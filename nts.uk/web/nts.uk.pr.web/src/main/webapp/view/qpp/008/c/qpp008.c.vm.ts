@@ -33,8 +33,10 @@ module qpp008.c.viewmodel {
         /*Other*/
         allowEditCode: KnockoutObservable<boolean>;
         isUpdate: KnockoutObservable<boolean>;
+        isEnableDeleteBtn: KnockoutObservable<boolean>;
         currentItemDirty: nts.uk.ui.DirtyChecker;
         items2Dirty: nts.uk.ui.DirtyChecker;
+
         constructor() {
             let self = this;
             self._initFormHeader();
@@ -114,9 +116,9 @@ module qpp008.c.viewmodel {
             let self = this;
             self.items2 = ko.computed(function() {
                 let itemsDetail = new Array();
-                itemsDetail = itemsDetail.concat(self.mappingItemMasterToFormDetail(self.currentCodeListSwap(), 0));
-                itemsDetail = itemsDetail.concat(self.mappingItemMasterToFormDetail(self.currentCodeListSwap1(), 1));
-                itemsDetail = itemsDetail.concat(self.mappingItemMasterToFormDetail(self.currentCodeListSwap3(), 3));
+                itemsDetail = itemsDetail.concat(self.currentCodeListSwap());
+                itemsDetail = itemsDetail.concat(self.currentCodeListSwap1());
+                itemsDetail = itemsDetail.concat(self.currentCodeListSwap3());
                 return itemsDetail;
             }, self).extend({ deferred: true });
 
@@ -129,6 +131,7 @@ module qpp008.c.viewmodel {
             self.currentCode2 = ko.observable();
             self.allowEditCode = ko.observable(false);
             self.isUpdate = ko.observable(true);
+            self.isEnableDeleteBtn = ko.observable(true);
             self.currentItemDirty = new nts.uk.ui.DirtyChecker(self.currentItem);
             self.items2Dirty = new nts.uk.ui.DirtyChecker(self.items2);
         }
@@ -145,6 +148,7 @@ module qpp008.c.viewmodel {
             self.previousCurrentCode = null;
             self.allowEditCode(true);
             self.isUpdate(false);
+            self.isEnableDeleteBtn(false);
             self.clearError();
             self.getComparingFormForTab(null).done(function() {
                 self.currentItemDirty.reset();
@@ -155,7 +159,6 @@ module qpp008.c.viewmodel {
 
         createButtonClick(): void {
             let self = this;
-            $('.save-error').ntsError('clear');
             if (!self.currentItemDirty.isDirty() && !self.items2Dirty.isDirty()) {
                 self.refreshLayout();
                 return;
@@ -193,7 +196,9 @@ module qpp008.c.viewmodel {
                     dfd.resolve(data);
                     return;
                 }
-                if (isReload) {
+                self.isEnableDeleteBtn(true);
+                self.items2Dirty.reset();
+                if (isReload) {   
                     self.currentCode(self.items()[0].formCode)
                 } else if (!nts.uk.text.isNullOrEmpty(reloadCode)) {
                     self.currentCode(reloadCode)
@@ -244,9 +249,7 @@ module qpp008.c.viewmodel {
             }).fail(function(error) {
                 if (error.message === '1') {
                     let _message = "入力した{0}は既に存在しています。\r\n {1}を確認してください。";
-                    nts.uk.ui.dialog.alert(nts.uk.text.format(_message, 'コード', 'コード')).then(function() {
-                        self.reload(true);
-                    })
+                    nts.uk.ui.dialog.alert(nts.uk.text.format(_message, 'コード', 'コード'));
                 } else if (error.message === '2') {
                     nts.uk.ui.dialog.alert("対象データがありません。").then(function() {
                         self.reload(true);
@@ -255,8 +258,8 @@ module qpp008.c.viewmodel {
             });
             return dfd.promise();
         }
-        
-         deleteConfirm() {
+
+        deleteConfirm() {
             let self = this;
             nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
                 self.deleteData();
@@ -323,7 +326,10 @@ module qpp008.c.viewmodel {
                 self.itemsSwap(data.lstItemMasterForTab_0);
                 self.itemsSwap1(data.lstItemMasterForTab_1);
                 self.itemsSwap3(data.lstItemMasterForTab_3);
+                var t0 = performance.now();
                 self.getSwapUpDownList(data.lstSelectForTab_0, 0);
+                var t1 = performance.now();
+                console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.");
                 self.getSwapUpDownList(data.lstSelectForTab_1, 1);
                 self.getSwapUpDownList(data.lstSelectForTab_3, 3);
                 dfd.resolve(data);
@@ -337,18 +343,6 @@ module qpp008.c.viewmodel {
             nts.uk.ui.windows.close();
         }
 
-        mappingItemMasterToFormDetail(selectList: Array<ItemMaster>, categoryAtr: number) {
-            return _.map(selectList, function(item) {
-                let newMapping = new ItemMaster(item.itemCode, item.itemName, "支", categoryAtr);
-                if (categoryAtr === 1) {
-                    newMapping = new ItemMaster(item.itemCode, item.itemName, "控", categoryAtr);
-                } else if (categoryAtr === 3) {
-                    newMapping = new ItemMaster(item.itemCode, item.itemName, "記", categoryAtr);
-                }
-                return newMapping;
-            });
-        }
-
         getSwapUpDownList(lstSelectForTab: Array<string>, categoryAtr: number) {
             let self = this;
             if (categoryAtr === 0) {
@@ -356,6 +350,8 @@ module qpp008.c.viewmodel {
                     _.forEach(self.itemsSwap(), function(itemMaster) {
                         if (value === itemMaster.itemCode) {
                             self.itemsSwap.remove(itemMaster);
+                            itemMaster.categoryAtrName = "支";
+                            itemMaster.categoryAtr = 0;
                             self.currentCodeListSwap.push(itemMaster);
                             return false;
                         }
@@ -368,6 +364,8 @@ module qpp008.c.viewmodel {
                     _.forEach(self.itemsSwap1(), function(itemMaster) {
                         if (value === itemMaster.itemCode) {
                             self.itemsSwap1.remove(itemMaster);
+                            itemMaster.categoryAtrName = "控";
+                            itemMaster.categoryAtr = 1;
                             self.currentCodeListSwap1.push(itemMaster);
                             return false;
                         }
@@ -380,6 +378,8 @@ module qpp008.c.viewmodel {
                     _.forEach(self.itemsSwap3(), function(itemMaster) {
                         if (value === itemMaster.itemCode) {
                             self.itemsSwap3.remove(itemMaster);
+                            itemMaster.categoryAtrName = "記";
+                            itemMaster.categoryAtr = 3;
                             self.currentCodeListSwap3.push(itemMaster);
                             return false;
                         }

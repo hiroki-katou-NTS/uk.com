@@ -73,9 +73,9 @@ var qpp008;
                     var self = this;
                     self.items2 = ko.computed(function () {
                         var itemsDetail = new Array();
-                        itemsDetail = itemsDetail.concat(self.mappingItemMasterToFormDetail(self.currentCodeListSwap(), 0));
-                        itemsDetail = itemsDetail.concat(self.mappingItemMasterToFormDetail(self.currentCodeListSwap1(), 1));
-                        itemsDetail = itemsDetail.concat(self.mappingItemMasterToFormDetail(self.currentCodeListSwap3(), 3));
+                        itemsDetail = itemsDetail.concat(self.currentCodeListSwap());
+                        itemsDetail = itemsDetail.concat(self.currentCodeListSwap1());
+                        itemsDetail = itemsDetail.concat(self.currentCodeListSwap3());
                         return itemsDetail;
                     }, self).extend({ deferred: true });
                     self.columns2 = ko.observableArray([
@@ -86,6 +86,7 @@ var qpp008;
                     self.currentCode2 = ko.observable();
                     self.allowEditCode = ko.observable(false);
                     self.isUpdate = ko.observable(true);
+                    self.isEnableDeleteBtn = ko.observable(true);
                     self.currentItemDirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                     self.items2Dirty = new nts.uk.ui.DirtyChecker(self.items2);
                 };
@@ -100,6 +101,7 @@ var qpp008;
                     self.previousCurrentCode = null;
                     self.allowEditCode(true);
                     self.isUpdate(false);
+                    self.isEnableDeleteBtn(false);
                     self.clearError();
                     self.getComparingFormForTab(null).done(function () {
                         self.currentItemDirty.reset();
@@ -109,7 +111,6 @@ var qpp008;
                 };
                 ScreenModel.prototype.createButtonClick = function () {
                     var self = this;
-                    $('.save-error').ntsError('clear');
                     if (!self.currentItemDirty.isDirty() && !self.items2Dirty.isDirty()) {
                         self.refreshLayout();
                         return;
@@ -145,6 +146,8 @@ var qpp008;
                             dfd.resolve(data);
                             return;
                         }
+                        self.isEnableDeleteBtn(true);
+                        self.items2Dirty.reset();
                         if (isReload) {
                             self.currentCode(self.items()[0].formCode);
                         }
@@ -194,9 +197,7 @@ var qpp008;
                     }).fail(function (error) {
                         if (error.message === '1') {
                             var _message = "入力した{0}は既に存在しています。\r\n {1}を確認してください。";
-                            nts.uk.ui.dialog.alert(nts.uk.text.format(_message, 'コード', 'コード')).then(function () {
-                                self.reload(true);
-                            });
+                            nts.uk.ui.dialog.alert(nts.uk.text.format(_message, 'コード', 'コード'));
                         }
                         else if (error.message === '2') {
                             nts.uk.ui.dialog.alert("対象データがありません。").then(function () {
@@ -266,7 +267,10 @@ var qpp008;
                         self.itemsSwap(data.lstItemMasterForTab_0);
                         self.itemsSwap1(data.lstItemMasterForTab_1);
                         self.itemsSwap3(data.lstItemMasterForTab_3);
+                        var t0 = performance.now();
                         self.getSwapUpDownList(data.lstSelectForTab_0, 0);
+                        var t1 = performance.now();
+                        console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.");
                         self.getSwapUpDownList(data.lstSelectForTab_1, 1);
                         self.getSwapUpDownList(data.lstSelectForTab_3, 3);
                         dfd.resolve(data);
@@ -278,18 +282,6 @@ var qpp008;
                 ScreenModel.prototype.closeDialog = function () {
                     nts.uk.ui.windows.close();
                 };
-                ScreenModel.prototype.mappingItemMasterToFormDetail = function (selectList, categoryAtr) {
-                    return _.map(selectList, function (item) {
-                        var newMapping = new ItemMaster(item.itemCode, item.itemName, "支", categoryAtr);
-                        if (categoryAtr === 1) {
-                            newMapping = new ItemMaster(item.itemCode, item.itemName, "控", categoryAtr);
-                        }
-                        else if (categoryAtr === 3) {
-                            newMapping = new ItemMaster(item.itemCode, item.itemName, "記", categoryAtr);
-                        }
-                        return newMapping;
-                    });
-                };
                 ScreenModel.prototype.getSwapUpDownList = function (lstSelectForTab, categoryAtr) {
                     var self = this;
                     if (categoryAtr === 0) {
@@ -297,6 +289,8 @@ var qpp008;
                             _.forEach(self.itemsSwap(), function (itemMaster) {
                                 if (value === itemMaster.itemCode) {
                                     self.itemsSwap.remove(itemMaster);
+                                    itemMaster.categoryAtrName = "支";
+                                    itemMaster.categoryAtr = 0;
                                     self.currentCodeListSwap.push(itemMaster);
                                     return false;
                                 }
@@ -308,6 +302,8 @@ var qpp008;
                             _.forEach(self.itemsSwap1(), function (itemMaster) {
                                 if (value === itemMaster.itemCode) {
                                     self.itemsSwap1.remove(itemMaster);
+                                    itemMaster.categoryAtrName = "控";
+                                    itemMaster.categoryAtr = 1;
                                     self.currentCodeListSwap1.push(itemMaster);
                                     return false;
                                 }
@@ -319,6 +315,8 @@ var qpp008;
                             _.forEach(self.itemsSwap3(), function (itemMaster) {
                                 if (value === itemMaster.itemCode) {
                                     self.itemsSwap3.remove(itemMaster);
+                                    itemMaster.categoryAtrName = "記";
+                                    itemMaster.categoryAtr = 3;
                                     self.currentCodeListSwap3.push(itemMaster);
                                     return false;
                                 }
