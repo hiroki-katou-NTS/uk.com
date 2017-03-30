@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * 
@@ -21,7 +22,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "QUPMT_P_UNITPRICE")
 @Data
-public class QupmtPUnitprice implements Serializable {
+public class QupmtPUnitprice extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -63,5 +64,10 @@ public class QupmtPUnitprice implements Serializable {
 
 	@Column(name = "MEMO")
 	public String memo;
+
+	@Override
+	protected QupmtPUnitpricePK getKey() {
+		return this.qupmtPUnitpricePK;
+	}
 
 }
