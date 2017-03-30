@@ -7,14 +7,12 @@ module qpp008.c.viewmodel {
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
         currentItem: KnockoutObservable<ComparingFormHeader>;
+        previousCurrentCode: string;
 
         //gridList2
         items2: KnockoutComputed<Array<ItemMaster>>;
         columns2: KnockoutObservableArray<any>;
         currentCode2: KnockoutObservable<any>;
-        currentItem2: KnockoutObservable<any>;
-
-
         /*SwapList*/
         //swapList1
         itemsSwap: KnockoutObservableArray<ItemMaster>;
@@ -36,8 +34,7 @@ module qpp008.c.viewmodel {
         allowEditCode: KnockoutObservable<boolean>;
         isUpdate: KnockoutObservable<boolean>;
         currentItemDirty: nts.uk.ui.DirtyChecker;
-        flagDirty: boolean;
-
+        items2Dirty: nts.uk.ui.DirtyChecker;
         constructor() {
             let self = this;
             self._initFormHeader();
@@ -45,11 +42,25 @@ module qpp008.c.viewmodel {
             self._initFormDetail();
 
             self.currentCode.subscribe(function(codeChanged) {
-                if (!nts.uk.text.isNullOrEmpty(codeChanged)) {
-                    self.currentItem(self.mappingFromJS(self.getItem(codeChanged)));
-                    self.allowEditCode(false);
-                    self.getComparingFormForTab(codeChanged);
+                if (nts.uk.text.isNullOrEmpty(codeChanged)) {
+                    if (self.isUpdate()) {
+                        self.refreshLayout();
+                    }
+                    return;
                 }
+                if (codeChanged === self.previousCurrentCode) {
+                    return;
+                }
+                if (!self.currentItemDirty.isDirty() && !self.items2Dirty.isDirty()) {
+                    self.processWhenCurrentCodeChange(codeChanged);
+                    return;
+                }
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
+                    self.processWhenCurrentCodeChange(codeChanged);
+                }).ifCancel(function() {
+                    self.currentCode(self.previousCurrentCode);
+                })
+
             });
         }
 
@@ -62,15 +73,12 @@ module qpp008.c.viewmodel {
             ]);
             self.currentItem = ko.observable(new ComparingFormHeader('', ''));
             self.currentCode = ko.observable();
+            self.previousCurrentCode = null;
         }
 
         _initSwap(): void {
             let self = this;
             self.itemsSwap = ko.observableArray([]);
-            let array = new Array();
-            let array1 = new Array();
-            let array2 = new Array();
-
             self.columnsSwap = ko.observableArray([
                 { headerText: 'コード', prop: 'itemCode', width: 60 },
                 { headerText: '名称', prop: 'itemName', width: 120 }
@@ -117,10 +125,12 @@ module qpp008.c.viewmodel {
                 { headerText: 'コード', prop: 'itemCode', width: 60 },
                 { headerText: '名称', prop: 'itemName', width: 120 },
             ]);
-            self.currentCode2 = ko.observable();
 
+            self.currentCode2 = ko.observable();
             self.allowEditCode = ko.observable(false);
             self.isUpdate = ko.observable(true);
+            self.currentItemDirty = new nts.uk.ui.DirtyChecker(self.currentItem);
+            self.items2Dirty = new nts.uk.ui.DirtyChecker(self.items2);
         }
 
         startPage(): JQueryPromise<any> {
@@ -132,15 +142,40 @@ module qpp008.c.viewmodel {
             let self = this;
             self.currentItem(self.mappingFromJS(new ComparingFormHeader('', '')));
             self.currentCode(null);
+            self.previousCurrentCode = null;
             self.allowEditCode(true);
             self.isUpdate(false);
-            self.getComparingFormForTab(null);
+            self.getComparingFormForTab(null).done(function() {
+                self.currentItemDirty.reset();
+                self.items2Dirty.reset();
+            });
+            $("#C_INP_002").focus();
         }
 
         createButtonClick(): void {
             let self = this;
-            self.isUpdate(false);
-            self.refreshLayout();
+            $('.save-error').ntsError('clear');
+            if (!self.currentItemDirty.isDirty() && !self.items2Dirty.isDirty()) {
+                self.refreshLayout();
+                return;
+            }
+            nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
+                self.refreshLayout();
+            }).ifCancel(function() {
+                return;
+            });
+        }
+
+        processWhenCurrentCodeChange(codeChanged: any): void {
+            let self = this;
+            self.currentItem(self.mappingFromJS(self.getItem(codeChanged)));
+            self.allowEditCode(false);
+            self.isUpdate(true);
+            self.getComparingFormForTab(codeChanged).done(function() {
+                self.currentItemDirty.reset();
+                self.items2Dirty.reset();
+            });
+            self.previousCurrentCode = codeChanged;
         }
 
         reload(isReload: boolean, reloadCode?: string) {
@@ -151,9 +186,9 @@ module qpp008.c.viewmodel {
                 _.forEach(data, function(item) {
                     self.items.push(item);
                 });
-                self.flagDirty = true;
                 if (self.items().length <= 0) {
-                    self.currentItem(ko.mapping.fromJS(new ComparingFormHeader('', '')));
+                    self.refreshLayout();
+                    dfd.resolve(data);
                     return;
                 }
                 if (isReload) {
@@ -189,7 +224,6 @@ module qpp008.c.viewmodel {
             let insertUpdateDataModel = new InsertUpdateDataModel(nts.uk.text.padLeft(newformCode, '0', 2), newformName, comparingFormDetailList);
             service.insertUpdateComparingForm(insertUpdateDataModel, self.isUpdate()).done(function() {
                 self.reload(false, nts.uk.text.padLeft(newformCode, '0', 2));
-                self.flagDirty = true;
                 self.currentItemDirty.reset();
                 if (self.isUpdate() === false) {
                     self.isUpdate(true);
@@ -222,7 +256,6 @@ module qpp008.c.viewmodel {
             service.deleteComparingForm(new DeleteFormHeaderModel(deleteCode)).done(function() {
                 let indexItemDelete = _.findIndex(self.items(), function(item) { return item.formCode == deleteCode; });
                 $.when(self.reload(false)).done(function() {
-                    self.flagDirty = true;
                     if (self.items().length === 0) {
                         self.allowEditCode(true);
                         self.isUpdate(false);
@@ -269,13 +302,13 @@ module qpp008.c.viewmodel {
         getComparingFormForTab(formCode: string) {
             let self = this;
             let dfd = $.Deferred();
+            self.itemsSwap([]);
+            self.itemsSwap1([]);
+            self.itemsSwap3([]);
+            self.currentCodeListSwap([]);
+            self.currentCodeListSwap1([]);
+            self.currentCodeListSwap3([]);
             service.getComparingFormForTab(formCode).done(function(data: ItemTabModel) {
-                self.itemsSwap([]);
-                self.itemsSwap1([]);
-                self.itemsSwap3([]);
-                self.currentCodeListSwap([]);
-                self.currentCodeListSwap1([]);
-                self.currentCodeListSwap3([]);
                 self.itemsSwap(data.lstItemMasterForTab_0);
                 self.itemsSwap1(data.lstItemMasterForTab_1);
                 self.itemsSwap3(data.lstItemMasterForTab_3);

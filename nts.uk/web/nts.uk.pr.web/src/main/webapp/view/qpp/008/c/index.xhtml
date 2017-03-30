@@ -19,12 +19,18 @@
 			<com:scriptfile path="qpp008.c.start.js" />
 			<com:scriptfile path="qpp008.c.vm.js" />
 			<com:scriptfile path="qpp008.c.service.js" />
+
+			<com:ValidatorScript>
+				nts.uk.ctx.pr.report.dom.payment.comparing.FormCode
+				nts.uk.ctx.pr.report.dom.payment.comparing.FormName
+			</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area" class="function-area">
 				<button id="C_BTN_001" data-bind="click: createButtonClick">新規</button>
-				<button id="C_BTN_002" class="proceed" data-bind="click: insertUpdateData">登録</button>
+				<button id="C_BTN_002" class="proceed"
+					data-bind="click: insertUpdateData">登録</button>
 				<button id="C_BTN_003" class="danger" data-bind="click: deleteData">削除</button>
 				<button id="C_BTN_004" data-bind="click: closeDialog">閉じる</button>
 			</div>
@@ -53,10 +59,20 @@
 				</div>
 				<div class="nts-right-content">
 					<div class="divRightTop valign-center control-group">
-						<div id="C_LBL_001" data-bind="ntsFormLabel: {required: true }">コード/名称</div>
+						<div id="C_LBL_001"
+							data-bind="ntsFormLabel: { constraint: ['FormCode','FormName'], required: true }">コード/名称</div>
 						<div class="C_INP_23" data-bind="with: currentItem">
-							<input id="C_INP_002" data-bind="ntsTextEditor: {value: formCode, enable: $root.content.allowEditCode}" />
-							<input id="C_INP_003" data-bind="ntsTextEditor: { value: formName }" />
+							<input id="C_INP_002" class="save-error"
+								data-bind="ntsTextEditor: {value: formCode,
+								 constraint: 'FormCode',
+								 enable: $root.content.allowEditCode, 
+								 required: true,
+								 immediate: true }" />
+							<input id="C_INP_003" class="save-error"
+								data-bind="ntsTextEditor: { value: formName,
+								constraint: 'FormName',
+								required: true,
+								immediate: true }" />
 						</div>
 					</div>
 					<hr />
@@ -165,9 +181,10 @@
 						</div>
 						<div class="div-right-bottom-left">
 							<div class="control-group valign-center">
-								<div id="C_LBL_002" data-bind="ntsFormLabel: { required: false }">帳票出力項目の一覧</div>
+								<div id="C_LBL_002"
+									data-bind="ntsFormLabel: { required: false }">帳票出力項目の一覧</div>
 								<button id="helpButton" class="small">?</button>
-							</div>							
+							</div>
 							<table id="C_LST_002"
 								data-bind="ntsGridList: {
 									width:'250',
@@ -176,7 +193,8 @@
 									optionsValue: 'itemCode',
 									columns: columns2,
 									multiple: false,
-									value: currentCode2}" class="cf">
+									value: currentCode2 }"
+								class="cf">
 							</table>
 						</div>
 					</div>
