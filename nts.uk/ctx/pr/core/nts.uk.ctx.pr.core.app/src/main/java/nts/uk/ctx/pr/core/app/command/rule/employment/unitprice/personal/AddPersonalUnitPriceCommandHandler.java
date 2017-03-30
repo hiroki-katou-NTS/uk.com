@@ -30,6 +30,7 @@ public class AddPersonalUnitPriceCommandHandler extends CommandHandler<AddPerson
 				command.getMemo(), command.getFixPaymentAtr(), command.getFixPaymentMonthly(),
 				command.getFixPaymentDayMonth(), command.getFixPaymentDaily(), command.getFixPaymentHoursly(),
 				command.getDisplaySet(), command.getPaymentSettingType(), command.getUnitPriceAtr());
+		
 		domain.validate();
 
 		// Check exist of data to be added base on personalUnitPriceCode.

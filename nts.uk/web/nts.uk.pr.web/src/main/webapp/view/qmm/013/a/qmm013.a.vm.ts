@@ -43,8 +43,8 @@ module qmm013.a.viewmodel {
 
             self.messages = ko.observableArray([
                 { messageId: "AL001", message: "変更された内容が登録されていません。\r\nよろしいですか。" },
-                { messageId: "ER001", message: "＊が入力されていません。" },
-                { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n＊を確認してください。" },
+                { messageId: "ER001", message: "が入力されていません。" },
+                { messageId: "ER005", message: "入力したコードは既に存在しています。\r\nコードを確認してください。" },
                 { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" },
                 { messageId: "ER026", message: "更新対象のデータが存在しません。" },
             ]);

@@ -7,55 +7,34 @@ module qmm013.a.service {
         updatePersonalUnitPrice: "pr/core/rule/employment/unitprice/personal/update",
         removePersonalUnitPrice: "pr/core/rule/employment/unitprice/personal/remove"
     }
-
-    export function getPersonalUnitPriceList(display: boolean): JQueryPromise<Array<any>> {
-        var dfd = $.Deferred<any>();
+    
+    /**
+     * get data from database base-on property 'display' true/false
+     */
+    export function getPersonalUnitPriceList(display: boolean): JQueryPromise<any> {
         var path = display ? paths.getPersonalUnitPriceList : paths.getPersonalUnitPriceListNoneDisplay;
-        nts.uk.request.ajax(path)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            });
-        return dfd.promise();
+        return nts.uk.request.ajax(path);
     }
-
+    
+    /**
+     * get data from database P_UNITPRICE
+     */
     export function getPersonalUnitPrice(code): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(paths.getPersonalUnitPrice + "" + code)
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            });
-        return dfd.promise();
+        return nts.uk.request.ajax(paths.getPersonalUnitPrice + "" + code);
     }
-
+    
+    /**
+     * add data in database P_UNITPRICE
+     */
     export function addPersonalUnitPrice(isCreated, data): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
         var path = isCreated ? paths.addPersonalUnitPrice : paths.updatePersonalUnitPrice;
-        nts.uk.request.ajax(path, data)
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            });
-        return dfd.promise();
+        return nts.uk.request.ajax(path, data);
     }
-
+    
+    /**
+     * remove data in database P_UNITPRICE
+     */
     export function removePersonalUnitPrice(data): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
-
-        nts.uk.request.ajax(paths.removePersonalUnitPrice, data)
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            });
-        return dfd.promise();
+        return nts.uk.request.ajax(paths.removePersonalUnitPrice, data);
     }
 }
