@@ -54,9 +54,6 @@ var qmm002;
                     });
                     return dfd.promise();
                 };
-                /**
-                 * Event button 002
-                 */
                 ScreenModel.prototype.addBank = function () {
                     var self = this;
                     var bankInfo = {
@@ -141,19 +138,12 @@ var qmm002;
                         self.items(data);
                         dfd.resolve(data);
                     }).fail(function (res) {
-                        // error
                     });
                     return dfd.promise();
                 };
-                /**
-                 * Check item list had data?
-                 */
                 ScreenModel.prototype.isEmptyList = function (data) {
                     return data.length > 0;
                 };
-                /**
-                 * Selected first item bank
-                 */
                 ScreenModel.prototype.selectedFirst = function (item) {
                     var self = this;
                     self.currentCode(item.bankCode);
@@ -183,3 +173,4 @@ var qmm002;
         })(viewmodel = d.viewmodel || (d.viewmodel = {}));
     })(d = qmm002.d || (qmm002.d = {}));
 })(qmm002 || (qmm002 = {}));
+//# sourceMappingURL=viewmodel.js.map

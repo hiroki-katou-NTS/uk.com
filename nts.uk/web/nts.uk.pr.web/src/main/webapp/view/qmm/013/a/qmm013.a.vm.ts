@@ -11,7 +11,9 @@ module qmm013.a.viewmodel {
         isCompany: KnockoutObservable<boolean>;
         SEL_004: KnockoutObservableArray<any>;
         dirty: nts.uk.ui.DirtyChecker;
-        isCreated: any;
+        isCreated: KnockoutObservable<boolean>;
+        //check enable/disable delete button
+        isEnableDelete: KnockoutObservable<boolean>;
         confirmDirty: boolean = false;
         messages: KnockoutObservableArray<any>;
         indexRow: KnockoutObservable<number>;
@@ -24,6 +26,7 @@ module qmm013.a.viewmodel {
             self.displayAll = ko.observable(true);
             self.selectedId = ko.observable(0);
             self.isCreated = ko.observable(true);
+            self.isEnableDelete = ko.observable(true);
             self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
             self.indexRow = ko.observable(0);
             self.columns = ko.observableArray([
@@ -50,7 +53,7 @@ module qmm013.a.viewmodel {
 
             self.SEL_004 = ko.observableArray([
                 { code: '0', name: '時間単価' },
-                { code: '1', name: '金額' },
+                { code: '1', name: '日額' },
                 { code: '2', name: 'その他' },
             ]);
 
@@ -58,6 +61,7 @@ module qmm013.a.viewmodel {
                 if (!self.checkDirty()) {
                     self.selectedUnitPrice(newCode);
                     self.isCreated(false);
+                    self.isEnableDelete(true);
                 }
                 else {
                     if (self.confirmDirty) {
@@ -67,6 +71,7 @@ module qmm013.a.viewmodel {
                     nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function() {
                         self.selectedUnitPrice(newCode);
                         self.isCreated(false);
+                        self.isEnableDelete(true);
                     }).ifNo(function() {
                         self.confirmDirty = true;
                         self.currentCode(self.currentItem().personalUnitPriceCode())
@@ -103,13 +108,13 @@ module qmm013.a.viewmodel {
             });
             return dfd.promise();
         }
-        
+
         getPersonalUnitPriceList() {
             var self = this;
             var dfd = $.Deferred();
             service.getPersonalUnitPriceList(self.displayAll()).done(function(data) {
                 var items = _.map(data, function(item) {
-                    var abolition = item.displayAtr == 0 ? '<i class="icon icon-close"></i>' : "";
+                    var abolition = item.displaySet == 0 ? '<i class="icon icon-close"></i>' : "";
                     return new ItemModel(item.personalUnitPriceCode, item.personalUnitPriceName, abolition);
                 });
                 self.items(items);
@@ -139,7 +144,7 @@ module qmm013.a.viewmodel {
                 item.personalUnitPriceCode,
                 item.personalUnitPriceName,
                 item.personalUnitPriceShortName,
-                item.displayAtr == 0,
+                item.displaySet == 0,
                 item.uniteCode,
                 item.paymentSettingType,
                 item.fixPaymentAtr,
@@ -165,27 +170,33 @@ module qmm013.a.viewmodel {
          */
         btn_001() {
             var self = this;
-            self.clearError();
+            //            self.clearError();
             self.confirmDirty = true;
             if (!self.checkDirty()) {
-                self.currentItem(new PersonalUnitPrice(null, null, null, false, "2", 1, null, false, false, false, false, false, null));
+                self.currentItem(new PersonalUnitPrice(null, null, null, false, "2", 0, true, true, true, true, true, 0, null));
                 self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                 self.currentCode("");
                 self.isCreated(true);
+                self.isEnableDelete(false);
             } else {
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function() {
-                    self.currentItem(new PersonalUnitPrice(null, null, null, false, "2", 1, null, false, false, false, false, false, null));
+                    self.currentItem(new PersonalUnitPrice(null, null, null, false, "2", 0, true, true, true, true, true, 0, null));
                     self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                     self.currentCode("");
                     self.isCreated(true);
+                    self.isEnableDelete(false);
                 })
             }
         }
-        
-        Opendialog(): any {
-                var self = this;
-                    nts.uk.ui.windows.sub.modal("/view/qmm/013/b/index.xhtml", { title: "銀行の登録　＞　銀行の統合" });
-            }
+
+        openDialog(): any {
+            var self = this;
+            nts.uk.ui.windows.sub.modal("/view/qmm/013/b/index.xhtml", { title: "個人情報の登録 ＞ 単価名の登録ボタン", dialogClass: "no-close" });
+        }
+
+        closeDialog() {
+            nts.uk.ui.windows.close();
+        }
 
 
         /**
@@ -194,19 +205,23 @@ module qmm013.a.viewmodel {
         btn_002() {
             var self = this;
             self.confirmDirty = true;
+            //if input 0-9, auto insert '0' before
+            if (self.currentItem().personalUnitPriceCode().length == 1) {
+                self.currentItem().personalUnitPriceCode("0" + self.currentItem().personalUnitPriceCode());
+            }
             var PersonalUnitPrice = {
                 personalUnitPriceCode: self.currentItem().personalUnitPriceCode(),
                 personalUnitPriceName: self.currentItem().personalUnitPriceName(),
                 personalUnitPriceShortName: self.currentItem().personalUnitPriceShortName(),
-                displayAtr: self.currentItem().displayAtr() ? 0 : 1,
-                uniteCode: "2",
-                paymentSettingType: self.currentItem().paymentSettingType(),
-                fixPaymentAtr: self.currentItem().fixPaymentAtr(),
+                displaySet: self.currentItem().displaySet() ? 0 : 1,
+                uniteCode: null,
+                paymentSettingType: self.currentItem().paymentSettingType() ? 0 : 1,
+                fixPaymentAtr: self.currentItem().fixPaymentAtr() ? 0 : 1,
                 fixPaymentMonthly: self.currentItem().fixPaymentMonthly() ? 0 : 1,
                 fixPaymentDayMonth: self.currentItem().fixPaymentDayMonth() ? 0 : 1,
                 fixPaymentDaily: self.currentItem().fixPaymentDaily() ? 0 : 1,
                 fixPaymentHoursly: self.currentItem().fixPaymentHoursly() ? 0 : 1,
-                unitPriceAtr: self.currentItem().unitPriceAtr() ? 0 : 1,
+                unitPriceAtr: self.currentItem().unitPriceAtr(),
                 memo: self.currentItem().memo()
             };
             service.addPersonalUnitPrice(self.isCreated(), PersonalUnitPrice).done(function() {
@@ -236,7 +251,7 @@ module qmm013.a.viewmodel {
                     _.findIndex(self.items(), function(x) {
                         return x.code === self.currentCode();
                     })
-                );
+                    );
                 service.removePersonalUnitPrice(data).done(function() {
                     // reload list   
                     self.getPersonalUnitPriceList().done(function() {
@@ -297,7 +312,7 @@ module qmm013.a.viewmodel {
         personalUnitPriceCode: KnockoutObservable<string>;
         personalUnitPriceName: KnockoutObservable<string>;
         personalUnitPriceShortName: KnockoutObservable<string>;
-        displayAtr: KnockoutObservable<boolean>;
+        displaySet: KnockoutObservable<boolean>;
         uniteCode: KnockoutObservable<string>;
         paymentSettingType: KnockoutObservable<number>;
         fixPaymentAtr: KnockoutObservable<boolean>;
@@ -305,17 +320,17 @@ module qmm013.a.viewmodel {
         fixPaymentDayMonth: KnockoutObservable<boolean>;
         fixPaymentDaily: KnockoutObservable<boolean>;
         fixPaymentHoursly: KnockoutObservable<boolean>;
-        unitPriceAtr: KnockoutObservable<boolean>;
+        unitPriceAtr: KnockoutObservable<number>;
         memo: KnockoutObservable<string>;
 
         constructor(personalUnitPriceCode: string, personalUnitPriceName: string, personalUnitPriceShortName: string,
-            displayAtr: boolean, uniteCode: string, paymentSettingType: number, fixPaymentAtr: boolean,
+            displaySet: boolean, uniteCode: string, paymentSettingType: number, fixPaymentAtr: boolean,
             fixPaymentMonthly: boolean, fixPaymentDayMonth: boolean, fixPaymentDaily: boolean, fixPaymentHoursly: boolean,
-            unitPriceAtr: boolean, memo: string) {
+            unitPriceAtr: number, memo: string) {
             this.personalUnitPriceCode = ko.observable(personalUnitPriceCode);
             this.personalUnitPriceName = ko.observable(personalUnitPriceName);
             this.personalUnitPriceShortName = ko.observable(personalUnitPriceShortName);
-            this.displayAtr = ko.observable(displayAtr);
+            this.displaySet = ko.observable(displaySet);
             this.uniteCode = ko.observable(uniteCode);
             this.paymentSettingType = ko.observable(paymentSettingType);
             this.fixPaymentAtr = ko.observable(fixPaymentAtr);
