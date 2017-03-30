@@ -104,7 +104,7 @@ module nts.uk.pr.view.qmm008.h {
              */
             private collectData(): Array<HealthInsuranceAvgEarnDto> {
                 var self = this;
-                var data:any = [];
+                var data: Array<HealthInsuranceAvgEarnDto> = [];
                 self.listHealthInsuranceAvgearn().forEach(item => {
                     data.push(ko.toJS(item));
                 });
@@ -116,8 +116,16 @@ module nts.uk.pr.view.qmm008.h {
              */
             private save(): void {
                 var self = this;
+                // Return if has error.
+                if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                    return;
+                }
                 service.updateHealthInsuranceAvgearn(self.collectData(), self.healthInsuranceRateModel.officeCode).done(() =>
                     self.closeDialog());
+            }
+
+            private clearError(): void {
+                $('.has-error').ntsError('clear');
             }
 
             /**
@@ -125,6 +133,7 @@ module nts.uk.pr.view.qmm008.h {
              */
             private reCalculate(): void {
                 var self = this;
+                self.clearError();
                 // Clear current listHealthInsuranceAvgearn
                 self.listHealthInsuranceAvgearn.removeAll();
                 // Recalculate listHealthInsuranceAvgearn
@@ -174,7 +183,7 @@ module nts.uk.pr.view.qmm008.h {
             }
             
             // rounding 
-            private rounding(roudingMethod: string,roundValue: number,roundType: number){
+            private rounding(roudingMethod: string,roundValue: number,roundType: number): number{
                 var self = this;
                 var getLevel = Math.pow(10,roundType);
                 var backupValue = roundValue*(getLevel/10);
@@ -190,16 +199,16 @@ module nts.uk.pr.view.qmm008.h {
                     case Rounding.DOWN5_UP6: return self.roudingDownUp(backupValue, 5)/(getLevel/10);
                 }
             }
-            private roudingDownUp(value: number, down: number) {
+            private roudingDownUp(value: number, down: number): number {
                 var newVal = Math.round(value * 10) / 10;
                 if ((newVal * 10) % 10 > down)
                     return Math.ceil(value);
                 else
                     return Math.floor(value);
             }
-            
+
               //value to string rounding
-            public convertToRounding(stringValue: string) {
+            public convertToRounding(stringValue: string): string {
                 switch (stringValue) {
                     case "0": return Rounding.ROUNDUP;
                     case "1": return Rounding.TRUNCATION;
@@ -209,8 +218,8 @@ module nts.uk.pr.view.qmm008.h {
                     default: return Rounding.ROUNDUP;
                 }
             }
-            
-            private closeDialogWithDirtyCheck() {
+
+            private closeDialogWithDirtyCheck(): void {
                 var self = this;
                 if (self.dirty.isDirty()) {
                     nts.uk.ui.dialog.confirm(self.errorList()[0].message).ifYes(function() {
@@ -223,7 +232,7 @@ module nts.uk.pr.view.qmm008.h {
                     self.closeDialog();
                 }
             }
-            
+
             /**
              * Close dialog.
              */

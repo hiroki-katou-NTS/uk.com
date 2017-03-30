@@ -11,12 +11,21 @@ import nts.uk.ctx.pr.core.dom.insurance.Address1;
 import nts.uk.ctx.pr.core.dom.insurance.Address2;
 import nts.uk.ctx.pr.core.dom.insurance.AddressKana1;
 import nts.uk.ctx.pr.core.dom.insurance.AddressKana2;
+import nts.uk.ctx.pr.core.dom.insurance.CityCode;
+import nts.uk.ctx.pr.core.dom.insurance.HealthInsuAssoCode;
+import nts.uk.ctx.pr.core.dom.insurance.HealthInsuOfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
+import nts.uk.ctx.pr.core.dom.insurance.OfficePensionFundCode;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeRefCode1;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeRefCode2;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeSign;
+import nts.uk.ctx.pr.core.dom.insurance.PhoneNumber;
 import nts.uk.ctx.pr.core.dom.insurance.PicName;
 import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
 import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
 import nts.uk.ctx.pr.core.dom.insurance.ShortName;
+import nts.uk.ctx.pr.core.dom.insurance.WelfarePensionFundCode;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -60,43 +69,43 @@ public class SocialInsuranceOffice extends DomainObject implements Master {
 
 	/** The phone number. */
 	// TODO: TelephoneNo
-	private String phoneNumber;
+	private PhoneNumber phoneNumber;
 
 	/** The health insu office ref code 1 st. */
-	private String healthInsuOfficeRefCode1st;
+	private OfficeRefCode1 healthInsuOfficeRefCode1st;
 
 	/** The health insu office ref code 2 nd. */
-	private String healthInsuOfficeRefCode2nd;
+	private OfficeRefCode2 healthInsuOfficeRefCode2nd;
 
 	/** The pension office ref code 1 st. */
-	private String pensionOfficeRefCode1st;
+	private OfficeRefCode1 pensionOfficeRefCode1st;
 
 	/** The pension office ref code 2 nd. */
-	private String pensionOfficeRefCode2nd;
+	private OfficeRefCode2 pensionOfficeRefCode2nd;
 
 	/** The welfare pension fund code. */
-	private String welfarePensionFundCode;
+	private WelfarePensionFundCode welfarePensionFundCode;
 
 	/** The office pension fund code. */
-	private String officePensionFundCode;
+	private OfficePensionFundCode officePensionFundCode;
 
 	/** The health insu city code. */
-	private String healthInsuCityCode;
+	private CityCode healthInsuCityCode;
 
 	/** The health insu office sign. */
-	private String healthInsuOfficeSign;
+	private OfficeSign healthInsuOfficeSign;
 
 	/** The pension city code. */
-	private String pensionCityCode;
+	private CityCode pensionCityCode;
 
 	/** The pension office sign. */
-	private String pensionOfficeSign;
+	private OfficeSign pensionOfficeSign;
 
 	/** The health insu office code. */
-	private String healthInsuOfficeCode;
+	private HealthInsuOfficeCode healthInsuOfficeCode;
 
 	/** The health insu asso code. */
-	private String healthInsuAssoCode;
+	private HealthInsuAssoCode healthInsuAssoCode;
 
 	/** The memo. */
 	private Memo memo;

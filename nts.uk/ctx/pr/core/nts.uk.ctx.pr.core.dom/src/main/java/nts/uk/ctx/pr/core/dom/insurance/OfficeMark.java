@@ -10,7 +10,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * The Class OfficeMark.
  */
-@StringMaxLength(4)
+@StringMaxLength(8)
 public class OfficeMark extends StringPrimitiveValue<OfficeMark> {
 
 	/** The Constant serialVersionUID. */

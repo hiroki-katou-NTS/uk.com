@@ -4,18 +4,29 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.office.command;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.insurance.Address1;
 import nts.uk.ctx.pr.core.dom.insurance.Address2;
 import nts.uk.ctx.pr.core.dom.insurance.AddressKana1;
 import nts.uk.ctx.pr.core.dom.insurance.AddressKana2;
+import nts.uk.ctx.pr.core.dom.insurance.CityCode;
+import nts.uk.ctx.pr.core.dom.insurance.HealthInsuAssoCode;
+import nts.uk.ctx.pr.core.dom.insurance.HealthInsuOfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
+import nts.uk.ctx.pr.core.dom.insurance.OfficePensionFundCode;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeRefCode1;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeRefCode2;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeSign;
+import nts.uk.ctx.pr.core.dom.insurance.PhoneNumber;
 import nts.uk.ctx.pr.core.dom.insurance.PicName;
 import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
 import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
 import nts.uk.ctx.pr.core.dom.insurance.ShortName;
+import nts.uk.ctx.pr.core.dom.insurance.WelfarePensionFundCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeGetMemento;
 import nts.uk.shr.com.primitive.Memo;
@@ -95,68 +106,77 @@ public class RegisterSocialOfficeCommand extends SocialOfficeBaseCommand {
 					}
 
 					@Override
-					public String getPhoneNumber() {
-						return command.getPhoneNumber();
+					public PhoneNumber getPhoneNumber() {
+						return new PhoneNumber(command.getPhoneNumber());
 					}
 
 					@Override
-					public String getHealthInsuOfficeRefCode1st() {
-						return command.getHealthInsuOfficeRefCode1st();
+					public OfficeRefCode1 getHealthInsuOfficeRefCode1st() {
+						return new OfficeRefCode1(command.getHealthInsuOfficeRefCode1st());
 					}
 
 					@Override
-					public String getHealthInsuOfficeRefCode2nd() {
-						return command.getHealthInsuOfficeRefCode2nd();
+					public OfficeRefCode2 getHealthInsuOfficeRefCode2nd() {
+						return new OfficeRefCode2(command.getHealthInsuOfficeRefCode2nd());
 					}
 
 					@Override
-					public String getPensionOfficeRefCode1st() {
-						return command.getPensionOfficeRefCode1st();
+					public OfficeRefCode1 getPensionOfficeRefCode1st() {
+						return new OfficeRefCode1(command.getPensionOfficeRefCode1st());
 					}
 
 					@Override
-					public String getPensionOfficeRefCode2nd() {
-						return command.getPensionOfficeRefCode2nd();
+					public OfficeRefCode2 getPensionOfficeRefCode2nd() {
+						return new OfficeRefCode2(command.getPensionOfficeRefCode2nd());
 					}
 
 					@Override
-					public String getWelfarePensionFundCode() {
-						return command.getWelfarePensionFundCode();
+					public WelfarePensionFundCode getWelfarePensionFundCode() {
+						if (command.getWelfarePensionFundCode() == null
+								|| command.getWelfarePensionFundCode().equals("")) {
+							return null;
+						} else {
+							return new WelfarePensionFundCode(new BigDecimal(command.getWelfarePensionFundCode()));
+						}
 					}
 
 					@Override
-					public String getOfficePensionFundCode() {
-						return command.getOfficePensionFundCode();
+					public OfficePensionFundCode getOfficePensionFundCode() {
+						return new OfficePensionFundCode(command.getOfficePensionFundCode());
 					}
 
 					@Override
-					public String getHealthInsuCityCode() {
-						return command.getHealthInsuCityCode();
+					public CityCode getHealthInsuCityCode() {
+						return new CityCode(command.getHealthInsuCityCode());
 					}
 
 					@Override
-					public String getHealthInsuOfficeSign() {
-						return command.getHealthInsuOfficeSign();
+					public OfficeSign getHealthInsuOfficeSign() {
+						return new OfficeSign(command.getHealthInsuOfficeSign());
 					}
 
 					@Override
-					public String getPensionCityCode() {
-						return command.getPensionCityCode();
+					public CityCode getPensionCityCode() {
+						return new CityCode(command.getPensionCityCode());
 					}
 
 					@Override
-					public String getPensionOfficeSign() {
-						return command.getPensionOfficeSign();
+					public OfficeSign getPensionOfficeSign() {
+						return new OfficeSign(command.getPensionOfficeSign());
 					}
 
 					@Override
-					public String getHealthInsuOfficeCode() {
-						return command.getHealthInsuOfficeCode();
+					public HealthInsuOfficeCode getHealthInsuOfficeCode() {
+						if (command.getHealthInsuOfficeCode() == null || command.getHealthInsuOfficeCode().equals("")) {
+							return null;
+						} else {
+							return new HealthInsuOfficeCode(new BigDecimal(command.getHealthInsuOfficeCode()));
+						}
 					}
 
 					@Override
-					public String getHealthInsuAssoCode() {
-						return command.getHealthInsuAssoCode();
+					public HealthInsuAssoCode getHealthInsuAssoCode() {
+						return new HealthInsuAssoCode(command.getHealthInsuAssoCode());
 					}
 
 					@Override

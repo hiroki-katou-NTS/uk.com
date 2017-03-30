@@ -8,12 +8,21 @@ import nts.uk.ctx.pr.core.dom.insurance.Address1;
 import nts.uk.ctx.pr.core.dom.insurance.Address2;
 import nts.uk.ctx.pr.core.dom.insurance.AddressKana1;
 import nts.uk.ctx.pr.core.dom.insurance.AddressKana2;
+import nts.uk.ctx.pr.core.dom.insurance.CityCode;
+import nts.uk.ctx.pr.core.dom.insurance.HealthInsuAssoCode;
+import nts.uk.ctx.pr.core.dom.insurance.HealthInsuOfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
+import nts.uk.ctx.pr.core.dom.insurance.OfficePensionFundCode;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeRefCode1;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeRefCode2;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeSign;
+import nts.uk.ctx.pr.core.dom.insurance.PhoneNumber;
 import nts.uk.ctx.pr.core.dom.insurance.PicName;
 import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
 import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
 import nts.uk.ctx.pr.core.dom.insurance.ShortName;
+import nts.uk.ctx.pr.core.dom.insurance.WelfarePensionFundCode;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -103,91 +112,91 @@ public interface SocialInsuranceOfficeSetMemento {
 	 *
 	 * @param phoneNumber the new phone number
 	 */
-	void setPhoneNumber(String phoneNumber);
+	void setPhoneNumber(PhoneNumber phoneNumber);
 
 	/**
 	 * Sets the health insu office ref code 1 st.
 	 *
 	 * @param healthInsuOfficeRefCode1st the new health insu office ref code 1 st
 	 */
-	void setHealthInsuOfficeRefCode1st(String healthInsuOfficeRefCode1st);
+	void setHealthInsuOfficeRefCode1st(OfficeRefCode1 healthInsuOfficeRefCode1st);
 
 	/**
 	 * Sets the health insu office ref code 2 nd.
 	 *
 	 * @param healthInsuOfficeRefCode2nd the new health insu office ref code 2 nd
 	 */
-	void setHealthInsuOfficeRefCode2nd(String healthInsuOfficeRefCode2nd);
+	void setHealthInsuOfficeRefCode2nd(OfficeRefCode2 healthInsuOfficeRefCode2nd);
 
 	/**
 	 * Sets the pension office ref code 1 st.
 	 *
 	 * @param pensionOfficeRefCode1st the new pension office ref code 1 st
 	 */
-	void setPensionOfficeRefCode1st(String pensionOfficeRefCode1st);
+	void setPensionOfficeRefCode1st(OfficeRefCode1 pensionOfficeRefCode1st);
 
 	/**
 	 * Sets the pension office ref code 2 nd.
 	 *
 	 * @param pensionOfficeRefCode2nd the new pension office ref code 2 nd
 	 */
-	void setPensionOfficeRefCode2nd(String pensionOfficeRefCode2nd);
+	void setPensionOfficeRefCode2nd(OfficeRefCode2 pensionOfficeRefCode2nd);
 
 	/**
 	 * Sets the welfare pension fund code.
 	 *
 	 * @param welfarePensionFundCode the new welfare pension fund code
 	 */
-	void setWelfarePensionFundCode(String welfarePensionFundCode);
+	void setWelfarePensionFundCode(WelfarePensionFundCode welfarePensionFundCode);
 
 	/**
 	 * Sets the office pension fund code.
 	 *
 	 * @param officePensionFundCode the new office pension fund code
 	 */
-	void setOfficePensionFundCode(String officePensionFundCode);
+	void setOfficePensionFundCode(OfficePensionFundCode officePensionFundCode);
 
 	/**
 	 * Sets the health insu city code.
 	 *
 	 * @param healthInsuCityCode the new health insu city code
 	 */
-	void setHealthInsuCityCode(String healthInsuCityCode);
+	void setHealthInsuCityCode(CityCode healthInsuCityCode);
 
 	/**
 	 * Sets the health insu office sign.
 	 *
 	 * @param healthInsuOfficeSign the new health insu office sign
 	 */
-	void setHealthInsuOfficeSign(String healthInsuOfficeSign);
+	void setHealthInsuOfficeSign(OfficeSign healthInsuOfficeSign);
 
 	/**
 	 * Sets the pension city code.
 	 *
 	 * @param pensionCityCode the new pension city code
 	 */
-	void setPensionCityCode(String pensionCityCode);
+	void setPensionCityCode(CityCode pensionCityCode);
 
 	/**
 	 * Sets the pension office sign.
 	 *
 	 * @param pensionOfficeSign the new pension office sign
 	 */
-	void setPensionOfficeSign(String pensionOfficeSign);
+	void setPensionOfficeSign(OfficeSign pensionOfficeSign);
 
 	/**
 	 * Sets the health insu office code.
 	 *
 	 * @param healthInsuOfficeCode the new health insu office code
 	 */
-	void setHealthInsuOfficeCode(String healthInsuOfficeCode);
+	void setHealthInsuOfficeCode(HealthInsuOfficeCode healthInsuOfficeCode);
 
 	/**
 	 * Sets the health insu asso code.
 	 *
 	 * @param healthInsuAssoCode the new health insu asso code
 	 */
-	void setHealthInsuAssoCode(String healthInsuAssoCode);
+	void setHealthInsuAssoCode(HealthInsuAssoCode healthInsuAssoCode);
 
 	/**
 	 * Sets the memo.
