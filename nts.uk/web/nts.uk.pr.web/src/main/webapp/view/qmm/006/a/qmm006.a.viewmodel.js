@@ -36,10 +36,10 @@ var qmm006;
                     self.countLineBank = ko.observable(0);
                     self.indexLineBank = ko.observable(0);
                     self.messageList = ko.observableArray([
-                        { messageId: "ER001", message: "＊が入力されていません。" },
-                        { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
-                        { messageId: "ER007", message: "＊が選択されていません。" },
-                        { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
+                        { messageId: "ER001", message: "が入力されていません。" },
+                        { messageId: "ER005", message: "入力したコードは既に存在しています。\r\n コードを確認してください。" },
+                        { messageId: "ER007", message: "が選択されていません。" },
+                        { messageId: "ER008", message: "選択された{0}は使用されているため削除できません。" },
                         { messageId: "ER010", message: "対象データがありません。" },
                     ]);
                     self.currentCode.subscribe(function (codeChange) {
@@ -133,8 +133,8 @@ var qmm006;
                 };
                 ScreenModel.prototype.saveData = function () {
                     var self = this;
-                    if (self.currentLineBank().lineBankCode().length == 1) {
-                        var lineBankCode = '0' + self.currentLineBank().lineBankCode();
+                    if (self.currentLineBank().lineBankCode() != null && self.currentLineBank().lineBankCode().length == 1) {
+                        self.currentLineBank().lineBankCode("0" + self.currentLineBank().lineBankCode());
                     }
                     var command = {
                         accountAtr: self.currentLineBank().accountAtr(),
@@ -207,7 +207,10 @@ var qmm006;
                                 }
                             });
                         }).fail(function (error) {
-                            nts.uk.ui.dialog.alert(self.messageList()[3].message);
+                            if (error.messageId == self.messageList()[3].messageId) {
+                                var messageError = nts.uk.text.format(self.messageList()[3].message, self.currentLineBank().lineBankName());
+                                nts.uk.ui.dialog.alert(messageError);
+                            }
                         });
                     })
                         .ifNo(function () {
@@ -372,50 +375,34 @@ var qmm006;
                         var consignorItem = consignors[i];
                         switch (i) {
                             case 0:
-                                if (consignorItem) {
-                                    this.consignors.push(new Consignor("①", consignorItem.code, consignorItem.memo));
-                                }
-                                else {
-                                    this.consignors.push(new Consignor("①", "", ""));
-                                }
+                                this.createConsignorItem(consignorItem, "①");
                                 break;
                             case 1:
-                                if (consignorItem) {
-                                    this.consignors.push(new Consignor("②", consignorItem.code, consignorItem.memo));
-                                }
-                                else {
-                                    this.consignors.push(new Consignor("②", "", ""));
-                                }
+                                this.createConsignorItem(consignorItem, "②");
                                 break;
                             case 2:
-                                if (consignorItem) {
-                                    this.consignors.push(new Consignor("③", consignorItem.code, consignorItem.memo));
-                                }
-                                else {
-                                    this.consignors.push(new Consignor("③", "", ""));
-                                }
+                                this.createConsignorItem(consignorItem, "③");
                                 break;
                             case 3:
-                                if (consignorItem) {
-                                    this.consignors.push(new Consignor("④", consignorItem.code, consignorItem.memo));
-                                }
-                                else {
-                                    this.consignors.push(new Consignor("④", "", ""));
-                                }
+                                this.createConsignorItem(consignorItem, "④");
                                 break;
                             case 4:
-                                if (consignorItem) {
-                                    this.consignors.push(new Consignor("⑤", consignorItem.code, consignorItem.memo));
-                                }
-                                else {
-                                    this.consignors.push(new Consignor("⑤", "", ""));
-                                }
+                                this.createConsignorItem(consignorItem, "⑤");
                                 break;
                             default:
                                 break;
                         }
                     }
                 }
+                LineBank.prototype.createConsignorItem = function (item, icon) {
+                    var self = this;
+                    if (item) {
+                        self.consignors.push(new Consignor(icon, item.code, item.memo));
+                    }
+                    else {
+                        self.consignors.push(new Consignor(icon, "", ""));
+                    }
+                };
                 return LineBank;
             }());
             var Consignor = (function () {

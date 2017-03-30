@@ -8,6 +8,9 @@ module qmm006.a.service {
         checkExistBankAndBranch: "basic/system/bank/find/check"
     }
 
+    /**
+     * remove data (lineBank) in database
+     */
     export function remove(command): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
         nts.uk.request.ajax("com", paths.remove, command)
@@ -20,6 +23,10 @@ module qmm006.a.service {
         return dfd.promise();
     }
 
+    /**
+     * update or insert data (lineBank) in database
+     * define update mode or insert mode base-on isEnable property
+     */
     export function saveData(isEnable, command): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
         var path = isEnable ? paths.saveData : paths.update;
@@ -33,6 +40,9 @@ module qmm006.a.service {
         return dfd.promise();
     }
 
+    /**
+     * get data from database to screen
+     */
     export function findAll(): JQueryPromise<Array<any>> {
         var dfd = $.Deferred<any>();
         nts.uk.request.ajax("com", paths.findAll)
@@ -45,6 +55,9 @@ module qmm006.a.service {
         return dfd.promise();
     }
 
+    /**
+     * get data of Bank 
+     */
     export function findBankAll(): JQueryPromise<Array<any>> {
         var dfd = $.Deferred<any>();
         nts.uk.request.ajax("com", paths.findBankAll)
@@ -57,6 +70,9 @@ module qmm006.a.service {
         return dfd.promise();
     }
 
+    /**
+     * check exist data of Bank
+     */
     export function checkExistBankAndBranch(): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
         nts.uk.request.ajax("com", paths.checkExistBankAndBranch)

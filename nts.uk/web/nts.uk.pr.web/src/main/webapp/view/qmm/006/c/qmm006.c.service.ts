@@ -3,6 +3,10 @@ module qmm006.c.service {
         findAll: "basic/system/bank/linebank/findAll",
         transfer: "basic/system/bank/linebank/transfer"
     }
+    
+    /**
+     * get data from database to screen
+     */
     export function findAll(): JQueryPromise<Array<any>> {
         var dfd = $.Deferred<any>();
         nts.uk.request.ajax("com", paths.findAll)
@@ -14,7 +18,10 @@ module qmm006.c.service {
             })
         return dfd.promise();
     }
-
+    
+    /**
+     * change lineBankCode in database PERSON_BANK_ACCOUNT
+     */
     export function transfer(data): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
         nts.uk.request.ajax('com', paths.transfer, data)
