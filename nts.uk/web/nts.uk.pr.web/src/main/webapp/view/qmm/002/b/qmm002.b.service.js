@@ -16,16 +16,8 @@ var nts;
                                 removeListBank: "basic/system/bank/remove/list"
                             };
                             function removeBank(data) {
-                                var dfd = $.Deferred();
                                 var path = paths.removeListBank;
-                                nts.uk.request.ajax("com", path, data)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax("com", path, data);
                             }
                             service.removeBank = removeBank;
                         })(service = b.service || (b.service = {}));
