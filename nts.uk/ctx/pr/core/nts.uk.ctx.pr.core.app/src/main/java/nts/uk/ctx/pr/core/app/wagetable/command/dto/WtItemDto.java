@@ -4,11 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.command.dto;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
+import nts.uk.ctx.pr.core.dom.wagetable.WtValue;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtItem;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtItemGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtItemSetMemento;
@@ -30,7 +29,7 @@ public class WtItemDto {
 	private String element3Id;
 
 	/** The amount. */
-	private BigDecimal amount;
+	private Long amount;
 
 	/**
 	 * To domain.
@@ -51,7 +50,8 @@ public class WtItemDto {
 	/**
 	 * From domain.
 	 *
-	 * @param wtHistory the wt history
+	 * @param wtHistory
+	 *            the wt history
 	 * @return the wt item dto
 	 */
 	public WtItemDto fromDomain(WtItem wtHistory) {
@@ -118,8 +118,8 @@ public class WtItemDto {
 		 * java. math.BigDecimal)
 		 */
 		@Override
-		public void setAmount(BigDecimal amount) {
-			this.dto.amount = amount;
+		public void setAmount(WtValue amount) {
+			this.dto.amount = amount.v();
 		}
 	}
 
@@ -182,8 +182,8 @@ public class WtItemDto {
 		 * getAmount()
 		 */
 		@Override
-		public BigDecimal getAmount() {
-			return this.dto.amount;
+		public WtValue getAmount() {
+			return new WtValue(this.dto.amount);
 		}
 	}
 }
