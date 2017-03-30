@@ -152,7 +152,7 @@ module nts.uk.ui.koExtentions {
                 var itemsSelected: any = selectListBoxContainer.data('value');
                 // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
                 document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
-                if (!changingEvent.returnValue) {
+                if (changingEvent.returnValue !== undefined && !changingEvent.returnValue) {
                     // revert select.
                     console.log(selectedValue);
                     selectListBoxContainer.data('value', data.value());

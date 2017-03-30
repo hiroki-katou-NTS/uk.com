@@ -25,6 +25,9 @@ __viewContext.ready(function () {
             self.isMulti = ko.observable(true);
             self.isMulti2 = ko.observable(true);
             self.isValidate = ko.observable(true);
+            $("#list-box").on("selectionChanging", function(){
+                return self.isValidate();    
+            });
         }
 
         addOptions() {
