@@ -8,7 +8,7 @@ __viewContext.ready(function () {
             self.simpleValue = ko.observable("123");
             self.texteditor = {
                 value: ko.observable(''),
-                constraint: 'ResidenceCode',
+                constraint: 'WLAggregateItemCode',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     textmode: "text",
                     placeholder: "Placeholder for text editor",

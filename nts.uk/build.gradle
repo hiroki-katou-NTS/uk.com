@@ -270,6 +270,7 @@ project (':ctx:pr:report:nts.uk.ctx.pr.report.app') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':shr:nts.uk.shr.find')
 		compile project(':ctx:pr:report:nts.uk.ctx.pr.report.dom')
+		compile project(':ctx:pr:report:nts.uk.ctx.pr.report.ac')
 	}
 }
 project (':ctx:pr:report:nts.uk.ctx.pr.report.infra') {
@@ -285,6 +286,7 @@ project (':ctx:pr:report:nts.uk.ctx.pr.report.ac') {
 		compile project(':ctx:pr:report:nts.uk.ctx.pr.report.app')
 		compile project(':ctx:pr:report:nts.uk.ctx.pr.report.dom')
 		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.pub')
+		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.pubimp')
 	}
 }
 project (':ctx:pr:report:nts.uk.ctx.pr.report.pub') {

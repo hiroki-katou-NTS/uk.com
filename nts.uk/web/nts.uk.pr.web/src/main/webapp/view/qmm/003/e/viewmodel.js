@@ -12,7 +12,7 @@ var nts;
                     (function (e) {
                         var ScreenModel = (function () {
                             function ScreenModel() {
-                                this.editMode = true; // true là mode thêm mới, false là mode sửa 
+                                this.editMode = true;
                                 var self = this;
                                 self.items = ko.observableArray([
                                     new Node('1', '東北', [
@@ -50,7 +50,6 @@ var nts;
                                 self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
                                 self.filteredData1 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
                                 self.selectedCodes = ko.observableArray([]);
-                                //Init();
                                 self.singleSelectedCode.subscribe(function (newValue) {
                                 });
                             }
@@ -77,7 +76,6 @@ var nts;
                                         error1 = true;
                                     }
                                 });
-                                //09.住民税納付先の統合_検索時エラーチェック処理  E_SCH_0002 9. Integration of inhabitant tax payment destination _ Error check processing at search time 
                                 if (inputSearch1 === "") {
                                     $('#E_SCH_001').ntsError('set', 'inputSearch E_INP_001 が入力されていません。');
                                 }
@@ -90,7 +88,6 @@ var nts;
                                 else {
                                     $('#E_SCH_001').ntsError('clear');
                                 }
-                                //10.住民税納付先の統合_検索時エラーチェック処理 E_SCH_0002  10. Integration of inhabitant tax payment destination _ Error check processing at search time 
                                 if (inputSearch2 === "") {
                                     $('#E_SCH_002').ntsError('set', 'inputSearch E_INP_002 が入力されていません。');
                                 }
@@ -124,3 +121,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=viewmodel.js.map

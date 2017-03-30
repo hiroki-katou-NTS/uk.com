@@ -18,7 +18,7 @@ var qmm019;
                 this.totalGrayLine = ko.observable("（+非表示0行）");
                 this.totalGrayLineNumber = ko.observable(0);
                 this.allowClick = ko.observable(true);
-                this.firstLayoutCode = ""; //Dùng cho select item đầu tiên.
+                this.firstLayoutCode = "";
                 var self = this;
                 screenQmm019 = ko.observable(self);
                 self.itemList = ko.observableArray([]);
@@ -133,7 +133,6 @@ var qmm019;
                 $(".row").sortable("destroy");
                 $(".all-line").sortable("destroy");
             };
-            // start function
             ScreenModel.prototype.start = function (currentLayoutSelectedCode) {
                 var self = this;
                 var dfd = $.Deferred();
@@ -145,7 +144,6 @@ var qmm019;
                             console.log(layoutsMax);
                             self.layoutsMax(layoutsMax);
                             self.buildTreeDataSource();
-                            //let firstLayout: service.model.LayoutMasterDto = _.first(self.layouts());
                             if (currentLayoutSelectedCode === undefined) {
                                 self.singleSelectedCode(self.firstLayoutCode);
                             }
@@ -160,10 +158,8 @@ var qmm019;
                         dfd.resolve();
                     }
                 }).fail(function (res) {
-                    // Alert message
                     alert(res);
                 });
-                // Return.
                 return dfd.promise();
             };
             ScreenModel.prototype.buildTreeDataSource = function () {
@@ -217,7 +213,6 @@ var qmm019;
                     return false;
                 var singleSelectedCode = self.singleSelectedCode().split(';');
                 nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
-                //17.03.2017 Lanlt  setShared startYm
                 nts.uk.ui.windows.setShared('startYm', singleSelectedCode[1]);
                 nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function () {
                     self.start(self.singleSelectedCode());
@@ -242,7 +237,6 @@ var qmm019;
             ScreenModel.prototype.openGDialog = function () {
                 var self = this;
                 nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', { title: '明細レイアウトの作成＞新規登録' }).onClosed(function () {
-                    // anh Lam
                     self.start(undefined);
                 });
             };
@@ -262,3 +256,4 @@ var qmm019;
     })(a = qmm019.a || (qmm019.a = {}));
 })(qmm019 || (qmm019 = {}));
 ;
+//# sourceMappingURL=viewmodel.js.map

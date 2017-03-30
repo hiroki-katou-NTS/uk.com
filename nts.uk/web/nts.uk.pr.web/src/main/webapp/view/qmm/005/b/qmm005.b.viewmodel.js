@@ -67,3 +67,4 @@ var qmm005;
         }());
     })(b = qmm005.b || (qmm005.b = {}));
 })(qmm005 || (qmm005 = {}));
+//# sourceMappingURL=qmm005.b.viewmodel.js.map
