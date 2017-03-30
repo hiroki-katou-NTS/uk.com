@@ -23,7 +23,7 @@ public class LaborInsuranceOfficeServiceImpl implements LaborInsuranceOfficeServ
 
 	/** The labor insurance office repo. */
 	@Inject
-	private LaborInsuranceOfficeRepository laborInsuranceOfficeRepo;
+	private LaborInsuranceOfficeRepository officeRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -50,7 +50,7 @@ public class LaborInsuranceOfficeServiceImpl implements LaborInsuranceOfficeServ
 	 */
 	@Override
 	public void checkDuplicateCode(LaborInsuranceOffice office) {
-		Optional<LaborInsuranceOffice> optionalCheck = this.laborInsuranceOfficeRepo
+		Optional<LaborInsuranceOffice> optionalCheck = this.officeRepo
 				.findById(office.getCompanyCode(), office.getCode().v());
 
 		if (optionalCheck.isPresent()) {
