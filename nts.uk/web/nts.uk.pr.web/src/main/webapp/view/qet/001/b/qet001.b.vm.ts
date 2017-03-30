@@ -116,7 +116,8 @@ module qet001.b.viewmodel {
                 // Check output setting is empty.
                 var isHasData = outputSettings && outputSettings.length > 0;
                 if (!isHasData) {
-                    self.switchToCreateMode();
+                    self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
+                    self.outputSettings().outputSettingSelectedCode('');
                     dfd.resolve();
                     return;
                 }
@@ -179,6 +180,7 @@ module qet001.b.viewmodel {
                 nts.uk.ui.windows.setShared('isHasUpdate', true, false);
                 nts.uk.ui.dialog.alert('save success!').then(function() {
                     self.loadAllOutputSetting();
+                    self.dirty.reset();
                 })
             }).fail(function(res) {
                 $('#code-input').ntsError('set', res.message);

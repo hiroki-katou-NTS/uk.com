@@ -137,12 +137,12 @@ var nts;
                                 };
                                 ScreenModel.prototype.convertToRounding = function (stringValue) {
                                     switch (stringValue) {
-                                        case "0": return Rounding.ROUNDUP;
-                                        case "1": return Rounding.TRUNCATION;
+                                        case "0": return Rounding.TRUNCATION;
+                                        case "1": return Rounding.ROUNDUP;
                                         case "2": return Rounding.DOWN4_UP5;
-                                        case "3": return Rounding.ROUNDDOWN;
-                                        case "4": return Rounding.DOWN5_UP6;
-                                        default: return Rounding.ROUNDUP;
+                                        case "3": return Rounding.DOWN5_UP6;
+                                        case "4": return Rounding.ROUNDDOWN;
+                                        default: return Rounding.TRUNCATION;
                                     }
                                 };
                                 ScreenModel.prototype.closeDialogWithDirtyCheck = function () {

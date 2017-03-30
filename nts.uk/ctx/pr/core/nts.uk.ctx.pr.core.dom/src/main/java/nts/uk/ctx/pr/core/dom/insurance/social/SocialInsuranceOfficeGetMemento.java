@@ -8,13 +8,21 @@ import nts.uk.ctx.pr.core.dom.insurance.Address1;
 import nts.uk.ctx.pr.core.dom.insurance.Address2;
 import nts.uk.ctx.pr.core.dom.insurance.AddressKana1;
 import nts.uk.ctx.pr.core.dom.insurance.AddressKana2;
+import nts.uk.ctx.pr.core.dom.insurance.CityCode;
+import nts.uk.ctx.pr.core.dom.insurance.HealthInsuAssoCode;
+import nts.uk.ctx.pr.core.dom.insurance.HealthInsuOfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
+import nts.uk.ctx.pr.core.dom.insurance.OfficePensionFundCode;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeRefCode1;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeRefCode2;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeSign;
 import nts.uk.ctx.pr.core.dom.insurance.PhoneNumber;
 import nts.uk.ctx.pr.core.dom.insurance.PicName;
 import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
 import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
 import nts.uk.ctx.pr.core.dom.insurance.ShortName;
+import nts.uk.ctx.pr.core.dom.insurance.WelfarePensionFundCode;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -112,84 +120,84 @@ public interface SocialInsuranceOfficeGetMemento {
 	 *
 	 * @return the health insu office ref code 1 st
 	 */
-	String getHealthInsuOfficeRefCode1st();
+	OfficeRefCode1 getHealthInsuOfficeRefCode1st();
 
 	/**
 	 * Gets the health insu office ref code 2 nd.
 	 *
 	 * @return the health insu office ref code 2 nd
 	 */
-	String getHealthInsuOfficeRefCode2nd();
+	OfficeRefCode2 getHealthInsuOfficeRefCode2nd();
 
 	/**
 	 * Gets the pension office ref code 1 st.
 	 *
 	 * @return the pension office ref code 1 st
 	 */
-	String getPensionOfficeRefCode1st();
+	OfficeRefCode1 getPensionOfficeRefCode1st();
 
 	/**
 	 * Gte pension office ref code 2 nd.
 	 *
 	 * @return the string
 	 */
-	String getPensionOfficeRefCode2nd();
+	OfficeRefCode2 getPensionOfficeRefCode2nd();
 
 	/**
 	 * Gets the welfare pension fund code.
 	 *
 	 * @return the welfare pension fund code
 	 */
-	String getWelfarePensionFundCode();
+	WelfarePensionFundCode getWelfarePensionFundCode();
 
 	/**
 	 * Gets the office pension fund code.
 	 *
 	 * @return the office pension fund code
 	 */
-	String getOfficePensionFundCode();
+	OfficePensionFundCode getOfficePensionFundCode();
 
 	/**
 	 * Gets the health insu city code.
 	 *
 	 * @return the health insu city code
 	 */
-	String getHealthInsuCityCode();
+	CityCode getHealthInsuCityCode();
 
 	/**
 	 * Gets the health insu office sign.
 	 *
 	 * @return the health insu office sign
 	 */
-	String getHealthInsuOfficeSign();
+	OfficeSign getHealthInsuOfficeSign();
 
 	/**
 	 * Gets the pension city code.
 	 *
 	 * @return the pension city code
 	 */
-	String getPensionCityCode();
+	CityCode getPensionCityCode();
 
 	/**
 	 * Gets the pension office sign.
 	 *
 	 * @return the pension office sign
 	 */
-	String getPensionOfficeSign();
+	OfficeSign getPensionOfficeSign();
 
 	/**
 	 * Gets the health insu office code.
 	 *
 	 * @return the health insu office code
 	 */
-	String getHealthInsuOfficeCode();
+	HealthInsuOfficeCode getHealthInsuOfficeCode();
 
 	/**
 	 * Gets the health insu asso code.
 	 *
 	 * @return the health insu asso code
 	 */
-	String getHealthInsuAssoCode();
+	HealthInsuAssoCode getHealthInsuAssoCode();
 
 	/**
 	 * Gets the memo.

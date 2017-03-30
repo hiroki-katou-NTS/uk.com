@@ -139,11 +139,11 @@ module nts.uk.pr.view.qmm008.c {
             //string rounding to value
             public convertRounding(stringRounding: string) {
                 switch (stringRounding) {
-                    case Rounding.ROUNDUP: return "0";
-                    case Rounding.TRUNCATION: return "1";
+                    case Rounding.TRUNCATION: return "0";
+                    case Rounding.ROUNDUP: return "1";
                     case Rounding.DOWN4_UP5: return "2";
-                    case Rounding.ROUNDDOWN: return "3";
-                    case Rounding.DOWN5_UP6: return "4";
+                    case Rounding.DOWN5_UP6: return "3";
+                    case Rounding.ROUNDDOWN: return "4";
                     default: return "0";
                 }
             }
@@ -151,12 +151,12 @@ module nts.uk.pr.view.qmm008.c {
             //value to string rounding
             public convertToRounding(stringValue: string) {
                 switch (stringValue) {
-                    case "0": return Rounding.ROUNDUP;
-                    case "1": return Rounding.TRUNCATION;
+                    case "0": return Rounding.TRUNCATION;
+                    case "1": return Rounding.ROUNDUP;
                     case "2": return Rounding.DOWN4_UP5;
-                    case "3": return Rounding.ROUNDDOWN;
-                    case "4": return Rounding.DOWN5_UP6;
-                    default: return Rounding.ROUNDUP;
+                    case "3": return Rounding.DOWN5_UP6;
+                    case "4": return Rounding.ROUNDDOWN;
+                    default: return Rounding.TRUNCATION;
                 }
             }
 
@@ -327,9 +327,9 @@ module nts.uk.pr.view.qmm008.c {
             /**
             * Collect data from input.
             */
-            private collectData(): PensionAvgearnDto {
+            private collectData(): Array<PensionAvgearnDto> {
                 var self = this;
-                var data: any = [];
+                var data: Array<PensionAvgearnDto> = [];
                 self.listAvgEarnLevelMasterSetting.forEach(item => {
                     self.listPensionAvgearnModel.push(self.calculateHealthInsuranceAvgEarnModel(item));
                 });

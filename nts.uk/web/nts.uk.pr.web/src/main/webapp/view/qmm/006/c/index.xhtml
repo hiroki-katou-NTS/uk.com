@@ -11,10 +11,10 @@
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
    				</com:ValidatorScript>
-			<com:stylefile path="main.css" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="service.js" />
+			<com:stylefile path="qmm006.c.main.css" />
+			<com:scriptfile path="qmm006.c.start.js" />
+			<com:scriptfile path="qmm006.c.viewmodel.js" />
+			<com:scriptfile path="qmm006.c.service.js" />
 			<com:scriptfile set="IGNITE" />
 
 		</ui:define>
@@ -40,8 +40,8 @@
 											comId: 'single-list',
 											items: items, 
 											selected: currentCode, 
-											selectedKey: 'code', 
-											fields: ['name', 'code']}" />
+											selectedKey: 'lineBankCode', 
+											fields: ['lineBankName', 'lineBankCode']}" />
 									<table id="single-list"
 										data-bind="ntsGridList: {
 											width: 440,
@@ -70,8 +70,8 @@
 											comId: 'single-list',
 											items: items1, 		
 											selected: currentCode1, 
-											selectedKey: 'code', 
-											fields: ['name', 'code']}" />
+											selectedKey: 'lineBankCode', 
+											fields: ['lineBankName', 'lineBankCode']}" />
 									<table id="single-list"
 										data-bind="ntsGridList: {
 											width: 440,
@@ -90,8 +90,8 @@
 				<hr id="hr-horizontal" />
 				<div>
 					<button class="x-large proceed" id="C_BTN_001"
-						data-bind="click: transfer">決定</button>
-					<button class="large" id="C_BTN_002" data-bind="click: closeDialog">キャンセル</button>
+						data-bind="click: transfer">実行</button>
+					<button class="large" id="C_BTN_002" data-bind="click: closeDialog">閉じる</button>
 					<br />
 				</div>
 

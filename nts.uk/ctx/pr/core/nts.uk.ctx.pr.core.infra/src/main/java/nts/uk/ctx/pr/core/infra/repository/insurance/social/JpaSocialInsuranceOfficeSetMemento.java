@@ -8,13 +8,21 @@ import nts.uk.ctx.pr.core.dom.insurance.Address1;
 import nts.uk.ctx.pr.core.dom.insurance.Address2;
 import nts.uk.ctx.pr.core.dom.insurance.AddressKana1;
 import nts.uk.ctx.pr.core.dom.insurance.AddressKana2;
+import nts.uk.ctx.pr.core.dom.insurance.CityCode;
+import nts.uk.ctx.pr.core.dom.insurance.HealthInsuAssoCode;
+import nts.uk.ctx.pr.core.dom.insurance.HealthInsuOfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
+import nts.uk.ctx.pr.core.dom.insurance.OfficePensionFundCode;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeRefCode1;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeRefCode2;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeSign;
 import nts.uk.ctx.pr.core.dom.insurance.PhoneNumber;
 import nts.uk.ctx.pr.core.dom.insurance.PicName;
 import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
 import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
 import nts.uk.ctx.pr.core.dom.insurance.ShortName;
+import nts.uk.ctx.pr.core.dom.insurance.WelfarePensionFundCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.QismtSocialInsuOffice;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.QismtSocialInsuOfficePK;
@@ -195,8 +203,8 @@ public class JpaSocialInsuranceOfficeSetMemento implements SocialInsuranceOffice
 	 * setHealthInsuOfficeRefCode1st(java.lang.String)
 	 */
 	@Override
-	public void setHealthInsuOfficeRefCode1st(String healthInsuOfficeRefCode1st) {
-		this.typeValue.setHealthInsuOfficeRefno1(healthInsuOfficeRefCode1st);
+	public void setHealthInsuOfficeRefCode1st(OfficeRefCode1 healthInsuOfficeRefCode1st) {
+		this.typeValue.setHealthInsuOfficeRefno1(healthInsuOfficeRefCode1st.v());
 	}
 
 	/*
@@ -207,8 +215,8 @@ public class JpaSocialInsuranceOfficeSetMemento implements SocialInsuranceOffice
 	 * setHealthInsuOfficeRefCode2nd(java.lang.String)
 	 */
 	@Override
-	public void setHealthInsuOfficeRefCode2nd(String healthInsuOfficeRefCode2nd) {
-		this.typeValue.setHealthInsuOfficeRefno2(healthInsuOfficeRefCode2nd);
+	public void setHealthInsuOfficeRefCode2nd(OfficeRefCode2 healthInsuOfficeRefCode2nd) {
+		this.typeValue.setHealthInsuOfficeRefno2(healthInsuOfficeRefCode2nd.v());
 	}
 
 	/*
@@ -219,8 +227,8 @@ public class JpaSocialInsuranceOfficeSetMemento implements SocialInsuranceOffice
 	 * setPensionOfficeRefCode1st(java.lang.String)
 	 */
 	@Override
-	public void setPensionOfficeRefCode1st(String pensionOfficeRefCode1st) {
-		this.typeValue.setPensionOfficeRefno1(pensionOfficeRefCode1st);
+	public void setPensionOfficeRefCode1st(OfficeRefCode1 pensionOfficeRefCode1st) {
+		this.typeValue.setPensionOfficeRefno1(pensionOfficeRefCode1st.v());
 	}
 
 	/*
@@ -231,8 +239,8 @@ public class JpaSocialInsuranceOfficeSetMemento implements SocialInsuranceOffice
 	 * setPensionOfficeRefCode2nd(java.lang.String)
 	 */
 	@Override
-	public void setPensionOfficeRefCode2nd(String pensionOfficeRefCode2nd) {
-		this.typeValue.setPensionOfficeRefno2(pensionOfficeRefCode2nd);
+	public void setPensionOfficeRefCode2nd(OfficeRefCode2 pensionOfficeRefCode2nd) {
+		this.typeValue.setPensionOfficeRefno2(pensionOfficeRefCode2nd.v());
 	}
 
 	/*
@@ -243,8 +251,12 @@ public class JpaSocialInsuranceOfficeSetMemento implements SocialInsuranceOffice
 	 * setWelfarePensionFundCode(java.lang.String)
 	 */
 	@Override
-	public void setWelfarePensionFundCode(String welfarePensionFundCode) {
-		this.typeValue.setPensionFundNo(welfarePensionFundCode);
+	public void setWelfarePensionFundCode(WelfarePensionFundCode welfarePensionFundCode) {
+		if (welfarePensionFundCode == null) {
+			this.typeValue.setPensionFundNo("");
+		} else {
+			this.typeValue.setPensionFundNo(welfarePensionFundCode.v().toString());
+		}
 	}
 
 	/*
@@ -255,8 +267,8 @@ public class JpaSocialInsuranceOfficeSetMemento implements SocialInsuranceOffice
 	 * setOfficePensionFundCode(java.lang.String)
 	 */
 	@Override
-	public void setOfficePensionFundCode(String officePensionFundCode) {
-		this.typeValue.setPensionFundOfficeNo(officePensionFundCode);
+	public void setOfficePensionFundCode(OfficePensionFundCode officePensionFundCode) {
+		this.typeValue.setPensionFundOfficeNo(officePensionFundCode.v());
 	}
 
 	/*
@@ -267,8 +279,8 @@ public class JpaSocialInsuranceOfficeSetMemento implements SocialInsuranceOffice
 	 * setHealthInsuCityCode(java.lang.String)
 	 */
 	@Override
-	public void setHealthInsuCityCode(String healthInsuCityCode) {
-		this.typeValue.setHealthInsuCityMark(healthInsuCityCode);
+	public void setHealthInsuCityCode(CityCode healthInsuCityCode) {
+		this.typeValue.setHealthInsuCityMark(healthInsuCityCode.v());
 	}
 
 	/*
@@ -279,8 +291,8 @@ public class JpaSocialInsuranceOfficeSetMemento implements SocialInsuranceOffice
 	 * setHealthInsuOfficeSign(java.lang.String)
 	 */
 	@Override
-	public void setHealthInsuOfficeSign(String healthInsuOfficeSign) {
-		this.typeValue.setHealthInsuOfficeMark(healthInsuOfficeSign);
+	public void setHealthInsuOfficeSign(OfficeSign healthInsuOfficeSign) {
+		this.typeValue.setHealthInsuOfficeMark(healthInsuOfficeSign.v());
 	}
 
 	/*
@@ -291,8 +303,8 @@ public class JpaSocialInsuranceOfficeSetMemento implements SocialInsuranceOffice
 	 * setPensionCityCode(java.lang.String)
 	 */
 	@Override
-	public void setPensionCityCode(String pensionCityCode) {
-		this.typeValue.setPensionCityMark(pensionCityCode);
+	public void setPensionCityCode(CityCode pensionCityCode) {
+		this.typeValue.setPensionCityMark(pensionCityCode.v());
 	}
 
 	/*
@@ -303,8 +315,8 @@ public class JpaSocialInsuranceOfficeSetMemento implements SocialInsuranceOffice
 	 * setPensionOfficeSign(java.lang.String)
 	 */
 	@Override
-	public void setPensionOfficeSign(String pensionOfficeSign) {
-		this.typeValue.setPensionOfficeMark(pensionOfficeSign);
+	public void setPensionOfficeSign(OfficeSign pensionOfficeSign) {
+		this.typeValue.setPensionOfficeMark(pensionOfficeSign.v());
 	}
 
 	/*
@@ -315,8 +327,12 @@ public class JpaSocialInsuranceOfficeSetMemento implements SocialInsuranceOffice
 	 * setHealthInsuOfficeCode(java.lang.String)
 	 */
 	@Override
-	public void setHealthInsuOfficeCode(String healthInsuOfficeCode) {
-		this.typeValue.setHealthInsuOfficeNo(healthInsuOfficeCode);
+	public void setHealthInsuOfficeCode(HealthInsuOfficeCode healthInsuOfficeCode) {
+		if (healthInsuOfficeCode == null) {
+			this.typeValue.setHealthInsuOfficeNo("");
+		} else {
+			this.typeValue.setHealthInsuOfficeNo(healthInsuOfficeCode.v().toString());
+		}
 	}
 
 	/*
@@ -327,8 +343,8 @@ public class JpaSocialInsuranceOfficeSetMemento implements SocialInsuranceOffice
 	 * setHealthInsuAssoCode(java.lang.String)
 	 */
 	@Override
-	public void setHealthInsuAssoCode(String healthInsuAssoCode) {
-		this.typeValue.setHealthInsuAssoNo(healthInsuAssoCode);
+	public void setHealthInsuAssoCode(HealthInsuAssoCode healthInsuAssoCode) {
+		this.typeValue.setHealthInsuAssoNo(healthInsuAssoCode.v());
 	}
 
 	/*

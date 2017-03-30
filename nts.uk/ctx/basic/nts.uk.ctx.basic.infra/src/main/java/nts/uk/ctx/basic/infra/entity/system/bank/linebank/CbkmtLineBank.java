@@ -18,11 +18,8 @@ public class CbkmtLineBank {
 	@Column(name="LINE_BANK_NAME")
 	public String lineBankName;
 	
-	@Column(name="BANK_CD")
-	public String bankCode;
-	
-	@Column(name="BRANCH_CD")
-	public String branchCode;
+	@Column(name="BRANCH_ID")
+	public String branchId;
 	
 	@Column(name="ACCOUNT_ATR")
 	public int accountAtr;

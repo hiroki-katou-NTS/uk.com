@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 public class BranchDto {
 	private String bankBranchCode;
+	private String bankBranchID;
 	private String bankBranchName;
 	private String bankBranchNameKana;
 	private String memo;
