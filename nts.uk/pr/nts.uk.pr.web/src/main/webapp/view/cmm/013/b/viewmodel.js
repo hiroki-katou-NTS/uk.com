@@ -7,6 +7,7 @@ var cmm013;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
+                    //self.listBox = new ListBox();
                     self.itemList = ko.observableArray([]);
                     self.selectedCode = ko.observable(null);
                 }
@@ -31,6 +32,7 @@ var cmm013;
                     var dfd = $.Deferred();
                     self.buildItemList();
                     dfd.resolve();
+                    // Return.
                     return dfd.promise();
                 };
                 ScreenModel.prototype.chooseItem = function () {
@@ -59,4 +61,3 @@ var cmm013;
         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
     })(b = cmm013.b || (cmm013.b = {}));
 })(cmm013 || (cmm013 = {}));
-//# sourceMappingURL=viewmodel.js.map

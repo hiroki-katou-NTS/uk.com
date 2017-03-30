@@ -9,13 +9,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.basic.app.command.system.bank.linebank.AddLineBankCommand;
 import nts.uk.ctx.basic.app.command.system.bank.linebank.AddLineBankCommandHandler;
+import nts.uk.ctx.basic.app.command.system.bank.linebank.LineBankCommandBase;
 import nts.uk.ctx.basic.app.command.system.bank.linebank.RemoveLineBankCommand;
 import nts.uk.ctx.basic.app.command.system.bank.linebank.RemoveLineBankCommandHandler;
 import nts.uk.ctx.basic.app.command.system.bank.linebank.TransferLineBankCommand;
 import nts.uk.ctx.basic.app.command.system.bank.linebank.TransferLineBankCommandHandler;
-import nts.uk.ctx.basic.app.command.system.bank.linebank.UpdateLineBankCommand;
 import nts.uk.ctx.basic.app.command.system.bank.linebank.UpdateLineBankCommandHandler;
 import nts.uk.ctx.basic.app.find.system.bank.linebank.LineBankDto;
 import nts.uk.ctx.basic.app.find.system.bank.linebank.LineBankFinder;
@@ -40,7 +39,7 @@ public class Qmm006WebService extends WebService {
 
 	@POST
 	@Path("add")
-	public void add(AddLineBankCommand command) {
+	public void add(LineBankCommandBase command) {
 		this.addLineBankCommandHandler.handle(command);
 	}
 
@@ -52,7 +51,7 @@ public class Qmm006WebService extends WebService {
 
 	@POST
 	@Path("update")
-	public void update(UpdateLineBankCommand command) {
+	public void update(LineBankCommandBase command) {
 		this.updateLineBankCommandHandler.handle(command);
 	}
 

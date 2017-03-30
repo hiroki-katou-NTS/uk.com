@@ -40,7 +40,6 @@ var qmm012;
                     service.findItemSalaryPeriod(itemCode).done(function (ItemPeriod) {
                         dfd.resolve(ItemPeriod);
                     }).fail(function (res) {
-                        // Alert message
                         dfd.reject(res);
                     });
                 }
@@ -48,7 +47,6 @@ var qmm012;
                     service.findItemDeductPeriod(itemCode).done(function (ItemPeriod) {
                         dfd.resolve(ItemPeriod);
                     }).fail(function (res) {
-                        // Alert message
                         dfd.reject(res);
                     });
                 }
@@ -84,3 +82,4 @@ var qmm012;
         })(service = h.service || (h.service = {}));
     })(h = qmm012.h || (qmm012.h = {}));
 })(qmm012 || (qmm012 = {}));
+//# sourceMappingURL=service.js.map
