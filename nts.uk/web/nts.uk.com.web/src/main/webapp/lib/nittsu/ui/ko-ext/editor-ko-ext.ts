@@ -53,7 +53,9 @@ module nts.uk.ui.koExtentions {
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
                 if (!result.isValid) {
+//                    console.log(nts.uk.ui._viewModel.errors.isEmpty());
                     $input.ntsError('set', result.errorMessage);
+//                    console.log(nts.uk.ui._viewModel.errors.isEmpty());
                 }
             }));
         }

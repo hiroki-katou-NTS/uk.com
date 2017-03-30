@@ -448,7 +448,11 @@ module nts.uk.ui.jqueryExtentions {
             var validateEvent = new CustomEvent("validate", {
                 
             });
-            document.getElementById($editor.attr('id')).dispatchEvent(validateEvent);
+            $editor.each(function(index) {
+                var $input = $(this);
+                document.getElementById($input.attr('id')).dispatchEvent(validateEvent);
+            });
+//            document.getElementById($editor.attr('id')).dispatchEvent(validateEvent);
 //            $editor.trigger("validate");
         }
     }

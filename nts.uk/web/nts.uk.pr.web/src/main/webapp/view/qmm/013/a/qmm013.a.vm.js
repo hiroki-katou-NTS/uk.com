@@ -14,6 +14,7 @@ var qmm013;
                     self.displayAll = ko.observable(true);
                     self.selectedId = ko.observable(0);
                     self.isCreated = ko.observable(true);
+                    self.isEnableDelete = ko.observable(true);
                     self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                     self.indexRow = ko.observable(0);
                     self.columns = ko.observableArray([
@@ -37,13 +38,14 @@ var qmm013;
                     ]);
                     self.SEL_004 = ko.observableArray([
                         { code: '0', name: '時間単価' },
-                        { code: '1', name: '金額' },
+                        { code: '1', name: '日額' },
                         { code: '2', name: 'その他' },
                     ]);
                     self.currentCode.subscribe(function (newCode) {
                         if (!self.checkDirty()) {
                             self.selectedUnitPrice(newCode);
                             self.isCreated(false);
+                            self.isEnableDelete(true);
                         }
                         else {
                             if (self.confirmDirty) {
@@ -53,6 +55,7 @@ var qmm013;
                             nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function () {
                                 self.selectedUnitPrice(newCode);
                                 self.isCreated(false);
+                                self.isEnableDelete(true);
                             }).ifNo(function () {
                                 self.confirmDirty = true;
                                 self.currentCode(self.currentItem().personalUnitPriceCode());
@@ -91,7 +94,7 @@ var qmm013;
                     var dfd = $.Deferred();
                     a.service.getPersonalUnitPriceList(self.displayAll()).done(function (data) {
                         var items = _.map(data, function (item) {
-                            var abolition = item.displayAtr == 0 ? '<i class="icon icon-close"></i>' : "";
+                            var abolition = item.displaySet == 0 ? '<i class="icon icon-close"></i>' : "";
                             return new ItemModel(item.personalUnitPriceCode, item.personalUnitPriceName, abolition);
                         });
                         self.items(items);
@@ -115,7 +118,7 @@ var qmm013;
                 };
                 ScreenModel.prototype.selectedFirst = function (item) {
                     var self = this;
-                    return new PersonalUnitPrice(item.personalUnitPriceCode, item.personalUnitPriceName, item.personalUnitPriceShortName, item.displayAtr == 0, item.uniteCode, item.paymentSettingType, item.fixPaymentAtr, item.fixPaymentMonthly, item.fixPaymentDayMonth, item.fixPaymentDaily, item.fixPaymentHoursly, item.unitPriceAtr, item.memo);
+                    return new PersonalUnitPrice(item.personalUnitPriceCode, item.personalUnitPriceName, item.personalUnitPriceShortName, item.displaySet == 0, item.uniteCode, item.paymentSettingType, item.fixPaymentAtr, item.fixPaymentMonthly, item.fixPaymentDayMonth, item.fixPaymentDaily, item.fixPaymentHoursly, item.unitPriceAtr, item.memo);
                 };
                 ScreenModel.prototype.checkDirty = function () {
                     var self = this;
@@ -127,51 +130,52 @@ var qmm013;
                     }
                 };
                 ;
-                /**
-                 * 新規(Clear form)
-                 */
                 ScreenModel.prototype.btn_001 = function () {
                     var self = this;
-                    self.clearError();
                     self.confirmDirty = true;
                     if (!self.checkDirty()) {
-                        self.currentItem(new PersonalUnitPrice(null, null, null, false, "2", 1, null, false, false, false, false, false, null));
+                        self.currentItem(new PersonalUnitPrice(null, null, null, false, "2", 0, true, true, true, true, true, 0, null));
                         self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                         self.currentCode("");
                         self.isCreated(true);
+                        self.isEnableDelete(false);
                     }
                     else {
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function () {
-                            self.currentItem(new PersonalUnitPrice(null, null, null, false, "2", 1, null, false, false, false, false, false, null));
+                            self.currentItem(new PersonalUnitPrice(null, null, null, false, "2", 0, true, true, true, true, true, 0, null));
                             self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                             self.currentCode("");
                             self.isCreated(true);
+                            self.isEnableDelete(false);
                         });
                     }
                 };
-                ScreenModel.prototype.Opendialog = function () {
+                ScreenModel.prototype.openDialog = function () {
                     var self = this;
-                    nts.uk.ui.windows.sub.modal("/view/qmm/013/b/index.xhtml", { title: "銀行の登録　＞　銀行の統合" });
+                    nts.uk.ui.windows.sub.modal("/view/qmm/013/b/index.xhtml", { title: "個人情報の登録 ＞ 単価名の登録ボタン", dialogClass: "no-close" });
                 };
-                /**
-                 * 登録(Add button)
-                 */
+                ScreenModel.prototype.closeDialog = function () {
+                    nts.uk.ui.windows.close();
+                };
                 ScreenModel.prototype.btn_002 = function () {
                     var self = this;
                     self.confirmDirty = true;
+                    if (self.currentItem().personalUnitPriceCode().length == 1) {
+                        self.currentItem().personalUnitPriceCode("0" + self.currentItem().personalUnitPriceCode());
+                    }
                     var PersonalUnitPrice = {
                         personalUnitPriceCode: self.currentItem().personalUnitPriceCode(),
                         personalUnitPriceName: self.currentItem().personalUnitPriceName(),
                         personalUnitPriceShortName: self.currentItem().personalUnitPriceShortName(),
-                        displayAtr: self.currentItem().displayAtr() ? 0 : 1,
-                        uniteCode: "2",
-                        paymentSettingType: self.currentItem().paymentSettingType(),
-                        fixPaymentAtr: self.currentItem().fixPaymentAtr(),
+                        displaySet: self.currentItem().displaySet() ? 0 : 1,
+                        uniteCode: null,
+                        paymentSettingType: self.currentItem().paymentSettingType() ? 0 : 1,
+                        fixPaymentAtr: self.currentItem().fixPaymentAtr() ? 0 : 1,
                         fixPaymentMonthly: self.currentItem().fixPaymentMonthly() ? 0 : 1,
                         fixPaymentDayMonth: self.currentItem().fixPaymentDayMonth() ? 0 : 1,
                         fixPaymentDaily: self.currentItem().fixPaymentDaily() ? 0 : 1,
                         fixPaymentHoursly: self.currentItem().fixPaymentHoursly() ? 0 : 1,
-                        unitPriceAtr: self.currentItem().unitPriceAtr() ? 0 : 1,
+                        unitPriceAtr: self.currentItem().unitPriceAtr(),
                         memo: self.currentItem().memo()
                     };
                     a.service.addPersonalUnitPrice(self.isCreated(), PersonalUnitPrice).done(function () {
@@ -188,9 +192,6 @@ var qmm013;
                         }
                     });
                 };
-                /**
-                 * 削除(Delete button)
-                 */
                 ScreenModel.prototype.btn_004 = function () {
                     var self = this;
                     nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
@@ -201,7 +202,6 @@ var qmm013;
                             return x.code === self.currentCode();
                         }));
                         a.service.removePersonalUnitPrice(data).done(function () {
-                            // reload list   
                             self.getPersonalUnitPriceList().done(function () {
                                 if (self.items().length > self.indexRow()) {
                                     self.currentCode(self.items()[self.indexRow()].code);
@@ -252,11 +252,11 @@ var qmm013;
                 return BoxModel;
             }());
             var PersonalUnitPrice = (function () {
-                function PersonalUnitPrice(personalUnitPriceCode, personalUnitPriceName, personalUnitPriceShortName, displayAtr, uniteCode, paymentSettingType, fixPaymentAtr, fixPaymentMonthly, fixPaymentDayMonth, fixPaymentDaily, fixPaymentHoursly, unitPriceAtr, memo) {
+                function PersonalUnitPrice(personalUnitPriceCode, personalUnitPriceName, personalUnitPriceShortName, displaySet, uniteCode, paymentSettingType, fixPaymentAtr, fixPaymentMonthly, fixPaymentDayMonth, fixPaymentDaily, fixPaymentHoursly, unitPriceAtr, memo) {
                     this.personalUnitPriceCode = ko.observable(personalUnitPriceCode);
                     this.personalUnitPriceName = ko.observable(personalUnitPriceName);
                     this.personalUnitPriceShortName = ko.observable(personalUnitPriceShortName);
-                    this.displayAtr = ko.observable(displayAtr);
+                    this.displaySet = ko.observable(displaySet);
                     this.uniteCode = ko.observable(uniteCode);
                     this.paymentSettingType = ko.observable(paymentSettingType);
                     this.fixPaymentAtr = ko.observable(fixPaymentAtr);
@@ -272,3 +272,4 @@ var qmm013;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm013.a || (qmm013.a = {}));
 })(qmm013 || (qmm013 = {}));
+//# sourceMappingURL=qmm013.a.vm.js.map

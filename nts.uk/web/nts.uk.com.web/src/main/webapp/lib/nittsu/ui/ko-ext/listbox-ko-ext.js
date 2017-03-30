@@ -256,6 +256,11 @@ var nts;
                             : !uk.text.isNullOrEmpty(selectedValue);
                         if (haveDate && (!_.isEqual(originalSelected, selectedValue) || init)) {
                             selectListBoxContainer.data('value', selectedValue);
+                            if(isMultiSelect){
+                                selectMultiRow(selectListBoxContainer, selectedValue);
+                            } else {
+                                selectOneRow(selectListBoxContainer, selectedValue);
+                            }
                             container.trigger('selectionChange');
                         }
                         if (isMultiSelect) {

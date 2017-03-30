@@ -13,7 +13,6 @@ public class PersonalUnitPriceShortName extends StringPrimitiveValue<PersonalUni
 
 	public PersonalUnitPriceShortName(String rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
 
 }

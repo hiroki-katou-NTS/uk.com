@@ -56,7 +56,7 @@ public class PersonalUnitPriceWebService extends WebService {
 	@Path("find/all/nonedisplay")
 	public List<PersonalUnitPriceDto> findAllNoneDisplay() {
 		return this.personalUnitPriceFinder.findAll().stream()
-				.filter(x->x.getDisplayAtr() == 1)
+				.filter(x->x.getDisplaySet() == 1)
 				.collect(Collectors.toList());
 	}
 	
