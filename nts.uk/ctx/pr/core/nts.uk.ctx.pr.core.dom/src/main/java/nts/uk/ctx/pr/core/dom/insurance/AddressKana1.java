@@ -10,7 +10,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * The Class AddressKana1.
  */
-@StringMaxLength(60)
+@StringMaxLength(240)
 public class AddressKana1 extends StringPrimitiveValue<AddressKana1>{
 
 	/** The Constant serialVersionUID. */

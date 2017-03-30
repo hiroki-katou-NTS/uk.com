@@ -13,6 +13,7 @@ import nts.uk.ctx.pr.core.dom.insurance.AddressKana1;
 import nts.uk.ctx.pr.core.dom.insurance.AddressKana2;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
+import nts.uk.ctx.pr.core.dom.insurance.PhoneNumber;
 import nts.uk.ctx.pr.core.dom.insurance.PicName;
 import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
 import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
@@ -60,7 +61,7 @@ public class SocialInsuranceOffice extends DomainObject implements Master {
 
 	/** The phone number. */
 	// TODO: TelephoneNo
-	private String phoneNumber;
+	private PhoneNumber phoneNumber;
 
 	/** The health insu office ref code 1 st. */
 	private String healthInsuOfficeRefCode1st;
