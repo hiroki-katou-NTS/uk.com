@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.core.app.command.rule.employment.unitprice.personal;
 
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -13,24 +13,31 @@ import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.personal.PersonalUnitPri
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.personal.PersonalUnitPriceRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+/**
+ * 
+ * @author sonnh
+ *
+ */
+@Stateless
 @Transactional
 public class RemovePersonalUnitPriceCommandHander extends CommandHandler<RemovePersonalUnitPriceCommand> {
 
 	@Inject
 	private PersonalUnitPriceRepository personalUnitPriceRepository;
-	
+
 	@Override
 	protected void handle(CommandHandlerContext<RemovePersonalUnitPriceCommand> context) {
 		RemovePersonalUnitPriceCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
-		
-		Optional<PersonalUnitPrice> unitPrice = personalUnitPriceRepository.find(companyCode, command.getPersonalUnitPriceCode());
+
+		// Check exist personal unit price
+		Optional<PersonalUnitPrice> unitPrice = personalUnitPriceRepository.find(companyCode,
+				command.getPersonalUnitPriceCode());
 		if (!unitPrice.isPresent()) {
-			throw new BusinessException("Unit price not found");
+			throw new BusinessException("対象が検索できません");
 		}
-		
-	    personalUnitPriceRepository.remove(companyCode, command.getPersonalUnitPriceCode());
+
+		personalUnitPriceRepository.remove(companyCode, command.getPersonalUnitPriceCode());
 	}
 
 }
