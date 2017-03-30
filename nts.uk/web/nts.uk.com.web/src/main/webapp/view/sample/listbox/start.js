@@ -30,10 +30,12 @@ __viewContext.ready(function () {
             $('#list-box').ntsListBox('deselectAll');
         };
         ScreenModel.prototype.selectAll = function () {
-            $('#list-box').ntsListBox('selectAll');
+        	var self = this;
+        	self.selectedCodes([10]);
         };
         ScreenModel.prototype.clearOptions = function () {
-            this.itemList([]);
+        	var self = this;
+            self.itemList([]);
         };
         ScreenModel.prototype.remove = function () {
             var self = this;
