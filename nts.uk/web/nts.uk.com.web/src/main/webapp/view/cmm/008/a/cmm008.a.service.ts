@@ -65,7 +65,7 @@ module cmm008.a.service{
     //get all 処理日区分
      export function getProcessingNo(){
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax('pr',path.getAllProcessingNo).done(function(res: Array<any>){
+        nts.uk.request.ajax(path.getAllProcessingNo).done(function(res: Array<any>){
             dfd.resolve(res);
         }).fail(function(res : any){
             dfd.reject(res);
@@ -75,7 +75,7 @@ module cmm008.a.service{
     //get 就業権限 by company
     export function getCompanyInfor(){
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax('pr',path.getCompanyInfor).done(function(res: Array<any>){
+        nts.uk.request.ajax('com',path.getCompanyInfor).done(function(res: Array<any>){
             dfd.resolve(res);
         }).fail(function(res : any){
             dfd.reject(res);

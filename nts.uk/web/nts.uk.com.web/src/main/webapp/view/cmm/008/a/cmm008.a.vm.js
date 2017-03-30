@@ -49,7 +49,13 @@ var cmm008;
                     $('#contents-left').css({ height: height, width: widthScreen * 38 / 100 });
                     $('#contents-right').css({ height: height, width: widthScreen * 62 / 100 });
                     self.listMessage();
-                    self.dataSourceItem();
+                    $.when(self.userKtSet()).done(function () {
+                        self.closeDateListItem();
+                        self.processingDateItem();
+                        self.managementHolidaylist();
+                        self.dataSourceItem();
+                        dfd.resolve(self.holidayCode());
+                    });
                     self.currentCode.subscribe(function (newValue) {
                         if (!self.checkChange(self.employmentCode())) {
                             var AL001 = _.find(self.lstMessage(), function (mess) {
@@ -73,11 +79,10 @@ var cmm008;
                             self.isMess(false);
                         }
                     });
-                    a.service.getProcessingNo();
-                    dfd.resolve();
                     return dfd.promise();
                 };
                 ScreenModel.prototype.userKtSet = function () {
+                    var def = $.Deferred();
                     var self = this;
                     a.service.getCompanyInfor().done(function (companyInfor) {
                         if (companyInfor !== undefined) {
@@ -85,15 +90,13 @@ var cmm008;
                             if (self.isUseKtSet() === 0) {
                                 $('.UseKtSet').css('display', 'none');
                             }
-                            else {
-                                self.closeDateListItem();
-                                self.managementHolidaylist();
-                                self.processingDateItem();
-                            }
                         }
+                        def.resolve(self.isUseKtSet());
                     }).fail(function (res) {
                         nts.uk.ui.dialog.alert(res.message);
+                        def.reject();
                     });
+                    return def.promise();
                 };
                 ScreenModel.prototype.reloadScreenWhenListClick = function (newValue) {
                     var self = this;
@@ -195,13 +198,22 @@ var cmm008;
                         }
                         dfd.resolve(listResult);
                     });
-                    this.columns = ko.observableArray([
-                        { headerText: 'コード', prop: 'employmentCode', width: '18%' },
-                        { headerText: '名称', prop: 'employmentName', width: '28%' },
-                        { headerText: '締め日', prop: 'closeDateNoStr', width: '20%' },
-                        { headerText: '処理日区分', prop: 'processingStr', width: '20%' },
-                        { headerText: '初期表示', prop: 'displayStr', width: '14%' }
-                    ]);
+                    if (self.isUseKtSet() === 0) {
+                        this.columns = ko.observableArray([
+                            { headerText: 'コード', prop: 'employmentCode', width: '30%' },
+                            { headerText: '名称', prop: 'employmentName', width: '50%' },
+                            { headerText: '初期表示', prop: 'displayStr', width: '20%' }
+                        ]);
+                    }
+                    else {
+                        this.columns = ko.observableArray([
+                            { headerText: 'コード', prop: 'employmentCode', width: '18%' },
+                            { headerText: '名称', prop: 'employmentName', width: '28%' },
+                            { headerText: '締め日', prop: 'closeDateNoStr', width: '20%' },
+                            { headerText: '処理日区分', prop: 'processingStr', width: '20%' },
+                            { headerText: '初期表示', prop: 'displayStr', width: '14%' }
+                        ]);
+                    }
                     self.singleSelectedCode = ko.observable(null);
                     return dfd.promise();
                 };
