@@ -9,25 +9,25 @@ module cmm001.a.service {
     /**
      * get list company
      */
-    export function getAllCompanys(): JQueryPromise<Array<any>> {
-        let dfd = $.Deferred<Array<any>>();
+    export function getAllCompanys(): JQueryPromise<Array<model.CompanyDto>> {
+        let dfd = $.Deferred<Array<model.CompanyDto>>();
         nts.uk.request.ajax(paths.getAllCompanys)
-            .done(function(res: Array<any>) {
+            .done(function(res: Array<model.CompanyDto>) {
                 dfd.resolve(res);
             })
-            .fail(function(res) {
+            .fail(function(res: model.CompanyDto) {
                 dfd.reject(res);
             })
         return dfd.promise();
     }
     
-    export function getCompanyDetail(companyCd: string): JQueryPromise<any> {
-        let dfd = $.Deferred<any>();
+    export function getCompanyDetail(companyCd: string): JQueryPromise<model.CompanyDto> {
+        let dfd = $.Deferred<model.CompanyDto>();
         nts.uk.request.ajax(paths.getCompanyDetail + "/" + companyCd)
-            .done(function(res: any) {
+            .done(function(res: model.CompanyDto) {
                 dfd.resolve(res);
             })
-            .fail(function(res) {
+            .fail(function(res: model.CompanyDto) {
                 dfd.reject(res);
             })
         return dfd.promise();
@@ -37,7 +37,7 @@ module cmm001.a.service {
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax(paths.addCompany, company).done(function(res: Array<any>) {
             dfd.resolve(res);
-        }).fail(function(res) {
+        }).fail(function(res: any) {
             dfd.reject(res);
         })
         return dfd.promise();
@@ -49,7 +49,7 @@ module cmm001.a.service {
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })
-            .fail(function(res) {
+            .fail(function(res: any) {
                 dfd.reject(res);
             })
         return dfd.promise();

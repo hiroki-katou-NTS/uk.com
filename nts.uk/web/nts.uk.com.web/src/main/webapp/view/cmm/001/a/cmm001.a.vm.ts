@@ -7,7 +7,7 @@ module cmm001.a {
         sel001Data: KnockoutObservableArray<CompanyModel>;
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
-        checked: KnockoutObservable<boolean>;
+        displayAttribute: KnockoutObservable<boolean>;
         isUpdate: KnockoutObservable<boolean> = ko.observable(null);
         dirtyObject: nts.uk.ui.DirtyChecker;
         previousCurrentCode: string = null; //lưu giá trị của currentCode trước khi nó bị thay đổi
@@ -36,7 +36,7 @@ module cmm001.a {
 
             });
 
-            self.checked.subscribe(function(newValue) {
+            self.displayAttribute.subscribe(function(newValue) {
                 let $grid = $("#A_LST_001");
                 var currentColumns = $grid.igGrid("option", "columns");
                 var width = $grid.igGrid("option", "width");
@@ -56,7 +56,7 @@ module cmm001.a {
                             _.each(data, function(obj: service.model.CompanyDto) {
                                 let companyModel: CompanyModel;
                                 companyModel = ko.mapping.fromJS(obj);
-                                if (obj.displayAttribute === 0) {
+                                if (obj.displayAttribute === 1) {
                                     companyModel.displayAttribute('');
                                     self.sel001Data.push(ko.toJS(companyModel));
                                 }
@@ -111,7 +111,7 @@ module cmm001.a {
                 { id: 'tab-3', title: 'システム設定', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
             ]);
 
-            self.checked = ko.observable(true);
+            self.displayAttribute = ko.observable(true);
             self.selectedTab = ko.observable('tab-1');
             self.gridColumns = ko.observableArray([
                 { headerText: '会社コード', prop: 'companyCode', width: 80 },
@@ -135,9 +135,9 @@ module cmm001.a {
                         let companyModel: CompanyModel;
                         companyModel = ko.mapping.fromJS(obj);
                         if (obj.displayAttribute === 1) {
-                            companyModel.displayAttribute('<i style="margin-left: 15px" class="icon icon-close"></i>');
-                        } else {
                             companyModel.displayAttribute('');
+                        } else {
+                            companyModel.displayAttribute('<i style="margin-left: 15px" class="icon icon-close"></i>');
                         }
                         self.sel001Data.push(ko.toJS(companyModel));
                     });
@@ -176,9 +176,9 @@ module cmm001.a {
                         let companyModel: CompanyModel;
                         companyModel = ko.mapping.fromJS(obj);
                         if (obj.displayAttribute === 1) {
-                            companyModel.displayAttribute('<i style="margin-left: 15px" class="icon icon-close"></i>');
-                        } else {
                             companyModel.displayAttribute('');
+                        } else {
+                            companyModel.displayAttribute('<i style="margin-left: 15px" class="icon icon-close"></i>');
                         }
                         self.sel001Data.push(ko.toJS(companyModel));
                     });
@@ -218,11 +218,11 @@ module cmm001.a {
             self.currentCompany().presidentName('');
             self.currentCompany().presidentJobTitle('');
             self.currentCompany().termBeginMon(1);
-            self.currentCompany().selectedRuleCode('0');
-            self.currentCompany().selectedRuleCode1('0');
-            self.currentCompany().selectedRuleCode2('0');
-            self.currentCompany().selectedRuleCode3('0');
-            self.currentCompany().isDelete(true);
+            self.currentCompany().selectedRuleCode('1');
+            self.currentCompany().selectedRuleCode1('1');
+            self.currentCompany().selectedRuleCode2('1');
+            self.currentCompany().selectedRuleCode3('1');
+            self.currentCompany().isDelete(false);
             self.currentCompany().editMode = true;
             self.currentCompany().isEnableCompanyCode(true);
             self.isUpdate(false);
@@ -240,15 +240,15 @@ module cmm001.a {
                 return;
             }
             if (currentCompany.isDelete) {
-                currentCompany.displayAttribute = ko.observable("1");
-            } else {
                 currentCompany.displayAttribute = ko.observable("0");
+            } else {
+                currentCompany.displayAttribute = ko.observable("1");
             }
             let company: service.model.CompanyDto =
                 new service.model.CompanyDto("", "", "", "", "", "", "", "", "", 0, 0, "", "", "", "", "", 0, 0, 0, 0);
 
             company = self.convertCompanyDto(currentCompany);
-            if (self.checked()) {
+            if (self.displayAttribute()) {
                 if (self.isUpdate()) {
                     cmm001.a.service.updateData(company).done(function() {
                         self.sel001Data([]);
@@ -269,7 +269,7 @@ module cmm001.a {
                                 _.each(data, function(obj: service.model.CompanyDto) {
                                     let companyModel: CompanyModel;
                                     companyModel = ko.mapping.fromJS(obj);
-                                    if (obj.displayAttribute === 0) {
+                                    if (obj.displayAttribute === 1) {
                                         companyModel.displayAttribute('');
                                         self.sel001Data.push(ko.toJS(companyModel));
                                     }
@@ -278,6 +278,7 @@ module cmm001.a {
                                 if (self.sel001Data().length > 0) {
                                     self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
                                 }else{
+                                    self.resetData();
                                     return;
                                 }
                             }
@@ -292,7 +293,7 @@ module cmm001.a {
                                 _.each(data, function(obj: service.model.CompanyDto) {
                                     let companyModel: CompanyModel;
                                     companyModel = ko.mapping.fromJS(obj);
-                                    if (obj.displayAttribute === 0) {
+                                    if (obj.displayAttribute === 1) {
                                         companyModel.displayAttribute('');
                                         self.sel001Data.push(ko.toJS(companyModel));
                                     }
@@ -430,9 +431,9 @@ module cmm001.a {
             self.depWorkPlaceSet(company.depWorkPlaceSet);
             self.displayAttribute(company.displayAttribute.toString());
             if (company.displayAttribute === 1) {
-                self.isDelete(true);
-            } else {
                 self.isDelete(false);
+            } else {
+                self.isDelete(true);
             }
             self.faxNo(company.faxNo);
             self.postal(company.postal);

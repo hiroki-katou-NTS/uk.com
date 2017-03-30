@@ -28,7 +28,7 @@ var cmm001;
                         }
                     }
                 });
-                self.checked.subscribe(function (newValue) {
+                self.displayAttribute.subscribe(function (newValue) {
                     var $grid = $("#A_LST_001");
                     var currentColumns = $grid.igGrid("option", "columns");
                     var width = $grid.igGrid("option", "width");
@@ -48,7 +48,7 @@ var cmm001;
                                 _.each(data, function (obj) {
                                     var companyModel;
                                     companyModel = ko.mapping.fromJS(obj);
-                                    if (obj.displayAttribute === 0) {
+                                    if (obj.displayAttribute === 1) {
                                         companyModel.displayAttribute('');
                                         self.sel001Data.push(ko.toJS(companyModel));
                                     }
@@ -101,7 +101,7 @@ var cmm001;
                     { id: 'tab-2', title: '会社所在地・連絡先', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-3', title: 'システム設定', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
-                self.checked = ko.observable(true);
+                self.displayAttribute = ko.observable(true);
                 self.selectedTab = ko.observable('tab-1');
                 self.gridColumns = ko.observableArray([
                     { headerText: '会社コード', prop: 'companyCode', width: 80 },
@@ -122,10 +122,10 @@ var cmm001;
                             var companyModel;
                             companyModel = ko.mapping.fromJS(obj);
                             if (obj.displayAttribute === 1) {
-                                companyModel.displayAttribute('<i style="margin-left: 15px" class="icon icon-close"></i>');
+                                companyModel.displayAttribute('');
                             }
                             else {
-                                companyModel.displayAttribute('');
+                                companyModel.displayAttribute('<i style="margin-left: 15px" class="icon icon-close"></i>');
                             }
                             self.sel001Data.push(ko.toJS(companyModel));
                         });
@@ -165,10 +165,10 @@ var cmm001;
                             var companyModel;
                             companyModel = ko.mapping.fromJS(obj);
                             if (obj.displayAttribute === 1) {
-                                companyModel.displayAttribute('<i style="margin-left: 15px" class="icon icon-close"></i>');
+                                companyModel.displayAttribute('');
                             }
                             else {
-                                companyModel.displayAttribute('');
+                                companyModel.displayAttribute('<i style="margin-left: 15px" class="icon icon-close"></i>');
                             }
                             self.sel001Data.push(ko.toJS(companyModel));
                         });
@@ -209,11 +209,11 @@ var cmm001;
                 self.currentCompany().presidentName('');
                 self.currentCompany().presidentJobTitle('');
                 self.currentCompany().termBeginMon(1);
-                self.currentCompany().selectedRuleCode('0');
-                self.currentCompany().selectedRuleCode1('0');
-                self.currentCompany().selectedRuleCode2('0');
-                self.currentCompany().selectedRuleCode3('0');
-                self.currentCompany().isDelete(true);
+                self.currentCompany().selectedRuleCode('1');
+                self.currentCompany().selectedRuleCode1('1');
+                self.currentCompany().selectedRuleCode2('1');
+                self.currentCompany().selectedRuleCode3('1');
+                self.currentCompany().isDelete(false);
                 self.currentCompany().editMode = true;
                 self.currentCompany().isEnableCompanyCode(true);
                 self.isUpdate(false);
@@ -229,14 +229,14 @@ var cmm001;
                     return;
                 }
                 if (currentCompany.isDelete) {
-                    currentCompany.displayAttribute = ko.observable("1");
+                    currentCompany.displayAttribute = ko.observable("0");
                 }
                 else {
-                    currentCompany.displayAttribute = ko.observable("0");
+                    currentCompany.displayAttribute = ko.observable("1");
                 }
                 var company = new a.service.model.CompanyDto("", "", "", "", "", "", "", "", "", 0, 0, "", "", "", "", "", 0, 0, 0, 0);
                 company = self.convertCompanyDto(currentCompany);
-                if (self.checked()) {
+                if (self.displayAttribute()) {
                     if (self.isUpdate()) {
                         cmm001.a.service.updateData(company).done(function () {
                             self.sel001Data([]);
@@ -259,7 +259,7 @@ var cmm001;
                                     _.each(data, function (obj) {
                                         var companyModel;
                                         companyModel = ko.mapping.fromJS(obj);
-                                        if (obj.displayAttribute === 0) {
+                                        if (obj.displayAttribute === 1) {
                                             companyModel.displayAttribute('');
                                             self.sel001Data.push(ko.toJS(companyModel));
                                         }
@@ -269,6 +269,7 @@ var cmm001;
                                         self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
                                     }
                                     else {
+                                        self.resetData();
                                         return;
                                     }
                                 }
@@ -283,7 +284,7 @@ var cmm001;
                                     _.each(data, function (obj) {
                                         var companyModel;
                                         companyModel = ko.mapping.fromJS(obj);
-                                        if (obj.displayAttribute === 0) {
+                                        if (obj.displayAttribute === 1) {
                                             companyModel.displayAttribute('');
                                             self.sel001Data.push(ko.toJS(companyModel));
                                         }
@@ -387,10 +388,10 @@ var cmm001;
                 self.depWorkPlaceSet(company.depWorkPlaceSet);
                 self.displayAttribute(company.displayAttribute.toString());
                 if (company.displayAttribute === 1) {
-                    self.isDelete(true);
+                    self.isDelete(false);
                 }
                 else {
-                    self.isDelete(false);
+                    self.isDelete(true);
                 }
                 self.faxNo(company.faxNo);
                 self.postal(company.postal);

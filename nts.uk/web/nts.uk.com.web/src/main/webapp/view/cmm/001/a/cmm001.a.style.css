@@ -7,21 +7,27 @@
 #contents-area {
 	width: 1300px;
 }
-#functions-area{
+
+#functions-area {
 	height: 50px;
 }
-#A_BTN_001{
+
+#A_BTN_001 {
 	width: 100px;
 }
-#A_BTN_002{
+
+#A_BTN_002 {
 	width: 100px;
 }
-#A_BTN_003{
+
+#A_BTN_003 {
 	width: 200px;
 }
-#A_BTN_004{
+
+#A_BTN_004 {
 	width: 150px;
 }
+
 #A_INP_002 {
 	width: 50px;
 	text-align: center;
@@ -141,17 +147,19 @@ button.search-btn {
 #A_LBL_002 {
 	width: 200px;
 }
-#A_INP_002{
+
+#A_INP_002 {
 	margin-left: 28px !important;
 	margin-bottom: 0px !important;
-} 
+}
+
 #A_INP_004 {
 	width: 360px !important;
 	margin-bottom: 10px;
 }
 
 #A_INP_005 {
-	width:360px !important;
+	width: 360px !important;
 }
 
 #A_INP_006 {
@@ -180,44 +188,54 @@ button.search-btn {
 #C_INP_002 {
 	width: 360px !important;
 	margin-bottom: 10px !important;
-	
-} 
+}
+
 #C_INP_003 {
 	width: 360px !important;
 	margin-bottom: 10px !important;
-	
-} 
+}
+
 #C_INP_004 {
 	width: 360px !important;
 	margin-bottom: 10px !important;
 }
+
 #C_INP_005 {
 	width: 360px !important;
 	margin-bottom: 10px !important;
-	
-} 
-#combo-box {
-	width: 125px;
+}
+
+#C_SEL_001 {
+	width: 110px !important;
+	margin-top: 5px !important;
 }
 
 #C_LBL_004 {
 	margin-left: 24px;
+	display: inline-block;
+	height: 40px;
+	line-height: 30px;
 }
 
 #C_LBL_005 {
 	margin-left: 24px;
+	display: inline-block;
+	height: 40px;
+	line-height: 30px;
 }
 
 #C_LBL_007 {
 	margin-left: 24px;
+	display: inline-block;
+	height: 40px;
+	line-height: 30px;
 }
 
 #C_LBL_008 {
 	margin-left: 24px;
-}
-
-#C_LBL_010 {
-	margin-left: 24px;
+	display: inline-block;
+	height: 40px;
+	line-height: 30px;
 }
 
 #D_BTN_001 {
@@ -225,19 +243,32 @@ button.search-btn {
 	margin-top: 6px;
 	height: 25px;
 }
-body > div:nth-child(4){
+
+body>div:nth-child(4) {
 	height: 0px;
 	top: 0px;
 	left: 0px;
 	width: 0px;
 }
+
 #D_SEL_005 {
-	width:80px !important;
+	width: 80px !important;
+	margin-top: 5px !important;
 }
-#contents-area > div.nts-right-content > div.table.fixed-height{
+
+#contents-area>div.nts-right-content>div.table.fixed-height {
 	margin-top: 0px !important;
 }
+
 .labelRed {
 	font-weight: bold !important;
 	color: red !important;
+}
+
+.border_none {
+	border: none !important;
+}
+
+.left20 {
+	margin-left: 20px;
 }

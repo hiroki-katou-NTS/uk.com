@@ -51,7 +51,7 @@
 				<div class="nts-left-content">
 					<div id="tree" class="bg-green caret-right caret-background">
 						<div id="A_SEL_001"
-							data-bind="ntsCheckBox: {checked: checked, text: '廃止も表示する'}"
+							data-bind="ntsCheckBox: {checked: displayAttribute, text: '廃止も表示する'}"
 							class="cf minimalist ntsCheckbox-left"></div>
 						<i class="icon icon-searchbox"></i>
 						<div style="margin-left: 30px; margin-top: 5px"
@@ -125,10 +125,11 @@
 										</div>
 									</th>
 								</tr>
-								<tr style="margin-top: 10px;">
+								<tr style="margin-top: 20px;">
 									<th colspan="1" class="th-col1">
-										<div style="margin-left: 48px">
-											<label id="A_LBL_005"> 半角カナ</label>
+										<!-- <div style="margin-left: 50px; margin-top: -7px"> -->
+									   <div  class="left20 border_none" data-bind="ntsFormLabel:{required: true, constraint:'CompanyNameKana'}">
+										      <label id="A_LBL_005"> 半角ｶﾅ</label>
 										</div>
 									</th>
 
@@ -141,11 +142,12 @@
 										</div>
 									</th>
 								</tr>
-								<tr style="margin-top: 20px;">
+							   <tr style="margin-top: 20px;">
 									<th colspan="1" class="th-col1">
-										<div style="margin-left: 50px">
+									<div  class="left20 border_none" data-bind="ntsFormLabel:{required: true, constraint:'CompanyNameAbb'}">
+										<!-- <div style="margin-left: 50px"> -->
 											<label id="A_LBL_006"> 略名</label>
-										</div>
+									</div>
 									</th>
 
 									<th colspan="2" class="th-col2">
@@ -207,7 +209,8 @@
 														<input id="B_INP_002" class="save-error" data-name="代表者名"
 															data-bind="ntsTextEditor: {value: presidentName,
 															 constraint: 'PresidentName',
-															 immediate: true}" />
+															 immediate: true,
+															 required: true}" />
 													</div>
 												</th>
 											</tr>
@@ -226,7 +229,8 @@
 														<input id="B_INP_003" class="save-error" data-name="代表者職位"
 															data-bind="ntsTextEditor: {value: presidentJobTitle,
 															 constraint: 'PresidentJobTitle',
-															 immediate: true}" />
+															 immediate: true,
+															 required: true}" />
 													</div>
 												</th>
 											</tr>
@@ -251,7 +255,8 @@
 														<input id="C_INP_001" class="save-error" data-name="郵便番号"
 															data-bind="ntsTextEditor: {value: postal,
 															 constraint: 'Postal',
-															 immediate: true}" />
+															 immediate: true,
+															 required: true}" />
 													</div>
 												</th>
 
@@ -273,9 +278,9 @@
 												<th colspan="2" class="th-col2">
 													<!-- <div class="control-group valign-center">
 														<div id="combo-box" data-bind=""></div> -->
-														<div class="control-group valign-center">
-															<div id="C_SEL_001"
-																data-bind="ntsComboBox: {
+													<div class="control-group valign-center">
+														<div id="C_SEL_001"
+															data-bind="ntsComboBox: {
 																			 options: itemList,
 																			 optionsValue: 'code',
 																			 value: termBeginMon,
@@ -283,14 +288,13 @@
 																			 editable: true,
 																			 enable: true,
 																			 columns: [{ prop: 'name' }]}">
-															</div>
 														</div>
-						<!-- 							</div> -->
+													</div> <!-- 							</div> -->
 												</th>
 											</tr>
 											<!-- 3 -->
 											<tr style="margin-top: 5px;">
-												<th colspan="1" class="th-col1">
+												<th colspan="2" class="th-col1">
 													<div class="form-label"
 														data-bind="ntsFormLabel:{required: true, constraint: ['Address1', 'Address2']}">
 														<label id="C_LBL_006">住所</label>
@@ -300,8 +304,7 @@
 											<!--  4 -->
 											<tr style="margin-top: 5px;">
 												<th colspan="1" class="th-col1">
-													<!-- <div data-bind="ntsFormLabel:{constraint: 'Address1'}"> -->
-													<label id="C_LBL_007">市区町村・番地</label> <!-- </div> -->
+													<label id="C_LBL_007">市区町村・番地</label> 
 												</th>
 
 												<th colspan="2" class="th-col2">
@@ -309,7 +312,8 @@
 														<input id="C_INP_002" class="save-error" data-name="住所１"
 															data-bind="ntsTextEditor: {value: address1,
 															 constraint: 'Address1',
-															 immediate: true}"
+															 immediate: true,
+															 required: true}"
 															type="text" placeholder=""
 															style="width: 200px; text-align: left; margin-bottom: 10px;">
 														</input>
@@ -319,8 +323,8 @@
 											</tr>
 											<!--  5 -->
 											<tr style="margin-top: 5px;">
-												<th colspan="1" class="th-col1"><label id="C_LBL_008">建物名
-														など</label></th>
+												<th colspan="1" class="th-col1">
+												<label id="C_LBL_008">建物名など</label></th>
 												<th colspan="2" class="th-col2">
 													<div>
 														<input id="C_INP_003" class="save-error" data-name="住所２"
@@ -332,7 +336,7 @@
 											</tr>
 											<!--  6 -->
 											<tr style="margin-top: 5px;">
-												<th colspan="1" class="th-col1">
+												<th colspan="2" class="th-col1">
 													<div class="form-label"
 														data-bind="ntsFormLabel:{required: true, constraint: ['AddressKana1', 'AddressKana2']}">
 														<label id="C_LBL_006">住所カナ</label>
@@ -347,19 +351,22 @@
 												<th colspan="2" class="th-col2">
 													<div style="width: 200px">
 														<input id="C_INP_004" class="save-error" data-name="住所カナ１"
-															data-bind="ntsTextEditor: {value: addressKana1, constraint: 'AddressKana1'}" />
+															data-bind="ntsTextEditor: {value: addressKana1, 
+															constraint: 'AddressKana1',
+															 required: true,
+															 immediate: true}" />
 													</div>
 												</th>
 											</tr>
 											<!--  8 -->
 											<tr style="margin-top: 5px;">
-												<th colspan="1" class="th-col1"><label id="C_LBL_008">建物名
-														など</label></th>
-
+												<th colspan="1" class="th-col1"><label id="C_LBL_008">建物名など</label></th>
 												<th colspan="2" class="th-col2">
 													<div>
 														<input id="C_INP_005" class="save-error" data-name="住所カナ２"
-															data-bind="ntsTextEditor: {value: addressKana2, constraint: 'AddressKana2'}" />
+															data-bind="ntsTextEditor: {value: addressKana2, 
+															constraint: 'AddressKana2',
+															immediate: true}" />
 													</div>
 												</th>
 											</tr>
@@ -367,7 +374,7 @@
 											<tr style="margin-top: 5px;">
 												<th colspan="1" class="th-col1">
 													<div class="form-label"
-														data-bind="ntsFormLabel:{required: true, constraint: ['TelephoneNo', 'FaxNo']}">
+														data-bind="ntsFormLabel:{required: true, constraint:'TelephoneNo'}">
 														<label id="C_LBL_009">電話番号</label>
 													</div>
 												</th>
@@ -375,19 +382,28 @@
 												<th colspan="2" class="th-col2">
 													<div>
 														<input id="C_INP_006" class="save-error" data-name="電話番号"
-															data-bind="ntsTextEditor: {value: telephoneNo, constraint: 'TelephoneNo'}" />
+															data-bind="ntsTextEditor: {value: telephoneNo,
+																					    constraint: 'TelephoneNo',
+																						required: true,
+																						immediate: true}" />
 													</div>
 												</th>
 											</tr>
 											<!--  10  -->
 											<tr style="margin-top: 5px;">
-												<th colspan="1" class="th-col1"><label id="C_LBL_010">FAX</label>
+												<th colspan="1" class="th-col1">
+												<div  class="left20 border_none" data-bind="ntsFormLabel:{required: true, constraint:'FaxNo'}">
+												    <label id="C_LBL_010">FAX</label>
+												</div>
 												</th>
 
 												<th colspan="2" class="th-col2">
 													<div>
 														<input id="C_INP_007" class="save-error" data-name="FAX番号"
-															data-bind="ntsTextEditor: {value: faxNo, constraint: 'FaxNo'}" />
+															data-bind="ntsTextEditor: {value: faxNo,
+																					   constraint: 'FaxNo',
+																					   required: true,																						required: true,
+																					   immediate: true}" />
 													</div>
 												</th>
 											</tr>
@@ -403,7 +419,7 @@
 												<tr style="margin-top: 5px;">
 													<th colspan="1" class="th-col1">
 														<div class="form-label"
-															data-bind="ntsFormLabel:{required: true, constraint:'UseSet'}"
+															data-bind="ntsFormLabel:{required: true}"
 															style="margin-top: 5px;">
 															<label id="D_LBL_001">人事システム</label>
 														</div>
@@ -425,7 +441,7 @@
 												<tr style="margin-top: 5px;">
 													<th colspan="1" class="th-col1">
 														<div class="form-label"
-															data-bind="ntsFormLabel:{required: true, constraint:'UseSet'}">
+															data-bind="ntsFormLabel:{required: true}">
 															<label id="D_LBL_002">就業システム</label>
 														</div>
 													</th>
@@ -447,7 +463,7 @@
 												<tr style="margin-top: 5px;">
 													<th colspan="1" class="th-col1">
 														<div class="form-label"
-															data-bind="ntsFormLabel:{required: true, constraint:'UseSet'}">
+															data-bind="ntsFormLabel:{required: true}">
 															<label id="D_LBL_003">給与システム</label>
 														</div>
 													</th>
@@ -487,8 +503,8 @@
 												</tr>
 												<tr style="margin-top: 5px;">
 													<th colspan="1" class="th-col1">
-														<div class="form-label"
-															data-bind="ntsFormLabel:{required: true, constraint: 'TermBeginMon'}">
+														<div 
+															data-bind="ntsFormLabel:{required: true}">
 															<label id="Ds_LBL_005">期首月</label>
 														</div>
 													</th>
