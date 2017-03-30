@@ -29,7 +29,7 @@
 				</div>
 				<div class="divLine-col-2">
 					<div id="G_INP_001"
-						data-bind="ntsDatePicker: { value: g_INP_001, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
+						data-bind="ntsDatePicker: { value: viewmodelg.g_INP_001, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
 					<label id="G_LBL_007">07</label>
 				</div>
 			</div>
@@ -40,9 +40,9 @@
 				<div class="divLine-col-2">
 					<div id="G_SEL_001"
 						data-bind="ntsComboBox: {
-								options: g_SEL_001_items,
+								options: viewmodelg.g_SEL_001_items,
 								optionsValue: 'code',
-								value: g_SEL_001_itemSelected,
+								value: viewmodelg.g_SEL_001_itemSelected,
 								optionsText: 'name',
 								editable: true,
 								enable: true,
@@ -76,9 +76,9 @@
 				<div class="divLine-col-2">
 					<div id="G_SEL_002"
 						data-bind="ntsComboBox: {
-								options: g_SEL_002_items,
+								options: viewmodelg.g_SEL_002_items,
 								optionsValue: 'code',
-								value: g_SEL_002_itemSelected,
+								value: viewmodelg.g_SEL_002_itemSelected,
 								optionsText: 'name',
 								editable: true,
 								enable: true,
@@ -94,7 +94,7 @@
 					<div id="G_LBL_014" data-bind="ntsFormLabel: {required: true}">種別コード</div>
 				</div>
 				<div class="divLine-col-2">
-					<div data-bind="with: g_INP_002">
+					<div data-bind="with: viewmodelg.g_INP_002">
 						<input id="G_INP_002"
 							data-bind="ntsNumberEditor: { 
 								value: value, 
@@ -117,7 +117,7 @@
 							        ]),
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: g_SEL_003_itemSelected,
+									value: viewmodelg.g_SEL_003_itemSelected,
 									enable: true }">
 					</div>
 				</div>

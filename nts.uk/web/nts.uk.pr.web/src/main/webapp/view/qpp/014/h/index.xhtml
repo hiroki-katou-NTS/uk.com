@@ -29,7 +29,7 @@
 				</div>
 				<div class="divLine-col-2">
 					<div id="H_INP_001"
-						data-bind="ntsDatePicker: { value: h_INP_001, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
+						data-bind="ntsDatePicker: { value: viewmodelh.h_INP_001, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
 					<label id="H_LBL_005">05</label>
 				</div>
 			</div>
@@ -43,7 +43,7 @@
 					data-bind="ntsGridList: {
 							width: 650,
 							height: 265,
-							dataSource: h_LST_001_items,
+							dataSource: viewmodelh.h_LST_001_items,
 							primaryKey: 'code',
 							columns: ko.observableArray([
 				                { headerText: '振込元銀行', prop: 'code', width: 90 },
@@ -54,7 +54,7 @@
 				                { headerText: '口座番号', prop: 'description', width: 150 }
 				            ]),
 							multiple: true,
-							value: h_LST_001_itemsSelected}">
+							value: viewmodelh.h_LST_001_itemsSelected}">
 				</table>
 			</div>
 			<div class="divLine">

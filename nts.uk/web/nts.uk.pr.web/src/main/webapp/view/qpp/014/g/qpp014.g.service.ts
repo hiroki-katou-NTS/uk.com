@@ -1,4 +1,4 @@
-module qpp014.e.service {
+module qpp014.g.service {
     var paths: any = {
         getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
     }
@@ -15,9 +15,6 @@ module qpp014.e.service {
         return dfd.promise();
     }
 }
-
-
-
 
 
 

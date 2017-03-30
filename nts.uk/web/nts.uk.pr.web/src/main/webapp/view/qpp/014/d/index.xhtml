@@ -33,7 +33,7 @@
 							        ]),
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: d_SEL_001_selectedCode,
+									value: viewmodeld.d_SEL_001_selectedCode,
 									enable: true }">
 					</div>
 				</div>
@@ -48,14 +48,48 @@
 					<label>10000</label>
 					<label>人</label>
 				</div>
-				<table id="D_LST_001"></table>
+				<table id="gridKO" data-bind="igGrid: {
+				dataSource: viewmodeld.d_LST_001_items,
+                primaryKey: 'code',
+                width: '740px',
+                height: '290px',
+                autoCommit: false,
+                dataSourceType: 'json',
+                features: [
+                    {
+                        name: 'Selection'
+                    },
+                    {
+                        name: 'RowSelectors',
+                        enableRowNumbering: true
+                    },
+                    {
+                        name: 'MultiColumnHeaders'
+                    }
+                ],
+                autoGenerateColumns: false,
+                columns: [
+                    { headerText: 'コード', key: 'code', dataType: 'string', width: '17%' },
+                    { headerText: '名称', key: 'code', dataType: 'string', width: '17%' },
+                    {
+                        headerText: '振込元設定', width: '70%',
+                        group: [
+                            { headerText: '支払1', key: 'code', dataType: 'string', width: '13%' },
+                            { headerText: '支払2', key: 'name', dataType: 'string', width: '13%' },
+                            { headerText: '支払3', key: 'description', dataType: 'string', width: '13%' },
+                            { headerText: '支払4', key: 'description', dataType: 'string', width: '13%' },
+                            { headerText: '支払5', key: 'description', dataType: 'string', width: '14%' }
+                        ]
+                    }
+                ]
+				}"></table>
 			</div>
 			<div class="divLine">
 				<div class="D-divLine-col-1">
 					<div id="D_LBL_005" data-bind="ntsFormLabel: {required: true}">振込日</div>
 				</div>
 				<div class="D-divLine-col-2">
-					<div data-bind="with: d_INP_001">
+					<div data-bind="with: viewmodeld.d_INP_001">
 						<input id="D_INP_001"
 							data-bind="ntsTextEditor: {
 									value: value,
@@ -77,7 +111,7 @@
 							        ]),
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: d_SEL_002_selectedCode,
+									value: viewmodeld.d_SEL_002_selectedCode,
 									enable: true }">
 					</div>
 				</div>

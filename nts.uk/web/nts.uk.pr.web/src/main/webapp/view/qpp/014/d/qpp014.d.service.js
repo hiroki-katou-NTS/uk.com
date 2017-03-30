@@ -1,7 +1,7 @@
 var qpp014;
 (function (qpp014) {
-    var i;
-    (function (i) {
+    var d;
+    (function (d) {
         var service;
         (function (service) {
             var paths = {
@@ -19,6 +19,6 @@ var qpp014;
                 return dfd.promise();
             }
             service.getPaymentDateProcessingList = getPaymentDateProcessingList;
-        })(service = i.service || (i.service = {}));
-    })(i = qpp014.i || (qpp014.i = {}));
+        })(service = d.service || (d.service = {}));
+    })(d = qpp014.d || (qpp014.d = {}));
 })(qpp014 || (qpp014 = {}));
