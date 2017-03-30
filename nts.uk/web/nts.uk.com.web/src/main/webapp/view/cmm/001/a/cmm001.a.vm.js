@@ -13,6 +13,7 @@ var cmm001;
                         return;
                     }
                     else {
+                        self.isUpdate(true);
                         if (!nts.uk.text.isNullOrEmpty(newValue) && self.currentCompanyCode() !== self.previousCurrentCode) {
                             if (self.dirtyObject.isDirty()) {
                                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function () {
@@ -36,7 +37,7 @@ var cmm001;
                         currentColumns[2].hidden = false;
                         $grid.igGrid("option", "width", "400px");
                         self.sel001Data([]);
-                        self.start(undefined);
+                        self.reload(undefined);
                     }
                     else {
                         self.sel001Data([]);
@@ -154,7 +155,7 @@ var cmm001;
                 });
                 return dfd.promise();
             };
-            ViewModel.prototype.reload = function () {
+            ViewModel.prototype.reload = function (currentCode) {
                 var self = this;
                 var dfd = $.Deferred();
                 a.service.getAllCompanys().done(function (data) {
@@ -172,7 +173,12 @@ var cmm001;
                             self.sel001Data.push(ko.toJS(companyModel));
                         });
                         self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentCompany);
-                        self.currentCompanyCode(self.currentCompany().companyCode());
+                        if (currentCode == undefined) {
+                            self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
+                        }
+                        else {
+                            self.currentCompanyCode(currentCode);
+                        }
                     }
                     else {
                         self.isUpdate(false);
@@ -234,13 +240,13 @@ var cmm001;
                     if (self.isUpdate()) {
                         cmm001.a.service.updateData(company).done(function () {
                             self.sel001Data([]);
-                            self.reload();
+                            self.reload(company.companyCode);
                         });
                     }
                     else {
                         cmm001.a.service.addData(company).done(function () {
                             self.sel001Data([]);
-                            self.reload();
+                            self.reload(company.companyCode);
                         });
                     }
                 }
@@ -258,11 +264,15 @@ var cmm001;
                                             self.sel001Data.push(ko.toJS(companyModel));
                                         }
                                     });
+                                    self.dirtyObject.reset();
+                                    if (self.sel001Data().length > 0) {
+                                        self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
+                                    }
+                                    else {
+                                        return;
+                                    }
                                 }
                             });
-                            console.log(self.sel001Data());
-                            self.processWhenCurrentCodeChange(ko.toJS(self.sel001Data()[0].companyCode));
-                            self.currentCompanyCode(self.currentCompany().companyCode());
                         });
                     }
                     else {
@@ -278,10 +288,10 @@ var cmm001;
                                             self.sel001Data.push(ko.toJS(companyModel));
                                         }
                                     });
+                                    self.dirtyObject.reset();
+                                    self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
                                 }
                             });
-                            console.log(self.sel001Data());
-                            self.processWhenCurrentCodeChange(ko.toJS(self.sel001Data()[0].companyCode));
                         });
                     }
                 }

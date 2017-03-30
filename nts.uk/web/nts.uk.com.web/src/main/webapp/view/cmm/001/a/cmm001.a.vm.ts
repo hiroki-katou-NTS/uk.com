@@ -19,6 +19,7 @@ module cmm001.a {
                 if (nts.uk.text.isNullOrEmpty(newValue)) {
                     return;
                 } else {
+                    self.isUpdate(true);
                     if (!nts.uk.text.isNullOrEmpty(newValue) && self.currentCompanyCode() !== self.previousCurrentCode) {
                         //goi check isDirty
                         if (self.dirtyObject.isDirty()) {
@@ -45,7 +46,7 @@ module cmm001.a {
                     currentColumns[2].hidden = false;
                     $grid.igGrid("option", "width", "400px");
                     self.sel001Data([]);
-                    self.start(undefined);
+                    self.reload(undefined);
                 } else {
                     self.sel001Data([]);
                     currentColumns[2].hidden = true;
@@ -70,10 +71,9 @@ module cmm001.a {
                                 if (!companyCheckExist) {
                                     self.processWhenCurrentCodeChange(ko.toJS(self.sel001Data()[0].companyCode));
                                     self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
-
                                 } else {
                                     self.processWhenCurrentCodeChange(self.currentCompanyCode());
-                                    
+
                                 }
                             } else {
                                 self.resetData();
@@ -166,7 +166,7 @@ module cmm001.a {
             return dfd.promise();
         }
 
-        reload() {
+        reload(currentCode: string) {
             let self = this;
             let dfd = $.Deferred<any>();
             service.getAllCompanys().done(function(data: Array<service.model.CompanyDto>) {
@@ -183,7 +183,11 @@ module cmm001.a {
                         self.sel001Data.push(ko.toJS(companyModel));
                     });
                     self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentCompany);
-                    self.currentCompanyCode(self.currentCompany().companyCode());
+                    if (currentCode == undefined) {
+                        self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
+                    } else {
+                        self.currentCompanyCode(currentCode);
+                    }
                 } else {
                     self.isUpdate(false);
                 }
@@ -248,12 +252,12 @@ module cmm001.a {
                 if (self.isUpdate()) {
                     cmm001.a.service.updateData(company).done(function() {
                         self.sel001Data([]);
-                        self.reload();
+                        self.reload(company.companyCode);
                     });
                 } else {
                     cmm001.a.service.addData(company).done(function() {
                         self.sel001Data([]);
-                        self.reload();
+                        self.reload(company.companyCode);
                     })
                 }
             } else {
@@ -270,11 +274,15 @@ module cmm001.a {
                                         self.sel001Data.push(ko.toJS(companyModel));
                                     }
                                 });
+                                self.dirtyObject.reset();
+                                if (self.sel001Data().length > 0) {
+                                    self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
+                                }else{
+                                    return;
+                                }
                             }
                         });
-                        console.log(self.sel001Data());
-                        self.processWhenCurrentCodeChange(ko.toJS(self.sel001Data()[0].companyCode));
-                        self.currentCompanyCode(self.currentCompany().companyCode());
+
                     });
                 } else {
                     cmm001.a.service.addData(company).done(function() {
@@ -289,11 +297,10 @@ module cmm001.a {
                                         self.sel001Data.push(ko.toJS(companyModel));
                                     }
                                 });
+                                self.dirtyObject.reset();
+                                self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
                             }
                         });
-                        console.log(self.sel001Data());
-                        self.processWhenCurrentCodeChange(ko.toJS(self.sel001Data()[0].companyCode));
-                        //self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
                     })
                 }
 

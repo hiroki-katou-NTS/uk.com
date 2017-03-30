@@ -188,7 +188,8 @@
 															data-name="法人マイナンバー"
 															data-bind="ntsTextEditor: {value: corporateMyNumber,
 															 constraint: 'CorporateMyNumber',
-															 immediate: true}" />
+															 immediate: true,
+															 required: true}" />
 													</div>
 												</th>
 											</tr>
@@ -270,9 +271,21 @@
 												</th>
 
 												<th colspan="2" class="th-col2">
-													<div class="control-group valign-center">
-														<div id="combo-box" data-bind=""></div>
-													</div>
+													<!-- <div class="control-group valign-center">
+														<div id="combo-box" data-bind=""></div> -->
+														<div class="control-group valign-center">
+															<div id="C_SEL_001"
+																data-bind="ntsComboBox: {
+																			 options: itemList,
+																			 optionsValue: 'code',
+																			 value: termBeginMon,
+																			 optionsText: 'name',
+																			 editable: true,
+																			 enable: true,
+																			 columns: [{ prop: 'name' }]}">
+															</div>
+														</div>
+						<!-- 							</div> -->
 												</th>
 											</tr>
 											<!-- 3 -->
