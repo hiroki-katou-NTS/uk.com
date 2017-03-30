@@ -124,11 +124,16 @@ module nts.uk.pr.view.qmm008.h {
                     self.closeDialog());
             }
 
+            private clearError(): void {
+                $('.has-error').ntsError('clear');
+            }
+
             /**
              * ReCalculate the healthInsuranceAvgearn list
              */
             private reCalculate(): void {
                 var self = this;
+                self.clearError();
                 // Clear current listHealthInsuranceAvgearn
                 self.listHealthInsuranceAvgearn.removeAll();
                 // Recalculate listHealthInsuranceAvgearn

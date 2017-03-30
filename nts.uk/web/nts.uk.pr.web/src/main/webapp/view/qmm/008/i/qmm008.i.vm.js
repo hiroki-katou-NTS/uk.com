@@ -37,10 +37,8 @@ var nts;
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    self.loadAvgEarnLevelMasterSetting().done(function () {
-                                        return self.loadPensionAvgearn().done(function () {
-                                            return dfd.resolve();
-                                        });
+                                    $.when(self.loadAvgEarnLevelMasterSetting(), self.loadPensionAvgearn()).done(function () {
+                                        dfd.resolve();
                                     });
                                     return dfd.promise();
                                 };
@@ -87,8 +85,12 @@ var nts;
                                 ScreenModel.prototype.rightToggle = function () {
                                     this.rightShow(!this.rightShow());
                                 };
+                                ScreenModel.prototype.clearError = function () {
+                                    $('.has-error').ntsError('clear');
+                                };
                                 ScreenModel.prototype.reCalculate = function () {
                                     var self = this;
+                                    self.clearError();
                                     self.listPensionAvgearnModel.removeAll();
                                     self.listAvgEarnLevelMasterSetting.forEach(function (item) {
                                         self.listPensionAvgearnModel.push(self.calculatePensionAvgearn(item));

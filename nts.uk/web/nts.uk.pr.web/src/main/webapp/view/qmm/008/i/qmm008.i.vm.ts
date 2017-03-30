@@ -59,10 +59,10 @@ module nts.uk.pr.view.qmm008.i {
              */
             public startPage(): JQueryPromise<void> {
                 var self = this;
-                var dfd = $.Deferred<any>();
-                self.loadAvgEarnLevelMasterSetting().done(() =>
-                    self.loadPensionAvgearn().done(() =>
-                        dfd.resolve()));
+                var dfd = $.Deferred<void>();
+                $.when(self.loadAvgEarnLevelMasterSetting(), self.loadPensionAvgearn()).done(() => {
+                    dfd.resolve();
+                });
                 return dfd.promise();
             }
 
@@ -71,7 +71,7 @@ module nts.uk.pr.view.qmm008.i {
              */
             private loadAvgEarnLevelMasterSetting(): JQueryPromise<void> {
                 var self = this;
-                var dfd = $.Deferred<any>();
+                var dfd = $.Deferred<void>();
                 commonService.getAvgEarnLevelMasterSettingList().done(res => {
                     self.listAvgEarnLevelMasterSetting = res;
                     dfd.resolve();
@@ -84,7 +84,7 @@ module nts.uk.pr.view.qmm008.i {
              */
             private loadPensionAvgearn(): JQueryPromise<void> {
                 var self = this;
-                var dfd = $.Deferred<any>();
+                var dfd = $.Deferred<void>();
                 service.findPensionAvgearn(self.pensionRateModel.historyId).done(res => {
                     res.forEach(item => {
                         self.listPensionAvgearnModel.push(new PensionAvgearnModel(
@@ -161,11 +161,16 @@ module nts.uk.pr.view.qmm008.i {
                 this.rightShow(!this.rightShow());
             }
 
+            private clearError(): void {
+                $('.has-error').ntsError('clear');
+            }
+
             /**
              * ReCalculate the listPensionAvgearnModel
              */
             private reCalculate(): void {
                 var self = this;
+                self.clearError();
                 // Clear current listPensionAvgearnModel
                 self.listPensionAvgearnModel.removeAll();
 

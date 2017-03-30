@@ -76,8 +76,12 @@ var nts;
                                         return self.closeDialog();
                                     });
                                 };
+                                ScreenModel.prototype.clearError = function () {
+                                    $('.has-error').ntsError('clear');
+                                };
                                 ScreenModel.prototype.reCalculate = function () {
                                     var self = this;
+                                    self.clearError();
                                     self.listHealthInsuranceAvgearn.removeAll();
                                     self.listAvgEarnLevelMasterSetting.forEach(function (item) {
                                         self.listHealthInsuranceAvgearn.push(self.calculateHealthInsuranceAvgEarnModel(item));
