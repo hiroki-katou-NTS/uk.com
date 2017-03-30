@@ -10,6 +10,7 @@ import nts.uk.ctx.pr.core.dom.insurance.AddressKana1;
 import nts.uk.ctx.pr.core.dom.insurance.AddressKana2;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
+import nts.uk.ctx.pr.core.dom.insurance.PhoneNumber;
 import nts.uk.ctx.pr.core.dom.insurance.PicName;
 import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
 import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
@@ -182,8 +183,8 @@ public class JpaSocialInsuranceOfficeSetMemento implements SocialInsuranceOffice
 	 * setPhoneNumber(java.lang.String)
 	 */
 	@Override
-	public void setPhoneNumber(String phoneNumber) {
-		this.typeValue.setTelNo(phoneNumber);
+	public void setPhoneNumber(PhoneNumber phoneNumber) {
+		this.typeValue.setTelNo(phoneNumber.v());
 	}
 
 	/*

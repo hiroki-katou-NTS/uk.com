@@ -10,6 +10,7 @@ import nts.uk.ctx.pr.core.dom.insurance.AddressKana1;
 import nts.uk.ctx.pr.core.dom.insurance.AddressKana2;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
+import nts.uk.ctx.pr.core.dom.insurance.PhoneNumber;
 import nts.uk.ctx.pr.core.dom.insurance.PicName;
 import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
 import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
@@ -103,7 +104,7 @@ public interface SocialInsuranceOfficeSetMemento {
 	 *
 	 * @param phoneNumber the new phone number
 	 */
-	void setPhoneNumber(String phoneNumber);
+	void setPhoneNumber(PhoneNumber phoneNumber);
 
 	/**
 	 * Sets the health insu office ref code 1 st.
