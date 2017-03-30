@@ -2,17 +2,20 @@ package nts.uk.ctx.basic.infra.repository.organization.position;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.basic.dom.organization.position.AuthorizationLevel;
 import nts.uk.ctx.basic.dom.organization.position.JobCode;
 import nts.uk.ctx.basic.dom.organization.position.JobHistory;
 import nts.uk.ctx.basic.dom.organization.position.JobTitle;
 import nts.uk.ctx.basic.dom.organization.position.JobTitleRef;
 import nts.uk.ctx.basic.dom.organization.position.PositionRepository;
+import nts.uk.ctx.basic.infra.entity.organization.position.CatmtAuth;
 import nts.uk.ctx.basic.infra.entity.organization.position.CmnmtJobHist;
 import nts.uk.ctx.basic.infra.entity.organization.position.CmnmtJobHistPK;
 import nts.uk.ctx.basic.infra.entity.organization.position.CmnmtJobTitle;
@@ -33,9 +36,26 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 	private static final String IS_UPDATE_HISTORY;
 	private static final String SELECT_HISTORY_BY_END_DATE;
 	private static final String IS_EXISTED_HISTORY;
-
+	private static final String SELECT_AUTHLEVEL;
+	private static final String SELECT_JOBTITLEREF;
 	static {
+		
 		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM CmnmtJobTitleRef e");
+		builderString.append(" WHERE e.cmnmtJobTitleRefPK.companyCode = :companyCode");
+		builderString.append(" AND e.cmnmtJobTitleRefPK.historyId = :historyId");
+		builderString.append(" AND e.cmnmtJobTitleRefPK.jobCode = :jobCode");
+		SELECT_JOBTITLEREF = builderString.toString();
+	
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM CatmtAuth e");
+		builderString.append(" WHERE e.catmtAuthPK.companyCode = :companyCode");
+		builderString.append(" AND e.catmtAuthPK.authCode = :authCode");	
+		SELECT_AUTHLEVEL = builderString.toString();
+
+		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmnmtJobTitle e");
 		builderString.append(" WHERE e.cmnmtJobTitlePK.companyCode = :companyCode");
@@ -106,18 +126,24 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		builderString.append(" FROM CmnmtJobHist e");
 		builderString.append(" WHERE e.cmnmtJobHistPK.historyId = :historyId");
 		IS_EXISTED_HISTORY = builderString.toString();
+		
+		
+		
+		
 
 	}
 
 	private JobTitle convertToDomain(CmnmtJobTitle cmnmtJobTittle) {
-		JobTitle jobTittle = JobTitle.createFromJavaType(cmnmtJobTittle.getJobName(),
-				cmnmtJobTittle.getCmnmtJobTitlePK().getJobCode(),
-				cmnmtJobTittle.getJobOutCode() != null ? cmnmtJobTittle.getJobOutCode() : "",
-				cmnmtJobTittle.getCmnmtJobTitlePK().getHistoryId(),
+		JobTitle jobTittle = JobTitle.createFromJavaType(
 				cmnmtJobTittle.getCmnmtJobTitlePK().getCompanyCode(),
+				cmnmtJobTittle.getCmnmtJobTitlePK().getHistoryId(),
+				cmnmtJobTittle.getCmnmtJobTitlePK().getJobCode(),
+				cmnmtJobTittle.getJobName(),
+				cmnmtJobTittle.getPresenceCheckScopeSet(),
+				cmnmtJobTittle.getJobOutCode() != null ? cmnmtJobTittle.getJobOutCode() : "",
 				cmnmtJobTittle.getMemo() != null ? cmnmtJobTittle.getMemo() : "",
-				cmnmtJobTittle.getHierarchyOrderCode() != null ? cmnmtJobTittle.getHierarchyOrderCode() : "",
-				cmnmtJobTittle.getPresenceCheckScopeSet());
+				cmnmtJobTittle.getHierarchyOrderCode() != null ? cmnmtJobTittle.getHierarchyOrderCode() : ""
+				);
 		return jobTittle;
 
 	}
@@ -191,16 +217,12 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 
 	@Override
 	public List<JobHistory> getAllHistory(String companyCode) {
-
+		
+		
 		return this.queryProxy().query(SELECT_ALL_HISTORY, CmnmtJobHist.class).setParameter("companyCode", companyCode)
 				.getList(c -> convertToDomain2(c));
 	}
 
-	@Override
-	public List<JobTitleRef> findAllJobTitleRef(String companyCode, String historyId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public void deleteHist(String companyCode, String historyId) {
@@ -254,10 +276,18 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		 return !result.isEmpty() ? Optional.of(convertToDomain2(result.get(0))): Optional.empty();
 	}
 	
+//	@Override
+//	public Optional<JobHistory> getHistoryByEdate(String historyId, GeneralDate endDate) {
+//		return this.queryProxy().query(SELECT_HISTORY_BY_END_DATE, CmnmtJobHist.class)
+//				.setParameter("historyId", historyId).setParameter("endDate", endDate).getSingle().map(e -> {
+//					return Optional.of(convertToDomain2(e));
+//				}).orElse(Optional.empty());
+//	}
 	@Override
-	public Optional<JobHistory> getHistoryByEdate(String historyId, GeneralDate endDate) {
+	public Optional<JobHistory> getHistoryByEdate(String companyCode, String endDate) {
+	
 		return this.queryProxy().query(SELECT_HISTORY_BY_END_DATE, CmnmtJobHist.class)
-				.setParameter("historyId", historyId).setParameter("endDate", endDate).getSingle().map(e -> {
+				.setParameter("companyCode", companyCode).setParameter("endDate", endDate).getSingle().map(e -> {
 					return Optional.of(convertToDomain2(e));
 				}).orElse(Optional.empty());
 	}
@@ -277,21 +307,81 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 	
 
 	
-	private static CmnmtJobTitleRef convertToDbType3(JobTitleRef domain){
-		val entity = new CmnmtJobTitleRef();
-		entity.cmnmtJobTitleRefPK = new CmnmtJobTitleRefPK(domain.getCompanyCode(),
-								domain.getHistoryId(),
-								domain.getJobCode().v(),
-								domain.getAuthorizationCode().v());
-		entity.referenceSettings = domain.getReferenceSettings().toString();
-		return entity;
+	private static JobTitleRef toDomainRef(CmnmtJobTitleRef entity){
+		val domain = JobTitleRef.createFromJavaType(
+				entity.cmnmtJobTitleRefPK.companyCode,
+				entity.cmnmtJobTitleRefPK.historyId,
+				entity.cmnmtJobTitleRefPK.jobCode,
+				entity.referenceSettings,
+				entity.cmnmtJobTitleRefPK.authorizationCode);
+		return domain;
 	}
 	
 
 	
+
 	@Override
-	public void addJobTitleRef(JobTitleRef jobTitleRef){
-		this.commandProxy().insert(convertToDbType3(jobTitleRef));
+	public List<JobTitleRef> findAllJobTitleRef(String companyCode, String historyId, String jobCode) {
+		return this.queryProxy().query(SELECT_JOBTITLEREF, CmnmtJobTitleRef.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("historyId", historyId)
+				.setParameter("jobCode", jobCode)
+				.getList(c->toDomainRef(c));
+	}
+	
+	
+	private static AuthorizationLevel toDomainAuth(CatmtAuth entity){
+		val domain = AuthorizationLevel.createFromJavaType(
+				entity.catmtAuthPk.companyCode,
+				entity.catmtAuthPk.authScopeAtr,
+				entity.catmtAuthPk.authCode,
+				entity.authName,
+				entity.empScopeAtr,
+				entity.inChargeAtr,
+				entity.memo);
+		return domain;
+	}
+	@Override
+	public Optional<AuthorizationLevel> findAllAuth(String companyCode, String authCode,String authScopeAtr) {
+		return this.queryProxy().query(SELECT_AUTHLEVEL, CatmtAuth.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("authCode", authCode)
+				.getSingle(c->toDomainAuth(c));
+	}
+
+	@Override
+	public void addJobTitleRef(JobTitleRef jobTitleRef) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Optional<JobTitle> getJobTitleByCode(String companyCode, String historyId, String jobCode) {
+		return this.queryProxy().query(FIND_SINGLE, CmnmtJobTitle.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("historyId", historyId)
+				.setParameter("jobCode", jobCode)
+				.getSingle()
+				.map(c->{
+					return Optional.of(convertToDomain(c));
+				}).orElse(Optional.empty());
+	}
+
+	private CmnmtJobTitlePK toEntityTitlePk(JobTitle domain){
+		val entityPk = new CmnmtJobTitlePK();
+		entityPk.companyCode = domain.getCompanyCode();
+		entityPk.historyId = domain.getHistoryId();
+		entityPk.jobCode = domain.getJobCode().toString();
+		return entityPk;
+	}
+	@Override
+	public void deleteJobTitleByHisId(String companyCode, String historyId) {
+		List<JobTitle> lstAllJobByHisId = this.findAllPosition(companyCode,historyId);
+		List<CmnmtJobTitlePK> detailEntitiesPk = lstAllJobByHisId.stream().map(detail -> {
+								return this.toEntityTitlePk(detail);
+								}).collect(Collectors.toList());
+		this.commandProxy().removeAll(CmnmtJobTitle.class, detailEntitiesPk);
+		
 	}
 
 }

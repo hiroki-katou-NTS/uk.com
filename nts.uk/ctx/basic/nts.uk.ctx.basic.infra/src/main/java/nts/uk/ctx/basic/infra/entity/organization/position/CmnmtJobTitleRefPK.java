@@ -34,5 +34,5 @@ public class CmnmtJobTitleRefPK implements Serializable{
 	
 	@Basic(optional = false)
 	@Column(name = "AUTHCD")
-	public String authorizationCode;
+	public int authorizationCode;
 }

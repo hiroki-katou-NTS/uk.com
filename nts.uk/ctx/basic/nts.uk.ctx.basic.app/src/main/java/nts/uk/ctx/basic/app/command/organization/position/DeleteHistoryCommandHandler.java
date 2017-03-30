@@ -38,15 +38,15 @@ public class DeleteHistoryCommandHandler extends CommandHandler<DeleteHistoryCom
 			positionRepository.addHistory(jobHistory);
 			GeneralDate pos1 = context.getCommand().getStartDate();
 			GeneralDate endDate = pos1.addDays(-1);
-			Optional<JobHistory> historyEndDate = positionRepository.getHistoryByEdate(companyCode, pos1);
-			if (historyEndDate.isPresent()) {
-				JobHistory jobHis = historyEndDate.get();
-				jobHis.setEndDate(endDate);
-				positionRepository.updateHistory(jobHis);
+//			Optional<JobHistory> historyEndDate = positionRepository.getHistoryByEdate(companyCode, pos1);
+//			if (historyEndDate.isPresent()) {
+//				JobHistory jobHis = historyEndDate.get();
+//				jobHis.setEndDate(endDate);
+//				positionRepository.updateHistory(jobHis);
 				positionRepository.deleteHist(companyCode, context.getCommand().getHistoryId());;
 
 			}
 		}
 	}
-}
+
 

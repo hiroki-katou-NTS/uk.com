@@ -31,12 +31,12 @@ public class CatmtAuth extends TableEntity implements Serializable {
 	/**社員参照範囲区分*/
 	@Basic(optional = false)
 	@Column(name = "EMP_SCOPE_ATR")
-	public String empScopeAtr;
+	public int empScopeAtr;
 	
 	/**担当者区分*/
 	@Basic(optional = false)
 	@Column(name = "IN_CHARGE_ATR")
-	public String inChargeAtr;
+	public int inChargeAtr;
 	
 	/**メモ*/
 	@Basic(optional = true)

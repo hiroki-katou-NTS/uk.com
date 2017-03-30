@@ -7,9 +7,9 @@ var cmm013;
             var paths = {
                 updateHist: "basic/organization/position/updateHist",
             };
-            function updateHist(listHist) {
+            function updateHist(jobHist) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.updateHist, listHist)
+                nts.uk.request.ajax("com", paths.updateHist, jobHist)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -19,28 +19,6 @@ var cmm013;
                 return dfd.promise();
             }
             service.updateHist = updateHist;
-            var model;
-            (function (model) {
-                var UpdateHandler = (function () {
-                    function UpdateHandler(listHist, checkUpdate, checkDelete) {
-                        this.listHist = listHist;
-                        this.checkUpdate = checkUpdate;
-                        this.checkDelete = checkDelete;
-                    }
-                    return UpdateHandler;
-                }());
-                model.UpdateHandler = UpdateHandler;
-                var ListHistoryDto = (function () {
-                    function ListHistoryDto(companyCode, startDate, endDate, historyId) {
-                        this.companyCode = companyCode;
-                        this.startDate = startDate;
-                        this.endDate = endDate;
-                        this.historyId = historyId;
-                    }
-                    return ListHistoryDto;
-                }());
-                model.ListHistoryDto = ListHistoryDto;
-            })(model = service.model || (service.model = {}));
         })(service = d.service || (d.service = {}));
     })(d = cmm013.d || (cmm013.d = {}));
 })(cmm013 || (cmm013 = {}));

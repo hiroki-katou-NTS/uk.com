@@ -1,32 +1,30 @@
 package nts.uk.ctx.basic.app.command.organization.position;
 
 
-import java.time.LocalDate;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.dom.organization.position.JobHistory;
 
 
-@Data
+@Getter
+@Setter
 public class AddHistoryCommand {
 
-	private GeneralDate endDate;
-
-	private String companyCode;
-
-	private String historyId;
-
-	private GeneralDate startDate; 
+	private JobHist jobHist;
+	
+	private JobTitle jobTitle;
+	
+	private String checkAddJhist;
+	
+	private String checkAddJtitle;
 	
 	public JobHistory toDomain(){
 		return JobHistory.createFromJavaType( 
-				this.companyCode,
-				this.historyId,
-				this.startDate,
-				this.endDate);
+				this.jobHist.getCompanyCode(),
+				this.jobHist.getHistoryId(),
+				this.jobHist.getStartDate(),
+				this.jobHist.getEndDate());
 	}
 
 	
