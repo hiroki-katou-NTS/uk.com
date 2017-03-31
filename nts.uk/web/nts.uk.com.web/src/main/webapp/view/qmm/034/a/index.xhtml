@@ -44,9 +44,9 @@
 					<table id="single-list"
 						data-bind="ntsGridList: {
 						width: 280,
-						height: 410,
+						height: 450,
 						options: items,
-						optionsValue: 'eraName',
+						primaryKey: 'eraHist',
 						columns: columns,
 						multiple: false,
 						value: currentCode
@@ -59,7 +59,8 @@
 								<div id="A_LBL_002" data-bind="ntsFormLabel: {required: true, constraint: 'EraName' }">元号</div>
 							</td>
 							<td>
-								<input id="A_INP_001"  data-bind="ntsTextEditor: { required: true, value: eraName, constraint: 'EraName', enable: $parent.isEnableCode}" /> 
+								<input id="A_INP_001"  data-bind="ntsTextEditor: { required: true, value: eraName, constraint: 'EraName', 
+											enable: $parent.isEnableCode, immediate: true}, hasFocus: true" /> 
 							</td>
 						</tr>
 						<tr>
@@ -67,7 +68,8 @@
 								<div id="A_LBL_003" data-bind="ntsFormLabel: {required: true, constraint: 'EraMark' }">記号</div>
 							</td>
 							<td>
-								<input id="A_INP_002"  data-bind="ntsTextEditor: { required: true, value: eraMark, constraint: 'EraMark'}"/>
+								<input id="A_INP_002"  data-bind="ntsTextEditor: { required: true, value: eraMark, 
+											constraint: 'EraMark', immediate: true}"/>
 							</td>
 						</tr>
 						<tr>
@@ -77,7 +79,7 @@
 							<td>
 								<div class="empriseLabel">
 									<div id="A_INP_003" 
-										data-bind="ntsDatePicker: {button: true, value: $parent.startDate, dateFormat: 'yyyy-MM-dd', startDate: $parent.date}"></div>
+										data-bind="ntsDatePicker: {button: true, value: $parent.startDate, dateFormat: 'yyyy-MM-dd'}"></div>
 									<div style="margin-top: 10px;" data-bind="text:$parent.dateTime"></div>
 								</div>
 							</td>

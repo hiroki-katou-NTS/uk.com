@@ -1,7 +1,5 @@
 package nts.uk.ctx.pr.core.app.find.rule.employment.unitprice.personal.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -11,7 +9,7 @@ public class PersonalUnitPriceDto {
      private String personalUnitPriceCode;
      private String personalUnitPriceName;
      private String personalUnitPriceShortName;
-     public int displayAtr;
+     public int displaySet;
      public String uniteCode;
      public int paymentSettingType;
      public int fixPaymentAtr;

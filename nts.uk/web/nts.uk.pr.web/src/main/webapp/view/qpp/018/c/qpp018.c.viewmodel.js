@@ -96,9 +96,6 @@ var nts;
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
-                            /**
-                             * The ChecklistPrintSettingModel
-                             */
                             var ChecklistPrintSettingModel = (function () {
                                 function ChecklistPrintSettingModel() {
                                     var self = this;
@@ -148,3 +145,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qpp018.c.viewmodel.js.map

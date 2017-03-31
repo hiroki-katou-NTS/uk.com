@@ -6,9 +6,6 @@ var qmm019;
         (function (viewmodel) {
             var option = nts.uk.ui.option;
             var ScreenModel = (function () {
-                /**
-                 * Init screen model.
-                 */
                 function ScreenModel() {
                     var self = this;
                     self.selectLayoutAtr = ko.observable("3");
@@ -25,7 +22,6 @@ var qmm019;
                     self.startYmHis = ko.observable(null);
                     console.log(option);
                     self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: "yearmonth" }));
-                    //---radio
                     self.itemsRadio = ko.observableArray([
                         { value: 1, text: ko.observable('最新の履歴（' + self.selectStartYm() + '）から引き継ぐ') },
                         { value: 2, text: ko.observable('初めから作成する') }
@@ -35,7 +31,6 @@ var qmm019;
                 ScreenModel.prototype.start = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    //list data
                     self.buildItemList();
                     $('#LST_001').on('selectionChanging', function (event) {
                         console.log('Selecting value:' + event.originalEvent.detail);
@@ -43,7 +38,6 @@ var qmm019;
                     $('#LST_001').on('selectionChanged', function (event) {
                         console.log('Selected value:' + event.originalEvent.detail);
                     });
-                    //fill data to dialog
                     d.service.getLayoutWithMaxStartYm().done(function (layout) {
                         self.layouts(layout);
                         d.service.getHistoryWithMaxStart().done(function (layoutHistory) {
@@ -55,7 +49,6 @@ var qmm019;
                         self.startDialog();
                     });
                     dfd.resolve();
-                    // Return.
                     return dfd.promise();
                 };
                 ScreenModel.prototype.buildItemList = function () {
@@ -86,7 +79,6 @@ var qmm019;
                 ScreenModel.prototype.createHistoryLayout = function () {
                     var self = this;
                     var inputYm = $('#INP_001').val();
-                    //check YM
                     if (!nts.uk.time.parseYearMonth(inputYm).success) {
                         alert(nts.uk.time.parseYearMonth(inputYm).msg);
                         return false;
@@ -107,7 +99,6 @@ var qmm019;
                             self.createlayout().checkContinue = false;
                         }
                         d.service.createLayoutHistory(self.createlayout()).done(function () {
-                            //alert("追加しました。"); 
                             nts.uk.ui.windows.close();
                         }).fail(function (res) {
                             alert(res);
@@ -134,9 +125,6 @@ var qmm019;
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            /**
-         * Class Item model.
-         */
             var ItemModel = (function () {
                 function ItemModel(stt, printType, paperType, direction, numberPeople, numberDisplayItems, reference) {
                     this.stt = stt;
@@ -161,3 +149,4 @@ var qmm019;
         })(viewmodel = d.viewmodel || (d.viewmodel = {}));
     })(d = qmm019.d || (qmm019.d = {}));
 })(qmm019 || (qmm019 = {}));
+//# sourceMappingURL=viewmodel.js.map

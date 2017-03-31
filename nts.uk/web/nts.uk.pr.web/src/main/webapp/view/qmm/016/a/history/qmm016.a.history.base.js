@@ -14,18 +14,12 @@ var nts;
                         (function (history_1) {
                             var base;
                             (function (base) {
-                                /**
-                                 * Base view model.
-                                 */
                                 var BaseHistoryViewModel = (function () {
                                     function BaseHistoryViewModel(htmlPath, history) {
                                         var self = this;
                                         self.htmlPath = htmlPath;
                                         self.history = history;
                                     }
-                                    /**
-                                     * Refresh element settings.
-                                     */
                                     BaseHistoryViewModel.prototype.refreshElementSettings = function (elementSettings) {
                                         var self = this;
                                         self.elementSettings = elementSettings;
@@ -42,3 +36,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qmm016.a.history.base.js.map

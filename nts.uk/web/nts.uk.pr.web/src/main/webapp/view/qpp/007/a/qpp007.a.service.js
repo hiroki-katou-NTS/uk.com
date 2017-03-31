@@ -12,14 +12,10 @@ var nts;
                     (function (a) {
                         var service;
                         (function (service) {
-                            // Service paths.
                             var servicePath = {
                                 findAllSalaryOutputSetting: "ctx/pr/report/salary/outputsetting/findall",
                                 saveAsPdf: "screen/pr/QPP007/saveAsPdf"
                             };
-                            /**
-                             * get All Output Setting
-                             */
                             function findAllSalaryOutputSetting() {
                                 return nts.uk.request.ajax(servicePath.findAllSalaryOutputSetting);
                             }
@@ -44,3 +40,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qpp007.a.service.js.map
