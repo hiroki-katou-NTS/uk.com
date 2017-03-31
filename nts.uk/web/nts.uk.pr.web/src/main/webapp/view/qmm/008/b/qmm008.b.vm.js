@@ -41,6 +41,10 @@ var nts;
                                         grouplength: 3,
                                         decimallength: 3
                                     }));
+                                    self.Rate5 = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                                        grouplength: 3,
+                                        decimallength: 5
+                                    }));
                                     self.healthAutoCalculateOptions = ko.observableArray([
                                         { code: '0', name: 'する' },
                                         { code: '1', name: 'しない' }
