@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.file.pr.app.export.wageledger;
 
+import java.util.List;
+
 import nts.uk.file.pr.app.export.wageledger.data.WLOldLayoutReportData;
 
 /**
@@ -17,5 +19,5 @@ public interface WageLedgerDataRepository {
 	 * @param query the query
 	 * @return the wage ledger report data
 	 */
-	WLOldLayoutReportData findReportData(WageLedgerReportQuery query);
+	List<WLOldLayoutReportData> findReportDatas(int targetYear, List<String> employeeIds);
 }

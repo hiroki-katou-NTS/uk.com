@@ -34,7 +34,7 @@
 						class="function-button-style">印刷実行ログ</button>
 				</div>
 			</div>
-			<div id="contents-area">
+			<div id="contents-area" data-bind="visible: true" style="display: none">
 				<table>
 					<tr>
 						<td id="contents-left">
@@ -42,17 +42,17 @@
 								<div id="time-input">
 									<div class="label" id="target-year-label">対象年度</div>
 									<span class="date-picker" for="target-year-label"
-										data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yyyy/MM',startDate: '1900/01', endDate:'9999/12'}"></span>
+										data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yyyy/MM',startDate: '1900/01', endDate:'9999/12'}"></span>
 									<span class="monthly-label">月度 ~</span> <span
 										class="date-picker" for="target-year-label"
-										data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yyyy/MM',startDate: '1900/01', endDate:'9999/12'}"></span>
+										data-bind="ntsDatePicker: {value: endYearMonth, dateFormat: 'yyyy/MM',startDate: '1900/01', endDate:'9999/12'}"></span>
 									<span class="monthly-label">月度</span>
 								</div>
 								<div id="monthly-checkbox">
 									<span
 										data-bind="ntsCheckBox: { checked: isUsuallyAMonth, enable: true, text: '通常月' }"></span>
 									<span
-										data-bind="ntsCheckBox: { checked: isPreliminaryMonth, enable: true, text: '通常月' }"></span>
+										data-bind="ntsCheckBox: { checked: isPreliminaryMonth, enable: true, text: '予備月' }"></span>
 								</div>
 							</div>
 							<div class="search-employee"></div>
