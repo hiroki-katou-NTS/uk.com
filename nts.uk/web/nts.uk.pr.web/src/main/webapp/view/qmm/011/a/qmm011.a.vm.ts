@@ -71,11 +71,11 @@ module nts.uk.pr.view.qmm011.a {
 
             constructor() {
                 var self = this;
-                self.selectionRoundingMethod = ko.observableArray<RoundingMethodDto>([new RoundingMethodDto(0, "切り捨て"),//"RoundUp 
-                    new RoundingMethodDto(1, "切り上げ"),//Truncation
-                    new RoundingMethodDto(2, "四捨五入"),//"RoundDown"
+                self.selectionRoundingMethod = ko.observableArray<RoundingMethodDto>([new RoundingMethodDto(0, "切り捨て"),//Truncation 
+                    new RoundingMethodDto(1, "切り上げ"),//RoundUp
+                    new RoundingMethodDto(2, "四捨五入"),//Down4_Up5
                     new RoundingMethodDto(3, "五捨六入"),//Down5_Up6
-                    new RoundingMethodDto(4, "五捨五超入")]);//Down4_Up5
+                    new RoundingMethodDto(4, "五捨五超入")]);//Round Down
                 self.rateInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                     grouplength: 3,
                     decimallength: 2
@@ -767,6 +767,7 @@ module nts.uk.pr.view.qmm011.a {
                 self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
                 //reset selection history unemployee insurance rate
                 self.selectionUnemployeeInsuranceRateHistory('');
+                self.dirtyUnemployeeInsurance.reset();
             }
 
             //detail UnemployeeInsuranceRateHistory => show view model xhtml (action event)
@@ -893,6 +894,7 @@ module nts.uk.pr.view.qmm011.a {
                 self.selectionAccidentInsuranceRateHistory('');
                 self.accidentInsuranceRateModel().resetValue(self.rateInputOptions, self.selectionRoundingMethod);
                 self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
+                self.dirtyAccidentInsurance.reset();
             }
 
             //detail AccidentInsuranceRateHistory => show view model xhtml (action event)
@@ -1134,7 +1136,6 @@ module nts.uk.pr.view.qmm011.a {
             unemployeeInsuranceRateItemOtherModel: UnemployeeInsuranceRateItemModel;
             version: KnockoutObservable<number>;
             unemployeeInsuranceHistoryModel: UnemployeeInsuranceHistoryModel;
-            isShowTable: KnockoutObservable<boolean>;
 
             constructor(rateInputOptions: any, selectionRoundingMethod: KnockoutObservableArray<RoundingMethodDto>) {
                 this.unemployeeInsuranceRateItemAgroforestryModel
@@ -1144,7 +1145,6 @@ module nts.uk.pr.view.qmm011.a {
                 this.unemployeeInsuranceRateItemOtherModel
                     = new UnemployeeInsuranceRateItemModel(rateInputOptions, selectionRoundingMethod);
                 this.version = ko.observable(0);
-                this.isShowTable = ko.observable(false);
                 this.unemployeeInsuranceHistoryModel = new UnemployeeInsuranceHistoryModel();
             }
 
@@ -1210,7 +1210,6 @@ module nts.uk.pr.view.qmm011.a {
                 this.unemployeeInsuranceRateItemAgroforestryModel.setEnable(isEnable);
                 this.unemployeeInsuranceRateItemContructionModel.setEnable(isEnable);
                 this.unemployeeInsuranceRateItemOtherModel.setEnable(isEnable);
-                this.isShowTable(!isEnable);
             }
         }
 
@@ -1338,7 +1337,6 @@ module nts.uk.pr.view.qmm011.a {
             accidentInsuranceRateBiz10ThModel: AccidentInsuranceRateDetailModel;
             accidentInsuranceRateHistoryModel: AccidentInsuranceRateHistoryModel;
             version: KnockoutObservable<number>;
-            isShowTable: KnockoutObservable<boolean>;
 
             constructor(rateInputOptions: any,
                 selectionRoundingMethod: KnockoutObservableArray<RoundingMethodDto>) {
@@ -1363,7 +1361,6 @@ module nts.uk.pr.view.qmm011.a {
                 this.accidentInsuranceRateBiz10ThModel =
                     new AccidentInsuranceRateDetailModel(rateInputOptions, selectionRoundingMethod);
                 this.accidentInsuranceRateHistoryModel = new AccidentInsuranceRateHistoryModel();
-                this.isShowTable = ko.observable(true);
             }
 
             setListItem(lstInsuBizRateItem: InsuBizRateItemDto[]) {
@@ -1529,7 +1526,6 @@ module nts.uk.pr.view.qmm011.a {
                 this.accidentInsuranceRateBiz8ThModel.setEnable(isEnable);
                 this.accidentInsuranceRateBiz9ThModel.setEnable(isEnable);
                 this.accidentInsuranceRateBiz10ThModel.setEnable(isEnable);
-                this.isShowTable(!isEnable);
             }
         }
     }

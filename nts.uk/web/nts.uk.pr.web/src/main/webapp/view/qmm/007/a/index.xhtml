@@ -34,14 +34,14 @@
 							<td><div id="lbl_003"
 									data-bind="ntsFormLabel: {constraint: ['UnitPriceCode','UnitPriceName'], required: true }">コード/名称</div></td>
 							<td colspan="2"><input id="inpCode" data-name="コード"
-								class="inp-default save-error"
+								class="inp-default"
 								data-bind="ntsTextEditor: {
 									value: unitPriceHistoryModel().unitPriceCode,
 									constraint: 'UnitPriceCode',
 									option: textEditorOption,
 									required: true,
 									enable: isNewMode()}" />
-								<input id="inpName" class="inp-default save-error" data-name="名称"
+								<input id="inpName" class="inp-default" data-name="名称"
 								data-bind="ntsTextEditor: {
 									value: unitPriceHistoryModel().unitPriceName,
 									constraint: 'UnitPriceName',
@@ -60,15 +60,11 @@
 						<tr>
 							<td><div id="lbl_006"
 									data-bind="ntsFormLabel: { constraint: 'Money', required: true }">金額</div></td>
-							<td><input id="inpBudget" class="inp-default save-error" data-name="金額"
+							<td><input id="inpBudget" class="inp-default" data-name="金額"
 								data-bind="ntsNumberEditor: {
 									value: unitPriceHistoryModel().budget,
 									constraint: 'Money',
-									option: {placeholder: '0.00',
-						                    grouplength: 3,
-						                    decimallength: 2,
-						                    currencyformat: 'JPY',
-						                    currencyposition: 'right'},
+									option: {decimallength: 2, currencyformat: 'JPY',currencyposition: 'right'}, 
 									required: true}" />
 							</td>
 						</tr>
