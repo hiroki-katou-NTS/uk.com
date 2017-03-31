@@ -146,26 +146,27 @@ var qet001;
                 ScreenModel.prototype.remove = function () {
                     var self = this;
                     var selectedCode = self.outputSettings().outputSettingSelectedCode();
-                    if (selectedCode == '') {
-                        nts.uk.ui.dialog.alert('未選択エラー');
+                    if (!selectedCode || selectedCode == '') {
                         return;
                     }
-                    b.service.removeOutputSetting(selectedCode).done(function () {
-                        nts.uk.ui.windows.setShared('isHasUpdate', true, false);
-                        var itemSelected = self.outputSettings().outputSettingList().filter(function (item) { return item.code == selectedCode; })[0];
-                        var indexSelected = self.outputSettings().outputSettingList().indexOf(itemSelected);
-                        self.outputSettings().outputSettingList.remove(itemSelected);
-                        if (self.outputSettings().outputSettingList().length == 0) {
-                            self.outputSettings().outputSettingSelectedCode(null);
-                            return;
-                        }
-                        if (self.outputSettings().outputSettingList()[indexSelected]) {
-                            self.outputSettings().outputSettingSelectedCode(self.outputSettings().outputSettingList()[indexSelected].code);
-                            return;
-                        }
-                        self.outputSettings().outputSettingSelectedCode(self.outputSettings().outputSettingList()[indexSelected - 1].code);
-                    }).fail(function (res) {
-                        nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.confirm('出力項目設定からもデータを削除します。\r\nよろしいですか？').ifYes(function () {
+                        b.service.removeOutputSetting(selectedCode).done(function () {
+                            nts.uk.ui.windows.setShared('isHasUpdate', true, false);
+                            var itemSelected = self.outputSettings().outputSettingList().filter(function (item) { return item.code == selectedCode; })[0];
+                            var indexSelected = self.outputSettings().outputSettingList().indexOf(itemSelected);
+                            self.outputSettings().outputSettingList.remove(itemSelected);
+                            if (self.outputSettings().outputSettingList().length == 0) {
+                                self.outputSettings().outputSettingSelectedCode(null);
+                                return;
+                            }
+                            if (self.outputSettings().outputSettingList()[indexSelected]) {
+                                self.outputSettings().outputSettingSelectedCode(self.outputSettings().outputSettingList()[indexSelected].code);
+                                return;
+                            }
+                            self.outputSettings().outputSettingSelectedCode(self.outputSettings().outputSettingList()[indexSelected - 1].code);
+                        }).fail(function (res) {
+                            nts.uk.ui.dialog.alert(res.message);
+                        });
                     });
                 };
                 ScreenModel.prototype.loadOutputSettingDetail = function (selectedCode) {

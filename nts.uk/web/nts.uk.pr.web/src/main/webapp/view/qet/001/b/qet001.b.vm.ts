@@ -194,38 +194,39 @@ module qet001.b.viewmodel {
             var self = this;
             // Check selected output setting.
             var selectedCode = self.outputSettings().outputSettingSelectedCode();
-            if (selectedCode == '') {
-                // TODO: Add error message 'AL006'.
-                nts.uk.ui.dialog.alert('未選択エラー');
+            if (!selectedCode || selectedCode == '') {
                 return;
             }
-            service.removeOutputSetting(selectedCode).done(function() {
-                nts.uk.ui.windows.setShared('isHasUpdate', true, false);
-                // Find item selected.
-                var itemSelected = self.outputSettings().outputSettingList().filter(item => item.code == selectedCode)[0];
-                var indexSelected = self.outputSettings().outputSettingList().indexOf(itemSelected);
-                // Remove item selected in list.
-                self.outputSettings().outputSettingList.remove(itemSelected);
-                
-                // If list is empty -> new mode.
-                if (self.outputSettings().outputSettingList().length == 0) {
-                    self.outputSettings().outputSettingSelectedCode(null);
-                    return;
-                }
-                
-                // Select same row with item selected.
-                if (self.outputSettings().outputSettingList()[indexSelected]) {
+            nts.uk.ui.dialog.confirm('出力項目設定からもデータを削除します。\r\nよろしいですか？').ifYes(function() {
+                service.removeOutputSetting(selectedCode).done(function() {
+                    nts.uk.ui.windows.setShared('isHasUpdate', true, false);
+                    // Find item selected.
+                    var itemSelected = self.outputSettings().outputSettingList().filter(item => item.code == selectedCode)[0];
+                    var indexSelected = self.outputSettings().outputSettingList().indexOf(itemSelected);
+                    // Remove item selected in list.
+                    self.outputSettings().outputSettingList.remove(itemSelected);
+
+                    // If list is empty -> new mode.
+                    if (self.outputSettings().outputSettingList().length == 0) {
+                        self.outputSettings().outputSettingSelectedCode(null);
+                        return;
+                    }
+
+                    // Select same row with item selected.
+                    if (self.outputSettings().outputSettingList()[indexSelected]) {
+                        self.outputSettings().outputSettingSelectedCode(
+                            self.outputSettings().outputSettingList()[indexSelected].code);
+                        return;
+                    }
+
+                    // Select next higher row.
                     self.outputSettings().outputSettingSelectedCode(
-                        self.outputSettings().outputSettingList()[indexSelected].code);
-                    return;
-                }
-                
-                // Select next higher row.
-                self.outputSettings().outputSettingSelectedCode(
-                    self.outputSettings().outputSettingList()[indexSelected - 1].code)
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alert(res.message);
+                        self.outputSettings().outputSettingList()[indexSelected - 1].code)
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
             });
+            
         }
         
         /**
