@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.core.infra.repository.insurance.social.healthavgearn;
 
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnValue;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn.QismtHealthInsuAvgearn;
@@ -31,9 +32,9 @@ public class JpaHealthInsuranceAvgearnGetMemento implements HealthInsuranceAvgea
 	 */
 	@Override
 	public HealthInsuranceAvgearnValue getPersonalAvg() {
-		return new HealthInsuranceAvgearnValue(new CommonAmount(entity.getPHealthBasicMny()),
+		return new HealthInsuranceAvgearnValue(new InsuranceAmount(entity.getPHealthBasicMny()),
 				new CommonAmount(entity.getPHealthGeneralMny()), new CommonAmount(entity.getPHealthNursingMny()),
-				new CommonAmount(entity.getPHealthSpecificMny()));
+				new InsuranceAmount(entity.getPHealthSpecificMny()));
 	}
 
 	/* (non-Javadoc)
@@ -57,9 +58,9 @@ public class JpaHealthInsuranceAvgearnGetMemento implements HealthInsuranceAvgea
 	 */
 	@Override
 	public HealthInsuranceAvgearnValue getCompanyAvg() {
-		return new HealthInsuranceAvgearnValue(new CommonAmount(entity.getCHealthBasicMny()),
+		return new HealthInsuranceAvgearnValue(new InsuranceAmount(entity.getCHealthBasicMny()),
 				new CommonAmount(entity.getCHealthGeneralMny()), new CommonAmount(entity.getCHealthNursingMny()),
-				new CommonAmount(entity.getCHealthSpecificMny()));
+				new InsuranceAmount(entity.getCHealthSpecificMny()));
 	}
 
 }
