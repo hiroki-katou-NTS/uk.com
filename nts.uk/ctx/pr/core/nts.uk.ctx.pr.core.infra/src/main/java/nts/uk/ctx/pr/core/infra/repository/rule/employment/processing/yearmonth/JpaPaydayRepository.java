@@ -31,9 +31,6 @@ public class JpaPaydayRepository extends JpaRepository implements PaydayReposito
 	private final String SELECT_ALL_6 = SELECT_ALL_BY_CCD
 			+ " AND c.qpdmtPaydayPK.processingNo = :processingNo AND c.qpdmtPaydayPK.processingYm = :processingYm ";
 
-	private final String SELECT_ALL_6_B = SELECT_ALL_BY_CCD
-			+ " AND c.qpdmtPaydayPK.processingNo = :processingNo AND c.qpdmtPaydayPK.payBonusAtr = 0 AND c.qpdmtPaydayPK.sparePayAtr = 0";
-
 	private final String SELECT_ALL_7 = SELECT_ALL_BY_CCD
 			+ " AND c.qpdmtPaydayPK.processingNo = :processingNo AND c.qpdmtPaydayPK.payBonusAtr = :payBonusAtr AND c.payDate >= :strYmd AND c.payDate <= :endYmd ";
 
@@ -42,6 +39,9 @@ public class JpaPaydayRepository extends JpaRepository implements PaydayReposito
 
 	private final String SELECT_ALL_12 = SELECT_ALL_BY_CCD
 			+ " AND c.qpdmtPaydayPK.payBonusAtr = :payBonusAtr AND c.qpdmtPaydayPK.sparePayAtr = :sparePayAtr";
+
+	private final String SELECT_ALL_12_B = SELECT_ALL_BY_CCD
+			+ " AND c.qpdmtPaydayPK.processingNo = :processingNo";
 
 	@Override
 	public List<Payday> select1_3(String companyCode, int processingNo, int payBonusAtr, int processingYm,
@@ -80,12 +80,6 @@ public class JpaPaydayRepository extends JpaRepository implements PaydayReposito
 	}
 
 	@Override
-	public List<Payday> select12b(String companyCode, int processingNo) {
-		return this.queryProxy().query(SELECT_ALL_6_B, QpdmtPayday.class).setParameter("companyCode", companyCode)
-				.setParameter("processingNo", processingNo).getList(c -> toDomain(c));
-	}
-
-	@Override
 	public List<Payday> select7(String companyCode, int processingNo, int payBonusAtr, GeneralDate strYmd,
 			GeneralDate endYmd) {
 		return this.queryProxy().query(SELECT_ALL_7, QpdmtPayday.class).setParameter("companyCode", companyCode)
@@ -106,6 +100,13 @@ public class JpaPaydayRepository extends JpaRepository implements PaydayReposito
 		return this.queryProxy().query(SELECT_ALL_12, QpdmtPayday.class).setParameter("companyCode", companyCode)
 				.setParameter("payBonusAtr", payBonusAtr).setParameter("sparePayAtr", sparePayAtr)
 				.getList(c -> toDomain(c));
+	}
+	
+	/// Hàm 12b viết ra để giảm số lần truy vấn vào DB và số lần request lên server của client.
+	@Override
+	public List<Payday> select12b(String companyCode, int processingNo) {
+		return this.queryProxy().query(SELECT_ALL_12_B, QpdmtPayday.class).setParameter("companyCode", companyCode)
+				.setParameter("processingNo", processingNo).getList(c -> toDomain(c));
 	}
 
 	@Override

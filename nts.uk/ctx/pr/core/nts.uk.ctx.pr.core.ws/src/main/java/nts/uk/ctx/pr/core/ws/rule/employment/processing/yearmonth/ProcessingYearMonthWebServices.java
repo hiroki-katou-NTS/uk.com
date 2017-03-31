@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005aCommand;
 import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005aCommandHandler;
+import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005bCommand;
 import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005cCommand;
 import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005cCommandHandler;
 import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005dCommand;
@@ -44,18 +45,16 @@ public class ProcessingYearMonthWebServices extends WebService {
 
 	@Inject
 	private Qmm005dCommandHandler qmm005dCommandHandler;
-	
-	@Inject
-	private Qmm005aCommandHandler qmm005aCommandHandler;
 
+	@Inject
+	private Qmm005aCommandHandler qmm005aUpdateCommandHandler;
 
 	@POST
 	@Path("paydayrocessing/getbyccd")
 	public List<PaydayProcessingDto> getPaydayProcessing(String companyCode) {
 		return paydayProcessingFinder.select3(companyCode);
 	}
-	
-	
+
 	@POST
 	@Path("qmm005a/getdata")
 	public Object[] qmm005aGetData() {
@@ -75,12 +74,25 @@ public class ProcessingYearMonthWebServices extends WebService {
 	@Path("qmm005a/update")
 	public void qmm005aUpdate(Qmm005aCommand command) {
 		try {
-			qmm005aCommandHandler.handle(command);
+			qmm005aUpdateCommandHandler.handle(command);
 		} catch (Exception ex) {
 			throw ex;
 		}
 	}
-	
+
+	@POST
+	@Path("qmm005b/getdata")
+	public List<PaydayDto> qmm005bGetData(Qmm005bCommand command) {
+		String companyCode = AppContexts.user().companyCode();
+
+		return paydayFinder.select4(companyCode, command.getProcessingNo());
+	}
+
+	@POST
+	@Path("qmm005b/update")
+	public void qmm005bUpdate(Qmm005bCommand command) {
+
+	}
 
 	@POST
 	@Path("qmm005c/insert")
@@ -94,8 +106,9 @@ public class ProcessingYearMonthWebServices extends WebService {
 
 	@POST
 	@Path("qmm005d/getdata")
-	public Object[] qmm005dGetData(Qmm005cCommand command) {
+	public Object[] qmm005dGetData(Qmm005dCommand command) {
 		String companyCode = AppContexts.user().companyCode();
+
 		SystemDayDto systemDayDto = systemDayFinder.select1(companyCode, command.getProcessingNo());
 		StandardDayDto standardDayDto = standardDayFinder.select1(companyCode, command.getProcessingNo());
 
