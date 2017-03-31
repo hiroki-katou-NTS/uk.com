@@ -7,19 +7,13 @@ var qmm006;
             var paths = {
                 findBankAll: "basic/system/bank/find/all"
             };
+            /**
+             * get data of Bank
+             */
             function findBankAll() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.findBankAll)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax("com", paths.findBankAll);
             }
             service.findBankAll = findBankAll;
         })(service = b.service || (b.service = {}));
     })(b = qmm006.b || (qmm006.b = {}));
 })(qmm006 || (qmm006 = {}));
-//# sourceMappingURL=qmm006.b.service.js.map

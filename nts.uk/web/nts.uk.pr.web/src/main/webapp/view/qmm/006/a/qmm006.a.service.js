@@ -12,68 +12,43 @@ var qmm006;
                 findBankAll: "basic/system/bank/find/all",
                 checkExistBankAndBranch: "basic/system/bank/find/check"
             };
+            /**
+             * remove data (lineBank) in database
+             */
             function remove(command) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.remove, command)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax("com", paths.remove, command);
             }
             service.remove = remove;
+            /**
+             * update or insert data (lineBank) in database
+             * define update mode or insert mode base-on isEnable property
+             */
             function saveData(isEnable, command) {
-                var dfd = $.Deferred();
                 var path = isEnable ? paths.saveData : paths.update;
-                nts.uk.request.ajax("com", path, command)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax("com", path, command);
             }
             service.saveData = saveData;
+            /**
+             * get data from database to screen
+             */
             function findAll() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.findAll)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax("com", paths.findAll);
             }
             service.findAll = findAll;
+            /**
+             * get data of Bank
+             */
             function findBankAll() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.findBankAll)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax("com", paths.findBankAll);
             }
             service.findBankAll = findBankAll;
+            /**
+             * check exist data of Bank
+             */
             function checkExistBankAndBranch() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.checkExistBankAndBranch)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax("com", paths.checkExistBankAndBranch);
             }
             service.checkExistBankAndBranch = checkExistBankAndBranch;
         })(service = a.service || (a.service = {}));
     })(a = qmm006.a || (qmm006.a = {}));
 })(qmm006 || (qmm006 = {}));
-//# sourceMappingURL=qmm006.a.service.js.map
