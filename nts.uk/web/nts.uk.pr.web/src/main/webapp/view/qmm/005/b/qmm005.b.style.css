@@ -163,21 +163,21 @@ td>.ntsControl span.label {
 	content: ')';
 }
 
-#B_INP_003_input {
+#B_INP_003-input {
 	width: 105px !important;
 }
 
-#B_INP_004_input {
+#B_INP_004-input {
 	width: 80px !important;
 }
 
-#B_INP_005_input {
+#B_INP_005-input {
 	padding-left: 12px;
 	padding-right: 12px;
 	width: 85px !important;
 }
 
-#B_INP_006_input, #B_INP_007_input, #B_INP_008_input, #B_INP_009_input {
+#B_INP_006-input, #B_INP_007-input, #B_INP_008-input, #B_INP_009-input {
 	display: inline-table;
 	width: 105px !important;
 }

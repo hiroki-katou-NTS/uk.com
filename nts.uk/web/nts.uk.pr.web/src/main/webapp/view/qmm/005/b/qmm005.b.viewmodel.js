@@ -38,17 +38,17 @@ var qmm005;
             }
             ViewModel.prototype.start = function () {
                 var self = this;
+                var lst002Data = [];
                 b.services.getData(self.index()).done(function (resp) {
                     if (resp && resp.length > 0) {
-                        console.log(resp);
                         var lst001Data = [], dataRow = nts.uk.ui.windows.getShared('dataRow');
                         var _loop_1 = function(i, rec) {
-                            var year = rec.processingYm["getYearInYm"](), yearIJE = year + "(" + year["yearInJapanEmpire"]() + ")";
+                            var year = rec.processingYm["getYearInYm"](), yearIJE = year + "(" + year["yearInJapanEmpire"]() + ")", row = {};
                             if (!_.find(lst001Data, function (item) { return item.value == year; })) {
                                 lst001Data.push(new qmm005.common.SelectItem({ index: i + 1, label: yearIJE, value: year, selected: year == dataRow.sel001() }));
                             }
                         };
-                        for (var i = 0, rec = void 0; rec = resp[i]; i++) {
+                        for (var i = 0, rec = void 0; i <= 11, rec = resp[i]; i++) {
                             _loop_1(i, rec);
                         }
                         self.lst001Data(lst001Data);
@@ -58,9 +58,8 @@ var qmm005;
                         }
                     }
                 });
-                var items = [];
                 for (var i = 1; i <= 12; i++) {
-                    items.push(new TableRowItem({
+                    lst002Data.push(new TableRowItem({
                         index: i,
                         label: '',
                         sel001: i % 2 == 0 ? true : false,
@@ -75,7 +74,7 @@ var qmm005;
                         inp010: 0
                     }));
                 }
-                self.lst002Data(items);
+                self.lst002Data(lst002Data);
             };
             ViewModel.prototype.toggleColumns = function (item, event) {
                 $('.toggle').toggleClass('hidden');

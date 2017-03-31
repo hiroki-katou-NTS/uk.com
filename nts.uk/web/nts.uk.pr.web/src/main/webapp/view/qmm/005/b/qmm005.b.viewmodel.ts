@@ -41,14 +41,17 @@ module qmm005.b {
 
         start() {
             let self = this;
+            let lst002Data: Array<TableRowItem> = [];
             services.getData(self.index()).done(function(resp: Array<PaydayDto>) {
                 if (resp && resp.length > 0) {
-                    console.log(resp);
                     let lst001Data: Array<common.SelectItem> = [],
                         dataRow = nts.uk.ui.windows.getShared('dataRow');
-                    for (let i: number = 0, rec: PaydayDto; rec = resp[i]; i++) {
+                    for (let i: number = 0, rec: PaydayDto; i <= 11, rec = resp[i]; i++) {
                         let year = rec.processingYm["getYearInYm"](),
-                            yearIJE = year + "(" + year["yearInJapanEmpire"]() + ")";
+                            yearIJE = year + "(" + year["yearInJapanEmpire"]() + ")",
+                            row: ITableRowItem = {
+                                
+                            };
                         if (!_.find(lst001Data, function(item) { return item.value == year; })) {
                             lst001Data.push(new common.SelectItem({ index: i + 1, label: yearIJE, value: year, selected: year == dataRow.sel001() }));
                         }
@@ -63,9 +66,8 @@ module qmm005.b {
                 }
             });
 
-            let items: Array<TableRowItem> = [];
             for (let i = 1; i <= 12; i++) {
-                items.push(new TableRowItem({
+                lst002Data.push(new TableRowItem({
                     index: i,
                     label: '',
                     sel001: i % 2 == 0 ? true : false,
@@ -80,7 +82,7 @@ module qmm005.b {
                     inp010: 0
                 }));
             }
-            self.lst002Data(items);
+            self.lst002Data(lst002Data);
         }
 
         toggleColumns(item, event): void {

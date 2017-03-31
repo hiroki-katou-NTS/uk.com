@@ -239,7 +239,6 @@ module qmm005.c {
                 payDays: []
             };
             /// Khởi tạo dữ liệu lương & thưởng cho 12 tháng trong năm
-            /// Dữ liệu lương
             for (var month = 0; month < 12; month++) {
                 data.payDays.push({
                     processingNo: data.processingNo,
@@ -257,26 +256,6 @@ module qmm005.c {
                     stmtOutputMon: parseInt(nts.uk.time.formatDate(new Date(stdYear, month + data.payslipPrintMonth, 1), 'yyyyMM'))
                 });
             }
-            
-            /// Dữ liệu thưởng
-            for (var month = 0; month < 12; month++) {
-                data.payDays.push({
-                    processingNo: data.processingNo,
-                    payBonusAtr: 1,
-                    processingYm: parseInt(nts.uk.time.formatDate(new Date(stdYear, month, 1), 'yyyyMM')),
-                    sparePayAtr: 0,
-                    payDate: new Date(stdYear, month, data.payStdDay),
-                    stdDate: new Date(stdYear, month + data.pickupStdMonAtr, data.pickupStdDay),
-                    accountingClosing: new Date(stdYear, month + data.accountDueMonAtr, data.accountDueDay),
-                    socialInsLevyMon: parseInt(nts.uk.time.formatDate(new Date(stdYear, month + data.socialInsuLevyMonAtr, 1), 'yyyyMM')),
-                    socialInsStdDate: new Date(stdYear + data.socialInsStdYearAtr, data.socialInsStdMon < 1 ? month + data.socialInsStdMon : data.socialInsStdMon - 1, data.socialInsStdDay),
-                    incomeTaxStdDate: new Date(stdYear + data.incometaxStdYearAtr, data.incometaxStdMon - 1, data.incometaxStdDay),
-                    neededWorkDay: 0, //Interim
-                    empInsStdDate: new Date(stdYear, data.empInsStdMon - 1, data.empInsStdDay),
-                    stmtOutputMon: parseInt(nts.uk.time.formatDate(new Date(stdYear, month + data.payslipPrintMonth, 1), 'yyyyMM'))
-                });
-            }
-            
             services.insertData(data).done(self.closeDialog);
         }
 
