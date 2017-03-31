@@ -31,7 +31,6 @@ public class UpdateHistoryCommandHandler extends CommandHandler<UpdateHistoryCom
 		String sDateEdit = context.getCommand().getJobHist().getStartDate().toString();
 		String endDateEdit = context.getCommand().getJobHist().getEndDate().toString();
 		GeneralDate eDateNew = GeneralDate.localDate(LocalDate.parse(endDateEdit));
-		//check jHist is existed in DB
 		Optional<JobHistory> checkJhist = positionRepository.findSingleHistory(companyCode, historyId);
 		if(checkJhist.isPresent()){
 			if(checkDelete.compareTo("0")==0){//update
@@ -40,8 +39,7 @@ public class UpdateHistoryCommandHandler extends CommandHandler<UpdateHistoryCom
 				JobHistory jobHist = new JobHistory(companyCode,historyId,sDateNew,eDateNew);
 	
 					if(checkUpdate.compareTo("1")==0 ){
-					//TH 1.0: update jHist L.i and update eDate L.(i+1) = sDate L.i - 1
-						Optional<JobHistory> hisEndate = positionRepository.getHistoryByEdate(companyCode,sDateEdit);
+						Optional<JobHistory> hisEndate = positionRepository.getHistoryByEdate(companyCode,GeneralDate.localDate(LocalDate.parse(sDateEdit)));
 						if(hisEndate.isPresent()){
 							JobHistory jobHistPre = hisEndate.get();
 							jobHistPre.setEndDate(eDateUpdateNew);
@@ -50,14 +48,12 @@ public class UpdateHistoryCommandHandler extends CommandHandler<UpdateHistoryCom
 						}
 					}
 					if(checkUpdate.compareTo("2")==0 && checkDelete.compareTo("0")==0){
-						//TH 2.0: update jHist L.n
 						positionRepository.updateHistory(jobHist);
 					}
 	
 			}
 			if(checkUpdate.compareTo("0")==0 && checkDelete.compareTo("1")==0){
-				//TH 0.1: delete jHist L.1 and update eDate L.2 = eDate L.1 and delete list jTitle by histId
-				Optional<JobHistory> hisEndate = positionRepository.getHistoryByEdate(companyCode,sDateEdit);
+				Optional<JobHistory> hisEndate = positionRepository.getHistoryByEdate(companyCode,GeneralDate.localDate(LocalDate.parse(sDateEdit)));
 				if(hisEndate.isPresent()){
 					JobHistory jobHistPre = hisEndate.get();
 					jobHistPre.setEndDate(eDateNew);

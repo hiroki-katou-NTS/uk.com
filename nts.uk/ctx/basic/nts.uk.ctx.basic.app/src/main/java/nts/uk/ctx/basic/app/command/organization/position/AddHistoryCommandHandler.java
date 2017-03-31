@@ -61,12 +61,11 @@ public class AddHistoryCommandHandler extends CommandHandler<AddHistoryCommand> 
 				new Memo(context.getCommand().getJobTitle().getMemo()),
 				new HiterarchyOrderCode(context.getCommand().getJobTitle().getHierarchyOrderCode()));
 		
-		if(checkAddJhist.compareTo("2")==0){//add job history n
+		if(checkAddJhist.compareTo("2")==0){
 			Optional<JobHistory> checkJhist = positionRepository.findSingleHistory(companyCode, historyId);
 			if(!checkJhist.isPresent()){
 				if(checkAddJtitle.compareTo("2")==0){
-					//TH 2.2: add job title new (input new) + add jobHist n: must update end date jobHist (n-1)
-					//job history new
+					
 					JobHistory jobHistory = new JobHistory(
 									companyCode,
 									historyId,
@@ -78,7 +77,7 @@ public class AddHistoryCommandHandler extends CommandHandler<AddHistoryCommand> 
 					String tmp = context.getCommand().getJobHist().getStartDate().toString();
 					GeneralDate eDate = GeneralDate.localDate(LocalDate.parse(tmp));
 					GeneralDate endDate = eDate.addDays(-1);
-					Optional<JobHistory> hisEndate = positionRepository.getHistoryByEdate(companyCode, "9999-12-31");
+					Optional<JobHistory> hisEndate = positionRepository.getHistoryByEdate(companyCode, GeneralDate.localDate(LocalDate.parse("9999-12-31")));
 					if(hisEndate.isPresent()){
 						JobHistory jobHis = hisEndate.get();
 						jobHis.setEndDate(endDate);
@@ -88,8 +87,7 @@ public class AddHistoryCommandHandler extends CommandHandler<AddHistoryCommand> 
 					}
 				}else
 				if(checkAddJtitle.compareTo("1")==0){
-					//TH 2.1: add job title copied + add job history n
-					//job history new
+				
 					JobHistory jobHistory = new JobHistory(
 									companyCode,
 									historyId,
@@ -100,12 +98,12 @@ public class AddHistoryCommandHandler extends CommandHandler<AddHistoryCommand> 
 					String tmp = context.getCommand().getJobHist().getStartDate().toString();
 					GeneralDate eDate = GeneralDate.localDate(LocalDate.parse(tmp));
 					GeneralDate endDate = eDate.addDays(-1);
-					Optional<JobHistory> hisEndate = positionRepository.getHistoryByEdate(companyCode, "9999-12-31");
+					Optional<JobHistory> hisEndate = positionRepository.getHistoryByEdate(companyCode, GeneralDate.localDate(LocalDate.parse("9999-12-31")));
 					List<JobTitle> listJobTitleCopy = positionRepository.findAllPosition(companyCode, context.getCommand().getJobHist().getHistoryId());
 					if(hisEndate.isPresent()&& listJobTitleCopy.size()>=1){
 						JobHistory jobHis = hisEndate.get();
 						jobHis.setEndDate(endDate);
-						//copy job title from l.s old to l.s new
+						//copy
 						for(int i=0;i<listJobTitleCopy.size();i++){
 							JobTitle jTitleCopy = listJobTitleCopy.get(i);
 							jTitleCopy.setHistoryId(historyId);
@@ -121,10 +119,9 @@ public class AddHistoryCommandHandler extends CommandHandler<AddHistoryCommand> 
 		}else{
 			throw new BusinessException("Is Existed");
 		
-		} if(checkAddJhist.compareTo("0")==0){//not add job history 
+		} if(checkAddJhist.compareTo("0")==0){
 				if(checkAddJtitle.compareTo("3")==0){
-					//TH 0.3: add jTitle new into jHist
-						//check job title is existed in DB?
+					
 					Optional<JobTitle> jTitle = positionRepository.getJobTitleByCode(companyCode, 
 													context.getCommand().getJobHist().getHistoryId(),
 													context.getCommand().getJobTitle().getJobCode());
@@ -135,7 +132,6 @@ public class AddHistoryCommandHandler extends CommandHandler<AddHistoryCommand> 
 					}
 				}
 				if(checkAddJtitle.compareTo("4")==0){
-					//TH 0.4: update jTitle into jHist
 					Optional<JobTitle> jTitle = positionRepository.getJobTitleByCode(companyCode, 
 													context.getCommand().getJobHist().getHistoryId(),
 													context.getCommand().getJobTitle().getJobCode());
@@ -147,21 +143,20 @@ public class AddHistoryCommandHandler extends CommandHandler<AddHistoryCommand> 
 					}
 				}
 			}else
-				if(checkAddJhist.compareTo("1")==0){//add job history 1
+				if(checkAddJhist.compareTo("1")==0){
 					if(checkAddJtitle.compareTo("2")==0){
-						//TH 1.2: add job title new + add jobHist 1
-						//job history new
+						
 						JobHistory jobHistory = new JobHistory(
 										companyCode,
 										historyId,
 										GeneralDate.localDate(LocalDate.parse(context.getCommand().getJobHist().getStartDate().toString())),
 										GeneralDate.localDate(LocalDate.parse("9999-12-31"))
 										);
-						//check job title is existed in DB?
+						
 						Optional<JobTitle> jTitle = positionRepository.getJobTitleByCode(companyCode, 
 														context.getCommand().getJobHist().getHistoryId(),
 														context.getCommand().getJobTitle().getJobCode());
-						//check job history is existed in DB?
+						
 						if(!jTitle.isPresent()){
 							positionRepository.addHistory(jobHistory);
 							positionRepository.add(jobTitle);
