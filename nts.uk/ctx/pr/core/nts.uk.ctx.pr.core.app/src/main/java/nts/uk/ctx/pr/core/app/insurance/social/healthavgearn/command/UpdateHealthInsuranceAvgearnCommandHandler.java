@@ -47,7 +47,7 @@ public class UpdateHealthInsuranceAvgearnCommandHandler extends CommandHandler<U
 		// Map to domain
 		List<HealthInsuranceAvgearn> healthInsuranceAvgearns = command.getListHealthInsuranceAvgearn().stream()
 				.map(item -> {
-					return item.toDomain();
+					return new HealthInsuranceAvgearn(item);
 				}).collect(Collectors.toList());
 
 		// Update

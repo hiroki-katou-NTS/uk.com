@@ -163,6 +163,7 @@ project (':ctx:basic:nts.uk.ctx.basic.pubimp') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':ctx:basic:nts.uk.ctx.basic.pub')
 		compile project(':ctx:basic:nts.uk.ctx.basic.dom')
+		compile project(':ctx:basic:nts.uk.ctx.basic.infra')
 	}
 }
 
@@ -182,6 +183,7 @@ project (':ctx:pr:core:nts.uk.ctx.pr.core.app') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':shr:nts.uk.shr.find')
 		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.dom')
+		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.ac')
 	}
 }
 project (':ctx:pr:core:nts.uk.ctx.pr.core.infra') {
@@ -194,8 +196,9 @@ project (':ctx:pr:core:nts.uk.ctx.pr.core.infra') {
 project (':ctx:pr:core:nts.uk.ctx.pr.core.ac') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.app')
 		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.dom')
+		compile project(':ctx:basic:nts.uk.ctx.basic.pub')
+		compile project(':ctx:basic:nts.uk.ctx.basic.pubimp')
 	}
 }
 project (':ctx:pr:core:nts.uk.ctx.pr.core.pub') {
@@ -208,6 +211,7 @@ project (':ctx:pr:core:nts.uk.ctx.pr.core.pubimp') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.pub')
 		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.dom')
+		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.infra')
 	}
 }
 
@@ -343,13 +347,10 @@ project (':web:nts.uk.com.web') {
 		// shr find implement
 		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.app')
 		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.infra')
-		//runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.dom')
 		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.app')
 		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.infra')
-		//runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.dom')
 		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.app')
 		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.infra')
-		//runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.dom')
 	}
 }
 
@@ -413,6 +414,9 @@ project (':web:nts.uk.pr.web') {
 		
 		// to provide PrimitiveValue
 		runtime project (':ctx:basic:nts.uk.ctx.basic.dom')
+		runtime project (':ctx:basic:nts.uk.ctx.basic.pub')
+		runtime project (':ctx:basic:nts.uk.ctx.basic.pubimp')
+		runtime project (':ctx:basic:nts.uk.ctx.basic.infra')
 	}
 }
 
