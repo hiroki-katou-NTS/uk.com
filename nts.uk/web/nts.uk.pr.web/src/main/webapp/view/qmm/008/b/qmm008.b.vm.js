@@ -281,7 +281,6 @@ var nts;
                                         self.save();
                                     }
                                     else {
-                                        alert('TODO has error! ERR001');
                                     }
                                     return dfd.promise();
                                 };
