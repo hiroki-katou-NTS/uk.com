@@ -49,18 +49,13 @@ module qpp008.b.viewmodel {
 
         startPage(): JQueryPromise<any> {
             var self = this;
-
             var dfd = $.Deferred();
-            service.getPaymentDateProcessingList().done(function(data) {
-                //self.paymentDateProcessingList(data);
-                dfd.resolve();
-            }).fail(function(res) {
-
-            });
+            dfd.resolve();
             return dfd.promise();
         }
-        closeDialog(): any{
-            nts.uk.ui.windows.close();   
+        
+        closeDialog(): any {
+            nts.uk.ui.windows.close();
         }
     }
 }

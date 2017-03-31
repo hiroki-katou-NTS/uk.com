@@ -13,7 +13,5 @@ public interface ComparingFormDetailRepository {
 
 	void insertComparingFormDetail(List<ComparingFormDetail> comparingFormDetailList);
 
-	//void updateComparingFormDetail(List<ComparingFormDetail> comparingFormDetailList);
-
 	void deleteComparingFormDetail(String companyCode, String formCode);
 }

@@ -32,10 +32,7 @@ var qpp008;
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    b.service.getPaymentDateProcessingList().done(function (data) {
-                        dfd.resolve();
-                    }).fail(function (res) {
-                    });
+                    dfd.resolve();
                     return dfd.promise();
                 };
                 ScreenModel.prototype.closeDialog = function () {

@@ -25,7 +25,7 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class = "contents-area-boder">
+				<div class="contents-area-boder">
 					<div class="div-title-page">
 						<span class="label" style="margin: 10px;">印刷設定</span>
 					</div>
@@ -37,20 +37,18 @@
 						<table class="tableCheckBox">
 							<tr>
 								<td><div id="B_SEL_001"
-										data-bind="ntsCheckBox: { checked: false, enable: true }">明細（支給した給与）を出力する
-									</div>
-								</td>
+										data-bind="ntsCheckBox: { checked: true, enable: true }">明細（支給した給与）を出力する
+									</div></td>
 							</tr>
 							<tr>
 								<td>
-									<div id="B_SEL_003"
-										data-bind="ntsCheckBox: { checked: enableSel3 }">%部門%計（%部門%ごとの対象期間合計）を出力する
+									<div id="B_SEL_003" data-bind="ntsCheckBox: { checked: false }">%部門%計（%部門%ごとの対象期間合計）を出力する
 									</div>
 								</td>
 							</tr>
 							<tr>
 								<td><div id="B_SEL_004"
-										data-bind="ntsCheckBox: { checked: enableSel4 }">%部門%階層累計を出力する
+										data-bind="ntsCheckBox: { checked: false }">%部門%階層累計を出力する
 									</div>
 									<button
 										data-bind="ntsHelpButton: {image: 'test-image.jpg', position: 'right center', enable: true }">?</button>
@@ -59,14 +57,14 @@
 										<table class="tableCheckBoxChild">
 											<tr>
 												<td><div id="B_SEL_014"
-														data-bind="ntsCheckBox: { checked: true }">1階層</div></td>
+														data-bind="ntsCheckBox: { checked: false }">1階層</div></td>
 												<td>
 													<div id="B_SEL_015"
-														data-bind="ntsCheckBox: { checked: true }">2階層</div>
+														data-bind="ntsCheckBox: { checked: false }">2階層</div>
 												</td>
 												<td>
 													<div id="B_SEL_016"
-														data-bind="ntsCheckBox: { checked: true }">3階層</div>
+														data-bind="ntsCheckBox: { checked: false }">3階層</div>
 												</td>
 												<td>
 													<div id="B_SEL_017"
@@ -86,11 +84,11 @@
 												</td>
 												<td>
 													<div id="B_SEL_021"
-														data-bind="ntsCheckBox: { checked: true }">8階層</div>
+														data-bind="ntsCheckBox: { checked: false }">8階層</div>
 												</td>
 												<td>
 													<div id="B_SEL_022"
-														data-bind="ntsCheckBox: { checked: true }">9階層</div>
+														data-bind="ntsCheckBox: { checked: false }">9階層</div>
 												</td>
 												<td></td>
 											</tr>
@@ -145,7 +143,7 @@
 						<span class="label" id="B_LBL_008">差額がない場合</span>
 					</div>
 					<div>
-						<table class = "table_setting_color">
+						<table class="table_setting_color">
 							<tr>
 								<td><div id="B_LBL_009"
 										data-bind="ntsFormLabel: {inline: true, required:false, enable: true}">プラス</div></td>
@@ -160,11 +158,11 @@
 							</tr>
 						</table>
 					</div>
-					
-					<hr/>
+
+					<hr />
 					<div class="div_button_submit">
-						<button id= "B_BTN_001" class="x-large proceed">設定</button>
-						<button id= "B_BTN_002" class="large">キャンセル</button>
+						<button id="B_BTN_001" class="x-large proceed">設定</button>
+						<button id="B_BTN_002" class="large">キャンセル</button>
 					</div>
 				</div>
 			</div>

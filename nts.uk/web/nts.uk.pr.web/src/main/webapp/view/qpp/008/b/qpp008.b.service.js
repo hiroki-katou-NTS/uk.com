@@ -12,8 +12,7 @@ var qpp008;
                 nts.uk.request.ajax(paths.getPaymentDateProcessingList)
                     .done(function (res) {
                     dfd.resolve(res);
-                })
-                    .fail(function (res) {
+                }).fail(function (res) {
                     dfd.reject(res);
                 });
                 return dfd.promise();

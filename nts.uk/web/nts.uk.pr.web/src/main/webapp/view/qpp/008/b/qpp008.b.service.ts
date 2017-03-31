@@ -8,8 +8,7 @@ module qpp008.b.service {
         nts.uk.request.ajax(paths.getPaymentDateProcessingList)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
-            })
-            .fail(function(res) {
+            }).fail(function(res: any) {
                 dfd.reject(res);
             })
         return dfd.promise();
