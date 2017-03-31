@@ -21,7 +21,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class FormulaHistoryFinder {
 
 	@Inject
-	FormulaHistoryRepository formulaHistoryRepository;
+	private FormulaHistoryRepository formulaHistoryRepository;
 
 	public List<FormulaHistoryDto> find() {
 

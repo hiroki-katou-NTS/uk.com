@@ -12,6 +12,9 @@
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="service.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.pr.formula.dom.primitive.Money
+			</com:ValidatorScript>
 			
 			<com:stylefile path="../../../../view/qmm/017/b/style.css" />
 			<com:scriptfile path="../../../../view/qmm/017/b/viewmodel.js" />
@@ -47,8 +50,8 @@
 		</ui:define>
 
 		<ui:define name="content">
-				<div id="functions-area" class="cf">
-				<button id="a_btn_001" class="button separate-button fix-button">新規</button>
+				<div id="functions-area" style="padding-top: 5px;" class="cf">
+				<button id="a_btn_001" class="button separate-button fix-button" data-bind="click: start">新規</button>
 				<button id="a_btn_002"
 					class="button proceed separate-button fix-button" data-bind="click: registerFormulaMaster">登録</button>
 				<button id="a_btn_003" class="button separate-button fix-button">コピー</button>

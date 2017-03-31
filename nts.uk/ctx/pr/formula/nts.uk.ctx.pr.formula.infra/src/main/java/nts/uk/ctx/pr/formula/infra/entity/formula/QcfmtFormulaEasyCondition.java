@@ -10,12 +10,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name="QCFMT_FORMULA_EASY_CONDI")
-public class QcfmtFormulaEasyCondition implements Serializable{
+public class QcfmtFormulaEasyCondition extends UkJpaEntity implements Serializable{
 	
 private static final long serialVersionUID = 1L;
 	
@@ -30,5 +31,10 @@ private static final long serialVersionUID = 1L;
 	
 	@Column(name = "EASY_FORMULA_CD")
 	public String easyFormulaCd;
+
+	@Override
+	protected Object getKey() {
+		return this.qcfmtFormulaEasyConditionPK;
+	}
 
 }

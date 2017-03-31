@@ -16,7 +16,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class RemoveFormulaHistoryCommandHandler extends CommandHandler<RemoveFormulaHistoryCommand> {
 
 	@Inject
-	FormulaHistoryDomainService formulaHistoryDomainService;
+	private FormulaHistoryDomainService formulaHistoryDomainService;
 
 	@Override
 	protected void handle(CommandHandlerContext<RemoveFormulaHistoryCommand> context) {

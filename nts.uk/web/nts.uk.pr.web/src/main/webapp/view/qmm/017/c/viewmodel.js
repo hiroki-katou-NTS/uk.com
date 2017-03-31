@@ -163,12 +163,6 @@ var nts;
             return EasyFormula;
         }());
         qmm017.EasyFormula = EasyFormula;
-        var EasyFormulaDetail = (function () {
-            function EasyFormulaDetail() {
-            }
-            return EasyFormulaDetail;
-        }());
-        qmm017.EasyFormulaDetail = EasyFormulaDetail;
         var ComboBox = (function () {
             function ComboBox(data, isEnable, isEditable) {
                 var self = this;

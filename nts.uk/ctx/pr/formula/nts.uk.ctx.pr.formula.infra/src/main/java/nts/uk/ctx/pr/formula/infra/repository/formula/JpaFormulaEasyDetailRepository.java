@@ -63,7 +63,7 @@ public class JpaFormulaEasyDetailRepository extends JpaRepository implements For
 
 		entity.qcfmtFormulaEasyDetailPK = new QcfmtFormulaEasyDetailPK();
 		entity.qcfmtFormulaEasyDetailPK.companyCode = formulaEasyDetail.getCompanyCode();
-		entity.qcfmtFormulaEasyDetailPK.easyFormulaCd = formulaEasyDetail.getFormulaCode().v();
+		entity.qcfmtFormulaEasyDetailPK.easyFormulaCd = formulaEasyDetail.getEasyFormulaCode().v();
 		entity.qcfmtFormulaEasyDetailPK.formulaCode = formulaEasyDetail.getFormulaCode().v();
 		entity.qcfmtFormulaEasyDetailPK.historyId = formulaEasyDetail.getHistoryId();
 		entity.easyFormulaName = formulaEasyDetail.getEasyFormulaName().v();

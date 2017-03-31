@@ -10,12 +10,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name="QCFMT_FORMULA_EASY_DETAIL")
-public class QcfmtFormulaEasyDetail implements Serializable{
+public class QcfmtFormulaEasyDetail extends UkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;	
 	
@@ -63,5 +64,10 @@ public class QcfmtFormulaEasyDetail implements Serializable{
 	
 	@Column(name = "MAX_LIMIT_VALUE	")
 	public BigDecimal maxLimitValue;
+
+	@Override
+	protected Object getKey() {
+		return this.qcfmtFormulaEasyDetailPK;
+	}
 
 }

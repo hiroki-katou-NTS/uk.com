@@ -10,6 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * @author nampt
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name="QCFMT_FORMULA_MANUAL")
-public class QcfmtFormulaManual implements Serializable {
+public class QcfmtFormulaManual extends UkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -37,5 +38,10 @@ public class QcfmtFormulaManual implements Serializable {
 	
 	@Column(name = "ROUND_ATR")
 	public BigDecimal roundAtr;
+
+	@Override
+	protected Object getKey() {
+		return this.qcfmtFormulaManualPK;
+	}
 	
 }

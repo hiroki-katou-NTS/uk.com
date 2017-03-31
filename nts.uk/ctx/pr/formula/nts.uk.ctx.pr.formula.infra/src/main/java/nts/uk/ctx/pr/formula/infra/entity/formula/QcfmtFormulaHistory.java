@@ -10,12 +10,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name="QCFMT_FORMULA_HIST")
-public class QcfmtFormulaHistory implements Serializable{
+public class QcfmtFormulaHistory extends UkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -27,5 +28,10 @@ public class QcfmtFormulaHistory implements Serializable{
 	
 	@Column(name ="END_YM")
 	public BigDecimal endDate;
+
+	@Override
+	protected Object getKey() {
+		return this.qcfmtFormulaHistoryPK;
+	}
 	
 }

@@ -198,23 +198,6 @@ module nts.qmm017 {
         }
     }
 
-    export class EasyFormulaDetail {
-        easyFormulaCode: string;
-        easyFormulaName: string;
-        easyFormulaType: number;
-        baseAmountAttr: number;
-        baseAmountFixedValue: number;
-        baseAmountListItem: Array<string>;
-        baseValueAttr: number;
-        baseValueFixedValue: number;
-        premiumRate: number;
-        roundingFiguresD: number;
-        roundingFiguresF: number;
-        coefficientAttr: number;
-        coefficientFixedValue: number;
-        adjustmentAttr: number;
-    }
-
     export class ComboBox {
         itemList: KnockoutObservableArray<any>;
         itemName: KnockoutObservable<string>;

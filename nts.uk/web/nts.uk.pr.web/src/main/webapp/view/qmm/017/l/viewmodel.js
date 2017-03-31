@@ -20,18 +20,18 @@ var nts;
                                     self.initOriginal();
                                     if (self.paramIsUpdate === true) {
                                         self.easyFormulaName(self.paramDirtyData.easyFormulaName);
-                                        self.comboBoxFormulaType().selectedCode(self.paramDirtyData.easyFormulaTypeAtr);
-                                        self.comboBoxBaseAmount().selectedCode(self.paramDirtyData.baseAmountDevision);
+                                        self.comboBoxFormulaType().selectedCode(self.paramDirtyData.easyFormulaTypeAtr.toString());
+                                        self.comboBoxBaseAmount().selectedCode(self.paramDirtyData.baseAmountDevision.toString());
                                         self.baseAmountFixedValue(self.paramDirtyData.baseFixedAmount);
                                         self.baseAmountListItem(self.paramDirtyData.referenceItemCodes);
-                                        self.comboBoxBaseValue().selectedCode(self.paramDirtyData.baseValueDevision);
+                                        self.comboBoxBaseValue().selectedCode(self.paramDirtyData.baseValueDevision.toString());
                                         self.baseValueFixedValue(self.paramDirtyData.baseFixedValue);
                                         self.premiumRate(self.paramDirtyData.premiumRate);
-                                        self.switchButtonRoundingFiguresD().selectedRuleCode(self.paramDirtyData.roundProcessingDevision);
-                                        self.switchButtonRoundingFiguresF().selectedRuleCode(self.paramDirtyData.totalRounding);
-                                        self.comboBoxCoefficient().selectedCode(self.paramDirtyData.coefficientDivision);
+                                        self.switchButtonRoundingFiguresD().selectedRuleCode(self.paramDirtyData.roundProcessingDevision.toString());
+                                        self.switchButtonRoundingFiguresF().selectedRuleCode(self.paramDirtyData.totalRounding.toString());
+                                        self.comboBoxCoefficient().selectedCode(self.paramDirtyData.coefficientDivision.toString());
                                         self.coefficientFixedValue(self.paramDirtyData.coefficientFixedValue);
-                                        self.comboBoxAdjustmentAtr().selectedCode(self.paramDirtyData.adjustmentDevision);
+                                        self.comboBoxAdjustmentAtr().selectedCode(self.paramDirtyData.adjustmentDevision.toString());
                                     }
                                 }
                                 ScreenModel.prototype.initOriginal = function () {
@@ -122,6 +122,30 @@ var nts;
                                         new ItemModel('2', 'マイナス調整'),
                                         new ItemModel('3', 'プラスマイナス反転')
                                     ]));
+                                    self.itemsBag = ko.observableArray([]);
+                                };
+                                ScreenModel.prototype.start = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    l.service.getListItemMaster(2)
+                                        .done(function (lstItem) {
+                                        if (lstItem && lstItem.length > 0) {
+                                            _.forEach(lstItem, function (item) {
+                                                self.comboBoxCoefficient().itemList.push(new ItemModel(item.itemCode, item.itemName));
+                                            });
+                                        }
+                                        dfd.resolve();
+                                    })
+                                        .fail(function () {
+                                        alert(res);
+                                    });
+                                    if (self.baseAmountListItem().length > 0) {
+                                        if (self.comboBoxFormulaType().selectedCode() === '1') {
+                                        }
+                                    }
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.openDialogP = function () {
                                 };
                                 ScreenModel.prototype.closeAndReturnData = function () {
                                     var self = this;

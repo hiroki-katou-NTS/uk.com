@@ -14,6 +14,10 @@
 			<com:scriptfile path="service.js" />
 			<com:ValidatorScript>
 				nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaName
+				nts.uk.ctx.pr.formula.dom.primitive.Money
+				nts.uk.ctx.pr.formula.dom.primitive.DivideValue
+				nts.uk.ctx.pr.formula.dom.primitive.PremiumRate
+				nts.uk.ctx.pr.formula.dom.primitive.WorkValue
 			</com:ValidatorScript>
 		</ui:define>
 
@@ -81,7 +85,7 @@
 									<com:ko-if bind="comboBoxBaseAmount().selectedCode() == '0'">
 										<input data-bind="ntsNumberEditor: {
 											value: baseAmountFixedValue,
-											constraint: '',
+											constraint: 'Money',
 											option: baseAmountFixedValueOption,
 											required: true,
 											enable: true,
@@ -119,7 +123,7 @@
 								<div class="col3">
 									<com:ko-if bind="comboBoxFormulaType().selectedCode() == '2'">
 										<com:ko-if bind="comboBoxBaseValue().selectedCode() == '0'">
-											<input id="input-base-value-fixed-value" data-bind="ntsNumberEditor: { value: baseValueFixedValue, constraint: '', required: true, enable: true, readonly:false}" />
+											<input id="input-base-value-fixed-value" data-bind="ntsNumberEditor: { value: baseValueFixedValue, constraint: 'DivideValue', required: true, enable: true, readonly:false}" />
 										</com:ko-if>
 									</com:ko-if>
 								</div>
@@ -131,7 +135,7 @@
 								<com:ko-if bind="comboBoxFormulaType().selectedCode() != '0'">
 									<div id="l_lbl_premiumRate" class="separate-vertical"
 										data-bind="ntsFormLabel: {required: true }">C：割増率</div>
-									<input style="margin-left: 14px;" id="number-2" data-bind="ntsNumberEditor: {value: premiumRate, constraint: '', option: premiumRateInputOption, required: true, enable: true, readonly: false}" />
+									<input style="margin-left: 14px;" id="number-2" data-bind="ntsNumberEditor: {value: premiumRate, constraint: 'PremiumRate', option: premiumRateInputOption, required: true, enable: true, readonly: false}" />
 								</com:ko-if>
 							</td>
 						</tr>
@@ -169,7 +173,7 @@
 							<td>
 								<div class="col3">
 									<com:ko-if bind="comboBoxCoefficient().selectedCode() == '0000'">
-										<input id="input-coefficient-fixed-value" data-bind="ntsNumberEditor: { value: coefficientFixedValue, constraint: '', required: true, enable: true, readonly:false}" />
+										<input id="input-coefficient-fixed-value" data-bind="ntsNumberEditor: { value: coefficientFixedValue, constraint: 'WorkValue', required: true, enable: true, readonly:false}" />
 									</com:ko-if>
 								</div>
 							</td>

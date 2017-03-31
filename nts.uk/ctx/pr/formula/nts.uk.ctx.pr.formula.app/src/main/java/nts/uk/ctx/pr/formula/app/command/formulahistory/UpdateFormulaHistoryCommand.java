@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateFormulaHistoryCommand {
 
-	String formulaCode;
+	private String formulaCode;
 
-	String historyId;
+	private String historyId;
 	
-	int startDate;
+	private int startDate;
 
 }

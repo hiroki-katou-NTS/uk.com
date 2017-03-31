@@ -21,7 +21,7 @@ module nts.uk.pr.view.qmm017.k {
                     let command = {
                         formulaCode: self.data.formulaCode,
                         historyId: self.data.historyId,
-                        startDate: self.startYm().replace('/',''),
+                        startDate: self.startYm(),
                         difficultyAtr: self.data.difficultyAtr
                     }
                     service.removeFormulaHistory(command)
@@ -35,7 +35,7 @@ module nts.uk.pr.view.qmm017.k {
                     let command = {
                         formulaCode: self.data.formulaCode,
                         historyId: self.data.historyId,
-                        startDate: self.startYm().replace('/',''),
+                        startDate: self.startYm(),
                     }
                     service.updateFormulaHistory(command)
                         .done(function() {

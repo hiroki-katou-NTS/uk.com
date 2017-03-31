@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -51,6 +50,7 @@ public class AddFormulaHistoryCommandHandler extends CommandHandler<AddFormulaHi
 		// select previous history with startDate
 		Optional<FormulaHistory> previousFormulaHistory = this.formulaHistoryRepository.findPreviousHistory(companyCode,
 				new FormulaCode(command.getFormulaCode()), new YearMonth(command.getStartDate()));
+		
 		// update previous history with endDate = startDate of last History
 		FormulaHistory previousFormulaHistoryUpdate = previousFormulaHistory.isPresent() ? new FormulaHistory(companyCode, new FormulaCode(command.getFormulaCode()),
 				previousFormulaHistory.get().getHistoryId(),

@@ -13,13 +13,13 @@ import nts.uk.ctx.pr.formula.dom.formula.FormulaMaster;
 @Value
 public class FormulaDto {
 	
-	String ccd;
+	private String ccd;
 
-	String formulaCode;
+	private String formulaCode;
 	
-	String formulaName;
+	private String formulaName;
 
-	int difficultyAtr;
+	private int difficultyAtr;
 
 	public static FormulaDto fromDomain(FormulaMaster domain) {
 		return new FormulaDto(domain.getCompanyCode(), domain.getFormulaCode().v(),

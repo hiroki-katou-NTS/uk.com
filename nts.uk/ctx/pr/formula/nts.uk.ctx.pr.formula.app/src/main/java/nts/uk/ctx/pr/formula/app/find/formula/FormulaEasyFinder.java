@@ -8,8 +8,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pr.formula.app.find.formulaeasydetail.FormulaEasyDetailDto;
-import nts.uk.ctx.pr.formula.app.find.formulaeasystandarditem.FormulaEasyStandardItemDto;
 import nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaCode;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
 import nts.uk.ctx.pr.formula.dom.repository.FormulaEasyDetailRepository;
@@ -26,10 +24,10 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class FormulaEasyFinder {
 
 	@Inject
-	FormulaEasyStandardItemRepository formulaEasyStandardItemRepository;
+	private FormulaEasyStandardItemRepository formulaEasyStandardItemRepository;
 
 	@Inject
-	FormulaEasyDetailRepository formulaEasyDetailRepository;
+	private FormulaEasyDetailRepository formulaEasyDetailRepository;
 
 	public FormulaEasyFinderDto init(String formulaCode, String historyId, String easyFormulaCode, int baseAmount) {
 		LoginUserContext login = AppContexts.user();
@@ -38,6 +36,9 @@ public class FormulaEasyFinder {
 		Optional<FormulaEasyDetailDto> formulaEasyDetailDto = formulaEasyDetailRepository.findByPriKey(companyCode,
 				new FormulaCode(formulaCode), historyId, new EasyFormulaCode(easyFormulaCode))
 				.map(f -> FormulaEasyDetailDto.fromDomain(f));
+		if(!formulaEasyDetailDto.isPresent()){
+			return null;
+		}
 
 		FormulaEasyFinderDto formulaEasyFinderDto = new FormulaEasyFinderDto();
 

@@ -5,7 +5,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pr.formula.app.find.formulaeasyhead.FormulaEasyHeadDto;
 import nts.uk.ctx.pr.formula.app.find.formulahistory.FormulaHistoryDto;
 import nts.uk.ctx.pr.formula.app.find.formulamaster.FormulaDto;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
@@ -46,19 +45,19 @@ public class FormulaBasicInformationFinder {
 
 		FormulaBasicInformationDto formulaBasicInformationDto = new FormulaBasicInformationDto();
 
-		formulaBasicInformationDto.setFormulaCode(formulaDto.get().getCcd());
-		formulaBasicInformationDto.setFormulaName(formulaDto.get().getFormulaName());
-		formulaBasicInformationDto.setDifficultyAtr(formulaDto.get().getDifficultyAtr());
-		formulaBasicInformationDto.setStartDate(formulaHistoryDto.get().getStartDate());
-		formulaBasicInformationDto.setEndDate(formulaHistoryDto.get().getEndDate());
+		formulaBasicInformationDto.setFormulaCode(formulaDto.isPresent() ? formulaDto.get().getCcd() : null);
+		formulaBasicInformationDto.setFormulaName(formulaDto.isPresent() ? formulaDto.get().getFormulaName() : null);
+		formulaBasicInformationDto.setDifficultyAtr(formulaDto.isPresent() ? formulaDto.get().getDifficultyAtr() : null);
+		formulaBasicInformationDto.setStartDate(formulaHistoryDto.isPresent() ? formulaHistoryDto.get().getStartDate() : null);
+		formulaBasicInformationDto.setEndDate(formulaHistoryDto.isPresent() ? formulaHistoryDto.get().getEndDate() : null);
 
 		if (formulaDto.get().getDifficultyAtr() == 0) {
 			Optional<FormulaEasyHeadDto> formulaEasyHeader = formulaEasyHeaderRepository
 					.findByPriKey(login.companyCode(), new FormulaCode(fomulaCode), historyId)
 					.map(f -> FormulaEasyHeadDto.fromDomain(f));
 
-			formulaBasicInformationDto.setConditionAtr(formulaEasyHeader.get().getConditionAtr().intValue());
-			formulaBasicInformationDto.setRefMasterNo(formulaEasyHeader.get().getReferenceMasterNo().intValue());
+			formulaBasicInformationDto.setConditionAtr(formulaEasyHeader.isPresent() ? formulaEasyHeader.get().getConditionAtr().intValue() : null);
+			formulaBasicInformationDto.setRefMasterNo(formulaEasyHeader.isPresent() ? formulaEasyHeader.get().getReferenceMasterNo().intValue() : null);
 		}
 
 		return formulaBasicInformationDto;

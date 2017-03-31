@@ -6,15 +6,15 @@ import nts.uk.ctx.pr.formula.dom.formula.FormulaHistory;
 @Value
 public class FormulaHistoryDto {
 	
-	String companyCode;
+	private String companyCode;
 	
-	String formulaCode;
+	private String formulaCode;
 	
-	String historyId;
+	private String historyId;
 	
-	int startDate;
+	private int startDate;
 	
-	int endDate;
+	private int endDate;
 	
 	public static FormulaHistoryDto fromDomain(FormulaHistory domain){
 		return new FormulaHistoryDto(domain.getCompanyCode(), domain.getFormulaCode().v(), domain.getHistoryId() 

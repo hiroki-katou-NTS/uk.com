@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyHeader;
@@ -39,48 +40,58 @@ public class FormulaHistoryDomainServiceImpl implements FormulaHistoryDomainServ
 	@Inject
 	private FormulaMasterRepository formulaMasterRepository;
 
-	public void add(int difficultyAtr, FormulaHistory formulaHistoryAdd, FormulaEasyHeader formulaEasyHead,FormulaHistory previousFormulaHistoryUpdate) {
+	public void add(int difficultyAtr, FormulaHistory formulaHistoryAdd, FormulaEasyHeader formulaEasyHead,
+			FormulaHistory previousFormulaHistoryUpdate) {
 
-		this.formulaHistoryRepository.add(formulaHistoryAdd);
-
-		if (difficultyAtr == 0) {
-			this.formulaEasyHeaderRepository.add(formulaEasyHead);
-		}
-		if ((difficultyAtr == 1 || difficultyAtr == 0) && previousFormulaHistoryUpdate != null) {
-			this.formulaHistoryRepository.update(previousFormulaHistoryUpdate);
+		try {
+			this.formulaHistoryRepository.add(formulaHistoryAdd);
+			if (difficultyAtr == 0) {
+				this.formulaEasyHeaderRepository.add(formulaEasyHead);
+			}
+			if ((difficultyAtr == 1 || difficultyAtr == 0) && previousFormulaHistoryUpdate != null) {
+				this.formulaHistoryRepository.update(previousFormulaHistoryUpdate);
+			}
+		} catch (Exception e) {
+			throw new BusinessException("OKボタンクリックで次の処理へ");
 		}
 	}
 
 	public void remove(int difficultyAtr, String companyCode, String formulaCode, String historyId, int startDate) {
-		this.formulaHistoryRepository.remove(companyCode, new FormulaCode(formulaCode), historyId);
 
-		if (difficultyAtr == 1) {
-			this.formulaManualRepository.remove(companyCode, new FormulaCode(formulaCode), historyId);
-		} else if (difficultyAtr == 0) {
-			this.formulaEasyHeaderRepository.remove(companyCode, new FormulaCode(formulaCode), historyId);
-			this.formulaEasyConditionRepository.remove(companyCode, new FormulaCode(formulaCode), historyId);
-			this.formulaEasyDetailRepository.remove(companyCode, new FormulaCode(formulaCode), historyId);
-			this.formulaEasyStandardItemRepository.remove(companyCode, new FormulaCode(formulaCode), historyId);
-		}
-
-		if (!this.formulaHistoryRepository.isNewestHistory(companyCode, new FormulaCode(formulaCode),
-				new YearMonth(startDate))) {
-			this.formulaMasterRepository.remove(companyCode, new FormulaCode(formulaCode));
-		} else if (this.formulaHistoryRepository.isNewestHistory(companyCode, new FormulaCode(formulaCode),
-				new YearMonth(startDate))) {
-			
+		try {
 			this.formulaHistoryRepository.remove(companyCode, new FormulaCode(formulaCode), historyId);
-			
-			// select last history
-			Optional<FormulaHistory> lastFormulaHistory = this.formulaHistoryRepository.findLastHistory(companyCode,
-					new FormulaCode(formulaCode));
-			// update history by historyId of last history, startDate =
-			// startDate input
-			FormulaHistory lastFormulaHistoryUpdate = new FormulaHistory(companyCode, new FormulaCode(formulaCode),
-					lastFormulaHistory.get().getHistoryId(), new YearMonth(startDate),
-					new YearMonth(GeneralDate.max().year()*100 + GeneralDate.max().month()));
 
-			this.formulaHistoryRepository.update(lastFormulaHistoryUpdate);
+			if (difficultyAtr == 1) {
+				this.formulaManualRepository.remove(companyCode, new FormulaCode(formulaCode), historyId);
+			} else if (difficultyAtr == 0) {
+				this.formulaEasyHeaderRepository.remove(companyCode, new FormulaCode(formulaCode), historyId);
+
+				this.formulaEasyConditionRepository.remove(companyCode, new FormulaCode(formulaCode), historyId);
+
+				this.formulaEasyDetailRepository.remove(companyCode, new FormulaCode(formulaCode), historyId);
+
+				this.formulaEasyStandardItemRepository.remove(companyCode, new FormulaCode(formulaCode), historyId);
+			}
+
+			if (!this.formulaHistoryRepository.isNewestHistory(companyCode, new FormulaCode(formulaCode),
+					new YearMonth(startDate))) {
+				this.formulaMasterRepository.remove(companyCode, new FormulaCode(formulaCode));
+			} else if (this.formulaHistoryRepository.isNewestHistory(companyCode, new FormulaCode(formulaCode),
+					new YearMonth(startDate))) {
+				this.formulaHistoryRepository.remove(companyCode, new FormulaCode(formulaCode), historyId);
+
+				// select last history
+				Optional<FormulaHistory> lastFormulaHistory = this.formulaHistoryRepository.findLastHistory(companyCode,
+						new FormulaCode(formulaCode));
+				// update history by historyId of last history, startDate = startDate input
+				if (lastFormulaHistory.isPresent()) {
+					this.formulaHistoryRepository.update(new FormulaHistory(companyCode, new FormulaCode(formulaCode),
+							lastFormulaHistory.get().getHistoryId(), new YearMonth(startDate),
+							new YearMonth(GeneralDate.max().year() * 100 + GeneralDate.max().month())));
+				}
+			}
+		} catch (Exception e) {
+			throw new BusinessException("OKボタンクリックで次の処理へ");
 		}
 	}
 

@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.YearMonth;
@@ -32,25 +33,28 @@ public class UpdateFormulaHistoryCommandHandler extends CommandHandler<UpdateFor
 		UpdateFormulaHistoryCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 
-		this.formulaHistoryrepository.updateByKey(companyCode, new FormulaCode(command.getFormulaCode()),
-				command.getHistoryId(), new YearMonth(command.getStartDate()));
+		try {
+			this.formulaHistoryrepository.updateByKey(companyCode, new FormulaCode(command.getFormulaCode()),
+					command.getHistoryId(), new YearMonth(command.getStartDate()));
+			if (this.formulaHistoryrepository.isNewestHistory(companyCode, new FormulaCode(command.getFormulaCode()),
+					new YearMonth(command.getStartDate()))) {
 
-		if (this.formulaHistoryrepository.isNewestHistory(companyCode, new FormulaCode(command.getFormulaCode()),
-				new YearMonth(command.getStartDate()))) {
+				// select previous history with startDate
+				Optional<FormulaHistory> previousFormulaHistory = this.formulaHistoryrepository.findPreviousHistory(
+						companyCode, new FormulaCode(command.getFormulaCode()), new YearMonth(command.getStartDate()));
 
+				if (previousFormulaHistory.isPresent()) {
+					this.formulaHistoryrepository.update(new FormulaHistory(companyCode,
+							new FormulaCode(command.getFormulaCode()), previousFormulaHistory.get().getHistoryId(),
+							new YearMonth(previousFormulaHistory.get().getStartDate().v()),
+							new YearMonth(command.getStartDate()).addMonths(-1)));
 
-			// select previous history with startDate
-			Optional<FormulaHistory> previousFormulaHistory = this.formulaHistoryrepository.findPreviousHistory(
-					companyCode, new FormulaCode(command.getFormulaCode()), new YearMonth(command.getStartDate()));
-			
-			// update previous history with endDate = startDate of last History
-			FormulaHistory previousFormulaHistoryUpdate = new FormulaHistory(companyCode,
-					new FormulaCode(command.getFormulaCode()), previousFormulaHistory.get().getHistoryId(),
-					new YearMonth(previousFormulaHistory.get().getStartDate().v()),
-					new YearMonth(command.getStartDate()).addMonths(-1));
-
-			this.formulaHistoryrepository.update(previousFormulaHistoryUpdate);
+				}
+			}
+		} catch (Exception e) {
+			throw new BusinessException("OKボタンクリックで次の処理へ");
 		}
+
 	}
 
 }

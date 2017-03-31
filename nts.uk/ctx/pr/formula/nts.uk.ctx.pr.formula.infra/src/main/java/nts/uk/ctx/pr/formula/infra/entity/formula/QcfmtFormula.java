@@ -10,12 +10,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name="QCFMT_FORMULA")
-public class QcfmtFormula implements Serializable{
+public class QcfmtFormula extends UkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -27,5 +28,10 @@ public class QcfmtFormula implements Serializable{
 	
 	@Column(name ="DIFFICULTY_ATR")
 	public BigDecimal difficultyAtr;
+
+	@Override
+	protected Object getKey() {
+		return this.qcfmtFormulaPK;
+	}
 
 }

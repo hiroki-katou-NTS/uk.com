@@ -20,6 +20,7 @@ module nts.uk.pr.view.qmm017.l {
             comboBoxAdjustmentAtr: KnockoutObservable<ComboBox>;
             paramIsUpdate: any;
             paramDirtyData: any;
+            companyUnitPriceItems: KnockoutObservableArray<any>;
 
             constructor(param) {
                 var self = this;
@@ -28,18 +29,18 @@ module nts.uk.pr.view.qmm017.l {
                 self.initOriginal();
                 if (self.paramIsUpdate === true) {
                     self.easyFormulaName(self.paramDirtyData.easyFormulaName);
-                    self.comboBoxFormulaType().selectedCode(self.paramDirtyData.easyFormulaTypeAtr);
-                    self.comboBoxBaseAmount().selectedCode(self.paramDirtyData.baseAmountDevision);
+                    self.comboBoxFormulaType().selectedCode(self.paramDirtyData.easyFormulaTypeAtr.toString());
+                    self.comboBoxBaseAmount().selectedCode(self.paramDirtyData.baseAmountDevision.toString());
                     self.baseAmountFixedValue(self.paramDirtyData.baseFixedAmount);
                     self.baseAmountListItem(self.paramDirtyData.referenceItemCodes);
-                    self.comboBoxBaseValue().selectedCode(self.paramDirtyData.baseValueDevision);
+                    self.comboBoxBaseValue().selectedCode(self.paramDirtyData.baseValueDevision.toString());
                     self.baseValueFixedValue(self.paramDirtyData.baseFixedValue);
                     self.premiumRate(self.paramDirtyData.premiumRate);
-                    self.switchButtonRoundingFiguresD().selectedRuleCode(self.paramDirtyData.roundProcessingDevision);
-                    self.switchButtonRoundingFiguresF().selectedRuleCode(self.paramDirtyData.totalRounding);
-                    self.comboBoxCoefficient().selectedCode(self.paramDirtyData.coefficientDivision);
+                    self.switchButtonRoundingFiguresD().selectedRuleCode(self.paramDirtyData.roundProcessingDevision.toString());
+                    self.switchButtonRoundingFiguresF().selectedRuleCode(self.paramDirtyData.totalRounding.toString());
+                    self.comboBoxCoefficient().selectedCode(self.paramDirtyData.coefficientDivision.toString());
                     self.coefficientFixedValue(self.paramDirtyData.coefficientFixedValue);
-                    self.comboBoxAdjustmentAtr().selectedCode(self.paramDirtyData.adjustmentDevision);
+                    self.comboBoxAdjustmentAtr().selectedCode(self.paramDirtyData.adjustmentDevision.toString());
                 }
 
             }
@@ -160,6 +161,37 @@ module nts.uk.pr.view.qmm017.l {
                     new ItemModel('2', 'マイナス調整'),
                     new ItemModel('3', 'プラスマイナス反転')
                 ]));
+                
+                self.itemsBag = ko.observableArray([]);
+            }
+
+            start(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred<any>();
+                service.getListItemMaster(2)
+                    .done(function(lstItem: Array<model.ItemMasterDto>) {
+                        if (lstItem && lstItem.length > 0) {
+                            _.forEach(lstItem, item => {
+                                self.comboBoxCoefficient().itemList.push(new ItemModel(item.itemCode, item.itemName));
+                            });
+                        }
+                        dfd.resolve();
+                    })
+                    .fail(function() {
+                        // Alert message
+                        alert(res);
+                    });
+                if(self.baseAmountListItem().length > 0) {
+                    if(self.comboBoxFormulaType().selectedCode() === '1'){
+                        
+                    }
+                }
+                // Return.
+                return dfd.promise();
+            }
+            
+            openDialogP() {
+                
             }
 
             closeAndReturnData() {

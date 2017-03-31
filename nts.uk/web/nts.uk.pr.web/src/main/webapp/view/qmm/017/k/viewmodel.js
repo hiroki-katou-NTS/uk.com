@@ -26,7 +26,7 @@ var nts;
                                         var command = {
                                             formulaCode: self.data.formulaCode,
                                             historyId: self.data.historyId,
-                                            startDate: self.startYm().replace('/', ''),
+                                            startDate: self.startYm(),
                                             difficultyAtr: self.data.difficultyAtr
                                         };
                                         k.service.removeFormulaHistory(command)
@@ -41,7 +41,7 @@ var nts;
                                         var command = {
                                             formulaCode: self.data.formulaCode,
                                             historyId: self.data.historyId,
-                                            startDate: self.startYm().replace('/', ''),
+                                            startDate: self.startYm(),
                                         };
                                         k.service.updateFormulaHistory(command)
                                             .done(function () {

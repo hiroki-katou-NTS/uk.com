@@ -2,10 +2,8 @@ package nts.uk.ctx.pr.formula.infra.repository.formula;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
-
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyCondition;

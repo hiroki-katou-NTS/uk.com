@@ -17,31 +17,30 @@
 						<span id="c_lbl_016" class="separate-span separate-vertical" data-bind="text: useMasterName"></span>
 						<hr/>
 						<div class="control-group">
-							<com:ko-if bind="useMasterCode() != '6'">
-								<div class="list001" data-bind="with: defaultEasyFormula">
-									<div class="col col-1 bg-green">既定の計算式</div>
-									<div class="col col-2">
-										<div data-bind="ntsSwitchButton: {
-												options: roundingRulesEasySettings,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedRuleCodeEasySettings}"></div>
-									</div>
-									<div class="col col-3">
-										<com:ko-if bind="selectedRuleCodeEasySettings() == 0">
-											<input style="width: 80px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
-																														 	required: true,
-																														 	enable: true,
-																														 	readonly: false}" />
-										</com:ko-if>
-										<com:ko-if bind="selectedRuleCodeEasySettings() == 1">
-											<button id="c_btn_019" data-bind="click: openDialogL">設定</button>
-											<span data-bind="text: easyFormulaName"></span>
-										</com:ko-if>
-									</div>
-									
+							<div class="list001" data-bind="with: defaultEasyFormula">
+								<div class="col col-1 bg-green">既定の計算式</div>
+								<div class="col col-2">
+									<div data-bind="ntsSwitchButton: {
+											options: roundingRulesEasySettings,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedRuleCodeEasySettings}"></div>
 								</div>
-							</com:ko-if>
+								<div class="col col-3">
+									<com:ko-if bind="selectedRuleCodeEasySettings() == 0">
+										<input style="width: 150px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
+																														constraint: 'Money',
+																													 	required: true,
+																													 	enable: true,
+																													 	readonly: false}" />
+									</com:ko-if>
+									<com:ko-if bind="selectedRuleCodeEasySettings() == 1">
+										<button id="c_btn_019" data-bind="click: openDialogL">設定</button>
+										<span data-bind="text: easyFormulaName"></span>
+									</com:ko-if>
+								</div>
+								
+							</div>
 							<com:ko-if bind="useMasterCode() == '6'">
 								<div class="list002">
 									<div class="header">
@@ -65,7 +64,8 @@
 											</div>
 											<div class="col col-4">
 												<com:ko-if bind="selectedRuleCodeEasySettings() == 0">
-													<input style="width: 80px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
+													<input style="width: 150px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
+																																	constraint: 'Money',
 																																 	required: true,
 																																 	enable: true,
 																																 	readonly: false}" />
@@ -87,7 +87,8 @@
 											</div>
 											<div class="col col-4">
 												<com:ko-if bind="selectedRuleCodeEasySettings() == 0">
-													<input style="width: 80px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
+													<input style="width: 150px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
+													                                                                                constraint: 'Money',
 																																 	required: true,
 																																 	enable: true,
 																																 	readonly: false}" />
@@ -109,7 +110,8 @@
 											</div>
 											<div class="col col-4">
 												<com:ko-if bind="selectedRuleCodeEasySettings() == 0">
-													<input style="width: 80px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
+													<input style="width: 150px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
+													                                                                                constraint: 'Money',
 																																 	required: true,
 																																 	enable: true,
 																																 	readonly: false}" />
@@ -131,7 +133,8 @@
 											</div>
 											<div class="col col-4">
 												<com:ko-if bind="selectedRuleCodeEasySettings() == 0">
-													<input style="width: 80px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
+													<input style="width: 150px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
+													                                                                                constraint: 'Money',
 																																 	required: true,
 																																 	enable: true,
 																																 	readonly: false}" />
@@ -247,7 +250,7 @@
 								<span class="separate-vertical ib" id="c_lbl_009">※明細データを参照する場合の設定です。</span> <br/>
 								<div id="c_lbl_006" data-bind="ntsFormLabel: {required: true}">端数処理</div>
 								<hr/>
-								<span style="vertical-align: middle">方法</span>
+								<span style="vertical-align: super">方法</span>
 								<div id="c_sel_008" class="ib" data-bind="with: comboBoxRoudingMethod">
 								<div id="combo-box" style="vertical-align: middle; margin-bottom: 10px" data-bind="ntsComboBox: {
 											options: itemList,
@@ -259,7 +262,7 @@
 											}"></div>
 								</div>
 								<br/>
-								<span style="vertical-align: middle">位置</span>
+								<span style="vertical-align: baseline">位置</span>
 								<div id="c_sel_009" class="ib" data-bind="with: comboBoxRoudingPosition">
 								<div id="combo-box" style="vertical-align: middle" data-bind="ntsComboBox: {
 											options: itemList,

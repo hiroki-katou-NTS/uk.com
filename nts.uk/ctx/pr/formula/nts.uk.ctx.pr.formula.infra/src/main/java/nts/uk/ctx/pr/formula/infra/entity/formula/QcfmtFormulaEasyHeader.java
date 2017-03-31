@@ -10,12 +10,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name="QCFMT_FORMULA_EASY_HEAD")
-public class QcfmtFormulaEasyHeader implements Serializable {
+public class QcfmtFormulaEasyHeader extends UkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -23,6 +24,11 @@ public class QcfmtFormulaEasyHeader implements Serializable {
     public QcfmtFormulaEasyHeaderPK qcfmtFormulaEasyHeaderPK;
 	
 	@Column(name = "CONDITION_ATR")
-	public BigDecimal conditionAtr;	
+	public BigDecimal conditionAtr;
+
+	@Override
+	protected Object getKey() {
+		return this.qcfmtFormulaEasyHeaderPK;
+	}	
 	
 }

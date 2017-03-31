@@ -8,35 +8,35 @@ import lombok.Data;
 @Data
 public class FormulaEasyFinderDto {
 	
-	String easyFormulaCode;
+	private String easyFormulaCode;
 	
-	String easyFormulaName;
+	private String easyFormulaName;
 
-	BigDecimal easyFormulaTypeAtr;
+	private BigDecimal easyFormulaTypeAtr;
 	
-	BigDecimal baseFixedAmount;
+	private BigDecimal baseFixedAmount;
 
-	BigDecimal baseAmountDevision;
+	private BigDecimal baseAmountDevision;
 
-	BigDecimal baseFixedValue;
+	private BigDecimal baseFixedValue;
 
-	BigDecimal baseValueDevision;
+	private BigDecimal baseValueDevision;
 
-	BigDecimal premiumRate;
+	private BigDecimal premiumRate;
 
-	BigDecimal roundProcessingDevision;
+	private BigDecimal roundProcessingDevision;
 
-	String coefficientDivision;
+	private String coefficientDivision;
 
-	BigDecimal coefficientFixedValue;
+	private BigDecimal coefficientFixedValue;
 
-	BigDecimal adjustmentDevision;
+	private BigDecimal adjustmentDevision;
 
-	BigDecimal totalRounding;
+	private BigDecimal totalRounding;
 	
-	BigDecimal maxLimitValue;
+	private BigDecimal maxLimitValue;
 	
-	BigDecimal minLimitValue;
+	private BigDecimal minLimitValue;
 	
-	List<String> referenceItemCodes;
+	private List<String> referenceItemCodes;
 }
