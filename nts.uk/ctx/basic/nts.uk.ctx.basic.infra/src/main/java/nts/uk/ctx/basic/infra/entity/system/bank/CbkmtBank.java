@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * 
@@ -25,7 +26,7 @@ import nts.uk.shr.infra.data.entity.TableEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "CBKMT_BANK")
-public class CbkmtBank extends TableEntity implements Serializable {
+public class CbkmtBank extends UkJpaEntity implements Serializable {
 	
 	static final long serialVersionUID = 42L;
 	
@@ -40,5 +41,10 @@ public class CbkmtBank extends TableEntity implements Serializable {
 
 	@Column(name = "MEMO")
 	public String memo;
+
+	@Override
+	protected CbkmtBankPK getKey() {
+		return this.cbkmtBankPK;
+	}
 
 }
