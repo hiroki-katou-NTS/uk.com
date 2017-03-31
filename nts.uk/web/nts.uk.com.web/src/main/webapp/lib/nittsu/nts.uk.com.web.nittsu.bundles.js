@@ -173,7 +173,7 @@ var nts;
             }
             util.isIn = isIn;
             ;
-            function createTreeFromString(original, openChar, closeChar, seperatorChar) {
+            function createTreeFromString(original, openChar, closeChar, seperatorChar, operatorChar) {
                 return convertToTree(original, openChar, closeChar, seperatorChar, 1).result;
             }
             util.createTreeFromString = createTreeFromString;
@@ -224,7 +224,10 @@ var nts;
                         }
                     }
                 }
-                return result;
+                return {
+                    "result": result,
+                    "index": index
+                };
             }
             function findIndexOfCloseChar(original, openChar, closeChar, firstOpenIndex) {
                 var openCount = 0;
@@ -1702,15 +1705,19 @@ var nts;
                                 return result;
                             }
                         }
-                        if (this.charType !== null) {
+                        if (this.charType !== null && this.charType !== undefined) {
                             if (!this.charType.validate(inputText)) {
                                 result.fail('Invalid text');
                                 return result;
                             }
                         }
-                        if (this.constraint !== null && this.constraint.maxLength !== undefined) {
-                            if (uk.text.countHalf(inputText) > this.constraint.maxLength) {
+                        if (this.constraint !== undefined && this.constraint !== null) {
+                            if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
                                 result.fail('Max length for this input is ' + this.constraint.maxLength);
+                                return result;
+                            }
+                            if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
+                                result.fail('This field is not valid with pattern!');
                                 return result;
                             }
                         }
@@ -1842,22 +1849,20 @@ var nts;
                         this.option.show(false);
                     };
                     ErrorsViewModel.prototype.addError = function (error) {
-                        var _this = this;
                         // defer無しでerrorsを呼び出すと、なぜか全てのKnockoutBindingHandlerのupdateが呼ばれてしまうので、
                         // 原因がわかるまでひとまずdeferを使っておく
-                        _.defer(function () {
-                            var duplicate = _.filter(_this.errors(), function (e) { return e.$control.is(error.$control) && e.message == error.message; });
-                            if (duplicate.length == 0)
-                                _this.errors.push(error);
-                        });
+                        //            _.defer(() => {
+                        var duplicate = _.filter(this.errors(), function (e) { return e.$control.is(error.$control) && e.message == error.message; });
+                        if (duplicate.length == 0)
+                            this.errors.push(error);
+                        //            });
                     };
                     ErrorsViewModel.prototype.removeErrorByElement = function ($element) {
-                        var _this = this;
                         // addErrorと同じ対応
-                        _.defer(function () {
-                            var removeds = _.filter(_this.errors(), function (e) { return e.$control.is($element); });
-                            _this.errors.removeAll(removeds);
-                        });
+                        //            _.defer(() => {
+                        var removeds = _.filter(this.errors(), function (e) { return e.$control.is($element); });
+                        this.errors.removeAll(removeds);
+                        //            });
                     };
                     return ErrorsViewModel;
                 }());
@@ -3223,7 +3228,11 @@ var nts;
                     };
                     function validate($editor) {
                         var validateEvent = new CustomEvent("validate", {});
-                        document.getElementById($editor.attr('id')).dispatchEvent(validateEvent);
+                        $editor.each(function (index) {
+                            var $input = $(this);
+                            document.getElementById($input.attr('id')).dispatchEvent(validateEvent);
+                        });
+                        //            document.getElementById($editor.attr('id')).dispatchEvent(validateEvent);
                         //            $editor.trigger("validate");
                     }
                 })(ntsEditor || (ntsEditor = {}));
@@ -4121,6 +4130,7 @@ var nts;
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (!result.isValid) {
+                                //                    console.log(nts.uk.ui._viewModel.errors.isEmpty());
                                 $input.ntsError('set', result.errorMessage);
                             }
                         }));
@@ -4632,7 +4642,7 @@ var nts;
                         selected: function (event, ui) {
                         },
                         stop: function (event, ui) {
-                            // Add selected value. 
+                            // Add selected value.
                             var data = [];
                             $("li.ui-selected", $target).each(function (index, opt) {
                                 data[index] = $(opt).data('value');
@@ -4754,7 +4764,7 @@ var nts;
                             var itemsSelected = selectListBoxContainer.data('value');
                             // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
                             document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
-                            if (!changingEvent.returnValue) {
+                            if (changingEvent.returnValue !== undefined && !changingEvent.returnValue) {
                                 // revert select.
                                 console.log(selectedValue);
                                 selectListBoxContainer.data('value', data.value());
@@ -4901,6 +4911,12 @@ var nts;
                             : !uk.text.isNullOrEmpty(selectedValue);
                         if (haveDate && (!_.isEqual(originalSelected, selectedValue) || init)) {
                             selectListBoxContainer.data('value', selectedValue);
+                            if (isMultiSelect) {
+                                selectMultiRow(selectListBoxContainer, selectedValue);
+                            }
+                            else {
+                                selectOneRow(selectListBoxContainer, selectedValue);
+                            }
                             container.trigger('selectionChange');
                         }
                         if (isMultiSelect) {
@@ -6252,7 +6268,7 @@ var nts;
                         var container = $(element);
                         var newValue = ko.unwrap(data.value);
                         var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
-                        var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : true;
+                        var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
                         var idatr = container.attr("id");
                         var $input = container.find('#' + idatr + "-input");
                         var formatOptions = container.data("format");

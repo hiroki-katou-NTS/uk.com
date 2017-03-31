@@ -4,9 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.labor;
 
-import nts.uk.ctx.pr.core.dom.insurance.Address;
+import nts.uk.ctx.pr.core.dom.insurance.Address1;
+import nts.uk.ctx.pr.core.dom.insurance.Address2;
+import nts.uk.ctx.pr.core.dom.insurance.AddressKana1;
+import nts.uk.ctx.pr.core.dom.insurance.AddressKana2;
 import nts.uk.ctx.pr.core.dom.insurance.CitySign;
-import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeMark;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
@@ -132,8 +134,8 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 * getAddress1st()
 	 */
 	@Override
-	public Address getAddress1st() {
-		return new Address(typeValue.getAddress1());
+	public Address1 getAddress1st() {
+		return new Address1(typeValue.getAddress1());
 	}
 
 	/*
@@ -144,8 +146,8 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 * getAddress2nd()
 	 */
 	@Override
-	public Address getAddress2nd() {
-		return new Address(typeValue.getAddress2());
+	public Address2 getAddress2nd() {
+		return new Address2(typeValue.getAddress2());
 	}
 
 	/*
@@ -156,8 +158,8 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 * getKanaAddress1st()
 	 */
 	@Override
-	public KanaAddress getKanaAddress1st() {
-		return new KanaAddress(typeValue.getKnAddress1());
+	public AddressKana1 getKanaAddress1st() {
+		return new AddressKana1(typeValue.getKnAddress1());
 	}
 
 	/*
@@ -168,8 +170,8 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 * getKanaAddress2nd()
 	 */
 	@Override
-	public KanaAddress getKanaAddress2nd() {
-		return new KanaAddress(typeValue.getKnAddress2());
+	public AddressKana2 getKanaAddress2nd() {
+		return new AddressKana2(typeValue.getKnAddress2());
 	}
 
 	/*

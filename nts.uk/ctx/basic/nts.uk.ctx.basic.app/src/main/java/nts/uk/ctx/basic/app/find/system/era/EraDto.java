@@ -10,6 +10,7 @@ import nts.uk.ctx.basic.dom.system.era.Era;
 @Value
 public class EraDto {
 	 String eraName;
+	 String eraHist;
 	 String eraMark;
 	 GeneralDate startDate;
 	 GeneralDate endDate;
@@ -19,6 +20,7 @@ public class EraDto {
 	public static EraDto fromDomain(Era era){
 		//System.out.print(era.getEndDate().year());
 		return new EraDto(era.getEraName().v(),
+				era.getEraHist(),
 				era.getEraMark().v(),
 				era.getStartDate(),
 				era.getEndDate(),
@@ -26,9 +28,10 @@ public class EraDto {
 	}
 
 
-	public EraDto(String eraName, String eraMark, GeneralDate startDate, GeneralDate endDate, int fixAttribute) {
+	public EraDto(String eraName, String eraHist, String eraMark, GeneralDate startDate, GeneralDate endDate, int fixAttribute) {
 		super();
 		this.eraName = eraName;
+		this.eraHist = eraHist;
 		this.eraMark = eraMark;
 		this.startDate = startDate;
 		this.endDate = endDate;

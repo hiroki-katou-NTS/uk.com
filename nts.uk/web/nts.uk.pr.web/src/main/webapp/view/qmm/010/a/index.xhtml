@@ -13,7 +13,7 @@
 			<com:scriptfile path="qmm010.a.service.js" />
 			<com:scriptfile path="../b/qmm010.b.service.js" />
 			<com:scriptfile path="qmm010.a.vm.js" />
-			<com:scriptfile path="../../../../view/base/address/service.js" />
+			<com:scriptfile path="../../../../view/base/postcode/service.js" />
 			<com:ValidatorScript>
 			    nts.uk.ctx.pr.core.dom.insurance.OfficeName
 			    nts.uk.ctx.pr.core.dom.insurance.OfficeCode
@@ -21,8 +21,10 @@
 			    nts.uk.ctx.pr.core.dom.insurance.PicName
 			    nts.uk.ctx.pr.core.dom.insurance.PicPosition
 			    nts.uk.ctx.pr.core.dom.insurance.PotalCode
-			    nts.uk.ctx.pr.core.dom.insurance.Address
-			    nts.uk.ctx.pr.core.dom.insurance.KanaAddress
+			    nts.uk.ctx.pr.core.dom.insurance.Address1
+			    nts.uk.ctx.pr.core.dom.insurance.Address2
+			    nts.uk.ctx.pr.core.dom.insurance.AddressKana1
+			    nts.uk.ctx.pr.core.dom.insurance.AddressKana2
 			    nts.uk.ctx.pr.core.dom.insurance.CitySign
 			    nts.uk.ctx.pr.core.dom.insurance.OfficeMark
 			    nts.uk.ctx.pr.core.dom.insurance.PhoneNumber
@@ -54,14 +56,15 @@
 					data-bind="click: deleteLaborInsuranceOffice, enable: isEnableDelete">削除</button>
 				<label id="lbl_registrationOfLaborInsurancePlant">労働保険事業所の登録</label>
 			</div>
-			<div id="contents-area">
+			<div id="contents-area" data-bind="visible: true" style="display: none">
 				<table>
 					<tr>
 						<td id="contents-left"
 							class="bg-green caret-right caret-background"><i
 							class="icon icon-searchbox"></i>
-							<div
-								data-bind="ntsSearchBox: {comId: 'tblaborInsuranceOffice', items: lstlaborInsuranceOfficeModel, selected: selectCodeLstlaborInsuranceOffice, selectedKey: 'code', fields: ['code','name'], constraint: 'SearchItem'}" />
+							<div data-bind="ntsSearchBox: {comId: 'tblaborInsuranceOffice', 
+								items: lstlaborInsuranceOfficeModel, selected: selectCodeLstlaborInsuranceOffice, 
+								selectedKey: 'code', fields: ['code','name'], constraint: 'SearchItem'}" />
 							<div id="searchlaborInsuranceOffice">
 								<table id="tblaborInsuranceOffice"
 									data-bind="ntsGridList: {
@@ -93,7 +96,7 @@
 											readonly: isReadOnly, 
 											enable: isEnable,
 											required:true}" />
-										<input id="inp_name" data-name="名称" class="save-error"
+										<input id="inp_name" data-name="名称" class="tr240 save-error"
 										data-bind="ntsTextEditor: {value: name, 
 											constraint: 'OfficeName',
 											option: textEditorOption,
@@ -125,7 +128,7 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_picName"
-										class="tr180 save-error" data-name="picName"
+										class="tr180 save-error" data-name="代表者名"
 										data-bind="ntsTextEditor: {value: picName, 
 										constraint: 'PicName', 
 										option: textEditorOption, 
@@ -160,7 +163,7 @@
 									</td>
 									<td class="contentsRR">
 										<input id="inp_postalCode"
-											class="trFull15" data-name="postalCode"
+											class="trFull15" data-name="郵便番号"
 											data-bind="ntsTextEditor: {value: postalCode, 
 											constraint: 'PostalCode', 
 											option: textEditorOption, 
@@ -173,14 +176,14 @@
 								<tr>
 									<td class="contentsRL">
 										<div
-											data-bind="ntsFormLabel: {constraint:'Address',required: false}">
+											data-bind="ntsFormLabel: {constraint:'Address1',required: false}">
 											<label>住所1</label>
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_address1st"
 										class="tr360 save-error" data-name="address1st"
 										data-bind="ntsTextEditor: {value: address1st, 
-										constraint: 'Address', 
+										constraint: 'Address1', 
 										option: textEditorOption, 
 										enable: true}" />
 									</td>
@@ -189,14 +192,14 @@
 								<tr>
 									<td class="contentsRL">
 										<div class="left20 border_none"
-											data-bind="ntsFormLabel: {constraint:'KanaAddress',required: false}">
+											data-bind="ntsFormLabel: {constraint:'AddressKana1',required: false}">
 											<label>ｶﾅ1</label>
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_kanaAddress1st"
-										class="tr360 save-error" data-name="kanaAddress1st"
+										class="tr360 save-error" data-name="ｶﾅ1"
 										data-bind="ntsTextEditor: {value: kanaAddress1st, 
-										constraint: 'KanaAddress', 
+										constraint: 'AddressKana1', 
 										option: textEditorOption, 
 										enable: true}" />
 									</td>
@@ -205,14 +208,14 @@
 								<tr>
 									<td class="contentsRL">
 										<div
-											data-bind="ntsFormLabel: {constraint:'Address',required: false}">
+											data-bind="ntsFormLabel: {constraint:'Address2',required: false}">
 											<label>住所2</label>
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_address2nd"
-										class="tr500 save-error" data-name="address2nd"
+										class="tr500 save-error" data-name="住所2"
 										data-bind="ntsTextEditor: {value: address2nd, 
-										constraint: 'Address', 
+										constraint: 'Address2', 
 										option: textEditorOption, 
 										enable: true}" />
 									</td>
@@ -221,14 +224,14 @@
 								<tr>
 									<td class="contentsRL">
 										<div class="left20 border_none"
-											data-bind="ntsFormLabel: {constraint:'KanaAddress',required: false}">
+											data-bind="ntsFormLabel: {constraint:'AddressKana2',required: false}">
 											<label>ｶﾅ2</label>
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_kanaAddress2nd"
-										class="tr500 save-error" data-name="kanaAddress2nd"
+										class="tr500 save-error" data-name="ｶﾅ2"
 										data-bind="ntsTextEditor: {value: kanaAddress2nd, 
-										constraint: 'KanaAddress', 
+										constraint: 'AddressKana2', 
 										option: textEditorOption, 
 										enable: true}" />
 									</td>
@@ -241,7 +244,7 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_phoneNumber"
-										class="tr240 save-error" data-name="phoneNumber"
+										class="tr240 save-error" data-name="電話番号"
 										data-bind="ntsTextEditor: {value: phoneNumber, 
 										option: textEditorOption, 
 										constraint: 'PhoneNumber',
@@ -261,14 +264,14 @@
 										</div>
 									</td>
 									<td class="contentsRR"><label>都市区符号 :</label><input
-										id="inp_citySign" class="tr40 save-error" data-name="citySign"
+										id="inp_citySign" class="tr40 save-error" data-name="都市区符号"
 										data-bind="ntsTextEditor: {value: citySign, 
 										option: textEditorOption, 
 										constraint: 'CitySign',
 										enable: true}" />
 
 										<label>事業所記号 :</label><input id="inp_officeMark"
-										class="tr40 save-error" data-name="officeMark"
+										class="tr40 save-error" data-name="事業所記号"
 										data-bind="ntsTextEditor: {value: officeMark, 
 										option: textEditorOption,
 										constraint: 'OfficeMark', 
@@ -282,19 +285,19 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_officeNoA"
-										class="tr50 save-error" data-name="officeNoA"
+										class="tr50 save-error" data-name="事業所整理番号Ａ"
 										data-bind="ntsTextEditor: {value: officeNoA, 
 										option: textEditorOption, 
 										constraint: 'OfficeNoA',
 										enable: true}" />
 										<label> - </label><input id="inp_officeNoB"
-										class="tr90 save-error" data-name="officeNoB"
+										class="tr90 save-error" data-name="事業所整理番号B"
 										data-bind="ntsTextEditor: {value: officeNoB, 
 										constraint: 'OfficeNoB',
 										option: textEditorOption, 
 										enable: true}" />
 										<label>-</label> <input id="inp_officeNoC"
-										class="tr40 save-error" data-name="officeNoC"
+										class="tr40 save-error" data-name="事業所整理番号C"
 										data-bind="ntsTextEditor: {value: officeNoC, 
 										constraint: 'OfficeNoC',
 										option: textEditorOption, 

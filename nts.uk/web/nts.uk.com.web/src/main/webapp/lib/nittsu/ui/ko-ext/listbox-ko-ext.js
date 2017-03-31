@@ -11,7 +11,79 @@ var nts;
                     container.find(".ui-selected").removeClass('ui-selected');
                     $(this).addClass('ui-selected');
                     container.data('value', $(this).data('value'));
-                    document.getElementById(container.attr('id')).dispatchEvent(event.data.event);
+                    document.getElementById(container.parent().attr('id')).dispatchEvent(event.data.event);
+                }
+                function unbindMultible($target) {
+                    $target.selectable("destroy");
+                }
+                function bindMultible($target, changeEvent) {
+                    $target.selectable({
+                        filter: 'li',
+                        selected: function (event, ui) {
+                        },
+                        stop: function (event, ui) {
+                            var data = [];
+                            $("li.ui-selected", $target).each(function (index, opt) {
+                                data[index] = $(opt).data('value');
+                            });
+                            $target.data('value', data);
+                            document.getElementById($target.parent().attr('id')).dispatchEvent(changeEvent);
+                        },
+                        selecting: function (event, ui) {
+                            if (event.shiftKey) {
+                                if ($(ui.selecting).attr("clicked") !== "true") {
+                                    var source = $target.find("li");
+                                    var clicked = _.find(source, function (row) {
+                                        return $(row).attr("clicked") === "true";
+                                    });
+                                    if (clicked === undefined) {
+                                        $(ui.selecting).attr("clicked", "true");
+                                    }
+                                    else {
+                                        $target.find("li").attr("clicked", "");
+                                        $(ui.selecting).attr("clicked", "true");
+                                        var start = parseInt($(clicked).attr("data-idx"));
+                                        var end = parseInt($(ui.selecting).attr("data-idx"));
+                                        var max = start > end ? start : end;
+                                        var min = start < end ? start : end;
+                                        var range = _.filter(source, function (row) {
+                                            var index = parseInt($(row).attr("data-idx"));
+                                            return index >= min && index <= max;
+                                        });
+                                        $(range).addClass("ui-selected");
+                                    }
+                                }
+                            }
+                            else if (!event.ctrlKey) {
+                                $target.find("li").attr("clicked", "");
+                                $(ui.selecting).attr("clicked", "true");
+                            }
+                        }
+                    });
+                }
+                function bindSingleSelectListBox($target, changeEvent) {
+                    $target.on("click", "li", { event: changeEvent }, selectOnListBox);
+                }
+                function unbindSingleSelectListBox($target) {
+                    $target.off("click", "li");
+                }
+                function selectOneRow(container, selectedValue) {
+                    container.find("li").removeClass("ui-selected");
+                    var target = _.find($('li', container), function (opt) {
+                        var optValue = $(opt).data('value');
+                        return optValue == selectedValue;
+                    });
+                    $(target).addClass('ui-selected');
+                }
+                function selectMultiRow(container, selectedValues) {
+                    container.find("li").removeClass("ui-selected");
+                    _.forEach(selectedValues, function (selectedValue) {
+                        var target = _.find($('li', container), function (opt) {
+                            var optValue = $(opt).data('value');
+                            return optValue == selectedValue;
+                        });
+                        $(target).addClass('ui-selected');
+                    });
                 }
                 var ListBoxBindingHandler = (function () {
                     function ListBoxBindingHandler() {
@@ -37,68 +109,36 @@ var nts;
                         });
                         container.data("selectionChange", changeEvent);
                         if (isMultiSelect) {
-                            selectListBoxContainer.selectable({
-                                filter: 'li',
-                                selected: function (event, ui) {
-                                },
-                                stop: function (event, ui) {
-                                    var data = [];
-                                    $("li.ui-selected", container).each(function (index, opt) {
-                                        data[index] = $(opt).data('value');
-                                    });
-                                    container.data('value', data);
-                                    document.getElementById(container.attr('id')).dispatchEvent(changeEvent);
-                                },
-                                selecting: function (event, ui) {
-                                    if (event.shiftKey) {
-                                        if ($(ui.selecting).attr("clicked") !== "true") {
-                                            var source = container.find("li");
-                                            var clicked = _.find(source, function (row) {
-                                                return $(row).attr("clicked") === "true";
-                                            });
-                                            if (clicked === undefined) {
-                                                $(ui.selecting).attr("clicked", "true");
-                                            }
-                                            else {
-                                                container.find("li").attr("clicked", "");
-                                                $(ui.selecting).attr("clicked", "true");
-                                                var start = parseInt($(clicked).attr("data-idx"));
-                                                var end = parseInt($(ui.selecting).attr("data-idx"));
-                                                var max = start > end ? start : end;
-                                                var min = start < end ? start : end;
-                                                var range = _.filter(source, function (row) {
-                                                    var index = parseInt($(row).attr("data-idx"));
-                                                    return index >= min && index <= max;
-                                                });
-                                                $(range).addClass("ui-selected");
-                                            }
-                                        }
-                                    }
-                                    else if (!event.ctrlKey) {
-                                        container.find("li").attr("clicked", "");
-                                        $(ui.selecting).attr("clicked", "true");
-                                    }
-                                }
-                            });
+                            bindMultible(selectListBoxContainer, changeEvent);
                         }
                         else {
-                            container.on("click", "li", { event: changeEvent }, selectOnListBox);
+                            bindSingleSelectListBox(selectListBoxContainer, changeEvent);
                         }
                         container.on('selectionChange', (function (e) {
-                            var itemsSelected = container.data('value');
-                            data.value(itemsSelected);
-                            container.data("selected", !isMultiSelect ? itemsSelected : itemsSelected.slice());
-                        }));
-                        container.on('validate', (function (e) {
-                            var itemsSelected = container.data('value');
-                            if ((itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0)
-                                && container.data("enable")) {
-                                selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
+                            var changingEvent = new CustomEvent("selectionChanging", {
+                                detail: itemsSelected,
+                                bubbles: true,
+                                cancelable: true,
+                            });
+                            var isMulti = container.data("multiple");
+                            var itemsSelected = selectListBoxContainer.data('value');
+                            document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
+                            if (!changingEvent.returnValue) {
+                                console.log(selectedValue);
+                                selectListBoxContainer.data('value', data.value());
+                                if (isMulti) {
+                                    selectMultiRow(selectListBoxContainer, data.value());
+                                }
+                                else {
+                                    selectOneRow(selectListBoxContainer, data.value());
+                                }
                             }
                             else {
-                                selectListBoxContainer.ntsError('clear');
+                                data.value(itemsSelected);
+                                container.data("selected", !isMulti ? itemsSelected : itemsSelected.slice());
                             }
                         }));
+                        container.data("multiple", isMultiSelect);
                     };
                     ListBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
@@ -126,21 +166,34 @@ var nts;
                         var originalOptions = container.data("options");
                         var init = container.data("init");
                         var originalSelected = container.data("selected");
+                        var oldMultiOption = container.data("multiple");
+                        if (oldMultiOption !== isMultiSelect && !init) {
+                            var changeEvent = new CustomEvent("selectionChange", {
+                                detail: {},
+                            });
+                            if (oldMultiOption) {
+                                unbindMultible(selectListBoxContainer);
+                                bindSingleSelectListBox(selectListBoxContainer, changeEvent);
+                                container.find("li").removeClass("ui-selected");
+                                if (selectedValue.length > 0) {
+                                    selectOneRow(selectListBoxContainer, selectedValue[0]);
+                                    data.value(selectedValue[0]);
+                                }
+                            }
+                            else {
+                                unbindSingleSelectListBox(selectListBoxContainer);
+                                bindMultible(selectListBoxContainer, changeEvent);
+                                if (!uk.text.isNullOrEmpty(selectedValue)) {
+                                    var array = [];
+                                    array.push(selectedValue);
+                                    data.value(array);
+                                }
+                            }
+                            container.data("multiple", isMultiSelect);
+                        }
                         if (!_.isEqual(originalOptions, options) || init) {
                             if (!init) {
-                                $('li', container).each(function (index, option) {
-                                    var optValue = $(option).data('value');
-                                    var foundFlag = _.findIndex(options, function (opt) {
-                                        return getOptionValue(opt) === optValue;
-                                    }) !== -1;
-                                    if (!foundFlag) {
-                                        selectedValue = jQuery.grep(selectedValue, function (value) {
-                                            return value !== optValue;
-                                        });
-                                        option.remove();
-                                        return;
-                                    }
-                                });
+                                selectListBoxContainer.empty();
                             }
                             options.forEach(function (item, idx) {
                                 var isSelected = false;
@@ -199,8 +252,15 @@ var nts;
                         }
                         container.data("options", options.slice());
                         container.data("init", false);
-                        if (!_.isEqual(originalSelected, selectedValue) || init) {
-                            container.data('value', selectedValue);
+                        var haveDate = isMultiSelect ? !uk.text.isNullOrEmpty(selectedValue) && selectedValue.length > 0
+                            : !uk.text.isNullOrEmpty(selectedValue);
+                        if (haveDate && (!_.isEqual(originalSelected, selectedValue) || init)) {
+                            selectListBoxContainer.data('value', selectedValue);
+                            if(isMultiSelect){
+                                selectMultiRow(selectListBoxContainer, selectedValue);
+                            } else {
+                                selectOneRow(selectListBoxContainer, selectedValue);
+                            }
                             container.trigger('selectionChange');
                         }
                         if (isMultiSelect) {
@@ -227,9 +287,6 @@ var nts;
                             }
                         }
                         container.data("enable", enable);
-                        if (!(selectedValue === undefined || selectedValue === null || selectedValue.length == 0)) {
-                            container.trigger('validate');
-                        }
                     };
                     return ListBoxBindingHandler;
                 }());

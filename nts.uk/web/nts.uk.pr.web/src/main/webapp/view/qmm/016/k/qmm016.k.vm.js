@@ -12,34 +12,28 @@ var nts;
                     (function (k) {
                         var viewmodel;
                         (function (viewmodel) {
-                            /**
-                             * Add simple history screen model.
-                             */
                             var ScreenModel = (function () {
-                                /**
-                                 * Constructor.
-                                 */
                                 function ScreenModel() {
                                     var self = this;
                                     self.dialogOptions = nts.uk.ui.windows.getShared('options');
                                     self.demensionItemList = ko.observableArray([]);
                                     self.selectedDemension = ko.observable(undefined);
                                 }
-                                /**
-                                 * Start page.
-                                 */
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     k.service.loadDemensionSelectionList().done(function (res) {
-                                        self.demensionItemList(res);
+                                        var filteredDemensionItemList = _.filter(res, function (item) {
+                                            var ignoredItem = _.find(self.dialogOptions.selectedDemensionDto, function (selected) {
+                                                return item.type == selected.type && item.code == selected.code;
+                                            });
+                                            return ignoredItem == undefined;
+                                        });
+                                        self.demensionItemList(filteredDemensionItemList);
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
                                 };
-                                /**
-                                 * Create history and then dialog.
-                                 */
                                 ScreenModel.prototype.btnApplyClicked = function () {
                                     var self = this;
                                     if (self.selectedDemension()) {
@@ -50,9 +44,6 @@ var nts;
                                         nts.uk.ui.windows.close();
                                     }
                                 };
-                                /**
-                                 * Close dialog.
-                                 */
                                 ScreenModel.prototype.btnCancelClicked = function () {
                                     nts.uk.ui.windows.close();
                                 };
@@ -66,3 +57,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qmm016.k.vm.js.map

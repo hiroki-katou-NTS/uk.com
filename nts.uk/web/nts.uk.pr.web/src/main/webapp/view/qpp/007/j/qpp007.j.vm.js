@@ -36,10 +36,10 @@ var nts;
                                         { id: '010', title: '集計項目10', content: '#aggregate10', enable: ko.observable(true), visible: ko.observable(true) }
                                     ]);
                                     self.selectedDivision = ko.observable(TaxDivision.PAYMENT);
-                                    self.selectedAggregateItem = ko.observable('001');
+                                    self.selectedAggregateItem = ko.observable('002');
                                     self.salaryAggregateItemModel = ko.observable(new SalaryAggregateItemModel());
                                     self.columns = ko.observableArray([
-                                        { headerText: 'コード', key: 'salaryItemCode', width: 100 },
+                                        { headerText: 'コード', key: 'salaryItemCode', width: 50 },
                                         { headerText: '名称', key: 'salaryItemName', width: 150 }
                                     ]);
                                     self.selectedAggregateItem.subscribe(function (selectedAggregateItem) {
@@ -49,9 +49,6 @@ var nts;
                                         self.onShowDataChange(selectedDivision, self.selectedAggregateItem());
                                     });
                                 }
-                                /**
-                                 * Start page.
-                                 */
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     return self.initData();
@@ -107,7 +104,6 @@ var nts;
                                     else {
                                         self.convertModelToDto(1);
                                     }
-                                    //reload///
                                 };
                                 ScreenModel.prototype.convertModelToDto = function (taxDivision) {
                                     var self = this;
@@ -125,9 +121,7 @@ var nts;
                                     salaryAggregateItemSaveDto.taxDivision = taxDivision;
                                     salaryAggregateItemSaveDto.categoryCode = self.selectedAggregateItem();
                                     j.service.saveSalaryAggregateItem(salaryAggregateItemSaveDto).done(function () {
-                                        //reload
                                     }).fail(function () {
-                                        //reload
                                     });
                                     return salaryAggregateItemSaveDto;
                                 };
@@ -137,7 +131,6 @@ var nts;
                             var SalaryItemModel = (function () {
                                 function SalaryItemModel() {
                                 }
-                                //convert dto find => model
                                 SalaryItemModel.prototype.convertDtoToData = function (salaryItemDto) {
                                     this.salaryItemCode = salaryItemDto.salaryItemCode;
                                     this.salaryItemName = salaryItemDto.salaryItemName;
@@ -221,3 +214,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qpp007.j.vm.js.map

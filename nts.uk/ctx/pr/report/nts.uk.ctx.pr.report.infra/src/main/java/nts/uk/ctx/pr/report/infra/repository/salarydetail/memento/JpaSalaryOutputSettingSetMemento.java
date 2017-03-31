@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.report.infra.repository.salarydetail.memento;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryCategorySetting;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingCode;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingName;
@@ -21,7 +20,7 @@ import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstFormHeadPK;
 public class JpaSalaryOutputSettingSetMemento implements SalaryOutputSettingSetMemento {
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The code. */
 	private SalaryOutputSettingCode code;
@@ -42,17 +41,25 @@ public class JpaSalaryOutputSettingSetMemento implements SalaryOutputSettingSetM
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingSetMemento#setCompanyCode(nts.uk.ctx.pr.report.dom.company.CompanyCode)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.
+	 * SalaryOutputSettingSetMemento#setCompanyCode(nts.uk.ctx.pr.report.dom.
+	 * company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
-		this.entity.getQlsptPaylstFormHeadPK().setCcd(companyCode.v());
+	public void setCompanyCode(String companyCode) {
+		this.entity.getQlsptPaylstFormHeadPK().setCcd(companyCode);
 		this.companyCode = companyCode;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingSetMemento#setCode(nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingCode)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.
+	 * SalaryOutputSettingSetMemento#setCode(nts.uk.ctx.pr.report.dom.
+	 * salarydetail.outputsetting.SalaryOutputSettingCode)
 	 */
 	@Override
 	public void setCode(SalaryOutputSettingCode salaryOutputSettingCode) {
@@ -60,16 +67,23 @@ public class JpaSalaryOutputSettingSetMemento implements SalaryOutputSettingSetM
 		this.code = salaryOutputSettingCode;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingSetMemento#setName(nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingName)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.
+	 * SalaryOutputSettingSetMemento#setName(nts.uk.ctx.pr.report.dom.
+	 * salarydetail.outputsetting.SalaryOutputSettingName)
 	 */
 	@Override
 	public void setName(SalaryOutputSettingName salaryOutputSettingName) {
 		this.entity.setFormName(salaryOutputSettingName.v());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingSetMemento#setCategorySettings(java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.
+	 * SalaryOutputSettingSetMemento#setCategorySettings(java.util.List)
 	 */
 	@Override
 	public void setCategorySettings(List<SalaryCategorySetting> listSalaryCategorySetting) {

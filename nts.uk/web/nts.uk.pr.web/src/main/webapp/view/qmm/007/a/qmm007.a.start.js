@@ -13,6 +13,7 @@ var nts;
                         __viewContext.ready(function () {
                             var screenModel = new a.viewmodel.ScreenModel();
                             screenModel.startPage().done(function () {
+                                nts.uk.ui.confirmSave(screenModel.dirtyChecker);
                                 __viewContext.bind(screenModel);
                             });
                         });
@@ -22,3 +23,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qmm007.a.start.js.map

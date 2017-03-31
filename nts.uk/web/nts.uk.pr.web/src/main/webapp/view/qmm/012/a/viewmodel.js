@@ -38,7 +38,7 @@ var qmm012;
                 ScreenModel.prototype.submitInfo = function () {
                     var self = this;
                     var groupCode = self.selectedRuleCode();
-                    nts.uk.sessionStorage.setItem('groupCode', groupCode);
+                    nts.uk.ui.windows.setShared('groupCode', groupCode);
                     nts.uk.ui.windows.close();
                 };
                 ScreenModel.prototype.closeDialog = function () {

@@ -25,6 +25,9 @@ __viewContext.ready(function () {
             self.isMulti = ko.observable(true);
             self.isMulti2 = ko.observable(true);
             self.isValidate = ko.observable(true);
+            $("#list-box").on("selectionChanging", function(){
+                return self.isValidate();    
+            });
         }
 
         addOptions() {
@@ -40,14 +43,16 @@ __viewContext.ready(function () {
         }
         
         selectAll() {
-            $('#list-box').ntsListBox('selectAll');
+            var self = this;
+            self.selectedCodes([10]);
         }
         
         /**
          * Clear options.
          */
         clearOptions() {
-            this.itemList([]);
+            var self = this;
+            self.itemList([]);
         }
         
         /**
