@@ -67,12 +67,18 @@ module qmm006.c.viewmodel {
             var self = this;
             var oldLineBankCode = self.currentCode();
             var newLineBankCode = self.currentCode1();
-            if (oldLineBankCode == null || newLineBankCode == null) {
-                nts.uk.ui.dialog.alert("＊が選択されていません。");//ER007
+            if (oldLineBankCode == null) {
+                nts.uk.ui.dialog.alert("置換元情報が選択されていません。");//ER007
                 return;
             }
-            else if (oldLineBankCode == newLineBankCode) {
-                nts.uk.ui.dialog.alert("統合元と統合先で同じコードの＊が選択されています。\r\n  ＊を確認してください。");//ER009
+            if (newLineBankCode == null) {
+                nts.uk.ui.dialog.alert("置換先情報が選択されていません。");//ER007
+                return;
+            }
+            if (oldLineBankCode == newLineBankCode) {
+                //ER009
+                let messageError = nts.uk.text.format("統合元と統合先で同じコードの{0}が選択されています。\r\n  振込元銀行を確認してください。", self.currentCode());
+                nts.uk.ui.dialog.alert(messageError);
                 return;
             } else {
                 //Al003
