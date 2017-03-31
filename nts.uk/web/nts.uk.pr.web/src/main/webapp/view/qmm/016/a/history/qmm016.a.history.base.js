@@ -19,6 +19,7 @@ var nts;
                                         var self = this;
                                         self.htmlPath = htmlPath;
                                         self.history = history;
+                                        self.elementSettings = history.elements;
                                     }
                                     BaseHistoryViewModel.prototype.refreshElementSettings = function (elementSettings) {
                                         var self = this;

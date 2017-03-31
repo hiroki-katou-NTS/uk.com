@@ -162,8 +162,8 @@ public class JpaWtHistorySetMemento implements WtHistorySetMemento {
 											historyId,
 											item.getDemensionNo().value,
 											rangeItem.getOrderNumber());
-									wagetableNum.setElementStr(BigDecimal.valueOf(rangeItem.getStartVal()));
-									wagetableNum.setElementEnd(BigDecimal.valueOf(rangeItem.getEndVal()));
+									wagetableNum.setElementStr(rangeItem.getStartVal());
+									wagetableNum.setElementEnd(rangeItem.getEndVal());
 									wagetableNum.setElementId(rangeItem.getUuid().v());
 									return wagetableNum;
 								}).collect(Collectors.toList());

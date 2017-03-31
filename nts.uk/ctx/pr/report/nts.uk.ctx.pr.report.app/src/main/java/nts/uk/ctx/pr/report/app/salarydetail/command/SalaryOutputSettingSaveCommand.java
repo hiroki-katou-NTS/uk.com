@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.report.app.salarydetail.command.dto.SalaryCategorySettingDto;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryCategorySetting;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSetting;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingCode;
@@ -76,8 +75,8 @@ public class SalaryOutputSettingSaveCommand {
 		 * SalaryOutputSettingGetMemento#getCompanyCode()
 		 */
 		@Override
-		public CompanyCode getCompanyCode() {
-			return new CompanyCode(this.companyCode);
+		public String getCompanyCode() {
+			return this.companyCode;
 		}
 
 		/*

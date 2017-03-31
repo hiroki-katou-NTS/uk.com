@@ -42,7 +42,7 @@ public class JpaChecklistPrintSettingRepository implements ChecklistPrintSetting
 		 * getCompanyCode()
 		 */
 		@Override
-		public CompanyCode getCompanyCode() {
+		public String getCompanyCode() {
 			return null;
 		}
 
