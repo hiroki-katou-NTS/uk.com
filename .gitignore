@@ -14,6 +14,5 @@ nts.uk/file/pr/nts.uk.file.pr.app/.gitignore
 nts.uk/pr/shr/nts.uk.shr.com/bin/
 nts.uk/pr/proto/nts.uk.pr.proto.ws/bin/
 nts.uk/pr/file/nts.uk.pr.file.infra/bin/
-
 *.class
 
