@@ -45,7 +45,7 @@ import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LayoutMasterLine;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LayoutMasterLineRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LineDispAtr;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LinePosition;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
+import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -169,7 +169,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 		LayoutMasterDetail detailData = new LayoutMasterDetail(new CompanyCode(companyCode), layout.getStmtCode(),
 				layoutHistory.getHistoryId(), cateAtr, new ItemCode(itemCode), new AutoLineId(autoLineId),
 				new ItemPosColumn(itemPosColumn), alarm, calMethod, distribute, DisplayAtr.DISPLAY, error, sumAtr,
-				new FormulaCode("00"), new PersonalWageCode("00"), new WageTableCode("00"),
+				new FormulaCode("00"), new PersonalWageCode("00"), new WtCode("00"),
 				new CommonAmount(new BigDecimal("0")), new ItemCode("0000"), CommuteAtr.TRANSPORTATION_EQUIPMENT);
 
 		this.detailRepo.add(detailData);

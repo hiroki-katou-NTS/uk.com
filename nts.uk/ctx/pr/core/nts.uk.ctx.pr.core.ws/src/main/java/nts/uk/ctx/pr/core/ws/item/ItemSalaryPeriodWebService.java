@@ -7,6 +7,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalaryperiod.AddItemSalaryPeriodCommand;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalaryperiod.AddItemSalaryPeriodCommandHandler;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalaryperiod.UpdateItemSalaryPeriodCommand;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalaryperiod.UpdateItemSalaryPeriodCommandHandler;
 import nts.uk.ctx.pr.core.app.find.itemmaster.dto.itemsalaryperiod.ItemSalaryPeriodDto;
 import nts.uk.ctx.pr.core.app.find.itemmaster.itemsalaryperiod.ItemSalaryPeriodFinder;
 
@@ -15,10 +19,29 @@ import nts.uk.ctx.pr.core.app.find.itemmaster.itemsalaryperiod.ItemSalaryPeriodF
 public class ItemSalaryPeriodWebService extends WebService {
 	@Inject
 	ItemSalaryPeriodFinder itemSalaryPeriodFinder;
+	@Inject
+	AddItemSalaryPeriodCommandHandler addHandler;
+	@Inject
+	UpdateItemSalaryPeriodCommandHandler updateHandler;
 
 	@POST
 	@Path("find/{itemCode}")
 	public ItemSalaryPeriodDto findItemSalaryPeriod(@PathParam("itemCode") String itemCode) {
 		return this.itemSalaryPeriodFinder.find(itemCode);
+	}
+
+	@POST
+	@Path("add")
+	public void addItemSalaryPeriod(AddItemSalaryPeriodCommand command) {
+		this.addHandler.handle(command);
+
+	}
+
+
+	@POST
+	@Path("update")
+	public void updateItemSalaryPeriod(UpdateItemSalaryPeriodCommand command) {
+		this.updateHandler.handle(command);
+
 	}
 }

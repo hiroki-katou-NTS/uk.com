@@ -1,22 +1,25 @@
 package nts.uk.ctx.basic.dom.system.bank.linebank;
+
 /**
  * Account attribute
+ * 
  * @author sonnh1
  *
  */
 public enum AccountAtr {
 	/**
-	 * 0 - “–À
+	 * 0 - æ™®é€š
 	 */
 	NORMAL(0),
 	/**
-	 * 1- •’Ê
+	 * 1- å½“åº§
 	 */
 	CURRENTLY(1);
-	
+
 	public final int value;
-	AccountAtr(int value){
+
+	AccountAtr(int value) {
 		this.value = value;
 	}
-	
+
 }

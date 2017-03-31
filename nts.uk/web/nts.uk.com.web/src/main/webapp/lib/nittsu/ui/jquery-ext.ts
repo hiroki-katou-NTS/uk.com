@@ -1,3 +1,5 @@
+/// <reference path="../reference.ts"/>
+
 interface JQuery {
     ntsPopup(args: any): JQuery;
     ntsError(action: string, param?: any): any;
@@ -6,6 +8,7 @@ interface JQuery {
     ntsWizard(action: string, param?: any): any;
     ntsUserGuide(action?: string, param?: any): any;
     ntsSideBar(action?: string, param?: any): any;
+    ntsEditor(action?: string, param?: any): any;
     setupSearchScroll(controlType: string, param?: any): any;
 }
 
@@ -27,6 +30,7 @@ module nts.uk.ui.jqueryExtentions {
             }
 
         }
+
         //function for set and clear error
         function processErrorOnItem($control: JQuery, message: string, action: string) {
             switch (action) {
@@ -37,6 +41,7 @@ module nts.uk.ui.jqueryExtentions {
                     return clearErrors($control);
             }
         }
+
         function setError($control: JQuery, message: string) {
             $control.data(DATA_HAS_ERROR, true);
             ui.errors.add({
@@ -232,41 +237,41 @@ module nts.uk.ui.jqueryExtentions {
                 detail: {},
             });
             var currentColumns = $grid.igGrid("option", "columns");
-            
+
             currentColumns.push({
-                dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField, 
-                    width: 30, formatter: function createButton(deleteField, row) {
+                dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
+                width: 30, formatter: function createButton(deleteField, row) {
                     var primaryKey = $grid.igGrid("option", "primaryKey");
                     var result = $('<input class="delete-button" value="delete" type="button"/>');
                     result.attr("data-value", row[primaryKey]);
                     if (deleteField === true && primaryKey !== null && !util.isNullOrUndefined(row[primaryKey])) {
-                        return result[0].outerHTML ;
+                        return result[0].outerHTML;
                     } else {
                         return result.attr("disabled", "disabled")[0].outerHTML;
                     }
-                }    
+                }
             });
             $grid.igGrid("option", "columns", currentColumns);
-            
-            $grid.on( "click", ".delete-button", function() {
+
+            $grid.on("click", ".delete-button", function() {
                 var key = $(this).attr("data-value");
                 var primaryKey = $grid.igGrid("option", "primaryKey");
                 var source = _.cloneDeep($grid.igGrid("option", "dataSource"));
-                _.remove(source, function(current){
-                    return _.isEqual(current[primaryKey].toString(), key.toString());      
+                _.remove(source, function(current) {
+                    return _.isEqual(current[primaryKey].toString(), key.toString());
                 });
-                if(!util.isNullOrUndefined(param.sourceTarget) && typeof param.sourceTarget === "function"){
+                if (!util.isNullOrUndefined(param.sourceTarget) && typeof param.sourceTarget === "function") {
                     param.sourceTarget(source);
-                }else {
+                } else {
                     $grid.igGrid("option", "dataSource", source);
-                    $grid.igGrid("dataBind");    
+                    $grid.igGrid("dataBind");
                 }
                 itemDeletedEvent.detail["target"] = key;
                 document.getElementById($grid.attr('id')).dispatchEvent(itemDeletedEvent);
             });
-            
+
         }
-        
+
         function setupSelecting($grid: JQuery) {
             setupDragging($grid);
             setupSelectingEvents($grid);
@@ -406,9 +411,6 @@ module nts.uk.ui.jqueryExtentions {
                     break;
                 case 'selectAll':
                     selectAll($grid);
-                    break;
-                case 'validate':
-                    return validate($grid);
                 default:
                     break;
             }
@@ -421,25 +423,37 @@ module nts.uk.ui.jqueryExtentions {
         }
 
         function deselectAll($list: JQuery) {
-            $list.data('value', '');
+            var selectListBoxContainer = $list.find('.nts-list-box');
+            selectListBoxContainer.data('value', '');
             $list.find('.nts-list-box > li').removeClass("ui-selected");
             $list.find('.nts-list-box > li > div').removeClass("ui-selected");
             $list.trigger("selectionChange");
         }
+    }
+    
+    module ntsEditor {
+        $.fn.ntsEditor = function(action: string): any {
 
-        function validate($list: JQuery) {
-            var required = $list.data('required');
-            var $currentListBox = $list.find('.nts-list-box');
-            if (required) {
-                var itemsSelected: any = $list.data('value');
-                if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
-                    $currentListBox.ntsError('set', 'at least 1 item selection required');
-                    return false;
-                } else {
-                    $currentListBox.ntsError('clear');
-                    return true;
-                }
+            var $editor = $(this);
+
+            switch (action) {
+                case 'validate':
+                    validate($editor);
+                default:
+                    break;
             }
+        };
+
+        function validate($editor: JQuery) {
+            var validateEvent = new CustomEvent("validate", {
+                
+            });
+            $editor.each(function(index) {
+                var $input = $(this);
+                document.getElementById($input.attr('id')).dispatchEvent(validateEvent);
+            });
+//            document.getElementById($editor.attr('id')).dispatchEvent(validateEvent);
+//            $editor.trigger("validate");
         }
     }
 
@@ -550,7 +564,12 @@ module nts.uk.ui.jqueryExtentions {
                     .addClass("overlay-" + direction)
                     .appendTo($control);
                 $control.hide();
+
             });
+
+            // Hiding when click outside
+            $("html").on("mouseup keypress", {controls: controls} , hideBinding);
+
             return controls;
         }
 
@@ -558,7 +577,17 @@ module nts.uk.ui.jqueryExtentions {
             controls.each(function() {
                 $(this).remove();
             });
+            
+            // Unbind Hiding when click outside
+            $("html").off("mouseup keypress", hideBinding);
             return controls;
+        }
+        
+        function hideBinding(e): JQuery {
+            e.data.controls.each(function() {
+                $(this).hide();
+            });
+            return e.data.controls;
         }
 
         function show(controls: JQuery): JQuery {
@@ -581,6 +610,7 @@ module nts.uk.ui.jqueryExtentions {
             });
             return controls;
         }
+        
 
         function hide(controls: JQuery): JQuery {
             controls.each(function() {

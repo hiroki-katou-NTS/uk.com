@@ -19,6 +19,7 @@ import nts.arc.primitive.constraint.LongMinValue;
 import nts.arc.primitive.constraint.LongRange;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
+import nts.arc.primitive.constraint.StringRegEx;
 
 class Helper {
 	
@@ -29,6 +30,7 @@ class Helper {
 	static {
 		CONSTRAINTS_SIGNLE_PARAM.put(StringCharType.class.getSimpleName(), "charType");
 		CONSTRAINTS_SIGNLE_PARAM.put(StringMaxLength.class.getSimpleName(), "maxLength");
+		CONSTRAINTS_SIGNLE_PARAM.put(StringRegEx.class.getSimpleName(), "stringExpression");
 		CONSTRAINTS_SIGNLE_PARAM.put(IntegerMaxValue.class.getSimpleName(), "max");
 		CONSTRAINTS_SIGNLE_PARAM.put(IntegerMinValue.class.getSimpleName(), "min");
 		CONSTRAINTS_SIGNLE_PARAM.put(LongMaxValue.class.getSimpleName(), "max");
@@ -68,7 +70,7 @@ class Helper {
 	}
 	
 	static String getAnnotationName(String representationOfAnnotation) {
-    	int end = representationOfAnnotation.indexOf("(");
+		int end = representationOfAnnotation.indexOf("(");
     	String noEnd = representationOfAnnotation.substring(0, end);
     	int start = noEnd.lastIndexOf(".") + 1;
 
@@ -86,6 +88,8 @@ class Helper {
 		
 		if (constraintName.equals("StringCharType")) {
 			jsValue = "'" + Helper.CHARTYPE_NAMES_MAP.get(jsValue) + "'";
+		} else if (constraintName.equals("StringRegEx")){
+			jsValue = "/" + jsValue + "/";
 		}
 		
 		return jsValue;

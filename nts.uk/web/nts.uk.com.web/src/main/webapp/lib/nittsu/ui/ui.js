@@ -15,9 +15,6 @@ var nts;
                         $(event.target).dialog('widget').css({ position: 'fixed' });
                     }
                 };
-                /**
-                 * Main or Sub Window(dialog)
-                 */
                 var ScreenWindow = (function () {
                     function ScreenWindow(id, isRoot, parent) {
                         this.globalContext = null;
@@ -84,7 +81,6 @@ var nts;
                                 title: options.title || "dialog",
                                 resizable: true,
                                 beforeClose: function () {
-                                    //return dialogWindow.__viewContext.dialog.beforeClose();
                                 }
                             }).dialog('open');
                         });
@@ -122,7 +118,6 @@ var nts;
                     ScreenWindow.prototype.dispose = function () {
                         var _this = this;
                         _.defer(function () { return _this.onClosedHandler(); });
-                        // delay 2 seconds to avoid IE error when any JS is running in destroyed iframe
                         setTimeout(function () {
                             _this.$iframe.remove();
                             _this.$dialog.remove();
@@ -136,10 +131,6 @@ var nts;
                     return ScreenWindow;
                 }());
                 windows.ScreenWindow = ScreenWindow;
-                /**
-                 * All ScreenWindows are managed by this container.
-                 * this instance is singleton in one browser-tab.
-                 */
                 var ScreenWindowContainer = (function () {
                     function ScreenWindowContainer() {
                         this.windows = {};
@@ -148,9 +139,6 @@ var nts;
                         this.shared = {};
                         this.localShared = {};
                     }
-                    /**
-                     * All dialog object is in MainWindow.
-                     */
                     ScreenWindowContainer.prototype.createDialog = function (path, options, parentId) {
                         var parentwindow = this.windows[parentId];
                         var subWindow = ScreenWindow.createSubWindow(parentwindow);
@@ -237,7 +225,6 @@ var nts;
                         .append($control)
                         .appendTo('body')
                         .dialog({
-                        dialogClass: "no-close",
                         width: 'auto',
                         modal: true,
                         closeOnEscape: false,
@@ -255,13 +242,6 @@ var nts;
                     });
                     return $this;
                 }
-                /**
-                 * Show information dialog.
-                 *
-                 * @param {String}
-                 *			text information text
-                 * @returns handler
-                 */
                 function info(text) {
                     var then = $.noop;
                     var $dialog = $('<div/>').hide();
@@ -288,46 +268,29 @@ var nts;
                 }
                 dialog.info = info;
                 ;
-                /**
-                 * Show alert dialog.
-                 *
-                 * @param {String}
-                 *			text information text
-                 * @returns handler
-                 */
                 function alert(text) {
                     return info(text);
                 }
                 dialog.alert = alert;
                 ;
-                /**
-                 * Show confirm dialog.
-                 *
-                 * @param {String}
-                 *			text information text
-                 * @returns handler
-                 */
                 function confirm(text) {
                     var handleYes = $.noop;
                     var handleNo = $.noop;
                     var handleCancel = $.noop;
                     var handleThen = $.noop;
-                    var hasNoButton = true;
                     var hasCancelButton = false;
                     var handlers = {
                         ifYes: function (handler) {
                             handleYes = handler;
                             return handlers;
                         },
-                        ifCancel: function (handler) {
-                            hasNoButton = false;
-                            hasCancelButton = true;
-                            handleCancel = handler;
+                        ifNo: function (handler) {
+                            handleNo = handler;
                             return handlers;
                         },
-                        ifNo: function (handler) {
-                            hasNoButton = true;
-                            handleNo = handler;
+                        ifCancel: function (handler) {
+                            hasCancelButton = true;
+                            handleCancel = handler;
                             return handlers;
                         },
                         then: function (handler) {
@@ -337,7 +300,6 @@ var nts;
                     };
                     setTimeout(function () {
                         var buttons = [];
-                        // yes button
                         buttons.push({
                             text: "はい",
                             "class": "yes large danger",
@@ -347,22 +309,18 @@ var nts;
                                 handleThen();
                             }
                         });
-                        // no button
-                        if (hasNoButton) {
-                            buttons.push({
-                                text: "いいえ",
-                                "class": "no large",
-                                click: function () {
-                                    $this.dialog('close');
-                                    handleNo();
-                                    handleThen();
-                                }
-                            });
-                        }
-                        // cancel button
+                        buttons.push({
+                            text: "いいえ",
+                            "class": "no large",
+                            click: function () {
+                                $this.dialog('close');
+                                handleNo();
+                                handleThen();
+                            }
+                        });
                         if (hasCancelButton) {
                             buttons.push({
-                                text: "キャンセル",
+                                text: "Cancel",
                                 "class": "cancel large",
                                 click: function () {
                                     $this.dialog('close');
@@ -381,38 +339,24 @@ var nts;
             var contextmenu;
             (function (contextmenu) {
                 var ContextMenu = (function () {
-                    /**
-                     * Create an instance of ContextMenu. Auto call init() method
-                     *
-                     * @constructor
-                     * @param {selector} Jquery selector for elements need to show ContextMenu
-                     * @param {items} List ContextMenuItem for ContextMenu
-                     * @param {enable} (Optinal) Set enable/disable for ContextMenu
-                     */
                     function ContextMenu(selector, items, enable) {
                         this.selector = selector;
                         this.items = items;
                         this.enable = (enable !== undefined) ? enable : true;
                         this.init();
                     }
-                    /**
-                     * Create ContextMenu and bind event in DOM
-                     */
                     ContextMenu.prototype.init = function () {
                         var self = this;
-                        // Remove ContextMenu with same 'selector' (In case Ajax call will re-create DOM elements)
                         $('body .ntsContextMenu').each(function () {
                             if ($(this).data("selector") === self.selector) {
                                 $("body").off("contextmenu", self.selector);
                                 $(this).remove();
                             }
                         });
-                        // Initial
                         self.guid = nts.uk.util.randomId();
                         var $contextMenu = $("<ul id='" + self.guid + "' class='ntsContextMenu'></ul>").data("selector", self.selector).hide();
                         self.createMenuItems($contextMenu);
                         $('body').append($contextMenu);
-                        // Binding contextmenu event
                         $("html").on("contextmenu", self.selector, function (event) {
                             if (self.enable === true) {
                                 event.preventDefault();
@@ -424,34 +368,20 @@ var nts;
                                 });
                             }
                         });
-                        // Hiding when click outside
                         $("html").on("mousedown", function (event) {
                             if (!$contextMenu.is(event.target) && $contextMenu.has(event.target).length === 0) {
                                 $contextMenu.hide();
                             }
                         });
                     };
-                    /**
-                     * Remove and unbind ContextMenu event
-                     */
                     ContextMenu.prototype.destroy = function () {
-                        // Unbind contextmenu event
                         $("html").off("contextmenu", this.selector);
                         $("#" + this.guid).remove();
                     };
-                    /**
-                     * Re-create ContextMenu. Useful when you change various things in ContextMenu.items
-                     */
                     ContextMenu.prototype.refresh = function () {
                         this.destroy();
                         this.init();
                     };
-                    /**
-                     * Get a ContextMenuItem instance
-                     *
-                     * @param {target} Can be string or number. String type will select item by "key", Number type will select item by index
-                     * @return {any} Return ContextMenuItem if found or undefiend
-                     */
                     ContextMenu.prototype.getItem = function (target) {
                         if (typeof target === "number") {
                             return this.items[target];
@@ -463,20 +393,10 @@ var nts;
                             return undefined;
                         }
                     };
-                    /**
-                     * Add an ContextMenuItem instance to ContextMenu
-                     *
-                     * @param {item} An ContextMenuItem instance
-                     */
                     ContextMenu.prototype.addItem = function (item) {
                         this.items.push(item);
                         this.refresh();
                     };
-                    /**
-                     * Remove item with given "key" or index
-                     *
-                     * @param {target} Can be string or number. String type will select item by "key", Number type will select item by index
-                     */
                     ContextMenu.prototype.removeItem = function (target) {
                         var item = this.getItem(target);
                         if (item !== undefined) {
@@ -484,31 +404,14 @@ var nts;
                             this.refresh();
                         }
                     };
-                    /**
-                     * Enable/Disable ContextMenu. If disable right-click will have default behavior
-                     *
-                     * @param {enable} A boolean value set enable/disable
-                     */
                     ContextMenu.prototype.setEnable = function (enable) {
                         this.enable = enable;
                     };
-                    /**
-                     * Enable/Disable item with given "key" or index
-                     *
-                     * @param {enable} A boolean value set enable/disable
-                     * @param {target} Can be string or number. String type will select item by "key", Number type will select item by index
-                     */
                     ContextMenu.prototype.setEnableItem = function (enable, target) {
                         var item = this.getItem(target);
                         item.enable = enable;
                         this.refresh();
                     };
-                    /**
-                     * Show/Hide item with given "key" or index
-                     *
-                     * @param {enable} A boolean value set visible/hidden
-                     * @param {target} Can be string or number. String type will select item by "key", Number type will select item by index
-                     */
                     ContextMenu.prototype.setVisibleItem = function (visible, target) {
                         var item = this.getItem(target);
                         item.visible = visible;
@@ -569,7 +472,6 @@ var nts;
                 confirmSaveEnable(beforeunloadHandler);
             }
             function confirmSaveDialog(dirtyChecker, dialog) {
-                //dialog* any;
                 var beforeunloadHandler = function (e) {
                     if (dirtyChecker.isDirty()) {
                         e.preventDefault();
@@ -620,9 +522,6 @@ var nts;
                 return DirtyChecker;
             }());
             ui_1.DirtyChecker = DirtyChecker;
-            /**
-             * Utilities for IgniteUI
-             */
             var ig;
             (function (ig) {
                 var grid;
@@ -682,3 +581,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=ui.js.map
