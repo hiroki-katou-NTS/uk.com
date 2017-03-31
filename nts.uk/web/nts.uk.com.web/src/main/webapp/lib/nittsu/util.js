@@ -127,7 +127,7 @@ var nts;
             }
             util.isIn = isIn;
             ;
-            function createTreeFromString(original, openChar, closeChar, seperatorChar, operatorChar) {
+            function createTreeFromString(original, openChar, closeChar, seperatorChar) {
                 return convertToTree(original, openChar, closeChar, seperatorChar, 1).result;
             }
             util.createTreeFromString = createTreeFromString;
@@ -178,10 +178,7 @@ var nts;
                         }
                     }
                 }
-                return {
-                    "result": result,
-                    "index": index
-                };
+                return result;
             }
             function findIndexOfCloseChar(original, openChar, closeChar, firstOpenIndex) {
                 var openCount = 0;

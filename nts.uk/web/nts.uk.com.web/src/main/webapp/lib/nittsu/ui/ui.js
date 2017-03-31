@@ -225,7 +225,6 @@ var nts;
                         .append($control)
                         .appendTo('body')
                         .dialog({
-                        dialogClass: "no-close",
                         width: 'auto',
                         modal: true,
                         closeOnEscape: false,
@@ -279,22 +278,19 @@ var nts;
                     var handleNo = $.noop;
                     var handleCancel = $.noop;
                     var handleThen = $.noop;
-                    var hasNoButton = true;
                     var hasCancelButton = false;
                     var handlers = {
                         ifYes: function (handler) {
                             handleYes = handler;
                             return handlers;
                         },
-                        ifCancel: function (handler) {
-                            hasNoButton = false;
-                            hasCancelButton = true;
-                            handleCancel = handler;
+                        ifNo: function (handler) {
+                            handleNo = handler;
                             return handlers;
                         },
-                        ifNo: function (handler) {
-                            hasNoButton = true;
-                            handleNo = handler;
+                        ifCancel: function (handler) {
+                            hasCancelButton = true;
+                            handleCancel = handler;
                             return handlers;
                         },
                         then: function (handler) {
@@ -313,20 +309,18 @@ var nts;
                                 handleThen();
                             }
                         });
-                        if (hasNoButton) {
-                            buttons.push({
-                                text: "いいえ",
-                                "class": "no large",
-                                click: function () {
-                                    $this.dialog('close');
-                                    handleNo();
-                                    handleThen();
-                                }
-                            });
-                        }
+                        buttons.push({
+                            text: "いいえ",
+                            "class": "no large",
+                            click: function () {
+                                $this.dialog('close');
+                                handleNo();
+                                handleThen();
+                            }
+                        });
                         if (hasCancelButton) {
                             buttons.push({
-                                text: "キャンセル",
+                                text: "Cancel",
                                 "class": "cancel large",
                                 click: function () {
                                     $this.dialog('close');
@@ -517,7 +511,7 @@ var nts;
                     this.initialState = this.getCurrentState();
                 }
                 DirtyChecker.prototype.getCurrentState = function () {
-                    return ko.toJSON(this.targetViewModel());
+                    return ko.mapping.toJSON(this.targetViewModel());
                 };
                 DirtyChecker.prototype.reset = function () {
                     this.initialState = this.getCurrentState();

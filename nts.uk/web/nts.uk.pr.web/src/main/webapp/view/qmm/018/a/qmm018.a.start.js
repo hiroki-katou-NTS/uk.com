@@ -5,9 +5,9 @@ var qmm018;
         __viewContext.ready(function () {
             var screenModel = new qmm018.a.viewmodel.ScreenModel();
             screenModel.startPage().done(function () {
-                nts.uk.ui.confirmSave(screenModel.dirtyObject);
                 __viewContext.bind(screenModel);
             });
         });
     })(a = qmm018.a || (qmm018.a = {}));
 })(qmm018 || (qmm018 = {}));
+//# sourceMappingURL=qmm018.a.start.js.map

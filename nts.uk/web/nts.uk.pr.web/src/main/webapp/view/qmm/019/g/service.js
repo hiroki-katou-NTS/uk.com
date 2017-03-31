@@ -6,7 +6,7 @@ var qmm019;
         (function (service) {
             var paths = {
                 getLayoutHeadInfor: "pr/proto/layout/findlayoutwithmaxstartym",
-                getAllLayoutHist: "pr/proto/layout/findalllayoutHist",
+                getLayoutHistoryInfor: "pr/proto/layout/findlayouthistorywithmaxstartym",
                 copylayoutPath: "pr/proto/layout/createlayout"
             };
             function getLayoutHeadInfor() {
@@ -21,9 +21,9 @@ var qmm019;
                 return dfd.promise();
             }
             service.getLayoutHeadInfor = getLayoutHeadInfor;
-            function getAllLayoutHist() {
+            function getLayoutHistoryInfor() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getAllLayoutHist)
+                nts.uk.request.ajax(paths.getLayoutHistoryInfor)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -32,7 +32,7 @@ var qmm019;
                 });
                 return dfd.promise();
             }
-            service.getAllLayoutHist = getAllLayoutHist;
+            service.getLayoutHistoryInfor = getLayoutHistoryInfor;
             function createLayout(layoutMaster) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.copylayoutPath, layoutMaster).done(function (res) {
@@ -57,12 +57,6 @@ var qmm019;
                     return LayoutMasterDto;
                 }());
                 model.LayoutMasterDto = LayoutMasterDto;
-                var LayoutHistory = (function () {
-                    function LayoutHistory() {
-                    }
-                    return LayoutHistory;
-                }());
-                model.LayoutHistory = LayoutHistory;
                 var LayoutHistoryDto = (function () {
                     function LayoutHistoryDto() {
                     }

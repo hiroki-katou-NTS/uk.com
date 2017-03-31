@@ -8,8 +8,7 @@ var qmm019;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.isEnable = ko.observable(true);
-                    self.isEnableCombox = ko.observable(false);
+                    self.isEnable = ko.observable(false);
                     self.selectedCodes = ko.observable("3");
                     self.layouts = ko.observableArray([]);
                     self.layoutHistory = ko.observableArray([]);
@@ -55,12 +54,10 @@ var qmm019;
                     });
                     self.isRadioCheck.subscribe(function (newValue) {
                         if (newValue === 1) {
-                            self.isEnable(true);
-                            self.isEnableCombox(false);
+                            self.isEnable(false);
                         }
                         else {
-                            self.isEnable(false);
-                            self.isEnableCombox(true);
+                            self.isEnable(true);
                         }
                     });
                     self.selectLayoutCode.subscribe(function (newValue) {

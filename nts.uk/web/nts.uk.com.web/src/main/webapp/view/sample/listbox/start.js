@@ -15,9 +15,6 @@ __viewContext.ready(function () {
             self.isMulti = ko.observable(true);
             self.isMulti2 = ko.observable(true);
             self.isValidate = ko.observable(true);
-            $("#list-box").on("selectionChanging", function(){
-                return self.isValidate();    
-            });
         }
         ScreenModel.prototype.addOptions = function () {
             var self = this;
@@ -30,12 +27,10 @@ __viewContext.ready(function () {
             $('#list-box').ntsListBox('deselectAll');
         };
         ScreenModel.prototype.selectAll = function () {
-        	var self = this;
-        	self.selectedCodes([10]);
+            $('#list-box').ntsListBox('selectAll');
         };
         ScreenModel.prototype.clearOptions = function () {
-        	var self = this;
-            self.itemList([]);
+            this.itemList([]);
         };
         ScreenModel.prototype.remove = function () {
             var self = this;
