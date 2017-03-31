@@ -22,7 +22,13 @@ module nts.uk.pr.view.qmm016.a.history.base {
             var self = this;
             self.htmlPath = htmlPath;
             self.history = history;
+            self.elementSettings = history.elements;
         }
+
+        /**
+         * On load.
+         */
+        abstract onLoad(): JQueryPromise<any>;
 
         /**
          * Refresh element settings.
