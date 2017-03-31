@@ -2,8 +2,6 @@ module nts.uk.pr.view.qmm010.b {
 
     import option = nts.uk.ui.option;
     import SocialInsuranceOfficeImportDto = service.model.SocialInsuranceOfficeImportDto;
-    import LaborInsuranceOfficeCheckImportDto = service.model.LaborInsuranceOfficeCheckImportDto;
-    import LaborInsuranceOfficeImportDto = service.model.LaborInsuranceOfficeImportDto;
 
     export module viewmodel {
         export class ScreenModel {
@@ -42,35 +40,6 @@ module nts.uk.pr.view.qmm010.b {
                 return dfd.promise();
             }
 
-            //show confirm by dulicate code
-            private showConfirm(laborInsuranceOfficeCheckImportDto: LaborInsuranceOfficeCheckImportDto,
-                socialInsuranceOfficeImport: SocialInsuranceOfficeImportDto) {
-                var self = this;
-                if (laborInsuranceOfficeCheckImportDto.code === "1") {
-                    nts.uk.ui.dialog.confirm("Duplicate Code ! Do you replace All?")
-                        .ifYes(function() {
-                            self.importData(0, socialInsuranceOfficeImport);
-                        }).ifNo(function() {
-                            self.importData(1, socialInsuranceOfficeImport);
-                        })
-                } else {
-                    self.importData(0, socialInsuranceOfficeImport);
-                }
-            }
-            
-            //import data
-            private importData(checkUpdateDuplicateCode: number,
-                socialInsuranceOfficeImport: SocialInsuranceOfficeImportDto) {
-                var laborInsuranceOfficeImportDto: LaborInsuranceOfficeImportDto;
-                laborInsuranceOfficeImportDto = new LaborInsuranceOfficeImportDto();
-                laborInsuranceOfficeImportDto.socialInsuranceOfficeImport = socialInsuranceOfficeImport;
-                laborInsuranceOfficeImportDto.checkUpdateDuplicateCode = checkUpdateDuplicateCode;
-                //call servier import data
-                service.importData(laborInsuranceOfficeImportDto).done(data => {
-                    nts.uk.ui.windows.close();
-                });
-            }
-
             //Find code data lst by check import data
             private findCode(code: string): SocialInsuranceOfficeImportDto {
                 var self = this;
@@ -83,15 +52,13 @@ module nts.uk.pr.view.qmm010.b {
             }
 
             //check dulicate code
-            private checkDuplicateCodeByImportData() {
+            private importData() {
                 var self = this;
                 if (self.selectLstSocialInsuranceOffice() != null) {
                     var socialInsuranceOfficeImport: SocialInsuranceOfficeImportDto;
                     socialInsuranceOfficeImport = self.findCode(self.selectLstSocialInsuranceOffice());
-                    //call service check duplicate
-                    service.checkDuplicateCodeByImportData(socialInsuranceOfficeImport).done(data => {
-                        self.showConfirm(data, socialInsuranceOfficeImport);
-                    });
+                    nts.uk.ui.windows.setShared('importData', socialInsuranceOfficeImport);
+                    nts.uk.ui.windows.close();
                 }
             }
         }

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.healthrate.command;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -14,7 +16,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.service.HealthInsuranceRateService;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class UpdateHealthInsuranceCommandHandler.
@@ -44,27 +45,27 @@ public class UpdateHealthInsuranceCommandHandler
 		// Get command.
 		UpdateHealthInsuranceCommand command = context.getCommand();
 
-		// Get the current company code.
-		String companyCode = AppContexts.user().companyCode();
-
 		// Get the history.
-		HealthInsuranceRate findhealthInsuranceRate = healthInsuranceRateRepository
-				.findById(command.getHistoryId()).get();
+		Optional<HealthInsuranceRate> optHealthInsuranceRate = this.healthInsuranceRateRepository
+				.findById(command.getHistoryId());
 
 		// if not exsits
-		if (findhealthInsuranceRate == null) {
+		if (!optHealthInsuranceRate.isPresent()) {
 			throw new BusinessException("ER010");
 		} else {
 			// Transfer data
-			HealthInsuranceRate updatedHealthInsuranceRate = command.toDomain(companyCode,
-					findhealthInsuranceRate.getHistoryId(),
-					findhealthInsuranceRate.getOfficeCode());
-			updatedHealthInsuranceRate.validate();
+			HealthInsuranceRate healthInsuranceRate = optHealthInsuranceRate.get();
+			healthInsuranceRate.setAutoCalculate(command.getAutoCalculate());
+			healthInsuranceRate.setMaxAmount(command.getMaxAmount());
+			healthInsuranceRate.setRateItems(command.getRateItems());
+			healthInsuranceRate.setRoundingMethods(command.getRoundingMethods());
+
 			// Validate
-			healthInsuranceRateService.validateRequiredItem(updatedHealthInsuranceRate);
+			healthInsuranceRate.validate();
+			this.healthInsuranceRateService.validateRequiredItem(healthInsuranceRate);
 
 			// Update to db.
-			healthInsuranceRateRepository.update(updatedHealthInsuranceRate);
+			this.healthInsuranceRateRepository.update(healthInsuranceRate);
 		}
 	}
 

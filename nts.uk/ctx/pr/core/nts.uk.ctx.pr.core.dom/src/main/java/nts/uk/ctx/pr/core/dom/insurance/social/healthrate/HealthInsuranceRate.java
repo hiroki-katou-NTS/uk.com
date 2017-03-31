@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.primitive.PrimitiveValue;
@@ -42,15 +43,19 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 	/** The apply range. */
 	private MonthRange applyRange;
 
+	@Setter
 	/** The auto calculate. */
 	private CalculateMethod autoCalculate;
 
+	@Setter
 	/** The max amount. */
 	private CommonAmount maxAmount;
 
+	@Setter
 	/** The rate items. */
 	private Set<InsuranceRateItem> rateItems;
 
+	@Setter
 	/** The rounding methods. */
 	private Set<HealthInsuranceRounding> roundingMethods;
 
@@ -220,14 +225,14 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 	private static Set<HealthInsuranceRounding> setDefaultRounding() {
 		Set<HealthInsuranceRounding> setItem = new HashSet<HealthInsuranceRounding>();
 		RoundingItem salRounding = new RoundingItem();
-		salRounding.setCompanyRoundAtr(RoundingMethod.RoundUp);
-		salRounding.setPersonalRoundAtr(RoundingMethod.RoundUp);
+		salRounding.setCompanyRoundAtr(RoundingMethod.Truncation);
+		salRounding.setPersonalRoundAtr(RoundingMethod.Truncation);
 		HealthInsuranceRounding item1 = new HealthInsuranceRounding(PaymentType.Salary,
 				salRounding);
 		setItem.add(item1);
 		RoundingItem bnsRounding = new RoundingItem();
-		bnsRounding.setCompanyRoundAtr(RoundingMethod.RoundUp);
-		bnsRounding.setPersonalRoundAtr(RoundingMethod.RoundUp);
+		bnsRounding.setCompanyRoundAtr(RoundingMethod.Truncation);
+		bnsRounding.setPersonalRoundAtr(RoundingMethod.Truncation);
 		HealthInsuranceRounding item2 = new HealthInsuranceRounding(PaymentType.Bonus, bnsRounding);
 		setItem.add(item2);
 

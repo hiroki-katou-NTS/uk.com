@@ -69,12 +69,19 @@ var nts;
                                 };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
+                                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                                        return;
+                                    }
                                     h.service.updateHealthInsuranceAvgearn(self.collectData(), self.healthInsuranceRateModel.officeCode).done(function () {
                                         return self.closeDialog();
                                     });
                                 };
+                                ScreenModel.prototype.clearError = function () {
+                                    $('.has-error').ntsError('clear');
+                                };
                                 ScreenModel.prototype.reCalculate = function () {
                                     var self = this;
+                                    self.clearError();
                                     self.listHealthInsuranceAvgearn.removeAll();
                                     self.listAvgEarnLevelMasterSetting.forEach(function (item) {
                                         self.listHealthInsuranceAvgearn.push(self.calculateHealthInsuranceAvgEarnModel(item));
@@ -121,12 +128,12 @@ var nts;
                                 };
                                 ScreenModel.prototype.convertToRounding = function (stringValue) {
                                     switch (stringValue) {
-                                        case "0": return Rounding.ROUNDUP;
-                                        case "1": return Rounding.TRUNCATION;
+                                        case "0": return Rounding.TRUNCATION;
+                                        case "1": return Rounding.ROUNDUP;
                                         case "2": return Rounding.DOWN4_UP5;
-                                        case "3": return Rounding.ROUNDDOWN;
-                                        case "4": return Rounding.DOWN5_UP6;
-                                        default: return Rounding.ROUNDUP;
+                                        case "3": return Rounding.DOWN5_UP6;
+                                        case "4": return Rounding.ROUNDDOWN;
+                                        default: return Rounding.TRUNCATION;
                                     }
                                 };
                                 ScreenModel.prototype.closeDialogWithDirtyCheck = function () {

@@ -12,7 +12,7 @@ module nts.uk.pr.view.qmm008.i {
         /**
          *  Save list pensionAvgearn
          */
-        export function updatePensionAvgearn(listPensionAvgearn: model.PensionAvgearnDto, officeCode: string): JQueryPromise<any> {
+        export function updatePensionAvgearn(listPensionAvgearn: Array<model.PensionAvgearnDto>, officeCode: string): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
             var data = { listPensionAvgearn: listPensionAvgearn, officeCode: officeCode };
             nts.uk.request.ajax(paths.updatePensionAvgearn, data).done(() =>
