@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -21,7 +20,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "QUPMT_P_UNITPRICE")
-@Data
 public class QupmtPUnitprice extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

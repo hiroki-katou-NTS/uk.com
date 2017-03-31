@@ -87,7 +87,7 @@ var qmm013;
                                     var tmp = _.find(self.listItems(), function (x) {
                                         return x.personalUnitPriceCode === self.currentCode();
                                     });
-                                    var tmp1 = new PersonalUnitPrice(tmp.personalUnitPriceCode, tmp.personalUnitPriceName, tmp.personalUnitPriceShortName, tmp.displaySet ? true : false, null, tmp.paymentSettingType, tmp.fixPaymentAtr, tmp.fixPaymentMonthly, tmp.fixPaymentDayMonth, tmp.fixPaymentDaily, tmp.fixPaymentHoursly, tmp.unitPriceAtr, tmp.memo);
+                                    var tmp1 = new PersonalUnitPrice(tmp.personalUnitPriceCode, tmp.personalUnitPriceName, tmp.personalUnitPriceShortName, tmp.displaySet ? false : true, null, tmp.paymentSettingType, tmp.fixPaymentAtr, tmp.fixPaymentMonthly, tmp.fixPaymentDayMonth, tmp.fixPaymentDaily, tmp.fixPaymentHoursly, tmp.unitPriceAtr, tmp.memo);
                                     self.currentItem(tmp1);
                                     self.dirty.reset();
                                 }
@@ -99,16 +99,20 @@ var qmm013;
                         else {
                             nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。")
                                 .ifYes(function () {
-                                self.notCheckDirty(true);
                                 self.getPersonalUnitPriceList().done(function () {
-                                    if (self.currentItem().displaySet() && self.currentCode() != "") {
+                                    if (self.currentCode() == "") {
+                                        self.notCheckDirty(true);
+                                        self.selectedFirstUnitPrice();
+                                    }
+                                    if (self.currentItem().displaySet()) {
+                                        self.notCheckDirty(true);
                                         self.selectedFirstUnitPrice();
                                     }
                                     else {
                                         var tmp = _.find(self.listItems(), function (x) {
                                             return x.personalUnitPriceCode === self.currentCode();
                                         });
-                                        var tmp1 = new PersonalUnitPrice(tmp.personalUnitPriceCode, tmp.personalUnitPriceName, tmp.personalUnitPriceShortName, tmp.displaySet ? true : false, null, tmp.paymentSettingType, tmp.fixPaymentAtr, tmp.fixPaymentMonthly, tmp.fixPaymentDayMonth, tmp.fixPaymentDaily, tmp.fixPaymentHoursly, tmp.unitPriceAtr, tmp.memo);
+                                        var tmp1 = new PersonalUnitPrice(tmp.personalUnitPriceCode, tmp.personalUnitPriceName, tmp.personalUnitPriceShortName, tmp.displaySet ? false : true, null, tmp.paymentSettingType, tmp.fixPaymentAtr, tmp.fixPaymentMonthly, tmp.fixPaymentDayMonth, tmp.fixPaymentDaily, tmp.fixPaymentHoursly, tmp.unitPriceAtr, tmp.memo);
                                         self.currentItem(tmp1);
                                         self.dirty.reset();
                                     }
@@ -138,7 +142,7 @@ var qmm013;
                     var dfd = $.Deferred();
                     a.service.getPersonalUnitPriceList(self.displayAll()).done(function (data) {
                         var items = _.map(data, function (item) {
-                            var abolition = item.displaySet == true ? '<i class="icon icon-close"></i>' : "";
+                            var abolition = item.displaySet == true ? "" : '<i class="icon icon-close"></i>';
                             return new ItemModel(item.personalUnitPriceCode, item.personalUnitPriceName, abolition);
                         });
                         self.listItems(data);
@@ -163,7 +167,7 @@ var qmm013;
                 };
                 ScreenModel.prototype.selectedFirst = function (item) {
                     var self = this;
-                    return new PersonalUnitPrice(item.personalUnitPriceCode, item.personalUnitPriceName, item.personalUnitPriceShortName, item.displaySet, item.uniteCode, item.paymentSettingType, item.fixPaymentAtr, item.fixPaymentMonthly, item.fixPaymentDayMonth, item.fixPaymentDaily, item.fixPaymentHoursly, item.unitPriceAtr, item.memo);
+                    return new PersonalUnitPrice(item.personalUnitPriceCode, item.personalUnitPriceName, item.personalUnitPriceShortName, item.displaySet ? false : true, item.uniteCode, item.paymentSettingType, item.fixPaymentAtr, item.fixPaymentMonthly, item.fixPaymentDayMonth, item.fixPaymentDaily, item.fixPaymentHoursly, item.unitPriceAtr, item.memo);
                 };
                 ScreenModel.prototype.checkDirty = function () {
                     var self = this;
@@ -212,7 +216,6 @@ var qmm013;
                 };
                 ScreenModel.prototype.btn_002 = function () {
                     var self = this;
-                    self.confirmDirty = true;
                     if (self.currentItem().personalUnitPriceCode() != null && self.currentItem().personalUnitPriceCode().length == 1) {
                         self.currentItem().personalUnitPriceCode("0" + self.currentItem().personalUnitPriceCode());
                     }
@@ -220,7 +223,7 @@ var qmm013;
                         personalUnitPriceCode: self.currentItem().personalUnitPriceCode(),
                         personalUnitPriceName: self.currentItem().personalUnitPriceName(),
                         personalUnitPriceShortName: self.currentItem().personalUnitPriceShortName(),
-                        displaySet: self.currentItem().displaySet() ? 1 : 0,
+                        displaySet: self.currentItem().displaySet() ? 0 : 1,
                         uniteCode: null,
                         paymentSettingType: self.currentItem().paymentSettingType(),
                         fixPaymentAtr: self.currentItem().fixPaymentAtr(),
@@ -233,6 +236,9 @@ var qmm013;
                     };
                     a.service.addPersonalUnitPrice(self.isCreated(), PersonalUnitPrice).done(function () {
                         self.getPersonalUnitPriceList();
+                        if (self.currentItem().personalUnitPriceCode() != self.currentCode()) {
+                            self.confirmDirty = true;
+                        }
                         self.currentCode(PersonalUnitPrice.personalUnitPriceCode);
                         self.isCreated(false);
                         self.dirty.reset();
@@ -241,8 +247,12 @@ var qmm013;
                             $('#INP_002').ntsError('set', self.messages()[2].message);
                         }
                         else if (error.messageId == self.messages()[1].messageId) {
-                            $('#INP_002').ntsError('set', self.messages()[1].message);
-                            $('#INP_003').ntsError('set', self.messages()[1].message);
+                            if (!PersonalUnitPrice.personalUnitPriceCode) {
+                                $('#INP_002').ntsError('set', self.messages()[1].message);
+                            }
+                            if (!PersonalUnitPrice.personalUnitPriceName) {
+                                $('#INP_003').ntsError('set', self.messages()[1].message);
+                            }
                         }
                         else if (error.messageId == self.messages()[4].messageId) {
                             nts.uk.ui.dialog.alert(self.messages()[4].message);
