@@ -16,7 +16,6 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
-import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
 import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSetting;
@@ -160,8 +159,8 @@ public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensio
 		 * PensionAvgearnGetMemento#getChildContributionAmount()
 		 */
 		@Override
-		public InsuranceAmount getChildContributionAmount() {
-			return new InsuranceAmount(
+		public CommonAmount getChildContributionAmount() {
+			return new CommonAmount(
 					BigDecimal.valueOf(setting.getAvgEarn()).multiply(childContributionRate));
 		}
 
