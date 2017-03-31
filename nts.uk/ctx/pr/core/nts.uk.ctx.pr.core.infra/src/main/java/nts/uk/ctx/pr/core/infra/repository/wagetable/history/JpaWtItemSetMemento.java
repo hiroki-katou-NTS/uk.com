@@ -4,9 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable.history;
 
-import java.math.BigDecimal;
-
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
+import nts.uk.ctx.pr.core.dom.wagetable.WtValue;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtItemSetMemento;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableMny;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableMnyPK;
@@ -96,8 +95,8 @@ public class JpaWtItemSetMemento implements WtItemSetMemento {
 	 * setAmount(java.math.BigDecimal)
 	 */
 	@Override
-	public void setAmount(BigDecimal amount) {
-		this.typeValue.setValueMny(amount.longValue());
+	public void setAmount(WtValue amount) {
+		this.typeValue.setValueMny(amount.v());
 	}
 
 }
