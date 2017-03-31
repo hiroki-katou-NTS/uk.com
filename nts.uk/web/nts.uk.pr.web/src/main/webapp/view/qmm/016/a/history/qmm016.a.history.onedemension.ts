@@ -67,6 +67,13 @@ module nts.uk.pr.view.qmm016.a.history {
                             },
                             {
                                 columnKey: 'amount',
+                                editorProvider: new (<any>$.ig).NtsNumberEditor(),
+                                editorOptions: {
+                                    constraint: 'WtValue',
+                                    option: {
+                                    },
+                                    required: true
+                                },
                                 readOnly: false
                             }
                         ],

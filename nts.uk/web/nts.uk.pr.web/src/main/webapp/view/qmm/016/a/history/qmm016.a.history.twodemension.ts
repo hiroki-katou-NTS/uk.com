@@ -48,9 +48,6 @@ module nts.uk.pr.view.qmm016.a.history {
         onRefreshElement(): void {
             var self = this;
 
-            // Clean node.
-            
-
             // Update data source.
             var firstEl = self.elementSettings[0];
             var secondEl = self.elementSettings[1];

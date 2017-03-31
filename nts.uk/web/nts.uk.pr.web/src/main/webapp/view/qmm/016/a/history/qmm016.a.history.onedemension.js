@@ -66,6 +66,12 @@ var nts;
                                                     },
                                                     {
                                                         columnKey: 'amount',
+                                                        editorProvider: new $.ig.NtsNumberEditor(),
+                                                        editorOptions: {
+                                                            constraint: 'WtValue',
+                                                            option: {},
+                                                            required: true
+                                                        },
                                                         readOnly: false
                                                     }
                                                 ],
