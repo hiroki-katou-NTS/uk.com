@@ -7,40 +7,16 @@ module qmm002.d.service {
     }
 
     export function getBankList(): JQueryPromise<Array<any>> {
-        let dfd = $.Deferred<any>();
-        nts.uk.request.ajax("com", paths.getBankList)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            });
-        return dfd.promise();
+        return nts.uk.request.ajax("com", paths.getBankList);
     }
 
     export function addBank(isCreated, bankInfo): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
         var path = isCreated ? paths.addBank : paths.updateBank;
         
-        nts.uk.request.ajax("com", path, bankInfo)
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+        return nts.uk.request.ajax("com", path, bankInfo);
     }
     
     export function removeBank(bankInfo): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
-        nts.uk.request.ajax("com", paths.removeBank, bankInfo)
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+        return nts.uk.request.ajax("com", paths.removeBank, bankInfo);
     }
 }

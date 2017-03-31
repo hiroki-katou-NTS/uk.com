@@ -4,12 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.command;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -42,6 +46,13 @@ public class LaborInsuranceOfficeDeleteCommandHandler
 		// get command
 		LaborInsuranceOfficeDeleteCommand command = context.getCommand();
 		// call Repository remove
+
+		Optional<LaborInsuranceOffice> optionalDelete = this.laborInsuranceOfficeRepo.findById(companyCode,
+			command.getLaborInsuranceOfficeDeleteDto().getCode());
+		if(!optionalDelete.isPresent()){
+			throw new BusinessException("ER010");
+		}
+
 		this.laborInsuranceOfficeRepo.remove(companyCode,
 			command.getLaborInsuranceOfficeDeleteDto().getCode(),
 			command.getLaborInsuranceOfficeDeleteDto().getVersion());
