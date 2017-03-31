@@ -7,14 +7,14 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1250, height: 670 };</script>
+			<script>var dialogSize = { width: 1030, height: 750 };</script>
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
    				</com:ValidatorScript>
-			<com:stylefile path="main.css" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="service.js" />
+			<com:stylefile path="qmm006.c.main.css" />
+			<com:scriptfile path="qmm006.c.start.js" />
+			<com:scriptfile path="qmm006.c.viewmodel.js" />
+			<com:scriptfile path="qmm006.c.service.js" />
 			<com:scriptfile set="IGNITE" />
 
 		</ui:define>
@@ -33,21 +33,19 @@
 							</div>
 							<br />
 							<div class="cf">
-								<div style="float: left">
-									<i class="icon icon-searchbox"
-										style="margin-top: 85px; margin-left: 38px"></i>
-									<div
-										style="width: 400px; margin-left: 42px; margin-bottom: 10px"
+								<div class="content-left">
+									<i id="icon1" class="icon icon-searchbox"></i>
+									<div class="searchBox"
 										data-bind="ntsSearchBox: {
 											comId: 'single-list',
 											items: items, 
 											selected: currentCode, 
-											selectedKey: 'code', 
-											fields: ['name', 'code']}" />
+											selectedKey: 'lineBankCode', 
+											fields: ['lineBankName', 'lineBankCode']}" />
 									<table id="single-list"
 										data-bind="ntsGridList: {
-											width: 550,
-											height: 400,
+											width: 440,
+											height: 500,
 											dataSource: items,
 											primaryKey: 'lineBankCode',
 											columns: columns,
@@ -65,21 +63,19 @@
 							</div>
 							<br />
 							<div class="cf">
-								<div style="float: left">
-									<i class="icon icon-searchbox"
-										style="margin-top: 85px; margin-left: 665px"></i>
-									<div
-										style="width: 400px; margin-left: 42px; margin-bottom: 10px"
+								<div class="content-left">
+									<i id="icon2" class="icon icon-searchbox"></i>
+									<div class="searchBox"
 										data-bind="ntsSearchBox: {
 											comId: 'single-list',
 											items: items1, 		
 											selected: currentCode1, 
-											selectedKey: 'code', 
-											fields: ['name', 'code']}" />						
+											selectedKey: 'lineBankCode', 
+											fields: ['lineBankName', 'lineBankCode']}" />
 									<table id="single-list"
 										data-bind="ntsGridList: {
-											width: 550,
-											height: 400,
+											width: 440,
+											height: 500,
 											dataSource: items1,
 											primaryKey: 'lineBankCode',
 											columns: columns,
@@ -93,8 +89,9 @@
 				</div>
 				<hr id="hr-horizontal" />
 				<div>
-					<button class="x-large proceed" id="C_BTN_001" data-bind="click: transfer">決定</button>
-					<button class="large" id="C_BTN_002" data-bind="click: closeDialog">キャンセル</button>
+					<button class="x-large proceed" id="C_BTN_001"
+						data-bind="click: transfer">実行</button>
+					<button class="large" id="C_BTN_002" data-bind="click: closeDialog">閉じる</button>
 					<br />
 				</div>
 

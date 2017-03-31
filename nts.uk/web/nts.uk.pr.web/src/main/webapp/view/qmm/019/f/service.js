@@ -7,7 +7,8 @@ var qmm019;
             var paths = {
                 getItemsByCategory: "pr/proto/item/findall/bycategory/{0}",
                 getItem: "pr/proto/item/find/{categoryAtr}/{itemCode}",
-                getLayoutMasterDetail: "pr/proto/layout/findlayoutdetail/{0}/{1}/{2}/{3}"
+                getLayoutMasterDetail: "pr/proto/layout/findlayoutdetail/{0}/{1}/{2}/{3}",
+                getPersonalWages: "pr/proto/personalwage/findalls/{0}"
             };
             function getItemsByCategory(categoryAtr) {
                 var dfd = $.Deferred();
@@ -51,6 +52,19 @@ var qmm019;
                 return dfd.promise();
             }
             service.getItem = getItem;
+            function getListPersonalWages(categoryAtr) {
+                var dfd = $.Deferred();
+                var _path = nts.uk.text.format(paths.getPersonalWages, categoryAtr);
+                nts.uk.request.ajax(_path)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getListPersonalWages = getListPersonalWages;
             var model;
             (function (model) {
                 var ItemDetailModel = (function () {
@@ -59,7 +73,14 @@ var qmm019;
                     return ItemDetailModel;
                 }());
                 model.ItemDetailModel = ItemDetailModel;
+                var PersonalWageNameDto = (function () {
+                    function PersonalWageNameDto() {
+                    }
+                    return PersonalWageNameDto;
+                }());
+                model.PersonalWageNameDto = PersonalWageNameDto;
             })(model = service.model || (service.model = {}));
         })(service = f.service || (f.service = {}));
     })(f = qmm019.f || (qmm019.f = {}));
 })(qmm019 || (qmm019 = {}));
+//# sourceMappingURL=service.js.map

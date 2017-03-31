@@ -60,6 +60,7 @@ var qmm019;
                 ScreenModel.prototype.layoutProcess = function () {
                     var self = this;
                     if (self.isRadioCheck() === 1) {
+                        alert('dedede');
                         self.dataDelete();
                     }
                     else {

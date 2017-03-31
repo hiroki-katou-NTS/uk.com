@@ -2,7 +2,7 @@ package nts.uk.ctx.basic.app.command.system.bank.linebank;
 
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -16,8 +16,13 @@ import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonBankAccountRepositor
 import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonUseSetting;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 @Transactional
+/**
+ * 
+ * @author sonnh1
+ *
+ */
 public class TransferLineBankCommandHandler extends CommandHandler<TransferLineBankCommand> {
 	@Inject
 	private PersonBankAccountRepository personBankAccountRepository;
@@ -29,21 +34,29 @@ public class TransferLineBankCommandHandler extends CommandHandler<TransferLineB
 	protected void handle(CommandHandlerContext<TransferLineBankCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		TransferLineBankCommand command = context.getCommand();
-		String oldLineBankCode = command.getOldLineBankCode(); 
-		String newLineBankCode = command.getNewLineBankCode(); 
-		
-		if(StringUtil.isNullOrEmpty(oldLineBankCode, true)||StringUtil.isNullOrEmpty(newLineBankCode, true)){
-			throw new BusinessException("＊が選択されていません。");//ER007
+		String oldLineBankCode = command.getOldLineBankCode();
+		String newLineBankCode = command.getNewLineBankCode();
+		int allowDelete = command.getAllowDelete();
+
+		// if oldLineBankCode or newLineBankCode = null, show error
+		if (StringUtil.isNullOrEmpty(oldLineBankCode, true) || StringUtil.isNullOrEmpty(newLineBankCode, true)) {
+			throw new BusinessException("ER007");
 		}
-		
-		boolean notDelete = oldLineBankCode.equals(newLineBankCode);
-		
-		if (notDelete) {
-			throw new BusinessException("統合元と統合先で同じコードの＊が選択されています。\r\n  ＊を確認してください。");//ER009
+
+		boolean duplicateCode = oldLineBankCode.equals(newLineBankCode);
+
+		// if newLineBankCode = oldLineBankCode, show error
+		if (duplicateCode) {
+			throw new BusinessException("ER009");
 		}
-		
+
+		// find all lineBank (base on companyCode and lineBankCode) has
+		// lineBankCode = lineBankCode in table PERSON_BANK_ACCOUNT
 		List<PersonBankAccount> listPersonBankAcc = personBankAccountRepository.findAllLineBank(companyCode,
 				oldLineBankCode);
+
+		// transfer data from lineBank has oldLineBankCode to lineBank has
+		// newLineBankCode
 		listPersonBankAcc.forEach(x -> {
 			PersonBankAccount bankAccount = x;
 			PersonUseSetting useSet1 = bankAccount.getUseSet1();
@@ -60,15 +73,19 @@ public class TransferLineBankCommandHandler extends CommandHandler<TransferLineB
 
 			PersonBankAccount domain = new PersonBankAccount(companyCode, x.getPersonID(), x.getHistId(),
 					x.getStartYearMonth(), x.getEndYearMonth(), useSet1, useSet2, useSet3, useSet4, useSet5);
-			
+
 			personBankAccountRepository.update(domain);
 		});
-		
-		if (!listPersonBankAcc.isEmpty()) {
+
+		// allowDelete = 1: allow delete
+		// listPersonBankAcc.isEmpty(): check exist lineBankCode which must
+		// delete
+		if (allowDelete == 1 && !listPersonBankAcc.isEmpty()) {
 			lineBankRepository.remove(companyCode, oldLineBankCode);
 		}
 	}
 
+	// change lineBankCode in fromLineBankCd of table PERSON_BANK_ACCOUNT
 	private PersonUseSetting useSet(String lineBankCode, PersonUseSetting bankAccount,
 			TransferLineBankCommand command) {
 		if (bankAccount.getFromLineBankCd().equals(lineBankCode)) {

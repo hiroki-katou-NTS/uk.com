@@ -14,7 +14,6 @@ __viewContext.ready(function () {
             self.option = {
                 value: ko.observable("2")
             };
-            // TextEditor
             self.texteditor = {
                 value: ko.observable(''),
                 constraint: 'ResidenceCode',
@@ -26,9 +25,11 @@ __viewContext.ready(function () {
                 })),
                 required: ko.observable(false),
                 enable: ko.observable(true),
-                readonly: ko.observable(false)
+                readonly: ko.observable(false),
+                clear: function () {
+                    $("#text-1").ntsError("clear");
+                }
             };
-            // EmployeeCodeEditor
             self.employeeeditor = {
                 value: ko.observable('19'),
                 constraint: 'EmployeeCode',
@@ -40,7 +41,6 @@ __viewContext.ready(function () {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
-            // MultilineEditor
             self.multilineeditor = {
                 value: ko.observable(''),
                 constraint: 'ResidenceCode',
@@ -54,17 +54,17 @@ __viewContext.ready(function () {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
-            // NumberEditor
             self.numbereditor = {
                 value: ko.observable(12),
                 constraint: 'CommonAmount',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
-                    grouplength: 3 })),
+                    grouplength: 3,
+                    textalign: 'left',
+                    width: "500" })),
                 required: ko.observable(false),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
-            // NumberEditor
             self.numbereditor2 = {
                 value: ko.observable(12),
                 constraint: 'CommonAmount',
@@ -77,7 +77,6 @@ __viewContext.ready(function () {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
-            // CurrencyEditor
             self.currencyeditor = {
                 value: ko.observable(1200),
                 constraint: '',
@@ -90,7 +89,6 @@ __viewContext.ready(function () {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
-            // CurrencyEditor
             self.currencyeditor2 = {
                 value: ko.observable(200000),
                 constraint: '',
@@ -103,7 +101,6 @@ __viewContext.ready(function () {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
-            // TimeEditor
             self.timeeditor = {
                 value: ko.observable(-1222),
                 constraint: 'LayoutCode',
@@ -117,7 +114,6 @@ __viewContext.ready(function () {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
-            // TimeEditor
             self.yearmontheditor = {
                 value: ko.observable(200001),
                 constraint: 'LayoutCode',
@@ -128,7 +124,6 @@ __viewContext.ready(function () {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
-            // File
             self.file = {
                 file: new nts.uk.ui.file.FileDownload("/file/company/print"),
                 print: function () {
@@ -143,3 +138,4 @@ __viewContext.ready(function () {
     nts.uk.ui.confirmSave(dirty);
     this.bind(viewmodel);
 });
+//# sourceMappingURL=start.js.map
