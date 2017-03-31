@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.primitive.PrimitiveValue;
@@ -42,15 +43,19 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 	/** The apply range. */
 	private MonthRange applyRange;
 
+	@Setter
 	/** The auto calculate. */
 	private CalculateMethod autoCalculate;
 
+	@Setter
 	/** The max amount. */
 	private CommonAmount maxAmount;
 
+	@Setter
 	/** The rate items. */
 	private Set<InsuranceRateItem> rateItems;
 
+	@Setter
 	/** The rounding methods. */
 	private Set<HealthInsuranceRounding> roundingMethods;
 

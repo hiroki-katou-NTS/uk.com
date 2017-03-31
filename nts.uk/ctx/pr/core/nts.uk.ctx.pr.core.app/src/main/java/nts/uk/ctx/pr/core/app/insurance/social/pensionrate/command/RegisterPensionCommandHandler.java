@@ -15,6 +15,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
@@ -39,11 +40,11 @@ public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensio
 
 	/** The pension rate service. */
 	@Inject
-	PensionRateService pensionRateService;
+	private PensionRateService pensionRateService;
 
 	/** The pension rate repository. */
 	@Inject
-	PensionRateRepository pensionRateRepository;
+	private PensionRateRepository pensionRateRepository;
 
 	/** The avg earn level master setting repository. */
 	@Inject
@@ -66,31 +67,30 @@ public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensio
 		// Get command.
 		RegisterPensionCommand command = context.getCommand();
 
-		// Get the current company code.
 		String companyCode = AppContexts.user().companyCode();
-		OfficeCode officeCode = new OfficeCode(command.getOfficeCode());
+		OfficeCode officeCode = command.getOfficeCode();
+		command.setHistoryId(IdentifierUtil.randomUniqueId());
 
 		// Transfer data
-		PensionRate pensionRate = command.toDomain(companyCode);
-		pensionRate.validate();
+		PensionRate pensionRate = new PensionRate(command);
+
 		// Validate
-		pensionRateService.validateRequiredItem(pensionRate);
-		pensionRateService.createInitalHistory(companyCode, officeCode.v(), pensionRate.getStart());
+		pensionRate.validate();
+		this.pensionRateService.validateRequiredItem(pensionRate);
+		this.pensionRateService.createInitalHistory(companyCode, officeCode.v(), pensionRate.getStart());
 		// Insert into db.
-		pensionRateRepository.add(pensionRate);
+		this.pensionRateRepository.add(pensionRate);
 
 		// Get listAvgEarnLevelMasterSetting.
-		List<AvgEarnLevelMasterSetting> listAvgEarnLevelMasterSetting = avgEarnLevelMasterSettingRepository
+		List<AvgEarnLevelMasterSetting> listAvgEarnLevelMasterSetting = this.avgEarnLevelMasterSettingRepository
 				.findAll(companyCode);
 
 		List<PensionAvgearn> listPensionAvgearn = listAvgEarnLevelMasterSetting.stream()
-				.map(setting -> {
-					return new PensionAvgearn(new PaGetMemento(pensionRate.getHistoryId(),
-							setting, pensionRate.getFundRateItems(),
-							pensionRate.getChildContributionRate().v()));
-				}).collect(Collectors.toList());
+				.map(setting -> new PensionAvgearn(new PaGetMemento(pensionRate.getHistoryId(), setting,
+						pensionRate.getFundRateItems(), pensionRate.getChildContributionRate().v())))
+				.collect(Collectors.toList());
 
-		pensionAvgearnRepository.update(listPensionAvgearn, companyCode, command.getOfficeCode());
+		this.pensionAvgearnRepository.update(listPensionAvgearn, companyCode, command.getOfficeCode().v());
 	}
 
 	/**
