@@ -1,4 +1,4 @@
-package employment.processing.yearmonth;
+package nts.uk.shr.find.employment.processing.yearmonth;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
