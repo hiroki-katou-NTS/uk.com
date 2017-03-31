@@ -19,20 +19,15 @@ var nts;
                                     self.healthInsuranceRateModel = new HealthInsuranceRateModel(healthModel.officeCode(), officeName, healthModel.historyId, healthModel.startMonth(), healthModel.endMonth(), healthModel.autoCalculate(), healthModel.rateItems(), healthModel.roundingMethods());
                                     self.listAvgEarnLevelMasterSetting = [];
                                     self.listHealthInsuranceAvgearn = ko.observableArray([]);
-                                    // Common NtsNumberEditor Option
                                     self.numberEditorCommonOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                                         grouplength: 3
                                     }));
-                                    //dirty check
                                     self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
                                     self.errorList = ko.observableArray([
                                         { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" },
                                         { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" },
                                     ]);
                                 }
-                                /**
-                                 * Start page.
-                                 */
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -43,9 +38,6 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
-                                /**
-                                 * Load AvgEarnLevelMasterSetting list.
-                                 */
                                 ScreenModel.prototype.loadAvgEarnLevelMasterSetting = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -55,9 +47,6 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
-                                /**
-                                 * Load HealthInsuranceAvgEarn.
-                                 */
                                 ScreenModel.prototype.loadHealthInsuranceAvgearn = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -70,9 +59,6 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
-                                /**
-                                 * Collect data from input.
-                                 */
                                 ScreenModel.prototype.collectData = function () {
                                     var self = this;
                                     var data = [];
@@ -81,30 +67,19 @@ var nts;
                                     });
                                     return data;
                                 };
-                                /**
-                                 * Call service to save healthInsuaranceAvgearn.
-                                 */
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
                                     h.service.updateHealthInsuranceAvgearn(self.collectData(), self.healthInsuranceRateModel.officeCode).done(function () {
                                         return self.closeDialog();
                                     });
                                 };
-                                /**
-                                 * ReCalculate the healthInsuranceAvgearn list
-                                 */
                                 ScreenModel.prototype.reCalculate = function () {
                                     var self = this;
-                                    // Clear current listHealthInsuranceAvgearn
                                     self.listHealthInsuranceAvgearn.removeAll();
-                                    // Recalculate listHealthInsuranceAvgearn
                                     self.listAvgEarnLevelMasterSetting.forEach(function (item) {
                                         self.listHealthInsuranceAvgearn.push(self.calculateHealthInsuranceAvgEarnModel(item));
                                     });
                                 };
-                                /**
-                                 * Calculate the healthInsuranceAvgearn
-                                 */
                                 ScreenModel.prototype.calculateHealthInsuranceAvgEarnModel = function (levelMasterSetting) {
                                     var self = this;
                                     var historyId = self.healthInsuranceRateModel.historyId;
@@ -121,7 +96,6 @@ var nts;
                                         return new HealthInsuranceAvgEarnModel(historyId, levelMasterSetting.code, new HealthInsuranceAvgEarnValueModel(Number.Zero, Number.Zero, Number.Zero, Number.Zero), new HealthInsuranceAvgEarnValueModel(Number.Zero, Number.Zero, Number.Zero, Number.Zero));
                                     }
                                 };
-                                // rounding 
                                 ScreenModel.prototype.rounding = function (roudingMethod, roundValue, roundType) {
                                     var self = this;
                                     var getLevel = Math.pow(10, roundType);
@@ -145,7 +119,6 @@ var nts;
                                     else
                                         return Math.floor(value);
                                 };
-                                //value to string rounding
                                 ScreenModel.prototype.convertToRounding = function (stringValue) {
                                     switch (stringValue) {
                                         case "0": return Rounding.ROUNDUP;
@@ -169,18 +142,12 @@ var nts;
                                         self.closeDialog();
                                     }
                                 };
-                                /**
-                                 * Close dialog.
-                                 */
                                 ScreenModel.prototype.closeDialog = function () {
                                     nts.uk.ui.windows.close();
                                 };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
-                            /**
-                             * HealthInsuranceRate Model
-                             */
                             var HealthInsuranceRateModel = (function () {
                                 function HealthInsuranceRateModel(officeCode, officeName, historyId, startMonth, endMonth, autoCalculate, rateItems, roundingMethods) {
                                     this.officeCode = officeCode;
@@ -195,9 +162,6 @@ var nts;
                                 return HealthInsuranceRateModel;
                             }());
                             viewmodel.HealthInsuranceRateModel = HealthInsuranceRateModel;
-                            /**
-                             * HealthInsuranceAvgEarn Model
-                             */
                             var HealthInsuranceAvgEarnModel = (function () {
                                 function HealthInsuranceAvgEarnModel(historyId, levelCode, personalAvg, companyAvg) {
                                     this.historyId = historyId;
@@ -208,9 +172,6 @@ var nts;
                                 return HealthInsuranceAvgEarnModel;
                             }());
                             viewmodel.HealthInsuranceAvgEarnModel = HealthInsuranceAvgEarnModel;
-                            /**
-                             * HealthInsuranceAvgEarnValue Model
-                             */
                             var HealthInsuranceAvgEarnValueModel = (function () {
                                 function HealthInsuranceAvgEarnValueModel(general, nursing, basic, specific) {
                                     this.healthGeneralMny = ko.observable(general);
@@ -250,3 +211,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qmm008.h.vm.js.map

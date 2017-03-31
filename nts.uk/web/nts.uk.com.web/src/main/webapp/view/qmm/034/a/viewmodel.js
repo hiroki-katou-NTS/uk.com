@@ -21,6 +21,7 @@ var qmm034;
                         else {
                             self.countStartDateChange = 1;
                         }
+                        self.currentEra().startDate(dateChange);
                     });
                     self.currentCode.subscribe(function (codeChanged) {
                         if (!nts.uk.text.isNullOrEmpty(codeChanged) && self.currentCode() !== self.previousCurrentCode) {
@@ -59,6 +60,7 @@ var qmm034;
                     var self = this;
                     self.items = ko.observableArray([]);
                     self.columns = ko.observableArray([
+                        { headerText: 'KEY', key: 'eraHist', width: 50, hidden: true },
                         { headerText: '元号', key: 'eraName', width: 50 },
                         { headerText: '記号', key: 'eraMark', width: 50 },
                         { headerText: '開始年月日', key: 'startDate', width: 80 },
@@ -98,14 +100,14 @@ var qmm034;
                     qmm034.a.service.addData(self.isUpdate(), node).done(function (result) {
                         self.dirtyObject.reset();
                         self.reload().done(function () {
-                            self.currentCode(eraName);
-                            dfd.resolve();
+                            self.currentCode(result === undefined ? self.currentEra().eraHist() : result.eraHist);
                             self.isDeleteEnable = ko.observable(false);
                             self.isEnableCode = ko.observable(false);
                             self.isUpdate = ko.observable(true);
                             var lastStartDate = _.maxBy(self.items(), function (o) {
                                 return o.startDate;
                             });
+                            dfd.resolve();
                         });
                     }).fail(function (res) {
                         $("#A_INP_003").ntsError("set", res.message);
@@ -125,8 +127,6 @@ var qmm034;
                         self.items([]);
                         if (data.length > 0) {
                             self.items(data);
-                            self.date(self.currentEra().startDate().toString());
-                            self.currentCode(self.currentEra().eraName());
                             self.isDeleteEnable(true);
                         }
                         dfd.resolve(data);
@@ -154,13 +154,13 @@ var qmm034;
                                 self.refreshLayout();
                             }
                             else if (self.items().length === rowIndex) {
-                                self.currentCode(self.items()[rowIndex - 1].eraName);
+                                self.currentCode(self.items()[rowIndex - 1].eraHist);
                             }
                             else if (self.items().length < rowIndex) {
-                                self.currentCode(self.items()[0].eraName);
+                                self.currentCode(self.items()[0].eraHist);
                             }
                             else {
-                                self.currentCode(self.items()[rowIndex].eraName);
+                                self.currentCode(self.items()[rowIndex].eraHist);
                             }
                         });
                         dfd.resolve();
@@ -172,7 +172,7 @@ var qmm034;
                 ScreenModel.prototype.getEra = function (codeNew) {
                     var self = this;
                     var era = _.find(self.items(), function (item) {
-                        return item.eraName === codeNew;
+                        return item.eraHist === codeNew;
                     });
                     if (era) {
                         return new EraModel(era.eraName, era.eraMark, new Date(era.startDate), era.fixAttribute, era.eraHist, new Date(era.endDate));
@@ -189,11 +189,11 @@ var qmm034;
                             self.items(data);
                             self.currentEra(self.items()[0]);
                             self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentEra);
-                            self.currentCode(self.currentEra().eraName);
-                            self.processWhenCurrentCodeChange(self.currentCode());
+                            self.currentCode(self.currentEra().eraHist);
                         }
                         else {
-                            self.refreshLayout();
+                            self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentEra);
+                            self.startWithEmptyData();
                         }
                         dfd.resolve();
                     }).fail(function (res) {
@@ -204,8 +204,17 @@ var qmm034;
                 ScreenModel.prototype.refreshLayout = function () {
                     var self = this;
                     self.clearError();
-                    self.currentEra(new EraModel('', '', new Date(self.currentEra().startDate().toString()), 1, '', new Date("")));
+                    self.currentEra(new EraModel('', '', new Date(), 1, '', new Date()));
+                    self.startDate(self.currentEra().startDate());
                     self.currentCode(null);
+                    self.isDeleteEnable(false);
+                    self.isEnableCode(true);
+                    self.isUpdate(false);
+                    self.dirtyObject.reset();
+                    $("#A_INP_001").focus();
+                };
+                ScreenModel.prototype.startWithEmptyData = function () {
+                    var self = this;
                     self.isDeleteEnable(false);
                     self.isEnableCode(true);
                     self.isUpdate(false);

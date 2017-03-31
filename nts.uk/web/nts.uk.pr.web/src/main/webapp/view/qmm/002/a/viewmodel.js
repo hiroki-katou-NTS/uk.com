@@ -256,7 +256,6 @@ var nts;
                                         memo: self.A_INP_006.value()
                                     };
                                     a.service.addBank(self.isCreated(), branchInfo).done(function () {
-                                        // reload tree
                                         self.getBankList().done(function () {
                                             var treecode = branchInfo.bankCode + "-" + branchInfo.branchCode;
                                             self.singleSelectedCode(treecode);
@@ -311,7 +310,6 @@ var nts;
                                         self.lst_002(nts.uk.util.flatArray(self.lst_001(), "childs"));
                                         dfd.resolve(list001);
                                     }).fail(function (res) {
-                                        // error
                                         dfd.reject(res);
                                     });
                                     return dfd.promise();
@@ -333,7 +331,6 @@ var nts;
                                             parentCode = self.singleSelectedCode();
                                         }
                                         a.service.removeBank(!check, parentCode, childCode).done(function () {
-                                            // reload tree
                                             self.cleanBranch();
                                             self.getBankList().done(function () {
                                                 var code = "";
@@ -341,7 +338,6 @@ var nts;
                                                 if (index < 0) {
                                                     index = 0;
                                                 }
-                                                // parent
                                                 if (!check) {
                                                     code = self.lst_001()[index].treeCode;
                                                 }
@@ -436,3 +432,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=viewmodel.js.map

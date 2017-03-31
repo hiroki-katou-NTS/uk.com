@@ -17,9 +17,6 @@ var nts;
                     (function (a) {
                         var history;
                         (function (history_1) {
-                            /**
-                             * For one demension view.
-                             */
                             var OneDemensionViewModel = (function (_super) {
                                 __extends(OneDemensionViewModel, _super);
                                 function OneDemensionViewModel(history) {
@@ -29,21 +26,15 @@ var nts;
                                         var element = history.elements[0];
                                         _.map(element.itemList, function (item) {
                                             var vm = new ItemViewModel(a.viewmodel.getElementTypeByValue(element.type), item);
-                                            // Filter value.
                                             vm.amount(_.filter(history.valueItems, function (vi) {
                                                 return vi.element1Id == item.uuid;
                                             })[0].amount);
                                         });
                                     }
-                                    // Init grid.
                                     this.initIgGrid();
                                 }
-                                /**
-                                 * Init ig grid.
-                                 */
                                 OneDemensionViewModel.prototype.initIgGrid = function () {
                                     var self = this;
-                                    // IgGrid
                                     self.igGrid = ko.observable({
                                         dataSource: self.igGridDataSource,
                                         width: '60%',
@@ -80,22 +71,14 @@ var nts;
                                         ]
                                     });
                                 };
-                                /**
-                                 * On refresh element.
-                                 */
                                 OneDemensionViewModel.prototype.onRefreshElement = function () {
                                     var self = this;
-                                    // First element.
                                     var element = self.elementSettings[0];
                                     var itemVmList = _.map(element.itemList, function (item) {
                                         return new ItemViewModel(a.viewmodel.getElementTypeByValue(element.type), item);
                                     });
-                                    // Update source
                                     self.igGridDataSource(itemVmList);
                                 };
-                                /**
-                                 * Get setting cell item.
-                                 */
                                 OneDemensionViewModel.prototype.getCellItem = function () {
                                     return _.map(this.igGridDataSource(), function (item) {
                                         var dto = {};
@@ -104,23 +87,13 @@ var nts;
                                         return dto;
                                     });
                                 };
-                                /**
-                                 * Paste data from excel.
-                                 */
                                 OneDemensionViewModel.prototype.pasteFromExcel = function () {
-                                    // Do parsing.
                                     return;
                                 };
                                 return OneDemensionViewModel;
                             }(history_1.base.BaseHistoryViewModel));
                             history_1.OneDemensionViewModel = OneDemensionViewModel;
-                            /**
-                             * Item view model.
-                             */
                             var ItemViewModel = (function () {
-                                /**
-                                 * Constructor.
-                                 */
                                 function ItemViewModel(type, item) {
                                     var self = this;
                                     self.uuid = item.uuid;
@@ -141,3 +114,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qmm016.a.history.onedemension.js.map

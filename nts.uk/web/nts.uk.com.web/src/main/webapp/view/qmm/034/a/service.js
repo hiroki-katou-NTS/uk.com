@@ -16,8 +16,8 @@ var qmm034;
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getAllEras).done(function (res) {
                     dfd.resolve(res);
-                }).fail(function (res) {
-                    dfd.reject(res);
+                }).fail(function (err) {
+                    dfd.reject(err);
                 });
                 return dfd.promise();
             }
@@ -28,8 +28,8 @@ var qmm034;
                 var _path = nts.uk.text.format(paths.getFixAttribute, eraHist);
                 nts.uk.request.ajax(_path).done(function (res) {
                     dfd.resolve(res);
-                }).fail(function (res) {
-                    dfd.reject(res);
+                }).fail(function (err) {
+                    dfd.reject(err);
                 });
                 return dfd.promise();
             }
@@ -37,12 +37,15 @@ var qmm034;
             function addData(isUpdate, command) {
                 var dfd = $.Deferred();
                 var path = isUpdate ? paths.updateEra : paths.addEra;
+                var options = {
+                    dataType: 'text',
+                    contentType: 'text/plain'
+                };
                 nts.uk.request.ajax(path, command)
                     .done(function (res) {
                     dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
+                }).fail(function (err) {
+                    dfd.reject(err);
                 });
                 return dfd.promise();
             }
@@ -52,9 +55,8 @@ var qmm034;
                 nts.uk.request.ajax(paths.deleteEra, command)
                     .done(function (res) {
                     dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
+                }).fail(function (err) {
+                    dfd.reject(err);
                 });
                 return dfd.promise();
             }

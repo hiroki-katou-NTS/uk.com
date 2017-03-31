@@ -9,6 +9,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
@@ -57,8 +58,8 @@ public class EraWebServices extends WebService {
 	}
 	@POST
 	@Path("addData")
-	public void addData(AddEraCommand command){
-		this.addEra.handle(command);
+	public EraDto addData(AddEraCommand command){
+		return this.addEra.handle(command);
 	}
 	
 	@POST
