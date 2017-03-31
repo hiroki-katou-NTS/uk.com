@@ -220,14 +220,14 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 	private static Set<HealthInsuranceRounding> setDefaultRounding() {
 		Set<HealthInsuranceRounding> setItem = new HashSet<HealthInsuranceRounding>();
 		RoundingItem salRounding = new RoundingItem();
-		salRounding.setCompanyRoundAtr(RoundingMethod.RoundUp);
-		salRounding.setPersonalRoundAtr(RoundingMethod.RoundUp);
+		salRounding.setCompanyRoundAtr(RoundingMethod.Truncation);
+		salRounding.setPersonalRoundAtr(RoundingMethod.Truncation);
 		HealthInsuranceRounding item1 = new HealthInsuranceRounding(PaymentType.Salary,
 				salRounding);
 		setItem.add(item1);
 		RoundingItem bnsRounding = new RoundingItem();
-		bnsRounding.setCompanyRoundAtr(RoundingMethod.RoundUp);
-		bnsRounding.setPersonalRoundAtr(RoundingMethod.RoundUp);
+		bnsRounding.setCompanyRoundAtr(RoundingMethod.Truncation);
+		bnsRounding.setPersonalRoundAtr(RoundingMethod.Truncation);
 		HealthInsuranceRounding item2 = new HealthInsuranceRounding(PaymentType.Bonus, bnsRounding);
 		setItem.add(item2);
 
