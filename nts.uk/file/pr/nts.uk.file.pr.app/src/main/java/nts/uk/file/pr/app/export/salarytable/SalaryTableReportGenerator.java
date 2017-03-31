@@ -2,16 +2,16 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.screen.app.report.salarychart;
+package nts.uk.file.pr.app.export.salarytable;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.ctx.pr.screen.app.report.salarychart.data.SalaryChartDataSource;
-import nts.uk.ctx.pr.screen.app.report.salarychart.query.SalaryChartReportQuery;
+import nts.uk.file.pr.app.export.salarytable.data.SalaryTableDataSource;
+import nts.uk.file.pr.app.export.salarytable.query.SalaryTableReportQuery;
 
 /**
  * The Interface SalaryChartReportGenerator.
  */
-public interface SalaryChartReportGenerator {
+public interface SalaryTableReportGenerator {
 
 //	/**
 //	 * Generate.
@@ -28,5 +28,5 @@ public interface SalaryChartReportGenerator {
 	 * @param dataSource the data source
 	 * @param query the query
 	 */
-	void generate(FileGeneratorContext generatorContext, SalaryChartDataSource dataSource, SalaryChartReportQuery query);	
+	void generate(FileGeneratorContext generatorContext, SalaryTableDataSource dataSource, SalaryTableReportQuery query);	
 }

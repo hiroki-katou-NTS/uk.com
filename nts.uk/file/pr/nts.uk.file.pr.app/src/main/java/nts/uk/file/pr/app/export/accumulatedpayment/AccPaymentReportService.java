@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.screen.app.report.accumulatedpayment;
+package nts.uk.file.pr.app.export.accumulatedpayment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +13,9 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
-import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.data.AccPaymentDataSource;
-import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.data.AccPaymentItemData;
-import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.query.AccPaymentReportQuery;
+import nts.uk.file.pr.app.export.accumulatedpayment.data.AccPaymentDataSource;
+import nts.uk.file.pr.app.export.accumulatedpayment.data.AccPaymentItemData;
+import nts.uk.file.pr.app.export.accumulatedpayment.query.AccPaymentReportQuery;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

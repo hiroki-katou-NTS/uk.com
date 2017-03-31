@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.screen.app.report.salarychart.data;
+package nts.uk.file.pr.app.export.salarytable.data;
 
 import java.util.List;
 
@@ -53,10 +53,10 @@ import lombok.Setter;
  * @param employeeList the new employee list
  */
 @Setter
-public class SalaryChartDataSource {
+public class SalaryTableDataSource {
 	
 	/** The salary chart header. */
-	private SalaryChartHeaderData salaryChartHeader;
+	private SalaryTableHeaderData salaryChartHeader;
 	
 	/** The employee list. */
 	private List<EmployeeData> employeeList;

@@ -2,25 +2,25 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.screen.app.report.accumulatedpayment.data;
+package nts.uk.file.pr.app.export.accumulatedpayment.data;
 
-import java.time.YearMonth;
+import java.util.List;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class AccPaymentHeaderData.
+ * The Class AccPaymentDataSource.
  */
 @Builder
 @Getter
 @Setter
-public class AccPaymentHeaderData {
-
-	/** The start. */
-	private YearMonth start;
-
-	/** The end. */
-	private YearMonth end;
+public class AccPaymentDataSource {
+	
+	/** The header data. */
+	private AccPaymentHeaderData headerData;
+	
+	/** The accumulated payment data source. */
+	private List<AccPaymentItemData> accPaymentItemData;
 }

@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.screen.app.report.salarychart.query;
+package nts.uk.file.pr.app.export.salarytable.query;
 import java.util.List;
 
 import lombok.Getter;
@@ -44,7 +44,7 @@ import lombok.Setter;
  * @param isBreakPageByAccumulated the new checks if is break page by accumulated
  */
 @Setter
-public class SalaryChartReportQuery {
+public class SalaryTableReportQuery {
 
 	/** The target year. */
 	private Integer targetYear;

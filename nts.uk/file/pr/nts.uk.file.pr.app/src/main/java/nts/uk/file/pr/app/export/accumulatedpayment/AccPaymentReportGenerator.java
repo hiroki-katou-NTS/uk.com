@@ -2,11 +2,11 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.screen.app.report.accumulatedpayment;
+package nts.uk.file.pr.app.export.accumulatedpayment;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.data.AccPaymentDataSource;
-import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.query.AccPaymentReportQuery;
+import nts.uk.file.pr.app.export.accumulatedpayment.data.AccPaymentDataSource;
+import nts.uk.file.pr.app.export.accumulatedpayment.query.AccPaymentReportQuery;
 
 
 /**

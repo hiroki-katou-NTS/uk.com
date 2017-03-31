@@ -2,9 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.screen.app.report.salarychart.data;
-
-import java.time.YearMonth;
+package nts.uk.file.pr.app.export.salarytable.data;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -29,19 +27,19 @@ import lombok.Setter;
  * @param empType the new emp type
  */
 @Setter
-public class SalaryChartHeaderData {
+public class SalaryTableHeaderData {
 	
 	/** The date. */
-	private YearMonth date;
+	private String targetYearMonth;
 	
 	/** The department. */
-	private String department;
+	private String departmentInfo;
 	
 	/** The position. */
-	private String position;
+	private String positionInfo;
 	
 	/** The emp type. */
-	private String empType;
+	private String empTypeInfo;
 	
 
 }
