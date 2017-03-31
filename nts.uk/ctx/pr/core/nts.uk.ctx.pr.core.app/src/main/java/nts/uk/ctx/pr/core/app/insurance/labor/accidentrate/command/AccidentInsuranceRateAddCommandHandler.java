@@ -47,7 +47,7 @@ public class AccidentInsuranceRateAddCommandHandler
 		// get user login
 		LoginUserContext loginUserContext = AppContexts.user();
 
-		// get commpany user login
+		// get company code user login
 		String companyCode = loginUserContext.companyCode();
 
 		// get command
@@ -59,7 +59,7 @@ public class AccidentInsuranceRateAddCommandHandler
 		// validate domain
 		accidentInsuranceRate.validate();
 
-		// validate input domian
+		// validate input domain
 		accidentInsuranceRateService.validateDateRange(accidentInsuranceRate);
 
 		// get first data

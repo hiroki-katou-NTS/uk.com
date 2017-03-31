@@ -58,22 +58,19 @@ public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsur
 		switch (this.careerGroup) {
 
 		case Agroforestry:
-			unemployeeInsuranceRateItemSetting
-				.setRate(Double.valueOf(String.valueOf(this.typeValue.getCEmpRateGeneral())));
+			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getCEmpRateGeneral().doubleValue());
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundGeneral()));
 			break;
 
 		case Contruction:
-			unemployeeInsuranceRateItemSetting
-				.setRate(Double.valueOf(String.valueOf(this.typeValue.getCEmpRateOther())));
+			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getCEmpRateOther().doubleValue());
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundOther()));
 			break;
 
 		case Other:
-			unemployeeInsuranceRateItemSetting
-				.setRate(Double.valueOf(String.valueOf(this.typeValue.getCEmpRateConst())));
+			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getCEmpRateConst().doubleValue());
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundConst()));
 			break;
@@ -94,22 +91,19 @@ public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsur
 		unemployeeInsuranceRateItemSetting = new UnemployeeInsuranceRateItemSetting();
 		switch (this.careerGroup) {
 		case Agroforestry:
-			unemployeeInsuranceRateItemSetting
-				.setRate(Double.valueOf(String.valueOf(this.typeValue.getPEmpRateGeneral())));
+			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getPEmpRateGeneral().doubleValue());
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundGeneral()));
 			break;
 
 		case Contruction:
-			unemployeeInsuranceRateItemSetting
-				.setRate(Double.valueOf(String.valueOf(this.typeValue.getPEmpRateOther())));
+			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getPEmpRateOther().doubleValue());
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundOther()));
 			break;
 
 		case Other:
-			unemployeeInsuranceRateItemSetting
-				.setRate(Double.valueOf(String.valueOf(this.typeValue.getPEmpRateConst())));
+			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getPEmpRateConst().doubleValue());
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundConst()));
 			break;

@@ -1,14 +1,15 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.labor.accidentrate;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateGetMemento;
@@ -42,10 +43,10 @@ public class JpaAccidentInsuranceRateGetMemento implements AccidentInsuranceRate
 	 */
 	@Override
 	public String getHistoryId() {
-		if (this.typeValue != null && this.typeValue.size() > 0) {
-			return this.typeValue.get(0).getQismtWorkAccidentInsuPK().getHistId();
+		if (CollectionUtil.isEmpty(this.typeValue)) {
+			return null;
 		}
-		return null;
+		return this.typeValue.get(0).getQismtWorkAccidentInsuPK().getHistId();
 	}
 
 	/*
@@ -56,10 +57,10 @@ public class JpaAccidentInsuranceRateGetMemento implements AccidentInsuranceRate
 	 */
 	@Override
 	public String getCompanyCode() {
-		if (this.typeValue != null && this.typeValue.size() > 0) {
-			return this.typeValue.get(0).getQismtWorkAccidentInsuPK().getCcd();
+		if (CollectionUtil.isEmpty(this.typeValue)) {
+			return null;
 		}
-		return null;
+		return this.typeValue.get(0).getQismtWorkAccidentInsuPK().getCcd();
 	}
 
 	/*
@@ -70,12 +71,11 @@ public class JpaAccidentInsuranceRateGetMemento implements AccidentInsuranceRate
 	 */
 	@Override
 	public MonthRange getApplyRange() {
-		if (this.typeValue != null && this.typeValue.size() > 0) {
-			return MonthRange.range(YearMonth.of(this.typeValue.get(0).getStrYm()),
-					YearMonth.of(this.typeValue.get(0).getEndYm()));
+		if (CollectionUtil.isEmpty(this.typeValue)) {
+			return null;
 		}
-
-		return null;
+		return MonthRange.range(YearMonth.of(this.typeValue.get(0).getStrYm()),
+			YearMonth.of(this.typeValue.get(0).getEndYm()));
 	}
 
 	/*
@@ -86,16 +86,15 @@ public class JpaAccidentInsuranceRateGetMemento implements AccidentInsuranceRate
 	 */
 	@Override
 	public Set<InsuBizRateItem> getRateItems() {
-		Set<InsuBizRateItem> setInsuBizRateItem = new HashSet<>();
-		for (QismtWorkAccidentInsu item : this.typeValue) {
+		return this.typeValue.stream().map(item -> {
 			InsuBizRateItem itemInsuBizRateItem = new InsuBizRateItem();
-			itemInsuBizRateItem.setInsuBizType(
-					BusinessTypeEnum.valueOf(item.getQismtWorkAccidentInsuPK().getWaInsuCd()));
-			itemInsuBizRateItem.setInsuRate(Double.valueOf(String.valueOf(item.getWaInsuRate())));
+			itemInsuBizRateItem
+				.setInsuBizType(BusinessTypeEnum.valueOf(item.getQismtWorkAccidentInsuPK().getWaInsuCd()));
+			itemInsuBizRateItem.setInsuRate((item.getWaInsuRate().doubleValue()));
 			itemInsuBizRateItem.setInsuRound(RoundingMethod.valueOf(item.getWaInsuRound()));
-			setInsuBizRateItem.add(itemInsuBizRateItem);
-		}
-		return setInsuBizRateItem;
+			return itemInsuBizRateItem;
+		}).collect(Collectors.toSet());
+
 	}
 
 }

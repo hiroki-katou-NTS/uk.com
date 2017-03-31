@@ -22,6 +22,7 @@ module nts.uk.pr.view.qmm008.b {
             roundingList: KnockoutObservableArray<Enum>;
             //numberInputOptions
             Rate3: KnockoutObservable<nts.uk.ui.option.NumberEditorOption>;
+            Rate5: KnockoutObservable<nts.uk.ui.option.NumberEditorOption>;
             healthFilteredData: KnockoutObservableArray<any>;
             //for health auto calculate switch button
             healthAutoCalculateOptions: KnockoutObservableArray<any>;
@@ -56,6 +57,10 @@ module nts.uk.pr.view.qmm008.b {
                 self.Rate3 = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                     grouplength: 3,
                     decimallength: 3
+                }));
+                self.Rate5 = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                    grouplength: 3,
+                    decimallength: 5
                 }));
                 //health calculate switch
                 self.healthAutoCalculateOptions = ko.observableArray([
