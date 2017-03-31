@@ -7,9 +7,6 @@ var qmm006;
             var paths = {
                 findBankAll: "basic/system/bank/find/all"
             };
-            /**
-             * get data of Bank
-             */
             function findBankAll() {
                 return nts.uk.request.ajax("com", paths.findBankAll);
             }
@@ -17,3 +14,4 @@ var qmm006;
         })(service = b.service || (b.service = {}));
     })(b = qmm006.b || (qmm006.b = {}));
 })(qmm006 || (qmm006 = {}));
+//# sourceMappingURL=qmm006.b.service.js.map
