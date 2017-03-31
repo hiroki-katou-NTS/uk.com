@@ -19,6 +19,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.core.dom.util.PrimitiveUtil;
 import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
@@ -192,7 +193,7 @@ public class RegisterHealthInsuranceCommandHandler
 			if (rateItem.getPayType() == PaymentType.Salary) {
 				switch (rateItem.getInsuranceType()) {
 				case Basic:
-					value.setHealthBasicMny(new CommonAmount(
+					value.setHealthBasicMny(new InsuranceAmount(
 							calculateChargeRate(masterRate, rateItem, isPersonal)));
 					break;
 				case General:
@@ -204,7 +205,7 @@ public class RegisterHealthInsuranceCommandHandler
 							calculateChargeRate(masterRate, rateItem, isPersonal)));
 					break;
 				case Special:
-					value.setHealthSpecificMny(new CommonAmount(
+					value.setHealthSpecificMny(new InsuranceAmount(
 							calculateChargeRate(masterRate, rateItem, isPersonal)));
 					break;
 				}
