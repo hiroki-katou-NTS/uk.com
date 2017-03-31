@@ -101,6 +101,21 @@ var cmm001;
                     { id: 'tab-2', title: '会社所在地・連絡先', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-3', title: 'システム設定', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
+                var itemArray = [
+                    { code: '1', name: '1月' },
+                    { code: '2', name: '2月' },
+                    { code: '3', name: '3月' },
+                    { code: '4', name: '4月' },
+                    { code: '5', name: '5月' },
+                    { code: '6', name: '6月' },
+                    { code: '7', name: '7月' },
+                    { code: '8', name: '8月' },
+                    { code: '9', name: '9月' },
+                    { code: '10', name: '10月' },
+                    { code: '11', name: '11月' },
+                    { code: '12', name: '12月' }
+                ];
+                self.itemList = ko.observableArray(itemArray);
                 self.displayAttribute = ko.observable(true);
                 self.selectedTab = ko.observable('tab-1');
                 self.gridColumns = ko.observableArray([
@@ -149,7 +164,20 @@ var cmm001;
                         }
                     }
                     else {
-                        self.isUpdate(false);
+                        self.currentCompany = ko.observable(new CompanyModel({
+                            companyCode: '',
+                            address1: '',
+                            companyName: '',
+                            companyNameGlobal: '',
+                            corporateMyNumber: '',
+                            depWorkPlaceSet: 0,
+                            displayAttribute: '',
+                            termBeginMon: 0,
+                            companyUseSet: null
+                        }));
+                        self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentCompany);
+                        self.currentCompanyCode(self.currentCompany().companyCode());
+                        self.resetData();
                     }
                     dfd.resolve();
                 });
@@ -181,7 +209,7 @@ var cmm001;
                         }
                     }
                     else {
-                        self.isUpdate(false);
+                        self.resetData();
                     }
                     dfd.resolve();
                 });
@@ -463,20 +491,6 @@ var cmm001;
                     new RoundingRule('0', '区別しない')
                 ]);
                 self.selectedRuleCode3 = ko.observable("");
-                self.itemList = ko.observableArray([
-                    { code: '1', name: '1月' },
-                    { code: '2', name: '2月' },
-                    { code: '3', name: '3月' },
-                    { code: '4', name: '4月' },
-                    { code: '5', name: '5月' },
-                    { code: '6', name: '6月' },
-                    { code: '7', name: '7月' },
-                    { code: '8', name: '8月' },
-                    { code: '9', name: '9月' },
-                    { code: '10', name: '10月' },
-                    { code: '11', name: '11月' },
-                    { code: '12', name: '12月' }
-                ]);
             };
             return CompanyModel;
         }());

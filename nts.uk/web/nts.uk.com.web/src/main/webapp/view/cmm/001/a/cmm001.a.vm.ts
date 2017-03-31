@@ -11,6 +11,7 @@ module cmm001.a {
         isUpdate: KnockoutObservable<boolean> = ko.observable(null);
         dirtyObject: nts.uk.ui.DirtyChecker;
         previousCurrentCode: string = null; //lưu giá trị của currentCode trước khi nó bị thay đổi
+        itemList: KnockoutObservable<any>;
 
         constructor() {
             let self = this;
@@ -110,7 +111,21 @@ module cmm001.a {
                 { id: 'tab-2', title: '会社所在地・連絡先', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-3', title: 'システム設定', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
             ]);
-
+            let itemArray = [
+                { code: '1', name: '1月' },
+                { code: '2', name: '2月' },
+                { code: '3', name: '3月' },
+                { code: '4', name: '4月' },
+                { code: '5', name: '5月' },
+                { code: '6', name: '6月' },
+                { code: '7', name: '7月' },
+                { code: '8', name: '8月' },
+                { code: '9', name: '9月' },
+                { code: '10', name: '10月' },
+                { code: '11', name: '11月' },
+                { code: '12', name: '12月' }
+            ];
+            self.itemList = ko.observableArray(itemArray);
             self.displayAttribute = ko.observable(true);
             self.selectedTab = ko.observable('tab-1');
             self.gridColumns = ko.observableArray([
@@ -159,7 +174,20 @@ module cmm001.a {
                         self.currentCompanyCode(currentCode);
                     }
                 } else {
-                    self.isUpdate(false);
+                    self.currentCompany = ko.observable(new CompanyModel({
+                            companyCode: '',
+                            address1: '',
+                            companyName: '',
+                            companyNameGlobal: '',
+                            corporateMyNumber: '',
+                            depWorkPlaceSet: 0,
+                            displayAttribute: '',
+                            termBeginMon: 0,
+                            companyUseSet: null
+                        }));
+                    self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentCompany);
+                    self.currentCompanyCode(self.currentCompany().companyCode());
+                    self.resetData();
                 }
                 dfd.resolve();
             });
@@ -189,7 +217,7 @@ module cmm001.a {
                         self.currentCompanyCode(currentCode);
                     }
                 } else {
-                    self.isUpdate(false);
+                    self.resetData();
                 }
                 dfd.resolve();
             });
@@ -399,7 +427,6 @@ module cmm001.a {
         termBeginMon: KnockoutObservable<number>;
         companyUseSet: KnockoutObservable<CompanyUseSet>;
         isDelete: KnockoutObservable<boolean>;
-        itemList: KnockoutObservable<any>;
         //switch
         roundingRules: KnockoutObservableArray<RoundingRule>;
         selectedRuleCode: KnockoutObservable<string>;
@@ -508,20 +535,6 @@ module cmm001.a {
                 new RoundingRule('0', '区別しない')
             ]);
             self.selectedRuleCode3 = ko.observable("");
-            self.itemList = ko.observableArray([
-                { code: '1', name: '1月' },
-                { code: '2', name: '2月' },
-                { code: '3', name: '3月' },
-                { code: '4', name: '4月' },
-                { code: '5', name: '5月' },
-                { code: '6', name: '6月' },
-                { code: '7', name: '7月' },
-                { code: '8', name: '8月' },
-                { code: '9', name: '9月' },
-                { code: '10', name: '10月' },
-                { code: '11', name: '11月' },
-                { code: '12', name: '12月' }
-            ]);
         }
     }
 
