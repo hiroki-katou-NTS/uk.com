@@ -7,6 +7,9 @@ var qmm018;
             var paths = {
                 itemSelect: "pr/core/item/findall/category/{0}"
             };
+            /**
+             * select items master by category
+             */
             function itemSelect(categoryAtr) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(nts.uk.text.format(paths.itemSelect, categoryAtr))

@@ -16,7 +16,7 @@ public class UpdateAveragePayCommand {
 	private int exceptionPayRate;
 	private int roundDigitSet;
 	private int roundTimingSet;
-	private List<String> salarySelectedCode;
-	private List<String> attendSelectedCode;
+	private List<String> selectedSalaryItems;
+	private List<String> selectedAttendItems;
 }
 

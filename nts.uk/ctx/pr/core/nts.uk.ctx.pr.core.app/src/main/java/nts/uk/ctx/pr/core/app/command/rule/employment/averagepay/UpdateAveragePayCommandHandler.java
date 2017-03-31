@@ -12,6 +12,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.core.dom.itemmaster.AvePayAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.ItemAttend;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.ItemAttendRespository;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalary;
@@ -50,7 +51,7 @@ public class UpdateAveragePayCommandHandler extends CommandHandler<UpdateAverage
 		// validate exist
 		Optional<AveragePay> avepay = this.averagePayRepository.findByCompanyCode(companyCode);
 		if (!avepay.isPresent()) {
-			throw new BusinessException("Update Fail");
+			throw new BusinessException("ER001");
 		}
 		
 		// QAPMT_AVE_PAY.UPD_1
@@ -65,45 +66,46 @@ public class UpdateAveragePayCommandHandler extends CommandHandler<UpdateAverage
 		List<ItemSalary> itemSalarys = this.itemSalaryRespository.findAll(companyCode);
 
 		// QCAMT_ITEM_SALARY.UPD_2: item salary selected
-		List<ItemSalary> itemSelectedSalarys = itemSalarys.stream()
-				.filter(x -> command.getSalarySelectedCode().contains(x.getItemCode().v())).collect(Collectors.toList());
-		itemSelectedSalarys.forEach(x -> {
-			x.setAvePayAttribute(nts.uk.ctx.pr.core.dom.itemmaster.AvePayAtr.Object);
-			this.itemSalaryRespository.update(x);
-		});
+		List<String> itemSelectedSalarys = itemSalarys.stream()
+				.filter(x -> command.getSelectedSalaryItems().contains(x.getItemCode().v()))
+				.map(x -> x.getItemCode().v())
+				.collect(Collectors.toList());
+		if(!itemSelectedSalarys.isEmpty()){
+			this.itemSalaryRespository.updateItems(companyCode, itemSelectedSalarys, AvePayAtr.Object);
+		}
 		
 		// QCAMT_ITEM_SALARY.UPD_2: item salary unselected
-		List<ItemSalary> itemUnselectedSalarys = itemSalarys.stream()
-				.filter(x -> !command.getSalarySelectedCode().contains(x.getItemCode().v())).collect(Collectors.toList());
-		itemUnselectedSalarys.forEach(x -> {
-			x.setAvePayAttribute(nts.uk.ctx.pr.core.dom.itemmaster.AvePayAtr.NotApplicable);
-			this.itemSalaryRespository.update(x);
-		});
+		List<String> itemUnselectedSalarys = itemSalarys.stream()
+				.filter(x -> !command.getSelectedSalaryItems().contains(x.getItemCode().v()))
+				.map(x -> x.getItemCode().v())
+				.collect(Collectors.toList());
+		if(!itemUnselectedSalarys.isEmpty()) {
+			this.itemSalaryRespository.updateItems(companyCode, itemUnselectedSalarys, AvePayAtr.NotApplicable);
+		}
 		
 		// if 明細書項目から選択 is selected
-		if (command.getAttendDayGettingSet() == 1) {
+		if (averagePay.isAttenDayStatementItem()) {
 			
 			// QCAMT_ITEM_ATTEND.SEL_3
 			List<ItemAttend> itemAttends = this.itemAttendRespository.findAll(companyCode);
 			
 			// QCAMT_ITEM_ATTEND.UPD_2: item attend selected
-			List<ItemAttend> itemSelectedAttends = itemAttends.stream()
-					.filter(x -> command.getAttendSelectedCode().contains(x.getItemCode().v()))
+			List<String> itemSelectedAttends = itemAttends.stream()
+					.filter(x -> command.getSelectedAttendItems().contains(x.getItemCode().v()))
+					.map(x -> x.getItemCode().v())
 					.collect(Collectors.toList());
-			itemSelectedAttends.forEach(x -> {
-				x.setAvePayAttribute(nts.uk.ctx.pr.core.dom.itemmaster.AvePayAtr.Object);
-				this.itemAttendRespository.update(x);
-			});
+			if(!itemSelectedAttends.isEmpty()) {
+				this.itemAttendRespository.updateItems(companyCode, itemSelectedAttends, AvePayAtr.Object);
+			}
 			
 			// QCAMT_ITEM_ATTEND.UPD_2: item attend unselected
-			List<ItemAttend> itemUnselectedAttends = itemAttends.stream()
-					.filter(x -> !command.getAttendSelectedCode().contains(x.getItemCode().v()))
+			List<String> itemUnselectedAttends = itemAttends.stream()
+					.filter(x -> !command.getSelectedAttendItems().contains(x.getItemCode().v()))
+					.map(x -> x.getItemCode().v())
 					.collect(Collectors.toList());
-			itemUnselectedAttends.forEach(x -> {
-				x.setAvePayAttribute(nts.uk.ctx.pr.core.dom.itemmaster.AvePayAtr.NotApplicable);
-				this.itemAttendRespository.update(x);
-			});
+			if(!itemUnselectedAttends.isEmpty()) {
+				this.itemAttendRespository.updateItems(companyCode, itemUnselectedAttends, AvePayAtr.NotApplicable);
+			}
 		}
-		
 	}
 }

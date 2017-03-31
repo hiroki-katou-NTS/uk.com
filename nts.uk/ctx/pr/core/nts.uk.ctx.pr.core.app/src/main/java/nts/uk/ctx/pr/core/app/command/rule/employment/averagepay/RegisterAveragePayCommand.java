@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 /**
  * 
  * @author Doan Duy Hung
@@ -16,6 +17,6 @@ public class RegisterAveragePayCommand {
 	private int exceptionPayRate;
 	private int roundDigitSet;
 	private int roundTimingSet;
-	private List<String> salarySelectedCode;
-	private List<String> attendSelectedCode;
+	private List<String> selectedSalaryItems;
+	private List<String> selectedAttendItems;
 }

@@ -11,6 +11,7 @@
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="qmm018.b.start.js" />
 				<com:scriptfile path="qmm018.b.viewmodel.js" />
+				<com:scriptfile path="../shr/qmm018.shr.viewmodelbase.js" />
 				<com:scriptfile path="qmm018.b.service.js" />
 				<com:stylefile path="qmm018.b.main.css" />
 			</ui:define>
@@ -24,11 +25,11 @@
 						<div id="swap-list" data-bind="ntsSwapList: {
 							showSearchBox: { showLeft : true, showRight: true},
 							height: 300,
-							dataSource: unselectedCodeListSwap,
-							primaryKey: 'code',
+							dataSource: items,
+							primaryKey: 'itemCode',
 							columns: ko.observableArray([
-				                { headerText: 'コード', prop: 'code', width: 50 },
-				                { headerText: '名称', prop: 'name', width: 180 },
+				                { headerText: 'コード', prop: 'itemCode', width: 50 },
+				                { headerText: '名称', prop: 'itemAbName', width: 180 },
 				            ]),
 							value: currentCodeListSwap }"></div>
 					</div>

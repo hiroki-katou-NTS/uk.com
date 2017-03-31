@@ -42,7 +42,9 @@ public class JpaAveragePayRepository extends JpaRepository implements AveragePay
 	}
 	/**
 	 * convert domain item to entity item
-	 * @param averagePay domain item
+	 * 
+	 * @param averagePay 
+	 * 				domain item
 	 * @return entity item
 	 */
 	private QapmtAvePay convertToEntity(AveragePay averagePay) {
@@ -56,7 +58,9 @@ public class JpaAveragePayRepository extends JpaRepository implements AveragePay
 	
 	/**
 	 * convert entity to domain item
-	 * @param qapmtAvePay entity item
+	 * 
+	 * @param qapmtAvePay 
+	 * 				entity item
 	 * @return domain item
 	 */
 	private AveragePay convertToDomain(QapmtAvePay qapmtAvePay) {

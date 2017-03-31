@@ -3,6 +3,9 @@ module qmm018.b.service {
         itemSelect: "pr/core/item/findall/category/{0}"
     }
     
+    /**
+     * select items master by category
+     */
     export function itemSelect(categoryAtr): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
         nts.uk.request.ajax(nts.uk.text.format(paths.itemSelect, categoryAtr))

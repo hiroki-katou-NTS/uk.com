@@ -9,94 +9,43 @@ var qmm018;
                 averagePayItemSelectBySalary: "pr/core/averagepay/findByItemSalary",
                 averagePayItemSelectByAttend: "pr/core/averagepay/findByItemAttend",
                 averagePayItemInsert: "pr/core/averagepay/register",
-                averagePayItemUpdate: "pr/core/averagepay/update",
-                itemSalaryUpdate: "",
-                itemAttendUpdate: ""
+                averagePayItemUpdate: "pr/core/averagepay/update"
             };
+            /**
+             * select average pay item
+             */
             function averagePayItemSelect() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.averagePayItemSelect)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax(paths.averagePayItemSelect);
             }
             service.averagePayItemSelect = averagePayItemSelect;
+            /**
+             * select items master by salary item code
+             */
             function averagePayItemSelectBySalary() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.averagePayItemSelectBySalary)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax(paths.averagePayItemSelectBySalary);
             }
             service.averagePayItemSelectBySalary = averagePayItemSelectBySalary;
+            /**
+             * select items master by attend item code
+             */
             function averagePayItemSelectByAttend() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.averagePayItemSelectByAttend)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax(paths.averagePayItemSelectByAttend);
             }
             service.averagePayItemSelectByAttend = averagePayItemSelectByAttend;
+            /**
+             * insert average pay item, salary items, attend items
+             */
             function averagePayItemInsert(command) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.averagePayItemInsert, command)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax(paths.averagePayItemInsert, command);
             }
             service.averagePayItemInsert = averagePayItemInsert;
+            /**
+             * update average pay item, salary items, attend items
+             */
             function averagePayItemUpdate(command) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.averagePayItemUpdate, command)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax(paths.averagePayItemUpdate, command);
             }
             service.averagePayItemUpdate = averagePayItemUpdate;
-            function itemSalaryUpdate() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax(nts.uk.text.format(paths.itemSalaryUpdate))
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.itemSalaryUpdate = itemSalaryUpdate;
-            function itemAttendUpdate() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax(nts.uk.text.format(paths.itemAttendUpdate))
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.itemAttendUpdate = itemAttendUpdate;
         })(service = a.service || (a.service = {}));
     })(a = qmm018.a || (qmm018.a = {}));
 })(qmm018 || (qmm018 = {}));

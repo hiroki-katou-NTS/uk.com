@@ -1,119 +1,113 @@
 module qmm018.a.viewmodel {
     export class ScreenModel {
         averagePay: KnockoutObservable<AveragePay>;
-        selectedItemList1: KnockoutObservableArray<ItemModel>; // ItemSalary Selected
-        selectedItemList2: KnockoutObservableArray<ItemModel>; // ItemAttend Selected
-        unSelectedItemList1: KnockoutObservableArray<ItemModel>; // ItemSalary Unselected
-        unSelectedItemList2: KnockoutObservableArray<ItemModel>; // ItemAttend Unselected
         texteditor1: KnockoutObservable<any>;
         texteditor2: KnockoutObservable<any>;
-        isUpdate: any;
+        isUpdate: boolean;
+        dirty: nts.uk.ui.DirtyChecker;
         constructor() {
             var self = this;
             self.averagePay = ko.observable(new AveragePay(null, null, null, null));
-            self.selectedItemList1 = ko.observableArray([]);
-            self.selectedItemList2 = ko.observableArray([]);
-            self.unSelectedItemList1 = ko.observableArray([]);
-            self.unSelectedItemList2 = ko.observableArray([]);
             self.texteditor1 = ko.observable({
                 value: ko.computed(function() {
-                    let s: any;
-                    ko.utils.arrayForEach(self.selectedItemList1(), function(item) { if (!s) { s = item.name } else { s += " + " + item.name } });
+                    let s: string;
+                    ko.utils.arrayForEach(self.averagePay().selectedSalaryItems(), function(item) { if (!s) { s = item.itemAbName } else { s += " + " + item.itemAbName } });
                     return s;
                 })
             });
             self.texteditor2 = ko.observable({
                 value: ko.computed(function() {
-                    let s: any;
-                    ko.utils.arrayForEach(self.selectedItemList2(), function(item) { if (!s) { s = item.name } else { s += " + " + item.name } });
+                    let s: string;
+                    ko.utils.arrayForEach(self.averagePay().selectedAttendItems(), function(item) { if (!s) { s = item.itemAbName } else { s += " + " + item.itemAbName } });
                     return s;
                 })
             });
             self.isUpdate = false;
+            self.dirty = new nts.uk.ui.DirtyChecker(self.averagePay);
         }
+        
+        /**
+         * get init data
+         */
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            qmm018.a.service.averagePayItemSelect().done(function(data) { // QAPMT_AVE_PAY SEL_1: get average pay items
+            // get average pay items
+            qmm018.a.service.averagePayItemSelect().done(function(data) { 
                 if (data) {
                     // if data exist go to update case
-                    qmm018.a.service.averagePayItemSelectBySalary().done(function(dataSalary) { //QCAMT_ITEM SEL_5 by salary items ( after QCAMT_ITEM_SALARY SEL_3 ): get salary items
-                        if (dataSalary.length) {
-                            dataSalary.forEach(function(dataSalaryItem) {
-                                self.selectedItemList1.push(new ItemModel(dataSalaryItem.itemCode, dataSalaryItem.itemAbName));
-                            });
-                        }
-                    }).fail(function(res) {
-                    });
-                    qmm018.a.service.averagePayItemSelectByAttend().done(function(dataAttend) { //QCAMT_ITEM SEL_5 by attend items ( after QCAMT_ITEM_ATTEND SEL_4 ): get attend items
-                        if (dataAttend.length) {
-                            dataAttend.forEach(function(dataAttendItem) {
-                                self.selectedItemList2.push(new ItemModel(dataAttendItem.itemCode, dataAttendItem.itemAbName));
-                            });
-                        }
-                    }).fail(function(res) {
-                    });
                     self.averagePay(
                         new AveragePay(data.roundTimingSet, data.attendDayGettingSet, data.roundDigitSet, data.exceptionPayRate));
+                    
+                    // get salary items
+                    qmm018.a.service.averagePayItemSelectBySalary().done(function(dataSalary) { 
+                        self.loadData(dataSalary, self.averagePay().selectedSalaryItems, false);
+                        self.dirty.reset();
+                    }).fail(function(res) {
+                    });
+                    
+                    // get attend items
+                    if(self.averagePay().attendDayGettingSet()) {
+                        qmm018.a.service.averagePayItemSelectByAttend().done(function(dataAttend) { 
+                            self.loadData(dataAttend, self.averagePay().selectedSalaryItems, false);
+                            self.dirty.reset();
+                        }).fail(function(res) {
+                        });
+                    }
                     self.isUpdate = true;
+                    self.dirty.reset();
                 } else {
                     // if data no exist go to insert case
                     self.averagePay(new AveragePay(0, 0, 0, null));
-                    self.selectedItemList1([]);
-                    self.selectedItemList2([]);
                     self.isUpdate = false;
+                    self.dirty.reset();
                 }
                 dfd.resolve();
                 
                 // error check on salary list and attend list
-                self.selectedItemList1.subscribe(function(value) {
-                    if (!value.length) $("#inp-3").ntsError('set', Error.ER007); else $("#inp-3").ntsError('clear');
-                });
-                self.selectedItemList2.subscribe(function(value) {
-                    if (!value.length) $("#inp-1").ntsError('set', Error.ER007); else $("#inp-1").ntsError('clear');
-                });
+                
                 
             }).fail(function(res) {
                 dfd.reject(res);
             });
             return dfd.promise();
         }
-        saveData(isUpdate) {
+        
+        /**
+         * save average setting
+         */
+        saveData(isUpdate): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             let error = false;
-            let selectedCodeList1 = [];
-            
             // check errors on required
-            if (self.selectedItemList1().length) {
-                self.selectedItemList1().forEach(function(item) { selectedCodeList1.push(item.code); });
-            } else { $("#inp-3").ntsError('set', Error.ER007);  error = true; }
-            let selectedCodeList2 = [];
+            if (!self.averagePay().selectedSalaryItems().length) { $("#inp-3").ntsError('set', shr.viewmodelbase.Error.ER007);  error = true; }
             if (self.averagePay().attendDayGettingSet()) {
-                if (self.selectedItemList2().length) {
-                    self.selectedItemList2().forEach(function(item) { selectedCodeList2.push(item.code); });
-                } else { $("#inp-1").ntsError('set', Error.ER007); error = true; }
+                if (!self.averagePay().selectedAttendItems().length) { $("#inp-1").ntsError('set', shr.viewmodelbase.Error.ER007); error = true; }
             }
-            if (self.averagePay().exceptionPayRate() == null) { $("#inp-2").ntsError('set', Error.ER001); error = true; }
+            if (self.averagePay().exceptionPayRate() == null) { $("#inp-2").ntsError('set', shr.viewmodelbase.Error.ER001); error = true; }
             
             // insert or update if no error
-            if (!error) {
+            if (!error && self.dirty.isDirty()) {
+                //create data
                 let command = {
-                    attendDayGettingSet: self.averagePay().attendDayGettingSet(),
-                    exceptionPayRate: self.averagePay().exceptionPayRate(),
-                    roundDigitSet: self.averagePay().roundDigitSet(),
                     roundTimingSet: self.averagePay().roundTimingSet(),
-                    salarySelectedCode: selectedCodeList1,
-                    attendSelectedCode: selectedCodeList2
-                };
+                    attendDayGettingSet: self.averagePay().attendDayGettingSet(),
+                    roundDigitSet: self.averagePay().roundDigitSet(),
+                    exceptionPayRate: self.averagePay().exceptionPayRate(),
+                    selectedSalaryItems: _.map(self.averagePay().selectedSalaryItems(), function(o){ return o.itemCode; }),
+                    selectedAttendItems: _.map(self.averagePay().selectedAttendItems(), function(o){ return o.itemCode; })   
+                }
                 if (isUpdate) {
                     qmm018.a.service.averagePayItemUpdate(command).done(function(data) {
+                        self.dirty.reset();
                         dfd.resolve();
                     }).fail(function(res) {
                         dfd.reject();
                     });
                 } else {
                     qmm018.a.service.averagePayItemInsert(command).done(function(data) {
+                        self.dirty.reset();
                         dfd.resolve();
                     }).fail(function(res) {
                         dfd.reject();
@@ -122,82 +116,86 @@ module qmm018.a.viewmodel {
             }
             return dfd.promise();
         }
-        openSubWindow(n) {
+        
+        /**
+         * open B screen
+         */
+        openSubWindow(n): void {
             var self = this;
             if (!n) {
                 // set salary data
-                nts.uk.ui.windows.setShared('selectedItemList', self.selectedItemList1());
-                nts.uk.ui.windows.setShared('categoryAtr', 0);
+                nts.uk.ui.windows.setShared('selectedItemList', self.averagePay().selectedSalaryItems());
+                nts.uk.ui.windows.setShared('categoryAtr', shr.viewmodelbase.CategoryAtr.PAYMENT);
             } else {
                 // set attend data
-                nts.uk.ui.windows.setShared('selectedItemList', self.selectedItemList2());
-                nts.uk.ui.windows.setShared('categoryAtr', 2);
+                nts.uk.ui.windows.setShared('selectedItemList', self.averagePay().selectedAttendItems());
+                nts.uk.ui.windows.setShared('categoryAtr', shr.viewmodelbase.CategoryAtr.PERSONAL_TIME);
             }
             nts.uk.ui.windows.sub.modal("/view/qmm/018/b/index.xhtml", { title: "対象項目の選択", dialogClass: "no-close" }).onClosed(function() {
-                let selectedList: Array<ItemModel> = nts.uk.ui.windows.getShared('selectedItemList'); // Get selected form B screen, n = 0: ItemSalary, n = 2: ItemAttend
-                let unSelectedList: Array<ItemModel> = nts.uk.ui.windows.getShared('unSelectedItemList'); // Get unselected form B screen, n = 0: ItemSalary, n = 2: ItemAttend
+                let selectedList: Array<shr.viewmodelbase.ItemModel> = nts.uk.ui.windows.getShared('selectedItemList'); // Get selected form B screen, n = 0: ItemSalary, n = 2: ItemAttend
                 if (!n) {
                     // set data to salary item list 
-                    if (selectedList.length) {
-                        if (!_.isEqual(selectedList, self.selectedItemList1())) {
-                            self.selectedItemList1.removeAll();
-                            ko.utils.arrayForEach(selectedList, function(item) { self.selectedItemList1.push(item) });
-                            if (unSelectedList.length) {
-                                self.unSelectedItemList1.removeAll();
-                                ko.utils.arrayForEach(unSelectedList, function(item) { self.unSelectedItemList1.push(item) });
-                            } else { self.unSelectedItemList1([]); }
-                        }
-                    } else { self.selectedItemList1([]); }
+                    self.loadData(selectedList, self.averagePay().selectedSalaryItems, _.isEqual(selectedList, self.averagePay().selectedSalaryItems()));
                 } else {
                     // set data to attend item list 
-                    if (selectedList.length) {
-                        if (!_.isEqual(selectedList, self.selectedItemList2())) {
-                            self.selectedItemList2.removeAll();
-                            ko.utils.arrayForEach(selectedList, function(item) { self.selectedItemList2.push(item) });
-                            if (unSelectedList.length) {
-                                self.unSelectedItemList2.removeAll();
-                                ko.utils.arrayForEach(unSelectedList, function(item) { self.unSelectedItemList2.push(item) });
-                            } else { self.unSelectedItemList2([]); }
-                        }
-                    } else { self.selectedItemList2([]); }
+                    self.loadData(selectedList, self.averagePay().selectedAttendItems, _.isEqual(selectedList, self.averagePay().selectedAttendItems()));
                 }
             });
         }
-    }
-
-    class ItemModel {
-        code: any;
-        name: any;
-        constructor(code: any, name: any) {
-            this.code = code;
-            this.name = name;
+        
+        /**
+         * set data to KnockoutObservableArray from Array source
+         */
+        loadData(dataSource: Array<any>, dataDestination: KnockoutObservableArray<any>, isDataEqual: boolean): void {
+            if(dataSource.length) {
+                if(!isDataEqual) {
+                    dataDestination.removeAll();
+                    dataSource.forEach(function(item) { dataDestination.push(new shr.viewmodelbase.ItemModel(item.itemCode, item.itemAbName)) });        
+                }    
+            } else {
+                dataDestination([]);    
+            }   
         }
     }
 
     class AveragePay {
-        roundTimingSet: KnockoutObservable<any>;
-        attendDayGettingSet: KnockoutObservable<any>;
-        roundDigitSet: KnockoutObservable<any>;
-        exceptionPayRate: KnockoutObservable<any>;
-        oldExceptionPayRate: KnockoutObservable<any>;
-        constructor(roundTimingSet: any, attendDayGettingSet: any, roundDigitSet: any, exceptionPayRate: any) {
+        roundTimingSet: KnockoutObservable<number>;
+        attendDayGettingSet: KnockoutObservable<number>;
+        roundDigitSet: KnockoutObservable<number>;
+        exceptionPayRate: KnockoutObservable<number>;
+        oldExceptionPayRate: KnockoutObservable<number>;
+        selectedSalaryItems: KnockoutObservableArray<shr.viewmodelbase.ItemModel>; 
+        selectedAttendItems: KnockoutObservableArray<shr.viewmodelbase.ItemModel>; 
+        constructor(roundTimingSet: number, attendDayGettingSet: number, roundDigitSet: number, exceptionPayRate: number) {
             var self = this;
             self.roundTimingSet = ko.observable(roundTimingSet);
             self.attendDayGettingSet = ko.observable(attendDayGettingSet);
             self.roundDigitSet = ko.observable(roundDigitSet);
             self.exceptionPayRate = ko.observable(exceptionPayRate);
             self.oldExceptionPayRate = ko.observable(exceptionPayRate);
+            self.selectedSalaryItems = ko.observableArray([]);
+            self.selectedAttendItems = ko.observableArray([]);
             self.roundTimingSet.subscribe(function(value) { self.roundTimingSet(value ? 1 : 0); });
+            self.attendDayGettingSet.subscribe(function(value){
+                if(!value) {
+                    self.roundDigitSet(0);
+                    $("#inp-1").ntsError('clear');     
+                    self.selectedAttendItems([]);
+                }         
+            });
             self.exceptionPayRate.subscribe(function(value) {
-                if ($("#inp-2").ntsError('set', Error.ER001)) { self.oldExceptionPayRate(exceptionPayRate); }
+                if ($("#inp-2").ntsError('hasError')) { self.oldExceptionPayRate(exceptionPayRate); }
                 else { exceptionPayRate = value; self.oldExceptionPayRate(value); }
             });
+            self.selectedSalaryItems.subscribe(function(value) {
+                if (!value.length) $("#inp-3").ntsError('set', shr.viewmodelbase.Error.ER007); else $("#inp-3").ntsError('clear');
+            });
+            self.selectedAttendItems.subscribe(function(value) {
+                if(!self.attendDayGettingSet()) $("#inp-1").ntsError('clear');
+                else {
+                    if (!value.length) $("#inp-1").ntsError('set', shr.viewmodelbase.Error.ER007); else $("#inp-1").ntsError('clear');
+                }
+            });
         }
-    }
-    
-    enum Error {
-        ER001 = <any>"＊が入力されていません。",
-        ER007 = <any>"＊が選択されていません。", 
-        ER010 = <any>"対象データがありません。",   
     }
 }

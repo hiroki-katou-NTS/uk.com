@@ -4,92 +4,41 @@ module qmm018.a.service {
         averagePayItemSelectBySalary: "pr/core/averagepay/findByItemSalary",
         averagePayItemSelectByAttend: "pr/core/averagepay/findByItemAttend",
         averagePayItemInsert: "pr/core/averagepay/register",
-        averagePayItemUpdate: "pr/core/averagepay/update",
-        itemSalaryUpdate: "",
-        itemAttendUpdate: ""
+        averagePayItemUpdate: "pr/core/averagepay/update"
     }
     
+    /**
+     * select average pay item
+     */
     export function averagePayItemSelect(): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(paths.averagePayItemSelect)
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+        return nts.uk.request.ajax(paths.averagePayItemSelect);
     }
     
+    /**
+     * select items master by salary item code
+     */
     export function averagePayItemSelectBySalary(): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(paths.averagePayItemSelectBySalary)
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+        return nts.uk.request.ajax(paths.averagePayItemSelectBySalary);
     }
     
+    /**
+     * select items master by attend item code
+     */
     export function averagePayItemSelectByAttend(): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(paths.averagePayItemSelectByAttend)
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+        return nts.uk.request.ajax(paths.averagePayItemSelectByAttend);
     }
     
+    /**
+     * insert average pay item, salary items, attend items
+     */
     export function averagePayItemInsert(command): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(paths.averagePayItemInsert, command)
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+        return nts.uk.request.ajax(paths.averagePayItemInsert, command);
     }
     
+    /**
+     * update average pay item, salary items, attend items
+     */
     export function averagePayItemUpdate(command): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(paths.averagePayItemUpdate, command)
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
-    
-    export function itemSalaryUpdate(): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(nts.uk.text.format(paths.itemSalaryUpdate))
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
-    
-    export function itemAttendUpdate(): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(nts.uk.text.format(paths.itemAttendUpdate))
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+        return nts.uk.request.ajax(paths.averagePayItemUpdate, command);
     }
 }

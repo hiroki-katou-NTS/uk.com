@@ -45,4 +45,12 @@ public class AveragePay extends AggregateRoot {
 		this.roundDigitSet = roundDigitSet;
 		this.roundTimingSet = roundTimingSet;
 	}
+	
+	/**
+	 * check attend day select
+	 * @return attend day statement
+	 */
+	public boolean isAttenDayStatementItem() {
+		 return AttendDayGettingSet.SELECT_FROM_STATEMENT_ITEM.equals(this.attendDayGettingSet);
+	}
 }
