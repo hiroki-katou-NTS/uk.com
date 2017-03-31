@@ -103,7 +103,14 @@ module nts.uk.pr.view.qmm016.a.history {
                             },
                             {
                                 columnKey: 'amount',
-                                readOnly: false
+                                readOnly: false,
+                                editorProvider: new (<any>$.ig).NtsNumberEditor(),
+                                editorOptions: {
+                                    constraint: 'WtValue',
+                                    option: {
+                                    },
+                                    required: true
+                                }
                             },
                             {
                                 columnKey: 'groupCalTypeText',
