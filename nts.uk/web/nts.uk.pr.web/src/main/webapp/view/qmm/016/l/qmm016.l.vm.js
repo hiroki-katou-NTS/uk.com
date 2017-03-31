@@ -228,8 +228,8 @@ var nts;
                                         { headerText: 'コード', key: 'code', width: 60 },
                                         { headerText: '名称', key: 'name', width: 180 }
                                     ]);
-                                    this.selectionMultipleTargetSetting = ko.observableArray([new MultipleTargetSettingDto(MultipleTargetSetting.BigestMethod, "BigestMethod"),
-                                        new MultipleTargetSettingDto(MultipleTargetSetting.TotalMethod, "TotalMethod")
+                                    this.selectionMultipleTargetSetting = ko.observableArray([new MultipleTargetSettingDto(MultipleTargetSetting.BigestMethod, "一番高い手当を1つだけ支給する"),
+                                        new MultipleTargetSettingDto(MultipleTargetSetting.TotalMethod, "複数該当した金額を加算する")
                                     ]);
                                     this.certifies = ko.observableArray(certifyGroupDto.certifies);
                                     this.lstCertification = ko.observableArray([]);
