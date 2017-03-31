@@ -9,20 +9,21 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "PBAMT_PERSON_BANK_ACCOUNT")
-public class PbamtPersonBankAccount extends TableEntity {
+public class PbamtPersonBankAccount extends UkJpaEntity {
 	
 	@EmbeddedId
 	public PbamtPersonBankAccountPK pbamtPersonBankAccountPK;
 	
-	@Column(name = "STR_D")
+	@Column(name = "STR_YM")
 	public int startYearMonth;
 	
-	@Column(name = "END_D")
+	@Column(name = "END_YM")
 	public int endYearMonth;
 	
 	@Column(name = "USE_SET1")
@@ -45,12 +46,9 @@ public class PbamtPersonBankAccount extends TableEntity {
 	
 	@Column(name = "FROM_LINE_BANK_CD1")
 	public String fromLineBankCd1;
-	
-	@Column(name = "TO_BANK_CD1")
-	public String toBankCd1;
-	
-	@Column(name = "TO_BRANCH_CD1")
-	public String toBranchCd1;
+		
+	@Column(name = "TO_BRANCH_ID1")
+	public String toBranchId1;
 	
 	@Column(name = "ACCOUNT_ATR1")
 	public int accountAtr1;
@@ -85,11 +83,8 @@ public class PbamtPersonBankAccount extends TableEntity {
 	@Column(name = "FROM_LINE_BANK_CD2")
 	public String fromLineBankCd2;
 	
-	@Column(name = "TO_BANK_CD2")
-	public String toBankCd2;
-	
-	@Column(name = "TO_BRANCH_CD2")
-	public String toBranchCd2;
+	@Column(name = "TO_BRANCH_ID2")
+	public String toBranchId2;
 	
 	@Column(name = "ACCOUNT_ATR2")
 	public int accountAtr2;
@@ -123,12 +118,9 @@ public class PbamtPersonBankAccount extends TableEntity {
 	
 	@Column(name = "FROM_LINE_BANK_CD3")
 	public String fromLineBankCd3;
-	
-	@Column(name = "TO_BANK_CD3")
-	public String toBankCd3;
-	
-	@Column(name = "TO_BRANCH_CD3")
-	public String toBranchCd3;
+		
+	@Column(name = "TO_BRANCH_ID3")
+	public String toBranchId3;
 	
 	@Column(name = "ACCOUNT_ATR3")
 	public int accountAtr3;
@@ -161,13 +153,10 @@ public class PbamtPersonBankAccount extends TableEntity {
 	public int fixRate4;
 	
 	@Column(name = "FROM_LINE_BANK_CD4")
-	public String fromLineBankCd4;
+	public String fromLineBankCd4;	
 	
-	@Column(name = "TO_BANK_CD4")
-	public String toBankCd4;
-	
-	@Column(name = "TO_BRANCH_CD4")
-	public String toBranchCd4;
+	@Column(name = "TO_BRANCH_ID4")
+	public String toBranchId4;
 	
 	@Column(name = "ACCOUNT_ATR4")
 	public int accountAtr4;
@@ -202,11 +191,8 @@ public class PbamtPersonBankAccount extends TableEntity {
 	@Column(name = "FROM_LINE_BANK_CD5")
 	public String fromLineBankCd5;
 	
-	@Column(name = "TO_BANK_CD5")
-	public String toBankCd5;
-	
-	@Column(name = "TO_BRANCH_CD5")
-	public String toBranchCd5;
+	@Column(name = "TO_BRANCH_ID5")
+	public String toBranchId5;
 	
 	@Column(name = "ACCOUNT_ATR5")
 	public int accountAtr5;
@@ -219,4 +205,9 @@ public class PbamtPersonBankAccount extends TableEntity {
 	
 	@Column(name = "ACCOUNT_HOLDER_NAME5")
 	public String accountHolderName5;
+
+	@Override
+	protected PbamtPersonBankAccountPK getKey() {		
+		return this.pbamtPersonBankAccountPK;
+	}
 }
