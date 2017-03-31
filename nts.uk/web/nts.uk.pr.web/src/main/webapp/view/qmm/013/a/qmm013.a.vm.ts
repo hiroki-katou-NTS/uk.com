@@ -71,7 +71,7 @@ module qmm013.a.viewmodel {
                 }
                 self.isFirstGetData(true);
 
-                //in case delete row, don't allow checkDirty
+                //don't allow checkDirty
                 if (self.notCheckDirty()) {
                     self.selectedUnitPrice(newCode);
                     self.notCheckDirty(false);
@@ -117,7 +117,7 @@ module qmm013.a.viewmodel {
                                 return x.personalUnitPriceCode === self.currentCode();
                             });
                             var tmp1 = new PersonalUnitPrice(
-                                tmp.personalUnitPriceCode, tmp.personalUnitPriceName, tmp.personalUnitPriceShortName, tmp.displaySet ? true : false,
+                                tmp.personalUnitPriceCode, tmp.personalUnitPriceName, tmp.personalUnitPriceShortName, tmp.displaySet ? false : true,
                                 null, tmp.paymentSettingType, tmp.fixPaymentAtr, tmp.fixPaymentMonthly, tmp.fixPaymentDayMonth, tmp.fixPaymentDaily,
                                 tmp.fixPaymentHoursly, tmp.unitPriceAtr, tmp.memo);
                             self.currentItem(tmp1);
@@ -129,11 +129,16 @@ module qmm013.a.viewmodel {
                 } else {
                     nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。")
                         .ifYes(function() {
-                            self.notCheckDirty(true);
+                            //self.notCheckDirty(true);
                             self.getPersonalUnitPriceList().done(function() {
                                 //in case dirty
+                                if(self.currentCode() == ""){
+                                    self.notCheckDirty(true);
+                                    self.selectedFirstUnitPrice();
+                                }
                                 //if row is chose has column '廃止' is 'X', select first row in new list
-                                if (self.currentItem().displaySet() && self.currentCode() != "") {
+                                if (self.currentItem().displaySet()) {
+                                    self.notCheckDirty(true);
                                     self.selectedFirstUnitPrice();
                                 } else {
                                     //if row is chose has column '廃止' isn't 'X', keep the same position in new list
@@ -141,7 +146,7 @@ module qmm013.a.viewmodel {
                                         return x.personalUnitPriceCode === self.currentCode();
                                     });
                                     var tmp1 = new PersonalUnitPrice(
-                                        tmp.personalUnitPriceCode, tmp.personalUnitPriceName, tmp.personalUnitPriceShortName, tmp.displaySet ? true : false,
+                                        tmp.personalUnitPriceCode, tmp.personalUnitPriceName, tmp.personalUnitPriceShortName, tmp.displaySet ? false : true,
                                         null, tmp.paymentSettingType, tmp.fixPaymentAtr, tmp.fixPaymentMonthly, tmp.fixPaymentDayMonth, tmp.fixPaymentDaily,
                                         tmp.fixPaymentHoursly, tmp.unitPriceAtr, tmp.memo);
                                     self.currentItem(tmp1);
@@ -182,7 +187,7 @@ module qmm013.a.viewmodel {
             var dfd = $.Deferred();
             service.getPersonalUnitPriceList(self.displayAll()).done(function(data) {
                 var items = _.map(data, function(item) {
-                    var abolition = item.displaySet == true ? '<i class="icon icon-close"></i>' : "";
+                    var abolition = item.displaySet == true ? "" : '<i class="icon icon-close"></i>';
                     return new ItemModel(item.personalUnitPriceCode, item.personalUnitPriceName, abolition);
                 });
                 self.listItems(data);
@@ -213,7 +218,7 @@ module qmm013.a.viewmodel {
                 item.personalUnitPriceCode,
                 item.personalUnitPriceName,
                 item.personalUnitPriceShortName,
-                item.displaySet,
+                item.displaySet ? false : true,
                 item.uniteCode,
                 item.paymentSettingType,
                 item.fixPaymentAtr,
@@ -277,7 +282,7 @@ module qmm013.a.viewmodel {
          */
         btn_002(): void {
             var self = this;
-            self.confirmDirty = true;
+            //self.confirmDirty = true;
             //if input 0-9, auto insert '0' before
             if (self.currentItem().personalUnitPriceCode() != null && self.currentItem().personalUnitPriceCode().length == 1) {
                 self.currentItem().personalUnitPriceCode("0" + self.currentItem().personalUnitPriceCode());
@@ -286,7 +291,7 @@ module qmm013.a.viewmodel {
                 personalUnitPriceCode: self.currentItem().personalUnitPriceCode(),
                 personalUnitPriceName: self.currentItem().personalUnitPriceName(),
                 personalUnitPriceShortName: self.currentItem().personalUnitPriceShortName(),
-                displaySet: self.currentItem().displaySet() ? 1 : 0,
+                displaySet: self.currentItem().displaySet() ? 0 : 1,
                 uniteCode: null,
                 paymentSettingType: self.currentItem().paymentSettingType(),
                 fixPaymentAtr: self.currentItem().fixPaymentAtr(),
@@ -299,6 +304,10 @@ module qmm013.a.viewmodel {
             };
             service.addPersonalUnitPrice(self.isCreated(), PersonalUnitPrice).done(function() {
                 self.getPersonalUnitPriceList();
+                //define update mode or insert mode
+                if(self.currentItem().personalUnitPriceCode()!= self.currentCode()){
+                    self.confirmDirty = true;
+                }
                 self.currentCode(PersonalUnitPrice.personalUnitPriceCode);
                 self.isCreated(false);
                 self.dirty.reset();
@@ -306,8 +315,12 @@ module qmm013.a.viewmodel {
                 if (error.messageId == self.messages()[2].messageId) {
                     $('#INP_002').ntsError('set', self.messages()[2].message);
                 } else if (error.messageId == self.messages()[1].messageId) {
-                    $('#INP_002').ntsError('set', self.messages()[1].message);
-                    $('#INP_003').ntsError('set', self.messages()[1].message);
+                    if(!PersonalUnitPrice.personalUnitPriceCode){
+                        $('#INP_002').ntsError('set', self.messages()[1].message);
+                    }
+                    if(!PersonalUnitPrice.personalUnitPriceName){
+                        $('#INP_003').ntsError('set', self.messages()[1].message);
+                    }
                 } else if (error.messageId == self.messages()[4].messageId) {
                     nts.uk.ui.dialog.alert(self.messages()[4].message);
                 }
