@@ -4,8 +4,8 @@ var qmm012;
     (function (b) {
         __viewContext.ready(function () {
             var screenModel = new qmm012.b.ScreenModel(new qmm012.c.viewmodel.ScreenModel(), new qmm012.d.viewmodel.ScreenModel(), new qmm012.e.viewmodel.ScreenModel(), new qmm012.f.viewmodel.ScreenModel(), new qmm012.g.viewmodel.ScreenModel());
-            screenModel.screenModelB = new b.viewmodel.ScreenModel(screenModel);
-            __viewContext.bind(screenModel);
+            var screenModelB = new b.viewmodel.ScreenModel(screenModel);
+            __viewContext.bind(screenModelB);
         });
         var ScreenModel = (function () {
             function ScreenModel(screenModelC, screenModelD, screenModelE, screenModelF, screenModelG) {

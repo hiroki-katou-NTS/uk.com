@@ -6,12 +6,13 @@ var qmm012;
         (function (service) {
             var paths = {
                 findAllItemMaster: "pr/core/item/findAllItemMaster",
-                findItemperiod: "pr/core/itemperiod/find",
                 deleteItemMaster: "pr/core/item/delete",
+                addItemMaster: "pr/core/item/add",
+                updateItemMaster: "pr/core/item/update",
             };
-            function findAllItemMaster() {
+            function findAllItemMaster(ctgAtr, dispSet) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.findAllItemMaster)
+                nts.uk.request.ajax(paths.findAllItemMaster + "/" + ctgAtr + "/" + dispSet)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -21,18 +22,6 @@ var qmm012;
                 return dfd.promise();
             }
             service.findAllItemMaster = findAllItemMaster;
-            function findItemperiod(categoryAtr, itemCode) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.findItemperiod + "/" + categoryAtr + "/" + itemCode)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.findItemperiod = findItemperiod;
             function deleteItemMaster(ItemMaster) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.deleteItemMaster, ItemMaster)
@@ -45,55 +34,50 @@ var qmm012;
                 return dfd.promise();
             }
             service.deleteItemMaster = deleteItemMaster;
+            function addItemMaster(ItemMaster) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.addItemMaster, ItemMaster)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.addItemMaster = addItemMaster;
+            function updateItemMaster(ItemMaster) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.updateItemMaster, ItemMaster)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.updateItemMaster = updateItemMaster;
             var model;
             (function (model) {
-                var ItemMasterModel = (function () {
-                    function ItemMasterModel(itemCode, itemName, categoryAtrValue, categoryAtrName, itemAbName, itemAbNameO, itemAbNameE, displaySet, uniteCode, zeroDisplaySet, itemDisplayAtr) {
+                var ItemMaster = (function () {
+                    function ItemMaster(itemCode, itemName, categoryAtr, categoryAtrName, itemAbName, itemAbNameO, itemAbNameE, displaySet, uniteCode, zeroDisplaySet, itemDisplayAtr, fixAtr) {
                         this.itemCode = itemCode;
                         this.itemName = itemName;
-                        this.categoryAtrValue = categoryAtrValue;
+                        this.categoryAtr = categoryAtr;
                         this.categoryAtrName = categoryAtrName;
                         this.itemAbName = itemAbName;
                         this.itemAbNameO = itemAbNameO;
                         this.itemAbNameE = itemAbNameE;
                         this.displaySet = displaySet;
                         this.uniteCode = uniteCode;
-                        this.zeroDisplaySet = itemDisplayAtr;
+                        this.zeroDisplaySet = zeroDisplaySet;
+                        this.itemDisplayAtr = itemDisplayAtr;
+                        this.fixAtr = fixAtr;
                     }
-                    return ItemMasterModel;
+                    return ItemMaster;
                 }());
-                model.ItemMasterModel = ItemMasterModel;
-                var ItemPeriodModel = (function () {
-                    function ItemPeriodModel(itemClass, itemCode, StartYear, ExpYear, cycleAtr, cycle1Atr, cycle2Atr, cycle3Atr, cycle4Atr, cycle5Atr, cycle6Atr, cycle7Atr, cycle8Atr, cycle9Atr, cycle10Atr, cycle11Atr, cycle12Atr) {
-                        this.itemClass = itemClass;
-                        this.itemCode = itemCode;
-                        this.StartYear = StartYear;
-                        this.ExpYear = ExpYear;
-                        this.cycleAtr = cycleAtr;
-                        this.cycle1Atr = cycle1Atr;
-                        this.cycle2Atr = cycle2Atr;
-                        this.cycle3Atr = cycle3Atr;
-                        this.cycle4Atr = cycle4Atr;
-                        this.cycle5Atr = cycle5Atr;
-                        this.cycle6Atr = cycle6Atr;
-                        this.cycle7Atr = cycle7Atr;
-                        this.cycle8Atr = cycle8Atr;
-                        this.cycle9Atr = cycle9Atr;
-                        this.cycle10Atr = cycle10Atr;
-                        this.cycle11Atr = cycle11Atr;
-                        this.cycle12Atr = cycle12Atr;
-                    }
-                    return ItemPeriodModel;
-                }());
-                model.ItemPeriodModel = ItemPeriodModel;
-                var categoryAtr = (function () {
-                    function categoryAtr(value, name) {
-                        this.value = value;
-                        this.name = name;
-                    }
-                    return categoryAtr;
-                }());
-                model.categoryAtr = categoryAtr;
+                model.ItemMaster = ItemMaster;
             })(model = service.model || (service.model = {}));
         })(service = b.service || (b.service = {}));
     })(b = qmm012.b || (qmm012.b = {}));

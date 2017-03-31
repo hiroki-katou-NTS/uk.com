@@ -15,18 +15,14 @@ var qmm012;
                     this.CurrentItemAttend = ko.observable(null);
                     this.CurrentAvePayAtr = ko.observable(0);
                     this.CurrentItemAtr = ko.observable(0);
-                    this.CurrentErrRangeLowAtr = ko.observable(0);
                     this.CurrentErrRangeLow = ko.observable(0);
-                    this.CurrentErrRangeHighAtr = ko.observable(0);
                     this.CurrentErrRangeHigh = ko.observable(0);
-                    this.CurrentAlRangeLowAtr = ko.observable(0);
                     this.CurrentAlRangeLow = ko.observable(0);
-                    this.CurrentAlRangeHighAtr = ko.observable(0);
                     this.CurrentAlRangeHigh = ko.observable(0);
                     this.CurrentWorkDaysScopeAtr = ko.observable(1);
                     this.CurrentMemo = ko.observable("");
                     this.CurrentZeroDisplaySet = ko.observable(1);
-                    this.CurentItemDisplayAtr = ko.observable(1);
+                    this.CurrentItemDisplayAtr = ko.observable(1);
                     var self = this;
                     self.roundingRules_E_001 = ko.observableArray([
                         { code: 0, name: '時間' },
@@ -43,40 +39,36 @@ var qmm012;
                     self.enable = ko.observable(false);
                     self.currencyeditor_E_001 = {
                         value: self.CurrentErrRangeHigh,
-                        constraint: '',
+                        constraint: 'ErrRangeHigh',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                             grouplength: 3,
-                            decimallength: 2,
                             currencyformat: "JPY",
                             currencyposition: 'right'
                         }))
                     };
                     self.currencyeditor_E_002 = {
                         value: self.CurrentAlRangeHigh,
-                        constraint: '',
+                        constraint: 'AlRangeHigh',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                             grouplength: 3,
-                            decimallength: 2,
                             currencyformat: "JPY",
                             currencyposition: 'right'
                         }))
                     };
                     self.currencyeditor_E_003 = {
                         value: self.CurrentErrRangeLow,
-                        constraint: '',
+                        constraint: 'ErrRangeLow',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                             grouplength: 3,
-                            decimallength: 2,
                             currencyformat: "JPY",
                             currencyposition: 'right'
                         }))
                     };
                     self.currencyeditor_E_004 = {
                         value: self.CurrentAlRangeLow,
-                        constraint: '',
+                        constraint: 'AlRangeLow',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                             grouplength: 3,
-                            decimallength: 2,
                             currencyformat: "JPY",
                             currencyposition: 'right'
                         }))
@@ -110,21 +102,14 @@ var qmm012;
                         self.checked_E_008(ItemAttend ? ItemAttend.alRangeLowAtr == 0 ? false : true : false);
                     });
                     self.checked_E_004.subscribe(function (NewValue) {
-                        self.CurentItemDisplayAtr(NewValue ? 0 : 1);
-                    });
-                    self.checked_E_005.subscribe(function (NewValue) {
-                        self.CurrentErrRangeHighAtr(NewValue ? 1 : 0);
-                    });
-                    self.checked_E_006.subscribe(function (NewValue) {
-                        self.CurrentErrRangeLowAtr(NewValue ? 1 : 0);
-                    });
-                    self.checked_E_007.subscribe(function (NewValue) {
-                        self.CurrentAlRangeHighAtr(NewValue ? 1 : 0);
-                    });
-                    self.checked_E_008.subscribe(function (NewValue) {
-                        self.CurrentAlRangeLowAtr(NewValue ? 1 : 0);
+                        self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
                     });
                 }
+                ScreenModel.prototype.getCurrentItemAttend = function () {
+                    var self = this;
+                    var itemAttend = new e.service.model.ItemAttend(self.CurrentAvePayAtr(), self.CurrentItemAtr(), self.checked_E_006() ? 1 : 0, self.CurrentErrRangeLow(), self.checked_E_005() ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_E_008() ? 1 : 0, self.CurrentAlRangeLow(), self.checked_E_007() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentWorkDaysScopeAtr(), self.CurrentMemo());
+                    return itemAttend;
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;

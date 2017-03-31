@@ -325,9 +325,6 @@ var nts;
                                 break;
                             case 'selectAll':
                                 selectAll($grid);
-                                break;
-                            case 'validate':
-                                return validate($grid);
                             default:
                                 break;
                         }
@@ -338,27 +335,32 @@ var nts;
                         $list.find('.nts-list-box').data("ui-selectable")._mouseStop(null);
                     }
                     function deselectAll($list) {
-                        $list.data('value', '');
+                        var selectListBoxContainer = $list.find('.nts-list-box');
+                        selectListBoxContainer.data('value', '');
                         $list.find('.nts-list-box > li').removeClass("ui-selected");
                         $list.find('.nts-list-box > li > div').removeClass("ui-selected");
                         $list.trigger("selectionChange");
                     }
-                    function validate($list) {
-                        var required = $list.data('required');
-                        var $currentListBox = $list.find('.nts-list-box');
-                        if (required) {
-                            var itemsSelected = $list.data('value');
-                            if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
-                                $currentListBox.ntsError('set', 'at least 1 item selection required');
-                                return false;
-                            }
-                            else {
-                                $currentListBox.ntsError('clear');
-                                return true;
-                            }
-                        }
-                    }
                 })(ntsListBox || (ntsListBox = {}));
+                var ntsEditor;
+                (function (ntsEditor) {
+                    $.fn.ntsEditor = function (action) {
+                        var $editor = $(this);
+                        switch (action) {
+                            case 'validate':
+                                validate($editor);
+                            default:
+                                break;
+                        }
+                    };
+                    function validate($editor) {
+                        var validateEvent = new CustomEvent("validate", {});
+                        $editor.each(function (index) {
+                            var $input = $(this);
+                            document.getElementById($input.attr('id')).dispatchEvent(validateEvent);
+                        });
+                    }
+                })(ntsEditor || (ntsEditor = {}));
                 var ntsWizard;
                 (function (ntsWizard) {
                     $.fn.ntsWizard = function (action, index) {
@@ -456,13 +458,21 @@ var nts;
                                 .appendTo($control);
                             $control.hide();
                         });
+                        $("html").on("mouseup keypress", { controls: controls }, hideBinding);
                         return controls;
                     }
                     function destroy(controls) {
                         controls.each(function () {
                             $(this).remove();
                         });
+                        $("html").off("mouseup keypress", hideBinding);
                         return controls;
+                    }
+                    function hideBinding(e) {
+                        e.data.controls.each(function () {
+                            $(this).hide();
+                        });
+                        return e.data.controls;
                     }
                     function show(controls) {
                         controls.each(function () {
@@ -644,6 +654,7 @@ var nts;
                         ;
                     };
                     function init(control) {
+                        $("html").addClass("sidebar-html");
                         control.find("div[role=tabpanel]").hide();
                         control.on("click", "#sidebar-area .navigator a", function (e) {
                             e.preventDefault();

@@ -782,3 +782,4 @@ var nts;
         qmm017.TextEditor = TextEditor;
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=viewmodel.js.map
