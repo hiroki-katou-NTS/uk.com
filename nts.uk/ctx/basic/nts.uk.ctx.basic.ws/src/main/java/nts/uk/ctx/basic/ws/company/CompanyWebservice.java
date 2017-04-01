@@ -38,7 +38,11 @@ public class CompanyWebservice extends WebService{
 	public List<CompanyDto> getAllCompanys(){
 		return this.finder.getAllCompanys();
 	}
-	
+	@POST
+	@Path("findCompany")
+	public CompanyDto getCompanyDetail(){
+		return this.finder.getCompany().get();
+	}
 	@POST
 	@Path("findCompanyDetail/{companyCd}")
 	public CompanyDto getCompanyDetail(@PathParam("companyCd") String companyCd){
