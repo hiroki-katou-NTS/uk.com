@@ -70,7 +70,7 @@ var qmm013;
                                 self.selectedUnitPrice(newCode);
                                 self.isCreated(false);
                                 self.isEnableDelete(true);
-                            }).ifNo(function () {
+                            }).ifCancel(function () {
                                 self.confirmDirty = true;
                                 self.currentCode(self.currentItem().personalUnitPriceCode());
                             });
@@ -118,7 +118,7 @@ var qmm013;
                                     }
                                 });
                             })
-                                .ifNo(function () {
+                                .ifCancel(function () {
                                 self.notLoop(true);
                                 self.displayAll(!self.displayAll());
                             });
@@ -198,7 +198,8 @@ var qmm013;
                             self.currentCode("");
                             self.isCreated(true);
                             self.isEnableDelete(false);
-                        });
+                        })
+                            .ifCancel(function () { });
                     }
                 };
                 ScreenModel.prototype.closeDialog = function () {
@@ -211,7 +212,7 @@ var qmm013;
                             .ifYes(function () {
                             nts.uk.ui.windows.close();
                         })
-                            .ifNo(function () { });
+                            .ifCancel(function () { });
                     }
                 };
                 ScreenModel.prototype.btn_002 = function () {
@@ -284,7 +285,7 @@ var qmm013;
                         }).fail(function (error) {
                             alert(error.message);
                         });
-                    });
+                    }).ifCancel(function () { });
                 };
                 ScreenModel.prototype.selectedFirstUnitPrice = function () {
                     var self = this;
