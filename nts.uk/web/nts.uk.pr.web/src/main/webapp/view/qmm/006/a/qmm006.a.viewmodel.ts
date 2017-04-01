@@ -99,7 +99,7 @@ module qmm006.a.viewmodel {
                     nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
                         //data is changed
                         self.setCurrentLineBank(codeChange);
-                    }).ifNo(function() {
+                    }).ifCancel(function() {
                         self.notLoopAlert(false);
                         self.currentCode(self.currentLineBank().lineBankCode());
                     });
@@ -273,7 +273,7 @@ module qmm006.a.viewmodel {
                             }
                         });
                 })
-                .ifNo(function() {
+                .ifCancel(function() {
                 });
         }
 
@@ -315,7 +315,7 @@ module qmm006.a.viewmodel {
                     //AL001 
                     nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
                         self.afterCloseCDialog();
-                    }).ifNo(function() {
+                    }).ifCancel(function() {
                     })
                 } else {
                     self.afterCloseCDialog();
@@ -353,7 +353,7 @@ module qmm006.a.viewmodel {
                 //AL001 
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
                     nts.uk.request.jump("/view/qmm/002/a/index.xhtml");
-                }).ifNo(function() {
+                }).ifCancel(function() {
                 })
             } else {
                 nts.uk.request.jump("/view/qmm/002/a/index.xhtml");
@@ -378,7 +378,7 @@ module qmm006.a.viewmodel {
                             self.currentCode(null);
                         }
                     })
-                    .ifNo(function() { })
+                    .ifCancel(function() { })
             } else {
                 self.currentCode(null);
             }

@@ -81,7 +81,7 @@ var qmm006;
                                 };
                                 self.transferData(data, newLineBankCode);
                             });
-                        }).ifNo(function () {
+                        }).ifCancel(function () {
                             return;
                         });
                     }

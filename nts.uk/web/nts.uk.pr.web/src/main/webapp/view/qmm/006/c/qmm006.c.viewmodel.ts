@@ -99,7 +99,7 @@ module qmm006.c.viewmodel {
                         }
                         self.transferData(data, newLineBankCode);
                     })
-                }).ifNo(function() {
+                }).ifCancel(function() {
                     return;
                 })
             }
