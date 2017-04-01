@@ -73,7 +73,7 @@
 						
 					</div>
 				</div>
-				<div class="nts-right-content">
+				<div class="nts-right-content"  data-bind="with: currentResidential">
 
 					<div>
 						<!-- table  -->
@@ -87,20 +87,20 @@
 									</th>
 									<th colspan="1" >
 									
-		                           <div data-bind="with: currentNode">
+		                           <div >
 										<input id="A_INP_002"  data-bind="ntsTextEditor: {
-												value: code,
+												value: resiTaxCode,
 												constraint: 'ResiTaxCode',
 												required: true,
 												enable: true,
 												readonly: false }
-												, hasFocus: true" />
+												, hasFocus: $parent.hasFocus" />
 								  </div>
 									</th>
 									<th colspan="2" >
-		                           <div data-bind="with: currentNode">
+		                           <div >
 										<input id="A_INP_003" data-bind="ntsTextEditor: {
-												value: name,
+												value: resiTaxAutonomy,
 												constraint: 'ResiTaxAutonomy',
 												required: true,
 												enable: true,
@@ -108,7 +108,7 @@
 								  </div>										
 									</th>								
 									<th colspan="3" >
-										<button id="A_BTN_007" data-bind="click: openBDialog,enable: enableBTN007" class="small" style="margin-left: 5px;">参照</button>													 		
+										<button id="A_BTN_007" data-bind="click: $parent.openBDialog,enable: $parent.enableBTN007" class="small" style="margin-left: 5px;">参照</button>													 		
 									</th>								
 								</tr>							
 
@@ -122,12 +122,12 @@
 									<th colspan="2" class="th">
 										<div id="A_SEL_001"
 											data-bind="ntsComboBox: {
-						                        options: itemPrefecture,
+						                        options: $parent.itemPrefecture,
 												optionsValue: 'code',
-												value: selectedCode,
+												value: $parent.selectedCode,
 												optionsText: 'name',
-												editable: isEditable,
-												enable: isEnable,
+												editable: $parent.isEditable,
+												enable: $parent.isEnable,
 												columns: [{ prop: 'name', length: 10 }]}">
 										</div>
 									</th>								
@@ -147,10 +147,10 @@
 										</div>
 									</th>
 									<th colspan="1">
-										<button id="A_BTN_009" data-bind="click: openCDialog, enable:enableBTN009" class="small">参照</button>													 		
+										<button id="A_BTN_009" data-bind="click: $parent.openCDialog, enable:$parent.enableBTN009" class="small">参照</button>													 		
 									</th>										
-									<th colspan="2">
- 			 							 <label id="A_LBL_012"  data-bind="text: residentialReportCode()"></label>					
+									<th colspan="2" >
+ 			 							 <label id="A_LBL_012"  data-bind="text: resiTaxReportCode()"></label>					
 									</th>							
 								</tr>							
 								<!--  2  -->
@@ -164,7 +164,7 @@
 									</th>
 
 									<th colspan="2" class="th">
-									<div data-bind="with: currentResidential">
+									<div >
 										<input id="A_INP_004" data-bind="ntsTextEditor: {
 												value: companyAccountNo,
 												constraint: 'CompanyAccountNo',
@@ -183,7 +183,7 @@
 									</th>
 
 									<th colspan="2" class="th">
-									<div data-bind="with: currentResidential">
+									<div >
 										<input id="A_INP_005"  data-bind="ntsTextEditor: {
 												value: registeredName,
 												constraint: 'RegisteredName',
@@ -211,7 +211,7 @@
 								</th>
 
 								<th colspan="2" class='th' >
-								<div data-bind="with: currentResidential">
+								<div >
 										<input id="A_INP_006"  data-bind="ntsTextEditor: {
 												value: companySpecifiedNo,
 												constraint: 'CompanySpecifiedNo',
@@ -233,7 +233,7 @@
 								</th>
 
 								<th colspan="2" class='th'>
-								<div data-bind="with: currentResidential">
+								<div >
 										<input id="A_INP_007"  data-bind="ntsTextEditor: {
 												value: cordinatePostalCode,
 												constraint: 'CordinatePostalCode',
@@ -255,7 +255,7 @@
 								</th>
 
 								<th colspan="2" class="th">
-								<div data-bind="with: currentResidential">
+								<div >
 										<input id="A_INP_008"  data-bind="ntsTextEditor: {
 												value: cordinatePostOffice,
 												constraint: 'CordinatePostOffice',
@@ -275,7 +275,7 @@
 								</th>
 
 								<th colspan="2" class="th">
-								<div data-bind="with: currentResidential">
+								<div >
 										<input id="A_INP_009" data-bind="ntsTextEditor: {
 												value: memo,
 												constraint: 'Memo',

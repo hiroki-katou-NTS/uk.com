@@ -7,6 +7,7 @@ var qmm003;
             var paths = {
                 getResidentialTaxList: "pr/core/residential/findallresidential",
                 getRegionPrefecture: "pr/core/residential/getlistLocation",
+                getResidentialDetail: "pr/core/residential/findResidentialTax/{0}",
                 addResidential: "pr/core/residential/addresidential",
                 updateResidential: "pr/core/residential/updateresidential",
                 deleteResidential: "pr/core/residential/deleteresidential"
@@ -72,6 +73,20 @@ var qmm003;
                 return dfd.promise();
             }
             service.deleteResidential = deleteResidential;
+            function getResidentialTaxDetail(resiTaxCode) {
+                var dfd = $.Deferred();
+                var objectLayout = { resiTaxCode: resiTaxCode };
+                var _path = nts.uk.text.format(paths.getResidentialDetail, resiTaxCode);
+                nts.uk.request.ajax(_path)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getResidentialTaxDetail = getResidentialTaxDetail;
             var model;
             (function (model) {
                 var ResidentialTax = (function () {
@@ -118,3 +133,4 @@ var qmm003;
         })(service = a.service || (a.service = {}));
     })(a = qmm003.a || (qmm003.a = {}));
 })(qmm003 || (qmm003 = {}));
+//# sourceMappingURL=qmm003.a.service.js.map

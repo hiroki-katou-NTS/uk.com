@@ -9,7 +9,6 @@ var qmm003;
                     this.firstSelectedCode = ko.observable("");
                     this.editMode = true; // true là mode thêm mới, false là mode sửa 
                     this.filteredData = ko.observableArray([]);
-                    this.testNode = [];
                     this.nodeRegionPrefectures = ko.observableArray([]);
                     this.japanLocation = [];
                     this.precfecture = [];
@@ -17,33 +16,58 @@ var qmm003;
                     this.residentalTaxList = ko.observableArray([]);
                     this.residentialReportCode = ko.observable("");
                     this.previousCurrentCode = null; //lưu giá trị của currentCode trước khi nó bị thay đổi
+                    this.hasFocus = ko.observable(true);
                     var self = this;
                     self.init();
-                    self.singleSelectedCode.subscribe(function (newChange) {
-                        if (nts.uk.text.isNullOrEmpty(newChange)) {
-                            self.editMode = true;
-                            return;
-                        }
-                        if (self.editMode) {
-                            var currentNode = void 0;
-                            if ($('.nts-editor').ntsError("hasError")) {
-                                $('.save-error').ntsError('clear');
+                    self.singleSelectedCode.subscribe(function (newValue) {
+                        if (!nts.uk.text.isNullOrEmpty(newValue) && (self.singleSelectedCode() !== self.previousCurrentCode) && self.editMode) {
+                            if (self.dirtyObject.isDirty()) {
+                                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function () {
+                                    self.processWhenCurrentCodeChange(newValue);
+                                }).ifCancel(function () {
+                                    self.items([]);
+                                    self.nodeRegionPrefectures([]);
+                                    self.start(self.previousCurrentCode);
+                                });
                             }
-                            $(document).ready(function (data) {
-                                $("#A_INP_002").attr('disabled', 'true');
-                            });
-                            currentNode = self.findByCode(self.filteredData(), newChange);
-                            self.currentNode(ko.mapping.fromJS(currentNode));
-                            self.findPrefectureByResiTax(newChange);
-                            self.currentResi(ko.mapping.fromJS(self.findResidentialByCode(self.residentalTaxList(), newChange)));
-                            self.residentialReportCode(self.currentResi().resiTaxReportCode);
-                            self.currentResidential(ko.mapping.fromJS(self.currentResi()));
+                            else {
+                                self.processWhenCurrentCodeChange(newValue);
+                            }
                         }
                         else {
                             self.editMode = true;
                         }
                     });
                 }
+                ScreenModel.prototype.processWhenCurrentCodeChange = function (newValue) {
+                    var self = this;
+                    if (!self.enableBTN009()) {
+                        self.enableBTN009(true);
+                    }
+                    var currentNode;
+                    if ($('.nts-editor').ntsError("hasError")) {
+                        $('.save-error').ntsError('clear');
+                    }
+                    $(document).ready(function (data) {
+                        $("#A_INP_002").attr('disabled', 'true');
+                    });
+                    a.service.getResidentialTaxDetail(newValue).done(function (data) {
+                        console.log(data);
+                    });
+                    currentNode = self.findByCode(self.filteredData(), newValue);
+                    if (currentNode) {
+                        self.currentNode(ko.mapping.fromJS(currentNode));
+                        self.findPrefectureByResiTax(newValue);
+                        self.currentResi(ko.mapping.fromJS(self.findResidentialByCode(self.residentalTaxList(), newValue)));
+                        self.residentialReportCode(self.currentResi().resiTaxReportCode);
+                        self.currentResidential(ko.mapping.fromJS(self.currentResi()));
+                        self.previousCurrentCode = newValue;
+                        self.dirtyObject.reset();
+                    }
+                    else {
+                        self.resetData();
+                    }
+                };
                 // find Node By code (singleSelectedCode)
                 ScreenModel.prototype.findByCode = function (items, newValue) {
                     var self = this;
@@ -109,7 +133,10 @@ var qmm003;
                     self.residentialReportCode("");
                     self.currentResi(node);
                     self.currentResidential(ko.mapping.fromJS(self.currentResi()));
+                    self.previousCurrentCode = '';
                     self.singleSelectedCode("");
+                    self.hasFocus(true);
+                    self.dirtyObject.reset();
                     self.selectedCode("");
                 };
                 // init menu
@@ -189,7 +216,6 @@ var qmm003;
                     var resiTaxCodes = [];
                     resiTaxCodes.push(objResidential.resiTaxCode);
                     qmm003.a.service.deleteResidential(resiTaxCodes).done(function (data) {
-                        console.log(data);
                         self.items([]);
                         self.nodeRegionPrefectures([]);
                         self.start(undefined);
@@ -351,3 +377,4 @@ var qmm003;
     })(a = qmm003.a || (qmm003.a = {}));
 })(qmm003 || (qmm003 = {}));
 ;
+//# sourceMappingURL=qmm003.a.vm.js.map

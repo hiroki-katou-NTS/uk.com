@@ -40,6 +40,12 @@ public class ResidentialTaxWebService extends WebService {
 	public List<ResidentialTaxDto> getAllResidialTax(@PathParam("resiTaxCode") String resiTaxCode,  @PathParam("resiTaxReportCode") String resiTaxReportCode) {
 		return this.finder.getAllResidentialTax(resiTaxCode,resiTaxReportCode);
 	}
+	
+	@POST
+	@Path("findResidentialTax/{resiTaxCode}")
+	public ResidentialTaxDto getResidialTaxDetail(@PathParam("resiTaxCode") String resiTaxCode) {
+		return this.finder.getResidentialTax(resiTaxCode).get();
+	}
 
 	// companyCode =0000
 	@POST
@@ -48,19 +54,9 @@ public class ResidentialTaxWebService extends WebService {
 		String companyCode = "0000";
 		return this.finder.getAllResidentialTax(companyCode);
 	}
-
-//	// param companyCode, ressidentialTaxCode
-//	@POST
-//	@Path("findallByCompanyCode")
-//	public List<ResidentialTaxDto> getResidential(String resiTaxCode) {
-//		
-//		return this.finder.getAllResidentialTax();
-//	}
-
 	@POST
 	@Path("addresidential")
 	public void addResidential(AddResidentialTaxCommand command) {
-		// String companyCode = AppContexts.user().companyCode();
 		this.addData.handle(command);
 	}
 

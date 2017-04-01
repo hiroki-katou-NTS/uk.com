@@ -92,7 +92,6 @@ public class JpaResidentialTaxRepository extends JpaRepository implements Reside
 	}
 	@Override
 	public Optional<ResidentialTax> getResidentialTax(String companyCode, String resiTaxCode) {
-		// TODO Auto-generated method stub
 		return this.queryProxy().query(SEL_3, QtxmtResidentialTax.class).setParameter("companyCd", companyCode)
 				.setParameter("resiTaxCode", resiTaxCode)
 				.getSingle(c -> toDomain(c));

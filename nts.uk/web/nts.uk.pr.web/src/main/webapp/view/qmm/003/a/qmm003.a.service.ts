@@ -2,6 +2,7 @@ module qmm003.a.service {
     var paths = {
         getResidentialTaxList: "pr/core/residential/findallresidential",
         getRegionPrefecture: "pr/core/residential/getlistLocation",
+        getResidentialDetail: "pr/core/residential/findResidentialTax/{0}",
         addResidential: "pr/core/residential/addresidential",
         updateResidential: "pr/core/residential/updateresidential",
         deleteResidential: "pr/core/residential/deleteresidential"
@@ -58,6 +59,19 @@ module qmm003.a.service {
         nts.uk.request.ajax(paths.deleteResidential, { resiTaxCodes: param }).done(function(res: Array<any>) {
             dfd.resolve(res);
         })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+    export function getResidentialTaxDetail(resiTaxCode: string): JQueryPromise<model.ResidentialTax> {
+        var dfd = $.Deferred<qmm003.d.service.model.ResidentialTax>();
+        var objectLayout = { resiTaxCode: resiTaxCode};
+        var _path = nts.uk.text.format(paths.getResidentialDetail, resiTaxCode);
+        nts.uk.request.ajax(_path)
+            .done(function(res: model.ResidentialTax) {
+                dfd.resolve(res);
+            })
             .fail(function(res) {
                 dfd.reject(res);
             })
