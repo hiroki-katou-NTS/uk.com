@@ -9,11 +9,27 @@ var qmm002;
                 getBankList: "basic/system/bank/find/all"
             };
             function tranferBranch(data) {
-                return nts.uk.request.ajax('com', paths.transfer, data);
+                var dfd = $.Deferred();
+                nts.uk.request.ajax('com', paths.transfer, data)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
             }
             service.tranferBranch = tranferBranch;
             function getBankList() {
-                return nts.uk.request.ajax("com", paths.getBankList);
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", paths.getBankList)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
             }
             service.getBankList = getBankList;
         })(service = c.service || (c.service = {}));

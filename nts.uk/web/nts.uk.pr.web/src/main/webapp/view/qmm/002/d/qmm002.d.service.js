@@ -11,16 +11,40 @@ var qmm002;
                 removeBank: "basic/system/bank/remove"
             };
             function getBankList() {
-                return nts.uk.request.ajax("com", paths.getBankList);
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", paths.getBankList)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
             }
             service.getBankList = getBankList;
             function addBank(isCreated, bankInfo) {
+                var dfd = $.Deferred();
                 var path = isCreated ? paths.addBank : paths.updateBank;
-                return nts.uk.request.ajax("com", path, bankInfo);
+                nts.uk.request.ajax("com", path, bankInfo)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
             }
             service.addBank = addBank;
             function removeBank(bankInfo) {
-                return nts.uk.request.ajax("com", paths.removeBank, bankInfo);
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", paths.removeBank, bankInfo)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
             }
             service.removeBank = removeBank;
         })(service = d.service || (d.service = {}));

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.core.app.find.rule.employment.unitprice.personal.dto.PersonalUnitPriceDto;
@@ -12,7 +12,7 @@ import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.personal.PersonalUnitPri
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.personal.PersonalUnitPriceRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@Stateless
+@RequestScoped
 public class PersonalUnitPriceFinder {
 	@Inject
 	private PersonalUnitPriceRepository personalUnitPriceRepository;
