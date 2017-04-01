@@ -27,9 +27,10 @@
 			<div id="content-header">
 				<button id="I_BTN_001" class="inputNomalSize"
 					data-bind="click:addNewItem">新規</button>
-				<button id="I_BTN_002" data-bind="click:saveItem"
+				<button id="I_BTN_002"
+					data-bind="click:saveItem,enable: $root.errors.isEmpty"
 					class="proceed inputNomalSize">登録</button>
-				<button id="I_BTN_003" data-bind="click:deleteItem"
+				<button id="I_BTN_003" data-bind="click:deleteItem,enable: I_BTN_003_enable"
 					class=" danger inputNomalSize">削除</button>
 				<button id="I_BTN_005" data-bind="click:closeDialog"
 					class="inputNomalSize">閉じる</button>

@@ -76,15 +76,15 @@
 	font-size: 0.8rem;
 }
 
-#B_INP_002, #B_INP_003 {
+#B_INP_003 {
 	float: left;
 }
 
-#B_INP_002 input {
-	width: 35px;
+#B_INP_002 {
+	width: 35px !important;
 }
 
-#B_INP_003 input, #B_INP_002 input, #B_INP_004 input {
+#B_INP_003 input, #B_INP_002, #B_INP_004 input {
 	height: 17px;
 }
 
