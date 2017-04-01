@@ -1,4 +1,3 @@
-// TreeGrid Node
 var qpp014;
 (function (qpp014) {
     var a;
@@ -10,21 +9,18 @@ var qpp014;
                     $('.func-btn').css('display', 'none');
                     $('#screenB').css('display', 'none');
                     var self = this;
-                    //viewmodel A
                     self.a_SEL_001_items = ko.observableArray([
                         new PayDayProcessing('基本給1', '基本給'),
                         new PayDayProcessing('基本給2', '役職手当'),
                         new PayDayProcessing('0003', '基本給')
                     ]);
                     self.a_SEL_001_itemSelected = ko.observable('0003');
-                    //viewmodel B
                     self.b_stepList = [
                         { content: '.step-1' },
                         { content: '.step-2' },
                         { content: '.step-3' }
                     ];
                     self.b_stepSelected = ko.observable({ id: 'step-2', content: '.step-2' });
-                    //viewmodel D
                     self.d_SEL_001_selectedCode = ko.observable(1);
                     self.d_SEL_002_selectedCode = ko.observable(1);
                     self.d_INP_001 = {
@@ -34,7 +30,6 @@ var qpp014;
                     for (var i_1 = 1; i_1 < 100; i_1++) {
                         self.d_LST_001_items.push({ 'code': '00' + i_1, 'name': '基本給', 'description': 'description' + i_1 });
                     }
-                    //LST 001
                     $("#D_LST_001").igGrid({
                         dataSource: self.d_LST_001_items,
                         primaryKey: 'code',
@@ -70,7 +65,6 @@ var qpp014;
                         ]
                     });
                     self.d_LST_001_itemSelected = ko.observable(0);
-                    //viewmodel G
                     self.g_INP_001 = ko.observable(new Date('2016/12/01'));
                     self.g_SEL_001_items = ko.observableArray([
                         new ItemModel_G_SEL_001('��{��1', '��{��'),
@@ -88,7 +82,6 @@ var qpp014;
                         value: ko.observable(12)
                     };
                     self.g_SEL_003_itemSelected = ko.observable('0002');
-                    //viewmodel H
                     self.h_INP_001 = ko.observable(new Date('2016/12/01'));
                     self.h_LST_001_items = ko.observableArray([]);
                     for (var i_2 = 1; i_2 < 100; i_2++) {
@@ -111,7 +104,6 @@ var qpp014;
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            // Pay day processing
             var PayDayProcessing = (function () {
                 function PayDayProcessing(companyCode, processingNumber, processingName, displaySet, currentProcessing, bonusAttribute, bonusCurrentProcessing) {
                     this.companyCode = companyCode;
@@ -166,3 +158,4 @@ var qpp014;
     })(a = qpp014.a || (qpp014.a = {}));
 })(qpp014 || (qpp014 = {}));
 ;
+//# sourceMappingURL=qpp014.a.viewmodel.js.map

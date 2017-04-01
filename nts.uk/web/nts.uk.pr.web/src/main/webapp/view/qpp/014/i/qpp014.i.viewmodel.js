@@ -1,4 +1,3 @@
-// TreeGrid Node
 var qpp014;
 (function (qpp014) {
     var i;
@@ -13,7 +12,6 @@ var qpp014;
                 self.currentCode_I_LST_003 = ko.observable();
                 $("#list3-div").css("display", "none");
                 $("#I_BTN_004").css("display", "none");
-                //$("#E_BTN_005").css("display","none");$("E_BTN_002")
             }
             return ScreenModel;
         }());
@@ -30,3 +28,4 @@ var qpp014;
     })(i = qpp014.i || (qpp014.i = {}));
 })(qpp014 || (qpp014 = {}));
 ;
+//# sourceMappingURL=qpp014.i.viewmodel.js.map
