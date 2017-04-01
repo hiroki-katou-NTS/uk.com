@@ -17,7 +17,7 @@ public class BankTranferParam {
 	int fromAccountAtr;
 	String fromAccountNo;
 	
-	String toBranchCode;
+	String toBranchId;
 	int toAccountAtr;
 	String toAccountNo;
 	

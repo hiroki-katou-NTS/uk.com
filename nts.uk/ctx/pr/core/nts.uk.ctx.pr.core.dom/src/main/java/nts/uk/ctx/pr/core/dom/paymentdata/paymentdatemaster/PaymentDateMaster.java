@@ -1,13 +1,14 @@
 package nts.uk.ctx.pr.core.dom.paymentdata.paymentdatemaster;
 
 import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.pr.core.dom.payment.banktranfer.PayBonusAtr;
-import nts.uk.ctx.pr.core.dom.payment.banktranfer.SparePayAtr;
+import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
+import nts.uk.ctx.pr.core.dom.enums.SparePayAtr;
 import nts.uk.shr.com.primitive.sample.ProcessingNo;
 
 /**

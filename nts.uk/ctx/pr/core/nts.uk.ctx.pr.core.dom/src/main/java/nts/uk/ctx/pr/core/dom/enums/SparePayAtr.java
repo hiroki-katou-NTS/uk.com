@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.dom.payment.banktranfer;
+package nts.uk.ctx.pr.core.dom.enums;
 
 /**
  * 予備月区分

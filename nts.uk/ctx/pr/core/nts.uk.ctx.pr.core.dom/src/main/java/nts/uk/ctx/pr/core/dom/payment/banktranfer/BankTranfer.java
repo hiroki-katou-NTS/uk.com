@@ -7,7 +7,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
+import nts.uk.ctx.pr.core.dom.enums.SparePayAtr;
 import nts.uk.shr.com.primitive.PersonId;
 
 @Getter
@@ -57,6 +58,35 @@ public class BankTranfer extends AggregateRoot {
 		this.paymentDate = paymentDate;
 		this.sparePaymentAtr = sparePaymentAtr;
 	}
+	
+
+	/**
+	 * Convert java type to domain
+	 * @param pid person id
+	 * @param ccd company code
+	 * @param cnameKana
+	 * @param depcd
+	 * @param payDate
+	 * @param payBonusAtr
+	 * @param paymentMny
+	 * @param processingNo2
+	 * @param processingYm2
+	 * @param sparePayAtr
+	 * @return
+	 */
+	public static BankTranfer createFromJavaType(String ccd, String cnameKana, String pid, String depcd,
+			GeneralDate payDate, int payBonusAtr, BigDecimal paymentMny, int processingNo, int processingYm,
+			int sparePayAtr) {
+		
+		return new BankTranfer(ccd, cnameKana, new PersonId(pid),
+				null, null, depcd, 
+				new PayMoney(paymentMny), 
+				EnumAdaptor.valueOf(payBonusAtr, PayBonusAtr.class), 
+				processingNo, 
+				new YearMonth(processingYm),
+				payDate, 
+				EnumAdaptor.valueOf(sparePayAtr, SparePayAtr.class));
+	}
 
 	/**
 	 * Create from bank information
@@ -68,8 +98,8 @@ public class BankTranfer extends AggregateRoot {
 	 * @param accountNameKana account name katakana
 	 * @return bank information
 	 */
-	public void fromBank(String branchId, String bankNameKana, String branchNameKana, int accountAtr, String accountNo, String accountNameKana) {
-		this.fromBank = createBank(branchId, bankNameKana, branchNameKana, accountAtr, accountNo, accountNameKana);
+	public void fromBank(String branchId, String bankNameKana, String branchNameKana, int accountAtr, String accountNo) {
+		this.fromBank = createBank(branchId, bankNameKana, branchNameKana, accountAtr, accountNo, null);
 	}
 	
 	/**

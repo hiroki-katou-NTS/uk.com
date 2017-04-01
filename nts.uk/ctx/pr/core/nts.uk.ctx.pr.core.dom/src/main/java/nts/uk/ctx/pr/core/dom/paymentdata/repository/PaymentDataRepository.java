@@ -3,8 +3,6 @@ package nts.uk.ctx.pr.core.dom.paymentdata.repository;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.pr.core.dom.payment.banktranfer.PayBonusAtr;
-import nts.uk.ctx.pr.core.dom.payment.banktranfer.SparePayAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.core.dom.paymentdata.dataitem.DetailItem;
 

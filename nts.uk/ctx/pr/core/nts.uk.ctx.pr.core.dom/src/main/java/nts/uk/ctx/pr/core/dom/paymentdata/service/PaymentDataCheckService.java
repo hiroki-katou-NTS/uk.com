@@ -1,6 +1,6 @@
 package nts.uk.ctx.pr.core.dom.paymentdata.service;
 
-import nts.uk.ctx.pr.core.dom.payment.banktranfer.PayBonusAtr;
+import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
 
 public interface PaymentDataCheckService {
 	
