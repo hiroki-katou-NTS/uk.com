@@ -23,7 +23,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button id="A_BTN_001" data-bind="click: cleanBranch" >新規</button>
-				<button id="A_BTN_002" class="proceed" data-bind="enable: checkDisabled,click: addBranch" >登録</button>
+				<button id="A_BTN_002" class="proceed" data-bind="enable: displayButtonSave,click: addBranch" >登録</button>
 				<button id="A_BTN_005" data-bind="enable: checkPrint">印刷 (PDF)</button>
 				<button id="A_BTN_009" data-bind="click: OpenDdialog">銀行の追加</button>
 				<button id="A_BTN_006" data-bind="enable: checkCountNode,click: OpenCdialog">銀行の統合</button>
