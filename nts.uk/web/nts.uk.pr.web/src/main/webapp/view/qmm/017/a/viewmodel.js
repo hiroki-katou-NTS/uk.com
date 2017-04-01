@@ -53,14 +53,14 @@ var nts;
                                     self.viewModel017c().noneConditionalEasyFormula().easyFormulaName(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaName);
                                 }
                                 else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo < 6) {
-                                    self.viewModel017c().defaultEasyFormula(new qmm017.EasyFormula(0));
+                                    self.viewModel017c().defaultEasyFormula(new qmm017.EasyFormula(0, self.viewModel017b));
                                     self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(currentFormulaDetail.easyFormula[0].value);
                                     self.viewModel017c().defaultEasyFormula().selectedRuleCodeEasySettings(currentFormulaDetail.easyFormula[0].fixFormulaAtr);
                                     self.viewModel017c().defaultEasyFormula().easyFormulaDetail(currentFormulaDetail.easyFormula[0].formulaEasyDetail);
                                     self.viewModel017c().defaultEasyFormula().easyFormulaName(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaName);
                                 }
                                 else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo === 6) {
-                                    self.viewModel017c().defaultEasyFormula(new qmm017.EasyFormula(0));
+                                    self.viewModel017c().defaultEasyFormula(new qmm017.EasyFormula(0, self.viewModel017b));
                                     _.forEach(currentFormulaDetail.easyFormula, function (easyFormula) {
                                         if (easyFormula.easyFormulaCode === '000') {
                                             self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(easyFormula.value);
@@ -242,6 +242,9 @@ var nts;
                                 formulaDetail: defaultEasyFormulaDetail,
                                 fixFormulaAtr: self.viewModel017c().defaultEasyFormula().selectedRuleCodeEasySettings()
                             });
+                            if (command.easyFormulaDto[0].fixFormulaAtr !== 0) {
+                                command.easyFormulaDto[0].value = 0;
+                            }
                         }
                         else if (self.viewModel017b().selectedConditionAtr() == 1 && self.viewModel017b().comboBoxUseMaster().selectedCode() === '6') {
                             var defaultEasyFormulaDetail = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
@@ -255,6 +258,9 @@ var nts;
                                 formulaDetail: defaultEasyFormulaDetail,
                                 fixFormulaAtr: self.viewModel017c().defaultEasyFormula().selectedRuleCodeEasySettings()
                             });
+                            if (command.easyFormulaDto[0].fixFormulaAtr !== '0') {
+                                command.easyFormulaDto[0].value = 0;
+                            }
                             if (self.viewModel017c().monthlyEasyFormula().selectedRuleCodeEasySettings() !== '2') {
                                 var monthlyEasyFormulaDetail = self.viewModel017c().monthlyEasyFormula().easyFormulaDetail();
                                 monthlyEasyFormulaDetail.easyFormulaCode = '001';
@@ -358,6 +364,18 @@ var nts;
                                     formulaDetail: defaultEasyFormulaDetail_4,
                                     fixFormulaAtr: self.viewModel017c().defaultEasyFormula().selectedRuleCodeEasySettings()
                                 });
+                            }
+                            if (command.easyFormulaDto[1].fixFormulaAtr !== 0) {
+                                command.easyFormulaDto[1].value = 0;
+                            }
+                            if (command.easyFormulaDto[2].fixFormulaAtr !== 0) {
+                                command.easyFormulaDto[2].value = 0;
+                            }
+                            if (command.easyFormulaDto[3].fixFormulaAtr !== 0) {
+                                command.easyFormulaDto[3].value = 0;
+                            }
+                            if (command.easyFormulaDto[4].fixFormulaAtr !== 0) {
+                                command.easyFormulaDto[4].value = 0;
                             }
                         }
                     }

@@ -64,3 +64,6 @@
     width: 620px;
     text-align: center;
 }
+.ui-igcombo-list {
+	max-height: 195px !important;
+}
