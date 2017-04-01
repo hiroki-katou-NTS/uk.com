@@ -22,6 +22,7 @@ var qmm019;
             service.getPersonalWageNames = getPersonalWageNames;
             var model;
             (function (model) {
+                // layout
                 var PersonalWageNameDto = (function () {
                     function PersonalWageNameDto() {
                     }

@@ -17,33 +17,49 @@ var nts;
                     (function (c) {
                         var service;
                         (function (service) {
+                            // Service paths.
                             var servicePath = {
                                 getAllOfficeItem: "pr/insurance/social/findall",
                                 getAllHistoryOfOffice: "pr/insurance/social/history",
+                                //get all heal insurance for get history
                                 getAllPensionOfficeAndHistory: "ctx/pr/core/insurance/social/pensionrate/findAllHistory",
+                                //get health and pension data 
                                 getPensionItemDetail: "ctx/pr/core/insurance/social/pensionrate/find",
+                                //register+ update pension
                                 registerPensionRate: "ctx/pr/core/insurance/social/pensionrate/create",
                                 updatePensionRate: "ctx/pr/core/insurance/social/pensionrate/update",
                                 removePensionRate: "ctx/pr/core/insurance/social/pensionrate/remove",
                                 getAllRoundingItem: "pr/insurance/social/find/rounding"
                             };
+                            /**
+                             * Normal service.
+                             */
                             var Service = (function (_super) {
                                 __extends(Service, _super);
                                 function Service(path) {
                                     _super.call(this, path);
                                 }
+                                /**
+                                 * Find history by id.
+                                 */
                                 Service.prototype.findHistoryByUuid = function (id) {
                                     return nts.uk.request.ajax(servicePath.getPensionItemDetail + "/" + id);
                                 };
                                 return Service;
                             }(view.base.simplehistory.service.BaseService));
                             service.Service = Service;
+                            /**
+                             * Service intance.
+                             */
                             service.instance = new Service({
                                 historyMasterPath: 'ctx/pr/core/insurance/social/pensionrate/masterhistory',
                                 createHisotyPath: 'ctx/pr/core/insurance/social/pensionrate/history/create',
                                 deleteHistoryPath: 'ctx/pr/core/insurance/social/pensionrate/history/delete',
                                 updateHistoryStartPath: 'ctx/pr/core/insurance/social/pensionrate/history/update/start'
                             });
+                            /**
+                             * Function is used to load all InsuranceOfficeItem by key.
+                             */
                             function findInsuranceOffice(key) {
                                 var dfd = $.Deferred();
                                 var findPath = servicePath.getAllOfficeItem + ((key != null && key != '') ? ('?key=' + key) : '');
@@ -53,6 +69,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findInsuranceOffice = findInsuranceOffice;
+                            /**
+                             * Function is used to load all RoundingOption.
+                             */
                             function findAllRounding() {
                                 var dfd = $.Deferred();
                                 var roundingList = [
@@ -66,6 +85,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findAllRounding = findAllRounding;
+                            /**
+                            * Function is used to load pension  data of Office by office code.
+                            */
                             function getPensionItemDetail(code) {
                                 var dfd = $.Deferred();
                                 var findPath = servicePath.getPensionItemDetail + "/" + code;
@@ -76,6 +98,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.getPensionItemDetail = getPensionItemDetail;
+                            /**
+                            * Function is used to load health data of Office by office code.
+                            */
                             function getAllPensionOfficeItem() {
                                 var dfd = $.Deferred();
                                 var findPath = servicePath.getAllPensionOfficeAndHistory;
@@ -86,25 +111,38 @@ var nts;
                                 return dfd.promise();
                             }
                             service.getAllPensionOfficeItem = getAllPensionOfficeItem;
+                            /**
+                            * Function is used to save new Pension rate with office code and history id.
+                            */
                             function registerPensionRate(data) {
                                 return nts.uk.request.ajax(servicePath.registerPensionRate, data);
                             }
                             service.registerPensionRate = registerPensionRate;
+                            /**
+                            * Function is used to update new Pension rate with office code and history id.
+                            */
                             function updatePensionRate(data) {
                                 return nts.uk.request.ajax(servicePath.updatePensionRate, data);
                             }
                             service.updatePensionRate = updatePensionRate;
+                            /**
+                            * Function is used to update new Health insurance rate with office code and history id.
+                            */
                             function removePensionRate(historyId) {
                                 var data = { historyId: historyId };
                                 return nts.uk.request.ajax(servicePath.removePensionRate, data);
                             }
                             service.removePensionRate = removePensionRate;
+                            /**
+                            * Model namespace.
+                            */
                             var model;
                             (function (model) {
                                 ;
                                 ;
                                 var finder;
                                 (function (finder) {
+                                    //office DTO
                                     var InsuranceOfficeItemDto = (function () {
                                         function InsuranceOfficeItemDto(id, name, code, childs, codeName) {
                                             this.id = id;
@@ -116,6 +154,7 @@ var nts;
                                         return InsuranceOfficeItemDto;
                                     }());
                                     finder.InsuranceOfficeItemDto = InsuranceOfficeItemDto;
+                                    //Pension DTO
                                     var PensionRateDto = (function () {
                                         function PensionRateDto(historyId, companyCode, officeCode, startMonth, endMonth, autoCalculate, fundInputApply, premiumRateItems, fundRateItems, roundingMethods, maxAmount, childContributionRate) {
                                             this.historyId = historyId;
@@ -168,6 +207,7 @@ var nts;
                                         return HistoryDto;
                                     }());
                                     finder.HistoryDto = HistoryDto;
+                                    //common class for health and pension
                                     var RoundingDto = (function () {
                                         function RoundingDto(payType, roundAtrs) {
                                             this.payType = payType;

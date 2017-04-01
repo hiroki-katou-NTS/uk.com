@@ -24,6 +24,7 @@ var qmm034;
                     ]);
                     self.currentCode = ko.observable(null);
                     self.currentCodeList = ko.observableArray([]);
+                    //Tim object dau tien
                     self.currentEra = ko.observable(_.first(self.items()));
                     self.currentCode.subscribe(function (codeChanged) {
                         self.currentEra(self.getEra(codeChanged));
@@ -47,10 +48,13 @@ var qmm034;
                     var self = this;
                     var newData = self.currentEra();
                     var newEradata = self;
+                    // var x = self.items();
+                    //x.push(newData);
                     if (self.isUpdate() === false) {
                         self.items.push(newData);
                         self.isUpdate = ko.observable(true);
                     }
+                    // alert('insert ok');
                 };
                 ScreenModel.prototype.alertDelete = function () {
                     var self = this;
@@ -75,12 +79,16 @@ var qmm034;
                 };
                 ScreenModel.prototype.update = function (eraCodeNew) {
                     var self = this;
+                    //let newCurrentEra = self.currentEra;
                     self.currentCode.subscribe(function (codeChanged) {
                         self.currentEra(self.getEra(codeChanged));
                     });
                     var newCurrentEra = _.findIndex(self.items(), function (item) {
                         return item.code === eraCodeNew;
                     });
+                    //            var x = self.items();
+                    //            x.push(newCurrentEra);
+                    //            self.items(x);
                     return eraCodeNew;
                 };
                 ScreenModel.prototype.selectSomeItems = function () {

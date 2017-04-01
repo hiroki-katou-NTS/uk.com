@@ -4,6 +4,7 @@ var qet001;
     (function (i_1) {
         var service;
         (function (service) {
+            // Service paths.
             var servicePath = {
                 findAggregateItemsByCategory: 'ctx/pr/report/wageledger/aggregateitem/findByCate',
                 findAggregateItemDetail: 'ctx/pr/report/wageledger/aggregateitem/findBySubject',
@@ -11,8 +12,12 @@ var qet001;
                 saveAggregateItem: 'ctx/pr/report/wageledger/aggregateitem/save',
                 removeAggegateItem: 'ctx/pr/report/wageledger/aggregateitem/remove'
             };
+            /**
+             * Find master items.
+             */
             function findMasterItems() {
                 var dfd = $.Deferred();
+                // Fake data.
                 var data = [];
                 for (var i = 0; i < 10; i++) {
                     data.push({ code: 'MI' + i, name: 'Master item' + i, category: 'Payment' });
@@ -24,10 +29,16 @@ var qet001;
                 return dfd.promise();
             }
             service.findMasterItems = findMasterItems;
+            /**
+             * Find Aggregate item by category and payment type.
+             */
             function findAggregateItemsByCategory(category, paymentType) {
                 return nts.uk.request.ajax(servicePath.findAggregateItemsByCategory + '/' + category + '/' + paymentType);
             }
             service.findAggregateItemsByCategory = findAggregateItemsByCategory;
+            /**
+             * Find aggregate item detail.
+             */
             function findAggregateItemDetail(category, paymentType, code) {
                 var subject = {
                     code: code,
@@ -37,7 +48,11 @@ var qet001;
                 return nts.uk.request.ajax(servicePath.findAggregateItemDetail, subject);
             }
             service.findAggregateItemDetail = findAggregateItemDetail;
+            /**
+             * Save aggregate item.
+             */
             function save(data) {
+                // Convert to json data.
                 var dataJson = {
                     subject: {
                         category: data.category,
@@ -53,6 +68,9 @@ var qet001;
                 return nts.uk.request.ajax(servicePath.saveAggregateItem, dataJson);
             }
             service.save = save;
+            /**
+             * Remove aggregate item.
+             */
             function remove(category, paymentType, code) {
                 var subject = {
                     code: code,

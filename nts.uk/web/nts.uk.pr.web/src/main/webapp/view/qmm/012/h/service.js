@@ -42,6 +42,7 @@ var qmm012;
                     findItemSalaryPeriod(itemCode).done(function (ItemPeriod) {
                         dfd.resolve(ItemPeriod);
                     }).fail(function (res) {
+                        // Alert message
                         dfd.reject(res);
                     });
                 }
@@ -49,6 +50,7 @@ var qmm012;
                     findItemDeductPeriod(itemCode).done(function (ItemPeriod) {
                         dfd.resolve(ItemPeriod);
                     }).fail(function (res) {
+                        // Alert message
                         dfd.reject(res);
                     });
                 }
@@ -84,6 +86,7 @@ var qmm012;
                     addItemSalaryPeriod(itemPeriod).done(function (res) {
                         dfd.resolve(res);
                     }).fail(function (res) {
+                        // Alert message
                         dfd.reject(res);
                     });
                 }
@@ -91,6 +94,7 @@ var qmm012;
                     addItemDeductPeriod(itemPeriod).done(function (res) {
                         dfd.resolve(res);
                     }).fail(function (res) {
+                        // Alert message
                         dfd.reject(res);
                     });
                 }
@@ -104,6 +108,7 @@ var qmm012;
                     updateItemSalaryPeriod(itemPeriod).done(function (res) {
                         dfd.resolve(res);
                     }).fail(function (res) {
+                        // Alert message
                         dfd.reject(res);
                     });
                 }
@@ -111,6 +116,7 @@ var qmm012;
                     updateItemDeductPeriod(itemPeriod).done(function (res) {
                         dfd.resolve(res);
                     }).fail(function (res) {
+                        // Alert message
                         dfd.reject(res);
                     });
                 }

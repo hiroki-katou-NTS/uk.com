@@ -121,6 +121,7 @@ var nts;
                 var mm = uk.text.padLeft(String(minutes % 60), '0', 2);
                 var hours = uk.ntsNumber.trunc(seconds / 60 / 60);
                 var h = String(hours);
+                // TODO: use formatOption
                 return "h:mm:ss"
                     .replace(/h/g, h)
                     .replace(/mm/g, mm)
@@ -302,6 +303,7 @@ var nts;
                     return ResultParseTimeOfTheDay.failed("invalid time of the day format");
                 var hour = parseInt(timeOfDay.substring(0, stringLength - 2));
                 var minute = parseInt(timeOfDay.substring(stringLength - 2));
+                //console.log(checkNum.substring(0,stringLength-2));
                 if (hour < 0 || hour > 23)
                     return ResultParseTimeOfTheDay.failed("invalid: hour must in range 0-23");
                 if (minute < 0 || minute > 59)
@@ -393,6 +395,12 @@ var nts;
                 return ResultParseYearMonthDate.succeeded(year, month, date);
             }
             time_1.parseYearMonthDate = parseYearMonthDate;
+            /**
+            * 日付をフォーマットする
+            * @param  {Date}   date     日付
+            * @param  {String} [format] フォーマット
+            * @return {String}          フォーマット済み日付
+            */
             function formatDate(date, format) {
                 if (!format)
                     format = 'yyyy-MM-dd hh:mm:ss.SSS';

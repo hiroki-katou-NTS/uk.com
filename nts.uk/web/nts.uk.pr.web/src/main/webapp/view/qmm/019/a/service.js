@@ -7,9 +7,14 @@ var qmm019;
             var paths = {
                 getAllLayoutHead: "pr/proto/layout/findalllayoutHead",
                 getAllLayoutHist: "pr/proto/layout/findalllayoutHist",
+                //            getLayoutInfor : "/pr/proto/layout/findlayout/{0}/{1}",
+                //            getLayoutsWithMaxStartYm: "pr/proto/layout/findlayoutwithmaxstartym",
                 getCategoryFull: "pr/proto/layout/findCategoies/full",
                 registerLayout: "pr/proto/layout/register"
             };
+            /**
+             * Get list payment date processing.
+             */
             function getAllLayoutHead() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getAllLayoutHead)
@@ -22,6 +27,9 @@ var qmm019;
                 return dfd.promise();
             }
             service.getAllLayoutHead = getAllLayoutHead;
+            /**
+             * Get list payment date processing.
+             */
             function getAllLayoutHist() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getAllLayoutHist)
@@ -34,6 +42,24 @@ var qmm019;
                 return dfd.promise();
             }
             service.getAllLayoutHist = getAllLayoutHist;
+            //        /**
+            //         * Get layout master 
+            //         */
+            //        export function getLayout(stmtCode: string, historyId: string): JQueryPromise<model.LayoutMasterDto> {
+            //            var dfd = $.Deferred<any>();
+            //            var _path = nts.uk.text.format(paths.getLayoutInfor, stmtCode, historyId);
+            //            nts.uk.request.ajax(_path)
+            //                .done(function(res: any){
+            //                    dfd.resolve(res);
+            //                })
+            //                .fail(function(res) {
+            //                    dfd.reject(res);
+            //                })
+            //            return dfd.promise(); 
+            //        }
+            /**
+             * Get list payment date processing.
+             */
             function getLayoutsWithMaxStartYm() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getLayoutsWithMaxStartYm)
@@ -46,6 +72,9 @@ var qmm019;
                 return dfd.promise();
             }
             service.getLayoutsWithMaxStartYm = getLayoutsWithMaxStartYm;
+            /**
+             * Get list getCategoryFull.
+             */
             function getCategoryFull(layoutCode, historyId, startYm) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getCategoryFull + "/" + layoutCode + "/" + historyId + "/" + startYm)
@@ -61,6 +90,9 @@ var qmm019;
                 return dfd.promise();
             }
             service.getCategoryFull = getCategoryFull;
+            /**
+             * Register Layout
+             */
             function registerLayout(layout, categories) {
                 var dfd = $.Deferred();
                 var categoryCommand = [], lineCommand = [], detailCommand = [];
@@ -69,6 +101,7 @@ var qmm019;
                 for (var _i = 0, categories_1 = categories; _i < categories_1.length; _i++) {
                     var category = categories_1[_i];
                     if (category.isRemoved === true) {
+                        // Truong hop remove category thi remove luon line va detail
                         listCategoryAtrDeleted.push(category.categoryAtr);
                     }
                     else {
@@ -94,6 +127,7 @@ var qmm019;
                             linePosition++;
                             var itemPosColumn = 1;
                             var sortedItemCodes = $("#" + line.rowId).sortable("toArray");
+                            // Vì item mà required thì ko được sortable nên cần kiểm tra để thêm item này vào còn save.
                             if (line.hasRequiredItem) {
                                 var detailRequired = _.find(line.details, function (requireItem) {
                                     return requireItem.isRequired();
@@ -130,6 +164,7 @@ var qmm019;
                                         alamRangeLow: detail.alamRangeLow() });
                                 }
                                 else if (!detail.added()) {
+                                    //Chỉ đưa vào mảng những itemCode đã đc lưu trước đó 
                                     listItemCodeDeleted.push({ categoryAtr: category.categoryAtr, itemCode: detail.itemCode() });
                                 }
                                 itemPosColumn++;
@@ -172,14 +207,19 @@ var qmm019;
                 return dfd.promise();
             }
             service.registerLayout = registerLayout;
+            /**
+               * Model namespace.
+            */
             var model;
             (function (model) {
+                // layout head
                 var LayoutHeadDto = (function () {
                     function LayoutHeadDto() {
                     }
                     return LayoutHeadDto;
                 }());
                 model.LayoutHeadDto = LayoutHeadDto;
+                // layout
                 var LayoutMasterDto = (function () {
                     function LayoutMasterDto() {
                     }
@@ -226,18 +266,21 @@ var qmm019;
                         nts.uk.ui.windows.sub.modal('/view/qmm/019/k/index.xhtml', { title: '明細レイアウトの作成＞カテゴリの設定' }).onClosed(function () {
                             var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
                             if (selectedCode === "1") {
+                                // cho phep print all row
                                 for (var _i = 0, _a = self.lines(); _i < _a.length; _i++) {
                                     var line = _a[_i];
                                     line.setPrint(true);
                                 }
                             }
                             else if (selectedCode === "2") {
+                                // Gray - Khong cho print all row
                                 for (var _b = 0, _c = self.lines(); _b < _c.length; _b++) {
                                     var line = _c[_b];
                                     line.setPrint(false);
                                 }
                             }
                             else if (selectedCode === "3") {
+                                // Xoa category
                                 $("#group-" + data.categoryAtr).addClass("removed");
                                 self.isRemoved = true;
                                 if (data.categoryAtr === 2)
@@ -252,6 +295,7 @@ var qmm019;
                     Category.prototype.addLine = function () {
                         var _this = this;
                         var self = this;
+                        //if (screenQmm019().totalNormalLineNumber() + screenQmm019().totalGrayLineNumber() === 10) {return this;}
                         nts.uk.ui.windows.setShared('totalNormalLineNumber', screenQmm019().totalNormalLineNumber());
                         nts.uk.ui.windows.setShared('totalGrayLineNumber', self.totalGrayLine);
                         nts.uk.ui.windows.sub.modal('/view/qmm/019/i/index.xhtml', { title: '明細レイアウトの作成＞＋行追加' }).onClosed(function () {
@@ -270,9 +314,11 @@ var qmm019;
                             }
                             var line = new Line(self.categoryAtr, listItemDetail, autoLineId, 1, self.lines.length);
                             if (selectedCode === "1") {
+                                // cho phep print
                                 line.setPrint(true);
                             }
                             else if (selectedCode === "2") {
+                                // Gray - Khong cho print
                                 line.setPrint(false);
                             }
                             self.lines.push(line);
@@ -315,12 +361,15 @@ var qmm019;
                         nts.uk.ui.windows.sub.modal('/view/qmm/019/j/index.xhtml', { title: '明細レイアウトの作成＞行の設定' }).onClosed(function () {
                             var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
                             if (selectedCode === "1") {
+                                // cho phep print
                                 self.setPrint(true);
                             }
                             else if (selectedCode === "2") {
+                                // Gray - Khong cho print
                                 self.setPrint(false);
                             }
                             else if (selectedCode === "3") {
+                                // Xoa line
                                 if (data.hasRequiredItem === false) {
                                     $("#" + data.rowId).addClass("removed");
                                     self.isRemoved = true;
@@ -333,11 +382,13 @@ var qmm019;
                     Line.prototype.setPrint = function (allowPrint) {
                         var self = this;
                         if (allowPrint === true) {
+                            // cho phep print
                             $("#" + self.rowId).removeClass("ground-gray");
                             self.isDisplayOnPrint = true;
                             self.lineDispayAtr = 1;
                         }
                         else {
+                            // Gray - Khong cho print
                             $("#" + self.rowId).addClass("ground-gray");
                             self.isDisplayOnPrint = false;
                             self.lineDispayAtr = 0;
@@ -352,6 +403,8 @@ var qmm019;
                         this.added = ko.observable(false);
                         this.isRequired = ko.observable(false);
                         this.isRemoved = false;
+                        //TODO-LamVT: bỏ rem khi đồng bộ sang develop
+                        //contextMenu : nts.uk.ui.contextmenu.ContextMenu;// context menu cho từng item
                         this.contextMenuClassId = "";
                         var self = this;
                         self.itemCode = ko.observable(itemObject.itemCode);
@@ -387,12 +440,16 @@ var qmm019;
                     ItemDetail.prototype.initContextMenu = function () {
                         var self = this;
                         self.contextMenuClassId = "context-menu-" + self.itemCode();
+                        //Chỉ cho phép xóa những item khác dấu "+" và không phải là item required
                         if (!_.includes(self.contextMenuClassId, "itemTemp-") && !self.isRequired()) {
                         }
                     };
                     ItemDetail.prototype.setDelete = function (isDelete) {
                         var self = this;
                         self.isRemoved = isDelete;
+                        //TODO-LamVT: bỏ rem khi đồng bộ sang develop
+                        //                    self.contextMenu.setVisibleItem(!isDelete, "delete");
+                        //                    self.contextMenu.setVisibleItem(isDelete, "undoDelete");
                         if (isDelete) {
                             $("#" + self.itemCode()).addClass("item-isDeleting");
                         }
@@ -403,6 +460,7 @@ var qmm019;
                     ItemDetail.prototype.itemClick = function (data, event) {
                         var _this = this;
                         var self = this;
+                        // Nếu đang bị delete thì ko cho bật dialog detail
                         if (self.isRemoved)
                             return this;
                         var param = {
@@ -420,20 +478,24 @@ var qmm019;
                             if (itemResult === undefined)
                                 return _this;
                             if (data.itemAbName() === "+") {
+                                // Them moi
                                 self.itemCode(itemResult.itemCode);
                                 self.added(true);
                                 self.initContextMenu();
                             }
                             else {
                                 if (self.added()) {
+                                    // Sửa một detail đang được Thêm mới
                                     self.itemCode(itemResult.itemCode);
                                 }
                                 else if (itemResult.itemCode !== self.itemCode()) {
+                                    // Update
                                     self.updateItemCode(itemResult.itemCode);
                                 }
                             }
                             self.itemAbName(itemResult.itemAbName);
                             self.sumScopeAtr(itemResult.sumScopeAtr);
+                            //self.setOffItemCode(itemResult.setOffItemCode);
                             self.commuteAtr(itemResult.commuteAtr);
                             self.calculationMethod(itemResult.calculationMethod);
                             self.distributeSet(itemResult.distributeSet);

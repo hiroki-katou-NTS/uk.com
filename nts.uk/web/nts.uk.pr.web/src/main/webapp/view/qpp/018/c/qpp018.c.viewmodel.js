@@ -96,6 +96,9 @@ var nts;
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
+                            /**
+                             * The ChecklistPrintSettingModel
+                             */
                             var ChecklistPrintSettingModel = (function () {
                                 function ChecklistPrintSettingModel() {
                                     var self = this;

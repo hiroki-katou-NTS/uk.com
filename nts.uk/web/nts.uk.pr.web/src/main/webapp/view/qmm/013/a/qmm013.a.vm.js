@@ -46,10 +46,12 @@ var qmm013;
                         { code: '2', name: 'その他' },
                     ]);
                     self.currentCode.subscribe(function (newCode) {
+                        //in case first getData, no error so not jump clearError()
                         if (self.isFirstGetData()) {
                             self.clearError();
                         }
                         self.isFirstGetData(true);
+                        //don't allow checkDirty
                         if (self.notCheckDirty()) {
                             self.selectedUnitPrice(newCode);
                             self.notCheckDirty(false);
@@ -61,6 +63,7 @@ var qmm013;
                             self.isEnableDelete(true);
                         }
                         else {
+                            //don't loop subscribe function
                             if (self.confirmDirty) {
                                 self.confirmDirty = false;
                                 self.isEnableDelete(true);
@@ -77,12 +80,16 @@ var qmm013;
                         }
                     });
                     self.displayAll.subscribe(function (newValue) {
+                        // don't loop subscribe function
+                        // in case change data, change state button SEL_001 and choise 'NO'
                         if (self.notLoop()) {
                             self.notLoop(false);
                             return;
                         }
                         if (!self.checkDirty()) {
                             self.getPersonalUnitPriceList().done(function () {
+                                //in case no dirty
+                                //if row is chose has column '廃止' is 'X', select first row in new list
                                 if (!self.currentItem().displaySet() && self.currentCode() != "") {
                                     var tmp = _.find(self.listItems(), function (x) {
                                         return x.personalUnitPriceCode === self.currentCode();
@@ -99,16 +106,20 @@ var qmm013;
                         else {
                             nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。")
                                 .ifYes(function () {
+                                //self.notCheckDirty(true);
                                 self.getPersonalUnitPriceList().done(function () {
+                                    //in case dirty
                                     if (self.currentCode() == "") {
                                         self.notCheckDirty(true);
                                         self.selectedFirstUnitPrice();
                                     }
+                                    //if row is chose has column '廃止' is 'X', select first row in new list
                                     if (self.currentItem().displaySet()) {
                                         self.notCheckDirty(true);
                                         self.selectedFirstUnitPrice();
                                     }
                                     else {
+                                        //if row is chose has column '廃止' isn't 'X', keep the same position in new list
                                         var tmp = _.find(self.listItems(), function (x) {
                                             return x.personalUnitPriceCode === self.currentCode();
                                         });
@@ -124,6 +135,9 @@ var qmm013;
                             });
                         }
                     });
+                    /**
+                     * paymentSettingType is number, convert to boolean type
+                     */
                     self.isCompany = ko.computed(function () {
                         return !(self.currentItem().paymentSettingType() == 0);
                     });
@@ -137,6 +151,9 @@ var qmm013;
                     });
                     return dfd.promise();
                 };
+                /**
+                 * get data from data base to screen
+                 */
                 ScreenModel.prototype.getPersonalUnitPriceList = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -179,6 +196,9 @@ var qmm013;
                     }
                 };
                 ;
+                /**
+                 * 新規(Clear form)
+                 */
                 ScreenModel.prototype.btn_001 = function () {
                     var self = this;
                     if (self.isFirstGetData()) {
@@ -214,8 +234,13 @@ var qmm013;
                             .ifNo(function () { });
                     }
                 };
+                /**
+                 * 登録(Add button)
+                 */
                 ScreenModel.prototype.btn_002 = function () {
                     var self = this;
+                    //self.confirmDirty = true;
+                    //if input 0-9, auto insert '0' before
                     if (self.currentItem().personalUnitPriceCode() != null && self.currentItem().personalUnitPriceCode().length == 1) {
                         self.currentItem().personalUnitPriceCode("0" + self.currentItem().personalUnitPriceCode());
                     }
@@ -236,6 +261,7 @@ var qmm013;
                     };
                     a.service.addPersonalUnitPrice(self.isCreated(), PersonalUnitPrice).done(function () {
                         self.getPersonalUnitPriceList();
+                        //define update mode or insert mode
                         if (self.currentItem().personalUnitPriceCode() != self.currentCode()) {
                             self.confirmDirty = true;
                         }
@@ -259,6 +285,9 @@ var qmm013;
                         }
                     });
                 };
+                /**
+                 * 削除(Delete button)
+                 */
                 ScreenModel.prototype.btn_004 = function () {
                     var self = this;
                     nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
@@ -269,6 +298,7 @@ var qmm013;
                             return x.code === self.currentCode();
                         }));
                         a.service.removePersonalUnitPrice(data).done(function () {
+                            // reload list   
                             self.getPersonalUnitPriceList().done(function () {
                                 self.notCheckDirty(true);
                                 if (self.items().length > self.indexRow()) {

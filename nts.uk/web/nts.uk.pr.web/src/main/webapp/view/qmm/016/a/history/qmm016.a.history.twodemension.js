@@ -17,14 +17,21 @@ var nts;
                     (function (a) {
                         var history;
                         (function (history_1) {
+                            /**
+                             * For two demension view.
+                             */
                             var TwoDemensionViewModel = (function (_super) {
                                 __extends(TwoDemensionViewModel, _super);
                                 function TwoDemensionViewModel(history) {
                                     _super.call(this, 'history/twodemension.xhtml', history);
                                     this.igGridDataSource = ko.observableArray([]);
                                 }
+                                /**
+                                 * On load init ig grid.
+                                 */
                                 TwoDemensionViewModel.prototype.onLoad = function () {
                                     var self = this;
+                                    // Build first data source.
                                     var history = self.history;
                                     if (history.valueItems && history.valueItems.length > 0) {
                                         var element = history.elements[0];
@@ -40,11 +47,17 @@ var nts;
                                             return vm;
                                         });
                                     }
+                                    // Build grid.
                                     self.initIgGrid(itemVmList);
+                                    // Ret.
                                     return $.Deferred().resolve().promise();
                                 };
+                                /**
+                                 * On refresh element.
+                                 */
                                 TwoDemensionViewModel.prototype.onRefreshElement = function () {
                                     var self = this;
+                                    // Update data source.
                                     var firstEl = self.elementSettings[0];
                                     var secondEl = self.elementSettings[1];
                                     var dataSource = [];
@@ -55,8 +68,12 @@ var nts;
                                         });
                                         dataSource.push(vm);
                                     });
+                                    // Recreate ig grid.
                                     self.initIgGrid(dataSource);
                                 };
+                                /**
+                                 * Get setting cell item.
+                                 */
                                 TwoDemensionViewModel.prototype.getCellItem = function () {
                                     var self = this;
                                     var firstEl = self.elementSettings[0];
@@ -73,18 +90,28 @@ var nts;
                                     });
                                     return result;
                                 };
+                                /**
+                                 * Paste data from excel.
+                                 */
                                 TwoDemensionViewModel.prototype.pasteFromExcel = function () {
+                                    // Do parsing.
                                     return;
                                 };
+                                /**
+                                 * Init ig grid.
+                                 */
                                 TwoDemensionViewModel.prototype.initIgGrid = function (data) {
                                     var self = this;
                                     ko.cleanNode($('#dataTable').get(0));
+                                    // Regenerate columns and columsn settings.
                                     var columns = [];
                                     var columnSettings = [];
+                                    // Fixed part.
                                     columns.push({ headerText: 'UUID', dataType: 'string', key: 'uuid', width: '100px', hidden: true });
                                     columns.push({ headerText: self.elementSettings[0].demensionName, dataType: 'string', key: 'name', width: '100px', columnCssClass: "bgIgCol" });
                                     columnSettings.push({ columnKey: 'uuid', readOnly: true });
                                     columnSettings.push({ columnKey: 'name', readOnly: true });
+                                    // Dynamic part.
                                     var secondDemensionElements = self.elementSettings[1];
                                     var mergeColumn = { headerText: secondDemensionElements.demensionName, group: [] };
                                     _.forEach(secondDemensionElements.itemList, function (item) {
@@ -93,6 +120,7 @@ var nts;
                                         columnSettings.push({ columnKey: item.uuid, readOnly: false });
                                     });
                                     columns.push(mergeColumn);
+                                    // IgGrid
                                     self.igGridDataSource(data);
                                     self.igGrid = ko.observable({
                                         dataSource: self.igGridDataSource,
@@ -125,6 +153,7 @@ var nts;
                                         autoCommit: true,
                                         columns: columns
                                     });
+                                    // Bind.
                                     if (mergeColumn.group.length > 0) {
                                         ko.applyBindingsToNode($('#dataTable').get(0), { igGrid: self.igGrid });
                                     }
@@ -132,7 +161,13 @@ var nts;
                                 return TwoDemensionViewModel;
                             }(history_1.base.BaseHistoryViewModel));
                             history_1.TwoDemensionViewModel = TwoDemensionViewModel;
+                            /**
+                             * Item view model.
+                             */
                             var ItemViewModel = (function () {
+                                /**
+                                 * Constructor.
+                                 */
                                 function ItemViewModel(type, item) {
                                     var self = this;
                                     self['uuid'] = ko.observable(item.uuid);

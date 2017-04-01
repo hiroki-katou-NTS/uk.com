@@ -6,6 +6,9 @@ var qmm019;
         (function (viewmodel) {
             var option = nts.uk.ui.option;
             var ScreenModel = (function () {
+                /**
+                 * Init screen model.
+                 */
                 function ScreenModel() {
                     var self = this;
                     self.selectedLayoutAtr = ko.observable(null);
@@ -18,12 +21,14 @@ var qmm019;
                     self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: "yearmonth" }));
                     self.historyId = ko.observable(null);
                     self.enableYm = ko.observable(true);
+                    //---radio
                     self.itemsRadio = ko.observableArray([
                         { value: 1, text: '履歴を削除する' },
                         { value: 2, text: '履歴を修正する' }
                     ]);
                     self.isRadioCheck = ko.observable(2);
                 }
+                // start function
                 ScreenModel.prototype.start = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -38,6 +43,7 @@ var qmm019;
                     }).fail(function (res) {
                         alert(res);
                     });
+                    //checkbox change
                     self.isRadioCheck.subscribe(function (newValue) {
                         if (newValue === 2) {
                             self.enableYm(true);
@@ -46,6 +52,7 @@ var qmm019;
                             self.enableYm(false);
                         }
                     });
+                    // Return.
                     return dfd.promise();
                 };
                 ScreenModel.prototype.startDiaglog = function () {
@@ -59,6 +66,7 @@ var qmm019;
                 };
                 ScreenModel.prototype.layoutProcess = function () {
                     var self = this;
+                    //履歴の編集-削除処理
                     if (self.isRadioCheck() === 1) {
                         self.dataDelete();
                     }
@@ -69,6 +77,7 @@ var qmm019;
                 ScreenModel.prototype.dataDelete = function () {
                     var self = this;
                     e.service.deleteLayout(self.selectLayout()).done(function () {
+                        //alert("履歴を削除しました。");
                         nts.uk.ui.windows.close();
                     }).fail(function (res) {
                         alert(res);
@@ -77,6 +86,7 @@ var qmm019;
                 ScreenModel.prototype.dataUpdate = function () {
                     var self = this;
                     var layoutInfor = self.selectLayout();
+                    //check YM
                     var inputYm = $("#INP_001").val();
                     if (!nts.uk.time.parseYearMonth(inputYm).success) {
                         alert(nts.uk.time.parseYearMonth(inputYm).msg);
@@ -84,17 +94,20 @@ var qmm019;
                     }
                     layoutInfor.startYmOriginal = +self.layoutStartYm().replace('/', '');
                     layoutInfor.startYm = +$("#INP_001").val().replace('/', '');
+                    //直前の[明細書マスタ]の開始年月　>　入力した開始年月　>=　終了年月　の場合
                     if (layoutInfor.startYmOriginal > layoutInfor.startYm
                         || layoutInfor.startYm > +self.selectLayoutEndYm().replace('/', '')) {
                         alert("履歴の期間が重複しています。");
                         return false;
                     }
                     else if (layoutInfor.startYmOriginal == layoutInfor.startYm) {
+                        //alert("履歴を修正しました。");
                         nts.uk.ui.windows.close();
                         return false;
                     }
                     else {
                         e.service.updateLayout(layoutInfor).done(function () {
+                            //alert("履歴を修正しました。");
                             nts.uk.ui.windows.close();
                         }).fail(function (res) {
                             alert(res);

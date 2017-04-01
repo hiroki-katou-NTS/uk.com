@@ -40,6 +40,7 @@ var nts;
                                     self.dirty = new nts.uk.ui.DirtyChecker(self.laborInsuranceOfficeModel);
                                     self.isShowDirty = ko.observable(true);
                                 }
+                                //function reset value viewmodel
                                 ScreenModel.prototype.resetValueLaborInsurance = function () {
                                     var self = this;
                                     if (self.dirty.isDirty() && self.isShowDirty()) {
@@ -48,6 +49,7 @@ var nts;
                                                 self.isShowDirty(false);
                                                 self.onResetValueLaborInsurance();
                                             }).ifNo(function () {
+                                                //No action
                                             });
                                             return;
                                         }
@@ -57,7 +59,9 @@ var nts;
                                 ScreenModel.prototype.onResetValueLaborInsurance = function () {
                                     var self = this;
                                     self.laborInsuranceOfficeModel().resetAllValue();
+                                    //set type action (ismode) add
                                     self.typeAction(TypeActionLaborInsuranceOffice.add);
+                                    //reset value model
                                     self.selectCodeLstlaborInsuranceOffice('');
                                     self.laborInsuranceOfficeModel().setReadOnly(false);
                                     if (!self.isEmpty())
@@ -66,16 +70,19 @@ var nts;
                                     self.isEnableDelete(false);
                                     self.isShowDirty(true);
                                 };
+                                //function clear message error
                                 ScreenModel.prototype.clearErrorSave = function () {
                                     $('.save-error').ntsError('clear');
                                     $('#btn_save').ntsError('clear');
                                 };
+                                //function read all SocialTnsuranceOffice
                                 ScreenModel.prototype.readFromSocialTnsuranceOffice = function () {
                                     var self = this;
                                     if (self.dirty.isDirty()) {
                                         nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
                                             self.onReadFromSocialTnsuranceOffice();
                                         }).ifNo(function () {
+                                            //No action
                                         });
                                         return;
                                     }
@@ -84,9 +91,12 @@ var nts;
                                 ScreenModel.prototype.onReadFromSocialTnsuranceOffice = function () {
                                     var self = this;
                                     self.enableButton(false);
+                                    //call service find all SocialTnsuranceOffice
                                     a.service.findAllSocialInsuranceOffice().done(function (data) {
                                         if (data != null && data.length > 0) {
+                                            //set data fw /b
                                             nts.uk.ui.windows.setShared("dataInsuranceOffice", data);
+                                            //open dialog /b/index.xhtml
                                             nts.uk.ui.windows.sub.modal("/view/qmm/010/b/index.xhtml", {
                                                 height: 700, width: 450,
                                                 title: "社会保険事業所から読み込み",
@@ -101,6 +111,7 @@ var nts;
                                             });
                                         }
                                         else {
+                                            //show message
                                             alert("ER010");
                                             self.enableButton(true);
                                         }
@@ -114,11 +125,14 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
+                                //Connection service find All InsuranceOffice
                                 ScreenModel.prototype.findAllInsuranceOffice = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     a.service.findAllLaborInsuranceOffice().done(function (data) {
                                         if (data != null && data.length > 0) {
+                                            //data not null length > 0
+                                            //reset List Labor Insurance Office
                                             self.lstlaborInsuranceOfficeModel = ko.observableArray(data);
                                             self.selectCodeLstlaborInsuranceOffice(data[0].code);
                                             self.selectCodeLstlaborInsuranceOffice.subscribe(function (selectCodeLstlaborInsuranceOffice) {
@@ -130,15 +144,18 @@ var nts;
                                             });
                                         }
                                         else {
+                                            //new reset data value
                                             self.newmodelEmptyData();
                                             dfd.resolve(self);
                                         }
                                     });
                                     return dfd.promise();
                                 };
+                                //Function show message error message
                                 ScreenModel.prototype.showMessageSave = function (messageId) {
                                     var self = this;
                                     if (self.messageList()[0].messageId === messageId) {
+                                        //001
                                         var message = self.messageList()[0].message;
                                         if (!self.laborInsuranceOfficeModel().code()) {
                                             $('#inp_code').ntsError('set', message);
@@ -173,6 +190,7 @@ var nts;
                                     $("#inp_officeNoB").ntsEditor("validate");
                                     $("#inp_officeNoC").ntsEditor("validate");
                                 };
+                                //Function action button save Onclick
                                 ScreenModel.prototype.saveLaborInsuranceOffice = function () {
                                     var self = this;
                                     self.clearErrorSave();
@@ -180,20 +198,29 @@ var nts;
                                     if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                                         return;
                                     }
+                                    //get ismode
                                     if (self.typeAction() == TypeActionLaborInsuranceOffice.add) {
+                                        //is mode is add
+                                        //call service add labor insurance office
                                         a.service.addLaborInsuranceOffice(self.collectData()).done(function () {
+                                            //reload labor insurance office
                                             self.reloadDataByAction();
+                                            //clear error
                                             self.clearErrorSave();
                                         }).fail(function (res) {
+                                            //show error message error
                                             self.showMessageSave(res.messageId);
                                         });
                                     }
                                     else {
+                                        //is mode is update
+                                        //call service update labor insurance office
                                         a.service.updateLaborInsuranceOffice(self.collectData()).done(function () {
                                             self.reloadDataByAction();
                                         });
                                     }
                                 };
+                                //Function show view by change selection
                                 ScreenModel.prototype.showchangeLaborInsuranceOffice = function (selectionCodeLstLstLaborInsuranceOffice) {
                                     var self = this;
                                     if (selectionCodeLstLstLaborInsuranceOffice
@@ -207,6 +234,7 @@ var nts;
                                                     self.detailLaborInsuranceOffice(selectionCodeLstLstLaborInsuranceOffice);
                                                     return;
                                                 }).ifNo(function () {
+                                                    //No action
                                                 });
                                             }
                                             self.selectCodeLstlaborInsuranceOffice(self.beginSelectlaborInsuranceOffice());
@@ -216,10 +244,12 @@ var nts;
                                         self.detailLaborInsuranceOffice(selectionCodeLstLstLaborInsuranceOffice);
                                     }
                                 };
+                                //Function detail
                                 ScreenModel.prototype.detailLaborInsuranceOffice = function (code) {
                                     var dfd = $.Deferred();
                                     if (code && code != '') {
                                         var self = this;
+                                        //call service find labor insurance office
                                         a.service.findLaborInsuranceOffice(code).done(function (data) {
                                             if (self.isEmpty()) {
                                                 self.selectCodeLstlaborInsuranceOffice.subscribe(function (selectionCodeLstLstLaborInsuranceOffice) {
@@ -227,6 +257,7 @@ var nts;
                                                 });
                                                 self.isEmpty(false);
                                             }
+                                            //set data labor insurance office
                                             self.selectCodeLstlaborInsuranceOffice(code);
                                             self.laborInsuranceOfficeModel().updateData(data);
                                             self.laborInsuranceOfficeModel().setReadOnly(true);
@@ -240,15 +271,19 @@ var nts;
                                     dfd.resolve();
                                     return dfd.promise();
                                 };
+                                //reload action
                                 ScreenModel.prototype.reloadDataByAction = function () {
                                     var self = this;
+                                    //call service findAll
                                     a.service.findAllLaborInsuranceOffice().done(function (data) {
+                                        //reset list data
                                         if (self.lstlaborInsuranceOfficeModel == null || self.lstlaborInsuranceOfficeModel == undefined) {
                                             self.lstlaborInsuranceOfficeModel = ko.observableArray(data);
                                         }
                                         else {
                                             self.lstlaborInsuranceOfficeModel(data);
                                         }
+                                        //set data view
                                         var code = self.selectCodeLstlaborInsuranceOffice();
                                         if (self.typeAction() == TypeActionLaborInsuranceOffice.add) {
                                             if (data != null && data.length > 0) {
@@ -263,6 +298,7 @@ var nts;
                                         }
                                     });
                                 };
+                                //reload data by delete Labor
                                 ScreenModel.prototype.reloadByDelete = function (code) {
                                     var self = this;
                                     self.lstlaborInsuranceOfficeModel;
@@ -277,12 +313,15 @@ var nts;
                                         return;
                                     }
                                     var codenew = '';
+                                    //exist under find code
                                     if (findcode + 1 < datapre.length) {
                                         codenew = datapre[findcode + 1].code;
                                     }
                                     else if (findcode - 1 >= 0) {
+                                        //exist begin find code
                                         codenew = datapre[findcode - 1].code;
                                     }
+                                    // find .... 
                                     datapre.splice(findcode, 1);
                                     self.lstlaborInsuranceOfficeModel(datapre);
                                     self.selectCodeLstlaborInsuranceOffice(codenew);
@@ -297,14 +336,17 @@ var nts;
                                     }
                                     return find;
                                 };
+                                //Function empty data respone
                                 ScreenModel.prototype.newmodelEmptyData = function () {
                                     var self = this;
+                                    //reset list data
                                     if (self.lstlaborInsuranceOfficeModel == null || self.lstlaborInsuranceOfficeModel == undefined) {
                                         self.lstlaborInsuranceOfficeModel = ko.observableArray([]);
                                     }
                                     else {
                                         self.lstlaborInsuranceOfficeModel([]);
                                     }
+                                    //reset value
                                     self.resetValueLaborInsurance();
                                     self.selectCodeLstlaborInsuranceOffice('');
                                     self.isEmpty(true);
@@ -328,6 +370,7 @@ var nts;
                                         });
                                     }
                                 };
+                                //Convert Model => DTO
                                 ScreenModel.prototype.collectData = function () {
                                     var self = this;
                                     var laborInsuranceOffice;
@@ -387,6 +430,7 @@ var nts;
                                     this.isReadOnly = ko.observable(true);
                                     this.isEnable = ko.observable(true);
                                 }
+                                //Reset value in view Model
                                 LaborInsuranceOfficeModel.prototype.resetAllValue = function () {
                                     this.code('');
                                     this.name('');

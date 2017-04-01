@@ -31,6 +31,7 @@ var qmm006;
                             self.items1(data);
                         }
                         else {
+                            //ER010- data is none
                             nts.uk.ui.dialog.alert("対象データがありません。");
                         }
                         dfd.resolve();
@@ -52,14 +53,15 @@ var qmm006;
                     var oldLineBankCode = self.currentCode();
                     var newLineBankCode = self.currentCode1();
                     if (oldLineBankCode == null || newLineBankCode == null) {
-                        nts.uk.ui.dialog.alert("＊が選択されていません。");
+                        nts.uk.ui.dialog.alert("＊が選択されていません。"); //ER007
                         return;
                     }
                     else if (oldLineBankCode == newLineBankCode) {
-                        nts.uk.ui.dialog.alert("統合元と統合先で同じコードの＊が選択されています。\r\n  ＊を確認してください。");
+                        nts.uk.ui.dialog.alert("統合元と統合先で同じコードの＊が選択されています。\r\n  ＊を確認してください。"); //ER009
                         return;
                     }
                     else {
+                        //Al003
                         nts.uk.ui.dialog.confirm("統合元から統合先へデータを置換えます。\r\n よろしいですか？").ifYes(function () {
                             nts.uk.ui.dialog.confirm("置換元のマスタを削除しますか？[はい/いいえ]").ifYes(function () {
                                 var data = {

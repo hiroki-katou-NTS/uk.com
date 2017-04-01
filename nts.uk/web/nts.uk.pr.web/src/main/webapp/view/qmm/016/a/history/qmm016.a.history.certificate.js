@@ -17,6 +17,9 @@ var nts;
                     (function (a) {
                         var history;
                         (function (history_1) {
+                            /**
+                             * For one demension view.
+                             */
                             var CertificateViewModel = (function (_super) {
                                 __extends(CertificateViewModel, _super);
                                 function CertificateViewModel(history) {
@@ -25,9 +28,13 @@ var nts;
                                     self.igGridDataSource = ko.observableArray([]);
                                     self.certToGroupMap = [];
                                 }
+                                /**
+                                 * On load processing.
+                                 */
                                 CertificateViewModel.prototype.onLoad = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
+                                    // Load certificate info.
                                     qmm016.service.instance.loadCertificate().done(function (res) {
                                         self.certificateGroupModel = res;
                                         _.forEach(self.certificateGroupModel.certifyGroups, function (group) {
@@ -35,8 +42,10 @@ var nts;
                                                 self.certToGroupMap[cert.code] = group;
                                             });
                                         });
+                                        // Already have data.
                                         var vmList = new Array();
                                         if (self.history.valueItems && self.history.valueItems.length > 0) {
+                                            // Map uuid to item.
                                             var codeToItemMap = [];
                                             var uuidToValueMap = [];
                                             _.forEach(self.elementSettings[0].itemList, function (item) {
@@ -45,6 +54,7 @@ var nts;
                                             _.forEach(self.history.valueItems, function (vi) {
                                                 uuidToValueMap[vi.element1Id] = vi;
                                             });
+                                            // Map values item. 
                                             _.forEach(self.certificateGroupModel.certifyGroups, function (group) {
                                                 _.forEach(group.certifyItems, function (cert) {
                                                     var item = codeToItemMap[cert.code];
@@ -55,14 +65,21 @@ var nts;
                                                 });
                                             });
                                         }
+                                        // Init ig girid.
                                         dfd.resolve();
                                         self.initIgGrid(vmList);
                                     });
+                                    // Ret.
                                     return dfd.promise();
                                 };
+                                /**
+                                 * Init ig grid.
+                                 */
                                 CertificateViewModel.prototype.initIgGrid = function (data) {
                                     var self = this;
+                                    // Clean node.
                                     ko.cleanNode($('#dataTable').get(0));
+                                    // IgGrid
                                     self.igGridDataSource(data);
                                     self.igGrid = ko.observable({
                                         dataSource: self.igGridDataSource,
@@ -98,7 +115,15 @@ var nts;
                                                         readOnly: true
                                                     }
                                                 ],
-                                            }
+                                            } /*
+                                            {
+                                                name: 'CellMerging',
+                                                initialState: 'merged',
+                                                cellsMerged: (evt: any, ui: any) => {
+                                                    $('.halign-right', ui.row).removeClass('ui-iggrid-mergedcellstop ui-iggrid-mergedcell');
+                                                }
+                                                
+                                            }*/
                                         ],
                                         autoCommit: true,
                                         columns: [
@@ -109,16 +134,22 @@ var nts;
                                             { headerText: '同一グループ内で複数の資格を取得している場合の支給方法', dataType: 'string', key: 'groupCalTypeText', width: '20%' }
                                         ]
                                     });
+                                    // Bind.
                                     if (data && data.length > 0) {
                                         ko.applyBindingsToNode($('#dataTable').get(0), { igGrid: self.igGrid });
                                     }
                                 };
+                                /**
+                                 * On refresh element.
+                                 */
                                 CertificateViewModel.prototype.onRefreshElement = function () {
                                     var self = this;
+                                    // Map uuid to item.
                                     var codeToItemMap = [];
                                     _.forEach(self.elementSettings[0].itemList, function (item) {
                                         codeToItemMap[item.referenceCode] = item;
                                     });
+                                    // Map values item.
                                     var vmList = new Array();
                                     _.forEach(self.certificateGroupModel.certifyGroups, function (group) {
                                         _.forEach(group.certifyItems, function (cert) {
@@ -127,8 +158,12 @@ var nts;
                                             vmList.push(vm);
                                         });
                                     });
+                                    // Update source
                                     self.initIgGrid(vmList);
                                 };
+                                /**
+                                 * Get setting cell item.
+                                 */
                                 CertificateViewModel.prototype.getCellItem = function () {
                                     return _.map(this.igGridDataSource(), function (item) {
                                         var dto = {};
@@ -137,13 +172,23 @@ var nts;
                                         return dto;
                                     });
                                 };
+                                /**
+                                 * Paste data from excel.
+                                 */
                                 CertificateViewModel.prototype.pasteFromExcel = function () {
+                                    // Do parsing.
                                     return;
                                 };
                                 return CertificateViewModel;
                             }(history_1.base.BaseHistoryViewModel));
                             history_1.CertificateViewModel = CertificateViewModel;
+                            /**
+                             * Item view model.
+                             */
                             var ItemViewModel = (function () {
+                                /**
+                                 * Constructor.
+                                 */
                                 function ItemViewModel(group, item) {
                                     var self = this;
                                     self.uuid = item.uuid;

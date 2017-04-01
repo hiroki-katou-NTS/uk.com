@@ -12,6 +12,9 @@ var nts;
                     (function (simplehistory) {
                         var dialogbase;
                         (function (dialogbase) {
+                            /**
+                              * Define screen mode.
+                              */
                             var ScreenMode = (function () {
                                 function ScreenMode() {
                                 }

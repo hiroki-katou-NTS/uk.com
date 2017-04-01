@@ -30,10 +30,16 @@ var nts;
                                     var list = nts.uk.ui.windows.getShared('listItem');
                                     self.lst_001(list);
                                 };
+                                /**
+                                 * close screen qmm002b
+                                 */
                                 ScreenModel.prototype.close = function () {
                                     var self = this;
                                     nts.uk.ui.windows.close();
                                 };
+                                /**
+                                 * Delete List Bank, Branch
+                                 */
                                 ScreenModel.prototype.btn_001 = function () {
                                     var self = this;
                                     if (!self.selectedCodes().length) {
@@ -65,6 +71,9 @@ var nts;
                                         });
                                     });
                                 };
+                                /**
+                                 * select node information
+                                 */
                                 ScreenModel.prototype.getNode = function (codeNew, parentId) {
                                     var self = this;
                                     self.lst_002(nts.uk.util.flatArray(self.lst_001(), "childs"));

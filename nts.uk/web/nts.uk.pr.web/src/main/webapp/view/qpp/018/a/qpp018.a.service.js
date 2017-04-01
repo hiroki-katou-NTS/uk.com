@@ -12,10 +12,14 @@ var nts;
                     (function (a) {
                         var service;
                         (function (service) {
+                            // Service paths.
                             var servicePath = {
                                 findAllInsuranceOffice: "screen/pr/QPP018/findAllOffice",
                                 saveAsPdf: "screen/pr/QPP018/saveAsPdf"
                             };
+                            /**
+                             * find All Insurance Office
+                             */
                             function findAllInsuranceOffice() {
                                 var dfd = $.Deferred();
                                 nts.uk.request.ajax(servicePath.findAllInsuranceOffice).done(function (res) {
@@ -31,6 +35,9 @@ var nts;
                                 return nts.uk.request.exportFile(servicePath.saveAsPdf, command);
                             }
                             service.saveAsPdf = saveAsPdf;
+                            /**
+                             * insurance office
+                             */
                             var model;
                             (function (model) {
                                 var InsuranceOffice = (function () {

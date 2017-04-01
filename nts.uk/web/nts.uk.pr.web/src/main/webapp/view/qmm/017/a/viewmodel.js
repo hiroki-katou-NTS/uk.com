@@ -37,6 +37,7 @@ var nts;
                         self.viewModel017b().startYearMonth(rangeYearMonth[0].trim());
                         self.viewModel017b().formulaCode(self.currentParentNode().code);
                         self.viewModel017b().formulaName(self.currentParentNode().name);
+                        //get formula detail
                         qmm017.service.findFormula(self.currentParentNode().code, self.currentNode().code)
                             .done(function (currentFormula) {
                             self.viewModel017b().selectedDifficultyAtr(currentFormula.difficultyAtr);
@@ -131,6 +132,8 @@ var nts;
                 var itemsTreeGridHistory = [];
                 var itemsTreeGridFormula = [];
                 var nodesTreeGrid = [];
+                // bind a_lst_001
+                // convert FormulaDto to Node objects to fill in the tree grid
                 qmm017.service.getAllFormula().done(function (lstFormulaDto) {
                     if (lstFormulaDto) {
                         var groupsFormulaByCode_1 = _.groupBy(lstFormulaDto, 'formulaCode');
@@ -162,8 +165,10 @@ var nts;
                     }
                     dfd.resolve();
                 }).fail(function (res) {
+                    // Alert message
                     alert(res);
                 });
+                // Return.
                 return dfd.promise();
             };
             ScreenModel.prototype.sortFormulaHistory = function (lstFormulaHistory) {

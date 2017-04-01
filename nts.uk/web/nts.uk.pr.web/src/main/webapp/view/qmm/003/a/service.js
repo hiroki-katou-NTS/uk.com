@@ -10,6 +10,9 @@ var qmm003;
                 addResidential: "pr/core/residential/addresidential",
                 updateResidential: "pr/core/residential/updateresidential"
             };
+            /**
+             * Get list payment date processing.
+             */
             function getResidentialTax() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getResidentalTaxList)

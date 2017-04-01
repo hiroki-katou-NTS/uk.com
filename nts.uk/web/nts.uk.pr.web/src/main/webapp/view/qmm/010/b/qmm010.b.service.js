@@ -14,6 +14,7 @@ var nts;
                         (function (service) {
                             var model;
                             (function (model) {
+                                //Import SocialInsuranceOffice =>  SocialInsuranceOfficeInDto
                                 var SocialInsuranceOfficeImportDto = (function () {
                                     function SocialInsuranceOfficeImportDto() {
                                     }

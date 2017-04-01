@@ -12,7 +12,7 @@ var nts;
                     (function (d) {
                         var ScreenModel = (function () {
                             function ScreenModel() {
-                                this.editMode = true;
+                                this.editMode = true; // true là mode thêm mới, false là mode sửa 
                                 var self = this;
                                 self.init();
                                 self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
@@ -136,6 +136,8 @@ var nts;
                             };
                             ;
                             ScreenModel.prototype.register = function () {
+                                // if()
+                                //                         $("#A_INP_002").attr('disabled', 'true');
                                 var inputSearch = $("#D_SCH_001").find("input.ntsSearchBox").val();
                                 if (inputSearch == "") {
                                     $('#D_SCH_001').ntsError('set', 'inputSearch が入力されていません。');
@@ -143,6 +145,7 @@ var nts;
                                 else {
                                     $('#D_SCH_001').ntsError('clear');
                                 }
+                                // errror search
                                 var error;
                                 _.find(this.filteredData(), function (obj) {
                                     if (obj.code !== inputSearch) {

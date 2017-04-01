@@ -30,6 +30,7 @@ var qet001;
                         if (val == undefined || val == null) {
                             return;
                         }
+                        // reload tab.
                         self.aggregateItemCategories()[val].loadAggregateItemByCategory();
                     });
                 }
@@ -38,6 +39,7 @@ var qet001;
                     var self = this;
                     i.service.findMasterItems().done(function (res) {
                         self.masterItems(res);
+                        // init aggregate categories.
                         self.aggregateItemCategories.push(new AggregateCategory(PaymentType.SALARY, Category.PAYMENT, res));
                         self.aggregateItemCategories.push(new AggregateCategory(PaymentType.SALARY, Category.DEDUCTION, res));
                         self.aggregateItemCategories.push(new AggregateCategory(PaymentType.SALARY, Category.ATTENDANCE, res));
@@ -49,7 +51,11 @@ var qet001;
                     dfd.resolve();
                     return dfd.promise();
                 };
+                /**
+                 * After rended template.
+                 */
                 ScreenModel.prototype.afterRender = function () {
+                    // set width when swap list is rended.
                     $('.master-table-label').width($('#swap-list-gridArea1').width());
                     $('.sub-table-label').width($('#swap-list-gridArea2').width());
                 };
@@ -62,10 +68,12 @@ var qet001;
                     this.category = categoryName;
                     this.paymentType = paymentType;
                     this.aggregateItemSelectedCode = ko.observable(null);
+                    // Filter master item by category and payment type.
                     var masterItemInCate = masterItems.filter(function (item) { return item.category == categoryName; });
                     this.aggregateItemDetail = ko.observable(new AggregateItemDetail(paymentType, categoryName, masterItemInCate));
                     var self = this;
                     self.dirty = new nts.uk.ui.DirtyChecker(self.aggregateItemDetail);
+                    // When selected aggregate item => load detail.
                     self.aggregateItemSelectedCode.subscribe(function (code) {
                         if (code == undefined || code == null || code == '') {
                             self.aggregateItemDetail(new AggregateItemDetail(paymentType, categoryName, masterItemInCate));
@@ -80,8 +88,12 @@ var qet001;
                         });
                     });
                 }
+                /**
+                 * Load Aggregate items by category.
+                 */
                 AggregateCategory.prototype.loadAggregateItemByCategory = function () {
                     var dfd = $.Deferred();
+                    // Fake data.
                     var self = this;
                     i.service.findAggregateItemsByCategory(self.category, self.paymentType).done(function (res) {
                         self.itemList(res);
@@ -93,6 +105,9 @@ var qet001;
                     });
                     return dfd.promise();
                 };
+                /**
+                 * Load detail aggregate item.
+                 */
                 AggregateCategory.prototype.loadDetailAggregateItem = function (category, paymentType, code) {
                     var dfd = $.Deferred();
                     i.service.findAggregateItemDetail(category, paymentType, code).done(function (data) {
@@ -103,7 +118,11 @@ var qet001;
                     });
                     return dfd.promise();
                 };
+                /**
+                 * Switch to create mode.
+                 */
                 AggregateCategory.prototype.switchToCreateMode = function () {
+                    // Dirty check.
                     var self = this;
                     if (self.dirty.isDirty()) {
                         nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function () {
@@ -113,14 +132,19 @@ var qet001;
                 };
                 AggregateCategory.prototype.save = function () {
                     var self = this;
+                    // clear error.
                     $('#code-input').ntsError('clear');
                     $('#name-input').ntsError('clear');
+                    // Validate.
                     $('#code-input').ntsEditor('validate');
                     $('#name-input').ntsEditor('validate');
+                    // Check has error.
                     if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                         return;
                     }
+                    // save.
                     i.service.save(self.aggregateItemDetail()).done(function () {
+                        // TODO: Show message save success.
                         nts.uk.ui.dialog.alert('Save success!');
                         self.loadAggregateItemByCategory();
                     }).fail(function (res) {
@@ -132,24 +156,34 @@ var qet001;
                     if (self.aggregateItemSelectedCode() == null) {
                         return;
                     }
+                    // save.
                     i.service.remove(self.category, self.paymentType, self.aggregateItemSelectedCode()).done(function () {
+                        // Find item selected.
                         var itemSelected = self.itemList().filter(function (item) { return item.code == self.aggregateItemSelectedCode(); })[0];
                         var indexSelected = self.itemList().indexOf(itemSelected);
+                        // Remove item selected in list.
                         self.itemList.remove(itemSelected);
+                        // If list is empty -> new mode.
                         if (self.itemList.length == 0) {
                             self.aggregateItemSelectedCode(null);
                             return;
                         }
+                        // Select same row with item selected.
                         if (self.itemList()[indexSelected]) {
                             self.aggregateItemSelectedCode(self.itemList()[indexSelected].code);
                             return;
                         }
+                        // Select next higher row.
                         self.aggregateItemSelectedCode(self.itemList()[indexSelected - 1].code);
                     }).fail(function (res) {
                         nts.uk.ui.dialog.alert(res.message);
                     });
                 };
+                /**
+                 * Close dialog.
+                 */
                 AggregateCategory.prototype.close = function () {
+                    // Dirty check.
                     var self = this;
                     if (self.dirty.isDirty()) {
                         nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function () {
@@ -160,13 +194,20 @@ var qet001;
                         nts.uk.ui.windows.close();
                     }
                 };
+                /**
+                 * Set style when re-rending list.
+                 */
                 AggregateCategory.prototype.setStyle = function () {
+                    // set width when swap list is rended.
                     $('.master-table-label').attr('style', 'width: ' + $('#swap-list-gridArea1').width() + 'px');
                     $('.sub-table-label').attr('style', 'width: ' + $('#swap-list-gridArea2').width() + 'px');
                 };
                 return AggregateCategory;
             }());
             viewmodel.AggregateCategory = AggregateCategory;
+            /**
+             * Aggregate detail model.
+             */
             var AggregateItemDetail = (function () {
                 function AggregateItemDetail(paymentType, category, masterItems, item) {
                     this.code = item == undefined ? ko.observable('') : ko.observable(item.code);
@@ -182,12 +223,14 @@ var qet001;
                     this.showValueZeroCode = ko.observable(this.showValueZeroValue() ? '0' : '1');
                     this.createMode = ko.observable(item == undefined);
                     var self = this;
+                    // Computed show values variable.
                     self.showNameZeroValue = ko.computed(function () {
                         return self.showNameZeroCode() == '0';
                     });
                     self.showValueZeroValue = ko.computed(function () {
                         return self.showValueZeroCode() == '0';
                     });
+                    // exclude items contain in sub items.
                     var subItemCodes = self.subItems().map(function (item) { return item.code; });
                     var masterItemsExcluded = masterItems.filter(function (item) { return subItemCodes.indexOf(item.code) == -1; });
                     self.masterItems = ko.observableArray(masterItemsExcluded);
@@ -195,19 +238,40 @@ var qet001;
                 return AggregateItemDetail;
             }());
             viewmodel.AggregateItemDetail = AggregateItemDetail;
+            /**
+             * Wage ledger category.
+             */
             var Category = (function () {
                 function Category() {
                 }
+                /**
+                 * 支給
+                 */
                 Category.PAYMENT = 'Payment';
+                /**
+                 * 控除
+                 */
                 Category.DEDUCTION = 'Deduction';
+                /**
+                 * 勤怠
+                 */
                 Category.ATTENDANCE = 'Attendance';
                 return Category;
             }());
             viewmodel.Category = Category;
+            /**
+             * Wage ledger payment type.
+             */
             var PaymentType = (function () {
                 function PaymentType() {
                 }
+                /**
+                 * Salary.
+                 */
                 PaymentType.SALARY = 'Salary';
+                /**
+                 * Bonus.
+                 */
                 PaymentType.BONUS = 'Bonus';
                 return PaymentType;
             }());

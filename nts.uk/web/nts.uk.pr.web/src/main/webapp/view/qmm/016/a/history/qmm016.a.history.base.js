@@ -14,6 +14,9 @@ var nts;
                         (function (history_1) {
                             var base;
                             (function (base) {
+                                /**
+                                 * Base view model.
+                                 */
                                 var BaseHistoryViewModel = (function () {
                                     function BaseHistoryViewModel(htmlPath, history) {
                                         var self = this;
@@ -21,6 +24,9 @@ var nts;
                                         self.history = history;
                                         self.elementSettings = history.elements;
                                     }
+                                    /**
+                                     * Refresh element settings.
+                                     */
                                     BaseHistoryViewModel.prototype.refreshElementSettings = function (elementSettings) {
                                         var self = this;
                                         self.elementSettings = elementSettings;

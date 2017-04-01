@@ -7,6 +7,9 @@ var qpp004;
             var paths = {
                 createpaymentdata: "pr/proto/paymentdata/add"
             };
+            /**
+             * Get list payment date processing.
+             */
             function processCreatePaymentData(options) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.createpaymentdata, options)

@@ -15,24 +15,51 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
+                                    /**
+                                     * 通勤費　合計
+                                     */
                                     self.totalCommuteCheck = new CheckBox();
+                                    /**
+                                     * １ヵ月分通勤費
+                                     */
                                     self.oneMonthCheck = new CheckBox();
                                     self.oneMonthCheck.isChecked = ko.observable(false);
+                                    /**
+                                     * 課税通勤費
+                                     */
                                     self.taxCommuteCheck = new CheckBox();
                                     self.taxCommuteCheck.isChecked = ko.observable(false);
+                                    /**
+                                     * 通勤費合計 テキストボックス（金額）
+                                     */
                                     self.totalCommuteEditor = new NumberEditor();
                                     self.totalCommuteEditor.isEnable = self.totalCommuteCheck.isChecked;
+                                    /**
+                                     * 課税通勤費 テキストボックス（金額）
+                                     */
                                     self.taxCommuteEditor = new NumberEditor();
                                     self.taxCommuteEditor.isEnable = ko.computed(function () {
                                         return self.totalCommuteCheck.isChecked() && self.taxCommuteCheck.isChecked();
                                     });
+                                    /**
+                                     * 1か月分通勤費 テキストボックス（金額）
+                                     */
                                     self.oneMonthCommuteEditor = new NumberEditor();
                                     self.oneMonthCommuteEditor.isEnable = self.oneMonthCheck.isChecked;
+                                    /**
+                                     * 余り（端数）
+                                     */
                                     self.oneMonthRemainderEditor = new NumberEditor();
                                     self.oneMonthRemainderEditor.isEnable = self.oneMonthCheck.isChecked;
+                                    /**
+                                     * Commute items
+                                     */
                                     self.commuteDividedByMonth = new CommuteDividedByMonth();
                                     self.commuteDividedByMonth.isEnable = self.oneMonthCheck.isChecked;
                                     self.commuteNotaxLimitItem = ko.observable();
+                                    /**
+                                     * item code, item name
+                                     */
                                     self.itemCode = ko.observable("");
                                     self.itemName = ko.observable("");
                                 }
@@ -42,10 +69,14 @@ var nts;
                                     var detailItemFromParentScreen = nts.uk.ui.windows.getShared('value');
                                     var employee = nts.uk.ui.windows.getShared('employee');
                                     var baseYearmonth = nts.uk.ui.windows.getShared('processingYM');
+                                    // Set item code and item name value
                                     self.itemCode(detailItemFromParentScreen.itemCode);
                                     self.itemName(detailItemFromParentScreen.itemName);
+                                    // Set value for 通勤費合計 textbox 
                                     self.totalCommuteEditor.value = ko.observable(detailItemFromParentScreen.value);
+                                    // Set value for 課税通勤費 textbox 
                                     self.taxCommuteEditor.value = ko.observable(detailItemFromParentScreen.commuteAllowTaxImpose);
+                                    // Set value for  1か月分通勤費 textbox 
                                     self.oneMonthCommuteEditor.value = ko.observable(detailItemFromParentScreen.commuteAllowMonth);
                                     if (self.oneMonthCommuteEditor.value()) {
                                         self.oneMonthCheck.isChecked(true);
@@ -53,6 +84,7 @@ var nts;
                                         self.oneMonthRemainderEditor.isEnable(true);
                                         self.commuteDividedByMonth.isEnable(true);
                                     }
+                                    // Set value for 余り textbox 
                                     self.oneMonthRemainderEditor.value = ko.observable(detailItemFromParentScreen.commuteAllowFraction);
                                     qpp005.f.service.getCommuteNotaxLimit(employee.personId, baseYearmonth).done(function (res) {
                                         if (res != null) {
@@ -67,10 +99,12 @@ var nts;
                                 ScreenModel.prototype.settingButtonClick = function () {
                                     var self = this;
                                     var detailItemFromParentScreen = nts.uk.ui.windows.getShared('value');
+                                    // Check checked item
                                     if (!self.totalCommuteCheck.isChecked() && !self.oneMonthCheck.isChecked()) {
                                         alert("対象データがありません。");
                                         return;
                                     }
+                                    // Check item is exist
                                     if (detailItemFromParentScreen.itemCode == "") {
                                         alert("更新対象のデータが存在しません。");
                                         return;

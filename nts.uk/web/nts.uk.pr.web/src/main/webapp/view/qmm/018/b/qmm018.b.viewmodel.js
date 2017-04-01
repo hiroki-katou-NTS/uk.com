@@ -41,12 +41,14 @@ var qmm018;
                     return dfd.promise();
                 };
                 ScreenModel.prototype.submitData = function () {
+                    // return new data
                     var self = this;
                     nts.uk.ui.windows.setShared('selectedItemList', self.currentCodeListSwap());
                     nts.uk.ui.windows.setShared('unSelectedItemList', self.unselectedCodeListSwap());
                     nts.uk.ui.windows.close();
                 };
                 ScreenModel.prototype.closeWindow = function () {
+                    // return old data
                     var self = this;
                     nts.uk.ui.windows.setShared('selectedItemList', self.oldCurrentCodeListSwap());
                     nts.uk.ui.windows.setShared('unSelectedItemList', self.oldUnselectedCodeListSwap());
