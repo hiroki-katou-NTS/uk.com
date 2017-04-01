@@ -14,6 +14,10 @@
 
 @CHARSET "UTF-8";
 
+body {
+	overflow: hidden;
+	visibility: hidden;
+}
 #content {
 	width: 1360px;
 	padding: 20px 0px 0px 30px;

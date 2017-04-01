@@ -6,6 +6,12 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
+		<script src="http://www.igniteui.com/js/external/knockout.mapping-latest.js" type="text/javascript"></script>
+		<script src="http://cdn-na.infragistics.com/igniteui/2016.2/latest/js/extensions/infragistics.datasource.knockoutjs.js"></script>
+		<script src="http://cdn-na.infragistics.com/igniteui/2016.2/latest/js/extensions/infragistics.ui.grid.knockout-extensions.js"></script>
+		<com:scriptfile path="../d/qpp014.d.viewmodel.js" />
+		<com:scriptfile path="../shr/qpp014.shr.viewmodelbase.js" />
+		<com:stylefile path="../d/qpp014.d.main.css" />
 		<div>
 			<div id="D-label-area">
 				<div>
@@ -48,20 +54,17 @@
 					<label>10000</label>
 					<label>人</label>
 				</div>
-				<table id="gridKO" data-bind="igGrid: {
+				<table id="D_LST_001" data-bind="igGrid: {
 				dataSource: viewmodeld.d_LST_001_items,
                 primaryKey: 'code',
                 width: '740px',
-                height: '290px',
+                height: '280px',
                 autoCommit: false,
                 dataSourceType: 'json',
                 features: [
                     {
-                        name: 'Selection'
-                    },
-                    {
-                        name: 'RowSelectors',
-                        enableRowNumbering: true
+                        name: 'Selection',
+                        mode: 'row'
                     },
                     {
                         name: 'MultiColumnHeaders'

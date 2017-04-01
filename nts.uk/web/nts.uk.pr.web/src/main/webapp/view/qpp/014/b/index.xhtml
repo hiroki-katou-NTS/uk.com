@@ -14,15 +14,11 @@
 			</div>
 			<div class="steps">
 				<div class="step-1">再集計</div>
-				<div class="step-2">
-					<span>処理方法を選ぶ</span><br /> └詳細設定をする
-				</div>
-				<div class="step-3">対象社員を選ぶ</div>
+				<div class="end step-2">対象社員を選ぶ</div>
 			</div>
 			<div class="contents">
 				<div class="step-1"><ui:include src="../d/index.xhtml" /></div>
-				<div class="step-2"><ui:include src="../g/index.xhtml" /></div>
-				<div class="step-3"><ui:include src="../h/index.xhtml" /></div>
+				<div class="step-2" id="dynamicScreen"><ui:include src='../g/index.xhtml' /></div>
 			</div>
 		</div>
 	</ui:composition>

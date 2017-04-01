@@ -10,10 +10,10 @@ var qpp014;
                     var self = this;
                     self.b_stepList = [
                         { content: '.step-1' },
-                        { content: '.step-2' },
-                        { content: '.step-3' }
+                        { content: '.step-2' }
                     ];
-                    self.b_stepSelected = ko.observable({ id: 'step-2', content: '.step-2' });
+                    self.b_stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
+                    self.nextScreen = ko.observable('../g/index.xhtml');
                 }
                 return ScreenModel;
             }());
