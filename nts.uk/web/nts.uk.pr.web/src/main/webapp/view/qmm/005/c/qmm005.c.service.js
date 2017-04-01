@@ -10,6 +10,7 @@ var qmm005;
             services.getData = getData;
             function insertData(model) {
                 var def = $.Deferred();
+                model.vuongDepTrai = '201709';
                 nts.uk.request.ajax(webapi.qmm005c.insert, model).done(function (resp) {
                     def.resolve(resp);
                 });
