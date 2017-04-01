@@ -3,7 +3,9 @@
 @import url("../a/base.css");
 
 #C_INP_006 {
-	border-radius: 5px;
+	
+	width: 340px;
+	height: 90px;
 }
 
 #C_SEL_011 button {
@@ -90,4 +92,8 @@
 #C_SEL_017 button {
 	height: 55px;
 	border-radius: 5px;
+}
+
+#C_LBL_019 label {
+	line-height: 25px;
 }

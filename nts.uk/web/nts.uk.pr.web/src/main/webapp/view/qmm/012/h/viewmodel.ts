@@ -1,215 +1,116 @@
 module qmm012.h.viewmodel {
     export class ScreenModel {
         //textediter
-        texteditor: any;
-        //combobox
-        ComboBoxItemList: KnockoutObservableArray<ComboboxItemModel>;
-        itemName: KnockoutObservable<string>;
-        ComboBoxCurrentCode: KnockoutObservable<number>
+
         selectedCode: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
-        //001
-        ComboBoxItemList_001: KnockoutObservableArray<ComboboxItemModel>;
-        itemName_001: KnockoutObservable<string>;
-        ComboBoxCurrentCode_001: KnockoutObservable<number>
-        selectedCode_001: KnockoutObservable<string>;
-        //Checkbox
-        checked: KnockoutObservable<boolean>;
-        //002
-        checked_002: KnockoutObservable<boolean>;
-        //003
-        checked_003: KnockoutObservable<boolean>;
-        //012
-        checked_012: KnockoutObservable<boolean>;
-        //013
-        checked_013: KnockoutObservable<boolean>;
-        //014
-        checked_014: KnockoutObservable<boolean>;
-        //015
-        checked_015: KnockoutObservable<boolean>;
-        //016
-        checked_016: KnockoutObservable<boolean>;
         //gridlist
         gridListItems: KnockoutObservableArray<GridItemModel>;
         columns: KnockoutObservableArray<any>;
         gridListCurrentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
         //Switch
-        roundingRules: KnockoutObservableArray<any>;
-        //002 003 005 006 007 008 009 010
-        roundingRules_002_003_005To010: KnockoutObservableArray<any>;
-        selectedRuleCode_002: any;
-        selectedRuleCode_003: any;
-        selectedRuleCode_005: any;
-        selectedRuleCode_006: any;
-        selectedRuleCode_007: any;
-        selectedRuleCode_008: any;
-        selectedRuleCode_009: any;
-        selectedRuleCode_010: any;
-        //011
-        roundingRules_011: KnockoutObservableArray<any>;
-        selectedRuleCode_011: any;
-        //017
-        roundingRules_017: KnockoutObservableArray<any>;
-        selectedRuleCode_017: any;
-        //end switch
-        selectedRuleCode: any;
-        //radiogroup
-        RadioItemList: KnockoutObservableArray<any>;
-        selectedId: KnockoutObservable<number>;
-        enable: KnockoutObservable<boolean>;
-        //004
-        RadioItemList_004: KnockoutObservableArray<any>;
-        selectedId_004: KnockoutObservable<number>;
-        //currencyeditor
-        currencyeditor: any;
-        //textarea
-        textArea: KnockoutObservable<any>;
-        //search box 
-        filteredData: any;
+        roundingRules_H_SEL_001: KnockoutObservableArray<any>;
+        roundingRules_H_SEL_002: KnockoutObservableArray<any>;
+
+        enable: KnockoutObservable<boolean> = ko.observable(true);
+
+        CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMaster> = ko.observable(null);
+        CurrentCategoryAtrName: KnockoutObservable<string> = ko.observable('');
+        CurrentItem: KnockoutObservable<service.model.ItemPeriod> = ko.observable(null);
+        CurrentItemCode: KnockoutObservable<string> = ko.observable('');
+        CurrentPeriodAtr: KnockoutObservable<number> = ko.observable(0);
+        CurrentStrY: KnockoutObservable<number> = ko.observable(0);
+        CurrentEndY: KnockoutObservable<number> = ko.observable(0);
+        CurrentCycleAtr: KnockoutObservable<number> = ko.observable(0);
+        H_SEL_003_checked: KnockoutObservable<boolean> = ko.observable(true);
+        H_SEL_004_checked: KnockoutObservable<boolean> = ko.observable(true);
+        H_SEL_005_checked: KnockoutObservable<boolean> = ko.observable(true);
+        H_SEL_006_checked: KnockoutObservable<boolean> = ko.observable(true);
+        H_SEL_007_checked: KnockoutObservable<boolean> = ko.observable(true);
+        H_SEL_008_checked: KnockoutObservable<boolean> = ko.observable(true);
+        H_SEL_009_checked: KnockoutObservable<boolean> = ko.observable(true);
+        H_SEL_010_checked: KnockoutObservable<boolean> = ko.observable(true);
+        H_SEL_011_checked: KnockoutObservable<boolean> = ko.observable(true);
+        H_SEL_012_checked: KnockoutObservable<boolean> = ko.observable(true);
+        H_SEL_013_checked: KnockoutObservable<boolean> = ko.observable(true);
+        H_SEL_014_checked: KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             var self = this;
-            //textediter
-            self.texteditor = {
-                value: ko.observable(''),
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: "",
-                    width: "60px",
-                    textalign: "left"
-                })),
-                required: ko.observable(true),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
-            //start combobox data
-            self.ComboBoxItemList = ko.observableArray([
-                new ComboboxItemModel('0001', 'Item1'),
-                new ComboboxItemModel('0002', 'Item2'),
-                new ComboboxItemModel('0003', 'Item3')
+            //set Switch Data
+            self.roundingRules_H_SEL_001 = ko.observableArray([
+                { code: 1, name: '設定する' },
+                { code: 0, name: '設定しない' }
             ]);
-            self.ComboBoxCurrentCode = ko.observable(1);
-            self.selectedCode = ko.observable('0001')
-            self.isEnable = ko.observable(true);
-            self.isEditable = ko.observable(true);
-            //001
-            self.ComboBoxItemList_001 = ko.observableArray([
-                new ComboboxItemModel('1', '隱ｲ遞�'),
-                new ComboboxItemModel('2', '髱櫁ｪｲ遞�(髯仙ｺｦ縺ゅｊ�ｼ�'),
-                new ComboboxItemModel('3', '髱櫁ｪｲ遞�(髯仙ｺｦ縺ｪ縺暦ｼ�'),
-                new ComboboxItemModel('4', '騾壼共雋ｻ(謇句�･蜉�)'),
-                new ComboboxItemModel('5', '騾壼共雋ｻ(螳壽悄蛻ｸ蛻ｩ逕ｨ)')
-            ]);
-            self.ComboBoxCurrentCode_001 = ko.observable(1);
-            self.selectedCode_001 = ko.observable('1')
-            //end combobox data
-            //start checkbox Data
-            self.checked_002 = ko.observable(true);
-            self.checked_003 = ko.observable(true);
-            self.checked_012 = ko.observable(true);
-            self.checked_013 = ko.observable(true);
-            self.checked_014 = ko.observable(true);
-            self.checked_015 = ko.observable(true);
-            self.checked_016 = ko.observable(true);
-
-            //end checkbox data
-            // start gridlist
-            this.gridListItems = ko.observableArray([
-                new GridItemModel('001', 'Item1'),
-                new GridItemModel('002', 'Item2'),
-                new GridItemModel('003', 'Item3'),
-                new GridItemModel('004', 'Item4'),
-                new GridItemModel('005', 'Item5'),
-                new GridItemModel('006', 'Item6'),
-                new GridItemModel('007', 'Item7'),
-                new GridItemModel('008', 'Item8'),
-                new GridItemModel('009', 'Item9'),
-                new GridItemModel('010', 'Item10'),
-                new GridItemModel('011', 'Item11'),
-                new GridItemModel('012', 'Item12'),
-                new GridItemModel('013', 'Item13')
-            ]);
-            self.columns = ko.observableArray([
-                { headerText: '鬩幢ｽ｢�ｿｽ�ｽｽ�ｽｧ�ｿｽ�ｽｿ�ｽｽ�ｿｽ�ｽｽ�ｽｽ�ｿｽ�ｽｽ�ｽｳ鬩幢ｽ｢隴趣ｽ｢�ｿｽ�ｽｽ�ｽｽ�ｿｽ�ｽｽ�ｽｼ鬩幢ｽ｢隴趣ｽ｢�ｿｽ�ｽｽ�ｽｿ�ｿｽ�ｽｽ�ｽｽ', prop: 'code', width: 100 },
-                { headerText: '鬮ｯ�ｽｷ�ｿｽ�ｽｽ�ｽｷ髯ｷ�ｽ･�ｿｽ�ｽｽ�ｽｲ�ｿｽ�ｽｿ�ｽｽ�ｿｽ�ｽｽ�ｽｽ�ｿｽ�ｽｽ�ｽｧ�ｿｽ�ｽｿ�ｽｽ�ｿｽ�ｽｽ�ｽｽ�ｿｽ�ｽｽ�ｽｰ', prop: 'name', width: 150 }
-            ]);
-            this.gridListCurrentCode = ko.observable();
-            this.currentCodeList = ko.observableArray([]);
-            //end gridlist
-            //start Switch Data
-            self.enable = ko.observable(true);
-            self.roundingRules = ko.observableArray([
-                { code: '1', name: '隰ｾ�ｽｯ驍ｨ�ｽｦ' },
-                { code: '2', name: '隰ｾ�ｽｯ驍ｨ�ｽｦ' }
-            ]);
-            self.selectedRuleCode = ko.observable(1);
             //005 006 007 008 009 010
-            self.roundingRules_002_003_005To010 = ko.observableArray([
-                { code: '1', name: '蟇ｾ雎｡' },
-                { code: '2', name: '蟇ｾ雎｡螟�' }
-            ]);
-            self.selectedRuleCode_002 = ko.observable(1);
-            self.selectedRuleCode_003 = ko.observable(1);
-            self.selectedRuleCode_005 = ko.observable(1);
-            self.selectedRuleCode_006 = ko.observable(1);
-            self.selectedRuleCode_007 = ko.observable(1);
-            self.selectedRuleCode_008 = ko.observable(1);
-            self.selectedRuleCode_009 = ko.observable(1);
-            self.selectedRuleCode_010 = ko.observable(1);
-            //011
-            self.roundingRules_011 = ko.observableArray([
-                { code: '1', name: '繧ｼ繝ｭ繧定｡ｨ遉ｺ縺吶ｋ' },
-                { code: '2', name: '繧ｼ繝ｭ繧定｡ｨ遉ｺ縺励↑縺�' }
-            ]);
-            self.selectedRuleCode_011 = ko.observable(1);
-            //017
-            self.roundingRules_017 = ko.observableArray([
-                { code: '1', name: '鬆�逶ｮ蛹ｺ蛻�' },
-                { code: '2', name: '鬆�逶ｮ蛹ｺ蛻�' },
-                { code: '3', name: '鬆�逶ｮ蛹ｺ蛻�' },
-                { code: '4', name: '鬆�逶ｮ蛹ｺ蛻�' },
-            ]);
-            self.selectedRuleCode_017 = ko.observable(1);
-            //endSwitch Data
-            //start radiogroup data
-            self.RadioItemList = ko.observableArray([
-                new BoxModel(1, '髫ｴ蟷｢�ｽｽ�ｽｬ鬩穂ｼ夲ｽｽ�ｽｾ'),
-                new BoxModel(2, '髮主供萓幢ｿｽ�ｽｽ�ｽｮ陞溷･�ｽｽ�ｽｪ�ｿｽ�ｽｽ�ｽｿ髫ｴ蜴�ｽｽ�ｽｸ髯ｷ�ｿｽ�ｽｽ�ｽｺ髯ｷ迚呻ｽｸ�ｽｷ騾｡鬘瑚�ｳ陞溘ｑ�ｽｽ�ｽ､�ｿｽ�ｽｽ�ｽｾ')
-            ]);
-            self.selectedId = ko.observable(1);
-            //004
-            self.RadioItemList_004 = ko.observableArray([
-                new BoxModel(1, '蜈ｨ蜩｡荳�蠕九〒謖�螳壹☆繧�'),
-                new BoxModel(2, '邨ｦ荳主･醍ｴ�蠖｢諷九＃縺ｨ縺ｫ謖�螳壹☆繧�')
-            ]);
-            self.selectedId_004 = ko.observable(1);
-            //end radiogroup data
-            //currencyeditor
-            self.currencyeditor = {
-                value: ko.observable(),
-                constraint: '',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
-                    grouplength: 3,
-                    decimallength: 2,
-                    currencyformat: "JPY",
-                    currencyposition: 'right'
-                })),
-                required: ko.observable(false),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
-            //end currencyeditor
-            //start textarea
-            this.textArea = ko.observable("");
-            //end textarea
-            // start search box 
-            self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.gridListItems(), "childs"));
-            // end search box 
-        }
 
+            self.roundingRules_H_SEL_002 = ko.observableArray([
+                { code: 1, name: 'する' },
+                { code: 0, name: 'しない' }
+            ]);
+            self.LoadItemPeriod();
+            self.CurrentItem.subscribe(function(ItemPeriod: service.model.ItemPeriod) {
+                self.CurrentItemCode(ItemPeriod ? ItemPeriod.itemCd : '');
+                self.CurrentPeriodAtr(ItemPeriod ? ItemPeriod.periodAtr : 0);
+                self.CurrentStrY(ItemPeriod ? ItemPeriod.strY : 0);
+                self.CurrentEndY(ItemPeriod ? ItemPeriod.endY : 0);
+                self.CurrentCycleAtr(ItemPeriod ? ItemPeriod.cycleAtr : 0);
+                self.H_SEL_003_checked(ItemPeriod ? ItemPeriod.cycle01Atr == 1 ? true : false : false);
+                self.H_SEL_004_checked(ItemPeriod ? ItemPeriod.cycle02Atr == 1 ? true : false : false);
+                self.H_SEL_005_checked(ItemPeriod ? ItemPeriod.cycle03Atr == 1 ? true : false : false);
+                self.H_SEL_006_checked(ItemPeriod ? ItemPeriod.cycle04Atr == 1 ? true : false : false);
+                self.H_SEL_007_checked(ItemPeriod ? ItemPeriod.cycle05Atr == 1 ? true : false : false);
+                self.H_SEL_008_checked(ItemPeriod ? ItemPeriod.cycle06Atr == 1 ? true : false : false);
+                self.H_SEL_009_checked(ItemPeriod ? ItemPeriod.cycle07Atr == 1 ? true : false : false);
+                self.H_SEL_010_checked(ItemPeriod ? ItemPeriod.cycle08Atr == 1 ? true : false : false);
+                self.H_SEL_011_checked(ItemPeriod ? ItemPeriod.cycle09Atr == 1 ? true : false : false);
+                self.H_SEL_012_checked(ItemPeriod ? ItemPeriod.cycle10Atr == 1 ? true : false : false);
+                self.H_SEL_013_checked(ItemPeriod ? ItemPeriod.cycle11Atr == 1 ? true : false : false);
+                self.H_SEL_014_checked(ItemPeriod ? ItemPeriod.cycle12Atr == 1 ? true : false : false);
+
+            });
+
+        }
+        LoadItemPeriod() {
+            let self = this;
+            self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
+            if (self.CurrentItemMaster()) {
+                self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
+                service.findItemPeriod(self.CurrentItemMaster()).done(function(ItemPeriod: service.model.ItemPeriod) {
+                    self.CurrentItem(ItemPeriod);
+                });
+            }
+        }
+        getCurrentItemPeriod() {
+            let self = this;
+            return new service.model.ItemPeriod(
+                self.CurrentItemMaster().itemCode,
+                self.CurrentPeriodAtr(),
+                self.CurrentStrY(),
+                self.CurrentEndY(),
+                self.CurrentCycleAtr(),
+                self.H_SEL_003_checked() == true ? 1 : 0,
+                self.H_SEL_004_checked() == true ? 1 : 0,
+                self.H_SEL_005_checked() == true ? 1 : 0,
+                self.H_SEL_006_checked() == true ? 1 : 0,
+                self.H_SEL_007_checked() == true ? 1 : 0,
+                self.H_SEL_008_checked() == true ? 1 : 0,
+                self.H_SEL_009_checked() == true ? 1 : 0,
+                self.H_SEL_010_checked() == true ? 1 : 0,
+                self.H_SEL_011_checked() == true ? 1 : 0,
+                self.H_SEL_012_checked() == true ? 1 : 0,
+                self.H_SEL_013_checked() == true ? 1 : 0,
+                self.H_SEL_014_checked() == true ? 1 : 0
+            );
+        }
         SubmitDialog() {
+            let self = this;
+            let itemPeriod = self.getCurrentItemPeriod();
+            if (!self.CurrentItemCode())
+                service.addItemPeriod(self.CurrentItemMaster(), itemPeriod);
+            else
+                service.updateItemPeriod(self.CurrentItemMaster(), itemPeriod);
             nts.uk.ui.windows.close();
         }
         CloseDialog() {

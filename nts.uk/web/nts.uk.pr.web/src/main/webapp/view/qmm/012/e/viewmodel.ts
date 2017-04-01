@@ -20,22 +20,18 @@ module qmm012.e.viewmodel {
         roundingRules_E_002: KnockoutObservableArray<any>;
         roundingRules_E_003: KnockoutObservableArray<any>;
         selectedRuleCode_E_003: any;
-        CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMasterModel> = ko.observable(null);
+        CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMaster> = ko.observable(null);
         CurrentItemAttend: KnockoutObservable<service.model.ItemAttend> = ko.observable(null);
         CurrentAvePayAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentItemAtr: KnockoutObservable<number> = ko.observable(0);
-        CurrentErrRangeLowAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentErrRangeLow: KnockoutObservable<number> = ko.observable(0);
-        CurrentErrRangeHighAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentErrRangeHigh: KnockoutObservable<number> = ko.observable(0);
-        CurrentAlRangeLowAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentAlRangeLow: KnockoutObservable<number> = ko.observable(0);
-        CurrentAlRangeHighAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentAlRangeHigh: KnockoutObservable<number> = ko.observable(0);
         CurrentWorkDaysScopeAtr: KnockoutObservable<number> = ko.observable(1);
         CurrentMemo: KnockoutObservable<string> = ko.observable("");
-        CurrentZeroDisplaySet: KnockoutObservable<number> = ko.observable(0);
-
+        CurrentZeroDisplaySet: KnockoutObservable<number> = ko.observable(1);
+        CurrentItemDisplayAtr: KnockoutObservable<number> = ko.observable(1);
 
         constructor() {
             let self = this;
@@ -46,8 +42,8 @@ module qmm012.e.viewmodel {
                 { code: 1, name: '回数' }
             ]);
             self.roundingRules_E_002 = ko.observableArray([
-                { code: 0, name: '対象' },
-                { code: 1, name: '対象外' }
+                { code: 1, name: '対象' },
+                { code: 0, name: '対象外' }
             ]);
             self.roundingRules_E_003 = ko.observableArray([
                 { code: 1, name: 'ゼロを表示する' },
@@ -57,10 +53,9 @@ module qmm012.e.viewmodel {
             //E_001
             self.currencyeditor_E_001 = {
                 value: self.CurrentErrRangeHigh,
-                constraint: '',
+                constraint: 'ErrRangeHigh',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
-                    decimallength: 2,
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 }))
@@ -68,10 +63,9 @@ module qmm012.e.viewmodel {
             //E_002
             self.currencyeditor_E_002 = {
                 value: self.CurrentAlRangeHigh,
-                constraint: '',
+                constraint: 'AlRangeHigh',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
-                    decimallength: 2,
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 }))
@@ -79,10 +73,9 @@ module qmm012.e.viewmodel {
             //E_003
             self.currencyeditor_E_003 = {
                 value: self.CurrentErrRangeLow,
-                constraint: '',
+                constraint: 'ErrRangeLow',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
-                    decimallength: 2,
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 }))
@@ -90,26 +83,28 @@ module qmm012.e.viewmodel {
             //E_004
             self.currencyeditor_E_004 = {
                 value: self.CurrentAlRangeLow,
-                constraint: '',
+                constraint: 'AlRangeLow',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
-                    decimallength: 2,
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 }))
             };
 
 
-            self.CurrentItemMaster.subscribe(function(ItemMaster: qmm012.b.service.model.ItemMasterModel) {
-                service.findItemAttend(ItemMaster.itemCode).done(function(ItemAttend: service.model.ItemAttend) {
-                    self.CurrentItemAttend(ItemAttend);
-                    self.CurrentZeroDisplaySet(ItemMaster ? ItemMaster.zeroDisplaySet : 1);
-                    self.checked_E_004(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
-                }).fail(function(res) {
-                    // Alert message
-                    alert(res);
-                });
-
+            self.CurrentItemMaster.subscribe(function(ItemMaster: qmm012.b.service.model.ItemMaster) {
+                if (ItemMaster) {
+                    service.findItemAttend(ItemMaster.itemCode).done(function(ItemAttend: service.model.ItemAttend) {
+                        self.CurrentItemAttend(ItemAttend);
+                    }).fail(function(res) {
+                        // Alert message
+                        alert(res);
+                    });
+                } else {
+                    self.CurrentItemAttend(null);
+                }
+                self.CurrentZeroDisplaySet(ItemMaster ? ItemMaster.zeroDisplaySet : 1);
+                self.checked_E_004(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
             });
             self.CurrentItemAttend.subscribe(function(ItemAttend: service.model.ItemAttend) {
                 self.CurrentAvePayAtr(ItemAttend ? ItemAttend.avePayAtr : 0);
@@ -118,7 +113,7 @@ module qmm012.e.viewmodel {
                 self.CurrentErrRangeHigh(ItemAttend ? ItemAttend.errRangeHigh : 0);
                 self.CurrentAlRangeLow(ItemAttend ? ItemAttend.alRangeLow : 0);
                 self.CurrentAlRangeHigh(ItemAttend ? ItemAttend.alRangeHigh : 0);
-                self.CurrentWorkDaysScopeAtr(ItemAttend ? ItemAttend.workDaysScopeAtr : 0);
+                self.CurrentWorkDaysScopeAtr(ItemAttend ? ItemAttend.workDaysScopeAtr : 1);
                 self.CurrentMemo(ItemAttend ? ItemAttend.memo : "");
                 self.checked_E_005(ItemAttend ? ItemAttend.errRangeHighAtr == 0 ? false : true : false);
                 self.checked_E_006(ItemAttend ? ItemAttend.errRangeLowAtr == 0 ? false : true : false);
@@ -126,20 +121,25 @@ module qmm012.e.viewmodel {
                 self.checked_E_008(ItemAttend ? ItemAttend.alRangeLowAtr == 0 ? false : true : false);
             });
             self.checked_E_004.subscribe(function(NewValue) {
-                self.CurrentErrRangeHighAtr(NewValue == true ? 0 : 1);
+                self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
             });
-            self.checked_E_005.subscribe(function(NewValue) {
-                self.CurrentErrRangeHighAtr(NewValue == false ? 0 : 1);
-            });
-            self.checked_E_006.subscribe(function(NewValue) {
-                self.CurrentErrRangeLowAtr(NewValue == false ? 0 : 1);
-            });
-            self.checked_E_007.subscribe(function(NewValue) {
-                self.CurrentAlRangeHighAtr(NewValue == false ? 0 : 1);
-            });
-            self.checked_E_008.subscribe(function(NewValue) {
-                self.CurrentAlRangeLowAtr(NewValue == false ? 0 : 1);
-            });
+        }
+        getCurrentItemAttend() {
+            let self = this;
+            let itemAttend = new service.model.ItemAttend(
+                self.CurrentAvePayAtr(),
+                self.CurrentItemAtr(),
+                self.checked_E_006() ? 1 : 0,
+                self.CurrentErrRangeLow(),
+                self.checked_E_005() ? 1 : 0,
+                self.CurrentErrRangeHigh(),
+                self.checked_E_008() ? 1 : 0,
+                self.CurrentAlRangeLow(),
+                self.checked_E_007() ? 1 : 0,
+                self.CurrentAlRangeHigh(),
+                self.CurrentWorkDaysScopeAtr(),
+                self.CurrentMemo());
+            return itemAttend;
         }
 
     }

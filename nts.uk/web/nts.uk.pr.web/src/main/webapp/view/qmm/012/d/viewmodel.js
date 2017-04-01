@@ -6,31 +6,25 @@ var qmm012;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
-                    //Checkbox
-                    //D_003
-                    this.checked_D_003 = ko.observable(false);
-                    //D_003
+                    this.checked_D_003 = ko.observable(true);
                     this.checked_D_004 = ko.observable(false);
-                    //D_003
                     this.checked_D_005 = ko.observable(false);
-                    //D_003
                     this.checked_D_006 = ko.observable(false);
-                    //D_003
                     this.checked_D_007 = ko.observable(false);
                     this.CurrentItemMaster = ko.observable(null);
                     this.CurrentItemDeduct = ko.observable(null);
                     this.CurrentAlRangeHigh = ko.observable(0);
-                    this.CurrentAlRangeHighAtr = ko.observable(0);
                     this.CurrentAlRangeLow = ko.observable(0);
-                    this.CurrentAlRangeLowAtr = ko.observable(0);
                     this.CurrentDeductAtr = ko.observable(0);
                     this.CurrentErrRangeHigh = ko.observable(0);
-                    this.CurrentErrRangeHighAtr = ko.observable(0);
                     this.CurrentErrRangeLow = ko.observable(0);
-                    this.CurrentErrRangeLowAtr = ko.observable(0);
                     this.CurrentMemo = ko.observable("");
                     this.CurrentItemDisplayAtr = ko.observable(1);
-                    this.CurrentZeroDisplaySet = ko.observable(0);
+                    this.CurrentZeroDisplaySet = ko.observable(1);
+                    this.currentItemPeriod = ko.observable(null);
+                    this.D_LBL_011_Text = ko.observable('設定なし');
+                    this.currentItemBDs = ko.observableArray([]);
+                    this.D_LBL_012_Text = ko.observable("設定なし");
                     var self = this;
                     self.isEditable = ko.observable(true);
                     self.isEnable = ko.observable(true);
@@ -41,17 +35,13 @@ var qmm012;
                         new ComboboxItemModel(2, '所得税項目'),
                         new ComboboxItemModel(3, '住民税項目')
                     ]);
-                    //end combobox data
-                    //D_002
                     self.roundingRules_D_002 = ko.observableArray([
-                        { code: 0, name: 'ゼロを表示する' },
-                        { code: 1, name: 'ゼロを表示しない' }
+                        { code: 1, name: 'ゼロを表示する' },
+                        { code: 0, name: 'ゼロを表示しない' }
                     ]);
-                    //currencyeditor
-                    //001
                     self.currencyeditor_D_001 = {
                         value: self.CurrentErrRangeHigh,
-                        constraint: '',
+                        constraint: 'ErrRangeHigh',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                             grouplength: 3,
                             currencyformat: "JPY",
@@ -61,10 +51,9 @@ var qmm012;
                         enable: ko.observable(true),
                         readonly: ko.observable(false)
                     };
-                    //002
                     self.currencyeditor_D_002 = {
                         value: self.CurrentAlRangeHigh,
-                        constraint: '',
+                        constraint: 'AlRangeHigh',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                             grouplength: 3,
                             currencyformat: "JPY",
@@ -74,10 +63,9 @@ var qmm012;
                         enable: ko.observable(true),
                         readonly: ko.observable(false)
                     };
-                    //003
                     self.currencyeditor_D_003 = {
                         value: self.CurrentErrRangeLow,
-                        constraint: '',
+                        constraint: 'ErrRangeLow',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                             grouplength: 3,
                             currencyformat: "JPY",
@@ -87,10 +75,9 @@ var qmm012;
                         enable: ko.observable(true),
                         readonly: ko.observable(false)
                     };
-                    //004
                     self.currencyeditor_D_004 = {
                         value: self.CurrentAlRangeLow,
-                        constraint: '',
+                        constraint: 'AlRangeLow',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                             grouplength: 3,
                             currencyformat: "JPY",
@@ -101,19 +88,24 @@ var qmm012;
                         readonly: ko.observable(false)
                     };
                     self.CurrentItemMaster.subscribe(function (ItemMaster) {
-                        d.service.findItemDeduct(ItemMaster.itemCode).done(function (ItemDeduct) {
-                            self.CurrentItemDeduct(ItemDeduct);
-                            self.checked_D_003(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
-                            self.CurrentZeroDisplaySet(ItemMaster.zeroDisplaySet);
-                        }).fail(function (res) {
-                            // Alert message
-                            alert(res);
-                        });
+                        if (ItemMaster) {
+                            d.service.findItemDeduct(ItemMaster.itemCode).done(function (ItemDeduct) {
+                                self.CurrentItemDeduct(ItemDeduct);
+                            }).fail(function (res) {
+                                alert(res);
+                            });
+                        }
+                        else {
+                            self.CurrentItemDeduct(null);
+                        }
+                        self.loadItemPeriod();
+                        self.loadItemBDs();
+                        self.checked_D_003(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
+                        self.CurrentZeroDisplaySet(ItemMaster ? ItemMaster.zeroDisplaySet : 1);
                     });
                     self.CurrentItemDeduct.subscribe(function (ItemDeduct) {
                         self.CurrentAlRangeHigh(ItemDeduct ? ItemDeduct.alRangeHigh : 0);
                         self.CurrentAlRangeLow(ItemDeduct ? ItemDeduct.alRangeLow : 0);
-                        self.CurrentAlRangeLowAtr(ItemDeduct ? ItemDeduct.alRangeLowAtr : 0);
                         self.CurrentDeductAtr(ItemDeduct ? ItemDeduct.deductAtr : 0);
                         self.CurrentErrRangeHigh(ItemDeduct ? ItemDeduct.errRangeHigh : 0);
                         self.CurrentErrRangeLow(ItemDeduct ? ItemDeduct.errRangeLow : 0);
@@ -124,28 +116,57 @@ var qmm012;
                         self.checked_D_007(ItemDeduct ? ItemDeduct.alRangeLowAtr == 0 ? false : true : false);
                     });
                     self.checked_D_003.subscribe(function (NewValue) {
-                        self.CurrentItemDisplayAtr(NewValue == true ? 0 : 1);
+                        self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
                     });
-                    self.checked_D_004.subscribe(function (NewValue) {
-                        self.CurrentErrRangeHighAtr(NewValue == true ? 1 : 0);
+                    self.currentItemPeriod.subscribe(function (newValue) {
+                        self.D_LBL_011_Text(newValue ? newValue.periodAtr == 1 ? '設定あり' : '設定なし' : '設定なし');
                     });
-                    self.checked_D_005.subscribe(function (NewValue) {
-                        self.CurrentAlRangeHighAtr(NewValue == true ? 1 : 0);
-                    });
-                    self.checked_D_006.subscribe(function (NewValue) {
-                        self.CurrentErrRangeLowAtr(NewValue == true ? 1 : 0);
-                    });
-                    self.checked_D_007.subscribe(function (NewValue) {
-                        self.CurrentAlRangeLowAtr(NewValue == true ? 1 : 0);
+                    self.currentItemBDs.subscribe(function (newValue) {
+                        self.D_LBL_012_Text(newValue.length ? '設定あり' : '設定なし');
                     });
                 }
+                ScreenModel.prototype.loadItemPeriod = function () {
+                    var self = this;
+                    if (self.CurrentItemMaster()) {
+                        qmm012.h.service.findItemPeriod(self.CurrentItemMaster()).done(function (ItemPeriod) {
+                            self.currentItemPeriod(ItemPeriod);
+                        }).fail(function (res) {
+                            alert(res);
+                        });
+                    }
+                    else
+                        self.currentItemPeriod(undefined);
+                };
+                ScreenModel.prototype.loadItemBDs = function () {
+                    var self = this;
+                    if (self.CurrentItemMaster()) {
+                        qmm012.i.service.findAllItemBD(self.CurrentItemMaster()).done(function (ItemBDs) {
+                            self.currentItemBDs(ItemBDs);
+                        }).fail(function (res) {
+                            alert(res);
+                        });
+                    }
+                    else
+                        self.currentItemPeriod(undefined);
+                };
                 ScreenModel.prototype.openHDialog = function () {
+                    var self = this;
+                    nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
                     nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close" }).onClosed(function () {
+                        self.loadItemPeriod();
                     });
                 };
                 ScreenModel.prototype.openIDialog = function () {
-                    nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 600, width: 1015, dialogClass: "no-close" }).onClosed(function () {
+                    var self = this;
+                    nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
+                    nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close" }).onClosed(function () {
+                        self.loadItemBDs();
                     });
+                };
+                ScreenModel.prototype.GetCurrentItemDeduct = function () {
+                    var self = this;
+                    var ItemDeduct = new d.service.model.ItemDeduct(self.CurrentDeductAtr(), self.checked_D_006() ? 1 : 0, self.CurrentErrRangeLow(), self.checked_D_004() ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_D_007() ? 1 : 0, self.CurrentAlRangeLow(), self.checked_D_005() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentMemo());
+                    return ItemDeduct;
                 };
                 return ScreenModel;
             }());
@@ -160,3 +181,4 @@ var qmm012;
         })(viewmodel = d.viewmodel || (d.viewmodel = {}));
     })(d = qmm012.d || (qmm012.d = {}));
 })(qmm012 || (qmm012 = {}));
+//# sourceMappingURL=viewmodel.js.map

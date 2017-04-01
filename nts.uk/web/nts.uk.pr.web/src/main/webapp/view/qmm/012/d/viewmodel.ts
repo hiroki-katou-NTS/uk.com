@@ -7,7 +7,7 @@ module qmm012.d.viewmodel {
         ComboBoxItemList_D_001: KnockoutObservableArray<ComboboxItemModel>;
         //Checkbox
         //D_003
-        checked_D_003: KnockoutObservable<boolean> = ko.observable(false);
+        checked_D_003: KnockoutObservable<boolean> = ko.observable(true);
         //D_003
         checked_D_004: KnockoutObservable<boolean> = ko.observable(false);
         //D_003
@@ -24,20 +24,20 @@ module qmm012.d.viewmodel {
         //D_002
         roundingRules_D_002: KnockoutObservableArray<any>;
 
-        CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMasterModel> = ko.observable(null);
+        CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMaster> = ko.observable(null);
         CurrentItemDeduct: KnockoutObservable<service.model.ItemDeduct> = ko.observable(null);
         CurrentAlRangeHigh: KnockoutObservable<number> = ko.observable(0);
-        CurrentAlRangeHighAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentAlRangeLow: KnockoutObservable<number> = ko.observable(0);
-        CurrentAlRangeLowAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentDeductAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentErrRangeHigh: KnockoutObservable<number> = ko.observable(0);
-        CurrentErrRangeHighAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentErrRangeLow: KnockoutObservable<number> = ko.observable(0);
-        CurrentErrRangeLowAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentMemo: KnockoutObservable<String> = ko.observable("");
         CurrentItemDisplayAtr: KnockoutObservable<number> = ko.observable(1);
-        CurrentZeroDisplaySet: KnockoutObservable<number> = ko.observable(0);
+        CurrentZeroDisplaySet: KnockoutObservable<number> = ko.observable(1);
+        currentItemPeriod: KnockoutObservable<qmm012.h.service.model.ItemPeriod> = ko.observable(null);
+        D_LBL_011_Text: KnockoutObservable<string> = ko.observable('設定なし');
+        currentItemBDs: KnockoutObservableArray<qmm012.i.service.model.ItemBD> = ko.observableArray([]);
+        D_LBL_012_Text: KnockoutObservable<string> = ko.observable("設定なし");
         constructor() {
             var self = this;
             self.isEditable = ko.observable(true);
@@ -52,14 +52,14 @@ module qmm012.d.viewmodel {
             //end combobox data
             //D_002
             self.roundingRules_D_002 = ko.observableArray([
-                { code: 0, name: 'ゼロを表示する' },
-                { code: 1, name: 'ゼロを表示しない' }
+                { code: 1, name: 'ゼロを表示する' },
+                { code: 0, name: 'ゼロを表示しない' }
             ]);
             //currencyeditor
             //001
             self.currencyeditor_D_001 = {
                 value: self.CurrentErrRangeHigh,
-                constraint: '',
+                constraint: 'ErrRangeHigh',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     currencyformat: "JPY",
@@ -72,7 +72,7 @@ module qmm012.d.viewmodel {
             //002
             self.currencyeditor_D_002 = {
                 value: self.CurrentAlRangeHigh,
-                constraint: '',
+                constraint: 'AlRangeHigh',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     currencyformat: "JPY",
@@ -85,7 +85,7 @@ module qmm012.d.viewmodel {
             //003
             self.currencyeditor_D_003 = {
                 value: self.CurrentErrRangeLow,
-                constraint: '',
+                constraint: 'ErrRangeLow',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     currencyformat: "JPY",
@@ -98,7 +98,7 @@ module qmm012.d.viewmodel {
             //004
             self.currencyeditor_D_004 = {
                 value: self.CurrentAlRangeLow,
-                constraint: '',
+                constraint: 'AlRangeLow',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     currencyformat: "JPY",
@@ -109,20 +109,25 @@ module qmm012.d.viewmodel {
                 readonly: ko.observable(false)
             };
 
-            self.CurrentItemMaster.subscribe(function(ItemMaster: qmm012.b.service.model.ItemMasterModel) {
-                service.findItemDeduct(ItemMaster.itemCode).done(function(ItemDeduct: service.model.ItemDeduct) {
-                    self.CurrentItemDeduct(ItemDeduct);
-                    self.checked_D_003(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
-                    self.CurrentZeroDisplaySet(ItemMaster.zeroDisplaySet);
-                }).fail(function(res) {
-                    // Alert message
-                    alert(res);
-                });
+            self.CurrentItemMaster.subscribe(function(ItemMaster: qmm012.b.service.model.ItemMaster) {
+                if (ItemMaster) {
+                    service.findItemDeduct(ItemMaster.itemCode).done(function(ItemDeduct: service.model.ItemDeduct) {
+                        self.CurrentItemDeduct(ItemDeduct);
+                    }).fail(function(res) {
+                        // Alert message
+                        alert(res);
+                    });
+                } else {
+                    self.CurrentItemDeduct(null);
+                }
+                self.loadItemPeriod();
+                self.loadItemBDs();
+                self.checked_D_003(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
+                self.CurrentZeroDisplaySet(ItemMaster ? ItemMaster.zeroDisplaySet : 1);
             });
             self.CurrentItemDeduct.subscribe(function(ItemDeduct: service.model.ItemDeduct) {
                 self.CurrentAlRangeHigh(ItemDeduct ? ItemDeduct.alRangeHigh : 0);
                 self.CurrentAlRangeLow(ItemDeduct ? ItemDeduct.alRangeLow : 0);
-                self.CurrentAlRangeLowAtr(ItemDeduct ? ItemDeduct.alRangeLowAtr : 0);
                 self.CurrentDeductAtr(ItemDeduct ? ItemDeduct.deductAtr : 0);
                 self.CurrentErrRangeHigh(ItemDeduct ? ItemDeduct.errRangeHigh : 0);
                 self.CurrentErrRangeLow(ItemDeduct ? ItemDeduct.errRangeLow : 0);
@@ -134,29 +139,71 @@ module qmm012.d.viewmodel {
             });
 
             self.checked_D_003.subscribe(function(NewValue) {
-                self.CurrentItemDisplayAtr(NewValue == true ? 0 : 1);
+                self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
             });
-            self.checked_D_004.subscribe(function(NewValue) {
-                self.CurrentErrRangeHighAtr(NewValue == true ? 1 : 0);
-            })
-            self.checked_D_005.subscribe(function(NewValue) {
-                self.CurrentAlRangeHighAtr(NewValue == true ? 1 : 0);
-            })
-            self.checked_D_006.subscribe(function(NewValue) {
-                self.CurrentErrRangeLowAtr(NewValue == true ? 1 : 0);
-            })
-            self.checked_D_007.subscribe(function(NewValue) {
-                self.CurrentAlRangeLowAtr(NewValue == true ? 1 : 0);
-            })
+            self.currentItemPeriod.subscribe(function(newValue) {
+                self.D_LBL_011_Text(newValue ? newValue.periodAtr == 1 ? '設定あり' : '設定なし' : '設定なし');
+            });
+            self.currentItemBDs.subscribe(function(newValue) {
+                self.D_LBL_012_Text(newValue.length ? '設定あり' : '設定なし');
+            });
+
         }
+        loadItemPeriod() {
+            let self = this;
+            //Load Screen H  Data
+            if (self.CurrentItemMaster()) {
+                qmm012.h.service.findItemPeriod(self.CurrentItemMaster()).done(function(ItemPeriod: qmm012.h.service.model.ItemPeriod) {
+                    self.currentItemPeriod(ItemPeriod);
+                }).fail(function(res) {
+                    // Alert message
+                    alert(res);
+                });
+            } else
+                self.currentItemPeriod(undefined);
+        }
+        loadItemBDs() {
+            let self = this;
+            if (self.CurrentItemMaster()) {
+                qmm012.i.service.findAllItemBD(self.CurrentItemMaster()).done(function(ItemBDs: Array<qmm012.i.service.model.ItemBD>) {
+                    self.currentItemBDs(ItemBDs);
+                }).fail(function(res) {
+                    // Alert message
+                    alert(res);
+                });
+            } else
+                self.currentItemPeriod(undefined);
+        }
+
         openHDialog() {
+            let self = this;
+            nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
             nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close" }).onClosed(function(): any {
+                self.loadItemPeriod();
             });
         }
 
         openIDialog() {
-            nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 600, width: 1015, dialogClass: "no-close" }).onClosed(function(): any {
+            let self = this;
+            nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
+            nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close" }).onClosed(function(): any {
+                self.loadItemBDs();
             });
+        }
+        GetCurrentItemDeduct() {
+            let self = this;
+            let ItemDeduct = new service.model.ItemDeduct(
+                self.CurrentDeductAtr(),
+                self.checked_D_006() ? 1 : 0,
+                self.CurrentErrRangeLow(),
+                self.checked_D_004() ? 1 : 0,
+                self.CurrentErrRangeHigh(),
+                self.checked_D_007() ? 1 : 0,
+                self.CurrentAlRangeLow(),
+                self.checked_D_005() ? 1 : 0,
+                self.CurrentAlRangeHigh(),
+                self.CurrentMemo());
+            return ItemDeduct;
         }
 
     }

@@ -5,15 +5,13 @@ var qmm019;
         var service;
         (function (service) {
             var paths = {
-                getLayoutInfor: "pr/proto/layout/findlayoutwithmaxstartym",
+                getLayoutHeadInfor: "pr/proto/layout/findlayoutwithmaxstartym",
+                getAllLayoutHist: "pr/proto/layout/findalllayoutHist",
                 copylayoutPath: "pr/proto/layout/createlayout"
             };
-            /**
-             * Get list layout master new history
-             */
-            function getLayoutWithMaxStartYm() {
+            function getLayoutHeadInfor() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getLayoutInfor)
+                nts.uk.request.ajax(paths.getLayoutHeadInfor)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -22,7 +20,19 @@ var qmm019;
                 });
                 return dfd.promise();
             }
-            service.getLayoutWithMaxStartYm = getLayoutWithMaxStartYm;
+            service.getLayoutHeadInfor = getLayoutHeadInfor;
+            function getAllLayoutHist() {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.getAllLayoutHist)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getAllLayoutHist = getAllLayoutHist;
             function createLayout(layoutMaster) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.copylayoutPath, layoutMaster).done(function (res) {
@@ -33,19 +43,34 @@ var qmm019;
                 return dfd.promise();
             }
             service.createLayout = createLayout;
-            /**
-                   * Model namespace.
-                */
             var model;
             (function (model) {
-                // layout
+                var LayoutHeadDto = (function () {
+                    function LayoutHeadDto() {
+                    }
+                    return LayoutHeadDto;
+                }());
+                model.LayoutHeadDto = LayoutHeadDto;
                 var LayoutMasterDto = (function () {
                     function LayoutMasterDto() {
                     }
                     return LayoutMasterDto;
                 }());
                 model.LayoutMasterDto = LayoutMasterDto;
+                var LayoutHistory = (function () {
+                    function LayoutHistory() {
+                    }
+                    return LayoutHistory;
+                }());
+                model.LayoutHistory = LayoutHistory;
+                var LayoutHistoryDto = (function () {
+                    function LayoutHistoryDto() {
+                    }
+                    return LayoutHistoryDto;
+                }());
+                model.LayoutHistoryDto = LayoutHistoryDto;
             })(model = service.model || (service.model = {}));
         })(service = g.service || (g.service = {}));
     })(g = qmm019.g || (qmm019.g = {}));
 })(qmm019 || (qmm019 = {}));
+//# sourceMappingURL=service.js.map

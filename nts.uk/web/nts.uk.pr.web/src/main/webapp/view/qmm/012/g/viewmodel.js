@@ -1,14 +1,17 @@
-// TreeGrid Node
-var qmm019;
-(function (qmm019) {
+var qmm012;
+(function (qmm012) {
     var g;
     (function (g) {
-        var ScreenModel = (function () {
-            function ScreenModel() {
-            }
-            return ScreenModel;
-        }());
-        g.ScreenModel = ScreenModel;
-    })(g = qmm019.g || (qmm019.g = {}));
-})(qmm019 || (qmm019 = {}));
+        var viewmodel;
+        (function (viewmodel) {
+            var ScreenModel = (function () {
+                function ScreenModel() {
+                }
+                return ScreenModel;
+            }());
+            viewmodel.ScreenModel = ScreenModel;
+        })(viewmodel = g.viewmodel || (g.viewmodel = {}));
+    })(g = qmm012.g || (qmm012.g = {}));
+})(qmm012 || (qmm012 = {}));
 ;
+//# sourceMappingURL=viewmodel.js.map

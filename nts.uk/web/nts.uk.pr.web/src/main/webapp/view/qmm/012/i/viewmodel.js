@@ -6,149 +6,186 @@ var qmm012;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
+                    this.checked_002 = ko.observable(false);
+                    this.checked_003 = ko.observable(false);
+                    this.checked_004 = ko.observable(false);
+                    this.checked_005 = ko.observable(false);
+                    this.checked_006 = ko.observable(false);
+                    this.gridListCurrentCode = ko.observable('');
+                    this.selectedRuleCode_001 = ko.observable(1);
+                    this.CurrentItemMaster = ko.observable(null);
+                    this.ItemBDList = ko.observableArray([]);
+                    this.CurrentCategoryAtrName = ko.observable('');
+                    this.CurrentItemBD = ko.observable(null);
+                    this.CurrentItemBreakdownCd = ko.observable('');
+                    this.CurrentItemBreakdownName = ko.observable('');
+                    this.CurrentItemBreakdownAbName = ko.observable('');
+                    this.CurrentUniteCd = ko.observable('');
+                    this.CurrentZeroDispSet = ko.observable(1);
+                    this.CurrentItemDispAtr = ko.observable(0);
+                    this.CurrentErrRangeLow = ko.observable(0);
+                    this.CurrentErrRangeHigh = ko.observable(0);
+                    this.CurrentAlRangeLow = ko.observable(0);
+                    this.CurrentAlRangeHigh = ko.observable(0);
+                    this.enable_I_INP_002 = ko.observable(false);
                     var self = this;
-                    //textediter
-                    self.texteditor = {
-                        value: ko.observable(''),
-                        constraint: 'ResidenceCode',
-                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                            textmode: "text",
-                            placeholder: "",
-                            width: "60px",
-                            textalign: "left"
-                        })),
-                        required: ko.observable(true),
-                        enable: ko.observable(true),
-                        readonly: ko.observable(false)
-                    };
-                    //start combobox data
-                    self.ComboBoxItemList = ko.observableArray([
-                        new ComboboxItemModel('0001', 'Item1'),
-                        new ComboboxItemModel('0002', 'Item2'),
-                        new ComboboxItemModel('0003', 'Item3')
-                    ]);
-                    self.ComboBoxCurrentCode = ko.observable(1);
-                    self.selectedCode = ko.observable('0001');
-                    self.isEnable = ko.observable(true);
-                    self.isEditable = ko.observable(true);
-                    //001
-                    self.ComboBoxItemList_001 = ko.observableArray([
-                        new ComboboxItemModel('1', '隱ｲ遞�'),
-                        new ComboboxItemModel('2', '髱櫁ｪｲ遞�(髯仙ｺｦ縺ゅｊ�ｼ�'),
-                        new ComboboxItemModel('3', '髱櫁ｪｲ遞�(髯仙ｺｦ縺ｪ縺暦ｼ�'),
-                        new ComboboxItemModel('4', '騾壼共雋ｻ(謇句�･蜉�)'),
-                        new ComboboxItemModel('5', '騾壼共雋ｻ(螳壽悄蛻ｸ蛻ｩ逕ｨ)')
-                    ]);
-                    self.ComboBoxCurrentCode_001 = ko.observable(1);
-                    self.selectedCode_001 = ko.observable('1');
-                    //end combobox data
-                    //start checkbox Data
-                    self.checked_002 = ko.observable(true);
-                    self.checked_003 = ko.observable(true);
-                    self.checked_012 = ko.observable(true);
-                    self.checked_013 = ko.observable(true);
-                    self.checked_014 = ko.observable(true);
-                    self.checked_015 = ko.observable(true);
-                    self.checked_016 = ko.observable(true);
-                    //end checkbox data
-                    // start gridlist
-                    this.gridListItems = ko.observableArray([
-                        new GridItemModel('001', 'Item1'),
-                        new GridItemModel('002', 'Item2'),
-                        new GridItemModel('003', 'Item3'),
-                        new GridItemModel('004', 'Item4'),
-                        new GridItemModel('005', 'Item5'),
-                        new GridItemModel('006', 'Item6'),
-                        new GridItemModel('007', 'Item7'),
-                        new GridItemModel('008', 'Item8'),
-                        new GridItemModel('009', 'Item9'),
-                        new GridItemModel('010', 'Item10'),
-                        new GridItemModel('011', 'Item11'),
-                        new GridItemModel('012', 'Item12'),
-                        new GridItemModel('013', 'Item13')
-                    ]);
-                    self.columns = ko.observableArray([
-                        { headerText: '鬩幢ｽ｢�ｿｽ�ｽｽ�ｽｧ�ｿｽ�ｽｿ�ｽｽ�ｿｽ�ｽｽ�ｽｽ�ｿｽ�ｽｽ�ｽｳ鬩幢ｽ｢隴趣ｽ｢�ｿｽ�ｽｽ�ｽｽ�ｿｽ�ｽｽ�ｽｼ鬩幢ｽ｢隴趣ｽ｢�ｿｽ�ｽｽ�ｽｿ�ｿｽ�ｽｽ�ｽｽ', prop: 'code', width: 100 },
-                        { headerText: '鬮ｯ�ｽｷ�ｿｽ�ｽｽ�ｽｷ髯ｷ�ｽ･�ｿｽ�ｽｽ�ｽｲ�ｿｽ�ｽｿ�ｽｽ�ｿｽ�ｽｽ�ｽｽ�ｿｽ�ｽｽ�ｽｧ�ｿｽ�ｽｿ�ｽｽ�ｿｽ�ｽｽ�ｽｽ�ｿｽ�ｽｽ�ｽｰ', prop: 'name', width: 150 }
-                    ]);
-                    this.gridListCurrentCode = ko.observable();
-                    this.currentCodeList = ko.observableArray([]);
-                    //end gridlist
-                    //start Switch Data
                     self.enable = ko.observable(true);
-                    self.roundingRules = ko.observableArray([
-                        { code: '1', name: '隰ｾ�ｽｯ驍ｨ�ｽｦ' },
-                        { code: '2', name: '隰ｾ�ｽｯ驍ｨ�ｽｦ' }
+                    self.roundingRules_001 = ko.observableArray([
+                        { code: 1, name: 'ゼロを表示する' },
+                        { code: 0, name: 'ゼロを表示しない' }
                     ]);
-                    self.selectedRuleCode = ko.observable(1);
-                    //005 006 007 008 009 010
-                    self.roundingRules_002_003_005To010 = ko.observableArray([
-                        { code: '1', name: '蟇ｾ雎｡' },
-                        { code: '2', name: '蟇ｾ雎｡螟�' }
-                    ]);
-                    self.selectedRuleCode_002 = ko.observable(1);
-                    self.selectedRuleCode_003 = ko.observable(1);
-                    self.selectedRuleCode_005 = ko.observable(1);
-                    self.selectedRuleCode_006 = ko.observable(1);
-                    self.selectedRuleCode_007 = ko.observable(1);
-                    self.selectedRuleCode_008 = ko.observable(1);
-                    self.selectedRuleCode_009 = ko.observable(1);
-                    self.selectedRuleCode_010 = ko.observable(1);
-                    //011
-                    self.roundingRules_011 = ko.observableArray([
-                        { code: '1', name: '繧ｼ繝ｭ繧定｡ｨ遉ｺ縺吶ｋ' },
-                        { code: '2', name: '繧ｼ繝ｭ繧定｡ｨ遉ｺ縺励↑縺�' }
-                    ]);
-                    self.selectedRuleCode_011 = ko.observable(1);
-                    //017
-                    self.roundingRules_017 = ko.observableArray([
-                        { code: '1', name: '鬆�逶ｮ蛹ｺ蛻�' },
-                        { code: '2', name: '鬆�逶ｮ蛹ｺ蛻�' },
-                        { code: '3', name: '鬆�逶ｮ蛹ｺ蛻�' },
-                        { code: '4', name: '鬆�逶ｮ蛹ｺ蛻�' },
-                    ]);
-                    self.selectedRuleCode_017 = ko.observable(1);
-                    //endSwitch Data
-                    //start radiogroup data
-                    self.RadioItemList = ko.observableArray([
-                        new BoxModel(1, '髫ｴ蟷｢�ｽｽ�ｽｬ鬩穂ｼ夲ｽｽ�ｽｾ'),
-                        new BoxModel(2, '髮主供萓幢ｿｽ�ｽｽ�ｽｮ陞溷･�ｽｽ�ｽｪ�ｿｽ�ｽｽ�ｽｿ髫ｴ蜴�ｽｽ�ｽｸ髯ｷ�ｿｽ�ｽｽ�ｽｺ髯ｷ迚呻ｽｸ�ｽｷ騾｡鬘瑚�ｳ陞溘ｑ�ｽｽ�ｽ､�ｿｽ�ｽｽ�ｽｾ')
-                    ]);
-                    self.selectedId = ko.observable(1);
-                    //004
-                    self.RadioItemList_004 = ko.observableArray([
-                        new BoxModel(1, '蜈ｨ蜩｡荳�蠕九〒謖�螳壹☆繧�'),
-                        new BoxModel(2, '邨ｦ荳主･醍ｴ�蠖｢諷九＃縺ｨ縺ｫ謖�螳壹☆繧�')
-                    ]);
-                    self.selectedId_004 = ko.observable(1);
-                    //end radiogroup data
-                    //currencyeditor
-                    self.currencyeditor = {
-                        value: ko.observable(),
-                        constraint: '',
+                    self.currencyeditor_I_INP_005 = {
+                        value: self.CurrentErrRangeHigh,
+                        constraint: 'ErrRangeHigh',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                             grouplength: 3,
-                            decimallength: 2,
                             currencyformat: "JPY",
                             currencyposition: 'right'
-                        })),
-                        required: ko.observable(false),
-                        enable: ko.observable(true),
-                        readonly: ko.observable(false)
+                        }))
                     };
-                    //end currencyeditor
-                    //start textarea
-                    this.textArea = ko.observable("");
-                    //end textarea
-                    // start search box 
-                    self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.gridListItems(), "childs"));
-                    // end search box 
+                    self.currencyeditor_I_INP_006 = {
+                        value: self.CurrentAlRangeHigh,
+                        constraint: 'AlRangeHigh',
+                        option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
+                            grouplength: 3,
+                            currencyformat: "JPY",
+                            currencyposition: 'right'
+                        }))
+                    };
+                    self.currencyeditor_I_INP_007 = {
+                        value: self.CurrentErrRangeLow,
+                        constraint: 'ErrRangeLow',
+                        option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
+                            grouplength: 3,
+                            currencyformat: "JPY",
+                            currencyposition: 'right'
+                        }))
+                    };
+                    self.currencyeditor_I_INP_008 = {
+                        value: self.CurrentAlRangeLow,
+                        constraint: 'AlRangeLow',
+                        option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
+                            grouplength: 3,
+                            currencyformat: "JPY",
+                            currencyposition: 'right'
+                        }))
+                    };
+                    self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.ItemBDList(), "childs"));
+                    self.columns = ko.observableArray([
+                        { headerText: 'ード', prop: 'itemBreakdownCd', width: 100 },
+                        { headerText: '名', prop: 'itemBreakdownName', width: 150 }
+                    ]);
+                    self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
+                    if (self.CurrentItemMaster()) {
+                        self.LoadItem();
+                        self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
+                    }
+                    self.gridListCurrentCode.subscribe(function (newValue) {
+                        var item = _.find(self.ItemBDList(), function (ItemBD) {
+                            return ItemBD.itemBreakdownCd == newValue;
+                        });
+                        self.CurrentItemBD(item);
+                    });
+                    self.CurrentItemBD.subscribe(function (ItemBD) {
+                        self.CurrentItemBreakdownCd(ItemBD ? ItemBD.itemBreakdownCd : '');
+                        self.CurrentItemBreakdownName(ItemBD ? ItemBD.itemBreakdownName : '');
+                        self.CurrentItemBreakdownAbName(ItemBD ? ItemBD.itemBreakdownAbName : '');
+                        self.CurrentUniteCd(ItemBD ? ItemBD.uniteCd : '');
+                        self.CurrentZeroDispSet(ItemBD ? ItemBD.zeroDispSet : 1);
+                        self.checked_002(ItemBD ? ItemBD.itemDispAtr == 1 ? false : true : false);
+                        self.CurrentItemDispAtr(ItemBD ? ItemBD.itemDispAtr : 0);
+                        self.checked_005(ItemBD ? ItemBD.errRangeLowAtr == 1 ? true : false : false);
+                        self.CurrentErrRangeLow(ItemBD ? ItemBD.errRangeLow : 0);
+                        self.checked_003(ItemBD ? ItemBD.errRangeHighAtr == 1 ? true : false : false);
+                        self.CurrentErrRangeHigh(ItemBD ? ItemBD.errRangeHigh : 0);
+                        self.checked_006(ItemBD ? ItemBD.alRangeLowAtr == 1 ? true : false : false);
+                        self.CurrentAlRangeLow(ItemBD ? ItemBD.alRangeLow : 0);
+                        self.checked_004(ItemBD ? ItemBD.alRangeHighAtr == 1 ? true : false : false);
+                        self.CurrentAlRangeHigh(ItemBD ? ItemBD.alRangeHigh : 0);
+                        if (self.CurrentItemBreakdownCd() != undefined) {
+                            self.enable_I_INP_002(false);
+                        }
+                    });
+                    self.checked_002.subscribe(function (newValue) {
+                        self.CurrentItemDispAtr(newValue == false ? 1 : 0);
+                    });
                 }
-                ScreenModel.prototype.SubmitDialog = function () {
-                    nts.uk.ui.windows.close();
+                ScreenModel.prototype.LoadItem = function (itemCode) {
+                    var self = this;
+                    i.service.findAllItemBD(self.CurrentItemMaster()).done(function (ItemBDs) {
+                        self.ItemBDList(ItemBDs);
+                        if (self.ItemBDList().length)
+                            if (!itemCode)
+                                self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCd);
+                            else
+                                self.gridListCurrentCode(itemCode);
+                    }).fail(function (res) {
+                        alert(res);
+                    });
+                };
+                ScreenModel.prototype.GetCurrentItemBD = function () {
+                    var self = this;
+                    return new i.service.model.ItemBD(self.CurrentItemMaster().itemCode, self.CurrentItemBreakdownCd(), self.CurrentItemBreakdownName(), self.CurrentItemBreakdownAbName(), self.CurrentUniteCd(), self.CurrentZeroDispSet(), self.checked_002() == true ? 0 : 1, self.checked_005() == true ? 1 : 0, self.CurrentErrRangeLow(), self.checked_003() == true ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_006() == true ? 1 : 0, self.CurrentAlRangeLow(), self.checked_004() == true ? 1 : 0, self.CurrentAlRangeHigh());
+                };
+                ScreenModel.prototype.SaveItem = function () {
+                    var self = this;
+                    if (self.enable_I_INP_002())
+                        self.addItemBD();
+                    else
+                        self.updateItemBD();
+                };
+                ScreenModel.prototype.deleteItem = function () {
+                    var self = this;
+                    var itemBD = self.GetCurrentItemBD();
+                    var itemCode;
+                    var index = self.ItemBDList.indexOf(self.CurrentItemBD());
+                    if (index != undefined) {
+                        if (self.ItemBDList().length > 1) {
+                            if (index == 0)
+                                itemCode = self.ItemBDList()[index + 1].itemBreakdownCd;
+                            else {
+                                if (index < self.ItemBDList().length - 1)
+                                    itemCode = self.ItemBDList()[index + 1].itemBreakdownCd;
+                                else
+                                    itemCode = self.ItemBDList()[index - 1].itemBreakdownCd;
+                            }
+                        }
+                        else
+                            itemCode = '';
+                    }
+                    i.service.deleteItemBD(self.CurrentItemMaster(), itemBD).done(function (any) {
+                        self.LoadItem(itemCode);
+                    }).fail(function (res) {
+                        alert(res);
+                    });
+                };
+                ScreenModel.prototype.addItemBD = function () {
+                    var self = this;
+                    var itemBD = self.GetCurrentItemBD();
+                    var itemCode = itemBD.itemBreakdownCd;
+                    i.service.addItemBD(self.CurrentItemMaster(), itemBD).done(function (any) {
+                        self.LoadItem(itemCode);
+                    }).fail(function (res) {
+                        alert(res);
+                    });
+                };
+                ScreenModel.prototype.updateItemBD = function () {
+                    var self = this;
+                    var itemBD = self.GetCurrentItemBD();
+                    var itemCode = itemBD.itemBreakdownCd;
+                    i.service.updateItemBD(self.CurrentItemMaster(), itemBD).done(function (any) {
+                        self.LoadItem(itemCode);
+                    }).fail(function (res) {
+                        alert(res);
+                    });
                 };
                 ScreenModel.prototype.CloseDialog = function () {
                     nts.uk.ui.windows.close();
+                };
+                ScreenModel.prototype.AddNewItem = function () {
+                    var self = this;
+                    self.gridListCurrentCode('');
+                    self.enable_I_INP_002(true);
                 };
                 return ScreenModel;
             }());
@@ -178,3 +215,4 @@ var qmm012;
         })(viewmodel = i.viewmodel || (i.viewmodel = {}));
     })(i = qmm012.i || (qmm012.i = {}));
 })(qmm012 || (qmm012 = {}));
+//# sourceMappingURL=viewmodel.js.map

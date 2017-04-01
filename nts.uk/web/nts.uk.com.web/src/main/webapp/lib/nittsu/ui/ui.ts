@@ -1,3 +1,5 @@
+/// <reference path="../reference.ts"/>
+
 module nts.uk.ui {
 
 	export module windows {
@@ -264,6 +266,7 @@ module nts.uk.ui {
 				.append($control)
 				.appendTo('body')
 				.dialog({
+                    dialogClass: "no-close",
 					width: 'auto',
 					modal: true,
 					closeOnEscape: false,
@@ -342,6 +345,7 @@ module nts.uk.ui {
 			var handleNo = $.noop;
 			var handleCancel = $.noop;
 			var handleThen = $.noop;
+            var hasNoButton = true;
 			var hasCancelButton = false;
 
 			var handlers = {
@@ -349,15 +353,17 @@ module nts.uk.ui {
 					handleYes = handler;
 					return handlers;
 				},
-				ifNo: function(handler) {
-					handleNo = handler;
-					return handlers;
-				},
-				ifCancel: function(handler) {
-					hasCancelButton = true;
-					handleCancel = handler;
-					return handlers;
-				},
+                ifCancel: function(handler) {
+                    hasNoButton = false;
+                    hasCancelButton = true;
+                    handleCancel = handler;
+                    return handlers;
+                },
+                ifNo: function(handler) {
+                    hasNoButton = true;
+                    handleNo = handler;
+                    return handlers;
+                },
 				then: function(handler) {
 					handleThen = handler;
 					return handlers;
@@ -378,19 +384,21 @@ module nts.uk.ui {
 					}
 				});
 				// no button
-				buttons.push({
-					text: "いいえ",
-					"class": "no large",
-					click: function() {
-						$this.dialog('close');
-						handleNo();
-						handleThen();
-					}
-				});
+                if (hasNoButton) {
+    				buttons.push({
+    					text: "いいえ",
+    					"class": "no large",
+    					click: function() {
+    						$this.dialog('close');
+    						handleNo();
+    						handleThen();
+    					}
+    				});
+                }
 				// cancel button
 				if (hasCancelButton) {
 					buttons.push({
-						text: "Cancel",
+						text: "キャンセル",
 						"class": "cancel large",
 						click: function() {
 							$this.dialog('close');
@@ -670,7 +678,7 @@ module nts.uk.ui {
 		}
 
 		getCurrentState() {
-			return ko.mapping.toJSON(this.targetViewModel());
+			return ko.toJSON(this.targetViewModel());
 		}
 
 		reset() {

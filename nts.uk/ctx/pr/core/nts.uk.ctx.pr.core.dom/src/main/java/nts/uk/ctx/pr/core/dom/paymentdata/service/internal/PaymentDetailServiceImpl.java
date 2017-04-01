@@ -16,9 +16,9 @@ import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterV1;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterV1Repository;
-import nts.uk.ctx.pr.core.dom.layout.detail.LayoutMasterDetail;
-import nts.uk.ctx.pr.core.dom.layout.line.LayoutMasterLine;
-import nts.uk.ctx.pr.core.dom.layout.line.LineDispAtr;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.detail.LayoutMasterDetail;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LayoutMasterLine;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LineDispAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.PaymentCalculationBasicInformation;
 import nts.uk.ctx.pr.core.dom.paymentdata.dataitem.CorrectFlag;
 import nts.uk.ctx.pr.core.dom.paymentdata.dataitem.DetailItem;
@@ -286,7 +286,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 				.findFirst().orElseThrow(() -> new BusinessException("対象データがありません。"));
 		
 		int linePosition;
-		if (line.getLineDispayAttribute() == LineDispAtr.DISABLE) {
+		if (line.getLineDisplayAttribute() == LineDispAtr.DISABLE) {
 			linePosition = 0;
 		} else {
 			linePosition = line.getLinePosition().v();

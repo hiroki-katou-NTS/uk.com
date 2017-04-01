@@ -2,12 +2,22 @@ module qmm012.c {
     export module service {
         var paths: any = {
             findItemSalary: "pr/core/itemsalary/find",
+            getCommuteNoTaxLimit: "core/commutelimit/getCommuteNoTaxLimit"
         }
-
-        export function findItemSalary(itemCode): JQueryPromise<model.ItemSalaryModel> {
-            var dfd = $.Deferred<model.ItemSalaryModel>();
+        export function getCommuteNoTaxLimit(commuNoTaxLimitCode): JQueryPromise<qmm023.a.service.model.CommuteNoTaxLimitDto> {
+            var dfd = $.Deferred<qmm023.a.service.model.CommuteNoTaxLimitDto>();
+            nts.uk.request.ajax(paths.getCommuteNoTaxLimit + "/" + commuNoTaxLimitCode)
+                .done(function(res: qmm023.a.service.model.CommuteNoTaxLimitDto) {
+                    dfd.resolve(res);
+                }).fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        export function findItemSalary(itemCode): JQueryPromise<model.ItemSalary> {
+            var dfd = $.Deferred<model.ItemSalary>();
             nts.uk.request.ajax(paths.findItemSalary + "/" + itemCode)
-                .done(function(res: model.ItemSalaryModel) {
+                .done(function(res: model.ItemSalary) {
                     dfd.resolve(res);
                 })
                 .fail(function(res) {
@@ -16,7 +26,7 @@ module qmm012.c {
             return dfd.promise();
         }
         export module model {
-            export class ItemSalaryModel {
+            export class ItemSalary {
                 taxAtr: number;
                 socialInsAtr: number;
                 laborInsAtr: number;
@@ -35,9 +45,9 @@ module qmm012.c {
                 alRangeLow: number;
                 alRangeHighAtr: number;
                 alRangeHigh: number;
-                memo: String;
+                memo: string;
                 limitMnyAtr: number;
-                limitMnyRefItemCd: String;
+                limitMnyRefItemCd: string;
                 limitMny: number;
                 constructor(
                     taxAtr: number,
@@ -58,9 +68,9 @@ module qmm012.c {
                     alRangeLow: number,
                     alRangeHighAtr: number,
                     alRangeHigh: number,
-                    memo: String,
+                    memo: string,
                     limitMnyAtr: number,
-                    limitMnyRefItemCd: String,
+                    limitMnyRefItemCd: string,
                     limitMny: number
 
                 ) {

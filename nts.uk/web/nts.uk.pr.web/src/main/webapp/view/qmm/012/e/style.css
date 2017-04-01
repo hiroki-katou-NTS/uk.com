@@ -1,8 +1,5 @@
 @CHARSET "UTF-8";
 
-#E_INP_005 {
-	border-radius: 5px;
-}
 
 #E_SEL_011 button {
 	height: 30px;
@@ -49,5 +46,10 @@
 }
 
 #contents-area {
-	width: 1400px;
+	width: 1235px;
+}
+
+#E_INP_005 {
+	width: 340px;
+	height: 90px;
 }

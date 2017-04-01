@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.core.app.find.itemmaster.itemperiod;
 
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.core.app.find.itemmaster.dto.itemperiod.ItemPeriodDto;
@@ -10,7 +10,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemperiod.ItemPeriod;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemperiod.ItemPeriodRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 public class ItemPeriodFinder {
 	@Inject
 	private ItemPeriodRepository itemPeriodRepo;
@@ -19,9 +19,9 @@ public class ItemPeriodFinder {
 
 		Optional<ItemPeriod> itemOpt = this.itemPeriodRepo.find(AppContexts.user().companyCode(), categoryAtr,
 				itemCode);
-		if (!itemOpt.isPresent()) {
+		if (!itemOpt.isPresent())
 			return null;
-		}
+		
 		return ItemPeriodDto.fromDomain(itemOpt.get());
 	}
 }

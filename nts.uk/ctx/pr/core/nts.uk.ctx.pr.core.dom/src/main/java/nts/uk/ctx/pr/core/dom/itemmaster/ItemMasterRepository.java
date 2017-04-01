@@ -18,6 +18,37 @@ public interface ItemMasterRepository {
 	Optional<ItemMaster> find(String companyCode, int categoryAtr, String itemCode);
 
 	/**
+	 * Find all item master
+	 * @param companyCode
+	 * @return
+	 */
+	List<ItemMaster> findAll(String companyCode);
+	
+	/**
+	 * Find all item by
+	 * 
+	 * @param companyCode
+	 *            company code
+	 * @param categoryAtr
+	 *            category attribute
+	 * @param itemCode
+	 *            item code list
+	 * @return
+	 */
+	List<ItemMaster> findAll(String companyCode, int categoryAtr, List<String> itemCode);
+
+	/**
+	 * Find all item by
+	 * 
+	 * @param companyCode
+	 *            company code
+	 * @param itemCode
+	 *            item code list
+	 * @return
+	 */
+	List<ItemMaster> findAll(String companyCode, List<String> itemCode);
+	
+	/**
 	 * Find all item by
 	 * 
 	 * @param companyCode
@@ -47,18 +78,19 @@ public interface ItemMasterRepository {
 	 * @param categoryAtr
 	 *            category attribute
 	 * @param itemCode
-	 *            item code
+	 *            item code list
 	 * @param fixAtr
 	 *            fix attribute
 	 * @return
 	 */
-	List<ItemMaster> findAll(String companyCode, int categoryAtr, String itemCode, int fixAtr);
+	List<ItemMaster> findAll(String companyCode, int categoryAtr, List<String> itemCode, int fixAtr);
 
 	/**
 	 * @param companyCode
 	 * @return
 	 */
-	List<ItemMaster> findAllNoAvePayAtr(String companyCode);
+
+	List<ItemMaster> findAll_SEL_3(String companyCode, int ctgAtr);
 
 	/**
 	 * @param companyCode
@@ -66,10 +98,15 @@ public interface ItemMasterRepository {
 	 * @param itemCode
 	 */
 	void remove(String companyCode, int categoryAtr, String itemCode);
-	
-	
+
 	/**
-	 * @param itemMaster: Object need Add New.
+	 * @param itemMaster:
+	 *            Object need Add New.
 	 */
 	void add(ItemMaster itemMaster);
+
+	void update(ItemMaster itemMaster);
+
+	List<ItemMaster> findAllNoAvePayAtr(String companyCode, int ctgAtr, int dispSet);
+
 }

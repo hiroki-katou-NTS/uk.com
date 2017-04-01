@@ -14,14 +14,17 @@
 			<com:scriptfile path="viewmodel.js" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile set="IGNITE" />
+			<com:ValidatorScript>
+				nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.Year
+				</com:ValidatorScript>
 		</ui:define>
 		<ui:define name="content">
 			<div id="content-header">
 				<div id="content-header-top">
 					<div class="divLine">
 						<div id="H_Text_001">
-							<label id="H_LBL_001">項目区分項目区分項目区分項目区分項目区分項目区分<br />
-								項目区分項目区分項目区分項目区分項目区分項目区分項目区分項目区分項目区分項目区分項目区分項目区分
+							<label id="H_LBL_001">「項目名に有効期間を設定したい場合に使用します。<br />
+								有効期間を設定した場合、支給入力画面や帳表には、入力した有効期間だけ表示されます。」
 							</label>
 						</div>
 					</div>
@@ -30,16 +33,18 @@
 							<div id="H_LBL_002" data-bind="ntsFormLabel: {  required: true }">項目区分</div>
 						</div>
 						<div class="divLineCol2">
-							<label id="H_LBL_003">項目 </label>
+							<label id="H_LBL_003" data-bind="text:CurrentCategoryAtrName">項目
+							</label>
 						</div>
 
 					</div>
 					<div class="divLine">
 						<div class="divLineCol1">
-							<div id="H_LBL_004" data-bind="ntsFormLabel: {  required: true }">項目区分</div>
+							<div id="H_LBL_004" data-bind="ntsFormLabel: {  required: true }">コード・名称</div>
 						</div>
 						<div class="divLineCol2">
-							<label id="H_LBL_005">項目 </label>
+							<label id="H_LBL_005" data-bind="text:CurrentItemCode">項目
+							</label>
 						</div>
 
 					</div>
@@ -47,43 +52,31 @@
 				<div id="content-header-bottom">
 					<div class="divLine">
 						<div class="divLineCol1">
-							<div id="H_LBL_002" data-bind="ntsFormLabel: {  required: true }">項目区分</div>
+							<div id="H_LBL_006" data-bind="ntsFormLabel: {  required: true }">有効期間</div>
 						</div>
 						<div class="divLineCol2">
 							<div id="H_SEL_001" class="cf switchMediumSize"
 								data-bind="ntsSwitchButton: {
-										options: roundingRules,
+										options: roundingRules_H_SEL_001,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: selectedRuleCode_002,
+										value: CurrentPeriodAtr,
 										enable: enable }"></div>
 						</div>
 					</div>
 					<div class="divLine">
 						<div class="divLineCol1"></div>
 						<div class="divLineCol2">
-							<div id="H_INP_001" data-bind="with: texteditor">
-								<input
-									data-bind="ntsTextEditor: {
-									value: value,
-									constraint: constraint,
-									option: option,
-									required: required,
-									enable: enable,
-									readonly: readonly}" />
-							</div>
-							<label id="H_LBL_007">項目 ~ </label>
-							<div id="H_INP_002" data-bind="with: texteditor">
-								<input
-									data-bind="ntsTextEditor: {
-									value: value,
-									constraint: constraint,
-									option: option,
-									required: required,
-									enable: enable,
-									readonly: readonly}" />
-							</div>
-							<label id="H_LBL_008">項目 </label>
+							<input id="H_INP_001"
+								data-bind="ntsNumberEditor: { value: CurrentStrY, constraint: 'Year' }" />
+							<label id="H_LBL_007"
+								data-bind="text:nts.uk.time.yearInJapanEmpire(CurrentStrY()) + ' ~ '">項目
+								~ </label> <input id="H_INP_002"
+								data-bind="ntsNumberEditor: { value: CurrentEndY , constraint: 'Year' }" />
+
+							<label id="H_LBL_008"
+								data-bind="text:nts.uk.time.yearInJapanEmpire(CurrentEndY())">項目
+							</label>
 						</div>
 					</div>
 					<div class="divLine">
@@ -94,10 +87,10 @@
 						<div class="divLineCol2">
 							<div id="H_SEL_002" class="cf switchMediumSize"
 								data-bind="ntsSwitchButton: {
-										options: roundingRules,
+										options: roundingRules_H_SEL_002,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: selectedRuleCode_002,
+										value: CurrentCycleAtr,
 										enable: enable }"></div>
 						</div>
 					</div>
@@ -113,35 +106,35 @@
 					<div class="divLine">
 						<div class="divLineCol1"></div>
 						<div class="divLineCol2">
-							<div id="C_SEL_003" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
-							<div id="C_SEL_004" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
-							<div id="C_SEL_005" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
-							<div id="C_SEL_006" class="checkboxBrightGreen"
-								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
-							<div id="C_SEL_007" class="checkboxBrightGreen"
-								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
-							<div id="C_SEL_008" class="checkboxBrightGreen"
-								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
+							<div id="H_SEL_003" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: H_SEL_003_checked, text: '1月' }"></div>
+							<div id="H_SEL_004" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: H_SEL_004_checked, text: '2月' }"></div>
+							<div id="H_SEL_005" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: H_SEL_005_checked, text: '3月'  }"></div>
+							<div id="H_SEL_006" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: H_SEL_006_checked, text: '4月'  }"></div>
+							<div id="H_SEL_007" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: H_SEL_007_checked, text: '5月'  }"></div>
+							<div id="H_SEL_008" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: H_SEL_008_checked, text: '6月'  }"></div>
 						</div>
 					</div>
 					<div class="divLine">
 						<div class="divLineCol1"></div>
 						<div class="divLineCol2">
-							<div id="C_SEL_009" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
-							<div id="C_SEL_010" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
-							<div id="C_SEL_011" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
-							<div id="C_SEL_012" class="checkboxBrightGreen"
-								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
-							<div id="C_SEL_013" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
-							<div id="C_SEL_014" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
+							<div id="H_SEL_009" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: H_SEL_009_checked, text: '7月'  }"></div>
+							<div id="H_SEL_010" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: {checked: H_SEL_010_checked,text: '8月'  }"></div>
+							<div id="H_SEL_011" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: H_SEL_011_checked, text: '9月'  }"></div>
+							<div id="H_SEL_012" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: H_SEL_012_checked ,text: '10月' }"></div>
+							<div id="H_SEL_013" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: H_SEL_013_checked ,text: '11月' }"></div>
+							<div id="H_SEL_014" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: H_SEL_014_checked ,text: '12月'  }"></div>
 						</div>
 					</div>
 				</div>
