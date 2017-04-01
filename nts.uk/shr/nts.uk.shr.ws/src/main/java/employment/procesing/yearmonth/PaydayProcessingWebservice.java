@@ -14,7 +14,7 @@ import nts.uk.shr.find.employment.processing.yearmonth.PaydayProcessingDto;
 public class PaydayProcessingWebservice {
 	
 	@Inject
-	private PaydayProcessing processing;
+	private IPaydayProcessingFinder processing;
 	@POST
 	@Path("paydayrocessing/getbyccd")
 	public List<PaydayProcessingDto> getPaydayProcessing(){
