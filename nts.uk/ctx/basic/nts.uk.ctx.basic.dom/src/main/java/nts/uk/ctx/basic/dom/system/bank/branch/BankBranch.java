@@ -14,7 +14,7 @@ public class BankBranch extends AggregateRoot{
 	 * Company code
 	 */
 	@Getter
-	private CompanyCode companyCode;
+	private String companyCode;
 	
 	/**
 	 * Branch id
@@ -73,7 +73,7 @@ public class BankBranch extends AggregateRoot{
 	 * @param bankBranchNameKana
 	 * @param memo
 	 */
-	public BankBranch(CompanyCode companyCode, UUID branchId, String bankCode, BankBranchCode bankBranchCode,
+	public BankBranch(String companyCode, UUID branchId, String bankCode, BankBranchCode bankBranchCode,
 			BankBranchName bankBranchName, BankBranchNameKana bankBranchNameKana, Memo memo) {
 		super();
 		this.companyCode = companyCode;
@@ -98,7 +98,7 @@ public class BankBranch extends AggregateRoot{
 	 */
 	public static BankBranch createFromJavaType (String companyCode, String branchId, String bankCode,String bankBranchCode, String bankBranchName,
 			String bankBranchNameKana, String memo){	
-		return new BankBranch(new CompanyCode(companyCode), UUID.fromString(branchId), bankCode,new BankBranchCode(bankBranchCode), new BankBranchName(bankBranchName), new BankBranchNameKana(bankBranchNameKana), new Memo(memo));
+		return new BankBranch(companyCode, UUID.fromString(branchId), bankCode,new BankBranchCode(bankBranchCode), new BankBranchName(bankBranchName), new BankBranchNameKana(bankBranchNameKana), new Memo(memo));
 	}
 	
 	/**

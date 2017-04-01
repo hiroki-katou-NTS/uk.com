@@ -46,7 +46,7 @@ public class UpdatePensionAvgearnCommandHandler extends CommandHandler<UpdatePen
 
 		// Map to domain
 		List<PensionAvgearn> updatedPensionAvgearns = command.getListPensionAvgearn().stream().map(item -> {
-			return item.toDomain();
+			return new PensionAvgearn(item);
 		}).collect(Collectors.toList());
 
 		// Update

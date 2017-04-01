@@ -54,14 +54,14 @@ public class PersonalUnitPriceWebService extends WebService {
 	}
 
 	/**
-	 * Find all personal unit price has property display_set = 0 (none display)
+	 * Find all personal unit price has property display_set = 1 (none display)
 	 * 
-	 * @return list of unit price code has display_set = 0
+	 * @return list of unit price code has display_set = 1
 	 */
 	@POST
 	@Path("find/all/nonedisplay")
 	public List<PersonalUnitPriceDto> findAllNoneDisplay() {
-		return this.personalUnitPriceFinder.findAll().stream().filter(x -> x.getDisplaySet() == 0)
+		return this.personalUnitPriceFinder.findAll().stream().filter(x -> x.getDisplaySet() == 1)
 				.collect(Collectors.toList());
 	}
 

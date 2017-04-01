@@ -46,7 +46,7 @@ public class RemoveBankCommandHandler extends CommandHandler<RemoveBankCommand> 
 
 		Optional<Bank> domain = bankRepository.find(companyCode, command.getBankCode());
 		if (!domain.isPresent()) {
-			throw new RuntimeException("Bank not found");
+			throw new RuntimeException("銀行を検索できません");
 		}
 
 		// check exists person bank account
@@ -65,12 +65,10 @@ public class RemoveBankCommandHandler extends CommandHandler<RemoveBankCommand> 
 			if (personBankAccountRepository.checkExistsBranchAccount(companyCode, branchIdList)) {
 				throw new BusinessException("ER008"); // ER008
 			}
-			branchAll.forEach((item) -> {
-				bankBranchRepo.remove(companyCode, item.getBranchId().toString());
-			});
+			bankBranchRepo.removeAll(companyCode, branchIdList);
 		}
 
 		// delete bank
-		bankRepository.remove(domain.get());
+		bankRepository.remove(companyCode, command.getBankCode());
 	}
 }

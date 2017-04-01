@@ -8,11 +8,25 @@ module qet001.i.viewmodel {
         aggregateItemCategories: KnockoutObservableArray<AggregateCategory>;
         masterItems: KnockoutObservableArray<service.Item>;
         selectedTab: KnockoutObservable<number>;
+        swapListColumns: KnockoutObservableArray<any>;
+        switchs: KnockoutObservableArray<any>;
+        itemListColumns: KnockoutObservableArray<any>;
         
         constructor() {
             this.aggregateItemCategories = ko.observableArray([]);
             this.masterItems = ko.observableArray([]);
             this.selectedTab = ko.observable(0);
+            this.switchs = ko.observableArray([
+                    { code: '0', name: '表示する' },
+                    { code: '1', name: '表示しない' }
+                ]);
+            this.swapListColumns = ko.observableArray([
+                { headerText: 'コード', key: 'code', width: 100 },
+                { headerText: '名称', key: 'name', width: 160 }
+            ]);
+            this.itemListColumns = ko.observableArray([
+                {headerText: 'コード', prop: 'code', width: 90}, 
+                {headerText: '名称', prop: 'name',  width: 100}]);
             var self = this;
             $("#sidebar-area > div > ul > li").on('click', function() {
                 var index = $("#sidebar-area > div > ul > li").index(this);
@@ -63,7 +77,6 @@ module qet001.i.viewmodel {
         itemList: KnockoutObservableArray<service.Item>;
         category: string;
         paymentType: string;
-        itemListColumns: KnockoutObservableArray<any>;
         aggregateItemSelectedCode: KnockoutObservable<string>;
         aggregateItemDetail: KnockoutObservable<AggregateItemDetail>;
         dirty: nts.uk.ui.DirtyChecker;
@@ -73,9 +86,6 @@ module qet001.i.viewmodel {
             this.category = categoryName;
             this.paymentType = paymentType;
             this.aggregateItemSelectedCode = ko.observable(null);
-            this.itemListColumns = ko.observableArray([
-                {headerText: 'コード', prop: 'code', width: 90}, 
-                {headerText: '名称', prop: 'name',  width: 100}]);
             
             // Filter master item by category and payment type.
             var masterItemInCate = masterItems.filter(item => item.category == categoryName);
@@ -145,7 +155,7 @@ module qet001.i.viewmodel {
                 nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function() {
                     self.aggregateItemSelectedCode(null);
                 });
-            }
+            } 
         }
         
         public save() {
@@ -154,16 +164,10 @@ module qet001.i.viewmodel {
             $('#code-input').ntsError('clear');
             $('#name-input').ntsError('clear');
             // Validate.
-            var hasError = false;
-            if (self.aggregateItemDetail().code() == '') {
-                $('#code-input').ntsError('set', 'コードが入力されていません。');
-                hasError = true;
-            }
-            if (self.aggregateItemDetail().name() == '') {
-                $('#name-input').ntsError('set', '名称が入力されていません。');
-                hasError = true;
-            }
-            if(hasError) {
+            $('#code-input').ntsEditor('validate');
+            $('#name-input').ntsEditor('validate');
+            // Check has error.
+            if(!nts.uk.ui._viewModel.errors.isEmpty()) {
                 return;
             }
             
@@ -173,7 +177,7 @@ module qet001.i.viewmodel {
                 nts.uk.ui.dialog.alert('Save success!');
                 self.loadAggregateItemByCategory();
             }).fail(function(res) {
-                nts.uk.ui.dialog.alert(res.message);
+                $('#code-input').ntsError('set', res.message);
             });
         }
         
@@ -219,6 +223,8 @@ module qet001.i.viewmodel {
                 nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function() {
                     nts.uk.ui.windows.close();
                 });
+            } else {
+                nts.uk.ui.windows.close();
             }
         }
         
@@ -246,10 +252,8 @@ module qet001.i.viewmodel {
         masterItemsSelected: KnockoutObservableArray<string>;
         subItems: KnockoutObservableArray<service.SubItem>;
         subItemsSelected: KnockoutObservableArray<string>;
-        switchs: KnockoutObservableArray<any>;
         showNameZeroCode: KnockoutObservable<string>;
         showValueZeroCode: KnockoutObservable<string>;
-        swapListColumns: KnockoutObservableArray<any>;
         createMode: KnockoutObservable<boolean>;
         
         constructor(paymentType: string, category: string, 
@@ -262,17 +266,9 @@ module qet001.i.viewmodel {
                 : ko.observable(item.showNameZeroValue);
             this.showValueZeroValue = item == undefined ? ko.observable(true)
                 : ko.observable(item.showValueZeroValue);
-            this.subItems = item == undefined ? ko.observableArray([]) : ko.observableArray(item.subItems)
-            this.switchs = ko.observableArray([
-                    { code: '0', name: '表示する' },
-                    { code: '1', name: '表示しない' }
-                ]);
+            this.subItems = item == undefined ? ko.observableArray([]) : ko.observableArray(item.subItems);
             this.showNameZeroCode = ko.observable(this.showNameZeroValue() ? '0' : '1');
             this.showValueZeroCode = ko.observable(this.showValueZeroValue() ? '0' : '1');
-            this.swapListColumns = ko.observableArray([
-                { headerText: 'コード', key: 'code', width: 100 },
-                { headerText: '名称', key: 'name', width: 160 }
-            ]);
             this.createMode = ko.observable(item == undefined);
             var self = this;
             

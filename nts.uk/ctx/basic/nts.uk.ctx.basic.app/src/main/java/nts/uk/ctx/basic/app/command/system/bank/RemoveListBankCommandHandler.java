@@ -35,7 +35,7 @@ public class RemoveListBankCommandHandler extends CommandHandler<RemoveListBankC
 	private PersonBankAccountRepository personBankAccountRepository;
 
 	@Inject
-	private BankBranchRepository banhBranchRepo;
+	private BankBranchRepository bankBranchRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<RemoveListBankCommand> context) {
@@ -48,25 +48,28 @@ public class RemoveListBankCommandHandler extends CommandHandler<RemoveListBankC
 		command.getBank().forEach(bank -> {
 			if (StringUtil.isNullOrEmpty(bank.getBranchId(), true)) {
 				Optional<Bank> domain = bankRepository.find(companyCode, bank.getBankCode());
-				if (domain.isPresent()) {
-					// get all branch by bank
-					List<BankBranch> branchAll = banhBranchRepo.findAll(companyCode, new BankCode(bank.getBankCode()));
-					if (!branchAll.isEmpty()) {
-						// get list of branch id
-						List<String> branchIdList = branchAll.stream().map(x -> x.getBranchId().toString())
-								.collect(Collectors.toList());
-
-						// check exists person bank account
-						if (personBankAccountRepository.checkExistsBranchAccount(companyCode, branchIdList)) {
-							throw new BusinessException("ER008"); // ER008
-						}
-                        // remove list bank branch
-							banhBranchRepo.removeAll(companyCode, branchIdList);
-					}
-					// remove bank
-					bankRepository.remove(domain.get());
-					bankDeleted.add(bank.getBankCode());
+				if (!domain.isPresent()) {
+					throw new RuntimeException("銀行を検索できません");
 				}
+				
+				// get all branch by bank
+				List<BankBranch> branchAll = bankBranchRepo.findAll(companyCode, new BankCode(bank.getBankCode()));
+				if (!branchAll.isEmpty()) {
+					// get list of branch id
+					List<String> branchIdList = branchAll.stream().map(x -> x.getBranchId().toString())
+							.collect(Collectors.toList());
+
+					// check exists person bank account
+					if (personBankAccountRepository.checkExistsBranchAccount(companyCode, branchIdList)) {
+						throw new BusinessException("ER008"); // ER008
+					}
+                    // remove list bank branch
+						bankBranchRepo.removeAll(companyCode, branchIdList);
+				}
+				// remove bank
+				bankRepository.remove(companyCode, bank.getBankCode());
+				bankDeleted.add(bank.getBankCode());
+				
 			} else if (!bankDeleted.contains(bank.getBankCode())) {
 				List<String> branchBranchIdList = new ArrayList<String>();
 				branchBranchIdList.add(bank.getBranchId().toString());
@@ -74,7 +77,7 @@ public class RemoveListBankCommandHandler extends CommandHandler<RemoveListBankC
 				if (personBankAccountRepository.checkExistsBranchAccount(companyCode, branchBranchIdList)) {
 					throw new BusinessException("ER008"); // ER008
 				}
-				banhBranchRepo.remove(companyCode, bank.getBranchId().toString());
+				bankBranchRepo.remove(companyCode, bank.getBranchId().toString());
 			}
 		});
 	}

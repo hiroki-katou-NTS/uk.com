@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 300, height: 200 };</script>
+				<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+   				</com:ValidatorScript>
+				<com:scriptfile set="IGNITE" />
+				<com:stylefile path="style.css" />
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="viewmodel.js" />
+				<com:scriptfile path="service.js" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="functions-area">
+				</div>
+				<div id="contents-area">
+					<div id="p_lbl_001" class="label warning separate-vertical">基準金額に設定する、支給項目を選択してください。<br/>（複数選択可）</div>
+					<br />
+					<table id="p_lbl_001" data-bind="ntsGridList: {
+								height: 350,
+								options: items,
+								optionsValue: 'code',
+								columns: columns,
+								multiple: true,
+								value: currentCodeList
+							}"
+							class="cf"></table>
+					<br />
+					<button id="p_btn_001" class="x-large proceed">決定</button>
+					<button id="p_btn_002" >キャンセル</button>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>
