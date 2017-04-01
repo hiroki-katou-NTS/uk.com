@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBD;
 
 @Getter
 @Setter
@@ -44,6 +45,12 @@ public class AddItemDeductBDCommand {
 		this.alRangeLow = alRangeLow;
 		this.alRangeHighAtr = alRangeHighAtr;
 		this.alRangeHigh = alRangeHigh;
+	}
+
+	public ItemDeductBD toDomain() {
+		return ItemDeductBD.createFromJavaType(itemCd, itemBreakdownCd, itemBreakdownName, itemBreakdownAbName, uniteCd,
+				zeroDispSet, itemDispAtr, errRangeLowAtr, errRangeLow, errRangeHighAtr, errRangeHigh, alRangeLowAtr,
+				alRangeLow, alRangeHighAtr, alRangeHigh);
 	}
 
 }

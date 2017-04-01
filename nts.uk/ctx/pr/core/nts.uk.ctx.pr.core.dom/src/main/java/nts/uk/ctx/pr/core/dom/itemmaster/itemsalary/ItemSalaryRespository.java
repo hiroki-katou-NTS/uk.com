@@ -31,5 +31,5 @@ public interface ItemSalaryRespository {
 	
 	void add(ItemSalary item);
 
-	void delete(String companyCode, String itemCode);
+	void delete(String companyCode);
 }

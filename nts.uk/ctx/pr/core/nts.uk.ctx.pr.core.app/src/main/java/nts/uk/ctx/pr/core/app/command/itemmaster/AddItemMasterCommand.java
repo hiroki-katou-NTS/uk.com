@@ -10,6 +10,7 @@ import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalary.AddItemSalaryCommand
 import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalarybd.AddItemSalaryBDCommand;
 import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalaryperiod.AddItemSalaryPeriodCommand;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
+import nts.uk.shr.com.context.AppContexts;
 
 @Getter
 @Setter
@@ -33,7 +34,7 @@ public class AddItemMasterCommand {
 	private int itemDisplayAtr;
 
 	public ItemMaster toDomain() {
-		return ItemMaster.createFromJavaType(companyCode, itemCode, itemName, itemAbName, itemAbNameE, itemAbNameO,
+		return ItemMaster.createFromJavaType(AppContexts.user().companyCode(), itemCode, itemName, itemAbName, itemAbNameE, itemAbNameO,
 				categoryAtr, fixAtr, displaySet, uniteCode, zeroDisplaySet, itemDisplayAtr);
 	}
 	

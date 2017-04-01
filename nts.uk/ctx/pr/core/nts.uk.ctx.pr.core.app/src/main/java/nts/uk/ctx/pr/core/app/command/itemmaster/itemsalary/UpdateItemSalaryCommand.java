@@ -9,7 +9,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalary;
 @Getter
 @Setter
 public class UpdateItemSalaryCommand {
-	
+
 	private String ccd;
 	private String itemCd;
 	private int taxAtr;
@@ -36,7 +36,7 @@ public class UpdateItemSalaryCommand {
 	private BigDecimal limitMny;
 
 	public ItemSalary toDomain() {
-		return ItemSalary.createFromJavaType(this.ccd, this.itemCd, this.taxAtr, this.socialInsAtr, this.laborInsAtr,
+		return ItemSalary.createFromJavaType(this.itemCd, this.taxAtr, this.socialInsAtr, this.laborInsAtr,
 				this.fixPayAtr, this.applyForAllEmpFlg, this.applyForMonthlyPayEmp, this.applyForDaymonthlyPayEmp,
 				this.applyForDaylyPayEmp, this.applyForHourlyPayEmp, this.avePayAtr, this.errRangeLowAtr,
 				this.errRangeLow, this.errRangeHighAtr, this.errRangeHigh, this.alRangeLowAtr, this.alRangeLow,

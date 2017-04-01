@@ -32,6 +32,6 @@ public interface ItemAttendRespository {
 	
 	void add(ItemAttend itemAttend);
 
-	void delete(String companyCode, String itemCode);
+	void delete(String companyCode);
 	
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.dom.itemmaster;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
@@ -21,6 +22,15 @@ public class ItemMaster extends AggregateRoot {
 	private UniteCode uniteCode;
 	private DisplayAtr zeroDisplaySet;
 	private ItemDisplayAtr itemDisplayAtr;
+
+	@Override
+	public void validate() {
+		super.validate();
+		if (this.itemCode == null || this.companyCode == null || this.categoryAtr == null || this.itemName == null
+				|| this.itemAbName == null || this.displaySet == null) {
+			throw new BusinessException("");
+		}
+	}
 
 	public ItemMaster(CompanyCode companyCode, ItemCode itemCode, ItemName itemName, ItemName itemAbName,
 			ItemName itemAbNameE, ItemName itemAbNameO, CategoryAtr categoryAtr, int fixAtr, DisplayAtr displaySet,

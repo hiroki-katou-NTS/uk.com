@@ -8,14 +8,15 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.core.app.command.itemmaster.itemattend.UpdateItemAttendCommandHandler;
-import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeduct.UpdateItemDeductCommandHandler;
-import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductbd.UpdateItemDeductBDCommandHandler;
-import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductperiod.UpdateItemDeductPeriodCommandHandler;
-import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalary.UpdateItemSalaryCommandHandler;
-import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalarybd.UpdateItemSalaryBDCommandHandler;
-import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalaryperiod.UpdateItemSalaryPeriodCommandHandler;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalarybd.UpdateItemSalaryBDCommand;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.ItemAttendRespository;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemdeduct.ItemDeductRespository;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBDRepository;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductperiod.ItemDeductPeriodRepository;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalaryRespository;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemsalarybd.ItemSalaryBDRepository;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemsalaryperiod.ItemSalaryPeriodRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -24,20 +25,25 @@ public class UpdateItemMasterCommandHandler extends CommandHandler<UpdateItemMas
 
 	@Inject
 	private ItemMasterRepository itemMasterRepository;
+	// item salary
 	@Inject
-	private UpdateItemSalaryCommandHandler itemSalaryHandler;
+	private ItemSalaryRespository itemSalaryRespository;
 	@Inject
-	private UpdateItemDeductCommandHandler itemDeductHandler;
+	private ItemSalaryPeriodRepository itemSalaryPeriodRepository;
 	@Inject
-	private UpdateItemAttendCommandHandler itemAttendHandler;
+	private ItemSalaryBDRepository itemSalaryBDRepository;
+
+	// item deduct
 	@Inject
-	private UpdateItemSalaryPeriodCommandHandler itemSalaryPeriodHandler;
+	private ItemDeductRespository itemDeductRespository;
 	@Inject
-	private UpdateItemDeductPeriodCommandHandler itemDeductPeriodHandler;
+	private ItemDeductPeriodRepository itemDeductPeriodRepository;
 	@Inject
-	private UpdateItemSalaryBDCommandHandler itemSalaryBDHandler;
+	private ItemDeductBDRepository itemDeductBDRepository;
+	
+	// item attend
 	@Inject
-	private UpdateItemDeductBDCommandHandler itemDeductBDHandler;
+	private ItemAttendRespository itemAttendRespository;
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateItemMasterCommand> context) {
@@ -46,32 +52,56 @@ public class UpdateItemMasterCommandHandler extends CommandHandler<UpdateItemMas
 		String companyCode = AppContexts.user().companyCode();
 		String itemCode = itemCommand.getItemCode();
 		if (!this.itemMasterRepository.find(companyCode, categoryAtr, itemCode).isPresent())
-			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
+			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。"));
 		this.itemMasterRepository.update(context.getCommand().toDomain(companyCode));
 		switch (categoryAtr) {
 		case 0:
-			itemCommand.getItemSalary().setCcd(companyCode);
-			itemCommand.getItemSalary().setItemCd(itemCode);
-			this.itemSalaryHandler.handle(itemCommand.getItemSalary());
-			this.itemSalaryPeriodHandler.handle(context.getCommand().getItemSalaryPeriod());
-			this.itemSalaryBDHandler.handle(context.getCommand().getItemSalaryBD());
+			updateItemSalary(context);
 			break;
 		case 1:
-			itemCommand.getItemDeduct().setCcd(companyCode);
-			itemCommand.getItemDeduct().setItemCd(itemCode);
-			this.itemDeductHandler.handle(itemCommand.getItemDeduct());
-			this.itemDeductPeriodHandler.handle(context.getCommand().getItemDeductPeriod());
-			this.itemDeductBDHandler.handle(context.getCommand().getItemDeductBD());
+			updateItemDeduct(context);
 			break;
 		case 2:
-			itemCommand.getItemAttend().setCcd(companyCode);
-			itemCommand.getItemAttend().setItemCd(itemCode);
-			this.itemAttendHandler.handle(itemCommand.getItemAttend());
+			updateItemAttend(context);
 			break;
 		}
 
 		// TODO Auto-generated method stub
 
+	}
+
+	private void updateItemSalary(CommandHandlerContext<UpdateItemMasterCommand> context) {
+		UpdateItemMasterCommand itemCommand = context.getCommand();
+		String companyCode = AppContexts.user().companyCode();
+		String itemCode = itemCommand.getItemCode();
+		itemCommand.getItemSalary().setCcd(companyCode);
+		itemCommand.getItemSalary().setItemCd(itemCode);
+		this.itemSalaryRespository.update(itemCommand.getItemSalary().toDomain());
+		this.itemSalaryPeriodRepository.update(itemCommand.getItemPeriod().toDomain());
+		for (UpdateItemSalaryBDCommand itemSalaryBD : context.getCommand().getItemBDs())
+			this.itemSalaryBDRepository.update(itemSalaryBD.toDomain());
+	}
+
+	private void updateItemDeduct(CommandHandlerContext<UpdateItemMasterCommand> context) {
+		UpdateItemMasterCommand itemCommand = context.getCommand();
+		String companyCode = AppContexts.user().companyCode();
+		String itemCode = itemCommand.getItemCode();
+		itemCommand.getItemDeduct().setCcd(companyCode);
+		itemCommand.getItemDeduct().setItemCd(itemCode);
+		this.itemDeductRespository.update(itemCommand.getItemDeduct().toDomain());
+		this.itemDeductPeriodRepository.update(context.getCommand().getItemPeriod().toDeduct().toDomain());
+		for (UpdateItemSalaryBDCommand itemSalaryBD : context.getCommand().getItemBDs())
+			this.itemDeductBDRepository.update(itemSalaryBD.toDeduct().toDomain());
+
+	}
+
+	private void updateItemAttend(CommandHandlerContext<UpdateItemMasterCommand> context) {
+		UpdateItemMasterCommand itemCommand = context.getCommand();
+		String companyCode = AppContexts.user().companyCode();
+		String itemCode = itemCommand.getItemCode();
+		itemCommand.getItemAttend().setCcd(companyCode);
+		itemCommand.getItemAttend().setItemCd(itemCode);
+		this.itemAttendRespository.update(itemCommand.getItemAttend().toDomain());
 	}
 
 }
