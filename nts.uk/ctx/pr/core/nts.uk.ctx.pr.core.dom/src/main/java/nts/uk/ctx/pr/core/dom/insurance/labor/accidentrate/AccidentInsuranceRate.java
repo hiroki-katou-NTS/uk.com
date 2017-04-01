@@ -11,25 +11,12 @@ import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 
 /**
  * The Class AccidentInsuranceRate.
- */
-
-/**
- * Gets the rate items.
- *
- * @return the rate items
- */
-
-/**
- * Gets the rate items.
- *
- * @return the rate items
  */
 @Getter
 public class AccidentInsuranceRate extends DomainObject {

@@ -8,9 +8,11 @@ package nts.uk.ctx.pr.core.dom.insurance.labor;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.pr.core.dom.insurance.Address;
+import nts.uk.ctx.pr.core.dom.insurance.Address1;
+import nts.uk.ctx.pr.core.dom.insurance.Address2;
+import nts.uk.ctx.pr.core.dom.insurance.AddressKana1;
+import nts.uk.ctx.pr.core.dom.insurance.AddressKana2;
 import nts.uk.ctx.pr.core.dom.insurance.CitySign;
-import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeMark;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
@@ -52,16 +54,16 @@ public class LaborInsuranceOffice extends DomainObject {
 	private PotalCode potalCode;
 
 	/** The address 1 st. */
-	private Address address1st;
+	private Address1 address1st;
 
 	/** The address 2 nd. */
-	private Address address2nd;
+	private Address2 address2nd;
 
 	/** The kana address 1 st. */
-	private KanaAddress kanaAddress1st;
+	private AddressKana1 kanaAddress1st;
 
 	/** The kana address 2 nd. */
-	private KanaAddress kanaAddress2nd;
+	private AddressKana2 kanaAddress2nd;
 
 	/** The phone number. */
 	// TODO: TelephoneNo
