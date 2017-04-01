@@ -46,8 +46,8 @@ var cmm008;
                     var widthScreen = $(window).width();
                     var heightHeader = $('#header').height() + $('#functions-area').height();
                     var height = heightScreen - heightHeader - 80;
-                    $('#contents-left').css({ height: height, width: widthScreen * 38 / 100 });
-                    $('#contents-right').css({ height: height, width: widthScreen * 62 / 100 });
+                    $('#contents-left').css({ height: height, width: widthScreen * 40 / 100 });
+                    $('#contents-right').css({ height: height, width: widthScreen * 60 / 100 });
                     self.listMessage();
                     $.when(self.userKtSet()).done(function () {
                         self.closeDateListItem();
@@ -209,8 +209,8 @@ var cmm008;
                         this.columns = ko.observableArray([
                             { headerText: 'コード', prop: 'employmentCode', width: '18%' },
                             { headerText: '名称', prop: 'employmentName', width: '28%' },
-                            { headerText: '締め日', prop: 'closeDateNoStr', width: '20%' },
-                            { headerText: '処理日区分', prop: 'processingStr', width: '20%' },
+                            { headerText: '締め日', prop: 'closeDateNoStr', width: '23%' },
+                            { headerText: '処理日区分', prop: 'processingStr', width: '17%' },
                             { headerText: '初期表示', prop: 'displayStr', width: '14%' }
                         ]);
                     }
