@@ -175,16 +175,16 @@ module cmm001.a {
                     }
                 } else {
                     self.currentCompany = ko.observable(new CompanyModel({
-                            companyCode: '',
-                            address1: '',
-                            companyName: '',
-                            companyNameGlobal: '',
-                            corporateMyNumber: '',
-                            depWorkPlaceSet: 0,
-                            displayAttribute: '',
-                            termBeginMon: 0,
-                            companyUseSet: null
-                        }));
+                        companyCode: '',
+                        address1: '',
+                        companyName: '',
+                        companyNameGlobal: '',
+                        corporateMyNumber: '',
+                        depWorkPlaceSet: 0,
+                        displayAttribute: '',
+                        termBeginMon: 0,
+                        companyUseSet: null
+                    }));
                     self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentCompany);
                     self.currentCompanyCode(self.currentCompany().companyCode());
                     self.resetData();
@@ -226,6 +226,9 @@ module cmm001.a {
 
         resetData() {
             let self = this;
+            if ($('.nts-editor').ntsError("hasError")) {
+                $('.save-error').ntsError('clear');
+            }
             self.currentCompanyCode("");
             self.currentCompany().companyCode("");
             self.currentCompany().address1("");
@@ -254,6 +257,7 @@ module cmm001.a {
             self.currentCompany().editMode = true;
             self.currentCompany().isEnableCompanyCode(true);
             self.isUpdate(false);
+            self.previousCurrentCode = "";
             self.dirtyObject.reset();
             self.currentCompany().hasFocus(true);
         }
@@ -305,7 +309,7 @@ module cmm001.a {
                                 self.dirtyObject.reset();
                                 if (self.sel001Data().length > 0) {
                                     self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
-                                }else{
+                                } else {
                                     self.resetData();
                                     return;
                                 }
