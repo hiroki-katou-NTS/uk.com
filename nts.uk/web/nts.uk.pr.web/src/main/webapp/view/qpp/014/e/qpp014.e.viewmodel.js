@@ -1,4 +1,3 @@
-// TreeGrid Node
 var qpp014;
 (function (qpp014) {
     var e;
@@ -11,9 +10,7 @@ var qpp014;
                     self.items_E_LST_003.push(new ItemModel_E_LST_003('00' + i_1, '基本給', "description " + i_1));
                 }
                 self.currentCode_E_LST_003 = ko.observable();
-                //$("#list3-div").css("display","none");
                 $("#E_BTN_004").css("display", "none");
-                //$("#E_BTN_005").css("display","none");$("E_BTN_002")
             }
             return ScreenModel;
         }());
@@ -30,3 +27,4 @@ var qpp014;
     })(e = qpp014.e || (qpp014.e = {}));
 })(qpp014 || (qpp014 = {}));
 ;
+//# sourceMappingURL=qpp014.e.viewmodel.js.map
