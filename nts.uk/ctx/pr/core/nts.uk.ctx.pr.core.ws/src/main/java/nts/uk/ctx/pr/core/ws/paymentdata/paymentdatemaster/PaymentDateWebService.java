@@ -10,7 +10,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.find.paymentdata.PaymentDateProcessingMasterDto;
 import nts.uk.ctx.pr.core.app.find.paymentdata.PaymentDateProcessingMasterFinder;
-import nts.uk.ctx.pr.core.dom.payment.banktranfer.PayBonusAtr;
+import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
 
 /**
  * Perform action with payment date master

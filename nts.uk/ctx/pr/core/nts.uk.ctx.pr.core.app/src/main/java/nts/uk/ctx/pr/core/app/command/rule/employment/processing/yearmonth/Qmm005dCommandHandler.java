@@ -58,7 +58,7 @@ public class Qmm005dCommandHandler extends CommandHandler<Qmm005dCommand> {
 						systemDayDomain.getResitaxBeginMon().v(), systemDayDomain.getPickupStdMonAtr().value,
 						systemDayDomain.getPickupStdDay().v(), systemDayDomain.getPayStdDay().v(),
 						systemDayDomain.getAccountDueMonAtr().value, systemDayDomain.getAccountDueDay().v(),
-						systemDayDomain.getPayslipPrintMonth().value);
+						systemDayDomain.getPayslipPrintMonthAtr().value);
 				systemDayRepo.update1(domain);
 			}
 

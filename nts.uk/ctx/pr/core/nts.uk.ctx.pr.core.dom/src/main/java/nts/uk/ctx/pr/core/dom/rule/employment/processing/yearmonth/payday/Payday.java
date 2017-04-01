@@ -7,9 +7,9 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.paymentdata.PayBonusAtr;
-import nts.uk.ctx.pr.core.dom.paymentdata.SparePayAtr;
-import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.systemday.ProcessingNo;
+import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
+import nts.uk.ctx.pr.core.dom.enums.SparePayAtr;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.ProcessingNo;
 
 @Getter
 @AllArgsConstructor

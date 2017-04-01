@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.enterprise.context.RequestScoped;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.payment.banktranfer.BankTranfer;
@@ -19,8 +18,7 @@ public class JpaBankTranferRepository extends JpaRepository implements BankTranf
 	private final String SEL = "SELECT b FROM QbkdtBankTransfer b ";
 	
 	private final String SEL_1 = SEL + "WHERE b.qbkdtBankTransferPK.ccd = :companyCode "
-								 + "AND b.qbkdtBankTransferPK.fromBankCd = :fromBankCd "
-								 + "AND b.qbkdtBankTransferPK.fromBranchCd = :fromBranchCd "
+								 + "AND b.qbkdtBankTransferPK.fromBranchId = :fromBranchId "
 								 + "AND b.processingNo = :processingNo "
 								 + "AND b.processingYm = :processingYm "
 								 + "AND b.qbkdtBankTransferPK.payDate = :payDate "
@@ -28,12 +26,10 @@ public class JpaBankTranferRepository extends JpaRepository implements BankTranf
 	
 	private final String SEL_2 = SEL + "WHERE b.qbkdtBankTransferPK.ccd = :companyCode "
 								+ "AND b.qbkdtBankTransferPK.pid = :personId "
-								+ "AND b.qbkdtBankTransferPK.fromBankCd = :fromBankCd "
-								+ "AND b.qbkdtBankTransferPK.fromBranchCd = :fromBranchCd "
+								+ "AND b.qbkdtBankTransferPK.fromBranchId = :fromBranchId "
 								+ "AND b.qbkdtBankTransferPK.fromAccountAtr = :fromAccountAtr "
 								+ "AND b.qbkdtBankTransferPK.fromAccountNo = :fromAccountNo "
-								+ "AND b.qbkdtBankTransferPK.toBankCd = :toBankCd "
-								+ "AND b.qbkdtBankTransferPK.toBranchCd = :toBranchCd "
+								+ "AND b.qbkdtBankTransferPK.toBranchId = :toBranchId "
 								+ "AND b.qbkdtBankTransferPK.toAccountAtr = :toAccountAtr "
 								+ "AND b.qbkdtBankTransferPK.toAccountNo = :toAccountNo "
 								+ "AND b.qbkdtBankTransferPK.payBonusAtr = :payBonusAtr "
@@ -53,19 +49,18 @@ public class JpaBankTranferRepository extends JpaRepository implements BankTranf
 	@Override
 	public Optional<BankTranfer> find(BankTranferParam param) {
 		QbkdtBankTransferPK key = new QbkdtBankTransferPK(
-				param.getCompanyCode(), 
-				param.getPersonId(), 
-				param.getFromBankCode(), 
-				param.getFromBranchCode(), 
-				param.getFromAccountAtr(), 
-				param.getFromAccountNo(), 
-				param.getToBankCode(), 
-				param.getToBranchCode(), 
-				param.getToAccountAtr(), 
-				param.getToAccountNo(), 
-				param.getPayBonusAtr(),
-				param.getPayDate(), 
-				param.getSparePayAtr());
+							param.getCompanyCode(),
+							param.getPersonId(), 
+							param.getFromBranchId(), 
+							param.getFromAccountAtr(), 
+							param.getFromAccountNo(),
+							param.getToBranchId(),
+							param.getToAccountAtr(), 
+							param.getToAccountNo(), 
+							param.getPayBonusAtr(), 
+							param.getProcessNo(),
+							param.getPayDate(),
+							param.getSparePayAtr());
 		
 		Optional<BankTranfer> entityOpt = this.queryProxy().find(key, QbkdtBankTransfer.class)
 				.map(x -> toDomain(x));
@@ -77,8 +72,7 @@ public class JpaBankTranferRepository extends JpaRepository implements BankTranf
 	public List<BankTranfer> findBySEL1(BankTranferParam param) {
 		return this.queryProxy().query(SEL_1, QbkdtBankTransfer.class)
 				.setParameter("companyCode", param.getCompanyCode())
-				.setParameter("fromBankCd", param.getFromBankCode())
-				.setParameter("fromBranchCd", param.getFromBranchCode())
+				.setParameter("fromBranchId", param.getFromBranchId())
 				.setParameter("processingNo", param.getProcessNo())
 				.setParameter("processingYm", param.getProcessYearMonth())
 				.setParameter("payDate", param.getPayDate())
@@ -91,12 +85,10 @@ public class JpaBankTranferRepository extends JpaRepository implements BankTranf
 		return this.queryProxy().query(SEL_2, QbkdtBankTransfer.class)
 				.setParameter("companyCode", param.getCompanyCode())
 				.setParameter("personId", param.getPersonId())
-				.setParameter("fromBankCd", param.getFromBankCode())
-				.setParameter("fromBranchCd", param.getFromBranchCode())
+				.setParameter("fromBranchId", param.getFromBranchId())
 				.setParameter("fromAccountAtr", param.getFromAccountAtr())
 				.setParameter("fromAccountNo", param.getFromAccountNo())
-				.setParameter("toBankCd", param.getToBankCode())
-				.setParameter("toBranchCd", param.getToBranchCode())
+				.setParameter("toBranchId", param.getToBranchId())
 				.setParameter("toAccountAtr", param.getToAccountAtr())
 				.setParameter("toAccountNo", param.getToAccountNo())
 				.setParameter("payBonusAtr", param.getPayBonusAtr())
@@ -112,19 +104,19 @@ public class JpaBankTranferRepository extends JpaRepository implements BankTranf
 	 */
 	private BankTranfer toDomain(QbkdtBankTransfer x) {
 		BankTranfer bankTranfer = BankTranfer.createFromJavaType(
-				x.qbkdtBankTransferPK.pid, 
 				x.qbkdtBankTransferPK.ccd, 
 				x.cnameKana, 
+				x.qbkdtBankTransferPK.pid, 
 				x.depcd,
 				x.qbkdtBankTransferPK.payDate, 
 				x.qbkdtBankTransferPK.payBonusAtr, 
 				x.paymentMny,
-				x.processingNo, 
+				x.qbkdtBankTransferPK.processingNo, 
 				x.processingYm,
 				x.qbkdtBankTransferPK.sparePayAtr);
 		
-		bankTranfer.fromBank(x.qbkdtBankTransferPK.fromAccountAtr, x.toAccountKnName, x.qbkdtBankTransferPK.fromAccountNo, x.qbkdtBankTransferPK.fromBankCd, x.fromBankKnName, x.qbkdtBankTransferPK.fromBranchCd, x.fromBranchKnName);
-		bankTranfer.toBank(x.qbkdtBankTransferPK.toAccountAtr, x.toAccountKnName, x.qbkdtBankTransferPK.toAccountNo, x.qbkdtBankTransferPK.toBankCd, x.toBankKnName, x.qbkdtBankTransferPK.toBranchCd, x.toBranchKnName);
+		bankTranfer.fromBank(x.qbkdtBankTransferPK.fromBranchId, x.fromBankKnName, x.fromBranchKnName, x.qbkdtBankTransferPK.fromAccountAtr, x.qbkdtBankTransferPK.fromAccountNo);
+		bankTranfer.toBank(x.qbkdtBankTransferPK.toBranchId, x.toBankKnName, x.toBranchKnName, x.qbkdtBankTransferPK.toAccountAtr, x.toAccountKnName, x.qbkdtBankTransferPK.toAccountNo);
 		
 		return bankTranfer;
 	}
@@ -146,8 +138,7 @@ public class JpaBankTranferRepository extends JpaRepository implements BankTranf
 		entity.toAccountKnName = root.getToBank().getAccountNameKana();
 		entity.depcd = root.getDepartmentCode();
 		entity.paymentMny = root.getPaymentMoney().v();
-		entity.processingNo = root.getProcessingNo();
-		entity.processingYm = root.getYearMonth().v();
+		entity.processingYm = root.getProcessingYM().v();
 		
 		return entity;
 	}
@@ -159,17 +150,16 @@ public class JpaBankTranferRepository extends JpaRepository implements BankTranf
 	 */
 	private QbkdtBankTransferPK toPK(BankTranfer root) {
 		return new QbkdtBankTransferPK(
-				root.getCompanyCode().v(), 
+				root.getCompanyCode(), 
 				root.getPersonId().v(), 
-				root.getFromBank().getBankCode(), 
-				root.getFromBank().getBranchCode(), 
+				root.getFromBank().getBranchId(), 
 				root.getFromBank().getAccountAtr(), 
 				root.getFromBank().getAccountNo(), 
-				root.getToBank().getBankCode(), 
-				root.getToBank().getBranchCode(), 
+				root.getToBank().getBranchId(), 
 				root.getToBank().getAccountAtr(), 
 				root.getToBank().getAccountNo(), 
 				root.getPaymentBonusAtr().value,
+				root.getProcessingNo(),
 				root.getPaymentDate(), 
 				root.getSparePaymentAtr().value);
 	}
