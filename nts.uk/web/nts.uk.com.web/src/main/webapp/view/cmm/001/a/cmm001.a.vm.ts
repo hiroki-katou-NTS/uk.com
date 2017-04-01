@@ -12,6 +12,7 @@ module cmm001.a {
         dirtyObject: nts.uk.ui.DirtyChecker;
         previousCurrentCode: string = null; //lưu giá trị của currentCode trước khi nó bị thay đổi
         itemList: KnockoutObservable<any>;
+        hasFocus: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
             let self = this;
@@ -96,6 +97,7 @@ module cmm001.a {
                         $('.save-error').ntsError('clear');
                     }
                     self.currentCompany().setDataForCurrentCompany(company);
+                    self.hasFocus(false);
                     self.previousCurrentCode = newValue;
                     self.dirtyObject.reset();
                 } else {
@@ -229,7 +231,6 @@ module cmm001.a {
             if ($('.nts-editor').ntsError("hasError")) {
                 $('.save-error').ntsError('clear');
             }
-            self.currentCompanyCode("");
             self.currentCompany().companyCode("");
             self.currentCompany().address1("");
             self.currentCompany().addressKana1("");
@@ -256,10 +257,12 @@ module cmm001.a {
             self.currentCompany().isDelete(false);
             self.currentCompany().editMode = true;
             self.currentCompany().isEnableCompanyCode(true);
+            self.hasFocus(true);
             self.isUpdate(false);
             self.previousCurrentCode = "";
+            self.currentCompanyCode("");
             self.dirtyObject.reset();
-            self.currentCompany().hasFocus(true);
+
         }
 
         clickRegister() {
@@ -438,7 +441,6 @@ module cmm001.a {
         selectedRuleCode2: KnockoutObservable<string>;
         roundingRules3: KnockoutObservableArray<RoundingRule>;
         selectedRuleCode3: KnockoutObservable<string>;
-        hasFocus: KnockoutObservable<boolean> = ko.observable(true);
         editMode: boolean = true;// mode reset or not reset
 
         constructor(param: ICompany) {
@@ -563,19 +565,6 @@ module cmm001.a {
         termBeginMon: number;
         companyUseSet: CompanyUseSet;
         isDelete?: boolean;
-    }
-
-    export class Address {
-        address1: KnockoutObservable<string>;
-        address2: KnockoutObservable<string>;
-        addressKana1: KnockoutObservable<string>;
-        addressKana2: KnockoutObservable<string>;
-        constructor(address1: string, address2: string, addressKana1: string, addressKana2: string) {
-            this.address1 = ko.observable(address1);
-            this.address2 = ko.observable(address2);
-            this.addressKana1 = ko.observable(addressKana1);
-            this.addressKana2 = ko.observable(addressKana2);
-        }
     }
 
     export class CompanyUseSet {

@@ -5,7 +5,8 @@ var cmm001;
         var ViewModel = (function () {
             function ViewModel() {
                 this.isUpdate = ko.observable(null);
-                this.previousCurrentCode = null;
+                this.previousCurrentCode = null; //lưu giá trị của currentCode trước khi nó bị thay đổi
+                this.hasFocus = ko.observable(true);
                 var self = this;
                 self.init();
                 self.currentCompanyCode.subscribe(function (newValue) {
@@ -15,6 +16,7 @@ var cmm001;
                     else {
                         self.isUpdate(true);
                         if (!nts.uk.text.isNullOrEmpty(newValue) && self.currentCompanyCode() !== self.previousCurrentCode) {
+                            //goi check isDirty
                             if (self.dirtyObject.isDirty()) {
                                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function () {
                                     self.processWhenCurrentCodeChange(newValue);
@@ -86,6 +88,7 @@ var cmm001;
                             $('.save-error').ntsError('clear');
                         }
                         self.currentCompany().setDataForCurrentCompany(company);
+                        self.hasFocus(false);
                         self.previousCurrentCode = newValue;
                         self.dirtyObject.reset();
                     }
@@ -220,7 +223,6 @@ var cmm001;
                 if ($('.nts-editor').ntsError("hasError")) {
                     $('.save-error').ntsError('clear');
                 }
-                self.currentCompanyCode("");
                 self.currentCompany().companyCode("");
                 self.currentCompany().address1("");
                 self.currentCompany().addressKana1("");
@@ -247,10 +249,11 @@ var cmm001;
                 self.currentCompany().isDelete(false);
                 self.currentCompany().editMode = true;
                 self.currentCompany().isEnableCompanyCode(true);
+                self.hasFocus(true);
                 self.isUpdate(false);
                 self.previousCurrentCode = "";
+                self.currentCompanyCode("");
                 self.dirtyObject.reset();
-                self.currentCompany().hasFocus(true);
             };
             ViewModel.prototype.clickRegister = function () {
                 var self = this;
@@ -400,8 +403,7 @@ var cmm001;
         var CompanyModel = (function () {
             function CompanyModel(param) {
                 this.isEnableCompanyCode = ko.observable(true);
-                this.hasFocus = ko.observable(true);
-                this.editMode = true;
+                this.editMode = true; // mode reset or not reset
                 var self = this;
                 self.init(param);
             }
@@ -483,6 +485,7 @@ var cmm001;
                 self.termBeginMon = ko.observable(param.termBeginMon);
                 self.companyUseSet = ko.observable(param.companyUseSet);
                 self.isDelete = ko.observable(param.isDelete || false);
+                //SWITCH
                 self.roundingRules = ko.observableArray([
                     new RoundingRule("1", '利用する'),
                     new RoundingRule('0', '利用しない')
@@ -498,16 +501,6 @@ var cmm001;
             };
             return CompanyModel;
         }());
-        var Address = (function () {
-            function Address(address1, address2, addressKana1, addressKana2) {
-                this.address1 = ko.observable(address1);
-                this.address2 = ko.observable(address2);
-                this.addressKana1 = ko.observable(addressKana1);
-                this.addressKana2 = ko.observable(addressKana2);
-            }
-            return Address;
-        }());
-        a.Address = Address;
         var CompanyUseSet = (function () {
             function CompanyUseSet(useKtSet, useQySet, useJjSet) {
                 this.useGrSet = 0;
@@ -542,4 +535,3 @@ var cmm001;
         }());
     })(a = cmm001.a || (cmm001.a = {}));
 })(cmm001 || (cmm001 = {}));
-//# sourceMappingURL=cmm001.a.vm.js.map
