@@ -1,0 +1,33 @@
+.wrap-sel-006 {
+	height: 203px;
+}
+.g-col-1 {
+	height: 100%;
+	float:left;
+}
+#g_lst_001{
+	margin-top: 39px;
+}
+#g_lst_002 {
+	width: 282px; 
+	margin-left: 20px;
+}
+#g_lst_001.caret-right:after {
+    border-width: 37px 19px;
+    top:38px;
+    color: #E0F59E;
+}
+
+#g_btn_001 {
+	width: 283px;
+    height: 28px;
+}
+#g_btn_001.caret-bottom:after {
+	border-width: 25px 75px;
+    color: #E0F59E;
+    top: 30px;
+    left: 87px;
+}
+#list-box-g {
+	width: 265px;
+}

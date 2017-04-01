@@ -23,7 +23,13 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     k.service.loadDemensionSelectionList().done(function (res) {
-                                        self.demensionItemList(res);
+                                        var filteredDemensionItemList = _.filter(res, function (item) {
+                                            var ignoredItem = _.find(self.dialogOptions.selectedDemensionDto, function (selected) {
+                                                return item.type == selected.type && item.code == selected.code;
+                                            });
+                                            return ignoredItem == undefined;
+                                        });
+                                        self.demensionItemList(filteredDemensionItemList);
                                         dfd.resolve();
                                     });
                                     return dfd.promise();

@@ -16,6 +16,12 @@
 			    nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupCode
 			    nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupName
 			 </com:ValidatorScript>
+			<script type="text/javascript">
+				var dialogSize = {
+					width : 1260,
+					height : 730
+				};
+			</script>
 		</ui:define>
 
 		<ui:define name="content">
@@ -33,13 +39,14 @@
 					<tr>
 						<td id="contents-left"
 							class="bg-green caret-right caret-background">
+							<i class="icon icon-searchbox"></i>
 							<div
 								data-bind="ntsSearchBox: {comId: 'certifyGroupList', items: lstCertifyGroup, selected: selectCodeLstLstCertifyGroup, selectedKey: 'code', fields: ['code','name']}" />
 							<div id="search_001">
 								<table id="certifyGroupList"
 									data-bind="ntsGridList: {
 									width: 300,
-									height: 500,
+									height: 400,
 									options: lstCertifyGroup,
 									optionsValue: 'code',
 									columns: columnsLstCertifyGroup,
@@ -52,7 +59,7 @@
 						<td id="contents-right" data-bind="with: certifyGroupModel">
 							<div class="contentsRL">
 								<div id="lbl_code_name"
-									data-bind="ntsFormLabel: { required: false }">
+									data-bind="ntsFormLabel: { required: true }">
 									<label>コード/名称<br /></label>
 								</div>
 								<input id="inp_code" class="tr50" data-name="code"
@@ -73,7 +80,7 @@
 								<tr>
 									<td class="contentsRL">
 										<div id="A_LBL_003"
-											data-bind="ntsFormLabel: {required: false}">
+											data-bind="ntsFormLabel: {required: true}">
 											<label>同一グループ内で複数の資格を取得している場合の支給方法</label>
 										</div>
 									</td>
@@ -89,9 +96,8 @@
 											optionsText: 'name',
 											editable: true,
 											enable: true,
-											columns: [
-												{ prop: 'name', length: 10 },
-											]}"></div>
+											columns: [{ prop: 'name', length: 10 }]
+											}"></div>
 									</td>
 								</tr>
 							</table>
@@ -104,7 +110,7 @@
 									<hr />
 									<br />
 								</div>
-								<div class="div50">
+								<div class="div50 left50">
 									<div id="lbl_code_name"
 										data-bind="ntsFormLabel: { required: false }">
 										<label>表に追加した資格<br /></label>

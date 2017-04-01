@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.command;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find.HealthInsuranceAvgearnValueDto;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnValue;
 
@@ -17,7 +16,7 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvge
 
 @Getter
 @Setter
-public class HealthInsuranceAvgearnCommandDto {
+public class HealthInsuranceAvgearnCommandDto implements HealthInsuranceAvgearnGetMemento {
 
 	/** The history id. */
 	private String historyId;
@@ -31,39 +30,48 @@ public class HealthInsuranceAvgearnCommandDto {
 	/** The personal avg. */
 	private HealthInsuranceAvgearnValueDto personalAvg;
 
-	/**
-	 * To domain.
-	 *
-	 * @return the health insurance avgearn
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
+	 * HealthInsuranceAvgearnGetMemento#getPersonalAvg()
 	 */
-	public HealthInsuranceAvgearn toDomain() {
-		HealthInsuranceAvgearnCommandDto dto = this;
-
-		// Transfer data
-		HealthInsuranceAvgearn healthInsuranceAvgearn = new HealthInsuranceAvgearn(
-				new HealthInsuranceAvgearnGetMemento() {
-
-					@Override
-					public HealthInsuranceAvgearnValue getPersonalAvg() {
-						return HealthInsuranceAvgearnValueDto.toDomain(dto.getPersonalAvg());
-					}
-
-					@Override
-					public Integer getLevelCode() {
-						return dto.getLevelCode();
-					}
-
-					@Override
-					public String getHistoryId() {
-						return dto.getHistoryId();
-					}
-
-					@Override
-					public HealthInsuranceAvgearnValue getCompanyAvg() {
-						return HealthInsuranceAvgearnValueDto.toDomain(dto.getCompanyAvg());
-					}
-				});
-
-		return healthInsuranceAvgearn;
+	@Override
+	public HealthInsuranceAvgearnValue getPersonalAvg() {
+		return HealthInsuranceAvgearnValueDto.toDomain(this.personalAvg);
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
+	 * HealthInsuranceAvgearnGetMemento#getLevelCode()
+	 */
+	@Override
+	public Integer getLevelCode() {
+		return this.levelCode;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
+	 * HealthInsuranceAvgearnGetMemento#getHistoryId()
+	 */
+	@Override
+	public String getHistoryId() {
+		return this.historyId;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
+	 * HealthInsuranceAvgearnGetMemento#getCompanyAvg()
+	 */
+	@Override
+	public HealthInsuranceAvgearnValue getCompanyAvg() {
+		return HealthInsuranceAvgearnValueDto.toDomain(this.companyAvg);
+	}
+
 }
