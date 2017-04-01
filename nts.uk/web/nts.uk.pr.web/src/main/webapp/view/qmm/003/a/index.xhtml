@@ -10,6 +10,8 @@
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
 					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResiTaxCode
+					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.PrefectureCode
+					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResiTaxReportCode
 					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResiTaxAutonomy
 					nts.uk.shr.com.primitive.Memo
 					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.CompanyAccountNo
@@ -19,10 +21,10 @@
 					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.CordinatePostalCode
 				</com:ValidatorScript>
            	<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="service.js" />
-			<com:stylefile path="main.css" />
+			<com:scriptfile path="qmm003.a.vm.js" />
+			<com:scriptfile path="qmm003.a.start.js" />
+			<com:scriptfile path="qmm003.a.service.js" />
+			<com:stylefile path="qmm003.a.main.css" />
 
 		</ui:define>
 
@@ -30,7 +32,7 @@
 		<div id="functions-area">
 <!-- 		data-bind="click: resetData" -->
 				<button id="A_BTN_001" class="group-button-1 " data-bind="click: resetData">新規</button>
-				<button id="A_BTN_002" class="proceed group-button-1" data-bind="click: ClickRegister, enable: $root.errors.isEmpty">登録</button>
+				<button id="A_BTN_002" class="proceed group-button-1" data-bind="click: clickRegister, enable: $root.errors.isEmpty">登録</button>
 				<button id="A_BTN_003" class="group-button-1">印刷（PDF）</button>
 				<button id="A_BTN_004" class="group-button-1" data-bind="click: openEDialog">納付先の統合</button>
 				<button id="A_BTN_008" class="group-button-1">マスタ修正ログ</button>
@@ -50,7 +52,7 @@
 						<div id="search" style="width: 400px"
 							data-bind="ntsSearchBox: {items: items, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
 						<div>
-							<table id="treegrid2"
+							<table id="A_LST_001"
 								data-bind="ntsTreeGridView:{
 								   	width: 350,
 									height: 500,
@@ -79,7 +81,7 @@
 							<tbody>
 								<tr class ="flex">
 									<th colspan="1" class="th flex">
-										<div data-bind="ntsFormLabel: {constraint: 'ResiTaxCode', required: true ,readonly: true}" class="form-label">
+										<div data-bind="ntsFormLabel: {constraint: ['ResiTaxCode','ResiTaxAutonomy'], required: true ,readonly: true}" class="form-label">
 											<label id="A_LBL_002">コード/名称</label>
 										</div>
 									</th>
@@ -91,7 +93,8 @@
 												constraint: 'ResiTaxCode',
 												required: true,
 												enable: true,
-												readonly: false }" />
+												readonly: false }
+												, hasFocus: true" />
 								  </div>
 									</th>
 									<th colspan="2" >
@@ -112,12 +115,12 @@
 								<!--  3  -->
 								<tr class= "flex">
 									<th colspan="1" class="th flex">
-										<div data-bind="ntsFormLabel: {required: true}" class="form-label ">
+										<div data-bind="ntsFormLabel: {constraint:'PrefectureCode',required: true}" class="form-label ">
 											<label id="A_LBL_003">都道府県</label>
 										</div>
 									</th>
 									<th colspan="2" class="th">
-										<div id="combo-box"
+										<div id="A_SEL_001"
 											data-bind="ntsComboBox: {
 						                        options: itemPrefecture,
 												optionsValue: 'code',
@@ -139,7 +142,7 @@
 							<tbody>
 								<tr class= "flex">
 									<th colspan="1" class="th">
-										<div data-bind="ntsFormLabel: {}">
+										<div data-bind="ntsFormLabel: {constraint: 'ResiTaxReportCode'}">
 											<label id="A_LBL_004"> 住民税報告先 </label>
 										</div>
 									</th>
@@ -165,7 +168,6 @@
 										<input id="A_INP_004" data-bind="ntsTextEditor: {
 												value: companyAccountNo,
 												constraint: 'CompanyAccountNo',
-												required: true,
 												enable: true,
 												readonly: false }" />					
 									</div>
@@ -235,7 +237,6 @@
 										<input id="A_INP_007"  data-bind="ntsTextEditor: {
 												value: cordinatePostalCode,
 												constraint: 'CordinatePostalCode',
-												required: true,
 												enable: true,
 												readonly: false }" />									
 							<!-- 	<input
@@ -258,7 +259,6 @@
 										<input id="A_INP_008"  data-bind="ntsTextEditor: {
 												value: cordinatePostOffice,
 												constraint: 'CordinatePostOffice',
-												required: true,
 												enable: true,
 												readonly: false }" />				
 								</div>
