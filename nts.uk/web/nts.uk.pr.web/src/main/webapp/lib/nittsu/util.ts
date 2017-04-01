@@ -156,7 +156,8 @@
             return false;
         };
         
-        export function createTreeFromString(original: string, openChar: string, closeChar: string, seperatorChar: string): Array<TreeObject>[]{
+        export function createTreeFromString(original: string, openChar: string, closeChar: string, 
+            seperatorChar: string, operatorChar: Array<string>): Array<TreeObject>[]{
             return convertToTree(original, openChar, closeChar, seperatorChar, 1).result;
         }
         
@@ -205,7 +206,10 @@
                 }
             }
             
-            return result;
+            return {
+                    "result": result,
+                    "index": index    
+                };
         }
         
         function findIndexOfCloseChar(original: string, openChar: string, closeChar: string, firstOpenIndex: number): number{

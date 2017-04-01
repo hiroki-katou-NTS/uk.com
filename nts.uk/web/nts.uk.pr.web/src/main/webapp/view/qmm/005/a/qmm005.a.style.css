@@ -1,0 +1,37 @@
+@import url("../qmm005.css");
+
+#functions-area .btn-group-left {
+	width: 355px;
+}
+
+#functions-area #A_BTN_001 {
+	background-color: rgb(164, 238, 176);
+}
+
+td>.caret {
+	display: inline-block;
+}
+
+td>.ui-igcombo-wrapper, td>.caret>.ui-igcombo-wrapper {
+	top: 0;
+}
+
+#C_SEL_001 {
+	width: 60px;
+}
+
+#C_SEL_002 {
+	width: 260px;
+}
+
+#C_SEL_003 {
+	width: 50px;
+}
+
+#C_SEL_004 {
+	width: 100px;
+}
+
+#C_SEL_005 {
+	width: 80px;
+}

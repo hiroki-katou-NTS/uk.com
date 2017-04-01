@@ -1,3 +1,5 @@
+/// <reference path="../reference.ts"/>
+
 module nts.uk.ui.validation {
 
     export interface IValidator {
@@ -71,16 +73,21 @@ module nts.uk.ui.validation {
                 }
             }
             
-            if (this.charType !== null) {
+            if (this.charType !== null && this.charType !== undefined) {
                 if (!this.charType.validate(inputText)) {
                     result.fail('Invalid text');
                     return result;
                 }
             }
             
-            if (this.constraint !== null && this.constraint.maxLength !== undefined) {
-                if (text.countHalf(inputText) > this.constraint.maxLength) {
+            if (this.constraint !== undefined && this.constraint !== null) {
+                if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
                     result.fail('Max length for this input is ' + this.constraint.maxLength);
+                    return result;
+                }  
+                
+                if (!text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)){
+                    result.fail('This field is not valid with pattern!');
                     return result;
                 }
             }

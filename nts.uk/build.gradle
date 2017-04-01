@@ -6,7 +6,7 @@ buildscript {
 	repositories {
 		maven {
 			name 'nsvnmk'
-			url 'http://1506-v0001:8081/artifactory/plugins-release'
+			url 'http://192.168.100.84:8081/artifactory/plugins-release'
 		}
 	}
 	dependencies {
@@ -61,6 +61,7 @@ subprojects {
 		
 		// JUnit
 		testCompile group: 'junit', name: 'junit', version: '4.12'
+		testCompile group: 'org.hamcrest', name: 'hamcrest-library', version: '1.3'
 		
 		// JMockit
 		testCompile group: 'org.jmockit', name: 'jmockit', version: '1.28'
@@ -96,8 +97,8 @@ subprojects {
 		compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.22'
 		compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.22'
 		
-		compile group: 'nts.gul', name: 'nts.gul', version: '0.13'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.18'
+		compile group: 'nts.gul', name: 'nts.gul', version: '0.15.1'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.21.1'
 	}
 }
 
@@ -107,6 +108,18 @@ project (':shr:nts.uk.shr.com') {
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
 		// Mime Detection Utility
 		compile group: 'eu.medsea.mimeutil', name: 'mime-util', version: '2.1.3'
+	}
+}
+
+project (':shr:nts.uk.shr.ws') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':shr:nts.uk.shr.find')
+	}
+}
+
+project (':shr:nts.uk.shr.find') {
+	dependencies {
 	}
 }
 
@@ -124,6 +137,7 @@ project (':ctx:basic:nts.uk.ctx.basic.dom') {
 project (':ctx:basic:nts.uk.ctx.basic.app') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':shr:nts.uk.shr.find')
 		compile project(':ctx:basic:nts.uk.ctx.basic.dom')
 	}
 }
@@ -149,6 +163,7 @@ project (':ctx:basic:nts.uk.ctx.basic.pubimp') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':ctx:basic:nts.uk.ctx.basic.pub')
 		compile project(':ctx:basic:nts.uk.ctx.basic.dom')
+		compile project(':ctx:basic:nts.uk.ctx.basic.infra')
 	}
 }
 
@@ -166,7 +181,9 @@ project (':ctx:pr:core:nts.uk.ctx.pr.core.dom') {
 project (':ctx:pr:core:nts.uk.ctx.pr.core.app') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':shr:nts.uk.shr.find')
 		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.dom')
+		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.ac')
 	}
 }
 project (':ctx:pr:core:nts.uk.ctx.pr.core.infra') {
@@ -180,6 +197,8 @@ project (':ctx:pr:core:nts.uk.ctx.pr.core.ac') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.dom')
+		compile project(':ctx:basic:nts.uk.ctx.basic.pub')
+		compile project(':ctx:basic:nts.uk.ctx.basic.pubimp')
 	}
 }
 project (':ctx:pr:core:nts.uk.ctx.pr.core.pub') {
@@ -192,6 +211,7 @@ project (':ctx:pr:core:nts.uk.ctx.pr.core.pubimp') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.pub')
 		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.dom')
+		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.infra')
 	}
 }
 
@@ -209,6 +229,7 @@ project (':ctx:pr:formula:nts.uk.ctx.pr.formula.dom') {
 project (':ctx:pr:formula:nts.uk.ctx.pr.formula.app') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':shr:nts.uk.shr.find')
 		compile project(':ctx:pr:formula:nts.uk.ctx.pr.formula.dom')
 	}
 }
@@ -251,7 +272,9 @@ project (':ctx:pr:report:nts.uk.ctx.pr.report.dom') {
 project (':ctx:pr:report:nts.uk.ctx.pr.report.app') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':shr:nts.uk.shr.find')
 		compile project(':ctx:pr:report:nts.uk.ctx.pr.report.dom')
+		compile project(':ctx:pr:report:nts.uk.ctx.pr.report.ac')
 	}
 }
 project (':ctx:pr:report:nts.uk.ctx.pr.report.infra') {
@@ -264,7 +287,10 @@ project (':ctx:pr:report:nts.uk.ctx.pr.report.infra') {
 project (':ctx:pr:report:nts.uk.ctx.pr.report.ac') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':ctx:pr:report:nts.uk.ctx.pr.report.app')
 		compile project(':ctx:pr:report:nts.uk.ctx.pr.report.dom')
+		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.pub')
+		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.pubimp')
 	}
 }
 project (':ctx:pr:report:nts.uk.ctx.pr.report.pub') {
@@ -314,6 +340,17 @@ project (':web:nts.uk.com.web') {
 		runtime project (':ctx:basic:nts.uk.ctx.basic.pub')
 		runtime project (':ctx:basic:nts.uk.ctx.basic.pubimp')
 		runtime project (':ctx:basic:nts.uk.ctx.basic.ws')
+		
+		runtime project (':shr:nts.uk.shr.ws')
+		runtime project (':shr:nts.uk.shr.find')
+		
+		// shr find implement
+		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.app')
+		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.infra')
+		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.app')
+		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.infra')
+		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.app')
+		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.infra')
 	}
 }
 
@@ -343,7 +380,7 @@ project (':web:nts.uk.pr.web') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
-
+		
 		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.ac')
 		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.app')
 		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.dom')
@@ -359,6 +396,14 @@ project (':web:nts.uk.pr.web') {
 		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.pub')
 		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.pubimp')
 		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.ws')
+
+		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.ac')
+		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.app')
+		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.dom')
+		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.infra')
+		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.pub')
+		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.pubimp')
+		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.ws')
 		
 		runtime project (':screen:pr:nts.uk.screen.pr.ws')
 		runtime project (':screen:pr:nts.uk.screen.pr.app')
@@ -369,6 +414,9 @@ project (':web:nts.uk.pr.web') {
 		
 		// to provide PrimitiveValue
 		runtime project (':ctx:basic:nts.uk.ctx.basic.dom')
+		runtime project (':ctx:basic:nts.uk.ctx.basic.pub')
+		runtime project (':ctx:basic:nts.uk.ctx.basic.pubimp')
+		runtime project (':ctx:basic:nts.uk.ctx.basic.infra')
 	}
 }
 

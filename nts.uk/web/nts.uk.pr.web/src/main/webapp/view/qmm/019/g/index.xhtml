@@ -13,13 +13,13 @@
             	<com:scriptfile path="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js"/>
 				<com:scriptfile path="../../../../lib/nittsu/ui/textbox-options.js"/>
 				<com:ValidatorScript>
-					nts.uk.ctx.pr.proto.dom.layout.LayoutCode
-					nts.uk.ctx.pr.proto.dom.layout.LayoutName
+					nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutCode
+					nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutName
    				</com:ValidatorScript>
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="viewmodel.js" />
 				<com:scriptfile path="service.js" />
-			    <script>var dialogSize = { width: 960, height: 610 };</script>
+			    <script>var dialogSize = { width: 900, height: 610 };</script>
 			    <style>.nts-list-box *{box-sizing: border-box} </style>
             </ui:define>
             
@@ -27,7 +27,7 @@
 <!--             <div id="functions-area"></div> -->
             	<div id="contents-area">
 					<div class="cf">
-						<div data-bind="ntsFormLabel: {required: true}"><label id="LBL_001">作成方法の選択</label></div><br />
+						<div data-bind="ntsFormLabel: {required: true}" class="form-label"><label id="LBL_001">作成方法の選択</label></div><br />
 						<div class = "layoutSelect">
 							<div id="SEL_001" data-bind="foreach: itemsRadio">
 				  				<span class="ntsControl">
@@ -44,7 +44,7 @@
  											optionsValue: 'layoutCode',
  											value: selectLayoutCode,
  											optionsText: 'layoutName',
- 											enable: isEnable(),
+ 											enable: isEnableCombox(),
  											columns: [
  												{ prop: 'layoutCode', length: 3 },
  												{ prop: 'layoutName', length: 10 }
@@ -56,12 +56,12 @@
 						<div class="clsDiv"><label id = "LBL_003">※選択した明細レイアウトの最新の履歴からコピーします。</label></div>
 						<div>
 							<div class ="inline clsDiv">
-								<div id="LBL_004" data-bind="ntsFormLabel: {required: true}">
+								<div id="LBL_004" data-bind="ntsFormLabel: {required: true,constraint: 'LayoutCode'}">
 									<label>コード/名称<br /></label>
 								</div>
 								<!-- <label id = "LBL_004" >コード/名称</label> -->
 								<input id="INP_001" data-name="コード" data-bind="ntsTextEditor: {value: layoutCode, 
-																					constraint: 'LayoutCode', 
+																					constraint: 'LayoutCode, LayoutName', 
 																					option: textEditorOption, 
 																					enable: true}" />
 								<input id="INP_002" data-name="名称" data-bind="ntsTextEditor: {value: layoutName, 
@@ -96,7 +96,8 @@
 											{ prop: 'numberDisplayItems', length: 13 },
 											{ prop: 'reference', length: 6 }
 										]}"
-						class="cf"></div></div>
+						class="cf"></div>
+						</div>
 						<br/>
 						<hr></hr>
 						<div class = "bottomStype">
