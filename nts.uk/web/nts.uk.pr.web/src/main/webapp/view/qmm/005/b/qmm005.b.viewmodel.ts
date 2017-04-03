@@ -43,6 +43,7 @@ module qmm005.b {
             let self = this;
             services.getData(self.index()).done(function(resp: Array<PaydayDto>) {
                 if (resp && resp.length > 0) {
+                    resp = _.orderBy(resp, ["processingYm"], ["asc"]);
                     let lst001Data: Array<common.SelectItem> = [],
                         lst002Data: Array<TableRowItem> = [],
                         dataRow = nts.uk.ui.windows.getShared('dataRow');
@@ -51,22 +52,34 @@ module qmm005.b {
                             let year = rec.processingYm["getYearInYm"](),
                                 yearIJE = year + "(" + year["yearInJapanEmpire"]() + ")",
                                 index = i + 1,
+                                sel002Data: Array<common.SelectItem> = [],
+                                $moment = moment(rec.payDate),
                                 row = new TableRowItem({
                                     index: index,
                                     label: index + '月の設定',
                                     sel001: rec.payBonusAtr == 1 ? true : false,
-                                    sel002: 0,
-                                    sel002Data: [new common.SelectItem({ index: 0, label: rec.payDate })],
-                                    inp003: new Date(),
-                                    inp004: new Date(),
-                                    inp005: new Date(),
-                                    inp006: new Date(),
-                                    inp007: new Date(),
-                                    inp008: new Date(),
-                                    inp009: new Date(),
-                                    inp010: 0
+                                    sel002: $moment.date(),
+                                    sel002Data: sel002Data,
+                                    inp003: new Date(rec.stdDate),
+                                    inp004: rec.socialInsLevyMon["formatYearMonth"]("/"),
+                                    inp005: rec.stmtOutputMon["formatYearMonth"]("/"),
+                                    inp006: new Date(rec.socialInsStdDate),
+                                    inp007: new Date(rec.empInsStdDate),
+                                    inp008: new Date(rec.incomeTaxStdDate),
+                                    inp009: new Date(rec.accountingClosing),
+                                    inp010: rec.neededWorkDay
                                 });
 
+                            for (var j: number = 1; j <= $moment.daysInMonth(); j++) {
+                                var date = moment(new Date($moment.year(), $moment.month(), j));
+                                sel002Data.push(new common.SelectItem({
+                                    index: j,
+                                    label: date.format("YYYY/MM/DD"),
+                                    value: date.toDate()
+                                }));
+                            }
+
+                            row.sel002Data(sel002Data);
                             lst002Data.push(row);
 
                             if (!_.find(lst001Data, function(item) { return item.value == year; })) {
@@ -145,8 +158,8 @@ module qmm005.b {
         sel002: number;
         sel002Data: Array<common.SelectItem>;
         inp003: Date;
-        inp004: Date;
-        inp005: Date;
+        inp004: string;
+        inp005: string;
         inp006: Date;
         inp007: Date;
         inp008: Date;
@@ -161,8 +174,8 @@ module qmm005.b {
         sel002: KnockoutObservable<number> = ko.observable(0);
         sel002L: KnockoutObservable<string> = ko.observable('');
         inp003: KnockoutObservable<Date> = ko.observable(null);
-        inp004: KnockoutObservable<Date> = ko.observable(null);
-        inp005: KnockoutObservable<Date> = ko.observable(null);
+        inp004: KnockoutObservable<string> = ko.observable('');
+        inp005: KnockoutObservable<string> = ko.observable('');
         inp006: KnockoutObservable<Date> = ko.observable(null);
         inp007: KnockoutObservable<Date> = ko.observable(null);
         inp008: KnockoutObservable<Date> = ko.observable(null);
@@ -192,9 +205,8 @@ module qmm005.b {
             self.sel002.subscribe(function(v) {
                 if (v) {
                     let currentSel002 = _.find(self.sel002Data(), function(item) { return item.index == v; });
-                    debugger;
                     if (currentSel002) {
-                        self.sel002L(new Date(currentSel002.value)["getDayJP"]());
+                        self.sel002L(currentSel002.value["getDayJP"]());
                     }
                 }
             });

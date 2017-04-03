@@ -42,30 +42,41 @@ var qmm005;
                 var self = this;
                 b.services.getData(self.index()).done(function (resp) {
                     if (resp && resp.length > 0) {
+                        resp = _.orderBy(resp, ["processingYm"], ["asc"]);
                         var lst001Data = [], lst002Data = [], dataRow = nts.uk.ui.windows.getShared('dataRow');
                         var _loop_1 = function(i, rec) {
                             if (rec) {
-                                var year_1 = rec.processingYm["getYearInYm"](), yearIJE = year_1 + "(" + year_1["yearInJapanEmpire"]() + ")", index = i + 1, row = new TableRowItem({
+                                var year_1 = rec.processingYm["getYearInYm"](), yearIJE = year_1 + "(" + year_1["yearInJapanEmpire"]() + ")", index = i + 1, sel002Data = [], $moment = moment(rec.payDate), row = new TableRowItem({
                                     index: index,
                                     label: index + '月の設定',
                                     sel001: rec.payBonusAtr == 1 ? true : false,
-                                    sel002: 0,
-                                    sel002Data: [new qmm005.common.SelectItem({ index: 0, label: rec.payDate })],
-                                    inp003: new Date(),
-                                    inp004: new Date(),
-                                    inp005: new Date(),
-                                    inp006: new Date(),
-                                    inp007: new Date(),
-                                    inp008: new Date(),
-                                    inp009: new Date(),
-                                    inp010: 0
+                                    sel002: $moment.date(),
+                                    sel002Data: sel002Data,
+                                    inp003: new Date(rec.stdDate),
+                                    inp004: rec.socialInsLevyMon["formatYearMonth"]("/"),
+                                    inp005: rec.stmtOutputMon["formatYearMonth"]("/"),
+                                    inp006: new Date(rec.socialInsStdDate),
+                                    inp007: new Date(rec.empInsStdDate),
+                                    inp008: new Date(rec.incomeTaxStdDate),
+                                    inp009: new Date(rec.accountingClosing),
+                                    inp010: rec.neededWorkDay
                                 });
+                                for (j = 1; j <= $moment.daysInMonth(); j++) {
+                                    date = moment(new Date($moment.year(), $moment.month(), j));
+                                    sel002Data.push(new qmm005.common.SelectItem({
+                                        index: j,
+                                        label: date.format("YYYY/MM/DD"),
+                                        value: date.toDate()
+                                    }));
+                                }
+                                row.sel002Data(sel002Data);
                                 lst002Data.push(row);
                                 if (!_.find(lst001Data, function (item) { return item.value == year_1; })) {
                                     lst001Data.push(new qmm005.common.SelectItem({ index: i + 1, label: yearIJE, value: year_1, selected: year_1 == dataRow.sel001() }));
                                 }
                             }
                         };
+                        var j, date;
                         for (var i = 0, rec = void 0; i <= 11, rec = resp[i]; i++) {
                             _loop_1(i, rec);
                         }
@@ -133,8 +144,8 @@ var qmm005;
                 this.sel002 = ko.observable(0);
                 this.sel002L = ko.observable('');
                 this.inp003 = ko.observable(null);
-                this.inp004 = ko.observable(null);
-                this.inp005 = ko.observable(null);
+                this.inp004 = ko.observable('');
+                this.inp005 = ko.observable('');
                 this.inp006 = ko.observable(null);
                 this.inp007 = ko.observable(null);
                 this.inp008 = ko.observable(null);
@@ -158,9 +169,8 @@ var qmm005;
                 self.sel002.subscribe(function (v) {
                     if (v) {
                         var currentSel002 = _.find(self.sel002Data(), function (item) { return item.index == v; });
-                        debugger;
                         if (currentSel002) {
-                            self.sel002L(new Date(currentSel002.value)["getDayJP"]());
+                            self.sel002L(currentSel002.value["getDayJP"]());
                         }
                     }
                 });
