@@ -29,8 +29,7 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthIn
  * The Class JpaHealthInsuranceRateRepository.
  */
 @Stateless
-public class JpaHealthInsuranceRateRepository extends JpaRepository
-		implements HealthInsuranceRateRepository {
+public class JpaHealthInsuranceRateRepository extends JpaRepository implements HealthInsuranceRateRepository {
 
 	/*
 	 * (non-Javadoc)
@@ -42,11 +41,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 	@Override
 	public void add(HealthInsuranceRate rate) {
 		EntityManager em = this.getEntityManager();
-
-		QismtHealthInsuRate entity = new QismtHealthInsuRate();
-		rate.saveToMemento(new JpaHealthInsuranceRateSetMemento(entity));
-
-		em.persist(entity);
+		em.persist(this.toEntity(rate));
 	}
 
 	/*
@@ -59,8 +54,8 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 	@Override
 	public void update(HealthInsuranceRate rate) {
 		EntityManager em = this.getEntityManager();
-		QismtHealthInsuRatePK pk = new QismtHealthInsuRatePK(rate.getCompanyCode(),
-				rate.getOfficeCode().v(), rate.getHistoryId());
+		QismtHealthInsuRatePK pk = new QismtHealthInsuRatePK(rate.getCompanyCode(), rate.getOfficeCode().v(),
+				rate.getHistoryId());
 		QismtHealthInsuRate findEntity = em.find(QismtHealthInsuRate.class, pk);
 		QismtHealthInsuRate entity = new QismtHealthInsuRate();
 		rate.saveToMemento(new JpaHealthInsuranceRateSetMemento(entity));
@@ -87,8 +82,8 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK)
-				.get(QismtHealthInsuRatePK_.histId), historyId));
+		predicateList.add(cb.equal(
+				root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK).get(QismtHealthInsuRatePK_.histId), historyId));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		List<QismtHealthInsuRate> result = em.createQuery(cq).getResultList();
 		// If have no record.
@@ -120,13 +115,12 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK)
-				.get(QismtHealthInsuRatePK_.ccd), companyCode));
+		predicateList.add(cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK).get(QismtHealthInsuRatePK_.ccd),
+				companyCode));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		cq.orderBy(cb.desc(root.get(QismtHealthInsuRate_.strYm)));
-		return em.createQuery(cq).getResultList().stream()
-				.map(item -> new HealthInsuranceRate(new JpaHealthInsuranceRateGetMemento(item)))
+		return em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
 				.collect(Collectors.toList());
 	}
 
@@ -151,15 +145,17 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK)
-				.get(QismtHealthInsuRatePK_.histId), historyId));
+		predicateList.add(cb.equal(
+				root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK).get(QismtHealthInsuRatePK_.histId), historyId));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
-		return Optional.of(em.createQuery(cq).getResultList().stream()
-				.map(item -> new HealthInsuranceRate(new JpaHealthInsuranceRateGetMemento(item)))
+		return Optional.of(em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
 				.collect(Collectors.toList()).get(0));
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository#findAllOffice(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public List<HealthInsuranceRate> findAllOffice(String companyCode, String officeCode) {
 		// Get entity manager
@@ -174,28 +170,32 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK)
-				.get(QismtHealthInsuRatePK_.ccd), companyCode));
-		predicateList.add(cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK)
-				.get(QismtHealthInsuRatePK_.siOfficeCd), officeCode));
+		predicateList.add(cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK).get(QismtHealthInsuRatePK_.ccd),
+				companyCode));
+		predicateList.add(
+				cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK).get(QismtHealthInsuRatePK_.siOfficeCd),
+						officeCode));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		cq.orderBy(cb.desc(root.get(QismtHealthInsuRate_.strYm)));
-		return em.createQuery(cq).getResultList().stream()
-				.map(item -> new HealthInsuranceRate(new JpaHealthInsuranceRateGetMemento(item)))
+		return em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
 				.collect(Collectors.toList());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository#deleteHistory(java.lang.String)
+	 */
 	@Override
 	public void deleteHistory(String uuid) {
 		this.remove(uuid);
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository#findLastestHistoryByMasterCode(java.lang.String, java.lang.String)
+	 */
 	@Override
-	public Optional<HealthInsuranceRate> findLastestHistoryByMasterCode(String companyCode,
-			String officeCode) {
-		List<HealthInsuranceRate> lstHealthInsuranceRate = this.findAllOffice(companyCode,
-				officeCode);
+	public Optional<HealthInsuranceRate> findLastestHistoryByMasterCode(String companyCode, String officeCode) {
+		List<HealthInsuranceRate> lstHealthInsuranceRate = this.findAllOffice(companyCode, officeCode);
 		// if create first his of office
 		if (lstHealthInsuranceRate.isEmpty()) {
 			return Optional.empty();
@@ -204,25 +204,59 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository#findHistoryByUuid(java.lang.String)
+	 */
 	// for history common
 	@Override
 	public Optional<HealthInsuranceRate> findHistoryByUuid(String uuid) {
 		return this.findById(uuid);
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository#addHistory(nts.uk.ctx.pr.core.dom.base.simplehistory.History)
+	 */
 	@Override
 	public void addHistory(HealthInsuranceRate history) {
 		this.add(history);
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository#updateHistory(nts.uk.ctx.pr.core.dom.base.simplehistory.History)
+	 */
 	@Override
 	public void updateHistory(HealthInsuranceRate history) {
 		this.update(history);
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository#findAllHistoryByMasterCode(java.lang.String, java.lang.String)
+	 */
 	@Override
-	public List<HealthInsuranceRate> findAllHistoryByMasterCode(String companyCode,
-			String officeCode) {
+	public List<HealthInsuranceRate> findAllHistoryByMasterCode(String companyCode, String officeCode) {
 		return this.findAllOffice(companyCode, officeCode);
+	}
+
+	/**
+	 * To domain.
+	 *
+	 * @param entity the entity
+	 * @return the health insurance rate
+	 */
+	private HealthInsuranceRate toDomain(QismtHealthInsuRate entity) {
+		HealthInsuranceRate domain = new HealthInsuranceRate(new JpaHealthInsuranceRateGetMemento(entity));
+		return domain;
+	}
+
+	/**
+	 * To entity.
+	 *
+	 * @param domain the domain
+	 * @return the qismt health insu rate
+	 */
+	private QismtHealthInsuRate toEntity(HealthInsuranceRate domain) {
+		QismtHealthInsuRate entity = new QismtHealthInsuRate();
+		domain.saveToMemento(new JpaHealthInsuranceRateSetMemento(entity));
+		return entity;
 	}
 }
