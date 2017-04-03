@@ -49,15 +49,20 @@ var nts;
                                     self.viewModel017c().comboBoxRoudingPosition().selectedCode(currentFormulaDetail.roundDigit);
                                 }
                                 else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 0) {
-                                    self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail(currentFormulaDetail.easyFormula[0].formulaEasyDetail);
-                                    self.viewModel017c().noneConditionalEasyFormula().easyFormulaName(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaName);
+                                    self.viewModel017c().noneConditionalEasyFormula(new qmm017.EasyFormula(0, self.viewModel017b));
+                                    if (currentFormulaDetail.easyFormula[0]) {
+                                        self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail(currentFormulaDetail.easyFormula[0].formulaEasyDetail);
+                                        self.viewModel017c().noneConditionalEasyFormula().easyFormulaName(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaName);
+                                    }
                                 }
                                 else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo < 6) {
                                     self.viewModel017c().defaultEasyFormula(new qmm017.EasyFormula(0, self.viewModel017b));
-                                    self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(currentFormulaDetail.easyFormula[0].value);
-                                    self.viewModel017c().defaultEasyFormula().selectedRuleCodeEasySettings(currentFormulaDetail.easyFormula[0].fixFormulaAtr);
-                                    self.viewModel017c().defaultEasyFormula().easyFormulaDetail(currentFormulaDetail.easyFormula[0].formulaEasyDetail);
-                                    self.viewModel017c().defaultEasyFormula().easyFormulaName(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaName);
+                                    if (currentFormulaDetail.easyFormula[0]) {
+                                        self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(currentFormulaDetail.easyFormula[0].value);
+                                        self.viewModel017c().defaultEasyFormula().selectedRuleCodeEasySettings(currentFormulaDetail.easyFormula[0].fixFormulaAtr);
+                                        self.viewModel017c().defaultEasyFormula().easyFormulaDetail(currentFormulaDetail.easyFormula[0].formulaEasyDetail);
+                                        self.viewModel017c().defaultEasyFormula().easyFormulaName(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaName);
+                                    }
                                 }
                                 else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo === 6) {
                                     self.viewModel017c().defaultEasyFormula(new qmm017.EasyFormula(0, self.viewModel017b));
@@ -125,6 +130,66 @@ var nts;
                 self.viewModel017h = ko.observable(new qmm017.HScreen());
                 self.viewModel017i = ko.observable(new qmm017.IScreen());
             }
+            ScreenModel.prototype.placeItemNameToTextArea = function (mode, self) {
+                if (mode === 0) {
+                    var currentTextArea = self.viewModel017c().formulaManualContent().textArea();
+                    var itemType = _.find(self.viewModel017d().listBoxItemType().itemList(), function (itemType) {
+                        return itemType.code === self.viewModel017d().listBoxItemType().selectedCode();
+                    });
+                    var itemTypeDisplayName = itemType.name.slice(5, 8);
+                    var itemDetailDisplayName = '';
+                    if (self.viewModel017d().listBoxItems().selectedCode() !== '') {
+                        var itemDetail = _.find(self.viewModel017d().listBoxItems().itemList(), function (item) {
+                            return item.code === self.viewModel017d().listBoxItems().selectedCode();
+                        });
+                        itemDetailDisplayName = itemDetail.name;
+                    }
+                    self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemTypeDisplayName + itemDetailDisplayName, $("#input-text")[0].selectionStart));
+                }
+                else if (mode === 1) {
+                    var currentTextArea = self.viewModel017c().formulaManualContent().textArea();
+                    var itemDetailDisplayName = '';
+                    if (self.viewModel017e().listBoxItems().selectedCode() !== '') {
+                        if (self.viewModel017e().listBoxItems().selectedCode() === '1') {
+                            itemDetailDisplayName = '関数＠条件式（ ,,）';
+                        }
+                        else if (self.viewModel017e().listBoxItems().selectedCode() === '2') {
+                            itemDetailDisplayName = '関数＠かつ（ ,）';
+                        }
+                        else if (self.viewModel017e().listBoxItems().selectedCode() === '3') {
+                            itemDetailDisplayName = '関数＠または（ ,）';
+                        }
+                        else if (self.viewModel017e().listBoxItems().selectedCode() === '4') {
+                            itemDetailDisplayName = '関数＠四捨五入（ ）';
+                        }
+                        else if (self.viewModel017e().listBoxItems().selectedCode() === '5') {
+                            itemDetailDisplayName = '関数＠切捨て（　）';
+                        }
+                        else if (self.viewModel017e().listBoxItems().selectedCode() === '6') {
+                            itemDetailDisplayName = '関数＠切上げ（　）';
+                        }
+                        else if (self.viewModel017e().listBoxItems().selectedCode() === '7') {
+                            itemDetailDisplayName = '関数＠最大値（ ,）';
+                        }
+                        else if (self.viewModel017e().listBoxItems().selectedCode() === '8') {
+                            itemDetailDisplayName = '関数＠最小値（ ,）';
+                        }
+                        else if (self.viewModel017e().listBoxItems().selectedCode() === '9') {
+                            itemDetailDisplayName = '関数＠家族人数（ ,）';
+                        }
+                        else if (self.viewModel017e().listBoxItems().selectedCode() === '10') {
+                            itemDetailDisplayName = '関数＠月加算（ ,）';
+                        }
+                        else if (self.viewModel017e().listBoxItems().selectedCode() === '11') {
+                            itemDetailDisplayName = '関数＠年抽出（  ）';
+                        }
+                        else if (self.viewModel017e().listBoxItems().selectedCode() === '12') {
+                            itemDetailDisplayName = '関数＠月抽出（  ）';
+                        }
+                    }
+                    self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemDetailDisplayName, $("#input-text")[0].selectionStart));
+                }
+            };
             ScreenModel.prototype.start = function () {
                 var self = this;
                 var dfd = $.Deferred();

@@ -38,7 +38,7 @@ module nts.qmm017 {
         export function getFormulaDetail(formulaCode: string, historyId: string, difficultyAtr: number): JQueryPromise<model.FormulaDetailDto> {
             var dfd = $.Deferred<model.FormulaDetailDto>();
             nts.uk.request.ajax("pr", paths.getFormulaDetail + "/" + formulaCode + "/" + historyId + "/" + difficultyAtr)
-                .done(function(res: model.FormulaDetailDto) {
+                .done(function(res) {
                     dfd.resolve(res);
                 })
                 .fail(function(res) {

@@ -51,7 +51,9 @@ module nts.qmm017 {
                     return item.code == codeChange;
                 });
                 self.useMasterCode(data().comboBoxUseMaster().selectedCode());
-                self.useMasterName(useMasterFound.name);
+                if (useMasterFound) {
+                    self.useMasterName(useMasterFound.name);
+                }
             });
             var lstReferenceMonthAtr = [
                 { code: 0, name: '当月' },
@@ -138,6 +140,8 @@ module nts.qmm017 {
             self.dailyEasyFormula().selectedRuleCodeEasySettings('1');
             self.hourlyEasyFormula().selectedRuleCodeEasySettings('1');
         }
+
+
     }
 
     export class EasyFormula {
