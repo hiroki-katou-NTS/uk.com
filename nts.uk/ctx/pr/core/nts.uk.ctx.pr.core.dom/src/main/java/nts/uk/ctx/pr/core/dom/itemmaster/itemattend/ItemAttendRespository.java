@@ -17,6 +17,13 @@ public interface ItemAttendRespository {
 	List<ItemAttend> findAll(String companyCode);
 	
 	/**
+	 * Find all item attend by company
+	 * @param companyCode
+	 * @return
+	 */
+	List<ItemAttend> findAll(String companyCode, AvePayAtr avePayAtr);
+	
+	/**
 	 * Update information of item attend
 	 * @param item domain
 	 */
@@ -32,6 +39,6 @@ public interface ItemAttendRespository {
 	
 	void add(ItemAttend itemAttend);
 
-	void delete(String companyCode, String itemCode);
+	void delete(String companyCode);
 	
 }

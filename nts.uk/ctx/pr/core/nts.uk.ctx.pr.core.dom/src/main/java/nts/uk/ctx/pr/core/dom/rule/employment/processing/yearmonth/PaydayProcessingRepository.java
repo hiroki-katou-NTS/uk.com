@@ -9,6 +9,8 @@ public interface PaydayProcessingRepository {
 
 	PaydayProcessing select1(String companyCode, int processingNo);
 	
+	List<PaydayProcessing> select1b(String companyCode, int bonusAtr);
+	
 	List<PaydayProcessing> select3(String companyCode);
 	
 	void insert1(PaydayProcessing domain);

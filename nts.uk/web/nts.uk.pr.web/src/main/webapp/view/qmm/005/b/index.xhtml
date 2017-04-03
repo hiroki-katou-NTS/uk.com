@@ -80,8 +80,8 @@
 							</thead>
 							<tbody data-bind="foreach: lst002Data">
 								<tr>
-									<th data-bind="text: ($index() + 1)"></th>
-									<th data-bind="text: ($index() + 1 + '月')"></th>
+									<th data-bind="text: index"></th>
+									<th data-bind="text: label"></th>
 									<td>
 										<div id="B_SEL_002"
 											data-bind="ntsComboBox: {
@@ -93,7 +93,7 @@
 											enable: true,
 											columns: [{ prop: 'label', length: 4 }]}">
 										</div>
-										<div>日</div>
+										<div data-bind="text: sel002L"></div>
 									</td>
 									<td>
 										<div id="B_INP_003"

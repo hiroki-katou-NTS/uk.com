@@ -320,7 +320,7 @@ module qmm012.c.viewmodel {
                     alert(res);
                 });
             } else
-                self.currentItemPeriod(undefined);
+                self.currentItemBDs([]);
         }
         GetCurrentItemSalary() {
             let self = this;
@@ -351,6 +351,7 @@ module qmm012.c.viewmodel {
         }
         openKDialog() {
             let self = this;
+            nts.uk.ui.windows.setShared('commuNoTaxLimitCode', self.currentCommuteNoTaxLimitDto() ? self.currentCommuteNoTaxLimitDto().commuNoTaxLimitCode : '');
             nts.uk.ui.windows.sub.modal('../k/index.xhtml', { height: 530, width: 350, dialogClass: "no-close" }).onClosed(function(): any {
                 if (nts.uk.ui.windows.getShared('CommuteNoTaxLimitDto'))
                     self.currentCommuteNoTaxLimitDto(nts.uk.ui.windows.getShared('CommuteNoTaxLimitDto'));
@@ -360,16 +361,18 @@ module qmm012.c.viewmodel {
         openHDialog() {
             let self = this;
             nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
+            nts.uk.ui.windows.setShared('itemPeriod', self.currentItemPeriod());
             nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close" }).onClosed(function(): any {
-                self.loadItemPeriod();
+                self.currentItemPeriod(nts.uk.ui.windows.getShared('itemPeriod'));
             });
         }
 
         openIDialog() {
             let self = this;
             nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
+            nts.uk.ui.windows.setShared('itemBDs', self.currentItemBDs());
             nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close" }).onClosed(function(): any {
-                self.loadItemBDs();
+                self.currentItemBDs(nts.uk.ui.windows.getShared('itemBDs'));
             });
         }
     }
