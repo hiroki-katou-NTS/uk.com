@@ -22,7 +22,7 @@ public class JpaResidentialTaxRepository extends JpaRepository implements Reside
 	private final String SEL_1 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd";
 	private final String SEL_2 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd AND c.qtxmtResidentialTaxPk.resiTaxCode <>:resiTaxCode AND c.resiTaxReportCode =:resiTaxReportCode ";
 	// key CCD RESI_TAX_CD
-	private final String SEL_3 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd && c.qtxmtResidentialTaxPk.resiTaxCode =:resiTaxCode";
+	private final String SEL_3 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd AND c.qtxmtResidentialTaxPk.resiTaxCode =:resiTaxCode";
 
 
 	private static ResidentialTax toDomain(QtxmtResidentialTax entity) {
