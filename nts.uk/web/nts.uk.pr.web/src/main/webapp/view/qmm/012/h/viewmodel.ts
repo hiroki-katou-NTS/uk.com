@@ -73,17 +73,13 @@ module qmm012.h.viewmodel {
         }
         LoadItemPeriod() {
             let self = this;
-            if (!nts.uk.ui.windows.getShared('itemPeriod')) {
-                self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
-                let itemMaster = self.CurrentItemMaster();
-                if (itemMaster) {
-                    self.CurrentCategoryAtrName(itemMaster.categoryAtrName);
-                    self.CurrentItemCode(itemMaster.itemCode);
-                    service.findItemPeriod(self.CurrentItemMaster()).done(function(ItemPeriod: service.model.ItemPeriod) {
-                        self.CurrentItemPeriod(ItemPeriod);
-                    });
-                }
-            } else
+            let itemMaster = nts.uk.ui.windows.getShared('itemMaster');
+            if (itemMaster != undefined) {
+                self.CurrentItemMaster(itemMaster);
+                self.CurrentCategoryAtrName(itemMaster.categoryAtrName);
+                self.CurrentItemCode(itemMaster.itemCode);
+            }
+            if (nts.uk.ui.windows.getShared('itemPeriod'))
                 self.CurrentItemPeriod(nts.uk.ui.windows.getShared('itemPeriod'));
         }
         getCurrentItemPeriod() {
@@ -110,10 +106,6 @@ module qmm012.h.viewmodel {
         SubmitDialog() {
             let self = this;
             let itemPeriod = self.getCurrentItemPeriod();
-            //            if (!self.CurrentItemCode())
-            //                service.addItemPeriod(self.CurrentItemMaster(), itemPeriod);
-            //            else
-            //                service.updateItemPeriod(self.CurrentItemMaster(), itemPeriod);
             nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);
             nts.uk.ui.windows.close();
         }

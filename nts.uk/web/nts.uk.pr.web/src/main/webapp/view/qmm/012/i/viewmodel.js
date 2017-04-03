@@ -145,7 +145,7 @@ var qmm012;
                     var self = this;
                     self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
                     var itemMaster = self.CurrentItemMaster();
-                    if (itemMaster) {
+                    if (itemMaster != undefined) {
                         self.loadItem();
                         self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
                         self.currentItemCode(itemMaster.itemCode);

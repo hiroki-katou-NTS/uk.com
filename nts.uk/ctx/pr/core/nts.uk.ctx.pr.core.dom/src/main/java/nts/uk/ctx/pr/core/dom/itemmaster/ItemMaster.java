@@ -4,6 +4,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.enums.DisplayAtr;
@@ -26,9 +27,10 @@ public class ItemMaster extends AggregateRoot {
 	@Override
 	public void validate() {
 		super.validate();
-		if (this.itemCode == null || this.companyCode == null || this.categoryAtr == null || this.itemName == null
-				|| this.itemAbName == null || this.displaySet == null) {
-			throw new BusinessException("");
+		if (StringUtil.isNullOrEmpty(this.itemCode.v(), true) || StringUtil.isNullOrEmpty(this.companyCode.v(), true)
+				|| StringUtil.isNullOrEmpty(this.itemName.v(), true)
+				|| StringUtil.isNullOrEmpty(this.itemAbName.v(), true) || this.displaySet == null) {
+			throw new BusinessException("pika");
 		}
 	}
 

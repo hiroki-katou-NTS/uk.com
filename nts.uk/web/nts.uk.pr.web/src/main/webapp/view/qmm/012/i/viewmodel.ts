@@ -161,7 +161,7 @@ module qmm012.i.viewmodel {
             let self = this;
             self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
             let itemMaster = self.CurrentItemMaster();
-            if (itemMaster) {
+            if (itemMaster != undefined) {
                 self.loadItem();
                 self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
                 self.currentItemCode(itemMaster.itemCode);

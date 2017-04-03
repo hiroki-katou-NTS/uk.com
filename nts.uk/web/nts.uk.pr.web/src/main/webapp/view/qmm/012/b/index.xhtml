@@ -107,24 +107,25 @@
 						<div class="divLine">
 							<div class="divLineCol1">
 								<div id="B_LBL_004" class="floatLeft haveSmallSpan"
-									data-bind="ntsFormLabel: {  required: true }">
-									コード/名称<br /> <span>会社選択</span>
-								</div>
+									data-bind="ntsFormLabel: {  required: true  ,constraint: 'ItemCode'}">
+									コード/名称</div>
 							</div>
 							<div class="divLineCol2">
 								<div class="floatLeft" data-bind="with:texteditor_B_INP_002">
-									<input id="B_INP_002"
+									<input id="B_INP_002" data-name="コード/名称"
 										data-bind="ntsTextEditor: {
 										constraint: 'ItemCode',
+										required: true,
 										value: value,
 										option: option,
 										enable: enable}" />
 								</div>
 
-								<div id="B_INP_003" data-bind="with:texteditor_B_INP_003">
-									<input
+								<div class="floatLeft" data-bind="with:texteditor_B_INP_003">
+									<input data-name="略名" id="B_INP_003"
 										data-bind="ntsTextEditor: {
 										constraint: 'ItemName',
+										required: true,
 										value: value,
 										option: option}" />
 								</div>
@@ -138,13 +139,14 @@
 						<div class="divLine">
 							<div class="divLineCol1">
 								<div id="B_LBL_005"
-									data-bind="ntsFormLabel: {  required: true }">略名</div>
+									data-bind="ntsFormLabel: {  required: true ,constraint: 'ItemName'}">略名</div>
 							</div>
 							<div class="divLineCol2">
-								<div id="B_INP_004" data-bind="with:texteditor_B_INP_004">
-									<input
+								<div data-bind="with:texteditor_B_INP_004">
+									<input data-name="略名" id="B_INP_004"
 										data-bind="ntsTextEditor: {
 										constraint: 'ItemName',
+										required: true,
 										value: value,
 										option: option}" />
 								</div>

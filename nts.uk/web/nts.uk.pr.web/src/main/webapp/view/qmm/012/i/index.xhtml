@@ -30,7 +30,8 @@
 				<button id="I_BTN_002"
 					data-bind="click:saveItem,enable: $root.errors.isEmpty"
 					class="proceed inputNomalSize">登録</button>
-				<button id="I_BTN_003" data-bind="click:deleteItem,enable: I_BTN_003_enable"
+				<button id="I_BTN_003"
+					data-bind="click:deleteItem,enable: I_BTN_003_enable"
 					class=" danger inputNomalSize">削除</button>
 				<button id="I_BTN_005" data-bind="click:closeDialog"
 					class="inputNomalSize">閉じる</button>
@@ -72,9 +73,8 @@
 						<div class="divLine">
 							<div class="divLineCol1">
 								<div id="I_LBL_004" class="haveSmallSpan"
-									data-bind="ntsFormLabel: {  required: true }">
-									コード/名称<br /> <span>会社選択</span>
-								</div>
+									data-bind="ntsFormLabel: {  required: true,  constraint : 'ItemCode' }">
+									コード/名称</div>
 							</div>
 							<div class="divLineCol2">
 								<input id="I_INP_002"
@@ -86,7 +86,7 @@
 						<div class="divLine">
 							<div class="divLineCol1">
 								<div id="I_LBL_005"
-									data-bind="ntsFormLabel: {  required: true }">略名</div>
+									data-bind="ntsFormLabel: {  required: true, constraint : 'ItemName' }">略名</div>
 							</div>
 							<div class="divLineCol2">
 								<input id="I_INP_004"

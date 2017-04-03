@@ -60,18 +60,13 @@ var qmm012;
                 }
                 ScreenModel.prototype.LoadItemPeriod = function () {
                     var self = this;
-                    if (!nts.uk.ui.windows.getShared('itemPeriod')) {
-                        self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
-                        var itemMaster = self.CurrentItemMaster();
-                        if (itemMaster) {
-                            self.CurrentCategoryAtrName(itemMaster.categoryAtrName);
-                            self.CurrentItemCode(itemMaster.itemCode);
-                            h.service.findItemPeriod(self.CurrentItemMaster()).done(function (ItemPeriod) {
-                                self.CurrentItemPeriod(ItemPeriod);
-                            });
-                        }
+                    var itemMaster = nts.uk.ui.windows.getShared('itemMaster');
+                    if (itemMaster != undefined) {
+                        self.CurrentItemMaster(itemMaster);
+                        self.CurrentCategoryAtrName(itemMaster.categoryAtrName);
+                        self.CurrentItemCode(itemMaster.itemCode);
                     }
-                    else
+                    if (nts.uk.ui.windows.getShared('itemPeriod'))
                         self.CurrentItemPeriod(nts.uk.ui.windows.getShared('itemPeriod'));
                 };
                 ScreenModel.prototype.getCurrentItemPeriod = function () {
@@ -81,10 +76,6 @@ var qmm012;
                 ScreenModel.prototype.SubmitDialog = function () {
                     var self = this;
                     var itemPeriod = self.getCurrentItemPeriod();
-                    //            if (!self.CurrentItemCode())
-                    //                service.addItemPeriod(self.CurrentItemMaster(), itemPeriod);
-                    //            else
-                    //                service.updateItemPeriod(self.CurrentItemMaster(), itemPeriod);
                     nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);
                     nts.uk.ui.windows.close();
                 };

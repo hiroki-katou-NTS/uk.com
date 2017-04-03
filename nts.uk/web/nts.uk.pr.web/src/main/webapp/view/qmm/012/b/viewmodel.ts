@@ -95,8 +95,9 @@ module qmm012.b.viewmodel {
             self.GridlistCurrentItem_B_001.subscribe(function(itemModel: service.model.ItemMaster) {
                 self.GridCurrentItemName_B_001(itemModel ? itemModel.itemName : '');
                 self.GridCurrentUniteCode_B_001(itemModel ? itemModel.uniteCode : '');
-
-
+                self.GridCurrentCategoryAtr_B_001(itemModel ? itemModel.categoryAtr : 0);
+                //Because there are many items in the same group  After set value , need call ChangeGroup function for Set Value to layout
+                ChangeGroup(self.GridCurrentCategoryAtr_B_001());
                 self.GridCurrentCodeAndName_B_001(itemModel ? itemModel.itemCode + ' ' + itemModel.itemName : '');
                 self.GridCurrentDisplaySet_B_001(itemModel ? itemModel.displaySet == 1 ? true : false : false);
                 self.GridCurrentItemAbName_B_001(itemModel ? itemModel.itemAbName : '');
@@ -104,9 +105,6 @@ module qmm012.b.viewmodel {
                 //when itemModel != undefined , need disable INP_002
                 if (itemModel != undefined) {
                     self.enable_B_INP_002(false);
-                    self.GridCurrentCategoryAtr_B_001(itemModel.categoryAtr);
-                    //Because there are many items in the same group  After set value , need call ChangeGroup function for Set Value to layout
-                    ChangeGroup(self.GridCurrentCategoryAtr_B_001());
                 }
             });
 
@@ -331,8 +329,8 @@ module qmm012.b.viewmodel {
                 if (nts.uk.ui.windows.getShared('groupCode') != undefined) {
                     let groupCode = Number(nts.uk.ui.windows.getShared('groupCode'));
                     //set layout for new.
-                    self.GridCurrentCategoryAtr_B_001(groupCode);
                     self.enable_B_INP_002(true);
+                    self.GridCurrentCategoryAtr_B_001(groupCode);
                 }
             });
         }
