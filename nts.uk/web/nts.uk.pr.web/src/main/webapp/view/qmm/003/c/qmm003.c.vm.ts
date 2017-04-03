@@ -3,8 +3,7 @@ module qmm003.c.viewmodel {
         items: KnockoutObservableArray<Node>;
         singleSelectedCode: KnockoutObservable<string>;
         filteredData: KnockoutObservableArray<Node> = ko.observableArray([]);
-        currentNode: KnockoutObservable<Node>;
-        testNode = [];
+        currentResidential: service.model.ResidentialTax = (null);
         nodeRegionPrefectures: KnockoutObservableArray<Node> = ko.observableArray([]);
         japanLocation: Array<qmm003.c.service.model.RegionObject> = [];
         precfecture: Array<Node> = [];
@@ -14,30 +13,24 @@ module qmm003.c.viewmodel {
             let self = this;
             self.init();
             self.singleSelectedCode.subscribe(function(newValue) {
-                let node: Node;
-                node = self.findByCode(self.filteredData(), newValue);
-                self.currentNode(node);
+                self.processWhenCurrentCodeChange(newValue);
             });
 
         }
-        findByCode(items: Array<Node>, newValue: string): Node {
+        processWhenCurrentCodeChange(newValue: string) {
             let self = this;
-            let node: Node;
-            _.find(items, function(obj: Node) {
-                if (!node) {
-                    if (obj.code == newValue) {
-                        node = obj;
-
-                    }
+            service.getResidentialTaxDetail(newValue).done(function(data: service.model.ResidentialTax) {
+                if (data) {
+                    self.currentResidential= ((data));;
+                } else {
+                    return;
                 }
             });
-
-            return node;
-        };
+        }
+        
         clickButton(): any {
             let self = this;
-            //nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode(), true);
-            nts.uk.ui.windows.setShared('currentNode', self.currentNode(), true);
+            nts.uk.ui.windows.setShared('currentResidential', self.currentResidential, true);
             nts.uk.ui.windows.close();
 
         }
@@ -48,7 +41,6 @@ module qmm003.c.viewmodel {
             let self = this;
             self.items = ko.observableArray([]);
             self.singleSelectedCode = ko.observable("");
-            self.currentNode = ko.observable((new Node("", "", [])));
         }
         //11.初期データ取得処理 11. Initial data acquisition processing
         start(): JQueryPromise<any> {

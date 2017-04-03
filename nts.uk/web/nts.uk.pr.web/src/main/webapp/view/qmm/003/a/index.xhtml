@@ -92,7 +92,7 @@
 												value: resiTaxCode,
 												constraint: 'ResiTaxCode',
 												required: true,
-												enable: true,
+												enable: $parent.enableInp002 ,
 												readonly: false }
 												, hasFocus: $parent.hasFocus" />
 								  </div>
@@ -124,10 +124,10 @@
 											data-bind="ntsComboBox: {
 						                        options: $parent.itemPrefecture,
 												optionsValue: 'code',
-												value: $parent.selectedCode,
+												value: prefectureCode,
 												optionsText: 'name',
-												editable: $parent.isEditable,
-												enable: $parent.isEnable,
+												editable: true,
+												enable: true,
 												columns: [{ prop: 'name', length: 10 }]}">
 										</div>
 									</th>								
@@ -150,7 +150,7 @@
 										<button id="A_BTN_009" data-bind="click: $parent.openCDialog, enable:$parent.enableBTN009" class="small">参照</button>													 		
 									</th>										
 									<th colspan="2" >
- 			 							 <label id="A_LBL_012"  data-bind="text: resiTaxReportCode()"></label>					
+ 			 							 <label id="A_LBL_012"  data-bind="text: resiTaxReportCode"></label>					
 									</th>							
 								</tr>							
 								<!--  2  -->

@@ -13,33 +13,27 @@ var qmm003;
                     this.precfecture = [];
                     this.itemPrefecture = ko.observableArray([]);
                     this.residentalTaxList = ko.observableArray([]);
-                    this.selectedCode = ko.observable("");
+                    this.currentResidential = (null);
                     var self = this;
                     self.init();
                     self.singleSelectedCode.subscribe(function (newValue) {
-                        self.currentNode(self.findByCode(self.filteredData(), newValue));
-                        self.findPrefectureByResiTax(newValue);
-                        console.log(self.selectedCode());
+                        self.processWhenCurrentCodeChange(newValue);
                     });
                 }
-                ScreenModel.prototype.findByCode = function (items, newValue) {
+                ScreenModel.prototype.processWhenCurrentCodeChange = function (newValue) {
                     var self = this;
-                    var _node;
-                    _.find(items, function (_obj) {
-                        if (!_node) {
-                            if (_obj.code == newValue) {
-                                _node = _obj;
-                            }
+                    b.service.getResidentialTaxDetail('0000', newValue).done(function (data) {
+                        if (data) {
+                            self.currentResidential = data;
+                        }
+                        else {
+                            return;
                         }
                     });
-                    return _node;
                 };
-                ;
                 ScreenModel.prototype.clickButton = function () {
                     var self = this;
-                    nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode(), true);
-                    nts.uk.ui.windows.setShared('selectedCode', self.selectedCode(), true);
-                    nts.uk.ui.windows.setShared('currentNode', self.currentNode(), true);
+                    nts.uk.ui.windows.setShared('currentResidential', self.currentResidential, true);
                     nts.uk.ui.windows.close();
                 };
                 ScreenModel.prototype.cancelButton = function () {
@@ -107,19 +101,6 @@ var qmm003;
                         });
                     });
                 };
-                ScreenModel.prototype.findPrefectureByResiTax = function (code) {
-                    var self = this;
-                    var node;
-                    _.each(self.items(), function (objRegion) {
-                        _.each(objRegion.childs, function (objPrefecture) {
-                            _.each(objPrefecture.childs, function (obj) {
-                                if (obj.code === code) {
-                                    self.selectedCode(objPrefecture.code);
-                                }
-                            });
-                        });
-                    });
-                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
@@ -138,3 +119,4 @@ var qmm003;
     })(b = qmm003.b || (qmm003.b = {}));
 })(qmm003 || (qmm003 = {}));
 ;
+//# sourceMappingURL=qmm003.b.vm.js.map

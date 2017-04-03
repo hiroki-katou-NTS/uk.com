@@ -7,7 +7,7 @@ var qmm003;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     this.filteredData = ko.observableArray([]);
-                    this.testNode = [];
+                    this.currentResidential = (null);
                     this.nodeRegionPrefectures = ko.observableArray([]);
                     this.japanLocation = [];
                     this.precfecture = [];
@@ -16,28 +16,24 @@ var qmm003;
                     var self = this;
                     self.init();
                     self.singleSelectedCode.subscribe(function (newValue) {
-                        var node;
-                        node = self.findByCode(self.filteredData(), newValue);
-                        self.currentNode(node);
+                        self.processWhenCurrentCodeChange(newValue);
                     });
                 }
-                ScreenModel.prototype.findByCode = function (items, newValue) {
+                ScreenModel.prototype.processWhenCurrentCodeChange = function (newValue) {
                     var self = this;
-                    var node;
-                    _.find(items, function (obj) {
-                        if (!node) {
-                            if (obj.code == newValue) {
-                                node = obj;
-                            }
+                    c.service.getResidentialTaxDetail(newValue).done(function (data) {
+                        if (data) {
+                            self.currentResidential = ((data));
+                            ;
+                        }
+                        else {
+                            return;
                         }
                     });
-                    return node;
                 };
-                ;
                 ScreenModel.prototype.clickButton = function () {
                     var self = this;
-                    //nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode(), true);
-                    nts.uk.ui.windows.setShared('currentNode', self.currentNode(), true);
+                    nts.uk.ui.windows.setShared('currentResidential', self.currentResidential, true);
                     nts.uk.ui.windows.close();
                 };
                 ScreenModel.prototype.cancelButton = function () {
@@ -47,7 +43,6 @@ var qmm003;
                     var self = this;
                     self.items = ko.observableArray([]);
                     self.singleSelectedCode = ko.observable("");
-                    self.currentNode = ko.observable((new Node("", "", [])));
                 };
                 //11.初期データ取得処理 11. Initial data acquisition processing
                 ScreenModel.prototype.start = function () {
@@ -121,3 +116,4 @@ var qmm003;
     })(c = qmm003.c || (qmm003.c = {}));
 })(qmm003 || (qmm003 = {}));
 ;
+//# sourceMappingURL=qmm003.c.vm.js.map

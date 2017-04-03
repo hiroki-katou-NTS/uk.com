@@ -10,36 +10,28 @@ module qmm003.b.viewmodel {
         precfecture: Array<Node> = [];
         itemPrefecture: KnockoutObservableArray<Node> = ko.observableArray([]);
         residentalTaxList: KnockoutObservableArray<qmm003.b.service.model.ResidentialTax> = ko.observableArray([]);
-        selectedCode: KnockoutObservable<string> = ko.observable("");
+        currentResidential: service.model.ResidentialTax = (null);
         constructor() {
             let self = this;
             self.init();
             self.singleSelectedCode.subscribe(function(newValue) {
-                self.currentNode(self.findByCode(self.filteredData(), newValue));
-                self.findPrefectureByResiTax(newValue);
-                console.log(self.selectedCode());
+                self.processWhenCurrentCodeChange(newValue);
             });
 
         }
-        findByCode(items: Array<Node>, newValue: string): Node {
+        processWhenCurrentCodeChange(newValue: string) {
             let self = this;
-            let _node: Node;
-            _.find(items, function(_obj: Node) {
-                if (!_node) {
-                    if (_obj.code == newValue) {
-                        _node = _obj;
-
-                    }
+            service.getResidentialTaxDetail('0000',newValue).done(function(data: service.model.ResidentialTax) {
+                if (data) {
+                    self.currentResidential = data;
+                } else {
+                    return;
                 }
             });
-
-            return _node;
-        };
+        }
         clickButton(): any {
             let self = this;
-            nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode(), true);
-            nts.uk.ui.windows.setShared('selectedCode', self.selectedCode(), true);
-            nts.uk.ui.windows.setShared('currentNode', self.currentNode(), true);
+            nts.uk.ui.windows.setShared('currentResidential', self.currentResidential, true);
             nts.uk.ui.windows.close();
 
         }
@@ -115,20 +107,7 @@ module qmm003.b.viewmodel {
 
             });
         }
-        findPrefectureByResiTax(code: string): void {
-            let self = this;
-            let node: Node;
-            _.each(self.items(), function(objRegion: Node) {
-                _.each(objRegion.childs, function(objPrefecture: Node) {
-                    _.each(objPrefecture.childs, function(obj: Node) {
-                        if (obj.code === code) {
-                            self.selectedCode(objPrefecture.code);
-                        }
-                    });
-                });
-            });
-
-        }
+        
     }
     export class Node {
         code: string;
