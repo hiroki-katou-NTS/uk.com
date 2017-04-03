@@ -94,6 +94,7 @@ module nts.uk.pr.view.base.simplehistory {
                         if (!self.selectedHistoryUuid()) {
                             inlineFunc();
                         }
+                        self.onSelectHistory(id);
                     }
                 })
             }
