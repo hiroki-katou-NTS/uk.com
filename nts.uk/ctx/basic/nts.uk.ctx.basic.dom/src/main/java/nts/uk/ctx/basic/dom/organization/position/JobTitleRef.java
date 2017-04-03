@@ -17,8 +17,7 @@ public class JobTitleRef extends AggregateRoot{
 	
 	private ReferenceSettings referenceSettings;
 	
-	public JobTitleRef(ReferenceSettings referenceSettings, 
-			String companyCode, String historyId,JobCode jobCode,AuthorizationCode authCode ) {
+	public JobTitleRef(String companyCode, String historyId,JobCode jobCode,AuthorizationCode authCode,ReferenceSettings referenceSettings ) {
 		super();
 		this.referenceSettings = referenceSettings;
 		this.historyId = historyId;
@@ -28,11 +27,11 @@ public class JobTitleRef extends AggregateRoot{
 		;
 	}
 
-	public static JobTitleRef createFromJavaType( int referenceSettings, 
-			 String companyCode, String historyId,String jobCode,String authCode)
+	public static JobTitleRef createFromJavaType(  
+			 String companyCode, String historyId,String jobCode,String authCode,int referenceSettings)
 	{
-		return new JobTitleRef(EnumAdaptor.valueOf(referenceSettings, ReferenceSettings.class), 
-				companyCode, historyId,new JobCode(jobCode),new AuthorizationCode(authCode) );
+		return new JobTitleRef( 
+				companyCode, historyId,new JobCode(jobCode),new AuthorizationCode(authCode),EnumAdaptor.valueOf(referenceSettings, ReferenceSettings.class) );
 	}
 
 }

@@ -10,7 +10,7 @@ var cmm013;
                 deletePosition: "basic/organization/position/deletePosition",
                 updatePosition: "basic/organization/position/updatePosition",
                 getAllHistory: "basic/organization/position/getallhist",
-                addHist: "basic/organization/position/addHist",
+                regitry: "basic/organization/position/registryPosition",
                 updateHist: "basic/organization/position/updateHist",
                 deleteHist: "basic/organization/position/deleteHist",
                 getRef: "basic/organization/position/getalljobtitleref/",
@@ -88,9 +88,9 @@ var cmm013;
                 return dfd.promise();
             }
             service.getAllHistory = getAllHistory;
-            function addHist(addHandler) {
+            function registry(addHandler) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.addHist, addHandler)
+                nts.uk.request.ajax("com", paths.regitry, addHandler)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -99,7 +99,7 @@ var cmm013;
                 });
                 return dfd.promise();
             }
-            service.addHist = addHist;
+            service.registry = registry;
             function getAllJobTitleRef(historyId, jobCode) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.getRef + historyId + "/" + jobCode)

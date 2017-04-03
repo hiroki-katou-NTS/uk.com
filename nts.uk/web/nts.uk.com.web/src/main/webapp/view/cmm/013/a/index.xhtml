@@ -22,7 +22,7 @@
 			<div id="function_area">
 				<button id="BTN_001_INIT" data-bind="click: initPosition"
 					class="button fix-button">新規</button>
-				<button id="BTN_002_ADD" data-bind="click: addHist"
+				<button id="BTN_002_ADD" data-bind="click: registerPosition"
 					class="button proceed fix-button">登録</button>
 				<button id="BTN_004" class="button">マスタ修正ログ</button>
 				<button id="BTN_005_DEL" data-bind="click: deletePosition"
@@ -42,7 +42,7 @@
 					<div id="list-box"
 						data-bind="ntsListBox: {
 								options: listbox,
-								primaryKey: 'startDate',
+								primaryKey: 'historyId',
 								primaryText: 'endDate',
 								multiple: false,
 								value: selectedCode,
@@ -67,7 +67,7 @@
 										items: dataSource, 		
 										selected: currentCode, 
 										selectedKey: 'jobCode', 
-										fields: ['jobName', 'jobCode']}">
+										fields: ['jobCode', 'jobName']}">
 							</div>
 							<br></br>
 
@@ -134,11 +134,11 @@
 								</div>
 							</td>
 						</tr>
-						<tr>
+						<tr class = "trLst003">
 							<td></td>
 							<td>
-								<div data-bind="if: dataRef">
-									<div class="lst_003" data-bind="foreach: dataRef ">
+								<div data-bind="if: dataRef" style="width: 265px">
+									<div ID="lst_003" data-bind="foreach: dataRef ">
 										<div class="row">
 											<div class="line left-line" data-bind="text: authName "></div>
 											<div class="line"

@@ -46,10 +46,10 @@ module cmm013.d.viewmodel {
             //self.deleteChecker(nts.uk.ui.windows.getShared('delete'));
             //self.startDateUpdate(nts.uk.ui.windows.getShared('startUpdate').split('/').join("-"));
             //thay doi lai ten shared quy tac cho them ma chuc nang vao
-            self.endDateUpdate(nts.uk.ui.windows.getShared('cmm013EndDate').split('/').join("-"));
+            self.endDateUpdate(nts.uk.ui.windows.getShared('cmm013EndDate'));
             //dudt
             //self.startDateLast(nts.uk.ui.windows.getShared('startDateLast'));
-            self.oldStartDate(nts.uk.ui.windows.getShared('cmm013StartDate').split('/').join("-"))
+            self.oldStartDate(nts.uk.ui.windows.getShared('cmm013StartDate'))
             //dudt
             self.histIdUpdate(nts.uk.ui.windows.getShared('cmm013HistoryId'));
             //dudt
@@ -86,7 +86,7 @@ module cmm013.d.viewmodel {
             })
             self.inp_003(self.oldStartDate());
             //neu khong phai lich su moi nhat thi khong duoc xoa va chỉ mặc định được sửa thôi
-            if(self.endDateUpdate() === "9999-12-31"){
+            if(self.endDateUpdate() === "9999/12/31"){
                 self.enable(false);     
             }else{
                 self.enable(true);

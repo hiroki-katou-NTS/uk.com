@@ -18,8 +18,8 @@ var cmm013;
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    self.endDateUpdate(nts.uk.ui.windows.getShared('cmm013EndDate').split('/').join("-"));
-                    self.oldStartDate(nts.uk.ui.windows.getShared('cmm013StartDate').split('/').join("-"));
+                    self.endDateUpdate(nts.uk.ui.windows.getShared('cmm013EndDate'));
+                    self.oldStartDate(nts.uk.ui.windows.getShared('cmm013StartDate'));
                     self.histIdUpdate(nts.uk.ui.windows.getShared('cmm013HistoryId'));
                     self.listMessage();
                     self.setValueForRadio();
@@ -32,7 +32,7 @@ var cmm013;
                         }
                     });
                     self.inp_003(self.oldStartDate());
-                    if (self.endDateUpdate() === "9999-12-31") {
+                    if (self.endDateUpdate() === "9999/12/31") {
                         self.enable(false);
                     }
                     else {

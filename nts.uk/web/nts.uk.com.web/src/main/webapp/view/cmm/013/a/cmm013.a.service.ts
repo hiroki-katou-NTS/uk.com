@@ -5,7 +5,7 @@ module cmm013.a.service {
         deletePosition: "basic/organization/position/deletePosition",
         updatePosition: "basic/organization/position/updatePosition",
         getAllHistory: "basic/organization/position/getallhist",
-        addHist: "basic/organization/position/addHist",
+        regitry: "basic/organization/position/registryPosition",
         updateHist: "basic/organization/position/updateHist",
         deleteHist: "basic/organization/position/deleteHist",
         getRef: "basic/organization/position/getalljobtitleref/",
@@ -100,9 +100,9 @@ module cmm013.a.service {
 
 
 
-       export function addHist(addHandler: viewmodel.model.AfterAdd){
-        var dfd = $.Deferred<viewmodel.model.ListHistoryDto>();
-        nts.uk.request.ajax("com",paths.addHist, addHandler)
+       export function registry(addHandler: viewmodel.model.registryCommand){
+        var dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax("com",paths.regitry, addHandler)
             .done(function(res: any){
                 dfd.resolve(res);    
             })    

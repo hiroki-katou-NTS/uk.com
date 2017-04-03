@@ -87,6 +87,7 @@ module cmm013.c.viewmodel {
 
                 nts.uk.ui.windows.setShared('cmm013C_startDateNew',dateNew, true);
                 nts.uk.ui.windows.setShared('cmm013C_copy',check, true);
+                nts.uk.ui.windows.setShared('cmm013Insert', true, true);
                 nts.uk.ui.windows.close();
             }
         }

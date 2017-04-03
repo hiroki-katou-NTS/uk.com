@@ -2,7 +2,6 @@ package nts.uk.ctx.basic.ws.organization.position;
 
 import java.util.List;
 
-import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -10,16 +9,14 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.basic.app.command.organization.position.AddHistoryCommand;
-import nts.uk.ctx.basic.app.command.organization.position.AddHistoryCommandHandler;
-import nts.uk.ctx.basic.app.command.organization.position.AddJobTitleRefCommand;
-import nts.uk.ctx.basic.app.command.organization.position.AddJobTitleRefCommandHandler;
-import nts.uk.ctx.basic.app.command.organization.position.AddPositionCommand;
+import nts.uk.ctx.basic.app.command.organization.position.PositionCommand;
 import nts.uk.ctx.basic.app.command.organization.position.AddPositionCommandHandler;
 import nts.uk.ctx.basic.app.command.organization.position.DeleteHistoryCommand;
 import nts.uk.ctx.basic.app.command.organization.position.DeleteHistoryCommandHandler;
 import nts.uk.ctx.basic.app.command.organization.position.DeletePositionCommand;
 import nts.uk.ctx.basic.app.command.organization.position.DeletePositionCommandHandler;
+import nts.uk.ctx.basic.app.command.organization.position.RegistryPositionCommand;
+import nts.uk.ctx.basic.app.command.organization.position.RegistryPositionCommandHandler;
 import nts.uk.ctx.basic.app.command.organization.position.UpdateHistoryCommand;
 import nts.uk.ctx.basic.app.command.organization.position.UpdateHistoryCommandHandler;
 import nts.uk.ctx.basic.app.command.organization.position.UpdatePositionCommand;
@@ -50,12 +47,14 @@ public class PositionWebService extends WebService {
 	private DeleteHistoryCommandHandler deleteHistoryCommandHandler;
 	@Inject
 	private UpdateHistoryCommandHandler updateHistoryCommandHandler;
-	@Inject
-	private AddHistoryCommandHandler addHistoryCommandHandler;
+//	@Inject
+//	private AddHistoryCommandHandler addHistoryCommandHandler;
 	@Inject
 	private JobRefAuthFinder jobRefAuth;
+//	@Inject
+//	private AddJobTitleRefCommandHandler addJtitleRef;
 	@Inject
-	private AddJobTitleRefCommandHandler addJtitleRef;
+	private RegistryPositionCommandHandler registryPosition;
 	
 	@POST
 	@Path("findallposition/{historyId}")
@@ -80,7 +79,7 @@ public class PositionWebService extends WebService {
 
 	@POST
 	@Path("addPosition")
-	public void add(AddPositionCommand command) {
+	public void add(PositionCommand command) {
 		this.addPosition.handle(command);
 	}
 
@@ -109,16 +108,15 @@ public class PositionWebService extends WebService {
 	}
 
 	@POST
-	@Path("addHist")
-	public void add(AddHistoryCommand command) {
-
-		this.addHistoryCommandHandler.handle(command);
+	@Path("registryPosition")
+	public void registryPosition(RegistryPositionCommand command) {
+		this.registryPosition.handle(command);
 
 	}
 	@POST
 	@Path("addjobtitleref")
-	public void addJobTitleRef(AddJobTitleRefCommand command){
-		this.addJtitleRef.handle(command);
+	public void addJobTitleRef(RegistryPositionCommand command){
+		this.registryPosition.handle(command);
 	}
 	
 	@POST

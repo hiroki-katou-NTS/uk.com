@@ -68,13 +68,17 @@ public class JobTitle extends AggregateRoot {
 
 
 
-	public JobTitle(JobName jobName, JobCode jobCode, String historyId, Memo memo , String companyCode) {
-		super();
-		this.jobName = jobName;
-		this.jobCode = jobCode;
-		this.historyId = historyId;
-		this.memo = memo;
-		this.companyCode = companyCode;
-	}
+//	public JobTitle(JobName jobName
+//			, JobCode jobCode
+//			, String historyId
+//			, Memo memo 
+//			, String companyCode) {
+//		super();
+//		this.jobName = jobName;
+//		this.jobCode = jobCode;
+//		this.historyId = historyId;
+//		this.memo = memo;
+//		this.companyCode = companyCode;
+//	}
 
 }

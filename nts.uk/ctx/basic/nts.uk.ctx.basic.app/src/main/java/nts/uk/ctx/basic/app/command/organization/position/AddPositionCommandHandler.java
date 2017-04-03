@@ -16,22 +16,22 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.primitive.Memo;
 
 @Stateless
-public class AddPositionCommandHandler extends CommandHandler<AddPositionCommand> {
+public class AddPositionCommandHandler extends CommandHandler<PositionCommand> {
 
 	@Inject
 	private PositionRepository positionRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<AddPositionCommand> context) {
-
-		
-		
-		String companyCode = AppContexts.user().companyCode();
-		// String hitoryId = IdentifierUtil.randomUniqueId();
-		JobTitle jobTitle = new JobTitle(new JobName(context.getCommand().getJobName()),
-				new JobCode(context.getCommand().getJobCode()), context.getCommand().getHistoryId(),
-				new Memo(context.getCommand().getMemo()), companyCode);
-		positionRepository.add(jobTitle);
+	protected void handle(CommandHandlerContext<PositionCommand> context) {
+//
+//		
+//		
+//		String companyCode = AppContexts.user().companyCode();
+//		// String hitoryId = IdentifierUtil.randomUniqueId();
+//		JobTitle jobTitle = new JobTitle(new JobName(context.getCommand().getJobName()),
+//				new JobCode(context.getCommand().getJobCode()), context.getCommand().getHistoryId(),
+//				new Memo(context.getCommand().getMemo()), companyCode);
+//		positionRepository.add(jobTitle);
 
 	}
 

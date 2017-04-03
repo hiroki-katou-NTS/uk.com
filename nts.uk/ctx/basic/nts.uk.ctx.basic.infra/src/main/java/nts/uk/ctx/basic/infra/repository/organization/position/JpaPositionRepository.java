@@ -51,7 +51,8 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		builderString.append(" AND e.cmnmtJobTitleRefPK.historyId = :historyId");
 		builderString.append(" AND e.cmnmtJobTitleRefPK.jobCode = :jobCode");
 		SELECT_JOBTITLEREF = builderString.toString();
-
+		
+		
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM CatmtAuth e");
@@ -129,7 +130,7 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		IS_UPDATE_HISTORY = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("SELECT TOP 1 e");
+		builderString.append("SELECT e");
 		builderString.append(" FROM CmnmtJobHist e");
 		builderString.append(" WHERE e.cmnmtJobHistPK.companyCode = :companyCode");
 		builderString.append(" AND e.endDate = :endDate");
@@ -146,9 +147,12 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 
 	@Override
 	public List<JobRef_Auth> getAllAuth(String companyCode, String historyId, String jobCode, String authScopeAtr) {
-		return this.queryProxy().query(SELECT_AUTHNAME, Object[].class).setParameter("companyCode", companyCode)
-				.setParameter("historyId", historyId).setParameter("jobCode", jobCode)
-				.setParameter("authScopeAtr", authScopeAtr).getList(c -> {
+		return this.queryProxy().query(SELECT_AUTHNAME, Object[].class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("historyId", historyId)
+				.setParameter("jobCode", jobCode)
+				.setParameter("authScopeAtr", authScopeAtr)
+				.getList(c -> {
 					String authCode = (String) c[0];
 					String authName = (String) c[1];
 					int referenceSettings = Integer.valueOf(c[2].toString());
@@ -262,6 +266,7 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 
 	}
 
+
 	@Override
 	public Optional<JobTitle> findSingle(String companyCode, String historyId, JobCode jobCode) {
 		return this.queryProxy().query(FIND_SINGLE, CmnmtJobTitle.class)
@@ -311,11 +316,11 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 	}
 
 	private JobTitleRef convertToDomainRef(CmnmtJobTitleRef cmnmtJobTitleRef) {
-		JobTitleRef jobTitleRef = JobTitleRef.createFromJavaType(cmnmtJobTitleRef.getReferenceSettings(),
+		JobTitleRef jobTitleRef = JobTitleRef.createFromJavaType(cmnmtJobTitleRef.getCmnmtJobTitleRefPK().getAuthCode(),
 				cmnmtJobTitleRef.getCmnmtJobTitleRefPK().getCompanyCode(),
 				cmnmtJobTitleRef.getCmnmtJobTitleRefPK().getHistoryId(),
 				cmnmtJobTitleRef.getCmnmtJobTitleRefPK().getJobCode(),
-				cmnmtJobTitleRef.getCmnmtJobTitleRefPK().getAuthCode()
+				cmnmtJobTitleRef.getReferenceSettings()
 				);
 		return jobTitleRef;
 	}
@@ -340,8 +345,9 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 				.setParameter("authCode", authCode).getSingle(c -> toDomainAuth(c));
 	}
 
+
 	@Override
-	public void addJobTitleRef(JobTitleRef jobTitleRef) {
+	public void getAllJobTitleRef(JobTitleRef jobTitleRef) {
 		// TODO Auto-generated method stub
 
 	}
@@ -370,6 +376,30 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		}).collect(Collectors.toList());
 		this.commandProxy().removeAll(CmnmtJobTitle.class, detailEntitiesPk);
 
+	}
+
+
+	@Override
+	public void add(List<JobTitle> lstPositionNow) {
+		this.commandProxy().insertAll(lstPositionNow.stream().map(item -> {return convertToDbType(item);}).collect(Collectors.toList()));
+		
+		
+	}
+
+	private CmnmtJobTitleRef convertToDbType3(JobTitleRef jobTitleRef) {
+		CmnmtJobTitleRef cmnmtJobTitleRef = new CmnmtJobTitleRef();
+		CmnmtJobTitleRefPK cmnmtJobTitleRefPK = new CmnmtJobTitleRefPK(jobTitleRef.getCompanyCode(),
+				jobTitleRef.getHistoryId(),jobTitleRef.getJobCode().v(),jobTitleRef.getAuthCode().v());
+		cmnmtJobTitleRef.setReferenceSettings(jobTitleRef.getReferenceSettings().value);
+	  
+		cmnmtJobTitleRef.setCmnmtJobTitleRefPK(cmnmtJobTitleRefPK);
+		return cmnmtJobTitleRef;
+	}
+
+	@Override
+	public void addJobTitleRef(List<JobTitleRef> jobTitleRef) {
+		this.commandProxy().insertAll(jobTitleRef.stream().map(item -> {return convertToDbType3(item);}).collect(Collectors.toList()));
+	
 	}
 
 
