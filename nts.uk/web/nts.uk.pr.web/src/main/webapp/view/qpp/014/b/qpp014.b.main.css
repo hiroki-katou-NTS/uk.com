@@ -21,17 +21,20 @@
 	margin-left: 50px;
 	height: 25px;
 }
-#wizard { border: none; }
+
+#wizard {
+	border: none;
+}
+
 div.steps.clearfix {
 	height: 645px;
 	width: 260px !important;
 }
+
 div.content.clearfix {
 	height: 650px;
-    margin-left: 0px !important;
-    width: 1066px !important;
-    position: absolute;
-    background-color: white;
+	margin-left: 0px !important;
+	width: 1066px !important;
+	position: absolute;
+	background-color: white;
 }
-
-    

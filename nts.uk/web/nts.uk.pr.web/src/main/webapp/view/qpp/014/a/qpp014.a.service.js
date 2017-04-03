@@ -4,21 +4,14 @@ var qpp014;
     (function (a) {
         var service;
         (function (service) {
-            var paths = {
-                getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
+            var path = {
+                findPayDayProcessing: "pr/proto/paymentdata/banktransfer/findPayDayProcessing/{companyCode}/{pay_bonus_atr}",
             };
-            function getPaymentDateProcessingList() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getPaymentDateProcessingList)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+            function findAll() {
+                return nts.uk.request.ajax(path.findPayDayProcessing);
             }
-            service.getPaymentDateProcessingList = getPaymentDateProcessingList;
+            service.findAll = findAll;
         })(service = a.service || (a.service = {}));
     })(a = qpp014.a || (qpp014.a = {}));
 })(qpp014 || (qpp014 = {}));
+//# sourceMappingURL=qpp014.a.service.js.map

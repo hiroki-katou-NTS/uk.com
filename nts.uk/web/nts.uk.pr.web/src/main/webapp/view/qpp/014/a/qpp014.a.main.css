@@ -18,6 +18,7 @@ body {
 	overflow: hidden;
 	visibility: hidden;
 }
+
 #content {
 	width: 1360px;
 	padding: 20px 0px 0px 30px;
@@ -26,13 +27,15 @@ body {
 #functions-area {
 	padding: 10px 0px 5px 10px;
 }
+
 #contents-area {
 	padding-left: 40px;
 }
+
 #A_BTN_001 {
 	margin-left: 20px;
-	width: 350px;
-	height: 420px;
+	width: 400px;
+	height: 355px;
 }
 
 #A_BTN_002 {
@@ -43,36 +46,47 @@ body {
 }
 
 #A_SEL_001 {
+	margin-left: 18px;
 	vertical-align: middle;
-    min-width: 200px !important;
-    width: 200px ;
+	min-width: 200px !important;
+	width: 200px;
 }
+
 #A_LBL_002 {
 	font-size: large;
 }
+
 #divLine2 {
 	margin-top: 20px;
 	margin-left: 20px;
 	margin-bottom: 20px;
 }
-#contents-area > div:NTH-LAST-CHILD(2){
+
+#contents-area>div:NTH-LAST-CHILD(2) {
 	margin-top: 10px;
 	margin-bottom: 15px;
 }
-.func-btn { 
+
+.func-btn {
 	display: inline-block;
-	margin-left: 30px;
 }
-#link_button {
+
+.iconBack {
+	float: left;
+	margin-left: 25px
+}
+
+.backgroundOfText {
 	background-color: #E2F79F;
-    width: 140px;	
+	width: 150px;
+	margin: 1px 0px 0px 42px;
+	padding: 6px 0px;
+	border: 2px solid #E2F79F;
+	border-radius: 5px
 }
-#link_button > img {
-	vertical-align: middle;
-    height: 30px;
-    width: 30px;
-}
-#link_button > a {
-	padding-left: 5px;
-    vertical-align: middle;
+
+.textInBackground {
+	text-decoration: none;
+	margin-left: 10px;
+	color: black
 }

@@ -1,4 +1,3 @@
-// TreeGrid Node
 var qpp014;
 (function (qpp014) {
     var a;
@@ -7,7 +6,6 @@ var qpp014;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
-                    //
                     this.viewmodelb = new qpp014.b.viewmodel.ScreenModel();
                     this.viewmodeld = new qpp014.d.viewmodel.ScreenModel();
                     this.viewmodelg = new qpp014.g.viewmodel.ScreenModel();
@@ -15,7 +13,6 @@ var qpp014;
                     $('.func-btn').css('visibility', 'hidden');
                     $('#screenB').css('display', 'none');
                     var self = this;
-                    //viewmodel A
                     self.a_SEL_001_items = ko.observableArray([
                         new qpp014.shr.viewmodelbase.PayDayProcessing('1', 1, '1', 1, 1, 1, 1),
                         new qpp014.shr.viewmodelbase.PayDayProcessing('2', 2, '2', 2, 2, 2, 2),
@@ -42,3 +39,4 @@ var qpp014;
     })(a = qpp014.a || (qpp014.a = {}));
 })(qpp014 || (qpp014 = {}));
 ;
+//# sourceMappingURL=qpp014.a.viewmodel.js.map

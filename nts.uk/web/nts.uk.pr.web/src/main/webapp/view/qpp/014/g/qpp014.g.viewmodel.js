@@ -1,4 +1,3 @@
-// TreeGrid Node
 var qpp014;
 (function (qpp014) {
     var g;
@@ -10,9 +9,9 @@ var qpp014;
                     var self = this;
                     self.g_INP_001 = ko.observable(new Date('2016/12/01'));
                     self.g_SEL_001_items = ko.observableArray([
-                        new ItemModel_G_SEL_001('��{��1', '��{��'),
-                        new ItemModel_G_SEL_001('��{��2', '��E�蓖'),
-                        new ItemModel_G_SEL_001('0003', '��{��')
+                        new ItemModel_G_SEL_001('0001', '登録済みの振込元銀行の名称'),
+                        new ItemModel_G_SEL_001('0002', '銀行コード'),
+                        new ItemModel_G_SEL_001('0003', '支店コード')
                     ]);
                     self.g_SEL_001_itemSelected = ko.observable('0002');
                     self.g_SEL_002_items = ko.observableArray([
@@ -24,7 +23,7 @@ var qpp014;
                     self.g_INP_002 = {
                         value: ko.observable(12)
                     };
-                    self.g_SEL_003_itemSelected = ko.observable('0002');
+                    self.g_SEL_003_itemSelected = ko.observable(1);
                 }
                 return ScreenModel;
             }());
@@ -49,3 +48,4 @@ var qpp014;
     })(g = qpp014.g || (qpp014.g = {}));
 })(qpp014 || (qpp014 = {}));
 ;
+//# sourceMappingURL=qpp014.g.viewmodel.js.map

@@ -1,4 +1,3 @@
-// TreeGrid Node
 var qpp014;
 (function (qpp014) {
     var h;
@@ -8,7 +7,6 @@ var qpp014;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    //viewmodel H
                     self.h_INP_001 = ko.observable(new Date('2016/12/01'));
                     self.h_LST_001_items = ko.observableArray([]);
                     for (var i_1 = 1; i_1 < 100; i_1++) {
@@ -32,3 +30,4 @@ var qpp014;
     })(h = qpp014.h || (qpp014.h = {}));
 })(qpp014 || (qpp014 = {}));
 ;
+//# sourceMappingURL=qpp014.h.viewmodel.js.map

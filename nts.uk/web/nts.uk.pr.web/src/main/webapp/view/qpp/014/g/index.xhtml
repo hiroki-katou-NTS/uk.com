@@ -7,13 +7,14 @@
 <body>
 	<ui:composition>
 		<div>
-			<div class="divLine">
+			<div>
 				<label id="G_LBL_001">給与 振込データを「全銀協フォーマット」にてテキスト出力します。</label>
 			</div>
 			<div class="divLine">
 				<label id="G_LBL_002">振込データ出力の指定</label>
 			</div>
 			<hr id="G_HR_001" />
+
 			<div class="divLine">
 				<div class="divLine-col-1">
 					<div id="G_LBL_003" data-bind="ntsFormLabel: {required: false}">処理年月</div>
@@ -22,7 +23,10 @@
 					<label id="G_LBL_004">04</label> <label id="G_LBL_005">05</label> <label
 						id="G_LBL_016">16</label> <label id="G_LBL_017">17</label>
 				</div>
+				<div id="G_INP_001"
+					data-bind="ntsDatePicker: { value: viewmodelg.g_INP_001, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
 			</div>
+
 			<div class="divLine">
 				<div class="divLine-col-1">
 					<div id="G_LBL_006" data-bind="ntsFormLabel: {required: false}">振込指定日</div>

@@ -1,18 +1,10 @@
 module qpp014.a.service {
-    var paths: any = {
-        getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
-    }
+    var path = {
+        findPayDayProcessing: "pr/proto/paymentdata/banktransfer/findPayDayProcessing/{companyCode}/{pay_bonus_atr}",
+    };
     
-    export function getPaymentDateProcessingList(): JQueryPromise<Array<any>> {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.getPaymentDateProcessingList)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+    export function findAll(): JQueryPromise<any> {
+        return nts.uk.request.ajax(path.findPayDayProcessing);
     }
 }
 

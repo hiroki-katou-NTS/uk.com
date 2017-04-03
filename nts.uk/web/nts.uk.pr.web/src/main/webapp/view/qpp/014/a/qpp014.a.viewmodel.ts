@@ -1,8 +1,6 @@
 // TreeGrid Node
 module qpp014.a.viewmodel {
     export class ScreenModel {
-        //
-        
         viewmodelb = new qpp014.b.viewmodel.ScreenModel();
         viewmodeld = new qpp014.d.viewmodel.ScreenModel();
         viewmodelg = new qpp014.g.viewmodel.ScreenModel();
@@ -13,12 +11,12 @@ module qpp014.a.viewmodel {
         a_SEL_001_itemSelected: KnockoutObservable<any>;
 
         constructor() {
-            
+
             $('.func-btn').css('visibility', 'hidden');
             $('#screenB').css('display', 'none');
-            
+
             let self = this;
-            
+
 
             //viewmodel A
             self.a_SEL_001_items = ko.observableArray([
@@ -27,8 +25,8 @@ module qpp014.a.viewmodel {
                 new shr.viewmodelbase.PayDayProcessing('3', 3, '3', 3, 3, 3, 3)
             ]);
             self.a_SEL_001_itemSelected = ko.observable(1);
-
         }
+
         nextScreen() {
             $("#screenA").css("display", "none");
             $("#screenB").css("display", "");
@@ -36,11 +34,11 @@ module qpp014.a.viewmodel {
                 $(".func-btn").css("visibility", "visible");
             });
         }
+
         backScreen() {
             $("#screenB").css("display", "none");
             $("#screenA").css("display", "");
             $(".func-btn").css("visibility", "hidden");
         }
-        
     }
 };

@@ -8,17 +8,10 @@ var qpp014;
                 getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
             };
             function getPaymentDateProcessingList() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getPaymentDateProcessingList)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax(paths.getPaymentDateProcessingList);
             }
             service.getPaymentDateProcessingList = getPaymentDateProcessingList;
         })(service = d.service || (d.service = {}));
     })(d = qpp014.d || (qpp014.d = {}));
 })(qpp014 || (qpp014 = {}));
+//# sourceMappingURL=qpp014.d.service.js.map
