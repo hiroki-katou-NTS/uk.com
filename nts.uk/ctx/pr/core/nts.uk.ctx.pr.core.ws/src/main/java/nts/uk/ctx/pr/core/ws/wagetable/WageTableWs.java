@@ -56,6 +56,8 @@ import nts.uk.ctx.pr.core.ws.wagetable.dto.DemensionItemDto;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.ElementTypeDto;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.SettingInfoInModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.SettingInfoOutModel;
+import nts.uk.ctx.pr.core.ws.wagetable.dto.WageTableItemInModel;
+import nts.uk.ctx.pr.core.ws.wagetable.dto.WageTableItemModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.WageTableModel;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -169,6 +171,40 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 
 		// Return
 		return model;
+	}
+
+	/**
+	 * Find by month.
+	 *
+	 * @param baseMonth
+	 *            the base month
+	 * @return the list
+	 */
+	@POST
+	@Path("findbymonth/{baseMonth}")
+	public List<WageTableItemModel> findByMonth(@PathParam("baseMonth") Integer baseMonth) {
+		List<WageTableItemModel> wtItems = wtHeadRepo
+				.getWageTableByBaseMonth(baseMonth).stream().map(item -> WageTableItemModel
+						.builder().code(item.getCode().v()).name(item.getName().v()).build())
+				.collect(Collectors.toList());
+		return wtItems;
+	}
+
+	/**
+	 * Find by codes.
+	 *
+	 * @param input
+	 *            the input
+	 * @return the list
+	 */
+	@POST
+	@Path("findbycodes")
+	public List<WageTableItemModel> findByCodes(WageTableItemInModel input) {
+		List<WageTableItemModel> wtItems = wtHeadRepo
+				.getWageTableByCodes(input.getCodes()).stream().map(item -> WageTableItemModel
+						.builder().code(item.getCode().v()).name(item.getName().v()).build())
+				.collect(Collectors.toList());
+		return wtItems;
 	}
 
 	/**
