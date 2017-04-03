@@ -8,6 +8,7 @@ package nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 
 /**
  * The Class HealthInsuranceAvgearnValue.
@@ -17,7 +18,7 @@ import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 public class HealthInsuranceAvgearnValue {
 
 	/** The health basic mny. */
-	private CommonAmount healthBasicMny;
+	private InsuranceAmount healthBasicMny;
 
 	/** The health general mny. */
 	private CommonAmount healthGeneralMny;
@@ -26,7 +27,7 @@ public class HealthInsuranceAvgearnValue {
 	private CommonAmount healthNursingMny;
 
 	/** The health specific mny. */
-	private CommonAmount healthSpecificMny;
+	private InsuranceAmount healthSpecificMny;
 
 	/**
 	 * Instantiates a new health insurance avgearn value.
@@ -47,8 +48,8 @@ public class HealthInsuranceAvgearnValue {
 	 * @param healthSpecificMny
 	 *            the health specific mny
 	 */
-	public HealthInsuranceAvgearnValue(CommonAmount healthBasicMny, CommonAmount healthGeneralMny, CommonAmount healthNursingMny,
-			CommonAmount healthSpecificMny) {
+	public HealthInsuranceAvgearnValue(InsuranceAmount healthBasicMny, CommonAmount healthGeneralMny,
+			CommonAmount healthNursingMny, InsuranceAmount healthSpecificMny) {
 		super();
 		this.healthBasicMny = healthBasicMny;
 		this.healthGeneralMny = healthGeneralMny;

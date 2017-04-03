@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 
 /**
  * The Class HealthInsuranceAvgearn.
@@ -86,11 +87,12 @@ public class HealthInsuranceAvgearn extends DomainObject {
 		HealthInsuranceAvgearn healthInsuranceAvgearn = new HealthInsuranceAvgearn();
 		healthInsuranceAvgearn.historyId = newHistoryId;
 		healthInsuranceAvgearn.levelCode = levelCode;
-		CommonAmount defaultAmount = new CommonAmount(BigDecimal.ZERO);
-		healthInsuranceAvgearn.companyAvg = new HealthInsuranceAvgearnValue(defaultAmount, defaultAmount, defaultAmount,
-				defaultAmount);
-		healthInsuranceAvgearn.personalAvg = new HealthInsuranceAvgearnValue(defaultAmount, defaultAmount,
-				defaultAmount, defaultAmount);
+		CommonAmount defaultCommonAmount = new CommonAmount(BigDecimal.ZERO);
+		InsuranceAmount defaultInsuranceAmount = new InsuranceAmount(BigDecimal.ZERO);
+		healthInsuranceAvgearn.companyAvg = new HealthInsuranceAvgearnValue(defaultInsuranceAmount, defaultCommonAmount,
+				defaultCommonAmount, defaultInsuranceAmount);
+		healthInsuranceAvgearn.personalAvg = new HealthInsuranceAvgearnValue(defaultInsuranceAmount,
+				defaultCommonAmount, defaultCommonAmount, defaultInsuranceAmount);
 		return healthInsuranceAvgearn;
 	}
 

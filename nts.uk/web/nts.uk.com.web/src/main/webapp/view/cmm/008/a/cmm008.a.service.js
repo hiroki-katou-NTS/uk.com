@@ -11,7 +11,7 @@ var cmm008;
                 deleteEmployment: "basic/organization/employment/deleteemployment/",
                 getEmploymentByCode: "basic/organization/employment/findemploymentbycode/",
                 getAllProcessingNo: "pr/core/paydayrocessing/getbyccd",
-                getCompanyInfor: "ctx/proto/company/findBycompanyCode"
+                getCompanyInfor: "ctx/proto/company/findCompany"
             };
             function getAllEmployments() {
                 var dfd = $.Deferred();

@@ -355,7 +355,10 @@ var nts;
                     };
                     function validate($editor) {
                         var validateEvent = new CustomEvent("validate", {});
-                        document.getElementById($editor.attr('id')).dispatchEvent(validateEvent);
+                        $editor.each(function (index) {
+                            var $input = $(this);
+                            document.getElementById($input.attr('id')).dispatchEvent(validateEvent);
+                        });
                     }
                 })(ntsEditor || (ntsEditor = {}));
                 var ntsWizard;
