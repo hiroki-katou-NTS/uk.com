@@ -1,13 +1,13 @@
 var cmm009;
 (function (cmm009) {
-    var d;
-    (function (d) {
+    var c;
+    (function (c) {
         __viewContext.ready(function () {
-            var screenModel = new d.viewmodel.ScreenModel();
+            var screenModel = new c.viewmodel.ScreenModel();
             screenModel.start().done(function () {
                 __viewContext.bind(screenModel);
             });
         });
-    })(d = cmm009.d || (cmm009.d = {}));
+    })(c = cmm009.c || (cmm009.c = {}));
 })(cmm009 || (cmm009 = {}));
-//# sourceMappingURL=start.js.map
+//# sourceMappingURL=cmm009.c.start.js.map
