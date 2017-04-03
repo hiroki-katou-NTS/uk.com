@@ -28,7 +28,9 @@ var nts;
                         return item.code == codeChange;
                     });
                     self.useMasterCode(data().comboBoxUseMaster().selectedCode());
-                    self.useMasterName(useMasterFound.name);
+                    if (useMasterFound) {
+                        self.useMasterName(useMasterFound.name);
+                    }
                 });
                 var lstReferenceMonthAtr = [
                     { code: 0, name: '当月' },
