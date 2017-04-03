@@ -5,5 +5,5 @@ import java.util.List;
 public interface IPaydayProcessingFinder {
 	List<PaydayProcessingDto> getPaydayProcessing(String companyCode); 
 	
-	List<PaydayProcessingDto> getPaydayProcessing(String companyCode, int payBonusAtr);
+	List<PaydayProcessingDto> getPaydayProcessing(int payBonusAtr);
 }

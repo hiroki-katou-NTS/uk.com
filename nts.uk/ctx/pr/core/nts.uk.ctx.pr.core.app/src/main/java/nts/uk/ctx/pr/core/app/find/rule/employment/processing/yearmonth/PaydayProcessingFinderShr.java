@@ -29,9 +29,8 @@ public class PaydayProcessingFinderShr implements IPaydayProcessingFinder {
 	}
 
 	@Override
-	public List<PaydayProcessingDto> getPaydayProcessing(String companyCode, int payBonusAtr) {
-		if (companyCode == null || companyCode.trim() == "")
-			companyCode = AppContexts.user().companyCode();
+	public List<PaydayProcessingDto> getPaydayProcessing(int payBonusAtr) {
+		 String	companyCode = AppContexts.user().companyCode();
 
 		return repository.select1b(companyCode, payBonusAtr).stream()
 				.map(c -> new PaydayProcessingDto(c.getCompanyCode().v(), c.getProcessingNo().v(),
