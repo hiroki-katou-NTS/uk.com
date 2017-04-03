@@ -5,7 +5,10 @@ module nts.qmm017 {
             findFormula: "pr/formula/formulaMaster/findFormula",
             getFormulaDetail: "pr/formula/formulaMaster/getFormulaDetail",
             registerFormulaMaster: "pr/formula/formulaMaster/addFormulaMaster",
-            updateFormula: "pr/formula/formulaMaster/updateFormulaMaster"
+            updateFormula: "pr/formula/formulaMaster/updateFormulaMaster",
+            getListCompanyUnitPrice: "pr/proto/unitprice/findbydate/",
+            getListPersonalUnitPrice: "pr/core/rule/employment/unitprice/personal/find/all",
+            getListItemMaster: "pr/core/item/findall/category/"
         }
 
         export function getAllFormula(): JQueryPromise<Array<model.FormulaDto>> {
@@ -61,6 +64,42 @@ module nts.qmm017 {
             }).fail(function(res){
                 dfd.reject(res);
             });
+            return dfd.promise();
+        }
+        
+        export function getListCompanyUnitPrice(baseDate): JQueryPromise<Array<model.CompanyUnitPriceDto>> {
+            var dfd = $.Deferred<Array<model.CompanyUnitPriceDto>>();
+            nts.uk.request.ajax("pr", paths.getListCompanyUnitPrice + baseDate)
+                .done(function(res: Array<model.CompanyUnitPriceDto>) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+
+        export function getListPersonalUnitPrice(): JQueryPromise<Array<model.PersonalUnitPriceDto>> {
+            var dfd = $.Deferred<Array<model.PersonalUnitPriceDto>>();
+            nts.uk.request.ajax("pr", paths.getListPersonalUnitPrice)
+                .done(function(res: Array<model.PersonalUnitPriceDto>) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+
+        export function getListItemMaster(categoryAtr): JQueryPromise<Array<model.ItemMasterDto>> {
+            var dfd = $.Deferred<Array<model.ItemMasterDto>>();
+            nts.uk.request.ajax("pr", paths.getListItemMaster + categoryAtr)
+                .done(function(res: Array<model.ItemMasterDto>) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
             return dfd.promise();
         }
     }
@@ -131,6 +170,21 @@ module nts.qmm017 {
             referenceItemCodes: Array<string>;
             constructor() {    
             }
+        }
+        
+        export class CompanyUnitPriceDto {
+            companyUnitPriceCode: string;
+            companyUnitPriceName: string;
+        }
+
+        export class PersonalUnitPriceDto {
+            personalUnitPriceCode: string;
+            personalUnitPriceName: string;
+        }
+
+        export class ItemMasterDto {
+            itemCode: string;
+            itemName: string;
         }
     }
 }

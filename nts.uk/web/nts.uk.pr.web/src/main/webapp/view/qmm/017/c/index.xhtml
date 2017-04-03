@@ -166,7 +166,7 @@
 					<span id="c_lbl_003" class="separate-span separate-vertical" data-bind="text: formulaName"></span>
 					<br/>
 					<div id="c_sel_006" data-bind="ntsTabPanel: { dataSource: c_sel_006, active: selectedTabCSel006}">
-						<div class="tab-content-1">
+						<div class="tab-content-1" data-bind="with: $root.content.viewModel017d">
 							<ui:include src="../d/index.xhtml" />
 						</div>
 						<div class="tab-content-2">
