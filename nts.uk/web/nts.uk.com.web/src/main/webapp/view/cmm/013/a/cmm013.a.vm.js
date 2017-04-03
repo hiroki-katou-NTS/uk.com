@@ -198,6 +198,59 @@ var cmm013;
                         });
                     }
                 };
+                ScreenModel.prototype.addJobHistory = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    var jTitle = new model.ListPositionDto(self.inp_002_code(), self.inp_003_name(), self.selectedId(), self.inp_005_memo());
+                    if (self.listbox()[0].historyId == '1') {
+                        if (self.checkCoppyJtitle() == '1') {
+                            self.checkAddJtitle('1');
+                        }
+                        else if (self.checkInput() == true) {
+                            self.checkAddJtitle('2');
+                        }
+                        if (self.listbox().length == 1) {
+                            var jHist = new model.ListHistoryDto('', self.startDateAddNew(), '', self.listbox()[0].historyId);
+                            self.checkAddJhist('1');
+                        }
+                        else if (self.listbox().length >= 1) {
+                            var jHist = new model.ListHistoryDto('', self.startDateAddNew(), '', self.listbox()[1].historyId);
+                            self.checkAddJhist('2');
+                        }
+                    }
+                    else {
+                        self.checkAddJhist('0');
+                        if (self.checkInput() == true) {
+                            var jHist = new model.ListHistoryDto('', self.startDateAddNew(), '', self.itemHist().historyId);
+                            if (self.dataSource().length != 0) {
+                                for (var i = 0; i < self.dataSource().length; i++) {
+                                    if (self.inp_002_code() == self.dataSource()[i].jobCode) {
+                                        self.checkAddJtitle('4');
+                                        break;
+                                    }
+                                    else {
+                                        self.checkAddJtitle('3');
+                                    }
+                                }
+                            }
+                            else {
+                                self.checkAddJtitle('3');
+                            }
+                        }
+                    }
+                    var addHandler = new model.AfterAdd(jHist, jTitle, self.checkAddJhist(), self.checkAddJtitle());
+                    if (self.checkRegister() != '0' || ((self.checkAddJtitle() == '3' || self.checkAddJtitle() == '4') && self.checkAddJhist() == '0')) {
+                        a.service.addHist(addHandler).done(function () {
+                            alert('OK');
+                            nts.uk.ui.windows.setShared('startNew', '', true);
+                            self.checkRegister('0');
+                            self.getAllJobTitleNew();
+                        }).fail(function (res) {
+                            alert(res.message);
+                            dfd.reject(res);
+                        });
+                    }
+                };
                 ScreenModel.prototype.getAllJobTitleNew = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -347,11 +400,9 @@ var cmm013;
                         else {
                             cDelete = 2;
                         }
-                        nts.uk.ui.windows.setShared('CMM013_sDateLast', self.srtDateLast(), true);
-                        nts.uk.ui.windows.setShared('CMM013_delete', cDelete, true);
-                        nts.uk.ui.windows.setShared('CMM013_historyIdUpdate', self.historyIdUpdate(), true);
-                        nts.uk.ui.windows.setShared('CMM013_startDateUpdate', self.startDateUpdate(), true);
-                        nts.uk.ui.windows.setShared('CMM013_endDateUpdate', self.endDateUpdate(), true);
+                        nts.uk.ui.windows.setShared('cmm013HistoryId', self.historyIdUpdate(), true);
+                        nts.uk.ui.windows.setShared('cmm013StartDate', self.startDateUpdate(), true);
+                        nts.uk.ui.windows.setShared('cmm013EndDate', self.endDateUpdate(), true);
                         nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '画面ID：D', })
                             .onClosed(function () {
                             var checkUpdate = nts.uk.ui.windows.getShared('cmm013D_updateFinish');
@@ -370,10 +421,9 @@ var cmm013;
                     self.checkCoppyJtitle(nts.uk.ui.windows.getShared('cmm013copy_c'));
                     if ((self.startDateAddNew() != null && self.startDateAddNew() !== undefined && self.startDateAddNew() != '')
                         || (self.checkInput() == true && self.inp_002_enable() == true)) {
-                        self.addHist();
+                        self.addJobHistory();
                     }
                     else {
-                        self.addPosition();
                     }
                 };
                 ScreenModel.prototype.deletePosition = function () {

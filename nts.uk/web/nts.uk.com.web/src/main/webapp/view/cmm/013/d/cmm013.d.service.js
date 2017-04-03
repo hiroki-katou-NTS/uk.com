@@ -5,42 +5,17 @@ var cmm013;
         var service;
         (function (service) {
             var paths = {
-                updateJobHist: "basic/organization/position/updatejobhist"
+                updateHist: "basic/organization/position/updateHist",
+                deleteHist: "basic/organization/position/deleteHist"
             };
-            function updateJobHist(jobHist) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.updateJobHist, jobHist)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+            function deleteHistory(history) {
+                return nts.uk.request.ajax("com", paths.deleteHist, history);
             }
-            service.updateJobHist = updateJobHist;
-            var model;
-            (function (model) {
-                var UpdateHandler = (function () {
-                    function UpdateHandler(jHist, checkUpdate, checkDelete) {
-                        this.jHist = jHist;
-                        this.checkUpdate = checkUpdate;
-                        this.checkDelete = checkDelete;
-                    }
-                    return UpdateHandler;
-                }());
-                model.UpdateHandler = UpdateHandler;
-                var JobHistDto = (function () {
-                    function JobHistDto(companyCode, startDate, endDate, historyId) {
-                        this.companyCode = companyCode;
-                        this.startDate = startDate;
-                        this.endDate = endDate;
-                        this.historyId = historyId;
-                    }
-                    return JobHistDto;
-                }());
-                model.JobHistDto = JobHistDto;
-            })(model = service.model || (service.model = {}));
+            service.deleteHistory = deleteHistory;
+            function updateHistory(history) {
+                return nts.uk.request.ajax("com", paths.updateHist, history);
+            }
+            service.updateHistory = updateHistory;
         })(service = d.service || (d.service = {}));
     })(d = cmm013.d || (cmm013.d = {}));
 })(cmm013 || (cmm013 = {}));

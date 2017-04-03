@@ -39,9 +39,9 @@ public class AddHistoryCommandHandler extends CommandHandler<AddHistoryCommand> 
 		String historyId = IdentifierUtil.randomUniqueId();
 		int a = context.getCommand().getJobTitle().getPresenceCheckScopeSet();
 		// case insert
-		if (positionRepository.ExistedHistoryBydate(companyCode, command.getJobHist().getStartDate())) {
-			throw new BusinessException(new RawErrorMessage("履歴の期間が正しくありません。"));
-		} else {
+//		if (positionRepository.ExistedHistoryBydate(companyCode, command.getJobHist().getStartDate())) {
+//			throw new BusinessException(new RawErrorMessage("履歴の期間が正しくありません。"));
+//		} else {
 		JobTitle jobTitle= new JobTitle(companyCode,
 				historyId,
 				new JobCode(context.getCommand().getJobTitle().getJobCode()),				
@@ -178,7 +178,7 @@ public class AddHistoryCommandHandler extends CommandHandler<AddHistoryCommand> 
 //			// positionRepository.addHistory(jobHistory);
 
 			}
-		}
+//		}
 
 	
 

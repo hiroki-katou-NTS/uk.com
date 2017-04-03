@@ -100,9 +100,9 @@ module cmm013.a.service {
 
 
 
-       export function addHist(jobHist: viewmodel.model.ListHistoryDto){
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com",paths.addHist, jobHist)
+       export function addHist(addHandler: viewmodel.model.AfterAdd){
+        var dfd = $.Deferred<viewmodel.model.ListHistoryDto>();
+        nts.uk.request.ajax("com",paths.addHist, addHandler)
             .done(function(res: any){
                 dfd.resolve(res);    
             })    

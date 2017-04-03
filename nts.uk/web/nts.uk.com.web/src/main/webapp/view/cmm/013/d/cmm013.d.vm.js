@@ -9,95 +9,138 @@ var cmm013;
                     var self = this;
                     self.inp_003 = ko.observable(null);
                     self.inp_003_enable = ko.observable(true);
-                    self.startDateNew = ko.observable('');
-                    self.startDateUpdate = ko.observable('');
                     self.endDateUpdate = ko.observable('');
                     self.enable = ko.observable(true);
-                    self.cDelete = ko.observable(0);
-                    self.sDateLast = ko.observable('');
+                    self.oldStartDate = ko.observable('');
+                    self.lstMessage = ko.observableArray([]);
                     self.histIdUpdate = ko.observable('');
                 }
-                ScreenModel.prototype.closeDialog = function () {
-                    nts.uk.ui.windows.close();
-                };
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    self.cDelete(nts.uk.ui.windows.getShared('CMM013_delete'));
-                    self.startDateUpdate(nts.uk.ui.windows.getShared('CMM013_startDateUpdate'));
-                    self.endDateUpdate(nts.uk.ui.windows.getShared('CMM013_endDateUpdate'));
-                    self.sDateLast(nts.uk.ui.windows.getShared('CMM013_sDateLast'));
-                    self.histIdUpdate(nts.uk.ui.windows.getShared('CMM013_historyIdUpdate'));
-                    if (self.cDelete() == 1) {
-                        self.itemList = ko.observableArray([
-                            new BoxModel(1, '履歴を削除する '),
-                            new BoxModel(2, '履歴を修正する')
-                        ]);
-                        self.selectedId = ko.observable(2);
-                        self.selectedId.subscribe((function (codeChanged) {
-                            if (codeChanged == 1) {
-                                self.inp_003_enable(false);
-                            }
-                            else {
-                                self.inp_003_enable(true);
-                            }
-                        }));
+                    self.endDateUpdate(nts.uk.ui.windows.getShared('cmm013EndDate').split('/').join("-"));
+                    self.oldStartDate(nts.uk.ui.windows.getShared('cmm013StartDate').split('/').join("-"));
+                    self.histIdUpdate(nts.uk.ui.windows.getShared('cmm013HistoryId'));
+                    self.listMessage();
+                    self.setValueForRadio();
+                    self.selectedId.subscribe(function (newValue) {
+                        if (newValue == 1) {
+                            self.inp_003_enable(false);
+                        }
+                        else {
+                            self.inp_003_enable(true);
+                        }
+                    });
+                    self.inp_003(self.oldStartDate());
+                    if (self.endDateUpdate() === "9999-12-31") {
+                        self.enable(false);
                     }
-                    if (self.cDelete() == 2) {
-                        self.itemList = ko.observableArray([
-                            new BoxModel(1, '履歴を修正する'),
-                            new BoxModel(2, '履歴を修正する')
-                        ]);
-                        self.selectedId = ko.observable(1);
+                    else {
+                        self.enable(true);
                     }
-                    self.inp_003(self.startDateUpdate());
                     dfd.resolve();
                     return dfd.promise();
                 };
-                ScreenModel.prototype.decision = function () {
+                ScreenModel.prototype.setValueForRadio = function () {
                     var self = this;
-                    if (self.selectedId() == 2 && self.cDelete() == 1) {
-                        if (self.inp_003() >= self.endDateUpdate() || self.inp_003() <= self.startDateUpdate()) {
-                            alert("nhap lai start Date");
+                    self.itemList = ko.observableArray([
+                        new BoxModel(1, '履歴を削除する '),
+                        new BoxModel(2, '履歴を修正する')
+                    ]);
+                    self.selectedId = ko.observable(2);
+                };
+                ScreenModel.prototype.listMessage = function () {
+                    var self = this;
+                    self.lstMessage.push(new ItemMessage("ER001", "*が入力されていません。"));
+                    self.lstMessage.push(new ItemMessage("ER005", "入力した*は既に存在しています。\r\n*を確認してください。"));
+                    self.lstMessage.push(new ItemMessage("ER010", "対象データがありません。"));
+                    self.lstMessage.push(new ItemMessage("AL001", "変更された内容が登録されていません。\r\nよろしいですか。"));
+                    self.lstMessage.push(new ItemMessage("AL002", "データを削除します。\r\nよろしいですか？"));
+                    self.lstMessage.push(new ItemMessage("ER026", "更新対象のデータが存在しません。"));
+                    self.lstMessage.push(new ItemMessage("ER023", "履歴の期間が重複しています。"));
+                };
+                ScreenModel.prototype.clearShared = function () {
+                    nts.uk.ui.windows.setShared('cmm013StartDate', '', true);
+                    nts.uk.ui.windows.setShared('cmm013EndDate', '', true);
+                    nts.uk.ui.windows.setShared('cmm013HistoryId', '', true);
+                };
+                ScreenModel.prototype.closeDialog = function () {
+                    var self = this;
+                    self.clearShared();
+                    nts.uk.ui.windows.close();
+                };
+                ScreenModel.prototype.positionHis = function () {
+                    var self = this;
+                    var historyInfo = new model.ListHistoryDto(self.histIdUpdate(), self.oldStartDate(), self.inp_003());
+                    if (self.selectedId() === 1) {
+                        var AL002 = _.find(self.lstMessage(), function (mess) {
+                            return mess.messCode === "AL002";
+                        });
+                        nts.uk.ui.dialog.confirm(AL002.messName).ifCancel(function () {
                             return;
-                        }
-                    }
-                    var dfd = $.Deferred();
-                    if (self.selectedId() == 1 && self.cDelete() == 1) {
-                        var jobHist = new d.service.model.JobHistDto(self.startDateUpdate(), '', self.endDateUpdate(), self.histIdUpdate());
-                        var checkDelete = '1';
-                        var checkUpdate = '0';
+                        }).ifYes(function () {
+                            d.service.deleteHistory(historyInfo).fail(function (res) {
+                                var delMess = _.find(self.lstMessage(), function (mess) {
+                                    return mess.messCode === res.message;
+                                });
+                                nts.uk.ui.dialog.alert(delMess.messName);
+                            }).done(function () {
+                                self.clearShared();
+                                nts.uk.ui.windows.close();
+                            });
+                        });
                     }
                     else {
-                        checkDelete = '0';
-                        var jobHist = new d.service.model.JobHistDto(self.startDateUpdate(), self.inp_003(), self.endDateUpdate(), self.histIdUpdate());
-                        if (self.startDateUpdate() == self.sDateLast()) {
-                            checkUpdate = '2';
+                        var originallyStartDate = new Date(self.oldStartDate());
+                        var newStartDate = new Date(self.inp_003());
+                        if (originallyStartDate >= newStartDate) {
+                            var AL023 = _.find(self.lstMessage(), function (mess) {
+                                return mess.messCode === "ER023";
+                            });
+                            nts.uk.ui.dialog.alert(AL023.messName);
                         }
                         else {
-                            checkUpdate = '1';
+                            d.service.updateHistory(historyInfo).fail(function (res) {
+                                var upMess = _.find(self.lstMessage(), function (mess) {
+                                    return mess.messCode === res.message;
+                                });
+                            }).done(function () {
+                                self.clearShared();
+                                nts.uk.ui.windows.close();
+                            });
                         }
                     }
-                    var updateHandler = new d.service.model.UpdateHandler(jobHist, checkUpdate, checkDelete);
-                    d.service.updateJobHist(updateHandler).done(function () {
-                        alert('update thanh cong');
-                        nts.uk.ui.windows.setShared('cmm013D_updateFinish', true, true);
-                        nts.uk.ui.windows.close();
-                    }).fail(function (res) {
-                        dfd.reject(res);
-                    });
                 };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
             var BoxModel = (function () {
                 function BoxModel(id, name) {
-                    var self = this;
-                    self.id = id;
-                    self.name = name;
+                    this.id = id;
+                    this.name = name;
                 }
                 return BoxModel;
             }());
+            var model;
+            (function (model) {
+                var ListHistoryDto = (function () {
+                    function ListHistoryDto(historyId, oldStartDate, newStartDate) {
+                        this.historyId = historyId;
+                        this.oldStartDate = oldStartDate;
+                        this.newStartDate = newStartDate;
+                    }
+                    return ListHistoryDto;
+                }());
+                model.ListHistoryDto = ListHistoryDto;
+            })(model = viewmodel.model || (viewmodel.model = {}));
+            var ItemMessage = (function () {
+                function ItemMessage(messCode, messName) {
+                    this.messCode = messCode;
+                    this.messName = messName;
+                }
+                return ItemMessage;
+            }());
+            viewmodel.ItemMessage = ItemMessage;
         })(viewmodel = d.viewmodel || (d.viewmodel = {}));
     })(d = cmm013.d || (cmm013.d = {}));
 })(cmm013 || (cmm013 = {}));

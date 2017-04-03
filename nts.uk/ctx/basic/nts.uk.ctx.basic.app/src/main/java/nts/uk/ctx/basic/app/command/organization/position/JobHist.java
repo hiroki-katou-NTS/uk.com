@@ -10,9 +10,9 @@ public class JobHist {
 	
 	private String companyCode;
 	
-	private GeneralDate startDate;
+	private String startDate;
 	
-	private GeneralDate endDate;
+	private String endDate;
 	
 	private String historyId;
 }

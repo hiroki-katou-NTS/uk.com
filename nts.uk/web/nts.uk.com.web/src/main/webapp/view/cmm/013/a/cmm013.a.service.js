@@ -88,9 +88,9 @@ var cmm013;
                 return dfd.promise();
             }
             service.getAllHistory = getAllHistory;
-            function addHist(jobHist) {
+            function addHist(addHandler) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.addHist, jobHist)
+                nts.uk.request.ajax("com", paths.addHist, addHandler)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
