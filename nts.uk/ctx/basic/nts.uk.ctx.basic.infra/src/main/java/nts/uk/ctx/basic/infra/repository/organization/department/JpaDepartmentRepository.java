@@ -261,7 +261,7 @@ public class JpaDepartmentRepository extends JpaRepository implements Department
 		return resultList.stream().map(e -> new Department((String) e[0], (GeneralDate) e[1], (GeneralDate) e[2]))
 				.collect(Collectors.toList());
 	}
-
+	
 	@Override
 	public Optional<DepartmentMemo> findMemo(String companyCode, String historyId) {
 		return this.queryProxy().query(FIND_MEMO, CmnmtDepMemo.class).setParameter("companyCode", companyCode)

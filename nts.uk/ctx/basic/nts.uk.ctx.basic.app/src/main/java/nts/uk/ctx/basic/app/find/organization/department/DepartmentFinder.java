@@ -50,7 +50,8 @@ public class DepartmentFinder {
 	private List<DepartmentDto> convertToTree(List<Department> departments) {
 		Function<Department, DepartmentDto> converter = e -> {
 			return new DepartmentDto(e.getDepartmentCode().toString(), e.getExternalCode().toString(),
-					e.getFullName().toString(), e.getHierarchyCode().toString(), e.getDepartmentName().toString() , e.getHistoryId());
+					e.getFullName().toString(), e.getHierarchyCode().toString(), e.getDepartmentName().toString(),
+					e.getHistoryId());
 		};
 		Map<String, List<DepartmentDto>> childrens = new HashMap<>();
 		childrens.put(ROOT, new ArrayList<>());
@@ -96,13 +97,10 @@ public class DepartmentFinder {
 		return list.isEmpty() ? null : convertToTree(list);
 	}
 
-	public Optional<DepartmentMemoDto> findMemo(String companyCode, String historyId) {
-		return this.departmentRepository.findMemo(companyCode, historyId).map(d -> DepartmentMemoDto.fromDomain(d));
+	public DepartmentMemoDto findMemo(String companyCode, String historyId) {
+		Optional<DepartmentMemo> departmentMemo = this.departmentRepository.findMemo(companyCode, historyId);
+		return departmentMemo.isPresent() ? new DepartmentMemoDto(departmentMemo.get().getHistoryId(),
+				departmentMemo.get().getMemo().toString()) : null;
 	}
-
-	// public Optional<CompanyDto> find(String companyCode) {
-	// return this.repository.find(companyCode).map(d ->
-	// CompanyDto.fromDomain(d));
-	// }
 
 }

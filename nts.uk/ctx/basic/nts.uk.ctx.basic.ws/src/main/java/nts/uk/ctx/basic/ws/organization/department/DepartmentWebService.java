@@ -9,6 +9,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
+import nts.arc.error.BusinessException;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.basic.app.command.organization.department.AddDepartmentCommand;
 import nts.uk.ctx.basic.app.command.organization.department.AddDepartmentCommandHandler;
@@ -45,16 +47,16 @@ public class DepartmentWebService extends WebService {
 
 	@Inject
 	private RemoveDepartmentCommandHandler removeDepartmentCommandHandler;
-	
+
 	@Inject
-	private RemoveHistoryCommandHandler  removeHistoryCommandHandler;
-	
+	private RemoveHistoryCommandHandler removeHistoryCommandHandler;
+
 	@Inject
-	private UpdateEndDateByHistoryIdCommandHandler  updateHistoryCommandHandler;
+	private UpdateEndDateByHistoryIdCommandHandler updateHistoryCommandHandler;
 
 	@Inject
 	private UpdateStartDateAndEndDateByHistoryIdCommandHandler updateStartAndEnddate;
-	
+
 	@POST
 	@Path("getcode")
 	public GetCodeDto getCode() {
@@ -78,7 +80,6 @@ public class DepartmentWebService extends WebService {
 	public List<DepartmentDto> getListDepByHistId(@PathParam("historyId") String historyId) {
 		String ccd = AppContexts.user().companyCode();
 		List<DepartmentDto> list = departmentFinder.findAllByHistory(ccd, historyId);
-		System.out.println(list);
 		return list;
 	}
 
@@ -86,7 +87,7 @@ public class DepartmentWebService extends WebService {
 	@Path("getmemobyhistid/{historyId}")
 	public DepartmentMemoDto getMemoByHistId(@PathParam("historyId") String historyId) {
 		String ccd = AppContexts.user().companyCode();
-		return departmentFinder.findMemo(ccd, historyId).get();
+		return departmentFinder.findMemo(ccd, historyId);
 	}
 
 	@Path("adddepartment")
@@ -94,41 +95,41 @@ public class DepartmentWebService extends WebService {
 	public void add(List<AddDepartmentCommand> command) {
 		this.addDepartmentCommandHandler.handle(command);
 	}
-	
+
 	@Path("updatedepartment")
 	@POST
 	public void update(List<UpdateDepartmentCommand> command) {
 		this.updateDepartmentCommandHandler.handle(command);
 	}
-	
+
 	@Path("updateenddate")
 	@POST
 	public void updateEndDate(List<UpdateDepartmentCommand> command) {
 		this.updateDepartmentCommandHandler.handle(command);
 	}
-	
+
 	@Path("updateenddatebyhistoryid")
 	@POST
 	public void updateEndDateByHistId(String command) {
 		this.updateHistoryCommandHandler.handle(command);
 	}
-	
+
 	@Path("deletehistory")
 	@POST
 	public void deleteHistory(String command) {
 		this.removeHistoryCommandHandler.handle(command);
 	}
-	
+
 	@Path("updatestartdateandenddate")
 	@POST
 	public void updateStartDateandEndDateByHistId(UpdateStartDateandEndDateHistoryCommand command) {
 		this.updateStartAndEnddate.handle(command);
 	}
-	
+
 	@Path("deletedep")
 	@POST
 	public void deleteDepartment(RemoveDepartmentCommand command) {
 		this.removeDepartmentCommandHandler.handle(command);
 	}
-	
+
 }

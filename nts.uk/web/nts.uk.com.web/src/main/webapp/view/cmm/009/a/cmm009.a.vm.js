@@ -93,7 +93,7 @@ var cmm009;
                                     });
                                     a.service.getMemoByHistId(self.historyId())
                                         .done(function (memo) {
-                                        if (memo.memo.length > 0) {
+                                        if (memo != null) {
                                             self.A_INP_008(memo.memo);
                                         }
                                     }).fail(function (error) {

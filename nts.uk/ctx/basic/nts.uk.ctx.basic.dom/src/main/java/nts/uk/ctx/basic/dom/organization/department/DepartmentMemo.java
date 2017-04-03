@@ -18,4 +18,7 @@ public class DepartmentMemo {
 		this.memo = memo;
 	}
 
+	public static DepartmentMemo createFromJavaType(String companyCode, String historyId, String memo) {
+		return new DepartmentMemo(companyCode, companyCode, new Memo(memo));
+	}
 }
