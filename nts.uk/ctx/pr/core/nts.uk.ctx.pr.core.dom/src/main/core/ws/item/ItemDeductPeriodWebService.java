@@ -15,10 +15,6 @@ import nts.uk.ctx.pr.core.app.find.itemmaster.itemdeductperiod.ItemDeductPeriodF
 public class ItemDeductPeriodWebService extends WebService {
 	@Inject
 	private ItemDeductPeriodFinder itemDeductPeriodFinder;
-//	@Inject
-//	AddItemDeductPeriodCommandHandler addHandler;
-//	@Inject
-//	UpdateItemDeductPeriodCommandHandler updateHandler;
 
 	@POST
 	@Path("find/{itemCode}")
@@ -26,19 +22,5 @@ public class ItemDeductPeriodWebService extends WebService {
 		return this.itemDeductPeriodFinder.find(itemCode);
 
 	}
-
-//	@POST
-//	@Path("add")
-//	public void addItemDeductPeriod(AddItemDeductPeriodCommand command) {
-//		this.addHandler.handle(command);
-//
-//	}
-//
-//	@POST
-//	@Path("update")
-//	public void updateItemDeductPeriod(UpdateItemDeductPeriodCommand command) {
-//		this.updateHandler.handle(command);
-//
-//	}
 
 }

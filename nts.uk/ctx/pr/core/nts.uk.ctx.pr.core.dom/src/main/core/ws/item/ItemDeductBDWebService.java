@@ -17,12 +17,6 @@ import nts.uk.ctx.pr.core.app.find.itemmaster.itemdeductbd.ItemDeductBDFinder;
 public class ItemDeductBDWebService extends WebService {
 	@Inject
 	ItemDeductBDFinder itemDeductBDFinder;
-//	@Inject
-//	AddItemDeductBDCommandHandler addHandler;
-//	@Inject
-//	DeleteItemDeductBDCommandHandler deleteHandler;
-//	@Inject
-//	UpdateItemDeductBDCommandHandler updateHandler;
 
 	@POST
 	@Path("find/{itemCode}")
@@ -30,23 +24,5 @@ public class ItemDeductBDWebService extends WebService {
 
 		return this.itemDeductBDFinder.findAll(itemCode);
 	}
-//
-//	@POST
-//	@Path("add")
-//	public void addItemDeductDB(AddItemDeductBDCommand command) {
-//		this.addHandler.handle(command);
-//	}
-//
-//	@POST
-//	@Path("delete")
-//	public void deleteItemDeductDB(DeleteItemDeductBDCommand command) {
-//		this.deleteHandler.handle(command);
-//	}
-//
-//	@POST
-//	@Path("update")
-//	public void updateItemDeductDB(UpdateItemDeductBDCommand command) {
-//		this.updateHandler.handle(command);
-//	}
 
 }

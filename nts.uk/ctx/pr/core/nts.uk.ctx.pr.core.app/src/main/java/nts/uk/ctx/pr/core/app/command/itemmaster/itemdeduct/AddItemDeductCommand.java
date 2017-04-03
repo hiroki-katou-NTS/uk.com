@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemdeduct.ItemDeduct;
 
 @Getter
 @Setter
@@ -19,4 +20,9 @@ public class AddItemDeductCommand {
 	private int alRangeHighAtr;
 	private BigDecimal alRangeHigh;
 	private String memo;
+
+	public ItemDeduct toDomain() {
+		return ItemDeduct.createFromJavaType(itemCd, deductAtr, errRangeLowAtr, errRangeLow, errRangeHighAtr,
+				errRangeHigh, alRangeLowAtr, alRangeLow, alRangeHighAtr, alRangeHigh, memo);
+	}
 }

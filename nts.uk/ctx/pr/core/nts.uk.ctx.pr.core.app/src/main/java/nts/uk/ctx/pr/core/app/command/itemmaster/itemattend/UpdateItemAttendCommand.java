@@ -26,7 +26,7 @@ public class UpdateItemAttendCommand {
 	private String memo;
 
 	public ItemAttend toDomain() {
-		return ItemAttend.createFromJavaType(this.ccd, this.itemCd, this.avePayAtr, this.itemAtr, this.errRangeLowAtr,
+		return ItemAttend.createFromJavaType(this.itemCd, this.avePayAtr, this.itemAtr, this.errRangeLowAtr,
 				this.errRangeLow, this.errRangeHighAtr, this.errRangeHigh, this.alRangeLowAtr, this.alRangeLow,
 				this.alRangeHighAtr, this.alRangeHigh, this.workDaysScopeAtr, this.memo);
 	}

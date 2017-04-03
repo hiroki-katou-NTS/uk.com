@@ -18,12 +18,6 @@ public class ItemSalaryBDWebService extends WebService {
 
 	@Inject
 	ItemSalaryBDFinder itemSalaryBDFinder;
-//	@Inject
-//	AddItemSalaryBDCommandHandler addHandler;
-//	@Inject
-//	DeleteItemSalaryBDCommandHandler deleteHandler;
-//	@Inject
-//	UpdateItemSalaryBDCommandHandler updateHandler;
 
 	@POST
 	@Path("find/{itemCode}")
@@ -31,19 +25,4 @@ public class ItemSalaryBDWebService extends WebService {
 		return itemSalaryBDFinder.findAll(itemCode);
 	}
 
-//	@POST
-//	@Path("add")
-//	public void addItemSalaryDB(AddItemSalaryBDCommand command) {
-//		this.addHandler.handle(command);
-//	}
-//	@POST
-//	@Path("delete")
-//	public void deleteItemSalaryDB(DeleteItemSalaryBDCommand command) {
-//		this.deleteHandler.handle(command);
-//	}
-//	@POST
-//	@Path("update")
-//	public void updateItemSalaryDB(UpdateItemSalaryBDCommand command) {
-//		this.updateHandler.handle(command);
-//	}
 }

@@ -5,6 +5,7 @@ module qmm012.b {
             deleteItemMaster: "pr/core/item/delete",
             addItemMaster: "pr/core/item/add",
             updateItemMaster: "pr/core/item/update",
+            findItemByCategoryAndCode: "pr/core/item/find",
         }
 
         export function findAllItemMaster(ctgAtr, dispSet): JQueryPromise<Array<model.ItemMaster>> {
@@ -18,7 +19,17 @@ module qmm012.b {
                 })
             return dfd.promise();
         }
-
+        export function findItemByCategoryAndCode(ctgAtr, itemCode): JQueryPromise<model.ItemMaster> {
+            var dfd = $.Deferred<model.ItemMaster>();
+            nts.uk.request.ajax(paths.findItemByCategoryAndCode + "/" + ctgAtr + "/" + itemCode)
+                .done(function(res: model.ItemMaster) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
 
 
 
@@ -64,6 +75,8 @@ module qmm012.b {
                 itemSalary: qmm012.c.service.model.ItemSalary;
                 itemDeduct: qmm012.d.service.model.ItemDeduct;
                 itemAttend: qmm012.e.service.model.ItemAttend;
+                itemPeriod: qmm012.h.service.model.ItemPeriod;
+                itemBDs: Array<qmm012.i.service.model.ItemBD>;
                 itemCode: string;
                 itemName: string;
                 categoryAtr: number;
