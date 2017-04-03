@@ -10,9 +10,9 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.infra.file.FileGeneratorContext;
 import nts.arc.layer.ws.WebService;
-import nts.uk.pr.file.infra.paymentdata.PrintPaymentDataQueryProcessor;
 import nts.uk.pr.file.infra.paymentdata.PaymentDataPrintFileGenerator;
 import nts.uk.pr.file.infra.paymentdata.PaymentDataQuery;
+import nts.uk.pr.file.infra.paymentdata.PrintPaymentDataQueryProcessor;
 import nts.uk.pr.file.infra.paymentdata.result.PaymentDataResult;
 
 @Path("/file/paymentdata")

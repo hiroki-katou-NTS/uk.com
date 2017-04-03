@@ -13,9 +13,9 @@ public enum HrchyIndex3 {
 	 */
 	CLASS0(0),
 	/**
-	 * 1..9.設定
+	 * 3..9.設定
 	 */
-	CLASS1(1), CLASS2(2), CLASS3(3), CLASS4(4), CLASS5(5), CLASS6(6), CLASS7(7), CLASS8(8), CLASS9(9);
+	CLASS3(3), CLASS4(4), CLASS5(5), CLASS6(6), CLASS7(7), CLASS8(8), CLASS9(9);
 
 	public final int value;
 }

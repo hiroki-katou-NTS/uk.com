@@ -1,8 +1,7 @@
 module qpp008.b.service {
     var paths: any = {
         getComparingPrintSet: "report/payment/comparing/setting/find",
-        insertData: "report/payment/comparing/setting/insertData",
-        updateData: "report/payment/comparing/setting/updateData",
+        inserUpdatetData: "report/payment/comparing/setting/insertUpdateData",
         deleteData: "report/payment/comparing/setting/deleteData",
 
     }
@@ -17,10 +16,9 @@ module qpp008.b.service {
         return dfd.promise();
     }
 
-    export function insertUpdateData(isUpdate: any, inserUpdateData: any): JQueryPromise<any> {
+    export function insertUpdateData(inserUpdateData: any): JQueryPromise<any> {
         let dfd = $.Deferred<any>();
-        let _path = isUpdate ? paths.updateData : paths.insertData;
-        nts.uk.request.ajax(_path, inserUpdateData).done(function(res: any) {
+        nts.uk.request.ajax(paths.inserUpdatetData, inserUpdateData).done(function(res: any) {
             dfd.resolve(res);
         }).fail(function(error: any) {
             dfd.reject(error);
@@ -29,7 +27,7 @@ module qpp008.b.service {
     }
 
     export function deleteData(): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
+        let dfd = $.Deferred<any>();
         nts.uk.request.ajax(paths.deleteData).done(function(res: any) {
             dfd.resolve(res);
         }).fail(function(error: any) {

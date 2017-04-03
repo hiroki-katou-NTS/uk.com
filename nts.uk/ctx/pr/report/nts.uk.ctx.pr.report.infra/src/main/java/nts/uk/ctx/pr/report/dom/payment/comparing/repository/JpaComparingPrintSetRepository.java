@@ -15,7 +15,7 @@ import nts.uk.ctx.pr.report.dom.payment.comparing.setting.ComparingPrintSetRepos
 public class JpaComparingPrintSetRepository extends JpaRepository implements ComparingPrintSetRepository {
 
 	private final String SELECT_COMPARING_PRINT_SET = "SELECT c FROM QlsptComparePrintSet c "
-			+ "WHERE c.QlsptComparePrintSetPK.companyCode = :ccd";
+			+ "WHERE c.qlsptComparePrintSetPK.companyCode = :ccd";
 
 	@Override
 	public Optional<ComparingPrintSet> getComparingPrintSet(String companyCode) {
