@@ -13,92 +13,104 @@
 					height : 900
 				};
 			</script>
-			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
-   				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="qpp008.b.main.css" />
 			<com:scriptfile path="qpp008.b.start.js" />
-			<com:scriptfile path="qpp008.b.viewmodel.js" />
+			<com:scriptfile path="qpp008.b.vm.js" />
 			<com:scriptfile path="qpp008.b.service.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class="contents-area-boder">
+				<div class="contents-area-boder" data-bind="with: printSetting">
 					<div class="div-title-page">
 						<span class="label" style="margin: 10px;">印刷設定</span>
 					</div>
 					<div class="div-title-content ">
 						<span class="label" id="B_LBL_001">明細・合計出力設定</span> <span
-							class="label" id="B_LBL_002">※ 2016/04/01 の%部門%構成で集計します。</span>
+							class="label" id="B_LBL_002">※ 2017/04/01 の部門構成で集計します。</span>
 					</div>
 					<div class="div-checkbox-list">
 						<table class="tableCheckBox">
 							<tr>
-								<td><div id="B_SEL_001"
-										data-bind="ntsCheckBox: { checked: true, enable: true }">明細（支給した給与）を出力する
-									</div></td>
-							</tr>
-							<tr>
 								<td>
-									<div id="B_SEL_003" data-bind="ntsCheckBox: { checked: false }">%部門%計（%部門%ごとの対象期間合計）を出力する
+									<div id="B_SEL_001"
+										data-bind="ntsCheckBox: { checked: showPayment, enable: true }">明細（支給した給与）を出力する
 									</div>
 								</td>
 							</tr>
 							<tr>
-								<td><div id="B_SEL_004"
-										data-bind="ntsCheckBox: { checked: false }">%部門%階層累計を出力する
+								<td>
+									<div id="B_SEL_003"
+										data-bind="ntsCheckBox: { checked: sumEachDeprtSet }">部門計（部門ごとの対象期間合計）を出力する
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div id="B_SEL_004"
+										data-bind="ntsCheckBox: { checked: sumDepHrchyIndexSet }">部門階層累計を出力する
 									</div>
 									<button
-										data-bind="ntsHelpButton: {image: 'test-image.jpg', position: 'right center', enable: true }">?</button>
+										data-bind="ntsHelpButton: {image: '', position: 'right center', enable: true }">?</button>
 									<div class="div-checkbox-child">
 										<span class="label" id="B_LBL_003">累計したい%部門%の階層を指定（最大５つ）</span>
 										<table class="tableCheckBoxChild">
 											<tr>
 												<td><div id="B_SEL_014"
-														data-bind="ntsCheckBox: { checked: false }">1階層</div></td>
+														data-bind="ntsCheckBox: { checked: hrchyIndex1 }">1
+														階層</div></td>
 												<td>
 													<div id="B_SEL_015"
-														data-bind="ntsCheckBox: { checked: false }">2階層</div>
+														data-bind="ntsCheckBox: { checked: hrchyIndex2 }">2
+														階層</div>
 												</td>
 												<td>
 													<div id="B_SEL_016"
-														data-bind="ntsCheckBox: { checked: false }">3階層</div>
+														data-bind="ntsCheckBox: { checked: hrchyIndex3 }">3
+														階層</div>
 												</td>
 												<td>
 													<div id="B_SEL_017"
-														data-bind="ntsCheckBox: { checked: false }">4階層</div>
+														data-bind="ntsCheckBox: { checked: hrchyIndex4 }">4
+														階層</div>
 												</td>
 												<td>
 													<div id="B_SEL_018"
-														data-bind="ntsCheckBox: { checked: false }">5階層</div>
+														data-bind="ntsCheckBox: { checked: hrchyIndex5 }">5
+														階層</div>
 												</td>
 											</tr>
 											<tr>
 												<td><div id="B_SEL_019"
-														data-bind="ntsCheckBox: { checked: false }">6階層</div></td>
+														data-bind="ntsCheckBox: { checked: hrchyIndex6 }">6
+														階層</div></td>
 												<td>
 													<div id="B_SEL_020"
-														data-bind="ntsCheckBox: { checked: false }">7階層</div>
+														data-bind="ntsCheckBox: { checked: hrchyIndex7 }">7
+														階層</div>
 												</td>
 												<td>
 													<div id="B_SEL_021"
-														data-bind="ntsCheckBox: { checked: false }">8階層</div>
+														data-bind="ntsCheckBox: { checked: hrchyIndex8 }">8
+														階層</div>
 												</td>
 												<td>
 													<div id="B_SEL_022"
-														data-bind="ntsCheckBox: { checked: false }">9階層</div>
+														data-bind="ntsCheckBox: { checked: hrchyIndex9 }">9
+														階層</div>
 												</td>
 												<td></td>
 											</tr>
 										</table>
-										<span class="label" id="B_LBL_013">※10階層計は%部門%計で確認できます。</span>
-									</div></td>
+										<span class="label" id="B_LBL_013">※10階層計は部門計で確認できます。</span>
+									</div>
+								</td>
 							</tr>
 							<tr>
-								<td><div id="B_SEL_002"
-										data-bind="ntsCheckBox: { checked: true }">総合計（選択した個人の対象期間合計）を出力する</div>
+								<td>
+									<div id="B_SEL_002"
+										data-bind="ntsCheckBox: { checked: totalSet }">総合計（選択した個人の対象期間合計）を出力する</div>
 								</td>
 							</tr>
 
@@ -110,13 +122,10 @@
 					</div>
 					<div class="cf" id="B_SEL_010"
 						data-bind="ntsSwitchButton: {
-							options: [
-            					{ code: '1', name: '表示する' },
-            					{ code: '2', name: '表示しない' }
-       						 ],
+							options: $parent.roundingRules,
 							optionsValue: 'code',
 							optionsText: 'name',
-							value: 1,
+							value: showItemIfCfWithNull,
 							enable: true }">
 					</div>
 
@@ -125,18 +134,15 @@
 					</div>
 					<div class="cf" id="B_SEL_011"
 						data-bind="ntsSwitchButton: {
-							options: [
-            					{ code: '1', name: '表示する' },
-            					{ code: '2', name: '表示しない' }
-       						 ],
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: 1,
+							options: $parent.roundingRules1,
+							optionsValue: 'code1',
+							optionsText: 'name1',
+							value: showItemIfSameValue,
 							enable: true }">
 					</div>
 					<div>
 						<span class="label" id="B_LBL_006">※差額がない項目は表示しません」と表記</span> <br />
-						<span class="label" id="B_LBL_007">※全項目の差額がない%社員%は、印刷対象になりません。</span>
+						<span class="label" id="B_LBL_007">※全項目の差額がない社員は、印刷対象になりません。</span>
 					</div>
 
 					<div class="div-title-content ">
@@ -147,13 +153,15 @@
 							<tr>
 								<td><div id="B_LBL_009"
 										data-bind="ntsFormLabel: {inline: true, required:false, enable: true}">プラス</div></td>
-								<td>waiting...</td>
+								<td><span data-bind="text: plushBackColor"></span>
+									waiting...</td>
 								<td><span class="label" id="B_LBL_010">サンプル文字</span></td>
 							</tr>
 							<tr>
 								<td><div id="B_LBL_011"
 										data-bind="ntsFormLabel: {inline: true, required:false, enable: true}">マイナス</div></td>
-								<td>waiting...</td>
+								<td><span data-bind="text: minusBackColor"></span>
+									waiting...</td>
 								<td><span class="label" id="B_LBL_012">サンプル文字</span></td>
 							</tr>
 						</table>

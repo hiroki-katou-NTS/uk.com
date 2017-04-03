@@ -11,12 +11,11 @@ public enum HrchyIndex2 {
 	/**
 	 * 0.設定なし
 	 */
-	NOT_SETTING(0),
-
+	CLASS0(0),
 	/**
-	 * 1.設定
+	 * 1..9.設定
 	 */
-	SETTING(1);
+	CLASS1(1), CLASS2(2), CLASS3(3), CLASS4(4), CLASS5(5), CLASS6(6), CLASS7(7), CLASS8(8), CLASS9(9);
 
 	public final int value;
 }
