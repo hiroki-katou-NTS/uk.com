@@ -18,10 +18,11 @@ public class JpaItemSalaryBDRepository extends JpaRepository implements ItemSala
 
 	private final String SEL = "SELECT c FROM QcamtItemSalaryBd c";
 	private final String SEL_1 = SEL
-			+ " WHERE c.qcamtItemSalaryBdPK.cCode = :companyCode AND c.qcamtItemSalaryBdPK.itemCode = :itemCode";
+			+ " WHERE c.qcamtItemSalaryBdPK.ccd = :companyCode AND c.qcamtItemSalaryBdPK.itemCd = :itemCode";
 
 	@Override
-	public List<ItemSalaryBD> findAll(String companyCode, String itemCode) {
+	public List<ItemSalaryBD> findAll(String itemCode) {
+		val companyCode = AppContexts.user().companyCode();
 		return this.queryProxy().query(SEL_1, QcamtItemSalaryBd.class).setParameter("companyCode", companyCode)
 				.setParameter("itemCode", itemCode).getList(c -> toDomain(c));
 

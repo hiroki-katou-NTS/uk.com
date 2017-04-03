@@ -4,19 +4,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.enums.EnumAdaptor;
+import lombok.val;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.core.dom.enums.DisplayAtr;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemName;
-import nts.uk.ctx.pr.core.dom.itemmaster.UniteCode;
-import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.AlRangeHigh;
-import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.AlRangeLow;
-import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ErrRangeHigh;
-import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ErrRangeLow;
-import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.RangeAtr;
-import nts.uk.ctx.pr.core.dom.itemmaster.itemsalarybd.ItemSalaryBD;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalarybd.ItemSalaryBDRepository;
 
 @Stateless
@@ -24,25 +16,14 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalarybd.ItemSalaryBDRepository;
 public class AddItemSalaryBDCommandHandler extends CommandHandler<AddItemSalaryBDCommand> {
 
 	@Inject
-	private ItemSalaryBDRepository ItemSalaryBDRepository;
+	private ItemSalaryBDRepository itemSalaryBDRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<AddItemSalaryBDCommand> context) {
-		ItemSalaryBD itemSalaryBD = new ItemSalaryBD(new ItemCode(context.getCommand().getItemCode()),
-				new ItemCode(context.getCommand().getItemBreakdownCode()),
-				new ItemName(context.getCommand().getItemBreakdownName()),
-				new ItemName(context.getCommand().getItemBreakdownAbName()),
-				new UniteCode(context.getCommand().getUniteCode()),
-				EnumAdaptor.valueOf(context.getCommand().getZeroDispSet(), DisplayAtr.class),
-				EnumAdaptor.valueOf(context.getCommand().getItemDispAtr(), DisplayAtr.class),
-				EnumAdaptor.valueOf(context.getCommand().getErrRangeLowAtr(), RangeAtr.class),
-				new ErrRangeLow(context.getCommand().getErrRangeLow()),
-				EnumAdaptor.valueOf(context.getCommand().getErrRangeHighAtr(), RangeAtr.class),
-				new ErrRangeHigh(context.getCommand().getErrRangeHigh()),
-				EnumAdaptor.valueOf(context.getCommand().getAlRangeLowAtr(), RangeAtr.class),
-				new AlRangeLow(context.getCommand().getAlRangeLow()),
-				EnumAdaptor.valueOf(context.getCommand().getAlRangeHighAtr(), RangeAtr.class),
-				new AlRangeHigh(context.getCommand().getAlRangeHigh()));
-		this.ItemSalaryBDRepository.add(itemSalaryBD);
+		val itemCode = context.getCommand().getItemCode();
+		val itemBreakdownCode = context.getCommand().getItemBreakdownCode();
+		if (this.itemSalaryBDRepository.find(itemCode, itemBreakdownCode).isPresent())
+			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
+		this.itemSalaryBDRepository.add(context.getCommand().toDomain());
 	}
 }

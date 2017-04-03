@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
@@ -21,7 +22,8 @@ public class AddItemDeductCommandHandler extends CommandHandler<AddItemDeductCom
 	@Override
 	protected void handle(CommandHandlerContext<AddItemDeductCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
-		if (this.itemDeductRespository.find(companyCode, context.getCommand().getItemCode()).isPresent())
+		val itemCode = context.getCommand().getItemCode();
+		if (this.itemDeductRespository.find(companyCode, itemCode).isPresent())
 			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
 		this.itemDeductRespository.add(context.getCommand().toDomain());
 

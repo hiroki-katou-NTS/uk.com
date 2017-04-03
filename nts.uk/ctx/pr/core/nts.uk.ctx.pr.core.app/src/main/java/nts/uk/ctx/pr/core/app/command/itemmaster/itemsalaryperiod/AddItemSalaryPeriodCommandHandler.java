@@ -19,7 +19,7 @@ public class AddItemSalaryPeriodCommandHandler extends CommandHandler<AddItemSal
 	@Override
 	protected void handle(CommandHandlerContext<AddItemSalaryPeriodCommand> context) {
 		String itemCode = context.getCommand().getItemCode();
-		if (!this.itemSalaryPeriodRepository.find( itemCode).isPresent())
+		if (this.itemSalaryPeriodRepository.find(itemCode).isPresent())
 			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
 		this.itemSalaryPeriodRepository.add(context.getCommand().toDomain());
 	}

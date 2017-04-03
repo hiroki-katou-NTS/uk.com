@@ -20,7 +20,7 @@ public class UpdateItemDeductPeriodCommandHandler extends CommandHandler<UpdateI
 	@Override
 	protected void handle(CommandHandlerContext<UpdateItemDeductPeriodCommand> context) {
 		String itemCode = context.getCommand().getItemCode();
-		if (!this.itemDeductPeriodRepository.find( itemCode).isPresent())
+		if (!this.itemDeductPeriodRepository.find(itemCode).isPresent())
 			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
 		this.itemDeductPeriodRepository.update(context.getCommand().toDomain());
 	}

@@ -21,8 +21,9 @@ public class DeleteItemDeductCommandHandler extends CommandHandler<DeleteItemDed
 
 	@Override
 	protected void handle(CommandHandlerContext<DeleteItemDeductCommand> context) {
-		val companyCode = AppContexts.user().companyCode();
-		if (!this.itemDeductRespository.find(companyCode, context.getCommand().getItemCode()).isPresent())
+		String companyCode = AppContexts.user().companyCode();
+		val itemCode = context.getCommand().getItemCode();
+		if (!this.itemDeductRespository.find(companyCode, itemCode).isPresent())
 			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
 		this.itemDeductRespository.delete( context.getCommand().getItemCode());
 

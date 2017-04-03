@@ -19,7 +19,6 @@ public class DeleteItemDeductBDCommandHandler extends CommandHandler<DeleteItemD
 
 	@Override
 	protected void handle(CommandHandlerContext<DeleteItemDeductBDCommand> context) {
-		// TODO Auto-generated method stub
 		val itemCode = context.getCommand().getItemCode();
 		val itemBreakdownCode = context.getCommand().getItemBreakdownCode();
 		if (!this.itemDeductBDRepository.find(itemCode, itemBreakdownCode).isPresent())

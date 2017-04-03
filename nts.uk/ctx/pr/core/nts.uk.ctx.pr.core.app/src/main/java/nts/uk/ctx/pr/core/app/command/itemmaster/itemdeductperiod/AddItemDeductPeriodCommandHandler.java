@@ -19,8 +19,8 @@ public class AddItemDeductPeriodCommandHandler extends CommandHandler<AddItemDed
 
 	@Override
 	protected void handle(CommandHandlerContext<AddItemDeductPeriodCommand> context) {
-		String itemCd = context.getCommand().getItemCode();
-		if(this.itemDeductPeriodRepo.find( itemCd).isPresent())
+		String itemCode = context.getCommand().getItemCode();
+		if (this.itemDeductPeriodRepo.find(itemCode).isPresent())
 			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
 		this.itemDeductPeriodRepo.add(context.getCommand().toDomain());
 	}
