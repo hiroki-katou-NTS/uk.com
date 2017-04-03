@@ -16,6 +16,14 @@ public interface ItemSalaryRespository {
 	List<ItemSalary> findAll(String companyCode);
 	
 	/**
+	 * Find all item salary by company
+	 * @param companyCode
+	 * @param avePayAtr
+	 * @return
+	 */
+	List<ItemSalary> findAll(String companyCode, AvePayAtr avePayAtr);
+	
+	/**
 	 * update information of item salary
 	 * @param item domain ItemSalary
 	 */
@@ -31,5 +39,5 @@ public interface ItemSalaryRespository {
 	
 	void add(ItemSalary item);
 
-	void delete(String companyCode, String itemCode);
+	void delete(String companyCode);
 }

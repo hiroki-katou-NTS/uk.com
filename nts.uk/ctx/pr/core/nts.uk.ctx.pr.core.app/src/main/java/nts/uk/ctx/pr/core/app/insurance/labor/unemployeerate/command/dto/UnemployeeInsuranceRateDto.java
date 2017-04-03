@@ -37,15 +37,13 @@ public class UnemployeeInsuranceRateDto {
 	 * @return the unemployee insurance rate
 	 */
 	public UnemployeeInsuranceRate toDomain(String companyCode) {
-		return new UnemployeeInsuranceRate(
-				new UnemployeeInsuranceRateGetMementoImpl(companyCode, this));
+		return new UnemployeeInsuranceRate(new UirGetMemento(companyCode, this));
 	}
 
 	/**
 	 * The Class UnemployeeInsuranceRateGetMementoImpl.
 	 */
-	public class UnemployeeInsuranceRateGetMementoImpl
-			implements UnemployeeInsuranceRateGetMemento {
+	private class UirGetMemento implements UnemployeeInsuranceRateGetMemento {
 
 		/** The company code. */
 		private String companyCode;
@@ -61,8 +59,7 @@ public class UnemployeeInsuranceRateDto {
 		 * @param dto
 		 *            the dto
 		 */
-		public UnemployeeInsuranceRateGetMementoImpl(String companyCode,
-				UnemployeeInsuranceRateDto dto) {
+		public UirGetMemento(String companyCode, UnemployeeInsuranceRateDto dto) {
 			super();
 			this.companyCode = companyCode;
 			this.dto = dto;

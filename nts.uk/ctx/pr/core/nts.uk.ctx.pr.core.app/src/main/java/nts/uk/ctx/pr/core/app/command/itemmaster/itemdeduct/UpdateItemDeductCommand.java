@@ -24,8 +24,9 @@ public class UpdateItemDeductCommand {
 	private String memo;
 
 	public ItemDeduct toDomain() {
-		return ItemDeduct.createFromJavaType(this.ccd, this.itemCd, this.deductAtr, this.errRangeLowAtr,
+		return ItemDeduct.createFromJavaType( this.itemCd, this.deductAtr, this.errRangeLowAtr,
 				this.errRangeLow, this.errRangeHighAtr, this.errRangeHigh, this.alRangeLowAtr, this.alRangeLow,
 				this.alRangeHighAtr, this.alRangeHigh, this.memo);
 	}
+	
 }

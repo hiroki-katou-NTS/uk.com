@@ -1,27 +1,20 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.insurance;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 
 /**
  * The Class ChecklistPrintSetting.
- */
-
-/**
- * Gets the show office.
- *
- * @return the show office
  */
 @Getter
 public class ChecklistPrintSetting extends AggregateRoot {
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The show category insurance item. */
 	private Boolean showCategoryInsuranceItem;
@@ -56,8 +49,7 @@ public class ChecklistPrintSetting extends AggregateRoot {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public void saveToMemento(ChecklistPrintSettingSetMemento memento) {
 		memento.setCompanyCode(this.companyCode);

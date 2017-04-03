@@ -29,6 +29,7 @@ module qmm012.b.viewmodel {
         texteditor_B_INP_004: any;
         enable_B_INP_002: KnockoutObservable<boolean> = ko.observable(false);
         screenModel: qmm012.b.ScreenModel;
+        B_BTN_004_enable: KnockoutObservable<boolean> = ko.observable(true);
         constructor(screenModel: qmm012.b.ScreenModel) {
             let self = this;
             self.screenModel = screenModel;
@@ -101,8 +102,8 @@ module qmm012.b.viewmodel {
                 self.GridCurrentDisplaySet_B_001(itemModel ? itemModel.displaySet == 1 ? true : false : false);
                 self.GridCurrentItemAbName_B_001(itemModel ? itemModel.itemAbName : '');
                 self.GridCurrentCategoryAtrName_B_001(itemModel ? itemModel.categoryAtrName : '');
-                //when CurrentCode != undefined , need disable INP_002
-                if (self.GridlistCurrentCode_B_001() != undefined) {
+                //when itemModel != undefined , need disable INP_002
+                if (itemModel != undefined) {
                     self.enable_B_INP_002(false);
                 }
             });
@@ -138,7 +139,30 @@ module qmm012.b.viewmodel {
             }
 
             self.LoadGridList();
+            self.enable_B_INP_002.subscribe(function(newValue) {
+                if (newValue) {
+                    self.GridlistCurrentCode_B_001('');
+                    self.B_BTN_004_enable(false);
+                } else {
+                    $('#B_INP_002').ntsError('clear');
+                    self.B_BTN_004_enable(true);
+                }
+            })
+            self.B_INP_002_text.subscribe(function(newValue) {
+                if (self.enable_B_INP_002()) {
+                    if (newValue != '') {
+                        $('#B_INP_002').ntsError('set', 'checking.....');
+                        service.findItemByCategoryAndCode(self.GridCurrentCategoryAtr_B_001(), newValue).done(function(itemMaster: service.model.ItemMaster) {
+                            $('#B_INP_002').ntsError('clear');
+                            if (itemMaster != undefined)
+                                $('#B_INP_002').ntsError('set', 'えらーです');
+                            else
+                                $('#B_INP_002').ntsError('clear');
+                        });
+                    }
+                }
 
+            });
             //set text editer data
             //INP_002
             self.texteditor_B_INP_002 = {
@@ -190,9 +214,36 @@ module qmm012.b.viewmodel {
             itemMaster.itemSalary = self.screenModel.screenModelC.GetCurrentItemSalary();
             itemMaster.itemDeduct = self.screenModel.screenModelD.GetCurrentItemDeduct();
             itemMaster.itemAttend = self.screenModel.screenModelE.getCurrentItemAttend();
+            itemMaster.itemPeriod = self.getCurrentItemPeriod();
+            itemMaster.itemBDs = self.getCurrentItemBDs();
             return itemMaster;
         }
-
+        getCurrentItemPeriod() {
+            let self = this;
+            let ItemPeriod: qmm012.h.service.model.ItemPeriod;
+            switch (self.GridCurrentCategoryAtr_B_001()) {
+                case 0:
+                    ItemPeriod = self.screenModel.screenModelC.currentItemPeriod();
+                    break;
+                case 1:
+                    ItemPeriod = self.screenModel.screenModelD.currentItemPeriod();
+                    break;
+            }
+            return ItemPeriod;
+        }
+        getCurrentItemBDs() {
+            let self = this;
+            let ItemBDs: Array<qmm012.i.service.model.ItemBD>;
+            switch (self.GridCurrentCategoryAtr_B_001()) {
+                case 0:
+                    ItemBDs = self.screenModel.screenModelC.currentItemBDs();
+                    break;
+                case 1:
+                    ItemBDs = self.screenModel.screenModelD.currentItemBDs();
+                    break;
+            }
+            return ItemBDs;
+        }
         LoadGridList(ItemCode?) {
             let self = this;
             let categoryAtr = self.categoryAtr;
@@ -211,29 +262,32 @@ module qmm012.b.viewmodel {
             });
         }
 
-        DeleteDialog() {
+        deleteItem() {
             let self = this;
             let ItemMaster = self.GetCurrentItemMaster();
             let index = self.GridlistItems_B_001.indexOf(self.GridlistCurrentItem_B_001());
-            service.deleteItemMaster(ItemMaster).done(function(any) {
-                //reload grid and set select code after delete item success
-                if (index) {
-                    let selectItemCode;
-                    if (self.GridlistItems_B_001().length - 1 > 1) {
-                        if (index < self.GridlistItems_B_001().length - 1)
-                            selectItemCode = self.GridlistItems_B_001()[index - 1].itemCode;
-                        else
-                            selectItemCode = self.GridlistItems_B_001()[index - 2].itemCode;
-                    } else
-                        selectItemCode = '';
-                    self.LoadGridList(selectItemCode);
-                }
-            }).fail(function(res) {
+            if (index >= 0) {
+                nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
+                    service.deleteItemMaster(ItemMaster).done(function(any) {
+                        //reload grid and set select code after delete item success
+                        if (index) {
+                            let selectItemCode;
+                            if (self.GridlistItems_B_001().length - 1 > 1) {
+                                if (index < self.GridlistItems_B_001().length - 1)
+                                    selectItemCode = self.GridlistItems_B_001()[index - 1].itemCode;
+                                else
+                                    selectItemCode = self.GridlistItems_B_001()[index - 2].itemCode;
+                            } else
+                                selectItemCode = '';
+                            self.LoadGridList(selectItemCode);
+                        }
+                    }).fail(function(res) {
 
-                alert(res);
-            });
+                        alert(res);
+                    });
+                });
+            }
         }
-
 
         getCurrentZeroDisplaySet() {
             let Result;
@@ -275,9 +329,8 @@ module qmm012.b.viewmodel {
                 if (nts.uk.ui.windows.getShared('groupCode') != undefined) {
                     let groupCode = Number(nts.uk.ui.windows.getShared('groupCode'));
                     //set layout for new.
-                    self.GridlistCurrentCode_B_001('');
-                    self.GridCurrentCategoryAtr_B_001(groupCode);
                     self.enable_B_INP_002(true);
+                    self.GridCurrentCategoryAtr_B_001(groupCode);
                 }
             });
         }

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalary;
 
 @Getter
 @Setter
@@ -31,4 +32,11 @@ public class AddItemSalaryCommand {
 	private int limitMnyAtr;
 	private String limitMnyRefItemCd;
 	private BigDecimal limitMny;
+
+	public ItemSalary toDomain() {
+		return ItemSalary.createFromJavaType(itemCd, taxAtr, socialInsAtr, laborInsAtr, fixPayAtr, applyForAllEmpFlg,
+				applyForMonthlyPayEmp, applyForDaymonthlyPayEmp, applyForDaylyPayEmp, applyForHourlyPayEmp, avePayAtr,
+				errRangeLowAtr, errRangeLow, errRangeHighAtr, errRangeHigh, alRangeLowAtr, alRangeLow, alRangeHighAtr,
+				alRangeHigh, memo, limitMnyAtr, limitMnyRefItemCd, limitMny);
+	}
 }

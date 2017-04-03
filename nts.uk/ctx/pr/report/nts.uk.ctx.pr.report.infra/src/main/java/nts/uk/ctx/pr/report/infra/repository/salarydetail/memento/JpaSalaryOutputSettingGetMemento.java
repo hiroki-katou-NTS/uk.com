@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.report.infra.repository.salarydetail.memento;
 import java.util.ArrayList;
 import java.util.List;
 
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.salarydetail.SalaryCategory;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryCategorySetting;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingCode;
@@ -40,8 +39,8 @@ public class JpaSalaryOutputSettingGetMemento implements SalaryOutputSettingGetM
 	 * SalaryOutputSettingGetMemento#getCompanyCode()
 	 */
 	@Override
-	public CompanyCode getCompanyCode() {
-		return new CompanyCode(this.entity.getQlsptPaylstFormHeadPK().getCcd());
+	public String getCompanyCode() {
+		return this.entity.getQlsptPaylstFormHeadPK().getCcd();
 	}
 
 	/*

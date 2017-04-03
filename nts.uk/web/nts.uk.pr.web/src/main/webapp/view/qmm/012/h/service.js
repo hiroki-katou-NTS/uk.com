@@ -42,6 +42,7 @@ var qmm012;
                     findItemSalaryPeriod(itemCode).done(function (ItemPeriod) {
                         dfd.resolve(ItemPeriod);
                     }).fail(function (res) {
+                        // Alert message
                         dfd.reject(res);
                     });
                 }
@@ -49,105 +50,17 @@ var qmm012;
                     findItemDeductPeriod(itemCode).done(function (ItemPeriod) {
                         dfd.resolve(ItemPeriod);
                     }).fail(function (res) {
+                        // Alert message
                         dfd.reject(res);
                     });
                 }
                 return dfd.promise();
             }
             service.findItemPeriod = findItemPeriod;
-            function addItemDeductPeriod(itemPeriod) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.addItemDeductPeriod, itemPeriod)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            function addItemSalaryPeriod(itemPeriod) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.addItemSalaryPeriod, itemPeriod)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            function addItemPeriod(itemMaster, itemPeriod) {
-                var dfd = $.Deferred();
-                var categoryAtr = itemMaster.categoryAtr;
-                if (categoryAtr == 0) {
-                    addItemSalaryPeriod(itemPeriod).done(function (res) {
-                        dfd.resolve(res);
-                    }).fail(function (res) {
-                        // Alert message
-                        dfd.reject(res);
-                    });
-                }
-                if (categoryAtr == 1) {
-                    addItemDeductPeriod(itemPeriod).done(function (res) {
-                        dfd.resolve(res);
-                    }).fail(function (res) {
-                        // Alert message
-                        dfd.reject(res);
-                    });
-                }
-                return dfd.promise();
-            }
-            service.addItemPeriod = addItemPeriod;
-            function updateItemPeriod(itemMaster, itemPeriod) {
-                var dfd = $.Deferred();
-                var categoryAtr = itemMaster.categoryAtr;
-                if (categoryAtr == 0) {
-                    updateItemSalaryPeriod(itemPeriod).done(function (res) {
-                        dfd.resolve(res);
-                    }).fail(function (res) {
-                        // Alert message
-                        dfd.reject(res);
-                    });
-                }
-                if (categoryAtr == 1) {
-                    updateItemDeductPeriod(itemPeriod).done(function (res) {
-                        dfd.resolve(res);
-                    }).fail(function (res) {
-                        // Alert message
-                        dfd.reject(res);
-                    });
-                }
-                return dfd.promise();
-            }
-            service.updateItemPeriod = updateItemPeriod;
-            function updateItemSalaryPeriod(itemPeriod) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.updateItemSalaryPeriod, itemPeriod)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            function updateItemDeductPeriod(itemPeriod) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.updateItemDeductPeriod, itemPeriod)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
             var model;
             (function (model) {
                 var ItemPeriod = (function () {
-                    function ItemPeriod(itemCd, periodAtr, strY, endY, cycleAtr, cycle01Atr, cycle02Atr, cycle03Atr, cycle04Atr, cycle05Atr, cycle06Atr, cycle07Atr, cycle08Atr, cycle09Atr, cycle10Atr, cycle11Atr, cycle12Atr) {
-                        this.itemCd = itemCd;
+                    function ItemPeriod(periodAtr, strY, endY, cycleAtr, cycle01Atr, cycle02Atr, cycle03Atr, cycle04Atr, cycle05Atr, cycle06Atr, cycle07Atr, cycle08Atr, cycle09Atr, cycle10Atr, cycle11Atr, cycle12Atr) {
                         this.periodAtr = periodAtr;
                         this.strY = strY;
                         this.endY = endY;
@@ -172,4 +85,3 @@ var qmm012;
         })(service = h.service || (h.service = {}));
     })(h = qmm012.h || (qmm012.h = {}));
 })(qmm012 || (qmm012 = {}));
-//# sourceMappingURL=service.js.map

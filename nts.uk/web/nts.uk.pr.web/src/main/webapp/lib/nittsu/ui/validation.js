@@ -66,15 +66,19 @@ var nts;
                                 return result;
                             }
                         }
-                        if (this.charType !== null) {
+                        if (this.charType !== null && this.charType !== undefined) {
                             if (!this.charType.validate(inputText)) {
                                 result.fail('Invalid text');
                                 return result;
                             }
                         }
-                        if (this.constraint !== null && this.constraint.maxLength !== undefined) {
-                            if (uk.text.countHalf(inputText) > this.constraint.maxLength) {
+                        if (this.constraint !== undefined && this.constraint !== null) {
+                            if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
                                 result.fail('Max length for this input is ' + this.constraint.maxLength);
+                                return result;
+                            }
+                            if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
+                                result.fail('This field is not valid with pattern!');
                                 return result;
                             }
                         }

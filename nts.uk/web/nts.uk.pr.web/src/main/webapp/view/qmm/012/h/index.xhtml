@@ -141,7 +141,7 @@
 			</div>
 			<div id="contents-area">
 				<button id="H_BTN_001" class="x-large proceed"
-					data-bind="click:SubmitDialog">選択ボタン</button>
+					data-bind="click:SubmitDialog,enable: $root.errors.isEmpty">選択ボタン</button>
 				<button id="H_BTN_002" class="large" data-bind="click:CloseDialog">キャンセルボタン</button>
 			</div>
 		</ui:define>
