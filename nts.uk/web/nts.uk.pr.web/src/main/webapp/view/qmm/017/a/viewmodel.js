@@ -129,6 +129,7 @@ var nts;
                 self.viewModel017g = ko.observable(new qmm017.GScreen());
                 self.viewModel017h = ko.observable(new qmm017.HScreen());
                 self.viewModel017i = ko.observable(new qmm017.IScreen());
+                self.viewModel017r = ko.observable(new qmm017.RScreen());
             }
             ScreenModel.prototype.placeItemNameToTextArea = function (mode, self) {
                 if (mode === 0) {
@@ -151,34 +152,34 @@ var nts;
                     var itemDetailDisplayName = '';
                     if (self.viewModel017e().listBoxItems().selectedCode() !== '') {
                         if (self.viewModel017e().listBoxItems().selectedCode() === '1') {
-                            itemDetailDisplayName = '関数＠条件式（ ,,）';
+                            itemDetailDisplayName = '関数＠条件式（,,）';
                         }
                         else if (self.viewModel017e().listBoxItems().selectedCode() === '2') {
-                            itemDetailDisplayName = '関数＠かつ（ ,）';
+                            itemDetailDisplayName = '関数＠かつ（,）';
                         }
                         else if (self.viewModel017e().listBoxItems().selectedCode() === '3') {
-                            itemDetailDisplayName = '関数＠または（ ,）';
+                            itemDetailDisplayName = '関数＠または（,）';
                         }
                         else if (self.viewModel017e().listBoxItems().selectedCode() === '4') {
                             itemDetailDisplayName = '関数＠四捨五入（ ）';
                         }
                         else if (self.viewModel017e().listBoxItems().selectedCode() === '5') {
-                            itemDetailDisplayName = '関数＠切捨て（　）';
+                            itemDetailDisplayName = '関数＠切捨て（ ）';
                         }
                         else if (self.viewModel017e().listBoxItems().selectedCode() === '6') {
-                            itemDetailDisplayName = '関数＠切上げ（　）';
+                            itemDetailDisplayName = '関数＠切上げ（ ）';
                         }
                         else if (self.viewModel017e().listBoxItems().selectedCode() === '7') {
-                            itemDetailDisplayName = '関数＠最大値（ ,）';
+                            itemDetailDisplayName = '関数＠最大値（,）';
                         }
                         else if (self.viewModel017e().listBoxItems().selectedCode() === '8') {
-                            itemDetailDisplayName = '関数＠最小値（ ,）';
+                            itemDetailDisplayName = '関数＠最小値（,）';
                         }
                         else if (self.viewModel017e().listBoxItems().selectedCode() === '9') {
-                            itemDetailDisplayName = '関数＠家族人数（ ,）';
+                            itemDetailDisplayName = '関数＠家族人数（,）';
                         }
                         else if (self.viewModel017e().listBoxItems().selectedCode() === '10') {
-                            itemDetailDisplayName = '関数＠月加算（ ,）';
+                            itemDetailDisplayName = '関数＠月加算（,）';
                         }
                         else if (self.viewModel017e().listBoxItems().selectedCode() === '11') {
                             itemDetailDisplayName = '関数＠年抽出（  ）';
