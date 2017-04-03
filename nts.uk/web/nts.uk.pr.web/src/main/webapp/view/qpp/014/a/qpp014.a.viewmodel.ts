@@ -19,15 +19,32 @@ module qpp014.a.viewmodel {
 
 
             //viewmodel A
-            self.a_SEL_001_items = ko.observableArray([
-                new shr.viewmodelbase.PayDayProcessing('1', 1, '1', 1, 1, 1, 1),
-                new shr.viewmodelbase.PayDayProcessing('2', 2, '2', 2, 2, 2, 2),
-                new shr.viewmodelbase.PayDayProcessing('3', 3, '3', 3, 3, 3, 3)
-            ]);
+            self.a_SEL_001_items = ko.observableArray([]);
             self.a_SEL_001_itemSelected = ko.observable(1);
         }
 
-        nextScreen() {
+        startPage(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            self.findAll();
+            dfd.resolve();
+            return dfd.promise();
+        }
+
+        findAll(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            qpp014.a.service.findAll("", 0)
+                .done(function(data) {
+                    self.a_SEL_001_items(data);
+                    dfd.resolve();
+                }).fail(function(res) {
+                    dfd.reject(res);
+                });
+            return dfd.promise();
+        }
+
+        nextScreen(): void {
             $("#screenA").css("display", "none");
             $("#screenB").css("display", "");
             $("#screenB").ready(function() {
@@ -35,7 +52,7 @@ module qpp014.a.viewmodel {
             });
         }
 
-        backScreen() {
+        backScreen(): void {
             $("#screenB").css("display", "none");
             $("#screenA").css("display", "");
             $(".func-btn").css("visibility", "hidden");

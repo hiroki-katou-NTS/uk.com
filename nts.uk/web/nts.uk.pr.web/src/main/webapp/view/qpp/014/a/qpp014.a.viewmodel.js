@@ -13,13 +13,28 @@ var qpp014;
                     $('.func-btn').css('visibility', 'hidden');
                     $('#screenB').css('display', 'none');
                     var self = this;
-                    self.a_SEL_001_items = ko.observableArray([
-                        new qpp014.shr.viewmodelbase.PayDayProcessing('1', 1, '1', 1, 1, 1, 1),
-                        new qpp014.shr.viewmodelbase.PayDayProcessing('2', 2, '2', 2, 2, 2, 2),
-                        new qpp014.shr.viewmodelbase.PayDayProcessing('3', 3, '3', 3, 3, 3, 3)
-                    ]);
+                    self.a_SEL_001_items = ko.observableArray([]);
                     self.a_SEL_001_itemSelected = ko.observable(1);
                 }
+                ScreenModel.prototype.startPage = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    self.findAll();
+                    dfd.resolve();
+                    return dfd.promise();
+                };
+                ScreenModel.prototype.findAll = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    qpp014.a.service.findAll("", 0)
+                        .done(function (data) {
+                        self.a_SEL_001_items(data);
+                        dfd.resolve();
+                    }).fail(function (res) {
+                        dfd.reject(res);
+                    });
+                    return dfd.promise();
+                };
                 ScreenModel.prototype.nextScreen = function () {
                     $("#screenA").css("display", "none");
                     $("#screenB").css("display", "");
