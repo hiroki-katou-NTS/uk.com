@@ -260,8 +260,10 @@ module qmm034.a.viewmodel {
         }
         
         clearError() {
-            $(".nts-editor").ntsError('clear');
-            $("#A_INP_003").ntsError('clear');
+            if ($(".nts-editor").ntsError('hasError'))
+                $(".nts-editor").ntsError('clear');
+            if ($("#A_INP_003").ntsError('hasError'))
+                $("#A_INP_003").ntsError('clear');
         }
     }
 
