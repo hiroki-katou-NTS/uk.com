@@ -13,11 +13,9 @@ import lombok.Setter;
 @Setter
 public class UpdateHistoryCommand {
 
-	private JobHist jobHist;
-
-	private String checkUpdate;
-
-	private String checkDelete;
+	private String historyId;
+	private String oldStartDate;
+	private String newStartDate;
 	
 
 }

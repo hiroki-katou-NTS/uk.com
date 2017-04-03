@@ -24,7 +24,7 @@ public class CmnmtJobTitleRef {
 
 	@Basic(optional = false)
 	@Column(name = "REF_SET")
-	public String referenceSettings;
+	public int referenceSettings;
 	
 	
 }

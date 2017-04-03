@@ -5,17 +5,18 @@ var cmm013;
         var service;
         (function (service) {
             var paths = {
-                findAllPosition: "basic/position/findallposition/",
-                addPosition: "basic/position/addPosition",
-                deletePosition: "basic/position/deletePosition",
-                updatePosition: "basic/position/updatePosition",
-                getAllHistory: "basic/position/getallhist",
-                addHist: "basic/position/addHist",
-                updateHist: "basic/position/updateHist",
-                deleteHist: "basic/position/deleteHist",
-                getRef: "basic/position/getalljobtitleref/",
+                findAllPosition: "basic/organization/position/findallposition/",
+                addPosition: "basic/organization/position/addPosition",
+                deletePosition: "basic/organization/position/deletePosition",
+                updatePosition: "basic/organization/position/updatePosition",
+                getAllHistory: "basic/organization/position/getallhist",
+                addHist: "basic/organization/position/addHist",
+                updateHist: "basic/organization/position/updateHist",
+                deleteHist: "basic/organization/position/deleteHist",
+                getRef: "basic/organization/position/getalljobtitleref/",
                 getAuthLevel: "basic/organization/position/getallauthlevel/",
-                getAllUseKt: "ctx/proto/company/findByUseKtSet/"
+                getAllUseKt: "ctx/proto/company/findByUseKtSet/",
+                getAuth: "basic/organization/position/getalljobrefauth/"
             };
             function findAllPosition(historyId) {
                 var dfd = $.Deferred();
@@ -41,6 +42,29 @@ var cmm013;
                 return dfd.promise();
             }
             service.findByUseKt = findByUseKt;
+            function addPosition(position) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", paths.addPosition, position)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.addPosition = addPosition;
+            function updatePosition(position) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", paths.updatePosition, position).done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.updatePosition = updatePosition;
             function deletePosition(position) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.deletePosition, position).done(function (res) {
@@ -52,9 +76,6 @@ var cmm013;
                 return dfd.promise();
             }
             service.deletePosition = deletePosition;
-            /**
-            * get all history
-            */
             function getAllHistory() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.getAllHistory)
@@ -67,9 +88,9 @@ var cmm013;
                 return dfd.promise();
             }
             service.getAllHistory = getAllHistory;
-            function addHist(addJobHist) {
+            function addHist(jobHist) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.addHist, addJobHist)
+                nts.uk.request.ajax("com", paths.addHist, jobHist)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -91,6 +112,18 @@ var cmm013;
                 return dfd.promise();
             }
             service.getAllJobTitleRef = getAllJobTitleRef;
+            function getAllJobTitleAuth(historyId, jobCode) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", paths.getAuth + historyId + "/" + jobCode)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getAllJobTitleAuth = getAllJobTitleAuth;
             function getAllAuthLevel(authCode) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.getAuthLevel + authCode)
@@ -104,12 +137,13 @@ var cmm013;
             }
             service.getAllAuthLevel = getAllAuthLevel;
             var GetJobAuth = (function () {
-                function GetJobAuth(historyId, jobCode, authCode, authName, refSet) {
+                function GetJobAuth(historyId, jobCode, authCode, authName, referenceSettings, authScopeAtr) {
                     this.historyId = historyId;
                     this.jobCode = jobCode;
                     this.authCode = authCode;
                     this.authName = authName;
-                    this.refSet = refSet;
+                    this.referenceSettings = referenceSettings;
+                    this.authScopeAtr = authScopeAtr;
                 }
                 return GetJobAuth;
             }());

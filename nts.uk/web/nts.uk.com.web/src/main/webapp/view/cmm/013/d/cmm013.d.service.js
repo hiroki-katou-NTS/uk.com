@@ -5,11 +5,11 @@ var cmm013;
         var service;
         (function (service) {
             var paths = {
-                updateHist: "basic/organization/position/updateHist",
+                updateJobHist: "basic/organization/position/updatejobhist"
             };
-            function updateHist(jobHist) {
+            function updateJobHist(jobHist) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.updateHist, jobHist)
+                nts.uk.request.ajax("com", paths.updateJobHist, jobHist)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -18,7 +18,29 @@ var cmm013;
                 });
                 return dfd.promise();
             }
-            service.updateHist = updateHist;
+            service.updateJobHist = updateJobHist;
+            var model;
+            (function (model) {
+                var UpdateHandler = (function () {
+                    function UpdateHandler(jHist, checkUpdate, checkDelete) {
+                        this.jHist = jHist;
+                        this.checkUpdate = checkUpdate;
+                        this.checkDelete = checkDelete;
+                    }
+                    return UpdateHandler;
+                }());
+                model.UpdateHandler = UpdateHandler;
+                var JobHistDto = (function () {
+                    function JobHistDto(companyCode, startDate, endDate, historyId) {
+                        this.companyCode = companyCode;
+                        this.startDate = startDate;
+                        this.endDate = endDate;
+                        this.historyId = historyId;
+                    }
+                    return JobHistDto;
+                }());
+                model.JobHistDto = JobHistDto;
+            })(model = service.model || (service.model = {}));
         })(service = d.service || (d.service = {}));
     })(d = cmm013.d || (cmm013.d = {}));
 })(cmm013 || (cmm013 = {}));

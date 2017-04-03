@@ -123,10 +123,15 @@ public class PositionWebService extends WebService {
 	
 	@POST
 	@PathParam("getallauth/{authCode}")
-	public List<JobRefAuthDto> getAllJobRefAuth(String historyId, String jobCode) {
+	public List<JobRefAuthDto> getAllJobRefAuth1(String historyId, String jobCode) {
 		return jobRefAuth.getAllRefAuth(historyId, jobCode);
 	}
 	
-	
+	@POST
+	@Path("getalljobrefauth/{historyId}/{jobCode}")
+	public List<JobRefAuthDto> getAllJobRefAuth(@PathParam("historyId") String historyId,
+					@PathParam("jobCode") String jobCode){
+		return this.jobRefAuth.getAllRefAuth(historyId, jobCode);
+	}
 
 }

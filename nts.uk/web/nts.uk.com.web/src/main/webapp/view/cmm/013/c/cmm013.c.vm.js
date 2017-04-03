@@ -11,59 +11,17 @@ var cmm013;
                     self.inp_003 = ko.observable(null);
                     self.historyId = ko.observable(null);
                     self.startDateLast = ko.observable('');
-                    self.endDateUpdate = ko.observable('');
                     self.selectedId = ko.observable(1);
                     self.enable = ko.observable(true);
-                    self.length = ko.observable(0);
-                    self.startDateAddNew = ko.observable("");
-                    self.startDateUpdate = ko.observable(null);
-                    self.endDateUpdate = ko.observable(null);
-                    self.historyIdUpdate = ko.observable(null);
-                    self.startDateUpdateNew = ko.observable(null);
-                    self.startDatePre = ko.observable(null);
-                    self.jobHistory = ko.observable(null);
-                    self.selectedCode = ko.observable(null);
-                    self.checkDelete = ko.observable(null);
-                    self.listbox = ko.observableArray([]);
-                    self.itemList = ko.observableArray([
-                        new BoxModel(1, '最新の履歴（' + self.startDateLast() + '）から引き継ぐ  '),
-                        new BoxModel(2, '全員参照不可')
-                    ]);
                 }
-                ScreenModel.prototype.closeDialog = function () {
-                    nts.uk.ui.windows.close();
-                };
-                ScreenModel.prototype.checkInput = function () {
-                    var self = this;
-                    var date = new Date(self.inp_003());
-                    if (date.toDateString() == 'Invalid Date') {
-                        alert("Input by YYYY-MM-DD or YYYY/MM/DD or YYYY.MM.DD ");
-                        return false;
-                    }
-                    else {
-                        return true;
-                    }
-                };
-                ScreenModel.prototype.checkValue = function (value) {
-                    var self = this;
-                    if (value <= self.startDateLast()) {
-                        alert("nhap lai start Date");
-                        return false;
-                    }
-                    else {
-                        return true;
-                    }
-                };
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    self.historyId(nts.uk.ui.windows.getShared('Id_13'));
-                    self.startDateLast(nts.uk.ui.windows.getShared('startLast'));
-                    self.endDateUpdate(nts.uk.ui.windows.getShared('endUpdate'));
-                    self.startDateUpdate(nts.uk.ui.windows.getShared('startUpdate'));
-                    if (self.startDateUpdate() != null) {
+                    self.historyId(nts.uk.ui.windows.getShared('CMM013_historyId'));
+                    self.startDateLast(nts.uk.ui.windows.getShared('CMM013_startDateLast'));
+                    if (self.startDateLast() != '' && self.startDateLast() != null) {
                         self.itemList = ko.observableArray([
-                            new BoxModel(1, '最新の履歴（' + self.startDateUpdate() + '）から引き継ぐ  '),
+                            new BoxModel(1, '最新の履歴（' + self.startDateLast() + '）から引き継ぐ  '),
                             new BoxModel(2, '全員参照不可')
                         ]);
                     }
@@ -75,37 +33,65 @@ var cmm013;
                     dfd.resolve();
                     return dfd.promise();
                 };
+                ScreenModel.prototype.closeDialog = function () {
+                    nts.uk.ui.windows.close();
+                };
                 ScreenModel.prototype.add = function () {
                     var self = this;
-                    var startDateLast = new Date(self.endDateUpdate());
-                    var startDate = new Date(self.inp_003());
-                    if (self.checkInput() == false) {
+                    if (self.checkTypeInput() == false) {
                         return;
                     }
-                    else if (self.startDateLast() != '' && self.startDateLast() != null) {
-                        var check = self.selectedId();
-                    }
-                    else {
-                        var check = 2;
-                    }
-                    var dateNew = startDate.getFullYear() + '-' + (startDate.getMonth() + 1) + '-' + startDate.getDate();
-                    if (startDate.getMonth() < 9 && startDate.getDate() < 10) {
-                        dateNew = startDate.getFullYear() + '-' + 0 + (startDate.getMonth() + 1) + '-' + 0 + startDate.getDate();
-                    }
-                    else {
-                        if (startDate.getDate() < 10) {
-                            dateNew = startDate.getFullYear() + '-' + (startDate.getMonth() + 1) + '-' + 0 + startDate.getDate();
-                        }
-                        if (startDate.getMonth() < 9) {
-                            dateNew = startDate.getFullYear() + '-' + 0 + (startDate.getMonth() + 1) + '-' + startDate.getDate();
-                        }
-                    }
-                    if (self.checkValue(dateNew) == false) {
+                    else if (self.checkValueInput(self.inp_003()) == false) {
                         return;
                     }
-                    nts.uk.ui.windows.setShared('startNew', self.inp_003());
-                    nts.uk.ui.windows.setShared('copy_c', check, false);
-                    nts.uk.ui.windows.close();
+                    else {
+                        if (self.startDateLast() != '' && self.startDateLast() != null) {
+                            var check = self.selectedId();
+                        }
+                        else {
+                            var check = 2;
+                        }
+                        var date = new Date(self.inp_003());
+                        var dateNew = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
+                        if (date.getMonth() < 9 && date.getDate() < 10) {
+                            dateNew = date.getFullYear() + '/' + 0 + (date.getMonth() + 1) + '/' + 0 + date.getDate();
+                        }
+                        else {
+                            if (date.getDate() < 10) {
+                                dateNew = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + 0 + date.getDate();
+                            }
+                            if (date.getMonth() < 9) {
+                                dateNew = date.getFullYear() + '/' + 0 + (date.getMonth() + 1) + '/' + date.getDate();
+                            }
+                        }
+                        if (self.checkValueInput(dateNew) == false) {
+                            return;
+                        }
+                        nts.uk.ui.windows.setShared('cmm013C_startDateNew', dateNew, true);
+                        nts.uk.ui.windows.setShared('cmm013C_copy', check, true);
+                        nts.uk.ui.windows.close();
+                    }
+                };
+                ScreenModel.prototype.checkTypeInput = function () {
+                    var self = this;
+                    var date = new Date(self.inp_003());
+                    if (date.toDateString() == 'Invalid Date') {
+                        alert("nhap lai ngay theo dinh dang YYYY-MM-DD hoac YYYY/MM/DD hoac YYYY.MM.DD");
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                };
+                ScreenModel.prototype.checkValueInput = function (value) {
+                    var self = this;
+                    if (value <= self.startDateLast()) {
+                        alert("nhap lai start Date");
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
                 };
                 return ScreenModel;
             }());
@@ -130,29 +116,6 @@ var cmm013;
                 return BoxModel;
             }());
             viewmodel.BoxModel = BoxModel;
-            var model;
-            (function (model) {
-                var historyDto = (function () {
-                    function historyDto(startDate, endDate, historyId) {
-                        this.startDate = startDate;
-                        this.endDate = endDate;
-                        this.historyId = historyId;
-                    }
-                    return historyDto;
-                }());
-                model.historyDto = historyDto;
-                var ListHistoryDto = (function () {
-                    function ListHistoryDto(companyCode, startDate, endDate, historyId) {
-                        var self = this;
-                        self.companyCode = companyCode;
-                        self.startDate = startDate;
-                        self.endDate = endDate;
-                        self.historyId = historyId;
-                    }
-                    return ListHistoryDto;
-                }());
-                model.ListHistoryDto = ListHistoryDto;
-            })(model = viewmodel.model || (viewmodel.model = {}));
         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
     })(c = cmm013.c || (cmm013.c = {}));
 })(cmm013 || (cmm013 = {}));

@@ -10,21 +10,8 @@ import nts.uk.ctx.basic.dom.organization.position.JobHistory;
 @Setter
 public class DeleteHistoryCommand {
 
-//	private GeneralDate endDate;
-//
-//	private String companyCode;
-//
-//	private String historyId;
-//
-//	private GeneralDate startDate; 
-//	public JobHistory toDomain(){
-//		return JobHistory.createFromJavaType( 
-//				this.companyCode,
-//				this.historyId,
-//				this.startDate,
-//				this.endDate);
-//	}
+
 	private String historyId;
 	private String startDate;
-
+	private String oldStartDate;
 }

@@ -1,12 +1,13 @@
 package nts.uk.ctx.basic.dom.organization.position;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 @Setter
 @Getter
 public class JobTitleRef extends AggregateRoot{
 	
-	private AuthorizationCode authorizationCode;
+	private AuthorizationCode authCode;
 			
 	private String historyId;
 	
@@ -17,20 +18,21 @@ public class JobTitleRef extends AggregateRoot{
 	private ReferenceSettings referenceSettings;
 	
 	public JobTitleRef(ReferenceSettings referenceSettings, 
-			String companyCode, String historyId,JobCode jobCode,AuthorizationCode authorizationCode ) {
+			String companyCode, String historyId,JobCode jobCode,AuthorizationCode authCode ) {
 		super();
-		this.authorizationCode = authorizationCode;
+		this.referenceSettings = referenceSettings;
 		this.historyId = historyId;
 		this.companyCode = companyCode;
 		this.jobCode = jobCode;
-		this.referenceSettings = referenceSettings;
+		this.authCode = authCode;
+		;
 	}
 
-	public static JobTitleRef createFromJavaType(String authorizationCode, 
-			 String companyCode, String historyId,String jobCode, int referenceSettings)
+	public static JobTitleRef createFromJavaType( int referenceSettings, 
+			 String companyCode, String historyId,String jobCode,String authCode)
 	{
-		return new JobTitleRef(ReferenceSettings.valueOf(String.valueOf(referenceSettings)),
-				companyCode, historyId,new JobCode(jobCode),new AuthorizationCode(authorizationCode) );
+		return new JobTitleRef(EnumAdaptor.valueOf(referenceSettings, ReferenceSettings.class), 
+				companyCode, historyId,new JobCode(jobCode),new AuthorizationCode(authCode) );
 	}
 
 }

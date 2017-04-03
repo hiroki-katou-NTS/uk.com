@@ -1,4 +1,5 @@
-module cmm013.d.viewmodel {
+module cmm013.d.viewmodel { 
+
     export class ScreenModel {
         inp_003: KnockoutObservable<string>;
         inp_003_enable: KnockoutObservable<boolean>;
@@ -9,8 +10,8 @@ module cmm013.d.viewmodel {
         itemList: KnockoutObservableArray<any>;
         selectedId: KnockoutObservable<number>;
         enable: KnockoutObservable<boolean>;
-        deleteChecker: KnockoutObservable<number>;
-        startDateLast: KnockoutObservable<string>;
+        cDelete: KnockoutObservable<number>;
+        sDateLast: KnockoutObservable<string>;
         histIdUpdate: KnockoutObservable<string>;
         constructor() {
             var self = this;
@@ -21,20 +22,22 @@ module cmm013.d.viewmodel {
             self.endDateUpdate = ko.observable('');
             //D_SEL_001
             self.enable = ko.observable(true); 
-            self.deleteChecker = ko.observable(0);
-            self.startDateLast = ko.observable('');
+            self.cDelete = ko.observable(0);
+            self.sDateLast = ko.observable('');
             self.histIdUpdate = ko.observable('');
         }
-        
+          closeDialog(){
+             nts.uk.ui.windows.close();   
+        }
         startPage(): JQueryPromise<any>{
             var self = this;
             var dfd = $.Deferred();
-            self.deleteChecker(nts.uk.ui.windows.getShared('delete'));
-            self.startDateUpdate(nts.uk.ui.windows.getShared('startUpdate'));
-            self.endDateUpdate(nts.uk.ui.windows.getShared('endUpdate'));
-            self.startDateLast(nts.uk.ui.windows.getShared('startDateLast'));
-            self.histIdUpdate(nts.uk.ui.windows.getShared('Id_13Update'));
-            if(self.deleteChecker()==1){//option delete
+            self.cDelete(nts.uk.ui.windows.getShared('CMM013_delete'));
+            self.startDateUpdate(nts.uk.ui.windows.getShared('CMM013_startDateUpdate'));
+            self.endDateUpdate(nts.uk.ui.windows.getShared('CMM013_endDateUpdate'));
+            self.sDateLast(nts.uk.ui.windows.getShared('CMM013_sDateLast'));
+            self.histIdUpdate(nts.uk.ui.windows.getShared('CMM013_historyIdUpdate'));
+            if(self.cDelete()==1){//option delete
                 self.itemList = ko.observableArray([
                     new BoxModel(1, '履歴を削除する '),
                     new BoxModel(2, '履歴を修正する')
@@ -49,9 +52,10 @@ module cmm013.d.viewmodel {
                     }  
                 }));
             }
-            if(self.deleteChecker()==2){//not option delete
+            if(self.cDelete()==2){//not option delete
                 self.itemList = ko.observableArray([
-                    new BoxModel(1, '履歴を修正する')
+                    new BoxModel(1, '履歴を修正する'),
+                    new BoxModel(2, '履歴を修正する')
                 ]);
                 self.selectedId = ko.observable(1);
             }
@@ -59,38 +63,35 @@ module cmm013.d.viewmodel {
             dfd.resolve();
             return dfd.promise();      
         }
-
-         closeDialog(): any{
-            nts.uk.ui.windows.close();   
-        }
-        positionHis(){
-            let self = this;
-            if(self.selectedId()==2 && self.deleteChecker()==1){
+   
+        decision(){
+            var self = this;
+            if(self.selectedId()==2 && self.cDelete()==1){//check input
                 if(self.inp_003() >= self.endDateUpdate()||self.inp_003()<=self.startDateUpdate()){
-                    alert("Re Input");    
+                    alert("nhap lai start Date");    
                     return;
                 }
             }
-            let dfd = $.Deferred<any>();
-            if(self.selectedId()==1 && self.deleteChecker()==1){   
-                let jobHist = new model.ListHistoryDto(self.startDateUpdate(), '', self.endDateUpdate(), self.histIdUpdate());
-                    
+            var dfd = $.Deferred<any>();
+            if(self.selectedId()==1 && self.cDelete()==1){//delete   
+                var jobHist = new service.model.JobHistDto(self.startDateUpdate(), '', self.endDateUpdate(), self.histIdUpdate());
+                    //delete jobHist 1
                 var checkDelete ='1';
                 var checkUpdate = '0';
-            }else{
+            }else{//update
                 checkDelete = '0';
-                var jobHist = new model.ListHistoryDto(self.startDateUpdate(), self.inp_003(), self.endDateUpdate(), self.histIdUpdate());
-                if (self.startDateUpdate()==self.startDateLast()) {
-                    
+                var jobHist = new service.model.JobHistDto(self.startDateUpdate(), self.inp_003(), self.endDateUpdate(), self.histIdUpdate());
+                if (self.startDateUpdate()==self.sDateLast()) {
+                    //update jHist last
                     checkUpdate = '2';
                 } else {
                    checkUpdate = '1';
                 }
             }
-            let afterUpdate = new model.AfUpdate(jobHist, checkUpdate, checkDelete);
-            service.updateHist(afterUpdate).done(function() {
+            var updateHandler = new service.model.UpdateHandler(jobHist, checkUpdate, checkDelete);
+            service.updateJobHist(updateHandler).done(function() {
                 alert('update thanh cong');
-                nts.uk.ui.windows.setShared('Finish',true, true);
+                nts.uk.ui.windows.setShared('cmm013D_updateFinish',true, true);
                 nts.uk.ui.windows.close();
             }).fail(function(res) {
                 dfd.reject(res);
@@ -106,30 +107,5 @@ module cmm013.d.viewmodel {
             self.id = id;
             self.name = name;
         }    
-    }
-        
-    export module model {
-        export class AfUpdate{
-            jHist: ListHistoryDto;
-            checkUpdate: string;
-            checkDelete: string;
-            constructor(jHist: ListHistoryDto, checkUpdate: string, checkDelete: string){
-                this.jHist = jHist;
-                this.checkUpdate = checkUpdate;
-                this.checkDelete = checkDelete;
-            }    
-        }
-        export class ListHistoryDto{
-            companyCode: string;
-            startDate: string;
-            endDate: string;
-            historyId: string;
-            constructor(companyCode: string, startDate: string, endDate: string, historyId: string){
-                this.companyCode = companyCode;
-                this.startDate = startDate;
-                this.endDate = endDate;
-                this.historyId = historyId;
-            }    
-        }
-    }
+    }    
 }

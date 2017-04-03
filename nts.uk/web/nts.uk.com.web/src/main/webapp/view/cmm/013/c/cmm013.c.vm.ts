@@ -5,87 +5,34 @@ module cmm013.c.viewmodel {
         inp_003: KnockoutObservable<string>;
         historyId: KnockoutObservable<string>;
         startDateLast: KnockoutObservable<string>;
+        //C_SEL_001
         itemList: KnockoutObservableArray<any>;
         selectedId: KnockoutObservable<number>;
         enable: KnockoutObservable<boolean>;
-        endDateUpdate: KnockoutObservable<string>;
-        length: KnockoutObservable<number>;
-        startDateAddNew: KnockoutObservable<string>;
-        listbox: KnockoutObservableArray<model.ListHistoryDto>;
-        selectedCode: KnockoutObservable<any>;
-        checkDelete: KnockoutObservable<any>;
-
-
-        startDateUpdate: KnockoutObservable<string>;
-        historyIdUpdate: KnockoutObservable<string>;
-        startDateUpdateNew: KnockoutObservable<string>;
-        startDatePre: KnockoutObservable<string>;
-        jobHistory: KnockoutObservable<model.ListHistoryDto>;
+        res: KnockoutObservableArray<string>;
 
         constructor() {
             var self = this;
-            self.label_002 = ko.observable(new Labels());
+            self.label_002 = ko.observable(new Labels()); 
             self.inp_003 = ko.observable(null);
             self.historyId = ko.observable(null);
             self.startDateLast = ko.observable('');
-            self.endDateUpdate = ko.observable('');
+            //C_SEL_001
             self.selectedId = ko.observable(1);
-            self.enable = ko.observable(true);
-
-            self.length = ko.observable(0);
-            self.startDateAddNew = ko.observable("");
-
-            self.startDateUpdate = ko.observable(null);
-            self.endDateUpdate = ko.observable(null);
-            self.historyIdUpdate = ko.observable(null);
-            self.startDateUpdateNew = ko.observable(null);
-            self.startDatePre = ko.observable(null);
-            self.jobHistory = ko.observable(null);
-            self.selectedCode = ko.observable(null);
-            self.checkDelete = ko.observable(null);
-            self.listbox = ko.observableArray([]);
-
-            self.itemList = ko.observableArray([
-                new BoxModel(1, '最新の履歴（' + self.startDateLast() + '）から引き継ぐ  '),
-                new BoxModel(2, '全員参照不可')
-            ]);
-
+            self.enable = ko.observable(true); 
         }
-        closeDialog(): any {
-            nts.uk.ui.windows.close();
-        }
-
-
-        checkInput(): boolean {
-            var self = this;
-            var date = new Date(self.inp_003());
-            if (date.toDateString() == 'Invalid Date') {
-                alert("Input by YYYY-MM-DD or YYYY/MM/DD or YYYY.MM.DD ");
-                return false;
-            } else {
-                return true;
-            }
-        }
-        checkValue(value: string): boolean {
-            var self = this;
-            if (value <= self.startDateLast()) {
-                alert("nhap lai start Date");
-                return false;
-            } else {
-                return true;
-            }
-        }
-
+        /**
+         * Start page
+         * get start date last from screen A
+         */
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            self.historyId(nts.uk.ui.windows.getShared('Id_13'));
-            self.startDateLast(nts.uk.ui.windows.getShared('startLast'));
-            self.endDateUpdate(nts.uk.ui.windows.getShared('endUpdate'));
-            self.startDateUpdate(nts.uk.ui.windows.getShared('startUpdate'));
-            if (self.startDateUpdate() != null) {
+            self.historyId(nts.uk.ui.windows.getShared('CMM013_historyId'));
+            self.startDateLast(nts.uk.ui.windows.getShared('CMM013_startDateLast'));     
+            if(self.startDateLast() !='' && self.startDateLast()!= null){
                 self.itemList = ko.observableArray([
-                    new BoxModel(1, '最新の履歴（' + self.startDateUpdate() + '）から引き継ぐ  '),
+                    new BoxModel(1, '最新の履歴（'+self.startDateLast()+'）から引き継ぐ  '),
                     new BoxModel(2, '全員参照不可')
                 ]);
             }
@@ -93,99 +40,99 @@ module cmm013.c.viewmodel {
                 self.itemList = ko.observableArray([
                     new BoxModel(1, '全員参照不可')
                 ]);
-            }
+            }                
 
             dfd.resolve();
-            return dfd.promise();
+            return dfd.promise();                    
         }
+        /**
+         * decision add history
+         * set start date new and send to screen A(main)
+         * then close screen C
+         */
 
-
-        add() {
+        
+        closeDialog(){
+             nts.uk.ui.windows.close();   
+        }
+        add(){
             var self = this;
-            let startDateLast = new Date(self.endDateUpdate());
-            let startDate = new Date(self.inp_003());
-
-            if (self.checkInput() == false) {
+            if(self.checkTypeInput()==false){
                 return;
-            } else
-                if (self.startDateLast() != '' && self.startDateLast() != null) {
-
+            }else
+            if(self.checkValueInput(self.inp_003())==false){
+                return;
+            }
+            else {
+                if(self.startDateLast()!=''&& self.startDateLast()!= null) {
                     var check = self.selectedId();
-                } else {
+                }else{
                     var check = 2;
                 }
-            let dateNew = startDate.getFullYear() + '-' + (startDate.getMonth() + 1) + '-' + startDate.getDate();
-            if (startDate.getMonth() < 9 && startDate.getDate() < 10) {
-                dateNew = startDate.getFullYear() + '-' + 0 + (startDate.getMonth() + 1) + '-' + 0 + startDate.getDate();
-            } else {
-                if (startDate.getDate() < 10) {
-                    dateNew = startDate.getFullYear() + '-' + (startDate.getMonth() + 1) + '-' + 0 + startDate.getDate();
+                var date = new Date(self.inp_003());
+                let dateNew = date.getFullYear()+'/'+(date.getMonth()+1)+'/'+ date.getDate();
+                if(date.getMonth()<9 && date.getDate()<10){
+                    dateNew = date.getFullYear()+'/'+0+(date.getMonth()+1)+'/'+0+ date.getDate();
+                }else{
+                    if(date.getDate()<10){
+                        dateNew = date.getFullYear()+'/'+(date.getMonth()+1)+'/'+0+ date.getDate();    
+                    }
+                    if(date.getMonth()<9){
+                        dateNew = date.getFullYear()+'/'+0+(date.getMonth()+1)+'/'+ date.getDate();   
+                    }    
                 }
-                if (startDate.getMonth() < 9) {
-                    dateNew = startDate.getFullYear() + '-' + 0 + (startDate.getMonth() + 1) + '-' + startDate.getDate();
+                if(self.checkValueInput(dateNew)==false){
+                    return;
                 }
-            }
-            if (self.checkValue(dateNew) == false) {
-                return;
-            }
 
-            nts.uk.ui.windows.setShared('startNew', self.inp_003());
-            nts.uk.ui.windows.setShared('copy_c', check, false);
-            nts.uk.ui.windows.close();
+                nts.uk.ui.windows.setShared('cmm013C_startDateNew',dateNew, true);
+                nts.uk.ui.windows.setShared('cmm013C_copy',check, true);
+                nts.uk.ui.windows.close();
+            }
+        }
+        checkTypeInput(): boolean{
+            var self = this;
+            var date = new Date(self.inp_003());
+            if(date.toDateString()=='Invalid Date'){ 
+                alert("nhap lai ngay theo dinh dang YYYY-MM-DD hoac YYYY/MM/DD hoac YYYY.MM.DD"); 
+                return false;
+            }else{
+                return true;
+            }
+        }
+        checkValueInput(value: string): boolean{
+            var self = this;
+            if(value <= self.startDateLast()){
+                alert("nhap lai start Date");
+                return false;
+            }else{
+                return true;    
+            }
         }
     }
 
-    export class Labels {
-        constraint: string = 'LayoutCode';
+     export class Labels{
+        constraint: string =  'LayoutCode';
         inline: KnockoutObservable<boolean>;
         required: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
-
+    
         constructor() {
             var self = this;
             self.inline = ko.observable(true);
             self.required = ko.observable(true);
             self.enable = ko.observable(true);
-        }
+        }    
     }
 
-    export class BoxModel {
+    export class BoxModel{
         id: number;
         name: string;
-        constructor(id, name) {
+        constructor(id, name){
             var self = this;
             self.id = id;
             self.name = name;
-        }
-    }
-
-
-    export module model {
-        export class historyDto {
-            startDate: string;
-            endDate: string;
-            historyId: string;
-            constructor(startDate: string, endDate: string, historyId: string) {
-                this.startDate = startDate;
-                this.endDate = endDate;
-                this.historyId = historyId;
-            }
-        }
-
-        export class ListHistoryDto {
-            companyCode: string;
-            startDate: string;
-            endDate: string;
-            historyId: string;
-            constructor(companyCode: string, startDate: string, endDate: string, historyId: string) {
-                var self = this;
-                self.companyCode = companyCode;
-                self.startDate = startDate;
-                self.endDate = endDate;
-                self.historyId = historyId;
-            }
-        }
-
-
-    }
+        }    
+    }    
+        
 }

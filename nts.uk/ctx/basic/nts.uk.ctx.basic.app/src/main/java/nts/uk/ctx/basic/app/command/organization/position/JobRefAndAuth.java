@@ -12,9 +12,9 @@ public class JobRefAndAuth {
 	
 	String jobCode;
 	
-	int authCode;
+	String authCode;
 	
-	int refSet;
+	int referenceSettings;
 	
 	String authScopeAtr;
 	

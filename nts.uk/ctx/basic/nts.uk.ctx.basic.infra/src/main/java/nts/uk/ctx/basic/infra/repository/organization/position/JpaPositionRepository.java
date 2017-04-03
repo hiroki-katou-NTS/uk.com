@@ -40,6 +40,8 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 	private static final String SELECT_JOBTITLEREF;
 	private static final String SELECT_AUTHNAME;
 	private static final String SELECT_HISTORY_BY_START_DATE;
+	
+	
 	static {
 
 		StringBuilder builderString = new StringBuilder();
@@ -58,17 +60,16 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		SELECT_AUTHLEVEL = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("SELECT a.authName,a.authCode,b.jobCode,coalesce(b.referenceSettings,1) referenceSettings");
-		builderString.append(" FROM CatmtAuth a");
-		builderString.append(" LEFT JOIN CmnmtJobTitleRef b");
-		builderString.append(" ON a.catmtAuthPK.companyCode = :b.cmnmtJobTitleRefPK.conpanyCode");
-		builderString.append(" AND a.catmtAuthPK.authScopeAtr = :authScopeAtr");
-		builderString.append(" AND a.catmtAuthPK.authCode = :b.cmnmtJobTitleRefPK.authScopeAtr");
-		builderString.append(" AND a.catmtAuthPK.companyCode = :companyCode");
-		builderString.append(" AND a.cmnmtJobTitleRefPK.jobCode = :jobCode");
-		builderString.append(" AND a.cmnmtJobTitleRefPK.historyId = :historyId");
+		builderString.append("SELECT a.catmtAuthPk.authCode, a.authName, coalesce(b.referenceSettings,1) referenceSettings");
+		builderString.append(" FROM CatmtAuth a LEFT JOIN CmnmtJobTitleRef b");
+		builderString.append(" ON a.catmtAuthPk.authCode = b.cmnmtJobTitleRefPK.authCode");
+		builderString.append(" AND a.catmtAuthPk.companyCode = b.cmnmtJobTitleRefPK.companyCode");
+		builderString.append(" AND a.catmtAuthPk.authScopeAtr = :authScopeAtr");
+		builderString.append(" AND a.catmtAuthPk.companyCode = :companyCode");
+		builderString.append(" AND b.cmnmtJobTitleRefPK.jobCode = :jobCode");
+		builderString.append(" AND b.cmnmtJobTitleRefPK.historyId = :historyId");
 		SELECT_AUTHNAME = builderString.toString();
-
+		
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmnmtJobTitle e");
@@ -130,7 +131,7 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		builderString = new StringBuilder();
 		builderString.append("SELECT TOP 1 e");
 		builderString.append(" FROM CmnmtJobHist e");
-		builderString.append(" WHERE e.cmnmtJobHistPK.historyId = :historyId");
+		builderString.append(" WHERE e.cmnmtJobHistPK.companyCode = :companyCode");
 		builderString.append(" AND e.endDate = :endDate");
 		builderString.append(" ORDER BY e.endDate DESC");
 		SELECT_HISTORY_BY_END_DATE = builderString.toString();
@@ -150,8 +151,8 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 				.setParameter("authScopeAtr", authScopeAtr).getList(c -> {
 					String authCode = (String) c[0];
 					String authName = (String) c[1];
-					int refSet = Integer.valueOf(c[2].toString());
-					return JobRef_Auth.createSimpleFromJavaType(authCode, authName, refSet);
+					int referenceSettings = Integer.valueOf(c[2].toString());
+					return JobRef_Auth.createSimpleFromJavaType(authCode, authName, referenceSettings);
 				});
 	}
 	
@@ -314,7 +315,8 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 				cmnmtJobTitleRef.getCmnmtJobTitleRefPK().getCompanyCode(),
 				cmnmtJobTitleRef.getCmnmtJobTitleRefPK().getHistoryId(),
 				cmnmtJobTitleRef.getCmnmtJobTitleRefPK().getJobCode(),
-				cmnmtJobTitleRef.getCmnmtJobTitleRefPK().getAuthorizationCode());
+				cmnmtJobTitleRef.getCmnmtJobTitleRefPK().getAuthCode()
+				);
 		return jobTitleRef;
 	}
 

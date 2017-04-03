@@ -19,54 +19,33 @@ import nts.uk.shr.com.context.AppContexts;
 public class UpdateHistoryCommandHandler extends CommandHandler<UpdateHistoryCommand> {
 
 	@Inject
-	private PositionRepository positionRepository;
+	private PositionRepository repository;
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateHistoryCommand> context) {
-
 		String companyCode = AppContexts.user().companyCode();
-		String historyId = context.getCommand().getJobHist().getHistoryId();
-		String checkUpdate = context.getCommand().getCheckUpdate();
-		String checkDelete = context.getCommand().getCheckDelete();
-		String sDateEdit = context.getCommand().getJobHist().getStartDate().toString();
-		String endDateEdit = context.getCommand().getJobHist().getEndDate().toString();
-		GeneralDate eDateNew = GeneralDate.localDate(LocalDate.parse(endDateEdit));
-		Optional<JobHistory> checkJhist = positionRepository.findSingleHistory(companyCode, historyId);
-		if(checkJhist.isPresent()){
-			if(checkDelete.compareTo("0")==0){//update
-				GeneralDate sDateNew = context.getCommand().getJobHist().getStartDate();
-				GeneralDate eDateUpdateNew = sDateNew.addDays(-1);
-				JobHistory jobHist = new JobHistory(companyCode,historyId,sDateNew,eDateNew);
-	
-					if(checkUpdate.compareTo("1")==0 ){
-						Optional<JobHistory> hisEndate = positionRepository.getHistoryByEdate(companyCode,GeneralDate.localDate(LocalDate.parse(sDateEdit)));
-						if(hisEndate.isPresent()){
-							JobHistory jobHistPre = hisEndate.get();
-							jobHistPre.setEndDate(eDateUpdateNew);
-							positionRepository.updateHistory(jobHistPre);
-							positionRepository.updateHistory(jobHist);
-						}
-					}
-					if(checkUpdate.compareTo("2")==0 && checkDelete.compareTo("0")==0){
-						positionRepository.updateHistory(jobHist);
-					}
-	
-			}
-			if(checkUpdate.compareTo("0")==0 && checkDelete.compareTo("1")==0){
-				Optional<JobHistory> hisEndate = positionRepository.getHistoryByEdate(companyCode,GeneralDate.localDate(LocalDate.parse(sDateEdit)));
-				if(hisEndate.isPresent()){
-					JobHistory jobHistPre = hisEndate.get();
-					jobHistPre.setEndDate(eDateNew);
-					positionRepository.updateHistory(jobHistPre);
-					positionRepository.deleteHist(companyCode, historyId);
-					positionRepository.deleteJobTitleByHisId(companyCode, historyId);
-				}
-			}
-		
-		}else{
-			throw new BusinessException("du lieu khong con ton tai tron DB");
-		}
+		UpdateHistoryCommand command = context.getCommand();
 
+		String historyId = command.getHistoryId();
+		//check xem lich su dang chon con ton tai hay khong
+		Optional<JobHistory> historyInfo = repository.findSingleHistory(companyCode, historyId);
+		if(!historyInfo.isPresent()){
+			throw new BusinessException("ER026");
+		}
+		//update start lich su dang chon
+		JobHistory history = historyInfo.get();
+		GeneralDate newStartDate = GeneralDate.localDate(LocalDate.parse(command.getNewStartDate()));
+		history.setStartDate(newStartDate);
+		repository.updateHistory(history);
+		//Neu co thang lich su duoi no thi update enddate
+		GeneralDate oldEndate = GeneralDate.localDate(LocalDate.parse(command.getOldStartDate())).addDays(-1);
+		GeneralDate newEndate = newStartDate.addDays(-1);
+		Optional<JobHistory> getHistoryByEndDate = repository.getHistoryByEdate(companyCode, oldEndate);
+		if(getHistoryByEndDate.isPresent()){
+			JobHistory historyPre = getHistoryByEndDate.get();
+			historyPre.setEndDate(newEndate);
+			repository.updateHistory(historyPre);
+		}
 	}
 
 }

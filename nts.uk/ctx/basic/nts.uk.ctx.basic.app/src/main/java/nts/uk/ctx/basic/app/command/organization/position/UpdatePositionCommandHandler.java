@@ -25,18 +25,21 @@ public class UpdatePositionCommandHandler extends CommandHandler<UpdatePositionC
 	@Override
 	protected void handle(CommandHandlerContext<UpdatePositionCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
-		String hitoryId = IdentifierUtil.randomUniqueId();
+//		String hitoryId = IdentifierUtil.randomUniqueId();
 		
-//		UpdatePositionCommand command = context.getCommand();
-//		JobTitle jobTitle = new JobTitle(new JobName(command.getJobName()),
-//				new JobCode(command.getJobCode()),
-//				new JobCode(command.getJobOutCode()),
-//				command.getHistoryId(), companyCode, 
-//				new Memo(command.getMemo()) ,
-//				new HiterarchyOrderCode(command.getHiterarchyOrderCode()),
-//				PresenceCheckScopeSet.SetForEachRole);
-//		
-//		positionRepository.update(jobTitle);
+	UpdatePositionCommand command = context.getCommand();
+		JobTitle jobTitle = new JobTitle(companyCode,
+				command.getHistoryId(), 
+				new JobCode(command.getJobCode()),
+				new JobName(command.getJobName()),
+				PresenceCheckScopeSet.SetForEachRole,
+				new JobCode(command.getJobOutCode()),
+				
+				new Memo(command.getMemo()) ,
+				new HiterarchyOrderCode(command.getHiterarchyOrderCode())
+				);
+		
+		positionRepository.update(jobTitle);
 		
 	}
 	

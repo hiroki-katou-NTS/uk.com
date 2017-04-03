@@ -1,17 +1,17 @@
-
 module cmm013.a.service {
     var paths = {
-        findAllPosition: "basic/position/findallposition/",
-        addPosition: "basic/position/addPosition",
-        deletePosition: "basic/position/deletePosition",
-        updatePosition: "basic/position/updatePosition",
-        getAllHistory: "basic/position/getallhist",
-        addHist: "basic/position/addHist",
-        updateHist: "basic/position/updateHist",
-        deleteHist: "basic/position/deleteHist",
-        getRef: "basic/position/getalljobtitleref/",
+        findAllPosition: "basic/organization/position/findallposition/",
+        addPosition: "basic/organization/position/addPosition",
+        deletePosition: "basic/organization/position/deletePosition",
+        updatePosition: "basic/organization/position/updatePosition",
+        getAllHistory: "basic/organization/position/getallhist",
+        addHist: "basic/organization/position/addHist",
+        updateHist: "basic/organization/position/updateHist",
+        deleteHist: "basic/organization/position/deleteHist",
+        getRef: "basic/organization/position/getalljobtitleref/",
         getAuthLevel: "basic/organization/position/getallauthlevel/",
-        getAllUseKt : "ctx/proto/company/findByUseKtSet/"
+        getAllUseKt : "ctx/proto/company/findByUseKtSet/",
+        getAuth: "basic/organization/position/getalljobrefauth/"
 
     }
     export function findAllPosition(historyId: string): JQueryPromise<Array<viewmodel.model.ListPositionDto>> {
@@ -42,6 +42,32 @@ module cmm013.a.service {
             
             
     }
+        export function addPosition(position: viewmodel.model.ListPositionDto) {
+        var dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax("com", paths.addPosition, position)
+            .done(function(res: any) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+    
+        export function updatePosition(position: viewmodel.model.ListPositionDto) {
+        let dfd = $.Deferred();
+        nts.uk.request.ajax("com", paths.updatePosition, position).done(
+            function(res: any) {
+                dfd.resolve(res);
+            }
+        )
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+
+        return dfd.promise();
+    }
+    
 
 
     export function deletePosition(position: viewmodel.model.DeleteJobTitle) {
@@ -74,9 +100,9 @@ module cmm013.a.service {
 
 
 
-      export function addHist(addJobHist: viewmodel.model.AfterAdd){
+       export function addHist(jobHist: viewmodel.model.ListHistoryDto){
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com",paths.addHist, addJobHist)
+        nts.uk.request.ajax("com",paths.addHist, jobHist)
             .done(function(res: any){
                 dfd.resolve(res);    
             })    
@@ -87,7 +113,7 @@ module cmm013.a.service {
      }
     
     
-       export function getAllJobTitleRef(historyId: string, jobCode: string): JQueryPromise<Array<GetJobAuth>>{
+       export function getAllJobTitleRef(historyId: string, jobCode: string ): JQueryPromise<Array<GetJobAuth>>{
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax("com",paths.getRef + historyId + "/" + jobCode)
             .done(function(res: Array<any>) {
@@ -99,6 +125,17 @@ module cmm013.a.service {
         return dfd.promise();
     }
     
+          export function getAllJobTitleAuth(historyId: string, jobCode: string ): JQueryPromise<Array<GetJobAuth>>{
+        var dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax("com",paths.getAuth + historyId + "/" + jobCode)
+            .done(function(res: Array<any>) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
         export function getAllAuthLevel(authCode: string): JQueryPromise<Array<viewmodel.model.AuthLevel>>{
         var dfd = $.Deferred<Array<viewmodel.model.AuthLevel>>();
         nts.uk.request.ajax("com",paths.getAuthLevel + authCode)
@@ -116,14 +153,16 @@ module cmm013.a.service {
             jobCode: string;
             authCode: string;
             authName: string;
-            refSet: number;
+            referenceSettings: number;
+            authScopeAtr: string;
             constructor(historyId: string,jobCode: string,authCode: string,
-                        authName: string,refSet: number){
+                        authName: string,referenceSettings: number,authScopeAtr: string){
                 this.historyId = historyId;
                 this.jobCode = jobCode;
                 this.authCode = authCode;
                 this.authName = authName;
-                this.refSet = refSet;
+                this.referenceSettings = referenceSettings;
+                this.authScopeAtr = authScopeAtr;
             }
         }
     

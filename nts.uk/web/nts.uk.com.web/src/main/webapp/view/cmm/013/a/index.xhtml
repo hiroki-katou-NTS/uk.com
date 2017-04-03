@@ -22,7 +22,7 @@
 			<div id="function_area">
 				<button id="BTN_001_INIT" data-bind="click: initPosition"
 					class="button fix-button">新規</button>
-				<button id="BTN_002_ADD" data-bind="click: registerPosition"
+				<button id="BTN_002_ADD" data-bind="click: addHist"
 					class="button proceed fix-button">登録</button>
 				<button id="BTN_004" class="button">マスタ修正ログ</button>
 				<button id="BTN_005_DEL" data-bind="click: deletePosition"
@@ -146,7 +146,7 @@
 											options: $parent.roundingRules,
 											optionsValue: 'code',
 											optionsText: 'name',
-											value: refSet,}">
+											value: referenceSettings,}">
 											</div>
 											<br />
 										</div>
