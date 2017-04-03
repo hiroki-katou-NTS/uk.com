@@ -128,20 +128,43 @@ var nts;
             util.isIn = isIn;
             ;
             function createTreeFromString(original, openChar, closeChar, seperatorChar, operatorChar) {
-                return convertToTree(original, openChar, closeChar, seperatorChar, 1).result;
+                var result = convertToTree(original, openChar, closeChar, seperatorChar, 1, operatorChar).result;
+                return result;
             }
             util.createTreeFromString = createTreeFromString;
-            function convertToTree(original, openChar, closeChar, separatorChar, index) {
+            function moveToParentIfEmpty(tree) {
+                var result = [];
+                _.forEach(tree, function (e) {
+                    if (e.children.length > 0) {
+                        e.children = moveToParentIfEmpty(e.children);
+                        if (uk.text.isNullOrEmpty(e.value)) {
+                            result = result.concat(e.children);
+                        }
+                        else {
+                            result.push(e);
+                        }
+                    }
+                    else {
+                        result.push(e);
+                    }
+                });
+                return result;
+            }
+            function convertToTree(original, openChar, closeChar, separatorChar, index, operatorChar) {
                 var result = [];
                 while (original.trim().length > 0) {
                     var firstOpenIndex = original.indexOf(openChar);
                     if (firstOpenIndex < 0) {
                         var values = original.split(separatorChar);
                         _.forEach(values, function (value) {
-                            var object = new TreeObject();
-                            object.value = value;
-                            object.children = [];
-                            result.push(object);
+                            var data = splitByArray(value, operatorChar.slice());
+                            _.each(data, function (v) {
+                                var object = new TreeObject();
+                                object.value = v;
+                                object.children = [];
+                                object.isOperator = operatorChar.indexOf(v) >= 0;
+                                result.push(object);
+                            });
                         });
                         return {
                             "result": result,
@@ -155,7 +178,7 @@ var nts;
                         var closeIndex = findIndexOfCloseChar(original, openChar, closeChar, firstOpenIndex);
                         if (closeIndex >= 0) {
                             index++;
-                            var res = convertToTree(original.substring(firstOpenIndex + 1, closeIndex).trim(), openChar, closeChar, separatorChar, index);
+                            var res = convertToTree(original.substring(firstOpenIndex + 1, closeIndex).trim(), openChar, closeChar, separatorChar, index, operatorChar);
                             object.children = res.result;
                             index = res.index++;
                             result.push(object);
@@ -183,6 +206,33 @@ var nts;
                     "index": index
                 };
             }
+            function splitByArray(original, operatorChar) {
+                var temp = [];
+                var result = [];
+                if (original.trim().length <= 0) {
+                    return temp;
+                }
+                if (operatorChar.length <= 0) {
+                    return [original];
+                }
+                var operator = operatorChar.shift();
+                while (original.trim().length > 0) {
+                    var index = original.indexOf(operator);
+                    if (index >= 0) {
+                        temp.push(original.substring(0, index).trim());
+                        temp.push(original.substring(index, index + 1).trim());
+                        original = original.substring(index + 1, original.length).trim();
+                    }
+                    else {
+                        temp.push(original);
+                        break;
+                    }
+                }
+                _.each(temp, function (value) {
+                    result = result.concat(splitByArray(value, operatorChar));
+                });
+                return result;
+            }
             function findIndexOfCloseChar(original, openChar, closeChar, firstOpenIndex) {
                 var openCount = 0;
                 var closeCount = 0;
@@ -200,11 +250,12 @@ var nts;
                 return -1;
             }
             var TreeObject = (function () {
-                function TreeObject(value, children, index) {
+                function TreeObject(value, children, index, isOperator) {
                     var self = this;
                     self.value = value;
                     self.children = children;
                     self.index = index;
+                    self.isOperator = isOperator;
                 }
                 return TreeObject;
             }());

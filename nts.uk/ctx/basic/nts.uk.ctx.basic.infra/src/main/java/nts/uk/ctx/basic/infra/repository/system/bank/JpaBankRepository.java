@@ -46,8 +46,8 @@ public class JpaBankRepository extends JpaRepository implements BankRepository {
 	}
 
 	@Override
-	public void remove(Bank bank) {
-		CbkmtBankPK key = new CbkmtBankPK(bank.getCompanyCode().v(), bank.getBankCode().v());
+	public void remove(String companyCode, String bankCode) {
+		CbkmtBankPK key = new CbkmtBankPK(companyCode, bankCode);
 		this.commandProxy().remove(CbkmtBank.class, key);
 	}
 	
@@ -57,7 +57,7 @@ public class JpaBankRepository extends JpaRepository implements BankRepository {
 	 * @return CbkmtBank
 	 */
 	private static CbkmtBank toEntity(Bank domain) {
-		CbkmtBankPK key = new CbkmtBankPK(domain.getCompanyCode().v(), domain.getBankCode().v());
+		CbkmtBankPK key = new CbkmtBankPK(domain.getCompanyCode(), domain.getBankCode().v());
 		
 		CbkmtBank entity = new CbkmtBank(key, domain.getBankName().v(), domain.getBankNameKana().v(), domain.getMemo().v());
 		
