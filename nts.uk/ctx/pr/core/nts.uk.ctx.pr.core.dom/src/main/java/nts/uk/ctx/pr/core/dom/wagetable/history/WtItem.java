@@ -4,10 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.history;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
+import nts.uk.ctx.pr.core.dom.wagetable.WtValue;
 
 /**
  * The Class WageTableItem.
@@ -28,7 +27,7 @@ public class WtItem {
 	private ElementId element3Id;
 
 	/** The amount. */
-	private BigDecimal amount;
+	private WtValue amount;
 
 	/**
 	 * Instantiates a new wage table item.
@@ -43,7 +42,7 @@ public class WtItem {
 	 *            the amount
 	 */
 	public WtItem(ElementId element1Id, ElementId element2Id, ElementId element3Id,
-			BigDecimal amount) {
+			WtValue amount) {
 		super();
 		this.element1Id = element1Id;
 		this.element2Id = element2Id;

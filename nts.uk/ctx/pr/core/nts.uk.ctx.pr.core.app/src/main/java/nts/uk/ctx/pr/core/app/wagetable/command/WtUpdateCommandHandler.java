@@ -63,7 +63,7 @@ public class WtUpdateCommandHandler extends CommandHandler<WtUpdateCommand> {
 		Optional<WtHead> optHeader = this.wtHeadRepo.findByCode(companyCode, command.getCode());
 
 		if (!optHeader.isPresent()) {
-			// TODO
+			// TODO: need msg id.
 			throw new BusinessException("errorMessage");
 		}
 

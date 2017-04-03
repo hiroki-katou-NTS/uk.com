@@ -28,7 +28,7 @@ var nts;
                                 __extends(ScreenModel, _super);
                                 function ScreenModel() {
                                     _super.call(this, {
-                                        functionName: '社会保険事業所',
+                                        functionName: '健康保険',
                                         service: b.service.instance,
                                         removeMasterOnLastHistoryRemove: false
                                     });
@@ -84,22 +84,22 @@ var nts;
                                 };
                                 ScreenModel.prototype.convertRounding = function (stringRounding) {
                                     switch (stringRounding) {
-                                        case Rounding.ROUNDUP: return "0";
-                                        case Rounding.TRUNCATION: return "1";
+                                        case Rounding.TRUNCATION: return "0";
+                                        case Rounding.ROUNDUP: return "1";
                                         case Rounding.DOWN4_UP5: return "2";
-                                        case Rounding.ROUNDDOWN: return "3";
-                                        case Rounding.DOWN5_UP6: return "4";
+                                        case Rounding.DOWN5_UP6: return "3";
+                                        case Rounding.ROUNDDOWN: return "4";
                                         default: return "0";
                                     }
                                 };
                                 ScreenModel.prototype.convertToRounding = function (stringValue) {
                                     switch (stringValue) {
-                                        case "0": return Rounding.ROUNDUP;
-                                        case "1": return Rounding.TRUNCATION;
+                                        case "0": return Rounding.TRUNCATION;
+                                        case "1": return Rounding.ROUNDUP;
                                         case "2": return Rounding.DOWN4_UP5;
-                                        case "3": return Rounding.ROUNDDOWN;
-                                        case "4": return Rounding.DOWN5_UP6;
-                                        default: return Rounding.ROUNDUP;
+                                        case "3": return Rounding.DOWN5_UP6;
+                                        case "4": return Rounding.ROUNDDOWN;
+                                        default: return Rounding.TRUNCATION;
                                     }
                                 };
                                 ScreenModel.prototype.loadHealth = function (data) {
@@ -196,11 +196,17 @@ var nts;
                                     var self = this;
                                     if (self.healthModel().autoCalculate() == AutoCalculateType.Auto) {
                                         nts.uk.ui.dialog.confirm("自動計算が行われます。登録しますか？").ifYes(function () {
+                                            self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
                                             hservice.updateHealthInsuranceAvgearn(self.collectData(), self.healthCollectData().officeCode);
                                             b.service.updateHealthRate(self.healthCollectData()).done(function () {
                                             }).fail();
                                         }).ifNo(function () {
                                         });
+                                    }
+                                    else {
+                                        self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
+                                        b.service.updateHealthRate(self.healthCollectData()).done(function () {
+                                        }).fail();
                                     }
                                 };
                                 ScreenModel.prototype.collectData = function () {
@@ -275,7 +281,6 @@ var nts;
                                         self.save();
                                     }
                                     else {
-                                        alert('TODO has error! ERR001');
                                     }
                                     return dfd.promise();
                                 };
@@ -306,6 +311,10 @@ var nts;
                                 ScreenModel.prototype.onRegistNew = function () {
                                     var self = this;
                                     self.OpenModalOfficeRegister();
+                                };
+                                ScreenModel.prototype.isDirty = function () {
+                                    var self = this;
+                                    return self.dirty.isDirty();
                                 };
                                 ScreenModel.prototype.OpenModalOfficeRegisterWithDirtyCheck = function () {
                                     var self = this;

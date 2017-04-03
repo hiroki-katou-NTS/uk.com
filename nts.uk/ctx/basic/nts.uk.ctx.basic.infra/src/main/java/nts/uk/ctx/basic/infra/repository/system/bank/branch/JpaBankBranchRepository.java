@@ -91,7 +91,7 @@ public class JpaBankBranchRepository extends JpaRepository implements BankBranch
 	 * @return CbkmtBranch
 	 */
 	private static CbkmtBranch toEntity(BankBranch domain){
-		CbkmtBranchPK key = new CbkmtBranchPK(domain.getCompanyCode().v(), domain.getBranchId().toString());
+		CbkmtBranchPK key = new CbkmtBranchPK(domain.getCompanyCode(), domain.getBranchId().toString());
 		CbkmtBranch entity = new CbkmtBranch(key, domain.getBankCode(), domain.getBankBranchCode().v(), domain.getBankBranchName().v(), domain.getBankBranchNameKana().v(), domain.getMemo().v());		
 		return entity;
 	}

@@ -23,7 +23,7 @@ public class Qmm005dCommand {
 
 	private int bonusAtr;
 
-	private int bCurrentProcessingYm;
+	private int bcurrentProcessingYm;
 
 	private int payStdDay;
 
@@ -77,6 +77,6 @@ public class Qmm005dCommand {
 
 	public PaydayProcessing toPaydayProcessingDomain(String companyCode) {
 		return PaydayProcessing.createSimpleFromJavaType(companyCode, getProcessingNo(), getProcessingName(),
-				getDispSet(), getCurrentProcessingYm(), getBonusAtr(), getBCurrentProcessingYm());
+				getDispSet(), getCurrentProcessingYm(), getBonusAtr(), getBcurrentProcessingYm());
 	}
 }

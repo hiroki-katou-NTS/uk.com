@@ -5,7 +5,8 @@ module nts.uk.pr.view.qpp007.a {
     export module viewmodel {
         
         export class ScreenModel {
-            yearMonth: KnockoutObservable<string>;
+            startYearMonth: KnockoutObservable<string>;
+            endYearMonth: KnockoutObservable<string>;
             isUsuallyAMonth: KnockoutObservable<boolean>;
             isPreliminaryMonth: KnockoutObservable<boolean>;
             outputFormatType: KnockoutObservableArray<SelectionModel>;
@@ -26,7 +27,8 @@ module nts.uk.pr.view.qpp007.a {
             constructor() {
                 this.isUsuallyAMonth = ko.observable(true);
                 this.isPreliminaryMonth = ko.observable(true);
-                this.yearMonth = ko.observable('2016/12');
+                this.startYearMonth = ko.observable('2016/12');
+                this.endYearMonth = ko.observable('2017/03');
                 this.enable = ko.observable(true);
                 this.selectedOutputFormat = ko.observable('1');
                 this.outputFormatType = ko.observableArray<SelectionModel>([
@@ -91,18 +93,16 @@ module nts.uk.pr.view.qpp007.a {
             
             public openPrintSettingDialog() {
                 // Set parent value
-                nts.uk.ui.windows.setShared("data", "");
-                nts.uk.ui.windows.setShared("isTransistReturnData", "");
+                nts.uk.ui.windows.setShared("data", "nothing");
 
-                nts.uk.ui.windows.sub.modal("/view/qpp/007/b/index.xhtml", { title: "印刷設定" }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal("/view/qpp/007/b/index.xhtml", { title: "印刷設定", dialogClass: 'no-close' }).onClosed(() => {
                     // Get child value
                     var returnValue = nts.uk.ui.windows.getShared("childData");
                 })
             }
             
             public openSalaryOuputSettingDialog() {
-                // Set parent value
-                nts.uk.ui.windows.sub.modal("/view/qpp/007/c/index.xhtml", { title: "出力項目の設定" }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal("/view/qpp/007/c/index.xhtml", { title: "出力項目の設定", dialogClass: 'no-close' }).onClosed(() => {
                     // Get child value
                 })
             }
