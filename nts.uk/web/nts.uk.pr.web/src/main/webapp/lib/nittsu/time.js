@@ -1,3 +1,4 @@
+/// <reference path="reference.ts"/>
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -426,6 +427,13 @@ var nts;
                 return format;
             }
             time_1.formatDate = formatDate;
+            /**
+            * Format by pattern
+            * @param  {Date}   [date]         Input date
+            * @param  {String} [inputFormat]  Input format
+            * @param  {String} [outputFormat] Output format
+            * @return {String}                Formatted date
+            */
             function formatPattern(date, inputFormat, outputFormat) {
                 outputFormat = uk.text.getISO8601Format(outputFormat);
                 inputFormat = uk.text.getISO8601Format(inputFormat);
@@ -435,3 +443,4 @@ var nts;
         })(time = uk.time || (uk.time = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=time.js.map

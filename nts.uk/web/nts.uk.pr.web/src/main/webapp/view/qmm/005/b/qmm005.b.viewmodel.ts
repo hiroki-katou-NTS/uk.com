@@ -50,23 +50,24 @@ module qmm005.b {
                         if (rec) {
                             let year = rec.processingYm["getYearInYm"](),
                                 yearIJE = year + "(" + year["yearInJapanEmpire"]() + ")",
-                                index = i + 1;
+                                index = i + 1,
+                                row = new TableRowItem({
+                                    index: index,
+                                    label: index + '月の設定',
+                                    sel001: rec.payBonusAtr == 1 ? true : false,
+                                    sel002: 0,
+                                    sel002Data: [new common.SelectItem({ index: 0, label: rec.payDate })],
+                                    inp003: new Date(),
+                                    inp004: new Date(),
+                                    inp005: new Date(),
+                                    inp006: new Date(),
+                                    inp007: new Date(),
+                                    inp008: new Date(),
+                                    inp009: new Date(),
+                                    inp010: 0
+                                });
 
-                            lst002Data.push(new TableRowItem({
-                                index: index,
-                                label: index + '月の設定',
-                                sel001: rec.payBonusAtr == 1 ? true : false,
-                                sel002: 0,
-                                sel002Data: [new common.SelectItem({ index: -1, label: "" })],
-                                inp003: new Date(),
-                                inp004: new Date(),
-                                inp005: new Date(),
-                                inp006: new Date(),
-                                inp007: new Date(),
-                                inp008: new Date(),
-                                inp009: new Date(),
-                                inp010: 0
-                            }));
+                            lst002Data.push(row);
 
                             if (!_.find(lst001Data, function(item) { return item.value == year; })) {
                                 lst001Data.push(new common.SelectItem({ index: i + 1, label: yearIJE, value: year, selected: year == dataRow.sel001() }));
@@ -158,6 +159,7 @@ module qmm005.b {
         label: KnockoutObservable<string> = ko.observable('');
         sel001: KnockoutObservable<boolean> = ko.observable(false);
         sel002: KnockoutObservable<number> = ko.observable(0);
+        sel002L: KnockoutObservable<string> = ko.observable('');
         inp003: KnockoutObservable<Date> = ko.observable(null);
         inp004: KnockoutObservable<Date> = ko.observable(null);
         inp005: KnockoutObservable<Date> = ko.observable(null);
@@ -173,8 +175,8 @@ module qmm005.b {
             let self = this;
             self.index(param.index);
             self.label(param.label);
-            self.sel002(param.sel002);
             self.sel001(param.sel001);
+            self.sel002(param.sel002);
 
             self.inp003(param.inp003);
             self.inp004(param.inp004);
@@ -186,6 +188,17 @@ module qmm005.b {
             self.inp010(param.inp010);
 
             self.sel002Data(param.sel002Data);
+
+            self.sel002.subscribe(function(v) {
+                if (v) {
+                    let currentSel002 = _.find(self.sel002Data(), function(item) { return item.index == v; });
+                    debugger;
+                    if (currentSel002) {
+                        self.sel002L(new Date(currentSel002.value)["getDayJP"]());
+                    }
+                }
+            });
+            self.sel002.valueHasMutated();
         }
 
         toggleCalendar(item, event): void {

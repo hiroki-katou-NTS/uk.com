@@ -45,13 +45,12 @@ var qmm005;
                         var lst001Data = [], lst002Data = [], dataRow = nts.uk.ui.windows.getShared('dataRow');
                         var _loop_1 = function(i, rec) {
                             if (rec) {
-                                var year_1 = rec.processingYm["getYearInYm"](), yearIJE = year_1 + "(" + year_1["yearInJapanEmpire"]() + ")", index = i + 1;
-                                lst002Data.push(new TableRowItem({
+                                var year_1 = rec.processingYm["getYearInYm"](), yearIJE = year_1 + "(" + year_1["yearInJapanEmpire"]() + ")", index = i + 1, row = new TableRowItem({
                                     index: index,
                                     label: index + '月の設定',
                                     sel001: rec.payBonusAtr == 1 ? true : false,
                                     sel002: 0,
-                                    sel002Data: [new qmm005.common.SelectItem({ index: -1, label: "" })],
+                                    sel002Data: [new qmm005.common.SelectItem({ index: 0, label: rec.payDate })],
                                     inp003: new Date(),
                                     inp004: new Date(),
                                     inp005: new Date(),
@@ -60,7 +59,8 @@ var qmm005;
                                     inp008: new Date(),
                                     inp009: new Date(),
                                     inp010: 0
-                                }));
+                                });
+                                lst002Data.push(row);
                                 if (!_.find(lst001Data, function (item) { return item.value == year_1; })) {
                                     lst001Data.push(new qmm005.common.SelectItem({ index: i + 1, label: yearIJE, value: year_1, selected: year_1 == dataRow.sel001() }));
                                 }
@@ -131,6 +131,7 @@ var qmm005;
                 this.label = ko.observable('');
                 this.sel001 = ko.observable(false);
                 this.sel002 = ko.observable(0);
+                this.sel002L = ko.observable('');
                 this.inp003 = ko.observable(null);
                 this.inp004 = ko.observable(null);
                 this.inp005 = ko.observable(null);
@@ -143,8 +144,8 @@ var qmm005;
                 var self = this;
                 self.index(param.index);
                 self.label(param.label);
-                self.sel002(param.sel002);
                 self.sel001(param.sel001);
+                self.sel002(param.sel002);
                 self.inp003(param.inp003);
                 self.inp004(param.inp004);
                 self.inp005(param.inp005);
@@ -154,6 +155,16 @@ var qmm005;
                 self.inp009(param.inp009);
                 self.inp010(param.inp010);
                 self.sel002Data(param.sel002Data);
+                self.sel002.subscribe(function (v) {
+                    if (v) {
+                        var currentSel002 = _.find(self.sel002Data(), function (item) { return item.index == v; });
+                        debugger;
+                        if (currentSel002) {
+                            self.sel002L(new Date(currentSel002.value)["getDayJP"]());
+                        }
+                    }
+                });
+                self.sel002.valueHasMutated();
             }
             TableRowItem.prototype.toggleCalendar = function (item, event) {
                 $(event.currentTarget).parent('div').find('input[type=text]').trigger('click');
