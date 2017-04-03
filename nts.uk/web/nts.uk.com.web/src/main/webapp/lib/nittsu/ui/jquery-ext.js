@@ -355,7 +355,10 @@ var nts;
                     };
                     function validate($editor) {
                         var validateEvent = new CustomEvent("validate", {});
-                        document.getElementById($editor.attr('id')).dispatchEvent(validateEvent);
+                        $editor.each(function (index) {
+                            var $input = $(this);
+                            document.getElementById($input.attr('id')).dispatchEvent(validateEvent);
+                        });
                     }
                 })(ntsEditor || (ntsEditor = {}));
                 var ntsWizard;
@@ -701,4 +704,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=jquery-ext.js.map

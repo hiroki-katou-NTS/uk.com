@@ -31,7 +31,6 @@ var nts;
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
                         var validator = this.getValidator(data);
                         $input.on(valueUpdate, function (e) {
-                            //                var validator = this.getValidator(data);
                             var newText = $input.val();
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
@@ -44,7 +43,6 @@ var nts;
                             }
                         });
                         $input.blur(function () {
-                            //                var validator = this.getValidator(data);
                             var formatter = _this.getFormatter(data);
                             var newText = $input.val();
                             var result = validator.validate(newText);
@@ -53,7 +51,6 @@ var nts;
                             }
                         });
                         $input.on('validate', (function (e) {
-                            //                var validator = this.getValidator(data);
                             var newText = $input.val();
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
@@ -300,4 +297,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=editor-ko-ext.js.map
