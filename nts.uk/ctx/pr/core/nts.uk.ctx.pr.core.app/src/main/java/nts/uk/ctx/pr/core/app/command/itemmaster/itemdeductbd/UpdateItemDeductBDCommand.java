@@ -32,4 +32,27 @@ public class UpdateItemDeductBDCommand {
 				this.alRangeHighAtr, this.alRangeHigh);
 
 	}
+
+	public UpdateItemDeductBDCommand(String itemCd, String itemBreakdownCd, String itemBreakdownName,
+			String itemBreakdownAbName, String uniteCd, int zeroDispSet, int itemDispAtr, int errRangeLowAtr,
+			BigDecimal errRangeLow, int errRangeHighAtr, BigDecimal errRangeHigh, int alRangeLowAtr,
+			BigDecimal alRangeLow, int alRangeHighAtr, BigDecimal alRangeHigh) {
+		super();
+		this.itemCd = itemCd;
+		this.itemBreakdownCd = itemBreakdownCd;
+		this.itemBreakdownName = itemBreakdownName;
+		this.itemBreakdownAbName = itemBreakdownAbName;
+		this.uniteCd = uniteCd;
+		this.zeroDispSet = zeroDispSet;
+		this.itemDispAtr = itemDispAtr;
+		this.errRangeLowAtr = errRangeLowAtr;
+		this.errRangeLow = errRangeLow;
+		this.errRangeHighAtr = errRangeHighAtr;
+		this.errRangeHigh = errRangeHigh;
+		this.alRangeLowAtr = alRangeLowAtr;
+		this.alRangeLow = alRangeLow;
+		this.alRangeHighAtr = alRangeHighAtr;
+		this.alRangeHigh = alRangeHigh;
+	}
+	
 }

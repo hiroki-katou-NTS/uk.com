@@ -25,7 +25,7 @@ public class DeleteItemSalaryCommandHandler extends CommandHandler<DeleteItemSal
 		val companyCode = AppContexts.user().companyCode();
 		if (!this.itemSalaryRespository.find(companyCode, context.getCommand().getItemCd()).isPresent())
 			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
-		this.itemSalaryRespository.delete(companyCode, context.getCommand().getItemCd());
+		this.itemSalaryRespository.delete( context.getCommand().getItemCd());
 
 	}
 
