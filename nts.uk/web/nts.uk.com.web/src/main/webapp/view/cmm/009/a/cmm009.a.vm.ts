@@ -135,7 +135,7 @@ module cmm009.a.viewmodel {
                                 })
                             service.getMemoByHistId(self.historyId())
                                 .done(function(memo: viewmodel.model.MemoDto) {
-                                    if (memo !=  null) {
+                                    if (memo != null) {
                                         self.A_INP_008(memo.memo);
                                     }
                                 }).fail(function(error) {
@@ -312,14 +312,99 @@ module cmm009.a.viewmodel {
                 var _code = self.singleSelectedCode();
                 var current = self.findHira(_code, _dt);
                 let deleteobj = new model.DepartmentDeleteDto(current.departmentCode, current.historyId, current.hierarchyCode);
-                var dfd2 = $.Deferred();
-                service.deleteDepartment(deleteobj)
-                    .done(function() {
-                        
-                    })
-                    .fail(function() { })
-                dfd2.resolve();
-                return dfd2.promise();
+                nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
+                    var dfd2 = $.Deferred();
+                    service.deleteDepartment(deleteobj)
+                        .done(function() {
+                            var _dt = self.dataSource();
+                            var _code = self.singleSelectedCode();
+                            var current = self.findHira(_code, _dt);
+                            var parrent = self.findParent(_code, _dt);
+                            if (parrent) {
+                                var index = parrent.children.indexOf(current);
+                                //Parent hirachy code
+                                var phc = parrent.hierarchyCode;
+                                var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
+
+                                // Thay đổi hirachiCode của các object bên dưới
+                                var changeIndexChild = _.filter(parrent['children'], function(item) {
+                                    return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) > chc;
+                                });
+                                debugger;
+                                for (var i in changeIndexChild) {
+                                    var item1 = changeIndexChild[i];
+                                    var itemAddH = (parseInt(item1.hierarchyCode.substr(item1.hierarchyCode.length - 3, 3)) - 1) + "";
+                                    while ((itemAddH + "").length < 3)
+                                        itemAddH = "0" + itemAddH;
+                                    item1.hierarchyCode = phc + itemAddH;
+                                    item1.editIndex = true;
+                                    if (item1.children.length > 0) {
+                                        self.updateHierachy2(item1, phc + itemAddH);
+                                    }
+                                }
+
+                                var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item) { return item.editIndex; });
+                                if (editObjs.length > 0) {
+                                    let currentHis = self.itemHist();
+                                    for (var k = 0; k < editObjs.length; k++) {
+                                        editObjs[k].startDate = currentHis.startDate;
+                                        editObjs[k].endDate = currentHis.endDate;
+                                        editObjs[k].memo = self.A_INP_008();
+                                    }
+                                }
+                                self.listDtothaydoi(editObjs);
+                            } else {
+
+                                var index = _dt.indexOf(current);
+                                //Parent hirachy code
+                                var phc = current.hierarchyCode;
+                                var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
+
+                                // Thay đổi hirachiCode của các object bên dưới
+                                var changeIndexChild2 = _.filter(_dt, function(item) {
+                                    return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) > chc;
+                                });
+
+                                for (var i in changeIndexChild2) {
+                                    var item2 = changeIndexChild2[i];
+                                    var itemAddH = (parseInt(item2.hierarchyCode.substr(item2.hierarchyCode.length - 3, 3)) - 1) + "";
+                                    while ((itemAddH + "").length < 3)
+                                        itemAddH = "0" + itemAddH;
+                                    item2.hierarchyCode = itemAddH;
+                                    item2.editIndex = true;
+                                    if (item2.children.length > 0) {
+                                        self.updateHierachy2(item2, itemAddH);
+                                    }
+                                }
+                                var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item) { return item.editIndex; });
+                                if (editObjs.length > 0) {
+                                    let currentHis = self.itemHist();
+                                    for (var k = 0; k < editObjs.length; k++) {
+                                        editObjs[k].startDate = currentHis.startDate;
+                                        editObjs[k].endDate = currentHis.endDate;
+                                        editObjs[k].memo = self.A_INP_008();
+                                    }
+                                }
+                                self.listDtothaydoi(editObjs);
+                            }
+                            let data = self.listDtothaydoi();
+                            if (data != null) {
+                                service.upDateListDepartment(data)
+                                    .done(function(mess) {
+                                        location.reload();
+                                    }).fail(function(error) {
+                                        if (error.message == "ER005") {
+                                            alert("ko ton tai");
+                                        }
+                                    })
+                                dfd.resolve();
+                                return dfd.promise();
+                            }
+                        })
+                        .fail(function() { })
+                    dfd2.resolve();
+                    return dfd2.promise();
+                }).ifNo(function() { });
             }
         }
 
