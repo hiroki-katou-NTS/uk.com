@@ -35,16 +35,26 @@ public class ResidentialTaxWebService extends WebService {
 	public List<ResidentialTaxDto> getAllResidential() {
 		return this.finder.getAllResidentialTax();
 	}
+
 	@POST
 	@Path("findResidentialTax/{resiTaxCode}/{resiTaxReportCode}")
-	public List<ResidentialTaxDto> getAllResidialTax(@PathParam("resiTaxCode") String resiTaxCode,  @PathParam("resiTaxReportCode") String resiTaxReportCode) {
-		return this.finder.getAllResidentialTax(resiTaxCode,resiTaxReportCode);
+	public List<ResidentialTaxDto> getAllResidialTax(@PathParam("resiTaxCode") String resiTaxCode,
+			@PathParam("resiTaxReportCode") String resiTaxReportCode) {
+		return this.finder.getAllResidentialTax(resiTaxCode, resiTaxReportCode);
 	}
-	
+
+	// companyCode != 0000
 	@POST
 	@Path("findResidentialTax/{resiTaxCode}")
 	public ResidentialTaxDto getResidialTaxDetail(@PathParam("resiTaxCode") String resiTaxCode) {
 		return this.finder.getResidentialTax(resiTaxCode).get();
+	}
+
+	// companyCode = 0000
+	@POST
+	@Path("findResidentialTax/{companyCd}/{resiTaxCode}")
+	public ResidentialTaxDto getResidialTaxDetail(@PathParam("companyCd") String companyCd, @PathParam("resiTaxCode") String resiTaxCode) {
+		return this.finder.getResidentialTax(companyCd, resiTaxCode).get();
 	}
 
 	// companyCode =0000
@@ -54,6 +64,7 @@ public class ResidentialTaxWebService extends WebService {
 		String companyCode = "0000";
 		return this.finder.getAllResidentialTax(companyCode);
 	}
+
 	@POST
 	@Path("addresidential")
 	public void addResidential(AddResidentialTaxCommand command) {
