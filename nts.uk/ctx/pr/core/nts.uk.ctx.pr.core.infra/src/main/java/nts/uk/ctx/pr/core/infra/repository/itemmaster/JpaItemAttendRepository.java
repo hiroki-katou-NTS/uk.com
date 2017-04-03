@@ -86,7 +86,7 @@ public class JpaItemAttendRepository extends JpaRepository implements ItemAttend
 	 */
 	private QcamtItemAttend toEntity(ItemAttend domain) {
 		String companyCode = AppContexts.user().companyCode();
-		return new QcamtItemAttend(new QcamtItemAttendPK(companyCode, domain.getItemCD().v()),
+		return new QcamtItemAttend(new QcamtItemAttendPK(companyCode, domain.getItemCode().v()),
 				domain.getAvePayAtr().value, domain.getItemAtr().value, domain.getErrRangeLowAtr().value,
 				domain.getErrRangeLow().v(), domain.getErrRangeHighAtr().value, domain.getErrRangeHigh().v(),
 				domain.getAlRangeLowAtr().value, domain.getAlRangeLow().v(), domain.getAlRangeHighAtr().value,

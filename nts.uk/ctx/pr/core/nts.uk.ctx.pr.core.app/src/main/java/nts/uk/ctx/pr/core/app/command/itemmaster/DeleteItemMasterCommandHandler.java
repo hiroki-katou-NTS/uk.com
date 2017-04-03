@@ -68,7 +68,7 @@ public class DeleteItemMasterCommandHandler extends CommandHandler<DeleteItemMas
 		this.itemSalaryRespository.delete(itemCode);
 		this.itemSalaryPeriodRepository.delete(itemCode);
 		for (DeleteItemSalaryBDCommand deleteItemSalaryBDCommand : context.getCommand().getItemBDs())
-			this.itemSalaryBDRepository.delete(itemCode, deleteItemSalaryBDCommand.getItemBreakdownCd());
+			this.itemSalaryBDRepository.delete(itemCode, deleteItemSalaryBDCommand.getItemBreakdownCode());
 	}
 
 	private void deleteItemDeduct(CommandHandlerContext<DeleteItemMasterCommand> context) {
@@ -76,7 +76,7 @@ public class DeleteItemMasterCommandHandler extends CommandHandler<DeleteItemMas
 		this.itemDeductRespository.delete(itemCode);
 		this.itemDeductPeriodRepository.delete(itemCode);
 		for (DeleteItemSalaryBDCommand deleteItemSalaryBDCommand : context.getCommand().getItemBDs())
-			this.itemDeductBDRepository.delete(itemCode, deleteItemSalaryBDCommand.toItemDeduct().getItemBreakdownCd());
+			this.itemDeductBDRepository.delete(itemCode, deleteItemSalaryBDCommand.toItemDeduct().getItemBreakdownCode());
 
 	}
 

@@ -7,7 +7,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductperiod.ItemDeductPeriod;
 @Getter
 @Setter
 public class UpdateItemDeductPeriodCommand {
-	private String itemCd;
+	private String itemCode;
 	private int periodAtr;
 	private int strY;
 	private int endY;
@@ -26,16 +26,16 @@ public class UpdateItemDeductPeriodCommand {
 	private int cycle12Atr;
 
 	public ItemDeductPeriod toDomain() {
-		return ItemDeductPeriod.createFromJavaType(itemCd, periodAtr, strY, endY, cycleAtr, cycle01Atr, cycle02Atr,
+		return ItemDeductPeriod.createFromJavaType(itemCode, periodAtr, strY, endY, cycleAtr, cycle01Atr, cycle02Atr,
 				cycle03Atr, cycle04Atr, cycle05Atr, cycle06Atr, cycle07Atr, cycle08Atr, cycle09Atr, cycle10Atr,
 				cycle11Atr, cycle12Atr);
 	}
 
-	public UpdateItemDeductPeriodCommand(String itemCd, int periodAtr, int strY, int endY, int cycleAtr, int cycle01Atr,
+	public UpdateItemDeductPeriodCommand(String itemCode, int periodAtr, int strY, int endY, int cycleAtr, int cycle01Atr,
 			int cycle02Atr, int cycle03Atr, int cycle04Atr, int cycle05Atr, int cycle06Atr, int cycle07Atr,
 			int cycle08Atr, int cycle09Atr, int cycle10Atr, int cycle11Atr, int cycle12Atr) {
 		super();
-		this.itemCd = itemCd;
+		this.itemCode = itemCode;
 		this.periodAtr = periodAtr;
 		this.strY = strY;
 		this.endY = endY;

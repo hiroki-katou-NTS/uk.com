@@ -17,7 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaItemDeductBDRepository extends JpaRepository implements ItemDeductBDRepository {
 	private final String SEL = "SELECT c FROM QcamtItemDeductBd c";
 	private final String SEL_1 = SEL
-			+ " WHERE c.qcamtItemDeductBdPK.ccd = :companyCode AND c.qcamtItemDeductBdPK.itemCd = :itemCode";
+			+ " WHERE c.qcamtItemDeductBdPK.cCode = :companyCode AND c.qcamtItemDeductBdPK.itemCode = :itemCode";
 
 	@Override
 	public List<ItemDeductBD> findAll(String companyCode, String itemCode) {
@@ -36,9 +36,9 @@ public class JpaItemDeductBDRepository extends JpaRepository implements ItemDedu
 	}
 
 	@Override
-	public Optional<ItemDeductBD> find(String itemCd, String itemBreakdownCd) {
+	public Optional<ItemDeductBD> find(String itemCode, String itemBreakdownCode) {
 		String companyCode = AppContexts.user().companyCode();
-		QcamtItemDeductBdPK pk = new QcamtItemDeductBdPK(companyCode, itemCd, itemBreakdownCd);
+		QcamtItemDeductBdPK pk = new QcamtItemDeductBdPK(companyCode, itemCode, itemBreakdownCode);
 		return this.queryProxy().find(pk, QcamtItemDeductBd.class).map(x -> toDomain(x));
 	}
 
@@ -49,19 +49,19 @@ public class JpaItemDeductBDRepository extends JpaRepository implements ItemDedu
 
 	private QcamtItemDeductBd toEntity(ItemDeductBD domain) {
 		String campanyCode = AppContexts.user().companyCode();
-		QcamtItemDeductBdPK pk = new QcamtItemDeductBdPK(campanyCode, domain.getItemCd().v(),
-				domain.getItemBreakdownCd().v());
+		QcamtItemDeductBdPK pk = new QcamtItemDeductBdPK(campanyCode, domain.getItemCode().v(),
+				domain.getItemBreakdownCode().v());
 		return new QcamtItemDeductBd(pk, domain.getItemBreakdownName().v(), domain.getItemBreakdownAbName().v(),
-				domain.getUniteCd().v(), domain.getZeroDispSet().value, domain.getItemDispAtr().value,
+				domain.getUniteCode().v(), domain.getZeroDispSet().value, domain.getItemDispAtr().value,
 				domain.getErrRangeLowAtr().value, domain.getErrRangeLow().v(), domain.getErrRangeHighAtr().value,
 				domain.getErrRangeHigh().v(), domain.getAlRangeLowAtr().value, domain.getAlRangeLow().v(),
 				domain.getAlRangeHighAtr().value, domain.getAlRangeHigh().v());
 	}
 
 	@Override
-	public void delete(String itemCd, String itemBreakdownCd) {
+	public void delete(String itemCode, String itemBreakdownCode) {
 		String companyCode = AppContexts.user().companyCode();
-		QcamtItemDeductBdPK pk = new QcamtItemDeductBdPK(companyCode, itemCd, itemBreakdownCd);
+		QcamtItemDeductBdPK pk = new QcamtItemDeductBdPK(companyCode, itemCode, itemBreakdownCode);
 		this.commandProxy().remove(QcamtItemDeductBd.class, pk);
 
 	}

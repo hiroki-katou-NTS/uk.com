@@ -20,11 +20,11 @@ public class DeleteItemSalaryBDCommandHandler extends CommandHandler<DeleteItemS
 	@Override
 	protected void handle(CommandHandlerContext<DeleteItemSalaryBDCommand> context) {
 		
-		val itemCd = context.getCommand().getItemCd();
-		val itemBreakdownCd = context.getCommand().getItemBreakdownCd();
-		if(!this.itemSalaryBDRepository.find(itemCd,itemBreakdownCd).isPresent())
+		val itemCode = context.getCommand().getItemCode();
+		val itemBreakdownCode = context.getCommand().getItemBreakdownCode();
+		if(!this.itemSalaryBDRepository.find(itemCode,itemBreakdownCode).isPresent())
 			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
-		this.itemSalaryBDRepository.delete(itemCd,itemBreakdownCd);
+		this.itemSalaryBDRepository.delete(itemCode,itemBreakdownCode);
 	}
 
 }

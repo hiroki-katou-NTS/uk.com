@@ -11,7 +11,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
 @Getter
 public class ItemSalary extends AggregateRoot {
 
-	private ItemCode itemCd;
+	private ItemCode itemCode;
 	private TaxAtr taxAtr;
 	private InsAtr socialInsAtr;
 	private InsAtr laborInsAtr;
@@ -32,18 +32,18 @@ public class ItemSalary extends AggregateRoot {
 	private AlRangeHigh alRangeHigh;
 	private Memo memo;
 	private LimitMnyAtr limitMnyAtr;
-	private LimitMnyRefItemCd limitMnyRefItemCd;
+	private LimitMnyRefItemCd limitMnyRefItemCode;
 	private LimitMny limitMny;
 
-	public ItemSalary(ItemCode itemCd, TaxAtr taxAtr, InsAtr socialInsAtr, InsAtr laborInsAtr, FixPayAtr fixPayAtr,
+	public ItemSalary(ItemCode itemCode, TaxAtr taxAtr, InsAtr socialInsAtr, InsAtr laborInsAtr, FixPayAtr fixPayAtr,
 			ApplyFor applyForAllEmpFlg, ApplyFor applyForMonthlyPayEmp, ApplyFor applyForDaymonthlyPayEmp,
 			ApplyFor applyForDaylyPayEmp, ApplyFor applyForHourlyPayEmp, AvePayAtr avePayAtr, RangeAtr errRangeLowAtr,
 			ErrRangeLow errRangeLow, RangeAtr errRangeHighAtr, ErrRangeHigh errRangeHigh, RangeAtr alRangeLowAtr,
 			AlRangeLow alRangeLow, RangeAtr alRangeHighAtr, AlRangeHigh alRangeHigh, Memo memo, LimitMnyAtr limitMnyAtr,
-			LimitMnyRefItemCd limitMnyRefItemCd, LimitMny limitMny) {
+			LimitMnyRefItemCd limitMnyRefItemCode, LimitMny limitMny) {
 		super();
 
-		this.itemCd = itemCd;
+		this.itemCode = itemCode;
 		this.taxAtr = taxAtr;
 		this.socialInsAtr = socialInsAtr;
 		this.laborInsAtr = laborInsAtr;
@@ -64,7 +64,7 @@ public class ItemSalary extends AggregateRoot {
 		this.alRangeHigh = alRangeHigh;
 		this.memo = memo;
 		this.limitMnyAtr = limitMnyAtr;
-		this.limitMnyRefItemCd = limitMnyRefItemCd;
+		this.limitMnyRefItemCode = limitMnyRefItemCode;
 		this.limitMny = limitMny;
 	}
 

@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DeleteItemDeductCommand {
-	private String itemCd;
+	private String itemCode;
 }

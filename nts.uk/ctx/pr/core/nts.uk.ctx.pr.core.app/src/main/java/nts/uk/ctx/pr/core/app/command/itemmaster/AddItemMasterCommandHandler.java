@@ -58,8 +58,8 @@ public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCom
 		// validate
 		itemMaster.validate();
 		
-		String itemCD = itemMaster.getItemCode().v();
-		if (this.itemMasterRepository.find(companyCode, CategoryAtr, itemCD).isPresent())
+		String itemCode = itemMaster.getItemCode().v();
+		if (this.itemMasterRepository.find(companyCode, CategoryAtr, itemCode).isPresent())
 			throw new BusinessException(" 明細書名が入力されていません。");
 		itemMasterRepository.add(itemMaster);
 		switch (CategoryAtr) {
@@ -77,32 +77,32 @@ public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCom
 	}
 
 	private void addItemAttend(CommandHandlerContext<AddItemMasterCommand> context) {
-		String itemCD = context.getCommand().toDomain().getItemCode().v();
-		context.getCommand().getItemAttend().setItemCd(itemCD);
+		String itemCode = context.getCommand().toDomain().getItemCode().v();
+		context.getCommand().getItemAttend().setItemCode(itemCode);
 		this.itemAttendRespository.add(context.getCommand().getItemAttend().toDomain());
 
 	}
 
 	private void addItemDeduct(CommandHandlerContext<AddItemMasterCommand> context) {
-		String itemCD = context.getCommand().toDomain().getItemCode().v();
-		context.getCommand().getItemDeduct().setItemCd(itemCD);
+		String itemCode = context.getCommand().toDomain().getItemCode().v();
+		context.getCommand().getItemDeduct().setItemCode(itemCode);
 		this.itemDeductRespository.add(context.getCommand().getItemDeduct().toDomain());
-		context.getCommand().getItemPeriod().setItemCd(itemCD);
+		context.getCommand().getItemPeriod().setItemCode(itemCode);
 		this.itemDeductPeriodRepository.add(context.getCommand().getItemPeriod().toItemDeduct().toDomain());
 		for (AddItemSalaryBDCommand addItemSalaryCommand : context.getCommand().getItemBDs()) {
-			addItemSalaryCommand.setItemCd(itemCD);
+			addItemSalaryCommand.setItemCode(itemCode);
 			this.itemDeductBDRepository.add(addItemSalaryCommand.toItemDeduct().toDomain());
 		}
 	}
 
 	private void addItemSalary(CommandHandlerContext<AddItemMasterCommand> context) {
-		String itemCD = context.getCommand().toDomain().getItemCode().v();
-		context.getCommand().getItemSalary().setItemCd(itemCD);
+		String itemCode = context.getCommand().toDomain().getItemCode().v();
+		context.getCommand().getItemSalary().setItemCode(itemCode);
 		this.itemSalaryRespository.add(context.getCommand().getItemSalary().toDomain());
-		context.getCommand().getItemPeriod().setItemCd(itemCD);
+		context.getCommand().getItemPeriod().setItemCode(itemCode);
 		this.itemSalaryPeriodRepository.add(context.getCommand().getItemPeriod().toDomain());
 		for (AddItemSalaryBDCommand addItemSalaryCommand : context.getCommand().getItemBDs()) {
-			addItemSalaryCommand.setItemCd(itemCD);
+			addItemSalaryCommand.setItemCode(itemCode);
 			this.itemSalaryBDRepository.add(addItemSalaryCommand.toDomain());
 		}
 	}

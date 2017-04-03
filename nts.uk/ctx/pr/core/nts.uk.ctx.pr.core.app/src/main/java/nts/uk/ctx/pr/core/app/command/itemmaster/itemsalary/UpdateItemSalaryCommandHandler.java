@@ -19,7 +19,7 @@ public class UpdateItemSalaryCommandHandler extends CommandHandler<UpdateItemSal
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateItemSalaryCommand> context) {
-		if (!this.itemSalaryRespository.find(context.getCommand().getCcd(), context.getCommand().getItemCd()).isPresent())
+		if (!this.itemSalaryRespository.find(context.getCommand().getCompanyCode(), context.getCommand().getItemCode()).isPresent())
 			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
 		this.itemSalaryRespository.update(context.getCommand().toDomain());
 

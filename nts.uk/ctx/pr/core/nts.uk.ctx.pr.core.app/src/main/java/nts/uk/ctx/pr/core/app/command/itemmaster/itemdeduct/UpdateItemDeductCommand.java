@@ -10,8 +10,8 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemdeduct.ItemDeduct;
 @Setter
 public class UpdateItemDeductCommand {
 	
-	private String ccd;
-	private String itemCd;
+	private String companyCode;
+	private String itemCode;
 	private int deductAtr;
 	private int errRangeLowAtr;
 	private BigDecimal errRangeLow;
@@ -24,7 +24,7 @@ public class UpdateItemDeductCommand {
 	private String memo;
 
 	public ItemDeduct toDomain() {
-		return ItemDeduct.createFromJavaType( this.itemCd, this.deductAtr, this.errRangeLowAtr,
+		return ItemDeduct.createFromJavaType( this.itemCode, this.deductAtr, this.errRangeLowAtr,
 				this.errRangeLow, this.errRangeHighAtr, this.errRangeHigh, this.alRangeLowAtr, this.alRangeLow,
 				this.alRangeHighAtr, this.alRangeHigh, this.memo);
 	}

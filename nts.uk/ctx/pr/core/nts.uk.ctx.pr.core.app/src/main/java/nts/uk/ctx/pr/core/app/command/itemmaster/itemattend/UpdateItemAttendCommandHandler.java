@@ -19,7 +19,7 @@ public class UpdateItemAttendCommandHandler extends CommandHandler<UpdateItemAtt
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateItemAttendCommand> context) {
-		if (!this.itemAttendRespository.find(context.getCommand().getCcd(), context.getCommand().getItemCd())
+		if (!this.itemAttendRespository.find(context.getCommand().getCompanyCode(), context.getCommand().getItemCode())
 				.isPresent())
 			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
 		this.itemAttendRespository.update(context.getCommand().toDomain());

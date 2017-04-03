@@ -74,8 +74,8 @@ public class UpdateItemMasterCommandHandler extends CommandHandler<UpdateItemMas
 		UpdateItemMasterCommand itemCommand = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		String itemCode = itemCommand.getItemCode();
-		itemCommand.getItemSalary().setCcd(companyCode);
-		itemCommand.getItemSalary().setItemCd(itemCode);
+		itemCommand.getItemSalary().setCompanyCode(companyCode);
+		itemCommand.getItemSalary().setItemCode(itemCode);
 		this.itemSalaryRespository.update(itemCommand.getItemSalary().toDomain());
 		this.itemSalaryPeriodRepository.update(itemCommand.getItemPeriod().toDomain());
 		for (UpdateItemSalaryBDCommand itemSalaryBD : context.getCommand().getItemBDs())
@@ -86,8 +86,8 @@ public class UpdateItemMasterCommandHandler extends CommandHandler<UpdateItemMas
 		UpdateItemMasterCommand itemCommand = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		String itemCode = itemCommand.getItemCode();
-		itemCommand.getItemDeduct().setCcd(companyCode);
-		itemCommand.getItemDeduct().setItemCd(itemCode);
+		itemCommand.getItemDeduct().setCompanyCode(companyCode);
+		itemCommand.getItemDeduct().setItemCode(itemCode);
 		this.itemDeductRespository.update(itemCommand.getItemDeduct().toDomain());
 		this.itemDeductPeriodRepository.update(context.getCommand().getItemPeriod().toDeduct().toDomain());
 		for (UpdateItemSalaryBDCommand itemSalaryBD : context.getCommand().getItemBDs())
@@ -99,8 +99,8 @@ public class UpdateItemMasterCommandHandler extends CommandHandler<UpdateItemMas
 		UpdateItemMasterCommand itemCommand = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		String itemCode = itemCommand.getItemCode();
-		itemCommand.getItemAttend().setCcd(companyCode);
-		itemCommand.getItemAttend().setItemCd(itemCode);
+		itemCommand.getItemAttend().setCompanyCode(companyCode);
+		itemCommand.getItemAttend().setItemCode(itemCode);
 		this.itemAttendRespository.update(itemCommand.getItemAttend().toDomain());
 	}
 

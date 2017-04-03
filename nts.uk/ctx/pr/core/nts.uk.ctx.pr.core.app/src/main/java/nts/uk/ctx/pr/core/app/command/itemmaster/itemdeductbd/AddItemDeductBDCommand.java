@@ -9,7 +9,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBD;
 @Getter
 @Setter
 public class AddItemDeductBDCommand {
-	private String itemCd;
+	private String itemCode;
 	private String itemBreakdownCd;
 	private String itemBreakdownName;
 	private String itemBreakdownAbName;
@@ -25,12 +25,12 @@ public class AddItemDeductBDCommand {
 	private int alRangeHighAtr;
 	private BigDecimal alRangeHigh;
 
-	public AddItemDeductBDCommand(String itemCd, String itemBreakdownCd, String itemBreakdownName,
+	public AddItemDeductBDCommand(String itemCode, String itemBreakdownCd, String itemBreakdownName,
 			String itemBreakdownAbName, String uniteCd, int zeroDispSet, int itemDispAtr, int errRangeLowAtr,
 			BigDecimal errRangeLow, int errRangeHighAtr, BigDecimal errRangeHigh, int alRangeLowAtr,
 			BigDecimal alRangeLow, int alRangeHighAtr, BigDecimal alRangeHigh) {
 		super();
-		this.itemCd = itemCd;
+		this.itemCode = itemCode;
 		this.itemBreakdownCd = itemBreakdownCd;
 		this.itemBreakdownName = itemBreakdownName;
 		this.itemBreakdownAbName = itemBreakdownAbName;
@@ -48,7 +48,7 @@ public class AddItemDeductBDCommand {
 	}
 
 	public ItemDeductBD toDomain() {
-		return ItemDeductBD.createFromJavaType(itemCd, itemBreakdownCd, itemBreakdownName, itemBreakdownAbName, uniteCd,
+		return ItemDeductBD.createFromJavaType(itemCode, itemBreakdownCd, itemBreakdownName, itemBreakdownAbName, uniteCd,
 				zeroDispSet, itemDispAtr, errRangeLowAtr, errRangeLow, errRangeHighAtr, errRangeHigh, alRangeLowAtr,
 				alRangeLow, alRangeHighAtr, alRangeHigh);
 	}

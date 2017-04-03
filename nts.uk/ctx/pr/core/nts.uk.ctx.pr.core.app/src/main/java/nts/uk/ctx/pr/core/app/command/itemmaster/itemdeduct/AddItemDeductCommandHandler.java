@@ -21,7 +21,7 @@ public class AddItemDeductCommandHandler extends CommandHandler<AddItemDeductCom
 	@Override
 	protected void handle(CommandHandlerContext<AddItemDeductCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
-		if (this.itemDeductRespository.find(companyCode, context.getCommand().getItemCd()).isPresent())
+		if (this.itemDeductRespository.find(companyCode, context.getCommand().getItemCode()).isPresent())
 			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
 		this.itemDeductRespository.add(context.getCommand().toDomain());
 

@@ -7,10 +7,10 @@ import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductbd.DeleteItemDeductBD
 @Getter
 @Setter
 public class DeleteItemSalaryBDCommand {
-	private String itemCd;
-	private String itemBreakdownCd;
+	private String itemCode;
+	private String itemBreakdownCode;
 
 	public DeleteItemDeductBDCommand toItemDeduct() {
-		return new DeleteItemDeductBDCommand(itemCd, itemBreakdownCd);
+		return new DeleteItemDeductBDCommand(itemCode, itemBreakdownCode);
 	}
 }

@@ -9,7 +9,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBD;
 @Getter
 @Setter
 public class UpdateItemDeductBDCommand {
-	private String itemCd;
+	private String itemCode;
 	private String itemBreakdownCd;
 	private String itemBreakdownName;
 	private String itemBreakdownAbName;
@@ -26,19 +26,19 @@ public class UpdateItemDeductBDCommand {
 	private BigDecimal alRangeHigh;
 
 	public ItemDeductBD toDomain() {
-		return ItemDeductBD.createFromJavaType(this.itemCd, this.itemBreakdownCd, this.itemBreakdownName,
+		return ItemDeductBD.createFromJavaType(this.itemCode, this.itemBreakdownCd, this.itemBreakdownName,
 				this.itemBreakdownAbName, this.uniteCd, this.zeroDispSet, this.itemDispAtr, this.errRangeLowAtr,
 				this.errRangeLow, this.errRangeHighAtr, this.errRangeHigh, this.alRangeLowAtr, this.alRangeLow,
 				this.alRangeHighAtr, this.alRangeHigh);
 
 	}
 
-	public UpdateItemDeductBDCommand(String itemCd, String itemBreakdownCd, String itemBreakdownName,
+	public UpdateItemDeductBDCommand(String itemCode, String itemBreakdownCd, String itemBreakdownName,
 			String itemBreakdownAbName, String uniteCd, int zeroDispSet, int itemDispAtr, int errRangeLowAtr,
 			BigDecimal errRangeLow, int errRangeHighAtr, BigDecimal errRangeHigh, int alRangeLowAtr,
 			BigDecimal alRangeLow, int alRangeHighAtr, BigDecimal alRangeHigh) {
 		super();
-		this.itemCd = itemCd;
+		this.itemCode = itemCode;
 		this.itemBreakdownCd = itemBreakdownCd;
 		this.itemBreakdownName = itemBreakdownName;
 		this.itemBreakdownAbName = itemBreakdownAbName;

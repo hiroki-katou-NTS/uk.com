@@ -21,7 +21,7 @@ public class AddItemAttendCommandHandler extends CommandHandler<AddItemAttendCom
 	protected void handle(CommandHandlerContext<AddItemAttendCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 
-		if (this.itemAttendRespository.find(companyCode, context.getCommand().getItemCd()).isPresent())
+		if (this.itemAttendRespository.find(companyCode, context.getCommand().getItemCode()).isPresent())
 			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
 		this.itemAttendRespository.add(context.getCommand().toDomain());
 

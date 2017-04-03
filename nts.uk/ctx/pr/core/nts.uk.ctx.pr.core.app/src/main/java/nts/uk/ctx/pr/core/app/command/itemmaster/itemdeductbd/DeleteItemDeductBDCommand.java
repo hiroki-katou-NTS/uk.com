@@ -6,13 +6,13 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DeleteItemDeductBDCommand {
-	private String itemCd;
-	private String itemBreakdownCd;
+	private String itemCode;
+	private String itemBreakdownCode;
 
-	public DeleteItemDeductBDCommand(String itemCd, String itemBreakdownCd) {
+	public DeleteItemDeductBDCommand(String itemCode, String itemBreakdownCode) {
 		super();
-		this.itemCd = itemCd;
-		this.itemBreakdownCd = itemBreakdownCd;
+		this.itemCode = itemCode;
+		this.itemBreakdownCode = itemBreakdownCode;
 	}
 
 }

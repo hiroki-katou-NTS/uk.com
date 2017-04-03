@@ -28,11 +28,11 @@ public class AddItemSalaryBDCommandHandler extends CommandHandler<AddItemSalaryB
 
 	@Override
 	protected void handle(CommandHandlerContext<AddItemSalaryBDCommand> context) {
-		ItemSalaryBD itemSalaryBD = new ItemSalaryBD(new ItemCode(context.getCommand().getItemCd()),
-				new ItemCode(context.getCommand().getItemBreakdownCd()),
+		ItemSalaryBD itemSalaryBD = new ItemSalaryBD(new ItemCode(context.getCommand().getItemCode()),
+				new ItemCode(context.getCommand().getItemBreakdownCode()),
 				new ItemName(context.getCommand().getItemBreakdownName()),
 				new ItemName(context.getCommand().getItemBreakdownAbName()),
-				new UniteCode(context.getCommand().getUniteCd()),
+				new UniteCode(context.getCommand().getUniteCode()),
 				EnumAdaptor.valueOf(context.getCommand().getZeroDispSet(), DisplayAtr.class),
 				EnumAdaptor.valueOf(context.getCommand().getItemDispAtr(), DisplayAtr.class),
 				EnumAdaptor.valueOf(context.getCommand().getErrRangeLowAtr(), RangeAtr.class),

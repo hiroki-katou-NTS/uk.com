@@ -19,10 +19,10 @@ public class DeleteItemSalaryPeriodCommandHandler extends CommandHandler<DeleteI
 	
 	@Override
 	protected void handle(CommandHandlerContext<DeleteItemSalaryPeriodCommand> context) {
-		String itemCd = context.getCommand().getItemCd();
-		if (!this.itemSalaryPeriodRepository.find(itemCd).isPresent())
+		String itemCode = context.getCommand().getItemCode();
+		if (!this.itemSalaryPeriodRepository.find(itemCode).isPresent())
 			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
-		this.itemSalaryPeriodRepository.delete(context.getCommand().getItemCd());
+		this.itemSalaryPeriodRepository.delete(context.getCommand().getItemCode());
 		
 	}
 

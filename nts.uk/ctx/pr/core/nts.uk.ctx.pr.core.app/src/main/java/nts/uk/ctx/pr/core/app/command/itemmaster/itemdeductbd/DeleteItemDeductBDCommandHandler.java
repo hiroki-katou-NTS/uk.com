@@ -20,10 +20,10 @@ public class DeleteItemDeductBDCommandHandler extends CommandHandler<DeleteItemD
 	@Override
 	protected void handle(CommandHandlerContext<DeleteItemDeductBDCommand> context) {
 		// TODO Auto-generated method stub
-		val itemCd = context.getCommand().getItemCd();
-		val itemBreakdownCd = context.getCommand().getItemBreakdownCd();
-		if (!this.itemDeductBDRepository.find(itemCd, itemBreakdownCd).isPresent())
+		val itemCode = context.getCommand().getItemCode();
+		val itemBreakdownCode = context.getCommand().getItemBreakdownCode();
+		if (!this.itemDeductBDRepository.find(itemCode, itemBreakdownCode).isPresent())
 			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
-		this.itemDeductBDRepository.delete(itemCd, itemBreakdownCd);
+		this.itemDeductBDRepository.delete(itemCode, itemBreakdownCode);
 	}
 }

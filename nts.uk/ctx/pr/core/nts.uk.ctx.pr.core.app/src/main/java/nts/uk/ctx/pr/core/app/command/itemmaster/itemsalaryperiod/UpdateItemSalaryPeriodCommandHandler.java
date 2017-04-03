@@ -20,8 +20,8 @@ public class UpdateItemSalaryPeriodCommandHandler extends CommandHandler<UpdateI
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateItemSalaryPeriodCommand> context) {
-		String itemCd = context.getCommand().getItemCd();
-		if (!this.itemSalaryPeriodRepository.find( itemCd).isPresent())
+		String itemCode = context.getCommand().getItemCode();
+		if (!this.itemSalaryPeriodRepository.find( itemCode).isPresent())
 			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
 		this.itemSalaryPeriodRepository.update(context.getCommand().toDomain());
 	}
