@@ -10,6 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.itemmaster.AvePayAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalary;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalaryRespository;
+import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemAttend;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemSalary;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemSalaryPK;
 import nts.uk.shr.com.context.AppContexts;
@@ -18,6 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaItemSalaryRepository extends JpaRepository implements ItemSalaryRespository {
 	private final String SEL = "SELECT c FROM QcamtItemSalary c";
 	private final String SEL_1 = SEL + " WHERE c.qcamtItemSalaryPK.ccd = :companyCode";
+	private final String SEL_3 = SEL + " WHERE c.qcamtItemSalaryPK.ccd = :companyCode AND c.avePayAtr = :avePayAtr";
 	private final String UPD_2 = "UPDATE QcamtItemSalary c SET c.avePayAtr = :avePayAtr WHERE  c.qcamtItemSalaryPK.ccd = :companyCode AND c.qcamtItemSalaryPK.itemCd IN :itemCodeList";
 
 	@Override
@@ -31,6 +33,14 @@ public class JpaItemSalaryRepository extends JpaRepository implements ItemSalary
 	public List<ItemSalary> findAll(String companyCode) {
 		return this.queryProxy().query(SEL_1, QcamtItemSalary.class).setParameter("companyCode", companyCode)
 				.getList(x -> toDomain(x));
+	}
+	
+	@Override
+	public List<ItemSalary> findAll(String companyCode, AvePayAtr avePayAtr) {
+		return this.queryProxy().query(SEL_3, QcamtItemSalary.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("avePayAtr", avePayAtr.value)
+				.getList(c -> toDomain(c));
 	}
 
 	@Override
