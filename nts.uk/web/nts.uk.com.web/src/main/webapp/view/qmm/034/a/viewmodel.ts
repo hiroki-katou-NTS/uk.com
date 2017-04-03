@@ -224,6 +224,7 @@ module qmm034.a.viewmodel {
                     self.currentCode(self.currentEra().eraName);
                     self.processWhenCurrentCodeChange(self.currentCode());
                 } else {
+                    self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentEra);
                     self.refreshLayout();
                 }
 
@@ -244,12 +245,15 @@ module qmm034.a.viewmodel {
             self.isDeleteEnable(false);
             self.isEnableCode(true);
             self.isUpdate(false);
-            self.dirtyObject.reset();
+            if (self.dirtyObject !== undefined)
+                self.dirtyObject.reset();   
         }
         
         clearError() {
-            $(".nts-editor").ntsError('clear');
-            $("#A_INP_003").ntsError('clear');
+            if ($(".nts-editor").ntsError('hasError'))
+                $(".nts-editor").ntsError('clear');
+            if ($("#A_INP_003").ntsError('hasError'))
+                $("#A_INP_003").ntsError('clear');
         }
     }
 

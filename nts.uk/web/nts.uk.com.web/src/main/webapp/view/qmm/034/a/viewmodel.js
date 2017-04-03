@@ -193,6 +193,7 @@ var qmm034;
                             self.processWhenCurrentCodeChange(self.currentCode());
                         }
                         else {
+                            self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentEra);
                             self.refreshLayout();
                         }
                         dfd.resolve();
@@ -210,11 +211,14 @@ var qmm034;
                     self.isDeleteEnable(false);
                     self.isEnableCode(true);
                     self.isUpdate(false);
-                    self.dirtyObject.reset();
+                    if (self.dirtyObject !== undefined)
+                        self.dirtyObject.reset();
                 };
                 ScreenModel.prototype.clearError = function () {
-                    $(".nts-editor").ntsError('clear');
-                    $("#A_INP_003").ntsError('clear');
+                    if ($(".nts-editor").ntsError('hasError'))
+                        $(".nts-editor").ntsError('clear');
+                    if ($("#A_INP_003").ntsError('hasError'))
+                        $("#A_INP_003").ntsError('clear');
                 };
                 return ScreenModel;
             }());
