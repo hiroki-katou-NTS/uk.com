@@ -20,6 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaItemAttendRepository extends JpaRepository implements ItemAttendRespository {
 	private final String SEL = "SELECT c FROM QcamtItemAttend c";
 	private final String SEL_1 = SEL + " WHERE c.qcamtItemAttendPK.ccd = :companyCode";
+	private final String SEL_4 = SEL + " WHERE c.qcamtItemAttendPK.ccd = :companyCode AND c.avePayAtr = :avePayAtr ";
 	private final String UPD_2 = "UPDATE QcamtItemAttend c SET c.avePayAtr = :avePayAtr WHERE c.qcamtItemAttendPK.ccd = :companyCode AND c.qcamtItemAttendPK.itemCd IN :itemCodeList";
 
 	@Override
@@ -34,6 +35,14 @@ public class JpaItemAttendRepository extends JpaRepository implements ItemAttend
 				.getList(c -> toDomain(c));
 	}
 
+	@Override
+	public List<ItemAttend> findAll(String companyCode, AvePayAtr avePayAtr) {
+		return this.queryProxy().query(SEL_4, QcamtItemAttend.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("avePayAtr", avePayAtr.value)
+				.getList(c -> toDomain(c));
+	}
+	
 	@Override
 	public void update(ItemAttend item) {
 		this.commandProxy().update(toEntity(item));
