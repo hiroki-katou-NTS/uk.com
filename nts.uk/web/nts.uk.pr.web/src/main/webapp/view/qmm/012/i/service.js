@@ -50,11 +50,11 @@ var qmm012;
             var model;
             (function (model) {
                 var ItemBD = (function () {
-                    function ItemBD(itemBreakdownCd, itemBreakdownName, itemBreakdownAbName, uniteCd, zeroDispSet, itemDispAtr, errRangeLowAtr, errRangeLow, errRangeHighAtr, errRangeHigh, alRangeLowAtr, alRangeLow, alRangeHighAtr, alRangeHigh) {
-                        this.itemBreakdownCd = itemBreakdownCd;
+                    function ItemBD(itemBreakdownCode, itemBreakdownName, itemBreakdownAbName, uniteCode, zeroDispSet, itemDispAtr, errRangeLowAtr, errRangeLow, errRangeHighAtr, errRangeHigh, alRangeLowAtr, alRangeLow, alRangeHighAtr, alRangeHigh) {
+                        this.itemBreakdownCode = itemBreakdownCode;
                         this.itemBreakdownName = itemBreakdownName;
                         this.itemBreakdownAbName = itemBreakdownAbName;
-                        this.uniteCd = uniteCd;
+                        this.uniteCode = uniteCode;
                         this.zeroDispSet = zeroDispSet;
                         this.itemDispAtr = itemDispAtr;
                         this.errRangeLowAtr = errRangeLowAtr;

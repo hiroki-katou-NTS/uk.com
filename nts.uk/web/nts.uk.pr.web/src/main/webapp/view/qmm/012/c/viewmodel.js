@@ -39,6 +39,8 @@ var qmm012;
                     this.C_LBL_020_Text = ko.observable("設定なし");
                     this.currentItemBDs = ko.observableArray([]);
                     this.C_LBL_022_Text = ko.observable("設定なし");
+                    this.C_BTN_001_enable = ko.observable(true);
+                    this.C_BTN_002_enable = ko.observable(true);
                     var self = this;
                     self.ComboBoxItemList_C_SEL_001 = ko.observableArray([
                         new C_SEL_001_ComboboxItemModel(0, '課税'),
@@ -216,7 +218,7 @@ var qmm012;
                         self.CurrentApplyForHourlyPayEmp(NewValue ? NewValue.applyForHourlyPayEmp : 0);
                         self.CurrentAvePayAtr(NewValue ? NewValue.avePayAtr : 0);
                         self.CurrentLimitMnyAtr(NewValue ? NewValue.limitMnyAtr : 0);
-                        self.CurrentLimitCode(NewValue ? NewValue.limitMnyRefItemCd : "");
+                        self.CurrentLimitCode(NewValue ? NewValue.limitMnyRefItemCode : "");
                         self.C_SEL_013_Selected(NewValue ? NewValue.errRangeHighAtr == 0 ? false : true : false);
                         self.C_SEL_014_Selected(NewValue ? NewValue.alRangeHighAtr == 0 ? false : true : false);
                         self.C_SEL_015_Selected(NewValue ? NewValue.errRangeLowAtr == 0 ? false : true : false);

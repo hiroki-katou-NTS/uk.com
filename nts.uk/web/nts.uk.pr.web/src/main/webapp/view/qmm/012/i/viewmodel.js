@@ -19,10 +19,10 @@ var qmm012;
                     this.ItemBDList = ko.observableArray([]);
                     this.CurrentCategoryAtrName = ko.observable('');
                     this.CurrentItemBD = ko.observable(null);
-                    this.CurrentItemBreakdownCd = ko.observable('');
+                    this.CurrentItemBreakdownCode = ko.observable('');
                     this.CurrentItemBreakdownName = ko.observable('');
                     this.CurrentItemBreakdownAbName = ko.observable('');
-                    this.CurrentUniteCd = ko.observable('');
+                    this.CurrentUniteCode = ko.observable('');
                     this.CurrentZeroDispSet = ko.observable(1);
                     this.CurrentItemDispAtr = ko.observable(0);
                     this.CurrentErrRangeLow = ko.observable(0);
@@ -86,20 +86,20 @@ var qmm012;
                     self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.ItemBDList(), "childs"));
                     // end search box 
                     self.columns = ko.observableArray([
-                        { headerText: 'ード', prop: 'itemBreakdownCd', width: 100 },
+                        { headerText: 'ード', prop: 'itemBreakdownCode', width: 100 },
                         { headerText: '名', prop: 'itemBreakdownName', width: 150 }
                     ]);
                     self.gridListCurrentCode.subscribe(function (newValue) {
                         var item = _.find(self.ItemBDList(), function (ItemBD) {
-                            return ItemBD.itemBreakdownCd == newValue;
+                            return ItemBD.itemBreakdownCode == newValue;
                         });
                         self.CurrentItemBD(item);
                     });
                     self.CurrentItemBD.subscribe(function (ItemBD) {
-                        self.CurrentItemBreakdownCd(ItemBD ? ItemBD.itemBreakdownCd : '');
+                        self.CurrentItemBreakdownCode(ItemBD ? ItemBD.itemBreakdownCode : '');
                         self.CurrentItemBreakdownName(ItemBD ? ItemBD.itemBreakdownName : '');
                         self.CurrentItemBreakdownAbName(ItemBD ? ItemBD.itemBreakdownAbName : '');
-                        self.CurrentUniteCd(ItemBD ? ItemBD.uniteCd : '');
+                        self.CurrentUniteCode(ItemBD ? ItemBD.uniteCode : '');
                         self.CurrentZeroDispSet(ItemBD ? ItemBD.zeroDispSet : 1);
                         self.checked_002(ItemBD ? ItemBD.itemDispAtr == 1 ? false : true : false);
                         self.CurrentItemDispAtr(ItemBD ? ItemBD.itemDispAtr : 0);
@@ -128,10 +128,10 @@ var qmm012;
                     self.checked_002.subscribe(function (newValue) {
                         self.CurrentItemDispAtr(newValue == false ? 1 : 0);
                     });
-                    self.CurrentItemBreakdownCd.subscribe(function (newValue) {
+                    self.CurrentItemBreakdownCode.subscribe(function (newValue) {
                         if (self.enable_I_INP_002()) {
                             var item = _.find(self.ItemBDList(), function (ItemBD) {
-                                return ItemBD.itemBreakdownCd == newValue;
+                                return ItemBD.itemBreakdownCode == newValue;
                             });
                             if (item)
                                 $('#I_INP_002').ntsError('set', 'えらーです');
@@ -158,7 +158,7 @@ var qmm012;
                     //set selected 
                     if (self.ItemBDList().length)
                         if (!itemCode)
-                            self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCd);
+                            self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCode);
                         else
                             self.gridListCurrentCode(itemCode);
                 };
@@ -172,7 +172,7 @@ var qmm012;
                 ScreenModel.prototype.getCurrentItemBD = function () {
                     //get item customer has input on form 
                     var self = this;
-                    return new i.service.model.ItemBD(self.CurrentItemBreakdownCd(), self.CurrentItemBreakdownName(), self.CurrentItemBreakdownAbName(), self.CurrentUniteCd(), self.CurrentZeroDispSet(), self.checked_002() == true ? 0 : 1, self.checked_005() == true ? 1 : 0, self.CurrentErrRangeLow(), self.checked_003() == true ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_006() == true ? 1 : 0, self.CurrentAlRangeLow(), self.checked_004() == true ? 1 : 0, self.CurrentAlRangeHigh());
+                    return new i.service.model.ItemBD(self.CurrentItemBreakdownCode(), self.CurrentItemBreakdownName(), self.CurrentItemBreakdownAbName(), self.CurrentUniteCode(), self.CurrentZeroDispSet(), self.checked_002() == true ? 0 : 1, self.checked_005() == true ? 1 : 0, self.CurrentErrRangeLow(), self.checked_003() == true ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_006() == true ? 1 : 0, self.CurrentAlRangeLow(), self.checked_004() == true ? 1 : 0, self.CurrentAlRangeHigh());
                 };
                 ScreenModel.prototype.saveItem = function () {
                     var self = this;
@@ -192,9 +192,9 @@ var qmm012;
                             //set selected code after remove item
                             if (self.ItemBDList().length > 1) {
                                 if (index < self.ItemBDList().length - 1)
-                                    itemCode = self.ItemBDList()[index + 1].itemBreakdownCd;
+                                    itemCode = self.ItemBDList()[index + 1].itemBreakdownCode;
                                 else
-                                    itemCode = self.ItemBDList()[index - 1].itemBreakdownCd;
+                                    itemCode = self.ItemBDList()[index - 1].itemBreakdownCode;
                             }
                             else
                                 itemCode = '';
@@ -210,13 +210,13 @@ var qmm012;
                     var itemBD = self.getCurrentItemBD();
                     //add item to array and set selected code
                     self.ItemBDList().push(itemBD);
-                    self.refreshAndSetSelectedCode(itemBD.itemBreakdownCd);
+                    self.refreshAndSetSelectedCode(itemBD.itemBreakdownCode);
                 };
                 ScreenModel.prototype.updateItemBD = function () {
                     var self = this;
                     var itemBD = self.getCurrentItemBD();
                     var index = self.ItemBDList().indexOf(self.CurrentItemBD());
-                    var itemCode = itemBD.itemBreakdownCd;
+                    var itemCode = itemBD.itemBreakdownCode;
                     //update item in array and set selected code
                     self.ItemBDList()[index] = itemBD;
                     self.refreshAndSetSelectedCode(itemCode);

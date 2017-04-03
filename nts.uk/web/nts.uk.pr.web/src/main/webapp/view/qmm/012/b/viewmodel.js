@@ -131,12 +131,10 @@ var qmm012;
                     self.LoadGridList();
                     self.enable_B_INP_002.subscribe(function (newValue) {
                         if (newValue) {
-                            self.GridlistCurrentCode_B_001('');
-                            self.B_BTN_004_enable(false);
+                            self.setNewItemMode();
                         }
                         else {
-                            $('#B_INP_002').ntsError('clear');
-                            self.B_BTN_004_enable(true);
+                            self.setUpdateItemMode();
                         }
                     });
                     self.B_INP_002_text.subscribe(function (newValue) {
@@ -183,6 +181,24 @@ var qmm012;
                         }))
                     };
                 }
+                ScreenModel.prototype.setNewItemMode = function () {
+                    var self = this;
+                    self.GridlistCurrentCode_B_001('');
+                    self.B_BTN_004_enable(false);
+                    self.screenModel.screenModelC.C_BTN_001_enable(false);
+                    self.screenModel.screenModelC.C_BTN_002_enable(false);
+                    self.screenModel.screenModelD.D_BTN_001_enable(false);
+                    self.screenModel.screenModelD.D_BTN_002_enable(false);
+                };
+                ScreenModel.prototype.setUpdateItemMode = function () {
+                    var self = this;
+                    $('#B_INP_002').ntsError('clear');
+                    self.B_BTN_004_enable(true);
+                    self.screenModel.screenModelC.C_BTN_001_enable(true);
+                    self.screenModel.screenModelC.C_BTN_002_enable(true);
+                    self.screenModel.screenModelD.D_BTN_001_enable(true);
+                    self.screenModel.screenModelD.D_BTN_002_enable(true);
+                };
                 ScreenModel.prototype.GetCurrentItemMaster = function () {
                     var self = this;
                     var CurrentGroup = self.GridCurrentCategoryAtr_B_001();

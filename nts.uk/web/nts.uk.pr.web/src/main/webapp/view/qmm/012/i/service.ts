@@ -46,10 +46,10 @@ module qmm012.i {
         export module model {
             export class ItemBD {
 
-                itemBreakdownCd: string;
+                itemBreakdownCode: string;
                 itemBreakdownName: string;
                 itemBreakdownAbName: string;
-                uniteCd: string;
+                uniteCode: string;
                 zeroDispSet: number;
                 itemDispAtr: number;
                 errRangeLowAtr: number;
@@ -62,10 +62,10 @@ module qmm012.i {
                 alRangeHigh: number;
                 constructor(
 
-                    itemBreakdownCd: string,
+                    itemBreakdownCode: string,
                     itemBreakdownName: string,
                     itemBreakdownAbName: string,
-                    uniteCd: string,
+                    uniteCode: string,
                     zeroDispSet: number,
                     itemDispAtr: number,
                     errRangeLowAtr: number,
@@ -77,10 +77,10 @@ module qmm012.i {
                     alRangeHighAtr: number,
                     alRangeHigh: number
                 ) {
-                    this.itemBreakdownCd = itemBreakdownCd;
+                    this.itemBreakdownCode = itemBreakdownCode;
                     this.itemBreakdownName = itemBreakdownName;
                     this.itemBreakdownAbName = itemBreakdownAbName;
-                    this.uniteCd = uniteCd;
+                    this.uniteCode = uniteCode;
                     this.zeroDispSet = zeroDispSet;
                     this.itemDispAtr = itemDispAtr;
                     this.errRangeLowAtr = errRangeLowAtr;

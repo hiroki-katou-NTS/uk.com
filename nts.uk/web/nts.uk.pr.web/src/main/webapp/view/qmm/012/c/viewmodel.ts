@@ -66,6 +66,8 @@ module qmm012.c.viewmodel {
         C_LBL_020_Text: KnockoutObservable<string> = ko.observable("設定なし");
         currentItemBDs: KnockoutObservableArray<qmm012.i.service.model.ItemBD> = ko.observableArray([]);
         C_LBL_022_Text: KnockoutObservable<string> = ko.observable("設定なし");
+        C_BTN_001_enable: KnockoutObservable<boolean> = ko.observable(true);
+        C_BTN_002_enable: KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             var self = this;
             self.ComboBoxItemList_C_SEL_001 = ko.observableArray([
@@ -251,7 +253,7 @@ module qmm012.c.viewmodel {
                 self.CurrentApplyForHourlyPayEmp(NewValue ? NewValue.applyForHourlyPayEmp : 0);
                 self.CurrentAvePayAtr(NewValue ? NewValue.avePayAtr : 0);
                 self.CurrentLimitMnyAtr(NewValue ? NewValue.limitMnyAtr : 0);
-                self.CurrentLimitCode(NewValue ? NewValue.limitMnyRefItemCd : "");
+                self.CurrentLimitCode(NewValue ? NewValue.limitMnyRefItemCode : "");
 
                 self.C_SEL_013_Selected(NewValue ? NewValue.errRangeHighAtr == 0 ? false : true : false);
                 self.C_SEL_014_Selected(NewValue ? NewValue.alRangeHighAtr == 0 ? false : true : false);

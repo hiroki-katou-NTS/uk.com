@@ -141,11 +141,9 @@ module qmm012.b.viewmodel {
             self.LoadGridList();
             self.enable_B_INP_002.subscribe(function(newValue) {
                 if (newValue) {
-                    self.GridlistCurrentCode_B_001('');
-                    self.B_BTN_004_enable(false);
+                    self.setNewItemMode();
                 } else {
-                    $('#B_INP_002').ntsError('clear');
-                    self.B_BTN_004_enable(true);
+                    self.setUpdateItemMode();
                 }
             })
             self.B_INP_002_text.subscribe(function(newValue) {
@@ -193,7 +191,24 @@ module qmm012.b.viewmodel {
                 }))
             };
         }
-
+        setNewItemMode() {
+            let self = this;
+            self.GridlistCurrentCode_B_001('');
+            self.B_BTN_004_enable(false);
+            self.screenModel.screenModelC.C_BTN_001_enable(false);
+            self.screenModel.screenModelC.C_BTN_002_enable(false);
+            self.screenModel.screenModelD.D_BTN_001_enable(false);
+            self.screenModel.screenModelD.D_BTN_002_enable(false);
+        }
+        setUpdateItemMode() {
+            let self = this;
+            $('#B_INP_002').ntsError('clear');
+            self.B_BTN_004_enable(true);
+            self.screenModel.screenModelC.C_BTN_001_enable(true);
+            self.screenModel.screenModelC.C_BTN_002_enable(true);
+            self.screenModel.screenModelD.D_BTN_001_enable(true);
+            self.screenModel.screenModelD.D_BTN_002_enable(true);
+        }
         GetCurrentItemMaster() {
             let self = this;
             let CurrentGroup = self.GridCurrentCategoryAtr_B_001();

@@ -52,13 +52,7 @@ module qmm012.h {
             }
             return dfd.promise();
         }
-       
-
-
         export module model {
-
-
-
             export class ItemPeriod {
                 periodAtr: number;
                 strY: number;
