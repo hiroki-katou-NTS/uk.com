@@ -35,6 +35,14 @@ public class OutputSettingSaveCommandHandler extends CommandHandler<OutputSettin
 		OutputSettingSaveCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		
+		// Validate required items.
+		if (command.getCode() == null || command.getCode().equals("")) {
+			throw new BusinessException("コードが入力されていません。");
+		}
+		if (command.getName() == null || command.getName().equals("")) {
+			throw new BusinessException("名称が入力されていません。");
+		}
+		
 		if (command.isCreateMode()) {
 			// Check exist.
 			if (this.repository.isExist(companyCode, new WLOutputSettingCode(command.getCode()))) {

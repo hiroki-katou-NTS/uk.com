@@ -21,57 +21,25 @@ var nts;
                                 check: "basic/system/bank/find/check"
                             };
                             function getBankList() {
-                                var dfd = $.Deferred();
-                                nts.uk.request.ajax("com", paths.getBankList)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax("com", paths.getBankList);
                             }
                             service.getBankList = getBankList;
                             function checkBankList() {
-                                var dfd = $.Deferred();
-                                nts.uk.request.ajax("com", paths.check)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax("com", paths.check);
                             }
                             service.checkBankList = checkBankList;
                             function addBank(isCreated, bankInfo) {
-                                var dfd = $.Deferred();
                                 var path = isCreated ? paths.addBranchList : paths.updateBranchList;
-                                nts.uk.request.ajax("com", path, bankInfo)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax("com", path, bankInfo);
                             }
                             service.addBank = addBank;
                             function removeBank(isParentNode, bankCode, branchId) {
-                                var dfd = $.Deferred();
                                 var path = isParentNode ? paths.removeBank : paths.removeBranch;
                                 var obj = {
                                     bankCode: bankCode,
                                     branchId: branchId
                                 };
-                                nts.uk.request.ajax("com", path, obj)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax("com", path, obj);
                             }
                             service.removeBank = removeBank;
                         })(service = a.service || (a.service = {}));
@@ -81,4 +49,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=service.js.map
+//# sourceMappingURL=qmm002.a.service.js.map

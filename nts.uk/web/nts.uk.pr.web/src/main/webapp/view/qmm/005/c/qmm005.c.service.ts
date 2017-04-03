@@ -9,6 +9,7 @@ module qmm005.c {
 
         export function insertData(model: any) {
             let def = $.Deferred();
+            model.vuongDepTrai = '201709';
             nts.uk.request.ajax(webapi.qmm005c.insert, model).done(function(resp) {
                 def.resolve(resp);
             });

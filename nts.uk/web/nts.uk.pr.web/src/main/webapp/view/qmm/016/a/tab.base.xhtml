@@ -78,7 +78,7 @@
 						<div id="lbl_004" data-bind="ntsFormLabel: { required: true }" style="float: left">要素指定</div>
 						<table style="float: left;" id="demension-tbl">
 							<thead>
-								<tr class="bg-green">
+								<tr class="bgIgCol">
 									<td width="50px">
 									</td>
 									<td width="200px">
@@ -89,7 +89,7 @@
 							<tbody data-bind="with: head">
 								<com:ko tag="foreach" bind="demensionItemList">
 									<tr>
-										<td class="bg-green halign-center" data-bind="text: demensionNo"/>
+										<td class="bgIgCol halign-center" data-bind="text: demensionNo"/>
 										<td>
 											<com:ko tag="ifnot" bind="$parent.demensionType().isAttendance || $parent.demensionType().isCertification">
 												<button data-bind="enable: $root.content.isNewMode, click: $parent.onSelectDemensionBtnClick.bind($parent, $data)">参照</button>
