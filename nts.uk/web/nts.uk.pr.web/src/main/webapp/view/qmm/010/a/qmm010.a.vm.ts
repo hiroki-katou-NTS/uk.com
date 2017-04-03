@@ -313,7 +313,7 @@ module nts.uk.pr.view.qmm010.a {
                     var code: string = self.selectCodeLstlaborInsuranceOffice();
                     if (self.typeAction() == TypeActionLaborInsuranceOffice.add) {
                         if (data != null && data.length > 0) {
-                            self.detailLaborInsuranceOffice(data[0].code);
+                            self.detailLaborInsuranceOffice(self.laborInsuranceOfficeModel().code());
                         } else {
                             self.newmodelEmptyData();
                         }
