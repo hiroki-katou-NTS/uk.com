@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.PaydayProcessingRepository;
@@ -10,6 +11,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.find.employment.processing.yearmonth.IPaydayProcessingFinder;
 import nts.uk.shr.find.employment.processing.yearmonth.PaydayProcessingDto;
 
+@Stateless
 public class PaydayProcessingFinderShr implements IPaydayProcessingFinder {
 	@Inject
 	private PaydayProcessingRepository repository;

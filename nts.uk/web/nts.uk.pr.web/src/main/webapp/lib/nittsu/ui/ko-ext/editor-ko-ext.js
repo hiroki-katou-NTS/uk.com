@@ -215,7 +215,7 @@ var nts;
                     };
                     TimeEditorProcessor.prototype.getFormatter = function (data) {
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-                        return new uk.text.TimeFormatter({ option: option });
+                        return new uk.text.TimeFormatter({ inputFormat: option.inputFormat });
                     };
                     TimeEditorProcessor.prototype.getValidator = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
@@ -367,4 +367,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=editor-ko-ext.js.map

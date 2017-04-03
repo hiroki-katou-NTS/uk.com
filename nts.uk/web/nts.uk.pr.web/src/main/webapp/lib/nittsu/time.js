@@ -14,7 +14,7 @@ var nts;
                 var result;
                 var num = parseInt(String(yearMonth));
                 var year = String(Math.floor(num / 100));
-                var month = nts.uk.text.charPadding(String(num % 100), '0', true, 2);
+                var month = uk.text.charPadding(String(num % 100), '0', true, 2);
                 result = year + '/' + month;
                 return result;
             }
@@ -150,15 +150,13 @@ var nts;
                     return new ResultParseTime(false);
                 };
                 ResultParseTime.prototype.format = function () {
-                    if (!this.success) {
+                    if (!this.success)
                         return "";
-                    }
                     return (this.minus ? '-' : '') + this.hours + ':' + uk.text.padLeft(String(this.minutes), '0', 2);
                 };
                 ResultParseTime.prototype.toValue = function () {
-                    if (!this.success) {
+                    if (!this.success)
                         return 0;
-                    }
                     return (this.minus ? -1 : 1) * (this.hours * 60 + this.minutes);
                 };
                 ResultParseTime.prototype.getMsg = function () { return this.msg; };
@@ -428,7 +426,12 @@ var nts;
                 return format;
             }
             time_1.formatDate = formatDate;
+            function formatPattern(date, inputFormat, outputFormat) {
+                outputFormat = uk.text.getISO8601Format(outputFormat);
+                inputFormat = uk.text.getISO8601Format(inputFormat);
+                return moment(date, inputFormat).format(outputFormat);
+            }
+            time_1.formatPattern = formatPattern;
         })(time = uk.time || (uk.time = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=time.js.map

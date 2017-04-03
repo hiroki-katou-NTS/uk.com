@@ -343,6 +343,19 @@ var nts;
                     return "top";
             }
             text_1.reverseDirection = reverseDirection;
+            function getISO8601Format(format) {
+                if (format.toLowerCase() === "date")
+                    return "YYYY/MM/DD";
+                if (format.toLowerCase() === "yearmonth")
+                    return "YYYY/MM";
+                if (format.toLowerCase() === "time")
+                    return "HH:mm";
+                if (format.toLowerCase() === "datetime")
+                    return "YYYY/MM/DD HH:mm";
+                format = format.replace(/y/g, "Y");
+                return format;
+            }
+            text_1.getISO8601Format = getISO8601Format;
             var StringFormatter = (function () {
                 function StringFormatter(args) {
                     this.args = args;
@@ -377,18 +390,20 @@ var nts;
                 }
                 TimeFormatter.prototype.format = function (source) {
                     var result;
-                    if (this.option.option.inputFormat === "yearmonth") {
+                    if (this.option.inputFormat === "yearmonth") {
                         result = uk.time.parseYearMonth(source);
                     }
-                    else if (this.option.option.inputFormat === "time") {
+                    else if (this.option.inputFormat === "time") {
                         result = uk.time.parseTime(source, true);
                     }
                     else {
-                        result = uk.time.ResultParseTime.failed();
+                        result = moment(source);
+                        if (result.isValid())
+                            return result.format(this.option.inputFormat);
+                        return source;
                     }
-                    if (result.success) {
+                    if (result.success)
                         return result.format();
-                    }
                     return source;
                 };
                 return TimeFormatter;
@@ -397,4 +412,3 @@ var nts;
         })(text = uk.text || (uk.text = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=text.js.map
