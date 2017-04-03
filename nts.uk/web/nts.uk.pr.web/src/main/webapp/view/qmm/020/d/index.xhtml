@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html>
+<body>
+	<div class="contents-area">
+		<!-- 		~~~~~~~~~~~~~~~~~~~~~~ LEFT ~~~~~~~~~~~~~~~~~~~~~~ -->
+		<div style="float: left; margin-left: 10px;" class="left-content">
+			<div class="bg-green caret-right caret-background"
+				style="width: 250px; height: 300px; margin: 20px 50px;">
+				<button id="D_BTN_003" style="margin: 20px 20px" data-bind="">履歴追加</button>
+				<button id="D_BTN_004" style="margin: 20px 20px" data-bind="">履歴編集</button>
+				<div style="margin: 10px 20px;">
+					<div style="width: 250px;" id="D_LST_001"
+						data-bind="ntsListBox: {
+ 											options: itemList, 
+ 											optionsValue: 'code', 
+ 											optionsText: 'name', 
+ 											multiple: false,	 
+ 											value: selectedCode, 
+ 											rows:4, 
+ 											required: true, 
+ 											columns: [ 
+ 												{ prop: 'name', length: 10 } 
+ 											]}">
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 		~~~~~~~~~~~~~~~~~~~~~~ RIGHT ~~~~~~~~~~~~~~~~~~~~~~ -->
+		<div style="float: left; margin-top: 10px" class="right-content">
+			<div class="form-label">
+				<label id="LBL_004">部門に明細書を紐ずける</label>
+			</div>
+				<HR style="display: block; margin-top: 10px; margin-bottom: 10px; margin-left: -1em; width: 600px;" />
+			<br/>
+				<!-- iG TreeGrid List -->
+				<div style= "width:800px;" data-bind="ntsSearchBox: {
+								comId: 'treegrid', 
+								items: dataSourceDTree, 
+								selected: selectedValueDTree, 
+								selectedKey: 'code', 
+								fields: ['name', 'code'], 
+								childField: 'childs'}" />
+				<BR />				
+				<table id="treegrid"></table>
+		</div>
+	</div>
+</body>
+</html>

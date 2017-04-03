@@ -1,0 +1,71 @@
+package nts.uk.ctx.pr.core.app.find.rule.employment.allot;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.uk.ctx.pr.core.ac.basic.classification.ClassificationAdaptor;
+import nts.uk.ctx.pr.core.ac.basic.classification.ClassificationDto;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.ClassificationAllotSetting;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.ClassificationAllotSettingRespository;
+import nts.uk.shr.com.context.AppContexts;
+@Stateless
+public class ClassificationAllotSettingFinder {
+//	
+//	@Inject
+//	private ClassificationAdaptor classAdaptor;
+//
+//	@Inject
+//	private ClassificationAllotSettingRespository classificationAllotSettingRespository;
+//	
+//	public List<ClassificationAllotSettingDto> getAllClassificationAllotSetting(String companyCode) {
+//		//get paymentcode bonuscode
+//		List<ClassificationAllotSetting> classAllots = this.classificationAllotSettingRespository.findAll(companyCode);
+//		
+//		List<String> classCodes = classAllots.stream().map(c -> c.getClassificationCode().v()).collect(Collectors.toList());
+//		//get classificationCode classificationName
+//		Map<String, ClassificationDto> classes = this.classAdaptor.getCodeName(classCodes, companyCode).stream().collect(
+//				Collectors.toMap(c -> c.getClassificationCode(), c -> c));
+//		
+//		return classAllots.stream()
+//				.map(m -> {
+//					ClassificationAllotSettingDto classAllot = ClassificationAllotSettingDto.fromDomain(m);
+//					
+//					ClassificationDto classDto = classes.remove(classAllot.getClassificationCode());
+//					classAllot.setClassificationName(classDto.getClassificationName());
+//					return classAllot;
+//				})
+//				.collect(Collectors.toList());
+//	}
+//	
+//	
+//	public List<ClassificationAllotSettingDto> getHistoy(String historyId) {
+//		String companyCode = AppContexts.user().companyCode();
+//		List<ClassificationAllotSetting> classAllots = this.classificationAllotSettingRespository.findbyHistoryId(companyCode , historyId);
+//		
+//		List<String> classCodes = classAllots.stream().map(c -> c.getClassificationCode().v()).collect(Collectors.toList());
+//		//get classificationCode classificationName
+//		if(classCodes == null || classCodes.isEmpty()){
+//			return new ArrayList<>();
+//		}
+//		Map<String, ClassificationDto> classes = this.classAdaptor.getCodeName(classCodes, companyCode).stream().collect(
+//				Collectors.toMap(c -> c.getClassificationCode(), c -> c));
+//		
+//		return classAllots.stream()
+//				.map(m -> {
+//					ClassificationAllotSettingDto classAllot = ClassificationAllotSettingDto.fromDomain(m);
+//					
+//					ClassificationDto classDto = classes.remove(classAllot.getClassificationCode());
+//					if(classDto != null){
+//						classAllot.setClassificationName(classDto.getClassificationName());
+//					}
+//					return classAllot;
+//				})
+//				.collect(Collectors.toList());
+//
+//	}
+}

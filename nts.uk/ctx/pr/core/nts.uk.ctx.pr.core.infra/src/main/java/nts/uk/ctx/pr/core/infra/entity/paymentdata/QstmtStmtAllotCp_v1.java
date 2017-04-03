@@ -10,10 +10,10 @@ import nts.uk.shr.infra.data.entity.AggregateTableEntity;
 
 @Entity
 @Table(name = "QSTMT_STMT_ALLOT_CP")
-public class QstmtStmtAllotCp extends AggregateTableEntity {
+public class QstmtStmtAllotCp_v1 extends AggregateTableEntity {
 	
 	@EmbeddedId
-	public QstmtStmtAllotCpPK qstmtStmtAllotCpPK;
+	public QstmtStmtAllotCpPK_v1 qstmtStmtAllotCpPK;
 
 	@Column(name = "STR_YM")
 	public int startDate;

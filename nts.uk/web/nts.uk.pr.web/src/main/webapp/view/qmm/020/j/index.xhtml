@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <body>
+        <ui:composition template="../../../../master/dialog.xhtml">
+            <ui:define name="htmlHead">
+            	<com:stylefile path="qmm020.j.main.css" />
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="qmm020.j.start.js" />
+				<com:scriptfile path="qmm020.j.viewmodel.js" />
+				<com:scriptfile path="qmm020.j.service.js" />
+			    <script>var dialogSize = { width: 560, height: 500};</script>
+			    <style>.nts-list-box *{box-sizing: border-box} </style>		
+            </ui:define>
+            <ui:define name="content">
+            	<div id="contents-area" style="margin-left : 10px; margin-top: 10px">
+					<div class="cf">
+						<div><label id="J_LBL_001">新たに作成する履歴の、作成情報を入力してください。</label></div><br />
+						<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
+						<!-- THEM LICH SU  -->
+						<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
+						<table style="width:100%">
+							<tr>
+								<td>
+									<div class="form-label inline required">
+										<label id="J_LBL_005">期間</label>
+									</div>
+								</td>
+								<td>
+									<span><input id="J_INP_001" style="ime-mode: inactive" maxlength="7" data-bind="hasFocus: isSelected"></input></span>
+									<span><label id="J_LBL_003"> ～ 9999/12</label></span>
+									<span>
+										<input id="J_INP_003" style="ime-mode: inactive" maxlength="1" data-bind="ntsTimeEditor: {value: selectStartYm, 
+																													constraint: 'startYm', 
+																													option: timeEditorOption}">
+										</input>
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="form-label inline required">
+										<label id="J_LBL_005">履歴の引継ぎ</label>
+									</div>
+								</td>
+								<td>
+									<span class="ntsControl">
+										<label class="ntsRadioBox">
+<!-- 											<input type="radio" name="textRadio" data-bind="checkedValue:selectedValue" /> -->
+												<input type="radio" name="textRadio" data-bind="checkedValue: 1, checked: selectedValue" />
+											<span class="box"></span>
+											<span class="label" data-bind="text: txtCopyHistory"></span>
+										</label>
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>
+									<div id="J_caution" style="width:300px; height: 60px; background-color: #FAEBD7">
+										<label class='caution'>引継ぎは部門名ではなく部門コードで行われます</label><br/>
+										<label class='caution'>部門名が同じでもコードが変更されている場合は</label><br/>
+										<label class='caution'>引き継がれません。</label>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>
+									<span class="ntsControl">
+										<label class="ntsRadioBox">
+											<input type="radio" name="textRadio" data-bind="checkedValue: 2,checked: selectedValue" />
+											<span class="box"></span><span class="label" data-bind="text: '初めから作成する'"></span>
+										</label>
+									</span>
+								</td>
+							</tr>
+							<tr data-bind="display: test">
+								<td>
+									<div class="form-label inline required">
+										<label id="J_LBL_006">部門基準日</label>
+									</div>
+								</td>
+								<td>
+									<span><input id="J_INP_002" style="ime-mode: inactive" maxlength="1" data-bind="ntsTimeEditor: {value: selectStartYm, constraint: 'startYm', option: timeEditorOption}"></input></span>
+								</td>
+							</tr>
+						</table>
+						<br />
+						<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+						<!-- THEM LICH SU  -->
+						<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
+					</div>
+						<hr></hr>
+					<div style="margin-left: 70px;">
+						<button class="x-large proceed" id = "J_BTN_001" data-bind="click: createHistoryDocument, enable: $root.errors.isEmpty">決定</button>
+						<button class="large" id="J_BTN_002" data-bind="click: closeDialog">キャンセル</button><br />
+					</div>
+				</div>
+            </ui:define>
+    	</ui:composition>
+   	</body>
+</html>

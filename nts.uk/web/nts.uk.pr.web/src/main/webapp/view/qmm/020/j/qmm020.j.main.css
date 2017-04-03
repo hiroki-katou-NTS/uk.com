@@ -1,0 +1,16 @@
+table, th, td {
+    padding : 5px;
+}
+#F_INP_001, #F_INP_003{
+	width: 70px !important;	
+	padding-left: 0px !important;
+}
+#F_BTN_001{
+	margin-left: 150px;
+}
+#F_BTN_002{
+	margin-left: 30px;
+}
+.caution{
+	padding : 15px;
+}
