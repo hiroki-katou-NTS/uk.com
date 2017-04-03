@@ -221,8 +221,10 @@ var qmm034;
                     self.dirtyObject.reset();
                 };
                 ScreenModel.prototype.clearError = function () {
-                    $(".nts-editor").ntsError('clear');
-                    $("#A_INP_003").ntsError('clear');
+                    if ($(".nts-editor").ntsError('hasError'))
+                        $(".nts-editor").ntsError('clear');
+                    if ($("#A_INP_003").ntsError('hasError'))
+                        $("#A_INP_003").ntsError('clear');
                 };
                 return ScreenModel;
             }());
