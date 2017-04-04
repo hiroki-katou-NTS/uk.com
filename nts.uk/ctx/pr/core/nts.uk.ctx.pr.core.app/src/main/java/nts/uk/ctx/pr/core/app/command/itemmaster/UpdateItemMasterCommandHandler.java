@@ -47,11 +47,11 @@ public class UpdateItemMasterCommandHandler extends CommandHandler<UpdateItemMas
 		switch (categoryAtr) {
 		case 0:
 			// if item Category 支給
-			updateItemSalary(context);
+			updateItemSalary(companyCode, context);
 			break;
 		case 1:
 			// 控除
-			updateItemDeduct(context);
+			updateItemDeduct(companyCode, context);
 			break;
 		case 2:
 			// 勤怠
@@ -63,18 +63,18 @@ public class UpdateItemMasterCommandHandler extends CommandHandler<UpdateItemMas
 
 	}
 
-	private void updateItemSalary(CommandHandlerContext<UpdateItemMasterCommand> context) {
+	private void updateItemSalary(String companyCode, CommandHandlerContext<UpdateItemMasterCommand> context) {
 		UpdateItemMasterCommand itemCommand = context.getCommand();
 		String itemCode = itemCommand.getItemCode();
 		itemCommand.getItemSalary().setItemCode(itemCode);
-		this.itemSalaryRespository.update(itemCommand.getItemSalary().toDomain());
+		this.itemSalaryRespository.update(companyCode, itemCommand.getItemSalary().toDomain());
 	}
 
-	private void updateItemDeduct(CommandHandlerContext<UpdateItemMasterCommand> context) {
+	private void updateItemDeduct(String companyCode, CommandHandlerContext<UpdateItemMasterCommand> context) {
 		UpdateItemMasterCommand itemCommand = context.getCommand();
 		String itemCode = itemCommand.getItemCode();
 		itemCommand.getItemDeduct().setItemCode(itemCode);
-		this.itemDeductRespository.update(itemCommand.getItemDeduct().toDomain());
+		this.itemDeductRespository.update(companyCode, itemCommand.getItemDeduct().toDomain());
 
 	}
 

@@ -9,6 +9,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalarybd.ItemSalaryBDRepository;
+import nts.uk.shr.com.context.AppContexts;
+
 @Stateless
 @Transactional
 public class DeleteItemSalaryBDCommandHandler extends CommandHandler<DeleteItemSalaryBDCommand> {
@@ -18,12 +20,13 @@ public class DeleteItemSalaryBDCommandHandler extends CommandHandler<DeleteItemS
 
 	@Override
 	protected void handle(CommandHandlerContext<DeleteItemSalaryBDCommand> context) {
-		
+
 		val itemCode = context.getCommand().getItemCode();
 		val itemBreakdownCode = context.getCommand().getItemBreakdownCode();
-		if(!this.itemSalaryBDRepository.find(itemCode,itemBreakdownCode).isPresent())
+		String companyCode = AppContexts.user().companyCode();
+		if (!this.itemSalaryBDRepository.find(companyCode, itemCode, itemBreakdownCode).isPresent())
 			throw new BusinessException("明細書名が入力されていません。");
-		this.itemSalaryBDRepository.delete(itemCode,itemBreakdownCode);
+		this.itemSalaryBDRepository.delete(companyCode, itemCode, itemBreakdownCode);
 	}
 
 }

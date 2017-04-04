@@ -49,11 +49,11 @@ public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCom
 		switch (CategoryAtr) {
 		case 0:
 			// if item Category 支給
-			addItemSalary(context);
+			addItemSalary(companyCode, context);
 			break;
 		case 1:
 			// 控除
-			addItemDeduct(context);
+			addItemDeduct(companyCode, context);
 			break;
 		case 2:
 			// 勤怠
@@ -71,17 +71,17 @@ public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCom
 
 	}
 
-	private void addItemDeduct(CommandHandlerContext<AddItemMasterCommand> context) {
+	private void addItemDeduct(String companyCode, CommandHandlerContext<AddItemMasterCommand> context) {
 		String itemCode = context.getCommand().toDomain().getItemCode().v();
 		context.getCommand().getItemDeduct().setItemCode(itemCode);
-		this.itemDeductRespository.add(context.getCommand().getItemDeduct().toDomain());
+		this.itemDeductRespository.add(companyCode, context.getCommand().getItemDeduct().toDomain());
 
 	}
 
-	private void addItemSalary(CommandHandlerContext<AddItemMasterCommand> context) {
+	private void addItemSalary(String companyCode, CommandHandlerContext<AddItemMasterCommand> context) {
 		String itemCode = context.getCommand().toDomain().getItemCode().v();
 		context.getCommand().getItemSalary().setItemCode(itemCode);
-		this.itemSalaryRespository.add(context.getCommand().getItemSalary().toDomain());
+		this.itemSalaryRespository.add(companyCode, context.getCommand().getItemSalary().toDomain());
 
 	}
 

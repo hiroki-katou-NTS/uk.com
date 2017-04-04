@@ -11,7 +11,6 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBD;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBDRepository;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemDeductBd;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemDeductBdPK;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaItemDeductBDRepository extends JpaRepository implements ItemDeductBDRepository {
@@ -20,8 +19,7 @@ public class JpaItemDeductBDRepository extends JpaRepository implements ItemDedu
 			+ " WHERE c.qcamtItemDeductBdPK.ccd = :companyCode AND c.qcamtItemDeductBdPK.itemCd = :itemCode";
 
 	@Override
-	public List<ItemDeductBD> findAll(String itemCode) {
-		val companyCode = AppContexts.user().companyCode();
+	public List<ItemDeductBD> findAll(String companyCode, String itemCode) {
 		return this.queryProxy().query(SEL_1, QcamtItemDeductBd.class).setParameter("companyCode", companyCode)
 				.setParameter("itemCode", itemCode).getList(c -> toDomain(c));
 
@@ -37,20 +35,18 @@ public class JpaItemDeductBDRepository extends JpaRepository implements ItemDedu
 	}
 
 	@Override
-	public Optional<ItemDeductBD> find(String itemCode, String itemBreakdownCode) {
-		String companyCode = AppContexts.user().companyCode();
+	public Optional<ItemDeductBD> find(String companyCode, String itemCode, String itemBreakdownCode) {
 		QcamtItemDeductBdPK pk = new QcamtItemDeductBdPK(companyCode, itemCode, itemBreakdownCode);
 		return this.queryProxy().find(pk, QcamtItemDeductBd.class).map(x -> toDomain(x));
 	}
 
 	@Override
-	public void add(ItemDeductBD itemDeductBD) {
-		this.commandProxy().insert(toEntity(itemDeductBD));
+	public void add(String companyCode, ItemDeductBD itemDeductBD) {
+		this.commandProxy().insert(toEntity(companyCode,itemDeductBD));
 	}
 
-	private QcamtItemDeductBd toEntity(ItemDeductBD domain) {
-		String campanyCode = AppContexts.user().companyCode();
-		QcamtItemDeductBdPK pk = new QcamtItemDeductBdPK(campanyCode, domain.getItemCode().v(),
+	private QcamtItemDeductBd toEntity(String companyCode, ItemDeductBD domain) {
+		QcamtItemDeductBdPK pk = new QcamtItemDeductBdPK(companyCode, domain.getItemCode().v(),
 				domain.getItemBreakdownCode().v());
 		return new QcamtItemDeductBd(pk, domain.getItemBreakdownName().v(), domain.getItemBreakdownAbName().v(),
 				domain.getUniteCode().v(), domain.getZeroDispSet().value, domain.getItemDispAtr().value,
@@ -60,16 +56,15 @@ public class JpaItemDeductBDRepository extends JpaRepository implements ItemDedu
 	}
 
 	@Override
-	public void delete(String itemCode, String itemBreakdownCode) {
-		String companyCode = AppContexts.user().companyCode();
+	public void delete(String companyCode, String itemCode, String itemBreakdownCode) {
 		QcamtItemDeductBdPK pk = new QcamtItemDeductBdPK(companyCode, itemCode, itemBreakdownCode);
 		this.commandProxy().remove(QcamtItemDeductBd.class, pk);
 
 	}
 
 	@Override
-	public void update(ItemDeductBD itemDeductBD) {
-		this.commandProxy().update(toEntity(itemDeductBD));
+	public void update(String companyCode, ItemDeductBD itemDeductBD) {
+		this.commandProxy().update(toEntity(companyCode, itemDeductBD));
 
 	}
 

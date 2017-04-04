@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.pr.core.app.find.itemmaster.dto.itemdeductperiod.ItemDeductPeriodDto;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductperiod.ItemDeductPeriod;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductperiod.ItemDeductPeriodRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class ItemDeductPeriodFinder {
@@ -16,7 +17,7 @@ public class ItemDeductPeriodFinder {
 	private ItemDeductPeriodRepository itemDeductPeriodRepo;
 
 	public ItemDeductPeriodDto find(String itemCode) {
-		Optional<ItemDeductPeriod> itemOpt = this.itemDeductPeriodRepo.find(itemCode);
+		Optional<ItemDeductPeriod> itemOpt = this.itemDeductPeriodRepo.find(AppContexts.user().companyCode(),itemCode);
 		if (!itemOpt.isPresent())
 			return null;
 		

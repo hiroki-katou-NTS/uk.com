@@ -24,7 +24,7 @@ public class AddItemSalaryCommandHandler extends CommandHandler<AddItemSalaryCom
 		String itemCode = context.getCommand().getItemCode();
 		if (this.itemSalaryRespository.find(companyCode, itemCode).isPresent())
 			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
-		this.itemSalaryRespository.add(context.getCommand().toDomain());
+		this.itemSalaryRespository.add(companyCode, context.getCommand().toDomain());
 
 	}
 

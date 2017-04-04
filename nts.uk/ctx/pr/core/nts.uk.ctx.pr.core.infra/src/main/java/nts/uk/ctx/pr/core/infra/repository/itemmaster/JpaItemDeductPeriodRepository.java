@@ -10,14 +10,12 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductperiod.ItemDeductPeriod;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductperiod.ItemDeductPeriodRepository;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemDeductPeriod;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemDeductPeriodPK;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaItemDeductPeriodRepository extends JpaRepository implements ItemDeductPeriodRepository {
 
 	@Override
-	public Optional<ItemDeductPeriod> find(String itemCode) {
-		String companyCode = AppContexts.user().companyCode();
+	public Optional<ItemDeductPeriod> find(String companyCode, String itemCode) {
 		QcamtItemDeductPeriodPK key = new QcamtItemDeductPeriodPK(companyCode, itemCode);
 		return this.queryProxy().find(key, QcamtItemDeductPeriod.class).map(x -> toDomain(x));
 
@@ -33,21 +31,19 @@ public class JpaItemDeductPeriodRepository extends JpaRepository implements Item
 	}
 
 	@Override
-	public void add(ItemDeductPeriod domain) {
-		this.commandProxy().insert(toEntity(domain));
+	public void add(String companyCode, ItemDeductPeriod domain) {
+		this.commandProxy().insert(toEntity(companyCode, domain));
 	}
 
 	@Override
-	public void delete(String itemCode) {
-		String companyCode = AppContexts.user().companyCode();
+	public void delete(String companyCode, String itemCode) {
 		QcamtItemDeductPeriodPK key = new QcamtItemDeductPeriodPK(companyCode, itemCode);
 		this.commandProxy().remove(QcamtItemDeductPeriod.class, key);
 
 	}
 
-	private QcamtItemDeductPeriod toEntity(ItemDeductPeriod domain) {
-		String campanyCode = AppContexts.user().companyCode();
-		QcamtItemDeductPeriodPK key = new QcamtItemDeductPeriodPK(campanyCode, domain.getItemCode().v());
+	private QcamtItemDeductPeriod toEntity(String companyCode, ItemDeductPeriod domain) {
+		QcamtItemDeductPeriodPK key = new QcamtItemDeductPeriodPK(companyCode, domain.getItemCode().v());
 		return new QcamtItemDeductPeriod(key, domain.getPeriodAtr().value, domain.getStrY().v(), domain.getEndY().v(),
 				domain.getCycleAtr().value, domain.getCycle01Atr().value, domain.getCycle02Atr().value,
 				domain.getCycle03Atr().value, domain.getCycle04Atr().value, domain.getCycle05Atr().value,
@@ -57,8 +53,8 @@ public class JpaItemDeductPeriodRepository extends JpaRepository implements Item
 	}
 
 	@Override
-	public void update(ItemDeductPeriod domain) {
-		this.commandProxy().update(toEntity(domain));
+	public void update(String companyCode, ItemDeductPeriod domain) {
+		this.commandProxy().update(toEntity(companyCode, domain));
 
 	}
 }

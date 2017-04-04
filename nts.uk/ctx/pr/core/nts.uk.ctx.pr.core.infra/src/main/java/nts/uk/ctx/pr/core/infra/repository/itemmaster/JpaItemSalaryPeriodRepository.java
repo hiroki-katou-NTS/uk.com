@@ -16,8 +16,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaItemSalaryPeriodRepository extends JpaRepository implements ItemSalaryPeriodRepository {
 
 	@Override
-	public Optional<ItemSalaryPeriod> find( String itemCode) {
-		String companyCode = AppContexts.user().companyCode();
+	public Optional<ItemSalaryPeriod> find(String companyCode, String itemCode) {
 		QcamtItemSalaryPeriodPK key = new QcamtItemSalaryPeriodPK(companyCode, itemCode);
 		return this.queryProxy().find(key, QcamtItemSalaryPeriod.class).map(x -> toDomain(x));
 	}
@@ -32,27 +31,25 @@ public class JpaItemSalaryPeriodRepository extends JpaRepository implements Item
 	}
 
 	@Override
-	public void add(ItemSalaryPeriod domain) {
-		this.commandProxy().insert(toEntity(domain));
+	public void add(String companyCode, ItemSalaryPeriod domain) {
+		this.commandProxy().insert(toEntity(companyCode, domain));
 	}
 
 	@Override
-	public void update(ItemSalaryPeriod domain) {
-		this.commandProxy().update(toEntity(domain));
+	public void update(String companyCode, ItemSalaryPeriod domain) {
+		this.commandProxy().update(toEntity(companyCode, domain));
 
 	}
 
 	@Override
-	public void delete(String itemCd) {
-		String companyCode = AppContexts.user().companyCode();
+	public void delete(String companyCode, String itemCd) {
 		QcamtItemSalaryPeriodPK key = new QcamtItemSalaryPeriodPK(companyCode, itemCd);
 		this.commandProxy().remove(QcamtItemSalaryPeriod.class, key);
 
 	}
 
-	private QcamtItemSalaryPeriod toEntity(ItemSalaryPeriod domain) {
-		String campanyCode = AppContexts.user().companyCode();
-		QcamtItemSalaryPeriodPK key = new QcamtItemSalaryPeriodPK(campanyCode, domain.getItemCode().v());
+	private QcamtItemSalaryPeriod toEntity(String companyCode, ItemSalaryPeriod domain) {
+		QcamtItemSalaryPeriodPK key = new QcamtItemSalaryPeriodPK(companyCode, domain.getItemCode().v());
 		return new QcamtItemSalaryPeriod(key, domain.getPeriodAtr().value, domain.getStrY().v(), domain.getEndY().v(),
 				domain.getCycleAtr().value, domain.getCycle01Atr().value, domain.getCycle02Atr().value,
 				domain.getCycle03Atr().value, domain.getCycle04Atr().value, domain.getCycle05Atr().value,

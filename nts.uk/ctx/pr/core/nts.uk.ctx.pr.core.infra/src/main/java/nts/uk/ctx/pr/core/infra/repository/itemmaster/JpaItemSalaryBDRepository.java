@@ -21,8 +21,7 @@ public class JpaItemSalaryBDRepository extends JpaRepository implements ItemSala
 			+ " WHERE c.qcamtItemSalaryBdPK.ccd = :companyCode AND c.qcamtItemSalaryBdPK.itemCd = :itemCode";
 
 	@Override
-	public List<ItemSalaryBD> findAll(String itemCode) {
-		val companyCode = AppContexts.user().companyCode();
+	public List<ItemSalaryBD> findAll(String companyCode, String itemCode) {
 		return this.queryProxy().query(SEL_1, QcamtItemSalaryBd.class).setParameter("companyCode", companyCode)
 				.setParameter("itemCode", itemCode).getList(c -> toDomain(c));
 
@@ -40,12 +39,12 @@ public class JpaItemSalaryBDRepository extends JpaRepository implements ItemSala
 	}
 
 	@Override
-	public void add(ItemSalaryBD itemSalaryBD) {
-		this.commandProxy().insert(toEntity(itemSalaryBD));
+	public void add(String companyCode, ItemSalaryBD itemSalaryBD) {
+		this.commandProxy().insert(toEntity(companyCode, itemSalaryBD));
 
 	}
 
-	private QcamtItemSalaryBd toEntity(ItemSalaryBD domain) {
+	private QcamtItemSalaryBd toEntity(String companyCode, ItemSalaryBD domain) {
 		String campanyCode = AppContexts.user().companyCode();
 		QcamtItemSalaryBdPK pk = new QcamtItemSalaryBdPK(campanyCode, domain.getItemCode().v(),
 				domain.getItemBreakdownCode().v());
@@ -57,23 +56,21 @@ public class JpaItemSalaryBDRepository extends JpaRepository implements ItemSala
 	}
 
 	@Override
-	public void delete(String itemCode, String itemBreakdownCode) {
-		String companyCode = AppContexts.user().companyCode();
+	public void delete(String companyCode, String itemCode, String itemBreakdownCode) {
 		QcamtItemSalaryBdPK pk = new QcamtItemSalaryBdPK(companyCode, itemCode, itemBreakdownCode);
 		this.commandProxy().remove(QcamtItemSalaryBd.class, pk);
 
 	}
 
 	@Override
-	public Optional<ItemSalaryBD> find(String itemCode, String itemBreakdownCode) {
-		String companyCode = AppContexts.user().companyCode();
+	public Optional<ItemSalaryBD> find(String companyCode, String itemCode, String itemBreakdownCode) {
 		QcamtItemSalaryBdPK pk = new QcamtItemSalaryBdPK(companyCode, itemCode, itemBreakdownCode);
 		return this.queryProxy().find(pk, QcamtItemSalaryBd.class).map(x -> toDomain(x));
 	}
 
 	@Override
-	public void update(ItemSalaryBD domain) {
-		this.commandProxy().update(toEntity(domain));
+	public void update(String companyCode, ItemSalaryBD domain) {
+		this.commandProxy().update(toEntity(companyCode, domain));
 
 	}
 

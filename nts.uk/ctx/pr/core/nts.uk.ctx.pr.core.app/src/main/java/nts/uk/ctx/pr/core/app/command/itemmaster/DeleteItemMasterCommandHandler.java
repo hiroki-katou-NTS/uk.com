@@ -57,11 +57,11 @@ public class DeleteItemMasterCommandHandler extends CommandHandler<DeleteItemMas
 		switch (categoryAtr) {
 		case 0:
 			// if item Category 支給
-			deleteItemSalary(context);
+			deleteItemSalary(companyCode, context);
 			break;
 		case 1:
 			// 控除
-			deleteItemDeduct(context);
+			deleteItemDeduct(companyCode, context);
 			break;
 		case 2:
 			// 勤怠
@@ -70,25 +70,26 @@ public class DeleteItemMasterCommandHandler extends CommandHandler<DeleteItemMas
 		}
 	}
 
-	private void deleteItemSalary(CommandHandlerContext<DeleteItemMasterCommand> context) {
+	private void deleteItemSalary(String companyCode, CommandHandlerContext<DeleteItemMasterCommand> context) {
 		val itemCode = context.getCommand().getItemCode();
-		this.itemSalaryRespository.delete(itemCode);
-		this.itemSalaryPeriodRepository.delete(itemCode);
-		//Then  remove itemBD 
-		List<ItemSalaryBD> itemBDList = this.itemSalaryBDRepository.findAll(itemCode);
+		this.itemSalaryRespository.delete(companyCode, itemCode);
+		this.itemSalaryPeriodRepository.delete(companyCode, itemCode);
+		// Then remove itemBD
+		List<ItemSalaryBD> itemBDList = this.itemSalaryBDRepository.findAll(companyCode, itemCode);
 		for (ItemSalaryBD itemBD : itemBDList) {
-			this.itemSalaryBDRepository.delete(itemBD.getItemCode().v(), itemBD.getItemBreakdownCode().v());
+			this.itemSalaryBDRepository.delete(companyCode, itemBD.getItemCode().v(),
+					itemBD.getItemBreakdownCode().v());
 		}
 
 	}
 
-	private void deleteItemDeduct(CommandHandlerContext<DeleteItemMasterCommand> context) {
+	private void deleteItemDeduct(String companyCode, CommandHandlerContext<DeleteItemMasterCommand> context) {
 		val itemCode = context.getCommand().getItemCode();
-		this.itemDeductRespository.delete(itemCode);
-		this.itemDeductPeriodRepository.delete(itemCode);
-		List<ItemDeductBD> itemBDList = this.itemDeductBDRepository.findAll(itemCode);
+		this.itemDeductRespository.delete(companyCode, itemCode);
+		this.itemDeductPeriodRepository.delete(companyCode, itemCode);
+		List<ItemDeductBD> itemBDList = this.itemDeductBDRepository.findAll(companyCode, itemCode);
 		for (ItemDeductBD itemBD : itemBDList) {
-			this.itemDeductBDRepository.delete(itemBD.getItemCode().v(), itemBD.getItemBreakdownCode().v());
+			this.itemDeductBDRepository.delete(companyCode,itemBD.getItemCode().v(), itemBD.getItemBreakdownCode().v());
 		}
 
 	}

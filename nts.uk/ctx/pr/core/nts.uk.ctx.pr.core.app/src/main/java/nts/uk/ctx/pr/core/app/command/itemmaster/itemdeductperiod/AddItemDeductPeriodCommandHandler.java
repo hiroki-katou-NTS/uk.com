@@ -9,6 +9,7 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductperiod.ItemDeductPeriodRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -20,9 +21,10 @@ public class AddItemDeductPeriodCommandHandler extends CommandHandler<AddItemDed
 	@Override
 	protected void handle(CommandHandlerContext<AddItemDeductPeriodCommand> context) {
 		String itemCode = context.getCommand().getItemCode();
-		if (this.itemDeductPeriodRepo.find(itemCode).isPresent())
+		String companyCode = AppContexts.user().companyCode();
+		if (this.itemDeductPeriodRepo.find(companyCode, itemCode).isPresent())
 			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
-		this.itemDeductPeriodRepo.add(context.getCommand().toDomain());
+		this.itemDeductPeriodRepo.add(companyCode, context.getCommand().toDomain());
 	}
 
 }

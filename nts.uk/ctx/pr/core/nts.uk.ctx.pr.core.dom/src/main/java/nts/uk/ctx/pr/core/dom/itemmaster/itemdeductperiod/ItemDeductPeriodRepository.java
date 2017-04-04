@@ -4,12 +4,12 @@ import java.util.Optional;
 
 public interface ItemDeductPeriodRepository {
 
-	Optional<ItemDeductPeriod> find( String itemCode);
+	Optional<ItemDeductPeriod> find(String companyCode, String itemCode);
 
-	void add(ItemDeductPeriod itemDeductPeriod);
+	void add(String companyCode, ItemDeductPeriod itemDeductPeriod);
 
-	void delete(String itemCode);
+	void delete(String companyCode, String itemCode);
 
-	void update(ItemDeductPeriod domain);
+	void update(String companyCode, ItemDeductPeriod domain);
 
 }
