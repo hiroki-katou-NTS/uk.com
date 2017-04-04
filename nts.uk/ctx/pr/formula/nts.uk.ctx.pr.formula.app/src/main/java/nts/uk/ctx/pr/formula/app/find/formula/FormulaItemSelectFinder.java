@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.formula.app.find.formula;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,9 +17,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * 
- * @author Nam-PT
- * activity 18
- * H screen
+ * @author Nam-PT activity 18 H screen
  *
  */
 @Stateless
@@ -38,11 +37,14 @@ public class FormulaItemSelectFinder {
 		List<FormulaHistoryDto> formulaHistoryDto = formulaHistoryRepository
 				.findDataDifFormulaCode(companyCode, new FormulaCode(formulaCode), new YearMonth(baseDate)).stream()
 				.map(f -> FormulaHistoryDto.fromDomain(f)).collect(Collectors.toList());
-		
-		List<FormulaItemSelectDto> formulaDto = formulaMasterRepository.findByCompanyCodeAndFormulaCodes(companyCode, formulaHistoryDto.stream().map(item -> {
-			return new FormulaCode(item.getFormulaCode());
-		}).collect(Collectors.toList())).stream().map(f -> FormulaItemSelectDto.fromDomain(f)).collect(Collectors.toList());
-		
+		List<FormulaItemSelectDto> formulaDto = new ArrayList<>();
+		if (formulaHistoryDto.size() > 0) {
+			formulaDto = formulaMasterRepository
+					.findByCompanyCodeAndFormulaCodes(companyCode, formulaHistoryDto.stream().map(item -> {
+						return new FormulaCode(item.getFormulaCode());
+					}).collect(Collectors.toList())).stream().map(f -> FormulaItemSelectDto.fromDomain(f))
+					.collect(Collectors.toList());
+		}
 		return formulaDto;
 	}
 

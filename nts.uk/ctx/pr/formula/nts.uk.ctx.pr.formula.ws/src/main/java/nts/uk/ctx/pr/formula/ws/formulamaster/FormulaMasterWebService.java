@@ -76,7 +76,7 @@ public class FormulaMasterWebService extends WebService {
 	}
 
 	@POST
-	@Path("getSelectedItems/{formulaCode}/{historyId}")
+	@Path("findOtherFormulas/{formulaCode}/{baseDate}")
 	public List<FormulaItemSelectDto> getSelectedItems(@PathParam("formulaCode") String formulaCode,
 			@PathParam("baseDate") int baseDate) {
 		return this.formulaItemSelectFinder.init(formulaCode, baseDate);

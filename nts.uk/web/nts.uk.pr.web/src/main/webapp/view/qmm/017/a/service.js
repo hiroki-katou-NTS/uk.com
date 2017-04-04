@@ -12,7 +12,8 @@ var nts;
                 updateFormula: "pr/formula/formulaMaster/updateFormulaMaster",
                 getListCompanyUnitPrice: "pr/proto/unitprice/findbydate/",
                 getListPersonalUnitPrice: "pr/core/rule/employment/unitprice/personal/find/all",
-                getListItemMaster: "pr/core/item/findall/category/"
+                getListItemMaster: "pr/core/item/findall/category/",
+                findOtherFormulas: "pr/formula/formulaMaster/findOtherFormulas/"
             };
             function getAllFormula() {
                 var dfd = $.Deferred();
@@ -50,6 +51,18 @@ var nts;
                 return dfd.promise();
             }
             service.getFormulaDetail = getFormulaDetail;
+            function findOtherFormulas(formulaCode, baseYearMonth) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("pr", paths.findOtherFormulas + formulaCode + "/" + baseYearMonth)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.findOtherFormulas = findOtherFormulas;
             function registerFormulaMaster(command) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.registerFormulaMaster, command).done(function () {
@@ -160,4 +173,3 @@ var nts;
         })(model = qmm017.model || (qmm017.model = {}));
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=service.js.map

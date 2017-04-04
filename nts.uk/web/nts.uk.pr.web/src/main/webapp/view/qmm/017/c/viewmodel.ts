@@ -93,11 +93,12 @@ module nts.qmm017 {
             self.formulaManualContent = ko.observable(new TextEditor());
             self.c_sel_006 = ko.observableArray([
                 { id: 'tab-1', title: '明細・勤怠', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-2', title: '関数', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-3', title: 'システム変数', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-4', title: '個人情報', content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-5', title: '計算式', content: '.tab-content-5', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-6', title: '賃金テーブル', content: '.tab-content-6', style: 'margin-left: 50px;', enable: ko.observable(true), visible: ko.observable(true) }
+                { id: 'tab-2', title: '単価', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-3', title: '関数', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-4', title: 'システム変数', content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-5', title: '個人情報', content: '.tab-content-5', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-6', title: '計算式', content: '.tab-content-6', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-7', title: '賃金テーブル', content: '.tab-content-7', style: 'margin-left: 50px;', enable: ko.observable(true), visible: ko.observable(true) }
             ]);
             self.comboBoxReferenceMonthAtr = ko.observable(new ComboBox(lstReferenceMonthAtr, true, false));
             self.comboBoxRoudingMethod = ko.observable(new ComboBox(lstRoudingMethod, true, false));

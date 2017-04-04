@@ -156,7 +156,7 @@ var nts;
                                         alert(res);
                                         dfdGetTimeItems.reject();
                                     });
-                                    l.service.getListCompanyUnitPrice(self.startYm)
+                                    l.service.getListCompanyUnitPrice(self.startYm.replace('/', ''))
                                         .done(function (lstCompanyUnitPrice) {
                                         if (lstCompanyUnitPrice && lstCompanyUnitPrice.length > 0) {
                                             _.forEach(lstCompanyUnitPrice, function (item) {
@@ -356,4 +356,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=viewmodel.js.map
