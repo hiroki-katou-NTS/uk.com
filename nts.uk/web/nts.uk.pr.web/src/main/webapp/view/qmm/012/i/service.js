@@ -6,7 +6,13 @@ var qmm012;
         (function (service) {
             var paths = {
                 findAllItemSalaryBD: "pr/core/itemsalarybd/find",
-                findAllItemDeductBD: "pr/core/itemdeductbd/find"
+                findAllItemDeductBD: "pr/core/itemdeductbd/find",
+                deleteItemSalaryBD: "pr/core/itemsalarybd/delete",
+                deleteItemDeductBD: "pr/core/itemdeductbd/delete",
+                addItemSalaryBD: "pr/core/itemsalarybd/add",
+                addItemDeductBD: "pr/core/itemdeductbd/add",
+                updateItemSalaryBD: "pr/core/itemsalarybd/update",
+                updateItemDeductBD: "pr/core/itemdeductbd/update",
             };
             function findAllItemSalaryBD(itemCode) {
                 var dfd = $.Deferred();
@@ -47,10 +53,128 @@ var qmm012;
                 });
                 return dfd.promise();
             }
+            function deleteItemDeductBD(itemBD) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.deleteItemDeductBD, itemBD)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            function deleteItemSalaryBD(itemBD) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.deleteItemSalaryBD, itemBD)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            function deleteItemBD(itemBD, ItemMaster) {
+                var dfd = $.Deferred();
+                var categoryAtr = ItemMaster.categoryAtr;
+                var itemCode = ItemMaster.itemCode;
+                if (categoryAtr == 0) {
+                    deleteItemSalaryBD(itemBD).done(function (any) {
+                        dfd.resolve(any);
+                    });
+                }
+                else {
+                    deleteItemDeductBD(itemBD).done(function (any) {
+                        dfd.resolve(any);
+                    });
+                }
+                return dfd.promise();
+            }
+            service.deleteItemBD = deleteItemBD;
+            function addItemDeductBD(itemBD) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.addItemDeductBD, itemBD)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            function addItemSalaryBD(itemBD) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.addItemSalaryBD, itemBD)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            function addItemBD(itemBD, ItemMaster) {
+                var dfd = $.Deferred();
+                var categoryAtr = ItemMaster.categoryAtr;
+                var itemCode = ItemMaster.itemCode;
+                if (categoryAtr == 0) {
+                    addItemSalaryBD(itemBD).done(function (any) {
+                        dfd.resolve(any);
+                    });
+                }
+                else {
+                    addItemDeductBD(itemBD).done(function (any) {
+                        dfd.resolve(any);
+                    });
+                }
+                return dfd.promise();
+            }
+            service.addItemBD = addItemBD;
+            function updateItemDeductBD(itemBD) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.updateItemDeductBD, itemBD)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            function updateItemSalaryBD(itemBD) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.updateItemSalaryBD, itemBD)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            function updateItemBD(itemBD, ItemMaster) {
+                var dfd = $.Deferred();
+                var categoryAtr = ItemMaster.categoryAtr;
+                var itemCode = ItemMaster.itemCode;
+                if (categoryAtr == 0) {
+                    updateItemSalaryBD(itemBD).done(function (any) {
+                        dfd.resolve(any);
+                    });
+                }
+                else {
+                    updateItemDeductBD(itemBD).done(function (any) {
+                        dfd.resolve(any);
+                    });
+                }
+                return dfd.promise();
+            }
+            service.updateItemBD = updateItemBD;
             var model;
             (function (model) {
                 var ItemBD = (function () {
-                    function ItemBD(itemBreakdownCode, itemBreakdownName, itemBreakdownAbName, uniteCode, zeroDispSet, itemDispAtr, errRangeLowAtr, errRangeLow, errRangeHighAtr, errRangeHigh, alRangeLowAtr, alRangeLow, alRangeHighAtr, alRangeHigh) {
+                    function ItemBD(itemCode, itemBreakdownCode, itemBreakdownName, itemBreakdownAbName, uniteCode, zeroDispSet, itemDispAtr, errRangeLowAtr, errRangeLow, errRangeHighAtr, errRangeHigh, alRangeLowAtr, alRangeLow, alRangeHighAtr, alRangeHigh) {
+                        this.itemCode = itemCode;
                         this.itemBreakdownCode = itemBreakdownCode;
                         this.itemBreakdownName = itemBreakdownName;
                         this.itemBreakdownAbName = itemBreakdownAbName;

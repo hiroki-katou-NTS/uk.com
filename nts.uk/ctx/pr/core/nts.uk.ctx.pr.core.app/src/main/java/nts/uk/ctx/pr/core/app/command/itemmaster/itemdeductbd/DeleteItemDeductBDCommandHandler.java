@@ -10,7 +10,10 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBDRepository;
-
+/**
+ * @author sonnlb
+ *
+ */
 @Stateless
 @Transactional
 public class DeleteItemDeductBDCommandHandler extends CommandHandler<DeleteItemDeductBDCommand> {
@@ -21,6 +24,7 @@ public class DeleteItemDeductBDCommandHandler extends CommandHandler<DeleteItemD
 	protected void handle(CommandHandlerContext<DeleteItemDeductBDCommand> context) {
 		val itemCode = context.getCommand().getItemCode();
 		val itemBreakdownCode = context.getCommand().getItemBreakdownCode();
+		//Check if the data no exists
 		if (!this.itemDeductBDRepository.find(itemCode, itemBreakdownCode).isPresent())
 			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
 		this.itemDeductBDRepository.delete(itemCode, itemBreakdownCode);

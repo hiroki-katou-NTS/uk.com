@@ -17,8 +17,10 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @Transactional
 public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCommand> {
+
 	@Inject
 	private ItemMasterRepository itemMasterRepository;
+	// Inject for add sub item after add Item Master
 	// item salary
 	@Inject
 	private ItemSalaryRespository itemSalaryRespository;
@@ -43,14 +45,18 @@ public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCom
 		if (this.itemMasterRepository.find(companyCode, CategoryAtr, itemCode).isPresent())
 			throw new BusinessException(" 明細書名が入力されていません。");
 		itemMasterRepository.add(itemMaster);
+		// add sub item after add ItemMaster
 		switch (CategoryAtr) {
 		case 0:
+			// if item Category 支給
 			addItemSalary(context);
 			break;
 		case 1:
+			// 控除
 			addItemDeduct(context);
 			break;
 		case 2:
+			// 勤怠
 			addItemAttend(context);
 			break;
 		}
@@ -60,6 +66,7 @@ public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCom
 	private void addItemAttend(CommandHandlerContext<AddItemMasterCommand> context) {
 		String itemCode = context.getCommand().toDomain().getItemCode().v();
 		context.getCommand().getItemAttend().setItemCode(itemCode);
+		// use interface for add sub item
 		this.itemAttendRespository.add(context.getCommand().getItemAttend().toDomain());
 
 	}

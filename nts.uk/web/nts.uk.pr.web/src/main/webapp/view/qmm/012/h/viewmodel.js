@@ -71,13 +71,28 @@ var qmm012;
                 };
                 ScreenModel.prototype.getCurrentItemPeriod = function () {
                     var self = this;
-                    return new h.service.model.ItemPeriod(self.CurrentPeriodAtr(), self.CurrentStrY(), self.CurrentEndY(), self.CurrentCycleAtr(), self.H_SEL_003_checked() == true ? 1 : 0, self.H_SEL_004_checked() == true ? 1 : 0, self.H_SEL_005_checked() == true ? 1 : 0, self.H_SEL_006_checked() == true ? 1 : 0, self.H_SEL_007_checked() == true ? 1 : 0, self.H_SEL_008_checked() == true ? 1 : 0, self.H_SEL_009_checked() == true ? 1 : 0, self.H_SEL_010_checked() == true ? 1 : 0, self.H_SEL_011_checked() == true ? 1 : 0, self.H_SEL_012_checked() == true ? 1 : 0, self.H_SEL_013_checked() == true ? 1 : 0, self.H_SEL_014_checked() == true ? 1 : 0);
+                    return new h.service.model.ItemPeriod(self.CurrentItemMaster().itemCode, self.CurrentPeriodAtr(), self.CurrentStrY(), self.CurrentEndY(), self.CurrentCycleAtr(), self.H_SEL_003_checked() == true ? 1 : 0, self.H_SEL_004_checked() == true ? 1 : 0, self.H_SEL_005_checked() == true ? 1 : 0, self.H_SEL_006_checked() == true ? 1 : 0, self.H_SEL_007_checked() == true ? 1 : 0, self.H_SEL_008_checked() == true ? 1 : 0, self.H_SEL_009_checked() == true ? 1 : 0, self.H_SEL_010_checked() == true ? 1 : 0, self.H_SEL_011_checked() == true ? 1 : 0, self.H_SEL_012_checked() == true ? 1 : 0, self.H_SEL_013_checked() == true ? 1 : 0, self.H_SEL_014_checked() == true ? 1 : 0);
                 };
                 ScreenModel.prototype.SubmitDialog = function () {
                     var self = this;
+                    var itemPeriodOld = self.CurrentItemPeriod();
                     var itemPeriod = self.getCurrentItemPeriod();
-                    nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);
-                    nts.uk.ui.windows.close();
+                    if (itemPeriodOld) {
+                        h.service.updateItemPeriod(itemPeriod, self.CurrentItemMaster()).done(function (res) {
+                            nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);
+                            nts.uk.ui.windows.close();
+                        }).fail(function (res) {
+                            alert(res.value);
+                        });
+                    }
+                    else {
+                        h.service.addItemPeriod(itemPeriod, self.CurrentItemMaster()).done(function (res) {
+                            nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);
+                            nts.uk.ui.windows.close();
+                        }).fail(function (res) {
+                            alert(res.value);
+                        });
+                    }
                 };
                 ScreenModel.prototype.CloseDialog = function () {
                     nts.uk.ui.windows.close();

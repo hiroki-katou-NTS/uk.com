@@ -167,28 +167,31 @@ module qmm012.i.viewmodel {
                 self.currentItemCode(itemMaster.itemCode);
             }
         }
-        refreshAndSetSelectedCode(itemCode) {
+        reloadAndSetSelectedCode(itemCode?) {
             let self = this;
-            //refresh list
-            self.ItemBDList(self.ItemBDList());
-            //set selected 
-            if (self.ItemBDList().length)
-                if (!itemCode)
-                    self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCode);
-                else
-                    self.gridListCurrentCode(itemCode);
+            //reload list
+            service.findAllItemBD(self.CurrentItemMaster()).done(function(ItemBDs: Array<service.model.ItemBD>) {
+                self.ItemBDList(ItemBDs);
+                //set selected 
+                if (self.ItemBDList().length)
+                    if (itemCode == undefined)
+                        self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCode);
+                    else
+                        self.gridListCurrentCode(itemCode);
+            });
         }
         loadItem(itemCode?) {
             //load itemBDList
             let self = this;
             let itemBDs = nts.uk.ui.windows.getShared('itemBDs');
             self.ItemBDList(itemBDs);
-            self.refreshAndSetSelectedCode(itemCode);
+            self.reloadAndSetSelectedCode(itemCode);
         }
         getCurrentItemBD() {
             //get item customer has input on form 
             let self = this;
             return new service.model.ItemBD(
+                self.CurrentItemMaster().itemCode,
                 self.CurrentItemBreakdownCode(),
                 self.CurrentItemBreakdownName(),
                 self.CurrentItemBreakdownAbName(),
@@ -230,9 +233,15 @@ module qmm012.i.viewmodel {
                             itemCode = self.ItemBDList()[index - 1].itemBreakdownCode;
                     } else
                         itemCode = '';
-                    //remove item and set selected code
-                    self.ItemBDList().splice(index, 1);
-                    self.refreshAndSetSelectedCode(itemCode);
+                    //remove item 
+                    itemBD.itemCode = self.CurrentItemMaster().itemCode;
+                    service.deleteItemBD(itemBD, self.CurrentItemMaster()).done(function(any) {
+                        // set selected code
+                        self.reloadAndSetSelectedCode(itemCode);
+                    }).fail(function(res) {
+                        alert(res.value);
+                    });
+
                 })
             }
         }
@@ -240,20 +249,24 @@ module qmm012.i.viewmodel {
             let self = this;
             //get itemBD on form
             let itemBD = self.getCurrentItemBD();
-            //add item to array and set selected code
-            self.ItemBDList().push(itemBD);
-            self.refreshAndSetSelectedCode(itemBD.itemBreakdownCode);
-
+            service.addItemBD(itemBD, self.CurrentItemMaster()).done(function(any) {
+                // set selected code
+                self.reloadAndSetSelectedCode(itemBD.itemBreakdownCode);
+            }).fail(function(res) {
+                alert(res.value);
+            });
         }
-
         updateItemBD() {
             let self = this;
             let itemBD = self.getCurrentItemBD();
-            let index = self.ItemBDList().indexOf(self.CurrentItemBD());
             let itemCode = itemBD.itemBreakdownCode;
-            //update item in array and set selected code
-            self.ItemBDList()[index] = itemBD;
-            self.refreshAndSetSelectedCode(itemCode);
+            //update item 
+            service.updateItemBD(itemBD, self.CurrentItemMaster()).done(function(any) {
+                // set selected code
+                self.reloadAndSetSelectedCode(itemBD.itemBreakdownCode);
+            }).fail(function(res) {
+                alert(res.value);
+            });
         }
         closeDialog() {
             let self = this;

@@ -10,7 +10,6 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalary;
 @Setter
 public class UpdateItemSalaryCommand {
 
-	private String companyCode;
 	private String itemCode;
 	private int taxAtr;
 	private int socialInsAtr;

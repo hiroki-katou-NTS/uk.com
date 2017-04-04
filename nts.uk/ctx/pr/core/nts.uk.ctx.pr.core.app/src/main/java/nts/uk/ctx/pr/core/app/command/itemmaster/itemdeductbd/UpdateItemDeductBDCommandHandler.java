@@ -20,9 +20,9 @@ public class UpdateItemDeductBDCommandHandler extends CommandHandler<UpdateItemD
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateItemDeductBDCommand> context) {
-
 		val itemCode = context.getCommand().getItemCode();
 		val itemBreakdownCd = context.getCommand().getItemBreakdownCd();
+		//Check if the data no exists
 		if (!this.itemDeductBDRepo.find(itemCode, itemBreakdownCd).isPresent())
 			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
 		this.itemDeductBDRepo.update(context.getCommand().toDomain());

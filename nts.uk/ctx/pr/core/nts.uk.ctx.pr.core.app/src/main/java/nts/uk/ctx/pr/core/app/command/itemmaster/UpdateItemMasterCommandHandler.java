@@ -24,18 +24,10 @@ public class UpdateItemMasterCommandHandler extends CommandHandler<UpdateItemMas
 	// item salary
 	@Inject
 	private ItemSalaryRespository itemSalaryRespository;
-	// @Inject
-	// private ItemSalaryPeriodRepository itemSalaryPeriodRepository;
-	// @Inject
-	// private ItemSalaryBDRepository itemSalaryBDRepository;
 
 	// item deduct
 	@Inject
 	private ItemDeductRespository itemDeductRespository;
-	// @Inject
-	// private ItemDeductPeriodRepository itemDeductPeriodRepository;
-	// @Inject
-	// private ItemDeductBDRepository itemDeductBDRepository;
 
 	// item attend
 	@Inject
@@ -51,14 +43,18 @@ public class UpdateItemMasterCommandHandler extends CommandHandler<UpdateItemMas
 		if (!this.itemMasterRepository.find(companyCode, categoryAtr, itemCode).isPresent())
 			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。"));
 		this.itemMasterRepository.update(context.getCommand().toDomain());
+		// after update item master , update sub item
 		switch (categoryAtr) {
 		case 0:
+			// if item Category 支給
 			updateItemSalary(context);
 			break;
 		case 1:
+			// 控除
 			updateItemDeduct(context);
 			break;
 		case 2:
+			// 勤怠
 			updateItemAttend(context);
 			break;
 		}
@@ -69,18 +65,14 @@ public class UpdateItemMasterCommandHandler extends CommandHandler<UpdateItemMas
 
 	private void updateItemSalary(CommandHandlerContext<UpdateItemMasterCommand> context) {
 		UpdateItemMasterCommand itemCommand = context.getCommand();
-		String companyCode = AppContexts.user().companyCode();
 		String itemCode = itemCommand.getItemCode();
-		itemCommand.getItemSalary().setCompanyCode(companyCode);
 		itemCommand.getItemSalary().setItemCode(itemCode);
 		this.itemSalaryRespository.update(itemCommand.getItemSalary().toDomain());
 	}
 
 	private void updateItemDeduct(CommandHandlerContext<UpdateItemMasterCommand> context) {
 		UpdateItemMasterCommand itemCommand = context.getCommand();
-		String companyCode = AppContexts.user().companyCode();
 		String itemCode = itemCommand.getItemCode();
-		itemCommand.getItemDeduct().setCompanyCode(companyCode);
 		itemCommand.getItemDeduct().setItemCode(itemCode);
 		this.itemDeductRespository.update(itemCommand.getItemDeduct().toDomain());
 
@@ -88,9 +80,7 @@ public class UpdateItemMasterCommandHandler extends CommandHandler<UpdateItemMas
 
 	private void updateItemAttend(CommandHandlerContext<UpdateItemMasterCommand> context) {
 		UpdateItemMasterCommand itemCommand = context.getCommand();
-		String companyCode = AppContexts.user().companyCode();
 		String itemCode = itemCommand.getItemCode();
-		itemCommand.getItemAttend().setCompanyCode(companyCode);
 		itemCommand.getItemAttend().setItemCode(itemCode);
 		this.itemAttendRespository.update(itemCommand.getItemAttend().toDomain());
 	}

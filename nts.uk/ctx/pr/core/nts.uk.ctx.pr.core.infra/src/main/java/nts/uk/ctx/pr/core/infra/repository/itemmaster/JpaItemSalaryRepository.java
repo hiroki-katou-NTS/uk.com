@@ -10,7 +10,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.itemmaster.AvePayAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalary;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalaryRespository;
-import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemAttend;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemSalary;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemSalaryPK;
 import nts.uk.shr.com.context.AppContexts;
@@ -67,7 +66,7 @@ public class JpaItemSalaryRepository extends JpaRepository implements ItemSalary
 				entity.avePayAtr, entity.errRangeLowAtr, entity.errRangeLow, entity.errRangeHighAtr,
 				entity.errRangeHigh, entity.alRangeLowAtr, entity.alRangeLow, entity.alRangeHighAtr, entity.alRangeHigh,
 				entity.memo, entity.limitMnyAtr, entity.limitMnyRefItemCd, entity.limitMny);
-		// TODO Auto-generated method stub
+		
 		return domain;
 	}
 

@@ -12,6 +12,10 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeduct.ItemDeductRespository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * @author sonnlb
+ *
+ */
 @Stateless
 @Transactional
 public class AddItemDeductCommandHandler extends CommandHandler<AddItemDeductCommand> {

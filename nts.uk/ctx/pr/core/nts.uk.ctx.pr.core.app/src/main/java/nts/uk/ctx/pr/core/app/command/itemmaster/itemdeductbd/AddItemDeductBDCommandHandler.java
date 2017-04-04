@@ -11,6 +11,10 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBDRepository;
 
+/**
+ * @author sonnlb
+ *
+ */
 @Stateless
 @Transactional
 public class AddItemDeductBDCommandHandler extends CommandHandler<AddItemDeductBDCommand> {
@@ -21,8 +25,9 @@ public class AddItemDeductBDCommandHandler extends CommandHandler<AddItemDeductB
 	@Override
 	protected void handle(CommandHandlerContext<AddItemDeductBDCommand> context) {
 		val itemCode = context.getCommand().getItemCode();
-		val itemBreakdownCd = context.getCommand().getItemBreakdownCd();
-		if (this.itemDeductBDRepo.find(itemCode, itemBreakdownCd).isPresent())
+		val itemBreakdownCode = context.getCommand().getItemBreakdownCode();
+		// Check if the data already exists 
+		if (this.itemDeductBDRepo.find(itemCode, itemBreakdownCode).isPresent())
 			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
 		this.itemDeductBDRepo.add(context.getCommand().toDomain());
 	}

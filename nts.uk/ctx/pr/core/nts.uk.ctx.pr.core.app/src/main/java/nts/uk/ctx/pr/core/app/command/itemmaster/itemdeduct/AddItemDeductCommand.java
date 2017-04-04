@@ -6,6 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeduct.ItemDeduct;
 
+/**
+ * @author sonnlb
+ *
+ */
 @Getter
 @Setter
 public class AddItemDeductCommand {

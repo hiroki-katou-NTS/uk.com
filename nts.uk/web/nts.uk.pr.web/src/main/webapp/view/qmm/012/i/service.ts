@@ -2,7 +2,13 @@ module qmm012.i {
     export module service {
         var paths: any = {
             findAllItemSalaryBD: "pr/core/itemsalarybd/find",
-            findAllItemDeductBD: "pr/core/itemdeductbd/find"
+            findAllItemDeductBD: "pr/core/itemdeductbd/find",
+            deleteItemSalaryBD: "pr/core/itemsalarybd/delete",
+            deleteItemDeductBD: "pr/core/itemdeductbd/delete",
+            addItemSalaryBD: "pr/core/itemsalarybd/add",
+            addItemDeductBD: "pr/core/itemdeductbd/add",
+            updateItemSalaryBD: "pr/core/itemsalarybd/update",
+            updateItemDeductBD: "pr/core/itemdeductbd/update",
         }
         function findAllItemSalaryBD(itemCode): JQueryPromise<Array<model.ItemBD>> {
             var dfd = $.Deferred<Array<model.ItemBD>>();
@@ -42,10 +48,121 @@ module qmm012.i {
             return dfd.promise();
         }
 
+        function deleteItemDeductBD(itemBD: model.ItemBD) {
+            var dfd = $.Deferred<any>();
+            nts.uk.request.ajax(paths.deleteItemDeductBD, itemBD)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        function deleteItemSalaryBD(itemBD: model.ItemBD) {
+            var dfd = $.Deferred<any>();
+            nts.uk.request.ajax(paths.deleteItemSalaryBD, itemBD)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        export function deleteItemBD(itemBD: model.ItemBD, ItemMaster: qmm012.b.service.model.ItemMaster): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            let categoryAtr = ItemMaster.categoryAtr;
+            let itemCode = ItemMaster.itemCode;
+            if (categoryAtr == 0) {
+                deleteItemSalaryBD(itemBD).done(function(any) {
+                    dfd.resolve(any);
+                });
+            } else {
+                deleteItemDeductBD(itemBD).done(function(any) {
+                    dfd.resolve(any);
+                });
+            }
+            return dfd.promise();
+        }
+        function addItemDeductBD(itemBD: model.ItemBD) {
+            var dfd = $.Deferred<any>();
+            nts.uk.request.ajax(paths.addItemDeductBD, itemBD)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        function addItemSalaryBD(itemBD: model.ItemBD) {
+            var dfd = $.Deferred<any>();
+            nts.uk.request.ajax(paths.addItemSalaryBD, itemBD)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        export function addItemBD(itemBD: model.ItemBD, ItemMaster: qmm012.b.service.model.ItemMaster): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            let categoryAtr = ItemMaster.categoryAtr;
+            let itemCode = ItemMaster.itemCode;
+            if (categoryAtr == 0) {
+                addItemSalaryBD(itemBD).done(function(any) {
+                    dfd.resolve(any);
+                });
+            } else {
+                addItemDeductBD(itemBD).done(function(any) {
+                    dfd.resolve(any);
+                });
+            }
+            return dfd.promise();
+        }
+        function updateItemDeductBD(itemBD: model.ItemBD) {
+            var dfd = $.Deferred<any>();
+            nts.uk.request.ajax(paths.updateItemDeductBD, itemBD)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        function updateItemSalaryBD(itemBD: model.ItemBD) {
+            var dfd = $.Deferred<any>();
+            nts.uk.request.ajax(paths.updateItemSalaryBD, itemBD)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        export function updateItemBD(itemBD: model.ItemBD, ItemMaster: qmm012.b.service.model.ItemMaster): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            let categoryAtr = ItemMaster.categoryAtr;
+            let itemCode = ItemMaster.itemCode;
+            if (categoryAtr == 0) {
+                updateItemSalaryBD(itemBD).done(function(any) {
+                    dfd.resolve(any);
+                });
+            } else {
+                updateItemDeductBD(itemBD).done(function(any) {
+                    dfd.resolve(any);
+                });
+            }
+            return dfd.promise();
+        }
 
         export module model {
             export class ItemBD {
-
+                itemCode: string;
                 itemBreakdownCode: string;
                 itemBreakdownName: string;
                 itemBreakdownAbName: string;
@@ -61,7 +178,7 @@ module qmm012.i {
                 alRangeHighAtr: number;
                 alRangeHigh: number;
                 constructor(
-
+                    itemCode: string,
                     itemBreakdownCode: string,
                     itemBreakdownName: string,
                     itemBreakdownAbName: string,
@@ -77,6 +194,7 @@ module qmm012.i {
                     alRangeHighAtr: number,
                     alRangeHigh: number
                 ) {
+                    this.itemCode = itemCode;
                     this.itemBreakdownCode = itemBreakdownCode;
                     this.itemBreakdownName = itemBreakdownName;
                     this.itemBreakdownAbName = itemBreakdownAbName;

@@ -10,7 +10,6 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.ItemAttend;
 @Setter
 public class UpdateItemAttendCommand {
 
-	private String companyCode;
 	private String itemCode;
 	private int avePayAtr;
 	private int itemAtr;

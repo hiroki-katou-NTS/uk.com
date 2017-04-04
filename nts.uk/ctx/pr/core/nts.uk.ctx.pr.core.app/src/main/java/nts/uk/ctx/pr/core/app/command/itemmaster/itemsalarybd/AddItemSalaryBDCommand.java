@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductbd.AddItemDeductBDCommand;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalarybd.ItemSalaryBD;
 
 @Getter
@@ -26,12 +25,6 @@ public class AddItemSalaryBDCommand {
 	private int alRangeHighAtr;
 	private BigDecimal alRangeHigh;
 
-	public AddItemDeductBDCommand toItemDeduct() {
-		return new AddItemDeductBDCommand(this.itemCode, this.itemBreakdownCode, this.itemBreakdownName,
-				this.itemBreakdownAbName, this.uniteCode, this.zeroDispSet, this.itemDispAtr, this.errRangeLowAtr,
-				this.errRangeLow, this.errRangeHighAtr, this.errRangeHigh, this.alRangeLowAtr, this.alRangeLow,
-				this.alRangeHighAtr, this.alRangeHigh);
-	}
 
 	public ItemSalaryBD toDomain() {
 		return ItemSalaryBD.createFromJavaType(itemCode, itemBreakdownCode, itemBreakdownName, itemBreakdownAbName, uniteCode,

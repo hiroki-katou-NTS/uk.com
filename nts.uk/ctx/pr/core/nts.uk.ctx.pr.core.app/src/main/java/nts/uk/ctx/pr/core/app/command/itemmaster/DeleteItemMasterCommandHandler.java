@@ -53,15 +53,18 @@ public class DeleteItemMasterCommandHandler extends CommandHandler<DeleteItemMas
 		val categoryAtr = context.getCommand().getCategoryAtr();
 		val itemCode = context.getCommand().getItemCode();
 		this.itemMasterRepository.remove(companyCode, categoryAtr, itemCode);
-		// remove all sub item linked with item master
+		// remove all sub item linked with item master through the item code
 		switch (categoryAtr) {
 		case 0:
+			// if item Category 支給
 			deleteItemSalary(context);
 			break;
 		case 1:
+			// 控除
 			deleteItemDeduct(context);
 			break;
 		case 2:
+			// 勤怠
 			deleteItemAttend(context);
 			break;
 		}
@@ -71,6 +74,7 @@ public class DeleteItemMasterCommandHandler extends CommandHandler<DeleteItemMas
 		val itemCode = context.getCommand().getItemCode();
 		this.itemSalaryRespository.delete(itemCode);
 		this.itemSalaryPeriodRepository.delete(itemCode);
+		//Then  remove itemBD 
 		List<ItemSalaryBD> itemBDList = this.itemSalaryBDRepository.findAll(itemCode);
 		for (ItemSalaryBD itemBD : itemBDList) {
 			this.itemSalaryBDRepository.delete(itemBD.getItemCode().v(), itemBD.getItemBreakdownCode().v());

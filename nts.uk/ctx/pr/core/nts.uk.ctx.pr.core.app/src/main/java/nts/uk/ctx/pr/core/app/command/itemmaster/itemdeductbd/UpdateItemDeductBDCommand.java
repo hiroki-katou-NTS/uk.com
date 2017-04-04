@@ -6,6 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBD;
 
+/**
+ * @author sonnlb
+ *
+ */
 @Getter
 @Setter
 public class UpdateItemDeductBDCommand {
@@ -31,28 +35,6 @@ public class UpdateItemDeductBDCommand {
 				this.errRangeLow, this.errRangeHighAtr, this.errRangeHigh, this.alRangeLowAtr, this.alRangeLow,
 				this.alRangeHighAtr, this.alRangeHigh);
 
-	}
-
-	public UpdateItemDeductBDCommand(String itemCode, String itemBreakdownCd, String itemBreakdownName,
-			String itemBreakdownAbName, String uniteCd, int zeroDispSet, int itemDispAtr, int errRangeLowAtr,
-			BigDecimal errRangeLow, int errRangeHighAtr, BigDecimal errRangeHigh, int alRangeLowAtr,
-			BigDecimal alRangeLow, int alRangeHighAtr, BigDecimal alRangeHigh) {
-		super();
-		this.itemCode = itemCode;
-		this.itemBreakdownCd = itemBreakdownCd;
-		this.itemBreakdownName = itemBreakdownName;
-		this.itemBreakdownAbName = itemBreakdownAbName;
-		this.uniteCd = uniteCd;
-		this.zeroDispSet = zeroDispSet;
-		this.itemDispAtr = itemDispAtr;
-		this.errRangeLowAtr = errRangeLowAtr;
-		this.errRangeLow = errRangeLow;
-		this.errRangeHighAtr = errRangeHighAtr;
-		this.errRangeHigh = errRangeHigh;
-		this.alRangeLowAtr = alRangeLowAtr;
-		this.alRangeLow = alRangeLow;
-		this.alRangeHighAtr = alRangeHighAtr;
-		this.alRangeHigh = alRangeHigh;
 	}
 	
 }

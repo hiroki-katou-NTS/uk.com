@@ -5,12 +5,14 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeduct.ItemDeduct;
-
+/**
+ * @author sonnlb
+ *
+ */
 @Getter
 @Setter
 public class UpdateItemDeductCommand {
 	
-	private String companyCode;
 	private String itemCode;
 	private int deductAtr;
 	private int errRangeLowAtr;

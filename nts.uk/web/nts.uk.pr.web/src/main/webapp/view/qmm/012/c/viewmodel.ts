@@ -209,9 +209,6 @@ module qmm012.c.viewmodel {
                         break;
                 }
             });
-
-
-
             self.CurrentItemMaster.subscribe(function(ItemMaster: qmm012.b.service.model.ItemMaster) {
                 if (ItemMaster) {
                     service.findItemSalary(ItemMaster.itemCode).done(function(ItemSalary: service.model.ItemSalary) {

@@ -85,6 +85,7 @@ module qmm012.h.viewmodel {
         getCurrentItemPeriod() {
             let self = this;
             return new service.model.ItemPeriod(
+                self.CurrentItemMaster().itemCode,
                 self.CurrentPeriodAtr(),
                 self.CurrentStrY(),
                 self.CurrentEndY(),
@@ -105,10 +106,26 @@ module qmm012.h.viewmodel {
         }
         SubmitDialog() {
             let self = this;
+            let itemPeriodOld = self.CurrentItemPeriod();
             let itemPeriod = self.getCurrentItemPeriod();
-            nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);
-            nts.uk.ui.windows.close();
+            if (itemPeriodOld) {
+                service.updateItemPeriod(itemPeriod, self.CurrentItemMaster()).done(function(res: any) {
+                    nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);
+                    nts.uk.ui.windows.close();
+                }).fail(function(res: any) {
+                    alert(res.value);
+                });
+
+            } else {
+                service.addItemPeriod(itemPeriod, self.CurrentItemMaster()).done(function(res: any) {
+                    nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);
+                    nts.uk.ui.windows.close();
+                }).fail(function(res: any) {
+                    alert(res.value);
+                });
+            }
         }
+
         CloseDialog() {
             nts.uk.ui.windows.close();
         }
