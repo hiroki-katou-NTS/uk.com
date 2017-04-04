@@ -257,6 +257,8 @@ var cmm009;
                     var self = this;
                     if (self.code().code == "CODE_004") {
                         var _dt = self.dataSource();
+                        var _dtflat = nts.uk.util.flatArray(_dt, 'children');
+                        debugger;
                         var _code = self.singleSelectedCode();
                         var current = self.findHira(_code, _dt);
                         var deleteobj_1 = new model.DepartmentDeleteDto(current.departmentCode, current.historyId, current.hierarchyCode);
@@ -347,49 +349,6 @@ var cmm009;
                         }).ifNo(function () { });
                     }
                 };
-                ScreenModel.prototype.findByCode_Wkp = function (items, newValue) {
-                    var self = this;
-                    var node;
-                    _.find(items, function (obj) {
-                        if (!node) {
-                            if (obj.departmentCode == newValue) {
-                                node = obj;
-                                self.currentItem_treegrid(node);
-                            }
-                        }
-                    });
-                    return node;
-                };
-                ;
-                ScreenModel.prototype.findByCode_Dep = function (items, newValue) {
-                    var self = this;
-                    var node;
-                    _.find(items, function (obj) {
-                        if (!node) {
-                            if (obj.departmentCode == newValue) {
-                                node = obj;
-                                self.currentItem_treegrid(node);
-                                console.log("===" + self.currentItem_treegrid());
-                            }
-                        }
-                    });
-                    return node;
-                };
-                ;
-                ScreenModel.prototype.findHist_Wkp = function (items, newValue) {
-                    var self = this;
-                    var node;
-                    _.find(items, function (obj) {
-                        if (!node) {
-                            if (obj.startDate == newValue) {
-                                node = obj;
-                                self.itemHist(node);
-                            }
-                        }
-                    });
-                    return node;
-                };
-                ;
                 ScreenModel.prototype.findHira = function (value, sources) {
                     var self = this;
                     if (!sources || !sources.length) {

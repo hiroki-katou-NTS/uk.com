@@ -78,8 +78,6 @@ module cmm009.a.viewmodel {
 
             self.singleSelectedCode.subscribe(function(codeChangeds) {
                 if (self.code().code == "CODE_004") {
-                    //self.findByCode_Dep(self.filteredData2(), codeChangeds);
-                    // console.log(self.currentItem_treegrid());
                     var _dt = self.dataSource();
                     var _code = self.singleSelectedCode();
                     var current = self.findHira(_code, _dt);
@@ -154,7 +152,7 @@ module cmm009.a.viewmodel {
                 }
             }));
         }
-        
+
         register() {
             var self = this;
             if (self.code().code == "CODE_004") {
@@ -303,6 +301,8 @@ module cmm009.a.viewmodel {
             var self = this;
             if (self.code().code == "CODE_004") {
                 var _dt = self.dataSource();
+                var _dtflat = nts.uk.util.flatArray(_dt, 'children');
+                debugger;
                 var _code = self.singleSelectedCode();
                 var current = self.findHira(_code, _dt);
                 let deleteobj = new model.DepartmentDeleteDto(current.departmentCode, current.historyId, current.hierarchyCode);
@@ -399,49 +399,6 @@ module cmm009.a.viewmodel {
                 }).ifNo(function() { });
             }
         }
-
-        findByCode_Wkp(items: Array<viewmodel.model.Dto>, newValue: string): viewmodel.model.Dto {
-            let self = this;
-            let node: viewmodel.model.Dto;
-            _.find(items, function(obj: viewmodel.model.Dto) {
-                if (!node) {
-                    if (obj.departmentCode == newValue) {
-                        node = obj;
-                        self.currentItem_treegrid(node);
-                    }
-                }
-            });
-            return node;
-        };
-
-        findByCode_Dep(items: Array<viewmodel.model.Dto>, newValue: string): viewmodel.model.Dto {
-            let self = this;
-            let node: viewmodel.model.Dto;
-            _.find(items, function(obj: viewmodel.model.Dto) {
-                if (!node) {
-                    if (obj.departmentCode == newValue) {
-                        node = obj;
-                        self.currentItem_treegrid(node);
-                        console.log("===" + self.currentItem_treegrid());
-                    }
-                }
-            });
-            return node;
-        };
-
-        findHist_Wkp(items: Array<viewmodel.model.HistoryDto>, newValue: string): viewmodel.model.HistoryDto {
-            let self = this;
-            let node: viewmodel.model.HistoryDto;
-            _.find(items, function(obj: viewmodel.model.HistoryDto) {
-                if (!node) {
-                    if (obj.startDate == newValue) {
-                        node = obj;
-                        self.itemHist(node);
-                    }
-                }
-            });
-            return node;
-        };
 
         findHira(value: string, sources) {
             let self = this;
@@ -614,7 +571,7 @@ module cmm009.a.viewmodel {
                     service.deleteHistory(self.itemHistId()[0].historyId)
                         .done(function() {
                             console.log("done");
-                            // cap nhat endate thang sau --> 9999/21/31
+                            // cap nhat endate thang sau --> 9999/12/31
                             var dfd = $.Deferred();
                             service.updateEndDateByHistoryId(self.itemHistId()[1].historyId)
                                 .done(function() {
