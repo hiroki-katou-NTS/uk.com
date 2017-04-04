@@ -61,8 +61,6 @@ module qmm034.a.viewmodel {
             let self = this;
             self.countStartDateChange += 1;
             self.currentEra(self.getEra(codeChanged));
-            self.dirtyObject.reset();
-            
             self.date(self.currentEra().startDate().toString());
             self.startDate(self.currentEra().startDate());
             self.isDeleteEnable(true);
@@ -73,6 +71,8 @@ module qmm034.a.viewmodel {
                     self.isEnableCode(true);
                 }
             });    
+            if (self.dirtyObject !== undefined)
+                self.dirtyObject.reset();
             self.previousCurrentCode = codeChanged;
         }
         
@@ -247,7 +247,8 @@ module qmm034.a.viewmodel {
             self.isDeleteEnable(false);
             self.isEnableCode(true);
             self.isUpdate(false);
-            self.dirtyObject.reset();
+            if (self.dirtyObject !== undefined)
+                self.dirtyObject.reset();
             $("#A_INP_001").focus();
         }
         
