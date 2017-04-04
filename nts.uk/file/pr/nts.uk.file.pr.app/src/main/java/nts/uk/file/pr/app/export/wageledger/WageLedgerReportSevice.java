@@ -177,7 +177,7 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 		if (query.layoutType == LayoutType.NewLayout) {
 			this.newGenerator.generate(context.getGeneratorContext(), newLayoutReportData, query);
 		} else {
-			this.oldGenerator.generate(context.getGeneratorContext(), fakeReportData);
+			this.oldGenerator.generate(context.getGeneratorContext(), fakeReportData, query);
 		}
 	}
 	
