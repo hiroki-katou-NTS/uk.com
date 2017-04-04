@@ -336,6 +336,7 @@ module nts.uk.pr.view.qmm008.c {
                 self.listPensionAvgearnModel().forEach(item => {
                     data.push(ko.toJS(item));
                 });
+                self.listPensionAvgearnModel([]);
                 return data;
             }
 

@@ -269,6 +269,7 @@ var nts;
                                     self.listPensionAvgearnModel().forEach(function (item) {
                                         data.push(ko.toJS(item));
                                     });
+                                    self.listPensionAvgearnModel([]);
                                     return data;
                                 };
                                 ScreenModel.prototype.calculateHealthInsuranceAvgEarnModel = function (levelMasterSetting) {

@@ -222,6 +222,7 @@ var nts;
                                     self.listHealthInsuranceAvgearn().forEach(function (item) {
                                         data.push(ko.toJS(item));
                                     });
+                                    self.listHealthInsuranceAvgearn([]);
                                     return data;
                                 };
                                 ScreenModel.prototype.calculateHealthInsuranceAvgEarnModel = function (levelMasterSetting) {

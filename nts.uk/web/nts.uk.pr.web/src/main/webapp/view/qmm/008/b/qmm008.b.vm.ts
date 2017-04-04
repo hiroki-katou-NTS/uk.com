@@ -276,6 +276,8 @@ module nts.uk.pr.view.qmm008.b {
                 self.listHealthInsuranceAvgearn().forEach(item => {
                     data.push(ko.toJS(item));
                 });
+                //reset listHealthInsuranceAvgearn
+                self.listHealthInsuranceAvgearn([]);
                 return data;
             }
 
