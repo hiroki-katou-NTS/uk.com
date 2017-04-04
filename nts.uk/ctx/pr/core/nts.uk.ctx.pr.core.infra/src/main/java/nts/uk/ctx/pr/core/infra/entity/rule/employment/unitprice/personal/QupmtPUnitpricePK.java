@@ -18,13 +18,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Embeddable
-public class QupmtPUnitpricePK implements Serializable {
-
+public class QupmtPUnitpricePK implements Serializable{/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
-
-	@Column(name = "CCD")
+    
+	@Column(name="CCD")
 	public String companyCode;
-
-	@Column(name = "P_UNITPRICE_CD")
+	
+	@Column(name="P_UNITPRICE_CD")
 	public String personalUnitPriceCode;
 }
