@@ -263,7 +263,7 @@ module cmm013.a.viewmodel {
                 positionInfor.chkInsert = self.inp_002_enable();
                 positionInfor.jobTitleInfor.push(jobInfor);
                 service.registry(positionInfor).done(function() {
-
+                    
                     //clear het bien toan cuc
 
                 })
@@ -294,44 +294,44 @@ module cmm013.a.viewmodel {
 
 
 
-//
-//        addHist() {
-//            var self = this;
-//            var dfd = $.Deferred<any>();
-//            self.startDateAddNew(nts.uk.ui.windows.getShared('startNew'));
-//            var i = 0;
-//            //check xem position da duoc nhap chua
-//            //ko ton tai viec co history nhung ko co position
-//            if (!self.checkPositionValue()) {
-//                return;
-//            } else {
-//                //lay du lieu dau tien cua list history de insert
-//                var currentHist = new model.ListHistoryDto(self.listbox()[0].companyCode, self.listbox()[0].startDate, '9999/12/31', self.listbox()[0].historyId);
-//                //dudt
-//                if (!currentHist) {
-//                    return false;
-//                }
-//                if (!currentHist.historyId) {
-//                    service.addHist(currentHist).done(function() {
-//                        nts.uk.ui.windows.setShared('startNew', '', true);
-//                        self.startPage();
-//                    }).fail(function(res) {
-//                        alert('fail');
-//                        dfd.reject(res);
-//                    })
-//                }
-//                else {
-//                    service.updateHist(currentHist).done(function() {
-//                        nts.uk.ui.windows.setShared('startNew', '', true);
-//                        self.startPage();
-//                    }).fail(function(res) {
-//                        alert('fail');
-//                        dfd.reject(res);
-//                    })
-//                }
-//            }
-//
-//        }
+
+        addHist() {
+            var self = this;
+            var dfd = $.Deferred<any>();
+            self.startDateAddNew(nts.uk.ui.windows.getShared('startNew'));
+            var i = 0;
+            //check xem position da duoc nhap chua
+            //ko ton tai viec co history nhung ko co position
+            if (!self.checkPositionValue()) {
+                return;
+            } else {
+                //lay du lieu dau tien cua list history de insert
+                var currentHist = new model.ListHistoryDto(self.listbox()[0].companyCode, self.listbox()[0].startDate, '9999/12/31', self.listbox()[0].historyId);
+                //dudt
+                if (!currentHist) {
+                    return false;
+                }
+                if (!currentHist.historyId) {
+                    service.registry(currentHist).done(function() {
+                        nts.uk.ui.windows.setShared('startNew', '', true);
+                        self.startPage();
+                    }).fail(function(res) {
+                        alert('fail');
+                        dfd.reject(res);
+                    })
+                }
+                else {
+                    service.updateHist(currentHist).done(function() {
+                        nts.uk.ui.windows.setShared('startNew', '', true);
+                        self.startPage();
+                    }).fail(function(res) {
+                        alert('fail');
+                        dfd.reject(res);
+                    })
+                }
+            }
+
+        }
 
        
          getAllJobHistAfterHandler(): any {

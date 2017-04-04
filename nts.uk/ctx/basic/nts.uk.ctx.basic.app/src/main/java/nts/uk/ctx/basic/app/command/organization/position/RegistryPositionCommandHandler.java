@@ -6,8 +6,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.EnumType;
+import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
@@ -27,7 +28,8 @@ import nts.uk.ctx.basic.dom.organization.position.PresenceCheckScopeSet;
 import nts.uk.ctx.basic.dom.organization.position.ReferenceSettings;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.primitive.Memo;
-
+@Stateless
+@Transactional
 public class RegistryPositionCommandHandler extends CommandHandler<RegistryPositionCommand> {
 	@Inject
 	private PositionRepository positionRepository;

@@ -191,6 +191,39 @@ var cmm013;
                     }
                     return true;
                 };
+                ScreenModel.prototype.addHist = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    self.startDateAddNew(nts.uk.ui.windows.getShared('startNew'));
+                    var i = 0;
+                    if (!self.checkPositionValue()) {
+                        return;
+                    }
+                    else {
+                        var currentHist = new model.ListHistoryDto(self.listbox()[0].companyCode, self.listbox()[0].startDate, '9999/12/31', self.listbox()[0].historyId);
+                        if (!currentHist) {
+                            return false;
+                        }
+                        if (!currentHist.historyId) {
+                            a.service.registry(currentHist).done(function () {
+                                nts.uk.ui.windows.setShared('startNew', '', true);
+                                self.startPage();
+                            }).fail(function (res) {
+                                alert('fail');
+                                dfd.reject(res);
+                            });
+                        }
+                        else {
+                            a.service.updateHist(currentHist).done(function () {
+                                nts.uk.ui.windows.setShared('startNew', '', true);
+                                self.startPage();
+                            }).fail(function (res) {
+                                alert('fail');
+                                dfd.reject(res);
+                            });
+                        }
+                    }
+                };
                 ScreenModel.prototype.getAllJobHistAfterHandler = function () {
                     var self = this;
                     var dfd = $.Deferred();
