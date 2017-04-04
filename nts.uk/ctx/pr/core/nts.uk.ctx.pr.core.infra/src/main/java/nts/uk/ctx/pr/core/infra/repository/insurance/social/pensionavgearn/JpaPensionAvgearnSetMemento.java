@@ -18,7 +18,7 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPens
 public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 
 	/** The type value. */
-	protected QismtPensionAvgearn typeValue;
+	private QismtPensionAvgearn typeValue;
 
 	/**
 	 * Instantiates a new jpa pension avgearn set memento.

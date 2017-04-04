@@ -183,11 +183,12 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	@POST
 	@Path("findbymonth/{baseMonth}")
 	public List<WageTableItemModel> findByMonth(@PathParam("baseMonth") Integer baseMonth) {
-		List<WageTableItemModel> wtItems = wtHeadRepo
-				.getWageTableByBaseMonth(baseMonth).stream().map(item -> WageTableItemModel
-						.builder().code(item.getCode().v()).name(item.getName().v()).build())
-				.collect(Collectors.toList());
-		return wtItems;
+		// Find by month year value.
+		List<WtHead> wtHeadList = wtHeadRepo.getWageTableByBaseMonth(baseMonth);
+
+		// Return.
+		return wtHeadList.stream().map(item -> WageTableItemModel.builder().code(item.getCode().v())
+				.name(item.getName().v()).build()).collect(Collectors.toList());
 	}
 
 	/**
@@ -200,11 +201,12 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	@POST
 	@Path("findbycodes")
 	public List<WageTableItemModel> findByCodes(WageTableItemInModel input) {
-		List<WageTableItemModel> wtItems = wtHeadRepo
-				.getWageTableByCodes(input.getCodes()).stream().map(item -> WageTableItemModel
-						.builder().code(item.getCode().v()).name(item.getName().v()).build())
-				.collect(Collectors.toList());
-		return wtItems;
+		// Find by codes
+		List<WtHead> wtHeadList = wtHeadRepo.getWageTableByCodes(input.getCodes());
+
+		// Return
+		return wtHeadList.stream().map(item -> WageTableItemModel.builder().code(item.getCode().v())
+				.name(item.getName().v()).build()).collect(Collectors.toList());
 	}
 
 	/**
@@ -217,8 +219,10 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	@POST
 	@Path("init")
 	public HistoryModel initTable(WtInitCommand command) {
+		// Execute handler.
 		WtHistory history = this.wtInitCommandHandler.handle(command);
-		// Ret.
+
+		// Return.
 		return HistoryModel.builder().uuid(history.getUuid()).start(history.getStart().v())
 				.end(history.getEnd().v()).build();
 	}
@@ -232,6 +236,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	@POST
 	@Path("update")
 	public void update(WtUpdateCommand command) {
+		// Execute handler.
 		this.wtUpdateCommandHandler.handle(command);
 	}
 
@@ -276,10 +281,13 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	@POST
 	@Path("reference/genitem")
 	public SettingInfoOutModel generateSettingItem(SettingInfoInModel input) {
+		// Create model.
 		SettingInfoOutModel model = new SettingInfoOutModel();
 
+		// Get the company code
 		String companyCode = AppContexts.user().companyCode();
 
+		// Convert to ElementSetting from dto.
 		List<ElementSetting> elementSettings = input.getSettings().stream().map(item -> {
 			if (ElementType.valueOf(item.getType()).isCodeMode) {
 				return new ElementSetting(DemensionNo.valueOf(item.getDemensionNo()),
@@ -294,9 +302,11 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 			}
 		}).collect(Collectors.toList());
 
+		// Generate setting items.
 		elementSettings = elementItemFactory.generate(companyCode, input.getHistoryId(),
 				elementSettings);
 
+		// Put item name
 		List<ElementSettingDto> elementSettingDtos = elementSettings.stream().map(item -> {
 
 			ElementSettingDto elementSettingDto = ElementSettingDto.builder()
@@ -329,17 +339,21 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 				elementSettingDto.setInterval(stepElementSetting.getInterval().v());
 			}
 
+			// Put demension name
 			Optional<WtElement> optWtElement = this.wtElementRepo
 					.findByHistoryId(input.getHistoryId());
 			elementSettingDto.setDemensionName(this.wtElementService.getDemensionName(companyCode,
 					optWtElement.get().getReferenceCode(), item.getType()));
 
+			// Return
 			return elementSettingDto;
 
 		}).collect(Collectors.toList());
 
+		// Set model
 		model.setElementSettings(elementSettingDtos);
 
+		// Return
 		return model;
 	}
 

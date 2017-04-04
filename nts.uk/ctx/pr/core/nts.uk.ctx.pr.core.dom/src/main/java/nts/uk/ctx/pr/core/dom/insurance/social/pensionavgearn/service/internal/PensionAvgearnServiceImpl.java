@@ -26,9 +26,12 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 	@Override
 	public void validateRequiredItem(PensionAvgearn pensionAvgearn) {
 		// Validate required item
-		if (pensionAvgearn.getChildContributionAmount() == null || pensionAvgearn.getCompanyFund() == null
-				|| pensionAvgearn.getCompanyFundExemption() == null || pensionAvgearn.getCompanyPension() == null
-				|| pensionAvgearn.getPersonalFund() == null || pensionAvgearn.getPersonalFundExemption() == null
+		if (pensionAvgearn.getChildContributionAmount() == null 
+				|| pensionAvgearn.getCompanyFund() == null
+				|| pensionAvgearn.getCompanyFundExemption() == null 
+				|| pensionAvgearn.getCompanyPension() == null
+				|| pensionAvgearn.getPersonalFund() == null 
+				|| pensionAvgearn.getPersonalFundExemption() == null
 				|| pensionAvgearn.getPersonalPension() == null) {
 			throw new BusinessException("ER001");
 		}
