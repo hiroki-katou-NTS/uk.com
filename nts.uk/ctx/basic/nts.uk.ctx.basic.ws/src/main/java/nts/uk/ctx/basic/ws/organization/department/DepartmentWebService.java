@@ -62,7 +62,7 @@ public class DepartmentWebService extends WebService {
 	public GetCodeDto getCode() {
 		String department = "CODE_004";
 		String workplace = "CODE_005";
-		GetCodeDto dto = new GetCodeDto(department);
+		GetCodeDto dto = new GetCodeDto(workplace);
 		return dto;
 	}
 

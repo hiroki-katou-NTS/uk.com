@@ -7,7 +7,7 @@ import nts.uk.shr.com.primitive.Memo;
 
 public interface WorkPlaceRepository {
 	
-	void add(WorkPlace workPlace);
+void add(WorkPlace workPlace);
 	
 	void update(WorkPlace workPlace);
 	
@@ -17,6 +17,14 @@ public interface WorkPlaceRepository {
 	
 	Optional<WorkPlace> findSingle(String companyCode, WorkPlaceCode workPlaceCode, String historyId);
 	
-	List<WorkPlace> findAll(String companyCode);
+	List<WorkPlace> findAllByHistory(String companyCode, String historyId);
+	
+	List<WorkPlace> findHistories(String companyCode);
+	
+	boolean checkExist(String companyCode);
+	
+	Optional<WorkPlaceMemo> findMemo(String companyCode, String historyId);
+	
+	boolean isDuplicateWorkPlaceCode(String companyCode, WorkPlaceCode workPlaceCode);
 
 }
