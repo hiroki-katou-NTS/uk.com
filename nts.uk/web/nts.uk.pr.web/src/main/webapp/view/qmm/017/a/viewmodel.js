@@ -127,9 +127,9 @@ var nts;
                 self.viewModel017e = ko.observable(new qmm017.EScreen());
                 self.viewModel017f = ko.observable(new qmm017.FScreen());
                 self.viewModel017g = ko.observable(new qmm017.GScreen());
-                self.viewModel017h = ko.observable(new qmm017.HScreen());
+                self.viewModel017h = ko.observable(new qmm017.HScreen(self));
                 self.viewModel017i = ko.observable(new qmm017.IScreen());
-                self.viewModel017r = ko.observable(new qmm017.RScreen());
+                self.viewModel017r = ko.observable(new qmm017.RScreen(self));
             }
             ScreenModel.prototype.placeItemNameToTextArea = function (mode, self) {
                 if (mode === 0) {
@@ -190,6 +190,21 @@ var nts;
                     }
                     self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemDetailDisplayName, $("#input-text")[0].selectionStart));
                 }
+                else if (mode === 2) {
+                    var currentTextArea = self.viewModel017c().formulaManualContent().textArea();
+                    var itemType = _.find(self.viewModel017r().listBoxItemType().itemList(), function (itemType) {
+                        return itemType.code === self.viewModel017r().listBoxItemType().selectedCode();
+                    });
+                    var itemTypeDisplayName = itemType.name.slice(7, 12);
+                    var itemDetailDisplayName = '';
+                    if (self.viewModel017r().listBoxItems().selectedCode() !== '') {
+                        var itemDetail = _.find(self.viewModel017r().listBoxItems().itemList(), function (item) {
+                            return item.code === self.viewModel017r().listBoxItems().selectedCode();
+                        });
+                        itemDetailDisplayName = itemDetail.name;
+                    }
+                    self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemTypeDisplayName + itemDetailDisplayName, $("#input-text")[0].selectionStart));
+                }
             };
             ScreenModel.prototype.start = function () {
                 var self = this;
@@ -247,11 +262,18 @@ var nts;
                     else if (self.viewModel017b().selectedDifficultyAtr() === 0 && self.viewModel017b().selectedConditionAtr() === '1') {
                         referenceMasterNo = self.viewModel017b().comboBoxUseMaster().selectedCode();
                     }
+                    var startDate = '';
+                    if (self.viewModel017b().startYearMonth().indexOf('/') !== -1) {
+                        startDate = self.viewModel017b().startYearMonth().replace('/', '');
+                    }
+                    else {
+                        startDate = self.viewModel017b().startYearMonth();
+                    }
                     var command = {
                         formulaCode: self.viewModel017b().formulaCode(),
                         formulaName: self.viewModel017b().formulaName(),
                         difficultyAtr: self.viewModel017b().selectedDifficultyAtr(),
-                        startDate: self.viewModel017b().startYearMonth(),
+                        startDate: startDate,
                         endDate: 999912,
                         conditionAtr: self.viewModel017b().selectedConditionAtr(),
                         refMasterNo: referenceMasterNo
@@ -547,4 +569,3 @@ var nts;
         qmm017.Node = Node;
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=viewmodel.js.map

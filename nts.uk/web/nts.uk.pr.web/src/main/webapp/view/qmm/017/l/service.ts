@@ -45,8 +45,8 @@ module nts.uk.pr.view.qmm017.l {
 
     export module model {
         export class CompanyUnitPriceDto {
-            companyUnitPriceCode: string;
-            companyUnitPriceName: string;
+            unitPriceCode: string;
+            unitPriceName: string;
         }
 
         export class PersonalUnitPriceDto {

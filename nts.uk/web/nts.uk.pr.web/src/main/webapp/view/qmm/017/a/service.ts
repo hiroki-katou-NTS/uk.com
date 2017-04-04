@@ -8,7 +8,8 @@ module nts.qmm017 {
             updateFormula: "pr/formula/formulaMaster/updateFormulaMaster",
             getListCompanyUnitPrice: "pr/proto/unitprice/findbydate/",
             getListPersonalUnitPrice: "pr/core/rule/employment/unitprice/personal/find/all",
-            getListItemMaster: "pr/core/item/findall/category/"
+            getListItemMaster: "pr/core/item/findall/category/",
+            findOtherFormulas: "pr/formula/formulaMaster/findOtherFormulas/"
         }
 
         export function getAllFormula(): JQueryPromise<Array<model.FormulaDto>> {
@@ -34,7 +35,7 @@ module nts.qmm017 {
                 })
             return dfd.promise();
         }
-        
+
         export function getFormulaDetail(formulaCode: string, historyId: string, difficultyAtr: number): JQueryPromise<model.FormulaDetailDto> {
             var dfd = $.Deferred<model.FormulaDetailDto>();
             nts.uk.request.ajax("pr", paths.getFormulaDetail + "/" + formulaCode + "/" + historyId + "/" + difficultyAtr)
@@ -46,27 +47,39 @@ module nts.qmm017 {
                 })
             return dfd.promise();
         }
-        
+
+        export function findOtherFormulas(formulaCode: string, baseYearMonth: number) {
+            var dfd = $.Deferred<any>();
+            nts.uk.request.ajax("pr", paths.findOtherFormulas + formulaCode + "/" + baseYearMonth)
+                .done(function(res) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+
         export function registerFormulaMaster(command): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
-            nts.uk.request.ajax(paths.registerFormulaMaster, command).done(function(){
-                dfd.resolve();    
-            }).fail(function(res){
+            nts.uk.request.ajax(paths.registerFormulaMaster, command).done(function() {
+                dfd.resolve();
+            }).fail(function(res) {
                 dfd.reject(res);
             });
             return dfd.promise();
         }
-        
+
         export function updateFormulaMaster(command): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
-            nts.uk.request.ajax(paths.updateFormula, command).done(function(){
-                dfd.resolve();    
-            }).fail(function(res){
+            nts.uk.request.ajax(paths.updateFormula, command).done(function() {
+                dfd.resolve();
+            }).fail(function(res) {
                 dfd.reject(res);
             });
             return dfd.promise();
         }
-        
+
         export function getListCompanyUnitPrice(baseDate): JQueryPromise<Array<model.CompanyUnitPriceDto>> {
             var dfd = $.Deferred<Array<model.CompanyUnitPriceDto>>();
             nts.uk.request.ajax("pr", paths.getListCompanyUnitPrice + baseDate)
@@ -168,13 +181,13 @@ module nts.qmm017 {
             maxLimitValue: number;
             minLimitValue: number;
             referenceItemCodes: Array<string>;
-            constructor() {    
+            constructor() {
             }
         }
-        
+
         export class CompanyUnitPriceDto {
-            companyUnitPriceCode: string;
-            companyUnitPriceName: string;
+            unitPriceCode: string;
+            unitPriceName: string;
         }
 
         export class PersonalUnitPriceDto {

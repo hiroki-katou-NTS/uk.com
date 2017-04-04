@@ -1,51 +1,43 @@
 module nts.qmm017 {
 
-    export class ListBoxH {
-        itemList: KnockoutObservableArray<any>;
-        itemName: KnockoutObservable<string>;
-        currentCode: KnockoutObservable<number>
-        selectedCode: KnockoutObservable<number>;
-        selectedCodes: KnockoutObservableArray<number>;
-        isEnable: KnockoutObservable<boolean>;
-
-        constructor(data) {
-            var self = this;
-            self.itemList = ko.observableArray(data);
-            self.itemName = ko.observable('');
-            self.currentCode = ko.observable(3);
-            self.selectedCode = ko.observable(null)
-            self.isEnable = ko.observable(true);
-            self.selectedCodes = ko.observableArray([]);
-
-            $('#list-box-h').on('selectionChanging', function(event) {
-                console.log('Selecting value:' + (<any>event.originalEvent).detail);
-            })
-            $('#list-box-h').on('selectionChanged', function(event: any) {
-                console.log('Selected value:' + (<any>event.originalEvent).detail)
-            })
-        }
-    }
-
     export class HScreen {
-        hList001: KnockoutObservable<ListBoxH>;
-        hList002: KnockoutObservable<ListBoxH>;
+        listBoxItemType: KnockoutObservable<ListBox>;
+        listBoxItems: KnockoutObservable<ListBox>;
+        formulaCode: KnockoutObservable<string>;
+        baseYm: KnockoutObservable<any>;
 
-        constructor() {
+        constructor(root) {
+            var self = this;
+            self.formulaCode = ko.observable(root.viewModel017b().formulaCode());
+            self.baseYm = ko.observable(root.viewModel017b().startYearMonth());
+            root.viewModel017b().formulaCode.subscribe(function(codeChange) {
+                self.formulaCode(codeChange);
+            });
+            root.viewModel017b().startYearMonth.subscribe(function(yM) {
+                self.baseYm(yM);
+            });
             var hList001 = [
-                { code: '1', name: '支給項目（支給＠） h' },
-                { code: '2', name: '控除項目（控除＠） h' },
-                { code: '3', name: '勤怠項目（勤怠＠） h' },
-                { code: '4', name: '明細割増単価項目（割増し単価＠） h' }
+                { code: '1', name: '全て' },
             ];
-            var hList002 = [
-                { code: '1', name: 'child1' },
-                { code: '2', name: 'child2' },
-                { code: '3', name: 'child3' },
-                { code: '4', name: 'child4' }
-            ];
-            self.hList001 = ko.observable(new ListBoxH(hList001));
-            self.hList002 = ko.observable(new ListBoxH(hList002));
+            self.listBoxItemType = ko.observable(new ListBox(hList001));
+            self.listBoxItems = ko.observable(new ListBox([]));
+            self.listBoxItemType().selectedCode.subscribe(function(codeChange) {
 
+                if (codeChange === '1') {
+                    self.listBoxItems().itemList([]);
+                    let baseYm = 0;
+                    if (self.baseYm().indexOf('/') !== -1) {
+                        baseYm = self.baseYm().replace('/', '');
+                    } else {
+                        baseYm = self.baseYm();
+                    }
+                    service.findOtherFormulas(self.formulaCode(), baseYm).done(function(lstFormula) {
+                        _.forEach(lstFormula, function(formula) {
+                            self.listBoxItems().itemList.push({ code: formula.formulaCode, name: formula.formulaName });
+                        });
+                    });
+                }
+            });
         }
     }
 }

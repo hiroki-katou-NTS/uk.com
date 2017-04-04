@@ -145,9 +145,9 @@ module nts.qmm017 {
             self.viewModel017e = ko.observable(new EScreen());
             self.viewModel017f = ko.observable(new FScreen());
             self.viewModel017g = ko.observable(new GScreen());
-            self.viewModel017h = ko.observable(new HScreen());
+            self.viewModel017h = ko.observable(new HScreen(self));
             self.viewModel017i = ko.observable(new IScreen());
-            self.viewModel017r = ko.observable(new RScreen());
+            self.viewModel017r = ko.observable(new RScreen(self));
         }
 
         placeItemNameToTextArea(mode, self) {
@@ -196,6 +196,20 @@ module nts.qmm017 {
                     }
                 }
                 self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemDetailDisplayName, $("#input-text")[0].selectionStart));
+            } else if (mode === 2) {
+                let currentTextArea = self.viewModel017c().formulaManualContent().textArea();
+                let itemType = _.find(self.viewModel017r().listBoxItemType().itemList(), function(itemType) {
+                    return itemType.code === self.viewModel017r().listBoxItemType().selectedCode();
+                });
+                let itemTypeDisplayName = itemType.name.slice(7, 12);
+                let itemDetailDisplayName = '';
+                if (self.viewModel017r().listBoxItems().selectedCode() !== '') {
+                    let itemDetail = _.find(self.viewModel017r().listBoxItems().itemList(), function(item) {
+                        return item.code === self.viewModel017r().listBoxItems().selectedCode();
+                    });
+                    itemDetailDisplayName = itemDetail.name;
+                }
+                self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemTypeDisplayName + itemDetailDisplayName, $("#input-text")[0].selectionStart));
             }
         }
 
@@ -267,11 +281,17 @@ module nts.qmm017 {
                 } else if (self.viewModel017b().selectedDifficultyAtr() === 0 && self.viewModel017b().selectedConditionAtr() === '1') {
                     referenceMasterNo = self.viewModel017b().comboBoxUseMaster().selectedCode();
                 }
+                let startDate = '';
+                if(self.viewModel017b().startYearMonth().indexOf('/') !== -1){
+                    startDate = self.viewModel017b().startYearMonth().replace('/', '');
+                } else {
+                    startDate = self.viewModel017b().startYearMonth();
+                }
                 let command = {
                     formulaCode: self.viewModel017b().formulaCode(),
                     formulaName: self.viewModel017b().formulaName(),
                     difficultyAtr: self.viewModel017b().selectedDifficultyAtr(),
-                    startDate: self.viewModel017b().startYearMonth(),
+                    startDate: startDate,
                     endDate: 999912,
                     conditionAtr: self.viewModel017b().selectedConditionAtr(),
                     refMasterNo: referenceMasterNo

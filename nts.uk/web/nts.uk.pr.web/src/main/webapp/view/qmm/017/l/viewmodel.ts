@@ -203,7 +203,7 @@ module nts.uk.pr.view.qmm017.l {
                         alert(res);
                         dfdGetTimeItems.reject();
                     });
-                service.getListCompanyUnitPrice(self.startYm)
+                service.getListCompanyUnitPrice(self.startYm.replace('/', ''))
                     .done(function(lstCompanyUnitPrice: Array<model.CompanyUnitPriceDto>) {
                         if (lstCompanyUnitPrice && lstCompanyUnitPrice.length > 0) {
                             _.forEach(lstCompanyUnitPrice, item => {
