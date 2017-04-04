@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.report.ws.insurance;
 
 import java.util.ArrayList;
@@ -10,10 +14,18 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.report.app.insurance.find.dto.InsuranceOfficeFindOutDto;
 
+/**
+ * The Class OfficeWs.
+ */
 @Path("ctx/pr/report/insurance/office")
 @Produces("application/json")
 public class OfficeWs extends WebService {
 
+	/**
+	 * Find all.
+	 *
+	 * @return the list
+	 */
 	@POST
 	@Path("findAll")
 	public List<InsuranceOfficeFindOutDto> findAll() {
@@ -30,4 +42,5 @@ public class OfficeWs extends WebService {
 
 		return officeList;
 	}
+
 }

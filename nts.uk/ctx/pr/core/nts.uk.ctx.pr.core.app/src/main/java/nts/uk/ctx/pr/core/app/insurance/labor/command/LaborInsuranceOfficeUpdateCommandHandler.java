@@ -29,7 +29,7 @@ public class LaborInsuranceOfficeUpdateCommandHandler
 
 	/** The Labor insurance office service. */
 	@Inject
-	private LaborInsuranceOfficeService LaborInsuranceOfficeService;
+	private LaborInsuranceOfficeService laborInsuranceOfficeService;
 
 	/*
 	 * (non-Javadoc)
@@ -51,7 +51,7 @@ public class LaborInsuranceOfficeUpdateCommandHandler
 		LaborInsuranceOffice laborInsuranceOffice = command.toDomain(companyCode);
 		// validate
 		laborInsuranceOffice.validate();
-		LaborInsuranceOfficeService.validateRequiredItem(laborInsuranceOffice);
+		laborInsuranceOfficeService.validateRequiredItem(laborInsuranceOffice);
 		// call respository
 		this.laborInsuranceOfficeRepository.update(laborInsuranceOffice);
 	}

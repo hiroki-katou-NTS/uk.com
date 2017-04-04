@@ -180,7 +180,7 @@ module nts.uk.pr.view.qmm016.l {
                 var self = this;
                 service.findAllCertifyGroup().done(data => {
                     self.lstCertifyGroup(data);
-                    if (code != null && code != undefined && code != '') {
+                    if (code && code != '') {
                         self.selectCodeLstLstCertifyGroup(code);
                         self.detailCertifyGroup(code);
                     } else {

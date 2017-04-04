@@ -23,7 +23,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.service.AccidentInsur
 public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateService {
 
 	/** The rate item count. */
-	private final int RATE_ITEM_COUNT = 10;
+	private static final int RATE_ITEM_COUNT = 10;
 
 	/** The accident insurance rate repo. */
 	@Inject

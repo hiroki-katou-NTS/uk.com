@@ -156,7 +156,7 @@ var nts;
                                     var self = this;
                                     l.service.findAllCertifyGroup().done(function (data) {
                                         self.lstCertifyGroup(data);
-                                        if (code != null && code != undefined && code != '') {
+                                        if (code && code != '') {
                                             self.selectCodeLstLstCertifyGroup(code);
                                             self.detailCertifyGroup(code);
                                         }
