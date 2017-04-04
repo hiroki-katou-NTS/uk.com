@@ -2,17 +2,17 @@ module qpp008.b.viewmodel {
     export class ScreenModel {
         printSetting: KnockoutObservable<PrintSettingModel>;
         hrchyIndexArray: KnockoutComputed<Array<number>>;
-
         /* SwictchButton*/
         roundingRules: KnockoutObservableArray<any>;
         roundingRules1: KnockoutObservableArray<any>;
-        departmentDate: KnockoutObservable<string>;
+
+        /* check dirty*/
+        printSettingDirty: nts.uk.ui.DirtyChecker;
 
         constructor() {
             let self = this;
             self.printSetting = ko.observable(new PrintSettingModel(null));
-            self.departmentDate = ko.observable(Date.now().toString());
-            
+            self.printSettingDirty = new nts.uk.ui.DirtyChecker(self.printSetting);
             /*Switch*/
             //B_SEL_010
             self.roundingRules = ko.observableArray([
@@ -24,34 +24,28 @@ module qpp008.b.viewmodel {
                 { code1: '0', name1: '表示する' },
                 { code1: '1', name1: '表示しない' },
             ]);
-            
+
             self.hrchyIndexArray = ko.computed(function() {
-                let itemsDetail = new Array<number>();
-                let hrchyIndexValue = new Array<boolean>();
-                hrchyIndexValue.push(self.printSetting().hrchyIndex1());
-                hrchyIndexValue.push(self.printSetting().hrchyIndex2());
-                hrchyIndexValue.push(self.printSetting().hrchyIndex3());
-                hrchyIndexValue.push(self.printSetting().hrchyIndex4());
-                hrchyIndexValue.push(self.printSetting().hrchyIndex5());
-                hrchyIndexValue.push(self.printSetting().hrchyIndex6());
-                hrchyIndexValue.push(self.printSetting().hrchyIndex7());
-                hrchyIndexValue.push(self.printSetting().hrchyIndex8());
-                hrchyIndexValue.push(self.printSetting().hrchyIndex9());
-                _.forEach(hrchyIndexValue, function(item, i){
-                    
-                    
+                let itemsDetail = [0, 0, 0, 0, 0];
+                let hrchyIndexSelect = self.printSetting().hrchyIndexSelectId().sort();
+                _.forEach(hrchyIndexSelect, function(item, i) {
+                    for (let x = 0; x < 5; x++) {
+                        if (itemsDetail[x] === 0 && i < 5) {
+                            itemsDetail[x] = item;
+                            break;
+                        }
+                    }
                 });
-                
                 return itemsDetail;
             }, self).extend({ deferred: true });
-
         }
 
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            self.loadData()
-            dfd.resolve();
+            self.loadData().done(function() {
+                dfd.resolve();
+            });
             return dfd.promise();
         }
 
@@ -60,21 +54,33 @@ module qpp008.b.viewmodel {
             let dfd = $.Deferred();
             service.getComparingPrintSet().done(function(data: PrintSettingMapping) {
                 self.printSetting(new PrintSettingModel(data));
-                dfd.resolve(data);
+                self.printSettingDirty.reset();
+                dfd.resolve();
             })
             return dfd.promise();
         }
 
         configurationPrintSetting(): any {
             let self = this;
-            service.insertUpdateData(new ConfigPrintSettingModel(self.printSetting()));
+            service.insertUpdateData(new ConfigPrintSettingModel(self.printSetting(), self.hrchyIndexArray())).done(function(){
+                 self.loadData();
+            });
         }
-
 
         closeDialog(): any {
-            nts.uk.ui.windows.close();
-        }
+            let self = this;
+            if (!self.printSettingDirty.isDirty()) {
+                nts.uk.ui.windows.close();
+                return;
+            }
+            nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
+                self.printSettingDirty.reset();
+                nts.uk.ui.windows.close();
+            }).ifCancel(function() {
+                return;
+            })
 
+        }
     }
 
     export class PrintSettingModel {
@@ -86,71 +92,39 @@ module qpp008.b.viewmodel {
         totalSet: KnockoutObservable<boolean> = ko.observable(true);
         sumEachDeprtSet: KnockoutObservable<boolean> = ko.observable(false);
         sumDepHrchyIndexSet: KnockoutObservable<boolean> = ko.observable(false);
-        hrchyIndex1: KnockoutObservable<boolean> = ko.observable(false);
-        hrchyIndex2: KnockoutObservable<boolean> = ko.observable(false);
-        hrchyIndex3: KnockoutObservable<boolean> = ko.observable(false);
-        hrchyIndex4: KnockoutObservable<boolean> = ko.observable(false);
-        hrchyIndex5: KnockoutObservable<boolean> = ko.observable(false);
-        hrchyIndex6: KnockoutObservable<boolean> = ko.observable(false);
-        hrchyIndex7: KnockoutObservable<boolean> = ko.observable(false);
-        hrchyIndex8: KnockoutObservable<boolean> = ko.observable(false);
-        hrchyIndex9: KnockoutObservable<boolean> = ko.observable(false);
+        hrchyIndexList: KnockoutObservableArray<HrchyIndexModel> = ko.observableArray([]);
+        hrchyIndexSelectId: KnockoutObservableArray<number> = ko.observableArray([]);
         constructor(settingMapping: PrintSettingMapping) {
+            let self = this;
+            for (let i = 1; i < 10; i++) {
+                self.hrchyIndexList.push(new HrchyIndexModel(i, i + " 階層"));
+            }
             if (settingMapping) {
-                this.plushBackColor(settingMapping.plushBackColor);
-                this.minusBackColor(settingMapping.minusBackColor);
-                this.showItemIfCfWithNull(settingMapping.showItemIfCfWithNull);
-                this.showItemIfSameValue(settingMapping.showItemIfSameValue);
-                this.showPayment(settingMapping.showPayment === 0 ? false : true);
-                this.totalSet(settingMapping.totalSet === 0 ? false : true);
-                this.sumEachDeprtSet(settingMapping.sumEachDeprtSet === 0 ? false : true);
-                this.sumDepHrchyIndexSet(settingMapping.sumDepHrchyIndexSet === 0 ? false : true);
-                this.mappingHrchyIndex(settingMapping.hrchyIndexList);
+                self.plushBackColor(settingMapping.plushBackColor);
+                self.minusBackColor(settingMapping.minusBackColor);
+                self.showItemIfCfWithNull(settingMapping.showItemIfCfWithNull);
+                self.showItemIfSameValue(settingMapping.showItemIfSameValue);
+                self.showPayment(settingMapping.showPayment === 0 ? false : true);
+                self.totalSet(settingMapping.totalSet === 0 ? false : true);
+                self.sumEachDeprtSet(settingMapping.sumEachDeprtSet === 0 ? false : true);
+                self.sumDepHrchyIndexSet(settingMapping.sumDepHrchyIndexSet === 0 ? false : true);
+                if (settingMapping.hrchyIndex1 > 0) { self.hrchyIndexSelectId.push(settingMapping.hrchyIndex1); }
+                if (settingMapping.hrchyIndex2 > 1) { self.hrchyIndexSelectId.push(settingMapping.hrchyIndex2); }
+                if (settingMapping.hrchyIndex3 > 2) { self.hrchyIndexSelectId.push(settingMapping.hrchyIndex3); }
+                if (settingMapping.hrchyIndex4 > 3) { self.hrchyIndexSelectId.push(settingMapping.hrchyIndex4); }
+                if (settingMapping.hrchyIndex5 > 4) { self.hrchyIndexSelectId.push(settingMapping.hrchyIndex5); }
             }
         }
-
-        mappingHrchyIndex(hrchyIndexList: Array<number>): void {
-            _.forEach(hrchyIndexList, function(value: number, i: number) {
-                switch (value) {
-                    case 1:
-                        if (i == 0) { this.hrchyIndex1(true); }
-                        break;
-                    case 2:
-                        if (i == 0 || i == 1) { this.hrchyIndex2(true); }
-                        break;
-                    case 3:
-                        if (i == 0 || i == 1 || i == 2) { this.hrchyIndex3(true); }
-                        break;
-                    case 4:
-                        if (i != 4) { this.hrchyIndex4(false); }
-                        break;
-                    case 5:
-                        this.hrchyIndex5(true);
-                        break;
-                    case 6:
-                        this.hrchyIndex6(true);
-                        break;
-                    case 7:
-                        this.hrchyIndex7(true);
-                        break;
-                    case 8:
-                        this.hrchyIndex8(true);
-                        break;
-                    case 9:
-                        this.hrchyIndex9(true);
-                        break;
-                }
-            });
-        }
     }
-    
-     export class HrchyIndexModel {
-        plushBackColor: string = "#cfe2f3";
-        minusBackColor: string = "#f4cccc";
-        constructor() {
-           
+
+    export class HrchyIndexModel {
+        id: number;
+        name: string;
+        constructor(id: number, name: string) {
+            let self = this;
+            self.id = id;
+            self.name = name;
         }
-       
     }
 
     export class PrintSettingMapping {
@@ -167,7 +141,6 @@ module qpp008.b.viewmodel {
         hrchyIndex3: number;
         hrchyIndex4: number;
         hrchyIndex5: number;
-        hrchyIndexList: Array<number>;
         constructor(plushBackColor: string, minusBackColor: string, showItemIfCfWithNull: number, showItemIfSameValue: number, showPayment: number,
             totalSet: number, sumEachDeprtSet: number, sumDepHrchyIndexSet: number, hrchyIndex1: number, hrchyIndex2: number,
             hrchyIndex3: number, hrchyIndex4: number, hrchyIndex5: number) {
@@ -184,11 +157,6 @@ module qpp008.b.viewmodel {
             this.hrchyIndex3 = hrchyIndex3;
             this.hrchyIndex4 = hrchyIndex4;
             this.hrchyIndex5 = hrchyIndex5;
-            this.hrchyIndexList.push(hrchyIndex1);
-            this.hrchyIndexList.push(hrchyIndex2);
-            this.hrchyIndexList.push(hrchyIndex3);
-            this.hrchyIndexList.push(hrchyIndex4);
-            this.hrchyIndexList.push(hrchyIndex5);
         }
     }
 
@@ -206,7 +174,7 @@ module qpp008.b.viewmodel {
         hrchyIndex3: number = 0;
         hrchyIndex4: number = 0;
         hrchyIndex5: number = 0;
-        constructor(printSettingModel: PrintSettingModel) {
+        constructor(printSettingModel: PrintSettingModel, hrchyIndexArray: Array<number>) {
             if (printSettingModel) {
                 this.plushBackColor = printSettingModel.plushBackColor();
                 this.minusBackColor = printSettingModel.minusBackColor();
@@ -216,24 +184,13 @@ module qpp008.b.viewmodel {
                 this.totalSet = (printSettingModel.totalSet() === true ? 1 : 0);
                 this.sumEachDeprtSet = (printSettingModel.sumEachDeprtSet() === true ? 1 : 0);
                 this.sumDepHrchyIndexSet = (printSettingModel.sumDepHrchyIndexSet() === true ? 1 : 0);
-                //                this.hrchyIndex1 = printSettingModel.hrchyIndex1();
-                //                this.hrchyIndex2 = printSettingModel.hrchyIndex2();
-                //                this.hrchyIndex3 = printSettingModel.hrchyIndex3;
-                //                this.hrchyIndex4 = printSettingModel.hrchyIndex4;
-                //                this.hrchyIndex5 = printSettingModel.hrchyIndex5;
+                this.hrchyIndex1 = hrchyIndexArray[0];
+                this.hrchyIndex2 = hrchyIndexArray[1];
+                this.hrchyIndex3 = hrchyIndexArray[2];
+                this.hrchyIndex4 = hrchyIndexArray[3];
+                this.hrchyIndex5 = hrchyIndexArray[4];
             }
         }
-        mappingHrchyIndex(printSetting: PrintSettingModel): void {
-            let listHrchyIndex = [0, 0, 0, 0, 0];
-            let x = 0;
-            if (printSetting.hrchyIndex1() === true) {
-                x++;
-                this.hrchyIndex1 = 1;
-                listHrchyIndex[0] = 1;
-            }
-            if (printSetting.hrchyIndex2() === true) {
 
-            }
-        }
     }
 }

@@ -1,8 +1,3 @@
-.div-title-page {
-	width: 100%;
-	border-bottom: grey solid 1px;
-}
-
 .div-title-content {
 	width: auto;
 	height: 35px;
@@ -46,7 +41,7 @@
 }
 
 #B_LBL_013 {
-	margin: 10px 0px 5px 30px;
+	margin: 0px 0px 5px 30px;
 }
 
 /* Checkbox css*/
@@ -63,11 +58,17 @@
 	margin: 5px 0px 20px 10px;
 }
 
-.nts-switch-button{
+.nts-switch-button {
 	width: 100px !important;
 	height: 30px !important;
 	font-size: 14px !important;
 }
+
+.col-100px .ntsCheckBox {
+	width: 100px !important;
+	padding-bottom: 10px !important;
+}
+
 /* Table css*/
 .tableCheckBox {
 	width: 90% !important;
@@ -79,14 +80,11 @@
 
 .tableCheckBoxChild {
 	width: 100% !important;
+	padding-left: 30px;
 }
 
 .tableCheckBoxChild td {
 	padding: 5px 0px 5px 30px;
-}
-
-.table_setting_color td {
-	
 }
 
 /* div css*/

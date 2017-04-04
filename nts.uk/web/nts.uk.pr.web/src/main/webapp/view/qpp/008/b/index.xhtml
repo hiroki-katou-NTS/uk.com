@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 700,
-					height : 900
+					width : 730,
+					height : 600
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -23,10 +23,7 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div class="contents-area-boder">
-					<div data-bind="with: printSetting">
-						<div class="div-title-page">
-							<span class="label" style="margin: 10px;">印刷設定</span>
-						</div>
+					<div data-bind="with: printSetting">						
 						<div class="div-title-content ">
 							<span class="label" id="B_LBL_001">明細・合計出力設定</span> <span
 								class="label" id="B_LBL_002">※ 2017/04/01 の部門構成で集計します。</span>
@@ -56,54 +53,16 @@
 											data-bind="ntsHelpButton: {image: 'test.img', position: 'right center', enable: true }">?</button>
 										<div class="div-checkbox-child">
 											<span class="label" id="B_LBL_003">累計したい%部門%の階層を指定（最大５つ）</span>
-											<table class="tableCheckBoxChild">
-												<tr>
-													<td><div id="B_SEL_014"
-															data-bind="ntsCheckBox: { checked: hrchyIndex1 }">1
-															階層</div></td>
-													<td>
-														<div id="B_SEL_015"
-															data-bind="ntsCheckBox: { checked: hrchyIndex2 }">2
-															階層</div>
-													</td>
-													<td>
-														<div id="B_SEL_016"
-															data-bind="ntsCheckBox: { checked: hrchyIndex3 }">3
-															階層</div>
-													</td>
-													<td>
-														<div id="B_SEL_017"
-															data-bind="ntsCheckBox: { checked: hrchyIndex4 }">4
-															階層</div>
-													</td>
-													<td>
-														<div id="B_SEL_018"
-															data-bind="ntsCheckBox: { checked: hrchyIndex5 }">5
-															階層</div>
-													</td>
-												</tr>
-												<tr>
-													<td><div id="B_SEL_019"
-															data-bind="ntsCheckBox: { checked: hrchyIndex6 }">6
-															階層</div></td>
-													<td>
-														<div id="B_SEL_020"
-															data-bind="ntsCheckBox: { checked: hrchyIndex7 }">7
-															階層</div>
-													</td>
-													<td>
-														<div id="B_SEL_021"
-															data-bind="ntsCheckBox: { checked: hrchyIndex8 }">8
-															階層</div>
-													</td>
-													<td>
-														<div id="B_SEL_022"
-															data-bind="ntsCheckBox: { checked: hrchyIndex9 }">9
-															階層</div>
-													</td>
-													<td></td>
-												</tr>
-											</table>
+											<div class="tableCheckBoxChild">
+												<div class="col-100px" style="" data-bind="ntsMultiCheckBox: {
+														options: hrchyIndexList,
+														optionsValue: 'id',
+														optionsText: 'name',
+															value: hrchyIndexSelectId,
+															enable: true
+														}">
+												</div>
+											</div>
 											<span class="label" id="B_LBL_013">※10階層計は部門計で確認できます。</span>
 										</div>
 									</td>
