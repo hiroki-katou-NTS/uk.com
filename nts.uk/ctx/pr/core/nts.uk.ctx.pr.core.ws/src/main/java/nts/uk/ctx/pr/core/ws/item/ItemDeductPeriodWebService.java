@@ -7,6 +7,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductperiod.AddItemDeductPeriodCommand;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductperiod.AddItemDeductPeriodCommandHandler;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductperiod.DeleteItemDeductPeriodCommand;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductperiod.DeleteItemDeductPeriodCommandHandler;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductperiod.UpdateItemDeductPeriodCommand;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductperiod.UpdateItemDeductPeriodCommandHandler;
 import nts.uk.ctx.pr.core.app.find.itemmaster.dto.itemdeductperiod.ItemDeductPeriodDto;
 import nts.uk.ctx.pr.core.app.find.itemmaster.itemdeductperiod.ItemDeductPeriodFinder;
 
@@ -19,6 +25,14 @@ public class ItemDeductPeriodWebService extends WebService {
 //	AddItemDeductPeriodCommandHandler addHandler;
 //	@Inject
 //	UpdateItemDeductPeriodCommandHandler updateHandler;
+	
+	@Inject
+	AddItemDeductPeriodCommandHandler addHandler;
+	@Inject
+	DeleteItemDeductPeriodCommandHandler deleteHandler;
+	@Inject
+	UpdateItemDeductPeriodCommandHandler updateHandler;
+
 
 	@POST
 	@Path("find/{itemCode}")
@@ -40,5 +54,12 @@ public class ItemDeductPeriodWebService extends WebService {
 //		this.updateHandler.handle(command);
 //
 //	}
+
+	@POST
+	@Path("delete")
+	public void deleteItemDeductPeriod(DeleteItemDeductPeriodCommand command) {
+		this.deleteHandler.handle(command);
+
+	}
 
 }

@@ -92,8 +92,8 @@
 											readonly: false}" />
 									</com:ko-if>
 									<com:ko-if bind="comboBoxBaseAmount().selectedCode() != '0'">
-										<button id="base-amount-button">選択</button>
-										<input id="base-amount-selection-items" data-bind="ntsTextEditor: { value: baseAmountSelectionItems, option: optionBaseAmountSelectionItems, enable:false}" />
+										<button id="base-amount-button" data-bind="click: openDialogP">選択</button>
+										<input id="base-amount-selection-items" data-bind="ntsTextEditor: { value: baseAmountSelectionItems, option: optionBaseAmountSelectionItems, enable:false, readonly: true}" />
 									</com:ko-if>
 								</div>
 							</td>
@@ -178,7 +178,7 @@
 								</div>
 							</td>
 						</tr>
-						<tr>
+						<tr>	
 							<td></td>
 							<td>
 								<div style="margin-top:5px" id="l_lbl_coefficient" class="separate-vertical"
