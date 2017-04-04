@@ -9,26 +9,27 @@ package nts.uk.file.pr.app.export.detailpaymentsalary.data;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.pr.report.dom.salarydetail.SalaryCategory;
 
 /**
- * The Class EmployeeDto.
+ * The Class EmployeeKey.
  *
  * @author duongnd
  */
 
 @Setter
 @Getter
-public class EmployeeDto {
-
+public class EmployeeKey {
+    
     /** The year month. */
     private String yearMonth;
-
-    /** The code. */
-    private String code;
     
-    /** The name. */
-    private String name;
+    /** The employee code. */
+    private String employeeCode;
     
-    /** The department. */
-    private DepartmentDto department;
+    /** The salary category. */
+    private SalaryCategory salaryCategory;
+    
+    /** The item name. */
+    private String itemName;
 }

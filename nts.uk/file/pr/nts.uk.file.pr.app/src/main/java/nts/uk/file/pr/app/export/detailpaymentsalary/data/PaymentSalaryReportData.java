@@ -8,6 +8,7 @@
 package nts.uk.file.pr.app.export.detailpaymentsalary.data;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,19 +22,22 @@ import lombok.Setter;
 @Setter
 @Getter
 public class PaymentSalaryReportData {
-
+    
     /** The header data. */
     private HeaderReportData headerData;
     
-    /** The payments. */
-    private List<RowItemDto> payments;
+    /** The employees. */
+    private List<EmployeeDto> employees; // employees are sorted by department level.
     
-    /** The deductions. */
-    private List<RowItemDto> deductions;
+    /** The map employee amount. */
+    private Map<EmployeeKey, Double> mapEmployeeAmount;
     
-    /** The attendances. */
-    private List<RowItemDto> attendances;
+    /** The report title items. */
+    private List<String> reportTitleItems;
     
-    /** The article others. */
-    private List<RowItemDto> articleOthers;
+    /** The category items. */
+    private List<CategoryItem> categoryItems;
+    
+    /** The configure. */
+    private PaymentSalaryPrintSettingDto configure;
 }

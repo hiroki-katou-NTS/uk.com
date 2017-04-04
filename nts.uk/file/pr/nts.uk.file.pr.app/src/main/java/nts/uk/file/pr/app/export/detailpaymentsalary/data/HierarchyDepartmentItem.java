@@ -11,24 +11,24 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class EmployeeDto.
+ * The Class HierarchyDepartmentItem.
  *
  * @author duongnd
  */
 
 @Setter
 @Getter
-public class EmployeeDto {
-
+public class HierarchyDepartmentItem {
+    
     /** The year month. */
     private String yearMonth;
-
-    /** The code. */
-    private String code;
     
-    /** The name. */
-    private String name;
+    /** The dep code. */
+    private String depCode;
     
-    /** The department. */
-    private DepartmentDto department;
+    /** The level. */
+    private int level;
+    
+    /** The amount. */
+    private double amount;
 }

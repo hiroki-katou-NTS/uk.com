@@ -8,8 +8,9 @@
 package nts.uk.file.pr.app.export.detailpaymentsalary.data;
 
 /**
- * @author duongnd
+ * The Class HeaderReportData.
  *
+ * @author duongnd
  */
 public class HeaderReportData {
 
