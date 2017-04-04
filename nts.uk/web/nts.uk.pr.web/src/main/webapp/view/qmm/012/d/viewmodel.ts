@@ -38,6 +38,8 @@ module qmm012.d.viewmodel {
         D_LBL_011_Text: KnockoutObservable<string> = ko.observable('設定なし');
         currentItemBDs: KnockoutObservableArray<qmm012.i.service.model.ItemBD> = ko.observableArray([]);
         D_LBL_012_Text: KnockoutObservable<string> = ko.observable("設定なし");
+        D_BTN_001_enable: KnockoutObservable<boolean> = ko.observable(true);
+        D_BTN_002_enable: KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             var self = this;
             self.isEditable = ko.observable(true);

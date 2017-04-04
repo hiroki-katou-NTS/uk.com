@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.app.command.itemmaster;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -7,13 +9,14 @@ import javax.transaction.Transactional;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalarybd.DeleteItemSalaryBDCommand;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.ItemAttendRespository;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeduct.ItemDeductRespository;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBD;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBDRepository;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductperiod.ItemDeductPeriodRepository;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalaryRespository;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemsalarybd.ItemSalaryBD;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalarybd.ItemSalaryBDRepository;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalaryperiod.ItemSalaryPeriodRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -50,15 +53,19 @@ public class DeleteItemMasterCommandHandler extends CommandHandler<DeleteItemMas
 		val categoryAtr = context.getCommand().getCategoryAtr();
 		val itemCode = context.getCommand().getItemCode();
 		this.itemMasterRepository.remove(companyCode, categoryAtr, itemCode);
+		// remove all sub item linked with item master through the item code
 		switch (categoryAtr) {
 		case 0:
+			// if item Category 支給
 			deleteItemSalary(context);
 			break;
 		case 1:
+			// 控除
 			deleteItemDeduct(context);
 			break;
 		case 2:
-			deleteItemAttend(context);
+			// 勤怠
+			deleteItemAttend(companyCode, context);
 			break;
 		}
 	}
@@ -67,22 +74,28 @@ public class DeleteItemMasterCommandHandler extends CommandHandler<DeleteItemMas
 		val itemCode = context.getCommand().getItemCode();
 		this.itemSalaryRespository.delete(itemCode);
 		this.itemSalaryPeriodRepository.delete(itemCode);
-		for (DeleteItemSalaryBDCommand deleteItemSalaryBDCommand : context.getCommand().getItemBDs())
-			this.itemSalaryBDRepository.delete(itemCode, deleteItemSalaryBDCommand.getItemBreakdownCd());
+		//Then  remove itemBD 
+		List<ItemSalaryBD> itemBDList = this.itemSalaryBDRepository.findAll(itemCode);
+		for (ItemSalaryBD itemBD : itemBDList) {
+			this.itemSalaryBDRepository.delete(itemBD.getItemCode().v(), itemBD.getItemBreakdownCode().v());
+		}
+
 	}
 
 	private void deleteItemDeduct(CommandHandlerContext<DeleteItemMasterCommand> context) {
 		val itemCode = context.getCommand().getItemCode();
 		this.itemDeductRespository.delete(itemCode);
 		this.itemDeductPeriodRepository.delete(itemCode);
-		for (DeleteItemSalaryBDCommand deleteItemSalaryBDCommand : context.getCommand().getItemBDs())
-			this.itemDeductBDRepository.delete(itemCode, deleteItemSalaryBDCommand.toItemDeduct().getItemBreakdownCd());
+		List<ItemDeductBD> itemBDList = this.itemDeductBDRepository.findAll(itemCode);
+		for (ItemDeductBD itemBD : itemBDList) {
+			this.itemDeductBDRepository.delete(itemBD.getItemCode().v(), itemBD.getItemBreakdownCode().v());
+		}
 
 	}
 
-	private void deleteItemAttend(CommandHandlerContext<DeleteItemMasterCommand> context) {
+	private void deleteItemAttend(String companyCode, CommandHandlerContext<DeleteItemMasterCommand> context) {
 		val itemCode = context.getCommand().getItemCode();
-		this.itemAttendRespository.delete(itemCode);
+		this.itemAttendRespository.delete(companyCode, itemCode);
 
 	}
 

@@ -37,7 +37,7 @@ public class JpaItemDeductRepository extends JpaRepository implements ItemDeduct
 
 	private QcamtItemDeduct toEntity(ItemDeduct domain) {
 		String companyCode = AppContexts.user().companyCode();
-		return new QcamtItemDeduct(new QcamtItemDeductPK(companyCode, domain.getItemCd().v()),
+		return new QcamtItemDeduct(new QcamtItemDeductPK(companyCode, domain.getItemCode().v()),
 				domain.getDeductAtr().value, domain.getErrRangeLowAtr().value, domain.getErrRangeLow().v(),
 				domain.getErrRangeHighAtr().value, domain.getErrRangeHigh().v(), domain.getAlRangeLowAtr().value,
 				domain.getAlRangeLow().v(), domain.getAlRangeHighAtr().value, domain.getAlRangeHigh().v(),

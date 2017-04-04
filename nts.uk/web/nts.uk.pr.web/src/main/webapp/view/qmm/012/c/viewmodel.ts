@@ -66,6 +66,8 @@ module qmm012.c.viewmodel {
         C_LBL_020_Text: KnockoutObservable<string> = ko.observable("設定なし");
         currentItemBDs: KnockoutObservableArray<qmm012.i.service.model.ItemBD> = ko.observableArray([]);
         C_LBL_022_Text: KnockoutObservable<string> = ko.observable("設定なし");
+        C_BTN_001_enable: KnockoutObservable<boolean> = ko.observable(true);
+        C_BTN_002_enable: KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             var self = this;
             self.ComboBoxItemList_C_SEL_001 = ko.observableArray([
@@ -207,9 +209,6 @@ module qmm012.c.viewmodel {
                         break;
                 }
             });
-
-
-
             self.CurrentItemMaster.subscribe(function(ItemMaster: qmm012.b.service.model.ItemMaster) {
                 if (ItemMaster) {
                     service.findItemSalary(ItemMaster.itemCode).done(function(ItemSalary: service.model.ItemSalary) {
@@ -222,6 +221,7 @@ module qmm012.c.viewmodel {
                 } else {
                     self.CurrentItemSalary(null);
                 }
+                //load subitem of item master 
                 self.loadItemPeriod();
                 self.loadItemBDs();
                 self.CurrentZeroDisplaySet(ItemMaster ? ItemMaster.zeroDisplaySet : 1);
@@ -233,7 +233,6 @@ module qmm012.c.viewmodel {
 
 
             self.CurrentItemSalary.subscribe(function(NewValue: service.model.ItemSalary) {
-
                 self.CurrentLimitMny(NewValue ? NewValue.limitMny : 0);
                 self.CurrentErrRangeHigh(NewValue ? NewValue.errRangeHigh : 0);
                 self.CurrentAlRangeHigh(NewValue ? NewValue.alRangeHigh : 0);
@@ -251,13 +250,11 @@ module qmm012.c.viewmodel {
                 self.CurrentApplyForHourlyPayEmp(NewValue ? NewValue.applyForHourlyPayEmp : 0);
                 self.CurrentAvePayAtr(NewValue ? NewValue.avePayAtr : 0);
                 self.CurrentLimitMnyAtr(NewValue ? NewValue.limitMnyAtr : 0);
-                self.CurrentLimitCode(NewValue ? NewValue.limitMnyRefItemCd : "");
-
+                self.CurrentLimitCode(NewValue ? NewValue.limitMnyRefItemCode : "");
                 self.C_SEL_013_Selected(NewValue ? NewValue.errRangeHighAtr == 0 ? false : true : false);
                 self.C_SEL_014_Selected(NewValue ? NewValue.alRangeHighAtr == 0 ? false : true : false);
                 self.C_SEL_015_Selected(NewValue ? NewValue.errRangeLowAtr == 0 ? false : true : false);
                 self.C_SEL_016_Selected(NewValue ? NewValue.alRangeLowAtr == 0 ? false : true : false);
-
 
             });
 
@@ -281,6 +278,7 @@ module qmm012.c.viewmodel {
             });
             self.CurrentLimitCode.subscribe(function(NewValue) {
                 if (NewValue) {
+                    //call service getCommuteNoTaxLimit
                     service.getCommuteNoTaxLimit(NewValue).done(function(CommuteNoTaxLimit: qmm023.a.service.model.CommuteNoTaxLimitDto) {
                         self.currentCommuteNoTaxLimitDto(CommuteNoTaxLimit);
                     }).fail(function(res) {
@@ -323,6 +321,7 @@ module qmm012.c.viewmodel {
                 self.currentItemBDs([]);
         }
         GetCurrentItemSalary() {
+            //get ItemSalary customer input in form
             let self = this;
             let ItemSalary = new service.model.ItemSalary(
                 self.CurrentTaxAtr(),
@@ -351,6 +350,7 @@ module qmm012.c.viewmodel {
         }
         openKDialog() {
             let self = this;
+            //set selected code to session
             nts.uk.ui.windows.setShared('commuNoTaxLimitCode', self.currentCommuteNoTaxLimitDto() ? self.currentCommuteNoTaxLimitDto().commuNoTaxLimitCode : '');
             nts.uk.ui.windows.sub.modal('../k/index.xhtml', { height: 530, width: 350, dialogClass: "no-close" }).onClosed(function(): any {
                 if (nts.uk.ui.windows.getShared('CommuteNoTaxLimitDto'))

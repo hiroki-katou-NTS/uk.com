@@ -27,9 +27,9 @@ public interface ItemAttendRespository {
 	 * Update information of item attend
 	 * @param item domain
 	 */
-	void update(ItemAttend item);
+	void update(String companyCode, ItemAttend item);
 
-	void add(ItemAttend itemAttend);
+	void add(String companyCode, ItemAttend itemAttend);
 
 	void delete(String companyCode, String itemCode);
 	

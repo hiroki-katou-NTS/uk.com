@@ -25,6 +25,8 @@ var qmm012;
                     this.D_LBL_011_Text = ko.observable('設定なし');
                     this.currentItemBDs = ko.observableArray([]);
                     this.D_LBL_012_Text = ko.observable("設定なし");
+                    this.D_BTN_001_enable = ko.observable(true);
+                    this.D_BTN_002_enable = ko.observable(true);
                     var self = this;
                     self.isEditable = ko.observable(true);
                     self.isEnable = ko.observable(true);

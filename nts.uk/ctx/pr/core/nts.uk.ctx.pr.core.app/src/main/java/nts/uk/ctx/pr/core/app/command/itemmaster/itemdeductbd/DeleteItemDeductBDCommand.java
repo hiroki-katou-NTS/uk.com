@@ -2,17 +2,20 @@ package nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductbd;
 
 import lombok.Getter;
 import lombok.Setter;
-
+/**
+ * @author sonnlb
+ *
+ */
 @Getter
 @Setter
 public class DeleteItemDeductBDCommand {
-	private String itemCd;
-	private String itemBreakdownCd;
+	private String itemCode;
+	private String itemBreakdownCode;
 
-	public DeleteItemDeductBDCommand(String itemCd, String itemBreakdownCd) {
+	public DeleteItemDeductBDCommand(String itemCode, String itemBreakdownCode) {
 		super();
-		this.itemCd = itemCd;
-		this.itemBreakdownCd = itemBreakdownCd;
+		this.itemCode = itemCode;
+		this.itemBreakdownCode = itemBreakdownCode;
 	}
 
 }

@@ -9,7 +9,6 @@ var qmm012;
                 deleteItemMaster: "pr/core/item/delete",
                 addItemMaster: "pr/core/item/add",
                 updateItemMaster: "pr/core/item/update",
-                findItemByCategoryAndCode: "pr/core/item/find",
             };
             function findAllItemMaster(ctgAtr, dispSet) {
                 var dfd = $.Deferred();
@@ -23,18 +22,6 @@ var qmm012;
                 return dfd.promise();
             }
             service.findAllItemMaster = findAllItemMaster;
-            function findItemByCategoryAndCode(ctgAtr, itemCode) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.findItemByCategoryAndCode + "/" + ctgAtr + "/" + itemCode)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.findItemByCategoryAndCode = findItemByCategoryAndCode;
             function deleteItemMaster(ItemMaster) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.deleteItemMaster, ItemMaster)

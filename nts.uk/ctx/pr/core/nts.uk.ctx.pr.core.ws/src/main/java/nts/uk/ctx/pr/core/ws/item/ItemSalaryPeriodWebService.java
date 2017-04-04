@@ -21,18 +21,12 @@ import nts.uk.ctx.pr.core.app.find.itemmaster.itemsalaryperiod.ItemSalaryPeriodF
 public class ItemSalaryPeriodWebService extends WebService {
 	@Inject
 	ItemSalaryPeriodFinder itemSalaryPeriodFinder;
-
-//	@Inject
-//	AddItemSalaryPeriodCommandHandler addHandler;
-//	@Inject
-//	UpdateItemSalaryPeriodCommandHandler updateHandler;
-
 	@Inject
 	AddItemSalaryPeriodCommandHandler addHandler;
 	@Inject
-	DeleteItemSalaryPeriodCommandHandler deleteHandler;
-	@Inject
 	UpdateItemSalaryPeriodCommandHandler updateHandler;
+	@Inject
+	DeleteItemSalaryPeriodCommandHandler deleteHandler;
 
 	@POST
 	@Path("find/{itemCode}")

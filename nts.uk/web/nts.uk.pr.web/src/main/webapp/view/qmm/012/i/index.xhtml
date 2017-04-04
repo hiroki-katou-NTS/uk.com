@@ -51,10 +51,10 @@
 								comId: 'I_LST_001',
 								items: ItemBDList, 
 								selected: gridListCurrentCode ,
-								selectedKey: 'itemBreakdownCd', 
+								selectedKey: 'itemBreakdownCode', 
 								filteredItems: filteredData, 
 								placeHolder:'',
-								fields: ['itemBreakdownCd']}" />
+								fields: ['itemBreakdownCode']}" />
 					</div>
 					<div class="divLine">
 						<table id="I_LST_001"
@@ -62,7 +62,7 @@
 								width: 290,
 								height: 365,
 								options: ItemBDList,
-								optionsValue: 'itemBreakdownCd',
+								optionsValue: 'itemBreakdownCode',
 								columns: columns,
 								value: gridListCurrentCode
 							}"></table>
@@ -78,7 +78,7 @@
 							</div>
 							<div class="divLineCol2">
 								<input id="I_INP_002"
-									data-bind="ntsTextEditor: {value: CurrentItemBreakdownCd , enable:enable_I_INP_002 , constraint : 'ItemCode'}"></input>
+									data-bind="ntsTextEditor: {value: CurrentItemBreakdownCode , enable:enable_I_INP_002 , constraint : 'ItemCode'}"></input>
 								<input id="I_INP_003"
 									data-bind="ntsTextEditor: {value: CurrentItemBreakdownName  , constraint : 'ItemName'}"></input>
 							</div>
@@ -111,7 +111,7 @@
 							</div>
 							<div class="divLineCol2">
 								<button id="I_BTN_006" class="small">参照</button>
-								<label id="I_LBL_009" data-bind="text:CurrentUniteCd">統合コード</label>
+								<label id="I_LBL_009" data-bind="text:CurrentUniteCode">統合コード</label>
 							</div>
 						</div>
 					</div>
