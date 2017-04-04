@@ -2,7 +2,7 @@ module nts.uk.pr.view.qmm008.h {
     export module viewmodel {
         import commonService = nts.uk.pr.view.qmm008._0.common.service;
         import AvgEarnLevelMasterSettingDto = nts.uk.pr.view.qmm008._0.common.service.model.AvgEarnLevelMasterSettingDto;
-        import HealthInsuranceAvgEarnDto = service.model.HealthInsuranceAvgEarnDto;
+        import ListHealthInsuranceAvgEarnDto = service.model.ListHealthInsuranceAvgEarnDto;
         import HealthInsuranceAvgEarnValue = service.model.HealthInsuranceAvgEarnValue;
         import HealthInsuranceRateItemModel = nts.uk.pr.view.qmm008.b.viewmodel.HealthInsuranceRateItemModel;
         import HealthInsuranceRoundingModel = nts.uk.pr.view.qmm008.b.viewmodel.HealthInsuranceRoundingModel;
@@ -75,10 +75,9 @@ module nts.uk.pr.view.qmm008.h {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 service.findHealthInsuranceAvgEarn(self.healthInsuranceRateModel.historyId).done(res => {
-                    res.forEach(item => {
+                    res.listHealthInsuranceAvgearnDto.forEach(item => {
                         self.listHealthInsuranceAvgearn.push(
                             new HealthInsuranceAvgEarnModel(
-                                item.historyId,
                                 item.levelCode,
                                 new HealthInsuranceAvgEarnValueModel(
                                     item.personalAvg.healthGeneralMny,
@@ -102,11 +101,11 @@ module nts.uk.pr.view.qmm008.h {
             /**
              * Collect data from input.
              */
-            private collectData(): Array<HealthInsuranceAvgEarnDto> {
+            private collectData(): ListHealthInsuranceAvgEarnDto {
                 var self = this;
-                var data: Array<HealthInsuranceAvgEarnDto> = [];
+                var data: ListHealthInsuranceAvgEarnDto = { historyId: self.healthInsuranceRateModel.historyId, listHealthInsuranceAvgearnDto: [] };
                 self.listHealthInsuranceAvgearn().forEach(item => {
-                    data.push(ko.toJS(item));
+                    data.listHealthInsuranceAvgearnDto.push(ko.toJS(item));
                 });
                 return data;
             }
@@ -147,7 +146,6 @@ module nts.uk.pr.view.qmm008.h {
              */
             private calculateHealthInsuranceAvgEarnModel(levelMasterSetting: AvgEarnLevelMasterSettingDto): HealthInsuranceAvgEarnModel {
                 var self = this;
-                var historyId = self.healthInsuranceRateModel.historyId;
                 var rateItems: HealthInsuranceRateItemModel = self.healthInsuranceRateModel.rateItems;
                 var roundingMethods: HealthInsuranceRoundingModel = self.healthInsuranceRateModel.roundingMethods;
                 var personalRounding = self.convertToRounding(roundingMethods.healthSalaryPersonalComboBoxSelectedCode());
@@ -156,7 +154,6 @@ module nts.uk.pr.view.qmm008.h {
                 var autoCalculate = self.healthInsuranceRateModel.autoCalculate;
                 if (autoCalculate == AutoCalculate.Auto) {
                     return new HealthInsuranceAvgEarnModel(
-                        historyId,
                         levelMasterSetting.code,
                         new HealthInsuranceAvgEarnValueModel(
                             self.rounding(personalRounding, rateItems.healthSalaryPersonalGeneral() * rate,Number.One),
@@ -174,7 +171,6 @@ module nts.uk.pr.view.qmm008.h {
                 }
                 else {
                     return new HealthInsuranceAvgEarnModel(
-                        historyId,
                         levelMasterSetting.code,
                         new HealthInsuranceAvgEarnValueModel(Number.Zero,Number.Zero,Number.Zero,Number.Zero),
                         new HealthInsuranceAvgEarnValueModel(Number.Zero,Number.Zero,Number.Zero,Number.Zero)
@@ -269,12 +265,10 @@ module nts.uk.pr.view.qmm008.h {
          * HealthInsuranceAvgEarn Model
          */
         export class HealthInsuranceAvgEarnModel {
-            historyId: string;
             levelCode: number;
             companyAvg: HealthInsuranceAvgEarnValueModel;
             personalAvg: HealthInsuranceAvgEarnValueModel;
-            constructor(historyId: string, levelCode: number, personalAvg: HealthInsuranceAvgEarnValueModel, companyAvg: HealthInsuranceAvgEarnValueModel) {
-                this.historyId = historyId;
+            constructor(levelCode: number, personalAvg: HealthInsuranceAvgEarnValueModel, companyAvg: HealthInsuranceAvgEarnValueModel) {
                 this.levelCode = levelCode;
                 this.companyAvg = companyAvg;
                 this.personalAvg = personalAvg;
