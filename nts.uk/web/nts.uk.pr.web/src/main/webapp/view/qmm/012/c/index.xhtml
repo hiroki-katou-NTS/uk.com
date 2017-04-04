@@ -45,7 +45,7 @@
 			</div>
 			<div class="divLineCol2">
 				<div id="C_Div_002">
-					<div id="C_INP_001" data-bind="with: currencyeditor_C_INP_001">
+					<div id="C_INP_001" data-name="限度金額" data-bind="with: currencyeditor_C_INP_001">
 						<input
 							data-bind="ntsNumberEditor: {
 										value: value,
@@ -202,7 +202,7 @@
 		<div class="divLineCol2">
 			<div id="C_SEL_013"
 				data-bind="ntsCheckBox: { checked: C_SEL_013_Selected, text: '' }"></div>
-			<div id="C_INP_002" data-bind="with: currencyeditor_C_INP_002">
+			<div id="C_INP_002" data-name="上限チェック" data-bind="with: currencyeditor_C_INP_002">
 				<input
 					data-bind="ntsNumberEditor: {
 										value: value,
@@ -220,7 +220,7 @@
 		<div class="divLineCol2">
 			<div id="C_SEL_014"
 				data-bind="ntsCheckBox: { checked: C_SEL_014_Selected, text: '' }"></div>
-			<div id="C_INP_003" data-bind="with: currencyeditor_C_INP_003">
+			<div id="C_INP_003" data-name="上限チェック" data-bind="with: currencyeditor_C_INP_003">
 				<input
 					data-bind="ntsNumberEditor: {
 										value: value,
@@ -241,7 +241,7 @@
 
 			<div id="C_SEL_015"
 				data-bind="ntsCheckBox: { checked: C_SEL_015_Selected, text: '' }"></div>
-			<div id="C_INP_004" data-bind="with: currencyeditor_C_INP_004">
+			<div id="C_INP_004" data-name="下限チェック" data-bind="with: currencyeditor_C_INP_004">
 				<input
 					data-bind="ntsNumberEditor: {
 										value: value,
@@ -257,7 +257,7 @@
 		<div class="divLineCol2">
 			<div id="C_SEL_016"
 				data-bind="ntsCheckBox: { checked: C_SEL_016_Selected, text: '' }"></div>
-			<div id="C_INP_005" data-bind="with: currencyeditor_C_INP_005">
+			<div id="C_INP_005"  data-name="下限チェック" data-bind="with: currencyeditor_C_INP_005">
 				<input
 					data-bind="ntsNumberEditor: {
 										value: value,
@@ -308,7 +308,7 @@
 			<div id="C_LBL_026" data-bind="ntsFormLabel: {  required: false }">備考</div>
 		</div>
 		<div class="divLineCol2">
-			<textarea id="C_INP_006"
+			<textarea id="C_INP_006" data-name="備考"
 				data-bind="ntsMultilineEditor: { value: CurrentMemo , constraint: 'Memo' }" />
 		</div>
 

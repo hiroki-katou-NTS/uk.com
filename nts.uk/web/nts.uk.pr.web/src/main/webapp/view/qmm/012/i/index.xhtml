@@ -77,9 +77,9 @@
 									コード/名称</div>
 							</div>
 							<div class="divLineCol2">
-								<input id="I_INP_002"
+								<input id="I_INP_002" data-name="コード/名称"
 									data-bind="ntsTextEditor: {value: CurrentItemBreakdownCode , enable:enable_I_INP_002 , constraint : 'ItemCode'}"></input>
-								<input id="I_INP_003"
+								<input id="I_INP_003" data-name="コード/名称"
 									data-bind="ntsTextEditor: {value: CurrentItemBreakdownName  , constraint : 'ItemName'}"></input>
 							</div>
 						</div>
@@ -89,7 +89,7 @@
 									data-bind="ntsFormLabel: {  required: true, constraint : 'ItemName' }">略名</div>
 							</div>
 							<div class="divLineCol2">
-								<input id="I_INP_004"
+								<input id="I_INP_004" data-name="略名"
 									data-bind="ntsTextEditor: {value: CurrentItemBreakdownAbName  , constraint : 'ItemName'}"></input>
 							</div>
 						</div>
@@ -143,7 +143,7 @@
 								<div id="I_SEL_003"
 									data-bind="ntsCheckBox: { checked: checked_003, enable: enable }"></div>
 								<div id="I_INP_005" data-bind="with: currencyeditor_I_INP_005">
-									<input
+									<input data-name="エラー範囲"
 										data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
@@ -158,7 +158,7 @@
 								<div id="I_SEL_005"
 									data-bind="ntsCheckBox: { checked: checked_005, enable: enable }"></div>
 								<div id="I_INP_007" data-bind="with: currencyeditor_I_INP_007">
-									<input
+									<input data-name="エラー範囲"
 										data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
@@ -176,7 +176,7 @@
 								<div id="I_SEL_004"
 									data-bind="ntsCheckBox: { checked: checked_004, enable: enable }"></div>
 								<div id="I_INP_006" data-bind="with: currencyeditor_I_INP_006">
-									<input
+									<input data-name="アラーム範囲"
 										data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
@@ -191,7 +191,7 @@
 								<div id="I_SEL_006"
 									data-bind="ntsCheckBox: { checked: checked_006, enable: enable }"></div>
 								<div id="I_INP_008" data-bind="with: currencyeditor_I_INP_008">
-									<input
+									<input data-name="アラーム範囲"
 										data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,

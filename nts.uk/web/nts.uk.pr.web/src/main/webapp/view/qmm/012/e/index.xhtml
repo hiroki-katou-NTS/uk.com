@@ -67,7 +67,8 @@
 		<div class="divLineCol2">
 			<div id="E_SEL_005"
 				data-bind="ntsCheckBox: { checked: checked_E_005, text: '' }"></div>
-			<div id="E_INP_001" data-bind="with: currencyeditor_E_001">
+			<div id="E_INP_001" data-name="エラー範囲"
+				data-bind="with: currencyeditor_E_001">
 				<input
 					data-bind="ntsNumberEditor: {
 										value: value,
@@ -82,7 +83,8 @@
 		<div class="divLineCol2">
 			<div id="E_SEL_006"
 				data-bind="ntsCheckBox: { checked: checked_E_006, text: '' }"></div>
-			<div id="E_INP_002" data-bind="with: currencyeditor_E_002">
+			<div id="E_INP_002" data-name="エラー範囲"
+				data-bind="with: currencyeditor_E_002">
 				<input
 					data-bind="ntsNumberEditor: {
 										value: value,
@@ -99,7 +101,8 @@
 		<div class="divLineCol2 verticalAlignBottom">
 			<div id="E_SEL_007"
 				data-bind="ntsCheckBox: { checked: checked_E_007, text: '' }"></div>
-			<div id="E_INP_003" data-bind="with: currencyeditor_E_003">
+			<div id="E_INP_003" data-name="アラーム範囲"
+				data-bind="with: currencyeditor_E_003">
 				<input
 					data-bind="ntsNumberEditor: {
 										value: value,
@@ -114,7 +117,8 @@
 		<div class="divLineCol2">
 			<div id="E_SEL_008"
 				data-bind="ntsCheckBox: { checked: checked_E_008, text: '' }"></div>
-			<div id="E_INP_004" data-bind="with: currencyeditor_E_004">
+			<div id="E_INP_004" data-name="アラーム範囲"
+				data-bind="with: currencyeditor_E_004">
 				<input
 					data-bind="ntsNumberEditor: {
 										value: value,
@@ -139,7 +143,7 @@
 			<div id="E_LBL_011" data-bind="ntsFormLabel: {  required: false }">備考</div>
 		</div>
 		<div class="divLineCol2">
-		<textarea id="E_INP_005"
+			<textarea id="E_INP_005" data-name="備考"
 				data-bind="ntsMultilineEditor: { value: CurrentMemo , constraint: 'Memo' }" />
 		</div>
 

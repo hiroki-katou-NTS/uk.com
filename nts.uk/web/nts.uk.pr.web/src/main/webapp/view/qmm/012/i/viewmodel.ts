@@ -205,11 +205,10 @@ module qmm012.i.viewmodel {
 
         saveItem() {
             let self = this;
-            //if I_INP_002 is enable is mean add new mode => add new item
+            //if I_INP_002 is enable is mean add new mode
             if (self.enable_I_INP_002())
                 self.addItemBD();
             else
-                //else is update
                 self.updateItemBD();
 
         }
@@ -217,7 +216,6 @@ module qmm012.i.viewmodel {
             let self = this;
             let itemBD = self.CurrentItemBD();
             if (itemBD) {
-                //show dialog
                 nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
                     let itemCode;
                     let index = self.ItemBDList().indexOf(self.CurrentItemBD());
