@@ -144,20 +144,23 @@ module cmm013.a.viewmodel {
                     return;
                 } else {
                     var dfd = $.Deferred();
-                    //tim kiem position tuong ung voi history
-                    service.findAllPosition(codeChanged).done(function(position_arr: Array<model.ListPositionDto>) {
-                        self.dataSource(position_arr);
-                        if (self.dataSource().length > 0 
-                         && !self.isRegitry()) {
-                            self.currentCode(self.dataSource()[0].jobCode);
-                        }
-                        if(self.isRegitry){
-                            self.isRegitry(false);    
-                        }
-                        dfd.resolve(self.currentCode());
-                    }).fail(function(err: any) {
-                        nts.uk.ui.dialog.alert(err.message);
-                    }) 
+                    if(codeChanged !== ""){
+                        //tim kiem position tuong ung voi history
+                        service.findAllPosition(codeChanged).done(function(position_arr: Array<model.ListPositionDto>) {
+                            self.dataSource(position_arr);
+                            if (self.dataSource().length > 0 
+                             && !self.isRegitry()) {
+                                self.currentCode(self.dataSource()[0].jobCode);
+                            }
+                            if(self.isRegitry){
+                                self.isRegitry(false);    
+                            }
+                            dfd.resolve(self.currentCode());
+                        }).fail(function(err: any) {
+                            nts.uk.ui.dialog.alert(err.message);
+                        })    
+                    }
+                     
                     //set lai disable cho input code
                     self.inp_002_enable(false);
                     return dfd.promise();

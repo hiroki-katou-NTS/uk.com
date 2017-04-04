@@ -82,19 +82,21 @@ var cmm013;
                         }
                         else {
                             var dfd = $.Deferred();
-                            a.service.findAllPosition(codeChanged).done(function (position_arr) {
-                                self.dataSource(position_arr);
-                                if (self.dataSource().length > 0
-                                    && !self.isRegitry()) {
-                                    self.currentCode(self.dataSource()[0].jobCode);
-                                }
-                                if (self.isRegitry) {
-                                    self.isRegitry(false);
-                                }
-                                dfd.resolve(self.currentCode());
-                            }).fail(function (err) {
-                                nts.uk.ui.dialog.alert(err.message);
-                            });
+                            if (codeChanged !== "") {
+                                a.service.findAllPosition(codeChanged).done(function (position_arr) {
+                                    self.dataSource(position_arr);
+                                    if (self.dataSource().length > 0
+                                        && !self.isRegitry()) {
+                                        self.currentCode(self.dataSource()[0].jobCode);
+                                    }
+                                    if (self.isRegitry) {
+                                        self.isRegitry(false);
+                                    }
+                                    dfd.resolve(self.currentCode());
+                                }).fail(function (err) {
+                                    nts.uk.ui.dialog.alert(err.message);
+                                });
+                            }
                             self.inp_002_enable(false);
                             return dfd.promise();
                         }
