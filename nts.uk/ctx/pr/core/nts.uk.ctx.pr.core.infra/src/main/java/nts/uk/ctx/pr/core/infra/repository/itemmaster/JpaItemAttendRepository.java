@@ -45,8 +45,8 @@ public class JpaItemAttendRepository extends JpaRepository implements ItemAttend
 	}
 	
 	@Override
-	public void update(ItemAttend item) {
-		this.commandProxy().update(toEntity(item));
+	public void update(String companyCode, ItemAttend item) {
+		this.commandProxy().update(toEntity(companyCode, item));
 	}
 
 	@Override
@@ -56,8 +56,8 @@ public class JpaItemAttendRepository extends JpaRepository implements ItemAttend
 	}
 
 	@Override
-	public void add(ItemAttend itemAttend) {
-		this.commandProxy().insert(toEntity(itemAttend));
+	public void add(String companyCode, ItemAttend itemAttend) {
+		this.commandProxy().insert(toEntity(companyCode,itemAttend));
 
 	}
 
@@ -75,7 +75,6 @@ public class JpaItemAttendRepository extends JpaRepository implements ItemAttend
 	 * @return ItemAttend
 	 */
 	private ItemAttend toDomain(QcamtItemAttend entity) {
-
 		val domain = ItemAttend.createFromJavaType(entity.qcamtItemAttendPK.itemCd, entity.avePayAtr, entity.itemAtr,
 				entity.errRangeLowAtr, entity.errRangeLow, entity.errRangeHighAtr, entity.errRangeHigh,
 				entity.alRangeLowAtr, entity.alRangeLow, entity.alRangeHighAtr, entity.alRangeHigh,
@@ -93,8 +92,7 @@ public class JpaItemAttendRepository extends JpaRepository implements ItemAttend
 	 *            domain object
 	 * @return QcamtItemAttend
 	 */
-	private QcamtItemAttend toEntity(ItemAttend domain) {
-		String companyCode = AppContexts.user().companyCode();
+	private QcamtItemAttend toEntity(String companyCode, ItemAttend domain) {
 		return new QcamtItemAttend(new QcamtItemAttendPK(companyCode, domain.getItemCode().v()),
 				domain.getAvePayAtr().value, domain.getItemAtr().value, domain.getErrRangeLowAtr().value,
 				domain.getErrRangeLow().v(), domain.getErrRangeHighAtr().value, domain.getErrRangeHigh().v(),

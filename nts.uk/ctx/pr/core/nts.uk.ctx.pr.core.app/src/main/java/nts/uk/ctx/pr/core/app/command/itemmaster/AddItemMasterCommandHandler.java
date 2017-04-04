@@ -57,17 +57,17 @@ public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCom
 			break;
 		case 2:
 			// 勤怠
-			addItemAttend(context);
+			addItemAttend(companyCode, context);
 			break;
 		}
 
 	}
 
-	private void addItemAttend(CommandHandlerContext<AddItemMasterCommand> context) {
+	private void addItemAttend(String companyCode, CommandHandlerContext<AddItemMasterCommand> context) {
 		String itemCode = context.getCommand().toDomain().getItemCode().v();
 		context.getCommand().getItemAttend().setItemCode(itemCode);
 		// use interface for add sub item
-		this.itemAttendRespository.add(context.getCommand().getItemAttend().toDomain());
+		this.itemAttendRespository.add(companyCode, context.getCommand().getItemAttend().toDomain());
 
 	}
 

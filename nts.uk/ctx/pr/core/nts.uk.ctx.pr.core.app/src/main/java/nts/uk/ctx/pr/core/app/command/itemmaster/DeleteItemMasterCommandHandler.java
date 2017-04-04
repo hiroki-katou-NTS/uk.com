@@ -65,7 +65,7 @@ public class DeleteItemMasterCommandHandler extends CommandHandler<DeleteItemMas
 			break;
 		case 2:
 			// 勤怠
-			deleteItemAttend(context);
+			deleteItemAttend(companyCode, context);
 			break;
 		}
 	}
@@ -93,9 +93,9 @@ public class DeleteItemMasterCommandHandler extends CommandHandler<DeleteItemMas
 
 	}
 
-	private void deleteItemAttend(CommandHandlerContext<DeleteItemMasterCommand> context) {
+	private void deleteItemAttend(String companyCode, CommandHandlerContext<DeleteItemMasterCommand> context) {
 		val itemCode = context.getCommand().getItemCode();
-		this.itemAttendRespository.delete(itemCode);
+		this.itemAttendRespository.delete(companyCode, itemCode);
 
 	}
 

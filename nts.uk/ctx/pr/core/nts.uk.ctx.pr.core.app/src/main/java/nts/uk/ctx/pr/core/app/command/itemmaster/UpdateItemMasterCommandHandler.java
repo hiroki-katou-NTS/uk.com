@@ -55,7 +55,7 @@ public class UpdateItemMasterCommandHandler extends CommandHandler<UpdateItemMas
 			break;
 		case 2:
 			// 勤怠
-			updateItemAttend(context);
+			updateItemAttend(companyCode, context);
 			break;
 		}
 
@@ -78,11 +78,11 @@ public class UpdateItemMasterCommandHandler extends CommandHandler<UpdateItemMas
 
 	}
 
-	private void updateItemAttend(CommandHandlerContext<UpdateItemMasterCommand> context) {
+	private void updateItemAttend(String companyCode, CommandHandlerContext<UpdateItemMasterCommand> context) {
 		UpdateItemMasterCommand itemCommand = context.getCommand();
 		String itemCode = itemCommand.getItemCode();
 		itemCommand.getItemAttend().setItemCode(itemCode);
-		this.itemAttendRespository.update(itemCommand.getItemAttend().toDomain());
+		this.itemAttendRespository.update(companyCode, itemCommand.getItemAttend().toDomain());
 	}
 
 }
