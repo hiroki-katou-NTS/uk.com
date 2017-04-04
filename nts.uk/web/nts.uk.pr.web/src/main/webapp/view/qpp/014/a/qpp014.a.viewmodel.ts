@@ -9,6 +9,7 @@ module qpp014.a.viewmodel {
         //viewmodel A
         a_SEL_001_items: KnockoutObservableArray<shr.viewmodelbase.PayDayProcessing>;
         a_SEL_001_itemSelected: KnockoutObservable<any>;
+        isNotEnable: KnockoutObservable<boolean>;
 
         constructor() {
             var self = this;
@@ -17,7 +18,8 @@ module qpp014.a.viewmodel {
 
             //viewmodel A
             self.a_SEL_001_items = ko.observableArray([]);
-            self.a_SEL_001_itemSelected = ko.observable(1);
+            self.a_SEL_001_itemSelected = ko.observable(0);
+            self.isNotEnable= ko.observable(false);
         }
 
         startPage(): JQueryPromise<any> {
@@ -41,8 +43,10 @@ module qpp014.a.viewmodel {
             qpp014.a.service.findAll(0)
                 .done(function(data) {
                     if (data.length > 0) {
+                        self.isNotEnable(true);
                         self.a_SEL_001_items(data);
                     } else {
+                        self.isNotEnable(false);
                         nts.uk.ui.dialog.alert("対象データがありません。");//ER010
                     }
                     dfd.resolve();
