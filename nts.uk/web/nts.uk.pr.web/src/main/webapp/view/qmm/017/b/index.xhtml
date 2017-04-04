@@ -18,7 +18,7 @@
 				<div id="b_lbl_001" class="label warning separate-vertical">計算式を新規で作成する場合、基本情報を入力後、一度登録ボタンを押してください。</div>
 			</com:ko-if>
 			<br />
-			<div id="b_lbl_002" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">コード/名称</div>
+			<div id="b_lbl_002" class="separate-vertical" data-bind="ntsFormLabel: {required: true, constraint:['FormulaCode', 'FormulaName']}">コード/名称</div>
 			<input id="b_inp_001" data-bind="ntsTextEditor: { value: formulaCode, constraint: 'FormulaCode', enable: isNewMode, required: true}" />
 			<input id="b_inp_002" data-bind="ntsTextEditor: { value: formulaName, constraint: 'FormulaName', enable: true, required: true}" />
 			<br/>
@@ -40,14 +40,14 @@
 			</div>
 			<br/>
 			<com:ko-if bind="selectedDifficultyAtr() == 0">
-				<div style="margin-left: 155px" id="b_lbl_006">
+				<div id="b_lbl_006">
 					<span>雇用、部門、職場、分類、職位、給与携帯など、マスタの値を条件に使用して、</span><br/>
 					<span style="margin-bottom:20px; display: inline-block;">計算式を簡単に設定することができます。</span><br/>
 					<span>マスタを使用しない、一律の設定をすることも可能です。</span>
 				</div>
 			</com:ko-if>
 			<com:ko-if bind="selectedDifficultyAtr() == 1">
-				<div style="margin-left: 155px;" id="b_lbl_007">
+				<div id="b_lbl_007">
 					<span>詳細な計算条件、計算式を設定することができます。</span>
 				</div>
 			</com:ko-if>
@@ -61,7 +61,7 @@
 								value: selectedConditionAtr,
 								enable: isNewMode }"></div>
 				<com:ko-if bind="selectedConditionAtr() == 1">
-					<div id="b_lbl_010" style="margin: 10px 0 0 142px;" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">使用するマスタ</div>
+					<div id="b_lbl_010" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">使用するマスタ</div>
 					<div id="combo-box" style="vertical-align: middle;" data-bind="ntsComboBox: {
 						options: comboBoxUseMaster().itemList,
 						optionsValue: 'code',

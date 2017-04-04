@@ -1,21 +1,23 @@
-#b_inp_001{
-	margin-left: 50px;
-}
-
 #b_inp_003{
-	margin-left: 60px;
+	margin-left: 102px;
 }
 #b_sel_001 {
 	display: inline-block;
-	margin-left: 6px;
+	margin-left: 48px;
 }
 #b_lbl_005 {
-	margin-left: 142px;
+	margin-left: 186px;
 	margin-right: 200px;
 }
 #b_sel_002 {
-	margin-left: 155px;
+	margin-left: 184px;
+}
+#b_lbl_006, #b_lbl_007{
+	margin-left: 184px;
 }
 #b_lbl_009 {
-	margin-left: 142px;
+	margin-left: 185px;
+}
+#b_lbl_010{
+	margin: 10px 0 0 185px;
 }
