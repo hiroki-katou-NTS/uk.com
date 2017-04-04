@@ -59,6 +59,7 @@ var qmm012;
                     self.LoadItemPeriod();
                 }
                 ScreenModel.prototype.LoadItemPeriod = function () {
+                    //this dialog only load data in session from parrent call it
                     var self = this;
                     var itemMaster = nts.uk.ui.windows.getShared('itemMaster');
                     if (itemMaster != undefined) {
@@ -70,6 +71,7 @@ var qmm012;
                         self.CurrentItemPeriod(nts.uk.ui.windows.getShared('itemPeriod'));
                 };
                 ScreenModel.prototype.getCurrentItemPeriod = function () {
+                    //return  ItemPeriod customer has input to form
                     var self = this;
                     return new h.service.model.ItemPeriod(self.CurrentItemMaster().itemCode, self.CurrentPeriodAtr(), self.CurrentStrY(), self.CurrentEndY(), self.CurrentCycleAtr(), self.H_SEL_003_checked() == true ? 1 : 0, self.H_SEL_004_checked() == true ? 1 : 0, self.H_SEL_005_checked() == true ? 1 : 0, self.H_SEL_006_checked() == true ? 1 : 0, self.H_SEL_007_checked() == true ? 1 : 0, self.H_SEL_008_checked() == true ? 1 : 0, self.H_SEL_009_checked() == true ? 1 : 0, self.H_SEL_010_checked() == true ? 1 : 0, self.H_SEL_011_checked() == true ? 1 : 0, self.H_SEL_012_checked() == true ? 1 : 0, self.H_SEL_013_checked() == true ? 1 : 0, self.H_SEL_014_checked() == true ? 1 : 0);
                 };
@@ -78,6 +80,7 @@ var qmm012;
                     var itemPeriodOld = self.CurrentItemPeriod();
                     var itemPeriod = self.getCurrentItemPeriod();
                     if (itemPeriodOld) {
+                        //it mean this item has been created before
                         h.service.updateItemPeriod(itemPeriod, self.CurrentItemMaster()).done(function (res) {
                             nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);
                             nts.uk.ui.windows.close();

@@ -72,6 +72,7 @@ module qmm012.h.viewmodel {
             self.LoadItemPeriod();
         }
         LoadItemPeriod() {
+            //this dialog only load data in session from parrent call it
             let self = this;
             let itemMaster = nts.uk.ui.windows.getShared('itemMaster');
             if (itemMaster != undefined) {
@@ -83,6 +84,7 @@ module qmm012.h.viewmodel {
                 self.CurrentItemPeriod(nts.uk.ui.windows.getShared('itemPeriod'));
         }
         getCurrentItemPeriod() {
+            //return  ItemPeriod customer has input to form
             let self = this;
             return new service.model.ItemPeriod(
                 self.CurrentItemMaster().itemCode,
@@ -109,13 +111,13 @@ module qmm012.h.viewmodel {
             let itemPeriodOld = self.CurrentItemPeriod();
             let itemPeriod = self.getCurrentItemPeriod();
             if (itemPeriodOld) {
+                //it mean this item has been created before
                 service.updateItemPeriod(itemPeriod, self.CurrentItemMaster()).done(function(res: any) {
                     nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);
                     nts.uk.ui.windows.close();
                 }).fail(function(res: any) {
                     alert(res.value);
                 });
-
             } else {
                 service.addItemPeriod(itemPeriod, self.CurrentItemMaster()).done(function(res: any) {
                     nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);

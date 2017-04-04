@@ -318,6 +318,11 @@ module qmm012.b.viewmodel {
                     //勤怠
                     Result = self.screenModel.screenModelE.CurrentZeroDisplaySet();
                     break;
+                //記事
+                case 3:
+                    Result = self.screenModel.screenModelF.CurrentZeroDisplaySet();
+                    break;
+
             }
             return Result;
         }
@@ -335,6 +340,9 @@ module qmm012.b.viewmodel {
                     break;
                 case 2:
                     Result = self.screenModel.screenModelE.CurrentItemDisplayAtr();
+                    break;
+                case 3:
+                    Result = self.screenModel.screenModelF.CurrentItemDisplayAtr();
                     break;
             }
             return Result;

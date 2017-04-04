@@ -192,6 +192,7 @@ var qmm012;
                         else {
                             self.CurrentItemSalary(null);
                         }
+                        //load subitem of item master 
                         self.loadItemPeriod();
                         self.loadItemBDs();
                         self.CurrentZeroDisplaySet(ItemMaster ? ItemMaster.zeroDisplaySet : 1);
@@ -243,6 +244,7 @@ var qmm012;
                     });
                     self.CurrentLimitCode.subscribe(function (NewValue) {
                         if (NewValue) {
+                            //call service getCommuteNoTaxLimit
                             c.service.getCommuteNoTaxLimit(NewValue).done(function (CommuteNoTaxLimit) {
                                 self.currentCommuteNoTaxLimitDto(CommuteNoTaxLimit);
                             }).fail(function (res) {
@@ -288,12 +290,14 @@ var qmm012;
                         self.currentItemBDs([]);
                 };
                 ScreenModel.prototype.GetCurrentItemSalary = function () {
+                    //get ItemSalary customer input in form
                     var self = this;
                     var ItemSalary = new c.service.model.ItemSalary(self.CurrentTaxAtr(), self.CurrentSocialInsAtr(), self.CurrentLaborInsAtr(), self.CurrentFixPayAtr(), self.CurrentApplyForAllEmpFlg(), self.CurrentApplyForMonthlyPayEmp(), self.CurrentApplyForDaymonthlyPayEmp(), self.CurrentApplyForDaylyPayEmp(), self.CurrentApplyForHourlyPayEmp(), self.CurrentAvePayAtr(), self.C_SEL_015_Selected() ? 1 : 0, self.CurrentErrRangeLow(), self.C_SEL_013_Selected() ? 1 : 0, self.CurrentErrRangeHigh(), self.C_SEL_016_Selected() ? 1 : 0, self.CurrentAlRangeLow(), self.C_SEL_014_Selected() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentMemo(), self.CurrentLimitMnyAtr(), self.currentCommuteNoTaxLimitDto() ? self.currentCommuteNoTaxLimitDto().commuNoTaxLimitCode : '', self.CurrentLimitMny());
                     return ItemSalary;
                 };
                 ScreenModel.prototype.openKDialog = function () {
                     var self = this;
+                    //set selected code to session
                     nts.uk.ui.windows.setShared('commuNoTaxLimitCode', self.currentCommuteNoTaxLimitDto() ? self.currentCommuteNoTaxLimitDto().commuNoTaxLimitCode : '');
                     nts.uk.ui.windows.sub.modal('../k/index.xhtml', { height: 530, width: 350, dialogClass: "no-close" }).onClosed(function () {
                         if (nts.uk.ui.windows.getShared('CommuteNoTaxLimitDto'))

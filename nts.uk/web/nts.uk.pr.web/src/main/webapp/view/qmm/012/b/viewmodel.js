@@ -295,6 +295,10 @@ var qmm012;
                             //勤怠
                             Result = self.screenModel.screenModelE.CurrentZeroDisplaySet();
                             break;
+                        //記事
+                        case 3:
+                            Result = self.screenModel.screenModelF.CurrentZeroDisplaySet();
+                            break;
                     }
                     return Result;
                 };
@@ -312,6 +316,9 @@ var qmm012;
                             break;
                         case 2:
                             Result = self.screenModel.screenModelE.CurrentItemDisplayAtr();
+                            break;
+                        case 3:
+                            Result = self.screenModel.screenModelF.CurrentItemDisplayAtr();
                             break;
                     }
                     return Result;

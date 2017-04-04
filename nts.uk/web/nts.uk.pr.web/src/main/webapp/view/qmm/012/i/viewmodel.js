@@ -112,23 +112,24 @@ var qmm012;
                         self.checked_004(ItemBD ? ItemBD.alRangeHighAtr == 1 ? true : false : false);
                         self.CurrentAlRangeHigh(ItemBD ? ItemBD.alRangeHigh : 0);
                         if (ItemBD != undefined) {
+                            //if item not undefined it mean active update mode
                             self.enable_I_INP_002(false);
                         }
                     });
                     self.enable_I_INP_002.subscribe(function (newValue) {
                         if (newValue) {
+                            //it mean new mode 
                             self.I_BTN_003_enable(false);
                             self.gridListCurrentCode('');
                         }
                         else {
+                            //it mean update mode
                             self.I_BTN_003_enable(true);
                             $('#I_INP_002').ntsError('clear');
                         }
                     });
-                    self.checked_002.subscribe(function (newValue) {
-                        self.CurrentItemDispAtr(newValue == false ? 1 : 0);
-                    });
                     self.CurrentItemBreakdownCode.subscribe(function (newValue) {
+                        //validate item for not duplicate on client
                         if (self.enable_I_INP_002()) {
                             var item = _.find(self.ItemBDList(), function (ItemBD) {
                                 return ItemBD.itemBreakdownCode == newValue;
@@ -146,7 +147,7 @@ var qmm012;
                     self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
                     var itemMaster = self.CurrentItemMaster();
                     if (itemMaster != undefined) {
-                        self.loadItem();
+                        self.reloadAndSetSelectedCode();
                         self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
                         self.currentItemCode(itemMaster.itemCode);
                     }
@@ -159,17 +160,12 @@ var qmm012;
                         //set selected 
                         if (self.ItemBDList().length)
                             if (itemCode == undefined)
+                                //if param itemCode == undefined => select first item in grid list
                                 self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCode);
                             else
+                                //else set itemCode 
                                 self.gridListCurrentCode(itemCode);
                     });
-                };
-                ScreenModel.prototype.loadItem = function (itemCode) {
-                    //load itemBDList
-                    var self = this;
-                    var itemBDs = nts.uk.ui.windows.getShared('itemBDs');
-                    self.ItemBDList(itemBDs);
-                    self.reloadAndSetSelectedCode(itemCode);
                 };
                 ScreenModel.prototype.getCurrentItemBD = function () {
                     //get item customer has input on form 
@@ -178,16 +174,18 @@ var qmm012;
                 };
                 ScreenModel.prototype.saveItem = function () {
                     var self = this;
-                    //if I_INP_002 is enable is mean add new mode
+                    //if I_INP_002 is enable is mean add new mode => add new item
                     if (self.enable_I_INP_002())
                         self.addItemBD();
                     else
+                        //else is update
                         self.updateItemBD();
                 };
                 ScreenModel.prototype.deleteItem = function () {
                     var self = this;
                     var itemBD = self.CurrentItemBD();
                     if (itemBD) {
+                        //show dialog
                         nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
                             var itemCode;
                             var index = self.ItemBDList().indexOf(self.CurrentItemBD());
