@@ -49,6 +49,8 @@ public class LaborInsuranceOfficeDeleteCommandHandler
 
 		Optional<LaborInsuranceOffice> optionalDelete = this.laborInsuranceOfficeRepo.findById(companyCode,
 			command.getLaborInsuranceOfficeDeleteDto().getCode());
+		
+		//check exist
 		if(!optionalDelete.isPresent()){
 			throw new BusinessException("ER010");
 		}

@@ -168,7 +168,7 @@ var nts;
                                             var dfd = $.Deferred();
                                             unemployeeInsuranceRateCopyDto.startMonth = data.startYearMonth;
                                             unemployeeInsuranceRateCopyDto.addNew = false;
-                                            a.service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(function (data) {
+                                            a.service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(function () {
                                                 self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
                                                 self.reloadDataUnemployeeInsuranceRateByAction();
                                                 self.clearErrorSaveUnemployeeInsurance();
@@ -182,7 +182,7 @@ var nts;
                                             var dfd = $.Deferred();
                                             unemployeeInsuranceRateCopyDto.startMonth = data.startYearMonth;
                                             unemployeeInsuranceRateCopyDto.addNew = true;
-                                            a.service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(function (data) {
+                                            a.service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(function () {
                                                 self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
                                                 self.reloadDataUnemployeeInsuranceRateByAction();
                                                 self.clearErrorSaveUnemployeeInsurance();
@@ -206,7 +206,7 @@ var nts;
                                         nts.uk.ui.windows.setShared("InsuranceBusinessTypeDto", data);
                                         nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 630, width: 425, title: "事業種類の登録", dialogClass: 'no-close' }).onClosed(function () {
                                             var insuranceBusinessTypeUpdateModel = nts.uk.ui.windows.getShared("insuranceBusinessTypeUpdateModel");
-                                            if (insuranceBusinessTypeUpdateModel != null && insuranceBusinessTypeUpdateModel != undefined) {
+                                            if (insuranceBusinessTypeUpdateModel) {
                                                 a.service.findAllInsuranceBusinessType().done(function (data) {
                                                     self.updateInsuranceBusinessTypeAccidentInsuranceDto(data);
                                                 });
@@ -411,15 +411,10 @@ var nts;
                                         $('#btn_saveAccidentInsuranceHistory').ntsError('set', message);
                                     }
                                 };
-                                ScreenModel.prototype.validateServer = function () {
-                                    var self = this;
-                                };
                                 ScreenModel.prototype.saveUnemployeeInsuranceHistory = function () {
                                     var self = this;
-                                    if (nts.uk.ui._viewModel.errors.isEmpty()) {
-                                    }
                                     if (self.typeActionUnemployeeInsurance() == TypeActionInsuranceRate.add) {
-                                        a.service.addUnemployeeInsuranceRate(self.unemployeeInsuranceRateModel()).done(function (data) {
+                                        a.service.addUnemployeeInsuranceRate(self.unemployeeInsuranceRateModel()).done(function () {
                                             self.reloadDataUnemployeeInsuranceRateByAction();
                                             self.clearErrorSaveUnemployeeInsurance();
                                         }).fail(function (res) {
@@ -428,7 +423,7 @@ var nts;
                                         });
                                     }
                                     else {
-                                        a.service.updateUnemployeeInsuranceRate(self.unemployeeInsuranceRateModel()).done(function (data) {
+                                        a.service.updateUnemployeeInsuranceRate(self.unemployeeInsuranceRateModel()).done(function () {
                                             self.reloadDataUnemployeeInsuranceRateByAction();
                                             self.clearErrorSaveUnemployeeInsurance();
                                         }).fail(function (res) {
@@ -441,7 +436,7 @@ var nts;
                                 ScreenModel.prototype.saveAccidentInsuranceHistory = function () {
                                     var self = this;
                                     if (self.typeActionAccidentInsurance() == TypeActionInsuranceRate.add) {
-                                        a.service.addAccidentInsuranceRate(self.accidentInsuranceRateModel()).done(function (data) {
+                                        a.service.addAccidentInsuranceRate(self.accidentInsuranceRateModel()).done(function () {
                                             self.reloadDataAccidentInsuranceRateByAction();
                                             self.clearErrorSaveAccidentInsurance();
                                         }).fail(function (res) {
@@ -449,7 +444,7 @@ var nts;
                                         });
                                     }
                                     else {
-                                        a.service.updateAccidentInsuranceRate(self.accidentInsuranceRateModel()).done(function (data) {
+                                        a.service.updateAccidentInsuranceRate(self.accidentInsuranceRateModel()).done(function () {
                                             self.detailAccidentInsuranceRateHistory(self.accidentInsuranceRateModel().accidentInsuranceRateHistoryModel.historyId());
                                             self.clearErrorSaveAccidentInsurance();
                                         }).fail(function (res) {
@@ -458,9 +453,7 @@ var nts;
                                     }
                                 };
                                 ScreenModel.prototype.showchangeAccidentInsuranceHistory = function (selectionAccidentInsuranceRateHistory) {
-                                    if (selectionAccidentInsuranceRateHistory != null
-                                        && selectionAccidentInsuranceRateHistory != undefined
-                                        && selectionAccidentInsuranceRateHistory != '') {
+                                    if (selectionAccidentInsuranceRateHistory && selectionAccidentInsuranceRateHistory != '') {
                                         var self = this;
                                         if (self.dirtyAccidentInsurance.isDirty() && self.isShowDirtyActionAccidentInsurance()) {
                                             if (selectionAccidentInsuranceRateHistory !== self.preSelectAccidentInsuranceRateHistory()

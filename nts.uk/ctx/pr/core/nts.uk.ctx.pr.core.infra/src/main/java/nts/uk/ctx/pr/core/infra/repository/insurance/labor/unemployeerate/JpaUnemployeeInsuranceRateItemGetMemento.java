@@ -11,7 +11,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate;
 
 /**
- * The Class JpaUnemployeeInsuranceRateItemGeneralGetMemento.
+ * The Class JpaUnemployeeInsuranceRateItemGetMemento.
  */
 public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsuranceRateItemGetMemento {
 
@@ -22,11 +22,12 @@ public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsur
 	private CareerGroup careerGroup;
 
 	/**
-	 * Instantiates a new jpa unemployee insurance rate item general get
-	 * memento.
+	 * Instantiates a new jpa unemployee insurance rate item get memento.
 	 *
 	 * @param typeValue
 	 *            the type value
+	 * @param careerGroup
+	 *            the career group
 	 */
 	public JpaUnemployeeInsuranceRateItemGetMemento(QismtEmpInsuRate typeValue, CareerGroup careerGroup) {
 		this.typeValue = typeValue;

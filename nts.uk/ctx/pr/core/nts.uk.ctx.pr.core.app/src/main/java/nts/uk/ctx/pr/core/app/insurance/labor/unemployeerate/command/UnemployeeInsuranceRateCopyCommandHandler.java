@@ -55,8 +55,9 @@ public class UnemployeeInsuranceRateCopyCommandHandler
 		UnemployeeInsuranceRateCopyCommand command = context.getCommand();
 
 		UnemployeeInsuranceRate unemployeeInsuranceRate = null;
+		
+		// add new
 		if (command.isAddNew()) {
-			// add new
 			unemployeeInsuranceRate = UnemployeeInsuranceRate.createWithIntial(companyCode,
 				YearMonth.of(command.getStartMonth()));
 		} else {
@@ -72,8 +73,8 @@ public class UnemployeeInsuranceRateCopyCommandHandler
 					YearMonth.of(command.getStartMonth()));
 			}
 		}
+		
 		// validate
-
 		unemployeeInsuranceRate.setMaxDate();
 
 		unemployeeInsuranceRate.validate();

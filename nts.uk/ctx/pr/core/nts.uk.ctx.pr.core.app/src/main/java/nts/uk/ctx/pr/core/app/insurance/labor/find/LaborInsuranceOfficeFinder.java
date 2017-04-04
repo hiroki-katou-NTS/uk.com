@@ -31,8 +31,7 @@ public class LaborInsuranceOfficeFinder {
 	/**
 	 * Find by id.
 	 *
-	 * @param officeCode
-	 *            the office code
+	 * @param officeCode the office code
 	 * @return the labor insurance office find dto
 	 */
 	public LaborInsuranceOfficeFindDto findById(String officeCode) {
@@ -50,7 +49,7 @@ public class LaborInsuranceOfficeFinder {
 		Optional<LaborInsuranceOffice> optionalLaborInsuranceOffice = laborInsuranceOfficeRepository
 			.findById(companyCode, officeCode);
 
-		// value exsit
+		// value exist
 		if (optionalLaborInsuranceOffice.isPresent()) {
 			optionalLaborInsuranceOffice.get().saveToMemento(laborInsuranceOfficeDto);
 			return laborInsuranceOfficeDto;
@@ -76,11 +75,13 @@ public class LaborInsuranceOfficeFinder {
 		List<LaborInsuranceOfficeFindOutDto> lstLaborInsuranceOfficeFindOutDto;
 		lstLaborInsuranceOfficeFindOutDto = this.laborInsuranceOfficeRepository.findAll(companyCode).stream()
 			.map(laborInsuranceOffice -> {
-				LaborInsuranceOfficeFindOutDto laborInsuranceOfficeFindOutDto = new LaborInsuranceOfficeFindOutDto();
+				LaborInsuranceOfficeFindOutDto laborInsuranceOfficeFindOutDto;
+				laborInsuranceOfficeFindOutDto = new LaborInsuranceOfficeFindOutDto();
 				laborInsuranceOffice.saveToMemento(laborInsuranceOfficeFindOutDto);
 				return laborInsuranceOfficeFindOutDto;
 			}).collect(Collectors.toList());
 
 		return lstLaborInsuranceOfficeFindOutDto;
 	}
+
 }

@@ -8,7 +8,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -71,28 +70,23 @@ public class QismtWorkAccidentInsu implements Serializable {
 	private String updPg;
 
 	/** The exclus ver. */
-	@Basic(optional = false)
 	@Column(name = "EXCLUS_VER")
 	private long exclusVer;
 
 	/** The str ym. */
-	@Basic(optional = false)
 	@Column(name = "STR_YM")
 	private int strYm;
 
 	/** The end ym. */
-	@Basic(optional = false)
 	@Column(name = "END_YM")
 	private int endYm;
 	// @Max(value=?) @Min(value=?)//if you know range of your decimal fields
 	/** The wa insu rate. */
 	// consider using these annotations to enforce field validation
-	@Basic(optional = false)
 	@Column(name = "WA_INSU_RATE")
 	private BigDecimal waInsuRate;
 
 	/** The wa insu round. */
-	@Basic(optional = false)
 	@Column(name = "WA_INSU_ROUND")
 	private int waInsuRound;
 
@@ -105,6 +99,7 @@ public class QismtWorkAccidentInsu implements Serializable {
 	 * Instantiates a new qismt work accident insu.
 	 */
 	public QismtWorkAccidentInsu() {
+		super();
 	}
 
 	/**
@@ -115,32 +110,6 @@ public class QismtWorkAccidentInsu implements Serializable {
 	 */
 	public QismtWorkAccidentInsu(QismtWorkAccidentInsuPK qismtWorkAccidentInsuPK) {
 		this.qismtWorkAccidentInsuPK = qismtWorkAccidentInsuPK;
-	}
-
-	/**
-	 * Instantiates a new qismt work accident insu.
-	 *
-	 * @param qismtWorkAccidentInsuPK
-	 *            the qismt work accident insu PK
-	 * @param exclusVer
-	 *            the exclus ver
-	 * @param strYm
-	 *            the str ym
-	 * @param endYm
-	 *            the end ym
-	 * @param waInsuRate
-	 *            the wa insu rate
-	 * @param waInsuRound
-	 *            the wa insu round
-	 */
-	public QismtWorkAccidentInsu(QismtWorkAccidentInsuPK qismtWorkAccidentInsuPK, long exclusVer, int strYm, int endYm,
-			BigDecimal waInsuRate, int waInsuRound) {
-		this.qismtWorkAccidentInsuPK = qismtWorkAccidentInsuPK;
-		this.exclusVer = exclusVer;
-		this.strYm = strYm;
-		this.endYm = endYm;
-		this.waInsuRate = waInsuRate;
-		this.waInsuRound = waInsuRound;
 	}
 
 	/**

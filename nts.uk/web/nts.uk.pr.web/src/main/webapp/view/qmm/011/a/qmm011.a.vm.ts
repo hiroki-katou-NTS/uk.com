@@ -236,7 +236,7 @@ module nts.uk.pr.view.qmm011.a {
                         var dfd = $.Deferred<any>();
                         unemployeeInsuranceRateCopyDto.startMonth = data.startYearMonth;
                         unemployeeInsuranceRateCopyDto.addNew = false;
-                        service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(data => {
+                        service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(function() {
                             self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
                             self.reloadDataUnemployeeInsuranceRateByAction();
                             self.clearErrorSaveUnemployeeInsurance();
@@ -252,7 +252,7 @@ module nts.uk.pr.view.qmm011.a {
                         var dfd = $.Deferred<any>();
                         unemployeeInsuranceRateCopyDto.startMonth = data.startYearMonth;
                         unemployeeInsuranceRateCopyDto.addNew = true;
-                        service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(data => {
+                        service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(function() {
                             self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
                             self.reloadDataUnemployeeInsuranceRateByAction();
                             self.clearErrorSaveUnemployeeInsurance();
@@ -285,7 +285,7 @@ module nts.uk.pr.view.qmm011.a {
                         //get fw e => respone 
                         var insuranceBusinessTypeUpdateModel = nts.uk.ui.windows.getShared("insuranceBusinessTypeUpdateModel");
 
-                        if (insuranceBusinessTypeUpdateModel != null && insuranceBusinessTypeUpdateModel != undefined) {
+                        if (insuranceBusinessTypeUpdateModel) {
                             //reload insurance business type by call service
                             service.findAllInsuranceBusinessType().done(data => {
                                 //update model view 
@@ -541,22 +541,15 @@ module nts.uk.pr.view.qmm011.a {
                 }
             }
 
-            private validateServer() {
-                var self = this;
-            }
-
             //action save UnemployeeInsuranceHistory Onlick connection service
             private saveUnemployeeInsuranceHistory() {
                 var self = this;
 
-                if (nts.uk.ui._viewModel.errors.isEmpty()) {
-
-                }
                 // get type action (ismode)
                 if (self.typeActionUnemployeeInsurance() == TypeActionInsuranceRate.add) {
                     //type action is add
                     //call service add UnemployeeInsuranceHistory
-                    service.addUnemployeeInsuranceRate(self.unemployeeInsuranceRateModel()).done(data => {
+                    service.addUnemployeeInsuranceRate(self.unemployeeInsuranceRateModel()).done(function() {
                         //reload viewmodel
                         self.reloadDataUnemployeeInsuranceRateByAction();
                         //clear error viewmodel
@@ -569,7 +562,7 @@ module nts.uk.pr.view.qmm011.a {
                 } else {
                     //type action is update
                     //call service update UnemployeeInsuranceHistory
-                    service.updateUnemployeeInsuranceRate(self.unemployeeInsuranceRateModel()).done(data => {
+                    service.updateUnemployeeInsuranceRate(self.unemployeeInsuranceRateModel()).done(function() {
                         //reload viewmodel
                         self.reloadDataUnemployeeInsuranceRateByAction();
                         //clear error viewmodel
@@ -591,7 +584,7 @@ module nts.uk.pr.view.qmm011.a {
                 if (self.typeActionAccidentInsurance() == TypeActionInsuranceRate.add) {
                     //type action is add
                     //call service add AccidentInsuranceRate
-                    service.addAccidentInsuranceRate(self.accidentInsuranceRateModel()).done(data => {
+                    service.addAccidentInsuranceRate(self.accidentInsuranceRateModel()).done(function() {
                         //reload viewmodel
                         self.reloadDataAccidentInsuranceRateByAction();
                         //clear error viewmodel
@@ -603,7 +596,7 @@ module nts.uk.pr.view.qmm011.a {
                 } else {
                     //type action is update
                     //call service update AccidentInsuranceRate
-                    service.updateAccidentInsuranceRate(self.accidentInsuranceRateModel()).done(data => {
+                    service.updateAccidentInsuranceRate(self.accidentInsuranceRateModel()).done(function() {
                         //reload viewmodel
                         self.detailAccidentInsuranceRateHistory(self.accidentInsuranceRateModel().accidentInsuranceRateHistoryModel.historyId());
                         //clear error viewmodel
@@ -618,9 +611,7 @@ module nts.uk.pr.view.qmm011.a {
 
             //show AccidentInsuranceHistory (change event)
             private showchangeAccidentInsuranceHistory(selectionAccidentInsuranceRateHistory: string) {
-                if (selectionAccidentInsuranceRateHistory != null
-                    && selectionAccidentInsuranceRateHistory != undefined
-                    && selectionAccidentInsuranceRateHistory != '') {
+                if (selectionAccidentInsuranceRateHistory && selectionAccidentInsuranceRateHistory != '') {
                     var self = this;
                     if (self.dirtyAccidentInsurance.isDirty() && self.isShowDirtyActionAccidentInsurance()) {
                         if (selectionAccidentInsuranceRateHistory !== self.preSelectAccidentInsuranceRateHistory()

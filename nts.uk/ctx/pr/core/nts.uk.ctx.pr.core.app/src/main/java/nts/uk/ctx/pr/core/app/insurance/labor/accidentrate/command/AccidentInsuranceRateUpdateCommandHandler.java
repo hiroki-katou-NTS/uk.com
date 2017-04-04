@@ -67,6 +67,7 @@ public class AccidentInsuranceRateUpdateCommandHandler
 			accidentInsuranceRate.getCompanyCode(), accidentInsuranceRate.getApplyRange().getStartMonth(),
 			accidentInsuranceRate.getHistoryId());
 
+		//exist data
 		if (optionalUpdate.isPresent()) {
 			optionalUpdate.get()
 				.setEnd(accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());

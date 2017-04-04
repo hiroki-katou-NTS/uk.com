@@ -17,11 +17,14 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
+/**
+ * The Class UnemployeeInsuranceRateDeleteCommandHandler.
+ */
 @Stateless
 public class UnemployeeInsuranceRateDeleteCommandHandler
 	extends CommandHandler<UnemployeeInsuranceRateDeleteCommand> {
 
-	/** CompanyRepository */
+	/** The unemployee insurance rate repository. */
 	@Inject
 	private UnemployeeInsuranceRateRepository unemployeeInsuranceRateRepository;
 
@@ -49,7 +52,7 @@ public class UnemployeeInsuranceRateDeleteCommandHandler
 		Optional<UnemployeeInsuranceRate> optionalRemove = this.unemployeeInsuranceRateRepository
 			.findFirstData(companyCode);
 
-		// remove data
+		// remove data by exist and equal code
 		if (optionalRemove.isPresent() && optionalRemove.get().getHistoryId().equals(command.getCode())) {
 			this.unemployeeInsuranceRateRepository.remove(companyCode, command.getCode(),
 				command.getVersion());

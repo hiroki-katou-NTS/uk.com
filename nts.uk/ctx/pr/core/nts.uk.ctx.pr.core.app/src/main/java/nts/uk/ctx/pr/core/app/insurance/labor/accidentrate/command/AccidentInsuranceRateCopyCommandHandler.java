@@ -28,11 +28,11 @@ public class AccidentInsuranceRateCopyCommandHandler
 
 	/** The accident insurance rate repo. */
 	@Inject
-	private AccidentInsuranceRateRepository accidentInsuranceRateRepo;
+	private AccidentInsuranceRateRepository rateRepo;
 
 	/** The accident insurance rate service. */
 	@Inject
-	private AccidentInsuranceRateService accidentInsuranceRateService;
+	private AccidentInsuranceRateService rateService;
 
 	/*
 	 * (non-Javadoc)
@@ -60,10 +60,12 @@ public class AccidentInsuranceRateCopyCommandHandler
 
 		if (!command.isAddNew() && command.getHistoryIdCopy() != null
 				&& command.getHistoryIdCopy().length() > 0) {
+
 			// add new with start historyId
-			Optional<AccidentInsuranceRate> optionalFindAdd;
-			optionalFindAdd = this.accidentInsuranceRateRepo.findById(companyCode,
-					command.getHistoryIdCopy());
+			Optional<AccidentInsuranceRate> optionalFindAdd = this.rateRepo
+					.findById(companyCode, command.getHistoryIdCopy());
+
+			// Check exist.
 			if (optionalFindAdd.isPresent()) {
 				accidentInsuranceRate = optionalFindAdd.get();
 				accidentInsuranceRate = accidentInsuranceRate
@@ -75,20 +77,21 @@ public class AccidentInsuranceRateCopyCommandHandler
 		accidentInsuranceRate.validate();
 
 		// validate input domain
-		accidentInsuranceRateService.validateDateRange(accidentInsuranceRate);
+		rateService.validateDateRange(accidentInsuranceRate);
 
 		// get first data
-		Optional<AccidentInsuranceRate> optionalFirst = this.accidentInsuranceRateRepo
+		Optional<AccidentInsuranceRate> optionalFirst = this.rateRepo
 				.findFirstData(companyCode);
 
+		// Check exist
 		if (optionalFirst.isPresent()) {
 			optionalFirst.get()
 					.setEnd(accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());
-			this.accidentInsuranceRateRepo.update(optionalFirst.get());
+			this.rateRepo.update(optionalFirst.get());
 		}
 
 		// connection repository running add
-		this.accidentInsuranceRateRepo.add(accidentInsuranceRate);
+		this.rateRepo.add(accidentInsuranceRate);
 	}
 
 }

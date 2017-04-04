@@ -66,6 +66,7 @@ public class AccidentInsuranceRateAddCommandHandler
 		Optional<AccidentInsuranceRate> optionalFirst = this.accidentInsuranceRateRepo
 				.findFirstData(companyCode);
 
+		//exist data
 		if (optionalFirst.isPresent()) {
 			optionalFirst.get()
 					.setEnd(accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());
