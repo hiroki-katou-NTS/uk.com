@@ -1,19 +1,37 @@
 module qmm003.c.viewmodel {
     export class ScreenModel {
-        items: KnockoutObservableArray<Node>;
+        items: KnockoutObservableArray<RedensitalTaxNode>;
         singleSelectedCode: KnockoutObservable<string>;
-        filteredData: KnockoutObservableArray<Node> = ko.observableArray([]);
+        filteredData: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
         currentResidential: service.model.ResidentialTax = (null);
-        nodeRegionPrefectures: KnockoutObservableArray<Node> = ko.observableArray([]);
+        nodeRegionPrefectures: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
         japanLocation: Array<qmm003.c.service.model.RegionObject> = [];
-        precfecture: Array<Node> = [];
-        itemPrefecture: KnockoutObservableArray<Node> = ko.observableArray([]);
+        precfecture: Array<RedensitalTaxNode> = [];
+        itemPrefecture: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
         residentalTaxList: KnockoutObservableArray<qmm003.c.service.model.ResidentialTax> = ko.observableArray([]);
         constructor() {
             let self = this;
             self.init();
             self.singleSelectedCode.subscribe(function(newValue) {
-                self.processWhenCurrentCodeChange(newValue);
+                if (newValue.length === 1) {
+                    let index: number;
+                    index = _.findIndex(self.items(), function(obj: RedensitalTaxNode) {
+                        return obj.code === newValue;
+
+                    })
+                    self.singleSelectedCode(self.items()[index].childs[0].childs[0].code);
+                    return;
+                }
+                if (newValue.length === 2) {
+
+                    let array = [];
+                    array = self.findIndex(self.items(), newValue);
+                    self.singleSelectedCode(self.items()[array[0]].childs[array[1]].childs[0].code);
+                    return;
+                }
+                if (newValue.length > 2) {
+                    self.processWhenCurrentCodeChange(newValue);
+                }
             });
 
         }
@@ -21,13 +39,13 @@ module qmm003.c.viewmodel {
             let self = this;
             service.getResidentialTaxDetail(newValue).done(function(data: service.model.ResidentialTax) {
                 if (data) {
-                    self.currentResidential= ((data));;
+                    self.currentResidential = ((data));;
                 } else {
                     return;
                 }
             });
         }
-        
+
         clickButton(): any {
             let self = this;
             nts.uk.ui.windows.setShared('currentResidential', self.currentResidential, true);
@@ -52,7 +70,7 @@ module qmm003.c.viewmodel {
                     (qmm003.c.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
                         self.japanLocation = locationData;
                         self.buildResidentalTaxTree();
-                        let node: Array<Node> = [];
+                        let node: Array<RedensitalTaxNode> = [];
                         node = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
                         self.filteredData(node);
                         self.items(self.nodeRegionPrefectures());
@@ -69,33 +87,51 @@ module qmm003.c.viewmodel {
             return dfd.promise();
         }
 
+        // tìm index để khi chọn root thì ra hiển thị ra thằng đầu tiên của 1 thằng root
+        findIndex(items: Array<RedensitalTaxNode>, newValue: string): any {
+            let index: number;
+            let count: number = -1;
+            let array = [];
+            _.each(items, function(obj: RedensitalTaxNode) {
+                count++;
+                index = _.findIndex(obj.childs, function(obj1: RedensitalTaxNode) {
+                    return obj1.code === newValue;
+                });
+                if (index > -1) {
+                    array.push(count, index);
+                }
+
+            });
+
+            return array;
+        }
         buildResidentalTaxTree() {
             let self = this;
             var child = [];
             let i = 0;
             _.each(self.residentalTaxList(), function(objResi: qmm003.c.service.model.ResidentialTax) {
                 _.each(self.japanLocation, function(objRegion: service.model.RegionObject) {
-                    let cout: boolean = false;
-                    let coutPre: boolean = false;
+                    let isChild: boolean = false;
+                    let isPrefecture: boolean = false;
                     _.each(objRegion.prefectures, function(objPrefecture: service.model.PrefectureObject) {
                         if (objPrefecture.prefectureCode === objResi.prefectureCode) {
-                            _.each(self.nodeRegionPrefectures(), function(obj: Node) {
+                            _.each(self.nodeRegionPrefectures(), function(obj: RedensitalTaxNode) {
                                 if (obj.code === objRegion.regionCode) {
-                                    _.each(obj.childs, function(objChild: Node) {
+                                    _.each(obj.childs, function(objChild: RedensitalTaxNode) {
                                         if (objChild.code === objPrefecture.prefectureCode) {
-                                            objChild.childs.push(new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, []));
-                                            coutPre = true;
+                                            objChild.childs.push(new RedensitalTaxNode(objResi.resiTaxCode, objResi.resiTaxAutonomy, []));
+                                            isPrefecture = true;
                                         }
                                     });
-                                    if (coutPre === false) {
-                                        obj.childs.push(new Node(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])]));
+                                    if (isPrefecture === false) {
+                                        obj.childs.push(new RedensitalTaxNode(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new RedensitalTaxNode(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])]));
                                     }
-                                    cout = true;
+                                    isChild = true;
                                 }
                             });
-                            if (cout === false) {
+                            if (isChild === false) {
                                 let chi = [];
-                                self.nodeRegionPrefectures.push(new Node(objRegion.regionCode, objRegion.regionName, [new Node(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])])]));
+                                self.nodeRegionPrefectures.push(new RedensitalTaxNode(objRegion.regionCode, objRegion.regionName, [new RedensitalTaxNode(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new RedensitalTaxNode(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])])]));
                             }
                         }
                     });
@@ -105,13 +141,13 @@ module qmm003.c.viewmodel {
         }
 
     }
-    export class Node {
+    export class RedensitalTaxNode {
         code: string;
         name: string;
         nodeText: string;
         custom: string;
         childs: any;
-        constructor(code: string, name: string, childs: Array<Node>) {
+        constructor(code: string, name: string, childs: Array<RedensitalTaxNode>) {
             let self = this;
             self.code = code;
             self.name = name;

@@ -16,7 +16,23 @@ var qmm003;
                     var self = this;
                     self.init();
                     self.singleSelectedCode.subscribe(function (newValue) {
-                        self.processWhenCurrentCodeChange(newValue);
+                        if (newValue.length === 1) {
+                            var index = void 0;
+                            index = _.findIndex(self.items(), function (obj) {
+                                return obj.code === newValue;
+                            });
+                            self.singleSelectedCode(self.items()[index].childs[0].childs[0].code);
+                            return;
+                        }
+                        if (newValue.length === 2) {
+                            var array = [];
+                            array = self.findIndex(self.items(), newValue);
+                            self.singleSelectedCode(self.items()[array[0]].childs[array[1]].childs[0].code);
+                            return;
+                        }
+                        if (newValue.length > 2) {
+                            self.processWhenCurrentCodeChange(newValue);
+                        }
                     });
                 }
                 ScreenModel.prototype.processWhenCurrentCodeChange = function (newValue) {
@@ -65,33 +81,49 @@ var qmm003;
                     });
                     return dfd.promise();
                 };
+                // tìm index để khi chọn root thì ra hiển thị ra thằng đầu tiên của 1 thằng root
+                ScreenModel.prototype.findIndex = function (items, newValue) {
+                    var index;
+                    var count = -1;
+                    var array = [];
+                    _.each(items, function (obj) {
+                        count++;
+                        index = _.findIndex(obj.childs, function (obj1) {
+                            return obj1.code === newValue;
+                        });
+                        if (index > -1) {
+                            array.push(count, index);
+                        }
+                    });
+                    return array;
+                };
                 ScreenModel.prototype.buildResidentalTaxTree = function () {
                     var self = this;
                     var child = [];
                     var i = 0;
                     _.each(self.residentalTaxList(), function (objResi) {
                         _.each(self.japanLocation, function (objRegion) {
-                            var cout = false;
-                            var coutPre = false;
+                            var isChild = false;
+                            var isPrefecture = false;
                             _.each(objRegion.prefectures, function (objPrefecture) {
                                 if (objPrefecture.prefectureCode === objResi.prefectureCode) {
                                     _.each(self.nodeRegionPrefectures(), function (obj) {
                                         if (obj.code === objRegion.regionCode) {
                                             _.each(obj.childs, function (objChild) {
                                                 if (objChild.code === objPrefecture.prefectureCode) {
-                                                    objChild.childs.push(new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, []));
-                                                    coutPre = true;
+                                                    objChild.childs.push(new RedensitalTaxNode(objResi.resiTaxCode, objResi.resiTaxAutonomy, []));
+                                                    isPrefecture = true;
                                                 }
                                             });
-                                            if (coutPre === false) {
-                                                obj.childs.push(new Node(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])]));
+                                            if (isPrefecture === false) {
+                                                obj.childs.push(new RedensitalTaxNode(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new RedensitalTaxNode(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])]));
                                             }
-                                            cout = true;
+                                            isChild = true;
                                         }
                                     });
-                                    if (cout === false) {
+                                    if (isChild === false) {
                                         var chi = [];
-                                        self.nodeRegionPrefectures.push(new Node(objRegion.regionCode, objRegion.regionName, [new Node(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])])]));
+                                        self.nodeRegionPrefectures.push(new RedensitalTaxNode(objRegion.regionCode, objRegion.regionName, [new RedensitalTaxNode(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new RedensitalTaxNode(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])])]));
                                     }
                                 }
                             });
@@ -101,17 +133,17 @@ var qmm003;
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            var Node = (function () {
-                function Node(code, name, childs) {
+            var RedensitalTaxNode = (function () {
+                function RedensitalTaxNode(code, name, childs) {
                     var self = this;
                     self.code = code;
                     self.name = name;
                     self.nodeText = self.code + ' ' + self.name;
                     self.childs = childs;
                 }
-                return Node;
+                return RedensitalTaxNode;
             }());
-            viewmodel.Node = Node;
+            viewmodel.RedensitalTaxNode = RedensitalTaxNode;
         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
     })(c = qmm003.c || (qmm003.c = {}));
 })(qmm003 || (qmm003 = {}));
