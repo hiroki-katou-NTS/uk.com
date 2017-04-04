@@ -22,7 +22,8 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class UpdateHealthInsuranceAvgearnCommandHandler.
  */
 @Stateless
-public class UpdateHealthInsuranceAvgearnCommandHandler extends CommandHandler<UpdateHealthInsuranceAvgearnCommand> {
+public class UpdateHealthInsuranceAvgearnCommandHandler
+	extends CommandHandler<UpdateHealthInsuranceAvgearnCommand> {
 
 	/** The health insurance avgearn repository. */
 	@Inject
@@ -45,13 +46,14 @@ public class UpdateHealthInsuranceAvgearnCommandHandler extends CommandHandler<U
 		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
 
 		// Map to domain
-		List<HealthInsuranceAvgearn> healthInsuranceAvgearns = command.getListHealthInsuranceAvgearn().stream()
-				.map(item -> {
-					return new HealthInsuranceAvgearn(item);
-				}).collect(Collectors.toList());
+		List<HealthInsuranceAvgearn> healthInsuranceAvgearns = command.getListHealthInsuranceAvgearn()
+			.stream().map(item -> {
+				return new HealthInsuranceAvgearn(item);
+			}).collect(Collectors.toList());
 
 		// Update
-		healthInsuranceAvgearnRepository.update(healthInsuranceAvgearns, companyCode.v(), command.getOfficeCode());
+		healthInsuranceAvgearnRepository.update(healthInsuranceAvgearns, companyCode.v(),
+			command.getOfficeCode());
 
 	}
 }
