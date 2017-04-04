@@ -42,15 +42,13 @@ var nts;
                                 }
                                 ScreenModel.prototype.resetValueLaborInsurance = function () {
                                     var self = this;
-                                    if (self.dirty.isDirty() && self.isShowDirty()) {
-                                        if (self.typeAction() == TypeActionLaborInsuranceOffice.update) {
-                                            nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
-                                                self.isShowDirty(false);
-                                                self.onResetValueLaborInsurance();
-                                            }).ifNo(function () {
-                                            });
-                                            return;
-                                        }
+                                    if (self.dirty.isDirty() && self.isShowDirty() && self.typeAction() == TypeActionLaborInsuranceOffice.update) {
+                                        nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
+                                            self.isShowDirty(false);
+                                            self.onResetValueLaborInsurance();
+                                        }).ifNo(function () {
+                                        });
+                                        return;
                                     }
                                     self.onResetValueLaborInsurance();
                                 };
@@ -95,7 +93,7 @@ var nts;
                                                 self.enableButton(true);
                                                 var importData;
                                                 importData = nts.uk.ui.windows.getShared('importData');
-                                                if (importData != null && importData != undefined) {
+                                                if (importData) {
                                                     self.laborInsuranceOfficeModel().setDataImport(importData);
                                                 }
                                             });
@@ -156,7 +154,6 @@ var nts;
                                     }
                                 };
                                 ScreenModel.prototype.validateData = function () {
-                                    var self = this;
                                     $("#inp_code").ntsEditor("validate");
                                     $("#inp_name").ntsEditor("validate");
                                     $("#inp_shortName").ntsEditor("validate");

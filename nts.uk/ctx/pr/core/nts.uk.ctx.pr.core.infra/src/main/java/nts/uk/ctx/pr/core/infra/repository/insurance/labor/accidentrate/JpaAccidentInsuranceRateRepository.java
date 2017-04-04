@@ -124,8 +124,8 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 	 * AccidentInsuranceRateRepository#findById(java.lang.String)
 	 */
 	@Override
-	public Optional<AccidentInsuranceRate> findById(String String, String historyId) {
-		return Optional.ofNullable(this.toDomain(this.findDataById(String, historyId)));
+	public Optional<AccidentInsuranceRate> findById(String companyCode, String historyId) {
+		return Optional.ofNullable(this.toDomain(this.findDataById(companyCode, historyId)));
 	}
 
 	/**

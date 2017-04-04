@@ -65,38 +65,38 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository
 	 */
 	@Override
 	public List<LaborInsuranceOffice> findAll(String companyCode) {
-		
+
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		
+
 		// call QISMT_LABOR_INSU_OFFICE (QismtLaborInsuOffice SQL)
 		CriteriaQuery<QismtLaborInsuOffice> cq = criteriaBuilder.createQuery(QismtLaborInsuOffice.class);
-		
+
 		// root data
 		Root<QismtLaborInsuOffice> root = cq.from(QismtLaborInsuOffice.class);
-		
+
 		// select root
 		cq.select(root);
-		
+
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		
+
 		// eq CompanyCode
 		lstpredicateWhere.add(criteriaBuilder.equal(
 			root.get(QismtLaborInsuOffice_.qismtLaborInsuOfficePK).get(QismtLaborInsuOfficePK_.ccd),
 			companyCode));
-		
+
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-		
+
 		// creat query
 		TypedQuery<QismtLaborInsuOffice> query = em.createQuery(cq);
-		
+
 		// exclude select
 		List<LaborInsuranceOffice> lstLaborInsuranceOffice = query.getResultList().stream()
 			.map(item -> this.toDomain(item)).collect(Collectors.toList());
-		
+
 		return lstLaborInsuranceOffice;
 	}
 
@@ -135,9 +135,7 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository
 	 * @return the labor insurance office
 	 */
 	private LaborInsuranceOffice toDomain(QismtLaborInsuOffice entity) {
-		LaborInsuranceOffice domain = new LaborInsuranceOffice(new JpaLaborInsuranceOfficeGetMemento(entity));
-		return domain;
-
+		return new LaborInsuranceOffice(new JpaLaborInsuranceOfficeGetMemento(entity));
 	}
 
 	/*

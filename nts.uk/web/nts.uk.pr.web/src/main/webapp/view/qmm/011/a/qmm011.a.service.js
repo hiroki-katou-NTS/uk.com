@@ -124,18 +124,10 @@ var nts;
                             }
                             service.copyAccidentInsuranceRate = copyAccidentInsuranceRate;
                             function addAccidentInsuranceRate(accidentInsuranceRateModel) {
-                                var dfd = $.Deferred();
                                 var data = {
                                     accidentInsuranceRate: service.convertAccidentInsuranceRateModelDTO(accidentInsuranceRateModel)
                                 };
-                                nts.uk.request.ajax(paths.addAccidentInsuranceRate, data)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.addAccidentInsuranceRate, data);
                             }
                             service.addAccidentInsuranceRate = addAccidentInsuranceRate;
                             function copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto) {
@@ -143,18 +135,10 @@ var nts;
                             }
                             service.copyUnemployeeInsuranceRate = copyUnemployeeInsuranceRate;
                             function updateAccidentInsuranceRate(accidentInsuranceRateModel) {
-                                var dfd = $.Deferred();
                                 var data = {
                                     accidentInsuranceRate: service.convertAccidentInsuranceRateModelDTO(accidentInsuranceRateModel)
                                 };
-                                nts.uk.request.ajax(paths.updateAccidentInsuranceRate, data)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.updateAccidentInsuranceRate, data);
                             }
                             service.updateAccidentInsuranceRate = updateAccidentInsuranceRate;
                             function findAllAccidentInsuranceRateHistory() {

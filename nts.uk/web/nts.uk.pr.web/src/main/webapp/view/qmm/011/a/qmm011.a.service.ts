@@ -131,19 +131,11 @@ module nts.uk.pr.view.qmm011.a {
 
         //Function connection service add Accident Insurance Rate
         export function addAccidentInsuranceRate(
-            accidentInsuranceRateModel: viewmodel.AccIRModel): JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
+            accidentInsuranceRateModel: viewmodel.AccIRModel): JQueryPromise<void> {
             var data = {
                 accidentInsuranceRate: service.convertAccidentInsuranceRateModelDTO(accidentInsuranceRateModel)
             };
-            nts.uk.request.ajax(paths.addAccidentInsuranceRate, data)
-                .done(function(res: any) {
-                    dfd.resolve(res);
-                })
-                .fail(function(res: any) {
-                    dfd.reject(res);
-                })
-            return dfd.promise();
+            return nts.uk.request.ajax(paths.addAccidentInsuranceRate, data);
         }
 
 
@@ -155,20 +147,11 @@ module nts.uk.pr.view.qmm011.a {
 
         //Function connection service update Accident Insurance Rate
         export function updateAccidentInsuranceRate(
-            accidentInsuranceRateModel: viewmodel.AccIRModel): JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
+            accidentInsuranceRateModel: viewmodel.AccIRModel): JQueryPromise<void> {
             var data = {
                 accidentInsuranceRate: service.convertAccidentInsuranceRateModelDTO(accidentInsuranceRateModel)
             };
-            nts.uk.request.ajax(paths.updateAccidentInsuranceRate, data)
-                .done(function(res: any) {
-                    dfd.resolve(res);
-                    //xyz
-                })
-                .fail(function(res: any) {
-                    dfd.reject(res);
-                })
-            return dfd.promise();
+            return nts.uk.request.ajax(paths.updateAccidentInsuranceRate, data);
         }
 
         //Function connection service find All AccidentInsuranceHistory 

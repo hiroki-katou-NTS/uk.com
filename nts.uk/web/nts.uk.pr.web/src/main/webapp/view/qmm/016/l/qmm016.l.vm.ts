@@ -25,6 +25,7 @@ module nts.uk.pr.view.qmm016.l {
             certifyGroupModel: KnockoutObservable<CertifyGroupModel>;
             textEditorOption: KnockoutObservable<option.TextEditorOption>;
             isEmpty: KnockoutObservable<boolean>;
+            messageList: KnockoutObservableArray<any>;
 
             constructor() {
                 var self = this;
@@ -38,6 +39,9 @@ module nts.uk.pr.view.qmm016.l {
                 self.typeAction = ko.observable(TypeActionCertifyGroup.update);
                 self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
                 self.isEmpty = ko.observable(true);
+                self.messageList = ko.observableArray([
+                    { messageId: "AL002", message: "データを削除します。\r\n よろしいですか？。" }
+                ]);
             }
 
             //start page init data begin load page
@@ -104,7 +108,7 @@ module nts.uk.pr.view.qmm016.l {
             }
 
             private detailCertifyGroup(code: string) {
-                if (code != null && code != undefined && code != '') {
+                if (code && code != '') {
                     var self = this;
                     service.findCertifyGroup(code).done(data => {
                         if (self.isEmpty()) {
@@ -204,11 +208,11 @@ module nts.uk.pr.view.qmm016.l {
 
             private deleteCertifyGroup() {
                 var self = this;
-                nts.uk.ui.dialog.confirm("Do you delete Item?").ifYes(function() {
+                nts.uk.ui.dialog.confirm(self.messageList()[0].message).ifYes(function() {
                     var certifyGroupDeleteDto: CertifyGroupDeleteDto = new CertifyGroupDeleteDto();
                     certifyGroupDeleteDto.groupCode = self.certifyGroupModel().code();
                     certifyGroupDeleteDto.version = 12;
-                    service.deleteCertifyGroup(certifyGroupDeleteDto).done(data => {
+                    service.deleteCertifyGroup(certifyGroupDeleteDto).done(function() {
                         self.reloadDataByAction('');
                     });
                 }).ifNo(function() {
@@ -243,7 +247,6 @@ module nts.uk.pr.view.qmm016.l {
 
             //clear error view 
             private clearErrorSave() {
-                var self = this;
                 $('.save-error').ntsError('clear');
                 $('#btn_saveCertifyGroup').ntsError('clear');
             }
