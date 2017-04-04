@@ -52,7 +52,7 @@ public class UnemployeeInsuranceRateDeleteCommandHandler
 		Optional<UnemployeeInsuranceRate> optionalRemove = this.unemployeeInsuranceRateRepository
 			.findFirstData(companyCode);
 
-		// remove data
+		// remove data by exist and equal code
 		if (optionalRemove.isPresent() && optionalRemove.get().getHistoryId().equals(command.getCode())) {
 			this.unemployeeInsuranceRateRepository.remove(companyCode, command.getCode(),
 				command.getVersion());

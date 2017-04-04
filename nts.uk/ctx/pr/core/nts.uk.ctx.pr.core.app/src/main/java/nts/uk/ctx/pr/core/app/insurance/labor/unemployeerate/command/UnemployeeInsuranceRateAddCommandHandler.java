@@ -60,6 +60,8 @@ public class UnemployeeInsuranceRateAddCommandHandler
 		// find first data
 		Optional<UnemployeeInsuranceRate> optionalFisrtData = this.unemployeeInsuranceRateRepository
 				.findFirstData(unemployeeInsuranceRate.getCompanyCode());
+		
+		//check exist 
 		if (optionalFisrtData.isPresent()) {
 			optionalFisrtData.get().setEnd(
 					unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());

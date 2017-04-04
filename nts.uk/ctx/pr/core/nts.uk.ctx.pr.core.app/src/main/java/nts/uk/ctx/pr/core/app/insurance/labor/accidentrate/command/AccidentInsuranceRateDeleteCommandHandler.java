@@ -52,6 +52,8 @@ public class AccidentInsuranceRateDeleteCommandHandler
 		Optional<AccidentInsuranceRate> optionalRemove = this.accidentInsuranceRateRepo
 				.findFirstData(companyCode);
 
+		
+		//exist data remove
 		if (optionalRemove.isPresent() && optionalRemove.get().getHistoryId()
 				.equals(command.getAccidentInsuranceRateDeleteDto().getCode())) {
 
@@ -63,6 +65,8 @@ public class AccidentInsuranceRateDeleteCommandHandler
 			// get first data (update)
 			Optional<AccidentInsuranceRate> optionalUpdate = this.accidentInsuranceRateRepo
 					.findFirstData(companyCode);
+			
+			//exist data update
 			if (optionalUpdate.isPresent()) {
 				optionalUpdate.get().setMaxDate();
 				this.accidentInsuranceRateRepo.update(optionalUpdate.get());

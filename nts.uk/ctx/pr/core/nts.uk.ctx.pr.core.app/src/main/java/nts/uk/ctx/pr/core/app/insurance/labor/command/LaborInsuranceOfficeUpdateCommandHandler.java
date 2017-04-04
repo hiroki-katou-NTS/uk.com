@@ -41,17 +41,23 @@ public class LaborInsuranceOfficeUpdateCommandHandler
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<LaborInsuranceOfficeUpdateCommand> context) {
+		
 		// get user login info
 		LoginUserContext loginUserContext = AppContexts.user();
+		
 		// get companyCode by user login
 		String companyCode = loginUserContext.companyCode();
+		
 		// get command
 		LaborInsuranceOfficeUpdateCommand command = context.getCommand();
+		
 		// to Domain
 		LaborInsuranceOffice laborInsuranceOffice = command.toDomain(companyCode);
+		
 		// validate
 		laborInsuranceOffice.validate();
 		laborInsuranceOfficeService.validateRequiredItem(laborInsuranceOffice);
+		
 		// call respository
 		this.laborInsuranceOfficeRepository.update(laborInsuranceOffice);
 	}

@@ -49,7 +49,7 @@ public class LaborInsuranceOfficeFinder {
 		Optional<LaborInsuranceOffice> optionalLaborInsuranceOffice = laborInsuranceOfficeRepository
 			.findById(companyCode, officeCode);
 
-		// value exsit
+		// value exist
 		if (optionalLaborInsuranceOffice.isPresent()) {
 			optionalLaborInsuranceOffice.get().saveToMemento(laborInsuranceOfficeDto);
 			return laborInsuranceOfficeDto;
