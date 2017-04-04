@@ -22,7 +22,6 @@ var nts;
                             var HealthInsuranceRateItemDto = b.service.model.finder.HealthInsuranceRateItemDto;
                             var ChargeRateItemDto = b.service.model.finder.ChargeRateItemDto;
                             var ScreenBaseModel = view.base.simplehistory.viewmodel.ScreenBaseModel;
-                            var hservice = nts.uk.pr.view.qmm008.h.service;
                             var commonService = nts.uk.pr.view.qmm008._0.common.service;
                             var ScreenModel = (function (_super) {
                                 __extends(ScreenModel, _super);
@@ -64,6 +63,7 @@ var nts;
                                         { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" }
                                     ]);
                                     self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
+                                    self.backupDataDirty = ko.observable();
                                 }
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
@@ -201,8 +201,8 @@ var nts;
                                     if (self.healthModel().autoCalculate() == AutoCalculateType.Auto) {
                                         nts.uk.ui.dialog.confirm("自動計算が行われます。登録しますか？").ifYes(function () {
                                             self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
-                                            hservice.updateHealthInsuranceAvgearn(self.collectData(), self.healthCollectData().officeCode);
                                             b.service.updateHealthRate(self.healthCollectData()).done(function () {
+                                                self.backupDataDirty(self.healthCollectData());
                                             }).fail();
                                         }).ifNo(function () {
                                         });
@@ -210,6 +210,7 @@ var nts;
                                     else {
                                         self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
                                         b.service.updateHealthRate(self.healthCollectData()).done(function () {
+                                            self.backupDataDirty(self.healthCollectData());
                                         }).fail();
                                     }
                                 };
@@ -271,6 +272,7 @@ var nts;
                                     self.isClickHistory(true);
                                     self.currentOfficeCode(self.getCurrentOfficeCode(id));
                                     b.service.instance.findHistoryByUuid(id).done(function (dto) {
+                                        self.backupDataDirty(dto);
                                         self.loadHealth(dto);
                                         self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
                                         self.isLoading(false);
@@ -345,6 +347,7 @@ var nts;
                                     var self = this;
                                     if (self.dirty.isDirty()) {
                                         nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function () {
+                                            self.loadHealth(self.backupDataDirty());
                                             self.OpenModalStandardMonthlyPriceHealth();
                                             self.dirty.reset();
                                         }).ifCancel(function () {

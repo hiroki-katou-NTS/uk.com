@@ -39,6 +39,7 @@ module nts.uk.pr.view.qmm008.b {
             listHealthInsuranceAvgearn: KnockoutObservableArray<HealthInsuranceAvgEarnModel>;
             errorList: KnockoutObservableArray<any>;
             dirty: nts.uk.ui.DirtyChecker;
+            backupDataDirty : KnockoutObservable<HealthInsuranceRateDto>;
             constructor() {
                 super({
                     functionName: '健康保険',
@@ -84,6 +85,7 @@ module nts.uk.pr.view.qmm008.b {
                     { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" }
                 ]);
                 self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
+                self.backupDataDirty = ko.observable<HealthInsuranceRateDto>();
             } //end constructor
 
             // Start
@@ -249,9 +251,10 @@ module nts.uk.pr.view.qmm008.b {
                 if (self.healthModel().autoCalculate() == AutoCalculateType.Auto) {
                     nts.uk.ui.dialog.confirm("自動計算が行われます。登録しますか？").ifYes(function() {
                         self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
-                        hservice.updateHealthInsuranceAvgearn(self.collectData(), self.healthCollectData().officeCode);
+                        //                        hservice.updateHealthInsuranceAvgearn(self.collectData(), self.healthCollectData().officeCode);
                         //update health
                         service.updateHealthRate(self.healthCollectData()).done(function() {
+                            self.backupDataDirty(self.healthCollectData());
                         }).fail();
                     }).ifNo(function() {
                     });
@@ -260,6 +263,7 @@ module nts.uk.pr.view.qmm008.b {
                     self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
                     //update health
                     service.updateHealthRate(self.healthCollectData()).done(function() {
+                        self.backupDataDirty(self.healthCollectData());
                     }).fail();
                 }
             }
@@ -358,6 +362,7 @@ module nts.uk.pr.view.qmm008.b {
                 // clear all error
 
                 service.instance.findHistoryByUuid(id).done(dto => {
+                    self.backupDataDirty(dto);
                     self.loadHealth(dto);
                     self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
                     self.isLoading(false);
@@ -449,6 +454,7 @@ module nts.uk.pr.view.qmm008.b {
                 var self = this;
                 if (self.dirty.isDirty()) {
                     nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function() {
+                        self.loadHealth(self.backupDataDirty());
                         self.OpenModalStandardMonthlyPriceHealth();
                         self.dirty.reset();
                     }).ifCancel(function() {
