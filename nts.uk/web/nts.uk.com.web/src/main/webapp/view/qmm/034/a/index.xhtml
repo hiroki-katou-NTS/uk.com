@@ -54,6 +54,10 @@
 				</div>
 				<div class="nts-right-content" data-bind = "with: currentEra">
 					<table class="tableRange">
+						<colgroup>
+							<col width="150" />
+							<col width="*" />
+						</colgroup>
 						<tr>
 							<td>
 								<div id="A_LBL_002" data-bind="ntsFormLabel: {required: true, constraint: 'EraName' }">元号</div>
@@ -79,8 +83,8 @@
 							<td>
 								<div class="empriseLabel">
 									<div id="A_INP_003" 
-										data-bind="ntsDatePicker: {button: true, value: $parent.startDate, dateFormat: 'YYYY-MM-DD'}"></div>
-									<div style="margin-top: 10px;" data-bind="text:$parent.dateTime"></div>
+										data-bind="ntsDatePicker: {button: true, value: $parent.startDate, dateFormat: 'YYYY/MM/DD'}"></div>
+									<div data-bind="text:$parent.dateTime"></div>
 								</div>
 							</td>
 						</tr>
