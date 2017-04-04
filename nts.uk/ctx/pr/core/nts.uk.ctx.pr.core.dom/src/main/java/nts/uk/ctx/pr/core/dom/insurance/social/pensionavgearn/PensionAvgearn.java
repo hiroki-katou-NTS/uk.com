@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
-import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 
 /**
  * The Class PensionAvgearn.
@@ -25,7 +24,7 @@ public class PensionAvgearn extends DomainObject {
 	private Integer levelCode;
 
 	/** The child contribution amount. */
-	private InsuranceAmount childContributionAmount;
+	private CommonAmount childContributionAmount;
 
 	/** The company fund. */
 	private PensionAvgearnValue companyFund;
@@ -127,7 +126,7 @@ public class PensionAvgearn extends DomainObject {
 		pensionAvgearn.companyFund = defaultValue;
 		pensionAvgearn.companyFundExemption = defaultValue;
 		pensionAvgearn.companyPension = defaultValue;
-		pensionAvgearn.childContributionAmount = new InsuranceAmount(BigDecimal.ZERO);
+		pensionAvgearn.childContributionAmount = defaultAmount;
 		return pensionAvgearn;
 	}
 

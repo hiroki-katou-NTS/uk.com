@@ -23,6 +23,7 @@ public class JpaItemAttendRepository extends JpaRepository implements ItemAttend
 	private final String SEL_4 = SEL + " WHERE c.qcamtItemAttendPK.ccd = :companyCode AND c.avePayAtr = :avePayAtr ";
 	private final String UPD_2 = "UPDATE QcamtItemAttend c SET c.avePayAtr = :avePayAtr WHERE c.qcamtItemAttendPK.ccd = :companyCode AND c.qcamtItemAttendPK.itemCd IN :itemCodeList";
 
+
 	@Override
 	public Optional<ItemAttend> find(String companyCode, String itemCode) {
 		return this.queryProxy().find(new QcamtItemAttendPK(companyCode, itemCode), QcamtItemAttend.class)
@@ -61,8 +62,7 @@ public class JpaItemAttendRepository extends JpaRepository implements ItemAttend
 	}
 
 	@Override
-	public void delete(String itemCode) {
-		String companyCode = AppContexts.user().companyCode();
+	public void delete(String companyCode, String itemCode) {
 		this.commandProxy().remove(QcamtItemAttend.class, new QcamtItemAttendPK(companyCode, itemCode));
 
 	}

@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 300, height: 200 };</script>
+				<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+   				</com:ValidatorScript>
+				<com:scriptfile set="IGNITE" />
+				<com:stylefile path="style.css" />
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="viewmodel.js" />
+				<com:scriptfile path="service.js" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="functions-area">
+				</div>
+				<div id="contents-area">
+					<div id="q_lbl_001" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">お試しの値</div>
+					<br />
+					<table>
+						<tbody>
+							<tr>
+								<td><table id="q_lbl_001" data-bind="ntsGridList: {
+										height: 350,
+										options: items,
+										optionsValue: 'code',
+										columns: columns,
+										value: currentCodeList
+									}"
+									class="cf"></table></td>
+								<td>
+									<button id="q_btn_001" class="x-large proceed">お試し計算</button></td>
+								<td>
+									<table class="label warning">
+										<tr>
+											<td id="q_lbl_002" >
+												<div>結果</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div>1231412312</div>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</tbody>
+					</table>					
+					<br />
+					<div id="q_lbl_003" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">お試しの値</div>
+					<br />
+					<input></input>
+					<br />
+					<button id="q_btn_002" class="x-large proceed">計算式</button>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

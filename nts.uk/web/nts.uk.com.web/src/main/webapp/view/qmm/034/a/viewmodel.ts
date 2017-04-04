@@ -1,304 +1,292 @@
 module qmm034.a.viewmodel {
     export class ScreenModel {
-        constraint: string = 'LayoutCode';
-        //list era;
-        items: KnockoutObservableArray<EraModel>;
-        columns: KnockoutObservableArray<any>;
+        //chua du lieu cua gridlist
+        items: KnockoutObservableArray<any>;
+        // cau truc cot cua gridList era
+        columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+        // là era code hien thời đang được select trên grid list era
         currentCode: KnockoutObservable<any>;
-        //layouts: KnockoutObservableArray<SingleSelectedCode>;
-        currentCodeList: KnockoutObservableArray<any>;
+        // dùng để lưu trữ đối tượng era hiện thời mà đang làm việc trên màn hình(dùng trong insert, update, delete)
         currentEra: KnockoutObservable<EraModel>;
-        isUpdate: KnockoutObservable<boolean> = ko.observable(true);
-        //date picker
-        date: KnockoutObservable<Date>;
+        // là cờ để phân biệt xem đang insert hay đang update
+        isUpdate: KnockoutObservable<boolean>;
+        // là giá trị để binding với nts datePicker
+        date: KnockoutObservable<any>;
+        startDate: KnockoutObservable<Date>;
         dateTime: KnockoutObservable<string>;
-        eras: KnockoutObservableArray<qmm034.a.service.model.EraDto>;
         // selected row
-        countItems: KnockoutObservable<number>;
-        findIndex: KnockoutObservable<number>;
-        isSelectdFirstRow: KnockoutObservable<boolean>;
         isDeleteEnable: KnockoutObservable<boolean>;
+        // binding with textEditor as a observable object
+        isEnableCode: KnockoutObservable<boolean>;
+        dirtyObject: nts.uk.ui.DirtyChecker;
+        countStartDateChange: number = 1; //Biến này để tránh việc chạy hàm startDate.subscribe 2 lần
+        previousCurrentCode: string = null; //lưu giá trị của currentCode trước khi nó bị thay đổi
 
         constructor() {
             let self = this;
+            self.init();
+            self.date = ko.observable("");
+            self.startDate = ko.observable(new Date());
 
-            
-            /*gridList*/
-            self.items = ko.observableArray([
-                //new EraModel('明明', 'M', "1999/01/25"),
-                //new EraModel('大正', 'T', "1912/07/30"),
-                //                new EraModel('大明', 'S', "1926/12/25"),
-                //                new EraModel('大元', 'H', "1989/01/08"),
-                //                new EraModel('大記', 'N', "2016/02/18"),
-            ]);
-            self.columns = ko.observableArray([
-                { headerText: '元号', prop: 'code', width: 50 },
-                { headerText: '記号', prop: 'name', width: 50 },
-                { headerText: '開始年月日', prop: 'startDateText', width: 80 },
-            ]);
-            self.currentCodeList = ko.observableArray([]);
-            //Tim object dau tien
-            self.currentEra = ko.observable(null);
-            self.currentCode = ko.observable();
+            self.startDate.subscribe(function(dateChange) {
+                if (self.countStartDateChange === 1) {
+                    // event datePicker onchange
+                    if ($('#A_INP_003').ntsError("hasError")) {
+                        $("#A_INP_003").ntsError('clear');
+                    }
+                } else {
+                    self.countStartDateChange = 1;
+                }
+                self.currentEra().startDate(dateChange);
+            })
             self.currentCode.subscribe(function(codeChanged) {
-                self.currentEra(self.getEra(codeChanged));
-                self.date(self.currentEra().startDate);
+                if (!nts.uk.text.isNullOrEmpty(codeChanged) && self.currentCode() !== self.previousCurrentCode) {
+                    if (self.dirtyObject.isDirty()) {
+                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
+                            self.processWhenCurrentCodeChange(codeChanged);
+                        }).ifCancel(function() {
+                            self.currentCode(self.previousCurrentCode);
+                        })
+                    } else {
+                        self.processWhenCurrentCodeChange(codeChanged);    
+                    }
+                }
             });
-            /*datePicker*/
-           // var datePicker = self.currentEra();
-            self.date =  ko.observable(new Date());
-            self.dateTime = ko.observable(nts.uk.time.yearInJapanEmpire(self.date()).toString());
-
-            self.eras = ko.observableArray([]);
-            console.log(self.items());
-            /*selected row*/
-            self.findIndex = ko.observable(0);
-            self.countItems = ko.observable(0);
-            self.isSelectdFirstRow = ko.observable(true);
-            self.isDeleteEnable = ko.observable(true);
+            //convert to Japan Emprise year
+            self.dateTime = ko.observable(nts.uk.time.yearInJapanEmpire(self.currentEra().startDate()).toString());
 
         }
 
-//        register() {
-//            let self = this;
-//            if (self.isUpdate() === false) {
-//                self.insertData();
-//            } else {
-//                self.update();
-//            }
-//        }
-        refreshLayout(): void {
+        processWhenCurrentCodeChange(codeChanged: any) {
             let self = this;
-            self.currentEra(new EraModel('', '', ''));
+            self.countStartDateChange += 1;
+            self.currentEra(self.getEra(codeChanged));
+            self.date(self.currentEra().startDate().toString());
+            self.startDate(self.currentEra().startDate());
+            self.isDeleteEnable(true);
+            self.isEnableCode(false);
+            self.isUpdate(true);
+            qmm034.a.service.getFixAttribute(self.currentEra().eraHist()).done(function(data) {
+                if (data === 0) {
+                    self.isEnableCode(true);
+                }
+            });    
+            if (self.dirtyObject !== undefined)
+                self.dirtyObject.reset();
+            self.previousCurrentCode = codeChanged;
+        }
+        
+        init(): void {
+            let self = this;
+            self.items = ko.observableArray([]);
+            self.columns = ko.observableArray([
+                { headerText: 'KEY', key: 'eraHist', width: 50, hidden: true },
+                { headerText: '元号', key: 'eraName', width: 50 },
+                { headerText: '記号', key: 'eraMark', width: 50 },
+                { headerText: '開始年月日', key: 'startDate', width: 80 },
+            ]);
+            self.currentEra = ko.observable((new EraModel('', '', new Date(), 1, '', new Date())));
+            self.currentCode = ko.observable(null);
+            self.date = ko.observable('');
+            self.dateTime = ko.observable('');
+            self.isDeleteEnable = ko.observable(false);
+            self.isEnableCode = ko.observable(false);
             self.isUpdate = ko.observable(false);
         }
+        
+        validateData() : boolean {
+            $(".nts-editor").ntsEditor("validate");
+            $("#A_INP_003").ntsEditor("validate");
+            
+            if ($(".nts-editor").ntsError('hasError') || $("#A_INP_003").ntsError('hasError')) {
+                return false;    
+            }
+            return true;
+        }
+
         insertData(): any {
             let self = this;
-            //let newData = self.currentEra();
-            //let newEradata = self;
-            // var x = self.items();
-            //x.push(newData);
-            //            if (self.isUpdate() === false) {
-            //                self.items.push(newData);
-            //                self.isUpdate = ko.observable(true);
-            //            }
             let eraName: string;
             eraName = $('#A_INP_001').val();
             let eraMark: string;
             eraMark = $('#A_INP_002').val();
-            let startDate = self.date();
-            let endDate: string;
+            let startDate = self.startDate();
+            let endDate: Date;
+            let eraHist = self.currentEra().eraHist();
             let fixAttribute: number;
             let dfd = $.Deferred<any>();
             let node: qmm034.a.service.model.EraDto;
             node = new qmm034.a.service.model.EraDto(
-                eraName, eraMark, startDate.toDateString(), endDate, fixAttribute
+                eraName, eraMark, startDate, endDate, fixAttribute, eraHist
             );
-            qmm034.a.service.addData(self.isUpdate(false), node).done(function(result) {
-                self.reload().done(function(){
+            if (!self.validateData()) {
+                return;    
+            }
+
+            qmm034.a.service.addData(self.isUpdate(), node).done(function(result: service.model.EraDto) {
+                self.dirtyObject.reset();
+                self.reload().done(function() {
+                    self.currentCode(result === undefined ? self.currentEra().eraHist() : result.eraHist);
+                    self.isDeleteEnable = ko.observable(false);
+                    self.isEnableCode = ko.observable(false);
+                    self.isUpdate = ko.observable(true);
+                    let lastStartDate = _.maxBy(self.items(), function(o) {
+                        return o.startDate;
+                    });
                     dfd.resolve();
                 });
             }).fail(function(res) {
-
+                $("#A_INP_003").ntsError("set", res.message);
             });
-           return dfd.promise();
-            
+            return dfd.promise();
+
         }
         alertDelete() {
             let self = this;
-            if (confirm("do you wanna delete") === true) {
+            nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
                 self.deleteData();
-            } else {
-                alert("you didnt delete!");
-            }
+            })
         }
-        selectedItem(item) : EraModel {
-            var self = this;
-            self.currentCode(item.code);
-            return new EraModel(item.code, item.name, item.startDate);    
-        }
-        reload(){
+
+        reload(): JQueryPromise<any> {
             var dfd = $.Deferred();
             var self = this;
+
             $.when(qmm034.a.service.getAllEras()).done(function(data) {
-                self.buildGridDataSource(data);
-                self.countItems(data.length);
-                if(data.length > 0){
-                    if(self.isSelectdFirstRow()){
-                        self.currentEra(self.selectedItem(data[0]));
-                        self.isSelectdFirstRow(false);
-                    }
-                    self.items(data);    
+                self.items([]);
+                if (data.length > 0) {
+                    self.items(data);
+                    //self.date(self.currentEra().startDate().toString());
+                    //self.currentCode(self.currentEra().eraHist());
+                    self.isDeleteEnable(true);
                 }
-                dfd.resolve();
+                dfd.resolve(data);
             }).fail(function(res) {
 
-            });    
-             return dfd.promise();
+            });
+            return dfd.promise();
         }
+
         deleteData() {
             let self = this;
-//            let newDel = self.currentEra();
-//            self.items.splice(self.items().indexOf(newDel), 1);
             let eraName: string;
             eraName = $('#A_INP_001').val();
             let eraMark: string;
             eraMark = $('#A_INP_002').val();
-            let startDate = self.date();
-            let endDate: string;
-            let fixAttribute: number;
+            let eraHist: string = self.currentEra().eraHist();
+            let startDate = self.startDate();
             let dfd = $.Deferred<any>();
             let node: qmm034.a.service.model.EraDtoDelete;
-            node = new qmm034.a.service.model.EraDtoDelete(startDate);
-//            qmm034.a.service.deleteData(node)
-//                .done(function() {
-//                    qmm034.a.service.getAllEras();
-//                }).fail(function(error) {
-//                    alert(error.message);
-//                });
-             qmm034.a.service.deleteData( node).done(function(result) {
-                self.reload().done(function(){
-                    dfd.resolve();
+            node = new qmm034.a.service.model.EraDtoDelete(eraHist);
+            let rowIndex = _.findIndex(self.items(), function(item) {
+                return item.eraName == self.currentEra().eraName();
+            })
+            qmm034.a.service.deleteData(node).done(function(result) {
+                self.reload().done(function(data) {
+                    if (self.items().length === 0) {
+                        self.refreshLayout();
+                    } else if (self.items().length === rowIndex) {
+                        self.currentCode(self.items()[rowIndex - 1].eraHist);
+                    } else if (self.items().length < rowIndex) {
+                        self.currentCode(self.items()[0].eraHist);
+                    } else {
+                        self.currentCode(self.items()[rowIndex].eraHist);
+                    }
                 });
-            }).fail(function(error) {
-                    alert(error.message);
-            });
-           return dfd.promise();
-        }
-
-        getEra(codeNew): EraModel {
-            let self = this;
-            let era: EraModel = _.find(self.items(), function(item) {
-                return item.code === codeNew;
-            });
-
-            return _.cloneDeep(era);
-        }
-        update() {
-            let self = this;
-//            if (self.currentCode() !== undefined && self.currentCode() !== null) {
-//                var newCurrentEra = _.findIndex(self.items(), function(item) {
-//                    return item.code === self.currentCode();
-//                });
-//                self.items.splice(newCurrentEra, 1, _.cloneDeep(self.currentEra()));
-//                self.items.valueHasMutated();
-//            }
-//            qmm034.a.service.updateData().done(function() {
-//                        self.start();
-//                        //console.log(self.items());
-//                    });
-        }
-
-
-        selectSomeItems() {
-            this.currentCode('150');
-            this.currentCodeList.removeAll();
-            this.currentCodeList.push('001');
-            this.currentCodeList.push('ABC');
-        }
-
-        deselectAll() {
-            this.currentCode(null);
-            this.currentCodeList.removeAll();
-        }
-        start(): JQueryPromise<any> {
-            var self = this;
-
-            // Page load dfd.
-            var dfd = $.Deferred();
-
-            // Resolve start page dfd after load all data.
-            $.when(qmm034.a.service.getAllEras()).done(function(data) {
                 dfd.resolve();
-
-            }).fail(function(res) {
-
+            }).fail(function(error) {
+                alert(error.message);
             });
-
             return dfd.promise();
         }
+
+        getEra(codeNew: any): EraModel {
+            let self = this;
+            let era = _.find(self.items(), function(item) {
+                return item.eraHist === codeNew;
+            });
+            if (era) {
+                return new EraModel(era.eraName, era.eraMark, new Date(era.startDate), era.fixAttribute, era.eraHist, new Date(era.endDate));
+            } else {
+                return new EraModel("", "", new Date(), 0, "", new Date());
+            }
+        }
+
         startPage(): JQueryPromise<any> {
             var self = this;
 
             // Page load dfd.
             var dfd = $.Deferred();
-
             // Resolve start page dfd after load all data.
-            $.when(qmm034.a.service.getAllEras()).done(function(data) {
-                self.buildGridDataSource(data);
-                self.currentEra = ko.observable(_.cloneDeep(_.first(self.items())));
+            $.when(qmm034.a.service.getAllEras()).done(function(data: Array<EraModel>) {
+                if (data.length > 0) {
+                    self.items(data);
+                    self.currentEra(self.items()[0]);
+                    self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentEra);
+                    self.currentCode(self.currentEra().eraHist);
+                    //self.processWhenCurrentCodeChange(self.currentCode());
+                } else {
+                    self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentEra);
+                    self.startWithEmptyData();
+                }
+
                 dfd.resolve();
-
             }).fail(function(res) {
-
+                $("#A_INP_001").ntsError("set", res.message);
             });
 
             return dfd.promise();
         }
-        buildGridDataSource(items: any): any {
+
+        refreshLayout(): void {
             let self = this;
-            self.items([]);
-            _.forEach(items, function(obj) {
-                self.items.push(new EraModel(obj.eraName, obj.eraMark, obj.startDate));
-            });
+            self.clearError();
+            self.currentEra(new EraModel('', '', new Date(), 1, '', new Date()));
+            self.startDate(self.currentEra().startDate());
+            self.currentCode(null);
+            self.isDeleteEnable(false);
+            self.isEnableCode(true);
+            self.isUpdate(false);
+            if (self.dirtyObject !== undefined)
+                self.dirtyObject.reset();
+            $("#A_INP_001").focus();
         }
-
-
-    }
-    //    class Era{
-    //        eraName: KnockoutObservable<string>;
-    //        eraMark: KnockoutObservable<string>;
-    //        startDateEra: KnockoutObservable<Date>;    
-    //        
-    //        constructor(eraName: string, eraMark: string, startDateEra: Date){
-    //                this.eraName = ko.observable(eraName);
-    //                this.eraMark = ko.observable(eraMark);
-    //                this.startDateEra = ko.observable(startDateEra);
-    //        }
-    //    }
-
-
-    class EraModel {
-        code: string;
-        name: string;
-        startDate: Date;
-        startDateText: string;
-
-
-        constructor(code: string, name: string, startDate: string) {
-            this.code = code;
-            this.name = name;
-            if (startDate !== "") {
-                this.startDate = new Date(startDate);
-                this.startDateText = startDate;
-            } else {
-                this.startDate = new Date();
-                this.startDateText = this.startDate.toDateString();
-            }
+        
+        startWithEmptyData() {
+            let self = this;
+            self.isDeleteEnable(false);
+            self.isEnableCode(true);
+            self.isUpdate(false);
+            self.dirtyObject.reset();
+        }
+        
+        clearError() {
+            if ($(".nts-editor").ntsError('hasError'))
+                $(".nts-editor").ntsError('clear');
+            if ($("#A_INP_003").ntsError('hasError'))
+                $("#A_INP_003").ntsError('clear');
         }
     }
-//    class Era{
-//        eraCodeName:KnockoutObservable<string>;
-//        eraNameMark: KnockoutObservable<string>;
-//        eraStartDate: KnockoutObservable<string>;
-//        constructor(eraCodeName: string, eraNameMark: string, eraStartDate: string){
-//            this.eraCodeName = ko.observable(eraCodeName);
-//            this.eraNameMark = ko.observable(eraNameMark);
-//            this.eraStartDate = ko.observable(eraStartDate);    
-//        }    
-//    }
-    //    class SingleSelectedCode {
-    //        layout: KnockoutObservable<any>;
-    //        strName: string;
-    //        strShortcutName: string;
-    //        strDate: string;
-    //        constructor(shortCutName: string, Date: any) {
-    //            let self = this;
-    //            self.strName = name;
-    //            self.strShortcutName = shortCutName;
-    //            self.strDate = Date;
-    //        }
-    //    }
+
+
+    export class EraModel {
+        eraName: KnockoutObservable<string>;
+        eraMark: KnockoutObservable<string>;
+        startDate: KnockoutObservable<Date>;
+        fixAttribute: KnockoutObservable<number>;
+        eraHist: KnockoutObservable<string>;
+        endDate: KnockoutObservable<Date>;
+
+        constructor(eraName: string, eraMark: string, startDate: Date, fixAttribute: number, eraHist: string, endDate: Date) {
+            this.eraName = ko.observable(eraName);
+            this.eraMark = ko.observable(eraMark);
+            this.startDate = ko.observable(startDate);
+            this.endDate = ko.observable(endDate);
+            this.fixAttribute = ko.observable(fixAttribute);
+            this.eraHist = ko.observable(eraHist);
+        }
+    }
+
 
 
 }

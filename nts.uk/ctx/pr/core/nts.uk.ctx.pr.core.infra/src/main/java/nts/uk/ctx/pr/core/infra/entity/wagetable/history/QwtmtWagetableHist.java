@@ -26,20 +26,7 @@ import lombok.Setter;
 /**
  * The Class QwtmtWagetableHist.
  */
-
-/**
- * Gets the qwtmt wagetable mny list.
- *
- * @return the qwtmt wagetable mny list
- */
 @Getter
-
-/**
- * Sets the qwtmt wagetable mny list.
- *
- * @param qwtmtWagetableMnyList
- *            the new qwtmt wagetable mny list
- */
 @Setter
 @Entity
 @Table(name = "QWTMT_WAGETABLE_HIST")

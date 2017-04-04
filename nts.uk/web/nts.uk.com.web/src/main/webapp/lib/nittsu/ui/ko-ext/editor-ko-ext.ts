@@ -24,7 +24,6 @@ module nts.uk.ui.koExtentions {
 
             let validator = this.getValidator(data);
             $input.on(valueUpdate, (e) => {
-//                var validator = this.getValidator(data);
                 var newText = $input.val();
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
@@ -38,7 +37,6 @@ module nts.uk.ui.koExtentions {
 
             // Format on blur
             $input.blur(() => {
-//                var validator = this.getValidator(data);
                 var formatter = this.getFormatter(data);
                 var newText = $input.val();
                 var result = validator.validate(newText);
@@ -48,7 +46,6 @@ module nts.uk.ui.koExtentions {
             });
             
             $input.on('validate', (function(e: Event) {
-//                var validator = this.getValidator(data);
                 var newText = $input.val();
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
@@ -214,7 +211,7 @@ module nts.uk.ui.koExtentions {
 
         getFormatter(data: any): format.IFormatter {
             var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-            return new text.TimeFormatter({ option: option });
+            return new text.TimeFormatter({ inputFormat: option.inputFormat });
         }
 
         getValidator(data: any): validation.IValidator {

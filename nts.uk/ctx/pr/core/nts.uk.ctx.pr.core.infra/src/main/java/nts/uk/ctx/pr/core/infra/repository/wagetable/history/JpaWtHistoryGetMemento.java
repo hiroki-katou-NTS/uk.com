@@ -118,8 +118,7 @@ public class JpaWtHistoryGetMemento implements WtHistoryGetMemento {
 			if (type.isRangeMode) {
 				List<RangeItem> rangeItems = entity.getQwtmtWagetableNumList().stream()
 						.map(item -> new RangeItem(item.getQwtmtWagetableNumPK().getElementNumNo(),
-								item.getElementStr().doubleValue(),
-								item.getElementEnd().doubleValue(),
+								item.getElementStr(), item.getElementEnd(),
 								new ElementId(item.getElementId())))
 						.collect(Collectors.toList());
 				StepElementSetting el = new StepElementSetting(
