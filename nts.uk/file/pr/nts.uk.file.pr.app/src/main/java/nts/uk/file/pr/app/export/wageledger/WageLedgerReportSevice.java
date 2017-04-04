@@ -25,6 +25,7 @@ import nts.uk.file.pr.app.export.wageledger.data.oldlayout.PaymentData;
 import nts.uk.file.pr.app.export.wageledger.data.share.HeaderReportData;
 import nts.uk.file.pr.app.export.wageledger.data.share.MonthlyData;
 import nts.uk.file.pr.app.export.wageledger.data.share.ReportItemDto;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class WageLedgerReportSevice.
@@ -52,10 +53,11 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 		
 		// TODO : validate query.
 		WageLedgerReportQuery query = context.getQuery();
+		String companyCode = AppContexts.user().companyCode();
 		
 		// Query Data.
 		@SuppressWarnings("unused")
-		List<WLOldLayoutReportData> reportData = this.repository.findReportDatas(query.targetYear, query.employeeIds);
+		List<WLOldLayoutReportData> reportData = this.repository.findReportDatas(companyCode, query);
 		
 		// Fake data.
 		WLOldLayoutReportData fakeReportData = WLOldLayoutReportData.builder()
