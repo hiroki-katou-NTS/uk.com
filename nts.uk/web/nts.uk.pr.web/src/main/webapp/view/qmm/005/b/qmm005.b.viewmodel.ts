@@ -1,3 +1,4 @@
+/// <reference path="../qmm005.ts"/>
 module qmm005.b {
     export class ViewModel {
         index: KnockoutObservable<number> = ko.observable(0);
@@ -8,6 +9,14 @@ module qmm005.b {
         lst001: KnockoutObservable<number> = ko.observable(0);
         lst001Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
         lst002Data: KnockoutObservableArray<TableRowItem> = ko.observableArray([]);
+        dirty: any = {
+            inp001: nts.uk.ui.DirtyChecker,
+            lst001: nts.uk.ui.DirtyChecker,
+            lst002: nts.uk.ui.DirtyChecker,
+            isDirty: function() {
+                debugger;
+            }
+        };
         constructor() {
             let self = this;
             // processingNo
@@ -25,6 +34,8 @@ module qmm005.b {
                     }
                 }
             });
+
+            self.dirty.isDirty();
 
             self.inp001.subscribe(function(v) {
                 if (v) {
@@ -52,24 +63,10 @@ module qmm005.b {
                             let year = rec.processingYm["getYearInYm"](),
                                 yearIJE = year + "(" + year["yearInJapanEmpire"]() + ")",
                                 index = i + 1,
-                                sel002Data: Array<common.SelectItem> = [],
                                 $moment = moment(rec.payDate),
-                                row = new TableRowItem({
-                                    index: index,
-                                    label: index + '月の設定',
-                                    sel001: rec.payBonusAtr == 1 ? true : false,
-                                    sel002: $moment.date(),
-                                    sel002Data: sel002Data,
-                                    inp003: new Date(rec.stdDate),
-                                    inp004: rec.socialInsLevyMon["formatYearMonth"]("/"),
-                                    inp005: rec.stmtOutputMon["formatYearMonth"]("/"),
-                                    inp006: new Date(rec.socialInsStdDate),
-                                    inp007: new Date(rec.empInsStdDate),
-                                    inp008: new Date(rec.incomeTaxStdDate),
-                                    inp009: new Date(rec.accountingClosing),
-                                    inp010: rec.neededWorkDay
-                                });
+                                sel002Data: Array<common.SelectItem> = [];
 
+                            //row.sel002($moment.date());
                             for (var j: number = 1; j <= $moment.daysInMonth(); j++) {
                                 var date = moment(new Date($moment.year(), $moment.month(), j));
                                 sel002Data.push(new common.SelectItem({
@@ -79,7 +76,22 @@ module qmm005.b {
                                 }));
                             }
 
-                            row.sel002Data(sel002Data);
+                            let row = new TableRowItem({
+                                index: index,
+                                label: index + '月の設定',
+                                sel001: rec.payBonusAtr == 1 ? true : false,
+                                sel002: $moment.date(),
+                                sel002Data: sel002Data,
+                                inp003: new Date(rec.stdDate),
+                                inp004: rec.socialInsLevyMon["formatYearMonth"]("/"),
+                                inp005: rec.stmtOutputMon["formatYearMonth"]("/"),
+                                inp006: new Date(rec.socialInsStdDate),
+                                inp007: new Date(rec.empInsStdDate),
+                                inp008: new Date(rec.incomeTaxStdDate),
+                                inp009: new Date(rec.accountingClosing),
+                                inp010: rec.neededWorkDay
+                            });
+
                             lst002Data.push(row);
 
                             if (!_.find(lst001Data, function(item) { return item.value == year; })) {
@@ -125,7 +137,7 @@ module qmm005.b {
                 .onClosed(() => { });
         }
 
-        initNewData(item, event) {
+        checkNewData(item, event) {
             let self = this;
             debugger;
             self.inp001(null);
@@ -204,7 +216,7 @@ module qmm005.b {
 
             self.sel002.subscribe(function(v) {
                 if (v) {
-                    let currentSel002 = _.find(self.sel002Data(), function(item) { return item.index == v; });
+                    let currentSel002 = _.find(param.sel002Data, function(item) { return item.index == v; });
                     if (currentSel002) {
                         self.sel002L(currentSel002.value["getDayJP"]());
                     }
@@ -232,5 +244,11 @@ module qmm005.b {
         neededWorkDay: number;
         empInsStdDate: string;
         stmtOutputMon: number;
+    }
+
+    interface IDirty {
+        inp001: nts.uk.ui.DirtyChecker,
+        lst001: nts.uk.ui.DirtyChecker,
+        lst002: nts.uk.ui.DirtyChecker,
     }
 }

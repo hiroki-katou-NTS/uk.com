@@ -1,3 +1,4 @@
+/// <reference path="../qmm005.ts"/>
 module qmm005.a {
     export class ViewModel {
         items: KnockoutObservableArray<TableRowItem>;
