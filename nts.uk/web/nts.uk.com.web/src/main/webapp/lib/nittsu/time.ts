@@ -49,11 +49,8 @@
         }
     }
 
-    export function yearInJapanEmpire(year): JapanYearMonth {
-        if (!(year instanceof String)) {
-            year = "" + year;
-        }
-        year = parseInt(year);
+    export function yearInJapanEmpire(date: any): JapanYearMonth {
+        let year = moment.utc(date).year();
         if (year == 1868) {
             return new JapanYearMonth("明治元年");
         }
@@ -114,6 +111,12 @@
         return new JapanYearMonth("平成 ", diff, month);
     }
 
+    /**
+    * Format by pattern
+    * @param  {number} [seconds]      Input seconds
+    * @param  {string} [formatOption] Format option
+    * @return {string}                Formatted duration
+    */
     export function formatSeconds(seconds: number, formatOption: string) {
         seconds = parseInt(String(seconds));
 
@@ -128,6 +131,52 @@
             .replace(/h/g, h)
             .replace(/mm/g, mm)
             .replace(/ss/g, ss);
+    }
+
+    /**
+    * 日付をフォーマットする
+    * @param  {Date}   date     日付
+    * @param  {String} [format] フォーマット
+    * @return {String}          フォーマット済み日付
+    */
+    export function formatDate(date: Date, format: any) {
+        if (!format)
+            format = 'yyyy-MM-dd hh:mm:ss.SSS';
+        format = format.replace(/yyyy/g, date.getFullYear());
+        format = format.replace(/yy/g, ('0' + (date.getFullYear() % 100)).slice(-2));
+        format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
+        format = format.replace(/dd/g, ('0' + date.getDate()).slice(-2));
+        if (format.indexOf("DDD") != -1) {
+            var daystr = "(" + dotW[date.getDay()] + ")";
+            format = format.replace("DDD", daystr);
+        }
+        else if (format.indexOf("D") != -1) {
+            var daystr = "(" + dotW[date.getDay()].substring(0, 1) + ")";
+            format = format.replace("D", daystr);
+        }
+        format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2));
+        format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
+        format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));
+        if (format.match(/S/g)) {
+            var milliSeconds = ('00' + date.getMilliseconds()).slice(-3);
+            var length = format.match(/S/g).length;
+            for (var i = 0; i < length; i++)
+                format = format.replace(/S/, milliSeconds.substring(i, i + 1));
+        }
+        return format;
+    }
+
+    /**
+    * Format by pattern
+    * @param  {Date}   [date]         Input date
+    * @param  {String} [inputFormat]  Input format
+    * @param  {String} [outputFormat] Output format
+    * @return {String}                Formatted date
+    */
+    export function formatPattern(date: any, inputFormat?: string, outputFormat?: string) {
+        outputFormat = text.getISO8601Format(outputFormat);
+        inputFormat = text.getISO8601Format(inputFormat);
+        return moment.utc(date, inputFormat).format(outputFormat);
     }
 
     abstract class ParseResult {
@@ -407,49 +456,37 @@
         return ResultParseYearMonthDate.succeeded(year, month, date);
     }
 
-    /**
-    * 日付をフォーマットする
-    * @param  {Date}   date     日付
-    * @param  {String} [format] フォーマット
-    * @return {String}          フォーマット済み日付
-    */
-    export function formatDate(date: Date, format: any) {
-        if (!format)
-            format = 'yyyy-MM-dd hh:mm:ss.SSS';
-        format = format.replace(/yyyy/g, date.getFullYear());
-        format = format.replace(/yy/g, ('0' + (date.getFullYear() % 100)).slice(-2));
-        format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
-        format = format.replace(/dd/g, ('0' + date.getDate()).slice(-2));
-        if (format.indexOf("DDD") != -1) {
-            var daystr = "(" + dotW[date.getDay()] + ")";
-            format = format.replace("DDD", daystr);
+    export class MomentResult extends ParseResult {
+        momentObject: moment.Moment;
+        outputFormat: string;
+        msg: string;
+        constructor(success: boolean, momentObject?: moment.Moment, outputFormat?: string, msg?: string) {
+            super(success);
+            this.momentObject = momentObject;
+            this.msg = msg || "Invalid format";
         }
-        else if (format.indexOf("D") != -1) {
-            var daystr = "(" + dotW[date.getDay()].substring(0, 1) + ")";
-            format = format.replace("D", daystr);
+
+        static succeeded(momentObject: moment.Moment) {
+            return new MomentResult(true, momentObject);
         }
-        format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2));
-        format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
-        format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));
-        if (format.match(/S/g)) {
-            var milliSeconds = ('00' + date.getMilliseconds()).slice(-3);
-            var length = format.match(/S/g).length;
-            for (var i = 0; i < length; i++)
-                format = format.replace(/S/, milliSeconds.substring(i, i + 1));
+
+        static failed(msg?: string) {
+            return new MomentResult(false, null, msg);
         }
-        return format;
+
+        format() {
+            if (!this.success)
+                return "";
+            return this.momentObject.format(this.outputFormat);
+        }
+
+        toValue() {
+            if (!this.success)
+                return null;
+            return this.momentObject;
+        }
+
+        getMsg() { return this.msg; }
     }
 
-    /**
-    * Format by pattern
-    * @param  {Date}   [date]         Input date
-    * @param  {String} [inputFormat]  Input format
-    * @param  {String} [outputFormat] Output format
-    * @return {String}                Formatted date
-    */
-    export function formatPattern(date: any, inputFormat?: string, outputFormat?: string) {
-        outputFormat = text.getISO8601Format(outputFormat);
-        inputFormat = text.getISO8601Format(inputFormat);
-        return moment(date, inputFormat).format(outputFormat);
-    }
 }

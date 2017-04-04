@@ -20,7 +20,7 @@ module nts.uk.ui.koExtentions {
             var hasDayofWeek: boolean = (dateFormat.indexOf("ddd") !== -1);
             var dayofWeekFormat: string = dateFormat.replace(/[^d]/g, "");
             dateFormat = dateFormat.replace(/d/g,"").trim();
-            var valueFormat: string = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : dateFormat;
+            var valueFormat: string = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : "";
             var disabled: boolean = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
             var button: boolean = (data.button !== undefined) ? ko.unwrap(data.button) : false;
             var startDate: any = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
@@ -48,7 +48,6 @@ module nts.uk.ui.koExtentions {
             
             // Init Datepicker
             $input.datepicker({
-                date: value(),
                 language: 'ja-JP',
                 format: dateFormat,
                 startDate: startDate,
@@ -58,14 +57,15 @@ module nts.uk.ui.koExtentions {
 
             $input.on("change", (e) => {
                 var newText = $input.val();
-                var isValid: boolean = moment(newText, valueFormat).isValid();
+                var isValid: boolean = moment.utc(newText, valueFormat).isValid();
                 $input.ntsError('clear');
                 if (isValid) {
-                    var dateFormatValue = moment(newText, valueFormat).format(dateFormat);
-                    var valueFormatValue = moment(newText, valueFormat).format(valueFormat);
+                    var dateFormatValue = moment.utc(newText, valueFormat).format(dateFormat);
+                    var valueFormatValue = (valueFormat) ? moment.utc(newText, valueFormat).format(valueFormat)
+                                                         : moment.utc(newText, valueFormat).toISOString();
                     $input.val(dateFormatValue);
                     if (hasDayofWeek)
-                        $label.text("(" + moment(newText, valueFormat).format(dayofWeekFormat) + ")");
+                        $label.text("(" + moment.utc(newText, valueFormat).format(dayofWeekFormat) + ")");
                     value(valueFormatValue);
                 }
                 else {
@@ -76,7 +76,7 @@ module nts.uk.ui.koExtentions {
 
             $input.on('validate', (function(e: Event) {
                 var newText = $input.val();
-                var isValid: boolean = moment(newText, valueFormat).isValid();
+                var isValid: boolean = moment.utc(newText, valueFormat).isValid();
                 $input.ntsError('clear');
                 if (!isValid) {
                     $input.ntsError('set', "Invalid format");
@@ -107,24 +107,20 @@ module nts.uk.ui.koExtentions {
 
             var container = $(element);
             var init = container.data("init");
-            container.data("init", false);
             var $input: any = container.find(".nts-input");
             var $label: any = container.find(".dayofweek-label");
             
             // Value Binding
-            var isValid: boolean = moment(value(), valueFormat).isValid();
-            if (isValid) {
-                var dateFormatValue = moment(value(), valueFormat).format(dateFormat);
-                if (init === true || (moment($input.datepicker('getDate')).format(dateFormat) !== dateFormatValue)) {
+            var dateFormatValue = moment.utc(value(), valueFormat).format(dateFormat);
+            if (init === true || (moment.utc($input.datepicker('getDate')).format(dateFormat) !== dateFormatValue)) {
+                if (dateFormatValue !== "Invalid date")
                     $input.datepicker('setDate', dateFormatValue);
-                    if (hasDayofWeek)
-                        $label.text("(" + moment(value(), valueFormat).format(dayofWeekFormat) + ")");
-                }
+                else
+                    $input.datepicker('setDate', null);
+                if (hasDayofWeek)
+                    $label.text("(" + moment.utc(value(), valueFormat).format(dayofWeekFormat) + ")");
             }
-            else {
-                $input.ntsError('set', "Invalid format");
-                $input.val(value());
-            }
+            container.data("init", false);
             
             // Properties Binding
             $input.datepicker('setStartDate', startDate);
