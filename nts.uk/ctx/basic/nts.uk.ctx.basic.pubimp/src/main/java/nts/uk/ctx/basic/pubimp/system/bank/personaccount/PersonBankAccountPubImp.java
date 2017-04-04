@@ -10,5 +10,12 @@ import nts.uk.ctx.basic.pub.system.bank.personaccount.PersonBankAccountPub;
 
 @RequestScoped
 public class PersonBankAccountPubImp implements PersonBankAccountPub {
+	@Inject
+	private PersonBankAccountRepository repository;
 	
+	@Override
+	public boolean checkExistsBankAccount(String companyCode, List<String> bankCodeList) {
+		return repository.checkExistsBankAccount(companyCode, bankCodeList);
+	}
+
 }

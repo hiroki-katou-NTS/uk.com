@@ -3,12 +3,8 @@ module qmm012.h {
         var paths: any = {
             findItemSalaryPeriod: "pr/core/itemsalaryperiod/find",
             findItemDeductPeriod: "pr/core/itemdeductperiod/find",
-            addItemSalaryPeriod: "pr/core/itemsalaryperiod/add",
-            addItemDeductPeriod: "pr/core/itemdeductperiod/add",
-            updateItemSalaryPeriod: "pr/core/itemsalaryperiod/update",
-            updateItemDeductPeriod: "pr/core/itemdeductperiod/update",
         }
-        function findItemSalaryPeriod(itemCode): JQueryPromise<model.ItemPeriod> {
+        export function findItemSalaryPeriod(itemCode): JQueryPromise<model.ItemPeriod> {
             var dfd = $.Deferred<model.ItemPeriod>();
             nts.uk.request.ajax(paths.findItemSalaryPeriod + "/" + itemCode)
                 .done(function(res: model.ItemPeriod) {
@@ -19,7 +15,7 @@ module qmm012.h {
                 })
             return dfd.promise();
         }
-        function findItemDeductPeriod(itemCode): JQueryPromise<model.ItemPeriod> {
+        export function findItemDeductPeriod(itemCode): JQueryPromise<model.ItemPeriod> {
             var dfd = $.Deferred<model.ItemPeriod>();
             nts.uk.request.ajax(paths.findItemDeductPeriod + "/" + itemCode)
                 .done(function(res: model.ItemPeriod) {
@@ -30,12 +26,12 @@ module qmm012.h {
                 })
             return dfd.promise();
         }
-        export function findItemPeriod(itemMaster: qmm012.b.service.model.ItemMaster): JQueryPromise<model.ItemPeriod> {
+        export function findItemPeriod(ItemMaster: qmm012.b.service.model.ItemMaster): JQueryPromise<model.ItemPeriod> {
             var dfd = $.Deferred<model.ItemPeriod>();
-            let categoryAtr = itemMaster.categoryAtr;
-            let itemCode = itemMaster.itemCode;
+            let categoryAtr = ItemMaster.categoryAtr;
+            let itemCode = ItemMaster.itemCode;
             if (categoryAtr == 0) {
-                findItemSalaryPeriod(itemCode).done(function(ItemPeriod: service.model.ItemPeriod) {
+                service.findItemSalaryPeriod(itemCode).done(function(ItemPeriod: service.model.ItemPeriod) {
                     dfd.resolve(ItemPeriod);
                 }).fail(function(res) {
                     // Alert message
@@ -43,7 +39,7 @@ module qmm012.h {
                 });
             }
             if (categoryAtr == 1) {
-                findItemDeductPeriod(itemCode).done(function(ItemPeriod: service.model.ItemPeriod) {
+                service.findItemDeductPeriod(itemCode).done(function(ItemPeriod: service.model.ItemPeriod) {
                     dfd.resolve(ItemPeriod);
                 }).fail(function(res) {
                     // Alert message
@@ -52,7 +48,6 @@ module qmm012.h {
             }
             return dfd.promise();
         }
-       
 
 
         export module model {

@@ -29,16 +29,16 @@ public interface ItemAttendRespository {
 	 */
 	void update(ItemAttend item);
 
-	/**
-	 * Update average wage attribute of multiple item
-	 * @param companyCode company code
-	 * @param itemCodeList list of item code
-	 * @param avePayAtr average wage attribute: NotApplicable or Object
-	 */
-	void updateItems(String companyCode, List<String> itemCodeList, AvePayAtr avePayAtr);
-	
 	void add(ItemAttend itemAttend);
 
-	void delete(String companyCode);
+	void delete(String companyCode, String itemCode);
+	
+	/**
+	 * Update AvePayAtr multiple items
+	 * @param companyCode
+	 * @param itemCodeList
+	 * @param avePayAtr
+	 */
+	void updateItems(String companyCode, List<String> itemCodeList, AvePayAtr avePayAtr);
 	
 }
