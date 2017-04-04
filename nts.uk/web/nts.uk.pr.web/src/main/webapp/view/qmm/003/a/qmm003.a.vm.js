@@ -25,6 +25,20 @@ var qmm003;
                     var self = this;
                     self.init();
                     self.singleSelectedCode.subscribe(function (newValue) {
+                        if (newValue.length === 1) {
+                            var index = void 0;
+                            index = _.findIndex(self.items(), function (obj) {
+                                return obj.code === newValue;
+                            });
+                            self.singleSelectedCode(self.items()[index].childs[0].childs[0].code);
+                            return;
+                        }
+                        if (newValue.length === 2) {
+                            var array = [];
+                            array = self.findIndex(self.items(), newValue);
+                            self.singleSelectedCode(self.items()[array[0]].childs[array[1]].childs[0].code);
+                            return;
+                        }
                         if (!nts.uk.text.isNullOrEmpty(newValue) && (self.singleSelectedCode() !== self.previousCurrentCode) && self.editMode) {
                             if (self.dirtyObject.isDirty()) {
                                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function () {
@@ -44,6 +58,22 @@ var qmm003;
                         }
                     });
                 }
+                // tìm index để khi chọn root thì ra hiển thị ra thằng đầu tiên của 1 thằng root
+                ScreenModel.prototype.findIndex = function (items, newValue) {
+                    var index;
+                    var count = -1;
+                    var array = [];
+                    _.each(items, function (obj) {
+                        count++;
+                        index = _.findIndex(obj.childs, function (obj1) {
+                            return obj1.code === newValue;
+                        });
+                        if (index > -1) {
+                            array.push(count, index);
+                        }
+                    });
+                    return array;
+                };
                 ScreenModel.prototype.processWhenCurrentCodeChange = function (newValue) {
                     var self = this;
                     a.service.getResidentialTaxDetail(newValue).done(function (data) {
@@ -78,7 +108,7 @@ var qmm003;
                     var self = this;
                     self.editMode = false;
                     self.enableBTN007(true);
-                    self.enableBTN009(false);
+                    self.enableBTN009(true);
                     self.enableInp002(true);
                     var node = new a.service.model.ResidentialTax();
                     node.companyCode = '';
@@ -167,7 +197,7 @@ var qmm003;
                     qmm003.a.service.deleteResidential(resiTaxCodes).done(function (data) {
                         self.items([]);
                         self.nodeRegionPrefectures([]);
-                        self.start(undefined);
+                        self.reload(self.firstSelectedCode());
                     });
                 };
                 ScreenModel.prototype.openEDialog = function () {
@@ -201,7 +231,46 @@ var qmm003;
                                 else {
                                     self.singleSelectedCode(currentSelectedCode);
                                 }
-                                self.enableBTN007(true);
+                                self.enableBTN007(false);
+                                self.enableBTN009(true);
+                                self.enableInp002(false);
+                            });
+                        }
+                        else {
+                            //self.resetData();
+                            (qmm003.a.service.getRegionPrefecture()).done(function (locationData) {
+                                self.japanLocation = locationData;
+                                self.buildPrefectureArray();
+                                self.itemPrefecture(self.precfecture);
+                            });
+                            self.mode(false); // false, new mode
+                            self.enableBTN007(true);
+                            self.enableBTN009(true);
+                        }
+                        dfd.resolve();
+                    }).fail(function (res) {
+                    });
+                    return dfd.promise();
+                };
+                ScreenModel.prototype.reload = function (currentSelectedCode) {
+                    var dfd = $.Deferred();
+                    var self = this;
+                    (qmm003.a.service.getResidentialTax()).done(function (data) {
+                        if (data.length > 0) {
+                            self.mode(true); // true, update mode 
+                            self.residentalTaxList(data);
+                            (qmm003.a.service.getRegionPrefecture()).done(function (locationData) {
+                                self.japanLocation = locationData;
+                                self.buildPrefectureArray();
+                                self.itemPrefecture(self.precfecture);
+                                self.buildResidentalTaxTree();
+                                var node = [];
+                                node = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
+                                self.filteredData(node);
+                                self.items(self.nodeRegionPrefectures());
+                                self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentResidential);
+                                self.singleSelectedCode(currentSelectedCode);
+                                self.enableBTN007(false);
                                 self.enableBTN009(true);
                                 self.enableInp002(false);
                             });
@@ -215,8 +284,7 @@ var qmm003;
                             });
                             self.mode(false); // false, new mode
                             self.enableBTN007(true);
-                            self.enableBTN009(false);
-                            console.log(self.mode());
+                            self.enableBTN009(true);
                         }
                         dfd.resolve();
                     }).fail(function (res) {
@@ -229,8 +297,8 @@ var qmm003;
                     var i = 0;
                     _.each(self.residentalTaxList(), function (objResi) {
                         _.each(self.japanLocation, function (objRegion) {
-                            var cout = false;
-                            var coutPre = false;
+                            var isChild = false;
+                            var isPrefecture = false;
                             _.each(objRegion.prefectures, function (objPrefecture) {
                                 if (objPrefecture.prefectureCode === objResi.prefectureCode) {
                                     _.each(self.nodeRegionPrefectures(), function (obj) {
@@ -238,17 +306,17 @@ var qmm003;
                                             _.each(obj.childs, function (objChild) {
                                                 if (objChild.code === objPrefecture.prefectureCode) {
                                                     objChild.childs.push(new RedensitalTaxNode(objResi.resiTaxCode, objResi.resiTaxAutonomy, []));
-                                                    coutPre = true;
+                                                    isPrefecture = true;
                                                 }
                                             });
-                                            if (coutPre === false) {
+                                            if (isPrefecture === false) {
                                                 obj.childs.push(new RedensitalTaxNode(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new RedensitalTaxNode(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])]));
                                             }
-                                            cout = true;
+                                            isChild = true;
                                         }
                                     });
-                                    if (cout === false) {
-                                        var chi = [];
+                                    if (isChild === false) {
+                                        var child_1 = [];
                                         self.nodeRegionPrefectures.push(new RedensitalTaxNode(objRegion.regionCode, objRegion.regionName, [new RedensitalTaxNode(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new RedensitalTaxNode(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])])]));
                                     }
                                 }
@@ -259,7 +327,7 @@ var qmm003;
                     node = self.nodeRegionPrefectures()[0].childs;
                     var node1;
                     node1 = (node[0].childs);
-                    self.firstSelectedCode(node1[0].code);
+                    self.firstSelectedCode(self.nodeRegionPrefectures()[0].childs[0].childs[0].code);
                 };
                 ScreenModel.prototype.validateData = function () {
                     $(".nts-editor").ntsEditor("validate");
