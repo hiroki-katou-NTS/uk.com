@@ -4,10 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.labor;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.insurance.Address;
+import nts.uk.ctx.pr.core.dom.insurance.Address1;
+import nts.uk.ctx.pr.core.dom.insurance.Address2;
+import nts.uk.ctx.pr.core.dom.insurance.AddressKana1;
+import nts.uk.ctx.pr.core.dom.insurance.AddressKana2;
 import nts.uk.ctx.pr.core.dom.insurance.CitySign;
-import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeMark;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
@@ -34,7 +35,7 @@ public interface LaborInsuranceOfficeGetMemento {
 	 *
 	 * @return the company code
 	 */
-	CompanyCode getCompanyCode();
+	String getCompanyCode();
 
 	/**
 	 * Gets the code.
@@ -83,28 +84,28 @@ public interface LaborInsuranceOfficeGetMemento {
 	 *
 	 * @return the address 1 st
 	 */
-	Address getAddress1st();
+	Address1 getAddress1st();
 
 	/**
 	 * Gets the address 2 nd.
 	 *
 	 * @return the address 2 nd
 	 */
-	Address getAddress2nd();
+	Address2 getAddress2nd();
 
 	/**
 	 * Gets the kana address 1 st.
 	 *
 	 * @return the kana address 1 st
 	 */
-	KanaAddress getKanaAddress1st();
+	AddressKana1 getKanaAddress1st();
 
 	/**
 	 * Gets the kana address 2 nd.
 	 *
 	 * @return the kana address 2 nd
 	 */
-	KanaAddress getKanaAddress2nd();
+	AddressKana2 getKanaAddress2nd();
 
 	/**
 	 * Gets the phone number.

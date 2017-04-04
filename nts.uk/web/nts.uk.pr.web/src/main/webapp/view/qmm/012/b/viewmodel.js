@@ -8,7 +8,6 @@ var qmm012;
                 function ScreenModel(screenModel) {
                     this.enable = ko.observable(true);
                     this.selectedCode_B_001 = ko.observable(1);
-                    //gridlist
                     this.GridlistItems_B_001 = ko.observableArray([]);
                     this.GridlistCurrentCode_B_001 = ko.observable('');
                     this.GridlistCurrentItem_B_001 = ko.observable(null);
@@ -19,14 +18,12 @@ var qmm012;
                     this.GridCurrentCategoryAtr_B_001 = ko.observable(0);
                     this.GridCurrentCategoryAtrName_B_001 = ko.observable('');
                     this.GridCurrentCodeAndName_B_001 = ko.observable('');
-                    //Checkbox
-                    //B_002
-                    this.checked_B_002 = ko.observable(true);
+                    this.B_INP_002_text = ko.observable('');
+                    this.categoryAtr = -1;
+                    this.checked_B_002 = ko.observable(false);
                     this.enable_B_INP_002 = ko.observable(false);
                     var self = this;
                     self.screenModel = screenModel;
-                    //set combobox data
-                    //001
                     self.ComboBoxItemList_B_001 = ko.observableArray([
                         new ComboboxItemModel(1, '全件'),
                         new ComboboxItemModel(2, '支給項目'),
@@ -35,7 +32,34 @@ var qmm012;
                         new ComboboxItemModel(5, '記事項目'),
                         new ComboboxItemModel(6, 'その他項目')
                     ]);
-                    // set gridlist data
+                    self.selectedCode_B_001.subscribe(function (newValue) {
+                        var categoryAtr;
+                        switch (newValue) {
+                            case 1:
+                                categoryAtr = -1;
+                                break;
+                            case 2:
+                                categoryAtr = 0;
+                                break;
+                            case 3:
+                                categoryAtr = 1;
+                                break;
+                            case 4:
+                                categoryAtr = 2;
+                                break;
+                            case 5:
+                                categoryAtr = 3;
+                                break;
+                            case 6:
+                                categoryAtr = 9;
+                                break;
+                        }
+                        self.categoryAtr = categoryAtr;
+                        self.LoadGridList();
+                    });
+                    self.checked_B_002.subscribe(function () {
+                        self.LoadGridList();
+                    });
                     self.GridColumns_B_001 = ko.observableArray([
                         { headerText: '項目区分', prop: 'categoryAtrName', width: 80 },
                         { headerText: 'コード', prop: 'itemCode', width: 50 },
@@ -52,24 +76,22 @@ var qmm012;
                             return ItemModel.itemCode == newValue;
                         });
                         self.GridlistCurrentItem_B_001(item);
+                        self.B_INP_002_text(newValue);
                     });
                     self.GridlistCurrentItem_B_001.subscribe(function (itemModel) {
                         self.GridCurrentItemName_B_001(itemModel ? itemModel.itemName : '');
                         self.GridCurrentUniteCode_B_001(itemModel ? itemModel.uniteCode : '');
                         self.GridCurrentCategoryAtr_B_001(itemModel ? itemModel.categoryAtr : 0);
-                        //Because there are many items in the same group  After set value , need call ChangeGroup function for Set Value to layout
                         ChangeGroup(self.GridCurrentCategoryAtr_B_001());
                         self.GridCurrentCodeAndName_B_001(itemModel ? itemModel.itemCode + ' ' + itemModel.itemName : '');
-                        self.GridCurrentDisplaySet_B_001(itemModel ? itemModel.displaySet == 1 ? true : false : '');
+                        self.GridCurrentDisplaySet_B_001(itemModel ? itemModel.displaySet == 1 ? true : false : false);
                         self.GridCurrentItemAbName_B_001(itemModel ? itemModel.itemAbName : '');
                         self.GridCurrentCategoryAtrName_B_001(itemModel ? itemModel.categoryAtrName : '');
-                        //when CurrentCode != undefined , need disable INP_002
                         if (self.GridlistCurrentCode_B_001() != undefined) {
                             self.enable_B_INP_002(false);
                         }
                     });
                     self.GridCurrentCategoryAtr_B_001.subscribe(function (newValue) {
-                        //when change to different group, need  call ChangeGroup function for Set Value to layout
                         ChangeGroup(newValue);
                     });
                     function ChangeGroup(newValue) {
@@ -96,21 +118,9 @@ var qmm012;
                                 break;
                         }
                     }
-                    b.service.findAllItemMaster().done(function (MasterItems) {
-                        for (var _i = 0, MasterItems_1 = MasterItems; _i < MasterItems_1.length; _i++) {
-                            var item = MasterItems_1[_i];
-                            self.GridlistItems_B_001.push(item);
-                        }
-                        //set selected first item in list
-                        if (self.GridlistItems_B_001().length > 0)
-                            self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[0].itemCode);
-                    }).fail(function (res) {
-                        alert(res);
-                    });
-                    //set text editer data
-                    //INP_002
+                    self.LoadGridList();
                     self.texteditor_B_INP_002 = {
-                        value: self.GridlistCurrentCode_B_001,
+                        value: self.B_INP_002_text,
                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                             textmode: "text",
                             placeholder: "",
@@ -118,7 +128,6 @@ var qmm012;
                         })),
                         enable: self.enable_B_INP_002
                     };
-                    //INP_003
                     self.texteditor_B_INP_003 = {
                         value: self.GridCurrentItemName_B_001,
                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -127,7 +136,6 @@ var qmm012;
                             textalign: "left"
                         }))
                     };
-                    //INP_004
                     self.texteditor_B_INP_004 = {
                         value: self.GridCurrentItemAbName_B_001,
                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -139,31 +147,50 @@ var qmm012;
                 }
                 ScreenModel.prototype.GetCurrentItemMaster = function () {
                     var self = this;
-                    return new b.service.model.ItemMasterModel(self.GridlistCurrentCode_B_001(), self.GridCurrentItemName_B_001(), self.GridCurrentCategoryAtr_B_001(), self.GridCurrentCategoryAtrName_B_001(), self.GridCurrentItemAbName_B_001(), self.GridlistCurrentItem_B_001() ? self.GridlistCurrentItem_B_001().itemAbNameO : self.GridCurrentItemAbName_B_001(), self.GridlistCurrentItem_B_001() ? self.GridlistCurrentItem_B_001().itemAbNameE : self.GridCurrentItemAbName_B_001(), self.GridCurrentDisplaySet_B_001(), self.GridCurrentUniteCode_B_001(), self.GetCurrentZeroDisplaySet(), self.GetCurrentItemDisplayAtr(), 1);
+                    var CurrentGroup = self.GridCurrentCategoryAtr_B_001();
+                    var itemMaster = new b.service.model.ItemMaster(self.B_INP_002_text(), self.GridCurrentItemName_B_001(), self.GridCurrentCategoryAtr_B_001(), self.GridCurrentCategoryAtrName_B_001(), self.GridCurrentItemAbName_B_001(), self.GridlistCurrentItem_B_001() ? self.GridlistCurrentItem_B_001().itemAbNameO : self.GridCurrentItemAbName_B_001(), self.GridlistCurrentItem_B_001() ? self.GridlistCurrentItem_B_001().itemAbNameE : self.GridCurrentItemAbName_B_001(), self.GridCurrentDisplaySet_B_001() == true ? 1 : 0, self.GridCurrentUniteCode_B_001(), self.getCurrentZeroDisplaySet(), self.getCurrentItemDisplayAtr(), 1);
+                    itemMaster.itemSalary = self.screenModel.screenModelC.GetCurrentItemSalary();
+                    itemMaster.itemDeduct = self.screenModel.screenModelD.GetCurrentItemDeduct();
+                    itemMaster.itemAttend = self.screenModel.screenModelE.getCurrentItemAttend();
+                    return itemMaster;
+                };
+                ScreenModel.prototype.LoadGridList = function (ItemCode) {
+                    var self = this;
+                    var categoryAtr = self.categoryAtr;
+                    var dispSet = self.checked_B_002() ? -1 : 0;
+                    b.service.findAllItemMaster(categoryAtr, dispSet).done(function (MasterItems) {
+                        self.GridlistItems_B_001(MasterItems);
+                        if (self.GridlistItems_B_001().length > 0)
+                            if (!ItemCode)
+                                self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[0].itemCode);
+                            else
+                                self.GridlistCurrentCode_B_001(ItemCode);
+                    }).fail(function (res) {
+                        alert(res);
+                    });
                 };
                 ScreenModel.prototype.DeleteDialog = function () {
                     var self = this;
-                    b.service.deleteItemMaster(self.GridlistCurrentItem_B_001()).done(function (any) {
-                        //i'm not reload Gridlist , just remove that item in GridlistItems Array
-                        var index = self.GridlistItems_B_001().indexOf(self.GridlistCurrentItem_B_001());
-                        if (index != undefined) {
-                            self.GridlistItems_B_001().splice(index, 1);
-                            //set selected code after remove
+                    var ItemMaster = self.GetCurrentItemMaster();
+                    var index = self.GridlistItems_B_001.indexOf(self.GridlistCurrentItem_B_001());
+                    b.service.deleteItemMaster(ItemMaster).done(function (any) {
+                        if (index) {
+                            var selectItemCode = void 0;
                             if (self.GridlistItems_B_001().length - 1 > 1) {
-                                //if is not last item, set selected next item 
                                 if (index < self.GridlistItems_B_001().length - 1)
-                                    self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[index].itemCode);
+                                    selectItemCode = self.GridlistItems_B_001()[index - 1].itemCode;
                                 else
-                                    self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[index - 1].itemCode);
+                                    selectItemCode = self.GridlistItems_B_001()[index - 2].itemCode;
                             }
                             else
-                                self.GridlistCurrentCode_B_001('');
+                                selectItemCode = '';
+                            self.LoadGridList(selectItemCode);
                         }
                     }).fail(function (res) {
                         alert(res);
                     });
                 };
-                ScreenModel.prototype.GetCurrentZeroDisplaySet = function () {
+                ScreenModel.prototype.getCurrentZeroDisplaySet = function () {
                     var Result;
                     var self = this;
                     var CurrentGroup = self.GridCurrentCategoryAtr_B_001();
@@ -180,7 +207,7 @@ var qmm012;
                     }
                     return Result;
                 };
-                ScreenModel.prototype.GetCurrentItemDisplayAtr = function () {
+                ScreenModel.prototype.getCurrentItemDisplayAtr = function () {
                     var Result;
                     var self = this;
                     var CurrentGroup = self.GridCurrentCategoryAtr_B_001();
@@ -200,9 +227,8 @@ var qmm012;
                 ScreenModel.prototype.openADialog = function () {
                     var self = this;
                     nts.uk.ui.windows.sub.modal('../a/index.xhtml', { height: 480, width: 630, dialogClass: "no-close" }).onClosed(function () {
-                        var groupCode = Number(nts.uk.sessionStorage.getItemAndRemove('groupCode').value);
-                        //set layout for new.
-                        if (groupCode != undefined) {
+                        if (nts.uk.ui.windows.getShared('groupCode') != undefined) {
+                            var groupCode = Number(nts.uk.ui.windows.getShared('groupCode'));
                             self.GridlistCurrentCode_B_001('');
                             self.GridCurrentCategoryAtr_B_001(groupCode);
                             self.enable_B_INP_002(true);
@@ -212,20 +238,28 @@ var qmm012;
                 ScreenModel.prototype.submitData = function () {
                     var self = this;
                     var ItemMaster = self.GetCurrentItemMaster();
-                    //if self.enable_B_INP_002 == true is mean New mode
                     if (self.enable_B_INP_002()) {
-                        self.AddNewItemMaster(ItemMaster);
+                        self.addNewItemMaster(ItemMaster);
                     }
                     else {
-                        self.UpdateItemMaster(ItemMaster);
+                        self.updateItemMaster(ItemMaster);
                     }
                 };
-                ScreenModel.prototype.AddNewItemMaster = function (ItemMaster) {
+                ScreenModel.prototype.addNewItemMaster = function (ItemMaster) {
                     var self = this;
-                    self.GridlistItems_B_001().push(ItemMaster);
-                    self.GridlistCurrentCode_B_001(ItemMaster.itemCode);
+                    b.service.addItemMaster(ItemMaster).done(function (any) {
+                        self.LoadGridList(ItemMaster.itemCode);
+                    }).fail(function (res) {
+                        alert(res);
+                    });
                 };
-                ScreenModel.prototype.UpdateItemMaster = function (ItemMaster) {
+                ScreenModel.prototype.updateItemMaster = function (ItemMaster) {
+                    var self = this;
+                    b.service.updateItemMaster(ItemMaster).done(function (any) {
+                        self.LoadGridList(ItemMaster.itemCode);
+                    }).fail(function (res) {
+                        alert(res);
+                    });
                 };
                 ScreenModel.prototype.openJDialog = function () {
                     var self = this;
@@ -245,3 +279,4 @@ var qmm012;
         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
     })(b = qmm012.b || (qmm012.b = {}));
 })(qmm012 || (qmm012 = {}));
+//# sourceMappingURL=viewmodel.js.map

@@ -11,7 +11,6 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSetting;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingRepository;
@@ -36,9 +35,17 @@ public class OutputSettingSaveCommandHandler extends CommandHandler<OutputSettin
 		OutputSettingSaveCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		
+		// Validate required items.
+		if (command.getCode() == null || command.getCode().equals("")) {
+			throw new BusinessException("コードが入力されていません。");
+		}
+		if (command.getName() == null || command.getName().equals("")) {
+			throw new BusinessException("名称が入力されていません。");
+		}
+		
 		if (command.isCreateMode()) {
 			// Check exist.
-			if (this.repository.isExist(new CompanyCode(companyCode), new WLOutputSettingCode(command.getCode()))) {
+			if (this.repository.isExist(companyCode, new WLOutputSettingCode(command.getCode()))) {
 				throw new BusinessException("入力したコードは既に存在しています。\r\nコードを確認してください。");
 			}
 			
@@ -50,7 +57,7 @@ public class OutputSettingSaveCommandHandler extends CommandHandler<OutputSettin
 		}
 		
 		// Case update.
-		WLOutputSetting outputSetting = this.repository.findByCode(new CompanyCode(companyCode), 
+		WLOutputSetting outputSetting = this.repository.findByCode(companyCode, 
 				new WLOutputSettingCode(command.getCode()));
 		if (outputSetting == null) {
 			throw new IllegalStateException("Output Setting is not found");

@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.wageledger.command.dto;
 
+import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode;
@@ -13,6 +13,7 @@ import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLItemSubject;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLItemSubjectGetMemento;
 
 @Setter
+@Getter
 public class ItemSubjectDto {
 	/** The category. */
 	private WLCategory category;
@@ -79,8 +80,8 @@ public class ItemSubjectDto {
 		 * #getCompanyCode()
 		 */
 		@Override
-		public CompanyCode getCompanyCode() {
-			return new CompanyCode(this.companyCode);
+		public String getCompanyCode() {
+			return this.companyCode;
 		}
 
 		/* (non-Javadoc)

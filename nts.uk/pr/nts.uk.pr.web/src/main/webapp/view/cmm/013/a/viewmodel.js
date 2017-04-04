@@ -16,6 +16,7 @@ var cmm013;
                 ScreenModel.prototype.start = function () {
                     var self = this;
                     var dfd = $.Deferred();
+                    //list data
                     self.buildItemList();
                     $('#LST_001').on('selectionChanging', function (event) {
                         console.log('Selecting value:' + event.originalEvent.detail);
@@ -23,7 +24,9 @@ var cmm013;
                     $('#LST_001').on('selectionChanged', function (event) {
                         console.log('Selected value:' + event.originalEvent.detail);
                     });
+                    //fill data to dialog
                     dfd.resolve();
+                    // Return.
                     return dfd.promise();
                 };
                 ScreenModel.prototype.buildItemList = function () {
@@ -40,6 +43,9 @@ var cmm013;
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
+            /**
+         * Class Item model.
+         */
             var ItemModel = (function () {
                 function ItemModel(stt, printType, paperType, direction, numberPeople, numberDisplayItems, reference) {
                     this.stt = stt;
@@ -56,4 +62,3 @@ var cmm013;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = cmm013.a || (cmm013.a = {}));
 })(cmm013 || (cmm013 = {}));
-//# sourceMappingURL=viewmodel.js.map

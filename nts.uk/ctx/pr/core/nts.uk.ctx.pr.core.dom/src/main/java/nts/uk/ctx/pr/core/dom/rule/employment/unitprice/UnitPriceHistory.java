@@ -12,7 +12,6 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.primitive.PrimitiveValue;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.History;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.shr.com.primitive.Memo;
@@ -28,7 +27,7 @@ public class UnitPriceHistory extends AggregateRoot implements History<UnitPrice
 	private String id;
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The unit price code. */
 	private UnitPriceCode unitPriceCode;
@@ -119,7 +118,9 @@ public class UnitPriceHistory extends AggregateRoot implements History<UnitPrice
 		memento.setMemo(this.memo);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#getUuid()
 	 */
 	@Override
@@ -127,7 +128,9 @@ public class UnitPriceHistory extends AggregateRoot implements History<UnitPrice
 		return this.id;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#getMasterCode()
 	 */
 	@Override
@@ -135,7 +138,9 @@ public class UnitPriceHistory extends AggregateRoot implements History<UnitPrice
 		return this.unitPriceCode;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#getStart()
 	 */
 	@Override
@@ -143,7 +148,9 @@ public class UnitPriceHistory extends AggregateRoot implements History<UnitPrice
 		return this.applyRange.getStartMonth();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#getEnd()
 	 */
 	@Override
@@ -151,26 +158,36 @@ public class UnitPriceHistory extends AggregateRoot implements History<UnitPrice
 		return this.applyRange.getEndMonth();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#setStart(nts.arc.time.YearMonth)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.base.simplehistory.History#setStart(nts.arc.time.
+	 * YearMonth)
 	 */
 	@Override
 	public void setStart(YearMonth yearMonth) {
-		this.applyRange = MonthRange.range(yearMonth,
-				this.applyRange.getEndMonth());
+		this.applyRange = MonthRange.range(yearMonth, this.applyRange.getEndMonth());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#setEnd(nts.arc.time.YearMonth)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.base.simplehistory.History#setEnd(nts.arc.time.
+	 * YearMonth)
 	 */
 	@Override
 	public void setEnd(YearMonth yearMonth) {
-		this.applyRange = MonthRange.range(this.applyRange.getStartMonth(),
-				yearMonth);
+		this.applyRange = MonthRange.range(this.applyRange.getStartMonth(), yearMonth);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#copyWithDate(nts.arc.time.YearMonth)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.base.simplehistory.History#copyWithDate(nts.arc.
+	 * time.YearMonth)
 	 */
 	@Override
 	public UnitPriceHistory copyWithDate(YearMonth start) {
@@ -192,11 +209,14 @@ public class UnitPriceHistory extends AggregateRoot implements History<UnitPrice
 	/**
 	 * Creates the with intial.
 	 *
-	 * @param companyCode the company code
-	 * @param unitPriceCode the unit price code
+	 * @param companyCode
+	 *            the company code
+	 * @param unitPriceCode
+	 *            the unit price code
 	 * @return the unit price history
 	 */
-	public static final UnitPriceHistory createWithIntial(CompanyCode companyCode, UnitPriceCode unitPriceCode, YearMonth startYearMonth) {
+	public static final UnitPriceHistory createWithIntial(String companyCode,
+			UnitPriceCode unitPriceCode, YearMonth startYearMonth) {
 		UnitPriceHistory history = new UnitPriceHistory();
 		history.companyCode = companyCode;
 		history.unitPriceCode = unitPriceCode;
@@ -212,7 +232,9 @@ public class UnitPriceHistory extends AggregateRoot implements History<UnitPrice
 		return history;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -223,7 +245,9 @@ public class UnitPriceHistory extends AggregateRoot implements History<UnitPrice
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

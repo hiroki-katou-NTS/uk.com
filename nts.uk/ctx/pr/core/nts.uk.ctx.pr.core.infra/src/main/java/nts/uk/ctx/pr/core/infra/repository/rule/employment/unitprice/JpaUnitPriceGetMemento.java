@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.rule.employment.unitprice;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceGetMemento;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName;
@@ -16,7 +15,7 @@ import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitprice
 public class JpaUnitPriceGetMemento implements UnitPriceGetMemento {
 
 	/** The type value. */
-	protected QupmtCUnitpriceHeader typeValue;
+	private QupmtCUnitpriceHeader typeValue;
 
 	/**
 	 * Instantiates a new jpa unit price get memento.
@@ -36,8 +35,8 @@ public class JpaUnitPriceGetMemento implements UnitPriceGetMemento {
 	 * getCompanyCode()
 	 */
 	@Override
-	public CompanyCode getCompanyCode() {
-		return new CompanyCode(this.typeValue.getQupmtCUnitpriceHeaderPK().getCcd());
+	public String getCompanyCode() {
+		return this.typeValue.getQupmtCUnitpriceHeaderPK().getCcd();
 	}
 
 	/*

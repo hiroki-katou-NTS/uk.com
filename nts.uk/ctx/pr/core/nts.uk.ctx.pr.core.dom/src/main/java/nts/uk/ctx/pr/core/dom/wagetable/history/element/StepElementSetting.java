@@ -50,7 +50,7 @@ public class StepElementSetting extends ElementSetting {
 	 * @param interval
 	 *            the interval
 	 */
-	public void setSetting(RangeLimit upperLimit, RangeLimit lowerLimit, RangeLimit interval) {
+	public void setSetting(RangeLimit lowerLimit, RangeLimit upperLimit, RangeLimit interval) {
 		this.upperLimit = upperLimit;
 		this.lowerLimit = lowerLimit;
 		this.interval = interval;

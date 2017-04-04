@@ -1,4 +1,3 @@
-/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -8,18 +7,10 @@ var nts;
             var koExtentions;
             (function (koExtentions) {
                 var DatePickerBindingHandler = (function () {
-                    /**
-                     * Constructor.
-                     */
                     function DatePickerBindingHandler() {
                     }
-                    /**
-                     * Init.
-                     */
                     DatePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data.
                         var data = valueAccessor();
-                        // Container.
                         var container = $(element);
                         if (!container.attr("id")) {
                             var idString = nts.uk.util.randomId();
@@ -57,7 +48,6 @@ var nts;
                             containerFormat = 'yyyy/mm';
                         }
                         if (containerFormat != 'yyyy/mm')
-                            //datepicker case
                             $input.attr('value', nts.uk.time.formatDate(value, dateFormat));
                         else
                             $input.attr('value', value);
@@ -98,17 +88,14 @@ var nts;
                             }
                         }
                     };
-                    /**
-                     * Update
-                     */
                     DatePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var container = $(element);
-                        var idatr = container.attr("id");
                         var newValue = ko.unwrap(data.value);
-                        var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+                        var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+                        var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
+                        var idatr = container.attr("id");
                         var $input = container.find('#' + idatr + "-input");
-                        var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
                         var formatOptions = container.data("format");
                         var oldDate = $input.datepicker("getDate");
                         if (formatOptions != 'yyyy/mm') {
@@ -125,12 +112,9 @@ var nts;
                                 $input.datepicker("setDate", newDate);
                             $input.val(formatted.format());
                         }
-                        if (data.disabled !== undefined && ko.unwrap(data.disabled) == true) {
-                            $input.prop("disabled", true);
-                            if (data.button) {
-                                container.find('.datepicker-btn').prop("disabled", true);
-                            }
-                        }
+                        $input.prop("disabled", disabled);
+                        if (data.button)
+                            container.find('.datepicker-btn').prop("disabled", disabled);
                     };
                     return DatePickerBindingHandler;
                 }());
@@ -139,3 +123,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=datepicker-ko-ext.js.map

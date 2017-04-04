@@ -36,16 +36,19 @@ public class LevelItemGenerator implements ItemGenerator {
 	public List<? extends Item> generate(String companyCode, String historyId,
 			ElementSetting elementSetting) {
 
+		// Create map: unique code - old uuid.
 		@SuppressWarnings("unchecked")
 		List<CodeItem> codeItems = (List<CodeItem>) elementSetting.getItemList();
 		Map<String, ElementId> mapCodeItems = codeItems.stream()
 				.collect(Collectors.toMap(CodeItem::getReferenceCode, CodeItem::getUuid));
 
-		return Arrays.asList(EmployeeLevel.values()).stream()
-				.map(item -> new CodeItem(item.value,
-						mapCodeItems.getOrDefault(item.value,
-								new ElementId(IdentifierUtil.randomUniqueId()))))
-				.collect(Collectors.toList());
+		// Generate uuid of code items.
+		return Arrays.asList(EmployeeLevel.values()).stream().map(item -> {
+			CodeItem codeItem = new CodeItem(item.value, mapCodeItems.getOrDefault(item.value,
+					new ElementId(IdentifierUtil.randomUniqueId())));
+			codeItem.setDisplayName(item.displayName);
+			return codeItem;
+		}).collect(Collectors.toList());
 	}
 
 	/*

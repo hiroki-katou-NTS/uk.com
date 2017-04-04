@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.social.healthrate;
@@ -14,11 +14,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.DeleteHealthInsuranceCommand;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.DeleteHealthInsuranceCommandHandler;
-import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.RegisterHealthInsuranceCommand;
-import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.RegisterHealthInsuranceCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.UpdateHealthInsuranceCommand;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.UpdateHealthInsuranceCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.HealthInsuranceOfficeItemDto;
@@ -41,27 +38,38 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Path("ctx/pr/core/insurance/social/healthrate")
 @Produces("application/json")
-public class HealthInsuranceRateWs extends SimpleHistoryWs<SocialInsuranceOffice, HealthInsuranceRate> {
+public class HealthInsuranceRateWs
+		extends SimpleHistoryWs<SocialInsuranceOffice, HealthInsuranceRate> {
 
+	/** The health insurance rate finder. */
 	@Inject
 	private HealthInsuranceRateFinder healthInsuranceRateFinder;
-	@Inject
-	private RegisterHealthInsuranceCommandHandler registerHealthInsuranceCommandHandler;
+
+	/** The update health insurance command handler. */
 	@Inject
 	private UpdateHealthInsuranceCommandHandler updateHealthInsuranceCommandHandler;
+
+	/** The delete health insurance command handler. */
 	@Inject
 	private DeleteHealthInsuranceCommandHandler deleteHealthInsuranceCommandHandler;
+
+	/** The social insurance office repository. */
 	@Inject
 	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
+
+	/** The health insurance rate repository. */
 	@Inject
 	private HealthInsuranceRateRepository healthInsuranceRateRepository;
+
+	/** The service. */
 	@Inject
 	private HealthInsuranceRateService service;
 
 	/**
 	 * Find.
 	 *
-	 * @param id the id
+	 * @param id
+	 *            the id
 	 * @return the health insurance rate dto
 	 */
 	// find by historyId
@@ -84,20 +92,10 @@ public class HealthInsuranceRateWs extends SimpleHistoryWs<SocialInsuranceOffice
 	}
 
 	/**
-	 * Creates the.
-	 *
-	 * @param command the command
-	 */
-	@POST
-	@Path("create")
-	public void create(RegisterHealthInsuranceCommand command) {
-		registerHealthInsuranceCommandHandler.handle(command);
-	}
-
-	/**
 	 * Update.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("update")
@@ -108,7 +106,8 @@ public class HealthInsuranceRateWs extends SimpleHistoryWs<SocialInsuranceOffice
 	/**
 	 * Removes the.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	// remove by historyId
 	@POST
@@ -117,8 +116,11 @@ public class HealthInsuranceRateWs extends SimpleHistoryWs<SocialInsuranceOffice
 		deleteHealthInsuranceCommandHandler.handle(command);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs#loadMasterModelList()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs#
+	 * loadMasterModelList()
 	 */
 	@Override
 	@Path("masterhistory")
@@ -126,7 +128,7 @@ public class HealthInsuranceRateWs extends SimpleHistoryWs<SocialInsuranceOffice
 	public List<MasterModel> loadMasterModelList() {
 		// Get list of Office.
 		List<SocialInsuranceOffice> socialInsuranceOffices = this.socialInsuranceOfficeRepository
-				.findAll(new CompanyCode(AppContexts.user().companyCode()));
+				.findAll(AppContexts.user().companyCode());
 
 		// Get list of unit price history.
 		List<HealthInsuranceRate> healthInsuranceRates = this.healthInsuranceRateRepository
@@ -134,10 +136,11 @@ public class HealthInsuranceRateWs extends SimpleHistoryWs<SocialInsuranceOffice
 
 		// Group histories by unit code.
 		Map<OfficeCode, List<HistoryModel>> historyMap = healthInsuranceRates.stream()
-				.collect(Collectors.groupingBy(HealthInsuranceRate::getOfficeCode, Collectors.mapping((res) -> {
-					return HistoryModel.builder().uuid(res.getUuid()).start(res.getStart().v()).end(res.getEnd().v())
-							.build();
-				}, Collectors.toList())));
+				.collect(Collectors.groupingBy(HealthInsuranceRate::getOfficeCode,
+						Collectors.mapping((res) -> {
+							return HistoryModel.builder().uuid(res.getUuid())
+									.start(res.getStart().v()).end(res.getEnd().v()).build();
+						}, Collectors.toList())));
 
 		// Return
 		return socialInsuranceOffices.stream().map(item -> {
@@ -146,8 +149,11 @@ public class HealthInsuranceRateWs extends SimpleHistoryWs<SocialInsuranceOffice
 		}).collect(Collectors.toList());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs#getServices()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs#getServices()
 	 */
 	@Override
 	protected SimpleHistoryBaseService<SocialInsuranceOffice, HealthInsuranceRate> getServices() {

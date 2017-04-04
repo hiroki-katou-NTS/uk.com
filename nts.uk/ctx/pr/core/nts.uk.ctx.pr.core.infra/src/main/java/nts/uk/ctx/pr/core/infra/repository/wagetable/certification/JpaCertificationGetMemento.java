@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable.certification;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationGetMemento;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertification;
 
@@ -14,7 +13,7 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertificatio
 public class JpaCertificationGetMemento implements CertificationGetMemento {
 
 	/** The type value. */
-	protected QcemtCertification typeValue;
+	private QcemtCertification typeValue;
 
 	/**
 	 * Instantiates a new jpa certification get memento.
@@ -33,8 +32,8 @@ public class JpaCertificationGetMemento implements CertificationGetMemento {
 	 * nts.uk.ctx.pr.core.dom.wagetable.CertificationGetMemento#getCompanyCode()
 	 */
 	@Override
-	public CompanyCode getCompanyCode() {
-		return new CompanyCode(this.typeValue.getQcemtCertificationPK().getCcd());
+	public String getCompanyCode() {
+		return this.typeValue.getQcemtCertificationPK().getCcd();
 	}
 
 	/*

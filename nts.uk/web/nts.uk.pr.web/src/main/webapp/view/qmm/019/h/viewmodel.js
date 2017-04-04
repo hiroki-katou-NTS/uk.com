@@ -7,14 +7,12 @@ var qmm019;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    //self.listBox = new ListBox();
                     self.itemList = ko.observableArray([]);
                     self.personalWages = ko.observableArray([]);
                     self.selectedCode = ko.observable(null);
                 }
                 ScreenModel.prototype.buildItemList = function () {
                     var self = this;
-                    //            self.itemList.removeAll();
                     _.forEach(self.personalWages(), function (personalWage) {
                         var companyCode = personalWage.companyCode;
                         if (companyCode.length == 1) {
@@ -34,7 +32,6 @@ var qmm019;
                     }).fail(function (res) {
                         alert(res);
                     });
-                    // Return.
                     return dfd.promise();
                 };
                 ScreenModel.prototype.chooseItem = function () {
@@ -61,3 +58,4 @@ var qmm019;
         })(viewmodel = h.viewmodel || (h.viewmodel = {}));
     })(h = qmm019.h || (qmm019.h = {}));
 })(qmm019 || (qmm019 = {}));
+//# sourceMappingURL=viewmodel.js.map

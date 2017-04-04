@@ -20,12 +20,10 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu;
-import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsuPK;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsuPK_;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu_;
 
@@ -126,8 +124,8 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 	 * AccidentInsuranceRateRepository#findById(java.lang.String)
 	 */
 	@Override
-	public Optional<AccidentInsuranceRate> findById(String String, String historyId) {
-		return Optional.ofNullable(this.toDomain(this.findDataById(String, historyId)));
+	public Optional<AccidentInsuranceRate> findById(String companyCode, String historyId) {
+		return Optional.ofNullable(this.toDomain(this.findDataById(companyCode, historyId)));
 	}
 
 	/**
@@ -213,30 +211,11 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 		return new AccidentInsuranceRate(new JpaHistoryAccidentInsuranceRateGetMemento(entity));
 	}
 
-	/**
-	 * Ramdom history.
-	 *
-	 * @param rate
-	 *            the rate
-	 * @return the list
-	 */
-	public List<QismtWorkAccidentInsu> ramdomHistory(AccidentInsuranceRate rate) {
-		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = this.toEntity(rate);
-		String historyId = IdentifierUtil.randomUniqueId();
-		for (QismtWorkAccidentInsu qismtWorkAccidentInsu : lstQismtWorkAccidentInsu) {
-			QismtWorkAccidentInsuPK pk = qismtWorkAccidentInsu.getQismtWorkAccidentInsuPK();
-			pk.setHistId(historyId);
-			qismtWorkAccidentInsu.setQismtWorkAccidentInsuPK(pk);
-		}
-		return lstQismtWorkAccidentInsu;
-	}
-
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
-	 * AccidentInsuranceRateRepository#findFirstData(nts.uk.ctx.core.dom.company
-	 * .String)
+	 * AccidentInsuranceRateRepository#findFirstData(java.lang.String)
 	 */
 	@Override
 	public Optional<AccidentInsuranceRate> findFirstData(String companyCode) {

@@ -4,4 +4,10 @@ import java.util.Optional;
 
 public interface ItemSalaryPeriodRepository {
 	Optional<ItemSalaryPeriod> find(String companyCode, String itemCode);
+
+	void add(ItemSalaryPeriod domain);
+
+	void update(ItemSalaryPeriod domain);
+
+	void delete(String itemCd);
 }

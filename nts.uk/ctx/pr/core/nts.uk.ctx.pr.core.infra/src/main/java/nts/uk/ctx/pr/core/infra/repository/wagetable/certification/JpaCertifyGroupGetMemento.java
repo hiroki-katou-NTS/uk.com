@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.core.infra.repository.wagetable.certification;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento;
@@ -21,7 +20,7 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCer
 public class JpaCertifyGroupGetMemento implements CertifyGroupGetMemento {
 
 	/** The type value. */
-	protected QwtmtWagetableCertifyG typeValue;
+	private QwtmtWagetableCertifyG typeValue;
 
 	/**
 	 * Instantiates a new jpa certify group get memento.
@@ -40,8 +39,8 @@ public class JpaCertifyGroupGetMemento implements CertifyGroupGetMemento {
 	 * nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupGetMemento#getCompanyCode()
 	 */
 	@Override
-	public CompanyCode getCompanyCode() {
-		return new CompanyCode(this.typeValue.getQwtmtWagetableCertifyGPK().getCcd());
+	public String getCompanyCode() {
+		return this.typeValue.getQwtmtWagetableCertifyGPK().getCcd();
 	}
 
 	/*

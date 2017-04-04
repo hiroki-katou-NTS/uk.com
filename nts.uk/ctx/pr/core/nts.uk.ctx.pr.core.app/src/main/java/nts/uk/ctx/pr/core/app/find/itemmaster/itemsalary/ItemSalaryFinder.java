@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.core.app.find.itemmaster.itemsalary;
 
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.core.app.find.itemmaster.dto.itemsalary.ItemSalaryDto;
@@ -10,7 +10,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalary;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalaryRespository;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 public class ItemSalaryFinder {
 	@Inject
 	ItemSalaryRespository itemSalaryRespo;

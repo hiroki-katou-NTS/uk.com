@@ -1,14 +1,13 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.labor.businesstype;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.BusinessName;
 
 /**
- * The Interface InsuranceBusinessTypeMemento.
+ * The Interface InsuranceBusinessTypeSetMemento.
  */
 public interface InsuranceBusinessTypeSetMemento {
 
@@ -17,7 +16,7 @@ public interface InsuranceBusinessTypeSetMemento {
 	 *
 	 * @return the company code
 	 */
-	void setCompanyCode(CompanyCode companyCode);
+	void setCompanyCode(String companyCode);
 
 	/**
 	 * Gets the biz order.

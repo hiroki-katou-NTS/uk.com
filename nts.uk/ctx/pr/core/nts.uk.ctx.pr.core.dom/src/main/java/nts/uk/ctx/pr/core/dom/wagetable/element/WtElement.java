@@ -1,9 +1,10 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.element;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
@@ -12,6 +13,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
  * The Class WageTableElement.
  */
 @Getter
+@EqualsAndHashCode(of = { "demensionNo" })
 public class WtElement {
 
 	/** The demension no. */
@@ -72,30 +74,5 @@ public class WtElement {
 		memento.setDemensionNo(this.demensionNo);
 		memento.setElementType(this.type);
 		memento.setElementRefCode(this.referenceCode);
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((demensionNo == null) ? 0 : demensionNo.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		WtElement other = (WtElement) obj;
-		if (demensionNo != other.demensionNo)
-			return false;
-		return true;
 	}
 }

@@ -38,7 +38,7 @@
 }
 
 .tab-content {
-	width: 700px;
+	width: 850px;
 }
 
 .tab-inline {
@@ -54,7 +54,7 @@
 }
 
 #demension-tbl td span {
-	padding-left: 20px;
+	padding-left: 10px;
 }
 
 #masterInfo .lblData {
@@ -72,4 +72,8 @@
 
 #masterInfo .lblData div:nth-child(2) {
 	width: 50%;
+}
+
+.bgIgCol {
+	background-color: #CFF1A5;
 }

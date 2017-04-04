@@ -6,133 +6,164 @@ var qmm034;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
-                    this.constraint = 'LayoutCode';
-                    this.isUpdate = ko.observable(true);
+                    this.countStartDateChange = 1;
+                    this.previousCurrentCode = null;
                     var self = this;
-                    /*gridList*/
+                    self.init();
+                    self.date = ko.observable("");
+                    self.startDate = ko.observable(new Date());
+                    self.startDate.subscribe(function (dateChange) {
+                        if (self.countStartDateChange === 1) {
+                            if ($('#A_INP_003').ntsError("hasError")) {
+                                $("#A_INP_003").ntsError('clear');
+                            }
+                        }
+                        else {
+                            self.countStartDateChange = 1;
+                        }
+                        self.currentEra().startDate(dateChange);
+                    });
+                    self.currentCode.subscribe(function (codeChanged) {
+                        if (!nts.uk.text.isNullOrEmpty(codeChanged) && self.currentCode() !== self.previousCurrentCode) {
+                            if (self.dirtyObject.isDirty()) {
+                                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function () {
+                                    self.processWhenCurrentCodeChange(codeChanged);
+                                }).ifCancel(function () {
+                                    self.currentCode(self.previousCurrentCode);
+                                });
+                            }
+                            else {
+                                self.processWhenCurrentCodeChange(codeChanged);
+                            }
+                        }
+                    });
+                    self.dateTime = ko.observable(nts.uk.time.yearInJapanEmpire(self.currentEra().startDate()).toString());
+                }
+                ScreenModel.prototype.processWhenCurrentCodeChange = function (codeChanged) {
+                    var self = this;
+                    self.countStartDateChange += 1;
+                    self.currentEra(self.getEra(codeChanged));
+                    self.dirtyObject.reset();
+                    self.date(self.currentEra().startDate().toString());
+                    self.startDate(self.currentEra().startDate());
+                    self.isDeleteEnable(true);
+                    self.isEnableCode(false);
+                    self.isUpdate(true);
+                    qmm034.a.service.getFixAttribute(self.currentEra().eraHist()).done(function (data) {
+                        if (data === 0) {
+                            self.isEnableCode(true);
+                        }
+                    });
+                    self.previousCurrentCode = codeChanged;
+                };
+                ScreenModel.prototype.init = function () {
+                    var self = this;
                     self.items = ko.observableArray([]);
                     self.columns = ko.observableArray([
-                        { headerText: '元号', prop: 'code', width: 50 },
-                        { headerText: '記号', prop: 'name', width: 50 },
-                        { headerText: '開始年月日', prop: 'startDateText', width: 80 },
+                        { headerText: 'KEY', key: 'eraHist', width: 50, hidden: true },
+                        { headerText: '元号', key: 'eraName', width: 50 },
+                        { headerText: '記号', key: 'eraMark', width: 50 },
+                        { headerText: '開始年月日', key: 'startDate', width: 80 },
                     ]);
-                    self.currentCodeList = ko.observableArray([]);
-                    //Tim object dau tien
-                    self.currentEra = ko.observable(null);
-                    self.currentCode = ko.observable();
-                    self.currentCode.subscribe(function (codeChanged) {
-                        self.currentEra(self.getEra(codeChanged));
-                        self.date(self.currentEra().startDate);
-                    });
-                    /*datePicker*/
-                    // var datePicker = self.currentEra();
-                    self.date = ko.observable(new Date());
-                    self.dateTime = ko.observable(nts.uk.time.yearInJapanEmpire(self.date()).toString());
-                    self.eras = ko.observableArray([]);
-                    console.log(self.items());
-                    /*selected row*/
-                    self.findIndex = ko.observable(0);
-                    self.countItems = ko.observable(0);
-                    self.isSelectdFirstRow = ko.observable(true);
-                    self.isDeleteEnable = ko.observable(true);
-                }
-                //        register() {
-                //            let self = this;
-                //            if (self.isUpdate() === false) {
-                //                self.insertData();
-                //            } else {
-                //                self.update();
-                //            }
-                //        }
-                ScreenModel.prototype.refreshLayout = function () {
-                    var self = this;
-                    self.currentEra(new EraModel('', '', ''));
+                    self.currentEra = ko.observable((new EraModel('', '', new Date(), 1, '', new Date())));
+                    self.currentCode = ko.observable(null);
+                    self.date = ko.observable('');
+                    self.dateTime = ko.observable('');
+                    self.isDeleteEnable = ko.observable(false);
+                    self.isEnableCode = ko.observable(false);
                     self.isUpdate = ko.observable(false);
+                };
+                ScreenModel.prototype.validateData = function () {
+                    $(".nts-editor").ntsEditor("validate");
+                    $("#A_INP_003").ntsEditor("validate");
+                    if ($(".nts-editor").ntsError('hasError') || $("#A_INP_003").ntsError('hasError')) {
+                        return false;
+                    }
+                    return true;
                 };
                 ScreenModel.prototype.insertData = function () {
                     var self = this;
-                    //let newData = self.currentEra();
-                    //let newEradata = self;
-                    // var x = self.items();
-                    //x.push(newData);
-                    //            if (self.isUpdate() === false) {
-                    //                self.items.push(newData);
-                    //                self.isUpdate = ko.observable(true);
-                    //            }
                     var eraName;
                     eraName = $('#A_INP_001').val();
                     var eraMark;
                     eraMark = $('#A_INP_002').val();
-                    var startDate = self.date();
+                    var startDate = self.startDate();
                     var endDate;
+                    var eraHist = self.currentEra().eraHist();
                     var fixAttribute;
                     var dfd = $.Deferred();
                     var node;
-                    node = new qmm034.a.service.model.EraDto(eraName, eraMark, startDate.toDateString(), endDate, fixAttribute);
-                    qmm034.a.service.addData(self.isUpdate(false), node).done(function (result) {
+                    node = new qmm034.a.service.model.EraDto(eraName, eraMark, startDate, endDate, fixAttribute, eraHist);
+                    if (!self.validateData()) {
+                        return;
+                    }
+                    qmm034.a.service.addData(self.isUpdate(), node).done(function (result) {
+                        self.dirtyObject.reset();
                         self.reload().done(function () {
+                            self.currentCode(result === undefined ? self.currentEra().eraHist() : result.eraHist);
+                            self.isDeleteEnable = ko.observable(false);
+                            self.isEnableCode = ko.observable(false);
+                            self.isUpdate = ko.observable(true);
+                            var lastStartDate = _.maxBy(self.items(), function (o) {
+                                return o.startDate;
+                            });
                             dfd.resolve();
                         });
                     }).fail(function (res) {
+                        $("#A_INP_003").ntsError("set", res.message);
                     });
                     return dfd.promise();
                 };
                 ScreenModel.prototype.alertDelete = function () {
                     var self = this;
-                    if (confirm("do you wanna delete") === true) {
+                    nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
                         self.deleteData();
-                    }
-                    else {
-                        alert("you didnt delete!");
-                    }
-                };
-                ScreenModel.prototype.selectedItem = function (item) {
-                    var self = this;
-                    self.currentCode(item.code);
-                    return new EraModel(item.code, item.name, item.startDate);
+                    });
                 };
                 ScreenModel.prototype.reload = function () {
                     var dfd = $.Deferred();
                     var self = this;
                     $.when(qmm034.a.service.getAllEras()).done(function (data) {
-                        self.buildGridDataSource(data);
-                        self.countItems(data.length);
+                        self.items([]);
                         if (data.length > 0) {
-                            if (self.isSelectdFirstRow()) {
-                                self.currentEra(self.selectedItem(data[0]));
-                                self.isSelectdFirstRow(false);
-                            }
                             self.items(data);
+                            self.isDeleteEnable(true);
                         }
-                        dfd.resolve();
+                        dfd.resolve(data);
                     }).fail(function (res) {
                     });
                     return dfd.promise();
                 };
                 ScreenModel.prototype.deleteData = function () {
                     var self = this;
-                    //            let newDel = self.currentEra();
-                    //            self.items.splice(self.items().indexOf(newDel), 1);
                     var eraName;
                     eraName = $('#A_INP_001').val();
                     var eraMark;
                     eraMark = $('#A_INP_002').val();
-                    var startDate = self.date();
-                    var endDate;
-                    var fixAttribute;
+                    var eraHist = self.currentEra().eraHist();
+                    var startDate = self.startDate();
                     var dfd = $.Deferred();
                     var node;
-                    node = new qmm034.a.service.model.EraDtoDelete(startDate);
-                    //            qmm034.a.service.deleteData(node)
-                    //                .done(function() {
-                    //                    qmm034.a.service.getAllEras();
-                    //                }).fail(function(error) {
-                    //                    alert(error.message);
-                    //                });
+                    node = new qmm034.a.service.model.EraDtoDelete(eraHist);
+                    var rowIndex = _.findIndex(self.items(), function (item) {
+                        return item.eraName == self.currentEra().eraName();
+                    });
                     qmm034.a.service.deleteData(node).done(function (result) {
-                        self.reload().done(function () {
-                            dfd.resolve();
+                        self.reload().done(function (data) {
+                            if (self.items().length === 0) {
+                                self.refreshLayout();
+                            }
+                            else if (self.items().length === rowIndex) {
+                                self.currentCode(self.items()[rowIndex - 1].eraHist);
+                            }
+                            else if (self.items().length < rowIndex) {
+                                self.currentCode(self.items()[0].eraHist);
+                            }
+                            else {
+                                self.currentCode(self.items()[rowIndex].eraHist);
+                            }
                         });
+                        dfd.resolve();
                     }).fail(function (error) {
                         alert(error.message);
                     });
@@ -141,94 +172,74 @@ var qmm034;
                 ScreenModel.prototype.getEra = function (codeNew) {
                     var self = this;
                     var era = _.find(self.items(), function (item) {
-                        return item.code === codeNew;
+                        return item.eraHist === codeNew;
                     });
-                    return _.cloneDeep(era);
-                };
-                ScreenModel.prototype.update = function () {
-                    var self = this;
-                    //            if (self.currentCode() !== undefined && self.currentCode() !== null) {
-                    //                var newCurrentEra = _.findIndex(self.items(), function(item) {
-                    //                    return item.code === self.currentCode();
-                    //                });
-                    //                self.items.splice(newCurrentEra, 1, _.cloneDeep(self.currentEra()));
-                    //                self.items.valueHasMutated();
-                    //            }
-                    //            qmm034.a.service.updateData().done(function() {
-                    //                        self.start();
-                    //                        //console.log(self.items());
-                    //                    });
-                };
-                ScreenModel.prototype.selectSomeItems = function () {
-                    this.currentCode('150');
-                    this.currentCodeList.removeAll();
-                    this.currentCodeList.push('001');
-                    this.currentCodeList.push('ABC');
-                };
-                ScreenModel.prototype.deselectAll = function () {
-                    this.currentCode(null);
-                    this.currentCodeList.removeAll();
-                };
-                ScreenModel.prototype.start = function () {
-                    var self = this;
-                    // Page load dfd.
-                    var dfd = $.Deferred();
-                    // Resolve start page dfd after load all data.
-                    $.when(qmm034.a.service.getAllEras()).done(function (data) {
-                        dfd.resolve();
-                    }).fail(function (res) {
-                    });
-                    return dfd.promise();
+                    if (era) {
+                        return new EraModel(era.eraName, era.eraMark, new Date(era.startDate), era.fixAttribute, era.eraHist, new Date(era.endDate));
+                    }
+                    else {
+                        return new EraModel("", "", new Date(), 0, "", new Date());
+                    }
                 };
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
-                    // Page load dfd.
                     var dfd = $.Deferred();
-                    // Resolve start page dfd after load all data.
                     $.when(qmm034.a.service.getAllEras()).done(function (data) {
-                        self.buildGridDataSource(data);
-                        self.currentEra = ko.observable(_.cloneDeep(_.first(self.items())));
+                        if (data.length > 0) {
+                            self.items(data);
+                            self.currentEra(self.items()[0]);
+                            self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentEra);
+                            self.currentCode(self.currentEra().eraHist);
+                        }
+                        else {
+                            self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentEra);
+                            self.startWithEmptyData();
+                        }
                         dfd.resolve();
                     }).fail(function (res) {
+                        $("#A_INP_001").ntsError("set", res.message);
                     });
                     return dfd.promise();
                 };
-                ScreenModel.prototype.buildGridDataSource = function (items) {
+                ScreenModel.prototype.refreshLayout = function () {
                     var self = this;
-                    self.items([]);
-                    _.forEach(items, function (obj) {
-                        self.items.push(new EraModel(obj.eraName, obj.eraMark, obj.startDate));
-                    });
+                    self.clearError();
+                    self.currentEra(new EraModel('', '', new Date(), 1, '', new Date()));
+                    self.startDate(self.currentEra().startDate());
+                    self.currentCode(null);
+                    self.isDeleteEnable(false);
+                    self.isEnableCode(true);
+                    self.isUpdate(false);
+                    self.dirtyObject.reset();
+                    $("#A_INP_001").focus();
+                };
+                ScreenModel.prototype.startWithEmptyData = function () {
+                    var self = this;
+                    self.isDeleteEnable(false);
+                    self.isEnableCode(true);
+                    self.isUpdate(false);
+                    self.dirtyObject.reset();
+                };
+                ScreenModel.prototype.clearError = function () {
+                    $(".nts-editor").ntsError('clear');
+                    $("#A_INP_003").ntsError('clear');
                 };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            //    class Era{
-            //        eraName: KnockoutObservable<string>;
-            //        eraMark: KnockoutObservable<string>;
-            //        startDateEra: KnockoutObservable<Date>;    
-            //        
-            //        constructor(eraName: string, eraMark: string, startDateEra: Date){
-            //                this.eraName = ko.observable(eraName);
-            //                this.eraMark = ko.observable(eraMark);
-            //                this.startDateEra = ko.observable(startDateEra);
-            //        }
-            //    }
             var EraModel = (function () {
-                function EraModel(code, name, startDate) {
-                    this.code = code;
-                    this.name = name;
-                    if (startDate !== "") {
-                        this.startDate = new Date(startDate);
-                        this.startDateText = startDate;
-                    }
-                    else {
-                        this.startDate = new Date();
-                        this.startDateText = this.startDate.toDateString();
-                    }
+                function EraModel(eraName, eraMark, startDate, fixAttribute, eraHist, endDate) {
+                    this.eraName = ko.observable(eraName);
+                    this.eraMark = ko.observable(eraMark);
+                    this.startDate = ko.observable(startDate);
+                    this.endDate = ko.observable(endDate);
+                    this.fixAttribute = ko.observable(fixAttribute);
+                    this.eraHist = ko.observable(eraHist);
                 }
                 return EraModel;
             }());
+            viewmodel.EraModel = EraModel;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm034.a || (qmm034.a = {}));
 })(qmm034 || (qmm034 = {}));
+//# sourceMappingURL=viewmodel.js.map

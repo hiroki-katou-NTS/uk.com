@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.history.element.item.generator;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -53,23 +54,39 @@ public class MasterRefItemGenerator implements ItemGenerator {
 	@Override
 	public List<? extends Item> generate(String companyCode, String historyId,
 			ElementSetting elementSetting) {
-		Optional<WtElement> optWtHistory = this.wtElementRepo.findByHistoryId(historyId);
+		// Get the element.
+		Optional<WtElement> optWtElement = this.wtElementRepo.findByHistoryId(historyId);
 
+		// Check element is existed.
+		if (!optWtElement.isPresent()) {
+			return Collections.emptyList();
+		}
+
+		// Get the master ref.
 		Optional<WtMasterRef> optMasterRef = this.wtMasterRefRepo.findByCode(companyCode,
-				optWtHistory.get().getReferenceCode());
+				optWtElement.get().getReferenceCode());
 
+		// Check master ref is existed.
+		if (!optMasterRef.isPresent()) {
+			return Collections.emptyList();
+		}
+
+		// Get ref items.
 		List<WtCodeRefItem> wtRefItems = this.wtReferenceRepo.getMasterRefItem(optMasterRef.get());
 
+		// Create map: unique code - old uuid.
 		@SuppressWarnings("unchecked")
 		List<CodeItem> codeItems = (List<CodeItem>) elementSetting.getItemList();
 		Map<String, ElementId> mapCodeItems = codeItems.stream()
 				.collect(Collectors.toMap(CodeItem::getReferenceCode, CodeItem::getUuid));
 
-		return wtRefItems.stream()
-				.map(item -> new CodeItem(item.getReferenceCode(),
-						mapCodeItems.getOrDefault(item.getReferenceCode(),
-								new ElementId(IdentifierUtil.randomUniqueId()))))
-				.collect(Collectors.toList());
+		// Generate uuid of code items.
+		return wtRefItems.stream().map(item -> {
+			CodeItem codeItem = new CodeItem(item.getReferenceCode(), mapCodeItems.getOrDefault(
+					item.getReferenceCode(), new ElementId(IdentifierUtil.randomUniqueId())));
+			codeItem.setDisplayName(item.getDisplayName());
+			return codeItem;
+		}).collect(Collectors.toList());
 	}
 
 	/*

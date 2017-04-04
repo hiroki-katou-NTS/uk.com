@@ -3,14 +3,14 @@ package nts.uk.ctx.pr.core.app.find.itemmaster.itemdeductbd;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.core.app.find.itemmaster.dto.itemdeductbd.ItemDeductBDDto;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBDRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 public class ItemDeductBDFinder {
 
 	@Inject

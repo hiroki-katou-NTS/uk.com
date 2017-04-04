@@ -22,6 +22,11 @@ import nts.uk.ctx.pr.core.app.wagetable.command.WtInitCommand;
 import nts.uk.ctx.pr.core.app.wagetable.command.WtInitCommandHandler;
 import nts.uk.ctx.pr.core.app.wagetable.command.WtUpdateCommand;
 import nts.uk.ctx.pr.core.app.wagetable.command.WtUpdateCommandHandler;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.ElementItemDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.ElementSettingDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.WtElementDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.WtHeadDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.WtHistoryDto;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
@@ -30,6 +35,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.WtHead;
 import nts.uk.ctx.pr.core.dom.wagetable.WtHeadRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.element.WtElement;
 import nts.uk.ctx.pr.core.dom.wagetable.element.WtElementRepository;
+import nts.uk.ctx.pr.core.dom.wagetable.element.service.WtElementService;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistory;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistoryRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.ElementSetting;
@@ -47,15 +53,12 @@ import nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.HistoryModel;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.MasterModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.DemensionItemDto;
-import nts.uk.ctx.pr.core.ws.wagetable.dto.ElementItemDto;
-import nts.uk.ctx.pr.core.ws.wagetable.dto.ElementSettingDto;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.ElementTypeDto;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.SettingInfoInModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.SettingInfoOutModel;
+import nts.uk.ctx.pr.core.ws.wagetable.dto.WageTableItemInModel;
+import nts.uk.ctx.pr.core.ws.wagetable.dto.WageTableItemModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.WageTableModel;
-import nts.uk.ctx.pr.core.ws.wagetable.dto.WtElementDto;
-import nts.uk.ctx.pr.core.ws.wagetable.dto.WtHeadDto;
-import nts.uk.ctx.pr.core.ws.wagetable.dto.WtHistoryDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -101,39 +104,45 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	@Inject
 	private WtElementRepository wtElementRepo;
 
+	/** The wt element service. */
+	@Inject
+	private WtElementService wtElementService;
+
 	/**
 	 * Find.
 	 *
 	 * @param id
 	 *            the id
-	 * @return the wage table history dto
+	 * @return the wage table model
 	 */
 	@POST
 	@Path("find/{id}")
 	public WageTableModel find(@PathParam("id") String id) {
+		// Create model.
 		WageTableModel model = new WageTableModel();
 
+		// Get the company code.
 		String companyCode = AppContexts.user().companyCode();
 
 		// Get the detail history.
 		Optional<WtHistory> optWageTableHistory = this.wtHistoryRepo.findHistoryByUuid(id);
 
-		// Check exsit.
+		// Check exist.
 		if (optWageTableHistory.isPresent()) {
-			WtHistory wageTableHistory = optWageTableHistory.get();
+			WtHistory wtHistory = optWageTableHistory.get();
 
-			Optional<WtHead> optWageTable = this.wtHeadRepo.findByCode(
-					wageTableHistory.getCompanyCode().v(), wageTableHistory.getWageTableCode().v());
+			Optional<WtHead> optWageTable = this.wtHeadRepo.findByCode(wtHistory.getCompanyCode(),
+					wtHistory.getWageTableCode().v());
 
-			// Check exsit.
+			// Check exist.
 			if (optWageTable.isPresent()) {
 				WtHead wageTableHead = optWageTable.get();
 				WtHeadDto headDto = new WtHeadDto();
-				wageTableHead.saveToMemento(headDto);
+				headDto.fromDomain(wageTableHead);
 
 				// Set demension name
 				headDto.getElements().stream().forEach(item -> {
-					item.setDemensionName(this.getDemensionName(companyCode,
+					item.setDemensionName(this.wtElementService.getDemensionName(companyCode,
 							item.getReferenceCode(), ElementType.valueOf(item.getType())));
 				});
 
@@ -145,7 +154,12 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 					Collectors.toMap(WtElementDto::getDemensionNo, WtElementDto::getDemensionName));
 
 			WtHistoryDto historyDto = new WtHistoryDto();
-			wageTableHistory.saveToMemento(historyDto);
+
+			// Get current setting with exist items.
+			List<ElementSetting> currentSettings = elementItemFactory.generate(companyCode,
+					wtHistory.getHistoryId(), wtHistory.getElementSettings());
+
+			historyDto.fromDomain(wtHistory, currentSettings);
 
 			// Set demension name
 			historyDto.getElements().stream().forEach(item -> {
@@ -160,16 +174,55 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	}
 
 	/**
+	 * Find by month.
+	 *
+	 * @param baseMonth
+	 *            the base month
+	 * @return the list
+	 */
+	@POST
+	@Path("findbymonth/{baseMonth}")
+	public List<WageTableItemModel> findByMonth(@PathParam("baseMonth") Integer baseMonth) {
+		// Find by month year value.
+		List<WtHead> wtHeadList = wtHeadRepo.getWageTableByBaseMonth(baseMonth);
+
+		// Return.
+		return wtHeadList.stream().map(item -> WageTableItemModel.builder().code(item.getCode().v())
+				.name(item.getName().v()).build()).collect(Collectors.toList());
+	}
+
+	/**
+	 * Find by codes.
+	 *
+	 * @param input
+	 *            the input
+	 * @return the list
+	 */
+	@POST
+	@Path("findbycodes")
+	public List<WageTableItemModel> findByCodes(WageTableItemInModel input) {
+		// Find by codes
+		List<WtHead> wtHeadList = wtHeadRepo.getWageTableByCodes(input.getCodes());
+
+		// Return
+		return wtHeadList.stream().map(item -> WageTableItemModel.builder().code(item.getCode().v())
+				.name(item.getName().v()).build()).collect(Collectors.toList());
+	}
+
+	/**
 	 * Inits the table.
 	 *
 	 * @param command
 	 *            the command
+	 * @return the history model
 	 */
 	@POST
 	@Path("init")
 	public HistoryModel initTable(WtInitCommand command) {
+		// Execute handler.
 		WtHistory history = this.wtInitCommandHandler.handle(command);
-		// Ret.
+
+		// Return.
 		return HistoryModel.builder().uuid(history.getUuid()).start(history.getStart().v())
 				.end(history.getEnd().v()).build();
 	}
@@ -183,6 +236,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	@POST
 	@Path("update")
 	public void update(WtUpdateCommand command) {
+		// Execute handler.
 		this.wtUpdateCommandHandler.handle(command);
 	}
 
@@ -227,10 +281,13 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	@POST
 	@Path("reference/genitem")
 	public SettingInfoOutModel generateSettingItem(SettingInfoInModel input) {
+		// Create model.
 		SettingInfoOutModel model = new SettingInfoOutModel();
 
+		// Get the company code
 		String companyCode = AppContexts.user().companyCode();
 
+		// Convert to ElementSetting from dto.
 		List<ElementSetting> elementSettings = input.getSettings().stream().map(item -> {
 			if (ElementType.valueOf(item.getType()).isCodeMode) {
 				return new ElementSetting(DemensionNo.valueOf(item.getDemensionNo()),
@@ -239,15 +296,17 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 				StepElementSetting el = new StepElementSetting(
 						DemensionNo.valueOf(item.getDemensionNo()),
 						ElementType.valueOf(item.getType()), Collections.emptyList());
-				el.setSetting(new RangeLimit(item.getUpperLimit()),
-						new RangeLimit(item.getLowerLimit()), new RangeLimit(item.getInterval()));
+				el.setSetting(new RangeLimit(item.getLowerLimit()),
+						new RangeLimit(item.getUpperLimit()), new RangeLimit(item.getInterval()));
 				return el;
 			}
 		}).collect(Collectors.toList());
 
+		// Generate setting items.
 		elementSettings = elementItemFactory.generate(companyCode, input.getHistoryId(),
 				elementSettings);
 
+		// Put item name
 		List<ElementSettingDto> elementSettingDtos = elementSettings.stream().map(item -> {
 
 			ElementSettingDto elementSettingDto = ElementSettingDto.builder()
@@ -258,7 +317,8 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 				List<ElementItemDto> itemList = item.getItemList().stream().map(subItem -> {
 					CodeItem codeItem = (CodeItem) subItem;
 					return ElementItemDto.builder().uuid(codeItem.getUuid().v())
-							.referenceCode(codeItem.getReferenceCode()).build();
+							.referenceCode(codeItem.getReferenceCode())
+							.displayName(codeItem.getDisplayName()).build();
 				}).collect(Collectors.toList());
 
 				elementSettingDto.setItemList(itemList);
@@ -270,7 +330,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 					return ElementItemDto.builder().uuid(rangeItem.getUuid().v())
 							.orderNumber(rangeItem.getOrderNumber())
 							.startVal(rangeItem.getStartVal()).endVal(rangeItem.getEndVal())
-							.build();
+							.displayName(rangeItem.getDisplayName()).build();
 				}).collect(Collectors.toList());
 
 				elementSettingDto.setItemList(itemList);
@@ -279,68 +339,22 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 				elementSettingDto.setInterval(stepElementSetting.getInterval().v());
 			}
 
+			// Put demension name
 			Optional<WtElement> optWtElement = this.wtElementRepo
 					.findByHistoryId(input.getHistoryId());
-			elementSettingDto.setDemensionName(this.getDemensionName(companyCode,
+			elementSettingDto.setDemensionName(this.wtElementService.getDemensionName(companyCode,
 					optWtElement.get().getReferenceCode(), item.getType()));
 
+			// Return
 			return elementSettingDto;
 
 		}).collect(Collectors.toList());
 
+		// Set model
 		model.setElementSettings(elementSettingDtos);
 
+		// Return
 		return model;
-	}
-
-	private String getDemensionName(String companyCode, String referenceCode, ElementType type) {
-		Optional<WtElement> optWtElement = Optional.empty();
-		switch (type) {
-		case MASTER_REF:
-			Optional<WtMasterRef> optWtMasterRef = this.wtMasterRefRepo.findByCode(companyCode,
-					referenceCode);
-			return optWtMasterRef.get().getRefName();
-
-		/** The code ref. */
-		case CODE_REF:
-			Optional<WtCodeRef> optWtCodeRef = this.wtCodeRefRepo.findByCode(companyCode,
-					optWtElement.get().getReferenceCode());
-			return optWtCodeRef.get().getRefName();
-
-		/** The item data ref. */
-		case ITEM_DATA_REF:
-			return ElementType.ITEM_DATA_REF.displayName;
-
-		/** The experience fix. */
-		case EXPERIENCE_FIX:
-			return ElementType.EXPERIENCE_FIX.displayName;
-
-		/** The age fix. */
-		case AGE_FIX:
-			return ElementType.AGE_FIX.displayName;
-
-		/** The family mem fix. */
-		case FAMILY_MEM_FIX:
-			return ElementType.FAMILY_MEM_FIX.displayName;
-
-		// Extend element type
-		/** The certification. */
-		case CERTIFICATION:
-			return ElementType.CERTIFICATION.displayName;
-
-		/** The working day. */
-		case WORKING_DAY:
-			return ElementType.WORKING_DAY.displayName;
-
-		/** The come late. */
-		case COME_LATE:
-			return ElementType.COME_LATE.displayName;
-
-		/** The level. */
-		// case LEVEL:
-		default:
-			return ElementType.LEVEL.displayName;
-		}
 	}
 
 	/**
@@ -356,42 +370,48 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 		List<DemensionItemDto> items = new ArrayList<>();
 
 		/** The age fix. */
-		// AGE_FIX(4, false, true),
 		items.add(new DemensionItemDto(ElementType.AGE_FIX));
 
 		/** The experience fix. */
-		// EXPERIENCE_FIX(3, false, true),
 		items.add(new DemensionItemDto(ElementType.EXPERIENCE_FIX));
 
 		/** The family mem fix. */
-		// FAMILY_MEM_FIX(5, false, true),
 		items.add(new DemensionItemDto(ElementType.FAMILY_MEM_FIX));
 
 		/** The master ref. */
-		// MASTER_REF(0, true, false),
-		// Find all in MASTER_REF table.
 		List<WtMasterRef> wtMasterRefs = this.wtMasterRefRepo.findAll(companyCode);
 		wtMasterRefs.stream().forEach(item -> {
-			items.add(new DemensionItemDto(ElementType.MASTER_REF.value, item.getRefNo().v(),
+			items.add(new DemensionItemDto(ElementType.MASTER_REF, item.getRefNo().v(),
 					item.getRefName()));
 		});
 
 		/** The code ref. */
-		// CODE_REF(1, true, false),
-		// Find all in CODE_REF table.
 		List<WtCodeRef> wtCodeRefs = this.wtCodeRefRepo.findAll(companyCode);
 		wtCodeRefs.stream().forEach(item -> {
-			items.add(new DemensionItemDto(ElementType.CODE_REF.value, item.getRefNo().v(),
+			items.add(new DemensionItemDto(ElementType.CODE_REF, item.getRefNo().v(),
 					item.getRefName()));
 		});
 
 		/** The item data ref. */
-		// ITEM_DATA_REF(2, false, true),
 		items.add(new DemensionItemDto(ElementType.ITEM_DATA_REF));
+
+		// Extend element type
+		/** The certification. */
+		items.add(new DemensionItemDto(ElementType.CERTIFICATION));
+
+		/** The working day. */
+		items.add(new DemensionItemDto(ElementType.WORKING_DAY));
+
+		/** The come late. */
+		items.add(new DemensionItemDto(ElementType.COME_LATE));
+
+		/** The level. */
+		items.add(new DemensionItemDto(ElementType.LEVEL));
 
 		return items;
 	}
 
+	/** The Constant ELEMENT_TYPE_DTO. */
 	private static final List<ElementTypeDto> ELEMENT_TYPE_DTO;
 	static {
 		ELEMENT_TYPE_DTO = new ArrayList<>();

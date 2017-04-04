@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.rule.employment.unitprice;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.ApplySetting;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.Money;
@@ -22,7 +21,7 @@ import nts.uk.shr.com.primitive.Memo;
 public class JpaUnitPriceHistorySetMemento implements UnitPriceHistorySetMemento {
 
 	/** The type value. */
-	protected QupmtCUnitpriceDetail typeValue;
+	private QupmtCUnitpriceDetail typeValue;
 
 	/**
 	 * Instantiates a new jpa unit price history set memento.
@@ -55,9 +54,9 @@ public class JpaUnitPriceHistorySetMemento implements UnitPriceHistorySetMemento
 	 * CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		QupmtCUnitpriceDetailPK qupmtCUnitpriceHistPK = this.typeValue.getQupmtCUnitpriceDetailPK();
-		qupmtCUnitpriceHistPK.setCcd(companyCode.v());
+		qupmtCUnitpriceHistPK.setCcd(companyCode);
 		this.typeValue.setQupmtCUnitpriceDetailPK(qupmtCUnitpriceHistPK);
 	}
 

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.command.dto;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,9 +32,12 @@ public class ElementItemDto {
 	private Integer orderNumber;
 
 	/** The start val. */
-	private Double startVal;
+	private BigDecimal startVal;
 
 	/** The end val. */
-	private Double endVal;
+	private BigDecimal endVal;
+
+	/** The display name. */
+	private String displayName;
 
 }

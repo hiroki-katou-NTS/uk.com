@@ -20,7 +20,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 
 @Stateless
 public class UnemployeeInsuranceRateAddCommandHandler
-	extends CommandHandler<UnemployeeInsuranceRateAddCommand> {
+		extends CommandHandler<UnemployeeInsuranceRateAddCommand> {
 
 	/** CompanyRepository */
 	@Inject
@@ -59,16 +59,16 @@ public class UnemployeeInsuranceRateAddCommandHandler
 
 		// find first data
 		Optional<UnemployeeInsuranceRate> optionalFisrtData = this.unemployeeInsuranceRateRepository
-			.findFirstData(unemployeeInsuranceRate.getCompanyCode().v());
+				.findFirstData(unemployeeInsuranceRate.getCompanyCode());
 		if (optionalFisrtData.isPresent()) {
-			optionalFisrtData.get()
-				.setEnd(unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+			optionalFisrtData.get().setEnd(
+					unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());
 			this.unemployeeInsuranceRateRepository.update(optionalFisrtData.get());
 		}
 
 		// call repository add (insert database)
 		this.unemployeeInsuranceRateRepository
-			.add(unemployeeInsuranceRate.copyWithDate(unemployeeInsuranceRate.getStart()));
+				.add(unemployeeInsuranceRate.copyWithDate(unemployeeInsuranceRate.getStart()));
 	}
 
 }

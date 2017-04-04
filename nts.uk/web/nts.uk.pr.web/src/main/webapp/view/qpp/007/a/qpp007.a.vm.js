@@ -16,7 +16,8 @@ var nts;
                                 function ScreenModel() {
                                     this.isUsuallyAMonth = ko.observable(true);
                                     this.isPreliminaryMonth = ko.observable(true);
-                                    this.yearMonth = ko.observable('2016/12');
+                                    this.startYearMonth = ko.observable('2016/12');
+                                    this.endYearMonth = ko.observable('2017/03');
                                     this.enable = ko.observable(true);
                                     this.selectedOutputFormat = ko.observable('1');
                                     this.outputFormatType = ko.observableArray([
@@ -71,14 +72,13 @@ var nts;
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.openPrintSettingDialog = function () {
-                                    nts.uk.ui.windows.setShared("data", "");
-                                    nts.uk.ui.windows.setShared("isTransistReturnData", "");
-                                    nts.uk.ui.windows.sub.modal("/view/qpp/007/b/index.xhtml", { title: "印刷設定" }).onClosed(function () {
+                                    nts.uk.ui.windows.setShared("data", "nothing");
+                                    nts.uk.ui.windows.sub.modal("/view/qpp/007/b/index.xhtml", { title: "印刷設定", dialogClass: 'no-close' }).onClosed(function () {
                                         var returnValue = nts.uk.ui.windows.getShared("childData");
                                     });
                                 };
                                 ScreenModel.prototype.openSalaryOuputSettingDialog = function () {
-                                    nts.uk.ui.windows.sub.modal("/view/qpp/007/c/index.xhtml", { title: "出力項目の設定" }).onClosed(function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qpp/007/c/index.xhtml", { title: "出力項目の設定", dialogClass: 'no-close' }).onClosed(function () {
                                     });
                                 };
                                 ScreenModel.prototype.saveAsPdf = function () {

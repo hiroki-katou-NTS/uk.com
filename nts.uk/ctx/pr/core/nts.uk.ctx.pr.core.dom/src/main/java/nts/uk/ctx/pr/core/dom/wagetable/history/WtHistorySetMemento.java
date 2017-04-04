@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.core.dom.wagetable.history;
 
 import java.util.List;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.ElementSetting;
@@ -21,7 +20,7 @@ public interface WtHistorySetMemento {
 	 *
 	 * @param companyCode the new company code
 	 */
-	void setCompanyCode(CompanyCode companyCode);
+	void setCompanyCode(String companyCode);
 
 	/**
 	 * Sets the code.
@@ -35,7 +34,7 @@ public interface WtHistorySetMemento {
 	 *
 	 * @param historyId the new history id
 	 */
-	void  setHistoryId(String historyId);
+	void setHistoryId(String historyId);
 
 	/**
 	 * Sets the apply range.

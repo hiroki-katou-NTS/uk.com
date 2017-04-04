@@ -7,9 +7,9 @@ package nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn;
 import java.math.BigDecimal;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
-import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 
 /**
  * The Class PensionAvgearn.
@@ -18,14 +18,14 @@ import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 public class PensionAvgearn extends DomainObject {
 
 	/** The history id. */
-	// historyId
+	@Setter
 	private String historyId;
 
 	/** The level code. */
 	private Integer levelCode;
 
 	/** The child contribution amount. */
-	private InsuranceAmount childContributionAmount;
+	private CommonAmount childContributionAmount;
 
 	/** The company fund. */
 	private PensionAvgearnValue companyFund;
@@ -127,7 +127,7 @@ public class PensionAvgearn extends DomainObject {
 		pensionAvgearn.companyFund = defaultValue;
 		pensionAvgearn.companyFundExemption = defaultValue;
 		pensionAvgearn.companyPension = defaultValue;
-		pensionAvgearn.childContributionAmount = new InsuranceAmount(BigDecimal.ZERO);
+		pensionAvgearn.childContributionAmount = defaultAmount;
 		return pensionAvgearn;
 	}
 

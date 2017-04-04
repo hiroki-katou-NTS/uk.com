@@ -63,7 +63,7 @@ public class WtUpdateCommandHandler extends CommandHandler<WtUpdateCommand> {
 		Optional<WtHead> optHeader = this.wtHeadRepo.findByCode(companyCode, command.getCode());
 
 		if (!optHeader.isPresent()) {
-			// TODO
+			// TODO: need msg id.
 			throw new BusinessException("errorMessage");
 		}
 
@@ -76,7 +76,6 @@ public class WtUpdateCommandHandler extends CommandHandler<WtUpdateCommand> {
 		WtHistory history = command.getWtHistoryDto().toDomain(header.getCode().v());
 		history.validate();
 		historyService.validateRequiredItem(history);
-		historyService.validateDateRange(history);
 
 		this.wtHeadRepo.update(header);
 		this.wtHistoryRepo.updateHistory(history);

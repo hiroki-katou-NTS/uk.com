@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.report.app.wageledger.command.dto.CategorySettingDto;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLCategorySetting;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSetting;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingCode;
@@ -107,8 +106,8 @@ public class OutputSettingSaveCommand {
 		 * #getCompanyCode()
 		 */
 		@Override
-		public CompanyCode getCompanyCode() {
-			return new CompanyCode(this.companyCode);
+		public String getCompanyCode() {
+			return this.companyCode;
 		}
 		
 		/* (non-Javadoc)

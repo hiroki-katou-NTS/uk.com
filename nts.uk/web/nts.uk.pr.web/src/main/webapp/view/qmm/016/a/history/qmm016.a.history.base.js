@@ -16,9 +16,15 @@ var nts;
                             (function (base) {
                                 var BaseHistoryViewModel = (function () {
                                     function BaseHistoryViewModel(htmlPath, history) {
+                                        var self = this;
+                                        self.htmlPath = htmlPath;
+                                        self.history = history;
+                                        self.elementSettings = history.elements;
                                     }
-                                    BaseHistoryViewModel.prototype.start = function () {
-                                        return null;
+                                    BaseHistoryViewModel.prototype.refreshElementSettings = function (elementSettings) {
+                                        var self = this;
+                                        self.elementSettings = elementSettings;
+                                        self.onRefreshElement();
                                     };
                                     return BaseHistoryViewModel;
                                 }());

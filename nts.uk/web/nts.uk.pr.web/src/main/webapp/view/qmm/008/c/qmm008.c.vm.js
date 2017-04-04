@@ -28,7 +28,7 @@ var nts;
                                 __extends(ScreenModel, _super);
                                 function ScreenModel() {
                                     _super.call(this, {
-                                        functionName: '社会保険事業所',
+                                        functionName: '厚生年金',
                                         service: c.service.instance,
                                         removeMasterOnLastHistoryRemove: false
                                     });
@@ -97,22 +97,22 @@ var nts;
                                 };
                                 ScreenModel.prototype.convertRounding = function (stringRounding) {
                                     switch (stringRounding) {
-                                        case Rounding.ROUNDUP: return "0";
-                                        case Rounding.TRUNCATION: return "1";
+                                        case Rounding.TRUNCATION: return "0";
+                                        case Rounding.ROUNDUP: return "1";
                                         case Rounding.DOWN4_UP5: return "2";
-                                        case Rounding.ROUNDDOWN: return "3";
-                                        case Rounding.DOWN5_UP6: return "4";
+                                        case Rounding.DOWN5_UP6: return "3";
+                                        case Rounding.ROUNDDOWN: return "4";
                                         default: return "0";
                                     }
                                 };
                                 ScreenModel.prototype.convertToRounding = function (stringValue) {
                                     switch (stringValue) {
-                                        case "0": return Rounding.ROUNDUP;
-                                        case "1": return Rounding.TRUNCATION;
+                                        case "0": return Rounding.TRUNCATION;
+                                        case "1": return Rounding.ROUNDUP;
                                         case "2": return Rounding.DOWN4_UP5;
-                                        case "3": return Rounding.ROUNDDOWN;
-                                        case "4": return Rounding.DOWN5_UP6;
-                                        default: return Rounding.ROUNDUP;
+                                        case "3": return Rounding.DOWN5_UP6;
+                                        case "4": return Rounding.ROUNDDOWN;
+                                        default: return Rounding.TRUNCATION;
                                     }
                                 };
                                 ScreenModel.prototype.loadPension = function (data) {
@@ -245,9 +245,20 @@ var nts;
                                 };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
-                                    iservice.updatePensionAvgearn(self.collectData(), self.pensionCollectData().officeCode);
-                                    c.service.updatePensionRate(self.pensionCollectData()).done(function () {
-                                    });
+                                    if (self.pensionModel().autoCalculate() == AutoCalculateType.Auto) {
+                                        nts.uk.ui.dialog.confirm("自動計算が行われます。登録しますか？").ifYes(function () {
+                                            self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
+                                            iservice.updatePensionAvgearn(self.collectData(), self.pensionCollectData().officeCode);
+                                            c.service.updatePensionRate(self.pensionCollectData()).done(function () {
+                                            });
+                                        }).ifNo(function () {
+                                        });
+                                    }
+                                    else {
+                                        self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
+                                        c.service.updatePensionRate(self.pensionCollectData()).done(function () {
+                                        });
+                                    }
                                 };
                                 ScreenModel.prototype.collectData = function () {
                                     var self = this;
@@ -258,6 +269,7 @@ var nts;
                                     self.listPensionAvgearnModel().forEach(function (item) {
                                         data.push(ko.toJS(item));
                                     });
+                                    self.listPensionAvgearnModel([]);
                                     return data;
                                 };
                                 ScreenModel.prototype.calculateHealthInsuranceAvgEarnModel = function (levelMasterSetting) {
@@ -271,7 +283,7 @@ var nts;
                                     var rate = levelMasterSetting.avgEarn / 1000;
                                     var autoCalculate = self.pensionModel().autoCalculate();
                                     if (autoCalculate == AutoCalculateType.Auto) {
-                                        return new PensionAvgearnModel(historyId, levelMasterSetting.code, new PensionAvgearnValueModel(self.rounding(companyRounding, fundRateItems.salaryCompanySonExemption() * rate), self.rounding(companyRounding, fundRateItems.salaryCompanyDaughterExemption() * rate), self.rounding(companyRounding, fundRateItems.salaryCompanyUnknownExemption() * rate)), new PensionAvgearnValueModel(self.rounding(companyRounding, fundRateItems.salaryCompanySonBurden() * rate), self.rounding(companyRounding, fundRateItems.salaryCompanyDaughterBurden() * rate), self.rounding(companyRounding, fundRateItems.salaryCompanyUnknownBurden() * rate)), new PensionAvgearnValueModel(self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanySon() * rate), self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanyDaughter() * rate), self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanyUnknown() * rate)), new PensionAvgearnValueModel(self.rounding(personalRounding, fundRateItems.salaryPersonalSonExemption() * rate), self.rounding(personalRounding, fundRateItems.salaryPersonalDaughterExemption() * rate), self.rounding(personalRounding, fundRateItems.salaryPersonalUnknownExemption() * rate)), new PensionAvgearnValueModel(self.rounding(personalRounding, fundRateItems.salaryPersonalSonBurden() * rate), self.rounding(personalRounding, fundRateItems.salaryPersonalDaughterBurden() * rate), self.rounding(personalRounding, fundRateItems.salaryPersonalUnknownBurden() * rate)), new PensionAvgearnValueModel(self.rounding(companyRounding, pensionRateItems.pensionSalaryPersonalSon() * rate), self.rounding(companyRounding, pensionRateItems.pensionSalaryPersonalDaughter() * rate), self.rounding(companyRounding, pensionRateItems.pensionSalaryPersonalUnknown() * rate)), self.pensionModel().childContributionRate() * rate);
+                                        return new PensionAvgearnModel(historyId, levelMasterSetting.code, new PensionAvgearnValueModel(self.rounding(companyRounding, fundRateItems.salaryCompanySonBurden() * rate), self.rounding(companyRounding, fundRateItems.salaryCompanyDaughterBurden() * rate), self.rounding(companyRounding, fundRateItems.salaryCompanyUnknownBurden() * rate)), new PensionAvgearnValueModel(self.rounding(companyRounding, fundRateItems.salaryCompanySonExemption() * rate), self.rounding(companyRounding, fundRateItems.salaryCompanyDaughterExemption() * rate), self.rounding(companyRounding, fundRateItems.salaryCompanyUnknownExemption() * rate)), new PensionAvgearnValueModel(self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanySon() * rate), self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanyDaughter() * rate), self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanyUnknown() * rate)), new PensionAvgearnValueModel(self.rounding(personalRounding, fundRateItems.salaryPersonalSonBurden() * rate), self.rounding(personalRounding, fundRateItems.salaryPersonalDaughterBurden() * rate), self.rounding(personalRounding, fundRateItems.salaryPersonalUnknownBurden() * rate)), new PensionAvgearnValueModel(self.rounding(personalRounding, fundRateItems.salaryPersonalSonExemption() * rate), self.rounding(personalRounding, fundRateItems.salaryPersonalDaughterExemption() * rate), self.rounding(personalRounding, fundRateItems.salaryPersonalUnknownExemption() * rate)), new PensionAvgearnValueModel(self.rounding(companyRounding, pensionRateItems.pensionSalaryPersonalSon() * rate), self.rounding(companyRounding, pensionRateItems.pensionSalaryPersonalDaughter() * rate), self.rounding(companyRounding, pensionRateItems.pensionSalaryPersonalUnknown() * rate)), self.pensionModel().childContributionRate() * rate);
                                     }
                                     else {
                                         return new PensionAvgearnModel(historyId, levelMasterSetting.code, new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero), new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero), new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero), new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero), new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero), new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero), self.pensionModel().childContributionRate() * rate);
@@ -321,7 +333,6 @@ var nts;
                                         self.save();
                                     }
                                     else {
-                                        alert('TODO has error! ERR001');
                                     }
                                     return dfd.promise();
                                 };
@@ -332,6 +343,10 @@ var nts;
                                 ScreenModel.prototype.onRegistNew = function () {
                                     var self = this;
                                     self.OpenModalOfficeRegister();
+                                };
+                                ScreenModel.prototype.isDirty = function () {
+                                    var self = this;
+                                    return self.dirty.isDirty();
                                 };
                                 ScreenModel.prototype.getCurrentOfficeCode = function (childId) {
                                     var self = this;

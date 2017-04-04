@@ -1,13 +1,14 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.labor;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.insurance.Address;
+import nts.uk.ctx.pr.core.dom.insurance.Address1;
+import nts.uk.ctx.pr.core.dom.insurance.Address2;
+import nts.uk.ctx.pr.core.dom.insurance.AddressKana1;
+import nts.uk.ctx.pr.core.dom.insurance.AddressKana2;
 import nts.uk.ctx.pr.core.dom.insurance.CitySign;
-import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeMark;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
@@ -30,7 +31,7 @@ import nts.uk.shr.com.primitive.Memo;
 public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSetMemento {
 
 	/** The type value. */
-	protected QismtLaborInsuOffice typeValue;
+	private QismtLaborInsuOffice typeValue;
 
 	/**
 	 * Instantiates a new jpa labor insurance office set memento.
@@ -50,9 +51,9 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 * setCompanyCode(nts.uk.ctx.core.dom.company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		QismtLaborInsuOfficePK pk = new QismtLaborInsuOfficePK();
-		pk.setCcd(companyCode.v());
+		pk.setCcd(companyCode);
 		this.typeValue.setQismtLaborInsuOfficePK(pk);
 	}
 
@@ -138,7 +139,7 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 * setAddress1st(nts.uk.ctx.pr.core.dom.insurance.Address)
 	 */
 	@Override
-	public void setAddress1st(Address address1st) {
+	public void setAddress1st(Address1 address1st) {
 		this.typeValue.setAddress1(address1st.v());
 	}
 
@@ -150,7 +151,7 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 * setAddress2nd(nts.uk.ctx.pr.core.dom.insurance.Address)
 	 */
 	@Override
-	public void setAddress2nd(Address address2nd) {
+	public void setAddress2nd(Address2 address2nd) {
 		this.typeValue.setAddress2(address2nd.v());
 	}
 
@@ -162,7 +163,7 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 * setKanaAddress1st(nts.uk.ctx.pr.core.dom.insurance.KanaAddress)
 	 */
 	@Override
-	public void setKanaAddress1st(KanaAddress kanaAddress1st) {
+	public void setKanaAddress1st(AddressKana1 kanaAddress1st) {
 		this.typeValue.setKnAddress1(kanaAddress1st.v());
 	}
 
@@ -174,7 +175,7 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 * setKanaAddress2nd(nts.uk.ctx.pr.core.dom.insurance.KanaAddress)
 	 */
 	@Override
-	public void setKanaAddress2nd(KanaAddress kanaAddress2nd) {
+	public void setKanaAddress2nd(AddressKana2 kanaAddress2nd) {
 		this.typeValue.setKnAddress2(kanaAddress2nd.v());
 	}
 

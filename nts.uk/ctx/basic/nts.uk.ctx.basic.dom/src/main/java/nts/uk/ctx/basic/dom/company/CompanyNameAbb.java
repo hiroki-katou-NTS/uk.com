@@ -16,7 +16,6 @@ public class CompanyNameAbb  extends StringPrimitiveValue<CompanyNameAbb>{
 	 */
 	public CompanyNameAbb(String rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
 	
 

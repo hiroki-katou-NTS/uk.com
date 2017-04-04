@@ -34,37 +34,41 @@
 						class="function-button-style">印刷実行ログ</button>
 				</div>
 			</div>
-			<div id="contents-area">
+			<div id="contents-area" data-bind="visible: true" style="display: none">
 				<table>
 					<tr>
 						<td id="contents-left">
 							<div class="select-target-year">
-								<div id="time-input">
-									<div class="label" id="target-year-label">対象年度</div>
-									<span class="date-picker" for="target-year-label"
-										data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yyyy/MM',startDate: '1900/01', endDate:'9999/12'}"></span>
-									<span class="monthly-label">月度 ~</span> <span
-										class="date-picker" for="target-year-label"
-										data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yyyy/MM',startDate: '1900/01', endDate:'9999/12'}"></span>
-									<span class="monthly-label">月度</span>
-								</div>
-								<div id="monthly-checkbox">
-									<span
-										data-bind="ntsCheckBox: { checked: isUsuallyAMonth, enable: true, text: '通常月' }"></span>
-									<span
-										data-bind="ntsCheckBox: { checked: isPreliminaryMonth, enable: true, text: '通常月' }"></span>
-								</div>
+									<span class="label with-image">
+										<i class="image image-calendar"/>
+										<span>対象年度</span>
+									</span>
+									<span class="date-picker" data-bind="ntsDatePicker: {
+										value: startYearMonth, 
+										dateFormat: 'yyyy/MM',
+										startDate: '1900/01', 
+										endDate:'9999/12'}"></span>
+									<span>月度 ~</span>
+									<span class="date-picker" data-bind="ntsDatePicker: {
+										value: endYearMonth,
+										dateFormat: 'yyyy/MM',
+										startDate: '1900/01',
+										endDate:'9999/12'}"></span>
+									<span>月度</span>
+									<span style="padding-left: 20px" data-bind="ntsCheckBox: {
+											checked: isUsuallyAMonth, enable: true, text: '通常月' }"></span>
+									<span style="padding-left: 20px" data-bind="ntsCheckBox: {
+										checked: isPreliminaryMonth, enable: true, text: '予備月' }"></span>
 							</div>
 							<div class="search-employee"></div>
 						</td>
 						<td id="contents-right">
 							<div id="detail-process">
-								<div class="label header-label" id="detail-process-label"
-									style="margin-bottom: 20px">処理の詳細設定</div>
+								<div class="label header-label" style="margin-bottom: 20px; font-size: 21px">処理の詳細設定</div>
 								<table id="contents-right-table">
 									<tbody>
 										<tr>
-											<td class="td-width">
+											<td style="width: 150px">
 												<div id="output-setting-label" class="margin-bottom"
 													data-bind="ntsFormLabel: {required: true}">出力形式</div>
 											</td>
@@ -83,7 +87,7 @@
 											</td>
 										</tr>
 										<tr>
-											<td class="td-width">
+											<td>
 												<div id="output-setting-label" class="margin-bottom"
 													data-bind="ntsFormLabel: {required: true}">出力項目の設定</div>
 											</td>
@@ -112,19 +116,19 @@
 											</td>
 										</tr>
 										<tr>
-											<td class="td-width">
+											<td>
 												<div id="output-setting-label"
 													data-bind="ntsFormLabel: {required: true}"
 													class="margin-bottom">罫線印刷</div>
 											</td>
-											<td span="2"><span
+											<td><span
 												data-bind="ntsCheckBox: { checked: isVerticalLine, enable: true, text: '縦罫線' }"></span>
 												<span
 												data-bind="ntsCheckBox: { checked: isHorizontalRuledLine, enable: true, text: '横罫線' }"
 												style="margin-left: 45px"></span></td>
 										</tr>
 										<tr>
-											<td class="td-width">
+											<td>
 												<div id="output-setting-label"
 													data-bind="ntsFormLabel: {required: true}"
 													class="margin-bottom">改ページ</div>
@@ -163,11 +167,11 @@
 											</td>
 										</tr>
 										<tr>
-											<td class="td-width">
+											<td>
 												<div id="output-language-label" class="margin-bottom"
 													data-bind="ntsFormLabel: {required: true}">言語出力選択</div>
 											</td>
-											<td style="width: 210px">
+											<td>
 												<div class="cf margin-bottom"
 													data-bind="ntsSwitchButton: {
 													options: outputLanguage,

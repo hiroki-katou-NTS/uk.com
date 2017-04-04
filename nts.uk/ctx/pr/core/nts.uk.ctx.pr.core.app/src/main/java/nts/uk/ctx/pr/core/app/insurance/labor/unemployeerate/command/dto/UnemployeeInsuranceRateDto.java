@@ -4,14 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.dto;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateGetMemento;
@@ -20,7 +19,20 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
 /**
  * The Class UnemployeeInsuranceRateDto.
  */
+
+/**
+ * Gets the rate items.
+ *
+ * @return the rate items
+ */
 @Getter
+
+/**
+ * Sets the rate items.
+ *
+ * @param rateItems
+ *            the new rate items
+ */
 @Setter
 public class UnemployeeInsuranceRateDto {
 
@@ -38,13 +50,13 @@ public class UnemployeeInsuranceRateDto {
 	 * @return the unemployee insurance rate
 	 */
 	public UnemployeeInsuranceRate toDomain(String companyCode) {
-		return new UnemployeeInsuranceRate(new UnemployeeInsuranceRateGetMementoImpl(companyCode, this));
+		return new UnemployeeInsuranceRate(new UirGetMemento(companyCode, this));
 	}
 
 	/**
-	 * The Class UnemployeeInsuranceRateGetMementoImpl.
+	 * The Class UirGetMemento.
 	 */
-	public class UnemployeeInsuranceRateGetMementoImpl implements UnemployeeInsuranceRateGetMemento {
+	private class UirGetMemento implements UnemployeeInsuranceRateGetMemento {
 
 		/** The company code. */
 		private String companyCode;
@@ -53,14 +65,14 @@ public class UnemployeeInsuranceRateDto {
 		private UnemployeeInsuranceRateDto dto;
 
 		/**
-		 * Instantiates a new unemployee insurance rate get memento impl.
+		 * Instantiates a new uir get memento.
 		 *
 		 * @param companyCode
 		 *            the company code
 		 * @param dto
 		 *            the dto
 		 */
-		public UnemployeeInsuranceRateGetMementoImpl(String companyCode, UnemployeeInsuranceRateDto dto) {
+		public UirGetMemento(String companyCode, UnemployeeInsuranceRateDto dto) {
 			super();
 			this.companyCode = companyCode;
 			this.dto = dto;
@@ -74,11 +86,8 @@ public class UnemployeeInsuranceRateDto {
 		 */
 		@Override
 		public Set<UnemployeeInsuranceRateItem> getRateItems() {
-			Set<UnemployeeInsuranceRateItem> setUnemployeeInsuranceRateItem = new HashSet<>();
-			dto.rateItems.forEach(rateItem -> {
-				setUnemployeeInsuranceRateItem.add(rateItem.toDomain(companyCode));
-			});
-			return setUnemployeeInsuranceRateItem;
+			return dto.rateItems.stream().map(rateItem -> rateItem.toDomain(this.companyCode))
+				.collect(Collectors.toSet());
 		}
 
 		/*
@@ -99,8 +108,8 @@ public class UnemployeeInsuranceRateDto {
 		 * UnemployeeInsuranceRateGetMemento#getCompanyCode()
 		 */
 		@Override
-		public CompanyCode getCompanyCode() {
-			return new CompanyCode(companyCode);
+		public String getCompanyCode() {
+			return companyCode;
 		}
 
 		/*

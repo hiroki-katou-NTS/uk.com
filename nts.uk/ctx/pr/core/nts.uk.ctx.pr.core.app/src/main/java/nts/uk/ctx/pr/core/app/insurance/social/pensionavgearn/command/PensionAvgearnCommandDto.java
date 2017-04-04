@@ -9,21 +9,16 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.find.PensionAvgearnValueDto;
-import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
-import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearn;
+import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValue;
 
 /**
  * The Class PensionAvgearnCommandDto.
  */
-
-@Getter
 @Setter
-public class PensionAvgearnCommandDto {
-
-	/** The history id. */
-	private String historyId;
+@Getter
+public class PensionAvgearnCommandDto implements PensionAvgearnGetMemento {
 
 	/** The level code. */
 	private Integer levelCode;
@@ -49,63 +44,76 @@ public class PensionAvgearnCommandDto {
 	/** The personal pension. */
 	private PensionAvgearnValueDto personalPension;
 
-	/**
-	 * To domain.
-	 *
-	 * @return the pension avgearn
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento#getPersonalPension()
 	 */
-	public PensionAvgearn toDomain() {
-		PensionAvgearnCommandDto dto = this;
+	@Override
+	public PensionAvgearnValue getPersonalPension() {
+		return PensionAvgearnValueDto.toDomain(this.personalPension);
+	}
 
-		// Transfer data
-		PensionAvgearn updatedPensionAvgearn = new PensionAvgearn(new PensionAvgearnGetMemento() {
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento#getPersonalFundExemption()
+	 */
+	@Override
+	public PensionAvgearnValue getPersonalFundExemption() {
+		return PensionAvgearnValueDto.toDomain(this.personalFundExemption);
+	}
 
-			@Override
-			public PensionAvgearnValue getPersonalPension() {
-				return PensionAvgearnValueDto.toDomain(dto.getPersonalPension());
-			}
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento#getPersonalFund()
+	 */
+	@Override
+	public PensionAvgearnValue getPersonalFund() {
+		return PensionAvgearnValueDto.toDomain(this.personalFund);
+	}
 
-			@Override
-			public PensionAvgearnValue getPersonalFundExemption() {
-				return PensionAvgearnValueDto.toDomain(dto.getPersonalFundExemption());
-			}
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento#getLevelCode()
+	 */
+	@Override
+	public Integer getLevelCode() {
+		return this.levelCode;
+	}
 
-			@Override
-			public PensionAvgearnValue getPersonalFund() {
-				return PensionAvgearnValueDto.toDomain(dto.getPersonalFund());
-			}
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento#getHistoryId()
+	 */
+	@Override
+	public String getHistoryId() {
+		// Set latter in commandHandler.
+		return "";
+	}
 
-			@Override
-			public Integer getLevelCode() {
-				return dto.getLevelCode();
-			}
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento#getCompanyPension()
+	 */
+	@Override
+	public PensionAvgearnValue getCompanyPension() {
+		return PensionAvgearnValueDto.toDomain(this.companyPension);
+	}
 
-			@Override
-			public String getHistoryId() {
-				return dto.getHistoryId();
-			}
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento#getCompanyFundExemption()
+	 */
+	@Override
+	public PensionAvgearnValue getCompanyFundExemption() {
+		return PensionAvgearnValueDto.toDomain(this.companyFundExemption);
+	}
 
-			@Override
-			public PensionAvgearnValue getCompanyPension() {
-				return PensionAvgearnValueDto.toDomain(dto.getCompanyPension());
-			}
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento#getCompanyFund()
+	 */
+	@Override
+	public PensionAvgearnValue getCompanyFund() {
+		return PensionAvgearnValueDto.toDomain(this.companyFund);
+	}
 
-			@Override
-			public PensionAvgearnValue getCompanyFundExemption() {
-				return PensionAvgearnValueDto.toDomain(dto.getCompanyFundExemption());
-			}
-
-			@Override
-			public PensionAvgearnValue getCompanyFund() {
-				return PensionAvgearnValueDto.toDomain(dto.getCompanyFund());
-			}
-
-			@Override
-			public InsuranceAmount getChildContributionAmount() {
-				return new InsuranceAmount(dto.getChildContributionAmount());
-			}
-		});
-
-		return updatedPensionAvgearn;
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento#getChildContributionAmount()
+	 */
+	@Override
+	public CommonAmount getChildContributionAmount() {
+		return new CommonAmount(this.childContributionAmount);
 	}
 }

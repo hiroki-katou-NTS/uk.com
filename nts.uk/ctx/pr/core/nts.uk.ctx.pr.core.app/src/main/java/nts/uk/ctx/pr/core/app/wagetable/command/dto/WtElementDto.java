@@ -12,14 +12,17 @@ import lombok.NoArgsConstructor;
 /**
  * The Class WtElementDto.
  */
-@Builder
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class WtElementDto {
 
 	/** The demension no. */
 	private Integer demensionNo;
+
+	/** The demension name. */
+	private String demensionName;
 
 	/** The type. */
 	private Integer type;

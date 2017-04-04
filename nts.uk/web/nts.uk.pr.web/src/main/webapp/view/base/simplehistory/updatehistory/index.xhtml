@@ -13,8 +13,8 @@
 			<com:scriptfile path="start.js" />
 			<script type="text/javascript">
 				var dialogSize = {
-					width : 580,
-					height : 380
+					width : 600,
+					height : 420
 				};
 			</script>
 		</ui:define>
@@ -26,7 +26,9 @@
 				<table class="form-default">
 					<ui:include src="../dialogbase/namepart.xhtml"/>
 					<tr>
-						<td style="vertical-align: top"><div data-bind="ntsFormLabel: { required: true }">編集方法の選択</div></td>
+						<td style="vertical-align: top">
+							<div style="min-width: 140px" data-bind="ntsFormLabel: { required: true }">編集方法の選択</div>
+						</td>
 						<td>
 						<label class="ntsRadioBox">
 							<input type="radio"
@@ -36,12 +38,18 @@
 							<span class="box"/>
 							<label for="actionDelete" class="label">履歴を削除する</label>
 						</label>
-						<com:ko tag="if" bind="dialogOptions.removeMasterOnLastHistoryRemove">
-							<div class="bg-yellow color-danger" style="height: 40px; line-height: 40px; margin: 10px;"
-								data-bind="text: '全ての履歴を削除すると、' + dialogOptions.name + 'のデータも削除します。'"/>
-						</com:ko>
 						</td>
 					</tr>
+					<com:ko tag="if" bind="dialogOptions.removeMasterOnLastHistoryRemove">
+					<tr>
+						<td></td>
+						<td style="padding-top: 0px">
+							<div class="bg-yellow color-danger" style="padding: 15px; margin-left: 20px;"
+								data-bind="text: '全ての履歴を削除すると、' + dialogOptions.name + 'のデータも削除します。'"/>
+							
+						</td>
+					</tr>
+					</com:ko>
 					<tr>
 						<td></td>
 						<td><label class="ntsRadioBox">
@@ -57,8 +65,12 @@
 						<td></td>
 						<td>
 							<div>
-								<div style="margin-right: 20px;" data-bind="ntsFormLabel: { required: true }">期間</div>
-								<span id="startYearMonth" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yyyy/MM', disabled: actionType() == 'DELETE'}"/>
+								<div style="margin-right: 20px; margin-left: 20px" data-bind="ntsFormLabel: { required: true }">期間</div>
+								<span id="startYearMonth" data-name="期間" style="margin-bottom: 30px"
+								data-bind="ntsDatePicker: {
+									value: startYearMonth, 
+									dateFormat: 'yyyy/MM', 
+									disabled: actionType() == 'DELETE'}"/>
 								<label data-bind="text: ' ~ '　+ endYearMonth"/>
 							</div>
 						</td>

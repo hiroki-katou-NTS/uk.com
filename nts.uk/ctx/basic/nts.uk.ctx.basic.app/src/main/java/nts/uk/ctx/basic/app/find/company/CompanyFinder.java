@@ -18,15 +18,20 @@ import nts.uk.shr.com.context.AppContexts;
 public class CompanyFinder {
 	@Inject
 	private CompanyRepository companyRepository;
+	
 	public List<CompanyDto> getAllCompanys(){
 		return this.companyRepository.getAllCompanys().stream()
 				.map(item -> CompanyDto.fromDomain(item))
 				.collect(Collectors.toList());
 	}
-	public Optional<CompanyDto> getCompany(String companyCode){
-		return this.companyRepository.getCompanyDetail(companyCode).map(company-> CompanyDto.fromDomain(company));
-		
+	
+	public Optional<CompanyDto> getCompanyDetail(String companyCd){
+		if(companyCd.isEmpty() || companyCd == null){
+			companyCd = AppContexts.user().companyCode();
+		}
+		return this.companyRepository.getCompanyDetail(companyCd).map(company-> CompanyDto.fromDomain(company));
 	}
+	
 	public  Optional<CompanyDto> getCompanyByUserKtSet(int use_Kt_Set){
 		String companyCode = "";
 		if (AppContexts.user() != null) {
@@ -34,9 +39,5 @@ public class CompanyFinder {
 		}
 		
 		return this.companyRepository.getCompanyByUserKtSet(companyCode, use_Kt_Set).map(c-> CompanyDto.fromDomain(c));
-		
 	}
-	
-	
-    
 }

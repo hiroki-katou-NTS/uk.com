@@ -1,5 +1,6 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ 
+* Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.labor.accidentrate;
@@ -7,7 +8,6 @@ package nts.uk.ctx.pr.core.infra.repository.insurance.labor.accidentrate;
 import java.util.Set;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
@@ -19,7 +19,7 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAcc
 public class JpaHistoryAccidentInsuranceRateGetMemento implements AccidentInsuranceRateGetMemento {
 
 	/** The type value. */
-	protected QismtWorkAccidentInsu typeValue;
+	private QismtWorkAccidentInsu typeValue;
 
 	/**
 	 * Instantiates a new jpa history accident insurance rate get memento.
@@ -49,8 +49,8 @@ public class JpaHistoryAccidentInsuranceRateGetMemento implements AccidentInsura
 	 * AccidentInsuranceRateGetMemento#getCompanyCode()
 	 */
 	@Override
-	public CompanyCode getCompanyCode() {
-		return new CompanyCode(this.typeValue.getQismtWorkAccidentInsuPK().getCcd());
+	public String getCompanyCode() {
+		return this.typeValue.getQismtWorkAccidentInsuPK().getCcd();
 	}
 
 	/*
@@ -62,7 +62,7 @@ public class JpaHistoryAccidentInsuranceRateGetMemento implements AccidentInsura
 	@Override
 	public MonthRange getApplyRange() {
 		return MonthRange.range(YearMonth.of(this.typeValue.getStrYm()),
-			YearMonth.of(this.typeValue.getEndYm()));
+				YearMonth.of(this.typeValue.getEndYm()));
 	}
 
 	/*

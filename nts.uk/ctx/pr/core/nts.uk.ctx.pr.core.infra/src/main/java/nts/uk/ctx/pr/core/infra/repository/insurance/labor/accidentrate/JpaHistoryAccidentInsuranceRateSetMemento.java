@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.core.infra.repository.insurance.labor.accidentrate;
 
 import java.util.Set;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateSetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
@@ -19,7 +18,7 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAcc
 public class JpaHistoryAccidentInsuranceRateSetMemento implements AccidentInsuranceRateSetMemento {
 
 	/** The type value. */
-	protected QismtWorkAccidentInsu typeValue;
+	private QismtWorkAccidentInsu typeValue;
 
 	/**
 	 * Instantiates a new jpa accident insurance rate set memento.
@@ -52,9 +51,9 @@ public class JpaHistoryAccidentInsuranceRateSetMemento implements AccidentInsura
 	 * company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		QismtWorkAccidentInsuPK pk = this.typeValue.getQismtWorkAccidentInsuPK();
-		pk.setCcd(companyCode.v());
+		pk.setCcd(companyCode);
 		this.typeValue.setQismtWorkAccidentInsuPK(pk);
 
 	}

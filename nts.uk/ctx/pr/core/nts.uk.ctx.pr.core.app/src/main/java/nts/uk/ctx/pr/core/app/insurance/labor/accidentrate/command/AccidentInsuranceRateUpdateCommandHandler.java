@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command;
@@ -25,7 +25,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class AccidentInsuranceRateUpdateCommandHandler
 	extends CommandHandler<AccidentInsuranceRateUpdateCommand> {
 
-	/** The accident insurance rate repository. */
+	/** The accident insurance rate repo. */
 	@Inject
 	private AccidentInsuranceRateRepository accidentInsuranceRateRepo;
 
@@ -64,7 +64,7 @@ public class AccidentInsuranceRateUpdateCommandHandler
 
 		// get first by update
 		Optional<AccidentInsuranceRate> optionalUpdate = this.accidentInsuranceRateRepo.findBetweenUpdate(
-			accidentInsuranceRate.getCompanyCode().v(), accidentInsuranceRate.getApplyRange().getStartMonth(),
+			accidentInsuranceRate.getCompanyCode(), accidentInsuranceRate.getApplyRange().getStartMonth(),
 			accidentInsuranceRate.getHistoryId());
 
 		if (optionalUpdate.isPresent()) {

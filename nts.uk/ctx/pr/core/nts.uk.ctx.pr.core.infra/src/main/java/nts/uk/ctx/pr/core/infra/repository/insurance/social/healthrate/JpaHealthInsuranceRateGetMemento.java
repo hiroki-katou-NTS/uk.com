@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.social.healthrate;
@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Set;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.Ins3Rate;
@@ -62,8 +61,8 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	 * HealthInsuranceRateGetMemento#getCompanyCode()
 	 */
 	@Override
-	public CompanyCode getCompanyCode() {
-		return new CompanyCode(this.typeValue.getQismtHealthInsuRatePK().getCcd());
+	public String getCompanyCode() {
+		return this.typeValue.getQismtHealthInsuRatePK().getCcd();
 	}
 
 	/*
@@ -85,7 +84,8 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	 */
 	@Override
 	public MonthRange getApplyRange() {
-		return MonthRange.range(new YearMonth(this.typeValue.getStrYm()), new YearMonth(this.typeValue.getEndYm()));
+		return MonthRange.range(new YearMonth(this.typeValue.getStrYm()),
+				new YearMonth(this.typeValue.getEndYm()));
 	}
 
 	/*
@@ -123,28 +123,36 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	@Override
 	public Set<InsuranceRateItem> getRateItems() {
 		List<InsuranceRateItem> listRate = new ArrayList<InsuranceRateItem>();
-		InsuranceRateItem generalSalary = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General,
+		InsuranceRateItem generalSalary = new InsuranceRateItem(PaymentType.Salary,
+				HealthInsuranceType.General,
 				new HealthChargeRateItem(new Ins3Rate(this.typeValue.getCPayGeneralRate()),
 						new Ins3Rate(this.typeValue.getPPayGeneralRate())));
-		InsuranceRateItem generalBonus = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.General,
+		InsuranceRateItem generalBonus = new InsuranceRateItem(PaymentType.Bonus,
+				HealthInsuranceType.General,
 				new HealthChargeRateItem(new Ins3Rate(this.typeValue.getCBnsGeneralRate()),
 						new Ins3Rate(this.typeValue.getPBnsGeneralRate())));
-		InsuranceRateItem nursingSalary = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.Nursing,
+		InsuranceRateItem nursingSalary = new InsuranceRateItem(PaymentType.Salary,
+				HealthInsuranceType.Nursing,
 				new HealthChargeRateItem(new Ins3Rate(this.typeValue.getCPayNursingRate()),
 						new Ins3Rate(this.typeValue.getPPayNursingRate())));
-		InsuranceRateItem nursingBonus = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Nursing,
+		InsuranceRateItem nursingBonus = new InsuranceRateItem(PaymentType.Bonus,
+				HealthInsuranceType.Nursing,
 				new HealthChargeRateItem(new Ins3Rate(this.typeValue.getCBnsNursingRate()),
 						new Ins3Rate(this.typeValue.getPBnsNursingRate())));
-		InsuranceRateItem specialSalary = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.Special,
+		InsuranceRateItem specialSalary = new InsuranceRateItem(PaymentType.Salary,
+				HealthInsuranceType.Special,
 				new HealthChargeRateItem(new Ins3Rate(this.typeValue.getCPaySpecificRate()),
 						new Ins3Rate(this.typeValue.getPPaySpecificRate())));
-		InsuranceRateItem specialBonus = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Special,
+		InsuranceRateItem specialBonus = new InsuranceRateItem(PaymentType.Bonus,
+				HealthInsuranceType.Special,
 				new HealthChargeRateItem(new Ins3Rate(this.typeValue.getCBnsSpecificRate()),
 						new Ins3Rate(this.typeValue.getPBnsSpecificRate())));
-		InsuranceRateItem basicSalary = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.Basic,
+		InsuranceRateItem basicSalary = new InsuranceRateItem(PaymentType.Salary,
+				HealthInsuranceType.Basic,
 				new HealthChargeRateItem(new Ins3Rate(this.typeValue.getCPayBasicRate()),
 						new Ins3Rate(this.typeValue.getPPayBasicRate())));
-		InsuranceRateItem basicBonus = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Basic,
+		InsuranceRateItem basicBonus = new InsuranceRateItem(PaymentType.Bonus,
+				HealthInsuranceType.Basic,
 				new HealthChargeRateItem(new Ins3Rate(this.typeValue.getCBnsBasicRate()),
 						new Ins3Rate(this.typeValue.getPBnsBasicRate())));
 
@@ -170,12 +178,18 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 		List<HealthInsuranceRounding> listRounding = new ArrayList<HealthInsuranceRounding>();
 		RoundingItem salaryRoundingItem = new RoundingItem();
 		RoundingItem bonusRoundingItem = new RoundingItem();
-		salaryRoundingItem.setCompanyRoundAtr(RoundingMethod.valueOf(this.typeValue.getCPayHealthRoundAtr()));
-		salaryRoundingItem.setPersonalRoundAtr(RoundingMethod.valueOf(this.typeValue.getPPayHealthRoundAtr()));
-		bonusRoundingItem.setCompanyRoundAtr(RoundingMethod.valueOf(this.typeValue.getCBnsHealthRoundAtr()));
-		bonusRoundingItem.setPersonalRoundAtr(RoundingMethod.valueOf(this.typeValue.getPBnsHealthRoundAtr()));
-		HealthInsuranceRounding roundSalary = new HealthInsuranceRounding(PaymentType.Salary, salaryRoundingItem);
-		HealthInsuranceRounding roundBonus = new HealthInsuranceRounding(PaymentType.Bonus, bonusRoundingItem);
+		salaryRoundingItem
+				.setCompanyRoundAtr(RoundingMethod.valueOf(this.typeValue.getCPayHealthRoundAtr()));
+		salaryRoundingItem.setPersonalRoundAtr(
+				RoundingMethod.valueOf(this.typeValue.getPPayHealthRoundAtr()));
+		bonusRoundingItem
+				.setCompanyRoundAtr(RoundingMethod.valueOf(this.typeValue.getCBnsHealthRoundAtr()));
+		bonusRoundingItem.setPersonalRoundAtr(
+				RoundingMethod.valueOf(this.typeValue.getPBnsHealthRoundAtr()));
+		HealthInsuranceRounding roundSalary = new HealthInsuranceRounding(PaymentType.Salary,
+				salaryRoundingItem);
+		HealthInsuranceRounding roundBonus = new HealthInsuranceRounding(PaymentType.Bonus,
+				bonusRoundingItem);
 		listRounding.add(roundSalary);
 		listRounding.add(roundBonus);
 		return new HashSet<HealthInsuranceRounding>(listRounding);

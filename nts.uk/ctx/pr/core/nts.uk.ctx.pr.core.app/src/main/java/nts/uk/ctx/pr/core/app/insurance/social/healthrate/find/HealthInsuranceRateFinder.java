@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.healthrate.find;
@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
@@ -58,12 +57,12 @@ public class HealthInsuranceRateFinder {
 	 */
 	public List<HealthInsuranceOfficeItemDto> findAllHistory() {
 
-		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
+		String companyCode = AppContexts.user().companyCode();
 
 		List<SocialInsuranceOffice> listOffice = socialInsuranceOfficeRepository
 				.findAll(companyCode);
 
-		List<HealthInsuranceRate> listHealth = healthInsuranceRateRepository.findAll(companyCode.v());
+		List<HealthInsuranceRate> listHealth = healthInsuranceRateRepository.findAll(companyCode);
 
 		// group health same office code
 		Map<OfficeCode, List<HealthInsuranceHistoryItemDto>> historyMap = listHealth.stream()

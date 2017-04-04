@@ -25,7 +25,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class UnemployeeInsuranceRateUpdateCommandHandler
 	extends CommandHandler<UnemployeeInsuranceRateUpdateCommand> {
 
-	/** CompanyRepository */
+	/** The unemployee insurance rate repository. */
 	@Inject
 	private UnemployeeInsuranceRateRepository unemployeeInsuranceRateRepository;
 
@@ -63,12 +63,12 @@ public class UnemployeeInsuranceRateUpdateCommandHandler
 		// call get by id
 		Optional<UnemployeeInsuranceRate> optionalFirst;
 		optionalFirst = this.unemployeeInsuranceRateRepository
-			.findById(unemployeeInsuranceRate.getCompanyCode().v(), unemployeeInsuranceRate.getHistoryId());
+			.findById(unemployeeInsuranceRate.getCompanyCode(), unemployeeInsuranceRate.getHistoryId());
 
 		// get <= start
 		if (optionalFirst.isPresent()) {
 			Optional<UnemployeeInsuranceRate> optionalBetweenUpdate = this.unemployeeInsuranceRateRepository
-				.findBetweenUpdate(unemployeeInsuranceRate.getCompanyCode().v(),
+				.findBetweenUpdate(unemployeeInsuranceRate.getCompanyCode(),
 					optionalFirst.get().getApplyRange().getStartMonth(), optionalFirst.get().getHistoryId());
 
 			// update end year month start previous

@@ -11,25 +11,12 @@ import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 
 /**
  * The Class AccidentInsuranceRate.
- */
-
-/**
- * Gets the rate items.
- *
- * @return the rate items
- */
-
-/**
- * Gets the rate items.
- *
- * @return the rate items
  */
 @Getter
 public class AccidentInsuranceRate extends DomainObject {
@@ -38,7 +25,7 @@ public class AccidentInsuranceRate extends DomainObject {
 	private String historyId;
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The apply range. */
 	private MonthRange applyRange;
@@ -108,7 +95,7 @@ public class AccidentInsuranceRate extends DomainObject {
 	 */
 	public static final AccidentInsuranceRate createWithIntial(String companyCode, YearMonth startYearMonth) {
 		AccidentInsuranceRate domain = new AccidentInsuranceRate();
-		domain.companyCode = new CompanyCode(companyCode);
+		domain.companyCode = companyCode;
 		domain.applyRange = MonthRange.toMaxDate(startYearMonth);
 		Set<InsuBizRateItem> setItem = new HashSet<>();
 		setItem.add(AccidentInsuranceRate.valueIntial(BusinessTypeEnum.Biz1St));

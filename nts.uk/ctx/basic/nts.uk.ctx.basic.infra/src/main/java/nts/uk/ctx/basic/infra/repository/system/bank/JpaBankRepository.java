@@ -2,18 +2,14 @@ package nts.uk.ctx.basic.infra.repository.system.bank;
 
 import java.util.List;
 import java.util.Optional;
-
 import javax.ejb.Stateless;
-import javax.enterprise.context.RequestScoped;
-import javax.transaction.Transactional;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.basic.dom.system.bank.Bank;
 import nts.uk.ctx.basic.dom.system.bank.BankRepository;
 import nts.uk.ctx.basic.infra.entity.system.bank.CbkmtBank;
 import nts.uk.ctx.basic.infra.entity.system.bank.CbkmtBankPK;
 
-@RequestScoped
+@Stateless
 public class JpaBankRepository extends JpaRepository implements BankRepository {
 	private final String SEL_1 = "SELECT b FROM CbkmtBank b WHERE b.cbkmtBankPK.companyCode = :companyCode ";
 	
@@ -51,7 +47,7 @@ public class JpaBankRepository extends JpaRepository implements BankRepository {
 
 	@Override
 	public void remove(Bank bank) {
-		CbkmtBankPK key = new CbkmtBankPK(bank.getCompanyCode(), bank.getBankCode().v());
+		CbkmtBankPK key = new CbkmtBankPK(bank.getCompanyCode().v(), bank.getBankCode().v());
 		this.commandProxy().remove(CbkmtBank.class, key);
 	}
 	
@@ -61,7 +57,7 @@ public class JpaBankRepository extends JpaRepository implements BankRepository {
 	 * @return CbkmtBank
 	 */
 	private static CbkmtBank toEntity(Bank domain) {
-		CbkmtBankPK key = new CbkmtBankPK(domain.getCompanyCode(), domain.getBankCode().v());
+		CbkmtBankPK key = new CbkmtBankPK(domain.getCompanyCode().v(), domain.getBankCode().v());
 		
 		CbkmtBank entity = new CbkmtBank(key, domain.getBankName().v(), domain.getBankNameKana().v(), domain.getMemo().v());
 		

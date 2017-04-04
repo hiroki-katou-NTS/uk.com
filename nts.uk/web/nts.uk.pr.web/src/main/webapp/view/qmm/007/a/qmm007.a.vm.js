@@ -29,6 +29,7 @@ var nts;
                                     var self = this;
                                     self.isLoading = ko.observable(true);
                                     self.unitPriceHistoryModel = ko.observable(new UnitPriceHistoryModel(self.getDefaultUnitPriceHistory()));
+                                    self.dirtyChecker = new nts.uk.ui.DirtyChecker(self.unitPriceHistoryModel);
                                     self.switchButtonDataSource = ko.observableArray([
                                         { code: ApplySetting.APPLY, name: '対象' },
                                         { code: ApplySetting.NOTAPPLY, name: '対象外' }
@@ -45,34 +46,55 @@ var nts;
                                 ScreenModel.prototype.onSave = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
+                                    self.clearError();
+                                    self.validate();
+                                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                                        dfd.reject();
+                                        return dfd.promise();
+                                    }
                                     if (self.isNewMode()) {
                                         qmm007.service.instance.create(ko.toJS(self.unitPriceHistoryModel())).done(function (res) {
                                             dfd.resolve(res.uuid);
+                                            self.dirtyChecker.reset();
                                         }).fail(function (res) {
+                                            dfd.reject();
                                             self.setMessages(res.messageId);
                                         });
                                     }
                                     else {
                                         qmm007.service.instance.update(ko.toJS(self.unitPriceHistoryModel())).done(function (res) {
                                             dfd.resolve(self.unitPriceHistoryModel().id);
+                                            self.dirtyChecker.reset();
+                                        }).fail(function (res) {
+                                            dfd.reject();
+                                            self.setMessages(res.messageId);
                                         });
                                     }
                                     return dfd.promise();
                                 };
+                                ScreenModel.prototype.onSelectHistory = function (id) {
+                                    var self = this;
+                                    self.isLoading(true);
+                                    qmm007.service.instance.findHistoryByUuid(id).done(function (dto) {
+                                        self.setUnitPriceHistoryModel(dto);
+                                        self.dirtyChecker.reset();
+                                        self.isLoading(false);
+                                        self.clearError();
+                                    });
+                                };
+                                ScreenModel.prototype.onRegistNew = function () {
+                                    var self = this;
+                                    self.clearError();
+                                    self.clearInput();
+                                    self.dirtyChecker.reset();
+                                };
+                                ScreenModel.prototype.isDirty = function () {
+                                    var self = this;
+                                    return self.dirtyChecker.isDirty();
+                                };
                                 ScreenModel.prototype.setMessages = function (messageId) {
                                     var self = this;
                                     switch (messageId) {
-                                        case 'ER001':
-                                            if (!self.unitPriceHistoryModel().unitPriceCode()) {
-                                                $('#inpCode').ntsError('set', '＊が入力されていません。');
-                                            }
-                                            if (!self.unitPriceHistoryModel().unitPriceName()) {
-                                                $('#inpName').ntsError('set', '＊が入力されていません。');
-                                            }
-                                            if (!self.unitPriceHistoryModel().budget()) {
-                                                $('#inpBudget').ntsError('set', '＊が入力されていません。');
-                                            }
-                                            break;
                                         case 'ER005':
                                             $('#inpCode').ntsError('set', '入力した＊は既に存在しています。\r\n ＊を確認してください。');
                                             break;
@@ -99,23 +121,20 @@ var nts;
                                     model.fixPayAtrHourly(dto.fixPayAtrHourly);
                                     model.memo(dto.memo);
                                 };
-                                ScreenModel.prototype.onSelectHistory = function (id) {
-                                    var _this = this;
-                                    var self = this;
-                                    var dfd = $.Deferred();
-                                    self.isLoading(true);
-                                    qmm007.service.instance.findHistoryByUuid(id).done(function (dto) {
-                                        self.setUnitPriceHistoryModel(dto);
-                                        self.isLoading(false);
-                                        nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(_this.unitPriceHistoryModel()));
-                                        $('.save-error').ntsError('clear');
-                                        dfd.resolve();
-                                    });
-                                    return dfd.promise();
+                                ScreenModel.prototype.clearError = function () {
+                                    $('#inpCode').ntsError('clear');
+                                    $('#inpName').ntsError('clear');
+                                    $('#inpStartMonth').ntsError('clear');
+                                    $('#inpBudget').ntsError('clear');
                                 };
-                                ScreenModel.prototype.onRegistNew = function () {
+                                ScreenModel.prototype.validate = function () {
+                                    $('#inpCode').ntsEditor('validate');
+                                    $('#inpName').ntsEditor('validate');
+                                    $('#inpStartMonth').ntsEditor('validate');
+                                    $('#inpBudget').ntsEditor('validate');
+                                };
+                                ScreenModel.prototype.clearInput = function () {
                                     var self = this;
-                                    $('.save-error').ntsError('clear');
                                     self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
                                 };
                                 ScreenModel.prototype.getDefaultUnitPriceHistory = function () {

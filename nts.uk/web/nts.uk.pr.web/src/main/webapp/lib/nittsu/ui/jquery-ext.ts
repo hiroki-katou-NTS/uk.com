@@ -8,6 +8,7 @@ interface JQuery {
     ntsWizard(action: string, param?: any): any;
     ntsUserGuide(action?: string, param?: any): any;
     ntsSideBar(action?: string, param?: any): any;
+    ntsEditor(action?: string, param?: any): any;
     setupSearchScroll(controlType: string, param?: any): any;
 }
 
@@ -410,9 +411,6 @@ module nts.uk.ui.jqueryExtentions {
                     break;
                 case 'selectAll':
                     selectAll($grid);
-                    break;
-                case 'validate':
-                    return validate($grid);
                 default:
                     break;
             }
@@ -425,25 +423,37 @@ module nts.uk.ui.jqueryExtentions {
         }
 
         function deselectAll($list: JQuery) {
-            $list.data('value', '');
+            var selectListBoxContainer = $list.find('.nts-list-box');
+            selectListBoxContainer.data('value', '');
             $list.find('.nts-list-box > li').removeClass("ui-selected");
             $list.find('.nts-list-box > li > div').removeClass("ui-selected");
             $list.trigger("selectionChange");
         }
+    }
+    
+    module ntsEditor {
+        $.fn.ntsEditor = function(action: string): any {
 
-        function validate($list: JQuery) {
-            var required = $list.data('required');
-            var $currentListBox = $list.find('.nts-list-box');
-            if (required) {
-                var itemsSelected: any = $list.data('value');
-                if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
-                    $currentListBox.ntsError('set', 'at least 1 item selection required');
-                    return false;
-                } else {
-                    $currentListBox.ntsError('clear');
-                    return true;
-                }
+            var $editor = $(this);
+
+            switch (action) {
+                case 'validate':
+                    validate($editor);
+                default:
+                    break;
             }
+        };
+
+        function validate($editor: JQuery) {
+            var validateEvent = new CustomEvent("validate", {
+                
+            });
+            $editor.each(function(index) {
+                var $input = $(this);
+                document.getElementById($input.attr('id')).dispatchEvent(validateEvent);
+            });
+//            document.getElementById($editor.attr('id')).dispatchEvent(validateEvent);
+//            $editor.trigger("validate");
         }
     }
 

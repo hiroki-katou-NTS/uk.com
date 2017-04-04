@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable.reference;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.WtElementRefNo;
 import nts.uk.ctx.pr.core.dom.wagetable.reference.WtCodeRefGetMemento;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.reference.QwtmtWagetableRefCd;
@@ -15,7 +14,7 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.reference.QwtmtWagetableRefCd;
 public class JpaWtCodeRefGetMemento implements WtCodeRefGetMemento {
 
 	/** The type value. */
-	protected QwtmtWagetableRefCd typeValue;
+	private QwtmtWagetableRefCd typeValue;
 
 	/**
 	 * Instantiates a new jpa wage table code ref get memento.
@@ -35,8 +34,8 @@ public class JpaWtCodeRefGetMemento implements WtCodeRefGetMemento {
 	 * getCompanyCode()
 	 */
 	@Override
-	public CompanyCode getCompanyCode() {
-		return new CompanyCode(this.typeValue.getQwtmtWagetableRefCdPK().getCcd());
+	public String getCompanyCode() {
+		return this.typeValue.getQwtmtWagetableRefCdPK().getCcd();
 	}
 
 	/*

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.history.element.item.generator;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,7 +27,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.reference.WtCodeRefRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.reference.WtReferenceRepository;
 
 /**
- * The Class StepItemGenerator.
+ * The Class CodeRefItemGenerator.
  */
 @Stateless
 public class CodeRefItemGenerator implements ItemGenerator {
@@ -53,23 +54,39 @@ public class CodeRefItemGenerator implements ItemGenerator {
 	@Override
 	public List<? extends Item> generate(String companyCode, String historyId,
 			ElementSetting elementSetting) {
+		// Get the element.
 		Optional<WtElement> optWtElement = this.wtElementRepo.findByHistoryId(historyId);
 
+		// Check element is existed.
+		if (!optWtElement.isPresent()) {
+			return Collections.emptyList();
+		}
+
+		// Get the code ref.
 		Optional<WtCodeRef> optCodeRef = this.wtCodeRefRepo.findByCode(companyCode,
 				optWtElement.get().getReferenceCode());
 
+		// Check code ref table is existed.
+		if (!optCodeRef.isPresent()) {
+			return Collections.emptyList();
+		}
+
+		// Get ref items.
 		List<WtCodeRefItem> wtRefItems = this.wtReferenceRepo.getCodeRefItem(optCodeRef.get());
 
+		// Create map: unique code - old uuid.
 		@SuppressWarnings("unchecked")
 		List<CodeItem> codeItems = (List<CodeItem>) elementSetting.getItemList();
 		Map<String, ElementId> mapCodeItems = codeItems.stream()
 				.collect(Collectors.toMap(CodeItem::getReferenceCode, CodeItem::getUuid));
 
-		return wtRefItems.stream()
-				.map(item -> new CodeItem(item.getReferenceCode(),
-						mapCodeItems.getOrDefault(item.getReferenceCode(),
-								new ElementId(IdentifierUtil.randomUniqueId()))))
-				.collect(Collectors.toList());
+		// Generate uuid of code items.
+		return wtRefItems.stream().map(item -> {
+			CodeItem codeItem = new CodeItem(item.getReferenceCode(), mapCodeItems.getOrDefault(
+					item.getReferenceCode(), new ElementId(IdentifierUtil.randomUniqueId())));
+			codeItem.setDisplayName(item.getDisplayName());
+			return codeItem;
+		}).collect(Collectors.toList());
 	}
 
 	/*

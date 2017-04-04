@@ -9,12 +9,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.primitive.PrimitiveValue;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.History;
 import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
@@ -35,7 +35,7 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 	private String historyId;
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The office code. */
 	private OfficeCode officeCode;
@@ -43,15 +43,19 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 	/** The apply range. */
 	private MonthRange applyRange;
 
+	@Setter
 	/** The auto calculate. */
 	private CalculateMethod autoCalculate;
 
+	@Setter
 	/** The max amount. */
 	private CommonAmount maxAmount;
 
+	@Setter
 	/** The rate items. */
 	private Set<InsuranceRateItem> rateItems;
 
+	@Setter
 	/** The rounding methods. */
 	private Set<HealthInsuranceRounding> roundingMethods;
 
@@ -61,12 +65,13 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 	private HealthInsuranceRate() {
 		this.historyId = IdentifierUtil.randomUniqueId();
 	};
-	
+
 	// =================== Memento State Support Method ===================
 	/**
 	 * Instantiates a new health insurance rate.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public HealthInsuranceRate(HealthInsuranceRateGetMemento memento) {
 		this.historyId = memento.getHistoryId();
@@ -82,7 +87,8 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(HealthInsuranceRateSetMemento memento) {
 		memento.setHistoryId(this.historyId);
@@ -125,18 +131,22 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 		this.applyRange = MonthRange.range(this.applyRange.getStartMonth(), yearMonth);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#copyWithDate(nts.arc.time.YearMonth)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.base.simplehistory.History#copyWithDate(nts.arc.
+	 * time.YearMonth)
 	 */
 	@Override
 	public HealthInsuranceRate copyWithDate(YearMonth start) {
-		//check if duplicate start date 
-		if(this.applyRange.getStartMonth().equals(start))
-		{
+		// check if duplicate start date
+		if (this.applyRange.getStartMonth().equals(start)) {
 			throw new BusinessException("ER011");
 		}
 		HealthInsuranceRate HealthInsuranceRate = new HealthInsuranceRate();
-		HealthInsuranceRate.applyRange = MonthRange.toMaxDate(start);;
+		HealthInsuranceRate.applyRange = MonthRange.toMaxDate(start);
+		;
 		HealthInsuranceRate.autoCalculate = this.autoCalculate;
 		HealthInsuranceRate.companyCode = this.companyCode;
 		HealthInsuranceRate.maxAmount = this.maxAmount;
@@ -145,16 +155,20 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 		HealthInsuranceRate.roundingMethods = this.roundingMethods;
 		return HealthInsuranceRate;
 	}
-	
+
 	/**
 	 * Creates the with intial.
 	 *
-	 * @param companyCode the company code
-	 * @param officeCode the office code
-	 * @param startYearMonth the start year month
+	 * @param companyCode
+	 *            the company code
+	 * @param officeCode
+	 *            the office code
+	 * @param startYearMonth
+	 *            the start year month
 	 * @return the health insurance rate
 	 */
-	public static final HealthInsuranceRate createWithIntial(CompanyCode companyCode, OfficeCode officeCode, YearMonth startYearMonth) {
+	public static final HealthInsuranceRate createWithIntial(String companyCode,
+			OfficeCode officeCode, YearMonth startYearMonth) {
 		HealthInsuranceRate HealthInsuranceRate = new HealthInsuranceRate();
 		HealthInsuranceRate.companyCode = companyCode;
 		HealthInsuranceRate.officeCode = officeCode;
@@ -165,7 +179,7 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 		HealthInsuranceRate.roundingMethods = setDefaultRounding();
 		return HealthInsuranceRate;
 	}
-	
+
 	/**
 	 * Sets the default rate items.
 	 *
@@ -175,48 +189,59 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 		Set<InsuranceRateItem> setItem = new HashSet<InsuranceRateItem>();
 		Ins3Rate insRate = new Ins3Rate(BigDecimal.ZERO);
 		HealthChargeRateItem chargeRate = new HealthChargeRateItem(insRate, insRate);
-		InsuranceRateItem item1 = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.Basic, chargeRate);
+		InsuranceRateItem item1 = new InsuranceRateItem(PaymentType.Salary,
+				HealthInsuranceType.Basic, chargeRate);
 		setItem.add(item1);
-		InsuranceRateItem item2 = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General, chargeRate);
+		InsuranceRateItem item2 = new InsuranceRateItem(PaymentType.Salary,
+				HealthInsuranceType.General, chargeRate);
 		setItem.add(item2);
-		InsuranceRateItem item3 = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.Nursing, chargeRate);
+		InsuranceRateItem item3 = new InsuranceRateItem(PaymentType.Salary,
+				HealthInsuranceType.Nursing, chargeRate);
 		setItem.add(item3);
-		InsuranceRateItem item4 = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.Special, chargeRate);
+		InsuranceRateItem item4 = new InsuranceRateItem(PaymentType.Salary,
+				HealthInsuranceType.Special, chargeRate);
 		setItem.add(item4);
-		InsuranceRateItem item5 = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Basic, chargeRate);
+		InsuranceRateItem item5 = new InsuranceRateItem(PaymentType.Bonus,
+				HealthInsuranceType.Basic, chargeRate);
 		setItem.add(item5);
-		InsuranceRateItem item6 = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.General, chargeRate);
+		InsuranceRateItem item6 = new InsuranceRateItem(PaymentType.Bonus,
+				HealthInsuranceType.General, chargeRate);
 		setItem.add(item6);
-		InsuranceRateItem item7 = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Nursing, chargeRate);
+		InsuranceRateItem item7 = new InsuranceRateItem(PaymentType.Bonus,
+				HealthInsuranceType.Nursing, chargeRate);
 		setItem.add(item7);
-		InsuranceRateItem item8 = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Special, chargeRate);
+		InsuranceRateItem item8 = new InsuranceRateItem(PaymentType.Bonus,
+				HealthInsuranceType.Special, chargeRate);
 		setItem.add(item8);
 		return setItem;
 	}
-	
+
 	/**
 	 * Sets the default rounding.
 	 *
 	 * @return the sets the
 	 */
-	//init default rounding values
+	// init default rounding values
 	private static Set<HealthInsuranceRounding> setDefaultRounding() {
 		Set<HealthInsuranceRounding> setItem = new HashSet<HealthInsuranceRounding>();
 		RoundingItem salRounding = new RoundingItem();
-		salRounding.setCompanyRoundAtr(RoundingMethod.RoundUp);
-		salRounding.setPersonalRoundAtr(RoundingMethod.RoundUp);
-		HealthInsuranceRounding item1 = new HealthInsuranceRounding(PaymentType.Salary, salRounding);
+		salRounding.setCompanyRoundAtr(RoundingMethod.Truncation);
+		salRounding.setPersonalRoundAtr(RoundingMethod.Truncation);
+		HealthInsuranceRounding item1 = new HealthInsuranceRounding(PaymentType.Salary,
+				salRounding);
 		setItem.add(item1);
 		RoundingItem bnsRounding = new RoundingItem();
-		bnsRounding.setCompanyRoundAtr(RoundingMethod.RoundUp);
-		bnsRounding.setPersonalRoundAtr(RoundingMethod.RoundUp);
+		bnsRounding.setCompanyRoundAtr(RoundingMethod.Truncation);
+		bnsRounding.setPersonalRoundAtr(RoundingMethod.Truncation);
 		HealthInsuranceRounding item2 = new HealthInsuranceRounding(PaymentType.Bonus, bnsRounding);
 		setItem.add(item2);
 
 		return setItem;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -227,7 +252,9 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -246,5 +273,5 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 			return false;
 		return true;
 	}
-			
+
 }

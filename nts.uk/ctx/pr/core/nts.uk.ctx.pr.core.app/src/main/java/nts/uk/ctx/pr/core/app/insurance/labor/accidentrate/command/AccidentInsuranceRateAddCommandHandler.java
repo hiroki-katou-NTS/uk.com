@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command;
@@ -22,9 +22,10 @@ import nts.uk.shr.com.context.LoginUserContext;
  * The Class AccidentInsuranceRateAddCommandHandler.
  */
 @Stateless
-public class AccidentInsuranceRateAddCommandHandler extends CommandHandler<AccidentInsuranceRateAddCommand> {
+public class AccidentInsuranceRateAddCommandHandler
+		extends CommandHandler<AccidentInsuranceRateAddCommand> {
 
-	/** The accident insurance rate repository. */
+	/** The accident insurance rate repo. */
 	@Inject
 	private AccidentInsuranceRateRepository accidentInsuranceRateRepo;
 
@@ -46,7 +47,7 @@ public class AccidentInsuranceRateAddCommandHandler extends CommandHandler<Accid
 		// get user login
 		LoginUserContext loginUserContext = AppContexts.user();
 
-		// get commpany user login
+		// get company code user login
 		String companyCode = loginUserContext.companyCode();
 
 		// get command
@@ -58,15 +59,16 @@ public class AccidentInsuranceRateAddCommandHandler extends CommandHandler<Accid
 		// validate domain
 		accidentInsuranceRate.validate();
 
-		// validate input domian
+		// validate input domain
 		accidentInsuranceRateService.validateDateRange(accidentInsuranceRate);
 
 		// get first data
 		Optional<AccidentInsuranceRate> optionalFirst = this.accidentInsuranceRateRepo
-			.findFirstData(companyCode);
+				.findFirstData(companyCode);
 
 		if (optionalFirst.isPresent()) {
-			optionalFirst.get().setEnd(accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+			optionalFirst.get()
+					.setEnd(accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());
 			this.accidentInsuranceRateRepo.update(optionalFirst.get());
 		}
 

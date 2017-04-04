@@ -15,7 +15,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSetting;
@@ -85,8 +84,7 @@ public class PensionRateServiceImpl extends PensionRateService {
 		if (!lstPensionRate.isEmpty()) {
 			throw new BusinessException("ER011");
 		}
-		return PensionRate.createWithIntial(new CompanyCode(companyCode),
-				new OfficeCode(officeCode), startTime);
+		return PensionRate.createWithIntial(companyCode, new OfficeCode(officeCode), startTime);
 	}
 
 	/*
@@ -125,7 +123,7 @@ public class PensionRateServiceImpl extends PensionRateService {
 		super.onCreateHistory(companyCode, masterCode, newHistory);
 		// Get listAvgEarnLevelMasterSetting.
 		List<AvgEarnLevelMasterSetting> listAvgEarnLevelMasterSetting = avgEarnLevelMasterSettingRepository
-				.findAll(new CompanyCode(companyCode));
+				.findAll(companyCode);
 		// Create HealthInsuranceAvgearn list with initial values.
 		List<PensionAvgearn> newList = listAvgEarnLevelMasterSetting.stream().map(setting -> {
 			return PensionAvgearn.createWithIntial(newHistory.getHistoryId(), setting.getCode());

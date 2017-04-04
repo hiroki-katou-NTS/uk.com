@@ -11,7 +11,6 @@ import nts.uk.ctx.basic.dom.company.Company;
 import nts.uk.ctx.basic.dom.company.CompanyRepository;
 import nts.uk.ctx.basic.infra.entity.company.CmnmtCompany;
 import nts.uk.ctx.basic.infra.entity.company.CmnmtCompanyPK;
-import nts.uk.ctx.basic.infra.entity.organization.classification.CmnmtClass;
 
 /**
  * 
@@ -21,12 +20,12 @@ import nts.uk.ctx.basic.infra.entity.organization.classification.CmnmtClass;
 @Stateless
 public class JpaCompanyRepository extends JpaRepository implements CompanyRepository {
 
-	private static final String SEL_1 = "SELECT e FROM CmnmtCompany e";
-	private static final String SEL_2 = SEL_1+ " WHERE e.cmnmtCompanyPk.companyCd = :companyCd"
-			+ " AND e.use_Kt_Set = :use_Kt_Set";
+	private static final String SEL_NO_WHERE = "SELECT e FROM CmnmtCompany e";
+	private static final String SEL_1 = SEL_NO_WHERE + " WHERE e.cmnmtCompanyPk.companyCd <> '0000'";
+	private static final String SEL_2 = SEL_NO_WHERE + " WHERE e.cmnmtCompanyPk.companyCd = :companyCd";
+	private static final String SEL_4 = SEL_NO_WHERE + " WHERE e.cmnmtCompanyPk.companyCd = :companyCd"
+													 + " AND e.use_Kt_Set = :use_Kt_Set";
 
-	// private static final String SEL_2 = SEL_1 + "WHERE
-	// e.cmnmtCompanyPK.companyCd = : companyCd";
 	private final Company toDomain(CmnmtCompany entity) {
 		val domain = Company.createFromJavaType(entity.cmnmtCompanyPk.companyCd, entity.cName, entity.cName_E,
 				entity.cName_Abb, entity.cName_Kana, entity.cmyNo, entity.fax_No, entity.postal, entity.president_Name,
@@ -83,31 +82,40 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	}
 
 	@Override
-	public Optional<Company> getCompanyDetail(String companyCode) {
-		try {
-			return this.queryProxy().find(new CmnmtCompanyPK(companyCode), CmnmtCompany.class).map(c -> toDomain(c));
-		} catch (Exception e) {
-			throw e;
-		}
-
-	}
-
-	@Override
 	public List<Company> getAllCompanys() {
 		try {
 			return this.queryProxy().query(SEL_1, CmnmtCompany.class).getList(c -> toDomain(c));
-
 		} catch (Exception e) {
 			throw e;
 		}
+	}
 
+	@Override
+	public Optional<Company> getCompanyDetail(String companyCd) {
+		try {
+			return this.queryProxy().query(SEL_2, CmnmtCompany.class)
+					.setParameter("companyCd", companyCd)
+					.getSingle().map(e -> {
+						return Optional.of(toDomain(e));
+					}).orElse(Optional.empty());
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public Optional<Company> getCompanyByUserKtSet(String companyCd, int use_Kt_Set) {
+		return this.queryProxy().query(SEL_4, CmnmtCompany.class)
+				.setParameter("companyCd", companyCd)
+				.setParameter("use_Kt_Set", use_Kt_Set).getSingle().map(e -> {
+					return Optional.of(toDomain(e));
+				}).orElse(Optional.empty());
 	}
 
 	@Override
 	public void add(Company company) {
 		try {
 			this.commandProxy().insert(toEntity(company));
-			System.out.println("success");
 		} catch (Exception e) {
 			throw (e);
 		}
@@ -117,7 +125,6 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	public void update(Company company) {
 		try {
 			this.commandProxy().update(toEntity(company));
-			System.out.println(toEntity(company));
 		} catch (Exception e) {
 			throw (e);
 		}
@@ -128,17 +135,6 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		val objKey = new CmnmtCompanyPK();
 		objKey.companyCd = companyCode;
 		this.commandProxy().remove(CmnmtCompany.class, objKey);
-	}
-
-	@Override
-	public Optional<Company> getCompanyByUserKtSet(String companyCd, int use_Kt_Set) {
-		
-		return this.queryProxy().query(SEL_2, CmnmtCompany.class)
-				.setParameter("companyCd", companyCd)
-				.setParameter("use_Kt_Set", use_Kt_Set).getSingle().map(e -> {
-					return Optional.of(toDomain(e));
-				}).orElse(Optional.empty());
-		
 	}
 
 }

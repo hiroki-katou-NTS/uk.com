@@ -5,16 +5,12 @@
 package nts.uk.ctx.pr.core.dom.wagetable.service.internal;
 
 import java.util.Optional;
-import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.service.CertifyGroupService;
@@ -28,10 +24,6 @@ public class CertifyGroupServiceImpl implements CertifyGroupService {
 	/** The certify group repository. */
 	@Inject
 	private CertifyGroupRepository certifyGroupRepository;
-
-	/** The certification reponsitory. */
-	@Inject
-	private CertificationRepository certificationReponsitory;
 
 	/*
 	 * (non-Javadoc)
@@ -61,7 +53,7 @@ public class CertifyGroupServiceImpl implements CertifyGroupService {
 	@Override
 	public void checkDuplicateCode(CertifyGroup certifyGroup) {
 		Optional<CertifyGroup> optionalCheck = this.certifyGroupRepository
-				.findById(certifyGroup.getCompanyCode().v(), certifyGroup.getCode().v());
+				.findById(certifyGroup.getCompanyCode(), certifyGroup.getCode().v());
 		if (optionalCheck.isPresent()) {
 			throw new BusinessException("ER005");
 		}
@@ -76,45 +68,13 @@ public class CertifyGroupServiceImpl implements CertifyGroupService {
 	 * wagetable.certification.CertifyGroup, java.lang.String)
 	 */
 	@Override
-	public void checkDulicateCertification(CertifyGroup certifyGroup, String certifyGroupCode) {
-		if (this.checkDulicateCertification(certifyGroup.getCompanyCode().v(),
-				certifyGroup.getCertifies(), certifyGroupCode)) {
+	public void checkCertificationIsBelong(CertifyGroup certifyGroup) {
+		if (certifyGroup.getCertifies().stream()
+				.anyMatch(item -> certifyGroupRepository.isBelongToExistGroup(
+						certifyGroup.getCompanyCode(), certifyGroup.getCode().v(),
+						item.getCode()))) {
 			throw new BusinessException("ER005");
 		}
-
-	}
-
-	/**
-	 * Check dulicate certification.
-	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param setCertification
-	 *            the set certification
-	 * @param certifyGroupCode
-	 *            the certify group code
-	 * @return true, if successful
-	 */
-	boolean checkDulicateCertification(String companyCode, Set<Certification> setCertification,
-			String certifyGroupCode) {
-
-		// none data => false
-		if (CollectionUtil.isEmpty(setCertification)) {
-			return false;
-		}
-
-		// not none data
-		boolean resvalue = false;
-		for (Certification certification : setCertification) {
-			Optional<Certification> optionalCheck = this.certificationReponsitory
-					.findById(companyCode, certification.getCode(), certifyGroupCode);
-			if (optionalCheck.isPresent()) {
-				resvalue = true;
-				break;
-			}
-		}
-		// res
-		return resvalue;
 	}
 
 }

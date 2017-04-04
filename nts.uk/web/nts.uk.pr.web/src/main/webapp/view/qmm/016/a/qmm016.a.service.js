@@ -19,7 +19,10 @@ var nts;
                             loadHistoryByUuid: 'pr/proto/wagetable/find/{0}',
                             loadDemensionList: 'pr/proto/wagetable/demensions',
                             loadElementTypeList: 'pr/proto/wagetable/elements',
-                            initWageTable: 'pr/proto/wagetable/init'
+                            initWageTable: 'pr/proto/wagetable/init',
+                            genitem: 'pr/proto/wagetable/reference/genitem',
+                            updateHistory: 'pr/proto/wagetable/update',
+                            certificateInfo: 'pr/proto/wagetable/sp/certifies'
                         };
                         var Service = (function (_super) {
                             __extends(Service, _super);
@@ -37,6 +40,19 @@ var nts;
                             };
                             Service.prototype.initWageTable = function (data) {
                                 return nts.uk.request.ajax(path.initWageTable, data);
+                            };
+                            Service.prototype.updateHistory = function (data) {
+                                return nts.uk.request.ajax(path.updateHistory, data);
+                            };
+                            Service.prototype.loadCertificate = function () {
+                                return nts.uk.request.ajax(path.certificateInfo);
+                            };
+                            Service.prototype.genearetItemSetting = function (data) {
+                                var dfd = $.Deferred();
+                                nts.uk.request.ajax(path.genitem, data).done(function (res) {
+                                    dfd.resolve(res.elementSettings);
+                                }).fail(dfd.fail);
+                                return dfd.promise();
                             };
                             return Service;
                         }(view.base.simplehistory.service.BaseService));

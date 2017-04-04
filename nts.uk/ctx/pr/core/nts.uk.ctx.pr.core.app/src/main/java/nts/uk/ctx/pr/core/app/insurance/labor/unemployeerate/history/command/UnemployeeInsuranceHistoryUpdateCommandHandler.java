@@ -66,26 +66,26 @@ public class UnemployeeInsuranceHistoryUpdateCommandHandler
 
 			// call get by id
 			Optional<UnemployeeInsuranceRate> optionalFirst;
-			optionalFirst = this.unemployeeInsuranceRateRepository.findById(
-				unemployeeInsuranceRate.getCompanyCode().v(), unemployeeInsuranceRate.getHistoryId());
+			optionalFirst = this.unemployeeInsuranceRateRepository
+				.findById(unemployeeInsuranceRate.getCompanyCode(), unemployeeInsuranceRate.getHistoryId());
 
 			// get <= start
-			if (optionalFirst.isPresent()) {
-				Optional<UnemployeeInsuranceRate> optionalBetweenUpdate = this.unemployeeInsuranceRateRepository
-					.findBetweenUpdate(unemployeeInsuranceRate.getCompanyCode().v(),
-						optionalFirst.get().getApplyRange().getStartMonth(),
-						optionalFirst.get().getHistoryId());
-
-				// update end year month start previous
-				if (optionalBetweenUpdate.isPresent()) {
-					optionalBetweenUpdate.get()
-						.setEnd(unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());
-					this.unemployeeInsuranceRateRepository.update(optionalBetweenUpdate.get());
-				}
-
-				// update value
-				this.unemployeeInsuranceRateRepository.update(unemployeeInsuranceRate);
+			if (!optionalFirst.isPresent()) {
+				return;
 			}
+			Optional<UnemployeeInsuranceRate> optionalBetweenUpdate = this.unemployeeInsuranceRateRepository
+				.findBetweenUpdate(unemployeeInsuranceRate.getCompanyCode(),
+					optionalFirst.get().getApplyRange().getStartMonth(), optionalFirst.get().getHistoryId());
+
+			// update end year month start previous
+			if (optionalBetweenUpdate.isPresent()) {
+				optionalBetweenUpdate.get()
+					.setEnd(unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+				this.unemployeeInsuranceRateRepository.update(optionalBetweenUpdate.get());
+			}
+
+			// update value
+			this.unemployeeInsuranceRateRepository.update(unemployeeInsuranceRate);
 		}
 	}
 

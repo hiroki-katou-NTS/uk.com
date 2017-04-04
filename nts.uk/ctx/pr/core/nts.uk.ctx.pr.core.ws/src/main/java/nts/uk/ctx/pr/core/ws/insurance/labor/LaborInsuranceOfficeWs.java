@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.labor;
@@ -22,11 +22,6 @@ import nts.uk.ctx.pr.core.app.insurance.labor.command.LaborInsuranceOfficeUpdate
 import nts.uk.ctx.pr.core.app.insurance.labor.find.LaborInsuranceOfficeFinder;
 import nts.uk.ctx.pr.core.app.insurance.labor.find.dto.LaborInsuranceOfficeFindDto;
 import nts.uk.ctx.pr.core.app.insurance.labor.find.dto.LaborInsuranceOfficeFindOutDto;
-import nts.uk.ctx.pr.core.app.insurance.labor.imports.LaborInsuranceOfficeImporter;
-import nts.uk.ctx.pr.core.app.insurance.labor.imports.dto.LaborInsuranceOfficeCheckImportDto;
-import nts.uk.ctx.pr.core.app.insurance.labor.imports.dto.LaborInsuranceOfficeImportDto;
-import nts.uk.ctx.pr.core.app.insurance.labor.imports.dto.LaborInsuranceOfficeImportOutDto;
-import nts.uk.ctx.pr.core.app.insurance.labor.imports.dto.SocialInsuranceOfficeImportDto;
 
 /**
  * The Class LaborInsuranceOfficeWs.
@@ -51,12 +46,8 @@ public class LaborInsuranceOfficeWs extends WebService {
 	@Inject
 	private LaborInsuranceOfficeDeleteCommandHandler delete;
 
-	/** The importser. */
-	@Inject
-	private LaborInsuranceOfficeImporter importser;
-
 	/**
-	 * Find all history.
+	 * Find all.
 	 *
 	 * @return the list
 	 */
@@ -67,11 +58,11 @@ public class LaborInsuranceOfficeWs extends WebService {
 	}
 
 	/**
-	 * Find history.
+	 * Find by code.
 	 *
-	 * @param historyId
-	 *            the history id
-	 * @return the history accident insurance rate dto
+	 * @param officeCode
+	 *            the office code
+	 * @return the labor insurance office find dto
 	 */
 	@POST
 	@Path("findLaborInsuranceOffice/{officeCode}")
@@ -113,32 +104,5 @@ public class LaborInsuranceOfficeWs extends WebService {
 	@Path("delete")
 	public void delete(LaborInsuranceOfficeDeleteCommand command) {
 		this.delete.handle(command);
-	}
-
-	/**
-	 * Check duplicate code.
-	 *
-	 * @param lstSocialInsuranceOfficeImport
-	 *            the lst social insurance office import
-	 * @return the labor insurance office check import dto
-	 */
-	@POST
-	@Path("importser/checkDuplicateCode")
-	public LaborInsuranceOfficeCheckImportDto checkDuplicateCode(
-			SocialInsuranceOfficeImportDto socialInsuranceOfficeImport) {
-		return importser.checkDuplicateCode(socialInsuranceOfficeImport);
-	}
-
-	/**
-	 * Import data.
-	 *
-	 * @param laborInsuranceOfficeImportDto
-	 *            the labor insurance office import dto
-	 * @return the labor insurance office import out dto
-	 */
-	@POST
-	@Path("importser/importData")
-	public LaborInsuranceOfficeImportOutDto importData(LaborInsuranceOfficeImportDto laborInsuranceOfficeImportDto) {
-		return importser.importData(laborInsuranceOfficeImportDto);
 	}
 }

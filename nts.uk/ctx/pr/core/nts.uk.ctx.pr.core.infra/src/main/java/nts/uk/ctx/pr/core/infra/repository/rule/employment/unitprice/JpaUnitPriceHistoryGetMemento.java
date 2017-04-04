@@ -5,7 +5,6 @@
 package nts.uk.ctx.pr.core.infra.repository.rule.employment.unitprice;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.ApplySetting;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.Money;
@@ -21,7 +20,7 @@ import nts.uk.shr.com.primitive.Memo;
 public class JpaUnitPriceHistoryGetMemento implements UnitPriceHistoryGetMemento {
 
 	/** The type value. */
-	protected QupmtCUnitpriceDetail typeValue;
+	private QupmtCUnitpriceDetail typeValue;
 
 	/**
 	 * Instantiates a new jpa unit price history get memento.
@@ -51,8 +50,8 @@ public class JpaUnitPriceHistoryGetMemento implements UnitPriceHistoryGetMemento
 	 * UnitPriceHistoryGetMemento#getCompanyCode()
 	 */
 	@Override
-	public CompanyCode getCompanyCode() {
-		return new CompanyCode(this.typeValue.getQupmtCUnitpriceDetailPK().getCcd());
+	public String getCompanyCode() {
+		return this.typeValue.getQupmtCUnitpriceDetailPK().getCcd();
 	}
 
 	/*
@@ -74,7 +73,8 @@ public class JpaUnitPriceHistoryGetMemento implements UnitPriceHistoryGetMemento
 	 */
 	@Override
 	public MonthRange getApplyRange() {
-		return MonthRange.range(new YearMonth(this.typeValue.getStrYm()), new YearMonth(this.typeValue.getEndYm()));
+		return MonthRange.range(new YearMonth(this.typeValue.getStrYm()),
+				new YearMonth(this.typeValue.getEndYm()));
 	}
 
 	/*

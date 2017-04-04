@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command;
@@ -9,16 +9,13 @@ import lombok.Setter;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.dto.AccidentInsuranceRateDeleteDto;
 
 /**
- * The Class AccidentInsuranceRateAddCommand.
+ * The Class AccidentInsuranceRateDeleteCommand.
  */
 @Getter
 @Setter
 public class AccidentInsuranceRateDeleteCommand {
 
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
-	
-	/** The accident insurance rate. */
+	/** The accident insurance rate delete dto. */
 	private AccidentInsuranceRateDeleteDto accidentInsuranceRateDeleteDto;
 
 }

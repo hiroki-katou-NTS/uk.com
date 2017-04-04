@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistorySetMemento;
@@ -31,7 +30,7 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableNum;
 public class JpaWtHistorySetMemento implements WtHistorySetMemento {
 
 	/** The type value. */
-	protected QwtmtWagetableHist typeValue;
+	private QwtmtWagetableHist typeValue;
 
 	/**
 	 * Instantiates a new jpa wage table history set memento.
@@ -50,9 +49,9 @@ public class JpaWtHistorySetMemento implements WtHistorySetMemento {
 	 * setCompanyCode(nts.uk.ctx.core.dom.company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		QwtmtWagetableHistPK qwtmtWagetableHistPK = new QwtmtWagetableHistPK();
-		qwtmtWagetableHistPK.setCcd(companyCode.v());
+		qwtmtWagetableHistPK.setCcd(companyCode);
 		this.typeValue.setQwtmtWagetableHistPK(qwtmtWagetableHistPK);
 	}
 
@@ -107,12 +106,19 @@ public class JpaWtHistorySetMemento implements WtHistorySetMemento {
 		String wageTableCd = qwtmtWagetableHistPK.getWageTableCd();
 		String historyId = qwtmtWagetableHistPK.getHistId();
 
+		// Create entity of step items
 		List<QwtmtWagetableMny> qwtmtWagetableMnyList = elements.stream().map(item -> {
+			// Create entity.
 			QwtmtWagetableMny entity = new QwtmtWagetableMny();
+
+			// Transfer data
 			item.saveToMemento(
 					new JpaWtItemSetMemento(companyCode, wageTableCd, historyId, entity));
+
 			return entity;
 		}).collect(Collectors.toList());
+
+		// Set val
 		this.typeValue.setQwtmtWagetableMnyList(qwtmtWagetableMnyList);
 	}
 
@@ -145,6 +151,7 @@ public class JpaWtHistorySetMemento implements WtHistorySetMemento {
 
 					// Check setting type
 					if (item instanceof StepElementSetting) {
+
 						// Cast to step setting.
 						StepElementSetting step = (StepElementSetting) item;
 
@@ -161,6 +168,8 @@ public class JpaWtHistorySetMemento implements WtHistorySetMemento {
 											companyCode, wageTableCd, historyId,
 											item.getDemensionNo().value,
 											rangeItem.getOrderNumber());
+									wagetableNum.setElementStr(rangeItem.getStartVal());
+									wagetableNum.setElementEnd(rangeItem.getEndVal());
 									wagetableNum.setElementId(rangeItem.getUuid().v());
 									return wagetableNum;
 								}).collect(Collectors.toList());
@@ -188,6 +197,7 @@ public class JpaWtHistorySetMemento implements WtHistorySetMemento {
 
 					// Return
 					return qwtmtWagetableEleHist;
+
 				}).collect(Collectors.toList());
 
 		this.typeValue.setQwtmtWagetableEleHistList(qwtmtWagetableEleHistList);

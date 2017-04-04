@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.core.infra.repository.wagetable;
 import java.util.List;
 
 import nts.gul.collection.LazyList;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
 import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.ctx.pr.core.dom.wagetable.WtHeadGetMemento;
@@ -23,7 +22,7 @@ import nts.uk.shr.com.primitive.Memo;
 public class JpaWtHeadGetMemento implements WtHeadGetMemento {
 
 	/** The type value. */
-	protected QwtmtWagetableHead typeValue;
+	private QwtmtWagetableHead typeValue;
 
 	/**
 	 * Instantiates a new jpa wage table head get memento.
@@ -42,8 +41,8 @@ public class JpaWtHeadGetMemento implements WtHeadGetMemento {
 	 * nts.uk.ctx.pr.core.dom.wagetable.WageTableHeadGetMemento#getCompanyCode()
 	 */
 	@Override
-	public CompanyCode getCompanyCode() {
-		return new CompanyCode(this.typeValue.getQwtmtWagetableHeadPK().getCcd());
+	public String getCompanyCode() {
+		return this.typeValue.getQwtmtWagetableHeadPK().getCcd();
 	}
 
 	/*
@@ -76,7 +75,9 @@ public class JpaWtHeadGetMemento implements WtHeadGetMemento {
 		return new Memo(this.typeValue.getMemo());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.uk.ctx.pr.core.dom.wagetable.WtHeadGetMemento#getMode()
 	 */
 	@Override
@@ -84,7 +85,9 @@ public class JpaWtHeadGetMemento implements WtHeadGetMemento {
 		return ElementCount.valueOf(this.typeValue.getDemensionSet());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.uk.ctx.pr.core.dom.wagetable.WtHeadGetMemento#getElements()
 	 */
 	@Override

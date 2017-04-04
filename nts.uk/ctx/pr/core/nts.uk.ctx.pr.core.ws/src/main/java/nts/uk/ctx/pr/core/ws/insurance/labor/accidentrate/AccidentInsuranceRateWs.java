@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.labor.accidentrate;
@@ -22,6 +22,9 @@ import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.AccidentInsur
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.AccidentInsuranceRateF‌inder;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto.AccidentInsuranceRateFindOutDto;
 
+/**
+ * The Class AccidentInsuranceRateWs.
+ */
 @Path("pr/insurance/labor/accidentrate")
 @Produces("application/json")
 public class AccidentInsuranceRateWs extends WebService {
@@ -51,7 +54,7 @@ public class AccidentInsuranceRateWs extends WebService {
 	 *
 	 * @param historyId
 	 *            the history id
-	 * @return the accident insurance rate find out dto
+	 * @return the accident insurance rate find out
 	 */
 	@POST
 	@Path("find/{historyId}")
@@ -72,7 +75,7 @@ public class AccidentInsuranceRateWs extends WebService {
 	}
 
 	/**
-	 * Adds the.
+	 * Copy.
 	 *
 	 * @param command
 	 *            the command

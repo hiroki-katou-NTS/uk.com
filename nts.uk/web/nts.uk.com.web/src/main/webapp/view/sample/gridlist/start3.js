@@ -65,3 +65,4 @@ __viewContext.ready(function () {
     var vmDeferred = new ScreenModel();
     this.bind(vmDeferred);
 });
+//# sourceMappingURL=start3.js.map

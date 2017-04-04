@@ -1,10 +1,9 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.labor.businesstype;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.BusinessName;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessTypeGetMemento;
@@ -16,8 +15,9 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.businesstype.QismtBusines
 public class JpaInsuranceBusinessTypeGetMemento implements InsuranceBusinessTypeGetMemento {
 
 	/** The type value. */
-	protected QismtBusinessType typeValue;
+	private QismtBusinessType typeValue;
 
+	/** The type. */
 	private BusinessTypeEnum type;
 
 	/**
@@ -38,8 +38,8 @@ public class JpaInsuranceBusinessTypeGetMemento implements InsuranceBusinessType
 	 * InsuranceBusinessTypeGetMemento#getCompanyCode()
 	 */
 	@Override
-	public CompanyCode getCompanyCode() {
-		return new CompanyCode(this.typeValue.getCcd());
+	public String getCompanyCode() {
+		return this.typeValue.getCcd();
 	}
 
 	/*
@@ -61,9 +61,8 @@ public class JpaInsuranceBusinessTypeGetMemento implements InsuranceBusinessType
 	 */
 	@Override
 	public BusinessName getBizName() {
-
-		String bizName = "";
-
+		String bizName = null;
+		// Check type
 		switch (this.type) {
 		case Biz1St:
 			bizName = this.typeValue.getBizName01();
@@ -109,6 +108,7 @@ public class JpaInsuranceBusinessTypeGetMemento implements InsuranceBusinessType
 			break;
 		}
 
+		// Return
 		return new BusinessName(bizName);
 	}
 

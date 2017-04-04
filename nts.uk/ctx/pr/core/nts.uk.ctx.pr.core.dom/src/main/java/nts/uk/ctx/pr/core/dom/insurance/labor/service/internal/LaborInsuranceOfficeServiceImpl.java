@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.labor.service.internal;
@@ -23,7 +23,7 @@ public class LaborInsuranceOfficeServiceImpl implements LaborInsuranceOfficeServ
 
 	/** The labor insurance office repo. */
 	@Inject
-	private LaborInsuranceOfficeRepository laborInsuranceOfficeRepo;
+	private LaborInsuranceOfficeRepository officeRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -34,8 +34,11 @@ public class LaborInsuranceOfficeServiceImpl implements LaborInsuranceOfficeServ
 	 */
 	@Override
 	public void validateRequiredItem(LaborInsuranceOffice office) {
-		if (office.getCode() == null || StringUtil.isNullOrEmpty(office.getCode().v(), true) || office.getName() == null
-				|| StringUtil.isNullOrEmpty(office.getName().v(), true) || office.getPicPosition() == null
+		if (office.getCode() == null 
+				|| office.getName() == null
+				|| office.getPicPosition() == null
+				|| StringUtil.isNullOrEmpty(office.getCode().v(), true) 
+				|| StringUtil.isNullOrEmpty(office.getName().v(), true) 
 				|| StringUtil.isNullOrEmpty(office.getPicPosition().v(), true)) {
 			throw new BusinessException("ER001");
 		}
@@ -50,8 +53,8 @@ public class LaborInsuranceOfficeServiceImpl implements LaborInsuranceOfficeServ
 	 */
 	@Override
 	public void checkDuplicateCode(LaborInsuranceOffice office) {
-		Optional<LaborInsuranceOffice> optionalCheck = this.laborInsuranceOfficeRepo
-				.findById(office.getCompanyCode().v(), office.getCode().v());
+		Optional<LaborInsuranceOffice> optionalCheck = this.officeRepo
+				.findById(office.getCompanyCode(), office.getCode().v());
 
 		if (optionalCheck.isPresent()) {
 			throw new BusinessException("ER005");

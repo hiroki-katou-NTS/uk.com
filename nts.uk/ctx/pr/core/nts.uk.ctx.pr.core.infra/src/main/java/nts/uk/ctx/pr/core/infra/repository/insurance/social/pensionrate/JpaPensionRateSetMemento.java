@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.core.infra.repository.insurance.social.pensionrate;
 
 import java.util.Set;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.FundInputApply;
@@ -28,7 +27,7 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPension
 public class JpaPensionRateSetMemento implements PensionRateSetMemento {
 
 	/** The type value. */
-	protected QismtPensionRate typeValue;
+	private QismtPensionRate typeValue;
 
 	/**
 	 * Instantiates a new jpa pension rate set memento.
@@ -62,9 +61,9 @@ public class JpaPensionRateSetMemento implements PensionRateSetMemento {
 	 * #setCompanyCode(nts.uk.ctx.core.dom.company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		QismtPensionRatePK qismtPensionRatePK = this.typeValue.getQismtPensionRatePK();
-		qismtPensionRatePK.setCcd(companyCode.v());
+		qismtPensionRatePK.setCcd(companyCode);
 		this.typeValue.setQismtPensionRatePK(qismtPensionRatePK);
 	}
 
@@ -116,42 +115,60 @@ public class JpaPensionRateSetMemento implements PensionRateSetMemento {
 	 */
 	@Override
 	public void setFundRateItems(Set<FundRateItem> fundRateItems) {
-		for( FundRateItem e : fundRateItems){
-			if (e.getPayType().equals(PaymentType.Salary) && e.getGenderType().equals(InsuranceGender.Male)) {
+		for (FundRateItem e : fundRateItems) {
+			if (e.getPayType().equals(PaymentType.Salary)
+					&& e.getGenderType().equals(InsuranceGender.Male)) {
 				this.typeValue.setCPayFundMaleRate(e.getBurdenChargeRate().getCompanyRate().v());
 				this.typeValue.setPPayFundMaleRate(e.getBurdenChargeRate().getPersonalRate().v());
-				this.typeValue.setCPayFundExMaleRate(e.getExemptionChargeRate().getCompanyRate().v());
-				this.typeValue.setPPayFundExMaleRate(e.getExemptionChargeRate().getPersonalRate().v());
+				this.typeValue
+						.setCPayFundExMaleRate(e.getExemptionChargeRate().getCompanyRate().v());
+				this.typeValue
+						.setPPayFundExMaleRate(e.getExemptionChargeRate().getPersonalRate().v());
 			}
-			if (e.getPayType().equals(PaymentType.Salary) && e.getGenderType().equals(InsuranceGender.Female)) {
+			if (e.getPayType().equals(PaymentType.Salary)
+					&& e.getGenderType().equals(InsuranceGender.Female)) {
 				this.typeValue.setCPayFundFemRate(e.getBurdenChargeRate().getCompanyRate().v());
 				this.typeValue.setPPayFundFemRate(e.getBurdenChargeRate().getPersonalRate().v());
-				this.typeValue.setCPayFundExFemRate(e.getExemptionChargeRate().getCompanyRate().v());
-				this.typeValue.setPPayFundExFemRate(e.getExemptionChargeRate().getPersonalRate().v());
+				this.typeValue
+						.setCPayFundExFemRate(e.getExemptionChargeRate().getCompanyRate().v());
+				this.typeValue
+						.setPPayFundExFemRate(e.getExemptionChargeRate().getPersonalRate().v());
 			}
-			if (e.getPayType().equals(PaymentType.Salary) && e.getGenderType().equals(InsuranceGender.Unknow)) {
+			if (e.getPayType().equals(PaymentType.Salary)
+					&& e.getGenderType().equals(InsuranceGender.Unknow)) {
 				this.typeValue.setCPayFundMinerRate(e.getBurdenChargeRate().getCompanyRate().v());
 				this.typeValue.setPPayFundMinerRate(e.getBurdenChargeRate().getPersonalRate().v());
-				this.typeValue.setCPayFundExMinerRate(e.getExemptionChargeRate().getCompanyRate().v());
-				this.typeValue.setPPayFundExMinerRate(e.getExemptionChargeRate().getPersonalRate().v());
+				this.typeValue
+						.setCPayFundExMinerRate(e.getExemptionChargeRate().getCompanyRate().v());
+				this.typeValue
+						.setPPayFundExMinerRate(e.getExemptionChargeRate().getPersonalRate().v());
 			}
-			if (e.getPayType().equals(PaymentType.Bonus) && e.getGenderType().equals(InsuranceGender.Male)) {
+			if (e.getPayType().equals(PaymentType.Bonus)
+					&& e.getGenderType().equals(InsuranceGender.Male)) {
 				this.typeValue.setCBnsFundManRate(e.getBurdenChargeRate().getCompanyRate().v());
 				this.typeValue.setPBnsFundManRate(e.getBurdenChargeRate().getPersonalRate().v());
-				this.typeValue.setCBnsFundExMaleRate(e.getExemptionChargeRate().getCompanyRate().v());
-				this.typeValue.setPBnsFundExMaleRate(e.getExemptionChargeRate().getPersonalRate().v());
+				this.typeValue
+						.setCBnsFundExMaleRate(e.getExemptionChargeRate().getCompanyRate().v());
+				this.typeValue
+						.setPBnsFundExMaleRate(e.getExemptionChargeRate().getPersonalRate().v());
 			}
-			if (e.getPayType().equals(PaymentType.Bonus) && e.getGenderType().equals(InsuranceGender.Female)) {
+			if (e.getPayType().equals(PaymentType.Bonus)
+					&& e.getGenderType().equals(InsuranceGender.Female)) {
 				this.typeValue.setCBnsFundFemRate(e.getBurdenChargeRate().getCompanyRate().v());
 				this.typeValue.setPBnsFundFemRate(e.getBurdenChargeRate().getPersonalRate().v());
-				this.typeValue.setCBnsFundExFemRate(e.getExemptionChargeRate().getCompanyRate().v());
-				this.typeValue.setPBnsFundExFemRate(e.getExemptionChargeRate().getPersonalRate().v());
+				this.typeValue
+						.setCBnsFundExFemRate(e.getExemptionChargeRate().getCompanyRate().v());
+				this.typeValue
+						.setPBnsFundExFemRate(e.getExemptionChargeRate().getPersonalRate().v());
 			}
-			if (e.getPayType().equals(PaymentType.Bonus) && e.getGenderType().equals(InsuranceGender.Unknow)) {
+			if (e.getPayType().equals(PaymentType.Bonus)
+					&& e.getGenderType().equals(InsuranceGender.Unknow)) {
 				this.typeValue.setCBnsFundMinerRate(e.getBurdenChargeRate().getCompanyRate().v());
 				this.typeValue.setPBnsFundMinerRate(e.getBurdenChargeRate().getPersonalRate().v());
-				this.typeValue.setCBnsFundExMinerRate(e.getExemptionChargeRate().getCompanyRate().v());
-				this.typeValue.setPBnsFundExMinerRate(e.getExemptionChargeRate().getPersonalRate().v());
+				this.typeValue
+						.setCBnsFundExMinerRate(e.getExemptionChargeRate().getCompanyRate().v());
+				this.typeValue
+						.setPBnsFundExMinerRate(e.getExemptionChargeRate().getPersonalRate().v());
 			}
 		}
 	}
@@ -165,28 +182,34 @@ public class JpaPensionRateSetMemento implements PensionRateSetMemento {
 	 */
 	@Override
 	public void setPremiumRateItems(Set<PensionPremiumRateItem> premiumRateItems) {
-		for(PensionPremiumRateItem e : premiumRateItems){
-			if(e.getPayType().equals(PaymentType.Salary)&&e.getGenderType().equals(InsuranceGender.Male)){
+		for (PensionPremiumRateItem e : premiumRateItems) {
+			if (e.getPayType().equals(PaymentType.Salary)
+					&& e.getGenderType().equals(InsuranceGender.Male)) {
 				this.typeValue.setCPayPensionMaleRate(e.getChargeRate().getCompanyRate().v());
 				this.typeValue.setPPayPensionMaleRate(e.getChargeRate().getPersonalRate().v());
 			}
-			if(e.getPayType().equals(PaymentType.Salary)&&e.getGenderType().equals(InsuranceGender.Female)){
+			if (e.getPayType().equals(PaymentType.Salary)
+					&& e.getGenderType().equals(InsuranceGender.Female)) {
 				this.typeValue.setCPayPensionFemRate(e.getChargeRate().getCompanyRate().v());
 				this.typeValue.setPPayPensionFemRate(e.getChargeRate().getPersonalRate().v());
 			}
-			if(e.getPayType().equals(PaymentType.Salary)&&e.getGenderType().equals(InsuranceGender.Unknow)){
+			if (e.getPayType().equals(PaymentType.Salary)
+					&& e.getGenderType().equals(InsuranceGender.Unknow)) {
 				this.typeValue.setCPayPensionMinerRate(e.getChargeRate().getCompanyRate().v());
 				this.typeValue.setPPayPensionMinerRate(e.getChargeRate().getPersonalRate().v());
 			}
-			if(e.getPayType().equals(PaymentType.Bonus)&&e.getGenderType().equals(InsuranceGender.Male)){
+			if (e.getPayType().equals(PaymentType.Bonus)
+					&& e.getGenderType().equals(InsuranceGender.Male)) {
 				this.typeValue.setCBnsPensionMaleRate(e.getChargeRate().getCompanyRate().v());
 				this.typeValue.setPBnsPensionMaleRate(e.getChargeRate().getPersonalRate().v());
 			}
-			if(e.getPayType().equals(PaymentType.Bonus)&&e.getGenderType().equals(InsuranceGender.Female)){
+			if (e.getPayType().equals(PaymentType.Bonus)
+					&& e.getGenderType().equals(InsuranceGender.Female)) {
 				this.typeValue.setCBnsPensionFemRate(e.getChargeRate().getCompanyRate().v());
 				this.typeValue.setPBnsPensionFemRate(e.getChargeRate().getPersonalRate().v());
 			}
-			if(e.getPayType().equals(PaymentType.Bonus)&&e.getGenderType().equals(InsuranceGender.Unknow)){
+			if (e.getPayType().equals(PaymentType.Bonus)
+					&& e.getGenderType().equals(InsuranceGender.Unknow)) {
 				this.typeValue.setCBnsPensionMinerRate(e.getChargeRate().getCompanyRate().v());
 				this.typeValue.setPBnsPensionMinerRate(e.getChargeRate().getPersonalRate().v());
 			}

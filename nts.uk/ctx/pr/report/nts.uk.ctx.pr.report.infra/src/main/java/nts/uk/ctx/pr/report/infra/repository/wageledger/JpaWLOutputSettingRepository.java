@@ -19,7 +19,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLItemSubject;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLItemType;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSetting;
@@ -68,7 +67,7 @@ public class JpaWLOutputSettingRepository extends JpaRepository implements WLOut
 	@Override
 	public void update(WLOutputSetting outputSetting) {
 		Optional<QlsptLedgerFormHead> entity = this.queryProxy().find(
-				new QlsptLedgerFormHeadPK(outputSetting.getCompanyCode().v(), outputSetting.getCode().v()),
+				new QlsptLedgerFormHeadPK(outputSetting.getCompanyCode(), outputSetting.getCode().v()),
 				QlsptLedgerFormHead.class);
 		if (entity.isPresent()) {
 			QlsptLedgerFormHead realEntity = entity.get();
@@ -89,9 +88,9 @@ public class JpaWLOutputSettingRepository extends JpaRepository implements WLOut
 	 * WLOutputSettingCode, nts.uk.ctx.pr.report.dom.company.CompanyCode)
 	 */
 	@Override
-	public void remove(CompanyCode companyCode, WLOutputSettingCode code) {
+	public void remove(String companyCode, WLOutputSettingCode code) {
 		Optional<QlsptLedgerFormHead> entity = this.queryProxy()
-				.find(new QlsptLedgerFormHeadPK(companyCode.v(), code.v()), QlsptLedgerFormHead.class);
+				.find(new QlsptLedgerFormHeadPK(companyCode, code.v()), QlsptLedgerFormHead.class);
 		if (entity.isPresent()) {
 			this.commandProxy().remove(entity.get());
 		}
@@ -105,9 +104,9 @@ public class JpaWLOutputSettingRepository extends JpaRepository implements WLOut
 	 * nts.uk.ctx.pr.report.dom.company.CompanyCode)
 	 */
 	@Override
-	public WLOutputSetting findByCode(CompanyCode companyCode, WLOutputSettingCode code) {
+	public WLOutputSetting findByCode(String companyCode, WLOutputSettingCode code) {
 		Optional<QlsptLedgerFormHead> entity = this.queryProxy()
-				.find(new QlsptLedgerFormHeadPK(companyCode.v(), code.v()), QlsptLedgerFormHead.class);
+				.find(new QlsptLedgerFormHeadPK(companyCode, code.v()), QlsptLedgerFormHead.class);
 
 		if (entity.isPresent()) {
 			// To Domain.
@@ -125,9 +124,9 @@ public class JpaWLOutputSettingRepository extends JpaRepository implements WLOut
 	 * nts.uk.ctx.pr.report.dom.company.CompanyCode)
 	 */
 	@Override
-	public boolean isExist(CompanyCode companyCode, WLOutputSettingCode code) {
+	public boolean isExist(String companyCode, WLOutputSettingCode code) {
 		Optional<QlsptLedgerFormHead> entity = this.queryProxy()
-				.find(new QlsptLedgerFormHeadPK(companyCode.v(), code.v()), QlsptLedgerFormHead.class);
+				.find(new QlsptLedgerFormHeadPK(companyCode, code.v()), QlsptLedgerFormHead.class);
 
 		if (!entity.isPresent()) {
 			return false;
@@ -151,7 +150,7 @@ public class JpaWLOutputSettingRepository extends JpaRepository implements WLOut
 		
 		// Create condition.
 		List<Predicate> conditions = new ArrayList<>();
-		conditions.add(cb.equal(pkPath.get(QlsptLedgerFormDetailPK_.ccd), itemSubject.getCompanyCode().v()));
+		conditions.add(cb.equal(pkPath.get(QlsptLedgerFormDetailPK_.ccd), itemSubject.getCompanyCode()));
 		conditions.add(cb.equal(pkPath.get(QlsptLedgerFormDetailPK_.formCd), itemSubject.getCode().v()));
 		conditions.add(cb.equal(pkPath.get(QlsptLedgerFormDetailPK_.aggregateAtr), WLItemType.Aggregate.value));
 		conditions.add(cb.equal(pkPath.get(QlsptLedgerFormDetailPK_.ctgAtr), itemSubject.getCategory().value));
@@ -167,7 +166,7 @@ public class JpaWLOutputSettingRepository extends JpaRepository implements WLOut
 	 * #findAll(nts.uk.ctx.pr.report.dom.company.CompanyCode)
 	 */
 	@Override
-	public List<WLOutputSetting> findAll(CompanyCode companyCode) {
+	public List<WLOutputSetting> findAll(String companyCode) {
 		EntityManager em = this.getEntityManager();
 		
 		// Create criteria buider.
@@ -177,7 +176,7 @@ public class JpaWLOutputSettingRepository extends JpaRepository implements WLOut
 		
 		// Create query.
 		cq.where(cb.equal(root.get(QlsptLedgerFormHead_.qlsptLedgerFormHeadPK)
-				.get(QlsptLedgerFormHeadPK_.ccd), companyCode.v()))
+				.get(QlsptLedgerFormHeadPK_.ccd), companyCode))
 			.orderBy(cb.asc(root.get(QlsptLedgerFormHead_.qlsptLedgerFormHeadPK)
 					.get(QlsptLedgerFormHeadPK_.formCd)));
 		

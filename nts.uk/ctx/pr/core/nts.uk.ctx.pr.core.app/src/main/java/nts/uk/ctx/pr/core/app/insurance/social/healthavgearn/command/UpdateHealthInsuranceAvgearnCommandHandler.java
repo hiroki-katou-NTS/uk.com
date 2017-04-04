@@ -13,7 +13,6 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -41,17 +40,17 @@ public class UpdateHealthInsuranceAvgearnCommandHandler extends CommandHandler<U
 		// Get command.
 		UpdateHealthInsuranceAvgearnCommand command = context.getCommand();
 
-		// Get the current company code.
-		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
-
 		// Map to domain
-		List<HealthInsuranceAvgearn> healthInsuranceAvgearns = command.getListHealthInsuranceAvgearn().stream()
+		List<HealthInsuranceAvgearn> healthInsuranceAvgearns = command.getListHealthInsuranceAvgearnDto().stream()
 				.map(item -> {
-					return item.toDomain();
+					HealthInsuranceAvgearn domain = new HealthInsuranceAvgearn(item);
+					domain.setHistoryId(command.getHistoryId());
+					return domain;
 				}).collect(Collectors.toList());
 
 		// Update
-		healthInsuranceAvgearnRepository.update(healthInsuranceAvgearns, companyCode.v(), command.getOfficeCode());
+		healthInsuranceAvgearnRepository.update(healthInsuranceAvgearns, AppContexts.user().companyCode(),
+				command.getOfficeCode());
 
 	}
 }

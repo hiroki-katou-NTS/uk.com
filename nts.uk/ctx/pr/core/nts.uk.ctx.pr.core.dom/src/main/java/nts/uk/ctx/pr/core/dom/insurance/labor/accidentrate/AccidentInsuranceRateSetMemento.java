@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate;
 
 import java.util.Set;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 
 /**
@@ -26,7 +25,7 @@ public interface AccidentInsuranceRateSetMemento {
 	 *
 	 * @param companyCode the new company code
 	 */
-	void setCompanyCode(CompanyCode companyCode);
+	void setCompanyCode(String companyCode);
 
 	/**
 	 * Sets the apply range.

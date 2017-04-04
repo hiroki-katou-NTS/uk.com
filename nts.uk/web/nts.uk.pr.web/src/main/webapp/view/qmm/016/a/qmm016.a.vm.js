@@ -17,7 +17,12 @@ var nts;
                     (function (a) {
                         var viewmodel;
                         (function (viewmodel) {
-                            var elementTypes;
+                            function getElementTypeByValue(val) {
+                                return _.filter(viewmodel.elementTypes, function (el) {
+                                    return el.value == val;
+                                })[0];
+                            }
+                            viewmodel.getElementTypeByValue = getElementTypeByValue;
                             var ScreenModel = (function (_super) {
                                 __extends(ScreenModel, _super);
                                 function ScreenModel() {
@@ -52,10 +57,13 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     qmm016.service.instance.loadElementList().done(function (res) {
-                                        elementTypes = res;
+                                        viewmodel.elementTypes = res;
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
+                                };
+                                ScreenModel.prototype.isDirty = function () {
+                                    return false;
                                 };
                                 ScreenModel.prototype.onSelectHistory = function (id) {
                                     var self = this;
@@ -70,7 +78,7 @@ var nts;
                                 ScreenModel.prototype.onSave = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    if (self.isNewMode) {
+                                    if (self.isNewMode()) {
                                         var wagetableDto = self.head.getWageTableDto();
                                         qmm016.service.instance.initWageTable({
                                             wageTableHeadDto: wagetableDto,
@@ -79,12 +87,30 @@ var nts;
                                             dfd.resolve(res.uuid);
                                         });
                                     }
+                                    else {
+                                        qmm016.service.instance.updateHistory({
+                                            code: self.head.code(),
+                                            name: self.head.name(),
+                                            memo: self.head.memo(),
+                                            wtHistoryDto: self.history.getWageTableHistoryDto()
+                                        }).done(function () {
+                                            dfd.resolve(self.history.history.historyId);
+                                        });
+                                    }
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.onRegistNew = function () {
                                     var self = this;
                                     self.selectedTab('tab-1');
                                     self.head.reset();
+                                };
+                                ScreenModel.prototype.btnGroupSettingClick = function () {
+                                    var self = this;
+                                    var ntsDialogOptions = {
+                                        title: '資格グループの設定',
+                                        dialogClass: 'no-close'
+                                    };
+                                    nts.uk.ui.windows.sub.modal('/view/qmm/016/l/index.xhtml', ntsDialogOptions);
                                 };
                                 return ScreenModel;
                             }(view.base.simplehistory.viewmodel.ScreenBaseModel));
@@ -98,6 +124,26 @@ var nts;
                                     self.memo = ko.observable(undefined);
                                     self.demensionType = ko.computed(function () {
                                         return qmm016.model.demensionMap[self.demensionSet()];
+                                    });
+                                    self.lblContent = ko.computed(function () {
+                                        var contentMap = [
+                                            '１つの要素でテーブルを作成します。',
+                                            '２つの要素でテーブルを作成します。',
+                                            '３つの要素でテーブルを作成します。',
+                                            '資格手当用のテーブルを作成します。',
+                                            '精皆勤手当て用のテーブルを作成します。'
+                                        ];
+                                        return contentMap[self.demensionSet()];
+                                    });
+                                    self.lblSampleImgLink = ko.computed(function () {
+                                        var linkMap = [
+                                            '１.png',
+                                            '２.png',
+                                            '３.png',
+                                            '4.png',
+                                            '5.png'
+                                        ];
+                                        return linkMap[self.demensionSet()];
                                     });
                                     self.demensionItemList = ko.observableArray([]);
                                     self.demensionSet.subscribe(function (val) {
@@ -127,6 +173,7 @@ var nts;
                                     dto.mode = self.demensionSet();
                                     dto.elements = _.map(self.demensionItemList(), function (item) {
                                         var elementDto = {};
+                                        elementDto.demensionName = item.elementName();
                                         elementDto.demensionNo = item.demensionNo();
                                         elementDto.type = item.elementType();
                                         elementDto.referenceCode = item.elementCode();
@@ -192,6 +239,12 @@ var nts;
                                 HeadViewModel.prototype.onSelectDemensionBtnClick = function (demension) {
                                     var self = this;
                                     var dlgOptions = {
+                                        selectedDemensionDto: _.map(self.demensionItemList(), function (item) {
+                                            var dto = {};
+                                            dto.type = item.elementType();
+                                            dto.code = item.elementCode();
+                                            return dto;
+                                        }),
                                         onSelectItem: function (data) {
                                             demension.elementType(data.demension.type);
                                             demension.elementCode(data.demension.code);
@@ -217,7 +270,7 @@ var nts;
                                     var self = this;
                                     self.elementType(element.type);
                                     self.elementCode(element.referenceCode);
-                                    self.elementName('need load later');
+                                    self.elementName(element.demensionName);
                                 };
                                 return DemensionItemViewModel;
                             }());
@@ -240,12 +293,80 @@ var nts;
                                 }
                                 HistoryViewModel.prototype.resetBy = function (head, history) {
                                     var self = this;
+                                    self.history = history;
                                     self.startYearMonth(history.startMonth);
                                     self.endYearMonth(history.endMonth);
                                     var elementSettingViewModel = _.map(history.elements, function (el) {
                                         return new HistoryElementSettingViewModel(head, el);
                                     });
                                     self.elements(elementSettingViewModel);
+                                    if ($('#detailContainer').children().length > 0) {
+                                        var element = $('#detailContainer').children().get(0);
+                                        ko.cleanNode(element);
+                                        $('#detailContainer').empty();
+                                    }
+                                    self.detailViewModel = this.getDetailViewModelByType(head.mode);
+                                    $('#detailContainer').load(self.detailViewModel.htmlPath, function () {
+                                        var element = $('#detailContainer').children().get(0);
+                                        self.detailViewModel.onLoad().done(function () {
+                                            ko.applyBindings(self.detailViewModel, element);
+                                        });
+                                    });
+                                };
+                                HistoryViewModel.prototype.generateItem = function () {
+                                    var self = this;
+                                    qmm016.service.instance.genearetItemSetting({
+                                        historyId: self.history.historyId,
+                                        settings: self.getElementSettings() })
+                                        .done(function (res) {
+                                        self.history.elements = res;
+                                        self.detailViewModel.refreshElementSettings(res);
+                                    });
+                                };
+                                HistoryViewModel.prototype.getElementSettings = function () {
+                                    var self = this;
+                                    return _.map(self.elements(), function (el) {
+                                        var dto = {};
+                                        dto.type = el.elementType();
+                                        dto.demensionNo = el.demensionNo();
+                                        dto.upperLimit = el.upperLimit();
+                                        dto.lowerLimit = el.lowerLimit();
+                                        dto.interval = el.interval();
+                                        return dto;
+                                    });
+                                };
+                                HistoryViewModel.prototype.getWageTableHistoryDto = function () {
+                                    var self = this;
+                                    self.history.valueItems = self.detailViewModel.getCellItem();
+                                    return self.history;
+                                };
+                                HistoryViewModel.prototype.getDetailViewModelByType = function (typeCode) {
+                                    var self = this;
+                                    switch (typeCode) {
+                                        case 0:
+                                            return new qmm016.a.history.OneDemensionViewModel(self.history);
+                                        case 1:
+                                            return new qmm016.a.history.TwoDemensionViewModel(self.history);
+                                        case 2:
+                                            return new qmm016.a.history.ThreeDemensionViewModel(self.history);
+                                        case 3:
+                                            return new qmm016.a.history.CertificateViewModel(self.history);
+                                        case 4:
+                                            return new qmm016.a.history.ThreeDemensionViewModel(self.history);
+                                        default:
+                                            return new qmm016.a.history.OneDemensionViewModel(self.history);
+                                    }
+                                };
+                                HistoryViewModel.prototype.unapplyBindings = function ($node, remove) {
+                                    $node.find("*").each(function () {
+                                        $(this).unbind();
+                                    });
+                                    if (remove) {
+                                        ko.removeNode($node[0]);
+                                    }
+                                    else {
+                                        ko.cleanNode($node[0]);
+                                    }
                                 };
                                 return HistoryViewModel;
                             }());
@@ -269,11 +390,11 @@ var nts;
                                         return el.demensionNo == element.demensionNo;
                                     })[0];
                                     self.elementCode(elementDto.referenceCode);
-                                    self.elementName('need load later');
+                                    self.elementName(elementDto.demensionName);
                                     self.upperLimit(element.upperLimit);
                                     self.lowerLimit(element.lowerLimit);
                                     self.interval(element.interval);
-                                    self.type = _.filter(elementTypes, function (type) {
+                                    self.type = _.filter(viewmodel.elementTypes, function (type) {
                                         return type.value == self.elementType();
                                     })[0];
                                 };

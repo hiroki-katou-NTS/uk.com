@@ -1,12 +1,11 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.labor.unemployeerate;
 
 import java.util.Set;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateSetMemento;
@@ -19,7 +18,7 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpIn
 public class JpaUnemployeeInsuranceRateSetMemento implements UnemployeeInsuranceRateSetMemento {
 
 	/** The type value. */
-	protected QismtEmpInsuRate typeValue;
+	private QismtEmpInsuRate typeValue;
 
 	/**
 	 * Instantiates a new jpa unemployee insurance rate set memento.
@@ -53,9 +52,9 @@ public class JpaUnemployeeInsuranceRateSetMemento implements UnemployeeInsurance
 	 * company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		QismtEmpInsuRatePK pk = this.typeValue.getQismtEmpInsuRatePK();
-		pk.setCcd(companyCode.v());
+		pk.setCcd(companyCode);
 		this.typeValue.setQismtEmpInsuRatePK(pk);
 	}
 
@@ -81,8 +80,8 @@ public class JpaUnemployeeInsuranceRateSetMemento implements UnemployeeInsurance
 	@Override
 	public void setRateItems(Set<UnemployeeInsuranceRateItem> rateItems) {
 		rateItems.forEach(rateItem -> {
-			rateItem.saveToMemento(
-				new JpaUnemployeeInsuranceRateItemSetMemento(this.typeValue, rateItem.getCareerGroup()));
+			rateItem.saveToMemento(new JpaUnemployeeInsuranceRateItemSetMemento(this.typeValue,
+					rateItem.getCareerGroup()));
 		});
 	}
 

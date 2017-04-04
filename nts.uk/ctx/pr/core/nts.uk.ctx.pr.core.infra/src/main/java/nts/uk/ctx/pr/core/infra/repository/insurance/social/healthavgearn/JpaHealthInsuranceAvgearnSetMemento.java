@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.social.healthavgearn;
@@ -17,7 +17,7 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn.QismtHealt
 public class JpaHealthInsuranceAvgearnSetMemento implements HealthInsuranceAvgearnSetMemento {
 
 	/** The type value. */
-	protected QismtHealthInsuAvgearn typeValue;
+	private QismtHealthInsuAvgearn typeValue;
 
 	/**
 	 * Instantiates a new jpa health insurance avgearn set memento.
