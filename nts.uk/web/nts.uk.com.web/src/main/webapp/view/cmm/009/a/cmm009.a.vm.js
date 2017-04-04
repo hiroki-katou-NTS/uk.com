@@ -79,7 +79,6 @@ var cmm009;
                                         }
                                     }
                                     self.historyId(self.itemHist().historyId);
-                                    console.log(self.historyId() + "= historyId");
                                     var dfd = $.Deferred();
                                     a.service.getAllDepartmentByHistId(self.historyId())
                                         .done(function (department_arr) {
@@ -87,6 +86,10 @@ var cmm009;
                                         if (self.dataSource().length > 0) {
                                             self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "children"));
                                             self.singleSelectedCode(self.dataSource()[0].departmentCode);
+                                            self.A_INP_003(self.dataSource()[0].name);
+                                            self.A_INP_004(self.dataSource()[0].fullName);
+                                            if (self.dataSource()[0].externalCode != null)
+                                                self.A_INP_007(self.dataSource()[0].externalCode);
                                         }
                                     }).fail(function (error) {
                                         alert(error.message);
@@ -217,12 +220,10 @@ var cmm009;
                                     .done(function () {
                                     location.reload();
                                 })
-                                    .fail(function () {
-                                });
+                                    .fail(function () { });
                                 self.start();
                             })
-                                .fail(function (error) {
-                            });
+                                .fail(function (error) { });
                             dfd2.resolve();
                             return dfd2.promise();
                         }
@@ -242,12 +243,10 @@ var cmm009;
                                         .done(function () {
                                         location.reload();
                                     })
-                                        .fail(function () {
-                                    });
+                                        .fail(function () { });
                                     self.start();
                                 })
-                                    .fail(function (error) {
-                                });
+                                    .fail(function (error) { });
                                 dfd2.resolve();
                                 return dfd2.promise();
                             }
@@ -581,15 +580,13 @@ var cmm009;
                                 newEndDate.setDate(newEndDate.getDate() - 1);
                                 newEndDateRep = newEndDate.getFullYear() + '/' + (newEndDate.getMonth() + 1) + '/' + newEndDate.getDate();
                             }
-                            debugger;
                             var obj = new model.updateDateMY(hisdto_2.historyId, his2, newstartDate, newEndDateRep);
                             var dfd = $.Deferred();
                             a.service.upDateStartDateandEndDate(obj)
                                 .done(function () {
                                 location.reload();
                             })
-                                .fail(function () {
-                            });
+                                .fail(function () { });
                             dfd.resolve();
                             return dfd.promise();
                         }
@@ -672,7 +669,6 @@ var cmm009;
                                     self.dtoAdd(newObj);
                                     self.listDtothaydoi(editObjs);
                                     _dt.splice(index, 0, newObj);
-                                    debugger;
                                 }
                                 self.dataSource(_dt);
                                 self.numberItemNew(1);
@@ -707,7 +703,6 @@ var cmm009;
                         if (con.children.length > 0) {
                             self.updateHierachy2(con, hierarchyCode);
                         }
-                        debugger;
                     }
                 };
                 ScreenModel.prototype.insertItemDown = function () {
@@ -731,7 +726,6 @@ var cmm009;
                                     var changeIndexChild = _.filter(parrent['children'], function (item) {
                                         return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) > chc;
                                     });
-                                    debugger;
                                     for (var i in changeIndexChild) {
                                         var item = changeIndexChild[i];
                                         var itemAddH = (parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) + 1) + "";
@@ -761,7 +755,6 @@ var cmm009;
                                     else {
                                         self.listDtothaydoi();
                                     }
-                                    debugger;
                                 }
                                 else {
                                     var index = _dt.indexOf(current);
@@ -827,7 +820,6 @@ var cmm009;
                                 while ((hierachyItemadd + "").length < 3)
                                     hierachyItemadd = "0" + hierachyItemadd;
                                 var newObj = new model.Dto('', new Date().getTime() + "", "", "", "", "", hierachy_current + hierachyItemadd, "情報を登録してください", current.startDate, []);
-                                debugger;
                                 current.children.push(newObj);
                                 var currentHis = self.itemHist();
                                 newObj.startDate = currentHis.startDate;

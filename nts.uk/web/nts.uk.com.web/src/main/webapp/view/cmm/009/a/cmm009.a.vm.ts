@@ -120,7 +120,6 @@ module cmm009.a.viewmodel {
                                 }
                             }
                             self.historyId(self.itemHist().historyId);
-                            console.log(self.historyId() + "= historyId");
                             //get position by historyId
                             var dfd = $.Deferred();
                             service.getAllDepartmentByHistId(self.historyId())
@@ -129,6 +128,10 @@ module cmm009.a.viewmodel {
                                     if (self.dataSource().length > 0) {
                                         self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "children"));
                                         self.singleSelectedCode(self.dataSource()[0].departmentCode);
+                                        self.A_INP_003(self.dataSource()[0].name);
+                                        self.A_INP_004(self.dataSource()[0].fullName);
+                                        if (self.dataSource()[0].externalCode != null)
+                                            self.A_INP_007(self.dataSource()[0].externalCode);
                                     }
                                 }).fail(function(error) {
                                     alert(error.message);
@@ -151,6 +154,7 @@ module cmm009.a.viewmodel {
                 }
             }));
         }
+        
         register() {
             var self = this;
             if (self.code().code == "CODE_004") {
@@ -241,7 +245,6 @@ module cmm009.a.viewmodel {
                         dfd2.resolve();
                         return dfd2.promise();
                     }
-
                 }
                 if (self.checkAddHist1() == "AddhistoryFromLatest") {
                     console.log(self.dataSource2());
@@ -261,14 +264,10 @@ module cmm009.a.viewmodel {
                                 .done(function() {
                                     location.reload();
                                 })
-                                .fail(function() {
-
-                                })
+                                .fail(function() { })
                             self.start();
                         })
-                        .fail(function(error) {
-
-                        })
+                        .fail(function(error) { })
                     dfd2.resolve();
                     return dfd2.promise();
                 }
@@ -289,20 +288,15 @@ module cmm009.a.viewmodel {
                                     .done(function() {
                                         location.reload();
                                     })
-                                    .fail(function() {
-
-                                    })
+                                    .fail(function() { })
                                 self.start();
                             })
-                            .fail(function(error) {
-
-                            })
+                            .fail(function(error) { })
                         dfd2.resolve();
                         return dfd2.promise();
                     }
                 }
             }
-
         }
 
         deletebtn() {
@@ -342,7 +336,6 @@ module cmm009.a.viewmodel {
                                         self.updateHierachy2(item1, phc + itemAddH);
                                     }
                                 }
-
                                 var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item) { return item.editIndex; });
                                 if (editObjs.length > 0) {
                                     let currentHis = self.itemHist();
@@ -354,7 +347,6 @@ module cmm009.a.viewmodel {
                                 }
                                 self.listDtothaydoi(editObjs);
                             } else {
-
                                 var index = _dt.indexOf(current);
                                 //Parent hirachy code
                                 var phc = current.hierarchyCode;
@@ -653,19 +645,14 @@ module cmm009.a.viewmodel {
                         let newEndDate = new Date(newstartDate);
                         newEndDate.setDate(newEndDate.getDate() - 1);
                         newEndDateRep = newEndDate.getFullYear() + '/' + (newEndDate.getMonth() + 1) + '/' + newEndDate.getDate();
-
                     }
-
-                    debugger;
                     let obj = new model.updateDateMY(hisdto.historyId, his2, newstartDate, newEndDateRep);
                     var dfd = $.Deferred();
                     service.upDateStartDateandEndDate(obj)
                         .done(function() {
                             location.reload();
                         })
-                        .fail(function() {
-
-                        })
+                        .fail(function() { })
                     dfd.resolve();
                     return dfd.promise();
                 }
@@ -683,15 +670,12 @@ module cmm009.a.viewmodel {
                         var hierachyItemadd = (parseInt(i)) + "";
                         while ((hierachyItemadd + "").length < 3)
                             hierachyItemadd = "0" + hierachyItemadd;
-
                         var parrent = self.findParent(_code, _dt);
-
                         var newObj = new model.Dto('', "999", "", "",
                             "", "", hierachyItemadd,
                             "情報を登録してください",
                             current.startDate,
                             []);
-
                         if (parrent) {
                             var index = parrent.children.indexOf(current);
                             //Parent hirachy code
@@ -713,7 +697,6 @@ module cmm009.a.viewmodel {
                                     self.updateHierachy2(item1, phc + itemAddH);
                                 }
                             }
-
                             newObj.hierarchyCode = phc + hierachyItemadd;
                             parrent.children.splice(index, 0, newObj);
                             var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item) { return item.editIndex; });
@@ -728,12 +711,10 @@ module cmm009.a.viewmodel {
                             self.dtoAdd(newObj);
                             self.listDtothaydoi(editObjs);
                         } else {
-
                             var index = _dt.indexOf(current);
                             //Parent hirachy code
                             var phc = current.hierarchyCode;
                             var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
-
                             // Thay đổi hirachiCode của các object bên dưới
                             var changeIndexChild2 = _.filter(_dt, function(item) {
                                 return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) >= chc;
@@ -763,13 +744,10 @@ module cmm009.a.viewmodel {
                             self.dtoAdd(newObj);
                             self.listDtothaydoi(editObjs);
                             _dt.splice(index, 0, newObj);
-                            debugger;
                         }
                         self.dataSource(_dt);
                         self.numberItemNew(1);
-
                         self.singleSelectedCode(newObj.departmentCode);
-
                         self.resetInput();
                     }
                 } else {
@@ -801,7 +779,6 @@ module cmm009.a.viewmodel {
                 if (con.children.length > 0) {
                     self.updateHierachy2(con, hierarchyCode);
                 }
-                debugger;
             }
         }
 
@@ -828,13 +805,10 @@ module cmm009.a.viewmodel {
                             //Parent hirachy code
                             var phc = parrent.hierarchyCode;
                             var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
-
                             // Thay đổi hirachiCode của các object bên dưới
                             var changeIndexChild = _.filter(parrent['children'], function(item) {
                                 return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) > chc;
                             });
-
-                            debugger;
                             for (var i in changeIndexChild) {
                                 var item = changeIndexChild[i];
                                 var itemAddH = (parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) + 1) + "";
@@ -863,20 +837,16 @@ module cmm009.a.viewmodel {
                             } else {
                                 self.listDtothaydoi();
                             }
-
-                            debugger;
                         }
                         else {
                             var index = _dt.indexOf(current);
                             //Parent hirachy code
                             var phc = current.hierarchyCode;
                             var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
-
                             // Thay đổi hirachiCode của các object bên dưới
                             var changeIndexChild2 = _.filter(_dt, function(item) {
                                 return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) > chc;
                             });
-
                             for (var i in changeIndexChild2) {
                                 var item = changeIndexChild2[i];
                                 var itemAddH = (parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) + 1) + "";
@@ -907,11 +877,8 @@ module cmm009.a.viewmodel {
                             _dt.splice(index + 1, 0, newObj);
                         }
                         self.dataSource(_dt);
-
                         self.numberItemNew(1);
-
                         self.singleSelectedCode(newObj.departmentCode);
-
                         self.resetInput();
                     }
                 } else {
@@ -932,17 +899,14 @@ module cmm009.a.viewmodel {
                     if (current.hierarchyCode.length < 30) {
                         var hierachy_current = current.hierarchyCode;
                         var length = current.children.length + 1;
-
                         var hierachyItemadd = length + "";
                         while ((hierachyItemadd + "").length < 3)
                             hierachyItemadd = "0" + hierachyItemadd;
-
                         var newObj = new model.Dto('', new Date().getTime() + "", "", "",
                             "", "", hierachy_current + hierachyItemadd,
                             "情報を登録してください",
                             current.startDate,
                             []);
-                        debugger;
                         current.children.push(newObj);
                         let currentHis = self.itemHist();
                         newObj.startDate = currentHis.startDate;
@@ -956,7 +920,6 @@ module cmm009.a.viewmodel {
                         self.A_INP_002("");
                         self.A_INP_003("");
                         $("#A_INP_002").focus();
-
                     } else {
                         alert("hierarchy item current = 10 ,not push item child to tree");
                     }
@@ -1055,8 +1018,6 @@ module cmm009.a.viewmodel {
             return dfd.promise();
         }
     }
-
-
     /**
           * Model namespace.
        */
