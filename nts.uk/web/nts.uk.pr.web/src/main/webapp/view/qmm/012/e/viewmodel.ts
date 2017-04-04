@@ -125,6 +125,7 @@ module qmm012.e.viewmodel {
             });
         }
         getCurrentItemAttend() {
+            //return Item Attend customer input on form
             let self = this;
             let itemAttend = new service.model.ItemAttend(
                 self.CurrentAvePayAtr(),

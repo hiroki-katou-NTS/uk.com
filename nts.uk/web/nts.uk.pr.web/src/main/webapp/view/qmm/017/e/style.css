@@ -1,0 +1,33 @@
+.wrap-sel-006 {
+	height: 203px;
+}
+.e-col-1 {
+	height: 100%;
+	float:left;
+}
+#e_lst_001{
+	margin-top: 39px;
+}
+#e_lst_002 {
+	width: 282px; 
+	margin-left: 20px;
+}
+#e_lst_001.caret-right:after {
+    border-width: 37px 19px;
+    top:38px;
+    color: #E0F59E;
+}
+
+#e_btn_001 {
+	width: 283px;
+    height: 28px;
+}
+#e_btn_001.caret-bottom:after {
+	border-width: 25px 75px;
+    color: #E0F59E;
+    top: 30px;
+    left: 87px;
+}
+#e_lst_002 .ntsSearchBox {
+	width: 225px !important;
+}

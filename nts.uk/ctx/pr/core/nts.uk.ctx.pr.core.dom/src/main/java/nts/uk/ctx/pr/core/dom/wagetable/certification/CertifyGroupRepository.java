@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.certification;
@@ -47,4 +47,13 @@ public interface CertifyGroupRepository {
 	 * @return the certify group
 	 */
 	Optional<CertifyGroup> findById(String companyCode, String code);
+
+	/**
+	 * Checks if is belong to exist group.
+	 *
+	 * @param companyCode the company code
+	 * @param certificationCode the certification code
+	 * @return the boolean
+	 */
+	Boolean isBelongToExistGroup(String companyCode, String groupCode, String certificationCode);
 }

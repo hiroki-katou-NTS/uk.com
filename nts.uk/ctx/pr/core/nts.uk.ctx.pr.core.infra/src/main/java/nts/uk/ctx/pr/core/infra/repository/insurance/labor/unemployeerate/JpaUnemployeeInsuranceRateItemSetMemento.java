@@ -45,13 +45,13 @@ public class JpaUnemployeeInsuranceRateItemSetMemento implements UnemployeeInsur
 			break;
 
 		case Contruction:
-			this.typeValue.setCEmpRateConst(new BigDecimal(String.valueOf(companySetting.getRate())));
-			this.typeValue.setCEmpRoundConst(companySetting.getRoundAtr().value);
+			this.typeValue.setCEmpRateOther(new BigDecimal(String.valueOf(companySetting.getRate())));
+			this.typeValue.setCEmpRoundOther(companySetting.getRoundAtr().value);
 			break;
 
 		case Other:
-			this.typeValue.setCEmpRateOther(new BigDecimal(String.valueOf(companySetting.getRate())));
-			this.typeValue.setCEmpRoundOther(companySetting.getRoundAtr().value);
+			this.typeValue.setCEmpRateConst(new BigDecimal(String.valueOf(companySetting.getRate())));
+			this.typeValue.setCEmpRoundConst(companySetting.getRoundAtr().value);
 			break;
 
 		}
@@ -68,13 +68,13 @@ public class JpaUnemployeeInsuranceRateItemSetMemento implements UnemployeeInsur
 			break;
 
 		case Contruction:
-			this.typeValue.setPEmpRateConst(new BigDecimal(String.valueOf(personalSetting.getRate())));
-			this.typeValue.setPEmpRoundConst(personalSetting.getRoundAtr().value);
+			this.typeValue.setPEmpRateOther(new BigDecimal(String.valueOf(personalSetting.getRate())));
+			this.typeValue.setPEmpRoundOther(personalSetting.getRoundAtr().value);
 			break;
 
 		case Other:
-			this.typeValue.setPEmpRateOther(new BigDecimal(String.valueOf(personalSetting.getRate())));
-			this.typeValue.setPEmpRoundOther(personalSetting.getRoundAtr().value);
+			this.typeValue.setPEmpRateConst(new BigDecimal(String.valueOf(personalSetting.getRate())));
+			this.typeValue.setPEmpRoundConst(personalSetting.getRoundAtr().value);
 			break;
 
 		}

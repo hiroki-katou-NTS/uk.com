@@ -14,7 +14,6 @@ module nts.uk.pr.view.qmm016.l {
         export class ScreenModel {
 
             enableButton: KnockoutObservable<boolean>;
-            //update add LaborInsuranceOffice
             typeAction: KnockoutObservable<number>;
             selectedMultipleTargetSetting: KnockoutObservable<number>;
             selectLstCodeLstCertification: KnockoutObservableArray<string>;
@@ -271,9 +270,9 @@ module nts.uk.pr.view.qmm016.l {
                     { headerText: '名称', key: 'name', width: 180 }
                 ]);
                 this.selectionMultipleTargetSetting = ko.observableArray<MultipleTargetSettingDto>(
-                    [new MultipleTargetSettingDto(MultipleTargetSetting.BigestMethod, "BigestMethod"),//"BigestMethod 
-                        new MultipleTargetSettingDto(MultipleTargetSetting.TotalMethod, "TotalMethod")//TotalMethod
-                    ]);//TotalMethod
+                    [new MultipleTargetSettingDto(MultipleTargetSetting.BigestMethod, "一番高い手当を1つだけ支給する"),
+                        new MultipleTargetSettingDto(MultipleTargetSetting.TotalMethod, "複数該当した金額を加算する")
+                    ]);
                 this.certifies = ko.observableArray<CertificationFindInDto>(certifyGroupDto.certifies);
                 this.lstCertification = ko.observableArray<CertificationFindInDto>([]);
                 this.isReadOnly = ko.observable(true);

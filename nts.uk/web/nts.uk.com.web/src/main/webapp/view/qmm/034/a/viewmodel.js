@@ -43,7 +43,6 @@ var qmm034;
                     var self = this;
                     self.countStartDateChange += 1;
                     self.currentEra(self.getEra(codeChanged));
-                    self.dirtyObject.reset();
                     self.date(self.currentEra().startDate().toString());
                     self.startDate(self.currentEra().startDate());
                     self.isDeleteEnable(true);
@@ -54,6 +53,8 @@ var qmm034;
                             self.isEnableCode(true);
                         }
                     });
+                    if (self.dirtyObject !== undefined)
+                        self.dirtyObject.reset();
                     self.previousCurrentCode = codeChanged;
                 };
                 ScreenModel.prototype.init = function () {
@@ -210,7 +211,8 @@ var qmm034;
                     self.isDeleteEnable(false);
                     self.isEnableCode(true);
                     self.isUpdate(false);
-                    self.dirtyObject.reset();
+                    if (self.dirtyObject !== undefined)
+                        self.dirtyObject.reset();
                     $("#A_INP_001").focus();
                 };
                 ScreenModel.prototype.startWithEmptyData = function () {
@@ -221,8 +223,10 @@ var qmm034;
                     self.dirtyObject.reset();
                 };
                 ScreenModel.prototype.clearError = function () {
-                    $(".nts-editor").ntsError('clear');
-                    $("#A_INP_003").ntsError('clear');
+                    if ($(".nts-editor").ntsError('hasError'))
+                        $(".nts-editor").ntsError('clear');
+                    if ($("#A_INP_003").ntsError('hasError'))
+                        $("#A_INP_003").ntsError('clear');
                 };
                 return ScreenModel;
             }());
