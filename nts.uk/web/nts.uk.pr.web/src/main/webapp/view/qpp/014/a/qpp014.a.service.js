@@ -5,10 +5,10 @@ var qpp014;
         var service;
         (function (service) {
             var path = {
-                findPayDayProcessing: "pr/proto/paymentdata/banktransfer/findPayDayProcessing/{0}/{1}",
+                findPayDayProcessing: "pr/proto/paymentdata/banktransfer/findPayDayProcessing/{0}",
             };
-            function findAll(companyCode, payBonusAtr) {
-                var _path = nts.uk.text.format(path.findPayDayProcessing, companyCode, payBonusAtr);
+            function findAll(payBonusAtr) {
+                var _path = nts.uk.text.format(path.findPayDayProcessing, payBonusAtr);
                 return nts.uk.request.ajax(_path);
             }
             service.findAll = findAll;

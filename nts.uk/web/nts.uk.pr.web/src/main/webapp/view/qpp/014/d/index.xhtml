@@ -6,9 +6,13 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
-		<script src="http://www.igniteui.com/js/external/knockout.mapping-latest.js" type="text/javascript"></script>
-		<script src="http://cdn-na.infragistics.com/igniteui/2016.2/latest/js/extensions/infragistics.datasource.knockoutjs.js"></script>
-		<script src="http://cdn-na.infragistics.com/igniteui/2016.2/latest/js/extensions/infragistics.ui.grid.knockout-extensions.js"></script>
+		<script
+			src="http://www.igniteui.com/js/external/knockout.mapping-latest.js"
+			type="text/javascript"></script>
+		<script
+			src="http://cdn-na.infragistics.com/igniteui/2016.2/latest/js/extensions/infragistics.datasource.knockoutjs.js"></script>
+		<script
+			src="http://cdn-na.infragistics.com/igniteui/2016.2/latest/js/extensions/infragistics.ui.grid.knockout-extensions.js"></script>
 		<com:scriptfile path="../d/qpp014.d.viewmodel.js" />
 		<com:scriptfile path="../shr/qpp014.shr.viewmodelbase.js" />
 		<com:stylefile path="../d/qpp014.d.main.css" />
@@ -21,8 +25,7 @@
 				</div>
 				<label id="D_LBL_002"
 					data-bind="text: ko.observable(new Date().getFullYear()+'/'+(new Date().getMonth()+1))"></label>
-				<label id="D_LBL_015">LBL_015</label>
-				<label id="D_LBL_016">LBL_016</label>
+				<label id="D_LBL_015">LBL_015</label> <label id="D_LBL_016">LBL_016</label>
 			</div>
 			<div class="divLine">
 				<label id="D_LBL_003">以下の設定で処理を行います。</label>
@@ -53,40 +56,40 @@
 			<div class="divLine" id="D-divLine5">
 				<div id="D_LBL_006" data-bind="ntsFormLabel: {required: true}">対象人数</div>
 				<div id="D_LBL_007" align="center">
-					<label>10000</label>
-					<label>人</label>
+					<label>10000</label> <label>人</label>
 				</div>
-				<table id="D_LST_001" data-bind="igGrid: {
-				dataSource: viewmodeld.d_LST_001_items,
-                primaryKey: 'code',
-                width: '740px',
-                height: '280px',
-                autoCommit: false,
-                dataSourceType: 'json',
-                features: [
-                    {
-                        name: 'Selection',
-                        mode: 'row'
-                    },
-                    {
-                        name: 'MultiColumnHeaders'
-                    }
-                ],
-                autoGenerateColumns: false,
-                columns: [
-                    { headerText: 'コード', key: 'code', dataType: 'string',columnCssClass: 'text_align', width: '15%' },
-                    { headerText: '名称', key: 'code', dataType: 'string', width: '15%' },
-                    {
-                        headerText: '振込元設定', width: '70%',
-                        group: [
-                            { headerText: '支払1', key: 'code', dataType: 'string', width: '14%' },
-                            { headerText: '支払2', key: 'name', dataType: 'string', width: '14%' },
-                            { headerText: '支払3', key: 'description', dataType: 'string', width: '14%' },
-                            { headerText: '支払4', key: 'description', dataType: 'string', width: '14%' },
-                            { headerText: '支払5', key: 'description', dataType: 'string', width: '14%' }
-                        ]
-                    }
-                ]
+				<table id="D_LST_001"
+					data-bind="igGrid: {
+						dataSource: viewmodeld.d_LST_001_items,
+		                primaryKey: 'code',
+		                width: '740px',
+		                height: '280px',
+		                autoCommit: false,
+		                dataSourceType: 'json',
+		                features: [
+		                    {
+		                        name: 'Selection',
+		                        mode: 'row'
+		                    },
+		                    {
+		                        name: 'MultiColumnHeaders'
+		                    }
+		                ],
+		                autoGenerateColumns: false,
+		                columns: [
+		                    { headerText: 'コード', key: 'code', dataType: 'string',columnCssClass: 'text_align', width: '15%' },
+		                    { headerText: '名称', key: 'name', dataType: 'string', width: '15%' },
+		                    {
+		                        headerText: '振込元設定', width: '70%',
+		                        group: [
+		                            { headerText: '支払1', key: 'code', dataType: 'string', width: '14%' },
+		                            { headerText: '支払2', key: 'name', dataType: 'string', width: '14%' },
+		                            { headerText: '支払3', key: 'description', dataType: 'string', width: '14%' },
+		                            { headerText: '支払4', key: 'description', dataType: 'string', width: '14%' },
+		                            { headerText: '支払5', key: 'description', dataType: 'string', width: '14%' }
+		                        ]
+		                    }
+		                ]
 				}"></table>
 			</div>
 			<div class="divLine">
@@ -122,7 +125,8 @@
 				</div>
 			</div>
 			<div class="divLine">
-				<button id="D_BTN_002" class="proceed x-large">作成を実行</button>
+				<button id="D_BTN_002" class="proceed x-large"
+					data-bind="click: openEDialog">作成を実行</button>
 			</div>
 		</div>
 	</ui:composition>

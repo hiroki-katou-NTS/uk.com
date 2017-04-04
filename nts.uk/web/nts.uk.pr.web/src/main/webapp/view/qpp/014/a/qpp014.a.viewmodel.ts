@@ -11,12 +11,9 @@ module qpp014.a.viewmodel {
         a_SEL_001_itemSelected: KnockoutObservable<any>;
 
         constructor() {
-
+            var self = this;
             $('.func-btn').css('visibility', 'hidden');
             $('#screenB').css('display', 'none');
-
-            let self = this;
-
 
             //viewmodel A
             self.a_SEL_001_items = ko.observableArray([]);
@@ -26,24 +23,38 @@ module qpp014.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            self.findAll();
-            dfd.resolve();
+            self.findAll().done(function() {
+                dfd.resolve();
+            }).fail(function(res) {
+                dfd.reject(res);
+            });
             return dfd.promise();
         }
-
+        
+        /**
+         * get data from table PAYDAY_PROCESSING
+         */
         findAll(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            qpp014.a.service.findAll("", 0)
+            //get data with BONUS_ATR(PAY_BONUS_ATR) = 0 
+            qpp014.a.service.findAll(0)
                 .done(function(data) {
-                    self.a_SEL_001_items(data);
+                    if (data.length > 0) {
+                        self.a_SEL_001_items(data);
+                    } else {
+                        nts.uk.ui.dialog.alert("対象データがありません。");//ER010
+                    }
                     dfd.resolve();
                 }).fail(function(res) {
                     dfd.reject(res);
                 });
             return dfd.promise();
         }
-
+        
+        /**
+         * go to next screen
+         */
         nextScreen(): void {
             $("#screenA").css("display", "none");
             $("#screenB").css("display", "");
@@ -51,7 +62,10 @@ module qpp014.a.viewmodel {
                 $(".func-btn").css("visibility", "visible");
             });
         }
-
+        
+        /**
+         * back to previous screen
+         */
         backScreen(): void {
             $("#screenB").css("display", "none");
             $("#screenA").css("display", "");

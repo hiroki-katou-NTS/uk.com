@@ -6,7 +6,7 @@ module qpp014.d.viewmodel {
         d_INP_001: any;
         d_LST_001_items: KnockoutObservableArray<any>;
         d_LST_001_itemSelected: KnockoutObservable<any>;
-        
+
         constructor() {
             let self = this;
 
@@ -16,10 +16,14 @@ module qpp014.d.viewmodel {
                 value: ko.observable('')
             };
             self.d_LST_001_items = ko.observableArray([]);
-            for (let i = 1; i < 5; i++) {
-                self.d_LST_001_items.push(({ code: '00' + i, name: ('基本給'), description: ('description' + i) }));
+            for (let i = 1; i < 31; i++) {
+                self.d_LST_001_items.push(({ code: '00' + i, name: '基本給' + i, description: ('description' + i) }));
             }
             self.d_LST_001_itemSelected = ko.observable(0);
+        }
+
+        openEDialog(): void {
+            nts.uk.ui.windows.sub.modal("/view/qpp/014/e/index.xhtml", { title: "振込データの作成結果一覧", dialogClass: "no-close" });
         }
     }
 };

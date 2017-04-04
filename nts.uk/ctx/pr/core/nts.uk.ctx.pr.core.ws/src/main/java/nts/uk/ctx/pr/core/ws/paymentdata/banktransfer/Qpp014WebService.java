@@ -20,9 +20,8 @@ public class Qpp014WebService extends WebService {
 	private IPaydayProcessingFinder iPaydayProcessingFinder;
 
 	@POST
-	@Path("findPayDayProcessing/{companyCode}/{payBonusAtr}")
-	public List<PaydayProcessingDto> findPayDayProcessing(@PathParam("companyCode") String companyCode,
-			@PathParam("payBonusAtr") int payBonusAtr) {
-		return iPaydayProcessingFinder.getPaydayProcessing(companyCode, payBonusAtr);
+	@Path("findPayDayProcessing/{payBonusAtr}")
+	public List<PaydayProcessingDto> findPayDayProcessing(@PathParam("payBonusAtr") int payBonusAtr) {
+		return iPaydayProcessingFinder.getPaydayProcessing(payBonusAtr);
 	}
 }

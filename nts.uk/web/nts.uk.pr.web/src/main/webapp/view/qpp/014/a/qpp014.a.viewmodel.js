@@ -10,25 +10,33 @@ var qpp014;
                     this.viewmodeld = new qpp014.d.viewmodel.ScreenModel();
                     this.viewmodelg = new qpp014.g.viewmodel.ScreenModel();
                     this.viewmodelh = new qpp014.h.viewmodel.ScreenModel();
+                    var self = this;
                     $('.func-btn').css('visibility', 'hidden');
                     $('#screenB').css('display', 'none');
-                    var self = this;
                     self.a_SEL_001_items = ko.observableArray([]);
                     self.a_SEL_001_itemSelected = ko.observable(1);
                 }
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    self.findAll();
-                    dfd.resolve();
+                    self.findAll().done(function () {
+                        dfd.resolve();
+                    }).fail(function (res) {
+                        dfd.reject(res);
+                    });
                     return dfd.promise();
                 };
                 ScreenModel.prototype.findAll = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    qpp014.a.service.findAll("", 0)
+                    qpp014.a.service.findAll(0)
                         .done(function (data) {
-                        self.a_SEL_001_items(data);
+                        if (data.length > 0) {
+                            self.a_SEL_001_items(data);
+                        }
+                        else {
+                            nts.uk.ui.dialog.alert("対象データがありません。");
+                        }
                         dfd.resolve();
                     }).fail(function (res) {
                         dfd.reject(res);
