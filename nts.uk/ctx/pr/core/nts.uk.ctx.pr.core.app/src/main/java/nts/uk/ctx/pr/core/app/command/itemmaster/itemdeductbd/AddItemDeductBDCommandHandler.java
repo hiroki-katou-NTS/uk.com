@@ -30,7 +30,7 @@ public class AddItemDeductBDCommandHandler extends CommandHandler<AddItemDeductB
 		String companyCode = AppContexts.user().companyCode();
 		// Check if the data already exists
 		if (this.itemDeductBDRepo.find(companyCode, itemCode, itemBreakdownCode).isPresent())
-			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
+			throw new BusinessException(" 明細書名が入力されていません。");
 		this.itemDeductBDRepo.add(companyCode, context.getCommand().toDomain());
 	}
 }

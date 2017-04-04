@@ -23,7 +23,7 @@ public class DeleteItemAttendCommandHandler extends CommandHandler<DeleteItemAtt
 	protected void handle(CommandHandlerContext<DeleteItemAttendCommand> context) {
 		val companyCode = AppContexts.user().companyCode();
 		if (!this.itemAttendRespository.find(companyCode, context.getCommand().getItemCode()).isPresent())
-			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
+			throw new BusinessException(" 明細書名が入力されていません。");
 		this.itemAttendRespository.delete(companyCode, context.getCommand().getItemCode());
 
 	}

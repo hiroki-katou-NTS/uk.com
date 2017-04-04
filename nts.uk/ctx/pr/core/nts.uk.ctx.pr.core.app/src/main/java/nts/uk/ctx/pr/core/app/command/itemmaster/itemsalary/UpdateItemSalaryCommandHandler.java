@@ -6,7 +6,6 @@ import javax.transaction.Transactional;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalaryRespository;
@@ -24,7 +23,7 @@ public class UpdateItemSalaryCommandHandler extends CommandHandler<UpdateItemSal
 		val companyCode = AppContexts.user().companyCode();
 		String itemCode = context.getCommand().getItemCode();
 		if (!this.itemSalaryRespository.find(companyCode, itemCode).isPresent())
-			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
+			throw new BusinessException(" 明細書名が入力されていません。");
 		this.itemSalaryRespository.update(companyCode, context.getCommand().toDomain());
 
 	}

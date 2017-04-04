@@ -26,7 +26,7 @@ public class UpdateItemDeductBDCommandHandler extends CommandHandler<UpdateItemD
 		String companyCode = AppContexts.user().companyCode();
 		// Check if the data no exists
 		if (!this.itemDeductBDRepo.find(companyCode, itemCode, itemBreakdownCd).isPresent())
-			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
+			throw new BusinessException(" 明細書名が入力されていません。");
 		this.itemDeductBDRepo.update(companyCode, context.getCommand().toDomain());
 	}
 }

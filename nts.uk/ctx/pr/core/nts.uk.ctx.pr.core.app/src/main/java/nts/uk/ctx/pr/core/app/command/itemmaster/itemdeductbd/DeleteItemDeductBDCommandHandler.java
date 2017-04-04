@@ -29,7 +29,7 @@ public class DeleteItemDeductBDCommandHandler extends CommandHandler<DeleteItemD
 		String companyCode = AppContexts.user().companyCode();
 		// Check if the data no exists
 		if (!this.itemDeductBDRepository.find(companyCode, itemCode, itemBreakdownCode).isPresent())
-			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
+			throw new BusinessException(" 明細書名が入力されていません。");
 		this.itemDeductBDRepository.delete(companyCode, itemCode, itemBreakdownCode);
 	}
 }

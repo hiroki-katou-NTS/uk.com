@@ -24,7 +24,7 @@ public class UpdateItemAttendCommandHandler extends CommandHandler<UpdateItemAtt
 		String companyCode = AppContexts.user().companyCode();
 		val itemCode = context.getCommand().getItemCode();
 		if (!this.itemAttendRespository.find(companyCode, itemCode).isPresent())
-			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
+			throw new BusinessException(" 明細書名が入力されていません。");
 		this.itemAttendRespository.update(companyCode, context.getCommand().toDomain());
 
 	}
