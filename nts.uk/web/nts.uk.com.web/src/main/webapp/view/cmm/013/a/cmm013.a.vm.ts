@@ -59,7 +59,7 @@ module cmm013.a.viewmodel {
         dataRef: KnockoutObservableArray<model.GetAuth>;
         dataRefNew: KnockoutObservableArray<model.GetAuth>;
         createdMode: KnockoutObservable<boolean>;
-        
+        isRegitry:  KnockoutObservable<boolean>;
         constructor() {
             var self = this;
             self.jTitleRef = ko.observableArray([]);
@@ -110,6 +110,9 @@ module cmm013.a.viewmodel {
             self.itemName = ko.observable('');
             self.currentCode = ko.observable();
             self.currentCodeList = ko.observableArray([]);
+            
+            self.isRegitry = ko.observable(false);
+            
             self.columns = ko.observableArray([
                 { headerText: 'コード', key: 'jobCode', width: 80 },
                 { headerText: '名称', key: 'jobName', width: 100 }
@@ -131,8 +134,8 @@ module cmm013.a.viewmodel {
 
             //change history
             self.selectedCode.subscribe(function(codeChanged) {
-                self.itemHist(self.findHist(codeChanged));
                 
+                self.itemHist(self.findHist(codeChanged));
                 var chkCopy = nts.uk.ui.windows.getShared('cmm013Copy');
                 if (codeChanged === '1' || chkCopy) {
                     //set lai disable cho input code
@@ -140,18 +143,26 @@ module cmm013.a.viewmodel {
                     $("#inp_002").focus(); //xem lai
                     return;
                 } else {
+                    var dfd = $.Deferred();
                     //tim kiem position tuong ung voi history
                     service.findAllPosition(codeChanged).done(function(position_arr: Array<model.ListPositionDto>) {
                         self.dataSource(position_arr);
-                        if (self.dataSource().length > 0) {
+                        if (self.dataSource().length > 0 
+                         && !self.isRegitry()) {
                             self.currentCode(self.dataSource()[0].jobCode);
                         }
+                        if(self.isRegitry){
+                            self.isRegitry(false);    
+                        }
+                        dfd.resolve(self.currentCode());
                     }).fail(function(err: any) {
                         nts.uk.ui.dialog.alert(err.message);
                     }) 
                     //set lai disable cho input code
                     self.inp_002_enable(false);
+                    return dfd.promise();
                 }
+                
             });
 
             //change position
@@ -183,54 +194,22 @@ module cmm013.a.viewmodel {
                             self.createdMode(true);
                         }
                     });
+                    
                 }
+                
             });
-            self.dataRef.subscribe(function(codeChanged) {
-            });
-
-            //            $("#list-box").on("selectionChanging", function(){
-            //                if(true){
-            //                   return false;     
-            //                }
-            //                return true;    
-            //            });
 
         }
 
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-//            service.getAllHistory().done(function(history_arr: Array<model.ListHistoryDto>) {
-//
-//                if (history_arr.length > 0) {
-//                    
-//                    self.listbox(history_arr);
-//                    var histStart = _.first(history_arr);
-//                    var hisEnd = _.last(history_arr);
-//                    self.selectedCode(histStart.historyId);
-//                    self.srtDateLast(histStart.startDate);
-//                    self.endDateUpdate(histStart.endDate);
-//                    self.histIdUpdate(histStart.historyId);
-//                    self.startDateLast(histStart.startDate);
-//                    self.historyIdUpdate(histStart.historyId);
-//                    self.startDateLastEnd(hisEnd.startDate);
-//                    self.oldStartDate();
-//                    dfd.resolve(history_arr);
-//                    
-//
-//                } else {
-//                    self.openCDialog();
-//                    dfd.resolve();
-//                }
-//                
-//            })
             self.getHistory(dfd);
             return dfd.promise();
-
         }
         
         //get all history
-        getHistory(dfd): any{
+        getHistory(dfd: any): any{
             var self = this;
             service.getAllHistory().done(function(history_arr: Array<model.ListHistoryDto>) {
                 if (history_arr.length > 0) {
@@ -298,8 +277,11 @@ module cmm013.a.viewmodel {
                 positionInfor.jobCode = self.inp_002_code();
                 positionInfor.chkInsert = self.inp_002_enable();
                 positionInfor.positionCommand = jobInfor;
-                $.when(service.registry(positionInfor).done(function() {
-                     
+                
+                
+                
+                service.registry(positionInfor).done(function() {
+                    self.isRegitry(true); 
                     var currentHis = self.selectedCode();
                     var currentJob = self.inp_002_code();
                     self.selectedCode('');
@@ -307,22 +289,16 @@ module cmm013.a.viewmodel {
                    // self.selectedCode.valueHasMutated();
                     self.getHistory(dfd);
                     if(!nts.uk.ui.windows.getShared('cmm013Insert')){
-                        $.when(self.selectedCode(currentHis)).done(function(){
-                            self.currentCode(currentJob);
-                        });
+                        self.selectedCode(currentHis);
+                        self.currentCode(currentJob);
+                        dfd.resolve(self.currentCode());
                     }
                     //clear het bien toan cuc
                     nts.uk.ui.windows.setShared('cmm013Insert', '', true);
                     nts.uk.ui.windows.setShared('cmm013Copy', '', true);
                     nts.uk.ui.windows.setShared('cmm013C_startDateNew', '', true);
-//                    $.when(self.selectedCode.valueHasMutated()).done(function(){
-//                        self.currentCode(self.inp_002_code());    
-//                    })
-                    //self.selectedCode.valueHasMutated();
-                }).done(function(){
-//                    self.isRegitry(true);
-//                     self.currentCode(self.inp_002_code());       
-                }));
+                    
+                });
                 
 //                service.registry(positionInfor).done(function() {
 //                    //clear het bien toan cuc 

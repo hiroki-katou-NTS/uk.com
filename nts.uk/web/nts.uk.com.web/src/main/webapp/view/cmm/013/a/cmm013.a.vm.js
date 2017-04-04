@@ -55,6 +55,7 @@ var cmm013;
                     self.itemName = ko.observable('');
                     self.currentCode = ko.observable();
                     self.currentCodeList = ko.observableArray([]);
+                    self.isRegitry = ko.observable(false);
                     self.columns = ko.observableArray([
                         { headerText: 'コード', key: 'jobCode', width: 80 },
                         { headerText: '名称', key: 'jobName', width: 100 }
@@ -80,15 +81,22 @@ var cmm013;
                             return;
                         }
                         else {
+                            var dfd = $.Deferred();
                             a.service.findAllPosition(codeChanged).done(function (position_arr) {
                                 self.dataSource(position_arr);
-                                if (self.dataSource().length > 0) {
+                                if (self.dataSource().length > 0
+                                    && !self.isRegitry()) {
                                     self.currentCode(self.dataSource()[0].jobCode);
                                 }
+                                if (self.isRegitry) {
+                                    self.isRegitry(false);
+                                }
+                                dfd.resolve(self.currentCode());
                             }).fail(function (err) {
                                 nts.uk.ui.dialog.alert(err.message);
                             });
                             self.inp_002_enable(false);
+                            return dfd.promise();
                         }
                     });
                     self.currentCode.subscribe(function (codeChanged) {
@@ -117,8 +125,6 @@ var cmm013;
                                 }
                             });
                         }
-                    });
-                    self.dataRef.subscribe(function (codeChanged) {
                     });
                 }
                 ScreenModel.prototype.startPage = function () {
@@ -181,21 +187,21 @@ var cmm013;
                         positionInfor.jobCode = self.inp_002_code();
                         positionInfor.chkInsert = self.inp_002_enable();
                         positionInfor.positionCommand = jobInfor;
-                        $.when(a.service.registry(positionInfor).done(function () {
+                        a.service.registry(positionInfor).done(function () {
+                            self.isRegitry(true);
                             var currentHis = self.selectedCode();
                             var currentJob = self.inp_002_code();
                             self.selectedCode('');
                             self.getHistory(dfd);
                             if (!nts.uk.ui.windows.getShared('cmm013Insert')) {
-                                $.when(self.selectedCode(currentHis)).done(function () {
-                                    self.currentCode(currentJob);
-                                });
+                                self.selectedCode(currentHis);
+                                self.currentCode(currentJob);
+                                dfd.resolve(self.currentCode());
                             }
                             nts.uk.ui.windows.setShared('cmm013Insert', '', true);
                             nts.uk.ui.windows.setShared('cmm013Copy', '', true);
                             nts.uk.ui.windows.setShared('cmm013C_startDateNew', '', true);
-                        }).done(function () {
-                        }));
+                        });
                         return dfd.promise();
                     }
                 };
