@@ -42,60 +42,71 @@ public class RegistryPositionCommandHandler extends CommandHandler<RegistryPosit
 		List<JobTitle> lstPositionBefor;
 		List<JobTitleRef> lstJobTitleRef;
 		// neu history = null thuc hien insert history isert position
-		if (historyId.equals(null)) {
-			GeneralDate endDate = GeneralDate.localDate(LocalDate.parse("9999/12/31"));
+		if (historyId.equals("1")) {
+			GeneralDate endDate = GeneralDate.localDate(LocalDate.parse("9999-12-31"));
 
 			String historyIdNew = IdentifierUtil.randomUniqueId();
 
-			GeneralDate startDate = GeneralDate.localDate(LocalDate.parse(rePositionCommand.getStartDate()));
+			GeneralDate startDate = GeneralDate.localDate(LocalDate.parse(rePositionCommand.getStartDate().replaceAll("/", "-")));
 			JobHistory historyInfor = new JobHistory(companyCode, historyIdNew, endDate, startDate);
 
 			// add position neu duoc copy tu lich su khac
 			if (rePositionCommand.isChkCopy()) {
+				// ---lay position cua lich su ngay truoc no
+				Optional<JobHistory> historyByEndate = positionRepository.getHistoryByEdate(companyCode, endDate);
+				String historyBefore = historyByEndate.get().getHistoryId();
+				lstPositionBefor = positionRepository.findAllPosition(companyCode, historyBefore);
+				List<JobTitle> lstPositionNow = lstPositionBefor.stream().map(org -> {
+					return JobTitle.createFromJavaType(companyCode, 
+							historyIdNew, 
+							org.getJobCode().v(),
+							org.getJobName().v(), 
+							org.getPresenceCheckScopeSet().value, org.getJobOutCode().v(),
+							org.getMemo().v(), 
+							org.getHiterarchyOrderCode().v());
+				}).collect(Collectors.toList());
+				// isert postition
+				
+			
+				positionRepository.add(lstPositionNow);
+				// insert quyen
+				// - lay list du lieu CMNMT_JOB_TITLE_REF
 
-				// --Neu copy position tu position khac
-				if (rePositionCommand.isChkCopy()) {
-					// ---lay position cua lich su ngay truoc no
-					Optional<JobHistory> historyByEndate = positionRepository.getHistoryByEdate(companyCode, endDate);
-					String historyBefore = historyByEndate.get().getHistoryId();
-					lstPositionBefor = positionRepository.findAllPosition(companyCode, historyBefore);
-					List<JobTitle> lstPositionNow = lstPositionBefor.stream().map(org -> {
-						return JobTitle.createFromJavaType(companyCode, 
-								historyIdNew, 
-								org.getJobCode().v(),
-								org.getJobName().v(), 
-								org.getPresenceCheckScopeSet().value, org.getJobOutCode().v(),
-								org.getMemo().v(), 
-								org.getHiterarchyOrderCode().v());
-					}).collect(Collectors.toList());
-					// isert postition
-					positionRepository.add(lstPositionNow);
-					// insert quyen
-					// - lay list du lieu CMNMT_JOB_TITLE_REF
+				lstJobTitleRef = positionRepository.findAllJobTitleRef(companyCode, historyIdNew,
+						rePositionCommand.getJobCode());
+				// - gan lai thong tin
+				List<JobTitleRef> lstTitleRef = lstJobTitleRef.stream().map(org -> {
+					return JobTitleRef.createFromJavaType(
+							org.getAuthCode().v(), 
+							companyCode, 
+							historyIdNew,
+							org.getJobCode().v(), 
+							org.getReferenceSettings().value);
+				}).collect(Collectors.toList());
+				// - add quyen
+				positionRepository.addJobTitleRef(lstTitleRef);
 
-					lstJobTitleRef = positionRepository.findAllJobTitleRef(companyCode, historyIdNew,
-							rePositionCommand.getJobCode());
-					// - gan lai thong tin
-					List<JobTitleRef> lstTitleRef = lstJobTitleRef.stream().map(org -> {
-						return JobTitleRef.createFromJavaType(
-								org.getAuthCode().v(), 
-								companyCode, 
-								historyIdNew,
-								org.getJobCode().v(), 
-								org.getReferenceSettings().value);
-					}).collect(Collectors.toList());
-					// - add quyen
-					positionRepository.addJobTitleRef(lstTitleRef);
-					
-
-				} else {
-					// neu them moi tu dau
-					InsertPositionAndRef(rePositionCommand, companyCode, historyIdNew);
-				}
-				// add history
-				positionRepository.addHistory(historyInfor);
-
+			} else {
+				// neu them moi tu dau
+				
+				InsertPositionAndRef(rePositionCommand, companyCode, historyIdNew);
 			}
+			// add history
+		
+			String tmp = rePositionCommand.getStartDate().replaceAll("/", "-").toString();
+			GeneralDate eDate = GeneralDate.localDate(LocalDate.parse(tmp));
+			GeneralDate endDateOld = eDate.addDays(-1);
+			Optional<JobHistory> hisEndate = positionRepository.getHistoryByEdate(companyCode, GeneralDate.localDate(LocalDate.parse("9999-12-31")));
+			if(hisEndate.isPresent()){
+				
+				JobHistory jobHis = hisEndate.get();
+				jobHis.setEndDate(endDateOld);
+				positionRepository.updateHistory(jobHis);
+				
+			}
+ 			positionRepository.addHistory(historyInfor);
+ 			
+			
 			// neu history != null thuc hien add or update position
 		} else {
 			PositionCommand commandInfor = rePositionCommand.getPositionCommand();
@@ -164,16 +175,18 @@ public class RegistryPositionCommandHandler extends CommandHandler<RegistryPosit
 	
 	private void InsertRefInfor(RegistryPositionCommand rePositionCommand, String companyCode, String historyId){
 		List<AddJobTitleRefCommand> refInfor = rePositionCommand.getRefCommand();
-		List<JobTitleRef> newRefInfor = new ArrayList<JobTitleRef>();
-		for (AddJobTitleRefCommand jobTitleRef : refInfor) {
-			JobTitleRef titleRef = new JobTitleRef(companyCode, 
-					historyId,
-					new JobCode(rePositionCommand.getJobCode()),
-					new AuthorizationCode(jobTitleRef.getAuthorizationCode()),
-					EnumAdaptor.valueOf(jobTitleRef.getReferenceSettings(), ReferenceSettings.class));
-			newRefInfor.add(titleRef);
+		if (!refInfor.isEmpty()){
+			List<JobTitleRef> newRefInfor = new ArrayList<JobTitleRef>();
+			for (AddJobTitleRefCommand jobTitleRef : refInfor) {
+				JobTitleRef titleRef = new JobTitleRef(companyCode, 
+						historyId,
+						new JobCode(rePositionCommand.getJobCode()),
+						new AuthorizationCode(jobTitleRef.getAuthorizationCode()),
+						EnumAdaptor.valueOf(jobTitleRef.getReferenceSettings(), ReferenceSettings.class));
+				newRefInfor.add(titleRef);
+			}
+			positionRepository.addJobTitleRef(newRefInfor);
 		}
-		positionRepository.addJobTitleRef(newRefInfor);
 	}
 	
 }

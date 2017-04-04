@@ -99,16 +99,16 @@
 									data-bind="ntsFormLabel: { constraint: ['JobCode', 'JobName'], required: true }">
 									コード/名称</div>
 							</td>
-							<td>
+							<td class="valign-center">
 								<div id="inp_002" style="width: 20px">
-									<input
+									<input id="code"
 										data-bind="ntsTextEditor: {
 	                                           value: inp_002_code,
 	                                           constraint: 'JobCode',
 	                                           enable: inp_002_enable}" />
 								</div>
 								<div id="inp_003" style="width: 50px">
-									<input
+									<input id="name"
 										data-bind="ntsTextEditor: {
 	                                           value: inp_003_name,
 	                                           constraint: 'JobName'

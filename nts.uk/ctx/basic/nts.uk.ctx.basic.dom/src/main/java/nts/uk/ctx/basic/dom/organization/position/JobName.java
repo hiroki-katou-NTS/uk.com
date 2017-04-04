@@ -1,13 +1,10 @@
 package nts.uk.ctx.basic.dom.organization.position;
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.arc.primitive.PrimitiveValue;
 import nts.arc.primitive.StringPrimitiveValue;
 
 
-@StringCharType(CharType.ALPHABET)
-@StringMaxLength(10)
+@StringMaxLength(20)
 public class JobName extends StringPrimitiveValue<PrimitiveValue<String>>{
 	/**
 	 * 

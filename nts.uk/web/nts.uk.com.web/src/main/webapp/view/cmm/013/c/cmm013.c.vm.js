@@ -21,8 +21,8 @@ var cmm013;
                     self.startDateLast(nts.uk.ui.windows.getShared('CMM013_startDateLast'));
                     if (self.startDateLast() != '' && self.startDateLast() != null) {
                         self.itemList = ko.observableArray([
-                            new BoxModel(1, '最新の履歴（' + self.startDateLast() + '）から引き継ぐ  '),
-                            new BoxModel(2, '全員参照不可')
+                            new BoxModel(0, '最新の履歴（' + self.startDateLast() + '）から引き継ぐ  '),
+                            new BoxModel(1, '全員参照不可')
                         ]);
                     }
                     else {
@@ -68,7 +68,7 @@ var cmm013;
                             return;
                         }
                         nts.uk.ui.windows.setShared('cmm013C_startDateNew', dateNew, true);
-                        nts.uk.ui.windows.setShared('cmm013C_copy', check, true);
+                        nts.uk.ui.windows.setShared('cmm013Copy', check == 0 ? true : false, true);
                         nts.uk.ui.windows.setShared('cmm013Insert', true, true);
                         nts.uk.ui.windows.close();
                     }
