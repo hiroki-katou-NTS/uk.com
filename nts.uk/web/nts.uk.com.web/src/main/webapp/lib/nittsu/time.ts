@@ -386,7 +386,7 @@
         }
 
         static succeeded(year, month, date) {
-            return new ResultParseYearMonthDate(true, year, month, date);
+            return new ResultParseYearMonthDate(true, "", year, month, date);
         }
 
         static failed(msg?) {

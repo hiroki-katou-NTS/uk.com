@@ -347,7 +347,7 @@ var nts;
                     this.msg = msg || "must yyyymm or yyyy/mm format: year in [1900-9999] and month in [1-12] ";
                 }
                 ResultParseYearMonthDate.succeeded = function (year, month, date) {
-                    return new ResultParseYearMonthDate(true, year, month, date);
+                    return new ResultParseYearMonthDate(true, "", year, month, date);
                 };
                 ResultParseYearMonthDate.failed = function (msg) {
                     return new ResultParseYearMonthDate(false, msg);
