@@ -8,7 +8,7 @@
 <body>
 
 	<ui:composition template="master/sidebar.xhtml">
-		<ui:define name="sidebar-head">
+		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 900, height: 700 };</script>
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
@@ -24,7 +24,7 @@
 				<li><a href="#tabpanel-1">納付書の印刷</a></li>
 			</ul>
 		</ui:define>
-		<ui:define name="sidebar-content">
+		<ui:define name="content">
 
 			<div id="tabpanel-1" role="tabpanel">
 				<div class="sidebar-content-header">

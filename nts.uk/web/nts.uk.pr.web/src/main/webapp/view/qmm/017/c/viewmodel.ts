@@ -51,7 +51,9 @@ module nts.qmm017 {
                     return item.code == codeChange;
                 });
                 self.useMasterCode(data().comboBoxUseMaster().selectedCode());
-                self.useMasterName(useMasterFound.name);
+                if (useMasterFound) {
+                    self.useMasterName(useMasterFound.name);
+                }
             });
             var lstReferenceMonthAtr = [
                 { code: 0, name: '当月' },
@@ -102,12 +104,12 @@ module nts.qmm017 {
             self.comboBoxRoudingPosition = ko.observable(new ComboBox(lstRoudingPostion, true, false));
             self.selectedTabCSel006 = ko.observable('tab-1');
 
-            self.noneConditionalEasyFormula = ko.observable(new EasyFormula(0));
-            self.defaultEasyFormula = ko.observable(new EasyFormula(0));
-            self.monthlyEasyFormula = ko.observable(new EasyFormula(1));
-            self.dailyMonthlyEasyFormula = ko.observable(new EasyFormula(1));
-            self.dailyEasyFormula = ko.observable(new EasyFormula(1));
-            self.hourlyEasyFormula = ko.observable(new EasyFormula(1));
+            self.noneConditionalEasyFormula = ko.observable(new EasyFormula(0, data));
+            self.defaultEasyFormula = ko.observable(new EasyFormula(0, data));
+            self.monthlyEasyFormula = ko.observable(new EasyFormula(1, data));
+            self.dailyMonthlyEasyFormula = ko.observable(new EasyFormula(1, data));
+            self.dailyEasyFormula = ko.observable(new EasyFormula(1, data));
+            self.hourlyEasyFormula = ko.observable(new EasyFormula(1, data));
         }
 
         undo() {
@@ -116,21 +118,6 @@ module nts.qmm017 {
 
         redo() {
             document.execCommand("redo", false, null);
-        }
-
-        openDialogL() {
-            var self = this;
-            let param = {
-                isUpdate: (self.defaultEasyFormula().easyFormulaDetail()),
-                dirtyData: self.defaultEasyFormula().easyFormulaDetail()
-            };
-            nts.uk.ui.windows.setShared('paramFromScreenC', param);
-            nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(() => {
-                if (nts.uk.ui.windows.getShared('easyFormulaDetail')) {
-                    self.defaultEasyFormula().easyFormulaDetail(ko.mapping.fromJS(nts.uk.ui.windows.getShared('easyFormulaDetail')));
-                    self.defaultEasyFormula().easyFormulaName(self.defaultEasyFormula().easyFormulaDetail().easyFormulaName());
-                }
-            });
         }
 
         validateTextArea() {
@@ -153,6 +140,8 @@ module nts.qmm017 {
             self.dailyEasyFormula().selectedRuleCodeEasySettings('1');
             self.hourlyEasyFormula().selectedRuleCodeEasySettings('1');
         }
+
+
     }
 
     export class EasyFormula {
@@ -161,8 +150,13 @@ module nts.qmm017 {
         easyFormulaFixMoney: KnockoutObservable<number>;
         easyFormulaDetail: KnockoutObservable<nts.qmm017.model.FormulaEasyDetailDto>;
         easyFormulaName: KnockoutObservable<string>;
-        constructor(mode: number) {
+        startYm: KnockoutObservable<any>;
+        constructor(mode: number, root) {
             var self = this;
+            self.startYm = ko.observable(root().startYearMonth());
+            root().startYearMonth.subscribe(function(yearMonth) {
+                self.startYm(yearMonth);
+            });
             if (mode == 0) {
                 self.roundingRulesEasySettings = ko.observableArray([
                     { code: '0', name: '固定値' },
@@ -186,7 +180,8 @@ module nts.qmm017 {
             var self = this;
             let param = {
                 isUpdate: (self.easyFormulaName() !== ''),
-                dirtyData: self.easyFormulaDetail()
+                dirtyData: self.easyFormulaDetail(),
+                startYm: self.startYm()
             };
             nts.uk.ui.windows.setShared('paramFromScreenC', param);
             nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(() => {
