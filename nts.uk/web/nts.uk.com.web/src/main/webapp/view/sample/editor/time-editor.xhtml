@@ -72,7 +72,8 @@
 		option: option,
 		required: required,
 		enable: enable,
-		readonly: readonly}" />
+		readonly: readonly,
+		immediate: false}" />
 </div>]]></pre>
 									<div class="pull-left">
 										<h2>API</h2>
@@ -125,6 +126,15 @@
 													</td>
 												</tr>
 												<tr>
+													<td>immediate<br/><i>(optional)</i></td>
+													<td>
+														<b>Type:</b> boolean<br/>
+														<b>Default:</b> false<br/>
+														Set update event trigger immediate for editor.<br/>
+														Can't change after init.
+													</td>
+												</tr>
+												<tr>
 													<td>option<br/><i>(optional)</i></td>
 													<td>
 														<b>Type:</b> object<br/>
@@ -156,33 +166,20 @@
 															<b>Type:</b> string<br/>
 															<b>Default:</b> "date"<br/>
 															<b>Members:</b><br/>
-															<i>date</i>: the date pattern (yyyy/MM/dd) member of regional option is used<br/>
-															<i>yearmonth</i>: the time pattern (yyyy/MM) member of regional option is used<br/>
+															<i>date</i>: the date pattern (YYYY/MM/DD) member of regional option is used<br/>
+															<i>yearmonth</i>: the time pattern (YYYY/MM) member of regional option is used<br/>
 															<i>time</i>: the time pattern (HH:mm) member of regional option is used<br/>
-															<i>datetime</i>: the datetime pattern (yyy/MM/dd HH:mm) member of regional option is used<br/>
-															<br/>
-															<b><i>Not implement yet!</i></b><br/>
-															<i>"pattern"</i>: the customize pattern member of regional option is used:<br/>
-															"y": year field without century and without leading zero<br/>
-															"yy": year field without century and with leading zero<br/>
-															"yyyy": year field with leading zeros<br/>
+															<i>datetime</i>: the datetime pattern (YYYY/MM/DD HH:mm) member of regional option is used<br/>
+															<i>ISO 8601 Formats</i><br/>
+															"YY": year field without century and with leading zero<br/>
+															"YYYY": year field with leading zeros<br/>
 															"M": month field as digit without leading zero<br/>
 															"MM": month field as digit with leading zero<br/>
-															"d": day of month field without leading zero<br/>
-															"dd": day of month field with leading zero<br/>
-															"t": first character of string which represents AM/PM field<br/>
-															"tt": 2 characters of string which represents AM/PM field<br/>
-															"h": hours field in 12-hours format without leading zero<br/>
-															"hh": hours field in 12-hours format with leading zero<br/>
-															"H": hours field in 24-hours format without leading zero<br/>
-															"HH": hours field in 24-hours format with leading zero<br/>
-															"m": minutes field without leading zero<br/>
-															"mm": minutes field with leading zero<br/>
-															"s": seconds field without leading zero<br/>
-															"ss": seconds field with leading zero<br/>
-															"f": milliseconds field in hundreds<br/>
-															"ff": milliseconds field in tenths<br/>
-															"fff": milliseconds field<br/>
+															"D": day of month field without leading zero<br/>
+															"DD": day of month field with leading zero<br/>
+															"ddd": short day of week<br/>
+															"dddd": long day of week<br/><br/>
+															The display format in timeeditor
 														</td>
 													</tr>
 													<tr>

@@ -20,25 +20,15 @@ public class ScriptFile extends UIComponentBase {
     private static Set<String> FILES_BASIC = new LinkedHashSet<String>(Arrays.asList(new String[] {
             "/lib/generic/jquery/jquery-3.1.1.js",
             "/lib/generic/jqueryui/jquery-ui.js",
+            "/lib/generic/jquery/jquery.steps.js",
+            "/lib/generic/momentjs/moment.js",
+            "/lib/generic/momentjs/ja.js",
             "/lib/generic/lodash/lodash-4.16.6.min.js",
             "/lib/generic/knockoutjs/knockout-3.4.1.js",
             "/lib/generic/knockoutjs/knockout.mapping-2.4.1.js",
+            "/lib/generic/jquery/datepicker.js",
             "/lib/nittsu/iefix.js",
-            "/lib/nittsu/util.js",
-            "/lib/nittsu/text.js",
-            "/lib/nittsu/request.js",
-            "/lib/nittsu/ui/init.js",
-            "/lib/nittsu/ui/notify.js",
-            "/lib/nittsu/ui/validation.js",
-            "/lib/nittsu/ui/jquery-ext.js",
-            "/lib/nittsu/ui/ko-ext.js",
-            "/lib/nittsu/ui/errors.js",
-            "/lib/nittsu/ui/ui.js",
-            "/lib/nittsu/ui/dialog-options.js",
-            "/lib/nittsu/ui/textbox-options.js",
-            "/lib/nittsu/time.js",
-            "/lib/nittsu/number.js",
-            "/lib/generic/jquery/datepicker.js"
+            "/lib/nittsu/nts.uk.com.web.nittsu.bundles.js"
     }));
     
     private static Set<String> FILES_IGNITE = new LinkedHashSet<String>(Arrays.asList(new String[] {

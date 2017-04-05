@@ -10,6 +10,7 @@ import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.LongPrimitiveValue;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.DecimalRange;
 import nts.arc.primitive.constraint.IntegerMaxValue;
 import nts.arc.primitive.constraint.IntegerMinValue;
 import nts.arc.primitive.constraint.IntegerRange;
@@ -18,6 +19,7 @@ import nts.arc.primitive.constraint.LongMinValue;
 import nts.arc.primitive.constraint.LongRange;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
+import nts.arc.primitive.constraint.StringRegEx;
 
 class Helper {
 	
@@ -28,6 +30,7 @@ class Helper {
 	static {
 		CONSTRAINTS_SIGNLE_PARAM.put(StringCharType.class.getSimpleName(), "charType");
 		CONSTRAINTS_SIGNLE_PARAM.put(StringMaxLength.class.getSimpleName(), "maxLength");
+		CONSTRAINTS_SIGNLE_PARAM.put(StringRegEx.class.getSimpleName(), "stringExpression");
 		CONSTRAINTS_SIGNLE_PARAM.put(IntegerMaxValue.class.getSimpleName(), "max");
 		CONSTRAINTS_SIGNLE_PARAM.put(IntegerMinValue.class.getSimpleName(), "min");
 		CONSTRAINTS_SIGNLE_PARAM.put(LongMaxValue.class.getSimpleName(), "max");
@@ -41,6 +44,7 @@ class Helper {
 	static {
 		CONSTRAINTS_MAX_MIN_PARAM.add(IntegerRange.class.getSimpleName());
 		CONSTRAINTS_MAX_MIN_PARAM.add(LongRange.class.getSimpleName());
+		CONSTRAINTS_MAX_MIN_PARAM.add(DecimalRange.class.getSimpleName());
 	}
 	
 	static HashMap<String, String> CHARTYPE_NAMES_MAP = new HashMap<>();
@@ -66,9 +70,11 @@ class Helper {
 	}
 	
 	static String getAnnotationName(String representationOfAnnotation) {
-    	int start = representationOfAnnotation.lastIndexOf(".") + 1;
-    	int end = representationOfAnnotation.indexOf("(");
-    	return representationOfAnnotation.substring(start, end);
+		int end = representationOfAnnotation.indexOf("(");
+    	String noEnd = representationOfAnnotation.substring(0, end);
+    	int start = noEnd.lastIndexOf(".") + 1;
+
+    	return noEnd.substring(start, end);
 	}
 	
 	static String getAnnotationParametersString(String representationOfAnnotation) {
@@ -82,6 +88,8 @@ class Helper {
 		
 		if (constraintName.equals("StringCharType")) {
 			jsValue = "'" + Helper.CHARTYPE_NAMES_MAP.get(jsValue) + "'";
+		} else if (constraintName.equals("StringRegEx")){
+			jsValue = "/" + jsValue + "/";
 		}
 		
 		return jsValue;

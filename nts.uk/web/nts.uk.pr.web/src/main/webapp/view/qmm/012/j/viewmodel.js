@@ -7,7 +7,6 @@ var qmm012;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    //gridlist
                     self.items = ko.observableArray([
                         new ItemModel('001', 'name1', "name1"),
                         new ItemModel('002', 'name1', "name1"),
@@ -31,14 +30,21 @@ var qmm012;
                         new ItemModel('020', 'name1', "name1")
                     ]);
                     self.columns = ko.observableArray([
-                        { headerText: '繧ｳ繝ｼ繝�', prop: 'code', width: 40 },
-                        { headerText: '蜷咲ｧｰ', prop: 'name', width: 130 },
-                        { headerText: '蜊ｰ蛻ｷ逕ｨ蜷咲ｧｰ', prop: 'description', width: 150 },
-                        { headerText: '蜊ｰ蛻ｷ逕ｨｧｰ', prop: 'mieo', width: 130 },
-                        { headerText: '蜊ｰ蛻ｷ逕ｨｰ', prop: 'pika', width: 170 }
+                        { headerText: '郢ｧ�ｽｳ郢晢ｽｼ郢晢ｿｽ', prop: 'code', width: 40 },
+                        { headerText: '陷ｷ蜥ｲ�ｽｧ�ｽｰ', prop: 'name', width: 130 },
+                        { headerText: '陷奇ｽｰ陋ｻ�ｽｷ騾包ｽｨ陷ｷ蜥ｲ�ｽｧ�ｽｰ', prop: 'description', width: 150 }
                     ]);
                     self.currentCode = ko.observable();
                 }
+                ScreenModel.prototype.changeGrid = function (value) {
+                    //    alert(value);
+                };
+                ScreenModel.prototype.SubmitDialog = function () {
+                    nts.uk.ui.windows.close();
+                };
+                ScreenModel.prototype.CloseDialog = function () {
+                    nts.uk.ui.windows.close();
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
@@ -53,3 +59,4 @@ var qmm012;
         })(viewmodel = j.viewmodel || (j.viewmodel = {}));
     })(j = qmm012.j || (qmm012.j = {}));
 })(qmm012 || (qmm012 = {}));
+//# sourceMappingURL=viewmodel.js.map

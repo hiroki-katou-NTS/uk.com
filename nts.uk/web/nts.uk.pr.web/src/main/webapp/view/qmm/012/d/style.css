@@ -1,5 +1,20 @@
 @CHARSET "UTF-8";
+
 #D_SCH_001 input {
 	width: 165px;
 	height: 30px;
+}
+
+#D_INP_001 input, #D_INP_002 input, #D_INP_003 input, #D_INP_004 input {
+	width: 100px;
+}
+
+#D_BTN_001, #D_BTN_002 {
+	width: 120px;
+}
+
+
+#D_INP_005 {
+	width: 340px;
+	height: 90px;
 }

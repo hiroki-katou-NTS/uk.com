@@ -1,4 +1,8 @@
 ﻿module nts.uk {
+    
+    export module KeyCodes {
+        export const Tab = 9;
+    }
 
     export module util {
     
@@ -151,6 +155,146 @@
             }
             return false;
         };
+        
+        export function createTreeFromString(original: string, openChar: string, closeChar: string, 
+            seperatorChar: string, operatorChar: Array<string>): Array<TreeObject>[]{
+            let result = convertToTree(original, openChar, closeChar, seperatorChar, 1, operatorChar).result;
+//            result = moveToParentIfEmpty(result);
+            return result;
+        }
+        
+        function moveToParentIfEmpty(tree: Array<TreeObject>[]) : Array<TreeObject>[]{
+            let result = [];
+            _.forEach(tree, function (e : TreeObject) {
+                if(e.children.length > 0){
+                    e.children = moveToParentIfEmpty(e.children);
+                    if(text.isNullOrEmpty(e.value)){
+                        result = result.concat(e.children);
+                    }else{
+                        result.push(e);    
+                    }
+                } else {
+                    result.push(e);
+                }
+            })
+            return result;
+        }
+        
+        function convertToTree(original: string, openChar: string, closeChar: string, separatorChar: string, index: number, operatorChar: Array<string>)
+            : {"result": Array<TreeObject>[], "index": number}{
+            let result = [];
+            while (original.trim().length > 0){  
+                let firstOpenIndex = original.indexOf(openChar);
+                if(firstOpenIndex < 0){
+                    let values = original.split(separatorChar);
+                    _.forEach(values, function(value){
+                        let data = splitByArray(value, operatorChar.slice());
+                        _.each(data, function(v){
+                           let object = new TreeObject();
+                            object.value = v;
+                            object.children = [];
+                            object.isOperator = operatorChar.indexOf(v) >= 0;
+                            result.push(object); 
+                        });     
+                    }); 
+                    return {
+                        "result": result,
+                        "index": index    
+                    };             
+                }else{
+                    let object = new TreeObject();
+                    object.value = original.substring(0, firstOpenIndex).trim();
+                    object.index = index;
+                    let closeIndex = findIndexOfCloseChar(original, openChar, closeChar, firstOpenIndex);
+                    if(closeIndex >= 0){
+                        index++;
+                        let res = convertToTree(original.substring(firstOpenIndex + 1, closeIndex).trim(), openChar, closeChar, separatorChar, index, operatorChar);
+                        object.children = res.result;
+                        index = res.index++;
+                        result.push(object);              
+                        let firstSeperatorIndex = original.indexOf(separatorChar, closeIndex);
+                        if(firstSeperatorIndex >= 0){
+                            original = original.substring(firstSeperatorIndex + 1, original.length).trim();    
+                        }else{
+                            return {
+                                "result": result,
+                                "index": index    
+                            };    
+                        }
+                    }else {
+                        return {
+                            "result": result,
+                            "index": index    
+                        };        
+                    }    
+                }
+            }
+            
+            return {
+                    "result": result,
+                    "index": index    
+                };
+        }
+        
+        function splitByArray(original: string, operatorChar: Array<string>){
+            let temp = [];
+            let result = [];      
+            if(original.trim().length <= 0){
+                return temp;
+            }
+            if (operatorChar.length <= 0){
+                return [original];        
+            }
+            let operator : string = operatorChar.shift();  
+            while (original.trim().length > 0){  
+                let index = original.indexOf(operator); 
+                if(index >= 0){ 
+                    temp.push(original.substring(0, index).trim());            
+                    temp.push(original.substring(index, index + 1).trim());
+                    original = original.substring(index + 1, original.length).trim()
+                } else {
+                    temp.push(original);
+                    break;    
+                }    
+            }
+            _.each(temp, function(value){
+                result = result.concat(splitByArray(value, operatorChar));    
+            });     
+            return result;       
+        }
+        
+        function findIndexOfCloseChar(original: string, openChar: string, closeChar: string, firstOpenIndex: number): number{
+            let openCount = 0;
+            let closeCount = 0;
+            for(var i = firstOpenIndex; i < original.length; i++){
+                if(original.charAt(i) === openChar){
+                    openCount++;
+                } else if(original.charAt(i) === closeChar){
+                    closeCount++;
+                }     
+                if(openCount > 0 && openCount === closeCount){
+                    return i;
+                } 
+            }
+            
+            return -1;
+        }
+        
+        export class TreeObject{
+            value: string;
+            isOperator: boolean;
+            children: Array<TreeObject>[];
+            index: number;
+            
+            constructor(value?: string, children?: Array<TreeObject>[], index?: number, isOperator?: boolean){
+                var self = this;
+                
+                self.value = value;
+                self.children = children;
+                self.index = index;
+                self.isOperator = isOperator;
+            }
+        }
     
         /**
          * Like Java Optional
