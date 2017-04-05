@@ -35,7 +35,7 @@ public class PensionAvgearnFinder {
 			return dto;
 		}).collect(Collectors.toList());
 		ListPensionAvgearnDto listPensionAvgearnDto = ListPensionAvgearnDto.builder().historyId(id)
-				.listPensionAvgearnDto(list).build();
+				.listPensionAvgearn(list).build();
 		return listPensionAvgearnDto;
 	}
 }

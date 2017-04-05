@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find;
@@ -26,7 +26,7 @@ public class HealthInsuranceAvgearnFinder {
 	 * Find.
 	 *
 	 * @param id the id
-	 * @return the list
+	 * @return the list health insurance avgearn dto
 	 */
 	public ListHealthInsuranceAvgearnDto find(String id) {
 		List<HealthInsuranceAvgearnDto> list = repository.findById(id).stream().map(domain -> {
@@ -34,7 +34,8 @@ public class HealthInsuranceAvgearnFinder {
 			domain.saveToMemento(dto);
 			return dto;
 		}).collect(Collectors.toList());
-		ListHealthInsuranceAvgearnDto listHealthInsuranceAvgearnDto = ListHealthInsuranceAvgearnDto.builder().listHealthInsuranceAvgearnDto(list).historyId(id).build();
+		ListHealthInsuranceAvgearnDto listHealthInsuranceAvgearnDto = ListHealthInsuranceAvgearnDto.builder()
+				.listHealthInsuranceAvgearn(list).historyId(id).build();
 		return listHealthInsuranceAvgearnDto;
 	}
 }

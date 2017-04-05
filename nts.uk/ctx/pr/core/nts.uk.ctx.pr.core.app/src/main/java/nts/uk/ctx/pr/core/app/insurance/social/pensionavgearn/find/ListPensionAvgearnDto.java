@@ -16,9 +16,9 @@ import lombok.Data;
 @Builder
 public class ListPensionAvgearnDto {
 
-	/** The list pension avgearn dto. */
-	List<PensionAvgearnDto> listPensionAvgearnDto;
+	/** The list pension avgearn. */
+	private List<PensionAvgearnDto> listPensionAvgearn;
 
 	/** The history id. */
-	String historyId;
+	private String historyId;
 }

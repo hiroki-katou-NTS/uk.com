@@ -19,6 +19,6 @@ public class ListHealthInsuranceAvgearnDto {
 	/** The history id. */
 	private String historyId;
 
-	/** The list health insurance avgearn dto. */
-	private List<HealthInsuranceAvgearnDto> listHealthInsuranceAvgearnDto;
+	/** The list health insurance avgearn. */
+	private List<HealthInsuranceAvgearnDto> listHealthInsuranceAvgearn;
 }
