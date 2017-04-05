@@ -20,19 +20,19 @@ import nts.uk.shr.com.context.LoginUserContext;
 
 @Stateless
 public class UnemployeeInsuranceRateAddCommandHandler
-		extends CommandHandler<UnemployeeInsuranceRateAddCommand> {
+	extends CommandHandler<UnemployeeInsuranceRateAddCommand> {
 
 	/** CompanyRepository */
 	@Inject
-	private UnemployeeInsuranceRateRepository unemployeeInsuranceRateRepository;
+	private UnemployeeInsuranceRateRepository repository;
 
 	/** The unemployee insurance rate service. */
 	@Inject
-	private UnemployeeInsuranceRateService unemployeeInsuranceRateService;
+	private UnemployeeInsuranceRateService service;
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
 	 * .CommandHandlerContext)
@@ -51,26 +51,24 @@ public class UnemployeeInsuranceRateAddCommandHandler
 		UnemployeeInsuranceRateAddCommand command = context.getCommand();
 
 		// to domain
-		UnemployeeInsuranceRate unemployeeInsuranceRate = command.toDomain(companyCode);
+		UnemployeeInsuranceRate insuranceRate = command.toDomain(companyCode);
 
 		// validate
-		unemployeeInsuranceRate.validate();
-		unemployeeInsuranceRateService.validateDateRange(unemployeeInsuranceRate);
+		insuranceRate.validate();
+		this.service.validateDateRange(insuranceRate);
 
 		// find first data
-		Optional<UnemployeeInsuranceRate> optionalFisrtData = this.unemployeeInsuranceRateRepository
-				.findFirstData(unemployeeInsuranceRate.getCompanyCode());
-		
-		//check exist 
-		if (optionalFisrtData.isPresent()) {
-			optionalFisrtData.get().setEnd(
-					unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());
-			this.unemployeeInsuranceRateRepository.update(optionalFisrtData.get());
+		Optional<UnemployeeInsuranceRate> dataFisrt = this.repository
+			.findFirstData(insuranceRate.getCompanyCode());
+
+		// check exist
+		if (dataFisrt.isPresent()) {
+			dataFisrt.get().setEnd(insuranceRate.getApplyRange().getStartMonth().previousMonth());
+			this.repository.update(dataFisrt.get());
 		}
 
 		// call repository add (insert database)
-		this.unemployeeInsuranceRateRepository
-				.add(unemployeeInsuranceRate.copyWithDate(unemployeeInsuranceRate.getStart()));
+		this.repository.add(insuranceRate.copyWithDate(insuranceRate.getStart()));
 	}
 
 }

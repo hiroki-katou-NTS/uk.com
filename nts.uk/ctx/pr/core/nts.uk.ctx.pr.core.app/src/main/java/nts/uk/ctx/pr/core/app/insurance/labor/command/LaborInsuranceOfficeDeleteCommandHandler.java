@@ -27,7 +27,7 @@ public class LaborInsuranceOfficeDeleteCommandHandler
 
 	/** The labor insurance office repository. */
 	@Inject
-	private LaborInsuranceOfficeRepository laborInsuranceOfficeRepo;
+	private LaborInsuranceOfficeRepository repository;
 
 	/*
 	 * (non-Javadoc)
@@ -39,25 +39,27 @@ public class LaborInsuranceOfficeDeleteCommandHandler
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<LaborInsuranceOfficeDeleteCommand> context) {
+
 		// get user login info
 		LoginUserContext loginUserContext = AppContexts.user();
+
 		// get companyCode by user login
 		String companyCode = loginUserContext.companyCode();
+
 		// get command
 		LaborInsuranceOfficeDeleteCommand command = context.getCommand();
-		// call Repository remove
 
-		Optional<LaborInsuranceOffice> optionalDelete = this.laborInsuranceOfficeRepo.findById(companyCode,
+		// call Repository remove
+		Optional<LaborInsuranceOffice> data = this.repository.findById(companyCode,
 			command.getLaborInsuranceOfficeDeleteDto().getCode());
-		
-		//check exist
-		if(!optionalDelete.isPresent()){
+
+		// check exist
+		if (!data.isPresent()) {
 			throw new BusinessException("ER010");
 		}
 
-		this.laborInsuranceOfficeRepo.remove(companyCode,
-			command.getLaborInsuranceOfficeDeleteDto().getCode(),
-			command.getLaborInsuranceOfficeDeleteDto().getVersion());
+		// call repository
+		this.repository.remove(companyCode, command.getLaborInsuranceOfficeDeleteDto().getCode());
 	}
 
 }

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command;
@@ -24,19 +24,19 @@ import nts.uk.shr.com.context.LoginUserContext;
  */
 @Stateless
 public class AccidentInsuranceRateCopyCommandHandler
-		extends CommandHandler<AccidentInsuranceRateCopyCommand> {
+	extends CommandHandler<AccidentInsuranceRateCopyCommand> {
 
 	/** The accident insurance rate repo. */
 	@Inject
-	private AccidentInsuranceRateRepository rateRepo;
+	private AccidentInsuranceRateRepository repository;
 
 	/** The accident insurance rate service. */
 	@Inject
-	private AccidentInsuranceRateService rateService;
+	private AccidentInsuranceRateService service;
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
 	 * .CommandHandlerContext)
@@ -55,43 +55,42 @@ public class AccidentInsuranceRateCopyCommandHandler
 		AccidentInsuranceRateCopyCommand command = context.getCommand();
 
 		// get domain by action request
-		AccidentInsuranceRate accidentInsuranceRate = AccidentInsuranceRate
-				.createWithIntial(companyCode, YearMonth.of(command.getStartMonth()));
+		AccidentInsuranceRate insuranceRate = AccidentInsuranceRate.createWithIntial(companyCode,
+			YearMonth.of(command.getStartMonth()));
 
+		// not copy default
 		if (!command.isAddNew() && command.getHistoryIdCopy() != null
-				&& command.getHistoryIdCopy().length() > 0) {
+			&& command.getHistoryIdCopy().length() > 0) {
 
 			// add new with start historyId
-			Optional<AccidentInsuranceRate> optionalFindAdd = this.rateRepo
-					.findById(companyCode, command.getHistoryIdCopy());
+			Optional<AccidentInsuranceRate> data = this.repository.findById(companyCode,
+				command.getHistoryIdCopy());
 
 			// Check exist.
-			if (optionalFindAdd.isPresent()) {
-				accidentInsuranceRate = optionalFindAdd.get();
-				accidentInsuranceRate = accidentInsuranceRate
-						.copyWithDate(YearMonth.of(command.getStartMonth()));
+			if (data.isPresent()) {
+				insuranceRate = data.get();
+				insuranceRate = insuranceRate.copyWithDate(YearMonth.of(command.getStartMonth()));
 			}
 		}
+
 		// validate domain
-		accidentInsuranceRate.setMaxDate();
-		accidentInsuranceRate.validate();
+		insuranceRate.setMaxDate();
+		insuranceRate.validate();
 
 		// validate input domain
-		rateService.validateDateRange(accidentInsuranceRate);
+		this.service.validateDateRange(insuranceRate);
 
 		// get first data
-		Optional<AccidentInsuranceRate> optionalFirst = this.rateRepo
-				.findFirstData(companyCode);
+		Optional<AccidentInsuranceRate> dataFirst = this.repository.findFirstData(companyCode);
 
 		// Check exist
-		if (optionalFirst.isPresent()) {
-			optionalFirst.get()
-					.setEnd(accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());
-			this.rateRepo.update(optionalFirst.get());
+		if (dataFirst.isPresent()) {
+			dataFirst.get().setEnd(insuranceRate.getApplyRange().getStartMonth().previousMonth());
+			this.repository.update(dataFirst.get());
 		}
 
 		// connection repository running add
-		this.rateRepo.add(accidentInsuranceRate);
+		this.repository.add(insuranceRate);
 	}
 
 }

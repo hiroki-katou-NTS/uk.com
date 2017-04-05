@@ -67,13 +67,13 @@ public class JpaUnemployeeInsuranceRateItemSetMemento
 			this.typeValue.setCEmpRoundGeneral(companySetting.getRoundAtr().value);
 			break;
 
-		case Contruction:
+		case Other:
 			this.typeValue
 					.setCEmpRateOther(new BigDecimal(String.valueOf(companySetting.getRate())));
 			this.typeValue.setCEmpRoundOther(companySetting.getRoundAtr().value);
 			break;
 
-		case Other:
+		case Contruction:
 			this.typeValue
 					.setCEmpRateConst(new BigDecimal(String.valueOf(companySetting.getRate())));
 			this.typeValue.setCEmpRoundConst(companySetting.getRoundAtr().value);
@@ -100,13 +100,13 @@ public class JpaUnemployeeInsuranceRateItemSetMemento
 			this.typeValue.setPEmpRoundGeneral(personalSetting.getRoundAtr().value);
 			break;
 
-		case Contruction:
+		case Other:
 			this.typeValue
 					.setPEmpRateOther(new BigDecimal(String.valueOf(personalSetting.getRate())));
 			this.typeValue.setPEmpRoundOther(personalSetting.getRoundAtr().value);
 			break;
 
-		case Other:
+		case Contruction:
 			this.typeValue
 					.setPEmpRateConst(new BigDecimal(String.valueOf(personalSetting.getRate())));
 			this.typeValue.setPEmpRoundConst(personalSetting.getRoundAtr().value);

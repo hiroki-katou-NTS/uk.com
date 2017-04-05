@@ -583,8 +583,8 @@ module nts.uk.pr.view.qmm011.a {
 
             export enum CareerGroupDto {
                 Agroforestry = 0,
-                Contruction = 1,
-                Other = 2
+                Other = 1,
+                Contruction = 2
             }
 
             export enum BusinessTypeEnumDto {

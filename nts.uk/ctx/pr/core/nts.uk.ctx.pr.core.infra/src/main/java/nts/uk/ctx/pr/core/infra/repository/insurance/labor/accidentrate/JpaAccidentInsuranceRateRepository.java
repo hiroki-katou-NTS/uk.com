@@ -59,12 +59,13 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
-	 * AccidentInsuranceRateRepository#remove(java.lang.String, java.lang.Long)
+	 * AccidentInsuranceRateRepository#remove(java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
-	public void remove(String companyCode, String historyId, long version) {
+	public void remove(String companyCode, String historyId) {
 		List<QismtWorkAccidentInsu> lstRateRemove = this.findDataById(companyCode, historyId);
 		this.commandProxy().removeAll(lstRateRemove);
 	}

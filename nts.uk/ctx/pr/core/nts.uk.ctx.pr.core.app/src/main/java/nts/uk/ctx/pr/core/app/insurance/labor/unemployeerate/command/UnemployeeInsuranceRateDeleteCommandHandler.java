@@ -26,7 +26,7 @@ public class UnemployeeInsuranceRateDeleteCommandHandler
 
 	/** The unemployee insurance rate repository. */
 	@Inject
-	private UnemployeeInsuranceRateRepository unemployeeInsuranceRateRepository;
+	private UnemployeeInsuranceRateRepository repository;
 
 	/*
 	 * (non-Javadoc)
@@ -49,20 +49,17 @@ public class UnemployeeInsuranceRateDeleteCommandHandler
 		UnemployeeInsuranceRateDeleteCommand command = context.getCommand();
 
 		// get first data (remove)
-		Optional<UnemployeeInsuranceRate> optionalRemove = this.unemployeeInsuranceRateRepository
-			.findFirstData(companyCode);
+		Optional<UnemployeeInsuranceRate> data = this.repository.findFirstData(companyCode);
 
 		// remove data by exist and equal code
-		if (optionalRemove.isPresent() && optionalRemove.get().getHistoryId().equals(command.getCode())) {
-			this.unemployeeInsuranceRateRepository.remove(companyCode, command.getCode(),
-				command.getVersion());
-			Optional<UnemployeeInsuranceRate> optionalUpdate = this.unemployeeInsuranceRateRepository
-				.findFirstData(companyCode);
+		if (data.isPresent() && data.get().getHistoryId().equals(command.getCode())) {
+			this.repository.remove(companyCode, command.getCode(), command.getVersion());
+			Optional<UnemployeeInsuranceRate> dataFirst = this.repository.findFirstData(companyCode);
 
 			// update second data
-			if (optionalUpdate.isPresent()) {
-				optionalUpdate.get().setMaxDate();
-				this.unemployeeInsuranceRateRepository.update(optionalUpdate.get());
+			if (dataFirst.isPresent()) {
+				dataFirst.get().setMaxDate();
+				this.repository.update(dataFirst.get());
 			}
 		}
 	}

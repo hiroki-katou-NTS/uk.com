@@ -488,8 +488,8 @@ var nts;
                                 model.InsuranceBusinessType = InsuranceBusinessType;
                                 (function (CareerGroupDto) {
                                     CareerGroupDto[CareerGroupDto["Agroforestry"] = 0] = "Agroforestry";
-                                    CareerGroupDto[CareerGroupDto["Contruction"] = 1] = "Contruction";
-                                    CareerGroupDto[CareerGroupDto["Other"] = 2] = "Other";
+                                    CareerGroupDto[CareerGroupDto["Other"] = 1] = "Other";
+                                    CareerGroupDto[CareerGroupDto["Contruction"] = 2] = "Contruction";
                                 })(model.CareerGroupDto || (model.CareerGroupDto = {}));
                                 var CareerGroupDto = model.CareerGroupDto;
                                 (function (BusinessTypeEnumDto) {

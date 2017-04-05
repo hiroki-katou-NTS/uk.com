@@ -64,13 +64,13 @@ public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsur
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundGeneral()));
 			break;
 
-		case Contruction:
+		case Other:
 			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getCEmpRateOther().doubleValue());
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundOther()));
 			break;
 
-		case Other:
+		case Contruction:
 			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getCEmpRateConst().doubleValue());
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundConst()));
@@ -97,13 +97,13 @@ public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsur
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundGeneral()));
 			break;
 
-		case Contruction:
+		case Other:
 			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getPEmpRateOther().doubleValue());
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundOther()));
 			break;
 
-		case Other:
+		case Contruction:
 			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getPEmpRateConst().doubleValue());
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundConst()));
