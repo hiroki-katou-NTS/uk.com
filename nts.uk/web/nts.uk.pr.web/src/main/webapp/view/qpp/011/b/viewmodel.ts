@@ -420,6 +420,24 @@ module qpp011.b {
             nts.uk.ui.windows.sub.modal('/view/qpp/011/d/index.xhtml', { height: 550, width: 1020, dialogClass: 'no-close' }).onClosed(function(): any {
             });
         }
+        
+        exportPdf(): void {
+            var self = this;
+            var command = {
+                    residentTaxCodeList: [],
+                    companyLogin: null,
+                    regalDocCompanyCode: null,
+                    yearMonth: 201601,
+                    processingYearMonth: 201604,
+                    endDate: self.B_INP_003_yearMonth()
+            };
+            
+            service.saveAsPdf(command).done(function() {
+                //
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.message);
+            });    
+        }
     }
 
     export class BoxModel {

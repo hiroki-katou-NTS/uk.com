@@ -365,6 +365,22 @@ var qpp011;
                 nts.uk.ui.windows.sub.modal('/view/qpp/011/d/index.xhtml', { height: 550, width: 1020, dialogClass: 'no-close' }).onClosed(function () {
                 });
             };
+            ScreenModel.prototype.exportPdf = function () {
+                var self = this;
+                var command = {
+                    residentTaxCodeList: [],
+                    companyLogin: null,
+                    regalDocCompanyCode: null,
+                    yearMonth: 201601,
+                    processingYearMonth: 201604,
+                    endDate: self.B_INP_003_yearMonth()
+                };
+                b.service.saveAsPdf(command).done(function () {
+                    //
+                }).fail(function (res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
+            };
             return ScreenModel;
         }());
         b.ScreenModel = ScreenModel;

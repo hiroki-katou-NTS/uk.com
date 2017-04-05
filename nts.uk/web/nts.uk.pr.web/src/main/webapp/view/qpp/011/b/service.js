@@ -14,6 +14,7 @@ var qpp011;
                 getlistLocation: "pr/core/residential/getlistLocation",
                 currentProcessingNo: "pr/proto/paymentdatemaster/processing/findbylogin",
                 findallRegalDoc: "pr/core/rule/law/tax/residential/output/findallRegalDoc",
+                saveAsPdf: "screen/pr/qpp011/saveAsPdf"
             };
             /**
              * Get list payment date processing.
@@ -126,6 +127,10 @@ var qpp011;
                 return dfd.promise();
             }
             service.update = update;
+            function saveAsPdf(command) {
+                return nts.uk.request.exportFile(paths.saveAsPdf, command);
+            }
+            service.saveAsPdf = saveAsPdf;
             var model;
             (function (model) {
                 var residentialTax = (function () {

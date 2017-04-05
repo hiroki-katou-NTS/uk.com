@@ -9,6 +9,7 @@ module qpp011.b.service {
         getlistLocation: "pr/core/residential/getlistLocation",
         currentProcessingNo: "pr/proto/paymentdatemaster/processing/findbylogin",
         findallRegalDoc: "pr/core/rule/law/tax/residential/output/findallRegalDoc",
+        saveAsPdf: "screen/pr/qpp011/saveAsPdf"
     }
 
     /**
@@ -115,6 +116,11 @@ module qpp011.b.service {
             })
         return dfd.promise();
     }
+    
+    export function saveAsPdf(command: any): JQueryPromise<any> {
+        return nts.uk.request.exportFile(paths.saveAsPdf, command);
+    }
+    
     export module model {
         export class residentialTax {
             resimentTaxCode: string;

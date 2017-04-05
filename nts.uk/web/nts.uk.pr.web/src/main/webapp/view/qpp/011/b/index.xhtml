@@ -27,13 +27,13 @@
 			<div id="tabpanel-1" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">納付書の印刷</span>
-					<button class="proceed" id="B_BTN_001">印刷（PDF)</button>
+					<button class="proceed" id="B_BTN_001" data-bind="click: exportPdf">印刷（PDF)</button>
 					<button id="B_BTN_002" data-bind="click: openFDialog">住民税チェックリスト</button>
 					<button id="B_BTN_003">印刷実行ログ</button>
 				</div>
 				<div class="contents-area">
 					<div id="content">
-						<div style="float: left">
+						<div style="float: left; margin-right: 60px;">
 							<div id="B_LBL_003" data-bind="ntsFormLabel: {  required: true }">会社選択</div>
 							<div id="B_SEL_001"
 								data-bind="ntsRadioBoxGroup: {
@@ -91,7 +91,7 @@
 									data-bind="click: openDDialog">納付書詳細設定</button>
 							</div>
 						</div>
-						<div style="float: left; margin-left: 120px;">
+						<div style="float: left;">
 							<div id="B_LBL_013" data-bind="ntsFormLabel: { required: true }">住民税納付先</div>
 
 
@@ -123,7 +123,7 @@
 				</div>
 				<div class="contents-area">
 					<div id="content2">
-						<div style="float: left">
+						<div style="float: left;margin-right: 30px;">
 							<div id="C_LBL_003" data-bind="ntsFormLabel: {  required: true }">会社選択</div>
 							<div id="C_SEL_001"
 								data-bind="ntsRadioBoxGroup: {
@@ -224,7 +224,7 @@
 								</div>
 							</div>
 						</div>
-						<div style="float: left; margin-left: 120px;">
+						<div style="float: left;">
 							<div id="C_LBL_014"
 								data-bind="ntsFormLabel: { required: true   }">住民税納付先</div>
 							<div class="LST_001">
