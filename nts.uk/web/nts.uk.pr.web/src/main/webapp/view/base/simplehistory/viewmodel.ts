@@ -78,6 +78,7 @@ module nts.uk.pr.view.base.simplehistory {
                         if (!selectedNode.isMaster) {
                             self.isNewMode(false);
                             self.selectedHistoryUuid(selectedNode.id);
+                            self.clearErrors();
                             self.onSelectHistory(id);
                         } else {
                             // Parent node.
@@ -197,6 +198,7 @@ module nts.uk.pr.view.base.simplehistory {
                 self.confirmDirtyAndExecute(() => {
                     self.isNewMode(true);
                     self.onRegistNew();
+                    self.clearErrors();
 
                     // Clear select history uuid.
                     self.igGridSelectedHistoryUuid(undefined);
@@ -235,7 +237,7 @@ module nts.uk.pr.view.base.simplehistory {
                         name: self.options.functionName,
                         master: currentNode.isMaster ? currentNode.data : currentNode.parent.data,
                         lastest: latestNode ? latestNode.data : undefined,
-    
+
                         // Copy.
                         onCopyCallBack: (data) => {
                             var dfd = $.Deferred<any>();
@@ -248,7 +250,7 @@ module nts.uk.pr.view.base.simplehistory {
                                 });
                             return dfd.promise();
                         },
-    
+
                         // Init.
                         onCreateCallBack: (data) => {
                             var dfd = $.Deferred<any>();
@@ -356,6 +358,13 @@ module nts.uk.pr.view.base.simplehistory {
              */
             onSelectMaster(code: string): void {
                 // Override your self if need.
+            }
+
+            /**
+             * Clear errors.
+             */
+            clearErrors(): void {
+                // Override it by yourself.
             }
 
             /**

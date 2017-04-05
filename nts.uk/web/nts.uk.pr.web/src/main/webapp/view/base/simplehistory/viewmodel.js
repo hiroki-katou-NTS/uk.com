@@ -39,6 +39,7 @@ var nts;
                                             if (!selectedNode.isMaster) {
                                                 self.isNewMode(false);
                                                 self.selectedHistoryUuid(selectedNode.id);
+                                                self.clearErrors();
                                                 self.onSelectHistory(id);
                                             }
                                             else {
@@ -134,6 +135,7 @@ var nts;
                                     self.confirmDirtyAndExecute(function () {
                                         self.isNewMode(true);
                                         self.onRegistNew();
+                                        self.clearErrors();
                                         self.igGridSelectedHistoryUuid(undefined);
                                     });
                                 };
@@ -245,6 +247,8 @@ var nts;
                                     return dfd.promise();
                                 };
                                 ScreenBaseModel.prototype.onSelectMaster = function (code) {
+                                };
+                                ScreenBaseModel.prototype.clearErrors = function () {
                                 };
                                 ScreenBaseModel.prototype.getNode = function (id) {
                                     var self = this;
