@@ -14,24 +14,22 @@
 			<com:scriptfile
 				path="/lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js" />
 
-			<com:stylefile path="qpp021.a.main.css" />
-			<com:scriptfile path="qpp021.a.start.js" />
-			<com:scriptfile path="qpp021.a.viewmodel.js" />
-			<com:scriptfile path="qpp021.a.service.js" />
+			<com:stylefile path="qpp021.c.main.css" />
+			<com:scriptfile path="qpp021.c.start.js" />
+			<com:scriptfile path="qpp021.c.vm.js" />
+			<com:scriptfile path="qpp021.c.service.js" />
 			<com:scriptfile path="/lib/nittsu/ui/file.js" />
 		</ui:define>
 
 		<ui:define name="content">
 
 			<div id="functions-area">
-				<button id="btn-001"
-					data-bind="click: print, enable: listBox.isEmpty()"
-					class="separate-1 proceed">選択した社員を印刷</button>
+				<button id="btn-001" data-bind="click: print, enable: listBox.isEmpty()" class="separate-1 proceed">選択した社員を印刷</button>
 				<button id="btn-002" class="separate-1">印刷の設定</button>
 				<a id="lbl-001" class="separate-1">給与明細書</a>
 			</div>
 
-			<div id="contents-area" class="cf">
+			<div id="contents-area"  class="cf">
 				<div id="left-content">
 					<div data-bind="with: listBox">
 						<div id="list-box"
@@ -50,11 +48,11 @@
 				</div>
 				<div id="right-content">
 					<span id="lbl-002">処理の詳細設定</span> <br />
-					<div id="lbl-003" style="float: left;"
-						data-bind="ntsFormLabel: {required: true }">帳票の選択</div>
+					<div id="lbl-003" style="float: left;" data-bind="ntsFormLabel: {required: true }">
+						帳票の選択
+					</div>
 					<div id="sel-001" data-bind="with: radioBox">
-						<div
-							data-bind="ntsRadioBoxGroup: {
+						<div data-bind="ntsRadioBoxGroup: {
 									options: items,
 									optionsValue: 'value',
 									optionsText: 'text',

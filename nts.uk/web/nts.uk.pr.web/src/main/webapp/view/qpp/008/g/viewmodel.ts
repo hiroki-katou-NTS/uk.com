@@ -41,11 +41,11 @@ module qpp008.g.viewmodel {
                 } else {
                     return;
                 }
-                var i, grid = ui.owner,
+                let grid = ui.owner,
                     ds = grid.dataSource,
                     data = ds.data(),
                     dataLength = data.length;
-                for (i = 0; i < dataLength; i++) {
+                for (let i = 0; i < dataLength; i++) {
                     if (_checkAll) {
                         if (data[i]["Difference"] < 6 || data[i]["Difference"] > 20) {
                             data[i]["Confirm"] = _checkAllValue;
@@ -60,14 +60,12 @@ module qpp008.g.viewmodel {
                 self.firstLoad = ko.observable(false);
             });
             // event editable cell
-            $(document).delegate("#grid10", "iggridupdatingeditrowstarting", function(evt, ui) {
-                var $cell = $($("#grid10").igGrid("cellById", ui.rowID, "Difference"));
+            $(document).delegate("#grid10", "iggridupdatingeditrowstarting", function(ui: any) {
+                let $cell = $($("#grid10").igGrid("cellById", ui.rowID, "Difference"));
                 if (!($cell.hasClass("red") || $cell.hasClass("yellow"))) {
                     return false;
 
                 }
-                //return the triggered event
-                evt;
 
                 // get reference to igGridUpdating widget
                 ui.owner;
@@ -80,15 +78,15 @@ module qpp008.g.viewmodel {
             });
 
             //change color by delegate
-                        $(document).delegate("#grid10", "iggriddatarendered", function(evt, ui) {
+                        $(document).delegate("#grid10", "iggriddatarendered", function(ui: any) {
                             _.forEach(ui.owner.dataSource.dataView(), function(item, index) {
                                 if (item["Difference"] > 20) {
-                                    var cell1 = $("#grid10").igGrid("cellById", item["EmpCode"], "Difference");
+                                    let cell1 = $("#grid10").igGrid("cellById", item["EmpCode"], "Difference");
                                     $(cell1).addClass('red').attr('data-class', 'red');
                                     $(window).on('resize', () => { $(cell1).addClass('red'); });
                                     //item["IsPromotion"] = true;
                                 } else if (item["Difference"] < 6) {
-                                    var cell1 = $("#grid10").igGrid("cellById", item["EmpCode"], "Difference");
+                                    let cell1 = $("#grid10").igGrid("cellById", item["EmpCode"], "Difference");
                                     $(cell1).addClass('yellow').attr('data-class', 'yellow');
                                     $(window).on('resize', () => { $(cell1).addClass('yellow'); });
                                     
@@ -100,14 +98,14 @@ module qpp008.g.viewmodel {
                         });
             //instantiation
 
-            var iggridData = [];
-            var str = ['a0', 'b0', 'c0', 'd0', 'eo', 'f0', 'g0', 'h0', 'i0', 'j0', 'k0'];
-            for (var j = 0; j < 4; j++) {
-                for (var i = 1; i < 41; i++) {
-                    var code = i < 10 ? str[j] + '0' + i : str[j] + i;
-                    var CompareDate1 = Math.floor((Math.random() * 5000) + 150);
-                    var CompareDate2 = Math.floor((Math.random() * 5000) + 150);
-                    var Difference = Math.floor((Math.random() * 20) + 5);
+            let iggridData = new Array();
+            let str = ['a0', 'b0', 'c0', 'd0', 'eo', 'f0', 'g0', 'h0', 'i0', 'j0', 'k0'];
+            for (let j = 0; j < 4; j++) {
+                for (let i = 1; i < 41; i++) {
+                    let code = i < 10 ? str[j] + '0' + i : str[j] + i;
+                    let CompareDate1 = Math.floor((Math.random() * 5000) + 150);
+                    let CompareDate2 = Math.floor((Math.random() * 5000) + 150);
+                    let Difference = Math.floor((Math.random() * 20) + 5);
                     iggridData.push({
                         "EmpCode": code, "EmpName": code, "Classification": '未', "ItemName": '項目名', "CompareDate1": CompareDate1,
                         "CompareDate2": CompareDate2, "Difference": Difference, "Reason": 'diference', "RegisStatus1": 'aa', "RegisStatus2": 'bb', "Confirm": true
@@ -139,7 +137,7 @@ module qpp008.g.viewmodel {
                     {
                         name: "Paging",
                         type: "local",
-                        pageIndexChanged: function(evt, ui) {
+                        pageIndexChanged: function(ui: any) {
 
                         },
                         pageSize: 20

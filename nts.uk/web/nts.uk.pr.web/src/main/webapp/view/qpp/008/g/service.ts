@@ -9,7 +9,7 @@ module qpp008.g.service {
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })
-            .fail(function(res) {
+            .fail(function(res: any) {
                 dfd.reject(res);
             })
         return dfd.promise();
