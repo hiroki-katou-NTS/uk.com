@@ -31,7 +31,7 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableHist;
 public class JpaWtHistoryGetMemento implements WtHistoryGetMemento {
 
 	/** The type value. */
-	protected QwtmtWagetableHist typeValue;
+	private QwtmtWagetableHist typeValue;
 
 	/**
 	 * Instantiates a new jpa wage table history get memento.
@@ -96,8 +96,9 @@ public class JpaWtHistoryGetMemento implements WtHistoryGetMemento {
 	 */
 	@Override
 	public List<WtItem> getValueItems() {
-		// Ret.
+		// Return.
 		return LazyList.withMap(() -> this.typeValue.getQwtmtWagetableMnyList(), (entity) -> {
+			// Transfer data
 			return new WtItem(new JpaWtItemGetMemento(entity));
 		});
 	}
@@ -115,23 +116,34 @@ public class JpaWtHistoryGetMemento implements WtHistoryGetMemento {
 			QwtmtWagetableElement element = entity.getQwtmtWagetableElement();
 			ElementType type = ElementType.valueOf(element.getDemensionType());
 
+			// Check mode
 			if (type.isRangeMode) {
+				// Create range items.
 				List<RangeItem> rangeItems = entity.getQwtmtWagetableNumList().stream()
 						.map(item -> new RangeItem(item.getQwtmtWagetableNumPK().getElementNumNo(),
 								item.getElementStr(), item.getElementEnd(),
 								new ElementId(item.getElementId())))
 						.collect(Collectors.toList());
+
+				// Create step setting.
 				StepElementSetting el = new StepElementSetting(
 						DemensionNo.valueOf(pk.getDemensionNo()), type, rangeItems);
+
+				// Set range
 				el.setSetting(new RangeLimit(entity.getDemensionLowerLimit()),
 						new RangeLimit(entity.getDemensionUpperLimit()),
 						new RangeLimit(entity.getDemensionInterval()));
+
+				// Return
 				return el;
 			} else {
+				// Create code items.
 				List<CodeItem> codeItems = entity.getQwtmtWagetableCdList().stream()
 						.map(item -> new CodeItem(item.getQwtmtWagetableCdPK().getElementCd(),
 								new ElementId(item.getElementId())))
 						.collect(Collectors.toList());
+
+				// Return setting.
 				return new ElementSetting(DemensionNo.valueOf(pk.getDemensionNo()), type,
 						codeItems);
 			}

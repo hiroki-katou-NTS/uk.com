@@ -55,8 +55,8 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     i.service.findPensionAvgearn(self.pensionRateModel.historyId).done(function (res) {
-                                        res.forEach(function (item) {
-                                            self.listPensionAvgearnModel.push(new PensionAvgearnModel(item.historyId, item.levelCode, new PensionAvgearnValueModel(item.companyFund.maleAmount, item.companyFund.femaleAmount, item.companyFund.unknownAmount), new PensionAvgearnValueModel(item.companyFundExemption.maleAmount, item.companyFundExemption.femaleAmount, item.companyFundExemption.unknownAmount), new PensionAvgearnValueModel(item.companyPension.maleAmount, item.companyPension.femaleAmount, item.companyPension.unknownAmount), new PensionAvgearnValueModel(item.personalFund.maleAmount, item.personalFund.femaleAmount, item.personalFund.unknownAmount), new PensionAvgearnValueModel(item.personalFundExemption.maleAmount, item.personalFundExemption.femaleAmount, item.personalFundExemption.unknownAmount), new PensionAvgearnValueModel(item.personalPension.maleAmount, item.personalPension.femaleAmount, item.personalPension.unknownAmount), item.childContributionAmount));
+                                        res.listPensionAvgearnDto.forEach(function (item) {
+                                            self.listPensionAvgearnModel.push(new PensionAvgearnModel(item.levelCode, new PensionAvgearnValueModel(item.companyFund.maleAmount, item.companyFund.femaleAmount, item.companyFund.unknownAmount), new PensionAvgearnValueModel(item.companyFundExemption.maleAmount, item.companyFundExemption.femaleAmount, item.companyFundExemption.unknownAmount), new PensionAvgearnValueModel(item.companyPension.maleAmount, item.companyPension.femaleAmount, item.companyPension.unknownAmount), new PensionAvgearnValueModel(item.personalFund.maleAmount, item.personalFund.femaleAmount, item.personalFund.unknownAmount), new PensionAvgearnValueModel(item.personalFundExemption.maleAmount, item.personalFundExemption.femaleAmount, item.personalFundExemption.unknownAmount), new PensionAvgearnValueModel(item.personalPension.maleAmount, item.personalPension.femaleAmount, item.personalPension.unknownAmount), item.childContributionAmount));
                                         });
                                         self.dirty.reset();
                                         dfd.resolve();
@@ -65,9 +65,9 @@ var nts;
                                 };
                                 ScreenModel.prototype.collectData = function () {
                                     var self = this;
-                                    var data = [];
+                                    var data = { historyId: self.pensionRateModel.historyId, listPensionAvgearnDto: [] };
                                     self.listPensionAvgearnModel().forEach(function (item) {
-                                        data.push(ko.toJS(item));
+                                        data.listPensionAvgearnDto.push(ko.toJS(item));
                                     });
                                     return data;
                                 };
@@ -105,12 +105,12 @@ var nts;
                                     var personalRounding = self.convertToRounding(roundingMethods.pensionSalaryPersonalComboBoxSelectedCode());
                                     var companyRounding = self.convertToRounding(roundingMethods.pensionSalaryCompanyComboBoxSelectedCode());
                                     var rate = levelMasterSetting.avgEarn / 1000;
-                                    var autoCalculate = self.pensionRateModel.autoCalculate;
-                                    if (autoCalculate == AutoCalculate.Auto) {
-                                        return new PensionAvgearnModel(model.historyId, levelMasterSetting.code, new PensionAvgearnValueModel(self.rounding(companyRounding, fundRateItems.salaryCompanySonBurden() * rate), self.rounding(companyRounding, fundRateItems.salaryCompanyDaughterBurden() * rate), self.rounding(companyRounding, fundRateItems.salaryCompanyUnknownBurden() * rate)), new PensionAvgearnValueModel(self.rounding(companyRounding, fundRateItems.salaryCompanySonExemption() * rate), self.rounding(companyRounding, fundRateItems.salaryCompanyDaughterExemption() * rate), self.rounding(companyRounding, fundRateItems.salaryCompanyUnknownExemption() * rate)), new PensionAvgearnValueModel(self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanySon() * rate), self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanyDaughter() * rate), self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanyUnknown() * rate)), new PensionAvgearnValueModel(self.rounding(personalRounding, fundRateItems.salaryPersonalSonBurden() * rate), self.rounding(personalRounding, fundRateItems.salaryPersonalDaughterBurden() * rate), self.rounding(personalRounding, fundRateItems.salaryPersonalUnknownBurden() * rate)), new PensionAvgearnValueModel(self.rounding(personalRounding, fundRateItems.salaryPersonalSonExemption() * rate), self.rounding(personalRounding, fundRateItems.salaryPersonalDaughterExemption() * rate), self.rounding(personalRounding, fundRateItems.salaryPersonalUnknownExemption() * rate)), new PensionAvgearnValueModel(self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalSon() * rate), self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalDaughter() * rate), self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalUnknown() * rate)), model.childContributionRate() * rate);
+                                    var fundInputApply = self.pensionRateModel.fundInputApply;
+                                    if (fundInputApply == FundInputApply.Yes) {
+                                        return new PensionAvgearnModel(levelMasterSetting.code, new PensionAvgearnValueModel(self.rounding(companyRounding, fundRateItems.salaryCompanySonBurden() * rate), self.rounding(companyRounding, fundRateItems.salaryCompanyDaughterBurden() * rate), self.rounding(companyRounding, fundRateItems.salaryCompanyUnknownBurden() * rate)), new PensionAvgearnValueModel(self.rounding(companyRounding, fundRateItems.salaryCompanySonExemption() * rate), self.rounding(companyRounding, fundRateItems.salaryCompanyDaughterExemption() * rate), self.rounding(companyRounding, fundRateItems.salaryCompanyUnknownExemption() * rate)), new PensionAvgearnValueModel(self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanySon() * rate), self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanyDaughter() * rate), self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanyUnknown() * rate)), new PensionAvgearnValueModel(self.rounding(personalRounding, fundRateItems.salaryPersonalSonBurden() * rate), self.rounding(personalRounding, fundRateItems.salaryPersonalDaughterBurden() * rate), self.rounding(personalRounding, fundRateItems.salaryPersonalUnknownBurden() * rate)), new PensionAvgearnValueModel(self.rounding(personalRounding, fundRateItems.salaryPersonalSonExemption() * rate), self.rounding(personalRounding, fundRateItems.salaryPersonalDaughterExemption() * rate), self.rounding(personalRounding, fundRateItems.salaryPersonalUnknownExemption() * rate)), new PensionAvgearnValueModel(self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalSon() * rate), self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalDaughter() * rate), self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalUnknown() * rate)), model.childContributionRate() * rate);
                                     }
                                     else {
-                                        return new PensionAvgearnModel(model.historyId, levelMasterSetting.code, new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero), new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero), new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero), new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero), new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero), new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero), model.childContributionRate() * rate);
+                                        return new PensionAvgearnModel(levelMasterSetting.code, new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero), new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero), new PensionAvgearnValueModel(self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanySon() * rate), self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanyDaughter() * rate), self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanyUnknown() * rate)), new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero), new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero), new PensionAvgearnValueModel(self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalSon() * rate), self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalDaughter() * rate), self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalUnknown() * rate)), model.childContributionRate() * rate);
                                     }
                                 };
                                 ScreenModel.prototype.rounding = function (roudingMethod, roundValue) {
@@ -181,8 +181,7 @@ var nts;
                             }());
                             viewmodel.PensionRateModel = PensionRateModel;
                             var PensionAvgearnModel = (function () {
-                                function PensionAvgearnModel(historyId, levelCode, companyFund, companyFundExemption, companyPension, personalFund, personalFundExemption, personalPension, childContributionAmount) {
-                                    this.historyId = historyId;
+                                function PensionAvgearnModel(levelCode, companyFund, companyFundExemption, companyPension, personalFund, personalFundExemption, personalPension, childContributionAmount) {
                                     this.levelCode = levelCode;
                                     this.companyFund = companyFund;
                                     this.companyFundExemption = companyFundExemption;
@@ -221,11 +220,11 @@ var nts;
                                 Number[Number["Three"] = 3] = "Three";
                             })(viewmodel.Number || (viewmodel.Number = {}));
                             var Number = viewmodel.Number;
-                            (function (AutoCalculate) {
-                                AutoCalculate[AutoCalculate["Auto"] = 0] = "Auto";
-                                AutoCalculate[AutoCalculate["Manual"] = 1] = "Manual";
-                            })(viewmodel.AutoCalculate || (viewmodel.AutoCalculate = {}));
-                            var AutoCalculate = viewmodel.AutoCalculate;
+                            (function (FundInputApply) {
+                                FundInputApply[FundInputApply["No"] = 0] = "No";
+                                FundInputApply[FundInputApply["Yes"] = 1] = "Yes";
+                            })(viewmodel.FundInputApply || (viewmodel.FundInputApply = {}));
+                            var FundInputApply = viewmodel.FundInputApply;
                         })(viewmodel = i.viewmodel || (i.viewmodel = {}));
                     })(i = qmm008.i || (qmm008.i = {}));
                 })(qmm008 = view.qmm008 || (view.qmm008 = {}));

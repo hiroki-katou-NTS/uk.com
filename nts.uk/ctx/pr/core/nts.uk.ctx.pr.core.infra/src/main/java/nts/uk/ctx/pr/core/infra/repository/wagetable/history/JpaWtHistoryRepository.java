@@ -12,27 +12,35 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistory;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistoryRepository;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableCd;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableCdPK_;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableCd_;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableEleHist;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableEleHistPK_;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableEleHist_;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableHist;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableHistPK_;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableHist_;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableMny;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableMnyPK_;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableMny_;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableNum;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableNumPK_;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableNum_;
+import nts.uk.ctx.pr.core.infra.repository.base.JpaSimpleHistoryBase;
 
 /**
  * The Class JpaWageTableHistoryRepository.
  */
 @Stateless
-public class JpaWtHistoryRepository extends JpaRepository implements WtHistoryRepository {
+public class JpaWtHistoryRepository extends JpaSimpleHistoryBase implements WtHistoryRepository {
 
 	/*
 	 * (non-Javadoc)
@@ -74,53 +82,31 @@ public class JpaWtHistoryRepository extends JpaRepository implements WtHistoryRe
 	 */
 	@Override
 	public void deleteHistory(String uuid) {
-		// Get entity manager.
-		EntityManager em = this.getEntityManager();
-
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-
-		// create delete
-		CriteriaDelete<QwtmtWagetableHist> delete = cb
-				.createCriteriaDelete(QwtmtWagetableHist.class);
-
-		// set the root class
-		Root<QwtmtWagetableHist> root = delete.from(QwtmtWagetableHist.class);
-
-		// set where clause
-		delete.where(cb.equal(root.get(QwtmtWagetableHist_.qwtmtWagetableHistPK)
-				.get(QwtmtWagetableHistPK_.histId), uuid));
-
-		// perform update
-		em.createQuery(delete).executeUpdate();
+		// Delete base.
+		this.deleteByUuid(QwtmtWagetableHist.class, uuid,
+				QwtmtWagetableHist_.qwtmtWagetableHistPK,
+				QwtmtWagetableHistPK_.histId);
 		
-		// Delete ref item
-		this.deleteHistMny(uuid);
-	}
+		// Delete element.
+		this.deleteByUuid(QwtmtWagetableEleHist.class, uuid,
+				QwtmtWagetableEleHist_.qwtmtWagetableEleHistPK,
+				QwtmtWagetableEleHistPK_.histId);
+		
 
-	/**
-	 * Delete hist mny.
-	 *
-	 * @param uuid the uuid
-	 */
-	private void deleteHistMny(String uuid) {
-		// Get entity manager.
-		EntityManager em = this.getEntityManager();
-
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-
-		// create delete
-		CriteriaDelete<QwtmtWagetableMny> delete = cb
-				.createCriteriaDelete(QwtmtWagetableMny.class);
-
-		// set the root class
-		Root<QwtmtWagetableMny> root = delete.from(QwtmtWagetableMny.class);
-
-		// set where clause
-		delete.where(cb.equal(root.get(QwtmtWagetableMny_.qwtmtWagetableMnyPK)
-				.get(QwtmtWagetableMnyPK_.histId), uuid));
-
-		// perform update
-		em.createQuery(delete).executeUpdate();
+		// Delete ref code.
+		this.deleteByUuid(QwtmtWagetableCd.class, uuid,
+				QwtmtWagetableCd_.qwtmtWagetableCdPK,
+				QwtmtWagetableCdPK_.histId);
+		
+		// Delete interval.
+		this.deleteByUuid(QwtmtWagetableNum.class, uuid,
+				QwtmtWagetableNum_.qwtmtWagetableNumPK,
+				QwtmtWagetableNumPK_.histId);
+		
+		// Delete money.
+		this.deleteByUuid(QwtmtWagetableMny.class, uuid,
+				QwtmtWagetableMny_.qwtmtWagetableMnyPK,
+				QwtmtWagetableMnyPK_.histId);
 	}
 
 	/*

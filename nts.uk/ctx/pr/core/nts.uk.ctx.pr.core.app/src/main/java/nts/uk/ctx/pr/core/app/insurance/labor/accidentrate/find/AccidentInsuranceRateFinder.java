@@ -47,6 +47,7 @@ public class AccidentInsuranceRateFinder {
 		Optional<AccidentInsuranceRate> optionalAccidentInsuranceRate = accidentInsuranceRateRepo
 				.findById(companyCode, historyId);
 
+		//exist data finder
 		if (optionalAccidentInsuranceRate.isPresent()) {
 			optionalAccidentInsuranceRate.get().saveToMemento(accidentInsuranceRateFindOutDto);
 		}
