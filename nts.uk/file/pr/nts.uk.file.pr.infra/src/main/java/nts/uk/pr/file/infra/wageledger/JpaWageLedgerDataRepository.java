@@ -29,7 +29,14 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 	 */
 	@Override
 	public List<WLOldLayoutReportData> findReportDatas(String companyCode, WageLedgerReportQuery query) {
-		// TODO Auto-generated method stub
+		EntityManager em = this.getEntityManager();
+		
+		// Create Query String In Case .
+		String queryString = "SELECT ? "
+				+ "FROM ReportPbsmtPersonBase p, ReportQcamtItem m, "
+				+ "ReportQstdtPaymentDetail d "
+				+ "WHERE p.";
+		
 		return null;
 	}
 
@@ -65,8 +72,6 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		}
 		return amountData > 0;
 	}
-	
-	
 
 	private <T> List<List<T>> splitInParamList(List<T> inputList) {
 		List<List<T>> resultList = new ArrayList<>();

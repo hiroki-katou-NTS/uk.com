@@ -161,7 +161,6 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 			reportContext.getDesigner().setUpdateReference(true);
 
 			// save as PDF file
-			reportContext.getWorkbook().save("C:\\Test.xlsx");
 			reportContext.saveAsPdf(this.createNewFile(fileContext, REPORT_FILE_NAME));
 
 		} catch (Exception e) {
