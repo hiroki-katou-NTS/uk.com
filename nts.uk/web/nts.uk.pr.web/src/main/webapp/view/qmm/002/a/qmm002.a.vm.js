@@ -101,7 +101,7 @@ var nts;
                                         self.lst_002(nts.uk.util.flatArray(self.lst_001(), "childs"));
                                         var parentCode = null;
                                         var childCode = null;
-                                        var check = self.singleSelectedCode().includes("-");
+                                        var check = _.includes(self.singleSelectedCode(), "-");
                                         if (check) {
                                             self.checkDisabled(true);
                                             self.displayButtonSave(true);
@@ -121,7 +121,7 @@ var nts;
                                             return item.treeCode == parentCode;
                                         });
                                         self.indexlast_c_node(node.childs.length + indexParen);
-                                        var isParentNode = self.singleSelectedCode().includes("-");
+                                        var isParentNode = _.includes(self.singleSelectedCode(), "-");
                                         if (!isParentNode) {
                                             var index = _.findIndex(self.lst_001(), function (item) {
                                                 return item.treeCode == codeChanged;
@@ -401,7 +401,7 @@ var nts;
                                         nts.uk.ui.dialog.confirm(self.messages()[4].message).ifYes(function () {
                                             var parentCode = null;
                                             var childCode = null;
-                                            var check = self.singleSelectedCode().includes("-");
+                                            var check = _.includes(self.singleSelectedCode(), "-");
                                             if (check) {
                                                 var codes = self.singleSelectedCode().split("-");
                                                 parentCode = codes[0];
@@ -474,7 +474,7 @@ var nts;
                                         self.A_INP_004.value(null);
                                         self.A_INP_005.value(null);
                                         self.A_INP_006.value(null);
-                                        var check = self.singleSelectedCode().includes("-");
+                                        var check = _.includes(self.singleSelectedCode(), "-");
                                         if (check) {
                                             var codes = self.singleSelectedCode().split("-");
                                             self.singleSelectedCode(codes[0]);
@@ -494,7 +494,7 @@ var nts;
                                             self.A_INP_004.value(null);
                                             self.A_INP_005.value(null);
                                             self.A_INP_006.value(null);
-                                            var check = self.singleSelectedCode().includes("-");
+                                            var check = _.includes(self.singleSelectedCode(), "-");
                                             if (check) {
                                                 var codes = self.singleSelectedCode().split("-");
                                                 self.singleSelectedCode(codes[0]);
