@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth;
 
+import java.math.BigDecimal;
+
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.payday.Payday;
@@ -29,7 +31,7 @@ public class PaydayDto {
 
 	GeneralDate incomeTaxStdDate;
 
-	int neededWorkDay;
+	BigDecimal neededWorkDay;
 
 	GeneralDate empInsStdDate;
 

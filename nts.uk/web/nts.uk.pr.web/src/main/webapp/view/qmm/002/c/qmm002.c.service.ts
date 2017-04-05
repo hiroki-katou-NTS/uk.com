@@ -5,10 +5,26 @@ module qmm002.c.service {
     }
 
     export function tranferBranch(data): JQueryPromise<Array<any>> {
-        return nts.uk.request.ajax('com', paths.transfer, data);
+        var dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax('com', paths.transfer, data)
+            .done(function(res: Array<any>) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
     }
     
     export function getBankList(): JQueryPromise<Array<any>> {
-        return nts.uk.request.ajax("com", paths.getBankList);
+        let dfd = $.Deferred<any>();
+        nts.uk.request.ajax("com", paths.getBankList)
+            .done(function(res: Array<any>) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            });
+        return dfd.promise();
     }
 }

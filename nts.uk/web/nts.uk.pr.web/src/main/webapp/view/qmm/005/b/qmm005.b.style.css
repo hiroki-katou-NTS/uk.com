@@ -187,7 +187,10 @@ td>.ntsControl span.label {
 }
 
 #B_LST_002 tbody th:nth-child(2) {
-	min-width: 120px;
+	min-width: 80px;
+	max-width: 80px;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 #B_LBL_005 {
