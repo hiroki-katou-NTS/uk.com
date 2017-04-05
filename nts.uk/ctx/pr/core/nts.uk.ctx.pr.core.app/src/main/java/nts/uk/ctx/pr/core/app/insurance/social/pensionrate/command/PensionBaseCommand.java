@@ -68,88 +68,124 @@ public class PensionBaseCommand implements PensionRateGetMemento {
 	/** The child contribution rate. */
 	private BigDecimal childContributionRate;
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento#getRoundingMethods()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento
+	 * #getRoundingMethods()
 	 */
 	@Override
 	public Set<PensionRateRounding> getRoundingMethods() {
 		return this.roundingMethods;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento#getPremiumRateItems()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento
+	 * #getPremiumRateItems()
 	 */
 	@Override
 	public Set<PensionPremiumRateItem> getPremiumRateItems() {
 		return this.premiumRateItems.stream().map(dto -> {
-			PensionChargeRateItem pensionChargeRateItem = new PensionChargeRateItem();
-			pensionChargeRateItem.setCompanyRate(new Ins2Rate(dto.getCompanyRate()));
-			pensionChargeRateItem.setPersonalRate(new Ins2Rate(dto.getPersonalRate()));
-			return new PensionPremiumRateItem(dto.getPayType(), dto.getGenderType(), pensionChargeRateItem);
+			PensionChargeRateItem pensionChargeRateItem = new PensionChargeRateItem(
+					new Ins2Rate(dto.getCompanyRate()), new Ins2Rate(dto.getPersonalRate()));
+			return new PensionPremiumRateItem(dto.getPayType(), dto.getGenderType(),
+					pensionChargeRateItem);
 		}).collect(Collectors.toSet());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento#getOfficeCode()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento
+	 * #getOfficeCode()
 	 */
 	@Override
 	public OfficeCode getOfficeCode() {
 		return new OfficeCode(this.officeCode);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento#getMaxAmount()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento
+	 * #getMaxAmount()
 	 */
 	@Override
 	public CommonAmount getMaxAmount() {
 		return new CommonAmount(this.maxAmount);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento#getHistoryId()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento
+	 * #getHistoryId()
 	 */
 	@Override
 	public String getHistoryId() {
 		return this.historyId;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento#getFundRateItems()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento
+	 * #getFundRateItems()
 	 */
 	@Override
 	public Set<FundRateItem> getFundRateItems() {
 		return this.fundRateItems.stream().map(dto -> {
-			PensionChargeRateItem burdenPensionChargeRateItem = new PensionChargeRateItem();
-			burdenPensionChargeRateItem.setCompanyRate(new Ins2Rate(dto.getBurdenChargeCompanyRate()));
-			burdenPensionChargeRateItem.setPersonalRate(new Ins2Rate(dto.getBurdenChargePersonalRate()));
+			PensionChargeRateItem burdenPensionChargeRateItem = new PensionChargeRateItem(
+					new Ins2Rate(dto.getBurdenChargeCompanyRate()),
+					new Ins2Rate(dto.getBurdenChargePersonalRate()));
 
-			PensionChargeRateItem exemptionPensionChargeRateItem = new PensionChargeRateItem();
-			exemptionPensionChargeRateItem.setCompanyRate(new Ins2Rate(dto.getExemptionChargeCompanyRate()));
-			exemptionPensionChargeRateItem.setPersonalRate(new Ins2Rate(dto.getExemptionChargePersonalRate()));
+			PensionChargeRateItem exemptionPensionChargeRateItem = new PensionChargeRateItem(
+					new Ins2Rate(dto.getExemptionChargeCompanyRate()),
+					new Ins2Rate(dto.getExemptionChargePersonalRate()));
 
-			return new FundRateItem(dto.getPayType(), dto.getGenderType(), burdenPensionChargeRateItem,
-					exemptionPensionChargeRateItem);
+			return new FundRateItem(dto.getPayType(), dto.getGenderType(),
+					burdenPensionChargeRateItem, exemptionPensionChargeRateItem);
 		}).collect(Collectors.toSet());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento#getCompanyCode()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento
+	 * #getCompanyCode()
 	 */
 	@Override
 	public String getCompanyCode() {
 		return companyCode;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento#getChildContributionRate()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento
+	 * #getChildContributionRate()
 	 */
 	@Override
 	public Ins2Rate getChildContributionRate() {
 		return new Ins2Rate(this.childContributionRate);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento#getApplyRange()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento
+	 * #getApplyRange()
 	 */
 	@Override
 	public MonthRange getApplyRange() {
@@ -157,16 +193,24 @@ public class PensionBaseCommand implements PensionRateGetMemento {
 				PrimitiveUtil.toYearMonth(this.endMonth, "/"));
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento#getFundInputApply()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento
+	 * #getFundInputApply()
 	 */
 	@Override
 	public FundInputApply getFundInputApply() {
 		return FundInputApply.valueOf(this.fundInputApply);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento#getAutoCalculate()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento
+	 * #getAutoCalculate()
 	 */
 	@Override
 	public CalculateMethod getAutoCalculate() {
