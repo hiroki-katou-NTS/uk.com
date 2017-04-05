@@ -1,4 +1,6 @@
 module qmm020.c.viewmodel {
+
+
     export class ScreenModel {
         // listbox
         itemList: KnockoutObservableArray<ItemModel>;
@@ -9,19 +11,19 @@ module qmm020.c.viewmodel {
         selectedCodes: KnockoutObservableArray<string>;
         isEnable: KnockoutObservable<boolean>;
         //selectedCode: KnockoutObservable<string>;
-        
-        
-        employeeAllotHead : Array<service.model.EmployeeAllotSettingHeaderDto>;
-        dataSource : any;
+
+
+        employeeAllotHead: Array<EmployeeSettingHeaderModel>;
+        dataSource: any;
         selectedList: any;
-        
+
         constructor() {
             var self = this;
             self.itemList = ko.observableArray([]);
             self.selectedCode = ko.observableArray([]);
             self.isEnable = ko.observable(true);
             self.selectedList = ko.observableArray([]);
-            
+
 
             // Array Data 1 
             let employment1 = ko.mapping.fromJS([
@@ -36,12 +38,12 @@ module qmm020.c.viewmodel {
                 { "NO": 3, "ID": "000000006", "Name": "GHK社員", "PaymentDocID": "K003", "PaymentDocName": "給与明細書003", "BonusDocID": "S001", "BonusDocName": "賞与明細書003" }
             ]);
             //self.buildGrid("#C_LST_001", "C_BTN_001", "C_BTN_002");
-            
+
             self.dataSource = ko.mapping.toJS(employment1());
             //console.log(self.dataSource);
             //Build IgGrid
             $("#C_LST_001").igGrid({
-               columns: [
+                columns: [
                     { headerText: "", key: "NO", dataType: "string", width: "20px" },
                     { headerText: "コード", key: "ID", dataType: "string", width: "100px" },
                     { headerText: "名称", key: "Name", dataType: "string", width: "200px" },
@@ -51,38 +53,38 @@ module qmm020.c.viewmodel {
                     { headerText: "", key: "BonusDocName", dataType: "string", hidden: true },
                     {
                         headerText: "給与明細書", key: "PaymentDocID", dataType: "string", width: "250px", unbound: true,
-                        template: "<input type='button' id='" + "C_BTN_001"  + "' value='選択'/><label style='margin-left:5px;'>${PaymentDocID}</label><label style='margin-left:15px;'>${PaymentDocName}</label>"
+                        template: "<input type='button' id='" + "C_BTN_001" + "' value='選択'/><label style='margin-left:5px;'>${PaymentDocID}</label><label style='margin-left:15px;'>${PaymentDocName}</label>"
                     },
                     {
                         headerText: "賞与明細書", key: "BonusDoc", dataType: "string", width: "20%", unbound: true,
                         template: "<input type='button' id='" + "C_BTN_002" + "' value='選択'/><label style='margin-left:5px;'>${BonusDocID}</label><label style='margin-left:15px;'>${BonusDocName}</label>"
                     },
                 ],
-               features: [{
+                features: [{
                     name: 'Selection',
                     mode: 'row',
                     multipleSelection: true,
                     activation: false,
                     rowSelectionChanged: this.selectionChanged.bind(this)
                 }],
-               virtualization: true,
-               virtualizationMode: 'continuous',
-               width: "800px",
-               height: "240px",
-               primaryKey: "ID",
-               dataSource: ko.mapping.toJS(employment1())
-           });
-            
-            
+                virtualization: true,
+                virtualizationMode: 'continuous',
+                width: "800px",
+                height: "240px",
+                primaryKey: "ID",
+                dataSource: ko.mapping.toJS(employment1())
+            });
+
+
             //subcribe list box's change
             self.selectedCode.subscribe(function(codeChange) {
                 if (codeChange.length > 0) {
                     //get ValueName when click to item in HistoryList
                     let row = _.find(self.itemList(), function(item) {
                         let code = self.selectedCode();
-//                        if (code === item.code) {
-//                            //self.selectedName(item.name);
-//                        }
+                        //                        if (code === item.code) {
+                        //                            //self.selectedName(item.name);
+                        //                        }
                     });
                 }
             });
@@ -102,132 +104,85 @@ module qmm020.c.viewmodel {
             self.start();
         }
         //Selected changed
-        selectionChanged (evt, ui) {
+        selectionChanged(evt, ui) {
             //console.log(evt.type);
             var selectedRows = ui.selectedRows;
             var arr = [];
-            for(var i = 0; i < selectedRows.length; i++) {
-                arr.push(""+selectedRows[i].id);
+            for (var i = 0; i < selectedRows.length; i++) {
+                arr.push("" + selectedRows[i].id);
             }
             this.selectedList(arr);
         };
+
+
         
-        
-        //Rebuild igGrid Screen C
-//        buildGrid(id: string, buttonKID: string, buttonSID: string) {
-//            var self = this;
-//            if ($(id).data("igGrid") !== undefined) {
-//                $(id).igGrid({
-//                    dataSource: [],
-//                    features: []
-//                });
-//                $(id).igGrid("destroy");
-//            }
-//            $(id).igGrid({
-//                columns: [
-//                    { headerText: "", key: "NO", dataType: "string", width: "20px" },
-//                    { headerText: "コード", key: "ID", dataType: "string", width: "100px" },
-//                    { headerText: "名称", key: "Name", dataType: "string", width: "200px" },
-//                    { headerText: "", key: "PaymentDocID", dataType: "string", hidden: true },
-//                    { headerText: "", key: "PaymentDocName", dataType: "string", hidden: true },
-//                    { headerText: "", key: "BonusDocID", dataType: "string", hidden: true },
-//                    { headerText: "", key: "BonusDocName", dataType: "string", hidden: true },
-//                    {
-//                        headerText: "給与明細書", key: "PaymentDocID", dataType: "string", width: "250px", unbound: true,
-//                        template: "<input type='button' id='" + buttonKID + "' value='選択'/><label style='margin-left:5px;'>${PaymentDocID}</label><label style='margin-left:15px;'>${PaymentDocName}</label>"
-//                    },
-//                    {
-//                        headerText: "賞与明細書", key: "BonusDoc", dataType: "string", width: "20%", unbound: true,
-//                        template: "<input type='button' id='" + buttonSID + "' value='選択'/><label style='margin-left:5px;'>${BonusDocID}</label><label style='margin-left:15px;'>${BonusDocName}</label>"
-//                    },
-//                ],
-//                primaryKey: "ID",
-//                width: "800px",
-//                autofitLastColumn: true,
-//                avgColumnWidth: "100px",
-//                dataSource: ko.mapping.toJS(self.employment1()),
-//                value: self.currentCodeList,
-//                cellClick: self.openPaymentDialog,
-//                features: [{
-//                    name: "Selection",
-//                    mode: "row",
-//                    activation: true
-//                }]
-//            });
-//        }
         //Search Employment
-//        searchEmployment(idInputSearch: string, idList: string) {
-//            var self = this;
-//            let textSearch: string = $("#C_INP_001").val().trim();
-//            if (textSearch.length === 0) {
-//                nts.uk.ui.dialog.alert("コード/名称が入力されていません。");
-//            } else {
-//                if (self.textSearch !== textSearch) {
-//                    let searchResult = _.filter(self.products, function(item) {
-//                        return _.includes(item.ID, textSearch) || _.includes(item.Name, textSearch);
-//                    });
-//                    self.queueSearchResult = [];
-//                    for (let item of searchResult) {
-//                        self.queueSearchResult.push(item);
-//                    }
-//                    self.textSearch = textSearch;
-//                }
-//                if (self.queueSearchResult.length === 0) {
-//                    nts.uk.ui.dialog.alert("対象データがありません。");
-//                } else {
-//                    let firstResult: ItemModel = _.first(self.queueSearchResult);
-//                    //self.listBox().selectedCode(firstResult.id);
-//                    $("#grid").igGridSelection("selectRowById", firstResult.ID);
-//                    self.queueSearchResult.shift();
-//                    self.queueSearchResult.push(firstResult);
-//                }
-//            }
-//        }
-        
+        //        searchEmployment(idInputSearch: string, idList: string) {
+        //            var self = this;
+        //            let textSearch: string = $("#C_INP_001").val().trim();
+        //            if (textSearch.length === 0) {
+        //                nts.uk.ui.dialog.alert("コード/名称が入力されていません。");
+        //            } else {
+        //                if (self.textSearch !== textSearch) {
+        //                    let searchResult = _.filter(self.products, function(item) {
+        //                        return _.includes(item.ID, textSearch) || _.includes(item.Name, textSearch);
+        //                    });
+        //                    self.queueSearchResult = [];
+        //                    for (let item of searchResult) {
+        //                        self.queueSearchResult.push(item);
+        //                    }
+        //                    self.textSearch = textSearch;
+        //                }
+        //                if (self.queueSearchResult.length === 0) {
+        //                    nts.uk.g.alert("対象データがありません。");
+        //                } else {
+        //                    let firstResult: ItemModel = _.first(self.queueSearchResult);
+        //                    //self.listBox().selectedCode(firstResult.id);
+        //                    $("#grid").igGridSelection("selectRowById", firstResult.ID);
+        //                    self.queueSearchResult.shift();
+        //                    self.queueSearchResult.push(firstResult);
+        //                }
+        //            }
+        //        }
+
         // start function
         start(): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred<any>();
-                //Get list startDate, endDate of History  
-                service.getEmployeeAllotHeaderList().done(function(employeeAllotHeader: Array<service.model.EmployeeAllotSettingHeaderDto>) {
-                    if (employeeAllotHeader.length > 0) {
-                          //TODO 2017.03.14
-                          self.employeeAllotHead = employeeAllotHeader;
-                          let _items : Array<ItemModel> = [];
-                          _.forEach(employeeAllotHeader,function(histEm,i){
-                             _items.push(new ItemModel(histEm.historyId, histEm.startYM+" ~ "+histEm.endYM));
-                              if (i == employeeAllotHeader.length - 1) {
-                                self.itemList(_items);
-                            }
-                          })
-                    } else {
-                        alert('dddd');
-                        //self.allowClick(false);
-                        dfd.resolve();
-                    }
-                }).fail(function(res) {
-                    // Alert message
-                    alert(res);
-                });
-            
-                               
-                // Return.
-                return dfd.promise();
+            var self = this;
+            var dfd = $.Deferred<any>();
+            //Get list startDate, endDate of History  
+            service.getEmployeeAllotHeaderList().done(function(data: Array<EmployeeSettingHeaderModel>) {
+                if (data.length > 0) {
+                    //TODO 2017.03.14
+                    _.forEach(data, function(item) {
+                        self.itemList.push(new ItemModel(item.historyId, item.startYm + ' ~ ' + item.endYm));
+                    });
+                    
+                } else {
+                    dfd.resolve();
+                }
+            }).fail(function(res) {
+                // Alert message
+                alert(res);
+            });
+
+
+            // Return.
+            return dfd.promise();
         }
         //Open dialog Add History
         openJDialog() {
-//            var self = this;
-//            //console.log(self);
-//            //alert($($("#sidebar-area .navigator a.active")[0]).attr("href"));
-//            var valueShareJDialog = $($("#sidebar-area .navigator a.active")[0]).attr("href");
-//            //Get value TabCode + value of selected Name in History List
-//            valueShareJDialog = valueShareJDialog + "~" + self.selectedName();
-//            nts.uk.ui.windows.setShared('valJDialog', valueShareJDialog);
-//            nts.uk.ui.windows.sub.modal('/view/qmm/020/f/index.xhtml', { title: '明細書の紐ずけ＞履歴追加' }).onClosed(function(): any {
-//                self.returnJDialog = ko.observable(nts.uk.ui.windows.getShared('returnJDialog'));
-//                //self.itemList.removeAll();
-//                self.itemList.push(new ItemModel('4', self.returnJDialog() + '~9999/12'));
-//            });
+            //            var self = this;
+            //            //console.log(self);
+            //            //alert($($("#sidebar-area .navigator a.active")[0]).attr("href"));
+            //            var valueShareJDialog = $($("#sidebar-area .navigator a.active")[0]).attr("href");
+            //            //Get value TabCode + value of selected Name in History List
+            //            valueShareJDialog = valueShareJDialog + "~" + self.selectedName();
+            //            nts.uk.ui.windows.setShared('valJDialog', valueShareJDialog);
+            //            nts.uk.ui.windows.sub.modal('/view/qmm/020/f/index.xhtml', { title: '明細書の紐ずけ＞履歴追加' }).onClosed(function(): any {
+            //                self.returnJDialog = ko.observable(nts.uk.ui.windows.getShared('returnJDialog'));
+            //                //self.itemList.removeAll();
+            //                self.itemList.push(new ItemModel('4', self.returnJDialog() + '~9999/12'));
+            //            });
         }
         //Open dialog Edit History
         openKDialog() {
@@ -238,32 +193,60 @@ module qmm020.c.viewmodel {
                 //self.start(self.singleSelectedCode());
             });
         }
-        
+
     }
-    
-    class ItemModel {
-        code: string;
-        name: string;
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
+    export class ItemModel {
+        histId: KnockoutObservable<string>;
+        startEnd: string;
+
+        constructor(histId: string, startEnd: string) {
+            let self = this;
+            self.histId = ko.observable(histId);
+            self.startEnd = startEnd;
         }
     }
-    class EmployeeList {
-        code: string;
-        name: string;
-        paymentCode: string;
-        paymentName: string;
-        bonusCode: string;
-        bonusName: string;
-        constructor(code:string,name:string,paymentCode:string,paymentName:string,bonusCode:string,bonusName:string){
-            this.code = code;
-            this.name = name;
-            this.paymentCode = paymentCode;
-            this.paymentName = paymentName;
-            this.bonusCode = bonusCode;
-            this.bonusName = bonusName;
-        }    
-    
+
+    class EmployeeAllotModel {
+        histId: KnockoutObservable<string>;
+        empCode: KnockoutObservable<string>;
+        startYM: KnockoutObservable<string>;
+        endYM: KnockoutObservable<string>;
+        paymentCode: KnockoutObservable<string>;
+        paymentName: KnockoutObservable<string>;
+        bonusCode: KnockoutObservable<string>;
+        bonusName: KnockoutObservable<string>;
+        constructor(histId: string, empCode: string, startYM: string, endYM: string, paymentCode: string, paymentName: string, bonusCode: string, bonusName: string) {
+            this.histId = ko.observable(histId);
+            this.empCode = ko.observable(empCode);
+            this.startYM = ko.observable(startYM);
+            this.endYM = ko.observable(endYM);
+            this.paymentCode = ko.observable(paymentCode);
+            this.paymentName = ko.observable(paymentName);
+            this.bonusCode = ko.observable(bonusCode);
+            this.bonusName = ko.observable(bonusName);
+        }
     }
+
+    export class EmployeeSettingHeaderModel{
+        companyCode: string;
+        startYm: string;
+        endYm: string;
+        historyId: string;
+        
+        constructor(companyCode: string, startYm: string, endYm: string, historyId: string){
+            this.companyCode = companyCode;
+            this.startYm = startYm;
+            this.endYm = endYm;
+            this.historyId = historyId;
+        }
+    }
+
+    export class EmployeeSettingDetailModel {
+        companyCode: string;
+        historyId: string;
+        employeeCode: string;
+        paymentDetailCode: string;
+        bonusDetailCode: string;
+    }
+
 }

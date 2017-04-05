@@ -20,21 +20,25 @@ var qmm020;
                     self.maxItem = ko.observable(new b.service.model.CompanyAllotSettingDto());
                     self.start();
                 }
+                // start function
                 ScreenModel.prototype.start = function () {
                     var self = this;
                     var dfd = $.Deferred();
+                    //Get list startDate, endDate of History 
+                    //get allot Company
                     b.service.getAllotCompanyList().done(function (companyAllots) {
                         if (companyAllots.length > 0) {
                             var _items = [];
+                            //push data to listItem of hist List
                             for (var i_1 in companyAllots) {
                                 var item = companyAllots[i_1];
                                 if (item) {
                                     _items.push(new ComHistItem({
-                                        histId: (item.historyId || "").toString(),
-                                        startYm: (item.startDate || "").toString(),
-                                        endYm: (item.endDate || "").toString(),
-                                        payCode: (item.paymentDetailCode || "").toString(),
-                                        bonusCode: (item.bonusDetailCode || "").toString()
+                                        histId: (item.historyId || ""),
+                                        startYm: (item.startDate || ""),
+                                        endYm: (item.endDate || ""),
+                                        payCode: (item.paymentDetailCode || ""),
+                                        bonusCode: (item.bonusDetailCode || "")
                                     }));
                                 }
                             }
@@ -44,19 +48,27 @@ var qmm020;
                             self.currentItem().histId(companyAllots[0].historyId);
                         }
                         else {
+                            //self.allowClick(false);
                             dfd.resolve();
                         }
                     }).fail(function (res) {
+                        // Alert message
                         alert(res);
                     });
+                    ///////////////////////////////////////
+                    ///////////////////////////////////////
+                    //get Row with max Date 
                     b.service.getAllotCompanyMaxDate().done(function (itemMax) {
+                        //console.log(current);
                         self.maxDate = (itemMax.startDate || "").toString();
                         self.maxItem(itemMax);
                     }).fail(function (res) {
                         alert(res);
                     });
+                    // Return.
                     return dfd.promise();
                 };
+                //Update data
                 ScreenModel.prototype.register = function () {
                     var self = this;
                     var current = _.find(self.companyAllots, function (item) { return item.historyId == self.currentItem().histId(); });
@@ -67,10 +79,19 @@ var qmm020;
                             alert(res);
                         });
                     }
+                    self.start();
                 };
+                // reload data
+                ScreenModel.prototype.reload = function () {
+                    var dfd = $.Deferred();
+                    var self = this;
+                };
+                //Open dialog Add History
                 ScreenModel.prototype.openJDialog = function () {
                     var self = this;
+                    //getMaxDate
                     var historyScreenType = "1";
+                    //Get value TabCode + value of selected Name in History List
                     var valueShareJDialog = historyScreenType + "~" + self.maxDate;
                     nts.uk.ui.windows.setShared('valJDialog', valueShareJDialog);
                     nts.uk.ui.windows.sub.modal('/view/qmm/020/j/index.xhtml', { title: '明細書の紐ずけ＞履歴追加' })
@@ -88,6 +109,8 @@ var qmm020;
                                 bonusCode: ''
                             });
                             items.push(addItem);
+                            // Goi cap nhat vao currentItem
+                            // Trong truong hop them moi NHANH, copy payCode, bonusCode tu Previous Item
                             if (modeRadio === "1") {
                                 debugger;
                                 self.currentItem().histId(addItem.histId());
@@ -95,6 +118,7 @@ var qmm020;
                                 self.currentItem().endYm('999912');
                                 self.currentItem().payCode(self.maxItem().paymentDetailCode);
                                 self.currentItem().bonusCode(self.maxItem().bonusDetailCode);
+                                //get Payment Name
                                 if (self.currentItem().payCode() != '') {
                                     b.service.getAllotLayoutName(self.currentItem().payCode()).done(function (stmtName) {
                                         self.currentItem().payName(stmtName);
@@ -105,6 +129,7 @@ var qmm020;
                                 else {
                                     self.currentItem().payName('');
                                 }
+                                //get Bonus Name
                                 if (self.currentItem().bonusCode() != '') {
                                     b.service.getAllotLayoutName(self.currentItem().bonusCode()).done(function (stmtName) {
                                         self.currentItem().bonusName(stmtName);
@@ -130,6 +155,7 @@ var qmm020;
                         }
                     });
                 };
+                //Open dialog Edit History
                 ScreenModel.prototype.openKDialog = function () {
                     var self = this;
                     nts.uk.ui.windows.setShared("endYM", self.currentItem().endYm());
@@ -140,19 +166,25 @@ var qmm020;
                         nts.uk.ui.windows.setShared('currentItem', current);
                     }
                     nts.uk.ui.windows.sub.modal('/view/qmm/020/k/index.xhtml', { title: '明細書の紐ずけ＞履歴編集' }).onClosed(function () {
+                        debugger;
                         self.start();
                     });
                 };
+                //Open L Dialog
                 ScreenModel.prototype.openLDialog = function () {
                     alert('2017');
                 };
+                //Click to button Select Payment
                 ScreenModel.prototype.openPaymentMDialog = function () {
                     var self = this;
                     var valueShareMDialog = self.currentItem().startYm();
+                    //debugger;
                     nts.uk.ui.windows.setShared('valMDialog', valueShareMDialog);
                     nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '明細書の選択' }).onClosed(function () {
+                        //get selected code from M dialog
                         var stmtCodeSelected = nts.uk.ui.windows.getShared('stmtCodeSelected');
                         self.currentItem().payCode(stmtCodeSelected);
+                        //get Name payment Name
                         b.service.getAllotLayoutName(self.currentItem().payCode()).done(function (stmtName) {
                             self.currentItem().payName(stmtName);
                         }).fail(function (res) {
@@ -160,13 +192,17 @@ var qmm020;
                         });
                     });
                 };
+                //Click to button Select Bonus
                 ScreenModel.prototype.openBonusMDialog = function () {
                     var self = this;
                     var valueShareMDialog = self.currentItem().startYm();
+                    //debugger;
                     nts.uk.ui.windows.setShared('valMDialog', valueShareMDialog);
                     nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '明細書の選択' }).onClosed(function () {
+                        //get selected code from M dialog
                         var stmtCodeSelected = nts.uk.ui.windows.getShared('stmtCodeSelected');
                         self.currentItem().bonusCode(stmtCodeSelected);
+                        //get Name payment Name
                         b.service.getAllotLayoutName(self.currentItem().bonusCode()).done(function (stmtName) {
                             self.currentItem().bonusName(stmtName);
                         }).fail(function (res) {
@@ -235,6 +271,7 @@ var qmm020;
                         }
                     });
                     self.payCode.subscribe(function (newValue) {
+                        //console.log(self.listSource);
                         var current = _.find(self.listSource, function (item) { return item.historyId == self.histId(); });
                         if (current) {
                             current.paymentDetailCode = newValue;
@@ -267,4 +304,3 @@ var qmm020;
         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
     })(b = qmm020.b || (qmm020.b = {}));
 })(qmm020 || (qmm020 = {}));
-//# sourceMappingURL=qmm020.b.viewmodel.js.map

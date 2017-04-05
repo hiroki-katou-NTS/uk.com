@@ -4,9 +4,13 @@ var qmm020;
     (function (a) {
         var service;
         (function (service) {
+            //duong dan   
             var paths = {
                 getAllotCompanySettingList: "pr/core/allot/findallcompanyallot"
             };
+            /**
+             * Get list allot company
+             */
             function getAllotCompanyList() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getAllotCompanySettingList)
@@ -19,6 +23,10 @@ var qmm020;
                 return dfd.promise();
             }
             service.getAllotCompanyList = getAllotCompanyList;
+            /**
+             *
+             *
+             */
             var model;
             (function (model) {
                 var CompanyAllotSettingDto = (function () {
@@ -31,4 +39,3 @@ var qmm020;
         })(service = a.service || (a.service = {}));
     })(a = qmm020.a || (qmm020.a = {}));
 })(qmm020 || (qmm020 = {}));
-//# sourceMappingURL=qmm020.a.service.js.map

@@ -1,22 +1,27 @@
 package nts.uk.ctx.pr.core.infra.entity.rule.employment.allot;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
+import nts.arc.time.GeneralDate;
+import nts.uk.shr.infra.data.entity.AggregateTableEntity;
+
 
 @Entity
 @Table(name = "QSTMT_STMT_ALLOT_H_EM")
 @AllArgsConstructor
 @NoArgsConstructor
-public class QstmtStmtAllotHEm extends TableEntity implements Serializable{
+public class QstmtStmtAllotHEm extends AggregateTableEntity implements Serializable{
 	
 	/**
 	 * 
@@ -28,10 +33,10 @@ public class QstmtStmtAllotHEm extends TableEntity implements Serializable{
 	
 	@Basic(optional = false)
 	@Column(name = "STR_YM")
-	public int startDate;
+	public int startYm;
 	
 	@Basic(optional = false)
 	@Column(name = "END_YM")
-	public int endDate;
+	public int endYm;
 
 }

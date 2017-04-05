@@ -4,10 +4,14 @@ var qmm020;
     (function (c) {
         var service;
         (function (service) {
+            //duong dan   
             var paths = {
                 getEmployAllotSettingHeaderList: "pr/core/allot/findallemployeeallotheader",
                 getEmployAllotSettingDetailList: "pr/core/allot/findallemployeeallotdetail",
             };
+            /**
+             * Get list payment date processing.
+             */
             function getEmployeeAllotHeaderList() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getEmployAllotSettingHeaderList)
@@ -20,6 +24,9 @@ var qmm020;
                 return dfd.promise();
             }
             service.getEmployeeAllotHeaderList = getEmployeeAllotHeaderList;
+            /**
+             * Get employee list with payment doc, bunus doc
+             */
             function getEmployeeAllotDetailList() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getEmployAllotSettingDetailList)
@@ -32,22 +39,6 @@ var qmm020;
                 return dfd.promise();
             }
             service.getEmployeeAllotDetailList = getEmployeeAllotDetailList;
-            var model;
-            (function (model) {
-                var EmployeeAllotSettingHeaderDto = (function () {
-                    function EmployeeAllotSettingHeaderDto() {
-                    }
-                    return EmployeeAllotSettingHeaderDto;
-                }());
-                model.EmployeeAllotSettingHeaderDto = EmployeeAllotSettingHeaderDto;
-                var EmployeeAllotSettingDetailDto = (function () {
-                    function EmployeeAllotSettingDetailDto() {
-                    }
-                    return EmployeeAllotSettingDetailDto;
-                }());
-                model.EmployeeAllotSettingDetailDto = EmployeeAllotSettingDetailDto;
-            })(model = service.model || (service.model = {}));
         })(service = c.service || (c.service = {}));
     })(c = qmm020.c || (qmm020.c = {}));
 })(qmm020 || (qmm020 = {}));
-//# sourceMappingURL=qmm020.c.service.js.map

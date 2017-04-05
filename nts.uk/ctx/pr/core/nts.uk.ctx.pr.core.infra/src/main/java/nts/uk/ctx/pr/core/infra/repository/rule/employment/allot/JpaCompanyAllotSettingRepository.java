@@ -29,9 +29,9 @@ public class JpaCompanyAllotSettingRepository extends JpaRepository implements C
 			+ " WHERE c.qstmtStmtAllotCpPK.companyCode = :companyCode " 
 			+ " AND c.endDate = :endDate";
 
-	private final String SEL_PREVIOUS_HIST = "SELECT c FROM QstmtStmtAllotCp c"
-			+ " WHERE c.qstmtStmtAllotCpPK.companyCode = :companyCode  " 
-			+ " AND c.endDate = :endDate";
+//	private final String SEL_PREVIOUS_HIST = "SELECT c FROM QstmtStmtAllotCp c"
+//			+ " WHERE c.qstmtStmtAllotCpPK.companyCode = :companyCode  " 
+//			+ " AND c.endDate = :endDate";
 
 	@Override
 	public Optional<CompanyAllotSetting> find(String companyCode) {
@@ -112,7 +112,7 @@ public class JpaCompanyAllotSettingRepository extends JpaRepository implements C
 	 */
 	@Override
 	public Optional<CompanyAllotSetting> getPreviousHistory(String companyCode, int endDate) {
-		return this.queryProxy().query(SEL_PREVIOUS_HIST, QstmtStmtAllotCp.class)
+		return this.queryProxy().query(SEL_MAX, QstmtStmtAllotCp.class)
 				.setParameter("companyCode", companyCode)
 				.setParameter("endDate", endDate)
 				.getSingle(c -> toDomain(c));

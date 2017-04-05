@@ -7,7 +7,7 @@ module qmm020.c.service {
         /**
          * Get list payment date processing.
          */
-        export function getEmployeeAllotHeaderList(): JQueryPromise<Array<model.EmployeeAllotSettingHeaderDto>> {
+        export function getEmployeeAllotHeaderList(): JQueryPromise<Array<any>> {
             var dfd = $.Deferred<Array<any>>();
             nts.uk.request.ajax(paths.getEmployAllotSettingHeaderList)
                 .done(function(res: Array<any>){
@@ -22,7 +22,7 @@ module qmm020.c.service {
         /**
          * Get employee list with payment doc, bunus doc
          */
-        export function getEmployeeAllotDetailList(): JQueryPromise<Array<model.EmployeeAllotSettingDetailDto>> {
+        export function getEmployeeAllotDetailList(): JQueryPromise<Array<any>> {
             var dfd = $.Deferred<Array<any>>();
             nts.uk.request.ajax(paths.getEmployAllotSettingDetailList)
                 .done(function(res: Array<any>){
@@ -33,20 +33,5 @@ module qmm020.c.service {
                 })
             return dfd.promise(); 
         }
-         export module model{
-            export class EmployeeAllotSettingHeaderDto {
-                    companyCode: string;
-                    startYM: number;
-                    endYM:number;
-                    historyId: string;
-                }
-            
-            export class EmployeeAllotSettingDetailDto {
-                    companyCode: string;
-                    historyId: string;
-                    employeeCode : string;
-                    paymentDetailCode : string;
-                    bonusDetailCode : string;
-                }
-        }
+         
 }

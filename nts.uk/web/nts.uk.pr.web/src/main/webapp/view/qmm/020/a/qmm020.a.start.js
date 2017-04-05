@@ -7,4 +7,3 @@ __viewContext.ready(function () {
     };
     __viewContext.bind(viewModel);
 });
-//# sourceMappingURL=qmm020.a.start.js.map

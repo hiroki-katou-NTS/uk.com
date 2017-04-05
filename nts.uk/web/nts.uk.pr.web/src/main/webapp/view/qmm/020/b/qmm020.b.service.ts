@@ -121,11 +121,11 @@ module qmm020.b.service {
         }
     }
 
-    interface IAllotCompanyDto {
-        payStmtCode: string;
-        bonusStmtCode: string;
-        startDate: number;
-        endDate: number;
-        historyId: string;
-    }
+//    interface IAllotCompanyDto {
+//        payStmtCode: string;
+//        bonusStmtCode: string;
+//        startDate: number;
+//        endDate: number;
+//        historyId: string;
+//    }
 }
