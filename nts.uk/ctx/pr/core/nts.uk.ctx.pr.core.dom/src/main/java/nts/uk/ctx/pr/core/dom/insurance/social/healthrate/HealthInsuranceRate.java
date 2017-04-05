@@ -29,12 +29,6 @@ import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 /**
  * The Class HealthInsuranceRate.
  */
-
-/**
- * Gets the rounding methods.
- *
- * @return the rounding methods
- */
 @Getter
 public class HealthInsuranceRate extends DomainObject implements History<HealthInsuranceRate> {
 

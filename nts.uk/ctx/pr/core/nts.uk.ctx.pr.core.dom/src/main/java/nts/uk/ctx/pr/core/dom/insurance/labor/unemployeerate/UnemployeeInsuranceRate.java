@@ -112,4 +112,49 @@ public class UnemployeeInsuranceRate extends DomainObject {
 		return domain;
 	}
 
+	/**
+	 * Gets the start.
+	 *
+	 * @return the start
+	 */
+	public YearMonth getStart() {
+		return this.applyRange.getStartMonth();
+	}
+
+	/**
+	 * Gets the end.
+	 *
+	 * @return the end
+	 */
+	public YearMonth getEnd() {
+		return this.applyRange.getEndMonth();
+	}
+
+	/**
+	 * Sets the start.
+	 *
+	 * @param yearMonth
+	 *            the new start
+	 */
+	public void setStart(YearMonth yearMonth) {
+		this.applyRange = MonthRange.range(yearMonth, this.applyRange.getEndMonth());
+	}
+
+	/**
+	 * Sets the end.
+	 *
+	 * @param yearMonth
+	 *            the new end
+	 */
+	public void setEnd(YearMonth yearMonth) {
+		this.applyRange = MonthRange.range(this.applyRange.getStartMonth(), yearMonth);
+	}
+
+	/**
+	 * Sets the max date.
+	 */
+	public void setMaxDate() {
+		this.applyRange = MonthRange.toMaxDate(this.getApplyRange().getStartMonth());
+	}
+
 }
