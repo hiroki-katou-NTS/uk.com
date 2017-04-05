@@ -36,6 +36,7 @@ module nts.uk.pr.view.qmm008.c {
 
             errorList: KnockoutObservableArray<any>;
             dirty: nts.uk.ui.DirtyChecker;
+            backupDataDirty : KnockoutObservable<PensionRateDto>;
             constructor() {
                 super({
                     functionName: '厚生年金',
@@ -93,6 +94,7 @@ module nts.uk.pr.view.qmm008.c {
                     { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" }
                 ]);
                 self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
+                self.backupDataDirty = ko.observable<PensionRateDto>();
             } //end constructor
 
             // Start
@@ -298,6 +300,7 @@ module nts.uk.pr.view.qmm008.c {
                         self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
                         //update pension
                         service.updatePensionRate(self.pensionCollectData()).done(function() {
+                            self.backupDataDirty(self.pensionCollectData());
                         });
                     }).ifNo(function() {
                     });
@@ -305,6 +308,7 @@ module nts.uk.pr.view.qmm008.c {
                 else {
                     self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
                     service.updatePensionRate(self.pensionCollectData()).done(function() {
+                        self.backupDataDirty(self.pensionCollectData());
                     });
                 }
             }
@@ -319,6 +323,7 @@ module nts.uk.pr.view.qmm008.c {
                 self.isClickHistory(true);
                 self.currentOfficeCode(self.getCurrentOfficeCode(id));
                 service.instance.findHistoryByUuid(id).done(dto => {
+                    self.backupDataDirty(dto);
                     self.loadPension(dto);
                     self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
                     self.isLoading(false);
@@ -385,6 +390,7 @@ module nts.uk.pr.view.qmm008.c {
                 var self = this;
                 if (self.dirty.isDirty()) {
                     nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function() {
+                        self.loadPension(self.backupDataDirty());
                         self.OpenModalOfficeRegister();
                         self.dirty.reset();
                     }).ifCancel(function() {
@@ -412,6 +418,7 @@ module nts.uk.pr.view.qmm008.c {
                 var self = this;
                 if (self.dirty.isDirty()) {
                     nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function() {
+                        self.loadPension(self.backupDataDirty());
                         self.OpenModalStandardMonthlyPricePension();
                         self.dirty.reset();
                     }).ifCancel(function() {
