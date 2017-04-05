@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.pr.core.dom.itemmaster.AvePayAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalary;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalaryRespository;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemSalary;
@@ -16,6 +17,7 @@ import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemSalaryPK;
 public class JpaItemSalaryRepository extends JpaRepository implements ItemSalaryRespository {
 	private final String SEL = "SELECT c FROM QcamtItemSalary c";
 	private final String SEL_1 = SEL + " WHERE c.qcamtItemSalaryPK.ccd = :companyCode";
+	private final String UPD_2 = "UPDATE QcamtItemSalary c SET c.avePayAtr = :avePayAtr WHERE  c.qcamtItemSalaryPK.ccd = :companyCode AND c.qcamtItemSalaryPK.itemCd IN :itemCodeList";
 
 	@Override
 	public Optional<ItemSalary> find(String companyCode, String itemCode) {
@@ -33,6 +35,15 @@ public class JpaItemSalaryRepository extends JpaRepository implements ItemSalary
 	@Override
 	public void update(ItemSalary item) {
 		this.commandProxy().update(toEntity(item));
+	}
+	
+	@Override
+	public void updateItems(String companyCode, List<String> itemCodeList, AvePayAtr avePayAtr) {
+		this.getEntityManager().createQuery(UPD_2)
+		.setParameter("companyCode", companyCode)		
+		.setParameter("itemCodeList", itemCodeList)
+		.setParameter("avePayAtr", avePayAtr.value)
+		.executeUpdate();
 	}
 
 	@Override

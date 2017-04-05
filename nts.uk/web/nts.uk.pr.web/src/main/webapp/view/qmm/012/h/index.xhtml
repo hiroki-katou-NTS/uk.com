@@ -67,12 +67,13 @@
 					<div class="divLine">
 						<div class="divLineCol1"></div>
 						<div class="divLineCol2">
-						<input id="H_INP_001" data-bind="ntsNumberEditor: { value: CurrentStrY, constraint: 'Year' }" />
+							<input id="H_INP_001"
+								data-bind="ntsNumberEditor: { value: CurrentStrY, constraint: 'Year' }" />
 							<label id="H_LBL_007"
 								data-bind="text:nts.uk.time.yearInJapanEmpire(CurrentStrY()) + ' ~ '">項目
-								~ </label>
-								<input id="H_INP_002" data-bind="ntsNumberEditor: { value: CurrentEndY , constraint: 'Year' }" />
-							
+								~ </label> <input id="H_INP_002"
+								data-bind="ntsNumberEditor: { value: CurrentEndY , constraint: 'Year' }" />
+
 							<label id="H_LBL_008"
 								data-bind="text:nts.uk.time.yearInJapanEmpire(CurrentEndY())">項目
 							</label>
@@ -105,35 +106,35 @@
 					<div class="divLine">
 						<div class="divLineCol1"></div>
 						<div class="divLineCol2">
-							<div id="C_SEL_003" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: CurrentCycle01Atr, text: '1月' }"></div>
-							<div id="C_SEL_004" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: CurrentCycle02Atr, text: '2月' }"></div>
-							<div id="C_SEL_005" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: CurrentCycle03Atr, text: '3月'  }"></div>
-							<div id="C_SEL_006" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: CurrentCycle04Atr, text: '4月'  }"></div>
-							<div id="C_SEL_007" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: CurrentCycle05Atr, text: '5月'  }"></div>
-							<div id="C_SEL_008" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: CurrentCycle06Atr, text: '6月'  }"></div>
+							<div id="H_SEL_003" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: H_SEL_003_checked, text: '1月' }"></div>
+							<div id="H_SEL_004" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: H_SEL_004_checked, text: '2月' }"></div>
+							<div id="H_SEL_005" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: H_SEL_005_checked, text: '3月'  }"></div>
+							<div id="H_SEL_006" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: H_SEL_006_checked, text: '4月'  }"></div>
+							<div id="H_SEL_007" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: H_SEL_007_checked, text: '5月'  }"></div>
+							<div id="H_SEL_008" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: H_SEL_008_checked, text: '6月'  }"></div>
 						</div>
 					</div>
 					<div class="divLine">
 						<div class="divLineCol1"></div>
 						<div class="divLineCol2">
-							<div id="C_SEL_009" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: CurrentCycle07Atr, text: '7月'  }"></div>
-							<div id="C_SEL_010" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: {checked: CurrentCycle08Atr ,text: '8月'  }"></div>
-							<div id="C_SEL_011" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: CurrentCycle09Atr, text: '9月'  }"></div>
-							<div id="C_SEL_012" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: CurrentCycle10Atr ,text: '10月' }"></div>
-							<div id="C_SEL_013" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: CurrentCycle11Atr ,text: '11月' }"></div>
-							<div id="C_SEL_014" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: CurrentCycle12Atr ,text: '12月'  }"></div>
+							<div id="H_SEL_009" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: H_SEL_009_checked, text: '7月'  }"></div>
+							<div id="H_SEL_010" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: {checked: H_SEL_010_checked,text: '8月'  }"></div>
+							<div id="H_SEL_011" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: H_SEL_011_checked, text: '9月'  }"></div>
+							<div id="H_SEL_012" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: H_SEL_012_checked ,text: '10月' }"></div>
+							<div id="H_SEL_013" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: H_SEL_013_checked ,text: '11月' }"></div>
+							<div id="H_SEL_014" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: H_SEL_014_checked ,text: '12月'  }"></div>
 						</div>
 					</div>
 				</div>
