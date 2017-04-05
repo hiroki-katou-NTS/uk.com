@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.find;
+package nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find;
 
 import java.util.List;
 
@@ -10,15 +10,15 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
- * The Class ListPensionAvgearnDto.
+ * The Class ListHealthInsuranceAvgearnModel.
  */
-@Data
 @Builder
-public class ListPensionAvgearnDto {
-
-	/** The list pension avgearn. */
-	private List<PensionAvgearnDto> listPensionAvgearn;
+@Data
+public class ListHealthInsuranceAvgearnModel {
 
 	/** The history id. */
 	private String historyId;
+
+	/** The list health insurance avgearn dto. */
+	private List<HealthInsuranceAvgearnDto> listHealthInsuranceAvgearnDto;
 }
