@@ -54,10 +54,8 @@ public class UpdateHealthInsuranceCommandHandler
 		Optional<HealthInsuranceRate> optHealthInsuranceRate = this.healthInsuranceRateRepository
 				.findById(command.getHistoryId());
 
-		// if not exsits
-		if (!optHealthInsuranceRate.isPresent()) {
-			throw new BusinessException("ER010");
-		} else {
+		// if is found
+		if (optHealthInsuranceRate.isPresent()) {
 			// Transfer data
 			HealthInsuranceRate healthInsuranceRate = optHealthInsuranceRate.get();
 			healthInsuranceRate.setAutoCalculate(command.getAutoCalculate());
@@ -76,6 +74,10 @@ public class UpdateHealthInsuranceCommandHandler
 					healthInsuranceAvgearnService.updateHealthInsuranceRateAvgEarn(healthInsuranceRate);
 				}
 			}
+		}
+		// if is not found.
+		else {
+			throw new BusinessException("ER010");
 		}
 	}
 

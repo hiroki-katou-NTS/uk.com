@@ -96,25 +96,25 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 	private class PensionAvgearnGetMementoImpl implements PensionAvgearnGetMemento {
 
 		/** The history id. */
-		private String historyId;
+		private final String historyId;
 
 		/** The level code. */
-		private int levelCode;
+		private final int levelCode;
 
 		/** The master rate. */
-		private BigDecimal masterRate;
+		private final BigDecimal masterRate;
 
 		/** The rate items. */
-		private Set<FundRateItem> rateItems;
+		private final Set<FundRateItem> rateItems;
 
 		/** The premium rate items. */
-		private Set<PensionPremiumRateItem> premiumRateItems;
+		private final Set<PensionPremiumRateItem> premiumRateItems;
 
 		/** The child contribution rate. */
-		private BigDecimal childContributionRate;
+		private final BigDecimal childContributionRate;
 
 		/** The setting. */
-		private PensionAvgearnSetting setting;
+		private final PensionAvgearnSetting setting;
 
 		/**
 		 * Instantiates a new pension avgearn get memento impl.
@@ -140,7 +140,9 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 			this.setting.setPensionRateItems(this.premiumRateItems);
 			this.setting.setRateItems(this.rateItems);
 			PensionRateRounding salaryRoundingMethod = roundingMethods.stream()
-					.filter(item -> item.getPayType() == PaymentType.Salary).findFirst().get();
+					.filter(item -> item.getPayType() == PaymentType.Salary).findFirst().orElseThrow(() -> {
+						throw new RuntimeException("No such RoungdingMethod.");
+					});
 			this.setting.setCompanyRoundAtr(salaryRoundingMethod.getRoundAtrs().getCompanyRoundAtr());
 			this.setting.setPersonalRoundAtr(salaryRoundingMethod.getRoundAtrs().getPersonalRoundAtr());
 		}
@@ -356,8 +358,10 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 	 * @return the big decimal
 	 */
 	private BigDecimal calculateFundRate(FundRateItem fundRateItem, PensionAvgearnSetting setting) {
-		PensionChargeRateItem chargeRate = setting.isExemption ? fundRateItem.getExemptionChargeRate()
-				: fundRateItem.getBurdenChargeRate();
+		PensionChargeRateItem chargeRate = fundRateItem.getBurdenChargeRate();
+		if (setting.isExemption) {
+			chargeRate = fundRateItem.getExemptionChargeRate();
+		}
 		return this.calculateChargeRate(chargeRate, setting);
 	}
 

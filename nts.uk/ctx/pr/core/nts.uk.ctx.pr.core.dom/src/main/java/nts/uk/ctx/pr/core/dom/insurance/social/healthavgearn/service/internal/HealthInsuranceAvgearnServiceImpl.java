@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.service.internal;
 
 import java.math.BigDecimal;
@@ -8,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.pr.core.dom.base.service.RoundingNumber;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
@@ -42,7 +47,9 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 
 	@Override
 	public void validateRequiredItem(HealthInsuranceAvgearn healthInsuranceAvgearn) {
-		// TODO check null then throw new BusinessException("ER001");
+		if (healthInsuranceAvgearn.getCompanyAvg() == null || healthInsuranceAvgearn.getPersonalAvg() == null) {
+			throw new BusinessException("ER001");
+		}
 
 	}
 
