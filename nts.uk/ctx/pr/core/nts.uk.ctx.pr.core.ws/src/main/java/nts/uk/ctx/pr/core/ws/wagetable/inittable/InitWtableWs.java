@@ -24,7 +24,6 @@ import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupName;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.MultipleTargetSetting;
-import nts.uk.ctx.pr.core.ws.wagetable.inittable.dto.BaseDemensionOutModel;
 import nts.uk.ctx.pr.core.ws.wagetable.inittable.dto.CertifyGroupDto;
 import nts.uk.ctx.pr.core.ws.wagetable.inittable.dto.CertifyGroupOutModel;
 import nts.uk.shr.com.context.AppContexts;
@@ -36,7 +35,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Produces(MediaType.APPLICATION_JSON)
 public class InitWtableWs extends WebService {
 
-	/** The find. */
+	/** The certify group repo. */
 	@Inject
 	private CertifyGroupRepository certifyGroupRepo;
 
@@ -45,9 +44,9 @@ public class InitWtableWs extends WebService {
 	private CertificationRepository certificationRepo;
 
 	/**
-	 * Certify.
+	 * Certifies.
 	 *
-	 * @return the history model
+	 * @return the certify group out model
 	 */
 	@POST
 	@Path("certifies")
@@ -107,17 +106,6 @@ public class InitWtableWs extends WebService {
 
 		// Return
 		return model;
-	}
-
-	/**
-	 * Reference.
-	 *
-	 * @return the history model
-	 */
-	@POST
-	@Path("reference")
-	public BaseDemensionOutModel reference() {
-		return null;
 	}
 
 }
