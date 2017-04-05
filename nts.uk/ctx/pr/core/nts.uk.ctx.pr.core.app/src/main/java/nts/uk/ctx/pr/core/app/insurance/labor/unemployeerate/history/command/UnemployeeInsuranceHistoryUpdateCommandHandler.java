@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.service.UnemployeeInsuranceRateService;
@@ -21,7 +22,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 
 @Stateless
 public class UnemployeeInsuranceHistoryUpdateCommandHandler
-	extends CommandHandler<UnemployeeInsuranceHistoryUpdateCommand> {
+		extends CommandHandler<UnemployeeInsuranceHistoryUpdateCommand> {
 
 	/** CompanyRepository */
 	@Inject
@@ -53,13 +54,14 @@ public class UnemployeeInsuranceHistoryUpdateCommandHandler
 
 		// find data
 		Optional<UnemployeeInsuranceRate> data = this.repository.findById(companyCode,
-			command.getHistoryId());
+				command.getHistoryId());
 
 		// exist data
 		if (data.isPresent()) {
 			UnemployeeInsuranceRate insuranceRate = data.get();
-			insuranceRate.setStart(YearMonth.of(command.getStartMonth()));
-			insuranceRate.setEnd(YearMonth.of(command.getEndMonth()));
+			insuranceRate.setApplyRange(MonthRange.range(
+					YearMonth.of(command.getStartMonth()),
+					YearMonth.of(command.getEndMonth())));
 
 			// validate
 			insuranceRate.validate();
@@ -67,19 +69,20 @@ public class UnemployeeInsuranceHistoryUpdateCommandHandler
 
 			// call get by id
 			Optional<UnemployeeInsuranceRate> dataFirst = this.repository
-				.findById(insuranceRate.getCompanyCode(), insuranceRate.getHistoryId());
+					.findById(insuranceRate.getCompanyCode(), insuranceRate.getHistoryId());
 
 			// get <= start
 			if (!dataFirst.isPresent()) {
 				return;
 			}
 			Optional<UnemployeeInsuranceRate> dataPrevious = this.repository.findBetweenUpdate(
-				insuranceRate.getCompanyCode(), dataFirst.get().getApplyRange().getStartMonth(),
-				dataFirst.get().getHistoryId());
+					insuranceRate.getCompanyCode(), dataFirst.get().getApplyRange().getStartMonth(),
+					dataFirst.get().getHistoryId());
 
 			// update end year month start previous
 			if (dataPrevious.isPresent()) {
-				dataPrevious.get().setEnd(insuranceRate.getApplyRange().getStartMonth().previousMonth());
+				dataPrevious.get()
+						.setEnd(insuranceRate.getApplyRange().getStartMonth().previousMonth());
 				this.repository.update(dataPrevious.get());
 			}
 

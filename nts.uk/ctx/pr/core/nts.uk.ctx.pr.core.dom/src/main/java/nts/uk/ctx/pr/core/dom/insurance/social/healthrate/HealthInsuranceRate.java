@@ -1,12 +1,13 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +29,12 @@ import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 /**
  * The Class HealthInsuranceRate.
  */
+
+/**
+ * Gets the rounding methods.
+ *
+ * @return the rounding methods
+ */
 @Getter
 public class HealthInsuranceRate extends DomainObject implements History<HealthInsuranceRate> {
 
@@ -43,20 +50,20 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 	/** The apply range. */
 	private MonthRange applyRange;
 
-	@Setter
 	/** The auto calculate. */
+	@Setter
 	private CalculateMethod autoCalculate;
 
-	@Setter
 	/** The max amount. */
+	@Setter
 	private CommonAmount maxAmount;
 
-	@Setter
 	/** The rate items. */
+	@Setter
 	private Set<InsuranceRateItem> rateItems;
 
-	@Setter
 	/** The rounding methods. */
+	@Setter
 	private Set<HealthInsuranceRounding> roundingMethods;
 
 	/**
@@ -101,61 +108,6 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 		memento.setRoundingMethods(this.roundingMethods);
 	}
 
-	@Override
-	public String getUuid() {
-		return this.historyId;
-	}
-
-	@Override
-	public PrimitiveValue<String> getMasterCode() {
-		return this.officeCode;
-	}
-
-	@Override
-	public YearMonth getStart() {
-		return this.getApplyRange().getStartMonth();
-	}
-
-	@Override
-	public YearMonth getEnd() {
-		return this.getApplyRange().getEndMonth();
-	}
-
-	@Override
-	public void setStart(YearMonth yearMonth) {
-		this.applyRange = MonthRange.range(yearMonth, this.applyRange.getEndMonth());
-	}
-
-	@Override
-	public void setEnd(YearMonth yearMonth) {
-		this.applyRange = MonthRange.range(this.applyRange.getStartMonth(), yearMonth);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.base.simplehistory.History#copyWithDate(nts.arc.
-	 * time.YearMonth)
-	 */
-	@Override
-	public HealthInsuranceRate copyWithDate(YearMonth start) {
-		// check if duplicate start date
-		if (this.applyRange.getStartMonth().equals(start)) {
-			throw new BusinessException("ER011");
-		}
-		HealthInsuranceRate HealthInsuranceRate = new HealthInsuranceRate();
-		HealthInsuranceRate.applyRange = MonthRange.toMaxDate(start);
-		;
-		HealthInsuranceRate.autoCalculate = this.autoCalculate;
-		HealthInsuranceRate.companyCode = this.companyCode;
-		HealthInsuranceRate.maxAmount = this.maxAmount;
-		HealthInsuranceRate.officeCode = this.officeCode;
-		HealthInsuranceRate.rateItems = this.rateItems;
-		HealthInsuranceRate.roundingMethods = this.roundingMethods;
-		return HealthInsuranceRate;
-	}
-
 	/**
 	 * Creates the with intial.
 	 *
@@ -169,15 +121,20 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 	 */
 	public static final HealthInsuranceRate createWithIntial(String companyCode,
 			OfficeCode officeCode, YearMonth startYearMonth) {
-		HealthInsuranceRate HealthInsuranceRate = new HealthInsuranceRate();
-		HealthInsuranceRate.companyCode = companyCode;
-		HealthInsuranceRate.officeCode = officeCode;
-		HealthInsuranceRate.applyRange = MonthRange.toMaxDate(startYearMonth);
-		HealthInsuranceRate.autoCalculate = CalculateMethod.Auto;
-		HealthInsuranceRate.maxAmount = new CommonAmount(BigDecimal.ZERO);
-		HealthInsuranceRate.rateItems = setDefaultRateItems();
-		HealthInsuranceRate.roundingMethods = setDefaultRounding();
-		return HealthInsuranceRate;
+		// Create domain
+		HealthInsuranceRate domain = new HealthInsuranceRate();
+
+		// Set data
+		domain.companyCode = companyCode;
+		domain.officeCode = officeCode;
+		domain.applyRange = MonthRange.toMaxDate(startYearMonth);
+		domain.autoCalculate = CalculateMethod.Auto;
+		domain.maxAmount = new CommonAmount(BigDecimal.ZERO);
+		domain.rateItems = setDefaultRateItems();
+		domain.roundingMethods = setDefaultRounding();
+
+		// Return
+		return domain;
 	}
 
 	/**
@@ -186,34 +143,20 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 	 * @return the sets the
 	 */
 	private static Set<InsuranceRateItem> setDefaultRateItems() {
-		Set<InsuranceRateItem> setItem = new HashSet<InsuranceRateItem>();
 		Ins3Rate insRate = new Ins3Rate(BigDecimal.ZERO);
 		HealthChargeRateItem chargeRate = new HealthChargeRateItem(insRate, insRate);
-		InsuranceRateItem item1 = new InsuranceRateItem(PaymentType.Salary,
-				HealthInsuranceType.Basic, chargeRate);
-		setItem.add(item1);
-		InsuranceRateItem item2 = new InsuranceRateItem(PaymentType.Salary,
-				HealthInsuranceType.General, chargeRate);
-		setItem.add(item2);
-		InsuranceRateItem item3 = new InsuranceRateItem(PaymentType.Salary,
-				HealthInsuranceType.Nursing, chargeRate);
-		setItem.add(item3);
-		InsuranceRateItem item4 = new InsuranceRateItem(PaymentType.Salary,
-				HealthInsuranceType.Special, chargeRate);
-		setItem.add(item4);
-		InsuranceRateItem item5 = new InsuranceRateItem(PaymentType.Bonus,
-				HealthInsuranceType.Basic, chargeRate);
-		setItem.add(item5);
-		InsuranceRateItem item6 = new InsuranceRateItem(PaymentType.Bonus,
-				HealthInsuranceType.General, chargeRate);
-		setItem.add(item6);
-		InsuranceRateItem item7 = new InsuranceRateItem(PaymentType.Bonus,
-				HealthInsuranceType.Nursing, chargeRate);
-		setItem.add(item7);
-		InsuranceRateItem item8 = new InsuranceRateItem(PaymentType.Bonus,
-				HealthInsuranceType.Special, chargeRate);
-		setItem.add(item8);
-		return setItem;
+
+		// Return
+		return Arrays.asList(
+				new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.Basic, chargeRate),
+				new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General, chargeRate),
+				new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.Nursing, chargeRate),
+				new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.Special, chargeRate),
+				new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Basic, chargeRate),
+				new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.General, chargeRate),
+				new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Nursing, chargeRate),
+				new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Special, chargeRate))
+				.stream().collect(Collectors.toSet());
 	}
 
 	/**
@@ -221,22 +164,15 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 	 *
 	 * @return the sets the
 	 */
-	// init default rounding values
 	private static Set<HealthInsuranceRounding> setDefaultRounding() {
-		Set<HealthInsuranceRounding> setItem = new HashSet<HealthInsuranceRounding>();
-		RoundingItem salRounding = new RoundingItem();
-		salRounding.setCompanyRoundAtr(RoundingMethod.Truncation);
-		salRounding.setPersonalRoundAtr(RoundingMethod.Truncation);
-		HealthInsuranceRounding item1 = new HealthInsuranceRounding(PaymentType.Salary,
-				salRounding);
-		setItem.add(item1);
-		RoundingItem bnsRounding = new RoundingItem();
-		bnsRounding.setCompanyRoundAtr(RoundingMethod.Truncation);
-		bnsRounding.setPersonalRoundAtr(RoundingMethod.Truncation);
-		HealthInsuranceRounding item2 = new HealthInsuranceRounding(PaymentType.Bonus, bnsRounding);
-		setItem.add(item2);
+		RoundingItem defRoundingItem = new RoundingItem(RoundingMethod.Truncation,
+				RoundingMethod.Truncation);
 
-		return setItem;
+		// Return
+		return Arrays
+				.asList(new HealthInsuranceRounding(PaymentType.Salary, defRoundingItem),
+						new HealthInsuranceRounding(PaymentType.Bonus, defRoundingItem))
+				.stream().collect(Collectors.toSet());
 	}
 
 	/*
@@ -274,4 +210,97 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 		return true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#getUuid()
+	 */
+	@Override
+	public String getUuid() {
+		return this.historyId;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#getMasterCode()
+	 */
+	@Override
+	public PrimitiveValue<String> getMasterCode() {
+		return this.officeCode;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#getStart()
+	 */
+	@Override
+	public YearMonth getStart() {
+		return this.getApplyRange().getStartMonth();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#getEnd()
+	 */
+	@Override
+	public YearMonth getEnd() {
+		return this.getApplyRange().getEndMonth();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.base.simplehistory.History#setStart(nts.arc.time.
+	 * YearMonth)
+	 */
+	@Override
+	public void setStart(YearMonth yearMonth) {
+		this.applyRange = MonthRange.range(yearMonth, this.applyRange.getEndMonth());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.base.simplehistory.History#setEnd(nts.arc.time.
+	 * YearMonth)
+	 */
+	@Override
+	public void setEnd(YearMonth yearMonth) {
+		this.applyRange = MonthRange.range(this.applyRange.getStartMonth(), yearMonth);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.base.simplehistory.History#copyWithDate(nts.arc.
+	 * time.YearMonth)
+	 */
+	@Override
+	public HealthInsuranceRate copyWithDate(YearMonth start) {
+		// check if duplicate start date
+		if (this.applyRange.getStartMonth().equals(start)) {
+			throw new BusinessException("ER011");
+		}
+
+		// Create domain
+		HealthInsuranceRate domain = new HealthInsuranceRate();
+
+		// Set data
+		domain.applyRange = MonthRange.toMaxDate(start);
+		domain.autoCalculate = this.autoCalculate;
+		domain.companyCode = this.companyCode;
+		domain.maxAmount = this.maxAmount;
+		domain.officeCode = this.officeCode;
+		domain.rateItems = this.rateItems;
+		domain.roundingMethods = this.roundingMethods;
+
+		// Return
+		return domain;
+	}
 }

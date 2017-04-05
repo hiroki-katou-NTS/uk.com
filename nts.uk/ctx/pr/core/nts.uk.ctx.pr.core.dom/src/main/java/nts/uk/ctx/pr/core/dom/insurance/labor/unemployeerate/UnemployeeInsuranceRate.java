@@ -4,8 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate;
 
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +22,6 @@ import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 public class UnemployeeInsuranceRate extends DomainObject {
 
 	/** The history id. */
-	// historyId
 	private String historyId;
 
 	/** The company code. */
@@ -71,44 +71,6 @@ public class UnemployeeInsuranceRate extends DomainObject {
 	}
 
 	/**
-	 * Gets the start.
-	 *
-	 * @return the start
-	 */
-	public YearMonth getStart() {
-		return this.applyRange.getStartMonth();
-	}
-
-	/**
-	 * Gets the end.
-	 *
-	 * @return the end
-	 */
-	public YearMonth getEnd() {
-		return this.applyRange.getEndMonth();
-	}
-
-	/**
-	 * Sets the start.
-	 *
-	 * @param yearMonth
-	 *            the new start
-	 */
-	public void setStart(YearMonth yearMonth) {
-		this.applyRange = MonthRange.range(yearMonth, this.applyRange.getEndMonth());
-	}
-
-	/**
-	 * Sets the end.
-	 *
-	 * @param yearMonth
-	 *            the new end
-	 */
-	public void setEnd(YearMonth yearMonth) {
-		this.applyRange = MonthRange.range(this.applyRange.getStartMonth(), yearMonth);
-	}
-
-	/**
 	 * Copy with date.
 	 *
 	 * @param start
@@ -133,23 +95,21 @@ public class UnemployeeInsuranceRate extends DomainObject {
 	 * @return the unemployee insurance rate
 	 */
 	public static final UnemployeeInsuranceRate createWithIntial(String companyCode,
-		YearMonth startYearMonth) {
+			YearMonth startYearMonth) {
+		// Create domain
 		UnemployeeInsuranceRate domain = new UnemployeeInsuranceRate();
+
+		// Set data
 		domain.companyCode = companyCode;
 		domain.applyRange = MonthRange.toMaxDate(startYearMonth);
-		Set<UnemployeeInsuranceRateItem> setItem = new HashSet<>();
-		setItem.add(UnemployeeInsuranceRateItem.valueIntial(CareerGroup.Agroforestry));
-		setItem.add(UnemployeeInsuranceRateItem.valueIntial(CareerGroup.Contruction));
-		setItem.add(UnemployeeInsuranceRateItem.valueIntial(CareerGroup.Other));
-		domain.rateItems = setItem;
-		return domain;
-	}
+		domain.rateItems = Arrays
+				.asList(UnemployeeInsuranceRateItem.valueIntial(CareerGroup.Agroforestry),
+						UnemployeeInsuranceRateItem.valueIntial(CareerGroup.Contruction),
+						UnemployeeInsuranceRateItem.valueIntial(CareerGroup.Other))
+				.stream().collect(Collectors.toSet());
 
-	/**
-	 * Sets the max date.
-	 */
-	public void setMaxDate() {
-		this.applyRange = MonthRange.toMaxDate(this.getApplyRange().getStartMonth());
+		// Return
+		return domain;
 	}
 
 }

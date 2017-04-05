@@ -5,18 +5,16 @@
 package nts.uk.ctx.pr.core.infra.entity.wagetable.reference;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class QwtmtWagetableRefTable.
@@ -25,7 +23,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "QWTMT_WAGETABLE_REF_TABLE")
-public class QwtmtWagetableRefTable implements Serializable {
+public class QwtmtWagetableRefTable extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -33,45 +31,6 @@ public class QwtmtWagetableRefTable implements Serializable {
 	/** The qwtmt wagetable ref table PK. */
 	@EmbeddedId
 	protected QwtmtWagetableRefTablePK qwtmtWagetableRefTablePK;
-
-	/** The ins date. */
-	@Column(name = "INS_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date insDate;
-
-	/** The ins ccd. */
-	@Column(name = "INS_CCD")
-	private String insCcd;
-
-	/** The ins scd. */
-	@Column(name = "INS_SCD")
-	private String insScd;
-
-	/** The ins pg. */
-	@Column(name = "INS_PG")
-	private String insPg;
-
-	/** The upd date. */
-	@Column(name = "UPD_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updDate;
-
-	/** The upd ccd. */
-	@Column(name = "UPD_CCD")
-	private String updCcd;
-
-	/** The upd scd. */
-	@Column(name = "UPD_SCD")
-	private String updScd;
-
-	/** The upd pg. */
-	@Column(name = "UPD_PG")
-	private String updPg;
-
-	/** The exclus ver. */
-	@Basic(optional = false)
-	@Column(name = "EXCLUS_VER")
-	private int exclusVer;
 
 	/** The ref table name. */
 	@Basic(optional = false)
@@ -131,39 +90,6 @@ public class QwtmtWagetableRefTable implements Serializable {
 	/**
 	 * Instantiates a new qwtmt wagetable ref table.
 	 *
-	 * @param qwtmtWagetableRefTablePK
-	 *            the qwtmt wagetable ref table PK
-	 * @param exclusVer
-	 *            the exclus ver
-	 * @param refTableName
-	 *            the ref table name
-	 * @param wageRefTable
-	 *            the wage ref table
-	 * @param wageRefField
-	 *            the wage ref field
-	 * @param wageRefDispField
-	 *            the wage ref disp field
-	 * @param wagePersonTable
-	 *            the wage person table
-	 * @param wagePersonField
-	 *            the wage person field
-	 */
-	public QwtmtWagetableRefTable(QwtmtWagetableRefTablePK qwtmtWagetableRefTablePK, int exclusVer, String refTableName,
-			String wageRefTable, String wageRefField, String wageRefDispField, String wagePersonTable,
-			String wagePersonField) {
-		this.qwtmtWagetableRefTablePK = qwtmtWagetableRefTablePK;
-		this.exclusVer = exclusVer;
-		this.refTableName = refTableName;
-		this.wageRefTable = wageRefTable;
-		this.wageRefField = wageRefField;
-		this.wageRefDispField = wageRefDispField;
-		this.wagePersonTable = wagePersonTable;
-		this.wagePersonField = wagePersonField;
-	}
-
-	/**
-	 * Instantiates a new qwtmt wagetable ref table.
-	 *
 	 * @param ccd
 	 *            the ccd
 	 * @param refTableNo
@@ -202,6 +128,14 @@ public class QwtmtWagetableRefTable implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.qwtmtWagetableRefTablePK;
 	}
 
 }

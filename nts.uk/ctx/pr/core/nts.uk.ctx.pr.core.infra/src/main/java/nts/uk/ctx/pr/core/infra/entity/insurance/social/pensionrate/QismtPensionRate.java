@@ -1,12 +1,11 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -19,20 +18,21 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.QismtSocialInsuOffice;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPensionAvgearn;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class QismtPensionRate.
  */
-@Data
+@Setter
+@Getter
 @Entity
 @Table(name = "QISMT_PENSION_RATE")
-public class QismtPensionRate implements Serializable {
+public class QismtPensionRate extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -40,45 +40,6 @@ public class QismtPensionRate implements Serializable {
 	/** The qismt pension rate PK. */
 	@EmbeddedId
 	protected QismtPensionRatePK qismtPensionRatePK;
-
-	/** The ins date. */
-	@Column(name = "INS_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date insDate;
-
-	/** The ins ccd. */
-	@Column(name = "INS_CCD")
-	private String insCcd;
-
-	/** The ins scd. */
-	@Column(name = "INS_SCD")
-	private String insScd;
-
-	/** The ins pg. */
-	@Column(name = "INS_PG")
-	private String insPg;
-
-	/** The upd date. */
-	@Column(name = "UPD_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updDate;
-
-	/** The upd ccd. */
-	@Column(name = "UPD_CCD")
-	private String updCcd;
-
-	/** The upd scd. */
-	@Column(name = "UPD_SCD")
-	private String updScd;
-
-	/** The upd pg. */
-	@Column(name = "UPD_PG")
-	private String updPg;
-
-	/** The exclus ver. */
-	@Basic(optional = false)
-	@Column(name = "EXCLUS_VER")
-	private long exclusVer;
 
 	/** The str ym. */
 	@Basic(optional = false)
@@ -316,7 +277,8 @@ public class QismtPensionRate implements Serializable {
 	private List<QismtPensionAvgearn> qismtPensionAvgearnList;
 
 	/** The qismt social insu office. */
-	@JoinColumns({ @JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
+	@JoinColumns({
+			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
 			@JoinColumn(name = "SI_OFFICE_CD", referencedColumnName = "SI_OFFICE_CD", insertable = false, updatable = false) })
 	@ManyToOne(optional = false)
 	private QismtSocialInsuOffice qismtSocialInsuOffice;
@@ -376,10 +338,21 @@ public class QismtPensionRate implements Serializable {
 		}
 		QismtPensionRate other = (QismtPensionRate) object;
 		if ((this.qismtPensionRatePK == null && other.qismtPensionRatePK != null)
-				|| (this.qismtPensionRatePK != null && !this.qismtPensionRatePK.equals(other.qismtPensionRatePK))) {
+				|| (this.qismtPensionRatePK != null
+						&& !this.qismtPensionRatePK.equals(other.qismtPensionRatePK))) {
 			return false;
 		}
 		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.qismtPensionRatePK;
 	}
 
 }

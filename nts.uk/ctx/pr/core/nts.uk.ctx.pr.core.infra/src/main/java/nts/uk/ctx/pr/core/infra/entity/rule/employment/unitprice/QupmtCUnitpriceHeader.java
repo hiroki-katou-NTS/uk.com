@@ -5,21 +5,18 @@
 package nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class QupmtCUnitpriceHeader.
@@ -28,7 +25,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "QUPMT_C_UNITPRICE_HEADER")
-public class QupmtCUnitpriceHeader implements Serializable {
+public class QupmtCUnitpriceHeader extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -37,49 +34,10 @@ public class QupmtCUnitpriceHeader implements Serializable {
 	@EmbeddedId
 	protected QupmtCUnitpriceHeaderPK qupmtCUnitpriceHeaderPK;
 
-	/** The ins date. */
-	@Column(name = "INS_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date insDate;
-
-	/** The ins ccd. */
-	@Column(name = "INS_CCD")
-	private String insCcd;
-
-	/** The ins scd. */
-	@Column(name = "INS_SCD")
-	private String insScd;
-
-	/** The ins pg. */
-	@Column(name = "INS_PG")
-	private String insPg;
-
-	/** The upd date. */
-	@Column(name = "UPD_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updDate;
-
-	/** The upd ccd. */
-	@Column(name = "UPD_CCD")
-	private String updCcd;
-
-	/** The upd scd. */
-	@Column(name = "UPD_SCD")
-	private String updScd;
-
-	/** The upd pg. */
-	@Column(name = "UPD_PG")
-	private String updPg;
-
-	/** The exclus ver. */
-	@Basic(optional = false)
-	@Column(name = "EXCLUS_VER")
-	private int exclusVer;
-
 	/** The c unitprice name. */
 	@Column(name = "C_UNITPRICE_NAME")
 	private String cUnitpriceName;
-	
+
 	/** The qupmt C unitprice hist list. */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qupmtCUnitpriceHeader")
 	private List<QupmtCUnitpriceDetail> qupmtCUnitpriceHistList;
@@ -99,19 +57,6 @@ public class QupmtCUnitpriceHeader implements Serializable {
 	 */
 	public QupmtCUnitpriceHeader(QupmtCUnitpriceHeaderPK qupmtCUnitpriceHeaderPK) {
 		this.qupmtCUnitpriceHeaderPK = qupmtCUnitpriceHeaderPK;
-	}
-
-	/**
-	 * Instantiates a new qupmt C unitprice header.
-	 *
-	 * @param qupmtCUnitpriceHeaderPK
-	 *            the qupmt C unitprice header PK
-	 * @param exclusVer
-	 *            the exclus ver
-	 */
-	public QupmtCUnitpriceHeader(QupmtCUnitpriceHeaderPK qupmtCUnitpriceHeaderPK, int exclusVer) {
-		this.qupmtCUnitpriceHeaderPK = qupmtCUnitpriceHeaderPK;
-		this.exclusVer = exclusVer;
 	}
 
 	/**
@@ -155,5 +100,15 @@ public class QupmtCUnitpriceHeader implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.qupmtCUnitpriceHeaderPK;
 	}
 }
