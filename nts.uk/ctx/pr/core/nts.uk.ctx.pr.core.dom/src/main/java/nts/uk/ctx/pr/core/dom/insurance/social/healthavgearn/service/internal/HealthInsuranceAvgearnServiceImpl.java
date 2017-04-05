@@ -103,7 +103,7 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 							calculateChargeRate(masterRate, rateItem, isPersonal), 1);
 					val2 = roundingNumber.healthRounding(salaryRound.getRoundAtrs().getPersonalRoundAtr(),
 							calculateChargeRate(masterRate, rateItem, isPersonal), 3);
-				} else// compnany
+				} else// company
 				{
 					val = roundingNumber.healthRounding(salaryRound.getRoundAtrs().getCompanyRoundAtr(),
 							calculateChargeRate(masterRate, rateItem, isPersonal), 1);
@@ -112,33 +112,16 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 				}
 				switch (rateItem.getInsuranceType()) {
 				case Basic:
-					if (isPersonal) {
-						value.setHealthBasicMny(new InsuranceAmount(val2));
-					} else {
-						value.setHealthBasicMny(new InsuranceAmount(val2));
-					}
+					value.setHealthBasicMny(new InsuranceAmount(val2));
 					break;
 				case General:
-					if (isPersonal) {
-						value.setHealthGeneralMny(new CommonAmount(val));
-					} else {
-						value.setHealthGeneralMny(new CommonAmount(val));
-					}
+					value.setHealthGeneralMny(new CommonAmount(val));
 					break;
-
 				case Nursing:
-					if (isPersonal) {
-						value.setHealthNursingMny(new CommonAmount(val));
-					} else {
-						value.setHealthNursingMny(new CommonAmount(val));
-					}
+					value.setHealthNursingMny(new CommonAmount(val));
 					break;
 				case Special:
-					if (isPersonal) {
-						value.setHealthSpecificMny(new InsuranceAmount(val2));
-					} else {
-						value.setHealthSpecificMny(new InsuranceAmount(val2));
-					}
+					value.setHealthSpecificMny(new InsuranceAmount(val2));
 					break;
 				}
 			}
