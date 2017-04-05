@@ -152,8 +152,8 @@ var nts;
             }
             time_1.formatDate = formatDate;
             function formatPattern(date, inputFormat, outputFormat) {
-                outputFormat = uk.text.getISO8601Format(outputFormat);
-                inputFormat = uk.text.getISO8601Format(inputFormat);
+                outputFormat = uk.text.getISOFormat(outputFormat);
+                inputFormat = uk.text.getISOFormat(inputFormat);
                 return moment.utc(date, inputFormat).format(outputFormat);
             }
             time_1.formatPattern = formatPattern;

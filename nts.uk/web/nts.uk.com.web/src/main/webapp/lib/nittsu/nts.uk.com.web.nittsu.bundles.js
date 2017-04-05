@@ -709,7 +709,9 @@ var nts;
                     return "top";
             }
             text_1.reverseDirection = reverseDirection;
-            function getISO8601Format(format) {
+            function getISOFormat(format) {
+                if (format.toLowerCase() === "iso")
+                    return "YYYY-MM-DD[T]HH:mm:ss.SSS[Z]";
                 if (format.toLowerCase() === "date")
                     return "YYYY/MM/DD";
                 if (format.toLowerCase() === "yearmonth")
@@ -721,7 +723,7 @@ var nts;
                 format = format.replace(/y/g, "Y");
                 return format;
             }
-            text_1.getISO8601Format = getISO8601Format;
+            text_1.getISOFormat = getISOFormat;
             var StringFormatter = (function () {
                 function StringFormatter(args) {
                     this.args = args;
@@ -765,7 +767,7 @@ var nts;
                     else {
                         result = moment(source, "YYYYMMDD");
                         if (result.isValid()) {
-                            var format = getISO8601Format(this.option.inputFormat);
+                            var format = getISOFormat(this.option.inputFormat);
                             return result.format(format);
                         }
                         return source;
@@ -1004,8 +1006,8 @@ var nts;
             }
             time_1.formatDate = formatDate;
             function formatPattern(date, inputFormat, outputFormat) {
-                outputFormat = uk.text.getISO8601Format(outputFormat);
-                inputFormat = uk.text.getISO8601Format(inputFormat);
+                outputFormat = uk.text.getISOFormat(outputFormat);
+                inputFormat = uk.text.getISOFormat(inputFormat);
                 return moment.utc(date, inputFormat).format(outputFormat);
             }
             time_1.formatPattern = formatPattern;
@@ -1721,10 +1723,10 @@ var nts;
                             parseResult = uk.time.parseYearMonthDate(inputText);
                         }
                         else {
-                            var format = uk.text.getISO8601Format(this.option.inputFormat);
+                            var format = uk.text.getISOFormat(this.option.inputFormat);
                             var momentObject = moment(inputText);
                             if (momentObject.isValid()) {
-                                var format = uk.text.getISO8601Format(this.option.inputFormat);
+                                var format = uk.text.getISOFormat(this.option.inputFormat);
                                 return momentObject.format(format);
                             }
                             return inputText;
@@ -3545,12 +3547,13 @@ var nts;
                         var data = valueAccessor();
                         var value = data.value;
                         var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
-                        dateFormat = uk.text.getISO8601Format(dateFormat);
+                        dateFormat = uk.text.getISOFormat(dateFormat);
                         var hasDayofWeek = (dateFormat.indexOf("ddd") !== -1);
                         var dayofWeekFormat = dateFormat.replace(/[^d]/g, "");
                         dateFormat = dateFormat.replace(/d/g, "").trim();
                         var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : "";
                         var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var button = (data.button !== undefined) ? ko.unwrap(data.button) : false;
                         var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
                         var endDate = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
@@ -3561,11 +3564,8 @@ var nts;
                             container.attr("id", idString);
                         }
                         container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
-                        var inputClass = "";
-                        if (dateFormat.length < 10)
-                            inputClass = "yearmonth-picker";
-                        var $input = $("<input id='" + container.attr("id") + "-input' class='ntsDatepicker nts-input' />")
-                            .addClass(inputClass);
+                        var inputClass = (dateFormat.length < 10) ? "yearmonth-picker" : "";
+                        var $input = $("<input id='" + container.attr("id") + "-input' class='ntsDatepicker nts-input' />").addClass(inputClass);
                         container.append($input);
                         if (hasDayofWeek) {
                             var lengthClass = (dayofWeekFormat.length > 3) ? "long-day" : "short-day";
@@ -3606,18 +3606,18 @@ var nts;
                                 $input.ntsError('set', "Invalid format");
                             }
                         }));
-                        var length = 10, atomWidth = 9.5;
                     };
                     DatePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var value = data.value;
                         var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
-                        dateFormat = uk.text.getISO8601Format(dateFormat);
+                        dateFormat = uk.text.getISOFormat(dateFormat);
                         var hasDayofWeek = (dateFormat.indexOf("ddd") !== -1);
                         var dayofWeekFormat = dateFormat.replace(/[^d]/g, "");
                         dateFormat = dateFormat.replace(/d/g, "").trim();
                         var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : dateFormat;
                         var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var button = (data.button !== undefined) ? ko.unwrap(data.button) : false;
                         var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
                         var endDate = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
@@ -3626,9 +3626,9 @@ var nts;
                         var init = container.data("init");
                         var $input = container.find(".nts-input");
                         var $label = container.find(".dayofweek-label");
-                        var dateFormatValue = moment.utc(value(), valueFormat).format(dateFormat);
+                        var dateFormatValue = (value() !== "") ? moment.utc(value(), valueFormat).format(dateFormat) : "";
                         if (init === true || (moment.utc($input.datepicker('getDate')).format(dateFormat) !== dateFormatValue)) {
-                            if (dateFormatValue !== "Invalid date")
+                            if (dateFormatValue !== "")
                                 $input.datepicker('setDate', dateFormatValue);
                             else
                                 $input.datepicker('setDate', null);
