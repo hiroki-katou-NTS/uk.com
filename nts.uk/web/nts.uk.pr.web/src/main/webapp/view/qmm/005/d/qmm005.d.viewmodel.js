@@ -159,7 +159,7 @@ var qmm005;
                     dispSet: 0,
                     currentProcessingYm: parseInt(nts.uk.time.formatDate(new Date(stdYear, stdDate <= self.sel001() ? stdMonth + 1 : stdMonth, 1), 'yyyyMM')),
                     bonusAtr: 0,
-                    bCurrentProcessingYm: 0,
+                    bcurrentProcessingYm: parseInt(nts.uk.time.formatDate(new Date(stdYear, stdDate <= self.sel001() ? stdMonth + 1 : stdMonth, 1), 'yyyyMM')),
                     payStdDay: self.sel001(),
                     resitaxBeginMon: 6,
                     resitaxStdMon: 1,

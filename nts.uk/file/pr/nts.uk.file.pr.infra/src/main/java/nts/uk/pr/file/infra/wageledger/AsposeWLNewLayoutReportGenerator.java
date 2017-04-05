@@ -15,8 +15,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import org.apache.commons.lang3.mutable.MutableInt;
-
 import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
 import com.aspose.cells.CellBorderType;
@@ -134,6 +132,7 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 			printData.currentRow = rowStartThisPart;
 			this.fillHeaderTable(printData);
 			printData.headerLabel = "【控除】";
+			printData.currentColumn = COLUMN_START_REPORT + AMOUNT_COLUMN_BONUS_PART + 1;
 			this.fillReportItemsData(reportData.bonusDeductionItems, printData);
 			printData.amountItemLeftOnCurrentPage = amountItemLeftOnThisPage;
 			printData.currentRow = rowEndThisPart;
@@ -162,7 +161,6 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 			reportContext.getDesigner().setUpdateReference(true);
 
 			// save as PDF file
-			reportContext.getWorkbook().save("C:\\Test.xlsx");
 			reportContext.saveAsPdf(this.createNewFile(fileContext, REPORT_FILE_NAME));
 
 		} catch (Exception e) {
@@ -313,10 +311,10 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 		Cells cells = ws.getCells();
 		Color backgroundColor = printData.isGreenRow ? GREEN_COLOR : null;
 		printData.isGreenRow  = !printData.isGreenRow;
-		
+		int startColumn = printData.currentColumn;
 		
 		// Fill item name cell.
-		Cell nameCell = cells.get(printData.currentColumn, printData.currentColumn);
+		Cell nameCell = cells.get(printData.currentRow, printData.currentColumn);
 		nameCell.setValue(item.name);
 		this.setStyleCell(nameCell, StyleModel.createNameCellStyle(backgroundColor));
 		printData.currentColumn++;
@@ -345,10 +343,12 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 		printData.currentRow++;
 		// Calculate amount item left on page.
 		printData.amountItemLeftOnCurrentPage--;
+		printData.currentColumn = startColumn;
 		
 		// Check row is last of page.
 		if (printData.amountItemLeftOnCurrentPage == 0) {
-			Range endRowRange = cells.createRange(printData.currentRow - 1, 1, 1, paymentDateMap.size());
+			Range endRowRange = cells.createRange(printData.currentRow - 1,
+					printData.currentColumn + 1, 1, paymentDateMap.size());
 			endRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 			printData.isCheckBreakPage = false;
 			this.breakPage(printData);

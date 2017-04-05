@@ -66,15 +66,19 @@ var nts;
                                 return result;
                             }
                         }
-                        if (this.charType !== null) {
+                        if (this.charType !== null && this.charType !== undefined) {
                             if (!this.charType.validate(inputText)) {
                                 result.fail('Invalid text');
                                 return result;
                             }
                         }
-                        if (this.constraint !== null && this.constraint.maxLength !== undefined) {
-                            if (uk.text.countHalf(inputText) > this.constraint.maxLength) {
+                        if (this.constraint !== undefined && this.constraint !== null) {
+                            if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
                                 result.fail('Max length for this input is ' + this.constraint.maxLength);
+                                return result;
+                            }
+                            if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
+                                result.fail('This field is not valid with pattern!');
                                 return result;
                             }
                         }
@@ -135,11 +139,17 @@ var nts;
                         else if (this.option.inputFormat === "timeofday") {
                             parseResult = uk.time.parseTimeOfTheDay(inputText);
                         }
-                        else if (this.option.inputFormat === "yearmonthdate") {
+                        else if (this.option.inputFormat === "date") {
                             parseResult = uk.time.parseYearMonthDate(inputText);
                         }
                         else {
-                            parseResult = uk.time.ResultParseTime.failed();
+                            var format = uk.text.getISO8601Format(this.option.inputFormat);
+                            var momentObject = moment(inputText);
+                            if (momentObject.isValid()) {
+                                var format = uk.text.getISO8601Format(this.option.inputFormat);
+                                return momentObject.format(format);
+                            }
+                            return inputText;
                         }
                         if (parseResult.success) {
                             result.success(parseResult.toValue());
@@ -170,4 +180,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=validation.js.map

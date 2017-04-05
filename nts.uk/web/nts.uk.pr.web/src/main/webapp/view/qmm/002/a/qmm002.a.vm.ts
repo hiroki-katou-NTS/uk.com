@@ -15,7 +15,8 @@ module nts.uk.pr.view.qmm002.a {
             A_INP_004: any;
             A_INP_005: any;
             isCreated: any;
-            checkDisabled: any;
+            checkDisabled: KnockoutObservable<boolean>;
+            displayButtonSave: KnockoutObservable<boolean>;
             checkCountNode: any;
             checkPrint: any;
             index: any;
@@ -41,6 +42,7 @@ module nts.uk.pr.view.qmm002.a {
                 self.lst_002 = ko.observableArray([]);
                 self.isCreated = ko.observable(false);
                 self.checkDisabled = ko.observable(false);
+                self.displayButtonSave = ko.observable(false);
                 self.checkCountNode = ko.observable(true);
                 self.checkPrint = ko.observable(true);
                 self.index = ko.observable();
@@ -121,11 +123,13 @@ module nts.uk.pr.view.qmm002.a {
                     var check = self.singleSelectedCode().includes("-");
                     if (check) {
                         self.checkDisabled(true);
+                        self.displayButtonSave(true);
                         var codes = self.singleSelectedCode().split("-");
                         parentCode = codes[0];
                         childCode = codes[1];
                     } else {
                         self.checkDisabled(false);
+                        self.displayButtonSave(false);
                         parentCode = self.singleSelectedCode();
                     }
                     var node = _.find(self.lst_002(), function(item: BankInfo) {
@@ -343,7 +347,6 @@ module nts.uk.pr.view.qmm002.a {
                     });
                 }).fail(function(error) {
                     var messageList = self.messages();
-                    self.checkDisabled(false);
                     if (error.messageId == messageList[0].messageId) { // ER001
                         $('#A_INP_003').ntsError('set', messageList[0].message);
                         $('#A_INP_004').ntsError('set', messageList[0].message);
@@ -409,10 +412,12 @@ module nts.uk.pr.view.qmm002.a {
                         self.nodeParent(new BankInfo(null, null, null, null, null, null, null));
                         self.checkPrint(false);
                         self.checkDisabled(false);
+                        self.displayButtonSave(false);
                         self.isCreated(false);
                     } else {
                         self.checkPrint(true);
                         self.checkDisabled(true);
+                        self.displayButtonSave(true);
                         self.isCreated(false);
                     }
                     _.forEach(data, function(itemBank) {
@@ -524,6 +529,7 @@ module nts.uk.pr.view.qmm002.a {
              */
             cleanBranch(): void {
                 var self = this;
+                self.clearError();
                 if (!self.checkDirty()) {
                     self.dirty1 = new nts.uk.ui.DirtyChecker(ko.observable(""));
                     self.dirty2 = new nts.uk.ui.DirtyChecker(ko.observable(""));
@@ -540,6 +546,7 @@ module nts.uk.pr.view.qmm002.a {
                         self.singleSelectedCode(codes[0])
                     }
                     self.checkDisabled(true);
+                    self.displayButtonSave(true);
                     self.A_INP_003.enable(true);
                     self.isCreated(true);
                 }
@@ -559,6 +566,7 @@ module nts.uk.pr.view.qmm002.a {
                             self.singleSelectedCode(codes[0])
                         }
                         self.checkDisabled(true);
+                        self.displayButtonSave(true);
                         self.A_INP_003.enable(true);
                         self.isCreated(true);
                     })
