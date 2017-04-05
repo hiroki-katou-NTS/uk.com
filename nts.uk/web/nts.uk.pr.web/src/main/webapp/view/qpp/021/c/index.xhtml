@@ -30,35 +30,7 @@
 			</div>
 
 			<div id="contents-area"  class="cf">
-				<div id="left-content">
-					<div data-bind="with: listBox">
-						<div id="list-box"
-							data-bind="ntsListBox: {options: itemList,
-											   optionsText: 'name',
-											   multiple: true,
-											   value: selectedCodes,
-											   enable: true,
-											   rows: 21,
-											   columns: [
-													{ prop: 'code', length: 12 },
-													{ prop: 'name', length: 12 }
-											   ]}"
-							class="cf"></div>
-					</div>
-				</div>
-				<div id="right-content">
-					<span id="lbl-002">処理の詳細設定</span> <br />
-					<div id="lbl-003" style="float: left;" data-bind="ntsFormLabel: {required: true }">
-						帳票の選択
-					</div>
-					<div id="sel-001" data-bind="with: radioBox">
-						<div data-bind="ntsRadioBoxGroup: {
-									options: items,
-									optionsValue: 'value',
-									optionsText: 'text',
-									value: selectedValue}"></div>
-					</div>
-				</div>
+				
 			</div>
 
 		</ui:define>

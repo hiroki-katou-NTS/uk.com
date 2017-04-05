@@ -3,7 +3,7 @@ var qpp021;
     var f;
     (function (f) {
         __viewContext.ready(function () {
-            var screenModel = new viewmodel.ScreenModel();
+            var screenModel = new f.viewmodel.ScreenModel();
             screenModel.startPage().done(function () {
                 __viewContext.bind(screenModel);
             });

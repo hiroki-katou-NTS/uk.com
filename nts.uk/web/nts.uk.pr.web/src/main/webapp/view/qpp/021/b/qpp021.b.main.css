@@ -1,48 +1,36 @@
-.separate-1 {
-	margin-top: 5px;
-	margin-right: 10px;
-	margin-bottom: 5px;
+#contents-area{
+	
+	padding: 0px !important;
 }
 
-#btn-001 {
-	width: 200px;
-	margin-left: 75px;
+#functions-area {
+	height: 50px;
 }
 
-#left-content {
-	margin-left: 65px;
-	padding: 10px;
-	float: left;
-	border: 1px solid #a79c9c;
-	border-radius: 4px;
-	min-height: 600px;
+/** wizard css */
+.wizard {
+	width: 1350px !important;
 }
 
-#lbl-001 {
-	float: right;
-	margin-right: 30px;
+
+.nts-wizard.vertical > .steps {
+	height: 535px !important	;
+	width: 23% !important;
 }
 
-#lbl-002 {
-	margin-bottom: 20px;
-	display: inline-block;
+.nts-wizard.vertical > .content {
+	margin: 0px !important;
+	width:  75% !important;
+	background: white !important;
 }
 
-.ntsRadioBox {
-	width: 100%;
+/** button css */
+#btn-002 {
+	margin: 10px 0px 0px 300px;
 }
 
-#sel-001 {
-	float:left;
-	margin: 8px 0px 0px 35px;
-}
+/** label css */
 
-#right-content {
-	margin-left: 20px;
-	padding: 10px;
-	float: left;
-	border: 1px solid #a79c9c;
-	border-radius: 4px;
-	min-height: 600px;
-	width: 38%;
-}
+/**  texfield css */
+
+/** table css */
