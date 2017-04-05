@@ -19,7 +19,7 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAcc
 public class JpaHistoryAccidentInsuranceRateGetMemento implements AccidentInsuranceRateGetMemento {
 
 	/** The type value. */
-	protected QismtWorkAccidentInsu typeValue;
+	private QismtWorkAccidentInsu typeValue;
 
 	/**
 	 * Instantiates a new jpa history accident insurance rate get memento.

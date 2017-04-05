@@ -47,6 +47,7 @@ public class StepItemGenerator implements ItemGenerator {
 	@Override
 	public List<? extends Item> generate(String companyCode, String historyId,
 			ElementSetting elementSetting) {
+		// Get info.
 		StepElementSetting stepElementSetting = (StepElementSetting) elementSetting;
 		BigDecimal lowerLimit = stepElementSetting.getLowerLimit().v();
 		BigDecimal upperLimit = stepElementSetting.getUpperLimit().v();
@@ -73,18 +74,20 @@ public class StepItemGenerator implements ItemGenerator {
 			throw new BusinessException("Interval must be greater than zero.");
 		}
 
-		// Interval is invalid
+		// Interval is invalid.
 		if (upperLimit.subtract(lowerLimit).add(minStep).doubleValue() < interval.doubleValue()) {
 			// TODO: need msg id.
 			throw new BusinessException(
 					"The range " + lowerLimit + " - " + upperLimit + " is not enough for 1 step");
 		}
 
+		// Create map: unique code - old uuid.
 		@SuppressWarnings("unchecked")
 		List<RangeItem> rangeItems = (List<RangeItem>) elementSetting.getItemList();
 		Map<String, ElementId> mapRangeItems = rangeItems.stream()
 				.collect(Collectors.toMap(item -> this.getUniqueCode(item), RangeItem::getUuid));
 
+		// Generate uuid of range items.
 		List<RangeItem> items = new ArrayList<>();
 		int index = 0;
 		BigDecimal start = lowerLimit;
@@ -92,6 +95,7 @@ public class StepItemGenerator implements ItemGenerator {
 			index++;
 			BigDecimal end = start.add(interval).subtract(minStep);
 
+			// Create new range item.
 			RangeItem rangeItem = new RangeItem(index, start,
 					((end.compareTo(upperLimit) <= 0) ? end : upperLimit),
 					new ElementId(IdentifierUtil.randomUniqueId()));
@@ -101,21 +105,29 @@ public class StepItemGenerator implements ItemGenerator {
 					((end.compareTo(upperLimit) <= 0) ? end : upperLimit),
 					mapRangeItems.getOrDefault(this.getUniqueCode(rangeItem), rangeItem.getUuid()));
 
+			// Set display name.
 			if (rangeItem.getStartVal().compareTo(rangeItem.getEndVal()) == 0) {
 				rangeItem.setDisplayName(rangeItem.getStartVal()
-						.setScale(this.getScale(rangeItem.getStartVal())).toEngineeringString());
+						.setScale(StepItemGenerator.getScale(rangeItem.getStartVal()))
+						.toEngineeringString());
 			} else {
 				rangeItem.setDisplayName(rangeItem.getStartVal()
-						.setScale(this.getScale(rangeItem.getStartVal())).toEngineeringString()
-						+ "～" + rangeItem.getEndVal().setScale(this.getScale(rangeItem.getEndVal()))
+						.setScale(StepItemGenerator.getScale(rangeItem.getStartVal()))
+						.toEngineeringString()
+						+ "～"
+						+ rangeItem.getEndVal()
+								.setScale(StepItemGenerator.getScale(rangeItem.getEndVal()))
 								.toEngineeringString());
 			}
 
+			// Add item.
 			items.add(rangeItem);
 
+			// Add start value of next item.
 			start = start.add(interval);
 		}
 
+		// Return
 		return items;
 	}
 
@@ -138,18 +150,21 @@ public class StepItemGenerator implements ItemGenerator {
 	 *            the num
 	 * @return the scale
 	 */
-	private Integer getScale(BigDecimal num) {
+	private static Integer getScale(BigDecimal num) {
+		// Mutiply 100
 		num = num.multiply(BigDecimal.valueOf(100d));
 		if (num.doubleValue() == BigDecimal.ZERO.doubleValue()) {
 			return 0;
 		}
 
+		// Count number of decimal.
 		int counter = 2;
 		while (num.remainder(BigDecimal.valueOf(10d)).intValue() == BigDecimal.ZERO.intValue()) {
 			counter--;
 			num = num.divide(BigDecimal.valueOf(10d));
 		}
 
+		// Return
 		return counter;
 	}
 

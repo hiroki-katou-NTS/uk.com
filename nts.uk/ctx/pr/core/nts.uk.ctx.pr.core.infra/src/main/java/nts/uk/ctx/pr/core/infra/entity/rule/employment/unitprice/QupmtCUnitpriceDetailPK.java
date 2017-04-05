@@ -41,6 +41,7 @@ public class QupmtCUnitpriceDetailPK implements Serializable {
 	 * Instantiates a new qupmt C unitprice hist PK.
 	 */
 	public QupmtCUnitpriceDetailPK() {
+		super();
 	}
 
 	/**

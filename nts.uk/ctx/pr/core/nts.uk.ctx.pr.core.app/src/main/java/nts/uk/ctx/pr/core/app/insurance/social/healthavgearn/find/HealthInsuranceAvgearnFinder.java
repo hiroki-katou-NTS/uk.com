@@ -28,11 +28,13 @@ public class HealthInsuranceAvgearnFinder {
 	 * @param id the id
 	 * @return the list
 	 */
-	public List<HealthInsuranceAvgearnDto> find(String id) {
-		return repository.findById(id).stream().map(domain -> {
+	public ListHealthInsuranceAvgearnDto find(String id) {
+		List<HealthInsuranceAvgearnDto> list = repository.findById(id).stream().map(domain -> {
 			HealthInsuranceAvgearnDto dto = HealthInsuranceAvgearnDto.builder().build();
 			domain.saveToMemento(dto);
 			return dto;
 		}).collect(Collectors.toList());
+		ListHealthInsuranceAvgearnDto listHealthInsuranceAvgearnDto = ListHealthInsuranceAvgearnDto.builder().listHealthInsuranceAvgearnDto(list).historyId(id).build();
+		return listHealthInsuranceAvgearnDto;
 	}
 }

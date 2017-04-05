@@ -15,7 +15,7 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPens
 public class JpaPensionAvgearnGetMemento implements PensionAvgearnGetMemento {
 
 	/** The entity. */
-	protected QismtPensionAvgearn entity;
+	private QismtPensionAvgearn entity;
 
 	/**
 	 * Instantiates a new jpa pension avgearn get memento.
