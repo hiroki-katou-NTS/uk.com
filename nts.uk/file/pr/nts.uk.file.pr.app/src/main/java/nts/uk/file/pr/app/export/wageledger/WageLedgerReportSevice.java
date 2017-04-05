@@ -57,7 +57,7 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 		
 		// Query Data.
 		@SuppressWarnings("unused")
-		List<WLOldLayoutReportData> reportData = this.repository.findReportDatas(companyCode, query);
+		List<WLOldLayoutReportData> reportData = this.repository.findReportDatas(companyCode, query, WLOldLayoutReportData.class);
 		
 		// Fake data.
 		WLOldLayoutReportData fakeReportData = WLOldLayoutReportData.builder()

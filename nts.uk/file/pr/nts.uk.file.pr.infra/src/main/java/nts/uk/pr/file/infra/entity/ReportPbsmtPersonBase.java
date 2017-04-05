@@ -15,9 +15,14 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * The Class ReportPbsmtPersonBase.
  */
+@Getter
+@Setter
 @Entity
 @Table(name = "PBSMT_PERSON_BASE")
 public class ReportPbsmtPersonBase implements Serializable {
