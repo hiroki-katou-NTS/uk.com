@@ -49,13 +49,12 @@ module nts.uk.pr.view.qmm007.a {
             }
 
             /**
+             * Override
              * Create or Update UnitPriceHistory.
              */
             onSave(): JQueryPromise<string> {
                 var self = this;
                 var dfd = $.Deferred<string>();
-                // Clear errors.
-                self.clearError();
                 // Validate.
                 self.validate();
                 // Return if has error.
@@ -83,7 +82,8 @@ module nts.uk.pr.view.qmm007.a {
                 return dfd.promise();
             }
 
-            /**
+           /**
+            * Override
             * Load UnitPriceHistory detail.
             */
             onSelectHistory(id: string): void {
@@ -93,23 +93,31 @@ module nts.uk.pr.view.qmm007.a {
                     self.setUnitPriceHistoryModel(dto);
                     self.dirtyChecker.reset();
                     self.isLoading(false);
-                    self.clearError();
                 });
             }
 
             /**
+             * Override
              * Clear all input and switch to new mode.
              */
             onRegistNew(): void {
                 var self = this;
-                self.clearError();
                 self.clearInput();
                 self.dirtyChecker.reset();
             }
 
+            // Override
             isDirty(): boolean {
                 var self = this;
                 return self.dirtyChecker.isDirty();
+            }
+
+            // Override
+            clearErrors(): void {
+                $('#inpCode').ntsError('clear');
+                $('#inpName').ntsError('clear');
+                $('#inpStartMonth').ntsError('clear');
+                $('#inpBudget').ntsError('clear');
             }
 
             private setMessages(messageId: string): void {
@@ -144,13 +152,6 @@ module nts.uk.pr.view.qmm007.a {
                 model.fixPayAtrDaily(dto.fixPayAtrDaily);
                 model.fixPayAtrHourly(dto.fixPayAtrHourly);
                 model.memo(dto.memo);
-            }
-
-            private clearError(): void {
-                $('#inpCode').ntsError('clear');
-                $('#inpName').ntsError('clear');
-                $('#inpStartMonth').ntsError('clear');
-                $('#inpBudget').ntsError('clear');
             }
 
             private validate(): void {

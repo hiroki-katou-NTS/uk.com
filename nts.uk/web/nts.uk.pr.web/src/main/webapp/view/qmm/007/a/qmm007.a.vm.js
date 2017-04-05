@@ -46,7 +46,6 @@ var nts;
                                 ScreenModel.prototype.onSave = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    self.clearError();
                                     self.validate();
                                     if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                                         dfd.reject();
@@ -79,18 +78,22 @@ var nts;
                                         self.setUnitPriceHistoryModel(dto);
                                         self.dirtyChecker.reset();
                                         self.isLoading(false);
-                                        self.clearError();
                                     });
                                 };
                                 ScreenModel.prototype.onRegistNew = function () {
                                     var self = this;
-                                    self.clearError();
                                     self.clearInput();
                                     self.dirtyChecker.reset();
                                 };
                                 ScreenModel.prototype.isDirty = function () {
                                     var self = this;
                                     return self.dirtyChecker.isDirty();
+                                };
+                                ScreenModel.prototype.clearErrors = function () {
+                                    $('#inpCode').ntsError('clear');
+                                    $('#inpName').ntsError('clear');
+                                    $('#inpStartMonth').ntsError('clear');
+                                    $('#inpBudget').ntsError('clear');
                                 };
                                 ScreenModel.prototype.setMessages = function (messageId) {
                                     var self = this;
@@ -120,12 +123,6 @@ var nts;
                                     model.fixPayAtrDaily(dto.fixPayAtrDaily);
                                     model.fixPayAtrHourly(dto.fixPayAtrHourly);
                                     model.memo(dto.memo);
-                                };
-                                ScreenModel.prototype.clearError = function () {
-                                    $('#inpCode').ntsError('clear');
-                                    $('#inpName').ntsError('clear');
-                                    $('#inpStartMonth').ntsError('clear');
-                                    $('#inpBudget').ntsError('clear');
                                 };
                                 ScreenModel.prototype.validate = function () {
                                     $('#inpCode').ntsEditor('validate');
