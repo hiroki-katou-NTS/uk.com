@@ -53,13 +53,23 @@
 			</com:ko-if>
 			<br/>
 			<com:ko-if bind="selectedDifficultyAtr() == 0">
-				<div id="b_lbl_009" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">かんたん計算式でマスタによる条件分岐を利用する</div>
-				<div id="b_sel_002"  class="cf" data-bind="ntsSwitchButton: {
+				<div id="b_lbl_009" class="separate-vertical" data-bind="ntsFormLabel: {required: true }, disable: false">かんたん計算式でマスタによる条件分岐を利用する</div>
+				<div id="b_sel_002"  class="cf" data-bind="disable: false, ntsSwitchButton: {
 								options: roundingRules2,
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: selectedConditionAtr,
 								enable: isNewMode }"></div>
+				<com:ko-if bind="selectedConditionAtr() == 0">
+					<div id="b_lbl_010" class="separate-vertical" data-bind="ntsFormLabel: {required: true }, enable: false">使用するマスタ</div>
+					<div id="combo-box" style="vertical-align: middle;" data-bind="ntsComboBox: {
+						options: comboBoxUseMaster().itemList,
+						optionsValue: 'code',
+						value: comboBoxUseMaster().selectedCode,
+						optionsText: 'name',
+						editable: false,
+						enable: false}"></div>
+				</com:ko-if>
 				<com:ko-if bind="selectedConditionAtr() == 1">
 					<div id="b_lbl_010" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">使用するマスタ</div>
 					<div id="combo-box" style="vertical-align: middle;" data-bind="ntsComboBox: {
