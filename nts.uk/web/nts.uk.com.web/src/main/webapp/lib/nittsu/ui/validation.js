@@ -139,11 +139,17 @@ var nts;
                         else if (this.option.inputFormat === "timeofday") {
                             parseResult = uk.time.parseTimeOfTheDay(inputText);
                         }
-                        else if (this.option.inputFormat === "yearmonthdate") {
+                        else if (this.option.inputFormat === "date") {
                             parseResult = uk.time.parseYearMonthDate(inputText);
                         }
                         else {
-                            parseResult = uk.time.ResultParseTime.failed();
+                            var format = uk.text.getISO8601Format(this.option.inputFormat);
+                            var momentObject = moment(inputText);
+                            if (momentObject.isValid()) {
+                                var format = uk.text.getISO8601Format(this.option.inputFormat);
+                                return momentObject.format(format);
+                            }
+                            return inputText;
                         }
                         if (parseResult.success) {
                             result.success(parseResult.toValue());

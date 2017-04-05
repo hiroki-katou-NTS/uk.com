@@ -24,31 +24,31 @@
 						<h1>DatePicker</h1>
 						<h2>Overview</h2>
 						<h3>Datepicker</h3>
-						<div id="date-picker" data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD', valueFormat: 'YYYYMMDD'}"></div>
-						<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>						
-						<br/><br/>
+						<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div><br/>
 						<span data-bind="text: date"/>
-						<input data-bind="ntsTextEditor: {value: date}"/>
 						<hr/>
 						<h3>Datepicker with Day of Week</h3>
-						<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD ddd', valueFormat: 'YYYYMMDD'}"></div>
-						<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD dddd', valueFormat: 'YYYYMMDD'}"></div>						
+						<div data-bind="ntsDatePicker: {value: date1, dateFormat: 'YYYY/MM/DD ddd', valueFormat: 'YYYYMMDD'}"></div>
+						<div data-bind="ntsDatePicker: {value: date1, dateFormat: 'YYYY/MM/DD dddd', valueFormat: 'YYYYMMDD'}"></div>		
+						<br/><br/>
+						<span data-bind="text: date1"/>
+						<input data-bind="ntsTextEditor: {value: date1}"/>
 						<hr/>
 						<h3>Year/Month/Day picker</h3>
 						<h4>YearMonth Picker</h4>
-						<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'YYYY/MM'}"></div>
+						<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'YYYY/MM', valueFormat: 'YYYYMM'}"></div>
 						<span data-bind="text: yearMonth"></span>
 						<br/>
 						<h4>Year Picker</h4>
-						<div data-bind="ntsDatePicker: {value: year, dateFormat: 'YYYY'}"></div>
+						<div data-bind="ntsDatePicker: {value: year, dateFormat: 'YYYY', valueFormat: 'YYYY'}"></div>
 						<span data-bind="text: year"></span>
 						<br/>
 						<h4>Month Picker</h4>
-						<div data-bind="ntsDatePicker: {value: month, dateFormat: 'MM'}"></div>
+						<div data-bind="ntsDatePicker: {value: month, dateFormat: 'MM', valueFormat: 'MM'}"></div>
 						<span data-bind="text: month"></span>
 						<br/>
 						<h4>Day Picker</h4>
-						<div data-bind="ntsDatePicker: {value: day, dateFormat: 'DD'}"></div>
+						<div data-bind="ntsDatePicker: {value: day, dateFormat: 'DD', valueFormat: 'DD'}"></div>
 						<span data-bind="text: day"></span>
 						<br/>
 						<article class="cf">
@@ -111,10 +111,11 @@
 												<td>valueFormat<br/><i>(Optional)</i></td>
 												<td>
 													<b>Type:</b> string<br/>
-													<b>Default:</b> Same as <b>dateFormat</b><br/>
+													<b>Default:</b> ""<br/>
 													<b>Members:</b><br/>
-													<i>date:</i> the date pattern (YYYY/MM/DD) member of regional option is used<br/>
-													<i>yearmonth:</i> the time pattern (YYYY/MM) member of regional option is used<br/>
+													<i>Empty:</i> the ISO format<br/>
+													<i>date:</i> the date pattern (YYYY/MM/DD)<br/>
+													<i>yearmonth:</i> the time pattern (YYYY/MM)<br/>
 													<i>ISO 8601 Formats</i><br/>
 													"YY": year field without century and with leading zero<br/>
 													"YYYY": year field with leading zeros<br/>

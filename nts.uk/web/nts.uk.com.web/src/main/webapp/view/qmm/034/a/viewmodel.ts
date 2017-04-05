@@ -12,7 +12,7 @@ module qmm034.a.viewmodel {
         isUpdate: KnockoutObservable<boolean>;
         // là giá trị để binding với nts datePicker
         date: KnockoutObservable<any>;
-        startDate: KnockoutObservable<Date>;
+        startDate: KnockoutObservable<string>;
         dateTime: KnockoutObservable<string>;
         // selected row
         isDeleteEnable: KnockoutObservable<boolean>;
@@ -26,7 +26,7 @@ module qmm034.a.viewmodel {
             let self = this;
             self.init();
             self.date = ko.observable("");
-            self.startDate = ko.observable(new Date());
+            self.startDate = ko.observable(moment().format("YYYY/MM/DD"));
 
             self.startDate.subscribe(function(dateChange) {
                 if (self.countStartDateChange === 1) {
@@ -37,7 +37,8 @@ module qmm034.a.viewmodel {
                 } else {
                     self.countStartDateChange = 1;
                 }
-                self.currentEra().startDate(dateChange);
+                //self.currentEra().startDate(dateChange);
+                self.dateTime(nts.uk.time.yearInJapanEmpire(dateChange).toString());
             })
             self.currentCode.subscribe(function(codeChanged) {
                 if (!nts.uk.text.isNullOrEmpty(codeChanged) && self.currentCode() !== self.previousCurrentCode) {
@@ -54,15 +55,12 @@ module qmm034.a.viewmodel {
             });
             //convert to Japan Emprise year
             self.dateTime = ko.observable(nts.uk.time.yearInJapanEmpire(self.currentEra().startDate()).toString());
-
         }
 
         processWhenCurrentCodeChange(codeChanged: any) {
             let self = this;
             self.countStartDateChange += 1;
             self.currentEra(self.getEra(codeChanged));
-            self.dirtyObject.reset();
-            
             self.date(self.currentEra().startDate().toString());
             self.startDate(self.currentEra().startDate());
             self.isDeleteEnable(true);
@@ -73,6 +71,8 @@ module qmm034.a.viewmodel {
                     self.isEnableCode(true);
                 }
             });    
+            if (self.dirtyObject !== undefined)
+                self.dirtyObject.reset();
             self.previousCurrentCode = codeChanged;
         }
         
@@ -85,7 +85,7 @@ module qmm034.a.viewmodel {
                 { headerText: '記号', key: 'eraMark', width: 50 },
                 { headerText: '開始年月日', key: 'startDate', width: 80 },
             ]);
-            self.currentEra = ko.observable((new EraModel('', '', new Date(), 1, '', new Date())));
+            self.currentEra = ko.observable((new EraModel('', '', moment.utc().toISOString(), 1, '', moment.utc().toISOString())));
             self.currentCode = ko.observable(null);
             self.date = ko.observable('');
             self.dateTime = ko.observable('');
@@ -206,9 +206,9 @@ module qmm034.a.viewmodel {
                 return item.eraHist === codeNew;
             });
             if (era) {
-                return new EraModel(era.eraName, era.eraMark, new Date(era.startDate), era.fixAttribute, era.eraHist, new Date(era.endDate));
+                return new EraModel(era.eraName, era.eraMark, era.startDate, era.fixAttribute, era.eraHist, era.endDate);
             } else {
-                return new EraModel("", "", new Date(), 0, "", new Date());
+                return new EraModel("", "", moment.utc().toISOString(), 0, "", moment.utc().toISOString());
             }
         }
 
@@ -241,13 +241,14 @@ module qmm034.a.viewmodel {
         refreshLayout(): void {
             let self = this;
             self.clearError();
-            self.currentEra(new EraModel('', '', new Date(), 1, '', new Date()));
+            self.currentEra(new EraModel('', '', moment.utc().toISOString(), 1, '', moment.utc().toISOString()));
             self.startDate(self.currentEra().startDate());
             self.currentCode(null);
             self.isDeleteEnable(false);
             self.isEnableCode(true);
             self.isUpdate(false);
-            self.dirtyObject.reset();
+            if (self.dirtyObject !== undefined)
+                self.dirtyObject.reset();
             $("#A_INP_001").focus();
         }
         
@@ -271,12 +272,12 @@ module qmm034.a.viewmodel {
     export class EraModel {
         eraName: KnockoutObservable<string>;
         eraMark: KnockoutObservable<string>;
-        startDate: KnockoutObservable<Date>;
+        startDate: KnockoutObservable<string>;
         fixAttribute: KnockoutObservable<number>;
         eraHist: KnockoutObservable<string>;
-        endDate: KnockoutObservable<Date>;
+        endDate: KnockoutObservable<string>;
 
-        constructor(eraName: string, eraMark: string, startDate: Date, fixAttribute: number, eraHist: string, endDate: Date) {
+        constructor(eraName: string, eraMark: string, startDate: string, fixAttribute: number, eraHist: string, endDate: string) {
             this.eraName = ko.observable(eraName);
             this.eraMark = ko.observable(eraMark);
             this.startDate = ko.observable(startDate);

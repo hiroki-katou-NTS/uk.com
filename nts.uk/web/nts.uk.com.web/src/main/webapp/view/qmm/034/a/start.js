@@ -7,8 +7,8 @@ var qmm034;
             screenModel.startPage().done(function () {
                 nts.uk.ui.confirmSave(screenModel.dirtyObject);
                 __viewContext.bind(screenModel);
+                screenModel.dirtyObject.reset();
             });
         });
     })(a = qmm034.a || (qmm034.a = {}));
 })(qmm034 || (qmm034 = {}));
-//# sourceMappingURL=start.js.map

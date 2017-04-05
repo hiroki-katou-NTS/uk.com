@@ -11,7 +11,7 @@ var qmm034;
                     var self = this;
                     self.init();
                     self.date = ko.observable("");
-                    self.startDate = ko.observable(new Date());
+                    self.startDate = ko.observable(moment().format("YYYY/MM/DD"));
                     self.startDate.subscribe(function (dateChange) {
                         if (self.countStartDateChange === 1) {
                             if ($('#A_INP_003').ntsError("hasError")) {
@@ -21,7 +21,7 @@ var qmm034;
                         else {
                             self.countStartDateChange = 1;
                         }
-                        self.currentEra().startDate(dateChange);
+                        self.dateTime(nts.uk.time.yearInJapanEmpire(dateChange).toString());
                     });
                     self.currentCode.subscribe(function (codeChanged) {
                         if (!nts.uk.text.isNullOrEmpty(codeChanged) && self.currentCode() !== self.previousCurrentCode) {
@@ -43,7 +43,6 @@ var qmm034;
                     var self = this;
                     self.countStartDateChange += 1;
                     self.currentEra(self.getEra(codeChanged));
-                    self.dirtyObject.reset();
                     self.date(self.currentEra().startDate().toString());
                     self.startDate(self.currentEra().startDate());
                     self.isDeleteEnable(true);
@@ -54,6 +53,8 @@ var qmm034;
                             self.isEnableCode(true);
                         }
                     });
+                    if (self.dirtyObject !== undefined)
+                        self.dirtyObject.reset();
                     self.previousCurrentCode = codeChanged;
                 };
                 ScreenModel.prototype.init = function () {
@@ -65,7 +66,7 @@ var qmm034;
                         { headerText: '記号', key: 'eraMark', width: 50 },
                         { headerText: '開始年月日', key: 'startDate', width: 80 },
                     ]);
-                    self.currentEra = ko.observable((new EraModel('', '', new Date(), 1, '', new Date())));
+                    self.currentEra = ko.observable((new EraModel('', '', moment.utc().toISOString(), 1, '', moment.utc().toISOString())));
                     self.currentCode = ko.observable(null);
                     self.date = ko.observable('');
                     self.dateTime = ko.observable('');
@@ -175,10 +176,10 @@ var qmm034;
                         return item.eraHist === codeNew;
                     });
                     if (era) {
-                        return new EraModel(era.eraName, era.eraMark, new Date(era.startDate), era.fixAttribute, era.eraHist, new Date(era.endDate));
+                        return new EraModel(era.eraName, era.eraMark, era.startDate, era.fixAttribute, era.eraHist, era.endDate);
                     }
                     else {
-                        return new EraModel("", "", new Date(), 0, "", new Date());
+                        return new EraModel("", "", moment.utc().toISOString(), 0, "", moment.utc().toISOString());
                     }
                 };
                 ScreenModel.prototype.startPage = function () {
@@ -204,13 +205,14 @@ var qmm034;
                 ScreenModel.prototype.refreshLayout = function () {
                     var self = this;
                     self.clearError();
-                    self.currentEra(new EraModel('', '', new Date(), 1, '', new Date()));
+                    self.currentEra(new EraModel('', '', moment.utc().toISOString(), 1, '', moment.utc().toISOString()));
                     self.startDate(self.currentEra().startDate());
                     self.currentCode(null);
                     self.isDeleteEnable(false);
                     self.isEnableCode(true);
                     self.isUpdate(false);
-                    self.dirtyObject.reset();
+                    if (self.dirtyObject !== undefined)
+                        self.dirtyObject.reset();
                     $("#A_INP_001").focus();
                 };
                 ScreenModel.prototype.startWithEmptyData = function () {
@@ -244,4 +246,3 @@ var qmm034;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm034.a || (qmm034.a = {}));
 })(qmm034 || (qmm034 = {}));
-//# sourceMappingURL=viewmodel.js.map
