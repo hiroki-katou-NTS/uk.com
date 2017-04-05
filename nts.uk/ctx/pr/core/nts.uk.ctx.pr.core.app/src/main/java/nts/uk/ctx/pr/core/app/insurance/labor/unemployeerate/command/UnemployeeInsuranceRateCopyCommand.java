@@ -18,7 +18,7 @@ public class UnemployeeInsuranceRateCopyCommand {
 	private String historyIdCopy;
 
 	/** The start month. */
-	private String startMonth;
+	private Integer startMonth;
 
 	/** The add new. */
 	private boolean addNew;
