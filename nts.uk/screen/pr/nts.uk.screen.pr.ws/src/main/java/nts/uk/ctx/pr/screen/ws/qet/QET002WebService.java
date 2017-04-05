@@ -11,8 +11,8 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.AccPaymentReportService;
-import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.query.AccPaymentReportQuery;
+import nts.uk.file.pr.app.export.accumulatedpayment.AccPaymentReportService;
+import nts.uk.file.pr.app.export.accumulatedpayment.query.AccPaymentReportQuery;
 
 
 /**

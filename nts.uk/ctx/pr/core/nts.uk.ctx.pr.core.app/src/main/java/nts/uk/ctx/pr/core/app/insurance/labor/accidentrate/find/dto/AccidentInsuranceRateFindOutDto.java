@@ -24,7 +24,6 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessType
 public class AccidentInsuranceRateFindOutDto implements AccidentInsuranceRateSetMemento {
 
 	/** The history insurance. */
-	// historyId
 	private AccidentInsuranceRateHistoryFindOutDto historyInsurance;
 
 	/** The rate items. */
@@ -67,7 +66,7 @@ public class AccidentInsuranceRateFindOutDto implements AccidentInsuranceRateSet
 	 */
 	@Override
 	public void setCompanyCode(String companyCode) {
-		// TODO Auto-generated method stub
+		// no thing code
 	}
 
 	/*
