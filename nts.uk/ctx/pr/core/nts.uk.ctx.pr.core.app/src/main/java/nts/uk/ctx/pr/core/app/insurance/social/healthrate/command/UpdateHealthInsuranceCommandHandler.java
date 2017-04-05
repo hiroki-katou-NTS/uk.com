@@ -67,12 +67,11 @@ public class UpdateHealthInsuranceCommandHandler
 			healthInsuranceRate.validate();
 			this.healthInsuranceRateService.validateRequiredItem(healthInsuranceRate);
 
-			// if Update to db success.
-			if (this.healthInsuranceRateRepository.update(healthInsuranceRate)) {
-				// if Autocalculate update avg earn
-				if (healthInsuranceRate.getAutoCalculate().equals(CalculateMethod.Auto)) {
-					healthInsuranceAvgearnService.updateHealthInsuranceRateAvgEarn(healthInsuranceRate);
-				}
+			this.healthInsuranceRateRepository.update(healthInsuranceRate);
+			
+			// if Autocalculate update avg earn
+			if (healthInsuranceRate.getAutoCalculate().equals(CalculateMethod.Auto)) {
+				healthInsuranceAvgearnService.updateHealthInsuranceRateAvgEarn(healthInsuranceRate);
 			}
 		}
 		// if is not found.

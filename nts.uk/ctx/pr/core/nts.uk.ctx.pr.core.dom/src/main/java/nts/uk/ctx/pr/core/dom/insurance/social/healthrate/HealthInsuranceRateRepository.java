@@ -26,7 +26,7 @@ public interface HealthInsuranceRateRepository extends SimpleHistoryRepository<H
 	 *
 	 * @param rate the rate
 	 */
-    boolean update(HealthInsuranceRate rate);
+    void update(HealthInsuranceRate rate);
 
 	/**
 	 * Removes the.

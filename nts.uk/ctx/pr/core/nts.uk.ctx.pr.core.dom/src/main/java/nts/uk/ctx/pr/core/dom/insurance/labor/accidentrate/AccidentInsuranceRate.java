@@ -4,8 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate;
 
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
@@ -17,12 +18,6 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 
 /**
  * The Class AccidentInsuranceRate.
- */
-
-/**
- * Gets the rate items.
- *
- * @return the rate items
  */
 @Getter
 public class AccidentInsuranceRate extends DomainObject {
@@ -99,22 +94,23 @@ public class AccidentInsuranceRate extends DomainObject {
 	 *            the start year month
 	 * @return the accident insurance rate
 	 */
-	public static final AccidentInsuranceRate createWithIntial(String companyCode, YearMonth startYearMonth) {
+	public static final AccidentInsuranceRate createWithIntial(String companyCode,
+			YearMonth startYearMonth) {
 		AccidentInsuranceRate domain = new AccidentInsuranceRate();
 		domain.companyCode = companyCode;
 		domain.applyRange = MonthRange.toMaxDate(startYearMonth);
-		Set<InsuBizRateItem> setItem = new HashSet<>();
-		setItem.add(AccidentInsuranceRate.valueIntial(BusinessTypeEnum.Biz1St));
-		setItem.add(AccidentInsuranceRate.valueIntial(BusinessTypeEnum.Biz2Nd));
-		setItem.add(AccidentInsuranceRate.valueIntial(BusinessTypeEnum.Biz3Rd));
-		setItem.add(AccidentInsuranceRate.valueIntial(BusinessTypeEnum.Biz4Th));
-		setItem.add(AccidentInsuranceRate.valueIntial(BusinessTypeEnum.Biz5Th));
-		setItem.add(AccidentInsuranceRate.valueIntial(BusinessTypeEnum.Biz6Th));
-		setItem.add(AccidentInsuranceRate.valueIntial(BusinessTypeEnum.Biz7Th));
-		setItem.add(AccidentInsuranceRate.valueIntial(BusinessTypeEnum.Biz8Th));
-		setItem.add(AccidentInsuranceRate.valueIntial(BusinessTypeEnum.Biz9Th));
-		setItem.add(AccidentInsuranceRate.valueIntial(BusinessTypeEnum.Biz10Th));
-		domain.rateItems = setItem;
+		domain.rateItems = Arrays
+				.asList(AccidentInsuranceRate.valueIntial(BusinessTypeEnum.Biz1St),
+						AccidentInsuranceRate.valueIntial(BusinessTypeEnum.Biz2Nd),
+						AccidentInsuranceRate.valueIntial(BusinessTypeEnum.Biz3Rd),
+						AccidentInsuranceRate.valueIntial(BusinessTypeEnum.Biz4Th),
+						AccidentInsuranceRate.valueIntial(BusinessTypeEnum.Biz5Th),
+						AccidentInsuranceRate.valueIntial(BusinessTypeEnum.Biz6Th),
+						AccidentInsuranceRate.valueIntial(BusinessTypeEnum.Biz7Th),
+						AccidentInsuranceRate.valueIntial(BusinessTypeEnum.Biz8Th),
+						AccidentInsuranceRate.valueIntial(BusinessTypeEnum.Biz9Th),
+						AccidentInsuranceRate.valueIntial(BusinessTypeEnum.Biz10Th))
+				.stream().collect(Collectors.toSet());
 		return domain;
 	}
 
