@@ -19,7 +19,7 @@ import nts.uk.shr.com.context.LoginUserContext;
  * The Class HistoryAccidentInsuranceRateF‌inder.
  */
 @Stateless
-public class AccidentInsuranceRateF‌inder {
+public class AccidentInsuranceRateFinder {
 
 	/** The accident insurance rate repository. */
 	@Inject

@@ -139,11 +139,17 @@ var nts;
                         else if (this.option.inputFormat === "timeofday") {
                             parseResult = uk.time.parseTimeOfTheDay(inputText);
                         }
-                        else if (this.option.inputFormat === "yearmonthdate") {
+                        else if (this.option.inputFormat === "date") {
                             parseResult = uk.time.parseYearMonthDate(inputText);
                         }
                         else {
-                            parseResult = uk.time.ResultParseTime.failed();
+                            var format = uk.text.getISOFormat(this.option.inputFormat);
+                            var momentObject = moment(inputText);
+                            if (momentObject.isValid()) {
+                                var format = uk.text.getISOFormat(this.option.inputFormat);
+                                return momentObject.format(format);
+                            }
+                            return inputText;
                         }
                         if (parseResult.success) {
                             result.success(parseResult.toValue());
@@ -174,4 +180,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=validation.js.map

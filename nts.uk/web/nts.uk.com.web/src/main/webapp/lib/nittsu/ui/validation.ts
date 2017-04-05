@@ -37,16 +37,16 @@ module nts.uk.ui.validation {
             return new NoValidator();
         }
         if (constraint.valueType === 'String') {
-                return new StringValidator(constraintName);
+            return new StringValidator(constraintName);
         }
-        if(option) {          
-            if(option.inputFormat) {
+        if (option) {
+            if (option.inputFormat) {
                 //If inputFormat presented, this is Date or Time Editor                 
                 return new TimeValidator(constraintName, option);
-            } else  {
+            } else {
                 return new NumberValidator(constraintName, option);
                 //currencyformat presented, this is CurrencyEditor
-            } 
+            }
         }
         return new NoValidator();
     }
@@ -56,37 +56,37 @@ module nts.uk.ui.validation {
         constraint: any;
         charType: nts.uk.text.CharType;
         required: boolean;
-        
+
         constructor(primitiveValueName: string, required?: boolean) {
             this.constraint = getConstraint(primitiveValueName);
             this.charType = text.getCharType(primitiveValueName);
             this.required = required;
         }
-        
+
         validate(inputText: string): ValidationResult {
             var result = new ValidationResult();
-            
+
             if (this.required !== undefined && this.required !== false) {
                 if (!checkRequired(inputText)) {
                     result.fail('This field is required');
                     return result;
                 }
             }
-            
+
             if (this.charType !== null && this.charType !== undefined) {
                 if (!this.charType.validate(inputText)) {
                     result.fail('Invalid text');
                     return result;
                 }
             }
-            
+
             if (this.constraint !== undefined && this.constraint !== null) {
                 if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
                     result.fail('Max length for this input is ' + this.constraint.maxLength);
                     return result;
-                }  
-                
-                if (!text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)){
+                }
+
+                if (!text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
                     result.fail('This field is not valid with pattern!');
                     return result;
                 }
@@ -108,16 +108,16 @@ module nts.uk.ui.validation {
         validate(inputText: string): ValidationResult {
             var result = new ValidationResult();
             var isDecimalNumber = false;
-            if(this.option !== undefined){
+            if (this.option !== undefined) {
                 isDecimalNumber = (this.option.decimallength > 0)
-                inputText = text.replaceAll(inputText.toString(), this.option.groupseperator, '');    
+                inputText = text.replaceAll(inputText.toString(), this.option.groupseperator, '');
             }
-            
+
             if (!ntsNumber.isNumber(inputText, isDecimalNumber)) {
                 result.fail('invalid number');
                 return result;
             }
-            var value = isDecimalNumber ? 
+            var value = isDecimalNumber ?
                 ntsNumber.getDecimal(inputText, this.option.decimallength) : parseInt(inputText);
 
             if (this.constraint !== null) {
@@ -144,36 +144,45 @@ module nts.uk.ui.validation {
             this.option = option;
         }
 
-        validate(inputText: string): ValidationResult {
+        validate(inputText: string): any {
             var result = new ValidationResult();
             var parseResult;
             if (this.option.inputFormat === "yearmonth") {
                 parseResult = time.parseYearMonth(inputText);
             } else if (this.option.inputFormat === "time") {
                 parseResult = time.parseTime(inputText, false);
-            }else if(this.option.inputFormat === "timeofday") {
+            } else if (this.option.inputFormat === "timeofday") {
                 parseResult = time.parseTimeOfTheDay(inputText);
-            }else if(this.option.inputFormat === "yearmonthdate") {
+            } else if (this.option.inputFormat === "date") {
                 parseResult = time.parseYearMonthDate(inputText);
-            }else {
-                parseResult = time.ResultParseTime.failed();
+            } else {
+                // TODO : Validate base on moment
+                var format: string = text.getISOFormat(this.option.inputFormat);
+                var momentObject: moment.Moment = moment(inputText);
+                if (momentObject.isValid()) {
+                    var format = text.getISOFormat(this.option.inputFormat);
+                    return momentObject.format(format);
+                }
+                return inputText;
+                //parseResult = time.ResultParseTime.failed();
             }
-            if(parseResult.success){
+            
+            if (parseResult.success) {
                 result.success(parseResult.toValue());
-            }else{
+            } else {
                 result.fail(parseResult.getMsg());
             }
             return result;
         }
     }
-   
+
     function checkRequired(value: any): boolean {
         if (value === undefined || value === null || value.length == 0) {
             return false;
         }
         return true;
     }
-     
+
     export function getConstraint(primitiveValueName: string) {
         var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
         if (constraint === undefined)
