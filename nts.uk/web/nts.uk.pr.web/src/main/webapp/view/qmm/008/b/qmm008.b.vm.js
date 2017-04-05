@@ -269,6 +269,7 @@ var nts;
                                     var self = this;
                                     if (self.dirty.isDirty()) {
                                         nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function () {
+                                            self.loadHealth(self.backupDataDirty());
                                             self.OpenModalOfficeRegister();
                                             self.dirty.reset();
                                         }).ifCancel(function () {
