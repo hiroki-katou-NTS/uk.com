@@ -30,7 +30,14 @@ module qpp014.g.viewmodel {
                 value: ko.observable(12)
             };
             self.g_SEL_003_itemSelected = ko.observable(1);
-
+        }
+        
+        /**
+         * open dialog I
+         */
+        openIDialog() {
+            nts.uk.ui.windows.sub.modal("/view/qpp/014/i/index.xhtml", { title: "振込データテキスト出力結果一覧", dialogClass: "no-close" }).onClosed(function() {
+            });
         }
     }
 

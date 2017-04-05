@@ -20,14 +20,20 @@
 	width: 100px;
 	margin-bottom: 10px;
 }
-#E_BTN_002{
-	margin-left: 210px
+
+#E_BTN_002_1 {
+	margin-left: 210px;
 }
+
+#E_BTN_002_2 {
+	margin-left: 155px!important;
+}
+
 #E_BTN_003, #E_BTN_005 {
 	margin-left: 20px;
 }
 
-#E_BTN_002, #E_BTN_003 {
+#E_BTN_002_1, #E_BTN_002_2, #E_BTN_003 {
 	width: 200px;
 }
 
@@ -73,11 +79,11 @@
 	margin-bottom: 25px;
 }
 
-#D_footer {
+#E_footer {
 	display: inline-block;
 }
 
-#D_division {
+#E_division {
 	margin-bottom: 15px;
 }
 

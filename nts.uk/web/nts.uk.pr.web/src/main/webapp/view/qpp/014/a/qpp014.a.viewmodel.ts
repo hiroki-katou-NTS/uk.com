@@ -72,5 +72,13 @@ module qpp014.a.viewmodel {
             $("#screenA").css("display", "");
             $(".func-btn").css("visibility", "hidden");
         }
+
+        /**
+         * go to screen J
+         */
+        goToScreenJ(): void {
+            nts.uk.ui.windows.sub.modal("/view/qpp/014/j/index.xhtml", { title: "振込チェックリスト", dialogClass: "no-close" }).onClosed(function() {
+            });
+        }
     }
 };

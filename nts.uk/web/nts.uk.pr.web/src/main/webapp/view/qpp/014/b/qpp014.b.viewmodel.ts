@@ -14,7 +14,6 @@ module qpp014.b.viewmodel {
             self.b_stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
             self.nextScreen = ko.observable('../g/index.xhtml');
         }
-          
     }
     
 

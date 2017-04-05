@@ -7,11 +7,10 @@ module qpp014.e {
         currentCode_E_LST_003: KnockoutObservable<any>;
         constructor() {
             var self = this;
-            $('#successful').css('display', 'none');
+            //$('#successful').css('display', 'none');
             $('#stop').css('display', 'none');
-            //$('#error').css('display', 'none');
-            $('#E_BTN_002a').css('margin-left', '175px');
-            nts.uk.ui.windows.getSelf().setHeight(595);
+            $('#error').css('display', 'none');
+            //nts.uk.ui.windows.getSelf().setHeight(595);
             self.items_E_LST_003 = ko.observableArray([]);
             for (let i = 1; i < 100; i++) {
                 self.items_E_LST_003.push(new ItemModel_E_LST_003('00' + i, '基本給', "description " + i));
@@ -24,6 +23,14 @@ module qpp014.e {
          */
         closeDialog(): void {
             nts.uk.ui.windows.close();
+        }
+
+        /**
+         * go to screen G
+         */
+        goToScreenGOrH(): void {
+            nts.uk.ui.windows.close();
+            //            nts.uk.request.jump('../g/index.xhtml');    
         }
     }
     export class ItemModel_E_LST_003 {

@@ -8,58 +8,75 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 650, height: 345 };</script>
 			<com:scriptfile path="qpp014.i.start.js" />
 			<com:scriptfile path="qpp014.i.viewmodel.js" />
 			<com:stylefile path="qpp014.i.main.css" />
 			<com:scriptfile set="IGNITE" />
 		</ui:define>
+
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class="divLine">
-					<label id="I_LBL_001">振込データの出力</label>
-				</div>
-				<div class="divLine">
-					<table id="I_LST_001">
-						<tbody>
-							<tr>
-								<td>経過時間</td>
-								<td>b</td>
-							</tr>
-							<tr>
-								<td>処理状態</td>
-								<td>b</td>
-							</tr>
-							<tr>
-								<td>エラ</td>
-								<td>b</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-				<div class="divLine">
-					<label id="I_LBL_002">設定情報</label>
-				</div>
-				<div class="divLine">
-					<table id="I_LST_002">
-						<tbody>
-							<tr>
-								<td>振込元銀行</td>
-								<td>b</td>
-							</tr>
-							<tr>
-								<td>処理する年月</td>
-								<td>b</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-				<div id="list3-div">
+				<div id="processing">
 					<div class="divLine">
-						<button id="I_BTN_001">エラー出力</button>
+						<label id="I_LBL_001">振込データの出力</label>
 					</div>
 					<div class="divLine">
-						<table id="I_LST_003"
-							data-bind="ntsGridList: {
+						<table id="I_LST_001">
+							<tbody>
+								<tr>
+									<td>経過時間</td>
+									<td>Elapsed Time</td>
+								</tr>
+								<tr>
+									<td>処理状態</td>
+									<td>Processing state</td>
+								</tr>
+								<tr>
+									<td>エラー件数</td>
+									<td>Error count</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="divLine">
+						<label id="I_LBL_002">設定情報</label>
+					</div>
+					<div class="divLine">
+						<table id="I_LST_002">
+							<tbody>
+								<tr>
+									<td>振込元銀行</td>
+									<td>Processing method</td>
+								</tr>
+								<tr>
+									<td>処理する年月</td>
+									<td>Date of description to be processed</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<div id="stop">
+					<hr id="I_division" />
+					<button id="I_BTN_004">中断</button>
+				</div>
+
+				<div id="successful">
+					<hr id="I_division" />
+					<button class="large" id="I_BTN_002">ファイルダウンロード</button>
+					<button id="I_BTN_003" data-bind="click: closeDialog">閉じる</button>
+				</div>
+
+				<div id="error">
+					<div id="list3-div">
+						<div class="divLine">
+							<button id="I_BTN_001">エラー出力</button>
+						</div>
+						<div class="divLine">
+							<table id="I_LST_003"
+								data-bind="ntsGridList: {
 							width: 590,
 							height: 150,
 							dataSource: items_I_LST_003,
@@ -72,14 +89,12 @@
 							multiple: false,
 							value: currentCode_I_LST_003
 						}">
-						</table>
+							</table>
+						</div>
 					</div>
-				</div>
-				<hr id="I_division"/>
-				<div class="divLine">
+					<hr id="I_division" />
 					<button class="large" id="I_BTN_002">ファイルダウンロード</button>
-					<button id="I_BTN_004">中断</button>
-					<button id="I_BTN_003">閉じる</button>
+					<button id="I_BTN_003" data-bind="click: closeDialog">閉じる</button>
 				</div>
 			</div>
 		</ui:define>

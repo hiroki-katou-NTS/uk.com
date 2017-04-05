@@ -56,6 +56,10 @@ var qpp014;
                     $("#screenA").css("display", "");
                     $(".func-btn").css("visibility", "hidden");
                 };
+                ScreenModel.prototype.goToScreenJ = function () {
+                    nts.uk.ui.windows.sub.modal("/view/qpp/014/j/index.xhtml", { title: "振込チェックリスト", dialogClass: "no-close" }).onClosed(function () {
+                    });
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;

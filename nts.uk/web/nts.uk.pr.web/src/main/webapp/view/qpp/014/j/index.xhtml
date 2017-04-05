@@ -9,6 +9,7 @@
 
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 1210, height: 560 };</script>
 			<com:scriptfile path="qpp014.j.start.js" />
 			<com:scriptfile path="qpp014.j.viewmodel.js" />
 			<com:stylefile path="qpp014.j.main.css" />
@@ -98,7 +99,8 @@
 						<div id="J_LBL_009" data-bind="ntsFormLabel: {required: false}">給与・予備月の出力形式</div>
 					</div>
 					<div class="divLine" style="padding-left: 30px;">
-						<div class="cf" id="J_SEL_009" data-bind="ntsSwitchButton: {
+						<div class="cf" id="J_SEL_009"
+							data-bind="ntsSwitchButton: {
 							options: ko.observableArray([
 					            { code: '1', name: '合算して出力' },
 					            { code: '2', name: '個別に出力' }

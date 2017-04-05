@@ -6,6 +6,13 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
+		<script type="text/html" id="screeng">
+			<ui:include src='../g/index.xhtml' />
+		</script>
+		<script type="text/html" id="screenh">
+			<ui:include src='../h/index.xhtml' />
+		</script>
+		
 		<div id="wizard"
 			data-bind="ntsWizard: {steps: viewmodelb.b_stepList, theme: 'yellow'}"
 			class="cf">
@@ -22,8 +29,8 @@
 				<div class="step-1">
 					<ui:include src="../d/index.xhtml" />
 				</div>
-				<div class="step-2" id="dynamicScreen">
-					<ui:include src='../g/index.xhtml' />
+				<div class="step-2" id="dynamicScreen" data-bind="template: {name: viewmodeld.d_nextScreen}">
+					
 				</div>
 			</div>
 		</div>

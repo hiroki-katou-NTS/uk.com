@@ -5,14 +5,18 @@ var qpp014;
         var ScreenModel = (function () {
             function ScreenModel() {
                 var self = this;
+                $('#successful').css('display', 'none');
+                $('#stop').css('display', 'none');
+                nts.uk.ui.windows.getSelf().setHeight(570);
                 self.items_I_LST_003 = ko.observableArray([]);
-                for (var i_2 = 1; i_2 < 100; i_2++) {
+                for (var i_2 = 1; i_2 < 14; i_2++) {
                     self.items_I_LST_003.push(new ItemModel_I_LST_003('00' + i_2, '基本給', "description " + i_2));
                 }
                 self.currentCode_I_LST_003 = ko.observable();
-                $("#list3-div").css("display", "none");
-                $("#I_BTN_004").css("display", "none");
             }
+            ScreenModel.prototype.closeDialog = function () {
+                nts.uk.ui.windows.close();
+            };
             return ScreenModel;
         }());
         i_1.ScreenModel = ScreenModel;
