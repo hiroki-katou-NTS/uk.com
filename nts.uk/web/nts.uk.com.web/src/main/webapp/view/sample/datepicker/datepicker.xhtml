@@ -23,26 +23,33 @@
 					<div id="content" class="cf">
 						<h1>DatePicker</h1>
 						<h2>Overview</h2>
-						<div style="border: 1px solid green; margin: 5px">
-							<h3>Datepicker with short day name</h3>
-							<div id="date-picker" data-bind="ntsDatePicker: {button: true, value: date, dateFormat: 'yyyy/MM/dd D', startDate: '2016/12/01', disabled: true}"></div>
-							
-							<br/><br/>
-							<h3>Datepicker with full day name</h3>
-							<div id="date-picker1" data-bind="ntsDatePicker: {value: date, dateFormat: 'yyyy/MM/dd DDD', startDate: '2016/12/01'}"></div>
-							<br/><br/>
-							<span data-bind="text: date"></span>
-						</div>
+						<h3>Datepicker</h3>
+						<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div><br/>
+						<b>ISO Format:</b> <span data-bind="text: date"/>
 						<hr/>
-						<div style="border: 1px solid green; margin: 5px">
-							<h3>Yearmonth picker</h3>
-							<div id="date-picker2" data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yyyy/MM'}"></div>
-							<br/><br/>
-							<h3>Yearmonth picker</h3>
-							<div id="date-picker3" data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yyyy/MM'}"></div>
-							<br/><br/>
-							<span data-bind="text: yearMonth"></span>
-						</div>
+						<h3>Datepicker with Day of Week</h3>
+						<div data-bind="ntsDatePicker: {value: date1, dateFormat: 'YYYY/MM/DD ddd', valueFormat: 'YYYYMMDD'}"></div>
+						<div data-bind="ntsDatePicker: {value: date1, dateFormat: 'YYYY/MM/DD dddd', valueFormat: 'YYYYMMDD'}"></div>		
+						<br/><br/>
+						<b>Custom Format:</b> <input data-bind="ntsTextEditor: {value: date1}"/>
+						<hr/>
+						<h3>Year/Month/Day picker</h3>
+						<h4>YearMonth Picker</h4>
+						<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'YYYY/MM', valueFormat: 'YYYYMM'}"></div>
+						<span data-bind="text: yearMonth"></span>
+						<br/>
+						<h4>Year Picker</h4>
+						<div data-bind="ntsDatePicker: {value: year, dateFormat: 'YYYY', valueFormat: 'YYYY'}"></div>
+						<span data-bind="text: year"></span>
+						<br/>
+						<h4>Month Picker</h4>
+						<div data-bind="ntsDatePicker: {value: month, dateFormat: 'MM', valueFormat: 'MM'}"></div>
+						<span data-bind="text: month"></span>
+						<br/>
+						<h4>Day Picker</h4>
+						<div data-bind="ntsDatePicker: {value: day, dateFormat: 'DD', valueFormat: 'DD'}"></div>
+						<span data-bind="text: day"></span>
+						<br/>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
@@ -50,22 +57,17 @@
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
-<pre><![CDATA[<!-- DATEPICKER SHORT DAY NAME -->
-<h3>Datepicker with short day name</h3>
-<div id="date-picker" data-bind="ntsDatePicker: {button: true, value: date, dateFormat: 'yyyy/MM/dd D', startDate: '2016/12/01', disabled: true}"></div>
-<br/><br/>
-<!--  DATEPICKER FULL DAY NAME -->
-<h3>Datepicker with full day name</h3>
-<div id="date-picker1" data-bind="ntsDatePicker: {value: date, dateFormat: 'yyyy/MM/dd DDD', startDate: '2016/12/01'}"></div>
-<br/><br/>
-<!-- YEARMONTH PICKER MODE-->
-<h3>Yearmonth picker</h3>
-<div id="date-picker2" data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yyyy/MM'}"></div>
-<br/><br/>
-]]></pre>
+<pre><![CDATA[<!-- Datepicker -->
+<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD', valueFormat: 'YYYYMMDD'}"></div>
+<!-- YearMonth Picker -->
+<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'YYYY/MM', valueFormat: 'YYYYMM'}"></div>
+<!-- Yearpicker -->
+<div data-bind="ntsDatePicker: {value: year, dateFormat: 'YYYY'}"></div>
+<!-- Monthpicker -->
+<div data-bind="ntsDatePicker: {value: month, dateFormat: 'MM'}"></div>
+<!-- Daypicker -->
+<div data-bind="ntsDatePicker: {value: day, dateFormat: 'DD'}"></div>]]></pre>
 									<h2>API</h2>
-									Two mode: datepicker and yearmonth picker
-									The second mode will not have 'startDate' and 'endDate' option.
 									<table>
 										<colgroup>
 											<col width="200px" />
@@ -78,70 +80,109 @@
 										</thead>
 										<tbody>
 											<tr>
-												<td>value<br/><i>(optional)</i></td>
+												<td>value</td>
 												<td>
-													<b>Type:</b> Date | string <br/>
-													<b>Default:</b> today<br/>
-													The Date value for datepicker mode or string value for yearmonth picker mode
+													<b>Type:</b> KnockoutObservable&lt;string&gt;<br/>
+													The date value for datepicker
 												</td>
 											</tr>
 											<tr>
-												<td>dateFormat</td>
+												<td>dateFormat<br/><i>(Optional)</i></td>
 												<td>
 													<b>Type:</b> string<br/>
-													<i>Optional</i>
-													Specify the desire format: 'yyyy/MM/dd' for simple date, 'yyyy/MM/dd DDD' or 'yyyy/MM/dd D' for date with Day name. <br/>
-													Or 'yyyy/MM' for yearmonth mode only
+													<b>Default:</b> 'YYYY/MM/DD'<br/>
+													<b>Members:</b><br/>
+													<i>date:</i> the date pattern (YYYY/MM/DD) member of regional option is used<br/>
+													<i>yearmonth:</i> the time pattern (YYYY/MM) member of regional option is used<br/>
+													<i>ISO 8601 Formats</i><br/>
+													"YY": year field without century and with leading zero<br/>
+													"YYYY": year field with leading zeros<br/>
+													"M": month field as digit without leading zero<br/>
+													"MM": month field as digit with leading zero<br/>
+													"D": day of month field without leading zero<br/>
+													"DD": day of month field with leading zero<br/>
+													"ddd": short day of week<br/>
+													"dddd": long day of week<br/><br/>
+													The display format in datepicker
 												</td>
 											</tr>
 											<tr>
-												<td>disabled</td>
+												<td>valueFormat<br/><i>(Optional)</i></td>
 												<td>
-													<b>Type:</b> boolean<br/>
-													<i>Optional</i>
+													<b>Type:</b> string<br/>
+													<b>Default:</b> ""<br/>
+													<b>Members:</b><br/>
+													<i>Empty:</i> the ISO format<br/>
+													<i>date:</i> the date pattern (YYYY/MM/DD)<br/>
+													<i>yearmonth:</i> the time pattern (YYYY/MM)<br/>
+													<i>ISO 8601 Formats</i><br/>
+													"YY": year field without century and with leading zero<br/>
+													"YYYY": year field with leading zeros<br/>
+													"M": month field as digit without leading zero<br/>
+													"MM": month field as digit with leading zero<br/>
+													"D": day of month field without leading zero<br/>
+													"DD": day of month field with leading zero<br/><br/>
+													The return value format for observable value
+												</td>
+											</tr>
+											<tr>
+												<td>disabled<br/><i>(Optional)</i></td>
+												<td>
+													<b>Type:</b> KnockoutObservable&lt;boolean&gt; | boolean<br/>
+													<b>Default:</b> false<br/>
 													Disable date picker
 												</td>
 											</tr>
 											<tr>
-												<td>buttons</td>
+												<td>button<br/><i>(Optional)</i></td>
 												<td>
 													<b>Type:</b> boolean<br/>
-													<i>Optional:</i> provide button for trigger datepicker
+													<b>Default:</b> false<br/>
+													Show a calendar icon
 												</td>
 											</tr>
 											<tr>
-												<td>startDate</td>
+												<td>startDate<br/><i>(Optional)</i></td>
 												<td>
-													<b>Type:</b> string<br/>
-													<i>Optional: </i> If presented, all date before this day will be disabled
+													<b>Type:</b> KnockoutObservable&lt;string&gt; | string<br/>
+													<b>Default:</b> null<br/>
+													Min date datepicker can pick
 												</td>
 											</tr>
 											<tr>
-												<td>endDate</td>
+												<td>endDate<br/><i>(Optional)</i></td>
 												<td>
-													<b>Type:</b> string<br/>
-													<i>Optional: </i> If presented, all date after this day will be disabled
+													<b>Type:</b> KnockoutObservable&lt;string&gt; | string<br/>
+													<b>Default:</b> null<br/>
+													Max date datepicker can pick
 												</td>
 											</tr>
 											<tr>
-												<td>autoHide</td>
+												<td>autoHide<br/><i>(Optional)</i></td>
 												<td>
 													<b>Type:</b> boolean<br/>
-													<i>Optional: </i> default true, determine that the datepicker should be hide or not after a date selection click
+													<b>Default:</b> true<br/>
+													Datepicker auto hide when picked
 												</td>
 											</tr>
 										</tbody>
 									</table>
 								</div>
 								<div id="tabs-viewmodel" class="cf">
-<pre><![CDATA[							
+<pre><![CDATA[<!-- Recommend use 'string' and momentjs for date type -->
 class ScreenModel {
-    date: KnockoutObservable<Date>;
-    yearMonth: any;
+    date: KnockoutObservable<string>;
+    yearMonth: KnockoutObservable<string>;
+    year: KnockoutObservable<string>;
+    month: KnockoutObservable<string>;
+    day: KnockoutObservable<string>;
     constructor() {
         var self = this;            
-        self.date = ko.observable(new Date('2016/12/01'));
-        self.yearMonth = ko.observable('2016/12');
+        self.date = ko.observable('20161201');
+        self.yearMonth = ko.observable('201601');
+        self.year = ko.observable('2016');
+        self.month = ko.observable('01');
+        self.day = ko.observable('01');
     }
 }]]></pre>
 								</div>

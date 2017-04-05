@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.labor;
@@ -31,7 +31,7 @@ import nts.uk.shr.com.primitive.Memo;
 public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSetMemento {
 
 	/** The type value. */
-	protected QismtLaborInsuOffice typeValue;
+	private QismtLaborInsuOffice typeValue;
 
 	/**
 	 * Instantiates a new jpa labor insurance office set memento.

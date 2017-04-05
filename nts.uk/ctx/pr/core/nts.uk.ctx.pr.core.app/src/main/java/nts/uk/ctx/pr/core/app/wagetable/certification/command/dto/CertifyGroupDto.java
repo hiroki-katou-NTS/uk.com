@@ -4,9 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.certification.command.dto;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Data;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
@@ -18,6 +18,10 @@ import nts.uk.ctx.pr.core.dom.wagetable.certification.MultipleTargetSetting;
 
 /**
  * The Class CertifyGroupDto.
+ */
+
+/**
+ * Instantiates a new certify group dto.
  */
 
 /**
@@ -76,67 +80,66 @@ public class CertifyGroupDto {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see
 		 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento
 		 * #getName()
 		 */
 		@Override
 		public CertifyGroupName getName() {
-			return new CertifyGroupName(dto.name);
+			return new CertifyGroupName(this.dto.name);
 		}
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see
 		 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento
 		 * #getMultiApplySet()
 		 */
 		@Override
 		public MultipleTargetSetting getMultiApplySet() {
-			return MultipleTargetSetting.valueOf(dto.multiApplySet);
+			return MultipleTargetSetting.valueOf(this.dto.multiApplySet);
 		}
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see
 		 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento
 		 * #getCompanyCode()
 		 */
 		@Override
 		public String getCompanyCode() {
-			return companyCode;
+			return this.companyCode;
 		}
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see
 		 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento
 		 * #getCode()
 		 */
 		@Override
 		public CertifyGroupCode getCode() {
-			return new CertifyGroupCode(dto.code);
+			return new CertifyGroupCode(this.dto.code);
 		}
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see
 		 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento
 		 * #getCertifies()
 		 */
 		@Override
 		public Set<Certification> getCertifies() {
-			Set<Certification> setCertification = new HashSet<>();
-			for (CertificationDto certificationDto : dto.certifies) {
-				setCertification.add(certificationDto.toDomain(companyCode));
-			}
-			return setCertification;
+			return this.dto.certifies.stream().map(certificationDto -> certificationDto.toDomain(this.companyCode))
+				.collect(Collectors.toSet());
+
 		}
+
 	}
 
 }

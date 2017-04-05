@@ -19,7 +19,7 @@ import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.AccidentInsur
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.AccidentInsuranceRateDeleteCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.AccidentInsuranceRateUpdateCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.AccidentInsuranceRateUpdateCommandHandler;
-import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.AccidentInsuranceRateF‌inder;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.AccidentInsuranceRateFinder;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto.AccidentInsuranceRateFindOutDto;
 
 /**
@@ -47,7 +47,7 @@ public class AccidentInsuranceRateWs extends WebService {
 
 	/** The find. */
 	@Inject
-	private AccidentInsuranceRateF‌inder find;
+	private AccidentInsuranceRateFinder find;
 
 	/**
 	 * Find.
