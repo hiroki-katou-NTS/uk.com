@@ -134,6 +134,7 @@ public class QismtBusinessType implements Serializable {
 	 * Instantiates a new qismt business type.
 	 */
 	public QismtBusinessType() {
+		super();
 	}
 
 	/**
@@ -144,48 +145,6 @@ public class QismtBusinessType implements Serializable {
 	 */
 	public QismtBusinessType(String ccd) {
 		this.ccd = ccd;
-	}
-
-	/**
-	 * Instantiates a new qismt business type.
-	 *
-	 * @param ccd
-	 *            the ccd
-	 * @param exclusVer
-	 *            the exclus ver
-	 * @param bizName01
-	 *            the biz name 01
-	 * @param bizName03
-	 *            the biz name 03
-	 * @param bizName04
-	 *            the biz name 04
-	 * @param bizName05
-	 *            the biz name 05
-	 * @param bizName06
-	 *            the biz name 06
-	 * @param bizName07
-	 *            the biz name 07
-	 * @param bizName08
-	 *            the biz name 08
-	 * @param bizName09
-	 *            the biz name 09
-	 * @param bizName10
-	 *            the biz name 10
-	 */
-	public QismtBusinessType(String ccd, long exclusVer, String bizName01, String bizName03, String bizName04,
-			String bizName05, String bizName06, String bizName07, String bizName08, String bizName09,
-			String bizName10) {
-		this.ccd = ccd;
-		this.exclusVer = exclusVer;
-		this.bizName01 = bizName01;
-		this.bizName03 = bizName03;
-		this.bizName04 = bizName04;
-		this.bizName05 = bizName05;
-		this.bizName06 = bizName06;
-		this.bizName07 = bizName07;
-		this.bizName08 = bizName08;
-		this.bizName09 = bizName09;
-		this.bizName10 = bizName10;
 	}
 
 	/*

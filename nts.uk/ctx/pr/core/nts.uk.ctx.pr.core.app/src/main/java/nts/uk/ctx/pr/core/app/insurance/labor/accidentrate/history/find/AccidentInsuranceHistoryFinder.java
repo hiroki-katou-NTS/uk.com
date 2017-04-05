@@ -18,7 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
 /**
- * The Class HistoryAccidentInsuranceRateF‌inder.
+ * The Class AccidentInsuranceHistoryF‌inder.
  */
 @Stateless
 public class AccidentInsuranceHistoryFinder {
@@ -30,8 +30,6 @@ public class AccidentInsuranceHistoryFinder {
 	/**
 	 * Find all.
 	 *
-	 * @param companyCode
-	 *            the company code
 	 * @return the list
 	 */
 	public List<AccidentInsuranceRateHistoryFindOutDto> findAll() {
@@ -40,13 +38,14 @@ public class AccidentInsuranceHistoryFinder {
 		// get companyCode by user login
 		String companyCode = loginUserContext.companyCode();
 		// call repository find
-		List<AccidentInsuranceRateHistoryFindOutDto> lstHistoryAccidentInsuranceRateFindOutDto = accidentInsuranceRateRepository
-				.findAll(companyCode).stream().map(accidentInsuranceRate -> {
-					AccidentInsuranceRateHistoryFindOutDto historyAccidentInsuranceRateFindOutDto;
-					historyAccidentInsuranceRateFindOutDto = new AccidentInsuranceRateHistoryFindOutDto();
-					accidentInsuranceRate.saveToMemento(historyAccidentInsuranceRateFindOutDto);
-					return historyAccidentInsuranceRateFindOutDto;
-				}).collect(Collectors.toList());
+		List<AccidentInsuranceRateHistoryFindOutDto> lstHistoryAccidentInsuranceRateFindOutDto;
+		lstHistoryAccidentInsuranceRateFindOutDto = accidentInsuranceRateRepository.findAll(companyCode)
+			.stream().map(accidentInsuranceRate -> {
+				AccidentInsuranceRateHistoryFindOutDto historyAccidentInsuranceRateFindOutDto;
+				historyAccidentInsuranceRateFindOutDto = new AccidentInsuranceRateHistoryFindOutDto();
+				accidentInsuranceRate.saveToMemento(historyAccidentInsuranceRateFindOutDto);
+				return historyAccidentInsuranceRateFindOutDto;
+			}).collect(Collectors.toList());
 		return lstHistoryAccidentInsuranceRateFindOutDto;
 	}
 
@@ -55,7 +54,7 @@ public class AccidentInsuranceHistoryFinder {
 	 *
 	 * @param historyId
 	 *            the history id
-	 * @return the history accident insurance rate find out dto
+	 * @return the accident insurance rate history find out dto
 	 */
 	public AccidentInsuranceRateHistoryFindOutDto find(String historyId) {
 		// get user login info
@@ -66,7 +65,7 @@ public class AccidentInsuranceHistoryFinder {
 		AccidentInsuranceRateHistoryFindOutDto historyAccidentInsuranceRateFindOutDto;
 		historyAccidentInsuranceRateFindOutDto = new AccidentInsuranceRateHistoryFindOutDto();
 		Optional<AccidentInsuranceRate> optionalAccidentInsuranceRate = accidentInsuranceRateRepository
-				.findById(companyCode, historyId);
+			.findById(companyCode, historyId);
 		if (optionalAccidentInsuranceRate.isPresent()) {
 			optionalAccidentInsuranceRate.get().saveToMemento(historyAccidentInsuranceRateFindOutDto);
 		}

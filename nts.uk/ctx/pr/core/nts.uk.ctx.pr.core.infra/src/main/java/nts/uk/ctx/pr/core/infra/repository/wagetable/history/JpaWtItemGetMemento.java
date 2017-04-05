@@ -15,7 +15,7 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableMny;
 public class JpaWtItemGetMemento implements WtItemGetMemento {
 
 	/** The type value. */
-	protected QwtmtWagetableMny typeValue;
+	private QwtmtWagetableMny typeValue;
 
 	/**
 	 * Instantiates a new jpa wage table item get memento.

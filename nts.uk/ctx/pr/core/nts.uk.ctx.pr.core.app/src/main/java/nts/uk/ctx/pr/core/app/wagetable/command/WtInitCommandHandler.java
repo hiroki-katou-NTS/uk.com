@@ -50,22 +50,30 @@ public class WtInitCommandHandler extends CommandHandlerWithResult<WtInitCommand
 	@Override
 	@Transactional
 	protected WtHistory handle(CommandHandlerContext<WtInitCommand> context) {
-
+		// Get command.
 		WtInitCommand command = context.getCommand();
 
+		// Transfer data
 		WtHead header = command.getWageTableHeadDto().toDomain();
+
+		// Validate
 		header.validate();
 		headService.validateRequiredItem(header);
 		headService.checkDuplicateCode(header);
 
+		// Create new history
 		WtHistory history = WtHistory.initFromHead(header, new YearMonth(command.getStartMonth()));
+
+		// Validate
 		history.validate();
 		historyService.validateRequiredItem(history);
 		historyService.validateDateRange(history);
 
+		// Insert into db.
 		this.headRepo.add(header);
 		this.historyRepo.addHistory(history);
 
+		// Return.
 		return history;
 	}
 }
