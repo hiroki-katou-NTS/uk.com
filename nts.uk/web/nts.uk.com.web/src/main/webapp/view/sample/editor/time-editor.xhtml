@@ -33,16 +33,16 @@
 						<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 						<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						<h3>Date (YYYY/MM/DD)</h3>
-						<input data-name="テスト" data-bind="ntsTimeEditor: {value: date, inputFormat: 'date', enable: enable, readonly: readonly, required: false}" />
+						<input data-name="Date Editor" data-bind="ntsTimeEditor: {value: date, inputFormat: 'date', enable: enable, readonly: readonly, required: false}" />
 						<h3>Time (HH:mm)</h3>
-						<input data-name="テスト" data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable, readonly: readonly, required: true}" />
+						<input data-name="Time Editor" data-bind="ntsTimeEditor: {value: time, option: new nts.uk.ui.option.TimeEditorOption({inputFormat: 'time'}), enable: enable, readonly: readonly, required: true}" />
 						<hr/>
 						<div data-bind="with: yearmontheditor">
 							<h3>YearMonth (YYYY/MM)</h3>
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 							<br/><br/>
-							<input data-name="テスト" data-bind="ntsTimeEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
+							<input data-name="YearMonth Editor" data-bind="ntsTimeEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
 						</div>
 						<article class="cf">
 							<div class="tabs">
