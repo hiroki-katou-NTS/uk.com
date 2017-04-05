@@ -8,10 +8,6 @@ public class PrefectureCode extends StringPrimitiveValue<PrefectureCode> {
 	public PrefectureCode(String rawValue) {
 		super(rawValue);
 	}
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 
