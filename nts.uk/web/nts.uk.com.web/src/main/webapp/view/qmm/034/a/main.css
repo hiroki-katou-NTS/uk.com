@@ -43,5 +43,6 @@
     left: 105% !important;
 }
 .empriseLabel div{
-	float: left;
+	display: inline-block;
+	vertical-align: middle;
 }
