@@ -21,16 +21,16 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
  */
 @Getter
 @Setter
-public class UnemployeeInsuranceRateItemFindOutDto implements UnemployeeInsuranceRateItemSetMemento {
+public class UnemployeeInsuranceRatetemFindDto implements UnemployeeInsuranceRateItemSetMemento {
 
 	/** The career group. */
 	private Integer careerGroup;
 
 	/** The company setting. */
-	private UnemployeeInsuranceRateItemSettingFindOutDto companySetting;
+	private UnemployeeInsuranceRateSettingFindDto companySetting;
 
 	/** The personal setting. */
-	private UnemployeeInsuranceRateItemSettingFindOutDto personalSetting;
+	private UnemployeeInsuranceRateSettingFindDto personalSetting;
 
 	/*
 	 * (non-Javadoc)
@@ -55,7 +55,7 @@ public class UnemployeeInsuranceRateItemFindOutDto implements UnemployeeInsuranc
 	@Override
 	public void setCompanySetting(UnemployeeInsuranceRateItemSetting companySetting) {
 		if (this.companySetting == null) {
-			this.companySetting = new UnemployeeInsuranceRateItemSettingFindOutDto();
+			this.companySetting = new UnemployeeInsuranceRateSettingFindDto();
 		}
 		this.companySetting.setRate(companySetting.getRate());
 		this.companySetting.setRoundAtr(companySetting.getRoundAtr().value);
@@ -72,7 +72,7 @@ public class UnemployeeInsuranceRateItemFindOutDto implements UnemployeeInsuranc
 	@Override
 	public void setPersonalSetting(UnemployeeInsuranceRateItemSetting personalSetting) {
 		if (this.personalSetting == null) {
-			this.personalSetting = new UnemployeeInsuranceRateItemSettingFindOutDto();
+			this.personalSetting = new UnemployeeInsuranceRateSettingFindDto();
 		}
 		this.personalSetting.setRate(personalSetting.getRate());
 		this.personalSetting.setRoundAtr(personalSetting.getRoundAtr().value);

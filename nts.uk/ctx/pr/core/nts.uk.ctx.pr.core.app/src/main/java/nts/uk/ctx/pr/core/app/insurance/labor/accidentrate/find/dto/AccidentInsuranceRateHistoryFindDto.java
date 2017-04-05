@@ -17,7 +17,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
  */
 @Getter
 @Setter
-public class AccidentInsuranceRateHistoryFindOutDto implements AccidentInsuranceRateSetMemento {
+public class AccidentInsuranceRateHistoryFindDto implements AccidentInsuranceRateSetMemento {
 
 	/** The history id. */
 	private String historyId;

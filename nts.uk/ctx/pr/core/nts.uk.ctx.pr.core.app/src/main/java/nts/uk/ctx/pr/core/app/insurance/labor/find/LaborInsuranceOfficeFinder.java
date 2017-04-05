@@ -68,7 +68,7 @@ public class LaborInsuranceOfficeFinder {
 		// get login user info
 		LoginUserContext loginUserContext = AppContexts.user();
 
-		// get companycode by user login
+		// get company code by user login
 		String companyCode = loginUserContext.companyCode();
 
 		// find data

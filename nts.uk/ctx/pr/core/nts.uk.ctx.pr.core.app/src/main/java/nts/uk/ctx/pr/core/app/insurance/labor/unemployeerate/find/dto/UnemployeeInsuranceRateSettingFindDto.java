@@ -12,7 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class UnemployeeInsuranceRateItemSettingFindOutDto {
+public class UnemployeeInsuranceRateSettingFindDto {
 	/** The round atr. */
 	private Integer roundAtr;
 

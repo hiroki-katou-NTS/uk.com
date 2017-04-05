@@ -25,11 +25,11 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class UnemployeeInsuranceRateUpdateCommandHandler
 	extends CommandHandler<UnemployeeInsuranceRateUpdateCommand> {
 
-	/** The unemployee insurance rate repository. */
+	/** The repository. */
 	@Inject
 	private UnemployeeInsuranceRateRepository repository;
 
-	/** The unemployee insurance rate service. */
+	/** The service. */
 	@Inject
 	private UnemployeeInsuranceRateService service;
 

@@ -21,13 +21,13 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessType
  */
 @Getter
 @Setter
-public class AccidentInsuranceRateFindOutDto implements AccidentInsuranceRateSetMemento {
+public class AccidentInsuranceRateFindDto implements AccidentInsuranceRateSetMemento {
 
 	/** The history insurance. */
-	private AccidentInsuranceRateHistoryFindOutDto historyInsurance;
+	private AccidentInsuranceRateHistoryFindDto historyInsurance;
 
 	/** The rate items. */
-	private List<InsuBizRateItemFindOutDto> rateItems;
+	private List<InsuBizRateItemFindDto> rateItems;
 
 	/**
 	 * Sets the dto to.
@@ -37,7 +37,7 @@ public class AccidentInsuranceRateFindOutDto implements AccidentInsuranceRateSet
 	 */
 	public void setDtoTo(List<InsuranceBusinessType> lstDomain) {
 		for (InsuranceBusinessType itemDomain : lstDomain) {
-			for (InsuBizRateItemFindOutDto itemDto : this.rateItems) {
+			for (InsuBizRateItemFindDto itemDto : this.rateItems) {
 				if (itemDto.getInsuBizType() == itemDomain.getBizOrder().value) {
 					itemDto.setInsuranceBusinessType(itemDomain.getBizName().v());
 				}
@@ -53,7 +53,7 @@ public class AccidentInsuranceRateFindOutDto implements AccidentInsuranceRateSet
 	 */
 	@Override
 	public void setHistoryId(String historyId) {
-		this.historyInsurance = new AccidentInsuranceRateHistoryFindOutDto();
+		this.historyInsurance = new AccidentInsuranceRateHistoryFindDto();
 		this.historyInsurance.setHistoryId(historyId);
 	}
 
@@ -92,7 +92,7 @@ public class AccidentInsuranceRateFindOutDto implements AccidentInsuranceRateSet
 	public void setRateItems(Set<InsuBizRateItem> items) {
 		this.rateItems = new ArrayList<>();
 		for (InsuBizRateItem insuBizRateItem : items) {
-			InsuBizRateItemFindOutDto insuBizRateItemFindOutDto = new InsuBizRateItemFindOutDto(
+			InsuBizRateItemFindDto insuBizRateItemFindOutDto = new InsuBizRateItemFindDto(
 					insuBizRateItem);
 			this.rateItems.add(insuBizRateItemFindOutDto);
 		}

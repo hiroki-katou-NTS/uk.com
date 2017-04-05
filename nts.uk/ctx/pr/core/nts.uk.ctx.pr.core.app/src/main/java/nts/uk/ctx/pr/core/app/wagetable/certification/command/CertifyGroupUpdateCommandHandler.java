@@ -24,15 +24,15 @@ public class CertifyGroupUpdateCommandHandler extends CommandHandler<CertifyGrou
 
 	/** The certify group repository. */
 	@Inject
-	private CertifyGroupRepository certifyGroupRepository;
+	private CertifyGroupRepository repository;
 
 	/** The certify group service. */
 	@Inject
-	private CertifyGroupService certifyGroupService;
+	private CertifyGroupService service;
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
 	 * .CommandHandlerContext)
@@ -57,13 +57,13 @@ public class CertifyGroupUpdateCommandHandler extends CommandHandler<CertifyGrou
 		certifyGroup.validate();
 
 		// validate
-		certifyGroupService.validateRequiredItem(certifyGroup);
-		
+		this.service.validateRequiredItem(certifyGroup);
+
 		// check duplicate
-		certifyGroupService.checkCertificationIsBelong(certifyGroup);
+		this.service.checkCertificationIsBelong(certifyGroup);
 
 		// update
-		this.certifyGroupRepository.update(certifyGroup);
+		this.repository.update(certifyGroup);
 	}
 
 }

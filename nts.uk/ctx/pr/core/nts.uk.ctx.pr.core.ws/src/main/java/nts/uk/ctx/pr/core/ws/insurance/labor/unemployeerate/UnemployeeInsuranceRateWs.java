@@ -19,7 +19,7 @@ import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeI
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateUpdateCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateUpdateCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.UnemployeeInsuranceFinder;
-import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto.UnemployeeInsuranceRateFindOutDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto.UnemployeeInsuranceRateFindDto;
 
 /**
  * The Class UnemployeeInsuranceRateWs.
@@ -57,7 +57,7 @@ public class UnemployeeInsuranceRateWs {
 	 */
 	@POST
 	@Path("detail/{historyId}")
-	public UnemployeeInsuranceRateFindOutDto detail(@PathParam("historyId") String historyId) {
+	public UnemployeeInsuranceRateFindDto detail(@PathParam("historyId") String historyId) {
 		return this.find.findById(historyId);
 	}
 
