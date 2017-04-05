@@ -23,8 +23,6 @@
 					<label id="G_LBL_004">04</label> <label id="G_LBL_005">05</label> <label
 						id="G_LBL_016">16</label> <label id="G_LBL_017">17</label>
 				</div>
-				<div id="G_INP_001"
-					data-bind="ntsDatePicker: { value: viewmodelg.g_INP_001, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
 			</div>
 
 			<div class="divLine">
@@ -44,16 +42,15 @@
 				<div class="divLine-col-2">
 					<div id="G_SEL_001"
 						data-bind="ntsComboBox: {
-								options: viewmodelg.g_SEL_001_items,
-								optionsValue: 'code',
-								value: viewmodelg.g_SEL_001_itemSelected,
-								optionsText: 'name',
-								editable: true,
-								enable: true,
-								columns: [
-									{ prop: 'code', length: 4 },
-									{ prop: 'name', length: 10 },
-								]}">
+									options: viewmodelg.g_SEL_001_items,
+									optionsValue: 'code',
+									value: viewmodelg.g_SEL_001_itemSelected,
+									editable: false,
+									enable: true,
+									columns: [
+										{ prop: 'code', length: 4 },
+										{ prop: 'name', length: 12 },
+									]}">
 					</div>
 				</div>
 			</div>
@@ -83,12 +80,11 @@
 								options: viewmodelg.g_SEL_002_items,
 								optionsValue: 'code',
 								value: viewmodelg.g_SEL_002_itemSelected,
-								optionsText: 'name',
-								editable: true,
+								optionsText: 'code',
+								editable: false,
 								enable: true,
 								columns: [
-									{ prop: 'code', length: 4 },
-									{ prop: 'name', length: 10 },
+									{ prop: 'code', length: 10 },
 								]}">
 					</div>
 				</div>

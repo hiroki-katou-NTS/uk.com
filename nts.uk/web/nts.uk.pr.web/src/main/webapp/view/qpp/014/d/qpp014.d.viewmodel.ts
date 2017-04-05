@@ -22,8 +22,11 @@ module qpp014.d.viewmodel {
             self.d_LST_001_itemSelected = ko.observable(0);
         }
 
-        openEDialog(): void {
-            nts.uk.ui.windows.sub.modal("/view/qpp/014/e/index.xhtml", { title: "振込データの作成結果一覧", dialogClass: "no-close" });
+        openEDialog() {
+            nts.uk.ui.windows.sub.modal("/view/qpp/014/e/index.xhtml", { title: "振込データの作成結果一覧", dialogClass: "no-close" }).onClosed(function() {
+                //when close dialog, go to screen G
+                $('#wizard').ntsWizard("next");
+            });
         }
     }
 };

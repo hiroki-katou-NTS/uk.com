@@ -19,7 +19,9 @@ var qpp014;
                     self.d_LST_001_itemSelected = ko.observable(0);
                 }
                 ScreenModel.prototype.openEDialog = function () {
-                    nts.uk.ui.windows.sub.modal("/view/qpp/014/e/index.xhtml", { title: "振込データの作成結果一覧", dialogClass: "no-close" });
+                    nts.uk.ui.windows.sub.modal("/view/qpp/014/e/index.xhtml", { title: "振込データの作成結果一覧", dialogClass: "no-close" }).onClosed(function () {
+                        $('#wizard').ntsWizard("next");
+                    });
                 };
                 return ScreenModel;
             }());

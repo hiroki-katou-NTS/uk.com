@@ -1,5 +1,5 @@
 #contents-area {
-	width: 630px;
+	width: 600px;
 }
 
 #contents-area>.divLine {
@@ -20,14 +20,13 @@
 	width: 100px;
 	margin-bottom: 10px;
 }
-
-#E_BTN_002, #E_BTN_003, #E_BTN_005 {
+#E_BTN_002{
+	margin-left: 210px
+}
+#E_BTN_003, #E_BTN_005 {
 	margin-left: 20px;
 }
-/*
-#E_BTN_002 {
-	margin-left: 60px;
-}*/
+
 #E_BTN_002, #E_BTN_003 {
 	width: 200px;
 }
@@ -37,7 +36,8 @@
 }
 
 #E_BTN_004 {
-	margin-left: 240px;
+	margin-left: 255px;
+	margin-top: 5px;
 	width: 100px;
 }
 
@@ -79,4 +79,8 @@
 
 #D_division {
 	margin-bottom: 15px;
+}
+
+#processing {
+	margin-left: 20px
 }

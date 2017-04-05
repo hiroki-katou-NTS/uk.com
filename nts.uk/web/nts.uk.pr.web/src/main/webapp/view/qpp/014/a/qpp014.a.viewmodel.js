@@ -14,8 +14,7 @@ var qpp014;
                     $('.func-btn').css('visibility', 'hidden');
                     $('#screenB').css('display', 'none');
                     self.a_SEL_001_items = ko.observableArray([]);
-                    self.a_SEL_001_itemSelected = ko.observable(0);
-                    self.isNotEnable = ko.observable(false);
+                    self.a_SEL_001_itemSelected = ko.observable();
                 }
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
@@ -33,11 +32,10 @@ var qpp014;
                     qpp014.a.service.findAll(0)
                         .done(function (data) {
                         if (data.length > 0) {
-                            self.isNotEnable(true);
                             self.a_SEL_001_items(data);
+                            self.a_SEL_001_itemSelected(self.a_SEL_001_items()[0]);
                         }
                         else {
-                            self.isNotEnable(false);
                             nts.uk.ui.dialog.alert("対象データがありません。");
                         }
                         dfd.resolve();
