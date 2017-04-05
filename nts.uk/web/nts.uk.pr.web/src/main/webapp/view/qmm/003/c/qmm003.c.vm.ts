@@ -77,7 +77,6 @@ module qmm003.c.viewmodel {
                     });
                 }
 
-
                 dfd.resolve();
 
             }).fail(function(res) {
@@ -105,6 +104,7 @@ module qmm003.c.viewmodel {
 
             return array;
         }
+        
         buildResidentalTaxTree() {
             let self = this;
             var child = [];

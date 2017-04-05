@@ -30,6 +30,7 @@ module qmm003.c.service {
             })
         return dfd.promise();
     }
+    
     export function getResidentialTaxDetail(resiTaxCode: string): JQueryPromise<model.ResidentialTax> {
         var dfd = $.Deferred<qmm003.d.service.model.ResidentialTax>();
         var objectLayout = { resiTaxCode: resiTaxCode };
@@ -43,6 +44,7 @@ module qmm003.c.service {
             })
         return dfd.promise();
     }
+    
     export module model {
         export class ResidentialTax {
             companyCode: string;

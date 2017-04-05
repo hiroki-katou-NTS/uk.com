@@ -8,6 +8,7 @@ var qmm003;
                 getResidentalTaxList: "pr/core/residential/findallresidential",
                 getRegionPrefecture: "pr/core/residential/getlistLocation",
                 getResidentialTaxByResidential: "pr/core/residential/findResidentialTax/{0}/{1}",
+                getResidentialDetail: "pr/core/residential/findResidentialTax/{0}",
                 deleteResidential: "pr/core/residential/deleteresidential"
             };
             /**
@@ -74,6 +75,20 @@ var qmm003;
                 return dfd.promise();
             }
             service.deleteResidential = deleteResidential;
+            function getResidentialTaxDetail(resiTaxCode) {
+                var dfd = $.Deferred();
+                var objectLayout = { resiTaxCode: resiTaxCode };
+                var _path = nts.uk.text.format(paths.getResidentialDetail, resiTaxCode);
+                nts.uk.request.ajax(_path)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getResidentialTaxDetail = getResidentialTaxDetail;
             var model;
             (function (model) {
                 var ResidentialTax = (function () {
@@ -120,3 +135,4 @@ var qmm003;
         })(service = d.service || (d.service = {}));
     })(d = qmm003.d || (qmm003.d = {}));
 })(qmm003 || (qmm003 = {}));
+//# sourceMappingURL=qmm003.d.service.js.map

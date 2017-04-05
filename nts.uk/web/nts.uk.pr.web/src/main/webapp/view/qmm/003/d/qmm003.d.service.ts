@@ -3,6 +3,7 @@ module qmm003.d.service {
         getResidentalTaxList: "pr/core/residential/findallresidential",
         getRegionPrefecture: "pr/core/residential/getlistLocation",
         getResidentialTaxByResidential: "pr/core/residential/findResidentialTax/{0}/{1}",
+        getResidentialDetail: "pr/core/residential/findResidentialTax/{0}",
         deleteResidential: "pr/core/residential/deleteresidential"
     }
 
@@ -34,6 +35,7 @@ module qmm003.d.service {
             })
         return dfd.promise();
     }
+
     export function getResidentialTaxByResidential(): JQueryPromise<Array<model.ResidentialTax>> {
         var dfd = $.Deferred<Array<qmm003.d.service.model.ResidentialTax>>();
         nts.uk.request.ajax(paths.getResidentalTaxList)
@@ -45,6 +47,7 @@ module qmm003.d.service {
             })
         return dfd.promise();
     }
+
     export function getRegionPrefecture(): JQueryPromise<Array<model.RegionObject>> {
         var dfd = $.Deferred<Array<model.RegionObject>>();
         nts.uk.request.ajax(paths.getRegionPrefecture)
@@ -56,9 +59,10 @@ module qmm003.d.service {
             })
         return dfd.promise();
     }
+
     export function deleteResidential(param: Array<string>) {
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.deleteResidential, { resiTaxCodes : param} ).done(function(res: Array<any>) {
+        nts.uk.request.ajax(paths.deleteResidential, { resiTaxCodes: param }).done(function(res: Array<any>) {
             dfd.resolve(res);
         })
             .fail(function(res) {
@@ -66,6 +70,21 @@ module qmm003.d.service {
             })
         return dfd.promise();
     }
+
+    export function getResidentialTaxDetail(resiTaxCode: string): JQueryPromise<model.ResidentialTax> {
+        var dfd = $.Deferred<qmm003.d.service.model.ResidentialTax>();
+        var objectLayout = { resiTaxCode: resiTaxCode };
+        var _path = nts.uk.text.format(paths.getResidentialDetail, resiTaxCode);
+        nts.uk.request.ajax(_path)
+            .done(function(res: model.ResidentialTax) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+    
     export module model {
         export class ResidentialTax {
             companyCode: string;

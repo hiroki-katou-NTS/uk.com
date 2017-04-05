@@ -35,21 +35,23 @@ module qmm003.a.viewmodel {
                         return obj.code === newValue;
 
                     })
-                    self.singleSelectedCode(self.items()[index].childs[0].childs[0].code);
+                   // self.singleSelectedCode(self.items()[index].childs[0].childs[0].code);
+                    self.processWhenCurrentCodeChange(self.items()[index].childs[0].childs[0].code);
                     return;
                 }
                 if (newValue.length === 2) {
 
                     let array = [];
                     array = self.findIndex(self.items(), newValue);
-                    self.singleSelectedCode(self.items()[array[0]].childs[array[1]].childs[0].code);
+                    //self.singleSelectedCode(self.items()[array[0]].childs[array[1]].childs[0].code);
+                    self.processWhenCurrentCodeChange(self.items()[array[0]].childs[array[1]].childs[0].code);
                     return;
                 }
 
                 if (!nts.uk.text.isNullOrEmpty(newValue) && (self.singleSelectedCode() !== self.previousCurrentCode) && self.editMode) {
                     if (self.dirtyObject.isDirty()) {
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
-                            self.processWhenCurrentCodeChange(newValue)
+                            self.processWhenCurrentCodeChange(newValue);
                         }).ifCancel(function() {
                             self.items([]);
                             self.nodeRegionPrefectures([]);
@@ -64,7 +66,7 @@ module qmm003.a.viewmodel {
                 }
             });
         }
-        
+
         // tìm index để khi chọn root thì ra hiển thị ra thằng đầu tiên của 1 thằng root
         findIndex(items: Array<RedensitalTaxNode>, newValue: string): any {
             let index: number;

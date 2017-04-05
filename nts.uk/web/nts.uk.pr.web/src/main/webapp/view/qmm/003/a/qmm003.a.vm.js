@@ -30,13 +30,15 @@ var qmm003;
                             index = _.findIndex(self.items(), function (obj) {
                                 return obj.code === newValue;
                             });
-                            self.singleSelectedCode(self.items()[index].childs[0].childs[0].code);
+                            // self.singleSelectedCode(self.items()[index].childs[0].childs[0].code);
+                            self.processWhenCurrentCodeChange(self.items()[index].childs[0].childs[0].code);
                             return;
                         }
                         if (newValue.length === 2) {
                             var array = [];
                             array = self.findIndex(self.items(), newValue);
-                            self.singleSelectedCode(self.items()[array[0]].childs[array[1]].childs[0].code);
+                            //self.singleSelectedCode(self.items()[array[0]].childs[array[1]].childs[0].code);
+                            self.processWhenCurrentCodeChange(self.items()[array[0]].childs[array[1]].childs[0].code);
                             return;
                         }
                         if (!nts.uk.text.isNullOrEmpty(newValue) && (self.singleSelectedCode() !== self.previousCurrentCode) && self.editMode) {
