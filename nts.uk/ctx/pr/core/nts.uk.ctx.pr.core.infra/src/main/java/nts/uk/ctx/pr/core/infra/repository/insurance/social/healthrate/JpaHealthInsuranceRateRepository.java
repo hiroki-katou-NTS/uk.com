@@ -52,7 +52,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 	 * social.healthrate.HealthInsuranceRate)
 	 */
 	@Override
-	public void update(HealthInsuranceRate rate) {
+	public boolean update(HealthInsuranceRate rate) {
 		EntityManager em = this.getEntityManager();
 		QismtHealthInsuRatePK pk = new QismtHealthInsuRatePK(rate.getCompanyCode(), rate.getOfficeCode().v(),
 				rate.getHistoryId());
@@ -60,7 +60,11 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 		QismtHealthInsuRate entity = new QismtHealthInsuRate();
 		rate.saveToMemento(new JpaHealthInsuranceRateSetMemento(entity));
 		entity.setQismtHealthInsuAvgearnList(findEntity.getQismtHealthInsuAvgearnList());
-		em.merge(entity);
+		if (em.merge(entity) != null) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/*

@@ -152,30 +152,21 @@ module nts.uk.pr.view.qmm008.h {
                 var companyRounding = self.convertToRounding(roundingMethods.healthSalaryCompanyComboBoxSelectedCode());
                 var rate = levelMasterSetting.avgEarn / 1000;
                 var autoCalculate = self.healthInsuranceRateModel.autoCalculate;
-                if (autoCalculate == AutoCalculate.Auto) {
-                    return new HealthInsuranceAvgEarnModel(
-                        levelMasterSetting.code,
-                        new HealthInsuranceAvgEarnValueModel(
-                            self.rounding(personalRounding, rateItems.healthSalaryPersonalGeneral() * rate,Number.One),
-                            self.rounding(personalRounding, rateItems.healthSalaryPersonalNursing() * rate,Number.One),
-                            self.rounding(personalRounding, rateItems.healthSalaryPersonalBasic() * rate,Number.Three),
-                            self.rounding(personalRounding, rateItems.healthSalaryPersonalSpecific() * rate,Number.Three)
-                        ),
-                        new HealthInsuranceAvgEarnValueModel(
-                            self.rounding(companyRounding, rateItems.healthSalaryCompanyGeneral() * rate,Number.One),
-                            self.rounding(companyRounding, rateItems.healthSalaryCompanyNursing() * rate,Number.One),
-                            self.rounding(companyRounding, rateItems.healthSalaryCompanyBasic() * rate,Number.Three),
-                            self.rounding(companyRounding, rateItems.healthSalaryCompanySpecific() * rate,Number.Three)
-                        )
-                    );
-                }
-                else {
-                    return new HealthInsuranceAvgEarnModel(
-                        levelMasterSetting.code,
-                        new HealthInsuranceAvgEarnValueModel(Number.Zero,Number.Zero,Number.Zero,Number.Zero),
-                        new HealthInsuranceAvgEarnValueModel(Number.Zero,Number.Zero,Number.Zero,Number.Zero)
-                    );
-                }
+                return new HealthInsuranceAvgEarnModel(
+                    levelMasterSetting.code,
+                    new HealthInsuranceAvgEarnValueModel(
+                        self.rounding(personalRounding, rateItems.healthSalaryPersonalGeneral() * rate, Number.One),
+                        self.rounding(personalRounding, rateItems.healthSalaryPersonalNursing() * rate, Number.One),
+                        self.rounding(personalRounding, rateItems.healthSalaryPersonalBasic() * rate, Number.Three),
+                        self.rounding(personalRounding, rateItems.healthSalaryPersonalSpecific() * rate, Number.Three)
+                    ),
+                    new HealthInsuranceAvgEarnValueModel(
+                        self.rounding(companyRounding, rateItems.healthSalaryCompanyGeneral() * rate, Number.One),
+                        self.rounding(companyRounding, rateItems.healthSalaryCompanyNursing() * rate, Number.One),
+                        self.rounding(companyRounding, rateItems.healthSalaryCompanyBasic() * rate, Number.Three),
+                        self.rounding(companyRounding, rateItems.healthSalaryCompanySpecific() * rate, Number.Three)
+                    )
+                );
             }
             
             // rounding 
