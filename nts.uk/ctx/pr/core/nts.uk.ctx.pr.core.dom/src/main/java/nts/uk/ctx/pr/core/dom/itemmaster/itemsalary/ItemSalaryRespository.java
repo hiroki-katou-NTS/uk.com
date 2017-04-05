@@ -16,20 +16,28 @@ public interface ItemSalaryRespository {
 	List<ItemSalary> findAll(String companyCode);
 	
 	/**
+	 * Find all item salary by company
+	 * @param companyCode
+	 * @param avePayAtr
+	 * @return
+	 */
+	List<ItemSalary> findAll(String companyCode, AvePayAtr avePayAtr);
+	
+	/**
 	 * update information of item salary
 	 * @param item domain ItemSalary
 	 */
 	void update(ItemSalary item);
 	
-	/**
-	 * Update average wage attribute of multiple item
-	 * @param companyCode company code
-	 * @param itemCodeList list of item code
-	 * @param avePayAtr average wage attribute: NotApplicable or Object
-	 */
-	void updateItems(String companyCode, List<String> itemCodeList, AvePayAtr avePayAtr);
-	
 	void add(ItemSalary item);
 
-	void delete(String companyCode, String itemCode);
+	void delete(String companyCode);
+	
+	/**
+	 * Update avePayAtr multiple item
+	 * @param companyCode
+	 * @param itemCodeList
+	 * @param avePayAtr
+	 */
+	void updateItems(String companyCode, List<String> itemCodeList, AvePayAtr avePayAtr);
 }

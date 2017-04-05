@@ -34,7 +34,7 @@ var qmm012;
             var model;
             (function (model) {
                 var ItemSalary = (function () {
-                    function ItemSalary(taxAtr, socialInsAtr, laborInsAtr, fixPayAtr, applyForAllEmpFlg, applyForMonthlyPayEmp, applyForDaymonthlyPayEmp, applyForDaylyPayEmp, applyForHourlyPayEmp, avePayAtr, errRangeLowAtr, errRangeLow, errRangeHighAtr, errRangeHigh, alRangeLowAtr, alRangeLow, alRangeHighAtr, alRangeHigh, memo, limitMnyAtr, limitMnyRefItemCd, limitMny) {
+                    function ItemSalary(taxAtr, socialInsAtr, laborInsAtr, fixPayAtr, applyForAllEmpFlg, applyForMonthlyPayEmp, applyForDaymonthlyPayEmp, applyForDaylyPayEmp, applyForHourlyPayEmp, avePayAtr, errRangeLowAtr, errRangeLow, errRangeHighAtr, errRangeHigh, alRangeLowAtr, alRangeLow, alRangeHighAtr, alRangeHigh, memo, limitMnyAtr, limitMnyRefItemCode, limitMny) {
                         this.taxAtr = taxAtr;
                         this.socialInsAtr = socialInsAtr;
                         this.laborInsAtr = laborInsAtr;
@@ -55,7 +55,7 @@ var qmm012;
                         this.alRangeHigh = alRangeHigh;
                         this.memo = memo;
                         this.limitMnyAtr = limitMnyAtr;
-                        this.limitMnyRefItemCd = limitMnyRefItemCd;
+                        this.limitMnyRefItemCode = limitMnyRefItemCode;
                         this.limitMny = limitMny;
                     }
                     ;
@@ -66,4 +66,3 @@ var qmm012;
         })(service = c.service || (c.service = {}));
     })(c = qmm012.c || (qmm012.c = {}));
 })(qmm012 || (qmm012 = {}));
-//# sourceMappingURL=service.js.map

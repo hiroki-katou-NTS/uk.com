@@ -102,10 +102,12 @@ public class QwtmtWagetableHead implements Serializable {
 	@OrderBy("qwtmtWagetableElementPK.demensionNo ASC")
 	private List<QwtmtWagetableElement> wagetableElementList;
 
+	/** The wagetable hist list. */
 	@JoinColumns({
 			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
 			@JoinColumn(name = "WAGE_TABLE_CD", referencedColumnName = "WAGE_TABLE_CD", insertable = false, updatable = false) })
 	@OneToMany(cascade = CascadeType.ALL)
+	@OrderBy("strYm DESC")
 	private List<QwtmtWagetableHist> wagetableHistList;
 
 	/**

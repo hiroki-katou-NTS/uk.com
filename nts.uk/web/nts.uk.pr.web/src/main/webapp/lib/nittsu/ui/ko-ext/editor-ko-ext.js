@@ -31,7 +31,6 @@ var nts;
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
                         var validator = this.getValidator(data);
                         $input.on(valueUpdate, function (e) {
-                            //                var validator = this.getValidator(data);
                             var newText = $input.val();
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
@@ -44,7 +43,6 @@ var nts;
                             }
                         });
                         $input.blur(function () {
-                            //                var validator = this.getValidator(data);
                             var formatter = _this.getFormatter(data);
                             var newText = $input.val();
                             var result = validator.validate(newText);
@@ -53,7 +51,6 @@ var nts;
                             }
                         });
                         $input.on('validate', (function (e) {
-                            //                var validator = this.getValidator(data);
                             var newText = $input.val();
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
@@ -197,7 +194,7 @@ var nts;
                     };
                     TimeEditorProcessor.prototype.getFormatter = function (data) {
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-                        return new uk.text.TimeFormatter({ option: option });
+                        return new uk.text.TimeFormatter({ inputFormat: option.inputFormat });
                     };
                     TimeEditorProcessor.prototype.getValidator = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";

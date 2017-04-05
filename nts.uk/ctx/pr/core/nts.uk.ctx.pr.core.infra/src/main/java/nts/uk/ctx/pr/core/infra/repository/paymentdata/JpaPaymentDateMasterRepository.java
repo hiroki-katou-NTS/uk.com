@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.infra.repository.paymentdata;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -15,20 +14,21 @@ import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.Qpdm
 public class JpaPaymentDateMasterRepository extends JpaRepository implements PaymentDateMasterRepository {
 
 	@Override
-	public Optional<PaymentDateMaster> find(String companyCode, int payBonusAtr, int processingYm, int sparePayAtr, int processingNo) {
+	public Optional<PaymentDateMaster> find(String companyCode, int payBonusAtr, int processingYm, int sparePayAtr,
+			int processingNo) {
 		Optional<PaymentDateMaster> paymentDateMaster = this.queryProxy()
-				.find(new QpdmtPaydayPK(companyCode, payBonusAtr, processingNo, processingYm, sparePayAtr), QpdmtPayday.class).map(c -> toDomain(c));
+				.find(new QpdmtPaydayPK(companyCode, payBonusAtr, processingNo, processingYm, sparePayAtr),
+						QpdmtPayday.class)
+				.map(c -> toDomain(c));
 		return paymentDateMaster;
 	}
 
 	private static PaymentDateMaster toDomain(QpdmtPayday entity) {
-		PaymentDateMaster domain = PaymentDateMaster.createFromJavaType(
-				new BigDecimal(entity.neededWorkDay),
-				entity.qpdmtPaydayPK.processingNo, entity.qpdmtPaydayPK.processingYm, 
-				entity.qpdmtPaydayPK.sparePayAtr,
+		PaymentDateMaster domain = PaymentDateMaster.createFromJavaType(entity.neededWorkDay,
+				entity.qpdmtPaydayPK.processingNo, entity.qpdmtPaydayPK.processingYm, entity.qpdmtPaydayPK.sparePayAtr,
 				entity.qpdmtPaydayPK.payBonusAtr, entity.stdDate);
-		//entity.toDomain(domain);
+		// entity.toDomain(domain);
 		return domain;
 	}
-	
+
 }

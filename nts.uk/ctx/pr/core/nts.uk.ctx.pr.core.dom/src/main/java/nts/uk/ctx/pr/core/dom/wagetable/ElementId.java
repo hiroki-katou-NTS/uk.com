@@ -13,6 +13,9 @@ import nts.arc.primitive.constraint.StringMaxLength;
 @StringMaxLength(36)
 public class ElementId extends StringPrimitiveValue<ElementId> {
 
+	/** The default value. */
+	public static ElementId DEFAULT_VALUE = new ElementId("-");
+
 	/**
 	 * Instantiates a new wage table ref no.
 	 *

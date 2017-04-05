@@ -18,24 +18,24 @@ module qmm012.h.viewmodel {
 
         CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMaster> = ko.observable(null);
         CurrentCategoryAtrName: KnockoutObservable<string> = ko.observable('');
-        CurrentItem: KnockoutObservable<service.model.ItemPeriod> = ko.observable(null);
+        CurrentItemPeriod: KnockoutObservable<service.model.ItemPeriod> = ko.observable(null);
         CurrentItemCode: KnockoutObservable<string> = ko.observable('');
         CurrentPeriodAtr: KnockoutObservable<number> = ko.observable(0);
-        CurrentStrY: KnockoutObservable<number> = ko.observable(0);
-        CurrentEndY: KnockoutObservable<number> = ko.observable(0);
+        CurrentStrY: KnockoutObservable<number> = ko.observable(1900);
+        CurrentEndY: KnockoutObservable<number> = ko.observable(1900);
         CurrentCycleAtr: KnockoutObservable<number> = ko.observable(0);
-        H_SEL_003_checked: KnockoutObservable<boolean> = ko.observable(true);
-        H_SEL_004_checked: KnockoutObservable<boolean> = ko.observable(true);
-        H_SEL_005_checked: KnockoutObservable<boolean> = ko.observable(true);
-        H_SEL_006_checked: KnockoutObservable<boolean> = ko.observable(true);
-        H_SEL_007_checked: KnockoutObservable<boolean> = ko.observable(true);
-        H_SEL_008_checked: KnockoutObservable<boolean> = ko.observable(true);
-        H_SEL_009_checked: KnockoutObservable<boolean> = ko.observable(true);
-        H_SEL_010_checked: KnockoutObservable<boolean> = ko.observable(true);
-        H_SEL_011_checked: KnockoutObservable<boolean> = ko.observable(true);
-        H_SEL_012_checked: KnockoutObservable<boolean> = ko.observable(true);
-        H_SEL_013_checked: KnockoutObservable<boolean> = ko.observable(true);
-        H_SEL_014_checked: KnockoutObservable<boolean> = ko.observable(true);
+        H_SEL_003_checked: KnockoutObservable<boolean> = ko.observable(false);
+        H_SEL_004_checked: KnockoutObservable<boolean> = ko.observable(false);
+        H_SEL_005_checked: KnockoutObservable<boolean> = ko.observable(false);
+        H_SEL_006_checked: KnockoutObservable<boolean> = ko.observable(false);
+        H_SEL_007_checked: KnockoutObservable<boolean> = ko.observable(false);
+        H_SEL_008_checked: KnockoutObservable<boolean> = ko.observable(false);
+        H_SEL_009_checked: KnockoutObservable<boolean> = ko.observable(false);
+        H_SEL_010_checked: KnockoutObservable<boolean> = ko.observable(false);
+        H_SEL_011_checked: KnockoutObservable<boolean> = ko.observable(false);
+        H_SEL_012_checked: KnockoutObservable<boolean> = ko.observable(false);
+        H_SEL_013_checked: KnockoutObservable<boolean> = ko.observable(false);
+        H_SEL_014_checked: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             var self = this;
             //set Switch Data
@@ -49,12 +49,11 @@ module qmm012.h.viewmodel {
                 { code: 1, name: 'する' },
                 { code: 0, name: 'しない' }
             ]);
-            self.LoadItemPeriod();
-            self.CurrentItem.subscribe(function(ItemPeriod: service.model.ItemPeriod) {
-                self.CurrentItemCode(ItemPeriod ? ItemPeriod.itemCd : '');
+
+            self.CurrentItemPeriod.subscribe(function(ItemPeriod: service.model.ItemPeriod) {
                 self.CurrentPeriodAtr(ItemPeriod ? ItemPeriod.periodAtr : 0);
-                self.CurrentStrY(ItemPeriod ? ItemPeriod.strY : 0);
-                self.CurrentEndY(ItemPeriod ? ItemPeriod.endY : 0);
+                self.CurrentStrY(ItemPeriod ? ItemPeriod.strY : 1900);
+                self.CurrentEndY(ItemPeriod ? ItemPeriod.endY : 1900);
                 self.CurrentCycleAtr(ItemPeriod ? ItemPeriod.cycleAtr : 0);
                 self.H_SEL_003_checked(ItemPeriod ? ItemPeriod.cycle01Atr == 1 ? true : false : false);
                 self.H_SEL_004_checked(ItemPeriod ? ItemPeriod.cycle02Atr == 1 ? true : false : false);
@@ -70,19 +69,22 @@ module qmm012.h.viewmodel {
                 self.H_SEL_014_checked(ItemPeriod ? ItemPeriod.cycle12Atr == 1 ? true : false : false);
 
             });
-
+            self.LoadItemPeriod();
         }
         LoadItemPeriod() {
+            //this dialog only load data in session from parrent call it
             let self = this;
-            self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
-            if (self.CurrentItemMaster()) {
-                self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
-                service.findItemPeriod(self.CurrentItemMaster()).done(function(ItemPeriod: service.model.ItemPeriod) {
-                    self.CurrentItem(ItemPeriod);
-                });
+            let itemMaster = nts.uk.ui.windows.getShared('itemMaster');
+            if (itemMaster != undefined) {
+                self.CurrentItemMaster(itemMaster);
+                self.CurrentCategoryAtrName(itemMaster.categoryAtrName);
+                self.CurrentItemCode(itemMaster.itemCode);
             }
+            if (nts.uk.ui.windows.getShared('itemPeriod'))
+                self.CurrentItemPeriod(nts.uk.ui.windows.getShared('itemPeriod'));
         }
         getCurrentItemPeriod() {
+            //return  ItemPeriod customer has input to form
             let self = this;
             return new service.model.ItemPeriod(
                 self.CurrentItemMaster().itemCode,
@@ -106,13 +108,26 @@ module qmm012.h.viewmodel {
         }
         SubmitDialog() {
             let self = this;
+            let itemPeriodOld = self.CurrentItemPeriod();
             let itemPeriod = self.getCurrentItemPeriod();
-            if (!self.CurrentItemCode())
-                service.addItemPeriod(self.CurrentItemMaster(), itemPeriod);
-            else
-                service.updateItemPeriod(self.CurrentItemMaster(), itemPeriod);
-            nts.uk.ui.windows.close();
+            if (itemPeriodOld) {
+                //it mean this item has been created before
+                service.updateItemPeriod(itemPeriod, self.CurrentItemMaster()).done(function(res: any) {
+                    nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);
+                    nts.uk.ui.windows.close();
+                }).fail(function(res: any) {
+                    alert(res.value);
+                });
+            } else {
+                service.addItemPeriod(itemPeriod, self.CurrentItemMaster()).done(function(res: any) {
+                    nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);
+                    nts.uk.ui.windows.close();
+                }).fail(function(res: any) {
+                    alert(res.value);
+                });
+            }
         }
+
         CloseDialog() {
             nts.uk.ui.windows.close();
         }

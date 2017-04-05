@@ -6,9 +6,11 @@ package nts.uk.ctx.pr.core.app.insurance.labor.find.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.core.dom.insurance.Address;
+import nts.uk.ctx.pr.core.dom.insurance.Address1;
+import nts.uk.ctx.pr.core.dom.insurance.Address2;
+import nts.uk.ctx.pr.core.dom.insurance.AddressKana1;
+import nts.uk.ctx.pr.core.dom.insurance.AddressKana2;
 import nts.uk.ctx.pr.core.dom.insurance.CitySign;
-import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeMark;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
@@ -181,7 +183,7 @@ public class LaborInsuranceOfficeFindDto implements LaborInsuranceOfficeSetMemen
 	 * setAddress1st(nts.uk.ctx.pr.core.dom.insurance.Address)
 	 */
 	@Override
-	public void setAddress1st(Address address1st) {
+	public void setAddress1st(Address1 address1st) {
 		this.address1st = address1st.v();
 	}
 
@@ -193,7 +195,7 @@ public class LaborInsuranceOfficeFindDto implements LaborInsuranceOfficeSetMemen
 	 * setAddress2nd(nts.uk.ctx.pr.core.dom.insurance.Address)
 	 */
 	@Override
-	public void setAddress2nd(Address address2nd) {
+	public void setAddress2nd(Address2 address2nd) {
 		this.address2nd = address2nd.v();
 	}
 
@@ -205,7 +207,7 @@ public class LaborInsuranceOfficeFindDto implements LaborInsuranceOfficeSetMemen
 	 * setKanaAddress1st(nts.uk.ctx.pr.core.dom.insurance.KanaAddress)
 	 */
 	@Override
-	public void setKanaAddress1st(KanaAddress kanaAddress1st) {
+	public void setKanaAddress1st(AddressKana1 kanaAddress1st) {
 		this.kanaAddress1st = kanaAddress1st.v();
 	}
 
@@ -217,7 +219,7 @@ public class LaborInsuranceOfficeFindDto implements LaborInsuranceOfficeSetMemen
 	 * setKanaAddress2nd(nts.uk.ctx.pr.core.dom.insurance.KanaAddress)
 	 */
 	@Override
-	public void setKanaAddress2nd(KanaAddress kanaAddress2nd) {
+	public void setKanaAddress2nd(AddressKana2 kanaAddress2nd) {
 		this.kanaAddress2nd = kanaAddress2nd.v();
 	}
 
