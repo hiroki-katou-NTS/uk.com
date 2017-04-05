@@ -191,8 +191,8 @@ module nts.uk.pr.view.qmm008.i {
                 var personalRounding = self.convertToRounding(roundingMethods.pensionSalaryPersonalComboBoxSelectedCode());
                 var companyRounding = self.convertToRounding(roundingMethods.pensionSalaryCompanyComboBoxSelectedCode()); 
                 var rate = levelMasterSetting.avgEarn / 1000;
-                var autoCalculate = self.pensionRateModel.autoCalculate;
-                if(autoCalculate == AutoCalculate.Auto){
+                var fundInputApply = self.pensionRateModel.fundInputApply;
+                if(fundInputApply == FundInputApply.Yes){
                     return new PensionAvgearnModel(
                         levelMasterSetting.code,
                         new PensionAvgearnValueModel(
@@ -227,10 +227,16 @@ module nts.uk.pr.view.qmm008.i {
                         levelMasterSetting.code,
                         new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero),
                         new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero),
+                        new PensionAvgearnValueModel(
+                            self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanySon() * rate),
+                            self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanyDaughter() * rate),
+                            self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanyUnknown() * rate)),
                         new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero),
                         new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero),
-                        new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero),
-                        new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero),
+                        new PensionAvgearnValueModel(
+                            self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalSon() * rate),
+                            self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalDaughter() * rate),
+                            self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalUnknown() * rate)),
                         model.childContributionRate() * rate
                     );
                 }
@@ -393,9 +399,9 @@ module nts.uk.pr.view.qmm008.i {
                 One = 1,
                 Three = 3
         }
-        export enum AutoCalculate{
-                Auto = 0,
-                Manual = 1
+        export enum FundInputApply {
+            No = 0,
+            Yes = 1
         }
     }
 }
