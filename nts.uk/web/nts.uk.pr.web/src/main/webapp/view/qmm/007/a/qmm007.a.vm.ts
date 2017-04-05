@@ -55,6 +55,8 @@ module nts.uk.pr.view.qmm007.a {
             onSave(): JQueryPromise<string> {
                 var self = this;
                 var dfd = $.Deferred<string>();
+                // Clear errors.
+                self.clearErrors();
                 // Validate.
                 self.validate();
                 // Return if has error.

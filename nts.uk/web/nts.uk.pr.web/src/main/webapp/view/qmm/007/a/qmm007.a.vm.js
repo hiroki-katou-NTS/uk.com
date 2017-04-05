@@ -46,6 +46,7 @@ var nts;
                                 ScreenModel.prototype.onSave = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
+                                    self.clearErrors();
                                     self.validate();
                                     if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                                         dfd.reject();
