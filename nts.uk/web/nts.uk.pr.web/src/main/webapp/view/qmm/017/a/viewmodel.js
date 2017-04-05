@@ -5,6 +5,7 @@ var nts;
         var ScreenModel = (function () {
             function ScreenModel() {
                 var self = this;
+                self.itemsBagRepository = [];
                 self.isNewMode = ko.observable(true);
                 self.isUpdateMode = ko.observable(false);
                 self.isNewMode.subscribe(function (val) {
@@ -128,7 +129,7 @@ var nts;
                 self.viewModel017f = ko.observable(new qmm017.FScreen());
                 self.viewModel017g = ko.observable(new qmm017.GScreen());
                 self.viewModel017h = ko.observable(new qmm017.HScreen(self));
-                self.viewModel017i = ko.observable(new qmm017.IScreen());
+                self.viewModel017i = ko.observable(new qmm017.IScreen(self));
                 self.viewModel017r = ko.observable(new qmm017.RScreen(self));
             }
             ScreenModel.prototype.placeItemNameToTextArea = function (mode, self) {
@@ -190,7 +191,7 @@ var nts;
                     }
                     self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemDetailDisplayName, $("#input-text")[0].selectionStart));
                 }
-                else if (mode === 2) {
+                else if (mode === 6) {
                     var currentTextArea = self.viewModel017c().formulaManualContent().textArea();
                     var itemType = _.find(self.viewModel017r().listBoxItemType().itemList(), function (itemType) {
                         return itemType.code === self.viewModel017r().listBoxItemType().selectedCode();
@@ -205,10 +206,101 @@ var nts;
                     }
                     self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemTypeDisplayName + itemDetailDisplayName, $("#input-text")[0].selectionStart));
                 }
+                else if (mode === 4) {
+                    var currentTextArea = self.viewModel017c().formulaManualContent().textArea();
+                    var itemDetailDisplayName = '';
+                    if (self.viewModel017h().listBoxItems().selectedCode() !== '') {
+                        var itemDetail = _.find(self.viewModel017h().listBoxItems().itemList(), function (item) {
+                            return item.code === self.viewModel017h().listBoxItems().selectedCode();
+                        });
+                        itemDetailDisplayName = '計算式＠' + itemDetail.name;
+                    }
+                }
+                else if (mode === 4) {
+                    var currentTextArea = self.viewModel017c().formulaManualContent().textArea();
+                    var itemDetailDisplayName = '';
+                    if (self.viewModel017i().listBoxItems().selectedCode() !== '') {
+                        var itemDetail = _.find(self.viewModel017i().listBoxItems().itemList(), function (item) {
+                            return item.code === self.viewModel017i().listBoxItems().selectedCode();
+                        });
+                        itemDetailDisplayName = '賃金TBL＠' + itemDetail.name;
+                    }
+                }
             };
             ScreenModel.prototype.start = function () {
                 var self = this;
-                var dfd = $.Deferred();
+                var dfdStart = $.Deferred();
+                var treeHistoryPromise = self.bindHistoryTree();
+                $.when(treeHistoryPromise)
+                    .done(function () {
+                    dfdStart.resolve();
+                })
+                    .fail(function () {
+                    dfdStart.reject();
+                });
+                return dfdStart.promise();
+            };
+            ScreenModel.prototype.fillItemsBagRepository = function () {
+                var self = this;
+                qmm017.service.getListItemMaster(0).done(function (lstItem) {
+                    _.forEach(lstItem, function (item) {
+                        self.itemsBagRepository.push({ code: '0＠' + item.itemCode, name: '支給＠' + item.itemName });
+                    });
+                });
+                qmm017.service.getListItemMaster(1).done(function (lstItem) {
+                    _.forEach(lstItem, function (item) {
+                        self.itemsBagRepository.push({ code: '1＠' + item.itemCode, name: '控除＠' + item.itemName });
+                    });
+                });
+                qmm017.service.getListItemMaster(2).done(function (lstItem) {
+                    _.forEach(lstItem, function (item) {
+                        self.itemsBagRepository.push({ code: '2＠' + item.itemCode, name: '勤怠＠' + item.itemName });
+                    });
+                });
+                self.itemsBagRepository.push({ code: '3＠1', name: '関数＠条件式' }, { code: '3＠2', name: '関数＠かつ' }, { code: '3＠3', name: '関数＠または' }, { code: '3＠4', name: '関数＠四捨五入' }, { code: '3＠5', name: '関数＠切捨て' }, { code: '3＠6', name: '関数＠切上げ' }, { code: '3＠7', name: '関数＠最大値' }, { code: '3＠8', name: '関数＠最小値' }, { code: '3＠9', name: '関数＠家族人数' }, { code: '3＠10', name: '関数＠月加算' }, { code: '3＠11', name: '関数＠年抽出' }, { code: '3＠12', name: '関数＠月抽出' });
+                qmm017.service.findOtherFormulas(self.viewModel017b().formulaCode(), self.toYearMonthInt(self.viewModel017b().startYearMonth())).done(function (lstFormula) {
+                    _.forEach(lstFormula, function (formula) {
+                        self.itemsBagRepository.push({ code: '5＠' + formula.formulaCode, name: '計算式＠' + formula.formulaName });
+                    });
+                });
+                qmm017.service.getListWageTable(self.toYearMonthInt(self.viewModel017b().startYearMonth())).done(function (lstWageTable) {
+                    _.forEach(lstWageTable, function (wageTbl) {
+                        self.itemsBagRepository.push({ code: '6＠' + wageTbl.code, name: '賃金TBL＠' + wageTbl.name });
+                    });
+                });
+                qmm017.service.getListCompanyUnitPrice(self.toYearMonthInt(self.viewModel017b().startYearMonth())).done(function (lstCompanyUnitPrice) {
+                    _.forEach(lstCompanyUnitPrice, function (companyUnitPrice) {
+                        self.itemsBagRepository.push({ code: '7＠' + companyUnitPrice.unitPriceCode, name: '会社単価＠' + companyUnitPrice.unitPriceName });
+                    });
+                });
+                qmm017.service.getListPersonalUnitPrice().done(function (lstPersonalUnitPrice) {
+                    _.forEach(lstPersonalUnitPrice, function (personalUnitPrice) {
+                        self.itemsBagRepository.push({ code: '8＠' + personalUnitPrice.personalUnitPriceCode, name: '個人単価＠' + personalUnitPrice.personalUnitPriceName });
+                    });
+                });
+            };
+            ScreenModel.prototype.toYearMonthInt = function (yearmonth) {
+                if (yearmonth.indexOf('/') !== -1) {
+                    return yearmonth.replace('/', '');
+                }
+                else {
+                    return yearmonth;
+                }
+            };
+            ScreenModel.prototype.resetToNewMode = function () {
+                var self = this;
+                self.isNewMode(true);
+                self.viewModel017b().startYearMonth('');
+                self.viewModel017b().formulaCode('');
+                self.viewModel017b().formulaName('');
+                self.viewModel017b().selectedDifficultyAtr(0);
+                self.viewModel017b().selectedConditionAtr(0);
+                self.viewModel017b().comboBoxUseMaster().selectedCode(1);
+                self.selectedTabASel001('tab-1');
+            };
+            ScreenModel.prototype.bindHistoryTree = function () {
+                var self = this;
+                var dfdHistoryTree = $.Deferred();
                 var itemsTreeGridHistory = [];
                 var itemsTreeGridFormula = [];
                 var nodesTreeGrid = [];
@@ -229,23 +321,17 @@ var nts;
                         });
                         self.treeGridHistory().items(nodesTreeGrid);
                         self.treeGridHistory().singleSelectedCode(null);
-                        self.isNewMode(true);
-                        self.viewModel017b().startYearMonth('');
-                        self.viewModel017b().formulaCode('');
-                        self.viewModel017b().formulaName('');
-                        self.viewModel017b().selectedDifficultyAtr(0);
-                        self.viewModel017b().selectedConditionAtr(0);
-                        self.viewModel017b().comboBoxUseMaster().selectedCode(1);
-                        self.selectedTabASel001('tab-1');
+                        self.resetToNewMode();
                     }
                     else {
                         self.treeGridHistory().items(nodesTreeGrid);
                     }
-                    dfd.resolve();
+                    dfdHistoryTree.resolve();
                 }).fail(function (res) {
                     alert(res);
+                    dfdHistoryTree.reject();
                 });
-                return dfd.promise();
+                return dfdHistoryTree.promise();
             };
             ScreenModel.prototype.sortFormulaHistory = function (lstFormulaHistory) {
                 return lstFormulaHistory.sort(function (formulaHistoryA, formulaHistoryB) {

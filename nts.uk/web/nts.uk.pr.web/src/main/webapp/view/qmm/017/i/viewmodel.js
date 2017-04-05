@@ -2,45 +2,38 @@ var nts;
 (function (nts) {
     var qmm017;
     (function (qmm017) {
-        var ListBoxI = (function () {
-            function ListBoxI(data) {
-                var self = this;
-                self.itemList = ko.observableArray(data);
-                self.itemName = ko.observable('');
-                self.currentCode = ko.observable(3);
-                self.selectedCode = ko.observable(null);
-                self.isEnable = ko.observable(true);
-                self.selectedCodes = ko.observableArray([]);
-                $('#list-box-i').on('selectionChanging', function (event) {
-                    console.log('Selecting value:' + event.originalEvent.detail);
-                });
-                $('#list-box-i').on('selectionChanged', function (event) {
-                    console.log('Selected value:' + event.originalEvent.detail);
-                });
-            }
-            return ListBoxI;
-        }());
-        qmm017.ListBoxI = ListBoxI;
         var IScreen = (function () {
-            function IScreen() {
-                var iList001 = [
-                    { code: '1', name: '支給項目（支給＠） h' },
-                    { code: '2', name: '控除項目（控除＠） h' },
-                    { code: '3', name: '勤怠項目（勤怠＠） h' },
-                    { code: '4', name: '明細割増単価項目（割増し単価＠） h' }
+            function IScreen(root) {
+                var self = this;
+                self.baseYm = ko.observable(root.viewModel017b().startYearMonth());
+                root.viewModel017b().startYearMonth.subscribe(function (yM) {
+                    self.baseYm(yM);
+                });
+                var hList001 = [
+                    { code: '1', name: '全て' },
                 ];
-                var iList002 = [
-                    { code: '1', name: 'child1 i' },
-                    { code: '2', name: 'child2 i' },
-                    { code: '3', name: 'child3 i' },
-                    { code: '4', name: 'child4 i' }
-                ];
-                self.iList001 = ko.observable(new ListBoxI(iList001));
-                self.iList002 = ko.observable(new ListBoxI(iList002));
+                self.listBoxItemType = ko.observable(new qmm017.ListBox(hList001));
+                self.listBoxItems = ko.observable(new qmm017.ListBox([]));
+                self.listBoxItemType().selectedCode.subscribe(function (codeChange) {
+                    if (codeChange === '1') {
+                        self.listBoxItems().itemList([]);
+                        var baseYm = 0;
+                        if (self.baseYm().indexOf('/') !== -1) {
+                            baseYm = self.baseYm().replace('/', '');
+                        }
+                        else {
+                            baseYm = self.baseYm();
+                        }
+                        qmm017.service.getListWageTable(baseYm).done(function (lstWageTbl) {
+                            _.forEach(lstWageTbl, function (wageTbl) {
+                                self.listBoxItems().itemList.push({ code: wageTbl.code, name: wageTbl.name });
+                            });
+                        });
+                    }
+                });
             }
             return IScreen;
         }());
         qmm017.IScreen = IScreen;
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=viewmodel.js.map

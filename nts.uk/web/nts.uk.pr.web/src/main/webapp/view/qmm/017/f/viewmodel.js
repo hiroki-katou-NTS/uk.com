@@ -2,31 +2,16 @@ var nts;
 (function (nts) {
     var qmm017;
     (function (qmm017) {
-        var ListBoxF = (function () {
-            function ListBoxF(data) {
-                var self = this;
-                self.itemList = ko.observableArray(data);
-                self.itemName = ko.observable('');
-                self.currentCode = ko.observable(3);
-                self.selectedCode = ko.observable(null);
-                self.isEnable = ko.observable(true);
-                self.selectedCodes = ko.observableArray([]);
-                $('#list-box-f').on('selectionChanging', function (event) {
-                    console.log('Selecting value:' + event.originalEvent.detail);
-                });
-                $('#list-box-f').on('selectionChanged', function (event) {
-                    console.log('Selected value:' + event.originalEvent.detail);
-                });
-            }
-            return ListBoxF;
-        }());
-        qmm017.ListBoxF = ListBoxF;
         var FScreen = (function () {
             function FScreen() {
-                var fList001 = [];
-                var fList002 = [];
-                self.fList001 = ko.observable(new ListBoxF(fList001));
-                self.fList002 = ko.observable(new ListBoxF(fList002));
+                var self = this;
+                var hList001 = [
+                    { code: '1', name: '全て' },
+                ];
+                self.listBoxItemType = ko.observable(new qmm017.ListBox(hList001));
+                self.listBoxItems = ko.observable(new qmm017.ListBox([]));
+                self.listBoxItemType().selectedCode.subscribe(function (codeChange) {
+                });
             }
             return FScreen;
         }());

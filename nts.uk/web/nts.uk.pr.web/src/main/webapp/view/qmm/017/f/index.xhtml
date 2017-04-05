@@ -9,32 +9,32 @@
 	<ui:composition>
 		<div class="wrap-sel-006">
 			<div class="ib f-col-1">
-				<div id="f_lst_001" class="ib va-middle caret-right caret-background" data-bind="with: fList001">
-				<div id="list-box-f" data-bind="ntsListBox: {
-					options: itemList,
-					optionsValue: 'code',
-					optionsText: 'name',
-					multiple: false,
-					value: selectedCodes,
-					enable: isEnable(),
-					rows: 5}"></div>
+				<div id="f_lst_001" class="ib va-middle caret-right caret-background" data-bind="with: listBoxItemType">
+					<div id="list-box-f" class="list-box-1" data-bind="ntsListBox: {
+						options: itemList,
+						optionsValue: 'code',
+						optionsText: 'name',
+						multiple: false,
+						value: selectedCode,
+						enable: isEnable(),
+						rows: 5}"></div>
 				</div>
 			</div>
-			<div id="f_lst_002" class="ib va-middle" data-bind="with: fList002">
-				<div data-bind="ntsSearchBox: {comId: 'multi-list', items: itemList, selected: selectedCode, selectedKey: 'code', fields: ['name', 'code']}" />
-				<div id="list-box-f" data-bind="ntsListBox: {
-					options: itemList,
-					optionsValue: 'code',
-					optionsText: 'name',
-					multiple: true,
-					value: selectedCodes,
-					enable: isEnable(),
-					columns: [
-						{ prop: 'code', length: 4 },
-						{ prop: 'name', length: 10 }
-					],
-					rows: 5}"></div>
-				<button id="f_btn_001" class="caret-bottom">計算式挿入ボタン</button>
+			<div id="f_lst_002" class="ib va-middle" data-bind="with: listBoxItems">
+				<div style="width: 282px" data-bind="ntsSearchBox: {comId: 'list-box', items: itemList, selected: selectedCode, selectedKey: 'code', fields: ['name', 'code']}" />
+					<div id="list-box-f2" style="width:280px" data-bind="ntsListBox: {
+						options: itemList,
+						optionsValue: 'code',
+						optionsText: 'name',
+						multiple: false,
+						value: selectedCode,
+						enable: isEnable(),
+						rows: 5}"></div>
+				<button id="f_btn_001" class="caret-bottom" data-bind="click: $root.content.placeItemNameToTextArea.bind($data, 2, $root.content)">計算式に挿入する</button>
+			</div>
+			<div class="ib block-detail">
+				<span class="lbl_001">項目説明</span>
+				<hr/>
 			</div>
 		</div>
 	</ui:composition>

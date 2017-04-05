@@ -6,10 +6,11 @@ module nts.qmm017 {
             getFormulaDetail: "pr/formula/formulaMaster/getFormulaDetail",
             registerFormulaMaster: "pr/formula/formulaMaster/addFormulaMaster",
             updateFormula: "pr/formula/formulaMaster/updateFormulaMaster",
-            getListCompanyUnitPrice: "pr/proto/unitprice/findbydate/",
+            getListCompanyUnitPrice: "pr/proto/unitprice/findbymonth/",
             getListPersonalUnitPrice: "pr/core/rule/employment/unitprice/personal/find/all",
             getListItemMaster: "pr/core/item/findall/category/",
-            findOtherFormulas: "pr/formula/formulaMaster/findOtherFormulas/"
+            findOtherFormulas: "pr/formula/formulaMaster/findOtherFormulas/",
+            getListWageTable: "pr/proto/wagetable/findbymonth/"
         }
 
         export function getAllFormula(): JQueryPromise<Array<model.FormulaDto>> {
@@ -80,9 +81,9 @@ module nts.qmm017 {
             return dfd.promise();
         }
 
-        export function getListCompanyUnitPrice(baseDate): JQueryPromise<Array<model.CompanyUnitPriceDto>> {
+        export function getListCompanyUnitPrice(baseYm): JQueryPromise<Array<model.CompanyUnitPriceDto>> {
             var dfd = $.Deferred<Array<model.CompanyUnitPriceDto>>();
-            nts.uk.request.ajax("pr", paths.getListCompanyUnitPrice + baseDate)
+            nts.uk.request.ajax("pr", paths.getListCompanyUnitPrice + baseYm)
                 .done(function(res: Array<model.CompanyUnitPriceDto>) {
                     dfd.resolve(res);
                 })
@@ -108,6 +109,18 @@ module nts.qmm017 {
             var dfd = $.Deferred<Array<model.ItemMasterDto>>();
             nts.uk.request.ajax("pr", paths.getListItemMaster + categoryAtr)
                 .done(function(res: Array<model.ItemMasterDto>) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        
+        export function getListWageTable(baseYm): JQueryPromise<Array<model.WageTableDto>> {
+            var dfd = $.Deferred<Array<model.WageTableDto>>();
+            nts.uk.request.ajax("pr", paths.getListWageTable + baseYm)
+                .done(function(res: Array<model.WageTableDto>) {
                     dfd.resolve(res);
                 })
                 .fail(function(res) {
@@ -198,6 +211,11 @@ module nts.qmm017 {
         export class ItemMasterDto {
             itemCode: string;
             itemName: string;
+        }
+        
+        export class WageTableDto {
+            code: string;
+            name: string;    
         }
     }
 }

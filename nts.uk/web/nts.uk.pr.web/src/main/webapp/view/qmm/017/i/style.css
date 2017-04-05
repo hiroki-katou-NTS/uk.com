@@ -10,7 +10,7 @@
 }
 #i_lst_002 {
 	width: 282px; 
-	margin-left: 287px;
+	margin-left: 20px;
 }
 #i_lst_001.caret-right:after {
     border-width: 37px 19px;
@@ -28,6 +28,6 @@
     top: 30px;
     left: 87px;
 }
-#list-box-i {
-	width: 265px;
+#i_lst_002 .ntsSearchBox {
+	width: 225px !important;
 }

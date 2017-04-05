@@ -10,7 +10,7 @@ module nts.qmm017 {
         viewModel017h: KnockoutObservable<any>;
         viewModel017i: KnockoutObservable<any>;
         viewModel017r: KnockoutObservable<any>;
-        
+
         treeGridHistory: KnockoutObservable<TreeGrid>;
         a_sel_001: KnockoutObservableArray<any>;
         selectedTabASel001: KnockoutObservable<string>;
@@ -21,9 +21,11 @@ module nts.qmm017 {
 
         currentNode: any;
         currentParentNode: any;
+        itemsBagRepository: Array<any>;
 
         constructor() {
             var self = this;
+            self.itemsBagRepository = [];
             self.isNewMode = ko.observable(true);
             self.isUpdateMode = ko.observable(false);
             self.isNewMode.subscribe(function(val) {
@@ -146,10 +148,17 @@ module nts.qmm017 {
             self.viewModel017f = ko.observable(new FScreen());
             self.viewModel017g = ko.observable(new GScreen());
             self.viewModel017h = ko.observable(new HScreen(self));
-            self.viewModel017i = ko.observable(new IScreen());
+            self.viewModel017i = ko.observable(new IScreen(self));
             self.viewModel017r = ko.observable(new RScreen(self));
         }
-
+        //from mode:
+        //0: Screen D
+        //1: Screen E
+        //2: Screen F
+        //3: Screen G
+        //4: Screen H
+        //5: Screen I
+        //6: Screen R
         placeItemNameToTextArea(mode, self) {
             if (mode === 0) {
                 let currentTextArea = self.viewModel017c().formulaManualContent().textArea();
@@ -196,7 +205,7 @@ module nts.qmm017 {
                     }
                 }
                 self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemDetailDisplayName, $("#input-text")[0].selectionStart));
-            } else if (mode === 2) {
+            } else if (mode === 6) {
                 let currentTextArea = self.viewModel017c().formulaManualContent().textArea();
                 let itemType = _.find(self.viewModel017r().listBoxItemType().itemList(), function(itemType) {
                     return itemType.code === self.viewModel017r().listBoxItemType().selectedCode();
@@ -210,16 +219,125 @@ module nts.qmm017 {
                     itemDetailDisplayName = itemDetail.name;
                 }
                 self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemTypeDisplayName + itemDetailDisplayName, $("#input-text")[0].selectionStart));
+            } else if (mode === 4){
+                let currentTextArea = self.viewModel017c().formulaManualContent().textArea();
+                let itemDetailDisplayName = '';
+                if (self.viewModel017h().listBoxItems().selectedCode() !== '') {
+                    let itemDetail = _.find(self.viewModel017h().listBoxItems().itemList(), function(item) {
+                        return item.code === self.viewModel017h().listBoxItems().selectedCode();
+                    });
+                    itemDetailDisplayName = '計算式＠' + itemDetail.name;
+                }
+            } else if (mode === 4){
+                let currentTextArea = self.viewModel017c().formulaManualContent().textArea();
+                let itemDetailDisplayName = '';
+                if (self.viewModel017i().listBoxItems().selectedCode() !== '') {
+                    let itemDetail = _.find(self.viewModel017i().listBoxItems().itemList(), function(item) {
+                        return item.code === self.viewModel017i().listBoxItems().selectedCode();
+                    });
+                    itemDetailDisplayName = '賃金TBL＠' + itemDetail.name;
+                }
             }
         }
 
         start(): JQueryPromise<any> {
             var self = this;
-            var dfd = $.Deferred<any>();
+            var dfdStart = $.Deferred<any>();
+            // binding tree history a_lst_001
+            let treeHistoryPromise = self.bindHistoryTree();
+            // fill items bag
+            //            self.fillItemsBagRepository();
+            // when all done
+            $.when(treeHistoryPromise)
+                .done(function() {
+                    dfdStart.resolve();
+                })
+                .fail(function() {
+                    dfdStart.reject();
+                });
+            // Return.
+            return dfdStart.promise();
+        }
+
+        fillItemsBagRepository() {
+            var self = this;
+            service.getListItemMaster(0).done(function(lstItem) {
+                _.forEach(lstItem, function(item: model.ItemMasterDto) {
+                    self.itemsBagRepository.push({ code: '0＠' + item.itemCode, name: '支給＠' + item.itemName });
+                });
+            });
+            service.getListItemMaster(1).done(function(lstItem) {
+                _.forEach(lstItem, function(item: model.ItemMasterDto) {
+                    self.itemsBagRepository.push({ code: '1＠' + item.itemCode, name: '控除＠' + item.itemName });
+                });
+            });
+            service.getListItemMaster(2).done(function(lstItem) {
+                _.forEach(lstItem, function(item: model.ItemMasterDto) {
+                    self.itemsBagRepository.push({ code: '2＠' + item.itemCode, name: '勤怠＠' + item.itemName });
+                });
+            });
+            self.itemsBagRepository.push(
+                { code: '3＠1', name: '関数＠条件式' },
+                { code: '3＠2', name: '関数＠かつ' },
+                { code: '3＠3', name: '関数＠または' },
+                { code: '3＠4', name: '関数＠四捨五入' },
+                { code: '3＠5', name: '関数＠切捨て' },
+                { code: '3＠6', name: '関数＠切上げ' },
+                { code: '3＠7', name: '関数＠最大値' },
+                { code: '3＠8', name: '関数＠最小値' },
+                { code: '3＠9', name: '関数＠家族人数' },
+                { code: '3＠10', name: '関数＠月加算' },
+                { code: '3＠11', name: '関数＠年抽出' },
+                { code: '3＠12', name: '関数＠月抽出' }
+            );
+            service.findOtherFormulas(self.viewModel017b().formulaCode(), self.toYearMonthInt(self.viewModel017b().startYearMonth())).done(function(lstFormula) {
+                _.forEach(lstFormula, function(formula) {
+                    self.itemsBagRepository.push({ code: '5＠' + formula.formulaCode, name: '計算式＠' + formula.formulaName });
+                });
+            });
+            service.getListWageTable(self.toYearMonthInt(self.viewModel017b().startYearMonth())).done(function(lstWageTable: Array<model.WageTableDto>) {
+                _.forEach(lstWageTable, function(wageTbl: model.WageTableDto) {
+                    self.itemsBagRepository.push({ code: '6＠' + wageTbl.code, name: '賃金TBL＠' + wageTbl.name });
+                });
+            });
+            service.getListCompanyUnitPrice(self.toYearMonthInt(self.viewModel017b().startYearMonth())).done(function(lstCompanyUnitPrice: Array<model.CompanyUnitPriceDto>) {
+                _.forEach(lstCompanyUnitPrice, function(companyUnitPrice: model.CompanyUnitPriceDto) {
+                    self.itemsBagRepository.push({ code: '7＠' + companyUnitPrice.unitPriceCode, name: '会社単価＠' + companyUnitPrice.unitPriceName });
+                });
+            });
+            service.getListPersonalUnitPrice().done(function(lstPersonalUnitPrice: Array<model.PersonalUnitPriceDto>) {
+                _.forEach(lstPersonalUnitPrice, function(personalUnitPrice: model.PersonalUnitPriceDto) {
+                    self.itemsBagRepository.push({ code: '8＠' + personalUnitPrice.personalUnitPriceCode, name: '個人単価＠' + personalUnitPrice.personalUnitPriceName });
+                });
+            });
+        }
+
+        toYearMonthInt(yearmonth) {
+            if (yearmonth.indexOf('/') !== -1) {
+                return yearmonth.replace('/', '');
+            } else {
+                return yearmonth;
+            }
+        }
+
+        resetToNewMode() {
+            var self = this;
+            self.isNewMode(true);
+            self.viewModel017b().startYearMonth('');
+            self.viewModel017b().formulaCode('');
+            self.viewModel017b().formulaName('');
+            self.viewModel017b().selectedDifficultyAtr(0);
+            self.viewModel017b().selectedConditionAtr(0);
+            self.viewModel017b().comboBoxUseMaster().selectedCode(1);
+            self.selectedTabASel001('tab-1');
+        }
+
+        bindHistoryTree(): JQueryPromise<any> {
+            var self = this;
+            var dfdHistoryTree = $.Deferred<any>();
             var itemsTreeGridHistory = [];
             var itemsTreeGridFormula = [];
             var nodesTreeGrid = [];
-            // bind a_lst_001
             // convert FormulaDto to Node objects to fill in the tree grid
             service.getAllFormula().done(function(lstFormulaDto: Array<model.FormulaDto>) {
                 if (lstFormulaDto) {
@@ -245,25 +363,18 @@ module nts.qmm017 {
                     });
                     self.treeGridHistory().items(nodesTreeGrid);
                     self.treeGridHistory().singleSelectedCode(null);
-                    self.isNewMode(true);
-                    self.viewModel017b().startYearMonth('');
-                    self.viewModel017b().formulaCode('');
-                    self.viewModel017b().formulaName('');
-                    self.viewModel017b().selectedDifficultyAtr(0);
-                    self.viewModel017b().selectedConditionAtr(0);
-                    self.viewModel017b().comboBoxUseMaster().selectedCode(1);
-                    self.selectedTabASel001('tab-1');
+                    self.resetToNewMode();
                 } else {
                     self.treeGridHistory().items(nodesTreeGrid);
                 }
-                dfd.resolve();
+                dfdHistoryTree.resolve();
             }).fail(function(res) {
                 // Alert message
                 alert(res);
+                dfdHistoryTree.reject();
             });
-
             // Return.
-            return dfd.promise();
+            return dfdHistoryTree.promise();
         }
 
         sortFormulaHistory(lstFormulaHistory) {
@@ -282,7 +393,7 @@ module nts.qmm017 {
                     referenceMasterNo = self.viewModel017b().comboBoxUseMaster().selectedCode();
                 }
                 let startDate = '';
-                if(self.viewModel017b().startYearMonth().indexOf('/') !== -1){
+                if (self.viewModel017b().startYearMonth().indexOf('/') !== -1) {
                     startDate = self.viewModel017b().startYearMonth().replace('/', '');
                 } else {
                     startDate = self.viewModel017b().startYearMonth();

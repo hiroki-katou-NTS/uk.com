@@ -10,10 +10,11 @@ var nts;
                 getFormulaDetail: "pr/formula/formulaMaster/getFormulaDetail",
                 registerFormulaMaster: "pr/formula/formulaMaster/addFormulaMaster",
                 updateFormula: "pr/formula/formulaMaster/updateFormulaMaster",
-                getListCompanyUnitPrice: "pr/proto/unitprice/findbydate/",
+                getListCompanyUnitPrice: "pr/proto/unitprice/findbymonth/",
                 getListPersonalUnitPrice: "pr/core/rule/employment/unitprice/personal/find/all",
                 getListItemMaster: "pr/core/item/findall/category/",
-                findOtherFormulas: "pr/formula/formulaMaster/findOtherFormulas/"
+                findOtherFormulas: "pr/formula/formulaMaster/findOtherFormulas/",
+                getListWageTable: "pr/proto/wagetable/findbymonth/"
             };
             function getAllFormula() {
                 var dfd = $.Deferred();
@@ -83,9 +84,9 @@ var nts;
                 return dfd.promise();
             }
             service.updateFormulaMaster = updateFormulaMaster;
-            function getListCompanyUnitPrice(baseDate) {
+            function getListCompanyUnitPrice(baseYm) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("pr", paths.getListCompanyUnitPrice + baseDate)
+                nts.uk.request.ajax("pr", paths.getListCompanyUnitPrice + baseYm)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -119,6 +120,18 @@ var nts;
                 return dfd.promise();
             }
             service.getListItemMaster = getListItemMaster;
+            function getListWageTable(baseYm) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("pr", paths.getListWageTable + baseYm)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getListWageTable = getListWageTable;
         })(service = qmm017.service || (qmm017.service = {}));
         var model;
         (function (model) {
@@ -170,6 +183,12 @@ var nts;
                 return ItemMasterDto;
             }());
             model.ItemMasterDto = ItemMasterDto;
+            var WageTableDto = (function () {
+                function WageTableDto() {
+                }
+                return WageTableDto;
+            }());
+            model.WageTableDto = WageTableDto;
         })(model = qmm017.model || (qmm017.model = {}));
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));
