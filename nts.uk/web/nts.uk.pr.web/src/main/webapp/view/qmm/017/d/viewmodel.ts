@@ -1,10 +1,9 @@
 module nts.qmm017 {
-    export class ListBoxD {
+    export class ListBox {
         itemList: KnockoutObservableArray<any>;
         itemName: KnockoutObservable<string>;
         currentCode: KnockoutObservable<number>
-        selectedCode: KnockoutObservable<number>;
-        selectedCodes: KnockoutObservableArray<number>;
+        selectedCode: KnockoutObservable<any>;
         isEnable: KnockoutObservable<boolean>;
 
         constructor(data) {
@@ -12,39 +11,48 @@ module nts.qmm017 {
             self.itemList = ko.observableArray(data);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(3);
-            self.selectedCode = ko.observable(null)
+            self.selectedCode = ko.observable('');
             self.isEnable = ko.observable(true);
-            self.selectedCodes = ko.observableArray([]);
-
-            $('#list-box-d').on('selectionChanging', function(event) {
-                console.log('Selecting value:' + (<any>event.originalEvent).detail);
-            })
-            $('#list-box-d').on('selectionChanged', function(event: any) {
-                console.log('Selected value:' + (<any>event.originalEvent).detail)
-            })
         }
     }
     
     export class DScreen {
-        dList001: KnockoutObservable<ListBoxD>;
-        dList002: KnockoutObservable<ListBoxD>;
+        listBoxItemType: KnockoutObservable<ListBox>;
+        listBoxItems: KnockoutObservable<ListBox>;
 
         constructor() {
+            var self = this;
             var dList001 = [
                 { code: '1', name: '支給項目（支給＠）' },
                 { code: '2', name: '控除項目（控除＠）' },
-                { code: '3', name: '勤怠項目（勤怠＠）' },
-                { code: '4', name: '明細割増単価項目（割増し単価＠）' }
+                { code: '3', name: '勤怠項目（勤怠＠）' }
             ];
-            var dList002 = [
-                { code: '1', name: 'child1' },
-                { code: '2', name: 'child2' },
-                { code: '3', name: 'child3' },
-                { code: '4', name: 'child4' }
-            ];
-            self.dList001 = ko.observable(new ListBoxD(dList001));
-            self.dList002 = ko.observable(new ListBoxD(dList002));
-            
+            self.listBoxItemType = ko.observable(new ListBox(dList001));
+            self.listBoxItems = ko.observable(new ListBox([]));
+            self.listBoxItemType().selectedCode.subscribe(function(codeChange){
+                if(codeChange === '1') {
+                    service.getListItemMaster(0).done(function(lstItem: Array<model.ItemMasterDto>){
+                        self.listBoxItems().itemList([]);
+                        _.forEach(lstItem, function(item){
+                            self.listBoxItems().itemList.push({code: item.itemCode, name: item.itemName});
+                        });
+                    });
+                } else if(codeChange === '2') {
+                    service.getListItemMaster(1).done(function(lstItem: Array<model.ItemMasterDto>){
+                        self.listBoxItems().itemList([]);
+                        _.forEach(lstItem, function(item){
+                            self.listBoxItems().itemList.push({code: item.itemCode, name: item.itemName});
+                        });
+                    });
+                } else if(codeChange === '3') {
+                    service.getListItemMaster(2).done(function(lstItem: Array<model.ItemMasterDto>){
+                        self.listBoxItems().itemList([]);
+                        _.forEach(lstItem, function(item){
+                            self.listBoxItems().itemList.push({code: item.itemCode, name: item.itemName});
+                        });
+                    });
+                } 
+            });
         }
     }
 }

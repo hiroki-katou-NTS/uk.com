@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -61,7 +62,7 @@ public class QpdmtPayday extends TableEntity implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "NEEDED_WORK_DAY")
-	public int neededWorkDay;
+	public BigDecimal neededWorkDay;
 
 	@Basic(optional = false)
 	@Column(name = "ACCOUNTING_CLOSING")

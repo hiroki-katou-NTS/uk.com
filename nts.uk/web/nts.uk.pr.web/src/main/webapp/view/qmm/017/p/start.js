@@ -1,5 +1,6 @@
 __viewContext.ready(function () {
-    var screenModel = new nts.uk.pr.view.qmm017.p.viewmodel.ScreenModel();
+    var param = nts.uk.ui.windows.getShared('paramFromScreenL');
+    var screenModel = new nts.uk.pr.view.qmm017.p.viewmodel.ScreenModel(param);
     this.bind(screenModel);
 });
 //# sourceMappingURL=start.js.map

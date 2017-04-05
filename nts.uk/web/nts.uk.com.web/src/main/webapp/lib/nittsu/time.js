@@ -14,7 +14,7 @@ var nts;
                 var result;
                 var num = parseInt(String(yearMonth));
                 var year = String(Math.floor(num / 100));
-                var month = nts.uk.text.charPadding(String(num % 100), '0', true, 2);
+                var month = uk.text.charPadding(String(num % 100), '0', true, 2);
                 result = year + '/' + month;
                 return result;
             }
@@ -47,11 +47,8 @@ var nts;
                 return JapanYearMonth;
             }());
             time_1.JapanYearMonth = JapanYearMonth;
-            function yearInJapanEmpire(year) {
-                if (!(year instanceof String)) {
-                    year = "" + year;
-                }
-                year = parseInt(year);
+            function yearInJapanEmpire(date) {
+                var year = moment.utc(date).year();
                 if (year == 1868) {
                     return new JapanYearMonth("明治元年");
                 }
@@ -127,6 +124,39 @@ var nts;
                     .replace(/ss/g, ss);
             }
             time_1.formatSeconds = formatSeconds;
+            function formatDate(date, format) {
+                if (!format)
+                    format = 'yyyy-MM-dd hh:mm:ss.SSS';
+                format = format.replace(/yyyy/g, date.getFullYear());
+                format = format.replace(/yy/g, ('0' + (date.getFullYear() % 100)).slice(-2));
+                format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
+                format = format.replace(/dd/g, ('0' + date.getDate()).slice(-2));
+                if (format.indexOf("DDD") != -1) {
+                    var daystr = "(" + dotW[date.getDay()] + ")";
+                    format = format.replace("DDD", daystr);
+                }
+                else if (format.indexOf("D") != -1) {
+                    var daystr = "(" + dotW[date.getDay()].substring(0, 1) + ")";
+                    format = format.replace("D", daystr);
+                }
+                format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2));
+                format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
+                format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));
+                if (format.match(/S/g)) {
+                    var milliSeconds = ('00' + date.getMilliseconds()).slice(-3);
+                    var length = format.match(/S/g).length;
+                    for (var i = 0; i < length; i++)
+                        format = format.replace(/S/, milliSeconds.substring(i, i + 1));
+                }
+                return format;
+            }
+            time_1.formatDate = formatDate;
+            function formatPattern(date, inputFormat, outputFormat) {
+                outputFormat = uk.text.getISO8601Format(outputFormat);
+                inputFormat = uk.text.getISO8601Format(inputFormat);
+                return moment.utc(date, inputFormat).format(outputFormat);
+            }
+            time_1.formatPattern = formatPattern;
             var ParseResult = (function () {
                 function ParseResult(success) {
                     this.success = success;
@@ -149,15 +179,13 @@ var nts;
                     return new ResultParseTime(false);
                 };
                 ResultParseTime.prototype.format = function () {
-                    if (!this.success) {
+                    if (!this.success)
                         return "";
-                    }
                     return (this.minus ? '-' : '') + this.hours + ':' + uk.text.padLeft(String(this.minutes), '0', 2);
                 };
                 ResultParseTime.prototype.toValue = function () {
-                    if (!this.success) {
+                    if (!this.success)
                         return 0;
-                    }
                     return (this.minus ? -1 : 1) * (this.hours * 60 + this.minutes);
                 };
                 ResultParseTime.prototype.getMsg = function () { return this.msg; };
@@ -319,7 +347,7 @@ var nts;
                     this.msg = msg || "must yyyymm or yyyy/mm format: year in [1900-9999] and month in [1-12] ";
                 }
                 ResultParseYearMonthDate.succeeded = function (year, month, date) {
-                    return new ResultParseYearMonthDate(true, year, month, date);
+                    return new ResultParseYearMonthDate(true, "", year, month, date);
                 };
                 ResultParseYearMonthDate.failed = function (msg) {
                     return new ResultParseYearMonthDate(false, msg);
@@ -393,34 +421,33 @@ var nts;
                 return ResultParseYearMonthDate.succeeded(year, month, date);
             }
             time_1.parseYearMonthDate = parseYearMonthDate;
-            function formatDate(date, format) {
-                if (!format)
-                    format = 'yyyy-MM-dd hh:mm:ss.SSS';
-                format = format.replace(/yyyy/g, date.getFullYear());
-                format = format.replace(/yy/g, ('0' + (date.getFullYear() % 100)).slice(-2));
-                format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
-                format = format.replace(/dd/g, ('0' + date.getDate()).slice(-2));
-                if (format.indexOf("DDD") != -1) {
-                    var daystr = "(" + dotW[date.getDay()] + ")";
-                    format = format.replace("DDD", daystr);
+            var MomentResult = (function (_super) {
+                __extends(MomentResult, _super);
+                function MomentResult(success, momentObject, outputFormat, msg) {
+                    _super.call(this, success);
+                    this.momentObject = momentObject;
+                    this.msg = msg || "Invalid format";
                 }
-                else if (format.indexOf("D") != -1) {
-                    var daystr = "(" + dotW[date.getDay()].substring(0, 1) + ")";
-                    format = format.replace("D", daystr);
-                }
-                format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2));
-                format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
-                format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));
-                if (format.match(/S/g)) {
-                    var milliSeconds = ('00' + date.getMilliseconds()).slice(-3);
-                    var length = format.match(/S/g).length;
-                    for (var i = 0; i < length; i++)
-                        format = format.replace(/S/, milliSeconds.substring(i, i + 1));
-                }
-                return format;
-            }
-            time_1.formatDate = formatDate;
+                MomentResult.succeeded = function (momentObject) {
+                    return new MomentResult(true, momentObject);
+                };
+                MomentResult.failed = function (msg) {
+                    return new MomentResult(false, null, msg);
+                };
+                MomentResult.prototype.format = function () {
+                    if (!this.success)
+                        return "";
+                    return this.momentObject.format(this.outputFormat);
+                };
+                MomentResult.prototype.toValue = function () {
+                    if (!this.success)
+                        return null;
+                    return this.momentObject;
+                };
+                MomentResult.prototype.getMsg = function () { return this.msg; };
+                return MomentResult;
+            }(ParseResult));
+            time_1.MomentResult = MomentResult;
         })(time = uk.time || (uk.time = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=time.js.map

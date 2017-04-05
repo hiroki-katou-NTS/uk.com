@@ -10,5 +10,5 @@ import nts.uk.ctx.basic.pub.system.bank.personaccount.PersonBankAccountPub;
 
 @RequestScoped
 public class PersonBankAccountPubImp implements PersonBankAccountPub {
-	
+
 }

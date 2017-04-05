@@ -1,3 +1,4 @@
+/// <reference path="../qmm005.ts"/>
 module qmm005.b {
     export class ViewModel {
         index: KnockoutObservable<number> = ko.observable(0);
@@ -8,6 +9,14 @@ module qmm005.b {
         lst001: KnockoutObservable<number> = ko.observable(0);
         lst001Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
         lst002Data: KnockoutObservableArray<TableRowItem> = ko.observableArray([]);
+        dirty: any = {
+            inp001: nts.uk.ui.DirtyChecker,
+            lst001: nts.uk.ui.DirtyChecker,
+            lst002: nts.uk.ui.DirtyChecker,
+            isDirty: function() {
+                debugger;
+            }
+        };
         constructor() {
             let self = this;
             // processingNo
@@ -26,6 +35,8 @@ module qmm005.b {
                 }
             });
 
+            self.dirty.isDirty();
+
             self.inp001.subscribe(function(v) {
                 if (v) {
                     self.lbl005("(" + v["yearInJapanEmpire"]() + ")");
@@ -41,22 +52,55 @@ module qmm005.b {
 
         start() {
             let self = this;
-            let lst002Data: Array<TableRowItem> = [];
             services.getData(self.index()).done(function(resp: Array<PaydayDto>) {
                 if (resp && resp.length > 0) {
+                    resp = _.orderBy(resp, ["processingYm"], ["asc"]);
                     let lst001Data: Array<common.SelectItem> = [],
+                        lst002Data: Array<TableRowItem> = [],
                         dataRow = nts.uk.ui.windows.getShared('dataRow');
                     for (let i: number = 0, rec: PaydayDto; i <= 11, rec = resp[i]; i++) {
-                        let year = rec.processingYm["getYearInYm"](),
-                            yearIJE = year + "(" + year["yearInJapanEmpire"]() + ")",
-                            row: ITableRowItem = {
-                                
-                            };
-                        if (!_.find(lst001Data, function(item) { return item.value == year; })) {
-                            lst001Data.push(new common.SelectItem({ index: i + 1, label: yearIJE, value: year, selected: year == dataRow.sel001() }));
+                        if (rec) {
+                            let year = rec.processingYm["getYearInYm"](),
+                                yearIJE = year + "(" + year["yearInJapanEmpire"]() + ")",
+                                index = i + 1,
+                                $moment = moment(rec.payDate),
+                                sel002Data: Array<common.SelectItem> = [];
+
+                            //row.sel002($moment.date());
+                            for (var j: number = 1; j <= $moment.daysInMonth(); j++) {
+                                var date = moment(new Date($moment.year(), $moment.month(), j));
+                                sel002Data.push(new common.SelectItem({
+                                    index: j,
+                                    label: date.format("YYYY/MM/DD"),
+                                    value: date.toDate()
+                                }));
+                            }
+
+                            let row = new TableRowItem({
+                                index: index,
+                                label: index + '月の設定',
+                                sel001: rec.payBonusAtr == 1 ? true : false,
+                                sel002: $moment.date(),
+                                sel002Data: sel002Data,
+                                inp003: new Date(rec.stdDate),
+                                inp004: rec.socialInsLevyMon["formatYearMonth"]("/"),
+                                inp005: rec.stmtOutputMon["formatYearMonth"]("/"),
+                                inp006: new Date(rec.socialInsStdDate),
+                                inp007: new Date(rec.empInsStdDate),
+                                inp008: new Date(rec.incomeTaxStdDate),
+                                inp009: new Date(rec.accountingClosing),
+                                inp010: rec.neededWorkDay
+                            });
+
+                            lst002Data.push(row);
+
+                            if (!_.find(lst001Data, function(item) { return item.value == year; })) {
+                                lst001Data.push(new common.SelectItem({ index: i + 1, label: yearIJE, value: year, selected: year == dataRow.sel001() }));
+                            }
                         }
                     }
                     self.lst001Data(lst001Data);
+                    self.lst002Data(lst002Data);
 
                     /// Select tạm ra một object (kiband có sửa phần này)
                     let selectRow = _.find(lst001Data, function(item) { return item.selected; });
@@ -65,24 +109,6 @@ module qmm005.b {
                     }
                 }
             });
-
-            for (let i = 1; i <= 12; i++) {
-                lst002Data.push(new TableRowItem({
-                    index: i,
-                    label: '',
-                    sel001: i % 2 == 0 ? true : false,
-                    sel002Data: [new common.SelectItem({ index: -1, label: "" })],
-                    inp003: new Date(),
-                    inp004: new Date(),
-                    inp005: new Date(),
-                    inp006: new Date(),
-                    inp007: new Date(),
-                    inp008: new Date(),
-                    inp009: new Date(),
-                    inp010: 0
-                }));
-            }
-            self.lst002Data(lst002Data);
         }
 
         toggleColumns(item, event): void {
@@ -90,9 +116,9 @@ module qmm005.b {
             $(event.currentTarget).parent('td').toggleClass('checkbox-cols');
             ($(event.currentTarget).text() == "-" && $(event.currentTarget).text('+')) || $(event.currentTarget).text('-');
             if (!$('.toggle').hasClass('hidden')) {
-                nts.uk.ui.windows.getSelf().setWidth(1515);
+                nts.uk.ui.windows.getSelf().setWidth(1465);
             } else {
-                nts.uk.ui.windows.getSelf().setWidth(1070);
+                nts.uk.ui.windows.getSelf().setWidth(1020);
             }
         }
 
@@ -111,7 +137,7 @@ module qmm005.b {
                 .onClosed(() => { });
         }
 
-        initNewData(item, event) {
+        checkNewData(item, event) {
             let self = this;
             debugger;
             self.inp001(null);
@@ -141,10 +167,11 @@ module qmm005.b {
         index: number;
         label: string;
         sel001: boolean;
+        sel002: number;
         sel002Data: Array<common.SelectItem>;
         inp003: Date;
-        inp004: Date;
-        inp005: Date;
+        inp004: string;
+        inp005: string;
         inp006: Date;
         inp007: Date;
         inp008: Date;
@@ -153,41 +180,49 @@ module qmm005.b {
     }
 
     class TableRowItem {
-        index: KnockoutObservable<number>;
-        label: KnockoutObservable<string>;
-        sel001: KnockoutObservable<boolean>;
-        sel002: KnockoutObservable<number>;
-        inp003: KnockoutObservable<Date>;
-        inp004: KnockoutObservable<Date>;
-        inp005: KnockoutObservable<Date>;
-        inp006: KnockoutObservable<Date>;
-        inp007: KnockoutObservable<Date>;
-        inp008: KnockoutObservable<Date>;
-        inp009: KnockoutObservable<Date>;
-        inp010: KnockoutObservable<number>;
+        index: KnockoutObservable<number> = ko.observable(0);
+        label: KnockoutObservable<string> = ko.observable('');
+        sel001: KnockoutObservable<boolean> = ko.observable(false);
+        sel002: KnockoutObservable<number> = ko.observable(0);
+        sel002L: KnockoutObservable<string> = ko.observable('');
+        inp003: KnockoutObservable<Date> = ko.observable(null);
+        inp004: KnockoutObservable<string> = ko.observable('');
+        inp005: KnockoutObservable<string> = ko.observable('');
+        inp006: KnockoutObservable<Date> = ko.observable(null);
+        inp007: KnockoutObservable<Date> = ko.observable(null);
+        inp008: KnockoutObservable<Date> = ko.observable(null);
+        inp009: KnockoutObservable<Date> = ko.observable(null);
+        inp010: KnockoutObservable<number> = ko.observable(0);
 
-        sel002Data: KnockoutObservableArray<common.SelectItem>;
+        sel002Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
 
         constructor(param: ITableRowItem) {
             let self = this;
-            self.index = ko.observable(param.index);
-            self.label = ko.observable(param.label);
-            self.sel002 = ko.observable(0);
+            self.index(param.index);
+            self.label(param.label);
+            self.sel001(param.sel001);
+            self.sel002(param.sel002);
 
-            self.sel001 = ko.observable(param.sel001);
-            self.sel002Data = ko.observableArray(param.sel002Data);
-            if (param.sel002Data[0]) {
-                self.sel002(param.sel002Data[0].index);
-            }
+            self.inp003(param.inp003);
+            self.inp004(param.inp004);
+            self.inp005(param.inp005);
+            self.inp006(param.inp006);
+            self.inp007(param.inp007);
+            self.inp008(param.inp008);
+            self.inp009(param.inp009);
+            self.inp010(param.inp010);
 
-            self.inp003 = ko.observable(param.inp003);
-            self.inp004 = ko.observable(param.inp004);
-            self.inp005 = ko.observable(param.inp005);
-            self.inp006 = ko.observable(param.inp006);
-            self.inp007 = ko.observable(param.inp007);
-            self.inp008 = ko.observable(param.inp008);
-            self.inp009 = ko.observable(param.inp009);
-            self.inp010 = ko.observable(param.inp010);
+            self.sel002Data(param.sel002Data);
+
+            self.sel002.subscribe(function(v) {
+                if (v) {
+                    let currentSel002 = _.find(param.sel002Data, function(item) { return item.index == v; });
+                    if (currentSel002) {
+                        self.sel002L(currentSel002.value["getDayJP"]());
+                    }
+                }
+            });
+            self.sel002.valueHasMutated();
         }
 
         toggleCalendar(item, event): void {
@@ -209,5 +244,11 @@ module qmm005.b {
         neededWorkDay: number;
         empInsStdDate: string;
         stmtOutputMon: number;
+    }
+
+    interface IDirty {
+        inp001: nts.uk.ui.DirtyChecker,
+        lst001: nts.uk.ui.DirtyChecker,
+        lst002: nts.uk.ui.DirtyChecker,
     }
 }

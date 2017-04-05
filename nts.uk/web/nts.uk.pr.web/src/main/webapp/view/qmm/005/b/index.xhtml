@@ -14,7 +14,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="btn-group-left">
-					<button id="B_BTN_001" data-bind="click: initNewData">新規</button>
+					<button id="B_BTN_001" data-bind="click: checkNewData">新規</button>
 					<button id="B_BTN_002" data-bind="click: saveData">登録</button>
 					<button id="B_BTN_003" data-bind="click: deleteData">削除</button>
 					<button id="B_BTN_004" data-bind="click: closeDialog">閉じる</button>
@@ -80,8 +80,8 @@
 							</thead>
 							<tbody data-bind="foreach: lst002Data">
 								<tr>
-									<th data-bind="text: ($index() + 1)"></th>
-									<th data-bind="text: ($index() + 1 + '月')"></th>
+									<th data-bind="text: index"></th>
+									<th data-bind="text: label"></th>
 									<td>
 										<div id="B_SEL_002"
 											data-bind="ntsComboBox: {
@@ -93,20 +93,20 @@
 											enable: true,
 											columns: [{ prop: 'label', length: 4 }]}">
 										</div>
-										<div>日</div>
+										<div data-bind="text: sel002L"></div>
 									</td>
 									<td>
 										<div id="B_INP_003"
-											data-bind="ntsDatePicker: { value: inp003, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
+											data-bind="ntsDatePicker: { value: inp003, dateFormat: 'YYYY/MM/DD'}"></div>
 									</td>
 									<td>
 										<div id="B_INP_004"
-											data-bind="ntsDatePicker: { value: inp004, dateFormat: 'yyyy/MM' }"></div>
+											data-bind="ntsDatePicker: { value: inp004, dateFormat: 'YYYY/MM' }"></div>
 										<div>分を徴収</div>
 									</td>
 									<td>
 										<div id="B_INP_005"
-											data-bind="ntsDatePicker: { value: inp005, dateFormat: 'yyyy/MM' }"></div>
+											data-bind="ntsDatePicker: { value: inp005, dateFormat: 'YYYY/MM' }"></div>
 									</td>
 									<td class="double-border"><input id="B_INP_010"
 										data-bind="ntsNumberEditor: {
@@ -121,19 +121,19 @@
 										<span>日</span></td>
 									<td class="toggle hidden">
 										<div id="B_INP_006"
-											data-bind="ntsDatePicker: { value: inp006, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
+											data-bind="ntsDatePicker: { value: inp006, dateFormat: 'YYYY/MM/DD'}"></div>
 									</td>
 									<td class="toggle hidden">
 										<div id="B_INP_007"
-											data-bind="ntsDatePicker: { value: inp007, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
+											data-bind="ntsDatePicker: { value: inp007, dateFormat: 'YYYY/MM/DD'}"></div>
 									</td>
 									<td class="toggle hidden">
 										<div id="B_INP_008"
-											data-bind="ntsDatePicker: { value: inp008, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
+											data-bind="ntsDatePicker: { value: inp008, dateFormat: 'YYYY/MM/DD'}"></div>
 									</td>
 									<td class="toggle hidden">
 										<div id="B_INP_009"
-											data-bind="ntsDatePicker: { value: inp009, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
+											data-bind="ntsDatePicker: { value: inp009, dateFormat: 'YYYY/MM/DD'}"></div>
 									</td>
 									<td class="checkbox-cols"><span id="B_SEL_00"
 										data-bind="ntsCheckBox: { checked: sel001, enable: true, text: '' }"></span>
