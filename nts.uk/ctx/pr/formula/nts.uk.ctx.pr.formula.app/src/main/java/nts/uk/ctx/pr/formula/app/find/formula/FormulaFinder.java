@@ -9,7 +9,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.formula.app.find.formulahistory.FormulaHistoryDto;
-import nts.uk.ctx.pr.formula.app.find.formulamaster.FormulaDto;
 import nts.uk.ctx.pr.formula.dom.repository.FormulaHistoryRepository;
 import nts.uk.ctx.pr.formula.dom.repository.FormulaMasterRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -53,7 +52,7 @@ public class FormulaFinder {
 			if (currentFormulaHistories != null && !currentFormulaHistories.isEmpty()) {
 				result.addAll(currentFormulaHistories.stream().map(x -> {
 					FormulaFinderDto history = new FormulaFinderDto();
-					history.setCcd(c.getValue().getCcd());
+					history.setCcd(c.getValue().getCompanyCode());
 					history.setFormulaCode(c.getValue().getFormulaCode());
 					history.setFormulaName(c.getValue().getFormulaName());
 					history.setDifficultyAtr(c.getValue().getDifficultyAtr());
