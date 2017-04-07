@@ -89,7 +89,7 @@ module qmm003.e.viewmodel {
             let self = this;
             var child = [];
             let i = 0;
-            _.each(self.residentalTaxList(), function(objResi: qmm003.a.service.model.ResidentialTax) {
+            _.each(self.residentalTaxList(), function(objResi: qmm003.a.service.model.ResidentialTaxDetailDto) {
                 _.each(self.japanLocation, function(objRegion: service.model.RegionObject) {
                     let cout: boolean = false;
                     let coutPre: boolean = false;

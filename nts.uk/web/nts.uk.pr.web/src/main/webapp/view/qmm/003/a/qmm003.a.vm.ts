@@ -1,50 +1,42 @@
 module qmm003.a.viewmodel {
     export class ScreenModel {
         // data of items list - tree grid
-        items: KnockoutObservableArray<RedensitalTaxNode>;
+        redensitalTaxNodeList: KnockoutObservableArray<RedensitalTaxNode>;
         singleSelectedCode: KnockoutObservable<string>;
         firstSelectedCode: KnockoutObservable<string> = ko.observable("");
-        isEnable: KnockoutObservable<boolean>;
-        enableBTN007: KnockoutObservable<boolean>;
         enableBTN009: KnockoutObservable<boolean>;
-        enableInp002: KnockoutObservable<boolean> = ko.observable(true);
-        isEditable: KnockoutObservable<boolean>;
-        editMode: boolean = true; // true là mode thêm mới, false là mode sửa 
+        isUpdate: KnockoutObservable<boolean> = ko.observable(true);
+        editMode: boolean = null; // true là mode thêm mới, false là mode update 
         filteredData: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
-        mode: KnockoutObservable<boolean>;
         nodeRegionPrefectures: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
         japanLocation: Array<service.model.RegionObject> = [];
         precfecture: Array<RedensitalTaxNode> = [];
         itemPrefecture: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
-        residentalTaxList: KnockoutObservableArray<service.model.ResidentialTax> = ko.observableArray([]);
-        currentResidential: KnockoutObservable<service.model.ResidentialTax> = ko.observable(null);
-        resiTaxReportCode: KnockoutObservable<string> = ko.observable("");
-        resiTaxCode: KnockoutObservable<string> = ko.observable("");
-        resiTaxAutonomy: KnockoutObservable<string> = ko.observable("");
-        prefectureCode: KnockoutObservable<string> = ko.observable("");
+        //companyCode != 0000
+        residentalTaxList: KnockoutObservableArray<service.model.ResidentialTaxDto> = ko.observableArray([]);
+        currentResidential: KnockoutObservable<service.model.ResidentialTaxDetailDto> = ko.observable(null);
+        report: KnockoutObservable<string> = ko.observable('');
         dirtyObject: nts.uk.ui.DirtyChecker;
         previousCurrentCode: string = null; //lưu giá trị của currentCode trước khi nó bị thay đổi
         hasFocus: KnockoutObservable<boolean> = ko.observable(true);
+        numberOfResidentialTax: KnockoutObservable<string> = ko.observable('');
         constructor() {
             let self = this;
             self.init();
             self.singleSelectedCode.subscribe(function(newValue) {
                 if (newValue.length === 1) {
                     let index: number;
-                    index = _.findIndex(self.items(), function(obj: RedensitalTaxNode) {
+                    index = _.findIndex(self.redensitalTaxNodeList(), function(obj: RedensitalTaxNode) {
                         return obj.code === newValue;
 
                     })
-                   // self.singleSelectedCode(self.items()[index].childs[0].childs[0].code);
-                    self.processWhenCurrentCodeChange(self.items()[index].childs[0].childs[0].code);
+                    self.processWhenCurrentCodeChange(self.redensitalTaxNodeList()[index].childs[0].childs[0].code);
                     return;
                 }
                 if (newValue.length === 2) {
-
-                    let array = [];
-                    array = self.findIndex(self.items(), newValue);
-                    //self.singleSelectedCode(self.items()[array[0]].childs[array[1]].childs[0].code);
-                    self.processWhenCurrentCodeChange(self.items()[array[0]].childs[array[1]].childs[0].code);
+                    let prefecture = [];
+                    prefecture = self.findIndex(self.redensitalTaxNodeList(), newValue);
+                    self.processWhenCurrentCodeChange(self.redensitalTaxNodeList()[prefecture[0]].childs[prefecture[1]].childs[0].code);
                     return;
                 }
 
@@ -53,9 +45,15 @@ module qmm003.a.viewmodel {
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
                             self.processWhenCurrentCodeChange(newValue);
                         }).ifCancel(function() {
-                            self.items([]);
-                            self.nodeRegionPrefectures([]);
-                            self.start(self.previousCurrentCode);
+
+                            if (nts.uk.text.isNullOrEmpty(self.previousCurrentCode)) {
+                                self.singleSelectedCode('');
+                                self.isUpdate(true);
+                            } else {
+                                self.redensitalTaxNodeList([]);
+                                self.nodeRegionPrefectures([]);
+                                self.start(self.previousCurrentCode);
+                            }
                         })
 
                     } else {
@@ -71,32 +69,30 @@ module qmm003.a.viewmodel {
         findIndex(items: Array<RedensitalTaxNode>, newValue: string): any {
             let index: number;
             let count: number = -1;
-            let array = [];
+            let prefectureArray = [];
             _.each(items, function(obj: RedensitalTaxNode) {
                 count++;
                 index = _.findIndex(obj.childs, function(obj1: RedensitalTaxNode) {
                     return obj1.code === newValue;
                 });
                 if (index > -1) {
-                    array.push(count, index);
+                    prefectureArray.push(count, index);
                 }
 
             });
 
-            return array;
+            return prefectureArray;
         }
 
+        // get Data khi currentCode thay đổi
         processWhenCurrentCodeChange(newValue: string) {
             let self = this;
-            service.getResidentialTaxDetail(newValue).done(function(data: service.model.ResidentialTax) {
+            service.getResidentialTaxDetail(newValue).done(function(data: service.model.ResidentialTaxDetailDto) {
                 if (data) {
                     if ($('.nts-editor').ntsError("hasError")) {
                         $('.save-error').ntsError('clear');
                     }
-                    if (!self.enableBTN009()) {
-                        self.enableBTN009(true);
-                    }
-                    self.enableInp002(false);
+                    self.isUpdate(false);
                     self.currentResidential(ko.mapping.fromJS(data));
                     self.previousCurrentCode = newValue;
                     self.dirtyObject.reset();
@@ -104,6 +100,17 @@ module qmm003.a.viewmodel {
                     self.resetData();
                 }
             });
+        }
+
+        //  set selectedcode by prefectureCode
+        findPrefectureByResiTax(items: Array<service.model.ResidentialTaxDto>, code: string): service.model.ResidentialTaxDto {
+            let self = this;
+            let node: service.model.ResidentialTaxDto;
+            node =_.find(items, function(objPrefecture: service.model.ResidentialTaxDto) {
+                return objPrefecture.resiTaxCode = code;
+            });
+            return node;
+
         }
 
         // create array prefecture from japan location
@@ -121,70 +128,58 @@ module qmm003.a.viewmodel {
         resetData(): void {
             let self = this;
             self.editMode = false;
-            self.enableBTN007(true);
             self.enableBTN009(true);
-            self.enableInp002(true);
-            let node = new service.model.ResidentialTax();
-            node.companyCode = '';
-            node.resiTaxCode = '';
-            node.resiTaxAutonomy = '';
-            node.prefectureCode = '1';
-            node.resiTaxReportCode = '';
-            node.registeredName = '';
-            node.companyAccountNo = '';
-            node.companySpecifiedNo = '';
-            node.cordinatePostalCode = '';
-            node.cordinatePostOffice = '';
-            node.memo = '';
+            self.isUpdate(true);
+            let node: ResidentialTax;
+            node = new ResidentialTax(({
+                resiTaxCode: '',
+                resiTaxAutonomy: '',
+                prefectureCode: '',
+                registeredName: '',
+                companyAccountNo: '',
+                companySpecifiedNo: ''
+            }));
             self.currentResidential(ko.mapping.fromJS(node));
             self.previousCurrentCode = '';
             self.singleSelectedCode("");
             self.hasFocus(true);
             self.dirtyObject.reset();
         }
+
         // init menu
         init(): void {
             let self = this;
             // data of treegrid
-            self.items = ko.observableArray([]);
-            self.mode = ko.observable(null);
-            self.isEnable = ko.observable(true);
-            self.enableBTN007 = ko.observable(true);
+            self.redensitalTaxNodeList = ko.observableArray([]);
             self.enableBTN009 = ko.observable(null);
-            self.isEditable = ko.observable(true);
             self.singleSelectedCode = ko.observable("");
-            let objResi = new service.model.ResidentialTax();
-            objResi.companyCode = '';
-            objResi.resiTaxCode = '';
-            objResi.resiTaxAutonomy = '';
-            objResi.prefectureCode = '';
-            objResi.resiTaxReportCode = '';
-            objResi.registeredName = '';
-            objResi.companyAccountNo = '';
-            objResi.companySpecifiedNo = '';
-            objResi.cordinatePostalCode = '';
-            objResi.cordinatePostOffice = '';
-            objResi.memo = '';
+            let objResi = new ResidentialTax(({
+                resiTaxCode: '',
+                resiTaxAutonomy: '',
+                prefectureCode: '',
+                registeredName: '',
+                companyAccountNo: '',
+                companySpecifiedNo: ''
+            }));
             self.currentResidential = ko.observable(ko.mapping.fromJS(objResi));
         }
-        //BTN007
+        // khi click btn007 mo ra man hinh B
         openBDialog() {
             let self = this;
-            let currentResidential: service.model.ResidentialTax;
-            nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode, true);
+            let currentNode: service.model.ResidentialTaxDto;
             nts.uk.ui.windows.sub.modeless('/view/qmm/003/b/index.xhtml', { title: '住民税納付先の登録＞住民税納付先一覧', dialogClass: "no-close" }).onClosed(function(): any {
-                currentResidential = nts.uk.ui.windows.getShared("currentResidential");
+                currentNode = nts.uk.ui.windows.getShared("currentNode");
                 self.editMode = false;
-                self.resiTaxCode(currentResidential.resiTaxCode);
-                self.resiTaxAutonomy(currentResidential.resiTaxAutonomy);
-                self.prefectureCode(currentResidential.prefectureCode);
+                self.resiTaxCode(currentNode.resiTaxCode);
+                self.resiTaxAutonomy(currentNode.resiTaxAutonomy);
+                self.prefectureCode(currentNode.prefectureCode);
             });
         }
 
-        //BTN009
+        // khi click btn009 mo ra man hinh C 
         openCDialog() {
             let self = this;
-            let currentResidential: service.model.ResidentialTax;
+            let currentResidential: service.model.ResidentialTaxDetailDto;
             nts.uk.ui.windows.sub.modeless("/view/qmm/003/c/index.xhtml", { title: '住民税納付先の登録＞住民税報告先一覧', dialogClass: "no-close" }).onClosed(function(): any {
                 currentResidential = nts.uk.ui.windows.getShared('currentResidential');
                 self.resiTaxReportCode(currentResidential.resiTaxCode);
@@ -192,31 +187,33 @@ module qmm003.a.viewmodel {
 
         }
 
-        //BTN006
+        // khi click vào btn006 mở ra màn hình D
         openDDialog() {
             let self = this;
             let items: any;
             nts.uk.ui.windows.sub.modeless("/view/qmm/003/d/index.xhtml", { title: '住民税納付先の登録　＞　一括削除', dialogClass: "no-close" }).onClosed(function(): any {
                 items = nts.uk.ui.windows.getShared('items');
-                console.log(items);
-                self.items([]);
+                self.redensitalTaxNodeList([]);
                 self.nodeRegionPrefectures([]);
                 self.start(undefined);
             });
         }
-        //BTN005
+
+        // xóa một đối tượng 
         deleteAResidential(): void {
             let self = this;
-            let objResidential: service.model.ResidentialTax;
+            let objResidential: service.model.ResidentialTaxDetailDto;
             objResidential = (ko.toJS(self.currentResidential()));
             let resiTaxCodes = [];
             resiTaxCodes.push(objResidential.resiTaxCode);
             qmm003.a.service.deleteResidential(resiTaxCodes).done(function(data) {
-                self.items([]);
+                self.redensitalTaxNodeList([]);
                 self.nodeRegionPrefectures([]);
                 self.reload(self.firstSelectedCode());
             });
         }
+
+        // khi click btn004 mở ra màn hình E - chức năng hợp nhất nơi đăng kí thuế cư trú
         openEDialog() {
 
             let self = this;
@@ -230,42 +227,15 @@ module qmm003.a.viewmodel {
         start(currentSelectedCode: string): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
             let self = this;
-
-            (qmm003.a.service.getResidentialTax()).done(function(data: Array<qmm003.a.service.model.ResidentialTax>) {
+            (qmm003.a.service.getResidentialTax()).done(function(data: Array<service.model.ResidentialTaxDto>) {
                 if (data.length > 0) {
-                    self.mode(true); // true, update mode 
+                    self.editMode = true; // true, update mode 
                     self.residentalTaxList(data);
-                    (qmm003.a.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
-                        self.japanLocation = locationData;
-                        self.buildPrefectureArray();
-                        self.itemPrefecture(self.precfecture);
-                        self.buildResidentalTaxTree();
-                        let node: Array<RedensitalTaxNode> = [];
-                        node = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
-                        self.filteredData(node);
-                        self.items(self.nodeRegionPrefectures());
-                        self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentResidential);
-                        if (currentSelectedCode === undefined) {
-                            self.singleSelectedCode(self.firstSelectedCode());
-                        } else {
-                            self.singleSelectedCode(currentSelectedCode);
-                        }
-                        self.enableBTN007(false);
-                        self.enableBTN009(true);
-                        self.enableInp002(false)
-                    });
-
-
+                    console.log(data);
+                    self.numberOfResidentialTax(" 【登録件数】" + data.length + "  件");
+                    self.getJapanLocation(currentSelectedCode);
                 } else {
-                    //self.resetData();
-                    (qmm003.a.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
-                        self.japanLocation = locationData;
-                        self.buildPrefectureArray();
-                        self.itemPrefecture(self.precfecture);
-                    });
-                    self.mode(false)// false, new mode
-                    self.enableBTN007(true);
-                    self.enableBTN009(true);
+                    self.settingNewMode();
                 }
 
                 dfd.resolve();
@@ -277,41 +247,22 @@ module qmm003.a.viewmodel {
             return dfd.promise();
         }
 
+        // Khi xóa dữ liệu xong rồi  mà list bên trái  = [] 
+        //thì sẽ gọi hàm reload ra để reset các giá trị ở màn hình bên phải
         reload(currentSelectedCode: string): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
             let self = this;
 
-            (qmm003.a.service.getResidentialTax()).done(function(data: Array<qmm003.a.service.model.ResidentialTax>) {
+            (qmm003.a.service.getResidentialTax()).done(function(data: Array<service.model.ResidentialTaxDto>) {
                 if (data.length > 0) {
-                    self.mode(true); // true, update mode 
+                    self.editMode = true; // true, update mode 
                     self.residentalTaxList(data);
-                    (qmm003.a.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
-                        self.japanLocation = locationData;
-                        self.buildPrefectureArray();
-                        self.itemPrefecture(self.precfecture);
-                        self.buildResidentalTaxTree();
-                        let node: Array<RedensitalTaxNode> = [];
-                        node = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
-                        self.filteredData(node);
-                        self.items(self.nodeRegionPrefectures());
-                        self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentResidential);
-                        self.singleSelectedCode(currentSelectedCode);
-                        self.enableBTN007(false);
-                        self.enableBTN009(true);
-                        self.enableInp002(false)
-                    });
-
-
+                    self.numberOfResidentialTax(" 【登録件数】" + data.length + "  件");
+                    self.getJapanLocation(currentSelectedCode);
                 } else {
                     self.resetData();
-                    (qmm003.a.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
-                        self.japanLocation = locationData;
-                        self.buildPrefectureArray();
-                        self.itemPrefecture(self.precfecture);
-                    });
-                    self.mode(false)// false, new mode
-                    self.enableBTN007(true);
-                    self.enableBTN009(true);
+                    self.numberOfResidentialTax(" 【登録件数】" + data.length + "  件");
+                    self.settingNewMode();
                 }
 
                 dfd.resolve();
@@ -323,11 +274,50 @@ module qmm003.a.viewmodel {
             return dfd.promise();
         }
 
+        // lấy dữ liệu japan location
+        getJapanLocation(currentSelectedCode: string) {
+            let self = this;
+            (qmm003.a.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
+                self.japanLocation = locationData;
+                self.buildPrefectureArray();
+                self.itemPrefecture(self.precfecture);
+                self.buildResidentalTaxTree();
+                let node: Array<RedensitalTaxNode> = [];
+                node = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
+                self.filteredData(node);
+                self.redensitalTaxNodeList(self.nodeRegionPrefectures());
+                self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentResidential);
+                if (currentSelectedCode === undefined) {
+                    self.singleSelectedCode(self.firstSelectedCode());
+                } else {
+                    self.singleSelectedCode(currentSelectedCode);
+                }
+                self.enableBTN009(true);
+                self.isUpdate(false)
+            });
+        }
+
+        // setting chế độ thêm mới (trường hợp get List data = 0)
+        settingNewMode() {
+            let self = this;
+            (qmm003.a.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
+                self.japanLocation = locationData;
+                self.buildPrefectureArray();
+                self.itemPrefecture(self.precfecture);
+            });
+            self.numberOfResidentialTax(" 【登録件数】 0  件");
+            self.editMode = false;// false, new mode
+            self.isUpdate(true);
+            self.enableBTN009(true);
+
+        }
+
+        // hàm xây dựng tree
         buildResidentalTaxTree() {
             let self = this;
             var child = [];
             let i = 0;
-            _.each(self.residentalTaxList(), function(objResi: qmm003.a.service.model.ResidentialTax) {
+            _.each(self.residentalTaxList(), function(objResi: qmm003.a.service.model.ResidentialTaxDetailDto) {
                 _.each(self.japanLocation, function(objRegion: service.model.RegionObject) {
                     let isChild: boolean = false;
                     let isPrefecture: boolean = false;
@@ -342,24 +332,25 @@ module qmm003.a.viewmodel {
                                         }
                                     });
                                     if (isPrefecture === false) {
-                                        obj.childs.push(new RedensitalTaxNode(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new RedensitalTaxNode(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])]));
+                                        obj.childs.push(
+                                            new RedensitalTaxNode(objPrefecture.prefectureCode, objPrefecture.prefectureName,
+                                                [new RedensitalTaxNode(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])]));
                                     }
                                     isChild = true;
                                 }
                             });
                             if (isChild === false) {
                                 let child = [];
-                                self.nodeRegionPrefectures.push(new RedensitalTaxNode(objRegion.regionCode, objRegion.regionName, [new RedensitalTaxNode(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new RedensitalTaxNode(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])])]));
+                                self.nodeRegionPrefectures.push(
+                                    new RedensitalTaxNode(objRegion.regionCode, objRegion.regionName,
+                                        [new RedensitalTaxNode(objPrefecture.prefectureCode, objPrefecture.prefectureName,
+                                            [new RedensitalTaxNode(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])])]));
                             }
                         }
                     });
                 });
 
             });
-            let node: Array<RedensitalTaxNode>;
-            node = self.nodeRegionPrefectures()[0].childs;
-            let node1: Array<RedensitalTaxNode>;
-            node1 = (node[0].childs);
             self.firstSelectedCode(self.nodeRegionPrefectures()[0].childs[0].childs[0].code);
         }
 
@@ -384,30 +375,33 @@ module qmm003.a.viewmodel {
             return true;
         }
 
+        // add va update doi tuong residentialTax
         clickRegister(): void {
             let self = this;
-            let objResi = new service.model.ResidentialTax();
+            let objResi = new service.model.ResidentialTaxDetailDto();
             let node = new RedensitalTaxNode('', '', []);
             if (!self.validateData()) {
                 return;
             }
             objResi = ko.toJS(self.currentResidential());
-            if (!self.mode()) {
+            if (!self.editMode) {
                 qmm003.a.service.addResidential(objResi).done(function() {
-                    self.items([]);
+                    self.redensitalTaxNodeList([]);
                     self.nodeRegionPrefectures([]);
                     self.start(objResi.resiTaxCode);
 
                 });
             } else {
                 qmm003.a.service.updateData(objResi).done(function() {
-                    self.items([]);
+                    self.redensitalTaxNodeList([]);
                     self.nodeRegionPrefectures([]);
                     self.start(objResi.resiTaxCode);
                 });
             }
         }
     }
+
+    // class xay dung tree grid
     export class RedensitalTaxNode {
         code: string;
         name: string;
@@ -422,4 +416,45 @@ module qmm003.a.viewmodel {
 
         }
     }
+
+    //insert an update  ResidentialTax Object
+    class ResidentialTax {
+        resiTaxCode: string;
+        resiTaxAutonomy: string;
+        prefectureCode: string;
+        resiTaxReportCode: string;
+        registeredName: string;
+        companyAccountNo: string;
+        companySpecifiedNo: string;
+        cordinatePostalCode: string;
+        cordinatePostOffice: string;
+        memo: string;
+        constructor(param: ResidentialTaxBase) {
+            this.resiTaxCode = param.resiTaxCode;
+            this.resiTaxAutonomy = param.resiTaxAutonomy;
+            this.prefectureCode = param.prefectureCode;
+            this.resiTaxReportCode = param.resiTaxReportCode;
+            this.registeredName = param.registeredName;
+            this.companyAccountNo = param.companyAccountNo;
+            this.companySpecifiedNo = param.companySpecifiedNo;
+            this.cordinatePostalCode = param.cordinatePostalCode;
+            this.cordinatePostOffice = param.cordinatePostOffice;
+            this.memo = param.memo;
+        }
+
+    }
+
+    interface ResidentialTaxBase {
+        resiTaxCode: string;
+        resiTaxAutonomy: string;
+        prefectureCode: string;
+        resiTaxReportCode?: string;
+        registeredName: string;
+        companyAccountNo: string;
+        companySpecifiedNo: string;
+        cordinatePostalCode?: string;
+        cordinatePostOffice?: string;
+        memo?: string;
+    }
+
 };

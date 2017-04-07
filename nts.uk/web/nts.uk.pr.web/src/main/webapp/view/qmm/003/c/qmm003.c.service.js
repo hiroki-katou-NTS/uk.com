@@ -92,6 +92,17 @@ var qmm003;
                     return PrefectureObject;
                 }());
                 model.PrefectureObject = PrefectureObject;
+                var ResidentialTaxDto = (function () {
+                    function ResidentialTaxDto() {
+                    }
+                    ResidentialTaxDto.prototype.contructor = function (resiTaxCode, resiTaxAutonomy, prefectureCode) {
+                        this.resiTaxCode = resiTaxCode;
+                        this.resiTaxAutonomy = resiTaxAutonomy;
+                        this.prefectureCode = prefectureCode;
+                    };
+                    return ResidentialTaxDto;
+                }());
+                model.ResidentialTaxDto = ResidentialTaxDto;
             })(model = service.model || (service.model = {}));
         })(service = c.service || (c.service = {}));
     })(c = qmm003.c || (qmm003.c = {}));

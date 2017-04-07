@@ -10,7 +10,7 @@ var qmm003;
                 getRegionPrefecture: "pr/core/residential/getlistLocation"
             };
             /**
-             * Get list payment date processing.
+             * Get list  ResidentialTax
              */
             function getResidentialTax() {
                 var dfd = $.Deferred();
@@ -36,20 +36,6 @@ var qmm003;
                 return dfd.promise();
             }
             service.getRegionPrefecture = getRegionPrefecture;
-            function getResidentialTaxDetail(companyCd, resiTaxCode) {
-                var dfd = $.Deferred();
-                var objectLayout = { resiTaxCode: resiTaxCode };
-                var _path = nts.uk.text.format(paths.getResidentialDetail, companyCd, resiTaxCode);
-                nts.uk.request.ajax(_path)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.getResidentialTaxDetail = getResidentialTaxDetail;
             var model;
             (function (model) {
                 var ResidentialTax = (function () {
@@ -92,6 +78,17 @@ var qmm003;
                     return PrefectureObject;
                 }());
                 model.PrefectureObject = PrefectureObject;
+                var ResidentialTaxDto = (function () {
+                    function ResidentialTaxDto() {
+                    }
+                    ResidentialTaxDto.prototype.contructor = function (resiTaxCode, resiTaxAutonomy, prefectureCode) {
+                        this.resiTaxCode = resiTaxCode;
+                        this.resiTaxAutonomy = resiTaxAutonomy;
+                        this.prefectureCode = prefectureCode;
+                    };
+                    return ResidentialTaxDto;
+                }());
+                model.ResidentialTaxDto = ResidentialTaxDto;
             })(model = service.model || (service.model = {}));
         })(service = b.service || (b.service = {}));
     })(b = qmm003.b || (qmm003.b = {}));

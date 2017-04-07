@@ -7,83 +7,60 @@ module qmm003.b.viewmodel {
         japanLocation: Array<qmm003.b.service.model.RegionObject> = [];
         precfecture: Array<RedensitalTaxNode> = [];
         itemPrefecture: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
-        residentalTaxList: KnockoutObservableArray<qmm003.b.service.model.ResidentialTax> = ko.observableArray([]);
-        currentResidential: service.model.ResidentialTax = (null);
+        residentalTaxList: KnockoutObservableArray<service.model.ResidentialTaxDto> = ko.observableArray([]);
+        currentNode: KnockoutObservable<service.model.ResidentialTaxDto> = ko.observable(null);
         constructor() {
             let self = this;
             self.init();
             self.singleSelectedCode.subscribe(function(newValue) {
-                if (newValue.length === 1) {
-                    let index: number;
-                    index = _.findIndex(self.items(), function(obj: RedensitalTaxNode) {
-                        return obj.code === newValue;
-
-                    })
-                    self.singleSelectedCode(self.items()[index].childs[0].childs[0].code);
-                    return;
-                }
-                if (newValue.length === 2) {
-
-                    let array = [];
-                    array = self.findIndex(self.items(), newValue);
-                    self.singleSelectedCode(self.items()[array[0]].childs[array[1]].childs[0].code);
-                    return;
-                }
                 if (newValue.length > 2) {
-                    self.processWhenCurrentCodeChange(newValue);
+                    self.currentNode(self.findByCode(self.residentalTaxList(), newValue));
+                    console.log(self.currentNode());
                 }
             });
 
         }
-        processWhenCurrentCodeChange(newValue: string) {
+        
+        findByCode(items: Array<service.model.ResidentialTaxDto>, newValue: string): service.model.ResidentialTaxDto {
             let self = this;
-            service.getResidentialTaxDetail('0000', newValue).done(function(data: service.model.ResidentialTax) {
-                if (data) {
-                    self.currentResidential = data;
-                } else {
-                    return;
+            let _node: service.model.ResidentialTaxDto;
+            _.find(items, function(_obj: service.model.ResidentialTaxDto) {
+                if (!_node) {
+                    if (_obj.resiTaxCode == newValue) {
+                        _node = _obj;
+
+                    }
                 }
             });
-        }
-        // tìm index để khi chọn root thì ra hiển thị ra thằng đầu tiên của 1 thằng root
-        findIndex(items: Array<RedensitalTaxNode>, newValue: string): any {
-            let index: number;
-            let count: number = -1;
-            let array = [];
-            _.each(items, function(obj: RedensitalTaxNode) {
-                count++;
-                index = _.findIndex(obj.childs, function(obj1: RedensitalTaxNode) {
-                    return obj1.code === newValue;
-                });
-                if (index > -1) {
-                    array.push(count, index);
-                }
 
-            });
-
-            return array;
-        }
+            return _node;
+        };
+      
         clickButton(): any {
             let self = this;
-            nts.uk.ui.windows.setShared('currentResidential', self.currentResidential, true);
+            nts.uk.ui.windows.setShared('currentNode', self.currentNode(), true);
             nts.uk.ui.windows.close();
 
         }
+        
         cancelButton(): void {
             nts.uk.ui.windows.close();
         }
+        
         init(): void {
             let self = this;
             self.items = ko.observableArray([]);
             self.singleSelectedCode = ko.observable(nts.uk.ui.windows.getShared("singleSelectedCode"));
         }
+        
         //11.初期データ取得処理 11. Initial data acquisition processing
         start(): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
             let self = this;
-            (qmm003.b.service.getResidentialTax()).done(function(data: Array<qmm003.b.service.model.ResidentialTax>) {
+            (qmm003.b.service.getResidentialTax()).done(function(data: Array<qmm003.b.service.model.ResidentialTaxDto>) {
                 if (data.length > 0) {
                     self.residentalTaxList(data);
+                    console.log(data);
                     (qmm003.b.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
                         self.japanLocation = locationData;
                         self.itemPrefecture(self.precfecture);
@@ -110,7 +87,7 @@ module qmm003.b.viewmodel {
             let self = this;
             var child = [];
             let i = 0;
-            _.each(self.residentalTaxList(), function(objResi: qmm003.a.service.model.ResidentialTax) {
+            _.each(self.residentalTaxList(), function(objResi: service.model.ResidentialTaxDto) {
                 _.each(self.japanLocation, function(objRegion: service.model.RegionObject) {
                     let isChild: boolean = false;
                     let isPrefecture: boolean = false;

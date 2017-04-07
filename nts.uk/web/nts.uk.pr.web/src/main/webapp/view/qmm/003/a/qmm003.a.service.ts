@@ -3,18 +3,19 @@ module qmm003.a.service {
         getResidentialTaxList: "pr/core/residential/findallresidential",
         getRegionPrefecture: "pr/core/residential/getlistLocation",
         getResidentialDetail: "pr/core/residential/findResidentialTax/{0}",
+        getResidentalTaxList: "pr/core/residential/findallByCompanyCode",
         addResidential: "pr/core/residential/addresidential",
         updateResidential: "pr/core/residential/updateresidential",
         deleteResidential: "pr/core/residential/deleteresidential"
     }
 
     /**
-     * Get list residential date processing.
+     * Get list residential companyCode !=0000.
      */
-    export function getResidentialTax(): JQueryPromise<Array<model.ResidentialTax>> {
-        var dfd = $.Deferred<Array<qmm003.a.service.model.ResidentialTax>>();
+    export function getResidentialTax(): JQueryPromise<Array<model.ResidentialTaxDto>> {
+        var dfd = $.Deferred<Array<model.ResidentialTaxDto>>();
         nts.uk.request.ajax(paths.getResidentialTaxList)
-            .done(function(res: Array<qmm003.a.service.model.ResidentialTax>) {
+            .done(function(res: Array<model.ResidentialTaxDto>) {
                 dfd.resolve(res);
             })
             .fail(function(res) {
@@ -22,6 +23,24 @@ module qmm003.a.service {
             })
         return dfd.promise();
     }
+    
+        /**
+     * Get list  ResidentialTax companyCode == 0000.
+     */
+    export function getResidentialTaxCCD(): JQueryPromise<Array<model.ResidentialTaxDto>> {
+        var dfd = $.Deferred<Array<model.ResidentialTaxDto>>();
+        nts.uk.request.ajax(paths.getResidentalTaxList)
+            .done(function(res: Array<model.ResidentialTaxDto>) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+    /**
+     * get japan location data
+     */
     export function getRegionPrefecture(): JQueryPromise<Array<model.RegionObject>> {
         var dfd = $.Deferred<Array<model.RegionObject>>();
         nts.uk.request.ajax(paths.getRegionPrefecture)
@@ -33,7 +52,12 @@ module qmm003.a.service {
             })
         return dfd.promise();
     }
-    export function addResidential(residential: model.ResidentialTax) {
+    
+    /**
+     * add  Residential
+     */
+    
+    export function addResidential(residential: model.ResidentialTaxDetailDto) {
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax(paths.addResidential, residential).done(function(res: Array<any>) {
             dfd.resolve(res);
@@ -43,7 +67,11 @@ module qmm003.a.service {
             })
         return dfd.promise();
     }
-    export function updateData(residential: model.ResidentialTax) {
+    
+    /**
+     * update ResidentialTax
+     */
+    export function updateData(residential: model.ResidentialTaxDetailDto) {
         let dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax(paths.updateResidential, residential)
             .done(function(res: Array<any>) {
@@ -54,6 +82,10 @@ module qmm003.a.service {
             })
         return dfd.promise();
     }
+    
+    /**
+     * delete Residential
+     */
     export function deleteResidential(param: Array<string>) {
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax(paths.deleteResidential, { resiTaxCodes: param }).done(function(res: Array<any>) {
@@ -64,13 +96,15 @@ module qmm003.a.service {
             })
         return dfd.promise();
     }
-    
-    export function getResidentialTaxDetail(resiTaxCode: string): JQueryPromise<model.ResidentialTax> {
-        var dfd = $.Deferred<qmm003.d.service.model.ResidentialTax>();
-        var objectLayout = { resiTaxCode: resiTaxCode};
+    /**
+     * get ResidentialTax Detail
+     */
+    export function getResidentialTaxDetail(resiTaxCode: string): JQueryPromise<model.ResidentialTaxDetailDto> {
+        var dfd = $.Deferred<qmm003.a.service.model.ResidentialTaxDetailDto>();
+        var objectLayout = { resiTaxCode: resiTaxCode };
         var _path = nts.uk.text.format(paths.getResidentialDetail, resiTaxCode);
         nts.uk.request.ajax(_path)
-            .done(function(res: model.ResidentialTax) {
+            .done(function(res: model.ResidentialTaxDetailDto) {
                 dfd.resolve(res);
             })
             .fail(function(res) {
@@ -80,7 +114,7 @@ module qmm003.a.service {
     }
 
     export module model {
-        export class ResidentialTax {
+        export class ResidentialTaxDetailDto {
             companyCode: string;
             resiTaxCode: string;
             resiTaxAutonomy: string;
@@ -128,6 +162,16 @@ module qmm003.a.service {
                 this.prefectureName = prefectureName;
             }
 
+        }
+        export class ResidentialTaxDto {
+            resiTaxCode: string;
+            resiTaxAutonomy: string;
+            prefectureCode: string;
+            contructor(resiTaxCode: string, resiTaxAutonomy: string, prefectureCode: string) {
+                this.resiTaxCode = resiTaxCode;
+                this.resiTaxAutonomy = resiTaxAutonomy;
+                this.prefectureCode = prefectureCode;
+            }
         }
 
     }

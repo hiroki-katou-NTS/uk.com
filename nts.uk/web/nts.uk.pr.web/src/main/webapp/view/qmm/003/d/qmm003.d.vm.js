@@ -7,6 +7,9 @@ var qmm003;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     this.filteredData = ko.observableArray([]);
+                    this.filteredData1 = ko.observableArray([]);
+                    this.filteredData2 = ko.observableArray([]);
+                    this.filteredData3 = ko.observableArray([]);
                     this.arrayNode = ko.observableArray([]);
                     this.nodeRegionPrefectures = ko.observableArray([]);
                     this.japanLocation = [];
@@ -57,24 +60,13 @@ var qmm003;
                     var self = this;
                     var resiTaxCodes = [];
                     var resiTax = [];
-                    console.log(self.arrayNode());
                     for (var i = 0; i < self.arrayNode().length; i++) {
+                        if (self.arrayNode()[i].length == 2) {
+                            console.log(self.arrayNode()[i]);
+                        }
                         resiTaxCodes.push(self.arrayNode()[i]);
-                        this.findIndex(this.items(), self.arrayNode()[i]);
                     }
-                    console.log(this.indexOfRoot);
-                    for (var i = 0; i < (self.indexOfRoot.length); i++) {
-                        _.each(self.items()[i], function (obj) {
-                            console.log(obj.childs);
-                            _.each(obj.childs, function (obj1) {
-                                console.log(obj1);
-                            });
-                        });
-                    }
-                    console.log(this.indexOfPrefecture);
-                    console.log(resiTaxCodes);
                     qmm003.d.service.deleteResidential(resiTaxCodes).done(function (data) {
-                        console.log(data);
                         self.items([]);
                         self.nodeRegionPrefectures([]);
                     });
@@ -95,7 +87,16 @@ var qmm003;
                                 self.buildResidentalTaxTree();
                                 var node = [];
                                 node = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
+                                var node1 = [];
+                                node1 = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
+                                var node2 = [];
+                                node2 = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
+                                var node3 = [];
+                                node3 = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
                                 self.filteredData(node);
+                                self.filteredData1(node1);
+                                self.filteredData2(node2);
+                                self.filteredData3(node3);
                                 self.items(self.nodeRegionPrefectures());
                             });
                         }
@@ -135,6 +136,33 @@ var qmm003;
                                 }
                             });
                         });
+                    });
+                };
+                ScreenModel.prototype.removeNodeByCode = function (items, newValue) {
+                    var self = this;
+                    _.remove(items, function (obj) {
+                        if (obj.code == newValue) {
+                            return obj.code == newValue;
+                        }
+                        else {
+                            return self.removeNodeByCode(obj.childs, newValue);
+                        }
+                    });
+                };
+                ;
+                ScreenModel.prototype.removeData1 = function (items) {
+                    _.remove(items, function (obj) {
+                        return obj.code.length == 1;
+                    });
+                };
+                ScreenModel.prototype.removeData2 = function (items) {
+                    _.remove(items, function (obj) {
+                        return obj.code.length == 2;
+                    });
+                };
+                ScreenModel.prototype.removeData3 = function (items) {
+                    _.remove(items, function (obj) {
+                        return obj.code.length > 3;
                     });
                 };
                 return ScreenModel;

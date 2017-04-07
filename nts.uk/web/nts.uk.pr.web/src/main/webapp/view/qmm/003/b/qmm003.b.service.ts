@@ -6,12 +6,12 @@ module qmm003.b.service {
     }
 
     /**
-     * Get list payment date processing.
+     * Get list  ResidentialTax
      */
-    export function getResidentialTax(): JQueryPromise<Array<model.ResidentialTax>> {
-        var dfd = $.Deferred<Array<qmm003.a.service.model.ResidentialTax>>();
+    export function getResidentialTax(): JQueryPromise<Array<model.ResidentialTaxDto>> {
+        var dfd = $.Deferred<Array<model.ResidentialTaxDto>>();
         nts.uk.request.ajax(paths.getResidentalTaxList)
-            .done(function(res: Array<qmm003.a.service.model.ResidentialTax>) {
+            .done(function(res: Array<model.ResidentialTaxDto>) {
                 dfd.resolve(res);
             })
             .fail(function(res) {
@@ -23,19 +23,6 @@ module qmm003.b.service {
         var dfd = $.Deferred<Array<model.RegionObject>>();
         nts.uk.request.ajax(paths.getRegionPrefecture)
             .done(function(res: Array<model.RegionObject>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
-    export function getResidentialTaxDetail(companyCd: string, resiTaxCode: string): JQueryPromise<model.ResidentialTax> {
-        var dfd = $.Deferred<qmm003.d.service.model.ResidentialTax>();
-        var objectLayout = { resiTaxCode: resiTaxCode };
-        var _path = nts.uk.text.format(paths.getResidentialDetail, companyCd, resiTaxCode);
-        nts.uk.request.ajax(_path)
-            .done(function(res: model.ResidentialTax) {
                 dfd.resolve(res);
             })
             .fail(function(res) {
@@ -92,6 +79,16 @@ module qmm003.b.service {
                 this.prefectureName = prefectureName;
             }
 
+        }
+        export class ResidentialTaxDto {
+            resiTaxCode: string;
+            resiTaxAutonomy: string;
+            prefectureCode: string;
+            contructor(resiTaxCode: string, resiTaxAutonomy: string, prefectureCode: string) {
+                this.resiTaxCode = resiTaxCode;
+                this.resiTaxAutonomy = resiTaxAutonomy;
+                this.prefectureCode = prefectureCode;
+            }
         }
 
     }

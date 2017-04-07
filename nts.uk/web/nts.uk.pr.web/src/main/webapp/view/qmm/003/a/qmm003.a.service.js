@@ -8,12 +8,13 @@ var qmm003;
                 getResidentialTaxList: "pr/core/residential/findallresidential",
                 getRegionPrefecture: "pr/core/residential/getlistLocation",
                 getResidentialDetail: "pr/core/residential/findResidentialTax/{0}",
+                getResidentalTaxList: "pr/core/residential/findallByCompanyCode",
                 addResidential: "pr/core/residential/addresidential",
                 updateResidential: "pr/core/residential/updateresidential",
                 deleteResidential: "pr/core/residential/deleteresidential"
             };
             /**
-             * Get list residential date processing.
+             * Get list residential companyCode !=0000.
              */
             function getResidentialTax() {
                 var dfd = $.Deferred();
@@ -27,6 +28,24 @@ var qmm003;
                 return dfd.promise();
             }
             service.getResidentialTax = getResidentialTax;
+            /**
+         * Get list  ResidentialTax companyCode == 0000.
+         */
+            function getResidentialTaxCCD() {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.getResidentalTaxList)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getResidentialTaxCCD = getResidentialTaxCCD;
+            /**
+             * get japan location data
+             */
             function getRegionPrefecture() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getRegionPrefecture)
@@ -39,6 +58,9 @@ var qmm003;
                 return dfd.promise();
             }
             service.getRegionPrefecture = getRegionPrefecture;
+            /**
+             * add  Residential
+             */
             function addResidential(residential) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.addResidential, residential).done(function (res) {
@@ -50,6 +72,9 @@ var qmm003;
                 return dfd.promise();
             }
             service.addResidential = addResidential;
+            /**
+             * update ResidentialTax
+             */
             function updateData(residential) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.updateResidential, residential)
@@ -62,6 +87,9 @@ var qmm003;
                 return dfd.promise();
             }
             service.updateData = updateData;
+            /**
+             * delete Residential
+             */
             function deleteResidential(param) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.deleteResidential, { resiTaxCodes: param }).done(function (res) {
@@ -73,6 +101,9 @@ var qmm003;
                 return dfd.promise();
             }
             service.deleteResidential = deleteResidential;
+            /**
+             * get ResidentialTax Detail
+             */
             function getResidentialTaxDetail(resiTaxCode) {
                 var dfd = $.Deferred();
                 var objectLayout = { resiTaxCode: resiTaxCode };
@@ -89,10 +120,10 @@ var qmm003;
             service.getResidentialTaxDetail = getResidentialTaxDetail;
             var model;
             (function (model) {
-                var ResidentialTax = (function () {
-                    function ResidentialTax() {
+                var ResidentialTaxDetailDto = (function () {
+                    function ResidentialTaxDetailDto() {
                     }
-                    ResidentialTax.prototype.contructor = function (companyCode, resiTaxCode, resiTaxAutonomy, prefectureCode, resiTaxReportCode, registeredName, companyAccountNo, companySpecifiedNo, cordinatePostalCode, cordinatePostOffice, memo) {
+                    ResidentialTaxDetailDto.prototype.contructor = function (companyCode, resiTaxCode, resiTaxAutonomy, prefectureCode, resiTaxReportCode, registeredName, companyAccountNo, companySpecifiedNo, cordinatePostalCode, cordinatePostOffice, memo) {
                         this.companyCode = companyCode;
                         this.resiTaxCode = resiTaxCode;
                         this.resiTaxAutonomy = resiTaxAutonomy;
@@ -105,9 +136,9 @@ var qmm003;
                         this.cordinatePostOffice = cordinatePostOffice;
                         this.memo = memo;
                     };
-                    return ResidentialTax;
+                    return ResidentialTaxDetailDto;
                 }());
-                model.ResidentialTax = ResidentialTax;
+                model.ResidentialTaxDetailDto = ResidentialTaxDetailDto;
                 var RegionObject = (function () {
                     function RegionObject() {
                     }
@@ -129,6 +160,17 @@ var qmm003;
                     return PrefectureObject;
                 }());
                 model.PrefectureObject = PrefectureObject;
+                var ResidentialTaxDto = (function () {
+                    function ResidentialTaxDto() {
+                    }
+                    ResidentialTaxDto.prototype.contructor = function (resiTaxCode, resiTaxAutonomy, prefectureCode) {
+                        this.resiTaxCode = resiTaxCode;
+                        this.resiTaxAutonomy = resiTaxAutonomy;
+                        this.prefectureCode = prefectureCode;
+                    };
+                    return ResidentialTaxDto;
+                }());
+                model.ResidentialTaxDto = ResidentialTaxDto;
             })(model = service.model || (service.model = {}));
         })(service = a.service || (a.service = {}));
     })(a = qmm003.a || (qmm003.a = {}));

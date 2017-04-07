@@ -3,6 +3,9 @@ module qmm003.d.viewmodel {
         items: KnockoutObservableArray<RedensitalTaxNode>;
         selectedCode: KnockoutObservableArray<string>;
         filteredData: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
+        filteredData1: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
+        filteredData2: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
+        filteredData3: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
         arrayNode: KnockoutObservableArray<string> = ko.observableArray([]);
         nodeRegionPrefectures: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
         japanLocation: Array<qmm003.d.service.model.RegionObject> = [];
@@ -16,6 +19,7 @@ module qmm003.d.viewmodel {
         constructor() {
             let self = this;
             self.init();
+
             self.selectedCode.subscribe(function(newValue) {
                 self.arrayNode(newValue);
             });
@@ -28,7 +32,7 @@ module qmm003.d.viewmodel {
                     return obj.code === newValue;
 
                 });
-               this.indexOfRoot.push(indexOfValue1);
+                this.indexOfRoot.push(indexOfValue1);
 
             } else if (newValue.length === 2) {
                 let index: number;
@@ -48,7 +52,7 @@ module qmm003.d.viewmodel {
                 return array;
             }
         }
-        
+
         init(): void {
             let self = this;
             self.items = ko.observableArray([]);
@@ -58,27 +62,15 @@ module qmm003.d.viewmodel {
         clickButton(): void {
             let self = this;
             let resiTaxCodes = [];
-            let resiTax =[];
-            console.log(self.arrayNode());
-            
+            let resiTax = [];
             for (let i = 0; i < self.arrayNode().length; i++) {
+                if(self.arrayNode()[i].length == 2){
+                    console.log(self.arrayNode()[i]);
+                }
                 resiTaxCodes.push(self.arrayNode()[i]);
-                this.findIndex(this.items(), self.arrayNode()[i]);
             }
-            console.log(this.indexOfRoot);
-            for(let i = 0; i < (self.indexOfRoot.length ); i++){
-                _.each(self.items()[i], function(obj){
-                    console.log(obj.childs);
-                    _.each(obj.childs, function(obj1){
-                      console.log(obj1);  
-                    });
-                })
             
-            }
-            console.log(this.indexOfPrefecture);
-            console.log(resiTaxCodes);
             qmm003.d.service.deleteResidential(resiTaxCodes).done(function(data) {
-                console.log(data);
                 self.items([]);
                 self.nodeRegionPrefectures([]);
             });
@@ -99,7 +91,16 @@ module qmm003.d.viewmodel {
                         self.buildResidentalTaxTree();
                         let node: Array<RedensitalTaxNode> = [];
                         node = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
+                        let node1: Array<RedensitalTaxNode> = [];
+                        node1 = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
+                        let node2: Array<RedensitalTaxNode> = [];
+                        node2 = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
+                        let node3: Array<RedensitalTaxNode> = [];
+                        node3 = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
                         self.filteredData(node);
+                        self.filteredData1(node1);
+                        self.filteredData2(node2);
+                        self.filteredData3(node3);
                         self.items(self.nodeRegionPrefectures());
                     });
                 }
@@ -144,6 +145,32 @@ module qmm003.d.viewmodel {
                     });
                 });
 
+            });
+        }
+        removeNodeByCode(items: Array<RedensitalTaxNode>, newValue: string): any {
+            let self = this;
+            _.remove(items, function(obj: RedensitalTaxNode) {
+                if (obj.code == newValue) {
+                    return obj.code == newValue;
+                } else {
+                    return self.removeNodeByCode(obj.childs, newValue);
+
+                }
+            })
+        };
+        removeData1(items: Array<RedensitalTaxNode>): any {
+            _.remove(items, function(obj: RedensitalTaxNode) {
+                return obj.code.length == 1;
+            });
+        }
+        removeData2(items: Array<RedensitalTaxNode>): any {
+            _.remove(items, function(obj: RedensitalTaxNode) {
+                return obj.code.length == 2;
+            });
+        }
+        removeData3(items: Array<RedensitalTaxNode>): any {
+            _.remove(items, function(obj: RedensitalTaxNode) {
+                return obj.code.length > 3;
             });
         }
     }

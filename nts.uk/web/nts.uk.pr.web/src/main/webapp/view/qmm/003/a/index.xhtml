@@ -50,13 +50,13 @@
 						<i class="icon icon-searchbox"></i>
 						<!-- , click: search -->
 						<div id="search" style="width: 400px"
-							data-bind="ntsSearchBox: {items: items, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
+							data-bind="ntsSearchBox: {items: redensitalTaxNodeList, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
 						<div>
 							<table id="A_LST_001"
 								data-bind="ntsTreeGridView:{
 								   	width: 350,
 									height: 500,
-									options: items,
+									options: redensitalTaxNodeList,
 									value: singleSelectedCode,
 									optionsValue: 'code',
 									optionsChild: 'childs',
@@ -67,7 +67,7 @@
 								class="cf"></table>
 						</div>
 				
-					 <label id="A_LBL_011"> 【登録件数】 202件</label>
+					 <label id="A_LBL_011" data-bind="text: numberOfResidentialTax()"> 【登録件数】 202件</label>
 				
 							
 						
@@ -92,7 +92,7 @@
 												value: resiTaxCode,
 												constraint: 'ResiTaxCode',
 												required: true,
-												enable: $parent.enableInp002 ,
+												enable: $parent.isUpdate ,
 												readonly: false }
 												, hasFocus: $parent.hasFocus" />
 								  </div>
@@ -108,7 +108,7 @@
 								  </div>										
 									</th>								
 									<th colspan="3" >
-										<button id="A_BTN_007" data-bind="click: $parent.openBDialog,enable: $parent.enableBTN007" class="small" style="margin-left: 5px;">参照</button>													 		
+										<button id="A_BTN_007" data-bind="click: $parent.openBDialog,enable: $parent.isUpdate" class="small" style="margin-left: 5px;">参照</button>													 		
 									</th>								
 								</tr>							
 

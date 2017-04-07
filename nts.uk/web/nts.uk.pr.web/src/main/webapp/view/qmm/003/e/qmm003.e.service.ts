@@ -8,9 +8,9 @@ module qmm003.e.service {
      * Get list payment date processing.
      */
     export function getResidentialTax(): JQueryPromise<Array<model.ResidentialTax>> {
-        var dfd = $.Deferred<Array<qmm003.a.service.model.ResidentialTax>>();
+        var dfd = $.Deferred<Array<qmm003.a.service.model.ResidentialTaxDetailDto>>();
         nts.uk.request.ajax(paths.getResidentalTaxList)
-            .done(function(res: Array<qmm003.a.service.model.ResidentialTax>) {
+            .done(function(res: Array<qmm003.a.service.model.ResidentialTaxDetailDto>) {
                 dfd.resolve(res);
             })
             .fail(function(res) {

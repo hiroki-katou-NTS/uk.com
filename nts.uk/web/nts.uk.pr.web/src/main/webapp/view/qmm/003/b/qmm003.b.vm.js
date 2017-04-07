@@ -12,59 +12,32 @@ var qmm003;
                     this.precfecture = [];
                     this.itemPrefecture = ko.observableArray([]);
                     this.residentalTaxList = ko.observableArray([]);
-                    this.currentResidential = (null);
+                    this.currentNode = ko.observable(null);
                     var self = this;
                     self.init();
                     self.singleSelectedCode.subscribe(function (newValue) {
-                        if (newValue.length === 1) {
-                            var index = void 0;
-                            index = _.findIndex(self.items(), function (obj) {
-                                return obj.code === newValue;
-                            });
-                            self.singleSelectedCode(self.items()[index].childs[0].childs[0].code);
-                            return;
-                        }
-                        if (newValue.length === 2) {
-                            var array = [];
-                            array = self.findIndex(self.items(), newValue);
-                            self.singleSelectedCode(self.items()[array[0]].childs[array[1]].childs[0].code);
-                            return;
-                        }
                         if (newValue.length > 2) {
-                            self.processWhenCurrentCodeChange(newValue);
+                            self.currentNode(self.findByCode(self.residentalTaxList(), newValue));
+                            console.log(self.currentNode());
                         }
                     });
                 }
-                ScreenModel.prototype.processWhenCurrentCodeChange = function (newValue) {
+                ScreenModel.prototype.findByCode = function (items, newValue) {
                     var self = this;
-                    b.service.getResidentialTaxDetail('0000', newValue).done(function (data) {
-                        if (data) {
-                            self.currentResidential = data;
-                        }
-                        else {
-                            return;
-                        }
-                    });
-                };
-                // tìm index để khi chọn root thì ra hiển thị ra thằng đầu tiên của 1 thằng root
-                ScreenModel.prototype.findIndex = function (items, newValue) {
-                    var index;
-                    var count = -1;
-                    var array = [];
-                    _.each(items, function (obj) {
-                        count++;
-                        index = _.findIndex(obj.childs, function (obj1) {
-                            return obj1.code === newValue;
-                        });
-                        if (index > -1) {
-                            array.push(count, index);
+                    var _node;
+                    _.find(items, function (_obj) {
+                        if (!_node) {
+                            if (_obj.resiTaxCode == newValue) {
+                                _node = _obj;
+                            }
                         }
                     });
-                    return array;
+                    return _node;
                 };
+                ;
                 ScreenModel.prototype.clickButton = function () {
                     var self = this;
-                    nts.uk.ui.windows.setShared('currentResidential', self.currentResidential, true);
+                    nts.uk.ui.windows.setShared('currentNode', self.currentNode(), true);
                     nts.uk.ui.windows.close();
                 };
                 ScreenModel.prototype.cancelButton = function () {
@@ -82,6 +55,7 @@ var qmm003;
                     (qmm003.b.service.getResidentialTax()).done(function (data) {
                         if (data.length > 0) {
                             self.residentalTaxList(data);
+                            console.log(data);
                             (qmm003.b.service.getRegionPrefecture()).done(function (locationData) {
                                 self.japanLocation = locationData;
                                 self.itemPrefecture(self.precfecture);

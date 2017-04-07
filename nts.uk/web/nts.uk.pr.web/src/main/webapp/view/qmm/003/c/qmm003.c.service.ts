@@ -8,10 +8,10 @@ module qmm003.c.service {
     /**
      * Get list payment date processing.
      */
-    export function getResidentialTax(): JQueryPromise<Array<model.ResidentialTax>> {
-        var dfd = $.Deferred<Array<qmm003.c.service.model.ResidentialTax>>();
+    export function getResidentialTax(): JQueryPromise<Array<model.ResidentialTaxDto>> {
+        var dfd = $.Deferred<Array<model.ResidentialTaxDto>>();
         nts.uk.request.ajax(paths.getResidentalTaxList)
-            .done(function(res: Array<qmm003.c.service.model.ResidentialTax>) {
+            .done(function(res: Array<model.ResidentialTaxDto>) {
                 dfd.resolve(res);
             })
             .fail(function(res) {
@@ -30,7 +30,7 @@ module qmm003.c.service {
             })
         return dfd.promise();
     }
-    
+
     export function getResidentialTaxDetail(resiTaxCode: string): JQueryPromise<model.ResidentialTax> {
         var dfd = $.Deferred<qmm003.d.service.model.ResidentialTax>();
         var objectLayout = { resiTaxCode: resiTaxCode };
@@ -44,7 +44,7 @@ module qmm003.c.service {
             })
         return dfd.promise();
     }
-    
+
     export module model {
         export class ResidentialTax {
             companyCode: string;
@@ -94,6 +94,16 @@ module qmm003.c.service {
                 this.prefectureName = prefectureName;
             }
 
+        }
+        export class ResidentialTaxDto {
+            resiTaxCode: string;
+            resiTaxAutonomy: string;
+            prefectureCode: string;
+            contructor(resiTaxCode: string, resiTaxAutonomy: string, prefectureCode: string) {
+                this.resiTaxCode = resiTaxCode;
+                this.resiTaxAutonomy = resiTaxAutonomy;
+                this.prefectureCode = prefectureCode;
+            }
         }
 
     }
