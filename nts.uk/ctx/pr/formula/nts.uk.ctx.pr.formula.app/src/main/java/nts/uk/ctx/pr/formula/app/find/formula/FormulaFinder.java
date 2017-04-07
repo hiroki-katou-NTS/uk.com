@@ -16,9 +16,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
 /**
- * @author Nam-PT
- *	A screen - init
- *	activity 1
+ * @author Nam-PT A screen - init activity 1
  */
 @Stateless
 public class FormulaFinder {
@@ -33,9 +31,8 @@ public class FormulaFinder {
 
 		LoginUserContext login = AppContexts.user();
 		boolean isExistedFormula = this.repository.isExistedFormula(login.companyCode());
-		boolean isExistedFormulaHistory = this.historyRepository.isExistedHistory(login.companyCode());
 
-		if (!isExistedFormula && !isExistedFormulaHistory) {
+		if (!isExistedFormula) {
 			return null;
 		}
 
@@ -53,9 +50,7 @@ public class FormulaFinder {
 		formulaDtos.entrySet().stream().forEach(c -> {
 			List<FormulaHistoryDto> currentFormulaHistories = formulaHistories.get(c.getKey());
 
-			if (currentFormulaHistories == null) {
-				throw new RuntimeException("");
-			} else {
+			if (currentFormulaHistories != null && !currentFormulaHistories.isEmpty()) {
 				result.addAll(currentFormulaHistories.stream().map(x -> {
 					FormulaFinderDto history = new FormulaFinderDto();
 					history.setCcd(c.getValue().getCcd());
