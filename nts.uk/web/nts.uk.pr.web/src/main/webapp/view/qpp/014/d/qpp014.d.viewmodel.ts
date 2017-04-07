@@ -22,12 +22,14 @@ module qpp014.d.viewmodel {
             }
             self.d_LST_001_itemSelected = ko.observable(0);
             self.d_nextScreen = ko.computed(function() {
-                return self.d_SEL_002_selectedCode() == 1 ? 'screeng' : 'screenh';
+                return self.d_SEL_002_selectedCode() == 2 ? 'screen_g' : 'screen_h';
             })
         }
 
         openEDialog() {
-            nts.uk.ui.windows.sub.modal("/view/qpp/014/e/index.xhtml", { title: "振込データの作成結果一覧", dialogClass: "no-close" });
+            nts.uk.ui.windows.sub.modal("/view/qpp/014/e/index.xhtml", { title: "振込データの作成結果一覧", dialogClass: "no-close" }).onClosed(function() {
+                $('#wizard').ntsWizard("next");    
+            });
         }
     }
 };
