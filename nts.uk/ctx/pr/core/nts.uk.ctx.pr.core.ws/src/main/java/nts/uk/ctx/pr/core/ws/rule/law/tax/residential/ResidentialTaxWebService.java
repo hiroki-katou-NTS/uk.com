@@ -15,6 +15,7 @@ import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.DeleteResidential
 import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.DeleteResidentialTaxCommandHandler;
 import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.UpdateResidentialTaxCommand;
 import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.UpdateResidentialTaxCommandHandler;
+import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.ResidentialTaxDetailDto;
 import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.ResidentialTaxDto;
 import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.ResidentialTaxFinder;
 
@@ -46,14 +47,14 @@ public class ResidentialTaxWebService extends WebService {
 	// companyCode != 0000
 	@POST
 	@Path("findResidentialTax/{resiTaxCode}")
-	public ResidentialTaxDto getResidialTaxDetail(@PathParam("resiTaxCode") String resiTaxCode) {
+	public ResidentialTaxDetailDto getResidialTaxDetail(@PathParam("resiTaxCode") String resiTaxCode) {
 		return this.finder.getResidentialTax(resiTaxCode).get();
 	}
 
 	// companyCode = 0000
 	@POST
 	@Path("findResidentialTax/{companyCd}/{resiTaxCode}")
-	public ResidentialTaxDto getResidialTaxDetail(@PathParam("companyCd") String companyCd, @PathParam("resiTaxCode") String resiTaxCode) {
+	public ResidentialTaxDetailDto getResidialTaxDetail(@PathParam("companyCd") String companyCd, @PathParam("resiTaxCode") String resiTaxCode) {
 		return this.finder.getResidentialTax(companyCd, resiTaxCode).get();
 	}
 

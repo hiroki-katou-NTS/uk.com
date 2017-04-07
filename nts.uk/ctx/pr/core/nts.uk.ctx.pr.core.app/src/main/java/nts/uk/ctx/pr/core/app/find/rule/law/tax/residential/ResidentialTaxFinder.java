@@ -46,19 +46,19 @@ public class ResidentialTaxFinder {
 	}
 
 	// SEL3
-	public Optional<ResidentialTaxDto> getResidentialTax(String companyCode, String resiTaxCode) {
+	public Optional<ResidentialTaxDetailDto> getResidentialTax(String companyCode, String resiTaxCode) {
 		
 		return this.resiTaxRepository.getResidentialTax(companyCode, resiTaxCode)
-				.map(c -> ResidentialTaxDto.fromDomain(c));
+				.map(c -> ResidentialTaxDetailDto.fromDomain(c));
 
 	}
 
-	public Optional<ResidentialTaxDto> getResidentialTax(String resiTaxCode) {
+	public Optional<ResidentialTaxDetailDto> getResidentialTax(String resiTaxCode) {
 		String companyCode = "";
 		if (AppContexts.user() != null) {
 			companyCode = AppContexts.user().companyCode();
 			return this.resiTaxRepository.getResidentialTax(companyCode, resiTaxCode)
-					.map(c -> ResidentialTaxDto.fromDomain(c));
+					.map(c -> ResidentialTaxDetailDto.fromDomain(c));
 		} else {
 			return null;
 		}
