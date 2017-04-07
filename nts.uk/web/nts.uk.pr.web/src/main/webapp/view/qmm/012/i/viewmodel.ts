@@ -4,8 +4,6 @@ module qmm012.i.viewmodel {
         //textediter
 
         //Checkbox
-        checked: KnockoutObservable<boolean>;
-        //002
         checked_002: KnockoutObservable<boolean> = ko.observable(false);
         checked_003: KnockoutObservable<boolean> = ko.observable(false);
         checked_004: KnockoutObservable<boolean> = ko.observable(false);
@@ -30,10 +28,10 @@ module qmm012.i.viewmodel {
         ItemBDList: KnockoutObservableArray<service.model.ItemBD> = ko.observableArray([]);
         CurrentCategoryAtrName: KnockoutObservable<string> = ko.observable('');
         CurrentItemBD: KnockoutObservable<service.model.ItemBD> = ko.observable(null);
-        CurrentItemBreakdownCd: KnockoutObservable<string> = ko.observable('');
+        CurrentItemBreakdownCode: KnockoutObservable<string> = ko.observable('');
         CurrentItemBreakdownName: KnockoutObservable<string> = ko.observable('');
         CurrentItemBreakdownAbName: KnockoutObservable<string> = ko.observable('');
-        CurrentUniteCd: KnockoutObservable<string> = ko.observable('');
+        CurrentUniteCode: KnockoutObservable<string> = ko.observable('');
         CurrentZeroDispSet: KnockoutObservable<number> = ko.observable(1);
         CurrentItemDispAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentErrRangeLow: KnockoutObservable<number> = ko.observable(0);
@@ -42,6 +40,8 @@ module qmm012.i.viewmodel {
         CurrentAlRangeHigh: KnockoutObservable<number> = ko.observable(0);
 
         enable_I_INP_002: KnockoutObservable<boolean> = ko.observable(false);
+        I_BTN_003_enable: KnockoutObservable<boolean> = ko.observable(true);
+        currentItemCode: KnockoutObservable<string> = ko.observable('');
         constructor() {
             var self = this;
             //start Switch Data
@@ -96,33 +96,25 @@ module qmm012.i.viewmodel {
             // start search box 
             self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.ItemBDList(), "childs"));
             // end search box 
-
-
             self.columns = ko.observableArray([
-                { headerText: 'ード', prop: 'itemBreakdownCd', width: 100 },
+                { headerText: 'ード', prop: 'itemBreakdownCode', width: 100 },
                 { headerText: '名', prop: 'itemBreakdownName', width: 150 }
             ]);
-            self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
-            if (self.CurrentItemMaster()) {
-                self.LoadItem();
-                self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
-            }
 
             self.gridListCurrentCode.subscribe(function(newValue) {
                 var item = _.find(self.ItemBDList(), function(ItemBD: service.model.ItemBD) {
-                    return ItemBD.itemBreakdownCd == newValue;
+                    return ItemBD.itemBreakdownCode == newValue;
                 });
                 self.CurrentItemBD(item);
             });
             self.CurrentItemBD.subscribe(function(ItemBD: service.model.ItemBD) {
-                self.CurrentItemBreakdownCd(ItemBD ? ItemBD.itemBreakdownCd : '');
+                self.CurrentItemBreakdownCode(ItemBD ? ItemBD.itemBreakdownCode : '');
                 self.CurrentItemBreakdownName(ItemBD ? ItemBD.itemBreakdownName : '');
                 self.CurrentItemBreakdownAbName(ItemBD ? ItemBD.itemBreakdownAbName : '');
-                self.CurrentUniteCd(ItemBD ? ItemBD.uniteCd : '');
+                self.CurrentUniteCode(ItemBD ? ItemBD.uniteCode : '');
                 self.CurrentZeroDispSet(ItemBD ? ItemBD.zeroDispSet : 1);
                 self.checked_002(ItemBD ? ItemBD.itemDispAtr == 1 ? false : true : false);
                 self.CurrentItemDispAtr(ItemBD ? ItemBD.itemDispAtr : 0);
-
                 self.checked_005(ItemBD ? ItemBD.errRangeLowAtr == 1 ? true : false : false);
                 self.CurrentErrRangeLow(ItemBD ? ItemBD.errRangeLow : 0);
                 self.checked_003(ItemBD ? ItemBD.errRangeHighAtr == 1 ? true : false : false);
@@ -131,37 +123,73 @@ module qmm012.i.viewmodel {
                 self.CurrentAlRangeLow(ItemBD ? ItemBD.alRangeLow : 0);
                 self.checked_004(ItemBD ? ItemBD.alRangeHighAtr == 1 ? true : false : false);
                 self.CurrentAlRangeHigh(ItemBD ? ItemBD.alRangeHigh : 0);
-                if (self.CurrentItemBreakdownCd() != undefined) {
+                if (ItemBD != undefined) {
+                    //if item not undefined it mean active update mode
                     self.enable_I_INP_002(false);
                 }
             });
-            self.checked_002.subscribe(function(newValue) {
-                self.CurrentItemDispAtr(newValue == false ? 1 : 0);
-            });
+            self.enable_I_INP_002.subscribe(function(newValue) {
+                if (newValue) {
+                    //it mean new mode 
+                    self.I_BTN_003_enable(false);
+                    self.gridListCurrentCode('');
+                }
+                else {
+                    //it mean update mode
+                    self.I_BTN_003_enable(true);
+                    $('#I_INP_002').ntsError('clear');
+                }
+
+            })
+            self.CurrentItemBreakdownCode.subscribe(function(newValue) {
+                //validate item for not duplicate on client
+                if (self.enable_I_INP_002()) {
+                    var item = _.find(self.ItemBDList(), function(ItemBD: service.model.ItemBD) {
+                        return ItemBD.itemBreakdownCode == newValue;
+                    });
+                    if (item)
+                        $('#I_INP_002').ntsError('set', 'えらーです');
+                    else
+                        $('#I_INP_002').ntsError('clear');
+                }
+            })
+            self.loadItemBDs();
         }
 
-        LoadItem(itemCode?) {
+        loadItemBDs() {
             let self = this;
+            self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
+            let itemMaster = self.CurrentItemMaster();
+            if (itemMaster != undefined) {
+                self.reloadAndSetSelectedCode();
+                self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
+                self.currentItemCode(itemMaster.itemCode);
+            }
+        }
+        reloadAndSetSelectedCode(itemCode?) {
+            let self = this;
+            //reload list
             service.findAllItemBD(self.CurrentItemMaster()).done(function(ItemBDs: Array<service.model.ItemBD>) {
                 self.ItemBDList(ItemBDs);
+                //set selected 
                 if (self.ItemBDList().length)
-                    if (!itemCode)
-                        self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCd);
+                    if (itemCode == undefined)
+                        //if param itemCode == undefined => select first item in grid list
+                        self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCode);
                     else
+                        //else set itemCode 
                         self.gridListCurrentCode(itemCode);
-            }).fail(function(res) {
-                // Alert message
-                alert(res);
             });
         }
-        GetCurrentItemBD() {
+        getCurrentItemBD() {
+            //get item customer has input on form 
             let self = this;
             return new service.model.ItemBD(
                 self.CurrentItemMaster().itemCode,
-                self.CurrentItemBreakdownCd(),
+                self.CurrentItemBreakdownCode(),
                 self.CurrentItemBreakdownName(),
                 self.CurrentItemBreakdownAbName(),
-                self.CurrentUniteCd(),
+                self.CurrentUniteCode(),
                 self.CurrentZeroDispSet(),
                 self.checked_002() == true ? 0 : 1,
                 self.checked_005() == true ? 1 : 0,
@@ -175,97 +203,75 @@ module qmm012.i.viewmodel {
             );
         }
 
-        SaveItem() {
+        saveItem() {
             let self = this;
+            //if I_INP_002 is enable is mean add new mode => add new item
             if (self.enable_I_INP_002())
                 self.addItemBD();
             else
+                //else is update
                 self.updateItemBD();
 
         }
         deleteItem() {
             let self = this;
-            let itemBD = self.GetCurrentItemBD();
-            let itemCode;
-            let index = self.ItemBDList.indexOf(self.CurrentItemBD());
-            if (index != undefined) {
-                if (self.ItemBDList().length > 1) {
-                    if (index == 0)
-                        itemCode = self.ItemBDList()[index + 1].itemBreakdownCd;
-                    else {
+            let itemBD = self.CurrentItemBD();
+            if (itemBD) {
+                //show dialog
+                nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
+                    let itemCode;
+                    let index = self.ItemBDList().indexOf(self.CurrentItemBD());
+                    //set selected code after remove item
+                    if (self.ItemBDList().length > 1) {
                         if (index < self.ItemBDList().length - 1)
-                            itemCode = self.ItemBDList()[index + 1].itemBreakdownCd;
+                            itemCode = self.ItemBDList()[index + 1].itemBreakdownCode;
                         else
-                            itemCode = self.ItemBDList()[index - 1].itemBreakdownCd;
-                    }
-                } else
-                    itemCode = '';
-            }
-            service.deleteItemBD(self.CurrentItemMaster(), itemBD).done(function(any) {
-                self.LoadItem(itemCode);
-            }).fail(function(res) {
-                alert(res);
-            });
+                            itemCode = self.ItemBDList()[index - 1].itemBreakdownCode;
+                    } else
+                        itemCode = '';
+                    //remove item 
+                    itemBD.itemCode = self.CurrentItemMaster().itemCode;
+                    service.deleteItemBD(itemBD, self.CurrentItemMaster()).done(function(any) {
+                        // set selected code
+                        self.reloadAndSetSelectedCode(itemCode);
+                    }).fail(function(res) {
+                        alert(res.value);
+                    });
 
+                })
+            }
         }
         addItemBD() {
             let self = this;
-            let itemBD = self.GetCurrentItemBD();
-            let itemCode = itemBD.itemBreakdownCd;
-            service.addItemBD(self.CurrentItemMaster(), itemBD).done(function(any) {
-                self.LoadItem(itemCode);
+            //get itemBD on form
+            let itemBD = self.getCurrentItemBD();
+            service.addItemBD(itemBD, self.CurrentItemMaster()).done(function(any) {
+                // set selected code
+                self.reloadAndSetSelectedCode(itemBD.itemBreakdownCode);
             }).fail(function(res) {
-                alert(res);
+                alert(res.value);
             });
         }
-
         updateItemBD() {
             let self = this;
-            let itemBD = self.GetCurrentItemBD();
-            let itemCode = itemBD.itemBreakdownCd;
-            service.updateItemBD(self.CurrentItemMaster(), itemBD).done(function(any) {
-                self.LoadItem(itemCode);
+            let itemBD = self.getCurrentItemBD();
+            let itemCode = itemBD.itemBreakdownCode;
+            //update item 
+            service.updateItemBD(itemBD, self.CurrentItemMaster()).done(function(any) {
+                // set selected code
+                self.reloadAndSetSelectedCode(itemBD.itemBreakdownCode);
             }).fail(function(res) {
-                alert(res);
+                alert(res.value);
             });
         }
-        CloseDialog() {
+        closeDialog() {
+            let self = this;
+            nts.uk.ui.windows.setShared('itemBDs', self.ItemBDList())
             nts.uk.ui.windows.close();
         }
-        AddNewItem() {
+        addNewItem() {
             let self = this;
-            self.gridListCurrentCode('');
             self.enable_I_INP_002(true);
-        }
-    }
-    class GridItemModel {
-        code: string;
-        name: string;
-        description: string;
-
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
-        }
-
-    }
-    class ComboboxItemModel {
-        code: string;
-        name: string;
-        label: string;
-
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
-        }
-    }
-    class BoxModel {
-        id: number;
-        name: string;
-        constructor(id, name) {
-            var self = this;
-            self.id = id;
-            self.name = name;
         }
     }
 

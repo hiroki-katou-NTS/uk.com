@@ -9,7 +9,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalaryperiod.ItemSalaryPeriod;
 @AllArgsConstructor
 @Data
 public class ItemSalaryPeriodDto {
-	private String itemCd;
+	private String itemCode;
 	private int periodAtr;
 	private int strY;
 	private int endY;
@@ -28,7 +28,7 @@ public class ItemSalaryPeriodDto {
 	private int cycle12Atr;
 
 	public static ItemSalaryPeriodDto fromDomain(ItemSalaryPeriod domain) {
-		return new ItemSalaryPeriodDto(domain.getItemCd().v(), domain.getPeriodAtr().value, domain.getStrY().v(),
+		return new ItemSalaryPeriodDto(domain.getItemCode().v(), domain.getPeriodAtr().value, domain.getStrY().v(),
 				domain.getEndY().v(), domain.getCycleAtr().value, domain.getCycle01Atr().value,
 				domain.getCycle02Atr().value, domain.getCycle03Atr().value, domain.getCycle04Atr().value,
 				domain.getCycle05Atr().value, domain.getCycle06Atr().value, domain.getCycle07Atr().value,

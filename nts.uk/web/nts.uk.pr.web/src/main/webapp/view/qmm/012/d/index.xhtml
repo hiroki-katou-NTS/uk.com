@@ -121,7 +121,8 @@
 			</div>
 		</div>
 		<div class="divLineCol2">
-			<button id="D_BTN_001" class="small" data-bind="click:openHDialog">有効期間設定</button>
+			<button id="D_BTN_001" class="small"
+				data-bind="click:openHDialog,enable: D_BTN_001_enable">有効期間設定</button>
 			<label id="D_LBL_011" data-bind="text:D_LBL_011_Text">設定区分 </label>
 
 		</div>
@@ -132,7 +133,8 @@
 			<div id="D_LBL_016" data-bind="ntsFormLabel: {  required: false }">内訳</div>
 		</div>
 		<div class="divLineCol2">
-			<button id="D_BTN_002" class="small" data-bind="click:openIDialog">有効期間設定</button>
+			<button id="D_BTN_002" class="small"
+				data-bind="click:openIDialog,enable: D_BTN_002_enable">有効期間設定</button>
 			<label id="D_LBL_012" data-bind="text:D_LBL_012_Text">サイクル設定区分</label>
 		</div>
 
