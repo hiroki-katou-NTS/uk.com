@@ -7,7 +7,8 @@ var sample;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.date = ko.observable('20161201');
+                    self.date = ko.observable('');
+                    self.date1 = ko.observable('20161201');
                     self.yearMonth = ko.observable('201601');
                     self.year = ko.observable('2016');
                     self.month = ko.observable('01');
@@ -19,4 +20,3 @@ var sample;
         })(viewmodel = datepicker.viewmodel || (datepicker.viewmodel = {}));
     })(datepicker = sample.datepicker || (sample.datepicker = {}));
 })(sample || (sample = {}));
-//# sourceMappingURL=viewmodel.js.map
