@@ -16,7 +16,7 @@
 		<com:scriptfile path="../d/qpp014.d.viewmodel.js" />
 		<com:scriptfile path="../shr/qpp014.shr.viewmodelbase.js" />
 		<com:stylefile path="../d/qpp014.d.main.css" />
-		<div>
+		<div class="cf">
 			<div id="D-label-area">
 				<div>
 					<img id="icon"
@@ -58,14 +58,16 @@
 				<div id="D_LBL_007" align="center">
 					<label>10000</label> <label>人</label>
 				</div>
-				<table id="D_LST_001"
-					data-bind="igGrid: {
+				<div>
+					<table id="D_LST_001"
+						data-bind="igGrid: {
 						dataSource: viewmodeld.d_LST_001_items,
 		                primaryKey: 'code',
 		                width: '740px',
 		                height: '280px',
 		                autoCommit: false,
 		                dataSourceType: 'json',
+		                autoGenerateColumns: false,
 		                features: [
 		                    {
 		                        name: 'Selection',
@@ -75,7 +77,6 @@
 		                        name: 'MultiColumnHeaders'
 		                    }
 		                ],
-		                autoGenerateColumns: false,
 		                columns: [
 		                    { headerText: 'コード', key: 'code', dataType: 'string',columnCssClass: 'text_align', width: '15%' },
 		                    { headerText: '名称', key: 'name', dataType: 'string', width: '15%' },
@@ -91,6 +92,7 @@
 		                    }
 		                ]
 				}"></table>
+				</div>
 			</div>
 			<div class="divLine">
 				<div class="D-divLine-col-1">

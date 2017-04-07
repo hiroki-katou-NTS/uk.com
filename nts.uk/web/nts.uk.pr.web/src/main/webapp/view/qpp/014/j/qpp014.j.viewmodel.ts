@@ -14,6 +14,7 @@ module qpp014.j {
         items_J_LST_001: KnockoutObservableArray<ItemModel_J_LST_001>;
         currentCode_J_LST_001: KnockoutObservable<any>;
         currentCode_J_SEL_004: KnockoutObservable<any>;
+        
         constructor() {
             let self = this;
             self.selectedId_J_SEL_001 = ko.observable(1);
@@ -37,6 +38,10 @@ module qpp014.j {
             }
             self.currentCode_J_LST_001 = ko.observable();
             self.currentCode_J_SEL_004 = ko.observable(1);
+        }
+
+        closeDialog(): void {
+            nts.uk.ui.windows.close();
         }
     }
     export class BoxModel_J_SEL_001 {

@@ -1,10 +1,10 @@
 // TreeGrid Node
 module qpp014.a.viewmodel {
     export class ScreenModel {
-        viewmodelb = new qpp014.b.viewmodel.ScreenModel();
-        viewmodeld = new qpp014.d.viewmodel.ScreenModel();
-        viewmodelg = new qpp014.g.viewmodel.ScreenModel();
-        viewmodelh = new qpp014.h.viewmodel.ScreenModel();
+//        viewmodelb = new qpp014.b.viewmodel.ScreenModel();
+//        viewmodeld = new qpp014.d.viewmodel.ScreenModel();
+//        viewmodelg = new qpp014.g.viewmodel.ScreenModel();
+//        viewmodelh = new qpp014.h.viewmodel.ScreenModel();
 
         //viewmodel A
         a_SEL_001_items: KnockoutObservableArray<shr.viewmodelbase.PayDayProcessing>;
@@ -12,8 +12,8 @@ module qpp014.a.viewmodel {
 
         constructor() {
             var self = this;
-            $('.func-btn').css('visibility', 'hidden');
-            $('#screenB').css('display', 'none');
+//            $('.func-btn').css('visibility', 'hidden');
+//            $('#screenB').css('display', 'none');
 
             //viewmodel A
             self.a_SEL_001_items = ko.observableArray([]);
@@ -57,28 +57,29 @@ module qpp014.a.viewmodel {
          * go to next screen
          */
         nextScreen(): void {
-            $("#screenA").css("display", "none");
-            $("#screenB").css("display", "");
-            $("#screenB").ready(function() {
-                $(".func-btn").css("visibility", "visible");
-            });
+//            $("#screenA").css("display", "none");
+//            $("#screenB").css("display", "");
+//            $("#screenB").ready(function() {
+//                $(".func-btn").css("visibility", "visible");
+//            });
+            nts.uk.request.jump("/view/qpp/014/b/index.xhtml");
         }
 
         /**
          * back to previous screen
          */
-        backScreen(): void {
-            $("#screenB").css("display", "none");
-            $("#screenA").css("display", "");
-            $(".func-btn").css("visibility", "hidden");
-        }
+//        backScreen(): void {
+//            $("#screenB").css("display", "none");
+//            $("#screenA").css("display", "");
+//            $(".func-btn").css("visibility", "hidden");
+//        }
 
         /**
          * go to screen J
          */
-        goToScreenJ(): void {
-            nts.uk.ui.windows.sub.modal("/view/qpp/014/j/index.xhtml", { title: "振込チェックリスト", dialogClass: "no-close" }).onClosed(function() {
-            });
-        }
+//        goToScreenJ(): void {
+//            nts.uk.ui.windows.sub.modal("/view/qpp/014/j/index.xhtml", { title: "振込チェックリスト", dialogClass: "no-close" }).onClosed(function() {
+//            });
+//        }
     }
 };

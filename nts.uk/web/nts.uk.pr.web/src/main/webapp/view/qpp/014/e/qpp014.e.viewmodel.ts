@@ -26,13 +26,13 @@ module qpp014.e {
         }
 
         /**
-         * go to screen G
+         * go to screen G or H
          */
         goToScreenGOrH(): void {
             nts.uk.ui.windows.close();
-            //            nts.uk.request.jump('../g/index.xhtml');    
         }
     }
+
     export class ItemModel_E_LST_003 {
         code: string;
         name: string;

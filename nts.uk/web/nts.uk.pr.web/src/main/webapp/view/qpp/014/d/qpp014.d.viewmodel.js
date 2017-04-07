@@ -22,9 +22,7 @@ var qpp014;
                     });
                 }
                 ScreenModel.prototype.openEDialog = function () {
-                    nts.uk.ui.windows.sub.modal("/view/qpp/014/e/index.xhtml", { title: "振込データの作成結果一覧", dialogClass: "no-close" }).onClosed(function () {
-                        $('#wizard').ntsWizard("next");
-                    });
+                    nts.uk.ui.windows.sub.modal("/view/qpp/014/e/index.xhtml", { title: "振込データの作成結果一覧", dialogClass: "no-close" });
                 };
                 return ScreenModel;
             }());

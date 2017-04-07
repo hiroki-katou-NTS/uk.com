@@ -25,6 +25,9 @@ var qpp014;
                 self.currentCode_J_LST_001 = ko.observable();
                 self.currentCode_J_SEL_004 = ko.observable(1);
             }
+            ScreenModel.prototype.closeDialog = function () {
+                nts.uk.ui.windows.close();
+            };
             return ScreenModel;
         }());
         j.ScreenModel = ScreenModel;
