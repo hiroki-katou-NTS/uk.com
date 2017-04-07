@@ -2,7 +2,7 @@
 
 #content {
 	width: 1000px;
-	height: 700px;	
+	height: 700px;
 }
 
 .nts-left-content {
@@ -62,16 +62,22 @@
 	width: 430px;
 	margin-left: 15px;
 }
-#H_BTN_001{
+
+#H_BTN_001 {
 	margin-left: 500px;
 	margin-top: 5px;
 }
-#H_LBL_007 { 
-	margin-left: 15px; 
+
+#H_LBL_007 {
+	margin-left: 15px;
 	font-size: large;
 }
-#H_LBL_008 { 
-	margin-left: 15px; 
+
+#H_LBL_008 {
+	margin-left: 15px;
 	font-size: 16px;
 }
-#data_TBL { margin-left: 15px; }
+
+#data_TBL {
+	margin-left: 15px;
+}
