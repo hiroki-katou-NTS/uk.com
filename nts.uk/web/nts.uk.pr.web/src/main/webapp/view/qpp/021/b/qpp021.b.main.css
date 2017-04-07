@@ -1,5 +1,4 @@
-#contents-area{
-	
+#contents-area {
 	padding: 0px !important;
 }
 
@@ -12,15 +11,14 @@
 	width: 1350px !important;
 }
 
-
-.nts-wizard.vertical > .steps {
-	height: 535px !important	;
+.nts-wizard.vertical>.steps {
+	height: 535px !important;
 	width: 23% !important;
 }
 
-.nts-wizard.vertical > .content {
+.nts-wizard.vertical>.content {
 	margin: 0px !important;
-	width:  75% !important;
+	width: 75% !important;
 	background: white !important;
 }
 
@@ -30,7 +28,26 @@
 }
 
 /** label css */
+#B_LBL_002_003 {
+    display: inline-block;
+    width: calc(48%);
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    overflow: hidden;
+    box-sizing: border-box;
+    transition: box-shadow 0.2s;
+    padding: 5px;   
+}
+#B_LBL_002_003 >.label.with-image{
+	padding:  0px !important;
+}
 
+#B_LBL_003 {
+	margin-left: 50px;
+}
+#B_SEL_004 >.ntsRadioBox {
+	margin-left: 50px !important;
+}
 /**  texfield css */
-
+#B_SEL_004 >.ntsRadioBox input[type="radio"] {display:none !important;}
 /** table css */

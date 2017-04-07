@@ -18,17 +18,18 @@
 			<com:scriptfile path="qpp021.b.start.js" />
 			<com:scriptfile path="qpp021.b.vm.js" />
 			<com:scriptfile path="qpp021.b.service.js" />
-			<com:scriptfile path="/lib/nittsu/ui/file.js" />
+
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="btn-002" class="separate-1" data-bind="click: next" >印刷実行ログ</button>
+				<button id="btn-002" class="separate-1" data-bind="click: next">印刷実行ログ</button>
 			</div>
 
 			<div id="contents-area" class="cf">
 				<div id="wizard"
-					data-bind="ntsWizard: {steps: stepList, theme: 'yellow'}" class="cf">
+					data-bind="ntsWizard: {steps: stepList, theme: 'yellow'}"
+					class="cf">
 					<div class="header">
 						<div class="image"
 							data-icon="../../../../lib/nittsu/ui/style/images/ntsWizard/start-images.jpg"></div>
@@ -42,7 +43,50 @@
 						<div class="end A_LBL_004-step">実 行</div>
 					</div>
 					<div class="contents">
-						<div class="A_LBL_002-step">contents step1</div>
+						<div class="A_LBL_002-step">
+							<div class="valign-center control-group">
+								<div id="B_LBL_001" data-bind="ntsFormLabel: { required: true }">対象となる処理区分を選択</div>
+								<div id="combo-box"
+									data-bind="ntsComboBox: {
+									options: processDateComboBox,
+									optionsValue: 'cbCode',
+									value: selectedCbCode,
+									optionsText: 'cbName',
+									editable: false,
+									enable: true,
+									columns: [
+										{ prop: 'cbCode', length: 4 },
+										{ prop: 'cbName', length: 10 },
+									]}">
+								</div>
+							</div>
+							<div class="valign-center control-group" id="B_LBL_002_003">
+								<span class="label with-image" id="B_LBL_002"> <i
+									class="image image-calendar" /> <span>処理する給与明細書の年月</span>
+								</span> <span id="B_LBL_003"
+									data-bind="ntsFormLabel: { required: true }">2017/04</span>
+							</div>
+							<div class="label" id="B_LBL_004">印刷レイアウトを選択してください。</div>
+							<div class="valign-center control-group">
+								<div id="B_LBL_005" data-bind="ntsFormLabel: { required: true }">プリンタの選択</div>
+
+							</div>
+							<div>
+								<div id="B_LBL_005" data-bind="ntsFormLabel: { required: true }">帳表レイアウトの選択</div>
+								<br />
+								<div id = "B_SEL_004"
+									data-bind="ntsRadioBoxGroup: {
+									options: selectCategorys,
+									optionsValue: 'rbCode',
+									optionsText: 'rbName',
+									value: selectedRbCode,
+									enable: true 
+									}">
+								</div>
+							</div>
+
+
+						</div>
 						<div class="A_LBL_003-step">contents step2</div>
 						<div class="A_LBL_004-step">contents step3</div>
 					</div>
