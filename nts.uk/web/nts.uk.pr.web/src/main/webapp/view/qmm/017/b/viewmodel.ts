@@ -24,7 +24,7 @@ module nts.qmm017 {
                 { code: '1', name: '利用する' }
             ]);
             self.selectedConditionAtr = ko.observable(0);
-            self.startYearMonth = ko.observable('');
+            self.startYearMonth = ko.observable(data.startYearMonth());
             self.formulaCode = ko.observable('');
             self.formulaName = ko.observable('');
             self.startYearMonthFormated = ko.observable('');
@@ -36,7 +36,7 @@ module nts.qmm017 {
                 if (!self.isNewMode()) {
                     self.startYearMonthFormated('(' + nts.uk.time.yearmonthInJapanEmpire(ymChange).toString() + ') ~');
                 } else {
-                    self.startYearMonthFormated = ko.observable('');
+                    self.startYearMonthFormated('');
                 }
             });
             self.comboBoxUseMaster = ko.observable({

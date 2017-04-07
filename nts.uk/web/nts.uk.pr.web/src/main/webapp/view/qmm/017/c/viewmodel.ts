@@ -27,30 +27,30 @@ module nts.qmm017 {
 
         constructor(data) {
             var self = this;
-            self.selectedDifficultyAtr = ko.observable(data().selectedDifficultyAtr());
-            self.selectedConditionAtr = ko.observable(data().selectedConditionAtr());
+            self.selectedDifficultyAtr = ko.observable(data.viewModel017b().selectedDifficultyAtr());
+            self.selectedConditionAtr = ko.observable(data.viewModel017b().selectedConditionAtr());
             self.formulaCode = ko.observable('');
             self.formulaName = ko.observable('');
-            data().selectedDifficultyAtr.subscribe(function(val) {
+            data.viewModel017b().selectedDifficultyAtr.subscribe(function(val) {
                 self.selectedDifficultyAtr(val);
             });
-            data().selectedConditionAtr.subscribe(function(val) {
+            data.viewModel017b().selectedConditionAtr.subscribe(function(val) {
                 self.selectedConditionAtr(val);
             });
-            data().formulaCode.subscribe(function(val) {
+            data.viewModel017b().formulaCode.subscribe(function(val) {
                 self.formulaCode(val);
             });
-            data().formulaName.subscribe(function(val) {
+            data.viewModel017b().formulaName.subscribe(function(val) {
                 self.formulaName(val);
             });
 
-            self.useMasterCode = ko.observable(data().comboBoxUseMaster().selectedCode());
+            self.useMasterCode = ko.observable(data.viewModel017b().comboBoxUseMaster().selectedCode());
             self.useMasterName = ko.observable('');
-            data().comboBoxUseMaster().selectedCode.subscribe(function(codeChange) {
-                let useMasterFound = _.find(data().comboBoxUseMaster().itemList(), (item) => {
+            data.viewModel017b().comboBoxUseMaster().selectedCode.subscribe(function(codeChange) {
+                let useMasterFound = _.find(data.viewModel017b().comboBoxUseMaster().itemList(), (item) => {
                     return item.code == codeChange;
                 });
-                self.useMasterCode(data().comboBoxUseMaster().selectedCode());
+                self.useMasterCode(data.viewModel017b().comboBoxUseMaster().selectedCode());
                 if (useMasterFound) {
                     self.useMasterName(useMasterFound.name);
                 }
@@ -105,12 +105,12 @@ module nts.qmm017 {
             self.comboBoxRoudingPosition = ko.observable(new ComboBox(lstRoudingPostion, true, false));
             self.selectedTabCSel006 = ko.observable('tab-1');
 
-            self.noneConditionalEasyFormula = ko.observable(new EasyFormula(0, data));
-            self.defaultEasyFormula = ko.observable(new EasyFormula(0, data));
-            self.monthlyEasyFormula = ko.observable(new EasyFormula(1, data));
-            self.dailyMonthlyEasyFormula = ko.observable(new EasyFormula(1, data));
-            self.dailyEasyFormula = ko.observable(new EasyFormula(1, data));
-            self.hourlyEasyFormula = ko.observable(new EasyFormula(1, data));
+            self.noneConditionalEasyFormula = ko.observable(new EasyFormula(0, data.viewModel017b));
+            self.defaultEasyFormula = ko.observable(new EasyFormula(0, data.viewModel017b));
+            self.monthlyEasyFormula = ko.observable(new EasyFormula(1, data.viewModel017b));
+            self.dailyMonthlyEasyFormula = ko.observable(new EasyFormula(1, data.viewModel017b));
+            self.dailyEasyFormula = ko.observable(new EasyFormula(1, data.viewModel017b));
+            self.hourlyEasyFormula = ko.observable(new EasyFormula(1, data.viewModel017b));
         }
 
         undo() {

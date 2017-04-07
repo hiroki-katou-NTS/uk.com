@@ -15,7 +15,7 @@ var nts;
                     { code: '1', name: '利用する' }
                 ]);
                 self.selectedConditionAtr = ko.observable(0);
-                self.startYearMonth = ko.observable('');
+                self.startYearMonth = ko.observable(data.startYearMonth());
                 self.formulaCode = ko.observable('');
                 self.formulaName = ko.observable('');
                 self.startYearMonthFormated = ko.observable('');
@@ -29,7 +29,7 @@ var nts;
                         self.startYearMonthFormated('(' + nts.uk.time.yearmonthInJapanEmpire(ymChange).toString() + ') ~');
                     }
                     else {
-                        self.startYearMonthFormated = ko.observable('');
+                        self.startYearMonthFormated('');
                     }
                 });
                 self.comboBoxUseMaster = ko.observable({
@@ -49,4 +49,3 @@ var nts;
         qmm017.BScreen = BScreen;
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=viewmodel.js.map

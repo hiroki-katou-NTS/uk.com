@@ -42,7 +42,6 @@
 			
 			<com:stylefile path="../../../../view/qmm/017/h/style.css" />
 			<com:scriptfile path="../../../../view/qmm/017/h/viewmodel.js" />
-			<com:scriptfile path="../../../../view/qmm/017/h/service.js" />
 			
 			<com:stylefile path="../../../../view/qmm/017/i/style.css" />
 			<com:scriptfile path="../../../../view/qmm/017/i/viewmodel.js" />
@@ -54,7 +53,7 @@
 
 		<ui:define name="content">
 				<div id="functions-area" style="padding-top: 5px;" class="cf">
-				<button id="a_btn_001" class="button separate-button fix-button" data-bind="click: start,enable: !isNewMode()">新規</button>
+				<button id="a_btn_001" class="button separate-button fix-button" data-bind="click: resetToNewMode,enable: !isNewMode()">新規</button>
 				<button id="a_btn_002"
 					class="button proceed separate-button fix-button" data-bind="click: registerFormulaMaster">登録</button>
 				<button id="a_btn_003" class="button separate-button fix-button">コピー</button>

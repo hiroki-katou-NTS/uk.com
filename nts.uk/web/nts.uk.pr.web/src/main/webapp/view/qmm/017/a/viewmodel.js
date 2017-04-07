@@ -18,112 +18,19 @@ var nts;
                 ]);
                 self.selectedTabASel001 = ko.observable('tab-1');
                 self.startYearMonth = ko.observable('');
+                self.startYearMonth.subscribe(function (newValue) {
+                    self.viewModel017b().startYearMonth(newValue);
+                    console.log(self.viewModel017b().startYearMonth());
+                });
                 self.currentNode = ko.observable(null);
                 self.currentParentNode = ko.observable(null);
                 self.treeGridHistory().singleSelectedCode.subscribe(function (codeChange) {
                     if (codeChange !== null) {
-                        var currentNode = null;
-                        var currentParentNode = null;
-                        self.isNewMode(false);
-                        for (var order = 0; order < self.treeGridHistory().items().length; order++) {
-                            var foundNode = findNode(self.treeGridHistory().items()[order], self.treeGridHistory().singleSelectedCode());
-                            if (foundNode) {
-                                self.currentNode(foundNode);
-                                self.currentParentNode(self.treeGridHistory().items()[order]);
-                            }
-                        }
-                        var rangeYearMonth = self.currentNode().name.split('~');
-                        self.startYearMonth(rangeYearMonth[0].trim());
-                        self.a_sel_001()[1].enable(true);
-                        self.viewModel017b().startYearMonth(rangeYearMonth[0].trim());
-                        self.viewModel017b().formulaCode(self.currentParentNode().code);
-                        self.viewModel017b().formulaName(self.currentParentNode().name);
-                        qmm017.service.findFormula(self.currentParentNode().code, self.currentNode().code)
-                            .done(function (currentFormula) {
-                            self.viewModel017b().selectedDifficultyAtr(currentFormula.difficultyAtr);
-                            qmm017.service.getFormulaDetail(self.currentParentNode().code, self.currentNode().code, currentFormula.difficultyAtr)
-                                .done(function (currentFormulaDetail) {
-                                if (currentFormula && currentFormula.difficultyAtr === 1) {
-                                    self.viewModel017c().formulaManualContent().textArea(currentFormulaDetail.formulaContent);
-                                    self.viewModel017c().comboBoxReferenceMonthAtr().selectedCode(currentFormulaDetail.referenceMonthAtr);
-                                    self.viewModel017c().comboBoxRoudingMethod().selectedCode(currentFormulaDetail.roundAtr);
-                                    self.viewModel017c().comboBoxRoudingPosition().selectedCode(currentFormulaDetail.roundDigit);
-                                }
-                                else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 0) {
-                                    self.viewModel017c().noneConditionalEasyFormula(new qmm017.EasyFormula(0, self.viewModel017b));
-                                    if (currentFormulaDetail.easyFormula[0]) {
-                                        self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail(currentFormulaDetail.easyFormula[0].formulaEasyDetail);
-                                        self.viewModel017c().noneConditionalEasyFormula().easyFormulaName(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaName);
-                                    }
-                                }
-                                else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo < 6) {
-                                    self.viewModel017c().defaultEasyFormula(new qmm017.EasyFormula(0, self.viewModel017b));
-                                    if (currentFormulaDetail.easyFormula[0]) {
-                                        self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(currentFormulaDetail.easyFormula[0].value);
-                                        self.viewModel017c().defaultEasyFormula().selectedRuleCodeEasySettings(currentFormulaDetail.easyFormula[0].fixFormulaAtr);
-                                        self.viewModel017c().defaultEasyFormula().easyFormulaDetail(currentFormulaDetail.easyFormula[0].formulaEasyDetail);
-                                        self.viewModel017c().defaultEasyFormula().easyFormulaName(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaName);
-                                    }
-                                }
-                                else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo === 6) {
-                                    self.viewModel017c().defaultEasyFormula(new qmm017.EasyFormula(0, self.viewModel017b));
-                                    _.forEach(currentFormulaDetail.easyFormula, function (easyFormula) {
-                                        if (easyFormula.easyFormulaCode === '000') {
-                                            self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(easyFormula.value);
-                                            self.viewModel017c().defaultEasyFormula().selectedRuleCodeEasySettings(easyFormula.fixFormulaAtr);
-                                            if (easyFormula.fixFormulaAtr === 1) {
-                                                self.viewModel017c().defaultEasyFormula().easyFormulaDetail(easyFormula.formulaEasyDetail);
-                                                self.viewModel017c().defaultEasyFormula().easyFormulaName(easyFormula.formulaEasyDetail.easyFormulaName);
-                                            }
-                                        }
-                                        if (easyFormula.easyFormulaCode === '001') {
-                                            self.viewModel017c().monthlyEasyFormula().easyFormulaFixMoney(easyFormula.value);
-                                            self.viewModel017c().monthlyEasyFormula().selectedRuleCodeEasySettings(easyFormula.fixFormulaAtr);
-                                            if (easyFormula.fixFormulaAtr === 1) {
-                                                self.viewModel017c().monthlyEasyFormula().easyFormulaDetail(easyFormula.formulaEasyDetail);
-                                                self.viewModel017c().monthlyEasyFormula().easyFormulaName(easyFormula.formulaEasyDetail.easyFormulaName);
-                                            }
-                                        }
-                                        if (easyFormula.easyFormulaCode === '002') {
-                                            self.viewModel017c().dailyMonthlyEasyFormula().easyFormulaFixMoney(easyFormula.value);
-                                            self.viewModel017c().dailyMonthlyEasyFormula().selectedRuleCodeEasySettings(easyFormula.fixFormulaAtr);
-                                            if (easyFormula.fixFormulaAtr === 1) {
-                                                self.viewModel017c().dailyMonthlyEasyFormula().easyFormulaDetail(easyFormula.formulaEasyDetail);
-                                                self.viewModel017c().dailyMonthlyEasyFormula().easyFormulaName(easyFormula.formulaEasyDetail.easyFormulaName);
-                                            }
-                                        }
-                                        if (easyFormula.easyFormulaCode === '003') {
-                                            self.viewModel017c().dailyEasyFormula().easyFormulaFixMoney(easyFormula.value);
-                                            self.viewModel017c().dailyEasyFormula().selectedRuleCodeEasySettings(easyFormula.fixFormulaAtr);
-                                            if (easyFormula.fixFormulaAtr === 1) {
-                                                self.viewModel017c().dailyEasyFormula().easyFormulaDetail(easyFormula.formulaEasyDetail);
-                                                self.viewModel017c().dailyEasyFormula().easyFormulaName(easyFormula.formulaEasyDetail.easyFormulaName);
-                                            }
-                                        }
-                                        if (easyFormula.easyFormulaCode === '004') {
-                                            self.viewModel017c().hourlyEasyFormula().easyFormulaFixMoney(easyFormula.value);
-                                            self.viewModel017c().hourlyEasyFormula().selectedRuleCodeEasySettings(easyFormula.fixFormulaAtr);
-                                            if (easyFormula.fixFormulaAtr === 1) {
-                                                self.viewModel017c().hourlyEasyFormula().easyFormulaDetail(easyFormula.formulaEasyDetail);
-                                                self.viewModel017c().hourlyEasyFormula().easyFormulaName(easyFormula.formulaEasyDetail.easyFormulaName);
-                                            }
-                                        }
-                                    });
-                                }
-                            })
-                                .fail(function (res) {
-                                alert(res);
-                            });
-                            self.viewModel017b().selectedConditionAtr(currentFormula.conditionAtr);
-                            self.viewModel017b().comboBoxUseMaster().selectedCode(currentFormula.refMasterNo.toString());
-                        })
-                            .fail(function (res) {
-                            alert(res);
-                        });
+                        self.bindDataByChanging(codeChange);
                     }
                 });
                 self.viewModel017b = ko.observable(new qmm017.BScreen(self));
-                self.viewModel017c = ko.observable(new qmm017.CScreen(self.viewModel017b));
+                self.viewModel017c = ko.observable(new qmm017.CScreen(self));
                 self.viewModel017d = ko.observable(new qmm017.DScreen());
                 self.viewModel017e = ko.observable(new qmm017.EScreen());
                 self.viewModel017f = ko.observable(new qmm017.FScreen());
@@ -132,6 +39,113 @@ var nts;
                 self.viewModel017i = ko.observable(new qmm017.IScreen(self));
                 self.viewModel017r = ko.observable(new qmm017.RScreen(self));
             }
+            ScreenModel.prototype.bindDataByChanging = function (codeChange) {
+                var self = this;
+                if (codeChange !== null) {
+                    var currentNode = null;
+                    var currentParentNode = null;
+                    self.isNewMode(false);
+                    for (var order = 0; order < self.treeGridHistory().items().length; order++) {
+                        var foundNode = findNode(self.treeGridHistory().items()[order], self.treeGridHistory().singleSelectedCode());
+                        if (foundNode) {
+                            self.currentNode(foundNode);
+                            self.currentParentNode(self.treeGridHistory().items()[order]);
+                        }
+                    }
+                    var rangeYearMonth = self.currentNode().name.split('~');
+                    self.startYearMonth(rangeYearMonth[0].trim());
+                    self.a_sel_001()[1].enable(true);
+                    self.viewModel017b().formulaCode(self.currentParentNode().code);
+                    self.viewModel017b().formulaName(self.currentParentNode().name);
+                    qmm017.service.findFormula(self.currentParentNode().code, self.currentNode().code)
+                        .done(function (currentFormula) {
+                        self.viewModel017b().selectedDifficultyAtr(currentFormula.difficultyAtr);
+                        qmm017.service.getFormulaDetail(self.currentParentNode().code, self.currentNode().code, currentFormula.difficultyAtr)
+                            .done(function (currentFormulaDetail) {
+                            if (currentFormula && currentFormula.difficultyAtr === 1) {
+                                self.itemsBagRepository = [];
+                                self.fillItemsBagRepository().done(function () {
+                                    self.viewModel017c().formulaManualContent().textArea(self.replaceCodesToNames(currentFormulaDetail.formulaContent));
+                                    self.viewModel017c().comboBoxReferenceMonthAtr().selectedCode(currentFormulaDetail.referenceMonthAtr);
+                                    self.viewModel017c().comboBoxRoudingMethod().selectedCode(currentFormulaDetail.roundAtr);
+                                    self.viewModel017c().comboBoxRoudingPosition().selectedCode(currentFormulaDetail.roundDigit);
+                                }).fail(function (res) {
+                                    alert(res);
+                                });
+                            }
+                            else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 0) {
+                                self.viewModel017c().noneConditionalEasyFormula(new qmm017.EasyFormula(0, self.viewModel017b));
+                                if (currentFormulaDetail.easyFormula[0]) {
+                                    self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail(currentFormulaDetail.easyFormula[0].formulaEasyDetail);
+                                    self.viewModel017c().noneConditionalEasyFormula().easyFormulaName(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaName);
+                                }
+                            }
+                            else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo < 6) {
+                                self.viewModel017c().defaultEasyFormula(new qmm017.EasyFormula(0, self.viewModel017b));
+                                if (currentFormulaDetail.easyFormula[0]) {
+                                    self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(currentFormulaDetail.easyFormula[0].value);
+                                    self.viewModel017c().defaultEasyFormula().selectedRuleCodeEasySettings(currentFormulaDetail.easyFormula[0].fixFormulaAtr);
+                                    self.viewModel017c().defaultEasyFormula().easyFormulaDetail(currentFormulaDetail.easyFormula[0].formulaEasyDetail);
+                                    self.viewModel017c().defaultEasyFormula().easyFormulaName(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaName);
+                                }
+                            }
+                            else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo === 6) {
+                                self.viewModel017c().defaultEasyFormula(new qmm017.EasyFormula(0, self.viewModel017b));
+                                _.forEach(currentFormulaDetail.easyFormula, function (easyFormula) {
+                                    if (easyFormula.easyFormulaCode === '000') {
+                                        self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(easyFormula.value);
+                                        self.viewModel017c().defaultEasyFormula().selectedRuleCodeEasySettings(easyFormula.fixFormulaAtr);
+                                        if (easyFormula.fixFormulaAtr === 1) {
+                                            self.viewModel017c().defaultEasyFormula().easyFormulaDetail(easyFormula.formulaEasyDetail);
+                                            self.viewModel017c().defaultEasyFormula().easyFormulaName(easyFormula.formulaEasyDetail.easyFormulaName);
+                                        }
+                                    }
+                                    if (easyFormula.easyFormulaCode === '001') {
+                                        self.viewModel017c().monthlyEasyFormula().easyFormulaFixMoney(easyFormula.value);
+                                        self.viewModel017c().monthlyEasyFormula().selectedRuleCodeEasySettings(easyFormula.fixFormulaAtr);
+                                        if (easyFormula.fixFormulaAtr === 1) {
+                                            self.viewModel017c().monthlyEasyFormula().easyFormulaDetail(easyFormula.formulaEasyDetail);
+                                            self.viewModel017c().monthlyEasyFormula().easyFormulaName(easyFormula.formulaEasyDetail.easyFormulaName);
+                                        }
+                                    }
+                                    if (easyFormula.easyFormulaCode === '002') {
+                                        self.viewModel017c().dailyMonthlyEasyFormula().easyFormulaFixMoney(easyFormula.value);
+                                        self.viewModel017c().dailyMonthlyEasyFormula().selectedRuleCodeEasySettings(easyFormula.fixFormulaAtr);
+                                        if (easyFormula.fixFormulaAtr === 1) {
+                                            self.viewModel017c().dailyMonthlyEasyFormula().easyFormulaDetail(easyFormula.formulaEasyDetail);
+                                            self.viewModel017c().dailyMonthlyEasyFormula().easyFormulaName(easyFormula.formulaEasyDetail.easyFormulaName);
+                                        }
+                                    }
+                                    if (easyFormula.easyFormulaCode === '003') {
+                                        self.viewModel017c().dailyEasyFormula().easyFormulaFixMoney(easyFormula.value);
+                                        self.viewModel017c().dailyEasyFormula().selectedRuleCodeEasySettings(easyFormula.fixFormulaAtr);
+                                        if (easyFormula.fixFormulaAtr === 1) {
+                                            self.viewModel017c().dailyEasyFormula().easyFormulaDetail(easyFormula.formulaEasyDetail);
+                                            self.viewModel017c().dailyEasyFormula().easyFormulaName(easyFormula.formulaEasyDetail.easyFormulaName);
+                                        }
+                                    }
+                                    if (easyFormula.easyFormulaCode === '004') {
+                                        self.viewModel017c().hourlyEasyFormula().easyFormulaFixMoney(easyFormula.value);
+                                        self.viewModel017c().hourlyEasyFormula().selectedRuleCodeEasySettings(easyFormula.fixFormulaAtr);
+                                        if (easyFormula.fixFormulaAtr === 1) {
+                                            self.viewModel017c().hourlyEasyFormula().easyFormulaDetail(easyFormula.formulaEasyDetail);
+                                            self.viewModel017c().hourlyEasyFormula().easyFormulaName(easyFormula.formulaEasyDetail.easyFormulaName);
+                                        }
+                                    }
+                                });
+                            }
+                        })
+                            .fail(function (res) {
+                            alert(res);
+                        });
+                        self.viewModel017b().selectedConditionAtr(currentFormula.conditionAtr);
+                        self.viewModel017b().comboBoxUseMaster().selectedCode(currentFormula.refMasterNo.toString());
+                    })
+                        .fail(function (res) {
+                        alert(res);
+                    });
+                }
+            };
             ScreenModel.prototype.placeItemNameToTextArea = function (mode, self) {
                 if (mode === 0) {
                     var currentTextArea = self.viewModel017c().formulaManualContent().textArea();
@@ -216,7 +230,7 @@ var nts;
                         itemDetailDisplayName = '計算式＠' + itemDetail.name;
                     }
                 }
-                else if (mode === 4) {
+                else if (mode === 5) {
                     var currentTextArea = self.viewModel017c().formulaManualContent().textArea();
                     var itemDetailDisplayName = '';
                     if (self.viewModel017i().listBoxItems().selectedCode() !== '') {
@@ -227,12 +241,33 @@ var nts;
                     }
                 }
             };
+            ScreenModel.prototype.replaceNamesToCodes = function (content) {
+                var self = this;
+                var replacedContent = content;
+                _.forEach(self.itemsBagRepository, function (item) {
+                    if (replacedContent.indexOf(item.name) !== -1) {
+                        replacedContent = replacedContent.replace(item.name, item.code);
+                    }
+                });
+                return replacedContent;
+            };
+            ScreenModel.prototype.replaceCodesToNames = function (content) {
+                var self = this;
+                var replacedContent = content;
+                _.forEach(self.itemsBagRepository, function (item) {
+                    if (replacedContent.indexOf(item.code) !== -1) {
+                        replacedContent = replacedContent.replace(item.code, item.name);
+                    }
+                });
+                return replacedContent;
+            };
             ScreenModel.prototype.start = function () {
                 var self = this;
                 var dfdStart = $.Deferred();
                 var treeHistoryPromise = self.bindHistoryTree();
                 $.when(treeHistoryPromise)
                     .done(function () {
+                    self.treeGridHistory().singleSelectedCode(self.treeGridHistory().items()[0].childs[0].code);
                     dfdStart.resolve();
                 })
                     .fail(function () {
@@ -242,42 +277,53 @@ var nts;
             };
             ScreenModel.prototype.fillItemsBagRepository = function () {
                 var self = this;
+                var dfdItemsBags = $.Deferred();
+                self.itemsBagRepository.push({ code: '3＠1', name: '関数＠条件式' }, { code: '3＠2', name: '関数＠かつ' }, { code: '3＠3', name: '関数＠または' }, { code: '3＠4', name: '関数＠四捨五入' }, { code: '3＠5', name: '関数＠切捨て' }, { code: '3＠6', name: '関数＠切上げ' }, { code: '3＠7', name: '関数＠最大値' }, { code: '3＠8', name: '関数＠最小値' }, { code: '3＠9', name: '関数＠家族人数' }, { code: '3＠10', name: '関数＠月加算' }, { code: '3＠11', name: '関数＠年抽出' }, { code: '3＠12', name: '関数＠月抽出' });
                 qmm017.service.getListItemMaster(0).done(function (lstItem) {
                     _.forEach(lstItem, function (item) {
                         self.itemsBagRepository.push({ code: '0＠' + item.itemCode, name: '支給＠' + item.itemName });
                     });
-                });
-                qmm017.service.getListItemMaster(1).done(function (lstItem) {
-                    _.forEach(lstItem, function (item) {
-                        self.itemsBagRepository.push({ code: '1＠' + item.itemCode, name: '控除＠' + item.itemName });
+                }).then(function () {
+                    qmm017.service.getListItemMaster(1).done(function (lstItem) {
+                        _.forEach(lstItem, function (item) {
+                            self.itemsBagRepository.push({ code: '1＠' + item.itemCode, name: '控除＠' + item.itemName });
+                        });
                     });
-                });
-                qmm017.service.getListItemMaster(2).done(function (lstItem) {
-                    _.forEach(lstItem, function (item) {
-                        self.itemsBagRepository.push({ code: '2＠' + item.itemCode, name: '勤怠＠' + item.itemName });
+                }).then(function () {
+                    qmm017.service.getListItemMaster(2).done(function (lstItem) {
+                        _.forEach(lstItem, function (item) {
+                            self.itemsBagRepository.push({ code: '2＠' + item.itemCode, name: '勤怠＠' + item.itemName });
+                        });
                     });
-                });
-                self.itemsBagRepository.push({ code: '3＠1', name: '関数＠条件式' }, { code: '3＠2', name: '関数＠かつ' }, { code: '3＠3', name: '関数＠または' }, { code: '3＠4', name: '関数＠四捨五入' }, { code: '3＠5', name: '関数＠切捨て' }, { code: '3＠6', name: '関数＠切上げ' }, { code: '3＠7', name: '関数＠最大値' }, { code: '3＠8', name: '関数＠最小値' }, { code: '3＠9', name: '関数＠家族人数' }, { code: '3＠10', name: '関数＠月加算' }, { code: '3＠11', name: '関数＠年抽出' }, { code: '3＠12', name: '関数＠月抽出' });
-                qmm017.service.findOtherFormulas(self.viewModel017b().formulaCode(), self.toYearMonthInt(self.viewModel017b().startYearMonth())).done(function (lstFormula) {
-                    _.forEach(lstFormula, function (formula) {
-                        self.itemsBagRepository.push({ code: '5＠' + formula.formulaCode, name: '計算式＠' + formula.formulaName });
+                }).then(function () {
+                    qmm017.service.findOtherFormulas(self.viewModel017b().formulaCode(), self.toYearMonthInt(self.viewModel017b().startYearMonth())).done(function (lstFormula) {
+                        _.forEach(lstFormula, function (formula) {
+                            self.itemsBagRepository.push({ code: '5＠' + formula.formulaCode, name: '計算式＠' + formula.formulaName });
+                        });
                     });
-                });
-                qmm017.service.getListWageTable(self.toYearMonthInt(self.viewModel017b().startYearMonth())).done(function (lstWageTable) {
-                    _.forEach(lstWageTable, function (wageTbl) {
-                        self.itemsBagRepository.push({ code: '6＠' + wageTbl.code, name: '賃金TBL＠' + wageTbl.name });
+                }).then(function () {
+                    qmm017.service.getListWageTable(self.toYearMonthInt(self.viewModel017b().startYearMonth())).done(function (lstWageTable) {
+                        _.forEach(lstWageTable, function (wageTbl) {
+                            self.itemsBagRepository.push({ code: '6＠' + wageTbl.code, name: '賃金TBL＠' + wageTbl.name });
+                        });
                     });
-                });
-                qmm017.service.getListCompanyUnitPrice(self.toYearMonthInt(self.viewModel017b().startYearMonth())).done(function (lstCompanyUnitPrice) {
-                    _.forEach(lstCompanyUnitPrice, function (companyUnitPrice) {
-                        self.itemsBagRepository.push({ code: '7＠' + companyUnitPrice.unitPriceCode, name: '会社単価＠' + companyUnitPrice.unitPriceName });
+                }).then(function () {
+                    qmm017.service.getListCompanyUnitPrice(self.toYearMonthInt(self.viewModel017b().startYearMonth())).done(function (lstCompanyUnitPrice) {
+                        _.forEach(lstCompanyUnitPrice, function (companyUnitPrice) {
+                            self.itemsBagRepository.push({ code: '7＠' + companyUnitPrice.unitPriceCode, name: '会社単価＠' + companyUnitPrice.unitPriceName });
+                        });
                     });
-                });
-                qmm017.service.getListPersonalUnitPrice().done(function (lstPersonalUnitPrice) {
-                    _.forEach(lstPersonalUnitPrice, function (personalUnitPrice) {
-                        self.itemsBagRepository.push({ code: '8＠' + personalUnitPrice.personalUnitPriceCode, name: '個人単価＠' + personalUnitPrice.personalUnitPriceName });
+                }).then(function () {
+                    qmm017.service.getListPersonalUnitPrice().done(function (lstPersonalUnitPrice) {
+                        _.forEach(lstPersonalUnitPrice, function (personalUnitPrice) {
+                            self.itemsBagRepository.push({ code: '8＠' + personalUnitPrice.personalUnitPriceCode, name: '個人単価＠' + personalUnitPrice.personalUnitPriceName });
+                        });
+                        dfdItemsBags.resolve();
                     });
+                }).fail(function (res) {
+                    dfdItemsBags.reject(res);
                 });
+                return dfdItemsBags.promise();
             };
             ScreenModel.prototype.toYearMonthInt = function (yearmonth) {
                 if (yearmonth.indexOf('/') !== -1) {
@@ -289,14 +335,17 @@ var nts;
             };
             ScreenModel.prototype.resetToNewMode = function () {
                 var self = this;
+                self.treeGridHistory().singleSelectedCode(null);
+                self.selectedTabASel001('tab-1');
                 self.isNewMode(true);
-                self.viewModel017b().startYearMonth('');
+                self.startYearMonth('');
                 self.viewModel017b().formulaCode('');
                 self.viewModel017b().formulaName('');
                 self.viewModel017b().selectedDifficultyAtr(0);
                 self.viewModel017b().selectedConditionAtr(0);
                 self.viewModel017b().comboBoxUseMaster().selectedCode(1);
-                self.selectedTabASel001('tab-1');
+                self.currentNode(null);
+                self.currentParentNode(null);
             };
             ScreenModel.prototype.bindHistoryTree = function () {
                 var self = this;
@@ -320,7 +369,6 @@ var nts;
                             nodesTreeGrid.push(nodeFormula);
                         });
                         self.treeGridHistory().items(nodesTreeGrid);
-                        self.treeGridHistory().singleSelectedCode(null);
                         self.resetToNewMode();
                     }
                     else {
@@ -366,7 +414,7 @@ var nts;
                     };
                     qmm017.service.registerFormulaMaster(command)
                         .done(function () {
-                        self.start();
+                        self.resetToNewMode();
                     })
                         .fail(function (res) {
                         alert(res);
@@ -385,7 +433,7 @@ var nts;
                         roundDigit: ''
                     };
                     if (command.difficultyAtr === 1) {
-                        command.formulaContent = self.viewModel017c().formulaManualContent().textArea();
+                        command.formulaContent = self.replaceNamesToCodes(self.viewModel017c().formulaManualContent().textArea());
                         command.referenceMonthAtr = self.viewModel017c().comboBoxReferenceMonthAtr().selectedCode();
                         command.roundAtr = self.viewModel017c().comboBoxRoudingMethod().selectedCode();
                         command.roundDigit = self.viewModel017c().comboBoxRoudingPosition().selectedCode();
@@ -555,7 +603,7 @@ var nts;
                     }
                     qmm017.service.updateFormulaMaster(command)
                         .done(function () {
-                        self.start();
+                        self.resetToNewMode();
                     })
                         .fail(function (res) {
                         alert(res);
