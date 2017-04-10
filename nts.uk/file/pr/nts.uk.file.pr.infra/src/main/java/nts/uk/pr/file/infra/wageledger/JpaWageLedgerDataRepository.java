@@ -22,7 +22,10 @@ import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery.OutputType;
 import nts.uk.file.pr.app.export.wageledger.data.WLNewLayoutReportData;
 import nts.uk.file.pr.app.export.wageledger.data.WLOldLayoutReportData;
 import nts.uk.file.pr.app.export.wageledger.data.share.HeaderReportData;
+import nts.uk.pr.file.infra.entity.ReportCmnmtDep;
 import nts.uk.pr.file.infra.entity.ReportPbsmtPersonBase;
+import nts.uk.pr.file.infra.entity.ReportPcpmtPersonCom;
+import nts.uk.pr.file.infra.entity.ReportPogmtPersonDepRgl;
 
 /**
  * The Class JpaWageLedgerDataRepository.
@@ -99,22 +102,34 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		YearMonth endYearMonth = YearMonth.of(query.targetYear, 12);
 		
 		// Create Query String.
-		String queryString = "SELECT p, m, d "
+		String queryString = "SELECT p, m, d, pc, pd, cd "
 				+ "FROM ReportPbsmtPersonBase p, ReportQcamtItem m, "
-				+ "ReportQstdtPaymentDetail d "
+				+ "ReportQstdtPaymentDetail d, "
+				+ "ReportPcpmtPersonCom pc, "
+				+ "ReportPogmtPersonDepRgl pd, "
+				+ "ReportCmnmtDep cd "
 				+ "WHERE p.pid = d.qstdtPaymentDetailPK.personId "
 				+ "AND d.qstdtPaymentDetailPK.itemCode = m.qcamtItemPK.itemCd "
 				+ "AND d.qstdtPaymentDetailPK.ccd = m.qcamtItemPK.ccd "
+				+ "AND pc.pcpmtPersonComPK.ccd = m.qcamtItemPK.ccd "
+				+ "AND pc.pcpmtPersonComPK.pid = p.pid "
+				+ "AND pd.pogmtPersonDepRglPK.ccd = m.qcamtItemPK.ccd "
+				+ "AND pd.pogmtPersonDepRglPK.pid = p.pid "
+				+ "AND cd.cmnmtDepPK.companyCode = m.qcamtItemPK.ccd "
+				+ "AND cd.cmnmtDepPK.departmentCode = pd.depcd"
 				+ "AND p.pid in :personIds "
 				+ "AND m.qcamtItemPK.ccd = :companyCode "
 				+ "AND d.qstdtPaymentDetailPK.processingYM <= :startProcessingYM "
 				+ "AND d.qstdtPaymentDetailPK.processingYM >= :endProcessingYM "
-				+ "AND d.qstdtPaymentDetailPK.sparePayAttribute = :sparePayAtr ";
+				+ "AND d.qstdtPaymentDetailPK.sparePayAttribute = :sparePayAtr "
+				+ "AND pd.strD <= :baseDate "
+				+ "AND pd.endD >= :baseDate ";
 
 		Query typeQuery = em.createQuery(queryString).setParameter("companyCode", companyCode)
 				.setParameter("sparePayAtr", query.isAggreatePreliminaryMonth ? 1 : 0)
 				.setParameter("startProcessingYM", startYearMonth.v())
-				.setParameter("endProcessingYM", endYearMonth.v());
+				.setParameter("endProcessingYM", endYearMonth.v())
+				.setParameter("baseDate", query.baseDate);
 		List<List<String>> subPersonIdsList = this.splitInParamList(query.employeeIds);
 		List<Object[]> masterResultList = new ArrayList<>();
 		for (List<String> personIds : subPersonIdsList) {
@@ -136,13 +151,19 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		Map<Object, List<Object[]>> userMap = itemList.stream().collect(Collectors.groupingBy(item -> item[0])); 
 		for (Object user : userMap.keySet()) {
 			ReportPbsmtPersonBase personBase = (ReportPbsmtPersonBase) user;
+			List<Object[]> detail = userMap.get(user);
+			ReportPcpmtPersonCom personCompany = (ReportPcpmtPersonCom) detail.get(0)[3];
+			ReportPogmtPersonDepRgl personDepartment = (ReportPogmtPersonDepRgl) detail.get(0)[4];
+			ReportCmnmtDep departmentMaster = (ReportCmnmtDep) detail.get(0)[5];
 			
 			// Convert to header data.
 			// TODO: Wait QA #82348
 			HeaderReportData headerReportData = HeaderReportData.builder()
-					.employeeCode(personBase.getInvScd())
+					.employeeCode(personCompany.getScd())
 					.employeeName(personBase.getNameOfficial())
 					.sex(personBase.getGendar() == 0 ? "男性" : "女性")
+					.departmentCode(personDepartment.getDepcd())
+					.departmentName(departmentMaster.getName())
 					.build();
 			
 			// Convert To data model.
