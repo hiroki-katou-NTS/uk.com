@@ -67,8 +67,8 @@ public class UpdateAveragePayCommandHandler extends CommandHandler<UpdateAverage
 
 		// QCAMT_ITEM_SALARY.UPD_2: item salary selected
 		List<String> itemSelectedSalarys = itemSalarys.stream()
-				.filter(x -> command.getSelectedSalaryItems().contains(x.getItemCode().v()))
-				.map(x -> x.getItemCode().v())
+				.filter(x -> command.getSelectedSalaryItems().contains(x.getItemCd().v()))
+				.map(x -> x.getItemCd().v())
 				.collect(Collectors.toList());
 		if(!itemSelectedSalarys.isEmpty()){
 			this.itemSalaryRespository.updateItems(companyCode, itemSelectedSalarys, AvePayAtr.Object);
@@ -76,8 +76,8 @@ public class UpdateAveragePayCommandHandler extends CommandHandler<UpdateAverage
 		
 		// QCAMT_ITEM_SALARY.UPD_2: item salary unselected
 		List<String> itemUnselectedSalarys = itemSalarys.stream()
-				.filter(x -> !command.getSelectedSalaryItems().contains(x.getItemCode().v()))
-				.map(x -> x.getItemCode().v())
+				.filter(x -> !command.getSelectedSalaryItems().contains(x.getItemCd().v()))
+				.map(x -> x.getItemCd().v())
 				.collect(Collectors.toList());
 		if(!itemUnselectedSalarys.isEmpty()) {
 			this.itemSalaryRespository.updateItems(companyCode, itemUnselectedSalarys, AvePayAtr.NotApplicable);
@@ -91,8 +91,8 @@ public class UpdateAveragePayCommandHandler extends CommandHandler<UpdateAverage
 			
 			// QCAMT_ITEM_ATTEND.UPD_2: item attend selected
 			List<String> itemSelectedAttends = itemAttends.stream()
-					.filter(x -> command.getSelectedAttendItems().contains(x.getItemCode().v()))
-					.map(x -> x.getItemCode().v())
+					.filter(x -> command.getSelectedAttendItems().contains(x.getItemCD().v()))
+					.map(x -> x.getItemCD().v())
 					.collect(Collectors.toList());
 			if(!itemSelectedAttends.isEmpty()) {
 				this.itemAttendRespository.updateItems(companyCode, itemSelectedAttends, AvePayAtr.Object);
@@ -100,8 +100,8 @@ public class UpdateAveragePayCommandHandler extends CommandHandler<UpdateAverage
 			
 			// QCAMT_ITEM_ATTEND.UPD_2: item attend unselected
 			List<String> itemUnselectedAttends = itemAttends.stream()
-					.filter(x -> !command.getSelectedAttendItems().contains(x.getItemCode().v()))
-					.map(x -> x.getItemCode().v())
+					.filter(x -> !command.getSelectedAttendItems().contains(x.getItemCD().v()))
+					.map(x -> x.getItemCD().v())
 					.collect(Collectors.toList());
 			if(!itemUnselectedAttends.isEmpty()) {
 				this.itemAttendRespository.updateItems(companyCode, itemUnselectedAttends, AvePayAtr.NotApplicable);

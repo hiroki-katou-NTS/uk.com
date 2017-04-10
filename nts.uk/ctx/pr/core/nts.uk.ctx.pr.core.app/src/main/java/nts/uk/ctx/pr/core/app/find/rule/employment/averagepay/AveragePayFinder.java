@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.pr.core.app.find.itemmaster.dto.ItemMasterDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.averagepay.dto.AveragePayDto;
+import nts.uk.ctx.pr.core.dom.itemmaster.AvePayAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.ItemAttend;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.ItemAttendRespository;
@@ -67,13 +68,13 @@ public class AveragePayFinder {
 		String companyCode = AppContexts.user().companyCode();
 		
 		// QCAMT_ITEM_SALARY.SEL_3
-		List<ItemSalary> itemSalarys = this.itemSalaryRespository.findAll(companyCode);
+		List<ItemSalary> itemSalarys = this.itemSalaryRespository.findAll(companyCode, AvePayAtr.Object);
 		if (itemSalarys.isEmpty()){
 			return null;
 		}
 		
 		// QCAMT_ITEM.SEL_5
-		List<String> itemSalaryCodeList = itemSalarys.stream().map(x -> x.getItemCode().v()).collect(Collectors.toList());
+		List<String> itemSalaryCodeList = itemSalarys.stream().map(x -> x.getItemCd().v()).collect(Collectors.toList());
 		List<ItemMasterDto> itemMasterDtos = this.itemMasterRepository.findAll(companyCode, 0, itemSalaryCodeList)
 				.stream().map(x -> ItemMasterDto.fromDomain(x)).collect(Collectors.toList());
 		return itemMasterDtos;
@@ -87,13 +88,13 @@ public class AveragePayFinder {
 		String companyCode = AppContexts.user().companyCode();
 		
 		// QCAMT_ITEM_ATTEND.SEL_4
-		List<ItemAttend> itemAttends = this.itemAttendRespository.findAll(companyCode);
+		List<ItemAttend> itemAttends = this.itemAttendRespository.findAll(companyCode, AvePayAtr.Object);
 		if (itemAttends.isEmpty()){
 			return null;
 		}
 		
 		// QCAMT_ITEM.SEL_5
-		List<String> itemAttendCodeList = itemAttends.stream().map(y -> y.getItemCode().v()).collect(Collectors.toList());
+		List<String> itemAttendCodeList = itemAttends.stream().map(y -> y.getItemCD().v()).collect(Collectors.toList());
 		List<ItemMasterDto> itemMasterDtos = this.itemMasterRepository.findAll(companyCode, 2, itemAttendCodeList)
 				.stream().map(x -> ItemMasterDto.fromDomain(x)).collect(Collectors.toList());
 		return itemMasterDtos;
