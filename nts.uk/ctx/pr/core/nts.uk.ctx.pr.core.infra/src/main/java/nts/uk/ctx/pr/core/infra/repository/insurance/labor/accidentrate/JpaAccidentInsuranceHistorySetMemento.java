@@ -15,7 +15,7 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAcc
 /**
  * The Class JpaAccidentInsuranceRateSetMemento.
  */
-public class JpaHistoryAccidentInsuranceRateSetMemento implements AccidentInsuranceRateSetMemento {
+public class JpaAccidentInsuranceHistorySetMemento implements AccidentInsuranceRateSetMemento {
 
 	/** The type value. */
 	private QismtWorkAccidentInsu typeValue;
@@ -26,7 +26,7 @@ public class JpaHistoryAccidentInsuranceRateSetMemento implements AccidentInsura
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaHistoryAccidentInsuranceRateSetMemento(QismtWorkAccidentInsu typeValue) {
+	public JpaAccidentInsuranceHistorySetMemento(QismtWorkAccidentInsu typeValue) {
 		this.typeValue = typeValue;
 	}
 
