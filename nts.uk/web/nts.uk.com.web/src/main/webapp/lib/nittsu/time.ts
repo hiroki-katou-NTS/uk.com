@@ -4,15 +4,6 @@
 
     var dotW = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
 
-    export function formatYearMonth(yearMonth: number) {
-        var result: string;
-        var num = parseInt(String(yearMonth));
-        var year = String(Math.floor(num / 100));
-        var month = text.charPadding(String(num % 100), '0', true, 2);
-        result = year + '/' + month;
-        return result;
-    }
-
     function getYearMonthJapan(year, month?) {
         if (month)
             return year + "年 " + month + " 月";
@@ -167,6 +158,20 @@
     }
 
     /**
+    * Format YearMonth
+    * @param  {Number} [yearMonth]    Input Yearmonth
+    * @return {String}                Formatted YearMonth
+    */
+    export function formatYearMonth(yearMonth: number) {
+        var result: string;
+        var num = parseInt(String(yearMonth));
+        var year = String(Math.floor(num / 100));
+        var month = text.charPadding(String(num % 100), '0', true, 2);
+        result = year + '/' + month;
+        return result;
+    }
+
+    /**
     * Format by pattern
     * @param  {Date}   [date]         Input date
     * @param  {String} [inputFormat]  Input format
@@ -175,8 +180,8 @@
     */
     export function formatPattern(date: any, inputFormat?: string, outputFormat?: string) {
         outputFormat = text.getISOFormat(outputFormat);
-        inputFormat = text.getISOFormat(inputFormat);
-        return moment.utc(date, inputFormat).format(outputFormat);
+        var inputFormats = (inputFormat) ? inputFormat : ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm", "HHmm"];
+        return moment.utc(date, inputFormats).format(outputFormat);
     }
 
     abstract class ParseResult {
@@ -460,18 +465,19 @@
         momentObject: moment.Moment;
         outputFormat: string;
         msg: string;
-        constructor(success: boolean, momentObject?: moment.Moment, outputFormat?: string, msg?: string) {
-            super(success);
+        constructor(momentObject: moment.Moment, outputFormat?: string) {
+            super(true);
             this.momentObject = momentObject;
-            this.msg = msg || "Invalid format";
+            this.outputFormat = text.getISOFormat(outputFormat);
         }
 
-        static succeeded(momentObject: moment.Moment) {
-            return new MomentResult(true, momentObject);
+        succeeded() {
+            this.success = true;
         }
 
-        static failed(msg?: string) {
-            return new MomentResult(false, null, msg);
+        failed(msg?: string) {
+            this.msg = (msg) ? msg : "Invalid format";
+            this.success = false;
         }
 
         format() {
@@ -486,7 +492,57 @@
             return this.momentObject;
         }
 
+        toNumber(outputFormat?: string) {
+            var dateFormats = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "date"];
+            var yearMonthFormats = ["YYYY/MM", "YYYY-MM", "YYYYMM", "yearmonth"];
+            if (!this.success)
+                return null;
+            if (dateFormats.indexOf(outputFormat) != -1) {
+                return this.momentObject.year() * 10000 + (this.momentObject.month() + 1) * 100 + this.momentObject.date();
+            }
+            else if (yearMonthFormats.indexOf(outputFormat) != -1) {
+                return this.momentObject.year() * 100 + (this.momentObject.month() + 1);
+            }
+            else {
+                return parseInt(this.momentObject.format(outputFormat).replace(/[^\d]/g, ""));
+            }
+        }
+
         getMsg() { return this.msg; }
     }
 
+
+    export function parseMoment(datetime: any, outputFormat?: any, inputFormat?: any): MomentResult {
+        var inputFormats = (inputFormat) ? inputFormat : ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm", "HHmm"];
+        var momentObject = moment.utc(datetime, inputFormats);
+        var result = new MomentResult(momentObject, outputFormat);
+        if (momentObject.isValid())
+            result.succeeded();
+        else
+            result.failed();
+        return result;
+    }
+
+    export function UTCDate(year?: number, month?: number, date?: number, hours?: number, minutes?: number, seconds?: number, milliseconds?: number): Date {
+        if (util.isNullOrUndefined(year)) {
+            var currentDate: Date = new Date();
+            year = currentDate.getUTCFullYear();
+            month = (util.isNullOrUndefined(month)) ? currentDate.getUTCMonth() : month;
+            date = (util.isNullOrUndefined(date)) ? currentDate.getUTCDate() : date;
+            hours = (util.isNullOrUndefined(hours)) ? currentDate.getUTCHours() : hours;
+            minutes = (util.isNullOrUndefined(minutes)) ? currentDate.getUTCMinutes() : minutes;
+            seconds = (util.isNullOrUndefined(seconds)) ? currentDate.getUTCSeconds() : seconds;
+            milliseconds = (util.isNullOrUndefined(milliseconds)) ? currentDate.getUTCMilliseconds() : milliseconds;
+            return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
+        }
+        else {
+            month = (util.isNullOrUndefined(month)) ? 0 : month;
+            date = (util.isNullOrUndefined(date)) ? 1 : date;
+            hours = (util.isNullOrUndefined(hours)) ? 0 : hours;
+            minutes = (util.isNullOrUndefined(minutes)) ? 0 : minutes;
+            seconds = (util.isNullOrUndefined(seconds)) ? 1 : seconds;
+            milliseconds = (util.isNullOrUndefined(milliseconds)) ? 0 : milliseconds;
+            return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
+        }
+    }
 }

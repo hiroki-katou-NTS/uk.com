@@ -319,6 +319,10 @@
             return charType;
         }
 
+        /**
+         * Format for EmployeeCode
+         * @return {String}  EmployeeCode
+         */
         export function formatEmployeeCode(code: string, filldirection: string, fillcharacter: string, length: number): string {
             if (filldirection === "left")
                 return padLeft(code, fillcharacter, length);
@@ -369,7 +373,9 @@
                 return "top";
         }
         
-        export function getISO8601Format(format: string): string {
+        export function getISOFormat(format: string): string {
+            if (format.toLowerCase() === "iso")
+                return "YYYY-MM-DD[T]HH:mm:ss.SSS[Z]";
             if (format.toLowerCase() === "date")
                 return "YYYY/MM/DD";
             if (format.toLowerCase() === "yearmonth")
@@ -403,7 +409,6 @@
         }
 
         export class NumberFormatter implements format.IFormatter {
-
             option: any;
 
             constructor(option: any) {
@@ -416,7 +421,6 @@
         }
 
         export class TimeFormatter implements format.IFormatter {
-
             option: any;
 
             constructor(option: any) {
@@ -432,9 +436,11 @@
                     result = time.parseTime(source, true);
                 }
                 else {
-                    result = moment(source);
-                    if (result.isValid())
-                        return result.format(this.option.inputFormat);
+                    result = moment(source, "YYYYMMDD");
+                    if (result.isValid()) {
+                        var format = getISOFormat(this.option.inputFormat);
+                        return result.format(format);
+                    }
                     return source;
                 }
                 
