@@ -159,16 +159,16 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 	private class HiaGetMemento implements HealthInsuranceAvgearnGetMemento {
 
 		/** The setting. */
-		protected AvgEarnLevelMasterSetting setting;
+		private final AvgEarnLevelMasterSetting setting;
 
 		/** The rate items. */
-		protected Set<InsuranceRateItem> rateItems;
+		private final Set<InsuranceRateItem> rateItems;
 
 		/** The rounding methods. */
-		protected Set<HealthInsuranceRounding> roundingMethods;
+		private final Set<HealthInsuranceRounding> roundingMethods;
 
 		/** The history id. */
-		protected String historyId;
+		private final String historyId;
 
 		/**
 		 * Instantiates a new gets the memento.

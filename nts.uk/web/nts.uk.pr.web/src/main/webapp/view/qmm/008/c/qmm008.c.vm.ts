@@ -393,7 +393,7 @@ module nts.uk.pr.view.qmm008.c {
                         self.loadPension(self.backupDataDirty());
                         self.OpenModalOfficeRegister();
                         self.dirty.reset();
-                    }).ifCancel(function() {
+                    }).ifNo(function() {
                     });
                 }
                 else {
@@ -421,7 +421,7 @@ module nts.uk.pr.view.qmm008.c {
                         self.loadPension(self.backupDataDirty());
                         self.OpenModalStandardMonthlyPricePension();
                         self.dirty.reset();
-                    }).ifCancel(function() {
+                    }).ifNo(function() {
                     });
                 }
                 else {

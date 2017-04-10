@@ -338,7 +338,7 @@ module nts.uk.pr.view.qmm008.b {
                         self.loadHealth(self.backupDataDirty());
                         self.OpenModalOfficeRegister();
                         self.dirty.reset();
-                    }).ifCancel(function() {
+                    }).ifNo(function() {
                     });
                 }
                 else {
@@ -364,7 +364,7 @@ module nts.uk.pr.view.qmm008.b {
                         self.loadHealth(self.backupDataDirty());
                         self.OpenModalStandardMonthlyPriceHealth();
                         self.dirty.reset();
-                    }).ifCancel(function() {
+                    }).ifNo(function() {
                     });
                 }
                 else {

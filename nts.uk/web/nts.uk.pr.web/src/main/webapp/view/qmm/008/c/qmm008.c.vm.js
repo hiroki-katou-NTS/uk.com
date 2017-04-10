@@ -319,7 +319,7 @@ var nts;
                                             self.loadPension(self.backupDataDirty());
                                             self.OpenModalOfficeRegister();
                                             self.dirty.reset();
-                                        }).ifCancel(function () {
+                                        }).ifNo(function () {
                                         });
                                     }
                                     else {
@@ -341,7 +341,7 @@ var nts;
                                             self.loadPension(self.backupDataDirty());
                                             self.OpenModalStandardMonthlyPricePension();
                                             self.dirty.reset();
-                                        }).ifCancel(function () {
+                                        }).ifNo(function () {
                                         });
                                     }
                                     else {

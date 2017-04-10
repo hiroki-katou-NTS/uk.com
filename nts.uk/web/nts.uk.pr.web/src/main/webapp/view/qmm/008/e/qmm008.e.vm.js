@@ -57,7 +57,7 @@ var nts;
                                                     self.showConfirmDialog(false);
                                                     self.dirty.reset();
                                                     self.loadItemOffice(selectedOfficeCode);
-                                                }).ifCancel(function () {
+                                                }).ifNo(function () {
                                                     self.selectedOfficeCode(self.previousSelectedOfficeCode());
                                                 });
                                             }
@@ -197,7 +197,7 @@ var nts;
                                     nts.uk.ui.dialog.confirm(self.errorList()[5].message).ifYes(function () {
                                         self.dirty.reset();
                                         self.remove();
-                                    }).ifCancel(function () {
+                                    }).ifNo(function () {
                                     });
                                 };
                                 ScreenModel.prototype.remove = function () {
@@ -227,7 +227,7 @@ var nts;
                                         nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function () {
                                             self.addNew();
                                             self.dirty.reset();
-                                        }).ifCancel(function () {
+                                        }).ifNo(function () {
                                         });
                                     }
                                     else {
@@ -274,7 +274,7 @@ var nts;
                                         nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function () {
                                             self.closeDialog();
                                             self.dirty.reset();
-                                        }).ifCancel(function () {
+                                        }).ifNo(function () {
                                         });
                                     }
                                     else {

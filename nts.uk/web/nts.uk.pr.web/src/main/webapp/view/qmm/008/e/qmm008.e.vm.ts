@@ -81,7 +81,7 @@ module nts.uk.pr.view.qmm008.e {
                                 self.showConfirmDialog(false);
                                 self.dirty.reset();
                                 self.loadItemOffice(selectedOfficeCode);
-                            }).ifCancel(function() {
+                            }).ifNo(function() {
                                 self.selectedOfficeCode(self.previousSelectedOfficeCode());
                             });
                         }
@@ -252,7 +252,7 @@ module nts.uk.pr.view.qmm008.e {
                 nts.uk.ui.dialog.confirm(self.errorList()[5].message).ifYes(function() {
                     self.dirty.reset();
                     self.remove();
-                }).ifCancel(function() {
+                }).ifNo(function() {
                 });
             }
             //remove office  by office Code
@@ -316,7 +316,7 @@ module nts.uk.pr.view.qmm008.e {
                     nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function() {
                         self.addNew();
                         self.dirty.reset();
-                    }).ifCancel(function() {
+                    }).ifNo(function() {
                     });
                 }
                 else {
@@ -369,7 +369,7 @@ module nts.uk.pr.view.qmm008.e {
                     nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function() {
                         self.closeDialog();
                         self.dirty.reset();
-                    }).ifCancel(function() {
+                    }).ifNo(function() {
                     });
                 }
                 else {

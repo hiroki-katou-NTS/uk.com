@@ -272,7 +272,7 @@ var nts;
                                             self.loadHealth(self.backupDataDirty());
                                             self.OpenModalOfficeRegister();
                                             self.dirty.reset();
-                                        }).ifCancel(function () {
+                                        }).ifNo(function () {
                                         });
                                     }
                                     else {
@@ -293,7 +293,7 @@ var nts;
                                             self.loadHealth(self.backupDataDirty());
                                             self.OpenModalStandardMonthlyPriceHealth();
                                             self.dirty.reset();
-                                        }).ifCancel(function () {
+                                        }).ifNo(function () {
                                         });
                                     }
                                     else {
