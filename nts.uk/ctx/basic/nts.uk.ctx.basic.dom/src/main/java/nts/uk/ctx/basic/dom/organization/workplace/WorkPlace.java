@@ -59,6 +59,27 @@ public class WorkPlace {
 		this.shortName = shortName;
 		this.startDate = startDate;
 	}
+	
+	public WorkPlace(String companyCode, WorkPlaceCode workPlaceCode, GeneralDate endDate,
+			WorkPlaceCode externalCode, WorkPlaceGenericName genericName, HierarchyCode hierarchyCode, WorkPlaceName name,
+			ParentChildAttribute parentChildAttribute1, ParentChildAttribute parentChildAttribute2,
+			WorkPlaceCode parentWorkCode1, WorkPlaceCode parentWorkCode2, WorkPlaceShortName shortName,
+			GeneralDate startDate) {
+		this.companyCode = companyCode;
+		this.workPlaceCode = workPlaceCode;
+		this.historyId = IdentifierUtil.randomUniqueId();
+		this.endDate = endDate;
+		this.externalCode = externalCode;
+		this.genericName = genericName;
+		this.hierarchyCode = hierarchyCode;
+		this.name = name;
+		this.parentChildAttribute1 = parentChildAttribute1;
+		this.parentChildAttribute2 = parentChildAttribute2;
+		this.parentWorkCode1 = parentWorkCode1;
+		this.parentWorkCode2 = parentWorkCode2;
+		this.shortName = shortName;
+		this.startDate = startDate;
+	}
 
 	public WorkPlace(String companyCode, WorkPlaceCode workPlaceCode, GeneralDate endDate, WorkPlaceCode externalCode,
 			WorkPlaceGenericName genericName, HierarchyCode hierarchyCode, WorkPlaceName name, WorkPlaceShortName shortName,

@@ -10,6 +10,8 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.basic.dom.organization.department.Department;
+import nts.uk.ctx.basic.dom.organization.department.DepartmentMemo;
 import nts.uk.ctx.basic.dom.organization.shr.HierarchyCode;
 import nts.uk.ctx.basic.dom.organization.workplace.ParentChildAttribute;
 import nts.uk.ctx.basic.dom.organization.workplace.WorkPlace;
@@ -19,9 +21,15 @@ import nts.uk.ctx.basic.dom.organization.workplace.WorkPlaceMemo;
 import nts.uk.ctx.basic.dom.organization.workplace.WorkPlaceName;
 import nts.uk.ctx.basic.dom.organization.workplace.WorkPlaceRepository;
 import nts.uk.ctx.basic.dom.organization.workplace.WorkPlaceShortName;
+import nts.uk.ctx.basic.infra.entity.organization.department.CmnmtDep;
+import nts.uk.ctx.basic.infra.entity.organization.department.CmnmtDepMemo;
+import nts.uk.ctx.basic.infra.entity.organization.department.CmnmtDepMemoPK;
+import nts.uk.ctx.basic.infra.entity.organization.department.CmnmtDepPK;
 import nts.uk.ctx.basic.infra.entity.organization.workplace.CmnmtWorkPlace;
 import nts.uk.ctx.basic.infra.entity.organization.workplace.CmnmtWorkPlaceMemo;
+import nts.uk.ctx.basic.infra.entity.organization.workplace.CmnmtWorkPlaceMemoPK;
 import nts.uk.ctx.basic.infra.entity.organization.workplace.CmnmtWorkPlacePK;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.primitive.Memo;
 
 @Stateless
@@ -38,6 +46,8 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 	private static final String FIND_ALL_BY_HISTORY;
 
 	private static final String IS_DUPLICATE_WORK_PLACE_CODE;
+
+	private static final String QUERY_IS_EXISTED;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -84,7 +94,17 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 		builderString.append(" FROM CmnmtWorkPlace e");
 		builderString.append(" WHERE e.cmnmtWorkPlacePK.companyCode = :companyCode");
 		builderString.append(" AND e.cmnmtWorkPlacePK.workPlaceCode = :workPlaceCode");
+		builderString.append(" AND e.cmnmtWorkPlacePK.historyId = :historyId");
 		IS_DUPLICATE_WORK_PLACE_CODE = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(e)");
+		builderString.append(" FROM CmnmtWorkPlace e");
+		builderString.append(" WHERE e.cmnmtWorkPlacePK.companyCode = :companyCode");
+		builderString.append(" AND e.cmnmtWorkPlacePK.workPlaceCode = :workPlaceCode");
+		builderString.append(" AND e.cmnmtWorkPlacePK.historyId = :historyId");
+		QUERY_IS_EXISTED = builderString.toString();
+
 	}
 
 	@Override
@@ -107,8 +127,8 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 
 	@Override
 	public void registerMemo(String companyCode, String historyId, Memo memo) {
-		// TODO Auto-generated method stub
-
+		WorkPlaceMemo workPlaceMemo = new WorkPlaceMemo(companyCode, historyId, memo);
+		this.commandProxy().insert(convertDepMemoToDbType(workPlaceMemo));
 	}
 
 	@Override
@@ -123,8 +143,7 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 	@Override
 	public List<WorkPlace> findAllByHistory(String companyCode, String historyId) {
 		List<CmnmtWorkPlace> resultList = this.queryProxy().query(FIND_ALL_BY_HISTORY, CmnmtWorkPlace.class)
-				.setParameter("companyCode", companyCode )
-				.setParameter("historyId", historyId ).getList();
+				.setParameter("companyCode", companyCode).setParameter("historyId", historyId).getList();
 		System.out.println(resultList);
 		return !resultList.isEmpty() ? resultList.stream().map(item -> {
 			return convertToDomain(item);
@@ -135,14 +154,14 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 	public List<WorkPlace> findHistories(String companyCode) {
 		List<Object[]> resultList = this.queryProxy().query(FIND_HISTORIES).setParameter("companyCode", companyCode)
 				.getList();
-		
+
 		return resultList.stream().map(e -> new WorkPlace((String) e[0], (GeneralDate) e[1], (GeneralDate) e[2]))
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public boolean checkExist(String companyCode) {
-		
+
 		return this.queryProxy().query(CHECK_EXIST, long.class).setParameter("companyCode", companyCode).getSingle()
 				.get() > 0;
 	}
@@ -156,26 +175,35 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 				}).orElse(Optional.empty());
 	}
 
+	private CmnmtWorkPlaceMemo convertDepMemoToDbType(WorkPlaceMemo workplaceMemo) {
+		CmnmtWorkPlaceMemo cmnmtwkpMemo = new CmnmtWorkPlaceMemo();
+		CmnmtWorkPlaceMemoPK wkpMemoPK = new CmnmtWorkPlaceMemoPK(workplaceMemo.getCompanyCode(),
+				workplaceMemo.getHistoryId());
+		cmnmtwkpMemo.setCmnmtWorkPlaceMemoPK(wkpMemoPK);
+		cmnmtwkpMemo.setMemo(workplaceMemo.getMemo().v());
+		return cmnmtwkpMemo;
+
+	}
+
 	private WorkPlace convertToDomain(CmnmtWorkPlace cmnmtWorkPlace) {
 		return new WorkPlace(cmnmtWorkPlace.getCmnmtWorkPlacePK().getCompanyCode(),
 				new WorkPlaceCode(cmnmtWorkPlace.getCmnmtWorkPlacePK().getWorkPlaceCode()),
-				cmnmtWorkPlace.getCmnmtWorkPlacePK().getHistoryId(),
-				cmnmtWorkPlace.getEndDate(),
+				cmnmtWorkPlace.getCmnmtWorkPlacePK().getHistoryId(), cmnmtWorkPlace.getEndDate(),
 				new WorkPlaceCode(cmnmtWorkPlace.getExternalCode()),
-				new WorkPlaceGenericName(cmnmtWorkPlace.getGenericName()), new HierarchyCode(cmnmtWorkPlace.getHierarchyId()),
-				new WorkPlaceName(cmnmtWorkPlace.getName()),
+				new WorkPlaceGenericName(cmnmtWorkPlace.getGenericName()),
+				new HierarchyCode(cmnmtWorkPlace.getHierarchyId()), new WorkPlaceName(cmnmtWorkPlace.getName()),
 				new ParentChildAttribute(new BigDecimal(cmnmtWorkPlace.getParentChildAttribute1())),
 				new ParentChildAttribute(new BigDecimal(cmnmtWorkPlace.getParentChildAttribute2())),
 				new WorkPlaceCode(cmnmtWorkPlace.getParentWorkCode1()),
 				new WorkPlaceCode(cmnmtWorkPlace.getParentWorkCode2()),
-				new WorkPlaceShortName(cmnmtWorkPlace.getShortName()),
-				cmnmtWorkPlace.getStartDate());
+				new WorkPlaceShortName(cmnmtWorkPlace.getShortName()), cmnmtWorkPlace.getStartDate());
 	}
 
 	private CmnmtWorkPlace convertToDbType(WorkPlace workPlace) {
+		String companyCode = AppContexts.user().companyCode();
 		CmnmtWorkPlace cmnmtWorkPlace = new CmnmtWorkPlace();
 		CmnmtWorkPlacePK cmnmtWorkPlacePK = new CmnmtWorkPlacePK();
-		cmnmtWorkPlacePK.setCompanyCode(workPlace.getCompanyCode());
+		cmnmtWorkPlacePK.setCompanyCode(companyCode);
 		cmnmtWorkPlacePK.setHistoryId(workPlace.getHistoryId());
 		cmnmtWorkPlacePK.setWorkPlaceCode(workPlace.getWorkPlaceCode().toString());
 		cmnmtWorkPlace.setCmnmtWorkPlacePK(cmnmtWorkPlacePK);
@@ -194,10 +222,58 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 	}
 
 	@Override
-	public boolean isDuplicateWorkPlaceCode(String companyCode, WorkPlaceCode workPlaceCode) {
+	public boolean isDuplicateWorkPlaceCode(String companyCode, WorkPlaceCode workPlaceCode,String historyId) {
 		return this.queryProxy().query(IS_DUPLICATE_WORK_PLACE_CODE, long.class)
 				.setParameter("companyCode", "'" + companyCode + "'")
-				.setParameter("departmentCode", "'" + workPlaceCode.toString() + "'").getSingle().get() > 0;
+				.setParameter("departmentCode", "'" + workPlaceCode.toString() + "'")
+				.setParameter("historyId", "'" + historyId + "'").getSingle().get() > 0;
+	}
+
+	@Override
+	public boolean isExistWorkPace(String companyCode, String historyId, WorkPlaceCode workPlaceCode) {
+		// TODO Auto-generated method stub
+		return this.queryProxy().query(QUERY_IS_EXISTED, long.class).setParameter("companyCode", companyCode)
+				.setParameter("historyId", historyId).setParameter("workPlaceCode", workPlaceCode.toString())
+				.getSingle().get() > 0;
+	}
+
+	@Override
+	public void updateMemo(WorkPlaceMemo workplaceMemo) {
+		this.commandProxy().update(convertDepMemoToDbType(workplaceMemo));
+	}
+
+	@Override
+	public void updateAll(List<WorkPlace> list) {
+		convertListDepToDbType(list).forEach(item -> {
+			this.commandProxy().update(item);
+		});
+	}
+
+	private List<CmnmtWorkPlace> convertListDepToDbType(List<WorkPlace> listwkp) {
+		List<CmnmtWorkPlace> listCmnmtWkp = new ArrayList<CmnmtWorkPlace>();
+		for (int i = 0; i < listwkp.size(); i++) {
+			CmnmtWorkPlace cmnmtWkp = new CmnmtWorkPlace();
+			String ccd = AppContexts.user().companyCode();
+			CmnmtWorkPlacePK cmnmtWkpPK = new CmnmtWorkPlacePK(ccd, listwkp.get(i).getHistoryId(),
+					listwkp.get(i).getWorkPlaceCode().toString());
+			cmnmtWkp.setCmnmtWorkPlacePK(cmnmtWkpPK);
+			cmnmtWkp.setEndDate(listwkp.get(i).getEndDate());
+			cmnmtWkp.setExternalCode(
+					listwkp.get(i).getExternalCode() != null ? listwkp.get(i).getExternalCode().toString() : "");
+			cmnmtWkp.setGenericName(
+					listwkp.get(i).getGenericName() != null ? listwkp.get(i).getGenericName().toString() : "");
+			cmnmtWkp.setHierarchyId(listwkp.get(i).getHierarchyCode().toString());
+			cmnmtWkp.setName(listwkp.get(i).getName() != null ? listwkp.get(i).getName().toString() : "");
+			cmnmtWkp.setParentChildAttribute1(listwkp.get(i).getParentChildAttribute1().toString());
+			cmnmtWkp.setParentChildAttribute2(listwkp.get(i).getParentChildAttribute2().toString());
+			cmnmtWkp.setParentWorkCode1(listwkp.get(i).getParentWorkCode1().toString());
+			cmnmtWkp.setParentWorkCode2(listwkp.get(i).getParentWorkCode2().toString());
+			cmnmtWkp.setShortName(
+					listwkp.get(i).getShortName() != null ? listwkp.get(i).getShortName().toString() : "");
+			cmnmtWkp.setStartDate(listwkp.get(i).getStartDate());
+			listCmnmtWkp.add(cmnmtWkp);
+		}
+		return listCmnmtWkp;
 	}
 
 }

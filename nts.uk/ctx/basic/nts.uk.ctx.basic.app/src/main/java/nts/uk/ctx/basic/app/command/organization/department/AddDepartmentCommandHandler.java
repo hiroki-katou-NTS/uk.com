@@ -33,12 +33,10 @@ import nts.uk.shr.com.primitive.Memo;
 public class AddDepartmentCommandHandler extends CommandHandler<List<AddDepartmentCommand>> {
 
 	@Inject
-	// private DepartmentDomainService departmentDomainService;
 	private DepartmentRepository departmentRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<List<AddDepartmentCommand>> context) {
-		// TODO Auto-generated method stub
 		Date startDate1 = new Date();
 		Date endDate1 = new Date();
 		List<Department> listDep = new ArrayList<Department>();

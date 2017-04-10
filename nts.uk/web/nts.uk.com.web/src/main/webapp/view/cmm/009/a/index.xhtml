@@ -11,6 +11,7 @@
 			<com:ValidatorScript>
 					nts.uk.ctx.basic.dom.organization.department.DepartmentCode
 					nts.uk.ctx.basic.dom.organization.department.DepartmentName
+					nts.uk.ctx.basic.dom.organization.department.DepartmentGenericName
 				</com:ValidatorScript>
 			<com:stylefile path="cmm009.a.main.css" />
 			<com:scriptfile set="IGNITE" />
@@ -21,7 +22,7 @@
 		<ui:define name="content">
 			<div id="functions-area" class="divHeader">
 				<button id="A_BTN_001" class="proceed btnStyle"
-					data-bind="click: register">登録</button>
+					data-bind="click: register , enable: $root.errors.isEmpty" >登録</button>
 				<button id="A_BTN_002" class=" btnStyle">組織図印刷</button>
 				<button id="A_BTN_003">マスタ修正ログ</button>
 				<button id="A_BTN_004" class="danger btnStyle"
@@ -149,16 +150,15 @@
 										<input id="A_INP_002" style="width: 120px"
 											data-bind="ntsTextEditor: {
 											value: A_INP_002,
-											constraint: 'ResidenceCode',
+											constraint: 'DepartmentCode',
 											enable: A_INP_002_enable}" />
 									</div>
 
 									<div class="input_002 input_name">
-										<input id="A_INP_003" style="width: 180px"
+										<input id="A_INP_003" style="width: 242px"
 											data-bind="ntsTextEditor: {
 											value: A_INP_003,
-											constraint: 'ResidenceCode'
-											
+											constraint: 'DepartmentName'
 											}" />
 									</div>
 
@@ -171,7 +171,7 @@
 						<tr>
 							<td>
 								<div class="row_2"
-									data-bind="ntsFormLabel: {constraint: 'DepartmentName'}">
+									data-bind="ntsFormLabel: {constraint: 'DepartmentGenericName'}">
 									表示名称</div>
 							</td>
 							<td class="valign-center">
@@ -180,7 +180,7 @@
 										<input id="A_INP_004" style="width: 330px"
 											data-bind="ntsTextEditor: {
 											value: A_INP_004,
-											constraint: 'ResidenceCode'
+											constraint: 'DepartmentGenericName'
 											}" />
 									</div>
 								</div>
@@ -190,7 +190,7 @@
 						<tr>
 							<td>
 								<div class="row_5"
-									data-bind="ntsFormLabel: {constraint: 'DepartmentName'}">
+									data-bind="ntsFormLabel: {constraint: 'DepartmentCode'}">
 									外部コード</div>
 							</td>
 							<td class="valign-center">
@@ -199,7 +199,7 @@
 										<input class="A_INP_007"
 											data-bind="ntsTextEditor: {
 											value: A_INP_007,
-											constraint: 'DepartmentName'
+											constraint: 'DepartmentCode'
 											}" />
 									</div>
 								</div>

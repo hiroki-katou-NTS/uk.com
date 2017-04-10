@@ -14,7 +14,7 @@ module cmm009.c.viewmodel {
         // -- check data ban đầu
         data: any;
         object: KnockoutObservable<viewmodel.Object>;
-
+        startDateofHisFromScreenatoString: any;
         /**
          * Init screen model.
          */
@@ -27,7 +27,14 @@ module cmm009.c.viewmodel {
             self.object = ko.observable(null);
             //self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: "date"}));
             self.data = nts.uk.ui.windows.getShared('datanull');
-            let startDateofHis = nts.uk.ui.windows.getShared('startDateOfHis');
+            var startDateofHisFromScreena = nts.uk.ui.windows.getShared('startDateOfHis');
+            startDateofHisFromScreena = new Date(startDateofHisFromScreena);
+            var year = startDateofHisFromScreena.getFullYear();
+            var month = startDateofHisFromScreena.getMonth() + 1;
+            if (month < 10) month = "0" + month;
+            var day = startDateofHisFromScreena.getDate();
+            if (day < 10) day = "0" + day;
+            startDateofHisFromScreenatoString = year+month+day;
 
             //---radio
             if (self.data == "datanull") {
@@ -35,17 +42,10 @@ module cmm009.c.viewmodel {
                 self.enable = ko.observable(false);
             } else {
                 self.enable = ko.observable(true);
-                let startYmHis = startDateofHis;
-                startDateofHis = startDateofHis.replace('-', '/');
-                startDateofHis = startDateofHis.replace('-', '/');
-                startYmHis = startYmHis.replace('-', '');
-                startYmHis = startYmHis.replace('-', '');
-                self.selectStartYm(startDateofHis);
-                self.startYmHis(startYmHis);
+                self.selectStartYm(nts.uk.ui.windows.getShared('startDateOfHis'));
                 self.isRadioCheck = ko.observable(1);
-                console.log("self.startYmHis" + self.startYmHis())
             }
-            
+
             self.itemsRadio = ko.observableArray([
                 { value: 1, text: ko.observable('最新の履歴（' + self.selectStartYm() + '）から引き継ぐ') },
                 { value: 2, text: ko.observable('初めから作成する') }
@@ -63,10 +63,9 @@ module cmm009.c.viewmodel {
             var selectYm = self.startYmHis();
             var inputYm2 = inputYm.replace('/', '');
             inputYm2 = inputYm2.replace('/', '');
-            console.log(inputYm2);
-            if (+inputYm2 < +selectYm
-                || +inputYm2 == +selectYm) {
-                alert('履歴の期間が正しくありません。'); 
+            if (+inputYm2 < +startDateofHisFromScreenatoString
+                || +inputYm2 == +startDateofHisFromScreenatoString) {
+                alert('履歴の期間が正しくありません。');
                 return false;
             }
             else {
@@ -77,7 +76,7 @@ module cmm009.c.viewmodel {
 
         createData(): any {
             var self = this;
-            var startYearMonth = $('#INP_001').val();
+            var startYearMonthDay = $('#INP_001').val();
             var checked = null;
             if (self.isRadioCheck() === 1 && self.enable() === true) {
                 checked = true;
@@ -85,7 +84,7 @@ module cmm009.c.viewmodel {
                 checked = false;
             }
             var memo = self.C_INP_002();
-            var obj = new Object(startYearMonth, checked, memo);
+            var obj = new Object(startYearMonthDay, checked, memo);
             self.object(obj);
             nts.uk.ui.windows.setShared('itemHistory', self.object());
         }

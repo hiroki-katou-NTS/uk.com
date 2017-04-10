@@ -122,7 +122,7 @@ public class UpdateDepartmentCommandHandler extends CommandHandler<List<UpdateDe
 			updateMemo(companyCode, historyId, context.getCommand().get(0).getMemo());
 		}else if((context.getCommand().size() == 1 ) && (context.getCommand().get(0).getMemo().compareTo("addhistoryfromlatest") == 0)){
 			
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 			try {
 				endDate1 = formatter.parse(context.getCommand().get(0).getEndDate());
 			} catch (ParseException e) {

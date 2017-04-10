@@ -9,8 +9,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.basic.app.command.organization.department.AddDepartmentCommand;
+import nts.uk.ctx.basic.app.command.organization.department.UpdateDepartmentCommand;
+import nts.uk.ctx.basic.app.command.organization.workplace.AddWorkPlaceCommand;
 import nts.uk.ctx.basic.app.command.organization.workplace.AddWorkPlaceCommandHandler;
 import nts.uk.ctx.basic.app.command.organization.workplace.RemoveWorkPlaceCommandHandler;
+import nts.uk.ctx.basic.app.command.organization.workplace.UpdateWorkPlaceCommand;
 import nts.uk.ctx.basic.app.command.organization.workplace.UpdateWorkPlaceCommandHandler;
 import nts.uk.ctx.basic.app.find.organization.workplace.WorkPlaceDto;
 import nts.uk.ctx.basic.app.find.organization.workplace.WorkPlaceFinder;
@@ -34,6 +38,12 @@ public class WorkplaceWebService extends WebService {
 
 	@Inject
 	private RemoveWorkPlaceCommandHandler removeWorkPlace;
+	
+	@Path("addworkplace")
+	@POST
+	public void add(List<AddWorkPlaceCommand> command) {
+		this.addWorkPlace.handle(command);
+	}
 
 	@POST
 	@Path("getallworkplace")
@@ -57,7 +67,13 @@ public class WorkplaceWebService extends WebService {
 	@Path("getmemowkpbyhistid/{historyId}")
 	public WorkPlaceMemoDto getMemoByHistId(@PathParam("historyId") String historyId) {
 		String ccd = AppContexts.user().companyCode();
-		return finder.findMemo(ccd, historyId).get();
+		return finder.findMemo(ccd, historyId);
+	}
+	
+	@Path("updateworkplace")
+	@POST
+	public void update(List<UpdateWorkPlaceCommand> command) {
+		this.updateWorkPlace.handle(command);
 	}
 
 }

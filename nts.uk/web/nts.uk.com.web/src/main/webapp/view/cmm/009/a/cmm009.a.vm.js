@@ -14,7 +14,6 @@ var cmm009;
                     self.selectedCodes_His = ko.observable('');
                     self.isEnable_histId = ko.observable(true);
                     self.itemHist = ko.observable(null);
-                    self.code = ko.observable(null);
                     self.arr = ko.observableArray([]);
                     self.dataSource = ko.observableArray([]);
                     self.dataSource2 = ko.observableArray([]);
@@ -37,156 +36,118 @@ var cmm009;
                     self.checkAddHist1 = ko.observable('');
                     self.newEndDate = ko.observable(null);
                     self.singleSelectedCode.subscribe(function (codeChangeds) {
-                        if (self.code().code == "CODE_004") {
-                            var _dt = self.dataSource();
-                            var _code = self.singleSelectedCode();
-                            var current = self.findHira(_code, _dt);
-                            if (current.historyId == "") {
-                                self.A_INP_002_enable(true);
-                                self.A_INP_002("");
-                                self.A_INP_003("");
-                                self.A_INP_004("");
-                                self.A_INP_007("");
-                                $("#A_INP_002").focus();
-                            }
-                            else {
-                                self.A_INP_002(current.departmentCode);
-                                self.A_INP_003(current.name);
-                                self.A_INP_004(current.fullName);
-                                self.A_INP_007(current.externalCode);
-                                self.A_INP_002_enable(false);
-                            }
+                        var _dt = self.dataSource();
+                        var _code = self.singleSelectedCode();
+                        var current = self.findHira(_code, _dt);
+                        if (current.historyId == "") {
+                            self.A_INP_002_enable(true);
+                            self.A_INP_002("");
+                            self.A_INP_003("");
+                            self.A_INP_004("");
+                            self.A_INP_007("");
+                            $("#A_INP_002").focus();
                         }
-                        else if (self.code().code == "CODE_005") {
-                            var _dt = self.dataSource();
-                            var _code = self.singleSelectedCode();
-                            var current = self.findHira(_code, _dt);
+                        else {
                             self.A_INP_002(current.departmentCode);
                             self.A_INP_003(current.name);
                             self.A_INP_004(current.fullName);
                             self.A_INP_007(current.externalCode);
+                            self.A_INP_002_enable(false);
                         }
                     });
                     self.selectedCodes_His.subscribe((function (codeChanged) {
-                        if (self.code().code == "CODE_004") {
-                            self.findHist_Dep(self.itemHistId(), codeChanged);
-                            if (self.itemHist() != null) {
-                                if (self.itemHist().historyId != "") {
-                                    for (var i = 0; i < self.itemHistId().length; i++) {
-                                        if (self.itemHistId()[i].historyId == "") {
-                                            var item = self.itemHistId()[i];
-                                            self.itemHistId.remove(item);
-                                        }
+                        self.findHist_Dep(self.itemHistId(), codeChanged);
+                        if (self.itemHist() != null) {
+                            if (self.itemHist().historyId != "") {
+                                for (var i = 0; i < self.itemHistId().length; i++) {
+                                    if (self.itemHistId()[i].historyId == "") {
+                                        var item = self.itemHistId()[i];
+                                        self.itemHistId.remove(item);
                                     }
-                                    self.historyId(self.itemHist().historyId);
-                                    var dfd = $.Deferred();
-                                    a.service.getAllDepartmentByHistId(self.historyId())
-                                        .done(function (department_arr) {
-                                        self.dataSource(department_arr);
-                                        if (self.dataSource().length > 0) {
-                                            self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "children"));
-                                            self.singleSelectedCode(self.dataSource()[0].departmentCode);
-                                            self.A_INP_003(self.dataSource()[0].name);
-                                            self.A_INP_004(self.dataSource()[0].fullName);
-                                            if (self.dataSource()[0].externalCode != null)
-                                                self.A_INP_007(self.dataSource()[0].externalCode);
-                                        }
-                                    }).fail(function (error) {
-                                        alert(error.message);
-                                    });
-                                    a.service.getMemoByHistId(self.historyId())
-                                        .done(function (memo) {
-                                        if (memo != null) {
-                                            self.A_INP_008(memo.memo);
-                                        }
-                                    }).fail(function (error) {
-                                        alert(error.message);
-                                    });
-                                    dfd.resolve();
-                                    return dfd.promise();
                                 }
-                                else {
-                                    console.log("=== historyId null");
-                                }
-                            }
-                        }
-                        else if (self.code().code == "CODE_005") {
-                        }
-                    }));
-                }
-                ScreenModel.prototype.register = function () {
-                    var self = this;
-                    if (self.code().code == "CODE_004") {
-                        if (self.checknull() === "landau" && self.itemHistId().length == 1 && self.checkInput()) {
-                            var dto = new model.AddDepartmentDto(self.A_INP_002(), "", "9999-12-31", self.A_INP_007(), self.A_INP_004(), "001", self.A_INP_003(), self.itemaddHist.startDate, self.A_INP_008(), null);
-                            var dfd = $.Deferred();
-                            a.service.addDepartment(dto)
-                                .done(function (mess) {
-                                self.start();
-                                location.reload();
-                            }).fail(function (error) {
-                                if (error.message == "ER026") {
-                                    alert("trung companyCode");
-                                }
-                            });
-                            dfd.resolve();
-                            return dfd.promise();
-                        }
-                        if (self.A_INP_002_enable() == false && self.checkInput() && self.checkAddHist1() == '') {
-                            var dfd = $.Deferred();
-                            var hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
-                            var _dt = self.dataSource();
-                            var _code = self.singleSelectedCode();
-                            var current = self.findHira(_code, _dt);
-                            var dto = new model.AddDepartmentDto(self.A_INP_002(), current.historyId, hisdto.endDate, self.A_INP_007(), self.A_INP_004(), current.hierarchyCode, self.A_INP_003(), hisdto.startDate, self.A_INP_008(), null);
-                            var arr = new Array;
-                            arr.push(dto);
-                            debugger;
-                            a.service.upDateListDepartment(arr)
-                                .done(function (mess) {
-                                location.reload();
-                            }).fail(function (error) {
-                                if (error.message == "ER005") {
-                                    alert("ko ton tai");
-                                }
-                            });
-                            dfd.resolve();
-                            return dfd.promise();
-                        }
-                        if (self.numberItemNew() == 1 && self.checkInput()) {
-                            var self = this;
-                            var dfd = $.Deferred();
-                            var hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
-                            var _dto_1 = new model.AddDepartmentDto(self.A_INP_002(), hisdto.historyId, hisdto.endDate, self.A_INP_007(), self.A_INP_004(), self.dtoAdd().hierarchyCode, self.A_INP_003(), hisdto.startDate, self.A_INP_008(), null);
-                            var data = self.listDtothaydoi();
-                            var arr_1 = new Array;
-                            arr_1.push(_dto_1);
-                            debugger;
-                            if (data != null) {
-                                a.service.upDateListDepartment(data)
-                                    .done(function (mess) {
-                                    var dfd2 = $.Deferred();
-                                    a.service.addDepartment(arr_1)
-                                        .done(function (mess) {
-                                        self.start();
-                                        location.reload();
-                                    })
-                                        .fail(function (error) {
-                                        if (error.message == "ER026") {
-                                            alert("入力した " + _dto_1.departmentCode + "は既に存在しています。\r\n " + _dto_1.departmentCode + "  を確認してください。 ");
-                                        }
-                                    });
-                                    dfd2.resolve();
-                                    return dfd2.promise();
+                                self.historyId(self.itemHist().historyId);
+                                var dfd = $.Deferred();
+                                a.service.getAllDepartmentByHistId(self.historyId())
+                                    .done(function (department_arr) {
+                                    self.dataSource(department_arr);
+                                    if (self.dataSource().length > 0) {
+                                        self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "children"));
+                                        self.singleSelectedCode(self.dataSource()[0].departmentCode);
+                                        self.A_INP_003(self.dataSource()[0].name);
+                                        self.A_INP_004(self.dataSource()[0].fullName);
+                                        if (self.dataSource()[0].externalCode != null)
+                                            self.A_INP_007(self.dataSource()[0].externalCode);
+                                    }
                                 }).fail(function (error) {
-                                    if (error.message == "ER005") {
-                                        alert("ko ton tai");
+                                    alert(error.message);
+                                });
+                                a.service.getMemoByHistId(self.historyId())
+                                    .done(function (memo) {
+                                    if (memo != null) {
+                                        self.A_INP_008(memo.memo);
                                     }
+                                }).fail(function (error) {
+                                    alert(error.message);
                                 });
                                 dfd.resolve();
                                 return dfd.promise();
                             }
                             else {
+                                console.log("=== historyId null");
+                            }
+                        }
+                    }));
+                }
+                ScreenModel.prototype.register = function () {
+                    var self = this;
+                    if (self.checknull() === "landau" && self.itemHistId().length == 1 && self.checkInput()) {
+                        var dto = new model.AddDepartmentDto(self.A_INP_002(), "", "9999-12-31", self.A_INP_007(), self.A_INP_004(), "001", self.A_INP_003(), self.itemaddHist.startDate, self.A_INP_008(), null);
+                        var dfd = $.Deferred();
+                        a.service.addDepartment(dto)
+                            .done(function (mess) {
+                            self.start();
+                            location.reload();
+                        }).fail(function (error) {
+                            if (error.message == "ER026") {
+                                alert("trung companyCode");
+                            }
+                        });
+                        dfd.resolve();
+                        return dfd.promise();
+                    }
+                    if (self.A_INP_002_enable() == false && self.checkInput() && self.checkAddHist1() == '') {
+                        var dfd = $.Deferred();
+                        var hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
+                        var _dt = self.dataSource();
+                        var _code = self.singleSelectedCode();
+                        var current = self.findHira(_code, _dt);
+                        var dto = new model.AddDepartmentDto(self.A_INP_002(), current.historyId, hisdto.endDate, self.A_INP_007(), self.A_INP_004(), current.hierarchyCode, self.A_INP_003(), hisdto.startDate, self.A_INP_008(), null);
+                        var arr = new Array;
+                        arr.push(dto);
+                        debugger;
+                        a.service.upDateListDepartment(arr)
+                            .done(function (mess) {
+                            location.reload();
+                        }).fail(function (error) {
+                            if (error.message == "ER005") {
+                                alert("ko ton tai");
+                            }
+                        });
+                        dfd.resolve();
+                        return dfd.promise();
+                    }
+                    if (self.numberItemNew() == 1 && self.checkInput()) {
+                        var self = this;
+                        var dfd = $.Deferred();
+                        var hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
+                        var _dto_1 = new model.AddDepartmentDto(self.A_INP_002(), hisdto.historyId, hisdto.endDate, self.A_INP_007(), self.A_INP_004(), self.dtoAdd().hierarchyCode, self.A_INP_003(), hisdto.startDate, self.A_INP_008(), null);
+                        var data = self.listDtothaydoi();
+                        var arr_1 = new Array;
+                        arr_1.push(_dto_1);
+                        debugger;
+                        if (data != null) {
+                            a.service.upDateListDepartment(data)
+                                .done(function (mess) {
                                 var dfd2 = $.Deferred();
                                 a.service.addDepartment(arr_1)
                                     .done(function (mess) {
@@ -200,17 +161,62 @@ var cmm009;
                                 });
                                 dfd2.resolve();
                                 return dfd2.promise();
-                            }
+                            }).fail(function (error) {
+                                if (error.message == "ER005") {
+                                    alert("ko ton tai");
+                                }
+                            });
+                            dfd.resolve();
+                            return dfd.promise();
                         }
-                        if (self.checkAddHist1() == "AddhistoryFromLatest") {
-                            console.log(self.dataSource2());
-                            var _dt_1 = self.dataSource2();
-                            if (_dt_1.length > 0) {
-                                _dt_1[0].memo = self.A_INP_008();
-                            }
-                            self.dataSource2(_dt_1);
+                        else {
                             var dfd2 = $.Deferred();
-                            a.service.addListDepartment(self.dataSource2())
+                            a.service.addDepartment(arr_1)
+                                .done(function (mess) {
+                                self.start();
+                                location.reload();
+                            })
+                                .fail(function (error) {
+                                if (error.message == "ER026") {
+                                    alert("入力した " + _dto_1.departmentCode + "は既に存在しています。\r\n " + _dto_1.departmentCode + "  を確認してください。 ");
+                                }
+                            });
+                            dfd2.resolve();
+                            return dfd2.promise();
+                        }
+                    }
+                    if (self.checkAddHist1() == "AddhistoryFromLatest") {
+                        console.log(self.dataSource2());
+                        var _dt_1 = self.dataSource2();
+                        if (_dt_1.length > 0) {
+                            _dt_1[0].memo = self.A_INP_008();
+                        }
+                        self.dataSource2(_dt_1);
+                        var dfd2 = $.Deferred();
+                        a.service.addListDepartment(self.dataSource2())
+                            .done(function (mess) {
+                            var dfd2 = $.Deferred();
+                            var _dto = new model.AddDepartmentDto("", self.itemHistId()[1].historyId, self.itemHistId()[1].endDate, "", "", "", "", "", "addhistoryfromlatest", null);
+                            var arr = new Array;
+                            arr.push(_dto);
+                            a.service.upDateEndDate(arr)
+                                .done(function () {
+                                location.reload();
+                            })
+                                .fail(function () { });
+                            self.start();
+                        })
+                            .fail(function (error) { });
+                        dfd2.resolve();
+                        return dfd2.promise();
+                    }
+                    if (self.checkAddHist1() == "AddhistoryFromBeggin") {
+                        if (self.checkInput()) {
+                            var _dto = new model.AddDepartmentDto(self.A_INP_002(), null, self.itemHistId()[0].endDate, self.A_INP_007(), self.A_INP_004(), "001", self.A_INP_003(), self.itemHistId()[0].startDate, self.A_INP_008(), null);
+                            var arr1 = new Array;
+                            arr1.push(_dto);
+                            var dfd2 = $.Deferred();
+                            a.service.addListDepartment(arr1)
                                 .done(function (mess) {
                                 var dfd2 = $.Deferred();
                                 var _dto = new model.AddDepartmentDto("", self.itemHistId()[1].historyId, self.itemHistId()[1].endDate, "", "", "", "", "", "addhistoryfromlatest", null);
@@ -227,127 +233,101 @@ var cmm009;
                             dfd2.resolve();
                             return dfd2.promise();
                         }
-                        if (self.checkAddHist1() == "AddhistoryFromBeggin") {
-                            if (self.checkInput()) {
-                                var _dto = new model.AddDepartmentDto(self.A_INP_002(), null, self.itemHistId()[0].endDate, self.A_INP_007(), self.A_INP_004(), "001", self.A_INP_003(), self.itemHistId()[0].startDate, self.A_INP_008(), null);
-                                var arr1 = new Array;
-                                arr1.push(_dto);
-                                var dfd2 = $.Deferred();
-                                a.service.addListDepartment(arr1)
-                                    .done(function (mess) {
-                                    var dfd2 = $.Deferred();
-                                    var _dto = new model.AddDepartmentDto("", self.itemHistId()[1].historyId, self.itemHistId()[1].endDate, "", "", "", "", "", "addhistoryfromlatest", null);
-                                    var arr = new Array;
-                                    arr.push(_dto);
-                                    a.service.upDateEndDate(arr)
-                                        .done(function () {
-                                        location.reload();
-                                    })
-                                        .fail(function () { });
-                                    self.start();
-                                })
-                                    .fail(function (error) { });
-                                dfd2.resolve();
-                                return dfd2.promise();
-                            }
-                        }
                     }
                 };
                 ScreenModel.prototype.deletebtn = function () {
                     var self = this;
-                    if (self.code().code == "CODE_004") {
-                        var _dt = self.dataSource();
-                        var _dtflat = nts.uk.util.flatArray(_dt, 'children');
-                        debugger;
-                        var _code = self.singleSelectedCode();
-                        var current = self.findHira(_code, _dt);
-                        var deleteobj_1 = new model.DepartmentDeleteDto(current.departmentCode, current.historyId, current.hierarchyCode);
-                        nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
-                            var dfd2 = $.Deferred();
-                            a.service.deleteDepartment(deleteobj_1)
-                                .done(function () {
-                                var _dt = self.dataSource();
-                                var _code = self.singleSelectedCode();
-                                var current = self.findHira(_code, _dt);
-                                var parrent = self.findParent(_code, _dt);
-                                if (parrent) {
-                                    var index = parrent.children.indexOf(current);
-                                    var phc = parrent.hierarchyCode;
-                                    var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
-                                    var changeIndexChild = _.filter(parrent['children'], function (item) {
-                                        return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) > chc;
-                                    });
-                                    debugger;
-                                    for (var i in changeIndexChild) {
-                                        var item1 = changeIndexChild[i];
-                                        var itemAddH = (parseInt(item1.hierarchyCode.substr(item1.hierarchyCode.length - 3, 3)) - 1) + "";
-                                        while ((itemAddH + "").length < 3)
-                                            itemAddH = "0" + itemAddH;
-                                        item1.hierarchyCode = phc + itemAddH;
-                                        item1.editIndex = true;
-                                        if (item1.children.length > 0) {
-                                            self.updateHierachy2(item1, phc + itemAddH);
-                                        }
+                    var _dt = self.dataSource();
+                    var _dtflat = nts.uk.util.flatArray(_dt, 'children');
+                    debugger;
+                    var _code = self.singleSelectedCode();
+                    var current = self.findHira(_code, _dt);
+                    var deleteobj = new model.DepartmentDeleteDto(current.departmentCode, current.historyId, current.hierarchyCode);
+                    nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
+                        var dfd2 = $.Deferred();
+                        a.service.deleteDepartment(deleteobj)
+                            .done(function () {
+                            var _dt = self.dataSource();
+                            var _code = self.singleSelectedCode();
+                            var current = self.findHira(_code, _dt);
+                            var parrent = self.findParent(_code, _dt);
+                            if (parrent) {
+                                var index = parrent.children.indexOf(current);
+                                var phc = parrent.hierarchyCode;
+                                var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
+                                var changeIndexChild = _.filter(parrent['children'], function (item) {
+                                    return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) > chc;
+                                });
+                                debugger;
+                                for (var i in changeIndexChild) {
+                                    var item1 = changeIndexChild[i];
+                                    var itemAddH = (parseInt(item1.hierarchyCode.substr(item1.hierarchyCode.length - 3, 3)) - 1) + "";
+                                    while ((itemAddH + "").length < 3)
+                                        itemAddH = "0" + itemAddH;
+                                    item1.hierarchyCode = phc + itemAddH;
+                                    item1.editIndex = true;
+                                    if (item1.children.length > 0) {
+                                        self.updateHierachy2(item1, phc + itemAddH);
                                     }
-                                    var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function (item) { return item.editIndex; });
-                                    if (editObjs.length > 0) {
-                                        var currentHis = self.itemHist();
-                                        for (var k = 0; k < editObjs.length; k++) {
-                                            editObjs[k].startDate = currentHis.startDate;
-                                            editObjs[k].endDate = currentHis.endDate;
-                                            editObjs[k].memo = self.A_INP_008();
-                                        }
-                                    }
-                                    self.listDtothaydoi(editObjs);
                                 }
-                                else {
-                                    var index = _dt.indexOf(current);
-                                    var phc = current.hierarchyCode;
-                                    var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
-                                    var changeIndexChild2 = _.filter(_dt, function (item) {
-                                        return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) > chc;
-                                    });
-                                    for (var i in changeIndexChild2) {
-                                        var item2 = changeIndexChild2[i];
-                                        var itemAddH = (parseInt(item2.hierarchyCode.substr(item2.hierarchyCode.length - 3, 3)) - 1) + "";
-                                        while ((itemAddH + "").length < 3)
-                                            itemAddH = "0" + itemAddH;
-                                        item2.hierarchyCode = itemAddH;
-                                        item2.editIndex = true;
-                                        if (item2.children.length > 0) {
-                                            self.updateHierachy2(item2, itemAddH);
-                                        }
+                                var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function (item) { return item.editIndex; });
+                                if (editObjs.length > 0) {
+                                    var currentHis = self.itemHist();
+                                    for (var k = 0; k < editObjs.length; k++) {
+                                        editObjs[k].startDate = currentHis.startDate;
+                                        editObjs[k].endDate = currentHis.endDate;
+                                        editObjs[k].memo = self.A_INP_008();
                                     }
-                                    var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function (item) { return item.editIndex; });
-                                    if (editObjs.length > 0) {
-                                        var currentHis = self.itemHist();
-                                        for (var k = 0; k < editObjs.length; k++) {
-                                            editObjs[k].startDate = currentHis.startDate;
-                                            editObjs[k].endDate = currentHis.endDate;
-                                            editObjs[k].memo = self.A_INP_008();
-                                        }
+                                }
+                                self.listDtothaydoi(editObjs);
+                            }
+                            else {
+                                var index = _dt.indexOf(current);
+                                var phc = current.hierarchyCode;
+                                var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
+                                var changeIndexChild2 = _.filter(_dt, function (item) {
+                                    return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) > chc;
+                                });
+                                for (var i in changeIndexChild2) {
+                                    var item2 = changeIndexChild2[i];
+                                    var itemAddH = (parseInt(item2.hierarchyCode.substr(item2.hierarchyCode.length - 3, 3)) - 1) + "";
+                                    while ((itemAddH + "").length < 3)
+                                        itemAddH = "0" + itemAddH;
+                                    item2.hierarchyCode = itemAddH;
+                                    item2.editIndex = true;
+                                    if (item2.children.length > 0) {
+                                        self.updateHierachy2(item2, itemAddH);
                                     }
-                                    self.listDtothaydoi(editObjs);
                                 }
-                                var data = self.listDtothaydoi();
-                                if (data != null) {
-                                    a.service.upDateListDepartment(data)
-                                        .done(function (mess) {
-                                        location.reload();
-                                    }).fail(function (error) {
-                                        if (error.message == "ER005") {
-                                            alert("ko ton tai");
-                                        }
-                                    });
-                                    dfd.resolve();
-                                    return dfd.promise();
+                                var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function (item) { return item.editIndex; });
+                                if (editObjs.length > 0) {
+                                    var currentHis = self.itemHist();
+                                    for (var k = 0; k < editObjs.length; k++) {
+                                        editObjs[k].startDate = currentHis.startDate;
+                                        editObjs[k].endDate = currentHis.endDate;
+                                        editObjs[k].memo = self.A_INP_008();
+                                    }
                                 }
-                            })
-                                .fail(function () { });
-                            dfd2.resolve();
-                            return dfd2.promise();
-                        }).ifNo(function () { });
-                    }
+                                self.listDtothaydoi(editObjs);
+                            }
+                            var data = self.listDtothaydoi();
+                            if (data != null) {
+                                a.service.upDateListDepartment(data)
+                                    .done(function (mess) {
+                                    location.reload();
+                                }).fail(function (error) {
+                                    if (error.message == "ER005") {
+                                        alert("ko ton tai");
+                                    }
+                                });
+                                dfd.resolve();
+                                return dfd.promise();
+                            }
+                        })
+                            .fail(function () { });
+                        dfd2.resolve();
+                        return dfd2.promise();
+                    }).ifNo(function () { });
                 };
                 ScreenModel.prototype.findHira = function (value, sources) {
                     var self = this;
@@ -419,7 +399,7 @@ var cmm009;
                         nts.uk.ui.windows.sub.modal('/view/cmm/009/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function () {
                             var itemAddHistory = nts.uk.ui.windows.getShared('itemHistory');
                             if (itemAddHistory !== undefined) {
-                                var itemadd = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999-12-31", "");
+                                var itemadd = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");
                                 self.itemaddHist = itemadd;
                                 self.itemHistId().push(self.itemaddHist);
                                 self.selectedCodes_His(self.itemaddHist.startDate);
@@ -450,7 +430,7 @@ var cmm009;
                                 arr.unshift(add);
                                 var startDate = new Date(itemAddHistory.startYearMonth);
                                 startDate.setDate(startDate.getDate() - 1);
-                                var strStartDate = startDate.getFullYear() + '-' + (startDate.getMonth() + 1) + '-' + startDate.getDate();
+                                var strStartDate = startDate.getFullYear() + '/' + (startDate.getMonth() + 1) + '/' + startDate.getDate();
                                 arr[1].endDate = strStartDate;
                                 self.itemHistId(arr);
                                 self.selectedCodes_His(itemAddHistory.startYearMonth);
@@ -474,7 +454,7 @@ var cmm009;
                                 arr.unshift(add);
                                 var startDate = new Date(itemAddHistory.startYearMonth);
                                 startDate.setDate(startDate.getDate() - 1);
-                                var strStartDate = startDate.getFullYear() + '-' + (startDate.getMonth() + 1) + '-' + startDate.getDate();
+                                var strStartDate = startDate.getFullYear() + '/' + (startDate.getMonth() + 1) + '/' + startDate.getDate();
                                 arr[1].endDate = strStartDate;
                                 self.itemHistId(arr);
                                 self.selectedCodes_His(self.itemHistId()[0].startDate);
@@ -553,93 +533,91 @@ var cmm009;
                 };
                 ScreenModel.prototype.insertItemUp = function () {
                     var self = this;
-                    if (self.code().code == "CODE_004") {
-                        if (self.lengthTreeCurrent() < 889) {
-                            if (self.numberItemNew() == 0) {
-                                var _dt = self.dataSource();
-                                var _code = self.singleSelectedCode();
-                                var current = self.findHira(_code, _dt);
-                                var i = current.hierarchyCode.substr(current.hierarchyCode.length - 3, current.hierarchyCode.length);
-                                var hierachyItemadd = (parseInt(i)) + "";
-                                while ((hierachyItemadd + "").length < 3)
-                                    hierachyItemadd = "0" + hierachyItemadd;
-                                var parrent = self.findParent(_code, _dt);
-                                var newObj = new model.Dto('', "999", "", "", "", "", hierachyItemadd, "情報を登録してください", current.startDate, []);
-                                if (parrent) {
-                                    var index = parrent.children.indexOf(current);
-                                    var phc = parrent.hierarchyCode;
-                                    var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
-                                    var changeIndexChild = _.filter(parrent['children'], function (item) {
-                                        return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) >= chc;
-                                    });
-                                    for (var i in changeIndexChild) {
-                                        var item1 = changeIndexChild[i];
-                                        var itemAddH = (parseInt(item1.hierarchyCode.substr(item1.hierarchyCode.length - 3, 3)) + 1) + "";
-                                        while ((itemAddH + "").length < 3)
-                                            itemAddH = "0" + itemAddH;
-                                        item1.hierarchyCode = phc + itemAddH;
-                                        item1.editIndex = true;
-                                        if (item1.children.length > 0) {
-                                            self.updateHierachy2(item1, phc + itemAddH);
-                                        }
+                    if (self.lengthTreeCurrent() < 889) {
+                        if (self.numberItemNew() == 0) {
+                            var _dt = self.dataSource();
+                            var _code = self.singleSelectedCode();
+                            var current = self.findHira(_code, _dt);
+                            var i = current.hierarchyCode.substr(current.hierarchyCode.length - 3, current.hierarchyCode.length);
+                            var hierachyItemadd = (parseInt(i)) + "";
+                            while ((hierachyItemadd + "").length < 3)
+                                hierachyItemadd = "0" + hierachyItemadd;
+                            var parrent = self.findParent(_code, _dt);
+                            var newObj = new model.Dto('', "999", "", "", "", "", hierachyItemadd, "情報を登録してください", current.startDate, []);
+                            if (parrent) {
+                                var index = parrent.children.indexOf(current);
+                                var phc = parrent.hierarchyCode;
+                                var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
+                                var changeIndexChild = _.filter(parrent['children'], function (item) {
+                                    return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) >= chc;
+                                });
+                                for (var i in changeIndexChild) {
+                                    var item1 = changeIndexChild[i];
+                                    var itemAddH = (parseInt(item1.hierarchyCode.substr(item1.hierarchyCode.length - 3, 3)) + 1) + "";
+                                    while ((itemAddH + "").length < 3)
+                                        itemAddH = "0" + itemAddH;
+                                    item1.hierarchyCode = phc + itemAddH;
+                                    item1.editIndex = true;
+                                    if (item1.children.length > 0) {
+                                        self.updateHierachy2(item1, phc + itemAddH);
                                     }
-                                    newObj.hierarchyCode = phc + hierachyItemadd;
-                                    parrent.children.splice(index, 0, newObj);
-                                    var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function (item) { return item.editIndex; });
-                                    if (editObjs.length > 0) {
-                                        var currentHis = self.itemHist();
-                                        for (var k = 0; k < editObjs.length; k++) {
-                                            editObjs[k].startDate = currentHis.startDate;
-                                            editObjs[k].endDate = currentHis.endDate;
-                                            editObjs[k].memo = self.A_INP_008();
-                                        }
-                                    }
-                                    self.dtoAdd(newObj);
-                                    self.listDtothaydoi(editObjs);
                                 }
-                                else {
-                                    var index = _dt.indexOf(current);
-                                    var phc = current.hierarchyCode;
-                                    var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
-                                    var changeIndexChild2 = _.filter(_dt, function (item) {
-                                        return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) >= chc;
-                                    });
-                                    for (var i in changeIndexChild2) {
-                                        var item2 = changeIndexChild2[i];
-                                        var itemAddH = (parseInt(item2.hierarchyCode.substr(item2.hierarchyCode.length - 3, 3)) + 1) + "";
-                                        while ((itemAddH + "").length < 3)
-                                            itemAddH = "0" + itemAddH;
-                                        item2.hierarchyCode = itemAddH;
-                                        item2.editIndex = true;
-                                        if (item2.children.length > 0) {
-                                            self.updateHierachy2(item2, itemAddH);
-                                        }
+                                newObj.hierarchyCode = phc + hierachyItemadd;
+                                parrent.children.splice(index, 0, newObj);
+                                var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function (item) { return item.editIndex; });
+                                if (editObjs.length > 0) {
+                                    var currentHis = self.itemHist();
+                                    for (var k = 0; k < editObjs.length; k++) {
+                                        editObjs[k].startDate = currentHis.startDate;
+                                        editObjs[k].endDate = currentHis.endDate;
+                                        editObjs[k].memo = self.A_INP_008();
+                                        editObjs[k].workPlaceCode = editObjs[k].departmentCode;
                                     }
-                                    newObj.hierarchyCode = hierachyItemadd;
-                                    var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function (item) { return item.editIndex; });
-                                    if (editObjs.length > 0) {
-                                        var currentHis = self.itemHist();
-                                        for (var k = 0; k < editObjs.length; k++) {
-                                            editObjs[k].startDate = currentHis.startDate;
-                                            editObjs[k].endDate = currentHis.endDate;
-                                            editObjs[k].memo = self.A_INP_008();
-                                        }
-                                    }
-                                    self.dtoAdd(newObj);
-                                    self.listDtothaydoi(editObjs);
-                                    _dt.splice(index, 0, newObj);
                                 }
-                                self.dataSource(_dt);
-                                self.numberItemNew(1);
-                                self.singleSelectedCode(newObj.departmentCode);
-                                self.resetInput();
+                                self.dtoAdd(newObj);
+                                self.listDtothaydoi(editObjs);
                             }
-                        }
-                        else {
-                            alert("more than 889 item");
+                            else {
+                                var index = _dt.indexOf(current);
+                                var phc = current.hierarchyCode;
+                                var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
+                                var changeIndexChild2 = _.filter(_dt, function (item) {
+                                    return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) >= chc;
+                                });
+                                for (var i in changeIndexChild2) {
+                                    var item2 = changeIndexChild2[i];
+                                    var itemAddH = (parseInt(item2.hierarchyCode.substr(item2.hierarchyCode.length - 3, 3)) + 1) + "";
+                                    while ((itemAddH + "").length < 3)
+                                        itemAddH = "0" + itemAddH;
+                                    item2.hierarchyCode = itemAddH;
+                                    item2.editIndex = true;
+                                    if (item2.children.length > 0) {
+                                        self.updateHierachy2(item2, itemAddH);
+                                    }
+                                }
+                                newObj.hierarchyCode = hierachyItemadd;
+                                var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function (item) { return item.editIndex; });
+                                if (editObjs.length > 0) {
+                                    var currentHis = self.itemHist();
+                                    for (var k = 0; k < editObjs.length; k++) {
+                                        editObjs[k].startDate = currentHis.startDate;
+                                        editObjs[k].endDate = currentHis.endDate;
+                                        editObjs[k].memo = self.A_INP_008();
+                                        editObjs[k].workPlaceCode = editObjs[k].departmentCode;
+                                    }
+                                }
+                                self.dtoAdd(newObj);
+                                self.listDtothaydoi(editObjs);
+                                _dt.splice(index, 0, newObj);
+                            }
+                            self.dataSource(_dt);
+                            self.numberItemNew(1);
+                            self.singleSelectedCode(newObj.departmentCode);
+                            self.resetInput();
                         }
                     }
-                    else if (self.code().code == "CODE_005") {
+                    else {
+                        alert("more than 889 item");
                     }
                 };
                 ScreenModel.prototype.resetInput = function () {
@@ -666,103 +644,99 @@ var cmm009;
                 };
                 ScreenModel.prototype.insertItemDown = function () {
                     var self = this;
-                    if (self.code().code == "CODE_004") {
-                        if (self.lengthTreeCurrent() < 889) {
-                            if (self.numberItemNew() == 0) {
-                                var _dt = self.dataSource();
-                                var _code = self.singleSelectedCode();
-                                var current = self.findHira(_code, _dt);
-                                var i = current.hierarchyCode.substr(current.hierarchyCode.length - 3, current.hierarchyCode.length);
-                                var hierachyItemadd = (parseInt(i) + 1) + "";
-                                while ((hierachyItemadd + "").length < 3)
-                                    hierachyItemadd = "0" + hierachyItemadd;
-                                var parrent = self.findParent(_code, _dt);
-                                var newObj = new model.Dto('', "999", "", "", "", "", hierachyItemadd, "情報を登録してください", current.startDate, []);
-                                if (parrent) {
-                                    var index = parrent.children.indexOf(current);
-                                    var phc = parrent.hierarchyCode;
-                                    var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
-                                    var changeIndexChild = _.filter(parrent['children'], function (item) {
-                                        return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) > chc;
-                                    });
-                                    for (var i in changeIndexChild) {
-                                        var item = changeIndexChild[i];
-                                        var itemAddH = (parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) + 1) + "";
-                                        while ((itemAddH + "").length < 3)
-                                            itemAddH = "0" + itemAddH;
-                                        item.hierarchyCode = phc + itemAddH;
-                                        item.editIndex = true;
-                                        if (item.children.length > 0) {
-                                            self.updateHierachy2(item, phc + itemAddH);
-                                        }
+                    if (self.lengthTreeCurrent() < 889) {
+                        if (self.numberItemNew() == 0) {
+                            var _dt = self.dataSource();
+                            var _code = self.singleSelectedCode();
+                            var current = self.findHira(_code, _dt);
+                            var i = current.hierarchyCode.substr(current.hierarchyCode.length - 3, current.hierarchyCode.length);
+                            var hierachyItemadd = (parseInt(i) + 1) + "";
+                            while ((hierachyItemadd + "").length < 3)
+                                hierachyItemadd = "0" + hierachyItemadd;
+                            var parrent = self.findParent(_code, _dt);
+                            var newObj = new model.Dto('', "999", "", "", "", "", hierachyItemadd, "情報を登録してください", current.startDate, []);
+                            if (parrent) {
+                                var index = parrent.children.indexOf(current);
+                                var phc = parrent.hierarchyCode;
+                                var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
+                                var changeIndexChild = _.filter(parrent['children'], function (item) {
+                                    return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) > chc;
+                                });
+                                for (var i in changeIndexChild) {
+                                    var item = changeIndexChild[i];
+                                    var itemAddH = (parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) + 1) + "";
+                                    while ((itemAddH + "").length < 3)
+                                        itemAddH = "0" + itemAddH;
+                                    item.hierarchyCode = phc + itemAddH;
+                                    item.editIndex = true;
+                                    if (item.children.length > 0) {
+                                        self.updateHierachy2(item, phc + itemAddH);
                                     }
-                                    newObj.hierarchyCode = phc + hierachyItemadd;
-                                    parrent.children.splice(index + 1, 0, newObj);
-                                    var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function (item) { return item.editIndex; });
-                                    if (editObjs.length > 0) {
-                                        var currentHis = self.itemHist();
-                                        for (var k = 0; k < editObjs.length; k++) {
-                                            editObjs[k].startDate = currentHis.startDate;
-                                            editObjs[k].endDate = currentHis.endDate;
-                                            editObjs[k].memo = self.A_INP_008();
-                                        }
+                                }
+                                newObj.hierarchyCode = phc + hierachyItemadd;
+                                parrent.children.splice(index + 1, 0, newObj);
+                                var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function (item) { return item.editIndex; });
+                                if (editObjs.length > 0) {
+                                    var currentHis = self.itemHist();
+                                    for (var k = 0; k < editObjs.length; k++) {
+                                        editObjs[k].startDate = currentHis.startDate;
+                                        editObjs[k].endDate = currentHis.endDate;
+                                        editObjs[k].memo = self.A_INP_008();
                                     }
-                                    self.dtoAdd(newObj);
-                                    if (editObjs.length > 0) {
-                                        self.listDtothaydoi(editObjs);
-                                    }
-                                    else {
-                                        self.listDtothaydoi();
-                                    }
+                                }
+                                self.dtoAdd(newObj);
+                                if (editObjs.length > 0) {
+                                    self.listDtothaydoi(editObjs);
                                 }
                                 else {
-                                    var index = _dt.indexOf(current);
-                                    var phc = current.hierarchyCode;
-                                    var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
-                                    var changeIndexChild2 = _.filter(_dt, function (item) {
-                                        return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) > chc;
-                                    });
-                                    for (var i in changeIndexChild2) {
-                                        var item = changeIndexChild2[i];
-                                        var itemAddH = (parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) + 1) + "";
-                                        while ((itemAddH + "").length < 3)
-                                            itemAddH = "0" + itemAddH;
-                                        item.hierarchyCode = itemAddH;
-                                        item.editIndex = true;
-                                        if (item.children.length > 0) {
-                                            self.updateHierachy2(item, itemAddH);
-                                        }
-                                    }
-                                    newObj.hierarchyCode = hierachyItemadd;
-                                    var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function (item) { return item.editIndex; });
-                                    if (editObjs.length > 0) {
-                                        var currentHis = self.itemHist();
-                                        for (var k = 0; k < editObjs.length; k++) {
-                                            editObjs[k].startDate = currentHis.startDate;
-                                            editObjs[k].endDate = currentHis.endDate;
-                                            editObjs[k].memo = self.A_INP_008();
-                                        }
-                                    }
-                                    self.dtoAdd(newObj);
-                                    if (editObjs.length > 0) {
-                                        self.listDtothaydoi(editObjs);
-                                    }
-                                    else {
-                                        self.listDtothaydoi();
-                                    }
-                                    _dt.splice(index + 1, 0, newObj);
+                                    self.listDtothaydoi();
                                 }
-                                self.dataSource(_dt);
-                                self.numberItemNew(1);
-                                self.singleSelectedCode(newObj.departmentCode);
-                                self.resetInput();
                             }
-                        }
-                        else {
-                            alert("more than 889 item");
+                            else {
+                                var index = _dt.indexOf(current);
+                                var phc = current.hierarchyCode;
+                                var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
+                                var changeIndexChild2 = _.filter(_dt, function (item) {
+                                    return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) > chc;
+                                });
+                                for (var i in changeIndexChild2) {
+                                    var item = changeIndexChild2[i];
+                                    var itemAddH = (parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) + 1) + "";
+                                    while ((itemAddH + "").length < 3)
+                                        itemAddH = "0" + itemAddH;
+                                    item.hierarchyCode = itemAddH;
+                                    item.editIndex = true;
+                                    if (item.children.length > 0) {
+                                        self.updateHierachy2(item, itemAddH);
+                                    }
+                                }
+                                newObj.hierarchyCode = hierachyItemadd;
+                                var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function (item) { return item.editIndex; });
+                                if (editObjs.length > 0) {
+                                    var currentHis = self.itemHist();
+                                    for (var k = 0; k < editObjs.length; k++) {
+                                        editObjs[k].startDate = currentHis.startDate;
+                                        editObjs[k].endDate = currentHis.endDate;
+                                        editObjs[k].memo = self.A_INP_008();
+                                    }
+                                }
+                                self.dtoAdd(newObj);
+                                if (editObjs.length > 0) {
+                                    self.listDtothaydoi(editObjs);
+                                }
+                                else {
+                                    self.listDtothaydoi();
+                                }
+                                _dt.splice(index + 1, 0, newObj);
+                            }
+                            self.dataSource(_dt);
+                            self.numberItemNew(1);
+                            self.singleSelectedCode(newObj.departmentCode);
+                            self.resetInput();
                         }
                     }
-                    else if (self.code().code == "CODE_005") {
+                    else {
+                        alert("more than 889 item");
                     }
                 };
                 ScreenModel.prototype.insertItemEnd = function () {
@@ -820,72 +794,34 @@ var cmm009;
                 ScreenModel.prototype.start = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    a.service.getCodeOfDepWP().done(function (code) {
-                        self.code(code);
-                        console.log(code);
-                        if (self.code().code == "CODE_004") {
-                            a.service.getAllDepartment().done(function (departmentQueryResult) {
-                                var departmentQueryResultmodel = departmentQueryResult;
-                                console.log(departmentQueryResult);
-                                if (departmentQueryResultmodel.histories == null) {
-                                    nts.uk.ui.windows.setShared('datanull', "datanull");
-                                    self.checknull("landau");
-                                    self.openCDialog();
-                                }
-                                else {
-                                    if (departmentQueryResult.departments.length > 0) {
-                                        self.dataSource(departmentQueryResult.departments);
-                                    }
-                                    if (departmentQueryResult.memo) {
-                                        self.A_INP_008(departmentQueryResult.memo.memo);
-                                    }
-                                    if (departmentQueryResultmodel.histories.length > 0) {
-                                        self.itemHistId(departmentQueryResultmodel.histories);
-                                        if (self.dataSource().length > 0) {
-                                            self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "children"));
-                                            self.singleSelectedCode(departmentQueryResult.departments[0].departmentCode);
-                                            self.selectedCodes_His(self.itemHistId()[0].startDate);
-                                            self.numberItemNew(0);
-                                        }
-                                    }
-                                }
-                                dfd.resolve();
-                            }).fail(function (error) {
-                                console.log(error);
-                            });
+                    a.service.getAllDepartment().done(function (departmentQueryResult) {
+                        var departmentQueryResultmodel = departmentQueryResult;
+                        console.log(departmentQueryResult);
+                        if (departmentQueryResultmodel.histories == null) {
+                            nts.uk.ui.windows.setShared('datanull', "datanull");
+                            self.checknull("landau");
+                            self.openCDialog();
                         }
-                        else if (self.code().code == "CODE_005") {
-                            a.service.getAllWorkplace().done(function (workplaceQueryResult) {
-                                var workplaceQueryResult = workplaceQueryResult;
-                                console.log(workplaceQueryResult);
-                                if (workplaceQueryResult.histories == null) {
-                                    nts.uk.ui.windows.setShared('datanull', "datanull");
-                                    self.checknull("landau");
-                                    self.openCDialog();
+                        else {
+                            if (departmentQueryResult.departments.length > 0) {
+                                self.dataSource(departmentQueryResult.departments);
+                            }
+                            if (departmentQueryResult.memo) {
+                                self.A_INP_008(departmentQueryResult.memo.memo);
+                            }
+                            if (departmentQueryResultmodel.histories.length > 0) {
+                                self.itemHistId(departmentQueryResultmodel.histories);
+                                if (self.dataSource().length > 0) {
+                                    self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "children"));
+                                    self.singleSelectedCode(departmentQueryResult.departments[0].departmentCode);
+                                    self.selectedCodes_His(self.itemHistId()[0].startDate);
+                                    self.numberItemNew(0);
                                 }
-                                else {
-                                    if (workplaceQueryResult.workPlaces.length > 0) {
-                                        self.dataSource(workplaceQueryResult.workPlaces);
-                                    }
-                                    if (workplaceQueryResult.memo) {
-                                        self.A_INP_008(workplaceQueryResult.memo.memo);
-                                    }
-                                    if (workplaceQueryResult.histories.length > 0) {
-                                        self.itemHistId(workplaceQueryResult.histories);
-                                        if (self.dataSource().length > 0) {
-                                            self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "children"));
-                                            self.singleSelectedCode(workplaceQueryResult.workPlaces[0].departmentCode);
-                                        }
-                                    }
-                                }
-                                dfd.resolve();
-                            }).fail(function (error) {
-                                console.log(error);
-                            });
+                            }
                         }
                         dfd.resolve();
                     }).fail(function (error) {
-                        alert(error.message);
+                        console.log(error);
                     });
                     return dfd.promise();
                 };
@@ -900,12 +836,6 @@ var cmm009;
                     return DepartmentQueryResult;
                 }());
                 model.DepartmentQueryResult = DepartmentQueryResult;
-                var WorkPlaceQueryResult = (function () {
-                    function WorkPlaceQueryResult() {
-                    }
-                    return WorkPlaceQueryResult;
-                }());
-                model.WorkPlaceQueryResult = WorkPlaceQueryResult;
                 var MemoDto = (function () {
                     function MemoDto() {
                     }
@@ -957,12 +887,6 @@ var cmm009;
                     return AddDepartmentDto;
                 }());
                 model.AddDepartmentDto = AddDepartmentDto;
-                var GetCodeDto = (function () {
-                    function GetCodeDto() {
-                    }
-                    return GetCodeDto;
-                }());
-                model.GetCodeDto = GetCodeDto;
                 var DepartmentDeleteDto = (function () {
                     function DepartmentDeleteDto(departmentCode, historyId, hierarchyCode) {
                         var self = this;

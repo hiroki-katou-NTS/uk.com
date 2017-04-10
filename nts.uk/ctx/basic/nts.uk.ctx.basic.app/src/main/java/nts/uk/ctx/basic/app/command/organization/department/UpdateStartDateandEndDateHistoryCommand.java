@@ -4,8 +4,8 @@ package nts.uk.ctx.basic.app.command.organization.department;
 import lombok.Getter;
 
 /**
- *  update StartDate cuar historyId1
- *	update endDate cuar historyId2
+ *  update StartDate of historyId1
+ *	update endDate of historyId2
  */
 
 @Getter

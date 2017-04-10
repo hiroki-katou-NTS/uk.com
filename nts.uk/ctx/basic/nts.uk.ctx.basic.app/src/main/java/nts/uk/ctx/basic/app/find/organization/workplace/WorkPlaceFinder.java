@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.basic.app.find.organization.department.DepartmentMemoDto;
 import nts.uk.ctx.basic.dom.organization.workplace.WorkPlace;
 import nts.uk.ctx.basic.dom.organization.workplace.WorkPlaceMemo;
 import nts.uk.ctx.basic.dom.organization.workplace.WorkPlaceRepository;
@@ -51,8 +52,10 @@ public class WorkPlaceFinder {
 
 	private List<WorkPlaceDto> convertToTree(List<WorkPlace> workPlaces) {
 		Function<WorkPlace, WorkPlaceDto> converter = e -> {
-			return new WorkPlaceDto(e.getWorkPlaceCode().toString(), e.getExternalCode().toString(),
-					e.getGenericName().toString(), e.getHierarchyCode().toString(), e.getName().toString());
+			return new WorkPlaceDto(e.getWorkPlaceCode().toString(), e.getEndDate(),e.getHistoryId(), e.getExternalCode().toString(),
+					e.getGenericName().toString(), e.getHierarchyCode().toString(), e.getName().toString(),
+					e.getParentChildAttribute1().toString(), e.getParentChildAttribute2().toString(), e.getParentWorkCode1().toString(),
+					e.getParentWorkCode2().toString(), e.getShortName().toString(), e.getStartDate());
 		};
 		Map<String, List<WorkPlaceDto>> childrens = new HashMap<>();
 		childrens.put(ROOT, new ArrayList<>());
@@ -98,8 +101,11 @@ public class WorkPlaceFinder {
 		return list.isEmpty() ? null : convertToTree(list);
 	}
 
-	public Optional<WorkPlaceMemoDto> findMemo(String companyCode, String historyId) {
-		return workPlaceRepository.findMemo(companyCode, historyId).map(d -> WorkPlaceMemoDto.fromDomain(d));
+	public WorkPlaceMemoDto findMemo(String companyCode, String historyId) {
+		Optional<WorkPlaceMemoDto> wkpmemo = workPlaceRepository.findMemo(companyCode, historyId)
+				.map(d -> WorkPlaceMemoDto.fromDomain(d));
+		return wkpmemo.isPresent()
+				? new WorkPlaceMemoDto(wkpmemo.get().getHistoryId(), wkpmemo.get().getMemo().toString()) : null;
 	}
 
 }

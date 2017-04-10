@@ -3,6 +3,9 @@ package nts.uk.ctx.basic.dom.organization.workplace;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.basic.dom.organization.department.Department;
+import nts.uk.ctx.basic.dom.organization.department.DepartmentCode;
+import nts.uk.ctx.basic.dom.organization.department.DepartmentMemo;
 import nts.uk.shr.com.primitive.Memo;
 
 public interface WorkPlaceRepository {
@@ -10,6 +13,8 @@ public interface WorkPlaceRepository {
 void add(WorkPlace workPlace);
 	
 	void update(WorkPlace workPlace);
+	
+	void updateAll(List<WorkPlace> list);
 	
 	void remove(String companyCode, WorkPlaceCode workPlaceCode, String historyId);
 	
@@ -25,6 +30,9 @@ void add(WorkPlace workPlace);
 	
 	Optional<WorkPlaceMemo> findMemo(String companyCode, String historyId);
 	
-	boolean isDuplicateWorkPlaceCode(String companyCode, WorkPlaceCode workPlaceCode);
+	boolean isExistWorkPace(String companyCode, String historyId,WorkPlaceCode workplaceCode);
+	
+	boolean isDuplicateWorkPlaceCode(String companyCode, WorkPlaceCode workPlaceCode , String HistoryID);
 
+	void updateMemo(WorkPlaceMemo workplaceMemo);
 }

@@ -108,8 +108,6 @@ button.search-btn {
 	
 }
 
-
-
 .table_content td {
 	border: 10px solid transparent;
 	border-top: none;
@@ -171,4 +169,8 @@ button.search-btn {
 
 div.upDown-container {
 	height: 145px !important;
+}
+
+#A_INP_003{
+	width: 242px !important;
 }

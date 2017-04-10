@@ -20,15 +20,15 @@ public class WorkPlaceDto extends OrganizationTreeDto<WorkPlaceDto> {
 
 	private String externalCode;
 
-	private String genericName;
+	private String fullName;
 
 	private String hierarchyCode;
 
 	private String name;
 
-	private BigDecimal parentChildAttribute1;
+	private String parentChildAttribute1;
 
-	private BigDecimal parentChildAttribute2;
+	private String parentChildAttribute2;
 
 	private String parentWorkCode1;
 
@@ -38,14 +38,15 @@ public class WorkPlaceDto extends OrganizationTreeDto<WorkPlaceDto> {
 
 	private GeneralDate startDate;
 
-	public WorkPlaceDto(String workPlaceCode, GeneralDate endDate, String externalCode, String genericName, String hierarchyCode,
-			String name, BigDecimal parentChildAttribute1, BigDecimal parentChildAttribute2, String parentWorkCode1,
+	public WorkPlaceDto(String workPlaceCode, GeneralDate endDate,String historyId, String externalCode, String genericName, String hierarchyCode,
+			String name, String parentChildAttribute1, String parentChildAttribute2, String parentWorkCode1,
 			String parentWorkCode2, String shortName, GeneralDate startDate) {
 		super();
 		this.departmentCode = workPlaceCode;
 		this.endDate = endDate;
+		this.historyId = historyId;
 		this.externalCode = externalCode;
-		this.genericName = genericName;
+		this.fullName = genericName;
 		this.hierarchyCode = hierarchyCode;
 		this.name = name;
 		this.parentChildAttribute1 = parentChildAttribute1;
@@ -54,13 +55,14 @@ public class WorkPlaceDto extends OrganizationTreeDto<WorkPlaceDto> {
 		this.parentWorkCode2 = parentWorkCode2;
 		this.shortName = shortName;
 		this.startDate = startDate;
+		this.children = new ArrayList<>();
 	}
 
 	public WorkPlaceDto(String workPlaceCode, String externalCode, String genericName, String hierarchyCode, String name) {
 		super();
 		this.departmentCode = workPlaceCode;
 		this.externalCode = externalCode;
-		this.genericName = genericName;
+		this.fullName = genericName;
 		this.hierarchyCode = hierarchyCode;
 		this.name = name;
 		this.children = new ArrayList<>();

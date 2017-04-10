@@ -1,13 +1,13 @@
 package nts.uk.ctx.basic.dom.organization.workplace;
 
-import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
+import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
-@StringCharType(CharType.ALPHA_NUMERIC)
+@StringCharType(CharType.ALPHABET)
 @StringMaxLength(10)
-public class WorkPlaceCode extends StringPrimitiveValue<WorkPlaceCode>{
+public class WorkPlaceCode extends CodePrimitiveValue<WorkPlaceCode>{
 
 	/**
 	 * serialVersionUID

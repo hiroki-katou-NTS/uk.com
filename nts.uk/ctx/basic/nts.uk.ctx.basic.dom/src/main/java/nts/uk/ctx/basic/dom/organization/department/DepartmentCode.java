@@ -5,7 +5,7 @@ import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
-@StringCharType(CharType.ALPHABET)
+@StringCharType(CharType.NUMERIC)
 @StringMaxLength(10)
 public class DepartmentCode extends CodePrimitiveValue<DepartmentCode>{
 
