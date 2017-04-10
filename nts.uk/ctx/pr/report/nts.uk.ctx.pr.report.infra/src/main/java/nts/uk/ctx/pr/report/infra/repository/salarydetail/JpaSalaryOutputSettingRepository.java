@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.report.infra.repository.salarydetail;
 
 import java.util.List;
@@ -35,9 +39,7 @@ public class JpaSalaryOutputSettingRepository extends JpaRepository implements S
 	 */
 	@Override
 	public void create(SalaryOutputSetting outputSetting) {
-		QlsptPaylstFormHead entity = new QlsptPaylstFormHead();
-		outputSetting.saveToMemento(new JpaSalaryOutputSettingSetMemento(entity));
-		this.commandProxy().insert(entity);
+		this.commandProxy().insert(this.toEntity(outputSetting));
 
 	}
 
@@ -50,9 +52,7 @@ public class JpaSalaryOutputSettingRepository extends JpaRepository implements S
 	 */
 	@Override
 	public void update(SalaryOutputSetting outputSetting) {
-		QlsptPaylstFormHead entity = new QlsptPaylstFormHead();
-		outputSetting.saveToMemento(new JpaSalaryOutputSettingSetMemento(entity));
-		this.commandProxy().update(entity);
+		this.commandProxy().update(this.toEntity(outputSetting));
 
 	}
 
@@ -85,7 +85,7 @@ public class JpaSalaryOutputSettingRepository extends JpaRepository implements S
 				.find(new QlsptPaylstFormHeadPK(companyCode, salaryOutputSettingCode), QlsptPaylstFormHead.class);
 
 		if (entity.isPresent()) {
-			return new SalaryOutputSetting(new JpaSalaryOutputSettingGetMemento(entity.get()));
+			return this.toDomain(entity.get());
 		}
 
 		throw new RuntimeException("Entity not found.");
@@ -130,9 +130,32 @@ public class JpaSalaryOutputSettingRepository extends JpaRepository implements S
 						.asc(root.get(QlsptPaylstFormHead_.qlsptPaylstFormHeadPK).get(QlsptPaylstFormHeadPK_.formCd)));
 
 		// Select.
-		return em.createQuery(cq).getResultList().stream().map(entity -> {
-			return new SalaryOutputSetting(new JpaSalaryOutputSettingGetMemento(entity));
-		}).collect(Collectors.toList());
+		return em.createQuery(cq).getResultList().stream().map(entity -> this.toDomain(entity))
+				.collect(Collectors.toList());
 
+	}
+
+	/**
+	 * To domain.
+	 *
+	 * @param entity the entity
+	 * @return the salary output setting
+	 */
+	private SalaryOutputSetting toDomain(QlsptPaylstFormHead entity) {
+		SalaryOutputSetting domain = new SalaryOutputSetting(new JpaSalaryOutputSettingGetMemento(entity));
+		return domain;
+
+	}
+
+	/**
+	 * To entity.
+	 *
+	 * @param domain the domain
+	 * @return the qlspt paylst form head
+	 */
+	private QlsptPaylstFormHead toEntity(SalaryOutputSetting domain) {
+		QlsptPaylstFormHead entity = new QlsptPaylstFormHead();
+		domain.saveToMemento(new JpaSalaryOutputSettingSetMemento(entity));
+		return entity;
 	}
 }

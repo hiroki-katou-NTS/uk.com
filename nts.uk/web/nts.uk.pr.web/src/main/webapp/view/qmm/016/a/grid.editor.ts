@@ -18,6 +18,8 @@
         $('input', editorWrapper).on('input',(evt) => {
             callbacks.textChanged(evt, {}, key);
         });
+
+        this._super(callbacks, key, editorOptions, tabIndex, format, element);
         return editorWrapper;
     },
 

@@ -115,9 +115,8 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implement
 	 * @param entity the entity
 	 * @return the health insurance avgearn
 	 */
-	private static HealthInsuranceAvgearn toDomain(QismtHealthInsuAvgearn entity) {
+	private HealthInsuranceAvgearn toDomain(QismtHealthInsuAvgearn entity) {
 		HealthInsuranceAvgearn domain = new HealthInsuranceAvgearn(new JpaHealthInsuranceAvgearnGetMemento(entity));
-
 		return domain;
 	}
 
