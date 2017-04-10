@@ -33,14 +33,22 @@ __viewContext.ready(function () {
             var self = this;
             self.selectedCodes([10]);
         };
+        /**
+         * Clear options.
+         */
         ScreenModel.prototype.clearOptions = function () {
             var self = this;
             self.itemList([]);
         };
+        /**
+         * Remove item by code;
+         */
         ScreenModel.prototype.remove = function () {
             var self = this;
+            // Remove by code.
             var selected = self.itemList().filter(function (item) { return item.code === self.selectedCode(); })[0];
             self.itemList.remove(selected);
+            // Remove by codes
             var selecteds = self.itemList().filter(function (item) { return self.selectedCodes().indexOf(item.code) != -1; });
             self.itemList.removeAll(selecteds);
         };
@@ -56,3 +64,4 @@ __viewContext.ready(function () {
     }());
     this.bind(new ScreenModel());
 });
+//# sourceMappingURL=start.js.map

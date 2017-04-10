@@ -4,15 +4,19 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
-
+import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBD;
+/**
+ * @author sonnlb
+ *
+ */
 @Getter
 @Setter
 public class AddItemDeductBDCommand {
-	private String itemCd;
-	private String itemBreakdownCd;
+	private String itemCode;
+	private String itemBreakdownCode;
 	private String itemBreakdownName;
 	private String itemBreakdownAbName;
-	private String uniteCd;
+	private String uniteCode;
 	private int zeroDispSet;
 	private int itemDispAtr;
 	private int errRangeLowAtr;
@@ -23,4 +27,13 @@ public class AddItemDeductBDCommand {
 	private BigDecimal alRangeLow;
 	private int alRangeHighAtr;
 	private BigDecimal alRangeHigh;
+
+
+
+	public ItemDeductBD toDomain() {
+		return ItemDeductBD.createFromJavaType(itemCode, itemBreakdownCode, itemBreakdownName, itemBreakdownAbName, uniteCode,
+				zeroDispSet, itemDispAtr, errRangeLowAtr, errRangeLow, errRangeHighAtr, errRangeHigh, alRangeLowAtr,
+				alRangeLow, alRangeHighAtr, alRangeHigh);
+	}
+
 }

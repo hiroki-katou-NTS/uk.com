@@ -7,7 +7,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductperiod.ItemDeductPeriod;
 @Getter
 @Setter
 public class UpdateItemDeductPeriodCommand {
-	private String itemCd;
+	private String itemCode;
 	private int periodAtr;
 	private int strY;
 	private int endY;
@@ -26,8 +26,11 @@ public class UpdateItemDeductPeriodCommand {
 	private int cycle12Atr;
 
 	public ItemDeductPeriod toDomain() {
-		return ItemDeductPeriod.createFromJavaType(itemCd, periodAtr, strY, endY, cycleAtr, cycle01Atr, cycle02Atr,
+		return ItemDeductPeriod.createFromJavaType(itemCode, periodAtr, strY, endY, cycleAtr, cycle01Atr, cycle02Atr,
 				cycle03Atr, cycle04Atr, cycle05Atr, cycle06Atr, cycle07Atr, cycle08Atr, cycle09Atr, cycle10Atr,
 				cycle11Atr, cycle12Atr);
 	}
+
+	
+	
 }

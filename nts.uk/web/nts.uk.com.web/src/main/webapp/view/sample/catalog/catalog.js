@@ -89,4 +89,10 @@ $(function(){
 	
 	$(".tabs").tabs();
 	
+	$(".catalog-accordion").accordion({
+		active: false,
+		animate: false,
+		collapsible: true
+	});
+	
 });

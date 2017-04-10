@@ -8,7 +8,7 @@ public interface ItemDeductRespository {
 
 	void add(ItemDeduct itemDeduct);
 
-	void delete(String companyCode, String itemCode);
+	void delete(String itemCode);
 
 	void update(ItemDeduct domain);
 

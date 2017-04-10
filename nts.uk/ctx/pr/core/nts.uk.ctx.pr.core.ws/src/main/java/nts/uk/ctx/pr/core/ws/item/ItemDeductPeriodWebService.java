@@ -9,8 +9,6 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductperiod.AddItemDeductPeriodCommand;
 import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductperiod.AddItemDeductPeriodCommandHandler;
-import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductperiod.DeleteItemDeductPeriodCommand;
-import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductperiod.DeleteItemDeductPeriodCommandHandler;
 import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductperiod.UpdateItemDeductPeriodCommand;
 import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductperiod.UpdateItemDeductPeriodCommandHandler;
 import nts.uk.ctx.pr.core.app.find.itemmaster.dto.itemdeductperiod.ItemDeductPeriodDto;
@@ -20,11 +18,9 @@ import nts.uk.ctx.pr.core.app.find.itemmaster.itemdeductperiod.ItemDeductPeriodF
 @Produces("application/json")
 public class ItemDeductPeriodWebService extends WebService {
 	@Inject
-	ItemDeductPeriodFinder itemDeductPeriodFinder;
+	private ItemDeductPeriodFinder itemDeductPeriodFinder;
 	@Inject
 	AddItemDeductPeriodCommandHandler addHandler;
-	@Inject
-	DeleteItemDeductPeriodCommandHandler deleteHandler;
 	@Inject
 	UpdateItemDeductPeriodCommandHandler updateHandler;
 
@@ -46,13 +42,6 @@ public class ItemDeductPeriodWebService extends WebService {
 	@Path("update")
 	public void updateItemDeductPeriod(UpdateItemDeductPeriodCommand command) {
 		this.updateHandler.handle(command);
-
-	}
-
-	@POST
-	@Path("delete")
-	public void deleteItemDeductPeriod(DeleteItemDeductPeriodCommand command) {
-		this.deleteHandler.handle(command);
 
 	}
 
