@@ -265,7 +265,6 @@ var nts;
                                         self.loadPension(dto);
                                         self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
                                         self.isLoading(false);
-                                        $('.save-error').ntsError('clear');
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
@@ -280,10 +279,15 @@ var nts;
                                     }
                                     return dfd.promise();
                                 };
+                                ScreenModel.prototype.clearErrors = function () {
+                                    if (nts.uk.ui._viewModel) {
+                                        $('.save-error').ntsError('clear');
+                                    }
+                                };
                                 ScreenModel.prototype.onSelectMaster = function (code) {
                                     var self = this;
                                     self.isClickHistory(false);
-                                    $('.save-error').ntsError('clear');
+                                    self.clearErrors();
                                 };
                                 ScreenModel.prototype.onRegistNew = function () {
                                     var self = this;
