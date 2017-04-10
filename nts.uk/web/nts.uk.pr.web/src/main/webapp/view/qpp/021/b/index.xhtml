@@ -74,7 +74,7 @@
 							<div>
 								<div id="B_LBL_005" data-bind="ntsFormLabel: { required: true }">帳表レイアウトの選択</div>
 								<br />
-								<div id = "B_SEL_004"
+								<div id="B_SEL_004"
 									data-bind="ntsRadioBoxGroup: {
 									options: selectCategorys,
 									optionsValue: 'rbCode',
@@ -84,7 +84,45 @@
 									}">
 								</div>
 							</div>
-
+							<table>
+								<tr>
+									<td>
+										<table id="B_LST_001"
+											data-bind="ntsGridList: {								
+											height: 350,
+											dataSource: selectPrintTypes,
+											primaryKey: 'printTypeCode',
+											columns: {[
+												{ headerText: 'コード', key: 'printTypeCode', width: 100, hidden: true },
+                    							{ headerText: '印刷タイプリスト', key: 'printTypeName', width: 150 },
+											]},
+											deleteOptions : {visible : false, deleteField: 'deletable'},
+											multiple: false,
+											value: selectPrintTypeCode
+											}" class="cf">
+										</table>
+									</td>
+									<td>
+										<table id="B_LST_002"
+											data-bind="ntsGridList: {								
+											height: 350,
+											dataSource: selectPrintTypes,
+											primaryKey: 'printTypeCode',
+											columns: {[
+												{ headerText: 'コード', key: 'printTypeCode', width: 100, hidden: true },
+                    							{ headerText: '印刷タイプリスト', key: 'printTypeName', width: 150 },
+											]},
+											deleteOptions : {visible : false, deleteField: 'deletable'},
+											multiple: false,
+											value: selectPrintTypeCode
+											}" class="cf">
+										</table>
+									</td>
+									<td>
+									
+									</td>
+								</tr>
+							</table>
 
 						</div>
 						<div class="A_LBL_003-step">contents step2</div>

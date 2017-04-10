@@ -26,6 +26,13 @@ var qpp021;
                         new RadioBoxModel(2, '明細レイアウトから選択する'),
                     ]);
                     self.selectedRbCode = ko.observable(1);
+                    self.selectPrintTypes = ko.observableArray([
+                        new PrintTypeModel('01', 'A4縦1人印刷'),
+                        new PrintTypeModel('02', 'A4縦2人印刷'),
+                        new PrintTypeModel('03', 'A4縦3人印刷'),
+                        new PrintTypeModel('04', 'A4横2人印刷'),
+                    ]);
+                    self.selectPrintTypeCode = ko.observable("01");
                 }
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
@@ -52,6 +59,13 @@ var qpp021;
                     this.rbName = rbName;
                 }
                 return RadioBoxModel;
+            }());
+            var PrintTypeModel = (function () {
+                function PrintTypeModel(printTypeCode, printTypeName) {
+                    this.printTypeCode = printTypeCode;
+                    this.printTypeName = printTypeName;
+                }
+                return PrintTypeModel;
             }());
         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
     })(b = qpp021.b || (qpp021.b = {}));

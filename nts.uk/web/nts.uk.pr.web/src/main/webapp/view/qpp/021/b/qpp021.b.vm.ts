@@ -2,10 +2,16 @@ module qpp021.b.viewmodel {
     export class ScreenModel {
         stepList: Array<nts.uk.ui.NtsWizardStep>;
         stepSelected: KnockoutObservable<nts.uk.ui.NtsWizardStep>;
+        
         processDateComboBox: KnockoutObservableArray<ComboBoxModel>;
         selectedCbCode: KnockoutObservable<string>;
+        
         selectCategorys: KnockoutObservableArray<RadioBoxModel>;
         selectedRbCode: KnockoutObservable<number>;
+        
+        selectPrintTypes: KnockoutObservableArray<PrintTypeModel>;
+        selectPrintTypeCode:  KnockoutObservable<string>;
+        
         constructor() {
             let self = this;
             self.stepList = [
@@ -29,6 +35,14 @@ module qpp021.b.viewmodel {
                 new RadioBoxModel(2, '明細レイアウトから選択する'),
             ]);
             self.selectedRbCode = ko.observable(1);
+            
+            self.selectPrintTypes = ko.observableArray([
+                new PrintTypeModel('01', 'A4縦1人印刷'),
+                new PrintTypeModel('02', 'A4縦2人印刷'),
+                new PrintTypeModel('03', 'A4縦3人印刷'),
+                new PrintTypeModel('04', 'A4横2人印刷'),
+            ]);
+             self.selectPrintTypeCode = ko.observable("01");
             
         }
         
@@ -59,6 +73,15 @@ module qpp021.b.viewmodel {
         constructor(rbCode: number, rbName: string) {
             this.rbCode = rbCode;
             this.rbName = rbName;
+        }
+    }
+    
+    class PrintTypeModel {
+        printTypeCode: string;
+        printTypeName: string;
+        constructor(printTypeCode: string, printTypeName: string) {
+            this.printTypeCode = printTypeCode;
+            this.printTypeName = printTypeName;
         }
     }
 }
