@@ -123,22 +123,22 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 			reportContext.getDesigner().setDataSource("Header", reportData.getSalaryChartHeader());
 			
 			// Initial Variables
-			int rowIndex = FIRST_ROW_INDEX;
-			EmployeeData prevEmp = null;
-			Stack<DepartmentData> depStack = new Stack<>();
-			Map<Denomination, Long> tempDenomination = new HashMap<>();
-			double tempAccumulate = 0;
-			int members = 0;
+//			int rowIndex = FIRST_ROW_INDEX;
+//			EmployeeData prevEmp = null;
+//			Stack<DepartmentData> depStack = new Stack<>();
+//			Map<Denomination, Long> tempDenomination = new HashMap<>();
+//			double tempAccumulate = 0;
+//			int members = 0;
 			
 			PrintProcess printProcess = new PrintProcess();
 			printProcess.cells = cells;
 			printProcess.query = query;
-			printProcess.rowIndex = rowIndex;
-			printProcess.depStack = depStack;
-			printProcess.tempDenomination = tempDenomination;
-			printProcess.tempAccumulate = tempAccumulate;
-			printProcess.prevEmp = prevEmp;
-			printProcess.members = members;
+			printProcess.rowIndex = FIRST_ROW_INDEX;
+			printProcess.depStack = new Stack<>();
+			printProcess.tempDenomination = new HashMap<>();
+			printProcess.tempAccumulate = 0;
+			printProcess.prevEmp = null;
+			printProcess.members = 0;
 			
 			// Fill Data
 			this.printData(printProcess, empList);
@@ -157,12 +157,8 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	/**
 	 * Prints the data.
 	 *
-	 * @param cells the cells
+	 * @param printProcess the print process
 	 * @param empList the emp list
-	 * @param query the query
-	 * @param rowIndex the row index
-	 * @param prevEmp the prev emp
-	 * @param depStack the dep stack
 	 */
 	private void printData(PrintProcess printProcess, List<EmployeeData> empList) {
 		// Temp Gross Vaviables
@@ -194,8 +190,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 				this.printEmpSameDep(printProcess, isGreenRow);
 				printProcess.prevEmp = currentEmp;
 				continue;
-			}
-			if (!prevDepCode.equals(currentDepCode)) {
+			} else {
 				// Push Temp DepartmentData To Stack and Reset Temp vars
 				this.pushToStackAndReset(printProcess);
 				// Cumulate to Temp vars
@@ -203,7 +198,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 
 				// Print Sub Accumulated payment of Sub Department
 				this.fillAccSubDep(printProcess);
-				
+
 				// Print Employee
 				this.printEmpDifferentDep(printProcess, isGreenRow);
 				printProcess.prevEmp = currentEmp;
@@ -225,11 +220,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	/**
 	 * Last cumulated deps.
 	 *
-	 * @param cells the cells
-	 * @param rowIndex the row index
-	 * @param query the query
-	 * @param depStack the dep stack
-	 * @param empDep the emp dep
+	 * @param printProcess the print process
 	 */
 	private void lastCumulatedDeps(PrintProcess printProcess){
 		while (!printProcess.depStack.isEmpty()) {
@@ -256,17 +247,10 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	}
 	
 	/**
-	 * Prints the if same dep.
+	 * Prints the emp same dep.
 	 *
-	 * @param cells the cells
-	 * @param rowIndex the row index
-	 * @param query the query
-	 * @param currentEmp the current emp
-	 * @param tempDenomination the temp denomination
-	 * @param tempAccumulate the temp accumulate
-	 * @param members the members
+	 * @param printProcess the print process
 	 * @param isGreen the is green
-	 * @return the employee data
 	 */
 	private void printEmpSameDep(PrintProcess printProcess, MutableBoolean isGreen) {
 		SalaryTableReportQuery query = printProcess.query;
@@ -285,17 +269,9 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	}
 	
 	/**
-	 * Prints the if different dep.
+	 * Push to stack and reset.
 	 *
-	 * @param cells the cells
-	 * @param rowIndex the row index
-	 * @param query the query
-	 * @param prevEmp the prev emp
-	 * @param tempDenomination the temp denomination
-	 * @param tempAccumulate the temp accumulate
-	 * @param members the members
-	 * @param depStack the dep stack
-	 * @return the map
+	 * @param printProcess the print process
 	 */
 	private void pushToStackAndReset(PrintProcess printProcess){
 		
@@ -317,12 +293,8 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	/**
 	 * Prints the emp different dep.
 	 *
-	 * @param cells the cells
-	 * @param rowIndex the row index
-	 * @param query the query
-	 * @param currentEmp the current emp
+	 * @param printProcess the print process
 	 * @param isGreen the is green
-	 * @return the employee data
 	 */
 	private void printEmpDifferentDep(PrintProcess printProcess, MutableBoolean isGreen){
 		SalaryTableReportQuery query = printProcess.query;
@@ -345,12 +317,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	/**
 	 * Fill acc sub dep.
 	 *
-	 * @param cells the cells
-	 * @param rowIndex the row index
-	 * @param query the query
-	 * @param currentEmp the current emp
-	 * @param prevEmp the prev emp
-	 * @param depStack the dep stack
+	 * @param printProcess the print process
 	 */
 	private void fillAccSubDep(PrintProcess printProcess){
 		
@@ -367,15 +334,9 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	}
 
 	/**
-	 * Fill acc at the end.
+	 * Prints the acc at the end.
 	 *
-	 * @param query the query
-	 * @param cells the cells
-	 * @param rowIndex the row index
-	 * @param prevEmp the prev emp
-	 * @param tempDenomination the temp denomination
-	 * @param tempAccumulate the temp accumulate
-	 * @param depStack the dep stack
+	 * @param printProcess the print process
 	 */
 	private void printAccAtTheEnd(PrintProcess printProcess) {
 		// Print Accumulated Hierarchy of Department
@@ -391,10 +352,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	/**
 	 * Cumulate to temp.
 	 *
-	 * @param tempDenomination the temp denomination
-	 * @param tempAccumulate the temp accumulate
-	 * @param members the members
-	 * @param currentEmp the current emp
+	 * @param printProcess the print process
 	 */
 	private void cumulateToTemp(PrintProcess printProcess){
 		EmployeeData currentEmp = printProcess.currentEmp;
@@ -404,6 +362,15 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 		printProcess.tempAccumulate += currentEmp.getPaymentAmount();
 		printProcess.members ++;
 	}
+	
+	/**
+	 * Cumulate to amount.
+	 *
+	 * @param tempDenomination the temp denomination
+	 * @param tempAccumulate the temp accumulate
+	 * @param members the members
+	 * @param currentEmp the current emp
+	 */
 	private void cumulateToAmount(Map<Denomination, Long> tempDenomination, 
 			MutableDouble tempAccumulate, MutableInt members, EmployeeData currentEmp){
 		// Cumulate to temple variables
@@ -413,17 +380,10 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	}
 	
 	/**
-	 * Fill first emp.
+	 * Prints the first emp.
 	 *
-	 * @param cells the cells
-	 * @param rowIndex the row index
-	 * @param query the query
-	 * @param currentEmp the current emp
+	 * @param printProcess the print process
 	 * @param isGreen the is green
-	 * @param tempDenomination the temp denomination
-	 * @param tempAccumulate the temp accumulate
-	 * @param members the members
-	 * @return the employee data
 	 */
 	private void printFirstEmp(PrintProcess printProcess, MutableBoolean isGreen){
 		// Print Title Row and Department Info
@@ -451,8 +411,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	/**
 	 * None break page.
 	 *
-	 * @param cells the cells
-	 * @param currentRow the current row
+	 * @param printProcess the print process
 	 */
 	private void noneBreakPage(PrintProcess printProcess) {
 		int currentRow = printProcess.rowIndex;
@@ -468,8 +427,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	/**
 	 * Break page border line.
 	 *
-	 * @param cells the cells
-	 * @param currentRow the current row
+	 * @param printProcess the print process
 	 */
 	private void breakPageBorderLine(PrintProcess printProcess) {
 		int currentRow = printProcess.rowIndex;
@@ -487,8 +445,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	/**
 	 * Break page by option.
 	 *
-	 * @param cells the cells
-	 * @param currentRow the current row
+	 * @param printProcess the print process
 	 */
 	private void breakPageByOption(PrintProcess printProcess){
 		int currentRow = printProcess.rowIndex;
@@ -508,8 +465,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	/**
 	 * Creates the end row range.
 	 *
-	 * @param cells the cells
-	 * @param currentRow the current row
+	 * @param printProcess the print process
 	 */
 	private void createEndRowRange(PrintProcess printProcess){
 		Cells cells = printProcess.cells;
@@ -521,8 +477,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	/**
 	 * Creates the start row range.
 	 *
-	 * @param cells the cells
-	 * @param currentRow the current row
+	 * @param printProcess the print process
 	 */
 	private void createStartRowRange(PrintProcess printProcess){
 		Cells cells = printProcess.cells;
@@ -532,10 +487,9 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	}
 	
 	/**
-	 * Creates the row range.
+	 * Creates the left right border.
 	 *
-	 * @param cells the cells
-	 * @param firstRow the first row
+	 * @param printProcess the print process
 	 */
 	private void createLeftRightBorder(PrintProcess printProcess) {
 		Cells cells = printProcess.cells;
@@ -550,11 +504,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	/**
 	 * Prints the sub accumulated.
 	 *
-	 * @param cells the cells
-	 * @param rowIndex the row index
-	 * @param query the query
-	 * @param depStack the dep stack
-	 * @param currentDepLevel the current dep level
+	 * @param printProcess the print process
 	 */
 	private void printSubAccumulated(PrintProcess printProcess){
 		// Peek Department Data from Stack
@@ -583,10 +533,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	/**
 	 * Push dep data.
 	 *
-	 * @param tempDenomination the temp denomination
-	 * @param accumulatePayment the accumulate payment
-	 * @param depStack the dep stack
-	 * @param prevEmp the prev emp
+	 * @param printProcess the print process
 	 */
 	private void pushDepData(PrintProcess printProcess){
 		// Set Denomination for Temp DepartmentData
@@ -606,10 +553,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	/**
 	 * Prints the dep info.
 	 *
-	 * @param empdata the empdata
-	 * @param cells the cells
-	 * @param rowIndex the row index
-	 * @param query the query
+	 * @param printProcess the print process
 	 */
 	private void printDepInfo(PrintProcess printProcess) {
 		EmployeeData currentEmp = printProcess.currentEmp;
@@ -630,24 +574,36 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 		}
 		printProcess.rowIndex ++;
 		// Breaking Page
+		this.breakPage(printProcess);
+	}
+	
+	private void setCumCellStyle(PrintProcess printProcess) {
+		Cells cells = printProcess.cells;
+		int rowIndex = printProcess.rowIndex;
+		// Style for cells
+		for (int i = FIRST_COLUMN_INDEX; i < LAST_COLUMN_INDEX; i++) {
+			Cell cell = cells.get(rowIndex, i);
+			StyleModel stylemodel = new StyleModel();
+			stylemodel.backgroundColor = LIGHT_BLUE_COLOR;
+			stylemodel.borderType = CellsBorderType.DoubleTopBorder;
+			this.setCellStyle1(cell, stylemodel);
+			createLeftRightBorder(printProcess);
+		}
+	}
+	
+	private void breakPage(PrintProcess printProcess){
 		int breakCode = printProcess.query.getSelectedBreakPageCode();
 		if (breakCode == NONE_BREAK_CODE) {
 			this.noneBreakPage(printProcess);
 		}
-		if ((breakCode == HIERARCHY_BREAK_CODE) || (breakCode == DEPARTMENT_BREAK_CODE)){
+		if ((breakCode == HIERARCHY_BREAK_CODE) || (breakCode == DEPARTMENT_BREAK_CODE)) {
 			this.breakPageBorderLine(printProcess);
 		}
 	}
-	
 	/**
 	 * Prints the total of dep.
 	 *
-	 * @param cells the cells
-	 * @param rowIndex the row index
-	 * @param denomination the denomination
-	 * @param amount the amount
-	 * @param members the members
-	 * @param query the query
+	 * @param printProcess the print process
 	 */
 	private void printTotalOfDep(PrintProcess printProcess) {
 		SalaryTableReportQuery query = printProcess.query;
@@ -655,8 +611,6 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 		int rowIndex = printProcess.rowIndex;
 		int members = printProcess.members;
 		if (query.getIsPrintTotalOfDepartment()) {
-			int breakCode = query.getSelectedBreakPageCode();
-			
 			// Fill Data to cells
 			cells.get(rowIndex, COLUMN_INDEX[0]).setValue("部門計" + SPACES1 + members + "人");
 			for (Denomination d : Denomination.values()) {
@@ -666,34 +620,20 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 			cells.get(rowIndex, COLUMN_INDEX[11]).setValue(printProcess.tempAccumulate);
 			
 			// Style for cells
-			for (int i = FIRST_COLUMN_INDEX; i < LAST_COLUMN_INDEX; i++) {
-				Cell cell = cells.get(rowIndex, i);
-				StyleModel stylemodel = new StyleModel();
-				stylemodel.backgroundColor = LIGHT_BLUE_COLOR;
-				stylemodel.borderType = CellsBorderType.DoubleTopBorder;
-				this.setCellStyle1(cell, stylemodel);
-				createLeftRightBorder(printProcess);
-			}
+			this.setCumCellStyle(printProcess);
 			printProcess.rowIndex ++;
 			
 			// Breaking Page
-			if (breakCode == NONE_BREAK_CODE) {
-				this.noneBreakPage(printProcess);
-			}
-			if ((breakCode == HIERARCHY_BREAK_CODE) || (breakCode == DEPARTMENT_BREAK_CODE)) {
-				this.breakPageBorderLine(printProcess);
-			}
+			this.breakPage(printProcess);
 		}
 
 	}
 	
 	/**
-	 * Checks if is printed or not.
+	 * Prints the acc by hierarchy.
 	 *
-	 * @param query the query
+	 * @param printProcess the print process
 	 * @param depToPrint the dep to print
-	 * @param cells the cells
-	 * @param rowIndex the row index
 	 */
 	private void printAccByHierarchy(PrintProcess printProcess, DepartmentData depToPrint) {
 		SalaryTableReportQuery query = printProcess.query;
@@ -718,9 +658,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	/**
 	 * Prints the gross total.
 	 *
-	 * @param query the query
-	 * @param cells the cells
-	 * @param rowIndex the row index
+	 * @param printProcess the print process
 	 * @param totalmembers the totalmembers
 	 * @param denomination the denomination
 	 * @param amount the amount
@@ -754,13 +692,10 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	/**
 	 * Prints the accumulated.
 	 *
-	 * @param cells the cells
-	 * @param rowIndex the row index
-	 * @param depData the dep data
-	 * @param query the query
+	 * @param printProcess the print process
+	 * @param depToPrint the dep to print
 	 */
 	private void printAccumulated(PrintProcess printProcess, DepartmentData depToPrint) {
-		int breakCode = printProcess.query.getSelectedBreakPageCode();
 		Cells cells = printProcess.cells;
 		int rowIndex = printProcess.rowIndex;
 		cells.get(rowIndex, COLUMN_INDEX[0]).setValue(depToPrint.getDepName() + SPACES + depToPrint.getDepPath());
@@ -769,27 +704,16 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 			cells.get(rowIndex, columnIndex).setValue(depToPrint.getDenomination().get(d) + "枚");
 		}
 		cells.get(rowIndex, COLUMN_INDEX[11]).setValue(depToPrint.getAccumulatedPayment());
+		
 		// Style for cells
-		for (int i = FIRST_COLUMN_INDEX; i < LAST_COLUMN_INDEX; i++) {
-			Cell cell = cells.get(rowIndex, i);
-			StyleModel stylemodel = new StyleModel();
-			stylemodel.backgroundColor = LIGHT_BLUE_COLOR;
-			stylemodel.borderType = CellsBorderType.DoubleTopBorder;
-			this.setCellStyle1(cell, stylemodel);
-			createLeftRightBorder(printProcess);
-		}
+		this.setCumCellStyle(printProcess);
 		printProcess.rowIndex ++;
 		// Breaking Page
-		if (breakCode == NONE_BREAK_CODE) {
-			this.noneBreakPage(printProcess);
-		}	
-		if ((breakCode == HIERARCHY_BREAK_CODE) || (breakCode == DEPARTMENT_BREAK_CODE)){
-			this.breakPageBorderLine(printProcess);
-		}
+		this.breakPage(printProcess);
 	}
 
 	/**
-	 * Cumulate denomination.
+	 * Cumulate gross denomination.
 	 *
 	 * @param denomination the denomination
 	 * @param currentEmpDeno the current emp deno
@@ -803,6 +727,12 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 			denomination.replace(d, quantity);
 		}		
 	}
+	
+	/**
+	 * Cumulate denomination.
+	 *
+	 * @param printProcess the print process
+	 */
 	private void cumulateDenomination(PrintProcess printProcess) {
 		Map<Denomination, Long> denomination = printProcess.tempDenomination;
 		for (Denomination d : Denomination.values()) {
@@ -838,12 +768,8 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	/**
 	 * Prints the employee.
 	 *
-	 * @param empdata the empdata
-	 * @param cells the cells
-	 * @param rowIndex the row index
+	 * @param printProcess the print process
 	 * @param isGreen the is green
-	 * @param query the query
-	 * @return the employee data
 	 */
 	private void printEmployee(PrintProcess printProcess, 
 			MutableBoolean isGreen) {
@@ -875,23 +801,14 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 			isGreen.setValue(switchColor(isGreen.getValue()));
 			printProcess.rowIndex ++;
 		}
-
 		// Breaking Page
-		int breakCode = printProcess.query.getSelectedBreakPageCode();
-		if (breakCode == NONE_BREAK_CODE) {
-			this.noneBreakPage(printProcess);
-		}
-		if ((breakCode == HIERARCHY_BREAK_CODE) || (breakCode == DEPARTMENT_BREAK_CODE)){
-			this.breakPageBorderLine(printProcess);
-		}
-
+		this.breakPage(printProcess);
 	}
 
 	/**
 	 * Creates the title.
 	 *
-	 * @param cells the cells
-	 * @param rowIndex the row index
+	 * @param printProcess the print process
 	 */
 	private void createTitle(PrintProcess printProcess) {
 		Cells cells = printProcess.cells;
@@ -1011,15 +928,36 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	}
 	
 
+	/**
+	 * The Class PrintProcess.
+	 */
 	class PrintProcess{
+		
+		/** The row index. */
 		int rowIndex;
+		
+		/** The cells. */
 		Cells cells;
+		
+		/** The query. */
 		SalaryTableReportQuery query;
+		
+		/** The dep stack. */
 		Stack<DepartmentData> depStack;
+		
+		/** The current emp. */
 		EmployeeData currentEmp;
+		
+		/** The prev emp. */
 		EmployeeData prevEmp;
+		
+		/** The temp denomination. */
 		Map<Denomination, Long> tempDenomination;
+		
+		/** The temp accumulate. */
 		double tempAccumulate; 
+		
+		/** The members. */
 		int members;
 	}
 }

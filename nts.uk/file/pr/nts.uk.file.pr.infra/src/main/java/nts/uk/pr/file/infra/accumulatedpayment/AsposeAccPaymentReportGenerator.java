@@ -180,7 +180,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 	 */
 	private void createContent(Cells cells, int firstRowIndex,
 			List<AccPaymentItemData> accumulatedPaymentList){
-		for(int i = 0; i < accumulatedPaymentList.size(); i++, firstRowIndex++){
+		for(int i = 0; i < accumulatedPaymentList.size(); i++){
 			// Set Row height
 			cells.setRowHeightPixel(firstRowIndex, ROW_HEIGHT);
 			
@@ -222,6 +222,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 					setBackgroundcolor(oddCell);
 				}
 			}
+			firstRowIndex ++;
 		}
 	}
 
