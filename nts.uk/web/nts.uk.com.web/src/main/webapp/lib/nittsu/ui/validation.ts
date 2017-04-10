@@ -157,10 +157,10 @@ module nts.uk.ui.validation {
                 parseResult = time.parseYearMonthDate(inputText);
             } else {
                 // TODO : Validate base on moment
-                var format: string = text.getISO8601Format(this.option.inputFormat);
+                var format: string = text.getISOFormat(this.option.inputFormat);
                 var momentObject: moment.Moment = moment(inputText);
                 if (momentObject.isValid()) {
-                    var format = text.getISO8601Format(this.option.inputFormat);
+                    var format = text.getISOFormat(this.option.inputFormat);
                     return momentObject.format(format);
                 }
                 return inputText;

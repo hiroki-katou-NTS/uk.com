@@ -8,12 +8,14 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
+import nts.arc.primitive.constraint.StringRegEx;
 
 /**
  * The Class WageTableCode.
  */
 @StringMaxLength(3)
 @StringCharType(CharType.NUMERIC)
+@StringRegEx("\\d{3}")
 public class WtCode extends StringPrimitiveValue<WtCode> {
 
 	/**

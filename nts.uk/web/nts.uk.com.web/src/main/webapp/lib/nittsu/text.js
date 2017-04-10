@@ -343,7 +343,9 @@ var nts;
                     return "top";
             }
             text_1.reverseDirection = reverseDirection;
-            function getISO8601Format(format) {
+            function getISOFormat(format) {
+                if (format.toLowerCase() === "iso")
+                    return "YYYY-MM-DD[T]HH:mm:ss.SSS[Z]";
                 if (format.toLowerCase() === "date")
                     return "YYYY/MM/DD";
                 if (format.toLowerCase() === "yearmonth")
@@ -355,7 +357,7 @@ var nts;
                 format = format.replace(/y/g, "Y");
                 return format;
             }
-            text_1.getISO8601Format = getISO8601Format;
+            text_1.getISOFormat = getISOFormat;
             var StringFormatter = (function () {
                 function StringFormatter(args) {
                     this.args = args;
@@ -399,7 +401,7 @@ var nts;
                     else {
                         result = moment(source, "YYYYMMDD");
                         if (result.isValid()) {
-                            var format = getISO8601Format(this.option.inputFormat);
+                            var format = getISOFormat(this.option.inputFormat);
                             return result.format(format);
                         }
                         return source;

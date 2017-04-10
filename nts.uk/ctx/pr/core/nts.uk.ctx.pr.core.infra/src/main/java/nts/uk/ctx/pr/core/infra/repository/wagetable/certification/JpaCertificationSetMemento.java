@@ -14,7 +14,7 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCer
 public class JpaCertificationSetMemento implements CertificationSetMemento {
 
 	/** The type value. */
-	protected QwtmtWagetableCertify typeValue;
+	private QwtmtWagetableCertify typeValue;
 
 	/**
 	 * Instantiates a new jpa certification set memento.

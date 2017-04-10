@@ -1,4 +1,3 @@
-/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -8,24 +7,19 @@ var nts;
             var koExtentions;
             (function (koExtentions) {
                 var DatePickerBindingHandler = (function () {
-                    /**
-                     * Constructor.
-                     */
                     function DatePickerBindingHandler() {
                     }
-                    /**
-                     * Init.
-                     */
                     DatePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var value = data.value;
                         var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
-                        dateFormat = uk.text.getISO8601Format(dateFormat);
+                        dateFormat = uk.text.getISOFormat(dateFormat);
                         var hasDayofWeek = (dateFormat.indexOf("ddd") !== -1);
                         var dayofWeekFormat = dateFormat.replace(/[^d]/g, "");
                         dateFormat = dateFormat.replace(/d/g, "").trim();
                         var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : "";
                         var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var button = (data.button !== undefined) ? ko.unwrap(data.button) : false;
                         var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
                         var endDate = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
@@ -36,11 +30,8 @@ var nts;
                             container.attr("id", idString);
                         }
                         container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
-                        var inputClass = "";
-                        if (dateFormat.length < 10)
-                            inputClass = "yearmonth-picker";
-                        var $input = $("<input id='" + container.attr("id") + "-input' class='ntsDatepicker nts-input' />")
-                            .addClass(inputClass);
+                        var inputClass = (dateFormat.length < 10) ? "yearmonth-picker" : "";
+                        var $input = $("<input id='" + container.attr("id") + "-input' class='ntsDatepicker nts-input' />").addClass(inputClass);
                         container.append($input);
                         if (hasDayofWeek) {
                             var lengthClass = (dayofWeekFormat.length > 3) ? "long-day" : "short-day";
@@ -48,7 +39,6 @@ var nts;
                             $input.addClass(lengthClass);
                             container.append($label);
                         }
-                        // Init Datepicker
                         $input.datepicker({
                             language: 'ja-JP',
                             format: dateFormat,
@@ -82,22 +72,18 @@ var nts;
                                 $input.ntsError('set', "Invalid format");
                             }
                         }));
-                        var length = 10, atomWidth = 9.5;
-                        //$input.width(Math.floor(atomWidth * length));
                     };
-                    /**
-                     * Update
-                     */
                     DatePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var value = data.value;
                         var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
-                        dateFormat = uk.text.getISO8601Format(dateFormat);
+                        dateFormat = uk.text.getISOFormat(dateFormat);
                         var hasDayofWeek = (dateFormat.indexOf("ddd") !== -1);
                         var dayofWeekFormat = dateFormat.replace(/[^d]/g, "");
                         dateFormat = dateFormat.replace(/d/g, "").trim();
                         var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : dateFormat;
                         var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var button = (data.button !== undefined) ? ko.unwrap(data.button) : false;
                         var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
                         var endDate = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
@@ -106,10 +92,9 @@ var nts;
                         var init = container.data("init");
                         var $input = container.find(".nts-input");
                         var $label = container.find(".dayofweek-label");
-                        // Value Binding
-                        var dateFormatValue = moment.utc(value(), valueFormat).format(dateFormat);
+                        var dateFormatValue = (value() !== "") ? moment.utc(value(), valueFormat).format(dateFormat) : "";
                         if (init === true || (moment.utc($input.datepicker('getDate')).format(dateFormat) !== dateFormatValue)) {
-                            if (dateFormatValue !== "Invalid date")
+                            if (dateFormatValue !== "")
                                 $input.datepicker('setDate', dateFormatValue);
                             else
                                 $input.datepicker('setDate', null);
@@ -117,7 +102,6 @@ var nts;
                                 $label.text("(" + moment.utc(value(), valueFormat).format(dayofWeekFormat) + ")");
                         }
                         container.data("init", false);
-                        // Properties Binding
                         $input.datepicker('setStartDate', startDate);
                         $input.datepicker('setEndDate', endDate);
                         $input.prop("disabled", disabled);
@@ -131,4 +115,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=datepicker-ko-ext.js.map
