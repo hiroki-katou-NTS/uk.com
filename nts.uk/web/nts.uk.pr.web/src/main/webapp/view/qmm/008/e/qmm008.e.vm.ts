@@ -198,7 +198,6 @@ module nts.uk.pr.view.qmm008.e {
             //save (mode: update or create new)
             public save() {
                 var self = this;
-                self.dirty.reset();
                 //if update office
                 if (!self.enabled())
                     self.updateOffice();
@@ -216,9 +215,10 @@ module nts.uk.pr.view.qmm008.e {
                     self.loadAllInsuranceOfficeData().done(function() {
                         //focus add new item
                         self.selectedOfficeCode(self.officeModel().officeCode());
-                    });   
+                    });
+                    self.dirty.reset();
                 }).fail(function() {
-                    //update fail    
+                    //update fail
                 });
             }
 
@@ -231,6 +231,7 @@ module nts.uk.pr.view.qmm008.e {
                         //focus add new item
                         self.selectedOfficeCode(self.officeModel().officeCode());
                     });
+                    self.dirty.reset();
                 }).fail(function(res) {
                     if (res.messageId == self.errorList()[2].messageId) {
                         $('#officeCode').ntsError('set', self.errorList()[2].message);
@@ -320,6 +321,7 @@ module nts.uk.pr.view.qmm008.e {
                 }
                 else {
                     self.addNew();
+                    self.showConfirmDialog(true);
                 }
             }
             //reset all field when click add new office button
@@ -358,6 +360,7 @@ module nts.uk.pr.view.qmm008.e {
                 self.selectedOfficeCode('');
                 self.showConfirmDialog(false);
                 self.previousSelectedOfficeCode('');
+                self.dirty = new nts.uk.ui.DirtyChecker(self.officeModel);
             }
             
             closeDialogWithDirtyCheck() {

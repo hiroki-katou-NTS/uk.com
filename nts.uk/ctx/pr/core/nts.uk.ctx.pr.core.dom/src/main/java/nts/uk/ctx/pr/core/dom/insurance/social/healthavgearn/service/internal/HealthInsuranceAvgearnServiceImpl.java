@@ -28,6 +28,9 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRounding;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
 
+/**
+ * The Class HealthInsuranceAvgearnServiceImpl.
+ */
 @Stateless
 public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearnService {
 
@@ -39,12 +42,16 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 	@Inject
 	private HealthInsuranceAvgearnRepository healthInsuranceAvgearnRepository;
 
+	/** The rounding number. */
 	@Inject
 	private RoundingNumber roundingNumber;
 
 	/** The Constant OneThousand. */
 	public static final BigDecimal OneThousand = BigDecimal.valueOf(1000);
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.service.HealthInsuranceAvgearnService#validateRequiredItem(nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn)
+	 */
 	@Override
 	public void validateRequiredItem(HealthInsuranceAvgearn healthInsuranceAvgearn) {
 		if (healthInsuranceAvgearn.getCompanyAvg() == null || healthInsuranceAvgearn.getPersonalAvg() == null) {
@@ -53,6 +60,9 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.service.HealthInsuranceAvgearnService#updateHealthInsuranceRateAvgEarn(nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate)
+	 */
 	@Override
 	public void updateHealthInsuranceRateAvgEarn(HealthInsuranceRate healthInsuranceRate) {
 		List<AvgEarnLevelMasterSetting> listAvgEarnLevelMasterSetting = avgEarnLevelMasterSettingRepository
@@ -69,12 +79,10 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 	/**
 	 * Calculate avgearn value.
 	 *
-	 * @param masterRate
-	 *            the master rate
-	 * @param rateItems
-	 *            the rate items
-	 * @param isPersonal
-	 *            the is personal
+	 * @param roundingMethods the rounding methods
+	 * @param masterRate the master rate
+	 * @param rateItems the rate items
+	 * @param isPersonal the is personal
 	 * @return the health insurance avgearn value
 	 */
 	private HealthInsuranceAvgearnValue calculateAvgearnValue(Set<HealthInsuranceRounding> roundingMethods,
@@ -133,12 +141,9 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 	/**
 	 * Calculate charge rate.
 	 *
-	 * @param masterRate
-	 *            the master rate
-	 * @param rateItem
-	 *            the rate item
-	 * @param isPersonal
-	 *            the is personal
+	 * @param masterRate the master rate
+	 * @param rateItem the rate item
+	 * @param isPersonal the is personal
 	 * @return the big decimal
 	 */
 	private BigDecimal calculateChargeRate(BigDecimal masterRate, InsuranceRateItem rateItem, boolean isPersonal) {

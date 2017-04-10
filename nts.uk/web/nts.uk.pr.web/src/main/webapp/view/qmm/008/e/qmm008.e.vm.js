@@ -155,7 +155,6 @@ var nts;
                                 };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
-                                    self.dirty.reset();
                                     if (!self.enabled())
                                         self.updateOffice();
                                     else {
@@ -168,6 +167,7 @@ var nts;
                                         self.loadAllInsuranceOfficeData().done(function () {
                                             self.selectedOfficeCode(self.officeModel().officeCode());
                                         });
+                                        self.dirty.reset();
                                     }).fail(function () {
                                     });
                                 };
@@ -177,6 +177,7 @@ var nts;
                                         self.loadAllInsuranceOfficeData().done(function () {
                                             self.selectedOfficeCode(self.officeModel().officeCode());
                                         });
+                                        self.dirty.reset();
                                     }).fail(function (res) {
                                         if (res.messageId == self.errorList()[2].messageId) {
                                             $('#officeCode').ntsError('set', self.errorList()[2].message);
@@ -231,6 +232,7 @@ var nts;
                                     }
                                     else {
                                         self.addNew();
+                                        self.showConfirmDialog(true);
                                     }
                                 };
                                 ScreenModel.prototype.addNew = function () {
@@ -264,6 +266,7 @@ var nts;
                                     self.selectedOfficeCode('');
                                     self.showConfirmDialog(false);
                                     self.previousSelectedOfficeCode('');
+                                    self.dirty = new nts.uk.ui.DirtyChecker(self.officeModel);
                                 };
                                 ScreenModel.prototype.closeDialogWithDirtyCheck = function () {
                                     var self = this;
