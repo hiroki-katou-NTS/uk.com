@@ -16,6 +16,10 @@ public class JpaPersonResiTaxRepository extends JpaRepository implements PersonR
 	private final String SEL_1 = "SELECT c FROM PprmtPersonResiTax c "
 			+ "WHERE c.pprmtPersonResiTaxPK.companyCode = :CCD" + " AND c.pprmtPersonResiTaxPK.personId = :PID"
 			+ " AND c.pprmtPersonResiTaxPK.yearKey = :Y_K";
+	
+	private final String SEL_5 ="SELECT c FROM PprmtPersonResiTax c "
+			+ "WHERE c.pprmtPersonResiTaxPK.companyCode = :CCD" + " c.residenceCode = :RESIDENCE_CD"
+			+ " AND c.pprmtPersonResiTaxPK.yearKey = :Y_K";
 
 	private PprmtPersonResiTax toEntity(PersonResiTax domain) {
 		val entity = new PprmtPersonResiTax();
@@ -72,6 +76,12 @@ public class JpaPersonResiTaxRepository extends JpaRepository implements PersonR
 	public void remove(String companyCode, String personId, int yearKey ) {
 		PprmtPersonResiTaxPK  pprmtPersonResiTaxPK = new PprmtPersonResiTaxPK(companyCode,personId, yearKey);
 		this.commandProxy().remove(PprmtPersonResiTax.class, pprmtPersonResiTaxPK);
+	}
+
+	@Override
+	public List<PersonResiTax> findByResidenceCode(String companyCode, String residenceCode, int yearKey) {
+		return this.queryProxy().query(SEL_5, PprmtPersonResiTax.class).setParameter("CCD", companyCode)
+				.setParameter("RESIDENCE_CD", residenceCode).setParameter("Y_K", yearKey).getList(c -> toDomain(c));
 	}
 
 }

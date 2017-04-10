@@ -33,6 +33,11 @@ public class Qmm025WebService extends WebService {
 	public List<PersonResiTaxDto> findAll(@PathParam("yearKey") int yearKey){
 		return this.personResiTaxFinder.findAll(yearKey);
 	}
+	@POST
+	@Path("findAll/{yearKey}/{residenceCode}")
+	public List<PersonResiTaxDto> findByResidenceCode(@PathParam("yearKey") int yearKey, @PathParam("residenceCode") String residenceCode){
+		return this.personResiTaxFinder.findByResidenceCode(residenceCode,yearKey);
+	}
 	
 	@POST
 	@Path("remove")

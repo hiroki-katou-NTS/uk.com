@@ -21,4 +21,12 @@ public class PersonResiTaxFinder {
 				.collect(Collectors.toList());
 		return result;
 	}
+	
+	public List<PersonResiTaxDto> findByResidenceCode(String residenceCode,int yearKey){
+		LoginUserContext login =  AppContexts.user();
+		List<PersonResiTaxDto> result = this.personResiTaxRepository.findByResidenceCode(login.companyCode(), residenceCode, yearKey)
+				.stream().map(x -> {return PersonResiTaxDto.fromDomain(x);})
+				.collect(Collectors.toList());
+		return result;
+	}
 }

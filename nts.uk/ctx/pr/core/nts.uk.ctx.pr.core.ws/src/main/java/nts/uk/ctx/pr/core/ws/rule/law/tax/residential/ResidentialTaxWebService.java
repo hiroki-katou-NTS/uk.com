@@ -18,6 +18,7 @@ import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.UpdateResidential
 import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.ResidentialTaxDetailDto;
 import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.ResidentialTaxDto;
 import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.ResidentialTaxFinder;
+import nts.uk.shr.com.context.AppContexts;
 
 @Path("pr/core/residential")
 @Produces("application/json")
@@ -35,13 +36,6 @@ public class ResidentialTaxWebService extends WebService {
 	@Path("findallresidential")
 	public List<ResidentialTaxDto> getAllResidential() {
 		return this.finder.getAllResidentialTax();
-	}
-
-	@POST
-	@Path("findResidentialTax/{resiTaxCode}/{resiTaxReportCode}")
-	public List<ResidentialTaxDto> getAllResidialTax(@PathParam("resiTaxCode") String resiTaxCode,
-			@PathParam("resiTaxReportCode") String resiTaxReportCode) {
-		return this.finder.getAllResidentialTax(resiTaxCode, resiTaxReportCode);
 	}
 
 	// companyCode != 0000
@@ -65,6 +59,31 @@ public class ResidentialTaxWebService extends WebService {
 		String companyCode = "0000";
 		return this.finder.getAllResidentialTax(companyCode);
 	}
+	
+	@POST
+	@Path("findResidentialTax/{resiTaxCode}/{resiTaxReportCode}")
+	public List<ResidentialTaxDto> getAllResidialTax(@PathParam("resiTaxCode") String resiTaxCode,
+			@PathParam("resiTaxReportCode") String resiTaxReportCode) {
+		return this.finder.getAllResidentialTax(resiTaxCode, resiTaxReportCode);
+	}
+
+	@POST
+	@Path("findallresidential/resiTaxCode")
+	public List<ResidentialTaxDto> getAllResidential(String resiTaxCode, String resiTaxReportCode) {
+		return this.finder.getAllResidentialTax();
+	}
+	@POST
+	@Path("findallresidential/resiTaxReportCode")
+	public List<ResidentialTaxDetailDto> getAllResiTax( @PathParam("resiTaxReportCode") String resiTaxReportCode){
+		String companyCode ="";
+		if(AppContexts.user() != null){
+			companyCode = AppContexts.user().companyCode();
+			return this.finder.getAllResiTax(companyCode, resiTaxReportCode);
+		}else{
+			
+			return null;
+		}
+	}
 
 	@POST
 	@Path("addresidential")
@@ -81,13 +100,7 @@ public class ResidentialTaxWebService extends WebService {
 	@POST
 	@Path("deleteresidential")
 	public void deleleResidential(DeleteResidentialTaxCommand command) {
-		System.out.println(command);
 		this.deleleData.handle(command);
 	}
 
-	@POST
-	@Path("findallresidential/resiTaxCode")
-	public List<ResidentialTaxDto> getAllResidential(String resiTaxCode, String resiTaxReportCode) {
-		return this.finder.getAllResidentialTax();
-	}
 }

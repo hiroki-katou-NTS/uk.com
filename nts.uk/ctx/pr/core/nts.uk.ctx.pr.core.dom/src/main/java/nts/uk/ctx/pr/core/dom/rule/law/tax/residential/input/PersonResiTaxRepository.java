@@ -16,6 +16,15 @@ public interface PersonResiTaxRepository {
 	 * @return
 	 */
 	List<PersonResiTax> findAll(String companyCode, String personId, int yearKey);
+	
+	/**
+	 * 
+	 * @param companyCode
+	 * @param residenceCode
+	 * @param yearKey
+	 * @return
+	 */
+	List<PersonResiTax> findByResidenceCode(String companyCode, String residenceCode, int yearKey);
 	/**
 	 * 
 	 * @param domain

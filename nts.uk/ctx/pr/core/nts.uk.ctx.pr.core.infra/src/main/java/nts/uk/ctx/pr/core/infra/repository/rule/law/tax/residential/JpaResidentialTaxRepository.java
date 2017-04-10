@@ -23,7 +23,7 @@ public class JpaResidentialTaxRepository extends JpaRepository implements Reside
 	private final String SEL_2 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd AND c.qtxmtResidentialTaxPk.resiTaxCode <>:resiTaxCode AND c.resiTaxReportCode =:resiTaxReportCode ";
 	// key CCD RESI_TAX_CD
 	private final String SEL_3 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd AND c.qtxmtResidentialTaxPk.resiTaxCode =:resiTaxCode";
-
+	private final String SEL_5 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd AND c.resiTaxReportCode =:resiTaxReportCode";
 
 	private static ResidentialTax toDomain(QtxmtResidentialTax entity) {
 		val domain = ResidentialTax.createFromJavaType(entity.qtxmtResidentialTaxPk.companyCd, entity.companyAccountNo,
@@ -52,8 +52,8 @@ public class JpaResidentialTaxRepository extends JpaRepository implements Reside
 	// by companyCode
 	@Override
 	public List<ResidentialTax> getAllResidentialTax(String companyCode) {
-		List<ResidentialTax> list= this.queryProxy().query(SEL_1, QtxmtResidentialTax.class).setParameter("companyCd", companyCode)
-				.getList(c -> toDomain(c));
+		List<ResidentialTax> list = this.queryProxy().query(SEL_1, QtxmtResidentialTax.class)
+				.setParameter("companyCd", companyCode).getList(c -> toDomain(c));
 		return list;
 	}
 
@@ -63,6 +63,7 @@ public class JpaResidentialTaxRepository extends JpaRepository implements Reside
 
 	}
 
+	// UPD_1
 	@Override
 	public void update(ResidentialTax residentalTax) {
 		try {
@@ -78,24 +79,28 @@ public class JpaResidentialTaxRepository extends JpaRepository implements Reside
 		val objectKey = new QtxmtResidentialTaxPk();
 		objectKey.companyCd = companyCode;
 		objectKey.resiTaxCode = resiTaxCode;
-		System.out.println(companyCode);
-		System.out.println(resiTaxCode);
 		this.commandProxy().remove(QtxmtResidentialTax.class, objectKey);
 	}
+
 	@Override
-	public List<ResidentialTax> getAllResidentialTax(String companyCode, String resiTaxCode,
-			String resiTaxReportCode) {
-		return this.queryProxy().query(SEL_2, QtxmtResidentialTax.class).setParameter("companyCd", companyCode)
+	public List<ResidentialTax> getAllResidentialTax(String companyCd, String resiTaxCode, String resiTaxReportCode) {
+		return this.queryProxy().query(SEL_2, QtxmtResidentialTax.class).setParameter("companyCd", companyCd)
 				.setParameter("resiTaxCode", resiTaxCode).setParameter("resiTaxReportCode", resiTaxReportCode)
 				.getList(c -> toDomain(c));
 
 	}
-	@Override
-	public Optional<ResidentialTax> getResidentialTax(String companyCode, String resiTaxCode) {
-		return this.queryProxy().query(SEL_3, QtxmtResidentialTax.class).setParameter("companyCd", companyCode)
-				.setParameter("resiTaxCode", resiTaxCode)
-				.getSingle(c -> toDomain(c));
 
+	@Override
+	public Optional<ResidentialTax> getResidentialTax(String companyCd, String resiTaxCode) {
+		return this.queryProxy().query(SEL_3, QtxmtResidentialTax.class).setParameter("companyCd", companyCd)
+				.setParameter("resiTaxCode", resiTaxCode).getSingle(c -> toDomain(c));
+
+	}
+
+	@Override
+	public List<ResidentialTax> getAllResidentialTax(String companyCd, String resiTaxReportCode) {
+		return this.queryProxy().query(SEL_5, QtxmtResidentialTax.class).setParameter("companyCd", companyCd)
+				.setParameter("resiTaxReportCode", resiTaxReportCode).getList(c -> toDomain(c));
 	}
 
 }
