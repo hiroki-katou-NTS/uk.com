@@ -27,14 +27,6 @@ var qmm012;
                     var self = this;
                     k.service.getCommutelimitsByCompanyCode().done(function (CommuteNoTaxLimits) {
                         self.GridlistItems_K_001(CommuteNoTaxLimits);
-                        var selectedCode = nts.uk.ui.windows.getShared('commuNoTaxLimitCode');
-                        if (!selectedCode) {
-                            if (CommuteNoTaxLimits.length) {
-                                self.GridlistCurrentCode_K_001(CommuteNoTaxLimits[0].commuNoTaxLimitCode);
-                            }
-                        }
-                        else
-                            self.GridlistCurrentCode_K_001(selectedCode);
                     }).fail(function (res) {
                         alert(res);
                     });

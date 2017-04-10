@@ -6,8 +6,7 @@ var qmm012;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
-                    //textediter
-                    //Checkbox
+                    //002
                     this.checked_002 = ko.observable(false);
                     this.checked_003 = ko.observable(false);
                     this.checked_004 = ko.observable(false);
@@ -19,10 +18,10 @@ var qmm012;
                     this.ItemBDList = ko.observableArray([]);
                     this.CurrentCategoryAtrName = ko.observable('');
                     this.CurrentItemBD = ko.observable(null);
-                    this.CurrentItemBreakdownCode = ko.observable('');
+                    this.CurrentItemBreakdownCd = ko.observable('');
                     this.CurrentItemBreakdownName = ko.observable('');
                     this.CurrentItemBreakdownAbName = ko.observable('');
-                    this.CurrentUniteCode = ko.observable('');
+                    this.CurrentUniteCd = ko.observable('');
                     this.CurrentZeroDispSet = ko.observable(1);
                     this.CurrentItemDispAtr = ko.observable(0);
                     this.CurrentErrRangeLow = ko.observable(0);
@@ -30,8 +29,6 @@ var qmm012;
                     this.CurrentAlRangeLow = ko.observable(0);
                     this.CurrentAlRangeHigh = ko.observable(0);
                     this.enable_I_INP_002 = ko.observable(false);
-                    this.I_BTN_003_enable = ko.observable(true);
-                    this.currentItemCode = ko.observable('');
                     var self = this;
                     //start Switch Data
                     self.enable = ko.observable(true);
@@ -86,20 +83,25 @@ var qmm012;
                     self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.ItemBDList(), "childs"));
                     // end search box 
                     self.columns = ko.observableArray([
-                        { headerText: 'ード', prop: 'itemBreakdownCode', width: 100 },
+                        { headerText: 'ード', prop: 'itemBreakdownCd', width: 100 },
                         { headerText: '名', prop: 'itemBreakdownName', width: 150 }
                     ]);
+                    self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
+                    if (self.CurrentItemMaster()) {
+                        self.LoadItem();
+                        self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
+                    }
                     self.gridListCurrentCode.subscribe(function (newValue) {
                         var item = _.find(self.ItemBDList(), function (ItemBD) {
-                            return ItemBD.itemBreakdownCode == newValue;
+                            return ItemBD.itemBreakdownCd == newValue;
                         });
                         self.CurrentItemBD(item);
                     });
                     self.CurrentItemBD.subscribe(function (ItemBD) {
-                        self.CurrentItemBreakdownCode(ItemBD ? ItemBD.itemBreakdownCode : '');
+                        self.CurrentItemBreakdownCd(ItemBD ? ItemBD.itemBreakdownCd : '');
                         self.CurrentItemBreakdownName(ItemBD ? ItemBD.itemBreakdownName : '');
                         self.CurrentItemBreakdownAbName(ItemBD ? ItemBD.itemBreakdownAbName : '');
-                        self.CurrentUniteCode(ItemBD ? ItemBD.uniteCode : '');
+                        self.CurrentUniteCd(ItemBD ? ItemBD.uniteCd : '');
                         self.CurrentZeroDispSet(ItemBD ? ItemBD.zeroDispSet : 1);
                         self.checked_002(ItemBD ? ItemBD.itemDispAtr == 1 ? false : true : false);
                         self.CurrentItemDispAtr(ItemBD ? ItemBD.itemDispAtr : 0);
@@ -111,139 +113,118 @@ var qmm012;
                         self.CurrentAlRangeLow(ItemBD ? ItemBD.alRangeLow : 0);
                         self.checked_004(ItemBD ? ItemBD.alRangeHighAtr == 1 ? true : false : false);
                         self.CurrentAlRangeHigh(ItemBD ? ItemBD.alRangeHigh : 0);
-                        if (ItemBD != undefined) {
-                            //if item not undefined it mean active update mode
+                        if (self.CurrentItemBreakdownCd() != undefined) {
                             self.enable_I_INP_002(false);
                         }
                     });
-                    self.enable_I_INP_002.subscribe(function (newValue) {
-                        if (newValue) {
-                            //it mean new mode 
-                            self.I_BTN_003_enable(false);
-                            self.gridListCurrentCode('');
-                        }
-                        else {
-                            //it mean update mode
-                            self.I_BTN_003_enable(true);
-                            $('#I_INP_002').ntsError('clear');
-                        }
+                    self.checked_002.subscribe(function (newValue) {
+                        self.CurrentItemDispAtr(newValue == false ? 1 : 0);
                     });
-                    self.CurrentItemBreakdownCode.subscribe(function (newValue) {
-                        //validate item for not duplicate on client
-                        if (self.enable_I_INP_002()) {
-                            var item = _.find(self.ItemBDList(), function (ItemBD) {
-                                return ItemBD.itemBreakdownCode == newValue;
-                            });
-                            if (item)
-                                $('#I_INP_002').ntsError('set', 'えらーです');
-                            else
-                                $('#I_INP_002').ntsError('clear');
-                        }
-                    });
-                    self.loadItemBDs();
                 }
-                ScreenModel.prototype.loadItemBDs = function () {
+                ScreenModel.prototype.LoadItem = function (itemCode) {
                     var self = this;
-                    self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
-                    var itemMaster = self.CurrentItemMaster();
-                    if (itemMaster != undefined) {
-                        self.reloadAndSetSelectedCode();
-                        self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
-                        self.currentItemCode(itemMaster.itemCode);
-                    }
-                };
-                ScreenModel.prototype.reloadAndSetSelectedCode = function (itemCode) {
-                    var self = this;
-                    //reload list
                     i.service.findAllItemBD(self.CurrentItemMaster()).done(function (ItemBDs) {
                         self.ItemBDList(ItemBDs);
-                        //set selected 
                         if (self.ItemBDList().length)
-                            if (itemCode == undefined)
-                                //if param itemCode == undefined => select first item in grid list
-                                self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCode);
+                            if (!itemCode)
+                                self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCd);
                             else
-                                //else set itemCode 
                                 self.gridListCurrentCode(itemCode);
+                    }).fail(function (res) {
+                        // Alert message
+                        alert(res);
                     });
                 };
-                ScreenModel.prototype.getCurrentItemBD = function () {
-                    //get item customer has input on form 
+                ScreenModel.prototype.GetCurrentItemBD = function () {
                     var self = this;
-                    return new i.service.model.ItemBD(self.CurrentItemMaster().itemCode, self.CurrentItemBreakdownCode(), self.CurrentItemBreakdownName(), self.CurrentItemBreakdownAbName(), self.CurrentUniteCode(), self.CurrentZeroDispSet(), self.checked_002() == true ? 0 : 1, self.checked_005() == true ? 1 : 0, self.CurrentErrRangeLow(), self.checked_003() == true ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_006() == true ? 1 : 0, self.CurrentAlRangeLow(), self.checked_004() == true ? 1 : 0, self.CurrentAlRangeHigh());
+                    return new i.service.model.ItemBD(self.CurrentItemMaster().itemCode, self.CurrentItemBreakdownCd(), self.CurrentItemBreakdownName(), self.CurrentItemBreakdownAbName(), self.CurrentUniteCd(), self.CurrentZeroDispSet(), self.checked_002() == true ? 0 : 1, self.checked_005() == true ? 1 : 0, self.CurrentErrRangeLow(), self.checked_003() == true ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_006() == true ? 1 : 0, self.CurrentAlRangeLow(), self.checked_004() == true ? 1 : 0, self.CurrentAlRangeHigh());
                 };
-                ScreenModel.prototype.saveItem = function () {
+                ScreenModel.prototype.SaveItem = function () {
                     var self = this;
-                    //if I_INP_002 is enable is mean add new mode => add new item
                     if (self.enable_I_INP_002())
                         self.addItemBD();
                     else
-                        //else is update
                         self.updateItemBD();
                 };
                 ScreenModel.prototype.deleteItem = function () {
                     var self = this;
-                    var itemBD = self.CurrentItemBD();
-                    if (itemBD) {
-                        //show dialog
-                        nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
-                            var itemCode;
-                            var index = self.ItemBDList().indexOf(self.CurrentItemBD());
-                            //set selected code after remove item
-                            if (self.ItemBDList().length > 1) {
+                    var itemBD = self.GetCurrentItemBD();
+                    var itemCode;
+                    var index = self.ItemBDList.indexOf(self.CurrentItemBD());
+                    if (index != undefined) {
+                        if (self.ItemBDList().length > 1) {
+                            if (index == 0)
+                                itemCode = self.ItemBDList()[index + 1].itemBreakdownCd;
+                            else {
                                 if (index < self.ItemBDList().length - 1)
-                                    itemCode = self.ItemBDList()[index + 1].itemBreakdownCode;
+                                    itemCode = self.ItemBDList()[index + 1].itemBreakdownCd;
                                 else
-                                    itemCode = self.ItemBDList()[index - 1].itemBreakdownCode;
+                                    itemCode = self.ItemBDList()[index - 1].itemBreakdownCd;
                             }
-                            else
-                                itemCode = '';
-                            //remove item 
-                            itemBD.itemCode = self.CurrentItemMaster().itemCode;
-                            i.service.deleteItemBD(itemBD, self.CurrentItemMaster()).done(function (any) {
-                                // set selected code
-                                self.reloadAndSetSelectedCode(itemCode);
-                            }).fail(function (res) {
-                                alert(res.value);
-                            });
-                        });
+                        }
+                        else
+                            itemCode = '';
                     }
+                    i.service.deleteItemBD(self.CurrentItemMaster(), itemBD).done(function (any) {
+                        self.LoadItem(itemCode);
+                    }).fail(function (res) {
+                        alert(res);
+                    });
                 };
                 ScreenModel.prototype.addItemBD = function () {
                     var self = this;
-                    //get itemBD on form
-                    var itemBD = self.getCurrentItemBD();
-                    i.service.addItemBD(itemBD, self.CurrentItemMaster()).done(function (any) {
-                        // set selected code
-                        self.reloadAndSetSelectedCode(itemBD.itemBreakdownCode);
+                    var itemBD = self.GetCurrentItemBD();
+                    var itemCode = itemBD.itemBreakdownCd;
+                    i.service.addItemBD(self.CurrentItemMaster(), itemBD).done(function (any) {
+                        self.LoadItem(itemCode);
                     }).fail(function (res) {
-                        alert(res.value);
+                        alert(res);
                     });
                 };
                 ScreenModel.prototype.updateItemBD = function () {
                     var self = this;
-                    var itemBD = self.getCurrentItemBD();
-                    var itemCode = itemBD.itemBreakdownCode;
-                    //update item 
-                    i.service.updateItemBD(itemBD, self.CurrentItemMaster()).done(function (any) {
-                        // set selected code
-                        self.reloadAndSetSelectedCode(itemBD.itemBreakdownCode);
+                    var itemBD = self.GetCurrentItemBD();
+                    var itemCode = itemBD.itemBreakdownCd;
+                    i.service.updateItemBD(self.CurrentItemMaster(), itemBD).done(function (any) {
+                        self.LoadItem(itemCode);
                     }).fail(function (res) {
-                        alert(res.value);
+                        alert(res);
                     });
                 };
-                ScreenModel.prototype.closeDialog = function () {
-                    var self = this;
-                    nts.uk.ui.windows.setShared('itemBDs', self.ItemBDList());
+                ScreenModel.prototype.CloseDialog = function () {
                     nts.uk.ui.windows.close();
                 };
-                ScreenModel.prototype.addNewItem = function () {
+                ScreenModel.prototype.AddNewItem = function () {
                     var self = this;
+                    self.gridListCurrentCode('');
                     self.enable_I_INP_002(true);
                 };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
+            var GridItemModel = (function () {
+                function GridItemModel(code, name) {
+                    this.code = code;
+                    this.name = name;
+                }
+                return GridItemModel;
+            }());
+            var ComboboxItemModel = (function () {
+                function ComboboxItemModel(code, name) {
+                    this.code = code;
+                    this.name = name;
+                }
+                return ComboboxItemModel;
+            }());
+            var BoxModel = (function () {
+                function BoxModel(id, name) {
+                    var self = this;
+                    self.id = id;
+                    self.name = name;
+                }
+                return BoxModel;
+            }());
         })(viewmodel = i.viewmodel || (i.viewmodel = {}));
     })(i = qmm012.i || (qmm012.i = {}));
 })(qmm012 || (qmm012 = {}));
+//# sourceMappingURL=viewmodel.js.map

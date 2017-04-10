@@ -47,6 +47,17 @@ class CheckBoxWithHelpBindingHandler implements KnockoutBindingHandler {
 ko.bindingHandlers['ntsTextEditor2'] = new TextEditorBindingHandler();
 ko.bindingHandlers['ntsCheckBox2'] = new CheckBoxWithHelpBindingHandler();
 
+Date.prototype["getWorkDays"] = function() {
+    let workDays = 0, lastDate = moment(this).daysInMonth();
+    for (let day = 1; day <= lastDate; day++) {
+        let date = new Date(this.getFullYear(), this.getMonth(), day);
+        if(date.getDay() != 0 && date.getDay() != 6) {
+           workDays++; 
+        }         
+    }
+    return workDays;
+}
+
 Date.prototype["getDayJP"] = function() {
     return ['日', '月', '火', '水', '木', '金', '土'][this.getDay()];
 }

@@ -15,6 +15,7 @@ import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm00
 import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005cCommandHandler;
 import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005dCommand;
 import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005dCommandHandler;
+import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005eCommand;
 import nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth.PaydayDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth.PaydayFinder;
 import nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth.PaydayProcessingDto;
@@ -123,5 +124,16 @@ public class ProcessingYearMonthWebServices extends WebService {
 		} catch (Exception ex) {
 			throw ex;
 		}
+	}
+
+	@POST
+	@Path("qmm005e/getdata")
+	public Object[] qmm005eGetData(Qmm005eCommand command) {
+		String companyCode = AppContexts.user().companyCode();
+
+		SystemDayDto systemDayDto = systemDayFinder.select1(companyCode, command.getProcessingNo());
+		StandardDayDto standardDayDto = standardDayFinder.select1(companyCode, command.getProcessingNo());
+
+		return new Object[] { systemDayDto, standardDayDto };
 	}
 }

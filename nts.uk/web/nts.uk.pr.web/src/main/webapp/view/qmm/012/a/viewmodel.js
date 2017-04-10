@@ -39,10 +39,8 @@ var qmm012;
                 }
                 ScreenModel.prototype.submitInfo = function () {
                     var self = this;
-                    //get and set selected code to session
                     var groupCode = self.selectedRuleCode();
                     nts.uk.ui.windows.setShared('groupCode', groupCode);
-                    //then close dialog
                     nts.uk.ui.windows.close();
                 };
                 ScreenModel.prototype.closeDialog = function () {
@@ -54,3 +52,4 @@ var qmm012;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm012.a || (qmm012.a = {}));
 })(qmm012 || (qmm012 = {}));
+//# sourceMappingURL=viewmodel.js.map
