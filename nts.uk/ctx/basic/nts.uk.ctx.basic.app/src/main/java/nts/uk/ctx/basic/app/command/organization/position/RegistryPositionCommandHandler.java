@@ -66,8 +66,6 @@ public class RegistryPositionCommandHandler extends CommandHandler<RegistryPosit
 							org.getHiterarchyOrderCode().v());
 				}).collect(Collectors.toList());
 				// isert postition
-				
-			
 				positionRepository.add(lstPositionNow);
 				// insert quyen
 				// - lay list du lieu CMNMT_JOB_TITLE_REF

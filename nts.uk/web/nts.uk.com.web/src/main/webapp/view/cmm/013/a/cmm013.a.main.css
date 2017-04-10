@@ -32,11 +32,13 @@
 	margin-top: 20px;
 }
 
-.lst_003 {
+#lst_003 {
 	margin-top: 10px;
 	display: inline-block;
 	height: 185px;
 	overflow-y: scroll;
+    width : 200px 
+  
 }
 
 .ntsRadioBox {
@@ -88,3 +90,4 @@
 	float: left;
 	min-height: 550px;
 }
+.line.left-line {display : inline-block; width: 100px;}

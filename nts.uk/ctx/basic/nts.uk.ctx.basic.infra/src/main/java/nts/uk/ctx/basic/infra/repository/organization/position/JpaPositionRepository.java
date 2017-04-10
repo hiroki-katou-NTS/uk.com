@@ -39,7 +39,6 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 	private static final String SELECT_AUTHLEVEL;
 	private static final String SELECT_JOBTITLEREF;
 	private static final String SELECT_AUTHNAME;
-	private static final String SELECT_HISTORY_BY_START_DATE;
 	
 	
 	static {
@@ -113,13 +112,6 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		builderString.append(" AND e.startDate >= :startDate");
 		IS_EXISTED_HISTORY_BY_DATE = builderString.toString();
 
-		builderString = new StringBuilder();
-		builderString.append("SELECT e");
-		builderString.append(" FROM CmnmtJobHist e");
-		builderString.append(" WHERE e.cmnmtJobHistPK.companyCode = :companyCode");
-		builderString.append(" AND e.startDate < :startDate");
-		builderString.append(" ORDER BY e.startDate DESC");
-		SELECT_HISTORY_BY_START_DATE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT  count(e)");
@@ -270,8 +262,8 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 	@Override
 	public Optional<JobTitle> findSingle(String companyCode, String historyId, JobCode jobCode) {
 		return this.queryProxy().query(FIND_SINGLE, CmnmtJobTitle.class)
-				.setParameter("companyCode", "'" + companyCode + "'").setParameter("historyId", "'" + historyId + "'")
-				.setParameter("jobCode", "'" + jobCode.toString() + "'").getSingle().map(e -> {
+				.setParameter("companyCode",companyCode).setParameter("historyId",historyId )
+				.setParameter("jobCode",  jobCode.toString() ).getSingle().map(e -> {
 					return Optional.of(convertToDomain(e));
 				}).orElse(Optional.empty());
 	}
@@ -279,7 +271,7 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 	@Override
 	public Optional<JobHistory> findSingleHistory(String companyCode, String historyId) {
 		return this.queryProxy().query(FIND_SINGLE_HISTORY, CmnmtJobHist.class)
-				.setParameter("companyCode", "'" + companyCode + "'").setParameter("historyId", "'" + historyId + "'")
+				.setParameter("companyCode", companyCode ).setParameter("historyId", historyId)
 				.getSingle().map(e -> {
 					return Optional.of(convertToDomain2(e));
 				}).orElse(Optional.empty());

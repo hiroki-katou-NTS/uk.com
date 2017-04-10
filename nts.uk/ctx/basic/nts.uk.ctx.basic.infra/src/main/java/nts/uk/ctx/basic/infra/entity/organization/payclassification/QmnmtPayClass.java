@@ -10,13 +10,14 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Data
 @Table(name = "QMNMT_PAYCLASS")
-public class QmnmtPayClass implements Serializable{
+@Data
+public class QmnmtPayClass extends UkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
@@ -32,4 +33,10 @@ public class QmnmtPayClass implements Serializable{
 	@Basic(optional = false)
 	@Column(name = "PAYCLASS_NAME")
 	public String payClassificationName;
+
+
+	@Override
+	protected QmnmtPayClassPK getKey() {
+		return this.qmnmtPayClassPK;
+	}
 }

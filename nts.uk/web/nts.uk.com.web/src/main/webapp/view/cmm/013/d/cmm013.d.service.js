@@ -9,10 +9,14 @@ var cmm013;
                 deleteHist: "basic/organization/position/deleteHist"
             };
             function deleteHistory(history) {
+                history.oldStartDate = moment(history.oldStartDate).format("YYYY-MM-DD");
+                history.newStartDate = moment(history.newStartDate).format("YYYY-MM-DD");
                 return nts.uk.request.ajax("com", paths.deleteHist, history);
             }
             service.deleteHistory = deleteHistory;
             function updateHistory(history) {
+                history.oldStartDate = moment(history.oldStartDate).format("YYYY-MM-DD");
+                history.newStartDate = moment(history.newStartDate).format("YYYY-MM-DD");
                 return nts.uk.request.ajax("com", paths.updateHist, history);
             }
             service.updateHistory = updateHistory;

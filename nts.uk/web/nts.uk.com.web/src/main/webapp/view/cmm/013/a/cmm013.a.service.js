@@ -124,18 +124,6 @@ var cmm013;
                 return dfd.promise();
             }
             service.getAllJobTitleAuth = getAllJobTitleAuth;
-            function getAllAuthLevel(authCode) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.getAuthLevel + authCode)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.getAllAuthLevel = getAllAuthLevel;
             var GetJobAuth = (function () {
                 function GetJobAuth(historyId, jobCode, authCode, authName, referenceSettings, authScopeAtr) {
                     this.historyId = historyId;
@@ -160,18 +148,6 @@ var cmm013;
                 return dfd.promise();
             }
             service.updateHist = updateHist;
-            function deleteHist(jobHist) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.deleteHist, jobHist)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.deleteHist = deleteHist;
         })(service = a.service || (a.service = {}));
     })(a = cmm013.a || (cmm013.a = {}));
 })(cmm013 || (cmm013 = {}));

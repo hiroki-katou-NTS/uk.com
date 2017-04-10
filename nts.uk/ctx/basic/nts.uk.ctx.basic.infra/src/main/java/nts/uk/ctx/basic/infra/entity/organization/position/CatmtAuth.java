@@ -9,17 +9,14 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="CATMT_AUTH")
-public class CatmtAuth extends TableEntity implements Serializable {
+public class CatmtAuth extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**主キー*/
@@ -45,4 +42,10 @@ public class CatmtAuth extends TableEntity implements Serializable {
 	@Basic(optional = true)
 	@Column(name = "MEMO")
 	public String memo;
+
+	@Override
+	protected CatmtAuthPK getKey() {
+		// TODO Auto-generated method stub
+		return this.catmtAuthPk;
+	}
 }

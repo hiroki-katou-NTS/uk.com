@@ -14,11 +14,13 @@ var cmm013;
                     self.oldStartDate = ko.observable('');
                     self.lstMessage = ko.observableArray([]);
                     self.histIdUpdate = ko.observable('');
+                    self.oldEndDate = ko.observable('');
                 }
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
                     self.endDateUpdate(nts.uk.ui.windows.getShared('cmm013EndDate'));
+                    self.oldEndDate(nts.uk.ui.windows.getShared('cmm013OldEndDate'));
                     self.oldStartDate(nts.uk.ui.windows.getShared('cmm013StartDate'));
                     self.histIdUpdate(nts.uk.ui.windows.getShared('cmm013HistoryId'));
                     self.listMessage();
@@ -32,11 +34,11 @@ var cmm013;
                         }
                     });
                     self.inp_003(self.oldStartDate());
-                    if (self.endDateUpdate() === "9999/12/31") {
-                        self.enable(false);
+                    if (self.oldEndDate() === "9999/12/31") {
+                        self.enable(true);
                     }
                     else {
-                        self.enable(true);
+                        self.enable(false);
                     }
                     dfd.resolve();
                     return dfd.promise();
@@ -81,9 +83,10 @@ var cmm013;
                         }).ifYes(function () {
                             d.service.deleteHistory(historyInfo).fail(function (res) {
                                 var delMess = _.find(self.lstMessage(), function (mess) {
-                                    return mess.messCode === res.message;
+                                    return mess.messCode === "ER005";
                                 });
                                 nts.uk.ui.dialog.alert(delMess.messName);
+                                nts.uk.ui.windows.close();
                             }).done(function () {
                                 self.clearShared();
                                 nts.uk.ui.windows.close();
@@ -98,12 +101,14 @@ var cmm013;
                                 return mess.messCode === "ER023";
                             });
                             nts.uk.ui.dialog.alert(AL023.messName);
+                            nts.uk.ui.windows.close();
                         }
                         else {
                             d.service.updateHistory(historyInfo).fail(function (res) {
                                 var upMess = _.find(self.lstMessage(), function (mess) {
                                     return mess.messCode === res.message;
                                 });
+                                nts.uk.ui.dialog.alert(upMess.messName);
                             }).done(function () {
                                 self.clearShared();
                                 nts.uk.ui.windows.close();

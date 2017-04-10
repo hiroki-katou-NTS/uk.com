@@ -136,17 +136,7 @@ module cmm013.a.service {
             })
         return dfd.promise();
     }
-        export function getAllAuthLevel(authCode: string): JQueryPromise<Array<viewmodel.model.AuthLevel>>{
-        var dfd = $.Deferred<Array<viewmodel.model.AuthLevel>>();
-        nts.uk.request.ajax("com",paths.getAuthLevel + authCode)
-            .done(function(res: Array<viewmodel.model.AuthLevel>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
+ 
     
         export class GetJobAuth{
             historyId: string;
@@ -179,17 +169,7 @@ module cmm013.a.service {
         return dfd.promise();
      }
 
-    export function deleteHist(jobHist:viewmodel.model.DeleteHistoryCommand){
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com",paths.deleteHist, jobHist)
-            .done(function(res: any){
-                dfd.resolve(res);    
-            })    
-            .fail(function(res){
-                dfd.reject(res);
-            })
-        return dfd.promise();
-     }
+
     
      
     

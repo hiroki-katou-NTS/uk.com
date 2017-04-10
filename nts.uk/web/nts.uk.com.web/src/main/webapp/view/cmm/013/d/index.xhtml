@@ -78,7 +78,8 @@
 							<!--dudt can phai sua lai input nay-->
 							<input data-bind="ntsTextEditor: {
 								value: inp_003,
-                                constraint: '',
+                                constraint: 'constraint',
+                                required: true,
                                 enable: inp_003_enable}" />
 							
 						</div>
@@ -86,7 +87,7 @@
  						<!-- D_LBL_004 -->
  						<div class="line" id="lbl_004">
 							<div><label id="">　　～　　</label>
-								<label id = "D_LBL_004" data-bind="text: endDateUpdate"></label>
+								<label id = "D_LBL_004" data-bind="text: oldEndDate"></label>
 							</div>
 						</div> 
 					</td>

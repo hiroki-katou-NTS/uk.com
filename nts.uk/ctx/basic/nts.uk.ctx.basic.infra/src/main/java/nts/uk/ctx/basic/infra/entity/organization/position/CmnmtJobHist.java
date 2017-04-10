@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Getter
 @Setter
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.TableEntity;
 @Table(name="CMNMT_JOB_HIST")
 @AllArgsConstructor
 @NoArgsConstructor
-public class CmnmtJobHist extends TableEntity implements Serializable{
+public class CmnmtJobHist extends UkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -41,6 +41,12 @@ public class CmnmtJobHist extends TableEntity implements Serializable{
 	@Basic(optional = false)
 	@Column(name = "END_D")
 	public GeneralDate endDate;
+
+	@Override
+	protected CmnmtJobHistPK getKey() {
+		// TODO Auto-generated method stub
+		return this.cmnmtJobHistPK;
+	}
 
 
 

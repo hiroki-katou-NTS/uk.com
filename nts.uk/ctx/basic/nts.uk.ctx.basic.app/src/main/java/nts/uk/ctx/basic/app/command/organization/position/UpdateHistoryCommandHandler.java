@@ -21,7 +21,7 @@ public class UpdateHistoryCommandHandler extends CommandHandler<UpdateHistoryCom
 	@Inject
 	private PositionRepository repository;
 
-	@Override
+	@Override 
 	protected void handle(CommandHandlerContext<UpdateHistoryCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		UpdateHistoryCommand command = context.getCommand();

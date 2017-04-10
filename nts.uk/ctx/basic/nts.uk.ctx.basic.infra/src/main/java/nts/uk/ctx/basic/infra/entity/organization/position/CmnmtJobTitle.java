@@ -10,13 +10,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @Table(name="CMNMT_JOB_TITLE")
 @AllArgsConstructor
 @NoArgsConstructor
-public class CmnmtJobTitle extends TableEntity implements Serializable{
+public class CmnmtJobTitle extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
@@ -104,6 +104,12 @@ public class CmnmtJobTitle extends TableEntity implements Serializable{
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	@Override
+	protected CmnmtJobTitlePK getKey() {
+		// TODO Auto-generated method stub
+		return this.cmnmtJobTitlePK;
 	}
 	
 	

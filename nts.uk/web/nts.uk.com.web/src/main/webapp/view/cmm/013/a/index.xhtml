@@ -99,28 +99,23 @@
 									data-bind="ntsFormLabel: { constraint: ['JobCode', 'JobName'], required: true }">
 									コード/名称</div>
 							</td>
-							<td class="valign-center">
-								<div id="inp_002" style="width: 20px">
-									<input id="code"
-										data-bind="ntsTextEditor: {
-	                                           value: inp_002_code,
-	                                           constraint: 'JobCode',
-	                                           enable: inp_002_enable}" />
-								</div>
-								<div id="inp_003" style="width: 50px">
-									<input id="name"
-										data-bind="ntsTextEditor: {
-	                                           value: inp_003_name,
-	                                           constraint: 'JobName'
-	                                          }" />
-								</div>
+							<td class = "column_data">
+								<input id="inp_002" data-bind="ntsTextEditor: {
+						                                           value: inp_002_code,
+						                                           constraint: 'JobCode',
+						                                           enable: inp_002_enable}" />
+
+								<input id="inp_003" data-bind="ntsTextEditor: {
+						                                           value: inp_003_name,
+						                                           constraint: 'JobName' }" />
+
 							</td>
 						</tr>
 						<tr>
 							<td class=" row_02" data-bind="with: label_003">
 								<!--LBL_003 -->
 								<div
-									data-bind="ntsFormLabel: {constraint: 'JobName', required: true}">在籍照会で参照可能な範囲</div>
+									data-bind="ntsFormLabel: {constraint: 'JobCode', required: true}">在籍照会で参照可能な範囲</div>
 							</td>
 							<td>
 								<!-- SEL_001 -->
@@ -137,8 +132,8 @@
 						<tr class = "trLst003">
 							<td></td>
 							<td>
-								<div data-bind="if: dataRef" style="width: 265px">
-									<div ID="lst_003" data-bind="foreach: dataRef ">
+								<div id="lst_003" data-bind="if: dataRef" style="width: 265px">
+									<div data-bind="foreach: dataRef ">
 										<div class="row">
 											<div class="line left-line" data-bind="text: authName "></div>
 											<div class="line"
@@ -173,7 +168,7 @@
 									<label id="A_LBL_003">メモ</label>
 								</div>
 							</td>
-							<td class="valign-center" style="padding-top: 20px"><textarea
+							<td class="valign-center" style="padding-top: 10px"><textarea
 									rows="6" cols="30"
 									data-bind="ntsMultilineEditor: {
 											value: inp_005_memo,

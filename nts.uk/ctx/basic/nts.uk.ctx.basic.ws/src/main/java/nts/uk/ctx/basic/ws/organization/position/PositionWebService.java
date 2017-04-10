@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.ws.organization.position;
+ package nts.uk.ctx.basic.ws.organization.position;
 
 import java.util.List;
 
@@ -9,8 +9,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.basic.app.command.organization.position.PositionCommand;
-import nts.uk.ctx.basic.app.command.organization.position.AddPositionCommandHandler;
 import nts.uk.ctx.basic.app.command.organization.position.DeleteHistoryCommand;
 import nts.uk.ctx.basic.app.command.organization.position.DeleteHistoryCommandHandler;
 import nts.uk.ctx.basic.app.command.organization.position.DeletePositionCommand;
@@ -37,8 +35,6 @@ public class PositionWebService extends WebService {
 	private JobTitleFinder positionFinder;
 	@Inject
 	private JobHistFinder histFinder;
-	@Inject
-	private AddPositionCommandHandler addPosition;
 	@Inject
 	private UpdatePositionCommandHandler updatePosition;
 	@Inject
@@ -76,13 +72,6 @@ public class PositionWebService extends WebService {
 		return this.histFinder.init();
 	}
 
-
-	@POST
-	@Path("addPosition")
-	public void add(PositionCommand command) {
-		this.addPosition.handle(command);
-	}
-
 	@POST
 	@Path("updatePosition")
 	public void update(UpdatePositionCommand command) {
@@ -97,20 +86,20 @@ public class PositionWebService extends WebService {
 
 	@POST
 	@Path("deleteHist")
-	public void deletePosition(DeleteHistoryCommand command) {
+	public void deleteHistory(DeleteHistoryCommand command) {
 		this.deleteHistoryCommandHandler.handle(command);
 	}
 
 	@POST
 	@Path("updateHist")
-	public void update(UpdateHistoryCommand command) {
+	public void updateHistory(UpdateHistoryCommand command) {
 		this.updateHistoryCommandHandler.handle(command);
 	}
 
 	@POST
 	@Path("registryPosition")
 	public void registryPosition(RegistryPositionCommand command) {
-		this.registryPosition.handle(command);
+		this.registryPosition.handle(command); 
 
 	}
 	@POST

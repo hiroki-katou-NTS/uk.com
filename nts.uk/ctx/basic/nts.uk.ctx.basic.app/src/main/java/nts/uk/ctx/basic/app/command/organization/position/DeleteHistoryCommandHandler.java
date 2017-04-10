@@ -37,7 +37,7 @@ public class DeleteHistoryCommandHandler extends CommandHandler<DeleteHistoryCom
 			
 			String historyId = command.getHistoryId();
 			//check xem lich su co ton tai khong
-			repository.findSingleHistory(companyCode, historyId).ifPresent(x -> {throw new BusinessException("ER010");});
+//			repository.findSingleHistory(companyCode, historyId).ifPresent(x -> {throw new BusinessException("ER010");});
 			if(!repository.findSingleHistory(companyCode, historyId).isPresent()){
 				throw new BusinessException("ER010");
 			}
@@ -57,7 +57,7 @@ public class DeleteHistoryCommandHandler extends CommandHandler<DeleteHistoryCom
 			}
 			//Xoa tat ca quyen cua position
 					
-			//dudt
+			
 		}
 	}
 
