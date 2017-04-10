@@ -44,9 +44,12 @@ public class LevelItemGenerator implements ItemGenerator {
 
 		// Generate uuid of code items.
 		return Arrays.asList(EmployeeLevel.values()).stream().map(item -> {
+			// Create code item
 			CodeItem codeItem = new CodeItem(item.value, mapCodeItems.getOrDefault(item.value,
 					new ElementId(IdentifierUtil.randomUniqueId())));
 			codeItem.setDisplayName(item.displayName);
+			
+			// Return
 			return codeItem;
 		}).collect(Collectors.toList());
 	}

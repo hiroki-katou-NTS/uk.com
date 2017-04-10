@@ -51,9 +51,12 @@ public class CertificateItemGenerator implements ItemGenerator {
 
 		// Generate uuid of code items.
 		return certifications.stream().map(item -> {
+			// Create code item.
 			CodeItem codeItem = new CodeItem(item.getCode(), mapCodeItems
 					.getOrDefault(item.getCode(), new ElementId(IdentifierUtil.randomUniqueId())));
 			codeItem.setDisplayName(item.getName());
+
+			// Return
 			return codeItem;
 		}).collect(Collectors.toList());
 	}

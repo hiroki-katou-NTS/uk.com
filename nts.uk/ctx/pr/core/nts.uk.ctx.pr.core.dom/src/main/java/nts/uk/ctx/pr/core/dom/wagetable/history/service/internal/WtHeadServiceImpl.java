@@ -33,8 +33,8 @@ public class WtHeadServiceImpl extends WtHeadService {
 	 */
 	@Override
 	public void validateRequiredItem(WtHead head) {
-		if (head.getCode() == null 
-				|| head.getName() == null
+		// Validate required item
+		if (head.getCode() == null || head.getName() == null
 				|| StringUtil.isNullOrEmpty(head.getCode().v(), true)
 				|| StringUtil.isNullOrEmpty(head.getName().v(), true)
 				|| CollectionUtil.isEmpty(head.getElements())) {
@@ -51,6 +51,7 @@ public class WtHeadServiceImpl extends WtHeadService {
 	 */
 	@Override
 	public void checkDuplicateCode(WtHead head) {
+		// Check exist code
 		if (wtHeadRepo.isExistCode(head.getCompanyCode(), head.getCode().v())) {
 			throw new BusinessException("ER005");
 		}

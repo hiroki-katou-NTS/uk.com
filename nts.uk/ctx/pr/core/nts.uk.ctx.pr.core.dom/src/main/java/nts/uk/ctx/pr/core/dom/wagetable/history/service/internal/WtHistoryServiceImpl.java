@@ -43,8 +43,8 @@ public class WtHistoryServiceImpl extends WtHistoryService {
 	 * employment.unitprice.WageTableHistory)
 	 */
 	public void validateRequiredItem(WtHistory history) {
-		if (history.getWageTableCode() == null 
-				|| history.getApplyRange() == null
+		// Validate required item
+		if (history.getWageTableCode() == null || history.getApplyRange() == null
 				|| StringUtil.isNullOrEmpty(history.getHistoryId(), true)
 				|| StringUtil.isNullOrEmpty(history.getWageTableCode().v(), true)
 				|| CollectionUtil.isEmpty(history.getElementSettings())) {
@@ -60,6 +60,7 @@ public class WtHistoryServiceImpl extends WtHistoryService {
 	 * employment.unitprice.WageTableHistory)
 	 */
 	public void validateDateRange(WtHistory history) {
+		// Check is valid date range
 		if (!wtHistoryRepo.isValidDateRange(history.getCompanyCode(),
 				history.getWageTableCode().v(), history.getApplyRange().getStartMonth().v())) {
 			// History after start date and time exists
@@ -99,6 +100,7 @@ public class WtHistoryServiceImpl extends WtHistoryService {
 	 * employment.unitprice.WageTableHistory)
 	 */
 	public void checkDuplicateCode(WtHistory history) {
+		// Check exist code
 		if (wtHeadRepo.isExistCode(history.getCompanyCode(), history.getWageTableCode().v())) {
 			throw new BusinessException("ER005");
 		}
