@@ -24,6 +24,8 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableHead;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableHeadPK;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableHeadPK_;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableHead_;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableHist;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableHist_;
 
 /**
  * The Class JpaWageTableHeadRepository.
@@ -175,6 +177,68 @@ public class JpaWtHeadRepository extends JpaRepository implements WtHeadReposito
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		return (em.createQuery(cq).getSingleResult() > 0);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.WtHeadRepository#getWageTableByBaseMonth
+	 * (java.lang.Integer)
+	 */
+	@Override
+	public List<WtHead> getWageTableByBaseMonth(Integer baseMonth) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<QwtmtWagetableHist> cq = cb.createQuery(QwtmtWagetableHist.class);
+		Root<QwtmtWagetableHist> root = cq.from(QwtmtWagetableHist.class);
+
+		// Constructing list of parameters
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Construct condition.
+		predicateList.add(cb.le(root.get(QwtmtWagetableHist_.strYm), baseMonth));
+		predicateList.add(cb.ge(root.get(QwtmtWagetableHist_.endYm), baseMonth));
+
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		List<QwtmtWagetableHist> list = em.createQuery(cq).getResultList();
+
+		return list.stream().map(item -> {
+			return new WtHead(new JpaWtHeadGetMemento(item.getQwtmtWagetableHead()));
+		}).collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.WtHeadRepository#getWageTableByCodes(
+	 * java.util.List)
+	 */
+	@Override
+	public List<WtHead> getWageTableByCodes(List<String> codes) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		// Query for.
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<QwtmtWagetableHead> cq = cb.createQuery(QwtmtWagetableHead.class);
+		Root<QwtmtWagetableHead> root = cq.from(QwtmtWagetableHead.class);
+
+		// Constructing list of parameters
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Construct condition.
+		predicateList.add(root.get(QwtmtWagetableHead_.qwtmtWagetableHeadPK)
+				.get(QwtmtWagetableHeadPK_.wageTableCd).in(codes));
+
+		cq.where(predicateList.toArray(new Predicate[] {}));
+
+		return em.createQuery(cq).getResultList().stream()
+				.map(item -> new WtHead(new JpaWtHeadGetMemento(item)))
+				.collect(Collectors.toList());
 	}
 
 }

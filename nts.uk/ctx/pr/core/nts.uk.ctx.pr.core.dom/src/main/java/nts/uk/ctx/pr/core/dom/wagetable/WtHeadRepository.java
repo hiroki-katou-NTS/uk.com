@@ -59,7 +59,21 @@ public interface WtHeadRepository {
 	 * @return true, if is duplicate code
 	 */
 	boolean isExistCode(String companyCode, String code);
-	
-	
+
+	/**
+	 * Gets the wage table by base date.
+	 *
+	 * @param baseDate the base date
+	 * @return the wage table by base date
+	 */
+	List<WtHead> getWageTableByBaseMonth(Integer baseMonth);
+
+	/**
+	 * Gets the wage table by codes.
+	 *
+	 * @param codes the codes
+	 * @return the wage table by codes
+	 */
+	List<WtHead> getWageTableByCodes(List<String> codes);
 
 }

@@ -128,20 +128,43 @@ var nts;
             util.isIn = isIn;
             ;
             function createTreeFromString(original, openChar, closeChar, seperatorChar, operatorChar) {
-                return convertToTree(original, openChar, closeChar, seperatorChar, 1).result;
+                var result = convertToTree(original, openChar, closeChar, seperatorChar, 1, operatorChar).result;
+                return result;
             }
             util.createTreeFromString = createTreeFromString;
-            function convertToTree(original, openChar, closeChar, separatorChar, index) {
+            function moveToParentIfEmpty(tree) {
+                var result = [];
+                _.forEach(tree, function (e) {
+                    if (e.children.length > 0) {
+                        e.children = moveToParentIfEmpty(e.children);
+                        if (uk.text.isNullOrEmpty(e.value)) {
+                            result = result.concat(e.children);
+                        }
+                        else {
+                            result.push(e);
+                        }
+                    }
+                    else {
+                        result.push(e);
+                    }
+                });
+                return result;
+            }
+            function convertToTree(original, openChar, closeChar, separatorChar, index, operatorChar) {
                 var result = [];
                 while (original.trim().length > 0) {
                     var firstOpenIndex = original.indexOf(openChar);
                     if (firstOpenIndex < 0) {
                         var values = original.split(separatorChar);
                         _.forEach(values, function (value) {
-                            var object = new TreeObject();
-                            object.value = value;
-                            object.children = [];
-                            result.push(object);
+                            var data = splitByArray(value, operatorChar.slice());
+                            _.each(data, function (v) {
+                                var object = new TreeObject();
+                                object.value = v;
+                                object.children = [];
+                                object.isOperator = operatorChar.indexOf(v) >= 0;
+                                result.push(object);
+                            });
                         });
                         return {
                             "result": result,
@@ -155,7 +178,7 @@ var nts;
                         var closeIndex = findIndexOfCloseChar(original, openChar, closeChar, firstOpenIndex);
                         if (closeIndex >= 0) {
                             index++;
-                            var res = convertToTree(original.substring(firstOpenIndex + 1, closeIndex).trim(), openChar, closeChar, separatorChar, index);
+                            var res = convertToTree(original.substring(firstOpenIndex + 1, closeIndex).trim(), openChar, closeChar, separatorChar, index, operatorChar);
                             object.children = res.result;
                             index = res.index++;
                             result.push(object);
@@ -183,6 +206,33 @@ var nts;
                     "index": index
                 };
             }
+            function splitByArray(original, operatorChar) {
+                var temp = [];
+                var result = [];
+                if (original.trim().length <= 0) {
+                    return temp;
+                }
+                if (operatorChar.length <= 0) {
+                    return [original];
+                }
+                var operator = operatorChar.shift();
+                while (original.trim().length > 0) {
+                    var index = original.indexOf(operator);
+                    if (index >= 0) {
+                        temp.push(original.substring(0, index).trim());
+                        temp.push(original.substring(index, index + 1).trim());
+                        original = original.substring(index + 1, original.length).trim();
+                    }
+                    else {
+                        temp.push(original);
+                        break;
+                    }
+                }
+                _.each(temp, function (value) {
+                    result = result.concat(splitByArray(value, operatorChar));
+                });
+                return result;
+            }
             function findIndexOfCloseChar(original, openChar, closeChar, firstOpenIndex) {
                 var openCount = 0;
                 var closeCount = 0;
@@ -200,11 +250,12 @@ var nts;
                 return -1;
             }
             var TreeObject = (function () {
-                function TreeObject(value, children, index) {
+                function TreeObject(value, children, index, isOperator) {
                     var self = this;
                     self.value = value;
                     self.children = children;
                     self.index = index;
+                    self.isOperator = isOperator;
                 }
                 return TreeObject;
             }());
@@ -658,7 +709,9 @@ var nts;
                     return "top";
             }
             text_1.reverseDirection = reverseDirection;
-            function getISO8601Format(format) {
+            function getISOFormat(format) {
+                if (format.toLowerCase() === "iso")
+                    return "YYYY-MM-DD[T]HH:mm:ss.SSS[Z]";
                 if (format.toLowerCase() === "date")
                     return "YYYY/MM/DD";
                 if (format.toLowerCase() === "yearmonth")
@@ -670,7 +723,7 @@ var nts;
                 format = format.replace(/y/g, "Y");
                 return format;
             }
-            text_1.getISO8601Format = getISO8601Format;
+            text_1.getISOFormat = getISOFormat;
             var StringFormatter = (function () {
                 function StringFormatter(args) {
                     this.args = args;
@@ -712,9 +765,11 @@ var nts;
                         result = uk.time.parseTime(source, true);
                     }
                     else {
-                        result = moment(source);
-                        if (result.isValid())
-                            return result.format(this.option.inputFormat);
+                        result = moment(source, "YYYYMMDD");
+                        if (result.isValid()) {
+                            var format = getISOFormat(this.option.inputFormat);
+                            return result.format(format);
+                        }
                         return source;
                     }
                     if (result.success)
@@ -846,11 +901,8 @@ var nts;
                 return JapanYearMonth;
             }());
             time_1.JapanYearMonth = JapanYearMonth;
-            function yearInJapanEmpire(year) {
-                if (!(year instanceof String)) {
-                    year = "" + year;
-                }
-                year = parseInt(year);
+            function yearInJapanEmpire(date) {
+                var year = moment.utc(date).year();
                 if (year == 1868) {
                     return new JapanYearMonth("明治元年");
                 }
@@ -926,6 +978,39 @@ var nts;
                     .replace(/ss/g, ss);
             }
             time_1.formatSeconds = formatSeconds;
+            function formatDate(date, format) {
+                if (!format)
+                    format = 'yyyy-MM-dd hh:mm:ss.SSS';
+                format = format.replace(/yyyy/g, date.getFullYear());
+                format = format.replace(/yy/g, ('0' + (date.getFullYear() % 100)).slice(-2));
+                format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
+                format = format.replace(/dd/g, ('0' + date.getDate()).slice(-2));
+                if (format.indexOf("DDD") != -1) {
+                    var daystr = "(" + dotW[date.getDay()] + ")";
+                    format = format.replace("DDD", daystr);
+                }
+                else if (format.indexOf("D") != -1) {
+                    var daystr = "(" + dotW[date.getDay()].substring(0, 1) + ")";
+                    format = format.replace("D", daystr);
+                }
+                format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2));
+                format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
+                format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));
+                if (format.match(/S/g)) {
+                    var milliSeconds = ('00' + date.getMilliseconds()).slice(-3);
+                    var length = format.match(/S/g).length;
+                    for (var i = 0; i < length; i++)
+                        format = format.replace(/S/, milliSeconds.substring(i, i + 1));
+                }
+                return format;
+            }
+            time_1.formatDate = formatDate;
+            function formatPattern(date, inputFormat, outputFormat) {
+                outputFormat = uk.text.getISOFormat(outputFormat);
+                inputFormat = uk.text.getISOFormat(inputFormat);
+                return moment.utc(date, inputFormat).format(outputFormat);
+            }
+            time_1.formatPattern = formatPattern;
             var ParseResult = (function () {
                 function ParseResult(success) {
                     this.success = success;
@@ -1116,7 +1201,7 @@ var nts;
                     this.msg = msg || "must yyyymm or yyyy/mm format: year in [1900-9999] and month in [1-12] ";
                 }
                 ResultParseYearMonthDate.succeeded = function (year, month, date) {
-                    return new ResultParseYearMonthDate(true, year, month, date);
+                    return new ResultParseYearMonthDate(true, "", year, month, date);
                 };
                 ResultParseYearMonthDate.failed = function (msg) {
                     return new ResultParseYearMonthDate(false, msg);
@@ -1190,39 +1275,33 @@ var nts;
                 return ResultParseYearMonthDate.succeeded(year, month, date);
             }
             time_1.parseYearMonthDate = parseYearMonthDate;
-            function formatDate(date, format) {
-                if (!format)
-                    format = 'yyyy-MM-dd hh:mm:ss.SSS';
-                format = format.replace(/yyyy/g, date.getFullYear());
-                format = format.replace(/yy/g, ('0' + (date.getFullYear() % 100)).slice(-2));
-                format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
-                format = format.replace(/dd/g, ('0' + date.getDate()).slice(-2));
-                if (format.indexOf("DDD") != -1) {
-                    var daystr = "(" + dotW[date.getDay()] + ")";
-                    format = format.replace("DDD", daystr);
+            var MomentResult = (function (_super) {
+                __extends(MomentResult, _super);
+                function MomentResult(success, momentObject, outputFormat, msg) {
+                    _super.call(this, success);
+                    this.momentObject = momentObject;
+                    this.msg = msg || "Invalid format";
                 }
-                else if (format.indexOf("D") != -1) {
-                    var daystr = "(" + dotW[date.getDay()].substring(0, 1) + ")";
-                    format = format.replace("D", daystr);
-                }
-                format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2));
-                format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
-                format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));
-                if (format.match(/S/g)) {
-                    var milliSeconds = ('00' + date.getMilliseconds()).slice(-3);
-                    var length = format.match(/S/g).length;
-                    for (var i = 0; i < length; i++)
-                        format = format.replace(/S/, milliSeconds.substring(i, i + 1));
-                }
-                return format;
-            }
-            time_1.formatDate = formatDate;
-            function formatPattern(date, inputFormat, outputFormat) {
-                outputFormat = uk.text.getISO8601Format(outputFormat);
-                inputFormat = uk.text.getISO8601Format(inputFormat);
-                return moment(date, inputFormat).format(outputFormat);
-            }
-            time_1.formatPattern = formatPattern;
+                MomentResult.succeeded = function (momentObject) {
+                    return new MomentResult(true, momentObject);
+                };
+                MomentResult.failed = function (msg) {
+                    return new MomentResult(false, null, msg);
+                };
+                MomentResult.prototype.format = function () {
+                    if (!this.success)
+                        return "";
+                    return this.momentObject.format(this.outputFormat);
+                };
+                MomentResult.prototype.toValue = function () {
+                    if (!this.success)
+                        return null;
+                    return this.momentObject;
+                };
+                MomentResult.prototype.getMsg = function () { return this.msg; };
+                return MomentResult;
+            }(ParseResult));
+            time_1.MomentResult = MomentResult;
         })(time = uk.time || (uk.time = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -1640,11 +1719,17 @@ var nts;
                         else if (this.option.inputFormat === "timeofday") {
                             parseResult = uk.time.parseTimeOfTheDay(inputText);
                         }
-                        else if (this.option.inputFormat === "yearmonthdate") {
+                        else if (this.option.inputFormat === "date") {
                             parseResult = uk.time.parseYearMonthDate(inputText);
                         }
                         else {
-                            parseResult = uk.time.ResultParseTime.failed();
+                            var format = uk.text.getISOFormat(this.option.inputFormat);
+                            var momentObject = moment(inputText);
+                            if (momentObject.isValid()) {
+                                var format = uk.text.getISOFormat(this.option.inputFormat);
+                                return momentObject.format(format);
+                            }
+                            return inputText;
                         }
                         if (parseResult.success) {
                             result.success(parseResult.toValue());
@@ -2448,7 +2533,7 @@ var nts;
                     __extends(TimeEditorOption, _super);
                     function TimeEditorOption(option) {
                         _super.call(this);
-                        this.inputFormat = (option !== undefined && option.inputFormat !== undefined) ? option.inputFormat : "yearmonthdate";
+                        this.inputFormat = (option !== undefined && option.inputFormat !== undefined) ? option.inputFormat : "date";
                         this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
                         this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "left";
@@ -2714,9 +2799,9 @@ var nts;
                         var currentColumns = $grid.igGrid("option", "columns");
                         currentColumns.push({
                             dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
-                            width: 30, formatter: function createButton(deleteField, row) {
+                            width: 60, formatter: function createButton(deleteField, row) {
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
-                                var result = $('<input class="delete-button" value="delete" type="button"/>');
+                                var result = $('<button class="small delete-button">Delete</button>');
                                 result.attr("data-value", row[primaryKey]);
                                 if (deleteField === true && primaryKey !== null && !uk.util.isNullOrUndefined(row[primaryKey])) {
                                     return result[0].outerHTML;
@@ -3462,12 +3547,13 @@ var nts;
                         var data = valueAccessor();
                         var value = data.value;
                         var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
-                        dateFormat = uk.text.getISO8601Format(dateFormat);
+                        dateFormat = uk.text.getISOFormat(dateFormat);
                         var hasDayofWeek = (dateFormat.indexOf("ddd") !== -1);
                         var dayofWeekFormat = dateFormat.replace(/[^d]/g, "");
                         dateFormat = dateFormat.replace(/d/g, "").trim();
-                        var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : dateFormat;
+                        var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : "";
                         var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var button = (data.button !== undefined) ? ko.unwrap(data.button) : false;
                         var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
                         var endDate = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
@@ -3478,11 +3564,8 @@ var nts;
                             container.attr("id", idString);
                         }
                         container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
-                        var inputClass = "";
-                        if (dateFormat.length < 10)
-                            inputClass = "yearmonth-picker";
-                        var $input = $("<input id='" + container.attr("id") + "-input' class='ntsDatepicker nts-input' />")
-                            .addClass(inputClass);
+                        var inputClass = (dateFormat.length < 10) ? "yearmonth-picker" : "";
+                        var $input = $("<input id='" + container.attr("id") + "-input' class='ntsDatepicker nts-input' />").addClass(inputClass);
                         container.append($input);
                         if (hasDayofWeek) {
                             var lengthClass = (dayofWeekFormat.length > 3) ? "long-day" : "short-day";
@@ -3491,7 +3574,6 @@ var nts;
                             container.append($label);
                         }
                         $input.datepicker({
-                            date: value(),
                             language: 'ja-JP',
                             format: dateFormat,
                             startDate: startDate,
@@ -3500,14 +3582,15 @@ var nts;
                         });
                         $input.on("change", function (e) {
                             var newText = $input.val();
-                            var isValid = moment(newText, valueFormat).isValid();
+                            var isValid = moment.utc(newText, valueFormat).isValid();
                             $input.ntsError('clear');
                             if (isValid) {
-                                var dateFormatValue = moment(newText, valueFormat).format(dateFormat);
-                                var valueFormatValue = moment(newText, valueFormat).format(valueFormat);
+                                var dateFormatValue = moment.utc(newText, valueFormat).format(dateFormat);
+                                var valueFormatValue = (valueFormat) ? moment.utc(newText, valueFormat).format(valueFormat)
+                                    : moment.utc(newText, valueFormat).toISOString();
                                 $input.val(dateFormatValue);
                                 if (hasDayofWeek)
-                                    $label.text("(" + moment(newText, valueFormat).format(dayofWeekFormat) + ")");
+                                    $label.text("(" + moment.utc(newText, valueFormat).format(dayofWeekFormat) + ")");
                                 value(valueFormatValue);
                             }
                             else {
@@ -3517,46 +3600,42 @@ var nts;
                         });
                         $input.on('validate', (function (e) {
                             var newText = $input.val();
-                            var isValid = moment(newText, valueFormat).isValid();
+                            var isValid = moment.utc(newText, valueFormat).isValid();
                             $input.ntsError('clear');
                             if (!isValid) {
                                 $input.ntsError('set', "Invalid format");
                             }
                         }));
-                        var length = 10, atomWidth = 9.5;
                     };
                     DatePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var value = data.value;
                         var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
-                        dateFormat = uk.text.getISO8601Format(dateFormat);
+                        dateFormat = uk.text.getISOFormat(dateFormat);
                         var hasDayofWeek = (dateFormat.indexOf("ddd") !== -1);
                         var dayofWeekFormat = dateFormat.replace(/[^d]/g, "");
                         dateFormat = dateFormat.replace(/d/g, "").trim();
                         var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : dateFormat;
                         var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var button = (data.button !== undefined) ? ko.unwrap(data.button) : false;
                         var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
                         var endDate = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
                         var autoHide = (data.autoHide !== undefined) ? ko.unwrap(data.autoHide) : true;
                         var container = $(element);
                         var init = container.data("init");
-                        container.data("init", false);
                         var $input = container.find(".nts-input");
                         var $label = container.find(".dayofweek-label");
-                        var isValid = moment(value(), valueFormat).isValid();
-                        if (isValid) {
-                            var dateFormatValue = moment(value(), valueFormat).format(dateFormat);
-                            if (init === true || (moment($input.datepicker('getDate')).format(dateFormat) !== dateFormatValue)) {
+                        var dateFormatValue = (value() !== "") ? moment.utc(value(), valueFormat).format(dateFormat) : "";
+                        if (init === true || (moment.utc($input.datepicker('getDate')).format(dateFormat) !== dateFormatValue)) {
+                            if (dateFormatValue !== "")
                                 $input.datepicker('setDate', dateFormatValue);
-                                if (hasDayofWeek)
-                                    $label.text("(" + moment(value(), valueFormat).format(dayofWeekFormat) + ")");
-                            }
+                            else
+                                $input.datepicker('setDate', null);
+                            if (hasDayofWeek)
+                                $label.text("(" + moment.utc(value(), valueFormat).format(dayofWeekFormat) + ")");
                         }
-                        else {
-                            $input.ntsError('set', "Invalid format");
-                            $input.val(value());
-                        }
+                        container.data("init", false);
                         $input.datepicker('setStartDate', startDate);
                         $input.datepicker('setEndDate', endDate);
                         $input.prop("disabled", disabled);
@@ -3853,6 +3932,33 @@ var nts;
                     };
                     return TextEditorProcessor;
                 }(EditorProcessor));
+                var MultilineEditorProcessor = (function (_super) {
+                    __extends(MultilineEditorProcessor, _super);
+                    function MultilineEditorProcessor() {
+                        _super.apply(this, arguments);
+                    }
+                    MultilineEditorProcessor.prototype.update = function ($input, data) {
+                        var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+                        var resizeable = ko.unwrap(editorOption.resizeable);
+                        $input.css('resize', (resizeable) ? "both" : "none");
+                        _super.prototype.update.call(this, $input, data);
+                    };
+                    MultilineEditorProcessor.prototype.getDefaultOption = function () {
+                        return new ui.option.MultilineEditorOption();
+                    };
+                    MultilineEditorProcessor.prototype.getFormatter = function (data) {
+                        var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        var constraint = validation.getConstraint(constraintName);
+                        return new uk.text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: editorOption });
+                    };
+                    MultilineEditorProcessor.prototype.getValidator = function (data) {
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        return new validation.StringValidator(constraintName, required);
+                    };
+                    return MultilineEditorProcessor;
+                }(EditorProcessor));
                 var NumberEditorProcessor = (function (_super) {
                     __extends(NumberEditorProcessor, _super);
                     function NumberEditorProcessor() {
@@ -3937,33 +4043,6 @@ var nts;
                         return new validation.TimeValidator(constraintName, option);
                     };
                     return TimeEditorProcessor;
-                }(EditorProcessor));
-                var MultilineEditorProcessor = (function (_super) {
-                    __extends(MultilineEditorProcessor, _super);
-                    function MultilineEditorProcessor() {
-                        _super.apply(this, arguments);
-                    }
-                    MultilineEditorProcessor.prototype.update = function ($input, data) {
-                        var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-                        var resizeable = ko.unwrap(editorOption.resizeable);
-                        $input.css('resize', (resizeable) ? "both" : "none");
-                        _super.prototype.update.call(this, $input, data);
-                    };
-                    MultilineEditorProcessor.prototype.getDefaultOption = function () {
-                        return new ui.option.MultilineEditorOption();
-                    };
-                    MultilineEditorProcessor.prototype.getFormatter = function (data) {
-                        var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        var constraint = validation.getConstraint(constraintName);
-                        return new uk.text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: editorOption });
-                    };
-                    MultilineEditorProcessor.prototype.getValidator = function (data) {
-                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
-                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        return new validation.StringValidator(constraintName, required);
-                    };
-                    return MultilineEditorProcessor;
                 }(EditorProcessor));
                 var NtsEditorBindingHandler = (function () {
                     function NtsEditorBindingHandler() {
@@ -4180,7 +4259,18 @@ var nts;
                         var currentSource = $grid.igGrid('option', 'dataSource');
                         var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
                         if (!_.isEqual(currentSource, sources)) {
-                            $grid.igGrid('option', 'dataSource', sources.slice());
+                            var currentSources = sources.slice();
+                            var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
+                                c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
+                                return c["isDateColumn"] !== undefined && c["isDateColumn"] !== null && c["isDateColumn"] === true;
+                            });
+                            _.forEach(currentSources, function (s) {
+                                _.forEach(observableColumns, function (c) {
+                                    var key = c["key"] === undefined ? c["prop"] : c["key"];
+                                    s[key] = moment(s[key]).format(c["format"]);
+                                });
+                            });
+                            $grid.igGrid('option', 'dataSource', currentSources);
                             $grid.igGrid("dataBind");
                         }
                         var currentSelectedItems = $grid.ntsGridList('getSelected');
@@ -4455,9 +4545,9 @@ var nts;
                         }
                         container.data("options", options.slice());
                         container.data("init", false);
-                        var haveDate = isMultiSelect ? !uk.text.isNullOrEmpty(selectedValue) && selectedValue.length > 0
+                        var haveData = isMultiSelect ? !uk.text.isNullOrEmpty(selectedValue) && selectedValue.length > 0
                             : !uk.text.isNullOrEmpty(selectedValue);
-                        if (haveDate && (!_.isEqual(originalSelected, selectedValue) || init)) {
+                        if (haveData && (!_.isEqual(originalSelected, selectedValue) || init)) {
                             selectListBoxContainer.data('value', selectedValue);
                             if (isMultiSelect) {
                                 selectMultiRow(selectListBoxContainer, selectedValue);
@@ -4466,6 +4556,9 @@ var nts;
                                 selectOneRow(selectListBoxContainer, selectedValue);
                             }
                             container.trigger('selectionChange');
+                        }
+                        else if (!haveData) {
+                            container.ntsListBox("deselectAll");
                         }
                         if (isMultiSelect) {
                             if (!enable) {
@@ -5603,6 +5696,85 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                var NtsHelpButtonBindingHandler = (function () {
+                    function NtsHelpButtonBindingHandler() {
+                    }
+                    NtsHelpButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var image = ko.unwrap(data.image);
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var position = ko.unwrap(data.position);
+                        var myPositions = position.replace(/[^a-zA-Z ]/gmi, "").split(" ");
+                        var atPositions = position.split(" ");
+                        var operator = 1;
+                        var marginDirection = "";
+                        var caretDirection = "";
+                        var caretPosition = "";
+                        if (myPositions[0].search(/(top|left)/i) !== -1) {
+                            operator = -1;
+                        }
+                        if (myPositions[0].search(/(left|right)/i) === -1) {
+                            atPositions[0] = atPositions.splice(1, 1, atPositions[0])[0];
+                            myPositions[0] = myPositions.splice(1, 1, myPositions[0])[0];
+                            caretDirection = myPositions[1] = uk.text.reverseDirection(myPositions[1]);
+                            caretPosition = "left";
+                            marginDirection = "margin-top";
+                        }
+                        else {
+                            caretDirection = myPositions[0] = uk.text.reverseDirection(myPositions[0]);
+                            caretPosition = "top";
+                            marginDirection = "margin-left";
+                        }
+                        $(element).on("click", function () {
+                            if ($popup.is(":visible")) {
+                                $popup.hide();
+                            }
+                            else {
+                                var CARET_WIDTH = parseFloat($caret.css("font-size")) * 2;
+                                $popup.show()
+                                    .css(marginDirection, 0)
+                                    .position({
+                                    my: myPositions[0] + " " + myPositions[1],
+                                    at: atPositions[0] + " " + atPositions[1],
+                                    of: $(element),
+                                    collision: "none"
+                                })
+                                    .css(marginDirection, CARET_WIDTH * operator);
+                                $caret.css(caretPosition, parseFloat($popup.css(caretPosition)) * -1);
+                            }
+                        }).wrap($("<div class='ntsControl ntsHelpButton'></div>"));
+                        var $container = $(element).closest(".ntsHelpButton");
+                        var $caret = $("<span class='caret-helpbutton caret-" + caretDirection + "'></span>");
+                        var $popup = $("<div class='nts-help-button-image'></div>")
+                            .append($caret)
+                            .append($("<img src='" + uk.request.resolvePath(image) + "' />"))
+                            .appendTo($container).hide();
+                        $("html").on("click", function (event) {
+                            if (!$container.is(event.target) && $container.has(event.target).length === 0) {
+                                $container.find(".nts-help-button-image").hide();
+                            }
+                        });
+                    };
+                    NtsHelpButtonBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        (enable === true) ? $(element).removeAttr("disabled") : $(element).attr("disabled", "disabled");
+                    };
+                    return NtsHelpButtonBindingHandler;
+                }());
+                ko.bindingHandlers['ntsHelpButton'] = new NtsHelpButtonBindingHandler();
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
             var file;
             (function (file_1) {
                 var FileDownload = (function () {
@@ -5738,85 +5910,6 @@ var nts;
                     return NtsLinkButtonBindingHandler;
                 }());
                 ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var koExtentions;
-            (function (koExtentions) {
-                var NtsHelpButtonBindingHandler = (function () {
-                    function NtsHelpButtonBindingHandler() {
-                    }
-                    NtsHelpButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var image = ko.unwrap(data.image);
-                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        var position = ko.unwrap(data.position);
-                        var myPositions = position.replace(/[^a-zA-Z ]/gmi, "").split(" ");
-                        var atPositions = position.split(" ");
-                        var operator = 1;
-                        var marginDirection = "";
-                        var caretDirection = "";
-                        var caretPosition = "";
-                        if (myPositions[0].search(/(top|left)/i) !== -1) {
-                            operator = -1;
-                        }
-                        if (myPositions[0].search(/(left|right)/i) === -1) {
-                            atPositions[0] = atPositions.splice(1, 1, atPositions[0])[0];
-                            myPositions[0] = myPositions.splice(1, 1, myPositions[0])[0];
-                            caretDirection = myPositions[1] = uk.text.reverseDirection(myPositions[1]);
-                            caretPosition = "left";
-                            marginDirection = "margin-top";
-                        }
-                        else {
-                            caretDirection = myPositions[0] = uk.text.reverseDirection(myPositions[0]);
-                            caretPosition = "top";
-                            marginDirection = "margin-left";
-                        }
-                        $(element).on("click", function () {
-                            if ($popup.is(":visible")) {
-                                $popup.hide();
-                            }
-                            else {
-                                var CARET_WIDTH = parseFloat($caret.css("font-size")) * 2;
-                                $popup.show()
-                                    .css(marginDirection, 0)
-                                    .position({
-                                    my: myPositions[0] + " " + myPositions[1],
-                                    at: atPositions[0] + " " + atPositions[1],
-                                    of: $(element),
-                                    collision: "none"
-                                })
-                                    .css(marginDirection, CARET_WIDTH * operator);
-                                $caret.css(caretPosition, parseFloat($popup.css(caretPosition)) * -1);
-                            }
-                        }).wrap($("<div class='ntsControl ntsHelpButton'></div>"));
-                        var $container = $(element).closest(".ntsHelpButton");
-                        var $caret = $("<span class='caret-helpbutton caret-" + caretDirection + "'></span>");
-                        var $popup = $("<div class='nts-help-button-image'></div>")
-                            .append($caret)
-                            .append($("<img src='" + uk.request.resolvePath(image) + "' />"))
-                            .appendTo($container).hide();
-                        $("html").on("click", function (event) {
-                            if (!$container.is(event.target) && $container.has(event.target).length === 0) {
-                                $container.find(".nts-help-button-image").hide();
-                            }
-                        });
-                    };
-                    NtsHelpButtonBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        (enable === true) ? $(element).removeAttr("disabled") : $(element).attr("disabled", "disabled");
-                    };
-                    return NtsHelpButtonBindingHandler;
-                }());
-                ko.bindingHandlers['ntsHelpButton'] = new NtsHelpButtonBindingHandler();
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
