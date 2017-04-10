@@ -9,12 +9,17 @@ module qmm005.b {
         lst001: KnockoutObservable<number> = ko.observable(0);
         lst001Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
         lst002Data: KnockoutObservableArray<TableRowItem> = ko.observableArray([]);
-        dirty: any = {
-            inp001: nts.uk.ui.DirtyChecker,
-            lst001: nts.uk.ui.DirtyChecker,
-            lst002: nts.uk.ui.DirtyChecker,
+        dirty: IDirty = {
+            inp001: new nts.uk.ui.DirtyChecker(this.inp001),
+            lst001: new nts.uk.ui.DirtyChecker(this.lst001),
+            lst002: new nts.uk.ui.DirtyChecker(this.lst002Data),
             isDirty: function() {
-                debugger;
+                return this.inp001.isDirty() || this.lst001.isDirty() || this.lst002.isDirty();
+            },
+            reset: function() {
+                this.inp001.reset();
+                this.lst001.reset();
+                this.lst002.reset();
             }
         };
         constructor() {
@@ -22,7 +27,7 @@ module qmm005.b {
             // processingNo
             let dataRow = nts.uk.ui.windows.getShared('dataRow');
             self.index(dataRow.index());
-            self.lbl002(dataRow.index() + '.');
+            self.lbl002(dataRow.index());
             self.lbl003(dataRow.label());
 
             self.lst001.subscribe(function(v) {
@@ -35,16 +40,20 @@ module qmm005.b {
                 }
             });
 
-            self.dirty.isDirty();
-
             self.inp001.subscribe(function(v) {
                 if (v) {
                     self.lbl005("(" + v["yearInJapanEmpire"]() + ")");
                 } else {
                     self.lbl005("");
-
-                    // Clear all selected value
-                    $('#B_LST_001').ntsListBox('deselectAll');
+                }
+                if (self.lst001() == null) {
+                    for (let i = 0; i < 12; i++) {
+                        let row = self.lst002Data()[i] as TableRowItem;
+                        if (row) {
+                            row.year(v || new Date().getFullYear());
+                            row.year.valueHasMutated();
+                        }
+                    }
                 }
             });
             self.start();
@@ -63,7 +72,7 @@ module qmm005.b {
                             let year = rec.processingYm["getYearInYm"](),
                                 yearIJE = year + "(" + year["yearInJapanEmpire"]() + ")",
                                 index = i + 1,
-                                $moment = moment(rec.payDate),
+                                $moment = moment(new Date(rec.payDate)),
                                 sel002Data: Array<common.SelectItem> = [];
 
                             //row.sel002($moment.date());
@@ -77,8 +86,8 @@ module qmm005.b {
                             }
 
                             let row = new TableRowItem({
-                                index: index,
-                                label: index + '月の設定',
+                                month: index,
+                                year: year,
                                 sel001: rec.payBonusAtr == 1 ? true : false,
                                 sel002: $moment.date(),
                                 sel002Data: sel002Data,
@@ -108,6 +117,7 @@ module qmm005.b {
                         self.lst001(selectRow.index);
                     }
                 }
+                self.dirty.reset();
             });
         }
 
@@ -137,11 +147,20 @@ module qmm005.b {
                 .onClosed(() => { });
         }
 
-        checkNewData(item, event) {
+        newData(item, event) {
             let self = this;
-            debugger;
-            self.inp001(null);
-            self.lst001(null);
+            if (self.dirty.isDirty()) {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
+                    self.lst001(null);
+                    self.inp001(null);
+                    self.dirty.reset();
+                }).ifCancel(function() {
+                })
+            } else {
+                self.lst001(null);
+                self.inp001(null);
+                self.dirty.reset();
+            }
         }
 
         saveData(item, event) {
@@ -157,15 +176,9 @@ module qmm005.b {
         closeDialog(item, event) { nts.uk.ui.windows.close(); }
     }
 
-    class Model {
-        processingNo: KnockoutObservable<number>;
-        processingYm: KnockoutObservable<number>;
-
-    }
-
     interface ITableRowItem {
-        index: number;
-        label: string;
+        month: number;
+        year: number;
         sel001: boolean;
         sel002: number;
         sel002Data: Array<common.SelectItem>;
@@ -180,8 +193,8 @@ module qmm005.b {
     }
 
     class TableRowItem {
-        index: KnockoutObservable<number> = ko.observable(0);
-        label: KnockoutObservable<string> = ko.observable('');
+        month: KnockoutObservable<number> = ko.observable(0);
+        year: KnockoutObservable<number> = ko.observable(0);
         sel001: KnockoutObservable<boolean> = ko.observable(false);
         sel002: KnockoutObservable<number> = ko.observable(0);
         sel002L: KnockoutObservable<string> = ko.observable('');
@@ -198,10 +211,43 @@ module qmm005.b {
 
         constructor(param: ITableRowItem) {
             let self = this;
-            self.index(param.index);
-            self.label(param.label);
+            self.month(param.month);
+            self.year(param.year);
+            self.year.subscribe(function(v) {                
+                self.sel001(false);
+                let sel002Data: Array<common.SelectItem> = [], $moment = moment(new Date(v, self.month() - 1, 1));
+                for (let i = 1; i <= $moment.daysInMonth(); i++) {
+                    let date = moment(new Date(v, self.month() - 1, i));
+                    sel002Data.push(new common.SelectItem({
+                        index: i,
+                        label: date.format("YYYY/MM/DD"),
+                        value: date.toDate()
+                    }));
+                }
+                self.sel002Data(sel002Data);
+                self.sel002.valueHasMutated();
+                self.inp003(new Date(v, self.month() - 1, 1))
+                self.inp004(new Date(v, self.month() - 1, 0)["formatYearMonth"]("/"))
+                self.inp005(new Date(v, self.month() - 1, 1)["formatYearMonth"]("/"));
+                self.inp006(new Date(v, self.month() - 1, 0));
+                self.inp007(new Date(v, self.month() - 1, 1));
+                self.inp008(new Date(v + 1, 0, 1));
+                self.inp009(new Date(v, self.month(), 0));
+                self.inp010(new Date(v, self.month() - 1, 1)["getWorkDays"]());
+            });
+            self.year.valueHasMutated();
+
             self.sel001(param.sel001);
             self.sel002(param.sel002);
+            self.sel002.subscribe(function(v) {
+                if (v) {
+                    let currentSel002 = _.find(self.sel002Data(), function(item) { return item.index == v; });
+                    if (currentSel002) {
+                        self.sel002L(currentSel002.value["getDayJP"]());
+                    }
+                }
+            });
+            self.sel002.valueHasMutated();
 
             self.inp003(param.inp003);
             self.inp004(param.inp004);
@@ -214,19 +260,7 @@ module qmm005.b {
 
             self.sel002Data(param.sel002Data);
 
-            self.sel002.subscribe(function(v) {
-                if (v) {
-                    let currentSel002 = _.find(param.sel002Data, function(item) { return item.index == v; });
-                    if (currentSel002) {
-                        self.sel002L(currentSel002.value["getDayJP"]());
-                    }
-                }
-            });
-            self.sel002.valueHasMutated();
-        }
 
-        toggleCalendar(item, event): void {
-            $(event.currentTarget).parent('div').find('input[type=text]').trigger('click');
         }
     }
 
@@ -250,5 +284,7 @@ module qmm005.b {
         inp001: nts.uk.ui.DirtyChecker,
         lst001: nts.uk.ui.DirtyChecker,
         lst002: nts.uk.ui.DirtyChecker,
+        isDirty: any,
+        reset: any
     }
 }

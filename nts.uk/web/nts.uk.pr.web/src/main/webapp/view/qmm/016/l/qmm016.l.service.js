@@ -20,28 +20,34 @@ var nts;
                                 updateCertifyGroup: "pr/wagetable/certifygroup/update",
                                 deleteCertifyGroup: "pr/wagetable/certifygroup/delete",
                             };
+                            //Function connection service FindAll Certification
                             function findAllCertification() {
                                 return nts.uk.request.ajax(paths.findAllCertification);
                             }
                             service.findAllCertification = findAllCertification;
+                            //Function connection service FindAll CertifyGroup
                             function findAllCertifyGroup() {
                                 return nts.uk.request.ajax(paths.findAllCertifyGroup);
                             }
                             service.findAllCertifyGroup = findAllCertifyGroup;
+                            //Function connection service FindA CertifyGroup
                             function findCertifyGroup(code) {
                                 return nts.uk.request.ajax(paths.findCertifyGroup + "/" + code);
                             }
                             service.findCertifyGroup = findCertifyGroup;
+                            //Function connection service Add CertifyGroup
                             function addCertifyGroup(certifyGroupDto) {
                                 var data = { certifyGroupDto: certifyGroupDto };
                                 return nts.uk.request.ajax(paths.addCertifyGroup, data);
                             }
                             service.addCertifyGroup = addCertifyGroup;
+                            //Function connection service Update CertifyGroup
                             function updateCertifyGroup(certifyGroupDto) {
                                 var data = { certifyGroupDto: certifyGroupDto };
                                 return nts.uk.request.ajax(paths.updateCertifyGroup, data);
                             }
                             service.updateCertifyGroup = updateCertifyGroup;
+                            //Function connection service Delete CertifyGroup
                             function deleteCertifyGroup(certifyGroupDeleteDto) {
                                 var data = { certifyGroupDeleteDto: certifyGroupDeleteDto };
                                 return nts.uk.request.ajax(paths.deleteCertifyGroup, data);
@@ -81,7 +87,7 @@ var nts;
                                 model.CertifyGroupDeleteDto = CertifyGroupDeleteDto;
                                 (function (MultipleTargetSetting) {
                                     MultipleTargetSetting[MultipleTargetSetting["BigestMethod"] = 0] = "BigestMethod";
-                                    MultipleTargetSetting[MultipleTargetSetting["TotalMethod"] = 1] = "TotalMethod";
+                                    MultipleTargetSetting[MultipleTargetSetting["TotalMethod"] = 1] = "TotalMethod"; //TotalMethod
                                 })(model.MultipleTargetSetting || (model.MultipleTargetSetting = {}));
                                 var MultipleTargetSetting = model.MultipleTargetSetting;
                                 var MultipleTargetSettingDto = (function () {

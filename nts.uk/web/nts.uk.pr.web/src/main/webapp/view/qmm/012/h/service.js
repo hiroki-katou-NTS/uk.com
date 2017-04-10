@@ -7,10 +7,6 @@ var qmm012;
             var paths = {
                 findItemSalaryPeriod: "pr/core/itemsalaryperiod/find",
                 findItemDeductPeriod: "pr/core/itemdeductperiod/find",
-                addItemSalaryPeriod: "pr/core/itemsalaryperiod/add",
-                addItemDeductPeriod: "pr/core/itemdeductperiod/add",
-                updateItemSalaryPeriod: "pr/core/itemsalaryperiod/update",
-                updateItemDeductPeriod: "pr/core/itemdeductperiod/update",
             };
             function findItemSalaryPeriod(itemCode) {
                 var dfd = $.Deferred();
@@ -23,6 +19,7 @@ var qmm012;
                 });
                 return dfd.promise();
             }
+            service.findItemSalaryPeriod = findItemSalaryPeriod;
             function findItemDeductPeriod(itemCode) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.findItemDeductPeriod + "/" + itemCode)
@@ -34,12 +31,13 @@ var qmm012;
                 });
                 return dfd.promise();
             }
-            function findItemPeriod(itemMaster) {
+            service.findItemDeductPeriod = findItemDeductPeriod;
+            function findItemPeriod(ItemMaster) {
                 var dfd = $.Deferred();
-                var categoryAtr = itemMaster.categoryAtr;
-                var itemCode = itemMaster.itemCode;
+                var categoryAtr = ItemMaster.categoryAtr;
+                var itemCode = ItemMaster.itemCode;
                 if (categoryAtr == 0) {
-                    findItemSalaryPeriod(itemCode).done(function (ItemPeriod) {
+                    service.findItemSalaryPeriod(itemCode).done(function (ItemPeriod) {
                         dfd.resolve(ItemPeriod);
                     }).fail(function (res) {
                         // Alert message
@@ -47,7 +45,7 @@ var qmm012;
                     });
                 }
                 if (categoryAtr == 1) {
-                    findItemDeductPeriod(itemCode).done(function (ItemPeriod) {
+                    service.findItemDeductPeriod(itemCode).done(function (ItemPeriod) {
                         dfd.resolve(ItemPeriod);
                     }).fail(function (res) {
                         // Alert message
@@ -176,3 +174,4 @@ var qmm012;
         })(service = h.service || (h.service = {}));
     })(h = qmm012.h || (qmm012.h = {}));
 })(qmm012 || (qmm012 = {}));
+//# sourceMappingURL=service.js.map

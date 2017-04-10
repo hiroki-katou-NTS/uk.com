@@ -1,3 +1,4 @@
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -33,11 +34,31 @@ var nts;
                     return ValidationResult;
                 }());
                 validation.ValidationResult = ValidationResult;
+                function createValidator(constraintName, option) {
+                    var constraint = getConstraint(constraintName);
+                    if (constraint === null) {
+                        return new NoValidator();
+                    }
+                    if (constraint.valueType === 'String') {
+                        return new StringValidator(constraintName);
+                    }
+                    if (option) {
+                        if (option.inputFormat) {
+                            //If inputFormat presented, this is Date or Time Editor                 
+                            return new TimeValidator(constraintName, option);
+                        }
+                        else {
+                            return new NumberValidator(constraintName, option);
+                        }
+                    }
+                    return new NoValidator();
+                }
+                validation.createValidator = createValidator;
                 var StringValidator = (function () {
-                    function StringValidator(primitiveValueName, option) {
+                    function StringValidator(primitiveValueName, required) {
                         this.constraint = getConstraint(primitiveValueName);
                         this.charType = uk.text.getCharType(primitiveValueName);
-                        this.required = option.required;
+                        this.required = required;
                     }
                     StringValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
@@ -106,35 +127,35 @@ var nts;
                 var TimeValidator = (function () {
                     function TimeValidator(primitiveValueName, option) {
                         this.constraint = getConstraint(primitiveValueName);
-                        this.outputFormat = (option && option.inputFormat) ? option.inputFormat : "";
-                        this.required = (option && option.required) ? option.required : false;
-                        this.valueType = (option && option.valueType) ? option.valueType : "string";
+                        this.option = option;
                     }
                     TimeValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
-                        if (this.required !== undefined && this.required !== false) {
-                            if (!checkRequired(inputText)) {
-                                result.fail('This field is required');
-                                return result;
-                            }
-                        }
                         var parseResult;
-                        parseResult = uk.time.parseMoment(inputText, this.outputFormat);
+                        if (this.option.inputFormat === "yearmonth") {
+                            parseResult = uk.time.parseYearMonth(inputText);
+                        }
+                        else if (this.option.inputFormat === "time") {
+                            parseResult = uk.time.parseTime(inputText, false);
+                        }
+                        else if (this.option.inputFormat === "timeofday") {
+                            parseResult = uk.time.parseTimeOfTheDay(inputText);
+                        }
+                        else if (this.option.inputFormat === "date") {
+                            parseResult = uk.time.parseYearMonthDate(inputText);
+                        }
+                        else {
+                            // TODO : Validate base on moment
+                            var format = uk.text.getISOFormat(this.option.inputFormat);
+                            var momentObject = moment(inputText);
+                            if (momentObject.isValid()) {
+                                var format = uk.text.getISOFormat(this.option.inputFormat);
+                                return momentObject.format(format);
+                            }
+                            return inputText;
+                        }
                         if (parseResult.success) {
-                            if (this.valueType === "string")
-                                result.success(parseResult.format());
-                            else if (this.valueType === "number") {
-                                result.success(parseResult.toNumber(this.outputFormat));
-                            }
-                            else if (this.valueType === "date") {
-                                result.success(parseResult.toValue().toDate());
-                            }
-                            else if (this.valueType === "moment") {
-                                result.success(parseResult.toValue());
-                            }
-                            else {
-                                result.success(parseResult.format());
-                            }
+                            result.success(parseResult.toValue());
                         }
                         else {
                             result.fail(parseResult.getMsg());
