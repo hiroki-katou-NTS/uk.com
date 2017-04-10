@@ -34,7 +34,7 @@ public interface WtHistorySetMemento {
 	 *
 	 * @param historyId the new history id
 	 */
-	void  setHistoryId(String historyId);
+	void setHistoryId(String historyId);
 
 	/**
 	 * Sets the apply range.

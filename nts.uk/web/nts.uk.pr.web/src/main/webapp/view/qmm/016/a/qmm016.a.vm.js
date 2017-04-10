@@ -125,6 +125,26 @@ var nts;
                                     self.demensionType = ko.computed(function () {
                                         return qmm016.model.demensionMap[self.demensionSet()];
                                     });
+                                    self.lblContent = ko.computed(function () {
+                                        var contentMap = [
+                                            '１つの要素でテーブルを作成します。',
+                                            '２つの要素でテーブルを作成します。',
+                                            '３つの要素でテーブルを作成します。',
+                                            '資格手当用のテーブルを作成します。',
+                                            '精皆勤手当て用のテーブルを作成します。'
+                                        ];
+                                        return contentMap[self.demensionSet()];
+                                    });
+                                    self.lblSampleImgLink = ko.computed(function () {
+                                        var linkMap = [
+                                            '１.png',
+                                            '２.png',
+                                            '３.png',
+                                            '4.png',
+                                            '5.png'
+                                        ];
+                                        return linkMap[self.demensionSet()];
+                                    });
                                     self.demensionItemList = ko.observableArray([]);
                                     self.demensionSet.subscribe(function (val) {
                                         if (!self.isNewMode()) {

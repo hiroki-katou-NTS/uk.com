@@ -26,17 +26,17 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class UnemployeeInsuranceRateCopyCommandHandler
 	extends CommandHandler<UnemployeeInsuranceRateCopyCommand> {
 
-	/** The unemployee insurance rate repository. */
+	/** The repository. */
 	@Inject
-	private UnemployeeInsuranceRateRepository unemployeeInsuranceRateRepository;
+	private UnemployeeInsuranceRateRepository repository;
 
-	/** The unemployee insurance rate service. */
+	/** The service. */
 	@Inject
-	private UnemployeeInsuranceRateService unemployeeInsuranceRateService;
+	private UnemployeeInsuranceRateService service;
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
 	 * .CommandHandlerContext)
@@ -54,42 +54,44 @@ public class UnemployeeInsuranceRateCopyCommandHandler
 		// get command
 		UnemployeeInsuranceRateCopyCommand command = context.getCommand();
 
-		UnemployeeInsuranceRate unemployeeInsuranceRate = null;
+		UnemployeeInsuranceRate insuranceRate = null;
+
+		// add new
 		if (command.isAddNew()) {
-			// add new
-			unemployeeInsuranceRate = UnemployeeInsuranceRate.createWithIntial(companyCode,
+			insuranceRate = UnemployeeInsuranceRate.createWithIntial(companyCode,
 				YearMonth.of(command.getStartMonth()));
 		} else {
 			// add new with start historyId
-			Optional<UnemployeeInsuranceRate> optionalFindAdd = this.unemployeeInsuranceRateRepository
-				.findById(companyCode, command.getHistoryIdCopy());
-			if (optionalFindAdd.isPresent()) {
-				unemployeeInsuranceRate = optionalFindAdd.get();
-				unemployeeInsuranceRate = unemployeeInsuranceRate
-					.copyWithDate(YearMonth.of(command.getStartMonth()));
+			Optional<UnemployeeInsuranceRate> dataAdd = this.repository.findById(companyCode,
+				command.getHistoryIdCopy());
+
+			// check exist data add
+			if (dataAdd.isPresent()) {
+				insuranceRate = dataAdd.get();
+				insuranceRate = insuranceRate.copyWithDate(YearMonth.of(command.getStartMonth()));
 			} else {
-				unemployeeInsuranceRate = UnemployeeInsuranceRate.createWithIntial(companyCode,
+				insuranceRate = UnemployeeInsuranceRate.createWithIntial(companyCode,
 					YearMonth.of(command.getStartMonth()));
 			}
 		}
+
 		// validate
-
-		unemployeeInsuranceRate.setMaxDate();
-
-		unemployeeInsuranceRate.validate();
-		unemployeeInsuranceRateService.validateDateRange(unemployeeInsuranceRate);
+		insuranceRate.setMaxDate();
+		insuranceRate.validate();
+		this.service.validateDateRange(insuranceRate);
 
 		// find first data
-		Optional<UnemployeeInsuranceRate> optionalFisrtData = this.unemployeeInsuranceRateRepository
-			.findFirstData(unemployeeInsuranceRate.getCompanyCode());
-		if (optionalFisrtData.isPresent()) {
-			optionalFisrtData.get()
-				.setEnd(unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());
-			this.unemployeeInsuranceRateRepository.update(optionalFisrtData.get());
+		Optional<UnemployeeInsuranceRate> dataFisrt = this.repository
+			.findFirstData(insuranceRate.getCompanyCode());
+
+		// check exist data first
+		if (dataFisrt.isPresent()) {
+			dataFisrt.get().setEnd(insuranceRate.getApplyRange().getStartMonth().previousMonth());
+			this.repository.update(dataFisrt.get());
 		}
 
 		// call repository add (insert database)
-		this.unemployeeInsuranceRateRepository.add(unemployeeInsuranceRate);
+		this.repository.add(insuranceRate);
 	}
 
 }

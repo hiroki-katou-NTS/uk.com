@@ -90,7 +90,16 @@ var nts;
                                     _.forEach(secondDemensionElements.itemList, function (item) {
                                         var colName = item.displayName;
                                         mergeColumn.group.push({ headerText: colName, dataType: 'number', key: item.uuid, width: '100px', columnCssClass: "halign-right" });
-                                        columnSettings.push({ columnKey: item.uuid, readOnly: false });
+                                        columnSettings.push({
+                                            columnKey: item.uuid,
+                                            readOnly: false,
+                                            editorProvider: new $.ig.NtsNumberEditor(),
+                                            editorOptions: {
+                                                constraint: 'WtValue',
+                                                option: {},
+                                                required: true
+                                            }
+                                        });
                                     });
                                     columns.push(mergeColumn);
                                     self.igGridDataSource(data);

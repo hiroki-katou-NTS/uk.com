@@ -53,6 +53,7 @@ public class QlsptPaylstFormDetailPK implements Serializable {
 	 * Instantiates a new qlspt paylst form detail PK.
 	 */
 	public QlsptPaylstFormDetailPK() {
+		super();
 	}
 
 	/**
