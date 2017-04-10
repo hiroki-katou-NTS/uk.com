@@ -72,7 +72,7 @@ module qmm005.b {
                             let year = rec.processingYm["getYearInYm"](),
                                 yearIJE = year + "(" + year["yearInJapanEmpire"]() + ")",
                                 index = i + 1,
-                                $moment = moment(rec.payDate),
+                                $moment = moment(new Date(rec.payDate)),
                                 sel002Data: Array<common.SelectItem> = [];
 
                             //row.sel002($moment.date());

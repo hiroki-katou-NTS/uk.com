@@ -130,6 +130,10 @@ module qmm005.common {
             'qmm005d': {
                 'update': 'pr/core/qmm005d/update',
                 'getdata': 'pr/core/qmm005d/getdata'
+            },
+            'qmm005e': {
+                'update': 'pr/core/qmm005e/update',
+                'getdata': 'pr/core/qmm005e/getdata'
             }
         }
     }
