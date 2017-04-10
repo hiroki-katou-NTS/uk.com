@@ -174,8 +174,8 @@
     * @return {String}                Formatted date
     */
     export function formatPattern(date: any, inputFormat?: string, outputFormat?: string) {
-        outputFormat = text.getISO8601Format(outputFormat);
-        inputFormat = text.getISO8601Format(inputFormat);
+        outputFormat = text.getISOFormat(outputFormat);
+        inputFormat = text.getISOFormat(inputFormat);
         return moment.utc(date, inputFormat).format(outputFormat);
     }
 

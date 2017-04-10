@@ -16,12 +16,13 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             var value = data.value;
             var dateFormat: string = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
-            dateFormat = text.getISO8601Format(dateFormat);
+            dateFormat = text.getISOFormat(dateFormat);
             var hasDayofWeek: boolean = (dateFormat.indexOf("ddd") !== -1);
             var dayofWeekFormat: string = dateFormat.replace(/[^d]/g, "");
             dateFormat = dateFormat.replace(/d/g,"").trim();
             var valueFormat: string = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : "";
             var disabled: boolean = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
+            var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var button: boolean = (data.button !== undefined) ? ko.unwrap(data.button) : false;
             var startDate: any = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
             var endDate: any = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
@@ -33,11 +34,8 @@ module nts.uk.ui.koExtentions {
                 container.attr("id", idString);
             }
             container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
-            var inputClass: string = "";
-            if (dateFormat.length < 10)
-                inputClass = "yearmonth-picker";
-            var $input: any = $("<input id='" + container.attr("id") + "-input' class='ntsDatepicker nts-input' />")
-                                .addClass(inputClass);
+            var inputClass: string = (dateFormat.length < 10) ? "yearmonth-picker" : "";
+            var $input: any = $("<input id='" + container.attr("id") + "-input' class='ntsDatepicker nts-input' />").addClass(inputClass);
             container.append($input);
             if (hasDayofWeek) {
                 var lengthClass: string = (dayofWeekFormat.length > 3) ? "long-day" : "short-day";
@@ -82,9 +80,6 @@ module nts.uk.ui.koExtentions {
                     $input.ntsError('set', "Invalid format");
                 }
             }));
-            
-            var length = 10, atomWidth = 9.5;
-            //$input.width(Math.floor(atomWidth * length));
         }
 
         /**
@@ -94,12 +89,13 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             var value = data.value;
             var dateFormat: string = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
-            dateFormat = text.getISO8601Format(dateFormat);
+            dateFormat = text.getISOFormat(dateFormat);
             var hasDayofWeek: boolean = (dateFormat.indexOf("ddd") !== -1);
             var dayofWeekFormat: string = dateFormat.replace(/[^d]/g, "");
             dateFormat = dateFormat.replace(/d/g,"").trim();
             var valueFormat: string = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : dateFormat;
             var disabled: boolean = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
+            var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var button: boolean = (data.button !== undefined) ? ko.unwrap(data.button) : false;
             var startDate: any = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
             var endDate: any = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
@@ -111,9 +107,9 @@ module nts.uk.ui.koExtentions {
             var $label: any = container.find(".dayofweek-label");
             
             // Value Binding
-            var dateFormatValue = moment.utc(value(), valueFormat).format(dateFormat);
+            var dateFormatValue = (value() !== "") ? moment.utc(value(), valueFormat).format(dateFormat) : "";
             if (init === true || (moment.utc($input.datepicker('getDate')).format(dateFormat) !== dateFormatValue)) {
-                if (dateFormatValue !== "Invalid date")
+                if (dateFormatValue !== "")
                     $input.datepicker('setDate', dateFormatValue);
                 else
                     $input.datepicker('setDate', null);

@@ -25,14 +25,13 @@
 						<h2>Overview</h2>
 						<h3>Datepicker</h3>
 						<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div><br/>
-						<span data-bind="text: date"/>
+						<b>ISO Format:</b> <span data-bind="text: date"/>
 						<hr/>
 						<h3>Datepicker with Day of Week</h3>
 						<div data-bind="ntsDatePicker: {value: date1, dateFormat: 'YYYY/MM/DD ddd', valueFormat: 'YYYYMMDD'}"></div>
 						<div data-bind="ntsDatePicker: {value: date1, dateFormat: 'YYYY/MM/DD dddd', valueFormat: 'YYYYMMDD'}"></div>		
 						<br/><br/>
-						<span data-bind="text: date1"/>
-						<input data-bind="ntsTextEditor: {value: date1}"/>
+						<b>Custom Format:</b> <input data-bind="ntsTextEditor: {value: date1}"/>
 						<hr/>
 						<h3>Year/Month/Day picker</h3>
 						<h4>YearMonth Picker</h4>

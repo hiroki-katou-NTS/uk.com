@@ -143,10 +143,10 @@ var nts;
                             parseResult = uk.time.parseYearMonthDate(inputText);
                         }
                         else {
-                            var format = uk.text.getISO8601Format(this.option.inputFormat);
+                            var format = uk.text.getISOFormat(this.option.inputFormat);
                             var momentObject = moment(inputText);
                             if (momentObject.isValid()) {
-                                var format = uk.text.getISO8601Format(this.option.inputFormat);
+                                var format = uk.text.getISOFormat(this.option.inputFormat);
                                 return momentObject.format(format);
                             }
                             return inputText;
