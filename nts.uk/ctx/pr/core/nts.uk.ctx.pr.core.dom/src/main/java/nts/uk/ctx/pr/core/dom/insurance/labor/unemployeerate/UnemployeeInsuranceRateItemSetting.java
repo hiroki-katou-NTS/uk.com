@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate;
@@ -42,6 +42,11 @@ public class UnemployeeInsuranceRateItemSetting {
 		this.rate = rate;
 	}
 
+	/**
+	 * Value intial.
+	 *
+	 * @return the unemployee insurance rate item setting
+	 */
 	public static final UnemployeeInsuranceRateItemSetting valueIntial() {
 		return new UnemployeeInsuranceRateItemSetting(RoundingMethod.Truncation, Double.valueOf(0d));
 	}

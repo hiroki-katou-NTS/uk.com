@@ -84,12 +84,26 @@ var nts;
                                 ScreenModel.prototype.saveAsPdf = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    var command = {};
+                                    var command = self.toJsObject();
                                     a.service.saveAsPdf(command).done(function () {
                                         dfd.resolve();
                                     }).fail(function (res) {
                                         nts.uk.ui.dialog.alert(res.message);
                                     });
+                                };
+                                ScreenModel.prototype.toJsObject = function () {
+                                    var self = this;
+                                    var command = {};
+                                    command.outputFormatType = self.selectedOutputFormat();
+                                    command.outputSettingCode = self.selectedOutputSetting();
+                                    command.isVerticalLine = self.isVerticalLine();
+                                    command.isHorizontalLine = self.isHorizontalRuledLine();
+                                    command.outputLanguage = self.selectedOutputLanguage();
+                                    command.pageBreakSetting = self.selectedpageBreakSetting();
+                                    if (self.isDepartmentHierarchy()) {
+                                        command.hierarchy = self.selectedHierachy();
+                                    }
+                                    return command;
                                 };
                                 return ScreenModel;
                             }());

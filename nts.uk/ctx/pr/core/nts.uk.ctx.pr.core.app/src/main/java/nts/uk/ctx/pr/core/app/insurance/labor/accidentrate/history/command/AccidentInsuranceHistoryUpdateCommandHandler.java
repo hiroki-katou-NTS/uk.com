@@ -24,7 +24,7 @@ import nts.uk.shr.com.context.LoginUserContext;
  */
 @Stateless
 public class AccidentInsuranceHistoryUpdateCommandHandler
-extends CommandHandler<AccidentInsuranceHistoryUpdateCommand> {
+	extends CommandHandler<AccidentInsuranceHistoryUpdateCommand> {
 
 	/** The accident insurance rate repository. */
 	@Inject

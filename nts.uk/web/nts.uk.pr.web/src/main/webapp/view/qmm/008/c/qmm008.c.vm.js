@@ -265,7 +265,6 @@ var nts;
                                         self.loadPension(dto);
                                         self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
                                         self.isLoading(false);
-                                        $('.save-error').ntsError('clear');
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
@@ -280,9 +279,15 @@ var nts;
                                     }
                                     return dfd.promise();
                                 };
+                                ScreenModel.prototype.clearErrors = function () {
+                                    if (nts.uk.ui._viewModel) {
+                                        $('.save-error').ntsError('clear');
+                                    }
+                                };
                                 ScreenModel.prototype.onSelectMaster = function (code) {
                                     var self = this;
                                     self.isClickHistory(false);
+                                    self.clearErrors();
                                 };
                                 ScreenModel.prototype.onRegistNew = function () {
                                     var self = this;
@@ -319,7 +324,7 @@ var nts;
                                             self.loadPension(self.backupDataDirty());
                                             self.OpenModalOfficeRegister();
                                             self.dirty.reset();
-                                        }).ifCancel(function () {
+                                        }).ifNo(function () {
                                         });
                                     }
                                     else {
@@ -341,7 +346,7 @@ var nts;
                                             self.loadPension(self.backupDataDirty());
                                             self.OpenModalStandardMonthlyPricePension();
                                             self.dirty.reset();
-                                        }).ifCancel(function () {
+                                        }).ifNo(function () {
                                         });
                                     }
                                     else {

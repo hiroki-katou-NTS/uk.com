@@ -29,5 +29,12 @@ public class RoundingItem {
 		this.companyRoundAtr = companyRoundAtr;
 		this.personalRoundAtr = personalRoundAtr;
 	}
+
+	/**
+	 * Instantiates a new rounding item.
+	 */
+	public RoundingItem() {
+		super();
+	}
 	
 }

@@ -118,7 +118,7 @@ module nts.uk.ui.koExtentions {
         getValidator(data: any): validation.IValidator {
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            return new validation.StringValidator(constraintName, required);
+            return new validation.StringValidator(constraintName, {required: required});
         }
     }
 
@@ -148,7 +148,7 @@ module nts.uk.ui.koExtentions {
         getValidator(data: any): validation.IValidator {
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            return new validation.StringValidator(constraintName, required);
+            return new validation.StringValidator(constraintName, {required: required});
         }
     }
 

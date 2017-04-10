@@ -31,7 +31,7 @@
 		<ui:define name="pageContent">
 			<table class="form-default">
 						<tr>
-							<td><div id="lbl_003"
+							<td><div id="lblName"
 									data-bind="ntsFormLabel: {constraint: ['UnitPriceCode','UnitPriceName'], required: true }">コード/名称</div></td>
 							<td colspan="2"><input id="inpCode" data-name="コード"
 								class="inp-default"
@@ -50,7 +50,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td><div id="lbl_004"
+							<td><div id="lblDatePicker"
 									data-bind="ntsFormLabel: { required: true }">開始年月</div></td>
 							<td style="min-width: 265px"><span id="inpStartMonth" data-name="開始年月"
 								data-bind="ntsDatePicker: {value: unitPriceHistoryModel().startMonth, dateFormat: 'yyyy/MM', disabled: !isNewMode()}"></span>
@@ -58,7 +58,7 @@
 								data-bind="text: '(' + nts.uk.time.yearmonthInJapanEmpire(unitPriceHistoryModel().startMonth()) + ') ~ '"></label></td>
 						</tr>
 						<tr>
-							<td><div id="lbl_006"
+							<td><div id="lblBudget"
 									data-bind="ntsFormLabel: { constraint: 'Money', required: true }">金額</div></td>
 							<td><input id="inpBudget" class="inp-default" data-name="金額"
 								data-bind="ntsNumberEditor: {
@@ -69,7 +69,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td><div id="lbl_007" data-bind="ntsFormLabel: {}">固定的賃金</div></td>
+							<td><div id="lblContractSetting" data-bind="ntsFormLabel: {}">固定的賃金</div></td>
 							<td><label class="ntsRadioBox"> <input type="radio"
 									name="textRadio"
 									data-bind="checkedValue: 'Company', checked: unitPriceHistoryModel().fixPaySettingType" />

@@ -218,7 +218,6 @@ var nts;
                                         self.loadHealth(dto);
                                         self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
                                         self.isLoading(false);
-                                        $('.save-error').ntsError('clear');
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
@@ -233,9 +232,15 @@ var nts;
                                     }
                                     return dfd.promise();
                                 };
+                                ScreenModel.prototype.clearErrors = function () {
+                                    if (nts.uk.ui._viewModel) {
+                                        $('.save-error').ntsError('clear');
+                                    }
+                                };
                                 ScreenModel.prototype.onSelectMaster = function (code) {
                                     var self = this;
                                     self.isClickHistory(false);
+                                    self.clearErrors();
                                 };
                                 ScreenModel.prototype.getCurrentOfficeCode = function (childId) {
                                     var self = this;
@@ -272,7 +277,7 @@ var nts;
                                             self.loadHealth(self.backupDataDirty());
                                             self.OpenModalOfficeRegister();
                                             self.dirty.reset();
-                                        }).ifCancel(function () {
+                                        }).ifNo(function () {
                                         });
                                     }
                                     else {
@@ -293,7 +298,7 @@ var nts;
                                             self.loadHealth(self.backupDataDirty());
                                             self.OpenModalStandardMonthlyPriceHealth();
                                             self.dirty.reset();
-                                        }).ifCancel(function () {
+                                        }).ifNo(function () {
                                         });
                                     }
                                     else {

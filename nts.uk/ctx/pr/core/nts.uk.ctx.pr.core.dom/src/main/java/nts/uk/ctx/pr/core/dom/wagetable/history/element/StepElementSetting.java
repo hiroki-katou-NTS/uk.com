@@ -16,6 +16,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.Item;
  */
 @Getter
 public class StepElementSetting extends ElementSetting {
+	
 	/** The upper limit. */
 	private RangeLimit upperLimit;
 

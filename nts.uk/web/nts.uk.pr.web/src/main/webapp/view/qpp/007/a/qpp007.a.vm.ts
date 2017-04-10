@@ -110,12 +110,27 @@ module nts.uk.pr.view.qpp007.a {
             saveAsPdf(): void {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                let command: any = {};
+                let command = self.toJsObject();
                 service.saveAsPdf(command).done(function() {
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
                 });
+            }
+            
+            private toJsObject(): any {
+                let self = this;
+                let command: any = {};
+                command.outputFormatType = self.selectedOutputFormat();
+                command.outputSettingCode = self.selectedOutputSetting();
+                command.isVerticalLine = self.isVerticalLine();
+                command.isHorizontalLine = self.isHorizontalRuledLine();
+                command.outputLanguage =  self.selectedOutputLanguage();
+                command.pageBreakSetting = self.selectedpageBreakSetting();
+                if (self.isDepartmentHierarchy()) {
+                    command.hierarchy  = self.selectedHierachy();
+                }
+                return command;
             }
 
         }

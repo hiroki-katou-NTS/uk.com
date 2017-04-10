@@ -34,8 +34,11 @@ public class CertifyGroupServiceImpl implements CertifyGroupService {
 	 */
 	@Override
 	public void validateRequiredItem(CertifyGroup certifyGroup) {
-		if (certifyGroup.getCode() == null || StringUtil.isNullOrEmpty(certifyGroup.getCode().v(), true)
-			|| certifyGroup.getName() == null || StringUtil.isNullOrEmpty(certifyGroup.getName().v(), true)) {
+		// Validate required item
+		if (certifyGroup.getCode() == null 
+				|| certifyGroup.getName() == null
+				|| StringUtil.isNullOrEmpty(certifyGroup.getCode().v(), true)
+				|| StringUtil.isNullOrEmpty(certifyGroup.getName().v(), true)) {
 			throw new BusinessException("ER001");
 		}
 
@@ -71,6 +74,7 @@ public class CertifyGroupServiceImpl implements CertifyGroupService {
 	 */
 	@Override
 	public void checkCertificationIsBelong(CertifyGroup certifyGroup) {
+		// Check certification is belong to exist group.
 		if (certifyGroup.getCertifies().stream()
 			.anyMatch(item -> this.repository.isBelongToExistGroup(certifyGroup.getCompanyCode(),
 				certifyGroup.getCode().v(), item.getCode()))) {

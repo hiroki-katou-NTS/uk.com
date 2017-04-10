@@ -62,7 +62,6 @@ module nts.uk.pr.view.qmm011.a {
         //Function connection service update Unemployee Insurance Rate
         export function updateUnemployeeInsuranceRate(
             unemployeeInsuranceRateModel: viewmodel.UnemployeeInsuranceRateModel): JQueryPromise<void> {
-            var dfd = $.Deferred<void>();
             var data = {
                 unemployeeInsuranceRate: service.convertUnemployeeInsuranceRateModelDTO(unemployeeInsuranceRateModel)
             };

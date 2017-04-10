@@ -62,7 +62,6 @@ var nts;
                             }
                             service.addUnemployeeInsuranceRate = addUnemployeeInsuranceRate;
                             function updateUnemployeeInsuranceRate(unemployeeInsuranceRateModel) {
-                                var dfd = $.Deferred();
                                 var data = {
                                     unemployeeInsuranceRate: service.convertUnemployeeInsuranceRateModelDTO(unemployeeInsuranceRateModel)
                                 };

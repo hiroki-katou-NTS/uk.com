@@ -11,14 +11,13 @@ import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 /**
  * The Class BaseItem.
  */
-
+@Getter
 public class BaseItem implements Item {
 
 	/** The uuid. */
 	protected ElementId uuid;
 	
 	/** The display name. */
-	@Getter
 	@Setter
 	private String displayName;
 
@@ -32,13 +31,5 @@ public class BaseItem implements Item {
 		super();
 		this.uuid = uuid;
 	}
-
-	/**
-	 * Gets the uuid.
-	 *
-	 * @return the uuid
-	 */
-	public ElementId getUuid() {
-		return this.uuid;
-	}
+	
 }
