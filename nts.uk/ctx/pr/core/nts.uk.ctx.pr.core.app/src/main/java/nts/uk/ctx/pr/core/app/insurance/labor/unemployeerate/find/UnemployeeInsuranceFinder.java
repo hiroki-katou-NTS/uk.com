@@ -9,7 +9,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto.UnemployeeInsuranceRateFindOutDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto.UnemployeeInsuranceRateFindDto;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -23,15 +23,16 @@ public class UnemployeeInsuranceFinder {
 
 	/** The find. */
 	@Inject
-	private UnemployeeInsuranceRateRepository find;
+	private UnemployeeInsuranceRateRepository repository;
 
 	/**
 	 * Find by id.
 	 *
-	 * @param historyId the history id
+	 * @param historyId
+	 *            the history id
 	 * @return the unemployee insurance rate find out dto
 	 */
-	public UnemployeeInsuranceRateFindOutDto findById(String historyId) {
+	public UnemployeeInsuranceRateFindDto findById(String historyId) {
 
 		// get user login info
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -40,17 +41,19 @@ public class UnemployeeInsuranceFinder {
 		String companyCode = loginUserContext.companyCode();
 
 		// call finder repository
-		UnemployeeInsuranceRateFindOutDto unemployeeInsuranceRateFindOutDto;
-		unemployeeInsuranceRateFindOutDto = new UnemployeeInsuranceRateFindOutDto();
-		Optional<UnemployeeInsuranceRate> optionalUnemployeeInsuranceRate = find.findById(companyCode,
-			historyId);
+		Optional<UnemployeeInsuranceRate> data = this.repository.findById(companyCode, historyId);
+
+		// set output
+		UnemployeeInsuranceRateFindDto dataOuput = new UnemployeeInsuranceRateFindDto();
 
 		// exist value
-		if (optionalUnemployeeInsuranceRate.isPresent()) {
-			optionalUnemployeeInsuranceRate.get().saveToMemento(unemployeeInsuranceRateFindOutDto);
-			return unemployeeInsuranceRateFindOutDto;
+		if (!data.isPresent()) {
+			return null;
 		}
-		return null;
+		
+		//res data
+		data.get().saveToMemento(dataOuput);
+		return dataOuput;
 	}
 
 }

@@ -14,8 +14,7 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpIn
 /**
  * The Class JpaUnemployeeInsuranceRateItemSetMemento.
  */
-public class JpaUnemployeeInsuranceRateItemSetMemento
-		implements UnemployeeInsuranceRateItemSetMemento {
+public class JpaUnemployeeInsuranceRateItemSetMemento implements UnemployeeInsuranceRateItemSetMemento {
 
 	/** The type value. */
 	private QismtEmpInsuRate typeValue;
@@ -31,8 +30,7 @@ public class JpaUnemployeeInsuranceRateItemSetMemento
 	 * @param careerGroup
 	 *            the career group
 	 */
-	public JpaUnemployeeInsuranceRateItemSetMemento(QismtEmpInsuRate typeValue,
-			CareerGroup careerGroup) {
+	public JpaUnemployeeInsuranceRateItemSetMemento(QismtEmpInsuRate typeValue, CareerGroup careerGroup) {
 		this.typeValue = typeValue;
 		this.careerGroup = careerGroup;
 	}
@@ -62,20 +60,17 @@ public class JpaUnemployeeInsuranceRateItemSetMemento
 		switch (this.careerGroup) {
 
 		case Agroforestry:
-			this.typeValue
-					.setCEmpRateGeneral(new BigDecimal(String.valueOf(companySetting.getRate())));
+			this.typeValue.setCEmpRateGeneral(new BigDecimal(String.valueOf(companySetting.getRate())));
 			this.typeValue.setCEmpRoundGeneral(companySetting.getRoundAtr().value);
 			break;
 
-		case Contruction:
-			this.typeValue
-					.setCEmpRateOther(new BigDecimal(String.valueOf(companySetting.getRate())));
+		case Other:
+			this.typeValue.setCEmpRateOther(new BigDecimal(String.valueOf(companySetting.getRate())));
 			this.typeValue.setCEmpRoundOther(companySetting.getRoundAtr().value);
 			break;
 
-		case Other:
-			this.typeValue
-					.setCEmpRateConst(new BigDecimal(String.valueOf(companySetting.getRate())));
+		case Contruction:
+			this.typeValue.setCEmpRateConst(new BigDecimal(String.valueOf(companySetting.getRate())));
 			this.typeValue.setCEmpRoundConst(companySetting.getRoundAtr().value);
 			break;
 		}
@@ -95,20 +90,17 @@ public class JpaUnemployeeInsuranceRateItemSetMemento
 		switch (this.careerGroup) {
 
 		case Agroforestry:
-			this.typeValue
-					.setPEmpRateGeneral(new BigDecimal(String.valueOf(personalSetting.getRate())));
+			this.typeValue.setPEmpRateGeneral(new BigDecimal(String.valueOf(personalSetting.getRate())));
 			this.typeValue.setPEmpRoundGeneral(personalSetting.getRoundAtr().value);
 			break;
 
-		case Contruction:
-			this.typeValue
-					.setPEmpRateOther(new BigDecimal(String.valueOf(personalSetting.getRate())));
+		case Other:
+			this.typeValue.setPEmpRateOther(new BigDecimal(String.valueOf(personalSetting.getRate())));
 			this.typeValue.setPEmpRoundOther(personalSetting.getRoundAtr().value);
 			break;
 
-		case Other:
-			this.typeValue
-					.setPEmpRateConst(new BigDecimal(String.valueOf(personalSetting.getRate())));
+		case Contruction:
+			this.typeValue.setPEmpRateConst(new BigDecimal(String.valueOf(personalSetting.getRate())));
 			this.typeValue.setPEmpRoundConst(personalSetting.getRoundAtr().value);
 			break;
 

@@ -23,11 +23,11 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.service.AccidentInsur
 public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateService {
 
 	/** The rate item count. */
-	private final int RATE_ITEM_COUNT = 10;
+	private static final int RATE_ITEM_COUNT = 10;
 
 	/** The accident insurance rate repo. */
 	@Inject
-	private AccidentInsuranceRateRepository accidentInsuranceRateRepo;
+	private AccidentInsuranceRateRepository repository;
 
 	/*
 	 * (non-Javadoc)
@@ -53,7 +53,7 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 	 */
 	@Override
 	public void validateDateRange(AccidentInsuranceRate rate) {
-		if (getValidateRange(rate)) {
+		if (invalidateRate(rate)) {
 			throw new BusinessException("ER010");
 		}
 
@@ -66,25 +66,24 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 	 *            the rate
 	 * @return the validate range
 	 */
-	private boolean getValidateRange(AccidentInsuranceRate rate) {
+	private boolean invalidateRate(AccidentInsuranceRate rate) {
+
+		boolean isValid = false;
 		// validate Add
 		// ? (start <= end)
-		if (rate.getApplyRange().getStartMonth().v() > rate.getApplyRange().getEndMonth().v()) {
-			return true;
-		}
+		isValid = isValid
+			|| rate.getApplyRange().getStartMonth().v() > rate.getApplyRange().getEndMonth().v();
 
 		// ? start > start first (order by desc)
-		Optional<AccidentInsuranceRate> optionalFirst = this.accidentInsuranceRateRepo
-			.findFirstData(rate.getCompanyCode());
+		Optional<AccidentInsuranceRate> data = this.repository.findFirstData(rate.getCompanyCode());
 
-		if (optionalFirst.isPresent()) {
-			if (optionalFirst.get().getApplyRange().getStartMonth().nextMonth().v() > rate.getApplyRange()
-				.getStartMonth().v()) {
-				return true;
-			}
+		isValid = isValid || !data.isPresent();
+
+		if (isValid) {
+			return isValid;
 		}
-		return false;
-
+		return (data.get().getApplyRange().getStartMonth().nextMonth().v() > rate.getApplyRange()
+			.getStartMonth().v());
 	}
 
 	/*
@@ -96,47 +95,69 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 	 */
 	@Override
 	public void validateDateRangeUpdate(AccidentInsuranceRate rate) {
-		if (getValidateRangeUpdate(rate)) {
+		if (isValidRateUpdate(rate)) {
 			throw new BusinessException("ER023");
 		}
 	}
 
 	/**
-	 * Gets the validate range update.
+	 * Checks if is valid rate update.
 	 *
 	 * @param rate
 	 *            the rate
-	 * @return the validate range update
+	 * @return true, if is valid rate update
 	 */
-	private boolean getValidateRangeUpdate(AccidentInsuranceRate rate) {
-		// start<=end
-		if (rate.getApplyRange().getStartMonth().v() > rate.getApplyRange().getEndMonth().v()) {
-			return true;
-		}
-		// data is begin update
-		Optional<AccidentInsuranceRate> optionalAccidentInsuranceRate;
-		optionalAccidentInsuranceRate = this.accidentInsuranceRateRepo.findById(rate.getCompanyCode(),
+	private boolean isValidRateUpdate(AccidentInsuranceRate rate) {
+		return (isMonthDate(rate) || !checkExistRate(rate) || isLaterThanLastHistory(rate));
+	}
+
+	/**
+	 * Checks if is month date.
+	 *
+	 * @param rate
+	 *            the rate
+	 * @return true, if is month date
+	 */
+	// start date > end date
+	private boolean isMonthDate(AccidentInsuranceRate rate) {
+		return rate.getApplyRange().getStartMonth().v() > rate.getApplyRange().getEndMonth().v();
+	}
+
+	/**
+	 * Check exist rate.
+	 *
+	 * @param rate
+	 *            the rate
+	 * @return true, if successful
+	 */
+	// check exist rate
+	private boolean checkExistRate(AccidentInsuranceRate rate) {
+		Optional<AccidentInsuranceRate> data = this.repository.findById(rate.getCompanyCode(),
+			rate.getHistoryId());
+		return data.isPresent();
+	}
+
+	/**
+	 * Checks if is later than last history.
+	 *
+	 * @param rate
+	 *            the rate
+	 * @return true, if is later than last history
+	 */
+	private boolean isLaterThanLastHistory(AccidentInsuranceRate rate) {
+
+		Optional<AccidentInsuranceRate> data = this.repository.findById(rate.getCompanyCode(),
 			rate.getHistoryId());
 
-		if (!optionalAccidentInsuranceRate.isPresent()) {
-			return true;
+		if (data.isPresent()) {
+			Optional<AccidentInsuranceRate> dataUpdate = this.repository.findBetweenUpdate(
+				rate.getCompanyCode(), data.get().getApplyRange().getStartMonth(), data.get().getHistoryId());
+
+			// check first data
+			return (dataUpdate.isPresent() && (dataUpdate.get().getApplyRange().getStartMonth().v() >= rate
+				.getApplyRange().getStartMonth().v()));
 		}
-
-		Optional<AccidentInsuranceRate> optionalBetweenUpdate = this.accidentInsuranceRateRepo
-			.findBetweenUpdate(rate.getCompanyCode(),
-				optionalAccidentInsuranceRate.get().getApplyRange().getStartMonth(),
-				optionalAccidentInsuranceRate.get().getHistoryId());
-
-		if (!optionalBetweenUpdate.isPresent()) {
-			return false;
-		}
-
-		if (optionalBetweenUpdate.get().getApplyRange().getStartMonth().v() >= rate.getApplyRange()
-			.getStartMonth().v()) {
-			return true;
-		}
-
-		return false;
+		return true;
 	}
 
 }

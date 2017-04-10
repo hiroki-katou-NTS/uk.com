@@ -130,7 +130,7 @@ public class JpaPensionAvgearnRepository extends JpaRepository implements Pensio
 	private QismtPensionAvgearn toEntity(PensionAvgearn pensionAvgearn, String ccd, String officeCd) {
 		QismtPensionAvgearn entity = new QismtPensionAvgearn();
 		pensionAvgearn.saveToMemento(new JpaPensionAvgearnSetMemento(entity));
-		// thua truong nay? phai fake data.
+		// TODO: thua truong nay? phai fake data.
 		entity.setPensionAvgEarn(BigDecimal.valueOf(5));
 		entity.setPensionUpperLimit(BigDecimal.valueOf(5));
 		QismtPensionAvgearnPK pk = entity.getQismtPensionAvgearnPK();

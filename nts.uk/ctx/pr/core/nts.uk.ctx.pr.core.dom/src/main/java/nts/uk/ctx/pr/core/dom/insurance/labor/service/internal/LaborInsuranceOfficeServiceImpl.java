@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.labor.service.internal;
@@ -21,25 +21,23 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.service.LaborInsuranceOfficeServic
 @Stateless
 public class LaborInsuranceOfficeServiceImpl implements LaborInsuranceOfficeService {
 
-	/** The labor insurance office repo. */
+	/** The repository. */
 	@Inject
-	private LaborInsuranceOfficeRepository officeRepo;
+	private LaborInsuranceOfficeRepository repository;
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.service.
 	 * LaborInsuranceOfficeService#validateRequiredItem(nts.uk.ctx.pr.core.dom.
 	 * insurance.labor.LaborInsuranceOffice)
 	 */
 	@Override
 	public void validateRequiredItem(LaborInsuranceOffice office) {
-		if (office.getCode() == null 
-				|| office.getName() == null
-				|| office.getPicPosition() == null
-				|| StringUtil.isNullOrEmpty(office.getCode().v(), true) 
-				|| StringUtil.isNullOrEmpty(office.getName().v(), true) 
-				|| StringUtil.isNullOrEmpty(office.getPicPosition().v(), true)) {
+		if (office.getCode() == null || office.getName() == null || office.getPicPosition() == null
+			|| StringUtil.isNullOrEmpty(office.getCode().v(), true)
+			|| StringUtil.isNullOrEmpty(office.getName().v(), true)
+			|| StringUtil.isNullOrEmpty(office.getPicPosition().v(), true)) {
 			throw new BusinessException("ER001");
 		}
 	}
@@ -53,10 +51,13 @@ public class LaborInsuranceOfficeServiceImpl implements LaborInsuranceOfficeServ
 	 */
 	@Override
 	public void checkDuplicateCode(LaborInsuranceOffice office) {
-		Optional<LaborInsuranceOffice> optionalCheck = this.officeRepo
-				.findById(office.getCompanyCode(), office.getCode().v());
 
-		if (optionalCheck.isPresent()) {
+		// find data
+		Optional<LaborInsuranceOffice> data = this.repository.findById(office.getCompanyCode(),
+			office.getCode().v());
+
+		// check exist
+		if (data.isPresent()) {
 			throw new BusinessException("ER005");
 		}
 	}

@@ -57,7 +57,7 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 		
 		// Query Data.
 		@SuppressWarnings("unused")
-		List<WLOldLayoutReportData> reportData = this.repository.findReportDatas(companyCode, query);
+		List<WLOldLayoutReportData> reportData = this.repository.findReportDatas(companyCode, query, WLOldLayoutReportData.class);
 		
 		// Fake data.
 		WLOldLayoutReportData fakeReportData = WLOldLayoutReportData.builder()
@@ -177,7 +177,7 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 		if (query.layoutType == LayoutType.NewLayout) {
 			this.newGenerator.generate(context.getGeneratorContext(), newLayoutReportData, query);
 		} else {
-			this.oldGenerator.generate(context.getGeneratorContext(), fakeReportData);
+			this.oldGenerator.generate(context.getGeneratorContext(), fakeReportData, query);
 		}
 	}
 	

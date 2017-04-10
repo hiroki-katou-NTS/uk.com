@@ -11,7 +11,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate;
 
 /**
- * The Class JpaUnemployeeInsuranceRateItemGeneralGetMemento.
+ * The Class JpaUnemployeeInsuranceRateItemGetMemento.
  */
 public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsuranceRateItemGetMemento {
 
@@ -22,11 +22,12 @@ public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsur
 	private CareerGroup careerGroup;
 
 	/**
-	 * Instantiates a new jpa unemployee insurance rate item general get
-	 * memento.
+	 * Instantiates a new jpa unemployee insurance rate item get memento.
 	 *
 	 * @param typeValue
 	 *            the type value
+	 * @param careerGroup
+	 *            the career group
 	 */
 	public JpaUnemployeeInsuranceRateItemGetMemento(QismtEmpInsuRate typeValue, CareerGroup careerGroup) {
 		this.typeValue = typeValue;
@@ -63,13 +64,13 @@ public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsur
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundGeneral()));
 			break;
 
-		case Contruction:
+		case Other:
 			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getCEmpRateOther().doubleValue());
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundOther()));
 			break;
 
-		case Other:
+		case Contruction:
 			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getCEmpRateConst().doubleValue());
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundConst()));
@@ -96,13 +97,13 @@ public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsur
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundGeneral()));
 			break;
 
-		case Contruction:
+		case Other:
 			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getPEmpRateOther().doubleValue());
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundOther()));
 			break;
 
-		case Other:
+		case Contruction:
 			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getPEmpRateConst().doubleValue());
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundConst()));

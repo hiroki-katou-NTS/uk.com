@@ -13,7 +13,7 @@ module nts.uk.pr.view.qmm016.l {
 
         export class ScreenModel {
 
-            enableButton: KnockoutObservable<boolean>;
+            showDelete: KnockoutObservable<boolean>;
             typeAction: KnockoutObservable<number>;
             selectedMultipleTargetSetting: KnockoutObservable<number>;
             selectLstCodeLstCertification: KnockoutObservableArray<string>;
@@ -42,6 +42,7 @@ module nts.uk.pr.view.qmm016.l {
                 self.messageList = ko.observableArray([
                     { messageId: "AL002", message: "データを削除します。\r\n よろしいですか？。" }
                 ]);
+                self.showDelete = ko.observable(true);
             }
 
             //start page init data begin load page
@@ -124,6 +125,7 @@ module nts.uk.pr.view.qmm016.l {
                         self.certifyGroupModel().certifies(data.certifies);
                         self.typeAction(TypeActionCertifyGroup.update);
                         self.certifyGroupModel().setReadOnly(true);
+                        self.showDelete(true);
                         service.findAllCertification().done(dataCertification => {
                             self.certifyGroupModel().setLstCertification(dataCertification);
                         });
@@ -150,6 +152,7 @@ module nts.uk.pr.view.qmm016.l {
                 self.selectCodeLstLstCertifyGroup('');
                 self.certifyGroupModel().setReadOnly(false);
                 self.certifyGroupModel().certifies([]);
+                self.showDelete(false);
                 service.findAllCertification().done(data => {
                     self.certifyGroupModel().lstCertification(data);
                 });
@@ -180,7 +183,7 @@ module nts.uk.pr.view.qmm016.l {
                 var self = this;
                 service.findAllCertifyGroup().done(data => {
                     self.lstCertifyGroup(data);
-                    if (code != null && code != undefined && code != '') {
+                    if (code && code != '') {
                         self.selectCodeLstLstCertifyGroup(code);
                         self.detailCertifyGroup(code);
                     } else {
@@ -203,6 +206,7 @@ module nts.uk.pr.view.qmm016.l {
                     self.resetValueCertifyGroup();
                     self.isEmpty(true);
                     self.certifyGroupModel().setReadOnly(false);
+                    self.showDelete(false);
                 });
             }
 

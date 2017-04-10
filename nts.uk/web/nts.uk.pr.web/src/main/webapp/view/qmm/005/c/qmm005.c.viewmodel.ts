@@ -212,18 +212,16 @@ module qmm005.c {
 
             // Chưa thấy đề cập tới các trường hợp ngày > số ngày trong tháng.
             var data = {
-                payBonusAtr: 0,
-                sparePayAtr: 0,
                 processingNo: self.index(),
                 processingName: self.inp001(),
-                dispSet: 0,
+                dispSet: 0, // default db design
                 currentProcessingYm: parseInt(nts.uk.time.formatDate(new Date(stdYear, stdDate <= self.sel001() ? stdMonth + 1 : stdMonth, 1), 'yyyyMM')),
-                bonusAtr: 0,
-                bCurrentProcessingYm: 0,
+                bonusAtr: 0, // default db design
+                bcurrentProcessingYm: parseInt(nts.uk.time.formatDate(new Date(stdYear, stdDate <= self.sel001() ? stdMonth + 1 : stdMonth, 1), 'yyyyMM')),
                 payStdDay: self.sel001(),
-                resitaxBeginMon: 6,
-                resitaxStdMon: 1,
-                resitaxStdDay: 1,
+                resitaxBeginMon: 6, // default db design
+                resitaxStdMon: 1, // default db design
+                resitaxStdDay: 1, // default db design
                 pickupStdMonAtr: self.sel002(),
                 pickupStdDay: self.sel003(),
                 accountDueMonAtr: self.sel004(),
@@ -240,6 +238,7 @@ module qmm005.c {
                 incometaxStdDay: self.sel015(),
                 payDays: []
             };
+            /// Khởi tạo dữ liệu lương & thưởng cho 12 tháng trong năm
             for (var month = 0; month < 12; month++) {
                 data.payDays.push({
                     processingNo: data.processingNo,

@@ -27,7 +27,7 @@ var nts;
                                         return self.selectedNode() && self.selectedHistoryUuid() != undefined;
                                     });
                                     self.canAddNewHistory = ko.computed(function () {
-                                        return self.selectedNode() != null;
+                                        return self.selectedNode() && self.selectedHistoryUuid() != undefined;
                                     });
                                     self.igGridSelectedHistoryUuid.subscribe(function (id) {
                                         var inlineFunc = function () {
@@ -39,6 +39,9 @@ var nts;
                                             if (!selectedNode.isMaster) {
                                                 self.isNewMode(false);
                                                 self.selectedHistoryUuid(selectedNode.id);
+                                                if (nts.uk.ui._viewModel) {
+                                                    self.clearErrors();
+                                                }
                                                 self.onSelectHistory(id);
                                             }
                                             else {
@@ -134,6 +137,9 @@ var nts;
                                     self.confirmDirtyAndExecute(function () {
                                         self.isNewMode(true);
                                         self.onRegistNew();
+                                        if (nts.uk.ui._viewModel) {
+                                            self.clearErrors();
+                                        }
                                         self.igGridSelectedHistoryUuid(undefined);
                                     });
                                 };
@@ -233,6 +239,10 @@ var nts;
                                                 }
                                             }
                                         }
+                                        if (!self.masterHistoryList || self.masterHistoryList.length == 0) {
+                                            self.isNewMode(true);
+                                            self.onRegistNew();
+                                        }
                                     });
                                 };
                                 ScreenBaseModel.prototype.start = function () {
@@ -241,6 +251,8 @@ var nts;
                                     return dfd.promise();
                                 };
                                 ScreenBaseModel.prototype.onSelectMaster = function (code) {
+                                };
+                                ScreenBaseModel.prototype.clearErrors = function () {
                                 };
                                 ScreenBaseModel.prototype.getNode = function (id) {
                                     var self = this;

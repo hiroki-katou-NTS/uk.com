@@ -62,7 +62,6 @@ module nts.uk.pr.view.qmm011.a {
         //Function connection service update Unemployee Insurance Rate
         export function updateUnemployeeInsuranceRate(
             unemployeeInsuranceRateModel: viewmodel.UnemployeeInsuranceRateModel): JQueryPromise<void> {
-            var dfd = $.Deferred<void>();
             var data = {
                 unemployeeInsuranceRate: service.convertUnemployeeInsuranceRateModelDTO(unemployeeInsuranceRateModel)
             };
@@ -583,8 +582,8 @@ module nts.uk.pr.view.qmm011.a {
 
             export enum CareerGroupDto {
                 Agroforestry = 0,
-                Contruction = 1,
-                Other = 2
+                Other = 1,
+                Contruction = 2
             }
 
             export enum BusinessTypeEnumDto {

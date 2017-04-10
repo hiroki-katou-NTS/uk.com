@@ -178,3 +178,11 @@ th, td {
 	width: 62%;
 	float: left;
 }
+
+#tabpanel-1 {
+	min-width: 1360px;
+}
+
+#tabpanel-2 {
+	min-width: 1360px;
+}

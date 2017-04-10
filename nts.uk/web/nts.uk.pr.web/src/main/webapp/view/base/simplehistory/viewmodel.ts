@@ -62,7 +62,7 @@ module nts.uk.pr.view.base.simplehistory {
                     return self.selectedNode() && self.selectedHistoryUuid() != undefined;
                 })
                 self.canAddNewHistory = ko.computed(() => {
-                    return self.selectedNode() != null;
+                    return self.selectedNode() && self.selectedHistoryUuid() != undefined;
                 })
 
                 self.igGridSelectedHistoryUuid.subscribe(id => {
@@ -78,6 +78,9 @@ module nts.uk.pr.view.base.simplehistory {
                         if (!selectedNode.isMaster) {
                             self.isNewMode(false);
                             self.selectedHistoryUuid(selectedNode.id);
+                            if (nts.uk.ui._viewModel) {
+                                self.clearErrors();
+                            }
                             self.onSelectHistory(id);
                         } else {
                             // Parent node.
@@ -197,6 +200,9 @@ module nts.uk.pr.view.base.simplehistory {
                 self.confirmDirtyAndExecute(() => {
                     self.isNewMode(true);
                     self.onRegistNew();
+                    if (nts.uk.ui._viewModel) {
+                        self.clearErrors();
+                    }
 
                     // Clear select history uuid.
                     self.igGridSelectedHistoryUuid(undefined);
@@ -205,7 +211,7 @@ module nts.uk.pr.view.base.simplehistory {
 
             /**
              * Confirm dirty check.
-             * Overrid it by your self.
+             * Override it by your self.
              */
             abstract isDirty(): boolean;
 
@@ -235,7 +241,7 @@ module nts.uk.pr.view.base.simplehistory {
                         name: self.options.functionName,
                         master: currentNode.isMaster ? currentNode.data : currentNode.parent.data,
                         lastest: latestNode ? latestNode.data : undefined,
-    
+
                         // Copy.
                         onCopyCallBack: (data) => {
                             var dfd = $.Deferred<any>();
@@ -248,7 +254,7 @@ module nts.uk.pr.view.base.simplehistory {
                                 });
                             return dfd.promise();
                         },
-    
+
                         // Init.
                         onCreateCallBack: (data) => {
                             var dfd = $.Deferred<any>();
@@ -328,6 +334,11 @@ module nts.uk.pr.view.base.simplehistory {
                             }
                         }
                     }
+                    // Set new mode if masterHistoryList has 0 element.
+                    if (!self.masterHistoryList || self.masterHistoryList.length == 0) {
+                        self.isNewMode(true);
+                        self.onRegistNew();
+                    }
                 })
             }
 
@@ -351,6 +362,13 @@ module nts.uk.pr.view.base.simplehistory {
              */
             onSelectMaster(code: string): void {
                 // Override your self if need.
+            }
+
+            /**
+             * Clear errors.
+             */
+            clearErrors(): void {
+                // Override it by yourself.
             }
 
             /**

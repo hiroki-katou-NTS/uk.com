@@ -7,17 +7,17 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import employment.processing.yearmonth.PaydayProcessing;
-import employment.processing.yearmonth.PaydayProcessingDto;
+import nts.uk.shr.find.employment.processing.yearmonth.IPaydayProcessingFinder;
+import nts.uk.shr.find.employment.processing.yearmonth.PaydayProcessingDto;
 @Path("pr/core")
 @Produces("application/json")
 public class PaydayProcessingWebservice {
 	
-//	@Inject
-//	private PaydayProcessing processing;
-//	@POST
-//	@Path("paydayrocessing/getbyccd")
-//	public List<PaydayProcessingDto> getPaydayProcessing(){
-//		return this.processing.getPaydayProcessing("");
-//	}
+	@Inject
+	private IPaydayProcessingFinder processing;
+	@POST
+	@Path("paydayrocessing/getbyccd")
+	public List<PaydayProcessingDto> getPaydayProcessing(){
+		return this.processing.getPaydayProcessing("");
+	}
 }

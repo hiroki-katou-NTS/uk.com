@@ -34,6 +34,7 @@ var nts;
                                     self.messageList = ko.observableArray([
                                         { messageId: "AL002", message: "データを削除します。\r\n よろしいですか？。" }
                                     ]);
+                                    self.showDelete = ko.observable(true);
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
@@ -106,6 +107,7 @@ var nts;
                                             self.certifyGroupModel().certifies(data.certifies);
                                             self.typeAction(TypeActionCertifyGroup.update);
                                             self.certifyGroupModel().setReadOnly(true);
+                                            self.showDelete(true);
                                             l.service.findAllCertification().done(function (dataCertification) {
                                                 self.certifyGroupModel().setLstCertification(dataCertification);
                                             });
@@ -128,6 +130,7 @@ var nts;
                                     self.selectCodeLstLstCertifyGroup('');
                                     self.certifyGroupModel().setReadOnly(false);
                                     self.certifyGroupModel().certifies([]);
+                                    self.showDelete(false);
                                     l.service.findAllCertification().done(function (data) {
                                         self.certifyGroupModel().lstCertification(data);
                                     });
@@ -156,7 +159,7 @@ var nts;
                                     var self = this;
                                     l.service.findAllCertifyGroup().done(function (data) {
                                         self.lstCertifyGroup(data);
-                                        if (code != null && code != undefined && code != '') {
+                                        if (code && code != '') {
                                             self.selectCodeLstLstCertifyGroup(code);
                                             self.detailCertifyGroup(code);
                                         }
@@ -179,6 +182,7 @@ var nts;
                                         self.resetValueCertifyGroup();
                                         self.isEmpty(true);
                                         self.certifyGroupModel().setReadOnly(false);
+                                        self.showDelete(false);
                                     });
                                 };
                                 ScreenModel.prototype.deleteCertifyGroup = function () {

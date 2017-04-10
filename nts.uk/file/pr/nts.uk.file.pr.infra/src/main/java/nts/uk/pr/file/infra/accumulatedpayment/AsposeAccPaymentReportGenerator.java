@@ -180,7 +180,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 	 */
 	private void createContent(Cells cells, int firstRowIndex,
 			List<AccPaymentItemData> accumulatedPaymentList){
-		for(int i = 0; i < accumulatedPaymentList.size(); i++, firstRowIndex++){
+		for(int i = 0; i < accumulatedPaymentList.size(); i++){
 			// Set Row height
 			cells.setRowHeightPixel(firstRowIndex, ROW_HEIGHT);
 			
@@ -198,8 +198,10 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 			socialInsCell.setValue(accPayment.getSocialInsuranceAmount());	
 			
 			// Print Amount after tax deduction
+			double deductedTaxValue = taxAmountCell.getDoubleValue() - socialInsCell.getDoubleValue();
+			
 			Cell afterTaxDeductionCell = cells.get(firstRowIndex, COLUMN_INDEX[3]);
-			afterTaxDeductionCell.setValue(accPayment.getAmountAfterTaxDeduction());
+			afterTaxDeductionCell.setValue(deductedTaxValue);
 			
 			// Print Witholding Tax Amount
 			Cell widthHoldingTaxAmCell = cells.get(firstRowIndex, COLUMN_INDEX[4]);
@@ -220,6 +222,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 					setBackgroundcolor(oddCell);
 				}
 			}
+			firstRowIndex ++;
 		}
 	}
 
@@ -233,7 +236,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 	 */
 	private void createRange(Cells cells, int firstRow, int totalRow){
 		for(int i = FIRST_COLUMN; i<AMOUNT_COLUMN; i++){
-			Range range = cells.createRange(firstRow, i, totalRow, 1);			
+			Range range = cells.createRange(firstRow, i, totalRow, 1);
 			range.setOutlineBorders(CellBorderType.THIN, Color.getGray());
 		}
 	}

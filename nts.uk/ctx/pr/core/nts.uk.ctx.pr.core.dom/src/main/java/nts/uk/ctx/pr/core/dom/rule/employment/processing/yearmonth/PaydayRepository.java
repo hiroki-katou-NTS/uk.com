@@ -7,19 +7,23 @@ import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.payday.Payday
 
 public interface PaydayRepository {
 
-	List<Payday> find1_3(String companyCode, int processingNo, int payBonusAtr, int processingYm, int sparePayAtr);
+	List<Payday> select1_3(String companyCode, int processingNo, int payBonusAtr, int processingYm, int sparePayAtr);
 
-	List<Payday> find2(String companyCode, int payBonusAtr, int processingYm, int sparePayAtr);
+	List<Payday> select2(String companyCode, int payBonusAtr, int processingYm, int sparePayAtr);
 
-	List<Payday> find4(String companyCode, int processingNo);
+	List<Payday> select4(String companyCode, int processingNo);
 
-	List<Payday> find5(String companyCode, int processingNo, int payBonusAtr);
+	List<Payday> select5(String companyCode, int processingNo, int payBonusAtr);
 
-	List<Payday> find6(String companyCode, int processingNo, int processingYm);
+	List<Payday> select6(String companyCode, int processingNo, int processingYm);
+	
+	List<Payday> select12b(String companyCode, int processingNo);
 
-	List<Payday> find7(String companyCode, int processingNo, int payBonusAtr, GeneralDate strYmd, GeneralDate endYmd);
+	List<Payday> select7(String companyCode, int processingNo, int payBonusAtr, GeneralDate strYmd, GeneralDate endYmd);
 
-	List<Payday> find11(String companyCode, int processingNo, int payBonusAtr, GeneralDate strYmd, GeneralDate endYmd);
+	List<Payday> select11(String companyCode, int processingNo, int payBonusAtr, GeneralDate strYmd, GeneralDate endYmd);
+	
+	List<Payday> select12(String companyCode, int payBonusAtr, int sparePayAtr);
 
 	void insert1(Payday domain);
 }

@@ -59,12 +59,13 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
-	 * AccidentInsuranceRateRepository#remove(java.lang.String, java.lang.Long)
+	 * AccidentInsuranceRateRepository#remove(java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
-	public void remove(String companyCode, String historyId, long version) {
+	public void remove(String companyCode, String historyId) {
 		List<QismtWorkAccidentInsu> lstRateRemove = this.findDataById(companyCode, historyId);
 		this.commandProxy().removeAll(lstRateRemove);
 	}
@@ -112,9 +113,8 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 
 		// exclude select
 		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
-		List<AccidentInsuranceRate> lstAccidentInsuranceRate = query.getResultList().stream()
-			.map(item -> this.toDomainHistory(item)).collect(Collectors.toList());
-		return lstAccidentInsuranceRate;
+		return query.getResultList().stream().map(item -> this.toDomainHistory(item))
+			.collect(Collectors.toList());
 	}
 
 	/*
@@ -169,8 +169,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 		// set order
 		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
-		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = query.getResultList();
-		return lstQismtWorkAccidentInsu;
+		return query.getResultList();
 	}
 
 	/**

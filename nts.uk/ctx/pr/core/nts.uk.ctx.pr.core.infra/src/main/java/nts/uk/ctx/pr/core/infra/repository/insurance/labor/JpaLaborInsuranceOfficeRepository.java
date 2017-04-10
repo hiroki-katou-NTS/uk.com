@@ -147,7 +147,7 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository
 	 * java.lang.Long)
 	 */
 	@Override
-	public void remove(String companyCode, String officeCode, long version) {
+	public void remove(String companyCode, String officeCode) {
 		this.commandProxy().remove(QismtLaborInsuOffice.class,
 			new QismtLaborInsuOfficePK(companyCode, officeCode));
 	}

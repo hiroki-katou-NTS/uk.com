@@ -51,15 +51,17 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 					.builder()
 					.empDesignation("Designation" + (i + 1))
 					.empCode("code000000")
-					.empName("氏名 " + (i + 1)).taxAmount(13456.0 + 100*i)
-					.socialInsuranceAmount(10156.0 + 100*i)
-					.widthHoldingTaxAmount(3956.0 + 100*i)
+					.empName("氏名 " + (i + 1))
+					.taxAmount(13456.0 + 100*i)
+					.socialInsuranceAmount(1346.0 + 10*i)
+					.widthHoldingTaxAmount(1016.0 + 10*i)
 					.amountAfterTaxDeduction(5567.0 + 100*i)
 					.enrollmentStatus("退職")
 					.directionalStatus("xxxxxxxxxxxxx   から　  出向")
 					.build();
 			accumulatedPaymentList.add(accumulatedPayment);
 		}
+		
 		
 		if(items == null){
 			items = accumulatedPaymentList;
@@ -78,4 +80,5 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 		// Call generator.
 		this.generator.generate(context.getGeneratorContext(),dataSource, query);		
 	}
+
 }

@@ -66,9 +66,13 @@ public class JpaWtHistoryRepository extends JpaSimpleHistoryBase implements WtHi
 				root.get(QwtmtWagetableHist_.qwtmtWagetableHistPK).get(QwtmtWagetableHistPK_.ccd),
 				companyCode));
 
+		// Add where clause
 		cq.where(predicateList.toArray(new Predicate[] {}));
+
+		// Add order clause
 		cq.orderBy(cb.desc(root.get(QwtmtWagetableHist_.strYm)));
 
+		// Return
 		return em.createQuery(cq).getResultList().stream()
 				.map(item -> new WtHistory(new JpaWtHistoryGetMemento(item)))
 				.collect(Collectors.toList());
@@ -83,29 +87,23 @@ public class JpaWtHistoryRepository extends JpaSimpleHistoryBase implements WtHi
 	@Override
 	public void deleteHistory(String uuid) {
 		// Delete base.
-		this.deleteByUuid(QwtmtWagetableHist.class, uuid,
-				QwtmtWagetableHist_.qwtmtWagetableHistPK,
+		this.deleteByUuid(QwtmtWagetableHist.class, uuid, QwtmtWagetableHist_.qwtmtWagetableHistPK,
 				QwtmtWagetableHistPK_.histId);
-		
+
 		// Delete element.
 		this.deleteByUuid(QwtmtWagetableEleHist.class, uuid,
-				QwtmtWagetableEleHist_.qwtmtWagetableEleHistPK,
-				QwtmtWagetableEleHistPK_.histId);
-		
+				QwtmtWagetableEleHist_.qwtmtWagetableEleHistPK, QwtmtWagetableEleHistPK_.histId);
 
 		// Delete ref code.
-		this.deleteByUuid(QwtmtWagetableCd.class, uuid,
-				QwtmtWagetableCd_.qwtmtWagetableCdPK,
+		this.deleteByUuid(QwtmtWagetableCd.class, uuid, QwtmtWagetableCd_.qwtmtWagetableCdPK,
 				QwtmtWagetableCdPK_.histId);
-		
+
 		// Delete interval.
-		this.deleteByUuid(QwtmtWagetableNum.class, uuid,
-				QwtmtWagetableNum_.qwtmtWagetableNumPK,
+		this.deleteByUuid(QwtmtWagetableNum.class, uuid, QwtmtWagetableNum_.qwtmtWagetableNumPK,
 				QwtmtWagetableNumPK_.histId);
-		
+
 		// Delete money.
-		this.deleteByUuid(QwtmtWagetableMny.class, uuid,
-				QwtmtWagetableMny_.qwtmtWagetableMnyPK,
+		this.deleteByUuid(QwtmtWagetableMny.class, uuid, QwtmtWagetableMny_.qwtmtWagetableMnyPK,
 				QwtmtWagetableMnyPK_.histId);
 	}
 
@@ -118,6 +116,7 @@ public class JpaWtHistoryRepository extends JpaSimpleHistoryBase implements WtHi
 	@Override
 	public Optional<WtHistory> findLastestHistoryByMasterCode(String companyCode,
 			String masterCode) {
+		// Return first element
 		return this.findByIndex(0, companyCode, masterCode);
 	}
 
@@ -144,8 +143,10 @@ public class JpaWtHistoryRepository extends JpaSimpleHistoryBase implements WtHi
 		predicateList.add(cb.equal(root.get(QwtmtWagetableHist_.qwtmtWagetableHistPK)
 				.get(QwtmtWagetableHistPK_.histId), uuid));
 
+		// Add where clause
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
+		// Get result
 		List<QwtmtWagetableHist> result = em.createQuery(cq).getResultList();
 
 		// Check empty.
@@ -202,6 +203,7 @@ public class JpaWtHistoryRepository extends JpaSimpleHistoryBase implements WtHi
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<QwtmtWagetableHist> cq = cb.createQuery(QwtmtWagetableHist.class);
 		Root<QwtmtWagetableHist> root = cq.from(QwtmtWagetableHist.class);
+
 		// Constructing list of parameters
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
@@ -212,9 +214,13 @@ public class JpaWtHistoryRepository extends JpaSimpleHistoryBase implements WtHi
 		predicateList.add(cb.equal(root.get(QwtmtWagetableHist_.qwtmtWagetableHistPK)
 				.get(QwtmtWagetableHistPK_.wageTableCd), wageTableCode));
 
-		cq.orderBy(cb.desc(root.get(QwtmtWagetableHist_.strYm)));
+		// Add where clause
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
+		// Add order clause
+		cq.orderBy(cb.desc(root.get(QwtmtWagetableHist_.strYm)));
+
+		// Get result
 		List<QwtmtWagetableHist> result = em.createQuery(cq).getResultList();
 
 		// Check empty.
@@ -243,6 +249,7 @@ public class JpaWtHistoryRepository extends JpaSimpleHistoryBase implements WtHi
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<QwtmtWagetableHist> root = cq.from(QwtmtWagetableHist.class);
+
 		// Constructing list of parameters
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
@@ -255,8 +262,11 @@ public class JpaWtHistoryRepository extends JpaSimpleHistoryBase implements WtHi
 		predicateList.add(cb.ge(root.get(QwtmtWagetableHist_.strYm), startMonth));
 
 		cq.select(cb.count(root));
+
+		// Add where clause
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
+		// Return
 		return em.createQuery(cq).getSingleResult().longValue() == 0L;
 	}
 
@@ -275,6 +285,7 @@ public class JpaWtHistoryRepository extends JpaSimpleHistoryBase implements WtHi
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<QwtmtWagetableHist> cq = cb.createQuery(QwtmtWagetableHist.class);
 		Root<QwtmtWagetableHist> root = cq.from(QwtmtWagetableHist.class);
+
 		// Constructing list of parameters
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
@@ -285,9 +296,13 @@ public class JpaWtHistoryRepository extends JpaSimpleHistoryBase implements WtHi
 		predicateList.add(cb.equal(root.get(QwtmtWagetableHist_.qwtmtWagetableHistPK)
 				.get(QwtmtWagetableHistPK_.wageTableCd), masterCode));
 
+		// Add order clause
 		cq.orderBy(cb.desc(root.get(QwtmtWagetableHist_.strYm)));
+
+		// Add where clause
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
+		// Return
 		return em.createQuery(cq).getResultList().stream()
 				.map(item -> new WtHistory(new JpaWtHistoryGetMemento(item)))
 				.collect(Collectors.toList());

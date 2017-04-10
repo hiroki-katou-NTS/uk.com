@@ -5,7 +5,6 @@
 package nts.uk.ctx.pr.report.infra.entity.wageledger;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -15,11 +14,10 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class QlsptLedgerAggreHead.
@@ -28,7 +26,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "QLSPT_LEDGER_AGGRE_HEAD")
-public class QlsptLedgerAggreHead implements Serializable {
+public class QlsptLedgerAggreHead extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -36,36 +34,6 @@ public class QlsptLedgerAggreHead implements Serializable {
 	/** The qlspt ledger aggre head PK. */
 	@EmbeddedId
 	protected QlsptLedgerAggreHeadPK qlsptLedgerAggreHeadPK;
-
-	/** The ins date. */
-	@Column(name = "INS_DATE")
-	@Temporal(TemporalType.TIME)
-	private Date insDate;
-
-	/** The ins ccd. */
-	@Column(name = "INS_CCD")
-	private String insCcd;
-
-	/** The ins scd. */
-	@Column(name = "INS_SCD")
-	private String insScd;
-
-	/** The ins pg. */
-	@Column(name = "INS_PG")
-	private String insPg;
-
-	/** The upd date. */
-	@Column(name = "UPD_DATE")
-	@Temporal(TemporalType.TIME)
-	private Date updDate;
-
-	/** The upd ccd. */
-	@Column(name = "UPD_CCD")
-	private String updCcd;
-
-	/** The upd scd. */
-	@Column(name = "UPD_SCD")
-	private String updScd;
 
 	/** The exclus ver. */
 	@Basic(optional = false)
@@ -172,5 +140,10 @@ public class QlsptLedgerAggreHead implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	protected Object getKey() {
+		return this.qlsptLedgerAggreHeadPK;
 	}
 }

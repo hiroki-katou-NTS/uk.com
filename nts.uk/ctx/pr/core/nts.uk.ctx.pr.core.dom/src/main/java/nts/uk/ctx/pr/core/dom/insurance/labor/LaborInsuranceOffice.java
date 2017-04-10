@@ -66,7 +66,6 @@ public class LaborInsuranceOffice extends DomainObject {
 	private AddressKana2 kanaAddress2nd;
 
 	/** The phone number. */
-	// TODO: TelephoneNo
 	private PhoneNumber phoneNumber;
 
 	/** The city sign. */
