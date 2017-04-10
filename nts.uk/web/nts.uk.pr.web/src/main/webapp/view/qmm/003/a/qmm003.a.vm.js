@@ -16,6 +16,8 @@ var qmm003;
                     this.itemPrefecture = ko.observableArray([]);
                     //companyCode != 0000
                     this.residentalTaxList = ko.observableArray([]);
+                    //companyCode = 0000
+                    this.residentalTaxList000 = ko.observableArray([]);
                     this.currentResidential = ko.observable(null);
                     this.report = ko.observable('');
                     this.previousCurrentCode = null; //lưu giá trị của currentCode trước khi nó bị thay đổi
@@ -84,6 +86,16 @@ var qmm003;
                     var self = this;
                     a.service.getResidentialTaxDetail(newValue).done(function (data) {
                         if (data) {
+                            if (data.resiTaxReportCode) {
+                                var residential_1;
+                                _.each(self.residentalTaxList000(), function (objResi) {
+                                    if (objResi.resiTaxCode === data.resiTaxReportCode) {
+                                        residential_1 = objResi;
+                                    }
+                                });
+                                console.log(residential_1);
+                                data.resiTaxReportCode = residential_1.resiTaxCode + " " + residential_1.resiTaxAutonomy;
+                            }
                             if ($('.nts-editor').ntsError("hasError")) {
                                 $('.save-error').ntsError('clear');
                             }
@@ -98,7 +110,7 @@ var qmm003;
                     });
                 };
                 //  set selectedcode by prefectureCode
-                ScreenModel.prototype.findPrefectureByResiTax = function (items, code) {
+                ScreenModel.prototype.findNodeByResiTax = function (items, code) {
                     var self = this;
                     var node;
                     node = _.find(items, function (objPrefecture) {
@@ -171,7 +183,7 @@ var qmm003;
                     var currentResidential;
                     nts.uk.ui.windows.sub.modeless("/view/qmm/003/c/index.xhtml", { title: '住民税納付先の登録＞住民税報告先一覧', dialogClass: "no-close" }).onClosed(function () {
                         currentResidential = nts.uk.ui.windows.getShared('currentResidential');
-                        self.resiTaxReportCode(currentResidential.resiTaxCode);
+                        self.resiTaxReportCode(currentResidential.resiTaxCode + " " + currentResidential.resiTaxAutonomy);
                     });
                 };
                 // khi click vào btn006 mở ra màn hình D
@@ -210,6 +222,9 @@ var qmm003;
                 ScreenModel.prototype.start = function (currentSelectedCode) {
                     var dfd = $.Deferred();
                     var self = this;
+                    a.service.getResidentialTaxCCD().done(function (data) {
+                        self.residentalTaxList000(data);
+                    });
                     (qmm003.a.service.getResidentialTax()).done(function (data) {
                         if (data.length > 0) {
                             self.editMode = true; // true, update mode 
@@ -348,6 +363,7 @@ var qmm003;
                         return;
                     }
                     objResi = ko.toJS(self.currentResidential());
+                    objResi.resiTaxReportCode = objResi.resiTaxReportCode.substring(0, 6);
                     if (!self.editMode) {
                         qmm003.a.service.addResidential(objResi).done(function () {
                             self.redensitalTaxNodeList([]);

@@ -8,7 +8,7 @@ module qmm003.c.viewmodel {
         japanLocation: Array<qmm003.c.service.model.RegionObject> = [];
         precfecture: Array<RedensitalTaxNode> = [];
         itemPrefecture: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
-        residentalTaxList: KnockoutObservableArray<qmm003.c.service.model.ResidentialTax> = ko.observableArray([]);
+        residentalTaxList: KnockoutObservableArray<qmm003.c.service.model.ResidentialTaxDto> = ko.observableArray([]);
         constructor() {
             let self = this;
             self.init();
@@ -64,9 +64,10 @@ module qmm003.c.viewmodel {
         start(): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
             let self = this;
-            (qmm003.c.service.getResidentialTax()).done(function(data: Array<qmm003.c.service.model.ResidentialTax>) {
+            (qmm003.c.service.getResidentialTax()).done(function(data: Array<qmm003.c.service.model.ResidentialTaxDto>) {
                 if (data.length > 0) {
                     self.residentalTaxList(data);
+                    console.log(data);
                     (qmm003.c.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
                         self.japanLocation = locationData;
                         self.buildResidentalTaxTree();

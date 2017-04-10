@@ -6,10 +6,11 @@ var qmm003;
         (function (service) {
             var paths = {
                 getResidentalTaxList: "pr/core/residential/findallresidential",
-                getRegionPrefecture: "pr/core/residential/getlistLocation"
+                getRegionPrefecture: "pr/core/residential/getlistLocation",
+                getResidentalTaxListByReportCode: "pr/core/residential/findallresidential/{0}"
             };
             /**
-             * Get list payment date processing.
+             * Get list ResidentialTax.
              */
             function getResidentialTax() {
                 var dfd = $.Deferred();
@@ -23,6 +24,22 @@ var qmm003;
                 return dfd.promise();
             }
             service.getResidentialTax = getResidentialTax;
+            /**
+         * Get list ResidentialTax.
+         */
+            function getResidentalTaxListByReportCode(resiTaxReportCode) {
+                var dfd = $.Deferred();
+                var _path = nts.uk.text.format(paths.getResidentalTaxListByReportCode, resiTaxReportCode);
+                nts.uk.request.ajax(_path)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getResidentalTaxListByReportCode = getResidentalTaxListByReportCode;
             function getRegionPrefecture() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getRegionPrefecture)

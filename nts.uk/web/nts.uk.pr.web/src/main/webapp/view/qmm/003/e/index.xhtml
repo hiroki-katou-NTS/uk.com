@@ -11,27 +11,33 @@
 			<com:ValidatorScript>
 					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResiTaxCode
 				</com:ValidatorScript>
-           	<com:scriptfile set="IGNITE" />
+			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="qmm003.e.vm.js" />
 			<com:scriptfile path="qmm003.e.start.js" />
 			<com:scriptfile path="qmm003.e.service.js" />
 			<com:stylefile path="main.css" />
-			<script>var dialogSize = { width: 910, height: 850 };</script>
+			<script>
+				var dialogSize = {
+					width : 910,
+					height : 850
+				};
+			</script>
 		</ui:define>
 
 		<ui:define name="content">
-		<div class="flex valign-center" style="margin-top:20px">
-			<label id="E_LBL_001">個人情報で登録した納付先を置換えます。</label>
-		</div>
-		<div>
-		<div style="margin-left: 55px" data-bind="ntsFormLabel: { required: true }" class="form-label">
-		 <label id="E_LBL_004">対象年度</label>
-		</div>
-		<input id="E_INP_003"  />
-		<label id="E_LBL_005">対象年度</label>
-		
-		
-		</div>
+			<div class="flex valign-center" style="margin-top: 20px">
+				<label id="E_LBL_001">個人情報で登録した納付先を置換えます。</label>
+			</div>
+			<div>
+				<div style="margin-left: 55px"
+					data-bind="ntsFormLabel: { required: true }" class="form-label">
+					<label id="E_LBL_004">対象年度</label>
+				</div>
+				<input id="E_INP_003" data-bind="ntsTextEditor: {value:singleSelectedCode}" />
+				<label id="E_LBL_005">対象年度</label>
+
+
+			</div>
 
 			<div id="contents-area" class="cf">
 
@@ -40,9 +46,9 @@
 						<label id="E_LBL_002">【統合元情報】</label>
 					</div>
 					<div class="caret-right caret-background">
-					<i class="icon icon-searchbox"></i>	
+						<i class="icon icon-searchbox"></i>
 
-						<div id ="E_SCH_001" style="width: 400px"
+						<div id="E_SCH_001" style="width: 400px"
 							data-bind="ntsSearchBox: {items: items, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
 						<div>
 							<table id="treegrid21"
@@ -59,18 +65,18 @@
 									showCheckBox: true}"
 								class="cf"></table>
 						</div>
-					</div>				
-		
+					</div>
+
 				</div>
-				
+
 				<div class="nts-right-content">
 					<div>
 						<label id="E_LBL_003">【統合先情報】</label>
 					</div>
-					
+
 					<div>
-					<i class="icon icon-searchbox"></i>	
-						<div  id ="E_SCH_002" style="width: 410px"
+						<i class="icon icon-searchbox"></i>
+						<div id="E_SCH_002" style="width: 410px"
 							data-bind="ntsSearchBox: {items: items, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
 						<div>
 							<table id="treegrid2"
@@ -89,12 +95,13 @@
 						</div>
 					</div>
 				</div>
-			    </div>
-			    <hr/>
-			    <div>
-					<button id="E_BTN_001" class="proceed" data-bind="click: clickButton">実行</button>
-					<button id="E_BTN_002" data-bind="click: cancelButton">キャンセル</button>
-			    </div>
+			</div>
+			<hr />
+			<div>
+				<button id="E_BTN_001" class="proceed"
+					data-bind="click: clickButton">実行</button>
+				<button id="E_BTN_002" data-bind="click: cancelButton">キャンセル</button>
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>

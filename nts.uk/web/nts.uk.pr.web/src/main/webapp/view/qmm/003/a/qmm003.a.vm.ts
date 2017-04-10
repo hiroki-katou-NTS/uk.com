@@ -14,6 +14,8 @@ module qmm003.a.viewmodel {
         itemPrefecture: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
         //companyCode != 0000
         residentalTaxList: KnockoutObservableArray<service.model.ResidentialTaxDto> = ko.observableArray([]);
+        //companyCode = 0000
+        residentalTaxList000: KnockoutObservableArray<service.model.ResidentialTaxDto> = ko.observableArray([]);
         currentResidential: KnockoutObservable<service.model.ResidentialTaxDetailDto> = ko.observable(null);
         report: KnockoutObservable<string> = ko.observable('');
         dirtyObject: nts.uk.ui.DirtyChecker;
@@ -89,6 +91,16 @@ module qmm003.a.viewmodel {
             let self = this;
             service.getResidentialTaxDetail(newValue).done(function(data: service.model.ResidentialTaxDetailDto) {
                 if (data) {
+                    if (data.resiTaxReportCode) {
+                        let residential: service.model.ResidentialTaxDto;
+                         _.each(self.residentalTaxList000(), function(objResi: service.model.ResidentialTaxDto) {
+                            if(objResi.resiTaxCode === data.resiTaxReportCode){
+                                residential = objResi;
+                            }
+                        });
+                        console.log(residential);
+                        data.resiTaxReportCode = residential.resiTaxCode + " " + residential.resiTaxAutonomy;
+                    }
                     if ($('.nts-editor').ntsError("hasError")) {
                         $('.save-error').ntsError('clear');
                     }
@@ -103,10 +115,10 @@ module qmm003.a.viewmodel {
         }
 
         //  set selectedcode by prefectureCode
-        findPrefectureByResiTax(items: Array<service.model.ResidentialTaxDto>, code: string): service.model.ResidentialTaxDto {
+        findNodeByResiTax(items: Array<service.model.ResidentialTaxDto>, code: string): service.model.ResidentialTaxDto {
             let self = this;
             let node: service.model.ResidentialTaxDto;
-            node =_.find(items, function(objPrefecture: service.model.ResidentialTaxDto) {
+            node = _.find(items, function(objPrefecture: service.model.ResidentialTaxDto) {
                 return objPrefecture.resiTaxCode = code;
             });
             return node;
@@ -182,7 +194,7 @@ module qmm003.a.viewmodel {
             let currentResidential: service.model.ResidentialTaxDetailDto;
             nts.uk.ui.windows.sub.modeless("/view/qmm/003/c/index.xhtml", { title: '住民税納付先の登録＞住民税報告先一覧', dialogClass: "no-close" }).onClosed(function(): any {
                 currentResidential = nts.uk.ui.windows.getShared('currentResidential');
-                self.resiTaxReportCode(currentResidential.resiTaxCode);
+                self.resiTaxReportCode(currentResidential.resiTaxCode + " " + currentResidential.resiTaxAutonomy);
             });
 
         }
@@ -227,6 +239,9 @@ module qmm003.a.viewmodel {
         start(currentSelectedCode: string): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
             let self = this;
+            service.getResidentialTaxCCD().done(function(data: Array<service.model.ResidentialTaxDto>) {
+                self.residentalTaxList000(data);
+            });
             (qmm003.a.service.getResidentialTax()).done(function(data: Array<service.model.ResidentialTaxDto>) {
                 if (data.length > 0) {
                     self.editMode = true; // true, update mode 
@@ -384,6 +399,7 @@ module qmm003.a.viewmodel {
                 return;
             }
             objResi = ko.toJS(self.currentResidential());
+            objResi.resiTaxReportCode = objResi.resiTaxReportCode.substring(0, 6);
             if (!self.editMode) {
                 qmm003.a.service.addResidential(objResi).done(function() {
                     self.redensitalTaxNodeList([]);

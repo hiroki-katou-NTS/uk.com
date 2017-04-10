@@ -67,6 +67,7 @@ var qmm003;
                     (qmm003.c.service.getResidentialTax()).done(function (data) {
                         if (data.length > 0) {
                             self.residentalTaxList(data);
+                            console.log(data);
                             (qmm003.c.service.getRegionPrefecture()).done(function (locationData) {
                                 self.japanLocation = locationData;
                                 self.buildResidentalTaxTree();

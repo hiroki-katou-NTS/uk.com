@@ -6,7 +6,6 @@ module qmm003.e.viewmodel {
         singleSelectedCode1: KnockoutObservable<string>;
         filteredData: KnockoutObservableArray<Node> = ko.observableArray([]);
         currentNode: KnockoutObservable<Node>;
-        testNode = [];
         nodeRegionPrefectures: KnockoutObservableArray<Node> = ko.observableArray([]);
         japanLocation: Array<qmm003.b.service.model.RegionObject> = [];
         precfecture: Array<Node> = [];
@@ -18,6 +17,7 @@ module qmm003.e.viewmodel {
             self.init();
             self.singleSelectedCode.subscribe(function(newValue) {
                 self.currentNode(self.findByCode(self.filteredData(), newValue));
+                console.log(self.currentNode());
                 self.findPrefectureByResiTax(newValue);
                 console.log(self.selectedCode());
             });
@@ -53,13 +53,16 @@ module qmm003.e.viewmodel {
             self.items = ko.observableArray([]);
             self.item1s = ko.observableArray([]);
             self.singleSelectedCode = ko.observable("");
-             self.singleSelectedCode1 = ko.observable("");
+            self.singleSelectedCode1 = ko.observable("");
             self.currentNode = ko.observable((new Node("", "", [])));
         }
         //11.初期データ取得処理 11. Initial data acquisition processing
         start(): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
             let self = this;
+            service.getResidentalTaxListByReportCode('029999').done(function(data: any) {
+                console.log(data);
+            });
             (qmm003.e.service.getResidentialTax()).done(function(data: Array<qmm003.e.service.model.ResidentialTax>) {
                 if (data.length > 0) {
                     self.residentalTaxList(data);

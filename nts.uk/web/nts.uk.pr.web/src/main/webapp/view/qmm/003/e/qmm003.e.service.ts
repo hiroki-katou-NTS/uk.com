@@ -1,16 +1,32 @@
 module qmm003.e.service {
     var paths = {
         getResidentalTaxList: "pr/core/residential/findallresidential",
-        getRegionPrefecture: "pr/core/residential/getlistLocation"
+        getRegionPrefecture: "pr/core/residential/getlistLocation",
+        getResidentalTaxListByReportCode: "pr/core/residential/findallresidential/{0}"
     }
 
     /**
-     * Get list payment date processing.
+     * Get list ResidentialTax.
      */
     export function getResidentialTax(): JQueryPromise<Array<model.ResidentialTax>> {
         var dfd = $.Deferred<Array<qmm003.a.service.model.ResidentialTaxDetailDto>>();
         nts.uk.request.ajax(paths.getResidentalTaxList)
             .done(function(res: Array<qmm003.a.service.model.ResidentialTaxDetailDto>) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+        /**
+     * Get list ResidentialTax.
+     */
+    export function getResidentalTaxListByReportCode(resiTaxReportCode: string): JQueryPromise<Array<model.ResidentialTax>> {
+        var dfd = $.Deferred<Array<model.ResidentialTax>>();
+        var _path = nts.uk.text.format(paths.getResidentalTaxListByReportCode, resiTaxReportCode);
+        nts.uk.request.ajax(_path)
+            .done(function(res: Array<model.ResidentialTax>) {
                 dfd.resolve(res);
             })
             .fail(function(res) {

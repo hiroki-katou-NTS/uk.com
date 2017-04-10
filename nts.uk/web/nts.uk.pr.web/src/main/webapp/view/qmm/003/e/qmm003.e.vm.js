@@ -7,7 +7,6 @@ var qmm003;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     this.filteredData = ko.observableArray([]);
-                    this.testNode = [];
                     this.nodeRegionPrefectures = ko.observableArray([]);
                     this.japanLocation = [];
                     this.precfecture = [];
@@ -18,6 +17,7 @@ var qmm003;
                     self.init();
                     self.singleSelectedCode.subscribe(function (newValue) {
                         self.currentNode(self.findByCode(self.filteredData(), newValue));
+                        console.log(self.currentNode());
                         self.findPrefectureByResiTax(newValue);
                         console.log(self.selectedCode());
                     });
@@ -57,6 +57,9 @@ var qmm003;
                 ScreenModel.prototype.start = function () {
                     var dfd = $.Deferred();
                     var self = this;
+                    e.service.getResidentalTaxListByReportCode('029999').done(function (data) {
+                        console.log(data);
+                    });
                     (qmm003.e.service.getResidentialTax()).done(function (data) {
                         if (data.length > 0) {
                             self.residentalTaxList(data);
