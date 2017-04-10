@@ -25,29 +25,24 @@ var nts;
                             }
                             service.findAllCertification = findAllCertification;
                             function findAllCertifyGroup() {
-                                var dfd = $.Deferred();
                                 return nts.uk.request.ajax(paths.findAllCertifyGroup);
                             }
                             service.findAllCertifyGroup = findAllCertifyGroup;
                             function findCertifyGroup(code) {
-                                var dfd = $.Deferred();
                                 return nts.uk.request.ajax(paths.findCertifyGroup + "/" + code);
                             }
                             service.findCertifyGroup = findCertifyGroup;
                             function addCertifyGroup(certifyGroupDto) {
-                                var dfd = $.Deferred();
                                 var data = { certifyGroupDto: certifyGroupDto };
                                 return nts.uk.request.ajax(paths.addCertifyGroup, data);
                             }
                             service.addCertifyGroup = addCertifyGroup;
                             function updateCertifyGroup(certifyGroupDto) {
-                                var dfd = $.Deferred();
                                 var data = { certifyGroupDto: certifyGroupDto };
                                 return nts.uk.request.ajax(paths.updateCertifyGroup, data);
                             }
                             service.updateCertifyGroup = updateCertifyGroup;
                             function deleteCertifyGroup(certifyGroupDeleteDto) {
-                                var dfd = $.Deferred();
                                 var data = { certifyGroupDeleteDto: certifyGroupDeleteDto };
                                 return nts.uk.request.ajax(paths.deleteCertifyGroup, data);
                             }

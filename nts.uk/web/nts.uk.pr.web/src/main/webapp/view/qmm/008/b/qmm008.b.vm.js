@@ -22,8 +22,6 @@ var nts;
                             var HealthInsuranceRateItemDto = b.service.model.finder.HealthInsuranceRateItemDto;
                             var ChargeRateItemDto = b.service.model.finder.ChargeRateItemDto;
                             var ScreenBaseModel = view.base.simplehistory.viewmodel.ScreenBaseModel;
-                            var hservice = nts.uk.pr.view.qmm008.h.service;
-                            var commonService = nts.uk.pr.view.qmm008._0.common.service;
                             var ScreenModel = (function (_super) {
                                 __extends(ScreenModel, _super);
                                 function ScreenModel() {
@@ -41,6 +39,10 @@ var nts;
                                         grouplength: 3,
                                         decimallength: 3
                                     }));
+                                    self.Rate5 = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                                        grouplength: 3,
+                                        decimallength: 5
+                                    }));
                                     self.healthAutoCalculateOptions = ko.observableArray([
                                         { code: '0', name: 'する' },
                                         { code: '1', name: 'しない' }
@@ -50,8 +52,6 @@ var nts;
                                     self.currentOfficeCode = ko.observable('');
                                     self.sendOfficeData = ko.observable('');
                                     self.japanYear = ko.observable('');
-                                    self.listAvgEarnLevelMasterSetting = [];
-                                    self.listHealthInsuranceAvgearn = ko.observableArray([]);
                                     self.errorList = ko.observableArray([
                                         { messageId: "ER001", message: "＊が入力されていません。" },
                                         { messageId: "ER007", message: "＊が選択されていません。" },
@@ -60,16 +60,13 @@ var nts;
                                         { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" }
                                     ]);
                                     self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
+                                    self.backupDataDirty = ko.observable();
                                 }
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     self.getAllRounding().done(function () {
                                         dfd.resolve(null);
-                                    });
-                                    commonService.getAvgEarnLevelMasterSettingList().done(function (data) {
-                                        self.listAvgEarnLevelMasterSetting = data;
-                                        dfd.resolve();
                                     });
                                     return dfd.promise();
                                 };
@@ -197,8 +194,8 @@ var nts;
                                     if (self.healthModel().autoCalculate() == AutoCalculateType.Auto) {
                                         nts.uk.ui.dialog.confirm("自動計算が行われます。登録しますか？").ifYes(function () {
                                             self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
-                                            hservice.updateHealthInsuranceAvgearn(self.collectData(), self.healthCollectData().officeCode);
                                             b.service.updateHealthRate(self.healthCollectData()).done(function () {
+                                                self.backupDataDirty(self.healthCollectData());
                                             }).fail();
                                         }).ifNo(function () {
                                         });
@@ -206,58 +203,9 @@ var nts;
                                     else {
                                         self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
                                         b.service.updateHealthRate(self.healthCollectData()).done(function () {
+                                            self.backupDataDirty(self.healthCollectData());
                                         }).fail();
                                     }
-                                };
-                                ScreenModel.prototype.collectData = function () {
-                                    var self = this;
-                                    var data = [];
-                                    self.listAvgEarnLevelMasterSetting.forEach(function (item) {
-                                        self.listHealthInsuranceAvgearn.push(self.calculateHealthInsuranceAvgEarnModel(item));
-                                    });
-                                    self.listHealthInsuranceAvgearn().forEach(function (item) {
-                                        data.push(ko.toJS(item));
-                                    });
-                                    return data;
-                                };
-                                ScreenModel.prototype.calculateHealthInsuranceAvgEarnModel = function (levelMasterSetting) {
-                                    var self = this;
-                                    var historyId = self.healthModel().historyId;
-                                    var rateItems = self.healthModel().rateItems();
-                                    var roundingMethods = self.healthModel().roundingMethods();
-                                    var personalRounding = self.convertToRounding(roundingMethods.healthSalaryPersonalComboBoxSelectedCode());
-                                    var companyRounding = self.convertToRounding(roundingMethods.healthSalaryCompanyComboBoxSelectedCode());
-                                    var rate = levelMasterSetting.avgEarn / 1000;
-                                    var autoCalculate = self.healthModel().autoCalculate();
-                                    if (autoCalculate == AutoCalculateType.Auto) {
-                                        return new HealthInsuranceAvgEarnModel(historyId, levelMasterSetting.code, new HealthInsuranceAvgEarnValueModel(self.rounding(personalRounding, rateItems.healthSalaryPersonalGeneral() * rate, Number.One), self.rounding(personalRounding, rateItems.healthSalaryPersonalNursing() * rate, Number.One), self.rounding(personalRounding, rateItems.healthSalaryPersonalBasic() * rate, Number.Three), self.rounding(personalRounding, rateItems.healthSalaryPersonalSpecific() * rate, Number.Three)), new HealthInsuranceAvgEarnValueModel(self.rounding(companyRounding, rateItems.healthSalaryCompanyGeneral() * rate, Number.One), self.rounding(companyRounding, rateItems.healthSalaryCompanyNursing() * rate, Number.One), self.rounding(companyRounding, rateItems.healthSalaryCompanyBasic() * rate, Number.Three), self.rounding(companyRounding, rateItems.healthSalaryCompanySpecific() * rate, Number.Three)));
-                                    }
-                                    else {
-                                        return new HealthInsuranceAvgEarnModel(historyId, levelMasterSetting.code, new HealthInsuranceAvgEarnValueModel(Number.Zero, Number.Zero, Number.Zero, Number.Zero), new HealthInsuranceAvgEarnValueModel(Number.Zero, Number.Zero, Number.Zero, Number.Zero));
-                                    }
-                                };
-                                ScreenModel.prototype.rounding = function (roudingMethod, roundValue, roundType) {
-                                    var self = this;
-                                    var getLevel = Math.pow(10, roundType);
-                                    var backupValue = roundValue * (getLevel / 10);
-                                    switch (roudingMethod) {
-                                        case Rounding.ROUNDUP: return Math.ceil(backupValue) / (getLevel / 10);
-                                        case Rounding.TRUNCATION: return Math.floor(backupValue) / (getLevel / 10);
-                                        case Rounding.ROUNDDOWN:
-                                            if ((backupValue * getLevel) % 10 > 5)
-                                                return (Math.ceil(backupValue)) / (getLevel / 10);
-                                            else
-                                                return Math.floor(backupValue) / (getLevel / 10);
-                                        case Rounding.DOWN4_UP5: return self.roudingDownUp(backupValue, 4) / (getLevel / 10);
-                                        case Rounding.DOWN5_UP6: return self.roudingDownUp(backupValue, 5) / (getLevel / 10);
-                                    }
-                                };
-                                ScreenModel.prototype.roudingDownUp = function (value, down) {
-                                    var newVal = Math.round(value * 10) / 10;
-                                    if ((newVal * 10) % 10 > down)
-                                        return Math.ceil(value);
-                                    else
-                                        return Math.floor(value);
                                 };
                                 ScreenModel.prototype.onSelectHistory = function (id) {
                                     var self = this;
@@ -266,6 +214,7 @@ var nts;
                                     self.isClickHistory(true);
                                     self.currentOfficeCode(self.getCurrentOfficeCode(id));
                                     b.service.instance.findHistoryByUuid(id).done(function (dto) {
+                                        self.backupDataDirty(dto);
                                         self.loadHealth(dto);
                                         self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
                                         self.isLoading(false);
@@ -320,6 +269,7 @@ var nts;
                                     var self = this;
                                     if (self.dirty.isDirty()) {
                                         nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function () {
+                                            self.loadHealth(self.backupDataDirty());
                                             self.OpenModalOfficeRegister();
                                             self.dirty.reset();
                                         }).ifCancel(function () {
@@ -340,6 +290,7 @@ var nts;
                                     var self = this;
                                     if (self.dirty.isDirty()) {
                                         nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function () {
+                                            self.loadHealth(self.backupDataDirty());
                                             self.OpenModalStandardMonthlyPriceHealth();
                                             self.dirty.reset();
                                         }).ifCancel(function () {
@@ -422,38 +373,12 @@ var nts;
                             }());
                             viewmodel.HealthInsuranceRoundingModel = HealthInsuranceRoundingModel;
                         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
-                        var HealthInsuranceAvgearn = (function () {
-                            function HealthInsuranceAvgearn() {
-                            }
-                            return HealthInsuranceAvgearn;
-                        }());
-                        b.HealthInsuranceAvgearn = HealthInsuranceAvgearn;
                         var ChargeRateItem = (function () {
                             function ChargeRateItem() {
                             }
                             return ChargeRateItem;
                         }());
                         b.ChargeRateItem = ChargeRateItem;
-                        var HealthInsuranceAvgEarnModel = (function () {
-                            function HealthInsuranceAvgEarnModel(historyId, levelCode, personalAvg, companyAvg) {
-                                this.historyId = historyId;
-                                this.levelCode = levelCode;
-                                this.companyAvg = companyAvg;
-                                this.personalAvg = personalAvg;
-                            }
-                            return HealthInsuranceAvgEarnModel;
-                        }());
-                        b.HealthInsuranceAvgEarnModel = HealthInsuranceAvgEarnModel;
-                        var HealthInsuranceAvgEarnValueModel = (function () {
-                            function HealthInsuranceAvgEarnValueModel(general, nursing, basic, specific) {
-                                this.healthGeneralMny = ko.observable(general);
-                                this.healthNursingMny = ko.observable(nursing);
-                                this.healthBasicMny = ko.observable(basic);
-                                this.healthSpecificMny = ko.observable(specific);
-                            }
-                            return HealthInsuranceAvgEarnValueModel;
-                        }());
-                        b.HealthInsuranceAvgEarnValueModel = HealthInsuranceAvgEarnValueModel;
                         var PaymentType = (function () {
                             function PaymentType() {
                             }

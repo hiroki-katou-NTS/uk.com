@@ -91,7 +91,13 @@ var nts;
                                                     },
                                                     {
                                                         columnKey: 'amount',
-                                                        readOnly: false
+                                                        readOnly: false,
+                                                        editorProvider: new $.ig.NtsNumberEditor(),
+                                                        editorOptions: {
+                                                            constraint: 'WtValue',
+                                                            option: {},
+                                                            required: true
+                                                        }
                                                     },
                                                     {
                                                         columnKey: 'groupCalTypeText',
