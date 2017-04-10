@@ -23,12 +23,13 @@ public class UnemployeeInsuranceFinder {
 
 	/** The find. */
 	@Inject
-	private UnemployeeInsuranceRateRepository find;
+	private UnemployeeInsuranceRateRepository repository;
 
 	/**
 	 * Find by id.
 	 *
-	 * @param historyId the history id
+	 * @param historyId
+	 *            the history id
 	 * @return the unemployee insurance rate find out dto
 	 */
 	public UnemployeeInsuranceRateFindOutDto findById(String historyId) {
@@ -40,16 +41,17 @@ public class UnemployeeInsuranceFinder {
 		String companyCode = loginUserContext.companyCode();
 
 		// call finder repository
-		UnemployeeInsuranceRateFindOutDto unemployeeInsuranceRateFindOutDto;
-		unemployeeInsuranceRateFindOutDto = new UnemployeeInsuranceRateFindOutDto();
-		Optional<UnemployeeInsuranceRate> optionalUnemployeeInsuranceRate = find.findById(companyCode,
-			historyId);
+		Optional<UnemployeeInsuranceRate> data = this.repository.findById(companyCode, historyId);
+
+		//set output
+		UnemployeeInsuranceRateFindOutDto dataOuput = new UnemployeeInsuranceRateFindOutDto();
 
 		// exist value
-		if (optionalUnemployeeInsuranceRate.isPresent()) {
-			optionalUnemployeeInsuranceRate.get().saveToMemento(unemployeeInsuranceRateFindOutDto);
-			return unemployeeInsuranceRateFindOutDto;
+		if (data.isPresent()) {
+			data.get().saveToMemento(dataOuput);
+			return dataOuput;
 		}
+		
 		return null;
 	}
 

@@ -30,6 +30,7 @@ public class ElementItemFactoryImpl implements ElementItemFactory {
 	 */
 	@Override
 	public List<ElementSetting> generate(String companyCode, String historyId, List<ElementSetting> elementSetting) {
+		// Execute generate items method.
 		for (ElementSetting element : elementSetting) {
 			for (ItemGenerator instance : generators) {
 				if (instance.canHandle(element.getType())) {
