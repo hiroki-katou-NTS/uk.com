@@ -224,12 +224,12 @@ var cmm008;
                     });
                     if (self.employmentCode() === "") {
                         nts.uk.ui.dialog.alert(ER001.messName.replace('*', 'コード'));
-                        $("#INP_002").focus();
+                        $("#inpCode").focus();
                         return;
                     }
                     if (self.employmentName() === "") {
                         nts.uk.ui.dialog.alert(ER001.messName.replace('*', '名称'));
-                        $("#INP_003").focus();
+                        $("#inpName").focus();
                         return;
                     }
                     var employment = new a.service.model.employmentDto();
@@ -260,7 +260,7 @@ var cmm008;
                             });
                             nts.uk.ui.dialog.alert(newMess.messName.split('*').join('コード'));
                             self.isEnable(true);
-                            $("#INP_002").focus();
+                            $("#inpCode").focus();
                         });
                     }
                     else {
@@ -329,7 +329,7 @@ var cmm008;
                     self.isDelete(false);
                     self.holidayCode(0);
                     self.selectedProcessNo(0);
-                    $("#INP_002").focus();
+                    $("#inpCode").focus();
                 };
                 ScreenModel.prototype.deleteEmployment = function () {
                     var self = this;
