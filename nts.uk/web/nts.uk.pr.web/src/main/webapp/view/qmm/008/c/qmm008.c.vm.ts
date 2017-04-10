@@ -350,6 +350,7 @@ module nts.uk.pr.view.qmm008.c {
             onSelectMaster(code: string): void {
                 var self = this;
                 self.isClickHistory(false);
+                $('.save-error').ntsError('clear');
             }
 
             /**

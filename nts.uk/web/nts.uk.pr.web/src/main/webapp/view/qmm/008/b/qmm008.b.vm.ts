@@ -295,6 +295,7 @@ module nts.uk.pr.view.qmm008.b {
             onSelectMaster(code: string): void {
                 var self = this;
                 self.isClickHistory(false);
+                $('.save-error').ntsError('clear');
             }
 
             public getCurrentOfficeCode(childId: string): string {
