@@ -148,8 +148,8 @@ public class RegistryPositionCommandHandler extends CommandHandler<RegistryPosit
 								EnumAdaptor.valueOf(jobTitleRef.getReferenceSettings(), ReferenceSettings.class));
 						newRefInfor.add(titleRef);
 					}
-					//update quyen (viet them)
-					
+					//update quyen 
+				positionRepository.updateRef(refInfor);
 				}
 			}
 		}

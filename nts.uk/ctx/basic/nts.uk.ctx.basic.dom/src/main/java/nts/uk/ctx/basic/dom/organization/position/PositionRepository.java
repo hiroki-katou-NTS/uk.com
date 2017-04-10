@@ -59,4 +59,6 @@ public interface PositionRepository {
 	void add(List<JobTitle> lstPositionNow);
 
 	void getAllJobTitleRef(JobTitleRef jobTitleRef);
+
+	void updateRef(List<JobTitleRef> refInfor);
 	}

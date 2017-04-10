@@ -57,6 +57,8 @@ module cmm013.a.viewmodel {
         dataRef: KnockoutObservableArray<model.GetAuth>;
         dataRefNew: KnockoutObservableArray<model.GetAuth>;
         createdMode: KnockoutObservable<boolean>;
+        
+        changeDetail: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
             self.jTitleRef = ko.observableArray([]);
@@ -104,6 +106,7 @@ module cmm013.a.viewmodel {
             self.currentItem = ko.observable(null);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable();
+            self.changeDetail = ko.observable(false);
             self.columns = ko.observableArray([
                 { headerText: 'コード', key: 'jobCode', width: 80 },
                 { headerText: '名称', key: 'jobName', width: 100 }
@@ -125,7 +128,7 @@ module cmm013.a.viewmodel {
                  self.itemHist(self.findHist(codeChanged));
                  self.oldStartDate(self.itemHist().startDate);
                  self.oldEndDate(self.itemHist().endDate);
-                              
+             
                 var chkCopy = nts.uk.ui.windows.getShared('cmm013Copy');
                 if (codeChanged === '1' && chkCopy) {
                     //set lai disable cho input code
@@ -145,6 +148,9 @@ module cmm013.a.viewmodel {
                         if (self.dataSource().length > 0) {
                             //set select position & history
                             self.currentCode(self.inp_002_code() || self.dataSource()[0].jobCode);
+                            self.changeDetail(true);
+                        } else {
+                            self.changeDetail(false);    
                         }
                     }).fail(function(err: any) {
                         nts.uk.ui.dialog.alert(err.message);
@@ -155,15 +161,20 @@ module cmm013.a.viewmodel {
             });
             //change position
             self.currentCode.subscribe(function(codeChanged) {
-                self.currentItem(self.findPosition(codeChanged));
-                if (self.currentItem() != null) {
-                    
-                    self.inp_002_code(self.currentItem().jobCode);
-                    self.inp_003_name(self.currentItem().jobName);
-                    self.inp_005_memo(self.currentItem().memo);
-                    self.selectedId(self.currentItem().presenceCheckScopeSet);
-                    self.inp_002_enable(false);
-                    self.createdMode(false);
+                self.changeDetail(true);
+            });          
+            
+            self.changeDetail.subscribe(function(value){
+                if(value){
+                    self.currentItem(self.findPosition(self.currentCode()));
+                    if (self.currentItem() != null) {
+                        self.inp_002_code(self.currentItem().jobCode);
+                        self.inp_003_name(self.currentItem().jobName);
+                        self.inp_005_memo(self.currentItem().memo);
+                        self.selectedId(self.currentItem().presenceCheckScopeSet);
+                        self.inp_002_enable(false);
+                        self.createdMode(false);
+                    } 
                     //tim kiem quyen theo historyId va position code
                     service.getAllJobTitleAuth(self.currentItem().historyId, self.currentItem().jobCode).done(function(jTref) {
                         //neu nhu ko co du lieu thi an list di
@@ -179,10 +190,11 @@ module cmm013.a.viewmodel {
                             });
                             self.dataRefNew(self.dataRef());
                             self.createdMode(true);
+                            self.changeDetail(false);
                         }
                     });
-                }
-            });           
+                }        
+            });
         }
         startPage(): JQueryPromise<any> {
             var self = this;
@@ -422,7 +434,7 @@ module cmm013.a.viewmodel {
                 nts.uk.ui.windows.setShared('cmm013StartDate', self.oldStartDate(), true);
                 nts.uk.ui.windows.setShared('cmm013EndDate', self.endDateUpdate(), true);
                 nts.uk.ui.windows.setShared('cmm013OldEndDate', self.oldEndDate(), true);
-                nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '画面ID：D', })
+                nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '履歴の編集', })
                     .onClosed(function() {
                         let dfd = $.Deferred();
                         self.getHistory(dfd);

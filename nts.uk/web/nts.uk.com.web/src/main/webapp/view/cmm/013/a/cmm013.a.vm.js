@@ -52,6 +52,7 @@ var cmm013;
                     self.currentItem = ko.observable(null);
                     self.itemName = ko.observable('');
                     self.currentCode = ko.observable();
+                    self.changeDetail = ko.observable(false);
                     self.columns = ko.observableArray([
                         { headerText: 'コード', key: 'jobCode', width: 80 },
                         { headerText: '名称', key: 'jobName', width: 100 }
@@ -89,6 +90,10 @@ var cmm013;
                                 self.dataSource(position_arr);
                                 if (self.dataSource().length > 0) {
                                     self.currentCode(self.inp_002_code() || self.dataSource()[0].jobCode);
+                                    self.changeDetail(true);
+                                }
+                                else {
+                                    self.changeDetail(false);
                                 }
                             }).fail(function (err) {
                                 nts.uk.ui.dialog.alert(err.message);
@@ -96,14 +101,19 @@ var cmm013;
                         }
                     });
                     self.currentCode.subscribe(function (codeChanged) {
-                        self.currentItem(self.findPosition(codeChanged));
-                        if (self.currentItem() != null) {
-                            self.inp_002_code(self.currentItem().jobCode);
-                            self.inp_003_name(self.currentItem().jobName);
-                            self.inp_005_memo(self.currentItem().memo);
-                            self.selectedId(self.currentItem().presenceCheckScopeSet);
-                            self.inp_002_enable(false);
-                            self.createdMode(false);
+                        self.changeDetail(true);
+                    });
+                    self.changeDetail.subscribe(function (value) {
+                        if (value) {
+                            self.currentItem(self.findPosition(self.currentCode()));
+                            if (self.currentItem() != null) {
+                                self.inp_002_code(self.currentItem().jobCode);
+                                self.inp_003_name(self.currentItem().jobName);
+                                self.inp_005_memo(self.currentItem().memo);
+                                self.selectedId(self.currentItem().presenceCheckScopeSet);
+                                self.inp_002_enable(false);
+                                self.createdMode(false);
+                            }
                             a.service.getAllJobTitleAuth(self.currentItem().historyId, self.currentItem().jobCode).done(function (jTref) {
                                 if (jTref.length === 0) {
                                     $('.trLst003').css('visibility', 'hidden');
@@ -118,6 +128,7 @@ var cmm013;
                                     });
                                     self.dataRefNew(self.dataRef());
                                     self.createdMode(true);
+                                    self.changeDetail(false);
                                 }
                             });
                         }
@@ -345,7 +356,7 @@ var cmm013;
                         nts.uk.ui.windows.setShared('cmm013StartDate', self.oldStartDate(), true);
                         nts.uk.ui.windows.setShared('cmm013EndDate', self.endDateUpdate(), true);
                         nts.uk.ui.windows.setShared('cmm013OldEndDate', self.oldEndDate(), true);
-                        nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '画面ID：D', })
+                        nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '履歴の編集', })
                             .onClosed(function () {
                             var dfd = $.Deferred();
                             self.getHistory(dfd);

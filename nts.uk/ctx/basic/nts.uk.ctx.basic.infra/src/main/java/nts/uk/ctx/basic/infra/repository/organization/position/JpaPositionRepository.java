@@ -378,6 +378,8 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		
 	}
 
+
+
 	private CmnmtJobTitleRef convertToDbType3(JobTitleRef jobTitleRef) {
 		CmnmtJobTitleRef cmnmtJobTitleRef = new CmnmtJobTitleRef();
 		CmnmtJobTitleRefPK cmnmtJobTitleRefPK = new CmnmtJobTitleRefPK(jobTitleRef.getCompanyCode(),
@@ -392,6 +394,11 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 	public void addJobTitleRef(List<JobTitleRef> jobTitleRef) {
 		this.commandProxy().insertAll(jobTitleRef.stream().map(item -> {return convertToDbType3(item);}).collect(Collectors.toList()));
 	
+	}
+
+	@Override
+	public void updateRef(List<JobTitleRef> refInfor) {
+		this.commandProxy().updateAll(refInfor.stream().map(item -> {return convertToDbType3(item);}).collect(Collectors.toList()));		
 	}
 
 
