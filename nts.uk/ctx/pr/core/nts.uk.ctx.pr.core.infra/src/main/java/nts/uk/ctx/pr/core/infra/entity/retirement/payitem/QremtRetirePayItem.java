@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 
  * @author Doan Duy Hung
@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.TableEntity;
 @NoArgsConstructor
 @Entity
 @Table(name="QREMT_RETIRE_PAY_ITEM")
-public class QremtRetirePayItem extends TableEntity {
+public class QremtRetirePayItem extends UkJpaEntity {
 	@EmbeddedId
 	public QremtRetirePayItemPK qremtRetirePayItemPK;
 	
@@ -35,4 +35,9 @@ public class QremtRetirePayItem extends TableEntity {
 
 	@Column(name="MEMO")
 	public String memo;
+
+	@Override
+	protected Object getKey() {
+		return qremtRetirePayItemPK;
+	}
 }
