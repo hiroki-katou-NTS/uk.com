@@ -125,9 +125,7 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 		TypedQuery<QismtEmpInsuRate> query = em.createQuery(cq);
 
 		// exclude select
-		List<UnemployeeInsuranceRate> UnemployeeInsuranceRate = query.getResultList().stream()
-			.map(item -> this.toDomain(item)).collect(Collectors.toList());
-		return UnemployeeInsuranceRate;
+		return query.getResultList().stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 
 	/**
@@ -138,22 +136,19 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 	 * @return the unemployee insurance rate
 	 */
 	private UnemployeeInsuranceRate toDomain(QismtEmpInsuRate entity) {
-		UnemployeeInsuranceRate domain = new UnemployeeInsuranceRate(
-			new JpaUnemployeeInsuranceRateGetMemento(entity));
-		return domain;
-
+		return new UnemployeeInsuranceRate(new JpaUnemployeeInsuranceRateGetMemento(entity));
 	}
 
 	/**
 	 * To entity.
 	 *
-	 * @param UnemployeeInsuranceRate
-	 *            the unemployee insurance rate
+	 * @param rate
+	 *            the rate
 	 * @return the qismt emp insu rate
 	 */
-	private QismtEmpInsuRate toEntity(UnemployeeInsuranceRate UnemployeeInsuranceRate) {
+	private QismtEmpInsuRate toEntity(UnemployeeInsuranceRate rate) {
 		QismtEmpInsuRate entity = new QismtEmpInsuRate();
-		UnemployeeInsuranceRate.saveToMemento(new JpaUnemployeeInsuranceRateSetMemento(entity));
+		rate.saveToMemento(new JpaUnemployeeInsuranceRateSetMemento(entity));
 		return entity;
 	}
 
@@ -257,7 +252,7 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 			return Optional.empty();
 		}
 
-		// get fisrt data
+		// get first data
 		return Optional.ofNullable(this.toDomain(lstQismtEmpInsuRate.get(BusinessTypeEnum.Biz1St.index)));
 	}
 

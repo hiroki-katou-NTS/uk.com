@@ -67,17 +67,20 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 	 * @return the validate range
 	 */
 	private boolean invalidateRate(AccidentInsuranceRate rate) {
+
+		boolean isValid = false;
 		// validate Add
 		// ? (start <= end)
-		if (rate.getApplyRange().getStartMonth().v() > rate.getApplyRange().getEndMonth().v()) {
-			return true;
-		}
+		isValid = isValid
+			|| rate.getApplyRange().getStartMonth().v() > rate.getApplyRange().getEndMonth().v();
 
 		// ? start > start first (order by desc)
 		Optional<AccidentInsuranceRate> data = this.repository.findFirstData(rate.getCompanyCode());
 
-		if (!data.isPresent()) {
-			return false;
+		isValid = isValid || !data.isPresent();
+
+		if (isValid) {
+			return isValid;
 		}
 		return (data.get().getApplyRange().getStartMonth().nextMonth().v() > rate.getApplyRange()
 			.getStartMonth().v());
@@ -96,6 +99,7 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 			throw new BusinessException("ER023");
 		}
 	}
+
 	/**
 	 * Checks if is valid rate update.
 	 *
@@ -145,12 +149,15 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 		Optional<AccidentInsuranceRate> data = this.repository.findById(rate.getCompanyCode(),
 			rate.getHistoryId());
 
-		Optional<AccidentInsuranceRate> dataUpdate = this.repository.findBetweenUpdate(
-			rate.getCompanyCode(), data.get().getApplyRange().getStartMonth(), data.get().getHistoryId());
+		if (data.isPresent()) {
+			Optional<AccidentInsuranceRate> dataUpdate = this.repository.findBetweenUpdate(
+				rate.getCompanyCode(), data.get().getApplyRange().getStartMonth(), data.get().getHistoryId());
 
-		// check first data
-		return (dataUpdate.isPresent() && (dataUpdate.get().getApplyRange().getStartMonth().v() >= rate
-			.getApplyRange().getStartMonth().v()));
+			// check first data
+			return (dataUpdate.isPresent() && (dataUpdate.get().getApplyRange().getStartMonth().v() >= rate
+				.getApplyRange().getStartMonth().v()));
+		}
+		return true;
 	}
 
 }
