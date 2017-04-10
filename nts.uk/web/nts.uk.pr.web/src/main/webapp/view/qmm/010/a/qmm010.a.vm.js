@@ -57,6 +57,7 @@ var nts;
                                     self.laborInsuranceOfficeModel().resetAllValue();
                                     self.typeAction(TypeActionLaborInsuranceOffice.add);
                                     self.selectCodeLstlaborInsuranceOffice('');
+                                    self.beginSelectlaborInsuranceOffice('');
                                     self.laborInsuranceOfficeModel().setReadOnly(false);
                                     if (!self.isEmpty())
                                         self.clearErrorSave();
@@ -119,9 +120,10 @@ var nts;
                                         if (data != null && data.length > 0) {
                                             self.lstlaborInsuranceOfficeModel = ko.observableArray(data);
                                             self.selectCodeLstlaborInsuranceOffice(data[0].code);
-                                            self.selectCodeLstlaborInsuranceOffice.subscribe(function (selectCodeLstlaborInsuranceOffice) {
-                                                self.showchangeLaborInsuranceOffice(selectCodeLstlaborInsuranceOffice);
+                                            self.selectCodeLstlaborInsuranceOffice.subscribe(function (code) {
+                                                self.showchangeLaborInsuranceOffice(code);
                                             });
+                                            self.isEmpty(false);
                                             self.detailLaborInsuranceOffice(data[0].code).done(function () {
                                                 self.isEnableDelete(true);
                                                 dfd.resolve(self);
@@ -191,26 +193,43 @@ var nts;
                                         });
                                     }
                                 };
-                                ScreenModel.prototype.showchangeLaborInsuranceOffice = function (selectionCodeLstLstLaborInsuranceOffice) {
+                                ScreenModel.prototype.showchangeLaborInsuranceOffice = function (code) {
                                     var self = this;
-                                    if (selectionCodeLstLstLaborInsuranceOffice
-                                        && selectionCodeLstLstLaborInsuranceOffice != '') {
-                                        if (self.dirty.isDirty() && self.isShowDirty()
-                                            && self.typeAction() == TypeActionLaborInsuranceOffice.update) {
-                                            if (selectionCodeLstLstLaborInsuranceOffice !== self.selectCodeLstlaborInsuranceOffice()) {
+                                    if (code && code != '') {
+                                        if (self.typeAction() == TypeActionLaborInsuranceOffice.add) {
+                                            if (self.dirty.isDirty() && self.isShowDirty()) {
                                                 nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
                                                     self.isShowDirty(false);
                                                     self.typeAction(TypeActionLaborInsuranceOffice.update);
-                                                    self.detailLaborInsuranceOffice(selectionCodeLstLstLaborInsuranceOffice);
-                                                    return;
+                                                    self.detailLaborInsuranceOffice(code);
                                                 }).ifNo(function () {
+                                                    self.isShowDirty(false);
+                                                    self.selectCodeLstlaborInsuranceOffice(self.beginSelectlaborInsuranceOffice());
+                                                    self.isShowDirty(true);
                                                 });
                                             }
-                                            self.selectCodeLstlaborInsuranceOffice(self.beginSelectlaborInsuranceOffice());
-                                            return;
+                                            else {
+                                                self.typeAction(TypeActionLaborInsuranceOffice.update);
+                                                self.detailLaborInsuranceOffice(code);
+                                            }
                                         }
-                                        self.typeAction(TypeActionLaborInsuranceOffice.update);
-                                        self.detailLaborInsuranceOffice(selectionCodeLstLstLaborInsuranceOffice);
+                                        else {
+                                            if (self.dirty.isDirty() && self.isShowDirty()) {
+                                                if (code !== self.selectCodeLstlaborInsuranceOffice()) {
+                                                    nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
+                                                        self.isShowDirty(false);
+                                                        self.typeAction(TypeActionLaborInsuranceOffice.update);
+                                                        self.detailLaborInsuranceOffice(code);
+                                                    }).ifNo(function () {
+                                                        self.selectCodeLstlaborInsuranceOffice(self.beginSelectlaborInsuranceOffice());
+                                                    });
+                                                }
+                                            }
+                                            else {
+                                                self.typeAction(TypeActionLaborInsuranceOffice.update);
+                                                self.detailLaborInsuranceOffice(code);
+                                            }
+                                        }
                                     }
                                 };
                                 ScreenModel.prototype.detailLaborInsuranceOffice = function (code) {
@@ -219,12 +238,11 @@ var nts;
                                         var self = this;
                                         a.service.findLaborInsuranceOffice(code).done(function (data) {
                                             if (self.isEmpty()) {
-                                                self.selectCodeLstlaborInsuranceOffice.subscribe(function (selectionCodeLstLstLaborInsuranceOffice) {
-                                                    self.showchangeLaborInsuranceOffice(selectionCodeLstLstLaborInsuranceOffice);
+                                                self.selectCodeLstlaborInsuranceOffice.subscribe(function (code) {
+                                                    self.showchangeLaborInsuranceOffice(code);
                                                 });
                                                 self.isEmpty(false);
                                             }
-                                            self.selectCodeLstlaborInsuranceOffice(code);
                                             self.laborInsuranceOfficeModel().updateData(data);
                                             self.laborInsuranceOfficeModel().setReadOnly(true);
                                             self.isEnableDelete(true);
@@ -249,6 +267,9 @@ var nts;
                                         var code = self.selectCodeLstlaborInsuranceOffice();
                                         if (self.typeAction() == TypeActionLaborInsuranceOffice.add) {
                                             if (data != null && data.length > 0) {
+                                                self.isEmpty(false);
+                                                self.typeAction(TypeActionLaborInsuranceOffice.update);
+                                                self.selectCodeLstlaborInsuranceOffice(self.laborInsuranceOfficeModel().code());
                                                 self.detailLaborInsuranceOffice(self.laborInsuranceOfficeModel().code());
                                             }
                                             else {
