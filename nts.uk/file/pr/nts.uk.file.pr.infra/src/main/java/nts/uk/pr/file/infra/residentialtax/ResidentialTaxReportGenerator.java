@@ -1,5 +1,7 @@
 package nts.uk.pr.file.infra.residentialtax;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
@@ -13,7 +15,7 @@ public class ResidentialTaxReportGenerator extends AsposeCellsReportGenerator im
 	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/qpp011a.xlsx";
 	/** The Constant REPORT_FILE_NAME. */
-	protected static final String REPORT_FILE_NAME = "サンプル帳票.pdf";
+	protected static final String REPORT_FILE_NAME = "テストQPP011.pdf";
 	
 	@Override
 	public void generate(FileGeneratorContext fileContext, ResidentTaxReportData reportData) {
@@ -21,6 +23,16 @@ public class ResidentialTaxReportGenerator extends AsposeCellsReportGenerator im
 			AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE);
 			
 			reportContext.getDesigner().setDataSource("DBD_001", "Dfsdfsdfsdf");
+			reportContext.getDesigner().setDataSource("DBD_002", "Dfsdfsdfsdf");
+			reportContext.getDesigner().setDataSource("DBD_002", "Dfsdfsdfsdf");
+			reportContext.getDesigner().setDataSource("DBD_002", "Dfsdfsdfsdf");
+			reportContext.getDesigner().setDataSource("DBD_002", "Dfsdfsdfsdf");
+			reportContext.getDesigner().setDataSource("DBD_002", "Dfsdfsdfsdf");
+			reportContext.getDesigner().setDataSource("DBD_002", "Dfsdfsdfsdf");
+			reportContext.getDesigner().setDataSource("DBD_002", "Dfsdfsdfsdf");
+			reportContext.getDesigner().setDataSource("DBD_002", "Dfsdfsdfsdf");
+			reportContext.getDesigner().setDataSource("DBD_002", "Dfsdfsdfsdf");
+			reportContext.getDesigner().setDataSource("DBD_002", "Dfsdfsdfsdf");
 			reportContext.getDesigner().setDataSource("DBD_002", "Dfsdfsdfsdf");
 			
 			// process data binginds in template

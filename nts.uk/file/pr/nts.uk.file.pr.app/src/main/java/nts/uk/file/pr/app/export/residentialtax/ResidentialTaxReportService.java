@@ -68,8 +68,7 @@ public class ResidentialTaxReportService extends ExportService<ResidentialTaxQue
 				PayBonusAtr.SALARY,
 				query.getProcessingYearMonth(),
 				CategoryAtr.DEDUCTION,
-			    "F108"
-				);
+			    "F108");
 		// RETIREMENT_PAYMENT(退職金明細データ).SEL-2
 		String processingYearMonth = String.valueOf(query.getProcessingYearMonth());
 		int year = Integer.valueOf(processingYearMonth.substring(0, 3));
@@ -91,31 +90,52 @@ public class ResidentialTaxReportService extends ExportService<ResidentialTaxQue
 		Map<String, ResidentialTaxSlipDto> residentialTaxSlipMap = residentialTaxSlipDto.stream().collect(Collectors.toMap(ResidentialTaxSlipDto::getResiTaxCode, y->y));
 		
 		
-		for (ResidentialTaxDto residentialTax : residentTaxList) {
-			ResidentialTaxSlipDto residentialTaxSlip = residentialTaxSlipMap.get(residentialTax.getResidenceTaxCode());
-			ResidentTaxReportData reportData = new ResidentTaxReportData();
-			reportData.setResidenceTaxCode(residentialTax.getResidenceTaxCode());
-			reportData.setResiTaxAutonomy(residentialTax.getResiTaxAutonomy());
-			reportData.setCompanyAccountNo(residentialTax.getCompanyAccountNo());
-			reportData.setRegisteredName(residentialTax.getRegisteredName());
-			reportData.setCompanySpecifiedNo(residentialTax.getCompanySpecifiedNo());
-			reportData.setCordinatePostalCode(residentialTax.getCordinatePostalCode());
-			reportData.setCordinatePostOffice(residentialTax.getCordinatePostOffice());
-			reportData.setDbd006(dbd006.toString());
-			reportData.setDbd007(dbd007.toString());
-			reportData.setPostal(company.getPostal());
-			reportData.setAddress1(company.getAddress1());
-			reportData.setAddress2(company.getAddress2());
-			reportData.setCompanyName(company.getCompanyName());
-			reportData.setCityTaxMny2(String.valueOf(residentialTaxSlip.getCityTaxMny()));
-			reportData.setPrefectureTaxMny2(String.valueOf(residentialTaxSlip.getPrefectureTaxMny()));
-			reportData.setTaxOverdueMny(String.valueOf(residentialTaxSlip.getTaxOverdueMny()));
-			reportData.setTaxDemandChargeMny(String.valueOf(residentialTaxSlip.getTaxDemandChargeMny()));
-			reportData.setDueDate(residentialTaxSlip.getDueDate().toString());
-			reportData.setDbd014(dbd014.toString());	
-		}
+//		for (ResidentialTaxDto residentialTax : residentTaxList) {
+//			ResidentialTaxSlipDto residentialTaxSlip = residentialTaxSlipMap.get(residentialTax.getResidenceTaxCode());
+//			ResidentTaxReportData reportData = new ResidentTaxReportData();
+//			reportData.setResidenceTaxCode(residentialTax.getResidenceTaxCode());
+//			reportData.setResiTaxAutonomy(residentialTax.getResiTaxAutonomy());
+//			reportData.setCompanyAccountNo(residentialTax.getCompanyAccountNo());
+//			reportData.setRegisteredName(residentialTax.getRegisteredName());
+//			reportData.setCompanySpecifiedNo(residentialTax.getCompanySpecifiedNo());
+//			reportData.setCordinatePostalCode(residentialTax.getCordinatePostalCode());
+//			reportData.setCordinatePostOffice(residentialTax.getCordinatePostOffice());
+//			reportData.setDbd006(dbd006.toString());
+//			reportData.setDbd007(dbd007.toString());
+//			reportData.setPostal(company.getPostal());
+//			reportData.setAddress1(company.getAddress1());
+//			reportData.setAddress2(company.getAddress2());
+//			reportData.setCompanyName(company.getCompanyName());
+//			reportData.setCityTaxMny2(String.valueOf(residentialTaxSlip.getCityTaxMny()));
+//			reportData.setPrefectureTaxMny2(String.valueOf(residentialTaxSlip.getPrefectureTaxMny()));
+//			reportData.setTaxOverdueMny(String.valueOf(residentialTaxSlip.getTaxOverdueMny()));
+//			reportData.setTaxDemandChargeMny(String.valueOf(residentialTaxSlip.getTaxDemandChargeMny()));
+//			reportData.setDueDate(residentialTaxSlip.getDueDate().toString());
+//			reportData.setDbd014(dbd014.toString());	
+//		}
+		ResidentTaxReportData reportData = new ResidentTaxReportData();
+		reportData.setResidenceTaxCode("Son");
+		reportData.setResiTaxAutonomy("Son");
+		reportData.setCompanyAccountNo("Son");
+		reportData.setRegisteredName("Son");
+		reportData.setCompanySpecifiedNo("Son");
+		reportData.setCordinatePostalCode("Son");
+		reportData.setCordinatePostOffice("Son");
+		reportData.setDbd006("Son");
+		reportData.setDbd007("Son");
+		reportData.setPostal("Son");
+		reportData.setAddress1("Son");
+		reportData.setAddress2("Son");
+		reportData.setCompanyName("Son");
+		reportData.setCityTaxMny2("Son");
+		reportData.setPrefectureTaxMny2("Son");
+		reportData.setTaxOverdueMny("Son");
+		reportData.setTaxDemandChargeMny(String.valueOf("Son"));
+		reportData.setDueDate("Son");
+		reportData.setDbd014("Son");	
+		
 						
-		this.generate.generate(context.getGeneratorContext(), reportDataList.get(0));
+		this.generate.generate(context.getGeneratorContext(), reportData);
 	}
 
 }
