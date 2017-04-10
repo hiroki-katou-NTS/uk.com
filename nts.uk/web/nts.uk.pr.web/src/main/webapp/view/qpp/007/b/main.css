@@ -14,27 +14,27 @@
 #this-functions-area {
 	margin-top: 15px;
 }
-#lbl_001 {
+#lbl_header_left {
 	padding-left: 10px;
 }
-#lbl_002 {
+#lbl_header_right {
 	padding-left: 100px;
 }
-#lbl_001, #lbl_004 {
+#lbl_header_left, #lbl_footer {
 	font-size: 1.3rem;
 }
-#lbl_004 {
+#lbl_footer {
 	margin-top: 30px;
 }
-#btn_001 {
+#btn_apply {
 	min-width: 120px;
 }
 
-#btn_002 {
+#btn_cancel {
 	margin-left: 10px;
 	min-width: 100px;
 }
-#sel_019 {
+#switch_time_setting {
 	padding-top: 10px;
 	padding-bottom: 10px;
 }

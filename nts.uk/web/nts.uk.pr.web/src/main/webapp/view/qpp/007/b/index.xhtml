@@ -22,7 +22,7 @@
 
 		<ui:define name="content">
 			<div id="this-header-area">
-				<label id="lbl_001">明細・合計出力設定</label> <label id="lbl_002">※2016/04/01
+				<label id="lbl_header_left">明細・合計出力設定</label> <label id="lbl_header_right">※2016/04/01
 					の部門構成で集計します。</label>
 				<hr />
 			</div>
@@ -69,7 +69,7 @@
 					</tr>
 					<tr>
 						<td><div class="rectangle-wrapper">
-								<label id="lbl_003">累計したい部門の階層を指定(最大５つ)</label>
+								<label>累計したい部門の階層を指定(最大５つ)</label>
 								<div class="margin-left-20">
 								<div data-bind="ntsCheckBox: { checked: showHierarchy1,enable:showHierarchyAccumulation()||showHierarchyMonthlyAccumulation() }">1階層</div>
 								<div data-bind="ntsCheckBox: { checked: showHierarchy2,enable:showHierarchyAccumulation()||showHierarchyMonthlyAccumulation() }">2階層</div>
@@ -81,7 +81,7 @@
 								<div data-bind="ntsCheckBox: { checked: showHierarchy7,enable:showHierarchyAccumulation()||showHierarchyMonthlyAccumulation() }">7階層</div>
 								<div data-bind="ntsCheckBox: { checked: showHierarchy8,enable:showHierarchyAccumulation()||showHierarchyMonthlyAccumulation() }">8階層</div>
 								<div data-bind="ntsCheckBox: { checked: showHierarchy9,enable:showHierarchyAccumulation()||showHierarchyMonthlyAccumulation() }">9階層</div>
-								<label id="lbl_005">※10階層計は部門計で確認できます。</label>
+								<label>※10階層計は部門計で確認できます。</label>
 								</div>
 							</div></td>
 					</tr>
@@ -95,9 +95,9 @@
 						<td><div data-bind="ntsCheckBox: { checked: showMonthlyAmount }">対象期間を複数月指定した場合、月ごとの総合計を出力する。</div></td>
 					</tr>
 				</table>
-				<div class="margin-left-20" id="lbl_004">時分出力区分</div>
+				<div class="margin-left-20" id="lbl_footer">時分出力区分</div>
 				<hr />
-				<div class="margin-left-20" id="sel_019"
+				<div class="margin-left-20" id="switch_time_setting"
 					data-bind="ntsSwitchButton: {
 						options: $parent.switchButtonDataSource,
 						optionsValue: 'code',
@@ -110,8 +110,8 @@
 			<!-- END CONTENT AREA-->
 			<!-- BEGIN FUNCTION AREA-->
 			<div id="this-functions-area" class="halign-center" data-bind="visible: true" style="display: none">
-				<button class="proceed x-large" id="btn_001" data-bind="click: saveSetting">設定</button>
-				<button id="btn_002" data-bind="click: cancel">キャンセル</button>
+				<button class="proceed x-large" id="btn_apply" data-bind="click: saveSetting">設定</button>
+				<button id="btn_cancel" data-bind="click: cancel">キャンセル</button>
 			</div>
 			<!-- END FUNCTION AREA-->
 		</ui:define>
