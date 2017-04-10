@@ -12,77 +12,38 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class RowItemDto.
  *
  * @author duongnd
  */
 
+/**
+ * Sets the amounts.
+ *
+ * @param amounts the new amounts
+ */
 @Setter
+
+/**
+ * Gets the amounts.
+ *
+ * @return the amounts
+ */
 @Getter
 public class RowItemDto {
     
     /** The item name. */
     private String itemName;
     
-    /** The amount employees. */
-    private List<DataItem> amountEmployees;
+    /** The amounts. */
+    private List<DataItem> columItems;
     
-    /** The amount departments. */
-    private List<DataItem> amountDepartments;
-    
-    /** The amount hierarchy departments. */
-    private List<DataItem> amountHierarchyDepartments;
-    
-    /** The total month. */
-    private double totalMonth;
-    
-    /** The total. */
-    private double total;
-    
-    /**
-     * Calculate employee month total.
-     *
-     * @param yearMonth the year month
-     * @return the double
-     */
-    public double calculateEmployeeMonthTotal(String yearMonth) {
-        return this.amountEmployees.stream()
-                .filter(item -> item.getYearMonth().equals(yearMonth))
-                .mapToDouble(item -> item.getAmount())
-                .sum();
-    }
-    
-    /**
-     * Calculate employee total.
-     *
-     * @return the double
-     */
-    public double calculateEmployeeTotal() {
-        return this.amountEmployees.stream()
-                .mapToDouble(item -> item.getAmount())
-                .sum();
-    }
-    
-    /**
-     * Calculate department total.
-     *
-     * @return the double
-     */
-    public double calculateDepartmentTotal() {
-        return this.amountDepartments.stream()
-                .mapToDouble(item -> item.getAmount())
-                .sum();
-    }
-    
-    /**
-     * Calculate hierarchy department total.
-     *
-     * @return the double
-     */
-    public double calculateHierarchyDepartmentTotal() {
-        return this.amountHierarchyDepartments.stream()
-                .mapToDouble(department -> department.getAmount())
+    public double calAmountMonthly(String yearMonth) {
+        return columItems.stream()
+                .filter(p -> p.getYearMonth().equals(yearMonth))
+                .mapToDouble(p -> p.getAmount())
                 .sum();
     }
 }

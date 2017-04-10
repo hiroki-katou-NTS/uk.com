@@ -38,4 +38,58 @@ public class DepartmentDto {
     
     /** The dep level. */
     private int depLevel;
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((code == null) ? 0 : code.hashCode());
+        result = prime * result + depLevel;
+        result = prime * result + ((depPath == null) ? 0 : depPath.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((yearMonth == null) ? 0 : yearMonth.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        DepartmentDto other = (DepartmentDto) obj;
+        if (code == null) {
+            if (other.code != null)
+                return false;
+        } else if (!code.equals(other.code))
+            return false;
+        if (depLevel != other.depLevel)
+            return false;
+        if (depPath == null) {
+            if (other.depPath != null)
+                return false;
+        } else if (!depPath.equals(other.depPath))
+            return false;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        if (yearMonth == null) {
+            if (other.yearMonth != null)
+                return false;
+        } else if (!yearMonth.equals(other.yearMonth))
+            return false;
+        return true;
+    }
+    
+    
 }

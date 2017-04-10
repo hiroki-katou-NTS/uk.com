@@ -27,8 +27,8 @@ public class DataItem {
     private String code;
     
     /** The level. */
-    private int level;
-    
-    /** The amount. */
-    private double amount;
+//    private int level;
+//    
+//    /** The amount. */
+//    private double amount;
 }

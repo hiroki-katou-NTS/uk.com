@@ -27,16 +27,18 @@ public class ReportConstant {
     public static final String FORMAT_NUMBER = "#,##0_);(#,##0)";
     
     /** The Constant ROW_HEIGHT_TITLE. */
-    public static final int ROW_HEIGHT_TITLE = 35;
+    public static final int ROW_HEIGHT_TITLE = 45;
     
     /** The Constant COLUMN_WITH. */
     public static final int COLUMN_WITH = 18;
+    
+    public static final int INDEX_ROW_TITLE = 0;
     
     /** The Constant INDEX_FIRST_COLUMN. */
     public static final int INDEX_FIRST_COLUMN = 0;
     
     /** The Constant INDEX_ROW_CONTENT. */
-    public static final int INDEX_ROW_CONTENT = 0;
+    public static final int INDEX_ROW_CONTENT = 1;
     
     /** The Constant NUMBER_ZERO. */
     public static final int NUMBER_ZERO = 0;
