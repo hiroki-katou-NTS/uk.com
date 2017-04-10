@@ -42,7 +42,7 @@ var nts;
                                 }
                                 ScreenModel.prototype.resetValueLaborInsurance = function () {
                                     var self = this;
-                                    if (self.dirty.isDirty() && self.isShowDirty() && self.typeAction() == TypeActionLaborInsuranceOffice.update) {
+                                    if (self.dirty.isDirty() && self.isShowDirty()) {
                                         nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
                                             self.isShowDirty(false);
                                             self.onResetValueLaborInsurance();

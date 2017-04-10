@@ -54,7 +54,7 @@ module nts.uk.pr.view.qmm010.a {
             //function reset value view model
             private resetValueLaborInsurance() {
                 var self = this;
-                if (self.dirty.isDirty() && self.isShowDirty() && self.typeAction() == TypeActionLaborInsuranceOffice.update) {
+                if (self.dirty.isDirty() && self.isShowDirty()) {
                     nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function() {
                         self.isShowDirty(false);
                         self.onResetValueLaborInsurance();
