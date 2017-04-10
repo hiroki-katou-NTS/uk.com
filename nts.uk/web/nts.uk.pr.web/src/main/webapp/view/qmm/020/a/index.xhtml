@@ -17,8 +17,8 @@
 			<com:scriptfile path="../b/qmm020.b.service.js" />
 			<com:scriptfile path="../c/qmm020.c.viewmodel.js" />
 			<com:scriptfile path="../c/qmm020.c.service.js" />
-			<com:scriptfile path="../d/qmm020.d.viewmodel.js" />
-			<com:scriptfile path="../d/qmm020.d.service.js" />
+<!-- 			<com:scriptfile path="../d/qmm020.d.viewmodel.js" /> -->
+<!-- 			<com:scriptfile path="../d/qmm020.d.service.js" /> -->
 		</ui:define>
 
 		<ui:define name="sidebar">
@@ -70,16 +70,16 @@
 			<!-- ~~~~~~~~~~~~~~~~~~~~~~~~TAB PANEL 3 SCREEN D~~~~~~~~~部門~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 			<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 			<div id="tabpanel-3" role="tabpanel">
-				<div class="sidebar-content-header" data-bind="with: viewmodelD">
+				<div class="sidebar-content-header">
 					<span class="title">部門</span>
 					<button class="proceed">登録</button>
 					<button>個人の設定状況確認</button>
-					<button id="A_BTN_003" data-bind="click : $parent.viewmodelA.openMainLDialog">利用単位の設定</button>
+<!-- 					<button id="A_BTN_003" data-bind="click : $parent.viewmodelA.openMainLDialog">利用単位の設定</button> -->
 					<button>マスタ修正ログ</button>
 				</div>
-				<div id="screenD" data-bind="with: viewmodelD"> 
- 					<ui:include src="../d/index.xhtml" /> 
- 				</div>
+<!-- 				<div id="screenD" data-bind="with: viewmodelD">  -->
+<!--  					<ui:include src="../d/index.xhtml" />  -->
+<!--  				</div> -->
 			</div>
 			<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 			<!-- ~~~~~~~~~~~~~~~~~~~~~~~~TABPANEL 4　SCREEN E   ~~~~~~~~~分類~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->

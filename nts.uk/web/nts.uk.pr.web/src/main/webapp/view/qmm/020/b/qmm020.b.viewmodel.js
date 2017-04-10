@@ -34,11 +34,11 @@ var qmm020;
                                 var item = companyAllots[i_1];
                                 if (item) {
                                     _items.push(new ComHistItem({
-                                        histId: (item.historyId || ""),
-                                        startYm: (item.startDate || ""),
-                                        endYm: (item.endDate || ""),
-                                        payCode: (item.paymentDetailCode || ""),
-                                        bonusCode: (item.bonusDetailCode || "")
+                                        histId: (item.historyId || "").toString(),
+                                        startYm: (item.startDate || "").toString(),
+                                        endYm: (item.endDate || "").toString(),
+                                        payCode: (item.paymentDetailCode || "").toString(),
+                                        bonusCode: (item.bonusDetailCode || "").toString()
                                     }));
                                 }
                             }
@@ -79,12 +79,6 @@ var qmm020;
                             alert(res);
                         });
                     }
-                    self.start();
-                };
-                // reload data
-                ScreenModel.prototype.reload = function () {
-                    var dfd = $.Deferred();
-                    var self = this;
                 };
                 //Open dialog Add History
                 ScreenModel.prototype.openJDialog = function () {
@@ -166,7 +160,6 @@ var qmm020;
                         nts.uk.ui.windows.setShared('currentItem', current);
                     }
                     nts.uk.ui.windows.sub.modal('/view/qmm/020/k/index.xhtml', { title: '明細書の紐ずけ＞履歴編集' }).onClosed(function () {
-                        debugger;
                         self.start();
                     });
                 };

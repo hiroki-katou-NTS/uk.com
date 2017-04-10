@@ -1,6 +1,6 @@
 package nts.uk.ctx.pr.core.app.find.rule.employment.allot;
 
-import java.util.List;
+import java.util.List;import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -20,6 +20,11 @@ public class EmployeeAllotSettingFinder{
 	 */
 	public List<EmployeeAllotSettingDto> getAllEmployeeAllotDetailSetting(String companyCode,String historyId) {
 		return this.EmpAllotSettingRepo.findAll(companyCode, historyId).stream().map(m -> EmployeeAllotSettingDto.fromDomain(m))
+				.collect(Collectors.toList());
+	}
+	
+	public List<getEmploymentListDto> getAllEmployeeAllotSettingList(String companyCode,String historyID, String employeeCode){
+		return this.EmpAllotSettingRepo.findAllEm(companyCode, historyID, employeeCode).stream().map(e -> getEmploymentListDto.fromDomain(e))
 				.collect(Collectors.toList());
 	}
 }

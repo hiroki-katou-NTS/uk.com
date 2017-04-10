@@ -4,6 +4,7 @@ module qmm020.c.viewmodel {
     export class ScreenModel {
         // listbox
         itemList: KnockoutObservableArray<ItemModel>;
+        itemListDetail: KnockoutObservableArray<EmployeeAllotModel>;
         itemName: KnockoutObservable<string>;
         currentCode: KnockoutObservable<number>
         selectedName: KnockoutObservable<string>;
@@ -115,35 +116,7 @@ module qmm020.c.viewmodel {
         };
 
 
-        
-        //Search Employment
-        //        searchEmployment(idInputSearch: string, idList: string) {
-        //            var self = this;
-        //            let textSearch: string = $("#C_INP_001").val().trim();
-        //            if (textSearch.length === 0) {
-        //                nts.uk.ui.dialog.alert("コード/名称が入力されていません。");
-        //            } else {
-        //                if (self.textSearch !== textSearch) {
-        //                    let searchResult = _.filter(self.products, function(item) {
-        //                        return _.includes(item.ID, textSearch) || _.includes(item.Name, textSearch);
-        //                    });
-        //                    self.queueSearchResult = [];
-        //                    for (let item of searchResult) {
-        //                        self.queueSearchResult.push(item);
-        //                    }
-        //                    self.textSearch = textSearch;
-        //                }
-        //                if (self.queueSearchResult.length === 0) {
-        //                    nts.uk.g.alert("対象データがありません。");
-        //                } else {
-        //                    let firstResult: ItemModel = _.first(self.queueSearchResult);
-        //                    //self.listBox().selectedCode(firstResult.id);
-        //                    $("#grid").igGridSelection("selectRowById", firstResult.ID);
-        //                    self.queueSearchResult.shift();
-        //                    self.queueSearchResult.push(firstResult);
-        //                }
-        //            }
-        //        }
+
 
         // start function
         start(): JQueryPromise<any> {
@@ -156,7 +129,7 @@ module qmm020.c.viewmodel {
                     _.forEach(data, function(item) {
                         self.itemList.push(new ItemModel(item.historyId, item.startYm + ' ~ ' + item.endYm));
                     });
-                    
+
                 } else {
                     dfd.resolve();
                 }
@@ -164,26 +137,24 @@ module qmm020.c.viewmodel {
                 // Alert message
                 alert(res);
             });
-
+//            service.getEmployeeAllotDetailList().done(funtion(dataDetail: Array<EmployeeSettingDetailModel>){
+//                if(dataDetail.length > 0) {
+//                    _.forEach(dataDetail, function(item) {
+//                        self.itemListDetail.push(new EmployeeAllotModel(item.histId, item.empCode, item.paymentCode, item.paymentName, item.bonusCode, item.bonusName ));
+//                    });
+//                } else {
+//                    dfd.resolve();
+//                }
+//            }).fail(function(res) {
+//                // Alert message
+//                alert(res);
+//            });
 
             // Return.
             return dfd.promise();
         }
         //Open dialog Add History
-        openJDialog() {
-            //            var self = this;
-            //            //console.log(self);
-            //            //alert($($("#sidebar-area .navigator a.active")[0]).attr("href"));
-            //            var valueShareJDialog = $($("#sidebar-area .navigator a.active")[0]).attr("href");
-            //            //Get value TabCode + value of selected Name in History List
-            //            valueShareJDialog = valueShareJDialog + "~" + self.selectedName();
-            //            nts.uk.ui.windows.setShared('valJDialog', valueShareJDialog);
-            //            nts.uk.ui.windows.sub.modal('/view/qmm/020/f/index.xhtml', { title: '明細書の紐ずけ＞履歴追加' }).onClosed(function(): any {
-            //                self.returnJDialog = ko.observable(nts.uk.ui.windows.getShared('returnJDialog'));
-            //                //self.itemList.removeAll();
-            //                self.itemList.push(new ItemModel('4', self.returnJDialog() + '~9999/12'));
-            //            });
-        }
+        openJDialog() {}
         //Open dialog Edit History
         openKDialog() {
             var self = this;
@@ -206,34 +177,27 @@ module qmm020.c.viewmodel {
         }
     }
 
-    class EmployeeAllotModel {
-        histId: KnockoutObservable<string>;
-        empCode: KnockoutObservable<string>;
-        startYM: KnockoutObservable<string>;
-        endYM: KnockoutObservable<string>;
-        paymentCode: KnockoutObservable<string>;
-        paymentName: KnockoutObservable<string>;
-        bonusCode: KnockoutObservable<string>;
-        bonusName: KnockoutObservable<string>;
-        constructor(histId: string, empCode: string, startYM: string, endYM: string, paymentCode: string, paymentName: string, bonusCode: string, bonusName: string) {
-            this.histId = ko.observable(histId);
-            this.empCode = ko.observable(empCode);
-            this.startYM = ko.observable(startYM);
-            this.endYM = ko.observable(endYM);
-            this.paymentCode = ko.observable(paymentCode);
-            this.paymentName = ko.observable(paymentName);
-            this.bonusCode = ko.observable(bonusCode);
-            this.bonusName = ko.observable(bonusName);
+    class EmployeeAllotSettingDto {
+        companyCode: KnockoutObservable<string>;
+        historyId: KnockoutObservable<string>;
+        employeeCode: KnockoutObservable<string>;
+        bonusDetailCode: KnockoutObservable<string>;
+        paymentDetailCode: KnockoutObservable<string>;
+        constructor(companyCode: string, historyId: string, employeeCode: string, bonusDetailCode: string, paymentDetailCode: string) {
+            this.companyCode = ko.observable(companyCode);
+            this.historyId = ko.observable(historyId);
+            this.bonusDetailCode = ko.observable(bonusDetailCode);
+            this.paymentDetailCode = ko.observable(paymentDetailCode);
         }
     }
 
-    export class EmployeeSettingHeaderModel{
+    export class EmployeeSettingHeaderModel {
         companyCode: string;
         startYm: string;
         endYm: string;
         historyId: string;
-        
-        constructor(companyCode: string, startYm: string, endYm: string, historyId: string){
+
+        constructor(companyCode: string, startYm: string, endYm: string, historyId: string) {
             this.companyCode = companyCode;
             this.startYm = startYm;
             this.endYm = endYm;
@@ -247,6 +211,15 @@ module qmm020.c.viewmodel {
         employeeCode: string;
         paymentDetailCode: string;
         bonusDetailCode: string;
+
+        constructor(companyCode: string, historyId: string, employeeCode: string, paymentDetailCode: string, bonusDetailCode: string) {
+            this.companyCode = companyCode;
+            this.historyId = historyId;
+            this.employeeCode = employeeCode;
+            this.paymentDetailCode = paymentDetailCode;
+            this.bonusDetailCode = bonusDetailCode;
+
+        }
     }
 
 }

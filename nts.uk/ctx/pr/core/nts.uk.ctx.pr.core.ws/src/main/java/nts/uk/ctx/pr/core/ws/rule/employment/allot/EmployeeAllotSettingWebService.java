@@ -9,6 +9,7 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.pr.core.app.find.rule.employment.allot.EmployeeAllotSettingDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.allot.EmployeeAllotSettingFinder;
+import nts.uk.ctx.pr.core.app.find.rule.employment.allot.getEmploymentListDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("pr/core/allot")
@@ -22,4 +23,11 @@ public class EmployeeAllotSettingWebService {
 	public List<EmployeeAllotSettingDto> GetAllEmployeeAllotSettingDetailList(String histId){
 		return this.find.getAllEmployeeAllotDetailSetting(AppContexts.user().companyCode(),histId);
 	}
+	
+	@POST
+	@Path("findAllEmployeeAllotSettingList")
+	public List<getEmploymentListDto> getAllEmployeeAllotSettingList(String historyID, String employeeCode ){
+		return this.find.getAllEmployeeAllotSettingList(AppContexts.user().companyCode(), historyID, employeeCode);
+	}
+	
 }

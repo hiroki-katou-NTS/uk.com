@@ -1,6 +1,6 @@
 module qmm020.b.viewmodel {
     export class ScreenModel {
-        //content:  KnockoutObservable<any>;
+        content:  KnockoutObservable<any>;
         itemList: KnockoutObservableArray<ComHistItem>;
         currentItem: KnockoutObservable<ComHistItem>;
         maxItem: KnockoutObservable<service.model.CompanyAllotSettingDto>;
@@ -28,7 +28,7 @@ module qmm020.b.viewmodel {
             var dfd = $.Deferred<any>();
             //Get list startDate, endDate of History 
             //get allot Company
-            service.getAllotCompanyList().done(function(companyAllots: Array<IComHistItem>) {
+            service.getAllotCompanyList().done(function(companyAllots: Array<service.model.CompanyAllotSettingDto>) {
                 if (companyAllots.length > 0) {
                     let _items: Array<ComHistItem> = [];
                     //push data to listItem of hist List
@@ -36,11 +36,11 @@ module qmm020.b.viewmodel {
                         let item = companyAllots[i];
                         if (item) {
                             _items.push(new ComHistItem({
-                                histId: (item.historyId || ""),
-                                startYm: (item.startDate || ""),
-                                endYm: (item.endDate || ""),
-                                payCode: (item.paymentDetailCode || ""),
-                                bonusCode: (item.bonusDetailCode || "")
+                                histId: (item.historyId || "").toString(),
+                                startYm: (item.startDate || "").toString(),
+                                endYm: (item.endDate || "").toString(),
+                                payCode: (item.paymentDetailCode || "").toString(),
+                                bonusCode: (item.bonusDetailCode || "").toString()
                             }));
                         }
                     }
@@ -70,7 +70,7 @@ module qmm020.b.viewmodel {
             // Return.
             return dfd.promise();
         }
-
+        
         //Update data
         register() {
             var self = this;
@@ -82,12 +82,6 @@ module qmm020.b.viewmodel {
                     alert(res);
                 });
             }
-            self.start();
-        }
-        // reload data
-        reload(): JQueryPromise<any> {
-            var dfd = $.Deferred();
-            var self = this;
         }
 
         //Open dialog Add History
@@ -146,7 +140,7 @@ module qmm020.b.viewmodel {
                             } else {
                                 self.currentItem().bonusName('');
                             }
-                        } else {
+                        }else{
                             self.currentItem().histId(addItem.histId());
                             self.currentItem().startYm(returnValue);
                             self.currentItem().endYm('999912');
@@ -163,19 +157,18 @@ module qmm020.b.viewmodel {
                 });
         }
 
-
+        
         //Open dialog Edit History
         openKDialog() {
             var self = this;
-            nts.uk.ui.windows.setShared("endYM", self.currentItem().endYm());
-            nts.uk.ui.windows.setShared('scrType', '1');
-            nts.uk.ui.windows.setShared('startYM', self.maxDate);
+            nts.uk.ui.windows.setShared("endYM",self.currentItem().endYm());    
+            nts.uk.ui.windows.setShared('scrType','1');
+            nts.uk.ui.windows.setShared('startYM',self.maxDate);
             var current = _.find(self.companyAllots, function(item) { return item.historyId == self.currentItem().histId(); });
-            if (current) {
-                nts.uk.ui.windows.setShared('currentItem', current);
+            if(current){
+                nts.uk.ui.windows.setShared('currentItem',current);
             }
             nts.uk.ui.windows.sub.modal('/view/qmm/020/k/index.xhtml', { title: '明細書の紐ずけ＞履歴編集' }).onClosed(function(): any {
-                debugger;
                 self.start();
             });
         }
@@ -343,5 +336,3 @@ module qmm020.b.viewmodel {
         }
     }
 }
-
-
