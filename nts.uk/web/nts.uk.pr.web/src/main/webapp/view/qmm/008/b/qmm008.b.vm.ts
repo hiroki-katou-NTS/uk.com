@@ -272,7 +272,6 @@ module nts.uk.pr.view.qmm008.b {
                     self.loadHealth(dto);
                     self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
                     self.isLoading(false);
-                    $('.save-error').ntsError('clear');
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -288,6 +287,11 @@ module nts.uk.pr.view.qmm008.b {
                 }
                 return dfd.promise();
             }
+            clearErrors(): void {
+                if(nts.uk.ui._viewModel) {
+                    $('.save-error').ntsError('clear');
+                }
+            }
 
             /**
              * On select master data.
@@ -295,7 +299,7 @@ module nts.uk.pr.view.qmm008.b {
             onSelectMaster(code: string): void {
                 var self = this;
                 self.isClickHistory(false);
-                $('.save-error').ntsError('clear');
+                self.clearErrors();
             }
 
             public getCurrentOfficeCode(childId: string): string {
@@ -323,7 +327,6 @@ module nts.uk.pr.view.qmm008.b {
              */
             onRegistNew(): void {
                 var self = this;
-                //                $('.save-error').ntsError('clear');
                 self.OpenModalOfficeRegister();
             }
 

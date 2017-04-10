@@ -327,7 +327,6 @@ module nts.uk.pr.view.qmm008.c {
                     self.loadPension(dto);
                     self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
                     self.isLoading(false);
-                    $('.save-error').ntsError('clear');
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -344,13 +343,19 @@ module nts.uk.pr.view.qmm008.c {
                 return dfd.promise();
             }
 
+            clearErrors(): void {
+                if(nts.uk.ui._viewModel) {
+                    $('.save-error').ntsError('clear');
+                }
+            }
+
             /**
               * On select master data.
               */
             onSelectMaster(code: string): void {
                 var self = this;
                 self.isClickHistory(false);
-                $('.save-error').ntsError('clear');
+                self.clearErrors();
             }
 
             /**
@@ -358,7 +363,6 @@ module nts.uk.pr.view.qmm008.c {
              */
             onRegistNew(): void {
                 var self = this;
-                //                $('.save-error').ntsError('clear');
                 self.OpenModalOfficeRegister();
             }
 
