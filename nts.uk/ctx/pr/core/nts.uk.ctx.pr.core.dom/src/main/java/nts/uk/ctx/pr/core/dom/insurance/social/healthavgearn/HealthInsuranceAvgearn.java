@@ -41,7 +41,8 @@ public class HealthInsuranceAvgearn extends DomainObject {
 	/**
 	 * Instantiates a new health insurance rate.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public HealthInsuranceAvgearn(HealthInsuranceAvgearnGetMemento memento) {
 		this.historyId = memento.getHistoryId();
@@ -53,7 +54,8 @@ public class HealthInsuranceAvgearn extends DomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(HealthInsuranceAvgearnSetMemento memento) {
 		memento.setHistoryId(this.historyId);
@@ -65,7 +67,8 @@ public class HealthInsuranceAvgearn extends DomainObject {
 	/**
 	 * Copy with new history id.
 	 *
-	 * @param newHistoryId the new history id
+	 * @param newHistoryId
+	 *            the new history id
 	 * @return the health insurance avgearn
 	 */
 	public HealthInsuranceAvgearn copyWithNewHistoryId(String newHistoryId) {
@@ -80,24 +83,33 @@ public class HealthInsuranceAvgearn extends DomainObject {
 	/**
 	 * Creates the with intial.
 	 *
-	 * @param newHistoryId the new history id
-	 * @param levelCode the level code
+	 * @param newHistoryId
+	 *            the new history id
+	 * @param levelCode
+	 *            the level code
 	 * @return the health insurance avgearn
 	 */
 	public static HealthInsuranceAvgearn createWithIntial(String newHistoryId, Integer levelCode) {
-		HealthInsuranceAvgearn healthInsuranceAvgearn = new HealthInsuranceAvgearn();
-		healthInsuranceAvgearn.historyId = newHistoryId;
-		healthInsuranceAvgearn.levelCode = levelCode;
-		CommonAmount defaultCommonAmount = new CommonAmount(BigDecimal.ZERO);
-		InsuranceAmount defaultInsuranceAmount = new InsuranceAmount(BigDecimal.ZERO);
-		healthInsuranceAvgearn.companyAvg = new HealthInsuranceAvgearnValue(defaultInsuranceAmount, defaultCommonAmount,
-				defaultCommonAmount, defaultInsuranceAmount);
-		healthInsuranceAvgearn.personalAvg = new HealthInsuranceAvgearnValue(defaultInsuranceAmount,
-				defaultCommonAmount, defaultCommonAmount, defaultInsuranceAmount);
-		return healthInsuranceAvgearn;
+		// Create new object
+		HealthInsuranceAvgearn healthInsAvgearn = new HealthInsuranceAvgearn();
+		CommonAmount defComAmount = new CommonAmount(BigDecimal.ZERO);
+		InsuranceAmount defInsAmount = new InsuranceAmount(BigDecimal.ZERO);
+
+		// Set data
+		healthInsAvgearn.historyId = newHistoryId;
+		healthInsAvgearn.levelCode = levelCode;
+		healthInsAvgearn.companyAvg = new HealthInsuranceAvgearnValue(defInsAmount, defComAmount,
+				defComAmount, defInsAmount);
+		healthInsAvgearn.personalAvg = new HealthInsuranceAvgearnValue(defInsAmount, defComAmount,
+				defComAmount, defInsAmount);
+
+		// Return
+		return healthInsAvgearn;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -109,7 +121,9 @@ public class HealthInsuranceAvgearn extends DomainObject {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

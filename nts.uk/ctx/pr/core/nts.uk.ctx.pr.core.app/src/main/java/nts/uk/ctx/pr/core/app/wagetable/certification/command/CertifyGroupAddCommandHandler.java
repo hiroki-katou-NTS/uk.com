@@ -21,17 +21,17 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class CertifyGroupAddCommandHandler extends CommandHandler<CertifyGroupAddCommand> {
 
-	/** The certify group repository. */
+	/** The repository. */
 	@Inject
-	private CertifyGroupRepository certifyGroupRepository;
+	private CertifyGroupRepository repository;
 
-	/** The certify group service. */
+	/** The service. */
 	@Inject
-	private CertifyGroupService certifyGroupService;
+	private CertifyGroupService service;
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
 	 * .CommandHandlerContext)
@@ -48,17 +48,17 @@ public class CertifyGroupAddCommandHandler extends CommandHandler<CertifyGroupAd
 
 		// to domain
 		CertifyGroup certifyGroup = command.toDomain(companyCode);
-		
-		//validate domain
+
+		// validate domain
 		certifyGroup.validate();
-		
+
 		// validate check ....
-		certifyGroupService.validateRequiredItem(certifyGroup);
-		certifyGroupService.checkDuplicateCode(certifyGroup);
-		certifyGroupService.checkCertificationIsBelong(certifyGroup);
+		this.service.validateRequiredItem(certifyGroup);
+		this.service.checkDuplicateCode(certifyGroup);
+		this.service.checkCertificationIsBelong(certifyGroup);
 
 		// add to server database
-		this.certifyGroupRepository.add(certifyGroup);
+		this.repository.add(certifyGroup);
 	}
 
 }

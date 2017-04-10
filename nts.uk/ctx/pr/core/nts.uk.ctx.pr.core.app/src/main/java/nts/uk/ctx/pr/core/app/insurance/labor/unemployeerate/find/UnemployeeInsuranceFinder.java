@@ -9,7 +9,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto.UnemployeeInsuranceRateFindOutDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto.UnemployeeInsuranceRateFindDto;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -32,7 +32,7 @@ public class UnemployeeInsuranceFinder {
 	 *            the history id
 	 * @return the unemployee insurance rate find out dto
 	 */
-	public UnemployeeInsuranceRateFindOutDto findById(String historyId) {
+	public UnemployeeInsuranceRateFindDto findById(String historyId) {
 
 		// get user login info
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -43,16 +43,17 @@ public class UnemployeeInsuranceFinder {
 		// call finder repository
 		Optional<UnemployeeInsuranceRate> data = this.repository.findById(companyCode, historyId);
 
-		//set output
-		UnemployeeInsuranceRateFindOutDto dataOuput = new UnemployeeInsuranceRateFindOutDto();
+		// set output
+		UnemployeeInsuranceRateFindDto dataOuput = new UnemployeeInsuranceRateFindDto();
 
 		// exist value
-		if (data.isPresent()) {
-			data.get().saveToMemento(dataOuput);
-			return dataOuput;
+		if (!data.isPresent()) {
+			return null;
 		}
 		
-		return null;
+		//res data
+		data.get().saveToMemento(dataOuput);
+		return dataOuput;
 	}
 
 }

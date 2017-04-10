@@ -6,10 +6,8 @@ package nts.uk.ctx.pr.core.infra.entity.wagetable.history;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -20,12 +18,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.element.QwtmtWagetableElement;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class QwtmtWagetableEleHist.
@@ -34,7 +31,7 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.element.QwtmtWagetableElement;
 @Setter
 @Entity
 @Table(name = "QWTMT_WAGETABLE_ELE_HIST")
-public class QwtmtWagetableEleHist implements Serializable {
+public class QwtmtWagetableEleHist extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -43,52 +40,11 @@ public class QwtmtWagetableEleHist implements Serializable {
 	@EmbeddedId
 	protected QwtmtWagetableEleHistPK qwtmtWagetableEleHistPK;
 
-	/** The ins date. */
-	@Column(name = "INS_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date insDate;
-
-	/** The ins ccd. */
-	@Column(name = "INS_CCD")
-	private String insCcd;
-
-	/** The ins scd. */
-	@Column(name = "INS_SCD")
-	private String insScd;
-
-	/** The ins pg. */
-	@Column(name = "INS_PG")
-	private String insPg;
-
-	/** The upd date. */
-	@Column(name = "UPD_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updDate;
-
-	/** The upd ccd. */
-	@Column(name = "UPD_CCD")
-	private String updCcd;
-
-	/** The upd scd. */
-	@Column(name = "UPD_SCD")
-	private String updScd;
-
-	/** The upd pg. */
-	@Column(name = "UPD_PG")
-	private String updPg;
-
-	/** The exclus ver. */
-	@Basic(optional = false)
-	@Column(name = "EXCLUS_VER")
-	private int exclusVer;
-
 	/** The demension lower limit. */
 	@Column(name = "DEMENSION_LOWER_LIMIT")
 	private BigDecimal demensionLowerLimit;
 
 	/** The demension upper limit. */
-	// @Max(value=?) @Min(value=?)//if you know range of your decimal fields
-	// consider using these annotations to enforce field validation
 	@Column(name = "DEMENSION_UPPER_LIMIT")
 	private BigDecimal demensionUpperLimit;
 
@@ -187,5 +143,15 @@ public class QwtmtWagetableEleHist implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.qwtmtWagetableEleHistPK;
 	}
 }

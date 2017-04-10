@@ -24,7 +24,7 @@ public class CertificationFinder {
 
 	/** The find. */
 	@Inject
-	private CertificationRepository find;
+	private CertificationRepository repository;
 
 	/**
 	 * Find all.
@@ -35,15 +35,15 @@ public class CertificationFinder {
 
 		// get info login
 		LoginUserContext loginUserContext = AppContexts.user();
+		
 		// call findAll None Group
+		List<Certification> data = this.repository.findAllNoneOfGroup(loginUserContext.companyCode());
 
-		List<Certification> lstCertification = this.find.findAllNoneOfGroup(loginUserContext.companyCode());
-
-		// to Dto
-		return lstCertification.stream().map(certification -> {
-			CertificationFindInDto certificationFindInDto = new CertificationFindInDto();
-			certification.saveToMemento(certificationFindInDto);
-			return certificationFindInDto;
+		// to data
+		return data.stream().map(certification -> {
+			CertificationFindInDto dto = new CertificationFindInDto();
+			certification.saveToMemento(dto);
+			return dto;
 		}).collect(Collectors.toList());
 	}
 

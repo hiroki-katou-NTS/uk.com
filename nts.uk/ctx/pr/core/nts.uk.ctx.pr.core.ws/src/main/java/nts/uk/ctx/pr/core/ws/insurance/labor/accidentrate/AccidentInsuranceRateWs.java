@@ -20,7 +20,7 @@ import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.AccidentInsur
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.AccidentInsuranceRateUpdateCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.AccidentInsuranceRateUpdateCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.AccidentInsuranceRateFinder;
-import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto.AccidentInsuranceRateFindOutDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto.AccidentInsuranceRateFindDto;
 
 /**
  * The Class AccidentInsuranceRateWs.
@@ -58,7 +58,7 @@ public class AccidentInsuranceRateWs extends WebService {
 	 */
 	@POST
 	@Path("find/{historyId}")
-	public AccidentInsuranceRateFindOutDto find(@PathParam("historyId") String historyId) {
+	public AccidentInsuranceRateFindDto find(@PathParam("historyId") String historyId) {
 		return this.find.find(historyId);
 	}
 

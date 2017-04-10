@@ -7,6 +7,7 @@ package nts.uk.ctx.pr.core.ws.rule.employment.unitprice.dto;
 import java.math.BigDecimal;
 
 import lombok.Builder;
+import lombok.Data;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.ApplySetting;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.Money;
@@ -20,6 +21,7 @@ import nts.uk.shr.com.primitive.Memo;
  * The Class UnitPriceHistoryDto.
  */
 @Builder
+@Data
 public class UnitPriceHistoryModel implements UnitPriceHistorySetMemento {
 
 	/** The id. */

@@ -10,15 +10,15 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
- * The Class ListPensionAvgearnDto.
+ * The Class ListPensionAvgearnModel.
  */
 @Data
 @Builder
-public class ListPensionAvgearnDto {
+public class ListPensionAvgearnModel {
 
 	/** The list pension avgearn dto. */
-	List<PensionAvgearnDto> listPensionAvgearnDto;
+	private List<PensionAvgearnDto> listPensionAvgearnDto;
 
 	/** The history id. */
-	String historyId;
+	private String historyId;
 }

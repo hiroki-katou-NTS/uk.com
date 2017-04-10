@@ -54,6 +54,8 @@ public class UnemployeeInsuranceRateDeleteCommandHandler
 		// remove data by exist and equal code
 		if (data.isPresent() && data.get().getHistoryId().equals(command.getCode())) {
 			this.repository.remove(companyCode, command.getCode(), command.getVersion());
+
+			// find second data (remove => first)
 			Optional<UnemployeeInsuranceRate> dataFirst = this.repository.findFirstData(companyCode);
 
 			// update second data

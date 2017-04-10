@@ -13,7 +13,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.command.UpdatePensionAvgearnCommand;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.command.UpdatePensionAvgearnCommandHandler;
-import nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.find.ListPensionAvgearnDto;
+import nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.find.ListPensionAvgearnModel;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.find.PensionAvgearnFinder;
 
 /**
@@ -39,7 +39,7 @@ public class PensionAvgearnWs extends WebService {
 	 */
 	@POST
 	@Path("find/{id}")
-	public ListPensionAvgearnDto find(@PathParam("id") String id) {
+	public ListPensionAvgearnModel find(@PathParam("id") String id) {
 		return pensionAvgearnFinder.find(id);
 	}
 

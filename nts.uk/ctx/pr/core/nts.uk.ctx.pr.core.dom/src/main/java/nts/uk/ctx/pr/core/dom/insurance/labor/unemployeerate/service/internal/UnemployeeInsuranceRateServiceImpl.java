@@ -22,16 +22,16 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.service.UnemployeeI
 @Stateless
 public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRateService {
 
-	/** The rate item count. */
+	/** The Constant RATE_ITEM_COUNT. */
 	public static final int RATE_ITEM_COUNT = 3;
 
-	/** The unemployee insurance rate repo. */
+	/** The repository. */
 	@Inject
-	private UnemployeeInsuranceRateRepository unemployeeInsuranceRateRepo;
+	private UnemployeeInsuranceRateRepository repository;
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.service.
 	 * UnemployeeInsuranceRateService#validateRequiredItem(nts.uk.ctx.pr.core.
 	 * dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate)
@@ -46,94 +46,113 @@ public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRa
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.service.
 	 * UnemployeeInsuranceRateService#validateDateRange(nts.uk.ctx.pr.core.dom.
 	 * insurance.labor.unemployeerate.UnemployeeInsuranceRate)
 	 */
 	@Override
 	public void validateDateRange(UnemployeeInsuranceRate rate) {
-		if (getValidateRange(rate)) {
+		if (this.invalidateRate(rate)) {
 			throw new BusinessException("ER010");
 		}
 	}
 
 	/**
-	 * Gets the validate range.
+	 * Invalidate rate.
 	 *
 	 * @param rate
 	 *            the rate
-	 * @return the validate range
+	 * @return true, if successful
 	 */
-	private boolean getValidateRange(UnemployeeInsuranceRate rate) {
+	private boolean invalidateRate(UnemployeeInsuranceRate rate) {
 		boolean resvalue = false;
 		if (rate.getApplyRange().getStartMonth().v() > rate.getApplyRange().getEndMonth().v()) {
 			resvalue = true;
 		}
 
-		Optional<UnemployeeInsuranceRate> optionalFirst = this.unemployeeInsuranceRateRepo
-			.findFirstData(rate.getCompanyCode());
+		// find data first
+		Optional<UnemployeeInsuranceRate> data = this.repository.findFirstData(rate.getCompanyCode());
 
-		if (optionalFirst.isPresent() && optionalFirst.get().getApplyRange().getStartMonth().nextMonth()
-			.v() > rate.getApplyRange().getStartMonth().v()) {
+		// check exist
+		if (data.isPresent() && data.get().getApplyRange().getStartMonth().nextMonth().v() > rate
+			.getApplyRange().getStartMonth().v()) {
 			resvalue = true;
 		}
+
 		return resvalue;
 
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.service.
 	 * UnemployeeInsuranceRateService#validateDateRangeUpdate(nts.uk.ctx.pr.core
 	 * .dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate)
 	 */
 	@Override
 	public void validateDateRangeUpdate(UnemployeeInsuranceRate rate) {
-		if (getValidateRangeUpdate(rate)) {
+		if (this.isValidRateUpdate(rate)) {
 			throw new BusinessException("ER023");
 		}
 	}
 
 	/**
-	 * Gets the validate range update.
+	 * Checks if is valid rate update.
 	 *
 	 * @param rate
 	 *            the rate
-	 * @return the validate range update
+	 * @return true, if is valid rate update
 	 */
-	private boolean getValidateRangeUpdate(UnemployeeInsuranceRate rate) {
+	private boolean isValidRateUpdate(UnemployeeInsuranceRate rate) {
+		return (isMonthDate(rate) || !checkExistRate(rate) || isLaterThanLastHistory(rate));
+	}
 
-		boolean resvalue = false;
-		// start<=end
-		if (rate.getApplyRange().getStartMonth().v() > rate.getApplyRange().getEndMonth().v()) {
-			resvalue = true;
-		}
-		if (!resvalue) {
-			// data is begin update
-			Optional<UnemployeeInsuranceRate> optionalUnemployeeInsuranceRate;
-			optionalUnemployeeInsuranceRate = this.unemployeeInsuranceRateRepo.findById(rate.getCompanyCode(),
-				rate.getHistoryId());
-			if (!optionalUnemployeeInsuranceRate.isPresent()) {
-				resvalue = true;
-			}
-			if (!resvalue) {
-				// get first data update
-				Optional<UnemployeeInsuranceRate> optionalBetweenUpdate = this.unemployeeInsuranceRateRepo
-					.findBetweenUpdate(rate.getCompanyCode(),
-						optionalUnemployeeInsuranceRate.get().getApplyRange().getStartMonth(),
-						optionalUnemployeeInsuranceRate.get().getHistoryId());
-				if (optionalBetweenUpdate.isPresent()) {
-					if (optionalBetweenUpdate.get().getApplyRange().getStartMonth().v() >= rate
-						.getApplyRange().getStartMonth().v()) {
-						resvalue = true;
-					}
-				}
-			}
-		}
+	/**
+	 * Checks if is month date.
+	 *
+	 * @param rate
+	 *            the rate
+	 * @return true, if is month date
+	 */
+	// start date > end date
+	private boolean isMonthDate(UnemployeeInsuranceRate rate) {
+		return rate.getApplyRange().getStartMonth().v() > rate.getApplyRange().getEndMonth().v();
+	}
 
-		return resvalue;
+	/**
+	 * Check exist rate.
+	 *
+	 * @param rate
+	 *            the rate
+	 * @return true, if successful
+	 */
+	// check exist rate
+	private boolean checkExistRate(UnemployeeInsuranceRate rate) {
+		Optional<UnemployeeInsuranceRate> data = this.repository.findById(rate.getCompanyCode(),
+			rate.getHistoryId());
+		return data.isPresent();
+	}
+
+	/**
+	 * Checks if is later than last history.
+	 *
+	 * @param rate
+	 *            the rate
+	 * @return true, if is later than last history
+	 */
+	private boolean isLaterThanLastHistory(UnemployeeInsuranceRate rate) {
+
+		Optional<UnemployeeInsuranceRate> data = this.repository.findById(rate.getCompanyCode(),
+			rate.getHistoryId());
+
+		Optional<UnemployeeInsuranceRate> dataUpdate = this.repository.findBetweenUpdate(
+			rate.getCompanyCode(), data.get().getApplyRange().getStartMonth(), data.get().getHistoryId());
+
+		// check first data
+		return (dataUpdate.isPresent() && (dataUpdate.get().getApplyRange().getStartMonth().v() >= rate
+			.getApplyRange().getStartMonth().v()));
 	}
 
 }

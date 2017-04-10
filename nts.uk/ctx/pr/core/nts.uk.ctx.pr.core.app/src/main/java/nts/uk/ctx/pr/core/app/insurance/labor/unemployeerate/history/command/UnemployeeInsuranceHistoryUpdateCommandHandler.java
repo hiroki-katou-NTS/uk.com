@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.service.UnemployeeInsuranceRateService;
@@ -21,19 +22,19 @@ import nts.uk.shr.com.context.LoginUserContext;
 
 @Stateless
 public class UnemployeeInsuranceHistoryUpdateCommandHandler
-	extends CommandHandler<UnemployeeInsuranceHistoryUpdateCommand> {
+		extends CommandHandler<UnemployeeInsuranceHistoryUpdateCommand> {
 
 	/** CompanyRepository */
 	@Inject
-	private UnemployeeInsuranceRateRepository unemployeeInsuranceRateRepository;
+	private UnemployeeInsuranceRateRepository repository;
 
 	/** The unemployee insurance rate service. */
 	@Inject
-	private UnemployeeInsuranceRateService unemployeeInsuranceRateService;
+	private UnemployeeInsuranceRateService service;
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
 	 * .CommandHandlerContext)
@@ -51,41 +52,42 @@ public class UnemployeeInsuranceHistoryUpdateCommandHandler
 		// get command
 		UnemployeeInsuranceHistoryUpdateCommand command = context.getCommand();
 
-		Optional<UnemployeeInsuranceRate> optionalUpdate = this.unemployeeInsuranceRateRepository
-			.findById(companyCode, command.getHistoryId());
+		// find data
+		Optional<UnemployeeInsuranceRate> data = this.repository.findById(companyCode,
+				command.getHistoryId());
 
 		// exist data
-		if (optionalUpdate.isPresent()) {
-			UnemployeeInsuranceRate unemployeeInsuranceRate = optionalUpdate.get();
-			unemployeeInsuranceRate.setStart(YearMonth.of(command.getStartMonth()));
-			unemployeeInsuranceRate.setEnd(YearMonth.of(command.getEndMonth()));
+		if (data.isPresent()) {
+			UnemployeeInsuranceRate insuranceRate = data.get();
+			insuranceRate.setApplyRange(MonthRange.range(
+					YearMonth.of(command.getStartMonth()),
+					YearMonth.of(command.getEndMonth())));
 
 			// validate
-			unemployeeInsuranceRate.validate();
-			unemployeeInsuranceRateService.validateDateRangeUpdate(unemployeeInsuranceRate);
+			insuranceRate.validate();
+			this.service.validateDateRangeUpdate(insuranceRate);
 
 			// call get by id
-			Optional<UnemployeeInsuranceRate> optionalFirst;
-			optionalFirst = this.unemployeeInsuranceRateRepository
-				.findById(unemployeeInsuranceRate.getCompanyCode(), unemployeeInsuranceRate.getHistoryId());
+			Optional<UnemployeeInsuranceRate> dataFirst = this.repository
+					.findById(insuranceRate.getCompanyCode(), insuranceRate.getHistoryId());
 
 			// get <= start
-			if (!optionalFirst.isPresent()) {
+			if (!dataFirst.isPresent()) {
 				return;
 			}
-			Optional<UnemployeeInsuranceRate> optionalBetweenUpdate = this.unemployeeInsuranceRateRepository
-				.findBetweenUpdate(unemployeeInsuranceRate.getCompanyCode(),
-					optionalFirst.get().getApplyRange().getStartMonth(), optionalFirst.get().getHistoryId());
+			Optional<UnemployeeInsuranceRate> dataPrevious = this.repository.findBetweenUpdate(
+					insuranceRate.getCompanyCode(), dataFirst.get().getApplyRange().getStartMonth(),
+					dataFirst.get().getHistoryId());
 
 			// update end year month start previous
-			if (optionalBetweenUpdate.isPresent()) {
-				optionalBetweenUpdate.get()
-					.setEnd(unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());
-				this.unemployeeInsuranceRateRepository.update(optionalBetweenUpdate.get());
+			if (dataPrevious.isPresent()) {
+				dataPrevious.get()
+						.setEnd(insuranceRate.getApplyRange().getStartMonth().previousMonth());
+				this.repository.update(dataPrevious.get());
 			}
 
 			// update value
-			this.unemployeeInsuranceRateRepository.update(unemployeeInsuranceRate);
+			this.repository.update(insuranceRate);
 		}
 	}
 

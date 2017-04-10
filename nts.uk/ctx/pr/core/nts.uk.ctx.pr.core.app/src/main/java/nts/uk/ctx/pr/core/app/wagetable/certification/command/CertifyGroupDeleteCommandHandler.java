@@ -21,11 +21,11 @@ public class CertifyGroupDeleteCommandHandler extends CommandHandler<CertifyGrou
 
 	/** The certify group repository. */
 	@Inject
-	private CertifyGroupRepository certifyGroupRepository;
+	private CertifyGroupRepository repository;
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
 	 * .CommandHandlerContext)
@@ -33,16 +33,15 @@ public class CertifyGroupDeleteCommandHandler extends CommandHandler<CertifyGrou
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<CertifyGroupDeleteCommand> context) {
-		
+
 		// get info login user companyCode
 		String companyCode = AppContexts.user().companyCode();
-		
+
 		// get command
 		CertifyGroupDeleteCommand command = context.getCommand();
-		
+
 		// call server remove
-		this.certifyGroupRepository.remove(companyCode, command.getCertifyGroupDeleteDto().getGroupCode(),
-				command.getCertifyGroupDeleteDto().getVersion());
+		this.repository.remove(companyCode, command.getCertifyGroupDeleteDto().getGroupCode());
 	}
 
 }

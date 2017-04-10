@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,75 +15,71 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateSetMemento;
 
 /**
- * The Class HistoryUnemployeeInsuranceFindOutDto.
+ * The Class UnemployeeInsuranceRateDto.
  */
 @Getter
 @Setter
-public class UnemployeeInsuranceHistoryFindOutDto implements UnemployeeInsuranceRateSetMemento {
+public class UnemployeeInsuranceRateFindDto implements UnemployeeInsuranceRateSetMemento {
 
-	/** The history id. */
-	private String historyId;
+	/** The history insurance. */
+	private UnemployeeInsuranceHistoryFindDto historyInsurance;
 
-	/** The start month rage. */
-	private int startMonth;
-
-	/** The end month rage. */
-	private int endMonth;
-
-	/**
-	 * Convert month.
-	 *
-	 * @param yearMonth
-	 *            the year month
-	 * @return the string
-	 */
+	/** The rate items. */
+	private List<UnemployeeInsuranceRatetemFindDto> rateItems;
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
+	 * UnemployeeInsuranceRateSetMemento#setHistoryId(java.lang.String)
+	 */
+	@Override
+	public void setHistoryId(String historyId) {
+		if (this.historyInsurance == null) {
+			this.historyInsurance = new UnemployeeInsuranceHistoryFindDto();
+		}
+		this.historyInsurance.setHistoryId(historyId);
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
 	 * UnemployeeInsuranceRateSetMemento#setCompanyCode(nts.uk.ctx.core.dom.
 	 * company.CompanyCode)
 	 */
 	@Override
 	public void setCompanyCode(String companyCode) {
-		// Nothing code
+		// Do nothing.
 
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
 	 * UnemployeeInsuranceRateSetMemento#setApplyRange(nts.uk.ctx.pr.core.dom.
 	 * insurance.MonthRange)
 	 */
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
-		this.endMonth = applyRange.getEndMonth().v();
-		this.startMonth = applyRange.getStartMonth().v();
+		this.historyInsurance.setEndMonth(applyRange.getEndMonth().v());
+		this.historyInsurance.setStartMonth(applyRange.getStartMonth().v());
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
 	 * UnemployeeInsuranceRateSetMemento#setRateItems(java.util.Set)
 	 */
 	@Override
 	public void setRateItems(Set<UnemployeeInsuranceRateItem> rateItems) {
-		// Nothing code
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
-	 * UnemployeeInsuranceRateSetMemento#setHistoryId(java.lang.String)
-	 */
-	@Override
-	public void setHistoryId(String historyId) {
-		this.historyId = historyId;
+		this.rateItems = rateItems.stream().map(rateItem -> {
+			UnemployeeInsuranceRatetemFindDto dto = new UnemployeeInsuranceRatetemFindDto();
+			rateItem.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
 	}
 }

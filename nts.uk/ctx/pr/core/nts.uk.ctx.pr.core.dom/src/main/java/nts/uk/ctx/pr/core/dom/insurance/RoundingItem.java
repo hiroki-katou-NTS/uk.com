@@ -1,15 +1,15 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance;
 
-import lombok.Data;
+import lombok.Getter;
 
 /**
  * The Class RoundingItem.
  */
-@Data
+@Getter
 public class RoundingItem {
 
 	/** The company round atr. */
@@ -18,4 +18,16 @@ public class RoundingItem {
 	/** The personal round atr. */
 	private RoundingMethod personalRoundAtr;
 
+	/**
+	 * Instantiates a new rounding item.
+	 *
+	 * @param companyRoundAtr the company round atr
+	 * @param personalRoundAtr the personal round atr
+	 */
+	public RoundingItem(RoundingMethod companyRoundAtr, RoundingMethod personalRoundAtr) {
+		super();
+		this.companyRoundAtr = companyRoundAtr;
+		this.personalRoundAtr = personalRoundAtr;
+	}
+	
 }

@@ -81,27 +81,11 @@ public class UnitPriceHistoryServiceImpl extends UnitPriceHistoryService {
 	 * employment.unitprice.UnitPriceHistory)
 	 */
 	public void validateDateRange(UnitPriceHistory unitPriceHistory) {
-		if (!isValidDateRange(unitPriceHistory)) {
-			// Invalid dateRange
+		if (!isEndDateGreaterThanStartDate(unitPriceHistory.getApplyRange())
+				|| !isLaterThanLastHistory(unitPriceHistory)) {
+			// Throw Invalid dateRange exception.
 			throw new BusinessException("ER011");
 		}
-
-	}
-
-	/**
-	 * Checks if is valid date range.
-	 *
-	 * @param unitPriceHistory
-	 *            the unit price history
-	 * @return true, if is valid date range
-	 */
-	private boolean isValidDateRange(UnitPriceHistory unitPriceHistory) {
-		boolean isValid = false;
-		if (isEndDateGreaterThanStartDate(unitPriceHistory.getApplyRange())
-				&& isLaterThanLastHistory(unitPriceHistory)) {
-			isValid = true;
-		}
-		return isValid;
 	}
 
 	/**

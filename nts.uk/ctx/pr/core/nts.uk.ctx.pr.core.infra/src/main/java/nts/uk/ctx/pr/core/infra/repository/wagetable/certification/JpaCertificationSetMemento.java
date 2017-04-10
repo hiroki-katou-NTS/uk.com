@@ -69,8 +69,7 @@ public class JpaCertificationSetMemento implements CertificationSetMemento {
 	 */
 	@Override
 	public void setName(String name) {
-		// TODO Auto-generated method stub
-
+		// Do nothing.
 	}
 
 }

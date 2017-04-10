@@ -13,7 +13,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
  */
 @Getter
 @Setter
-public class InsuBizRateItemFindOutDto {
+public class InsuBizRateItemFindDto {
 
 	/** The insu biz type. */
 	private Integer insuBizType;
@@ -32,7 +32,7 @@ public class InsuBizRateItemFindOutDto {
 	 *
 	 * @param item the item
 	 */
-	public InsuBizRateItemFindOutDto(InsuBizRateItem item) {
+	public InsuBizRateItemFindDto(InsuBizRateItem item) {
 		this.insuBizType = item.getInsuBizType().value;
 		this.insuRate = item.getInsuRate();
 		this.insuRound = item.getInsuRound().value;

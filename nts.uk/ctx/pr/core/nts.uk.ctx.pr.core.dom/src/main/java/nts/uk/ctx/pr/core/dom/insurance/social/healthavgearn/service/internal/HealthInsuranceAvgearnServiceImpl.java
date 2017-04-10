@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.service.internal;
 
 import java.math.BigDecimal;
@@ -8,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.pr.core.dom.base.service.RoundingNumber;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
@@ -42,7 +47,9 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 
 	@Override
 	public void validateRequiredItem(HealthInsuranceAvgearn healthInsuranceAvgearn) {
-		// TODO check null then throw new BusinessException("ER001");
+		if (healthInsuranceAvgearn.getCompanyAvg() == null || healthInsuranceAvgearn.getPersonalAvg() == null) {
+			throw new BusinessException("ER001");
+		}
 
 	}
 
@@ -96,7 +103,7 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 							calculateChargeRate(masterRate, rateItem, isPersonal), 1);
 					val2 = roundingNumber.healthRounding(salaryRound.getRoundAtrs().getPersonalRoundAtr(),
 							calculateChargeRate(masterRate, rateItem, isPersonal), 3);
-				} else// compnany
+				} else// company
 				{
 					val = roundingNumber.healthRounding(salaryRound.getRoundAtrs().getCompanyRoundAtr(),
 							calculateChargeRate(masterRate, rateItem, isPersonal), 1);
@@ -105,33 +112,16 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 				}
 				switch (rateItem.getInsuranceType()) {
 				case Basic:
-					if (isPersonal) {
-						value.setHealthBasicMny(new InsuranceAmount(val2));
-					} else {
-						value.setHealthBasicMny(new InsuranceAmount(val2));
-					}
+					value.setHealthBasicMny(new InsuranceAmount(val2));
 					break;
 				case General:
-					if (isPersonal) {
-						value.setHealthGeneralMny(new CommonAmount(val));
-					} else {
-						value.setHealthGeneralMny(new CommonAmount(val));
-					}
+					value.setHealthGeneralMny(new CommonAmount(val));
 					break;
-
 				case Nursing:
-					if (isPersonal) {
-						value.setHealthNursingMny(new CommonAmount(val));
-					} else {
-						value.setHealthNursingMny(new CommonAmount(val));
-					}
+					value.setHealthNursingMny(new CommonAmount(val));
 					break;
 				case Special:
-					if (isPersonal) {
-						value.setHealthSpecificMny(new InsuranceAmount(val2));
-					} else {
-						value.setHealthSpecificMny(new InsuranceAmount(val2));
-					}
+					value.setHealthSpecificMny(new InsuranceAmount(val2));
 					break;
 				}
 			}

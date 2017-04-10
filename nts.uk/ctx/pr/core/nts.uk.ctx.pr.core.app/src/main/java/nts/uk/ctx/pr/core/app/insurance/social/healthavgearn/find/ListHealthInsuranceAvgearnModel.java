@@ -10,11 +10,11 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
- * The Class ListHealthInsuranceAvgearnDto.
+ * The Class ListHealthInsuranceAvgearnModel.
  */
 @Builder
 @Data
-public class ListHealthInsuranceAvgearnDto {
+public class ListHealthInsuranceAvgearnModel {
 
 	/** The history id. */
 	private String historyId;
