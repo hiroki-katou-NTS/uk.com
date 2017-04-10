@@ -83,7 +83,19 @@ module nts.uk.ui.koExtentions {
             var currentSource = $grid.igGrid('option', 'dataSource');
             var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
             if (!_.isEqual(currentSource, sources)) {
-                $grid.igGrid('option', 'dataSource', sources.slice());
+                let currentSources = sources.slice();
+                var observableColumns = _.filter(ko.unwrap(data.columns), function(c){
+                    c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
+                    return c["isDateColumn"] !== undefined && c["isDateColumn"] !== null && c["isDateColumn"] === true;
+                });
+                _.forEach(currentSources, function(s){
+                    _.forEach(observableColumns, function(c){
+                        let key = c["key"] === undefined ? c["prop"] : c["key"];
+                        s[key] = moment(s[key]).format(c["format"]);
+                    });        
+//                    currentSources.push(s);
+                });
+                $grid.igGrid('option', 'dataSource', currentSources);
                 $grid.igGrid("dataBind");
             }
 

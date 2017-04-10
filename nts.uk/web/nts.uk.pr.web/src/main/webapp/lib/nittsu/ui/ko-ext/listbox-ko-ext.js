@@ -252,9 +252,9 @@ var nts;
                         }
                         container.data("options", options.slice());
                         container.data("init", false);
-                        var haveDate = isMultiSelect ? !uk.text.isNullOrEmpty(selectedValue) && selectedValue.length > 0
+                        var haveData = isMultiSelect ? !uk.text.isNullOrEmpty(selectedValue) && selectedValue.length > 0
                             : !uk.text.isNullOrEmpty(selectedValue);
-                        if (haveDate && (!_.isEqual(originalSelected, selectedValue) || init)) {
+                        if (haveData && (!_.isEqual(originalSelected, selectedValue) || init)) {
                             selectListBoxContainer.data('value', selectedValue);
                             if (isMultiSelect) {
                                 selectMultiRow(selectListBoxContainer, selectedValue);
@@ -263,6 +263,9 @@ var nts;
                                 selectOneRow(selectListBoxContainer, selectedValue);
                             }
                             container.trigger('selectionChange');
+                        }
+                        else if (!haveData) {
+                            container.ntsListBox("deselectAll");
                         }
                         if (isMultiSelect) {
                             if (!enable) {
@@ -296,4 +299,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=listbox-ko-ext.js.map
