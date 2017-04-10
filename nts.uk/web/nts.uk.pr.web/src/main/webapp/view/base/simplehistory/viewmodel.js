@@ -59,7 +59,6 @@ var nts;
                                             if (!self.selectedHistoryUuid()) {
                                                 inlineFunc();
                                             }
-                                            self.onSelectHistory(id);
                                         }
                                     });
                                 }
