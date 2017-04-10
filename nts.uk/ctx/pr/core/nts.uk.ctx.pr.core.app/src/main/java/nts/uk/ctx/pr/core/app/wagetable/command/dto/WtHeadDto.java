@@ -78,7 +78,7 @@ public class WtHeadDto {
 	private class WhdGetMemento implements WtHeadGetMemento {
 
 		/** The dto. */
-		protected WtHeadDto dto;
+		private WtHeadDto dto;
 
 		/**
 		 * Instantiates a new wage table head dto memento.
@@ -166,7 +166,7 @@ public class WtHeadDto {
 	private class WhdSetMemento implements WtHeadSetMemento {
 
 		/** The dto. */
-		protected WtHeadDto dto;
+		private WtHeadDto dto;
 
 		/**
 		 * Instantiates a new wage table history dto get memento.

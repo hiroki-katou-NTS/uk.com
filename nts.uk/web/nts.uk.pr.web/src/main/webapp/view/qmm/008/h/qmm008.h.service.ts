@@ -12,9 +12,11 @@ module nts.uk.pr.view.qmm008.h {
         /**
          *  Save List Health Insurance Average Earn
          */
-        export function updateHealthInsuranceAvgearn(list: Array<model.HealthInsuranceAvgEarnDto>, officeCode: string): JQueryPromise<any> {
+        export function updateHealthInsuranceAvgearn(list: model.ListHealthInsuranceAvgEarnDto, officeCode: string): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
-            var data = { listHealthInsuranceAvgearn: list, officeCode: officeCode };
+            var data = { listHealthInsuranceAvgearnDto: list.listHealthInsuranceAvgearnDto, 
+                historyId: list.historyId, 
+                officeCode: officeCode };
             nts.uk.request.ajax(paths.updateHealthInsuranceAvgearn, data).done(() =>
                 dfd.resolve());
             return dfd.promise();
@@ -23,13 +25,13 @@ module nts.uk.pr.view.qmm008.h {
         /**
          *  Find list HealthInsuranceAvgEarn by historyId
          */
-        export function findHealthInsuranceAvgEarn(historyId: string): JQueryPromise<Array<model.HealthInsuranceAvgEarnDto>> {
-            var dfd = $.Deferred<Array<model.HealthInsuranceAvgEarnDto>>();
+        export function findHealthInsuranceAvgEarn(historyId: string): JQueryPromise<model.ListHealthInsuranceAvgEarnDto> {
+            var dfd = $.Deferred<model.ListHealthInsuranceAvgEarnDto>();
             nts.uk.request.ajax(paths.findHealthInsuranceAvgEarn + '/' + historyId)
-                .done(function(res: Array<model.HealthInsuranceAvgEarnDto>) {
+                .done(function(res: model.ListHealthInsuranceAvgEarnDto) {
                     dfd.resolve(res);
                 })
-                .fail(function(res: Array<model.HealthInsuranceAvgEarnDto>) {
+                .fail(function(res: any) {
                     dfd.reject(res);
                 });
             return dfd.promise();
@@ -48,10 +50,14 @@ module nts.uk.pr.view.qmm008.h {
             }
 
             export interface HealthInsuranceAvgEarnDto {
-                historyId: string;
                 levelCode: number;
                 companyAvg: HealthInsuranceAvgEarnValue;
                 personalAvg: HealthInsuranceAvgEarnValue;
+            }
+
+            export interface ListHealthInsuranceAvgEarnDto {
+                historyId: string;
+                listHealthInsuranceAvgearnDto: HealthInsuranceAvgEarnDto[];
             }
 
         }

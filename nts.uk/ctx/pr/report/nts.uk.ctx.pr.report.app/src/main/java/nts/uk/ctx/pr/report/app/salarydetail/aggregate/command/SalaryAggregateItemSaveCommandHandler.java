@@ -11,19 +11,17 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.report.app.salarydetail.aggregate.command.dto.SalaryAggregateItemSaveDto;
-import nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSetting;
-import nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingRepository;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItem;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class CheckListPrintSettingSaveCommandHandler.
+ * The Class SalaryAggregateItemSaveCommandHandler.
  */
 @Stateless
 public class SalaryAggregateItemSaveCommandHandler extends CommandHandler<SalaryAggregateItemSaveCommand> {
 
-	/** The checklist print setting repository. */
+	/** The salary aggregate item repository. */
 	@Inject
 	private SalaryAggregateItemRepository salaryAggregateItemRepository;
 
@@ -43,7 +41,7 @@ public class SalaryAggregateItemSaveCommandHandler extends CommandHandler<Salary
 
 		SalaryAggregateItem domain = salaryAggregateItemSaveDto.toDomain(companyCode);
 		domain.validate();
-		
+
 		this.salaryAggregateItemRepository.update(domain);
 	}
 

@@ -4,9 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -76,11 +76,10 @@ public class UnemployeeInsuranceRateFindOutDto implements UnemployeeInsuranceRat
 	 */
 	@Override
 	public void setRateItems(Set<UnemployeeInsuranceRateItem> rateItems) {
-		this.rateItems = new ArrayList<>();
-		for (UnemployeeInsuranceRateItem unemployeeInsuranceRateItem : rateItems) {
+		this.rateItems = rateItems.stream().map(rateItem -> {
 			UnemployeeInsuranceRateItemFindOutDto dto = new UnemployeeInsuranceRateItemFindOutDto();
-			unemployeeInsuranceRateItem.saveToMemento(dto);
-			this.rateItems.add(dto);
-		}
+			rateItem.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
 	}
 }

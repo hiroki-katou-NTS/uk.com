@@ -162,6 +162,10 @@ module nts.uk.pr.view.qmm016.a {
             demensionSet: KnockoutObservable<number>;
 
             demensionType: KnockoutObservable<model.DemensionElementCountType>;
+            
+            lblContent: KnockoutComputed<string>;
+            
+            lblSampleImgLink: KnockoutComputed<string>;
 
             /** The memo. */
             memo: KnockoutObservable<string>;
@@ -186,6 +190,31 @@ module nts.uk.pr.view.qmm016.a {
                 self.demensionType = ko.computed(() => {
                     return model.demensionMap[self.demensionSet()];
                 });
+                
+                self.lblContent = ko.computed(() => {
+                    var contentMap = [
+                        '１つの要素でテーブルを作成します。',
+                        '２つの要素でテーブルを作成します。',
+                        '３つの要素でテーブルを作成します。',
+                        '資格手当用のテーブルを作成します。',
+                        '精皆勤手当て用のテーブルを作成します。'
+                    ];
+                    
+                    return contentMap[self.demensionSet()];
+                });
+                
+                self.lblSampleImgLink = ko.computed(() => {
+                    var linkMap = [
+                        '１.png',
+                        '２.png',
+                        '３.png',
+                        '4.png',
+                        '5.png'
+                    ];
+                    
+                    return linkMap[self.demensionSet()];
+                });
+                
                 self.demensionItemList = ko.observableArray<DemensionItemViewModel>([]);
                 
                 self.demensionSet.subscribe(val => {

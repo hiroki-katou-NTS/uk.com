@@ -1768,8 +1768,10 @@ button.nts-switch-button[disabled]:hover {
 .ntsListBox .nts-list-box li {
   height: 28px;
   overflow: hidden;
+  user-select: none;
+  cursor: default;
 }
-/* line 29, ../sass/components/_listbox.scss */
+/* line 31, ../sass/components/_listbox.scss */
 .ntsListBox .nts-column {
   float: left;
   padding: 0 5px;
@@ -1778,7 +1780,7 @@ button.nts-switch-button[disabled]:hover {
   overflow: hidden;
   box-sizing: border-box;
 }
-/* line 38, ../sass/components/_listbox.scss */
+/* line 40, ../sass/components/_listbox.scss */
 .ntsListBox.disabled {
   color: graytext;
 }

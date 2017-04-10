@@ -18,19 +18,9 @@
 					nts.uk.shr.com.primitive.sample.CommonAmount
 					nts.arc.time.YearMonth
    				</com:ValidatorScript>
-   				<!-- Because there isn't any EmployeeCode domain entity yet. I'll create it manual -->
-				<script>
-				__viewContext.primitiveValueConstraints.EmployeeCode = {
-						valueType: 'String',
-						charType: 'Numeric',
-						maxLength: 10,
-					};
-				</script>
 				<com:stylefile path="../catalog/catalog.css" />
-				<com:scriptfile path="/lib/nittsu/ui/file.js" />
-				<com:scriptfile path="/lib/nittsu/ui/textbox-options.js" />
-				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../catalog/catalog.js" />
+				<com:scriptfile path="time-editor.js" />
 			</ui:define>
 			
 			<ui:define name="content">
@@ -40,29 +30,30 @@
 					<div id="content" class="cf">
 						<h1>TimeEditor</h1>
 						<h2>Overview</h2>
-						<div data-bind="with: timeeditor">
-							<h3>Time (HH:mm)</h3>
-							<input data-name="テスト" data-bind="ntsTimeEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
-							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
-							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
-						</div>
-						<br/>
+						<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
+						<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
+						<h3>Date (YYYY/MM/DD)</h3>
+						<input data-name="Date Editor" data-bind="ntsTimeEditor: {value: date, inputFormat: 'date', enable: enable, readonly: readonly, required: false}" />
+						<h3>Time (HH:mm)</h3>
+						<input data-name="Time Editor" data-bind="ntsTimeEditor: {value: time, option: new nts.uk.ui.option.TimeEditorOption({inputFormat: 'time'}), enable: enable, readonly: readonly, required: true}" />
+						<hr/>
 						<div data-bind="with: yearmontheditor">
-							<h3>YearMonth (yyyy/MM)</h3>
-							<input data-name="テスト" data-bind="ntsTimeEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
+							<h3>YearMonth (YYYY/MM)</h3>
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
+							<br/><br/>
+							<input data-name="YearMonth Editor" data-bind="ntsTimeEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
 						</div>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
-									<li><a href="#tabs-html">HTML Binding</a></li>
-									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+									<li><a href="#tabs-usage">Usage</a></li>
+									<li><a href="#tabs-api">API</a></li>
 								</ol>
-								<div id="tabs-html" class="cf">
+								<div id="tabs-usage" class="cf">
 									<h2>HTML</h2>
 <pre><![CDATA[<!-- Simple -->
-<input data-bind="ntsTimeEditor: { value: value, constraint: 'ResidenceCode' }" />
+<input data-bind="ntsTimeEditor: {value: date, inputFormat: 'date'}" />
 
 <!-- Full Options -->
 <div data-bind="with: timeeditor">
@@ -75,146 +66,6 @@
 		readonly: readonly,
 		immediate: false}" />
 </div>]]></pre>
-									<div class="pull-left">
-										<h2>API</h2>
-										<table>
-											<colgroup>
-												<col width="200px" />
-											</colgroup>
-											<thead>
-												<tr>
-													<th><h4>ViewModel</h4></th>
-													<th><h4>Description</h4></th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>value</td>
-													<td>
-														<b>Type:</b> string<br/>
-													</td>
-												</tr>
-												<tr>
-													<td>constraint<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> string<br/>
-														Validate constraint for editor
-													</td>
-												</tr>
-												<tr>
-													<td>required<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> boolean<br/>
-														<b>Default:</b> false<br/>
-														Set required for editor
-													</td>
-												</tr>
-												<tr>
-													<td>enable<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> boolean<br/>
-														<b>Default:</b> true<br/>
-														Set enable/disable for editor
-													</td>
-												</tr>
-												<tr>
-													<td>readonly<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> boolean<br/>
-														<b>Default:</b> false<br/>
-														Set readonly for editor
-													</td>
-												</tr>
-												<tr>
-													<td>immediate<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> boolean<br/>
-														<b>Default:</b> false<br/>
-														Set update event trigger immediate for editor.<br/>
-														Can't change after init.
-													</td>
-												</tr>
-												<tr>
-													<td>option<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> object<br/>
-														<b>Default:</b> TimeEditorOption()<br/>
-														<b>Members:</b><br/>
-														<a href="#timeeditoroption"><i class="color">TimeEditorOption</i></a>: Option for text editor
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
-									<div id="timeeditoroption" class="feature-box" style="width:100%;margin:10px 0;">
-										<div class="header"><h3 >TimeEditorOption</h3></div>
-										<div class="content">
-											<table style="width:100%;">
-												<colgroup>
-													<col width="200px" />
-												</colgroup>
-												<thead>
-													<tr>
-														<th><h4>Properties</h4></th>
-														<th><h4>Description</h4></th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr>
-														<td>inputFormat<br/><i>(optional)</i></td>
-														<td>
-															<b>Type:</b> string<br/>
-															<b>Default:</b> "date"<br/>
-															<b>Members:</b><br/>
-															<i>date</i>: the date pattern (YYYY/MM/DD) member of regional option is used<br/>
-															<i>yearmonth</i>: the time pattern (YYYY/MM) member of regional option is used<br/>
-															<i>time</i>: the time pattern (HH:mm) member of regional option is used<br/>
-															<i>datetime</i>: the datetime pattern (YYYY/MM/DD HH:mm) member of regional option is used<br/>
-															<i>ISO 8601 Formats</i><br/>
-															"YY": year field without century and with leading zero<br/>
-															"YYYY": year field with leading zeros<br/>
-															"M": month field as digit without leading zero<br/>
-															"MM": month field as digit with leading zero<br/>
-															"D": day of month field without leading zero<br/>
-															"DD": day of month field with leading zero<br/>
-															"ddd": short day of week<br/>
-															"dddd": long day of week<br/><br/>
-															The display format in timeeditor
-														</td>
-													</tr>
-													<tr>
-														<td>placeholder<br/><i>(optional)</i></td>
-														<td>
-															<b>Type:</b> string<br/>
-															<b>Default:</b> ""<br/>
-															Hint text for the control
-														</td>
-													</tr>
-													<tr>
-														<td>width<br/><i>(optional)</i></td>
-														<td>
-															<b>Type:</b> string<br/>
-															<b>Default:</b> ""<br/>
-															Set width for the control
-														</td>
-													</tr>
-													<tr>
-														<td>textalign<br/><i>(optional)</i></td>
-														<td>
-															<b>Type:</b> string<br/>
-															<b>Default:</b> "right"<br/>
-															<b>Members:</b><br/>
-															<i>left</i>: Align text to left<br/>
-															<i>right</i>: Align text to right<br/>
-															<i>center</i>: Align text to center
-														</td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
-									</div>
-								</div>
-								<div id="tabs-viewmodel" class="cf">
 									<h2>TypeScript</h2>
 <pre><![CDATA[class ScreenModel {
 	timeeditor: any;
@@ -236,6 +87,132 @@
 		};
 	}
 }]]></pre>
+								</div>
+								<div id="tabs-api" class="cf">
+									<h2>Properties</h2>
+									<table class="table">
+										<colgroup>
+											<col width="150px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Name</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>value</td>
+												<td>
+													<b>Type:</b> KnockoutObservable&lt;string&gt;<br/>
+												</td>
+											</tr>
+											<tr>
+												<td>constraint<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> string<br/>
+													Validate constraint for editor
+												</td>
+											</tr>
+											<tr>
+												<td>inputFormat<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> string<br/>
+													<b>Default:</b> "date"<br/>
+													<b>Members:</b><br/>
+													<i>date</i>: the date pattern (YYYY/MM/DD) member of regional option is used<br/>
+													<i>yearmonth</i>: the time pattern (YYYY/MM) member of regional option is used<br/>
+													<i>time</i>: the time pattern (HH:mm) member of regional option is used<br/>
+													<i>datetime</i>: the datetime pattern (YYYY/MM/DD HH:mm) member of regional option is used<br/>
+													<i>ISO 8601 Formats</i><br/>
+													"YY": year field without century and with leading zero<br/>
+													"YYYY": year field with leading zeros<br/>
+													"M": month field as digit without leading zero<br/>
+													"MM": month field as digit with leading zero<br/>
+													"D": day of month field without leading zero<br/>
+													"DD": day of month field with leading zero<br/>
+													"ddd": short day of week<br/>
+													"dddd": long day of week<br/><br/>
+													The display format in timeeditor
+												</td>
+											</tr>
+											<tr>
+												<td>required<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> KnockoutObservable&lt;boolean&gt; | boolean<br/>
+													<b>Default:</b> false<br/>
+													Set required for editor
+												</td>
+											</tr>
+											<tr>
+												<td>enable<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> KnockoutObservable&lt;boolean&gt; | boolean<br/>
+													<b>Default:</b> true<br/>
+													Set enable/disable for editor
+												</td>
+											</tr>
+											<tr>
+												<td>readonly<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> KnockoutObservable&lt;boolean&gt; | boolean<br/>
+													<b>Default:</b> false<br/>
+													Set readonly for editor
+												</td>
+											</tr>
+											<tr>
+												<td>option<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> TimeEditorOption<br/>
+													<b>Default:</b> TimeEditorOption<br/>
+													<b>Members:</b><br/>
+													<div class="catalog-accordion">
+														<a href="#timeeditoroption">TimeEditorOption</a>
+														<table class="table">
+															<colgroup>
+																<col width="150px" />
+															</colgroup>
+															<thead>
+																<tr>
+																	<th><h4>Name</h4></th>
+																	<th><h4>Description</h4></th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr>
+																	<td>placeholder<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> KnockoutObservable&lt;string&gt; | string<br/>
+																		<b>Default:</b> ""<br/>
+																		Hint text for the control
+																	</td>
+																</tr>
+																<tr>
+																	<td>width<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> KnockoutObservable&lt;string&gt; | string<br/>
+																		<b>Default:</b> ""<br/>
+																		Set width for the control
+																	</td>
+																</tr>
+																<tr>
+																	<td>textalign<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> KnockoutObservable&lt;string&gt; | string<br/>
+																		<b>Default:</b> "right"<br/>
+																		<b>Members:</b><br/>
+																		<i>left</i>: Align text to left<br/>
+																		<i>right</i>: Align text to right<br/>
+																		<i>center</i>: Align text to center
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
 								</div>
 							</div>
 						</article>
