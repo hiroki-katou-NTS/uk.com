@@ -201,11 +201,12 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 		TypedQuery<QismtEmpInsuRate> query = em.createQuery(cq);
 		List<QismtEmpInsuRate> lstQismtEmpInsuRate = query.getResultList();
 
+		// check exist data
 		if (CollectionUtil.isEmpty(lstQismtEmpInsuRate)) {
 			return Optional.empty();
 		}
 
-		// get fisrt data
+		// get first data
 		return Optional.ofNullable(this.toDomain(lstQismtEmpInsuRate.get(BusinessTypeEnum.Biz1St.index)));
 	}
 
@@ -248,6 +249,7 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 		TypedQuery<QismtEmpInsuRate> query = em.createQuery(cq);
 		List<QismtEmpInsuRate> lstQismtEmpInsuRate = query.getResultList();
 
+		// check exist data
 		if (CollectionUtil.isEmpty(lstQismtEmpInsuRate)) {
 			return Optional.empty();
 		}

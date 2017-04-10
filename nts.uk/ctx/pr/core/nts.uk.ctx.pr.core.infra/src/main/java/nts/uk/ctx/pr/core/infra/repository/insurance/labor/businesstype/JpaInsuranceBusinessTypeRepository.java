@@ -23,28 +23,13 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.businesstype.QismtBusines
 public class JpaInsuranceBusinessTypeRepository extends JpaRepository
 		implements InsuranceBusinessTypeRepository {
 
-	@Override
-	public void add(InsuranceBusinessType type) {
-		// None
-
-	}
-
-	@Override
-	public void update(InsuranceBusinessType type) {
-		// None
-
-	}
-
-	@Override
-	public void remove(String id, Long version) {
-		// None
-
-	}
 
 	@Override
 	public List<InsuranceBusinessType> findAll(String companyCode) {
 		Optional<QismtBusinessType> optionalQismtBusinessType = this.queryProxy().find(companyCode,
 				QismtBusinessType.class);
+
+		// check exist data
 		if (optionalQismtBusinessType.isPresent()) {
 			return toDomain(optionalQismtBusinessType.get());
 		}
@@ -77,6 +62,7 @@ public class JpaInsuranceBusinessTypeRepository extends JpaRepository
 	public QismtBusinessType toEntity(List<InsuranceBusinessType> lstInsuranceBusinessType) {
 		QismtBusinessType entity = new QismtBusinessType();
 
+		// to entity data 
 		lstInsuranceBusinessType.forEach(businessType -> {
 			businessType.saveToMemento(
 					new JpaInsuranceBusinessTypeSetMemento(entity, businessType.getBizOrder()));

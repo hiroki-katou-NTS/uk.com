@@ -38,7 +38,10 @@ public class JpaUnemployeeInsuranceRateSetMemento implements UnemployeeInsurance
 	 */
 	@Override
 	public void setHistoryId(String historyId) {
+		// get pk
 		QismtEmpInsuRatePK pk = new QismtEmpInsuRatePK();
+
+		// set history id pk
 		pk.setHistId(historyId);
 		this.typeValue.setQismtEmpInsuRatePK(pk);
 
@@ -80,8 +83,8 @@ public class JpaUnemployeeInsuranceRateSetMemento implements UnemployeeInsurance
 	@Override
 	public void setRateItems(Set<UnemployeeInsuranceRateItem> rateItems) {
 		rateItems.forEach(rateItem -> {
-			rateItem.saveToMemento(new JpaUnemployeeInsuranceRateItemSetMemento(this.typeValue,
-					rateItem.getCareerGroup()));
+			rateItem.saveToMemento(
+				new JpaUnemployeeInsuranceRateItemSetMemento(this.typeValue, rateItem.getCareerGroup()));
 		});
 	}
 

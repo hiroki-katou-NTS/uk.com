@@ -11,34 +11,6 @@ import java.util.List;
  */
 public interface InsuranceBusinessTypeRepository {
 
-	/**
-	 * Adds the.
-	 *
-	 * @param type the type
-	 */
-    void add(InsuranceBusinessType type);
-
-	/**
-	 * Update.
-	 *
-	 * @param type the type
-	 */
-    void update(InsuranceBusinessType type);
-
-	/**
-	 * Removes the.
-	 *
-	 * @param id the id
-	 * @param version the version
-	 */
-    void remove(String id, Long version);
-
-	/**
-	 * Find all.
-	 *
-	 * @param companyCode the company code
-	 * @return the list
-	 */
 	List<InsuranceBusinessType> findAll(String companyCode);
 
 	/**

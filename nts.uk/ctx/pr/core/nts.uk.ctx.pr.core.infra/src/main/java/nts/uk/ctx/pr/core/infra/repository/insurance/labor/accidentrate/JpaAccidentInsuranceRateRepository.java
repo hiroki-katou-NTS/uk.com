@@ -207,7 +207,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 	 * @return the accident insurance rate
 	 */
 	public AccidentInsuranceRate toDomainHistory(QismtWorkAccidentInsu entity) {
-		return new AccidentInsuranceRate(new JpaHistoryAccidentInsuranceRateGetMemento(entity));
+		return new AccidentInsuranceRate(new JpaAccidentInsuranceHistoryGetMemento(entity));
 	}
 
 	/*
@@ -318,6 +318,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
 		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = query.getResultList();
 
+		// check empty data  
 		if (CollectionUtil.isEmpty(lstQismtWorkAccidentInsu)) {
 			return Optional.empty();
 		}
