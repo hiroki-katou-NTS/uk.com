@@ -17,7 +17,7 @@ public interface WtReferenceRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<WtCodeRefItem> getCodeRefItem(WtCodeRef codeRef);
+	List<WtCodeRefItem> getCodeRefItem(WtCodeRef codeRef, Object... params);
 
 	/**
 	 * Gets the master ref item.
@@ -25,6 +25,6 @@ public interface WtReferenceRepository {
 	 * @param masterRef the master ref
 	 * @return the master ref item
 	 */
-	List<WtCodeRefItem> getMasterRefItem(WtMasterRef masterRef);
+	List<WtCodeRefItem> getMasterRefItem(WtMasterRef masterRef, Object... params);
 
 }
