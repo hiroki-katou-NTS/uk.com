@@ -62,7 +62,7 @@ module nts.uk.pr.view.base.simplehistory {
                     return self.selectedNode() && self.selectedHistoryUuid() != undefined;
                 })
                 self.canAddNewHistory = ko.computed(() => {
-                    return self.selectedNode() != null;
+                    return self.selectedNode() && self.selectedHistoryUuid() != undefined;
                 })
 
                 self.igGridSelectedHistoryUuid.subscribe(id => {
@@ -78,7 +78,9 @@ module nts.uk.pr.view.base.simplehistory {
                         if (!selectedNode.isMaster) {
                             self.isNewMode(false);
                             self.selectedHistoryUuid(selectedNode.id);
-                            self.clearErrors();
+                            if (nts.uk.ui._viewModel) {
+                                self.clearErrors();
+                            }
                             self.onSelectHistory(id);
                         } else {
                             // Parent node.
@@ -198,7 +200,9 @@ module nts.uk.pr.view.base.simplehistory {
                 self.confirmDirtyAndExecute(() => {
                     self.isNewMode(true);
                     self.onRegistNew();
-                    self.clearErrors();
+                    if (nts.uk.ui._viewModel) {
+                        self.clearErrors();
+                    }
 
                     // Clear select history uuid.
                     self.igGridSelectedHistoryUuid(undefined);
@@ -318,11 +322,6 @@ module nts.uk.pr.view.base.simplehistory {
             reloadMasterHistory(uuid: string) {
                 var self = this;
                 self.loadMasterHistory().done(() => {
-                    // Set new mode if masterHistoryList has 0 element.
-                    if (!self.masterHistoryList || self.masterHistoryList.length == 0) {
-                        self.isNewMode(true);
-                        self.onRegistNew();
-                    }
                     self.selectedHistoryUuid(undefined);
                     if (uuid) {
                         self.igGridSelectedHistoryUuid(uuid);
@@ -334,6 +333,11 @@ module nts.uk.pr.view.base.simplehistory {
                                 self.igGridSelectedHistoryUuid.valueHasMutated();
                             }
                         }
+                    }
+                    // Set new mode if masterHistoryList has 0 element.
+                    if (!self.masterHistoryList || self.masterHistoryList.length == 0) {
+                        self.isNewMode(true);
+                        self.onRegistNew();
                     }
                 })
             }
