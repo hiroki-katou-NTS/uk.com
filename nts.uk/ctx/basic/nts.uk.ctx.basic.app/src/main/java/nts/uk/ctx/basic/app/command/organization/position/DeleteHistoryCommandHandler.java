@@ -45,6 +45,8 @@ public class DeleteHistoryCommandHandler extends CommandHandler<DeleteHistoryCom
 			repository.deleteHist(companyCode, historyId);
 			//xoa tat ca postition cua lich su
 			repository.deleteJobTitleByHisId(companyCode, historyId);
+			//xoa tat ca ref cua lich su
+			repository.deleteJobRef(companyCode, historyId);
 			//update tat ca ngay ket thuc cua lich su truoc ve 1999-12-31
 			//---Tim lich su cua thang dang truoc
 			GeneralDate endDate = GeneralDate.localDate(LocalDate.parse(command.getOldStartDate())).addDays(-1);

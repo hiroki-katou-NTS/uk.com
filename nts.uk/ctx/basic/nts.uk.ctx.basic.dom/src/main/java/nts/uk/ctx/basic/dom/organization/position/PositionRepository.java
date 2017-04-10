@@ -61,4 +61,5 @@ public interface PositionRepository {
 	void getAllJobTitleRef(JobTitleRef jobTitleRef);
 
 	void updateRef(List<JobTitleRef> refInfor);
+	void deleteJobRef (String companyCode, String historyId);
 	}

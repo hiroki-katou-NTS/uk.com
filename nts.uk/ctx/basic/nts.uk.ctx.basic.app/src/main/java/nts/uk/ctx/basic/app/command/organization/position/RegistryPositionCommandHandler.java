@@ -129,7 +129,7 @@ public class RegistryPositionCommandHandler extends CommandHandler<RegistryPosit
 				jobInfor.setHiterarchyOrderCode(new HiterarchyOrderCode(commandInfor.getHiterarchyOrderCode()));
 				jobInfor.setMemo(new Memo(commandInfor.getMemo()));
 				jobInfor.setPresenceCheckScopeSet(EnumAdaptor.valueOf(commandInfor.getPresenceCheckScopeSet(), PresenceCheckScopeSet.class));
-				//update position
+				//update position				
 				positionRepository.update(jobInfor);
 				//update quyen
 				//- check xem quyen ton tai ko

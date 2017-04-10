@@ -1,5 +1,6 @@
 package nts.uk.ctx.basic.infra.repository.organization.position;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -137,21 +138,7 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 
 	}
 
-	@Override
-	public List<JobRef_Auth> getAllAuth(String companyCode, String historyId, String jobCode, String authScopeAtr) {
-		return this.queryProxy().query(SELECT_AUTHNAME, Object[].class)
-				.setParameter("companyCode", companyCode)
-				.setParameter("historyId", historyId)
-				.setParameter("jobCode", jobCode)
-				.setParameter("authScopeAtr", authScopeAtr)
-				.getList(c -> {
-					String authCode = (String) c[0];
-					String authName = (String) c[1];
-					int referenceSettings = Integer.valueOf(c[2].toString());
-					return JobRef_Auth.createSimpleFromJavaType(authCode, authName, referenceSettings);
-				});
-	}
-	
+
 	
 	private JobTitle convertToDomain(CmnmtJobTitle cmnmtJobTittle) {
 		JobTitle jobTittle = JobTitle.createFromJavaType(cmnmtJobTittle.getCmnmtJobTitlePK().getCompanyCode(),
@@ -369,7 +356,37 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		this.commandProxy().removeAll(CmnmtJobTitle.class, detailEntitiesPk);
 
 	}
-
+	
+	@Override
+	public List<JobRef_Auth> getAllAuth(String companyCode, String historyId, String jobCode, String authScopeAtr) {
+		return this.queryProxy().query(SELECT_AUTHNAME, Object[].class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("historyId", historyId)
+				.setParameter("jobCode", jobCode)
+				.setParameter("authScopeAtr", authScopeAtr)
+				.getList(c -> {
+					String authCode = (String) c[0];
+					String authName = (String) c[1];
+					int referenceSettings = Integer.valueOf(c[2].toString());
+					return JobRef_Auth.createSimpleFromJavaType(authCode, authName, referenceSettings);
+				});
+	}
+	
+	private CmnmtJobTitleRefPK toEntityTitlePk2(JobTitleRef domain) {
+		val entityPk = new CmnmtJobTitleRefPK();
+		entityPk.companyCode = domain.getCompanyCode();
+		entityPk.historyId = domain.getHistoryId();
+		entityPk.jobCode = domain.getJobCode().toString();
+		entityPk.authCode = domain.getAuthCode().toString();
+		return entityPk;
+	}
+	public void deleteJobRef(String companyCode, String historyId) {
+		List<JobTitleRef> newRefInfor = new ArrayList<JobTitleRef>();
+		List<CmnmtJobTitleRefPK> cmnmtJobTitleRefPK = newRefInfor.stream().map(detail -> {
+			return this.toEntityTitlePk2(detail);
+		}).collect(Collectors.toList());
+			this.commandProxy().removeAll(CmnmtJobTitleRef.class, cmnmtJobTitleRefPK);
+	}
 
 	@Override
 	public void add(List<JobTitle> lstPositionNow) {

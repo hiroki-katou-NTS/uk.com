@@ -17,8 +17,6 @@ import nts.uk.ctx.basic.app.command.organization.position.RegistryPositionComman
 import nts.uk.ctx.basic.app.command.organization.position.RegistryPositionCommandHandler;
 import nts.uk.ctx.basic.app.command.organization.position.UpdateHistoryCommand;
 import nts.uk.ctx.basic.app.command.organization.position.UpdateHistoryCommandHandler;
-import nts.uk.ctx.basic.app.command.organization.position.UpdatePositionCommand;
-import nts.uk.ctx.basic.app.command.organization.position.UpdatePositionCommandHandler;
 import nts.uk.ctx.basic.app.find.organization.position.JobHistDto;
 import nts.uk.ctx.basic.app.find.organization.position.JobHistFinder;
 import nts.uk.ctx.basic.app.find.organization.position.JobRefAuthDto;
@@ -35,8 +33,6 @@ public class PositionWebService extends WebService {
 	private JobTitleFinder positionFinder;
 	@Inject
 	private JobHistFinder histFinder;
-	@Inject
-	private UpdatePositionCommandHandler updatePosition;
 	@Inject
 	private DeletePositionCommandHandler deletePosition;
 	@Inject
@@ -70,12 +66,6 @@ public class PositionWebService extends WebService {
 	public List<JobHistDto> init() {
 		
 		return this.histFinder.init();
-	}
-
-	@POST
-	@Path("updatePosition")
-	public void update(UpdatePositionCommand command) {
-		this.updatePosition.handle(command);
 	}
 
 	@POST

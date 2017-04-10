@@ -11,6 +11,6 @@ public class JobHistDto {
 	private String companyCode;
 	private GeneralDate startDate;
 	private GeneralDate endDate;
-	
+
 
 }

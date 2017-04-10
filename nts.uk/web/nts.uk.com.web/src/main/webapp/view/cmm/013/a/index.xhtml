@@ -129,10 +129,10 @@
 								</div>
 							</td>
 						</tr>
-						<tr class = "trLst003">
+						<tr class="trLst003" data-bind="visible: dataRefNew().length">
 							<td></td>
 							<td>
-								<div id="lst_003" data-bind="if: dataRef" style="width: 265px">
+								<div id="lst_003" data-bind="if: dataRef" style="width: 225px">
 									<div data-bind="foreach: dataRef ">
 										<div class="row">
 											<div class="line left-line" data-bind="text: authName "></div>
