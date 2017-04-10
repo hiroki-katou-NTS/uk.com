@@ -90,7 +90,7 @@ public class JpaAccidentInsuranceRateGetMemento implements AccidentInsuranceRate
 			InsuBizRateItem itemInsuBizRateItem = new InsuBizRateItem();
 			itemInsuBizRateItem
 				.setInsuBizType(BusinessTypeEnum.valueOf(item.getQismtWorkAccidentInsuPK().getWaInsuCd()));
-			itemInsuBizRateItem.setInsuRate((item.getWaInsuRate().doubleValue()));
+			itemInsuBizRateItem.setInsuRate(item.getWaInsuRate().doubleValue());
 			itemInsuBizRateItem.setInsuRound(RoundingMethod.valueOf(item.getWaInsuRound()));
 			return itemInsuBizRateItem;
 		}).collect(Collectors.toSet());

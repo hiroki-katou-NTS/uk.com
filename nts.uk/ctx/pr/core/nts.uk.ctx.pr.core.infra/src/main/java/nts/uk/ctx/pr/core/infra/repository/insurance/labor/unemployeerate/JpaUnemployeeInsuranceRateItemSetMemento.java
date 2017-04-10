@@ -73,6 +73,11 @@ public class JpaUnemployeeInsuranceRateItemSetMemento implements UnemployeeInsur
 			this.typeValue.setCEmpRateConst(new BigDecimal(String.valueOf(companySetting.getRate())));
 			this.typeValue.setCEmpRoundConst(companySetting.getRoundAtr().value);
 			break;
+
+		default:
+			this.typeValue.setCEmpRateGeneral(new BigDecimal(String.valueOf(companySetting.getRate())));
+			this.typeValue.setCEmpRoundGeneral(companySetting.getRoundAtr().value);
+			break;
 		}
 
 	}
@@ -102,6 +107,11 @@ public class JpaUnemployeeInsuranceRateItemSetMemento implements UnemployeeInsur
 		case Contruction:
 			this.typeValue.setPEmpRateConst(new BigDecimal(String.valueOf(personalSetting.getRate())));
 			this.typeValue.setPEmpRoundConst(personalSetting.getRoundAtr().value);
+			break;
+
+		default:
+			this.typeValue.setPEmpRateGeneral(new BigDecimal(String.valueOf(personalSetting.getRate())));
+			this.typeValue.setPEmpRoundGeneral(personalSetting.getRoundAtr().value);
 			break;
 
 		}
