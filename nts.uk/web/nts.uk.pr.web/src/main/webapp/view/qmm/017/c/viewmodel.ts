@@ -142,7 +142,14 @@ module nts.qmm017 {
             self.hourlyEasyFormula().selectedRuleCodeEasySettings('1');
         }
 
-
+        openDialogQ() {
+            var self = this;    
+            let param = {
+            };
+            nts.uk.ui.windows.setShared('paramFromScreenC', param);
+            nts.uk.ui.windows.sub.modal('/view/qmm/017/q/index.xhtml', { title: 'お試し計算', width: 840, height: 615 }).onClosed(() => {
+            });
+        }
     }
 
     export class EasyFormula {

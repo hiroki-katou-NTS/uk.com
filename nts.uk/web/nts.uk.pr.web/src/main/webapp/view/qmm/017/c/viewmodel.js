@@ -110,6 +110,13 @@ var nts;
                 self.dailyEasyFormula().selectedRuleCodeEasySettings('1');
                 self.hourlyEasyFormula().selectedRuleCodeEasySettings('1');
             };
+            CScreen.prototype.openDialogQ = function () {
+                var self = this;
+                var param = {};
+                nts.uk.ui.windows.setShared('paramFromScreenC', param);
+                nts.uk.ui.windows.sub.modal('/view/qmm/017/q/index.xhtml', { title: 'お試し計算', width: 840, height: 615 }).onClosed(function () {
+                });
+            };
             return CScreen;
         }());
         qmm017.CScreen = CScreen;

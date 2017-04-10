@@ -1,7 +1,7 @@
 module nts.uk.pr.view.qmm017.l {
     export module service {
         var paths = {
-            getListCompanyUnitPrice: "pr/proto/unitprice/findbydate/",
+            getListCompanyUnitPrice: "pr/proto/unitprice/findbymonth/",
             getListPersonalUnitPrice: "pr/core/rule/employment/unitprice/personal/find/all",
             getListItemMaster: "pr/core/item/findall/category/"
         }

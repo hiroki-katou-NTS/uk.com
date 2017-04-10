@@ -13,7 +13,7 @@ var nts;
                         var service;
                         (function (service) {
                             var paths = {
-                                getListCompanyUnitPrice: "pr/proto/unitprice/findbydate/",
+                                getListCompanyUnitPrice: "pr/proto/unitprice/findbymonth/",
                                 getListPersonalUnitPrice: "pr/core/rule/employment/unitprice/personal/find/all",
                                 getListItemMaster: "pr/core/item/findall/category/"
                             };
