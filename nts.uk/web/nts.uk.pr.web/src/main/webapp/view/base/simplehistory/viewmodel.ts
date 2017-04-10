@@ -62,7 +62,7 @@ module nts.uk.pr.view.base.simplehistory {
                     return self.selectedNode() && self.selectedHistoryUuid() != undefined;
                 })
                 self.canAddNewHistory = ko.computed(() => {
-                    return self.selectedNode() && self.selectedHistoryUuid() != undefined;
+                    return self.selectedNode() != null;
                 })
 
                 self.igGridSelectedHistoryUuid.subscribe(id => {
@@ -336,6 +336,7 @@ module nts.uk.pr.view.base.simplehistory {
                     // Set new mode if masterHistoryList has 0 element.
                     if (!self.masterHistoryList || self.masterHistoryList.length == 0) {
                         self.isNewMode(true);
+                        self.selectedNode(null);
                         self.onRegistNew();
                     }
                 })

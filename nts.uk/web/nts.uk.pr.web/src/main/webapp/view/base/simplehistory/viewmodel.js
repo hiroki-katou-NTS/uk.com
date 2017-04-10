@@ -27,7 +27,7 @@ var nts;
                                         return self.selectedNode() && self.selectedHistoryUuid() != undefined;
                                     });
                                     self.canAddNewHistory = ko.computed(function () {
-                                        return self.selectedNode() && self.selectedHistoryUuid() != undefined;
+                                        return self.selectedNode() != null;
                                     });
                                     self.igGridSelectedHistoryUuid.subscribe(function (id) {
                                         var inlineFunc = function () {
@@ -240,6 +240,7 @@ var nts;
                                         }
                                         if (!self.masterHistoryList || self.masterHistoryList.length == 0) {
                                             self.isNewMode(true);
+                                            self.selectedNode(null);
                                             self.onRegistNew();
                                         }
                                     });
