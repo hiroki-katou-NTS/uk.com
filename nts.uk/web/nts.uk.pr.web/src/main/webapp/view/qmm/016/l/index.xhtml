@@ -38,11 +38,11 @@
 				<table>
 					<tr>
 						<td id="contents-left"
-							class="bg-green caret-right caret-background">
-							<i class="icon icon-searchbox"></i>
+							class="bg-green caret-right caret-background"><i
+							class="icon icon-searchbox"></i>
 							<div
 								data-bind="ntsSearchBox: {comId: 'certifyGroupList', items: lstCertifyGroup, selected: selectCodeLstLstCertifyGroup, selectedKey: 'code', fields: ['code','name']}" />
-							<div id="search_001">
+							<div id="search_data">
 								<table id="certifyGroupList"
 									data-bind="ntsGridList: {
 									width: 300,
@@ -54,8 +54,7 @@
 									value: selectCodeLstLstCertifyGroup,
 									enable: true
 							}"></table>
-							</div>
-						</td>
+							</div></td>
 						<td id="contents-right" data-bind="with: certifyGroupModel">
 							<div class="contentsRL">
 								<div id="lbl_code_name"
@@ -79,8 +78,7 @@
 							<table>
 								<tr>
 									<td class="contentsRL">
-										<div id="A_LBL_003"
-											data-bind="ntsFormLabel: {required: true}">
+										<div data-bind="ntsFormLabel: {required: true}">
 											<label>同一グループ内で複数の資格を取得している場合の支給方法</label>
 										</div>
 									</td>

@@ -55,9 +55,6 @@
 	padding-left: 40px !important;
 }
 
-#SCH_001 {
-	width: 100%;
-}
 
 .spanSearch {
 	float: right;
@@ -79,10 +76,6 @@
 
 button.nts-switch-button {
 	min-width: 80px;
-}
-
-#search_001 {
-	margin-top: 20px;
 }
 
 .contentvalue {
