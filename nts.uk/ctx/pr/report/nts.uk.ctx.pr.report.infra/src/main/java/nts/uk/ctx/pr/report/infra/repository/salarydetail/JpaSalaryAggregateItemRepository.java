@@ -78,30 +78,6 @@ public class JpaSalaryAggregateItemRepository extends JpaRepository implements S
 	 * java.lang.String)
 	 */
 
-	/**
-	 * To domain.
-	 *
-	 * @param entity
-	 *            the entity
-	 * @return the salary aggregate item
-	 */
-	private SalaryAggregateItem toDomain(QlsptPaylstAggreHead entity) {
-		return new SalaryAggregateItem(new JpaSalaryAggregateItemGetMemento(entity));
-	}
-
-	/**
-	 * To entity.
-	 *
-	 * @param domain
-	 *            the domain
-	 * @return the qlspt paylst aggre head
-	 */
-	private QlsptPaylstAggreHead toEntity(SalaryAggregateItem domain) {
-		QlsptPaylstAggreHead entity = new QlsptPaylstAggreHead();
-		domain.saveToMemento(new JpaSalaryAggregateItemSetMemento(entity));
-		return entity;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -110,16 +86,16 @@ public class JpaSalaryAggregateItemRepository extends JpaRepository implements S
 	 * java.lang.String, int)
 	 */
 	@Override
-	public Optional<SalaryAggregateItem> findByCode(String companyCode, String aggregateItemCode,
-		int categoryCode) {
-		return this.queryProxy()
-			.find(new QlsptPaylstAggreHeadPK(companyCode, aggregateItemCode, categoryCode),
-				QlsptPaylstAggreHead.class)
-			.map(c -> this.toDomain(c));
+	public Optional<SalaryAggregateItem> findByCode(String companyCode, String aggregateItemCode, int categoryCode) {
+		return this.queryProxy().find(new QlsptPaylstAggreHeadPK(companyCode, aggregateItemCode, categoryCode),
+				QlsptPaylstAggreHead.class).map(c -> this.toDomain(c));
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemRepository#findAll(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
+	 * SalaryAggregateItemRepository#findAll(java.lang.String)
 	 */
 	@Override
 	public List<SalaryAggregateItem> findAll(String companyCode) {
@@ -136,9 +112,30 @@ public class JpaSalaryAggregateItemRepository extends JpaRepository implements S
 		predicateList.add(cb.equal(
 				root.get(QlsptPaylstAggreHead_.qlsptPaylstAggreHeadPK).get(QlsptPaylstAggreHeadPK_.ccd), companyCode));
 		cq.where(predicateList.toArray(new Predicate[] {}));
-		return em.createQuery(cq).getResultList().stream()
-				.map(item -> new SalaryAggregateItem(new JpaSalaryAggregateItemGetMemento(item)))
+		return em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
 				.collect(Collectors.toList());
+	}
+
+	/**
+	 * To domain.
+	 *
+	 * @param entity the entity
+	 * @return the salary aggregate item
+	 */
+	private SalaryAggregateItem toDomain(QlsptPaylstAggreHead entity) {
+		return new SalaryAggregateItem(new JpaSalaryAggregateItemGetMemento(entity));
+	}
+
+	/**
+	 * To entity.
+	 *
+	 * @param domain the domain
+	 * @return the qlspt paylst aggre head
+	 */
+	private QlsptPaylstAggreHead toEntity(SalaryAggregateItem domain) {
+		QlsptPaylstAggreHead entity = new QlsptPaylstAggreHead();
+		domain.saveToMemento(new JpaSalaryAggregateItemSetMemento(entity));
+		return entity;
 	}
 
 }
