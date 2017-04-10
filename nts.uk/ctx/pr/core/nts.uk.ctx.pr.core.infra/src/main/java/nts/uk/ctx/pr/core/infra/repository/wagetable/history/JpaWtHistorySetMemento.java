@@ -30,7 +30,7 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableNum;
 public class JpaWtHistorySetMemento implements WtHistorySetMemento {
 
 	/** The type value. */
-	protected QwtmtWagetableHist typeValue;
+	private QwtmtWagetableHist typeValue;
 
 	/**
 	 * Instantiates a new jpa wage table history set memento.
@@ -106,12 +106,19 @@ public class JpaWtHistorySetMemento implements WtHistorySetMemento {
 		String wageTableCd = qwtmtWagetableHistPK.getWageTableCd();
 		String historyId = qwtmtWagetableHistPK.getHistId();
 
+		// Create entity of step items
 		List<QwtmtWagetableMny> qwtmtWagetableMnyList = elements.stream().map(item -> {
+			// Create entity.
 			QwtmtWagetableMny entity = new QwtmtWagetableMny();
+
+			// Transfer data
 			item.saveToMemento(
 					new JpaWtItemSetMemento(companyCode, wageTableCd, historyId, entity));
+
 			return entity;
 		}).collect(Collectors.toList());
+
+		// Set val
 		this.typeValue.setQwtmtWagetableMnyList(qwtmtWagetableMnyList);
 	}
 
@@ -144,6 +151,7 @@ public class JpaWtHistorySetMemento implements WtHistorySetMemento {
 
 					// Check setting type
 					if (item instanceof StepElementSetting) {
+
 						// Cast to step setting.
 						StepElementSetting step = (StepElementSetting) item;
 
@@ -157,9 +165,7 @@ public class JpaWtHistorySetMemento implements WtHistorySetMemento {
 								.map(subItem -> {
 									RangeItem rangeItem = (RangeItem) subItem;
 									QwtmtWagetableNum wagetableNum = new QwtmtWagetableNum(
-											companyCode,
-											wageTableCd,
-											historyId,
+											companyCode, wageTableCd, historyId,
 											item.getDemensionNo().value,
 											rangeItem.getOrderNumber());
 									wagetableNum.setElementStr(rangeItem.getStartVal());
@@ -180,9 +186,7 @@ public class JpaWtHistorySetMemento implements WtHistorySetMemento {
 								.map(subItem -> {
 									CodeItem rangeItem = (CodeItem) subItem;
 									QwtmtWagetableCd wagetableCd = new QwtmtWagetableCd(companyCode,
-											wageTableCd,
-											historyId,
-											item.getDemensionNo().value,
+											wageTableCd, historyId, item.getDemensionNo().value,
 											rangeItem.getReferenceCode());
 									wagetableCd.setElementId(rangeItem.getUuid().v());
 									return wagetableCd;
@@ -193,6 +197,7 @@ public class JpaWtHistorySetMemento implements WtHistorySetMemento {
 
 					// Return
 					return qwtmtWagetableEleHist;
+
 				}).collect(Collectors.toList());
 
 		this.typeValue.setQwtmtWagetableEleHistList(qwtmtWagetableEleHistList);
