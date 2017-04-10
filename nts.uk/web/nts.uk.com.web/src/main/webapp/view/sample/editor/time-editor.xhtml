@@ -30,6 +30,7 @@
 					<div id="content" class="cf">
 						<h1>TimeEditor</h1>
 						<h2>Overview</h2>
+						<!-- Binding with Value -->
 						<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 						<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						<h3>Date (YYYY/MM/DD)</h3>
@@ -37,6 +38,7 @@
 						<h3>Time (HH:mm)</h3>
 						<input data-name="Time Editor" data-bind="ntsTimeEditor: {value: time, option: new nts.uk.ui.option.TimeEditorOption({inputFormat: 'time'}), enable: enable, readonly: readonly, required: true}" />
 						<hr/>
+						<!-- Binding with Object -->
 						<div data-bind="with: yearmontheditor">
 							<h3>YearMonth (YYYY/MM)</h3>
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
@@ -68,24 +70,30 @@
 </div>]]></pre>
 									<h2>TypeScript</h2>
 <pre><![CDATA[class ScreenModel {
-	timeeditor: any;
-	
-	constructor() {
-		var self = this;				  
-		self.timeeditor = {
-			value: ko.observable(-1222),
-			constraint: 'LayoutCode',
-			option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
-				inputFormat: 'time',
-				placeholder: "Enter a valid HH:mm",
-				width: "",
-				textalign: "left"
-			})),
-			required: ko.observable(false),
-			enable: ko.observable(true),
-			readonly: ko.observable(false)
-		};
-	}
+    enable: KnockoutObservable<boolean>;
+    readonly: KnockoutObservable<boolean>;
+    date: KnockoutObservable<string>;
+    time: KnockoutObservable<string>;
+    yearmontheditor: any;
+    constructor() {
+        var self = this;
+        self.enable = ko.observable(true);
+        self.readonly = ko.observable(false);
+        
+        self.date = ko.observable("1990/01/01");
+        self.time = ko.observable("12:00");
+        // YearMonth Editor
+        self.yearmontheditor = {
+            value: ko.observable(200001),
+            constraint: 'LayoutCode',
+            option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
+                inputFormat: 'yearmonth'
+            })),
+            required: ko.observable(false),
+            enable: ko.observable(true),
+            readonly: ko.observable(false)
+        };
+    }
 }]]></pre>
 								</div>
 								<div id="tabs-api" class="cf">
