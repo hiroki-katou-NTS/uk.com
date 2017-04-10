@@ -49,15 +49,19 @@ module cmm009.d.viewmodel {
                 alert(nts.uk.time.parseYearMonthDate(inputYm).msg);
                 return false;
             }
-            var selectYm = self.startDateFromA();
+            var startYMD = self.startDateFromA();
+            var endYMD = self.endDate();
             var inputYm2 = inputYm.replace('/', '');
             inputYm2 = inputYm2.replace('/', '');
-            selectYm = selectYm.replace('/', '');
-            selectYm = selectYm.replace('/', '');
-            console.log(inputYm2);
-            if (+inputYm2 < +selectYm
-                || +inputYm2 == +selectYm) {
-                alert('履歴の期間が正しくありません。');
+            startYMD = startYMD.replace('/', '');
+            startYMD = startYMD.replace('/', '');
+            endYMD = endYMD.replace('/', '');
+            endYMD = endYMD.replace('/', '');
+            if (+inputYm2 < +startYMD
+                || +inputYm2 == +startYMD 
+                || +inputYm2 > +endYMD 
+                || +inputYm2 == +endYMD) {
+                alert('履歴の期間が正しくありません。'); 
                 return false;
             }
             else {

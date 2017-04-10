@@ -22,7 +22,7 @@ var cmm009;
                     var day = startDateofHisFromScreena.getDate();
                     if (day < 10)
                         day = "0" + day;
-                    startDateofHisFromScreenatoString = year + month + day;
+                    startDateofHisFromScreenatoString = year + "" + month + "" + day;
                     if (self.data == "datanull") {
                         self.isRadioCheck = ko.observable(2);
                         self.enable = ko.observable(false);

@@ -34,7 +34,7 @@ module cmm009.c.viewmodel {
             if (month < 10) month = "0" + month;
             var day = startDateofHisFromScreena.getDate();
             if (day < 10) day = "0" + day;
-            startDateofHisFromScreenatoString = year+month+day;
+            startDateofHisFromScreenatoString = year+""+month+""+day;
 
             //---radio
             if (self.data == "datanull") {
