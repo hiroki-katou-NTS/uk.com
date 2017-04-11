@@ -24,11 +24,6 @@ public class PaydayFinder {
 				.collect(Collectors.toList());
 	}
 
-	public List<PaydayDto> select12b(String companyCode, int processingNo) {
-		return repository.select12b(companyCode, processingNo).stream().map(m -> PaydayDto.fromDomain(m))
-				.collect(Collectors.toList());
-	}
-
 	public List<PaydayDto> select12(String companyCode, int payBonusAtr, int sparePayAtr) {
 		return repository.select12(companyCode, payBonusAtr, sparePayAtr).stream().map(m -> PaydayDto.fromDomain(m))
 				.collect(Collectors.toList());

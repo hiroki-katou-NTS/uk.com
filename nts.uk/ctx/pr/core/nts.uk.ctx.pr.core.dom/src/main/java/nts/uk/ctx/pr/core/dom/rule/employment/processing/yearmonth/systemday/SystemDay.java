@@ -18,12 +18,6 @@ public class SystemDay extends AggregateRoot {
 
 	private SocialInsLevyMonAtr socialInsLevyMonAtr;
 
-	private ResitaxStdMon resitaxStdMon;
-
-	private ResitaxStdDay resitaxStdDay;
-
-	private ResitaxBeginMon resitaxBeginMon;
-
 	private PickupStdMonAtr pickupStdMonAtr;
 
 	private PickupStdDay pickupStdDay;
@@ -36,13 +30,11 @@ public class SystemDay extends AggregateRoot {
 
 	private PayslipPrintMonthAtr payslipPrintMonthAtr;
 
-	public static SystemDay createSimpleFromJavaType(String companyCode, int processingNo, int socialInsLevyMonAtr,
-			int resitaxStdMon, int resitaxStdDay, int resitaxBeginMon, int pickupStdMonAtr, int pickupStdDay,
+	public static SystemDay createSimpleFromJavaType(String companyCode, int processingNo, int socialInsLevyMonAtr, int pickupStdMonAtr, int pickupStdDay,
 			int payStdDay, int accountDueMonAtr, int accountDueDay, int payslipPrintMonthAtr) {
 
 		return new SystemDay(new CompanyCode(companyCode), new ProcessingNo(processingNo),
-				EnumAdaptor.valueOf(socialInsLevyMonAtr, SocialInsLevyMonAtr.class), new ResitaxStdMon(resitaxStdMon),
-				new ResitaxStdDay(resitaxStdDay), new ResitaxBeginMon(resitaxBeginMon),
+				EnumAdaptor.valueOf(socialInsLevyMonAtr, SocialInsLevyMonAtr.class),
 				EnumAdaptor.valueOf(pickupStdMonAtr, PickupStdMonAtr.class), new PickupStdDay(pickupStdDay),
 				new PayStdDay(payStdDay), EnumAdaptor.valueOf(accountDueMonAtr, AccountDueMonAtr.class),
 				new AccountDueDay(accountDueDay), EnumAdaptor.valueOf(payslipPrintMonthAtr, PayslipPrintMonthAtr.class));

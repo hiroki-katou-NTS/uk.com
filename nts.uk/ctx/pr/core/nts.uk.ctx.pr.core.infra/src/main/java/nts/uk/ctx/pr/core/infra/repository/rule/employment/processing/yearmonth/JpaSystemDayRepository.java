@@ -22,9 +22,7 @@ public class JpaSystemDayRepository extends JpaRepository implements SystemDayRe
 				.setParameter("companyCode", companyCode).setParameter("processingNo", processingNo)
 				.getList(c -> toDomain(c)).get(0);
 	}
-	
-	
-	
+
 	@Override
 	public void insert(SystemDay domain) {
 		this.commandProxy().insert(toEntity(domain));
@@ -33,27 +31,25 @@ public class JpaSystemDayRepository extends JpaRepository implements SystemDayRe
 	@Override
 	public void update1(SystemDay domain) {
 		this.commandProxy().update(toEntity(domain));
-		
+
 	}
 
 	@Override
 	public void delete(SystemDay domain) {
-		this.commandProxy().remove(toEntity(domain));		
+		this.commandProxy().remove(toEntity(domain));
 	}
 
 	private SystemDay toDomain(QpdmtSystemDay entity) {
 		return SystemDay.createSimpleFromJavaType(entity.qpdmtSystemDayPk.ccd, entity.qpdmtSystemDayPk.processingNo,
-				entity.socialInsuLevyMonAtr, entity.resitaxStdMon, entity.resitaxStdDay, entity.resitaxBeginMon,
-				entity.pickupStdMonAtr, entity.pickupStdDay, entity.payStdDay, entity.accountDueMonAtr,
-				entity.accountDueDay, entity.payslipPrintMonthAtr);
+				entity.socialInsuLevyMonAtr, entity.pickupStdMonAtr, entity.pickupStdDay, entity.payStdDay,
+				entity.accountDueMonAtr, entity.accountDueDay, entity.payslipPrintMonthAtr);
 	}
 
 	private QpdmtSystemDay toEntity(SystemDay domain) {
 		QpdmtSystemDayPK qpdmtSystemDayPk = new QpdmtSystemDayPK(domain.getCompanyCode().v(),
 				domain.getProcessingNo().v());
 
-		return new QpdmtSystemDay(qpdmtSystemDayPk, domain.getPayStdDay().v(), domain.getResitaxBeginMon().v(),
-				domain.getResitaxStdMon().v(), domain.getResitaxStdDay().v(), domain.getPickupStdMonAtr().value,
+		return new QpdmtSystemDay(qpdmtSystemDayPk, domain.getPayStdDay().v(), domain.getPickupStdMonAtr().value,
 				domain.getPickupStdDay().v(), domain.getSocialInsLevyMonAtr().value, domain.getAccountDueMonAtr().value,
 				domain.getAccountDueDay().v(), domain.getPayslipPrintMonthAtr().value);
 	}

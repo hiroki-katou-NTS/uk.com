@@ -1,19 +1,21 @@
 /// <reference path="../qmm005.ts"/>
+/// <reference path="qmm005.a.start.ts" />
 module qmm005.a {
     export class ViewModel {
-        items: KnockoutObservableArray<TableRowItem>;
+        items: KnockoutObservableArray<TableRowItem> = ko.observableArray([]);
+        dirty: nts.uk.ui.DirtyChecker = new nts.uk.ui.DirtyChecker(this.items);
+
         constructor() {
             let self = this;
-            self.items = ko.observableArray([]);
             self.start();
         }
 
         start() {
             let self = this;
             let _records: Array<TableRowItem> = [];
-            /// Service trả về một mảng 2 chiều gồm 2 bảng paydayProcessing và payDay
+            /// get data from server
             services.getData().done(function(resp: Array<any>) {
-                /// Lặp từng dòng, số dòng cố định là 5 được
+                /// repeat row (5 records paydayProcessing)
                 for (let i in resp) {
                     let index = parseInt(i) + 1;
                     let _row = new TableRowItem({
@@ -25,51 +27,57 @@ module qmm005.a {
                         sel004Data: [new common.SelectItem({ index: -1, label: "" })],
                         sel005Data: [new common.SelectItem({ index: -1, label: "" })]
                     });
-                    _row.parent = self;
-                    let item = _.find(resp, function(o) { return o && o[0] && o[0].processingNo == index; });
+
+                    let item = _.find(resp, function(item) { return item && item.paydayProcessingDto && item.paydayProcessingDto.processingNo == index; });
+
                     if (item) {
-                        _row.index(item[0].processingNo);
-                        _row.label(item[0].processingName);
+                        _row.index(item.paydayProcessingDto.processingNo);
+                        _row.label(item.paydayProcessingDto.processingName);
                         let _sel001Data: Array<common.SelectItem> = [];
                         let _sel002Data: Array<common.SelectItem> = [];
                         let _sel004Data: Array<common.SelectItem> = [];
                         let _sel005Data: Array<common.SelectItem> = [];
-                        let cym = nts.uk.time.parseYearMonth(item[0].currentProcessingYm);
-                        let bcym = nts.uk.time.parseYearMonth(item[0].bcurrentProcessingYm);
+                        let cym = nts.uk.time.parseYearMonth(item.paydayProcessingDto.currentProcessingYm);
+                        let bcym = nts.uk.time.parseYearMonth(item.paydayProcessingDto.bcurrentProcessingYm);
                         let cspd = 0, bcspdy = 0, cspdm = 0;
-                        if (item[1]) {
-                            var payDays = _.orderBy(item[1], ['processingYm'], ['desc']);
+
+                        // Salary
+                        if (item.paydayDtos) {
+                            let payDays = _.orderBy(item.paydayDtos, ['processingYm'], ['desc']);
                             for (let j = 0; j < payDays.length; j++) {
                                 let rec = payDays[j] as PaydayDto,
                                     payDate: Date = new Date(rec.payDate),
                                     month: number = payDate.getMonth() + 1,
                                     stdDate: Date = new Date(rec.stdDate),
-                                    label: string = nts.uk.time.formatDate(payDate, "yyyy/MM/dd") + '(' + payDate['getDayJP']() + ')|' + nts.uk.time.formatDate(stdDate, "yyyy/MM/dd");
+                                    label: string = nts.uk.time.formatDate(payDate, "yyyy/MM/dd") + '(' + payDate['getDayJP']() + ')|' + nts.uk.time.formatDate(stdDate, "yyyy/MM/dd"),
+                                    ym = nts.uk.time.parseYearMonth(rec.processingYm);
 
-                                // Trường hợp là lương
-                                if (rec.payBonusAtr === 0 && rec.sparePayAtr === 0) {
-                                    var ym = nts.uk.time.parseYearMonth(rec.processingYm);
-                                    if (ym.success) {
-                                        _sel001Data.push(new common.SelectItem({ index: ym.year, label: ym.year.toString() }));
-                                    }
-                                    _sel002Data.push(new common.SelectItem({ index: month, label: label }));
-
-                                    if (payDate.getFullYear() === cym.year && month === cym.month) {
-                                        cspd = month;
-                                    }
+                                if (ym.success) {
+                                    _sel001Data.push(new common.SelectItem({ index: ym.year, label: ym.year.toString() }));
                                 }
+                                _sel002Data.push(new common.SelectItem({ index: month, label: label }));
 
-                                // Chưa thấy cập nhật trường hợp dữ liệu của thưởng?
-                                if (rec.payBonusAtr === 1 && rec.sparePayAtr === 0) {
-                                    let pym = nts.uk.time.parseYearMonth(rec.processingYm);
-                                    if (pym.success) {
-                                        _sel004Data.push(new common.SelectItem({ index: pym.year, label: pym.year.toString() }));
-                                        _sel005Data.push(new common.SelectItem({ index: pym.month, label: pym.month.toString() + '月' }));
-                                    }
+                                if (payDate.getFullYear() === cym.year && month === cym.month) {
+                                    cspd = month;
                                 }
                             }
                         }
 
+                        // Bonus
+                        if (item.paydayBonusDtos) {
+                            let payDays = _.orderBy(item.paydayBonusDtos, ['processingYm'], ['desc']);
+                            for (let j = 0; j < payDays.length; j++) {
+                                let rec = payDays[j] as PaydayDto;
+                                let pym = nts.uk.time.parseYearMonth(rec.processingYm);
+                                if (pym.success) {
+                                    _sel004Data.push(new common.SelectItem({ index: pym.year, label: pym.year.toString() }));
+                                    _sel005Data.push(new common.SelectItem({ index: pym.month, label: pym.month.toString() + '月' }));
+                                }
+                            }
+                        }
+
+
+                        // Filter duplicate data option
                         _sel001Data = _.uniqWith(_sel001Data, _.isEqual);
                         _row.sel001Data(_sel001Data);
 
@@ -82,16 +90,19 @@ module qmm005.a {
                         _sel005Data = _.uniqWith(_sel005Data, _.isEqual);
                         _row.sel005Data(_sel005Data);
 
-                        // Năm được là năm hiện tại
-                        _row.sel001(cym.year); // năm xử lý
-                        _row.sel002(cspd); // Năm tháng của năm xử lý
-                        _row.sel003(item[0].bonusAtr == 1 ? true : false); // Năm có thưởng hay không?
-                        _row.sel004(bcym.year); // Thường vào năm nào (khác năm có thưởng = năm xử lý), VD: Năm 2017 có thưởng nhưng năm 2018 mới nhận thưởng
-                        _row.sel005(bcym.month); //Thưởng vào tháng nào.
+                        // Current processing year
+                        _row.sel001(cym.year); // processing year
+                        _row.sel002(cspd); // processing month
+                        _row.sel003(item.paydayProcessingDto.bonusAtr == 1 ? true : false); // Year has bonus?
+                        _row.sel004(bcym.year); // bonus in year
+                        _row.sel005(bcym.month); // bonus in month
                     }
                     _records.push(_row);
                 }
                 self.items(_records);
+
+                // Reset dirty on start success
+                self.dirty.reset();
             });
         }
 
@@ -118,19 +129,47 @@ module qmm005.a {
 
         // Navigate to qmp/005/b/index.xhtml
         btn002Click(item, event): void {
-            location.href = "../../../qmp/005/b/index.xhtml";
+            let self = this;
+            if (self.dirty.isDirty()) {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。よろしいですか。?").ifYes(function() {
+                    location.href = "../../../qmp/005/b/index.xhtml";
+                });
+            } else {
+                location.href = "../../../qmp/005/b/index.xhtml";
+            }
         }
 
         btn003Click(item, event): void {
-
+            let self = this;
+            if (self.dirty.isDirty()) {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。よろしいですか。?").ifYes(function() {
+                    location.href = "../../../qmp/005/b/index.xhtml";
+                });
+            } else {
+                location.href = "../../../qmp/005/b/index.xhtml";
+            }
         }
 
         btn004Click(item, event): void {
-
+            let self = this;
+            if (self.dirty.isDirty()) {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。よろしいですか。?").ifYes(function() {
+                    location.href = "../../../qmp/005/b/index.xhtml";
+                });
+            } else {
+                location.href = "../../../qmp/005/b/index.xhtml";
+            }
         }
 
         btn005Click(item, event): void {
-
+            let self = this;
+            if (self.dirty.isDirty()) {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。よろしいですか。?").ifYes(function() {
+                    location.href = "../../../qmp/005/b/index.xhtml";
+                });
+            } else {
+                location.href = "../../../qmp/005/b/index.xhtml";
+            }
         }
     }
 
@@ -145,41 +184,40 @@ module qmm005.a {
     }
 
     class TableRowItem {
-        parent: ViewModel;
-        index: KnockoutObservable<number>;
-        label: KnockoutObservable<string>;
-        sel001: KnockoutObservable<number>;
-        sel002: KnockoutObservable<number>;
-        sel003: KnockoutObservable<boolean>;
-        sel004: KnockoutObservable<number>;
-        sel005: KnockoutObservable<number>;
+        index: KnockoutObservable<number> = ko.observable(0);
+        label: KnockoutObservable<string> = ko.observable('');
+        sel001: KnockoutObservable<number> = ko.observable(0);
+        sel002: KnockoutObservable<number> = ko.observable(0);
+        sel003: KnockoutObservable<boolean> = ko.observable(false);
+        sel004: KnockoutObservable<number> = ko.observable(0);
+        sel005: KnockoutObservable<number> = ko.observable(0);
 
-        sel001Data: KnockoutObservableArray<common.SelectItem>;
-        sel002Data: KnockoutObservableArray<common.SelectItem>;
-        sel004Data: KnockoutObservableArray<common.SelectItem>;
-        sel005Data: KnockoutObservableArray<common.SelectItem>;
+        sel001Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
+        sel002Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
+        sel004Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
+        sel005Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
 
         constructor(param: ITableRowItem) {
-            this.index = ko.observable(param.index);
-            this.label = ko.observable(param.label);
+            this.index(param.index);
+            this.label(param.label);
 
-            this.sel001Data = ko.observableArray(param.sel001Data);
+            this.sel001Data(param.sel001Data);
             if (param.sel001Data[0])
-                this.sel001 = ko.observable(param.sel001Data[0].index);
+                this.sel001(param.sel001Data[0].index);
 
-            this.sel002Data = ko.observableArray(param.sel002Data);
+            this.sel002Data(param.sel002Data);
             if (param.sel002Data[0])
-                this.sel002 = ko.observable(param.sel002Data[0].index);
+                this.sel002(param.sel002Data[0].index);
 
-            this.sel003 = ko.observable(param.sel003);
+            this.sel003(param.sel003);
 
-            this.sel004Data = ko.observableArray(param.sel004Data);
+            this.sel004Data(param.sel004Data);
             if (param.sel004Data[0])
-                this.sel004 = ko.observable(param.sel004Data[0].index);
+                this.sel004(param.sel004Data[0].index);
 
-            this.sel005Data = ko.observableArray(param.sel005Data);
+            this.sel005Data(param.sel005Data);
             if (param.sel005Data[0])
-                this.sel005 = ko.observable(param.sel005Data[0].index);
+                this.sel005(param.sel005Data[0].index);
         }
 
         enable(): boolean {
@@ -189,22 +227,28 @@ module qmm005.a {
         showModalDialogB(item, event): void {
             let self = this;
             nts.uk.ui.windows.setShared('dataRow', item);
-            nts.uk.ui.windows.sub.modal("../b/index.xhtml", { width: 1020, height: 730, title: '支払日の設定' })
-                .onClosed(function() { self.parent.start(); });
+            nts.uk.ui.windows.sub.modal("../b/index.xhtml", { width: 1020, height: 730, title: '支払日の設定', dialogClass: "no-close" })
+                .onClosed(function() {
+                    __viewContext.viewModel.start();
+                });
         }
 
         showModalDialogC(item, event): void {
             let self = this;
             nts.uk.ui.windows.setShared('dataRow', item);
-            nts.uk.ui.windows.sub.modal("../c/index.xhtml", { width: 800, height: 350, title: '処理区分の追加' })
-                .onClosed(function() { self.parent.start(); });
+            nts.uk.ui.windows.sub.modal("../c/index.xhtml", { width: 800, height: 350, title: '処理区分の追加', dialogClass: "no-close" })
+                .onClosed(function() {
+                    __viewContext.viewModel.start();
+                });
         }
 
         showModalDialogD(item, event): void {
             let self = this;
             nts.uk.ui.windows.setShared('dataRow', item);
-            nts.uk.ui.windows.sub.modal("../d/index.xhtml", { width: 800, height: 370, title: '処理区分の編集' })
-                .onClosed(function() { self.parent.start(); });
+            nts.uk.ui.windows.sub.modal("../d/index.xhtml", { width: 800, height: 370, title: '処理区分の編集', dialogClass: "no-close" })
+                .onClosed(function() {
+                    __viewContext.viewModel.start();
+                });
         }
     }
 

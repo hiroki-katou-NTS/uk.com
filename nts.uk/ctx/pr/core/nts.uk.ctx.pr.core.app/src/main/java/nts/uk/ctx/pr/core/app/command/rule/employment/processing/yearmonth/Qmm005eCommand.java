@@ -27,12 +27,6 @@ public class Qmm005eCommand {
 
 	private int payStdDay;
 
-	private int resitaxBeginMon;
-
-	private int resitaxStdMon;
-
-	private int resitaxStdDay;
-
 	private int pickupStdMonAtr;
 
 	private int pickupStdDay;
@@ -65,8 +59,8 @@ public class Qmm005eCommand {
 
 	public SystemDay toSystemDayDomain(String companyCode) {
 		return SystemDay.createSimpleFromJavaType(companyCode, getProcessingNo(), getSocialInsuLevyMonAtr(),
-				getResitaxStdMon(), getResitaxStdDay(), getResitaxBeginMon(), getPickupStdMonAtr(), getPickupStdDay(),
-				getPayStdDay(), getAccountDueMonAtr(), getAccountDueDay(), getPayslipPrintMonth());
+				getPickupStdMonAtr(), getPickupStdDay(), getPayStdDay(), getAccountDueMonAtr(), getAccountDueDay(),
+				getPayslipPrintMonth());
 	}
 
 	public StandardDay toStandardDayDomain(String companyCode) {

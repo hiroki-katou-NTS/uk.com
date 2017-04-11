@@ -59,13 +59,13 @@
 								<tr>
 									<th class="hide" colspan="7"></th>
 									<td class="checkbox-cols text-left no-border"><button
-											class="btn-collapse" data-bind="click: toggleColumns">+</button></td>
+											class="btn-collapse" data-bind="text: toggle() ? '+' : '-', click: toggleColumns"></button></td>
 								</tr>
 								<tr>
 									<th colspan="2" rowspan="2" class="index-cols"></th>
 									<th colspan="5" class="double-border text-left">処理年</th>
-									<th colspan="4" class="toggle hidden"></th>
-									<th class="checkbox-cols" rowspan="2">賞与支給指定</th>
+									<th colspan="4" data-bind="css: {'hidden' : toggle}"></th>
+									<th class='checkbox-cols' rowspan="2">賞与支給指定</th>
 								</tr>
 								<tr>
 									<th>支払年月日</th>
@@ -73,10 +73,10 @@
 									<th>社会保険徴収月</th>
 									<th>明細書印字年月</th>
 									<th class="double-border">要勤務日数</th>
-									<th class="toggle hidden">社会保険基準日</th>
-									<th class="toggle hidden">雇用保険基準日</th>
-									<th class="toggle hidden">所得税基準日</th>
-									<th class="toggle hidden">経理締め日</th>
+									<th class="hidden" data-bind="css: {'hidden' : toggle}">社会保険基準日</th>
+									<th class="hidden" data-bind="css: {'hidden' : toggle}">雇用保険基準日</th>
+									<th class="hidden" data-bind="css: {'hidden' : toggle}">所得税基準日</th>
+									<th class="hidden" data-bind="css: {'hidden' : toggle}">経理締め日</th>
 								</tr>
 							</thead>
 							<tbody data-bind="foreach: lst002Data">
@@ -120,19 +120,19 @@
 											enable: true,
 											readonly: false}" />
 										<span>日</span></td>
-									<td class="toggle hidden">
+									<td data-bind="css: {'hidden' : $parent.toggle}">
 										<div id="B_INP_006"
 											data-bind="ntsDatePicker: { value: inp006, dateFormat: 'YYYY/MM/DD'}"></div>
 									</td>
-									<td class="toggle hidden">
+									<td data-bind="css: {'hidden' : $parent.toggle}">
 										<div id="B_INP_007"
 											data-bind="ntsDatePicker: { value: inp007, dateFormat: 'YYYY/MM/DD'}"></div>
 									</td>
-									<td class="toggle hidden">
+									<td data-bind="css: {'hidden' : $parent.toggle}">
 										<div id="B_INP_008"
 											data-bind="ntsDatePicker: { value: inp008, dateFormat: 'YYYY/MM/DD'}"></div>
 									</td>
-									<td class="toggle hidden">
+									<td data-bind="css: {'hidden' : $parent.toggle}">
 										<div id="B_INP_009"
 											data-bind="ntsDatePicker: { value: inp009, dateFormat: 'YYYY/MM/DD'}"></div>
 									</td>

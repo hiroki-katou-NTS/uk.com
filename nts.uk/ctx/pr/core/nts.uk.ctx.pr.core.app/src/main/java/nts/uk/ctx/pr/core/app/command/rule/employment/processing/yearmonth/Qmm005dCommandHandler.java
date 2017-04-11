@@ -54,11 +54,9 @@ public class Qmm005dCommandHandler extends CommandHandler<Qmm005dCommand> {
 			if (systemDayDomainUpdate != null) {
 				SystemDay domain = SystemDay.createSimpleFromJavaType(companyCode,
 						systemDayDomainUpdate.getProcessingNo().v(), systemDayDomain.getSocialInsLevyMonAtr().value,
-						systemDayDomain.getResitaxStdMon().v(), systemDayDomain.getResitaxStdDay().v(),
-						systemDayDomain.getResitaxBeginMon().v(), systemDayDomain.getPickupStdMonAtr().value,
-						systemDayDomain.getPickupStdDay().v(), systemDayDomain.getPayStdDay().v(),
-						systemDayDomain.getAccountDueMonAtr().value, systemDayDomain.getAccountDueDay().v(),
-						systemDayDomain.getPayslipPrintMonthAtr().value);
+						systemDayDomain.getPickupStdMonAtr().value, systemDayDomain.getPickupStdDay().v(),
+						systemDayDomain.getPayStdDay().v(), systemDayDomain.getAccountDueMonAtr().value,
+						systemDayDomain.getAccountDueDay().v(), systemDayDomain.getPayslipPrintMonthAtr().value);
 				systemDayRepo.update1(domain);
 			}
 

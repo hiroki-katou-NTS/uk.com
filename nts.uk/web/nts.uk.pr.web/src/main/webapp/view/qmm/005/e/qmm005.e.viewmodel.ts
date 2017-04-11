@@ -34,16 +34,20 @@ module qmm005.e {
         start() {
             let self = this;
             
+            let dataRow = nts.uk.ui.windows.getShared('dataRow');
+            let viewModelB = nts.uk.ui.windows.getShared('viewModelB');
+            
+            // Month           
+            self.sel001(dataRow.sel002());
+            
             let sel001Data: Array<common.SelectItem> = [];
             for (let i = 1; i <= 12; i++) {
                 sel001Data.push(new common.SelectItem({ index: i, label: i.toString() }));
             }
             self.sel001Data(sel001Data);
-            
-            let dataRow = nts.uk.ui.windows.getShared('dataRow');
             self.lbl003(dataRow.index() + "." + dataRow.label());
-            
-            self.lbl005(2017);
+            // Year
+            self.lbl005(viewModelB.inp001());
             
             services.getData(dataRow.index()).done(function(resp) {
                debugger; 

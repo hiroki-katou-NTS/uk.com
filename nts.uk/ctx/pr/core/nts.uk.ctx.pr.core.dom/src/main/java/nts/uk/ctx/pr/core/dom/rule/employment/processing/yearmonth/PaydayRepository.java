@@ -16,8 +16,6 @@ public interface PaydayRepository {
 	List<Payday> select5(String companyCode, int processingNo, int payBonusAtr);
 
 	List<Payday> select6(String companyCode, int processingNo, int processingYm);
-	
-	List<Payday> select12b(String companyCode, int processingNo);
 
 	List<Payday> select7(String companyCode, int processingNo, int payBonusAtr, GeneralDate strYmd, GeneralDate endYmd);
 
