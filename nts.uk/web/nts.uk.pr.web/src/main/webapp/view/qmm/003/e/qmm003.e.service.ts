@@ -2,7 +2,24 @@ module qmm003.e.service {
     var paths = {
         getResidentalTaxList: "pr/core/residential/findallresidential",
         getRegionPrefecture: "pr/core/residential/getlistLocation",
-        getResidentalTaxListByReportCode: "pr/core/residential/findallresidential/{0}"
+        getResidentalTaxListByReportCode: "pr/core/residential/findallresidential/{0}",
+        getPersionResidentalTax: "pr/core/rule/law/tax/residential/input/findAll/{0}/{1}"
+    }
+    
+    //get person residential Tax
+    export function getPersonResidentialTax(yearKey: number, residenceCode: string):
+        JQueryPromise<Array<any>> {
+        var dfd = $.Deferred<any>();
+         var _path = nts.uk.text.format(paths.getPersionResidentalTax, yearKey ,residenceCode);
+        nts.uk.request.ajax(_path)
+            .done(function(res: Array<any>) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+
     }
 
     /**
@@ -19,9 +36,9 @@ module qmm003.e.service {
             })
         return dfd.promise();
     }
-        /**
-     * Get list ResidentialTax.
-     */
+    /**
+ * Get list ResidentialTax.
+ */
     export function getResidentalTaxListByReportCode(resiTaxReportCode: string): JQueryPromise<Array<model.ResidentialTax>> {
         var dfd = $.Deferred<Array<model.ResidentialTax>>();
         var _path = nts.uk.text.format(paths.getResidentalTaxListByReportCode, resiTaxReportCode);
@@ -82,7 +99,7 @@ module qmm003.e.service {
             contructor(regionCode: string, regionName: string, prefectures: Array<PrefectureObject>) {
                 this.regionCode = regionCode;
                 this.regionName = regionName;
-                this.prefectures=prefectures;
+                this.prefectures = prefectures;
             }
         }
 

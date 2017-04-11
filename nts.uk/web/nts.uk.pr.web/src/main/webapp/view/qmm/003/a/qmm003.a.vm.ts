@@ -93,8 +93,8 @@ module qmm003.a.viewmodel {
                 if (data) {
                     if (data.resiTaxReportCode) {
                         let residential: service.model.ResidentialTaxDto;
-                         _.each(self.residentalTaxList000(), function(objResi: service.model.ResidentialTaxDto) {
-                            if(objResi.resiTaxCode === data.resiTaxReportCode){
+                        _.each(self.residentalTaxList000(), function(objResi: service.model.ResidentialTaxDto) {
+                            if (objResi.resiTaxCode === data.resiTaxReportCode) {
                                 residential = objResi;
                             }
                         });
@@ -399,7 +399,11 @@ module qmm003.a.viewmodel {
                 return;
             }
             objResi = ko.toJS(self.currentResidential());
-            objResi.resiTaxReportCode = objResi.resiTaxReportCode.substring(0, 6);
+            if (!objResi.resiTaxReportCode) {
+                objResi.resiTaxReportCode = objResi.resiTaxReportCode;
+            }else{
+                 objResi.resiTaxReportCode = objResi.resiTaxReportCode.substring(0, 6);
+            }
             if (!self.editMode) {
                 qmm003.a.service.addResidential(objResi).done(function() {
                     self.redensitalTaxNodeList([]);

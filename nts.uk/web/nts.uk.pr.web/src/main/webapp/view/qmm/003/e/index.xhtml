@@ -33,7 +33,7 @@
 					data-bind="ntsFormLabel: { required: true }" class="form-label">
 					<label id="E_LBL_004">対象年度</label>
 				</div>
-				<input id="E_INP_003" data-bind="ntsTextEditor: {value:singleSelectedCode}" />
+				<input id="E_INP_003" data-bind="ntsTextEditor: {value:year}" />
 				<label id="E_LBL_005">対象年度</label>
 
 
@@ -49,14 +49,14 @@
 						<i class="icon icon-searchbox"></i>
 
 						<div id="E_SCH_001" style="width: 400px"
-							data-bind="ntsSearchBox: {items: items, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
+							data-bind="ntsSearchBox: {items: treeLeft, selected: resiTaxCodeLeft, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
 						<div>
 							<table id="treegrid21"
 								data-bind="ntsTreeGridView:{
 								   	width: 385,
 									height: 350,
-									options: items,
-									value: singleSelectedCode,
+									options: treeLeft,
+									value: resiTaxCodeLeft,
 									optionsValue: 'code',
 									optionsChild: 'childs',
 									optionsText: 'nodeText',
@@ -83,8 +83,8 @@
 								data-bind="ntsTreeGridView:{
 								   	width: 385,
 									height: 350,
-									options: items,
-									value: singleSelectedCode1,
+									options: treeRight,
+									value: resiTaxCodeRight,
 									optionsValue: 'code',
 									optionsChild: 'childs',
 									optionsText: 'nodeText',

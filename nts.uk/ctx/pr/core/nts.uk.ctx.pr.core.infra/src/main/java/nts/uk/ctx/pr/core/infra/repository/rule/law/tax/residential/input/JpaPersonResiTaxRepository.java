@@ -18,7 +18,7 @@ public class JpaPersonResiTaxRepository extends JpaRepository implements PersonR
 			+ " AND c.pprmtPersonResiTaxPK.yearKey = :Y_K";
 	
 	private final String SEL_5 ="SELECT c FROM PprmtPersonResiTax c "
-			+ "WHERE c.pprmtPersonResiTaxPK.companyCode = :CCD" + " c.residenceCode = :RESIDENCE_CD"
+			+ "WHERE c.pprmtPersonResiTaxPK.companyCode = :CCD" + " AND c.residenceCode = :RESIDENCE_CD"
 			+ " AND c.pprmtPersonResiTaxPK.yearKey = :Y_K";
 
 	private PprmtPersonResiTax toEntity(PersonResiTax domain) {
