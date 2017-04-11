@@ -13,10 +13,11 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSetting;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingRepository;
+import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.service.SalaryOutputSettingService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class OutputSettingSaveCommandHandler.
+ * The Class SalaryOutputSettingSaveCommandHandler.
  */
 @Stateless
 public class SalaryOutputSettingSaveCommandHandler extends CommandHandler<SalaryOutputSettingSaveCommand> {
@@ -24,6 +25,10 @@ public class SalaryOutputSettingSaveCommandHandler extends CommandHandler<Salary
 	/** The repository. */
 	@Inject
 	private SalaryOutputSettingRepository repository;
+
+	/** The service. */
+	@Inject
+	private SalaryOutputSettingService service;
 
 	/*
 	 * (non-Javadoc)
@@ -49,6 +54,7 @@ public class SalaryOutputSettingSaveCommandHandler extends CommandHandler<Salary
 			// Convert to domain & validate
 			SalaryOutputSetting outputSetting = command.toDomain(companyCode);
 			outputSetting.validate();
+			service.validateRequiredItem(outputSetting);
 
 			this.repository.create(outputSetting);
 		}
@@ -62,6 +68,7 @@ public class SalaryOutputSettingSaveCommandHandler extends CommandHandler<Salary
 			// Convert to domain & validate
 			SalaryOutputSetting outputSetting = command.toDomain(companyCode);
 			outputSetting.validate();
+			service.validateRequiredItem(outputSetting);
 
 			this.repository.update(outputSetting);
 		}
