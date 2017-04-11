@@ -355,8 +355,8 @@ module nts.uk.pr.view.qmm008.b {
                 // Set parent value
                 nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録", dialogClass: 'no-close' }).onClosed(() => {
                     //when close dialog -> reload office list
-                    self.loadMasterHistory();
                     var codeOfNewOffice = nts.uk.ui.windows.getShared("codeOfNewOffice");
+                    self.reloadMasterHistory(codeOfNewOffice);
                     //                    self.igGridSelectedHistoryUuid(codeOfNewOffice);
                 });
             }

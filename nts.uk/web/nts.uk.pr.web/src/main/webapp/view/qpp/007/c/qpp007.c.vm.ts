@@ -28,6 +28,7 @@ module nts.uk.pr.view.qpp007.c {
                 }
 
                 this.reportItemColumns = ko.observableArray<any>([
+                    { headerText: '区分', prop: 'categoryNameJPN', width: 50 },
                     {
                         headerText: '集約', prop: 'isAggregate', width: 40,
                         formatter: function(isAggregate: string) {
@@ -159,8 +160,11 @@ module nts.uk.pr.view.qpp007.c {
             * Delete outputSetting.
             */
             public remove(): void {
-                if (this.outputSettingSelectedCode) {
-                    service.remove(this.outputSettingSelectedCode()).done(() => this.loadAllOutputSetting());
+                var self = this;
+                if (self.outputSettingSelectedCode) {
+                    nts.uk.ui.dialog.confirm("データを削除します。\r\n よろしいですか？").ifYes(function() {
+                        service.remove(self.outputSettingSelectedCode()).done(() => self.loadAllOutputSetting());
+                    });
                 }
             }
 
@@ -574,13 +578,29 @@ module nts.uk.pr.view.qpp007.c {
         export class ReportItem {
             code: string;
             name: string;
-            categoryName: SalaryCategory;
+            categoryNameJPN: string;
             isAggregate: boolean;
             constructor(code: string, name: string, categoryName: SalaryCategory, isAggregate: boolean) {
                 this.code = code;
                 this.name = name;
-                this.categoryName = categoryName;
                 this.isAggregate = isAggregate;
+                var self = this;
+                switch (categoryName) {
+                    case SalaryCategory.PAYMENT:
+                        self.categoryNameJPN = '支給';
+                        break;
+                    case SalaryCategory.DEDUCTION:
+                    self.categoryNameJPN = '控除';
+                        break;
+                    case SalaryCategory.ATTENDANCE:
+                    self.categoryNameJPN = '勤怠';
+                        break;
+                    case SalaryCategory.ARTICLE_OTHERS:
+                    self.categoryNameJPN = '記事・その他';
+                        break;
+                    default:
+                        self.categoryNameJPN = '';
+                }
             }
         }
     }

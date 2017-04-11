@@ -50,11 +50,15 @@ public class SocialInsuranceOfficeFinder {
 	 * @return the list
 	 */
 	public List<SocialInsuranceOfficeItemDto> findAll(String companyCode) {
-		return socialInsuranceOfficeRepo.findAll(companyCode).stream().map(domain -> {
-			SocialInsuranceOfficeItemDto dto = SocialInsuranceOfficeItemDto.builder().build();
-			domain.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
+		List<SocialInsuranceOffice> lstSocialInsuranceOffice = socialInsuranceOfficeRepo.findAll(companyCode);
+		return lstSocialInsuranceOffice.stream()
+				.map(domain -> {
+					SocialInsuranceOfficeItemDto dto = SocialInsuranceOfficeItemDto.builder()
+							.build();
+					domain.saveToMemento(dto);
+					return dto;
+				})
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -65,10 +69,13 @@ public class SocialInsuranceOfficeFinder {
 	 * @return the list
 	 */
 	public List<SocialInsuranceOfficeDto> findAllDetail(String companyCode) {
-		return socialInsuranceOfficeRepo.findAll(companyCode).stream().map(domain -> {
-			SocialInsuranceOfficeDto dto = SocialInsuranceOfficeDto.builder().build();
-			domain.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
+		List<SocialInsuranceOffice> lstSocialInsuranceOffice = socialInsuranceOfficeRepo.findAll(companyCode);
+		return lstSocialInsuranceOffice.stream()
+				.map(domain -> {
+					SocialInsuranceOfficeDto dto = SocialInsuranceOfficeDto.builder()
+							.build();
+					domain.saveToMemento(dto);
+					return dto;
+				}).collect(Collectors.toList());
 	}
 }
