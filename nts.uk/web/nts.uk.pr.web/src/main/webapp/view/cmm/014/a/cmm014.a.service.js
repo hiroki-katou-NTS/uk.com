@@ -10,6 +10,9 @@ var cmm014;
                 updateClassification: "basic/organization/classification/update",
                 removeClassification: "basic/organization/classification/remove"
             };
+            /**
+             * Get list classification
+             */
             function getAllClassification() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.getAllClassification)
@@ -22,6 +25,9 @@ var cmm014;
                 return dfd.promise();
             }
             service.getAllClassification = getAllClassification;
+            /**
+            * update Classification
+            */
             function addClassification(classification) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.addClassification, classification).done(function (res) {
@@ -33,6 +39,9 @@ var cmm014;
                 return dfd.promise();
             }
             service.addClassification = addClassification;
+            /**
+             * update Classification
+             */
             function updateClassification(classification) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.updateClassification, classification).done(function (res) {
@@ -44,6 +53,9 @@ var cmm014;
                 return dfd.promise();
             }
             service.updateClassification = updateClassification;
+            /**
+            * remove Classification
+            */
             function removeClassification(classification) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.removeClassification, classification).done(function (res) {
@@ -58,4 +70,3 @@ var cmm014;
         })(service = a.service || (a.service = {}));
     })(a = cmm014.a || (cmm014.a = {}));
 })(cmm014 || (cmm014 = {}));
-//# sourceMappingURL=cmm014.a.service.js.map

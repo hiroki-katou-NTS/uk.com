@@ -60,12 +60,14 @@ var nts;
                                 self.currentCode = ko.observable("01");
                                 self.currentCodeList = ko.observableArray(null);
                                 self.currentNode = ko.observable(new Company("11", "22", "33"));
+                                //tabpanel
                                 self.tabs = ko.observableArray([
                                     { id: 'tab-1', title: '会社基本情報', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                                     { id: 'tab-2', title: '会社所在地・連絡先', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
                                     { id: 'tab-3', title: 'システム設定', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
                                 ]);
                                 self.selectedTab = ko.observable('tab-1');
+                                //SWITCH
                                 self.roundingRules = ko.observableArray([
                                     { code: '1', name: '区別する' },
                                     { code: '2', name: '区別しない' }
@@ -76,6 +78,7 @@ var nts;
                                     { code: '2', name: '利用しない' }
                                 ]);
                                 self.selectedRuleCode1 = ko.observable(1);
+                                //COMBOX 
                                 self.itemList = ko.observableArray([
                                     new Company('1', '1月', ''),
                                     new Company('2', '2月', ''),
@@ -113,4 +116,3 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 ;
-//# sourceMappingURL=viewmodel.js.map
