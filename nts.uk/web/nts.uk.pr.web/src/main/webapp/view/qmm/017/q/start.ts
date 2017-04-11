@@ -1,4 +1,5 @@
 __viewContext.ready(function() {
-        var screenModel = new nts.uk.pr.view.qmm017.q.viewmodel.ScreenModel();
+        var param = nts.uk.ui.windows.getShared('formulaManual');
+        var screenModel = new nts.uk.pr.view.qmm017.q.viewmodel.ScreenModel(param);
         this.bind(screenModel);
 });

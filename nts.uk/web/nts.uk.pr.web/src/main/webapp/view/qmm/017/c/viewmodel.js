@@ -66,7 +66,7 @@ var nts;
                     { code: 3, name: '1000円丸め' }
                 ];
                 self.formulaManualContent = ko.observable(new TextEditor());
-                self.c_sel_006 = ko.observableArray([
+                self.itemsTab = ko.observableArray([
                     { id: 'tab-1', title: '明細・勤怠', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-2', title: '単価', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-3', title: '関数', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
@@ -110,12 +110,10 @@ var nts;
                 self.dailyEasyFormula().selectedRuleCodeEasySettings('1');
                 self.hourlyEasyFormula().selectedRuleCodeEasySettings('1');
             };
-            CScreen.prototype.openDialogQ = function () {
+            CScreen.prototype.pasteValue = function (targetString) {
                 var self = this;
-                var param = {};
-                nts.uk.ui.windows.setShared('paramFromScreenC', param);
-                nts.uk.ui.windows.sub.modal('/view/qmm/017/q/index.xhtml', { title: 'お試し計算', width: 840, height: 615 }).onClosed(function () {
-                });
+                var currentTextArea = self.formulaManualContent().textArea();
+                self.formulaManualContent().textArea(self.formulaManualContent().insertString(currentTextArea, targetString, $("#input-text")[0].selectionStart));
             };
             return CScreen;
         }());
@@ -149,7 +147,7 @@ var nts;
             EasyFormula.prototype.openDialogL = function () {
                 var self = this;
                 var param = {
-                    isUpdate: (self.easyFormulaName() !== ''),
+                    isUpdate: (self.easyFormulaName() !== '' && self.easyFormulaName() !== null),
                     dirtyData: self.easyFormulaDetail(),
                     startYm: self.startYm()
                 };
@@ -531,12 +529,6 @@ var nts;
                 var functionName = treeObject.value.trim();
                 var param = treeObject.children;
                 if (functionName === "関数＠条件式" && param.length == 3) {
-                    if (!nts.uk.ntsNumber.isNumber(param[1], true))
-                        return 2;
-                    else if (!nts.uk.ntsNumber.isNumber(param[2], true))
-                        return 3;
-                    else
-                        return 0;
                 }
                 else if (functionName === "関数＠かつ" && param.length >= 2) {
                 }

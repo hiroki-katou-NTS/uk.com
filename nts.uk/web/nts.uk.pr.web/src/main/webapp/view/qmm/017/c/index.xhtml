@@ -165,7 +165,7 @@
 					<span id="c_lbl_002" class="separate-span separate-vertical" data-bind="text: formulaCode"></span>
 					<span id="c_lbl_003" class="separate-span separate-vertical" data-bind="text: formulaName"></span>
 					<br/>
-					<div id="c_sel_006" data-bind="ntsTabPanel: { dataSource: c_sel_006, active: selectedTabCSel006}">
+					<div id="itemsTab" data-bind="ntsTabPanel: { dataSource: itemsTab, active: selectedTabCSel006}">
 						<div class="tab-content-1" data-bind="with: $root.content.viewModel017d">
 							<ui:include src="../d/index.xhtml" />
 						</div>
@@ -195,7 +195,7 @@
 						    	<button style="font-weight: bold;" id="c_btn_017" data-bind="click: undo">←</button>
 						    	<button style="font-weight: bold;" id="c_btn_018" data-bind="click: redo">→</button>
 						    	<button id="btn-validateTextArea" data-bind="click: validateTextArea" class="separate-button">計算式チェック</button>
-						    	<button id="c_btn_003" data-bind="click: openDialogQ">お試し計算</button>
+						    	<button id="c_btn_003" data-bind="click: $root.content.openDialogQ.bind($data, $root.content)">お試し計算</button>
 						    	<hr/>
 						    </td>
 						    <td class="td-right">
@@ -205,19 +205,19 @@
 						  </tr>
 						  <tr>
 						  	<td class="td-left-1">
-						  		<button id="btn-plus" class="fix-button-operation">+</button>
-						  		<button id="btn-minus" class="fix-button-operation">-</button><br/>
-						  		<button id="btn-multi" class="fix-button-operation">×</button>
-						  		<button id="btn-divide" class="fix-button-operation">÷</button><br/>
-						  		<button id="btn-caret" class="fix-button-operation">＾</button><br/>
-						  		<button id="btn-open-bracket" class="fix-button-operation">（</button>
-						  		<button id="btn-close-bracket" class="fix-button-operation">）</button><br/>
-						  		<button id="btn-less-than" class="fix-button-operation">＜</button>
-						  		<button id="btn-greater-than" class="fix-button-operation">＞</button><br/>
-						  		<button id="btn-less-than-or-equal" class="fix-button-operation">≦</button>
-						  		<button id="btn-greater-than-or-equal" class="fix-button-operation">≧</button><br/>
-						  		<button id="btn-equal" class="fix-button-operation">＝</button>
-						  		<button id="btn-not-equal" class="fix-button-operation">≠</button>
+						  		<button id="btn-plus" class="fix-button-operation" data-bind="click: pasteValue.bind($data, '+')">+</button>
+						  		<button id="btn-minus" class="fix-button-operation" data-bind="click: pasteValue.bind($data, '-')">-</button><br/>
+						  		<button id="btn-multi" class="fix-button-operation" data-bind="click: pasteValue.bind($data, '×')">×</button>
+						  		<button id="btn-divide" class="fix-button-operation" data-bind="click: pasteValue.bind($data, '÷')">÷</button><br/>
+						  		<button id="btn-caret" class="fix-button-operation" data-bind="click: pasteValue.bind($data, '＾')">＾</button><br/>
+						  		<button id="btn-open-bracket" class="fix-button-operation" data-bind="click: pasteValue.bind($data, '（')">（</button>
+						  		<button id="btn-close-bracket" class="fix-button-operation" data-bind="click: pasteValue.bind($data, '）')">）</button><br/>
+						  		<button id="btn-less-than" class="fix-button-operation" data-bind="click: pasteValue.bind($data, '+'＜">＜</button>
+						  		<button id="btn-greater-than" class="fix-button-operation" data-bind="click: pasteValue.bind($data, '＞')">＞</button><br/>
+						  		<button id="btn-less-than-or-equal" class="fix-button-operation" data-bind="click: pasteValue.bind($data, '≦')">≦</button>
+						  		<button id="btn-greater-than-or-equal" class="fix-button-operation" data-bind="click: pasteValue.bind($data, '≧')">≧</button><br/>
+						  		<button id="btn-equal" class="fix-button-operation" data-bind="click: pasteValue.bind($data, '＝')">＝</button>
+						  		<button id="btn-not-equal" class="fix-button-operation" data-bind="click: pasteValue.bind($data, '≠')">≠</button>
 						  	</td>
 						  	<td class="td-left-2">
 						  		<div data-bind="with: formulaManualContent">

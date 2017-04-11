@@ -25,7 +25,7 @@
 									<table id="q_lst_001"></table>
 								</td>
 								<td>
-									<button id="q_btn_001">お試し計算</button>
+									<button id="q_btn_001" data-bind="click: calculationTrial">お試し計算</button>
 									<span class="caret-right outline" style="height: 35px; font-size: 3.2rem;"></span>	
 								</td>
 								<td>
@@ -42,7 +42,7 @@
 					<div id="q_lbl_003" class="separate-vertical" data-bind="ntsFormLabel: {}">お試しの値</div>
 					<hr/>
 					<div id="q_inp_002">
-						
+						<span data-bind="text: formulaContent"></span>
 					</div>
 					<br />
 					<div id="footer">

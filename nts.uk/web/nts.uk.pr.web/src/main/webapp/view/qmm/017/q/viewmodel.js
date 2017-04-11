@@ -13,15 +13,29 @@ var nts;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
-                                function ScreenModel() {
+                                function ScreenModel(data) {
                                     var self = this;
                                     self.items = ko.observableArray([]);
-                                    for (var i = 1; i < 4; i++) {
-                                        self.items.push(new ItemModel('00' + i, 0));
-                                    }
                                     self.currentCodeList = ko.observableArray([]);
+                                    self.formulaContent = data.formulaContent;
+                                    self.buildListItemModel(data.itemsBag);
                                     self.bindGridListItem();
                                 }
+                                ScreenModel.prototype.isDuplicated = function (itemName) {
+                                    var self = this;
+                                    var foundItem = _.find(self.items(), function (item) {
+                                        return item.name == itemName;
+                                    });
+                                    return foundItem !== undefined;
+                                };
+                                ScreenModel.prototype.buildListItemModel = function (itemsBag) {
+                                    var self = this;
+                                    _.forEach(itemsBag, function (item) {
+                                        if (item.name.indexOf('関数') === -1 && self.formulaContent.indexOf(item.name) !== -1 && !self.isDuplicated(item.name)) {
+                                            self.items.push(new ItemModel(item.name, 0));
+                                        }
+                                    });
+                                };
                                 ScreenModel.prototype.bindGridListItem = function () {
                                     var self = this;
                                     $("#q_lst_001").igGrid({
@@ -49,6 +63,14 @@ var nts;
                                             }]
                                     });
                                     $("[aria-describedby='q_lst_001_code']").css({ "backgroundColor": "#CFF1A5" });
+                                };
+                                ScreenModel.prototype.calculationTrial = function () {
+                                    var self = this;
+                                    var replacedValue = '';
+                                    _.forEach(self.items(), function (item) {
+                                        replacedValue = self.formulaContent.replace(item.code, item.value);
+                                    });
+                                    console.log(replacedValue);
                                 };
                                 return ScreenModel;
                             }());
