@@ -6,6 +6,8 @@ import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.paydayprocess
 
 
 public interface PaydayProcessingRepository {
+	
+	PaydayProcessing selectOne(String companyCode, int processingNo);
 
 	List<PaydayProcessing> select1(String companyCode, int bonusAtr);
 

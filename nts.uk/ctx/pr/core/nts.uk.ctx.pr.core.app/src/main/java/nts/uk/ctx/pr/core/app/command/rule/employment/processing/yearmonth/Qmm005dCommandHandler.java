@@ -34,7 +34,7 @@ public class Qmm005dCommandHandler extends CommandHandler<Qmm005dCommand> {
 
 		try {
 			PaydayProcessing paydayProcessingDomain = command.toPaydayProcessingDomain(companyCode);
-			PaydayProcessing paydayProcessingDomainUpdate = paydayProcessingRepo.select1(companyCode,
+			PaydayProcessing paydayProcessingDomainUpdate = paydayProcessingRepo.selectOne(companyCode,
 					paydayProcessingDomain.getProcessingNo().v());
 
 			if (paydayProcessingDomainUpdate != null) {
