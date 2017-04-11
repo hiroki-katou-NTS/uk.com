@@ -29,7 +29,6 @@ import nts.uk.ctx.basic.dom.organization.workplace.WorkPlaceGenericName;
 import nts.uk.ctx.basic.dom.organization.workplace.WorkPlaceMemo;
 import nts.uk.ctx.basic.dom.organization.workplace.WorkPlaceName;
 import nts.uk.ctx.basic.dom.organization.workplace.WorkPlaceRepository;
-import nts.uk.ctx.basic.dom.organization.workplace.WorkPlaceShortName;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.primitive.Memo;
 
@@ -65,11 +64,10 @@ public class UpdateWorkPlaceCommandHandler extends CommandHandler<List<UpdateWor
 			}
 			GeneralDate startDate = GeneralDate.legacyDate(startDate1);
 			GeneralDate endDate = GeneralDate.legacyDate(endDate1);
- 
+
 			WorkPlace workPlace = new WorkPlace(companyCode,
 					new WorkPlaceCode(context.getCommand().get(0).getWorkPlaceCode()),
-					context.getCommand().get(0).getHistoryId(),
-					endDate,
+					context.getCommand().get(0).getHistoryId(), endDate,
 					new WorkPlaceCode(context.getCommand().get(0).getExternalCode()),
 					new WorkPlaceGenericName(context.getCommand().get(0).getFullName()),
 					new HierarchyCode(context.getCommand().get(0).getHierarchyCode()),
@@ -77,18 +75,15 @@ public class UpdateWorkPlaceCommandHandler extends CommandHandler<List<UpdateWor
 					new ParentChildAttribute(new BigDecimal(context.getCommand().get(0).getParentChildAttribute1())),
 					new ParentChildAttribute(new BigDecimal(context.getCommand().get(0).getParentChildAttribute2())),
 					new WorkPlaceCode(context.getCommand().get(0).getParentWorkCode1()),
-					new WorkPlaceCode(context.getCommand().get(0).getParentWorkCode2()),
-					new WorkPlaceShortName(context.getCommand().get(0).getShortName()),
-					startDate
-					);
-			
+					new WorkPlaceCode(context.getCommand().get(0).getParentWorkCode2()), startDate);
+
 			String historyId = workPlace.getHistoryId();
 			workPlaceRepository.update(workPlace);
 			updateMemo(companyCode, historyId, context.getCommand().get(0).getMemo());
 		} else if (context.getCommand().size() > 1) {
 
 			for (int i = 0; i < context.getCommand().size(); i++) {
-				if (!workPlaceRepository.isExistWorkPace(companyCode,context.getCommand().get(0).getHistoryId(),
+				if (!workPlaceRepository.isExistWorkPace(companyCode, context.getCommand().get(0).getHistoryId(),
 						new WorkPlaceCode(context.getCommand().get(i).getWorkPlaceCode()))) {
 					throw new BusinessException("ER005");
 				}
@@ -109,43 +104,37 @@ public class UpdateWorkPlaceCommandHandler extends CommandHandler<List<UpdateWor
 
 				WorkPlace workPlace1 = new WorkPlace(companyCode,
 						new WorkPlaceCode(context.getCommand().get(i).getWorkPlaceCode()),
-						context.getCommand().get(i).getHistoryId(),
-						endDate,
-						new WorkPlaceCode(context.getCommand().get(i).getExternalCode()!= null
+						context.getCommand().get(i).getHistoryId(), endDate,
+						new WorkPlaceCode(context.getCommand().get(i).getExternalCode() != null
 								? context.getCommand().get(i).getExternalCode() : ""),
-						new WorkPlaceGenericName(context.getCommand().get(i).getFullName()!= null
+						new WorkPlaceGenericName(context.getCommand().get(i).getFullName() != null
 								? context.getCommand().get(i).getFullName() : ""),
 						new HierarchyCode(context.getCommand().get(i).getHierarchyCode()),
-						new WorkPlaceName(context.getCommand().get(i).getName()!= null
+						new WorkPlaceName(context.getCommand().get(i).getName() != null
 								? context.getCommand().get(i).getName() : ""),
-						new ParentChildAttribute(new BigDecimal(context.getCommand().get(i).getParentChildAttribute1())),
-						new ParentChildAttribute(new BigDecimal(context.getCommand().get(i).getParentChildAttribute2())),
+						new ParentChildAttribute(
+								new BigDecimal(context.getCommand().get(i).getParentChildAttribute1())),
+						new ParentChildAttribute(
+								new BigDecimal(context.getCommand().get(i).getParentChildAttribute2())),
 						new WorkPlaceCode(context.getCommand().get(i).getParentWorkCode1()),
-						new WorkPlaceCode(context.getCommand().get(i).getParentWorkCode2()),
-						new WorkPlaceShortName(context.getCommand().get(i).getShortName()!= null
-								? context.getCommand().get(i).getShortName() : ""),
-						startDate
-						);
-				
+						new WorkPlaceCode(context.getCommand().get(i).getParentWorkCode2()), startDate);
+
 				WorkPlace workPlace2 = new WorkPlace(companyCode,
 						new WorkPlaceCode(context.getCommand().get(i).getWorkPlaceCode()),
-						context.getCommand().get(i).getHistoryId(),
-						endDate,
-						new WorkPlaceCode(context.getCommand().get(i).getExternalCode()!= null
+						context.getCommand().get(i).getHistoryId(), endDate,
+						new WorkPlaceCode(context.getCommand().get(i).getExternalCode() != null
 								? context.getCommand().get(i).getExternalCode() : ""),
-						new WorkPlaceGenericName(context.getCommand().get(i).getFullName()!= null
+						new WorkPlaceGenericName(context.getCommand().get(i).getFullName() != null
 								? context.getCommand().get(i).getFullName() : ""),
-						new HierarchyCode(context.getCommand().get(i).getHierarchyCode()+ i +""),
-						new WorkPlaceName(context.getCommand().get(i).getName()!= null
+						new HierarchyCode("099" + i + ""),
+						new WorkPlaceName(context.getCommand().get(i).getName() != null
 								? context.getCommand().get(i).getName() : ""),
-						new ParentChildAttribute(new BigDecimal(context.getCommand().get(i).getParentChildAttribute1())),
-						new ParentChildAttribute(new BigDecimal(context.getCommand().get(i).getParentChildAttribute2())),
+						new ParentChildAttribute(
+								new BigDecimal(context.getCommand().get(i).getParentChildAttribute1())),
+						new ParentChildAttribute(
+								new BigDecimal(context.getCommand().get(i).getParentChildAttribute2())),
 						new WorkPlaceCode(context.getCommand().get(i).getParentWorkCode1()),
-						new WorkPlaceCode(context.getCommand().get(i).getParentWorkCode2()),
-						new WorkPlaceShortName(context.getCommand().get(i).getShortName()!= null
-								? context.getCommand().get(i).getShortName() : ""),
-						startDate
-						);
+						new WorkPlaceCode(context.getCommand().get(i).getParentWorkCode2()), startDate);
 				listDep.add(workPlace1);
 				listDep1.add(workPlace2);
 			}
@@ -153,14 +142,30 @@ public class UpdateWorkPlaceCommandHandler extends CommandHandler<List<UpdateWor
 			update(listDep1);
 			update(listDep);
 			updateMemo(companyCode, historyId, context.getCommand().get(0).getMemo());
+		} else if ((context.getCommand().size() == 1)
+				&& (context.getCommand().get(0).getMemo().compareTo("addhistoryfromlatest") == 0)) {
+
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+			try {
+				endDate1 = formatter.parse(context.getCommand().get(0).getEndDate());
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			GeneralDate endDate = GeneralDate.legacyDate(endDate1);
+			String historyId = context.getCommand().get(0).getHistoryId();
+
+			workPlaceRepository.updateEnddate(companyCode, historyId, endDate);
+
 		}
 
 	}
+
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	private void update(List<WorkPlace> listDep) {
 		workPlaceRepository.updateAll(listDep);
 	}
-	
+
 	void updateMemo(String companyCode, String historyId, String memo) {
 		WorkPlaceMemo departmentMemo = new WorkPlaceMemo(companyCode, historyId, new Memo(memo));
 		workPlaceRepository.updateMemo(departmentMemo);

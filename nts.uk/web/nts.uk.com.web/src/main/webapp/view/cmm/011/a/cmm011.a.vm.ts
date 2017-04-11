@@ -1,4 +1,4 @@
-module cmm009.a.viewmodel {
+module cmm011.a.viewmodel {
 
 
     export class ScreenModel {
@@ -106,8 +106,8 @@ module cmm009.a.viewmodel {
                         self.historyId(self.itemHist().historyId);
                         //get position by historyId
                         var dfd = $.Deferred();
-                        service.getAllDepartmentByHistId(self.historyId())
-                            .done(function(department_arr: Array<viewmodel.model.Dto>) {
+                        service.getAllWorkPLaceByHistId(self.historyId())
+                            .done(function(department_arr: Array<viewmodel.model.DtoWKP>) {
                                 self.dataSource(department_arr);
                                 if (self.dataSource().length > 0) {
                                     self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "children"));
@@ -120,7 +120,7 @@ module cmm009.a.viewmodel {
                             }).fail(function(error) {
                                 alert(error.message);
                             })
-                        service.getMemoByHistId(self.historyId())
+                        service.getMemoWorkPLaceByHistId(self.historyId())
                             .done(function(memo: viewmodel.model.MemoDto) {
                                 if (memo != null) {
                                     self.A_INP_008(memo.memo);
@@ -141,9 +141,11 @@ module cmm009.a.viewmodel {
             var self = this;
             /*case add item lần đầu khi history == null*/
             if (self.checknull() === "landau" && self.itemHistId().length == 1 && self.checkInput()) {
-                let dto = new model.AddDepartmentDto(self.A_INP_002(), "", "9999-12-31", self.A_INP_007(), self.A_INP_004(), "001", self.A_INP_003(), self.itemaddHist.startDate, self.A_INP_008(), null);
+                let dto = new model.AddWorkplaceDto(self.A_INP_002(), null, "9999/12/31", self.A_INP_007(), self.A_INP_004(), "001", self.A_INP_003(), self.itemaddHist.startDate, self.A_INP_008(), self.A_INP_003(), "1", "1", null, null, null);
                 var dfd = $.Deferred();
-                service.addDepartment(dto)
+                let arr = new Array;
+                arr.push(dto);
+                service.addWorkPlace(arr)
                     .done(function(mess: any) {
                         self.start();
                         location.reload();
@@ -162,11 +164,11 @@ module cmm009.a.viewmodel {
                 var _dt = self.dataSource();
                 var _code = self.singleSelectedCode();
                 var current = self.findHira(_code, _dt);
-                let dto = new model.AddDepartmentDto(self.A_INP_002(), current.historyId, hisdto.endDate, self.A_INP_007(), self.A_INP_004(), current.hierarchyCode, self.A_INP_003(), hisdto.startDate, self.A_INP_008(), null);
+                let dto = new model.AddWorkplaceDto(self.A_INP_002(), hisdto.historyId, hisdto.endDate, self.A_INP_007(), self.A_INP_004(), current.hierarchyCode, self.A_INP_003(), hisdto.startDate, self.A_INP_008(), current.shortName, current.parentChildAttribute1, current.parentChildAttribute2, null, null, null);
                 let arr = new Array;
                 arr.push(dto);
                 debugger;
-                service.upDateListDepartment(arr)
+                service.upDateListWorkplace(arr)
                     .done(function(mess: any) {
                         location.reload();
                     }).fail(function(error) {
@@ -183,23 +185,23 @@ module cmm009.a.viewmodel {
                 var self = this;
                 var dfd = $.Deferred();
                 let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
-                let _dto = new model.AddDepartmentDto(self.A_INP_002(), hisdto.historyId, hisdto.endDate, self.A_INP_007(), self.A_INP_004(), self.dtoAdd().hierarchyCode, self.A_INP_003(), hisdto.startDate, self.A_INP_008(), null);
+                let _dto = new model.AddWorkplaceDto(self.A_INP_002(), hisdto.historyId, hisdto.endDate, self.A_INP_007(), self.A_INP_004(), self.dtoAdd().hierarchyCode, self.A_INP_003(), hisdto.startDate, self.A_INP_008(), self.A_INP_004(), "1", "1", null, null, null);
                 let data = self.listDtothaydoi();
                 let arr = new Array;
                 arr.push(_dto);
                 debugger;
                 if (data != null) {
-                    service.upDateListDepartment(data)
+                    service.upDateListWorkplace(data)
                         .done(function(mess) {
                             var dfd2 = $.Deferred();
-                            service.addDepartment(arr)
+                            service.addWorkPlace(arr)
                                 .done(function(mess: any) {
                                     self.start();
                                     location.reload();
                                 })
                                 .fail(function(error) {
                                     if (error.message == "ER026") {
-                                        alert("入力した " + _dto.departmentCode + "は既に存在しています。\r\n " + _dto.departmentCode + "  を確認してください。 ");
+                                        alert("入力した " + _dto.workplaceCode + "は既に存在しています。\r\n " + _dto.departmentCode + "  を確認してください。 ");
                                     }
                                 })
                             dfd2.resolve();
@@ -213,14 +215,14 @@ module cmm009.a.viewmodel {
                     return dfd.promise();
                 } else {
                     var dfd2 = $.Deferred();
-                    service.addDepartment(arr)
+                    service.addWorkPlace(arr)
                         .done(function(mess: any) {
                             self.start();
                             location.reload();
                         })
                         .fail(function(error) {
                             if (error.message == "ER026") {
-                                alert("入力した " + _dto.departmentCode + "は既に存在しています。\r\n " + _dto.departmentCode + "  を確認してください。 ");
+                                alert("入力した " + _dto.workplaceCode + "は既に存在しています。\r\n " + _dto.departmentCode + "  を確認してください。 ");
                             }
                         })
                     dfd2.resolve();
@@ -235,13 +237,13 @@ module cmm009.a.viewmodel {
                 }
                 self.dataSource2(_dt);
                 var dfd2 = $.Deferred();
-                service.addListDepartment(self.dataSource2())
+                service.addListWorkPlace(self.dataSource2())
                     .done(function(mess: any) {
                         var dfd2 = $.Deferred();
-                        let _dto = new model.AddDepartmentDto("", self.itemHistId()[1].historyId, self.itemHistId()[1].endDate, "", "", "", "", "", "addhistoryfromlatest", null);
+                        let _dto = new model.AddWorkplaceDto("", self.itemHistId()[1].historyId, self.itemHistId()[1].endDate, null, null, null, null, null, "addhistoryfromlatest", null, null, null, null, null, null);
                         let arr = new Array;
                         arr.push(_dto);
-                        service.upDateEndDate(arr)
+                        service.upDateEndDateWkp(arr)
                             .done(function() {
                                 location.reload();
                             })
@@ -252,20 +254,19 @@ module cmm009.a.viewmodel {
                 dfd2.resolve();
                 return dfd2.promise();
             }
-
             if (self.checkAddHist1() == "AddhistoryFromBeggin") {
                 if (self.checkInput()) {
-                    let _dto = new model.AddDepartmentDto(self.A_INP_002(), null, self.itemHistId()[0].endDate, self.A_INP_007(), self.A_INP_004(), "001", self.A_INP_003(), self.itemHistId()[0].startDate, self.A_INP_008(), null);
+                    let _dto = new model.AddWorkplaceDto(self.A_INP_002(), null, self.itemHistId()[0].endDate, self.A_INP_007(), self.A_INP_004(), "001", self.A_INP_003(), self.itemHistId()[0].startDate, self.A_INP_008(), null, "1", "1", null, null, null);
                     let arr1 = new Array;
                     arr1.push(_dto);
                     var dfd2 = $.Deferred();
-                    service.addListDepartment(arr1)
+                    service.addListWorkPlace(arr1)
                         .done(function(mess: any) {
                             var dfd2 = $.Deferred();
-                            let _dto = new model.AddDepartmentDto("", self.itemHistId()[1].historyId, self.itemHistId()[1].endDate, "", "", "", "", "", "addhistoryfromlatest", null);
+                            let _dto = new model.AddWorkplaceDto("", self.itemHistId()[1].historyId, self.itemHistId()[1].endDate, null, null, null, null, null, "addhistoryfromlatest", null, null, null, null, null, null);
                             let arr = new Array;
                             arr.push(_dto);
-                            service.upDateEndDate(arr)
+                            service.upDateEndDateWkp(arr)
                                 .done(function() {
                                     location.reload();
                                 })
@@ -442,10 +443,6 @@ module cmm009.a.viewmodel {
                 alert("名称 が入力されていません。");
                 $("#A_INP_003").focus();
                 return false;
-            } else if (self.A_INP_004() == "") {
-                alert("表示名称 が入力されていません。");
-                $("#A_INP_004").focus();
-                return false;
             }
             return true
         }
@@ -454,7 +451,7 @@ module cmm009.a.viewmodel {
             var self = this;
             if (self.checknull() == "landau") {
                 nts.uk.ui.windows.setShared('datanull', "datanull");
-                nts.uk.ui.windows.sub.modal('/view/cmm/009/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
+                nts.uk.ui.windows.sub.modal('/view/cmm/011/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
                     let itemAddHistory = nts.uk.ui.windows.getShared('itemHistory');
                     if (itemAddHistory !== undefined) {
                         let itemadd = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");
@@ -482,7 +479,6 @@ module cmm009.a.viewmodel {
                     let itemAddHistory = nts.uk.ui.windows.getShared('itemHistory');
                     if (itemAddHistory.checked == true) {
                         let add = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");
-                        console.log(add);
                         let arr = self.itemHistId();
                         arr.unshift(add);
                         //self.itemHistId.unshift(add);
@@ -500,6 +496,7 @@ module cmm009.a.viewmodel {
                             item.historyId = null;
                             item.startDate = hisdto.startDate;
                             item.endDate = hisdto.endDate;
+                            item.workPlaceCode = item.departmentCode;
                         });
 
                         self.checkAddHist1("AddhistoryFromLatest");
@@ -516,6 +513,7 @@ module cmm009.a.viewmodel {
                         let strStartDate = startDate.getFullYear() + '/' + (startDate.getMonth() + 1) + '/' + startDate.getDate();
                         arr[1].endDate = strStartDate;
                         self.itemHistId(arr);
+                        self.A_INP_008(itemAddHistory.memo);
                         self.selectedCodes_His(self.itemHistId()[0].startDate);
                         self.dataSource(null);
                         self.A_INP_002("");
@@ -539,9 +537,8 @@ module cmm009.a.viewmodel {
             hisdto.index = index;
             console.log(hisdto);
             console.log(index);
-            debugger;
             nts.uk.ui.windows.setShared('itemHist', hisdto);
-            nts.uk.ui.windows.sub.modal('/view/cmm/009/d/index.xhtml', { title: '明細レイアウトの作成＞履歴の編集' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/cmm/011/d/index.xhtml', { title: '明細レイアウトの作成＞履歴の編集' }).onClosed(function(): any {
                 let newstartDate = nts.uk.ui.windows.getShared('newstartDate');
                 let isRadiocheck = nts.uk.ui.windows.getShared('isradio');
                 debugger;
@@ -766,6 +763,7 @@ module cmm009.a.viewmodel {
                                 editObjs[k].startDate = currentHis.startDate;
                                 editObjs[k].endDate = currentHis.endDate;
                                 editObjs[k].memo = self.A_INP_008();
+                                editObjs[k].workPlaceCode = editObjs[k].departmentCode;
                             }
                         }
                         self.dtoAdd(newObj);
@@ -803,6 +801,7 @@ module cmm009.a.viewmodel {
                                 editObjs[k].startDate = currentHis.startDate;
                                 editObjs[k].endDate = currentHis.endDate;
                                 editObjs[k].memo = self.A_INP_008();
+                                editObjs[k].workPlaceCode = editObjs[k].departmentCode;
                             }
                         }
                         self.dtoAdd(newObj);
@@ -847,6 +846,7 @@ module cmm009.a.viewmodel {
                         newObj.startDate = currentHis.startDate;
                         newObj.endDate = currentHis.endDate;
                         newObj.memo = self.A_INP_008();
+                        //newObj.workPlaceCode = editObjs[k].departmentCode;
                         self.dtoAdd(newObj);
                         self.listDtothaydoi();
                         self.dataSource(_dt);
@@ -865,45 +865,30 @@ module cmm009.a.viewmodel {
             }
         }
 
-        getAllData() {
-            var self = this;
-            var dfd = $.Deferred<any>();
-            service.getAllDepartment().done(function(departmentQueryResult: viewmodel.model.DepartmentQueryResult) {
-                var departmentQueryResultmodel = departmentQueryResult;
-                if (departmentQueryResult.departments.length > 0) {
-                    self.dataSource(departmentQueryResult.departments);
-                }
-                dfd.resolve();
-            }).fail(function(error) {
-                console.log(error);
-            })
-            return dfd.promise();
-        }
 
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred<any>();
-
-            // get all department
-            service.getAllDepartment().done(function(departmentQueryResult: viewmodel.model.DepartmentQueryResult) {
-                var departmentQueryResultmodel = departmentQueryResult;
-                console.log(departmentQueryResult);
-                if (departmentQueryResultmodel.histories == null) {
+            // get init data workplace
+            service.getAllWorkplace().done(function(workplaceQueryResult: viewmodel.model.WorkPlaceQueryResult) {
+                var workplaceQueryResult = workplaceQueryResult;
+                console.log(workplaceQueryResult);
+                if (workplaceQueryResult.histories == null) {
                     nts.uk.ui.windows.setShared('datanull', "datanull");
                     self.checknull("landau");
                     self.openCDialog();
                 } else {
-                    if (departmentQueryResult.departments.length > 0) {
-                        self.dataSource(departmentQueryResult.departments);
+                    if (workplaceQueryResult.workPlaces.length > 0) {
+                        self.dataSource(workplaceQueryResult.workPlaces);
                     }
-                    if (departmentQueryResult.memo) {
-                        self.A_INP_008(departmentQueryResult.memo.memo);
+                    if (workplaceQueryResult.memo) {
+                        self.A_INP_008(workplaceQueryResult.memo.memo);
                     }
-                    if (departmentQueryResultmodel.histories.length > 0) {
-                        self.itemHistId(departmentQueryResultmodel.histories);
+                    if (workplaceQueryResult.histories.length > 0) {
+                        self.itemHistId(workplaceQueryResult.histories);
                         if (self.dataSource().length > 0) {
                             self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "children"));
-                            self.singleSelectedCode(departmentQueryResult.departments[0].departmentCode);
+                            self.singleSelectedCode(workplaceQueryResult.workPlaces[0].departmentCode);
                             self.selectedCodes_His(self.itemHistId()[0].startDate);
                             self.numberItemNew(0);
                         }
@@ -913,8 +898,10 @@ module cmm009.a.viewmodel {
             }).fail(function(error) {
                 console.log(error);
             })
+            dfd.resolve();
             return dfd.promise();
         }
+    }
     /**
           * Model namespace.
        */
@@ -923,6 +910,12 @@ module cmm009.a.viewmodel {
         export class DepartmentQueryResult {
             histories: Array<HistoryDto>;
             departments: Array<Dto>;
+            memo: MemoDto;
+        }
+
+        export class WorkPlaceQueryResult {
+            histories: Array<HistoryDto>;
+            workPlaces: Array<DtoWKP>;
             memo: MemoDto;
         }
 
@@ -942,6 +935,57 @@ module cmm009.a.viewmodel {
                 self.startDate = startDate;
                 self.historyId = historyId;
                 self.displayDate = startDate + " ~ " + endDate;
+            }
+        }
+        //    Department     
+        export class DtoWKP {
+            companyCode: string;
+            departmentCode: string;
+            historyId: string;
+            endDate: string;
+            externalCode: string;
+            fullName: string;
+            hierarchyCode: string;
+            name: string;
+            parentChildAttribute1: string;
+            parentChildAttribute2: string;
+            parentWorkCode1: string;
+            parentWorkCode2: string;
+            shortName: string;
+            startDate: string;
+            children: Array<Dto>;
+            constructor(companyCode: string,
+                departmentCode: string,
+                historyId: string,
+                endDate: string,
+                externalCode: string,
+                fullName: string,
+                hierarchyCode: string,
+                name: string,
+                parentChildAttribute1: string,
+                parentChildAttribute2: string,
+                parentWorkCode1: string,
+                parentWorkCode2: string,
+                shortName: string,
+                startDate: string,
+                children: Array<Dto>
+            ) {
+                var self = this;
+                self.companyCode = companyCode;
+                self.departmentCode = departmentCode;
+                self.historyId = historyId;
+                self.endDate = endDate;
+                self.externalCode = externalCode;
+                self.fullName = fullName;
+                self.hierarchyCode = hierarchyCode;
+                self.name = name;
+                self.parentChildAttribute1 = parentChildAttribute1;
+                self.parentChildAttribute2 = parentChildAttribute2;
+                self.parentWorkCode1 = parentWorkCode1;
+                self.parentWorkCode2 = parentWorkCode2;
+                self.shortName = shortName;
+                self.startDate = startDate;
+                self.children = children;
             }
         }
 
@@ -981,6 +1025,56 @@ module cmm009.a.viewmodel {
                 self.children = children;
             }
         }
+        export class AddWorkplaceDto {
+            workPlaceCode: string;
+            historyId: string;
+            endDate: string;
+            externalCode: string;
+            fullName: string;
+            hierarchyCode: string;
+            name: string;
+            startDate: string;
+            memo: string;
+            shortName: string;
+            parentChildAttribute1: string;
+            parentChildAttribute2: string;
+            parentWorkCode1: string;
+            parentWorkCode2: string;
+            children: Array<AddWorkplaceDto>;
+            constructor(
+                workPlaceCode: string,
+                historyId: string,
+                endDate: string,
+                externalCode: string,
+                fullName: string,
+                hierarchyCode: string,
+                name: string,
+                startDate: string,
+                memo: string,
+                shortName: string,
+                parentChildAttribute1: string,
+                parentChildAttribute2: string,
+                parentWorkCode1: string,
+                parentWorkCode2: string,
+                children: Array<AddWorkplaceDto>) {
+                var self = this;
+                self.memo = memo;
+                self.workPlaceCode = workPlaceCode;
+                self.historyId = historyId;
+                self.endDate = endDate;
+                self.externalCode = externalCode;
+                self.fullName = fullName;
+                self.hierarchyCode = hierarchyCode;
+                self.name = name;
+                self.shortName = shortName;
+                self.startDate = startDate;
+                self.parentChildAttribute1 = parentChildAttribute1;
+                self.parentChildAttribute2 = parentChildAttribute2;
+                self.parentWorkCode1 = parentWorkCode1;
+                self.parentWorkCode2 = parentWorkCode2;
+                self.children = children;
+            }
+        }
 
         export class AddDepartmentDto {
             departmentCode: string;
@@ -1017,7 +1111,6 @@ module cmm009.a.viewmodel {
                 self.children = children;
             }
         }
-
 
         export class DepartmentDeleteDto {
             departmentCode: string;

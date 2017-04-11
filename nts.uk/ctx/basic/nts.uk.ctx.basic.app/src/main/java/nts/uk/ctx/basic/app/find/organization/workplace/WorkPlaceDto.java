@@ -34,13 +34,11 @@ public class WorkPlaceDto extends OrganizationTreeDto<WorkPlaceDto> {
 
 	private String parentWorkCode2;
 
-	private String shortName;
-
 	private GeneralDate startDate;
 
 	public WorkPlaceDto(String workPlaceCode, GeneralDate endDate,String historyId, String externalCode, String genericName, String hierarchyCode,
 			String name, String parentChildAttribute1, String parentChildAttribute2, String parentWorkCode1,
-			String parentWorkCode2, String shortName, GeneralDate startDate) {
+			String parentWorkCode2, GeneralDate startDate) {
 		super();
 		this.departmentCode = workPlaceCode;
 		this.endDate = endDate;
@@ -53,7 +51,6 @@ public class WorkPlaceDto extends OrganizationTreeDto<WorkPlaceDto> {
 		this.parentChildAttribute2 = parentChildAttribute2;
 		this.parentWorkCode1 = parentWorkCode1;
 		this.parentWorkCode2 = parentWorkCode2;
-		this.shortName = shortName;
 		this.startDate = startDate;
 		this.children = new ArrayList<>();
 	}

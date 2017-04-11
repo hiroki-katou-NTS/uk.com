@@ -55,7 +55,7 @@ public class WorkPlaceFinder {
 			return new WorkPlaceDto(e.getWorkPlaceCode().toString(), e.getEndDate(),e.getHistoryId(), e.getExternalCode().toString(),
 					e.getGenericName().toString(), e.getHierarchyCode().toString(), e.getName().toString(),
 					e.getParentChildAttribute1().toString(), e.getParentChildAttribute2().toString(), e.getParentWorkCode1().toString(),
-					e.getParentWorkCode2().toString(), e.getShortName().toString(), e.getStartDate());
+					e.getParentWorkCode2().toString(), e.getStartDate());
 		};
 		Map<String, List<WorkPlaceDto>> childrens = new HashMap<>();
 		childrens.put(ROOT, new ArrayList<>());

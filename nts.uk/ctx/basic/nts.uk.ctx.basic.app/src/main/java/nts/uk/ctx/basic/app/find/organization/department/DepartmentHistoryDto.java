@@ -1,20 +1,23 @@
 package nts.uk.ctx.basic.app.find.organization.department;
 
+import java.time.format.DateTimeFormatter;
+
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 
 @Data
 public class DepartmentHistoryDto {
 
-	private GeneralDate startDate;
+	private String startDate;
 
-	private GeneralDate endDate;
+	private String endDate;
 
 	private String historyId;
 
 	public DepartmentHistoryDto(String historyId, GeneralDate startDate, GeneralDate endDate) {
-		this.startDate = startDate;
-		this.endDate = endDate;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+		this.startDate = startDate.localDate().format(formatter);
+		this.endDate = endDate.localDate().format(formatter);
 		this.historyId = historyId;
 	}
 

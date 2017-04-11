@@ -20,7 +20,6 @@ import nts.uk.ctx.basic.dom.organization.workplace.WorkPlaceGenericName;
 import nts.uk.ctx.basic.dom.organization.workplace.WorkPlaceMemo;
 import nts.uk.ctx.basic.dom.organization.workplace.WorkPlaceName;
 import nts.uk.ctx.basic.dom.organization.workplace.WorkPlaceRepository;
-import nts.uk.ctx.basic.dom.organization.workplace.WorkPlaceShortName;
 import nts.uk.ctx.basic.infra.entity.organization.department.CmnmtDep;
 import nts.uk.ctx.basic.infra.entity.organization.department.CmnmtDepMemo;
 import nts.uk.ctx.basic.infra.entity.organization.department.CmnmtDepMemoPK;
@@ -40,6 +39,8 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 	private static final String CHECK_EXIST;
 
 	private static final String FIND_HISTORIES;
+	
+	private static final String UPDATE_ENDDATE;
 
 	private static final String FIND_MEMO;
 
@@ -48,6 +49,14 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 	private static final String IS_DUPLICATE_WORK_PLACE_CODE;
 
 	private static final String QUERY_IS_EXISTED;
+	
+	private static final String QUERY_IS_EXISTEDHISTORY;
+	
+	private static final String REMOVE_HISTORY;
+	
+	private static final String REMOVE_MEMO;
+	
+	private static final String UPDATE_STARTDATE;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -57,6 +66,26 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 		builderString.append(" AND e.cmnmtWorkPlacePK.historyId = :historyId");
 		builderString.append(" ORDER BY e.hierarchyId");
 		FIND_ALL_BY_HISTORY = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("DELETE FROM CmnmtWorkPlaceMemo e ");
+		builderString.append(" WHERE e.cmnmtWorkPlaceMemoPK.companyCode = :companyCode");
+		builderString.append(" AND e.cmnmtWorkPlaceMemoPK.historyId = :historyId");
+		REMOVE_MEMO = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("UPDATE CmnmtWorkPlace e");
+		builderString.append(" SET e.startDate = :startDate");
+		builderString.append(" WHERE e.cmnmtWorkPlacePK.companyCode = :companyCode");
+		builderString.append(" AND e.cmnmtWorkPlacePK.historyId = :historyId");
+		UPDATE_STARTDATE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("UPDATE CmnmtWorkPlace e");
+		builderString.append(" SET e.endDate = :endDate");
+		builderString.append(" WHERE e.cmnmtWorkPlacePK.companyCode = :companyCode");
+		builderString.append(" AND e.cmnmtWorkPlacePK.historyId = :historyId");
+		UPDATE_ENDDATE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -104,6 +133,19 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 		builderString.append(" AND e.cmnmtWorkPlacePK.workPlaceCode = :workPlaceCode");
 		builderString.append(" AND e.cmnmtWorkPlacePK.historyId = :historyId");
 		QUERY_IS_EXISTED = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(e)");
+		builderString.append(" FROM CmnmtWorkPlace e");
+		builderString.append(" WHERE e.cmnmtWorkPlacePK.companyCode = :companyCode");
+		builderString.append(" AND e.cmnmtWorkPlacePK.historyId = :historyId");
+		QUERY_IS_EXISTEDHISTORY = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("DELETE FROM CmnmtWorkPlace e ");
+		builderString.append(" WHERE e.cmnmtWorkPlacePK.companyCode = :companyCode");
+		builderString.append(" AND e.cmnmtWorkPlacePK.historyId = :historyId");
+		REMOVE_HISTORY = builderString.toString();
 
 	}
 
@@ -195,8 +237,7 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 				new ParentChildAttribute(new BigDecimal(cmnmtWorkPlace.getParentChildAttribute1())),
 				new ParentChildAttribute(new BigDecimal(cmnmtWorkPlace.getParentChildAttribute2())),
 				new WorkPlaceCode(cmnmtWorkPlace.getParentWorkCode1()),
-				new WorkPlaceCode(cmnmtWorkPlace.getParentWorkCode2()),
-				new WorkPlaceShortName(cmnmtWorkPlace.getShortName()), cmnmtWorkPlace.getStartDate());
+				new WorkPlaceCode(cmnmtWorkPlace.getParentWorkCode2()), cmnmtWorkPlace.getStartDate());
 	}
 
 	private CmnmtWorkPlace convertToDbType(WorkPlace workPlace) {
@@ -216,17 +257,15 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 		cmnmtWorkPlace.setParentChildAttribute2(workPlace.getParentChildAttribute2().toString());
 		cmnmtWorkPlace.setParentWorkCode1(workPlace.getParentWorkCode1().toString());
 		cmnmtWorkPlace.setParentWorkCode2(workPlace.getParentWorkCode2().toString());
-		cmnmtWorkPlace.setShortName(workPlace.getShortName().toString());
 		cmnmtWorkPlace.setStartDate(workPlace.getStartDate());
 		return cmnmtWorkPlace;
 	}
 
 	@Override
-	public boolean isDuplicateWorkPlaceCode(String companyCode, WorkPlaceCode workPlaceCode,String historyId) {
+	public boolean isDuplicateWorkPlaceCode(String companyCode, WorkPlaceCode workPlaceCode, String historyId) {
 		return this.queryProxy().query(IS_DUPLICATE_WORK_PLACE_CODE, long.class)
-				.setParameter("companyCode", "'" + companyCode + "'")
-				.setParameter("departmentCode", "'" + workPlaceCode.toString() + "'")
-				.setParameter("historyId", "'" + historyId + "'").getSingle().get() > 0;
+				.setParameter("companyCode", companyCode).setParameter("workPlaceCode", workPlaceCode.toString())
+				.setParameter("historyId", historyId).getSingle().get() > 0;
 	}
 
 	@Override
@@ -268,12 +307,49 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 			cmnmtWkp.setParentChildAttribute2(listwkp.get(i).getParentChildAttribute2().toString());
 			cmnmtWkp.setParentWorkCode1(listwkp.get(i).getParentWorkCode1().toString());
 			cmnmtWkp.setParentWorkCode2(listwkp.get(i).getParentWorkCode2().toString());
-			cmnmtWkp.setShortName(
-					listwkp.get(i).getShortName() != null ? listwkp.get(i).getShortName().toString() : "");
 			cmnmtWkp.setStartDate(listwkp.get(i).getStartDate());
 			listCmnmtWkp.add(cmnmtWkp);
 		}
 		return listCmnmtWkp;
+	}
+
+	@Override
+	public void addAll(List<WorkPlace> list) {
+		convertListDepToDbType(list).forEach(item -> {
+			this.commandProxy().insert(item);
+		});
+	}
+
+	@Override
+	public void updateEnddate(String companyCode, String historyId, GeneralDate endDate) {
+		this.getEntityManager().createQuery(UPDATE_ENDDATE).setParameter("companyCode", companyCode)
+		.setParameter("historyId", historyId).setParameter("endDate", endDate).executeUpdate();
+
+		
+	}
+
+	@Override
+	public boolean isExistHistory(String companyCode, String historyId) {
+		return this.queryProxy().query(QUERY_IS_EXISTEDHISTORY, long.class).setParameter("companyCode", companyCode)
+				.setParameter("historyId", historyId).getSingle().get() > 0;
+	}
+
+	@Override
+	public void removeHistory(String companyCode, String historyId) {
+		this.getEntityManager().createQuery(REMOVE_HISTORY).setParameter("companyCode", companyCode)
+				.setParameter("historyId", historyId).executeUpdate();
+	}
+
+	@Override
+	public void removeMemoByHistId(String companyCode, String historyId) {
+		this.getEntityManager().createQuery(REMOVE_MEMO).setParameter("companyCode", companyCode)
+				.setParameter("historyId", historyId).executeUpdate();
+	}
+
+	@Override
+	public void updateStartdate(String companyCode, String historyId, GeneralDate startDate) {
+		this.getEntityManager().createQuery(UPDATE_STARTDATE).setParameter("companyCode", companyCode)
+				.setParameter("historyId", historyId).setParameter("startDate", startDate).executeUpdate();
 	}
 
 }

@@ -35,14 +35,14 @@ public class WorkPlace {
 
 	private WorkPlaceCode parentWorkCode2;
 
-	private WorkPlaceShortName shortName;
+	//private WorkPlaceShortName shortName;
 
 	private GeneralDate startDate;
 
 	public WorkPlace(String companyCode, WorkPlaceCode workPlaceCode, String historyId, GeneralDate endDate,
 			WorkPlaceCode externalCode, WorkPlaceGenericName genericName, HierarchyCode hierarchyCode, WorkPlaceName name,
 			ParentChildAttribute parentChildAttribute1, ParentChildAttribute parentChildAttribute2,
-			WorkPlaceCode parentWorkCode1, WorkPlaceCode parentWorkCode2, WorkPlaceShortName shortName,
+			WorkPlaceCode parentWorkCode1, WorkPlaceCode parentWorkCode2,
 			GeneralDate startDate) {
 		this.companyCode = companyCode;
 		this.workPlaceCode = workPlaceCode;
@@ -56,14 +56,13 @@ public class WorkPlace {
 		this.parentChildAttribute2 = parentChildAttribute2;
 		this.parentWorkCode1 = parentWorkCode1;
 		this.parentWorkCode2 = parentWorkCode2;
-		this.shortName = shortName;
 		this.startDate = startDate;
 	}
 	
 	public WorkPlace(String companyCode, WorkPlaceCode workPlaceCode, GeneralDate endDate,
 			WorkPlaceCode externalCode, WorkPlaceGenericName genericName, HierarchyCode hierarchyCode, WorkPlaceName name,
 			ParentChildAttribute parentChildAttribute1, ParentChildAttribute parentChildAttribute2,
-			WorkPlaceCode parentWorkCode1, WorkPlaceCode parentWorkCode2, WorkPlaceShortName shortName,
+			WorkPlaceCode parentWorkCode1, WorkPlaceCode parentWorkCode2,
 			GeneralDate startDate) {
 		this.companyCode = companyCode;
 		this.workPlaceCode = workPlaceCode;
@@ -77,12 +76,11 @@ public class WorkPlace {
 		this.parentChildAttribute2 = parentChildAttribute2;
 		this.parentWorkCode1 = parentWorkCode1;
 		this.parentWorkCode2 = parentWorkCode2;
-		this.shortName = shortName;
 		this.startDate = startDate;
 	}
 
 	public WorkPlace(String companyCode, WorkPlaceCode workPlaceCode, GeneralDate endDate, WorkPlaceCode externalCode,
-			WorkPlaceGenericName genericName, HierarchyCode hierarchyCode, WorkPlaceName name, WorkPlaceShortName shortName,
+			WorkPlaceGenericName genericName, HierarchyCode hierarchyCode, WorkPlaceName name,
 			GeneralDate startDate) {
 		this.companyCode = companyCode;
 		this.workPlaceCode = workPlaceCode;
@@ -92,7 +90,6 @@ public class WorkPlace {
 		this.genericName = genericName;
 		this.hierarchyCode = hierarchyCode;
 		this.name = name;
-		this.shortName = shortName;
 		this.startDate = startDate;
 	}
 

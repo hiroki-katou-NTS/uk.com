@@ -1,5 +1,5 @@
-var cmm009;
-(function (cmm009) {
+var cmm011;
+(function (cmm011) {
     var a;
     (function (a) {
         var viewmodel;
@@ -67,7 +67,7 @@ var cmm009;
                                 }
                                 self.historyId(self.itemHist().historyId);
                                 var dfd = $.Deferred();
-                                a.service.getAllDepartmentByHistId(self.historyId())
+                                a.service.getAllWorkPLaceByHistId(self.historyId())
                                     .done(function (department_arr) {
                                     self.dataSource(department_arr);
                                     if (self.dataSource().length > 0) {
@@ -81,7 +81,7 @@ var cmm009;
                                 }).fail(function (error) {
                                     alert(error.message);
                                 });
-                                a.service.getMemoByHistId(self.historyId())
+                                a.service.getMemoWorkPLaceByHistId(self.historyId())
                                     .done(function (memo) {
                                     if (memo != null) {
                                         self.A_INP_008(memo.memo);
@@ -101,9 +101,11 @@ var cmm009;
                 ScreenModel.prototype.register = function () {
                     var self = this;
                     if (self.checknull() === "landau" && self.itemHistId().length == 1 && self.checkInput()) {
-                        var dto = new model.AddDepartmentDto(self.A_INP_002(), "", "9999-12-31", self.A_INP_007(), self.A_INP_004(), "001", self.A_INP_003(), self.itemaddHist.startDate, self.A_INP_008(), null);
+                        var dto = new model.AddWorkplaceDto(self.A_INP_002(), null, "9999/12/31", self.A_INP_007(), self.A_INP_004(), "001", self.A_INP_003(), self.itemaddHist.startDate, self.A_INP_008(), self.A_INP_003(), "1", "1", null, null, null);
                         var dfd = $.Deferred();
-                        a.service.addDepartment(dto)
+                        var arr = new Array;
+                        arr.push(dto);
+                        a.service.addWorkPlace(arr)
                             .done(function (mess) {
                             self.start();
                             location.reload();
@@ -121,11 +123,11 @@ var cmm009;
                         var _dt = self.dataSource();
                         var _code = self.singleSelectedCode();
                         var current = self.findHira(_code, _dt);
-                        var dto = new model.AddDepartmentDto(self.A_INP_002(), current.historyId, hisdto.endDate, self.A_INP_007(), self.A_INP_004(), current.hierarchyCode, self.A_INP_003(), hisdto.startDate, self.A_INP_008(), null);
+                        var dto = new model.AddWorkplaceDto(self.A_INP_002(), hisdto.historyId, hisdto.endDate, self.A_INP_007(), self.A_INP_004(), current.hierarchyCode, self.A_INP_003(), hisdto.startDate, self.A_INP_008(), current.shortName, current.parentChildAttribute1, current.parentChildAttribute2, null, null, null);
                         var arr = new Array;
                         arr.push(dto);
                         debugger;
-                        a.service.upDateListDepartment(arr)
+                        a.service.upDateListWorkplace(arr)
                             .done(function (mess) {
                             location.reload();
                         }).fail(function (error) {
@@ -140,23 +142,23 @@ var cmm009;
                         var self = this;
                         var dfd = $.Deferred();
                         var hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
-                        var _dto_1 = new model.AddDepartmentDto(self.A_INP_002(), hisdto.historyId, hisdto.endDate, self.A_INP_007(), self.A_INP_004(), self.dtoAdd().hierarchyCode, self.A_INP_003(), hisdto.startDate, self.A_INP_008(), null);
+                        var _dto_1 = new model.AddWorkplaceDto(self.A_INP_002(), hisdto.historyId, hisdto.endDate, self.A_INP_007(), self.A_INP_004(), self.dtoAdd().hierarchyCode, self.A_INP_003(), hisdto.startDate, self.A_INP_008(), self.A_INP_004(), "1", "1", null, null, null);
                         var data = self.listDtothaydoi();
                         var arr_1 = new Array;
                         arr_1.push(_dto_1);
                         debugger;
                         if (data != null) {
-                            a.service.upDateListDepartment(data)
+                            a.service.upDateListWorkplace(data)
                                 .done(function (mess) {
                                 var dfd2 = $.Deferred();
-                                a.service.addDepartment(arr_1)
+                                a.service.addWorkPlace(arr_1)
                                     .done(function (mess) {
                                     self.start();
                                     location.reload();
                                 })
                                     .fail(function (error) {
                                     if (error.message == "ER026") {
-                                        alert("入力した " + _dto_1.departmentCode + "は既に存在しています。\r\n " + _dto_1.departmentCode + "  を確認してください。 ");
+                                        alert("入力した " + _dto_1.workplaceCode + "は既に存在しています。\r\n " + _dto_1.departmentCode + "  を確認してください。 ");
                                     }
                                 });
                                 dfd2.resolve();
@@ -171,14 +173,14 @@ var cmm009;
                         }
                         else {
                             var dfd2 = $.Deferred();
-                            a.service.addDepartment(arr_1)
+                            a.service.addWorkPlace(arr_1)
                                 .done(function (mess) {
                                 self.start();
                                 location.reload();
                             })
                                 .fail(function (error) {
                                 if (error.message == "ER026") {
-                                    alert("入力した " + _dto_1.departmentCode + "は既に存在しています。\r\n " + _dto_1.departmentCode + "  を確認してください。 ");
+                                    alert("入力した " + _dto_1.workplaceCode + "は既に存在しています。\r\n " + _dto_1.departmentCode + "  を確認してください。 ");
                                 }
                             });
                             dfd2.resolve();
@@ -193,13 +195,13 @@ var cmm009;
                         }
                         self.dataSource2(_dt_1);
                         var dfd2 = $.Deferred();
-                        a.service.addListDepartment(self.dataSource2())
+                        a.service.addListWorkPlace(self.dataSource2())
                             .done(function (mess) {
                             var dfd2 = $.Deferred();
-                            var _dto = new model.AddDepartmentDto("", self.itemHistId()[1].historyId, self.itemHistId()[1].endDate, "", "", "", "", "", "addhistoryfromlatest", null);
+                            var _dto = new model.AddWorkplaceDto("", self.itemHistId()[1].historyId, self.itemHistId()[1].endDate, null, null, null, null, null, "addhistoryfromlatest", null, null, null, null, null, null);
                             var arr = new Array;
                             arr.push(_dto);
-                            a.service.upDateEndDate(arr)
+                            a.service.upDateEndDateWkp(arr)
                                 .done(function () {
                                 location.reload();
                             })
@@ -212,17 +214,17 @@ var cmm009;
                     }
                     if (self.checkAddHist1() == "AddhistoryFromBeggin") {
                         if (self.checkInput()) {
-                            var _dto = new model.AddDepartmentDto(self.A_INP_002(), null, self.itemHistId()[0].endDate, self.A_INP_007(), self.A_INP_004(), "001", self.A_INP_003(), self.itemHistId()[0].startDate, self.A_INP_008(), null);
+                            var _dto = new model.AddWorkplaceDto(self.A_INP_002(), null, self.itemHistId()[0].endDate, self.A_INP_007(), self.A_INP_004(), "001", self.A_INP_003(), self.itemHistId()[0].startDate, self.A_INP_008(), null, "1", "1", null, null, null);
                             var arr1 = new Array;
                             arr1.push(_dto);
                             var dfd2 = $.Deferred();
-                            a.service.addListDepartment(arr1)
+                            a.service.addListWorkPlace(arr1)
                                 .done(function (mess) {
                                 var dfd2 = $.Deferred();
-                                var _dto = new model.AddDepartmentDto("", self.itemHistId()[1].historyId, self.itemHistId()[1].endDate, "", "", "", "", "", "addhistoryfromlatest", null);
+                                var _dto = new model.AddWorkplaceDto("", self.itemHistId()[1].historyId, self.itemHistId()[1].endDate, null, null, null, null, null, "addhistoryfromlatest", null, null, null, null, null, null);
                                 var arr = new Array;
                                 arr.push(_dto);
-                                a.service.upDateEndDate(arr)
+                                a.service.upDateEndDateWkp(arr)
                                     .done(function () {
                                     location.reload();
                                 })
@@ -385,18 +387,13 @@ var cmm009;
                         $("#A_INP_003").focus();
                         return false;
                     }
-                    else if (self.A_INP_004() == "") {
-                        alert("表示名称 が入力されていません。");
-                        $("#A_INP_004").focus();
-                        return false;
-                    }
                     return true;
                 };
                 ScreenModel.prototype.openCDialog = function () {
                     var self = this;
                     if (self.checknull() == "landau") {
                         nts.uk.ui.windows.setShared('datanull', "datanull");
-                        nts.uk.ui.windows.sub.modal('/view/cmm/009/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function () {
+                        nts.uk.ui.windows.sub.modal('/view/cmm/011/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function () {
                             var itemAddHistory = nts.uk.ui.windows.getShared('itemHistory');
                             if (itemAddHistory !== undefined) {
                                 var itemadd = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");
@@ -425,7 +422,6 @@ var cmm009;
                             var itemAddHistory = nts.uk.ui.windows.getShared('itemHistory');
                             if (itemAddHistory.checked == true) {
                                 var add = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");
-                                console.log(add);
                                 var arr = self.itemHistId();
                                 arr.unshift(add);
                                 var startDate = new Date(itemAddHistory.startYearMonth);
@@ -442,6 +438,7 @@ var cmm009;
                                     item.historyId = null;
                                     item.startDate = hisdto_1.startDate;
                                     item.endDate = hisdto_1.endDate;
+                                    item.workPlaceCode = item.departmentCode;
                                 });
                                 self.checkAddHist1("AddhistoryFromLatest");
                                 self.dataSource2(_dt2);
@@ -457,6 +454,7 @@ var cmm009;
                                 var strStartDate = startDate.getFullYear() + '/' + (startDate.getMonth() + 1) + '/' + startDate.getDate();
                                 arr[1].endDate = strStartDate;
                                 self.itemHistId(arr);
+                                self.A_INP_008(itemAddHistory.memo);
                                 self.selectedCodes_His(self.itemHistId()[0].startDate);
                                 self.dataSource(null);
                                 self.A_INP_002("");
@@ -479,9 +477,8 @@ var cmm009;
                     hisdto.index = index;
                     console.log(hisdto);
                     console.log(index);
-                    debugger;
                     nts.uk.ui.windows.setShared('itemHist', hisdto);
-                    nts.uk.ui.windows.sub.modal('/view/cmm/009/d/index.xhtml', { title: '明細レイアウトの作成＞履歴の編集' }).onClosed(function () {
+                    nts.uk.ui.windows.sub.modal('/view/cmm/011/d/index.xhtml', { title: '明細レイアウトの作成＞履歴の編集' }).onClosed(function () {
                         var newstartDate = nts.uk.ui.windows.getShared('newstartDate');
                         var isRadiocheck = nts.uk.ui.windows.getShared('isradio');
                         debugger;
@@ -683,6 +680,7 @@ var cmm009;
                                         editObjs[k].startDate = currentHis.startDate;
                                         editObjs[k].endDate = currentHis.endDate;
                                         editObjs[k].memo = self.A_INP_008();
+                                        editObjs[k].workPlaceCode = editObjs[k].departmentCode;
                                     }
                                 }
                                 self.dtoAdd(newObj);
@@ -719,6 +717,7 @@ var cmm009;
                                         editObjs[k].startDate = currentHis.startDate;
                                         editObjs[k].endDate = currentHis.endDate;
                                         editObjs[k].memo = self.A_INP_008();
+                                        editObjs[k].workPlaceCode = editObjs[k].departmentCode;
                                     }
                                 }
                                 self.dtoAdd(newObj);
@@ -778,43 +777,29 @@ var cmm009;
                         alert("more than 889 item");
                     }
                 };
-                ScreenModel.prototype.getAllData = function () {
-                    var self = this;
-                    var dfd = $.Deferred();
-                    a.service.getAllDepartment().done(function (departmentQueryResult) {
-                        var departmentQueryResultmodel = departmentQueryResult;
-                        if (departmentQueryResult.departments.length > 0) {
-                            self.dataSource(departmentQueryResult.departments);
-                        }
-                        dfd.resolve();
-                    }).fail(function (error) {
-                        console.log(error);
-                    });
-                    return dfd.promise();
-                };
                 ScreenModel.prototype.start = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    a.service.getAllDepartment().done(function (departmentQueryResult) {
-                        var departmentQueryResultmodel = departmentQueryResult;
-                        console.log(departmentQueryResult);
-                        if (departmentQueryResultmodel.histories == null) {
+                    a.service.getAllWorkplace().done(function (workplaceQueryResult) {
+                        var workplaceQueryResult = workplaceQueryResult;
+                        console.log(workplaceQueryResult);
+                        if (workplaceQueryResult.histories == null) {
                             nts.uk.ui.windows.setShared('datanull', "datanull");
                             self.checknull("landau");
                             self.openCDialog();
                         }
                         else {
-                            if (departmentQueryResult.departments.length > 0) {
-                                self.dataSource(departmentQueryResult.departments);
+                            if (workplaceQueryResult.workPlaces.length > 0) {
+                                self.dataSource(workplaceQueryResult.workPlaces);
                             }
-                            if (departmentQueryResult.memo) {
-                                self.A_INP_008(departmentQueryResult.memo.memo);
+                            if (workplaceQueryResult.memo) {
+                                self.A_INP_008(workplaceQueryResult.memo.memo);
                             }
-                            if (departmentQueryResultmodel.histories.length > 0) {
-                                self.itemHistId(departmentQueryResultmodel.histories);
+                            if (workplaceQueryResult.histories.length > 0) {
+                                self.itemHistId(workplaceQueryResult.histories);
                                 if (self.dataSource().length > 0) {
                                     self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "children"));
-                                    self.singleSelectedCode(departmentQueryResult.departments[0].departmentCode);
+                                    self.singleSelectedCode(workplaceQueryResult.workPlaces[0].departmentCode);
                                     self.selectedCodes_His(self.itemHistId()[0].startDate);
                                     self.numberItemNew(0);
                                 }
@@ -824,6 +809,7 @@ var cmm009;
                     }).fail(function (error) {
                         console.log(error);
                     });
+                    dfd.resolve();
                     return dfd.promise();
                 };
                 return ScreenModel;
@@ -837,6 +823,12 @@ var cmm009;
                     return DepartmentQueryResult;
                 }());
                 model.DepartmentQueryResult = DepartmentQueryResult;
+                var WorkPlaceQueryResult = (function () {
+                    function WorkPlaceQueryResult() {
+                    }
+                    return WorkPlaceQueryResult;
+                }());
+                model.WorkPlaceQueryResult = WorkPlaceQueryResult;
                 var MemoDto = (function () {
                     function MemoDto() {
                     }
@@ -854,6 +846,28 @@ var cmm009;
                     return HistoryDto;
                 }());
                 model.HistoryDto = HistoryDto;
+                var DtoWKP = (function () {
+                    function DtoWKP(companyCode, departmentCode, historyId, endDate, externalCode, fullName, hierarchyCode, name, parentChildAttribute1, parentChildAttribute2, parentWorkCode1, parentWorkCode2, shortName, startDate, children) {
+                        var self = this;
+                        self.companyCode = companyCode;
+                        self.departmentCode = departmentCode;
+                        self.historyId = historyId;
+                        self.endDate = endDate;
+                        self.externalCode = externalCode;
+                        self.fullName = fullName;
+                        self.hierarchyCode = hierarchyCode;
+                        self.name = name;
+                        self.parentChildAttribute1 = parentChildAttribute1;
+                        self.parentChildAttribute2 = parentChildAttribute2;
+                        self.parentWorkCode1 = parentWorkCode1;
+                        self.parentWorkCode2 = parentWorkCode2;
+                        self.shortName = shortName;
+                        self.startDate = startDate;
+                        self.children = children;
+                    }
+                    return DtoWKP;
+                }());
+                model.DtoWKP = DtoWKP;
                 var Dto = (function () {
                     function Dto(companyCode, departmentCode, historyId, endDate, externalCode, fullName, hierarchyCode, name, startDate, children) {
                         var self = this;
@@ -871,6 +885,28 @@ var cmm009;
                     return Dto;
                 }());
                 model.Dto = Dto;
+                var AddWorkplaceDto = (function () {
+                    function AddWorkplaceDto(workPlaceCode, historyId, endDate, externalCode, fullName, hierarchyCode, name, startDate, memo, shortName, parentChildAttribute1, parentChildAttribute2, parentWorkCode1, parentWorkCode2, children) {
+                        var self = this;
+                        self.memo = memo;
+                        self.workPlaceCode = workPlaceCode;
+                        self.historyId = historyId;
+                        self.endDate = endDate;
+                        self.externalCode = externalCode;
+                        self.fullName = fullName;
+                        self.hierarchyCode = hierarchyCode;
+                        self.name = name;
+                        self.shortName = shortName;
+                        self.startDate = startDate;
+                        self.parentChildAttribute1 = parentChildAttribute1;
+                        self.parentChildAttribute2 = parentChildAttribute2;
+                        self.parentWorkCode1 = parentWorkCode1;
+                        self.parentWorkCode2 = parentWorkCode2;
+                        self.children = children;
+                    }
+                    return AddWorkplaceDto;
+                }());
+                model.AddWorkplaceDto = AddWorkplaceDto;
                 var AddDepartmentDto = (function () {
                     function AddDepartmentDto(departmentCode, historyId, endDate, externalCode, fullName, hierarchyCode, name, startDate, memo, children) {
                         var self = this;
@@ -911,6 +947,6 @@ var cmm009;
                 model.updateDateMY = updateDateMY;
             })(model = viewmodel.model || (viewmodel.model = {}));
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
-    })(a = cmm009.a || (cmm009.a = {}));
-})(cmm009 || (cmm009 = {}));
-//# sourceMappingURL=cmm009.a.vm.js.map
+    })(a = cmm011.a || (cmm011.a = {}));
+})(cmm011 || (cmm011 = {}));
+//# sourceMappingURL=cmm011.a.vm.js.map

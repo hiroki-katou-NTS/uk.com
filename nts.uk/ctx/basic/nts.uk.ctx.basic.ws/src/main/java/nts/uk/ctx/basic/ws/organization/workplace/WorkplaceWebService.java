@@ -11,9 +11,14 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.basic.app.command.organization.department.AddDepartmentCommand;
 import nts.uk.ctx.basic.app.command.organization.department.UpdateDepartmentCommand;
+import nts.uk.ctx.basic.app.command.organization.department.UpdateStartDateandEndDateHistoryCommand;
 import nts.uk.ctx.basic.app.command.organization.workplace.AddWorkPlaceCommand;
 import nts.uk.ctx.basic.app.command.organization.workplace.AddWorkPlaceCommandHandler;
+import nts.uk.ctx.basic.app.command.organization.workplace.RemoveHistoryWkPCommandHandler;
 import nts.uk.ctx.basic.app.command.organization.workplace.RemoveWorkPlaceCommandHandler;
+import nts.uk.ctx.basic.app.command.organization.workplace.UpdateEndDateWorkPalceByHistoryIdCommandHandler;
+import nts.uk.ctx.basic.app.command.organization.workplace.UpdateStartDateAndEndDateByHistoryIdWkPCommandHandler;
+import nts.uk.ctx.basic.app.command.organization.workplace.UpdateStartDateandEndDateWKPHistoryCommand;
 import nts.uk.ctx.basic.app.command.organization.workplace.UpdateWorkPlaceCommand;
 import nts.uk.ctx.basic.app.command.organization.workplace.UpdateWorkPlaceCommandHandler;
 import nts.uk.ctx.basic.app.find.organization.workplace.WorkPlaceDto;
@@ -38,6 +43,15 @@ public class WorkplaceWebService extends WebService {
 
 	@Inject
 	private RemoveWorkPlaceCommandHandler removeWorkPlace;
+	
+	@Inject
+	private RemoveHistoryWkPCommandHandler removeHistory;
+	
+	@Inject
+	private UpdateEndDateWorkPalceByHistoryIdCommandHandler updateEnddateByHist;
+	
+	@Inject 
+	private UpdateStartDateAndEndDateByHistoryIdWkPCommandHandler updateStartDateandEndDate;
 	
 	@Path("addworkplace")
 	@POST
@@ -74,6 +88,30 @@ public class WorkplaceWebService extends WebService {
 	@POST
 	public void update(List<UpdateWorkPlaceCommand> command) {
 		this.updateWorkPlace.handle(command);
+	}
+	
+	@Path("updateenddateofwkp")
+	@POST
+	public void updateEndDate(List<UpdateWorkPlaceCommand> command) {
+		this.updateWorkPlace.handle(command);
+	}
+	
+	@Path("deletehistorywkp")
+	@POST
+	public void deleteHistory(String command) {
+		this.removeHistory.handle(command);
+	}
+	
+	@Path("updateenddatewkpbyhistoryid")
+	@POST
+	public void updateEndDateByHistId(String command) {
+		this.updateEnddateByHist.handle(command);
+	}
+
+	@Path("updatestartdateandenddatewkp")
+	@POST
+	public void updateStartDateandEndDateByHistId(UpdateStartDateandEndDateWKPHistoryCommand command) {
+		this.updateStartDateandEndDate.handle(command);
 	}
 
 }

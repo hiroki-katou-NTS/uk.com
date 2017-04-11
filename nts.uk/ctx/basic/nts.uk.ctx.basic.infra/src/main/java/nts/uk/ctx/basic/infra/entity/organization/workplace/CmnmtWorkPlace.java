@@ -39,9 +39,6 @@ public class CmnmtWorkPlace implements Serializable {
 	@Column(name = "WKPNAME")
 	private String name;
 
-	@Column(name = "WKPNAME_ABB")
-	private String shortName;
-
 	@Column(name = "WKPNAME_TOTAL")
 	private String genericName;
 
@@ -95,14 +92,7 @@ public class CmnmtWorkPlace implements Serializable {
 		this.name = name;
 	}
 
-	public String getShortName() {
-		return shortName;
-	}
-
-	public void setShortName(String shortName) {
-		this.shortName = shortName;
-	}
-
+	
 	public String getGenericName() {
 		return genericName;
 	}
