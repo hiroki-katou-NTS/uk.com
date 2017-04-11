@@ -24,9 +24,9 @@ public class ItemSalaryPeriodWebService extends WebService {
 	@Inject
 	AddItemSalaryPeriodCommandHandler addHandler;
 	@Inject
-	DeleteItemSalaryPeriodCommandHandler deleteHandler;
-	@Inject
 	UpdateItemSalaryPeriodCommandHandler updateHandler;
+	@Inject
+	DeleteItemSalaryPeriodCommandHandler deleteHandler;
 
 	@POST
 	@Path("find/{itemCode}")

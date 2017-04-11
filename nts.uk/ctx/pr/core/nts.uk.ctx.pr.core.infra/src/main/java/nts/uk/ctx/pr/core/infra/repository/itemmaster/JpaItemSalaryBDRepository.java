@@ -21,7 +21,8 @@ public class JpaItemSalaryBDRepository extends JpaRepository implements ItemSala
 			+ " WHERE c.qcamtItemSalaryBdPK.ccd = :companyCode AND c.qcamtItemSalaryBdPK.itemCd = :itemCode";
 
 	@Override
-	public List<ItemSalaryBD> findAll(String companyCode, String itemCode) {
+	public List<ItemSalaryBD> findAll(String itemCode) {
+		val companyCode = AppContexts.user().companyCode();
 		return this.queryProxy().query(SEL_1, QcamtItemSalaryBd.class).setParameter("companyCode", companyCode)
 				.setParameter("itemCode", itemCode).getList(c -> toDomain(c));
 
@@ -46,27 +47,27 @@ public class JpaItemSalaryBDRepository extends JpaRepository implements ItemSala
 
 	private QcamtItemSalaryBd toEntity(ItemSalaryBD domain) {
 		String campanyCode = AppContexts.user().companyCode();
-		QcamtItemSalaryBdPK pk = new QcamtItemSalaryBdPK(campanyCode, domain.getItemCd().v(),
-				domain.getItemBreakdownCd().v());
+		QcamtItemSalaryBdPK pk = new QcamtItemSalaryBdPK(campanyCode, domain.getItemCode().v(),
+				domain.getItemBreakdownCode().v());
 		return new QcamtItemSalaryBd(pk, domain.getItemBreakdownName().v(), domain.getItemBreakdownAbName().v(),
-				domain.getUniteCd().v(), domain.getZeroDispSet().value, domain.getItemDispAtr().value,
+				domain.getUniteCode().v(), domain.getZeroDispSet().value, domain.getItemDispAtr().value,
 				domain.getErrRangeLowAtr().value, domain.getErrRangeLow().v(), domain.getErrRangeHighAtr().value,
 				domain.getErrRangeHigh().v(), domain.getAlRangeLowAtr().value, domain.getAlRangeLow().v(),
 				domain.getAlRangeHighAtr().value, domain.getAlRangeHigh().v());
 	}
 
 	@Override
-	public void delete(String itemCd, String itemBreakdownCd) {
+	public void delete(String itemCode, String itemBreakdownCode) {
 		String companyCode = AppContexts.user().companyCode();
-		QcamtItemSalaryBdPK pk = new QcamtItemSalaryBdPK(companyCode, itemCd, itemBreakdownCd);
+		QcamtItemSalaryBdPK pk = new QcamtItemSalaryBdPK(companyCode, itemCode, itemBreakdownCode);
 		this.commandProxy().remove(QcamtItemSalaryBd.class, pk);
 
 	}
 
 	@Override
-	public Optional<ItemSalaryBD> find(String itemCd, String itemBreakdownCd) {
+	public Optional<ItemSalaryBD> find(String itemCode, String itemBreakdownCode) {
 		String companyCode = AppContexts.user().companyCode();
-		QcamtItemSalaryBdPK pk = new QcamtItemSalaryBdPK(companyCode, itemCd, itemBreakdownCd);
+		QcamtItemSalaryBdPK pk = new QcamtItemSalaryBdPK(companyCode, itemCode, itemBreakdownCode);
 		return this.queryProxy().find(pk, QcamtItemSalaryBd.class).map(x -> toDomain(x));
 	}
 

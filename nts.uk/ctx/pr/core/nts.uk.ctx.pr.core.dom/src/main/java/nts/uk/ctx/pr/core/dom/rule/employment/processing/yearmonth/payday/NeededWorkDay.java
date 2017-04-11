@@ -1,13 +1,14 @@
 package nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.payday;
 
-import nts.arc.primitive.IntegerPrimitiveValue;
+import java.math.BigDecimal;
 
-public class NeededWorkDay extends IntegerPrimitiveValue<NeededWorkDay> {
+import nts.arc.primitive.DecimalPrimitiveValue;
+
+public class NeededWorkDay extends DecimalPrimitiveValue<NeededWorkDay> {
 	private static final long serialVersionUID = 1L;
 
-	public NeededWorkDay(Integer rawValue) {
+	public NeededWorkDay(BigDecimal rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
 
 }

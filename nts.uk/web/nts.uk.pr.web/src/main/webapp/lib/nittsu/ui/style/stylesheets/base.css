@@ -2365,73 +2365,33 @@ button.nts-switch-button[disabled]:hover {
   padding: 2.5%;
 }
 /* line 272, ../sass/components/_wizard.scss */
-.nts-wizard > .content > .body ul {
-  list-style: disc !important;
-}
-/* line 276, ../sass/components/_wizard.scss */
-.nts-wizard > .content > .body ul > li {
-  display: list-item;
-}
-/* line 280, ../sass/components/_wizard.scss */
-.nts-wizard > .content > .body > iframe {
-  border: 0 none;
-  width: 100%;
-  height: 100%;
-}
-/* line 286, ../sass/components/_wizard.scss */
-.nts-wizard > .content > .body input {
-  display: block;
-  border: 1px solid #ccc;
-}
-/* line 291, ../sass/components/_wizard.scss */
-.nts-wizard > .content > .body input[type="checkbox"] {
-  display: inline-block;
-}
-/* line 295, ../sass/components/_wizard.scss */
-.nts-wizard > .content > .body input.error {
-  background: #fbe3e4;
-  border: 1px solid #fbc2c4;
-  color: #8a1f11;
-}
-/* line 301, ../sass/components/_wizard.scss */
-.nts-wizard > .content > .body label {
-  display: inline-block;
-  margin-bottom: 0.5em;
-}
-/* line 306, ../sass/components/_wizard.scss */
-.nts-wizard > .content > .body label.error {
-  color: #8a1f11;
-  display: inline-block;
-  margin-left: 1.5em;
-}
-/* line 312, ../sass/components/_wizard.scss */
 .nts-wizard > .actions {
   position: relative;
   display: block;
   text-align: right;
   width: 100%;
 }
-/* line 319, ../sass/components/_wizard.scss */
+/* line 279, ../sass/components/_wizard.scss */
 .nts-wizard.vertical > .actions {
   display: inline;
   float: right;
   margin: 0 2.5%;
   width: 95%;
 }
-/* line 326, ../sass/components/_wizard.scss */
+/* line 286, ../sass/components/_wizard.scss */
 .nts-wizard > .actions > ul {
   display: inline-block;
   text-align: right;
 }
-/* line 331, ../sass/components/_wizard.scss */
+/* line 291, ../sass/components/_wizard.scss */
 .nts-wizard > .actions > ul > li {
   margin: 0 0.5em;
 }
-/* line 335, ../sass/components/_wizard.scss */
+/* line 295, ../sass/components/_wizard.scss */
 .nts-wizard.vertical > .actions > ul > li {
   margin: 0 0 0 1em;
 }
-/* line 339, ../sass/components/_wizard.scss */
+/* line 299, ../sass/components/_wizard.scss */
 .nts-wizard > .actions a,
 .nts-wizard > .actions a:hover,
 .nts-wizard > .actions a:active {
@@ -2444,28 +2404,28 @@ button.nts-switch-button[disabled]:hover {
   -moz-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 352, ../sass/components/_wizard.scss */
+/* line 312, ../sass/components/_wizard.scss */
 .nts-wizard > .actions .disabled a,
 .nts-wizard > .actions .disabled a:hover,
 .nts-wizard > .actions .disabled a:active {
   background: #eee;
   color: #aaa;
 }
-/* line 366, ../sass/components/_wizard.scss */
+/* line 326, ../sass/components/_wizard.scss */
 .nts-wizard.theme-blue .header .content {
   background: #ABEBF5;
 }
-/* line 368, ../sass/components/_wizard.scss */
+/* line 328, ../sass/components/_wizard.scss */
 .nts-wizard.theme-blue > .steps > ul > .end > a,
 .nts-wizard.theme-blue > .steps > ul > .end > a:hover,
 .nts-wizard.theme-blue > .steps > ul > .end > a:active {
   background-color: #ABEBF5;
 }
-/* line 372, ../sass/components/_wizard.scss */
+/* line 332, ../sass/components/_wizard.scss */
 .nts-wizard.theme-blue > .steps > ul > .end.current a, .nts-wizard.theme-blue > .steps > ul > .end.current a:hover, .nts-wizard.theme-blue > .steps > ul > .end.current a:active {
   background-color: #37B0F0;
 }
-/* line 376, ../sass/components/_wizard.scss */
+/* line 336, ../sass/components/_wizard.scss */
 .nts-wizard.theme-blue > .actions a:active {
   background: #ABEBF5;
 }

@@ -1,3 +1,4 @@
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -6,6 +7,9 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * GridList binding handler
+                 */
                 var NtsGridListBindingHandler = (function () {
                     function NtsGridListBindingHandler() {
                     }
@@ -87,6 +91,7 @@ var nts;
                                     var key = c["key"] === undefined ? c["prop"] : c["key"];
                                     s[key] = moment(s[key]).format(c["format"]);
                                 });
+                                //                    currentSources.push(s);
                             });
                             $grid.igGrid('option', 'dataSource', currentSources);
                             $grid.igGrid("dataBind");
@@ -109,3 +114,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=gridlist-ko-ext.js.map

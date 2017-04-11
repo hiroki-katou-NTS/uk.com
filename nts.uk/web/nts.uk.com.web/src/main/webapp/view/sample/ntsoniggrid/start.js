@@ -24,6 +24,7 @@ var nts;
                             })();
                         }
                         ScreenModel.prototype.rowsRendered = function (evt, ui) {
+                            // 
                             _.defer(function () {
                                 $('.nts-binding').not('.nts-binding-done').each(function () {
                                     var $this = $(this).addClass('.nts-binding-done');
@@ -53,3 +54,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=start.js.map

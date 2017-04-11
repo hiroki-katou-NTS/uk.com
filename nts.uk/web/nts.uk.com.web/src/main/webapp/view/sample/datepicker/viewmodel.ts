@@ -1,19 +1,16 @@
 module sample.datepicker.viewmodel {  
     export class ScreenModel {
-        date: KnockoutObservable<string>;
-        date1: KnockoutObservable<string>;
-        yearMonth: KnockoutObservable<string>;
-        year: KnockoutObservable<string>;
-        month: KnockoutObservable<string>;
-        day: KnockoutObservable<string>;
+        dateString: KnockoutObservable<string>;
+        date: KnockoutObservable<Date>;
+        yearMonth: KnockoutObservable<number>;
         constructor() {
             var self = this;            
-            self.date = ko.observable('');
-            self.date1 = ko.observable('20161201');
-            self.yearMonth = ko.observable('201601');
-            self.year = ko.observable('2016');
-            self.month = ko.observable('01');
-            self.day = ko.observable('01');
+            self.dateString = ko.observable('20000101');
+            
+            // Un-comment to see diffirent between Date and UTC Date 
+            //self.date = ko.observable(new Date(2000,1,2));
+            self.date = ko.observable(new Date(Date.UTC(2000,0,1)));
+            self.yearMonth = ko.observable(200001);
         }
     }
 }

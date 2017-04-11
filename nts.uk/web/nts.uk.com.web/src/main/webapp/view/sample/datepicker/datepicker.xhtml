@@ -10,7 +10,6 @@
         <ui:composition template="../../../master/base.xhtml">
             <ui:define name="htmlHead">
             	<script>var dialogSize = { width: 300, height: 200 };</script>           	
-   				
 				<com:stylefile path="../catalog/catalog.css" />
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="viewmodel.js" />
@@ -18,6 +17,7 @@
             </ui:define>
             
             <ui:define name="content">
+				<div id="functions-area"></div>
             	<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
@@ -25,38 +25,26 @@
 						<h2>Overview</h2>
 						<h3>Datepicker</h3>
 						<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div><br/>
-						<b>ISO Format:</b> <span data-bind="text: date"/>
+						<b>Return ISO String:</b> <span data-bind="text: date"/>
 						<hr/>
 						<h3>Datepicker with Day of Week</h3>
-						<div data-bind="ntsDatePicker: {value: date1, dateFormat: 'YYYY/MM/DD ddd', valueFormat: 'YYYYMMDD'}"></div>
-						<div data-bind="ntsDatePicker: {value: date1, dateFormat: 'YYYY/MM/DD dddd', valueFormat: 'YYYYMMDD'}"></div>		
-						<br/><br/>
-						<b>Custom Format:</b> <input data-bind="ntsTextEditor: {value: date1}"/>
+						<div data-bind="ntsDatePicker: {value: date1, dateFormat: 'YYYY/MM/DD ddd'}"></div>
+						<div data-bind="ntsDatePicker: {value: date1, dateFormat: 'YYYY/MM/DD dddd'}"></div><br/>
+						<b>Return Date:</b> <span data-bind="text: date1"/>						
 						<hr/>
 						<h3>Year/Month/Day picker</h3>
 						<h4>YearMonth Picker</h4>
-						<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'YYYY/MM', valueFormat: 'YYYYMM'}"></div>
-						<span data-bind="text: yearMonth"></span>
-						<br/>
-						<h4>Year Picker</h4>
-						<div data-bind="ntsDatePicker: {value: year, dateFormat: 'YYYY', valueFormat: 'YYYY'}"></div>
-						<span data-bind="text: year"></span>
-						<br/>
-						<h4>Month Picker</h4>
-						<div data-bind="ntsDatePicker: {value: month, dateFormat: 'MM', valueFormat: 'MM'}"></div>
-						<span data-bind="text: month"></span>
-						<br/>
-						<h4>Day Picker</h4>
-						<div data-bind="ntsDatePicker: {value: day, dateFormat: 'DD', valueFormat: 'DD'}"></div>
-						<span data-bind="text: day"></span>
+						<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth'}"></div><br/>
+						<b>Return Number:</b> <span data-bind="text: yearMonth"/>
 						<br/>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
-									<li><a href="#tabs-html">HTML Binding</a></li>
-									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+									<li><a href="#tabs-usage">Usage</a></li>
+									<li><a href="#tabs-api">API</a></li>
 								</ol>
-								<div id="tabs-html" class="cf">
+								<div id="tabs-usage" class="cf">
+									<h2>HTML</h2>
 <pre><![CDATA[<!-- Datepicker -->
 <div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD', valueFormat: 'YYYYMMDD'}"></div>
 <!-- YearMonth Picker -->
@@ -67,14 +55,29 @@
 <div data-bind="ntsDatePicker: {value: month, dateFormat: 'MM'}"></div>
 <!-- Daypicker -->
 <div data-bind="ntsDatePicker: {value: day, dateFormat: 'DD'}"></div>]]></pre>
-									<h2>API</h2>
-									<table>
+									<h2>ViewModel</h2>
+<pre><![CDATA[<!-- Recommend use 'string' and momentjs for date type -->
+class ScreenModel {
+    dateString: KnockoutObservable<string>;
+    date: KnockoutObservable<Date>;
+    yearMonth: KnockoutObservable<number>;
+    constructor() {
+        var self = this;            
+        self.dateString = ko.observable('20000101');
+        self.date = ko.observable(new Date(Date.UTC(2000,0,1)));
+        self.yearMonth = ko.observable(200001);
+    }
+}]]></pre>
+								</div>
+								<div id="tabs-api" class="cf">
+									<h2>Properties</h2>
+									<table class="table">
 										<colgroup>
 											<col width="200px" />
 										</colgroup>
 										<thead>
 											<tr>
-												<th><h4>Binding</h4></th>
+												<th><h4>Name</h4></th>
 												<th><h4>Description</h4></th>
 											</tr>
 										</thead>
@@ -110,7 +113,7 @@
 												<td>valueFormat<br/><i>(Optional)</i></td>
 												<td>
 													<b>Type:</b> string<br/>
-													<b>Default:</b> ""<br/>
+													<b>Default:</b> <i>Empty</i><br/>
 													<b>Members:</b><br/>
 													<i>Empty:</i> the ISO format<br/>
 													<i>date:</i> the date pattern (YYYY/MM/DD)<br/>
@@ -122,12 +125,21 @@
 													"MM": month field as digit with leading zero<br/>
 													"D": day of month field without leading zero<br/>
 													"DD": day of month field with leading zero<br/><br/>
-													The return value format for observable value
+													The return value format for observable value. Only work with <b>string</b> and <b>number</b> type
+												</td>
+											</tr>
+											<tr>
+												<td>enable<br/><i>(Optional)</i></td>
+												<td>
+													<b>Type:</b> KnockoutObservable&lt;boolean&gt; | boolean<br/>
+													<b>Default:</b> true<br/>
+													Enable/disable date picker
 												</td>
 											</tr>
 											<tr>
 												<td>disabled<br/><i>(Optional)</i></td>
 												<td>
+													<b>Obsoleted: using enable!</b><br/>
 													<b>Type:</b> KnockoutObservable&lt;boolean&gt; | boolean<br/>
 													<b>Default:</b> false<br/>
 													Disable date picker
@@ -167,24 +179,6 @@
 											</tr>
 										</tbody>
 									</table>
-								</div>
-								<div id="tabs-viewmodel" class="cf">
-<pre><![CDATA[<!-- Recommend use 'string' and momentjs for date type -->
-class ScreenModel {
-    date: KnockoutObservable<string>;
-    yearMonth: KnockoutObservable<string>;
-    year: KnockoutObservable<string>;
-    month: KnockoutObservable<string>;
-    day: KnockoutObservable<string>;
-    constructor() {
-        var self = this;            
-        self.date = ko.observable('20161201');
-        self.yearMonth = ko.observable('201601');
-        self.year = ko.observable('2016');
-        self.month = ko.observable('01');
-        self.day = ko.observable('01');
-    }
-}]]></pre>
 								</div>
 							</div>
 						</article>

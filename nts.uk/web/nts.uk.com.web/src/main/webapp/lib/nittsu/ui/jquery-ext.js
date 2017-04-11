@@ -1,3 +1,4 @@
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -22,6 +23,7 @@ var nts;
                             return $control;
                         }
                     };
+                    //function for set and clear error
                     function processErrorOnItem($control, message, action) {
                         switch (action) {
                             case 'set':
@@ -236,20 +238,25 @@ var nts;
                     }
                     function setupDragging($grid) {
                         var dragSelectRange = [];
+                        // used to auto scrolling when dragged above/below grid)
                         var mousePos = null;
                         $grid.bind('mousedown', function (e) {
+                            // グリッド内がマウスダウンされていない場合は処理なしで終了
                             var $container = $grid.closest('.ui-iggrid-scrolldiv');
                             if ($(e.target).closest('.ui-iggrid-table').length === 0) {
                                 return;
                             }
+                            // current grid size
                             var gridVerticalRange = new uk.util.Range($container.offset().top, $container.offset().top + $container.height());
                             mousePos = {
                                 x: e.pageX,
                                 y: e.pageY,
                                 rowIndex: ui.ig.grid.getRowIndexFrom($(e.target))
                             };
+                            // set position to start dragging
                             dragSelectRange.push(mousePos.rowIndex);
                             var $scroller = $('#' + $grid.attr('id') + '_scrollContainer');
+                            // auto scroll while mouse is outside grid
                             var timerAutoScroll = setInterval(function () {
                                 var distance = gridVerticalRange.distanceFrom(mousePos.y);
                                 if (distance === 0) {
@@ -259,8 +266,10 @@ var nts;
                                 var currentScrolls = $scroller.scrollTop();
                                 $grid.igGrid('virtualScrollTo', (currentScrolls + delta) + 'px');
                             }, 20);
+                            // handle mousemove on window while dragging (unhandle when mouseup)
                             $(window).bind('mousemove.NtsGridListDragging', function (e) {
                                 var newPointedRowIndex = ui.ig.grid.getRowIndexFrom($(e.target));
+                                // selected range is not changed
                                 if (mousePos.rowIndex === newPointedRowIndex) {
                                     return;
                                 }
@@ -274,6 +283,7 @@ var nts;
                                 }
                                 updateSelections();
                             });
+                            // stop dragging
                             $(window).one('mouseup', function (e) {
                                 mousePos = null;
                                 dragSelectRange = [];
@@ -282,15 +292,21 @@ var nts;
                             });
                         });
                         function updateSelections() {
+                            // rowIndex is NaN when mouse is outside grid
                             if (isNaN(mousePos.rowIndex)) {
                                 return;
                             }
+                            // 以前のドラッグ範囲の選択を一旦解除する
+                            // TODO: probably this code has problem of perfomance when select many rows
+                            // should process only "differences" instead of "all"
                             for (var i = 0, i_len = dragSelectRange.length; i < i_len; i++) {
+                                // http://jp.igniteui.com/help/api/2016.2/ui.iggridselection#methods:deselectRow
                                 $grid.igGridSelection('deselectRow', dragSelectRange[i]);
                             }
                             var newDragSelectRange = [];
                             if (dragSelectRange[0] <= mousePos.rowIndex) {
                                 for (var j = dragSelectRange[0]; j <= mousePos.rowIndex; j++) {
+                                    // http://jp.igniteui.com/help/api/2016.2/ui.iggridselection#methods:selectRow
                                     $grid.igGridSelection('selectRow', j);
                                     newDragSelectRange.push(j);
                                 }
@@ -359,6 +375,8 @@ var nts;
                             var $input = $(this);
                             document.getElementById($input.attr('id')).dispatchEvent(validateEvent);
                         });
+                        //            document.getElementById($editor.attr('id')).dispatchEvent(validateEvent);
+                        //            $editor.trigger("validate");
                     }
                 })(ntsEditor || (ntsEditor = {}));
                 var ntsWizard;
@@ -441,6 +459,7 @@ var nts;
                     };
                     function init(controls) {
                         controls.each(function () {
+                            // UserGuide container
                             var $control = $(this);
                             $control.remove();
                             if (!$control.hasClass("ntsUserGuide"))
@@ -448,16 +467,19 @@ var nts;
                             $($control).appendTo($("body")).show();
                             var target = $control.data('target');
                             var direction = $control.data('direction');
+                            // Userguide Information Box
                             $control.children().each(function () {
                                 var $box = $(this);
                                 var boxDirection = $box.data("direction");
                                 $box.addClass("userguide-box caret-" + getReveseDirection(boxDirection) + " caret-overlay");
                             });
+                            // Userguide Overlay
                             var $overlay = $("<div class='userguide-overlay'></div>")
                                 .addClass("overlay-" + direction)
                                 .appendTo($control);
                             $control.hide();
                         });
+                        // Hiding when click outside
                         $("html").on("mouseup keypress", { controls: controls }, hideBinding);
                         return controls;
                     }
@@ -465,6 +487,7 @@ var nts;
                         controls.each(function () {
                             $(this).remove();
                         });
+                        // Unbind Hiding when click outside
                         $("html").off("mouseup keypress", hideBinding);
                         return controls;
                     }
@@ -620,6 +643,7 @@ var nts;
                         return $treegrid;
                     }
                     function setupIgTreeScroll($control) {
+                        //implement later if needed
                         return $control;
                     }
                 })(ntsSearchBox || (ntsSearchBox = {}));
@@ -704,3 +728,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=jquery-ext.js.map

@@ -1,3 +1,4 @@
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -43,6 +44,7 @@ var nts;
                     }
                     if (option) {
                         if (option.inputFormat) {
+                            //If inputFormat presented, this is Date or Time Editor                 
                             return new TimeValidator(constraintName, option);
                         }
                         else {
@@ -143,6 +145,7 @@ var nts;
                             parseResult = uk.time.parseYearMonthDate(inputText);
                         }
                         else {
+                            // TODO : Validate base on moment
                             var format = uk.text.getISOFormat(this.option.inputFormat);
                             var momentObject = moment(inputText);
                             if (momentObject.isValid()) {
@@ -180,3 +183,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=validation.js.map

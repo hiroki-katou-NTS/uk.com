@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.payday;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
@@ -45,7 +47,7 @@ public class Payday extends AggregateRoot {
 
 	public static Payday createSimpleFromJavaType(String companyCode, int processingNo, int payBonusAtr,
 			int processingYm, int sparePayAtr, GeneralDate payDate, GeneralDate stdDate, GeneralDate accountingClosing,
-			int socialInsLevyMon, GeneralDate socialInsStdDate, GeneralDate incomeTaxStdDate, int neededWorkDay,
+			int socialInsLevyMon, GeneralDate socialInsStdDate, GeneralDate incomeTaxStdDate, BigDecimal neededWorkDay,
 			GeneralDate empInsStdDate, int stmtOutputMon) {
 
 		return new Payday(new CompanyCode(companyCode), new ProcessingNo(processingNo),

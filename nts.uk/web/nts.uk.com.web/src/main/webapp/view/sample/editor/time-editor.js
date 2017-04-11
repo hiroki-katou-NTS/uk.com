@@ -6,6 +6,7 @@ __viewContext.ready(function () {
             self.readonly = ko.observable(false);
             self.date = ko.observable("1990/01/01");
             self.time = ko.observable("12:00");
+            // YearMonth Editor
             self.yearmontheditor = {
                 value: ko.observable(200001),
                 constraint: 'LayoutCode',
@@ -22,3 +23,4 @@ __viewContext.ready(function () {
     var viewmodel = new ScreenModel();
     this.bind(viewmodel);
 });
+//# sourceMappingURL=time-editor.js.map
