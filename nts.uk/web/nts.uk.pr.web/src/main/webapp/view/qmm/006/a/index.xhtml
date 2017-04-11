@@ -25,22 +25,22 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="A_BTN_001" data-bind="click: clearForm ">新規</button>
-				<button id="A_BTN_002"
+				<button id="btn_clearForm" data-bind="click: clearForm ">新規</button>
+				<button id="btn_saveData"
 					data-bind="click: saveData, enable: $root.errors.isEmpty"
 					class="proceed">登録</button>
-				<button id="A_BTN_003"
+				<button id="btn_openCDialog"
 					data-bind="click: openCDialog, enable: enableBtn003 ">振込元銀行の置換</button>
-				<button id="A_BTN_007" data-bind="click: btn007">マスタ修正ログ</button>
-				<button id="A_BTN_004"
+				<button id="btn_masterCorrectionLog" data-bind="click: btn007">マスタ修正ログ</button>
+				<button id="btn_remove"
 					data-bind="click: remove, enable : isDeleteEnable" class="danger">削除</button>
-				<a href="#" id="A_BTN_005"
-					data-bind="click: jumpToQmm002A, ntsLinkButton: { }">振込元銀行の登録へ</a>
+				<a href="#" data-bind="click: jumpToQmm002A, ntsLinkButton: { }">振込元銀行の登録へ</a>
 			</div>
 
 			<div id="contents-area" class="cf">
 				<div class="left-content">
-					<div id="A_LST_001" class="caret-right caret-background bg-green">
+					<div id="lst_listOfBanks"
+						class="caret-right caret-background bg-green">
 						<table id="single-list"
 							data-bind="ntsGridList: {
 					       width: 440,
@@ -56,16 +56,18 @@
 				</div>
 				<div class="right-content" data-bind="with: currentLineBank">
 					<div class="right-content-left">
-						<div id="A_LBL_002"
+						<div id="lbl_codeName"
 							data-bind="ntsFormLabel:{constraint: ['LineBankCode','LineBankName'],required: true}">コード/名称</div>
-						<div id="A_LBL_003" data-bind="ntsFormLabel:{required: true}">銀行/支店</div>
-						<div id="A_LBL_009" data-bind="ntsFormLabel:{required: true}">口座区分</div>
-						<div id="A_LBL_010"
+						<div id="lbl_bankBranch" data-bind="ntsFormLabel:{required: true}">銀行/支店</div>
+						<div id="lbl_accountClassification"
+							data-bind="ntsFormLabel:{required: true}">口座区分</div>
+						<div id="lbl_accountNumber"
 							data-bind="ntsFormLabel:{constraint: 'AccountNo',required: true}">口座番号</div>
 					</div>
 					<div class="right-content-right">
 						<div class="control-group">
-							<span> <input id="A_INP_001" data-name="取引銀行区分 "
+							<span> <input id="inp_bankClassification"
+								data-name="取引銀行区分 "
 								data-bind="ntsTextEditor: {
 									value: lineBankCode,
 									constraint:'LineBankCode',
@@ -78,7 +80,7 @@
 									required: true,
 									enable: $parent.isEnable,
 									readonly: false}" /></span>
-							<span> <input id="A_INP_002" data-name="取引銀行名"
+							<span> <input id="inp_bankName" data-name="取引銀行名"
 								data-bind="ntsTextEditor: {
 									value: lineBankName,
 									constraint: 'LineBankName',
@@ -93,17 +95,16 @@
 									readonly: false}" /></span>
 						</div>
 						<div class="control-group">
-							<button id="A_BTN_006"
-								data-bind="click: $parent.openBDialog.bind($parent)">参照</button>
-							<label id="A_LBL_004" data-name="銀行コード"
+							<button data-bind="click: $parent.openBDialog.bind($parent)">参照</button>
+							<label id="lbl_bankCode" data-name="銀行コード"
 								data-bind="text: $parent.bankCode"></label> <label
-								id="A_LBL_005" data-bind="text: $parent.bankName"></label> <label
-								id="A_LBL_006">-</label> <label id="A_LBL_007" data-name="支店コード"
-								data-bind="text: $parent.branchCode"></label> <label
-								id="A_LBL_008" data-bind="text: $parent.branchName"></label>
+								id="lbl_bankName" data-bind="text: $parent.bankName"></label> <label
+								id="lbl_hyphen">-</label> <label id="lbl_branchCode"
+								data-name="支店コード" data-bind="text: $parent.branchCode"></label>
+							<label data-bind="text: $parent.branchName"></label>
 						</div>
 						<div class="control-group">
-							<span id="A_SEL_001" class="cf"
+							<span id="sel_classification" class="cf"
 								style="min-width: 90px; height: 30px"
 								data-bind="ntsSwitchButton: {
 								options: $parent.roundingRules,
@@ -113,7 +114,7 @@
 								enable: true }"></span>
 						</div>
 						<div class="control-group">
-							<span> <input id="A_INP_003" data-name="口座番号"
+							<span> <input id="inp_accountNumber" data-name="口座番号"
 								data-bind="ntsTextEditor: {
 									value: accountNo,
 									constraint:'AccountNo',
@@ -132,14 +133,15 @@
 					<hr />
 
 					<div class="right-content-left">
-						<div id="A_LBL_011"
+						<div id="lbl_transferRequestName"
 							data-bind="ntsFormLabel:{constraint: 'RequesterName'}">振込依頼者名</div>
-						<div id="A_LBL_012" data-bind="ntsFormLabel:{constraint: 'Memo'}">メモ</div>
+						<div id="lbl_memo" data-bind="ntsFormLabel:{constraint: 'Memo'}">メモ</div>
 					</div>
 
 					<div class="right-content-right">
 						<div class="control-group">
-							<span> <input id="A_INP_004" data-name="振込依頼者名 "
+							<span> <input id="inp_transferRequestName"
+								data-name="振込依頼者名 "
 								data-bind="ntsTextEditor: {
 									value: requesterName,
 									constraint:'RequesterName',
@@ -154,7 +156,7 @@
 									readonly: false}" /></span>
 						</div>
 						<div class="control-group">
-							<span id="A_INP_005"> <textarea
+							<span id="inp_memo"> <textarea
 									style="height: 130px; width: 450px" data-name="メモ"
 									data-bind="ntsMultilineEditor: {
 									constraint: 'Memo',
@@ -175,7 +177,7 @@
 					<hr />
 
 					<div class="right-content-left">
-						<div id="A_LBL_013"
+						<div id="lbl_consignorCodeUsage"
 							data-bind="ntsFormLabel:{constraint: ['ConsignorCode','ConsignorMemo']}">委託者コード/用途</div>
 					</div>
 

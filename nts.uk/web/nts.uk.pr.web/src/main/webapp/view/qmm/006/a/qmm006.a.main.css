@@ -27,72 +27,73 @@ hr {
 
 .right-content-left {
 	float: left;
-	width: 23%
+	width: 28%
 }
 
 .right-content-right {
 	float: left;
-	width: 77%
+	width: 72%
 }
 
 .consignor {
 	margin-left: 5px
 }
 
-#A_LBL_002, #A_LBL_003, #A_LBL_009, #A_LBL_010, #A_LBL_011, #A_LBL_012,
-	#A_LBL_013 {
+#lbl_codeName, #lbl_bankBranch, #lbl_accountClassification,
+	#lbl_accountNumber, #lbl_transferRequestName, #lbl_memo,
+	#lbl_consignorCodeUsage {
 	margin-bottom: 10px;
 	display: block
 }
 
-#A_BTN_001 {
+#btn_clearForm {
 	margin: 4px 0px 0px 10px;
 	padding: 0px 20px;
 }
 
-#A_BTN_002 {
+#btn_saveData {
 	margin-left: 10px;
 	padding: 0px 20px;
 }
 
-#A_BTN_003, #A_BTN_007 {
+#btn_openCDialog, #btn_masterCorrectionLog {
 	margin-left: 10px;
 	padding: 0px 10px;
 }
 
-#A_BTN_004 {
+#btn_remove {
 	margin: 0px 330px 0px 100px;
 	padding: 0px 20px;
 }
 
-#A_LST_001 {
+#lst_listOfBanks {
 	border-radius: 5px;
 	padding: 15px;
 	width: 85%;
 	height: 580px
 }
 
-#A_INP_004, #A_INP_005 {
+#inp_transferRequestName, #inp_memo {
 	margin-bottom: 10px
 }
 
-#A_LBL_004, #A_LBL_007 {
+#lbl_bankCode, #lbl_branchCode {
 	margin: 0px 5px
 }
 
-#A_LBL_005 {
+#lbl_bankName {
 	margin: 0px 5px 0px 0px
 }
 
-#A_LBL_006 {
+#lbl_hyphen {
 	margin: 0px 15px
 }
 
-#A_INP_002 {
+#inp_bankName {
 	margin-left: 5px
 }
 
-#A_SEL_001 .nts-switch-button {
+#sel_classification .nts-switch-button {
 	width: 90px;
 	height: 33px
 }

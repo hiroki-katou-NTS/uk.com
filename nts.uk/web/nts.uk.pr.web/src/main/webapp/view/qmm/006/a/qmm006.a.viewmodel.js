@@ -163,25 +163,25 @@ var qmm006;
                         if (error.messageId == self.messageList()[0].messageId) {
                             var message = self.messageList()[0].message;
                             if (!command.lineBankCode) {
-                                $('#A_INP_001').ntsError('set', message);
+                                $('#inp_bankClassification').ntsError('set', message);
                             }
                             if (!command.lineBankName) {
-                                $('#A_INP_002').ntsError('set', message);
+                                $('#inp_bankName').ntsError('set', message);
                             }
                             if (!command.accountNo) {
-                                $('#A_INP_003').ntsError('set', message);
+                                $('#inp_accountNumber').ntsError('set', message);
                             }
                         }
                         else if (error.messageId == self.messageList()[2].messageId) {
                             var message = self.messageList()[2].message;
                             if (!command.branchId) {
-                                $('#A_LBL_004').ntsError('set', message);
-                                $('#A_LBL_007').ntsError('set', message);
+                                $('#lbl_bankCode').ntsError('set', message);
+                                $('#lbl_branchCode').ntsError('set', message);
                             }
                         }
                         else if (error.messageId == self.messageList()[1].messageId) {
                             var message = self.messageList()[1].message;
-                            $('#A_INP_001').ntsError('set', message);
+                            $('#inp_bankClassification').ntsError('set', message);
                         }
                     });
                 };
@@ -208,6 +208,7 @@ var qmm006;
                             });
                         }).fail(function (error) {
                             if (error.messageId == self.messageList()[3].messageId) {
+                                self.isNotCheckDirty(false);
                                 var messageError = nts.uk.text.format(self.messageList()[3].message, self.currentLineBank().lineBankName());
                                 nts.uk.ui.dialog.alert(messageError);
                             }
@@ -228,8 +229,8 @@ var qmm006;
                                 self.bankCode(nts.uk.ui.windows.getShared("selectedBank").parentCode);
                                 self.branchName(nts.uk.ui.windows.getShared("selectedBank").name);
                                 lineBank.branchId(nts.uk.ui.windows.getShared("selectedBank").branchId);
-                                $('#A_LBL_004').ntsError('clear');
-                                $('#A_LBL_007').ntsError('clear');
+                                $('#lbl_bankCode').ntsError('clear');
+                                $('#lbl_branchCode').ntsError('clear');
                             }
                         });
                     })
@@ -299,12 +300,12 @@ var qmm006;
                     }
                 };
                 ScreenModel.prototype.clearError = function () {
-                    $('#A_INP_001').ntsError('clear');
-                    $('#A_INP_002').ntsError('clear');
-                    $('#A_INP_003').ntsError('clear');
-                    $('#A_LBL_004').ntsError('clear');
-                    $('#A_LBL_007').ntsError('clear');
-                    $('#A_INP_004').ntsError('clear');
+                    $('#inp_bankClassification').ntsError('clear');
+                    $('#inp_bankName').ntsError('clear');
+                    $('#inp_accountNumber').ntsError('clear');
+                    $('#lbl_bankCode').ntsError('clear');
+                    $('#lbl_branchCode').ntsError('clear');
+                    $('#inp_transferRequestName').ntsError('clear');
                 };
                 ScreenModel.prototype.getLineBank = function (curCode) {
                     var self = this;

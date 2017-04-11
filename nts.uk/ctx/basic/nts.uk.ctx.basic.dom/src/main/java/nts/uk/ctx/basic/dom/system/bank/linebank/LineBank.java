@@ -39,7 +39,7 @@ public class LineBank extends AggregateRoot {
 	@Override
 	public void validate() {
 		super.validate();
-		
+
 		if (StringUtil.isNullOrEmpty(lineBankCode.v(), true) || StringUtil.isNullOrEmpty(lineBankName.v(), true)
 				|| StringUtil.isNullOrEmpty(accountNo.v(), true)) {
 			throw new BusinessException("ER001");
@@ -79,9 +79,14 @@ public class LineBank extends AggregateRoot {
 	 */
 	public static LineBank createFromJavaType(String companyCode, int accountAtr, String accountNo, String branchId,
 			String lineBankCode, String lineBankName, String memo, String requesterName) {
+		// if branchId = null, set branchId = (UUID) branchIdUuid
+		UUID branchIdUuid = null;
+		if (!StringUtil.isNullOrEmpty(branchId, true)) {
+			branchIdUuid = UUID.fromString(branchId);
+		}
 
 		return new LineBank(companyCode, EnumAdaptor.valueOf(accountAtr, AccountAtr.class), new AccountNo(accountNo),
-				UUID.fromString(branchId), new LineBankCode(lineBankCode), new LineBankName(lineBankName), new Memo(memo),
+				branchIdUuid, new LineBankCode(lineBankCode), new LineBankName(lineBankName), new Memo(memo),
 				new RequesterName(requesterName));
 	}
 
