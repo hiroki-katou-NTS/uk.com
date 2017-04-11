@@ -1,4 +1,5 @@
 module cmm001.a {
+    import PostCode = nts.uk.pr.view.base.postcode.service.model.PostCode;
     export class ViewModel {
 
         gridColumns: KnockoutObservableArray<any>;
@@ -410,6 +411,50 @@ module cmm001.a {
                 return false;
             }
             return true;
+        }
+        
+        //search Zip Code
+        searchZipCode() {
+            var self = this;
+            var messageList = [
+                { messageId: "ER001", message: "＊が入力されていません。" },
+                { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                { messageId: "ER010", message: "対象データがありません。" }
+            ];
+            console.log("ehehe");
+            nts.uk.pr.view.base.postcode.service.findPostCodeZipCodeToRespone(self.postal()).done(data => {
+                if (data.errorCode == '0') {
+                    for (var datamessage of messageList) {
+                        if (datamessage.messageId == data.message) {
+                            $('#C_INP_001').ntsError('set', datamessage.message);
+                        }
+                    }
+                }
+                else if (data.errorCode == '1') {
+                    self.postal(data.postcode.postcode);
+                    console.log(data);
+                    $('#C_INP_001').ntsError('clear');
+                } else {
+                    nts.uk.pr.view.base.postcode.service.findPostCodeZipCodeSelection(self.postal()).done(res => {
+                        if (res.errorCode == '0') {
+                            for (var datamessage of messageList) {
+                                if (datamessage.messageId == res.message) {
+                                    $('#C_INP_001').ntsError('set', datamessage.message);
+                                }
+                            }
+                        }
+                        else if (res.errorCode == '1') {
+                             self.postal(res.postcode.postcode);
+                            console.log(res);
+                            $('#C_INP_001').ntsError('clear');
+                        }
+                    }).fail(function(error) {
+                        console.log(error);
+                    });
+                }
+            }).fail(function(error) {
+                console.log(error);
+            });
         }
     }
     class CompanyModel {
