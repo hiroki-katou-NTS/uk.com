@@ -44,6 +44,10 @@ var qrm007;
                     });
                     return dfd.promise();
                 };
+                /**
+                 * find retirement payment item by company code
+                 * @param notFirstTime : check current find is first time or not
+                 */
                 ScreenModel.prototype.findRetirementPayItemList = function (notFirstTime) {
                     var self = this;
                     var dfd = $.Deferred();
@@ -68,6 +72,9 @@ var qrm007;
                     });
                     return dfd.promise();
                 };
+                /**
+                 * update retirement payment item
+                 */
                 ScreenModel.prototype.updateRetirementPayItemList = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -83,6 +90,9 @@ var qrm007;
                     }
                     return dfd.promise();
                 };
+                /**
+                 * event update selected retirement payment item
+                 */
                 ScreenModel.prototype.saveData = function () {
                     var self = this;
                     self.updateRetirementPayItemList();
@@ -110,4 +120,3 @@ var qrm007;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qrm007.a || (qrm007.a = {}));
 })(qrm007 || (qrm007 = {}));
-//# sourceMappingURL=qrm007.a.viewmodel.js.map

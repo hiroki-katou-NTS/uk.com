@@ -11,16 +11,13 @@ module qmm006.b.viewmodel {
         constructor() {
             var self = this;
             self.dataSource = ko.observableArray([]),
-            self.dataSource2 = ko.observableArray([]),
-            self.singleSelectedCode = ko.observable();
+                self.dataSource2 = ko.observableArray([]),
+                self.singleSelectedCode = ko.observable();
             self.selectedBank = ko.observable();
             self.selectedCodes = ko.observableArray([]);
             self.headers = ko.observableArray(["Item Value Header", "コード/名称"]);
             self.messageList = ko.observableArray([
-                { messageId: "ER001", message: "＊が入力されていません。" },
-                { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
-                { messageId: "ER007", message: "＊が選択されていません。" },
-                { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
+                { messageId: "ER007", message: "支店がが選択されていません。" },
                 { messageId: "ER010", message: "対象データがありません。" },
             ]);
 
@@ -29,16 +26,18 @@ module qmm006.b.viewmodel {
             });
         }
 
+        /**
+         * find data in Bank base-on treeCode
+         */
         getBank(codeNew): Bank {
             let self = this;
-            //            self.dataSource2(nts.uk.util.flatArray(self.dataSource(), "childs"));
             let bank: Bank = _.find(self.dataSource2(), function(item: any) {
                 return item.treeCode === codeNew;
             });
             return bank;
         }
 
-        startPage() {
+        startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             self.findBankAll().done(function() {
@@ -49,7 +48,10 @@ module qmm006.b.viewmodel {
             return dfd.promise();
         }
 
-        findBankAll() {
+        /**
+         * get data from database BANK, set to property dataSource
+         */
+        findBankAll(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             qmm006.b.service.findBankAll()
@@ -73,7 +75,7 @@ module qmm006.b.viewmodel {
                             self.singleSelectedCode(data[0].bankCode);
                         }
                     } else {
-                        nts.uk.ui.dialog.alert(self.messageList()[4].message);
+                        nts.uk.ui.dialog.alert(self.messageList()[1].message);
                     }
 
                     dfd.resolve();
@@ -81,12 +83,18 @@ module qmm006.b.viewmodel {
             return dfd.promise();
         }
 
-        closeDialog() {
+        /**
+         * forward data 'selectedBank' to screen A, close dialog
+         */
+        closeDialog(): void {
             nts.uk.ui.windows.setShared("selectedBank", null, true);
             nts.uk.ui.windows.close();
         }
 
-        transferData() {
+        /**
+         * forward data 'selectedBank' to screen A, close dialog
+         */
+        transferData(): void {
             var self = this;
             //define row selected
             if (_.find(self.dataSource(), function(x: any) {
@@ -97,7 +105,7 @@ module qmm006.b.viewmodel {
                 nts.uk.ui.windows.close();
             } else {
                 // select row parent will appear alert
-                nts.uk.ui.dialog.alert(self.messageList()[2].message);
+                nts.uk.ui.dialog.alert(self.messageList()[0].message);
             }
         }
     }

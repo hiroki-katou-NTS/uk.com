@@ -30,7 +30,9 @@ module nts.uk.ui.koExtentions {
             var features = [];
             features.push({ name: 'Selection', multipleSelection: data.multiple });
             features.push({ name: 'Sorting', type: 'local' });
-            features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: true });
+            if(data.multiple){
+                features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: false });        
+            }
 
             $grid.igGrid({
                 width: data.width,

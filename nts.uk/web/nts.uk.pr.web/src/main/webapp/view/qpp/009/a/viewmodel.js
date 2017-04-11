@@ -16,11 +16,17 @@ var qpp009;
                     this.printSetting = ko.observable(new PrintSetting());
                     this.yearMonth = ko.observable('2016/12');
                 }
+                /**
+                 * Start srceen.
+                 */
                 ScreenModel.prototype.start = function () {
                     var dfd = $.Deferred();
                     dfd.resolve();
                     return dfd.promise();
                 };
+                /**
+                 * Print report.
+                 */
                 ScreenModel.prototype.printData = function () {
                     a.service.printService(this).done(function () {
                     })
@@ -31,6 +37,9 @@ var qpp009;
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
+            /**
+             * Class detail items setting.
+             */
             var DetailItemsSetting = (function () {
                 function DetailItemsSetting() {
                     this.isPrintDetailItem = ko.observable(false);
@@ -47,6 +56,9 @@ var qpp009;
                 return DetailItemsSetting;
             }());
             viewmodel.DetailItemsSetting = DetailItemsSetting;
+            /**
+             * Class print setting.
+             */
             var PrintSetting = (function () {
                 function PrintSetting() {
                     this.specifyBreakPageList = ko.observableArray([
@@ -90,6 +102,9 @@ var qpp009;
                 return SalaryChartResultViewModel;
             }());
             viewmodel.SalaryChartResultViewModel = SalaryChartResultViewModel;
+            /**
+         * Class 出力区分.
+         */
             var SelectionModel = (function () {
                 function SelectionModel(code, name) {
                     this.code = code;
@@ -109,4 +124,3 @@ var qpp009;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qpp009.a || (qpp009.a = {}));
 })(qpp009 || (qpp009 = {}));
-//# sourceMappingURL=viewmodel.js.map
