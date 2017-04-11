@@ -86,7 +86,6 @@ var cmm013;
                                     return mess.messCode === "ER005";
                                 });
                                 nts.uk.ui.dialog.alert(delMess.messName);
-                                nts.uk.ui.windows.close();
                             }).done(function () {
                                 self.clearShared();
                                 nts.uk.ui.windows.close();
@@ -101,7 +100,6 @@ var cmm013;
                                 return mess.messCode === "ER023";
                             });
                             nts.uk.ui.dialog.alert(AL023.messName);
-                            nts.uk.ui.windows.close();
                         }
                         else {
                             d.service.updateHistory(historyInfo).fail(function (res) {

@@ -98,7 +98,7 @@ module cmm013.a.viewmodel {
             $("#list-box").click(function(evt, ui) {
                 self.clickChange(true);
             });
-            self.selectedCode.subscribe(function(codeChanged) {                
+            self.selectedCode.subscribe(function(codeChanged) {
                 self.itemHist(self.findHist(codeChanged));
                 self.oldStartDate(self.itemHist().startDate);
                 self.oldEndDate(self.itemHist().endDate);
@@ -154,7 +154,7 @@ module cmm013.a.viewmodel {
                 self.inp_002_enable(false);
                 self.createdMode(false);
                 //tim kiem quyen theo historyId va position code
-                
+
                 service.getAllJobTitleAuth(self.currentItem().historyId, self.currentItem().jobCode).done(function(jTref) {
                     //neu nhu ko co du lieu thi an list di
                     if (jTref.length === 0) {
@@ -185,9 +185,9 @@ module cmm013.a.viewmodel {
         getHistory(dfd: any, selectedHistory?: string): any {
             var self = this;
             service.getAllHistory().done(function(history_arr: Array<model.ListHistoryDto>) {
+                self.listbox(history_arr);
+              
                 if (history_arr.length > 0) {
-                    self.listbox(history_arr);
-
                     if (selectedHistory !== undefined && selectedHistory !== "1") {
                         let currentHist = self.findHist(selectedHistory);
                         self.selectedCode(currentHist.historyId);
@@ -264,6 +264,8 @@ module cmm013.a.viewmodel {
                     self.getHistory(dfd, selectedHistory);
                 });
                 return dfd.promise();
+
+                //        nts.uk.time.formatDate(data, "yyyy/MM/dd")
             }
         }
         //check dieu kien cua position
@@ -295,6 +297,17 @@ module cmm013.a.viewmodel {
                 return obj.historyId === value;
             })
         }
+
+        clearInit() {
+            var self = this;
+            self.inp_002_enable(true);
+            self.inp_002_code("");
+            self.inp_003_name("");
+            self.selectedId(1);
+            self.inp_005_memo("");
+            self.currentCode(null);
+            $("#inp_002").focus();
+        }
         //thực hiện nút 新規
         initPosition() {
             var self = this;
@@ -323,6 +336,8 @@ module cmm013.a.viewmodel {
 
             }
         }
+
+
         //kiểm tra dữ liệu
         checkChangeData(): boolean {
             var self = this;
@@ -423,6 +438,8 @@ module cmm013.a.viewmodel {
                     .onClosed(function() {
                         let dfd = $.Deferred();
                         self.getHistory(dfd);
+                          self.dataSource([]);
+                self.clearInit();
                         dfd.promise();
                     });
             }

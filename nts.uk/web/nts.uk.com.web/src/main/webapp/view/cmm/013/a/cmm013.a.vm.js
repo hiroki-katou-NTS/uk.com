@@ -135,8 +135,8 @@ var cmm013;
                 ScreenModel.prototype.getHistory = function (dfd, selectedHistory) {
                     var self = this;
                     a.service.getAllHistory().done(function (history_arr) {
+                        self.listbox(history_arr);
                         if (history_arr.length > 0) {
-                            self.listbox(history_arr);
                             if (selectedHistory !== undefined && selectedHistory !== "1") {
                                 var currentHist = self.findHist(selectedHistory);
                                 self.selectedCode(currentHist.historyId);
@@ -234,6 +234,16 @@ var cmm013;
                     return _.find(self.listbox(), function (obj) {
                         return obj.historyId === value;
                     });
+                };
+                ScreenModel.prototype.clearInit = function () {
+                    var self = this;
+                    self.inp_002_enable(true);
+                    self.inp_002_code("");
+                    self.inp_003_name("");
+                    self.selectedId(1);
+                    self.inp_005_memo("");
+                    self.currentCode(null);
+                    $("#inp_002").focus();
                 };
                 ScreenModel.prototype.initPosition = function () {
                     var self = this;
@@ -357,6 +367,8 @@ var cmm013;
                             .onClosed(function () {
                             var dfd = $.Deferred();
                             self.getHistory(dfd);
+                            self.dataSource([]);
+                            self.clearInit();
                             dfd.promise();
                         });
                     }

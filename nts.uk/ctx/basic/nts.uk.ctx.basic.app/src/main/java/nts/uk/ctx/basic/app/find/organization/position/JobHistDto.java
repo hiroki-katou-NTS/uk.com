@@ -11,6 +11,6 @@ public class JobHistDto {
 	private String companyCode;
 	private GeneralDate startDate;
 	private GeneralDate endDate;
-
-
+	//nts.uk.time.formatDate(data, "yyyy/MM/dd")
+	
 }

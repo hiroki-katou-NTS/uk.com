@@ -80,7 +80,7 @@ module cmm013.d.viewmodel {
         //<---close dialog--->       
         closeDialog() {
             var self = this;
-            //neu chua co lich su can chuyen ve man hinh top                
+                            
             self.clearShared();
             nts.uk.ui.windows.close();
         }
@@ -102,7 +102,6 @@ module cmm013.d.viewmodel {
                             return mess.messCode === "ER005";
                         })
                         nts.uk.ui.dialog.alert(delMess.messName);
-                        nts.uk.ui.windows.close();
                     }).done(function() {
                         //<---Close Screen--->
                         self.clearShared();
@@ -119,7 +118,6 @@ module cmm013.d.viewmodel {
                         return mess.messCode === "ER023";
                     })
                     nts.uk.ui.dialog.alert(AL023.messName);
-                    nts.uk.ui.windows.close();
                 } else {
                     service.updateHistory(historyInfo).fail(function(res: any) {
                         var upMess = _.find(self.lstMessage(), function(mess) {

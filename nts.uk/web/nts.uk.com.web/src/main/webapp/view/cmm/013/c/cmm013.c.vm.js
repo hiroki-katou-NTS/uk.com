@@ -19,19 +19,28 @@ var cmm013;
                     var dfd = $.Deferred();
                     self.historyId(nts.uk.ui.windows.getShared('CMM013_historyId'));
                     self.startDateLast(nts.uk.ui.windows.getShared('CMM013_startDateLast'));
-                    if (self.startDateLast() != '' && self.startDateLast() != null) {
+                    if (self.startDateLast()) {
+                        debugger;
                         self.itemList = ko.observableArray([
                             new BoxModel(0, '最新の履歴（' + self.startDateLast() + '）から引き継ぐ  '),
-                            new BoxModel(1, '全員参照不可')
+                            new BoxModel(1, '初めから作成する')
                         ]);
+                        self.enable(true);
                     }
                     else {
-                        self.itemList = ko.observableArray([
-                            new BoxModel(1, '全員参照不可')
-                        ]);
+                        self.enable(false);
+                        self.setValueForRadio();
                     }
                     dfd.resolve();
                     return dfd.promise();
+                };
+                ScreenModel.prototype.setValueForRadio = function () {
+                    var self = this;
+                    self.itemList = ko.observableArray([
+                        new BoxModel(1, ' 初めから作成する '),
+                        new BoxModel(2, ' 初めから作成する')
+                    ]);
+                    self.selectedId = ko.observable(2);
                 };
                 ScreenModel.prototype.closeDialog = function () {
                     nts.uk.ui.windows.close();
