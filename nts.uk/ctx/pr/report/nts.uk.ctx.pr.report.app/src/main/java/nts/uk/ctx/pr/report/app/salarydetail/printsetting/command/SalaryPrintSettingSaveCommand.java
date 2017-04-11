@@ -1,16 +1,15 @@
-package nts.uk.ctx.pr.report.app.salarydetail.command;
+package nts.uk.ctx.pr.report.app.salarydetail.printsetting.command;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.salarydetail.SalaryOutputDistinction;
-import nts.uk.ctx.pr.report.dom.salarydetail.SalaryPrintSetting;
+import nts.uk.ctx.pr.report.dom.salarydetail.printsetting.SalaryPrintSettingGetMemento;
 
 @Getter
 @Setter
-public class SaveSalaryPrintSettingCommand {
+public class SalaryPrintSettingSaveCommand implements SalaryPrintSettingGetMemento {
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The output distinction. */
 	private SalaryOutputDistinction outputDistinction;
@@ -74,9 +73,29 @@ public class SaveSalaryPrintSettingCommand {
 
 	/** The show total. */
 	private Boolean showTotal;
-	
-	public SalaryPrintSetting toDomain(){
-		//TODO
+
+	@Override
+	public Boolean getShowierarchy2() {
+		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public Boolean getShowierarchy3() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Boolean getShwowierarchy4() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Boolean getShowierarchy5() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.report.app.salarydetail.command.dto;
+package nts.uk.ctx.pr.report.app.salarydetail.outputsetting.command.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;

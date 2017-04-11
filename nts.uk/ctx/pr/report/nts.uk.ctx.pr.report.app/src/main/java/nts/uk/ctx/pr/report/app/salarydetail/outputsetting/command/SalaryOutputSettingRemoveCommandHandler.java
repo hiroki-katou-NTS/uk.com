@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.report.app.salarydetail.command;
+package nts.uk.ctx.pr.report.app.salarydetail.outputsetting.command;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
