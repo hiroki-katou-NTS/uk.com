@@ -14,12 +14,6 @@ module qmm002.c.viewmodel {
             self.singleSelectedCode = ko.observable();
             self.selectedCodes = ko.observableArray([]);
             self.selectedCodes2 = ko.observableArray([]);
-            self.selectedCodes.subscribe(function(items) {
-            });
-
-            self.singleSelectedCode.subscribe(function(val) {
-            });
-
         }
 
         startPage() {
@@ -37,11 +31,11 @@ module qmm002.c.viewmodel {
             var self = this;
             var message = "*が選択されていません。";
             if (!self.singleSelectedCode()) {
-                nts.uk.ui.dialog.alert(message.replace("*", "統合元情報"));
+                nts.uk.ui.dialog.alert(message.replace("*", "統合先情報"));
                 return;
             }
             if (!self.selectedCodes().length) {
-                nts.uk.ui.dialog.alert(message.replace("*", "統合先情報"));
+                nts.uk.ui.dialog.alert(message.replace("*", "統合元情報"));
                 return;
             }
             if (self.selectedCodes().length) {
@@ -50,7 +44,6 @@ module qmm002.c.viewmodel {
                         nts.uk.ui.dialog.alert("統合元と統合先で同じコードの＊が選択されています。\r\n");
                     } else {
                         nts.uk.ui.dialog.confirm("統合元から統合先へデータを置換えます。\r\nよろしいですか？").ifYes(function() {
-                            debugger;
                             var branchId = new Array();
                             _.forEach(self.selectedCodes(), function(item) {
                                 var code = item.split('-');

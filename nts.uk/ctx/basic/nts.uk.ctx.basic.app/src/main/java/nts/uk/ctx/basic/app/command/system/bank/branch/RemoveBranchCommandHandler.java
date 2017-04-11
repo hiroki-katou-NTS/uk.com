@@ -1,5 +1,8 @@
 package nts.uk.ctx.basic.app.command.system.bank.branch;
 
+/**
+ * remove branch command handler
+ */
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,9 +32,11 @@ public class RemoveBranchCommandHandler extends CommandHandler<RemoveBranchComma
 		RemoveBranchCommand command = context.getCommand();
 	    List<String> branchBranchIdList = new ArrayList<String>();
 	    branchBranchIdList.add(command.getBranchId().toString());
+	    // check exists bank branch
 	    if(personBankAccountRepository.checkExistsBranchAccount(companyCode, branchBranchIdList)){
 	    	throw new BusinessException("ER008"); // ER008
 	    }
+	    // remove bank branch
 		bankBranchRepo.remove(companyCode,command.getBranchId());	
 	}
 

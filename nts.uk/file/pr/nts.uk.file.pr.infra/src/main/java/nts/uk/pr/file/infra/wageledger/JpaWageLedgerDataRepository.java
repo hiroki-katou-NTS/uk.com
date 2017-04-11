@@ -4,10 +4,11 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.wageledger;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 
 import nts.uk.file.pr.app.export.wageledger.WageLedgerDataRepository;
-import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery;
 import nts.uk.file.pr.app.export.wageledger.data.WLOldLayoutReportData;
 
 /**
@@ -16,14 +17,12 @@ import nts.uk.file.pr.app.export.wageledger.data.WLOldLayoutReportData;
 @Stateless
 public class JpaWageLedgerDataRepository implements WageLedgerDataRepository {
 
-	/* (non-Javadoc)
-	 * @see nts.uk.file.pr.app.export.wageledger.WageLedgerDataRepository
-	 * #findReportData(nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery)
-	 */
 	@Override
-	public WLOldLayoutReportData findReportData(WageLedgerReportQuery query) {
+	public List<WLOldLayoutReportData> findReportDatas(int targetYear, List<String> employeeIds) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	
 
 }

@@ -1,17 +1,25 @@
 package nts.uk.ctx.basic.app.command.system.bank.branch;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.basic.dom.system.bank.linebank.LineBank;
+import nts.uk.ctx.basic.dom.system.bank.linebank.LineBankRepository;
 import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonBankAccount;
 import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonBankAccountRepository;
 import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonUseSetting;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * tranfer branch command handler
+ * @author sonnh
+ *
+ */
 @Stateless
 @Transactional
 public class TranferBranchCommandHandler  extends CommandHandler<TranferBranchCommand> {
@@ -19,16 +27,34 @@ public class TranferBranchCommandHandler  extends CommandHandler<TranferBranchCo
 	@Inject
 	private PersonBankAccountRepository personBankAccountRepository;
 	
+	@Inject 
+	private LineBankRepository lineBankRepository;
+	
 	@Override
 	protected void handle(CommandHandlerContext<TranferBranchCommand> context) {
-		
-		TranferBranchCommand command = context.getCommand();
+		// get company code
 		String companyCode = AppContexts.user().companyCode();
+		
+		// get command
+		TranferBranchCommand command = context.getCommand();
+		
+		// get person bank account by list of branch id
+		List<PersonBankAccount> listPersonBankAcc = personBankAccountRepository.findAllBranch(companyCode, command.getBranchId());
+		
+		// get line bank by list of branch id
+		List<LineBank> listLineBank = lineBankRepository.find(companyCode, command.getBranchId());
+		if (!listLineBank.isEmpty()) {
+			lineBankRepository.updateByBranch(companyCode, command.getBranchId(), command.getBranchNewId());
+		}
+		
 		command.getBranchId().forEach(item -> {
-			List<PersonBankAccount> listPersonBankAcc = personBankAccountRepository.findAllBranchCode(companyCode,item);
+			// get person bank account by branch id
+			List<PersonBankAccount> personBankAccList = listPersonBankAcc.stream()
+					.filter(x -> filterBranchId(x, item))
+					.collect(Collectors.toList());
 			
-			listPersonBankAcc.forEach(x -> {
-				
+			// perform update person bank account by branch id
+			personBankAccList.forEach(x -> {
 				PersonBankAccount bankAccount = x;
 				PersonUseSetting useSet1 = bankAccount.getUseSet1(); 
 				PersonUseSetting useSet2 = bankAccount.getUseSet2();
@@ -59,12 +85,43 @@ public class TranferBranchCommandHandler  extends CommandHandler<TranferBranchCo
 		});
 	}
 	
+	/**
+	 * Create useSet
+	 * @param branchId
+	 * @param bankAccount
+	 * @param command
+	 * @return
+	 */
 	private PersonUseSetting useSet(String branchId, PersonUseSetting bankAccount, TranferBranchCommand command) {
 		if (bankAccount.getToBranchId().equals(branchId)) {
 			bankAccount.setToBranchId(command.getBranchNewId());
 		}
-		
 		return bankAccount;
 	}
 
+	/**
+	 * Check update useSet
+	 * @param personBankAcc
+	 * @param branchId
+	 * @return
+	 */
+	private boolean filterBranchId(PersonBankAccount personBankAcc, String branchId) {
+		if (personBankAcc.getUseSet1() != null && branchId.equals(personBankAcc.getUseSet1().getToBranchId())) {
+			return true;
+		}
+		
+		if (personBankAcc.getUseSet2() != null && branchId.equals(personBankAcc.getUseSet2().getToBranchId())) {
+			return true;
+		}
+		
+		if (personBankAcc.getUseSet3() != null && branchId.equals(personBankAcc.getUseSet3().getToBranchId())) {
+			return true;
+		}
+		
+		if (personBankAcc.getUseSet4() != null && branchId.equals(personBankAcc.getUseSet4().getToBranchId())) {
+			return true;
+		}
+		
+		return false;
+	}
 }

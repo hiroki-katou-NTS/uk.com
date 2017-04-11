@@ -14,13 +14,14 @@ import nts.uk.ctx.basic.dom.system.era.Era;
 public class DeleteEraCommand {
 	//private String eraName;
 	//private String eraMark;
-	private GeneralDate startDate;
+	//private GeneralDate startDate;
 	//private Date endDate;
 	//private int fixAttribute;
+	private String eraHist;
 	
 	public Era toDomain(){
-		Era domain = Era.createFromDataType1(
-				this.startDate);
+		Era domain = Era.createFromDataType(
+				this.eraHist);
 		return domain;
 	}
 	

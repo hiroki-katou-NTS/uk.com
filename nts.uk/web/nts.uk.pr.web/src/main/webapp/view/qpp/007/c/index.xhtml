@@ -5,8 +5,12 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingCode
+				nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingName
+  			</com:ValidatorScript>
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../j/qpp007.j.service.js" />
@@ -24,11 +28,11 @@
 		<ui:define name="content">
 			<!-- BEGIN FUNCTION AREA -->
 			<div id="functions-area">
-				<button id="new-button" data-bind="click: newModeBtnClick">新規</button>
-				<button id="register-button" class="proceed" data-bind="click: save, enable: $root.errors.isEmpty">登録</button>
+				<button id="new-button" data-bind="click: onNewModeBtnClick">新規</button>
+				<button id="register-button" class="proceed" data-bind="click: save">登録</button>
 				<button id="setting-button" data-bind="click: commonSettingBtnClick">集計項目の設定</button>
 				<button id="delete-button" class="danger" data-bind="click: remove">削除</button>
-				<button id="close-button" data-bind="">閉じる</button>
+				<button id="close-button" data-bind="click: close">閉じる</button>
 			</div>
 
 			<!-- END FUNCTION AREA -->
@@ -66,10 +70,11 @@
 				<div id="contents-center" class="caret-right caret-background pull-left" data-bind="with: outputSettingDetailModel">
 					<div class="flex valign-center">
 						<div id="lblCodeName" data-bind="ntsFormLabel: {required: true}">コード/名称</div>
-						<input id="inpCode"
-							data-bind="ntsTextEditor: {value: settingCode, required: true, enable: $parent.isNewMode()}"></input>
-						<input id="inpName"
-							data-bind="ntsTextEditor: {value: settingName, required: true}"></input>
+						<input id="inpCode" data-name="コード"
+							data-bind="ntsTextEditor: {constraint: 'SalaryOutputSettingCode', value: settingCode, required: true, enable: $parent.isNewMode()}">
+						</input>
+						<input id="inpName" data-name="名称"
+							data-bind="ntsTextEditor: {constraint: 'SalaryOutputSettingName', value: settingName, required: true}"></input>
 					</div>
 
 					<!-- BEGIN TAB PANEL -->

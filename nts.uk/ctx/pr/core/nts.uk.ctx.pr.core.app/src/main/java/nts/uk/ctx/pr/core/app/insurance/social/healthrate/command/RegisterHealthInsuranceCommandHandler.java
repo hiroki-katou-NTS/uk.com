@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.healthrate.command;
@@ -19,6 +19,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.core.dom.util.PrimitiveUtil;
 import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
@@ -98,8 +99,8 @@ public class RegisterHealthInsuranceCommandHandler
 		// Auto calculate listHealthInsuranceAvgearn
 		List<HealthInsuranceAvgearn> listHealthInsuranceAvgearn = listAvgEarnLevelMasterSetting
 				.stream().map(setting -> {
-					return new HealthInsuranceAvgearn(new HealthInsuranceAvgearnMemento(setting,
-							addNew.getRateItems(), addNew.getHistoryId()));
+					return new HealthInsuranceAvgearn(
+							new HiaGetMemento(setting, addNew.getRateItems(), addNew.getHistoryId()));
 				}).collect(Collectors.toList());
 
 		healthInsuranceAvgearnRepository.update(listHealthInsuranceAvgearn, companyCode,
@@ -109,10 +110,8 @@ public class RegisterHealthInsuranceCommandHandler
 	/**
 	 * Covert to memento.
 	 *
-	 * @param healthInsuranceRate
-	 *            the health insurance rate
-	 * @param command
-	 *            the command
+	 * @param healthInsuranceRate the health insurance rate
+	 * @param command the command
 	 * @return the health insurance rate get memento
 	 */
 	protected HealthInsuranceRateGetMemento covertToMemento(HealthInsuranceRate healthInsuranceRate,
@@ -182,12 +181,9 @@ public class RegisterHealthInsuranceCommandHandler
 	/**
 	 * Calculate avgearn value.
 	 *
-	 * @param masterRate
-	 *            the master rate
-	 * @param rateItems
-	 *            the rate items
-	 * @param isPersonal
-	 *            the is personal
+	 * @param masterRate the master rate
+	 * @param rateItems the rate items
+	 * @param isPersonal the is personal
 	 * @return the health insurance avgearn value
 	 */
 	private HealthInsuranceAvgearnValue calculateAvgearnValue(BigDecimal masterRate,
@@ -197,7 +193,7 @@ public class RegisterHealthInsuranceCommandHandler
 			if (rateItem.getPayType() == PaymentType.Salary) {
 				switch (rateItem.getInsuranceType()) {
 				case Basic:
-					value.setHealthBasicMny(new CommonAmount(
+					value.setHealthBasicMny(new InsuranceAmount(
 							calculateChargeRate(masterRate, rateItem, isPersonal)));
 					break;
 				case General:
@@ -209,7 +205,7 @@ public class RegisterHealthInsuranceCommandHandler
 							calculateChargeRate(masterRate, rateItem, isPersonal)));
 					break;
 				case Special:
-					value.setHealthSpecificMny(new CommonAmount(
+					value.setHealthSpecificMny(new InsuranceAmount(
 							calculateChargeRate(masterRate, rateItem, isPersonal)));
 					break;
 				}
@@ -223,12 +219,9 @@ public class RegisterHealthInsuranceCommandHandler
 	/**
 	 * Calculate charge rate.
 	 *
-	 * @param masterRate
-	 *            the master rate
-	 * @param rateItem
-	 *            the rate item
-	 * @param isPersonal
-	 *            the is personal
+	 * @param masterRate the master rate
+	 * @param rateItem the rate item
+	 * @param isPersonal the is personal
 	 * @return the big decimal
 	 */
 	private BigDecimal calculateChargeRate(BigDecimal masterRate, InsuranceRateItem rateItem,
@@ -239,34 +232,62 @@ public class RegisterHealthInsuranceCommandHandler
 		return masterRate.multiply(rateItem.getChargeRate().getCompanyRate().v());
 	}
 
-	private class HealthInsuranceAvgearnMemento implements HealthInsuranceAvgearnGetMemento {
+	/**
+	 * The Class GetMemento.
+	 */
+	private class HiaGetMemento implements HealthInsuranceAvgearnGetMemento {
+		
+		/** The setting. */
 		protected AvgEarnLevelMasterSetting setting;
+		
+		/** The rate items. */
 		protected Set<InsuranceRateItem> rateItems;
+		
+		/** The history id. */
 		protected String historyId;
 
-		public HealthInsuranceAvgearnMemento(AvgEarnLevelMasterSetting setting,
-				Set<InsuranceRateItem> rateItems, String historyId) {
+		/**
+		 * Instantiates a new gets the memento.
+		 *
+		 * @param setting the setting
+		 * @param rateItems the rate items
+		 * @param historyId the history id
+		 */
+		public HiaGetMemento(AvgEarnLevelMasterSetting setting, Set<InsuranceRateItem> rateItems,
+				String historyId) {
 			this.setting = setting;
 			this.rateItems = rateItems;
 			this.historyId = historyId;
 		}
 
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnGetMemento#getHistoryId()
+		 */
 		@Override
 		public String getHistoryId() {
 			return historyId;
 		}
 
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnGetMemento#getLevelCode()
+		 */
 		@Override
 		public Integer getLevelCode() {
 			return setting.getCode();
 		}
 
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnGetMemento#getCompanyAvg()
+		 */
 		@Override
 		public HealthInsuranceAvgearnValue getCompanyAvg() {
 			return calculateAvgearnValue(BigDecimal.valueOf(setting.getAvgEarn()), rateItems,
 					false);
 		}
 
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnGetMemento#getPersonalAvg()
+		 */
 		@Override
 		public HealthInsuranceAvgearnValue getPersonalAvg() {
 			return calculateAvgearnValue(BigDecimal.valueOf(setting.getAvgEarn()), rateItems, true);

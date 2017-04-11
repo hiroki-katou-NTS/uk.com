@@ -129,7 +129,7 @@
 								height: 500,
 								options: itemList,
 								optionsValue: 'code',
-								columns: itemListColumns,
+								columns: $root.content.itemListColumns,
 								multiple: false,
 								value: aggregateItemSelectedCode
 						}"></table>
@@ -154,7 +154,7 @@
 			<div class="flex valign-center">
 				<div data-bind="ntsFormLabel: {}">値が0の時の項目名</div>
 				<div class="cf switch-button-class" data-bind="ntsSwitchButton: {
-					options: switchs,
+					options: $root.content.switchs,
 					optionsValue: 'code',
 					optionsText: 'name',
 					value: showNameZeroCode,
@@ -163,7 +163,7 @@
 			<div class="flex valign-center">
 				<div data-bind="ntsFormLabel: {}">値が0の時の項目値</div>
 				<div class="cf switch-button-class" data-bind="ntsSwitchButton: {
-					options: switchs,
+					options: $root.content.switchs,
 					optionsValue: 'code',
 					optionsText: 'name',
 					value: showValueZeroCode,
@@ -186,7 +186,7 @@
 						width: 750,
 						dataSource: masterItems,
 						primaryKey: 'code',
-						columns: swapListColumns,
+						columns: $root.content.swapListColumns,
 						value: subItems
 					}"></div>
 			</div>
