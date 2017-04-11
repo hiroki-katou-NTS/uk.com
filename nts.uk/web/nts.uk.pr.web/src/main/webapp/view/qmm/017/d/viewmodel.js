@@ -43,4 +43,3 @@ var nts;
         qmm017.DScreen = DScreen;
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=viewmodel.js.map
