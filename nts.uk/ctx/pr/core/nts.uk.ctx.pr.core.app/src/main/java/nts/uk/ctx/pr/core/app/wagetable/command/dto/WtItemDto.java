@@ -65,7 +65,7 @@ public class WtItemDto {
 	private class WidSetMemento implements WtItemSetMemento {
 
 		/** The type value. */
-		protected WtItemDto dto;
+		private WtItemDto dto;
 
 		/**
 		 * Instantiates a new jpa accident insurance rate get memento.
@@ -126,7 +126,7 @@ public class WtItemDto {
 	private class WidGetMemento implements WtItemGetMemento {
 
 		/** The type value. */
-		protected WtItemDto dto;
+		private WtItemDto dto;
 
 		/**
 		 * Instantiates a new jpa accident insurance rate get memento.

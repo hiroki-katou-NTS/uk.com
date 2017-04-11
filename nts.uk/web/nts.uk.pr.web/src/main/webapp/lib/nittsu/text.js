@@ -262,6 +262,21 @@ var nts;
                     return "top";
             }
             text_1.reverseDirection = reverseDirection;
+            function getISOFormat(format) {
+                if (format.toLowerCase() === "iso")
+                    return "YYYY-MM-DD[T]HH:mm:ss.SSS[Z]";
+                if (format.toLowerCase() === "date")
+                    return "YYYY/MM/DD";
+                if (format.toLowerCase() === "yearmonth")
+                    return "YYYY/MM";
+                if (format.toLowerCase() === "time")
+                    return "HH:mm";
+                if (format.toLowerCase() === "datetime")
+                    return "YYYY/MM/DD HH:mm";
+                format = format.replace(/y/g, "Y");
+                return format;
+            }
+            text_1.getISOFormat = getISOFormat;
             var StringFormatter = (function () {
                 function StringFormatter(args) {
                     this.args = args;
@@ -296,18 +311,22 @@ var nts;
                 }
                 TimeFormatter.prototype.format = function (source) {
                     var result;
-                    if (this.option.option.inputFormat === "yearmonth") {
+                    if (this.option.inputFormat === "yearmonth") {
                         result = uk.time.parseYearMonth(source);
                     }
-                    else if (this.option.option.inputFormat === "time") {
+                    else if (this.option.inputFormat === "time") {
                         result = uk.time.parseTime(source, true);
                     }
                     else {
-                        result = uk.time.ResultParseTime.failed();
+                        result = moment(source, "YYYYMMDD");
+                        if (result.isValid()) {
+                            var format = getISOFormat(this.option.inputFormat);
+                            return result.format(format);
+                        }
+                        return source;
                     }
-                    if (result.success) {
+                    if (result.success)
                         return result.format();
-                    }
                     return source;
                 };
                 return TimeFormatter;

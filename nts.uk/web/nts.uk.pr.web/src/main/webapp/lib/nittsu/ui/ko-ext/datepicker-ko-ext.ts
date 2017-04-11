@@ -13,120 +13,133 @@ module nts.uk.ui.koExtentions {
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            // Get data.
             var data = valueAccessor();
-            // Container.
+            var value = data.value;
+            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            var dateFormat: string = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
+            var ISOFormat = text.getISOFormat(dateFormat);
+            var hasDayofWeek: boolean = (ISOFormat.indexOf("ddd") !== -1);
+            var dayofWeekFormat: string = ISOFormat.replace(/[^d]/g, "");
+            ISOFormat = ISOFormat.replace(/d/g,"").trim();
+            var valueFormat: string = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : "";
+            var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+            var button: boolean = (data.button !== undefined) ? ko.unwrap(data.button) : false;
+            var startDate: any = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
+            var endDate: any = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
+            var autoHide: boolean = (data.autoHide !== undefined) ? ko.unwrap(data.autoHide) : true;
+            var valueType = typeof value();
+            if (valueType === "string") {
+                valueFormat = (valueFormat) ? valueFormat : text.getISOFormat("ISO");
+            }
+            else if (valueType === "number") {
+                valueFormat = (valueFormat) ? valueFormat : ISOFormat;
+            }
+            else if (valueType === "object") {
+                if (moment.isDate(value())) {
+                    valueType = "date";
+                }
+                else if (moment.isMoment(value())) {
+                    valueType = "moment";
+                }
+            }
+
             var container = $(element);
             if (!container.attr("id")) {
                 var idString = nts.uk.util.randomId();
                 container.attr("id", idString);
             }
-            container.addClass("ntsControl");
-            var startDate = null;
-            var endDate = null;
-            if (data.startDate) {
-                startDate = ko.unwrap(data.startDate);
+            container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
+            var inputClass: string = (ISOFormat.length < 10) ? "yearmonth-picker" : "";
+            var $input: any = $("<input id='" + container.attr("id") + "-input' class='ntsDatepicker nts-input' />").addClass(inputClass);
+            container.append($input);
+            if (hasDayofWeek) {
+                var lengthClass: string = (dayofWeekFormat.length > 3) ? "long-day" : "short-day";
+                var $label: any = $("<label id='" + container.attr("id") + "-label' for='" + container.attr("id") + "-input' class='dayofweek-label' />");
+                $input.addClass(lengthClass);
+                container.append($label);
             }
-            if (data.endDate) {
-                endDate = ko.unwrap(data.endDate);
-            }
-            var autoHide = data.autoHide == false ? false : true;
-            var idatr = container.attr("id");
-            container.append("<input id='" + idatr + "-input' class='ntsDatepicker nts-input' />");
-            var $input = container.find('#' + idatr + "-input");
-            var button = null;
-            if (data.button) button = idatr + "_button";
-            $input.prop("readonly", true);
-
-            var value = ko.unwrap(data.value);
-            var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
-            var containerFormat = 'yyyy/mm/dd';
-            var length = 10, atomWidth = 9.5;
-            if (dateFormat === "yyyy/MM/dd DDD") {
-                length = 16;
-            } else if (dateFormat === "yyyy/MM/dd D") {
-                length = 14;
-            } else if (dateFormat === "yyyy/MM") {
-                length = 7;
-                containerFormat = 'yyyy/mm';
-            }
-            if (containerFormat != 'yyyy/mm')
-                //datepicker case
-                $input.attr('value', nts.uk.time.formatDate(value, dateFormat));
-            else //yearmonth picker case 
-                $input.attr('value', value);
-            if (button) {
-                container.append("<input type='button' id='" + button + "' class='datepicker-btn' />");
-                (<any>$input).datepicker({
-                    format: containerFormat, // cast to avoid error
-                    language: 'ja-JP',
-                    trigger: "#" + button,
-                    autoHide: autoHide,
-                    startDate: startDate,
-                    endDate: endDate
-                });
-            }
-            else (<any>$input).datepicker({
-                format: containerFormat, // cast to avoid error
+            
+            // Init Datepicker
+            $input.datepicker({
                 language: 'ja-JP',
-                autoHide: autoHide,
+                format: ISOFormat,
                 startDate: startDate,
-                endDate: endDate
+                endDate: endDate,
+                autoHide: autoHide,
             });
-            container.data("format", containerFormat);
-            if (containerFormat !== 'yyyy/mm')
-                $input.on('change', (event: any) => {
-                    data.value(new Date($input.val().substring(0, 10)));
-                });
-            else
-                $input.on('change', (event: any) => {
-                    let result = nts.uk.time.parseYearMonth($input.val());
-                    data.value(result.toValue());
-                });
-            $input.width(Math.floor(atomWidth * length));
-            if (data.disabled !== undefined && ko.unwrap(data.disabled) == true) {
-                $input.prop("disabled", true);
-                if (button) {
-                    container.find('.datepicker-btn').prop("disabled", true);
+
+            var validator = new validation.TimeValidator(constraintName, {required: required, inputFormat: valueFormat, valueType: valueType});
+            $input.on("change", (e) => {
+                var newText = $input.val();
+                var result = validator.validate(newText);
+                $input.ntsError('clear');
+                if (result.isValid) {
+                    // Day of Week
+                    if (hasDayofWeek)
+                        $label.text("(" + time.formatPattern(newText, "", dayofWeekFormat) + ")");
+                    value(result.parsedValue);
                 }
-            }
+                else {
+                    $input.ntsError('set', result.errorMessage);
+                    value(newText);
+                }
+            });
+
+            $input.on('validate', (function(e: Event) {
+                var newText = $input.val();
+                var result = validator.validate(newText);
+                $input.ntsError('clear');
+                if (result.isValid) {
+                    $input.ntsError('set', "Invalid format");
+                }
+            }));
         }
 
         /**
          * Update
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-
             var data = valueAccessor();
-            var container = $(element);
-            var newValue = ko.unwrap(data.value);
-            var dateFormat: string = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+            var value = data.value;
+            var dateFormat: string = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
+            var ISOFormat = text.getISOFormat(dateFormat);
+            var hasDayofWeek: boolean = (ISOFormat.indexOf("ddd") !== -1);
+            var dayofWeekFormat: string = ISOFormat.replace(/[^d]/g, "");
+            ISOFormat = ISOFormat.replace(/d/g,"").trim();
+            var valueFormat: string = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : ISOFormat;
             var disabled: boolean = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
+            var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : undefined;
+            var startDate: any = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
+            var endDate: any = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
+
+            var container = $(element);
+            var init = container.data("init");
+            var $input: any = container.find(".nts-input");
+            var $label: any = container.find(".dayofweek-label");
             
-            var idatr = container.attr("id");
-            var $input = container.find('#' + idatr + "-input");
-            var formatOptions = container.data("format");
-            var oldDate = $input.datepicker("getDate");
-            if (formatOptions != 'yyyy/mm') {
-                var oldDate = $input.datepicker("getDate");
-                if (oldDate.getFullYear() != newValue.getFullYear() || oldDate.getMonth() != newValue.getMonth() || oldDate.getDate() != newValue.getDate())
-                    $input.datepicker("setDate", newValue);
-                $input.val(nts.uk.time.formatDate(newValue, dateFormat));
-            } else {
-                let formatted = nts.uk.time.parseYearMonth(newValue);
-                var newDate = new Date(formatted.format() + "/01");
-                var oldDate = $input.datepicker("getDate");
-                if (oldDate.getFullYear() != newDate.getFullYear() || oldDate.getMonth() != newDate.getMonth())
-                    $input.datepicker("setDate", newDate);
-                $input.val(formatted.format());
+            // Value Binding
+            var dateFormatValue = (value() !== "") ? time.formatPattern(value(), valueFormat, ISOFormat) : "";
+            if (init === true || time.formatPattern($input.datepicker("getDate",true),"",ISOFormat) !== dateFormatValue) {
+                if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
+                    $input.datepicker('setDate', dateFormatValue);
+                    // Day of Week
+                    if (hasDayofWeek)
+                        $label.text("(" + moment.utc(value(), valueFormat).format(dayofWeekFormat) + ")");
+                }
             }
+            container.data("init", false);
             
-            // Disable
-            $input.prop("disabled", disabled);
-            if (data.button) 
+            // Properties Binding
+            $input.datepicker('setStartDate', startDate);
+            $input.datepicker('setEndDate', endDate);
+            if (enable !== undefined)
+               $input.prop("disabled", !enable);
+            else
+                $input.prop("disabled", disabled);
+            if (data.button)
                 container.find('.datepicker-btn').prop("disabled", disabled);
         }
     }
-    
+
     ko.bindingHandlers['ntsDatePicker'] = new DatePickerBindingHandler();
 }

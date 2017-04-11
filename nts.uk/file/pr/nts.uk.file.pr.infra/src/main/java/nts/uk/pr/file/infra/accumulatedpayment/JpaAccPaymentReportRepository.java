@@ -8,9 +8,10 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.AccPaymentRepository;
-import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.data.AccPaymentItemData;
-import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.query.AccPaymentReportQuery;
+import nts.uk.file.pr.app.export.accumulatedpayment.AccPaymentRepository;
+import nts.uk.file.pr.app.export.accumulatedpayment.data.AccPaymentItemData;
+import nts.uk.file.pr.app.export.accumulatedpayment.query.AccPaymentReportQuery;
+
 
 
 @Stateless

@@ -123,7 +123,7 @@ var nts;
                             var isMulti = container.data("multiple");
                             var itemsSelected = selectListBoxContainer.data('value');
                             document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
-                            if (!changingEvent.returnValue) {
+                            if (changingEvent.returnValue !== undefined && !changingEvent.returnValue) {
                                 console.log(selectedValue);
                                 selectListBoxContainer.data('value', data.value());
                                 if (isMulti) {
@@ -252,16 +252,20 @@ var nts;
                         }
                         container.data("options", options.slice());
                         container.data("init", false);
-                        var haveDate = isMultiSelect ? !uk.text.isNullOrEmpty(selectedValue) && selectedValue.length > 0
+                        var haveData = isMultiSelect ? !uk.text.isNullOrEmpty(selectedValue) && selectedValue.length > 0
                             : !uk.text.isNullOrEmpty(selectedValue);
-                        if (haveDate && (!_.isEqual(originalSelected, selectedValue) || init)) {
+                        if (haveData && (!_.isEqual(originalSelected, selectedValue) || init)) {
                             selectListBoxContainer.data('value', selectedValue);
-                            if(isMultiSelect){
+                            if (isMultiSelect) {
                                 selectMultiRow(selectListBoxContainer, selectedValue);
-                            } else {
+                            }
+                            else {
                                 selectOneRow(selectListBoxContainer, selectedValue);
                             }
                             container.trigger('selectionChange');
+                        }
+                        else if (!haveData) {
+                            container.ntsListBox("deselectAll");
                         }
                         if (isMultiSelect) {
                             if (!enable) {

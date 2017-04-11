@@ -36,10 +36,10 @@ var qmm006;
                     self.countLineBank = ko.observable(0);
                     self.indexLineBank = ko.observable(0);
                     self.messageList = ko.observableArray([
-                        { messageId: "ER001", message: "が入力されていません。" },
-                        { messageId: "ER005", message: "入力したコードは既に存在しています。\r\n コードを確認してください。" },
-                        { messageId: "ER007", message: "が選択されていません。" },
-                        { messageId: "ER008", message: "選択された{0}は使用されているため削除できません。" },
+                        { messageId: "ER001", message: "＊が入力されていません。" },
+                        { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                        { messageId: "ER007", message: "＊が選択されていません。" },
+                        { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
                         { messageId: "ER010", message: "対象データがありません。" },
                     ]);
                     self.currentCode.subscribe(function (codeChange) {
@@ -58,7 +58,7 @@ var qmm006;
                         if (self.dirty.isDirty()) {
                             nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                                 self.setCurrentLineBank(codeChange);
-                            }).ifCancel(function () {
+                            }).ifNo(function () {
                                 self.notLoopAlert(false);
                                 self.currentCode(self.currentLineBank().lineBankCode());
                             });
@@ -133,8 +133,8 @@ var qmm006;
                 };
                 ScreenModel.prototype.saveData = function () {
                     var self = this;
-                    if (self.currentLineBank().lineBankCode() != null && self.currentLineBank().lineBankCode().length == 1) {
-                        self.currentLineBank().lineBankCode("0" + self.currentLineBank().lineBankCode());
+                    if (self.currentLineBank().lineBankCode().length == 1) {
+                        var lineBankCode = '0' + self.currentLineBank().lineBankCode();
                     }
                     var command = {
                         accountAtr: self.currentLineBank().accountAtr(),
@@ -207,13 +207,10 @@ var qmm006;
                                 }
                             });
                         }).fail(function (error) {
-                            if (error.messageId == self.messageList()[3].messageId) {
-                                var messageError = nts.uk.text.format(self.messageList()[3].message, self.currentLineBank().lineBankName());
-                                nts.uk.ui.dialog.alert(messageError);
-                            }
+                            nts.uk.ui.dialog.alert(self.messageList()[3].message);
                         });
                     })
-                        .ifCancel(function () {
+                        .ifNo(function () {
                     });
                 };
                 ScreenModel.prototype.openBDialog = function () {
@@ -243,7 +240,7 @@ var qmm006;
                         if (self.dirty.isDirty()) {
                             nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                                 self.afterCloseCDialog();
-                            }).ifCancel(function () {
+                            }).ifNo(function () {
                             });
                         }
                         else {
@@ -272,7 +269,7 @@ var qmm006;
                     if (self.dirty.isDirty()) {
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                             nts.uk.request.jump("/view/qmm/002/a/index.xhtml");
-                        }).ifCancel(function () {
+                        }).ifNo(function () {
                         });
                     }
                     else {
@@ -292,7 +289,7 @@ var qmm006;
                                 self.currentCode(null);
                             }
                         })
-                            .ifCancel(function () { });
+                            .ifNo(function () { });
                     }
                     else {
                         self.currentCode(null);
@@ -375,34 +372,50 @@ var qmm006;
                         var consignorItem = consignors[i];
                         switch (i) {
                             case 0:
-                                this.createConsignorItem(consignorItem, "①");
+                                if (consignorItem) {
+                                    this.consignors.push(new Consignor("①", consignorItem.code, consignorItem.memo));
+                                }
+                                else {
+                                    this.consignors.push(new Consignor("①", "", ""));
+                                }
                                 break;
                             case 1:
-                                this.createConsignorItem(consignorItem, "②");
+                                if (consignorItem) {
+                                    this.consignors.push(new Consignor("②", consignorItem.code, consignorItem.memo));
+                                }
+                                else {
+                                    this.consignors.push(new Consignor("②", "", ""));
+                                }
                                 break;
                             case 2:
-                                this.createConsignorItem(consignorItem, "③");
+                                if (consignorItem) {
+                                    this.consignors.push(new Consignor("③", consignorItem.code, consignorItem.memo));
+                                }
+                                else {
+                                    this.consignors.push(new Consignor("③", "", ""));
+                                }
                                 break;
                             case 3:
-                                this.createConsignorItem(consignorItem, "④");
+                                if (consignorItem) {
+                                    this.consignors.push(new Consignor("④", consignorItem.code, consignorItem.memo));
+                                }
+                                else {
+                                    this.consignors.push(new Consignor("④", "", ""));
+                                }
                                 break;
                             case 4:
-                                this.createConsignorItem(consignorItem, "⑤");
+                                if (consignorItem) {
+                                    this.consignors.push(new Consignor("⑤", consignorItem.code, consignorItem.memo));
+                                }
+                                else {
+                                    this.consignors.push(new Consignor("⑤", "", ""));
+                                }
                                 break;
                             default:
                                 break;
                         }
                     }
                 }
-                LineBank.prototype.createConsignorItem = function (item, icon) {
-                    var self = this;
-                    if (item) {
-                        self.consignors.push(new Consignor(icon, item.code, item.memo));
-                    }
-                    else {
-                        self.consignors.push(new Consignor(icon, "", ""));
-                    }
-                };
                 return LineBank;
             }());
             var Consignor = (function () {

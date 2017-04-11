@@ -14,7 +14,10 @@ var qmm006;
                     self.selectedCodes = ko.observableArray([]);
                     self.headers = ko.observableArray(["Item Value Header", "コード/名称"]);
                     self.messageList = ko.observableArray([
-                        { messageId: "ER007", message: "支店がが選択されていません。" },
+                        { messageId: "ER001", message: "＊が入力されていません。" },
+                        { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                        { messageId: "ER007", message: "＊が選択されていません。" },
+                        { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
                         { messageId: "ER010", message: "対象データがありません。" },
                     ]);
                     self.singleSelectedCode.subscribe(function (codeChanged) {
@@ -61,7 +64,7 @@ var qmm006;
                             }
                         }
                         else {
-                            nts.uk.ui.dialog.alert(self.messageList()[1].message);
+                            nts.uk.ui.dialog.alert(self.messageList()[4].message);
                         }
                         dfd.resolve();
                     }).fail(function (res) { });
@@ -80,7 +83,7 @@ var qmm006;
                         nts.uk.ui.windows.close();
                     }
                     else {
-                        nts.uk.ui.dialog.alert(self.messageList()[0].message);
+                        nts.uk.ui.dialog.alert(self.messageList()[2].message);
                     }
                 };
                 return ScreenModel;
