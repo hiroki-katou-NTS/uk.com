@@ -14,13 +14,14 @@ var qmm034;
                     self.startDate = ko.observable(moment().format("YYYY/MM/DD"));
                     self.startDate.subscribe(function (dateChange) {
                         if (self.countStartDateChange === 1) {
-                            if ($('#A_INP_003').ntsError("hasError")) {
-                                $("#A_INP_003").ntsError('clear');
+                            if ($('#txtStartDate').ntsError("hasError")) {
+                                $("#txtStartDate").ntsError('clear');
                             }
                         }
                         else {
                             self.countStartDateChange = 1;
                         }
+                        self.currentEra().startDate(dateChange);
                         self.dateTime(nts.uk.time.yearInJapanEmpire(dateChange).toString());
                     });
                     self.currentCode.subscribe(function (codeChanged) {
@@ -64,7 +65,7 @@ var qmm034;
                         { headerText: 'KEY', key: 'eraHist', width: 50, hidden: true },
                         { headerText: '元号', key: 'eraName', width: 50 },
                         { headerText: '記号', key: 'eraMark', width: 50 },
-                        { headerText: '開始年月日', key: 'startDate', width: 80 },
+                        { headerText: '開始年月日', key: 'startDate', width: 80, isDateColumn: true, format: 'YYYY/MM/DD' },
                     ]);
                     self.currentEra = ko.observable((new EraModel('', '', moment.utc().toISOString(), 1, '', moment.utc().toISOString())));
                     self.currentCode = ko.observable(null);
@@ -76,8 +77,8 @@ var qmm034;
                 };
                 ScreenModel.prototype.validateData = function () {
                     $(".nts-editor").ntsEditor("validate");
-                    $("#A_INP_003").ntsEditor("validate");
-                    if ($(".nts-editor").ntsError('hasError') || $("#A_INP_003").ntsError('hasError')) {
+                    $("#txtStartDate").ntsEditor("validate");
+                    if ($(".nts-editor").ntsError('hasError') || $("#txtStartDate").ntsError('hasError')) {
                         return false;
                     }
                     return true;
@@ -85,9 +86,9 @@ var qmm034;
                 ScreenModel.prototype.insertData = function () {
                     var self = this;
                     var eraName;
-                    eraName = $('#A_INP_001').val();
+                    eraName = $('#txtEraName').val();
                     var eraMark;
-                    eraMark = $('#A_INP_002').val();
+                    eraMark = $('#txtEraMark').val();
                     var startDate = self.startDate();
                     var endDate;
                     var eraHist = self.currentEra().eraHist();
@@ -111,7 +112,7 @@ var qmm034;
                             dfd.resolve();
                         });
                     }).fail(function (res) {
-                        $("#A_INP_003").ntsError("set", res.message);
+                        $("#txtStartDate").ntsError("set", res.message);
                     });
                     return dfd.promise();
                 };
@@ -138,9 +139,9 @@ var qmm034;
                 ScreenModel.prototype.deleteData = function () {
                     var self = this;
                     var eraName;
-                    eraName = $('#A_INP_001').val();
+                    eraName = $('#txtEraName').val();
                     var eraMark;
-                    eraMark = $('#A_INP_002').val();
+                    eraMark = $('#txtEraMark').val();
                     var eraHist = self.currentEra().eraHist();
                     var startDate = self.startDate();
                     var dfd = $.Deferred();
@@ -198,7 +199,7 @@ var qmm034;
                         }
                         dfd.resolve();
                     }).fail(function (res) {
-                        $("#A_INP_001").ntsError("set", res.message);
+                        $("#txtEraName").ntsError("set", res.message);
                     });
                     return dfd.promise();
                 };
@@ -213,7 +214,7 @@ var qmm034;
                     self.isUpdate(false);
                     if (self.dirtyObject !== undefined)
                         self.dirtyObject.reset();
-                    $("#A_INP_001").focus();
+                    $("#txtEraName").focus();
                 };
                 ScreenModel.prototype.startWithEmptyData = function () {
                     var self = this;
@@ -225,8 +226,8 @@ var qmm034;
                 ScreenModel.prototype.clearError = function () {
                     if ($(".nts-editor").ntsError('hasError'))
                         $(".nts-editor").ntsError('clear');
-                    if ($("#A_INP_003").ntsError('hasError'))
-                        $("#A_INP_003").ntsError('clear');
+                    if ($("#txtStartDate").ntsError('hasError'))
+                        $("#txtStartDate").ntsError('clear');
                 };
                 return ScreenModel;
             }());

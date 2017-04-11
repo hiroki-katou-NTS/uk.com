@@ -7,6 +7,7 @@ var qmm012;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
+                    //gridlist
                     self.items = ko.observableArray([
                         new ItemModel('001', 'name1', "name1"),
                         new ItemModel('002', 'name1', "name1"),
@@ -59,4 +60,3 @@ var qmm012;
         })(viewmodel = j.viewmodel || (j.viewmodel = {}));
     })(j = qmm012.j || (qmm012.j = {}));
 })(qmm012 || (qmm012 = {}));
-//# sourceMappingURL=viewmodel.js.map

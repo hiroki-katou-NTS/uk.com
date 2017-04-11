@@ -154,4 +154,3 @@ var nts;
         qmm017.EScreen = EScreen;
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=viewmodel.js.map

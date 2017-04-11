@@ -1,12 +1,13 @@
-var qmm025;
-(function (qmm025) {
+var qrm007;
+(function (qrm007) {
     var a;
     (function (a) {
         __viewContext.ready(function () {
             var screenModel = new a.viewmodel.ScreenModel();
+            nts.uk.ui.confirmSave(screenModel.dirty);
             screenModel.startPage().done(function () {
                 __viewContext.bind(screenModel);
             });
         });
-    })(a = qmm025.a || (qmm025.a = {}));
-})(qmm025 || (qmm025 = {}));
+    })(a = qrm007.a || (qrm007.a = {}));
+})(qrm007 || (qrm007 = {}));

@@ -17,7 +17,6 @@ var nts;
                                     var self = this;
                                     self.paramIsUpdate = param.isUpdate;
                                     self.paramDirtyData = param.dirtyData;
-                                    self.startYm = param.startYm;
                                     self.initOriginal();
                                     if (self.paramIsUpdate === true) {
                                         self.easyFormulaName(self.paramDirtyData.easyFormulaName);
@@ -35,13 +34,6 @@ var nts;
                                         self.comboBoxAdjustmentAtr().selectedCode(self.paramDirtyData.adjustmentDevision.toString());
                                     }
                                 }
-                                ScreenModel.prototype.exportTextListItemName = function (lstItem, lstItemCode) {
-                                    var textListItemName = '';
-                                    _.forEach(lstItemCode, function (itemCode) {
-                                        textListItemName += (_.find(lstItem, function (item) { return item.code == itemCode; }).name + ' ');
-                                    });
-                                    return textListItemName;
-                                };
                                 ScreenModel.prototype.initOriginal = function () {
                                     var self = this;
                                     self.easyFormulaName = ko.observable(null);
@@ -50,12 +42,19 @@ var nts;
                                         new ItemModel('1', '計算式２'),
                                         new ItemModel('2', '計算式3')
                                     ]));
+                                    //              0 Fixed value
+                                    //              1 Company Unit price 
+                                    //              2 Person unit price
+                                    //              3 Payment items
+                                    //              4 Deduction item
                                     self.comboBoxBaseAmount = ko.observable(new ComboBox([
                                         new ItemModel('0', '固定値'),
                                         new ItemModel('2', '個人単価'),
                                         new ItemModel('3', '支給項目'),
                                         new ItemModel('4', '控除項目')
                                     ]));
+                                    // if formula type 3, base amount attribute: 0, 1, 3, 4
+                                    // if formula type 1 or 2, base amount attribute: 0, 2, 3, 4
                                     self.comboBoxFormulaType().selectedCode.subscribe(function (codeChange) {
                                         if (codeChange === '2') {
                                             self.comboBoxBaseAmount().itemList([
@@ -88,6 +87,16 @@ var nts;
                                         width: "290px",
                                         textalign: "left"
                                     }));
+                                    //Fixed value  0
+                                    //Standard number of days 1
+                                    //Number of working days 2
+                                    //Work day 3
+                                    //Work days + paid usage 4
+                                    //Reference days * Reference time 5
+                                    //Number of working days * Reference time 6
+                                    //Working days * Reference time 7
+                                    //(Attendance days + number of paid use) * reference time 8
+                                    //Working time 9
                                     self.comboBoxBaseValue = ko.observable(new ComboBox([
                                         new ItemModel('0', '固定値'),
                                         new ItemModel('1', '基準日数'),
@@ -107,42 +116,46 @@ var nts;
                                         decimallength: 0,
                                         symbolChar: '%'
                                     }));
+                                    //Round figure: 0
+                                    //Round up: 1
+                                    //Truncate: 2
+                                    //No round figure: 3
                                     self.switchButtonRoundingFiguresD = ko.observable(new SwitchButton([
                                         new ItemModel('0', '四捨五入'),
                                         new ItemModel('1', '切り上げ'),
                                         new ItemModel('2', '切り捨て'),
                                         new ItemModel('3', '端数処理なし')
                                     ]));
+                                    //Round figure: 0
+                                    //Round up: 1
+                                    //Truncate: 2
                                     self.switchButtonRoundingFiguresF = ko.observable(new SwitchButton([
                                         new ItemModel('0', '四捨五入'),
                                         new ItemModel('1', '切り上げ'),
                                         new ItemModel('2', '切り捨て')
                                     ]));
+                                    //TO DO: get items which have CTG_ATR = 2 from table QCAMT_ITEM to add to the item model list from the fourth item 
                                     self.comboBoxCoefficient = ko.observable(new ComboBox([
                                         new ItemModel('0000', '固定値'),
                                         new ItemModel('F200', '基準日数'),
                                         new ItemModel('F000', '出勤日数+有給使用数')
                                     ]));
                                     self.coefficientFixedValue = ko.observable(0);
+                                    //Do not adjust: 0
+                                    //Plus adjustment: 1
+                                    //Minus adjustment: 2
+                                    //Plus and minus inversion: 3
                                     self.comboBoxAdjustmentAtr = ko.observable(new ComboBox([
                                         new ItemModel('0', '調整しない'),
                                         new ItemModel('1', 'プラス調整'),
                                         new ItemModel('2', 'マイナス調整'),
                                         new ItemModel('3', 'プラスマイナス反転')
                                     ]));
-                                    self.companyUnitPriceItems = ko.observableArray([]);
-                                    self.personalUnitPriceItems = ko.observableArray([]);
-                                    self.paymentItems = ko.observableArray([]);
-                                    self.deductionItems = ko.observableArray([]);
+                                    self.itemsBag = ko.observableArray([]);
                                 };
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
-                                    var dfdMaster = $.Deferred();
-                                    var dfdGetListCompanyUP = $.Deferred();
-                                    var dfdGetListPersonalUP = $.Deferred();
-                                    var dfdGetPaymentItems = $.Deferred();
-                                    var dfdGetDeductionItems = $.Deferred();
-                                    var dfdGetTimeItems = $.Deferred();
+                                    var dfd = $.Deferred();
                                     l.service.getListItemMaster(2)
                                         .done(function (lstItem) {
                                         if (lstItem && lstItem.length > 0) {
@@ -150,138 +163,20 @@ var nts;
                                                 self.comboBoxCoefficient().itemList.push(new ItemModel(item.itemCode, item.itemName));
                                             });
                                         }
-                                        dfdGetTimeItems.resolve();
+                                        dfd.resolve();
                                     })
                                         .fail(function () {
+                                        // Alert message
                                         alert(res);
-                                        dfdGetTimeItems.reject();
                                     });
-                                    l.service.getListCompanyUnitPrice(self.startYm)
-                                        .done(function (lstCompanyUnitPrice) {
-                                        if (lstCompanyUnitPrice && lstCompanyUnitPrice.length > 0) {
-                                            _.forEach(lstCompanyUnitPrice, function (item) {
-                                                self.companyUnitPriceItems.push(new ItemModel(item.companyUnitPriceCode, item.companyUnitPriceName));
-                                            });
+                                    if (self.baseAmountListItem().length > 0) {
+                                        if (self.comboBoxFormulaType().selectedCode() === '1') {
                                         }
-                                        dfdGetListCompanyUP.resolve();
-                                    }).fail(function () {
-                                        dfdGetListCompanyUP.reject();
-                                    });
-                                    l.service.getListPersonalUnitPrice()
-                                        .done(function (lstPersonalUnitPrice) {
-                                        if (lstPersonalUnitPrice && lstPersonalUnitPrice.length > 0) {
-                                            _.forEach(lstPersonalUnitPrice, function (item) {
-                                                self.personalUnitPriceItems.push(new ItemModel(item.personalUnitPriceCode, item.personalUnitPriceName));
-                                            });
-                                        }
-                                        dfdGetListPersonalUP.resolve();
-                                    }).fail(function () {
-                                        dfdGetListPersonalUP.reject();
-                                    });
-                                    l.service.getListItemMaster(0)
-                                        .done(function (lstItem) {
-                                        if (lstItem && lstItem.length > 0) {
-                                            _.forEach(lstItem, function (item) {
-                                                self.paymentItems.push(new ItemModel(item.itemCode, item.itemName));
-                                            });
-                                        }
-                                        dfdGetPaymentItems.resolve();
-                                    })
-                                        .fail(function () {
-                                        alert(res);
-                                        dfdGetPaymentItems.reject();
-                                    });
-                                    l.service.getListItemMaster(1)
-                                        .done(function (lstItem) {
-                                        if (lstItem && lstItem.length > 0) {
-                                            _.forEach(lstItem, function (item) {
-                                                self.deductionItems.push(new ItemModel(item.itemCode, item.itemName));
-                                            });
-                                        }
-                                        dfdGetDeductionItems.resolve();
-                                    })
-                                        .fail(function () {
-                                        alert(res);
-                                        dfdGetDeductionItems.reject();
-                                    });
-                                    $.when(dfdGetTimeItems.promise(), dfdGetListCompanyUP.promise(), dfdGetListPersonalUP.promise(), dfdGetPaymentItems.promise(), dfdGetDeductionItems.promise())
-                                        .done(function () {
-                                        if (self.baseAmountListItem().length > 0) {
-                                            var textListItemName = '';
-                                            if (self.comboBoxBaseAmount().selectedCode() === '1') {
-                                                textListItemName = self.exportTextListItemName(self.companyUnitPriceItems(), self.baseAmountListItem());
-                                            }
-                                            else if (self.comboBoxBaseAmount().selectedCode() === '2') {
-                                                textListItemName = self.exportTextListItemName(self.personalUnitPriceItems(), self.baseAmountListItem());
-                                            }
-                                            else if (self.comboBoxBaseAmount().selectedCode() === '3') {
-                                                textListItemName = self.exportTextListItemName(self.paymentItems(), self.baseAmountListItem());
-                                            }
-                                            else if (self.comboBoxBaseAmount().selectedCode() === '4') {
-                                                textListItemName = self.exportTextListItemName(self.deductionItems(), self.baseAmountListItem());
-                                            }
-                                        }
-                                        else {
-                                            self.baseAmountSelectionItems('');
-                                        }
-                                        ;
-                                        self.baseAmountSelectionItems(textListItemName);
-                                        self.baseAmountListItem.subscribe(function (lstItem) {
-                                            if (lstItem && lstItem.length > 0) {
-                                                var textListItemName = '';
-                                                if (self.comboBoxBaseAmount().selectedCode() === '1') {
-                                                    textListItemName = self.exportTextListItemName(self.companyUnitPriceItems(), lstItem);
-                                                }
-                                                else if (self.comboBoxBaseAmount().selectedCode() === '2') {
-                                                    textListItemName = self.exportTextListItemName(self.personalUnitPriceItems(), lstItem);
-                                                }
-                                                else if (self.comboBoxBaseAmount().selectedCode() === '3') {
-                                                    textListItemName = self.exportTextListItemName(self.paymentItems(), lstItem);
-                                                }
-                                                else if (self.comboBoxBaseAmount().selectedCode() === '4') {
-                                                    textListItemName = self.exportTextListItemName(self.deductionItems(), lstItem);
-                                                }
-                                                self.baseAmountSelectionItems(textListItemName);
-                                            }
-                                            else {
-                                                self.baseAmountSelectionItems('');
-                                            }
-                                        });
-                                        dfdMaster.resolve();
-                                    })
-                                        .fail(function () {
-                                        dfdMaster.reject();
-                                    });
-                                    return dfdMaster.promise();
+                                    }
+                                    // Return.
+                                    return dfd.promise();
                                 };
                                 ScreenModel.prototype.openDialogP = function () {
-                                    var self = this;
-                                    var param = {
-                                        subject: '',
-                                        itemList: [],
-                                        selectedItems: self.baseAmountListItem()
-                                    };
-                                    if (self.comboBoxBaseAmount().selectedCode() === '1') {
-                                        param.subject = '会社単価';
-                                        param.itemList = self.companyUnitPriceItems();
-                                    }
-                                    else if (self.comboBoxBaseAmount().selectedCode() === '2') {
-                                        param.subject = '個人単価';
-                                        param.itemList = self.personalUnitPriceItems();
-                                    }
-                                    else if (self.comboBoxBaseAmount().selectedCode() === '3') {
-                                        param.subject = '支給項目';
-                                        param.itemList = self.paymentItems();
-                                    }
-                                    else if (self.comboBoxBaseAmount().selectedCode() === '4') {
-                                        param.subject = '控除項目';
-                                        param.itemList = self.deductionItems();
-                                    }
-                                    nts.uk.ui.windows.setShared('paramFromScreenL', param);
-                                    nts.uk.ui.windows.sub.modal('/view/qmm/017/p/index.xhtml', { title: '項目の選択', width: 350, height: 480 }).onClosed(function () {
-                                        var baseAmountListItem = nts.uk.ui.windows.getShared('baseAmountListItem');
-                                        self.baseAmountListItem(baseAmountListItem);
-                                    });
                                 };
                                 ScreenModel.prototype.closeAndReturnData = function () {
                                     var self = this;
@@ -301,18 +196,6 @@ var nts;
                                         coefficientFixedValue: self.coefficientFixedValue(),
                                         adjustmentDevision: self.comboBoxAdjustmentAtr().selectedCode()
                                     };
-                                    if (easyFormulaDetail.baseAmountDevision === '0') {
-                                        easyFormulaDetail.referenceItemCodes = [];
-                                    }
-                                    else {
-                                        easyFormulaDetail.baseFixedAmount = 0;
-                                    }
-                                    if (easyFormulaDetail.baseValueDevision !== '0') {
-                                        easyFormulaDetail.baseFixedValue = 0;
-                                    }
-                                    if (easyFormulaDetail.coefficientDivision !== '0') {
-                                        easyFormulaDetail.coefficientFixedValue = 0;
-                                    }
                                     nts.uk.ui.windows.setShared('easyFormulaDetail', easyFormulaDetail);
                                     nts.uk.ui.windows.close();
                                 };
@@ -356,4 +239,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=viewmodel.js.map
