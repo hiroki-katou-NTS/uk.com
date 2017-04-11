@@ -5,9 +5,10 @@ var qpp014;
         var ScreenModel = (function () {
             function ScreenModel() {
                 var self = this;
-                $('#stop').css('display', 'none');
+                $('#successful').css('display', 'none');
                 $('#error').css('display', 'none');
                 self.items_E_LST_003 = ko.observableArray([]);
+                self.timer = new nts.uk.ui.sharedvm.KibanTimer('timer');
                 for (var i_1 = 1; i_1 < 100; i_1++) {
                     self.items_E_LST_003.push(new ItemModel_E_LST_003('00' + i_1, '基本給', "description " + i_1));
                 }
@@ -18,6 +19,10 @@ var qpp014;
             };
             ScreenModel.prototype.goToScreenGOrH = function () {
                 nts.uk.ui.windows.close();
+            };
+            ScreenModel.prototype.stopProcessing = function () {
+                var self = this;
+                self.timer.end();
             };
             return ScreenModel;
         }());

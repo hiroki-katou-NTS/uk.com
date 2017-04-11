@@ -5,13 +5,15 @@ module qpp014.e {
         items_E_LST_003: KnockoutObservableArray<ItemModel_E_LST_003>;
         columns_E_LST_003: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         currentCode_E_LST_003: KnockoutObservable<any>;
+        timer: nts.uk.ui.sharedvm.KibanTimer;
         constructor() {
             var self = this;
-            //$('#successful').css('display', 'none');
-            $('#stop').css('display', 'none');
+            $('#successful').css('display', 'none');
+            //$('#stop').css('display', 'none');
             $('#error').css('display', 'none');
-            //nts.uk.ui.windows.getSelf().setHeight(595);
+            //            nts.uk.ui.windows.getSelf().setHeight(595);
             self.items_E_LST_003 = ko.observableArray([]);
+            self.timer = new nts.uk.ui.sharedvm.KibanTimer('timer');
             for (let i = 1; i < 100; i++) {
                 self.items_E_LST_003.push(new ItemModel_E_LST_003('00' + i, '基本給', "description " + i));
             }
@@ -30,6 +32,14 @@ module qpp014.e {
          */
         goToScreenGOrH(): void {
             nts.uk.ui.windows.close();
+        }
+
+        /**
+         * stop processing
+         */
+        stopProcessing(): void {
+            var self = this;
+            self.timer.end();
         }
     }
 

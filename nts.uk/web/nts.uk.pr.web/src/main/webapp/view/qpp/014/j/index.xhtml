@@ -45,11 +45,8 @@
 					<div class="divLine">
 						<div id="J_SEL_001"
 							data-bind="ntsRadioBoxGroup: {
-								options: ko.observableArray([
-						            { code: '1', name: '銀行集計' },
-						            { code: '2', name: '明細出力' }
-						        ]),
-								optionsValue: 'code',
+								options:itemList_J_SEL_001,
+								optionsValue: 'id',
 								optionsText: 'name',
 								value: selectedId_J_SEL_001,
 								enable: true}">
@@ -66,7 +63,6 @@
 								optionsValue: 'code',
 								value: selectedCode_J_SEL_002,
 								optionsText: 'name',
-								editable: true,
 								enable: true,
 								columns: [
 									{ prop: 'code', length: 4 },
@@ -86,7 +82,6 @@
 								optionsValue: 'code',
 								value: selectedCode_J_SEL_003,
 								optionsText: 'name',
-								editable: true,
 								enable: true,
 								columns: [
 									{ prop: 'code', length: 4 },
@@ -123,14 +118,14 @@
 							dataSource: items_J_LST_001,
 							primaryKey: 'code',
 							columns: ko.observableArray([
-				                { headerText: '振込元銀行', prop: 'code', width: 100 },
-				                { headerText: '銀行コード', prop: 'name', width: 150 },
-				                { headerText: '銀行名', prop: 'description', width: 200 },
-				                { headerText: '支店名', prop: 'description', width: 200 },
-				                { headerText: '口座区分', prop: 'description', width: 200 },
-				                { headerText: '口座番号', prop: 'description', width: 200 }
+				                { headerText: '振込元銀行', key: 'code', width: 100 },
+				                { headerText: '銀行コード', key: 'name', width: 100 },
+				                { headerText: '銀行名', key: 'description', width: 100 },
+				                { headerText: '支店名', key: 'description', width: 100 },
+				                { headerText: '口座区分', key: 'description', width: 100 },
+				                { headerText: '口座番号', key: 'description', width: 100 }
 				            ]),
-							multiple: false,
+							multiple: true,
 							value: currentCode_J_LST_001}">
 						</table>
 					</div>

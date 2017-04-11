@@ -1,20 +1,21 @@
-// TreeGrid Node
 module qpp014.b.viewmodel {
     export class ScreenModel {
-        viewmodeld = new qpp014.d.viewmodel.ScreenModel();
-        viewmodelg = new qpp014.g.viewmodel.ScreenModel();
-        viewmodelh = new qpp014.h.viewmodel.ScreenModel();
-
         b_stepList: Array<nts.uk.ui.NtsWizardStep>;
         b_stepSelected: KnockoutObservable<nts.uk.ui.NtsWizardStep>;
-
-        constructor() {
+        viewmodeld : qpp014.d.viewmodel.ScreenModel;
+        viewmodelg : qpp014.g.viewmodel.ScreenModel;
+        viewmodelh : qpp014.h.viewmodel.ScreenModel;
+        
+        constructor(data: any) {
             let self = this;
             self.b_stepList = [
                 { content: '.step-1' },
                 { content: '.step-2' }
             ];
             self.b_stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
+            self.viewmodeld = new qpp014.d.viewmodel.ScreenModel(data);
+            self.viewmodelg = new qpp014.g.viewmodel.ScreenModel();
+            self.viewmodelh = new qpp014.h.viewmodel.ScreenModel();
         }
 
         startPage(): JQueryPromise<any> {
@@ -23,11 +24,11 @@ module qpp014.b.viewmodel {
             dfd.resolve();
             return dfd.promise();
         }
-        
+
         /**
          * back to screen J
          */
-        goToScreenA(): void {
+        backToScreenA(): void {
             nts.uk.request.jump("/view/qpp/014/a/index.xhtml");
         }
 

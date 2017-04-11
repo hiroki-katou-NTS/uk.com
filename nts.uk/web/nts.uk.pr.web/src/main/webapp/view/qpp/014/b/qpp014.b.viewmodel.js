@@ -5,16 +5,16 @@ var qpp014;
         var viewmodel;
         (function (viewmodel) {
             var ScreenModel = (function () {
-                function ScreenModel() {
-                    this.viewmodeld = new qpp014.d.viewmodel.ScreenModel();
-                    this.viewmodelg = new qpp014.g.viewmodel.ScreenModel();
-                    this.viewmodelh = new qpp014.h.viewmodel.ScreenModel();
+                function ScreenModel(data) {
                     var self = this;
                     self.b_stepList = [
                         { content: '.step-1' },
                         { content: '.step-2' }
                     ];
                     self.b_stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
+                    self.viewmodeld = new qpp014.d.viewmodel.ScreenModel(data);
+                    self.viewmodelg = new qpp014.g.viewmodel.ScreenModel();
+                    self.viewmodelh = new qpp014.h.viewmodel.ScreenModel();
                 }
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
@@ -22,7 +22,7 @@ var qpp014;
                     dfd.resolve();
                     return dfd.promise();
                 };
-                ScreenModel.prototype.goToScreenA = function () {
+                ScreenModel.prototype.backToScreenA = function () {
                     nts.uk.request.jump("/view/qpp/014/a/index.xhtml");
                 };
                 ScreenModel.prototype.goToScreenJ = function () {
