@@ -28,17 +28,17 @@
 		<ui:define name="content">
 			<!-- BEGIN FUNCTION AREA -->
 			<div id="functions-area">
-				<button id="new-button" data-bind="click: onNewModeBtnClick">新規</button>
-				<button id="register-button" class="proceed" data-bind="click: save">登録</button>
-				<button id="setting-button" data-bind="click: commonSettingBtnClick">集計項目の設定</button>
-				<button id="delete-button" class="danger" data-bind="click: remove">削除</button>
-				<button id="close-button" data-bind="click: close">閉じる</button>
+				<button id="new-button" data-bind="click: onNewModeBtnClicked">新規</button>
+				<button id="register-button" class="proceed" data-bind="click: onSaveBtnClicked">登録</button>
+				<button id="setting-button" data-bind="click: onCommonSettingBtnClicked">集計項目の設定</button>
+				<button id="delete-button" class="danger" data-bind="click: onRemoveBtnClicked">削除</button>
+				<button id="close-button" data-bind="click: onCloseBtnClicked">閉じる</button>
 			</div>
 
 			<!-- END FUNCTION AREA -->
 
 			<!-- BEGIN CONTENT AREA -->
-			<div id="contents-area" data-bind="visible: !isLoading()" style="display: none">
+			<div id="contents-area" data-bind="visible: true" style="display: none">
 				<!-- BEGIN CONTENT LEFT -->
 				<div id="contents-left" class="bg-green caret-right caret-background pull-left">
 					<div id="inpSearch" class="ntsSearchBox"
@@ -59,7 +59,7 @@
 			                    { headerText: 'コード', key: 'code', width: 50 },
 			                    { headerText: '名称', key: 'name', width: 50 }
 			                ]),
-							value: outputSettingSelectedCode
+							value: temporarySelectedCode
 						}"
 							class="cf"></table>
 					</div>

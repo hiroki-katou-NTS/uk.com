@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.report.app.salarydetail.find;
+package nts.uk.ctx.pr.report.app.salarydetail.outputsetting.find;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pr.report.app.salarydetail.find.dto.SalaryOutputSettingDto;
-import nts.uk.ctx.pr.report.app.salarydetail.find.dto.SalaryOutputSettingHeaderDto;
+import nts.uk.ctx.pr.report.app.salarydetail.outputsetting.find.dto.SalaryOutputSettingDto;
+import nts.uk.ctx.pr.report.app.salarydetail.outputsetting.find.dto.SalaryOutputSettingHeaderDto;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSetting;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingRepository;
 import nts.uk.shr.com.context.AppContexts;

@@ -2,14 +2,14 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.report.app.salarydetail.command;
+package nts.uk.ctx.pr.report.app.salarydetail.outputsetting.command;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.report.app.salarydetail.command.dto.SalaryCategorySettingDto;
+import nts.uk.ctx.pr.report.app.salarydetail.outputsetting.command.dto.SalaryCategorySettingDto;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryCategorySetting;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSetting;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingCode;

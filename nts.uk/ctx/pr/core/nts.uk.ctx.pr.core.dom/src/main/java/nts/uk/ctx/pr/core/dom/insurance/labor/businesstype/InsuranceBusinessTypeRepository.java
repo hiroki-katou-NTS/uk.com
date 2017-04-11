@@ -14,14 +14,6 @@ public interface InsuranceBusinessTypeRepository {
 	List<InsuranceBusinessType> findAll(String companyCode);
 
 	/**
-	 * Find by id.
-	 *
-	 * @param id the id
-	 * @return the insurance business type
-	 */
-	InsuranceBusinessType findById(String id);
-
-	/**
 	 * Update.
 	 *
 	 * @param lstInsuranceBusinessType the lst insurance business type

@@ -1,15 +1,21 @@
-package nts.uk.ctx.pr.report.app.salarydetail.find;
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+package nts.uk.ctx.pr.report.dom.salarydetail.printsetting;
 
 import lombok.Getter;
-import lombok.Setter;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.report.dom.salarydetail.SalaryOutputDistinction;
 
+/**
+ * The Class SalaryPrintSetting.
+ */
 @Getter
-@Setter
-public class SalaryPrintSettingDto {
+public class SalaryPrintSetting extends DomainObject {
+
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The output distinction. */
 	private SalaryOutputDistinction outputDistinction;
@@ -73,4 +79,51 @@ public class SalaryPrintSettingDto {
 
 	/** The show total. */
 	private Boolean showTotal;
+
+	// =================== Memento State Support Method ===================
+	/**
+	 * Instantiates a new unit price history.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public SalaryPrintSetting(SalaryPrintSettingGetMemento memento) {
+		this.companyCode = memento.getCompanyCode();
+		this.outputDistinction = memento.getOutputDistinction();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(SalaryPrintSettingSetMemento memento) {
+		memento.setCompanyCode(this.companyCode);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((companyCode == null) ? 0 : companyCode.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SalaryPrintSetting other = (SalaryPrintSetting) obj;
+		if (companyCode == null) {
+			if (other.companyCode != null)
+				return false;
+		} else if (!companyCode.equals(other.companyCode))
+			return false;
+		return true;
+	}
 }
