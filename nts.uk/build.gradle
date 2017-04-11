@@ -346,8 +346,10 @@ project (':web:nts.uk.com.web') {
 		// shr find implement
 		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.app')
 		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.infra')
+		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.pubimp')
 		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.app')
 		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.infra')
+		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.ac')
 		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.app')
 		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.infra')
 	}
