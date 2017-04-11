@@ -4,22 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.insurance.find.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingSetMemento;
 
 /**
  * The Class CheckListPrintSettingFindOutDto.
  */
-
-/**
- * Instantiates a new check list print setting find out dto.
- */
-
-/**
- * Instantiates a new check list print setting find out dto.
- */
-@Data
-public class CheckListPrintSettingFindOutDto implements ChecklistPrintSettingSetMemento {
+@Setter
+@Getter
+public class CheckListPrintSettingDto implements ChecklistPrintSettingSetMemento {
 
 	/** The show category insurance item. */
 	private Boolean showCategoryInsuranceItem;
