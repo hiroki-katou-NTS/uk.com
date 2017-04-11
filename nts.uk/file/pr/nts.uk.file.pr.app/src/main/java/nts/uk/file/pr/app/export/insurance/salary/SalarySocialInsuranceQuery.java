@@ -24,7 +24,7 @@ import nts.uk.file.pr.app.export.insurance.data.InsuranceOfficeDto;
 public class SalarySocialInsuranceQuery {
 
     /** The year month. */
-    private String yearMonth;
+    private int yearMonth;
     
     /** The is equal. */
     private boolean isEqual;

@@ -23,5 +23,5 @@ public interface SalarySocialInsuranceRepository {
      *            the query
      * @return the salary social insurance report data
      */
-    SalarySocialInsuranceReportData findReportData(SalarySocialInsuranceQuery query);
+    SalarySocialInsuranceReportData findReportData(String companyCode, String loginPersonId, SalarySocialInsuranceQuery salaryQuery);
 }

@@ -20,6 +20,7 @@ import nts.uk.file.pr.app.export.insurance.data.DataRowItem;
 import nts.uk.file.pr.app.export.insurance.data.InsuranceOfficeDto;
 import nts.uk.file.pr.app.export.insurance.data.SalarySocialInsuranceHeaderReportData;
 import nts.uk.file.pr.app.export.insurance.data.SalarySocialInsuranceReportData;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author duongnd
@@ -35,15 +36,26 @@ public class SalarySocialInsuranceReportService extends ExportService<SalarySoci
     @Inject
     private SalarySocialInsuranceQueryProcessor salarySocialInsuQueryProcessor;
     
+    @Inject
+    private SalarySocialInsuranceRepository repository;
+    
     @Override
     protected void handle(ExportServiceContext<SalarySocialInsuranceQuery> context) {
         // get query
         SalarySocialInsuranceQuery query = context.getQuery();
         // get data from repository follow query.
+        
+        String companyCode = AppContexts.user().companyCode();
+        String loginPersonID = "000000000000000000000000000000000001"; //AppContexts.user().personId();
+        
+        SalarySocialInsuranceReportData rawReportData = repository.findReportData(companyCode, loginPersonID, query);
+        
         ChecklistPrintSettingDto configOutput = salarySocialInsuQueryProcessor.findConfigureOutputSetting();
+        
+        // fake data
         SalarySocialInsuranceReportData reportData = fakeData();
         reportData.setConfigureOutput(configOutput);
-        this.generator.generate(context.getGeneratorContext(), reportData);
+//        this.generator.generate(context.getGeneratorContext(), reportData);
     }
     
     private DataRowItem calculateTotal(List<DataRowItem> rowItems) {
