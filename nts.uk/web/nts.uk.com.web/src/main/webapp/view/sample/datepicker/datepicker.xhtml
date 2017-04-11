@@ -24,19 +24,26 @@
 						<h1>DatePicker</h1>
 						<h2>Overview</h2>
 						<h3>Datepicker</h3>
-						<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div><br/>
-						<b>Return ISO String:</b> <span data-bind="text: date"/>
-						<hr/>
-						<h3>Datepicker with Day of Week</h3>
-						<div data-bind="ntsDatePicker: {value: date1, dateFormat: 'YYYY/MM/DD ddd'}"></div>
-						<div data-bind="ntsDatePicker: {value: date1, dateFormat: 'YYYY/MM/DD dddd'}"></div><br/>
-						<b>Return Date:</b> <span data-bind="text: date1"/>						
-						<hr/>
-						<h3>Year/Month/Day picker</h3>
-						<h4>YearMonth Picker</h4>
-						<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth'}"></div><br/>
-						<b>Return Number:</b> <span data-bind="text: yearMonth"/>
+						<div data-bind="ntsDatePicker: {value: dateString, dateFormat: 'YYYY/MM/DD'}"></div>
+						<input data-bind="ntsTimeEditor: {value: dateString}"/>
 						<br/>
+						<b>Return ISO String:</b> <span data-bind="text: dateString"/>
+						<br/>
+						<br/>
+						<button class="ntsUpButton auto-height" data-bind="click: pushDataUp"><i class="icon icon-button-arrow-top"></i></button>
+						<button class="ntsUpButton auto-height" data-bind="click: pushDataDown"><i class="icon icon-button-arrow-bottom"></i></button>
+						<br/>
+						<br/>
+						<h3>Datepicker with Day of Week</h3>
+						<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD ddd'}"></div>
+						<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD dddd'}"></div>
+						<br/>
+						<b>Return Date:</b> <span data-bind="text: date"/>						
+						<hr/>
+						<h3>YearMonth picker</h3>
+						<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth'}"></div>
+						<br/>
+						<b>Return Number:</b> <span data-bind="text: yearMonth"/>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
@@ -48,13 +55,7 @@
 <pre><![CDATA[<!-- Datepicker -->
 <div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD', valueFormat: 'YYYYMMDD'}"></div>
 <!-- YearMonth Picker -->
-<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'YYYY/MM', valueFormat: 'YYYYMM'}"></div>
-<!-- Yearpicker -->
-<div data-bind="ntsDatePicker: {value: year, dateFormat: 'YYYY'}"></div>
-<!-- Monthpicker -->
-<div data-bind="ntsDatePicker: {value: month, dateFormat: 'MM'}"></div>
-<!-- Daypicker -->
-<div data-bind="ntsDatePicker: {value: day, dateFormat: 'DD'}"></div>]]></pre>
+<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'YYYY/MM', valueFormat: 'YYYYMM'}"></div>]]></pre>
 									<h2>ViewModel</h2>
 <pre><![CDATA[<!-- Recommend use 'string' and momentjs for date type -->
 class ScreenModel {
