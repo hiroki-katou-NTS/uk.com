@@ -12,23 +12,23 @@
 	height: 50px;
 }
 
-#A_BTN_001 {
+#reset {
 	width: 100px;
 }
 
-#A_BTN_002 {
+#register {
 	width: 100px;
 }
 
-#A_BTN_003 {
+#setting {
 	width: 200px;
 }
 
-#A_BTN_004 {
+#masterLog {
 	width: 150px;
 }
 
-#A_INP_002 {
+#companyCode {
 	width: 50px;
 	text-align: center;
 }
@@ -43,10 +43,10 @@
 	margin-left: 15px;
 }
 
-#tree {
+#ntsleft {
 	float: left;
 	width: 440px;
-	height: 600px;
+	height: 550px;
 	margin-top: 2px;
 }
 
@@ -144,33 +144,29 @@ button.search-btn {
 	align-items: center;
 }
 
-#A_LBL_002 {
+#codeName {
 	width: 200px;
 }
 
-#A_INP_002 {
+#companyCode {
 	margin-left: 28px !important;
 	margin-bottom: 0px !important;
 }
 
-#A_INP_004 {
+#companyNameKana {
 	width: 360px !important;
 	margin-bottom: 10px;
 }
 
-#A_INP_005 {
+#companyNameAbb {
 	width: 360px !important;
 }
 
-#A_INP_006 {
-	width: 500px;
-}
-
-#B_INP_002 {
+#presidentName {
 	width: 250px;
 }
 
-#B_INP_003 {
+#presidentJobTitle {
 	width: 250px;
 }
 
@@ -180,65 +176,57 @@ button.search-btn {
 	border: 1px solid #cdd0c9;
 }
 
-#C_INP_001 {
+#postal {
 	width: 100px;
 	text-align: center;
 }
 
-#C_INP_002 {
+#address1 {
 	width: 360px !important;
 	margin-bottom: 10px !important;
 }
 
-#C_INP_003 {
+#address2 {
 	width: 360px !important;
 	margin-bottom: 10px !important;
 }
 
-#C_INP_004 {
+#addressKana1 {
 	width: 360px !important;
 	margin-bottom: 10px !important;
 }
 
-#C_INP_005 {
+#addressKana2 {
 	width: 360px !important;
 	margin-bottom: 10px !important;
 }
 
-#C_SEL_001 {
-	width: 110px !important;
-	margin-top: 5px !important;
-}
-
-#C_LBL_004 {
+#LBLAddress1 {
 	margin-left: 24px;
 	display: inline-block;
 	height: 40px;
 	line-height: 30px;
 }
 
-#C_LBL_005 {
+#LBLAddress2 {
 	margin-left: 24px;
 	display: inline-block;
 	height: 40px;
 	line-height: 30px;
 }
-
-#C_LBL_007 {
-	margin-left: 24px;
-	display: inline-block;
-	height: 40px;
-	line-height: 30px;
+#LBLAddressKana1 {
+    margin-left: 24px;
+    display: inline-block;
+    line-height: 30px;
+    height: 40px;
 }
-
-#C_LBL_008 {
-	margin-left: 24px;
-	display: inline-block;
-	height: 40px;
-	line-height: 30px;
+#LBLAddressKana2 {
+    margin-left: 24px;
+    display: inline-block;
+    height: 40px;
+    line-height: 30px;
 }
-
-#D_BTN_001 {
+#help {
 	margin-left: 10px;
 	margin-top: 6px;
 	height: 25px;
@@ -251,7 +239,7 @@ body>div:nth-child(4) {
 	width: 0px;
 }
 
-#D_SEL_005 {
+#termBeginMon {
 	width: 80px !important;
 	margin-top: 5px !important;
 }
