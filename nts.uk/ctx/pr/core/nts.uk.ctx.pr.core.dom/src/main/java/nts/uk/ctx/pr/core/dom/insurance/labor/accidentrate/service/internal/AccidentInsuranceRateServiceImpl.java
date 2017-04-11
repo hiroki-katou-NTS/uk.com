@@ -68,22 +68,21 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 	 */
 	private boolean invalidateRate(AccidentInsuranceRate rate) {
 
-		boolean isValid = false;
-		// validate Add
-		// ? (start <= end)
-		isValid = isValid
-			|| rate.getApplyRange().getStartMonth().v() > rate.getApplyRange().getEndMonth().v();
+		boolean resvalue = false;
+		if (rate.getApplyRange().getStartMonth().v() > rate.getApplyRange().getEndMonth().v()) {
+			resvalue = true;
+		}
 
-		// ? start > start first (order by desc)
+		// find data first
 		Optional<AccidentInsuranceRate> data = this.repository.findFirstData(rate.getCompanyCode());
 
-		isValid = isValid || !data.isPresent();
-
-		if (isValid) {
-			return isValid;
+		// check exist
+		if (data.isPresent() && data.get().getApplyRange().getStartMonth().nextMonth().v() > rate
+			.getApplyRange().getStartMonth().v()) {
+			resvalue = true;
 		}
-		return (data.get().getApplyRange().getStartMonth().nextMonth().v() > rate.getApplyRange()
-			.getStartMonth().v());
+
+		return resvalue;
 	}
 
 	/*
