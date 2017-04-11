@@ -290,6 +290,10 @@ var nts;
                 return charType;
             }
             text_1.getCharType = getCharType;
+            /**
+             * Format for EmployeeCode
+             * @return {String}  EmployeeCode
+             */
             function formatEmployeeCode(code, filldirection, fillcharacter, length) {
                 if (filldirection === "left")
                     return padLeft(code, fillcharacter, length);

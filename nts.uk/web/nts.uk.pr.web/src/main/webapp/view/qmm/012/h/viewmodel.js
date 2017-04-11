@@ -128,4 +128,3 @@ var qmm012;
         })(viewmodel = h.viewmodel || (h.viewmodel = {}));
     })(h = qmm012.h || (qmm012.h = {}));
 })(qmm012 || (qmm012 = {}));
-//# sourceMappingURL=viewmodel.js.map

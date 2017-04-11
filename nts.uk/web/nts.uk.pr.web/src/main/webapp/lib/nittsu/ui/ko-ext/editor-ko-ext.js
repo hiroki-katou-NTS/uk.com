@@ -122,9 +122,39 @@ var nts;
                     TextEditorProcessor.prototype.getValidator = function (data) {
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        return new validation.StringValidator(constraintName, required);
+                        return new validation.StringValidator(constraintName, { required: required });
                     };
                     return TextEditorProcessor;
+                }(EditorProcessor));
+                /**
+                 * MultilineEditor Processor
+                 */
+                var MultilineEditorProcessor = (function (_super) {
+                    __extends(MultilineEditorProcessor, _super);
+                    function MultilineEditorProcessor() {
+                        _super.apply(this, arguments);
+                    }
+                    MultilineEditorProcessor.prototype.update = function ($input, data) {
+                        var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+                        var resizeable = ko.unwrap(editorOption.resizeable);
+                        $input.css('resize', (resizeable) ? "both" : "none");
+                        _super.prototype.update.call(this, $input, data);
+                    };
+                    MultilineEditorProcessor.prototype.getDefaultOption = function () {
+                        return new ui.option.MultilineEditorOption();
+                    };
+                    MultilineEditorProcessor.prototype.getFormatter = function (data) {
+                        var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        var constraint = validation.getConstraint(constraintName);
+                        return new uk.text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: editorOption });
+                    };
+                    MultilineEditorProcessor.prototype.getValidator = function (data) {
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        return new validation.StringValidator(constraintName, { required: required });
+                    };
+                    return MultilineEditorProcessor;
                 }(EditorProcessor));
                 /**
                  * NumberEditor Processor
@@ -211,6 +241,7 @@ var nts;
                     };
                     TimeEditorProcessor.prototype.getFormatter = function (data) {
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+                        //var inputFormat: string = (data.inputFormat !== undefined) ? ko.unwrap(data.inputFormat) : option.inputFormat;
                         return new uk.text.TimeFormatter({ inputFormat: option.inputFormat });
                     };
                     TimeEditorProcessor.prototype.getValidator = function (data) {
@@ -219,36 +250,6 @@ var nts;
                         return new validation.TimeValidator(constraintName, option);
                     };
                     return TimeEditorProcessor;
-                }(EditorProcessor));
-                /**
-                 * MultilineEditor Processor
-                 */
-                var MultilineEditorProcessor = (function (_super) {
-                    __extends(MultilineEditorProcessor, _super);
-                    function MultilineEditorProcessor() {
-                        _super.apply(this, arguments);
-                    }
-                    MultilineEditorProcessor.prototype.update = function ($input, data) {
-                        var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-                        var resizeable = ko.unwrap(editorOption.resizeable);
-                        $input.css('resize', (resizeable) ? "both" : "none");
-                        _super.prototype.update.call(this, $input, data);
-                    };
-                    MultilineEditorProcessor.prototype.getDefaultOption = function () {
-                        return new ui.option.MultilineEditorOption();
-                    };
-                    MultilineEditorProcessor.prototype.getFormatter = function (data) {
-                        var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        var constraint = validation.getConstraint(constraintName);
-                        return new uk.text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: editorOption });
-                    };
-                    MultilineEditorProcessor.prototype.getValidator = function (data) {
-                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
-                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        return new validation.StringValidator(constraintName, required);
-                    };
-                    return MultilineEditorProcessor;
                 }(EditorProcessor));
                 /**
                  * Base Editor
@@ -363,4 +364,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=editor-ko-ext.js.map
