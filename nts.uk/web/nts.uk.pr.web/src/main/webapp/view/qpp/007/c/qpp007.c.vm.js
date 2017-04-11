@@ -27,6 +27,7 @@ var nts;
                                         this.outputSettings.push(new OutputSettingHeader('00' + i, '基本給' + i));
                                     }
                                     this.reportItemColumns = ko.observableArray([
+                                        { headerText: '区分', prop: 'categoryNameJPN', width: 50 },
                                         {
                                             headerText: '集約', prop: 'isAggregate', width: 40,
                                             formatter: function (isAggregate) {
@@ -128,9 +129,11 @@ var nts;
                                     $('#inpName').ntsEditor('validate');
                                 };
                                 ScreenModel.prototype.remove = function () {
-                                    var _this = this;
-                                    if (this.outputSettingSelectedCode) {
-                                        c.service.remove(this.outputSettingSelectedCode()).done(function () { return _this.loadAllOutputSetting(); });
+                                    var self = this;
+                                    if (self.outputSettingSelectedCode) {
+                                        nts.uk.ui.dialog.confirm("データを削除します。\r\n よろしいですか？").ifYes(function () {
+                                            c.service.remove(self.outputSettingSelectedCode()).done(function () { return self.loadAllOutputSetting(); });
+                                        });
                                     }
                                 };
                                 ScreenModel.prototype.commonSettingBtnClick = function () {
@@ -471,8 +474,24 @@ var nts;
                                 function ReportItem(code, name, categoryName, isAggregate) {
                                     this.code = code;
                                     this.name = name;
-                                    this.categoryName = categoryName;
                                     this.isAggregate = isAggregate;
+                                    var self = this;
+                                    switch (categoryName) {
+                                        case SalaryCategory.PAYMENT:
+                                            self.categoryNameJPN = '支給';
+                                            break;
+                                        case SalaryCategory.DEDUCTION:
+                                            self.categoryNameJPN = '控除';
+                                            break;
+                                        case SalaryCategory.ATTENDANCE:
+                                            self.categoryNameJPN = '勤怠';
+                                            break;
+                                        case SalaryCategory.ARTICLE_OTHERS:
+                                            self.categoryNameJPN = '記事・その他';
+                                            break;
+                                        default:
+                                            self.categoryNameJPN = '';
+                                    }
                                 }
                                 return ReportItem;
                             }());
