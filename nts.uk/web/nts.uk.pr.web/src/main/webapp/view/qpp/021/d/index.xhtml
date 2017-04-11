@@ -7,60 +7,96 @@
 
 <body>
 
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.core.js" />
-			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.lob.js" />
-			<com:scriptfile
-				path="/lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js" />
-
+			<script>
+				var dialogSize = {
+					width : 730,
+					height : 600
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="qpp021.d.main.css" />
 			<com:scriptfile path="qpp021.d.start.js" />
 			<com:scriptfile path="qpp021.d.vm.js" />
 			<com:scriptfile path="qpp021.d.service.js" />
-			<com:scriptfile path="/lib/nittsu/ui/file.js" />
 		</ui:define>
 
 		<ui:define name="content">
+			<div id="contents-area">
+				<div class="d-label-001">詳細設定を行ってください。 ※この設定は翌月以降の明細書にも反映されます。</div>
+				<div class="contents-area-right-left">
+					<div id="left-contents-area">
+						<div class="d-label-001">値がゼロの項目の印刷方法</div>
+						<hr />
+						<div id="zero-item-setting-list"
+							data-bind="ntsRadioBoxGroup: {
+							options: zeroItemSetting,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: zeroItemSettingCode,
+							enable: true 
+							}">
+						</div>
+						<div class="valign-center control-group div-zero-setting">
+							<div class="zero-setting-label" data-bind="ntsFormLabel: {}">金額ゼロ出力</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: zeroAmountOutput,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: zeroAmountOutputCode,
+								enable: true }">
+							</span>
+							<div class="zero-output-checkbox"
+								data-bind="ntsCheckBox: { checked: true, enable: true, text: '項目名も表示しない' }"></div>
+						</div>
+						<div class="valign-center control-group div-zero-setting">
+							<div class="zero-setting-label" data-bind="ntsFormLabel: {}">金額ゼロ出力</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: zeroTimeClassification,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: zeroTimeClassificationCode,
+								enable: true }">
+							</span>
+							<div class="zero-output-checkbox"
+								data-bind="ntsCheckBox: { checked: false, enable: false, text: '項目名も表示しない' }"></div>
+						</div>
 
-			<div id="functions-area">
-				<button id="btn-001" data-bind="click: print, enable: listBox.isEmpty()" class="separate-1 proceed">選択した社員を印刷</button>
-				<button id="btn-002" class="separate-1">印刷の設定</button>
-				<a id="lbl-001" class="separate-1">給与明細書</a>
-			</div>
+						<div class="d-label-005">明細書に出力する年月</div>
+						<hr />
+						<div>
+							<div class="zero-setting-label select-print-year-month"
+								data-bind="ntsFormLabel: {}">印字する年月を選択してください。</div>
+							<div id="combo-box-select-print-YM"
+								data-bind="ntsComboBox: {
+									options: selectPrintYearMonth,
+									optionsValue: 'code',
+									value: selectPrintYearMonthCode,
+									optionsText: 'name',
+									editable: false,
+									enable: true,
+									columns: [
+										{ prop: 'name', length: 13 },
+									]}">
+							</div>
+						</div>
+					</div>
 
-			<div id="contents-area"  class="cf">
-				<div id="left-content">
-					<div data-bind="with: listBox">
-						<div id="list-box"
-							data-bind="ntsListBox: {options: itemList,
-											   optionsText: 'name',
-											   multiple: true,
-											   value: selectedCodes,
-											   enable: true,
-											   rows: 21,
-											   columns: [
-													{ prop: 'code', length: 12 },
-													{ prop: 'name', length: 12 }
-											   ]}"
-							class="cf"></div>
+					<div id="right-contents-area">
+						<div class="d-label-007">任意出力項目の指定</div>
+						<hr />
 					</div>
 				</div>
-				<div id="right-content">
-					<span id="lbl-002">処理の詳細設定</span> <br />
-					<div id="lbl-003" style="float: left;" data-bind="ntsFormLabel: {required: true }">
-						帳票の選択
-					</div>
-					<div id="sel-001" data-bind="with: radioBox">
-						<div data-bind="ntsRadioBoxGroup: {
-									options: items,
-									optionsValue: 'value',
-									optionsText: 'text',
-									value: selectedValue}"></div>
-					</div>
+
+				<div id="div-button-bottom">
+					<hr />
+					<button class="x-large proceed">登録</button>
+					<button class="small">キャンセル</button>
 				</div>
 			</div>
-
 		</ui:define>
 	</ui:composition>
 </body>

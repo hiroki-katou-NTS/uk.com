@@ -3,12 +3,18 @@
 }
 
 #functions-area {
-	height: 50px;
+	padding-left: 400px;
+	padding-top: 10px;
 }
 
 /** wizard css */
 .wizard {
 	width: 1350px !important;
+}
+
+#wizard-p-1 {
+	padding: 5px !important;
+	width: 100% !important;
 }
 
 .nts-wizard.vertical>.steps {
@@ -17,37 +23,145 @@
 }
 
 .nts-wizard.vertical>.content {
+	height: 535px !important;
 	margin: 0px !important;
-	width: 75% !important;
+	width: 76% !important;
 	background: white !important;
 }
 
 /** button css */
+
+#c-button-003 {
+	width: 120px;
+}
 #btn-002 {
 	margin: 10px 0px 0px 300px;
 }
 
-/** label css */
-#B_LBL_002_003 {
-    display: inline-block;
-    width: calc(48%);
-    border: 1px solid #bbb;
-    border-radius: 5px;
-    overflow: hidden;
-    box-sizing: border-box;
-    transition: box-shadow 0.2s;
-    padding: 5px;   
+.B_BTN_001_002_003 {
+	margin-bottom: 10px;
 }
-#B_LBL_002_003 >.label.with-image{
-	padding:  0px !important;
+
+.B_BTN_004 {
+	margin-top: 25px;
+	margin-bottom: 10px;
+}
+
+.B_BTN_005 {
+	margin-top: 15px;
+}
+
+#B_BTN_001, #B_BTN_002 {
+	width: 100px;
+}
+
+#B_BTN_003 {
+	width: 130px;
+}
+
+#B_BTN_004, #B_BTN_005 {
+	width: 180px;
+}
+
+.swich-button-select-radio>button {
+	height: 30px;
+}
+/** label css */
+#c_label_002 {
+	margin-left: 100px;
+}
+
+#B_LBL_002_003 {
+	display: inline-block;
+	width: calc(48%);
+	border: 1px solid #bbb;
+	border-radius: 5px;
+	overflow: hidden;
+	box-sizing: border-box;
+	transition: box-shadow 0.2s;
+	padding: 5px;
+}
+
+#B_LBL_002_003>.label.with-image {
+	padding: 0px !important;
 }
 
 #B_LBL_003 {
 	margin-left: 50px;
 }
-#B_SEL_004 >.ntsRadioBox {
+
+#span-B_BTN_004 {
+	padding-left: 20px;
+}
+
+#B_SEL_004>.ntsRadioBox {
 	margin-left: 50px !important;
 }
+
+.nts-wizard>.content>.body label {
+	margin-bottom: 0em !important;
+}
+
 /**  texfield css */
-#B_SEL_004 >.ntsRadioBox input[type="radio"] {display:none !important;}
+
+/**  radio css */
+.ntsRadioBox input[type="radio"] {
+	display: none !important;
+}
+
+#radio-ntsControl {
+	margin-left: 106px !important;
+}
 /** table css */
+.table-list-bottom {
+	margin-left: 50px;
+	margin-top: 10px;
+	width: 95% !important;
+}
+
+.B_LST_002 {
+	padding-right: 0px !important;
+}
+
+#B_LST_001_container, #B_LST_002_container {
+	border: 1px solid gray !important;
+}
+
+/** DIV css */
+#content-step2-left {
+	width: 45%;
+	background-color: gray;
+	height: 535px;
+	float: left;
+}
+
+#content-step2-right {
+	width: 54%;
+	height: 535px;
+	float: left;
+}
+
+#content-step2-right-calendar {
+	display: inline-block;
+	width: calc(98%);
+	border: 1px solid #bbb;
+	border-radius: 5px;
+	overflow: hidden;
+	box-sizing: border-box;
+	transition: box-shadow 0.2s;
+	margin-left: 5px;
+}
+
+.content-step2-right-gridLsit {
+	width: 99%;
+	height: 410px;
+	border: 1px solid #bbb;
+}
+
+.content-step2-right-button{
+	padding: 10px;
+}
+
+.content-step2-right-button > button {
+	margin-left: 10px;
+}

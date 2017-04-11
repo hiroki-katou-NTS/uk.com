@@ -33,6 +33,13 @@ var qpp021;
                         new PrintTypeModel('04', 'A4横2人印刷'),
                     ]);
                     self.selectPrintTypeCode = ko.observable("01");
+                    self.selectLineItemLayout = ko.observableArray([
+                        new LineItemLayoutModel('01', 'Screen A', 0, "A4　縦向き　1人"),
+                        new LineItemLayoutModel('02', 'Screen B', 1, "A4　縦向き　2人"),
+                        new LineItemLayoutModel('03', 'Screen C', 2, "A4　縦向き　3人"),
+                        new LineItemLayoutModel('04', 'Screen D', 3, "A4　縦向き　4人"),
+                    ]);
+                    self.selectLineItemCodes = ko.observableArray([]);
                 }
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
@@ -42,6 +49,9 @@ var qpp021;
                 };
                 ScreenModel.prototype.next = function () {
                     $('#wizard').ntsWizard("next");
+                };
+                ScreenModel.prototype.previous = function () {
+                    $('#wizard').ntsWizard("prev");
                 };
                 return ScreenModel;
             }());
@@ -66,6 +76,15 @@ var qpp021;
                     this.printTypeName = printTypeName;
                 }
                 return PrintTypeModel;
+            }());
+            var LineItemLayoutModel = (function () {
+                function LineItemLayoutModel(statementCode, statementName, layoutAttributeId, layoutAttributeName) {
+                    this.statementCode = statementCode;
+                    this.statementName = statementCode + " " + statementName;
+                    this.layoutAttributeId = layoutAttributeId;
+                    this.layoutAttributeName = layoutAttributeName;
+                }
+                return LineItemLayoutModel;
             }());
         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
     })(b = qpp021.b || (qpp021.b = {}));

@@ -1,48 +1,76 @@
-.separate-1 {
-	margin-top: 5px;
-	margin-right: 10px;
-	margin-bottom: 5px;
+/* ====================== main css =============================*/
+#contents-area {
+	padding: 20px 30px !important;
+	width: 850px;
 }
 
-#btn-001 {
-	width: 200px;
-	margin-left: 75px;
-}
-
-#left-content {
-	margin-left: 65px;
-	padding: 10px;
-	float: left;
-	border: 1px solid #a79c9c;
-	border-radius: 4px;
-	min-height: 600px;
-}
-
-#lbl-001 {
-	float: right;
-	margin-right: 30px;
-}
-
-#lbl-002 {
-	margin-bottom: 20px;
+/* ====================== div css =============================*/
+.contents-area-right-left {
+	width: 825px;
 	display: inline-block;
 }
 
-.ntsRadioBox {
-	width: 100%;
-}
-
-#sel-001 {
-	float:left;
-	margin: 8px 0px 0px 35px;
-}
-
-#right-content {
-	margin-left: 20px;
-	padding: 10px;
+#left-contents-area {
+	width: 380px;
+	height: 450px;
+	border: 1px solid gray;
 	float: left;
-	border: 1px solid #a79c9c;
-	border-radius: 4px;
-	min-height: 600px;
-	width: 38%;
+	padding: 15px;
+}
+
+#right-contents-area {
+	width: 380px;
+	height: 450px;
+	border: 1px solid gray;
+	float: left;
+	padding: 15px;
+}
+
+.zero-setting-label {
+	margin-right: 30px;
+}
+.select-print-year-month {
+	margin-top: 10px;
+}
+#div-button-bottom {
+	text-align: center !important;
+	width: 820px;
+	
+}
+#div-button-bottom > button {
+	margin: 10px;
+	width: 100px !important;
+}
+/* ====================== radio css =============================*/
+#zero-item-setting-list .ntsRadioBox {
+	width: 99% !important;
+}
+
+/* ====================== checkbox css =============================*/
+.zero-output-checkbox {
+	margin-left: 137px;
+}
+/* ====================== label css =============================*/
+.d-label-001, .d-label-005, .d-label-007 {
+	width: 500px;
+	margin-bottom: 10px;
+}
+
+.d-label-005 {
+	margin-top: 70px !important;
+}
+
+/* ====================== Switch css =============================*/
+.div-zero-setting {
+	padding-left: 40px;
+	padding-top: 10px;
+}
+button.nts-switch-button {
+	width: 90px !important;
+	height: 30px !important;
+}
+
+/* ====================== listbox css =============================*/
+#combo-box-select-print-YM {
+	margin: 10px 0px 0px 20px !important;
 }

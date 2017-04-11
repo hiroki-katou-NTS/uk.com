@@ -2,16 +2,19 @@ module qpp021.b.viewmodel {
     export class ScreenModel {
         stepList: Array<nts.uk.ui.NtsWizardStep>;
         stepSelected: KnockoutObservable<nts.uk.ui.NtsWizardStep>;
-        
+
         processDateComboBox: KnockoutObservableArray<ComboBoxModel>;
         selectedCbCode: KnockoutObservable<string>;
-        
+
         selectCategorys: KnockoutObservableArray<RadioBoxModel>;
         selectedRbCode: KnockoutObservable<number>;
-        
+
         selectPrintTypes: KnockoutObservableArray<PrintTypeModel>;
-        selectPrintTypeCode:  KnockoutObservable<string>;
-        
+        selectPrintTypeCode: KnockoutObservable<string>;
+
+        selectLineItemLayout: KnockoutObservableArray<LineItemLayoutModel>;
+        selectLineItemCodes: KnockoutObservableArray<number>;
+
         constructor() {
             let self = this;
             self.stepList = [
@@ -20,7 +23,7 @@ module qpp021.b.viewmodel {
                 { content: '.A_LBL_004-step' },
             ];
             self.stepSelected = ko.observable({ id: 'A_LBL_002-step', content: '.A_LBL_002-step' });
-            
+
             self.processDateComboBox = ko.observableArray([
                 new ComboBoxModel('01', '基本給'),
                 new ComboBoxModel('02', '役職手当'),
@@ -29,23 +32,31 @@ module qpp021.b.viewmodel {
                 new ComboBoxModel('05', '基本給')
             ]);
             self.selectedCbCode = ko.observable('02');
-            
+
             self.selectCategorys = ko.observableArray([
                 new RadioBoxModel(1, '印刷タイプから選択する'),
                 new RadioBoxModel(2, '明細レイアウトから選択する'),
             ]);
             self.selectedRbCode = ko.observable(1);
-            
+
             self.selectPrintTypes = ko.observableArray([
                 new PrintTypeModel('01', 'A4縦1人印刷'),
                 new PrintTypeModel('02', 'A4縦2人印刷'),
                 new PrintTypeModel('03', 'A4縦3人印刷'),
                 new PrintTypeModel('04', 'A4横2人印刷'),
             ]);
-             self.selectPrintTypeCode = ko.observable("01");
-            
+            self.selectPrintTypeCode = ko.observable("01");
+
+            self.selectLineItemLayout = ko.observableArray([
+                new LineItemLayoutModel('01', 'Screen A', 0, "A4　縦向き　1人"),
+                new LineItemLayoutModel('02', 'Screen B', 1, "A4　縦向き　2人"),
+                new LineItemLayoutModel('03', 'Screen C', 2, "A4　縦向き　3人"),
+                new LineItemLayoutModel('04', 'Screen D', 3, "A4　縦向き　4人"),
+            ]);
+            self.selectLineItemCodes = ko.observableArray([]);
+
         }
-        
+
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
@@ -56,6 +67,10 @@ module qpp021.b.viewmodel {
         next() {
             $('#wizard').ntsWizard("next");
         }
+        
+        previous() {
+        $('#wizard').ntsWizard("prev");
+    }
     }
 
     class ComboBoxModel {
@@ -66,8 +81,8 @@ module qpp021.b.viewmodel {
             this.cbName = cbName;
         }
     }
-    
-     class RadioBoxModel {
+
+    class RadioBoxModel {
         rbCode: number;
         rbName: string;
         constructor(rbCode: number, rbName: string) {
@@ -75,7 +90,7 @@ module qpp021.b.viewmodel {
             this.rbName = rbName;
         }
     }
-    
+
     class PrintTypeModel {
         printTypeCode: string;
         printTypeName: string;
@@ -84,4 +99,18 @@ module qpp021.b.viewmodel {
             this.printTypeName = printTypeName;
         }
     }
+
+    class LineItemLayoutModel {
+        statementCode: string;
+        statementName: string;
+        layoutAttributeId: number;
+        layoutAttributeName: string;
+        constructor(statementCode: string, statementName: string, layoutAttributeId: number, layoutAttributeName: string) {
+            this.statementCode = statementCode;
+            this.statementName = statementCode + " " + statementName;
+            this.layoutAttributeId = layoutAttributeId;
+            this.layoutAttributeName = layoutAttributeName;
+        }
+    }
+
 }
