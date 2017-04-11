@@ -1,4 +1,3 @@
-/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -42,21 +41,18 @@ var nts;
                     }
                     StringValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
-                        // Check Required
                         if (this.required !== undefined && this.required !== false) {
                             if (!checkRequired(inputText)) {
                                 result.fail('This field is required');
                                 return result;
                             }
                         }
-                        // Check CharType
                         if (this.charType !== null && this.charType !== undefined) {
                             if (!this.charType.validate(inputText)) {
                                 result.fail('Invalid text');
                                 return result;
                             }
                         }
-                        // Check Constraint
                         if (this.constraint !== undefined && this.constraint !== null) {
                             if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
                                 result.fail('Max length for this input is ' + this.constraint.maxLength);
@@ -116,17 +112,14 @@ var nts;
                     }
                     TimeValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
-                        // Check required
                         if (this.required !== undefined && this.required !== false) {
                             if (!checkRequired(inputText)) {
                                 result.fail('This field is required');
                                 return result;
                             }
                         }
-                        // Create Parser
                         var parseResult;
                         parseResult = uk.time.parseMoment(inputText, this.outputFormat);
-                        // Parse
                         if (parseResult.success) {
                             if (this.valueType === "string")
                                 result.success(parseResult.format());
@@ -169,3 +162,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=validation.js.map
