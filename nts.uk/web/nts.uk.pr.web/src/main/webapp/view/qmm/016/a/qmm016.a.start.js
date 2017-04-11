@@ -4,4 +4,3 @@ __viewContext.ready(function () {
         __viewContext.bind(screenModel);
     });
 });
-//# sourceMappingURL=qmm016.a.start.js.map
