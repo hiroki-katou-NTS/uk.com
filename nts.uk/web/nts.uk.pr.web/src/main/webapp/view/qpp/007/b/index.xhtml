@@ -21,13 +21,14 @@
 		</ui:define>
 
 		<ui:define name="content">
+		<div class="wrapper" data-bind="visible: true" style="display: none">
 			<div id="this-header-area">
 				<label id="lbl_header_left">明細・合計出力設定</label> <label id="lbl_header_right">※2016/04/01
 					の部門構成で集計します。</label>
 				<hr />
 			</div>
 			<!-- BEGIN CONTENT AREA-->
-			<div id="this-contents-area" class="margin-top-bot-20" data-bind="visible: true" style="display: none">
+			<div id="this-contents-area" class="margin-top-bot-20">
 			<com:ko tag="with" bind="salaryPrintSettingModel">
 				<table class="margin-left-20">
 					<tr>
@@ -109,11 +110,12 @@
 			<hr />
 			<!-- END CONTENT AREA-->
 			<!-- BEGIN FUNCTION AREA-->
-			<div id="this-functions-area" class="halign-center" data-bind="visible: true" style="display: none">
+			<div id="this-functions-area" class="halign-center">
 				<button class="proceed x-large" id="btn_apply" data-bind="click: saveSetting">設定</button>
 				<button id="btn_cancel" data-bind="click: cancel">キャンセル</button>
 			</div>
 			<!-- END FUNCTION AREA-->
+		</div>
 		</ui:define>
 	</ui:composition>
 </body>

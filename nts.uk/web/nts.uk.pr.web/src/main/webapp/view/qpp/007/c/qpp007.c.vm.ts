@@ -3,6 +3,7 @@ module nts.uk.pr.view.qpp007.c {
         export class ScreenModel {
             outputSettings: KnockoutObservableArray<OutputSettingHeader>;
             outputSettingSelectedCode: KnockoutObservable<string>;
+            temporarySelectedCode: KnockoutObservable<string>;
             outputSettingColumns: KnockoutObservableArray<any>;
             outputSettingDetailModel: KnockoutObservable<OutputSettingDetailModel>;
             reportItems: KnockoutObservableArray<ReportItem>;
@@ -11,6 +12,7 @@ module nts.uk.pr.view.qpp007.c {
             allAggregateItems: KnockoutObservableArray<AggregateItem>;
             isLoading: KnockoutObservable<boolean>;
             isNewMode: KnockoutObservable<boolean>;
+            dirtyChecker: nts.uk.ui.DirtyChecker;
 
             constructor() {
                 var self = this;
@@ -18,10 +20,12 @@ module nts.uk.pr.view.qpp007.c {
                 self.isNewMode = ko.observable(true);
                 self.outputSettings = ko.observableArray<OutputSettingHeader>([]);
                 self.outputSettingSelectedCode = ko.observable('');
+                self.temporarySelectedCode = ko.observable('');
                 self.outputSettingDetailModel = ko.observable(new OutputSettingDetailModel(ko.observableArray<AggregateItem>([])));
                 self.reportItems = ko.observableArray<ReportItem>([]);
                 self.reportItemSelected = ko.observable('');
                 self.allAggregateItems = ko.observableArray<AggregateItem>([]);
+                self.dirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetailModel);
 
                 for (let i = 1; i < 30; i++) {
                     this.outputSettings.push(new OutputSettingHeader('00' + i, '基本給' + i));
@@ -47,8 +51,28 @@ module nts.uk.pr.view.qpp007.c {
                     data.reloadReportItems = self.reloadReportItems.bind(self);
                 });
 
-                self.outputSettingSelectedCode.subscribe((id) => {
-                    self.onSelectOutputSetting(id);
+                self.temporarySelectedCode.subscribe(code => {
+                    // Do nothing if code == null or undefined.
+                    if (!code) {
+                        return;
+                    }
+                    // Function to executed on confirmDirty dialog.
+                    var executeIfConfirmed = () => {
+                        self.outputSettingSelectedCode(self.temporarySelectedCode());
+                        self.onSelectOutputSetting(code);
+                    };
+                    var executeIfCanceled = () => {
+                        self.temporarySelectedCode(self.outputSettingSelectedCode());
+                    };
+
+                    // Do nothing if selected same code.
+                    if (self.outputSettingSelectedCode() == code) {
+                        return;
+                    }
+                    // Check dirty then execute appropriate function.
+                    else {
+                        self.confirmDirtyAndExecute(executeIfConfirmed, executeIfCanceled);
+                    }
                 })
             }
 
@@ -58,7 +82,7 @@ module nts.uk.pr.view.qpp007.c {
             public startPage(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                $.when(self.loadAllOutputSetting(), self.loadAggregateItems()).done(() => {
+                $.when(self.loadAllOutputSetting(), self.loadMasterItems(), self.loadAggregateItems()).done(() => {
                     self.isLoading(false);
                     // New mode if there is 0 outputSettings. 
                     if (!self.outputSettings || self.outputSettings().length == 0) {
@@ -66,7 +90,7 @@ module nts.uk.pr.view.qpp007.c {
                     }
                     // else select first outputSetting.
                     else {
-                        self.outputSettingSelectedCode(self.outputSettings()[0].code);
+                        self.temporarySelectedCode(self.outputSettings()[0].code);
                     }
                     dfd.resolve();
                 });
@@ -74,30 +98,102 @@ module nts.uk.pr.view.qpp007.c {
             }
 
             /**
-            * Reload report items.
+            * Open common setting dialog.
             */
-            public reloadReportItems(): void {
+            public onCommonSettingBtnClicked(): void {
                 var self = this;
-                var data = self.outputSettingDetailModel();
-                if (!data || data.categorySettings().length == 0) {
-                    self.reportItems([]);
+                nts.uk.ui.windows.sub.modal('/view/qpp/007/j/index.xhtml', { title: '集計項目の設定', dialogClass: 'no-close' })
+                    .onClosed(function() {
+                        self.loadAggregateItems().done(() => {
+                            self.loadOutputSettingDetail(self.outputSettingDetailModel().settingCode());
+                        });
+                    });
+            }
+
+            /**
+             * Clear errors and enable new mode.
+             */
+            public onNewModeBtnClicked(): void {
+                var self = this;
+                self.confirmDirtyAndExecute(function() {
+                    self.clearError();
+                    self.enableNewMode();
+                });
+            }
+
+            /**
+             * Save outputSetting.
+             */
+            public onSaveBtnClicked(): void {
+                var self = this;
+                // Validate.
+                self.validate();
+                if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                     return;
                 }
-                // Set data to report item list.
-                var reportItemList: ReportItem[] = [];
-                data.categorySettings().forEach((setting) => {
-                    var categoryName: SalaryCategory = setting.categoryName;
-                    setting.outputItems().forEach((item) => {
-                        reportItemList.push(new ReportItem(item.code, item.name, categoryName, item.isAggregateItem));
-                    });
+                var data = self.collectData();
+                // Set isCreateMode.
+                if (self.isNewMode()) {
+                    data.createMode = true;
+                } else {
+                    data.createMode = false;
+                }
+                // Save.
+                service.save(data).done(() => {
+                    self.isNewMode(false);
+                    self.dirtyChecker.reset();
+                    self.loadAllOutputSetting();
+                }).fail(res => {
+                    // TODO: ...
+                    console.log(res);
                 });
-                self.reportItems(reportItemList);
+            }
+
+            /**
+             * Delete selected outputSetting.
+             */
+            public onRemoveBtnClicked(): void {
+                var self = this;
+                if (self.outputSettingSelectedCode) {
+                    nts.uk.ui.dialog.confirm("データを削除します。\r\n よろしいですか？").ifYes(function() {
+                        service.remove(self.outputSettingSelectedCode()).done(() => {
+                            self.loadAllOutputSetting();
+                            // Set new mode if outputSettings has 0 element.
+                            if (!self.outputSettings || self.outputSettings.length == 0) {
+                                self.clearError();
+                                self.enableNewMode();
+                            }
+                        });
+                    });
+                }
+            }
+
+            /**
+             * Close dialog.
+             */
+            public onCloseBtnClicked(): void {
+                var self = this;
+                self.confirmDirtyAndExecute(function() {
+                    nts.uk.ui.windows.close();
+                });
+            }
+
+            /**
+              * On select outputSetting
+              */
+            private onSelectOutputSetting(code: string): void {
+                var self = this;
+                self.loadOutputSettingDetail(code).done(() => {
+                    self.isNewMode(false);
+                    self.isLoading(false);
+                    self.clearError();
+                });
             }
 
             /**
             * Collect Data
             */
-            public collectData(): OutputSettingDto {
+            private collectData(): OutputSettingDto {
                 var self = this;
                 var model = self.outputSettingDetailModel();
                 var data = new OutputSettingDto();
@@ -121,102 +217,77 @@ module nts.uk.pr.view.qpp007.c {
             }
 
             /**
-            * Save outputSetting.
+            * Clear all input errors.
             */
-            public save(): void {
-                var self = this;
-                // clear error.
-                self.clearError();
-                // Validate.
-                self.validate();
-                if (!nts.uk.ui._viewModel.errors.isEmpty()) {
-                    return;
-                }
-                var data = self.collectData();
-                // Set isCreateMode.
-                if (self.isNewMode()) {
-                    data.createMode = true;
-                } else {
-                    data.createMode = false;
-                }
-                // Save.
-                service.save(data).done(() => {
-                    self.isNewMode(false);
-                    self.loadAllOutputSetting()
-                });
-            }
-
             private clearError(): void {
-                $('#inpCode').ntsError('clear');
-                $('#inpName').ntsError('clear');
+                if (nts.uk.ui._viewModel) {
+                    $('#inpCode').ntsError('clear');
+                    $('#inpName').ntsError('clear');
+                }
             }
 
+            /**
+            * Validate all inputs.
+            */
             private validate(): void {
                 $('#inpCode').ntsEditor('validate');
                 $('#inpName').ntsEditor('validate');
             }
 
             /**
-            * Delete outputSetting.
-            */
-            public remove(): void {
+             * Confirm dirty state and execute function.
+             */
+            private confirmDirtyAndExecute(functionToExecute: () => void, functionToExecuteIfNo?: () => void) {
                 var self = this;
-                if (self.outputSettingSelectedCode) {
-                    nts.uk.ui.dialog.confirm("データを削除します。\r\n よろしいですか？").ifYes(function() {
-                        service.remove(self.outputSettingSelectedCode()).done(() => self.loadAllOutputSetting());
+                if (self.dirtyChecker.isDirty()) {
+                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                        functionToExecute();
+                    }).ifNo(function() {
+                        if (functionToExecuteIfNo) {
+                            functionToExecuteIfNo();
+                        }
                     });
+                } else {
+                    functionToExecute();
                 }
             }
 
             /**
-            * Open common setting dialog.
+            * Reset selected code & all inputs.
             */
-            public commonSettingBtnClick(): void {
-                var self = this;
-                nts.uk.ui.windows.sub.modal('/view/qpp/007/j/index.xhtml', { title: '集計項目の設定', dialogClass: 'no-close' })
-                    .onClosed(function() {
-                        self.loadAggregateItems().done(() => {
-                            self.loadOutputSettingDetail(self.outputSettingDetailModel().settingCode());
-                        });
-                    });
-            }
-
-            /**
-             * on NewMode button click.
-             */
-            public onNewModeBtnClick(): void {
-                var self = this;
-                self.clearError();
-                self.enableNewMode();
-            }
-
             private enableNewMode(): void {
                 var self = this;
                 self.outputSettingDetailModel(new OutputSettingDetailModel(ko.observableArray<AggregateItem>([])));
                 self.outputSettingSelectedCode(null);
+                self.dirtyChecker.reset();
                 self.isNewMode(true);
             }
 
             /**
-           * On select outputSetting
-           */
-            private onSelectOutputSetting(id: string): void {
+            * Reload report items.
+            */
+            private reloadReportItems(): void {
                 var self = this;
-                if (!id) {
+                var data = self.outputSettingDetailModel();
+                if (!data || data.categorySettings().length == 0) {
+                    self.reportItems([]);
                     return;
                 }
-                // self.isLoading(true);
-                self.loadOutputSettingDetail(id).done(() => {
-                    self.isNewMode(false);
-                    self.isLoading(false);
-                    self.clearError();
+                // Set data to report item list.
+                var reportItemList: ReportItem[] = [];
+                data.categorySettings().forEach((setting) => {
+                    var categoryName: SalaryCategory = setting.categoryName;
+                    setting.outputItems().forEach((item) => {
+                        reportItemList.push(new ReportItem(item.code, item.name, categoryName, item.isAggregateItem));
+                    });
                 });
+                self.reportItems(reportItemList);
             }
 
             /**
              * Load all output setting.
              */
-            public loadAllOutputSetting(): JQueryPromise<void> {
+            private loadAllOutputSetting(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 service.findAllOutputSettings().done(data => {
@@ -232,11 +303,12 @@ module nts.uk.pr.view.qpp007.c {
             /**
              * Load detail output setting.
              */
-            public loadOutputSettingDetail(code: string): JQueryPromise<void> {
+            private loadOutputSettingDetail(code: string): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 service.findOutputSettingDetail(code).done(function(data: OutputSettingDto) {
                     self.outputSettingDetailModel(new OutputSettingDetailModel(self.allAggregateItems, data));
+                    self.dirtyChecker.reset();
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res);
@@ -248,7 +320,7 @@ module nts.uk.pr.view.qpp007.c {
             /**
             * Load aggregate items
             */
-            public loadAggregateItems(): JQueryPromise<void> {
+            private loadAggregateItems(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 service.findAllAggregateItems().done(res => {
@@ -268,19 +340,17 @@ module nts.uk.pr.view.qpp007.c {
             /**
             * Load master items
             */
-            public loadMasterItems(): JQueryPromise<void> {
+            private loadMasterItems(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
+                dfd.resolve();
                 return dfd.promise();
             }
 
-            /**
-            * Close dialog.
-            */
-            public close(): void {
-                nts.uk.ui.windows.close();
-            }
-
         }
+
+        /**
+         * OutputSettingHeader model.
+         */
         export class OutputSettingHeader {
             code: string;
             name: string;
@@ -290,6 +360,9 @@ module nts.uk.pr.view.qpp007.c {
             }
         }
 
+        /**
+         * OutputSettingDto model.
+         */
         export class OutputSettingDto {
             code: string;
             name: string;
@@ -297,6 +370,9 @@ module nts.uk.pr.view.qpp007.c {
             createMode: boolean;
         }
 
+        /**
+         * OutputSettingDetailModel model.
+         */
         export class OutputSettingDetailModel {
             settingCode: KnockoutObservable<string>;
             settingName: KnockoutObservable<string>;
@@ -352,7 +428,7 @@ module nts.uk.pr.view.qpp007.c {
             private filterSettingByCategory(category: SalaryCategory, categorySettings?: CategorySettingDto[]): CategorySettingModel {
                 var cateTempSetting: CategorySettingDto = { category: category, outputItems: [] };
                 if (categorySettings == undefined) {
-                    return new CategorySettingModel(category, this.aggregateItems,cateTempSetting);
+                    return new CategorySettingModel(category, this.aggregateItems, cateTempSetting);
                 }
 
                 var categorySetting = categorySettings.filter(item => item.category == category)[0];
@@ -364,6 +440,9 @@ module nts.uk.pr.view.qpp007.c {
 
         }
 
+        /**
+         * CategorySettingDto model.
+         */
         export class CategorySettingDto {
             category: SalaryCategory;
             outputItems: OutputItem[];
@@ -374,6 +453,41 @@ module nts.uk.pr.view.qpp007.c {
             }
         }
 
+        /**
+         * ReportItem model.
+         */
+        export class ReportItem {
+            code: string;
+            name: string;
+            categoryNameJPN: string;
+            isAggregate: boolean;
+            constructor(code: string, name: string, categoryName: SalaryCategory, isAggregate: boolean) {
+                this.code = code;
+                this.name = name;
+                this.isAggregate = isAggregate;
+                var self = this;
+                switch (categoryName) {
+                    case SalaryCategory.PAYMENT:
+                        self.categoryNameJPN = '支給';
+                        break;
+                    case SalaryCategory.DEDUCTION:
+                        self.categoryNameJPN = '控除';
+                        break;
+                    case SalaryCategory.ATTENDANCE:
+                        self.categoryNameJPN = '勤怠';
+                        break;
+                    case SalaryCategory.ARTICLE_OTHERS:
+                        self.categoryNameJPN = '記事・その他';
+                        break;
+                    default:
+                        self.categoryNameJPN = '';
+                }
+            }
+        }
+
+        /**
+         * CategorySettingModel model.
+         */
         export class CategorySettingModel {
             categoryName: SalaryCategory;
             aggregateItems: KnockoutObservableArray<AggregateItem>;
@@ -574,34 +688,6 @@ module nts.uk.pr.view.qpp007.c {
         export class PaymentType {
             static SALARY = 'Salary';
             static BONUS = 'Bonus';
-        }
-        export class ReportItem {
-            code: string;
-            name: string;
-            categoryNameJPN: string;
-            isAggregate: boolean;
-            constructor(code: string, name: string, categoryName: SalaryCategory, isAggregate: boolean) {
-                this.code = code;
-                this.name = name;
-                this.isAggregate = isAggregate;
-                var self = this;
-                switch (categoryName) {
-                    case SalaryCategory.PAYMENT:
-                        self.categoryNameJPN = '支給';
-                        break;
-                    case SalaryCategory.DEDUCTION:
-                    self.categoryNameJPN = '控除';
-                        break;
-                    case SalaryCategory.ATTENDANCE:
-                    self.categoryNameJPN = '勤怠';
-                        break;
-                    case SalaryCategory.ARTICLE_OTHERS:
-                    self.categoryNameJPN = '記事・その他';
-                        break;
-                    default:
-                        self.categoryNameJPN = '';
-                }
-            }
         }
     }
 }

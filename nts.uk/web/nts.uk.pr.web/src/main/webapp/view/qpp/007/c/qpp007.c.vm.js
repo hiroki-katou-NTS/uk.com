@@ -19,10 +19,12 @@ var nts;
                                     self.isNewMode = ko.observable(true);
                                     self.outputSettings = ko.observableArray([]);
                                     self.outputSettingSelectedCode = ko.observable('');
+                                    self.temporarySelectedCode = ko.observable('');
                                     self.outputSettingDetailModel = ko.observable(new OutputSettingDetailModel(ko.observableArray([])));
                                     self.reportItems = ko.observableArray([]);
                                     self.reportItemSelected = ko.observable('');
                                     self.allAggregateItems = ko.observableArray([]);
+                                    self.dirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetailModel);
                                     for (var i = 1; i < 30; i++) {
                                         this.outputSettings.push(new OutputSettingHeader('00' + i, '基本給' + i));
                                     }
@@ -44,40 +46,104 @@ var nts;
                                         self.reloadReportItems();
                                         data.reloadReportItems = self.reloadReportItems.bind(self);
                                     });
-                                    self.outputSettingSelectedCode.subscribe(function (id) {
-                                        self.onSelectOutputSetting(id);
+                                    self.temporarySelectedCode.subscribe(function (code) {
+                                        if (!code) {
+                                            return;
+                                        }
+                                        var executeIfConfirmed = function () {
+                                            self.outputSettingSelectedCode(self.temporarySelectedCode());
+                                            self.onSelectOutputSetting(code);
+                                        };
+                                        var executeIfCanceled = function () {
+                                            self.temporarySelectedCode(self.outputSettingSelectedCode());
+                                        };
+                                        if (self.outputSettingSelectedCode() == code) {
+                                            return;
+                                        }
+                                        else {
+                                            self.confirmDirtyAndExecute(executeIfConfirmed, executeIfCanceled);
+                                        }
                                     });
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    $.when(self.loadAllOutputSetting(), self.loadAggregateItems()).done(function () {
+                                    $.when(self.loadAllOutputSetting(), self.loadMasterItems(), self.loadAggregateItems()).done(function () {
                                         self.isLoading(false);
                                         if (!self.outputSettings || self.outputSettings().length == 0) {
                                             self.enableNewMode();
                                         }
                                         else {
-                                            self.outputSettingSelectedCode(self.outputSettings()[0].code);
+                                            self.temporarySelectedCode(self.outputSettings()[0].code);
                                         }
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
                                 };
-                                ScreenModel.prototype.reloadReportItems = function () {
+                                ScreenModel.prototype.onCommonSettingBtnClicked = function () {
                                     var self = this;
-                                    var data = self.outputSettingDetailModel();
-                                    if (!data || data.categorySettings().length == 0) {
-                                        self.reportItems([]);
-                                        return;
-                                    }
-                                    var reportItemList = [];
-                                    data.categorySettings().forEach(function (setting) {
-                                        var categoryName = setting.categoryName;
-                                        setting.outputItems().forEach(function (item) {
-                                            reportItemList.push(new ReportItem(item.code, item.name, categoryName, item.isAggregateItem));
+                                    nts.uk.ui.windows.sub.modal('/view/qpp/007/j/index.xhtml', { title: '集計項目の設定', dialogClass: 'no-close' })
+                                        .onClosed(function () {
+                                        self.loadAggregateItems().done(function () {
+                                            self.loadOutputSettingDetail(self.outputSettingDetailModel().settingCode());
                                         });
                                     });
-                                    self.reportItems(reportItemList);
+                                };
+                                ScreenModel.prototype.onNewModeBtnClicked = function () {
+                                    var self = this;
+                                    self.confirmDirtyAndExecute(function () {
+                                        self.clearError();
+                                        self.enableNewMode();
+                                    });
+                                };
+                                ScreenModel.prototype.onSaveBtnClicked = function () {
+                                    var self = this;
+                                    self.validate();
+                                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                                        return;
+                                    }
+                                    var data = self.collectData();
+                                    if (self.isNewMode()) {
+                                        data.createMode = true;
+                                    }
+                                    else {
+                                        data.createMode = false;
+                                    }
+                                    c.service.save(data).done(function () {
+                                        self.isNewMode(false);
+                                        self.dirtyChecker.reset();
+                                        self.loadAllOutputSetting();
+                                    }).fail(function (res) {
+                                        console.log(res);
+                                    });
+                                };
+                                ScreenModel.prototype.onRemoveBtnClicked = function () {
+                                    var self = this;
+                                    if (self.outputSettingSelectedCode) {
+                                        nts.uk.ui.dialog.confirm("データを削除します。\r\n よろしいですか？").ifYes(function () {
+                                            c.service.remove(self.outputSettingSelectedCode()).done(function () {
+                                                self.loadAllOutputSetting();
+                                                if (!self.outputSettings || self.outputSettings.length == 0) {
+                                                    self.clearError();
+                                                    self.enableNewMode();
+                                                }
+                                            });
+                                        });
+                                    }
+                                };
+                                ScreenModel.prototype.onCloseBtnClicked = function () {
+                                    var self = this;
+                                    self.confirmDirtyAndExecute(function () {
+                                        nts.uk.ui.windows.close();
+                                    });
+                                };
+                                ScreenModel.prototype.onSelectOutputSetting = function (code) {
+                                    var self = this;
+                                    self.loadOutputSettingDetail(code).done(function () {
+                                        self.isNewMode(false);
+                                        self.isLoading(false);
+                                        self.clearError();
+                                    });
                                 };
                                 ScreenModel.prototype.collectData = function () {
                                     var self = this;
@@ -101,71 +167,53 @@ var nts;
                                     data.categorySettings = settings;
                                     return data;
                                 };
-                                ScreenModel.prototype.save = function () {
-                                    var self = this;
-                                    self.clearError();
-                                    self.validate();
-                                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
-                                        return;
-                                    }
-                                    var data = self.collectData();
-                                    if (self.isNewMode()) {
-                                        data.createMode = true;
-                                    }
-                                    else {
-                                        data.createMode = false;
-                                    }
-                                    c.service.save(data).done(function () {
-                                        self.isNewMode(false);
-                                        self.loadAllOutputSetting();
-                                    });
-                                };
                                 ScreenModel.prototype.clearError = function () {
-                                    $('#inpCode').ntsError('clear');
-                                    $('#inpName').ntsError('clear');
+                                    if (nts.uk.ui._viewModel) {
+                                        $('#inpCode').ntsError('clear');
+                                        $('#inpName').ntsError('clear');
+                                    }
                                 };
                                 ScreenModel.prototype.validate = function () {
                                     $('#inpCode').ntsEditor('validate');
                                     $('#inpName').ntsEditor('validate');
                                 };
-                                ScreenModel.prototype.remove = function () {
+                                ScreenModel.prototype.confirmDirtyAndExecute = function (functionToExecute, functionToExecuteIfNo) {
                                     var self = this;
-                                    if (self.outputSettingSelectedCode) {
-                                        nts.uk.ui.dialog.confirm("データを削除します。\r\n よろしいですか？").ifYes(function () {
-                                            c.service.remove(self.outputSettingSelectedCode()).done(function () { return self.loadAllOutputSetting(); });
+                                    if (self.dirtyChecker.isDirty()) {
+                                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
+                                            functionToExecute();
+                                        }).ifNo(function () {
+                                            if (functionToExecuteIfNo) {
+                                                functionToExecuteIfNo();
+                                            }
                                         });
                                     }
-                                };
-                                ScreenModel.prototype.commonSettingBtnClick = function () {
-                                    var self = this;
-                                    nts.uk.ui.windows.sub.modal('/view/qpp/007/j/index.xhtml', { title: '集計項目の設定', dialogClass: 'no-close' })
-                                        .onClosed(function () {
-                                        self.loadAggregateItems().done(function () {
-                                            self.loadOutputSettingDetail(self.outputSettingDetailModel().settingCode());
-                                        });
-                                    });
-                                };
-                                ScreenModel.prototype.onNewModeBtnClick = function () {
-                                    var self = this;
-                                    self.clearError();
-                                    self.enableNewMode();
+                                    else {
+                                        functionToExecute();
+                                    }
                                 };
                                 ScreenModel.prototype.enableNewMode = function () {
                                     var self = this;
                                     self.outputSettingDetailModel(new OutputSettingDetailModel(ko.observableArray([])));
                                     self.outputSettingSelectedCode(null);
+                                    self.dirtyChecker.reset();
                                     self.isNewMode(true);
                                 };
-                                ScreenModel.prototype.onSelectOutputSetting = function (id) {
+                                ScreenModel.prototype.reloadReportItems = function () {
                                     var self = this;
-                                    if (!id) {
+                                    var data = self.outputSettingDetailModel();
+                                    if (!data || data.categorySettings().length == 0) {
+                                        self.reportItems([]);
                                         return;
                                     }
-                                    self.loadOutputSettingDetail(id).done(function () {
-                                        self.isNewMode(false);
-                                        self.isLoading(false);
-                                        self.clearError();
+                                    var reportItemList = [];
+                                    data.categorySettings().forEach(function (setting) {
+                                        var categoryName = setting.categoryName;
+                                        setting.outputItems().forEach(function (item) {
+                                            reportItemList.push(new ReportItem(item.code, item.name, categoryName, item.isAggregateItem));
+                                        });
                                     });
+                                    self.reportItems(reportItemList);
                                 };
                                 ScreenModel.prototype.loadAllOutputSetting = function () {
                                     var self = this;
@@ -184,6 +232,7 @@ var nts;
                                     var dfd = $.Deferred();
                                     c.service.findOutputSettingDetail(code).done(function (data) {
                                         self.outputSettingDetailModel(new OutputSettingDetailModel(self.allAggregateItems, data));
+                                        self.dirtyChecker.reset();
                                         dfd.resolve();
                                     }).fail(function (res) {
                                         nts.uk.ui.dialog.alert(res);
@@ -209,10 +258,8 @@ var nts;
                                 };
                                 ScreenModel.prototype.loadMasterItems = function () {
                                     var dfd = $.Deferred();
+                                    dfd.resolve();
                                     return dfd.promise();
-                                };
-                                ScreenModel.prototype.close = function () {
-                                    nts.uk.ui.windows.close();
                                 };
                                 return ScreenModel;
                             }());
@@ -292,6 +339,32 @@ var nts;
                                 return CategorySettingDto;
                             }());
                             viewmodel.CategorySettingDto = CategorySettingDto;
+                            var ReportItem = (function () {
+                                function ReportItem(code, name, categoryName, isAggregate) {
+                                    this.code = code;
+                                    this.name = name;
+                                    this.isAggregate = isAggregate;
+                                    var self = this;
+                                    switch (categoryName) {
+                                        case SalaryCategory.PAYMENT:
+                                            self.categoryNameJPN = '支給';
+                                            break;
+                                        case SalaryCategory.DEDUCTION:
+                                            self.categoryNameJPN = '控除';
+                                            break;
+                                        case SalaryCategory.ATTENDANCE:
+                                            self.categoryNameJPN = '勤怠';
+                                            break;
+                                        case SalaryCategory.ARTICLE_OTHERS:
+                                            self.categoryNameJPN = '記事・その他';
+                                            break;
+                                        default:
+                                            self.categoryNameJPN = '';
+                                    }
+                                }
+                                return ReportItem;
+                            }());
+                            viewmodel.ReportItem = ReportItem;
                             var CategorySettingModel = (function () {
                                 function CategorySettingModel(categoryName, aggregateItems, categorySetting) {
                                     var self = this;
@@ -470,32 +543,6 @@ var nts;
                                 return PaymentType;
                             }());
                             viewmodel.PaymentType = PaymentType;
-                            var ReportItem = (function () {
-                                function ReportItem(code, name, categoryName, isAggregate) {
-                                    this.code = code;
-                                    this.name = name;
-                                    this.isAggregate = isAggregate;
-                                    var self = this;
-                                    switch (categoryName) {
-                                        case SalaryCategory.PAYMENT:
-                                            self.categoryNameJPN = '支給';
-                                            break;
-                                        case SalaryCategory.DEDUCTION:
-                                            self.categoryNameJPN = '控除';
-                                            break;
-                                        case SalaryCategory.ATTENDANCE:
-                                            self.categoryNameJPN = '勤怠';
-                                            break;
-                                        case SalaryCategory.ARTICLE_OTHERS:
-                                            self.categoryNameJPN = '記事・その他';
-                                            break;
-                                        default:
-                                            self.categoryNameJPN = '';
-                                    }
-                                }
-                                return ReportItem;
-                            }());
-                            viewmodel.ReportItem = ReportItem;
                         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
                     })(c = qpp007.c || (qpp007.c = {}));
                 })(qpp007 = view.qpp007 || (view.qpp007 = {}));
