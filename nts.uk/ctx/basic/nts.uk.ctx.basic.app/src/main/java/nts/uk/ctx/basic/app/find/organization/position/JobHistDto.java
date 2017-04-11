@@ -11,6 +11,15 @@ public class JobHistDto {
 	private String companyCode;
 	private GeneralDate startDate;
 	private GeneralDate endDate;
+	
 	//nts.uk.time.formatDate(data, "yyyy/MM/dd")
+	
+//	public static JobHistDto fromDomain(JobHistory domain){
+//		  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//		  return new JobHistDto(domain.getCompanyCode(),
+//		    domain.getHistoryId(),
+//		    domain.getStartDate().localDate().format(formatter), 
+//		    domain.getEndDate().localDate().format(formatter));
+//		 }
 	
 }
