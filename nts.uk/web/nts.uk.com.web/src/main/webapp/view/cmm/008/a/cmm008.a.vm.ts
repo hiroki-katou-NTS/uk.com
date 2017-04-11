@@ -116,14 +116,6 @@ module cmm008.a.viewmodel{
                 }
                 
             });
-            
-
-//            self.userKtSet();
-//            self.closeDateListItem();
-//            self.processingDateItem();
-//            self.managementHolidaylist();
-//             dfd.resolve(); 
-            // Return.
             return dfd.promise();
         }
         
@@ -209,7 +201,7 @@ module cmm008.a.viewmodel{
                      })
                           
                  }
-            }).fail(function(res){
+            }).fail(function(res: any){
                 var ER010 = _.find(self.lstMessage(), function(mess){
                     return  mess.messCode === "ER010";
                 })
@@ -282,12 +274,12 @@ module cmm008.a.viewmodel{
             })
             if(self.employmentCode() === ""){
                 nts.uk.ui.dialog.alert(ER001.messName.replace('*','コード'));   
-                $("#INP_002").focus(); 
+                $("#inpCode").focus(); 
                 return;
             }
             if(self.employmentName() === ""){
                 nts.uk.ui.dialog.alert(ER001.messName.replace('*','名称'));  
-                $("#INP_003").focus();  
+                $("#inpName").focus();  
                 return;
             }
             var employment = new service.model.employmentDto();
@@ -315,13 +307,13 @@ module cmm008.a.viewmodel{
                             self.currentCode(employment.employmentCode);
                         })    
                     })
-                }).fail(function(error){
+                }).fail(function(error: any){
                     var newMess = _.find(self.lstMessage(), function(mess){
                         return  mess.messCode === error.message;
                     })
                     nts.uk.ui.dialog.alert(newMess.messName.split('*').join('コード'));    
                     self.isEnable(true);
-                    $("#INP_002").focus();
+                    $("#inpCode").focus();
                 })   
             //更新の時 
             }else{
@@ -393,7 +385,7 @@ module cmm008.a.viewmodel{
             self.isDelete(false);
             self.holidayCode(0);
             self.selectedProcessNo(0);
-            $("#INP_002").focus();
+            $("#inpCode").focus();
         }
         
         //削除
@@ -432,7 +424,7 @@ module cmm008.a.viewmodel{
                             }
                         }
                     })
-                }).fail(function(res){
+                }).fail(function(res: any){
                     var delMess = _.find(self.lstMessage(), function(mess){
                         return  mess.messCode === res.message;
                     })
