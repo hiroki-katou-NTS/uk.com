@@ -37,26 +37,40 @@ public interface PersonBankAccountRepository {
 	List<PersonBankAccount> findAllLineBank(String companyCode, String lineBankCode);
 
 	/**
-	 * Check all person bank account by bank
-	 * @param companyCode company code
-	 * @param bankCode bank code
-	 * @return list person bank account
-	 */
-	/**
-	 * 
+	 * Check all person branch account by bank
 	 * @param companyCode
 	 * @param bankCode
 	 * @param branchCode
 	 * @return
 	 */
 	List<PersonBankAccount> findAllBranchCode(String companyCode, String branchId);
-		
+	
+	/**
+	 * Check exists branch account
+	 * @param companyCode
+	 * @param branchId
+	 * @return
+	 */
 	boolean checkExistsBranchAccount(String companyCode, List<String> branchId);
 	
+	/**
+	 * Check exists line bank account
+	 * @param companyCode
+	 * @param lineBankCode
+	 * @return
+	 */
 	boolean checkExistsLineBankAccount(String companyCode, List<String> lineBankCode);
 	/**
 	 * 
 	 * @param personBankAccount
 	 */
 	void update(PersonBankAccount personBankAccount);
+
+	/**
+	 * Find all personal bank account
+	 * @param companyCode company code
+	 * @param branchId branch id
+	 * @return list of personal bank account
+	 */
+	List<PersonBankAccount> findAllBranch(String companyCode, List<String> branchId);
 }

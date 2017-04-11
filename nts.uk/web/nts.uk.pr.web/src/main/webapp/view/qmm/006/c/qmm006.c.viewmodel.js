@@ -26,15 +26,16 @@ var qmm006;
                     var dfd = $.Deferred();
                     qmm006.c.service.findAll()
                         .done(function (data) {
-                        if (data.length > 1) {
+                        if (data.length > 0) {
                             self.items(data);
                             self.items1(data);
                         }
                         else {
-                            nts.uk.ui.dialog.alert("対象データがありません。");
+                            self.items([]);
+                            self.items1([]);
                         }
                         dfd.resolve();
-                    }).fail(function () { });
+                    }).fail(function (res) { });
                     return dfd.promise();
                 };
                 ScreenModel.prototype.transferData = function (data, newLineBankCode) {
@@ -105,4 +106,4 @@ var qmm006;
     })(c = qmm006.c || (qmm006.c = {}));
 })(qmm006 || (qmm006 = {}));
 ;
-//# sourceMappingURL=qmm006.c.viewmodel.js.map
+//# sourceMappingURL=viewmodel.js.map

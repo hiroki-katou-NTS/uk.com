@@ -24,63 +24,88 @@ import nts.uk.ctx.pr.core.app.find.rule.employment.unitprice.personal.dto.Person
 public class PersonalUnitPriceWebService extends WebService {
 	@Inject
 	private PersonalUnitPriceFinder personalUnitPriceFinder;
-	
+
 	@Inject
 	private AddPersonalUnitPriceCommandHandler addCommandHandler;
-	
+
 	@Inject
 	private UpdatePersonalUnitPriceCommandHander updateCommandHandler;
-	
+
 	@Inject
 	private RemovePersonalUnitPriceCommandHander removeCommandHander;
-	
 
 	@POST
 	@Path("find/all")
 	public List<PersonalUnitPriceDto> findAll() {
 		return this.personalUnitPriceFinder.findAll();
 	}
-	
+
 	/**
 	 * Find all personal unit price
-	 * @param unitPriceCodeList list of unit price code
-	 * @return
+	 * 
+	 * @param unitPriceCodeList
+	 * 
+	 * @return list of unit price code
 	 */
 	@POST
 	@Path("find/all/codes")
 	public List<PersonalUnitPriceDto> findAll(List<String> unitPriceCodeList) {
 		return this.personalUnitPriceFinder.findAll(unitPriceCodeList);
 	}
-	
+
+	/**
+	 * Find all personal unit price has property display_set = 1 (none display)
+	 * 
+	 * @return list of unit price code has display_set = 1
+	 */
 	@POST
 	@Path("find/all/nonedisplay")
 	public List<PersonalUnitPriceDto> findAllNoneDisplay() {
-		return this.personalUnitPriceFinder.findAll().stream()
-				.filter(x->x.getDisplayAtr() == 1)
+		return this.personalUnitPriceFinder.findAll().stream().filter(x -> x.getDisplaySet() == 1)
 				.collect(Collectors.toList());
 	}
-	
+
+	/**
+	 * 
+	 * @param code
+	 * @return
+	 */
 	@POST
 	@Path("find/{code}")
 	public PersonalUnitPriceDto find(@PathParam("code") String code) {
 		return this.personalUnitPriceFinder.find(code);
 	}
-	
+
+	/**
+	 * Insert personal unit price
+	 * 
+	 * @param command
+	 */
 	@POST
 	@Path("add")
-	public void add(AddPersonalUnitPriceCommand command){
+	public void add(AddPersonalUnitPriceCommand command) {
 		this.addCommandHandler.handle(command);
 	}
-	
+
+	/**
+	 * Update personal unit price base-on code
+	 * 
+	 * @param command
+	 */
 	@POST
 	@Path("update")
-	public void update(UpdatePersonalUnitPriceCommand command){
+	public void update(UpdatePersonalUnitPriceCommand command) {
 		this.updateCommandHandler.handle(command);
 	}
-	
+
+	/**
+	 * Remove personal unit price base-on code
+	 * 
+	 * @param command
+	 */
 	@POST
 	@Path("remove")
-	public void remove(RemovePersonalUnitPriceCommand command){
+	public void remove(RemovePersonalUnitPriceCommand command) {
 		this.removeCommandHander.handle(command);
 	}
 }

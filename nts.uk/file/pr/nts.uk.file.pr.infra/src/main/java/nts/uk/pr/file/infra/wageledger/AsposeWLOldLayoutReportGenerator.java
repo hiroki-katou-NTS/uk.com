@@ -91,6 +91,11 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 			// ======================== salary attendance content and net salary.========================
 			this.fillDeductionAndAttendanceDataContentOldLayout(reportContext, reportData.salaryDeductionData,
 					reportData.netSalaryData, reportData.salaryAttendanceDatas, currentRow, reportData.salaryMonthList);
+			// Create end line of salary part.
+			Range salaryEndRowRange = ws.getCells().createRange(currentRow.intValue() - 1, COLUMN_START_REPORT + 2, 1,
+					reportData.salaryMonthList.size() + 1);
+			salaryEndRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+			this.breakPage(reportContext, currentRow, reportData.bonusMonthList.size());
 			
 			// ======================== Fill Bonus payment content.========================
 			this.fillSalaryOrBonusHeaderTable(reportContext, currentRow, reportData.bonusMonthList, "【賞与支給】");
@@ -101,6 +106,10 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 			// ======================== Fill Bonus deduction, bonus attendance content and total bonus. ===============
 			this.fillDeductionAndAttendanceDataContentOldLayout(reportContext, reportData.bonusDeductionData,
 					reportData.totalBonusData,reportData.salaryAttendanceDatas, currentRow, reportData.bonusMonthList);
+			// Create end line of bonus part.
+			Range bonusEndRowRange = ws.getCells().createRange(currentRow.intValue() - 1, COLUMN_START_REPORT + 2, 1,
+					reportData.bonusMonthList.size() + 1);
+			bonusEndRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 			
 			// Set print area.
 			PageSetup pageSetup = ws.getPageSetup();
@@ -200,26 +209,15 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 			for (int i = 0; i < items.size(); i++) {
 				ReportItemDto item = items.get(i);
 				
-				// Draw begin line on page.
-				if (i == 0) {
-					Range beginRowRange = cells.createRange(startRow.intValue(), currentColumn, 1, items.size());
-					beginRowRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
-				}
-				
 				// Fill items
 				this.fillItemData(reportContext, item, startRow, currentColumn, false, monthList);
-				
-				// Draw end line on page.
-				if (i == items.size() - 1) {
-					Range endRowRange = cells.createRange(startRow.intValue(), currentColumn, 1, items.size());
-					endRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
-				}
 			}
 			
 			// Caculate to next page.
 			totalItemData -= MAX_RECORD_ON_ONE_PAGE;
 			fromIndex += MAX_RECORD_ON_ONE_PAGE;
 		}
+		
 	}
 	
 	/**
@@ -383,7 +381,4 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 		styleFlag.setWrapText(true);
 		range.applyStyle(style, styleFlag);;
 	}
-	
-
-
 }

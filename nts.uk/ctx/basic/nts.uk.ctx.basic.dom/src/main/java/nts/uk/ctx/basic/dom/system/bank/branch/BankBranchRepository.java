@@ -49,6 +49,20 @@ public interface BankBranchRepository {
 	 * @param branchId branch
 	 */
 	void remove(String companyCode, String branchId);
+	
+	/**
+	 * Remove a list bank branch
+	 * @param companyCode
+	 * @param branchId
+	 */
+	void removeAll(String companyCode, List<String> branchIdList);
 
+	/**
+	 * Check exist bank
+	 * @param companyCode
+	 * @param bankCode
+	 * @param branchCode
+	 * @return
+	 */
 	boolean checkExists(String companyCode, String bankCode, String branchCode);
 }

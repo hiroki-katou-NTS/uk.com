@@ -8,9 +8,13 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -78,6 +82,14 @@ public class QwtmtWagetableMny implements Serializable {
 	@Column(name = "VALUE_MNY")
 	private long valueMny;
 
+	/** The qwtmt wagetable hist. */
+	@JoinColumns({
+			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
+			@JoinColumn(name = "WAGE_TABLE_CD", referencedColumnName = "WAGE_TABLE_CD", insertable = false, updatable = false),
+			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false) })
+	@ManyToOne(cascade = CascadeType.ALL)
+	private QwtmtWagetableHist qwtmtWagetableHist;
+
 	/**
 	 * Instantiates a new qwtmt wagetable mny.
 	 */
@@ -105,7 +117,8 @@ public class QwtmtWagetableMny implements Serializable {
 	 * @param valueMny
 	 *            the value mny
 	 */
-	public QwtmtWagetableMny(QwtmtWagetableMnyPK qwtmtWagetableMnyPK, int exclusVer, long valueMny) {
+	public QwtmtWagetableMny(QwtmtWagetableMnyPK qwtmtWagetableMnyPK, int exclusVer,
+			long valueMny) {
 		this.qwtmtWagetableMnyPK = qwtmtWagetableMnyPK;
 		this.exclusVer = exclusVer;
 		this.valueMny = valueMny;
@@ -127,10 +140,10 @@ public class QwtmtWagetableMny implements Serializable {
 	 * @param element3Id
 	 *            the element 3 id
 	 */
-	public QwtmtWagetableMny(String ccd, String wageTableCd, String histId, String element1Id, String element2Id,
-			String element3Id) {
-		this.qwtmtWagetableMnyPK = new QwtmtWagetableMnyPK(ccd, wageTableCd, histId, element1Id, element2Id,
-				element3Id);
+	public QwtmtWagetableMny(String ccd, String wageTableCd, String histId, String element1Id,
+			String element2Id, String element3Id) {
+		this.qwtmtWagetableMnyPK = new QwtmtWagetableMnyPK(ccd, wageTableCd, histId, element1Id,
+				element2Id, element3Id);
 	}
 
 	/*
@@ -157,7 +170,8 @@ public class QwtmtWagetableMny implements Serializable {
 		}
 		QwtmtWagetableMny other = (QwtmtWagetableMny) object;
 		if ((this.qwtmtWagetableMnyPK == null && other.qwtmtWagetableMnyPK != null)
-				|| (this.qwtmtWagetableMnyPK != null && !this.qwtmtWagetableMnyPK.equals(other.qwtmtWagetableMnyPK))) {
+				|| (this.qwtmtWagetableMnyPK != null
+						&& !this.qwtmtWagetableMnyPK.equals(other.qwtmtWagetableMnyPK))) {
 			return false;
 		}
 		return true;

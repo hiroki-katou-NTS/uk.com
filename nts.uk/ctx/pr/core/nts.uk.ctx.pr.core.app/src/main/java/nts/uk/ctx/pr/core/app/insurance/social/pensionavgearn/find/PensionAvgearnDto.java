@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 import lombok.Builder;
 import lombok.Getter;
-import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
+import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnSetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValue;
 
@@ -76,7 +76,7 @@ public class PensionAvgearnDto implements PensionAvgearnSetMemento {
 	 * dom.insurance.InsuranceAmount)
 	 */
 	@Override
-	public void setChildContributionAmount(InsuranceAmount childContributionAmount) {
+	public void setChildContributionAmount(CommonAmount childContributionAmount) {
 		this.childContributionAmount = childContributionAmount.v();
 	}
 
