@@ -88,4 +88,3 @@ function OpenModeSubWindow(url, option) {
 function closeDialog() {
     nts.uk.ui.windows.close();
 }
-//# sourceMappingURL=start.js.map

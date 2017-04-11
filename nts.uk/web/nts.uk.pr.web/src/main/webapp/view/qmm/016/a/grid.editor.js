@@ -37,4 +37,3 @@ $.ig.NtsNumberEditor = $.ig.EditorProvider.extend({
         return !$('span', this.editor.element).hasClass('error');
     }
 });
-//# sourceMappingURL=grid.editor.js.map

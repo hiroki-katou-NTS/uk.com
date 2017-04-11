@@ -58,4 +58,3 @@ var qmm012;
         })(viewmodel = j.viewmodel || (j.viewmodel = {}));
     })(j = qmm012.j || (qmm012.j = {}));
 })(qmm012 || (qmm012 = {}));
-//# sourceMappingURL=viewmodel.js.map

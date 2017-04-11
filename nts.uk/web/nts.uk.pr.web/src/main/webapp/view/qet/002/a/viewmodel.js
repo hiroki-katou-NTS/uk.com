@@ -77,4 +77,3 @@ var qet002;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qet002.a || (qet002.a = {}));
 })(qet002 || (qet002 = {}));
-//# sourceMappingURL=viewmodel.js.map

@@ -5,4 +5,3 @@ __viewContext.ready(function () {
         screenModel.bindSortable();
     });
 });
-//# sourceMappingURL=start.js.map

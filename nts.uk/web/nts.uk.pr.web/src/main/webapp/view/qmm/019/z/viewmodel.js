@@ -60,4 +60,3 @@ var qmm019;
     })(z = qmm019.z || (qmm019.z = {}));
 })(qmm019 || (qmm019 = {}));
 ;
-//# sourceMappingURL=viewmodel.js.map

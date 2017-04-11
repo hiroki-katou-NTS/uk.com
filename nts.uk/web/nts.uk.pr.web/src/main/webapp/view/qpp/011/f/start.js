@@ -63,4 +63,3 @@ function closeDialog() {
 function submitInfo() {
     nts.uk.ui.windows.close();
 }
-//# sourceMappingURL=start.js.map

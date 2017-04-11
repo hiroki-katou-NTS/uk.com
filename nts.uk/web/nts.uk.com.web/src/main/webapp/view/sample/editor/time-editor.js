@@ -22,4 +22,3 @@ __viewContext.ready(function () {
     var viewmodel = new ScreenModel();
     this.bind(viewmodel);
 });
-//# sourceMappingURL=time-editor.js.map
