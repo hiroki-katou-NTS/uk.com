@@ -1,21 +1,21 @@
 module qmm018.a.viewmodel {
     export class ScreenModel {
         averagePay: KnockoutObservable<AveragePay>;
+        texteditor3: KnockoutObservable<any>;
         texteditor1: KnockoutObservable<any>;
-        texteditor2: KnockoutObservable<any>;
         isUpdate: boolean;
         dirty: nts.uk.ui.DirtyChecker;
         constructor() {
             var self = this;
-            self.averagePay = ko.observable(new AveragePay(null, null, null, null));
-            self.texteditor1 = ko.observable({
+            self.averagePay = ko.observable(new AveragePay(null, null, null, null, null, null));
+            self.texteditor3 = ko.observable({
                 value: ko.computed(function() {
                     let s: string;
                     ko.utils.arrayForEach(self.averagePay().selectedSalaryItems(), function(item) { if (!s) { s = item.itemAbName } else { s += " + " + item.itemAbName } });
                     return s;
                 })
             });
-            self.texteditor2 = ko.observable({
+            self.texteditor1 = ko.observable({
                 value: ko.computed(function() {
                     let s: string;
                     ko.utils.arrayForEach(self.averagePay().selectedAttendItems(), function(item) { if (!s) { s = item.itemAbName } else { s += " + " + item.itemAbName } });
@@ -37,36 +37,22 @@ module qmm018.a.viewmodel {
                 if (data) {
                     // if data exist go to update case
                     self.averagePay(
-                        new AveragePay(data.roundTimingSet, data.attendDayGettingSet, data.roundDigitSet, data.exceptionPayRate));
-                    
-                    // get salary items
-                    qmm018.a.service.averagePayItemSelectBySalary().done(function(dataSalary) { 
-                        self.loadData(dataSalary, self.averagePay().selectedSalaryItems, false);
-                        self.dirty.reset();
-                    }).fail(function(res) {
-                    });
-                    
-                    // get attend items
-                    if(self.averagePay().attendDayGettingSet()) {
-                        qmm018.a.service.averagePayItemSelectByAttend().done(function(dataAttend) { 
-                            self.loadData(dataAttend, self.averagePay().selectedSalaryItems, false);
-                            self.dirty.reset();
-                        }).fail(function(res) {
-                        });
-                    }
+                        new AveragePay(
+                            data.roundTimingSet, 
+                            data.attendDayGettingSet, 
+                            data.roundDigitSet, 
+                            data.exceptionPayRate,
+                            data.itemsSalary,
+                            data.itemsAttend));
                     self.isUpdate = true;
                     self.dirty.reset();
                 } else {
                     // if data no exist go to insert case
-                    self.averagePay(new AveragePay(0, 0, 0, null));
+                    self.averagePay(new AveragePay(0, 0, 0, null, null, null));
                     self.isUpdate = false;
                     self.dirty.reset();
                 }
                 dfd.resolve();
-                
-                // error check on salary list and attend list
-                
-                
             }).fail(function(res) {
                 dfd.reject(res);
             });
@@ -166,15 +152,15 @@ module qmm018.a.viewmodel {
         oldExceptionPayRate: KnockoutObservable<number>;
         selectedSalaryItems: KnockoutObservableArray<shr.viewmodelbase.ItemModel>; 
         selectedAttendItems: KnockoutObservableArray<shr.viewmodelbase.ItemModel>; 
-        constructor(roundTimingSet: number, attendDayGettingSet: number, roundDigitSet: number, exceptionPayRate: number) {
+        constructor(roundTimingSet: number, attendDayGettingSet: number, roundDigitSet: number, exceptionPayRate: number, selectedSalaryItems: Array<any>, selectedAttendItems: Array<any>) {
             var self = this;
             self.roundTimingSet = ko.observable(roundTimingSet);
             self.attendDayGettingSet = ko.observable(attendDayGettingSet);
             self.roundDigitSet = ko.observable(roundDigitSet);
             self.exceptionPayRate = ko.observable(exceptionPayRate);
             self.oldExceptionPayRate = ko.observable(exceptionPayRate);
-            self.selectedSalaryItems = ko.observableArray([]);
-            self.selectedAttendItems = ko.observableArray([]);
+            self.selectedSalaryItems = ko.observableArray(selectedSalaryItems);
+            self.selectedAttendItems = ko.observableArray(selectedAttendItems);
             self.roundTimingSet.subscribe(function(value) { self.roundTimingSet(value ? 1 : 0); });
             self.attendDayGettingSet.subscribe(function(value){
                 if(!value) {

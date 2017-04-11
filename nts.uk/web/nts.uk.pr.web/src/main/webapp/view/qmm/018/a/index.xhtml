@@ -64,7 +64,7 @@
 							<div class="valign-center control-group">
 								<div data-bind="ntsFormLabel: { required: true } ">A：対象賃金項目</div>
 								<button class="short-button" data-bind="click: function () { openSubWindow(0); }">設定</button>
-								<span id="item-inp" data-bind="with: texteditor1">
+								<span id="item-inp" data-bind="with: texteditor3">
 									<input id="inp-3" data-name="対象賃金項目" data-bind="ntsTextEditor: {
 										value: value,
 										constraint: 'ResidenceCode',
@@ -100,7 +100,7 @@
 							<div class="valign-center control-group sub">
 								<span>対象労働日数項目</span>
 								<button class="short-button" data-bind="click: function () { openSubWindow(1); }, enable: averagePay().attendDayGettingSet">設定</button>
-								<span id="item-inp" data-bind="with: texteditor2">
+								<span id="item-inp" data-bind="with: texteditor1">
 									<input id="inp-1" data-name="対象労働日数項目" data-bind="ntsTextEditor: {
 										value: value,
 										constraint: 'ResidenceCode',
