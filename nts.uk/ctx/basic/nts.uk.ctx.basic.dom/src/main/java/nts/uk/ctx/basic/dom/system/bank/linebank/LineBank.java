@@ -2,6 +2,7 @@ package nts.uk.ctx.basic.dom.system.bank.linebank;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
@@ -23,7 +24,7 @@ public class LineBank extends AggregateRoot {
 	@Getter
 	private AccountNo accountNo;
 	@Getter
-	private String branchId;
+	private UUID branchId;
 	@Getter
 	private List<Consignor> consignor;
 	@Getter
@@ -44,12 +45,12 @@ public class LineBank extends AggregateRoot {
 			throw new BusinessException("ER001");
 		}
 
-		if (StringUtil.isNullOrEmpty(branchId, true)) {
+		if (branchId == null) {
 			throw new BusinessException("ER007");
 		}
 	}
 
-	public LineBank(String companyCode, AccountAtr accountAtr, AccountNo accountNo, String branchId,
+	public LineBank(String companyCode, AccountAtr accountAtr, AccountNo accountNo, UUID branchId,
 			LineBankCode lineBankCode, LineBankName lineBankName, Memo memo, RequesterName requesterName) {
 		super();
 		this.companyCode = companyCode;
@@ -80,7 +81,7 @@ public class LineBank extends AggregateRoot {
 			String lineBankCode, String lineBankName, String memo, String requesterName) {
 
 		return new LineBank(companyCode, EnumAdaptor.valueOf(accountAtr, AccountAtr.class), new AccountNo(accountNo),
-				branchId, new LineBankCode(lineBankCode), new LineBankName(lineBankName), new Memo(memo),
+				UUID.fromString(branchId), new LineBankCode(lineBankCode), new LineBankName(lineBankName), new Memo(memo),
 				new RequesterName(requesterName));
 	}
 

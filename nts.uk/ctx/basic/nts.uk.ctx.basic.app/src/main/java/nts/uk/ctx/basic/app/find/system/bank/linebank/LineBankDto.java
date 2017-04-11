@@ -20,7 +20,7 @@ public class LineBankDto {
 
 	public static LineBankDto fromDomain(LineBank domain) {
 		return new LineBankDto(domain.getAccountAtr().value, domain.getAccountNo().v(),
-				domain.getBranchId(),
+				domain.getBranchId().toString(),
 				domain.getConsignor().stream()
 						.map(x -> new ConsignorCommand(x.getConsignorCode().v(), x.getConsignorMemo().v()))
 						.collect(Collectors.toList()),
