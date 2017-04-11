@@ -26,3 +26,4 @@ __viewContext.ready(function () {
     $("#parentInstruct").text("My parent say: " + nts.uk.ui.windows.getShared("parentValue"));
     this.bind(new ScreenModel());
 });
+//# sourceMappingURL=substart.js.map
