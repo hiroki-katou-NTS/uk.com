@@ -15,10 +15,12 @@ import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm00
 import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005cCommandHandler;
 import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005dCommand;
 import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005dCommandHandler;
+import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005eCommand;
 import nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth.PaydayDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth.PaydayFinder;
 import nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth.PaydayProcessingDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth.PaydayProcessingFinder;
+import nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth.PaydayProcessingSelect4Dto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth.StandardDayDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth.StandardDayFinder;
 import nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth.SystemDayDto;
@@ -54,6 +56,12 @@ public class ProcessingYearMonthWebServices extends WebService {
 	public List<PaydayProcessingDto> getPaydayProcessing(String companyCode) {
 		return paydayProcessingFinder.select3(companyCode);
 	}
+
+	@POST
+	@Path("paydayrocessing/getbyccdanddisatr1")
+	public List<PaydayProcessingSelect4Dto> getPaydayProcessing2(String companyCode) {
+		return paydayProcessingFinder.select4(companyCode);
+	}	
 
 	@POST
 	@Path("qmm005a/getdata")
@@ -123,5 +131,16 @@ public class ProcessingYearMonthWebServices extends WebService {
 		} catch (Exception ex) {
 			throw ex;
 		}
+	}
+
+	@POST
+	@Path("qmm005e/getdata")
+	public Object[] qmm005eGetData(Qmm005eCommand command) {
+		String companyCode = AppContexts.user().companyCode();
+
+		SystemDayDto systemDayDto = systemDayFinder.select1(companyCode, command.getProcessingNo());
+		StandardDayDto standardDayDto = standardDayFinder.select1(companyCode, command.getProcessingNo());
+
+		return new Object[] { systemDayDto, standardDayDto };
 	}
 }

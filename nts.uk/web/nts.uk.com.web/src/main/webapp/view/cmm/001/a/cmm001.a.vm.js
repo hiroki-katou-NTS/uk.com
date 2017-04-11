@@ -5,7 +5,7 @@ var cmm001;
         var ViewModel = (function () {
             function ViewModel() {
                 this.isUpdate = ko.observable(null);
-                this.previousCurrentCode = null;
+                this.previousCurrentCode = null; //lưu giá trị của currentCode trước khi nó bị thay đổi
                 this.hasFocus = ko.observable(true);
                 var self = this;
                 self.init();
@@ -16,6 +16,7 @@ var cmm001;
                     else {
                         self.isUpdate(true);
                         if (!nts.uk.text.isNullOrEmpty(newValue) && self.currentCompanyCode() !== self.previousCurrentCode) {
+                            //goi check isDirty
                             if (self.dirtyObject.isDirty()) {
                                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function () {
                                     self.processWhenCurrentCodeChange(newValue);
@@ -402,7 +403,7 @@ var cmm001;
         var CompanyModel = (function () {
             function CompanyModel(param) {
                 this.isEnableCompanyCode = ko.observable(true);
-                this.editMode = true;
+                this.editMode = true; // mode reset or not reset
                 var self = this;
                 self.init(param);
             }
@@ -484,6 +485,7 @@ var cmm001;
                 self.termBeginMon = ko.observable(param.termBeginMon);
                 self.companyUseSet = ko.observable(param.companyUseSet);
                 self.isDelete = ko.observable(param.isDelete || false);
+                //SWITCH
                 self.roundingRules = ko.observableArray([
                     new RoundingRule("1", '利用する'),
                     new RoundingRule('0', '利用しない')
@@ -496,6 +498,49 @@ var cmm001;
                     new RoundingRule('0', '区別しない')
                 ]);
                 self.selectedRuleCode3 = ko.observable("");
+            };
+            //search Zip Code
+            CompanyModel.prototype.searchZipCode = function () {
+                var self = this;
+                var messageList = [
+                    { messageId: "ER001", message: "＊が入力されていません。" },
+                    { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                    { messageId: "ER010", message: "対象データがありません。" }
+                ];
+                nts.uk.pr.view.base.postcode.service.findPostCodeZipCodeToRespone(self.postal()).done(function (data) {
+                    if (data.errorCode == '0') {
+                        for (var _i = 0, messageList_1 = messageList; _i < messageList_1.length; _i++) {
+                            var datamessage = messageList_1[_i];
+                            if (datamessage.messageId == data.message) {
+                                $('#C_INP_001').ntsError('set', datamessage.message);
+                            }
+                        }
+                    }
+                    else if (data.errorCode == '1') {
+                        self.postal(data.postcode.postcode);
+                        $('#C_INP_001').ntsError('clear');
+                    }
+                    else {
+                        nts.uk.pr.view.base.postcode.service.findPostCodeZipCodeSelection(self.postal()).done(function (res) {
+                            if (res.errorCode == '0') {
+                                for (var _i = 0, messageList_2 = messageList; _i < messageList_2.length; _i++) {
+                                    var datamessage = messageList_2[_i];
+                                    if (datamessage.messageId == res.message) {
+                                        $('#C_INP_001').ntsError('set', datamessage.message);
+                                    }
+                                }
+                            }
+                            else if (res.errorCode == '1') {
+                                self.postal(res.postcode.postcode);
+                                $('#C_INP_001').ntsError('clear');
+                            }
+                        }).fail(function (error) {
+                            console.log(error);
+                        });
+                    }
+                }).fail(function (error) {
+                    console.log(error);
+                });
             };
             return CompanyModel;
         }());
@@ -533,4 +578,3 @@ var cmm001;
         }());
     })(a = cmm001.a || (cmm001.a = {}));
 })(cmm001 || (cmm001 = {}));
-//# sourceMappingURL=cmm001.a.vm.js.map

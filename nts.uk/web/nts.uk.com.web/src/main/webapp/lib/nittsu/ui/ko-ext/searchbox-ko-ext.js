@@ -1,3 +1,4 @@
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -6,7 +7,11 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                * SearchBox Binding Handler
+                */
                 var filteredArray = function (array, searchTerm, fields, childField) {
+                    //if items is empty return empty array
                     if (!array) {
                         return [];
                     }
@@ -15,9 +20,11 @@ var nts;
                     }
                     var flatArr = nts.uk.util.flatArray(array, childField);
                     var filter = searchTerm.toLowerCase();
+                    //if filter is empty return all the items
                     if (!filter) {
                         return flatArr;
                     }
+                    //filter data
                     var filtered = ko.utils.arrayFilter(flatArr, function (item) {
                         var i = fields.length;
                         while (i--) {
@@ -65,6 +72,9 @@ var nts;
                 var NtsSearchBoxBindingHandler = (function () {
                     function NtsSearchBoxBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsSearchBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var searchBox = $(element);
                         var data = valueAccessor();
@@ -153,3 +163,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=searchbox-ko-ext.js.map

@@ -13,78 +13,38 @@ var cmm008;
                 getAllProcessingNo: "pr/core/paydayrocessing/getbyccd",
                 getCompanyInfor: "ctx/proto/company/findCompany"
             };
+            //find all employment data
             function getAllEmployments() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", path.getAllEmployment)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax("com", path.getAllEmployment);
             }
             service.getAllEmployments = getAllEmployments;
             function getEmploymentByCode(employmentCode) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", path.getEmploymentByCode + employmentCode)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax("com", path.getEmploymentByCode + employmentCode);
             }
             service.getEmploymentByCode = getEmploymentByCode;
+            //create new employment data
             function createEmployment(employment) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", path.createEmployment, employment).done(function (res) {
-                    dfd.resolve(res);
-                }).fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax("com", path.createEmployment, employment);
             }
             service.createEmployment = createEmployment;
+            //update employment data
             function updateEmployment(employment) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", path.updateEmployment, employment).done(function (res) {
-                    dfd.resolve(res);
-                }).fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax("com", path.updateEmployment, employment);
             }
             service.updateEmployment = updateEmployment;
+            //delete employment data
             function deleteEmployment(employment) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", path.deleteEmployment, employment).done(function (res) {
-                    dfd.resolve(res);
-                }).fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax("com", path.deleteEmployment, employment);
             }
             service.deleteEmployment = deleteEmployment;
+            //get all 処理日区分
             function getProcessingNo() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax(path.getAllProcessingNo).done(function (res) {
-                    dfd.resolve(res);
-                }).fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax(path.getAllProcessingNo);
             }
             service.getProcessingNo = getProcessingNo;
+            //get 就業権限 by company
             function getCompanyInfor() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax('com', path.getCompanyInfor).done(function (res) {
-                    dfd.resolve(res);
-                }).fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax('com', path.getCompanyInfor);
             }
             service.getCompanyInfor = getCompanyInfor;
             var model;
@@ -99,4 +59,3 @@ var cmm008;
         })(service = a.service || (a.service = {}));
     })(a = cmm008.a || (cmm008.a = {}));
 })(cmm008 || (cmm008 = {}));
-//# sourceMappingURL=cmm008.a.service.js.map

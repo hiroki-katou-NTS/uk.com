@@ -19,4 +19,12 @@ public class PaydayProcessingFinder {
 				.collect(Collectors.toList());
 	}
 
+	public List<PaydayProcessingSelect4Dto> select4(String companyCode) {
+		return repository.select4(companyCode).stream().map(m -> PaydayProcessingSelect4Dto.fromDomain(m))
+				.collect(Collectors.toList());
+	}
+	
+	
+	
+
 }

@@ -26,6 +26,7 @@ var qmm006;
                 }
                 ScreenModel.prototype.getBank = function (codeNew) {
                     var self = this;
+                    //            self.dataSource2(nts.uk.util.flatArray(self.dataSource(), "childs"));
                     var bank = _.find(self.dataSource2(), function (item) {
                         return item.treeCode === codeNew;
                     });
@@ -56,6 +57,7 @@ var qmm006;
                             });
                             self.dataSource(bankData);
                             self.dataSource2(nts.uk.util.flatArray(self.dataSource(), "childs"));
+                            //select first row child of first row parent
                             if (data[0].bankBranch != null) {
                                 self.singleSelectedCode(data[0].bankCode + data[0].bankBranch[0].bankBranchCode);
                             }
@@ -76,13 +78,16 @@ var qmm006;
                 };
                 ScreenModel.prototype.transferData = function () {
                     var self = this;
+                    //define row selected
                     if (_.find(self.dataSource(), function (x) {
                         return x.treeCode === self.singleSelectedCode();
                     }) == undefined) {
+                        // select row child will transfer data to screen QMM006.a
                         nts.uk.ui.windows.setShared("selectedBank", self.selectedBank(), true);
                         nts.uk.ui.windows.close();
                     }
                     else {
+                        // select row parent will appear alert
                         nts.uk.ui.dialog.alert(self.messageList()[2].message);
                     }
                 };
@@ -107,4 +112,3 @@ var qmm006;
     })(b = qmm006.b || (qmm006.b = {}));
 })(qmm006 || (qmm006 = {}));
 ;
-//# sourceMappingURL=qmm006.b.viewmodel.js.map

@@ -4,15 +4,6 @@
 
     var dotW = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
 
-    export function formatYearMonth(yearMonth: number) {
-        var result: string;
-        var num = parseInt(String(yearMonth));
-        var year = String(Math.floor(num / 100));
-        var month = text.charPadding(String(num % 100), '0', true, 2);
-        result = year + '/' + month;
-        return result;
-    }
-
     function getYearMonthJapan(year, month?) {
         if (month)
             return year + "年 " + month + " 月";
@@ -49,11 +40,8 @@
         }
     }
 
-    export function yearInJapanEmpire(year): JapanYearMonth {
-        if (!(year instanceof String)) {
-            year = "" + year;
-        }
-        year = parseInt(year);
+    export function yearInJapanEmpire(date: any): JapanYearMonth {
+        let year = moment.utc(date).year();
         if (year == 1868) {
             return new JapanYearMonth("明治元年");
         }
@@ -114,6 +102,12 @@
         return new JapanYearMonth("平成 ", diff, month);
     }
 
+    /**
+    * Format by pattern
+    * @param  {number} [seconds]      Input seconds
+    * @param  {string} [formatOption] Format option
+    * @return {string}                Formatted duration
+    */
     export function formatSeconds(seconds: number, formatOption: string) {
         seconds = parseInt(String(seconds));
 
@@ -128,6 +122,66 @@
             .replace(/h/g, h)
             .replace(/mm/g, mm)
             .replace(/ss/g, ss);
+    }
+
+    /**
+    * 日付をフォーマットする
+    * @param  {Date}   date     日付
+    * @param  {String} [format] フォーマット
+    * @return {String}          フォーマット済み日付
+    */
+    export function formatDate(date: Date, format: any) {
+        if (!format)
+            format = 'yyyy-MM-dd hh:mm:ss.SSS';
+        format = format.replace(/yyyy/g, date.getFullYear());
+        format = format.replace(/yy/g, ('0' + (date.getFullYear() % 100)).slice(-2));
+        format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
+        format = format.replace(/dd/g, ('0' + date.getDate()).slice(-2));
+        if (format.indexOf("DDD") != -1) {
+            var daystr = "(" + dotW[date.getDay()] + ")";
+            format = format.replace("DDD", daystr);
+        }
+        else if (format.indexOf("D") != -1) {
+            var daystr = "(" + dotW[date.getDay()].substring(0, 1) + ")";
+            format = format.replace("D", daystr);
+        }
+        format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2));
+        format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
+        format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));
+        if (format.match(/S/g)) {
+            var milliSeconds = ('00' + date.getMilliseconds()).slice(-3);
+            var length = format.match(/S/g).length;
+            for (var i = 0; i < length; i++)
+                format = format.replace(/S/, milliSeconds.substring(i, i + 1));
+        }
+        return format;
+    }
+
+    /**
+    * Format YearMonth
+    * @param  {Number} [yearMonth]    Input Yearmonth
+    * @return {String}                Formatted YearMonth
+    */
+    export function formatYearMonth(yearMonth: number) {
+        var result: string;
+        var num = parseInt(String(yearMonth));
+        var year = String(Math.floor(num / 100));
+        var month = text.charPadding(String(num % 100), '0', true, 2);
+        result = year + '/' + month;
+        return result;
+    }
+
+    /**
+    * Format by pattern
+    * @param  {Date}   [date]         Input date
+    * @param  {String} [inputFormat]  Input format
+    * @param  {String} [outputFormat] Output format
+    * @return {String}                Formatted date
+    */
+    export function formatPattern(date: any, inputFormat?: string, outputFormat?: string) {
+        outputFormat = text.getISOFormat(outputFormat);
+        var inputFormats = (inputFormat) ? inputFormat : ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm", "HHmm"];
+        return moment.utc(date, inputFormats).format(outputFormat);
     }
 
     abstract class ParseResult {
@@ -337,7 +391,7 @@
         }
 
         static succeeded(year, month, date) {
-            return new ResultParseYearMonthDate(true, year, month, date);
+            return new ResultParseYearMonthDate(true, "", year, month, date);
         }
 
         static failed(msg?) {
@@ -407,49 +461,88 @@
         return ResultParseYearMonthDate.succeeded(year, month, date);
     }
 
-    /**
-    * 日付をフォーマットする
-    * @param  {Date}   date     日付
-    * @param  {String} [format] フォーマット
-    * @return {String}          フォーマット済み日付
-    */
-    export function formatDate(date: Date, format: any) {
-        if (!format)
-            format = 'yyyy-MM-dd hh:mm:ss.SSS';
-        format = format.replace(/yyyy/g, date.getFullYear());
-        format = format.replace(/yy/g, ('0' + (date.getFullYear() % 100)).slice(-2));
-        format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
-        format = format.replace(/dd/g, ('0' + date.getDate()).slice(-2));
-        if (format.indexOf("DDD") != -1) {
-            var daystr = "(" + dotW[date.getDay()] + ")";
-            format = format.replace("DDD", daystr);
+    export class MomentResult extends ParseResult {
+        momentObject: moment.Moment;
+        outputFormat: string;
+        msg: string;
+        constructor(momentObject: moment.Moment, outputFormat?: string) {
+            super(true);
+            this.momentObject = momentObject;
+            this.outputFormat = text.getISOFormat(outputFormat);
         }
-        else if (format.indexOf("D") != -1) {
-            var daystr = "(" + dotW[date.getDay()].substring(0, 1) + ")";
-            format = format.replace("D", daystr);
+
+        succeeded() {
+            this.success = true;
         }
-        format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2));
-        format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
-        format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));
-        if (format.match(/S/g)) {
-            var milliSeconds = ('00' + date.getMilliseconds()).slice(-3);
-            var length = format.match(/S/g).length;
-            for (var i = 0; i < length; i++)
-                format = format.replace(/S/, milliSeconds.substring(i, i + 1));
+
+        failed(msg?: string) {
+            this.msg = (msg) ? msg : "Invalid format";
+            this.success = false;
         }
-        return format;
+
+        format() {
+            if (!this.success)
+                return "";
+            return this.momentObject.format(this.outputFormat);
+        }
+
+        toValue() {
+            if (!this.success)
+                return null;
+            return this.momentObject;
+        }
+
+        toNumber(outputFormat?: string) {
+            var dateFormats = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "date"];
+            var yearMonthFormats = ["YYYY/MM", "YYYY-MM", "YYYYMM", "yearmonth"];
+            if (!this.success)
+                return null;
+            if (dateFormats.indexOf(outputFormat) != -1) {
+                return this.momentObject.year() * 10000 + (this.momentObject.month() + 1) * 100 + this.momentObject.date();
+            }
+            else if (yearMonthFormats.indexOf(outputFormat) != -1) {
+                return this.momentObject.year() * 100 + (this.momentObject.month() + 1);
+            }
+            else {
+                return parseInt(this.momentObject.format(outputFormat).replace(/[^\d]/g, ""));
+            }
+        }
+
+        getMsg() { return this.msg; }
     }
 
-    /**
-    * Format by pattern
-    * @param  {Date}   [date]         Input date
-    * @param  {String} [inputFormat]  Input format
-    * @param  {String} [outputFormat] Output format
-    * @return {String}                Formatted date
-    */
-    export function formatPattern(date: any, inputFormat?: string, outputFormat?: string) {
-        outputFormat = text.getISO8601Format(outputFormat);
-        inputFormat = text.getISO8601Format(inputFormat);
-        return moment(date, inputFormat).format(outputFormat);
+
+    export function parseMoment(datetime: any, outputFormat?: any, inputFormat?: any): MomentResult {
+        var inputFormats = (inputFormat) ? inputFormat : ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm", "HHmm"];
+        var momentObject = moment.utc(datetime, inputFormats);
+        var result = new MomentResult(momentObject, outputFormat);
+        if (momentObject.isValid())
+            result.succeeded();
+        else
+            result.failed();
+        return result;
+    }
+
+    export function UTCDate(year?: number, month?: number, date?: number, hours?: number, minutes?: number, seconds?: number, milliseconds?: number): Date {
+        if (util.isNullOrUndefined(year)) {
+            var currentDate: Date = new Date();
+            year = currentDate.getUTCFullYear();
+            month = (util.isNullOrUndefined(month)) ? currentDate.getUTCMonth() : month;
+            date = (util.isNullOrUndefined(date)) ? currentDate.getUTCDate() : date;
+            hours = (util.isNullOrUndefined(hours)) ? currentDate.getUTCHours() : hours;
+            minutes = (util.isNullOrUndefined(minutes)) ? currentDate.getUTCMinutes() : minutes;
+            seconds = (util.isNullOrUndefined(seconds)) ? currentDate.getUTCSeconds() : seconds;
+            milliseconds = (util.isNullOrUndefined(milliseconds)) ? currentDate.getUTCMilliseconds() : milliseconds;
+            return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
+        }
+        else {
+            month = (util.isNullOrUndefined(month)) ? 0 : month;
+            date = (util.isNullOrUndefined(date)) ? 1 : date;
+            hours = (util.isNullOrUndefined(hours)) ? 0 : hours;
+            minutes = (util.isNullOrUndefined(minutes)) ? 0 : minutes;
+            seconds = (util.isNullOrUndefined(seconds)) ? 1 : seconds;
+            milliseconds = (util.isNullOrUndefined(milliseconds)) ? 0 : milliseconds;
+            return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
+        }
     }
 }
