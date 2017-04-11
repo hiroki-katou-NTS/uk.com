@@ -335,8 +335,8 @@ var nts;
                                     var self = this;
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                                     nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録", dialogClass: 'no-close' }).onClosed(function () {
-                                        self.loadMasterHistory();
                                         var codeOfNewOffice = nts.uk.ui.windows.getShared("codeOfNewOffice");
+                                        self.reloadMasterHistory(codeOfNewOffice);
                                     });
                                 };
                                 ScreenModel.prototype.OpenModalStandardMonthlyPricePensionWithDirtyCheck = function () {

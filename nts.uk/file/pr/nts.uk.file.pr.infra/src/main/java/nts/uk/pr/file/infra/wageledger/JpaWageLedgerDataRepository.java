@@ -70,7 +70,7 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		EntityManager em = this.getEntityManager();
 		
 		// Create Query String.
-		String queryString = "SELECT COUNT(h.qstdtPaymentHeaderPK.personId) FROM ReportQstdtPaymentHeader h"
+		String queryString = "SELECT COUNT(h.qstdtPaymentHeaderPK.personId) FROM ReportQstdtPaymentHeader h "
 			+ "WHERE h.qstdtPaymentHeaderPK.companyCode = :companyCode "
 			+ "AND h.qstdtPaymentHeaderPK.personId IN :personIds "
 			+ "AND h.qstdtPaymentHeaderPK.sparePayAtr = :sparePayAtr "

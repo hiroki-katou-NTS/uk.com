@@ -32,12 +32,6 @@ public class PaymentSalaryReportData {
     /** The map employee amount. */
     private Map<EmployeeKey, Double> mapEmployeeAmount;
     
-    /** The report title items. */
-    private List<String> reportTitleItems;
-    
-    /** The category items. */
-    private List<CategoryItem> categoryItems;
-    
     /** The configure. */
     private PaymentSalaryPrintSettingDto configure;
 }
