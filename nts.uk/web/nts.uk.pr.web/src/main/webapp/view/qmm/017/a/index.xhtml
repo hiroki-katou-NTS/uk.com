@@ -52,18 +52,17 @@
 		</ui:define>
 
 		<ui:define name="content">
+				<span id="title_span">計算式の登録</span>
 				<div id="functions-area" style="padding-top: 5px;" class="cf">
-				<button id="a_btn_001" class="button separate-button fix-button" data-bind="click: resetToNewMode,enable: !isNewMode()">新規</button>
-				<button id="a_btn_002"
-					class="button proceed separate-button fix-button" data-bind="click: registerFormulaMaster">登録</button>
-				<button id="a_btn_003" class="button separate-button fix-button">コピー</button>
-				<button id="a_btn_004" class="button separate-button fix-button">Excel出力</button>
-				<button id="a_btn_007" class="button separate-button fix-button">マスタ修正ログ</button>
-				<span id="a_lbl_001">計算式の登録</span>
+				<button class="button separate-button fix-button" data-bind="click: resetToNewMode,enable: !isNewMode()">新規</button>
+				<button class="button proceed separate-button fix-button" data-bind="click: registerFormulaMaster">登録</button>
+				<button id="copy_btn" class="button separate-button fix-button">コピー</button>
+				<button class="button separate-button fix-button">Excel出力</button>
+				<button class="button separate-button fix-button">マスタ修正ログ</button>
 				</div>
 				<div id="contents-area" style="width: 1366px;" class="cf">
 					<div id="left-content" class="bg-green caret-right caret-background">
-						<div id="a_lbl_002" data-bind="ntsFormLabel: {}">コード/名称</div>
+						<div id="code_name_lbl" data-bind="ntsFormLabel: {}">コード/名称</div>
 						<div style="width: 200px; display: inline-block" data-bind="ntsSearchBox: {
 							comId: 'treeGrid',
 							items: treeGridHistory().items, 		
@@ -72,10 +71,10 @@
 							childField: 'childs', 
 							fields: ['name', 'code']}" />	
 						<br />
-						<button id="a_btn_005" data-bind="click: openDialogJ, enable: !isNewMode()">履歴追加</button>
-						<button id="a_btn_006" data-bind="click: openDialogK, enable: !isNewMode()">履歴編集</button>
+						<button data-bind="click: openDialogJ, enable: !isNewMode()">履歴追加</button>
+						<button id="edit_history_btn" data-bind="click: openDialogK, enable: !isNewMode()">履歴編集</button>
 						<br />
-						<div id="a_lst_001" data-bind="with: treeGridHistory">
+						<div id="tree_history" data-bind="with: treeGridHistory">
 							<table id="treeGrid"
 								data-bind="ntsTreeGridView:{
 										width: 288,
@@ -92,8 +91,8 @@
 						</div>
 					</div>
 					<div id="right-content">
-						<div id="a_sel_001"
-							data-bind="ntsTabPanel: { dataSource: a_sel_001, active: selectedTabASel001}">
+						<div id="tabFormula"
+							data-bind="ntsTabPanel: { dataSource: tabFormula, active: selectedTabASel001}">
 							<div class="tab-content-1" data-bind="with: viewModel017b">
 								<ui:include src="../b/index.xhtml" />
 							</div>

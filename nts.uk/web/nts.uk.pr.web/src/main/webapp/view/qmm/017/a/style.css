@@ -64,24 +64,23 @@ body{
 
 /* screen a */
 
-#a_btn_003 {
+#copy_btn {
 	margin-left: 110px;
 }
 
-#a_lbl_002 {
+#code_name_lbl {
 	margin-bottom: 10px;
 }
 
-#a_btn_006 {
+#edit_history_btn {
 	margin-left: 128px;
 }
 
-#a_lst_001 {
+#tree_history {
 	margin-top: 10px;
 }
 
-#a_lbl_001 {
-	float: right;
+#title_span {
 	margin-right: 20px;
 }
 

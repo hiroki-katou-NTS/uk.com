@@ -2,22 +2,22 @@
 	margin-bottom: 10px;
 }
 
-#k_sel_001 {
+#editing_method_sel_k_screen {
 	margin-left: 20px;
 	width: 350px;
 	vertical-align: text-top;
 	display: inline-block;
 }
 
-#k_lbl_003, #k_inp_001 {
-	margin-left: 20px;
+#formula_code_lbl_k_screen{
+	margin-left: 50px;
 }
 
-#k_lbl_005 {
+#editing_method_lbl {
 	margin-top: 10px;
 }
 
-#k_lbl_006 {
+#description_editing_method_lbl {
 	margin-top: 10px;
 	margin-left: 28px;
 }

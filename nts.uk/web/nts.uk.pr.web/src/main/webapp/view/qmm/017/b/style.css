@@ -1,23 +1,23 @@
-#b_inp_003{
+#start_date_inp{
 	margin-left: 102px;
 }
-#b_sel_001 {
+#difficulty_attribute_sel {
 	display: inline-block;
 	margin-left: 48px;
 }
-#b_lbl_005 {
+#description_lbl {
 	margin-left: 186px;
 	margin-right: 200px;
 }
-#b_sel_002 {
+#conditional_attribute_sel {
 	margin-left: 184px;
 }
-#b_lbl_006, #b_lbl_007{
+#easy_setting_description, #advanced_setting_description{
 	margin-left: 184px;
 }
-#b_lbl_009 {
+#conditional_lbl {
 	margin-left: 185px;
 }
-#b_lbl_010{
+#master_item_lbl{
 	margin: 10px 0 0 185px;
 }

@@ -5,29 +5,29 @@
 	height: 100%;
 	float:left;
 }
-#i_lst_001{
+#listBox_itemType_i_screen{
 	margin-top: 39px;
 }
-#i_lst_002 {
+#listBox_items_i_screen {
 	width: 282px; 
 	margin-left: 20px;
 }
-#i_lst_001.caret-right:after {
+#listBox_itemType_i_screen.caret-right:after {
     border-width: 37px 19px;
     top:38px;
     color: #E0F59E;
 }
 
-#i_btn_001 {
+#insert_in_calculation_btn_i_screen {
 	width: 283px;
     height: 28px;
 }
-#i_btn_001.caret-bottom:after {
+#insert_in_calculation_btn_i_screen.caret-bottom:after {
 	border-width: 25px 75px;
     color: #E0F59E;
     top: 30px;
     left: 87px;
 }
-#i_lst_002 .ntsSearchBox {
+#listBox_items_i_screen .ntsSearchBox {
 	width: 225px !important;
 }

@@ -14,6 +14,9 @@ module nts.uk.pr.view.qmm017.k {
                 self.selectedMode = ko.observable(1);
             }
 
+            closeDialog() {
+                nts.uk.ui.windows.close();
+            }
 
             actionHandler() {
                 var self = this;
@@ -43,7 +46,7 @@ module nts.uk.pr.view.qmm017.k {
                         })
                         .fail(function(res) {
                             alert(res);
-                        });    
+                        });
                 }
             }
         }

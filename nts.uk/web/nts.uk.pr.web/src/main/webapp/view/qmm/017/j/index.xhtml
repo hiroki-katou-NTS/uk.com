@@ -21,22 +21,22 @@
 
 		<ui:define name="content">
 			<div id="contents-area" style="padding-left: 20px">
-				<span id="j_lbl_001" style="font-size: large;">新たに作成する履歴の、作成情報を入力してください。</span>
+				<span style="font-size: large;">新たに作成する履歴の、作成情報を入力してください。</span>
 				<br />
-				<div id="j_lbl_002" style="margin-top: 10px" class="separate-vertical"
+				<div id="code_name_lbl" style="margin-top: 10px" class="separate-vertical"
 					data-bind="ntsFormLabel: {}">コード/名称</div>
-				<span id="j_lbl_003" data-bind="text: formulaCode"></span> 
-				<span id="j_lbl_004" data-bind="text: formulaName" style="display: inline-block; margin-left: 20px"></span>
+				<span id="formula_code_lbl" data-bind="text: formulaCode"></span> 
+				<span data-bind="text: formulaName" style="display: inline-block; margin-left: 20px"></span>
 				<br />
-				<div id="j_lbl_005" class="separate-vertical"
+				<div id="start_date_lbl" class="separate-vertical"
 					data-bind="ntsFormLabel: {required: true }">開始年月</div>
-				<div id="l_inp_001" data-bind="ntsDatePicker: {value: startYm, dateFormat: 'yyyy/MM'}"></div>
-				<span id="j_lbl_007" data-bind="text: startYearMonthFormated"></span> <br />
+				<div id="start_date_inp" data-bind="ntsDatePicker: {value: startYm, dateFormat: 'yyyy/MM'}"></div>
+				<span data-bind="text: startYearMonthFormated"></span> <br />
 				<div>
 					<div class="separate-vertical" data-bind="ntsFormLabel: {required: true }">
-						<label id="j_lbl_006" >編集方法の選択</label>
+						<label id="editing_method_lbl" >編集方法の選択</label>
 					</div>
-					<div id="j_sel_001">
+					<div id="editing_method_sel">
 						<span class="ntsControl"> 
 							<label class="ntsRadioBox">
 								<input type="radio" name="textRadio" data-bind="checkedValue: 0, checked: selectedMode" />
@@ -56,7 +56,7 @@
 					
 				</div>
 				<com:ko-if bind="selectedMode() == 1">
-					<div id="j_lbl_008" style="margin-top: 10px" class="separate-vertical"
+					<div id="setting_formula_lbl" style="margin-top: 10px" class="separate-vertical"
 						data-bind="ntsFormLabel: {required: true }">計算式の設定方法</div>
 					<div class="cf" style="display: inline-block" data-bind="ntsSwitchButton: {
 						options: switchButtonDifficultyAtr().items,
@@ -65,7 +65,7 @@
 						value: switchButtonDifficultyAtr().selectedCode,
 						enable: true }"></div> <br/>
 					<com:ko-if bind="switchButtonDifficultyAtr().selectedCode() == 0">
-						<div id="j_lbl_009" class="separate-vertical"
+						<div id="condition_attribute_lbl" class="separate-vertical"
 							data-bind="ntsFormLabel: {required: true }">かんたん計算式でマスタによる条件分岐を利用する</div><br/>
 						<div class="cf" style="margin: 10px 0px 0px 193px;" data-bind="ntsSwitchButton: {
 							options: switchButtonConditionAtr().items,
@@ -74,7 +74,7 @@
 							value: switchButtonConditionAtr().selectedCode,
 							enable: true }"></div> <br/>
 						<com:ko-if bind="switchButtonConditionAtr().selectedCode() == 1">	
-							<div id="j_lbl_010" class="separate-vertical"
+							<div id="master_item_sel" class="separate-vertical"
 								data-bind="ntsFormLabel: {required: true }">使用するマスタ</div>
 							<div id="combo-box" data-bind="ntsComboBox: {
 								options: comboBoxReferenceMasterNo().items,
