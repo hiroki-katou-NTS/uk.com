@@ -43,7 +43,6 @@ var qmm018;
                     var dfd = $.Deferred();
                     qmm018.a.service.averagePayItemSelect().done(function (data) {
                         if (data) {
-                            // if data exist go to update case
                             qmm018.a.service.averagePayItemSelectBySalary().done(function (dataSalary) {
                                 if (dataSalary.length) {
                                     dataSalary.forEach(function (dataSalaryItem) {
@@ -64,14 +63,12 @@ var qmm018;
                             self.isUpdate = true;
                         }
                         else {
-                            // if data no exist go to insert case
                             self.averagePay(new AveragePay(0, 0, 0, null));
                             self.selectedItemList1([]);
                             self.selectedItemList2([]);
                             self.isUpdate = false;
                         }
                         dfd.resolve();
-                        // error check on salary list and attend list
                         self.selectedItemList1.subscribe(function (value) {
                             if (!value.length)
                                 $("#inp-3").ntsError('set', Error.ER007);
@@ -94,7 +91,6 @@ var qmm018;
                     var dfd = $.Deferred();
                     var error = false;
                     var selectedCodeList1 = [];
-                    // check errors on required
                     if (self.selectedItemList1().length) {
                         self.selectedItemList1().forEach(function (item) { selectedCodeList1.push(item.code); });
                     }
@@ -116,7 +112,6 @@ var qmm018;
                         $("#inp-2").ntsError('set', Error.ER001);
                         error = true;
                     }
-                    // insert or update if no error
                     if (!error) {
                         var command = {
                             attendDayGettingSet: self.averagePay().attendDayGettingSet(),
@@ -146,20 +141,17 @@ var qmm018;
                 ScreenModel.prototype.openSubWindow = function (n) {
                     var self = this;
                     if (!n) {
-                        // set salary data
                         nts.uk.ui.windows.setShared('selectedItemList', self.selectedItemList1());
                         nts.uk.ui.windows.setShared('categoryAtr', 0);
                     }
                     else {
-                        // set attend data
                         nts.uk.ui.windows.setShared('selectedItemList', self.selectedItemList2());
                         nts.uk.ui.windows.setShared('categoryAtr', 2);
                     }
                     nts.uk.ui.windows.sub.modal("/view/qmm/018/b/index.xhtml", { title: "対象項目の選択", dialogClass: "no-close" }).onClosed(function () {
-                        var selectedList = nts.uk.ui.windows.getShared('selectedItemList'); // Get selected form B screen, n = 0: ItemSalary, n = 2: ItemAttend
-                        var unSelectedList = nts.uk.ui.windows.getShared('unSelectedItemList'); // Get unselected form B screen, n = 0: ItemSalary, n = 2: ItemAttend
+                        var selectedList = nts.uk.ui.windows.getShared('selectedItemList');
+                        var unSelectedList = nts.uk.ui.windows.getShared('unSelectedItemList');
                         if (!n) {
-                            // set data to salary item list 
                             if (selectedList.length) {
                                 if (!_.isEqual(selectedList, self.selectedItemList1())) {
                                     self.selectedItemList1.removeAll();
@@ -178,7 +170,6 @@ var qmm018;
                             }
                         }
                         else {
-                            // set data to attend item list 
                             if (selectedList.length) {
                                 if (!_.isEqual(selectedList, self.selectedItemList2())) {
                                     self.selectedItemList2.removeAll();
@@ -238,3 +229,4 @@ var qmm018;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm018.a || (qmm018.a = {}));
 })(qmm018 || (qmm018 = {}));
+//# sourceMappingURL=qmm018.a.viewmodel.js.map
