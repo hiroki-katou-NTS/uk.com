@@ -7,7 +7,12 @@ var cmm009;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.selectStartYm = ko.observable(null);
+                    self.selectStartYm = ko.observable("1900");
+                    self.yearmonthdayeditor = {
+                        option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
+                            inputFormat: 'date'
+                        })),
+                    };
                     self.C_INP_002 = ko.observable(null);
                     self.valueSel001 = ko.observable("");
                     self.startYmHis = ko.observable(null);

@@ -1,7 +1,7 @@
 module cmm009.d.viewmodel {
     import option = nts.uk.ui.option;
     export class ScreenModel {
-        
+
         startDate: KnockoutObservable<string>;
         startDateFromA: KnockoutObservable<string>;
         endDate: KnockoutObservable<string>;
@@ -12,13 +12,20 @@ module cmm009.d.viewmodel {
         isRadioCheck: KnockoutObservable<number>;
         itemsRadio: KnockoutObservableArray<any>;
         isEnable: KnockoutObservable<boolean>;
+        // time editor
+        yearmonthdayeditor: any;
         /**
          * Init screen model.
          */
         constructor() {
             var self = this;
             self.isEnable = ko.observable(true);
-            self.startDate = ko.observable(null);
+            self.startDate = ko.observable("1900");
+            self.yearmonthdayeditor = {
+                option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
+                    inputFormat: 'date'
+                })),
+            };
             self.startDateFromA = ko.observable(null);
             self.valueSel001 = ko.observable("");
             self.startYmHis = ko.observable(null);
@@ -62,7 +69,7 @@ module cmm009.d.viewmodel {
             }
             else {
                 var self = this;
-                var isRadio = self.isRadioCheck()+"";
+                var isRadio = self.isRadioCheck() + "";
                 nts.uk.ui.windows.setShared('newstartDate', self.startDate());
                 nts.uk.ui.windows.setShared('isradio', isRadio);
                 nts.uk.ui.windows.close();

@@ -7,11 +7,16 @@ var cmm009;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.selectStartYm = ko.observable(null);
                     self.C_INP_002 = ko.observable(null);
                     self.valueSel001 = ko.observable("");
                     self.startYmHis = ko.observable(null);
                     self.object = ko.observable(null);
+                    self.selectStartYm = ko.observable("1900");
+                    self.yearmonthdayeditor = {
+                        option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
+                            inputFormat: 'date'
+                        })),
+                    };
                     self.data = nts.uk.ui.windows.getShared('datanull');
                     var startDateofHisFromScreena = nts.uk.ui.windows.getShared('startDateOfHis');
                     startDateofHisFromScreena = new Date(startDateofHisFromScreena);
@@ -29,7 +34,8 @@ var cmm009;
                     }
                     else {
                         self.enable = ko.observable(true);
-                        self.selectStartYm(nts.uk.ui.windows.getShared('startDateOfHis'));
+                        var _st = nts.uk.ui.windows.getShared('startDateOfHis');
+                        self.selectStartYm(_st);
                         self.isRadioCheck = ko.observable(1);
                     }
                     self.itemsRadio = ko.observableArray([

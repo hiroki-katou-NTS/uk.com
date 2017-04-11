@@ -15,12 +15,20 @@ module cmm009.c.viewmodel {
         data: any;
         object: KnockoutObservable<viewmodel.Object>;
         startDateofHisFromScreenatoString: any;
+        
+        // time editor
+        yearmonthdayeditor: any;
         /**
          * Init screen model.
          */
         constructor() {
             var self = this;
-            self.selectStartYm = ko.observable(null);
+            self.selectStartYm = ko.observable("1900");
+            self.yearmonthdayeditor = {
+                option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
+                    inputFormat: 'date'
+                })),
+            };
             self.C_INP_002 = ko.observable(null);
             self.valueSel001 = ko.observable("");
             self.startYmHis = ko.observable(null);

@@ -47,7 +47,7 @@
 						<div data-bind="ntsFormLabel: { required: true }">期間</div>
 						<div class="C_INP_001">
 							<input id="INP_001" style="ime-mode: inactive" maxlength="10"
-								data-bind="ntsTextEditor :{value: selectStartYm, constraint: 'LayoutName' , enable: true}" />
+								data-bind="ntsTimeEditor: {value: selectStartYm, inputFormat: 'date'}" />
 						</div>
 						<div>
 							<label id="C_LBL_003"> ～ 9999/12/31</label>

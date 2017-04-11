@@ -418,7 +418,7 @@ var cmm011;
                         console.log(self.selectedCodes_His() + "=== test== " + self.historyId());
                         nts.uk.ui.windows.setShared('datanull', "notnull");
                         nts.uk.ui.windows.setShared('startDateOfHis', self.itemHistId()[0].startDate);
-                        nts.uk.ui.windows.sub.modal('/view/cmm/009/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function () {
+                        nts.uk.ui.windows.sub.modal('/view/cmm/011/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function () {
                             var itemAddHistory = nts.uk.ui.windows.getShared('itemHistory');
                             if (itemAddHistory.checked == true) {
                                 var add = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");

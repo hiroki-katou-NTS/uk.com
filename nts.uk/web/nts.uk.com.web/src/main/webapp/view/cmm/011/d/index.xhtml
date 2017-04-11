@@ -63,8 +63,8 @@
 					<div class="timeInput">
 						<div data-bind="ntsFormLabel: {}">期間</div>
 						<div class="C_INP_001">
-							<input id="INP_001" style="ime-mode: inactive ; text-align: center;" maxlength="10" 
-								data-bind="ntsTextEditor :{value: startDate, constraint: 'LayoutName' , enable: true}" />
+							<input id="INP_001" style="ime-mode: inactive" maxlength="10"
+								data-bind="ntsTimeEditor: {value: startDate,inputFormat: 'date'}" />
 						</div>
 						<div class="C_INP_002" >
 							<label >  ~ </label>

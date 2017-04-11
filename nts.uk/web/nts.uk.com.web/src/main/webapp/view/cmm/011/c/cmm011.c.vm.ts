@@ -15,17 +15,24 @@ module cmm009.c.viewmodel {
         data: any;
         object: KnockoutObservable<viewmodel.Object>;
         startDateofHisFromScreenatoString: any;
+        // time editor
+        yearmonthdayeditor: any;
+
         /**
          * Init screen model.
          */
         constructor() {
             var self = this;
-            self.selectStartYm = ko.observable(null);
             self.C_INP_002 = ko.observable(null);
             self.valueSel001 = ko.observable("");
             self.startYmHis = ko.observable(null);
             self.object = ko.observable(null);
-            //self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: "date"}));
+            self.selectStartYm =  ko.observable("1900");
+            self.yearmonthdayeditor = {
+                option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
+                    inputFormat: 'date'
+                })),
+            };
             self.data = nts.uk.ui.windows.getShared('datanull');
             var startDateofHisFromScreena = nts.uk.ui.windows.getShared('startDateOfHis');
             startDateofHisFromScreena = new Date(startDateofHisFromScreena);
@@ -34,7 +41,7 @@ module cmm009.c.viewmodel {
             if (month < 10) month = "0" + month;
             var day = startDateofHisFromScreena.getDate();
             if (day < 10) day = "0" + day;
-            startDateofHisFromScreenatoString = year+month+day;
+            startDateofHisFromScreenatoString = year + month + day;
 
             //---radio
             if (self.data == "datanull") {
@@ -42,12 +49,13 @@ module cmm009.c.viewmodel {
                 self.enable = ko.observable(false);
             } else {
                 self.enable = ko.observable(true);
-                self.selectStartYm(nts.uk.ui.windows.getShared('startDateOfHis'));
+                let _st = nts.uk.ui.windows.getShared('startDateOfHis');
+                self.selectStartYm(_st);
                 self.isRadioCheck = ko.observable(1);
             }
 
             self.itemsRadio = ko.observableArray([
-                { value: 1, text: ko.observable('最新の履歴（' + self.selectStartYm() + '）から引き継ぐ') },
+                { value: 1, text: ko.observable('最新の履歴（'+ self.selectStartYm()+'）から引き継ぐ') },
                 { value: 2, text: ko.observable('初めから作成する') }
             ]);
         }

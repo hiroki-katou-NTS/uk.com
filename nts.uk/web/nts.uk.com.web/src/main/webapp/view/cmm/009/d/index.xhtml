@@ -43,7 +43,7 @@
 						<label id="C_LBL_001">履歴情報を確認し、削除または修正を行ってください。</label>
 					</div>
 					<br />
-					
+
 					<div class="inlineInfor">
 						<div data-bind="ntsFormLabel: { required: true }">編集方法の選択</div>
 
@@ -63,26 +63,26 @@
 					<div class="timeInput">
 						<div data-bind="ntsFormLabel: {}">期間</div>
 						<div class="C_INP_001">
-							<input id="INP_001" style="ime-mode: inactive ; text-align: center;" maxlength="10" 
-								data-bind="ntsTextEditor :{value: startDate, constraint: 'LayoutName' , enable: true}" />
+							<input id="INP_001" style="ime-mode: inactive" maxlength="10"
+								data-bind="ntsTimeEditor: {value: startDate, inputFormat: 'date'}" />
 						</div>
-						<div class="C_INP_002" >
-							<label >  ~ </label>
+						<div class="C_INP_002">
+							<label> ~ </label>
 						</div>
 						<div id="C_LBL_003">
-							<label  data-bind ="text : endDate"> </label>
+							<label data-bind="text : endDate"> </label>
 						</div>
 					</div>
 					<br />
 
-					
+
 
 				</div>
 				<br />
 				<hr></hr>
 				<div class="bottomStype">
 					<button class="x-large proceed" id="BTN_001"
-					data-bind="click: createHistory, enable: $root.errors.isEmpty" >決定</button>
+						data-bind="click: createHistory, enable: $root.errors.isEmpty">決定</button>
 					<button class="large" id="BTN_002" data-bind="click: closeDialog">キャンセル</button>
 					<br />
 				</div>
