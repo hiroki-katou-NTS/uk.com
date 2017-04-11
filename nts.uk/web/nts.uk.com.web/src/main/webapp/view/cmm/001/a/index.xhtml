@@ -11,6 +11,7 @@
 			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.core.js" />
 			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.lob.js" />
 
+
 			<com:ValidatorScript>
 					nts.uk.ctx.basic.dom.company.CompanyCode
 					nts.uk.ctx.basic.dom.company.CompanyName
@@ -29,11 +30,11 @@
 					nts.uk.ctx.basic.dom.company.address.AddressKana2
 					nts.uk.ctx.basic.dom.company.useset.UseSet
    				</com:ValidatorScript>
+			<com:scriptfile path="../e/service.js" />
 			<com:scriptfile path="cmm001.a.service.js" />
 			<com:scriptfile path="cmm001.a.vm.js" />
 			<com:scriptfile path="cmm001.a.start.js" />
 			<com:stylefile path="cmm001.a.style.css" />
-
 		</ui:define>
 
 		<ui:define name="content">
@@ -128,8 +129,9 @@
 								<tr style="margin-top: 20px;">
 									<th colspan="1" class="th-col1">
 										<!-- <div style="margin-left: 50px; margin-top: -7px"> -->
-									   <div  class="left20 border_none" data-bind="ntsFormLabel:{required: true, constraint:'CompanyNameKana'}">
-										      <label id="A_LBL_005"> 半角ｶﾅ</label>
+										<div class="left20 border_none"
+											data-bind="ntsFormLabel:{required: true, constraint:'CompanyNameKana'}">
+											<label id="A_LBL_005"> 半角ｶﾅ</label>
 										</div>
 									</th>
 
@@ -142,12 +144,13 @@
 										</div>
 									</th>
 								</tr>
-							   <tr style="margin-top: 20px;">
+								<tr style="margin-top: 20px;">
 									<th colspan="1" class="th-col1">
-									<div  class="left20 border_none" data-bind="ntsFormLabel:{required: true, constraint:'CompanyNameAbb'}">
-										<!-- <div style="margin-left: 50px"> -->
+										<div class="left20 border_none"
+											data-bind="ntsFormLabel:{required: true, constraint:'CompanyNameAbb'}">
+											<!-- <div style="margin-left: 50px"> -->
 											<label id="A_LBL_006"> 略名</label>
-									</div>
+										</div>
 									</th>
 
 									<th colspan="2" class="th-col2">
@@ -261,7 +264,8 @@
 												</th>
 
 												<th colspan="1">
-													<button id="C_BTN_001" data-bind="click: $parent.Browse">
+													<button id="C_BTN_001"
+														data-bind="click: $parent.searchZipCode">
 														<label class="labelRed">〒</label>検索
 													</button>
 												</th>
@@ -276,8 +280,7 @@
 											</tr>
 											<!--  4 -->
 											<tr style="margin-top: 5px;">
-												<th colspan="1" class="th-col1">
-													<label id="C_LBL_007">市区町村・番地</label> 
+												<th colspan="1" class="th-col1"><label id="C_LBL_007">市区町村・番地</label>
 												</th>
 
 												<th colspan="2" class="th-col2">
@@ -296,8 +299,7 @@
 											</tr>
 											<!--  5 -->
 											<tr style="margin-top: 5px;">
-												<th colspan="1" class="th-col1">
-												<label id="C_LBL_008">建物名など</label></th>
+												<th colspan="1" class="th-col1"><label id="C_LBL_008">建物名など</label></th>
 												<th colspan="2" class="th-col2">
 													<div>
 														<input id="C_INP_003" class="save-error" data-name="住所２"
@@ -365,9 +367,10 @@
 											<!--  10  -->
 											<tr style="margin-top: 5px;">
 												<th colspan="1" class="th-col1">
-												<div  class="left20 border_none" data-bind="ntsFormLabel:{required: true, constraint:'FaxNo'}">
-												    <label id="C_LBL_010">FAX</label>
-												</div>
+													<div class="left20 border_none"
+														data-bind="ntsFormLabel:{required: true, constraint:'FaxNo'}">
+														<label id="C_LBL_010">FAX</label>
+													</div>
 												</th>
 
 												<th colspan="2" class="th-col2">
@@ -476,8 +479,7 @@
 												</tr>
 												<tr style="margin-top: 5px;">
 													<th colspan="1" class="th-col1">
-														<div 
-															data-bind="ntsFormLabel:{required: true}">
+														<div data-bind="ntsFormLabel:{required: true}">
 															<label id="Ds_LBL_005">期首月</label>
 														</div>
 													</th>
