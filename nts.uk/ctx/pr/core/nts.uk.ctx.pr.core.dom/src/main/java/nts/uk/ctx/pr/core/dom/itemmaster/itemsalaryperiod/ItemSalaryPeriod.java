@@ -9,7 +9,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.Year;
 
 @Getter
 public class ItemSalaryPeriod extends AggregateRoot {
-	private ItemCode itemCd;
+	private ItemCode itemCode;
 	private PeriodAtr periodAtr;
 	private Year strY;
 	private Year endY;
@@ -27,13 +27,13 @@ public class ItemSalaryPeriod extends AggregateRoot {
 	private UsageClassification cycle11Atr;
 	private UsageClassification cycle12Atr;
 
-	public ItemSalaryPeriod(ItemCode itemCd, PeriodAtr periodAtr, Year strY, Year endY, UsageClassification cycleAtr,
+	public ItemSalaryPeriod(ItemCode itemCode, PeriodAtr periodAtr, Year strY, Year endY, UsageClassification cycleAtr,
 			UsageClassification cycle01Atr, UsageClassification cycle02Atr, UsageClassification cycle03Atr,
 			UsageClassification cycle04Atr, UsageClassification cycle05Atr, UsageClassification cycle06Atr,
 			UsageClassification cycle07Atr, UsageClassification cycle08Atr, UsageClassification cycle09Atr,
 			UsageClassification cycle10Atr, UsageClassification cycle11Atr, UsageClassification cycle12Atr) {
 		super();
-		this.itemCd = itemCd;
+		this.itemCode = itemCode;
 		this.periodAtr = periodAtr;
 		this.strY = strY;
 		this.endY = endY;

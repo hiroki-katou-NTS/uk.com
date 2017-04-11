@@ -20,7 +20,6 @@ var nts;
                 self.startYearMonth = ko.observable('');
                 self.startYearMonth.subscribe(function (newValue) {
                     self.viewModel017b().startYearMonth(newValue);
-                    console.log(self.viewModel017b().startYearMonth());
                 });
                 self.currentNode = ko.observable(null);
                 self.currentParentNode = ko.observable(null);
@@ -646,6 +645,16 @@ var nts;
                 nts.uk.ui.windows.setShared('paramFromScreenA', param);
                 nts.uk.ui.windows.sub.modal('/view/qmm/017/k/index.xhtml', { title: '履歴の編集', width: 540, height: 380 }).onClosed(function () {
                     self.start();
+                });
+            };
+            ScreenModel.prototype.openDialogQ = function (root) {
+                var self = root;
+                var param = {
+                    formulaContent: self.viewModel017c().formulaManualContent().textArea(),
+                    itemsBag: self.itemsBagRepository
+                };
+                nts.uk.ui.windows.setShared('formulaManual', param);
+                nts.uk.ui.windows.sub.modal('/view/qmm/017/q/index.xhtml', { title: 'お試し計算', width: 840, height: 615 }).onClosed(function () {
                 });
             };
             return ScreenModel;

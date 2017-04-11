@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public interface ItemDeductPeriodRepository {
 
-	Optional<ItemDeductPeriod> find(String companyCode, String itemCode);
+	Optional<ItemDeductPeriod> find( String itemCode);
 
 	void add(ItemDeductPeriod itemDeductPeriod);
 

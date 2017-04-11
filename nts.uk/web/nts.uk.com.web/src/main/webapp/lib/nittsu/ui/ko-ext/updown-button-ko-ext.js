@@ -1,3 +1,4 @@
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -6,9 +7,18 @@ var nts;
         (function (ui_1) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * UpDownButton binding handler
+                 */
                 var NtsUpDownBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
                     function NtsUpDownBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsUpDownBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $upDown = $(element);
                         if ($upDown.prop("tagName").toLowerCase() !== "div") {
@@ -103,7 +113,10 @@ var nts;
                                 if (moved) {
                                     $targetElement.igGrid("virtualScrollTo", 0);
                                     data.targetSource(source);
+                                    //                        $targetElement.igGrid("option", "dataSource", source);
+                                    //                        $targetElement.igGrid("dataBind");
                                     var index = upDown + grouped["group1"][0].index;
+                                    //                        var index = $targetElement.igGrid("selectedRows")[0].index;
                                     $targetElement.igGrid("virtualScrollTo", index);
                                 }
                             }
@@ -111,6 +124,7 @@ var nts;
                         var moveTree = function (upDown, $targetElement) {
                             var multiSelectedRaw = $targetElement.igTreeGrid("selectedRows");
                             var singleSelectedRaw = $targetElement.igTreeGrid("selectedRow");
+                            //                var targetSource = ko.unwrap(data.targetSource);
                             var selected;
                             if (multiSelectedRaw !== null) {
                                 if (multiSelectedRaw.length !== 1) {
@@ -127,6 +141,7 @@ var nts;
                             if (selected["index"] < 0) {
                                 return;
                             }
+                            //                var targetSource = ko.unwrap(data.targetSource);
                             var source = _.cloneDeep($targetElement.igTreeGrid("option", "dataSource"));
                             var result = findChild(upDown, selected["id"], source, false, false);
                             var moved = result.moved;
@@ -134,6 +149,9 @@ var nts;
                             source = result.source;
                             if (moved && changed) {
                                 data.targetSource(source);
+                                //                    $targetElement.igTreeGrid("option", "dataSource", source);
+                                //                    $targetElement.igTreeGrid("dataBind");
+                                //                    data.targetSource(source);
                                 var index = $targetElement.igTreeGrid("selectedRows")[0].index;
                                 if (index !== selected["index"]) {
                                     var scrollTo = _.sumBy(_.filter($target.igTreeGrid("allRows"), function (row) {
@@ -216,6 +234,9 @@ var nts;
                             }
                         });
                     };
+                    /**
+                     * Update
+                     */
                     NtsUpDownBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $upDown = $(element);
                         var elementId = $upDown.attr('id');
@@ -231,3 +252,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=updown-button-ko-ext.js.map

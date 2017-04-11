@@ -1,7 +1,7 @@
 module nts.qmm017 {
 
     export class CScreen {
-        c_sel_006: KnockoutObservableArray<any>;
+        itemsTab: KnockoutObservableArray<any>;
         formulaCode: KnockoutObservable<string>;
         formulaName: KnockoutObservable<string>;
         selectedDifficultyAtr: KnockoutObservable<any>;
@@ -91,7 +91,7 @@ module nts.qmm017 {
             ]
 
             self.formulaManualContent = ko.observable(new TextEditor());
-            self.c_sel_006 = ko.observableArray([
+            self.itemsTab = ko.observableArray([
                 { id: 'tab-1', title: '明細・勤怠', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-2', title: '単価', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-3', title: '関数', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
@@ -141,8 +141,12 @@ module nts.qmm017 {
             self.dailyEasyFormula().selectedRuleCodeEasySettings('1');
             self.hourlyEasyFormula().selectedRuleCodeEasySettings('1');
         }
-
-
+        
+        pasteValue(targetString) {
+            var self = this;
+            let currentTextArea = self.formulaManualContent().textArea();
+            self.formulaManualContent().textArea(self.formulaManualContent().insertString(currentTextArea, targetString, $("#input-text")[0].selectionStart));
+        }
     }
 
     export class EasyFormula {
@@ -180,7 +184,7 @@ module nts.qmm017 {
         openDialogL() {
             var self = this;
             let param = {
-                isUpdate: (self.easyFormulaName() !== ''),
+                isUpdate: (self.easyFormulaName() !== '' && self.easyFormulaName() !== null),
                 dirtyData: self.easyFormulaDetail(),
                 startYm: self.startYm()
             };
@@ -558,10 +562,7 @@ module nts.qmm017 {
             let functionName = treeObject.value.trim();
             let param = treeObject.children;
             if (functionName === "関数＠条件式" && param.length == 3) {
-                //if (param[0].children.length === 0) return 1;
-                if (!nts.uk.ntsNumber.isNumber(param[1], true)) return 2;
-                else if (!nts.uk.ntsNumber.isNumber(param[2], true)) return 3;
-                else return 0;
+                
             } else if (functionName === "関数＠かつ" && param.length >= 2) {
                 //if param[0].children.length 
             } else if (functionName === "関数＠または" && param.length >= 2) {

@@ -15,4 +15,6 @@ nts.uk/pr/shr/nts.uk.shr.com/bin/
 nts.uk/pr/proto/nts.uk.pr.proto.ws/bin/
 nts.uk/pr/file/nts.uk.pr.file.infra/bin/
 *.class
-
+*.js
+*.map
+*.gitignore

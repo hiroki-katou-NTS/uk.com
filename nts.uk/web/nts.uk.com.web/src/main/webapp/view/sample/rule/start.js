@@ -18,6 +18,7 @@ __viewContext.ready(function () {
             var self = this;
             self.dataSource = products;
             self.htmlString = ko.observable("<script>alert('You have been attacked!')</script>");
+            // Grid settings
             var columns = [
                 { headerText: "Product ID", key: "ProductID", dataType: "number" },
                 { headerText: "Product Name", key: "Name", dataType: "string" },
@@ -34,6 +35,7 @@ __viewContext.ready(function () {
                 { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: true },
                 { name: "Updating", editMode: "dialog", enableAddRow: false, columnSettings: [{ columnKey: "ProductID", readOnly: true }] }
             ];
+            // Init Grid
             $("#grid").igGrid({
                 columns: columns,
                 features: features,
@@ -61,3 +63,4 @@ __viewContext.ready(function () {
     }());
     this.bind(new ScreenModel());
 });
+//# sourceMappingURL=start.js.map

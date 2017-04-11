@@ -5,12 +5,8 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 	<body>
-		<ui:composition template="../../../../master/base.xhtml">
+		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 300, height: 200 };</script>
-				<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
-   				</com:ValidatorScript>
 				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="style.css" />
 				<com:scriptfile path="start.js" />
@@ -19,47 +15,41 @@
 			</ui:define>
 			
 			<ui:define name="content">
-				<div id="functions-area">
-				</div>
-				<div id="contents-area">
+				<div id="contents-area" style="padding: 10px 15px 0 15px">
 					<div id="q_lbl_001" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">お試しの値</div>
 					<br />
-					<table>
+					<table style="margin-top: 10px">
 						<tbody>
 							<tr>
-								<td><table id="q_lbl_001" data-bind="ntsGridList: {
-										height: 350,
-										options: items,
-										optionsValue: 'code',
-										columns: columns,
-										value: currentCodeList
-									}"
-									class="cf"></table></td>
 								<td>
-									<button id="q_btn_001" class="x-large proceed">お試し計算</button></td>
+									<table id="q_lst_001"></table>
+								</td>
 								<td>
-									<table class="label warning">
-										<tr>
-											<td id="q_lbl_002" >
-												<div>結果</div>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<div>1231412312</div>
-											</td>
-										</tr>
-									</table>
+									<button id="q_btn_001" data-bind="click: calculationTrial">お試し計算</button>
+									<span class="caret-right outline" style="height: 35px; font-size: 3.2rem;"></span>	
+								</td>
+								<td>
+									<div class="result-block">
+										<span>結果</span>
+										<hr/>
+										<span id="result-value">10000</span>
+									</div>
 								</td>
 							</tr>
 						</tbody>
 					</table>					
 					<br />
-					<div id="q_lbl_003" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">お試しの値</div>
+					<div id="q_lbl_003" class="separate-vertical" data-bind="ntsFormLabel: {}">お試しの値</div>
+					<hr/>
+					<div id="q_inp_002">
+						<span data-bind="text: formulaContent"></span>
+					</div>
 					<br />
-					<input></input>
-					<br />
-					<button id="q_btn_002" class="x-large proceed">計算式</button>
+					<div id="footer">
+						<hr/>
+						<button id="q_btn_002">計算式</button>
+					</div>
+					
 				</div>
 			</ui:define>
 		</ui:composition>
