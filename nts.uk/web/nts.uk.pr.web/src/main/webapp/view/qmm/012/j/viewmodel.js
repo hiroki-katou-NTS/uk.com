@@ -7,6 +7,7 @@ var qmm012;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
+                    //gridlist
                     self.items = ko.observableArray([
                         new ItemModel('001', 'name1', "name1"),
                         new ItemModel('002', 'name1', "name1"),

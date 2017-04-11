@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.labor.businesstype;
@@ -17,6 +17,7 @@ public class JpaInsuranceBusinessTypeSetMemento implements InsuranceBusinessType
 	/** The type value. */
 	private QismtBusinessType typeValue;
 
+	/** The type. */
 	private BusinessTypeEnum type;
 
 	/**
@@ -68,7 +69,6 @@ public class JpaInsuranceBusinessTypeSetMemento implements InsuranceBusinessType
 	@Override
 	public void setBizName(BusinessName name) {
 		switch (this.type) {
-
 		case Biz1St:
 			this.typeValue.setBizName01(name.v());
 			break;

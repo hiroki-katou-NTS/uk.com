@@ -14,7 +14,7 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.reference.QwtmtWagetableRefCd;
 public class JpaWtCodeRefGetMemento implements WtCodeRefGetMemento {
 
 	/** The type value. */
-	protected QwtmtWagetableRefCd typeValue;
+	private QwtmtWagetableRefCd typeValue;
 
 	/**
 	 * Instantiates a new jpa wage table code ref get memento.

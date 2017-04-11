@@ -54,7 +54,7 @@ public class AccidentInsuranceRateWs extends WebService {
 	 *
 	 * @param historyId
 	 *            the history id
-	 * @return the accident insurance rate find out dto
+	 * @return the accident insurance rate find out
 	 */
 	@POST
 	@Path("find/{historyId}")

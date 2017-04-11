@@ -32,7 +32,7 @@ public interface LaborInsuranceOfficeRepository {
 	 * @param id the id
 	 * @param version the version
 	 */
-    void remove(String companyCode, String officeCode, long version);
+    void remove(String companyCode, String officeCode);
 
 	/**
 	 * Find all.

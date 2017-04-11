@@ -14,7 +14,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="btn-group-left">
-					<button id="B_BTN_001" data-bind="click: checkNewData">新規</button>
+					<button id="B_BTN_001" data-bind="click: newData">新規</button>
 					<button id="B_BTN_002" data-bind="click: saveData">登録</button>
 					<button id="B_BTN_003" data-bind="click: deleteData">削除</button>
 					<button id="B_BTN_004" data-bind="click: closeDialog">閉じる</button>
@@ -41,7 +41,8 @@
 					<div class="right-panel-top">
 						<div class="form-group">
 							<div id="B_LBL_001" data-bind="ntsFormLabel: {}">処理区分</div>
-							<label id="B_LBL_002" data-bind="text: lbl002">1.</label>
+							<label id="B_LBL_002" data-bind="text: lbl002">1</label>
+							<label>.</label>
 							<label id="B_LBL_003" data-bind="text: lbl003">25日払い</label>
 						</div>
 						<div class="form-group">
@@ -80,8 +81,8 @@
 							</thead>
 							<tbody data-bind="foreach: lst002Data">
 								<tr>
-									<th data-bind="text: index"></th>
-									<th data-bind="text: label"></th>
+									<th data-bind="text: month"></th>
+									<th data-bind="text: month() + '月の設定'"></th>
 									<td>
 										<div id="B_SEL_002"
 											data-bind="ntsComboBox: {
@@ -135,7 +136,7 @@
 										<div id="B_INP_009"
 											data-bind="ntsDatePicker: { value: inp009, dateFormat: 'YYYY/MM/DD'}"></div>
 									</td>
-									<td class="checkbox-cols"><span id="B_SEL_00"
+									<td class="checkbox-cols"><span id="B_SEL_001"
 										data-bind="ntsCheckBox: { checked: sel001, enable: true, text: '' }"></span>
 									</td>
 								</tr>

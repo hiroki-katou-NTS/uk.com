@@ -23,7 +23,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.service.UnemployeeI
 public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRateService {
 
 	/** The rate item count. */
-	private final int RATE_ITEM_COUNT = 3;
+	public static final int RATE_ITEM_COUNT = 3;
 
 	/** The unemployee insurance rate repo. */
 	@Inject
@@ -38,9 +38,8 @@ public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRa
 	 */
 	@Override
 	public void validateRequiredItem(UnemployeeInsuranceRate rate) {
-		if (StringUtil.isNullOrEmpty(rate.getHistoryId(), true)
-			|| CollectionUtil.isEmpty(rate.getRateItems()) || rate.getRateItems() == null
-			|| rate.getRateItems().size() != RATE_ITEM_COUNT) {
+		if (StringUtil.isNullOrEmpty(rate.getHistoryId(), true) || CollectionUtil.isEmpty(rate.getRateItems())
+			|| rate.getRateItems() == null || rate.getRateItems().size() != RATE_ITEM_COUNT) {
 			throw new BusinessException("ER001");
 		}
 	}
