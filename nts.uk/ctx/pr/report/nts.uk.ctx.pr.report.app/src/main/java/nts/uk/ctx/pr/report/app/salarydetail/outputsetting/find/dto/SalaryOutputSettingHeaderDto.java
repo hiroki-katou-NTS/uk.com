@@ -2,15 +2,15 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.report.app.salarydetail.find.dto;
+package nts.uk.ctx.pr.report.app.salarydetail.outputsetting.find.dto;
 
 import lombok.Builder;
 
 /**
- * The Class SubItemDto.
+ * The Class SalaryOutputSettingHeadDto.
  */
 @Builder
-public class SubItemDto {
+public class SalaryOutputSettingHeaderDto {
 
 	/** The code. */
 	public String code;
