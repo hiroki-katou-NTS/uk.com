@@ -20,6 +20,7 @@ var nts;
                                     self.formulaContent = data.formulaContent;
                                     self.buildListItemModel(data.itemsBag);
                                     self.bindGridListItem();
+                                    self.calculator = new Calculator();
                                 }
                                 ScreenModel.prototype.isDuplicated = function (itemName) {
                                     var self = this;
@@ -38,7 +39,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.bindGridListItem = function () {
                                     var self = this;
-                                    $("#q_lst_001").igGrid({
+                                    $("#lstItemValue").igGrid({
                                         primaryKey: "code",
                                         columns: [
                                             { headerText: "計算式の項目名", key: "code", dataType: "string", width: '150px' },
@@ -62,20 +63,145 @@ var nts;
                                                 }
                                             }]
                                     });
-                                    $("[aria-describedby='q_lst_001_code']").css({ "backgroundColor": "#CFF1A5" });
+                                    $("[aria-describedby='lstItemValue_code']").css({ "backgroundColor": "#CFF1A5" });
                                 };
                                 ScreenModel.prototype.calculationTrial = function () {
                                     var self = this;
-                                    var replacedValue = '';
+                                    var replacedValue = self.formulaContent + '+ 0';
                                     _.forEach(self.items(), function (item) {
-                                        replacedValue = self.formulaContent.replace(item.code, item.value);
+                                        replacedValue = replacedValue.replace(new RegExp(item.code, 'g'), item.value);
                                     });
-                                    console.log(replacedValue);
+                                    var contentPieces = replacedValue.split(/[\+|\-|\×|\÷|\＾]/);
+                                    var listTreeObject = [];
+                                    for (var i = 0; i < contentPieces.length - 1; i++) {
+                                        listTreeObject.push(nts.uk.util.createTreeFromString(contentPieces[i], "（", "）", ",", [])[0]);
+                                    }
+                                    ;
+                                    var listOperator = [];
+                                    var toCharContent = replacedValue.split('');
+                                    _.forEach(toCharContent, function (char) {
+                                        if (char === '+' || char === '-' || char === '×' || char === '÷' || char === '＾') {
+                                            listOperator.push(char);
+                                        }
+                                    });
+                                    debugger;
+                                };
+                                ScreenModel.prototype.calculateTreeObject = function (treeObject) {
+                                    var self = this;
+                                    if (treeObject.value === '関数＠条件式') {
+                                        _.forEach(treeObject.children, function (child) {
+                                            if (child.children.length > 0) {
+                                                child.value = self.calculateTreeObject(child);
+                                            }
+                                        });
+                                        return self.calculator.calculateConditionExpression(self.compareValues(treeObject.children[0], treeObject.children[2], treeObject.children[1]), treeObject.children[3], treeObject.children[4]);
+                                    }
+                                    else if (treeObject.value === '関数＠かつ') {
+                                        _.forEach(treeObject.children, function (child) {
+                                            if (child.children.length > 0) {
+                                                child.value = self.calculateTreeObject(child);
+                                            }
+                                        });
+                                    }
+                                    else if (treeObject.value === '関数＠条件式') {
+                                    }
+                                    else if (treeObject.value === '関数＠条件式') {
+                                    }
+                                    else if (treeObject.value === '関数＠条件式') {
+                                    }
+                                    else if (treeObject.value === '関数＠条件式') {
+                                    }
+                                    else if (treeObject.value === '関数＠条件式') {
+                                    }
+                                    else if (treeObject.value === '関数＠条件式') {
+                                    }
+                                    else if (treeObject.value === '関数＠条件式') {
+                                    }
+                                    else if (treeObject.value === '関数＠条件式') {
+                                    }
+                                    else if (treeObject.value === '関数＠条件式') {
+                                    }
+                                    else if (treeObject.value === '関数＠条件式') {
+                                    }
+                                };
+                                ScreenModel.prototype.compareValues = function (firstValue, secondValue, comparator) {
+                                    if (comparator === '＜') {
+                                        return firstValue < secondValue;
+                                    }
+                                    else if (comparator === '＞') {
+                                        return firstValue > secondValue;
+                                    }
+                                    else if (comparator === '≦') {
+                                        return firstValue <= secondValue;
+                                    }
+                                    else if (comparator === '≧') {
+                                        return firstValue >= secondValue;
+                                    }
+                                    else if (comparator === '＝') {
+                                        return firstValue === secondValue;
+                                    }
+                                    else if (comparator === '≠') {
+                                        return firstValue !== secondValue;
+                                    }
+                                };
+                                ScreenModel.prototype.close = function () {
+                                    nts.uk.ui.windows.close();
                                 };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
                         })(viewmodel = q.viewmodel || (q.viewmodel = {}));
+                        var Calculator = (function () {
+                            function Calculator() {
+                            }
+                            Calculator.prototype.calculateConditionExpression = function (condition, result1, result2) {
+                                if (condition) {
+                                    return result1;
+                                }
+                                else {
+                                    return result2;
+                                }
+                            };
+                            Calculator.prototype.calculateAndExpression = function (lstCondition) {
+                                _.forEach(lstCondition, function (condition) {
+                                    if (!condition) {
+                                        return false;
+                                    }
+                                });
+                                return true;
+                            };
+                            Calculator.prototype.calculateOrExpression = function (lstCondition) {
+                                _.forEach(lstCondition, function (condition) {
+                                    if (condition) {
+                                        return true;
+                                    }
+                                });
+                                return false;
+                            };
+                            Calculator.prototype.calculateCeil = function (value) {
+                                return _.ceil(value);
+                            };
+                            Calculator.prototype.calculateMax = function (lstValue) {
+                                return _.max(lstValue);
+                            };
+                            Calculator.prototype.calculateMin = function (lstValue) {
+                                return _.min(lstValue);
+                            };
+                            Calculator.prototype.calculateNumberOfFamily = function (minAge, maxAge) {
+                                return 0;
+                            };
+                            Calculator.prototype.calculateAddMonth = function (yearMonth, month) {
+                                return moment(yearMonth, "YYYY/MM").add(month, 'months').format("YYYY/MM");
+                            };
+                            Calculator.prototype.calculateExportYear = function (yearMonth) {
+                                return moment("2012/01", "YYYY/MM").year();
+                            };
+                            Calculator.prototype.calculateExportMonth = function (yearMonth) {
+                                return moment("2012/01", "YYYY/MM").month() + 1;
+                            };
+                            return Calculator;
+                        }());
+                        q.Calculator = Calculator;
                         var ItemModel = (function () {
                             function ItemModel(code, value) {
                                 this.code = code;
