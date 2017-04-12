@@ -157,12 +157,17 @@ module nts.uk.pr.view.qpp007.c {
                 if (self.outputSettingSelectedCode) {
                     nts.uk.ui.dialog.confirm("データを削除します。\r\n よろしいですか？").ifYes(function() {
                         service.remove(self.outputSettingSelectedCode()).done(() => {
-                            self.loadAllOutputSetting();
-                            // Set new mode if outputSettings has 0 element.
-                            if (!self.outputSettings || self.outputSettings.length == 0) {
-                                self.clearError();
-                                self.enableNewMode();
-                            }
+                            self.loadAllOutputSetting().done(() => {
+                                // Select first element.
+                                if (self.outputSettings() && self.outputSettings().length > 0) {
+                                    self.temporarySelectedCode(self.outputSettings()[0].code);
+                                }
+                                // Set new mode if outputSettings has 0 element.
+                                else {
+                                    self.clearError();
+                                    self.enableNewMode();
+                                }
+                            });
                         });
                     });
                 }
@@ -294,7 +299,6 @@ module nts.uk.pr.view.qpp007.c {
                     self.outputSettings(data);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res);
                     dfd.reject();
                 })
                 return dfd.promise();

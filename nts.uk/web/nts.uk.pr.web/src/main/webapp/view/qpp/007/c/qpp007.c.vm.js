@@ -122,11 +122,15 @@ var nts;
                                     if (self.outputSettingSelectedCode) {
                                         nts.uk.ui.dialog.confirm("データを削除します。\r\n よろしいですか？").ifYes(function () {
                                             c.service.remove(self.outputSettingSelectedCode()).done(function () {
-                                                self.loadAllOutputSetting();
-                                                if (!self.outputSettings || self.outputSettings.length == 0) {
-                                                    self.clearError();
-                                                    self.enableNewMode();
-                                                }
+                                                self.loadAllOutputSetting().done(function () {
+                                                    if (self.outputSettings() && self.outputSettings().length > 0) {
+                                                        self.temporarySelectedCode(self.outputSettings()[0].code);
+                                                    }
+                                                    else {
+                                                        self.clearError();
+                                                        self.enableNewMode();
+                                                    }
+                                                });
                                             });
                                         });
                                     }
@@ -222,7 +226,6 @@ var nts;
                                         self.outputSettings(data);
                                         dfd.resolve();
                                     }).fail(function (res) {
-                                        nts.uk.ui.dialog.alert(res);
                                         dfd.reject();
                                     });
                                     return dfd.promise();
