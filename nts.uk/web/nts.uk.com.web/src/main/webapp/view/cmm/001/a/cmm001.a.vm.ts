@@ -9,6 +9,7 @@ module cmm001.a {
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
         displayAttribute: KnockoutObservable<boolean>;
+        previousDisplayAttribute: boolean = true; //lưu giá trị của displayAttribute trước khi nó bị thay đổi
         isUpdate: KnockoutObservable<boolean> = ko.observable(null);
         dirtyObject: nts.uk.ui.DirtyChecker;
         previousCurrentCode: string = null; //lưu giá trị của currentCode trước khi nó bị thay đổi
@@ -39,54 +40,72 @@ module cmm001.a {
             });
 
             self.displayAttribute.subscribe(function(newValue) {
-                let $grid = $("#gridCompany");
-                var currentColumns = $grid.igGrid("option", "columns");
-                var width = $grid.igGrid("option", "width");
+                if (self.displayAttribute() !== self.previousDisplayAttribute) {
+                    //goi check isDirty
+                    if (self.dirtyObject.isDirty()) {
+                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
+                            self.dirtyObject.reset();
+                            self.processWhenDisplayAttributeChanged(newValue);
+                        }).ifCancel(function() {
+                            self.displayAttribute(self.previousDisplayAttribute);
+                        })
+                    } else {
+                        self.processWhenDisplayAttributeChanged(newValue);    
+                    }
+                }
+            });
+        }
+        
+        processWhenDisplayAttributeChanged(newValue: boolean) {
+            let self = this;
+            let $grid = $("#gridCompany");
+            var currentColumns = $grid.igGrid("option", "columns");
+            var width = $grid.igGrid("option", "width");
 
-                if (newValue) {
-                    $('#displayAttribute').ntsError('clear');
-                    currentColumns[2].hidden = false;
-                    $grid.igGrid("option", "width", "400px");
-                    self.sel001Data([]);
-                    self.reload(undefined);
-                } else {
-                    self.sel001Data([]);
-                    currentColumns[2].hidden = true;
-                    $grid.igGrid("option", "width", "400px");
-                    service.getAllCompanys().done(function(data: Array<service.model.CompanyDto>) {
-                        if (data.length > 0) {
-                            _.each(data, function(obj: service.model.CompanyDto) {
-                                let companyModel: CompanyModel;
-                                companyModel = ko.mapping.fromJS(obj);
-                                if (obj.displayAttribute === 1) {
-                                    companyModel.displayAttribute('');
-                                    self.sel001Data.push(ko.toJS(companyModel));
-                                }
-                            });
-                            let companyCheckExist = _.find(self.sel001Data(), function(obj: CompanyModel) {
-                                let newCompanyCode: string = ko.toJS(obj.companyCode);
-                                let oldCompanyCode: string = (ko.toJS(self.currentCompanyCode));
-                                return newCompanyCode === oldCompanyCode;
-                            });
-                            if (self.sel001Data().length > 0) {
-                                self.isUpdate(true);
-                                if (!companyCheckExist) {
-                                    self.processWhenCurrentCodeChange(ko.toJS(self.sel001Data()[0].companyCode));
-                                    self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
-                                } else {
-                                    self.processWhenCurrentCodeChange(self.currentCompanyCode());
-
-                                }
+            if (newValue) {
+                $('#displayAttribute').ntsError('clear');
+                currentColumns[2].hidden = false;
+                $grid.igGrid("option", "width", "400px");
+                self.sel001Data([]);
+                self.reload(undefined);
+            } else {
+                self.sel001Data([]);
+                currentColumns[2].hidden = true;
+                $grid.igGrid("option", "width", "400px");
+                service.getAllCompanys().done(function(data: Array<service.model.CompanyDto>) {
+                    if (data.length > 0) {
+                        _.each(data, function(obj: service.model.CompanyDto) {
+                            let companyModel: CompanyModel;
+                            companyModel = ko.mapping.fromJS(obj);
+                            if (obj.displayAttribute === 1) {
+                                companyModel.displayAttribute('');
+                                self.sel001Data.push(ko.toJS(companyModel));
+                            }
+                        });
+                        let companyCheckExist = _.find(self.sel001Data(), function(obj: CompanyModel) {
+                            let newCompanyCode: string = ko.toJS(obj.companyCode);
+                            let oldCompanyCode: string = (ko.toJS(self.currentCompanyCode));
+                            return newCompanyCode === oldCompanyCode;
+                        });
+                        if (self.sel001Data().length > 0) {
+                            self.isUpdate(true);
+                            if (!companyCheckExist) {
+                                self.processWhenCurrentCodeChange(ko.toJS(self.sel001Data()[0].companyCode));
+                                self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
                             } else {
-                                self.resetData();
-                                self.isUpdate(false);
+                                self.processWhenCurrentCodeChange(self.currentCompanyCode());
 
                             }
+                        } else {
+                            self.resetData();
+                            self.isUpdate(false);
+
                         }
-                    });
-                }
-                $grid.igGrid("option", "columns", currentColumns);
-            });
+                    }
+                });
+            }
+            $grid.igGrid("option", "columns", currentColumns);    
+            self.previousDisplayAttribute = newValue;
         }
 
         processWhenCurrentCodeChange(newValue: string) {

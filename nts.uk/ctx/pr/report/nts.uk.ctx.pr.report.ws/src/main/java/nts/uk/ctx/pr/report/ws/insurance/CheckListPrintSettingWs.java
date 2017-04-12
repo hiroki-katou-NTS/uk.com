@@ -13,7 +13,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.report.app.insurance.command.CheckListPrintSettingSaveCommand;
 import nts.uk.ctx.pr.report.app.insurance.command.CheckListPrintSettingSaveCommandHandler;
 import nts.uk.ctx.pr.report.app.insurance.find.ChecklistPrintSettingFinder;
-import nts.uk.ctx.pr.report.app.insurance.find.dto.CheckListPrintSettingFindOutDto;
+import nts.uk.ctx.pr.report.app.insurance.find.dto.CheckListPrintSettingDto;
 
 /**
  * The Class CheckListPrintSettingWs.
@@ -37,7 +37,7 @@ public class CheckListPrintSettingWs extends WebService {
      */
     @POST
     @Path("find")
-    public CheckListPrintSettingFindOutDto find() {
+    public CheckListPrintSettingDto find() {
         return checklistPrintSettingFinder.find();
     }
 

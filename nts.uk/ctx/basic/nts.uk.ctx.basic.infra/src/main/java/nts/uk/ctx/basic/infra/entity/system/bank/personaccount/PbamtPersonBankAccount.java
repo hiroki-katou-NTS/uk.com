@@ -9,13 +9,12 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.TableEntity;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "PBAMT_PERSON_BANK_ACCOUNT")
-public class PbamtPersonBankAccount extends UkJpaEntity {
+public class PbamtPersonBankAccount extends TableEntity {
 	
 	@EmbeddedId
 	public PbamtPersonBankAccountPK pbamtPersonBankAccountPK;
@@ -205,9 +204,4 @@ public class PbamtPersonBankAccount extends UkJpaEntity {
 	
 	@Column(name = "ACCOUNT_HOLDER_NAME5")
 	public String accountHolderName5;
-
-	@Override
-	protected PbamtPersonBankAccountPK getKey() {		
-		return this.pbamtPersonBankAccountPK;
-	}
 }

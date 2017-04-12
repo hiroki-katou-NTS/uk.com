@@ -33,7 +33,7 @@ public interface CertifyGroupRepository {
 	 * @param groupCode the group code
 	 * @param version the version
 	 */
-    void remove(String companyCode, String groupCode, long version);
+    void remove(String companyCode, String groupCode);
 
 	/**
 	 * Find all.

@@ -101,7 +101,7 @@ hr {
 	padding: 0px 20px;
 }
 
-#BTN_003 {
+#BTN_003, #BTN_007 {
 	margin-left: 10px;
 	padding: 0px 10px;
 }
@@ -111,12 +111,13 @@ hr {
 	padding: 0px 20px;
 }
 
-#BTN_005 {
-	padding: 0px 20px;
-}
-
 .ntsSearchBox {
 	width: 390px !important;
+}
+
+.icon.icon-searchbox {
+	top: 115px;
+	left: 20px;
 }
 
 .control-group-left {

@@ -13,13 +13,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.report.app.salarydetail.command.SalaryOutputSettingRemoveCommand;
-import nts.uk.ctx.pr.report.app.salarydetail.command.SalaryOutputSettingRemoveCommandHandler;
-import nts.uk.ctx.pr.report.app.salarydetail.command.SalaryOutputSettingSaveCommand;
-import nts.uk.ctx.pr.report.app.salarydetail.command.SalaryOutputSettingSaveCommandHandler;
-import nts.uk.ctx.pr.report.app.salarydetail.find.SalaryOutputSettingFinder;
-import nts.uk.ctx.pr.report.app.salarydetail.find.dto.SalaryOutputSettingDto;
-import nts.uk.ctx.pr.report.app.salarydetail.find.dto.SalaryOutputSettingHeaderDto;
+import nts.uk.ctx.pr.report.app.salarydetail.outputsetting.command.SalaryOutputSettingRemoveCommand;
+import nts.uk.ctx.pr.report.app.salarydetail.outputsetting.command.SalaryOutputSettingRemoveCommandHandler;
+import nts.uk.ctx.pr.report.app.salarydetail.outputsetting.command.SalaryOutputSettingSaveCommand;
+import nts.uk.ctx.pr.report.app.salarydetail.outputsetting.command.SalaryOutputSettingSaveCommandHandler;
+import nts.uk.ctx.pr.report.app.salarydetail.outputsetting.find.SalaryOutputSettingFinder;
+import nts.uk.ctx.pr.report.app.salarydetail.outputsetting.find.dto.SalaryOutputSettingDto;
+import nts.uk.ctx.pr.report.app.salarydetail.outputsetting.find.dto.SalaryOutputSettingHeaderDto;
 
 /**
  * The Class SalaryOutputSettingWs.

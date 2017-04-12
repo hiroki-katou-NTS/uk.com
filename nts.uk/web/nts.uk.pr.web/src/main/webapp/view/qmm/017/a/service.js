@@ -9,7 +9,10 @@ var nts;
                 findFormula: "pr/formula/formulaMaster/findFormula",
                 getFormulaDetail: "pr/formula/formulaMaster/getFormulaDetail",
                 registerFormulaMaster: "pr/formula/formulaMaster/addFormulaMaster",
-                updateFormula: "pr/formula/formulaMaster/updateFormulaMaster"
+                updateFormula: "pr/formula/formulaMaster/updateFormulaMaster",
+                getListCompanyUnitPrice: "pr/proto/unitprice/findbydate/",
+                getListPersonalUnitPrice: "pr/core/rule/employment/unitprice/personal/find/all",
+                getListItemMaster: "pr/core/item/findall/category/"
             };
             function getAllFormula() {
                 var dfd = $.Deferred();
@@ -67,6 +70,42 @@ var nts;
                 return dfd.promise();
             }
             service.updateFormulaMaster = updateFormulaMaster;
+            function getListCompanyUnitPrice(baseDate) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("pr", paths.getListCompanyUnitPrice + baseDate)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getListCompanyUnitPrice = getListCompanyUnitPrice;
+            function getListPersonalUnitPrice() {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("pr", paths.getListPersonalUnitPrice)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getListPersonalUnitPrice = getListPersonalUnitPrice;
+            function getListItemMaster(categoryAtr) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("pr", paths.getListItemMaster + categoryAtr)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getListItemMaster = getListItemMaster;
         })(service = qmm017.service || (qmm017.service = {}));
         var model;
         (function (model) {
@@ -100,6 +139,24 @@ var nts;
                 return FormulaEasyDetailDto;
             }());
             model.FormulaEasyDetailDto = FormulaEasyDetailDto;
+            var CompanyUnitPriceDto = (function () {
+                function CompanyUnitPriceDto() {
+                }
+                return CompanyUnitPriceDto;
+            }());
+            model.CompanyUnitPriceDto = CompanyUnitPriceDto;
+            var PersonalUnitPriceDto = (function () {
+                function PersonalUnitPriceDto() {
+                }
+                return PersonalUnitPriceDto;
+            }());
+            model.PersonalUnitPriceDto = PersonalUnitPriceDto;
+            var ItemMasterDto = (function () {
+                function ItemMasterDto() {
+                }
+                return ItemMasterDto;
+            }());
+            model.ItemMasterDto = ItemMasterDto;
         })(model = qmm017.model || (qmm017.model = {}));
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));

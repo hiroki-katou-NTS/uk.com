@@ -22,6 +22,5 @@ public enum RoundTimingSet {
 	
 	RoundTimingSet(int value) {
 		this.value = value;
-		// TODO Auto-generated constructor stub
 	}
 }

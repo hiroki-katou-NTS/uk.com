@@ -75,6 +75,11 @@ public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsur
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundConst()));
 			break;
+		default:
+			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getCEmpRateGeneral().doubleValue());
+			unemployeeInsuranceRateItemSetting
+				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundGeneral()));
+			break;
 		}
 		return unemployeeInsuranceRateItemSetting;
 	}
@@ -107,6 +112,11 @@ public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsur
 			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getPEmpRateConst().doubleValue());
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundConst()));
+			break;
+		default:
+			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getPEmpRateGeneral().doubleValue());
+			unemployeeInsuranceRateItemSetting
+				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundGeneral()));
 			break;
 		}
 		return unemployeeInsuranceRateItemSetting;

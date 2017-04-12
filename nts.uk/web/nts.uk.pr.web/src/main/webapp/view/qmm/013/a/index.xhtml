@@ -26,7 +26,8 @@
 					data-bind="click: btn_002, enable: $root.errors.isEmpty">登録</button>
 				<button id="BTN_003">印刷 (PDF)</button>
 				<button id="BTN_005">マスタ修正ログ</button>
-				<button id="BTN_004" class="danger" data-bind="click: btn_004, enable: isEnableDelete">削除</button>
+				<button id="BTN_004" class="danger"
+					data-bind="click: btn_004, enable: isEnableDelete">削除</button>
 			</div>
 			<div id="contents-area">
 				<div class="left-content">
@@ -66,7 +67,8 @@
 					<div class="right-content-left">
 						<div id="LBL_002"
 							data-bind="ntsFormLabel:{constraint: ['PersonalUnitPriceCode', 'PersonalUnitPriceName'],required: true}">コード/名称</div>
-						<div id="LBL_003" data-bind="ntsFormLabel:{constraint: 'PersonalUnitPriceShortName'}">略名</div>
+						<div id="LBL_003"
+							data-bind="ntsFormLabel:{constraint: 'PersonalUnitPriceShortName'}">略名</div>
 						<br />
 						<div id="LBL_004" data-bind="ntsFormLabel:{}">統合コード</div>
 					</div>
@@ -102,7 +104,7 @@
 							</div>
 						</div>
 						<div class="control-group">
-							<span id="INP_004"> <input
+							<span> <input id="INP_004" data-name="略名"
 								data-bind="ntsTextEditor: {
 									value: personalUnitPriceShortName,
 									constraint: 'PersonalUnitPriceShortName',
@@ -217,7 +219,7 @@
 					</div>
 					<div class="right-content-right">
 						<div class="control-group">
-							<span id="INP_005"> <textarea
+							<span> <textarea id="INP_005" data-name="メモ"
 									style="height: 200px; width: 500px"
 									data-bind="ntsMultilineEditor: {
 									value: memo,

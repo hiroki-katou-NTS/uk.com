@@ -1,12 +1,11 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.entity.insurance.labor.businesstype;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -15,61 +14,23 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class QismtBusinessType.
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "QISMT_BUSINESS_TYPE")
-public class QismtBusinessType implements Serializable {
+public class QismtBusinessType extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-
-	/** The ins date. */
-	@Column(name = "INS_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date insDate;
-
-	/** The ins ccd. */
-	@Column(name = "INS_CCD")
-	private String insCcd;
-
-	/** The ins scd. */
-	@Column(name = "INS_SCD")
-	private String insScd;
-
-	/** The ins pg. */
-	@Column(name = "INS_PG")
-	private String insPg;
-
-	/** The upd date. */
-	@Column(name = "UPD_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updDate;
-
-	/** The upd ccd. */
-	@Column(name = "UPD_CCD")
-	private String updCcd;
-
-	/** The upd scd. */
-	@Column(name = "UPD_SCD")
-	private String updScd;
-
-	/** The upd pg. */
-	@Column(name = "UPD_PG")
-	private String updPg;
-
-	/** The exclus ver. */
-	@Basic(optional = false)
-	@Column(name = "EXCLUS_VER")
-	private long exclusVer;
 
 	/** The ccd. */
 	@Id
@@ -137,16 +98,6 @@ public class QismtBusinessType implements Serializable {
 		super();
 	}
 
-	/**
-	 * Instantiates a new qismt business type.
-	 *
-	 * @param ccd
-	 *            the ccd
-	 */
-	public QismtBusinessType(String ccd) {
-		this.ccd = ccd;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -170,10 +121,21 @@ public class QismtBusinessType implements Serializable {
 			return false;
 		}
 		QismtBusinessType other = (QismtBusinessType) object;
-		if ((this.ccd == null && other.ccd != null) || (this.ccd != null && !this.ccd.equals(other.ccd))) {
+		if ((this.ccd == null && other.ccd != null)
+				|| (this.ccd != null && !this.ccd.equals(other.ccd))) {
 			return false;
 		}
 		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.ccd;
 	}
 
 }
