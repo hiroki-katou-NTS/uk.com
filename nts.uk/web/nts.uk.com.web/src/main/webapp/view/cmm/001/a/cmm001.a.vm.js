@@ -33,6 +33,7 @@ var cmm001;
                     if (self.displayAttribute() !== self.previousDisplayAttribute) {
                         if (self.dirtyObject.isDirty()) {
                             nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function () {
+                                self.dirtyObject.reset();
                                 self.processWhenDisplayAttributeChanged(newValue);
                             }).ifCancel(function () {
                                 self.displayAttribute(self.previousDisplayAttribute);
