@@ -42,7 +42,7 @@ module nts.uk.pr.view.qpp007.c {
                             return '';
                         }
                     },
-                    { headerText: 'コード', prop: 'code', width: 100 },
+                    { headerText: 'コード', prop: 'code', width: 50 },
                     { headerText: '名称', prop: 'name', width: 100 },
                 ]);
 
@@ -257,7 +257,7 @@ module nts.uk.pr.view.qpp007.c {
             */
             private enableNewMode(): void {
                 var self = this;
-                self.outputSettingDetailModel(new OutputSettingDetailModel(ko.observableArray<AggregateItem>([])));
+                self.outputSettingDetailModel(new OutputSettingDetailModel(self.allAggregateItems));
                 self.outputSettingSelectedCode(null);
                 self.dirtyChecker.reset();
                 self.isNewMode(true);
@@ -542,7 +542,7 @@ module nts.uk.pr.view.qpp007.c {
                         }
                     },
                     { headerText: 'コード', prop: 'code', width: 50 },
-                    { headerText: '名称', prop: 'name', width: 60 },
+                    { headerText: '名称', prop: 'name', width: 120 },
                     {
                         headerText: '削除', prop: 'code', width: 60,
                         formatter: function(code: string) {

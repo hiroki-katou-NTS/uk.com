@@ -39,7 +39,7 @@ var nts;
                                                 return '';
                                             }
                                         },
-                                        { headerText: 'コード', prop: 'code', width: 100 },
+                                        { headerText: 'コード', prop: 'code', width: 50 },
                                         { headerText: '名称', prop: 'name', width: 100 },
                                     ]);
                                     self.outputSettingDetailModel.subscribe(function (data) {
@@ -194,7 +194,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.enableNewMode = function () {
                                     var self = this;
-                                    self.outputSettingDetailModel(new OutputSettingDetailModel(ko.observableArray([])));
+                                    self.outputSettingDetailModel(new OutputSettingDetailModel(self.allAggregateItems));
                                     self.outputSettingSelectedCode(null);
                                     self.dirtyChecker.reset();
                                     self.isNewMode(true);
@@ -404,7 +404,7 @@ var nts;
                                             }
                                         },
                                         { headerText: 'コード', prop: 'code', width: 50 },
-                                        { headerText: '名称', prop: 'name', width: 60 },
+                                        { headerText: '名称', prop: 'name', width: 120 },
                                         {
                                             headerText: '削除', prop: 'code', width: 60,
                                             formatter: function (code) {

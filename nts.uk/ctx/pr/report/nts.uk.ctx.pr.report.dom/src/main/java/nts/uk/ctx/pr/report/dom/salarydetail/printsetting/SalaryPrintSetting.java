@@ -94,12 +94,18 @@ public class SalaryPrintSetting extends DomainObject {
 	@Setter
 	private SalaryOutputDistinction outputDistinction;
 
+	/**
+	 * Instantiates a new salary print setting.
+	 */
+	private SalaryPrintSetting() {
+		super();
+	}
+
 	// =================== Memento State Support Method ===================
 	/**
 	 * Instantiates a new salary print setting.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public SalaryPrintSetting(SalaryPrintSettingGetMemento memento) {
 		this.companyCode = memento.getCompanyCode();
@@ -127,11 +133,61 @@ public class SalaryPrintSetting extends DomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public void saveToMemento(SalaryPrintSettingSetMemento memento) {
 		memento.setCompanyCode(this.companyCode);
+		memento.setHrchyIndex1(this.hrchyIndex1);
+		memento.setHrchyIndex2(this.hrchyIndex2);
+		memento.setHrchyIndex3(this.hrchyIndex3);
+		memento.setHrchyIndex4(this.hrchyIndex4);
+		memento.setHrchyIndex5(this.hrchyIndex5);
+		memento.setHrchyIndex6(this.hrchyIndex6);
+		memento.setHrchyIndex7(this.hrchyIndex7);
+		memento.setHrchyIndex8(this.hrchyIndex8);
+		memento.setHrchyIndex9(this.hrchyIndex9);
+		memento.setMonthTotalSet(this.monthTotalSet);
+		memento.setTotalSet(this.totalSet);
+		memento.setOutputDistinction(this.outputDistinction);
+		memento.setShowPayment(this.showPayment);
+		memento.setSumDepHrchyIndexSet(this.sumDepHrchyIndexSet);
+		memento.setSumEachDeprtSet(this.sumEachDeprtSet);
+		memento.setSumMonthDepHrchySet(this.sumMonthDepHrchySet);
+		memento.setSumPersonSet(this.sumPersonSet);
+		memento.setSumMonthPersonSet(this.sumMonthPersonSet);
+		memento.setSumMonthDeprtSet(this.sumMonthDepHrchySet);
+	}
+
+	/**
+	 * Creates the with intial.
+	 *
+	 * @param companyCode the company code
+	 * @return the salary print setting
+	 */
+	public static final SalaryPrintSetting createWithIntial(String companyCode) {
+		SalaryPrintSetting setting = new SalaryPrintSetting();
+		setting.companyCode = companyCode;
+		setting.hrchyIndex1 = false;
+		setting.hrchyIndex2 = false;
+		setting.hrchyIndex3 = false;
+		setting.hrchyIndex4 = false;
+		setting.hrchyIndex5 = false;
+		setting.hrchyIndex6 = false;
+		setting.hrchyIndex7 = false;
+		setting.hrchyIndex8 = false;
+		setting.hrchyIndex9 = false;
+		setting.monthTotalSet = false;
+		setting.outputDistinction = SalaryOutputDistinction.Hourly;
+		setting.showPayment = false;
+		setting.sumDepHrchyIndexSet = false;
+		setting.sumEachDeprtSet = false;
+		setting.sumMonthDepHrchySet = false;
+		setting.sumMonthDeprtSet = false;
+		setting.sumMonthPersonSet = false;
+		setting.sumPersonSet = false;
+		setting.totalSet = false;
+		return setting;
+
 	}
 
 	/*
