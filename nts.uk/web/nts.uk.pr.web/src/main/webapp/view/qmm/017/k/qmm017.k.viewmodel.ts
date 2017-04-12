@@ -1,6 +1,6 @@
 module nts.uk.pr.view.qmm017.k {
     export module viewmodel {
-        export class ScreenModel {
+        export class ScreenModelKScreen {
             data: any;
             startYm: KnockoutObservable<any>;
             endYm: KnockoutObservable<any>;

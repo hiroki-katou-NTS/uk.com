@@ -1,6 +1,6 @@
 module nts.uk.pr.view.qmm017.j {
     export module viewmodel {
-        export class ScreenModel {
+        export class ScreenModelJScreen {
             formulaCode: KnockoutObservable<string>;
             formulaName: KnockoutObservable<string>;
             startYm: KnockoutObservable<any>;
@@ -53,6 +53,10 @@ module nts.uk.pr.view.qmm017.j {
                 self.selectedMode = ko.observable(0);
             }
 
+            closeDialog() {
+                nts.uk.ui.windows.close();
+            }
+            
             registerFormulaHistory() {
                 var self = this;
                 let command = {};

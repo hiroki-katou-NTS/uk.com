@@ -1,6 +1,6 @@
 module nts.uk.pr.view.qmm017.l {
     export module viewmodel {
-        export class ScreenModel {
+        export class ScreenModelLScreen {
             easyFormulaName: KnockoutObservable<string>;
             comboBoxFormulaType: KnockoutObservable<ComboBox>;
             comboBoxBaseAmount: KnockoutObservable<ComboBox>;
