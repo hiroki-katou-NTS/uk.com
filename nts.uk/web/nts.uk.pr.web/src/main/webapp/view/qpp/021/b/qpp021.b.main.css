@@ -96,6 +96,7 @@
 
 #B_SEL_004>.ntsRadioBox {
 	margin-left: 50px !important;
+	margin-right: 50px !important;
 }
 
 .nts-wizard>.content>.body label {

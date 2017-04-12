@@ -11,8 +11,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 730,
-					height : 600
+					width : 840,
+					height : 610
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -39,10 +39,10 @@
 							}">
 						</div>
 						<div class="valign-center control-group div-zero-setting">
-							<div class="zero-setting-label" data-bind="ntsFormLabel: {}">金額ゼロ出力</div>
+							<div class="d-div-label" data-bind="ntsFormLabel: {}">金額ゼロ出力</div>
 							<span
 								data-bind="ntsSwitchButton: {
-								options: zeroAmountOutput,
+								options: switchItemList,
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: zeroAmountOutputCode,
@@ -52,10 +52,10 @@
 								data-bind="ntsCheckBox: { checked: true, enable: true, text: '項目名も表示しない' }"></div>
 						</div>
 						<div class="valign-center control-group div-zero-setting">
-							<div class="zero-setting-label" data-bind="ntsFormLabel: {}">金額ゼロ出力</div>
+							<div class="d-div-label" data-bind="ntsFormLabel: {}">金額ゼロ出力</div>
 							<span
 								data-bind="ntsSwitchButton: {
-								options: zeroTimeClassification,
+								options: switchItemList,
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: zeroTimeClassificationCode,
@@ -68,7 +68,7 @@
 						<div class="d-label-005">明細書に出力する年月</div>
 						<hr />
 						<div>
-							<div class="zero-setting-label select-print-year-month"
+							<div class="d-div-label select-print-year-month"
 								data-bind="ntsFormLabel: {}">印字する年月を選択してください。</div>
 							<div id="combo-box-select-print-YM"
 								data-bind="ntsComboBox: {
@@ -88,6 +88,116 @@
 					<div id="right-contents-area">
 						<div class="d-label-007">任意出力項目の指定</div>
 						<hr />
+						<div class="valign-center control-group">
+							<div class="right-contents-area-label" data-bind="ntsFormLabel: {}">課税対象累計出力</div>
+							<span 
+								data-bind="ntsSwitchButton: {
+								options: switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: totalTaxableOutputCode,
+								enable: true
+								},visible: true ">
+							</span>
+						</div>
+						<div class="valign-center control-group">
+							<div class="right-contents-area-label" data-bind="ntsFormLabel: {}">年休残数出力</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: yearlyHolidaysClassificationCode,
+								enable: true 
+								}">
+							</span>
+						</div>
+						<div class="valign-center control-group">
+							<div class="right-contents-area-label" data-bind="ntsFormLabel: {}">現物支給額出力</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: kindPaymentOutputCode,
+								enable: true 
+								}">
+							</span>
+						</div>
+						<div class="valign-center control-group">
+							<div class="right-contents-area-label" data-bind="ntsFormLabel: {}">支払枠出力名称指定</div>
+							<span  class = "right-contents-area-comobox"
+								data-bind="ntsComboBox: {
+									options: outputNameDesignation,
+									optionsValue: 'code',
+									value: outputNameDesignationCode,
+									optionsText: 'name',
+									editable: false,
+									enable: true,
+									columns: [
+										{ prop: 'name', length: 10 },
+									]}">
+							</span>
+						</div>
+						
+						
+						
+						 <div class="valign-center control-group">
+							<div class="right-contents-area-label" data-bind="ntsFormLabel: {}">会社名出力</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: outputCompanyNameCode,
+								enable: true 
+								}">
+							</span>
+						</div>
+						<div class="valign-center control-group">
+							<div class="right-contents-area-label" data-bind="ntsFormLabel: {}">部門出力</div>
+							<span  class = "right-contents-area-comobox"
+								data-bind="ntsComboBox: {
+									options: outputDepartment,
+									optionsValue: 'code',
+									value: outputDepartmentCode,
+									optionsText: 'name',
+									editable: false,
+									enable: true,
+									columns: [
+										{ prop: 'name', length: 10 },
+									]}">
+							</span>
+						</div>
+						
+						<div class="valign-center control-group">
+							<div class="right-contents-area-label" data-bind="ntsFormLabel: {}">網掛け</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: shadedSectionCode,
+								enable: true 
+								}">
+							</span>
+						</div>
+						<div class="valign-center control-group">
+							<div class="right-contents-area-label" data-bind="ntsFormLabel: {}">枠線幅</div>
+							<span  class = "right-contents-area-comobox"
+								data-bind="ntsComboBox: {
+									options: borderLineWidth,
+									optionsValue: 'code',
+									value: borderLineWidthCode,
+									optionsText: 'name',
+									editable: false,
+									enable: true,
+									columns: [
+										{ prop: 'name', length: 10 },
+									]}">
+							</span>
+						</div>
+						
 					</div>
 				</div>
 

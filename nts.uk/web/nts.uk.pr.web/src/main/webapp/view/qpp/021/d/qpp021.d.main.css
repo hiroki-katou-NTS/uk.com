@@ -1,7 +1,11 @@
 /* ====================== main css =============================*/
 #contents-area {
-	padding: 20px 30px !important;
-	width: 850px;
+	width: 825px !important;
+	padding: 5px 0px 0px 10px !important;
+}
+
+.control-group {
+    margin-bottom: 7px !important;
 }
 
 /* ====================== div css =============================*/
@@ -11,23 +15,24 @@
 }
 
 #left-contents-area {
-	width: 380px;
-	height: 450px;
-	border: 1px solid gray;
+	width: 370px;
 	float: left;
 	padding: 15px;
+	margin-right: 25px;
 }
 
 #right-contents-area {
-	width: 380px;
-	height: 450px;
-	border: 1px solid gray;
+	width: 370px;
 	float: left;
 	padding: 15px;
 }
 
-.zero-setting-label {
+.d-div-label {
 	margin-right: 30px;
+}
+.right-contents-area-label{
+	width: 170px !important;
+	height: 35px !important;
 }
 .select-print-year-month {
 	margin-top: 10px;
@@ -38,7 +43,7 @@
 	
 }
 #div-button-bottom > button {
-	margin: 10px;
+	margin: 0px 10px;
 	width: 100px !important;
 }
 /* ====================== radio css =============================*/
@@ -52,13 +57,14 @@
 }
 /* ====================== label css =============================*/
 .d-label-001, .d-label-005, .d-label-007 {
-	width: 500px;
 	margin-bottom: 10px;
 }
 
 .d-label-005 {
 	margin-top: 70px !important;
 }
+
+
 
 /* ====================== Switch css =============================*/
 .div-zero-setting {
@@ -70,7 +76,14 @@ button.nts-switch-button {
 	height: 30px !important;
 }
 
+.right-contents-area-switch {
+	margin: 10px 0px 0px 20px !important;
+}
+
 /* ====================== listbox css =============================*/
 #combo-box-select-print-YM {
 	margin: 10px 0px 0px 20px !important;
+}
+.right-contents-area-comobox{
+	width: 180px !important;
 }

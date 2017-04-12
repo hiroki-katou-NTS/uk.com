@@ -7,6 +7,7 @@ var qpp021;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
+                    self.selectPrintType = ko.observable(1);
                     self.stepList = [
                         { content: '.A_LBL_002-step' },
                         { content: '.A_LBL_003-step' },
@@ -27,10 +28,15 @@ var qpp021;
                     ]);
                     self.selectedRbCode = ko.observable(1);
                     self.selectPrintTypes = ko.observableArray([
-                        new PrintTypeModel('01', 'A4縦1人印刷'),
-                        new PrintTypeModel('02', 'A4縦2人印刷'),
-                        new PrintTypeModel('03', 'A4縦3人印刷'),
-                        new PrintTypeModel('04', 'A4横2人印刷'),
+                        new PrintTypeModel(0, 'レーザー　A4　縦向き　1人'),
+                        new PrintTypeModel(1, 'レーザー　A4　縦向き　2人'),
+                        new PrintTypeModel(2, 'レーザー　A4　縦向き　3人'),
+                        new PrintTypeModel(3, 'レーザー　A4　横向き　2人'),
+                        new PrintTypeModel(4, 'レーザー(圧着式)　縦向き　1人'),
+                        new PrintTypeModel(5, 'レーザー(圧着式)　横向き　1人'),
+                        new PrintTypeModel(6, 'ドットプリンタ　連続用紙　1人'),
+                        new PrintTypeModel(7, 'PAYS単票'),
+                        new PrintTypeModel(8, 'PAYS連続')
                     ]);
                     self.selectPrintTypeCode = ko.observable("01");
                     self.selectLineItemLayout = ko.observableArray([
@@ -52,6 +58,9 @@ var qpp021;
                 };
                 ScreenModel.prototype.previous = function () {
                     $('#wizard').ntsWizard("prev");
+                };
+                ScreenModel.prototype.openDialogScreenD = function () {
+                    nts.uk.ui.windows.sub.modal('/view/qpp/021/d/index.xhtml', { title: '詳細設定', });
                 };
                 return ScreenModel;
             }());

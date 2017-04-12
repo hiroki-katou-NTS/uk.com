@@ -1,5 +1,7 @@
 module qpp021.b.viewmodel {
     export class ScreenModel {
+        selectPrintType: KnockoutObservable<number>;
+
         stepList: Array<nts.uk.ui.NtsWizardStep>;
         stepSelected: KnockoutObservable<nts.uk.ui.NtsWizardStep>;
 
@@ -15,8 +17,10 @@ module qpp021.b.viewmodel {
         selectLineItemLayout: KnockoutObservableArray<LineItemLayoutModel>;
         selectLineItemCodes: KnockoutObservableArray<number>;
 
+
         constructor() {
             let self = this;
+            self.selectPrintType = ko.observable(1);
             self.stepList = [
                 { content: '.A_LBL_002-step' },
                 { content: '.A_LBL_003-step' },
@@ -40,10 +44,15 @@ module qpp021.b.viewmodel {
             self.selectedRbCode = ko.observable(1);
 
             self.selectPrintTypes = ko.observableArray([
-                new PrintTypeModel('01', 'A4縦1人印刷'),
-                new PrintTypeModel('02', 'A4縦2人印刷'),
-                new PrintTypeModel('03', 'A4縦3人印刷'),
-                new PrintTypeModel('04', 'A4横2人印刷'),
+                new PrintTypeModel(0, 'レーザー　A4　縦向き　1人'),
+                new PrintTypeModel(1, 'レーザー　A4　縦向き　2人'),
+                new PrintTypeModel(2, 'レーザー　A4　縦向き　3人'),
+                new PrintTypeModel(3, 'レーザー　A4　横向き　2人'),
+                new PrintTypeModel(4, 'レーザー(圧着式)　縦向き　1人'),
+                new PrintTypeModel(5, 'レーザー(圧着式)　横向き　1人'),
+                new PrintTypeModel(6, 'ドットプリンタ　連続用紙　1人'),
+                new PrintTypeModel(7, 'PAYS単票'),
+                new PrintTypeModel(8, 'PAYS連続')
             ]);
             self.selectPrintTypeCode = ko.observable("01");
 
@@ -67,10 +76,16 @@ module qpp021.b.viewmodel {
         next() {
             $('#wizard').ntsWizard("next");
         }
-        
+
         previous() {
-        $('#wizard').ntsWizard("prev");
-    }
+            $('#wizard').ntsWizard("prev");
+        }
+        
+        openDialogScreenD(){
+                //nts.uk.ui.windows.setShared('CMM013_historyId', self.index_selected(), true);
+                //nts.uk.ui.windows.setShared('CMM013_startDateLast', self.startDateLast(), true);
+                nts.uk.ui.windows.sub.modal('/view/qpp/021/d/index.xhtml', { title: '詳細設定', })
+        }
     }
 
     class ComboBoxModel {
@@ -92,9 +107,9 @@ module qpp021.b.viewmodel {
     }
 
     class PrintTypeModel {
-        printTypeCode: string;
+        printTypeCode: number;
         printTypeName: string;
-        constructor(printTypeCode: string, printTypeName: string) {
+        constructor(printTypeCode: number, printTypeName: string) {
             this.printTypeCode = printTypeCode;
             this.printTypeName = printTypeName;
         }

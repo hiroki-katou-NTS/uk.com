@@ -65,8 +65,8 @@
 							<div class="valign-center control-group">
 								<div id="B_LBL_005" data-bind="ntsFormLabel: { required: true }">プリンタの選択</div>
 								<span class="ntsControl"> <label class="ntsRadioBox">
-										<input type="radio" name="textRadio"
-										data-bind="checkedValue: 1, checked: 1, enable: true" /> <span
+										<input type="radio" name="textRadioPrintType"
+										data-bind="checkedValue: 1, checked: selectPrintType, enable: true" /> <span
 										class="box"></span><span class="label"
 										data-bind="text: 'レーザープリンタ用帳表（圧着式用も含みます）'"></span>
 								</label>
@@ -74,8 +74,8 @@
 								<div>
 									<span class="ntsControl" id="radio-ntsControl"> <label
 										class="ntsRadioBox"> <input type="radio"
-											name="textRadio"
-											data-bind="checkedValue: 2, checked: false, enable: true" />
+											name="textRadioPrintType"
+											data-bind="checkedValue: 2, checked: selectPrintType, enable: true" />
 											<span class="box"></span><span class="label"
 											data-bind="text: 'ドットプリンタ用帳表'"></span>
 									</label>
@@ -113,7 +113,7 @@
 											primaryKey: 'printTypeCode',
 											columns: [
 												{ headerText: 'コード', key: 'printTypeCode', width: 100, hidden: true},
-                    							{ headerText: '印刷タイプリスト', key: 'printTypeName', width: 100 },
+                    							{ headerText: '印刷タイプリスト', key: 'printTypeName', width: 150 },
 											],
 											deleteOptions : {visible : false, deleteField: 'deletable'},
 											multiple: false,
@@ -143,7 +143,7 @@
 									</td>
 									<td style="vertical-align: top;">
 										<div class="B_BTN_001_002_003">
-											<button id="B_BTN_001" class="small" data-bind="">詳細設定</button>
+											<button id="B_BTN_001" class="small" data-bind="click: openDialogScreenD">詳細設定</button>
 										</div>
 
 										<div class="B_BTN_001_002_003">
