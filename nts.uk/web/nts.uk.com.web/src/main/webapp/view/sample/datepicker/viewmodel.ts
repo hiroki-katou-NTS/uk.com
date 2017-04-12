@@ -6,7 +6,7 @@ module sample.datepicker.viewmodel {
         constructor() {
             var self = this;
             self.dateString = ko.observable('20000101');
-            self.yearMonth = ko.observable(200001);
+            self.yearMonth = ko.observable("200002");
             // NOTE: Un-comment to see diffirent between Date and UTC Date 
             //self.date = ko.observable(new Date(2000,0,1));
             self.date = ko.observable(nts.uk.time.UTCDate(2000, 0, 1));

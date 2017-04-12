@@ -75,8 +75,12 @@ module nts.uk.ui.koExtentions {
                 $input.ntsError('clear');
                 if (result.isValid) {
                     // Day of Week
-                    if (hasDayofWeek)
-                        $label.text("(" + time.formatPattern(newText, "", dayofWeekFormat) + ")");
+                    if (hasDayofWeek) {
+                        if (util.isNullOrEmpty(result.parsedValue))
+                            $label.text("");
+                        else
+                            $label.text("(" + time.formatPattern(newText, "", dayofWeekFormat) + ")");
+                    }
                     value(result.parsedValue);
                 }
                 else {
@@ -123,8 +127,12 @@ module nts.uk.ui.koExtentions {
                 if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
                     $input.datepicker('setDate', dateFormatValue);
                     // Day of Week
-                    if (hasDayofWeek)
-                        $label.text("(" + moment.utc(value(), valueFormat).format(dayofWeekFormat) + ")");
+                    if (hasDayofWeek) {
+                        if (util.isNullOrEmpty(dateFormatValue))
+                            $label.text("");
+                        else
+                            $label.text("(" + time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
+                    }
                 }
             }
             container.data("init", false);

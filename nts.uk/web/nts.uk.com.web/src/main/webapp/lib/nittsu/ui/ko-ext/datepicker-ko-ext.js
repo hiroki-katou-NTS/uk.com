@@ -67,8 +67,12 @@ var nts;
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (result.isValid) {
-                                if (hasDayofWeek)
-                                    $label.text("(" + uk.time.formatPattern(newText, "", dayofWeekFormat) + ")");
+                                if (hasDayofWeek) {
+                                    if (uk.util.isNullOrEmpty(result.parsedValue))
+                                        $label.text("");
+                                    else
+                                        $label.text("(" + uk.time.formatPattern(newText, "", dayofWeekFormat) + ")");
+                                }
                                 value(result.parsedValue);
                             }
                             else {
@@ -106,8 +110,12 @@ var nts;
                         if (init === true || uk.time.formatPattern($input.datepicker("getDate", true), "", ISOFormat) !== dateFormatValue) {
                             if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
                                 $input.datepicker('setDate', dateFormatValue);
-                                if (hasDayofWeek)
-                                    $label.text("(" + moment.utc(value(), valueFormat).format(dayofWeekFormat) + ")");
+                                if (hasDayofWeek) {
+                                    if (uk.util.isNullOrEmpty(dateFormatValue))
+                                        $label.text("");
+                                    else
+                                        $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
+                                }
                             }
                         }
                         container.data("init", false);
