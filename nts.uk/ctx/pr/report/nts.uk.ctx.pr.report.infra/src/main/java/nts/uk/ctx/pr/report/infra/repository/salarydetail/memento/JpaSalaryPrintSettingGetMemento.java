@@ -2,77 +2,42 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.report.app.salarydetail.printsetting.command;
+package nts.uk.ctx.pr.report.infra.repository.salarydetail.memento;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.uk.ctx.pr.report.dom.salarydetail.SalaryOutputDistinction;
 import nts.uk.ctx.pr.report.dom.salarydetail.printsetting.SalaryPrintSettingGetMemento;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstPrintSet;
 
 /**
- * The Class SalaryPrintSettingSaveCommand.
+ * The Class JpaSalaryPrintSettingGetMemento.
  */
-@Getter
-@Setter
-public class SalaryPrintSettingSaveCommand implements SalaryPrintSettingGetMemento {
+public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMemento {
 
-	/** The show payment. */
-	private Boolean showPayment;
+	/** The entity. */
+	@Getter
+	private QlsptPaylstPrintSet entity;
 
-	/** The sum person set. */
-	private Boolean sumPersonSet;
+	/**
+	 * Instantiates a new jpa salary print setting get memento.
+	 *
+	 * @param entity
+	 *            the entity
+	 */
+	public JpaSalaryPrintSettingGetMemento(QlsptPaylstPrintSet entity) {
+		this.entity = entity;
+	}
 
-	/** The sum month person set. */
-	private Boolean sumMonthPersonSet;
-
-	/** The sum each deprt set. */
-	private Boolean sumEachDeprtSet;
-
-	/** The sum month deprt set. */
-	private Boolean sumMonthDeprtSet;
-
-	/** The sum dep hrchy index set. */
-	private Boolean sumDepHrchyIndexSet;
-
-	/** The sum month dep hrchy set. */
-	private Boolean sumMonthDepHrchySet;
-
-	/** The hrchy index 1. */
-	private Boolean hrchyIndex1;
-
-	/** The hrchy index 2. */
-	private Boolean hrchyIndex2;
-
-	/** The hrchy index 3. */
-	private Boolean hrchyIndex3;
-
-	/** The hrchy index 4. */
-	private Boolean hrchyIndex4;
-
-	/** The hrchy index 5. */
-	private Boolean hrchyIndex5;
-
-	/** The hrchy index 6. */
-	private Boolean hrchyIndex6;
-
-	/** The hrchy index 7. */
-	private Boolean hrchyIndex7;
-
-	/** The hrchy index 8. */
-	private Boolean hrchyIndex8;
-
-	/** The hrchy index 9. */
-	private Boolean hrchyIndex9;
-
-	/** The total set. */
-	private Boolean totalSet;
-
-	/** The month total set. */
-	private Boolean monthTotalSet;
-
-	/** The output distinction. */
-	private SalaryOutputDistinction outputDistinction;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
+	 * SalaryAggregateItemGetMemento#getCompanyCode()
+	 */
+	@Override
+	public String getCompanyCode() {
+		return this.entity.getCcd();
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -82,7 +47,7 @@ public class SalaryPrintSettingSaveCommand implements SalaryPrintSettingGetMemen
 	 */
 	@Override
 	public Boolean getShowPayment() {
-		return this.showPayment;
+		return this.entity.getShowPayment() == 1 ? true : false;
 	}
 
 	/*
@@ -93,7 +58,7 @@ public class SalaryPrintSettingSaveCommand implements SalaryPrintSettingGetMemen
 	 */
 	@Override
 	public Boolean getSumPersonSet() {
-		return this.sumPersonSet;
+		return this.entity.getSumPersonSet() == 1 ? true : false;
 	}
 
 	/*
@@ -104,7 +69,7 @@ public class SalaryPrintSettingSaveCommand implements SalaryPrintSettingGetMemen
 	 */
 	@Override
 	public Boolean getSumMonthPersonSet() {
-		return this.sumMonthPersonSet;
+		return this.entity.getSumMonthPersonSet() == 1 ? true : false;
 	}
 
 	/*
@@ -115,7 +80,7 @@ public class SalaryPrintSettingSaveCommand implements SalaryPrintSettingGetMemen
 	 */
 	@Override
 	public Boolean getSumEachDeprtSet() {
-		return this.sumEachDeprtSet;
+		return this.entity.getSumEachDeprtSet() == 1 ? true : false;
 	}
 
 	/*
@@ -126,7 +91,7 @@ public class SalaryPrintSettingSaveCommand implements SalaryPrintSettingGetMemen
 	 */
 	@Override
 	public Boolean getSumMonthDeprtSet() {
-		return this.sumMonthDeprtSet;
+		return this.entity.getSumMonthDeprtSet() == 1 ? true : false;
 	}
 
 	/*
@@ -137,7 +102,7 @@ public class SalaryPrintSettingSaveCommand implements SalaryPrintSettingGetMemen
 	 */
 	@Override
 	public Boolean getSumDepHrchyIndexSet() {
-		return this.sumDepHrchyIndexSet;
+		return this.entity.getSumDepHrchyIndexSet() == 1 ? true : false;
 	}
 
 	/*
@@ -148,7 +113,7 @@ public class SalaryPrintSettingSaveCommand implements SalaryPrintSettingGetMemen
 	 */
 	@Override
 	public Boolean getSumMonthDepHrchySet() {
-		return this.sumMonthDepHrchySet;
+		return this.entity.getSumMonthDepHrchySet() == 1 ? true : false;
 	}
 
 	/*
@@ -159,7 +124,7 @@ public class SalaryPrintSettingSaveCommand implements SalaryPrintSettingGetMemen
 	 */
 	@Override
 	public Boolean getHrchyIndex1() {
-		return this.hrchyIndex1;
+		return this.entity.getHrchyIndex1() == 1 ? true : false;
 	}
 
 	/*
@@ -170,7 +135,7 @@ public class SalaryPrintSettingSaveCommand implements SalaryPrintSettingGetMemen
 	 */
 	@Override
 	public Boolean getHrchyIndex2() {
-		return this.hrchyIndex2;
+		return this.entity.getHrchyIndex2() == 1 ? true : false;
 	}
 
 	/*
@@ -181,7 +146,7 @@ public class SalaryPrintSettingSaveCommand implements SalaryPrintSettingGetMemen
 	 */
 	@Override
 	public Boolean getHrchyIndex3() {
-		return this.hrchyIndex3;
+		return this.entity.getHrchyIndex3() == 1 ? true : false;
 	}
 
 	/*
@@ -192,7 +157,7 @@ public class SalaryPrintSettingSaveCommand implements SalaryPrintSettingGetMemen
 	 */
 	@Override
 	public Boolean getHrchyIndex4() {
-		return this.hrchyIndex4;
+		return this.entity.getHrchyIndex4() == 1 ? true : false;
 	}
 
 	/*
@@ -203,7 +168,7 @@ public class SalaryPrintSettingSaveCommand implements SalaryPrintSettingGetMemen
 	 */
 	@Override
 	public Boolean getHrchyIndex5() {
-		return this.hrchyIndex5;
+		return this.entity.getHrchyIndex5() == 1 ? true : false;
 	}
 
 	/*
@@ -214,7 +179,8 @@ public class SalaryPrintSettingSaveCommand implements SalaryPrintSettingGetMemen
 	 */
 	@Override
 	public Boolean getHrchyIndex6() {
-		return this.hrchyIndex6;
+		// TODO Khong co trong db.
+		return this.entity.getHrchyIndex5() == 1 ? true : false;
 	}
 
 	/*
@@ -225,7 +191,8 @@ public class SalaryPrintSettingSaveCommand implements SalaryPrintSettingGetMemen
 	 */
 	@Override
 	public Boolean getHrchyIndex7() {
-		return this.hrchyIndex7;
+		// TODO Khong co trong db.
+		return this.entity.getHrchyIndex5() == 1 ? true : false;
 	}
 
 	/*
@@ -236,7 +203,8 @@ public class SalaryPrintSettingSaveCommand implements SalaryPrintSettingGetMemen
 	 */
 	@Override
 	public Boolean getHrchyIndex8() {
-		return this.hrchyIndex8;
+		// TODO Khong co trong db.
+		return this.entity.getHrchyIndex5() == 1 ? true : false;
 	}
 
 	/*
@@ -247,7 +215,8 @@ public class SalaryPrintSettingSaveCommand implements SalaryPrintSettingGetMemen
 	 */
 	@Override
 	public Boolean getHrchyIndex9() {
-		return this.hrchyIndex9;
+		// TODO Khong co trong db.
+		return this.entity.getHrchyIndex5() == 1 ? true : false;
 	}
 
 	/*
@@ -258,7 +227,7 @@ public class SalaryPrintSettingSaveCommand implements SalaryPrintSettingGetMemen
 	 */
 	@Override
 	public Boolean getTotalSet() {
-		return this.totalSet;
+		return this.entity.getTotalSet() == 1 ? true : false;
 	}
 
 	/*
@@ -269,18 +238,19 @@ public class SalaryPrintSettingSaveCommand implements SalaryPrintSettingGetMemen
 	 */
 	@Override
 	public Boolean getMonthTotalSet() {
-		return this.monthTotalSet;
+		return this.entity.getMonthTotalSet() == 1 ? true : false;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.report.dom.salarydetail.printsetting.
-	 * SalaryPrintSettingGetMemento#getCompanyCode()
+	 * SalaryPrintSettingGetMemento#getOutputDistinction()
 	 */
 	@Override
-	public String getCompanyCode() {
-		return AppContexts.user().companyCode();
+	public SalaryOutputDistinction getOutputDistinction() {
+		// TODO Khong co trong db.
+		return SalaryOutputDistinction.Hourly;
 	}
 
 }

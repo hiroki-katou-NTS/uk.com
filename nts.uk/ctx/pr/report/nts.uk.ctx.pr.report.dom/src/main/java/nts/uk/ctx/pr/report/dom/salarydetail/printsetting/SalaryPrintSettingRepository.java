@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.salarydetail.printsetting;
@@ -8,7 +8,7 @@ package nts.uk.ctx.pr.report.dom.salarydetail.printsetting;
  * The Interface SalaryPrintSettingRepository.
  */
 public interface SalaryPrintSettingRepository {
-	
+
 	/**
 	 * Find.
 	 *
@@ -16,18 +16,11 @@ public interface SalaryPrintSettingRepository {
 	 * @return the salary print setting
 	 */
 	SalaryPrintSetting find(String companyCode);
-	
+
 	/**
 	 * Save.
 	 *
 	 * @param salaryPrintSetting the salary print setting
 	 */
 	void save(SalaryPrintSetting salaryPrintSetting);
-	
-	/**
-	 * Removes the.
-	 *
-	 * @param salaryPrintSetting the salary print setting
-	 */
-	void remove(SalaryPrintSetting salaryPrintSetting);
 }

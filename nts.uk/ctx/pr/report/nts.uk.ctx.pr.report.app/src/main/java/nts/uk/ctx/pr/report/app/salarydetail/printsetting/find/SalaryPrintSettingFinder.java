@@ -30,11 +30,20 @@ public class SalaryPrintSettingFinder {
 	 * @return the salary print setting dto
 	 */
 	public SalaryPrintSettingDto find() {
-		SalaryPrintSetting domain = repository.find(AppContexts.user().companyCode());
+		String companyCode = AppContexts.user().companyCode();
+		SalaryPrintSetting domain = repository.find(companyCode);
 		SalaryPrintSettingDto dto = SalaryPrintSettingDto.builder().outputDistinction(domain.getOutputDistinction())
-				.showHierarchy1(domain.getShowHierarchy1()).showHierarchy2(domain.getShowHierarchy2())
-				.showHierarchy3(domain.getShowHierarchy3()).showHierarchy4(domain.getShowHierarchy4())
-				.showHierarchy5(domain.getShowHierarchy5()).build();
+				.companyCode(companyCode).outputDistinction(domain.getOutputDistinction())
+				.hrchyIndex1(domain.getHrchyIndex1()).hrchyIndex2(domain.getHrchyIndex2())
+				.hrchyIndex3(domain.getHrchyIndex3()).hrchyIndex4(domain.getHrchyIndex4())
+				.hrchyIndex5(domain.getHrchyIndex5()).hrchyIndex6(domain.getHrchyIndex6())
+				.hrchyIndex7(domain.getHrchyIndex7()).hrchyIndex8(domain.getHrchyIndex8())
+				.hrchyIndex9(domain.getHrchyIndex9()).totalSet(domain.getTotalSet())
+				.monthTotalSet(domain.getMonthTotalSet()).outputDistinction(domain.getOutputDistinction())
+				.showPayment(domain.getShowPayment()).sumDepHrchyIndexSet(domain.getSumDepHrchyIndexSet())
+				.sumEachDeprtSet(domain.getSumEachDeprtSet()).sumMonthDepHrchySet(domain.getSumMonthDepHrchySet())
+				.sumMonthDeprtSet(domain.getSumMonthDeprtSet()).sumMonthPersonSet(domain.getSumMonthPersonSet())
+				.sumPersonSet(domain.getSumPersonSet()).build();
 		return dto;
 	}
 }
