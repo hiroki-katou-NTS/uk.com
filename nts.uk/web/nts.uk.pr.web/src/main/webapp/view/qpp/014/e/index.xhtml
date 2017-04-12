@@ -30,15 +30,18 @@
 								</tr>
 								<tr>
 									<td>処理状態</td>
-									<td><span
+									<td><span></span> <!-- <span
 										data-bind="text: processingState()==0 ? 'データの作成中': '完了'"></span>
 										<span
 										data-bind="text:nts.uk.text.format('{0}/{1}人', completeList().length, numberOfPerson())">
-									</span></td>
+									</span> -->
+									</td>
 								</tr>
 								<tr>
 									<td>エラー件数</td>
-									<td><span data-bind="text: countError"></span>件</td>
+									<td><span></span>
+									<!-- <span data-bind="text: countError()"></span> -->
+									件</td>
 								</tr>
 							</tbody>
 						</table>
@@ -51,15 +54,15 @@
 							<tbody>
 								<tr>
 									<td>処理方法</td>
-									<td>Processing method</td>
+									<td>振込データの作成結果一覧</td>
 								</tr>
 								<tr>
 									<td>処理する明細書の年月</td>
-									<td>Date of description to be processed</td>
+									<td data-bind="text: processingDate()"></td>
 								</tr>
 								<tr>
 									<td>振込日</td>
-									<td>Transfer date</td>
+									<td data-bind="text: transferDate()"></td>
 								</tr>
 							</tbody>
 						</table>
@@ -68,7 +71,7 @@
 
 				<div id="stop">
 					<hr id="E_division" />
-					<button id="E_BTN_004" data-bind="click: interruption">中断</button>
+					<button id="E_BTN_004" data-bind="click: stopProcessing">中断</button>
 				</div>
 
 				<div id="successful">

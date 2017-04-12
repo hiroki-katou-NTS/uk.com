@@ -2,19 +2,19 @@
 module qpp014.d.viewmodel {
     export class ScreenModel {
         countItems: KnockoutObservable<number>;
-        date: KnockoutObservable<string>;
+        processingDate: KnockoutObservable<string>;
         d_SEL_001_selectedCode: KnockoutObservable<any>;
         d_SEL_002_selectedCode: KnockoutObservable<any>;
         d_LST_001_items: KnockoutObservableArray<any>;
         d_LST_001_itemSelected: KnockoutObservable<any>;
         d_nextScreen: KnockoutObservable<string>;
-        d_lbl_002: KnockoutObservable<string>;
+        transferDate: KnockoutObservable<string>;
         d_lbl_015: KnockoutObservable<string>;
         d_lbl_016: KnockoutObservable<string>;
 
         constructor(data: any) {
             let self = this;
-            self.date = ko.observable('20161212');
+            self.transferDate = ko.observable('2016/12/12');
             self.d_SEL_001_selectedCode = ko.observable(1);
             self.d_SEL_002_selectedCode = ko.observable(1);
             self.d_LST_001_items = ko.observableArray([]);
@@ -28,12 +28,15 @@ module qpp014.d.viewmodel {
                 return self.d_SEL_002_selectedCode() == 2 ? 'screen_g' : 'screen_h';
             });
 
-            self.d_lbl_002 = ko.observable(nts.uk.time.formatYearMonth(data.currentProcessingYm));
+            self.processingDate = ko.observable(nts.uk.time.formatYearMonth(data.currentProcessingYm));
             self.d_lbl_015 = ko.observable('( ' + data.processingNo + ' : ');
             self.d_lbl_016 = ko.observable(data.processingName + ' )');
         }
 
         openEDialog() {
+            var self = this;
+            nts.uk.ui.windows.setShared("processingDate", self.processingDate(), true);
+            nts.uk.ui.windows.setShared("transferDate", self.transferDate(), true);
             nts.uk.ui.windows.sub.modal("/view/qpp/014/e/index.xhtml", { title: "振込データの作成結果一覧", dialogClass: "no-close" }).onClosed(function() {
                 $('#wizard').ntsWizard("next");
             });
