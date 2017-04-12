@@ -38,6 +38,7 @@ module cmm011.a.viewmodel {
         dtoAdd: KnockoutObservable<any>;
         checkAddHist1: KnockoutObservable<string>;
         newEndDate: KnockoutObservable<string>;
+        arrayItemEdit: KnockoutObservableArray<any>;
 
         constructor() {
             var self = this;
@@ -71,7 +72,7 @@ module cmm011.a.viewmodel {
             self.dtoAdd = ko.observable(null);
             self.checkAddHist1 = ko.observable('');
             self.newEndDate = ko.observable(null);
-
+            self.arrayItemEdit = ko.observableArray([]);
 
             self.singleSelectedCode.subscribe(function(codeChangeds) {
                 var _dt = self.dataSource();
@@ -135,6 +136,17 @@ module cmm011.a.viewmodel {
                     }
                 }
             }));
+
+            $(document).delegate("#tree-up-down-up", "click", function() {
+                self.checkAddHist1("clickbtnupdown");
+                self.updateHirechyOfBtnUpDown();
+            });
+
+
+            $(document).delegate("#tree-up-down-down", "click", function() {
+                self.checkAddHist1("clickbtnupdown");
+                self.updateHirechyOfBtnUpDown();
+            });
         }
 
         register() {
@@ -278,6 +290,107 @@ module cmm011.a.viewmodel {
                     return dfd2.promise();
                 }
             }
+
+            if (self.checkAddHist1() == "clickbtnupdown") {
+                console.log(self.arrayItemEdit());
+                let _dt = self.arrayItemEdit();
+                var dfd = $.Deferred();
+                service.upDateListWorkplace(_dt)
+                    .done(function(done) {
+                        location.reload();
+                    }).fail(function(error) {
+                        alert(error.message);
+                    })
+                dfd.resolve();
+                return dfd.promise();
+            }
+        }
+
+        // update hirachy khi click btn up down
+        updateHirechyOfBtnUpDown() {
+            var self = this;
+            var _dt = self.dataSource();
+            var _code = self.singleSelectedCode();
+            var current = self.findHira(_code, _dt);
+            var parrent = self.findParent(_code, _dt);
+            let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
+            debugger;
+            if (parrent) {
+                //Parent hirachy code
+                var phc = parrent.hierarchyCode;
+                var changeIndexChild = _.filter(parrent['children'], function(item) {
+                    return item;
+                });
+                for (var i in changeIndexChild) {
+                    var item = changeIndexChild[i];
+                    var itemHierachy = item.hierarchyCode;
+                    var j = parseInt(i) + 1;
+                    item.hierarchyCode = item.hierarchyCode.substr(0, item.hierarchyCode.length - 1) + j;
+                    item.startDate = hisdto.startDate;
+                    item.endDate = hisdto.endDate;
+                    item.workPlaceCode = item.departmentCode;
+                    if (self.arrayItemEdit().length > 0) {
+                        let _dt2 = self.arrayItemEdit();
+                        var isDuplicateItem = _.filter(_dt2, function(item1) {
+                            return item1.departmentCode == item.departmentCode;
+                        });
+                        if (isDuplicateItem.length > 0) {
+                            // xóa isDuplicateItem
+                            _dt2 = jQuery.grep(_dt2, function(value) {
+                                return value.departmentCode != isDuplicateItem[0].departmentCode;
+                            });
+
+                            self.arrayItemEdit(_dt2);
+                            self.arrayItemEdit().push(item);
+                        } else {
+                            self.arrayItemEdit().push(item);
+                        }
+                    } else {
+                        self.arrayItemEdit().push(item);
+                    }
+                    if (item.children.length > 0) {
+                        self.updateHierachy1(item);
+                    }
+                }
+            } else {
+                //curtent hirachy code
+                var chc = current.hierarchyCode;
+                var changeIndexChild = _.filter(_dt, function(item) {
+                    return item;
+                });
+                for (var i in changeIndexChild) {
+                    var item = changeIndexChild[i];
+                    var itemHierachy = item.hierarchyCode;
+                    var j = parseInt(i) + 1;
+                    item.hierarchyCode = item.hierarchyCode.substr(0, item.hierarchyCode.length - 1) + j;
+                    item.startDate = hisdto.startDate;
+                    item.endDate = hisdto.endDate;
+                    item.workPlaceCode = item.departmentCode;
+                    if (self.arrayItemEdit().length > 0) {
+                        let _dt2 = self.arrayItemEdit();
+                        var isDuplicateItem = _.filter(_dt2, function(item1) {
+                            return item1.departmentCode == item.departmentCode;
+                        });
+                        if (isDuplicateItem.length > 0) {
+                            // xóa isDuplicateItem
+                            _dt2 = jQuery.grep(_dt2, function(value) {
+                                return value.departmentCode != isDuplicateItem[0].departmentCode;
+                            });
+
+                            self.arrayItemEdit(_dt2);
+                            self.arrayItemEdit().push(item);
+                        } else {
+                            self.arrayItemEdit().push(item);
+                        }
+                    } else {
+                        self.arrayItemEdit().push(item);
+                    }
+                    if (item.children.length > 0) {
+                        self.updateHierachy1(item);
+                    }
+                }
+            }
+
         }
 
         deletebtn() {
@@ -700,6 +813,43 @@ module cmm011.a.viewmodel {
             self.A_INP_004("");
             self.A_INP_007("");
             $("#A_INP_002").focus();
+        }
+
+        updateHierachy1(item: any) {
+            var self = this;
+            let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
+            for (var i in item.children) {
+                var itemCon = item.children[i];
+                var j = parseInt(i) + 1;
+                while ((j + "").length < 3)
+                    j = "0" + j;
+                itemCon.hierarchyCode = item.hierarchyCode.substr(0, item.hierarchyCode.length) + j;
+                itemCon.startDate = hisdto.startDate;
+                itemCon.endDate = hisdto.endDate;
+                itemCon.workPlaceCode = itemCon.departmentCode;
+                if (self.arrayItemEdit().length > 0) {
+                    let _dt2 = self.arrayItemEdit();
+                    var isDuplicateItem = _.filter(_dt2, function(item1) {
+                        return item1.departmentCode == itemCon.departmentCode;
+                    });
+                    if (isDuplicateItem.length > 0) {
+                        // xóa isDuplicateItem
+                        _dt2 = jQuery.grep(_dt2, function(value) {
+                            return value.departmentCode != isDuplicateItem[0].departmentCode;
+                        });
+
+                        self.arrayItemEdit(_dt2);
+                        self.arrayItemEdit().push(itemCon);
+                    } else {
+                        self.arrayItemEdit().push(itemCon);
+                    }
+                } else {
+                    self.arrayItemEdit().push(itemCon);
+                }
+                if (itemCon.children.length > 0) {
+                    self.updateHierachy1(itemCon);
+                }
+            }
         }
 
         updateHierachy2(item: any, hierarchyCode: any) {

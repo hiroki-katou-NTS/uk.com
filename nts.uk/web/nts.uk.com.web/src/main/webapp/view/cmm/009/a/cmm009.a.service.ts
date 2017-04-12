@@ -19,8 +19,10 @@ module cmm009.a.service {
         getMemoWorkPLaceByHistId: "basic/organization/getmemowkpbyhistid/",
         addWorkPlace: "basic/organization/addworkplace",
         updatelistWorkPLace: "basic/organization/updateworkplace",
+        
     }
     
+     
     export function upDateListWorkplace(listworkplace: any) {
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax("com", paths.updatelistWorkPLace, listworkplace).done(
