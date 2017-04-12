@@ -2,6 +2,7 @@ __viewContext.ready(function () {
     var ScreenModel = (function () {
         function ScreenModel() {
             var self = this;
+            // TextEditor
             self.texteditor = {
                 value: ko.observable('123'),
                 constraint: 'ResidenceCode',
@@ -9,6 +10,7 @@ __viewContext.ready(function () {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
+            // NumberEditor
             self.numbereditor = {
                 value: ko.observable(12),
                 constraint: '',
@@ -30,4 +32,3 @@ __viewContext.ready(function () {
     }());
     this.bind(new ScreenModel());
 });
-//# sourceMappingURL=start.js.map

@@ -31,6 +31,7 @@ var qmm006;
                             self.items1(data);
                         }
                         else {
+                            //ER010- data is none
                             nts.uk.ui.dialog.alert("対象データがありません。");
                         }
                         dfd.resolve();
@@ -51,20 +52,16 @@ var qmm006;
                     var self = this;
                     var oldLineBankCode = self.currentCode();
                     var newLineBankCode = self.currentCode1();
-                    if (oldLineBankCode == null) {
-                        nts.uk.ui.dialog.alert("置換元情報が選択されていません。");
+                    if (oldLineBankCode == null || newLineBankCode == null) {
+                        nts.uk.ui.dialog.alert("＊が選択されていません。"); //ER007
                         return;
                     }
-                    if (newLineBankCode == null) {
-                        nts.uk.ui.dialog.alert("置換先情報が選択されていません。");
-                        return;
-                    }
-                    if (oldLineBankCode == newLineBankCode) {
-                        var messageError = nts.uk.text.format("統合元と統合先で同じコードの{0}が選択されています。\r\n  振込元銀行を確認してください。", self.currentCode());
-                        nts.uk.ui.dialog.alert(messageError);
+                    else if (oldLineBankCode == newLineBankCode) {
+                        nts.uk.ui.dialog.alert("統合元と統合先で同じコードの＊が選択されています。\r\n  ＊を確認してください。"); //ER009
                         return;
                     }
                     else {
+                        //Al003
                         nts.uk.ui.dialog.confirm("統合元から統合先へデータを置換えます。\r\n よろしいですか？").ifYes(function () {
                             nts.uk.ui.dialog.confirm("置換元のマスタを削除しますか？[はい/いいえ]").ifYes(function () {
                                 var data = {
@@ -81,7 +78,7 @@ var qmm006;
                                 };
                                 self.transferData(data, newLineBankCode);
                             });
-                        }).ifCancel(function () {
+                        }).ifNo(function () {
                             return;
                         });
                     }
@@ -105,4 +102,3 @@ var qmm006;
     })(c = qmm006.c || (qmm006.c = {}));
 })(qmm006 || (qmm006 = {}));
 ;
-//# sourceMappingURL=qmm006.c.viewmodel.js.map

@@ -12,6 +12,7 @@ __viewContext.ready(function () {
             $("#tree").igTree({
                 singleBranchExpand: false,
                 initialExpandDepth: 1,
+                //initialExpandDepth = x, where all nodes at level x are expanded
                 checkboxMode: checkboxMode,
                 bindings: {
                     textKey: 'text',
@@ -41,6 +42,7 @@ __viewContext.ready(function () {
                     for (var i = 0; i < selectedList.length; i++)
                         arr.push(selectedList[i].element.attr('data-value'));
                     self.checkedValues(arr);
+                    //console.log(arr);
                 },
                 dataSource: data
             });
@@ -58,4 +60,3 @@ __viewContext.ready(function () {
     }());
     this.bind(new ScreenModel());
 });
-//# sourceMappingURL=igTree.js.map

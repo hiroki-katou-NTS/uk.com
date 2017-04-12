@@ -10,6 +10,7 @@ var nts;
                 (function (qmm011) {
                     var a;
                     (function (a) {
+                        //import data class .... BEGIN
                         var option = nts.uk.ui.option;
                         var RoundingMethodDto = a.service.model.RoundingMethodDto;
                         var UnemployeeInsuranceHistoryUpdateDto = a.service.model.UnemployeeInsuranceHistoryUpdateDto;
@@ -22,6 +23,7 @@ var nts;
                         var AccidentInsuranceRateCopyDto = a.service.model.AccidentInsuranceRateCopyDto;
                         var TypeActionInsuranceRate = a.service.model.TypeActionInsuranceRate;
                         var ScreenMode = nts.uk.pr.view.base.simplehistory.dialogbase.ScreenMode;
+                        //import data class ... END
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
@@ -31,7 +33,7 @@ var nts;
                                         new RoundingMethodDto(1, "切り上げ"),
                                         new RoundingMethodDto(2, "四捨五入"),
                                         new RoundingMethodDto(3, "五捨六入"),
-                                        new RoundingMethodDto(4, "五捨五超入")]);
+                                        new RoundingMethodDto(4, "五捨五超入")]); //Round Down
                                     self.rateInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                                         grouplength: 3,
                                         decimallength: 2
@@ -68,17 +70,21 @@ var nts;
                                     self.preSelectUnemployeeInsuranceRateHistory = ko.observable('');
                                     self.preSelectAccidentInsuranceRateHistory = ko.observable('');
                                 }
+                                //open dialog edit UnemployeeInsuranceRateHistory => show view model xhtml (action event add)
                                 ScreenModel.prototype.openEditUnemployeeInsuranceRateHistory = function () {
+                                    //set info
                                     var self = this;
                                     if (self.dirtyUnemployeeInsurance.isDirty()) {
                                         nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
                                             self.onShowEditUnemployeeInsuranceRateHistory();
                                         }).ifNo(function () {
+                                            //No action
                                         });
                                         return;
                                     }
                                     self.onShowEditUnemployeeInsuranceRateHistory();
                                 };
+                                //open dialog edit UnemployeeInsuranceRateHistory => show view model xhtml (action event add)
                                 ScreenModel.prototype.onShowEditUnemployeeInsuranceRateHistory = function () {
                                     var self = this;
                                     a.service.findUnemployeeInsuranceRateHistory(self.selectionUnemployeeInsuranceRateHistory()).done(function (data) {
@@ -96,6 +102,7 @@ var nts;
                                             master: null,
                                             history: history,
                                             removeMasterOnLastHistoryRemove: false,
+                                            // Delete callback.
                                             onDeleteCallBack: function (data) {
                                                 var unemployeeInsuranceDeleteDto;
                                                 unemployeeInsuranceDeleteDto = new UnemployeeInsuranceDeleteDto();
@@ -108,6 +115,7 @@ var nts;
                                                     self.showMessageSaveUnemployeeInsurance(error.message);
                                                 });
                                             },
+                                            // Update call back.
                                             onUpdateCallBack: function (data) {
                                                 var dfd = $.Deferred();
                                                 var unemployeeInsuranceHistoryUpdateDto;
@@ -133,17 +141,21 @@ var nts;
                                         nts.uk.ui.windows.sub.modal('/view/base/simplehistory/updatehistory/index.xhtml', ntsDialogOptions);
                                     });
                                 };
+                                //open dialog add UnemployeeInsuranceRateHistory => show view model xhtml (action event add)
                                 ScreenModel.prototype.openAddUnemployeeInsuranceRateHistory = function () {
+                                    //set info
                                     var self = this;
                                     if (self.dirtyUnemployeeInsurance.isDirty() && !self.isEmptyUnemployee()) {
                                         nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
                                             self.onShowAddUnemployeeInsuranceRateHistory();
                                         }).ifNo(function () {
+                                            //No action
                                         });
                                         return;
                                     }
                                     self.onShowAddUnemployeeInsuranceRateHistory();
                                 };
+                                //open dialog add UnemployeeInsuranceRateHistory => show view model xhtml (action event add)
                                 ScreenModel.prototype.onShowAddUnemployeeInsuranceRateHistory = function () {
                                     var self = this;
                                     var lastest;
@@ -156,14 +168,17 @@ var nts;
                                     if (self.isEmptyUnemployee()) {
                                         lastest = undefined;
                                     }
+                                    //set info history
                                     var unemployeeInsuranceRateCopyDto;
                                     unemployeeInsuranceRateCopyDto = new UnemployeeInsuranceRateCopyDto();
                                     unemployeeInsuranceRateCopyDto.historyIdCopy = self.selectionUnemployeeInsuranceRateHistory();
+                                    //set info option
                                     var newHistoryOptions = {
                                         screenMode: ScreenMode.MODE_HISTORY_ONLY,
                                         name: name,
                                         master: null,
                                         lastest: lastest,
+                                        // Copy.
                                         onCopyCallBack: function (data) {
                                             var dfd = $.Deferred();
                                             unemployeeInsuranceRateCopyDto.startMonth = data.startYearMonth;
@@ -178,6 +193,7 @@ var nts;
                                             });
                                             return dfd.promise();
                                         },
+                                        // Init.
                                         onCreateCallBack: function (data) {
                                             var dfd = $.Deferred();
                                             unemployeeInsuranceRateCopyDto.startMonth = data.startYearMonth;
@@ -200,31 +216,42 @@ var nts;
                                     };
                                     nts.uk.ui.windows.sub.modal('/view/base/simplehistory/newhistory/index.xhtml', ntsDialogOptions);
                                 };
+                                //open dialog edit InsuranceBusinessType => show view model xhtml (action event edit)
                                 ScreenModel.prototype.openEditInsuranceBusinessType = function () {
                                     var self = this;
+                                    //call service get all insurance business type
                                     a.service.findAllInsuranceBusinessType().done(function (data) {
+                                        //set data fw to /e
                                         nts.uk.ui.windows.setShared("InsuranceBusinessTypeDto", data);
+                                        //open dialog /e/index.xhtml
                                         nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 630, width: 425, title: "事業種類の登録", dialogClass: 'no-close' }).onClosed(function () {
+                                            //OnClose => call
+                                            //get fw e => respone 
                                             var insuranceBusinessTypeUpdateModel = nts.uk.ui.windows.getShared("insuranceBusinessTypeUpdateModel");
                                             if (insuranceBusinessTypeUpdateModel) {
+                                                //reload insurance business type by call service
                                                 a.service.findAllInsuranceBusinessType().done(function (data) {
+                                                    //update model view 
                                                     self.updateInsuranceBusinessTypeAccidentInsuranceDto(data);
                                                 });
                                             }
                                         });
                                     });
                                 };
+                                //open dialog edit AccidentInsuranceHistory => show view model xhtml (action event edit)
                                 ScreenModel.prototype.openEditAccidentInsuranceRateHistory = function () {
                                     var self = this;
                                     if (self.dirtyAccidentInsurance.isDirty()) {
                                         nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
                                             self.onShowEditAccidentInsuranceRateHistory();
                                         }).ifNo(function () {
+                                            //No action
                                         });
                                         return;
                                     }
                                     self.onShowEditAccidentInsuranceRateHistory();
                                 };
+                                //open dialog edit AccidentInsuranceHistory => show view model xhtml (action event edit)
                                 ScreenModel.prototype.onShowEditAccidentInsuranceRateHistory = function () {
                                     var self = this;
                                     a.service.findAccidentInsuranceRateHistory(self.selectionAccidentInsuranceRateHistory()).done(function (data) {
@@ -242,6 +269,7 @@ var nts;
                                             master: null,
                                             history: history,
                                             removeMasterOnLastHistoryRemove: false,
+                                            // Delete callback.
                                             onDeleteCallBack: function (data) {
                                                 var accidentInsuranceRateDeleteDto;
                                                 accidentInsuranceRateDeleteDto = new AccidentInsuranceRateDeleteDto();
@@ -254,6 +282,7 @@ var nts;
                                                     self.showMessageSaveAccidentInsurance(error.messageId);
                                                 });
                                             },
+                                            // Update call back.
                                             onUpdateCallBack: function (data) {
                                                 var dfd = $.Deferred();
                                                 var accidentInsuranceHistoryUpdateDto;
@@ -279,18 +308,22 @@ var nts;
                                         nts.uk.ui.windows.sub.modal('/view/base/simplehistory/updatehistory/index.xhtml', ntsDialogOptions);
                                     });
                                 };
+                                //open dialog add AccidentInsuranceRateHistory => show view model xhtml (action event add)
                                 ScreenModel.prototype.openAddAccidentInsuranceRateHistory = function () {
                                     var self = this;
                                     if (self.dirtyAccidentInsurance.isDirty() && !self.isEmptyAccident()) {
                                         nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
                                             self.onShowAddAccidentInsuranceRateHistory();
                                         }).ifNo(function () {
+                                            //No action
                                         });
                                         return;
                                     }
                                     self.onShowAddAccidentInsuranceRateHistory();
                                 };
+                                //open dialog add AccidentInsuranceRateHistory => show view model xhtml (action event add)
                                 ScreenModel.prototype.onShowAddAccidentInsuranceRateHistory = function () {
+                                    //set info
                                     var self = this;
                                     var lastest;
                                     var name = '労働保険料率';
@@ -302,14 +335,17 @@ var nts;
                                     if (self.isEmptyAccident()) {
                                         lastest = undefined;
                                     }
+                                    //set info history
                                     var accidentInsuranceRateCopyDto;
                                     accidentInsuranceRateCopyDto = new AccidentInsuranceRateCopyDto();
                                     accidentInsuranceRateCopyDto.historyIdCopy = self.selectionAccidentInsuranceRateHistory();
+                                    //set info option
                                     var newHistoryOptions = {
                                         screenMode: ScreenMode.MODE_HISTORY_ONLY,
                                         name: name,
                                         master: null,
                                         lastest: lastest,
+                                        // Copy.
                                         onCopyCallBack: function (data) {
                                             var dfd = $.Deferred();
                                             accidentInsuranceRateCopyDto.startMonth = data.startYearMonth;
@@ -324,6 +360,7 @@ var nts;
                                             });
                                             return dfd.promise();
                                         },
+                                        // Init.
                                         onCreateCallBack: function (data) {
                                             var dfd = $.Deferred();
                                             accidentInsuranceRateCopyDto.startMonth = data.startYearMonth;
@@ -346,6 +383,7 @@ var nts;
                                     };
                                     nts.uk.ui.windows.sub.modal('/view/base/simplehistory/newhistory/index.xhtml', ntsDialogOptions);
                                 };
+                                //show UnemployeeInsuranceHistory (change event)
                                 ScreenModel.prototype.showchangeUnemployeeInsuranceHistory = function (selectionUnemployeeInsuranceRateHistory) {
                                     if (selectionUnemployeeInsuranceRateHistory != null
                                         && selectionUnemployeeInsuranceRateHistory != undefined
@@ -367,14 +405,17 @@ var nts;
                                         }
                                     }
                                 };
+                                //Clear show message error connection by server
                                 ScreenModel.prototype.clearErrorSaveUnemployeeInsurance = function () {
                                     var self = this;
                                     $('.save-error').ntsError('clear');
                                     $('#btn_saveUnemployeeInsuranceHistory').ntsError('clear');
                                 };
+                                //show message save UnemployeeInsurance 
                                 ScreenModel.prototype.showMessageSaveUnemployeeInsurance = function (messageId) {
                                     var self = this;
                                     if (self.messageList()[0].messageId === messageId) {
+                                        //001
                                         var message = self.messageList()[0].message;
                                         if (!self.unemployeeInsuranceRateModel().unemployeeInsuranceRateItemAgroforestryModel) {
                                             $('#inp_code').ntsError('set', message);
@@ -389,14 +430,17 @@ var nts;
                                         $('#btn_saveUnemployeeInsuranceHistory').ntsError('set', message);
                                     }
                                 };
+                                //Clear show message error connection by server
                                 ScreenModel.prototype.clearErrorSaveAccidentInsurance = function () {
                                     var self = this;
                                     $('.save-error').ntsError('clear');
                                     $('#btn_saveAccidentInsuranceHistory').ntsError('clear');
                                 };
+                                //show message save AccidentInsurance 
                                 ScreenModel.prototype.showMessageSaveAccidentInsurance = function (messageId) {
                                     var self = this;
                                     if (self.messageList()[0].messageId === messageId) {
+                                        //001
                                         var message = self.messageList()[0].message;
                                         if (!self.unemployeeInsuranceRateModel().unemployeeInsuranceRateItemAgroforestryModel) {
                                             $('#inp_code').ntsError('set', message);
@@ -411,47 +455,72 @@ var nts;
                                         $('#btn_saveAccidentInsuranceHistory').ntsError('set', message);
                                     }
                                 };
+                                //action save UnemployeeInsuranceHistory Onlick connection service
                                 ScreenModel.prototype.saveUnemployeeInsuranceHistory = function () {
                                     var self = this;
+                                    // get type action (ismode)
                                     if (self.typeActionUnemployeeInsurance() == TypeActionInsuranceRate.add) {
+                                        //type action is add
+                                        //call service add UnemployeeInsuranceHistory
                                         a.service.addUnemployeeInsuranceRate(self.unemployeeInsuranceRateModel()).done(function () {
+                                            //reload viewmodel
                                             self.reloadDataUnemployeeInsuranceRateByAction();
+                                            //clear error viewmodel
                                             self.clearErrorSaveUnemployeeInsurance();
                                         }).fail(function (res) {
+                                            //show message by exception message
                                             self.showMessageSaveUnemployeeInsurance(res.messageId);
                                             self.reloadDataUnemployeeInsuranceRateByAction();
                                         });
                                     }
                                     else {
+                                        //type action is update
+                                        //call service update UnemployeeInsuranceHistory
                                         a.service.updateUnemployeeInsuranceRate(self.unemployeeInsuranceRateModel()).done(function () {
+                                            //reload viewmodel
                                             self.reloadDataUnemployeeInsuranceRateByAction();
+                                            //clear error viewmodel
                                             self.clearErrorSaveUnemployeeInsurance();
                                         }).fail(function (res) {
+                                            //show message by exception message
                                             self.showMessageSaveUnemployeeInsurance(res.messageId);
                                             self.reloadDataUnemployeeInsuranceRateByAction();
                                         });
                                     }
                                     return true;
                                 };
+                                //action save AccidentInsuranceHistory Onlick connection service
                                 ScreenModel.prototype.saveAccidentInsuranceHistory = function () {
                                     var self = this;
+                                    //get type action (ismode)
                                     if (self.typeActionAccidentInsurance() == TypeActionInsuranceRate.add) {
+                                        //type action is add
+                                        //call service add AccidentInsuranceRate
                                         a.service.addAccidentInsuranceRate(self.accidentInsuranceRateModel()).done(function () {
+                                            //reload viewmodel
                                             self.reloadDataAccidentInsuranceRateByAction();
+                                            //clear error viewmodel
                                             self.clearErrorSaveAccidentInsurance();
                                         }).fail(function (res) {
+                                            //show message by exception message
                                             self.showMessageSaveAccidentInsurance(res.messageId);
                                         });
                                     }
                                     else {
+                                        //type action is update
+                                        //call service update AccidentInsuranceRate
                                         a.service.updateAccidentInsuranceRate(self.accidentInsuranceRateModel()).done(function () {
+                                            //reload viewmodel
                                             self.detailAccidentInsuranceRateHistory(self.accidentInsuranceRateModel().accidentInsuranceRateHistoryModel.historyId());
+                                            //clear error viewmodel
                                             self.clearErrorSaveAccidentInsurance();
                                         }).fail(function (res) {
+                                            //show message by exception message
                                             self.showMessageSaveAccidentInsurance(res.messageId);
                                         });
                                     }
                                 };
+                                //show AccidentInsuranceHistory (change event)
                                 ScreenModel.prototype.showchangeAccidentInsuranceHistory = function (selectionAccidentInsuranceRateHistory) {
                                     if (selectionAccidentInsuranceRateHistory && selectionAccidentInsuranceRateHistory != '') {
                                         var self = this;
@@ -463,6 +532,7 @@ var nts;
                                                     self.detailAccidentInsuranceRateHistory(selectionAccidentInsuranceRateHistory);
                                                     return;
                                                 }).ifNo(function () {
+                                                    //No action
                                                 });
                                                 self.selectionAccidentInsuranceRateHistory(self.preSelectAccidentInsuranceRateHistory());
                                                 return;
@@ -471,93 +541,135 @@ var nts;
                                         self.detailAccidentInsuranceRateHistory(selectionAccidentInsuranceRateHistory);
                                     }
                                 };
+                                // startPage => show view model xhtml (constructor)
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
+                                    //findAll history Unemployee Insurance Rate
                                     self.findAllUnemployeeInsuranceRateHistory().done(function (data) {
+                                        //find All History Accident Insurance Rate
                                         self.findAllAccidentInsuranceRateHistory().done(function (data) {
                                             dfd.resolve(self);
                                         });
                                     });
                                     return dfd.promise();
                                 };
+                                //find add UnemployeeInsuranceRateHistory => show view model xhtml (constructor)
                                 ScreenModel.prototype.findAllUnemployeeInsuranceRateHistory = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
+                                    //call service get all history unemployee insuranceRate
                                     a.service.findAllUnemployeeInsuranceRateHistory().done(function (data) {
+                                        //get data respone
                                         if (data != null && data.length > 0) {
+                                            //data[] is length > 0
+                                            //set List history unemployee insurance rate by data
                                             self.lstUnemployeeInsuranceRateHistory(data);
+                                            //set selection by fisrt data select
                                             self.selectionUnemployeeInsuranceRateHistory(data[0].historyId);
+                                            //subscribe history selection
                                             if (self.isEmptyUnemployee()) {
                                                 self.selectionUnemployeeInsuranceRateHistory.subscribe(function (selectionUnemployeeInsuranceRateHistory) {
                                                     self.showchangeUnemployeeInsuranceHistory(selectionUnemployeeInsuranceRateHistory);
                                                 });
                                             }
+                                            //set isEmptyUnemployee false (not isEmptyUnemployee)
                                             self.isEmptyUnemployee(false);
+                                            //call detail history unemployee insurance rate
                                             self.detailUnemployeeInsuranceRateHistory(data[0].historyId).done(function () {
+                                                //fw to start page
                                                 dfd.resolve();
                                             });
                                         }
                                         else {
+                                            //set history unemployee insurance rate is empty
                                             self.newmodelEmptyDataUnemployeeInsuranceRate();
+                                            //fw to start page
                                             dfd.resolve();
                                         }
                                     });
                                     return dfd.promise();
                                 };
+                                //reload action
                                 ScreenModel.prototype.reloadDataUnemployeeInsuranceRateByAction = function () {
                                     var self = this;
+                                    //call service get all history unemployee insurance rate
                                     a.service.findAllUnemployeeInsuranceRateHistory().done(function (data) {
                                         if (data != null && data.length > 0) {
+                                            //get data respone is data not null length > 0
+                                            //reset selection history unemployee insurance rate
                                             self.selectionUnemployeeInsuranceRateHistory('');
+                                            //reset List history unemployee insurance rate
                                             self.lstUnemployeeInsuranceRateHistory([]);
+                                            //get historyId by selection viewmodel
                                             var historyId = self.unemployeeInsuranceRateModel().unemployeeInsuranceHistoryModel.historyId();
                                             if (self.typeActionUnemployeeInsurance() == TypeActionInsuranceRate.add) {
+                                                //type action is add => set historyId (selection first data)
                                                 historyId = data[0].historyId;
                                             }
                                             if (self.isEmptyUnemployee()) {
+                                                //empty history unemployee insurance rate => set subscribe
                                                 self.selectionUnemployeeInsuranceRateHistory.subscribe(function (selectionUnemployeeInsuranceRateHistory) {
                                                     self.showchangeUnemployeeInsuranceHistory(self.selectionUnemployeeInsuranceRateHistory());
                                                 });
+                                                //set is empty 
                                                 self.isEmptyUnemployee(false);
                                             }
+                                            //set data List history unemployee insurance rate
                                             self.selectionUnemployeeInsuranceRateHistory(historyId);
                                             self.lstUnemployeeInsuranceRateHistory(data);
+                                            //call detail history unemployee insurance rate
                                             self.detailUnemployeeInsuranceRateHistory(historyId).done(function (data) {
+                                                //set enable input viewmodel
                                                 self.unemployeeInsuranceRateModel().setEnable(true);
                                             });
                                             self.isEnableSaveUnemployeeInsurance(true);
                                             self.isEnableEditUnemployeeInsurance(true);
                                         }
                                         else {
+                                            //set history unemployee insurance rate is empty
                                             self.newmodelEmptyDataUnemployeeInsuranceRate();
                                         }
                                     });
                                 };
+                                //new model data = []
                                 ScreenModel.prototype.newmodelEmptyDataUnemployeeInsuranceRate = function () {
                                     var self = this;
+                                    //reset selection history unemployee insurance rate
                                     self.selectionUnemployeeInsuranceRateHistory('');
+                                    //reset List history unemployee insurance rate
                                     self.lstUnemployeeInsuranceRateHistory([]);
+                                    //reset value history unemployee insurance rate
                                     self.resetValueUnemployeeInsuranceRate();
+                                    //set is empty history unemployee insurance rate
                                     self.isEmptyUnemployee(true);
                                     self.isEnableSaveUnemployeeInsurance(false);
                                     self.isEnableEditUnemployeeInsurance(false);
                                 };
+                                //reset value UnemployeeInsuranceRate
                                 ScreenModel.prototype.resetValueUnemployeeInsuranceRate = function () {
                                     var self = this;
+                                    //reset view model history unemployee insurance rate
                                     self.unemployeeInsuranceRateModel().resetValue(self.rateInputOptions, self.selectionRoundingMethod);
+                                    //reset enable input viewmodel
                                     self.unemployeeInsuranceRateModel().setEnable(false);
+                                    //set ismode type action add
                                     self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
+                                    //reset selection history unemployee insurance rate
                                     self.selectionUnemployeeInsuranceRateHistory('');
                                     self.dirtyUnemployeeInsurance.reset();
                                 };
+                                //detail UnemployeeInsuranceRateHistory => show view model xhtml (action event)
                                 ScreenModel.prototype.detailUnemployeeInsuranceRateHistory = function (historyId) {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     if (historyId != null && historyId != undefined && historyId != '') {
+                                        //call service detail history unemployee insurance rate by historyId
                                         a.service.detailUnemployeeInsuranceRateHistory(historyId).done(function (data) {
+                                            //set viewmode by data
                                             self.unemployeeInsuranceRateModel().setListItem(data.rateItems);
                                             self.unemployeeInsuranceRateModel().setHistoryData(data.historyInsurance);
+                                            //set ismode type action is update
                                             self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.update);
                                             self.beginHistoryStartUnemployeeInsuranceRate(nts.uk.time.formatYearMonth(data.historyInsurance.startMonth));
                                             self.dirtyUnemployeeInsurance.reset();
@@ -568,19 +680,28 @@ var nts;
                                     }
                                     return dfd.promise();
                                 };
+                                //find All AccidentInsuranceRateHistory => Show View model xhtml (constructor)
                                 ScreenModel.prototype.findAllAccidentInsuranceRateHistory = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
+                                    //call service find all history accident insurance rate
                                     a.service.findAllAccidentInsuranceRateHistory().done(function (data) {
+                                        //get data respone
                                         if (data != null && data.length > 0) {
+                                            //data not null length > 0 => update List history accident insurance rate
                                             self.lstAccidentInsuranceRateHistory = ko.observableArray(data);
                                             self.selectionAccidentInsuranceRateHistory(data[0].historyId);
+                                            //subscribe history accident insurance rate
                                             self.selectionAccidentInsuranceRateHistory.subscribe(function (selectionAccidentInsuranceRateHistory) {
                                                 self.showchangeAccidentInsuranceHistory(selectionAccidentInsuranceRateHistory);
                                             });
+                                            //set is emmpty history accident insurance rate
                                             self.isEmptyAccident(false);
+                                            //call detail history accident insurance rate by historyId
                                             self.detailAccidentInsuranceRateHistory(data[0].historyId).done(function (data) {
+                                                //call service get all insurance business type
                                                 a.service.findAllInsuranceBusinessType().done(function (data) {
+                                                    //update insurance business type
                                                     self.updateInsuranceBusinessTypeAccidentInsuranceDto(data);
                                                     dfd.resolve(self);
                                                 });
@@ -588,26 +709,37 @@ var nts;
                                             self.isEnableSaveActionAccidentInsurance(true);
                                         }
                                         else {
+                                            //reset viewmode is empty
                                             self.newmodelEmptyDataAccidentInsuranceRate();
                                             dfd.resolve(self);
                                         }
                                     });
                                     return dfd.promise();
                                 };
+                                //reload action
                                 ScreenModel.prototype.reloadDataAccidentInsuranceRateByAction = function () {
                                     var self = this;
+                                    //call service find all  history accident insurance rate
                                     a.service.findAllAccidentInsuranceRateHistory().done(function (data) {
+                                        //get data by respone
                                         if (data != null && data.length > 0) {
+                                            //data not null length > 0
+                                            //reset List history accident insurance rate
                                             self.selectionAccidentInsuranceRateHistory('');
                                             self.lstAccidentInsuranceRateHistory([]);
+                                            //set historyId
                                             var historyId = self.accidentInsuranceRateModel().accidentInsuranceRateHistoryModel.historyId();
                                             if (self.typeActionAccidentInsurance() == TypeActionInsuranceRate.add) {
                                                 historyId = data[0].historyId;
                                             }
                                             self.selectionAccidentInsuranceRateHistory(historyId);
+                                            //update List history accident insurance rate
                                             self.lstAccidentInsuranceRateHistory(data);
+                                            //call detail history accident insurance rate
                                             self.detailAccidentInsuranceRateHistory(historyId).done(function (data) {
+                                                //call service get all insurance business type
                                                 a.service.findAllInsuranceBusinessType().done(function (data) {
+                                                    //update insurance business type
                                                     self.updateInsuranceBusinessTypeAccidentInsuranceDto(data);
                                                 });
                                             });
@@ -621,10 +753,12 @@ var nts;
                                             self.isEnableEditActionAccidentInsurance(true);
                                         }
                                         else {
+                                            //reset viewmode is empty
                                             self.newmodelEmptyDataAccidentInsuranceRate();
                                         }
                                     });
                                 };
+                                //new model data = []
                                 ScreenModel.prototype.newmodelEmptyDataAccidentInsuranceRate = function () {
                                     var self = this;
                                     self.selectionAccidentInsuranceRateHistory('');
@@ -638,6 +772,7 @@ var nts;
                                     self.isEnableEditActionAccidentInsurance(false);
                                     self.accidentInsuranceRateModel().setEnable(false);
                                 };
+                                //reset value AccidentInsuranceRate
                                 ScreenModel.prototype.resetValueAccidentInsuranceRate = function () {
                                     var self = this;
                                     self.selectionAccidentInsuranceRateHistory('');
@@ -645,10 +780,12 @@ var nts;
                                     self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
                                     self.dirtyAccidentInsurance.reset();
                                 };
+                                //detail AccidentInsuranceRateHistory => show view model xhtml (action event)
                                 ScreenModel.prototype.detailAccidentInsuranceRateHistory = function (historyId) {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     if (historyId != null && historyId != undefined && historyId != '') {
+                                        //call service find  accident insurance rate by historyId
                                         a.service.findAccidentInsuranceRate(historyId).done(function (data) {
                                             self.accidentInsuranceRateModel().setListItem(data.rateItems);
                                             self.accidentInsuranceRateModel().setVersion(data.version);
@@ -662,6 +799,7 @@ var nts;
                                     }
                                     return dfd.promise();
                                 };
+                                //update InsuranceBusinessType by Model viewmodel
                                 ScreenModel.prototype.updateInsuranceBusinessTypeAccidentInsurance = function (insuranceBusinessTypeUpdateModel) {
                                     var self = this;
                                     self.accidentInsuranceRateModel()
@@ -695,6 +833,7 @@ var nts;
                                         .biz10ThModel
                                         .updateInsuranceBusinessType(insuranceBusinessTypeUpdateModel.bizNameBiz10Th());
                                 };
+                                //update insurance business type accident insurance
                                 ScreenModel.prototype.updateInsuranceBusinessTypeAccidentInsuranceDto = function (InsuranceBusinessTypeDto) {
                                     var self = this;
                                     self.accidentInsuranceRateModel()
@@ -910,6 +1049,7 @@ var nts;
                                     if (rateItems != null && rateItems.length > 0) {
                                         for (var _i = 0, rateItems_1 = rateItems; _i < rateItems_1.length; _i++) {
                                             var rateItem = rateItems_1[_i];
+                                            //Agroforestry
                                             if (rateItem.careerGroup == CareerGroupDto.Agroforestry) {
                                                 this.unemployeeInsuranceRateItemAgroforestryModel.setItem(rateItem);
                                             }
@@ -942,6 +1082,7 @@ var nts;
                                     this.insuRound = ko.observable(0);
                                     this.isEnable = ko.observable(true);
                                 }
+                                //Fuction update value insuranceBusinessType
                                 AccIRDetailModel.prototype.updateInsuranceBusinessType = function (insuranceBusinessType) {
                                     if (this.insuranceBusinessType() != null && this.insuranceBusinessType() != undefined) {
                                         this.insuranceBusinessType(insuranceBusinessType);
@@ -1056,33 +1197,43 @@ var nts;
                                 AccIRModel.prototype.setListItem = function (lstInsuBizRateItem) {
                                     for (var _i = 0, lstInsuBizRateItem_1 = lstInsuBizRateItem; _i < lstInsuBizRateItem_1.length; _i++) {
                                         var rateItem = lstInsuBizRateItem_1[_i];
+                                        //Biz1St
                                         if (rateItem.insuBizType == BusinessTypeEnumDto.Biz1St) {
                                             this.biz1StModel.setItem(rateItem);
                                         }
+                                        //Biz2Nd
                                         if (rateItem.insuBizType == BusinessTypeEnumDto.Biz2Nd) {
                                             this.biz2NdModel.setItem(rateItem);
                                         }
+                                        //Biz3Rd
                                         if (rateItem.insuBizType == BusinessTypeEnumDto.Biz3Rd) {
                                             this.biz3RdModel.setItem(rateItem);
                                         }
+                                        //Biz4Th
                                         if (rateItem.insuBizType == BusinessTypeEnumDto.Biz4Th) {
                                             this.biz4ThModel.setItem(rateItem);
                                         }
+                                        //Biz5Th
                                         if (rateItem.insuBizType == BusinessTypeEnumDto.Biz5Th) {
                                             this.biz5ThModel.setItem(rateItem);
                                         }
+                                        //Biz6Th
                                         if (rateItem.insuBizType == BusinessTypeEnumDto.Biz6Th) {
                                             this.biz6ThModel.setItem(rateItem);
                                         }
+                                        //Biz7Th
                                         if (rateItem.insuBizType == BusinessTypeEnumDto.Biz7Th) {
                                             this.biz7ThModel.setItem(rateItem);
                                         }
+                                        //Biz8Th
                                         if (rateItem.insuBizType == BusinessTypeEnumDto.Biz8Th) {
                                             this.biz8ThModel.setItem(rateItem);
                                         }
+                                        //Biz9Th
                                         if (rateItem.insuBizType == BusinessTypeEnumDto.Biz9Th) {
                                             this.biz9ThModel.setItem(rateItem);
                                         }
+                                        //Biz10Th
                                         if (rateItem.insuBizType == BusinessTypeEnumDto.Biz10Th) {
                                             this.biz10ThModel.setItem(rateItem);
                                         }
@@ -1227,4 +1378,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm011.a.vm.js.map

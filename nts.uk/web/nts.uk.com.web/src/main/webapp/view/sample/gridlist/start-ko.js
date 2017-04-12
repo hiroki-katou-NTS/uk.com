@@ -101,4 +101,3 @@ __viewContext.ready(function () {
     var vm = new ScreenModel();
     this.bind(vm);
 });
-//# sourceMappingURL=start-ko.js.map

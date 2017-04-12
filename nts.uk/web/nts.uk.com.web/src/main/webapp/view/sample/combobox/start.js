@@ -1,4 +1,5 @@
 __viewContext.ready(function () {
+    /* ItemModelCbb1 of combobox */
     var ItemModelCbb1 = (function () {
         function ItemModelCbb1(codeCbb1, nameCbb1) {
             this.codeCbb1 = codeCbb1;
@@ -27,6 +28,9 @@ __viewContext.ready(function () {
         return ItemModel2;
     }());
     var ScreenModel = (function () {
+        /**
+         * Constructor.
+         */
         function ScreenModel() {
             var self = this;
             self.itemList = ko.observableArray([
@@ -50,6 +54,9 @@ __viewContext.ready(function () {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
+            /*
+                    GridList
+            */
             self.items = ko.observableArray([
                 new ItemModel2('基本給'),
                 new ItemModel2('基本給3'),
@@ -61,9 +68,14 @@ __viewContext.ready(function () {
             ]);
             self.currentCode2 = ko.observable();
             self.currentCodeList = ko.observableArray([]);
+            /* Label  */
             self.inline = ko.observable(true);
             self.required = ko.observable(true);
             self.enable = ko.observable(true);
+            /**
+             * combobox
+              */
+            //combobox1
             self.itemListCbb1 = ko.observableArray([
                 new ItemModelCbb1('1', '基本給'),
                 new ItemModelCbb1('2', '役職手当'),
@@ -74,6 +86,7 @@ __viewContext.ready(function () {
             self.selectedCodeCbb1 = ko.observable('0002');
             self.isEnableCbb1 = ko.observable(true);
             self.isEditableCbb1 = ko.observable(true);
+            //combobox2
             self.itemListCbb2 = ko.observableArray([
                 new ItemModelCbb2('基本給'),
                 new ItemModelCbb2('役職手当'),
@@ -82,6 +95,7 @@ __viewContext.ready(function () {
             self.selectedCodeCbb2 = ko.observable('基本給');
             self.isEnableCbb2 = ko.observable(true);
             self.isEditableCbb2 = ko.observable(true);
+            //combobox3
             self.itemListCbb3 = ko.observableArray([
                 new ItemModelCbb3('基本給1', '基本給'),
                 new ItemModelCbb3('基本給2', '役職手当'),
@@ -92,6 +106,9 @@ __viewContext.ready(function () {
             self.selectedCodeCbb3 = ko.observable('');
             self.isEnableCbb3 = ko.observable(true);
             self.isEditableCbb3 = ko.observable(true);
+            /**
+                Textediter
+            */
             self.texteditor1 = {
                 value: ko.observable(''),
                 constraint: 'ResidenceCode',
@@ -119,6 +136,9 @@ __viewContext.ready(function () {
                 readonly: ko.observable(false)
             };
         }
+        /**
+         * Add options.
+         */
         ScreenModel.prototype.addOptions = function () {
             var self = this;
             var newCode = self.currentCode() + 1;
@@ -131,9 +151,15 @@ __viewContext.ready(function () {
             self.itemList.push(new ItemModel(itemCode, self.itemName()));
             self.currentCode(newCode);
         };
+        /**
+         * Clear options.
+         */
         ScreenModel.prototype.clearOptions = function () {
             this.itemList([]);
         };
+        /**
+         * Remove item by code;
+         */
         ScreenModel.prototype.removeByCode = function () {
             var self = this;
             var selected = self.itemListCbb1().filter(function (item) { return item.codeCbb1 == self.selectedCode(); })[0];
@@ -152,4 +178,3 @@ __viewContext.ready(function () {
     }());
     this.bind(new ScreenModel());
 });
-//# sourceMappingURL=start.js.map
