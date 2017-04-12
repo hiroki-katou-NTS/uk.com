@@ -60,7 +60,6 @@ public class LaborInsuranceOfficeFindOutDto implements LaborInsuranceOfficeSetMe
 	 */
 	@Override
 	public void setCode(OfficeCode code) {
-		// Nothing code
 		this.code = code.v();
 
 	}
@@ -74,7 +73,6 @@ public class LaborInsuranceOfficeFindOutDto implements LaborInsuranceOfficeSetMe
 	 */
 	@Override
 	public void setName(OfficeName name) {
-		// Nothing code
 		this.name = name.v();
 
 	}
@@ -273,5 +271,4 @@ public class LaborInsuranceOfficeFindOutDto implements LaborInsuranceOfficeSetMe
 		// Nothing code
 
 	}
-
 }

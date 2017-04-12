@@ -124,18 +124,10 @@ var nts;
                             }
                             service.copyAccidentInsuranceRate = copyAccidentInsuranceRate;
                             function addAccidentInsuranceRate(accidentInsuranceRateModel) {
-                                var dfd = $.Deferred();
                                 var data = {
                                     accidentInsuranceRate: service.convertAccidentInsuranceRateModelDTO(accidentInsuranceRateModel)
                                 };
-                                nts.uk.request.ajax(paths.addAccidentInsuranceRate, data)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.addAccidentInsuranceRate, data);
                             }
                             service.addAccidentInsuranceRate = addAccidentInsuranceRate;
                             function copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto) {
@@ -143,18 +135,10 @@ var nts;
                             }
                             service.copyUnemployeeInsuranceRate = copyUnemployeeInsuranceRate;
                             function updateAccidentInsuranceRate(accidentInsuranceRateModel) {
-                                var dfd = $.Deferred();
                                 var data = {
                                     accidentInsuranceRate: service.convertAccidentInsuranceRateModelDTO(accidentInsuranceRateModel)
                                 };
-                                nts.uk.request.ajax(paths.updateAccidentInsuranceRate, data)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.updateAccidentInsuranceRate, data);
                             }
                             service.updateAccidentInsuranceRate = updateAccidentInsuranceRate;
                             function findAllAccidentInsuranceRateHistory() {
@@ -277,25 +261,25 @@ var nts;
                                 accidentInsuranceRateDto.version = accidentInsuranceRateModel.version();
                                 accidentInsuranceRateDto.rateItems = [];
                                 accidentInsuranceRateDto.rateItems
-                                    .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz1St, accidentInsuranceRateModel.accidentInsuranceRateBiz1StModel));
+                                    .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz1St, accidentInsuranceRateModel.biz1StModel));
                                 accidentInsuranceRateDto.rateItems
-                                    .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz2Nd, accidentInsuranceRateModel.accidentInsuranceRateBiz2NdModel));
+                                    .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz2Nd, accidentInsuranceRateModel.biz2NdModel));
                                 accidentInsuranceRateDto.rateItems
-                                    .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz3Rd, accidentInsuranceRateModel.accidentInsuranceRateBiz3RdModel));
+                                    .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz3Rd, accidentInsuranceRateModel.biz3RdModel));
                                 accidentInsuranceRateDto.rateItems
-                                    .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz4Th, accidentInsuranceRateModel.accidentInsuranceRateBiz4ThModel));
+                                    .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz4Th, accidentInsuranceRateModel.biz4ThModel));
                                 accidentInsuranceRateDto.rateItems
-                                    .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz5Th, accidentInsuranceRateModel.accidentInsuranceRateBiz5ThModel));
+                                    .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz5Th, accidentInsuranceRateModel.biz5ThModel));
                                 accidentInsuranceRateDto.rateItems
-                                    .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz6Th, accidentInsuranceRateModel.accidentInsuranceRateBiz6ThModel));
+                                    .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz6Th, accidentInsuranceRateModel.biz6ThModel));
                                 accidentInsuranceRateDto.rateItems
-                                    .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz7Th, accidentInsuranceRateModel.accidentInsuranceRateBiz7ThModel));
+                                    .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz7Th, accidentInsuranceRateModel.biz7ThModel));
                                 accidentInsuranceRateDto.rateItems
-                                    .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz8Th, accidentInsuranceRateModel.accidentInsuranceRateBiz8ThModel));
+                                    .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz8Th, accidentInsuranceRateModel.biz8ThModel));
                                 accidentInsuranceRateDto.rateItems
-                                    .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz9Th, accidentInsuranceRateModel.accidentInsuranceRateBiz9ThModel));
+                                    .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz9Th, accidentInsuranceRateModel.biz9ThModel));
                                 accidentInsuranceRateDto.rateItems
-                                    .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz10Th, accidentInsuranceRateModel.accidentInsuranceRateBiz10ThModel));
+                                    .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz10Th, accidentInsuranceRateModel.biz10ThModel));
                                 return accidentInsuranceRateDto;
                             }
                             service.convertAccidentInsuranceRateModelDTO = convertAccidentInsuranceRateModelDTO;
@@ -504,8 +488,8 @@ var nts;
                                 model.InsuranceBusinessType = InsuranceBusinessType;
                                 (function (CareerGroupDto) {
                                     CareerGroupDto[CareerGroupDto["Agroforestry"] = 0] = "Agroforestry";
-                                    CareerGroupDto[CareerGroupDto["Contruction"] = 1] = "Contruction";
-                                    CareerGroupDto[CareerGroupDto["Other"] = 2] = "Other";
+                                    CareerGroupDto[CareerGroupDto["Other"] = 1] = "Other";
+                                    CareerGroupDto[CareerGroupDto["Contruction"] = 2] = "Contruction";
                                 })(model.CareerGroupDto || (model.CareerGroupDto = {}));
                                 var CareerGroupDto = model.CareerGroupDto;
                                 (function (BusinessTypeEnumDto) {

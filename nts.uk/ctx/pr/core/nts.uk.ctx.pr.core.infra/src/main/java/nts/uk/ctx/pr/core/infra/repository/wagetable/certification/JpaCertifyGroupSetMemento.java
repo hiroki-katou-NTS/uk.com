@@ -23,7 +23,7 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCer
 public class JpaCertifyGroupSetMemento implements CertifyGroupSetMemento {
 
 	/** The type value. */
-	protected QwtmtWagetableCertifyG typeValue;
+	private QwtmtWagetableCertifyG typeValue;
 
 	/**
 	 * Instantiates a new jpa certify group set memento.

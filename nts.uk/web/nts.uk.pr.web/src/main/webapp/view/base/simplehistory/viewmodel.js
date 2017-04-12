@@ -56,6 +56,7 @@ var nts;
                                             if (!self.selectedHistoryUuid()) {
                                                 inlineFunc();
                                             }
+                                            self.onSelectHistory(id);
                                         }
                                     });
                                 }
@@ -219,6 +220,10 @@ var nts;
                                 ScreenBaseModel.prototype.reloadMasterHistory = function (uuid) {
                                     var self = this;
                                     self.loadMasterHistory().done(function () {
+                                        if (!self.masterHistoryList || self.masterHistoryList.length == 0) {
+                                            self.isNewMode(true);
+                                            self.onRegistNew();
+                                        }
                                         self.selectedHistoryUuid(undefined);
                                         if (uuid) {
                                             self.igGridSelectedHistoryUuid(uuid);

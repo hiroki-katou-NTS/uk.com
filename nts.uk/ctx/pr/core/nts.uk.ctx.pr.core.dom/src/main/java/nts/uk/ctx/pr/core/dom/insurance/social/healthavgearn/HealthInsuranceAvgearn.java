@@ -7,6 +7,7 @@ package nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn;
 import java.math.BigDecimal;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
@@ -18,7 +19,7 @@ import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 public class HealthInsuranceAvgearn extends DomainObject {
 
 	/** The history id. */
-	// historyId
+	@Setter
 	private String historyId;
 
 	/** The level code. */

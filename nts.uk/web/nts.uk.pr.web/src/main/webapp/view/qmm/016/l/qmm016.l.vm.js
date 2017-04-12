@@ -31,6 +31,10 @@ var nts;
                                     self.typeAction = ko.observable(TypeActionCertifyGroup.update);
                                     self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
                                     self.isEmpty = ko.observable(true);
+                                    self.messageList = ko.observableArray([
+                                        { messageId: "AL002", message: "データを削除します。\r\n よろしいですか？。" }
+                                    ]);
+                                    self.showDelete = ko.observable(true);
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
@@ -87,7 +91,7 @@ var nts;
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.detailCertifyGroup = function (code) {
-                                    if (code != null && code != undefined && code != '') {
+                                    if (code && code != '') {
                                         var self = this;
                                         l.service.findCertifyGroup(code).done(function (data) {
                                             if (self.isEmpty()) {
@@ -103,6 +107,7 @@ var nts;
                                             self.certifyGroupModel().certifies(data.certifies);
                                             self.typeAction(TypeActionCertifyGroup.update);
                                             self.certifyGroupModel().setReadOnly(true);
+                                            self.showDelete(true);
                                             l.service.findAllCertification().done(function (dataCertification) {
                                                 self.certifyGroupModel().setLstCertification(dataCertification);
                                             });
@@ -125,6 +130,7 @@ var nts;
                                     self.selectCodeLstLstCertifyGroup('');
                                     self.certifyGroupModel().setReadOnly(false);
                                     self.certifyGroupModel().certifies([]);
+                                    self.showDelete(false);
                                     l.service.findAllCertification().done(function (data) {
                                         self.certifyGroupModel().lstCertification(data);
                                     });
@@ -153,7 +159,7 @@ var nts;
                                     var self = this;
                                     l.service.findAllCertifyGroup().done(function (data) {
                                         self.lstCertifyGroup(data);
-                                        if (code != null && code != undefined && code != '') {
+                                        if (code && code != '') {
                                             self.selectCodeLstLstCertifyGroup(code);
                                             self.detailCertifyGroup(code);
                                         }
@@ -176,15 +182,16 @@ var nts;
                                         self.resetValueCertifyGroup();
                                         self.isEmpty(true);
                                         self.certifyGroupModel().setReadOnly(false);
+                                        self.showDelete(false);
                                     });
                                 };
                                 ScreenModel.prototype.deleteCertifyGroup = function () {
                                     var self = this;
-                                    nts.uk.ui.dialog.confirm("Do you delete Item?").ifYes(function () {
+                                    nts.uk.ui.dialog.confirm(self.messageList()[0].message).ifYes(function () {
                                         var certifyGroupDeleteDto = new CertifyGroupDeleteDto();
                                         certifyGroupDeleteDto.groupCode = self.certifyGroupModel().code();
                                         certifyGroupDeleteDto.version = 12;
-                                        l.service.deleteCertifyGroup(certifyGroupDeleteDto).done(function (data) {
+                                        l.service.deleteCertifyGroup(certifyGroupDeleteDto).done(function () {
                                             self.reloadDataByAction('');
                                         });
                                     }).ifNo(function () {
@@ -212,7 +219,6 @@ var nts;
                                     nts.uk.ui.dialog.alert(message);
                                 };
                                 ScreenModel.prototype.clearErrorSave = function () {
-                                    var self = this;
                                     $('.save-error').ntsError('clear');
                                     $('#btn_saveCertifyGroup').ntsError('clear');
                                 };

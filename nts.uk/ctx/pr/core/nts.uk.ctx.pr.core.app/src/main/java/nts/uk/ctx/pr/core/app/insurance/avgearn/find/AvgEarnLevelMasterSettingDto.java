@@ -14,7 +14,7 @@ import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSetting;
 @Builder
 @Getter
 public class AvgEarnLevelMasterSettingDto {
-	
+
 	/** The code. */
 	private Integer code;
 
@@ -33,12 +33,14 @@ public class AvgEarnLevelMasterSettingDto {
 	/**
 	 * From domain.
 	 *
-	 * @param domain the domain
+	 * @param domain
+	 *            the domain
 	 * @return the avg earn level master setting dto
 	 */
 	public static AvgEarnLevelMasterSettingDto fromDomain(AvgEarnLevelMasterSetting domain) {
-		return new AvgEarnLevelMasterSettingDto(domain.getCode(), domain.getHealthLevel(), domain.getPensionLevel(),
-				domain.getAvgEarn(), domain.getSalLimit());
+		return AvgEarnLevelMasterSettingDto.builder().code(domain.getCode())
+				.healthLevel(domain.getHealthLevel()).pensionLevel(domain.getPensionLevel())
+				.avgEarn(domain.getAvgEarn()).salLimit(domain.getSalLimit()).build();
 	}
 
 }

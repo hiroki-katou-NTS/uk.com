@@ -34,8 +34,11 @@ public class LaborInsuranceOfficeServiceImpl implements LaborInsuranceOfficeServ
 	 */
 	@Override
 	public void validateRequiredItem(LaborInsuranceOffice office) {
-		if (office.getCode() == null || StringUtil.isNullOrEmpty(office.getCode().v(), true) || office.getName() == null
-				|| StringUtil.isNullOrEmpty(office.getName().v(), true) || office.getPicPosition() == null
+		if (office.getCode() == null 
+				|| office.getName() == null
+				|| office.getPicPosition() == null
+				|| StringUtil.isNullOrEmpty(office.getCode().v(), true) 
+				|| StringUtil.isNullOrEmpty(office.getName().v(), true) 
 				|| StringUtil.isNullOrEmpty(office.getPicPosition().v(), true)) {
 			throw new BusinessException("ER001");
 		}

@@ -16,9 +16,11 @@ var nts;
                                 updatePensionAvgearn: "ctx/pr/core/insurance/social/pensionavgearn/update",
                                 findPensionAvgearn: "ctx/pr/core/insurance/social/pensionavgearn/find"
                             };
-                            function updatePensionAvgearn(listPensionAvgearn, officeCode) {
+                            function updatePensionAvgearn(list, officeCode) {
                                 var dfd = $.Deferred();
-                                var data = { listPensionAvgearn: listPensionAvgearn, officeCode: officeCode };
+                                var data = { listPensionAvgearnDto: list.listPensionAvgearnDto,
+                                    historyId: list.historyId,
+                                    officeCode: officeCode };
                                 nts.uk.request.ajax(paths.updatePensionAvgearn, data).done(function () {
                                     return dfd.resolve();
                                 });

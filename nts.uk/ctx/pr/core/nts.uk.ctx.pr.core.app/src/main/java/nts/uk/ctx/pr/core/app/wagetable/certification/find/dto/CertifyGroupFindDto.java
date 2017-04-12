@@ -4,9 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.certification.find.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Data;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
@@ -92,12 +92,10 @@ public class CertifyGroupFindDto implements CertifyGroupSetMemento {
 	 */
 	@Override
 	public void setCertifies(Set<Certification> certifies) {
-		List<CertificationFindDto> lstCertificationDto = new ArrayList<>();
-		for (Certification certification : certifies) {
+		this.certifies = certifies.stream().map(certification -> {
 			CertificationFindDto certificationDto = new CertificationFindDto();
 			certification.saveToMemento(certificationDto);
-			lstCertificationDto.add(certificationDto);
-		}
-		this.certifies = lstCertificationDto;
+			return certificationDto;
+		}).collect(Collectors.toList());
 	}
 }

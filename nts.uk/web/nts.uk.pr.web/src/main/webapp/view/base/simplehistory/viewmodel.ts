@@ -94,6 +94,7 @@ module nts.uk.pr.view.base.simplehistory {
                         if (!self.selectedHistoryUuid()) {
                             inlineFunc();
                         }
+                        self.onSelectHistory(id);
                     }
                 })
             }
@@ -204,7 +205,7 @@ module nts.uk.pr.view.base.simplehistory {
 
             /**
              * Confirm dirty check.
-             * Overrid it by your self.
+             * Override it by your self.
              */
             abstract isDirty(): boolean;
 
@@ -315,6 +316,11 @@ module nts.uk.pr.view.base.simplehistory {
             reloadMasterHistory(uuid: string) {
                 var self = this;
                 self.loadMasterHistory().done(() => {
+                    // Set new mode if masterHistoryList has 0 element.
+                    if (!self.masterHistoryList || self.masterHistoryList.length == 0) {
+                        self.isNewMode(true);
+                        self.onRegistNew();
+                    }
                     self.selectedHistoryUuid(undefined);
                     if (uuid) {
                         self.igGridSelectedHistoryUuid(uuid);

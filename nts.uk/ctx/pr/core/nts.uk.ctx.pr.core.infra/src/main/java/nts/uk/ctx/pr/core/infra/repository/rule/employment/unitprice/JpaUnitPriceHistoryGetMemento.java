@@ -20,7 +20,7 @@ import nts.uk.shr.com.primitive.Memo;
 public class JpaUnitPriceHistoryGetMemento implements UnitPriceHistoryGetMemento {
 
 	/** The type value. */
-	protected QupmtCUnitpriceDetail typeValue;
+	private QupmtCUnitpriceDetail typeValue;
 
 	/**
 	 * Instantiates a new jpa unit price history get memento.

@@ -34,7 +34,12 @@ public class JpaPaydayProcessingRepository extends JpaRepository implements Payd
 	public void insert1(PaydayProcessing domain) {
 		this.commandProxy().insert(toEntity(domain));
 	}
-
+	
+	@Override
+	public void update1(PaydayProcessing domain) {
+		this.commandProxy().update(toEntity(domain));
+	}
+	
 	@Override
 	public void update2(PaydayProcessing domain) {
 		this.commandProxy().update(toEntity(domain));

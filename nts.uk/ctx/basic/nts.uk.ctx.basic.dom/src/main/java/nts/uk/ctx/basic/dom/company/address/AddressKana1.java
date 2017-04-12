@@ -9,7 +9,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author lanlt
  *
  */
-@StringMaxLength(120)
+@StringMaxLength(60)
 @StringCharType(CharType.ALPHABET)
 public class AddressKana1 extends StringPrimitiveValue<AddressKana1>{
 

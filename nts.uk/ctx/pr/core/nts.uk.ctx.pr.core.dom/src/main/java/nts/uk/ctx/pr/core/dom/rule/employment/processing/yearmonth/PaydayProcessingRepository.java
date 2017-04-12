@@ -12,6 +12,8 @@ public interface PaydayProcessingRepository {
 	List<PaydayProcessing> select3(String companyCode);
 	
 	void insert1(PaydayProcessing domain);
+
+	void update1(PaydayProcessing domain);
 	
 	void update2(PaydayProcessing domain);
 }

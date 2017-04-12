@@ -18,7 +18,9 @@ var nts;
                             };
                             function updateHealthInsuranceAvgearn(list, officeCode) {
                                 var dfd = $.Deferred();
-                                var data = { listHealthInsuranceAvgearn: list, officeCode: officeCode };
+                                var data = { listHealthInsuranceAvgearnDto: list.listHealthInsuranceAvgearnDto,
+                                    historyId: list.historyId,
+                                    officeCode: officeCode };
                                 nts.uk.request.ajax(paths.updateHealthInsuranceAvgearn, data).done(function () {
                                     return dfd.resolve();
                                 });
