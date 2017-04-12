@@ -96,25 +96,25 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 	private class PensionAvgearnGetMementoImpl implements PensionAvgearnGetMemento {
 
 		/** The history id. */
-		private String historyId;
+		private final String historyId;
 
 		/** The level code. */
-		private int levelCode;
+		private final int levelCode;
 
 		/** The master rate. */
-		private BigDecimal masterRate;
+		private final BigDecimal masterRate;
 
 		/** The rate items. */
-		private Set<FundRateItem> rateItems;
+		private final Set<FundRateItem> rateItems;
 
 		/** The premium rate items. */
-		private Set<PensionPremiumRateItem> premiumRateItems;
+		private final Set<PensionPremiumRateItem> premiumRateItems;
 
 		/** The child contribution rate. */
-		private BigDecimal childContributionRate;
+		private final BigDecimal childContributionRate;
 
 		/** The setting. */
-		private PensionAvgearnSetting setting;
+		private final PensionAvgearnSetting setting;
 
 		/**
 		 * Instantiates a new pension avgearn get memento impl.
@@ -140,7 +140,9 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 			this.setting.setPensionRateItems(this.premiumRateItems);
 			this.setting.setRateItems(this.rateItems);
 			PensionRateRounding salaryRoundingMethod = roundingMethods.stream()
-					.filter(item -> item.getPayType() == PaymentType.Salary).findFirst().get();
+					.filter(item -> item.getPayType() == PaymentType.Salary).findFirst().orElseThrow(() -> {
+						throw new RuntimeException("No such RoungdingMethod.");
+					});
 			this.setting.setCompanyRoundAtr(salaryRoundingMethod.getRoundAtrs().getCompanyRoundAtr());
 			this.setting.setPersonalRoundAtr(salaryRoundingMethod.getRoundAtrs().getPersonalRoundAtr());
 		}
@@ -187,9 +189,8 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 		@Override
 		public PensionAvgearnValue getCompanyFund() {
 			setting.setExemption(false);
-			setting.setPensionPremium(false);
 			setting.setPersonal(false);
-			return calculateAvgearnValue(setting);
+			return calculateAvgearnFundValue(setting);
 		}
 
 		/*
@@ -201,9 +202,8 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 		@Override
 		public PensionAvgearnValue getCompanyFundExemption() {
 			setting.setExemption(true);
-			setting.setPensionPremium(false);
 			setting.setPersonal(false);
-			return calculateAvgearnValue(setting);
+			return calculateAvgearnFundValue(setting);
 		}
 
 		/*
@@ -215,9 +215,8 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 		@Override
 		public PensionAvgearnValue getCompanyPension() {
 			setting.setExemption(false);
-			setting.setPensionPremium(true);
 			setting.setPersonal(false);
-			return calculateAvgearnValue(setting);
+			return calculateAvgearnPensionValue(setting);
 		}
 
 		/*
@@ -229,9 +228,8 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 		@Override
 		public PensionAvgearnValue getPersonalFund() {
 			this.setting.setExemption(false);
-			this.setting.setPensionPremium(false);
 			this.setting.setPersonal(true);
-			return calculateAvgearnValue(this.setting);
+			return calculateAvgearnFundValue(this.setting);
 		}
 
 		/*
@@ -243,9 +241,8 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 		@Override
 		public PensionAvgearnValue getPersonalFundExemption() {
 			this.setting.setExemption(true);
-			this.setting.setPensionPremium(false);
 			this.setting.setPersonal(true);
-			return calculateAvgearnValue(this.setting);
+			return calculateAvgearnFundValue(this.setting);
 		}
 
 		/*
@@ -257,21 +254,14 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 		@Override
 		public PensionAvgearnValue getPersonalPension() {
 			this.setting.setExemption(false);
-			this.setting.setPensionPremium(true);
 			this.setting.setPersonal(true);
-			return calculateAvgearnValue(this.setting);
+			return calculateAvgearnPensionValue(this.setting);
 		}
 
 	}
 
 	/**
 	 * The Class PensionAvgearnSetting.
-	 */
-	
-	/**
-	 * Sets the pension premium.
-	 *
-	 * @param isPensionPremium the new pension premium
 	 */
 	@Setter
 	private class PensionAvgearnSetting {
@@ -296,61 +286,68 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 
 		/** The is exemption. */
 		private boolean isExemption;
-
-		/** The is pension premium. */
-		private boolean isPensionPremium;
 	}
 
 	/**
-	 * Calculate avgearn value.
+	 * Calculate avgearn pension value.
 	 *
 	 * @param setting the setting
 	 * @return the pension avgearn value
 	 */
-	private PensionAvgearnValue calculateAvgearnValue(PensionAvgearnSetting setting) {
+	private PensionAvgearnValue calculateAvgearnPensionValue(PensionAvgearnSetting setting) {
 		PensionAvgearnValue value = new PensionAvgearnValue();
-
-		// Calculate fundRate.
-		if (!setting.isPensionPremium) {
-			setting.rateItems.forEach(item -> {
-				if (item.getPayType() == PaymentType.Salary) {
-					switch (item.getGenderType()) {
-					case Female:
-						value.setFemaleAmount(new CommonAmount(calculateFundRate(item, setting)));
-						break;
-					case Male:
-						value.setMaleAmount(new CommonAmount(calculateFundRate(item, setting)));
-						break;
-					case Unknow:
-						value.setUnknownAmount(new CommonAmount(calculateFundRate(item, setting)));
-						break;
-					}
+		setting.pensionRateItems.forEach(item -> {
+			if (item.getPayType() == PaymentType.Salary) {
+				switch (item.getGenderType()) {
+				case Female:
+					value.setFemaleAmount(new CommonAmount(calculatePensionRate(item, setting)));
+					break;
+				case Male:
+					value.setMaleAmount(new CommonAmount(calculatePensionRate(item, setting)));
+					break;
+				case Unknow:
+					value.setUnknownAmount(new CommonAmount(calculatePensionRate(item, setting)));
+					break;
+				default:
+					// Do nothing because all cases are covered.
+					break;
 				}
-			});
-		}
-
-		// Calculate premiumPension.
-		else {
-			setting.pensionRateItems.forEach(item -> {
-				if (item.getPayType() == PaymentType.Salary) {
-					switch (item.getGenderType()) {
-					case Female:
-						value.setFemaleAmount(new CommonAmount(calculatePensionRate(item, setting)));
-						break;
-					case Male:
-						value.setMaleAmount(new CommonAmount(calculatePensionRate(item, setting)));
-						break;
-					case Unknow:
-						value.setUnknownAmount(new CommonAmount(calculatePensionRate(item, setting)));
-						break;
-					}
-				}
-			});
-		}
+			}
+		});
 
 		// Return calculated value
 		return value;
+	}
 
+	/**
+	 * Calculate avgearn fund value.
+	 *
+	 * @param setting the setting
+	 * @return the pension avgearn value
+	 */
+	private PensionAvgearnValue calculateAvgearnFundValue(PensionAvgearnSetting setting) {
+		PensionAvgearnValue value = new PensionAvgearnValue();
+		setting.rateItems.forEach(item -> {
+			if (item.getPayType() == PaymentType.Salary) {
+				switch (item.getGenderType()) {
+				case Female:
+					value.setFemaleAmount(new CommonAmount(calculateFundRate(item, setting)));
+					break;
+				case Male:
+					value.setMaleAmount(new CommonAmount(calculateFundRate(item, setting)));
+					break;
+				case Unknow:
+					value.setUnknownAmount(new CommonAmount(calculateFundRate(item, setting)));
+					break;
+				default:
+					// Do nothing because all cases are covered.
+					break;
+				}
+			}
+		});
+
+		// Return calculated value
+		return value;
 	}
 
 	/**
@@ -361,8 +358,10 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 	 * @return the big decimal
 	 */
 	private BigDecimal calculateFundRate(FundRateItem fundRateItem, PensionAvgearnSetting setting) {
-		PensionChargeRateItem chargeRate = setting.isExemption ? fundRateItem.getExemptionChargeRate()
-				: fundRateItem.getBurdenChargeRate();
+		PensionChargeRateItem chargeRate = fundRateItem.getBurdenChargeRate();
+		if (setting.isExemption) {
+			chargeRate = fundRateItem.getExemptionChargeRate();
+		}
 		return this.calculateChargeRate(chargeRate, setting);
 	}
 

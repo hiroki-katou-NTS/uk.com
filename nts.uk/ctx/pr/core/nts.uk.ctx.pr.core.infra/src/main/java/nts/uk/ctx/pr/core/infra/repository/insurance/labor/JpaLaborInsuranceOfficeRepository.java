@@ -94,10 +94,7 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository
 		TypedQuery<QismtLaborInsuOffice> query = em.createQuery(cq);
 
 		// exclude select
-		List<LaborInsuranceOffice> lstLaborInsuranceOffice = query.getResultList().stream()
-			.map(item -> this.toDomain(item)).collect(Collectors.toList());
-
-		return lstLaborInsuranceOffice;
+		return query.getResultList().stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 
 	/*

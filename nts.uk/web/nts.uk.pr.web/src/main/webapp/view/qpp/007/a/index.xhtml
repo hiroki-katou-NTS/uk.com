@@ -103,7 +103,7 @@
 												<div id="output-setting-box" class="margin-bottom"
 													style="width: 350px; margin-left: 10px;"
 													data-bind="ntsComboBox: {
-													options: outputItemSetting,
+													options: outputSettings,
 													optionsValue: 'code',
 													value: selectedOutputSetting,
 													optionsText: 'name',
@@ -142,7 +142,7 @@
 													value: selectedpageBreakSetting,
 													optionsText: 'name',
 													enable: true,
-													columns: [																								
+													columns: [
 														{ prop: 'name', length: 6 },
 													]}">
 												</div>
@@ -160,7 +160,7 @@
 													value: selectedHierachy,
 													optionsText: 'name',
 													enable: isDepartmentHierarchy(),
-													columns: [																								
+													columns: [
 														{ prop: 'name', length: 3 },
 													]}">
 												</div>

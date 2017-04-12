@@ -115,58 +115,69 @@ public class JpaPensionRateGetMemento implements PensionRateGetMemento {
 	public Set<FundRateItem> getFundRateItems() {
 		Set<FundRateItem> fundRateItems = new HashSet<FundRateItem>();
 
-		PensionChargeRateItem salaryMaleBurden = new PensionChargeRateItem();
-		salaryMaleBurden.setCompanyRate(new Ins2Rate(this.typeValue.getCPayFundMaleRate()));
-		salaryMaleBurden.setPersonalRate(new Ins2Rate(this.typeValue.getPPayFundMaleRate()));
-		PensionChargeRateItem salaryMaleExemption = new PensionChargeRateItem();
-		salaryMaleExemption.setCompanyRate(new Ins2Rate(this.typeValue.getCPayFundExMaleRate()));
-		salaryMaleExemption.setPersonalRate(new Ins2Rate(this.typeValue.getPPayFundExMaleRate()));
+		PensionChargeRateItem salaryMaleBurden = new PensionChargeRateItem(
+				new Ins2Rate(this.typeValue.getCPayFundMaleRate()),
+				new Ins2Rate(this.typeValue.getPPayFundMaleRate()));
+
+		PensionChargeRateItem salaryMaleExemption = new PensionChargeRateItem(
+				new Ins2Rate(this.typeValue.getCPayFundExMaleRate()),
+				new Ins2Rate(this.typeValue.getPPayFundExMaleRate()));
+
 		FundRateItem salaryMale = new FundRateItem(PaymentType.Salary, InsuranceGender.Male,
 				salaryMaleBurden, salaryMaleExemption);
 
-		PensionChargeRateItem salaryFemaleBurden = new PensionChargeRateItem();
-		salaryFemaleBurden.setCompanyRate(new Ins2Rate(this.typeValue.getCPayFundFemRate()));
-		salaryFemaleBurden.setPersonalRate(new Ins2Rate(this.typeValue.getPPayFundFemRate()));
-		PensionChargeRateItem salaryFemaleExemption = new PensionChargeRateItem();
-		salaryFemaleExemption.setCompanyRate(new Ins2Rate(this.typeValue.getCPayFundExFemRate()));
-		salaryFemaleExemption.setPersonalRate(new Ins2Rate(this.typeValue.getPPayFundExFemRate()));
+		PensionChargeRateItem salaryFemaleBurden = new PensionChargeRateItem(
+				new Ins2Rate(this.typeValue.getCPayFundFemRate()),
+				new Ins2Rate(this.typeValue.getPPayFundFemRate()));
+
+		PensionChargeRateItem salaryFemaleExemption = new PensionChargeRateItem(
+				new Ins2Rate(this.typeValue.getCPayFundExFemRate()),
+				new Ins2Rate(this.typeValue.getPPayFundExFemRate()));
+
 		FundRateItem salaryFemale = new FundRateItem(PaymentType.Salary, InsuranceGender.Female,
 				salaryFemaleBurden, salaryFemaleExemption);
 
-		PensionChargeRateItem salaryUnknowBurden = new PensionChargeRateItem();
-		salaryUnknowBurden.setCompanyRate(new Ins2Rate(this.typeValue.getCPayFundMinerRate()));
-		salaryUnknowBurden.setPersonalRate(new Ins2Rate(this.typeValue.getPPayFundMinerRate()));
-		PensionChargeRateItem salaryUnknowExemption = new PensionChargeRateItem();
-		salaryUnknowExemption.setCompanyRate(new Ins2Rate(this.typeValue.getCPayFundExMinerRate()));
-		salaryUnknowExemption
-				.setPersonalRate(new Ins2Rate(this.typeValue.getPPayFundExMinerRate()));
+		PensionChargeRateItem salaryUnknowBurden = new PensionChargeRateItem(
+				new Ins2Rate(this.typeValue.getCPayFundMinerRate()),
+				new Ins2Rate(this.typeValue.getPPayFundMinerRate()));
+
+		PensionChargeRateItem salaryUnknowExemption = new PensionChargeRateItem(
+				new Ins2Rate(this.typeValue.getCPayFundExMinerRate()),
+				new Ins2Rate(this.typeValue.getPPayFundExMinerRate()));
+
 		FundRateItem salaryUnknow = new FundRateItem(PaymentType.Salary, InsuranceGender.Unknow,
 				salaryUnknowBurden, salaryUnknowExemption);
 
-		PensionChargeRateItem bonusMaleBurden = new PensionChargeRateItem();
-		bonusMaleBurden.setCompanyRate(new Ins2Rate(this.typeValue.getCBnsFundManRate()));
-		bonusMaleBurden.setPersonalRate(new Ins2Rate(this.typeValue.getPBnsFundManRate()));
-		PensionChargeRateItem bonusMaleExemption = new PensionChargeRateItem();
-		bonusMaleExemption.setCompanyRate(new Ins2Rate(this.typeValue.getCBnsFundExMaleRate()));
-		bonusMaleExemption.setPersonalRate(new Ins2Rate(this.typeValue.getPBnsFundExMaleRate()));
+		PensionChargeRateItem bonusMaleBurden = new PensionChargeRateItem(
+				new Ins2Rate(this.typeValue.getCBnsFundManRate()),
+				new Ins2Rate(this.typeValue.getPBnsFundManRate()));
+
+		PensionChargeRateItem bonusMaleExemption = new PensionChargeRateItem(
+				new Ins2Rate(this.typeValue.getCBnsFundExMaleRate()),
+				new Ins2Rate(this.typeValue.getPBnsFundExMaleRate()));
+
 		FundRateItem bonusMale = new FundRateItem(PaymentType.Bonus, InsuranceGender.Male,
 				bonusMaleBurden, bonusMaleExemption);
 
-		PensionChargeRateItem bonusFemaleBurden = new PensionChargeRateItem();
-		bonusFemaleBurden.setCompanyRate(new Ins2Rate(this.typeValue.getCBnsFundFemRate()));
-		bonusFemaleBurden.setPersonalRate(new Ins2Rate(this.typeValue.getPBnsFundFemRate()));
-		PensionChargeRateItem bonusFemaleExemption = new PensionChargeRateItem();
-		bonusFemaleExemption.setCompanyRate(new Ins2Rate(this.typeValue.getCBnsFundExFemRate()));
-		bonusFemaleExemption.setPersonalRate(new Ins2Rate(this.typeValue.getPBnsFundExFemRate()));
+		PensionChargeRateItem bonusFemaleBurden = new PensionChargeRateItem(
+				new Ins2Rate(this.typeValue.getCBnsFundFemRate()),
+				new Ins2Rate(this.typeValue.getPBnsFundFemRate()));
+
+		PensionChargeRateItem bonusFemaleExemption = new PensionChargeRateItem(
+				new Ins2Rate(this.typeValue.getCBnsFundExFemRate()),
+				new Ins2Rate(this.typeValue.getPBnsFundExFemRate()));
+
 		FundRateItem bonusFemale = new FundRateItem(PaymentType.Bonus, InsuranceGender.Female,
 				bonusFemaleBurden, bonusFemaleExemption);
 
-		PensionChargeRateItem bonusUnknowBurden = new PensionChargeRateItem();
-		bonusUnknowBurden.setCompanyRate(new Ins2Rate(this.typeValue.getCBnsFundMinerRate()));
-		bonusUnknowBurden.setPersonalRate(new Ins2Rate(this.typeValue.getPBnsFundMinerRate()));
-		PensionChargeRateItem bonusUnknowExemption = new PensionChargeRateItem();
-		bonusUnknowExemption.setCompanyRate(new Ins2Rate(this.typeValue.getCBnsFundExMinerRate()));
-		bonusUnknowExemption.setPersonalRate(new Ins2Rate(this.typeValue.getPBnsFundExMinerRate()));
+		PensionChargeRateItem bonusUnknowBurden = new PensionChargeRateItem(
+				new Ins2Rate(this.typeValue.getCBnsFundMinerRate()),
+				new Ins2Rate(this.typeValue.getPBnsFundMinerRate()));
+
+		PensionChargeRateItem bonusUnknowExemption = new PensionChargeRateItem(
+				new Ins2Rate(this.typeValue.getCBnsFundExMinerRate()),
+				new Ins2Rate(this.typeValue.getPBnsFundExMinerRate()));
+
 		FundRateItem bonusUnknow = new FundRateItem(PaymentType.Bonus, InsuranceGender.Unknow,
 				bonusUnknowBurden, bonusUnknowExemption);
 
@@ -191,39 +202,45 @@ public class JpaPensionRateGetMemento implements PensionRateGetMemento {
 
 		Set<PensionPremiumRateItem> pensionRates = new HashSet<PensionPremiumRateItem>();
 
-		PensionChargeRateItem salaryMaleCharge = new PensionChargeRateItem();
-		salaryMaleCharge.setCompanyRate(new Ins2Rate(this.typeValue.getCPayPensionMaleRate()));
-		salaryMaleCharge.setPersonalRate(new Ins2Rate(this.typeValue.getPPayPensionMaleRate()));
+		PensionChargeRateItem salaryMaleCharge = new PensionChargeRateItem(
+				new Ins2Rate(this.typeValue.getCPayPensionMaleRate()),
+				new Ins2Rate(this.typeValue.getPPayPensionMaleRate()));
+
 		PensionPremiumRateItem salaryMale = new PensionPremiumRateItem(PaymentType.Salary,
 				InsuranceGender.Male, salaryMaleCharge);
 
-		PensionChargeRateItem salaryFemaleCharge = new PensionChargeRateItem();
-		salaryFemaleCharge.setCompanyRate(new Ins2Rate(this.typeValue.getCPayPensionFemRate()));
-		salaryFemaleCharge.setPersonalRate(new Ins2Rate(this.typeValue.getPPayPensionFemRate()));
+		PensionChargeRateItem salaryFemaleCharge = new PensionChargeRateItem(
+				new Ins2Rate(this.typeValue.getCPayPensionFemRate()),
+				new Ins2Rate(this.typeValue.getPPayPensionFemRate()));
+
 		PensionPremiumRateItem salaryFemale = new PensionPremiumRateItem(PaymentType.Salary,
 				InsuranceGender.Female, salaryFemaleCharge);
 
-		PensionChargeRateItem salaryUnknowCharge = new PensionChargeRateItem();
-		salaryUnknowCharge.setCompanyRate(new Ins2Rate(this.typeValue.getCPayPensionMinerRate()));
-		salaryUnknowCharge.setPersonalRate(new Ins2Rate(this.typeValue.getPPayPensionMinerRate()));
+		PensionChargeRateItem salaryUnknowCharge = new PensionChargeRateItem(
+				new Ins2Rate(this.typeValue.getCPayPensionMinerRate()),
+				new Ins2Rate(this.typeValue.getPPayPensionMinerRate()));
+
 		PensionPremiumRateItem salaryUnknow = new PensionPremiumRateItem(PaymentType.Salary,
 				InsuranceGender.Unknow, salaryUnknowCharge);
 
-		PensionChargeRateItem bonusMaleCharge = new PensionChargeRateItem();
-		bonusMaleCharge.setCompanyRate(new Ins2Rate(this.typeValue.getCBnsPensionMaleRate()));
-		bonusMaleCharge.setPersonalRate(new Ins2Rate(this.typeValue.getPBnsPensionMaleRate()));
+		PensionChargeRateItem bonusMaleCharge = new PensionChargeRateItem(
+				new Ins2Rate(this.typeValue.getCBnsPensionMaleRate()),
+				new Ins2Rate(this.typeValue.getPBnsPensionMaleRate()));
+
 		PensionPremiumRateItem bonusMale = new PensionPremiumRateItem(PaymentType.Bonus,
 				InsuranceGender.Male, bonusMaleCharge);
 
-		PensionChargeRateItem bonusFemaleCharge = new PensionChargeRateItem();
-		bonusFemaleCharge.setCompanyRate(new Ins2Rate(this.typeValue.getCBnsPensionFemRate()));
-		bonusFemaleCharge.setPersonalRate(new Ins2Rate(this.typeValue.getPBnsPensionFemRate()));
+		PensionChargeRateItem bonusFemaleCharge = new PensionChargeRateItem(
+				new Ins2Rate(this.typeValue.getCBnsPensionFemRate()),
+				new Ins2Rate(this.typeValue.getPBnsPensionFemRate()));
+
 		PensionPremiumRateItem bonusFemale = new PensionPremiumRateItem(PaymentType.Bonus,
 				InsuranceGender.Female, bonusFemaleCharge);
 
-		PensionChargeRateItem bonusUnknowCharge = new PensionChargeRateItem();
-		bonusUnknowCharge.setCompanyRate(new Ins2Rate(this.typeValue.getCBnsPensionMinerRate()));
-		bonusUnknowCharge.setPersonalRate(new Ins2Rate(this.typeValue.getPBnsPensionMinerRate()));
+		PensionChargeRateItem bonusUnknowCharge = new PensionChargeRateItem(
+				new Ins2Rate(this.typeValue.getCBnsPensionMinerRate()),
+				new Ins2Rate(this.typeValue.getPBnsPensionMinerRate()));
+
 		PensionPremiumRateItem bonusUnknow = new PensionPremiumRateItem(PaymentType.Bonus,
 				InsuranceGender.Unknow, bonusUnknowCharge);
 
@@ -259,15 +276,12 @@ public class JpaPensionRateGetMemento implements PensionRateGetMemento {
 	@Override
 	public Set<PensionRateRounding> getRoundingMethods() {
 		Set<PensionRateRounding> listRounding = new HashSet<PensionRateRounding>();
-		RoundingItem salaryRoundingItem = new RoundingItem();
-		RoundingItem bonusRoundingItem = new RoundingItem();
-		salaryRoundingItem.setCompanyRoundAtr(
-				RoundingMethod.valueOf(this.typeValue.getCPayPensionRoundAtr()));
-		salaryRoundingItem.setPersonalRoundAtr(
+		RoundingItem salaryRoundingItem = new RoundingItem(
+				RoundingMethod.valueOf(this.typeValue.getCPayPensionRoundAtr()),
 				RoundingMethod.valueOf(this.typeValue.getPPayPensionRoundAtr()));
-		bonusRoundingItem.setCompanyRoundAtr(
-				RoundingMethod.valueOf(this.typeValue.getCBnsPensionRoundAtr()));
-		bonusRoundingItem.setPersonalRoundAtr(
+
+		RoundingItem bonusRoundingItem = new RoundingItem(
+				RoundingMethod.valueOf(this.typeValue.getCBnsPensionRoundAtr()),
 				RoundingMethod.valueOf(this.typeValue.getPBnsPensionRoundAtr()));
 
 		PensionRateRounding roundSalary = new PensionRateRounding(PaymentType.Salary,

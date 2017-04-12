@@ -12,7 +12,7 @@ module nts.uk.pr.view.qpp007.a {
             outputFormatType: KnockoutObservableArray<SelectionModel>;
             enable: KnockoutObservable<boolean>;
             selectedOutputFormat: KnockoutObservable<string>;
-            outputItemSetting: KnockoutObservableArray<SelectionModel>;
+            outputSettings: KnockoutObservableArray<SelectionModel>;
             selectedOutputSetting: KnockoutObservable<string>;
             isVerticalLine: KnockoutObservable<boolean>;
             isHorizontalRuledLine: KnockoutObservable<boolean>;
@@ -35,7 +35,7 @@ module nts.uk.pr.view.qpp007.a {
                     new SelectionModel('1', '明細一覧表'),
                     new SelectionModel('2', '明細累計表')
                 ]);
-                this.outputItemSetting = ko.observableArray<SelectionModel>([]);
+                this.outputSettings = ko.observableArray<SelectionModel>([]);
                 this.selectedOutputSetting = ko.observable('1');
                 this.isVerticalLine = ko.observable(true);
                 this.isHorizontalRuledLine = ko.observable(true);
@@ -82,7 +82,7 @@ module nts.uk.pr.view.qpp007.a {
                 var dfd = $.Deferred<any>();
                 var self = this;
                 service.findAllSalaryOutputSetting().done(function(data) {
-                    self.outputItemSetting(data);
+                    self.outputSettings(data);
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
@@ -110,12 +110,27 @@ module nts.uk.pr.view.qpp007.a {
             saveAsPdf(): void {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                let command: any = {};
+                let command = self.toJsObject();
                 service.saveAsPdf(command).done(function() {
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
                 });
+            }
+            
+            private toJsObject(): any {
+                let self = this;
+                let command: any = {};
+                command.outputFormatType = self.selectedOutputFormat();
+                command.outputSettingCode = self.selectedOutputSetting();
+                command.isVerticalLine = self.isVerticalLine();
+                command.isHorizontalLine = self.isHorizontalRuledLine();
+                command.outputLanguage =  self.selectedOutputLanguage();
+                command.pageBreakSetting = self.selectedpageBreakSetting();
+                if (self.isDepartmentHierarchy()) {
+                    command.hierarchy  = self.selectedHierachy();
+                }
+                return command;
             }
 
         }
