@@ -23,7 +23,7 @@
 			<input data-bind="ntsTextEditor: { value: formulaName, constraint: 'FormulaName', enable: true, required: true}" />
 			<br/>
 			<div class="separate-vertical" data-bind="ntsFormLabel: {required: true }">開始年月</div>
-			<div id="start_date_inp" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yyyy/MM', disabled: !isNewMode() }"></div>
+			<div id="start_date_inp" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yyyy/MM', disabled: !isNewMode(), valueFormat: 'YYYYMM' }"></div>
 			<span data-bind="text: startYearMonthFormated"></span>
 			<br/>
 			<div class="separate-vertical" data-bind="ntsFormLabel: {required: true }">計算式の設定方法</div>

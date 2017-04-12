@@ -14,7 +14,7 @@
 			<com:scriptfile path="../../../../lib/nittsu/ui/textbox-options.js" />
 			<com:scriptfile path="qmm017.k.start.js" />
 			<com:stylefile path="qmm017.k.style.css" />
-			<com:scriptfile path="qmm017.k.viewmodel.js" />
+			<com:scriptfile path="qmm017.k.vm.js" />
 			<com:scriptfile path="qmm017.k.service.js" />
 		</ui:define>
 
@@ -52,7 +52,7 @@
 						<br />
 						<com:ko-if bind="selectedMode() == 1">
 							<div id="editing_method_lbl" class="separate-vertical" style="margin-left: 28px" data-bind="ntsFormLabel: {}">期間</div>
-							<div id="date-picker2" data-bind="ntsDatePicker: {value: startYm, dateFormat: 'yyyy/MM', startDate: startYm, endDate: endYm}"></div>
+							<div id="date-picker2" data-bind="ntsDatePicker: {value: startYm, dateFormat: 'yyyy/MM', startDate: startYm, endDate: endYm, valueFormat: 'YYYYMM'}"></div>
 							<span> ~ </span>
 							<span data-bind="text: endYm"></span>
 							<br />
