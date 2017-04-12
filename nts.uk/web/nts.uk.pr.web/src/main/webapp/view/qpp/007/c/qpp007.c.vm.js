@@ -233,14 +233,18 @@ var nts;
                                 ScreenModel.prototype.loadOutputSettingDetail = function (code) {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    c.service.findOutputSettingDetail(code).done(function (data) {
-                                        self.outputSettingDetailModel(new OutputSettingDetailModel(self.allAggregateItems, data));
-                                        self.dirtyChecker.reset();
-                                        dfd.resolve();
-                                    }).fail(function (res) {
-                                        nts.uk.ui.dialog.alert(res);
-                                        dfd.reject();
-                                    });
+                                    if (code) {
+                                        c.service.findOutputSettingDetail(code).done(function (data) {
+                                            self.outputSettingDetailModel(new OutputSettingDetailModel(self.allAggregateItems, data));
+                                            self.dirtyChecker.reset();
+                                            dfd.resolve();
+                                        }).fail(function (res) {
+                                            dfd.reject();
+                                        });
+                                    }
+                                    else {
+                                        self.outputSettingDetailModel(new OutputSettingDetailModel(self.allAggregateItems));
+                                    }
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.loadAggregateItems = function () {

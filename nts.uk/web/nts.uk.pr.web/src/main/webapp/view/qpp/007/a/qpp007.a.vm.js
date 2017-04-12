@@ -78,7 +78,9 @@ var nts;
                                     });
                                 };
                                 ScreenModel.prototype.openSalaryOuputSettingDialog = function () {
+                                    var self = this;
                                     nts.uk.ui.windows.sub.modal("/view/qpp/007/c/index.xhtml", { title: "出力項目の設定", dialogClass: 'no-close' }).onClosed(function () {
+                                        self.loadAllOutputSetting();
                                     });
                                 };
                                 ScreenModel.prototype.saveAsPdf = function () {

@@ -310,14 +310,17 @@ module nts.uk.pr.view.qpp007.c {
             private loadOutputSettingDetail(code: string): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                service.findOutputSettingDetail(code).done(function(data: OutputSettingDto) {
-                    self.outputSettingDetailModel(new OutputSettingDetailModel(self.allAggregateItems, data));
-                    self.dirtyChecker.reset();
-                    dfd.resolve();
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res);
-                    dfd.reject();
-                })
+                if (code) {
+                    service.findOutputSettingDetail(code).done(function(data: OutputSettingDto) {
+                        self.outputSettingDetailModel(new OutputSettingDetailModel(self.allAggregateItems, data));
+                        self.dirtyChecker.reset();
+                        dfd.resolve();
+                    }).fail(function(res) {
+                        dfd.reject();
+                    });
+                } else {
+                    self.outputSettingDetailModel(new OutputSettingDetailModel(self.allAggregateItems));
+                }
                 return dfd.promise();
             }
 

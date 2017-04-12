@@ -102,8 +102,9 @@ module nts.uk.pr.view.qpp007.a {
             }
             
             public openSalaryOuputSettingDialog() {
+                var self = this;
                 nts.uk.ui.windows.sub.modal("/view/qpp/007/c/index.xhtml", { title: "出力項目の設定", dialogClass: 'no-close' }).onClosed(() => {
-                    // Get child value
+                    self.loadAllOutputSetting();
                 })
             }
 
