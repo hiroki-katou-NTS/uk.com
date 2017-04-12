@@ -203,7 +203,8 @@ module qmm005.b {
 
         deleteData(item, event) {
             let self = this;
-
+            // Note
+            /// No document for this action
         }
 
         closeDialog(item, event) {
