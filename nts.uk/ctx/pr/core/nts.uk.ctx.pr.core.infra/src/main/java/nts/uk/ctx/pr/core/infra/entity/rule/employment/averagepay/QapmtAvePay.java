@@ -22,14 +22,14 @@ public class QapmtAvePay extends UkJpaEntity {
 	@Column(name="CCD")
 	public String companyCode;
 	
-	@Column(name="ROUND_DIGIT_SET")
-	public int roundDigitSet;
+	@Column(name="ROUND_TIMING_SET")
+	public int roundTimingSet;
 	
 	@Column(name="ATTEND_DAY_GETTING_SET")
 	public int attendDayGettingSet;
 	
-	@Column(name="ROUND_TIMING_SET")
-	public int roundTimingSet;
+	@Column(name="ROUND_DIGIT_SET")
+	public int roundDigitSet;
 	
 	@Column(name="EXCEPTION_PAY_RATE")
 	public BigDecimal exceptionPayRate;

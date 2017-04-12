@@ -15,10 +15,10 @@ import nts.uk.ctx.pr.core.app.find.itemmaster.dto.ItemMasterDto;
 @AllArgsConstructor
 public class AveragePayDto {
 	private String companyCode;
-	private int attendDayGettingSet;
-	private BigDecimal exceptionPayRate;
-	private int roundDigitSet;
 	private int roundTimingSet;
+	private int attendDayGettingSet;
+	private int roundDigitSet;
+	private BigDecimal exceptionPayRate;
 	private List<ItemMasterDto> itemsSalary;
 	private List<ItemMasterDto> itemsAttend;
 }

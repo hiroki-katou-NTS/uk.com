@@ -57,10 +57,10 @@ public class RegisterAveragePayCommandHandler extends CommandHandler<RegisterAve
 		
 		// QAPMT_AVE_PAY.INS_1
 		AveragePay averagePay = new AveragePay(companyCode,
+				EnumAdaptor.valueOf(command.getRoundTimingSet(), RoundTimingSet.class),
 				EnumAdaptor.valueOf(command.getAttendDayGettingSet(), AttendDayGettingSet.class),
-				new ExceptionPayRate(command.getExceptionPayRate()),
 				EnumAdaptor.valueOf(command.getRoundDigitSet(), RoundDigitSet.class),
-				EnumAdaptor.valueOf(command.getRoundTimingSet(), RoundTimingSet.class));
+				new ExceptionPayRate(command.getExceptionPayRate()));
 		averagePay.validate();
 		averagePayRepository.register(averagePay);
 		

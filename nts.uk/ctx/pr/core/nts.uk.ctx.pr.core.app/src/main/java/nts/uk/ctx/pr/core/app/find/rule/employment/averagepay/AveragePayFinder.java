@@ -78,10 +78,10 @@ public class AveragePayFinder {
 		}
 		return new AveragePayDto(
 				avepay.getCompanyCode(),
+				avepay.getRoundTimingSet().value,
 				avepay.getAttendDayGettingSet().value, 
-				avepay.getExceptionPayRate().v(), 
-				avepay.getRoundTimingSet().value, 
 				avepay.getRoundDigitSet().value,
+				avepay.getExceptionPayRate().v(), 
 				itemsSalaryDto,
 				itemsAttendDto);
 	}

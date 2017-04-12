@@ -16,16 +16,16 @@ public class AveragePay extends AggregateRoot {
 	private String companyCode;
 	
 	@Getter
-	private AttendDayGettingSet attendDayGettingSet;
+	private RoundTimingSet roundTimingSet;
 	
 	@Getter
-	private ExceptionPayRate exceptionPayRate;
+	private AttendDayGettingSet attendDayGettingSet;
 	
 	@Getter
 	private RoundDigitSet roundDigitSet;
 	
 	@Getter
-	private RoundTimingSet roundTimingSet;
+	private ExceptionPayRate exceptionPayRate;
 	
 	@Override
 	public void validate() {
@@ -35,14 +35,14 @@ public class AveragePay extends AggregateRoot {
 		super.validate();
 	} 
 	
-	public AveragePay(String companyCode, AttendDayGettingSet attendDayGettingSet, ExceptionPayRate exceptionPayRate,
-			RoundDigitSet roundDigitSet, RoundTimingSet roundTimingSet) {
+	public AveragePay(String companyCode, RoundTimingSet roundTimingSet, AttendDayGettingSet attendDayGettingSet,
+			RoundDigitSet roundDigitSet, ExceptionPayRate exceptionPayRate) {
 		super();
 		this.companyCode = companyCode;
-		this.attendDayGettingSet = attendDayGettingSet;
-		this.exceptionPayRate = exceptionPayRate;
-		this.roundDigitSet = roundDigitSet;
 		this.roundTimingSet = roundTimingSet;
+		this.attendDayGettingSet = attendDayGettingSet;
+		this.roundDigitSet = roundDigitSet;
+		this.exceptionPayRate = exceptionPayRate;
 	}
 	
 	/**

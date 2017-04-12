@@ -14,10 +14,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class RegisterAveragePayCommand {
-	private int attendDayGettingSet;
-	private BigDecimal exceptionPayRate;
-	private int roundDigitSet;
 	private int roundTimingSet;
+	private int attendDayGettingSet;
+	private int roundDigitSet;
+	private BigDecimal exceptionPayRate;
 	private List<String> selectedSalaryItems;
 	private List<String> selectedAttendItems;
 }
