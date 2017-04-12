@@ -43,20 +43,18 @@ var qmm006;
                         { messageId: "ER010", message: "対象データがありません。" },
                     ]);
                     self.currentCode.subscribe(function (codeChange) {
-                        if (!self.isFirstFindAll()) {
-                            self.clearError();
-                        }
-                        if (!self.notLoopAlert()) {
-                            self.notLoopAlert(true);
-                            return;
-                        }
-                        if (codeChange == null || self.isNotCheckDirty()) {
-                            self.isNotCheckDirty(false);
-                            self.setCurrentLineBank(codeChange);
-                            return;
-                        }
                         if (self.dirty.isDirty()) {
+                            if (!self.notLoopAlert()) {
+                                self.notLoopAlert(true);
+                                return;
+                            }
+                            if (codeChange == null || self.isNotCheckDirty()) {
+                                self.isNotCheckDirty(false);
+                                self.setCurrentLineBank(codeChange);
+                                return;
+                            }
                             nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
+                                self.clearError();
                                 self.setCurrentLineBank(codeChange);
                             }).ifCancel(function () {
                                 self.notLoopAlert(false);
@@ -64,6 +62,18 @@ var qmm006;
                             });
                         }
                         else {
+                            if (!self.isFirstFindAll()) {
+                                self.clearError();
+                            }
+                            if (!self.notLoopAlert()) {
+                                self.notLoopAlert(true);
+                                return;
+                            }
+                            if (codeChange == null || self.isNotCheckDirty()) {
+                                self.isNotCheckDirty(false);
+                                self.setCurrentLineBank(codeChange);
+                                return;
+                            }
                             self.setCurrentLineBank(codeChange);
                         }
                     });
@@ -163,10 +173,10 @@ var qmm006;
                         if (error.messageId == self.messageList()[0].messageId) {
                             var message = self.messageList()[0].message;
                             if (!command.lineBankCode) {
-                                $('#inp_bankClassification').ntsError('set', message);
+                                $('#inp_lineBankCode').ntsError('set', message);
                             }
                             if (!command.lineBankName) {
-                                $('#inp_bankName').ntsError('set', message);
+                                $('#inp_lineBankName').ntsError('set', message);
                             }
                             if (!command.accountNo) {
                                 $('#inp_accountNumber').ntsError('set', message);
@@ -181,7 +191,7 @@ var qmm006;
                         }
                         else if (error.messageId == self.messageList()[1].messageId) {
                             var message = self.messageList()[1].message;
-                            $('#inp_bankClassification').ntsError('set', message);
+                            $('#inp_lineBankCode').ntsError('set', message);
                         }
                     });
                 };
@@ -301,12 +311,14 @@ var qmm006;
                     }
                 };
                 ScreenModel.prototype.clearError = function () {
-                    $('#inp_bankClassification').ntsError('clear');
-                    $('#inp_bankName').ntsError('clear');
+                    $('#inp_lineBankCode').ntsError('clear');
+                    $('#inp_lineBankName').ntsError('clear');
                     $('#inp_accountNumber').ntsError('clear');
                     $('#lbl_bankCode').ntsError('clear');
                     $('#lbl_branchCode').ntsError('clear');
                     $('#inp_transferRequestName').ntsError('clear');
+                    $('#inp_memo').ntsError('clear');
+                    $('.consignor').ntsError('clear');
                 };
                 ScreenModel.prototype.getLineBank = function (curCode) {
                     var self = this;

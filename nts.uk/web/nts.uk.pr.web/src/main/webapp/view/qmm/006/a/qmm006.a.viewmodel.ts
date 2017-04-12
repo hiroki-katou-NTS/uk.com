@@ -78,25 +78,23 @@ module qmm006.a.viewmodel {
             ]);
 
             self.currentCode.subscribe(function(codeChange) {
-                // no error in the first findAll(), so dont allow jump to clearError() 
-                if (!self.isFirstFindAll()) {
-                    self.clearError();
-                }
-                // dont allow loop checkDirty when change data and change row 
-                if (!self.notLoopAlert()) {
-                    self.notLoopAlert(true);
-                    return;
-                }
-                // only checkDirty in clearForm, not checkDirty in subscribe
-                // when remove(), not check dirty
-                if (codeChange == null || self.isNotCheckDirty()) {
-                    self.isNotCheckDirty(false);
-                    self.setCurrentLineBank(codeChange);
-                    return;
-                }
                 if (self.dirty.isDirty()) {
+                    // dont allow loop checkDirty when change data and change row 
+                    if (!self.notLoopAlert()) {
+                        self.notLoopAlert(true);
+                        return;
+                    }
+                    // only checkDirty in clearForm, not checkDirty in subscribe
+                    // when remove(), not check dirty
+                    if (codeChange == null || self.isNotCheckDirty()) {
+                        self.isNotCheckDirty(false);
+                        self.setCurrentLineBank(codeChange);
+                        return;
+                        //end
+                    }
                     //"変更された内容が登録されていません。"---AL001 
                     nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                        self.clearError();
                         //data is changed
                         self.setCurrentLineBank(codeChange);
                     }).ifCancel(function() {
@@ -104,6 +102,23 @@ module qmm006.a.viewmodel {
                         self.currentCode(self.currentLineBank().lineBankCode());
                     });
                 } else {
+                    // no error in the first findAll(), so dont allow jump to clearError() 
+                    if (!self.isFirstFindAll()) {
+                        self.clearError();
+                    }
+                    // dont allow loop checkDirty when change data and change row 
+                    if (!self.notLoopAlert()) {
+                        self.notLoopAlert(true);
+                        return;
+                    }
+                    // only checkDirty in clearForm, not checkDirty in subscribe
+                    // when remove(), not check dirty
+                    if (codeChange == null || self.isNotCheckDirty()) {
+                        self.isNotCheckDirty(false);
+                        self.setCurrentLineBank(codeChange);
+                        return;
+                        //end
+                    }
                     //data isn't changed
                     self.setCurrentLineBank(codeChange);
                 }
@@ -223,10 +238,10 @@ module qmm006.a.viewmodel {
                     if (error.messageId == self.messageList()[0].messageId) {
                         var message = self.messageList()[0].message;
                         if (!command.lineBankCode) {
-                            $('#inp_bankClassification').ntsError('set', message);
+                            $('#inp_lineBankCode').ntsError('set', message);
                         }
                         if (!command.lineBankName) {
-                            $('#inp_bankName').ntsError('set', message);
+                            $('#inp_lineBankName').ntsError('set', message);
                         }
                         if (!command.accountNo) {
                             $('#inp_accountNumber').ntsError('set', message);
@@ -239,7 +254,7 @@ module qmm006.a.viewmodel {
                         }
                     } else if (error.messageId == self.messageList()[1].messageId) {
                         var message = self.messageList()[1].message;
-                        $('#inp_bankClassification').ntsError('set', message);
+                        $('#inp_lineBankCode').ntsError('set', message);
                     }
                 });
         }
@@ -391,12 +406,14 @@ module qmm006.a.viewmodel {
          * clear error on screen
          */
         clearError(): void {
-            $('#inp_bankClassification').ntsError('clear');
-            $('#inp_bankName').ntsError('clear');
+            $('#inp_lineBankCode').ntsError('clear');
+            $('#inp_lineBankName').ntsError('clear');
             $('#inp_accountNumber').ntsError('clear');
             $('#lbl_bankCode').ntsError('clear');
             $('#lbl_branchCode').ntsError('clear');
             $('#inp_transferRequestName').ntsError('clear');
+            $('#inp_memo').ntsError('clear');
+            $('.consignor').ntsError('clear');
         }
 
         /**
