@@ -1,6 +1,8 @@
 package nts.uk.ctx.pr.core.infra.entity.rule.employment.averagepay;
 
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -30,7 +32,7 @@ public class QapmtAvePay extends UkJpaEntity {
 	public int roundTimingSet;
 	
 	@Column(name="EXCEPTION_PAY_RATE")
-	public int exceptionPayRate;
+	public BigDecimal exceptionPayRate;
 	
 	@Override
 	protected Object getKey() {

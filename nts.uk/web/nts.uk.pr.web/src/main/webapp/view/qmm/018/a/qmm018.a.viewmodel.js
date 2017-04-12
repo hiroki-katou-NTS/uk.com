@@ -66,18 +66,15 @@ var qmm018;
                  */
                 ScreenModel.prototype.saveData = function (isUpdate) {
                     var self = this;
-                    var dfd = $.Deferred();
                     var error = false;
                     // check errors on required
                     if (!self.averagePay().selectedSalaryItems().length) {
                         $("#inp-3").ntsError('set', qmm018.shr.viewmodelbase.Error.ER007);
                         error = true;
                     }
-                    if (self.averagePay().attendDayGettingSet()) {
-                        if (!self.averagePay().selectedAttendItems().length) {
-                            $("#inp-1").ntsError('set', qmm018.shr.viewmodelbase.Error.ER007);
-                            error = true;
-                        }
+                    if (self.averagePay().attendDayGettingSet() && !self.averagePay().selectedAttendItems().length) {
+                        $("#inp-1").ntsError('set', qmm018.shr.viewmodelbase.Error.ER007);
+                        error = true;
                     }
                     if (self.averagePay().exceptionPayRate() == null) {
                         $("#inp-2").ntsError('set', qmm018.shr.viewmodelbase.Error.ER001);
@@ -86,7 +83,7 @@ var qmm018;
                     // insert or update if no error
                     if (!error && self.dirty.isDirty()) {
                         //create data
-                        var command = {
+                        var command_1 = {
                             roundTimingSet: self.averagePay().roundTimingSet(),
                             attendDayGettingSet: self.averagePay().attendDayGettingSet(),
                             roundDigitSet: self.averagePay().roundDigitSet(),
@@ -95,23 +92,20 @@ var qmm018;
                             selectedAttendItems: _.map(self.averagePay().selectedAttendItems(), function (o) { return o.itemCode; })
                         };
                         if (isUpdate) {
-                            qmm018.a.service.averagePayItemUpdate(command).done(function (data) {
+                            qmm018.a.service.averagePayItemUpdate(command_1).done(function (data) {
                                 self.dirty.reset();
-                                dfd.resolve();
                             }).fail(function (res) {
-                                dfd.reject();
+                                self.processErrorResponse(res, command_1);
                             });
                         }
                         else {
-                            qmm018.a.service.averagePayItemInsert(command).done(function (data) {
+                            qmm018.a.service.averagePayItemInsert(command_1).done(function (data) {
                                 self.dirty.reset();
-                                dfd.resolve();
                             }).fail(function (res) {
-                                dfd.reject();
+                                self.processErrorResponse(res, command_1);
                             });
                         }
                     }
-                    return dfd.promise();
                 };
                 /**
                  * open B screen
@@ -152,6 +146,22 @@ var qmm018;
                     }
                     else {
                         dataDestination([]);
+                    }
+                };
+                /**
+                 * process response error
+                 */
+                ScreenModel.prototype.processErrorResponse = function (res, command) {
+                    if (res.messageId == "ER001") {
+                        $("#inp-2").ntsError('set', qmm018.shr.viewmodelbase.Error.ER001);
+                    }
+                    if (res.messageId == "ER007") {
+                        if (command.selectedSalaryItems.length == 0) {
+                            $("#inp-3").ntsError('set', qmm018.shr.viewmodelbase.Error.ER007);
+                        }
+                        if (command.attendDayGettingSet && command.selectedAttendItems.length == 0) {
+                            $("#inp-1").ntsError('set', qmm018.shr.viewmodelbase.Error.ER007);
+                        }
                     }
                 };
                 return ScreenModel;

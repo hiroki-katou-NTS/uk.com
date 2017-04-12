@@ -52,7 +52,7 @@ public class RegisterAveragePayCommandHandler extends CommandHandler<RegisterAve
 		// validate exist
 		Optional<AveragePay> avepay = this.averagePayRepository.findByCompanyCode(companyCode);
 		if (avepay.isPresent()) {
-			throw new BusinessException("ER001");
+			throw new RuntimeException("Average payment exist");
 		}
 		
 		// QAPMT_AVE_PAY.INS_1
@@ -61,7 +61,12 @@ public class RegisterAveragePayCommandHandler extends CommandHandler<RegisterAve
 				new ExceptionPayRate(command.getExceptionPayRate()),
 				EnumAdaptor.valueOf(command.getRoundDigitSet(), RoundDigitSet.class),
 				EnumAdaptor.valueOf(command.getRoundTimingSet(), RoundTimingSet.class));
+		averagePay.validate();
 		averagePayRepository.register(averagePay);
+		
+		if(command.getSelectedSalaryItems().isEmpty()){
+			throw new BusinessException("ER007");
+		}
 		
 		// QCAMT_ITEM_SALARY.SEL_2
 		List<ItemSalary> itemSalarys = this.itemSalaryRespository.findAll(companyCode);
@@ -77,6 +82,10 @@ public class RegisterAveragePayCommandHandler extends CommandHandler<RegisterAve
 		
 		// if 明細書項目から選択 is selected
 		if (averagePay.isAttenDayStatementItem()) { 
+			
+			if(command.getSelectedAttendItems().isEmpty()){
+				throw new BusinessException("ER007");
+			}
 			
 			// QCAMT_ITEM_ATTEND.SEL_3
 			List<ItemAttend> itemAttends = this.itemAttendRespository.findAll(companyCode);

@@ -4,7 +4,6 @@ package nts.uk.ctx.pr.core.dom.rule.employment.averagepay;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.gul.text.StringUtil;
 
 /**
  * 平均賃金計算設定マスタ
@@ -30,10 +29,10 @@ public class AveragePay extends AggregateRoot {
 	
 	@Override
 	public void validate() {
-		super.validate();
-		if (StringUtil.isNullOrEmpty(this.roundDigitSet.toString(), true) ) {
+		if(this.exceptionPayRate.v()==null) {
 			throw new BusinessException("ER001");
 		}
+		super.validate();
 	} 
 	
 	public AveragePay(String companyCode, AttendDayGettingSet attendDayGettingSet, ExceptionPayRate exceptionPayRate,
