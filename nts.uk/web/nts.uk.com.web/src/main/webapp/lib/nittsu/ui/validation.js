@@ -42,7 +42,7 @@ var nts;
                     StringValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
                         if (this.required !== undefined && this.required !== false) {
-                            if (!checkRequired(inputText)) {
+                            if (uk.util.isNullOrEmpty(inputText)) {
                                 result.fail('This field is required');
                                 return result;
                             }
@@ -112,14 +112,17 @@ var nts;
                     }
                     TimeValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
-                        if (this.required !== undefined && this.required !== false) {
-                            if (!checkRequired(inputText)) {
+                        if (uk.util.isNullOrEmpty(inputText)) {
+                            if (this.required === true) {
                                 result.fail('This field is required');
                                 return result;
                             }
+                            else {
+                                result.success("");
+                                return result;
+                            }
                         }
-                        var parseResult;
-                        parseResult = uk.time.parseMoment(inputText, this.outputFormat);
+                        var parseResult = uk.time.parseMoment(inputText, this.outputFormat);
                         if (parseResult.success) {
                             if (this.valueType === "string")
                                 result.success(parseResult.format());
@@ -144,12 +147,6 @@ var nts;
                     return TimeValidator;
                 }());
                 validation.TimeValidator = TimeValidator;
-                function checkRequired(value) {
-                    if (value === undefined || value === null || value.length == 0) {
-                        return false;
-                    }
-                    return true;
-                }
                 function getConstraint(primitiveValueName) {
                     var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
                     if (constraint === undefined)
