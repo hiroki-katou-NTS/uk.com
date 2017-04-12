@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.repository.insurance;
@@ -8,126 +8,74 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.pr.report.app.insurance.find.dto.CheckListPrintSettingFindOutDto;
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSetting;
-import nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingGetMemento;
 import nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingRepository;
+import nts.uk.ctx.pr.report.infra.entity.insurance.QismtChecklistPrintSet;
 
 /**
  * The Class JpaChecklistPrintSettingRepository.
  */
 @Stateless
-public class JpaChecklistPrintSettingRepository implements ChecklistPrintSettingRepository {
+public class JpaChecklistPrintSettingRepository extends JpaRepository implements ChecklistPrintSettingRepository {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see
-	 * nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingRepository#save(
-	 * nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSetting)
+	 * nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingRepository#create
+	 * (nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSetting)
 	 */
 	@Override
-	public void save(ChecklistPrintSetting printSetting) {
-		// Do nothing
+	public void create(ChecklistPrintSetting printSetting) {
+		QismtChecklistPrintSet entity = new QismtChecklistPrintSet();
+
+		// Convert to entity.
+		printSetting.saveToMemento(new JpaChecklistPrintSettingSetMemento(entity));
+
+		// insert to DB.
+		this.commandProxy().insert(entity);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 * @see
+	 * nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingRepository#update
+	 * (nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSetting)
+	 */
+	@Override
+	public void update(ChecklistPrintSetting printSetting) {
+		Optional<QismtChecklistPrintSet> entityOptional = this.queryProxy().find(printSetting.getCompanyCode(),
+				QismtChecklistPrintSet.class);
+
+		// Check entity optional.
+		if (entityOptional.isPresent()) {
+			QismtChecklistPrintSet entity = entityOptional.get();
+			printSetting.saveToMemento(new JpaChecklistPrintSettingSetMemento(entity));
+			this.commandProxy().insert(entity);
+			return;
+		}
+		throw new RuntimeException("Can not update entity not exist!");
+	}
+
+	/*
+	 * (non-Javadoc)
 	 * @see nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingRepository#
 	 * findByCompanyCode(java.lang.String)
 	 */
 	@Override
 	public Optional<ChecklistPrintSetting> findByCompanyCode(String companyCode) {
-		return null;
-	}
+		Optional<QismtChecklistPrintSet> entityOptional = this.queryProxy().find(companyCode,
+				QismtChecklistPrintSet.class);
 
-	/**
-	 * The Class JpaChecklistPrintSettingGetMemento.
-	 */
-	class JpaChecklistPrintSettingGetMemento implements ChecklistPrintSettingGetMemento {
-
-		/**
-		 * Instantiates a new jpa checklist print setting get memento.
-		 *
-		 * @param entity
-		 *            the entity
-		 */
-		public JpaChecklistPrintSettingGetMemento(CheckListPrintSettingFindOutDto entity) {
+		// Check entity optional.
+		ChecklistPrintSetting printSetting = null;
+		if (entityOptional.isPresent()) {
+			QismtChecklistPrintSet entity = entityOptional.get();
+			printSetting = new ChecklistPrintSetting(new JpaChecklistPrintSettingGetMemento(entity));
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingGetMemento#
-		 * getCompanyCode()
-		 */
-		@Override
-		public String getCompanyCode() {
-			return null;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingGetMemento#
-		 * getShowCategoryInsuranceItem()
-		 */
-		@Override
-		public Boolean getShowCategoryInsuranceItem() {
-			return null;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingGetMemento#
-		 * getShowDeliveryNoticeAmount()
-		 */
-		@Override
-		public Boolean getShowDeliveryNoticeAmount() {
-			return null;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingGetMemento#
-		 * getShowDetail()
-		 */
-		@Override
-		public Boolean getShowDetail() {
-			return null;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingGetMemento#
-		 * getShowOffice()
-		 */
-		@Override
-		public Boolean getShowOffice() {
-			return null;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingGetMemento#
-		 * getShowTotal()
-		 */
-		@Override
-		public Boolean getShowTotal() {
-			return null;
-		}
-
+		// Return optional.
+		return Optional.ofNullable(printSetting);
 	}
 
 }

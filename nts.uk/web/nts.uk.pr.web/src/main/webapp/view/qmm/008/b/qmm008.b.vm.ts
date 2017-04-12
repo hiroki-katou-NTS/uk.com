@@ -34,6 +34,7 @@ module nts.uk.pr.view.qmm008.b {
             errorList: KnockoutObservableArray<any>;
             dirty: nts.uk.ui.DirtyChecker;
             backupDataDirty : KnockoutObservable<HealthInsuranceRateDto>;
+            canOpenOfficeRegisterDialog : KnockoutObservable<boolean>;
             constructor() {
                 super({
                     functionName: '健康保険',
@@ -78,6 +79,7 @@ module nts.uk.pr.view.qmm008.b {
                 ]);
                 self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
                 self.backupDataDirty = ko.observable<HealthInsuranceRateDto>();
+                self.canOpenOfficeRegisterDialog = ko.observable(true);
             } //end constructor
 
             // Start
@@ -327,7 +329,12 @@ module nts.uk.pr.view.qmm008.b {
              */
             onRegistNew(): void {
                 var self = this;
-                self.OpenModalOfficeRegister();
+                if (self.canOpenOfficeRegisterDialog())
+                {
+                    self.OpenModalOfficeRegister();
+                }
+                self.isClickHistory(false);
+                self.canOpenOfficeRegisterDialog(false);
             }
 
             isDirty(): boolean {

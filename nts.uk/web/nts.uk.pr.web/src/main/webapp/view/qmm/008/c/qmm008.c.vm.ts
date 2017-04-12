@@ -37,6 +37,7 @@ module nts.uk.pr.view.qmm008.c {
             errorList: KnockoutObservableArray<any>;
             dirty: nts.uk.ui.DirtyChecker;
             backupDataDirty : KnockoutObservable<PensionRateDto>;
+            canOpenOfficeRegisterDialog : KnockoutObservable<boolean>;
             constructor() {
                 super({
                     functionName: '厚生年金',
@@ -95,6 +96,7 @@ module nts.uk.pr.view.qmm008.c {
                 ]);
                 self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
                 self.backupDataDirty = ko.observable<PensionRateDto>();
+                self.canOpenOfficeRegisterDialog = ko.observable(true);
             } //end constructor
 
             // Start
@@ -363,7 +365,11 @@ module nts.uk.pr.view.qmm008.c {
              */
             onRegistNew(): void {
                 var self = this;
-                self.OpenModalOfficeRegister();
+                if (self.canOpenOfficeRegisterDialog()) {
+                    self.OpenModalOfficeRegister();
+                }
+                self.canOpenOfficeRegisterDialog(false);
+                self.isClickHistory(false);
             }
 
             isDirty(): boolean {

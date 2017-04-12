@@ -61,6 +61,7 @@ var nts;
                                     ]);
                                     self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
                                     self.backupDataDirty = ko.observable();
+                                    self.canOpenOfficeRegisterDialog = ko.observable(true);
                                 }
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
@@ -264,7 +265,11 @@ var nts;
                                 };
                                 ScreenModel.prototype.onRegistNew = function () {
                                     var self = this;
-                                    self.OpenModalOfficeRegister();
+                                    if (self.canOpenOfficeRegisterDialog()) {
+                                        self.OpenModalOfficeRegister();
+                                    }
+                                    self.isClickHistory(false);
+                                    self.canOpenOfficeRegisterDialog(false);
                                 };
                                 ScreenModel.prototype.isDirty = function () {
                                     var self = this;
