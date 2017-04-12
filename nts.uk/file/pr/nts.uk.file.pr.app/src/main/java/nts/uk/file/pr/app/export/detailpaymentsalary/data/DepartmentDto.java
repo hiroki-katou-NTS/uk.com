@@ -25,7 +25,7 @@ import lombok.Setter;
 public class DepartmentDto {
 
     /** The year month. */
-    private String yearMonth;
+    private Integer yearMonth;
     
     /** The code. */
     private String code;

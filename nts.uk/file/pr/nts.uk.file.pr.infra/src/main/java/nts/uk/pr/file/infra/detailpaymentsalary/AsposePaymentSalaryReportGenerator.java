@@ -394,7 +394,7 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
             mapAmountDepMonths = new HashMap<>();
         }
         // write amount a department monthly.
-        for (String yearMonth : printProcess.yearMonths) {
+        for (Integer yearMonth : printProcess.yearMonths) {
             double amountMonth = mapAmonutItemName.entrySet()
                     .stream()
                     .filter(p -> p.getKey().getYearMonth().equals(yearMonth)
@@ -693,6 +693,6 @@ class PrintProcess {
     List<EmployeeDto> employees;
     List<DepartmentDto> departments;
     List<Integer> selectedLevels;
-    List<String> yearMonths;
+    List<Integer> yearMonths;
     Map<DepartmentDto, Double> mapAmountDepMonths;
 }
