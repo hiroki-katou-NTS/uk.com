@@ -368,11 +368,11 @@ var qpp011;
             ScreenModel.prototype.exportPdf = function () {
                 var self = this;
                 var command = {
-                    residentTaxCodeList: [],
+                    residentTaxCodeList: self.selectedValue_B_LST_001(),
                     companyLogin: null,
                     regalDocCompanyCode: null,
-                    yearMonth: 201601,
-                    processingYearMonth: 201604,
+                    yearMonth: 201612,
+                    processingYearMonth: 201703,
                     endDate: self.B_INP_003_yearMonth()
                 };
                 b.service.saveAsPdf(command).done(function () {

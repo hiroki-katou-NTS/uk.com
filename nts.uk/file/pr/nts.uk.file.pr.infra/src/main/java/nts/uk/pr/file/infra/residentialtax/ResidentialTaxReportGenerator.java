@@ -22,18 +22,9 @@ public class ResidentialTaxReportGenerator extends AsposeCellsReportGenerator im
 		try {
 			AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE);
 			
-			reportContext.getDesigner().setDataSource("DBD_001", "Dfsdfsdfsdf");
-			reportContext.getDesigner().setDataSource("DBD_002", "Dfsdfsdfsdf");
-			reportContext.getDesigner().setDataSource("DBD_002", "Dfsdfsdfsdf");
-			reportContext.getDesigner().setDataSource("DBD_002", "Dfsdfsdfsdf");
-			reportContext.getDesigner().setDataSource("DBD_002", "Dfsdfsdfsdf");
-			reportContext.getDesigner().setDataSource("DBD_002", "Dfsdfsdfsdf");
-			reportContext.getDesigner().setDataSource("DBD_002", "Dfsdfsdfsdf");
-			reportContext.getDesigner().setDataSource("DBD_002", "Dfsdfsdfsdf");
-			reportContext.getDesigner().setDataSource("DBD_002", "Dfsdfsdfsdf");
-			reportContext.getDesigner().setDataSource("DBD_002", "Dfsdfsdfsdf");
-			reportContext.getDesigner().setDataSource("DBD_002", "Dfsdfsdfsdf");
-			reportContext.getDesigner().setDataSource("DBD_002", "Dfsdfsdfsdf");
+			reportContext.getDesigner().setDataSource("DBD_001", reportData.getCompanyName());
+			reportContext.getDesigner().setDataSource("DBD_002", reportData.getAddress1());
+			reportContext.getDesigner().setDataSource("DBD_003", reportData.getAddress2());
 			
 			// process data binginds in template
 			reportContext.getDesigner().getWorkbook().calculateFormula(true);

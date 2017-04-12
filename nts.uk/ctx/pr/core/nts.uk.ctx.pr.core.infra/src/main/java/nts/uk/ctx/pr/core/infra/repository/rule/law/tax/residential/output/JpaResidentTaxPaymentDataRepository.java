@@ -7,8 +7,8 @@ import javax.enterprise.context.RequestScoped;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.rule.law.tax.residential.output.ResidentTaxPaymentData;
 import nts.uk.ctx.pr.core.dom.rule.law.tax.residential.output.ResidentTaxPaymentDataRepository;
-import nts.uk.ctx.pr.core.infra.entity.rule.law.tax.residential.output.QtxmtResimentTialTaxSlip;
-import nts.uk.ctx.pr.core.infra.entity.rule.law.tax.residential.output.QtxmtResimentTialTaxSlipPk;
+import nts.uk.ctx.pr.core.infra.entity.rule.law.tax.residential.output.QtxmtResidentTialTaxSlip;
+import nts.uk.ctx.pr.core.infra.entity.rule.law.tax.residential.output.QtxmtResidentTialTaxSlipPk;
 
 @RequestScoped
 public class JpaResidentTaxPaymentDataRepository extends JpaRepository implements ResidentTaxPaymentDataRepository {
@@ -16,9 +16,9 @@ public class JpaResidentTaxPaymentDataRepository extends JpaRepository implement
 	@Override
 	public Optional<ResidentTaxPaymentData> find(String companyCode, String residentTaxCode, int yearMonth) {
 		
-		QtxmtResimentTialTaxSlipPk primaryKey = new QtxmtResimentTialTaxSlipPk(companyCode, residentTaxCode, yearMonth);
+		QtxmtResidentTialTaxSlipPk primaryKey = new QtxmtResidentTialTaxSlipPk(companyCode, residentTaxCode, yearMonth);
 		
-		return this.queryProxy().find(primaryKey, QtxmtResimentTialTaxSlip.class)
+		return this.queryProxy().find(primaryKey, QtxmtResidentTialTaxSlip.class)
 				.map(x -> ResidentTaxPaymentData.createFromJavaType(
 						x.qtxmtResimentTialTaxSlipPk.residentTaxCode, 
 						x.taxPayRollMoney, 
@@ -36,20 +36,20 @@ public class JpaResidentTaxPaymentDataRepository extends JpaRepository implement
 
 	@Override
 	public void add(String companyCode, ResidentTaxPaymentData domain) {
-		QtxmtResimentTialTaxSlip entity = toEntity(companyCode, domain);
+		QtxmtResidentTialTaxSlip entity = toEntity(companyCode, domain);
 		this.commandProxy().insert(entity);
 	}
 
 	@Override
 	public void update(String companyCode, ResidentTaxPaymentData domain) {
-		QtxmtResimentTialTaxSlip entity = toEntity(companyCode, domain);
+		QtxmtResidentTialTaxSlip entity = toEntity(companyCode, domain);
 		this.commandProxy().update(entity);
 	}
 	
-	private QtxmtResimentTialTaxSlip toEntity(String companyCode, ResidentTaxPaymentData domain) {
-		QtxmtResimentTialTaxSlipPk qtxmtResimentTialTaxSlipPk = new QtxmtResimentTialTaxSlipPk(companyCode, domain.getCode().v(), domain.getYearMonth().v());
+	private QtxmtResidentTialTaxSlip toEntity(String companyCode, ResidentTaxPaymentData domain) {
+		QtxmtResidentTialTaxSlipPk qtxmtResimentTialTaxSlipPk = new QtxmtResidentTialTaxSlipPk(companyCode, domain.getCode().v(), domain.getYearMonth().v());
 		
-		QtxmtResimentTialTaxSlip entity = new QtxmtResimentTialTaxSlip(
+		QtxmtResidentTialTaxSlip entity = new QtxmtResidentTialTaxSlip(
 				qtxmtResimentTialTaxSlipPk, 
 				domain.getTaxPayrollMoney().v(), 
 				domain.getTaxBonusMoney().v(), 

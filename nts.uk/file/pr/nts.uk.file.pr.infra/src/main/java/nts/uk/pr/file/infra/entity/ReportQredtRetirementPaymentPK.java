@@ -12,6 +12,8 @@ import javax.persistence.Embeddable;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import nts.arc.time.GeneralDate;
+
 /**
  *
  * @author chinhbv
@@ -25,12 +27,12 @@ public class ReportQredtRetirementPaymentPK {
     public String pid;
     @Column(name = "PAY_DATE")
     @Temporal(TemporalType.TIMESTAMP)
-    public Date payDate;
+    public GeneralDate payDate;
 
     public ReportQredtRetirementPaymentPK() {
     }
 
-    public ReportQredtRetirementPaymentPK(String ccd, String pid, Date payDate) {
+    public ReportQredtRetirementPaymentPK(String ccd, String pid, GeneralDate payDate) {
         this.ccd = ccd;
         this.pid = pid;
         this.payDate = payDate;

@@ -9,7 +9,7 @@ module qpp011.b.service {
         getlistLocation: "pr/core/residential/getlistLocation",
         currentProcessingNo: "pr/proto/paymentdatemaster/processing/findbylogin",
         findallRegalDoc: "pr/core/rule/law/tax/residential/output/findallRegalDoc",
-        saveAsPdf: "screen/pr/qpp011/saveAsPdf"
+        saveAsPdf: "screen/pr/QPP011/saveAsPdf"
     }
 
     /**

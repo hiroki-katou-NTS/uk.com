@@ -6,7 +6,6 @@
 package nts.uk.pr.file.infra.entity;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -14,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -91,7 +91,7 @@ public class ReportQredtRetirementPayment extends UkJpaEntity {
     }
 
 
-    public ReportQredtRetirementPayment(String ccd, String pid, Date payDate) {
+    public ReportQredtRetirementPayment(String ccd, String pid, GeneralDate payDate) {
         this.qredtRetirementPaymentPK = new ReportQredtRetirementPaymentPK(ccd, pid, payDate);
     }
 
