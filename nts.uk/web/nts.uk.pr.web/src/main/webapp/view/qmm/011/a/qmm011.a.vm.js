@@ -526,10 +526,9 @@ var nts;
                                             self.selectionUnemployeeInsuranceRateHistory(historyId);
                                             self.lstUnemployeeInsuranceRateHistory(data);
                                             self.detailUnemployeeInsuranceRateHistory(historyId).done(function (data) {
-                                                self.unemployeeInsuranceRateModel().setEnable(true);
+                                                self.isEnableSaveUnemployeeInsurance(true);
+                                                self.isEnableEditUnemployeeInsurance(true);
                                             });
-                                            self.isEnableSaveUnemployeeInsurance(true);
-                                            self.isEnableEditUnemployeeInsurance(true);
                                         }
                                         else {
                                             self.newmodelEmptyDataUnemployeeInsuranceRate();
@@ -562,6 +561,7 @@ var nts;
                                             self.unemployeeInsuranceRateModel().setHistoryData(data.historyInsurance);
                                             self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.update);
                                             self.beginHistoryStartUnemployeeInsuranceRate(nts.uk.time.formatYearMonth(data.historyInsurance.startMonth));
+                                            self.unemployeeInsuranceRateModel().setEnable(true);
                                             self.dirtyUnemployeeInsurance.reset();
                                             self.isShowDirtyUnemployeeInsurance(true);
                                             self.preSelectUnemployeeInsuranceRateHistory(historyId);
