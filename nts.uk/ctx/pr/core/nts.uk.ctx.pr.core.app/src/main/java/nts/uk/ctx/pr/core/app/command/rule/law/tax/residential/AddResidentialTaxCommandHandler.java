@@ -15,31 +15,31 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * AddResidentalTaxCommandHandler
+ * 
  * @author lanlt
  *
  */
 @Stateless
 @Transactional
-public class AddResidentialTaxCommandHandler extends CommandHandler<AddResidentialTaxCommand>{
-    @Inject
+public class AddResidentialTaxCommandHandler extends CommandHandler<AddResidentialTaxCommand> {
+	@Inject
 	private ResidentialTaxRepository repo;
-	
+
 	@Override
 	protected void handle(CommandHandlerContext<AddResidentialTaxCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		AddResidentialTaxCommand add = context.getCommand();
-		//ERROR5 resiTaxCode duplicate 
+		// ERROR5 resiTaxCode duplicate
 		Optional<ResidentialTax> resiTax = this.repo.getResidentialTax(companyCode, add.getResiTaxCode().toString());
-		if(resiTax.isPresent()){
-			this.repo.add(ResidentialTax.createFromJavaType(companyCode, add.getCompanyAccountNo(), add.getCompanySpecifiedNo(),
-					add.getCordinatePostOffice(), add.getCordinatePostalCode(), add.getMemo(), 
-					add.getPrefectureCode(), add.getRegisteredName(), add.getResiTaxAutonomy(), 
-					add.getResiTaxCode(), add.getResiTaxReportCode()));
-			
-		}else{
+		if (resiTax.isPresent()) {
 			throw new BusinessException("入力した 住民税納付先コード  は既に存在しています。\r\n 住民税納付先コードを確認してください。");
+
+		} else {
+			this.repo.add(ResidentialTax.createFromJavaType(companyCode, add.getCompanyAccountNo(),
+					add.getCompanySpecifiedNo(), add.getCordinatePostOffice(), add.getCordinatePostalCode(),
+					add.getMemo(), add.getPrefectureCode(), add.getRegisteredName(), add.getResiTaxAutonomy(),
+					add.getResiTaxCode(), add.getResiTaxReportCode()));
 		}
 	}
-
 
 }
