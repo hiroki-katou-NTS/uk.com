@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.salarydetail.aggregate;
@@ -8,17 +8,10 @@ import java.util.Set;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.salarydetail.item.SalaryItem;
 
 /**
  * The Class SalaryAggregateItem.
- */
-
-/**
- * Gets the item category.
- *
- * @return the item category
  */
 @Getter
 public class SalaryAggregateItem extends DomainObject {
@@ -27,7 +20,7 @@ public class SalaryAggregateItem extends DomainObject {
 	private SalaryAggregateItemCode code;
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The name. */
 	private SalaryAggregateItemName name;
@@ -45,8 +38,7 @@ public class SalaryAggregateItem extends DomainObject {
 	/**
 	 * Instantiates a new salary aggregate item.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public SalaryAggregateItem(SalaryAggregateItemGetMemento memento) {
 		super();
@@ -61,8 +53,7 @@ public class SalaryAggregateItem extends DomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public void saveToMemento(SalaryAggregateItemSetMemento memento) {
 		memento.setCompanyCode(this.companyCode);

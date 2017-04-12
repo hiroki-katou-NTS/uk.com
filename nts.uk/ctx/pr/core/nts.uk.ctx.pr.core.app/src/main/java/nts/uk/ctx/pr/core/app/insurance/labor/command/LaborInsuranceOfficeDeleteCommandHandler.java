@@ -4,12 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.command;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -23,7 +27,7 @@ public class LaborInsuranceOfficeDeleteCommandHandler
 
 	/** The labor insurance office repository. */
 	@Inject
-	private LaborInsuranceOfficeRepository laborInsuranceOfficeRepo;
+	private LaborInsuranceOfficeRepository repository;
 
 	/*
 	 * (non-Javadoc)
@@ -35,16 +39,27 @@ public class LaborInsuranceOfficeDeleteCommandHandler
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<LaborInsuranceOfficeDeleteCommand> context) {
+
 		// get user login info
 		LoginUserContext loginUserContext = AppContexts.user();
+
 		// get companyCode by user login
 		String companyCode = loginUserContext.companyCode();
+
 		// get command
 		LaborInsuranceOfficeDeleteCommand command = context.getCommand();
+
 		// call Repository remove
-		this.laborInsuranceOfficeRepo.remove(companyCode,
-			command.getLaborInsuranceOfficeDeleteDto().getCode(),
-			command.getLaborInsuranceOfficeDeleteDto().getVersion());
+		Optional<LaborInsuranceOffice> data = this.repository.findById(companyCode,
+			command.getLaborInsuranceOfficeDeleteDto().getCode());
+
+		// check exist
+		if (!data.isPresent()) {
+			throw new BusinessException("ER010");
+		}
+
+		// call repository
+		this.repository.remove(companyCode, command.getLaborInsuranceOfficeDeleteDto().getCode());
 	}
 
 }

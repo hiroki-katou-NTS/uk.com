@@ -177,7 +177,8 @@ public class JpaUnitPriceRepository extends JpaRepository implements UnitPriceRe
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(root.get(QupmtCUnitpriceDetail_.strYm), baseDate));
+		predicateList.add(cb.le(root.get(QupmtCUnitpriceDetail_.strYm), baseDate));
+		predicateList.add(cb.ge(root.get(QupmtCUnitpriceDetail_.endYm), baseDate));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		List<QupmtCUnitpriceDetail> list = em.createQuery(cq).getResultList();

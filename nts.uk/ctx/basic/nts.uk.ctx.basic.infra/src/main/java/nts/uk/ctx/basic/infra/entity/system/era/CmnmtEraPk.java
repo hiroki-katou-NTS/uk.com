@@ -21,8 +21,9 @@ public class CmnmtEraPk implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
 	@Basic(optional = false)
-	@Column(name = "STR_D")
-	@Convert(converter = GeneralDateToDBConverter.class)
-	public GeneralDate startDate;
+	@Column(name = "HIST_ID")
+	public String hist_Id;
+	
 }

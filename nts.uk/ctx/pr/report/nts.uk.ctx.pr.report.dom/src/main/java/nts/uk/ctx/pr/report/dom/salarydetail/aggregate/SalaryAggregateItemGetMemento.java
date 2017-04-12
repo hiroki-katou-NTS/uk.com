@@ -2,7 +2,6 @@ package nts.uk.ctx.pr.report.dom.salarydetail.aggregate;
 
 import java.util.Set;
 
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.salarydetail.item.SalaryItem;
 
 /**
@@ -15,7 +14,7 @@ public interface SalaryAggregateItemGetMemento {
 	 *
 	 * @return the company code
 	 */
-	CompanyCode getCompanyCode();
+	String getCompanyCode();
 
 	/**
 	 * Gets the salary aggregate item code.

@@ -21,15 +21,13 @@ module qmm023.a.viewmodel {
                     }
                     return;
                 }
-                if ($('.nts-editor').ntsError("hasError")) {
-                    $('.save-error').ntsError('clear');
-                }
                 let oldCode = ko.mapping.toJS(self.currentTax().code);
                 if (ko.mapping.toJS(codeChanged) === oldCode && self.flatDirty === false) {
                     return;
                 }
 
                 if (self.flatDirty == true) {
+                    self.clearError();
                     self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
                     self.allowEditCode(false);
                     self.isUpdate(true);
@@ -64,7 +62,7 @@ module qmm023.a.viewmodel {
                 self.isUpdate = ko.observable(false);
                 self.isEnableDeleteBtn = ko.observable(false);
             }
-            
+
         }
 
         getTax(codeNew: string): TaxModel {
@@ -75,9 +73,25 @@ module qmm023.a.viewmodel {
             return tax;
         }
 
+        isError(): boolean {
+            let self = this;
+            $('#INP_002').ntsEditor("validate");
+            $('#INP_003').ntsEditor("validate");
+            if ($('.nts-editor').ntsError("hasError")) {
+                return true;
+            }
+            return false;
+        }
+        clearError(): void {
+            if ($('.nts-editor').ntsError("hasError")) {
+                $('.save-error').ntsError('clear');
+            }
+        }
+
         alertCheckDirty(oldCode: string, codeChanged: string) {
             let self = this;
             if (!self.currentTaxDirty.isDirty()) {
+                self.clearError();
                 self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
                 self.allowEditCode(false);
                 self.isUpdate(true);
@@ -86,6 +100,7 @@ module qmm023.a.viewmodel {
                 self.flatDirty = false;
             } else {
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
+                    self.clearError();
                     self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
                     self.allowEditCode(false);
                     self.isUpdate(true);
@@ -100,18 +115,16 @@ module qmm023.a.viewmodel {
         refreshLayout(): void {
             let self = this;
             self.allowEditCode(true);
+            self.clearError();
             self.currentTax(ko.mapping.fromJS(new TaxModel('', '', 0)));
             self.currentCode(null);
             self.isUpdate(false);
             self.isEnableDeleteBtn(false);
             self.currentTaxDirty.reset();
-            self.flatDirty = true;
-            
         }
 
         createButtonClick(): void {
             let self = this;
-            $('.save-error').ntsError('clear');
             if (self.currentTaxDirty.isDirty()) {
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
                     self.refreshLayout();
@@ -125,17 +138,12 @@ module qmm023.a.viewmodel {
 
         insertUpdateData(): void {
             let self = this;
+            if (self.isError()) {
+                return;
+            }
             let newCode = ko.mapping.toJS(self.currentTax().code);
             let newName = ko.mapping.toJS(self.currentTax().name);
             let newTaxLimit = ko.mapping.toJS(self.currentTax().taxLimit);
-            if (nts.uk.text.isNullOrEmpty(newCode)) {
-                $('#INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
-                return;
-            }
-            if (nts.uk.text.isNullOrEmpty(newName)) {
-                $('#INP_003').ntsError('set', nts.uk.text.format('{0}が入力されていません。', '名称'));
-                return;
-            }
             let insertUpdateModel = new InsertUpdateModel(nts.uk.text.padLeft(newCode, '0', 2), newName, newTaxLimit);
             service.insertUpdateData(self.isUpdate(), insertUpdateModel).done(function() {
                 self.reload(false, nts.uk.text.padLeft(newCode, '0', 2));
@@ -149,15 +157,11 @@ module qmm023.a.viewmodel {
             }).fail(function(error) {
                 if (error.message === '3') {
                     let _message = "入力した{0}は既に存在しています。\r\n {1}を確認してください。";
-                    nts.uk.ui.dialog.alert(nts.uk.text.format(_message, 'コード', 'コード')).then(function() {
-                        self.reload(true);
-                    })
+                    nts.uk.ui.dialog.alert(nts.uk.text.format(_message, 'コード', 'コード'));
                 } else if (error.message === '4') {
                     nts.uk.ui.dialog.alert("対象データがありません。").then(function() {
                         self.reload(true);
                     })
-                } else {
-                    $('#INP_002').ntsError('set', error.message);
                 }
             });
 
@@ -166,17 +170,11 @@ module qmm023.a.viewmodel {
         deleteData(): void {
             let self = this;
             let deleteCode = ko.mapping.toJS(self.currentTax().code);
-            if (nts.uk.text.isNullOrEmpty(deleteCode)) {
-                $('#INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
-                return;
-            }
             service.deleteData(new DeleteModel(deleteCode)).done(function() {
                 let indexItemDelete = _.findIndex(self.items(), function(item) { return item.code == deleteCode; });
                 $.when(self.reload(false)).done(function() {
                     self.flatDirty = true;
                     if (self.items().length === 0) {
-                        self.allowEditCode(true);
-                        self.isUpdate(false);
                         self.refreshLayout();
                         return;
                     }
@@ -201,8 +199,6 @@ module qmm023.a.viewmodel {
                     nts.uk.ui.dialog.alert("対象データがありません。").then(function() {
                         self.reload(true);
                     })
-                } else {
-                    $('#INP_002').ntsError('set', error.message);
                 }
             });
         }

@@ -60,6 +60,6 @@ public class QpdmtSystemDay extends TableEntity implements Serializable {
 	public int accountDueDay;
 
 	@Basic(optional = false)
-	@Column(name = "PAYSLIP_PRINT_MONTH")
+	@Column(name = "PAYSLIP_PRINT_MONTH_ATR")
 	public int payslipPrintMonthAtr;
 }

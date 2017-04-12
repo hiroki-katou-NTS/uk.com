@@ -12,6 +12,7 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.report.app.wageledger.command.dto.ItemSubjectDto;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItem;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemRepository;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLItemSubject;
@@ -35,9 +36,19 @@ public class AggregateItemSaveCommandHandler extends CommandHandler<AggregateIte
 	protected void handle(CommandHandlerContext<AggregateItemSaveCommand> context) {
 		val companyCode = AppContexts.user().companyCode();
 		val command = context.getCommand();
+		
+		// Validate required items.
+		ItemSubjectDto subjectItem = command.getSubject();
+		if (subjectItem.getCode() == null || subjectItem.getCode().equals("")) {
+			throw new BusinessException("コードが入力されていません。");
+		}
+		if (command.getName() == null || command.getName().equals("")) {
+			throw new BusinessException("名称が入力されていません。");
+		}
+		
+		// Convert command to Domain.
 		WLItemSubject subject = command.getSubject().toDomain(companyCode);
 		subject.validate();
-		
 		// In case update.
 		if (!command.isCreateMode()) {
 			// Find aggregate item.

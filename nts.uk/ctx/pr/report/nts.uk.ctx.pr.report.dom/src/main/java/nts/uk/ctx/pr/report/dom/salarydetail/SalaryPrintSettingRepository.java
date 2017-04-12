@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.salarydetail;
 
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
-
 /**
  * The Interface SalaryPrintSettingRepository.
  */
@@ -17,7 +15,7 @@ public interface SalaryPrintSettingRepository {
 	 * @param companyCode the company code
 	 * @return the salary print setting
 	 */
-	SalaryPrintSetting find(CompanyCode companyCode);
+	SalaryPrintSetting find(String companyCode);
 	
 	/**
 	 * Save.

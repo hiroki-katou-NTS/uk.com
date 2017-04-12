@@ -5,7 +5,6 @@
 package nts.uk.ctx.pr.report.app.insurance.find.dto;
 
 import lombok.Data;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingSetMemento;
 
 /**
@@ -44,7 +43,7 @@ public class CheckListPrintSettingFindOutDto implements ChecklistPrintSettingSet
 	 * setCompanyCode(nts.uk.ctx.pr.report.dom.company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		// Do nothing.
 	}
 

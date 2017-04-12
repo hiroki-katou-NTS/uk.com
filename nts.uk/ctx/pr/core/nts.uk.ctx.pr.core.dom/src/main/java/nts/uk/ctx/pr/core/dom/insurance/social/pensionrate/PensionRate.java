@@ -276,13 +276,13 @@ public class PensionRate extends DomainObject implements History<PensionRate> {
 	private static Set<PensionRateRounding> setDefaultRounding() {
 		Set<PensionRateRounding> setItems = new HashSet<PensionRateRounding>();
 		RoundingItem salRounding = new RoundingItem();
-		salRounding.setCompanyRoundAtr(RoundingMethod.RoundUp);
-		salRounding.setPersonalRoundAtr(RoundingMethod.RoundUp);
+		salRounding.setCompanyRoundAtr(RoundingMethod.Truncation);
+		salRounding.setPersonalRoundAtr(RoundingMethod.Truncation);
 		PensionRateRounding item1 = new PensionRateRounding(PaymentType.Salary, salRounding);
 		setItems.add(item1);
 		RoundingItem bnsRounding = new RoundingItem();
-		bnsRounding.setCompanyRoundAtr(RoundingMethod.RoundUp);
-		bnsRounding.setPersonalRoundAtr(RoundingMethod.RoundUp);
+		bnsRounding.setCompanyRoundAtr(RoundingMethod.Truncation);
+		bnsRounding.setPersonalRoundAtr(RoundingMethod.Truncation);
 		PensionRateRounding item2 = new PensionRateRounding(PaymentType.Bonus, bnsRounding);
 		setItems.add(item2);
 

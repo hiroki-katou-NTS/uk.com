@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemCode;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemGetMemento;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemName;
@@ -48,8 +47,8 @@ public class JpaSalaryAggregateItemGetMemento implements SalaryAggregateItemGetM
 	 * SalaryAggregateItemGetMemento#getCompanyCode()
 	 */
 	@Override
-	public CompanyCode getCompanyCode() {
-		return new CompanyCode(this.aggerHead.getQlsptPaylstAggreHeadPK().getCcd());
+	public String getCompanyCode() {
+		return this.aggerHead.getQlsptPaylstAggreHeadPK().getCcd();
 	}
 
 	/*

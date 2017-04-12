@@ -11,6 +11,24 @@ var qet001;
                     this.outputSettingDetail = ko.observable(new OutputSettingDetail([], []));
                     this.reportItems = ko.observableArray([]);
                     this.isLoading = ko.observable(true);
+                    this.outputItemColumns = ko.observableArray([
+                        { headerText: '集約', prop: 'isAggregateItem', width: 40,
+                            formatter: function (data) {
+                                if (data == 'true') {
+                                    return '<div class="center"><i class="icon icon-dot"></i></div>';
+                                }
+                                return '';
+                            }
+                        },
+                        { headerText: 'コード', prop: 'code', width: 50 },
+                        { headerText: '名称', prop: 'name', width: 50 },
+                        { headerText: '削除', prop: 'code', width: 50,
+                            formatter: function (data) {
+                                return '<button class="delete-button icon icon-close" id="' + data + '" >'
+                                    + '</button>';
+                            }
+                        },
+                    ]);
                     this.reportItemColumns = ko.observableArray([
                         { headerText: '区分', prop: 'categoryNameJa', width: 50 },
                         { headerText: '集約', prop: 'isAggregate', width: 40,
@@ -80,7 +98,8 @@ var qet001;
                         // Check output setting is empty.
                         var isHasData = outputSettings && outputSettings.length > 0;
                         if (!isHasData) {
-                            self.switchToCreateMode();
+                            self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
+                            self.outputSettings().outputSettingSelectedCode('');
                             dfd.resolve();
                             return;
                         }
@@ -117,6 +136,9 @@ var qet001;
                             nts.uk.ui.windows.close();
                         });
                     }
+                    else {
+                        nts.uk.ui.windows.close();
+                    }
                 };
                 /**
                  * Save output setting.
@@ -127,16 +149,10 @@ var qet001;
                     $('#code-input').ntsError('clear');
                     $('#name-input').ntsError('clear');
                     // Validate.
-                    var hasError = false;
-                    if (self.outputSettingDetail().settingCode() == '') {
-                        $('#code-input').ntsError('set', 'コードが入力されていません。');
-                        hasError = true;
-                    }
-                    if (self.outputSettingDetail().settingName() == '') {
-                        $('#name-input').ntsError('set', '名称が入力されていません。');
-                        hasError = true;
-                    }
-                    if (hasError) {
+                    $('#code-input').ntsEditor('validate');
+                    $('#name-input').ntsEditor('validate');
+                    // Check has error.
+                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                         return;
                     }
                     var currentSelectedCode = self.outputSettings().outputSettingSelectedCode();
@@ -144,10 +160,10 @@ var qet001;
                         nts.uk.ui.windows.setShared('isHasUpdate', true, false);
                         nts.uk.ui.dialog.alert('save success!').then(function () {
                             self.loadAllOutputSetting();
+                            self.dirty.reset();
                         });
                     }).fail(function (res) {
-                        // TODO: Show message duplicate code.
-                        nts.uk.ui.dialog.alert(res.message);
+                        $('#code-input').ntsError('set', res.message);
                     });
                 };
                 /**
@@ -157,32 +173,32 @@ var qet001;
                     var self = this;
                     // Check selected output setting.
                     var selectedCode = self.outputSettings().outputSettingSelectedCode();
-                    if (selectedCode == '') {
-                        // TODO: Add error message 'AL006'.
-                        nts.uk.ui.dialog.alert('未選択エラー');
+                    if (!selectedCode || selectedCode == '') {
                         return;
                     }
-                    b.service.removeOutputSetting(selectedCode).done(function () {
-                        nts.uk.ui.windows.setShared('isHasUpdate', true, false);
-                        // Find item selected.
-                        var itemSelected = self.outputSettings().outputSettingList().filter(function (item) { return item.code == selectedCode; })[0];
-                        var indexSelected = self.outputSettings().outputSettingList().indexOf(itemSelected);
-                        // Remove item selected in list.
-                        self.outputSettings().outputSettingList.remove(itemSelected);
-                        // If list is empty -> new mode.
-                        if (self.outputSettings().outputSettingList().length == 0) {
-                            self.outputSettings().outputSettingSelectedCode(null);
-                            return;
-                        }
-                        // Select same row with item selected.
-                        if (self.outputSettings().outputSettingList()[indexSelected]) {
-                            self.outputSettings().outputSettingSelectedCode(self.outputSettings().outputSettingList()[indexSelected].code);
-                            return;
-                        }
-                        // Select next higher row.
-                        self.outputSettings().outputSettingSelectedCode(self.outputSettings().outputSettingList()[indexSelected - 1].code);
-                    }).fail(function (res) {
-                        nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.confirm('出力項目設定からもデータを削除します。\r\nよろしいですか？').ifYes(function () {
+                        b.service.removeOutputSetting(selectedCode).done(function () {
+                            nts.uk.ui.windows.setShared('isHasUpdate', true, false);
+                            // Find item selected.
+                            var itemSelected = self.outputSettings().outputSettingList().filter(function (item) { return item.code == selectedCode; })[0];
+                            var indexSelected = self.outputSettings().outputSettingList().indexOf(itemSelected);
+                            // Remove item selected in list.
+                            self.outputSettings().outputSettingList.remove(itemSelected);
+                            // If list is empty -> new mode.
+                            if (self.outputSettings().outputSettingList().length == 0) {
+                                self.outputSettings().outputSettingSelectedCode(null);
+                                return;
+                            }
+                            // Select same row with item selected.
+                            if (self.outputSettings().outputSettingList()[indexSelected]) {
+                                self.outputSettings().outputSettingSelectedCode(self.outputSettings().outputSettingList()[indexSelected].code);
+                                return;
+                            }
+                            // Select next higher row.
+                            self.outputSettings().outputSettingSelectedCode(self.outputSettings().outputSettingList()[indexSelected - 1].code);
+                        }).fail(function (res) {
+                            nts.uk.ui.dialog.alert(res.message);
+                        });
                     });
                 };
                 /**
@@ -235,6 +251,9 @@ var qet001;
                  * Switch to create mode.
                  */
                 ScreenModel.prototype.switchToCreateMode = function () {
+                    // clear error.
+                    $('#code-input').ntsError('clear');
+                    $('#name-input').ntsError('clear');
                     // Dirty check.
                     var self = this;
                     if (self.dirty.isDirty()) {
@@ -360,30 +379,12 @@ var qet001;
                     this.outputItemsSelected = ko.observable(null);
                     this.aggregateItemSelected = ko.observable(null);
                     this.masterItemSelected = ko.observable(null);
-                    this.outputItemColumns = ko.observableArray([
-                        { headerText: '集約', prop: 'isAggregateItem', width: 40,
-                            formatter: function (data) {
-                                if (data == 'true') {
-                                    return '<div class="center"><i class="icon icon-dot"></i></div>';
-                                }
-                                return '';
-                            }
-                        },
-                        { headerText: 'コード', prop: 'code', width: 50 },
-                        { headerText: '名称', prop: 'name', width: 50 },
-                        { headerText: '削除', prop: 'code', width: 50,
-                            formatter: function (data) {
-                                return '<button class="delete-button icon icon-close" id="' + data + '" >'
-                                    + '</button>';
-                            }
-                        },
-                    ]);
                     var self = this;
                     self.outputItemCache = categorySetting != undefined ? categorySetting.outputItems : [];
                     self.outputItems.subscribe(function (items) {
                         self.outputItemCache = items;
                     });
-                    // Customs handle.
+                    // Create Customs handle For event rened nts grid.
                     ko.bindingHandlers.rended = {
                         init: function (element, valueAccessor, allBindings, viewModel, bindingContext) { },
                         update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {

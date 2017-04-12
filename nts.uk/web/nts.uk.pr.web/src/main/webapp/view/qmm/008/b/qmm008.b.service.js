@@ -56,21 +56,15 @@ var nts;
                                 deleteHistoryPath: 'ctx/pr/core/insurance/social/healthrate/history/delete',
                                 updateHistoryStartPath: 'ctx/pr/core/insurance/social/healthrate/history/update/start'
                             });
-                            ////////////////////////
                             /**
                              * Function is used to load all InsuranceOfficeItem by key.
                              */
                             function findInsuranceOffice(key) {
-                                // Init new dfd.
                                 var dfd = $.Deferred();
                                 var findPath = servicePath.getAllOfficeItem + ((key != null && key != '') ? ('?key=' + key) : '');
-                                // Call ajax.
                                 nts.uk.request.ajax(findPath).done(function (data) {
-                                    // Convert json to model here.
-                                    // Resolve.
                                     dfd.resolve(data);
                                 });
-                                // Ret promise.
                                 return dfd.promise();
                             }
                             service.findInsuranceOffice = findInsuranceOffice;
@@ -78,22 +72,15 @@ var nts;
                              * Function is used to load all RoundingOption.
                              */
                             function findAllRounding() {
-                                // Init new dfd.
                                 var dfd = $.Deferred();
-                                // Call ajax.
-                                //            nts.uk.request.ajax(findPath).done(function(data) {
-                                // Convert json to model here.
                                 var roundingList = [
-                                    new model.finder.Enum('0', '切り上げ'),
-                                    new model.finder.Enum('1', '切捨て'),
+                                    new model.finder.Enum('0', '切捨て'),
+                                    new model.finder.Enum('1', '切り上げ'),
                                     new model.finder.Enum('2', '四捨五入'),
-                                    new model.finder.Enum('3', '五捨五超入'),
-                                    new model.finder.Enum('4', '五捨六入')
+                                    new model.finder.Enum('3', '五捨六入'),
+                                    new model.finder.Enum('4', '五捨五超入')
                                 ];
-                                // Resolve.
                                 dfd.resolve(roundingList);
-                                //            });
-                                // Ret promise.
                                 return dfd.promise();
                             }
                             service.findAllRounding = findAllRounding;
@@ -101,17 +88,12 @@ var nts;
                              * Function is used to load health data of Office by office code.
                              */
                             function getHealthInsuranceItemDetail(code) {
-                                // Init new dfd.
                                 var dfd = $.Deferred();
                                 var findPath = servicePath.getHealthInsuranceItemDetail + "/" + code;
-                                // Call ajax.
                                 nts.uk.request.ajax(findPath).done(function (data) {
-                                    // Convert json to model here.
                                     var healthInsuranceRateDetailData = data;
-                                    // Resolve.
                                     dfd.resolve(healthInsuranceRateDetailData);
                                 });
-                                // Ret promise.
                                 return dfd.promise();
                             }
                             service.getHealthInsuranceItemDetail = getHealthInsuranceItemDetail;
@@ -119,17 +101,12 @@ var nts;
                             * Function is used to load health data of Office by office code.
                             */
                             function getAllHealthOfficeItem() {
-                                // Init new dfd.
                                 var dfd = $.Deferred();
                                 var findPath = servicePath.getAllHealthOfficeAndHistory;
-                                // Call ajax.
                                 nts.uk.request.ajax(findPath).done(function (data) {
-                                    // Convert json to model here.
                                     var returnData = data;
-                                    // Resolve.
                                     dfd.resolve(returnData);
                                 });
-                                // Ret promise.
                                 return dfd.promise();
                             }
                             service.getAllHealthOfficeItem = getAllHealthOfficeItem;

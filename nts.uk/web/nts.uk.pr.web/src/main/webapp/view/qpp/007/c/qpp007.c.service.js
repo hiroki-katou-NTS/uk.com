@@ -20,6 +20,7 @@ var nts;
                                 remove: "ctx/pr/report/salary/outputsetting/remove",
                                 findOutputSettingDetail: "ctx/pr/report/salary/outputsetting/find",
                                 findAllOutputSettings: "ctx/pr/report/salary/outputsetting/findall",
+                                findAllAggregateItems: "ctx/pr/report/salary/aggregate/item/findall"
                             };
                             /**
                              *  Update
@@ -49,6 +50,13 @@ var nts;
                                 return nts.uk.request.ajax(paths.findAllOutputSettings);
                             }
                             service.findAllOutputSettings = findAllOutputSettings;
+                            /**
+                             *  Find all aggregateItems.
+                             */
+                            function findAllAggregateItems() {
+                                return nts.uk.request.ajax(paths.findAllAggregateItems);
+                            }
+                            service.findAllAggregateItems = findAllAggregateItems;
                         })(service = c.service || (c.service = {}));
                     })(c = qpp007.c || (qpp007.c = {}));
                 })(qpp007 = view.qpp007 || (view.qpp007 = {}));

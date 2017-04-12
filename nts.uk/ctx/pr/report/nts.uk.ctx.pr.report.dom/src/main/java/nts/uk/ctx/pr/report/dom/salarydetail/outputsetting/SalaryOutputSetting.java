@@ -8,7 +8,6 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 
 /**
  * The Class SalaryOutputSetting.
@@ -16,7 +15,49 @@ import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 @Getter
 public class SalaryOutputSetting extends DomainObject {
 
-	/* (non-Javadoc)
+	/** The company code. */
+	private String companyCode;
+
+	/** The code. */
+	private SalaryOutputSettingCode code;
+
+	/** The name. */
+	private SalaryOutputSettingName name;
+
+	/** The category settings. */
+	private List<SalaryCategorySetting> categorySettings;
+
+	/**
+	 * Instantiates a new salary output setting.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public SalaryOutputSetting(SalaryOutputSettingGetMemento memento) {
+		super();
+		this.companyCode = memento.getCompanyCode();
+		this.code = memento.getCode();
+		this.name = memento.getName();
+		this.categorySettings = memento.getCategorySettings();
+
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(SalaryOutputSettingSetMemento memento) {
+		memento.setCode(this.code);
+		memento.setName(this.name);
+		memento.setCompanyCode(this.companyCode);
+		memento.setCategorySettings(this.categorySettings);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -28,7 +69,9 @@ public class SalaryOutputSetting extends DomainObject {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -53,41 +96,4 @@ public class SalaryOutputSetting extends DomainObject {
 		return true;
 	}
 
-	/** The company code. */
-	private CompanyCode companyCode;
-
-	/** The code. */
-	private SalaryOutputSettingCode code;
-
-	/** The name. */
-	private SalaryOutputSettingName name;
-
-	/** The category settings. */
-	private List<SalaryCategorySetting> categorySettings;
-
-	/**
-	 * Instantiates a new salary output setting.
-	 *
-	 * @param memento the memento
-	 */
-	public SalaryOutputSetting(SalaryOutputSettingGetMemento memento) {
-		super();
-		this.companyCode = memento.getCompanyCode();
-		this.code = memento.getCode();
-		this.name = memento.getName();
-		this.categorySettings = memento.getCategorySettings();
-
-	}
-
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(SalaryOutputSettingSetMemento memento) {
-		memento.setCode(this.code);
-		memento.setName(this.name);
-		memento.setCompanyCode(this.companyCode);
-		memento.setCategorySettings(this.categorySettings);
-	}
 }

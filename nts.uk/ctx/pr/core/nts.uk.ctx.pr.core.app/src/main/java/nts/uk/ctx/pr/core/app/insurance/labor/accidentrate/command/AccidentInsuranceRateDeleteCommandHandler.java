@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command;
@@ -22,11 +22,11 @@ import nts.uk.shr.com.context.LoginUserContext;
  */
 @Stateless
 public class AccidentInsuranceRateDeleteCommandHandler
-		extends CommandHandler<AccidentInsuranceRateDeleteCommand> {
+	extends CommandHandler<AccidentInsuranceRateDeleteCommand> {
 
 	/** The accident insurance rate repo. */
 	@Inject
-	private AccidentInsuranceRateRepository accidentInsuranceRateRepo;
+	private AccidentInsuranceRateRepository repository;
 
 	/*
 	 * (non-Javadoc)
@@ -49,23 +49,22 @@ public class AccidentInsuranceRateDeleteCommandHandler
 		AccidentInsuranceRateDeleteCommand command = context.getCommand();
 
 		// get first data (remove)
-		Optional<AccidentInsuranceRate> optionalRemove = this.accidentInsuranceRateRepo
-				.findFirstData(companyCode);
+		Optional<AccidentInsuranceRate> data = this.repository.findFirstData(companyCode);
 
-		if (optionalRemove.isPresent() && optionalRemove.get().getHistoryId()
-				.equals(command.getAccidentInsuranceRateDeleteDto().getCode())) {
+		// exist data remove
+		if (data.isPresent()
+			&& data.get().getHistoryId().equals(command.getAccidentInsuranceRateDeleteDto().getCode())) {
 
 			// history first
-			this.accidentInsuranceRateRepo.remove(companyCode,
-					command.getAccidentInsuranceRateDeleteDto().getCode(),
-					command.getAccidentInsuranceRateDeleteDto().getVersion());
+			this.repository.remove(companyCode, command.getAccidentInsuranceRateDeleteDto().getCode());
 
 			// get first data (update)
-			Optional<AccidentInsuranceRate> optionalUpdate = this.accidentInsuranceRateRepo
-					.findFirstData(companyCode);
-			if (optionalUpdate.isPresent()) {
-				optionalUpdate.get().setMaxDate();
-				this.accidentInsuranceRateRepo.update(optionalUpdate.get());
+			Optional<AccidentInsuranceRate> dataFirst = this.repository.findFirstData(companyCode);
+
+			// exist data update
+			if (dataFirst.isPresent()) {
+				dataFirst.get().setMaxDate();
+				this.repository.update(dataFirst.get());
 			}
 		}
 	}

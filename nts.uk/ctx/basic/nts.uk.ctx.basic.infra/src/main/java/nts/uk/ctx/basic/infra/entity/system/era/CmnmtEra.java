@@ -10,13 +10,17 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.AggregateTableEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Getter
+@Setter
 @Table(name="CMNMT_ERA")
 public class CmnmtEra extends AggregateTableEntity implements Serializable{
 	 
@@ -26,7 +30,11 @@ public class CmnmtEra extends AggregateTableEntity implements Serializable{
 	public CmnmtEraPk cmnmtEraPk;
 	
 	@Basic(optional = false)
-//	@Column(name="ERA_NAME")
+	@Column(name = "STR_D")
+	@Convert(converter = GeneralDateToDBConverter.class)
+	public GeneralDate startDate;
+	
+	@Basic(optional = false)
 	@Column(name="ERA_NAME")
 	public String era_Name;
 	
@@ -34,10 +42,12 @@ public class CmnmtEra extends AggregateTableEntity implements Serializable{
 	@Column(name="ERA_MARK")
 	public String era_Mark;
 	
+	@Basic(optional = false)
 	@Column(name="END_D")
 	@Convert(converter= GeneralDateToDBConverter.class)
 	public GeneralDate end_D;
 
+	@Basic(optional = false)
 	@Column(name="FIX_ATR")
 	public int fix_Atr;
 	

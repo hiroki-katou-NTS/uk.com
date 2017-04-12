@@ -22,7 +22,6 @@ public class AddPersonalUnitPriceCommandHandler extends CommandHandler<AddPerson
 
 	@Override
 	protected void handle(CommandHandlerContext<AddPersonalUnitPriceCommand> context) {
-		// TODO Auto-generated method stub
 		AddPersonalUnitPriceCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		if (StringUtil.isNullOrEmpty(command.getPersonalUnitPriceCode(), true)) {
@@ -44,7 +43,7 @@ public class AddPersonalUnitPriceCommandHandler extends CommandHandler<AddPerson
 				command.getFixPaymentDayMonth(),
 				command.getFixPaymentDaily(),
 				command.getFixPaymentHoursly(),
-				command.getDisplayAtr(),
+				command.getDisplaySet(),
 				command.getPaymentSettingType(),
 				command.getUnitPriceAtr());
 	    

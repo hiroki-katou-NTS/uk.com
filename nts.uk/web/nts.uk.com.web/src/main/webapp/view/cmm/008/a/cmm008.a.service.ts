@@ -6,81 +6,35 @@ module cmm008.a.service{
         deleteEmployment: "basic/organization/employment/deleteemployment/" ,
         getEmploymentByCode: "basic/organization/employment/findemploymentbycode/",
         getAllProcessingNo: "pr/core/paydayrocessing/getbyccd",
-        getCompanyInfor: "ctx/proto/company/findBycompanyCode"
+        getCompanyInfor: "ctx/proto/company/findCompany"
     }
     //find all employment data
     export function getAllEmployments(): JQueryPromise<Array<model.employmentDto>>{
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com",path.getAllEmployment)
-            .done(function(res: Array<any>){
-                dfd.resolve(res);             
-            })
-            .fail(function(res: any){
-                dfd.reject(res);    
-            })
-        return dfd.promise();
+        return  nts.uk.request.ajax("com",path.getAllEmployment);
     }
     
     export function getEmploymentByCode(employmentCode: string): JQueryPromise<model.employmentDto>{
-        var dfd = $.Deferred<model.employmentDto>();
-        nts.uk.request.ajax("com",path.getEmploymentByCode + employmentCode)
-            .done(function(res: model.employmentDto){
-                dfd.resolve(res);             
-            })
-            .fail(function(res: any){
-                dfd.reject(res);    
-            })
-        return dfd.promise();
+        return  nts.uk.request.ajax("com",path.getEmploymentByCode + employmentCode);
     }
     //create new employment data
     export function createEmployment(employment: model.employmentDto){
-        var dfd = $.Deferred<Array<any>>();  
-        nts.uk.request.ajax("com", path.createEmployment, employment).done(function(res: Array<any>){
-            dfd.resolve(res);        
-        }).fail(function(res: any){
-            dfd.reject(res);
-        })
-        return dfd.promise();
+        return nts.uk.request.ajax("com", path.createEmployment, employment);
     }
     //update employment data
     export function updateEmployment(employment: model.employmentDto){
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com",path.updateEmployment,employment).done(function(res: Array<any>){
-            dfd.resolve(res);
-        }).fail(function(res: any){
-            dfd.reject(res);
-        })
-        return dfd.promise();
+        return nts.uk.request.ajax("com",path.updateEmployment,employment);
     }
     //delete employment data
     export function deleteEmployment(employment: model.employmentDto){
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com",path.deleteEmployment, employment).done(function(res: Array<any>){
-            dfd.resolve(res);
-        }).fail(function(res : any){
-            dfd.reject(res);
-        })
-        return dfd.promise();
+        return nts.uk.request.ajax("com",path.deleteEmployment, employment);
     }
     //get all 処理日区分
      export function getProcessingNo(){
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax('pr',path.getAllProcessingNo).done(function(res: Array<any>){
-            dfd.resolve(res);
-        }).fail(function(res : any){
-            dfd.reject(res);
-        })
-        return dfd.promise();
+         return nts.uk.request.ajax(path.getAllProcessingNo);
     }
     //get 就業権限 by company
     export function getCompanyInfor(){
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax('pr',path.getCompanyInfor).done(function(res: Array<any>){
-            dfd.resolve(res);
-        }).fail(function(res : any){
-            dfd.reject(res);
-        })
-        return dfd.promise(); 
+        return nts.uk.request.ajax('com',path.getCompanyInfor);
     }
     
     

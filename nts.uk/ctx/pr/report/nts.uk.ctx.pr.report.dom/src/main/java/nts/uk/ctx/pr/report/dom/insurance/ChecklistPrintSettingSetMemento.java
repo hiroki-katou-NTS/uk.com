@@ -1,11 +1,12 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.insurance;
 
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
-
+/**
+ * The Interface ChecklistPrintSettingSetMemento.
+ */
 public interface ChecklistPrintSettingSetMemento {
 
 	/**
@@ -13,7 +14,7 @@ public interface ChecklistPrintSettingSetMemento {
 	 *
 	 * @param companyCode the new company code
 	 */
-	void setCompanyCode(CompanyCode companyCode);
+	void setCompanyCode(String companyCode);
 
 	/**
 	 * Sets the show category insurance item.

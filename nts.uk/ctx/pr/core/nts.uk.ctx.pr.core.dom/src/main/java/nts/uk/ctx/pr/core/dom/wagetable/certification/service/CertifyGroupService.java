@@ -31,6 +31,6 @@ public interface CertifyGroupService {
 	 * @param certifyGroup the certify group
 	 * @param certifyGroupCode the certify group code
 	 */
-	void checkDulicateCertification(CertifyGroup certifyGroup, String certifyGroupCode);
+	void checkCertificationIsBelong(CertifyGroup certifyGroup);
 
 }

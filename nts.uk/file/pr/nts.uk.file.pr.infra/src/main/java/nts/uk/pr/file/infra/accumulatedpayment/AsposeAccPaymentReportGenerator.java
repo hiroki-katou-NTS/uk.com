@@ -4,12 +4,11 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.accumulatedpayment;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
+
 import com.aspose.cells.BackgroundType;
 import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
@@ -25,10 +24,10 @@ import com.aspose.cells.WorksheetCollection;
 
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.AccPaymentReportGenerator;
-import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.data.AccPaymentDataSource;
-import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.data.AccPaymentItemData;
-import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.query.AccPaymentReportQuery;
+import nts.uk.file.pr.app.export.accumulatedpayment.AccPaymentReportGenerator;
+import nts.uk.file.pr.app.export.accumulatedpayment.data.AccPaymentDataSource;
+import nts.uk.file.pr.app.export.accumulatedpayment.data.AccPaymentItemData;
+import nts.uk.file.pr.app.export.accumulatedpayment.query.AccPaymentReportQuery;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 /**
@@ -85,11 +84,6 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 			Cells cells = worksheet.getCells();
 			
 			// Fill data
-			Date date = new Date();
-			SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd hh:mm");
-			String str = sf.format(date);
-			designer.setDataSource("HeaderTime", str);
-			
 			// List Item Data			
 			int amountEmployee = accumulatedPaymentList.size();
 			int startIndex = 0;
@@ -241,7 +235,6 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 		for(int i = FIRST_COLUMN; i<AMOUNT_COLUMN; i++){
 			Range range = cells.createRange(firstRow, i, totalRow, 1);			
 			range.setOutlineBorders(CellBorderType.THIN, Color.getGray());
-			
 		}
 	}
 	

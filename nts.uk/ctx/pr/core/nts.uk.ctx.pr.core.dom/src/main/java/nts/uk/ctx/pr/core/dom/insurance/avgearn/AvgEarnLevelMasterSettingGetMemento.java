@@ -44,11 +44,4 @@ public interface AvgEarnLevelMasterSettingGetMemento {
 	 */
 	Long getSalLimit();
 
-	/**
-	 * Gets the version.
-	 *
-	 * @return the version
-	 */
-	Long getVersion();
-
 }

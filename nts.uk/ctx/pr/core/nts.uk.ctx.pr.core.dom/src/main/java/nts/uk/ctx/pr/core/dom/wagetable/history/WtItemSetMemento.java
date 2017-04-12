@@ -4,9 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.history;
 
-import java.math.BigDecimal;
-
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
+import nts.uk.ctx.pr.core.dom.wagetable.WtValue;
 
 /**
  * The Interface WageTableItemSetMemento.
@@ -39,6 +38,6 @@ public interface WtItemSetMemento {
 	 *
 	 * @param amount the new amount
 	 */
-	void setAmount(BigDecimal amount);
+	void setAmount(WtValue amount);
 
 }

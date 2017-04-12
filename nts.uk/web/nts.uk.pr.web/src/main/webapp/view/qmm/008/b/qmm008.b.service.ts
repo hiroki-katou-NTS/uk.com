@@ -41,23 +41,16 @@ module nts.uk.pr.view.qmm008.b {
             deleteHistoryPath: 'ctx/pr/core/insurance/social/healthrate/history/delete',
             updateHistoryStartPath: 'ctx/pr/core/insurance/social/healthrate/history/update/start'
         });
-        ////////////////////////
-        
         
         /**
          * Function is used to load all InsuranceOfficeItem by key.
          */
         export function findInsuranceOffice(key: string): JQueryPromise<Array<model.finder.InsuranceOfficeItemDto>> {
-            // Init new dfd.
             var dfd = $.Deferred<Array<model.finder.InsuranceOfficeItemDto>>();
             var findPath = servicePath.getAllOfficeItem + ((key != null && key != '') ? ('?key=' + key) : '');
-            // Call ajax.
             nts.uk.request.ajax(findPath).done(function(data: any) {
-                // Convert json to model here.
-                // Resolve.
                 dfd.resolve(data);
             });
-            // Ret promise.
             return dfd.promise();
         }
 
@@ -65,58 +58,41 @@ module nts.uk.pr.view.qmm008.b {
          * Function is used to load all RoundingOption.
          */
         export function findAllRounding(): JQueryPromise<Array<model.finder.Enum>> {
-            // Init new dfd.
             var dfd = $.Deferred<Array<model.finder.Enum>>();
-            // Call ajax.
-            //            nts.uk.request.ajax(findPath).done(function(data) {
-            // Convert json to model here.
             var roundingList: Array<model.finder.Enum> = [
-                new model.finder.Enum('0', '切り上げ'),
-                new model.finder.Enum('1', '切捨て'),
+                new model.finder.Enum('0', '切捨て'),
+                new model.finder.Enum('1', '切り上げ'),
                 new model.finder.Enum('2', '四捨五入'),
-                new model.finder.Enum('3', '五捨五超入'),
-                new model.finder.Enum('4', '五捨六入')
+                new model.finder.Enum('3', '五捨六入'),
+                new model.finder.Enum('4', '五捨五超入')
             ];
-            // Resolve.
             dfd.resolve(roundingList);
-            //            });
-
-            // Ret promise.
             return dfd.promise();
         }
+        
         /**
          * Function is used to load health data of Office by office code.
          */
         export function getHealthInsuranceItemDetail(code: string): JQueryPromise<model.finder.HealthInsuranceRateDto> {
-            // Init new dfd.
             var dfd = $.Deferred<model.finder.HealthInsuranceRateDto>();
             var findPath = servicePath.getHealthInsuranceItemDetail + "/" + code;
-            // Call ajax.
             nts.uk.request.ajax(findPath).done(function(data: model.finder.HealthInsuranceRateDto) {
-                // Convert json to model here.
                 var healthInsuranceRateDetailData: model.finder.HealthInsuranceRateDto = data;
-                // Resolve.
                 dfd.resolve(healthInsuranceRateDetailData);
             });
-
-            // Ret promise.
             return dfd.promise();
         }
+        
         /**
         * Function is used to load health data of Office by office code.
         */
         export function getAllHealthOfficeItem(): JQueryPromise<Array<model.finder.OfficeItemDto>> {
-            // Init new dfd.
             var dfd = $.Deferred<Array<model.finder.OfficeItemDto>>();
             var findPath = servicePath.getAllHealthOfficeAndHistory;
-            // Call ajax.
             nts.uk.request.ajax(findPath).done(function(data: Array<model.finder.OfficeItemDto>) {
-                // Convert json to model here.
                 var returnData: Array<model.finder.OfficeItemDto> = data;
-                // Resolve.
                 dfd.resolve(returnData);
             });
-            // Ret promise.
             return dfd.promise();
         }
 
@@ -149,7 +125,6 @@ module nts.uk.pr.view.qmm008.b {
             export interface Office extends base.simplehistory.model.MasterModel<Health> {};
             export interface Health extends base.simplehistory.model.HistoryModel {};
             export module finder {
-
                 //office DTO
                 export class InsuranceOfficeItemDto {
                     id: string;
@@ -165,7 +140,6 @@ module nts.uk.pr.view.qmm008.b {
                         this.codeName = codeName;
                     }
                 }
-
                 //health DTO
                 export class HealthInsuranceRateDto {
                     historyId: string;
@@ -177,7 +151,6 @@ module nts.uk.pr.view.qmm008.b {
                     rateItems: Array<HealthInsuranceRateItemDto>;
                     roundingMethods: Array<RoundingDto>;
                     maxAmount: number;
-
                     constructor(historyId: string, companyCode: string, officeCode: string, startMonth: string, endMonth: string, autoCalculate: number, rateItems: Array<HealthInsuranceRateItemDto>, roundingMethods: Array<RoundingDto>, maxAmount: number) {
                         this.historyId = historyId;
                         this.companyCode = companyCode;
@@ -236,7 +209,7 @@ module nts.uk.pr.view.qmm008.b {
                         this.companyRoundAtr = companyRoundAtr;
                     }
                 }
-                export class AddNewHistoryDto{
+                export class AddNewHistoryDto {
                     officeCode: string;
                     startMonth: string;
                     endMonth: string;
@@ -246,7 +219,6 @@ module nts.uk.pr.view.qmm008.b {
                     code: string;
                     name: string;
                     label: string;
-
                     constructor(code: string, name: string) {
                         this.code = code;
                         this.name = name;

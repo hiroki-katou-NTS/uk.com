@@ -37,7 +37,7 @@ public class JpaPersonalUnitPriceRepository extends JpaRepository implements Per
 						x.fixPaymentDayMonth,
 						x.fixPaymentDaily,
 						x.fixPaymentHoursly,
-						x.displayAtr,
+						x.displaySet,
 						x.paymentSettingType,
 						x.unitPriceAtr));
 	}
@@ -58,7 +58,7 @@ public class JpaPersonalUnitPriceRepository extends JpaRepository implements Per
 						x.fixPaymentDayMonth,
 						x.fixPaymentDaily,
 						x.fixPaymentHoursly,
-						x.displayAtr,
+						x.displaySet,
 						x.paymentSettingType,
 						x.unitPriceAtr));
 	}
@@ -80,7 +80,7 @@ public class JpaPersonalUnitPriceRepository extends JpaRepository implements Per
 						x.fixPaymentDayMonth,
 						x.fixPaymentDaily,
 						x.fixPaymentHoursly,
-						x.displayAtr,
+						x.displaySet,
 						x.paymentSettingType,
 						x.unitPriceAtr));
 	}
@@ -105,7 +105,7 @@ public class JpaPersonalUnitPriceRepository extends JpaRepository implements Per
 	    			key,
 	    			domain.getPersonalUnitPriceName().v(), 
 	    			domain.getPersonalUnitPriceAbName().v(),
-	    			domain.getDisplayAtr().value,
+	    			domain.getDisplaySet().value,
 	    			domain.getUniteCode().v(),
 	    			domain.getPaymentSettingType().value,
 	    			domain.getFixPaymentAtr().value,

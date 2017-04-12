@@ -33,7 +33,7 @@ public class UpdatePersonalUnitPriceCommandHander extends CommandHandler<UpdateP
 				command.getFixPaymentDayMonth(),
 				command.getFixPaymentDaily(),
 				command.getFixPaymentHoursly(),
-				command.getDisplayAtr(),
+				command.getDisplaySet(),
 				command.getPaymentSettingType(),
 				command.getUnitPriceAtr());
 	    domain.validate();

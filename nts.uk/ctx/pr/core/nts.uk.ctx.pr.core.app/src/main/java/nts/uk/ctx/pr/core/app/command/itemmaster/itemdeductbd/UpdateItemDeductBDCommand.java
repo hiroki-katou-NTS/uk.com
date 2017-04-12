@@ -6,10 +6,14 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBD;
 
+/**
+ * @author sonnlb
+ *
+ */
 @Getter
 @Setter
 public class UpdateItemDeductBDCommand {
-	private String itemCd;
+	private String itemCode;
 	private String itemBreakdownCd;
 	private String itemBreakdownName;
 	private String itemBreakdownAbName;
@@ -26,10 +30,11 @@ public class UpdateItemDeductBDCommand {
 	private BigDecimal alRangeHigh;
 
 	public ItemDeductBD toDomain() {
-		return ItemDeductBD.createFromJavaType(this.itemCd, this.itemBreakdownCd, this.itemBreakdownName,
+		return ItemDeductBD.createFromJavaType(this.itemCode, this.itemBreakdownCd, this.itemBreakdownName,
 				this.itemBreakdownAbName, this.uniteCd, this.zeroDispSet, this.itemDispAtr, this.errRangeLowAtr,
 				this.errRangeLow, this.errRangeHighAtr, this.errRangeHigh, this.alRangeLowAtr, this.alRangeLow,
 				this.alRangeHighAtr, this.alRangeHigh);
 
 	}
+	
 }

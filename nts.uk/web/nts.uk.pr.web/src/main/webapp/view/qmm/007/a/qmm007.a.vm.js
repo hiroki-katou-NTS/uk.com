@@ -34,51 +34,73 @@ var nts;
                                         { code: ApplySetting.APPLY, name: '対象' },
                                         { code: ApplySetting.NOTAPPLY, name: '対象外' }
                                     ]);
+                                    // Setting type
                                     self.isContractSettingEnabled = ko.computed(function () {
                                         return self.unitPriceHistoryModel().fixPaySettingType() == SettingType.CONTRACT;
                                     });
+                                    // Nts text editor options
                                     self.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                                         textmode: "text",
                                         placeholder: "",
                                         textalign: "left"
                                     }));
                                 }
+                                /**
+                                 * Create or Update UnitPriceHistory.
+                                 */
                                 ScreenModel.prototype.onSave = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
+                                    // Clear errors.
+                                    self.clearError();
+                                    // Validate.
+                                    self.validate();
+                                    // Return if has error.
+                                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                                        dfd.reject();
+                                        return dfd.promise();
+                                    }
                                     if (self.isNewMode()) {
                                         qmm007.service.instance.create(ko.toJS(self.unitPriceHistoryModel())).done(function (res) {
                                             dfd.resolve(res.uuid);
+                                            self.dirtyChecker.reset();
                                         }).fail(function (res) {
+                                            dfd.reject();
                                             self.setMessages(res.messageId);
                                         });
                                     }
                                     else {
                                         qmm007.service.instance.update(ko.toJS(self.unitPriceHistoryModel())).done(function (res) {
                                             dfd.resolve(self.unitPriceHistoryModel().id);
+                                            self.dirtyChecker.reset();
+                                        }).fail(function (res) {
+                                            dfd.reject();
+                                            self.setMessages(res.messageId);
                                         });
                                     }
                                     return dfd.promise();
                                 };
+                                /**
+                                * Load UnitPriceHistory detail.
+                                */
                                 ScreenModel.prototype.onSelectHistory = function (id) {
-                                    var _this = this;
                                     var self = this;
-                                    var dfd = $.Deferred();
                                     self.isLoading(true);
                                     qmm007.service.instance.findHistoryByUuid(id).done(function (dto) {
                                         self.setUnitPriceHistoryModel(dto);
                                         self.dirtyChecker.reset();
                                         self.isLoading(false);
-                                        nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(_this.unitPriceHistoryModel()));
                                         self.clearError();
-                                        dfd.resolve();
                                     });
-                                    return dfd.promise();
                                 };
+                                /**
+                                 * Clear all input and switch to new mode.
+                                 */
                                 ScreenModel.prototype.onRegistNew = function () {
                                     var self = this;
                                     self.clearError();
                                     self.clearInput();
+                                    self.dirtyChecker.reset();
                                 };
                                 ScreenModel.prototype.isDirty = function () {
                                     var self = this;
@@ -87,17 +109,6 @@ var nts;
                                 ScreenModel.prototype.setMessages = function (messageId) {
                                     var self = this;
                                     switch (messageId) {
-                                        case 'ER001':
-                                            if (!self.unitPriceHistoryModel().unitPriceCode()) {
-                                                $('#inpCode').ntsError('set', '＊が入力されていません。');
-                                            }
-                                            if (!self.unitPriceHistoryModel().unitPriceName()) {
-                                                $('#inpName').ntsError('set', '＊が入力されていません。');
-                                            }
-                                            if (!self.unitPriceHistoryModel().budget()) {
-                                                $('#inpBudget').ntsError('set', '＊が入力されていません。');
-                                            }
-                                            break;
                                         case 'ER005':
                                             $('#inpCode').ntsError('set', '入力した＊は既に存在しています。\r\n ＊を確認してください。');
                                             break;
@@ -108,6 +119,9 @@ var nts;
                                             break;
                                     }
                                 };
+                                /**
+                                 * Set the UnitPriceHistoryModel
+                                 */
                                 ScreenModel.prototype.setUnitPriceHistoryModel = function (dto) {
                                     var model = this.unitPriceHistoryModel();
                                     model.id = dto.id;
@@ -125,12 +139,24 @@ var nts;
                                     model.memo(dto.memo);
                                 };
                                 ScreenModel.prototype.clearError = function () {
-                                    $('.save-error').ntsError('clear');
+                                    $('#inpCode').ntsError('clear');
+                                    $('#inpName').ntsError('clear');
+                                    $('#inpStartMonth').ntsError('clear');
+                                    $('#inpBudget').ntsError('clear');
+                                };
+                                ScreenModel.prototype.validate = function () {
+                                    $('#inpCode').ntsEditor('validate');
+                                    $('#inpName').ntsEditor('validate');
+                                    $('#inpStartMonth').ntsEditor('validate');
+                                    $('#inpBudget').ntsEditor('validate');
                                 };
                                 ScreenModel.prototype.clearInput = function () {
                                     var self = this;
                                     self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
                                 };
+                                /**
+                                 * Get default history
+                                 */
                                 ScreenModel.prototype.getDefaultUnitPriceHistory = function () {
                                     var defaultHist = {};
                                     defaultHist.id = '';
@@ -193,4 +219,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm007.a.vm.js.map

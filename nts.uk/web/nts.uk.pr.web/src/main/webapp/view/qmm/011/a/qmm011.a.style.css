@@ -42,6 +42,10 @@
 	float: right;
 }
 
+.floatLeft {
+	float: left;
+}
+
 #contents-left, #contents-right {
 	padding: 20px;
 	vertical-align: top !important;
@@ -73,11 +77,9 @@
 	width: 100%;
 }
 
-
 button.nts-switch-button {
 	min-width: 80px;
 }
-
 
 #search_001 {
 	margin-top: 20px;
@@ -118,6 +120,10 @@ button.nts-switch-button {
 .text_center {
 	text-align: center;
 	height: 30px;
+}
+
+.text_right {
+	text-align: right;
 }
 
 .hr_width {

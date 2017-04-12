@@ -11,8 +11,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 1200,
-					height : 600
+					width : 1300,
+					height : 850
 				};
 			</script>
 
@@ -23,11 +23,13 @@
 				nts.uk.ctx.pr.core.dom.insurance.PicName
 				nts.uk.ctx.pr.core.dom.insurance.PicPosition
 				nts.uk.ctx.pr.core.dom.insurance.PotalCode
-				nts.uk.ctx.pr.core.dom.insurance.Phone
+				nts.uk.ctx.pr.core.dom.insurance.PhoneNumber
 				<!-- province address -->
 				nts.uk.shr.com.primitive.Memo
-				nts.uk.ctx.pr.core.dom.insurance.Address
-				nts.uk.ctx.pr.core.dom.insurance.KanaAddress
+				nts.uk.ctx.pr.core.dom.insurance.Address1
+				nts.uk.ctx.pr.core.dom.insurance.Address2
+				nts.uk.ctx.pr.core.dom.insurance.AddressKana1
+				nts.uk.ctx.pr.core.dom.insurance.AddressKana2
 				
 				<!-- add new primitive -->
 				nts.uk.ctx.pr.core.dom.insurance.OfficeRefCode1
@@ -44,54 +46,11 @@
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../../../base/simplehistory/service.js" />
+			<com:scriptfile path="../../../base/postcode/service.js" />
 			<com:scriptfile path="../b/qmm008.b.service.js" />
 			<com:scriptfile path="qmm008.e.service.js" />
 			<com:scriptfile path="qmm008.e.vm.js" />
 			<com:scriptfile path="qmm008.e.start.js" />
-			<!-- <script>
-				__viewContext.primitiveValueConstraints.OfficeRefCode1 = {
-					valueType : 'String',
-					maxLength : 6,
-				};
-				__viewContext.primitiveValueConstraints.OfficeRefCode2 = {
-						valueType : 'String',
-						maxLength : 8,
-					};
-				//
-				__viewContext.primitiveValueConstraints.WelfarePensionFundCode = {
-					valueType : 'Number',
-					charType : 'Numeric',
-					maxLength : 4,
-				}
-			
-				__viewContext.primitiveValueConstraints.OfficePensionFundCode = {
-					valueType : 'Number',
-					charType : 'Numeric',
-					maxLength : 7,
-				}
-				
-				__viewContext.primitiveValueConstraints.CityCode = {
-						valueType : 'Number',
-						charType : 'Numeric',
-						maxLength : 2,
-					}
-				__viewContext.primitiveValueConstraints.OfficeSign = {
-						valueType : 'Number',
-						charType : 'Numeric',
-						maxLength : 4,
-					}
-				//
-				__viewContext.primitiveValueConstraints.HealthInsuOfficeCode = {
-						valueType : 'Number',
-						charType : 'Numeric',
-						maxLength : 5,
-					}
-				__viewContext.primitiveValueConstraints.HealthInsuAssoCode = {
-						valueType : 'Number',
-						charType : 'Numeric',
-						maxLength : 4,
-					}
-			</script> -->
 		</ui:define>
 
 		<ui:define name="content">
@@ -203,66 +162,66 @@
 										<td class="border_none"><div style="margin-top: 20px;"
 												data-bind="ntsFormLabel: {constraint:'PotalCode'}">郵便番号</div></td>
 										<td class="border_none padding_top"><div>
-												<input class ="save-error"
+												<input class="save-error" id="inp_postCode" data-name="郵便番号"
 													data-bind="ntsTextEditor: {
 														value: potalCode ,
 														constraint: 'PotalCode', 
 														option: {textmode: 'text',width: '80',textalign: 'left'}}" />
 											</div></td>
 										<td class="padding_top">
-											<button>検索</button>
+											<button data-bind="click: searchPostCode"><label class="labelRed">〒</label>検索</button>
 										</td>
 									</tr>
 									<tr>
 										<td class="border_none"><div style="margin-top: 20px;"
-												data-bind="ntsFormLabel: {constraint:'Address'}">住所 １</div></td>
+												data-bind="ntsFormLabel: {constraint:'Address1'}">住所 １</div></td>
 										<td colspan="3" class="border_none padding_top"><div>
 												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: address1st ,
-														constraint: 'Address', 
+														constraint: 'Address1', 
 														option: {textmode: 'text',width: '300',textalign: 'left'}}" />
 											</div></td>
 									</tr>
 									<tr>
-										<td class="border_none kana_address" ><div style="border: none !important" data-bind="ntsFormLabel: {constraint:'KanaAddress'}">カナ１</div></td>
+										<td class="border_none kana_address" ><div style="border: none !important" data-bind="ntsFormLabel: {constraint:'AddressKana1'}">カナ１</div></td>
 										<td colspan="3" class="border_none padding_top"><div>
 												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: kanaAddress1st ,
-														constraint: 'KanaAddress', 
+														constraint: 'AddressKana1', 
 														option: {textmode: 'text',width: '300',textalign: 'left'}}" />
 											</div></td>
 									</tr>
 									<tr>
 										<td class="border_none"><div style="margin-top: 20px;"
-												data-bind="ntsFormLabel: {constraint:'Address'}">住所 ２</div></td>
+												data-bind="ntsFormLabel: {constraint:'Address2'}">住所 ２</div></td>
 										<td colspan="3" class="border_none padding_top"><div>
 												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: address2nd ,
-														constraint: 'Address', 
+														constraint: 'Address2', 
 														option: {textmode: 'text',width: '300',textalign: 'left'}}" />
 											</div></td>
 									</tr>
 									<tr>
-										<td class="border_none kana_address"> <div style="border: none !important" data-bind="ntsFormLabel: {constraint:'KanaAddress'}">カナ ２</div></td>
+										<td class="border_none kana_address"> <div style="border: none !important" data-bind="ntsFormLabel: {constraint:'AddressKana2'}">カナ ２</div></td>
 										<td colspan="3" class="border_none padding_top"><div>
 												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: kanaAddress2nd ,
-														constraint: 'KanaAddress', 
+														constraint: 'AddressKana2', 
 														option: {textmode: 'text',width: '300',textalign: 'left'}}" />
 											</div></td>
 									</tr>
 									<tr>
 										<td class="border_none"><div style="margin-top: 20px;"
-												data-bind="ntsFormLabel: {constraint:'Phone'}">電話番号</div></td>
+												data-bind="ntsFormLabel: {constraint:'PhoneNumber'}">電話番号</div></td>
 										<td colspan="3" class="border_none padding_top"><div>
 												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: phoneNumber ,
-														constraint: 'Phone', 
+														constraint: 'PhoneNumber', 
 														option: {textmode: 'text',width: '150',textalign: 'left'}}" />
 											</div></td>
 									</tr>

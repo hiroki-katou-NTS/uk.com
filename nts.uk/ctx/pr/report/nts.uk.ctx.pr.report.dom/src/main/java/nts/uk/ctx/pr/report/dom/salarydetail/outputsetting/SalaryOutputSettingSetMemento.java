@@ -1,8 +1,10 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.report.dom.salarydetail.outputsetting;
 
 import java.util.List;
-
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 
 /**
  * The Interface SalaryOutputSettingSetMemento.
@@ -14,7 +16,7 @@ public interface SalaryOutputSettingSetMemento {
 	 *
 	 * @param companyCode the new company code
 	 */
-	 void setCompanyCode(CompanyCode companyCode);
+	 void setCompanyCode(String companyCode);
 
 	/**
 	 * Sets the code.

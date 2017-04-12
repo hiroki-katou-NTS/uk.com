@@ -27,7 +27,7 @@
 				<hr />
 			</div>
 			<!-- BEGIN CONTENT AREA-->
-			<div id="this-contents-area" class="margin-top-bot-20">
+			<div id="this-contents-area" class="margin-top-bot-20" data-bind="visible: true" style="display: none">
 			<com:ko tag="with" bind="salaryPrintSettingModel">
 				<table class="margin-left-20">
 					<tr>
@@ -109,7 +109,7 @@
 			<hr />
 			<!-- END CONTENT AREA-->
 			<!-- BEGIN FUNCTION AREA-->
-			<div id="this-functions-area" class="halign-center">
+			<div id="this-functions-area" class="halign-center" data-bind="visible: true" style="display: none">
 				<button class="proceed x-large" id="btn_001" data-bind="click: saveSetting">設定</button>
 				<button id="btn_002" data-bind="click: cancel">キャンセル</button>
 			</div>

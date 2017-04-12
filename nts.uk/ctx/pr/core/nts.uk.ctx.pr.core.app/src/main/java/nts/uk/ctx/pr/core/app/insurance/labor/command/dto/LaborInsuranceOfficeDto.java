@@ -6,9 +6,11 @@ package nts.uk.ctx.pr.core.app.insurance.labor.command.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.core.dom.insurance.Address;
+import nts.uk.ctx.pr.core.dom.insurance.Address1;
+import nts.uk.ctx.pr.core.dom.insurance.Address2;
+import nts.uk.ctx.pr.core.dom.insurance.AddressKana1;
+import nts.uk.ctx.pr.core.dom.insurance.AddressKana2;
 import nts.uk.ctx.pr.core.dom.insurance.CitySign;
-import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeMark;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
@@ -261,8 +263,8 @@ public class LaborInsuranceOfficeDto {
 		 * #getKanaAddress2nd()
 		 */
 		@Override
-		public KanaAddress getKanaAddress2nd() {
-			return new KanaAddress(dto.kanaAddress2nd);
+		public AddressKana2 getKanaAddress2nd() {
+			return new AddressKana2(dto.kanaAddress2nd);
 		}
 
 		/*
@@ -273,8 +275,8 @@ public class LaborInsuranceOfficeDto {
 		 * #getKanaAddress1st()
 		 */
 		@Override
-		public KanaAddress getKanaAddress1st() {
-			return new KanaAddress(dto.kanaAddress1st);
+		public AddressKana1 getKanaAddress1st() {
+			return new AddressKana1(dto.kanaAddress1st);
 		}
 
 		/*
@@ -321,8 +323,8 @@ public class LaborInsuranceOfficeDto {
 		 * #getAddress2nd()
 		 */
 		@Override
-		public Address getAddress2nd() {
-			return new Address(dto.address2nd);
+		public Address2 getAddress2nd() {
+			return new Address2(dto.address2nd);
 		}
 
 		/*
@@ -333,8 +335,8 @@ public class LaborInsuranceOfficeDto {
 		 * #getAddress1st()
 		 */
 		@Override
-		public Address getAddress1st() {
-			return new Address(dto.address1st);
+		public Address1 getAddress1st() {
+			return new Address1(dto.address1st);
 		}
 
 	}

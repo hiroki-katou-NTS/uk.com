@@ -16,16 +16,9 @@
 					nts.uk.shr.com.primitive.sample.ProcessingNo
 					nts.uk.shr.com.primitive.sample.PersonalWageCode
 					nts.uk.shr.com.primitive.sample.CommonAmount
+					nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode
 					nts.arc.time.YearMonth
    				</com:ValidatorScript>
-   				<!-- Because there isn't any EmployeeCode domain entity yet. I'll create it manual -->
-				<script>
-				__viewContext.primitiveValueConstraints.EmployeeCode = {
-						valueType: 'String',
-						charType: 'Numeric',
-						maxLength: 10,
-					};
-				</script>
 				<com:stylefile path="../catalog/catalog.css" />
 				<com:scriptfile path="../catalog/catalog.js" />
 				<com:scriptfile path="start.js" />

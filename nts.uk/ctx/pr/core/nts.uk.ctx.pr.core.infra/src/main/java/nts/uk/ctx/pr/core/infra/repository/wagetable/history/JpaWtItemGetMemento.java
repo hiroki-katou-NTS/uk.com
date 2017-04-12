@@ -4,9 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable.history;
 
-import java.math.BigDecimal;
-
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
+import nts.uk.ctx.pr.core.dom.wagetable.WtValue;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtItemGetMemento;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableMny;
 
@@ -16,7 +15,7 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableMny;
 public class JpaWtItemGetMemento implements WtItemGetMemento {
 
 	/** The type value. */
-	protected QwtmtWagetableMny typeValue;
+	private QwtmtWagetableMny typeValue;
 
 	/**
 	 * Instantiates a new jpa wage table item get memento.
@@ -68,8 +67,8 @@ public class JpaWtItemGetMemento implements WtItemGetMemento {
 	 * getAmount()
 	 */
 	@Override
-	public BigDecimal getAmount() {
-		return new BigDecimal(this.typeValue.getValueMny());
+	public WtValue getAmount() {
+		return new WtValue(this.typeValue.getValueMny());
 	}
 
 }

@@ -35,10 +35,10 @@ module nts.uk.pr.view.qpp007.j {
                 ]);
 
                 self.selectedDivision = ko.observable(TaxDivision.PAYMENT);
-                self.selectedAggregateItem = ko.observable('001');
+                self.selectedAggregateItem = ko.observable('002');
                 self.salaryAggregateItemModel = ko.observable(new SalaryAggregateItemModel());
                 self.columns = ko.observableArray<nts.uk.ui.NtsGridListColumn>([
-                    { headerText: 'コード', key: 'salaryItemCode', width: 100 },
+                    { headerText: 'コード', key: 'salaryItemCode', width: 50 },
                     { headerText: '名称', key: 'salaryItemName', width: 150 }
                 ]);
                 self.selectedAggregateItem.subscribe(function(selectedAggregateItem: string) {

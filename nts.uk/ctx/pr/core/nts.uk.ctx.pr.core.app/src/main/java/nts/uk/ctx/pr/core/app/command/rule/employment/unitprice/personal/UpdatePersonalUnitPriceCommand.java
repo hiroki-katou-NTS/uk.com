@@ -9,7 +9,7 @@ public class UpdatePersonalUnitPriceCommand {
 	private String personalUnitPriceCode;
     private String personalUnitPriceName;
     private String personalUnitPriceShortName;
-    public int displayAtr;
+    public int displaySet;
     public String uniteCode;
     public int paymentSettingType;
     public int fixPaymentAtr;

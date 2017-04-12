@@ -5,6 +5,11 @@ module nts.uk.pr.view.qmm016.k {
          */
         export interface Option {
             /**
+             * Selected demension dto.
+             */
+            selectedDemensionDto: Array<model.DemensionItemDto>;
+
+            /**
              * On copy call back.
              */
             onSelectItem: (data: CallBackData) => void;
@@ -42,7 +47,13 @@ module nts.uk.pr.view.qmm016.k {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 service.loadDemensionSelectionList().done(res => { 
-                    self.demensionItemList(res);
+                    var filteredDemensionItemList = _.filter(res, (item) => {
+                        var ignoredItem = _.find(self.dialogOptions.selectedDemensionDto, (selected) => {
+                            return item.type == selected.type && item.code == selected.code;
+                        })
+                        return ignoredItem == undefined;
+                    })
+                    self.demensionItemList(filteredDemensionItemList);
                     dfd.resolve();
                 });
                 return dfd.promise();

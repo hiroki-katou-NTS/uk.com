@@ -7,11 +7,12 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1350, height: 700 };</script>
+			<script>var dialogSize = { width: 1325, height: 780 };</script>
 			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
 					nts.uk.ctx.pr.core.dom.rule.employment.unitprice.personal.PersonalUnitPriceCode
 					nts.uk.ctx.pr.core.dom.rule.employment.unitprice.personal.PersonalUnitPriceName
+					nts.uk.ctx.pr.core.dom.rule.employment.unitprice.personal.PersonalUnitPriceShortName
+					nts.uk.shr.com.primitive.Memo
    				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="main.css" />
@@ -25,11 +26,13 @@
 				<button id="BTN_002" class="proceed"
 					data-bind="click: btn_002, enable: $root.errors.isEmpty">登録</button>
 				<button id="BTN_003">印刷 (PDF)</button>
-				<button id="BTN_007">マスタ修正ログ</button>
-				<button id="BTN_004" class="danger" data-bind="click: btn_004">削除</button>
+				<button id="BTN_004" class="danger"
+					data-bind="click: btn_004, enable: isEnableDelete">削除</button>
+				<button id="BTN_005" data-bind="click: closeDialog">閉じる</button>
 			</div>
 			<div id="contents-area">
 				<div class="left-content">
+
 					<div class="cf">
 						<div style="float: left; width: 480px"
 							class="caret-right caret-background bg-green">
@@ -61,18 +64,19 @@
 						</div>
 					</div>
 				</div>
+				<i class="icon icon-searchbox"></i>
 				<div class="right-content" data-bind="with: currentItem">
 					<div class="right-content-left">
 						<div id="LBL_002"
 							data-bind="ntsFormLabel:{constraint: ['PersonalUnitPriceCode', 'PersonalUnitPriceName'],required: true}">コード/名称</div>
-						<div id="LBL_003" data-bind="ntsFormLabel:{}">略名</div>
+						<div id="LBL_003"
+							data-bind="ntsFormLabel:{constraint: 'PersonalUnitPriceShortName'}">略名</div>
 						<br />
 						<div id="LBL_004" data-bind="ntsFormLabel:{}">統合コード</div>
 					</div>
 					<div class="right-content-right">
 						<div class="control-group">
 							<span> <input data-name="コード" id="INP_002"
-								class="text-editor1"
 								data-bind="ntsTextEditor: {
 									value: personalUnitPriceCode,
 									constraint: 'PersonalUnitPriceCode',
@@ -84,7 +88,6 @@
 									required: true,
 									enable: $parent.isCreated}" /></span>
 							<span> <input data-name="名称" id="INP_003"
-								class="text-editor2"
 								data-bind="ntsTextEditor: {
 									value: personalUnitPriceName,
 									constraint: 'PersonalUnitPriceName',
@@ -95,18 +98,18 @@
 					                    textalign: 'left'},
 									required: true,
 									enable: true}" /></span>
-							<div class="bg-yellow"
-								style="width: 200px; height: 25px; display: inline-block; margin-left: 46px">
+							<div class="bg-yellow">
 								<div style="margin-left: 5px;"
-									data-bind="ntsCheckBox: {checked: displayAtr, text: 'この会社を廃止する' }"
+									data-bind="ntsCheckBox: {checked: displaySet, text: 'この会社を廃止する' }"
 									class="cf minimalist"></div>
 								<button style="width: 25px; height: 25px; margin-left: 20px;">?</button>
 							</div>
 						</div>
 						<div class="control-group">
-							<span id="INP_004"> <input class="text-editor2"
+							<span id="INP_004"> <input
 								data-bind="ntsTextEditor: {
 									value: personalUnitPriceShortName,
+									constraint: 'PersonalUnitPriceShortName',
 									option: {
 										textmode: 'text',
 					                    placeholder: '',
@@ -118,8 +121,9 @@
 						</div>
 						<div class="control-group">
 							<button id="BTN_006">参照</button>
+							<!-- Stage 2
 							<label id="LBL_012" data-bind="text: uniteCode">002</label> <label
-								id="LBL_013">支店名称</label>
+								id="LBL_013">支店名称</label> -->
 						</div>
 					</div>
 					<hr />
@@ -150,7 +154,7 @@
 						<div class="control-group-right" style="float: left">
 							<div class="cf">
 								<span id="LBL_008"
-									style="float: left; margin: 8px 0px 0px 37px; width: 110px">月給者</span>
+									style="float: left; margin: 8px 0px 0px 21px; width: 110px">月給者</span>
 								<div id="SEL_006" style="float: left"
 									data-bind="ntsSwitchButton: {
 								options: $parent.roundingRules,
@@ -162,7 +166,7 @@
 							</div>
 							<div class="cf">
 								<span id="LBL_009"
-									style="float: left; margin: 8px 0px 0px 37px; width: 110px">日給月給者</span>
+									style="float: left; margin: 8px 0px 0px 21px; width: 110px">日給月給者</span>
 								<div id="SEL_007" style="float: left"
 									data-bind="ntsSwitchButton: {
 								options: $parent.roundingRules,
@@ -174,7 +178,7 @@
 							</div>
 							<div class="cf">
 								<span id="LBL_010"
-									style="float: left; margin: 8px 0px 0px 37px; width: 110px">日給者</span>
+									style="float: left; margin: 8px 0px 0px 21px; width: 110px">日給者</span>
 								<div id="SEL_008" style="float: left"
 									data-bind="ntsSwitchButton: {
 								options: $parent.roundingRules,
@@ -186,7 +190,7 @@
 							</div>
 							<div class="cf">
 								<span id="LBL_011"
-									style="float: left; margin: 8px 0px 0px 37px; width: 110px">時給者</span>
+									style="float: left; margin: 8px 0px 0px 21px; width: 110px">時給者</span>
 								<div id="SEL_009" style="float: left"
 									data-bind="ntsSwitchButton: {
 								options: $parent.roundingRules,
@@ -202,7 +206,7 @@
 						<div id="LBL_006" data-bind="ntsFormLabel:{}">単価種類</div>
 					</div>
 					<div class="right-content-right">
-						<div class="cf"
+						<div id="SEL_004" class="cf"
 							data-bind="ntsSwitchButton: {
 								options: $parent.SEL_004,
 								optionsValue: 'code',
@@ -213,14 +217,15 @@
 					</div>
 					<hr />
 					<div class="right-content-left">
-						<div id="LBL_007" data-bind="ntsFormLabel:{}">メモ</div>
+						<div id="LBL_007" data-bind="ntsFormLabel:{constraint: 'Memo'}">メモ</div>
 					</div>
 					<div class="right-content-right">
 						<div class="control-group">
 							<span id="INP_005"> <textarea
-									style="height: 130px; width: 450px" class="text-editor1"
+									style="height: 130px; width: 450px"
 									data-bind="ntsMultilineEditor: {
 									value: memo,
+									constraint: 'Memo',
 									option: {
 											resizeable: true,
 						                    placeholder: '',

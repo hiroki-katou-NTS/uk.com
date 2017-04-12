@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DeleteItemDeductPeriodCommand {
-	public String itemCd;
+	public String itemCode;
 }

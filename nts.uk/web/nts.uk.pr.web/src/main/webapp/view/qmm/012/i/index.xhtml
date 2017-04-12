@@ -26,12 +26,14 @@
 		<ui:define name="content">
 			<div id="content-header">
 				<button id="I_BTN_001" class="inputNomalSize"
-					data-bind="click:AddNewItem">新規</button>
-				<button id="I_BTN_002" data-bind="click:SaveItem"
+					data-bind="click:addNewItem">新規</button>
+				<button id="I_BTN_002"
+					data-bind="click:saveItem,enable: $root.errors.isEmpty"
 					class="proceed inputNomalSize">登録</button>
-				<button id="I_BTN_003" data-bind="click:deleteItem"
+				<button id="I_BTN_003"
+					data-bind="click:deleteItem,enable: I_BTN_003_enable"
 					class=" danger inputNomalSize">削除</button>
-				<button id="I_BTN_005" data-bind="click:CloseDialog"
+				<button id="I_BTN_005" data-bind="click:closeDialog"
 					class="inputNomalSize">閉じる</button>
 			</div>
 			<div id="contents-area">
@@ -49,10 +51,10 @@
 								comId: 'I_LST_001',
 								items: ItemBDList, 
 								selected: gridListCurrentCode ,
-								selectedKey: 'itemBreakdownCd', 
+								selectedKey: 'itemBreakdownCode', 
 								filteredItems: filteredData, 
 								placeHolder:'',
-								fields: ['itemBreakdownCd']}" />
+								fields: ['itemBreakdownCode']}" />
 					</div>
 					<div class="divLine">
 						<table id="I_LST_001"
@@ -60,7 +62,7 @@
 								width: 290,
 								height: 365,
 								options: ItemBDList,
-								optionsValue: 'itemBreakdownCd',
+								optionsValue: 'itemBreakdownCode',
 								columns: columns,
 								value: gridListCurrentCode
 							}"></table>
@@ -71,13 +73,12 @@
 						<div class="divLine">
 							<div class="divLineCol1">
 								<div id="I_LBL_004" class="haveSmallSpan"
-									data-bind="ntsFormLabel: {  required: true }">
-									コード/名称<br /> <span>会社選択</span>
-								</div>
+									data-bind="ntsFormLabel: {  required: true,  constraint : 'ItemCode' }">
+									コード/名称</div>
 							</div>
 							<div class="divLineCol2">
 								<input id="I_INP_002"
-									data-bind="ntsTextEditor: {value: CurrentItemBreakdownCd , enable:enable_I_INP_002 , constraint : 'ItemCode'}"></input>
+									data-bind="ntsTextEditor: {value: CurrentItemBreakdownCode , enable:enable_I_INP_002 , constraint : 'ItemCode'}"></input>
 								<input id="I_INP_003"
 									data-bind="ntsTextEditor: {value: CurrentItemBreakdownName  , constraint : 'ItemName'}"></input>
 							</div>
@@ -85,7 +86,7 @@
 						<div class="divLine">
 							<div class="divLineCol1">
 								<div id="I_LBL_005"
-									data-bind="ntsFormLabel: {  required: true }">略名</div>
+									data-bind="ntsFormLabel: {  required: true, constraint : 'ItemName' }">略名</div>
 							</div>
 							<div class="divLineCol2">
 								<input id="I_INP_004"
@@ -110,7 +111,7 @@
 							</div>
 							<div class="divLineCol2">
 								<button id="I_BTN_006" class="small">参照</button>
-								<label id="I_LBL_009" data-bind="text:CurrentUniteCd">統合コード</label>
+								<label id="I_LBL_009" data-bind="text:CurrentUniteCode">統合コード</label>
 							</div>
 						</div>
 					</div>

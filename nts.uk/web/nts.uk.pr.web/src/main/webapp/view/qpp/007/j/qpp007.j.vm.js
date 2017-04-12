@@ -36,10 +36,10 @@ var nts;
                                         { id: '010', title: '集計項目10', content: '#aggregate10', enable: ko.observable(true), visible: ko.observable(true) }
                                     ]);
                                     self.selectedDivision = ko.observable(TaxDivision.PAYMENT);
-                                    self.selectedAggregateItem = ko.observable('001');
+                                    self.selectedAggregateItem = ko.observable('002');
                                     self.salaryAggregateItemModel = ko.observable(new SalaryAggregateItemModel());
                                     self.columns = ko.observableArray([
-                                        { headerText: 'コード', key: 'salaryItemCode', width: 100 },
+                                        { headerText: 'コード', key: 'salaryItemCode', width: 50 },
                                         { headerText: '名称', key: 'salaryItemName', width: 150 }
                                     ]);
                                     self.selectedAggregateItem.subscribe(function (selectedAggregateItem) {

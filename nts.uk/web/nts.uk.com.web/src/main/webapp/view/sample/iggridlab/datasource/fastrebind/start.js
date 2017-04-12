@@ -5,11 +5,14 @@ __viewContext.ready(function () {
             this.first = ko.observable({});
         }
         ScreenModel.prototype.rebind = function () {
+            // dispose binding
             ko.cleanNode($("#grid")[0]);
+            // update viewmodel datasource
             var newArray = testdata.createRandomHogeArray(100);
             this.first(newArray[0]);
             this.items.removeAll();
             this.items(newArray);
+            // prepare igGrid options
             var gridOptions = {
                 primaryKey: 'code',
                 dataSource: this.items,
@@ -31,6 +34,7 @@ __viewContext.ready(function () {
                     { headerText: 'Name', key: 'name', dataType: 'string', width: 200 },
                 ]
             };
+            // apply bindings
             ko.applyBindingsToNode($('#grid')[0], { igGrid: gridOptions }, this);
         };
         return ScreenModel;

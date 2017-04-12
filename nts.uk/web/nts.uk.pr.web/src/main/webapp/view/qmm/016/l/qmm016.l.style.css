@@ -126,10 +126,14 @@ button.nts-switch-button {
 }
 
 .div50 {
-	width: 45%;
+	width: 37%;
 	float: left;
 	margin-left: 20px;
 	padding-bottom: 5px;
+}
+
+.left50 {
+	margin-left: 80px;
 }
 
 .div100 {

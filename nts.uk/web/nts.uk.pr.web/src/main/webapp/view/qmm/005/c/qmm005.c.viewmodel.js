@@ -137,14 +137,12 @@ var qmm005;
                 var self = this, date = new Date(), stdYear = date.getFullYear(), stdMonth = date.getMonth(), stdDate = date.getDate();
                 // Chưa thấy đề cập tới các trường hợp ngày > số ngày trong tháng.
                 var data = {
-                    payBonusAtr: 0,
-                    sparePayAtr: 0,
                     processingNo: self.index(),
                     processingName: self.inp001(),
                     dispSet: 0,
                     currentProcessingYm: parseInt(nts.uk.time.formatDate(new Date(stdYear, stdDate <= self.sel001() ? stdMonth + 1 : stdMonth, 1), 'yyyyMM')),
                     bonusAtr: 0,
-                    bCurrentProcessingYm: 0,
+                    bcurrentProcessingYm: parseInt(nts.uk.time.formatDate(new Date(stdYear, stdDate <= self.sel001() ? stdMonth + 1 : stdMonth, 1), 'yyyyMM')),
                     payStdDay: self.sel001(),
                     resitaxBeginMon: 6,
                     resitaxStdMon: 1,
@@ -165,6 +163,7 @@ var qmm005;
                     incometaxStdDay: self.sel015(),
                     payDays: []
                 };
+                /// Khởi tạo dữ liệu lương & thưởng cho 12 tháng trong năm
                 for (var month = 0; month < 12; month++) {
                     data.payDays.push({
                         processingNo: data.processingNo,

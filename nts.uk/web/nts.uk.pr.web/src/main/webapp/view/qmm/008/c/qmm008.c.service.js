@@ -57,21 +57,15 @@ var nts;
                                 deleteHistoryPath: 'ctx/pr/core/insurance/social/pensionrate/history/delete',
                                 updateHistoryStartPath: 'ctx/pr/core/insurance/social/pensionrate/history/update/start'
                             });
-                            ////////////////////////
                             /**
                              * Function is used to load all InsuranceOfficeItem by key.
                              */
                             function findInsuranceOffice(key) {
-                                // Init new dfd.
                                 var dfd = $.Deferred();
                                 var findPath = servicePath.getAllOfficeItem + ((key != null && key != '') ? ('?key=' + key) : '');
-                                // Call ajax.
                                 nts.uk.request.ajax(findPath).done(function (data) {
-                                    // Convert json to model here.
-                                    // Resolve.
                                     dfd.resolve(data);
                                 });
-                                // Ret promise.
                                 return dfd.promise();
                             }
                             service.findInsuranceOffice = findInsuranceOffice;
@@ -79,22 +73,15 @@ var nts;
                              * Function is used to load all RoundingOption.
                              */
                             function findAllRounding() {
-                                // Init new dfd.
                                 var dfd = $.Deferred();
-                                // Call ajax.
-                                //            nts.uk.request.ajax(findPath).done(function(data) {
-                                // Convert json to model here.
                                 var roundingList = [
-                                    new model.finder.Enum('0', '切り上げ'),
-                                    new model.finder.Enum('1', '切捨て'),
+                                    new model.finder.Enum('0', '切捨て'),
+                                    new model.finder.Enum('1', '切り上げ'),
                                     new model.finder.Enum('2', '四捨五入'),
-                                    new model.finder.Enum('3', '五捨五超入'),
-                                    new model.finder.Enum('4', '五捨六入')
+                                    new model.finder.Enum('3', '五捨六入'),
+                                    new model.finder.Enum('4', '五捨五超入')
                                 ];
-                                // Resolve.
                                 dfd.resolve(roundingList);
-                                //            });
-                                // Ret promise.
                                 return dfd.promise();
                             }
                             service.findAllRounding = findAllRounding;
@@ -102,17 +89,12 @@ var nts;
                             * Function is used to load pension  data of Office by office code.
                             */
                             function getPensionItemDetail(code) {
-                                // Init new dfd.
                                 var dfd = $.Deferred();
                                 var findPath = servicePath.getPensionItemDetail + "/" + code;
-                                // Call ajax.
                                 nts.uk.request.ajax(findPath).done(function (data) {
-                                    // Convert json to model here.
                                     var pensionRateDetailData = data;
-                                    // Resolve.
                                     dfd.resolve(pensionRateDetailData);
                                 });
-                                // Ret promise.
                                 return dfd.promise();
                             }
                             service.getPensionItemDetail = getPensionItemDetail;
@@ -120,17 +102,12 @@ var nts;
                             * Function is used to load health data of Office by office code.
                             */
                             function getAllPensionOfficeItem() {
-                                // Init new dfd.
                                 var dfd = $.Deferred();
                                 var findPath = servicePath.getAllPensionOfficeAndHistory;
-                                // Call ajax.
                                 nts.uk.request.ajax(findPath).done(function (data) {
-                                    // Convert json to model here.
                                     var returnData = data;
-                                    // Resolve.
                                     dfd.resolve(returnData);
                                 });
-                                // Ret promise.
                                 return dfd.promise();
                             }
                             service.getAllPensionOfficeItem = getAllPensionOfficeItem;

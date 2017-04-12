@@ -19,15 +19,20 @@ var nts;
                                     self.healthInsuranceRateModel = new HealthInsuranceRateModel(healthModel.officeCode(), officeName, healthModel.historyId, healthModel.startMonth(), healthModel.endMonth(), healthModel.autoCalculate(), healthModel.rateItems(), healthModel.roundingMethods());
                                     self.listAvgEarnLevelMasterSetting = [];
                                     self.listHealthInsuranceAvgearn = ko.observableArray([]);
+                                    // Common NtsNumberEditor Option
                                     self.numberEditorCommonOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                                         grouplength: 3
                                     }));
+                                    //dirty check
                                     self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
                                     self.errorList = ko.observableArray([
                                         { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" },
                                         { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" },
                                     ]);
                                 }
+                                /**
+                                 * Start page.
+                                 */
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -38,6 +43,9 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
+                                /**
+                                 * Load AvgEarnLevelMasterSetting list.
+                                 */
                                 ScreenModel.prototype.loadAvgEarnLevelMasterSetting = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -47,55 +55,75 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
+                                /**
+                                 * Load HealthInsuranceAvgEarn.
+                                 */
                                 ScreenModel.prototype.loadHealthInsuranceAvgearn = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     h.service.findHealthInsuranceAvgEarn(self.healthInsuranceRateModel.historyId).done(function (res) {
-                                        res.forEach(function (item) {
-                                            self.listHealthInsuranceAvgearn.push(new HealthInsuranceAvgEarnModel(item.historyId, item.levelCode, new HealthInsuranceAvgEarnValueModel(item.personalAvg.healthGeneralMny, item.personalAvg.healthNursingMny, item.personalAvg.healthBasicMny, item.personalAvg.healthSpecificMny), new HealthInsuranceAvgEarnValueModel(item.companyAvg.healthGeneralMny, item.companyAvg.healthNursingMny, item.companyAvg.healthBasicMny, item.companyAvg.healthSpecificMny)));
+                                        res.listHealthInsuranceAvgearnDto.forEach(function (item) {
+                                            self.listHealthInsuranceAvgearn.push(new HealthInsuranceAvgEarnModel(item.levelCode, new HealthInsuranceAvgEarnValueModel(item.personalAvg.healthGeneralMny, item.personalAvg.healthNursingMny, item.personalAvg.healthBasicMny, item.personalAvg.healthSpecificMny), new HealthInsuranceAvgEarnValueModel(item.companyAvg.healthGeneralMny, item.companyAvg.healthNursingMny, item.companyAvg.healthBasicMny, item.companyAvg.healthSpecificMny)));
                                         });
                                         self.dirty = new nts.uk.ui.DirtyChecker(self.listHealthInsuranceAvgearn);
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
                                 };
+                                /**
+                                 * Collect data from input.
+                                 */
                                 ScreenModel.prototype.collectData = function () {
                                     var self = this;
-                                    var data = [];
+                                    var data = { historyId: self.healthInsuranceRateModel.historyId, listHealthInsuranceAvgearnDto: [] };
                                     self.listHealthInsuranceAvgearn().forEach(function (item) {
-                                        data.push(ko.toJS(item));
+                                        data.listHealthInsuranceAvgearnDto.push(ko.toJS(item));
                                     });
                                     return data;
                                 };
+                                /**
+                                 * Call service to save healthInsuaranceAvgearn.
+                                 */
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
+                                    // Return if has error.
+                                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                                        return;
+                                    }
                                     h.service.updateHealthInsuranceAvgearn(self.collectData(), self.healthInsuranceRateModel.officeCode).done(function () {
                                         return self.closeDialog();
                                     });
                                 };
+                                ScreenModel.prototype.clearError = function () {
+                                    $('.has-error').ntsError('clear');
+                                };
+                                /**
+                                 * ReCalculate the healthInsuranceAvgearn list
+                                 */
                                 ScreenModel.prototype.reCalculate = function () {
                                     var self = this;
+                                    self.clearError();
+                                    // Clear current listHealthInsuranceAvgearn
                                     self.listHealthInsuranceAvgearn.removeAll();
+                                    // Recalculate listHealthInsuranceAvgearn
                                     self.listAvgEarnLevelMasterSetting.forEach(function (item) {
                                         self.listHealthInsuranceAvgearn.push(self.calculateHealthInsuranceAvgEarnModel(item));
                                     });
                                 };
+                                /**
+                                 * Calculate the healthInsuranceAvgearn
+                                 */
                                 ScreenModel.prototype.calculateHealthInsuranceAvgEarnModel = function (levelMasterSetting) {
                                     var self = this;
-                                    var historyId = self.healthInsuranceRateModel.historyId;
                                     var rateItems = self.healthInsuranceRateModel.rateItems;
                                     var roundingMethods = self.healthInsuranceRateModel.roundingMethods;
                                     var personalRounding = self.convertToRounding(roundingMethods.healthSalaryPersonalComboBoxSelectedCode());
                                     var companyRounding = self.convertToRounding(roundingMethods.healthSalaryCompanyComboBoxSelectedCode());
                                     var rate = levelMasterSetting.avgEarn / 1000;
                                     var autoCalculate = self.healthInsuranceRateModel.autoCalculate;
-                                    if (autoCalculate == AutoCalculate.Auto) {
-                                        return new HealthInsuranceAvgEarnModel(historyId, levelMasterSetting.code, new HealthInsuranceAvgEarnValueModel(self.rounding(personalRounding, rateItems.healthSalaryPersonalGeneral() * rate, Number.One), self.rounding(personalRounding, rateItems.healthSalaryPersonalNursing() * rate, Number.One), self.rounding(personalRounding, rateItems.healthSalaryPersonalBasic() * rate, Number.Three), self.rounding(personalRounding, rateItems.healthSalaryPersonalSpecific() * rate, Number.Three)), new HealthInsuranceAvgEarnValueModel(self.rounding(companyRounding, rateItems.healthSalaryCompanyGeneral() * rate, Number.One), self.rounding(companyRounding, rateItems.healthSalaryCompanyNursing() * rate, Number.One), self.rounding(companyRounding, rateItems.healthSalaryCompanyBasic() * rate, Number.Three), self.rounding(companyRounding, rateItems.healthSalaryCompanySpecific() * rate, Number.Three)));
-                                    }
-                                    else {
-                                        return new HealthInsuranceAvgEarnModel(historyId, levelMasterSetting.code, new HealthInsuranceAvgEarnValueModel(Number.Zero, Number.Zero, Number.Zero, Number.Zero), new HealthInsuranceAvgEarnValueModel(Number.Zero, Number.Zero, Number.Zero, Number.Zero));
-                                    }
+                                    return new HealthInsuranceAvgEarnModel(levelMasterSetting.code, new HealthInsuranceAvgEarnValueModel(self.rounding(personalRounding, rateItems.healthSalaryPersonalGeneral() * rate, Number.One), self.rounding(personalRounding, rateItems.healthSalaryPersonalNursing() * rate, Number.One), self.rounding(personalRounding, rateItems.healthSalaryPersonalBasic() * rate, Number.Three), self.rounding(personalRounding, rateItems.healthSalaryPersonalSpecific() * rate, Number.Three)), new HealthInsuranceAvgEarnValueModel(self.rounding(companyRounding, rateItems.healthSalaryCompanyGeneral() * rate, Number.One), self.rounding(companyRounding, rateItems.healthSalaryCompanyNursing() * rate, Number.One), self.rounding(companyRounding, rateItems.healthSalaryCompanyBasic() * rate, Number.Three), self.rounding(companyRounding, rateItems.healthSalaryCompanySpecific() * rate, Number.Three)));
                                 };
+                                // rounding 
                                 ScreenModel.prototype.rounding = function (roudingMethod, roundValue, roundType) {
                                     var self = this;
                                     var getLevel = Math.pow(10, roundType);
@@ -119,14 +147,15 @@ var nts;
                                     else
                                         return Math.floor(value);
                                 };
+                                //value to string rounding
                                 ScreenModel.prototype.convertToRounding = function (stringValue) {
                                     switch (stringValue) {
-                                        case "0": return Rounding.ROUNDUP;
-                                        case "1": return Rounding.TRUNCATION;
+                                        case "0": return Rounding.TRUNCATION;
+                                        case "1": return Rounding.ROUNDUP;
                                         case "2": return Rounding.DOWN4_UP5;
-                                        case "3": return Rounding.ROUNDDOWN;
-                                        case "4": return Rounding.DOWN5_UP6;
-                                        default: return Rounding.ROUNDUP;
+                                        case "3": return Rounding.DOWN5_UP6;
+                                        case "4": return Rounding.ROUNDDOWN;
+                                        default: return Rounding.TRUNCATION;
                                     }
                                 };
                                 ScreenModel.prototype.closeDialogWithDirtyCheck = function () {
@@ -142,12 +171,18 @@ var nts;
                                         self.closeDialog();
                                     }
                                 };
+                                /**
+                                 * Close dialog.
+                                 */
                                 ScreenModel.prototype.closeDialog = function () {
                                     nts.uk.ui.windows.close();
                                 };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
+                            /**
+                             * HealthInsuranceRate Model
+                             */
                             var HealthInsuranceRateModel = (function () {
                                 function HealthInsuranceRateModel(officeCode, officeName, historyId, startMonth, endMonth, autoCalculate, rateItems, roundingMethods) {
                                     this.officeCode = officeCode;
@@ -162,9 +197,11 @@ var nts;
                                 return HealthInsuranceRateModel;
                             }());
                             viewmodel.HealthInsuranceRateModel = HealthInsuranceRateModel;
+                            /**
+                             * HealthInsuranceAvgEarn Model
+                             */
                             var HealthInsuranceAvgEarnModel = (function () {
-                                function HealthInsuranceAvgEarnModel(historyId, levelCode, personalAvg, companyAvg) {
-                                    this.historyId = historyId;
+                                function HealthInsuranceAvgEarnModel(levelCode, personalAvg, companyAvg) {
                                     this.levelCode = levelCode;
                                     this.companyAvg = companyAvg;
                                     this.personalAvg = personalAvg;
@@ -172,6 +209,9 @@ var nts;
                                 return HealthInsuranceAvgEarnModel;
                             }());
                             viewmodel.HealthInsuranceAvgEarnModel = HealthInsuranceAvgEarnModel;
+                            /**
+                             * HealthInsuranceAvgEarnValue Model
+                             */
                             var HealthInsuranceAvgEarnValueModel = (function () {
                                 function HealthInsuranceAvgEarnValueModel(general, nursing, basic, specific) {
                                     this.healthGeneralMny = ko.observable(general);
@@ -211,4 +251,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm008.h.vm.js.map

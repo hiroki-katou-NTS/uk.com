@@ -1,43 +1,6 @@
 module nts.uk.pr.view.qmm010.b {
     export module service {
-        var paths: any = {
-            checkDuplicateCodeByImportData: "ctx/pr/core/insurance/labor/importser/checkDuplicateCode",
-            importData: "ctx/pr/core/insurance/labor/importser/importData"
-        };
-
-        //Function connnection service check Duplicate Code By ImportData
-        export function checkDuplicateCodeByImportData(
-            socialInsuranceOfficeImportDto: model.SocialInsuranceOfficeImportDto)
-            : JQueryPromise<model.LaborInsuranceOfficeCheckImportDto> {
-            //set up data respone
-            var dfd = $.Deferred<model.LaborInsuranceOfficeCheckImportDto>();
-            //call server service
-            nts.uk.request.ajax(paths.checkDuplicateCodeByImportData, socialInsuranceOfficeImportDto)
-                .done(function(res: model.LaborInsuranceOfficeCheckImportDto) {
-                    dfd.resolve(res);
-                })
-                .fail(function(res: any) {
-                    dfd.reject(res);
-                })
-            return dfd.promise();
-        }
-
-        //Function import data
-        export function importData(laborInsuranceOfficeImportDto: model.LaborInsuranceOfficeImportDto)
-            : JQueryPromise<model.LaborInsuranceOfficeImportOutDto> {
-            //set up data respone
-            var dfd = $.Deferred<model.LaborInsuranceOfficeImportOutDto>();
-            //call server service
-            nts.uk.request.ajax(paths.importData, laborInsuranceOfficeImportDto)
-                .done(function(res: model.LaborInsuranceOfficeImportOutDto) {
-                    dfd.resolve(res);
-                })
-                .fail(function(res: any) {
-                    dfd.reject(res);
-                })
-            return dfd.promise();
-        }
-
+       
         export module model {
             //Import SocialInsuranceOffice =>  SocialInsuranceOfficeInDto
             export class SocialInsuranceOfficeImportDto {
@@ -117,26 +80,6 @@ module nts.uk.pr.view.qmm010.b {
                 memo: string;
             }
 
-            export class LaborInsuranceOfficeImportOutDto {
-                code: string;
-                message: string;
-                totalImport: number;
-            }
-
-            export class LaborInsuranceOfficeImportDto {
-                socialInsuranceOfficeImport: SocialInsuranceOfficeImportDto;
-                checkUpdateDuplicateCode: number; //0 update //1 none update
-                constructor() {
-                    this.socialInsuranceOfficeImport = new SocialInsuranceOfficeImportDto();
-                    this.checkUpdateDuplicateCode = 0;
-                }
-            }
-
-            export class LaborInsuranceOfficeCheckImportDto {
-                code: string; // "0" succ 1 "rows duplication"
-                /** The message. */
-                message: string;
-            }
         }
     }
 }

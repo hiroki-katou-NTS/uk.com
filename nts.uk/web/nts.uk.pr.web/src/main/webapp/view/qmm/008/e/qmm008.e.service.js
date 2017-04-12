@@ -23,15 +23,11 @@ var nts;
                              * Function is used to load office detail by office code
                              */
                             function getOfficeItemDetail(code) {
-                                // Init new dfd.
                                 var dfd = $.Deferred();
                                 var findPath = servicePath.getOfficeDetailData + "/" + code;
-                                // Call ajax.
                                 nts.uk.request.ajax(findPath).done(function (data) {
-                                    // Resolve.
                                     dfd.resolve(data);
                                 });
-                                // Ret promise.
                                 return dfd.promise();
                             }
                             service.getOfficeItemDetail = getOfficeItemDetail;
