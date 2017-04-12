@@ -2,7 +2,7 @@ __viewContext.ready(function () {
     var ScreenModel = (function () {
         function ScreenModel() {
             var self = this;
-            self.constraint = ['ResidenceCode', 'PersonId'];
+            self.constraint = ['ResidenceCode', 'ResidenceCode'];
             self.inline = ko.observable(true);
             self.required = ko.observable(true);
             self.enable = ko.observable(true);
@@ -11,4 +11,3 @@ __viewContext.ready(function () {
     }());
     this.bind(new ScreenModel());
 });
-//# sourceMappingURL=start.js.map

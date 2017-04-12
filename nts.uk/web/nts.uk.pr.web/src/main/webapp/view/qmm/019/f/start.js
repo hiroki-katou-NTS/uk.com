@@ -5,4 +5,3 @@ __viewContext.ready(function () {
         __viewContext.bind(screenModel);
     });
 });
-//# sourceMappingURL=start.js.map

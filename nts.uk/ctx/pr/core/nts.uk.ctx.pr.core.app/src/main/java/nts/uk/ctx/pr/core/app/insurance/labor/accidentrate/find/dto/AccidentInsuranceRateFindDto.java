@@ -5,9 +5,9 @@
 
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -90,12 +90,8 @@ public class AccidentInsuranceRateFindDto implements AccidentInsuranceRateSetMem
 	 */
 	@Override
 	public void setRateItems(Set<InsuBizRateItem> items) {
-		this.rateItems = new ArrayList<>();
-		for (InsuBizRateItem insuBizRateItem : items) {
-			InsuBizRateItemFindDto insuBizRateItemFindOutDto = new InsuBizRateItemFindDto(
-					insuBizRateItem);
-			this.rateItems.add(insuBizRateItemFindOutDto);
-		}
+		this.rateItems = items.stream().map(item -> new InsuBizRateItemFindDto(item))
+			.collect(Collectors.toList());
 	}
 
 }

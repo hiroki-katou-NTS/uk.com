@@ -24,7 +24,7 @@ var nts;
                                         new SelectionModel('1', '明細一覧表'),
                                         new SelectionModel('2', '明細累計表')
                                     ]);
-                                    this.outputItemSetting = ko.observableArray([]);
+                                    this.outputSettings = ko.observableArray([]);
                                     this.selectedOutputSetting = ko.observable('1');
                                     this.isVerticalLine = ko.observable(true);
                                     this.isHorizontalRuledLine = ko.observable(true);
@@ -51,6 +51,9 @@ var nts;
                                         return self.selectedpageBreakSetting() == '4';
                                     });
                                 }
+                                /**
+                                 * Start srceen.
+                                 */
                                 ScreenModel.prototype.start = function () {
                                     var dfd = $.Deferred();
                                     var self = this;
@@ -63,7 +66,7 @@ var nts;
                                     var dfd = $.Deferred();
                                     var self = this;
                                     a.service.findAllSalaryOutputSetting().done(function (data) {
-                                        self.outputItemSetting(data);
+                                        self.outputSettings(data);
                                         dfd.resolve();
                                     }).fail(function (res) {
                                         nts.uk.ui.dialog.alert(res.message);
@@ -72,28 +75,48 @@ var nts;
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.openPrintSettingDialog = function () {
+                                    // Set parent value
                                     nts.uk.ui.windows.setShared("data", "nothing");
                                     nts.uk.ui.windows.sub.modal("/view/qpp/007/b/index.xhtml", { title: "印刷設定", dialogClass: 'no-close' }).onClosed(function () {
+                                        // Get child value
                                         var returnValue = nts.uk.ui.windows.getShared("childData");
                                     });
                                 };
                                 ScreenModel.prototype.openSalaryOuputSettingDialog = function () {
                                     nts.uk.ui.windows.sub.modal("/view/qpp/007/c/index.xhtml", { title: "出力項目の設定", dialogClass: 'no-close' }).onClosed(function () {
+                                        // Get child value
                                     });
                                 };
                                 ScreenModel.prototype.saveAsPdf = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    var command = {};
+                                    var command = self.toJsObject();
                                     a.service.saveAsPdf(command).done(function () {
                                         dfd.resolve();
                                     }).fail(function (res) {
                                         nts.uk.ui.dialog.alert(res.message);
                                     });
                                 };
+                                ScreenModel.prototype.toJsObject = function () {
+                                    var self = this;
+                                    var command = {};
+                                    command.outputFormatType = self.selectedOutputFormat();
+                                    command.outputSettingCode = self.selectedOutputSetting();
+                                    command.isVerticalLine = self.isVerticalLine();
+                                    command.isHorizontalLine = self.isHorizontalRuledLine();
+                                    command.outputLanguage = self.selectedOutputLanguage();
+                                    command.pageBreakSetting = self.selectedpageBreakSetting();
+                                    if (self.isDepartmentHierarchy()) {
+                                        command.hierarchy = self.selectedHierachy();
+                                    }
+                                    return command;
+                                };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
+                            /**
+                             *  Class Page Break setting
+                             */
                             var SelectionModel = (function () {
                                 function SelectionModel(code, name) {
                                     this.code = code;
@@ -109,4 +132,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qpp007.a.vm.js.map

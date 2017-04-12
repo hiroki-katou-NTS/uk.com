@@ -19,6 +19,18 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 /**
  * The Class AccidentInsuranceRate.
  */
+
+/**
+ * Gets the rate items.
+ *
+ * @return the rate items
+ */
+
+/**
+ * Gets the rate items.
+ *
+ * @return the rate items
+ */
 @Getter
 public class AccidentInsuranceRate extends DomainObject {
 
@@ -47,8 +59,7 @@ public class AccidentInsuranceRate extends DomainObject {
 	/**
 	 * Instantiates a new accident insurance rate.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public AccidentInsuranceRate(AccidentInsuranceRateGetMemento memento) {
 		this.historyId = memento.getHistoryId();
@@ -60,8 +71,7 @@ public class AccidentInsuranceRate extends DomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public void saveToMemento(AccidentInsuranceRateSetMemento memento) {
 		memento.setHistoryId(this.historyId);
@@ -71,6 +81,12 @@ public class AccidentInsuranceRate extends DomainObject {
 	}
 
 	/**
+	 * Copy with date.
+	 *
+	 * @param start the start
+	 * @return the accident insurance rate
+	 */
+	/*
 	 * Copy with date.
 	 *
 	 * @param start
@@ -86,6 +102,13 @@ public class AccidentInsuranceRate extends DomainObject {
 	}
 
 	/**
+	 * Creates the with intial.
+	 *
+	 * @param companyCode the company code
+	 * @param startYearMonth the start year month
+	 * @return the accident insurance rate
+	 */
+	/*
 	 * Creates the with intial.
 	 *
 	 * @param companyCode
@@ -117,6 +140,12 @@ public class AccidentInsuranceRate extends DomainObject {
 	/**
 	 * Value intial.
 	 *
+	 * @param businessTypeEnum the business type enum
+	 * @return the insu biz rate item
+	 */
+	/*
+	 * Value intial.
+	 *
 	 * @param businessTypeEnum
 	 *            the business type enum
 	 * @return the insu biz rate item
@@ -128,11 +157,19 @@ public class AccidentInsuranceRate extends DomainObject {
 	/**
 	 * Sets the max date.
 	 */
+	/*
+	 * Sets the max date.
+	 */
 	public void setMaxDate() {
 		this.applyRange = MonthRange.toMaxDate(this.getApplyRange().getStartMonth());
 	}
 
 	/**
+	 * Sets the start.
+	 *
+	 * @param yearMonth the new start
+	 */
+	/*
 	 * Sets the start.
 	 *
 	 * @param yearMonth
@@ -143,6 +180,11 @@ public class AccidentInsuranceRate extends DomainObject {
 	}
 
 	/**
+	 * Sets the end.
+	 *
+	 * @param yearMonth the new end
+	 */
+	/*
 	 * Sets the end.
 	 *
 	 * @param yearMonth

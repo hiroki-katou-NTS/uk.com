@@ -63,4 +63,3 @@ __viewContext.ready(function () {
     }());
     this.bind(new ScreenModel());
 });
-//# sourceMappingURL=start2.js.map

@@ -70,6 +70,7 @@ var nts;
                                     ]);
                                     self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
                                     self.backupDataDirty = ko.observable();
+                                    self.canOpenOfficeRegisterDialog = ko.observable(true);
                                 }
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
@@ -265,7 +266,6 @@ var nts;
                                         self.loadPension(dto);
                                         self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
                                         self.isLoading(false);
-                                        $('.save-error').ntsError('clear');
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
@@ -280,13 +280,23 @@ var nts;
                                     }
                                     return dfd.promise();
                                 };
+                                ScreenModel.prototype.clearErrors = function () {
+                                    if (nts.uk.ui._viewModel) {
+                                        $('.save-error').ntsError('clear');
+                                    }
+                                };
                                 ScreenModel.prototype.onSelectMaster = function (code) {
                                     var self = this;
                                     self.isClickHistory(false);
+                                    self.clearErrors();
                                 };
                                 ScreenModel.prototype.onRegistNew = function () {
                                     var self = this;
-                                    self.OpenModalOfficeRegister();
+                                    if (self.canOpenOfficeRegisterDialog()) {
+                                        self.OpenModalOfficeRegister();
+                                    }
+                                    self.canOpenOfficeRegisterDialog(false);
+                                    self.isClickHistory(false);
                                 };
                                 ScreenModel.prototype.isDirty = function () {
                                     var self = this;
@@ -319,7 +329,7 @@ var nts;
                                             self.loadPension(self.backupDataDirty());
                                             self.OpenModalOfficeRegister();
                                             self.dirty.reset();
-                                        }).ifCancel(function () {
+                                        }).ifNo(function () {
                                         });
                                     }
                                     else {
@@ -330,8 +340,8 @@ var nts;
                                     var self = this;
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                                     nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録", dialogClass: 'no-close' }).onClosed(function () {
-                                        self.loadMasterHistory();
                                         var codeOfNewOffice = nts.uk.ui.windows.getShared("codeOfNewOffice");
+                                        self.reloadMasterHistory(codeOfNewOffice);
                                     });
                                 };
                                 ScreenModel.prototype.OpenModalStandardMonthlyPricePensionWithDirtyCheck = function () {
@@ -341,7 +351,7 @@ var nts;
                                             self.loadPension(self.backupDataDirty());
                                             self.OpenModalStandardMonthlyPricePension();
                                             self.dirty.reset();
-                                        }).ifCancel(function () {
+                                        }).ifNo(function () {
                                         });
                                     }
                                     else {

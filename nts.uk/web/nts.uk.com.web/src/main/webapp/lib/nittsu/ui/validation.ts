@@ -31,55 +31,34 @@ module nts.uk.ui.validation {
         }
     }
 
-    export function createValidator(constraintName: string, option?: any): IValidator {
-        var constraint = getConstraint(constraintName);
-        if (constraint === null) {
-            return new NoValidator();
-        }
-        if (constraint.valueType === 'String') {
-            return new StringValidator(constraintName);
-        }
-        if (option) {
-            if (option.inputFormat) {
-                //If inputFormat presented, this is Date or Time Editor                 
-                return new TimeValidator(constraintName, option);
-            } else {
-                return new NumberValidator(constraintName, option);
-                //currencyformat presented, this is CurrencyEditor
-            }
-        }
-        return new NoValidator();
-    }
-
-
     export class StringValidator implements IValidator {
         constraint: any;
         charType: nts.uk.text.CharType;
         required: boolean;
 
-        constructor(primitiveValueName: string, required?: boolean) {
+        constructor(primitiveValueName: string, option?: any) {
             this.constraint = getConstraint(primitiveValueName);
             this.charType = text.getCharType(primitiveValueName);
-            this.required = required;
+            this.required = option.required;
         }
 
         validate(inputText: string): ValidationResult {
             var result = new ValidationResult();
-
+            // Check Required
             if (this.required !== undefined && this.required !== false) {
                 if (!checkRequired(inputText)) {
                     result.fail('This field is required');
                     return result;
                 }
             }
-
+            // Check CharType
             if (this.charType !== null && this.charType !== undefined) {
                 if (!this.charType.validate(inputText)) {
                     result.fail('Invalid text');
                     return result;
                 }
             }
-
+            // Check Constraint
             if (this.constraint !== undefined && this.constraint !== null) {
                 if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
                     result.fail('Max length for this input is ' + this.constraint.maxLength);
@@ -137,39 +116,46 @@ module nts.uk.ui.validation {
 
     export class TimeValidator implements IValidator {
         constraint: any;
-        option: any;
-
-        constructor(primitiveValueName: string, option: any) {
+        outputFormat: string;
+        required: boolean;
+        valueType: string;
+        constructor(primitiveValueName: string, option?: any) {
             this.constraint = getConstraint(primitiveValueName);
-            this.option = option;
+            this.outputFormat = (option && option.inputFormat) ? option.inputFormat : "";
+            this.required = (option && option.required) ? option.required : false;
+            this.valueType = (option && option.valueType) ? option.valueType : "string";
         }
 
         validate(inputText: string): any {
             var result = new ValidationResult();
-            var parseResult;
-            if (this.option.inputFormat === "yearmonth") {
-                parseResult = time.parseYearMonth(inputText);
-            } else if (this.option.inputFormat === "time") {
-                parseResult = time.parseTime(inputText, false);
-            } else if (this.option.inputFormat === "timeofday") {
-                parseResult = time.parseTimeOfTheDay(inputText);
-            } else if (this.option.inputFormat === "date") {
-                parseResult = time.parseYearMonthDate(inputText);
-            } else {
-                // TODO : Validate base on moment
-                var format: string = text.getISOFormat(this.option.inputFormat);
-                var momentObject: moment.Moment = moment(inputText);
-                if (momentObject.isValid()) {
-                    var format = text.getISOFormat(this.option.inputFormat);
-                    return momentObject.format(format);
+            // Check required
+            if (this.required !== undefined && this.required !== false) {
+                if (!checkRequired(inputText)) {
+                    result.fail('This field is required');
+                    return result;
                 }
-                return inputText;
-                //parseResult = time.ResultParseTime.failed();
             }
-            
+            // Create Parser
+            var parseResult;
+            parseResult = time.parseMoment(inputText, this.outputFormat);
+            // Parse
             if (parseResult.success) {
-                result.success(parseResult.toValue());
-            } else {
+                if (this.valueType === "string")
+                    result.success(parseResult.format());
+                else if (this.valueType === "number") {
+                    result.success(parseResult.toNumber(this.outputFormat));
+                }
+                else if (this.valueType === "date") {
+                    result.success(parseResult.toValue().toDate());
+                }
+                else if (this.valueType === "moment") {
+                    result.success(parseResult.toValue());
+                }
+                else {
+                    result.success(parseResult.format());
+                }
+            }
+            else {
                 result.fail(parseResult.getMsg());
             }
             return result;

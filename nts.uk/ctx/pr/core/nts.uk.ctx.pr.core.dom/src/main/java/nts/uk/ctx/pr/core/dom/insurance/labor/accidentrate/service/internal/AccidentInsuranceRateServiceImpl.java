@@ -67,20 +67,22 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 	 * @return the validate range
 	 */
 	private boolean invalidateRate(AccidentInsuranceRate rate) {
-		// validate Add
-		// ? (start <= end)
+
+		boolean resvalue = false;
 		if (rate.getApplyRange().getStartMonth().v() > rate.getApplyRange().getEndMonth().v()) {
-			return true;
+			resvalue = true;
 		}
 
-		// ? start > start first (order by desc)
+		// find data first
 		Optional<AccidentInsuranceRate> data = this.repository.findFirstData(rate.getCompanyCode());
 
-		if (!data.isPresent()) {
-			return false;
+		// check exist
+		if (data.isPresent() && data.get().getApplyRange().getStartMonth().nextMonth().v() > rate
+			.getApplyRange().getStartMonth().v()) {
+			resvalue = true;
 		}
-		return (data.get().getApplyRange().getStartMonth().nextMonth().v() > rate.getApplyRange()
-			.getStartMonth().v());
+
+		return resvalue;
 	}
 
 	/*
@@ -96,6 +98,7 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 			throw new BusinessException("ER023");
 		}
 	}
+
 	/**
 	 * Checks if is valid rate update.
 	 *
@@ -145,12 +148,15 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 		Optional<AccidentInsuranceRate> data = this.repository.findById(rate.getCompanyCode(),
 			rate.getHistoryId());
 
-		Optional<AccidentInsuranceRate> dataUpdate = this.repository.findBetweenUpdate(
-			rate.getCompanyCode(), data.get().getApplyRange().getStartMonth(), data.get().getHistoryId());
+		if (data.isPresent()) {
+			Optional<AccidentInsuranceRate> dataUpdate = this.repository.findBetweenUpdate(
+				rate.getCompanyCode(), data.get().getApplyRange().getStartMonth(), data.get().getHistoryId());
 
-		// check first data
-		return (dataUpdate.isPresent() && (dataUpdate.get().getApplyRange().getStartMonth().v() >= rate
-			.getApplyRange().getStartMonth().v()));
+			// check first data
+			return (dataUpdate.isPresent() && (dataUpdate.get().getApplyRange().getStartMonth().v() >= rate
+				.getApplyRange().getStartMonth().v()));
+		}
+		return true;
 	}
 
 }

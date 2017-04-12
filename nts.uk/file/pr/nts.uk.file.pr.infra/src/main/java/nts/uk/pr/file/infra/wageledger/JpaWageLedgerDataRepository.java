@@ -16,13 +16,16 @@ import javax.persistence.TypedQuery;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.basic.infra.entity.organization.department.CmnmtDep;
+import nts.uk.ctx.basic.infra.entity.report.PbsmtPersonBase;
+import nts.uk.ctx.basic.infra.entity.report.PcpmtPersonCom;
+import nts.uk.ctx.basic.infra.entity.report.PogmtPersonDepRgl;
 import nts.uk.file.pr.app.export.wageledger.WageLedgerDataRepository;
 import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery;
 import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery.OutputType;
 import nts.uk.file.pr.app.export.wageledger.data.WLNewLayoutReportData;
 import nts.uk.file.pr.app.export.wageledger.data.WLOldLayoutReportData;
 import nts.uk.file.pr.app.export.wageledger.data.share.HeaderReportData;
-import nts.uk.pr.file.infra.entity.ReportPbsmtPersonBase;
 
 /**
  * The Class JpaWageLedgerDataRepository.
@@ -67,7 +70,7 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		EntityManager em = this.getEntityManager();
 		
 		// Create Query String.
-		String queryString = "SELECT COUNT(h.qstdtPaymentHeaderPK.personId) FROM ReportQstdtPaymentHeader h"
+		String queryString = "SELECT COUNT(h.qstdtPaymentHeaderPK.personId) FROM QstdtPaymentHeader h "
 			+ "WHERE h.qstdtPaymentHeaderPK.companyCode = :companyCode "
 			+ "AND h.qstdtPaymentHeaderPK.personId IN :personIds "
 			+ "AND h.qstdtPaymentHeaderPK.sparePayAtr = :sparePayAtr "
@@ -99,22 +102,34 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		YearMonth endYearMonth = YearMonth.of(query.targetYear, 12);
 		
 		// Create Query String.
-		String queryString = "SELECT p, m, d "
-				+ "FROM ReportPbsmtPersonBase p, ReportQcamtItem m, "
-				+ "ReportQstdtPaymentDetail d "
+		String queryString = "SELECT p, m, d, pc, pd, cd "
+				+ "FROM PbsmtPersonBase p, ReportQcamtItem m, "
+				+ "QstdtPaymentDetail d, "
+				+ "PcpmtPersonCom pc, "
+				+ "PogmtPersonDepRgl pd, "
+				+ "CmnmtDep cd "
 				+ "WHERE p.pid = d.qstdtPaymentDetailPK.personId "
 				+ "AND d.qstdtPaymentDetailPK.itemCode = m.qcamtItemPK.itemCd "
 				+ "AND d.qstdtPaymentDetailPK.ccd = m.qcamtItemPK.ccd "
+				+ "AND pc.pcpmtPersonComPK.ccd = m.qcamtItemPK.ccd "
+				+ "AND pc.pcpmtPersonComPK.pid = p.pid "
+				+ "AND pd.pogmtPersonDepRglPK.ccd = m.qcamtItemPK.ccd "
+				+ "AND pd.pogmtPersonDepRglPK.pid = p.pid "
+				+ "AND cd.cmnmtDepPK.companyCode = m.qcamtItemPK.ccd "
+				+ "AND cd.cmnmtDepPK.departmentCode = pd.depcd"
 				+ "AND p.pid in :personIds "
 				+ "AND m.qcamtItemPK.ccd = :companyCode "
 				+ "AND d.qstdtPaymentDetailPK.processingYM <= :startProcessingYM "
 				+ "AND d.qstdtPaymentDetailPK.processingYM >= :endProcessingYM "
-				+ "AND d.qstdtPaymentDetailPK.sparePayAttribute = :sparePayAtr ";
+				+ "AND d.qstdtPaymentDetailPK.sparePayAttribute = :sparePayAtr "
+				+ "AND pd.strD <= :baseDate "
+				+ "AND pd.endD >= :baseDate ";
 
 		Query typeQuery = em.createQuery(queryString).setParameter("companyCode", companyCode)
 				.setParameter("sparePayAtr", query.isAggreatePreliminaryMonth ? 1 : 0)
 				.setParameter("startProcessingYM", startYearMonth.v())
-				.setParameter("endProcessingYM", endYearMonth.v());
+				.setParameter("endProcessingYM", endYearMonth.v())
+				.setParameter("baseDate", query.baseDate);
 		List<List<String>> subPersonIdsList = this.splitInParamList(query.employeeIds);
 		List<Object[]> masterResultList = new ArrayList<>();
 		for (List<String> personIds : subPersonIdsList) {
@@ -135,14 +150,20 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		// Group by user.
 		Map<Object, List<Object[]>> userMap = itemList.stream().collect(Collectors.groupingBy(item -> item[0])); 
 		for (Object user : userMap.keySet()) {
-			ReportPbsmtPersonBase personBase = (ReportPbsmtPersonBase) user;
+			PbsmtPersonBase personBase = (PbsmtPersonBase) user;
+			List<Object[]> detail = userMap.get(user);
+			PcpmtPersonCom personCompany = (PcpmtPersonCom) detail.get(0)[3];
+			PogmtPersonDepRgl personDepartment = (PogmtPersonDepRgl) detail.get(0)[4];
+			CmnmtDep departmentMaster = (CmnmtDep) detail.get(0)[5];
 			
 			// Convert to header data.
 			// TODO: Wait QA #82348
 			HeaderReportData headerReportData = HeaderReportData.builder()
-					.employeeCode(personBase.getInvScd())
+					.employeeCode(personCompany.getScd())
 					.employeeName(personBase.getNameOfficial())
 					.sex(personBase.getGendar() == 0 ? "男性" : "女性")
+					.departmentCode(personDepartment.getDepcd())
+					.departmentName(departmentMaster.getName())
 					.build();
 			
 			// Convert To data model.

@@ -39,7 +39,9 @@ var nts;
                                             if (!selectedNode.isMaster) {
                                                 self.isNewMode(false);
                                                 self.selectedHistoryUuid(selectedNode.id);
-                                                self.clearErrors();
+                                                if (nts.uk.ui._viewModel) {
+                                                    self.clearErrors();
+                                                }
                                                 self.onSelectHistory(id);
                                             }
                                             else {
@@ -57,7 +59,6 @@ var nts;
                                             if (!self.selectedHistoryUuid()) {
                                                 inlineFunc();
                                             }
-                                            self.onSelectHistory(id);
                                         }
                                     });
                                 }
@@ -135,7 +136,9 @@ var nts;
                                     self.confirmDirtyAndExecute(function () {
                                         self.isNewMode(true);
                                         self.onRegistNew();
-                                        self.clearErrors();
+                                        if (nts.uk.ui._viewModel) {
+                                            self.clearErrors();
+                                        }
                                         self.igGridSelectedHistoryUuid(undefined);
                                     });
                                 };
@@ -222,10 +225,6 @@ var nts;
                                 ScreenBaseModel.prototype.reloadMasterHistory = function (uuid) {
                                     var self = this;
                                     self.loadMasterHistory().done(function () {
-                                        if (!self.masterHistoryList || self.masterHistoryList.length == 0) {
-                                            self.isNewMode(true);
-                                            self.onRegistNew();
-                                        }
                                         self.selectedHistoryUuid(undefined);
                                         if (uuid) {
                                             self.igGridSelectedHistoryUuid(uuid);
@@ -238,6 +237,11 @@ var nts;
                                                     self.igGridSelectedHistoryUuid.valueHasMutated();
                                                 }
                                             }
+                                        }
+                                        if (!self.masterHistoryList || self.masterHistoryList.length == 0) {
+                                            self.isNewMode(true);
+                                            self.selectedNode(null);
+                                            self.onRegistNew();
                                         }
                                     });
                                 };

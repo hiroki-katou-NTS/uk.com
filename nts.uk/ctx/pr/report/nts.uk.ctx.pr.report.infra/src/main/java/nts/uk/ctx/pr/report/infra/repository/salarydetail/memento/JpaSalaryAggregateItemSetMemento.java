@@ -30,6 +30,12 @@ public class JpaSalaryAggregateItemSetMemento implements SalaryAggregateItemSetM
 	 *
 	 * @return the agger head
 	 */
+
+	/**
+	 * Gets the agger head.
+	 *
+	 * @return the agger head
+	 */
 	@Getter
 	private QlsptPaylstAggreHead aggerHead;
 
@@ -93,12 +99,11 @@ public class JpaSalaryAggregateItemSetMemento implements SalaryAggregateItemSetM
 	@Override
 	public void setSubItemCodes(Set<SalaryItem> subItemCodes) {
 		this.aggerHead.setQlsptPaylstAggreDetailList(subItemCodes.stream().map(item -> {
-			QlsptPaylstAggreDetail detail = new QlsptPaylstAggreDetail();
 			QlsptPaylstAggreDetailPK pk = new QlsptPaylstAggreDetailPK();
 			pk.setItemCd(item.getSalaryItemCode());
 			pk.setCcd(this.aggerHead.getQlsptPaylstAggreHeadPK().getCcd());
 			pk.setAggregateCd(this.aggerHead.getQlsptPaylstAggreHeadPK().getAggregateCd());
-			detail.setQlsptPaylstAggreDetailPK(pk);
+			QlsptPaylstAggreDetail detail = new QlsptPaylstAggreDetail(pk);
 			return detail;
 		}).collect(Collectors.toList()));
 	}

@@ -96,11 +96,7 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	 */
 	@Override
 	public CalculateMethod getAutoCalculate() {
-		if (this.typeValue.getKeepEntryFlg() == CalculateMethod.Auto.value) {
-			return CalculateMethod.Auto;
-		} else {
-			return CalculateMethod.Manual;
-		}
+		return CalculateMethod.valueOf(this.typeValue.getKeepEntryFlg());
 	}
 
 	/*

@@ -88,11 +88,12 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		List<QismtHealthInsuRate> result = em.createQuery(cq).getResultList();
 		// If have no record.
-		if (!CollectionUtil.isEmpty(result)) {
-			QismtHealthInsuRate entity = new QismtHealthInsuRate();
-			entity = result.get(0);
-			em.remove(entity);
+		if (CollectionUtil.isEmpty(result)) {
+			return;
 		}
+		QismtHealthInsuRate entity = new QismtHealthInsuRate();
+		entity = result.get(0);
+		em.remove(entity);
 	}
 
 	/*

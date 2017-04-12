@@ -35,4 +35,3 @@ __viewContext.ready(function () {
     nts.uk.ui.confirmSave(viewmodel.dirty);
     this.bind(viewmodel);
 });
-//# sourceMappingURL=start.js.map

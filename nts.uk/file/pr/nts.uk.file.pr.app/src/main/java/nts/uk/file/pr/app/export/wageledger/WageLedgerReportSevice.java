@@ -54,6 +54,11 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 		// TODO : validate query.
 		WageLedgerReportQuery query = context.getQuery();
 		String companyCode = AppContexts.user().companyCode();
+		query.baseDate = new Date();
+		query.employeeIds = Arrays.asList("test");
+		if (!this.repository.hasReportData(companyCode, query)) {
+			throw new RuntimeException("None Data!");
+		}
 		
 		// Query Data.
 		@SuppressWarnings("unused")

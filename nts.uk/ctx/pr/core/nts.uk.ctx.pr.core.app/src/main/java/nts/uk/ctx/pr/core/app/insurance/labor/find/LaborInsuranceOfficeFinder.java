@@ -77,7 +77,8 @@ public class LaborInsuranceOfficeFinder {
 		// to Dto
 		List<LaborInsuranceOfficeFindOutDto> dataOutput = data.stream().map(office -> {
 			LaborInsuranceOfficeFindOutDto dto = new LaborInsuranceOfficeFindOutDto();
-			office.saveToMemento(dto);
+			dto.setCode(office.getCode().v());
+			dto.setName(office.getName().v());
 			return dto;
 		}).collect(Collectors.toList());
 

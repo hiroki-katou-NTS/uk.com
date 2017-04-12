@@ -147,12 +147,15 @@ public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRa
 		Optional<UnemployeeInsuranceRate> data = this.repository.findById(rate.getCompanyCode(),
 			rate.getHistoryId());
 
-		Optional<UnemployeeInsuranceRate> dataUpdate = this.repository.findBetweenUpdate(
-			rate.getCompanyCode(), data.get().getApplyRange().getStartMonth(), data.get().getHistoryId());
+		if (data.isPresent()) {
+			Optional<UnemployeeInsuranceRate> dataUpdate = this.repository.findBetweenUpdate(
+				rate.getCompanyCode(), data.get().getApplyRange().getStartMonth(), data.get().getHistoryId());
 
-		// check first data
-		return (dataUpdate.isPresent() && (dataUpdate.get().getApplyRange().getStartMonth().v() >= rate
-			.getApplyRange().getStartMonth().v()));
+			// check first data
+			return (dataUpdate.isPresent() && (dataUpdate.get().getApplyRange().getStartMonth().v() >= rate
+				.getApplyRange().getStartMonth().v()));
+		}
+		return true;
 	}
 
 }

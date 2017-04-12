@@ -22,4 +22,3 @@ var qmm012;
         })(service = k.service || (k.service = {}));
     })(k = qmm012.k || (qmm012.k = {}));
 })(qmm012 || (qmm012 = {}));
-//# sourceMappingURL=service.js.map

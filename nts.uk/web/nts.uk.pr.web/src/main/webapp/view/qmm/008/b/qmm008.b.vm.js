@@ -61,6 +61,7 @@ var nts;
                                     ]);
                                     self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
                                     self.backupDataDirty = ko.observable();
+                                    self.canOpenOfficeRegisterDialog = ko.observable(true);
                                 }
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
@@ -218,7 +219,6 @@ var nts;
                                         self.loadHealth(dto);
                                         self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
                                         self.isLoading(false);
-                                        $('.save-error').ntsError('clear');
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
@@ -233,9 +233,15 @@ var nts;
                                     }
                                     return dfd.promise();
                                 };
+                                ScreenModel.prototype.clearErrors = function () {
+                                    if (nts.uk.ui._viewModel) {
+                                        $('.save-error').ntsError('clear');
+                                    }
+                                };
                                 ScreenModel.prototype.onSelectMaster = function (code) {
                                     var self = this;
                                     self.isClickHistory(false);
+                                    self.clearErrors();
                                 };
                                 ScreenModel.prototype.getCurrentOfficeCode = function (childId) {
                                     var self = this;
@@ -259,7 +265,11 @@ var nts;
                                 };
                                 ScreenModel.prototype.onRegistNew = function () {
                                     var self = this;
-                                    self.OpenModalOfficeRegister();
+                                    if (self.canOpenOfficeRegisterDialog()) {
+                                        self.OpenModalOfficeRegister();
+                                    }
+                                    self.isClickHistory(false);
+                                    self.canOpenOfficeRegisterDialog(false);
                                 };
                                 ScreenModel.prototype.isDirty = function () {
                                     var self = this;
@@ -272,7 +282,7 @@ var nts;
                                             self.loadHealth(self.backupDataDirty());
                                             self.OpenModalOfficeRegister();
                                             self.dirty.reset();
-                                        }).ifCancel(function () {
+                                        }).ifNo(function () {
                                         });
                                     }
                                     else {
@@ -282,8 +292,8 @@ var nts;
                                 ScreenModel.prototype.OpenModalOfficeRegister = function () {
                                     var self = this;
                                     nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録", dialogClass: 'no-close' }).onClosed(function () {
-                                        self.loadMasterHistory();
                                         var codeOfNewOffice = nts.uk.ui.windows.getShared("codeOfNewOffice");
+                                        self.reloadMasterHistory(codeOfNewOffice);
                                     });
                                 };
                                 ScreenModel.prototype.OpenModalStandardMonthlyPriceHealthWithDirtyCheck = function () {
@@ -293,7 +303,7 @@ var nts;
                                             self.loadHealth(self.backupDataDirty());
                                             self.OpenModalStandardMonthlyPriceHealth();
                                             self.dirty.reset();
-                                        }).ifCancel(function () {
+                                        }).ifNo(function () {
                                         });
                                     }
                                     else {
