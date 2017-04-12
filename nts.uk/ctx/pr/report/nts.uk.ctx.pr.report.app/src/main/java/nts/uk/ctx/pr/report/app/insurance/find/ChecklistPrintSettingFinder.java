@@ -28,7 +28,7 @@ public class ChecklistPrintSettingFinder {
 	 */
 	public CheckListPrintSettingDto find() {
 		String companyCode = AppContexts.user().companyCode();
-		CheckListPrintSettingDto dto = new CheckListPrintSettingDto();
+		CheckListPrintSettingDto dto = CheckListPrintSettingDto.createDefaultSetting();
 		
 		// Find check list setting.
 		Optional<ChecklistPrintSetting> printSetting = this.checklistPrintSettingRepository

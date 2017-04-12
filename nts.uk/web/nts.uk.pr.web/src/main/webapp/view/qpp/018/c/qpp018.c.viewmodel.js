@@ -72,19 +72,11 @@ var nts;
                                 ScreenModel.prototype.initUI = function (res) {
                                     var self = this;
                                     var checklistSetting = self.checklistPrintSettingModel();
-                                    if (res) {
-                                        checklistSetting.setData(res);
-                                    }
-                                    else {
-                                        checklistSetting.defaultValue();
-                                    }
+                                    checklistSetting.setData(res);
                                 };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
-                            /**
-                             * The ChecklistPrintSettingModel
-                             */
                             var ChecklistPrintSettingModel = (function () {
                                 function ChecklistPrintSettingModel() {
                                     var self = this;
@@ -106,25 +98,12 @@ var nts;
                                 }
                                 ChecklistPrintSettingModel.prototype.setData = function (dto) {
                                     var self = this;
-                                    if (dto.showCategoryInsuranceItem == null || dto.showCategoryInsuranceItem == undefined) {
-                                        self.selectedHealthInsuranceItem("indicate");
-                                    }
-                                    else {
-                                        var insuranceItemCode = dto.showCategoryInsuranceItem ? 'indicate' : 'hide';
-                                        self.selectedHealthInsuranceItem(insuranceItemCode);
-                                    }
-                                    self.showDetail(dto.showDetail ? dto.showDetail : true);
-                                    self.showOffice(dto.showOffice ? dto.showOffice : true);
-                                    self.showTotal(dto.showTotal ? dto.showTotal : true);
-                                    self.showDeliveryNoticeAmount(dto.showDeliveryNoticeAmount
-                                        ? dto.showDeliveryNoticeAmount : true);
-                                };
-                                ChecklistPrintSettingModel.prototype.defaultValue = function () {
-                                    var self = this;
-                                    self.selectedHealthInsuranceItem("indicate");
-                                    self.showOffice(false);
-                                    self.showTotal(false);
-                                    self.showDeliveryNoticeAmount(false);
+                                    var insuranceItemCode = dto.showCategoryInsuranceItem ? 'indicate' : 'hide';
+                                    self.selectedHealthInsuranceItem(insuranceItemCode);
+                                    self.showDetail(dto.showDetail);
+                                    self.showOffice(dto.showOffice);
+                                    self.showTotal(dto.showTotal);
+                                    self.showDeliveryNoticeAmount(dto.showDeliveryNoticeAmount);
                                 };
                                 return ChecklistPrintSettingModel;
                             }());
@@ -136,3 +115,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qpp018.c.viewmodel.js.map
