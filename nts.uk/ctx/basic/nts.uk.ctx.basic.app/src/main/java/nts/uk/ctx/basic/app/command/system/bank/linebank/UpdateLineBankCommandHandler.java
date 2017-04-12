@@ -26,6 +26,8 @@ public class UpdateLineBankCommandHandler extends CommandHandler<LineBankCommand
 	protected void handle(CommandHandlerContext<LineBankCommandBase> context) {
 		String companyCode = AppContexts.user().companyCode();
 		LineBank lineBank = context.getCommand().toDomain(companyCode);
+		
+		lineBank.validate();
 
 		this.lineBankRepository.update(lineBank);
 	}
