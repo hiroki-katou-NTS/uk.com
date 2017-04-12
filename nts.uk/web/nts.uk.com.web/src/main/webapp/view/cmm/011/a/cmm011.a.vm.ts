@@ -295,14 +295,16 @@ module cmm011.a.viewmodel {
                 console.log(self.arrayItemEdit());
                 let _dt = self.arrayItemEdit();
                 var dfd = $.Deferred();
-                service.upDateListWorkplace(_dt)
-                    .done(function(done) {
-                        location.reload();
-                    }).fail(function(error) {
-                        alert(error.message);
-                    })
-                dfd.resolve();
-                return dfd.promise();
+                if (self.arrayItemEdit().length > 1) {
+                    service.upDateListWorkplace(_dt)
+                        .done(function(done) {
+                            location.reload();
+                        }).fail(function(error) {
+                            alert(error.message);
+                        })
+                    dfd.resolve();
+                    return dfd.promise();
+                }
             }
         }
 

@@ -247,14 +247,16 @@ var cmm009;
                         console.log(self.arrayItemEdit());
                         var _dt_2 = self.arrayItemEdit();
                         var dfd = $.Deferred();
-                        a.service.upDateListDepartment(_dt_2)
-                            .done(function (done) {
-                            location.reload();
-                        }).fail(function (error) {
-                            alert(error.message);
-                        });
-                        dfd.resolve();
-                        return dfd.promise();
+                        if (self.arrayItemEdit().length > 1) {
+                            a.service.upDateListDepartment(_dt_2)
+                                .done(function (done) {
+                                location.reload();
+                            }).fail(function (error) {
+                                alert(error.message);
+                            });
+                            dfd.resolve();
+                            return dfd.promise();
+                        }
                     }
                 };
                 ScreenModel.prototype.updateHirechyOfBtnUpDown = function () {
