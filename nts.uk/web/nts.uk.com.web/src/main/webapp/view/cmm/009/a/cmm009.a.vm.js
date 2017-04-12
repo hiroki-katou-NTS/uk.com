@@ -97,6 +97,14 @@ var cmm009;
                             }
                         }
                     }));
+                    $(document).delegate("#tree-up-down-up", "click", function () {
+                        console.log(self.dataSource());
+                        self.checkAddHist1("clickbtnup");
+                    });
+                    $(document).delegate("#tree-up-down-down", "click", function () {
+                        console.log(self.dataSource());
+                        self.checkAddHist1("clickbtndown");
+                    });
                 }
                 ScreenModel.prototype.register = function () {
                     var self = this;
@@ -233,6 +241,12 @@ var cmm009;
                             dfd2.resolve();
                             return dfd2.promise();
                         }
+                    }
+                    if (self.checkAddHist1() == "clickbtnup") {
+                        var _dt_2 = self.dataSource();
+                    }
+                    if (self.checkAddHist1() == "clickbtndown") {
+                        var _dt_3 = self.dataSource();
                     }
                 };
                 ScreenModel.prototype.deletebtn = function () {

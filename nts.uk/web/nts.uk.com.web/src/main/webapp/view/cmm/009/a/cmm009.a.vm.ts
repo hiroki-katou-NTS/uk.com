@@ -72,7 +72,6 @@ module cmm009.a.viewmodel {
             self.checkAddHist1 = ko.observable('');
             self.newEndDate = ko.observable(null);
 
-
             self.singleSelectedCode.subscribe(function(codeChangeds) {
                 var _dt = self.dataSource();
                 var _code = self.singleSelectedCode();
@@ -135,6 +134,19 @@ module cmm009.a.viewmodel {
                     }
                 }
             }));
+
+
+            $(document).delegate("#tree-up-down-up", "click", function() {
+                console.log(self.dataSource());
+                self.checkAddHist1("clickbtnup");
+
+            });
+
+
+            $(document).delegate("#tree-up-down-down", "click", function() {
+                console.log(self.dataSource());
+                self.checkAddHist1("clickbtndown");
+            });
         }
 
         register() {
@@ -276,6 +288,12 @@ module cmm009.a.viewmodel {
                     dfd2.resolve();
                     return dfd2.promise();
                 }
+            }
+            if (self.checkAddHist1() == "clickbtnup") {
+                let _dt = self.dataSource();
+            }
+            if (self.checkAddHist1() == "clickbtndown") {
+                let _dt = self.dataSource();
             }
         }
 
