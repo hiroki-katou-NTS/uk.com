@@ -54,16 +54,14 @@ module nts.uk.pr.view.qmm010.a {
             //function reset value viewmodel
             private resetValueLaborInsurance() {
                 var self = this;
-                if (self.dirty.isDirty() && self.isShowDirty()) {
-                    if (self.typeAction() == TypeActionLaborInsuranceOffice.update) {
-                        nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function() {
-                            self.isShowDirty(false);
-                            self.onResetValueLaborInsurance();
-                        }).ifNo(function() {
-                            //No action
-                        });
-                        return;
-                    }
+                if (self.dirty.isDirty() && self.isShowDirty() && self.typeAction() == TypeActionLaborInsuranceOffice.update) {
+                    nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function() {
+                        self.isShowDirty(false);
+                        self.onResetValueLaborInsurance();
+                    }).ifNo(function() {
+                        //No action
+                    });
+                    return;
                 }
                 self.onResetValueLaborInsurance();
 
@@ -122,7 +120,7 @@ module nts.uk.pr.view.qmm010.a {
                             self.enableButton(true);
                             var importData: SocialInsuranceOfficeImportDto;
                             importData = nts.uk.ui.windows.getShared('importData');
-                            if (importData != null && importData != undefined) {
+                            if (importData) {
                                 self.laborInsuranceOfficeModel().setDataImport(importData);
                             }
                         });
@@ -196,7 +194,6 @@ module nts.uk.pr.view.qmm010.a {
             }
 
             private validateData() {
-                var self = this;
                 $("#inp_code").ntsEditor("validate");
                 $("#inp_name").ntsEditor("validate");
                 $("#inp_shortName").ntsEditor("validate");
@@ -313,7 +310,7 @@ module nts.uk.pr.view.qmm010.a {
                     var code: string = self.selectCodeLstlaborInsuranceOffice();
                     if (self.typeAction() == TypeActionLaborInsuranceOffice.add) {
                         if (data != null && data.length > 0) {
-                            self.detailLaborInsuranceOffice(data[0].code);
+                            self.detailLaborInsuranceOffice(self.laborInsuranceOfficeModel().code());
                         } else {
                             self.newmodelEmptyData();
                         }

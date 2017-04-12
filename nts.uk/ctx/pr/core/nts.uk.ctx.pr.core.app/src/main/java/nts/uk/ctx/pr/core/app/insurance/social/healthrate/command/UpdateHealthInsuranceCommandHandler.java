@@ -13,6 +13,8 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.service.HealthInsuranceAvgearnService;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.service.HealthInsuranceRateService;
@@ -31,6 +33,9 @@ public class UpdateHealthInsuranceCommandHandler
 	/** The health insurance rate repository. */
 	@Inject
 	private HealthInsuranceRateRepository healthInsuranceRateRepository;
+	
+	@Inject 
+	private HealthInsuranceAvgearnService healthInsuranceAvgearnService;
 
 	/*
 	 * (non-Javadoc)
@@ -64,8 +69,13 @@ public class UpdateHealthInsuranceCommandHandler
 			healthInsuranceRate.validate();
 			this.healthInsuranceRateService.validateRequiredItem(healthInsuranceRate);
 
-			// Update to db.
-			this.healthInsuranceRateRepository.update(healthInsuranceRate);
+			// if Update to db success.
+			if (this.healthInsuranceRateRepository.update(healthInsuranceRate)) {
+				// if Autocalculate update avg earn
+				if (healthInsuranceRate.getAutoCalculate().equals(CalculateMethod.Auto)) {
+					healthInsuranceAvgearnService.updateHealthInsuranceRateAvgEarn(healthInsuranceRate);
+				}
+			}
 		}
 	}
 

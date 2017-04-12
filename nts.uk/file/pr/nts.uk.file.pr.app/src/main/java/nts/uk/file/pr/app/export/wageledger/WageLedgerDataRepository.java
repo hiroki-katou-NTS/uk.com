@@ -19,5 +19,14 @@ public interface WageLedgerDataRepository {
 	 * @param query the query
 	 * @return the wage ledger report data
 	 */
-	List<WLOldLayoutReportData> findReportDatas(int targetYear, List<String> employeeIds);
+	List<WLOldLayoutReportData> findReportDatas(String companyCode, WageLedgerReportQuery query);
+	
+	/**
+	 * Check has report data.
+	 *
+	 * @param companyCode the company code
+	 * @param query the query
+	 * @return true, if successful
+	 */
+	boolean hasReportData(String companyCode, WageLedgerReportQuery query);
 }

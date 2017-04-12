@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.social.healthavgearn;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -15,8 +13,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.command.UpdateHealthInsuranceAvgearnCommand;
 import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.command.UpdateHealthInsuranceAvgearnCommandHandler;
-import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find.HealthInsuranceAvgearnDto;
 import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find.HealthInsuranceAvgearnFinder;
+import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find.ListHealthInsuranceAvgearnDto;
 
 /**
  * The Class HealthInsuranceAvgearnWs.
@@ -52,7 +50,7 @@ public class HealthInsuranceAvgearnWs extends WebService {
 	 */
 	@POST
 	@Path("find/{id}")
-	public List<HealthInsuranceAvgearnDto> find(@PathParam("id") String id) {
+	public ListHealthInsuranceAvgearnDto find(@PathParam("id") String id) {
 		return healthInsuranceAvgearnFinder.find(id);
 	}
 }

@@ -28,7 +28,9 @@ var nts;
                         return item.code == codeChange;
                     });
                     self.useMasterCode(data().comboBoxUseMaster().selectedCode());
-                    self.useMasterName(useMasterFound.name);
+                    if (useMasterFound) {
+                        self.useMasterName(useMasterFound.name);
+                    }
                 });
                 var lstReferenceMonthAtr = [
                     { code: 0, name: '当月' },
@@ -76,32 +78,18 @@ var nts;
                 self.comboBoxRoudingMethod = ko.observable(new ComboBox(lstRoudingMethod, true, false));
                 self.comboBoxRoudingPosition = ko.observable(new ComboBox(lstRoudingPostion, true, false));
                 self.selectedTabCSel006 = ko.observable('tab-1');
-                self.noneConditionalEasyFormula = ko.observable(new EasyFormula(0));
-                self.defaultEasyFormula = ko.observable(new EasyFormula(0));
-                self.monthlyEasyFormula = ko.observable(new EasyFormula(1));
-                self.dailyMonthlyEasyFormula = ko.observable(new EasyFormula(1));
-                self.dailyEasyFormula = ko.observable(new EasyFormula(1));
-                self.hourlyEasyFormula = ko.observable(new EasyFormula(1));
+                self.noneConditionalEasyFormula = ko.observable(new EasyFormula(0, data));
+                self.defaultEasyFormula = ko.observable(new EasyFormula(0, data));
+                self.monthlyEasyFormula = ko.observable(new EasyFormula(1, data));
+                self.dailyMonthlyEasyFormula = ko.observable(new EasyFormula(1, data));
+                self.dailyEasyFormula = ko.observable(new EasyFormula(1, data));
+                self.hourlyEasyFormula = ko.observable(new EasyFormula(1, data));
             }
             CScreen.prototype.undo = function () {
                 document.execCommand("undo", false, null);
             };
             CScreen.prototype.redo = function () {
                 document.execCommand("redo", false, null);
-            };
-            CScreen.prototype.openDialogL = function () {
-                var self = this;
-                var param = {
-                    isUpdate: (self.defaultEasyFormula().easyFormulaDetail()),
-                    dirtyData: self.defaultEasyFormula().easyFormulaDetail()
-                };
-                nts.uk.ui.windows.setShared('paramFromScreenC', param);
-                nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(function () {
-                    if (nts.uk.ui.windows.getShared('easyFormulaDetail')) {
-                        self.defaultEasyFormula().easyFormulaDetail(ko.mapping.fromJS(nts.uk.ui.windows.getShared('easyFormulaDetail')));
-                        self.defaultEasyFormula().easyFormulaName(self.defaultEasyFormula().easyFormulaDetail().easyFormulaName());
-                    }
-                });
             };
             CScreen.prototype.validateTextArea = function () {
                 var self = this;
@@ -125,8 +113,12 @@ var nts;
         }());
         qmm017.CScreen = CScreen;
         var EasyFormula = (function () {
-            function EasyFormula(mode) {
+            function EasyFormula(mode, root) {
                 var self = this;
+                self.startYm = ko.observable(root().startYearMonth());
+                root().startYearMonth.subscribe(function (yearMonth) {
+                    self.startYm(yearMonth);
+                });
                 if (mode == 0) {
                     self.roundingRulesEasySettings = ko.observableArray([
                         { code: '0', name: '固定値' },
@@ -150,7 +142,8 @@ var nts;
                 var self = this;
                 var param = {
                     isUpdate: (self.easyFormulaName() !== ''),
-                    dirtyData: self.easyFormulaDetail()
+                    dirtyData: self.easyFormulaDetail(),
+                    startYm: self.startYm()
                 };
                 nts.uk.ui.windows.setShared('paramFromScreenC', param);
                 nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(function () {
@@ -204,6 +197,7 @@ var nts;
         qmm017.ItemModelTextEditor = ItemModelTextEditor;
         var TextEditor = (function () {
             function TextEditor() {
+                //list error messsage
                 this.ERROR_BRACKET = "カッコ()の数に誤りがあります。";
                 this.ERROR_CONSECUTIVELY = "構文に誤りがあります。{0}と{1}が連続して入力されています。";
                 this.ERROR_MUST_CONTAIN_ATSIGN = "「{0}」は利用できない文字列です。";
@@ -219,6 +213,7 @@ var nts;
                 this.listSpecialChar = ["+", "-", "×", "÷", "＾", "（", "）", "＜", "＞", "≦", "≧", "＝", "≠"];
                 this.listOperatorChar = ["+", "-", "×", "÷"];
                 var self = this;
+                //----------------------------------------------------------------------------
                 self.autoComplete = ko.observableArray([
                     new ItemModelTextEditor('001', '基本給', "description 1"),
                     new ItemModelTextEditor('150', '役職手当', "description 2"),
@@ -425,6 +420,9 @@ var nts;
                     }
                 }
             };
+            // return 2 if too much param
+            // return 1 if not enough param
+            // return 0 if OK
             TextEditor.prototype.validateNumberOfParam = function (treeObject) {
                 var functionName = treeObject.value.trim();
                 var numberOfParam = treeObject.children.length;
@@ -530,6 +528,7 @@ var nts;
                 var functionName = treeObject.value.trim();
                 var param = treeObject.children;
                 if (functionName === "関数＠条件式" && param.length == 3) {
+                    //if (param[0].children.length === 0) return 1;
                     if (!nts.uk.ntsNumber.isNumber(param[1], true))
                         return 2;
                     else if (!nts.uk.ntsNumber.isNumber(param[2], true))
@@ -611,6 +610,7 @@ var nts;
                     if (specialCharTags[orderTag].innerText === '（') {
                         countOpenBrackets += 1;
                     }
+                    //if found the bracket of the function
                     if (countOpenBrackets === indexTree) {
                         var functionNameTag = specialCharTags[orderTag].previousSibling;
                         self.markError($(functionNameTag), message, [functionNameTag.innerText]);
@@ -782,4 +782,3 @@ var nts;
         qmm017.TextEditor = TextEditor;
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=viewmodel.js.map

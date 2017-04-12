@@ -1,23 +1,31 @@
 module nts.uk.pr.view.qmm017.p {
     export module viewmodel {
         export class ScreenModel {
-            items: KnockoutObservableArray<ItemModel>;
+            items: KnockoutObservableArray<any>;
             columns: KnockoutObservableArray<any>;
             currentCodeList: KnockoutObservableArray<any>;
+            subject: string;
 
-            constructor() {
-                this.items = ko.observableArray([]);
-
-                for (let i = 1; i < 100; i++) {
-                    this.items.push(new ItemModel('00' + i, '基本給', "description " + i, "other" + i));
-                }
-
-                this.columns = ko.observableArray([
-                    { headerText: 'コード', prop: 'code', width: 100 }
+            constructor(data) {
+                var self = this;
+                self.subject = "基準金額に設定する、" + data.subject + "を";
+                self.items = ko.observableArray(data.itemList);
+                self.columns = ko.observableArray([
+                    { headerText: 'コード', prop: 'code', width: 50 },
+                    { headerText: '名称', prop: 'name', width: 145 }
                 ]);
-
-                this.currentCodeList = ko.observableArray([]);
-                
+                self.currentCodeList = ko.observableArray(data.selectedItems);
+            }
+            
+            closeAndReturnData() {
+                var self = this;
+                let baseAmountListItem = self.currentCodeList();
+                nts.uk.ui.windows.setShared('baseAmountListItem', baseAmountListItem);
+                nts.uk.ui.windows.close();
+            }
+            
+            closeDialog() {
+                nts.uk.ui.windows.close();
             }
         }
     }
@@ -25,15 +33,9 @@ module nts.uk.pr.view.qmm017.p {
     class ItemModel {
         code: string;
         name: string;
-        description: string;
-        other1: string;
-        other2: string;
-        constructor(code: string, name: string, description: string, other1?: string, other2?: string) {
+        constructor(code: string, name: string) {
             this.code = code;
             this.name = name;
-            this.description = description;
-            this.other1 = other1;
-            this.other2 = other2 || other1;
         }
     }
 }

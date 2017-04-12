@@ -4,17 +4,16 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductbd.UpdateItemDeductBDCommand;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalarybd.ItemSalaryBD;
 
 @Getter
 @Setter
 public class UpdateItemSalaryBDCommand {
-	private String itemCd;
-	private String itemBreakdownCd;
+	private String itemCode;
+	private String itemBreakdownCode;
 	private String itemBreakdownName;
 	private String itemBreakdownAbName;
-	private String uniteCd;
+	private String uniteCode;
 	private int zeroDispSet;
 	private int itemDispAtr;
 	private int errRangeLowAtr;
@@ -27,16 +26,12 @@ public class UpdateItemSalaryBDCommand {
 	private BigDecimal alRangeHigh;
 
 	public ItemSalaryBD toDomain() {
-		return ItemSalaryBD.createFromJavaType(this.itemCd, this.itemBreakdownCd, this.itemBreakdownName,
-				this.itemBreakdownAbName, this.uniteCd, this.zeroDispSet, this.itemDispAtr, this.errRangeLowAtr,
+		return ItemSalaryBD.createFromJavaType(this.itemCode, this.itemBreakdownCode, this.itemBreakdownName,
+				this.itemBreakdownAbName, this.uniteCode, this.zeroDispSet, this.itemDispAtr, this.errRangeLowAtr,
 				this.errRangeLow, this.errRangeHighAtr, this.errRangeHigh, this.alRangeLowAtr, this.alRangeLow,
 				this.alRangeHighAtr, this.alRangeHigh);
 
 	}
 
-	public UpdateItemDeductBDCommand toDeduct() {
-		return new UpdateItemDeductBDCommand(itemCd, itemBreakdownCd, itemBreakdownName, itemBreakdownAbName, uniteCd,
-				zeroDispSet, itemDispAtr, errRangeLowAtr, errRangeLow, errRangeHighAtr, errRangeHigh, alRangeLowAtr,
-				alRangeLow, alRangeHighAtr, alRangeHigh);
-	}
+	
 }

@@ -10,7 +10,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.itemmaster.AvePayAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalary;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalaryRespository;
-import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemAttend;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemSalary;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemSalaryPK;
 import nts.uk.shr.com.context.AppContexts;
@@ -67,7 +66,7 @@ public class JpaItemSalaryRepository extends JpaRepository implements ItemSalary
 				entity.avePayAtr, entity.errRangeLowAtr, entity.errRangeLow, entity.errRangeHighAtr,
 				entity.errRangeHigh, entity.alRangeLowAtr, entity.alRangeLow, entity.alRangeHighAtr, entity.alRangeHigh,
 				entity.memo, entity.limitMnyAtr, entity.limitMnyRefItemCd, entity.limitMny);
-		// TODO Auto-generated method stub
+		
 		return domain;
 	}
 
@@ -80,15 +79,16 @@ public class JpaItemSalaryRepository extends JpaRepository implements ItemSalary
 	 */
 	private QcamtItemSalary toEntity(ItemSalary domain) {
 		String companyCode = AppContexts.user().companyCode();
-		return new QcamtItemSalary(new QcamtItemSalaryPK(companyCode, domain.getItemCd().v()), domain.getTaxAtr().value,
-				domain.getSocialInsAtr().value, domain.getLaborInsAtr().value, domain.getFixPayAtr().value,
-				domain.getApplyForAllEmpFlg().value, domain.getApplyForMonthlyPayEmp().value,
-				domain.getApplyForDaymonthlyPayEmp().value, domain.getApplyForDaylyPayEmp().value,
-				domain.getApplyForHourlyPayEmp().value, domain.getAvePayAtr().value, domain.getErrRangeLowAtr().value,
-				domain.getErrRangeLow().v(), domain.getErrRangeHighAtr().value, domain.getErrRangeHigh().v(),
-				domain.getAlRangeLowAtr().value, domain.getAlRangeLow().v(), domain.getAlRangeHighAtr().value,
-				domain.getAlRangeHigh().v(), domain.getMemo().v(), domain.getLimitMnyAtr().value,
-				domain.getLimitMnyRefItemCd().v(), domain.getLimitMny().v());
+		return new QcamtItemSalary(new QcamtItemSalaryPK(companyCode, domain.getItemCode().v()),
+				domain.getTaxAtr().value, domain.getSocialInsAtr().value, domain.getLaborInsAtr().value,
+				domain.getFixPayAtr().value, domain.getApplyForAllEmpFlg().value,
+				domain.getApplyForMonthlyPayEmp().value, domain.getApplyForDaymonthlyPayEmp().value,
+				domain.getApplyForDaylyPayEmp().value, domain.getApplyForHourlyPayEmp().value,
+				domain.getAvePayAtr().value, domain.getErrRangeLowAtr().value, domain.getErrRangeLow().v(),
+				domain.getErrRangeHighAtr().value, domain.getErrRangeHigh().v(), domain.getAlRangeLowAtr().value,
+				domain.getAlRangeLow().v(), domain.getAlRangeHighAtr().value, domain.getAlRangeHigh().v(),
+				domain.getMemo().v(), domain.getLimitMnyAtr().value, domain.getLimitMnyRefItemCode().v(),
+				domain.getLimitMny().v());
 	}
 
 	@Override

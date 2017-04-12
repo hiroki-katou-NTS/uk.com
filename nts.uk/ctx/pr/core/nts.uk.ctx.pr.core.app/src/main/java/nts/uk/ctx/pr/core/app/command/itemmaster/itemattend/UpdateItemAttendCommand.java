@@ -10,8 +10,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.ItemAttend;
 @Setter
 public class UpdateItemAttendCommand {
 
-	private String ccd;
-	private String itemCd;
+	private String itemCode;
 	private int avePayAtr;
 	private int itemAtr;
 	private int errRangeLowAtr;
@@ -26,7 +25,7 @@ public class UpdateItemAttendCommand {
 	private String memo;
 
 	public ItemAttend toDomain() {
-		return ItemAttend.createFromJavaType(this.itemCd, this.avePayAtr, this.itemAtr, this.errRangeLowAtr,
+		return ItemAttend.createFromJavaType(this.itemCode, this.avePayAtr, this.itemAtr, this.errRangeLowAtr,
 				this.errRangeLow, this.errRangeHighAtr, this.errRangeHigh, this.alRangeLowAtr, this.alRangeLow,
 				this.alRangeHighAtr, this.alRangeHigh, this.workDaysScopeAtr, this.memo);
 	}

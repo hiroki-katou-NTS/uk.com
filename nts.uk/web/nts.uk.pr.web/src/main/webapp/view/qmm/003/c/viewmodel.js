@@ -42,6 +42,7 @@ var qmm003;
                 };
                 ScreenModel.prototype.clickButton = function () {
                     var self = this;
+                    //nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode(), true);
                     nts.uk.ui.windows.setShared('currentNode', self.currentNode(), true);
                     nts.uk.ui.windows.close();
                 };
@@ -56,6 +57,7 @@ var qmm003;
                     else {
                         $('#C_SCH_001').ntsError('clear');
                     }
+                    // errror search
                     var error;
                     _.find(this.filteredData(), function (obj) {
                         if (obj.code !== inputSearch) {
@@ -69,6 +71,7 @@ var qmm003;
                         $('#C_SCH_001').ntsError('clear');
                     }
                 };
+                //11.初期データ取得処理 11. Initial data acquisition processing
                 ScreenModel.prototype.start = function () {
                     var dfd = $.Deferred();
                     var self = this;
@@ -139,4 +142,3 @@ var qmm003;
         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
     })(c = qmm003.c || (qmm003.c = {}));
 })(qmm003 || (qmm003 = {}));
-//# sourceMappingURL=viewmodel.js.map

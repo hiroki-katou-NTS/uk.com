@@ -47,7 +47,7 @@ public class JpaItemDeductPeriodRepository extends JpaRepository implements Item
 
 	private QcamtItemDeductPeriod toEntity(ItemDeductPeriod domain) {
 		String campanyCode = AppContexts.user().companyCode();
-		QcamtItemDeductPeriodPK key = new QcamtItemDeductPeriodPK(campanyCode, domain.getItemCd().v());
+		QcamtItemDeductPeriodPK key = new QcamtItemDeductPeriodPK(campanyCode, domain.getItemCode().v());
 		return new QcamtItemDeductPeriod(key, domain.getPeriodAtr().value, domain.getStrY().v(), domain.getEndY().v(),
 				domain.getCycleAtr().value, domain.getCycle01Atr().value, domain.getCycle02Atr().value,
 				domain.getCycle03Atr().value, domain.getCycle04Atr().value, domain.getCycle05Atr().value,

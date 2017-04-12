@@ -25,6 +25,9 @@ var nts;
                             }());
                             viewmodel.SwitchButton = SwitchButton;
                             var ScreenModel = (function () {
+                                /**
+                                 * Init screen
+                                 */
                                 function ScreenModel() {
                                     var self = this;
                                     self.switchButton = new SwitchButton();
@@ -43,4 +46,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=viewmodel.js.map

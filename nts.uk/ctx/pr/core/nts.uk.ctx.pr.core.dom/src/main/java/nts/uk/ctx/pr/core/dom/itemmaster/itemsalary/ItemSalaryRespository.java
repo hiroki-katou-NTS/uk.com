@@ -29,15 +29,15 @@ public interface ItemSalaryRespository {
 	 */
 	void update(ItemSalary item);
 	
-	/**
-	 * Update average wage attribute of multiple item
-	 * @param companyCode company code
-	 * @param itemCodeList list of item code
-	 * @param avePayAtr average wage attribute: NotApplicable or Object
-	 */
-	void updateItems(String companyCode, List<String> itemCodeList, AvePayAtr avePayAtr);
-	
 	void add(ItemSalary item);
 
 	void delete(String companyCode);
+	
+	/**
+	 * Update avePayAtr multiple item
+	 * @param companyCode
+	 * @param itemCodeList
+	 * @param avePayAtr
+	 */
+	void updateItems(String companyCode, List<String> itemCodeList, AvePayAtr avePayAtr);
 }

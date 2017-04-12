@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.history.service.internal;
@@ -22,7 +22,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.history.service.WtHistoryService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class WageTableHistoryServiceImpl.
+ * The Class WtHistoryServiceImpl.
  */
 @Stateless
 public class WtHistoryServiceImpl extends WtHistoryService {
@@ -43,10 +43,10 @@ public class WtHistoryServiceImpl extends WtHistoryService {
 	 * employment.unitprice.WageTableHistory)
 	 */
 	public void validateRequiredItem(WtHistory history) {
-		if (history.getWageTableCode() == null
+		if (history.getWageTableCode() == null 
+				|| history.getApplyRange() == null
 				|| StringUtil.isNullOrEmpty(history.getHistoryId(), true)
 				|| StringUtil.isNullOrEmpty(history.getWageTableCode().v(), true)
-				|| history.getApplyRange() == null
 				|| CollectionUtil.isEmpty(history.getElementSettings())) {
 			throw new BusinessException("ER001");
 		}
@@ -75,14 +75,18 @@ public class WtHistoryServiceImpl extends WtHistoryService {
 	 */
 	@Override
 	public void deleteHistory(String uuid) {
+		// Get the history.
 		WtHistory history = this.wtHistoryRepo.findHistoryByUuid(uuid).get();
-		List<WtHistory> unitPriceHistoryList = this.wtHistoryRepo.findAllHistoryByMasterCode(
+
+		// Get histories of master.
+		List<WtHistory> wtHistoryList = this.wtHistoryRepo.findAllHistoryByMasterCode(
 				AppContexts.user().companyCode(), history.getMasterCode().v());
 
+		// Delete history.
 		super.deleteHistory(uuid);
 
 		// Remove unit price.
-		if (!CollectionUtil.isEmpty(unitPriceHistoryList) && unitPriceHistoryList.size() == 1) {
+		if (!CollectionUtil.isEmpty(wtHistoryList) && wtHistoryList.size() == 1) {
 			this.wtHeadRepo.remove(history.getCompanyCode(), history.getMasterCode().v());
 		}
 	}

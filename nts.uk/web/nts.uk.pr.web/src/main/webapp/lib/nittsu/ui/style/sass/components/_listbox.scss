@@ -23,6 +23,8 @@
 		li {
 			height: 28px;
 			overflow: hidden;
+			user-select: none;
+			cursor: default;
 		}
 	}
 	

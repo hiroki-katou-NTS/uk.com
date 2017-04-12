@@ -34,7 +34,7 @@ import nts.uk.shr.com.primitive.Memo;
 public class JpaSocialInsuranceOfficeSetMemento implements SocialInsuranceOfficeSetMemento {
 
 	/** The type value. */
-	protected QismtSocialInsuOffice typeValue;
+	private QismtSocialInsuOffice typeValue;
 
 	/**
 	 * Instantiates a new jpa social insurance office set memento.

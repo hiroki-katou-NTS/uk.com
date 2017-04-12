@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.itemmaster.AvePayAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.core.dom.itemmaster.Memo;
@@ -17,7 +16,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.RangeAtr;
 
 @Getter
 public class ItemAttend extends AggregateRoot {
-	private ItemCode itemCD;
+	private ItemCode itemCode;
 	private AvePayAtr avePayAtr;
 	private ItemAtr itemAtr;
 	private RangeAtr errRangeLowAtr;
@@ -31,12 +30,12 @@ public class ItemAttend extends AggregateRoot {
 	private WorkDaysScopeAtr workDaysScopeAtr;
 	private Memo memo;
 
-	public ItemAttend(ItemCode itemCD, AvePayAtr avePayAtr, ItemAtr itemAtr, RangeAtr errRangeLowAtr,
+	public ItemAttend(ItemCode itemCode, AvePayAtr avePayAtr, ItemAtr itemAtr, RangeAtr errRangeLowAtr,
 			ErrRangeLow errRangeLow, RangeAtr errRangeHighAtr, ErrRangeHigh errRangeHigh, RangeAtr alRangeLowAtr,
 			AlRangeLow alRangeLow, RangeAtr alRangeHighAtr, AlRangeHigh alRangeHigh, WorkDaysScopeAtr workDaysScopeAtr,
 			Memo memo) {
 		super();
-		this.itemCD = itemCD;
+		this.itemCode = itemCode;
 		this.avePayAtr = avePayAtr;
 		this.itemAtr = itemAtr;
 		this.errRangeLowAtr = errRangeLowAtr;
@@ -51,10 +50,10 @@ public class ItemAttend extends AggregateRoot {
 		this.memo = memo;
 	}
 
-	public static ItemAttend createFromJavaType(String itemCD, int avePayAtr, int itemAtr, int errRangeLowAtr,
+	public static ItemAttend createFromJavaType(String itemCode, int avePayAtr, int itemAtr, int errRangeLowAtr,
 			BigDecimal errRangeLow, int errRangeHighAtr, BigDecimal errRangeHigh, int alRangeLowAtr,
 			BigDecimal alRangeLow, int alRangeHighAtr, BigDecimal alRangeHigh, int workDaysScopeAtr, String memo) {
-		return new ItemAttend(new ItemCode(itemCD), EnumAdaptor.valueOf(avePayAtr, AvePayAtr.class),
+		return new ItemAttend(new ItemCode(itemCode), EnumAdaptor.valueOf(avePayAtr, AvePayAtr.class),
 				EnumAdaptor.valueOf(itemAtr, ItemAtr.class), EnumAdaptor.valueOf(errRangeLowAtr, RangeAtr.class),
 				new ErrRangeLow(errRangeLow), EnumAdaptor.valueOf(errRangeHighAtr, RangeAtr.class),
 				new ErrRangeHigh(errRangeHigh), EnumAdaptor.valueOf(alRangeLowAtr, RangeAtr.class),

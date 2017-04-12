@@ -2,6 +2,7 @@ var qmm005;
 (function (qmm005) {
     var b;
     (function (b) {
+        // api define in qmm005.ts
         var webapi = qmm005.common.webapi();
         var services;
         (function (services) {
@@ -44,4 +45,3 @@ var qmm005;
         })(services = b.services || (b.services = {}));
     })(b = qmm005.b || (qmm005.b = {}));
 })(qmm005 || (qmm005 = {}));
-//# sourceMappingURL=qmm005.b.service.js.map

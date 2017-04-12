@@ -52,7 +52,7 @@ public class JpaItemSalaryPeriodRepository extends JpaRepository implements Item
 
 	private QcamtItemSalaryPeriod toEntity(ItemSalaryPeriod domain) {
 		String campanyCode = AppContexts.user().companyCode();
-		QcamtItemSalaryPeriodPK key = new QcamtItemSalaryPeriodPK(campanyCode, domain.getItemCd().v());
+		QcamtItemSalaryPeriodPK key = new QcamtItemSalaryPeriodPK(campanyCode, domain.getItemCode().v());
 		return new QcamtItemSalaryPeriod(key, domain.getPeriodAtr().value, domain.getStrY().v(), domain.getEndY().v(),
 				domain.getCycleAtr().value, domain.getCycle01Atr().value, domain.getCycle02Atr().value,
 				domain.getCycle03Atr().value, domain.getCycle04Atr().value, domain.getCycle05Atr().value,

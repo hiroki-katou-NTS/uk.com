@@ -1,15 +1,12 @@
 package nts.uk.ctx.pr.core.app.command.itemmaster;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.app.command.itemmaster.itemattend.UpdateItemAttendCommand;
 import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeduct.UpdateItemDeductCommand;
 import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalary.UpdateItemSalaryCommand;
-import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalarybd.UpdateItemSalaryBDCommand;
-import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalaryperiod.UpdateItemSalaryPeriodCommand;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
+import nts.uk.shr.com.context.AppContexts;
 
 @Getter
 @Setter
@@ -18,8 +15,6 @@ public class UpdateItemMasterCommand {
 	private UpdateItemSalaryCommand itemSalary;
 	private UpdateItemDeductCommand itemDeduct;
 	private UpdateItemAttendCommand itemAttend;
-	private UpdateItemSalaryPeriodCommand itemPeriod;
-	private List<UpdateItemSalaryBDCommand> itemBDs;
 	private String itemCode;
 	private String itemName;
 	private String itemAbName;
@@ -32,9 +27,9 @@ public class UpdateItemMasterCommand {
 	private int zeroDisplaySet;
 	private int itemDisplayAtr;
 
-	public ItemMaster toDomain(String companyCode) {
-		return ItemMaster.createFromJavaType(companyCode, this.itemCode, this.itemName, this.itemAbName,
-				this.itemAbNameE, this.itemAbNameO, this.categoryAtr, this.fixAtr, this.displaySet, this.uniteCode,
-				this.zeroDisplaySet, this.itemDisplayAtr);
+	public ItemMaster toDomain() {
+		return ItemMaster.createFromJavaType(AppContexts.user().companyCode(), this.itemCode, this.itemName,
+				this.itemAbName, this.itemAbNameE, this.itemAbNameO, this.categoryAtr, this.fixAtr, this.displaySet,
+				this.uniteCode, this.zeroDisplaySet, this.itemDisplayAtr);
 	}
 }

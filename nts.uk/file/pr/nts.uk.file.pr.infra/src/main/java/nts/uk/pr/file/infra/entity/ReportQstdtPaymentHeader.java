@@ -19,10 +19,10 @@ import nts.arc.time.GeneralDate;
 /**
  * The Class ReportQstdtPaymentHeader.
  */
-@Entity
-@Table(name = "QSTDT_PAYMENT_HEADER")
 @Setter
 @Getter
+@Entity
+@Table(name = "QSTDT_PAYMENT_HEADER")
 public class ReportQstdtPaymentHeader {
 	
 	/** The qstdt payment header PK. */

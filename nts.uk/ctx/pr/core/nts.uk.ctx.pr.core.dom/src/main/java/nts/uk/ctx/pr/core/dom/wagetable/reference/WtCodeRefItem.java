@@ -9,12 +9,6 @@ import lombok.Getter;
 /**
  * The Class WtCodeRefItem.
  */
-
-/**
- * Gets the display name.
- *
- * @return the display name
- */
 @Getter
 public class WtCodeRefItem {
 

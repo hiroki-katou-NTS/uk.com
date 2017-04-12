@@ -2,13 +2,12 @@ package nts.uk.ctx.pr.core.app.command.itemmaster.itemsalaryperiod;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductperiod.UpdateItemDeductPeriodCommand;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalaryperiod.ItemSalaryPeriod;
 
 @Getter
 @Setter
 public class UpdateItemSalaryPeriodCommand {
-	private String itemCd;
+	private String itemCode;
 	private int periodAtr;
 	private int strY;
 	private int endY;
@@ -27,15 +26,10 @@ public class UpdateItemSalaryPeriodCommand {
 	private int cycle12Atr;
 
 	public ItemSalaryPeriod toDomain() {
-		return ItemSalaryPeriod.createFromJavaType(itemCd, periodAtr, strY, endY, cycleAtr, cycle01Atr, cycle02Atr,
+		return ItemSalaryPeriod.createFromJavaType(itemCode, periodAtr, strY, endY, cycleAtr, cycle01Atr, cycle02Atr,
 				cycle03Atr, cycle04Atr, cycle05Atr, cycle06Atr, cycle07Atr, cycle08Atr, cycle09Atr, cycle10Atr,
 				cycle11Atr, cycle12Atr);
 	}
 
-	public UpdateItemDeductPeriodCommand toDeduct() {
-		// TODO Auto-generated method stub
-		return new UpdateItemDeductPeriodCommand(itemCd, periodAtr, strY, endY, cycleAtr, cycle01Atr, cycle02Atr,
-				cycle03Atr, cycle04Atr, cycle05Atr, cycle06Atr, cycle07Atr, cycle08Atr, cycle09Atr, cycle10Atr,
-				cycle11Atr, cycle12Atr);
-	}
+	
 }

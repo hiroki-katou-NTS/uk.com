@@ -19,9 +19,6 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValu
 @Getter
 public class PensionAvgearnDto implements PensionAvgearnSetMemento {
 
-	/** The history id. */
-	private String historyId;
-
 	/** The level code. */
 	private Integer levelCode;
 
@@ -54,7 +51,7 @@ public class PensionAvgearnDto implements PensionAvgearnSetMemento {
 	 */
 	@Override
 	public void setHistoryId(String historyId) {
-		this.historyId = historyId;
+		// Do nothing.
 	}
 
 	/*

@@ -39,6 +39,7 @@ var cmm008;
                     };
                 }
                 ;
+                // start function
                 ScreenModel.prototype.start = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -46,10 +47,17 @@ var cmm008;
                     var widthScreen = $(window).width();
                     var heightHeader = $('#header').height() + $('#functions-area').height();
                     var height = heightScreen - heightHeader - 80;
-                    $('#contents-left').css({ height: height, width: widthScreen * 38 / 100 });
-                    $('#contents-right').css({ height: height, width: widthScreen * 62 / 100 });
+                    $('#contents-left').css({ height: height, width: widthScreen * 40 / 100 });
+                    $('#contents-right').css({ height: height, width: widthScreen * 60 / 100 });
                     self.listMessage();
-                    self.dataSourceItem();
+                    $.when(self.userKtSet()).done(function () {
+                        self.closeDateListItem();
+                        self.processingDateItem();
+                        self.managementHolidaylist();
+                        self.dataSourceItem();
+                        dfd.resolve(self.holidayCode());
+                    });
+                    //list data click
                     self.currentCode.subscribe(function (newValue) {
                         if (!self.checkChange(self.employmentCode())) {
                             var AL001 = _.find(self.lstMessage(), function (mess) {
@@ -73,11 +81,17 @@ var cmm008;
                             self.isMess(false);
                         }
                     });
-                    a.service.getProcessingNo();
-                    dfd.resolve();
+                    //            self.userKtSet();
+                    //            self.closeDateListItem();
+                    //            self.processingDateItem();
+                    //            self.managementHolidaylist();
+                    //             dfd.resolve(); 
+                    // Return.
                     return dfd.promise();
                 };
+                //就業権限
                 ScreenModel.prototype.userKtSet = function () {
+                    var def = $.Deferred();
                     var self = this;
                     a.service.getCompanyInfor().done(function (companyInfor) {
                         if (companyInfor !== undefined) {
@@ -85,15 +99,13 @@ var cmm008;
                             if (self.isUseKtSet() === 0) {
                                 $('.UseKtSet').css('display', 'none');
                             }
-                            else {
-                                self.closeDateListItem();
-                                self.managementHolidaylist();
-                                self.processingDateItem();
-                            }
                         }
+                        def.resolve(self.isUseKtSet());
                     }).fail(function (res) {
                         nts.uk.ui.dialog.alert(res.message);
+                        def.reject();
                     });
+                    return def.promise();
                 };
                 ScreenModel.prototype.reloadScreenWhenListClick = function (newValue) {
                     var self = this;
@@ -120,11 +132,15 @@ var cmm008;
                         }
                     });
                 };
+                //締め日区分
+                //今回は就業システム未導入の場合としてください。
+                //（上記にあるように　締め日区分 = 0 ）
                 ScreenModel.prototype.closeDateListItem = function () {
                     var self = this;
                     self.closeDateList.removeAll();
                     self.closeDateList.push(new ItemCloseDate(0, 'システム未導入'));
                 };
+                //公休の管理
                 ScreenModel.prototype.managementHolidaylist = function () {
                     var self = this;
                     self.managementHolidays = ko.observableArray([
@@ -133,6 +149,7 @@ var cmm008;
                     ]);
                     self.holidayCode = ko.observable(0);
                 };
+                //list  message
                 ScreenModel.prototype.listMessage = function () {
                     var self = this;
                     self.lstMessage.push(new ItemMessage("ER001", "*が入力されていません。"));
@@ -142,6 +159,7 @@ var cmm008;
                     self.lstMessage.push(new ItemMessage("AL002", "データを削除します。\r\nよろしいですか？"));
                     self.lstMessage.push(new ItemMessage("ER026", "更新対象のデータが存在しません。"));
                 };
+                //処理日区分 を取得する
                 ScreenModel.prototype.processingDateItem = function () {
                     var self = this;
                     a.service.getProcessingNo().done(function (lstProcessingNo) {
@@ -179,6 +197,7 @@ var cmm008;
                                 if (employ.closeDateNo === 0) {
                                     employ.closeDateNoStr = "システム未導入";
                                 }
+                                //get processing name
                                 var process = _.find(self.processingDateList(), function (processNo) {
                                     return employ.processingNo == processNo.processingNo;
                                 });
@@ -195,18 +214,29 @@ var cmm008;
                         }
                         dfd.resolve(listResult);
                     });
-                    this.columns = ko.observableArray([
-                        { headerText: 'コード', prop: 'employmentCode', width: '18%' },
-                        { headerText: '名称', prop: 'employmentName', width: '28%' },
-                        { headerText: '締め日', prop: 'closeDateNoStr', width: '20%' },
-                        { headerText: '処理日区分', prop: 'processingStr', width: '20%' },
-                        { headerText: '初期表示', prop: 'displayStr', width: '14%' }
-                    ]);
+                    if (self.isUseKtSet() === 0) {
+                        this.columns = ko.observableArray([
+                            { headerText: 'コード', prop: 'employmentCode', width: '30%' },
+                            { headerText: '名称', prop: 'employmentName', width: '50%' },
+                            { headerText: '初期表示', prop: 'displayStr', width: '20%' }
+                        ]);
+                    }
+                    else {
+                        this.columns = ko.observableArray([
+                            { headerText: 'コード', prop: 'employmentCode', width: '18%' },
+                            { headerText: '名称', prop: 'employmentName', width: '28%' },
+                            { headerText: '締め日', prop: 'closeDateNoStr', width: '23%' },
+                            { headerText: '処理日区分', prop: 'processingStr', width: '17%' },
+                            { headerText: '初期表示', prop: 'displayStr', width: '14%' }
+                        ]);
+                    }
                     self.singleSelectedCode = ko.observable(null);
                     return dfd.promise();
                 };
+                //登録ボタンを押す
                 ScreenModel.prototype.createEmployment = function () {
                     var self = this;
+                    //必須項目の未入力チェック
                     var ER001 = _.find(self.lstMessage(), function (mess) {
                         return mess.messCode === "ER001";
                     });
@@ -223,6 +253,8 @@ var cmm008;
                     var employment = new a.service.model.employmentDto();
                     employment.employmentCode = self.employmentCode();
                     employment.employmentName = self.employmentName();
+                    //今回は就業システム未導入の場合としてください。
+                    //（上記にあるように　締め日区分 = 0 ）
                     employment.closeDateNo = 0;
                     employment.processingNo = self.selectedProcessNo();
                     employment.statutoryHolidayAtr = self.holidayCode();
@@ -235,6 +267,7 @@ var cmm008;
                         employment.displayFlg = 1;
                     else
                         employment.displayFlg = 0;
+                    //新規の時
                     if (self.isEnable()) {
                         a.service.createEmployment(employment).done(function () {
                             $.when(self.dataSource()).done(function () {
@@ -264,8 +297,10 @@ var cmm008;
                         });
                     }
                 };
+                //新規ボタンを押す
                 ScreenModel.prototype.newCreateEmployment = function () {
                     var self = this;
+                    //変更確認
                     if (self.dataSource().length !== 0 && !self.checkChange(self.employmentCode())) {
                         var AL001 = _.find(self.lstMessage(), function (mess) {
                             return mess.messCode === "AL001";
@@ -280,6 +315,7 @@ var cmm008;
                         self.clearItem();
                     }
                 };
+                //tu lam dirty check
                 ScreenModel.prototype.checkChange = function (employmentCodeChk) {
                     var self = this;
                     var chkEmployment = _.find(self.dataSource(), function (employ) {
@@ -319,6 +355,7 @@ var cmm008;
                     self.selectedProcessNo(0);
                     $("#INP_002").focus();
                 };
+                //削除
                 ScreenModel.prototype.deleteEmployment = function () {
                     var self = this;
                     var AL002 = _.find(self.lstMessage(), function (mess) {
@@ -395,4 +432,3 @@ var cmm008;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = cmm008.a || (cmm008.a = {}));
 })(cmm008 || (cmm008 = {}));
-//# sourceMappingURL=cmm008.a.vm.js.map

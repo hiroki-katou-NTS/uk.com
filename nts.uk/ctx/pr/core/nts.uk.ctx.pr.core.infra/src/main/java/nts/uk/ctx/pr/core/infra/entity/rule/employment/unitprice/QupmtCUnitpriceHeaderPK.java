@@ -36,6 +36,7 @@ public class QupmtCUnitpriceHeaderPK implements Serializable {
 	 * Instantiates a new qupmt C unitprice head PK.
 	 */
 	public QupmtCUnitpriceHeaderPK() {
+		super();
 	}
 
 	/**

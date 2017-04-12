@@ -28,15 +28,13 @@
 		<ui:define name="content">
 			<div id="functions-area" class="cf">
 				<div class="aligntLeft">
-					<button id="A_BTN_001" data-bind="click: refreshLayout">新規</button>
-					<button id="A_BTN_002" class="proceed" data-bind="click: insertData, enable: $root.errors.isEmpty" >登録</button>
-					<button id="A_BTN_004">マスタ修正ログ</button>
-					<button id="A_BTN_003" class="danger"
+					<button id="btnCreateNew" data-bind="click: refreshLayout">新規</button>
+					<button id="btnRegister" class="proceed" data-bind="click: insertData, enable: $root.errors.isEmpty" >登録</button>
+					<button id="btnLog">マスタ修正ログ</button>
+					<button id="btnDelete" class="danger"
 						data-bind="click: alertDelete, enable: isDeleteEnable ">削除</button>
 				</div>
-				<div class="alignRight">
-					<label id="A_LBL_001">元号の登録</label>
-				</div>
+				
 			</div>
 			<div id="contents-area" class="cf">
 				<div class="nts-left-content bg-green relative">
@@ -54,33 +52,37 @@
 				</div>
 				<div class="nts-right-content" data-bind = "with: currentEra">
 					<table class="tableRange">
+						<colgroup>
+							<col width="150" />
+							<col width="*" />
+						</colgroup>
 						<tr>
 							<td>
-								<div id="A_LBL_002" data-bind="ntsFormLabel: {required: true, constraint: 'EraName' }">元号</div>
+								<div id="lblEraName" data-bind="ntsFormLabel: {required: true, constraint: 'EraName' }">元号</div>
 							</td>
 							<td>
-								<input id="A_INP_001"  data-bind="ntsTextEditor: { required: true, value: eraName, constraint: 'EraName', 
+								<input id="txtEraName"  data-bind="ntsTextEditor: { required: true, value: eraName, constraint: 'EraName', 
 											enable: $parent.isEnableCode, immediate: true}, hasFocus: true" /> 
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<div id="A_LBL_003" data-bind="ntsFormLabel: {required: true, constraint: 'EraMark' }">記号</div>
+								<div id="lblEraMark" data-bind="ntsFormLabel: {required: true, constraint: 'EraMark' }">記号</div>
 							</td>
 							<td>
-								<input id="A_INP_002"  data-bind="ntsTextEditor: { required: true, value: eraMark, 
+								<input id="txtEraMark"  data-bind="ntsTextEditor: { required: true, value: eraMark, 
 											constraint: 'EraMark', immediate: true}"/>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<div id="A_LBL_004" data-bind="ntsFormLabel: { required: true}">開始年月日</div>
+								<div id="lblStartDate" data-bind="ntsFormLabel: { required: true}">開始年月日</div>
 							</td>
 							<td>
 								<div class="empriseLabel">
-									<div id="A_INP_003" 
-										data-bind="ntsDatePicker: {button: true, value: $parent.startDate, dateFormat: 'yyyy-MM-dd'}"></div>
-									<div style="margin-top: 10px;" data-bind="text:$parent.dateTime"></div>
+									<div id="txtStartDate" 
+										data-bind="ntsDatePicker: {button: true, value: $parent.startDate, dateFormat: 'YYYY/MM/DD'}"></div>
+									<div data-bind="text:$parent.dateTime"></div>
 								</div>
 							</td>
 						</tr>

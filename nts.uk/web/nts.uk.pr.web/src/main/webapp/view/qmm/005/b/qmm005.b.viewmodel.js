@@ -13,6 +13,7 @@ var qmm005;
                 this.lst001Data = ko.observableArray([]);
                 this.lst002Data = ko.observableArray([]);
                 var self = this;
+                // processingNo
                 var dataRow = nts.uk.ui.windows.getShared('dataRow');
                 self.index(dataRow.index());
                 self.lbl002(dataRow.index() + '.');
@@ -31,6 +32,7 @@ var qmm005;
                     }
                     else {
                         self.lbl005("");
+                        // Clear all selected value
                         $('#B_LST_001').ntsListBox('deselectAll');
                     }
                 });
@@ -52,6 +54,7 @@ var qmm005;
                             _loop_1(i, rec);
                         }
                         self.lst001Data(lst001Data);
+                        /// Select tạm ra một object (kiband có sửa phần này)
                         var selectRow = _.find(lst001Data, function (item) { return item.selected; });
                         if (selectRow) {
                             self.lst001(selectRow.index);
@@ -149,4 +152,3 @@ var qmm005;
         }());
     })(b = qmm005.b || (qmm005.b = {}));
 })(qmm005 || (qmm005 = {}));
-//# sourceMappingURL=qmm005.b.viewmodel.js.map

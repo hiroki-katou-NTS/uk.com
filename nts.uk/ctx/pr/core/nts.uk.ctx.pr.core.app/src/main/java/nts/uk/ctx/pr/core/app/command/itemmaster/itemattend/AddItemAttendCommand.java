@@ -9,7 +9,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.ItemAttend;
 @Getter
 @Setter
 public class AddItemAttendCommand {
-	private String itemCd;
+	private String itemCode;
 	private int avePayAtr;
 	private int itemAtr;
 	private int errRangeLowAtr;
@@ -24,7 +24,7 @@ public class AddItemAttendCommand {
 	private String memo;
 
 	public ItemAttend toDomain() {
-		return ItemAttend.createFromJavaType(itemCd, avePayAtr, itemAtr, errRangeLowAtr, errRangeLow, errRangeHighAtr,
+		return ItemAttend.createFromJavaType(itemCode, avePayAtr, itemAtr, errRangeLowAtr, errRangeLow, errRangeHighAtr,
 				errRangeHigh, alRangeLowAtr, alRangeLow, alRangeHighAtr, alRangeHigh, workDaysScopeAtr, memo);
 	}
 }

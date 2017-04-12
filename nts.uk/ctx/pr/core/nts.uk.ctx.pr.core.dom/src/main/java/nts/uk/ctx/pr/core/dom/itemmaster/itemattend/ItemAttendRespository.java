@@ -27,18 +27,18 @@ public interface ItemAttendRespository {
 	 * Update information of item attend
 	 * @param item domain
 	 */
-	void update(ItemAttend item);
+	void update(String companyCode, ItemAttend item);
 
+	void add(String companyCode, ItemAttend itemAttend);
+
+	void delete(String companyCode, String itemCode);
+	
 	/**
-	 * Update average wage attribute of multiple item
-	 * @param companyCode company code
-	 * @param itemCodeList list of item code
-	 * @param avePayAtr average wage attribute: NotApplicable or Object
+	 * Update AvePayAtr multiple items
+	 * @param companyCode
+	 * @param itemCodeList
+	 * @param avePayAtr
 	 */
 	void updateItems(String companyCode, List<String> itemCodeList, AvePayAtr avePayAtr);
-	
-	void add(ItemAttend itemAttend);
-
-	void delete(String companyCode);
 	
 }

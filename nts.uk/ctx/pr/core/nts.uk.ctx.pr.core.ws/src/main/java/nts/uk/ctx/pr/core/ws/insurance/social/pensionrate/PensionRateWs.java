@@ -16,8 +16,6 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.DeletePensionCommand;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.DeletePensionCommandHandler;
-import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.RegisterPensionCommand;
-import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.RegisterPensionCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.UpdatePensionCommand;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.UpdatePensionCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.find.PensionOfficeItemDto;
@@ -45,10 +43,6 @@ public class PensionRateWs extends SimpleHistoryWs<SocialInsuranceOffice, Pensio
 	/** The pension rate finder. */
 	@Inject
 	private PensionRateFinder pensionRateFinder;
-
-	/** The register pension command handler. */
-	@Inject
-	private RegisterPensionCommandHandler registerPensionCommandHandler;
 
 	/** The update pension command handler. */
 	@Inject
@@ -91,17 +85,6 @@ public class PensionRateWs extends SimpleHistoryWs<SocialInsuranceOffice, Pensio
 	@Path("findAllHistory")
 	public List<PensionOfficeItemDto> findbyCode() {
 		return pensionRateFinder.findAllHistory();
-	}
-
-	/**
-	 * Creates the.
-	 *
-	 * @param command the command
-	 */
-	@POST
-	@Path("create")
-	public void create(RegisterPensionCommand command) {
-		registerPensionCommandHandler.handle(command);
 	}
 
 	/**

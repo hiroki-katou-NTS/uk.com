@@ -35,7 +35,7 @@ public class AddCompanyCommandHandler extends CommandHandler<AddCompanyCommand> 
 		companyCheckExist = this.companyRepository.getCompanyDetail(addCompany.getCompanyCode());
 		// notification error 005 check in account -> add account (sign up)
 		if (companyCheckExist.isPresent()) {
-			throw new BusinessException(new RawErrorMessage("入力した 会社コード は既に存在しています。\r\n。 " + "を確認してください again。"));
+			throw new BusinessException(new RawErrorMessage("入力した 会社コード は既に存在しています。\r\n。 " + "を確認してください 。"));
 		} else {
 			this.companyRepository.add(company);
 		}
