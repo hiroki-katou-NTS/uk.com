@@ -51,9 +51,6 @@ var nts;
                                         return self.selectedpageBreakSetting() == '4';
                                     });
                                 }
-                                /**
-                                 * Start srceen.
-                                 */
                                 ScreenModel.prototype.start = function () {
                                     var dfd = $.Deferred();
                                     var self = this;
@@ -75,16 +72,13 @@ var nts;
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.openPrintSettingDialog = function () {
-                                    // Set parent value
                                     nts.uk.ui.windows.setShared("data", "nothing");
                                     nts.uk.ui.windows.sub.modal("/view/qpp/007/b/index.xhtml", { title: "印刷設定", dialogClass: 'no-close' }).onClosed(function () {
-                                        // Get child value
                                         var returnValue = nts.uk.ui.windows.getShared("childData");
                                     });
                                 };
                                 ScreenModel.prototype.openSalaryOuputSettingDialog = function () {
                                     nts.uk.ui.windows.sub.modal("/view/qpp/007/c/index.xhtml", { title: "出力項目の設定", dialogClass: 'no-close' }).onClosed(function () {
-                                        // Get child value
                                     });
                                 };
                                 ScreenModel.prototype.saveAsPdf = function () {
@@ -114,9 +108,6 @@ var nts;
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
-                            /**
-                             *  Class Page Break setting
-                             */
                             var SelectionModel = (function () {
                                 function SelectionModel(code, name) {
                                     this.code = code;
@@ -132,3 +123,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qpp007.a.vm.js.map

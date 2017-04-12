@@ -35,6 +35,20 @@ public class LineBank extends AggregateRoot {
 	@Getter
 	private RequesterName requesterName;
 
+	@Override
+	public void validate() {
+		super.validate();
+		
+		if (StringUtil.isNullOrEmpty(lineBankCode.v(), true) || StringUtil.isNullOrEmpty(lineBankName.v(), true)
+				|| StringUtil.isNullOrEmpty(accountNo.v(), true)) {
+			throw new BusinessException("ER001");
+		}
+
+		if (StringUtil.isNullOrEmpty(branchId, true)) {
+			throw new BusinessException("ER007");
+		}
+	}
+
 	public LineBank(String companyCode, AccountAtr accountAtr, AccountNo accountNo, String branchId,
 			LineBankCode lineBankCode, LineBankName lineBankName, Memo memo, RequesterName requesterName) {
 		super();
@@ -64,19 +78,6 @@ public class LineBank extends AggregateRoot {
 	 */
 	public static LineBank createFromJavaType(String companyCode, int accountAtr, String accountNo, String branchId,
 			String lineBankCode, String lineBankName, String memo, String requesterName) {
-		if (StringUtil.isNullOrEmpty(lineBankCode, true) || StringUtil.isNullOrEmpty(lineBankName, true)
-				|| StringUtil.isNullOrEmpty(accountNo, true)) {
-			throw new BusinessException("ER001");
-		}
-
-		// if (StringUtil.isNullOrEmpty(bankCode, true) ||
-		// StringUtil.isNullOrEmpty(branchCode, true)) {
-		// throw new BusinessException("ER007");
-		// }
-
-		if (StringUtil.isNullOrEmpty(branchId, true)) {
-			throw new BusinessException("ER007");
-		}
 
 		return new LineBank(companyCode, EnumAdaptor.valueOf(accountAtr, AccountAtr.class), new AccountNo(accountNo),
 				branchId, new LineBankCode(lineBankCode), new LineBankName(lineBankName), new Memo(memo),
@@ -106,4 +107,5 @@ public class LineBank extends AggregateRoot {
 		consignor.add(new Consignor(new ConsignorCode(code4), new ConsignorMemo(memo4)));
 		consignor.add(new Consignor(new ConsignorCode(code5), new ConsignorMemo(memo5)));
 	}
+
 }
