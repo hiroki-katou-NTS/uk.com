@@ -29,7 +29,9 @@ public class AddLineBankCommandHandler extends CommandHandler<LineBankCommandBas
 	protected void handle(CommandHandlerContext<LineBankCommandBase> context) {
 		String companyCode = AppContexts.user().companyCode();
 		LineBank lineBank = context.getCommand().toDomain(companyCode);
-
+		
+		lineBank.validate();
+		
 		// check exist lineBankCode
 		Optional<LineBank> lineBankOpt = this.lineBankRepository.find(companyCode, lineBank.getLineBankCode().v());
 		if (lineBankOpt.isPresent()) {

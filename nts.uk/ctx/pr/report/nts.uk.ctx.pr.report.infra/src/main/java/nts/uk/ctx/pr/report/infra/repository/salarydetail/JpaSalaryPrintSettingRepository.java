@@ -6,8 +6,8 @@ package nts.uk.ctx.pr.report.infra.repository.salarydetail;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.pr.report.dom.salarydetail.SalaryPrintSetting;
-import nts.uk.ctx.pr.report.dom.salarydetail.SalaryPrintSettingRepository;
+import nts.uk.ctx.pr.report.dom.salarydetail.printsetting.SalaryPrintSetting;
+import nts.uk.ctx.pr.report.dom.salarydetail.printsetting.SalaryPrintSettingRepository;
 
 /**
  * The Class JpaSalaryPrintSettingRepository.

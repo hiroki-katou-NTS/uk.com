@@ -467,12 +467,14 @@ module nts.uk.pr.view.qmm011.a {
                             && self.typeActionUnemployeeInsurance() == TypeActionInsuranceRate.update) {
                             nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function() {
                                 self.isShowDirtyUnemployeeInsurance(false);
+                                self.clearErrorSaveUnemployeeInsurance();
                                 self.detailUnemployeeInsuranceRateHistory(selectionUnemployeeInsuranceRateHistory);
                             }).ifNo(function() {
                                 self.selectionUnemployeeInsuranceRateHistory(self.preSelectUnemployeeInsuranceRateHistory());
                             });
                         }
                     } else {
+                        self.clearErrorSaveUnemployeeInsurance();
                         self.detailUnemployeeInsuranceRateHistory(selectionUnemployeeInsuranceRateHistory);
                     }
                 }

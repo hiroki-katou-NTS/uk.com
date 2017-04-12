@@ -14,7 +14,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.UnemployeeInsuranceHistoryFinder;
-import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto.UnemployeeInsuranceHistoryFindOutDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto.UnemployeeInsuranceHistoryFindDto;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.history.command.UnemployeeInsuranceHistoryUpdateCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.history.command.UnemployeeInsuranceHistoryUpdateCommandHandler;
 
@@ -40,7 +40,7 @@ public class UnemployeeInsuranceHistoryWs extends WebService {
 	 */
 	@POST
 	@Path("findall")
-	public List<UnemployeeInsuranceHistoryFindOutDto> findAll() {
+	public List<UnemployeeInsuranceHistoryFindDto> findAll() {
 		return this.find.findAll();
 	}
 
@@ -53,7 +53,7 @@ public class UnemployeeInsuranceHistoryWs extends WebService {
 	 */
 	@POST
 	@Path("find/{historyId}")
-	public UnemployeeInsuranceHistoryFindOutDto findHistory(
+	public UnemployeeInsuranceHistoryFindDto findHistory(
 			@PathParam("historyId") String historyId) {
 		return this.find.find(historyId);
 	}

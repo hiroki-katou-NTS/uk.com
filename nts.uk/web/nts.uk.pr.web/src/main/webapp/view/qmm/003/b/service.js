@@ -8,9 +8,6 @@ var qmm003;
                 getResidentalTaxList: "pr/core/residential/findallByCompanyCode",
                 getRegionPrefecture: "pr/core/residential/getlistLocation"
             };
-            /**
-             * Get list payment date processing.
-             */
             function getResidentialTax() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getResidentalTaxList)
@@ -81,3 +78,4 @@ var qmm003;
         })(service = b.service || (b.service = {}));
     })(b = qmm003.b || (qmm003.b = {}));
 })(qmm003 || (qmm003 = {}));
+//# sourceMappingURL=service.js.map

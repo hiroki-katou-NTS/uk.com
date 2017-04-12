@@ -24,7 +24,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class AccidentInsuranceRateDeleteCommandHandler
 	extends CommandHandler<AccidentInsuranceRateDeleteCommand> {
 
-	/** The accident insurance rate repo. */
+	/** The repository. */
 	@Inject
 	private AccidentInsuranceRateRepository repository;
 

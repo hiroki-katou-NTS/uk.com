@@ -17,8 +17,17 @@ module nts.uk.pr.view.qpp018.c {
         /**
          * save checklist print setting
          */
-        export function saveCheckListPrintSetting(command: any): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.saveCheckListPrintSetting, command)
+        export function saveCheckListPrintSetting(data: viewmodel.ScreenModel): JQueryPromise<any> {
+            var checklistSetting = data.checklistPrintSettingModel();
+            var jsonData = {
+                showCategoryInsuranceItem : checklistSetting.showCategoryInsuranceItem(),
+                showDetail : checklistSetting.showDetail(),
+                showOffice : checklistSetting.showOffice(),
+                showTotal : checklistSetting.showTotal(),
+                showDeliveryNoticeAmount : checklistSetting.showDeliveryNoticeAmount()
+                }
+            
+            return nts.uk.request.ajax(paths.saveCheckListPrintSetting, jsonData);
         }
         
         /**
