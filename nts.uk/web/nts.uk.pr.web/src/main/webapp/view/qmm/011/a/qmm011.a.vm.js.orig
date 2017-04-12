@@ -622,9 +622,13 @@ var nts;
                                             self.lstUnemployeeInsuranceRateHistory(data);
                                             //call detail history unemployee insurance rate
                                             self.detailUnemployeeInsuranceRateHistory(historyId).done(function (data) {
-                                                //set enable input viewmodel
+<<<<<<< HEAD
                                                 self.isEnableSaveUnemployeeInsurance(true);
                                                 self.isEnableEditUnemployeeInsurance(true);
+=======
+                                                //set enable input viewmodel
+                                                self.unemployeeInsuranceRateModel().setEnable(true);
+>>>>>>> b394b5efcfe33a737cdffcd1543cf21724b39632
                                             });
                                         }
                                         else {

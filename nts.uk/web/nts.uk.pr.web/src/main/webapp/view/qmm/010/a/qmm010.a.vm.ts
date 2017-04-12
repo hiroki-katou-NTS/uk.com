@@ -212,7 +212,7 @@ module nts.uk.pr.view.qmm010.a {
                 $("#inp_officeNoB").ntsEditor("validate");
                 $("#inp_officeNoC").ntsEditor("validate");
             }
-            //Function action button save Onclick
+            //Function action button save on click
             private saveLaborInsuranceOffice() {
                 var self = this;
 
