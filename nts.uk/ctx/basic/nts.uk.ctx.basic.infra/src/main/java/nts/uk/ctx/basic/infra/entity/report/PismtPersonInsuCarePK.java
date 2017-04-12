@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.pr.file.infra.entity;
+package nts.uk.ctx.basic.infra.entity.report;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
@@ -13,52 +13,51 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class PismtPersonInsuPensBPK.
+ * The Class PismtPersonInsuCarePK.
  */
-@Embeddable
 @Setter
 @Getter
-public class ReportPismtPersonInsuPensBPK implements Serializable {
-
+@Embeddable
+public class PismtPersonInsuCarePK implements Serializable {
+	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-
+	
 	/** The ccd. */
 	@Basic(optional = false)
 	@Column(name = "CCD")
 	private String ccd;
-
+	
 	/** The pid. */
 	@Basic(optional = false)
 	@Column(name = "PID")
 	private String pid;
-
+	
 	/** The hist id. */
 	@Basic(optional = false)
 	@Column(name = "HIST_ID")
 	private String histId;
 
 	/**
-	 * Instantiates a new pismt person insu pens BPK.
+	 * Instantiates a new pismt person insu care PK.
 	 */
-	public ReportPismtPersonInsuPensBPK() {
+	public PismtPersonInsuCarePK() {
 	}
 
 	/**
-	 * Instantiates a new pismt person insu pens BPK.
+	 * Instantiates a new pismt person insu care PK.
 	 *
 	 * @param ccd the ccd
 	 * @param pid the pid
 	 * @param histId the hist id
 	 */
-	public ReportPismtPersonInsuPensBPK(String ccd, String pid, String histId) {
+	public PismtPersonInsuCarePK(String ccd, String pid, String histId) {
 		this.ccd = ccd;
 		this.pid = pid;
 		this.histId = histId;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -70,18 +69,15 @@ public class ReportPismtPersonInsuPensBPK implements Serializable {
 		return hash;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are
-		// not set
-		if (!(object instanceof ReportPismtPersonInsuPensBPK)) {
+		if (!(object instanceof PismtPersonInsuCarePK)) {
 			return false;
 		}
-		ReportPismtPersonInsuPensBPK other = (ReportPismtPersonInsuPensBPK) object;
+		PismtPersonInsuCarePK other = (PismtPersonInsuCarePK) object;
 		if ((this.ccd == null && other.ccd != null) || (this.ccd != null && !this.ccd.equals(other.ccd))) {
 			return false;
 		}
@@ -95,13 +91,12 @@ public class ReportPismtPersonInsuPensBPK implements Serializable {
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "entity.PismtPersonInsuPensBPK[ ccd=" + ccd + ", pid=" + pid + ", histId=" + histId + " ]";
+		return "entity.PismtPersonInsuCarePK[ ccd=" + ccd + ", pid=" + pid + ", histId=" + histId + " ]";
 	}
 
 }

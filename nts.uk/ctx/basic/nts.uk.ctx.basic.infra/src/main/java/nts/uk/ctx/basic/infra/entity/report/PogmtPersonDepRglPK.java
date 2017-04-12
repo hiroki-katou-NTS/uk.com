@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.pr.file.infra.entity;
+package nts.uk.ctx.basic.infra.entity.report;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
@@ -13,7 +13,7 @@ import javax.persistence.Embeddable;
  * The Class PogmtPersonDepRglPK.
  */
 @Embeddable
-public class ReportPogmtPersonDepRglPK implements Serializable {
+public class PogmtPersonDepRglPK implements Serializable {
     
     /** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -36,7 +36,7 @@ public class ReportPogmtPersonDepRglPK implements Serializable {
     /**
      * Instantiates a new pogmt person dep rgl PK.
      */
-    public ReportPogmtPersonDepRglPK() {
+    public PogmtPersonDepRglPK() {
     }
 
     /**
@@ -46,7 +46,7 @@ public class ReportPogmtPersonDepRglPK implements Serializable {
      * @param pid the pid
      * @param histId the hist id
      */
-    public ReportPogmtPersonDepRglPK(String ccd, String pid, String histId) {
+    public PogmtPersonDepRglPK(String ccd, String pid, String histId) {
         this.ccd = ccd;
         this.pid = pid;
         this.histId = histId;
@@ -69,10 +69,10 @@ public class ReportPogmtPersonDepRglPK implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof ReportPogmtPersonDepRglPK)) {
+        if (!(object instanceof PogmtPersonDepRglPK)) {
             return false;
         }
-        ReportPogmtPersonDepRglPK other = (ReportPogmtPersonDepRglPK) object;
+        PogmtPersonDepRglPK other = (PogmtPersonDepRglPK) object;
         if ((this.ccd == null && other.ccd != null) || (this.ccd != null && !this.ccd.equals(other.ccd))) {
             return false;
         }

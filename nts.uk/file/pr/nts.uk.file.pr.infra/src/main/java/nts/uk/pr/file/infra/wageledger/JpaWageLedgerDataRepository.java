@@ -16,16 +16,16 @@ import javax.persistence.TypedQuery;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.basic.infra.entity.organization.department.CmnmtDep;
+import nts.uk.ctx.basic.infra.entity.report.PbsmtPersonBase;
+import nts.uk.ctx.basic.infra.entity.report.PcpmtPersonCom;
+import nts.uk.ctx.basic.infra.entity.report.PogmtPersonDepRgl;
 import nts.uk.file.pr.app.export.wageledger.WageLedgerDataRepository;
 import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery;
 import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery.OutputType;
 import nts.uk.file.pr.app.export.wageledger.data.WLNewLayoutReportData;
 import nts.uk.file.pr.app.export.wageledger.data.WLOldLayoutReportData;
 import nts.uk.file.pr.app.export.wageledger.data.share.HeaderReportData;
-import nts.uk.pr.file.infra.entity.ReportCmnmtDep;
-import nts.uk.pr.file.infra.entity.ReportPbsmtPersonBase;
-import nts.uk.pr.file.infra.entity.ReportPcpmtPersonCom;
-import nts.uk.pr.file.infra.entity.ReportPogmtPersonDepRgl;
 
 /**
  * The Class JpaWageLedgerDataRepository.
@@ -70,7 +70,7 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		EntityManager em = this.getEntityManager();
 		
 		// Create Query String.
-		String queryString = "SELECT COUNT(h.qstdtPaymentHeaderPK.personId) FROM ReportQstdtPaymentHeader h "
+		String queryString = "SELECT COUNT(h.qstdtPaymentHeaderPK.personId) FROM QstdtPaymentHeader h "
 			+ "WHERE h.qstdtPaymentHeaderPK.companyCode = :companyCode "
 			+ "AND h.qstdtPaymentHeaderPK.personId IN :personIds "
 			+ "AND h.qstdtPaymentHeaderPK.sparePayAtr = :sparePayAtr "
@@ -103,11 +103,11 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		
 		// Create Query String.
 		String queryString = "SELECT p, m, d, pc, pd, cd "
-				+ "FROM ReportPbsmtPersonBase p, ReportQcamtItem m, "
-				+ "ReportQstdtPaymentDetail d, "
-				+ "ReportPcpmtPersonCom pc, "
-				+ "ReportPogmtPersonDepRgl pd, "
-				+ "ReportCmnmtDep cd "
+				+ "FROM PbsmtPersonBase p, ReportQcamtItem m, "
+				+ "QstdtPaymentDetail d, "
+				+ "PcpmtPersonCom pc, "
+				+ "PogmtPersonDepRgl pd, "
+				+ "CmnmtDep cd "
 				+ "WHERE p.pid = d.qstdtPaymentDetailPK.personId "
 				+ "AND d.qstdtPaymentDetailPK.itemCode = m.qcamtItemPK.itemCd "
 				+ "AND d.qstdtPaymentDetailPK.ccd = m.qcamtItemPK.ccd "
@@ -150,11 +150,11 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		// Group by user.
 		Map<Object, List<Object[]>> userMap = itemList.stream().collect(Collectors.groupingBy(item -> item[0])); 
 		for (Object user : userMap.keySet()) {
-			ReportPbsmtPersonBase personBase = (ReportPbsmtPersonBase) user;
+			PbsmtPersonBase personBase = (PbsmtPersonBase) user;
 			List<Object[]> detail = userMap.get(user);
-			ReportPcpmtPersonCom personCompany = (ReportPcpmtPersonCom) detail.get(0)[3];
-			ReportPogmtPersonDepRgl personDepartment = (ReportPogmtPersonDepRgl) detail.get(0)[4];
-			ReportCmnmtDep departmentMaster = (ReportCmnmtDep) detail.get(0)[5];
+			PcpmtPersonCom personCompany = (PcpmtPersonCom) detail.get(0)[3];
+			PogmtPersonDepRgl personDepartment = (PogmtPersonDepRgl) detail.get(0)[4];
+			CmnmtDep departmentMaster = (CmnmtDep) detail.get(0)[5];
 			
 			// Convert to header data.
 			// TODO: Wait QA #82348

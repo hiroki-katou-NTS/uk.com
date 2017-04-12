@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.pr.file.infra.entity;
+package nts.uk.ctx.basic.infra.entity.report;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -25,14 +25,14 @@ import lombok.Setter;
 @Setter
 @Getter
 @Table(name = "PISMT_PERSON_INSU_SOCIAL")
-public class ReportPismtPersonInsuSocial implements Serializable {
+public class PismtPersonInsuSocial implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 	
 	/** The pismt person insu social PK. */
 	@EmbeddedId
-	protected ReportPismtPersonInsuSocialPK pismtPersonInsuSocialPK;
+	protected PismtPersonInsuSocialPK pismtPersonInsuSocialPK;
 	
 	/** The ins date. */
 	@Column(name = "INS_DATE")
@@ -160,7 +160,7 @@ public class ReportPismtPersonInsuSocial implements Serializable {
 	/**
 	 * Instantiates a new pismt person insu social.
 	 */
-	public ReportPismtPersonInsuSocial() {
+	public PismtPersonInsuSocial() {
 	}
 
 	/**
@@ -168,7 +168,7 @@ public class ReportPismtPersonInsuSocial implements Serializable {
 	 *
 	 * @param pismtPersonInsuSocialPK the pismt person insu social PK
 	 */
-	public ReportPismtPersonInsuSocial(ReportPismtPersonInsuSocialPK pismtPersonInsuSocialPK) {
+	public PismtPersonInsuSocial(PismtPersonInsuSocialPK pismtPersonInsuSocialPK) {
 		this.pismtPersonInsuSocialPK = pismtPersonInsuSocialPK;
 	}
 
@@ -189,10 +189,10 @@ public class ReportPismtPersonInsuSocial implements Serializable {
 	public boolean equals(Object object) {
 		// TODO: Warning - this method won't work in the case the id fields are
 		// not set
-		if (!(object instanceof ReportPismtPersonInsuSocial)) {
+		if (!(object instanceof PismtPersonInsuSocial)) {
 			return false;
 		}
-		ReportPismtPersonInsuSocial other = (ReportPismtPersonInsuSocial) object;
+		PismtPersonInsuSocial other = (PismtPersonInsuSocial) object;
 		if ((this.pismtPersonInsuSocialPK == null && other.pismtPersonInsuSocialPK != null)
 				|| (this.pismtPersonInsuSocialPK != null
 						&& !this.pismtPersonInsuSocialPK.equals(other.pismtPersonInsuSocialPK))) {

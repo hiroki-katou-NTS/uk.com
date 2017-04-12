@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.pr.file.infra.entity;
+package nts.uk.ctx.basic.infra.entity.report;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -19,147 +19,142 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class PismtPersonInsuHealB.
+ * The Class PismtPersonInsuPensB.
  */
 @Entity
 @Setter
 @Getter
-@Table(name = "PISMT_PERSON_INSU_HEAL_B")
-public class ReportPismtPersonInsuHealB implements Serializable {
-
+@Table(name = "PISMT_PERSON_INSU_PENS_B")
+public class PismtPersonInsuPensB implements Serializable {
+	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-
-	/** The pismt person insu heal BPK. */
+	
+	/** The pismt person insu pens BPK. */
 	@EmbeddedId
-	protected ReportPismtPersonInsuHealBPK pismtPersonInsuHealBPK;
-
+	protected PismtPersonInsuPensBPK pismtPersonInsuPensBPK;
+	
 	/** The ins date. */
 	@Column(name = "INS_DATE")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date insDate;
-
+	
 	/** The ins ccd. */
 	@Column(name = "INS_CCD")
 	private String insCcd;
-
+	
 	/** The ins scd. */
 	@Column(name = "INS_SCD")
 	private String insScd;
-
+	
 	/** The ins pg. */
 	@Column(name = "INS_PG")
 	private String insPg;
-
+	
 	/** The upd date. */
 	@Column(name = "UPD_DATE")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updDate;
-
+	
 	/** The upd ccd. */
 	@Column(name = "UPD_CCD")
 	private String updCcd;
-
+	
 	/** The upd scd. */
 	@Column(name = "UPD_SCD")
 	private String updScd;
-
+	
 	/** The upd pg. */
 	@Column(name = "UPD_PG")
 	private String updPg;
-
+	
 	/** The exclus ver. */
 	@Basic(optional = false)
 	@Column(name = "EXCLUS_VER")
 	private int exclusVer;
-
+	
 	/** The inv scd. */
 	@Column(name = "INV_SCD")
 	private String invScd;
-
+	
 	/** The str ym. */
 	@Basic(optional = false)
 	@Column(name = "STR_YM")
 	private int strYm;
-
+	
 	/** The end ym. */
 	@Basic(optional = false)
 	@Column(name = "END_YM")
 	private int endYm;
-
+	
 	/** The fix occasion atr. */
 	@Basic(optional = false)
 	@Column(name = "FIX_OCCASION_ATR")
 	private short fixOccasionAtr;
-
-	/** The health insu grade. */
+	
+	/** The pension insu grade. */
 	@Basic(optional = false)
-	@Column(name = "HEALTH_INSU_GRADE")
-	private short healthInsuGrade;
-
-	/** The health insu avg earn. */
+	@Column(name = "PENSION_INSU_GRADE")
+	private short pensionInsuGrade;
+	
+	/** The pension avg earn. */
 	@Basic(optional = false)
-	@Column(name = "HEALTH_INSU_AVG_EARN")
-	private long healthInsuAvgEarn;
-
-	/** The health insu pra earn. */
+	@Column(name = "PENSION_AVG_EARN")
+	private long pensionAvgEarn;
+	
+	/** The pension pra earn. */
 	@Basic(optional = false)
-	@Column(name = "HEALTH_INSU_PRA_EARN")
-	private long healthInsuPraEarn;
+	@Column(name = "PENSION_PRA_EARN")
+	private long pensionPraEarn;
 
 	/**
-	 * Instantiates a new pismt person insu heal B.
+	 * Instantiates a new pismt person insu pens B.
 	 */
-	public ReportPismtPersonInsuHealB() {
+	public PismtPersonInsuPensB() {
 	}
 
 	/**
-	 * Instantiates a new pismt person insu heal B.
+	 * Instantiates a new pismt person insu pens B.
 	 *
-	 * @param pismtPersonInsuHealBPK the pismt person insu heal BPK
+	 * @param pismtPersonInsuPensBPK the pismt person insu pens BPK
 	 */
-	public ReportPismtPersonInsuHealB(ReportPismtPersonInsuHealBPK pismtPersonInsuHealBPK) {
-		this.pismtPersonInsuHealBPK = pismtPersonInsuHealBPK;
+	public PismtPersonInsuPensB(PismtPersonInsuPensBPK pismtPersonInsuPensBPK) {
+		this.pismtPersonInsuPensBPK = pismtPersonInsuPensBPK;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (pismtPersonInsuHealBPK != null ? pismtPersonInsuHealBPK.hashCode() : 0);
+		hash += (pismtPersonInsuPensBPK != null ? pismtPersonInsuPensBPK.hashCode() : 0);
 		return hash;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are
-		// not set
-		if (!(object instanceof ReportPismtPersonInsuHealB)) {
+		if (!(object instanceof PismtPersonInsuPensB)) {
 			return false;
 		}
-		ReportPismtPersonInsuHealB other = (ReportPismtPersonInsuHealB) object;
-		if ((this.pismtPersonInsuHealBPK == null && other.pismtPersonInsuHealBPK != null)
-				|| (this.pismtPersonInsuHealBPK != null
-						&& !this.pismtPersonInsuHealBPK.equals(other.pismtPersonInsuHealBPK))) {
+		PismtPersonInsuPensB other = (PismtPersonInsuPensB) object;
+		if ((this.pismtPersonInsuPensBPK == null && other.pismtPersonInsuPensBPK != null)
+				|| (this.pismtPersonInsuPensBPK != null
+						&& !this.pismtPersonInsuPensBPK.equals(other.pismtPersonInsuPensBPK))) {
 			return false;
 		}
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "entity.PismtPersonInsuHealB[ pismtPersonInsuHealBPK=" + pismtPersonInsuHealBPK + " ]";
+		return "entity.PismtPersonInsuPensB[ pismtPersonInsuPensBPK=" + pismtPersonInsuPensBPK + " ]";
 	}
 
 }

@@ -3,7 +3,7 @@
  * All right reserved.                                            *
  *****************************************************************/
 
-package nts.uk.pr.file.infra.entity;
+package nts.uk.ctx.basic.infra.entity.report;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
@@ -19,7 +19,7 @@ import lombok.Setter;
 @Embeddable
 @Setter
 @Getter
-public class ReportPcpmtPersonComPK implements Serializable {
+public class PcpmtPersonComPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -42,7 +42,7 @@ public class ReportPcpmtPersonComPK implements Serializable {
 	/**
 	 * Instantiates a new pcpmt person com PK.
 	 */
-	public ReportPcpmtPersonComPK() {
+	public PcpmtPersonComPK() {
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class ReportPcpmtPersonComPK implements Serializable {
 	 * @param pid the pid
 	 * @param histId the hist id
 	 */
-	public ReportPcpmtPersonComPK(String ccd, String pid, String histId) {
+	public PcpmtPersonComPK(String ccd, String pid, String histId) {
 		this.ccd = ccd;
 		this.pid = pid;
 		this.histId = histId;
@@ -64,10 +64,10 @@ public class ReportPcpmtPersonComPK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof ReportPcpmtPersonComPK)) {
+		if (!(object instanceof PcpmtPersonComPK)) {
 			return false;
 		}
-		ReportPcpmtPersonComPK other = (ReportPcpmtPersonComPK) object;
+		PcpmtPersonComPK other = (PcpmtPersonComPK) object;
 		if ((this.ccd == null && other.ccd != null) || (this.ccd != null && !this.ccd.equals(other.ccd))) {
 			return false;
 		}

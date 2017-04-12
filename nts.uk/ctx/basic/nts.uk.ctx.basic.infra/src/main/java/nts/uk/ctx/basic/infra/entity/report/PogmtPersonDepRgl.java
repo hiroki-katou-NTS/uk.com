@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.pr.file.infra.entity;
+package nts.uk.ctx.basic.infra.entity.report;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -26,14 +26,14 @@ import lombok.Setter;
 @Table(name = "POGMT_PERSON_DEP_RGL")
 @Setter
 @Getter
-public class ReportPogmtPersonDepRgl implements Serializable {
+public class PogmtPersonDepRgl implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The pogmt person dep rgl PK. */
 	@EmbeddedId
-	protected ReportPogmtPersonDepRglPK pogmtPersonDepRglPK;
+	protected PogmtPersonDepRglPK pogmtPersonDepRglPK;
 
 	/** The ins date. */
 	@Column(name = "INS_DATE")
@@ -217,10 +217,10 @@ public class ReportPogmtPersonDepRgl implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof ReportPogmtPersonDepRgl)) {
+		if (!(object instanceof PogmtPersonDepRgl)) {
 			return false;
 		}
-		ReportPogmtPersonDepRgl other = (ReportPogmtPersonDepRgl) object;
+		PogmtPersonDepRgl other = (PogmtPersonDepRgl) object;
 		if ((this.pogmtPersonDepRglPK == null && other.pogmtPersonDepRglPK != null)
 				|| (this.pogmtPersonDepRglPK != null && !this.pogmtPersonDepRglPK.equals(other.pogmtPersonDepRglPK))) {
 			return false;

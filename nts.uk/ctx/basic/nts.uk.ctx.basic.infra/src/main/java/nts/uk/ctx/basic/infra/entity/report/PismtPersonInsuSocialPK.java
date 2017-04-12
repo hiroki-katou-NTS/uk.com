@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.pr.file.infra.entity;
+package nts.uk.ctx.basic.infra.entity.report;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
@@ -13,12 +13,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class PismtPersonInsuHealBPK.
+ * The Class PismtPersonInsuSocialPK.
  */
+@Embeddable
 @Setter
 @Getter
-@Embeddable
-public class ReportPismtPersonInsuHealBPK implements Serializable {
+public class PismtPersonInsuSocialPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -39,19 +39,19 @@ public class ReportPismtPersonInsuHealBPK implements Serializable {
 	private String histId;
 
 	/**
-	 * Instantiates a new pismt person insu heal BPK.
+	 * Instantiates a new pismt person insu social PK.
 	 */
-	public ReportPismtPersonInsuHealBPK() {
+	public PismtPersonInsuSocialPK() {
 	}
 
 	/**
-	 * Instantiates a new pismt person insu heal BPK.
+	 * Instantiates a new pismt person insu social PK.
 	 *
 	 * @param ccd the ccd
 	 * @param pid the pid
 	 * @param histId the hist id
 	 */
-	public ReportPismtPersonInsuHealBPK(String ccd, String pid, String histId) {
+	public PismtPersonInsuSocialPK(String ccd, String pid, String histId) {
 		this.ccd = ccd;
 		this.pid = pid;
 		this.histId = histId;
@@ -76,10 +76,10 @@ public class ReportPismtPersonInsuHealBPK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof ReportPismtPersonInsuHealBPK)) {
+		if (!(object instanceof PismtPersonInsuSocialPK)) {
 			return false;
 		}
-		ReportPismtPersonInsuHealBPK other = (ReportPismtPersonInsuHealBPK) object;
+		PismtPersonInsuSocialPK other = (PismtPersonInsuSocialPK) object;
 		if ((this.ccd == null && other.ccd != null) || (this.ccd != null && !this.ccd.equals(other.ccd))) {
 			return false;
 		}
@@ -99,7 +99,7 @@ public class ReportPismtPersonInsuHealBPK implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "entity.PismtPersonInsuHealBPK[ ccd=" + ccd + ", pid=" + pid + ", histId=" + histId + " ]";
+		return "entity.PismtPersonInsuSocialPK[ ccd=" + ccd + ", pid=" + pid + ", histId=" + histId + " ]";
 	}
 
 }

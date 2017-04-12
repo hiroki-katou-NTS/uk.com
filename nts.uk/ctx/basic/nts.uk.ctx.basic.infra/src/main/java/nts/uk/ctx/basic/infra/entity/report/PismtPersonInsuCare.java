@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.pr.file.infra.entity;
+package nts.uk.ctx.basic.infra.entity.report;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -25,14 +25,14 @@ import lombok.Setter;
 @Getter
 @Entity
 @Table(name = "PISMT_PERSON_INSU_CARE")
-public class ReportPismtPersonInsuCare implements Serializable {
+public class PismtPersonInsuCare implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 	
 	/** The pismt person insu care PK. */
 	@EmbeddedId
-	protected ReportPismtPersonInsuCarePK pismtPersonInsuCarePK;
+	protected PismtPersonInsuCarePK pismtPersonInsuCarePK;
 	
 	/** The ins date. */
 	@Column(name = "INS_DATE")
@@ -105,7 +105,7 @@ public class ReportPismtPersonInsuCare implements Serializable {
 	/**
 	 * Instantiates a new pismt person insu care.
 	 */
-	public ReportPismtPersonInsuCare() {
+	public PismtPersonInsuCare() {
 	}
 
 	/**
@@ -113,7 +113,7 @@ public class ReportPismtPersonInsuCare implements Serializable {
 	 *
 	 * @param pismtPersonInsuCarePK the pismt person insu care PK
 	 */
-	public ReportPismtPersonInsuCare(ReportPismtPersonInsuCarePK pismtPersonInsuCarePK) {
+	public PismtPersonInsuCare(PismtPersonInsuCarePK pismtPersonInsuCarePK) {
 		this.pismtPersonInsuCarePK = pismtPersonInsuCarePK;
 	}
 
@@ -126,7 +126,7 @@ public class ReportPismtPersonInsuCare implements Serializable {
 	 * @param endD the end D
 	 * @param careInsuAtr the care insu atr
 	 */
-	public ReportPismtPersonInsuCare(ReportPismtPersonInsuCarePK pismtPersonInsuCarePK, int exclusVer, Date strD, Date endD,
+	public PismtPersonInsuCare(PismtPersonInsuCarePK pismtPersonInsuCarePK, int exclusVer, Date strD, Date endD,
 			short careInsuAtr) {
 		this.pismtPersonInsuCarePK = pismtPersonInsuCarePK;
 		this.exclusVer = exclusVer;
@@ -142,8 +142,8 @@ public class ReportPismtPersonInsuCare implements Serializable {
 	 * @param pid the pid
 	 * @param histId the hist id
 	 */
-	public ReportPismtPersonInsuCare(String ccd, String pid, String histId) {
-		this.pismtPersonInsuCarePK = new ReportPismtPersonInsuCarePK(ccd, pid, histId);
+	public PismtPersonInsuCare(String ccd, String pid, String histId) {
+		this.pismtPersonInsuCarePK = new PismtPersonInsuCarePK(ccd, pid, histId);
 	}
 
 	/* (non-Javadoc)
@@ -161,10 +161,10 @@ public class ReportPismtPersonInsuCare implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof ReportPismtPersonInsuCare)) {
+		if (!(object instanceof PismtPersonInsuCare)) {
 			return false;
 		}
-		ReportPismtPersonInsuCare other = (ReportPismtPersonInsuCare) object;
+		PismtPersonInsuCare other = (PismtPersonInsuCare) object;
 		if ((this.pismtPersonInsuCarePK == null && other.pismtPersonInsuCarePK != null)
 				|| (this.pismtPersonInsuCarePK != null
 						&& !this.pismtPersonInsuCarePK.equals(other.pismtPersonInsuCarePK))) {

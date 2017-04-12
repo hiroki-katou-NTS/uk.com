@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.pr.file.infra.entity;
+package nts.uk.ctx.basic.infra.entity.report;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
@@ -13,12 +13,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class PismtPersonInsuSocialPK.
+ * The Class PismtPersonInsuPensBPK.
  */
 @Embeddable
 @Setter
 @Getter
-public class ReportPismtPersonInsuSocialPK implements Serializable {
+public class PismtPersonInsuPensBPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -39,19 +39,19 @@ public class ReportPismtPersonInsuSocialPK implements Serializable {
 	private String histId;
 
 	/**
-	 * Instantiates a new pismt person insu social PK.
+	 * Instantiates a new pismt person insu pens BPK.
 	 */
-	public ReportPismtPersonInsuSocialPK() {
+	public PismtPersonInsuPensBPK() {
 	}
 
 	/**
-	 * Instantiates a new pismt person insu social PK.
+	 * Instantiates a new pismt person insu pens BPK.
 	 *
 	 * @param ccd the ccd
 	 * @param pid the pid
 	 * @param histId the hist id
 	 */
-	public ReportPismtPersonInsuSocialPK(String ccd, String pid, String histId) {
+	public PismtPersonInsuPensBPK(String ccd, String pid, String histId) {
 		this.ccd = ccd;
 		this.pid = pid;
 		this.histId = histId;
@@ -76,10 +76,12 @@ public class ReportPismtPersonInsuSocialPK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof ReportPismtPersonInsuSocialPK)) {
+		// TODO: Warning - this method won't work in the case the id fields are
+		// not set
+		if (!(object instanceof PismtPersonInsuPensBPK)) {
 			return false;
 		}
-		ReportPismtPersonInsuSocialPK other = (ReportPismtPersonInsuSocialPK) object;
+		PismtPersonInsuPensBPK other = (PismtPersonInsuPensBPK) object;
 		if ((this.ccd == null && other.ccd != null) || (this.ccd != null && !this.ccd.equals(other.ccd))) {
 			return false;
 		}
@@ -99,7 +101,7 @@ public class ReportPismtPersonInsuSocialPK implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "entity.PismtPersonInsuSocialPK[ ccd=" + ccd + ", pid=" + pid + ", histId=" + histId + " ]";
+		return "entity.PismtPersonInsuPensBPK[ ccd=" + ccd + ", pid=" + pid + ", histId=" + histId + " ]";
 	}
 
 }

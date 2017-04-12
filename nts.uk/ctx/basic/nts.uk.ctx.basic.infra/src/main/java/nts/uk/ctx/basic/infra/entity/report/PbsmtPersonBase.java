@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.pr.file.infra.entity;
+package nts.uk.ctx.basic.infra.entity.report;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -25,7 +25,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "PBSMT_PERSON_BASE")
-public class ReportPbsmtPersonBase implements Serializable {
+public class PbsmtPersonBase implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -219,7 +219,7 @@ public class ReportPbsmtPersonBase implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ReportPbsmtPersonBase other = (ReportPbsmtPersonBase) obj;
+		PbsmtPersonBase other = (PbsmtPersonBase) obj;
 		if (pid == null) {
 			if (other.pid != null)
 				return false;

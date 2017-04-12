@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.pr.file.infra.entity;
+package nts.uk.ctx.basic.infra.entity.report;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -25,14 +25,14 @@ import lombok.Setter;
 @Table(name = "PCPMT_PERSON_COM")
 @Setter
 @Getter
-public class ReportPcpmtPersonCom implements Serializable {
+public class PcpmtPersonCom implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The pcpmt person com PK. */
 	@EmbeddedId
-	protected ReportPcpmtPersonComPK pcpmtPersonComPK;
+	protected PcpmtPersonComPK pcpmtPersonComPK;
 
 	/** The ins date. */
 	@Column(name = "INS_DATE")
@@ -232,7 +232,7 @@ public class ReportPcpmtPersonCom implements Serializable {
 	/**
 	 * Instantiates a new pcpmt person com.
 	 */
-	public ReportPcpmtPersonCom() {
+	public PcpmtPersonCom() {
 	}
 
 	/**
@@ -240,7 +240,7 @@ public class ReportPcpmtPersonCom implements Serializable {
 	 *
 	 * @param pcpmtPersonComPK the pcpmt person com PK
 	 */
-	public ReportPcpmtPersonCom(ReportPcpmtPersonComPK pcpmtPersonComPK) {
+	public PcpmtPersonCom(PcpmtPersonComPK pcpmtPersonComPK) {
 		this.pcpmtPersonComPK = pcpmtPersonComPK;
 	}
 
@@ -251,8 +251,8 @@ public class ReportPcpmtPersonCom implements Serializable {
 	 * @param pid the pid
 	 * @param histId the hist id
 	 */
-	public ReportPcpmtPersonCom(String ccd, String pid, String histId) {
-		this.pcpmtPersonComPK = new ReportPcpmtPersonComPK(ccd, pid, histId);
+	public PcpmtPersonCom(String ccd, String pid, String histId) {
+		this.pcpmtPersonComPK = new PcpmtPersonComPK(ccd, pid, histId);
 	}
 
 	/*
@@ -272,10 +272,10 @@ public class ReportPcpmtPersonCom implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof ReportPcpmtPersonCom)) {
+		if (!(object instanceof PcpmtPersonCom)) {
 			return false;
 		}
-		ReportPcpmtPersonCom other = (ReportPcpmtPersonCom) object;
+		PcpmtPersonCom other = (PcpmtPersonCom) object;
 		if ((this.pcpmtPersonComPK == null && other.pcpmtPersonComPK != null)
 				|| (this.pcpmtPersonComPK != null && !this.pcpmtPersonComPK.equals(other.pcpmtPersonComPK))) {
 			return false;
