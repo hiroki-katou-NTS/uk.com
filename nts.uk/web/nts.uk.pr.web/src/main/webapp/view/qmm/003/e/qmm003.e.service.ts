@@ -2,15 +2,16 @@ module qmm003.e.service {
     var paths = {
         getResidentalTaxList: "pr/core/residential/findallresidential",
         getRegionPrefecture: "pr/core/residential/getlistLocation",
-        getResidentalTaxListByReportCode: "pr/core/residential/findallresidential/{0}",
+        getResidentalTaxListByReportCode: "pr/core/residential/findallresidential1/{0}",
+        updateReportCode: "pr/core/residential/updatereportCode",
         getPersionResidentalTax: "pr/core/rule/law/tax/residential/input/findAll/{0}/{1}"
     }
-    
+
     //get person residential Tax
     export function getPersonResidentialTax(yearKey: number, residenceCode: string):
         JQueryPromise<Array<any>> {
         var dfd = $.Deferred<any>();
-         var _path = nts.uk.text.format(paths.getPersionResidentalTax, yearKey ,residenceCode);
+        var _path = nts.uk.text.format(paths.getPersionResidentalTax, yearKey, residenceCode);
         nts.uk.request.ajax(_path)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
@@ -36,9 +37,10 @@ module qmm003.e.service {
             })
         return dfd.promise();
     }
+    
     /**
- * Get list ResidentialTax.
- */
+     * Get list ResidentialTax.
+     */
     export function getResidentalTaxListByReportCode(resiTaxReportCode: string): JQueryPromise<Array<model.ResidentialTax>> {
         var dfd = $.Deferred<Array<model.ResidentialTax>>();
         var _path = nts.uk.text.format(paths.getResidentalTaxListByReportCode, resiTaxReportCode);
@@ -51,6 +53,8 @@ module qmm003.e.service {
             })
         return dfd.promise();
     }
+    
+   
     export function getRegionPrefecture(): JQueryPromise<Array<model.RegionObject>> {
         var dfd = $.Deferred<Array<model.RegionObject>>();
         nts.uk.request.ajax(paths.getRegionPrefecture)
@@ -62,6 +66,22 @@ module qmm003.e.service {
             })
         return dfd.promise();
     }
+    
+     /**
+     * update ReportCode
+     */
+    export function updateReportCode(residential: model.ResidentialTax) {
+        let dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax(paths.updateReportCode, residential)
+            .done(function(res: Array<any>) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+    
     export module model {
         export class ResidentialTax {
             companyCode: string;

@@ -67,7 +67,7 @@ public class ResidentialTaxFinder {
 	//SEL 5
 	public List<ResidentialTaxDetailDto> getAllResiTax(String companyCode, String resiTaxReportCode){
 		
-		return this.resiTaxRepository.getAllResidentialTax(companyCode).stream()
+		return this.resiTaxRepository.getAllResidentialTax(companyCode,resiTaxReportCode).stream()
 				.map(c -> ResidentialTaxDetailDto.fromDomain(c)).collect(Collectors.toList());
 	}
 

@@ -6,6 +6,7 @@ module qmm003.a.service {
         getResidentalTaxList: "pr/core/residential/findallByCompanyCode",
         addResidential: "pr/core/residential/addresidential",
         updateResidential: "pr/core/residential/updateresidential",
+        updateReportCode: "pr/core/residential/updatereportCode",
         deleteResidential: "pr/core/residential/deleteresidential"
     }
 

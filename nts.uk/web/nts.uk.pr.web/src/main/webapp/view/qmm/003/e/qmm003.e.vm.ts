@@ -2,7 +2,7 @@ module qmm003.e.viewmodel {
     export class ScreenModel {
         treeLeft: KnockoutObservableArray<ResidentialTaxNode>;
         treeRight: KnockoutObservableArray<ResidentialTaxNode>;
-        resiTaxCodeLeft: KnockoutObservable<string>;
+        resiTaxCodeLeft: KnockoutObservableArray<string>;
         resiTaxCodeRight: KnockoutObservable<string>;
         filteredData: KnockoutObservableArray<ResidentialTaxNode> = ko.observableArray([]);
         currentNode: KnockoutObservable<ResidentialTaxNode>;
@@ -17,17 +17,22 @@ module qmm003.e.viewmodel {
             let self = this;
             self.init();
             self.resiTaxCodeLeft.subscribe(function(newValue) {
-                console.log(self.year());
                 console.log(newValue);
-                service.getPersonResidentialTax(self.year(), newValue).done(function(data: any) {
-                    console.log(data);
-                });
-                self.currentNode(self.findByCode(self.filteredData(), newValue));
-                console.log(self.currentNode());
-                self.findPrefectureByResiTax(newValue);
-                console.log(self.selectedCode());
+                //self.processWhenCurrentCodeChange(newValue);
+            });
+            self.resiTaxCodeRight.subscribe(function(newValue) {
+                console.log(newValue);
+                //self.processWhenCurrentCodeChange(newValue);
             });
 
+        }
+        processWhenCurrentCodeChange(newValue: string) {
+            let self = this;
+            service.getPersonResidentialTax(self.year(), newValue).done(function(data: any) {
+                // console.log(data);
+            });
+            self.currentNode(self.findByCode(self.filteredData(), newValue));
+            self.findPrefectureByResiTax(newValue);
         }
         findByCode(items: Array<ResidentialTaxNode>, newValue: string): ResidentialTaxNode {
             let self = this;
@@ -45,8 +50,13 @@ module qmm003.e.viewmodel {
         };
         clickButton(): any {
             let self = this;
-            nts.uk.ui.windows.setShared('singleSelectedCode', self.resiTaxCodeLeft(), true);
-//            nts.uk.ui.windows.setShared('currentNode', self.currentNode(), true);
+            service.getPersonResidentialTax(self.year(), self.resiTaxCodeLeft()[0]).done(function(data: any) {
+                console.log(data);
+            });
+            service.getResidentalTaxListByReportCode(self.resiTaxCodeLeft()[0]).done(function(data: any) {
+                console.log(data);
+            })
+
             nts.uk.ui.windows.close();
 
         }
@@ -57,7 +67,7 @@ module qmm003.e.viewmodel {
             let self = this;
             self.treeLeft = ko.observableArray([]);
             self.treeRight = ko.observableArray([]);
-            self.resiTaxCodeLeft = ko.observable("");
+            self.resiTaxCodeLeft = ko.observableArray([]);
             self.resiTaxCodeRight = ko.observable("");
             self.currentNode = ko.observable((new ResidentialTaxNode("", "", [])));
         }
@@ -71,12 +81,15 @@ module qmm003.e.viewmodel {
                     (qmm003.e.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
                         self.japanLocation = locationData;
                         self.itemPrefecture(self.precfecture);
-                        console.log(self.itemPrefecture());
+                        // console.log(self.itemPrefecture());
                         self.buildResidentalTaxTree();
                         let node: Array<ResidentialTaxNode> = [];
                         node = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
                         self.filteredData(node);
                         self.treeLeft(self.nodeRegionPrefectures());
+                        self.treeRight(self.nodeRegionPrefectures());
+                        //console.log(self.treeLeft());
+                        //console.log(self.treeRight())
                     });
                 }
 

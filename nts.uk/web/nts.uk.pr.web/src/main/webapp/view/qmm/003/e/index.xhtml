@@ -56,12 +56,12 @@
 								   	width: 385,
 									height: 350,
 									options: treeLeft,
-									value: resiTaxCodeLeft,
+									selectedValues: resiTaxCodeLeft,
 									optionsValue: 'code',
 									optionsChild: 'childs',
 									optionsText: 'nodeText',
-									multiple: false,
-									enable: false,
+									multiple: true,
+									enable: true,
 									showCheckBox: true}"
 								class="cf"></table>
 						</div>
@@ -77,7 +77,7 @@
 					<div>
 						<i class="icon icon-searchbox"></i>
 						<div id="E_SCH_002" style="width: 410px"
-							data-bind="ntsSearchBox: {items: items, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
+							data-bind="ntsSearchBox: {items: treeRight, selected: resiTaxCodeRight, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
 						<div>
 							<table id="treegrid2"
 								data-bind="ntsTreeGridView:{
