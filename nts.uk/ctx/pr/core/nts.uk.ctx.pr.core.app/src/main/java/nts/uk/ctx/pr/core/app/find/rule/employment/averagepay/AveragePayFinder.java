@@ -61,7 +61,7 @@ public class AveragePayFinder {
 		if (itemSalarys.isEmpty()){
 			return null;
 		}
-		List<String> itemSalaryCodeList = itemSalarys.stream().map(x -> x.getItemCd().v()).collect(Collectors.toList());
+		List<String> itemSalaryCodeList = itemSalarys.stream().map(x -> x.getItemCode().v()).collect(Collectors.toList());
 		itemsSalaryDto = this.itemMasterRepository.findAll(companyCode, 0, itemSalaryCodeList)
 				.stream().map(x -> ItemMasterDto.fromDomain(x)).collect(Collectors.toList());
 		
@@ -72,7 +72,7 @@ public class AveragePayFinder {
 				if (itemAttends.isEmpty()){
 					return null;
 				}
-				List<String> itemAttendCodeList = itemAttends.stream().map(y -> y.getItemCD().v()).collect(Collectors.toList());
+				List<String> itemAttendCodeList = itemAttends.stream().map(y -> y.getItemCode().v()).collect(Collectors.toList());
 				itemsAttendDto = this.itemMasterRepository.findAll(companyCode, 2, itemAttendCodeList)
 						.stream().map(x -> ItemMasterDto.fromDomain(x)).collect(Collectors.toList());
 		}
