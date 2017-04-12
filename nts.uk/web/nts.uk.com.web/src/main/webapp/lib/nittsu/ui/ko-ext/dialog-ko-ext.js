@@ -1,3 +1,4 @@
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -6,12 +7,22 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * Dialog binding handler
+                 */
                 var NtsDialogBindingHandler = (function () {
                     function NtsDialogBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsDialogBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                     };
+                    /**
+                     * Update
+                     */
                     NtsDialogBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
                         var data = valueAccessor();
                         var option = ko.unwrap(data.option);
                         var title = ko.unwrap(data.title);
@@ -22,6 +33,7 @@ var nts;
                         var $dialog = $("<div id='ntsDialog'></div>");
                         if (show == true) {
                             $('body').append($dialog);
+                            // Create Buttons
                             var dialogbuttons = [];
                             var _loop_1 = function(button) {
                                 dialogbuttons.push({
@@ -34,6 +46,7 @@ var nts;
                                 var button = buttons_1[_i];
                                 _loop_1(button);
                             }
+                            // Create dialog
                             $dialog.dialog({
                                 title: title,
                                 modal: modal,
@@ -51,6 +64,7 @@ var nts;
                             }).text(message);
                         }
                         else {
+                            // Destroy dialog
                             if ($('#ntsDialog').dialog("instance") != null)
                                 $('#ntsDialog').dialog("destroy");
                             $('#ntsDialog').remove();
@@ -58,10 +72,17 @@ var nts;
                     };
                     return NtsDialogBindingHandler;
                 }());
+                /**
+                 * Error Dialog binding handler
+                 */
                 var NtsErrorDialogBindingHandler = (function () {
                     function NtsErrorDialogBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsErrorDialogBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
                         var data = valueAccessor();
                         var option = ko.unwrap(data.option);
                         var title = ko.unwrap(data.title);
@@ -71,6 +92,7 @@ var nts;
                         var buttons = ko.unwrap(option.buttons);
                         var $dialog = $("<div id='ntsErrorDialog'></div>");
                         $('body').append($dialog);
+                        // Create Buttons
                         var dialogbuttons = [];
                         var _loop_2 = function(button) {
                             dialogbuttons.push({
@@ -83,12 +105,14 @@ var nts;
                             var button = buttons_2[_i];
                             _loop_2(button);
                         }
+                        // Calculate width
                         var dialogWidth = 40 + 35 + 17;
                         headers.forEach(function (header, index) {
                             if (ko.unwrap(header.visible)) {
                                 dialogWidth += ko.unwrap(header.width);
                             }
                         });
+                        // Create dialog
                         $dialog.dialog({
                             title: title,
                             modal: modal,
@@ -106,7 +130,11 @@ var nts;
                             }
                         });
                     };
+                    /**
+                     * Update
+                     */
                     NtsErrorDialogBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
                         var data = valueAccessor();
                         var option = ko.unwrap(data.option);
                         var title = ko.unwrap(data.title);
@@ -119,8 +147,10 @@ var nts;
                         var $dialog = $("#ntsErrorDialog");
                         if (show == true) {
                             $dialog.dialog("open");
+                            // Create Error Table
                             var $errorboard = $("<div id='error-board'></div>");
                             var $errortable = $("<table></table>");
+                            // Header
                             var $header = $("<thead><tr></tr></thead>");
                             $header.find("tr").append("<th style='width: 35px'></th>");
                             headers.forEach(function (header, index) {
@@ -130,14 +160,17 @@ var nts;
                                 }
                             });
                             $errortable.append($header);
+                            // Body
                             var $body = $("<tbody></tbody>");
                             errors.forEach(function (error, index) {
                                 if (index < maxrows) {
+                                    // Row
                                     var $row_1 = $("<tr></tr>");
                                     $row_1.append("<td style='width:35px'>" + (index + 1) + "</td>");
                                     headers.forEach(function (header) {
                                         if (ko.unwrap(header.visible))
                                             if (error.hasOwnProperty(ko.unwrap(header.name))) {
+                                                // TD
                                                 var $column = $("<td>" + error[ko.unwrap(header.name)] + "</td>").width(ko.unwrap(header.width));
                                                 $row_1.append($column);
                                             }
@@ -147,11 +180,13 @@ var nts;
                             });
                             $errortable.append($body);
                             $errorboard.append($errortable);
+                            // Errors over maxrows message
                             var $message = $("<div></div>");
                             if (errors.length > maxrows)
                                 $message.text("Showing " + maxrows + " in total " + errors.length + " errors");
                             $dialog.html("");
                             $dialog.append($errorboard).append($message);
+                            // Calculate body height base on displayrow
                             $body.height(Math.min(displayrows, errors.length) * $(">:first-child", $body).outerHeight() + 1);
                         }
                         else {

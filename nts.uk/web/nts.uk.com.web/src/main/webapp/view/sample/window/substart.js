@@ -16,13 +16,17 @@ __viewContext.ready(function () {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
+            // Reset child value
+            //            nts.uk.ui.windows.setShared("childValue", null);
         }
         ScreenModel.prototype.CloseModalSubWindow = function () {
+            // Set child value
             nts.uk.ui.windows.setShared("childValue", this.modalValue(), this.isTransistReturnData());
             nts.uk.ui.windows.close();
         };
         return ScreenModel;
     }());
+    // Get parent value
     $("#parentInstruct").text("My parent say: " + nts.uk.ui.windows.getShared("parentValue"));
     this.bind(new ScreenModel());
 });
