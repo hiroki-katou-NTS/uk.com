@@ -16,6 +16,7 @@ import javax.persistence.TypedQuery;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.basic.infra.entity.organization.department.CmnmtDep;
 import nts.uk.ctx.basic.infra.entity.report.PbsmtPersonBase;
 import nts.uk.ctx.basic.infra.entity.report.PcpmtPersonCom;
@@ -86,12 +87,11 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 				.setParameter("startProcessingYM", startYearMonth.v())
 				.setParameter("endProcessingYM", endYearMonth.v());
 		
-		List<List<String>> subPersonIdsList = this.splitInParamList(query.employeeIds);
-		long amountData = 0;
-		for (List<String> personIds : subPersonIdsList) {
-			amountData += typedQuery.setParameter("personIds", personIds).getFirstResult();
-		}
-		return amountData > 0;
+		List<Long> resultList = new ArrayList<>();
+		CollectionUtil.split(query.employeeIds, 1000, (subList) -> {
+			resultList.add((long) typedQuery.setParameter("personIds", subList).getFirstResult());
+		});
+		return resultList.stream().mapToLong(Long::longValue).sum() > 0;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -130,11 +130,12 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 				.setParameter("startProcessingYM", startYearMonth.v())
 				.setParameter("endProcessingYM", endYearMonth.v())
 				.setParameter("baseDate", query.baseDate);
-		List<List<String>> subPersonIdsList = this.splitInParamList(query.employeeIds);
+		
+		// Query data.
 		List<Object[]> masterResultList = new ArrayList<>();
-		for (List<String> personIds : subPersonIdsList) {
-			masterResultList.addAll(typeQuery.setParameter("personIds", personIds).getResultList());
-		}
+		CollectionUtil.split(query.employeeIds, 1000, (subList) -> {
+			masterResultList.addAll(typeQuery.setParameter("personIds", subList).getResultList());
+		});
 		return masterResultList;
 	}
 	
@@ -175,31 +176,5 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 			dataList.add(data);
 		}
 		return dataList;
-	}
-
-	private <T> List<List<T>> splitInParamList(List<T> inputList) {
-		List<List<T>> resultList = new ArrayList<>();
-		int fromIndex = 0;
-		// NOTE: DURING TO LIMITATION OF NUMBER PARAMETER
-		// WE MUST LIMIT EMPLOYEE SIZE WHEN QUERY.
-		int maxParamSize = 1000;
-		int nextIndex = fromIndex;
-
-		// Split into sub user id h.
-		do {
-			// Cal next index of sublist.
-			nextIndex = fromIndex + maxParamSize;
-			if (nextIndex > inputList.size()) {
-				nextIndex = inputList.size();
-			}
-
-			// Extract sub user id list.
-			List<T> subUserIdH = inputList.subList(fromIndex, nextIndex);
-			resultList.add(subUserIdH);
-			fromIndex = nextIndex;
-		} while (nextIndex < inputList.size());
-
-		// Ret.
-		return resultList;
 	}
 }
