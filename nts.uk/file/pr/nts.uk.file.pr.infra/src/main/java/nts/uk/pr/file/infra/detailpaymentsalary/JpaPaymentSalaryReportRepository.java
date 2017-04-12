@@ -12,12 +12,15 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.basic.dom.organization.department.Department;
 import nts.uk.ctx.basic.dom.organization.department.DepartmentRepository;
+import nts.uk.ctx.basic.infra.entity.report.PbsmtPersonBase;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItem;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentHeader;
+import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstAggreDetail;
 import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstAggreHead;
 import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstFormHead;
 import nts.uk.file.pr.app.export.detailpaymentsalary.PaymentSalaryReportRepository;
@@ -48,8 +51,15 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository implements P
 		QlsptPaylstFormHead headerForm = this.findHeaderFrom(companyCode, query.getOutputSettingCode());
 		QcamtItem item = this.findItem(companyCode);
 		QlsptPaylstAggreHead payHead = this.findAggreHeader(companyCode);
+		if (CollectionUtil.isEmpty(payHead.getQlsptPaylstAggreDetailList())) {
+			throw new BusinessException("ER010");
+		}
+		List<PbsmtPersonBase> persons = this.findAllPerson(query.getEmployeeCodes());
+		if (CollectionUtil.isEmpty(persons)) {
+			throw new BusinessException("ER010");
+		}
 		
-		//data.setEmployees(this.sortEmployees(query.getEmployeeCodes()));
+
 		return data;
 	}
 
@@ -113,7 +123,6 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository implements P
 		departmentDto.setName(department.getDepartmentName().v());
 		departmentDto.setDepLevel(department.getHierarchyCode().v().length() / 3);
 		departmentDto.setDepPath(department.getHierarchyCode().v());
-		departmentDto.setYearMonth(department.getStartDate().yearMonth().v());
 		return departmentDto;
 	}
 
@@ -173,6 +182,22 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository implements P
 		TypedQuery<QlsptPaylstAggreHead> typedQuery = em.createQuery(queryString, QlsptPaylstAggreHead.class);
 		typedQuery.setParameter("companyCode", companyCode);
 		return typedQuery.getSingleResult();
+	}
+
+	/**
+	 * Find all person.
+	 *
+	 * @param personIds
+	 *            the person ids
+	 * @return the list
+	 */
+	private List<PbsmtPersonBase> findAllPerson(List<String> personIds) {
+		EntityManager em = this.getEntityManager();
+		String queryString = "SELECT h FROM PbsmtPersonBase h " + "WHERE h.pid IN = :personIds ";
+
+		TypedQuery<PbsmtPersonBase> typedQuery = em.createQuery(queryString, PbsmtPersonBase.class);
+		typedQuery.setParameter("personIds", personIds);
+		return typedQuery.getResultList();
 	}
 
 	/**
