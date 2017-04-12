@@ -15,6 +15,7 @@ var nts;
                             var pathService = {
                                 loadDemensionSelectionList: "pr/proto/wagetable/demensions"
                             };
+                            //fuction connection service load demension
                             function loadDemensionSelectionList() {
                                 return nts.uk.request.ajax(pathService.loadDemensionSelectionList);
                             }
@@ -35,4 +36,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm016.k.service.js.map

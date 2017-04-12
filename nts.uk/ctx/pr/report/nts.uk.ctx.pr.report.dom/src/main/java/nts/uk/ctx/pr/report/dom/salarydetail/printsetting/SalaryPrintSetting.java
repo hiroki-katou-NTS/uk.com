@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.report.dom.salarydetail.printsetting;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.report.dom.salarydetail.SalaryOutputDistinction;
 
@@ -17,78 +18,109 @@ public class SalaryPrintSetting extends DomainObject {
 	/** The company code. */
 	private String companyCode;
 
+	/** The show payment. */
+	@Setter
+	private Boolean showPayment;
+
+	/** The sum person set. */
+	@Setter
+	private Boolean sumPersonSet;
+
+	/** The sum month person set. */
+	@Setter
+	private Boolean sumMonthPersonSet;
+
+	/** The sum each deprt set. */
+	@Setter
+	private Boolean sumEachDeprtSet;
+
+	/** The sum month deprt set. */
+	@Setter
+	private Boolean sumMonthDeprtSet;
+
+	/** The sum dep hrchy index set. */
+	@Setter
+	private Boolean sumDepHrchyIndexSet;
+
+	/** The sum month dep hrchy set. */
+	@Setter
+	private Boolean sumMonthDepHrchySet;
+
+	/** The hrchy index 1. */
+	@Setter
+	private Boolean hrchyIndex1;
+
+	/** The hrchy index 2. */
+	@Setter
+	private Boolean hrchyIndex2;
+
+	/** The hrchy index 3. */
+	@Setter
+	private Boolean hrchyIndex3;
+
+	/** The hrchy index 4. */
+	@Setter
+	private Boolean hrchyIndex4;
+
+	/** The hrchy index 5. */
+	@Setter
+	private Boolean hrchyIndex5;
+
+	/** The hrchy index 6. */
+	@Setter
+	private Boolean hrchyIndex6;
+
+	/** The hrchy index 7. */
+	@Setter
+	private Boolean hrchyIndex7;
+
+	/** The hrchy index 8. */
+	@Setter
+	private Boolean hrchyIndex8;
+
+	/** The hrchy index 9. */
+	@Setter
+	private Boolean hrchyIndex9;
+
+	/** The total set. */
+	@Setter
+	private Boolean totalSet;
+
+	/** The month total set. */
+	@Setter
+	private Boolean monthTotalSet;
+
 	/** The output distinction. */
+	@Setter
 	private SalaryOutputDistinction outputDistinction;
-
-	/** The show department monthly amount. */
-	private Boolean showDepartmentMonthlyAmount;
-
-	/** The show detail. */
-	private Boolean showDetail;
-
-	/** The show division monthly total. */
-	private Boolean showDivisionMonthlyTotal;
-
-	/** The show division total. */
-	private Boolean showDivisionTotal;
-
-	/** The show hierarchy 1. */
-	private Boolean showHierarchy1;
-
-	/** The show hierarchy 2. */
-	private Boolean showHierarchy2;
-
-	/** The show hierarchy 3. */
-	private Boolean showHierarchy3;
-
-	/** The show hierarchy 4. */
-	private Boolean showHierarchy4;
-
-	/** The show hierarchy 5. */
-	private Boolean showHierarchy5;
-
-	/** The show hierarchy 6. */
-	private Boolean showHierarchy6;
-
-	/** The show hierarchy 7. */
-	private Boolean showHierarchy7;
-
-	/** The show hierarchy 8. */
-	private Boolean showHierarchy8;
-
-	/** The show hierarchy 9. */
-	private Boolean showHierarchy9;
-
-	/** The show hierarchy accumulation. */
-	private Boolean showHierarchyAccumulation;
-
-	/** The show hierarchy monthly accumulation. */
-	private Boolean showHierarchyMonthlyAccumulation;
-
-	/** The show monthly amount. */
-	private Boolean showMonthlyAmount;
-
-	/** The show personal monthly amount. */
-	private Boolean showPersonalMonthlyAmount;
-
-	/** The show personal total. */
-	private Boolean showPersonalTotal;
-
-	/** The show sectional calculation. */
-	private Boolean showSectionalCalculation;
-
-	/** The show total. */
-	private Boolean showTotal;
 
 	// =================== Memento State Support Method ===================
 	/**
-	 * Instantiates a new unit price history.
+	 * Instantiates a new salary print setting.
 	 *
 	 * @param memento
 	 *            the memento
 	 */
 	public SalaryPrintSetting(SalaryPrintSettingGetMemento memento) {
 		this.companyCode = memento.getCompanyCode();
+		this.showPayment = memento.getShowPayment();
+		this.sumPersonSet = memento.getSumPersonSet();
+		this.sumMonthPersonSet = memento.getSumMonthPersonSet();
+		this.sumEachDeprtSet = memento.getSumEachDeprtSet();
+		this.sumMonthDeprtSet = memento.getSumMonthDeprtSet();
+		this.sumDepHrchyIndexSet = memento.getSumDepHrchyIndexSet();
+		this.sumMonthDepHrchySet = memento.getSumMonthDepHrchySet();
+		this.hrchyIndex1 = memento.getHrchyIndex1();
+		this.hrchyIndex2 = memento.getHrchyIndex2();
+		this.hrchyIndex3 = memento.getHrchyIndex3();
+		this.hrchyIndex4 = memento.getHrchyIndex4();
+		this.hrchyIndex5 = memento.getHrchyIndex5();
+		this.hrchyIndex6 = memento.getHrchyIndex6();
+		this.hrchyIndex7 = memento.getHrchyIndex7();
+		this.hrchyIndex8 = memento.getHrchyIndex8();
+		this.hrchyIndex9 = memento.getHrchyIndex9();
+		this.totalSet = memento.getTotalSet();
+		this.monthTotalSet = memento.getMonthTotalSet();
 		this.outputDistinction = memento.getOutputDistinction();
 	}
 
@@ -102,6 +134,11 @@ public class SalaryPrintSetting extends DomainObject {
 		memento.setCompanyCode(this.companyCode);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -110,6 +147,11 @@ public class SalaryPrintSetting extends DomainObject {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

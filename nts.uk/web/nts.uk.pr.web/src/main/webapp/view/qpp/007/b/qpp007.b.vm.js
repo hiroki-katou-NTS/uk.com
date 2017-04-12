@@ -22,6 +22,9 @@ var nts;
                                     ]);
                                     self.switchValue = ko.observable('Apply');
                                 }
+                                /**
+                                 * Start page.
+                                 */
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -30,6 +33,9 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
+                                /**
+                                 * Call service to load salary print setting.
+                                 */
                                 ScreenModel.prototype.loadSalaryPrintSetting = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -39,10 +45,16 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
+                                /**
+                                 * Call service to save print setting.
+                                 */
                                 ScreenModel.prototype.saveSetting = function () {
                                     var self = this;
                                     b.service.saveSalaryPrintSetting(ko.toJS(self.salaryPrintSettingModel));
                                 };
+                                /**
+                                 * Cancel and close dialog.
+                                 */
                                 ScreenModel.prototype.cancel = function () {
                                     nts.uk.ui.windows.close();
                                 };
@@ -83,4 +95,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qpp007.b.vm.js.map
