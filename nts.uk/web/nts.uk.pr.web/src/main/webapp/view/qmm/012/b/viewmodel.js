@@ -8,7 +8,6 @@ var qmm012;
                 function ScreenModel(screenModel) {
                     this.enable = ko.observable(true);
                     this.selectedCode_B_001 = ko.observable(1);
-                    //gridlist
                     this.GridlistItems_B_001 = ko.observableArray([]);
                     this.GridlistCurrentCode_B_001 = ko.observable('');
                     this.GridlistCurrentItem_B_001 = ko.observable(null);
@@ -21,14 +20,10 @@ var qmm012;
                     this.GridCurrentCodeAndName_B_001 = ko.observable('');
                     this.B_INP_002_text = ko.observable('');
                     this.categoryAtr = -1;
-                    //Checkbox
-                    //B_002
                     this.checked_B_002 = ko.observable(false);
                     this.enable_B_INP_002 = ko.observable(false);
                     var self = this;
                     self.screenModel = screenModel;
-                    //set combobox data
-                    //001
                     self.ComboBoxItemList_B_001 = ko.observableArray([
                         new ComboboxItemModel(1, '全件'),
                         new ComboboxItemModel(2, '支給項目'),
@@ -65,7 +60,6 @@ var qmm012;
                     self.checked_B_002.subscribe(function () {
                         self.LoadGridList();
                     });
-                    // set gridlist data
                     self.GridColumns_B_001 = ko.observableArray([
                         { headerText: '項目区分', prop: 'categoryAtrName', width: 80 },
                         { headerText: 'コード', prop: 'itemCode', width: 50 },
@@ -88,19 +82,16 @@ var qmm012;
                         self.GridCurrentItemName_B_001(itemModel ? itemModel.itemName : '');
                         self.GridCurrentUniteCode_B_001(itemModel ? itemModel.uniteCode : '');
                         self.GridCurrentCategoryAtr_B_001(itemModel ? itemModel.categoryAtr : 0);
-                        //Because there are many items in the same group  After set value , need call ChangeGroup function for Set Value to layout
                         ChangeGroup(self.GridCurrentCategoryAtr_B_001());
                         self.GridCurrentCodeAndName_B_001(itemModel ? itemModel.itemCode + ' ' + itemModel.itemName : '');
                         self.GridCurrentDisplaySet_B_001(itemModel ? itemModel.displaySet == 1 ? true : false : false);
                         self.GridCurrentItemAbName_B_001(itemModel ? itemModel.itemAbName : '');
                         self.GridCurrentCategoryAtrName_B_001(itemModel ? itemModel.categoryAtrName : '');
-                        //when CurrentCode != undefined , need disable INP_002
                         if (self.GridlistCurrentCode_B_001() != undefined) {
                             self.enable_B_INP_002(false);
                         }
                     });
                     self.GridCurrentCategoryAtr_B_001.subscribe(function (newValue) {
-                        //when change to different group, need  call ChangeGroup function for Set Value to layout
                         ChangeGroup(newValue);
                     });
                     function ChangeGroup(newValue) {
@@ -128,8 +119,6 @@ var qmm012;
                         }
                     }
                     self.LoadGridList();
-                    //set text editer data
-                    //INP_002
                     self.texteditor_B_INP_002 = {
                         value: self.B_INP_002_text,
                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -139,7 +128,6 @@ var qmm012;
                         })),
                         enable: self.enable_B_INP_002
                     };
-                    //INP_003
                     self.texteditor_B_INP_003 = {
                         value: self.GridCurrentItemName_B_001,
                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -148,7 +136,6 @@ var qmm012;
                             textalign: "left"
                         }))
                     };
-                    //INP_004
                     self.texteditor_B_INP_004 = {
                         value: self.GridCurrentItemAbName_B_001,
                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -173,9 +160,7 @@ var qmm012;
                     var dispSet = self.checked_B_002() ? -1 : 0;
                     b.service.findAllItemMaster(categoryAtr, dispSet).done(function (MasterItems) {
                         self.GridlistItems_B_001(MasterItems);
-                        //set selected first item in list
                         if (self.GridlistItems_B_001().length > 0)
-                            // if not itemcode parameter
                             if (!ItemCode)
                                 self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[0].itemCode);
                             else
@@ -189,7 +174,6 @@ var qmm012;
                     var ItemMaster = self.GetCurrentItemMaster();
                     var index = self.GridlistItems_B_001.indexOf(self.GridlistCurrentItem_B_001());
                     b.service.deleteItemMaster(ItemMaster).done(function (any) {
-                        //reload grid and set select code after delete item success
                         if (index) {
                             var selectItemCode = void 0;
                             if (self.GridlistItems_B_001().length - 1 > 1) {
@@ -245,7 +229,6 @@ var qmm012;
                     nts.uk.ui.windows.sub.modal('../a/index.xhtml', { height: 480, width: 630, dialogClass: "no-close" }).onClosed(function () {
                         if (nts.uk.ui.windows.getShared('groupCode') != undefined) {
                             var groupCode = Number(nts.uk.ui.windows.getShared('groupCode'));
-                            //set layout for new.
                             self.GridlistCurrentCode_B_001('');
                             self.GridCurrentCategoryAtr_B_001(groupCode);
                             self.enable_B_INP_002(true);
@@ -255,7 +238,6 @@ var qmm012;
                 ScreenModel.prototype.submitData = function () {
                     var self = this;
                     var ItemMaster = self.GetCurrentItemMaster();
-                    //if self.enable_B_INP_002 == true is mean New mode
                     if (self.enable_B_INP_002()) {
                         self.addNewItemMaster(ItemMaster);
                     }
@@ -297,3 +279,4 @@ var qmm012;
         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
     })(b = qmm012.b || (qmm012.b = {}));
 })(qmm012 || (qmm012 = {}));
+//# sourceMappingURL=viewmodel.js.map

@@ -22,7 +22,7 @@ var nts;
                                     self.columns = ko.observableArray([
                                         { headerText: '郵便番号', prop: 'postcode', width: 100 },
                                         { headerText: '住所', prop: 'address', width: 150 },
-                                        { headerText: 'ｶﾅ', prop: 'kana', width: 150 }
+                                        { headerText: 'カナ', prop: 'kana', width: 150 }
                                     ]);
                                     postcode_1.service.findPostCodeZipCode(strZipCode).done(function (data) {
                                         var postcodeList;
@@ -68,3 +68,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=cmm001.e.vm.js.map

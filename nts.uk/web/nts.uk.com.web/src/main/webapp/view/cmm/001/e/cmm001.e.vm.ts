@@ -19,7 +19,7 @@ module nts.uk.pr.view.base.postcode {
                 self.columns = ko.observableArray([
                     { headerText: '郵便番号', prop: 'postcode', width: 100 },
                     { headerText: '住所', prop: 'address', width: 150 },
-                    { headerText: 'ｶﾅ', prop: 'kana', width: 150 }
+                    { headerText: 'カナ', prop: 'kana', width: 150 }
                 ]);
                 service.findPostCodeZipCode(strZipCode).done(data => {
                     var postcodeList: PostCodeModel[];
