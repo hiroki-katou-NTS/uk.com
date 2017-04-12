@@ -55,7 +55,7 @@ public class CertifyGroupAddCommandHandler extends CommandHandler<CertifyGroupAd
 		// validate check ....
 		certifyGroupService.validateRequiredItem(certifyGroup);
 		certifyGroupService.checkDuplicateCode(certifyGroup);
-		certifyGroupService.checkDulicateCertification(certifyGroup, null);
+		certifyGroupService.checkCertificationIsBelong(certifyGroup);
 
 		// add to server database
 		this.certifyGroupRepository.add(certifyGroup);

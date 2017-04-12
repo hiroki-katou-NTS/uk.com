@@ -13,6 +13,7 @@ var qmm019;
                 return ItemModel;
             }());
             viewmodel.ItemModel = ItemModel;
+            //get the model from app
             var ItemDto = (function () {
                 function ItemDto() {
                     this.checkUseHighError = ko.observable(false);
@@ -42,6 +43,7 @@ var qmm019;
                     this.checkUseHighAlam = ko.observable(false);
                     this.checkUseLowAlam = ko.observable(false);
                     var self = this;
+                    // set list item dto
                     self.listItemDto = listItemDto;
                     self.itemName = ko.observable('');
                     self.selectedCode = ko.observable('');
@@ -141,6 +143,7 @@ var qmm019;
                     }
                     self.isEnable = ko.observable(true);
                     self.selectedCodes = ko.observableArray([]);
+                    // bind list item dto to list item model
                     self.itemList = ko.observableArray([]);
                     _.forEach(self.listItemDto, function (item) {
                         self.itemList.push(new ItemModel(item.itemCode, item.itemAbName));
@@ -157,6 +160,7 @@ var qmm019;
                         }
                     }).extend({ deferred: true });
                     ;
+                    //subcribe list box's change
                     self.selectedCode.subscribe(function (codeChange) {
                         var item = ko.mapping.fromJS(self.getItemDtoSelected(codeChange));
                         self.itemDtoSelected(item);
@@ -270,11 +274,17 @@ var qmm019;
                         new ItemModel(1, '交通用具')
                     ]);
                     if (self.paramCategoryAtr() == 0) {
+                        //計算方法
                         self.comboBoxCalcMethod = ko.observable(new ComboBox(itemListCalcMethod0));
+                        //内訳区分
+                        //「合計対象内（現物）」と「合計対象外（現物）」は項目区分が「支給項目」の場合のみ表示
                         self.comboBoxSumScopeAtr = ko.observable(new ComboBox(itemListSumScopeAtr));
                     }
                     else if (self.paramCategoryAtr() == 1) {
+                        //計算方法
+                        //6 支給相殺は項目区分が「控除項目」の場合のみ表示する。
                         self.comboBoxCalcMethod = ko.observable(new ComboBox(itemListCalcMethod1));
+                        //内訳区分
                         self.comboBoxSumScopeAtr = ko.observable(new ComboBox(itemListSumScopeAtr1));
                     }
                     self.comboBoxDistributeWay = ko.observable(new ComboBox(itemListDistributeWay));
@@ -312,9 +322,11 @@ var qmm019;
                 };
                 ScreenModel.prototype.start = function () {
                     var self = this;
+                    // Page load dfd.
                     var dfd = $.Deferred();
                     if (self.comboBoxCalcMethod !== undefined) {
                         self.switchButton().selectedRuleCode.subscribe(function (newValue) {
+                            //按分方法: 非活性: 項目区分が「支給項目」 or 「控除項目」＆「按分設定」が「按分しない」の場合
                             if (newValue == 0) {
                                 self.comboBoxDistributeWay().enable(false);
                             }
@@ -323,6 +335,7 @@ var qmm019;
                             }
                         });
                     }
+                    // Resolve start page dfd after load all data.
                     qmm019.f.service.getItemsByCategory(self.paramCategoryAtr()).done(function (data1) {
                         if (data1 !== null) {
                             self.listItemDto = data1;
@@ -485,12 +498,15 @@ var qmm019;
                         alamRangeHigh = itemSelected().alamRangeHigh();
                         isUseLowAlam = self.listBox().checkUseLowAlam();
                         alamRangeLow = itemSelected().alamRangeLow();
+                        //入力値の整合チェックを行う
+                        //エラー上限値<アラーム上限値<アラーム下限値<エラー下限値　の場合
                         if (isUseHighError && isUseHighAlam
                             && (+errRangeHigh < +alamRangeHigh)) {
                             alert('範囲の指定が正しくありません。');
                             $('#INP_002').focus();
                             return false;
                         }
+                        //エラー上限値 < エラー下限値 || エラー上限値 = エラー下限値
                         if (isUseHighError && isUseLowError
                             && (+errRangeHigh < +errRangeLow || +errRangeHigh == +errRangeLow)) {
                             alert('範囲の指定が正しくありません。');
@@ -503,6 +519,7 @@ var qmm019;
                             $('#INP_003').focus();
                             return false;
                         }
+                        //アラーム上限値 < アラーム下限値 || アラーム上限値 = アラーム下限値
                         if (isUseHighAlam && isUseLowAlam
                             && (+alamRangeHigh < +alamRangeLow || +alamRangeHigh == +alamRangeLow)) {
                             alert('範囲の指定が正しくありません。');
@@ -554,4 +571,3 @@ var qmm019;
         })(viewmodel = f.viewmodel || (f.viewmodel = {}));
     })(f = qmm019.f || (qmm019.f = {}));
 })(qmm019 || (qmm019 = {}));
-//# sourceMappingURL=viewmodel.js.map

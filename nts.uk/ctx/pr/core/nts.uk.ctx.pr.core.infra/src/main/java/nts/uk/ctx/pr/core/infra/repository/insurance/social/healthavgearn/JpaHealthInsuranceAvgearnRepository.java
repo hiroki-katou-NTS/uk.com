@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.social.healthavgearn;
 
 import java.math.BigDecimal;
@@ -15,11 +19,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnRepository;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnValue;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn.QismtHealthInsuAvgearn;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn.QismtHealthInsuAvgearnPK;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn.QismtHealthInsuAvgearnPK_;
@@ -111,40 +112,11 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implement
 	/**
 	 * To domain.
 	 *
-	 * @param entity
-	 *            the entity
+	 * @param entity the entity
 	 * @return the health insurance avgearn
 	 */
-	private static HealthInsuranceAvgearn toDomain(QismtHealthInsuAvgearn entity) {
-		HealthInsuranceAvgearn domain = new HealthInsuranceAvgearn(new HealthInsuranceAvgearnGetMemento() {
-
-			@Override
-			public HealthInsuranceAvgearnValue getPersonalAvg() {
-				return new HealthInsuranceAvgearnValue(new CommonAmount(entity.getPHealthBasicMny()),
-						new CommonAmount(entity.getPHealthGeneralMny()),
-						new CommonAmount(entity.getPHealthNursingMny()),
-						new CommonAmount(entity.getPHealthSpecificMny()));
-			}
-
-			@Override
-			public Integer getLevelCode() {
-				return entity.getQismtHealthInsuAvgearnPK().getHealthInsuGrade().intValue();
-			}
-
-			@Override
-			public String getHistoryId() {
-				return entity.getQismtHealthInsuAvgearnPK().getHistId();
-			}
-
-			@Override
-			public HealthInsuranceAvgearnValue getCompanyAvg() {
-				return new HealthInsuranceAvgearnValue(new CommonAmount(entity.getCHealthBasicMny()),
-						new CommonAmount(entity.getCHealthGeneralMny()),
-						new CommonAmount(entity.getCHealthNursingMny()),
-						new CommonAmount(entity.getCHealthSpecificMny()));
-			}
-		});
-
+	private HealthInsuranceAvgearn toDomain(QismtHealthInsuAvgearn entity) {
+		HealthInsuranceAvgearn domain = new HealthInsuranceAvgearn(new JpaHealthInsuranceAvgearnGetMemento(entity));
 		return domain;
 	}
 

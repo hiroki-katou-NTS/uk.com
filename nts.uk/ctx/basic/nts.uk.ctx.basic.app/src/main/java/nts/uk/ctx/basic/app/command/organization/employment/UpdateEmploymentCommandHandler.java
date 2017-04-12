@@ -37,7 +37,7 @@ public class UpdateEmploymentCommandHandler extends CommandHandler<UpdateEmploym
 			//A_SEL_001にチェックが付いている場合
 			if(command.getDisplayFlg() == 1){
 				Optional<Employment> employmentByDisplayFlg = repository.findEmploymnetByDisplayFlg(companyCode);
-				if(employmentByDisplayFlg != null){
+				if(employmentByDisplayFlg.isPresent()){
 					//[雇用マスタ.UPD-2]を実施する
 					Employment employmentDisplay = employmentByDisplayFlg.get();
 					employmentDisplay.setDisplayFlg(ManageOrNot.NOT_MANAGE);

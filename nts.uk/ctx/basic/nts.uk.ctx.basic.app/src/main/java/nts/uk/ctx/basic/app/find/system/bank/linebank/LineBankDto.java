@@ -11,26 +11,20 @@ import nts.uk.ctx.basic.dom.system.bank.linebank.LineBank;
 public class LineBankDto {
 	int accountAtr;
 	String accountNo;
-	String bankCode;
-	String branchCode;
+	String branchId;
 	List<ConsignorCommand> consignors;
 	String lineBankCode;
 	String lineBankName;
 	String memo;
 	String requesterName;
-	    
-	public static LineBankDto fromDomain(LineBank domain){
-		return new LineBankDto(
-				domain.getAccountAtr().value,
-				domain.getAccountNo().v(),
-				domain.getBankCode(),
-				domain.getBranchCode(),
+
+	public static LineBankDto fromDomain(LineBank domain) {
+		return new LineBankDto(domain.getAccountAtr().value, domain.getAccountNo().v(),
+				domain.getBranchId(),
 				domain.getConsignor().stream()
-						.map(x -> new ConsignorCommand(x.getConsignorCode().v(),x.getConsignorMemo().v()))
+						.map(x -> new ConsignorCommand(x.getConsignorCode().v(), x.getConsignorMemo().v()))
 						.collect(Collectors.toList()),
-				domain.getLineBankCode().v(),
-				domain.getLineBankName().v(),
-				domain.getMemo().v(),
+				domain.getLineBankCode().v(), domain.getLineBankName().v(), domain.getMemo().v(),
 				domain.getRequesterName().v());
 	}
 }

@@ -43,6 +43,6 @@ public class UnemployeeInsuranceRateItemSetting {
 	}
 
 	public static final UnemployeeInsuranceRateItemSetting valueIntial() {
-		return new UnemployeeInsuranceRateItemSetting(RoundingMethod.RoundUp, Double.valueOf(0d));
+		return new UnemployeeInsuranceRateItemSetting(RoundingMethod.Truncation, Double.valueOf(0d));
 	}
 }

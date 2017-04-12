@@ -10,7 +10,6 @@ var nts;
                 (function (qmm010) {
                     var b;
                     (function (b) {
-                        var LaborInsuranceOfficeImportDto = b.service.model.LaborInsuranceOfficeImportDto;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
@@ -22,6 +21,7 @@ var nts;
                                         { headerText: '名称', prop: 'name', width: 150 }
                                     ]);
                                 }
+                                //start page
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -30,6 +30,7 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
+                                //Connection service find All InsuranceOffice
                                 ScreenModel.prototype.findAllInsuranceOffice = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -38,29 +39,7 @@ var nts;
                                     dfd.resolve(self);
                                     return dfd.promise();
                                 };
-                                ScreenModel.prototype.showConfirm = function (laborInsuranceOfficeCheckImportDto, socialInsuranceOfficeImport) {
-                                    var self = this;
-                                    if (laborInsuranceOfficeCheckImportDto.code === "1") {
-                                        nts.uk.ui.dialog.confirm("Duplicate Code ! Do you replace All?")
-                                            .ifYes(function () {
-                                            self.importData(0, socialInsuranceOfficeImport);
-                                        }).ifNo(function () {
-                                            self.importData(1, socialInsuranceOfficeImport);
-                                        });
-                                    }
-                                    else {
-                                        self.importData(0, socialInsuranceOfficeImport);
-                                    }
-                                };
-                                ScreenModel.prototype.importData = function (checkUpdateDuplicateCode, socialInsuranceOfficeImport) {
-                                    var laborInsuranceOfficeImportDto;
-                                    laborInsuranceOfficeImportDto = new LaborInsuranceOfficeImportDto();
-                                    laborInsuranceOfficeImportDto.socialInsuranceOfficeImport = socialInsuranceOfficeImport;
-                                    laborInsuranceOfficeImportDto.checkUpdateDuplicateCode = checkUpdateDuplicateCode;
-                                    b.service.importData(laborInsuranceOfficeImportDto).done(function (data) {
-                                        nts.uk.ui.windows.close();
-                                    });
-                                };
+                                //Find code data lst by check import data
                                 ScreenModel.prototype.findCode = function (code) {
                                     var self = this;
                                     for (var _i = 0, _a = self.lstSocialInsuranceOffice(); _i < _a.length; _i++) {
@@ -71,14 +50,14 @@ var nts;
                                     }
                                     return null;
                                 };
-                                ScreenModel.prototype.checkDuplicateCodeByImportData = function () {
+                                //check dulicate code
+                                ScreenModel.prototype.importData = function () {
                                     var self = this;
                                     if (self.selectLstSocialInsuranceOffice() != null) {
                                         var socialInsuranceOfficeImport;
                                         socialInsuranceOfficeImport = self.findCode(self.selectLstSocialInsuranceOffice());
-                                        b.service.checkDuplicateCodeByImportData(socialInsuranceOfficeImport).done(function (data) {
-                                            self.showConfirm(data, socialInsuranceOfficeImport);
-                                        });
+                                        nts.uk.ui.windows.setShared('importData', socialInsuranceOfficeImport);
+                                        nts.uk.ui.windows.close();
                                     }
                                 };
                                 return ScreenModel;
@@ -91,4 +70,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm010.b.vm.js.map

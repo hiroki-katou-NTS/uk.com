@@ -29,19 +29,19 @@
 
 		<!-- PAGE CONTENT -->
 		<ui:define name="pageContent">
-			<table class="form-default" data-bind="visible: true" style="display: none">
+			<table class="form-default">
 						<tr>
 							<td><div id="lbl_003"
 									data-bind="ntsFormLabel: {constraint: ['UnitPriceCode','UnitPriceName'], required: true }">コード/名称</div></td>
 							<td colspan="2"><input id="inpCode" data-name="コード"
-								class="inp-default save-error"
+								class="inp-default"
 								data-bind="ntsTextEditor: {
 									value: unitPriceHistoryModel().unitPriceCode,
 									constraint: 'UnitPriceCode',
 									option: textEditorOption,
 									required: true,
 									enable: isNewMode()}" />
-								<input id="inpName" class="inp-default save-error" data-name="名称"
+								<input id="inpName" class="inp-default" data-name="名称"
 								data-bind="ntsTextEditor: {
 									value: unitPriceHistoryModel().unitPriceName,
 									constraint: 'UnitPriceName',
@@ -52,23 +52,19 @@
 						<tr>
 							<td><div id="lbl_004"
 									data-bind="ntsFormLabel: { required: true }">開始年月</div></td>
-							<td><span id="inpStartMonth" data-name="開始年月"
+							<td style="min-width: 265px"><span id="inpStartMonth" data-name="開始年月"
 								data-bind="ntsDatePicker: {value: unitPriceHistoryModel().startMonth, dateFormat: 'yyyy/MM', disabled: !isNewMode()}"></span>
 								<label id="lblJapanenseYearMonth"
-								data-bind="text: '(' + nts.uk.time.yearmonthInJapanEmpire(unitPriceHistoryModel().endMonth()) + ') ~ '"></label></td>
+								data-bind="text: '(' + nts.uk.time.yearmonthInJapanEmpire(unitPriceHistoryModel().startMonth()) + ') ~ '"></label></td>
 						</tr>
 						<tr>
 							<td><div id="lbl_006"
 									data-bind="ntsFormLabel: { constraint: 'Money', required: true }">金額</div></td>
-							<td><input id="inpBudget" class="inp-default save-error" data-name="金額"
+							<td><input id="inpBudget" class="inp-default" data-name="金額"
 								data-bind="ntsNumberEditor: {
 									value: unitPriceHistoryModel().budget,
 									constraint: 'Money',
-									option: {placeholder: '0.00',
-						                    grouplength: 3,
-						                    decimallength: 2,
-						                    currencyformat: 'JPY',
-						                    currencyposition: 'right'},
+									option: {decimallength: 2, currencyformat: 'JPY',currencyposition: 'right'}, 
 									required: true}" />
 							</td>
 						</tr>
@@ -88,62 +84,55 @@
 						</tr>
 						<tr>
 							<td> </td>
-							<td style="vertical-align: top" class="valign-top" rowspan="4"><div
-									id="sel_002"
-									data-bind="ntsSwitchButton: {
-						options: switchButtonDataSource,
-						optionsValue: 'code',
-						optionsText: 'name',
-						enable: !isContractSettingEnabled(),
-						value: unitPriceHistoryModel().fixPayAtr}"></div></td>
-							<td><label id="lbl_009">月給者</label></td>
-							<td class="">
-								<div id="sel_003"
-									data-bind="ntsSwitchButton: {
-						options: switchButtonDataSource,
-						optionsValue: 'code',
-						optionsText: 'name',
-						enable: isContractSettingEnabled(),
-						value: unitPriceHistoryModel().fixPayAtrMonthly}"></div>
+							<td style="vertical-align: top" class="valign-top" rowspan="4">
+								<div class="lbl-switch" data-bind="ntsSwitchButton: {
+									options: switchButtonDataSource,
+									optionsValue: 'code',
+									optionsText: 'name',
+									enable: !isContractSettingEnabled(),
+									value: unitPriceHistoryModel().fixPayAtr}">
+								</div>
+							</td>
+							<td><label class="lbl-switch">月給者</label></td>
+							<td><div class="btn-switch" data-bind="ntsSwitchButton: {
+									options: switchButtonDataSource,
+									optionsValue: 'code',
+									optionsText: 'name',
+									enable: isContractSettingEnabled(),
+									value: unitPriceHistoryModel().fixPayAtrMonthly}"></div>
 							</td>
 						</tr>
 						<tr>
 							<td> </td>
-							<td><label id="lbl_010">日給月給者</label></td>
-							<td class="">
-								<div id="sel_004"
-									data-bind="ntsSwitchButton: {
-						options: switchButtonDataSource,
-						optionsValue: 'code',
-						optionsText: 'name',
-						enable: isContractSettingEnabled(),
-						value: unitPriceHistoryModel().fixPayAtrDayMonth}"></div>
+							<td><label class="lbl-switch">日給月給者</label></td>
+							<td><div class="btn-switch" data-bind="ntsSwitchButton: {
+									options: switchButtonDataSource,
+									optionsValue: 'code',
+									optionsText: 'name',
+									enable: isContractSettingEnabled(),
+									value: unitPriceHistoryModel().fixPayAtrDayMonth}"></div>
 							</td>
 						</tr>
 						<tr>
 							<td> </td>
-							<td><label id="lbl_011">日給者</label></td>
-							<td class="">
-								<div id="sel_005"
-									data-bind="ntsSwitchButton: {
-						options: switchButtonDataSource,
-						optionsValue: 'code',
-						optionsText: 'name',
-						enable: isContractSettingEnabled(),
-						value: unitPriceHistoryModel().fixPayAtrDaily}"></div>
+							<td><label class="lbl-switch">日給者</label></td>
+							<td><div class="btn-switch" data-bind="ntsSwitchButton: {
+									options: switchButtonDataSource,
+									optionsValue: 'code',
+									optionsText: 'name',
+									enable: isContractSettingEnabled(),
+									value: unitPriceHistoryModel().fixPayAtrDaily}"></div>
 							</td>
 						</tr>
 						<tr>
 							<td> </td>
-							<td><label id="lbl_012">時給者</label></td>
-							<td class="">
-								<div id="sel_006"
-									data-bind="ntsSwitchButton: {
-						options: switchButtonDataSource,
-						optionsValue: 'code',
-						optionsText: 'name',
-						enable: isContractSettingEnabled(),
-						value: unitPriceHistoryModel().fixPayAtrHourly}"></div>
+							<td><label class="lbl-switch">時給者</label></td>
+							<td><div class="btn-switch" data-bind="ntsSwitchButton: {
+									options: switchButtonDataSource,
+									optionsValue: 'code',
+									optionsText: 'name',
+									enable: isContractSettingEnabled(),
+									value: unitPriceHistoryModel().fixPayAtrHourly}"></div>
 							</td>
 						</tr>
 						<tr>
@@ -160,12 +149,10 @@
 										data-bind="ntsMultilineEditor: {
 										value: unitPriceHistoryModel().memo,
 										constraint: 'Memo',
-										option: {
-											resizeable: false,
+										option: { resizeable: false,
 											placeholder: '',
-											width: '350',
-											textalign: 'left'
-											}
+											width: '400',
+											textalign: 'left'}
 										}"/>
 								</div></td>
 						</tr>

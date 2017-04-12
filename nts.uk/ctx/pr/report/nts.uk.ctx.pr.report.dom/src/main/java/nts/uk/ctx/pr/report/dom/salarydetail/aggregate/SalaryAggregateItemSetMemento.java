@@ -1,8 +1,11 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.report.dom.salarydetail.aggregate;
 
 import java.util.Set;
 
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.salarydetail.item.SalaryItem;
 
 /**
@@ -15,7 +18,7 @@ public interface SalaryAggregateItemSetMemento {
 	 *
 	 * @param companyCode the new company code
 	 */
-	 void setCompanyCode(CompanyCode companyCode);
+	 void setCompanyCode(String companyCode);
 
 	/**
 	 * Sets the salary aggregate item code.

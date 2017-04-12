@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate;
@@ -12,17 +12,10 @@ import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 
 /**
  * The Class UnemployeeInsuranceRate.
- */
-
-/**
- * Gets the rate items.
- *
- * @return the rate items
  */
 @Getter
 public class UnemployeeInsuranceRate extends DomainObject {
@@ -35,24 +28,10 @@ public class UnemployeeInsuranceRate extends DomainObject {
 	private String companyCode;
 
 	/** The apply range. */
-
-	/**
-	 * Sets the apply range.
-	 *
-	 * @param applyRange
-	 *            the new apply range
-	 */
 	@Setter
 	private MonthRange applyRange;
 
 	/** The rate items. */
-
-	/**
-	 * Sets the rate items.
-	 *
-	 * @param rateItems
-	 *            the new rate items
-	 */
 	@Setter
 	private Set<UnemployeeInsuranceRateItem> rateItems;
 

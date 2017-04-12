@@ -66,23 +66,36 @@ module nts.uk.pr.view.base.simplehistory {
                 })
 
                 self.igGridSelectedHistoryUuid.subscribe(id => {
-                    // Not select.
-                    if (!id) {
-                        self.selectedNode(undefined);
-                        return;
-                    }
+                    var inlineFunc = () => {
+                        // Not select.
+                        if (!id) {
+                            self.selectedNode(undefined);
+                            return;
+                        }
 
-                    var selectedNode = self.getNode(id);
-                    // History node.
-                    if (!selectedNode.isMaster) {
-                        self.isNewMode(false);
-                        self.selectedHistoryUuid(selectedNode.id);
-                        self.onSelectHistory(id);
+                        var selectedNode = self.getNode(id);
+                        // History node.
+                        if (!selectedNode.isMaster) {
+                            self.isNewMode(false);
+                            self.selectedHistoryUuid(selectedNode.id);
+                            self.onSelectHistory(id);
+                        } else {
+                            // Parent node.
+                            self.onSelectMaster(id);
+                        }
+                        self.selectedNode(selectedNode);
+                    };
+                    if (self.selectedHistoryUuid() &&
+                        id != self.selectedHistoryUuid()) {
+                        self.confirmDirtyAndExecute(inlineFunc, () => {
+                            self.igGridSelectedHistoryUuid(self.selectedHistoryUuid());
+                        })
                     } else {
-                        // Parent node.
-                        self.onSelectMaster(id);
+                        if (!self.selectedHistoryUuid()) {
+                            inlineFunc();
+                        }
+                        self.onSelectHistory(id);
                     }
-                    self.selectedNode(selectedNode);
                 })
             }
 
@@ -161,13 +174,15 @@ module nts.uk.pr.view.base.simplehistory {
             /**
              * Confirm dirty state and execute function.
              */
-            confirmDirtyAndExecute(functionToExecute: () => void) {
+            confirmDirtyAndExecute(functionToExecute: () => void, functionToExecuteIfNo?: () => void) {
                 var self = this;
                 if (self.isDirty()) {
                     nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
                         functionToExecute();
                     }).ifNo(function() {
-                        // Do nothing.
+                        if (functionToExecuteIfNo) {
+                            functionToExecuteIfNo();
+                        }
                     });
                 } else {
                     functionToExecute();
@@ -181,16 +196,16 @@ module nts.uk.pr.view.base.simplehistory {
                 var self = this;
                 self.confirmDirtyAndExecute(() => {
                     self.isNewMode(true);
+                    self.onRegistNew();
 
                     // Clear select history uuid.
                     self.igGridSelectedHistoryUuid(undefined);
-                    self.onRegistNew();
                 });
             }
 
             /**
              * Confirm dirty check.
-             * Overrid it by your self.
+             * Override it by your self.
              */
             abstract isDirty(): boolean;
 
@@ -301,6 +316,11 @@ module nts.uk.pr.view.base.simplehistory {
             reloadMasterHistory(uuid: string) {
                 var self = this;
                 self.loadMasterHistory().done(() => {
+                    // Set new mode if masterHistoryList has 0 element.
+                    if (!self.masterHistoryList || self.masterHistoryList.length == 0) {
+                        self.isNewMode(true);
+                        self.onRegistNew();
+                    }
                     self.selectedHistoryUuid(undefined);
                     if (uuid) {
                         self.igGridSelectedHistoryUuid(uuid);

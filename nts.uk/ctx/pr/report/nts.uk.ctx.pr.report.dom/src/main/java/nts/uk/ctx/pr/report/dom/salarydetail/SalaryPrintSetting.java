@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.report.dom.salarydetail;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 
 /**
  * The Class SalaryPrintSetting.
@@ -15,7 +14,7 @@ import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 public class SalaryPrintSetting extends DomainObject {
 	
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 	
 	/** The output distinction. */
 	private SalaryOutputDistinction outputDistinction;

@@ -21,6 +21,12 @@ public class CbkmtBranch extends TableEntity {
    @EmbeddedId
    public CbkmtBranchPK ckbmtBranchPK;
    
+   @Column(name="BANK_CD")
+   public String bankCode;
+   
+   @Column(name="BRANCH_CD")
+   public String branchCode;
+   
    @Column(name="BRANCH_NAME")
    public String branchName;
    

@@ -10,6 +10,7 @@ module nts.uk.pr.view.qmm016 {
             initWageTable: 'pr/proto/wagetable/init',
             genitem: 'pr/proto/wagetable/reference/genitem',
             updateHistory: 'pr/proto/wagetable/update',
+            certificateInfo: 'pr/proto/wagetable/sp/certifies'
         }
 
         /**
@@ -47,10 +48,17 @@ module nts.uk.pr.view.qmm016 {
             /**
              * Update history.
              */
-            updateHistory(data: {code: string, name: string, memo: string, wtHistoryDto: model.WageTableHistoryModel}): JQueryPromise<any> {
+            updateHistory(data: {code: string, name: string, memo: string, wtHistoryDto: model.WageTableHistoryDto}): JQueryPromise<any> {
                 return nts.uk.request.ajax(path.updateHistory, data);
             }
             
+            /**
+             * Certificate
+             */
+            loadCertificate(): JQueryPromise<model.CertifyGroupOutModel> {
+                return nts.uk.request.ajax(path.certificateInfo);
+            }
+
             /**
              * Generate item table.
              */
@@ -176,6 +184,7 @@ module nts.uk.pr.view.qmm016 {
          */
         export interface ItemDto {
             uuid: string;
+            displayName: string;
             referenceCode?: string;
             orderNumber?: number;
             startVal?: number;
@@ -265,6 +274,34 @@ module nts.uk.pr.view.qmm016 {
             
             /** The amount. */
             amount: number;
+        }
+        
+
+        export interface CertifyGroupOutModel {
+            certifyGroups: Array<model.CertifyGroupDto>
+        }
+        
+        export interface CertifyGroupDto {
+            /** The code. */
+            code: string;
+            
+            /** The name. */
+            name: string;
+            
+            /** The memo. */
+            multiApplySet: number
+            
+            /** The certify items. */
+            certifyItems: Array<CertifyItemDto>;
+        }
+
+        export interface CertifyItemDto {
+            /** The code. */
+            code: string;
+
+            /** The name. */
+            name: string;
+
         }
     }
 }

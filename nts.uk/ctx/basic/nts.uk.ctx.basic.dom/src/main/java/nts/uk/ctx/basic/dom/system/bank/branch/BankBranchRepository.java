@@ -10,11 +10,10 @@ public interface BankBranchRepository {
 	/**
 	 * Find bank branch
 	 * @param companyCode
-	 * @param bankCode
-	 * @param branchCode
+	 * @param branchId
 	 * @return
 	 */
-	Optional<BankBranch> find(String companyCode, String bankCode, String branchCode);
+	Optional<BankBranch> find(String companyCode, String branchId);
 	
     /**
      * Get list of bank code
@@ -39,15 +38,31 @@ public interface BankBranchRepository {
 	
     /**
      * Update bank branch information	
-     * @param bank branch
+     * @param branchId branch
      */
 	void update(BankBranch bank);
 	
-	void update(String bankNewCode,  String companyCode, String bankCode, String branchCode);
+	void update(String bankNewCode,  String companyCode, String branchId);
 	
 	/**
 	 * Remove a bank branch
-	 * @param bank branch
+	 * @param branchId branch
 	 */
-	void remove(String companyCode, String bankCode, String branchCode);
+	void remove(String companyCode, String branchId);
+	
+	/**
+	 * Remove a list bank branch
+	 * @param companyCode
+	 * @param branchId
+	 */
+	void removeAll(String companyCode, List<String> branchIdList);
+
+	/**
+	 * Check exist bank
+	 * @param companyCode
+	 * @param bankCode
+	 * @param branchCode
+	 * @return
+	 */
+	boolean checkExists(String companyCode, String bankCode, String branchCode);
 }

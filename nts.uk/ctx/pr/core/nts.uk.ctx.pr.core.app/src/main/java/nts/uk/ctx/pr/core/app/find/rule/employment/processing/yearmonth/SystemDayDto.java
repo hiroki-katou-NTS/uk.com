@@ -27,13 +27,13 @@ public class SystemDayDto {
 
 	int accountDueDay;
 
-	int payslipPrintMonth;
+	int payslipPrintMonthAtr;
 
 	public static SystemDayDto fromDomain(SystemDay domain) {
 		return new SystemDayDto(domain.getCompanyCode().v(), domain.getProcessingNo().v(),
 				domain.getSocialInsLevyMonAtr().value, domain.getResitaxStdMon().v(), domain.getResitaxStdDay().v(),
 				domain.getResitaxBeginMon().v(), domain.getPickupStdMonAtr().value, domain.getPickupStdDay().v(),
 				domain.getPayStdDay().v(), domain.getAccountDueMonAtr().value, domain.getAccountDueDay().v(),
-				domain.getPayslipPrintMonth().value);
+				domain.getPayslipPrintMonthAtr().value);
 	}
 }

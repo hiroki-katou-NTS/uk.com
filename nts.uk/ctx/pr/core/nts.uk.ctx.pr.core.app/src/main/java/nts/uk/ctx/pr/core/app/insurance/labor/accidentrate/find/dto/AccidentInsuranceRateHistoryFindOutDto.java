@@ -49,8 +49,7 @@ public class AccidentInsuranceRateHistoryFindOutDto implements AccidentInsurance
 	 */
 	@Override
 	public void setCompanyCode(String companyCode) {
-		// TODO Auto-generated method stub
-
+		// Do nothing code
 	}
 
 	/*
@@ -74,8 +73,7 @@ public class AccidentInsuranceRateHistoryFindOutDto implements AccidentInsurance
 	 */
 	@Override
 	public void setRateItems(Set<InsuBizRateItem> items) {
-		// TODO Auto-generated method stub
-
+		// Do nothing code
 	}
 
 }

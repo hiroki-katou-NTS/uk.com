@@ -23,7 +23,7 @@ public class Qmm005cCommand {
 
 	private int bonusAtr;
 
-	private int bCurrentProcessingYm;
+	private int bcurrentProcessingYm;
 
 	private int payStdDay;
 
@@ -41,7 +41,7 @@ public class Qmm005cCommand {
 
 	private int accountDueDay;
 
-	private int payslipPrintMonth;
+	private int payslipPrintMonthAtr;
 
 	private int socialInsuLevyMonAtr;
 
@@ -66,7 +66,7 @@ public class Qmm005cCommand {
 	public SystemDay toSystemDayDomain(String companyCode) {
 		return SystemDay.createSimpleFromJavaType(companyCode, getProcessingNo(), getSocialInsuLevyMonAtr(),
 				getResitaxStdMon(), getResitaxStdDay(), getResitaxBeginMon(), getPickupStdMonAtr(), getPickupStdDay(),
-				getPayStdDay(), getAccountDueMonAtr(), getAccountDueDay(), getPayslipPrintMonth());
+				getPayStdDay(), getAccountDueMonAtr(), getAccountDueDay(), getPayslipPrintMonthAtr());
 	}
 
 	public StandardDay toStandardDayDomain(String companyCode) {
@@ -77,6 +77,6 @@ public class Qmm005cCommand {
 
 	public PaydayProcessing toPaydayProcessingDomain(String companyCode) {
 		return PaydayProcessing.createSimpleFromJavaType(companyCode, getProcessingNo(), getProcessingName(),
-				getDispSet(), getCurrentProcessingYm(), getBonusAtr(), getBCurrentProcessingYm());
+				getDispSet(), getCurrentProcessingYm(), getBonusAtr(), getBcurrentProcessingYm());
 	}
 }

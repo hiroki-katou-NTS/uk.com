@@ -11,7 +11,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * The Class CitySign.
  */
 @StringMaxLength(2)
-public class CitySign extends StringPrimitiveValue<CitySign>{
+public class CitySign extends StringPrimitiveValue<CitySign> {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -19,11 +19,11 @@ public class CitySign extends StringPrimitiveValue<CitySign>{
 	/**
 	 * Instantiates a new city sign.
 	 *
-	 * @param rawValue the raw value
+	 * @param rawValue
+	 *            the raw value
 	 */
 	public CitySign(String rawValue) {
 		super(rawValue);
 	}
-	
 
 }

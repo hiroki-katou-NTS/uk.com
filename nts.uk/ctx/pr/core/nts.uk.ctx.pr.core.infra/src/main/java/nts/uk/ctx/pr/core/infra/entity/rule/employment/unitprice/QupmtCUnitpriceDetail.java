@@ -129,15 +129,17 @@ public class QupmtCUnitpriceDetail implements Serializable {
 	private String memo;
 
 	/** The qupmt C unitprice head. */
-	@JoinColumns({ @JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
+	@JoinColumns({
+			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
 			@JoinColumn(name = "C_UNITPRICE_CD", referencedColumnName = "C_UNITPRICE_CD", insertable = false, updatable = false) })
 	@ManyToOne(optional = false)
 	private QupmtCUnitpriceHeader qupmtCUnitpriceHeader;
-	
+
 	/**
 	 * Instantiates a new qupmt C unitprice detail.
 	 */
 	public QupmtCUnitpriceDetail() {
+		super();
 	}
 
 	/**
@@ -148,48 +150,6 @@ public class QupmtCUnitpriceDetail implements Serializable {
 	 */
 	public QupmtCUnitpriceDetail(QupmtCUnitpriceDetailPK qupmtCUnitpriceDetailPK) {
 		this.qupmtCUnitpriceDetailPK = qupmtCUnitpriceDetailPK;
-	}
-
-	/**
-	 * Instantiates a new qupmt C unitprice detail.
-	 *
-	 * @param qupmtCUnitpriceDetailPK
-	 *            the qupmt C unitprice detail PK
-	 * @param exclusVer
-	 *            the exclus ver
-	 * @param strYm
-	 *            the str ym
-	 * @param endYm
-	 *            the end ym
-	 * @param cUnitprice
-	 *            the c unitprice
-	 * @param fixPaySet
-	 *            the fix pay set
-	 * @param fixPayAtr
-	 *            the fix pay atr
-	 * @param fixPayAtrMonthly
-	 *            the fix pay atr monthly
-	 * @param fixPayAtrDaymonth
-	 *            the fix pay atr daymonth
-	 * @param fixPayAtrDaily
-	 *            the fix pay atr daily
-	 * @param fixPayAtrHourly
-	 *            the fix pay atr hourly
-	 */
-	public QupmtCUnitpriceDetail(QupmtCUnitpriceDetailPK qupmtCUnitpriceDetailPK, int exclusVer, int strYm, int endYm,
-			BigDecimal cUnitprice, short fixPaySet, short fixPayAtr, short fixPayAtrMonthly, short fixPayAtrDaymonth,
-			short fixPayAtrDaily, short fixPayAtrHourly) {
-		this.qupmtCUnitpriceDetailPK = qupmtCUnitpriceDetailPK;
-		this.exclusVer = exclusVer;
-		this.strYm = strYm;
-		this.endYm = endYm;
-		this.cUnitprice = cUnitprice;
-		this.fixPaySet = fixPaySet;
-		this.fixPayAtr = fixPayAtr;
-		this.fixPayAtrMonthly = fixPayAtrMonthly;
-		this.fixPayAtrDaymonth = fixPayAtrDaymonth;
-		this.fixPayAtrDaily = fixPayAtrDaily;
-		this.fixPayAtrHourly = fixPayAtrHourly;
 	}
 
 	/**

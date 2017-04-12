@@ -8,6 +8,7 @@ module nts.uk.pr.view.qpp007.c {
             remove: "ctx/pr/report/salary/outputsetting/remove",
             findOutputSettingDetail: "ctx/pr/report/salary/outputsetting/find",
             findAllOutputSettings: "ctx/pr/report/salary/outputsetting/findall",
+            findAllAggregateItems: "ctx/pr/report/salary/aggregate/item/findall"
         };
 
         /**
@@ -33,6 +34,12 @@ module nts.uk.pr.view.qpp007.c {
          */
         export function findAllOutputSettings(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.findAllOutputSettings);
+        }
+        /**
+         *  Find all aggregateItems.
+         */
+        export function findAllAggregateItems(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.findAllAggregateItems);
         }
 
     }

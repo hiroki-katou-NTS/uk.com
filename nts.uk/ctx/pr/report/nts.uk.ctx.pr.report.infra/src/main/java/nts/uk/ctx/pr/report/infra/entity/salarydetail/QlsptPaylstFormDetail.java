@@ -87,6 +87,7 @@ public class QlsptPaylstFormDetail implements Serializable {
 	 * Instantiates a new qlspt paylst form detail.
 	 */
 	public QlsptPaylstFormDetail() {
+		super();
 	}
 
 	/**

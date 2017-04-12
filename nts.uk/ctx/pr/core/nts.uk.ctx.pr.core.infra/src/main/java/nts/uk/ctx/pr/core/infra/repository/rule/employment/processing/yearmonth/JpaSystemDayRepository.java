@@ -23,6 +23,8 @@ public class JpaSystemDayRepository extends JpaRepository implements SystemDayRe
 				.getList(c -> toDomain(c)).get(0);
 	}
 	
+	
+	
 	@Override
 	public void insert(SystemDay domain) {
 		this.commandProxy().insert(toEntity(domain));
@@ -53,6 +55,6 @@ public class JpaSystemDayRepository extends JpaRepository implements SystemDayRe
 		return new QpdmtSystemDay(qpdmtSystemDayPk, domain.getPayStdDay().v(), domain.getResitaxBeginMon().v(),
 				domain.getResitaxStdMon().v(), domain.getResitaxStdDay().v(), domain.getPickupStdMonAtr().value,
 				domain.getPickupStdDay().v(), domain.getSocialInsLevyMonAtr().value, domain.getAccountDueMonAtr().value,
-				domain.getAccountDueDay().v(), domain.getPayslipPrintMonth().value);
+				domain.getAccountDueDay().v(), domain.getPayslipPrintMonthAtr().value);
 	}
 }

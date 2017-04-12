@@ -26,7 +26,7 @@ public class LaborInsuranceOfficeFinder {
 
 	/** The labor insurance office repository. */
 	@Inject
-	private LaborInsuranceOfficeRepository laborInsuranceOfficeRepository;
+	private LaborInsuranceOfficeRepository repository;
 
 	/**
 	 * Find by id.
@@ -44,16 +44,15 @@ public class LaborInsuranceOfficeFinder {
 		String companyCode = loginUserContext.companyCode();
 
 		// to Dto
-		LaborInsuranceOfficeFindDto laborInsuranceOfficeDto = new LaborInsuranceOfficeFindDto();
+		LaborInsuranceOfficeFindDto dataOuput = new LaborInsuranceOfficeFindDto();
 
 		// call service find Id
-		Optional<LaborInsuranceOffice> optionalLaborInsuranceOffice = laborInsuranceOfficeRepository
-			.findById(companyCode, officeCode);
+		Optional<LaborInsuranceOffice> data = this.repository.findById(companyCode, officeCode);
 
-		// value exsit
-		if (optionalLaborInsuranceOffice.isPresent()) {
-			optionalLaborInsuranceOffice.get().saveToMemento(laborInsuranceOfficeDto);
-			return laborInsuranceOfficeDto;
+		// value exist
+		if (data.isPresent()) {
+			data.get().saveToMemento(dataOuput);
+			return dataOuput;
 		}
 
 		return null;
@@ -72,15 +71,17 @@ public class LaborInsuranceOfficeFinder {
 		// get companycode by user login
 		String companyCode = loginUserContext.companyCode();
 
-		// to Dto
-		List<LaborInsuranceOfficeFindOutDto> lstLaborInsuranceOfficeFindOutDto;
-		lstLaborInsuranceOfficeFindOutDto = this.laborInsuranceOfficeRepository.findAll(companyCode).stream()
-			.map(laborInsuranceOffice -> {
-				LaborInsuranceOfficeFindOutDto laborInsuranceOfficeFindOutDto = new LaborInsuranceOfficeFindOutDto();
-				laborInsuranceOffice.saveToMemento(laborInsuranceOfficeFindOutDto);
-				return laborInsuranceOfficeFindOutDto;
-			}).collect(Collectors.toList());
+		// find data
+		List<LaborInsuranceOffice> data = this.repository.findAll(companyCode);
 
-		return lstLaborInsuranceOfficeFindOutDto;
+		// to Dto
+		List<LaborInsuranceOfficeFindOutDto> dataOutput = data.stream().map(office -> {
+			LaborInsuranceOfficeFindOutDto dto = new LaborInsuranceOfficeFindOutDto();
+			office.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
+
+		return dataOutput;
 	}
+
 }

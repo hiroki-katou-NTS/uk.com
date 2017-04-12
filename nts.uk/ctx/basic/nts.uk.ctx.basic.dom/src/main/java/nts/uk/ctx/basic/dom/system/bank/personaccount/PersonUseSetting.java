@@ -21,9 +21,7 @@ public class PersonUseSetting {
 
 	private String fromLineBankCd;
 
-	private String toBankCd;
-
-	private String toBranchCd;
+	private String toBranchId;
 
 	private int accountAtr;
 
@@ -34,14 +32,14 @@ public class PersonUseSetting {
 	private String accountHolderName;
 
 	public static PersonUseSetting createFromJavaType(int useSet, int priorityOrder, int paymentMethod,
-			int partialPaySet, int fixAmountMny, int fixRate, String fromLineBankCd, String toBankCd, String toBranchCd,
+			int partialPaySet, int fixAmountMny, int fixRate, String fromLineBankCd, String toBranchId,
 			int accountAtr, String accountNo, String accountHolderKnName, String accountHolderName) {
 		return new PersonUseSetting(useSet, priorityOrder, paymentMethod, partialPaySet, fixAmountMny, fixRate,
-				fromLineBankCd, toBankCd, toBranchCd, accountAtr, accountNo, accountHolderKnName, accountHolderName);
+				fromLineBankCd, toBranchId, accountAtr, accountNo, accountHolderKnName, accountHolderName);
 	}
 
 	public PersonUseSetting(int useSet, int priorityOrder, int paymentMethod, int partialPaySet, int fixAmountMny,
-			int fixRate, String fromLineBankCd, String toBankCd, String toBranchCd, int accountAtr, String accountNo,
+			int fixRate, String fromLineBankCd, String toBranchId, int accountAtr, String accountNo,
 			String accountHolderKnName, String accountHolderName) {
 		super();
 		this.useSet = useSet;
@@ -51,8 +49,7 @@ public class PersonUseSetting {
 		this.fixAmountMny = fixAmountMny;
 		this.fixRate = fixRate;
 		this.fromLineBankCd = fromLineBankCd;
-		this.toBankCd = toBankCd;
-		this.toBranchCd = toBranchCd;
+		this.toBranchId = toBranchId;
 		this.accountAtr = accountAtr;
 		this.accountNo = accountNo;
 		this.accountHolderKnName = accountHolderKnName;

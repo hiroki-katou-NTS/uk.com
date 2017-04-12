@@ -26,7 +26,7 @@
 					<div style="float: left; width: 600px">
 						<table id="demension-tbl">
 							<thead>
-								<tr class="bg-green">
+								<tr class="bgIgCol">
 									<td width="50px" class="halign-center">
 									</td>
 									<td width="200px" class="halign-center">
@@ -43,7 +43,7 @@
 							<tbody data-bind="with: history">
 								<com:ko tag="foreach" bind="elements">
 									<tr>
-										<td class="bg-green halign-center" data-bind="text: demensionNo"/>
+										<td class="bgIgCol halign-center" data-bind="text: demensionNo"/>
 										<td>
 											<com:ko tag="ifnot" bind="$root.content.head.demensionType().isAttendance || $root.content.head.demensionType().isCertification">
 											</com:ko>
@@ -56,10 +56,10 @@
 														style="width: 80px;"
 														data-bind="ntsNumberEditor: {
 															value: lowerLimit,
-															constraint: 'Money',
+															constraint: 'RangeLimit',
 															option: {placeholder: '0',
 																grouplength: 3,
-																decimallength: 0},
+																decimallength: 2},
 																required: true}" />
 												</div>
 												<span>~</span>
@@ -68,10 +68,10 @@
 														style="width: 80px;"
 														data-bind="ntsNumberEditor: {
 															value: upperLimit,
-															constraint: 'Money',
+															constraint: 'RangeLimit',
 															option: {placeholder: '0',
 																grouplength: 3,
-																decimallength: 0},
+																decimallength: 2},
 															required: true}" />
 												</div>
 											</com:ko>
@@ -87,10 +87,10 @@
 													style="width: 80px;"
 													data-bind="ntsNumberEditor: {
 														value: interval,
-														constraint: 'Money',
+														constraint: 'RangeLimit',
 														option: {placeholder: '0',
 															grouplength: 3,
-															decimallength: 0},
+															decimallength: 2},
 														required: true}" />
 											</com:ko>
 											<com:ko tag="ifnot" bind="type.isRangeMode">

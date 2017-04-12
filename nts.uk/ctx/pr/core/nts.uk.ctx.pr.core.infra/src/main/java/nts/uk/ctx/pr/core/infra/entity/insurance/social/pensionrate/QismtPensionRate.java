@@ -325,6 +325,7 @@ public class QismtPensionRate implements Serializable {
 	 * Instantiates a new qismt pension rate.
 	 */
 	public QismtPensionRate() {
+		super();
 	}
 
 	/**

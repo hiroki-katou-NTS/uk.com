@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.service.AccidentInsuranceRateService;
@@ -22,7 +23,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.service.AccidentInsur
 public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateService {
 
 	/** The rate item count. */
-	private final int RATE_ITEM_COUNT = 10;
+	private static final int RATE_ITEM_COUNT = 10;
 
 	/** The accident insurance rate repo. */
 	@Inject
@@ -37,8 +38,8 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 	 */
 	@Override
 	public void validateRequiredItem(AccidentInsuranceRate rate) {
-		if (rate.getApplyRange() == null || CollectionUtil.isEmpty(rate.getRateItems())
-			|| rate.getRateItems().size() != RATE_ITEM_COUNT) {
+		if (StringUtil.isNullOrEmpty(rate.getHistoryId(), true) || rate.getApplyRange() == null
+			|| CollectionUtil.isEmpty(rate.getRateItems()) || rate.getRateItems().size() != RATE_ITEM_COUNT) {
 			throw new BusinessException("ER001");
 		}
 	}
@@ -100,6 +101,13 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 		}
 	}
 
+	/**
+	 * Gets the validate range update.
+	 *
+	 * @param rate
+	 *            the rate
+	 * @return the validate range update
+	 */
 	private boolean getValidateRangeUpdate(AccidentInsuranceRate rate) {
 		// start<=end
 		if (rate.getApplyRange().getStartMonth().v() > rate.getApplyRange().getEndMonth().v()) {
@@ -109,25 +117,25 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 		Optional<AccidentInsuranceRate> optionalAccidentInsuranceRate;
 		optionalAccidentInsuranceRate = this.accidentInsuranceRateRepo.findById(rate.getCompanyCode(),
 			rate.getHistoryId());
-		
+
 		if (!optionalAccidentInsuranceRate.isPresent()) {
 			return true;
 		}
-		
+
 		Optional<AccidentInsuranceRate> optionalBetweenUpdate = this.accidentInsuranceRateRepo
 			.findBetweenUpdate(rate.getCompanyCode(),
 				optionalAccidentInsuranceRate.get().getApplyRange().getStartMonth(),
 				optionalAccidentInsuranceRate.get().getHistoryId());
-		
+
 		if (!optionalBetweenUpdate.isPresent()) {
 			return false;
 		}
-		
+
 		if (optionalBetweenUpdate.get().getApplyRange().getStartMonth().v() >= rate.getApplyRange()
 			.getStartMonth().v()) {
 			return true;
 		}
-		
+
 		return false;
 	}
 

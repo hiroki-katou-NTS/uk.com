@@ -84,6 +84,7 @@ public class QlsptLedgerAggreDetail implements Serializable {
 	 * Instantiates a new qlspt ledger aggre detail.
 	 */
 	public QlsptLedgerAggreDetail() {
+		super();
 	}
 
 	/**

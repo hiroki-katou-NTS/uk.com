@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class UpdateBranchCommand {
+	private String branchId;
 	private String bankCode;
 	private String branchCode; 
 	private String branchName; 

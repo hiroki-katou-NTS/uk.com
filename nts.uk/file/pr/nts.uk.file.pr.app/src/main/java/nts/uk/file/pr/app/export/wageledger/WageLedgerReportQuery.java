@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.file.pr.app.export.wageledger;
 
+import java.util.List;
+
 /**
  * The Class WageLedgerReportQuery.
  */
@@ -26,6 +28,9 @@ public class WageLedgerReportQuery {
 	
 	/** The output setting code. */
 	public String outputSettingCode;
+	
+	/** The employee ids. */
+	public List<String> employeeIds;
 	
 	/**
 	 * The Enum LayoutType.

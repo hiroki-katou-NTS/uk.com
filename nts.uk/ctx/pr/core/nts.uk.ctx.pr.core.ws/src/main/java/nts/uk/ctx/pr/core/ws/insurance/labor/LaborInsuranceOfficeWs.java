@@ -22,11 +22,6 @@ import nts.uk.ctx.pr.core.app.insurance.labor.command.LaborInsuranceOfficeUpdate
 import nts.uk.ctx.pr.core.app.insurance.labor.find.LaborInsuranceOfficeFinder;
 import nts.uk.ctx.pr.core.app.insurance.labor.find.dto.LaborInsuranceOfficeFindDto;
 import nts.uk.ctx.pr.core.app.insurance.labor.find.dto.LaborInsuranceOfficeFindOutDto;
-import nts.uk.ctx.pr.core.app.insurance.labor.imports.LaborInsuranceOfficeImporter;
-import nts.uk.ctx.pr.core.app.insurance.labor.imports.dto.LaborInsuranceOfficeCheckImportDto;
-import nts.uk.ctx.pr.core.app.insurance.labor.imports.dto.LaborInsuranceOfficeImportDto;
-import nts.uk.ctx.pr.core.app.insurance.labor.imports.dto.LaborInsuranceOfficeImportOutDto;
-import nts.uk.ctx.pr.core.app.insurance.labor.imports.dto.SocialInsuranceOfficeImportDto;
 
 /**
  * The Class LaborInsuranceOfficeWs.
@@ -50,10 +45,6 @@ public class LaborInsuranceOfficeWs extends WebService {
 	/** The delete. */
 	@Inject
 	private LaborInsuranceOfficeDeleteCommandHandler delete;
-
-	/** The importser. */
-	@Inject
-	private LaborInsuranceOfficeImporter importser;
 
 	/**
 	 * Find all.
@@ -113,33 +104,5 @@ public class LaborInsuranceOfficeWs extends WebService {
 	@Path("delete")
 	public void delete(LaborInsuranceOfficeDeleteCommand command) {
 		this.delete.handle(command);
-	}
-
-	/**
-	 * Check duplicate code.
-	 *
-	 * @param socialInsuranceOfficeImport
-	 *            the social insurance office import
-	 * @return the labor insurance office check import dto
-	 */
-	@POST
-	@Path("importser/checkDuplicateCode")
-	public LaborInsuranceOfficeCheckImportDto checkDuplicateCode(
-			SocialInsuranceOfficeImportDto socialInsuranceOfficeImport) {
-		return importser.checkDuplicateCode(socialInsuranceOfficeImport);
-	}
-
-	/**
-	 * Import data.
-	 *
-	 * @param laborInsuranceOfficeImportDto
-	 *            the labor insurance office import dto
-	 * @return the labor insurance office import out dto
-	 */
-	@POST
-	@Path("importser/importData")
-	public LaborInsuranceOfficeImportOutDto importData(
-			LaborInsuranceOfficeImportDto laborInsuranceOfficeImportDto) {
-		return importser.importData(laborInsuranceOfficeImportDto);
 	}
 }

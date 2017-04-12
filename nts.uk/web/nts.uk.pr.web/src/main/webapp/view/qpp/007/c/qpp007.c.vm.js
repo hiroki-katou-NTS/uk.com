@@ -12,17 +12,17 @@ var nts;
                     (function (c) {
                         var viewmodel;
                         (function (viewmodel) {
-                            var aggregateService = nts.uk.pr.view.qpp007.j.service;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
                                     self.isLoading = ko.observable(true);
-                                    self.isNewMode = ko.observable(false);
+                                    self.isNewMode = ko.observable(true);
                                     self.outputSettings = ko.observableArray([]);
                                     self.outputSettingSelectedCode = ko.observable('');
-                                    self.outputSettingDetailModel = ko.observable(new OutputSettingDetailModel());
+                                    self.outputSettingDetailModel = ko.observable(new OutputSettingDetailModel(ko.observableArray([])));
                                     self.reportItems = ko.observableArray([]);
                                     self.reportItemSelected = ko.observable('');
+                                    self.allAggregateItems = ko.observableArray([]);
                                     for (var i = 1; i < 30; i++) {
                                         this.outputSettings.push(new OutputSettingHeader('00' + i, '基本給' + i));
                                     }
@@ -47,16 +47,28 @@ var nts;
                                         self.onSelectOutputSetting(id);
                                     });
                                 }
+                                /**
+                                 * Start page.
+                                 */
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    self.loadAllOutputSetting().done(function () {
+                                    $.when(self.loadAllOutputSetting(), self.loadAggregateItems()).done(function () {
                                         self.isLoading(false);
-                                        self.loadAggregateItems();
+                                        // New mode if there is 0 outputSettings. 
+                                        if (!self.outputSettings || self.outputSettings().length == 0) {
+                                            self.enableNewMode();
+                                        }
+                                        else {
+                                            self.outputSettingSelectedCode(self.outputSettings()[0].code);
+                                        }
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
                                 };
+                                /**
+                                * Reload report items.
+                                */
                                 ScreenModel.prototype.reloadReportItems = function () {
                                     var self = this;
                                     var data = self.outputSettingDetailModel();
@@ -64,6 +76,7 @@ var nts;
                                         self.reportItems([]);
                                         return;
                                     }
+                                    // Set data to report item list.
                                     var reportItemList = [];
                                     data.categorySettings().forEach(function (setting) {
                                         var categoryName = setting.categoryName;
@@ -73,6 +86,9 @@ var nts;
                                     });
                                     self.reportItems(reportItemList);
                                 };
+                                /**
+                                * Collect Data
+                                */
                                 ScreenModel.prototype.collectData = function () {
                                     var self = this;
                                     var model = self.outputSettingDetailModel();
@@ -80,62 +96,108 @@ var nts;
                                     data.code = model.settingCode();
                                     data.name = model.settingName();
                                     var settings = new Array();
-                                    model.categorySettings().forEach(function (item) {
-                                        settings.push(new CategorySettingDto(SalaryCategory.PAYMENT, item.outputItems()));
+                                    model.categorySettings().forEach(function (setting) {
+                                        settings.push(new CategorySettingDto(setting.categoryName, setting.outputItems().map(function (item) {
+                                            var mappedItem = item;
+                                            if (!item.isAggregateItem) {
+                                                mappedItem = new OutputItem();
+                                                mappedItem.code = item.code;
+                                                mappedItem.name = item.name;
+                                                mappedItem.isAggregateItem = false;
+                                            }
+                                            return mappedItem;
+                                        })));
                                     });
                                     data.categorySettings = settings;
                                     return data;
                                 };
+                                /**
+                                * Save outputSetting.
+                                */
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
-                                    $('#inpCode').ntsError('clear');
-                                    $('#inpName').ntsError('clear');
-                                    var hasError = false;
-                                    if (self.outputSettingDetailModel().settingCode() == '') {
-                                        $('#inpCode').ntsError('set', '未入力エラー');
-                                        hasError = true;
-                                    }
-                                    if (self.outputSettingDetailModel().settingName() == '') {
-                                        $('#inpName').ntsError('set', '未入力エラー');
-                                        hasError = true;
-                                    }
-                                    if (hasError) {
+                                    // clear error.
+                                    self.clearError();
+                                    // Validate.
+                                    self.validate();
+                                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                                         return;
                                     }
                                     var data = self.collectData();
+                                    // Set isCreateMode.
                                     if (self.isNewMode()) {
                                         data.createMode = true;
                                     }
                                     else {
                                         data.createMode = false;
                                     }
+                                    // Save.
                                     c.service.save(data).done(function () {
                                         self.isNewMode(false);
                                         self.loadAllOutputSetting();
                                     });
                                 };
+                                ScreenModel.prototype.clearError = function () {
+                                    $('#inpCode').ntsError('clear');
+                                    $('#inpName').ntsError('clear');
+                                };
+                                ScreenModel.prototype.validate = function () {
+                                    $('#inpCode').ntsEditor('validate');
+                                    $('#inpName').ntsEditor('validate');
+                                };
+                                /**
+                                * Delete outputSetting.
+                                */
                                 ScreenModel.prototype.remove = function () {
                                     var _this = this;
                                     if (this.outputSettingSelectedCode) {
                                         c.service.remove(this.outputSettingSelectedCode()).done(function () { return _this.loadAllOutputSetting(); });
                                     }
                                 };
+                                /**
+                                * Open common setting dialog.
+                                */
                                 ScreenModel.prototype.commonSettingBtnClick = function () {
-                                    nts.uk.ui.windows.sub.modal('/view/qpp/007/j/index.xhtml', { title: '集計項目の設定', dialogClass: 'no-close' });
-                                };
-                                ScreenModel.prototype.newModeBtnClick = function () {
                                     var self = this;
-                                    self.outputSettingDetailModel(new OutputSettingDetailModel());
-                                    self.outputSettingSelectedCode('');
-                                    self.isNewMode(true);
-                                };
-                                ScreenModel.prototype.onSelectOutputSetting = function (id) {
-                                    var self = this;
-                                    $('.save-error').ntsError('clear');
-                                    self.isNewMode(false);
-                                    self.loadOutputSettingDetail(id).done(function () {
+                                    nts.uk.ui.windows.sub.modal('/view/qpp/007/j/index.xhtml', { title: '集計項目の設定', dialogClass: 'no-close' })
+                                        .onClosed(function () {
+                                        self.loadAggregateItems().done(function () {
+                                            self.loadOutputSettingDetail(self.outputSettingDetailModel().settingCode());
+                                        });
                                     });
                                 };
+                                /**
+                                 * on NewMode button click.
+                                 */
+                                ScreenModel.prototype.onNewModeBtnClick = function () {
+                                    var self = this;
+                                    self.clearError();
+                                    self.enableNewMode();
+                                };
+                                ScreenModel.prototype.enableNewMode = function () {
+                                    var self = this;
+                                    self.outputSettingDetailModel(new OutputSettingDetailModel(ko.observableArray([])));
+                                    self.outputSettingSelectedCode(null);
+                                    self.isNewMode(true);
+                                };
+                                /**
+                               * On select outputSetting
+                               */
+                                ScreenModel.prototype.onSelectOutputSetting = function (id) {
+                                    var self = this;
+                                    if (!id) {
+                                        return;
+                                    }
+                                    // self.isLoading(true);
+                                    self.loadOutputSettingDetail(id).done(function () {
+                                        self.isNewMode(false);
+                                        self.isLoading(false);
+                                        self.clearError();
+                                    });
+                                };
+                                /**
+                                 * Load all output setting.
+                                 */
                                 ScreenModel.prototype.loadAllOutputSetting = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -148,11 +210,14 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
+                                /**
+                                 * Load detail output setting.
+                                 */
                                 ScreenModel.prototype.loadOutputSettingDetail = function (code) {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     c.service.findOutputSettingDetail(code).done(function (data) {
-                                        self.outputSettingDetailModel(new OutputSettingDetailModel(data));
+                                        self.outputSettingDetailModel(new OutputSettingDetailModel(self.allAggregateItems, data));
                                         dfd.resolve();
                                     }).fail(function (res) {
                                         nts.uk.ui.dialog.alert(res);
@@ -160,16 +225,35 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
+                                /**
+                                * Load aggregate items
+                                */
                                 ScreenModel.prototype.loadAggregateItems = function () {
+                                    var self = this;
                                     var dfd = $.Deferred();
-                                    $.when(aggregateService.findSalaryAggregateItem({ taxDivision: 0, aggregateItemCode: '001' }), aggregateService.findSalaryAggregateItem({ taxDivision: 1, aggregateItemCode: '001' })).done(function (res1, res2) {
+                                    c.service.findAllAggregateItems().done(function (res) {
+                                        self.allAggregateItems.removeAll();
+                                        res.forEach(function (item) {
+                                            self.allAggregateItems.push({
+                                                code: item.salaryAggregateItemCode,
+                                                name: item.salaryAggregateItemName,
+                                                taxDivision: item.taxDivision,
+                                            });
+                                        });
+                                        dfd.resolve();
                                     });
                                     return dfd.promise();
                                 };
+                                /**
+                                * Load master items
+                                */
                                 ScreenModel.prototype.loadMasterItems = function () {
                                     var dfd = $.Deferred();
                                     return dfd.promise();
                                 };
+                                /**
+                                * Close dialog.
+                                */
                                 ScreenModel.prototype.close = function () {
                                     nts.uk.ui.windows.close();
                                 };
@@ -191,9 +275,10 @@ var nts;
                             }());
                             viewmodel.OutputSettingDto = OutputSettingDto;
                             var OutputSettingDetailModel = (function () {
-                                function OutputSettingDetailModel(outputSetting) {
+                                function OutputSettingDetailModel(aggregateItems, outputSetting) {
                                     this.settingCode = ko.observable(outputSetting != undefined ? outputSetting.code : '');
                                     this.settingName = ko.observable(outputSetting != undefined ? outputSetting.name : '');
+                                    this.aggregateItems = aggregateItems;
                                     var settings = [];
                                     if (outputSetting == undefined) {
                                         settings = this.toModel();
@@ -216,12 +301,16 @@ var nts;
                                         });
                                     });
                                 }
+                                /**
+                                * Convert category setting data from dto to screen model.
+                                */
                                 OutputSettingDetailModel.prototype.toModel = function (categorySettings) {
                                     var settings = [];
                                     var test;
                                     if (categorySettings != undefined && categorySettings.length > 0) {
                                         test = categorySettings;
                                     }
+                                    // TODO... change later.
                                     settings[0] = this.filterSettingByCategory(SalaryCategory.PAYMENT, test);
                                     settings[1] = this.filterSettingByCategory(SalaryCategory.DEDUCTION, test);
                                     settings[2] = this.filterSettingByCategory(SalaryCategory.ATTENDANCE, test);
@@ -231,13 +320,13 @@ var nts;
                                 OutputSettingDetailModel.prototype.filterSettingByCategory = function (category, categorySettings) {
                                     var cateTempSetting = { category: category, outputItems: [] };
                                     if (categorySettings == undefined) {
-                                        return new CategorySettingModel(category, cateTempSetting);
+                                        return new CategorySettingModel(category, this.aggregateItems, cateTempSetting);
                                     }
                                     var categorySetting = categorySettings.filter(function (item) { return item.category == category; })[0];
                                     if (categorySetting == undefined) {
                                         categorySetting = cateTempSetting;
                                     }
-                                    return new CategorySettingModel(category, categorySetting);
+                                    return new CategorySettingModel(category, this.aggregateItems, categorySetting);
                                 };
                                 return OutputSettingDetailModel;
                             }());
@@ -251,7 +340,7 @@ var nts;
                             }());
                             viewmodel.CategorySettingDto = CategorySettingDto;
                             var CategorySettingModel = (function () {
-                                function CategorySettingModel(categoryName, categorySetting) {
+                                function CategorySettingModel(categoryName, aggregateItems, categorySetting) {
                                     var self = this;
                                     self.categoryName = categoryName;
                                     self.aggregateItems = ko.observableArray([]);
@@ -261,12 +350,25 @@ var nts;
                                     self.outputItems = ko.observableArray(categorySetting != undefined ? categorySetting.outputItems : []);
                                     self.outputItemSelected = ko.observable(null);
                                     self.outputItemsSelected = ko.observableArray([]);
-                                    for (var i = 1; i < 15; i++) {
-                                        this.aggregateItems.push({ code: '00' + i, name: '基本給' + i, subItems: [], taxDivision: 'Payment', value: i });
+                                    if (categoryName == SalaryCategory.PAYMENT) {
+                                        aggregateItems().forEach(function (item) {
+                                            if (item.taxDivision == TaxDivision.PAYMENT) {
+                                                self.aggregateItems.push(item);
+                                            }
+                                        });
                                     }
+                                    if (categoryName == SalaryCategory.DEDUCTION) {
+                                        aggregateItems().forEach(function (item) {
+                                            if (item.taxDivision == TaxDivision.DEDUCTION) {
+                                                self.aggregateItems.push(item);
+                                            }
+                                        });
+                                    }
+                                    // mock data
                                     for (var i = 1; i < 15; i++) {
                                         this.masterItems.push({ code: '00' + i, name: '基本給' + i, paymentType: 'Salary', taxDivision: 'Deduction' });
                                     }
+                                    // Define outputItemColumns.
                                     this.outputItemColumns = ko.observableArray([
                                         {
                                             headerText: '集約', prop: 'isAggregateItem', width: 40,
@@ -287,6 +389,7 @@ var nts;
                                             }
                                         }
                                     ]);
+                                    // Customs handle.
                                     ko.bindingHandlers.rended = {
                                         init: function (element, valueAccessor, allBindings, viewModel, bindingContext) { },
                                         update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
@@ -301,15 +404,21 @@ var nts;
                                         }
                                     };
                                 }
+                                /**
+                                * Move master item to outputItems.
+                                */
                                 CategorySettingModel.prototype.moveMasterItem = function () {
+                                    // Check if has selected
                                     if (this.masterItemsSelected()[0]) {
                                         var self = this;
+                                        // Get selected items from selected code list.
                                         var selectedItems = [];
                                         self.masterItemsSelected().forEach(function (selectedCode) {
                                             selectedItems.push(self.masterItems().filter(function (item) {
                                                 return selectedCode == item.code;
                                             })[0]);
                                         });
+                                        // Remove from master list and add to output list
                                         selectedItems.forEach(function (item) {
                                             self.masterItems.remove(item);
                                             self.outputItems.push({
@@ -321,15 +430,21 @@ var nts;
                                         self.masterItemsSelected([]);
                                     }
                                 };
+                                /**
+                                * Move aggregate item to outputItems.
+                                */
                                 CategorySettingModel.prototype.moveAggregateItem = function () {
+                                    // Check if has selected
                                     if (this.aggregateItemsSelected()[0]) {
                                         var self = this;
+                                        // Get selected items from selected code list.
                                         var selectedItems = [];
                                         self.aggregateItemsSelected().forEach(function (selectedCode) {
                                             selectedItems.push(self.aggregateItems().filter(function (item) {
                                                 return selectedCode == item.code;
                                             })[0]);
                                         });
+                                        // Remove from aggregate list and add to output list
                                         selectedItems.forEach(function (item) {
                                             self.aggregateItems.remove(item);
                                             self.outputItems.push({
@@ -341,22 +456,26 @@ var nts;
                                         self.aggregateItemsSelected([]);
                                     }
                                 };
+                                /**
+                                * Remove item from outputItems.
+                                */
                                 CategorySettingModel.prototype.remove = function () {
                                     var self = this;
                                     var selectedItem = self.outputItems().filter(function (item) {
                                         return item.code == self.outputItemSelected();
                                     })[0];
                                     self.outputItems.remove(selectedItem);
+                                    // Return item.
                                     if (selectedItem.isAggregateItem) {
+                                        // Return to Aggregate items table.
                                         self.aggregateItems.push({
                                             code: selectedItem.code,
                                             name: selectedItem.name,
-                                            subItems: [],
                                             taxDivision: TaxDivision.PAYMENT,
-                                            value: 5
                                         });
                                         return;
                                     }
+                                    // Return to master items table.
                                     self.masterItems.push({
                                         code: selectedItem.code,
                                         name: selectedItem.name,
@@ -436,4 +555,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qpp007.c.vm.js.map

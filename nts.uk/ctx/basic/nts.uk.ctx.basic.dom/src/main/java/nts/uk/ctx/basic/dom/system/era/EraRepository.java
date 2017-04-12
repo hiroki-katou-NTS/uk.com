@@ -1,7 +1,6 @@
 package nts.uk.ctx.basic.dom.system.era;
 
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +19,7 @@ public interface EraRepository {
 	 * @param endDate
 	 * @return
 	 */
-	Optional<Era>getEraDetail(GeneralDate startDate);
+	Optional<Era>getEraDetail(String eraHist);
 	
 	/**
 	 * get the latest era which is has end_date = 9999/12/31
@@ -31,6 +30,10 @@ public interface EraRepository {
 	 * 
 	 * @param era
 	 */
+	List<Era> getStartDateEraMaster(GeneralDate startDate);
+	
+	Optional<Era> getHistIdUpdate(String eraHist);
+	Optional<Era> getEndDateBefore(GeneralDate endDate);
 	
 	void add(Era era);
 	/**
@@ -42,5 +45,9 @@ public interface EraRepository {
 	 * 
 	 * @param era
 	 */
-	void delete(GeneralDate startDate);
+	void delete(String eraHist);
+	Optional<Era> getCurrentEndDate(GeneralDate endDate);
+		
+	
+	GeneralDate checkStartDate();
 }

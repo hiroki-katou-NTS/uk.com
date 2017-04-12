@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.ws.salarydetail.aggregate;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -43,6 +45,17 @@ public class SalaryAggregateItemWs extends WebService {
 	public SalaryAggregateItemFindDto findSalaryAggregateItem(
 		SalaryAggregateItemInDto salaryAggregateItemInDto) {
 		return this.find.findSalaryAggregateItem(salaryAggregateItemInDto);
+	}
+
+	/**
+	 * Find all.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("findall")
+	public List<SalaryAggregateItemFindDto> findAll() {
+		return this.find.findAll();
 	}
 
 	/**

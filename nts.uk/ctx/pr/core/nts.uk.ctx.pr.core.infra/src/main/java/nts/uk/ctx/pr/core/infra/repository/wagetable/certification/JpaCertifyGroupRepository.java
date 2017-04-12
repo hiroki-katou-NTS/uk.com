@@ -20,10 +20,13 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertify;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyG;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyGPK;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyGPK_;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyG_;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyPK_;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertify_;
 
 /**
  * The Class JpaCertifyGroupRepository.
@@ -65,7 +68,7 @@ public class JpaCertifyGroupRepository extends JpaRepository implements CertifyG
 	@Override
 	public void remove(String companyCode, String groupCode, long version) {
 		this.commandProxy().remove(QwtmtWagetableCertifyG.class,
-			new QwtmtWagetableCertifyGPK(companyCode, groupCode));
+				new QwtmtWagetableCertifyGPK(companyCode, groupCode));
 	}
 
 	/*
@@ -78,21 +81,8 @@ public class JpaCertifyGroupRepository extends JpaRepository implements CertifyG
 	@Override
 	public Optional<CertifyGroup> findById(String companyCode, String code) {
 		return this.queryProxy()
-			.find(new QwtmtWagetableCertifyGPK(companyCode, code), QwtmtWagetableCertifyG.class)
-			.map(c -> toDomain(c));
-	}
-
-	/**
-	 * To domain.
-	 *
-	 * @param entity
-	 *            the entity
-	 * @return the certify group
-	 */
-	private static CertifyGroup toDomain(QwtmtWagetableCertifyG entity) {
-		CertifyGroup domain = new CertifyGroup(new JpaCertifyGroupGetMemento(entity));
-		return domain;
-
+				.find(new QwtmtWagetableCertifyGPK(companyCode, code), QwtmtWagetableCertifyG.class)
+				.map(c -> new CertifyGroup(new JpaCertifyGroupGetMemento(c)));
 	}
 
 	/**
@@ -123,7 +113,8 @@ public class JpaCertifyGroupRepository extends JpaRepository implements CertifyG
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call QWTMT_WAGETABLE_CERTIFY_G (QwtmtWagetableCertifyG SQL)
-		CriteriaQuery<QwtmtWagetableCertifyG> cq = criteriaBuilder.createQuery(QwtmtWagetableCertifyG.class);
+		CriteriaQuery<QwtmtWagetableCertifyG> cq = criteriaBuilder
+				.createQuery(QwtmtWagetableCertifyG.class);
 
 		// root data
 		Root<QwtmtWagetableCertifyG> root = cq.from(QwtmtWagetableCertifyG.class);
@@ -135,9 +126,9 @@ public class JpaCertifyGroupRepository extends JpaRepository implements CertifyG
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// eq CompanyCode
-		lstpredicateWhere.add(criteriaBuilder.equal(
-			root.get(QwtmtWagetableCertifyG_.qwtmtWagetableCertifyGPK).get(QwtmtWagetableCertifyGPK_.ccd),
-			companyCode));
+		lstpredicateWhere.add(
+				criteriaBuilder.equal(root.get(QwtmtWagetableCertifyG_.qwtmtWagetableCertifyGPK)
+						.get(QwtmtWagetableCertifyGPK_.ccd), companyCode));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -146,9 +137,54 @@ public class JpaCertifyGroupRepository extends JpaRepository implements CertifyG
 		TypedQuery<QwtmtWagetableCertifyG> query = em.createQuery(cq);
 
 		// exclude select
-		List<CertifyGroup> lstCertifyGroup = query.getResultList().stream().map(item -> toDomain(item))
-			.collect(Collectors.toList());
+		List<CertifyGroup> lstCertifyGroup = query.getResultList().stream()
+				.map(item -> new CertifyGroup(new JpaCertifyGroupGetMemento(item)))
+				.collect(Collectors.toList());
 		return lstCertifyGroup;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory#
+	 * findById(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Boolean isBelongToExistGroup(String companyCode, String groupCode, String certifyCode) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// QWTMT_WAGETABLE_CERTIFY (QwtmtWagetableCertify) SQL
+		CriteriaQuery<Long> cq = criteriaBuilder.createQuery(Long.class);
+
+		// root data QwtmtWagetableCertify
+		Root<QwtmtWagetableCertify> root = cq.from(QwtmtWagetableCertify.class);
+
+		// select count(*) root (SQL SELECT)
+		cq.select(criteriaBuilder.count(root));
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// eq CompanyCode (where)
+		lstpredicateWhere
+				.add(criteriaBuilder.equal(root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK)
+						.get(QwtmtWagetableCertifyPK_.ccd), companyCode));
+
+		// eq CerticationCode (where)
+		lstpredicateWhere
+				.add(criteriaBuilder.equal(root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK)
+						.get(QwtmtWagetableCertifyPK_.certifyCd), certifyCode));
+
+		lstpredicateWhere.add(
+				criteriaBuilder.notEqual(root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK)
+						.get(QwtmtWagetableCertifyPK_.certifyGroupCd), groupCode));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		return (em.createQuery(cq).getSingleResult() > 0);
+	}
 }
