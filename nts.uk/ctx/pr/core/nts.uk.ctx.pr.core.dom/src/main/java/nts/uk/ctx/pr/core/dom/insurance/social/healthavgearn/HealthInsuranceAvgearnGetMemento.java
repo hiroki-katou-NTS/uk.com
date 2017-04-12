@@ -21,7 +21,7 @@ public interface HealthInsuranceAvgearnGetMemento {
 	 *
 	 * @return the level code
 	 */
-	Integer getLevelCode();
+	Integer getGrade();
 
 	/**
 	 * Gets the company avg.
