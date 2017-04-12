@@ -65,25 +65,32 @@ module qmm013.a.viewmodel {
             ]);
 
             self.currentCode.subscribe(function(newCode) {
-                //in case first getData, no error so not jump clearError()
-                if (self.isFirstGetData()) {
-                    self.clearError();
-                }
-                self.isFirstGetData(true);
-
-                //don't allow checkDirty
-                if (self.notCheckDirty()) {
-                    self.selectedUnitPrice(newCode);
-                    self.notCheckDirty(false);
-                    return;
-                }
-
                 if (!self.checkDirty()) {
+                    //in case first getData, no error so not jump clearError()
+                    if (self.isFirstGetData()) {
+                        self.clearError();
+                    }
+                    self.isFirstGetData(true);
+
+                    //don't allow checkDirty
+                    if (self.notCheckDirty()) {
+                        self.selectedUnitPrice(newCode);
+                        self.notCheckDirty(false);
+                        return;
+                        //end
+                    }
                     self.selectedUnitPrice(newCode);
                     self.isCreated(false);
                     self.isEnableDelete(true);
                 }
                 else {
+                    //don't allow checkDirty
+                    if (self.notCheckDirty()) {
+                        self.selectedUnitPrice(newCode);
+                        self.notCheckDirty(false);
+                        return;
+                        //end
+                    }
                     //don't loop subscribe function
                     if (self.confirmDirty) {
                         self.confirmDirty = false;
@@ -91,6 +98,8 @@ module qmm013.a.viewmodel {
                         return;
                     }
                     nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function() {
+                        self.clearError();
+                        self.isFirstGetData(true);
                         self.selectedUnitPrice(newCode);
                         self.isCreated(false);
                         self.isEnableDelete(true);
@@ -357,7 +366,7 @@ module qmm013.a.viewmodel {
                 }).fail(function(error) {
                     alert(error.message);
                 });
-            }).ifCancel(function(){})
+            }).ifCancel(function() { })
         }
 
         selectedFirstUnitPrice(): void {
@@ -373,6 +382,8 @@ module qmm013.a.viewmodel {
         clearError(): void {
             $('#INP_002').ntsError('clear');
             $('#INP_003').ntsError('clear');
+            $('#INP_004').ntsError('clear');
+            $('#INP_005').ntsError('clear');
         }
 
     }
