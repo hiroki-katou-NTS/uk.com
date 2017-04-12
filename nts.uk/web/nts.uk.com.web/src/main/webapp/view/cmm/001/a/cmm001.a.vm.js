@@ -5,7 +5,7 @@ var cmm001;
         var ViewModel = (function () {
             function ViewModel() {
                 this.isUpdate = ko.observable(null);
-                this.previousCurrentCode = null; //lưu giá trị của currentCode trước khi nó bị thay đổi
+                this.previousCurrentCode = null;
                 this.hasFocus = ko.observable(true);
                 var self = this;
                 self.init();
@@ -14,9 +14,7 @@ var cmm001;
                         return;
                     }
                     else {
-                        self.isUpdate(true);
                         if (!nts.uk.text.isNullOrEmpty(newValue) && self.currentCompanyCode() !== self.previousCurrentCode) {
-                            //goi check isDirty
                             if (self.dirtyObject.isDirty()) {
                                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function () {
                                     self.processWhenCurrentCodeChange(newValue);
@@ -31,11 +29,11 @@ var cmm001;
                     }
                 });
                 self.displayAttribute.subscribe(function (newValue) {
-                    var $grid = $("#A_LST_001");
+                    var $grid = $("#gridCompany");
                     var currentColumns = $grid.igGrid("option", "columns");
                     var width = $grid.igGrid("option", "width");
                     if (newValue) {
-                        $('#A_SEL_001').ntsError('clear');
+                        $('#displayAttribute').ntsError('clear');
                         currentColumns[2].hidden = false;
                         $grid.igGrid("option", "width", "400px");
                         self.sel001Data([]);
@@ -89,10 +87,12 @@ var cmm001;
                         }
                         self.currentCompany().setDataForCurrentCompany(company);
                         self.hasFocus(false);
+                        self.isUpdate(true);
                         self.previousCurrentCode = newValue;
                         self.dirtyObject.reset();
                     }
                     else {
+                        self.isUpdate(false);
                         self.currentCompany().resetCurrentCompany();
                     }
                 });
@@ -359,40 +359,33 @@ var cmm001;
             };
             ViewModel.prototype.validateData = function () {
                 $(".nts-editor").ntsEditor("validate");
-                $("#A_INP_002").ntsEditor("validate");
-                $("#A_INP_003").ntsEditor("validate");
-                $("#A_INP_004").ntsEditor("validate");
-                $("#A_INP_005").ntsEditor("validate");
-                $("#B_INP_001").ntsEditor("validate");
-                $("#B_INP_002").ntsEditor("validate");
-                $("#B_INP_003").ntsEditor("validate");
-                $("#C_INP_002").ntsEditor("validate");
-                $("#C_INP_003").ntsEditor("validate");
-                $("#C_INP_004").ntsEditor("validate");
-                $("#C_INP_005").ntsEditor("validate");
-                $("#C_INP_006").ntsEditor("validate");
-                $("#C_INP_007").ntsEditor("validate");
-                $("#D_SEL_001").ntsEditor("validate");
-                $("#D_SEL_002").ntsEditor("validate");
-                $("#D_SEL_003").ntsEditor("validate");
-                $("#D_SEL_004").ntsEditor("validate");
-                $("#D_SEL_005").ntsEditor("validate");
+                $("#companyCode").ntsEditor("validate");
+                $("#companyName").ntsEditor("validate");
+                $("#companyNameKana").ntsEditor("validate");
+                $("#companyNameAbb").ntsEditor("validate");
+                $("#corporateMyNumber").ntsEditor("validate");
+                $("#presidentName").ntsEditor("validate");
+                $("#presidentJobTitle").ntsEditor("validate");
+                $("#postal").ntsEditor("validate");
+                $("#address1").ntsEditor("validate");
+                $("#address2").ntsEditor("validate");
+                $("#addressKana1").ntsEditor("validate");
+                $("#addressKana2").ntsEditor("validate");
+                $("#telephoneNo").ntsEditor("validate");
+                $("#faxNo").ntsEditor("validate");
                 var errorA = false;
                 var errorB = false;
                 var errorC = false;
-                var errorD = false;
-                errorA = $("#A_INP_002").ntsError('hasError') || $("#A_INP_003").ntsError('hasError')
-                    || $("#A_INP_004").ntsError('hasError')
-                    || $("#A_INP_005").ntsError('hasError');
-                errorB = $("#B_INP_002").ntsError('hasError') || $("#B_INP_001").ntsError('hasError')
-                    || $("#B_INP_003").ntsError('hasError');
-                errorC = $("#C_INP_002").ntsError('hasError') || $("#C_INP_003").ntsError('hasError')
-                    || $("#C_INP_004").ntsError('hasError') || $("#C_INP_005").ntsError('hasError')
-                    || $("#C_INP_006").ntsError('hasError') || $("#C_INP_007").ntsError('hasError');
-                errorD = $("#D_SEL_001").ntsError('hasError') || $("#D_SEL_002").ntsError('hasError')
-                    || $("#D_SEL_003").ntsError('hasError') || $("#D_SEL_004").ntsError('hasError')
-                    || $("#D_SEL_005").ntsError('hasError');
-                if ($(".nts-editor").ntsError('hasError') || errorA || errorB || errorC || errorD) {
+                errorA = $("#companyCode").ntsError('hasError') || $("#companyName").ntsError('hasError')
+                    || $("#companyNameKana").ntsError('hasError')
+                    || $("#companyNameAbb").ntsError('hasError');
+                errorB = $("#corporateMyNumber").ntsError('hasError') || $("#presidentName").ntsError('hasError')
+                    || $("#presidentJobTitle").ntsError('hasError');
+                errorC = $("#postal").ntsError('hasError') || $("#address1").ntsError('hasError')
+                    || $("#address2").ntsError('hasError') || $("#addressKana1").ntsError('hasError')
+                    || $("#addressKana2").ntsError('hasError') || $("#telephoneNo").ntsError('hasError')
+                    || $("#faxNo").ntsError('hasError');
+                if ($(".nts-editor").ntsError('hasError') || errorA || errorB || errorC) {
                     return false;
                 }
                 return true;
@@ -403,7 +396,7 @@ var cmm001;
         var CompanyModel = (function () {
             function CompanyModel(param) {
                 this.isEnableCompanyCode = ko.observable(true);
-                this.editMode = true; // mode reset or not reset
+                this.editMode = true;
                 var self = this;
                 self.init(param);
             }
@@ -485,7 +478,6 @@ var cmm001;
                 self.termBeginMon = ko.observable(param.termBeginMon);
                 self.companyUseSet = ko.observable(param.companyUseSet);
                 self.isDelete = ko.observable(param.isDelete || false);
-                //SWITCH
                 self.roundingRules = ko.observableArray([
                     new RoundingRule("1", '利用する'),
                     new RoundingRule('0', '利用しない')
@@ -499,7 +491,6 @@ var cmm001;
                 ]);
                 self.selectedRuleCode3 = ko.observable("");
             };
-            //search Zip Code
             CompanyModel.prototype.searchZipCode = function () {
                 var self = this;
                 var messageList = [
@@ -512,13 +503,13 @@ var cmm001;
                         for (var _i = 0, messageList_1 = messageList; _i < messageList_1.length; _i++) {
                             var datamessage = messageList_1[_i];
                             if (datamessage.messageId == data.message) {
-                                $('#C_INP_001').ntsError('set', datamessage.message);
+                                $('#postal').ntsError('set', datamessage.message);
                             }
                         }
                     }
                     else if (data.errorCode == '1') {
                         self.postal(data.postcode.postcode);
-                        $('#C_INP_001').ntsError('clear');
+                        $('#postal').ntsError('clear');
                     }
                     else {
                         nts.uk.pr.view.base.postcode.service.findPostCodeZipCodeSelection(self.postal()).done(function (res) {
@@ -526,13 +517,13 @@ var cmm001;
                                 for (var _i = 0, messageList_2 = messageList; _i < messageList_2.length; _i++) {
                                     var datamessage = messageList_2[_i];
                                     if (datamessage.messageId == res.message) {
-                                        $('#C_INP_001').ntsError('set', datamessage.message);
+                                        $('#postal').ntsError('set', datamessage.message);
                                     }
                                 }
                             }
                             else if (res.errorCode == '1') {
                                 self.postal(res.postcode.postcode);
-                                $('#C_INP_001').ntsError('clear');
+                                $('#postal').ntsError('clear');
                             }
                         }).fail(function (error) {
                             console.log(error);
@@ -578,3 +569,4 @@ var cmm001;
         }());
     })(a = cmm001.a || (cmm001.a = {}));
 })(cmm001 || (cmm001 = {}));
+//# sourceMappingURL=cmm001.a.vm.js.map
