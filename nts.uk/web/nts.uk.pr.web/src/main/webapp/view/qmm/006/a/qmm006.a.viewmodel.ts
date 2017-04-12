@@ -315,6 +315,8 @@ module qmm006.a.viewmodel {
                 if (self.dirty.isDirty()) {
                     //AL001 
                     nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                        //delete the data being changed
+                        self.setCurrentLineBank(self.currentCode());
                         self.afterCloseCDialog();
                     }).ifCancel(function() {
                     })

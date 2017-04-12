@@ -243,6 +243,7 @@ var qmm006;
                     if (self.items().length > 1) {
                         if (self.dirty.isDirty()) {
                             nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
+                                self.setCurrentLineBank(self.currentCode());
                                 self.afterCloseCDialog();
                             }).ifCancel(function () {
                             });
