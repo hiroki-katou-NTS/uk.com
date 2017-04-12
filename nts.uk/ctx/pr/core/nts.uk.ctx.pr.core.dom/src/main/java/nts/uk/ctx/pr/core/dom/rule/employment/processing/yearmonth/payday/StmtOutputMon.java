@@ -1,11 +1,9 @@
 package nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.payday;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.IntegerMaxValue;
-import nts.arc.primitive.constraint.IntegerMinValue;
+import nts.arc.primitive.constraint.IntegerRange;
 
-@IntegerMinValue(0)
-@IntegerMaxValue(5)
+@IntegerRange(min = 190001, max = 999912)
 public class StmtOutputMon extends IntegerPrimitiveValue<StmtOutputMon> {
 
 	private static final long serialVersionUID = 1L;

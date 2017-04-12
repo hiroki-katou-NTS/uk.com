@@ -117,6 +117,7 @@ module qmm005.b {
         }
 
         reloadData(year) {
+            console.log(_.filter(this.dataSources, (item) => { return item.processingYm == 201707; }));
             let self = this,
                 lst002Data: Array<TableRowItem> = [],
                 dataRow = nts.uk.ui.windows.getShared('dataRow');
@@ -183,11 +184,11 @@ module qmm005.b {
         newData(item, event) {
             let self = this;
             if (self.dirty.isDirty()) {
-                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。よろしいですか。?").ifYes(function() {
                     self.lst001(null);
                     self.inp001(null);
                     self.dirty.reset();
-                })
+                });
             } else {
                 self.lst001(null);
                 self.inp001(null);

@@ -229,7 +229,7 @@ module qmm005.a {
             nts.uk.ui.windows.setShared('dataRow', item);
             nts.uk.ui.windows.sub.modal("../b/index.xhtml", { width: 1020, height: 730, title: '支払日の設定', dialogClass: "no-close" })
                 .onClosed(function() {
-                    __viewContext.viewModel.start();
+                    __viewContext["viewModel"].start();
                 });
         }
 
@@ -238,7 +238,7 @@ module qmm005.a {
             nts.uk.ui.windows.setShared('dataRow', item);
             nts.uk.ui.windows.sub.modal("../c/index.xhtml", { width: 800, height: 350, title: '処理区分の追加', dialogClass: "no-close" })
                 .onClosed(function() {
-                    __viewContext.viewModel.start();
+                    __viewContext["viewModel"].start();
                 });
         }
 
@@ -247,7 +247,7 @@ module qmm005.a {
             nts.uk.ui.windows.setShared('dataRow', item);
             nts.uk.ui.windows.sub.modal("../d/index.xhtml", { width: 800, height: 370, title: '処理区分の編集', dialogClass: "no-close" })
                 .onClosed(function() {
-                    __viewContext.viewModel.start();
+                    __viewContext["viewModel"].start();
                 });
         }
     }

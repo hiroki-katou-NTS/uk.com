@@ -1,11 +1,9 @@
 package nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.standardday;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.IntegerMaxValue;
-import nts.arc.primitive.constraint.IntegerMinValue;
+import nts.arc.primitive.constraint.IntegerRange;
 
-@IntegerMinValue(1)
-@IntegerMaxValue(31)
+@IntegerRange(min = 1, max = 31)
 public class SocialInsStdDay extends IntegerPrimitiveValue<SocialInsStdDay> {
 
 	private static final long serialVersionUID = 1L;
