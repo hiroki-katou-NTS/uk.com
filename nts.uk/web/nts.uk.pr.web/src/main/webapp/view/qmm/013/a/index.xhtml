@@ -224,10 +224,10 @@
 									data-bind="ntsMultilineEditor: {
 									value: memo,
 									constraint: 'Memo',
-									option: {
+									option: new nts.uk.ui.option.MultilineEditorOption({
 						                    placeholder: '',
 						                    textalign: 'left'
-									},
+									}),
 									enable: true,
 									readonly: false}" />
 							</span>
