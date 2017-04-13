@@ -398,13 +398,17 @@ module cmm011.a.viewmodel {
             var self = this;
             var _dt = self.dataSource();
             var _dtflat = nts.uk.util.flatArray(_dt, 'children');
-            debugger;
             var _code = self.singleSelectedCode();
             var current = self.findHira(_code, _dt);
-            let deleteobj = new model.DepartmentDeleteDto(current.departmentCode, current.historyId, current.hierarchyCode);
+            let deleteobj = new model.WorkPlaceDeleteDto(current.departmentCode, current.historyId, current.hierarchyCode);
+            if (_dtflat.length < 2) {
+                return;
+            } else if (_dt.length < 2 && current.hierarchyCode.length == 3) {
+                return;
+            }
             nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
                 var dfd2 = $.Deferred();
-                service.deleteDepartment(deleteobj)
+                service.deleteWorkPalce(deleteobj)
                     .done(function() {
                         var _dt = self.dataSource();
                         var _code = self.singleSelectedCode();
@@ -439,6 +443,7 @@ module cmm011.a.viewmodel {
                                     editObjs[k].startDate = currentHis.startDate;
                                     editObjs[k].endDate = currentHis.endDate;
                                     editObjs[k].memo = self.A_INP_MEMO();
+                                    editObjs[k].workPlaceCode = editObjs[k].departmentCode;
                                 }
                             }
                             self.listDtothaydoi(editObjs);
@@ -471,13 +476,14 @@ module cmm011.a.viewmodel {
                                     editObjs[k].startDate = currentHis.startDate;
                                     editObjs[k].endDate = currentHis.endDate;
                                     editObjs[k].memo = self.A_INP_MEMO();
+                                    editObjs[k].workPlaceCode = editObjs[k].departmentCode;
                                 }
                             }
                             self.listDtothaydoi(editObjs);
                         }
                         let data = self.listDtothaydoi();
                         if (data != null) {
-                            service.upDateListDepartment(data)
+                            service.upDateListWorkplace(data)
                                 .done(function(mess) {
                                     location.reload();
                                 }).fail(function(error) {
@@ -1263,13 +1269,13 @@ module cmm011.a.viewmodel {
             }
         }
 
-        export class DepartmentDeleteDto {
-            departmentCode: string;
+        export class WorkPlaceDeleteDto {
+            workplaceCode: string;
             hierarchyCode: string;
             historyId: string;
-            constructor(departmentCode: string, historyId: string, hierarchyCode: string) {
+            constructor(workplaceCode: string, historyId: string, hierarchyCode: string) {
                 var self = this;
-                self.departmentCode = departmentCode;
+                self.workplaceCode = workplaceCode;
                 self.hierarchyCode = hierarchyCode;
                 self.historyId = historyId;
             }

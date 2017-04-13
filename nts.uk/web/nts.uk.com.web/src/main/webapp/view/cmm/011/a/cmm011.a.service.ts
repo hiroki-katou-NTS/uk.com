@@ -15,12 +15,13 @@ module cmm011.a.service {
         deleteHistory: "basic/organization/deletehistorywkp",
         updateStartDateandEndDate: "basic/organization/updatestartdateandenddatewkp",
         deleteDep: "basic/organization/deletedep",
+        deleteWorkPLace: "basic/organization/deleteworkplace",
         getAllWorkPLaceByHistId: "basic/organization/getallwkpbyhistid/",
         getMemoWorkPLaceByHistId: "basic/organization/getmemowkpbyhistid/",
         addWorkPlace: "basic/organization/addworkplace",
         updatelistWorkPLace: "basic/organization/updateworkplace",
     }
-    
+
     export function upDateListWorkplace(listworkplace: any) {
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax("com", paths.updatelistWorkPLace, listworkplace).done(
@@ -45,9 +46,9 @@ module cmm011.a.service {
             })
         return dfd.promise();
     }
-    
+
     // add list WorkPlace
-     export function addListWorkPlace(listworkplace: any) {
+    export function addListWorkPlace(listworkplace: any) {
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax("com", paths.addWorkPlace, listworkplace).done(
             function(res: any) {
@@ -92,6 +93,18 @@ module cmm011.a.service {
     export function deleteDepartment(department: viewmodel.model.DepartmentDeleteDto) {
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax("com", paths.deleteDep, department).done(
+            function(res: any) {
+                dfd.resolve(res);
+            })
+            .fail(function(res: any) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+    
+    export function deleteWorkPalce(workplace: viewmodel.model.WorkPlaceDeleteDto) {
+        var dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax("com", paths.deleteWorkPLace, workplace).done(
             function(res: any) {
                 dfd.resolve(res);
             })

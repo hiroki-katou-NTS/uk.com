@@ -20,6 +20,7 @@ var cmm011;
                 deleteHistory: "basic/organization/deletehistorywkp",
                 updateStartDateandEndDate: "basic/organization/updatestartdateandenddatewkp",
                 deleteDep: "basic/organization/deletedep",
+                deleteWorkPLace: "basic/organization/deleteworkplace",
                 getAllWorkPLaceByHistId: "basic/organization/getallwkpbyhistid/",
                 getMemoWorkPLaceByHistId: "basic/organization/getmemowkpbyhistid/",
                 addWorkPlace: "basic/organization/addworkplace",
@@ -93,6 +94,17 @@ var cmm011;
                 return dfd.promise();
             }
             service.deleteDepartment = deleteDepartment;
+            function deleteWorkPalce(workplace) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", paths.deleteWorkPLace, workplace).done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.deleteWorkPalce = deleteWorkPalce;
             function upDateStartDateandEndDate(updateYMD) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.updateStartDateandEndDate, updateYMD).done(function (res) {

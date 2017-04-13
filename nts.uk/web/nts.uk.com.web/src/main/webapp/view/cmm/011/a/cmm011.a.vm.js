@@ -348,13 +348,18 @@ var cmm011;
                     var self = this;
                     var _dt = self.dataSource();
                     var _dtflat = nts.uk.util.flatArray(_dt, 'children');
-                    debugger;
                     var _code = self.singleSelectedCode();
                     var current = self.findHira(_code, _dt);
-                    var deleteobj = new model.DepartmentDeleteDto(current.departmentCode, current.historyId, current.hierarchyCode);
+                    var deleteobj = new model.WorkPlaceDeleteDto(current.departmentCode, current.historyId, current.hierarchyCode);
+                    if (_dtflat.length < 2) {
+                        return;
+                    }
+                    else if (_dt.length < 2 && current.hierarchyCode.length == 3) {
+                        return;
+                    }
                     nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
                         var dfd2 = $.Deferred();
-                        a.service.deleteDepartment(deleteobj)
+                        a.service.deleteWorkPalce(deleteobj)
                             .done(function () {
                             var _dt = self.dataSource();
                             var _code = self.singleSelectedCode();
@@ -386,6 +391,7 @@ var cmm011;
                                         editObjs[k].startDate = currentHis.startDate;
                                         editObjs[k].endDate = currentHis.endDate;
                                         editObjs[k].memo = self.A_INP_MEMO();
+                                        editObjs[k].workPlaceCode = editObjs[k].departmentCode;
                                     }
                                 }
                                 self.listDtothaydoi(editObjs);
@@ -415,13 +421,14 @@ var cmm011;
                                         editObjs[k].startDate = currentHis.startDate;
                                         editObjs[k].endDate = currentHis.endDate;
                                         editObjs[k].memo = self.A_INP_MEMO();
+                                        editObjs[k].workPlaceCode = editObjs[k].departmentCode;
                                     }
                                 }
                                 self.listDtothaydoi(editObjs);
                             }
                             var data = self.listDtothaydoi();
                             if (data != null) {
-                                a.service.upDateListDepartment(data)
+                                a.service.upDateListWorkplace(data)
                                     .done(function (mess) {
                                     location.reload();
                                 }).fail(function (error) {
@@ -1067,16 +1074,16 @@ var cmm011;
                     return AddDepartmentDto;
                 }());
                 model.AddDepartmentDto = AddDepartmentDto;
-                var DepartmentDeleteDto = (function () {
-                    function DepartmentDeleteDto(departmentCode, historyId, hierarchyCode) {
+                var WorkPlaceDeleteDto = (function () {
+                    function WorkPlaceDeleteDto(workplaceCode, historyId, hierarchyCode) {
                         var self = this;
-                        self.departmentCode = departmentCode;
+                        self.workplaceCode = workplaceCode;
                         self.hierarchyCode = hierarchyCode;
                         self.historyId = historyId;
                     }
-                    return DepartmentDeleteDto;
+                    return WorkPlaceDeleteDto;
                 }());
-                model.DepartmentDeleteDto = DepartmentDeleteDto;
+                model.WorkPlaceDeleteDto = WorkPlaceDeleteDto;
                 var updateDateMY = (function () {
                     function updateDateMY(historyId1, historyId2, newStartDate, newEndDate) {
                         var self = this;

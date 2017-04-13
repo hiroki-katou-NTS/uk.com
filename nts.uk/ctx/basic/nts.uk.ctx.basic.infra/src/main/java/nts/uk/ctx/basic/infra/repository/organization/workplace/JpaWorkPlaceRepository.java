@@ -57,6 +57,8 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 	private static final String REMOVE_MEMO;
 	
 	private static final String UPDATE_STARTDATE;
+	
+	private static final String REMOVE_WORKPLACE;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -72,6 +74,13 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 		builderString.append(" WHERE e.cmnmtWorkPlaceMemoPK.companyCode = :companyCode");
 		builderString.append(" AND e.cmnmtWorkPlaceMemoPK.historyId = :historyId");
 		REMOVE_MEMO = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("DELETE FROM CmnmtWorkPlace e ");
+		builderString.append(" WHERE e.cmnmtWorkPlacePK.companyCode = :companyCode");
+		builderString.append(" AND e.cmnmtWorkPlacePK.historyId = :historyId");
+		builderString.append(" AND e.hierarchyId LIKE :hierarchyId");
+		REMOVE_WORKPLACE = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append("UPDATE CmnmtWorkPlace e");
@@ -161,11 +170,6 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 
 	}
 
-	@Override
-	public void remove(String companyCode, WorkPlaceCode workPlaceCode, String historyId) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void registerMemo(String companyCode, String historyId, Memo memo) {
@@ -350,6 +354,13 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 	public void updateStartdate(String companyCode, String historyId, GeneralDate startDate) {
 		this.getEntityManager().createQuery(UPDATE_STARTDATE).setParameter("companyCode", companyCode)
 				.setParameter("historyId", historyId).setParameter("startDate", startDate).executeUpdate();
+	}
+
+	@Override
+	public void remove(String companyCode, String historyId, String hierarchyId) {
+		this.getEntityManager().createQuery(REMOVE_WORKPLACE).setParameter("companyCode", companyCode)
+		.setParameter("historyId", historyId)
+		.setParameter("hierarchyId", hierarchyId + "%").executeUpdate();
 	}
 
 }
