@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DeleteItemSalaryBDCommand {
-	private String itemCd;
-	private String itemBreakdownCd;
+	private String itemCode;
+	private String itemBreakdownCode;
+
 }

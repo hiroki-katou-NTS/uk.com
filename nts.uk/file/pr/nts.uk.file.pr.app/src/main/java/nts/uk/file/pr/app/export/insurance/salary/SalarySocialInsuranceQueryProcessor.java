@@ -21,8 +21,8 @@ import nts.uk.file.pr.app.export.insurance.data.ChecklistPrintSettingDto;
 public class SalarySocialInsuranceQueryProcessor {
     
     /** The checklist print setting repository. */
-    @Inject
-    private ChecklistPrintSettingRepository checklistPrintSettingRepository;
+    //@Inject
+    //private ChecklistPrintSettingRepository checklistPrintSettingRepository;
 
     /**
      * Find configure output setting.

@@ -65,25 +65,32 @@ module qmm013.a.viewmodel {
             ]);
 
             self.currentCode.subscribe(function(newCode) {
-                //in case first getData, no error so not jump clearError()
-                if (self.isFirstGetData()) {
-                    self.clearError();
-                }
-                self.isFirstGetData(true);
-
-                //don't allow checkDirty
-                if (self.notCheckDirty()) {
-                    self.selectedUnitPrice(newCode);
-                    self.notCheckDirty(false);
-                    return;
-                }
-
                 if (!self.checkDirty()) {
+                    //in case first getData, no error so not jump clearError()
+                    if (self.isFirstGetData()) {
+                        self.clearError();
+                    }
+                    self.isFirstGetData(true);
+
+                    //don't allow checkDirty
+                    if (self.notCheckDirty()) {
+                        self.selectedUnitPrice(newCode);
+                        self.notCheckDirty(false);
+                        return;
+                        //end
+                    }
                     self.selectedUnitPrice(newCode);
                     self.isCreated(false);
                     self.isEnableDelete(true);
                 }
                 else {
+                    //don't allow checkDirty
+                    if (self.notCheckDirty()) {
+                        self.selectedUnitPrice(newCode);
+                        self.notCheckDirty(false);
+                        return;
+                        //end
+                    }
                     //don't loop subscribe function
                     if (self.confirmDirty) {
                         self.confirmDirty = false;
@@ -91,10 +98,12 @@ module qmm013.a.viewmodel {
                         return;
                     }
                     nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function() {
+                        self.clearError();
+                        self.isFirstGetData(true);
                         self.selectedUnitPrice(newCode);
                         self.isCreated(false);
                         self.isEnableDelete(true);
-                    }).ifNo(function() {
+                    }).ifCancel(function() {
                         self.confirmDirty = true;
                         self.currentCode(self.currentItem().personalUnitPriceCode())
                     })
@@ -132,7 +141,7 @@ module qmm013.a.viewmodel {
                             //self.notCheckDirty(true);
                             self.getPersonalUnitPriceList().done(function() {
                                 //in case dirty
-                                if(self.currentCode() == ""){
+                                if (self.currentCode() == "") {
                                     self.notCheckDirty(true);
                                     self.selectedFirstUnitPrice();
                                 }
@@ -154,7 +163,7 @@ module qmm013.a.viewmodel {
                                 }
                             });
                         })
-                        .ifNo(function() {
+                        .ifCancel(function() {
                             self.notLoop(true);
                             self.displayAll(!self.displayAll());
                         });
@@ -261,6 +270,7 @@ module qmm013.a.viewmodel {
                     self.isCreated(true);
                     self.isEnableDelete(false);
                 })
+                    .ifCancel(function() { })
             }
         }
 
@@ -273,7 +283,7 @@ module qmm013.a.viewmodel {
                     .ifYes(function() {
                         nts.uk.ui.windows.close();
                     })
-                    .ifNo(function() { });
+                    .ifCancel(function() { });
             }
         }
 
@@ -305,7 +315,7 @@ module qmm013.a.viewmodel {
             service.addPersonalUnitPrice(self.isCreated(), PersonalUnitPrice).done(function() {
                 self.getPersonalUnitPriceList();
                 //define update mode or insert mode
-                if(self.currentItem().personalUnitPriceCode()!= self.currentCode()){
+                if (self.currentItem().personalUnitPriceCode() != self.currentCode()) {
                     self.confirmDirty = true;
                 }
                 self.currentCode(PersonalUnitPrice.personalUnitPriceCode);
@@ -315,10 +325,10 @@ module qmm013.a.viewmodel {
                 if (error.messageId == self.messages()[2].messageId) {
                     $('#INP_002').ntsError('set', self.messages()[2].message);
                 } else if (error.messageId == self.messages()[1].messageId) {
-                    if(!PersonalUnitPrice.personalUnitPriceCode){
+                    if (!PersonalUnitPrice.personalUnitPriceCode) {
                         $('#INP_002').ntsError('set', self.messages()[1].message);
                     }
-                    if(!PersonalUnitPrice.personalUnitPriceName){
+                    if (!PersonalUnitPrice.personalUnitPriceName) {
                         $('#INP_003').ntsError('set', self.messages()[1].message);
                     }
                 } else if (error.messageId == self.messages()[4].messageId) {
@@ -356,7 +366,7 @@ module qmm013.a.viewmodel {
                 }).fail(function(error) {
                     alert(error.message);
                 });
-            })
+            }).ifCancel(function() { })
         }
 
         selectedFirstUnitPrice(): void {
@@ -372,6 +382,8 @@ module qmm013.a.viewmodel {
         clearError(): void {
             $('#INP_002').ntsError('clear');
             $('#INP_003').ntsError('clear');
+            $('#INP_004').ntsError('clear');
+            $('#INP_005').ntsError('clear');
         }
 
     }

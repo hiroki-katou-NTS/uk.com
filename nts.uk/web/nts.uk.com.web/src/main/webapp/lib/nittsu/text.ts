@@ -118,7 +118,7 @@
         export function allHalfAlphabet(text: string) {
             return regexp.allHalfAlphabet.test(text);
         }
-
+ 
         /**
          * 文字列が半角英数字のみで構成された1文字以上の文字列かどうか判断する
          * @param text 解析対象の文字列
