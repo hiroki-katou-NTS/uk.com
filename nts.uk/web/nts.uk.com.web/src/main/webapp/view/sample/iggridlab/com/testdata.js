@@ -25,3 +25,4 @@ var testdata;
     }
     testdata.createRandomHogeArray = createRandomHogeArray;
 })(testdata || (testdata = {}));
+//# sourceMappingURL=testdata.js.map

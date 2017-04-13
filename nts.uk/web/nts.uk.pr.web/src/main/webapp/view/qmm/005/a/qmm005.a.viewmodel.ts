@@ -1,3 +1,4 @@
+/// <reference path="../qmm005.ts"/>
 module qmm005.a {
     export class ViewModel {
         items: KnockoutObservableArray<TableRowItem>;
@@ -188,7 +189,7 @@ module qmm005.a {
         showModalDialogB(item, event): void {
             let self = this;
             nts.uk.ui.windows.setShared('dataRow', item);
-            nts.uk.ui.windows.sub.modal("../b/index.xhtml", { width: 1070, height: 730, title: '支払日の設定' })
+            nts.uk.ui.windows.sub.modal("../b/index.xhtml", { width: 1020, height: 730, title: '支払日の設定' })
                 .onClosed(function() { self.parent.start(); });
         }
 

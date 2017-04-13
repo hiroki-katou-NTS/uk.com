@@ -2,7 +2,9 @@ package nts.uk.ctx.pr.core.dom.itemmaster;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.enums.DisplayAtr;
@@ -21,6 +23,16 @@ public class ItemMaster extends AggregateRoot {
 	private UniteCode uniteCode;
 	private DisplayAtr zeroDisplaySet;
 	private ItemDisplayAtr itemDisplayAtr;
+
+	@Override
+	public void validate() {
+		super.validate();
+		if (StringUtil.isNullOrEmpty(this.itemCode.v(), true) || StringUtil.isNullOrEmpty(this.companyCode.v(), true)
+				|| StringUtil.isNullOrEmpty(this.itemName.v(), true)
+				|| StringUtil.isNullOrEmpty(this.itemAbName.v(), true) || this.displaySet == null) {
+			throw new BusinessException("pika");
+		}
+	}
 
 	public ItemMaster(CompanyCode companyCode, ItemCode itemCode, ItemName itemName, ItemName itemAbName,
 			ItemName itemAbNameE, ItemName itemAbNameO, CategoryAtr categoryAtr, int fixAtr, DisplayAtr displaySet,

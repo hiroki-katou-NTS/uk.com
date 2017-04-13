@@ -10,6 +10,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemdeduct.ItemDeduct;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeduct.ItemDeductRespository;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemDeduct;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemDeductPK;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaItemDeductRepository extends JpaRepository implements ItemDeductRespository {
@@ -22,10 +23,9 @@ public class JpaItemDeductRepository extends JpaRepository implements ItemDeduct
 
 	private ItemDeduct toDomain(QcamtItemDeduct entity) {
 
-		val domain = ItemDeduct.createFromJavaType(entity.qcamtItemDeductPK.ccd, entity.qcamtItemDeductPK.itemCd,
-				entity.deductAtr, entity.errRangeLowAtr, entity.errRangeLow, entity.errRangeHighAtr,
-				entity.errRangeHigh, entity.alRangeLowAtr, entity.alRangeLow, entity.alRangeHighAtr, entity.alRangeHigh,
-				entity.memo);
+		val domain = ItemDeduct.createFromJavaType(entity.qcamtItemDeductPK.itemCd, entity.deductAtr,
+				entity.errRangeLowAtr, entity.errRangeLow, entity.errRangeHighAtr, entity.errRangeHigh,
+				entity.alRangeLowAtr, entity.alRangeLow, entity.alRangeHighAtr, entity.alRangeHigh, entity.memo);
 		// TODO Auto-generated method stub
 		return domain;
 	}
@@ -36,8 +36,8 @@ public class JpaItemDeductRepository extends JpaRepository implements ItemDeduct
 	}
 
 	private QcamtItemDeduct toEntity(ItemDeduct domain) {
-		// TODO Auto-generated method stub
-		return new QcamtItemDeduct(new QcamtItemDeductPK(domain.getCcd().v(), domain.getItemCd().v()),
+		String companyCode = AppContexts.user().companyCode();
+		return new QcamtItemDeduct(new QcamtItemDeductPK(companyCode, domain.getItemCode().v()),
 				domain.getDeductAtr().value, domain.getErrRangeLowAtr().value, domain.getErrRangeLow().v(),
 				domain.getErrRangeHighAtr().value, domain.getErrRangeHigh().v(), domain.getAlRangeLowAtr().value,
 				domain.getAlRangeLow().v(), domain.getAlRangeHighAtr().value, domain.getAlRangeHigh().v(),
@@ -45,7 +45,8 @@ public class JpaItemDeductRepository extends JpaRepository implements ItemDeduct
 	}
 
 	@Override
-	public void delete(String companyCode, String itemCode) {
+	public void delete(String itemCode) {
+		String companyCode = AppContexts.user().companyCode();
 		this.commandProxy().remove(QcamtItemDeduct.class, new QcamtItemDeductPK(companyCode, itemCode));
 	}
 

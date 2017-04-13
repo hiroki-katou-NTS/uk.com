@@ -18,7 +18,7 @@ import nts.uk.ctx.pr.core.app.find.itemmaster.itemdeductperiod.ItemDeductPeriodF
 @Produces("application/json")
 public class ItemDeductPeriodWebService extends WebService {
 	@Inject
-	ItemDeductPeriodFinder itemDeductPeriodFinder;
+	private ItemDeductPeriodFinder itemDeductPeriodFinder;
 	@Inject
 	AddItemDeductPeriodCommandHandler addHandler;
 	@Inject

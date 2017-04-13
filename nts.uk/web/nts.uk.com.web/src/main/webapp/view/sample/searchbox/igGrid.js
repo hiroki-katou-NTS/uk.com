@@ -69,3 +69,4 @@ __viewContext.ready(function () {
     }());
     this.bind(new ScreenModel());
 });
+//# sourceMappingURL=igGrid.js.map
