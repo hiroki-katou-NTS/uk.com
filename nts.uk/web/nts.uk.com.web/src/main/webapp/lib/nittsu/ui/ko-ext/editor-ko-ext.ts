@@ -112,11 +112,13 @@ module nts.uk.ui.koExtentions {
 
             let validator = this.getValidator(data);
             $input.on("keyup", (e) => {
-                var newText = $input.val();
-                var result = validator.validate(newText);
-                $input.ntsError('clear');
-                if (!result.isValid) {
-                    $input.ntsError('set', result.errorMessage);
+                if (!readonly) {
+                    var newText = $input.val();
+                    var result = validator.validate(newText);
+                    $input.ntsError('clear');
+                    if (!result.isValid) {
+                        $input.ntsError('set', result.errorMessage);
+                    }
                 }
             });
 
