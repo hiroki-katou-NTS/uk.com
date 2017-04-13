@@ -8,7 +8,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSetting;
@@ -42,14 +41,11 @@ public class SalaryOutputSettingSaveCommandHandler extends CommandHandler<Salary
 	protected void handle(CommandHandlerContext<SalaryOutputSettingSaveCommand> context) {
 		SalaryOutputSettingSaveCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
-		Boolean isExist = repository.isExist(companyCode, command.getCode());
 
 		// In case of adding.
 		if (command.isCreateMode()) {
-			// Check exist.
-			if (isExist) {
-				throw new BusinessException("ER026");
-			}
+			// Check duplicate.
+			service.checkDuplicateCode(companyCode, command.getCode());
 
 			// Convert to domain & validate
 			SalaryOutputSetting outputSetting = command.toDomain(companyCode);
@@ -62,15 +58,16 @@ public class SalaryOutputSettingSaveCommandHandler extends CommandHandler<Salary
 		// In case of updating.
 		else {
 			// Check exist.
-			if (!isExist) {
+			if (repository.isExist(companyCode, command.getCode())) {
+				// Convert to domain & validate
+				SalaryOutputSetting outputSetting = command.toDomain(companyCode);
+				outputSetting.validate();
+				service.validateRequiredItem(outputSetting);
+
+				this.repository.update(outputSetting);
+			} else {
 				throw new IllegalStateException("Output Setting is not found");
 			}
-			// Convert to domain & validate
-			SalaryOutputSetting outputSetting = command.toDomain(companyCode);
-			outputSetting.validate();
-			service.validateRequiredItem(outputSetting);
-
-			this.repository.update(outputSetting);
 		}
 	}
 
