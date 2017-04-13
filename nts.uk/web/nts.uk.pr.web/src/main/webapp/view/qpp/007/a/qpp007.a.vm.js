@@ -15,7 +15,7 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     this.isUsuallyAMonth = ko.observable(true);
-                                    this.isPreliminaryMonth = ko.observable(true);
+                                    this.isPreliminaryMonth = ko.observable(false);
                                     this.startYearMonth = ko.observable('2016/12');
                                     this.endYearMonth = ko.observable('2017/03');
                                     this.selectedOutputFormat = ko.observable('1');
@@ -25,8 +25,8 @@ var nts;
                                     ]);
                                     this.outputSettings = ko.observableArray([]);
                                     this.selectedOutputSetting = ko.observable('1');
-                                    this.isVerticalLine = ko.observable(true);
-                                    this.isHorizontalRuledLine = ko.observable(true);
+                                    this.isVerticalLine = ko.observable(false);
+                                    this.isHorizontalRuledLine = ko.observable(false);
                                     this.pageBreakSetting = ko.observableArray([
                                         new SelectionModel('1', 'なし'),
                                         new SelectionModel('2', '社員毎'),
@@ -49,6 +49,11 @@ var nts;
                                     this.isDepartmentHierarchy = ko.computed(function () {
                                         return self.selectedpageBreakSetting() == '4';
                                     });
+                                    self.hourMinuteOutputClassification = ko.observableArray([
+                                        new SelectionModel('0', '時間'),
+                                        new SelectionModel('1', '分')
+                                    ]);
+                                    self.selectedHourMinuteOutputClassification = ko.observable('0');
                                 }
                                 ScreenModel.prototype.start = function () {
                                     var dfd = $.Deferred();

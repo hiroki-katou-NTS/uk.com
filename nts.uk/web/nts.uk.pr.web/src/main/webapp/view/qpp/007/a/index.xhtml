@@ -172,17 +172,32 @@
 												<div id="output-language-label" class="margin-bottom"
 													data-bind="ntsFormLabel: {required: true}">言語出力選択</div>
 											</td>
-											<td>
-												<div class="cf margin-bottom"
+											<td colspan="2">
+												<div id="output-language" class="cf margin-bottom"
 													data-bind="ntsSwitchButton: {
 													options: outputLanguage,
 													optionsValue: 'code',
 													optionsText: 'name',
 													value: selectedOutputLanguage,
-													enable: enable }">
+													enable: true }">
 												</div>
 											</td>
 											<td></td>
+										</tr>
+										<tr>
+											<td>
+												<div id="time-setting-label" class="margin-bottom"
+													data-bind="ntsFormLabel: {required: true}">時分出力区分</div>
+											</td>
+											<td>
+												<div id="time-setting"
+													data-bind="ntsSwitchButton: {
+													options: hourMinuteOutputClassification,
+													optionsValue: 'code',
+													optionsText: 'name',
+													enable: true,
+													value: selectedHourMinuteOutputClassification}"></div>
+											</td>
 										</tr>
 									</tbody>
 								</table>

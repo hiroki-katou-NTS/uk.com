@@ -20,10 +20,12 @@ module nts.uk.pr.view.qpp007.a {
             outputLanguage: KnockoutObservableArray<SelectionModel>;
             selectedOutputLanguage: KnockoutObservable<string>;
             isDepartmentHierarchy: KnockoutObservable<boolean>;
+            hourMinuteOutputClassification: KnockoutObservableArray<SelectionModel>;
+            selectedHourMinuteOutputClassification: KnockoutObservable<string>;
 
             constructor() {
                 this.isUsuallyAMonth = ko.observable(true);
-                this.isPreliminaryMonth = ko.observable(true);
+                this.isPreliminaryMonth = ko.observable(false);
                 this.startYearMonth = ko.observable('2016/12');
                 this.endYearMonth = ko.observable('2017/03');
                 this.selectedOutputFormat = ko.observable('1');
@@ -33,8 +35,8 @@ module nts.uk.pr.view.qpp007.a {
                 ]);
                 this.outputSettings = ko.observableArray<SelectionModel>([]);
                 this.selectedOutputSetting = ko.observable('1');
-                this.isVerticalLine = ko.observable(true);
-                this.isHorizontalRuledLine = ko.observable(true);
+                this.isVerticalLine = ko.observable(false);
+                this.isHorizontalRuledLine = ko.observable(false);
 
                 this.pageBreakSetting = ko.observableArray<SelectionModel>([
                     new SelectionModel('1', 'なし'),
@@ -60,6 +62,11 @@ module nts.uk.pr.view.qpp007.a {
                 this.isDepartmentHierarchy = ko.computed(function() {
                     return self.selectedpageBreakSetting() == '4';
                 });
+                self.hourMinuteOutputClassification = ko.observableArray<SelectionModel>([
+                    new SelectionModel('0', '時間'),
+                    new SelectionModel('1', '分')
+                ]);
+                self.selectedHourMinuteOutputClassification = ko.observable('0');
             }
 
             /**
