@@ -23,12 +23,12 @@ var cmm011;
                     self.lengthTreeCurrent = ko.observable(null);
                     self.lengthTreeBegin = ko.observable(null);
                     self.numberItemNew = ko.observable(0);
-                    self.A_INP_002 = ko.observable(null);
-                    self.A_INP_002_enable = ko.observable(false);
-                    self.A_INP_003 = ko.observable(null);
-                    self.A_INP_004 = ko.observable(null);
-                    self.A_INP_007 = ko.observable(null);
-                    self.A_INP_008 = ko.observable(null);
+                    self.A_INP_CODE = ko.observable(null);
+                    self.A_INP_CODE_enable = ko.observable(false);
+                    self.A_INP_NAME = ko.observable(null);
+                    self.A_INP_FULLNAME = ko.observable(null);
+                    self.A_INP_OUTCODE = ko.observable(null);
+                    self.A_INP_MEMO = ko.observable(null);
                     self.currentItem_treegrid = ko.observable(null);
                     self.checknull = ko.observable(null);
                     self.listDtothaydoi = ko.observable(null);
@@ -41,19 +41,19 @@ var cmm011;
                         var _code = self.singleSelectedCode();
                         var current = self.findHira(_code, _dt);
                         if (current.historyId == "") {
-                            self.A_INP_002_enable(true);
-                            self.A_INP_002("");
-                            self.A_INP_003("");
-                            self.A_INP_004("");
-                            self.A_INP_007("");
-                            $("#A_INP_002").focus();
+                            self.A_INP_CODE_enable(true);
+                            self.A_INP_CODE("");
+                            self.A_INP_NAME("");
+                            self.A_INP_FULLNAME("");
+                            self.A_INP_OUTCODE("");
+                            $("#A_INP_CODE").focus();
                         }
                         else {
-                            self.A_INP_002(current.departmentCode);
-                            self.A_INP_003(current.name);
-                            self.A_INP_004(current.fullName);
-                            self.A_INP_007(current.externalCode);
-                            self.A_INP_002_enable(false);
+                            self.A_INP_CODE(current.departmentCode);
+                            self.A_INP_NAME(current.name);
+                            self.A_INP_FULLNAME(current.fullName);
+                            self.A_INP_OUTCODE(current.externalCode);
+                            self.A_INP_CODE_enable(false);
                         }
                     });
                     self.selectedCodes_His.subscribe((function (codeChanged) {
@@ -74,10 +74,10 @@ var cmm011;
                                     if (self.dataSource().length > 0) {
                                         self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "children"));
                                         self.singleSelectedCode(self.dataSource()[0].departmentCode);
-                                        self.A_INP_003(self.dataSource()[0].name);
-                                        self.A_INP_004(self.dataSource()[0].fullName);
+                                        self.A_INP_NAME(self.dataSource()[0].name);
+                                        self.A_INP_FULLNAME(self.dataSource()[0].fullName);
                                         if (self.dataSource()[0].externalCode != null)
-                                            self.A_INP_007(self.dataSource()[0].externalCode);
+                                            self.A_INP_OUTCODE(self.dataSource()[0].externalCode);
                                     }
                                 }).fail(function (error) {
                                     alert(error.message);
@@ -85,7 +85,7 @@ var cmm011;
                                 a.service.getMemoWorkPLaceByHistId(self.historyId())
                                     .done(function (memo) {
                                     if (memo != null) {
-                                        self.A_INP_008(memo.memo);
+                                        self.A_INP_MEMO(memo.memo);
                                     }
                                 }).fail(function (error) {
                                     alert(error.message);
@@ -110,7 +110,7 @@ var cmm011;
                 ScreenModel.prototype.register = function () {
                     var self = this;
                     if (self.checknull() === "landau" && self.itemHistId().length == 1 && self.checkInput()) {
-                        var dto = new model.AddWorkplaceDto(self.A_INP_002(), null, "9999/12/31", self.A_INP_007(), self.A_INP_004(), "001", self.A_INP_003(), self.itemaddHist.startDate, self.A_INP_008(), self.A_INP_003(), "1", "1", null, null, null);
+                        var dto = new model.AddWorkplaceDto(self.A_INP_CODE(), null, "9999/12/31", self.A_INP_OUTCODE(), self.A_INP_FULLNAME(), "001", self.A_INP_NAME(), self.itemaddHist.startDate, self.A_INP_MEMO(), self.A_INP_NAME(), "1", "1", null, null, null);
                         var dfd = $.Deferred();
                         var arr = new Array;
                         arr.push(dto);
@@ -126,13 +126,13 @@ var cmm011;
                         dfd.resolve();
                         return dfd.promise();
                     }
-                    if (self.A_INP_002_enable() == false && self.checkInput() && self.checkAddHist1() == '') {
+                    if (self.A_INP_CODE_enable() == false && self.checkInput() && self.checkAddHist1() == '') {
                         var dfd = $.Deferred();
                         var hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
                         var _dt = self.dataSource();
                         var _code = self.singleSelectedCode();
                         var current = self.findHira(_code, _dt);
-                        var dto = new model.AddWorkplaceDto(self.A_INP_002(), hisdto.historyId, hisdto.endDate, self.A_INP_007(), self.A_INP_004(), current.hierarchyCode, self.A_INP_003(), hisdto.startDate, self.A_INP_008(), current.shortName, current.parentChildAttribute1, current.parentChildAttribute2, null, null, null);
+                        var dto = new model.AddWorkplaceDto(self.A_INP_CODE(), hisdto.historyId, hisdto.endDate, self.A_INP_OUTCODE(), self.A_INP_FULLNAME(), current.hierarchyCode, self.A_INP_NAME(), hisdto.startDate, self.A_INP_MEMO(), current.shortName, current.parentChildAttribute1, current.parentChildAttribute2, null, null, null);
                         var arr = new Array;
                         arr.push(dto);
                         debugger;
@@ -151,7 +151,7 @@ var cmm011;
                         var self = this;
                         var dfd = $.Deferred();
                         var hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
-                        var _dto_1 = new model.AddWorkplaceDto(self.A_INP_002(), hisdto.historyId, hisdto.endDate, self.A_INP_007(), self.A_INP_004(), self.dtoAdd().hierarchyCode, self.A_INP_003(), hisdto.startDate, self.A_INP_008(), self.A_INP_004(), "1", "1", null, null, null);
+                        var _dto_1 = new model.AddWorkplaceDto(self.A_INP_CODE(), hisdto.historyId, hisdto.endDate, self.A_INP_OUTCODE(), self.A_INP_FULLNAME(), self.dtoAdd().hierarchyCode, self.A_INP_NAME(), hisdto.startDate, self.A_INP_MEMO(), self.A_INP_FULLNAME(), "1", "1", null, null, null);
                         var data = self.listDtothaydoi();
                         var arr_1 = new Array;
                         arr_1.push(_dto_1);
@@ -200,7 +200,7 @@ var cmm011;
                         console.log(self.dataSource2());
                         var _dt_1 = self.dataSource2();
                         if (_dt_1.length > 0) {
-                            _dt_1[0].memo = self.A_INP_008();
+                            _dt_1[0].memo = self.A_INP_MEMO();
                         }
                         self.dataSource2(_dt_1);
                         var dfd2 = $.Deferred();
@@ -223,7 +223,7 @@ var cmm011;
                     }
                     if (self.checkAddHist1() == "AddhistoryFromBeggin") {
                         if (self.checkInput()) {
-                            var _dto = new model.AddWorkplaceDto(self.A_INP_002(), null, self.itemHistId()[0].endDate, self.A_INP_007(), self.A_INP_004(), "001", self.A_INP_003(), self.itemHistId()[0].startDate, self.A_INP_008(), null, "1", "1", null, null, null);
+                            var _dto = new model.AddWorkplaceDto(self.A_INP_CODE(), null, self.itemHistId()[0].endDate, self.A_INP_OUTCODE(), self.A_INP_FULLNAME(), "001", self.A_INP_NAME(), self.itemHistId()[0].startDate, self.A_INP_MEMO(), null, "1", "1", null, null, null);
                             var arr1 = new Array;
                             arr1.push(_dto);
                             var dfd2 = $.Deferred();
@@ -385,7 +385,7 @@ var cmm011;
                                     for (var k = 0; k < editObjs.length; k++) {
                                         editObjs[k].startDate = currentHis.startDate;
                                         editObjs[k].endDate = currentHis.endDate;
-                                        editObjs[k].memo = self.A_INP_008();
+                                        editObjs[k].memo = self.A_INP_MEMO();
                                     }
                                 }
                                 self.listDtothaydoi(editObjs);
@@ -414,7 +414,7 @@ var cmm011;
                                     for (var k = 0; k < editObjs.length; k++) {
                                         editObjs[k].startDate = currentHis.startDate;
                                         editObjs[k].endDate = currentHis.endDate;
-                                        editObjs[k].memo = self.A_INP_008();
+                                        editObjs[k].memo = self.A_INP_MEMO();
                                     }
                                 }
                                 self.listDtothaydoi(editObjs);
@@ -484,14 +484,14 @@ var cmm011;
                 };
                 ScreenModel.prototype.checkInput = function () {
                     var self = this;
-                    if (self.A_INP_002() == "") {
+                    if (self.A_INP_CODE() == "") {
                         alert("コードが入力されていません。");
-                        $("#A_INP_002").focus();
+                        $("#A_INP_CODE").focus();
                         return false;
                     }
-                    else if (self.A_INP_003() == "") {
+                    else if (self.A_INP_NAME() == "") {
                         alert("名称 が入力されていません。");
-                        $("#A_INP_003").focus();
+                        $("#A_INP_NAME").focus();
                         return false;
                     }
                     return true;
@@ -507,14 +507,14 @@ var cmm011;
                                 self.itemaddHist = itemadd;
                                 self.itemHistId().push(self.itemaddHist);
                                 self.selectedCodes_His(self.itemaddHist.startDate);
-                                self.A_INP_002_enable(true);
-                                self.A_INP_002("");
-                                self.A_INP_003("");
-                                self.A_INP_004("");
-                                self.A_INP_007("");
-                                $("#A_INP_002").focus();
+                                self.A_INP_CODE_enable(true);
+                                self.A_INP_CODE("");
+                                self.A_INP_NAME("");
+                                self.A_INP_FULLNAME("");
+                                self.A_INP_OUTCODE("");
+                                $("#A_INP_CODE").focus();
                                 if (itemAddHistory.memo !== null) {
-                                    self.A_INP_008(itemAddHistory.memo);
+                                    self.A_INP_MEMO(itemAddHistory.memo);
                                 }
                             }
                         });
@@ -537,7 +537,7 @@ var cmm011;
                                 arr[1].endDate = strStartDate;
                                 self.itemHistId(arr);
                                 self.selectedCodes_His(itemAddHistory.startYearMonth);
-                                self.A_INP_008(itemAddHistory.memo);
+                                self.A_INP_MEMO(itemAddHistory.memo);
                                 console.log(self.selectedCodes_His());
                                 var _dt = self.dataSource();
                                 var hisdto_1 = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
@@ -561,15 +561,15 @@ var cmm011;
                                 var strStartDate = startDate.getFullYear() + '/' + (startDate.getMonth() + 1) + '/' + startDate.getDate();
                                 arr[1].endDate = strStartDate;
                                 self.itemHistId(arr);
-                                self.A_INP_008(itemAddHistory.memo);
+                                self.A_INP_MEMO(itemAddHistory.memo);
                                 self.selectedCodes_His(self.itemHistId()[0].startDate);
                                 self.dataSource(null);
-                                self.A_INP_002("");
-                                self.A_INP_002_enable(true);
-                                self.A_INP_003("");
-                                self.A_INP_004("");
-                                self.A_INP_007("");
-                                $("#A_INP_002").focus();
+                                self.A_INP_CODE("");
+                                self.A_INP_CODE_enable(true);
+                                self.A_INP_NAME("");
+                                self.A_INP_FULLNAME("");
+                                self.A_INP_OUTCODE("");
+                                $("#A_INP_CODE").focus();
                                 self.checkAddHist1("AddhistoryFromBeggin");
                             }
                         });
@@ -675,7 +675,7 @@ var cmm011;
                                     for (var k = 0; k < editObjs.length; k++) {
                                         editObjs[k].startDate = currentHis.startDate;
                                         editObjs[k].endDate = currentHis.endDate;
-                                        editObjs[k].memo = self.A_INP_008();
+                                        editObjs[k].memo = self.A_INP_MEMO();
                                         editObjs[k].workPlaceCode = editObjs[k].departmentCode;
                                     }
                                 }
@@ -707,7 +707,7 @@ var cmm011;
                                     for (var k = 0; k < editObjs.length; k++) {
                                         editObjs[k].startDate = currentHis.startDate;
                                         editObjs[k].endDate = currentHis.endDate;
-                                        editObjs[k].memo = self.A_INP_008();
+                                        editObjs[k].memo = self.A_INP_MEMO();
                                         editObjs[k].workPlaceCode = editObjs[k].departmentCode;
                                     }
                                 }
@@ -727,12 +727,12 @@ var cmm011;
                 };
                 ScreenModel.prototype.resetInput = function () {
                     var self = this;
-                    self.A_INP_002("");
-                    self.A_INP_002_enable(true);
-                    self.A_INP_003("");
-                    self.A_INP_004("");
-                    self.A_INP_007("");
-                    $("#A_INP_002").focus();
+                    self.A_INP_CODE("");
+                    self.A_INP_CODE_enable(true);
+                    self.A_INP_NAME("");
+                    self.A_INP_FULLNAME("");
+                    self.A_INP_OUTCODE("");
+                    $("#A_INP_CODE").focus();
                 };
                 ScreenModel.prototype.updateHierachy1 = function (item) {
                     var self = this;
@@ -822,7 +822,7 @@ var cmm011;
                                     for (var k = 0; k < editObjs.length; k++) {
                                         editObjs[k].startDate = currentHis.startDate;
                                         editObjs[k].endDate = currentHis.endDate;
-                                        editObjs[k].memo = self.A_INP_008();
+                                        editObjs[k].memo = self.A_INP_MEMO();
                                         editObjs[k].workPlaceCode = editObjs[k].departmentCode;
                                     }
                                 }
@@ -859,7 +859,7 @@ var cmm011;
                                     for (var k = 0; k < editObjs.length; k++) {
                                         editObjs[k].startDate = currentHis.startDate;
                                         editObjs[k].endDate = currentHis.endDate;
-                                        editObjs[k].memo = self.A_INP_008();
+                                        editObjs[k].memo = self.A_INP_MEMO();
                                         editObjs[k].workPlaceCode = editObjs[k].departmentCode;
                                     }
                                 }
@@ -900,15 +900,15 @@ var cmm011;
                                 var currentHis = self.itemHist();
                                 newObj.startDate = currentHis.startDate;
                                 newObj.endDate = currentHis.endDate;
-                                newObj.memo = self.A_INP_008();
+                                newObj.memo = self.A_INP_MEMO();
                                 self.dtoAdd(newObj);
                                 self.listDtothaydoi();
                                 self.dataSource(_dt);
                                 self.numberItemNew(1);
                                 self.singleSelectedCode(newObj.departmentCode);
-                                self.A_INP_002("");
-                                self.A_INP_003("");
-                                $("#A_INP_002").focus();
+                                self.A_INP_CODE("");
+                                self.A_INP_NAME("");
+                                $("#A_INP_CODE").focus();
                             }
                             else {
                                 alert("hierarchy item current = 10 ,not push item child to tree");
@@ -936,7 +936,7 @@ var cmm011;
                                 self.dataSource(workplaceQueryResult.workPlaces);
                             }
                             if (workplaceQueryResult.memo) {
-                                self.A_INP_008(workplaceQueryResult.memo.memo);
+                                self.A_INP_MEMO(workplaceQueryResult.memo.memo);
                             }
                             if (workplaceQueryResult.histories.length > 0) {
                                 self.itemHistId(workplaceQueryResult.histories);
