@@ -17,6 +17,7 @@ var nts;
                                     var self = this;
                                     self.isLoading = ko.observable(true);
                                     self.isNewMode = ko.observable(true);
+                                    self.isSomethingChanged = ko.observable(false);
                                     self.outputSettings = ko.observableArray([]);
                                     self.outputSettingSelectedCode = ko.observable('');
                                     self.temporarySelectedCode = ko.observable('');
@@ -66,13 +67,16 @@ var nts;
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    $.when(self.loadAllOutputSetting(), self.loadMasterItems(), self.loadAggregateItems()).done(function () {
+                                    var outputSettings = nts.uk.ui.windows.getShared('outputSettings');
+                                    var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
+                                    $.when(self.loadMasterItems(), self.loadAggregateItems()).done(function () {
                                         self.isLoading(false);
-                                        if (!self.outputSettings || self.outputSettings().length == 0) {
+                                        if (!outputSettings || outputSettings.length == 0) {
                                             self.enableNewMode();
                                         }
                                         else {
-                                            self.temporarySelectedCode(self.outputSettings()[0].code);
+                                            self.outputSettings(outputSettings);
+                                            self.temporarySelectedCode(selectedCode);
                                         }
                                         dfd.resolve();
                                     });
@@ -110,6 +114,7 @@ var nts;
                                     }
                                     c.service.save(data).done(function () {
                                         self.isNewMode(false);
+                                        self.isSomethingChanged(true);
                                         self.dirtyChecker.reset();
                                         self.loadAllOutputSetting();
                                     }).fail(function (res) {
@@ -120,18 +125,27 @@ var nts;
                                 };
                                 ScreenModel.prototype.onRemoveBtnClicked = function () {
                                     var self = this;
-                                    if (self.outputSettingSelectedCode) {
+                                    var selectedCode = self.outputSettingSelectedCode();
+                                    if (selectedCode) {
                                         nts.uk.ui.dialog.confirm("データを削除します。\r\n よろしいですか？").ifYes(function () {
-                                            c.service.remove(self.outputSettingSelectedCode()).done(function () {
-                                                self.loadAllOutputSetting().done(function () {
-                                                    if (self.outputSettings() && self.outputSettings().length > 0) {
-                                                        self.temporarySelectedCode(self.outputSettings()[0].code);
+                                            c.service.remove(selectedCode).done(function () {
+                                                self.isSomethingChanged(true);
+                                                var selectedOutputSetting = self.outputSettings().filter(function (item) { return item.code == selectedCode; })[0];
+                                                var selectedIndex = self.outputSettings().indexOf(selectedOutputSetting);
+                                                self.outputSettings.remove(selectedOutputSetting);
+                                                if (self.outputSettings() && self.outputSettings().length > 0) {
+                                                    var currentSetting = self.outputSettings()[selectedIndex];
+                                                    if (currentSetting) {
+                                                        self.temporarySelectedCode(currentSetting.code);
                                                     }
                                                     else {
-                                                        self.clearError();
-                                                        self.enableNewMode();
+                                                        self.temporarySelectedCode(self.outputSettings()[selectedIndex - 1].code);
                                                     }
-                                                });
+                                                }
+                                                else {
+                                                    self.clearError();
+                                                    self.enableNewMode();
+                                                }
                                             });
                                         });
                                     }
@@ -139,6 +153,7 @@ var nts;
                                 ScreenModel.prototype.onCloseBtnClicked = function () {
                                     var self = this;
                                     self.confirmDirtyAndExecute(function () {
+                                        nts.uk.ui.windows.setShared('isSomethingChanged', self.isSomethingChanged());
                                         nts.uk.ui.windows.close();
                                     });
                                 };

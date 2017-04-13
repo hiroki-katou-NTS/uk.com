@@ -13,12 +13,14 @@ module nts.uk.pr.view.qpp007.c {
             allMasterItems: KnockoutObservableArray<MasterItem>;
             isLoading: KnockoutObservable<boolean>;
             isNewMode: KnockoutObservable<boolean>;
+            isSomethingChanged: KnockoutObservable<boolean>;
             dirtyChecker: nts.uk.ui.DirtyChecker;
 
             constructor() {
                 var self = this;
                 self.isLoading = ko.observable(true);
                 self.isNewMode = ko.observable(true);
+                self.isSomethingChanged = ko.observable(false);
                 self.outputSettings = ko.observableArray<OutputSettingHeader>([]);
                 self.outputSettingSelectedCode = ko.observable('');
                 self.temporarySelectedCode = ko.observable('');
@@ -83,15 +85,18 @@ module nts.uk.pr.view.qpp007.c {
             public startPage(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                $.when(self.loadAllOutputSetting(), self.loadMasterItems(), self.loadAggregateItems()).done(() => {
+                var outputSettings: OutputSettingHeader[] = nts.uk.ui.windows.getShared('outputSettings');
+                var selectedCode: string = nts.uk.ui.windows.getShared('selectedCode');
+                $.when(self.loadMasterItems(), self.loadAggregateItems()).done(() => {
                     self.isLoading(false);
                     // New mode if there is 0 outputSettings. 
-                    if (!self.outputSettings || self.outputSettings().length == 0) {
+                    if (!outputSettings || outputSettings.length == 0) {
                         self.enableNewMode();
                     }
-                    // else select first outputSetting.
+                    // else select selected code from caller screen.
                     else {
-                        self.temporarySelectedCode(self.outputSettings()[0].code);
+                        self.outputSettings(outputSettings);
+                        self.temporarySelectedCode(selectedCode);
                     }
                     dfd.resolve();
                 });
@@ -144,6 +149,7 @@ module nts.uk.pr.view.qpp007.c {
                 // Save.
                 service.save(data).done(() => {
                     self.isNewMode(false);
+                    self.isSomethingChanged(true);
                     self.dirtyChecker.reset();
                     self.loadAllOutputSetting();
                 }).fail(res => {
@@ -158,20 +164,36 @@ module nts.uk.pr.view.qpp007.c {
              */
             public onRemoveBtnClicked(): void {
                 var self = this;
-                if (self.outputSettingSelectedCode) {
+                var selectedCode = self.outputSettingSelectedCode();
+                if (selectedCode) {
                     nts.uk.ui.dialog.confirm("データを削除します。\r\n よろしいですか？").ifYes(function() {
-                        service.remove(self.outputSettingSelectedCode()).done(() => {
-                            self.loadAllOutputSetting().done(() => {
-                                // Select first element.
-                                if (self.outputSettings() && self.outputSettings().length > 0) {
-                                    self.temporarySelectedCode(self.outputSettings()[0].code);
+                        service.remove(selectedCode).done(() => {
+                            self.isSomethingChanged(true);
+
+                            // Find selected outputSetting.
+                            var selectedOutputSetting = self.outputSettings().filter(item => item.code == selectedCode)[0];
+                            var selectedIndex = self.outputSettings().indexOf(selectedOutputSetting);
+
+                            // Remove selected setting from list.
+                            self.outputSettings.remove(selectedOutputSetting);
+
+                            if (self.outputSettings() && self.outputSettings().length > 0) {
+                                var currentSetting = self.outputSettings()[selectedIndex];
+                                // Select setting with the same index.
+                                if (currentSetting) {
+                                    self.temporarySelectedCode(currentSetting.code);
                                 }
-                                // Set new mode if outputSettings has 0 element.
+                                // Select next setting.
                                 else {
-                                    self.clearError();
-                                    self.enableNewMode();
+                                    self.temporarySelectedCode(self.outputSettings()[selectedIndex - 1].code);
                                 }
-                            });
+                            }
+                            // Set new mode if all setting is removed.
+                            else {
+                                self.clearError();
+                                self.enableNewMode();
+                            }
+
                         });
                     });
                 }
@@ -183,6 +205,7 @@ module nts.uk.pr.view.qpp007.c {
             public onCloseBtnClicked(): void {
                 var self = this;
                 self.confirmDirtyAndExecute(function() {
+                    nts.uk.ui.windows.setShared('isSomethingChanged', self.isSomethingChanged());
                     nts.uk.ui.windows.close();
                 });
             }
