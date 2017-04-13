@@ -97,10 +97,11 @@ public class HealthInsuranceRateServiceImpl extends HealthInsuranceRateService {
 	@Override
 	protected void onCopyHistory(String companyCode, String masterCode,
 			HealthInsuranceRate copiedHistory, HealthInsuranceRate newHistory) {
-		super.onCopyHistory(companyCode, masterCode, copiedHistory, newHistory);
+
 		// Get listAvgEarn of copiedHistory.
 		List<HealthInsuranceAvgearn> listHealthInsuranceAvgearn = healthInsuranceAvgearnRepository
 				.findById(copiedHistory.getHistoryId());
+
 		// Update newHistoryId.
 		List<HealthInsuranceAvgearn> updatedList = listHealthInsuranceAvgearn.stream().map(item -> {
 			return item.copyWithNewHistoryId(newHistory.getHistoryId());
@@ -120,15 +121,16 @@ public class HealthInsuranceRateServiceImpl extends HealthInsuranceRateService {
 	@Override
 	protected void onCreateHistory(String companyCode, String masterCode,
 			HealthInsuranceRate newHistory) {
-		super.onCreateHistory(companyCode, masterCode, newHistory);
+
 		// Get listAvgEarnLevelMasterSetting.
 		List<AvgEarnLevelMasterSetting> listAvgEarnLevelMasterSetting = avgEarnLevelMasterSettingRepository
 				.findAll(companyCode);
+
 		// Create HealthInsuranceAvgearn list with initial values.
 		List<HealthInsuranceAvgearn> newList = listAvgEarnLevelMasterSetting.stream()
 				.map(setting -> {
 					return HealthInsuranceAvgearn.createWithIntial(newHistory.getHistoryId(),
-							setting.getCode());
+							setting.getCode(), setting.getAvgEarn(), setting.getSalLimit());
 				}).collect(Collectors.toList());
 
 		this.healthInsuranceAvgearnRepository.update(newList, companyCode,

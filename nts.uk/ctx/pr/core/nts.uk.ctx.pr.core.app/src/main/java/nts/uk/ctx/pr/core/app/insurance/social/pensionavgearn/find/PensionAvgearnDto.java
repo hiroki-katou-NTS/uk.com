@@ -61,8 +61,8 @@ public class PensionAvgearnDto implements PensionAvgearnSetMemento {
 	 * PensionAvgearnSetMemento#setLevelCode(java.lang.Integer)
 	 */
 	@Override
-	public void setLevelCode(Integer levelCode) {
-		this.levelCode = levelCode;
+	public void setGrade(Integer grade) {
+		this.levelCode = grade;
 	}
 
 	/*
@@ -147,5 +147,17 @@ public class PensionAvgearnDto implements PensionAvgearnSetMemento {
 	@Override
 	public void setPersonalPension(PensionAvgearnValue personalPension) {
 		this.personalPension = PensionAvgearnValueDto.fromDomain(personalPension);
+	}
+
+	@Override
+	public void setAvgEarn(Long avgEarn) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setUpperLimit(Long upperLimit) {
+		// TODO Auto-generated method stub
+
 	}
 }

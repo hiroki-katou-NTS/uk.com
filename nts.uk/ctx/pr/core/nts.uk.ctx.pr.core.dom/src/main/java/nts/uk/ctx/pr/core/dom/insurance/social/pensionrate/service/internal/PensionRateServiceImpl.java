@@ -1,6 +1,5 @@
 /******************************************************************
-
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.service.internal;
@@ -45,7 +44,7 @@ public class PensionRateServiceImpl extends PensionRateService {
 	@Inject
 	private AvgEarnLevelMasterSettingRepository avgEarnLevelMasterSettingRepository;
 
-	/** The pension rate repo. */
+	/** The pension avgearn repository. */
 	@Inject
 	private PensionAvgearnRepository pensionAvgearnRepository;
 
@@ -69,11 +68,24 @@ public class PensionRateServiceImpl extends PensionRateService {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService#
+	 * getRepository()
+	 */
 	@Override
 	public SimpleHistoryRepository<PensionRate> getRepository() {
 		return this.pensionRateRepo;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService#
+	 * createInitalHistory(java.lang.String, java.lang.String,
+	 * nts.arc.time.YearMonth)
+	 */
 	@Override
 	public PensionRate createInitalHistory(String companyCode, String officeCode,
 			YearMonth startTime) {
@@ -98,10 +110,11 @@ public class PensionRateServiceImpl extends PensionRateService {
 	@Override
 	protected void onCopyHistory(String companyCode, String masterCode, PensionRate copiedHistory,
 			PensionRate newHistory) {
-		super.onCopyHistory(companyCode, masterCode, copiedHistory, newHistory);
+
 		// Get listAvgEarn of copiedHistory.
 		List<PensionAvgearn> listPensionAvgearn = pensionAvgearnRepository
 				.find(copiedHistory.getHistoryId());
+
 		// Update newHistoryId.
 		List<PensionAvgearn> updatedList = listPensionAvgearn.stream().map(item -> {
 			return item.copyWithNewHistoryId(newHistory.getHistoryId());
@@ -120,13 +133,15 @@ public class PensionRateServiceImpl extends PensionRateService {
 	 */
 	@Override
 	protected void onCreateHistory(String companyCode, String masterCode, PensionRate newHistory) {
-		super.onCreateHistory(companyCode, masterCode, newHistory);
+
 		// Get listAvgEarnLevelMasterSetting.
 		List<AvgEarnLevelMasterSetting> listAvgEarnLevelMasterSetting = avgEarnLevelMasterSettingRepository
 				.findAll(companyCode);
+
 		// Create HealthInsuranceAvgearn list with initial values.
 		List<PensionAvgearn> newList = listAvgEarnLevelMasterSetting.stream().map(setting -> {
-			return PensionAvgearn.createWithIntial(newHistory.getHistoryId(), setting.getCode());
+			return PensionAvgearn.createWithIntial(newHistory.getHistoryId(), setting.getCode(),
+					setting.getAvgEarn(), setting.getSalLimit());
 		}).collect(Collectors.toList());
 
 		this.pensionAvgearnRepository.update(newList, companyCode, newHistory.getOfficeCode().v());

@@ -62,21 +62,16 @@ public class AccidentInsuranceHistoryFinder {
 	 */
 	public AccidentInsuranceRateHistoryFindDto find(String historyId) {
 
-		// get user login info
-		LoginUserContext loginUserContext = AppContexts.user();
-
-		// get companyCode by user login
-		String companyCode = loginUserContext.companyCode();
-
 		// call repository find
-		Optional<AccidentInsuranceRate> data = this.repository.findById(companyCode, historyId);
+		Optional<AccidentInsuranceRate> data = this.repository.findById(historyId);
+
 		AccidentInsuranceRateHistoryFindDto dataOutput = new AccidentInsuranceRateHistoryFindDto();
 
 		// check exist data
 		if (data.isPresent()) {
 			data.get().saveToMemento(dataOutput);
 		}
-		
+
 		return dataOutput;
 	}
 

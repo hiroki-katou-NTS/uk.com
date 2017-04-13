@@ -57,11 +57,11 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 	@Override
 	public void validateRequiredItem(PensionAvgearn pensionAvgearn) {
 		// Validate required item
-		if (pensionAvgearn.getChildContributionAmount() == null 
+		if (pensionAvgearn.getChildContributionAmount() == null
 				|| pensionAvgearn.getCompanyFund() == null
-				|| pensionAvgearn.getCompanyFundExemption() == null 
+				|| pensionAvgearn.getCompanyFundExemption() == null
 				|| pensionAvgearn.getCompanyPension() == null
-				|| pensionAvgearn.getPersonalFund() == null 
+				|| pensionAvgearn.getPersonalFund() == null
 				|| pensionAvgearn.getPersonalFundExemption() == null
 				|| pensionAvgearn.getPersonalPension() == null) {
 			throw new BusinessException("ER001");
@@ -83,9 +83,11 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 
 		// Calculate listPensionAvgearn.
 		List<PensionAvgearn> listPensionAvgearn = listAvgEarnLevelMasterSetting.stream()
-				.map(setting -> new PensionAvgearn(new PensionAvgearnGetMementoImpl(pensionRate.getHistoryId(), setting,
-						pensionRate.getFundRateItems(), pensionRate.getPremiumRateItems(),
-						pensionRate.getChildContributionRate().v(), pensionRate.getRoundingMethods())))
+				.map(setting -> new PensionAvgearn(
+						new PensionAvgearnGetMementoImpl(pensionRate.getHistoryId(), setting,
+								pensionRate.getFundRateItems(), pensionRate.getPremiumRateItems(),
+								pensionRate.getChildContributionRate().v(),
+								pensionRate.getRoundingMethods())))
 				.collect(Collectors.toList());
 		return listPensionAvgearn;
 	}
@@ -96,40 +98,52 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 	private class PensionAvgearnGetMementoImpl implements PensionAvgearnGetMemento {
 
 		/** The history id. */
-		private final String historyId;
+		private String historyId;
 
 		/** The level code. */
-		private final int levelCode;
+		private int grade;
+
+		/** The avg earn. */
+		private Long avgEarn;
+
+		/** The upper limit. */
+		private Long upperLimit;
 
 		/** The master rate. */
-		private final BigDecimal masterRate;
+		private BigDecimal masterRate;
 
 		/** The rate items. */
-		private final Set<FundRateItem> rateItems;
+		private Set<FundRateItem> rateItems;
 
 		/** The premium rate items. */
-		private final Set<PensionPremiumRateItem> premiumRateItems;
+		private Set<PensionPremiumRateItem> premiumRateItems;
 
 		/** The child contribution rate. */
-		private final BigDecimal childContributionRate;
+		private BigDecimal childContributionRate;
 
 		/** The setting. */
-		private final PensionAvgearnSetting setting;
+		private PensionAvgearnSetting setting;
 
 		/**
 		 * Instantiates a new pension avgearn get memento impl.
 		 *
-		 * @param historyId the history id
-		 * @param setting the setting
-		 * @param rateItems the rate items
-		 * @param premiumRateItems the premium rate items
-		 * @param childContributionRate the child contribution rate
-		 * @param roundingMethods the rounding methods
+		 * @param historyId
+		 *            the history id
+		 * @param setting
+		 *            the setting
+		 * @param rateItems
+		 *            the rate items
+		 * @param premiumRateItems
+		 *            the premium rate items
+		 * @param childContributionRate
+		 *            the child contribution rate
+		 * @param roundingMethods
+		 *            the rounding methods
 		 */
 		public PensionAvgearnGetMementoImpl(String historyId, AvgEarnLevelMasterSetting setting,
 				Set<FundRateItem> rateItems, Set<PensionPremiumRateItem> premiumRateItems,
 				BigDecimal childContributionRate, Set<PensionRateRounding> roundingMethods) {
-			this.levelCode = setting.getCode();
+			this.grade = setting.getCode();
 			this.masterRate = BigDecimal.valueOf(setting.getAvgEarn()).divide(OneThousand);
 			this.rateItems = rateItems;
 			this.premiumRateItems = premiumRateItems;
@@ -140,11 +154,14 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 			this.setting.setPensionRateItems(this.premiumRateItems);
 			this.setting.setRateItems(this.rateItems);
 			PensionRateRounding salaryRoundingMethod = roundingMethods.stream()
-					.filter(item -> item.getPayType() == PaymentType.Salary).findFirst().orElseThrow(() -> {
+					.filter(item -> item.getPayType() == PaymentType.Salary).findFirst()
+					.orElseThrow(() -> {
 						throw new RuntimeException("No such RoungdingMethod.");
 					});
-			this.setting.setCompanyRoundAtr(salaryRoundingMethod.getRoundAtrs().getCompanyRoundAtr());
-			this.setting.setPersonalRoundAtr(salaryRoundingMethod.getRoundAtrs().getPersonalRoundAtr());
+			this.setting
+					.setCompanyRoundAtr(salaryRoundingMethod.getRoundAtrs().getCompanyRoundAtr());
+			this.setting
+					.setPersonalRoundAtr(salaryRoundingMethod.getRoundAtrs().getPersonalRoundAtr());
 		}
 
 		/*
@@ -165,8 +182,30 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 		 * PensionAvgearnGetMemento#getLevelCode()
 		 */
 		@Override
-		public Integer getLevelCode() {
-			return this.levelCode;
+		public Integer getGrade() {
+			return this.grade;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+		 * PensionAvgearnGetMemento#getAvgEarn()
+		 */
+		@Override
+		public Long getAvgEarn() {
+			return this.avgEarn;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+		 * PensionAvgearnGetMemento#getUpperLimit()
+		 */
+		@Override
+		public Long getUpperLimit() {
+			return this.upperLimit;
 		}
 
 		/*
@@ -291,7 +330,8 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 	/**
 	 * Calculate avgearn pension value.
 	 *
-	 * @param setting the setting
+	 * @param setting
+	 *            the setting
 	 * @return the pension avgearn value
 	 */
 	private PensionAvgearnValue calculateAvgearnPensionValue(PensionAvgearnSetting setting) {
@@ -322,7 +362,8 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 	/**
 	 * Calculate avgearn fund value.
 	 *
-	 * @param setting the setting
+	 * @param setting
+	 *            the setting
 	 * @return the pension avgearn value
 	 */
 	private PensionAvgearnValue calculateAvgearnFundValue(PensionAvgearnSetting setting) {
@@ -353,8 +394,10 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 	/**
 	 * Calculate fund rate.
 	 *
-	 * @param fundRateItem the fund rate item
-	 * @param setting the setting
+	 * @param fundRateItem
+	 *            the fund rate item
+	 * @param setting
+	 *            the setting
 	 * @return the big decimal
 	 */
 	private BigDecimal calculateFundRate(FundRateItem fundRateItem, PensionAvgearnSetting setting) {
@@ -368,11 +411,14 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 	/**
 	 * Calculate pension rate.
 	 *
-	 * @param pensionRateItem the pension rate item
-	 * @param setting the setting
+	 * @param pensionRateItem
+	 *            the pension rate item
+	 * @param setting
+	 *            the setting
 	 * @return the big decimal
 	 */
-	private BigDecimal calculatePensionRate(PensionPremiumRateItem pensionRateItem, PensionAvgearnSetting setting) {
+	private BigDecimal calculatePensionRate(PensionPremiumRateItem pensionRateItem,
+			PensionAvgearnSetting setting) {
 		PensionChargeRateItem chargeRate = pensionRateItem.getChargeRate();
 		return this.calculateChargeRate(chargeRate, setting);
 	}
@@ -380,11 +426,14 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 	/**
 	 * Calculate charge rate.
 	 *
-	 * @param chargeRate the charge rate
-	 * @param setting the setting
+	 * @param chargeRate
+	 *            the charge rate
+	 * @param setting
+	 *            the setting
 	 * @return the big decimal
 	 */
-	private BigDecimal calculateChargeRate(PensionChargeRateItem chargeRate, PensionAvgearnSetting setting) {
+	private BigDecimal calculateChargeRate(PensionChargeRateItem chargeRate,
+			PensionAvgearnSetting setting) {
 		if (setting.isPersonal) {
 			return this.roudingService.pensionRounding(setting.personalRoundAtr,
 					setting.masterRate.multiply(chargeRate.getPersonalRate().v()));

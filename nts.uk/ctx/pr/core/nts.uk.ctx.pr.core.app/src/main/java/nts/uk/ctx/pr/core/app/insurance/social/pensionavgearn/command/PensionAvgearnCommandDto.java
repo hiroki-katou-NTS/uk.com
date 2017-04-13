@@ -44,40 +44,55 @@ public class PensionAvgearnCommandDto implements PensionAvgearnGetMemento {
 	/** The personal pension. */
 	private PensionAvgearnValueDto personalPension;
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento#getPersonalPension()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnGetMemento#getPersonalPension()
 	 */
 	@Override
 	public PensionAvgearnValue getPersonalPension() {
 		return PensionAvgearnValueDto.toDomain(this.personalPension);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento#getPersonalFundExemption()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnGetMemento#getPersonalFundExemption()
 	 */
 	@Override
 	public PensionAvgearnValue getPersonalFundExemption() {
 		return PensionAvgearnValueDto.toDomain(this.personalFundExemption);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento#getPersonalFund()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnGetMemento#getPersonalFund()
 	 */
 	@Override
 	public PensionAvgearnValue getPersonalFund() {
 		return PensionAvgearnValueDto.toDomain(this.personalFund);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento#getLevelCode()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnGetMemento#getLevelCode()
 	 */
 	@Override
-	public Integer getLevelCode() {
+	public Integer getGrade() {
 		return this.levelCode;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento#getHistoryId()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnGetMemento#getHistoryId()
 	 */
 	@Override
 	public String getHistoryId() {
@@ -85,35 +100,59 @@ public class PensionAvgearnCommandDto implements PensionAvgearnGetMemento {
 		return "";
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento#getCompanyPension()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnGetMemento#getCompanyPension()
 	 */
 	@Override
 	public PensionAvgearnValue getCompanyPension() {
 		return PensionAvgearnValueDto.toDomain(this.companyPension);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento#getCompanyFundExemption()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnGetMemento#getCompanyFundExemption()
 	 */
 	@Override
 	public PensionAvgearnValue getCompanyFundExemption() {
 		return PensionAvgearnValueDto.toDomain(this.companyFundExemption);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento#getCompanyFund()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnGetMemento#getCompanyFund()
 	 */
 	@Override
 	public PensionAvgearnValue getCompanyFund() {
 		return PensionAvgearnValueDto.toDomain(this.companyFund);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento#getChildContributionAmount()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnGetMemento#getChildContributionAmount()
 	 */
 	@Override
 	public CommonAmount getChildContributionAmount() {
 		return new CommonAmount(this.childContributionAmount);
+	}
+
+	@Override
+	public Long getAvgEarn() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Long getUpperLimit() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

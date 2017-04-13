@@ -12,18 +12,13 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class QismtHealthInsuAvgearnPK_.
  */
-@StaticMetamodel(QismtHealthInsuAvgearnPK.class)
-public class QismtHealthInsuAvgearnPK_ {
-
-	/** The ccd. */
-	public static volatile SingularAttribute<QismtHealthInsuAvgearnPK, String> ccd;
-
-	/** The si office cd. */
-	public static volatile SingularAttribute<QismtHealthInsuAvgearnPK, String> siOfficeCd;
+@StaticMetamodel(QismtHealInsuAvgearnDPK.class)
+public class QismtHealInsuAvgearnDPK_ {
 
 	/** The hist id. */
-	public static volatile SingularAttribute<QismtHealthInsuAvgearnPK, String> histId;
+	public static volatile SingularAttribute<QismtHealInsuAvgearnDPK, String> histId;
 
 	/** The health insu grade. */
-	public static volatile SingularAttribute<QismtHealthInsuAvgearnPK, BigDecimal> healthInsuGrade;
+	public static volatile SingularAttribute<QismtHealInsuAvgearnDPK, BigDecimal> healthInsuGrade;
+	
 }

@@ -71,4 +71,16 @@ public class HealthInsuranceAvgearnDto implements HealthInsuranceAvgearnSetMemen
 		this.personalAvg = HealthInsuranceAvgearnValueDto.fromDomain(personalAvg);
 	}
 
+	@Override
+	public void setAvgEarn(Long avgEarn) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setUpperLimit(Long upperLimit) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

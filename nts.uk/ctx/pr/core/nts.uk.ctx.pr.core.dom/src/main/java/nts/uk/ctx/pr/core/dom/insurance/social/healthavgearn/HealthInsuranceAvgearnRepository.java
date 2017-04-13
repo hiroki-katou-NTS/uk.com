@@ -22,16 +22,6 @@ public interface HealthInsuranceAvgearnRepository {
 	void update(List<HealthInsuranceAvgearn> healthInsuranceAvgearns, String ccd, String officeCd);
 
 	/**
-	 * Removes the.
-	 *
-	 * @param ccd the ccd
-	 * @param officeCd the office cd
-	 * @param histId the hist id
-	 * @param levelCode the level code
-	 */
-	void remove(String ccd, String officeCd, String histId, Integer levelCode);
-
-	/**
 	 * Find by id.
 	 *
 	 * @param id the id
