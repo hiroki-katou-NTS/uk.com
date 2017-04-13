@@ -38,6 +38,7 @@ module cmm001.a.service {
         nts.uk.request.ajax(paths.addCompany, company).done(function(res: Array<any>) {
             dfd.resolve(res);
         }).fail(function(res: any) {
+            nts.uk.ui.dialog.alert(res.messName);
             dfd.reject(res);
         })
         return dfd.promise();
