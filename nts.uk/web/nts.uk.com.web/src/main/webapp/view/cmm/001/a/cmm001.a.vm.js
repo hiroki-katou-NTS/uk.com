@@ -4,7 +4,6 @@ var cmm001;
     (function (a) {
         var ViewModel = (function () {
             function ViewModel() {
-                this.previousDisplayAttribute = true;
                 this.isUpdate = ko.observable(null);
                 this.previousCurrentCode = null;
                 this.hasFocus = ko.observable(true);
@@ -30,72 +29,55 @@ var cmm001;
                     }
                 });
                 self.displayAttribute.subscribe(function (newValue) {
-                    if (self.displayAttribute() !== self.previousDisplayAttribute) {
-                        if (self.dirtyObject.isDirty()) {
-                            nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function () {
-                                self.dirtyObject.reset();
-                                self.processWhenDisplayAttributeChanged(newValue);
-                            }).ifCancel(function () {
-                                self.displayAttribute(self.previousDisplayAttribute);
-                            });
-                        }
-                        else {
-                            self.processWhenDisplayAttributeChanged(newValue);
-                        }
+                    var $grid = $("#gridCompany");
+                    var currentColumns = $grid.igGrid("option", "columns");
+                    var width = $grid.igGrid("option", "width");
+                    if (newValue) {
+                        $('#displayAttribute').ntsError('clear');
+                        currentColumns[2].hidden = false;
+                        $grid.igGrid("option", "width", "400px");
+                        self.sel001Data([]);
+                        self.reload(undefined);
                     }
-                });
-            }
-            ViewModel.prototype.processWhenDisplayAttributeChanged = function (newValue) {
-                var self = this;
-                var $grid = $("#gridCompany");
-                var currentColumns = $grid.igGrid("option", "columns");
-                var width = $grid.igGrid("option", "width");
-                if (newValue) {
-                    $('#displayAttribute').ntsError('clear');
-                    currentColumns[2].hidden = false;
-                    $grid.igGrid("option", "width", "400px");
-                    self.sel001Data([]);
-                    self.reload(undefined);
-                }
-                else {
-                    self.sel001Data([]);
-                    currentColumns[2].hidden = true;
-                    $grid.igGrid("option", "width", "400px");
-                    a.service.getAllCompanys().done(function (data) {
-                        if (data.length > 0) {
-                            _.each(data, function (obj) {
-                                var companyModel;
-                                companyModel = ko.mapping.fromJS(obj);
-                                if (obj.displayAttribute === 1) {
-                                    companyModel.displayAttribute('');
-                                    self.sel001Data.push(ko.toJS(companyModel));
-                                }
-                            });
-                            var companyCheckExist = _.find(self.sel001Data(), function (obj) {
-                                var newCompanyCode = ko.toJS(obj.companyCode);
-                                var oldCompanyCode = (ko.toJS(self.currentCompanyCode));
-                                return newCompanyCode === oldCompanyCode;
-                            });
-                            if (self.sel001Data().length > 0) {
-                                self.isUpdate(true);
-                                if (!companyCheckExist) {
-                                    self.processWhenCurrentCodeChange(ko.toJS(self.sel001Data()[0].companyCode));
-                                    self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
+                    else {
+                        self.sel001Data([]);
+                        currentColumns[2].hidden = true;
+                        $grid.igGrid("option", "width", "400px");
+                        a.service.getAllCompanys().done(function (data) {
+                            if (data.length > 0) {
+                                _.each(data, function (obj) {
+                                    var companyModel;
+                                    companyModel = ko.mapping.fromJS(obj);
+                                    if (obj.displayAttribute === 1) {
+                                        companyModel.displayAttribute('');
+                                        self.sel001Data.push(ko.toJS(companyModel));
+                                    }
+                                });
+                                var companyCheckExist = _.find(self.sel001Data(), function (obj) {
+                                    var newCompanyCode = ko.toJS(obj.companyCode);
+                                    var oldCompanyCode = (ko.toJS(self.currentCompanyCode));
+                                    return newCompanyCode === oldCompanyCode;
+                                });
+                                if (self.sel001Data().length > 0) {
+                                    self.isUpdate(true);
+                                    if (!companyCheckExist) {
+                                        self.processWhenCurrentCodeChange(ko.toJS(self.sel001Data()[0].companyCode));
+                                        self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
+                                    }
+                                    else {
+                                        self.processWhenCurrentCodeChange(self.currentCompanyCode());
+                                    }
                                 }
                                 else {
-                                    self.processWhenCurrentCodeChange(self.currentCompanyCode());
+                                    self.resetData();
+                                    self.isUpdate(false);
                                 }
                             }
-                            else {
-                                self.resetData();
-                                self.isUpdate(false);
-                            }
-                        }
-                    });
-                }
-                $grid.igGrid("option", "columns", currentColumns);
-                self.previousDisplayAttribute = newValue;
-            };
+                        });
+                    }
+                    $grid.igGrid("option", "columns", currentColumns);
+                });
+            }
             ViewModel.prototype.processWhenCurrentCodeChange = function (newValue) {
                 var self = this;
                 a.service.getCompanyDetail(newValue).done(function (company) {
@@ -587,4 +569,3 @@ var cmm001;
         }());
     })(a = cmm001.a || (cmm001.a = {}));
 })(cmm001 || (cmm001 = {}));
-//# sourceMappingURL=cmm001.a.vm.js.map

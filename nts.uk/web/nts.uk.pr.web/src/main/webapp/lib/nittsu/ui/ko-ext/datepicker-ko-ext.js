@@ -61,18 +61,14 @@ var nts;
                             endDate: endDate,
                             autoHide: autoHide,
                         });
-                        var validator = new ui.validation.TimeValidator(constraintName, { required: required, outputFormat: valueFormat, valueType: valueType });
+                        var validator = new ui.validation.TimeValidator(constraintName, { required: required, inputFormat: valueFormat, valueType: valueType });
                         $input.on("change", function (e) {
                             var newText = $input.val();
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (result.isValid) {
-                                if (hasDayofWeek) {
-                                    if (uk.util.isNullOrEmpty(result.parsedValue))
-                                        $label.text("");
-                                    else
-                                        $label.text("(" + uk.time.formatPattern(newText, "", dayofWeekFormat) + ")");
-                                }
+                                if (hasDayofWeek)
+                                    $label.text("(" + uk.time.formatPattern(newText, "", dayofWeekFormat) + ")");
                                 value(result.parsedValue);
                             }
                             else {
@@ -110,12 +106,8 @@ var nts;
                         if (init === true || uk.time.formatPattern($input.datepicker("getDate", true), "", ISOFormat) !== dateFormatValue) {
                             if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
                                 $input.datepicker('setDate', dateFormatValue);
-                                if (hasDayofWeek) {
-                                    if (uk.util.isNullOrEmpty(dateFormatValue))
-                                        $label.text("");
-                                    else
-                                        $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
-                                }
+                                if (hasDayofWeek)
+                                    $label.text("(" + moment.utc(value(), valueFormat).format(dayofWeekFormat) + ")");
                             }
                         }
                         container.data("init", false);
@@ -135,4 +127,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=datepicker-ko-ext.js.map

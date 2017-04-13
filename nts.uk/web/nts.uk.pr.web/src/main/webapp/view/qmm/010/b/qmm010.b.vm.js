@@ -21,7 +21,6 @@ var nts;
                                         { headerText: '名称', prop: 'name', width: 150 }
                                     ]);
                                 }
-                                //start page
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -30,7 +29,6 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
-                                //Connection service find All InsuranceOffice
                                 ScreenModel.prototype.findAllInsuranceOffice = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -39,7 +37,6 @@ var nts;
                                     dfd.resolve(self);
                                     return dfd.promise();
                                 };
-                                //Find code data lst by check import data
                                 ScreenModel.prototype.findCode = function (code) {
                                     var self = this;
                                     for (var _i = 0, _a = self.lstSocialInsuranceOffice(); _i < _a.length; _i++) {
@@ -50,7 +47,6 @@ var nts;
                                     }
                                     return null;
                                 };
-                                //check dulicate code
                                 ScreenModel.prototype.importData = function () {
                                     var self = this;
                                     if (self.selectLstSocialInsuranceOffice() != null) {

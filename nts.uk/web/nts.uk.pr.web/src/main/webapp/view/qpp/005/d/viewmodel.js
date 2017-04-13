@@ -13,9 +13,6 @@ var nts;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
-                                /**
-                                 * Init screen
-                                 */
                                 function ScreenModel() {
                                     var self = this;
                                 }

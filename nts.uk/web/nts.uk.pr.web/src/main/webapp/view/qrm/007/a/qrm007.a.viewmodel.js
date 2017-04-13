@@ -17,12 +17,12 @@ var qrm007;
                     var dfd = $.Deferred();
                     self.findRetirementPayItemList(false)
                         .done(function () {
-                        $(document).delegate("#lst-1", "iggridselectionrowselectionchanging", function (evt, ui) {
+                        $(document).delegate("#LST_001", "iggridselectionrowselectionchanging", function (evt, ui) {
                             if (self.dirty.isDirty()) {
                                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。 ").
                                     ifYes(function () {
-                                    $('#inp-1').ntsError('clear');
-                                    $('#inp-2').ntsError('clear');
+                                    $('#INP_001').ntsError('clear');
+                                    $('#INP_002').ntsError('clear');
                                     self.currentCode(ui.row.id);
                                     self.currentItem(RetirementPayItem.converToObject(_.find(self.retirementPayItemList(), function (o) { return o.itemCode == self.currentCode(); })));
                                     self.dirty.reset();
@@ -31,8 +31,8 @@ var qrm007;
                                 });
                             }
                             else {
-                                $('#inp-1').ntsError('clear');
-                                $('#inp-2').ntsError('clear');
+                                $('#INP_001').ntsError('clear');
+                                $('#INP_002').ntsError('clear');
                                 self.currentCode(ui.row.id);
                                 self.currentItem(RetirementPayItem.converToObject(_.find(self.retirementPayItemList(), function (o) { return o.itemCode == self.currentCode(); })));
                                 self.dirty.reset();
@@ -44,10 +44,6 @@ var qrm007;
                     });
                     return dfd.promise();
                 };
-                /**
-                 * find retirement payment item by company code
-                 * @param notFirstTime : check current find is first time or not
-                 */
                 ScreenModel.prototype.findRetirementPayItemList = function (notFirstTime) {
                     var self = this;
                     var dfd = $.Deferred();
@@ -72,9 +68,6 @@ var qrm007;
                     });
                     return dfd.promise();
                 };
-                /**
-                 * update retirement payment item
-                 */
                 ScreenModel.prototype.updateRetirementPayItemList = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -90,9 +83,6 @@ var qrm007;
                     }
                     return dfd.promise();
                 };
-                /**
-                 * event update selected retirement payment item
-                 */
                 ScreenModel.prototype.saveData = function () {
                     var self = this;
                     self.updateRetirementPayItemList();

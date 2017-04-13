@@ -94,6 +94,54 @@ module nts.uk.ui.koExtentions {
      */
     class TextEditorProcessor extends EditorProcessor {
 
+        init($input: JQuery, data: any) {
+            var value: KnockoutObservable<string> = data.value;
+            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            var constraint = validation.getConstraint(constraintName);
+            var characterWidth: number = 9;
+            if (constraint && constraint.maxLength && !$input.is("textarea")) {
+                var autoWidth = constraint.maxLength * characterWidth;
+                $input.width(autoWidth);
+            }
+            $input.addClass('nts-editor nts-input');
+            $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
+
+            let validator = this.getValidator(data);
+            $input.on("keyup", (e) => {
+                var newText = $input.val();
+                var result = validator.validate(newText);
+                $input.ntsError('clear');
+                if (!result.isValid) {
+                    $input.ntsError('set', result.errorMessage);
+                }
+            });
+
+            $input.on("blur", (e) => {
+                var newText = $input.val();
+                var result = validator.validate(newText, {isCheckExpression: true});
+                $input.ntsError('clear');
+                if (result.isValid) {
+                    if(value() === result.parsedValue){
+                        $input.val(result.parsedValue);    
+                    } else {
+                        value(result.parsedValue);    
+                    }
+                } else {
+                    $input.ntsError('set', result.errorMessage);
+                    value(newText);
+                }
+            });
+            
+            $input.on('validate', (function(e: Event) {
+                var newText = $input.val();
+                var result = validator.validate(newText);
+                $input.ntsError('clear');
+                if (!result.isValid) {
+                    $input.ntsError('set', result.errorMessage);
+                }
+            }));
+        }
+        
         update($input: JQuery, data: any) {
             var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             var textmode: string = editorOption.textmode;

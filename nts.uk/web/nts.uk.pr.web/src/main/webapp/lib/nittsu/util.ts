@@ -113,7 +113,7 @@
             }
             return undefined;
         }
-        
+         
         /**
          * Returns true if the target is null or undefined.
          */

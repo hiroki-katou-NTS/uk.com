@@ -9,11 +9,27 @@ var qmm006;
                 transfer: "basic/system/bank/linebank/transfer"
             };
             function findAll() {
-                return nts.uk.request.ajax("com", paths.findAll);
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", paths.findAll)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
             }
             service.findAll = findAll;
             function transfer(data) {
-                return nts.uk.request.ajax('com', paths.transfer, data);
+                var dfd = $.Deferred();
+                nts.uk.request.ajax('com', paths.transfer, data)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
             }
             service.transfer = transfer;
         })(service = c.service || (c.service = {}));

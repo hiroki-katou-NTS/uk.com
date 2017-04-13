@@ -14,4 +14,3 @@ __viewContext.ready(function () {
     $(".draggable").draggable({});
     this.bind(new ScreenModel());
 });
-//# sourceMappingURL=start.js.map

@@ -3,11 +3,11 @@
 module nts.uk.ui.validation {
 
     export interface IValidator {
-        validate(inputText: string): ValidationResult;
+        validate(inputText: string, option?: any): ValidationResult;
     }
 
     export class NoValidator {
-        validate(inputText: string): ValidationResult {
+        validate(inputText: string, option?: any): ValidationResult {
             var result = new ValidationResult();
             result.isValid = true;
             result.parsedValue = inputText;
@@ -42,7 +42,7 @@ module nts.uk.ui.validation {
             this.required = option.required;
         }
 
-        validate(inputText: string): ValidationResult {
+        validate(inputText: string, option?: any): ValidationResult {
             var result = new ValidationResult();
             // Check Required
             if (this.required !== undefined && this.required !== false) {
@@ -53,6 +53,11 @@ module nts.uk.ui.validation {
             }
             // Check CharType
             if (this.charType !== null && this.charType !== undefined) {
+                if (this.charType.viewName === '半角数字' || this.charType.viewName === '半角英数字') {
+                    inputText = text.toOneByteAlphaNumberic(inputText);        
+                } else if (this.charType.viewName === 'カタカナ') {
+                    inputText = text.oneByteKatakanaToTwoByte(inputText);    
+                }
                 if (!this.charType.validate(inputText)) {
                     result.fail('Invalid text');
                     return result;
@@ -64,12 +69,15 @@ module nts.uk.ui.validation {
                     result.fail('Max length for this input is ' + this.constraint.maxLength);
                     return result;
                 }
-
-                if (!text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
-                    result.fail('This field is not valid with pattern!');
-                    return result;
+                
+                if(!util.isNullOrUndefined(option) && option.isCheckExpression === true){  
+                    if (!text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
+                        result.fail('This field is not valid with pattern!');
+                        return result;
+                    }  
                 }
             }
+            
             result.success(inputText);
             return result;
         }

@@ -8,7 +8,15 @@ var qmm006;
                 findBankAll: "basic/system/bank/find/all"
             };
             function findBankAll() {
-                return nts.uk.request.ajax("com", paths.findBankAll);
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", paths.findBankAll)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
             }
             service.findBankAll = findBankAll;
         })(service = b.service || (b.service = {}));

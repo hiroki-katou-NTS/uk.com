@@ -25,9 +25,6 @@ var nts;
                             }());
                             viewmodel.SwitchButton = SwitchButton;
                             var ScreenModel = (function () {
-                                /**
-                                 * Init screen
-                                 */
                                 function ScreenModel() {
                                     var self = this;
                                     self.switchButton = new SwitchButton();

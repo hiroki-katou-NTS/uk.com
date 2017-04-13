@@ -15,13 +15,9 @@ var nts;
                             var paths = {
                                 updateInsuranceBusinessType: "pr/insurance/labor/businesstype/update"
                             };
-                            //Function update 
                             function updateInsuranceBusinessType(insuranceBusinessType) {
-                                //set up respone
                                 var dfd = $.Deferred();
-                                //set up data request
                                 var data = { insuranceBusinessType: insuranceBusinessType };
-                                //call service server
                                 nts.uk.request.ajax(paths.updateInsuranceBusinessType, data)
                                     .done(function (res) {
                                     dfd.resolve(res);

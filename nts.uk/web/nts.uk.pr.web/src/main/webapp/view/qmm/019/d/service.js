@@ -9,9 +9,6 @@ var qmm019;
                 getHistoryWithMaxStart: "pr/proto/layout/findallMaxHistory",
                 createlayouthistory: "pr/proto/layout/createlayouthistory"
             };
-            /**
-             * Get list layout master new history
-             */
             function getLayoutWithMaxStartYm() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getLayoutInfor)
@@ -48,7 +45,6 @@ var qmm019;
             service.createLayoutHistory = createLayoutHistory;
             var model;
             (function (model) {
-                // layout
                 var LayoutMasterDto = (function () {
                     function LayoutMasterDto() {
                     }

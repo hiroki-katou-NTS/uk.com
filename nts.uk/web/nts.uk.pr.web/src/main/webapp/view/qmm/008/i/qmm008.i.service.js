@@ -12,16 +12,10 @@ var nts;
                     (function (i) {
                         var service;
                         (function (service) {
-                            /**
-                             *  Service paths
-                             */
                             var paths = {
                                 updatePensionAvgearn: "ctx/pr/core/insurance/social/pensionavgearn/update",
                                 findPensionAvgearn: "ctx/pr/core/insurance/social/pensionavgearn/find"
                             };
-                            /**
-                             *  Save list pensionAvgearn
-                             */
                             function updatePensionAvgearn(list, officeCode) {
                                 var dfd = $.Deferred();
                                 var data = { listPensionAvgearnDto: list.listPensionAvgearnDto,
@@ -33,9 +27,6 @@ var nts;
                                 return dfd.promise();
                             }
                             service.updatePensionAvgearn = updatePensionAvgearn;
-                            /**
-                            *  Find list PensionAvgearn by historyId
-                            */
                             function findPensionAvgearn(id) {
                                 var dfd = $.Deferred();
                                 nts.uk.request.ajax(paths.findPensionAvgearn + '/' + id)

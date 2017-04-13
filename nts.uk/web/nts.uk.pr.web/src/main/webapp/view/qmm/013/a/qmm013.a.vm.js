@@ -46,38 +46,31 @@ var qmm013;
                         { code: '2', name: 'その他' },
                     ]);
                     self.currentCode.subscribe(function (newCode) {
+                        if (self.isFirstGetData()) {
+                            self.clearError();
+                        }
+                        self.isFirstGetData(true);
+                        if (self.notCheckDirty()) {
+                            self.selectedUnitPrice(newCode);
+                            self.notCheckDirty(false);
+                            return;
+                        }
                         if (!self.checkDirty()) {
-                            if (self.isFirstGetData()) {
-                                self.clearError();
-                            }
-                            self.isFirstGetData(true);
-                            if (self.notCheckDirty()) {
-                                self.selectedUnitPrice(newCode);
-                                self.notCheckDirty(false);
-                                return;
-                            }
                             self.selectedUnitPrice(newCode);
                             self.isCreated(false);
                             self.isEnableDelete(true);
                         }
                         else {
-                            if (self.notCheckDirty()) {
-                                self.selectedUnitPrice(newCode);
-                                self.notCheckDirty(false);
-                                return;
-                            }
                             if (self.confirmDirty) {
                                 self.confirmDirty = false;
                                 self.isEnableDelete(true);
                                 return;
                             }
                             nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function () {
-                                self.clearError();
-                                self.isFirstGetData(true);
                                 self.selectedUnitPrice(newCode);
                                 self.isCreated(false);
                                 self.isEnableDelete(true);
-                            }).ifCancel(function () {
+                            }).ifNo(function () {
                                 self.confirmDirty = true;
                                 self.currentCode(self.currentItem().personalUnitPriceCode());
                             });
@@ -125,7 +118,7 @@ var qmm013;
                                     }
                                 });
                             })
-                                .ifCancel(function () {
+                                .ifNo(function () {
                                 self.notLoop(true);
                                 self.displayAll(!self.displayAll());
                             });
@@ -205,8 +198,7 @@ var qmm013;
                             self.currentCode("");
                             self.isCreated(true);
                             self.isEnableDelete(false);
-                        })
-                            .ifCancel(function () { });
+                        });
                     }
                 };
                 ScreenModel.prototype.closeDialog = function () {
@@ -219,7 +211,7 @@ var qmm013;
                             .ifYes(function () {
                             nts.uk.ui.windows.close();
                         })
-                            .ifCancel(function () { });
+                            .ifNo(function () { });
                     }
                 };
                 ScreenModel.prototype.btn_002 = function () {
@@ -292,7 +284,7 @@ var qmm013;
                         }).fail(function (error) {
                             alert(error.message);
                         });
-                    }).ifCancel(function () { });
+                    });
                 };
                 ScreenModel.prototype.selectedFirstUnitPrice = function () {
                     var self = this;
@@ -307,8 +299,6 @@ var qmm013;
                 ScreenModel.prototype.clearError = function () {
                     $('#INP_002').ntsError('clear');
                     $('#INP_003').ntsError('clear');
-                    $('#INP_004').ntsError('clear');
-                    $('#INP_005').ntsError('clear');
                 };
                 return ScreenModel;
             }());
@@ -350,4 +340,3 @@ var qmm013;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm013.a || (qmm013.a = {}));
 })(qmm013 || (qmm013 = {}));
-//# sourceMappingURL=qmm013.a.vm.js.map

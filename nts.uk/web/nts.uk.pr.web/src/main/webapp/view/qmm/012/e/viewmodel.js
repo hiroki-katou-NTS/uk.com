@@ -106,7 +106,6 @@ var qmm012;
                     });
                 }
                 ScreenModel.prototype.getCurrentItemAttend = function () {
-                    //return Item Attend customer input on form
                     var self = this;
                     var itemAttend = new e.service.model.ItemAttend(self.CurrentAvePayAtr(), self.CurrentItemAtr(), self.checked_E_006() ? 1 : 0, self.CurrentErrRangeLow(), self.checked_E_005() ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_E_008() ? 1 : 0, self.CurrentAlRangeLow(), self.checked_E_007() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentWorkDaysScopeAtr(), self.CurrentMemo());
                     return itemAttend;
@@ -117,4 +116,3 @@ var qmm012;
         })(viewmodel = e.viewmodel || (e.viewmodel = {}));
     })(e = qmm012.e || (qmm012.e = {}));
 })(qmm012 || (qmm012 = {}));
-//# sourceMappingURL=viewmodel.js.map

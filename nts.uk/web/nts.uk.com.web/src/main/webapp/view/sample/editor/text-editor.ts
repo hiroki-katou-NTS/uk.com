@@ -16,14 +16,14 @@ __viewContext.ready(function () {
                     placeholder: "Placeholder for text editor",
                     width: "",
                     textalign: "left"
-                })),
+                })), 
                 required: ko.observable(false),
                 enable: ko.observable(true),
                 readonly: ko.observable(false),
                 clear: function(){
                     $("#text-1").ntsError("clear");    
                 }
-            };
+            }; 
             // EmployeeCodeEditor
             self.employeeeditor = {
                 value: ko.observable('19'),
