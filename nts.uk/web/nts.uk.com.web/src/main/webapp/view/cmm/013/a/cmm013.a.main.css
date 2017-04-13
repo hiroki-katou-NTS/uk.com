@@ -91,7 +91,7 @@
 }
 
 .disableClass {
-	pointer-events: none;
+	background:#ebebe4;
 }
 
 .line.left-line {

@@ -36,6 +36,7 @@ module cmm013.a.viewmodel {
         srtDateLast: KnockoutObservable<string>;
         jTitleRef: KnockoutObservableArray<model.JobRef>;
         dataRef: KnockoutObservableArray<model.GetAuth>;
+        enableListBoxAuth: KnockoutObservable<boolean>;
         dataRefNew: KnockoutObservableArray<model.GetAuth>;
         createdMode: KnockoutObservable<boolean>;
         clickChange: KnockoutObservable<boolean>;
@@ -72,6 +73,7 @@ module cmm013.a.viewmodel {
             self.currentItem = ko.observable(null);
             self.currentCode = ko.observable();
             self.clickChange = ko.observable(false);
+            self.enableListBoxAuth = ko.observable(true);
             self.columns = ko.observableArray([
                 { headerText: 'コード', key: 'jobCode', width: 90 },
                 { headerText: '名称', key: 'jobName', width: 100 }
@@ -87,7 +89,17 @@ module cmm013.a.viewmodel {
                 new BoxModel(2, 'ロール毎に設定')
             ]);
             self.selectedId = ko.observable(0);
-            if (self.selectedId() == 0) { $('#lst_003').addClass('disableClass'); }
+            self.selectedId.subscribe(function(codeChanged) {
+                    $('#lst_003').removeClass('disableClass');
+                    if (codeChanged == 0 || codeChanged == 1) {
+                        $('#lst_003').show();
+                        $('#lst_003').addClass('disableClass');
+                        self.enableListBoxAuth(false);
+                    } else {
+                        $('#lst_003').show();
+                        self.enableListBoxAuth(true);
+                    }
+                });
             self.enable = ko.observable(true);
             self.notAlert = ko.observable(true);
             self.dirty = new nts.uk.ui.DirtyChecker(self.dataSource);
@@ -96,20 +108,18 @@ module cmm013.a.viewmodel {
                 self.clickChange(true);
             });
             self.selectedCode.subscribe(function(codeChanged) {
-                              
                 self.itemHist(self.findHist(codeChanged));
                 self.oldStartDate(self.itemHist().startDate);
                 self.oldEndDate(self.itemHist().endDate);
                 self.srtDateLast(self.listbox()[0].startDate);
-                 if (codeChanged == null) {
+                if (codeChanged == null) {
                     return;
                 }
                 if (!self.notAlert()) {
                     self.notAlert(true);
                     return;
                 }
-                
-                
+
                 var chkCopy = nts.uk.ui.windows.getShared('cmm013Copy');
                 if (codeChanged === '1' && chkCopy) {
                     //set lai disable cho input code
@@ -123,9 +133,9 @@ module cmm013.a.viewmodel {
                         }
                         self.listbox.shift();
                     }
-                   
                     //tim kiem position tuong ung voi history                                        
                     service.findAllJobTitle(codeChanged).done(function(position_arr: Array<model.ListPositionDto>) {
+
                         self.dataSource(position_arr);
                         if (self.dataSource().length > 0) {
                             //set select position & history
@@ -137,12 +147,14 @@ module cmm013.a.viewmodel {
                             }
                         }
                         self.clickChange(false);
+
+
                     }).fail(function(err: any) {
                         nts.uk.ui.dialog.alert(err.message);
                     })
                     //set lai disable cho input code
                     //self.inp_002_enable(false);
-                         
+
                 }
             });
             //change position
@@ -150,7 +162,9 @@ module cmm013.a.viewmodel {
                 if (codeChanged !== null && codeChanged !== undefined) {
                     self.changedCode(codeChanged);
                 }
+                
             });
+            
         }
         changedCode(value) {
             var self = this;
@@ -162,47 +176,39 @@ module cmm013.a.viewmodel {
                 self.selectedId(self.currentItem().presenceCheckScopeSet);
                 self.inp_002_enable(false);
                 self.createdMode(false);
-                //tim kiem quyen theo historyId va position code
-                service.findByUseKt().done(function(res: any) {
-                    if (res.use_Kt_Set === 1) {
-
-                        service.getAllJobTitleAuth(self.currentItem().historyId, self.currentItem().jobCode).done(function(jTref) {
-                            //neu nhu ko co du lieu thi an list di
-                            if (jTref.length === 0) {
-                                $('.trLst003').hide();
-                            } else {
-                                $('.trLst003').show();
-                                self.dataRef([]);
-                                _.map(jTref, function(item) {
-                                    var tmp = new model.GetAuth(item.jobCode, item.authCode, item.authName, item.referenceSettings);
-                                    self.dataRef.push(tmp);
-                                    return tmp;
-                                });
-                                self.dataRefNew(self.dataRef());
-                                self.createdMode(true);
-                            }
-                        });
-                    }
-                    self.selectedId.subscribe(function(codeChanged) {
-                        $('#lst_003').removeClass('disableClass');
-                        if (codeChanged == 0) {
-                            $('#lst_003').show();
-                            $('#lst_003').addClass('disableClass');
-                        } else if (codeChanged == 1) {
-                            $('#lst_003').hide();
-                        } else {
-                            $('#lst_003').show();
-                        }
-                    })
-                })
             }
+            //tim kiem quyen theo historyId va position code
+            service.findByUseKt().done(function(res: any) {
+                if (res.use_Kt_Set === 1) {
+                    service.getAllJobTitleAuth(self.currentItem().historyId, self.currentItem().jobCode).done(function(jTref) {
+                        //neu nhu ko co du lieu thi an list di
+                        if (jTref.length === 0) {
+                            $('.trLst003').hide();
+                        } else {
+                            $('.trLst003').show();
+                            self.dataRef([]);
+                            _.map(jTref, function(item) {
+                                var tmp = new model.GetAuth(item.jobCode, item.authCode, item.authName, item.referenceSettings);
+                                self.dataRef.push(tmp);
+                                return tmp;
+                            });
+                            self.dataRefNew(self.dataRef());
+                            self.createdMode(true);
+                        }
+                    });
+                }
+                
+            })
+
         }
 
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             self.getHistory(dfd);
+            self.dirty.reset();
             return dfd.promise();
+
         }
 
         //get all history
@@ -210,22 +216,22 @@ module cmm013.a.viewmodel {
             var self = this;
             service.getAllHistory().done(function(history_arr: Array<model.ListHistoryDto>) {
                 var listHistory = _.map(history_arr, function(item) {
-                    return new model.ListHistoryDto(item.companyCode, item.startDate, item.endDate, item.historyId);
+                    return new model.ListHistoryDto(item.companyCode, item.historyId, item.startDate, item.endDate);
                 });
                 self.listbox(listHistory);
 
                 if (history_arr.length > 0) {
                     if (selectedHistory !== undefined && selectedHistory !== "1") {
                         let currentHist = self.findHist(selectedHistory);
-                        self.selectedCode(currentHist.historyId);
-                        self.endDateUpdate(currentHist.endDate);
+                        self.selectedCode(currentHist.historyId);            
                         self.startDateLast(currentHist.startDate);
+                        self.endDateUpdate(currentHist.endDate);
                         self.historyIdUpdate(currentHist.historyId);
                     } else {
                         var histStart = _.first(history_arr);
                         self.selectedCode(histStart.historyId);
-                        self.endDateUpdate(histStart.endDate);
                         self.startDateLast(histStart.startDate);
+                        self.endDateUpdate(histStart.endDate);                    
                         self.historyIdUpdate(histStart.historyId);
                     }
                     var hisEnd = _.last(history_arr);
@@ -337,9 +343,12 @@ module cmm013.a.viewmodel {
             self.inp_002_enable(true);
             self.inp_002_code("");
             self.inp_003_name("");
-            self.selectedId(1);
+            self.selectedId(0);
             self.inp_005_memo("");
             self.currentCode(null);
+            _.forEach(self.dataRef(), function(item){
+                item.referenceSettings(0);
+            });
             $("#inp_002").focus();
         }
         //thực hiện nút 新規
@@ -392,7 +401,7 @@ module cmm013.a.viewmodel {
                         self.checkCoppyJtitle(nts.uk.ui.windows.getShared('cmm013Copy'));
                         if (self.checkCoppyJtitle() == false) {
                             if (self.startDateAddNew() != '' && self.startDateAddNew() !== undefined) {
-                                let add = new model.ListHistoryDto('', self.startDateAddNew(), '9999/12/31', '1');
+                                let add = new model.ListHistoryDto('', '1', self.startDateAddNew(), '9999/12/31');
                                 self.initPosition();
                                 self.listbox.unshift(add);
                                 self.selectedCode('1');
@@ -402,7 +411,7 @@ module cmm013.a.viewmodel {
                                 let startDate = new Date(self.startDateAddNew());
                                 startDate.setDate(startDate.getDate() - 1);
                                 let strStartDate = startDate.getFullYear() + '/' + (startDate.getMonth() + 1) + '/' + startDate.getDate();
-                                let update = new model.ListHistoryDto('', self.startDateLast(), strStartDate, self.historyIdUpdate());
+                                let update = new model.ListHistoryDto('', self.historyIdUpdate(), self.startDateLast(), strStartDate);
                                 if (self.listbox().length > 1) {
                                     self.listbox.splice(1, 1, update);
                                     self.listbox.valueHasMutated();
@@ -413,13 +422,13 @@ module cmm013.a.viewmodel {
                             //add history and coppy position    
                         } else {
                             if (self.startDateAddNew() != '' && self.startDateAddNew() !== undefined) {
-                                let add = new model.ListHistoryDto('', self.startDateAddNew(), '9999/12/31', '1');
+                                let add = new model.ListHistoryDto('', '1', self.startDateAddNew(), '9999/12/31');
                                 self.listbox.unshift(add);
                                 self.selectedCode('1');
                                 let startDate = new Date(self.startDateAddNew());
                                 startDate.setDate(startDate.getDate() - 1);
                                 let strStartDate = startDate.getFullYear() + '/' + (startDate.getMonth() + 1) + '/' + startDate.getDate();
-                                let update = new model.ListHistoryDto('', self.startDateLast(), strStartDate, self.historyIdUpdate());
+                                let update = new model.ListHistoryDto('', self.historyIdUpdate(), self.startDateLast(), strStartDate);
                                 if (self.listbox().length > 1) {
                                     self.listbox.splice(1, 1, update);
                                     //tim kiem position tuong ung voi history
@@ -480,7 +489,7 @@ module cmm013.a.viewmodel {
                 var item = new model.DeleteJobTitle(self.selectedCode(), self.currentItem().jobCode);
                 self.index_of_itemDelete = self.dataSource().indexOf(self.currentItem());
                 if (self.dataSource().length == 1) {
-                    nts.uk.ui.dialog.confirm("選択している履歴の職位が1件のみのため、\r\n履歴の編集ボタンから履歴削除を行ってください。")
+                    nts.uk.ui.dialog.alert("選択している履歴の職位が1件のみのため、\r\n履歴の編集ボタンから履歴削除を行ってください。")
                 } else {
                     nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
                         service.deleteJobTitle(item).done(function(res) {
@@ -547,16 +556,18 @@ module cmm013.a.viewmodel {
     export module model {
         export class ListHistoryDto {
             companyCode: string;
+            historyId: string;
             startDate: string;
             endDate: string;
-            historyId: string;
+            
 
-            constructor(companyCode: string, startDate: string, endDate: string, historyId: string) {
+            constructor(companyCode: string, historyId: string, startDate: string, endDate: string) {
                 var self = this;
                 self.companyCode = companyCode;
+                self.historyId = historyId;
                 self.startDate = moment.utc(startDate).format("YYYY/MM/DD");
                 self.endDate = moment.utc(endDate).format("YYYY/MM/DD");
-                self.historyId = historyId;
+                
             }
         }
         export class ListPositionDto {
@@ -660,7 +671,7 @@ module cmm013.a.viewmodel {
                 this.referenceSettings = referenceSettings;
             }
         }
-  
+
         export class InputField {
             inp_002_enable: KnockoutObservable<boolean>;
             inp_003_name: KnockoutObservable<string>;

@@ -48,7 +48,7 @@ public class RegistryPositionCommandHandler extends CommandHandler<RegistryPosit
 			String historyIdNew = IdentifierUtil.randomUniqueId();
 
 			GeneralDate startDate = GeneralDate.localDate(LocalDate.parse(rePositionCommand.getStartDate().replaceAll("/", "-")));
-			JobHistory historyInfor = new JobHistory(companyCode, historyIdNew, endDate, startDate);
+			JobHistory historyInfor = new JobHistory(companyCode, historyIdNew,startDate,endDate);
 
 			// add position neu duoc copy tu lich su khac
 			if (rePositionCommand.isChkCopy()) {
@@ -151,7 +151,7 @@ public class RegistryPositionCommandHandler extends CommandHandler<RegistryPosit
 						newRefInfor.add(titleRef);
 					}
 					//update quyen 
-					positionRepository.updateRef(refInfor);
+					positionRepository.updateRef(newRefInfor);
 				}
 			}
 		}

@@ -125,7 +125,7 @@ module cmm013.c.viewmodel {
         checkValueInput(value: string): boolean {
             var self = this;
             if (value <= self.startDateLast()) {
-                alert("nhap lai start Date");
+                alert("履歴の期間が正しくありません。");
                 return false;
             } else {
                 return true;

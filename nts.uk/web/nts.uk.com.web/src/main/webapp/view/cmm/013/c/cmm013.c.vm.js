@@ -102,7 +102,7 @@ var cmm013;
                 ScreenModel.prototype.checkValueInput = function (value) {
                     var self = this;
                     if (value <= self.startDateLast()) {
-                        alert("nhap lai start Date");
+                        alert("履歴の期間が正しくありません。");
                         return false;
                     }
                     else {

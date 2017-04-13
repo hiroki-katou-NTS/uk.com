@@ -143,7 +143,7 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 				position.getHistoryId(),
 				position.getJobCode().v());
 		cmnmtJobTitle.setJobName(position.getJobName().v());
-		cmnmtJobTitle.setPresenceCheckScopeSet(0);
+		cmnmtJobTitle.setPresenceCheckScopeSet(position.getPresenceCheckScopeSet().value);
 		cmnmtJobTitle.setJobOutCode(position.getJobOutCode().v());
 		cmnmtJobTitle.setMemo(position.getMemo().v());
 		cmnmtJobTitle.setHierarchyOrderCode(position.getHiterarchyOrderCode().v());
