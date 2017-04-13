@@ -9,7 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class PersonResitaxDto {
 	private String personID;
-//	private String residenceCode;
+	private String residenceCode;
 //	private BigDecimal residenceTax06;
 //	private BigDecimal residenceTax07;
 //	private BigDecimal residenceTax08;

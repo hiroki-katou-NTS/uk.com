@@ -58,7 +58,6 @@ public class ResidentialTaxReportService extends ExportService<ResidentialTaxQue
 		
 		// PPRMT_PERSON_RESITAX.SEL_1
 		List<PersonResitaxDto> personResidentTaxList = residentialTaxRepo.findPersonResidentTax(companyCode, Y_K , query.getResidentTaxCodeList());
-		int totalPerson = personResidentTaxList.size();
 		
 		// PAYMENTDETAI.SEL_6
 		List<String> personIdList = personResidentTaxList.stream().map(x -> x.getPersonID()).collect(Collectors.toList());
@@ -76,19 +75,19 @@ public class ResidentialTaxReportService extends ExportService<ResidentialTaxQue
 		GeneralDate baseRangeStartYearMonth = GeneralDate.ymd(2017, 03, 11);
 		//GeneralDate baseRangeEndYearMonth = query.getEndDate();
 		GeneralDate baseRangeEndYearMonth = GeneralDate.ymd(2017, 04, 01);
-		List<RetirementPaymentDto> retirementPaymentList = residentialTaxRepo.findRetirementPaymentList(
-				companyCode,
-				personIdList,
-				baseRangeStartYearMonth,
-				baseRangeEndYearMonth
-				);
+		List<RetirementPaymentDto> retirementPaymentList = residentialTaxRepo.findRetirementPaymentList(companyCode, personIdList, baseRangeStartYearMonth, baseRangeEndYearMonth);
 				
 		// return
 		List<ResidentTaxReportData> reportDataList = new ArrayList<ResidentTaxReportData>();
 		
-		//Map<String, ResidentialTaxDto> residentTaxMap = residentTaxList.stream().collect(Collectors.toMap(ResidentialTaxDto::getResidenceTaxCode, x->x));
-		
+		Map<String, PersonResitaxDto> personResidentTaxListMap =  personResidentTaxList.stream().collect(Collectors.toMap(PersonResitaxDto::getResidenceCode, a->a));
+	
 		Map<String, ResidentialTaxSlipDto> residentialTaxSlipMap = residentialTaxSlipDto.stream().collect(Collectors.toMap(ResidentialTaxSlipDto::getResiTaxCode, y->y));
+		
+		//Map<String, PaymentDetailDto> paymentDetailListMap = 
+		
+		
+		
 		
 		
 		for (ResidentialTaxDto residentialTax : residentTaxList) {

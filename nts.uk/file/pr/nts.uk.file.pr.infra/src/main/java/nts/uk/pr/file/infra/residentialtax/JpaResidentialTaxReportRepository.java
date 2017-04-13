@@ -31,7 +31,7 @@ public class JpaResidentialTaxReportRepository extends JpaRepository implements 
 			+ "FROM QtxmtResidentTialTaxSlip a WHERE a.qtxmtResimentTialTaxSlipPk.companyCode =:companyCd AND a.qtxmtResimentTialTaxSlipPk.yearMonth =:yearMonth AND a.qtxmtResimentTialTaxSlipPk.residentTaxCode IN :resiTaxCode";
 
 	private String PPRMT_PERSON_RESITAX_SEL_5 = "SELECT NEW " + PersonResitaxDto.class.getName() + ""
-			+ "(b.pprmtPersonResiTaxPK.personId)" + "FROM PprmtPersonResiTax b "
+			+ "(b.pprmtPersonResiTaxPK.personId, b.residenceCode)" + "FROM PprmtPersonResiTax b "
 			+ "WHERE b.pprmtPersonResiTaxPK.companyCode = :companyCd" + " AND b.residenceCode IN :residenceCode"
 			+ " AND b.pprmtPersonResiTaxPK.yearKey = :yearKey";
 
