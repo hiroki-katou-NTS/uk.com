@@ -13,6 +13,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005aCommand;
 import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005aCommandHandler;
 import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005bCommand;
+import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005bCommandHandler;
 import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005cCommand;
 import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005cCommandHandler;
 import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005dCommand;
@@ -54,6 +55,9 @@ public class ProcessingYearMonthWebServices extends WebService {
 	@Inject
 	private Qmm005aCommandHandler qmm005aUpdateCommandHandler;
 
+	@Inject
+	private Qmm005bCommandHandler qmm005bUpdateCommandHandler;
+
 	@POST
 	@Path("paydayrocessing/getbyccd")
 	public List<PaydayProcessingDto> getPaydayProcessing(String companyCode) {
@@ -78,7 +82,7 @@ public class ProcessingYearMonthWebServices extends WebService {
 			List<PaydayDto> paydayDtos = paydayFinder.select12(companyCode, 0, 0).stream()
 					.filter(f -> f.getProcessingNo() == paydayProcessing.getProcessingNo())
 					.collect(Collectors.toList());
-			
+
 			List<PaydayDto> paydayBonusDtos = paydayFinder.select12(companyCode, 1, 0).stream()
 					.filter(f -> f.getProcessingNo() == paydayProcessing.getProcessingNo())
 					.collect(Collectors.toList());
@@ -111,7 +115,11 @@ public class ProcessingYearMonthWebServices extends WebService {
 	@POST
 	@Path("qmm005b/update")
 	public void qmm005bUpdate(Qmm005bCommand command) {
-
+		try {
+			qmm005bUpdateCommandHandler.handle(command);
+		} catch (Exception ex) {
+			throw ex;
+		}
 	}
 
 	@POST

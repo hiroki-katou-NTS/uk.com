@@ -10,7 +10,7 @@ module qmm005.b {
         lst001: KnockoutObservable<number> = ko.observable(0);
         lst001Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
         lst002Data: KnockoutObservableArray<TableRowItem> = ko.observableArray([]);
-        dataSources: Array<PaydayDto> = [];
+        dataSources: Array<IPaydayDto> = [];
         dirty: IDirty = {
             inp001: new nts.uk.ui.DirtyChecker(this.inp001),
             lst001: new nts.uk.ui.DirtyChecker(this.lst001),
@@ -26,7 +26,7 @@ module qmm005.b {
         };
         constructor() {
             let self = this;
-            
+
             // toggle width of dialog
             self.toggle.subscribe(function(v) {
                 if (v) {
@@ -45,6 +45,7 @@ module qmm005.b {
 
             self.lst001.subscribe(function(v) {
                 if (v && v != 0 && v != parseInt(self.dirty.lst001.initialState)) {
+                    
                     if (self.dirty.isDirty()) {
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
                             let lst001Data = self.lst001Data(),
@@ -91,10 +92,10 @@ module qmm005.b {
                 lst001Data: Array<common.SelectItem> = [],
                 dataRow = nts.uk.ui.windows.getShared('dataRow');
 
-            services.getData(self.processingNo()).done(function(resp: Array<PaydayDto>) {
+            services.getData(self.processingNo()).done(function(resp: Array<IPaydayDto>) {
                 if (resp && resp.length > 0) {
                     self.dataSources = _.orderBy(resp, ["processingYm"], ["asc"]);
-                    for (let i: number = 0, rec: PaydayDto; rec = self.dataSources[i]; i++) {
+                    for (let i: number = 0, rec: IPaydayDto; rec = self.dataSources[i]; i++) {
                         let year = rec.processingYm["getYearInYm"](),
                             yearIJE = year + "(" + year["yearInJapanEmpire"]() + ")";
 
@@ -127,8 +128,8 @@ module qmm005.b {
 
             let dataSources = self.dataSources.filter(function(item) { return item.processingYm["getYearInYm"]() == year; });
 
-            for (let i: number = 0, rec: PaydayDto; rec = self.dataSources[i]; i++) {
-                let rec: PaydayDto = dataSources[i];
+            for (let i: number = 0, rec: IPaydayDto; rec = self.dataSources[i]; i++) {
+                let rec: IPaydayDto = dataSources[i];
                 if (rec) {
                     let $moment = moment(new Date(rec.payDate)),
                         month = $moment.month() + 1,
@@ -197,8 +198,80 @@ module qmm005.b {
         }
 
         saveData(item, event) {
-            let self = this;
+            let self = this,
+                lst002Data = ko.toJS(self.lst002Data()),
+                data: Array<IPaydayDto> = [];
+
+            for (var i in lst002Data) {
+                let item = lst002Data[i],
+                    dataSources = _.clone(self.dataSources),
+                    processingYm = parseInt((item.year + '' + item.month)['formatYearMonth']()),
+                    filterProcessings = _.filter(dataSources, function(item) { return item.processingYm == processingYm; });
+
+                // update salary info
+                let salary = _.find(filterProcessings, function(item) { return item.payBonusAtr == 0; });
+                {
+                    salary.processingNo = self.processingNo();
+                    salary.payBonusAtr = 0;
+                    salary.processingYm = parseInt((item.year + '' + item.month)['formatYearMonth']());
+                    salary.sparePayAtr = 0;
+                    salary.payDate = moment.utc(item.sel002Data[item.sel002 - 1].label).toISOString();
+                    salary.stdDate = moment.utc(item.inp003).toISOString();
+                    salary.accountingClosing = moment.utc(item.inp009).toISOString();
+                    salary.socialInsLevyMon = parseInt(item.inp004["formatYearMonth"]());
+                    salary.socialInsStdDate = moment.utc(item.inp006).toISOString();
+                    salary.incomeTaxStdDate = moment.utc(item.inp008).toISOString();
+                    salary.neededWorkDay = item.inp010;
+                    salary.empInsStdDate = moment.utc(item.inp007).toISOString();
+                    salary.stmtOutputMon = parseInt(item.inp005["formatYearMonth"]());
+                }
+
+                // If month has bonus
+                if (item.sel001 == true) {
+                    if (filterProcessings.length == 1) {
+                        // Add new bonus data
+                        filterProcessings.push({
+                            processingNo: self.processingNo(),
+                            payBonusAtr: 1,
+                            processingYm: parseInt((item.year + '' + item.month)['formatYearMonth']()),
+                            sparePayAtr: 0,
+                            payDate: moment.utc(item.sel002Data[item.sel002 - 1].label).toISOString(),
+                            stdDate: moment.utc(item.inp003).toISOString(),
+                            accountingClosing: moment.utc(item.inp009).toISOString(),
+                            socialInsLevyMon: parseInt(item.inp004["formatYearMonth"]()),
+                            socialInsStdDate: moment.utc(item.inp006).toISOString(),
+                            incomeTaxStdDate: moment.utc(item.inp008).toISOString(),
+                            neededWorkDay: item.inp010,
+                            empInsStdDate: moment.utc(item.inp007).toISOString(),
+                            stmtOutputMon: parseInt(item.inp005["formatYearMonth"]())
+                        });
+                    } else {
+                        // update bonus infomation
+                        let bonus = _.find(filterProcessings, function(item) { return item.payBonusAtr == 1; });
+                        if (bonus) {
+                            //bonus.processingNo = self.processingNo();
+                            //bonus.payBonusAtr = 0;
+                            //bonus.processingYm = parseInt((item.year + '' + item.month)['formatYearMonth']());
+                            //bonus.sparePayAtr = 0;
+                            bonus.payDate = moment.utc(bonus.payDate).toISOString();
+                            bonus.stdDate = moment.utc(bonus.stdDate).toISOString();
+                            bonus.accountingClosing = moment.utc(bonus.accountingClosing).toISOString();
+                            //bonus.socialInsLevyMon = parseInt(item.inp004["formatYearMonth"]());
+                            bonus.socialInsStdDate = moment.utc(bonus.socialInsStdDate).toISOString();
+                            bonus.incomeTaxStdDate = moment.utc(bonus.incomeTaxStdDate).toISOString();
+                            bonus.neededWorkDay = item.inp010;
+                            bonus.empInsStdDate = moment.utc(bonus.empInsStdDate).toISOString();
+                            //bonus.stmtOutputMon = parseInt(item.inp005["formatYearMonth"]());
+                        }
+                    }
+                } else { // remove bonus info
+                    filterProcessings = _.filter(filterProcessings, function(item) { return item.payBonusAtr == 0; });
+                }
+                data = data.concat(filterProcessings);
+            }
+            data = _.orderBy(data, ["payBonusAtr", "processingYm"], ["asc", "asc"]);
             debugger;
+            services.updatData({ processingNo: self.processingNo(), payDays: data }).done(() => { });
         }
 
         deleteData(item, event) {
@@ -267,14 +340,14 @@ module qmm005.b {
                 }
                 self.sel002Data(sel002Data);
                 self.sel002.valueHasMutated();
-                self.inp003(new Date(v, self.month() - 1, 1))
-                self.inp004(new Date(v, self.month() - 1, 0)["formatYearMonth"]("/"))
-                self.inp005(new Date(v, self.month() - 1, 1)["formatYearMonth"]("/"));
-                self.inp006(new Date(v, self.month() - 1, 0));
-                self.inp007(new Date(v, self.month() - 1, 1));
-                self.inp008(new Date(v + 1, 0, 1));
-                self.inp009(new Date(v, self.month(), 0));
-                self.inp010(new Date(v, self.month() - 1, 1)["getWorkDays"]());
+                self.inp003(moment.utc([v, self.month() - 1, 1]).toDate())
+                self.inp004(moment.utc([v, self.month() - 1, 0]).format("YYYY/MM"))
+                self.inp005(moment.utc([v, self.month() - 1, 1]).format("YYYY/MM"));
+                self.inp006(moment.utc([v, self.month() - 1, 0]).toDate());
+                self.inp007(moment.utc([v, self.month() - 1, 1]).toDate());
+                self.inp008(moment.utc([v + 1, 0, 1]).toDate());
+                self.inp009(moment.utc([v, self.month(), 0]).toDate());
+                self.inp010(moment.utc([v, self.month() - 1, 1]).toDate()["getWorkDays"]());
             });
             self.year.valueHasMutated();
 
@@ -305,7 +378,7 @@ module qmm005.b {
         }
     }
 
-    interface PaydayDto {
+    interface IPaydayDto {
         processingNo: number;
         payBonusAtr: number;
         processingYm: number;
