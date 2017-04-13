@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.report.app.salarydetail.printsetting.find.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.report.dom.salarydetail.SalaryOutputDistinction;
 
 @Getter
 @Setter
@@ -70,7 +69,4 @@ public class SalaryPrintSettingDto {
 
 	/** The month total set. */
 	private Boolean monthTotalSet;
-
-	/** The output distinction. */
-	private SalaryOutputDistinction outputDistinction;
 }

@@ -46,7 +46,6 @@ module nts.uk.pr.view.qpp007.b {
                 hrchyIndex9: boolean;
                 totalSet: boolean;
                 monthTotalSet: boolean;
-                outputDistinction: string;
             }
 
         }

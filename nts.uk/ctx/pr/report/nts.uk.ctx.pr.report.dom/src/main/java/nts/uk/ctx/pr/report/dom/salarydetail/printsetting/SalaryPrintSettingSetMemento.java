@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.salarydetail.printsetting;
 
-import nts.uk.ctx.pr.report.dom.salarydetail.SalaryOutputDistinction;
-
 /**
  * The Interface SalaryPrintSettingSetMemento.
  */
@@ -160,13 +158,4 @@ public interface SalaryPrintSettingSetMemento {
 	 */
 	
 	void setMonthTotalSet(boolean monthTotalSet);
-
-	/**
-	 * Sets the output distinction.
-	 *
-	 * @param outputDistinction the new output distinction
-	 */
-		
-	void setOutputDistinction(SalaryOutputDistinction outputDistinction);
-
 }

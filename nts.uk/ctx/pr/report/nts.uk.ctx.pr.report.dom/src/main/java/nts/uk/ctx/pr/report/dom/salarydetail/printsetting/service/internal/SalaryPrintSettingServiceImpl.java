@@ -30,10 +30,10 @@ public class SalaryPrintSettingServiceImpl implements SalaryPrintSettingService 
 				|| setting.getHrchyIndex6() == null || setting.getHrchyIndex7() == null
 				|| setting.getHrchyIndex8() == null || setting.getHrchyIndex9() == null
 				|| setting.getMonthTotalSet() == null || setting.getShowPayment() == null
-				|| setting.getTotalSet() == null || setting.getOutputDistinction() == null
-				|| setting.getSumDepHrchyIndexSet() == null || setting.getSumEachDeprtSet() == null
-				|| setting.getSumMonthDepHrchySet() == null || setting.getSumMonthDeprtSet() == null
-				|| setting.getSumMonthPersonSet() == null || setting.getSumPersonSet() == null) {
+				|| setting.getTotalSet() == null || setting.getSumDepHrchyIndexSet() == null
+				|| setting.getSumEachDeprtSet() == null || setting.getSumMonthDepHrchySet() == null
+				|| setting.getSumMonthDeprtSet() == null || setting.getSumMonthPersonSet() == null
+				|| setting.getSumPersonSet() == null) {
 			throw new BusinessException("ER001");
 		}
 	}
