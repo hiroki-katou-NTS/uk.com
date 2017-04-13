@@ -122,11 +122,15 @@ var nts;
                                     if (self.outputSettingSelectedCode) {
                                         nts.uk.ui.dialog.confirm("データを削除します。\r\n よろしいですか？").ifYes(function () {
                                             c.service.remove(self.outputSettingSelectedCode()).done(function () {
-                                                self.loadAllOutputSetting();
-                                                if (!self.outputSettings || self.outputSettings.length == 0) {
-                                                    self.clearError();
-                                                    self.enableNewMode();
-                                                }
+                                                self.loadAllOutputSetting().done(function () {
+                                                    if (self.outputSettings() && self.outputSettings().length > 0) {
+                                                        self.temporarySelectedCode(self.outputSettings()[0].code);
+                                                    }
+                                                    else {
+                                                        self.clearError();
+                                                        self.enableNewMode();
+                                                    }
+                                                });
                                             });
                                         });
                                     }
@@ -222,7 +226,6 @@ var nts;
                                         self.outputSettings(data);
                                         dfd.resolve();
                                     }).fail(function (res) {
-                                        nts.uk.ui.dialog.alert(res);
                                         dfd.reject();
                                     });
                                     return dfd.promise();
@@ -230,14 +233,18 @@ var nts;
                                 ScreenModel.prototype.loadOutputSettingDetail = function (code) {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    c.service.findOutputSettingDetail(code).done(function (data) {
-                                        self.outputSettingDetailModel(new OutputSettingDetailModel(self.allAggregateItems, data));
-                                        self.dirtyChecker.reset();
-                                        dfd.resolve();
-                                    }).fail(function (res) {
-                                        nts.uk.ui.dialog.alert(res);
-                                        dfd.reject();
-                                    });
+                                    if (code) {
+                                        c.service.findOutputSettingDetail(code).done(function (data) {
+                                            self.outputSettingDetailModel(new OutputSettingDetailModel(self.allAggregateItems, data));
+                                            self.dirtyChecker.reset();
+                                            dfd.resolve();
+                                        }).fail(function (res) {
+                                            dfd.reject();
+                                        });
+                                    }
+                                    else {
+                                        self.outputSettingDetailModel(new OutputSettingDetailModel(self.allAggregateItems));
+                                    }
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.loadAggregateItems = function () {
