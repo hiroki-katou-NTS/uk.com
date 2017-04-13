@@ -28,4 +28,6 @@ public interface PaymentSalaryReportRepository {
 	 * @return true, if successful
 	 */
 	public boolean checkExport(String companyCode, PaymentSalaryQuery query);
+	
+	
 }
