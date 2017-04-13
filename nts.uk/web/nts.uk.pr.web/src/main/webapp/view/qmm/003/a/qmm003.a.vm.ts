@@ -6,7 +6,6 @@ module qmm003.a.viewmodel {
         firstSelectedCode: KnockoutObservable<string> = ko.observable("");
         enableBTN009: KnockoutObservable<boolean>;
         isUpdate: KnockoutObservable<boolean> = ko.observable(true);
-        editMode: boolean = null; // true là mode thêm mới, false là mode update 
         filteredData: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
         nodeRegionPrefectures: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
         japanLocation: Array<service.model.RegionObject> = [];
@@ -16,11 +15,9 @@ module qmm003.a.viewmodel {
         residentalTaxList: KnockoutObservableArray<service.model.ResidentialTaxDto> = ko.observableArray([]);
         //companyCode = 0000
         residentalTaxList000: KnockoutObservableArray<service.model.ResidentialTaxDto> = ko.observableArray([]);
-        currentResidential: KnockoutObservable<service.model.ResidentialTaxDetailDto> = ko.observable(null);
-        report: KnockoutObservable<string> = ko.observable('');
+        currentResidential: KnockoutObservable<ResidentialTax> = ko.observable(null);
         dirtyObject: nts.uk.ui.DirtyChecker;
         previousCurrentCode: string = null; //lưu giá trị của currentCode trước khi nó bị thay đổi
-        hasFocus: KnockoutObservable<boolean> = ko.observable(true);
         numberOfResidentialTax: KnockoutObservable<string> = ko.observable('');
         constructor() {
             let self = this;
@@ -42,7 +39,7 @@ module qmm003.a.viewmodel {
                     return;
                 }
 
-                if (!nts.uk.text.isNullOrEmpty(newValue) && (self.singleSelectedCode() !== self.previousCurrentCode) && self.editMode) {
+                if (!nts.uk.text.isNullOrEmpty(newValue) && (self.singleSelectedCode() !== self.previousCurrentCode) && self.currentResidential().editMode) {
                     if (self.dirtyObject.isDirty()) {
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
                             self.processWhenCurrentCodeChange(newValue);
@@ -52,9 +49,7 @@ module qmm003.a.viewmodel {
                                 self.singleSelectedCode('');
                                 self.isUpdate(true);
                             } else {
-                                self.redensitalTaxNodeList([]);
-                                self.nodeRegionPrefectures([]);
-                                self.start(self.previousCurrentCode);
+                                self.singleSelectedCode(self.previousCurrentCode);
                             }
                         })
 
@@ -62,7 +57,7 @@ module qmm003.a.viewmodel {
                         self.processWhenCurrentCodeChange(newValue);
                     }
                 } else {
-                    self.editMode = true;
+                    self.currentResidential().editMode = true;
                 }
             });
         }
@@ -98,14 +93,20 @@ module qmm003.a.viewmodel {
                                 residential = objResi;
                             }
                         });
-                        console.log(residential);
+                        if (!residential) {
+                            _.each(self.residentalTaxList(), function(objResi: service.model.ResidentialTaxDto) {
+                                if (objResi.resiTaxCode === data.resiTaxReportCode) {
+                                    residential = objResi;
+                                }
+                            });
+                        }
                         data.resiTaxReportCode = residential.resiTaxCode + " " + residential.resiTaxAutonomy;
                     }
                     if ($('.nts-editor').ntsError("hasError")) {
                         $('.save-error').ntsError('clear');
                     }
                     self.isUpdate(false);
-                    self.currentResidential(ko.mapping.fromJS(data));
+                    self.currentResidential().setData(data);
                     self.previousCurrentCode = newValue;
                     self.dirtyObject.reset();
                 } else {
@@ -139,23 +140,23 @@ module qmm003.a.viewmodel {
         // reset Data
         resetData(): void {
             let self = this;
-            self.editMode = false;
-            self.enableBTN009(true);
+            self.currentResidential().editMode = false;
+            self.currentResidential().enableBTN009(true);
             self.isUpdate(true);
-            let node: ResidentialTax;
-            node = new ResidentialTax(({
-                resiTaxCode: '',
-                resiTaxAutonomy: '',
-                prefectureCode: '',
-                registeredName: '',
-                companyAccountNo: '',
-                companySpecifiedNo: ''
-            }));
-            self.currentResidential(ko.mapping.fromJS(node));
+            self.currentResidential().resiTaxCode('');
+            self.currentResidential().resiTaxAutonomy('');
+            self.currentResidential().prefectureCode('');
+            self.currentResidential().resiTaxReportCode('');
+            self.currentResidential().registeredName('');
+            self.currentResidential().companyAccountNo('');
+            self.currentResidential().companySpecifiedNo('');
+            self.currentResidential().cordinatePostalCode('');
+            self.currentResidential().cordinatePostOffice('');
+            self.currentResidential().memo('');
             self.previousCurrentCode = '';
             self.singleSelectedCode("");
-            self.hasFocus(true);
             self.dirtyObject.reset();
+            self.currentResidential().hasFocus(true);
         }
 
         // init menu
@@ -163,40 +164,16 @@ module qmm003.a.viewmodel {
             let self = this;
             // data of treegrid
             self.redensitalTaxNodeList = ko.observableArray([]);
-            self.enableBTN009 = ko.observable(null);
+            //self.enableBTN009 = ko.observable(null);
             self.singleSelectedCode = ko.observable("");
-            let objResi = new ResidentialTax(({
+            self.currentResidential = ko.observable(new ResidentialTax(({
                 resiTaxCode: '',
                 resiTaxAutonomy: '',
                 prefectureCode: '',
                 registeredName: '',
                 companyAccountNo: '',
                 companySpecifiedNo: ''
-            }));
-            self.currentResidential = ko.observable(ko.mapping.fromJS(objResi));
-        }
-        // khi click btn007 mo ra man hinh B
-        openBDialog() {
-            let self = this;
-            let currentNode: service.model.ResidentialTaxDto;
-            nts.uk.ui.windows.sub.modeless('/view/qmm/003/b/index.xhtml', { title: '住民税納付先の登録＞住民税納付先一覧', dialogClass: "no-close" }).onClosed(function(): any {
-                currentNode = nts.uk.ui.windows.getShared("currentNode");
-                self.editMode = false;
-                self.resiTaxCode(currentNode.resiTaxCode);
-                self.resiTaxAutonomy(currentNode.resiTaxAutonomy);
-                self.prefectureCode(currentNode.prefectureCode);
-            });
-        }
-
-        // khi click btn009 mo ra man hinh C 
-        openCDialog() {
-            let self = this;
-            let currentResidential: service.model.ResidentialTaxDetailDto;
-            nts.uk.ui.windows.sub.modeless("/view/qmm/003/c/index.xhtml", { title: '住民税納付先の登録＞住民税報告先一覧', dialogClass: "no-close" }).onClosed(function(): any {
-                currentResidential = nts.uk.ui.windows.getShared('currentResidential');
-                self.resiTaxReportCode(currentResidential.resiTaxCode + " " + currentResidential.resiTaxAutonomy);
-            });
-
+            })));
         }
 
         // khi click vào btn006 mở ra màn hình D
@@ -214,7 +191,7 @@ module qmm003.a.viewmodel {
         // xóa một đối tượng 
         deleteAResidential(): void {
             let self = this;
-            let objResidential: service.model.ResidentialTaxDetailDto;
+            let objResidential: ResidentialTax;
             objResidential = (ko.toJS(self.currentResidential()));
             let resiTaxCodes = [];
             resiTaxCodes.push(objResidential.resiTaxCode);
@@ -244,9 +221,8 @@ module qmm003.a.viewmodel {
             });
             (qmm003.a.service.getResidentialTax()).done(function(data: Array<service.model.ResidentialTaxDto>) {
                 if (data.length > 0) {
-                    self.editMode = true; // true, update mode 
+                    self.currentResidential().editMode = true; // true, update mode 
                     self.residentalTaxList(data);
-                    console.log(data);
                     self.numberOfResidentialTax(" 【登録件数】" + data.length + "  件");
                     self.getJapanLocation(currentSelectedCode);
                 } else {
@@ -270,7 +246,7 @@ module qmm003.a.viewmodel {
 
             (qmm003.a.service.getResidentialTax()).done(function(data: Array<service.model.ResidentialTaxDto>) {
                 if (data.length > 0) {
-                    self.editMode = true; // true, update mode 
+                    self.currentResidential().editMode = true; // true, update mode 
                     self.residentalTaxList(data);
                     self.numberOfResidentialTax(" 【登録件数】" + data.length + "  件");
                     self.getJapanLocation(currentSelectedCode);
@@ -307,7 +283,7 @@ module qmm003.a.viewmodel {
                 } else {
                     self.singleSelectedCode(currentSelectedCode);
                 }
-                self.enableBTN009(true);
+                self.currentResidential().enableBTN009(true);
                 self.isUpdate(false)
             });
         }
@@ -321,9 +297,9 @@ module qmm003.a.viewmodel {
                 self.itemPrefecture(self.precfecture);
             });
             self.numberOfResidentialTax(" 【登録件数】 0  件");
-            self.editMode = false;// false, new mode
+            self.currentResidential().editMode = false;// false, new mode
             self.isUpdate(true);
-            self.enableBTN009(true);
+            self.currentResidential().enableBTN009(true);
 
         }
 
@@ -401,10 +377,10 @@ module qmm003.a.viewmodel {
             objResi = ko.toJS(self.currentResidential());
             if (!objResi.resiTaxReportCode) {
                 objResi.resiTaxReportCode = objResi.resiTaxReportCode;
-            }else{
-                 objResi.resiTaxReportCode = objResi.resiTaxReportCode.substring(0, 6);
+            } else {
+                objResi.resiTaxReportCode = objResi.resiTaxReportCode.substring(0, 6);
             }
-            if (!self.editMode) {
+            if (!self.currentResidential().editMode) {
                 qmm003.a.service.addResidential(objResi).done(function() {
                     self.redensitalTaxNodeList([]);
                     self.nodeRegionPrefectures([]);
@@ -421,45 +397,73 @@ module qmm003.a.viewmodel {
         }
     }
 
-    // class xay dung tree grid
-    export class RedensitalTaxNode {
-        code: string;
-        name: string;
-        nodeText: string;
-        childs: any;
-        constructor(code: string, name: string, childs: Array<RedensitalTaxNode>) {
-            let self = this;
-            self.code = code;
-            self.name = name;
-            self.nodeText = self.code + ' ' + self.name;
-            self.childs = childs;
-
-        }
-    }
-
     //insert an update  ResidentialTax Object
-    class ResidentialTax {
-        resiTaxCode: string;
-        resiTaxAutonomy: string;
-        prefectureCode: string;
-        resiTaxReportCode: string;
-        registeredName: string;
-        companyAccountNo: string;
-        companySpecifiedNo: string;
-        cordinatePostalCode: string;
-        cordinatePostOffice: string;
-        memo: string;
+    export class ResidentialTax {
+        editMode: boolean = null; // true là mode thêm mới, false là mode update 
+        hasFocus: KnockoutObservable<boolean> = ko.observable(true);
+        enableBTN009: KnockoutObservable<boolean> = ko.observable(null);
+        resiTaxCode: KnockoutObservable<string>;
+        resiTaxAutonomy: KnockoutObservable<string>;
+        prefectureCode: KnockoutObservable<string>;
+        resiTaxReportCode: KnockoutObservable<string>;
+        registeredName: KnockoutObservable<string>;
+        companyAccountNo: KnockoutObservable<string>;
+        companySpecifiedNo: KnockoutObservable<string>;
+        cordinatePostalCode: KnockoutObservable<string>;
+        cordinatePostOffice: KnockoutObservable<string>;
+        memo: KnockoutObservable<string>;
         constructor(param: ResidentialTaxBase) {
-            this.resiTaxCode = param.resiTaxCode;
-            this.resiTaxAutonomy = param.resiTaxAutonomy;
-            this.prefectureCode = param.prefectureCode;
-            this.resiTaxReportCode = param.resiTaxReportCode;
-            this.registeredName = param.registeredName;
-            this.companyAccountNo = param.companyAccountNo;
-            this.companySpecifiedNo = param.companySpecifiedNo;
-            this.cordinatePostalCode = param.cordinatePostalCode;
-            this.cordinatePostOffice = param.cordinatePostOffice;
-            this.memo = param.memo;
+            this.init(param);
+        }
+
+        setData(param: any) {
+            let self = this;
+            self.resiTaxCode(param.resiTaxCode);
+            self.resiTaxAutonomy(param.resiTaxAutonomy);
+            self.prefectureCode(param.prefectureCode);
+            self.resiTaxReportCode(param.resiTaxReportCode);
+            self.registeredName(param.registeredName);
+            self.companyAccountNo(param.companyAccountNo);
+            self.companySpecifiedNo(param.companySpecifiedNo);
+            self.cordinatePostalCode(param.cordinatePostalCode);
+            self.cordinatePostOffice(param.cordinatePostOffice);
+            self.memo(param.memo);
+        }
+
+        init(param: any) {
+            this.resiTaxCode = ko.observable(param.resiTaxCode);
+            this.resiTaxAutonomy = ko.observable(param.resiTaxAutonomy);
+            this.prefectureCode = ko.observable(param.prefectureCode);
+            this.resiTaxReportCode = ko.observable(param.resiTaxReportCode);
+            this.registeredName = ko.observable(param.registeredName);
+            this.companyAccountNo = ko.observable(param.companyAccountNo);
+            this.companySpecifiedNo = ko.observable(param.companySpecifiedNo);
+            this.cordinatePostalCode = ko.observable(param.cordinatePostalCode);
+            this.cordinatePostOffice = ko.observable(param.cordinatePostOffice);
+            this.memo = ko.observable(param.memo);
+        }
+        // khi click btn007 mo ra man hinh B
+        openBDialog() {
+            let self = this;
+            let currentNode: service.model.ResidentialTaxDto;
+            nts.uk.ui.windows.sub.modeless('/view/qmm/003/b/index.xhtml', { title: '住民税納付先の登録＞住民税納付先一覧', dialogClass: "no-close" }).onClosed(function(): any {
+                currentNode = nts.uk.ui.windows.getShared("currentNode");
+                self.editMode = false;
+                self.resiTaxCode(currentNode.resiTaxCode);
+                self.resiTaxAutonomy(currentNode.resiTaxAutonomy);
+                self.prefectureCode(currentNode.prefectureCode);
+            });
+        }
+
+        // khi click btn009 mo ra man hinh C 
+        openCDialog() {
+            let self = this;
+            let currentResidential: service.model.ResidentialTaxDetailDto;
+            nts.uk.ui.windows.sub.modeless("/view/qmm/003/c/index.xhtml", { title: '住民税納付先の登録＞住民税報告先一覧', dialogClass: "no-close" }).onClosed(function(): any {
+                currentResidential = nts.uk.ui.windows.getShared('currentResidential');
+                self.resiTaxReportCode(currentResidential.resiTaxCode + " " + currentResidential.resiTaxAutonomy);
+            });
+
         }
 
     }
@@ -475,6 +479,22 @@ module qmm003.a.viewmodel {
         cordinatePostalCode?: string;
         cordinatePostOffice?: string;
         memo?: string;
+    }
+
+    // class xay dung tree grid
+    export class RedensitalTaxNode {
+        code: string;
+        name: string;
+        nodeText: string;
+        childs: any;
+        constructor(code: string, name: string, childs: Array<RedensitalTaxNode>) {
+            let self = this;
+            self.code = code;
+            self.name = name;
+            self.nodeText = self.code + ' ' + self.name;
+            self.childs = childs;
+
+        }
     }
 
 };

@@ -4,6 +4,7 @@ module qmm003.e.service {
         getRegionPrefecture: "pr/core/residential/getlistLocation",
         getResidentalTaxListByReportCode: "pr/core/residential/findallresidential1/{0}",
         updateReportCode: "pr/core/residential/updatereportCode",
+        update: "pr/core/rule/law/tax/residential/input/update2",
         getPersionResidentalTax: "pr/core/rule/law/tax/residential/input/findAll/{0}/{1}"
     }
 
@@ -37,7 +38,7 @@ module qmm003.e.service {
             })
         return dfd.promise();
     }
-    
+
     /**
      * Get list ResidentialTax.
      */
@@ -53,8 +54,8 @@ module qmm003.e.service {
             })
         return dfd.promise();
     }
-    
-   
+
+
     export function getRegionPrefecture(): JQueryPromise<Array<model.RegionObject>> {
         var dfd = $.Deferred<Array<model.RegionObject>>();
         nts.uk.request.ajax(paths.getRegionPrefecture)
@@ -66,10 +67,10 @@ module qmm003.e.service {
             })
         return dfd.promise();
     }
-    
-     /**
-     * update ReportCode
-     */
+
+    /**
+    * update ReportCode
+    */
     export function updateReportCode(residential: model.ResidentialTax) {
         let dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax(paths.updateReportCode, residential)
@@ -81,7 +82,28 @@ module qmm003.e.service {
             })
         return dfd.promise();
     }
-    
+
+    //UPD-2
+    /**
+* update ReportCode
+*/
+    export function updateResidenceCode(residenceCode: string, personId: string, yearKey: number) {
+        let dfd = $.Deferred<any>();
+        var obj = {
+            residenceCode: residenceCode,
+            yearKey: yearKey,
+            personId: personId
+        };
+        nts.uk.request.ajax(paths.update, obj)
+            .done(function(res: any) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+
     export module model {
         export class ResidentialTax {
             companyCode: string;

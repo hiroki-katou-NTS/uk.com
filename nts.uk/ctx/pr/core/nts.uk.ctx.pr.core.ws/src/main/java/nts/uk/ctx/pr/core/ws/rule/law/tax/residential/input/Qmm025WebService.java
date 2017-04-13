@@ -13,6 +13,8 @@ import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.input.RemovePerso
 import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.input.RemovePersonResiTaxCommandHandler;
 import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.input.UpdatePersonResiTaxCommand;
 import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.input.UpdatePersonResiTaxCommandHandler;
+import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.input.UpdateResidenceCodeCommand;
+import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.input.UpdateResidenceCodeCommandHandler;
 import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.input.PersonResiTaxDto;
 import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.input.PersonResiTaxFinder;
 
@@ -21,33 +23,45 @@ import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.input.PersonResiTaxF
 public class Qmm025WebService extends WebService {
 	@Inject
 	private PersonResiTaxFinder personResiTaxFinder;
-	
+
 	@Inject
 	private RemovePersonResiTaxCommandHandler removePersonResiTaxCommandHandler;
-	
+
 	@Inject
 	private UpdatePersonResiTaxCommandHandler updatePersonResiTaxCommandHandler;
-	
+
+	@Inject
+	private UpdateResidenceCodeCommandHandler updateResidenceCodeCommandHandler;
+
 	@POST
 	@Path("findAll/{yearKey}")
-	public List<PersonResiTaxDto> findAll(@PathParam("yearKey") int yearKey){
+	public List<PersonResiTaxDto> findAll(@PathParam("yearKey") int yearKey) {
 		return this.personResiTaxFinder.findAll(yearKey);
 	}
+
 	@POST
 	@Path("findAll/{yearKey}/{residenceCode}")
-	public List<PersonResiTaxDto> findByResidenceCode(@PathParam("yearKey") int yearKey, @PathParam("residenceCode") String residenceCode){
-		return this.personResiTaxFinder.findByResidenceCode(residenceCode,yearKey);
+	public List<String> findByResidenceCode(@PathParam("yearKey") int yearKey,
+			@PathParam("residenceCode") String residenceCode) {
+		return this.personResiTaxFinder.findByResidenceCode(residenceCode, yearKey);
 	}
-	
+
 	@POST
 	@Path("remove")
-	public void remove(RemovePersonResiTaxCommand command){
+	public void remove(RemovePersonResiTaxCommand command) {
 		this.removePersonResiTaxCommandHandler.handle(command);
 	}
-	
+
 	@POST
 	@Path("update")
-	public void update(UpdatePersonResiTaxCommand command){
+	public void update(UpdatePersonResiTaxCommand command) {
 		this.updatePersonResiTaxCommandHandler.handle(command);
 	}
+
+	@POST
+	@Path("update2")
+	public void update(UpdateResidenceCodeCommand command) {
+		this.updateResidenceCodeCommandHandler.handle(command);
+	}
+
 }

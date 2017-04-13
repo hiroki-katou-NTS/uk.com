@@ -13,24 +13,20 @@ module qmm003.e.viewmodel {
         residentalTaxList: KnockoutObservableArray<qmm003.b.service.model.ResidentialTax> = ko.observableArray([]);
         selectedCode: KnockoutObservable<string> = ko.observable("");
         year: KnockoutObservable<number> = ko.observable(null);
+        residenceSourceList = [];
+
         constructor() {
             let self = this;
             self.init();
             self.resiTaxCodeLeft.subscribe(function(newValue) {
-                console.log(newValue);
-                //self.processWhenCurrentCodeChange(newValue);
             });
             self.resiTaxCodeRight.subscribe(function(newValue) {
-                console.log(newValue);
-                //self.processWhenCurrentCodeChange(newValue);
             });
 
         }
         processWhenCurrentCodeChange(newValue: string) {
             let self = this;
-            service.getPersonResidentialTax(self.year(), newValue).done(function(data: any) {
-                // console.log(data);
-            });
+            console.log(self.residenceSourceList);
             self.currentNode(self.findByCode(self.filteredData(), newValue));
             self.findPrefectureByResiTax(newValue);
         }
@@ -50,12 +46,18 @@ module qmm003.e.viewmodel {
         };
         clickButton(): any {
             let self = this;
-            service.getPersonResidentialTax(self.year(), self.resiTaxCodeLeft()[0]).done(function(data: any) {
-                console.log(data);
-            });
-            service.getResidentalTaxListByReportCode(self.resiTaxCodeLeft()[0]).done(function(data: any) {
-                console.log(data);
-            })
+            console.log(self.residenceSourceList);
+            for (let i = 0; i < self.resiTaxCodeLeft().length; i++) {
+                service.getPersonResidentialTax(self.year(), self.resiTaxCodeLeft()[i]).done(function(data: any) {
+                    _.each(data, function(value) {
+                        service.updateResidenceCode(self.resiTaxCodeRight(), value, self.year()).done(function(data) {
+                            console.log(data);
+                        })
+                    });
+                    self.residenceSourceList.push(data);
+                });
+
+            }
 
             nts.uk.ui.windows.close();
 
@@ -81,15 +83,12 @@ module qmm003.e.viewmodel {
                     (qmm003.e.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
                         self.japanLocation = locationData;
                         self.itemPrefecture(self.precfecture);
-                        // console.log(self.itemPrefecture());
                         self.buildResidentalTaxTree();
                         let node: Array<ResidentialTaxNode> = [];
                         node = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
                         self.filteredData(node);
                         self.treeLeft(self.nodeRegionPrefectures());
                         self.treeRight(self.nodeRegionPrefectures());
-                        //console.log(self.treeLeft());
-                        //console.log(self.treeRight())
                     });
                 }
 

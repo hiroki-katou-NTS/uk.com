@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.input;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,11 +23,14 @@ public class PersonResiTaxFinder {
 		return result;
 	}
 	
-	public List<PersonResiTaxDto> findByResidenceCode(String residenceCode,int yearKey){
+	//SEL_5
+	public List<String> findByResidenceCode(String residenceCode,int yearKey){
 		LoginUserContext login =  AppContexts.user();
-		List<PersonResiTaxDto> result = this.personResiTaxRepository.findByResidenceCode(login.companyCode(), residenceCode, yearKey)
-				.stream().map(x -> {return PersonResiTaxDto.fromDomain(x);})
+		List<?> result = this.personResiTaxRepository.findByResidenceCode(login.companyCode(), residenceCode, yearKey)
+				.stream()
 				.collect(Collectors.toList());
-		return result;
+		List<String> lstPersonId= new ArrayList<String>();
+		result.forEach(item->lstPersonId.add(item.toString()));
+		return lstPersonId;
 	}
 }

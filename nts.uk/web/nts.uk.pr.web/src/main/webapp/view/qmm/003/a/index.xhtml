@@ -94,7 +94,7 @@
 												required: true,
 												enable: $parent.isUpdate ,
 												readonly: false }
-												, hasFocus: $parent.hasFocus" />
+												, hasFocus: hasFocus" />
 								  </div>
 									</th>
 									<th colspan="2" >
@@ -108,7 +108,7 @@
 								  </div>										
 									</th>								
 									<th colspan="3" >
-										<button id="A_BTN_007" data-bind="click: $parent.openBDialog,enable: $parent.isUpdate" class="small" style="margin-left: 5px;">参照</button>													 		
+										<button id="A_BTN_007" data-bind="click: openBDialog,enable: $parent.isUpdate" class="small" style="margin-left: 5px;">参照</button>													 		
 									</th>								
 								</tr>							
 
@@ -147,7 +147,7 @@
 										</div>
 									</th>
 									<th colspan="1">
-										<button id="A_BTN_009" data-bind="click: $parent.openCDialog, enable:$parent.enableBTN009" class="small">参照</button>													 		
+										<button id="A_BTN_009" data-bind="click: openCDialog, enable: enableBTN009" class="small">参照</button>													 		
 									</th>										
 									<th colspan="2" >
  			 							 <label id="A_LBL_012"  data-bind="text: resiTaxReportCode"></label>					
