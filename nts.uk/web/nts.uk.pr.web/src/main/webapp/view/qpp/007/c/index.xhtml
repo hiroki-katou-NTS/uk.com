@@ -188,18 +188,18 @@
 					<button class="btn-help"
 						data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true }">?</button>
 					<div id="contents-right-grid-list">
-						<table id="reportItems"
+						<table id="aggregateOutputItems"
 							data-bind="ntsGridList: {
 							height: 500,
 							width: 300,
-							options: reportItems,
+							options: aggregateOutputItems,
 							primaryKey: 'code',
-							columns: reportItemColumns,
-							value: reportItemSelected}"
+							columns: aggregateOutputItemColumns,
+							value: aggregateOutputItemSelected}"
 							class="cf"></table>
 					</div>
-					<div id="reportItemCounter" style="margin-left: 30px; margin-top: 20px;" 
-						data-bind="text: '(' + reportItems().length + '件)'">
+					<div id="aggregateOutputItemCounter" style="margin-left: 30px; margin-top: 20px;" 
+						data-bind="text: '(' + aggregateOutputItems().length + '件)'">
 					</div>
 				</div>
 				<!-- END CONTENT RIGHT-->

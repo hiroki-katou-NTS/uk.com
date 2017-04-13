@@ -18,7 +18,6 @@ var nts;
                                     this.isPreliminaryMonth = ko.observable(true);
                                     this.startYearMonth = ko.observable('2016/12');
                                     this.endYearMonth = ko.observable('2017/03');
-                                    this.enable = ko.observable(true);
                                     this.selectedOutputFormat = ko.observable('1');
                                     this.outputFormatType = ko.observableArray([
                                         new SelectionModel('1', '明細一覧表'),
@@ -72,26 +71,35 @@ var nts;
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.openPrintSettingDialog = function () {
-                                    nts.uk.ui.windows.setShared("data", "nothing");
-                                    nts.uk.ui.windows.sub.modal("/view/qpp/007/b/index.xhtml", { title: "印刷設定", dialogClass: 'no-close' }).onClosed(function () {
-                                        var returnValue = nts.uk.ui.windows.getShared("childData");
-                                    });
+                                    nts.uk.ui.windows.sub.modal("/view/qpp/007/b/index.xhtml", { title: "印刷設定", dialogClass: 'no-close' });
                                 };
                                 ScreenModel.prototype.openSalaryOuputSettingDialog = function () {
                                     var self = this;
+                                    nts.uk.ui.windows.setShared("selectedCode", self.selectedOutputSetting());
+                                    nts.uk.ui.windows.setShared("outputSettings", self.outputSettings());
                                     nts.uk.ui.windows.sub.modal("/view/qpp/007/c/index.xhtml", { title: "出力項目の設定", dialogClass: 'no-close' }).onClosed(function () {
-                                        self.loadAllOutputSetting();
+                                        if (nts.uk.ui.windows.getShared('isSomethingChanged')) {
+                                            self.loadAllOutputSetting();
+                                        }
                                     });
                                 };
-                                ScreenModel.prototype.saveAsPdf = function () {
+                                ScreenModel.prototype.printSelectedEmployee = function () {
                                     var self = this;
-                                    var dfd = $.Deferred();
+                                    self.validate();
+                                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                                        return;
+                                    }
                                     var command = self.toJsObject();
-                                    a.service.saveAsPdf(command).done(function () {
-                                        dfd.resolve();
-                                    }).fail(function (res) {
-                                        nts.uk.ui.dialog.alert(res.message);
+                                    a.service.saveAsPdf(command)
+                                        .fail(function (res) {
                                     });
+                                };
+                                ScreenModel.prototype.outputText = function () {
+                                    var self = this;
+                                    self.validate();
+                                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                                        return;
+                                    }
                                 };
                                 ScreenModel.prototype.toJsObject = function () {
                                     var self = this;
@@ -106,6 +114,16 @@ var nts;
                                         command.hierarchy = self.selectedHierachy();
                                     }
                                     return command;
+                                };
+                                ScreenModel.prototype.clearErrors = function () {
+                                    if (nts.uk.ui._viewModel) {
+                                        $('#start-ym').ntsError('clear');
+                                        $('#end-ym').ntsError('clear');
+                                    }
+                                };
+                                ScreenModel.prototype.validate = function () {
+                                    $('#start-ym').ntsEditor('validate');
+                                    $('#end-ym').ntsEditor('validate');
                                 };
                                 return ScreenModel;
                             }());

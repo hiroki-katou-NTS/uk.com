@@ -17,4 +17,12 @@ public interface SalaryOutputSettingService {
 	 * @param salaryOutputSetting the salary output setting
 	 */
 	void validateRequiredItem(SalaryOutputSetting salaryOutputSetting);
+
+	/**
+	 * Check duplicate code.
+	 *
+	 * @param companyCode the company code
+	 * @param salaryOutputSettingCode the salary output setting code
+	 */
+	void checkDuplicateCode(String companyCode, String salaryOutputSettingCode);
 }
