@@ -10,6 +10,7 @@ module nts.qmm017 {
         easyFormulaName: KnockoutObservable<string>;
         useMasterName: KnockoutObservable<string>;
         useMasterCode: KnockoutObservable<string>;
+        historyId: KnockoutObservable<string>;
 
         //formula easy
         noneConditionalEasyFormula: KnockoutObservable<EasyFormula>;
@@ -141,7 +142,7 @@ module nts.qmm017 {
             self.dailyEasyFormula().selectedRuleCodeEasySettings('1');
             self.hourlyEasyFormula().selectedRuleCodeEasySettings('1');
         }
-        
+
         pasteValue(targetString) {
             var self = this;
             let currentTextArea = self.formulaManualContent().textArea();
@@ -155,7 +156,10 @@ module nts.qmm017 {
         easyFormulaFixMoney: KnockoutObservable<number>;
         easyFormulaDetail: KnockoutObservable<nts.qmm017.model.FormulaEasyDetailDto>;
         easyFormulaName: KnockoutObservable<string>;
+        easyFormulaCode: KnockoutObservable<string>;
+        formulaCode: KnockoutObservable<string>;
         startYm: KnockoutObservable<any>;
+        historyId: KnockoutObservable<string>;
         constructor(mode: number, root) {
             var self = this;
             self.startYm = ko.observable(root().startYearMonth());
@@ -179,22 +183,36 @@ module nts.qmm017 {
             self.easyFormulaFixMoney = ko.observable(0);
             self.easyFormulaDetail = ko.observable(new nts.qmm017.model.FormulaEasyDetailDto());
             self.easyFormulaName = ko.observable('');
+            self.easyFormulaCode = ko.observable('');
+            self.formulaCode = ko.observable(root().formulaCode());
+            root().formulaCode.subscribe(function(formulaCode) {
+                self.formulaCode(formulaCode);
+            });
+            self.historyId = ko.observable(root().historyId());
+            root().historyId.subscribe(function(historyId) {
+                self.historyId(historyId);
+            });
         }
 
         openDialogL() {
             var self = this;
-            let param = {
-                isUpdate: (self.easyFormulaName() !== '' && self.easyFormulaName() !== null),
-                dirtyData: self.easyFormulaDetail(),
-                startYm: self.startYm()
-            };
-            nts.uk.ui.windows.setShared('paramFromScreenC', param);
-            nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(() => {
-                if (nts.uk.ui.windows.getShared('easyFormulaDetail')) {
-                    self.easyFormulaDetail(nts.uk.ui.windows.getShared('easyFormulaDetail'));
-                    self.easyFormulaName(self.easyFormulaDetail().easyFormulaName);
-                }
-            });
+            service.getFormulaEasyDetail(self.formulaCode(), self.historyId(), self.easyFormulaCode())
+                .done(function(formulaEasyDetail) {
+                    self.easyFormulaDetail(formulaEasyDetail);
+                    let param = {
+                        isUpdate: (self.easyFormulaName() !== '' && self.easyFormulaName() !== null),
+                        dirtyData: self.easyFormulaDetail(),
+                        startYm: self.startYm()
+                    };
+                    nts.uk.ui.windows.setShared('paramFromScreenC', param);
+                    nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(() => {
+                        if (nts.uk.ui.windows.getShared('easyFormulaDetail')) {
+                            self.easyFormulaDetail(nts.uk.ui.windows.getShared('easyFormulaDetail'));
+                            self.easyFormulaName(self.easyFormulaDetail().easyFormulaName);
+                        }
+                    });
+                });
+
         }
     }
 
@@ -562,7 +580,7 @@ module nts.qmm017 {
             let functionName = treeObject.value.trim();
             let param = treeObject.children;
             if (functionName === "関数＠条件式" && param.length == 3) {
-                
+
             } else if (functionName === "関数＠かつ" && param.length >= 2) {
                 //if param[0].children.length 
             } else if (functionName === "関数＠または" && param.length >= 2) {

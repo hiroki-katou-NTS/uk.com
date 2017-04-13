@@ -10,7 +10,8 @@ module nts.qmm017 {
             getListPersonalUnitPrice: "pr/core/rule/employment/unitprice/personal/find/all",
             getListItemMaster: "pr/core/item/findall/category/",
             findOtherFormulas: "pr/formula/formulaMaster/findOtherFormulas/",
-            getListWageTable: "pr/proto/wagetable/findbymonth/"
+            getListWageTable: "pr/proto/wagetable/findbymonth/",
+            getFormulaEasyDetail: "pr/formula/formulaMaster/getFormulaEasyDetail/"
         }
 
         export function getAllFormula(): JQueryPromise<Array<model.FormulaDto>> {
@@ -40,6 +41,18 @@ module nts.qmm017 {
         export function getFormulaDetail(formulaCode: string, historyId: string, difficultyAtr: number): JQueryPromise<model.FormulaDetailDto> {
             var dfd = $.Deferred<model.FormulaDetailDto>();
             nts.uk.request.ajax("pr", paths.getFormulaDetail + "/" + formulaCode + "/" + historyId + "/" + difficultyAtr)
+                .done(function(res) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        
+        export function getFormulaEasyDetail(formulaCode: string, historyId: string, easyFormulaCode: string): JQueryPromise<model.FormulaEasyDetailDto> {
+            var dfd = $.Deferred<model.FormulaEasyDetailDto>();
+            nts.uk.request.ajax("pr", paths.getFormulaEasyDetail + formulaCode + "/" + historyId + "/" + easyFormulaCode)
                 .done(function(res) {
                     dfd.resolve(res);
                 })

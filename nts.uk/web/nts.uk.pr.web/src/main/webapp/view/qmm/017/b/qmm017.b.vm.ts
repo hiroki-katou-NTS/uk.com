@@ -11,9 +11,11 @@ module nts.qmm017 {
         startYearMonthFormated: KnockoutObservable<string>;
         comboBoxUseMaster: KnockoutObservable<any>;
         isNewMode: KnockoutObservable<boolean>;
+        historyId: KnockoutObservable<string>;
 
         constructor(data) {
             var self = this;
+            self.historyId = ko.observable('');
             self.roundingRules = ko.observableArray([
                 { code: '0', name: 'かんたん設定' },
                 { code: '1', name: '詳細設定' }
