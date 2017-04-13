@@ -9,10 +9,8 @@ var cmm009;
                     this.allowClick = ko.observable(true);
                     var self = this;
                     self.itemHistId = ko.observableArray([]);
-                    self.itemName_histId = ko.observable('');
                     self.historyId = ko.observable('');
                     self.selectedCodes_His = ko.observable(null);
-                    self.isEnable_histId = ko.observable(true);
                     self.itemHist = ko.observable(null);
                     self.arr = ko.observableArray([]);
                     self.dataSource = ko.observableArray([]);
@@ -21,7 +19,6 @@ var cmm009;
                     self.selectedCodes_treegrid = ko.observableArray([]);
                     self.headers = ko.observableArray(["", ""]);
                     self.lengthTreeCurrent = ko.observable(null);
-                    self.lengthTreeBegin = ko.observable(null);
                     self.numberItemNew = ko.observable(0);
                     self.A_INP_CODE = ko.observable(null);
                     self.A_INP_CODE_ENABLE = ko.observable(false);
@@ -31,9 +28,9 @@ var cmm009;
                     self.A_INP_MEMO = ko.observable(null);
                     self.currentItem_treegrid = ko.observable(null);
                     self.checknull = ko.observable(null);
-                    self.listDtoEdited = ko.observable(null);
+                    self.listDtoUpdateHierachy = ko.observable(null);
                     self.dtoAdd = ko.observable(null);
-                    self.checkAddHist1 = ko.observable('');
+                    self.checkConditionAddHist = ko.observable('');
                     self.newEndDate = ko.observable(null);
                     self.arrayItemEdit = ko.observableArray([]);
                     self.singleSelectedCode.subscribe(function (codeChangeds) {
@@ -98,11 +95,11 @@ var cmm009;
                         }
                     }));
                     $(document).delegate("#tree-up-down-up", "click", function () {
-                        self.checkAddHist1("clickbtnupdown");
+                        self.checkConditionAddHist("clickbtnupdown");
                         self.updateHirechyOfBtnUpDown();
                     });
                     $(document).delegate("#tree-up-down-down", "click", function () {
-                        self.checkAddHist1("clickbtnupdown");
+                        self.checkConditionAddHist("clickbtnupdown");
                         self.updateHirechyOfBtnUpDown();
                     });
                 }
@@ -125,7 +122,7 @@ var cmm009;
                         dfd.resolve();
                         return dfd.promise();
                     }
-                    if (self.A_INP_CODE_ENABLE() == false && self.checkInput() && self.checkAddHist1() == '') {
+                    if (self.A_INP_CODE_ENABLE() == false && self.checkInput() && self.checkConditionAddHist() == '') {
                         var dfd = $.Deferred();
                         var hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
                         var _dt = self.dataSource();
@@ -150,7 +147,7 @@ var cmm009;
                         var dfd = $.Deferred();
                         var hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
                         var _dto_1 = new model.AddDepartmentDto(self.A_INP_CODE(), hisdto.historyId, hisdto.endDate, self.A_INP_OUTCODE(), self.A_INP_FULLNAME(), self.dtoAdd().hierarchyCode, self.A_INP_DEPNAME(), hisdto.startDate, self.A_INP_MEMO(), null);
-                        var data = self.listDtoEdited();
+                        var data = self.listDtoUpdateHierachy();
                         var arr_1 = new Array;
                         arr_1.push(_dto_1);
                         if (data != null) {
@@ -193,7 +190,7 @@ var cmm009;
                             return dfd2.promise();
                         }
                     }
-                    if (self.checkAddHist1() == "AddhistoryFromLatest") {
+                    if (self.checkConditionAddHist() == "AddhistoryFromLatest") {
                         var _dt_1 = self.dataSource2();
                         if (_dt_1.length > 0) {
                             _dt_1[0].memo = self.A_INP_MEMO();
@@ -217,7 +214,7 @@ var cmm009;
                         dfd2.resolve();
                         return dfd2.promise();
                     }
-                    if (self.checkAddHist1() == "AddhistoryFromBeggin") {
+                    if (self.checkConditionAddHist() == "AddhistoryFromBeggin") {
                         if (self.checkInput()) {
                             var _dto = new model.AddDepartmentDto(self.A_INP_CODE(), null, self.itemHistId()[0].endDate, self.A_INP_OUTCODE(), self.A_INP_FULLNAME(), "001", self.A_INP_DEPNAME(), self.itemHistId()[0].startDate, self.A_INP_MEMO(), null);
                             var arr1 = new Array;
@@ -241,7 +238,7 @@ var cmm009;
                             return dfd2.promise();
                         }
                     }
-                    if (self.checkAddHist1() == "clickbtnupdown") {
+                    if (self.checkConditionAddHist() == "clickbtnupdown") {
                         var _dt_2 = self.arrayItemEdit();
                         var dfd = $.Deferred();
                         if (self.arrayItemEdit().length > 1) {
@@ -343,6 +340,12 @@ var cmm009;
                     var _code = self.singleSelectedCode();
                     var current = self.findHira(_code, _dt);
                     var deleteobj = new model.DepartmentDeleteDto(current.departmentCode, current.historyId, current.hierarchyCode);
+                    if (_dtflat.length < 2) {
+                        return;
+                    }
+                    else if (_dt.length < 2 && current.hierarchyCode.length == 3) {
+                        return;
+                    }
                     nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
                         var dfd2 = $.Deferred();
                         a.service.deleteDepartment(deleteobj)
@@ -378,7 +381,7 @@ var cmm009;
                                         editObjs[k].memo = self.A_INP_MEMO();
                                     }
                                 }
-                                self.listDtoEdited(editObjs);
+                                self.listDtoUpdateHierachy(editObjs);
                             }
                             else {
                                 var index = _dt.indexOf(current);
@@ -407,9 +410,9 @@ var cmm009;
                                         editObjs[k].memo = self.A_INP_MEMO();
                                     }
                                 }
-                                self.listDtoEdited(editObjs);
+                                self.listDtoUpdateHierachy(editObjs);
                             }
-                            var data = self.listDtoEdited();
+                            var data = self.listDtoUpdateHierachy();
                             if (data != null) {
                                 a.service.upDateListDepartment(data)
                                     .done(function (mess) {
@@ -532,7 +535,7 @@ var cmm009;
                                     item.startDate = hisdto_1.startDate;
                                     item.endDate = hisdto_1.endDate;
                                 });
-                                self.checkAddHist1("AddhistoryFromLatest");
+                                self.checkConditionAddHist("AddhistoryFromLatest");
                                 self.dataSource2(_dt2);
                             }
                             else {
@@ -552,7 +555,7 @@ var cmm009;
                                 self.A_INP_FULLNAME("");
                                 self.A_INP_OUTCODE("");
                                 $("#A_INP_CODE").focus();
-                                self.checkAddHist1("AddhistoryFromBeggin");
+                                self.checkConditionAddHist("AddhistoryFromBeggin");
                             }
                         });
                     }
@@ -658,7 +661,7 @@ var cmm009;
                                     }
                                 }
                                 self.dtoAdd(newObj);
-                                self.listDtoEdited(editObjs);
+                                self.listDtoUpdateHierachy(editObjs);
                             }
                             else {
                                 var index = _dt.indexOf(current);
@@ -690,7 +693,7 @@ var cmm009;
                                     }
                                 }
                                 self.dtoAdd(newObj);
-                                self.listDtoEdited(editObjs);
+                                self.listDtoUpdateHierachy(editObjs);
                                 _dt.splice(index, 0, newObj);
                             }
                             self.dataSource(_dt);
@@ -804,10 +807,10 @@ var cmm009;
                                 }
                                 self.dtoAdd(newObj);
                                 if (editObjs.length > 0) {
-                                    self.listDtoEdited(editObjs);
+                                    self.listDtoUpdateHierachy(editObjs);
                                 }
                                 else {
-                                    self.listDtoEdited();
+                                    self.listDtoUpdateHierachy();
                                 }
                             }
                             else {
@@ -840,10 +843,10 @@ var cmm009;
                                 }
                                 self.dtoAdd(newObj);
                                 if (editObjs.length > 0) {
-                                    self.listDtoEdited(editObjs);
+                                    self.listDtoUpdateHierachy(editObjs);
                                 }
                                 else {
-                                    self.listDtoEdited();
+                                    self.listDtoUpdateHierachy();
                                 }
                                 _dt.splice(index + 1, 0, newObj);
                             }
@@ -877,7 +880,7 @@ var cmm009;
                                 newObj.endDate = currentHis.endDate;
                                 newObj.memo = self.A_INP_MEMO();
                                 self.dtoAdd(newObj);
-                                self.listDtoEdited();
+                                self.listDtoUpdateHierachy();
                                 self.dataSource(_dt);
                                 self.numberItemNew(1);
                                 self.singleSelectedCode(newObj.departmentCode);

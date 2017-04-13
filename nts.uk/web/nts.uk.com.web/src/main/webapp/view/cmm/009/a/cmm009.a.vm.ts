@@ -3,23 +3,21 @@ module cmm009.a.viewmodel {
 
     export class ScreenModel {
 
-        //  list box
+        // list box
         itemHistId: KnockoutObservableArray<any>;
-        itemName_histId: KnockoutObservable<string>;
         historyId: KnockoutObservable<any>;
         selectedCodes_His: KnockoutObservable<any>;
-        isEnable_histId: KnockoutObservable<boolean>;
         itemHist: KnockoutObservable<any>;
         arr: any;
 
         // treegrid
         dataSource: KnockoutObservableArray<any>;
+        // dataSource2 : chứa list department để insert vào csdl trong trường hợp thêm mới lịch sử
         dataSource2: KnockoutObservableArray<any>;
         currentItem_treegrid: KnockoutObservable<any>;
         singleSelectedCode: KnockoutObservable<string>;
         selectedCodes_treegrid: any;
         headers: any;
-        lengthTreeBegin: KnockoutObservable<number>;
         lengthTreeCurrent: KnockoutObservable<number>;
 
         A_INP_CODE: KnockoutObservable<string>;
@@ -33,20 +31,20 @@ module cmm009.a.viewmodel {
         filteredData2: any;
         itemaddHist: any;
         numberItemNew: KnockoutObservable<number>;
-        listDtoEdited: KnockoutObservable<any>;
+        // listDtoUpdateHierachy : chứa list department bị thay đổi hirachy khi thêm mới department.
+        // gửi list này lên để update hirachy.
+        listDtoUpdateHierachy: KnockoutObservable<any>;
         dtoAdd: KnockoutObservable<any>;
-        checkAddHist1: KnockoutObservable<string>;
+        checkConditionAddHist: KnockoutObservable<string>;
         newEndDate: KnockoutObservable<string>;
+        // arrayItemEdit : chứa list department để update hirachy khi click button updaown
         arrayItemEdit: KnockoutObservableArray<any>;
 
         constructor() {
             var self = this;
             self.itemHistId = ko.observableArray([]);
-            self.itemName_histId = ko.observable('');
             self.historyId = ko.observable('');
             self.selectedCodes_His = ko.observable(null);
-            //self.selectedCodes_His = ko.observableArray([]);
-            self.isEnable_histId = ko.observable(true);
             self.itemHist = ko.observable(null);
             self.arr = ko.observableArray([]);
 
@@ -56,7 +54,6 @@ module cmm009.a.viewmodel {
             self.selectedCodes_treegrid = ko.observableArray([]);
             self.headers = ko.observableArray(["", ""]);
             self.lengthTreeCurrent = ko.observable(null);
-            self.lengthTreeBegin = ko.observable(null);
             self.numberItemNew = ko.observable(0);
 
             self.A_INP_CODE = ko.observable(null);
@@ -67,9 +64,9 @@ module cmm009.a.viewmodel {
             self.A_INP_MEMO = ko.observable(null);
             self.currentItem_treegrid = ko.observable(null);
             self.checknull = ko.observable(null);
-            self.listDtoEdited = ko.observable(null);
+            self.listDtoUpdateHierachy = ko.observable(null);
             self.dtoAdd = ko.observable(null);
-            self.checkAddHist1 = ko.observable('');
+            self.checkConditionAddHist = ko.observable('');
             self.newEndDate = ko.observable(null);
             self.arrayItemEdit = ko.observableArray([]);
 
@@ -137,13 +134,12 @@ module cmm009.a.viewmodel {
 
 
             $(document).delegate("#tree-up-down-up", "click", function() {
-                self.checkAddHist1("clickbtnupdown");
+                self.checkConditionAddHist("clickbtnupdown");
                 self.updateHirechyOfBtnUpDown();
             });
 
-
             $(document).delegate("#tree-up-down-down", "click", function() {
-                self.checkAddHist1("clickbtnupdown");
+                self.checkConditionAddHist("clickbtnupdown");
                 self.updateHirechyOfBtnUpDown();
             });
         }
@@ -169,7 +165,7 @@ module cmm009.a.viewmodel {
                 return dfd.promise();
             }
             /*case update item*/
-            if (self.A_INP_CODE_ENABLE() == false && self.checkInput() && self.checkAddHist1() == '') {
+            if (self.A_INP_CODE_ENABLE() == false && self.checkInput() && self.checkConditionAddHist() == '') {
                 var dfd = $.Deferred();
                 let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
                 var _dt = self.dataSource();
@@ -195,7 +191,7 @@ module cmm009.a.viewmodel {
                 var dfd = $.Deferred();
                 let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
                 let _dto = new model.AddDepartmentDto(self.A_INP_CODE(), hisdto.historyId, hisdto.endDate, self.A_INP_OUTCODE(), self.A_INP_FULLNAME(), self.dtoAdd().hierarchyCode, self.A_INP_DEPNAME(), hisdto.startDate, self.A_INP_MEMO(), null);
-                let data = self.listDtoEdited();
+                let data = self.listDtoUpdateHierachy();
                 let arr = new Array;
                 arr.push(_dto);
                 if (data != null) {
@@ -237,7 +233,7 @@ module cmm009.a.viewmodel {
                     return dfd2.promise();
                 }
             }
-            if (self.checkAddHist1() == "AddhistoryFromLatest") {
+            if (self.checkConditionAddHist() == "AddhistoryFromLatest") {
                 let _dt = self.dataSource2();
                 if (_dt.length > 0) {
                     _dt[0].memo = self.A_INP_MEMO();
@@ -262,7 +258,7 @@ module cmm009.a.viewmodel {
                 return dfd2.promise();
             }
 
-            if (self.checkAddHist1() == "AddhistoryFromBeggin") {
+            if (self.checkConditionAddHist() == "AddhistoryFromBeggin") {
                 if (self.checkInput()) {
                     let _dto = new model.AddDepartmentDto(self.A_INP_CODE(), null, self.itemHistId()[0].endDate, self.A_INP_OUTCODE(), self.A_INP_FULLNAME(), "001", self.A_INP_DEPNAME(), self.itemHistId()[0].startDate, self.A_INP_MEMO(), null);
                     let arr1 = new Array;
@@ -286,7 +282,7 @@ module cmm009.a.viewmodel {
                     return dfd2.promise();
                 }
             }
-            if (self.checkAddHist1() == "clickbtnupdown") {
+            if (self.checkConditionAddHist() == "clickbtnupdown") {
                 let _dt = self.arrayItemEdit();
                 var dfd = $.Deferred();
                 if (self.arrayItemEdit().length > 1) {
@@ -394,6 +390,11 @@ module cmm009.a.viewmodel {
             var _code = self.singleSelectedCode();
             var current = self.findHira(_code, _dt);
             let deleteobj = new model.DepartmentDeleteDto(current.departmentCode, current.historyId, current.hierarchyCode);
+            if (_dtflat.length < 2) {
+                return;
+            } else if (_dt.length < 2 && current.hierarchyCode.length ==3) {
+                return;
+            }
             nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
                 var dfd2 = $.Deferred();
                 service.deleteDepartment(deleteobj)
@@ -432,7 +433,7 @@ module cmm009.a.viewmodel {
                                     editObjs[k].memo = self.A_INP_MEMO();
                                 }
                             }
-                            self.listDtoEdited(editObjs);
+                            self.listDtoUpdateHierachy(editObjs);
                         } else {
                             var index = _dt.indexOf(current);
                             //Parent hirachy code
@@ -464,9 +465,9 @@ module cmm009.a.viewmodel {
                                     editObjs[k].memo = self.A_INP_MEMO();
                                 }
                             }
-                            self.listDtoEdited(editObjs);
+                            self.listDtoUpdateHierachy(editObjs);
                         }
-                        let data = self.listDtoEdited();
+                        let data = self.listDtoUpdateHierachy();
                         if (data != null) {
                             service.upDateListDepartment(data)
                                 .done(function(mess) {
@@ -598,7 +599,7 @@ module cmm009.a.viewmodel {
                             item.startDate = hisdto.startDate;
                             item.endDate = hisdto.endDate;
                         });
-                        self.checkAddHist1("AddhistoryFromLatest");
+                        self.checkConditionAddHist("AddhistoryFromLatest");
                         self.dataSource2(_dt2);
                     } else {
                         let add = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");
@@ -618,7 +619,7 @@ module cmm009.a.viewmodel {
                         self.A_INP_FULLNAME("");
                         self.A_INP_OUTCODE("");
                         $("#A_INP_CODE").focus();
-                        self.checkAddHist1("AddhistoryFromBeggin");
+                        self.checkConditionAddHist("AddhistoryFromBeggin");
                     }
                 });
             }
@@ -736,7 +737,7 @@ module cmm009.a.viewmodel {
                         }
 
                         self.dtoAdd(newObj);
-                        self.listDtoEdited(editObjs);
+                        self.listDtoUpdateHierachy(editObjs);
                     } else {
                         var index = _dt.indexOf(current);
                         //Parent hirachy code
@@ -770,7 +771,7 @@ module cmm009.a.viewmodel {
                             }
                         }
                         self.dtoAdd(newObj);
-                        self.listDtoEdited(editObjs);
+                        self.listDtoUpdateHierachy(editObjs);
                         _dt.splice(index, 0, newObj);
                     }
                     self.dataSource(_dt);
@@ -894,9 +895,9 @@ module cmm009.a.viewmodel {
                         }
                         self.dtoAdd(newObj);
                         if (editObjs.length > 0) {
-                            self.listDtoEdited(editObjs);
+                            self.listDtoUpdateHierachy(editObjs);
                         } else {
-                            self.listDtoEdited();
+                            self.listDtoUpdateHierachy();
                         }
                     }
                     else {
@@ -931,9 +932,9 @@ module cmm009.a.viewmodel {
                         }
                         self.dtoAdd(newObj);
                         if (editObjs.length > 0) {
-                            self.listDtoEdited(editObjs);
+                            self.listDtoUpdateHierachy(editObjs);
                         } else {
-                            self.listDtoEdited();
+                            self.listDtoUpdateHierachy();
                         }
                         _dt.splice(index + 1, 0, newObj);
                     }
@@ -972,7 +973,7 @@ module cmm009.a.viewmodel {
                         newObj.endDate = currentHis.endDate;
                         newObj.memo = self.A_INP_MEMO();
                         self.dtoAdd(newObj);
-                        self.listDtoEdited();
+                        self.listDtoUpdateHierachy();
                         self.dataSource(_dt);
                         self.numberItemNew(1);
                         self.singleSelectedCode(newObj.departmentCode);
