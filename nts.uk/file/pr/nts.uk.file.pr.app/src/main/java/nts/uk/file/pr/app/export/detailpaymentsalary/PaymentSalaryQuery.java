@@ -7,11 +7,37 @@
  */
 package nts.uk.file.pr.app.export.detailpaymentsalary;
 
-/**
- * @author duongnd
- *
- */
-public interface PaymentSalaryQuery {
+import lombok.Getter;
+import lombok.Setter;
 
-    // add condition
+/**
+ * The Class PaymentSalaryQuery.
+ *
+ * @author duongnd
+ */
+
+@Setter
+@Getter
+public class PaymentSalaryQuery {
+    
+    /** The output format type. */
+    private String outputFormatType;
+    
+    /** The output setting code. */
+    private String outputSettingCode;
+    
+    /** The is vertical line. */
+    private boolean isVerticalLine;
+    
+    /** The is horizontal line. */
+    private boolean isHorizontalLine;
+    
+    /** The output language. */
+    private String outputLanguage;
+    
+    /** The page break setting. */
+    private String pageBreakSetting;
+    
+    /** The hierarchy. */
+    private String hierarchy;
 }

@@ -48,6 +48,7 @@ public class QlsptLedgerAggreHeadPK implements Serializable {
 	 * Instantiates a new qlspt ledger aggre head PK.
 	 */
 	public QlsptLedgerAggreHeadPK() {
+		super();
 	}
 
 	/**

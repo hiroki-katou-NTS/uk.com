@@ -21,13 +21,13 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class LaborInsuranceOfficeAddCommandHandler extends CommandHandler<LaborInsuranceOfficeAddCommand> {
 
-	/** The labor insurance office repository. */
+	/** The repository. */
 	@Inject
-	private LaborInsuranceOfficeRepository laborInsuranceOfficeRepo;
+	private LaborInsuranceOfficeRepository repository;
 
-	/** The labor insurance office service. */
+	/** The service. */
 	@Inject
-	private LaborInsuranceOfficeService laborInsuranceOfficeService;
+	private LaborInsuranceOfficeService service;
 
 	/*
 	 * (non-Javadoc)
@@ -46,13 +46,15 @@ public class LaborInsuranceOfficeAddCommandHandler extends CommandHandler<LaborI
 		LaborInsuranceOfficeAddCommand command = context.getCommand();
 
 		// toDomain
-		LaborInsuranceOffice laborInsuranceOffice = command.toDomain(companyCode);
+		LaborInsuranceOffice office = command.toDomain(companyCode);
 
 		// validate domain
-		laborInsuranceOffice.validate();
-		this.laborInsuranceOfficeService.validateRequiredItem(laborInsuranceOffice);
-		this.laborInsuranceOfficeService.checkDuplicateCode(laborInsuranceOffice);
+		office.validate();
+		this.service.validateRequiredItem(office);
+		this.service.checkDuplicateCode(office);
+		
 		// add
-		this.laborInsuranceOfficeRepo.add(laborInsuranceOffice);
+		this.repository.add(office);
 	}
+
 }

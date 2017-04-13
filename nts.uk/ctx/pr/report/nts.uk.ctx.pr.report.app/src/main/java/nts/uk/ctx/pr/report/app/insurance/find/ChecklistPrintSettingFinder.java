@@ -8,15 +8,13 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
-import nts.uk.ctx.pr.report.app.insurance.find.dto.CheckListPrintSettingFindOutDto;
+import nts.uk.ctx.pr.report.app.insurance.find.dto.CheckListPrintSettingDto;
 import nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSetting;
 import nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-@Transactional
 public class ChecklistPrintSettingFinder {
 
 	/** The checklist print setting repository. */
@@ -28,23 +26,17 @@ public class ChecklistPrintSettingFinder {
 	 *
 	 * @return the check list print setting find out dto
 	 */
-	public CheckListPrintSettingFindOutDto find() {
-//	    String companyCode = AppContexts.user().companyCode();
-//		CheckListPrintSettingFindOutDto checkListPrintSettingFindOutDto = new CheckListPrintSettingFindOutDto();
-//		Optional<ChecklistPrintSetting> optionalChecklistPrintSetting = checklistPrintSettingRepository
-//				.findByCompanyCode(companyCode);
-//		if (optionalChecklistPrintSetting.isPresent()) {
-//			optionalChecklistPrintSetting.get().saveToMemento(checkListPrintSettingFindOutDto);
-//			return checkListPrintSettingFindOutDto;
-//		}
-//		return null;
-		CheckListPrintSettingFindOutDto dto = new CheckListPrintSettingFindOutDto();
-        dto.setShowCategoryInsuranceItem(true);
-        dto.setShowDetail(true);
-        dto.setShowOffice(false);
-        dto.setShowTotal(false);
-        dto.setShowDeliveryNoticeAmount(false);
-        return dto;
+	public CheckListPrintSettingDto find() {
+		String companyCode = AppContexts.user().companyCode();
+		CheckListPrintSettingDto dto = new CheckListPrintSettingDto();
+		
+		// Find check list setting.
+		Optional<ChecklistPrintSetting> printSetting = this.checklistPrintSettingRepository
+				.findByCompanyCode(companyCode);
+		if (printSetting.isPresent()) {
+			printSetting.get().saveToMemento(dto);
+		}
+		return dto;
 	}
 
 }

@@ -1,12 +1,11 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.entity.insurance.labor.businesstype;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -15,61 +14,23 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class QismtBusinessType.
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "QISMT_BUSINESS_TYPE")
-public class QismtBusinessType implements Serializable {
+public class QismtBusinessType extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-
-	/** The ins date. */
-	@Column(name = "INS_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date insDate;
-
-	/** The ins ccd. */
-	@Column(name = "INS_CCD")
-	private String insCcd;
-
-	/** The ins scd. */
-	@Column(name = "INS_SCD")
-	private String insScd;
-
-	/** The ins pg. */
-	@Column(name = "INS_PG")
-	private String insPg;
-
-	/** The upd date. */
-	@Column(name = "UPD_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updDate;
-
-	/** The upd ccd. */
-	@Column(name = "UPD_CCD")
-	private String updCcd;
-
-	/** The upd scd. */
-	@Column(name = "UPD_SCD")
-	private String updScd;
-
-	/** The upd pg. */
-	@Column(name = "UPD_PG")
-	private String updPg;
-
-	/** The exclus ver. */
-	@Basic(optional = false)
-	@Column(name = "EXCLUS_VER")
-	private long exclusVer;
 
 	/** The ccd. */
 	@Id
@@ -134,58 +95,7 @@ public class QismtBusinessType implements Serializable {
 	 * Instantiates a new qismt business type.
 	 */
 	public QismtBusinessType() {
-	}
-
-	/**
-	 * Instantiates a new qismt business type.
-	 *
-	 * @param ccd
-	 *            the ccd
-	 */
-	public QismtBusinessType(String ccd) {
-		this.ccd = ccd;
-	}
-
-	/**
-	 * Instantiates a new qismt business type.
-	 *
-	 * @param ccd
-	 *            the ccd
-	 * @param exclusVer
-	 *            the exclus ver
-	 * @param bizName01
-	 *            the biz name 01
-	 * @param bizName03
-	 *            the biz name 03
-	 * @param bizName04
-	 *            the biz name 04
-	 * @param bizName05
-	 *            the biz name 05
-	 * @param bizName06
-	 *            the biz name 06
-	 * @param bizName07
-	 *            the biz name 07
-	 * @param bizName08
-	 *            the biz name 08
-	 * @param bizName09
-	 *            the biz name 09
-	 * @param bizName10
-	 *            the biz name 10
-	 */
-	public QismtBusinessType(String ccd, long exclusVer, String bizName01, String bizName03, String bizName04,
-			String bizName05, String bizName06, String bizName07, String bizName08, String bizName09,
-			String bizName10) {
-		this.ccd = ccd;
-		this.exclusVer = exclusVer;
-		this.bizName01 = bizName01;
-		this.bizName03 = bizName03;
-		this.bizName04 = bizName04;
-		this.bizName05 = bizName05;
-		this.bizName06 = bizName06;
-		this.bizName07 = bizName07;
-		this.bizName08 = bizName08;
-		this.bizName09 = bizName09;
-		this.bizName10 = bizName10;
+		super();
 	}
 
 	/*
@@ -211,10 +121,21 @@ public class QismtBusinessType implements Serializable {
 			return false;
 		}
 		QismtBusinessType other = (QismtBusinessType) object;
-		if ((this.ccd == null && other.ccd != null) || (this.ccd != null && !this.ccd.equals(other.ccd))) {
+		if ((this.ccd == null && other.ccd != null)
+				|| (this.ccd != null && !this.ccd.equals(other.ccd))) {
 			return false;
 		}
 		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.ccd;
 	}
 
 }

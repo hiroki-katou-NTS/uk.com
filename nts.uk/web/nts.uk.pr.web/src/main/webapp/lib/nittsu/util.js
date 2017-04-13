@@ -103,6 +103,10 @@ var nts;
                 return target === null || target === undefined;
             }
             util.isNullOrUndefined = isNullOrUndefined;
+            function isNullOrEmpty(target) {
+                return (target === undefined || target === null || target.length == 0);
+            }
+            util.isNullOrEmpty = isNullOrEmpty;
             function randomId() {
                 return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
                     var r = Math.random() * 16 | 0;
@@ -445,4 +449,3 @@ var nts;
         uk.sessionStorage = new WebStorageWrapper(window.sessionStorage);
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=util.js.map

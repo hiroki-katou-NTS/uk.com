@@ -53,8 +53,10 @@ public class JpaWtRefRepository extends JpaRepository implements WtMasterRefRepo
 		predicateList.add(cb.equal(root.get(QwtmtWagetableRefTable_.qwtmtWagetableRefTablePK)
 				.get(QwtmtWagetableRefTablePK_.ccd), companyCode));
 
+		// Add where clause
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
+		// Return
 		return em.createQuery(cq).getResultList().stream()
 				.map(item -> new WtMasterRef(new JpaWtMasterRefGetMemento(item)))
 				.collect(Collectors.toList());
@@ -86,14 +88,18 @@ public class JpaWtRefRepository extends JpaRepository implements WtMasterRefRepo
 		predicateList.add(cb.equal(root.get(QwtmtWagetableRefTable_.qwtmtWagetableRefTablePK)
 				.get(QwtmtWagetableRefTablePK_.refTableNo), code));
 
+		// Add where clause
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
+		// Get result
 		List<QwtmtWagetableRefTable> result = em.createQuery(cq).getResultList();
 
+		// Check empty
 		if (CollectionUtil.isEmpty(result)) {
 			return Optional.empty();
 		}
 
+		// Return
 		return Optional
 				.of(result.stream().map(item -> new WtMasterRef(new JpaWtMasterRefGetMemento(item)))
 						.collect(Collectors.toList()).get(0));

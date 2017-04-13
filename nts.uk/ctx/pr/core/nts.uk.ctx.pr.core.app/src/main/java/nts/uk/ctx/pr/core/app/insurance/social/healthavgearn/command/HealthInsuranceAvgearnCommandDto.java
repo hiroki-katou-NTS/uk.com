@@ -18,9 +18,6 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvge
 @Setter
 public class HealthInsuranceAvgearnCommandDto implements HealthInsuranceAvgearnGetMemento {
 
-	/** The history id. */
-	private String historyId;
-
 	/** The level code. */
 	private Integer levelCode;
 
@@ -60,7 +57,8 @@ public class HealthInsuranceAvgearnCommandDto implements HealthInsuranceAvgearnG
 	 */
 	@Override
 	public String getHistoryId() {
-		return this.historyId;
+		// Set later in commandHandler.
+		return "";
 	}
 
 	/*

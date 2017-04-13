@@ -130,4 +130,3 @@ __viewContext.ready(function () {
     nts.uk.ui.confirmSave(dirty);
     this.bind(viewmodel);
 });
-//# sourceMappingURL=start.js.map

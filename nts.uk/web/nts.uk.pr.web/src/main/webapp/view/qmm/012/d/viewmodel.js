@@ -25,8 +25,6 @@ var qmm012;
                     this.D_LBL_011_Text = ko.observable('設定なし');
                     this.currentItemBDs = ko.observableArray([]);
                     this.D_LBL_012_Text = ko.observable("設定なし");
-                    this.D_BTN_001_enable = ko.observable(true);
-                    this.D_BTN_002_enable = ko.observable(true);
                     var self = this;
                     self.isEditable = ko.observable(true);
                     self.isEnable = ko.observable(true);
@@ -149,22 +147,20 @@ var qmm012;
                         });
                     }
                     else
-                        self.currentItemBDs([]);
+                        self.currentItemPeriod(undefined);
                 };
                 ScreenModel.prototype.openHDialog = function () {
                     var self = this;
                     nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
-                    nts.uk.ui.windows.setShared('itemPeriod', self.currentItemPeriod());
                     nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close" }).onClosed(function () {
-                        self.currentItemPeriod(nts.uk.ui.windows.getShared('itemPeriod'));
+                        self.loadItemPeriod();
                     });
                 };
                 ScreenModel.prototype.openIDialog = function () {
                     var self = this;
                     nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
-                    nts.uk.ui.windows.setShared('itemBDs', self.currentItemBDs());
                     nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close" }).onClosed(function () {
-                        self.currentItemBDs(nts.uk.ui.windows.getShared('itemBDs'));
+                        self.loadItemBDs();
                     });
                 };
                 ScreenModel.prototype.GetCurrentItemDeduct = function () {
@@ -185,4 +181,3 @@ var qmm012;
         })(viewmodel = d.viewmodel || (d.viewmodel = {}));
     })(d = qmm012.d || (qmm012.d = {}));
 })(qmm012 || (qmm012 = {}));
-//# sourceMappingURL=viewmodel.js.map

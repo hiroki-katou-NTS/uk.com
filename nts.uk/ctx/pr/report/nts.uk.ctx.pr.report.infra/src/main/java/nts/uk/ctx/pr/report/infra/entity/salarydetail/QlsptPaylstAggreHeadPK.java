@@ -43,6 +43,7 @@ public class QlsptPaylstAggreHeadPK implements Serializable {
 	 * Instantiates a new qlspt paylst aggre head PK.
 	 */
 	public QlsptPaylstAggreHeadPK() {
+		super();
 	}
 
 	/**

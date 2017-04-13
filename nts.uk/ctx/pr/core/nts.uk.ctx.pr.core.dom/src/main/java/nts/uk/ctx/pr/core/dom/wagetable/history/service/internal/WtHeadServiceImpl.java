@@ -15,7 +15,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.WtHeadRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.history.service.WtHeadService;
 
 /**
- * The Class WageTableHeadServiceImpl.
+ * The Class WtHeadServiceImpl.
  */
 @Stateless
 public class WtHeadServiceImpl extends WtHeadService {
@@ -33,8 +33,10 @@ public class WtHeadServiceImpl extends WtHeadService {
 	 */
 	@Override
 	public void validateRequiredItem(WtHead head) {
-		if (head.getCode() == null || StringUtil.isNullOrEmpty(head.getCode().v(), true)
-				|| head.getName() == null || StringUtil.isNullOrEmpty(head.getName().v(), true)
+		// Validate required item
+		if (head.getCode() == null || head.getName() == null
+				|| StringUtil.isNullOrEmpty(head.getCode().v(), true)
+				|| StringUtil.isNullOrEmpty(head.getName().v(), true)
 				|| CollectionUtil.isEmpty(head.getElements())) {
 			throw new BusinessException("ER001");
 		}
@@ -49,6 +51,7 @@ public class WtHeadServiceImpl extends WtHeadService {
 	 */
 	@Override
 	public void checkDuplicateCode(WtHead head) {
+		// Check exist code
 		if (wtHeadRepo.isExistCode(head.getCompanyCode(), head.getCode().v())) {
 			throw new BusinessException("ER005");
 		}

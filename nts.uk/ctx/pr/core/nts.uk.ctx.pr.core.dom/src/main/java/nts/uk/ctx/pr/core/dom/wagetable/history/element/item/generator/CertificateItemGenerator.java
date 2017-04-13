@@ -40,17 +40,23 @@ public class CertificateItemGenerator implements ItemGenerator {
 	@Override
 	public List<? extends Item> generate(String companyCode, String historyId,
 			ElementSetting elementSetting) {
+		// Get all certification.
 		List<Certification> certifications = this.certificationRepo.findAll(companyCode);
 
+		// Create map: unique code - old uuid.
 		@SuppressWarnings("unchecked")
 		List<CodeItem> codeItems = (List<CodeItem>) elementSetting.getItemList();
 		Map<String, ElementId> mapCodeItems = codeItems.stream()
 				.collect(Collectors.toMap(CodeItem::getReferenceCode, CodeItem::getUuid));
 
+		// Generate uuid of code items.
 		return certifications.stream().map(item -> {
+			// Create code item.
 			CodeItem codeItem = new CodeItem(item.getCode(), mapCodeItems
 					.getOrDefault(item.getCode(), new ElementId(IdentifierUtil.randomUniqueId())));
 			codeItem.setDisplayName(item.getName());
+
+			// Return
 			return codeItem;
 		}).collect(Collectors.toList());
 	}

@@ -42,31 +42,4 @@ public class RangeItem extends BaseItem {
 		this.startVal = startVal;
 		this.endVal = endVal;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object object) {
-		if (!(object instanceof RangeItem)) {
-			return false;
-		}
-		RangeItem other = (RangeItem) object;
-		if ((this.orderNumber == null && other.orderNumber != null)
-				|| (this.orderNumber != null && !this.orderNumber.equals(other.orderNumber))) {
-			return false;
-		}
-		if ((this.startVal == null && other.startVal != null)
-				|| (this.startVal != null && !this.startVal.equals(other.startVal))) {
-			return false;
-		}
-		if ((this.endVal == null && other.endVal != null)
-				|| (this.endVal != null && !this.endVal.equals(other.endVal))) {
-			return false;
-		}
-		return true;
-	}
-
 }
