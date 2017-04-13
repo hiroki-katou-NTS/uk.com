@@ -58,6 +58,9 @@ var qmm002;
                     });
                     return dfd.promise();
                 };
+                /**
+                 * Event button 002
+                 */
                 ScreenModel.prototype.addBank = function () {
                     var self = this;
                     var bankInfo = {
@@ -154,12 +157,19 @@ var qmm002;
                         self.items(list001);
                         dfd.resolve(data);
                     }).fail(function (res) {
+                        // error
                     });
                     return dfd.promise();
                 };
+                /**
+                 * Check item list had data?
+                 */
                 ScreenModel.prototype.isEmptyList = function (data) {
                     return data.length > 0;
                 };
+                /**
+                 * Selected first item bank
+                 */
                 ScreenModel.prototype.selectedFirst = function (item) {
                     var self = this;
                     self.currentCode(item.bankCode);
