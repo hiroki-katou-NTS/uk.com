@@ -62,7 +62,7 @@ module qmm018.a.viewmodel {
         /**
          * save average setting
          */
-        saveData(isUpdate): void {
+        saveData(isUpdate: boolean): void {
             var self = this;
             let error = false;
             // check errors on required
@@ -101,7 +101,7 @@ module qmm018.a.viewmodel {
         /**
          * open B screen
          */
-        openSubWindow(n): void {
+        openSubWindow(n: number): void {
             var self = this;
             if (!n) {
                 // set salary data
@@ -141,7 +141,7 @@ module qmm018.a.viewmodel {
         /**
          * process response error
          */
-        processErrorResponse(res, command) {
+        processErrorResponse(res: any, command: any) {
             if (res.messageId == "ER001") {
                 $("#inp-2").ntsError('set', shr.viewmodelbase.Error.ER001);
             }
