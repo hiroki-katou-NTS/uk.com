@@ -180,7 +180,7 @@
     */
     export function formatPattern(date: any, inputFormat?: string, outputFormat?: string) {
         outputFormat = text.getISOFormat(outputFormat);
-        var inputFormats = (inputFormat) ? inputFormat : ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm", "HHmm"];
+        var inputFormats = (inputFormat) ? inputFormat : ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm"];
         return moment.utc(date, inputFormats).format(outputFormat);
     }
 
@@ -513,7 +513,7 @@
 
 
     export function parseMoment(datetime: any, outputFormat?: any, inputFormat?: any): MomentResult {
-        var inputFormats = (inputFormat) ? inputFormat : ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm", "HHmm"];
+        var inputFormats = (inputFormat) ? inputFormat : ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm"];
         var momentObject = moment.utc(datetime, inputFormats);
         var result = new MomentResult(momentObject, outputFormat);
         if (momentObject.isValid())
@@ -524,6 +524,7 @@
     }
 
     export function UTCDate(year?: number, month?: number, date?: number, hours?: number, minutes?: number, seconds?: number, milliseconds?: number): Date {
+        // Return local time in UTC
         if (util.isNullOrUndefined(year)) {
             var currentDate: Date = new Date();
             year = currentDate.getUTCFullYear();
@@ -535,6 +536,7 @@
             milliseconds = (util.isNullOrUndefined(milliseconds)) ? currentDate.getUTCMilliseconds() : milliseconds;
             return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
         }
+        // Return input time in UTC
         else {
             month = (util.isNullOrUndefined(month)) ? 0 : month;
             date = (util.isNullOrUndefined(date)) ? 1 : date;

@@ -113,14 +113,23 @@
             }
             return undefined;
         }
-        
+         
         /**
          * Returns true if the target is null or undefined.
          */
-        export function isNullOrUndefined(target: any) {
+        export function isNullOrUndefined(target: any): boolean {
             return target === null || target === undefined;
         }
     
+        /**
+         * Returns true if the target is null or undefined or blank.
+         * @param  {any} [target] Target need to check
+         * @return {boolean}      Formatted duration
+         */
+        export function isNullOrEmpty(target: any): boolean {
+            return (target === undefined || target === null || target.length == 0);
+        }
+        
         /**
          * Generate random identifier string (UUIDv4)
          */

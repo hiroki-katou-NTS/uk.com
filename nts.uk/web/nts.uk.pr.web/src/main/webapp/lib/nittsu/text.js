@@ -38,6 +38,63 @@ var nts;
                 return count;
             }
             text_1.countHalf = countHalf;
+            function toOneByteAlphaNumberic(text) {
+                return text.replace(/[！-～　]/g, function (s) {
+                    if (s === "　") {
+                        return String.fromCharCode(s.charCodeAt(0) - 12256);
+                    }
+                    return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+                });
+            }
+            text_1.toOneByteAlphaNumberic = toOneByteAlphaNumberic;
+            function toTwoByteAlphaNumberic(text) {
+                return text.replace(/[\!-\~ ]/g, function (s) {
+                    if (s === " ") {
+                        return String.fromCharCode(s.charCodeAt(0) + 12256);
+                    }
+                    return String.fromCharCode(s.charCodeAt(0) + 0xFEE0);
+                });
+            }
+            text_1.toTwoByteAlphaNumberic = toTwoByteAlphaNumberic;
+            function katakanaToHiragana(text) {
+                text = text.replace(/[ァ-ヴ]/g, function (s) {
+                    return String.fromCharCode(s.charCodeAt(0) - 0x60);
+                })
+                    .replace(/ﾞ/g, '゛')
+                    .replace(/ﾟ/g, '゜')
+                    .replace(/(う゛)/g, 'ゔ')
+                    .replace(/ヷ/g, 'わ゛')
+                    .replace(/ヸ/g, 'ゐ゛')
+                    .replace(/ヹ/g, 'ゑ゛')
+                    .replace(/ヺ/g, 'を゛')
+                    .replace(/(ヽ゛)/g, 'ゞ')
+                    .replace(/ヽ/g, 'ゝ')
+                    .replace(/ヾ/g, 'ゞ');
+                return text;
+            }
+            text_1.katakanaToHiragana = katakanaToHiragana;
+            ;
+            function hiraganaToKatakana(text, opt) {
+                text = text.replace(/[ぁ-ゔ]/g, function (s) {
+                    return String.fromCharCode(s.charCodeAt(0) + 0x60);
+                })
+                    .replace(/ﾞ/g, '゛')
+                    .replace(/ﾟ/g, '゜')
+                    .replace(/(ウ゛)/g, 'ヴ')
+                    .replace(/(ワ゛)/g, 'ヷ')
+                    .replace(/(ヰ゛)/g, 'ヸ')
+                    .replace(/(ヱ゛)/g, 'ヹ')
+                    .replace(/(ヲ゛)/g, 'ヺ')
+                    .replace(/(ゝ゛)/g, 'ヾ')
+                    .replace(/ゝ/g, 'ヽ')
+                    .replace(/ゞ/g, 'ヾ');
+                if (opt !== false) {
+                    text = text.replace(/ゕ/g, 'ヵ').replace(/ゖ/g, 'ヶ');
+                }
+                return text;
+            }
+            text_1.hiraganaToKatakana = hiraganaToKatakana;
+            ;
             function allHalfNumeric(text) {
                 return regexp.allHalfNumeric.test(text);
             }

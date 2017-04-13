@@ -22,7 +22,6 @@ var cmm014;
                     self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                     self.notAlert = ko.observable(true);
                     self.currentCode.subscribe((function (codeChanged) {
-                        //self.currentItem(self.findObj(codeChanged));
                         if (codeChanged == null) {
                             return;
                         }
@@ -209,7 +208,6 @@ var cmm014;
                     dfd.resolve();
                     return dfd.promise();
                 };
-                // get list Classification after insert
                 ScreenModel.prototype.getClassificationList_afterUpdateClassification = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -226,7 +224,6 @@ var cmm014;
                     dfd.resolve();
                     return dfd.promise();
                 };
-                // get list Classification after insert
                 ScreenModel.prototype.getClassificationList_first = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -248,7 +245,6 @@ var cmm014;
                     dfd.resolve();
                     return dfd.promise();
                 };
-                // get list Classification after insert
                 ScreenModel.prototype.getClassificationList_afterAddClassification = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -261,7 +257,6 @@ var cmm014;
                     });
                     return dfd.promise();
                 };
-                // get list Classification after remove
                 ScreenModel.prototype.getClassificationList_aftefDelete = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -289,9 +284,6 @@ var cmm014;
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            /**
-            *  model
-            */
             var model;
             (function (model) {
                 var InputField = (function () {

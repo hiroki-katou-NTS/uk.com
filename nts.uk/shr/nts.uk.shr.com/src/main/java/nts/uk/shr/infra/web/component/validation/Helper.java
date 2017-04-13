@@ -10,6 +10,8 @@ import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.LongPrimitiveValue;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.DecimalMaxValue;
+import nts.arc.primitive.constraint.DecimalMinValue;
 import nts.arc.primitive.constraint.DecimalRange;
 import nts.arc.primitive.constraint.IntegerMaxValue;
 import nts.arc.primitive.constraint.IntegerMinValue;
@@ -35,6 +37,8 @@ class Helper {
 		CONSTRAINTS_SIGNLE_PARAM.put(IntegerMinValue.class.getSimpleName(), "min");
 		CONSTRAINTS_SIGNLE_PARAM.put(LongMaxValue.class.getSimpleName(), "max");
 		CONSTRAINTS_SIGNLE_PARAM.put(LongMinValue.class.getSimpleName(), "min");
+		CONSTRAINTS_SIGNLE_PARAM.put(DecimalMaxValue.class.getSimpleName(), "max");
+		CONSTRAINTS_SIGNLE_PARAM.put(DecimalMinValue.class.getSimpleName(), "min");
 	}
 	
 	/**

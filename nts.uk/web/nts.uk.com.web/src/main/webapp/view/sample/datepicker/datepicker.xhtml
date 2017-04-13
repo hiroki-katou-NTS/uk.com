@@ -24,7 +24,7 @@
 						<h1>DatePicker</h1>
 						<h2>Overview</h2>
 						<h3>Datepicker</h3>
-						<div data-bind="ntsDatePicker: {value: dateString, dateFormat: 'YYYY/MM/DD'}"></div>
+						<div data-bind="ntsDatePicker: {value: dateString, dateFormat: 'YYYY/MM/DD', required: true}"></div>
 						<input data-bind="ntsTimeEditor: {value: dateString}"/>
 						<br/>
 						<b>Return ISO String:</b> <span data-bind="text: dateString"/>
@@ -41,7 +41,7 @@
 						<b>Return Date:</b> <span data-bind="text: date"/>						
 						<hr/>
 						<h3>YearMonth picker</h3>
-						<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth'}"></div>
+						<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth', valueFormat: 'YYYYMM'}"></div>
 						<br/>
 						<b>Return Number:</b> <span data-bind="text: yearMonth"/>
 						<article class="cf">
@@ -53,19 +53,17 @@
 								<div id="tabs-usage" class="cf">
 									<h2>HTML</h2>
 <pre><![CDATA[<!-- Datepicker -->
-<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD', valueFormat: 'YYYYMMDD'}"></div>
+<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
 <!-- YearMonth Picker -->
-<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'YYYY/MM', valueFormat: 'YYYYMM'}"></div>]]></pre>
+<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth'}"></div>]]></pre>
 									<h2>ViewModel</h2>
 <pre><![CDATA[<!-- Recommend use 'string' and momentjs for date type -->
 class ScreenModel {
-    dateString: KnockoutObservable<string>;
-    date: KnockoutObservable<Date>;
+    date: KnockoutObservable<string>;
     yearMonth: KnockoutObservable<number>;
     constructor() {
         var self = this;            
-        self.dateString = ko.observable('20000101');
-        self.date = ko.observable(new Date(Date.UTC(2000,0,1)));
+        self.date = ko.observable('20000101');
         self.yearMonth = ko.observable(200001);
     }
 }]]></pre>
@@ -117,8 +115,6 @@ class ScreenModel {
 													<b>Default:</b> <i>Empty</i><br/>
 													<b>Members:</b><br/>
 													<i>Empty:</i> the ISO format<br/>
-													<i>date:</i> the date pattern (YYYY/MM/DD)<br/>
-													<i>yearmonth:</i> the time pattern (YYYY/MM)<br/>
 													<i>ISO 8601 Formats</i><br/>
 													"YY": year field without century and with leading zero<br/>
 													"YYYY": year field with leading zeros<br/>
