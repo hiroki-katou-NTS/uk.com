@@ -29,12 +29,12 @@ public class JpaAvgEarnLevelMasterSettingRepository extends JpaRepository
 	@Override
 	public List<AvgEarnLevelMasterSetting> findAll(String companyCode) {
 		List<AvgEarnLevelMasterSetting> listAvgEarnLevelMasterSetting = new ArrayList<AvgEarnLevelMasterSetting>();
-		listAvgEarnLevelMasterSetting.add(new AvgEarnLevelMasterSetting(1, 1, 1, 58000L, 63000L));
-		listAvgEarnLevelMasterSetting.add(new AvgEarnLevelMasterSetting(2, 2, 1, 68000L, 73000L));
-		listAvgEarnLevelMasterSetting.add(new AvgEarnLevelMasterSetting(3, 3, 1, 78000L, 83000L));
-		listAvgEarnLevelMasterSetting.add(new AvgEarnLevelMasterSetting(4, 4, 1, 88000L, 93000L));
-		listAvgEarnLevelMasterSetting.add(new AvgEarnLevelMasterSetting(5, 5, 1, 98000L, 101000L));
-		listAvgEarnLevelMasterSetting.add(new AvgEarnLevelMasterSetting(6, 6, 2, 104000L, 121000L));
+		listAvgEarnLevelMasterSetting.add(new AvgEarnLevelMasterSetting(1, 58000L, 63000L));
+		listAvgEarnLevelMasterSetting.add(new AvgEarnLevelMasterSetting(2, 68000L, 73000L));
+		listAvgEarnLevelMasterSetting.add(new AvgEarnLevelMasterSetting(3, 78000L, 83000L));
+		listAvgEarnLevelMasterSetting.add(new AvgEarnLevelMasterSetting(4, 88000L, 93000L));
+		listAvgEarnLevelMasterSetting.add(new AvgEarnLevelMasterSetting(5, 98000L, 101000L));
+		listAvgEarnLevelMasterSetting.add(new AvgEarnLevelMasterSetting(6, 104000L, 121000L));
 		return listAvgEarnLevelMasterSetting;
 	}
 

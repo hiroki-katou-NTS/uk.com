@@ -35,8 +35,8 @@ public interface HealthInsuranceAvgearnRepository {
 	 * @param ccd the ccd
 	 * @param officeCd the office cd
 	 * @param historyId the history id
-	 * @param levelCode the level code
+	 * @param grade the level code
 	 * @return the optional
 	 */
-	Optional<HealthInsuranceAvgearn> find(String ccd, String officeCd, String historyId, Integer levelCode);
+	Optional<HealthInsuranceAvgearn> find(String ccd, String officeCd, String historyId, Integer grade);
 }

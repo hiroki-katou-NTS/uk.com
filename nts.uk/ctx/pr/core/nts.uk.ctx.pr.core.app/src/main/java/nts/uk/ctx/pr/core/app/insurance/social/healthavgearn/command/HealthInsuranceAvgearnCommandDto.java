@@ -18,8 +18,14 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvge
 @Setter
 public class HealthInsuranceAvgearnCommandDto {
 
-	/** The level code. */
-	private Integer levelCode;
+	/** The grade. */
+	private Integer grade;
+
+	/** The avg earn. */
+	private Long avgEarn;
+
+	/** The upper limit. */
+	private Long upperLimit;
 
 	/** The company avg. */
 	private HealthInsuranceAvgearnValueDto companyAvg;
@@ -30,7 +36,8 @@ public class HealthInsuranceAvgearnCommandDto {
 	/**
 	 * To domain.
 	 *
-	 * @param historyId the history id
+	 * @param historyId
+	 *            the history id
 	 * @return the health insurance avgearn
 	 */
 	public HealthInsuranceAvgearn toDomain(String historyId) {
@@ -51,8 +58,10 @@ public class HealthInsuranceAvgearnCommandDto {
 		/**
 		 * Instantiates a new gets the memento.
 		 *
-		 * @param historyId the history id
-		 * @param typeValue the type value
+		 * @param historyId
+		 *            the history id
+		 * @param typeValue
+		 *            the type value
 		 */
 		public GetMemento(String historyId, HealthInsuranceAvgearnCommandDto typeValue) {
 			this.historyId = historyId;
@@ -74,11 +83,33 @@ public class HealthInsuranceAvgearnCommandDto {
 		 * (non-Javadoc)
 		 * 
 		 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
-		 * HealthInsuranceAvgearnGetMemento#getLevelCode()
+		 * HealthInsuranceAvgearnGetMemento#getGrade()
 		 */
 		@Override
 		public Integer getGrade() {
-			return this.typeValue.levelCode;
+			return this.typeValue.grade;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
+		 * HealthInsuranceAvgearnGetMemento#getAvgEarn()
+		 */
+		@Override
+		public Long getAvgEarn() {
+			return this.typeValue.avgEarn;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
+		 * HealthInsuranceAvgearnGetMemento#getUpperLimit()
+		 */
+		@Override
+		public Long getUpperLimit() {
+			return this.typeValue.upperLimit;
 		}
 
 		/*
@@ -103,16 +134,5 @@ public class HealthInsuranceAvgearnCommandDto {
 			return HealthInsuranceAvgearnValueDto.toDomain(this.typeValue.companyAvg);
 		}
 
-		@Override
-		public Long getAvgEarn() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Long getUpperLimit() {
-			// TODO Auto-generated method stub
-			return null;
-		}
 	}
 }

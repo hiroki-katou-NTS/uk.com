@@ -90,9 +90,9 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository
 	public List<HealthInsuranceAvgearn> findById(String historyId) {
 		EntityManager em = getEntityManager();
 
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 
-		CriteriaQuery<QismtHealthInsuAmount> cq = criteriaBuilder
+		CriteriaQuery<QismtHealthInsuAmount> cq = cb
 				.createQuery(QismtHealthInsuAmount.class);
 
 		Root<QismtHealthInsuAmount> root = cq.from(QismtHealthInsuAmount.class);
@@ -102,7 +102,7 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository
 		List<Predicate> listpredicate = new ArrayList<>();
 
 		listpredicate
-				.add(criteriaBuilder.equal(root.get(QismtHealthInsuAmount_.qismtHealthInsuAvgearnPK)
+				.add(cb.equal(root.get(QismtHealthInsuAmount_.qismtHealthInsuAmountPK)
 						.get(QismtHealthInsuAmountPK_.histId), historyId));
 
 		cq.where(listpredicate.toArray(new Predicate[] {}));

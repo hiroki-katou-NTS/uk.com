@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.avgearn;
@@ -10,25 +10,11 @@ package nts.uk.ctx.pr.core.dom.insurance.avgearn;
 public interface AvgEarnLevelMasterSettingSetMemento {
 
 	/**
-	 * Sets the code.
+	 * Sets the grade.
 	 *
-	 * @param code the new code
+	 * @param grade the new grade
 	 */
-	void setCode(Integer code);
-
-	/**
-	 * Sets the health level.
-	 *
-	 * @param healthLevel the new health level
-	 */
-	void setHealthLevel(Integer healthLevel);
-
-	/**
-	 * Sets the pension level.
-	 *
-	 * @param pensionLevel the new pension level
-	 */
-	void setPensionLevel(Integer pensionLevel);
+	void setGrade(Integer grade);
 
 	/**
 	 * Sets the avg earn.

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find;
@@ -16,8 +16,8 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvge
 @Getter
 public class HealthInsuranceAvgearnDto implements HealthInsuranceAvgearnSetMemento {
 
-	/** The level code. */
-	private Integer levelCode;
+	/** The grade. */
+	private Integer grade;
 
 	/** The company avg. */
 	private HealthInsuranceAvgearnValueDto companyAvg;
@@ -40,11 +40,11 @@ public class HealthInsuranceAvgearnDto implements HealthInsuranceAvgearnSetMemen
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
-	 * HealthInsuranceAvgearnSetMemento#setLevelCode(java.lang.Integer)
+	 * HealthInsuranceAvgearnSetMemento#setGrade(java.lang.Integer)
 	 */
 	@Override
-	public void setGrade(Integer levelCode) {
-		this.levelCode = levelCode;
+	public void setGrade(Integer grade) {
+		this.grade = grade;
 	}
 
 	/*

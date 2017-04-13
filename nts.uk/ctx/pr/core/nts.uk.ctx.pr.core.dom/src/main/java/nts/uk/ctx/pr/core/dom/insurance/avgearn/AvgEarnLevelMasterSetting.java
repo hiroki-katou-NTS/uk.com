@@ -12,14 +12,8 @@ import lombok.Data;
 @Data
 public class AvgEarnLevelMasterSetting {
 
-	/** The code. */
-	private Integer code;
-
-	/** The health level. */
-	private Integer healthLevel;
-
-	/** The pension level. */
-	private Integer pensionLevel;
+	/** The grade. */
+	private Integer grade;
 
 	/** The avg earn. */
 	private Long avgEarn;
@@ -37,18 +31,13 @@ public class AvgEarnLevelMasterSetting {
 	/**
 	 * Instantiates a new avg earn level master setting.
 	 *
-	 * @param code the code
-	 * @param healthLevel the health level
-	 * @param pensionLevel the pension level
+	 * @param grade the grade
 	 * @param avgEarn the avg earn
 	 * @param salLimit the sal limit
 	 */
-	public AvgEarnLevelMasterSetting(Integer code, Integer healthLevel, Integer pensionLevel,
-			Long avgEarn, Long salLimit) {
+	public AvgEarnLevelMasterSetting(Integer grade, Long avgEarn, Long salLimit) {
 		super();
-		this.code = code;
-		this.healthLevel = healthLevel;
-		this.pensionLevel = pensionLevel;
+		this.grade = grade;
 		this.avgEarn = avgEarn;
 		this.salLimit = salLimit;
 	}
@@ -61,9 +50,7 @@ public class AvgEarnLevelMasterSetting {
 	 *            the memento
 	 */
 	public AvgEarnLevelMasterSetting(AvgEarnLevelMasterSettingGetMemento memento) {
-		this.code = memento.getCode();
-		this.healthLevel = memento.getHealthLevel();
-		this.pensionLevel = memento.getPensionLevel();
+		this.grade = memento.getGrade();
 		this.avgEarn = memento.getAvgEarn();
 		this.salLimit = memento.getSalLimit();
 	}
@@ -75,9 +62,7 @@ public class AvgEarnLevelMasterSetting {
 	 *            the memento
 	 */
 	public void saveToMemento(AvgEarnLevelMasterSettingSetMemento memento) {
-		memento.setCode(this.code);
-		memento.setHealthLevel(this.healthLevel);
-		memento.setPensionLevel(this.pensionLevel);
+		memento.setGrade(this.grade);
 		memento.setAvgEarn(this.avgEarn);
 		memento.setSalLimit(this.salLimit);
 	}

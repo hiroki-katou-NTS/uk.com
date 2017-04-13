@@ -143,7 +143,7 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 		public PensionAvgearnGetMementoImpl(String historyId, AvgEarnLevelMasterSetting setting,
 				Set<FundRateItem> rateItems, Set<PensionPremiumRateItem> premiumRateItems,
 				BigDecimal childContributionRate, Set<PensionRateRounding> roundingMethods) {
-			this.grade = setting.getCode();
+			this.grade = setting.getGrade();
 			this.masterRate = BigDecimal.valueOf(setting.getAvgEarn()).divide(OneThousand);
 			this.rateItems = rateItems;
 			this.premiumRateItems = premiumRateItems;
@@ -179,7 +179,7 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 		 * (non-Javadoc)
 		 * 
 		 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
-		 * PensionAvgearnGetMemento#getLevelCode()
+		 * PensionAvgearnGetMemento#getGrade()
 		 */
 		@Override
 		public Integer getGrade() {

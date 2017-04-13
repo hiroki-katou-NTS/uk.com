@@ -20,5 +20,5 @@ public class QismtHealthInsuAmountPK_ {
 
 	/** The health insu grade. */
 	public static volatile SingularAttribute<QismtHealthInsuAmountPK, BigDecimal> healthInsuGrade;
-	
+
 }

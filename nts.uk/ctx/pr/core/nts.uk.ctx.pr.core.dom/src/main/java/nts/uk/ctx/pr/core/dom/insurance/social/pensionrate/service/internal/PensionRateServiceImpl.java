@@ -140,7 +140,7 @@ public class PensionRateServiceImpl extends PensionRateService {
 
 		// Create HealthInsuranceAvgearn list with initial values.
 		List<PensionAvgearn> newList = listAvgEarnLevelMasterSetting.stream().map(setting -> {
-			return PensionAvgearn.createWithIntial(newHistory.getHistoryId(), setting.getCode(),
+			return PensionAvgearn.createWithIntial(newHistory.getHistoryId(), setting.getGrade(),
 					setting.getAvgEarn(), setting.getSalLimit());
 		}).collect(Collectors.toList());
 

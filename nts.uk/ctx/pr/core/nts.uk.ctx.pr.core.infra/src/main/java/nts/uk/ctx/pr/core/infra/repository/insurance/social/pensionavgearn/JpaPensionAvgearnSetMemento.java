@@ -68,7 +68,7 @@ public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
-	 * PensionAvgearnSetMemento#setLevelCode(java.lang.Integer)
+	 * PensionAvgearnSetMemento#setGrade(java.lang.Integer)
 	 */
 	@Override
 	public void setGrade(Integer grade) {

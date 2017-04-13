@@ -130,7 +130,7 @@ public class HealthInsuranceRateServiceImpl extends HealthInsuranceRateService {
 		List<HealthInsuranceAvgearn> newList = listAvgEarnLevelMasterSetting.stream()
 				.map(setting -> {
 					return HealthInsuranceAvgearn.createWithIntial(newHistory.getHistoryId(),
-							setting.getCode(), setting.getAvgEarn(), setting.getSalLimit());
+							setting.getGrade(), setting.getAvgEarn(), setting.getSalLimit());
 				}).collect(Collectors.toList());
 
 		this.healthInsuranceAvgearnRepository.update(newList, companyCode,

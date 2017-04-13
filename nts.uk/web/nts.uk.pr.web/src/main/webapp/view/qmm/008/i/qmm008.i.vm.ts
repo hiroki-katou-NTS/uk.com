@@ -88,7 +88,9 @@ module nts.uk.pr.view.qmm008.i {
                 service.findPensionAvgearn(self.pensionRateModel.historyId).done(res => {
                     res.listPensionAvgearnDto.forEach(item => {
                         self.listPensionAvgearnModel.push(new PensionAvgearnModel(
-                            item.levelCode,
+                            item.grade,
+                            item.avgEarn,
+                            item.upperLimit,
                             new PensionAvgearnValueModel(
                                 item.companyFund.maleAmount,
                                 item.companyFund.femaleAmount,
@@ -189,10 +191,10 @@ module nts.uk.pr.view.qmm008.i {
                 var pensionRateItems: PensionRateItemModel = self.pensionRateModel.rateItems;
                 var roundingMethods: PensionRateRoundingModel = self.pensionRateModel.roundingMethods;
                 var personalRounding = self.convertToRounding(roundingMethods.pensionSalaryPersonalComboBoxSelectedCode());
-                var companyRounding = self.convertToRounding(roundingMethods.pensionSalaryCompanyComboBoxSelectedCode()); 
+                var companyRounding = self.convertToRounding(roundingMethods.pensionSalaryCompanyComboBoxSelectedCode());
                 var rate = levelMasterSetting.avgEarn / 1000;
                 var fundInputApply = self.pensionRateModel.fundInputApply;
-                if(fundInputApply == FundInputApply.Yes){
+                if (fundInputApply == FundInputApply.Yes) {
                     return new PensionAvgearnModel(
                         levelMasterSetting.code,
                         new PensionAvgearnValueModel(
@@ -243,10 +245,10 @@ module nts.uk.pr.view.qmm008.i {
             }
 
             // rounding 
-            private rounding(roudingMethod: string,roundValue: number): number {
+            private rounding(roudingMethod: string, roundValue: number): number {
                 var self = this;
                 var backupValue = roundValue;
-                switch(roudingMethod){
+                switch (roudingMethod) {
                     case Rounding.ROUNDUP: return Math.ceil(backupValue);
                     case Rounding.TRUNCATION: return Math.floor(backupValue);
                     case Rounding.ROUNDDOWN:
@@ -267,7 +269,7 @@ module nts.uk.pr.view.qmm008.i {
                     return Math.floor(value);
             }
 
-              //value to string rounding
+            //value to string rounding
             public convertToRounding(stringValue: string) {
                 switch (stringValue) {
                     case "0": return Rounding.TRUNCATION;
@@ -345,7 +347,9 @@ module nts.uk.pr.view.qmm008.i {
          * PensionAvgearn Model
          */
         export class PensionAvgearnModel {
-            levelCode: number;
+            grade: number;
+            avgEarn: number;
+            upperLimit: number;
             companyFund: PensionAvgearnValueModel;
             companyFundExemption: PensionAvgearnValueModel;
             companyPension: PensionAvgearnValueModel;
@@ -354,7 +358,9 @@ module nts.uk.pr.view.qmm008.i {
             personalPension: PensionAvgearnValueModel;
             childContributionAmount: KnockoutObservable<number>;
             constructor(
-                levelCode: number,
+                grade: number,
+                avgEarn: number,
+                upperLimit: number,
                 companyFund: PensionAvgearnValueModel,
                 companyFundExemption: PensionAvgearnValueModel,
                 companyPension: PensionAvgearnValueModel,
@@ -362,7 +368,9 @@ module nts.uk.pr.view.qmm008.i {
                 personalFundExemption: PensionAvgearnValueModel,
                 personalPension: PensionAvgearnValueModel,
                 childContributionAmount: number) {
-                this.levelCode = levelCode;
+                this.grade = grade;
+                this.avgEarn = avgEarn;
+                this.upperLimit = upperLimit;
                 this.companyFund = companyFund;
                 this.companyFundExemption = companyFundExemption;
                 this.companyPension = companyPension;
@@ -387,17 +395,17 @@ module nts.uk.pr.view.qmm008.i {
             }
         }
 
-         export class Rounding {
+        export class Rounding {
             static ROUNDUP = 'RoundUp';
             static TRUNCATION = 'Truncation';
             static ROUNDDOWN = 'RoundDown';
             static DOWN5_UP6 = 'Down5_Up6';
             static DOWN4_UP5 = 'Down4_Up5'
         }
-        export enum Number{
-                Zero = 0,
-                One = 1,
-                Three = 3
+        export enum Number {
+            Zero = 0,
+            One = 1,
+            Three = 3
         }
         export enum FundInputApply {
             No = 0,

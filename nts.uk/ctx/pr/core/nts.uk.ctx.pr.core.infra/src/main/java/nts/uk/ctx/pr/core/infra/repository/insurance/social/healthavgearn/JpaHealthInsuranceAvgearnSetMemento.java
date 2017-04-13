@@ -66,7 +66,7 @@ public class JpaHealthInsuranceAvgearnSetMemento implements HealthInsuranceAvgea
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
-	 * HealthInsuranceAvgearnSetMemento#setLevelCode(java.lang.Integer)
+	 * HealthInsuranceAvgearnSetMemento#setGrade(java.lang.Integer)
 	 */
 	@Override
 	public void setGrade(Integer grade) {

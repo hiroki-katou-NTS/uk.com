@@ -56,16 +56,11 @@ public class JpaHealthInsuranceAvgearnGetMemento implements HealthInsuranceAvgea
 				new InsuranceAmount(this.insuAmount.getPHealthSpecificMny()));
 	}
 
-	/**
-	 * Gets the grade.
-	 *
-	 * @return the grade
-	 */
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
-	 * HealthInsuranceAvgearnGetMemento#getLevelCode()
+	 * HealthInsuranceAvgearnGetMemento#getGrade()
 	 */
 	@Override
 	public Integer getGrade() {

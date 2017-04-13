@@ -181,7 +181,7 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 	}
 
 	/**
-	 * The Class GetMemento.
+	 * The Class HiaGetMemento.
 	 */
 	private class HiaGetMemento implements HealthInsuranceAvgearnGetMemento {
 
@@ -198,12 +198,14 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 		private String historyId;
 
 		/**
-		 * Instantiates a new gets the memento.
+		 * Instantiates a new hia get memento.
 		 *
 		 * @param setting
 		 *            the setting
 		 * @param rateItems
 		 *            the rate items
+		 * @param roundingMethods
+		 *            the rounding methods
 		 * @param historyId
 		 *            the history id
 		 */
@@ -223,18 +225,18 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 		 */
 		@Override
 		public String getHistoryId() {
-			return historyId;
+			return this.historyId;
 		}
 
 		/*
 		 * (non-Javadoc)
 		 * 
 		 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
-		 * HealthInsuranceAvgearnGetMemento#getLevelCode()
+		 * HealthInsuranceAvgearnGetMemento#getGrade()
 		 */
 		@Override
 		public Integer getGrade() {
-			return setting.getCode();
+			return this.setting.getGrade();
 		}
 
 		/*
@@ -245,8 +247,8 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 		 */
 		@Override
 		public HealthInsuranceAvgearnValue getCompanyAvg() {
-			return calculateAvgearnValue(roundingMethods, BigDecimal.valueOf(setting.getAvgEarn()),
-					rateItems, false);
+			return calculateAvgearnValue(this.roundingMethods,
+					BigDecimal.valueOf(this.setting.getAvgEarn()), this.rateItems, false);
 		}
 
 		/*
@@ -257,20 +259,30 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 		 */
 		@Override
 		public HealthInsuranceAvgearnValue getPersonalAvg() {
-			return calculateAvgearnValue(roundingMethods, BigDecimal.valueOf(setting.getAvgEarn()),
-					rateItems, true);
+			return calculateAvgearnValue(this.roundingMethods,
+					BigDecimal.valueOf(this.setting.getAvgEarn()), this.rateItems, true);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
+		 * HealthInsuranceAvgearnGetMemento#getAvgEarn()
+		 */
 		@Override
 		public Long getAvgEarn() {
-			// TODO Auto-generated method stub
-			return null;
+			return this.setting.getAvgEarn();
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
+		 * HealthInsuranceAvgearnGetMemento#getUpperLimit()
+		 */
 		@Override
 		public Long getUpperLimit() {
-			// TODO Auto-generated method stub
-			return null;
+			return this.setting.getSalLimit();
 		}
 
 	}

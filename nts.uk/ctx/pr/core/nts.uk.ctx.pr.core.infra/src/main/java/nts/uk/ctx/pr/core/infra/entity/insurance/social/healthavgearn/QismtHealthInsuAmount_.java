@@ -25,7 +25,7 @@ public class QismtHealthInsuAmount_ {
 	public static volatile SingularAttribute<QismtHealthInsuAmount, String> siOfficeCd;
 
 	/** The qismt health insu avgearn PK. */
-	public static volatile SingularAttribute<QismtHealthInsuAmount, QismtHealthInsuAmountPK> qismtHealthInsuAvgearnPK;
+	public static volatile SingularAttribute<QismtHealthInsuAmount, QismtHealthInsuAmountPK> qismtHealthInsuAmountPK;
 
 	/** The ins date. */
 	public static volatile SingularAttribute<QismtHealthInsuAmount, Date> insDate;

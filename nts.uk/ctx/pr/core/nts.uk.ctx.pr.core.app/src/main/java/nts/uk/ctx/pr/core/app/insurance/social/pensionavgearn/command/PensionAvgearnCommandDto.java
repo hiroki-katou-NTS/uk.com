@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.command;
@@ -21,7 +21,7 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValu
 public class PensionAvgearnCommandDto implements PensionAvgearnGetMemento {
 
 	/** The level code. */
-	private Integer levelCode;
+	private Integer grade;
 
 	/** The child contribution amount. */
 	private BigDecimal childContributionAmount;
@@ -81,11 +81,11 @@ public class PensionAvgearnCommandDto implements PensionAvgearnGetMemento {
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
-	 * PensionAvgearnGetMemento#getLevelCode()
+	 * PensionAvgearnGetMemento#getGrade()
 	 */
 	@Override
 	public Integer getGrade() {
-		return this.levelCode;
+		return this.grade;
 	}
 
 	/*

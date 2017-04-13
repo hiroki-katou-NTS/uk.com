@@ -76,7 +76,7 @@ public class JpaPensionAvgearnGetMemento implements PensionAvgearnGetMemento {
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
-	 * PensionAvgearnGetMemento#getLevelCode()
+	 * PensionAvgearnGetMemento#getGrade()
 	 */
 	@Override
 	public Integer getGrade() {
