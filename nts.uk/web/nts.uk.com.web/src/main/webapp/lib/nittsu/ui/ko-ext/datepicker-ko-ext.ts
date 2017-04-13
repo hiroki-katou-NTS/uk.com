@@ -68,7 +68,7 @@ module nts.uk.ui.koExtentions {
                 autoHide: autoHide,
             });
 
-            var validator = new validation.TimeValidator(constraintName, {required: required, inputFormat: valueFormat, valueType: valueType});
+            var validator = new validation.TimeValidator(constraintName, {required: required, outputFormat: valueFormat, valueType: valueType});
             $input.on("change", (e) => {
                 var newText = $input.val();
                 var result = validator.validate(newText);

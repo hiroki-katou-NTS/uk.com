@@ -121,7 +121,7 @@ module nts.uk.ui.validation {
         valueType: string;
         constructor(primitiveValueName: string, option?: any) {
             this.constraint = getConstraint(primitiveValueName);
-            this.outputFormat = (option && option.inputFormat) ? option.inputFormat : "";
+            this.outputFormat = (option && option.outputFormat) ? option.outputFormat : "";
             this.required = (option && option.required) ? option.required : false;
             this.valueType = (option && option.valueType) ? option.valueType : "string";
         }

@@ -61,7 +61,7 @@ var nts;
                             endDate: endDate,
                             autoHide: autoHide,
                         });
-                        var validator = new ui.validation.TimeValidator(constraintName, { required: required, inputFormat: valueFormat, valueType: valueType });
+                        var validator = new ui.validation.TimeValidator(constraintName, { required: required, outputFormat: valueFormat, valueType: valueType });
                         $input.on("change", function (e) {
                             var newText = $input.val();
                             var result = validator.validate(newText);
