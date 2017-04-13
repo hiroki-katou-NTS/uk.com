@@ -16,8 +16,6 @@ module cmm001.a {
         previousCurrentCode: string = null; //lưu giá trị của currentCode trước khi nó bị thay đổi
         itemList: KnockoutObservable<any>;
         hasFocus: KnockoutObservable<boolean> = ko.observable(true);
-        //message
-        lstMessage: KnockoutObservableArray<ItemMessage>;
 
         constructor() {
             let self = this;
@@ -162,14 +160,12 @@ module cmm001.a {
 
             self.currentCompany = ko.observable(null);
             self.currentCompanyCode = ko.observable('');
-            self.lstMessage = ko.observableArray([]);
             self.sel001Data = ko.observableArray([]);
         }
 
         start(currentCode: string) {
             let self = this;
             let dfd = $.Deferred<any>();
-            self.listMessage();
             service.getAllCompanys().done(function(data: Array<service.model.CompanyDto>) {
                 if (data.length > 0) {
                     self.isUpdate(true);
@@ -445,16 +441,6 @@ module cmm001.a {
                 return false;
             }
             return true;
-        }
-        //list  message
-        listMessage(): any {
-            var self = this;
-            self.lstMessage.push(new ItemMessage("ER001", "*が入力されていません。"));
-            self.lstMessage.push(new ItemMessage("ER005", "入力した*は既に存在しています。\r\n*を確認してください。"));
-            self.lstMessage.push(new ItemMessage("ER010", "対象データがありません。"));
-            self.lstMessage.push(new ItemMessage("AL001", "変更された内容が登録されていません。\r\nよろしいですか。"));
-            self.lstMessage.push(new ItemMessage("AL002", "データを削除します。\r\nよろしいですか？"));
-            self.lstMessage.push(new ItemMessage("ER026", "更新対象のデータが存在しません。"));
         }
     }
     class CompanyModel {
