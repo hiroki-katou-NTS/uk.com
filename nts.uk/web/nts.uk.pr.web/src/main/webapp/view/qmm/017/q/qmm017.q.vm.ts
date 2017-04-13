@@ -2,6 +2,7 @@ module nts.uk.pr.view.qmm017.q {
     export module viewmodel {
         export class ScreenModel {
             items: KnockoutObservableArray<ItemModel>;
+            personalUPItems: KnockoutObservableArray<ItemModel>;
             columns: KnockoutObservableArray<any>;
             currentCodeList: KnockoutObservableArray<any>;
             formulaContent: string;
@@ -10,6 +11,7 @@ module nts.uk.pr.view.qmm017.q {
             constructor(data) {
                 var self = this;
                 self.items = ko.observableArray([]);
+                self.personalUPItems = ko.observableArray([]);
                 self.currentCodeList = ko.observableArray([]);
                 self.formulaContent = data.formulaContent;
                 self.buildListItemModel(data.itemsBag);
@@ -29,7 +31,11 @@ module nts.uk.pr.view.qmm017.q {
                 var self = this;
                 _.forEach(itemsBag, function(item) {
                     if (item.name.indexOf('関数') === -1 && self.formulaContent.indexOf(item.name) !== -1 && !self.isDuplicated(item.name)) {
-                        self.items.push(new ItemModel(item.name, 0));
+                        if (item.name.indexOf('個人単価＠') !== -1) {
+                            self.personalUPItems.push(new ItemModel(item.name, 0));
+                        } else {
+                            self.items.push(new ItemModel(item.name, 0));
+                        }
                     }
                 });
             }
@@ -69,6 +75,9 @@ module nts.uk.pr.view.qmm017.q {
                 _.forEach(self.items(), function(item) {
                     replacedValue = replacedValue.replace(new RegExp(item.code, 'g'), item.value);
                 });
+                _.forEach(self.personalUPItems(), function(item) {
+                    replacedValue = replacedValue.replace(new RegExp(item.code, 'g'), item.value);
+                });
                 let contentPieces = replacedValue.split(/[\+|\-|\×|\÷|\＾]/);
                 let listTreeObject = [];
                 for (let i = 0; i < contentPieces.length - 1; i++) {
@@ -81,50 +90,34 @@ module nts.uk.pr.view.qmm017.q {
                         listOperator.push(char);
                     }
                 });
-                debugger;
             }
 
             calculateTreeObject(treeObject) {
                 var self = this;
+                
                 if (treeObject.value === '関数＠条件式') {
-                    _.forEach(treeObject.children, function(child) {
-                        if (child.children.length > 0) {
-                            child.value = self.calculateTreeObject(child);
-                        }
-                    });
-                    return self.calculator.calculateConditionExpression(
-                        self.compareValues(
-                            treeObject.children[0],
-                            treeObject.children[2],
-                            treeObject.children[1]),
-                        treeObject.children[3],
-                        treeObject.children[4]
-                    );
+
                 } else if (treeObject.value === '関数＠かつ') {
-                    _.forEach(treeObject.children, function(child) {
-                        if (child.children.length > 0) {
-                            child.value = self.calculateTreeObject(child);
-                        }
-                    });
-                } else if (treeObject.value === '関数＠条件式') {
 
-                } else if (treeObject.value === '関数＠条件式') {
+                } else if (treeObject.value === '関数＠または') {
 
-                } else if (treeObject.value === '関数＠条件式') {
+                } else if (treeObject.value === '関数＠四捨五入') {
 
-                } else if (treeObject.value === '関数＠条件式') {
+                } else if (treeObject.value === '関数＠切り捨て') {
 
-                } else if (treeObject.value === '関数＠条件式') {
+                } else if (treeObject.value === '関数＠切り上げ') {
 
-                } else if (treeObject.value === '関数＠条件式') {
+                } else if (treeObject.value === '関数＠最大値') {
 
-                } else if (treeObject.value === '関数＠条件式') {
+                } else if (treeObject.value === '関数＠最小値') {
 
-                } else if (treeObject.value === '関数＠条件式') {
+                } else if (treeObject.value === '関数＠家族人数') {
 
-                } else if (treeObject.value === '関数＠条件式') {
+                } else if (treeObject.value === '関数＠年月加算') {
 
-                } else if (treeObject.value === '関数＠条件式') {
+                } else if (treeObject.value === '関数＠年抽出') {
+
+                } else if (treeObject.value === '関数＠月抽出') {
 
                 }
             }
@@ -142,6 +135,20 @@ module nts.uk.pr.view.qmm017.q {
                     return firstValue === secondValue;
                 } else if (comparator === '≠') {
                     return firstValue !== secondValue;
+                }
+            }
+
+            operatorHandler(firstValue, secondValue, operator) {
+                if (operator === '+') {
+                    return firstValue + secondValue;
+                } else if (operator === '-') {
+                    return firstValue - secondValue;
+                } else if (operator === '×') {
+                    return firstValue * secondValue;
+                } else if (operator === '÷') {
+                    return firstValue / secondValue;
+                } else if (operator === '＾') {
+                    return Math.pow(firstValue, secondValue);
                 }
             }
 
@@ -167,7 +174,7 @@ module nts.uk.pr.view.qmm017.q {
 
         calculateAndExpression(lstCondition) {
             _.forEach(lstCondition, function(condition) {
-                if (!condition) {
+                if (!condition || condition !== 'true') {
                     return false;
                 }
             });
@@ -176,7 +183,7 @@ module nts.uk.pr.view.qmm017.q {
 
         calculateOrExpression(lstCondition) {
             _.forEach(lstCondition, function(condition) {
-                if (condition) {
+                if (condition || condition === 'true') {
                     return true;
                 }
             });
@@ -204,11 +211,11 @@ module nts.uk.pr.view.qmm017.q {
         }
 
         calculateExportYear(yearMonth) {
-            return moment("2012/01", "YYYY/MM").year();
+            return moment(yearMonth, "YYYY/MM").year();
         }
 
         calculateExportMonth(yearMonth) {
-            return moment("2012/01", "YYYY/MM").month() + 1;
+            return moment(yearMonth, "YYYY/MM").month() + 1;
         }
     }
 
