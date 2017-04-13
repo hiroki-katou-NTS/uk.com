@@ -13,7 +13,7 @@ var qpp014;
                     self.items_E_LST_003.push(new ItemModel_E_LST_003('00' + i_1, '基本給', "description " + i_1));
                 }
                 self.currentCode_E_LST_003 = ko.observable();
-                self.transferDate = ko.observable(nts.uk.time.parseYearMonthDate(nts.uk.ui.windows.getShared("transferDate")).format());
+                self.transferDate = ko.observable(moment(nts.uk.ui.windows.getShared("transferDate")).format("YYYY/MM/DD"));
                 self.processingDate = ko.observable(nts.uk.ui.windows.getShared("processingDate"));
             }
             ScreenModel.prototype.closeDialog = function () {

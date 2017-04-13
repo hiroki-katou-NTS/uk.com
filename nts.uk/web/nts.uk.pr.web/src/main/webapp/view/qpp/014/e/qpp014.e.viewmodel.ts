@@ -20,7 +20,7 @@ module qpp014.e {
                 self.items_E_LST_003.push(new ItemModel_E_LST_003('00' + i, '基本給', "description " + i));
             }
             self.currentCode_E_LST_003 = ko.observable();
-            self.transferDate = ko.observable(nts.uk.time.parseYearMonthDate(nts.uk.ui.windows.getShared("transferDate")).format());
+            self.transferDate = ko.observable(moment(nts.uk.ui.windows.getShared("transferDate")).format("YYYY/MM/DD"));
             self.processingDate = ko.observable(nts.uk.ui.windows.getShared("processingDate"));
         }
 
