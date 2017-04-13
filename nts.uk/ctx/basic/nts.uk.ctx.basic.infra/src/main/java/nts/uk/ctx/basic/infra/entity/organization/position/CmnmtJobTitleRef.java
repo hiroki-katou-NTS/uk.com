@@ -29,8 +29,9 @@ public class CmnmtJobTitleRef extends UkJpaEntity implements Serializable{
 	public int referenceSettings;
 
 	@Override
-	protected CmnmtJobTitleRefPK getKey() {
-		return this.cmnmtJobTitleRefPK;
+	protected Object getKey() {
+		// TODO Auto-generated method stub
+		return cmnmtJobTitleRefPK;
 	}
 	
 	

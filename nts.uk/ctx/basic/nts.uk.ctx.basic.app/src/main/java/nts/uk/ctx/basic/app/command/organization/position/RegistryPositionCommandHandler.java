@@ -130,13 +130,17 @@ public class RegistryPositionCommandHandler extends CommandHandler<RegistryPosit
 				//update position				
 				positionRepository.update(jobInfor);
 				//update quyen
+				List<AddJobTitleRefCommand> refInforUpdate = rePositionCommand.getRefCommand();
+				if(refInforUpdate.isEmpty()){
+					return;
+				}
 				//- check xem quyen ton tai ko
 				List<JobTitleRef> refInfor = positionRepository.findAllJobTitleRef(companyCode, historyId, rePositionCommand.getJobCode());
 				//-- neu chua co thi insert
 				if(refInfor.isEmpty()){
 					InsertRefInfor(rePositionCommand, companyCode, historyId);
 				}else{
-					List<AddJobTitleRefCommand> refInforUpdate = rePositionCommand.getRefCommand();
+					
 					List<JobTitleRef> newRefInfor = new ArrayList<JobTitleRef>();
 					for (AddJobTitleRefCommand jobTitleRef : refInforUpdate) {
 						JobTitleRef titleRef = new JobTitleRef(companyCode, 
@@ -147,7 +151,7 @@ public class RegistryPositionCommandHandler extends CommandHandler<RegistryPosit
 						newRefInfor.add(titleRef);
 					}
 					//update quyen 
-				positionRepository.updateRef(refInfor);
+					positionRepository.updateRef(refInfor);
 				}
 			}
 		}
