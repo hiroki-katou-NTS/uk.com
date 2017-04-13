@@ -43,7 +43,7 @@
 	
 }
 #div-button-bottom > button {
-	margin: 0px 10px;
+	margin: 0px 10px 10px 10px;
 	width: 100px !important;
 }
 /* ====================== radio css =============================*/
@@ -56,15 +56,9 @@
 	margin-left: 137px;
 }
 /* ====================== label css =============================*/
-.d-label-001, .d-label-005, .d-label-007 {
-	margin-bottom: 10px;
-}
-
 .d-label-005 {
 	margin-top: 70px !important;
 }
-
-
 
 /* ====================== Switch css =============================*/
 .div-zero-setting {

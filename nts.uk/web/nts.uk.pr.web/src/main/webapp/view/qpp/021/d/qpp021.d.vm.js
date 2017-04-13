@@ -6,6 +6,8 @@ var qpp021;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
+                    this.isEnaleFromParent = ko.observable(true);
+                    this.isvisibleItem = ko.observable(true);
                     var self = this;
                     self.zeroItemSetting = ko.observableArray([
                         new ItemModel(1, "項目名の登録の設定を優先する"),
@@ -48,6 +50,13 @@ var qpp021;
                     self.borderLineWidthCode = ko.observable(2);
                     self.outputCompanyNameCode = ko.observable(1);
                     self.shadedSectionCode = ko.observable(1);
+                    self.numberOutputDependentCode = ko.observable(1);
+                    self.incomeTaxClassificationCode = ko.observable(1);
+                    self.insuranceFollowingOutputCode = ko.observable(1);
+                    self.personalAddressCode = ko.observable(1);
+                    self.personNameCode = ko.observable(1);
+                    self.companyAddressCode = ko.observable(1);
+                    self.companyNameCode = ko.observable(1);
                 }
                 ScreenModel.prototype.startPage = function () {
                     var self = this;

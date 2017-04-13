@@ -11,8 +11,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 840,
-					height : 610
+					width : 860,
+					height : 600
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -88,9 +88,11 @@
 					<div id="right-contents-area">
 						<div class="d-label-007">任意出力項目の指定</div>
 						<hr />
+						<!-- Start right-contents Screen D -->
 						<div class="valign-center control-group">
-							<div class="right-contents-area-label" data-bind="ntsFormLabel: {}">課税対象累計出力</div>
-							<span 
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {}">課税対象累計出力</div>
+							<span
 								data-bind="ntsSwitchButton: {
 								options: switchItemList,
 								optionsValue: 'code',
@@ -101,7 +103,8 @@
 							</span>
 						</div>
 						<div class="valign-center control-group">
-							<div class="right-contents-area-label" data-bind="ntsFormLabel: {}">年休残数出力</div>
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {}">年休残数出力</div>
 							<span
 								data-bind="ntsSwitchButton: {
 								options: switchItemList,
@@ -113,7 +116,8 @@
 							</span>
 						</div>
 						<div class="valign-center control-group">
-							<div class="right-contents-area-label" data-bind="ntsFormLabel: {}">現物支給額出力</div>
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {}">現物支給額出力</div>
 							<span
 								data-bind="ntsSwitchButton: {
 								options: switchItemList,
@@ -125,8 +129,9 @@
 							</span>
 						</div>
 						<div class="valign-center control-group">
-							<div class="right-contents-area-label" data-bind="ntsFormLabel: {}">支払枠出力名称指定</div>
-							<span  class = "right-contents-area-comobox"
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {}">支払枠出力名称指定</div>
+							<span class="right-contents-area-comobox"
 								data-bind="ntsComboBox: {
 									options: outputNameDesignation,
 									optionsValue: 'code',
@@ -139,11 +144,10 @@
 									]}">
 							</span>
 						</div>
-						
-						
-						
-						 <div class="valign-center control-group">
-							<div class="right-contents-area-label" data-bind="ntsFormLabel: {}">会社名出力</div>
+
+						<div class="valign-center control-group">
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {}">会社名出力</div>
 							<span
 								data-bind="ntsSwitchButton: {
 								options: switchItemList,
@@ -155,8 +159,9 @@
 							</span>
 						</div>
 						<div class="valign-center control-group">
-							<div class="right-contents-area-label" data-bind="ntsFormLabel: {}">部門出力</div>
-							<span  class = "right-contents-area-comobox"
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {}">部門出力</div>
+							<span class="right-contents-area-comobox"
 								data-bind="ntsComboBox: {
 									options: outputDepartment,
 									optionsValue: 'code',
@@ -169,9 +174,10 @@
 									]}">
 							</span>
 						</div>
-						
+
 						<div class="valign-center control-group">
-							<div class="right-contents-area-label" data-bind="ntsFormLabel: {}">網掛け</div>
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {}">網掛け</div>
 							<span
 								data-bind="ntsSwitchButton: {
 								options: switchItemList,
@@ -183,8 +189,9 @@
 							</span>
 						</div>
 						<div class="valign-center control-group">
-							<div class="right-contents-area-label" data-bind="ntsFormLabel: {}">枠線幅</div>
-							<span  class = "right-contents-area-comobox"
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {}">枠線幅</div>
+							<span class="right-contents-area-comobox"
 								data-bind="ntsComboBox: {
 									options: borderLineWidth,
 									optionsValue: 'code',
@@ -197,10 +204,108 @@
 									]}">
 							</span>
 						</div>
-						
+						<!--End right-contents Screen D -->
+
+
+						<!--Start right-contents Screen E -->
+						<div class="valign-center control-group">
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {},visible: isvisibleItem ">扶養親族等の数出力</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: numberOutputDependentCode,
+								enable: true 
+								}, visible: isvisibleItem  ">
+							</span>
+						</div>
+						<div class="valign-center control-group">
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {}, visible: isvisibleItem ">所得税区分出力</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: incomeTaxClassificationCode,
+								enable: true 
+								}, visible: isvisibleItem ">
+							</span>
+						</div>
+						<div class="valign-center control-group">
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {}, visible: isvisibleItem ">保険踏襲出力</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: insuranceFollowingOutputCode,
+								enable: true 
+								}, visible: isvisibleItem ">
+							</span>
+						</div>
+						<div data-bind="visible: isvisibleItem ">
+							<div class="d-label-019">表面出力項目の指定</div>
+							<hr />
+						</div>
+						<div class="valign-center control-group">
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {}, visible: isvisibleItem ">個人住所</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: personalAddressCode,
+								enable: true 
+								}, visible: isvisibleItem ">
+							</span>
+						</div>
+						<div class="valign-center control-group">
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {}, visible: isvisibleItem ">個人氏名</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: personNameCode,
+								enable: true 
+								}, visible: isvisibleItem ">
+							</span>
+						</div>
+						<div class="valign-center control-group">
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {}, visible: isvisibleItem ">会社住所</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: companyAddressCode,
+								enable: true 
+								}, visible: isvisibleItem ">
+							</span>
+						</div>
+						<div class="valign-center control-group">
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {}, visible: isvisibleItem ">会社名</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: companyNameCode,
+								enable: true 
+								}, visible: isvisibleItem ">
+							</span>
+						</div>
+						<!--End right-contents Screen E -->
 					</div>
 				</div>
-
 				<div id="div-button-bottom">
 					<hr />
 					<button class="x-large proceed">登録</button>

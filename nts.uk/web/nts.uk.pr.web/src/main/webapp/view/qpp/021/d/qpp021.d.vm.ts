@@ -1,7 +1,7 @@
 module qpp021.d.viewmodel {
     export class ScreenModel {
-        isEnaleFromParent: KnockoutObservable<boolean>;
-
+        isEnaleFromParent: KnockoutObservable<boolean> = ko.observable(true);
+        isvisibleItem: KnockoutObservable<boolean> = ko.observable(true);
         zeroItemSetting: KnockoutObservableArray<ItemModel>;
         zeroItemSettingCode: KnockoutObservable<number>;
 
@@ -28,8 +28,14 @@ module qpp021.d.viewmodel {
         outputCompanyNameCode: KnockoutObservable<number>;
         shadedSectionCode: KnockoutObservable<number>;
         
+        numberOutputDependentCode: KnockoutObservable<number>;
+        incomeTaxClassificationCode: KnockoutObservable<number>;
+        insuranceFollowingOutputCode: KnockoutObservable<number>;
+        personalAddressCode: KnockoutObservable<number>;
+        personNameCode: KnockoutObservable<number>;
+        companyAddressCode: KnockoutObservable<number>;
+        companyNameCode: KnockoutObservable<number>;
         
-
         constructor() {
             let self = this;
             self.zeroItemSetting = ko.observableArray([
@@ -79,6 +85,16 @@ module qpp021.d.viewmodel {
 
             self.outputCompanyNameCode = ko.observable(1);
             self.shadedSectionCode = ko.observable(1);
+            
+            // Screen D2
+            self.numberOutputDependentCode = ko.observable(1);
+            self.incomeTaxClassificationCode = ko.observable(1);
+            self.insuranceFollowingOutputCode = ko.observable(1);
+            self.personalAddressCode = ko.observable(1);
+            self.personNameCode = ko.observable(1);
+            self.companyAddressCode = ko.observable(1);
+            self.companyNameCode = ko.observable(1);
+            
         }
 
         startPage(): JQueryPromise<any> {
