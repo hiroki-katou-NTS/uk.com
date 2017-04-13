@@ -8,7 +8,7 @@ var sample;
                 function ScreenModel() {
                     var self = this;
                     self.dateString = ko.observable('20000101');
-                    self.yearMonth = ko.observable(200001);
+                    self.yearMonth = ko.observable("200002");
                     self.date = ko.observable(nts.uk.time.UTCDate(2000, 0, 1));
                 }
                 ScreenModel.prototype.pushDataUp = function () {
@@ -44,3 +44,4 @@ var sample;
         })(viewmodel = datepicker.viewmodel || (datepicker.viewmodel = {}));
     })(datepicker = sample.datepicker || (sample.datepicker = {}));
 })(sample || (sample = {}));
+//# sourceMappingURL=viewmodel.js.map
