@@ -18,7 +18,7 @@ module qmm002.d.viewmodel {
         constructor() {
             var self = this;
             self.items = ko.observableArray([]);
-            self.currentItem = ko.observable(new Bank(null, null,null, null));
+            self.currentItem = ko.observable(new Bank(null, null, null, null));
             self.currentCode = ko.observable();
             self.currentCodeList = ko.observableArray([]);
             self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
@@ -78,6 +78,10 @@ module qmm002.d.viewmodel {
          */
         addBank(): any {
             var self = this;
+            self.confirmDirty = false;
+            if ($("#INP_001").ntsError("hasError")||$("#INP_002").ntsError("hasError")||$("#INP_003").ntsError("hasError")||$("#INP_004").ntsError("hasError")) {
+                return;
+            }
             var bankInfo = {
                 bankCode: self.currentItem().code(),
                 bankName: self.currentItem().name(),
@@ -140,16 +144,18 @@ module qmm002.d.viewmodel {
             var self = this;
             self.confirmDirty = true;
             if (!self.checkDirty()) {
-                self.currentItem(new Bank(null, null,null,null));
+                self.currentItem(new Bank(null, null, null, null));
                 self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                 self.currentCode("");
                 self.isCreated(true);
+                 $("#INP_001").focus();
             } else {
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
-                    self.currentItem(new Bank(null,null,null,null));
+                    self.currentItem(new Bank(null, null, null, null));
                     self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                     self.currentCode("");
                     self.isCreated(true);
+                    $("#INP_001").focus();
                 })
             }
         }
@@ -173,7 +179,7 @@ module qmm002.d.viewmodel {
             qmm002.d.service.getBankList().done(function(data) {
                 var list001: Array<Bank> = [];
                 _.forEach(data, function(itemBank) {
-                 list001.push(new Bank(itemBank.bankCode,itemBank.bankName,itemBank.bankNameKana,itemBank.memo));
+                    list001.push(new Bank(itemBank.bankCode, itemBank.bankName, itemBank.bankNameKana, itemBank.memo));
                 });
                 self.items(list001);
                 dfd.resolve(data);

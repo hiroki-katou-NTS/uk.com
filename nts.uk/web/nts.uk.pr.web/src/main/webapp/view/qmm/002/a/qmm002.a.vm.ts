@@ -93,7 +93,6 @@ module nts.uk.pr.view.qmm002.a {
                         width: "130px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
                     enable: ko.observable(false),
                     readonly: ko.observable(false)
                 };
@@ -238,11 +237,20 @@ module nts.uk.pr.view.qmm002.a {
              */
             checkFirtNode(): void {
                 var self = this;
+                //self.confirmDirty = true;
                 self.singleSelectedCode('');
                 if (self.lst_001()[0].childs.length != 0) {
                     self.singleSelectedCode(self.lst_001()[0].childs[0].treeCode);
+                    self.A_INP_003.value(self.currentNode().code);
+                    self.A_INP_004.value(self.currentNode().name);
+                    self.A_INP_005.value(self.currentNode().nameKata);
+                    self.A_INP_006.value(self.currentNode().memo);
                 } else {
                     self.singleSelectedCode(self.lst_001()[0].treeCode);
+                    self.A_INP_003.value(self.currentNode().code);
+                    self.A_INP_004.value(self.currentNode().name);
+                    self.A_INP_005.value(self.currentNode().nameKata);
+                    self.A_INP_006.value(self.currentNode().memo);
                 }
             }
 
@@ -288,6 +296,10 @@ module nts.uk.pr.view.qmm002.a {
                     else {
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
                             nts.uk.ui.windows.sub.modal("/view/qmm/002/c/index.xhtml", { title: "銀行の登録　＞　銀行の統合" }).onClosed(function() {
+                                self.A_INP_003.value(self.currentNode().code);
+                                self.A_INP_004.value(self.currentNode().name);
+                                self.A_INP_005.value(self.currentNode().nameKata);
+                                self.A_INP_006.value(self.currentNode().memo);
                             });
                             nts.uk.ui.windows.setShared('listItem', self.lst_001());
                         })
@@ -314,6 +326,7 @@ module nts.uk.pr.view.qmm002.a {
                     nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
                         nts.uk.ui.windows.sub.modal("/view/qmm/002/d/index.xhtml", { title: "銀行の登録　＞　銀行の追加", dialogClass: "no-close" }).onClosed(() => {
                             if (self.lst_001().length != 0) {
+                                self.confirmDirty = true;
                                 self.checkFirtNode();
                             }
                         });
@@ -326,7 +339,10 @@ module nts.uk.pr.view.qmm002.a {
              */
             addBranch(): void {
                 var self = this;
-                self.confirmDirty = true;
+                self.confirmDirty = false;
+                if ($("#A_INP_003").ntsError("hasError") || $("#A_INP_004").ntsError("hasError") || $("#A_INP_005").ntsError("hasError") || $("#A_INP_006").ntsError("hasError")) {
+                    return;
+                }
                 var branchInfo = {
                     bankCode: self.nodeParent().code,
                     branchId: self.isCreated() ? "" : self.currentNode().branchId,
@@ -364,9 +380,9 @@ module nts.uk.pr.view.qmm002.a {
                 $('#A_INP_003').ntsEditor('validate');
                 var inpt003 = $('#A_INP_003').ntsError('hasError');
                 if (inpt003) {
-                    return false;    
+                    return false;
                 }
-                
+
                 return true;
             }
 
@@ -549,6 +565,7 @@ module nts.uk.pr.view.qmm002.a {
                     self.displayButtonSave(true);
                     self.A_INP_003.enable(true);
                     self.isCreated(true);
+                    $("#A_INP_003").focus();
                 }
                 else {
                     nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
@@ -569,6 +586,7 @@ module nts.uk.pr.view.qmm002.a {
                         self.displayButtonSave(true);
                         self.A_INP_003.enable(true);
                         self.isCreated(true);
+                        $("#A_INP_003").focus();
                     })
                 }
 
