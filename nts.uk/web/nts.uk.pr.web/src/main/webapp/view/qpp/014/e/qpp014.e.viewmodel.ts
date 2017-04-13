@@ -20,7 +20,7 @@ module qpp014.e {
                 self.items_E_LST_003.push(new ItemModel_E_LST_003('00' + i, '基本給', "description " + i));
             }
             self.currentCode_E_LST_003 = ko.observable();
-            self.transferDate = ko.observable(nts.uk.time.parseYearMonthDate(nts.uk.ui.windows.getShared("transferDate")));
+            self.transferDate = ko.observable(nts.uk.time.parseYearMonthDate(nts.uk.ui.windows.getShared("transferDate")).format());
             self.processingDate = ko.observable(nts.uk.ui.windows.getShared("processingDate"));
         }
 
@@ -28,6 +28,7 @@ module qpp014.e {
          * close dialog
          */
         closeDialog(): void {
+            nts.uk.ui.windows.setShared("closeDialog", true, true);
             nts.uk.ui.windows.close();
         }
 
@@ -44,6 +45,11 @@ module qpp014.e {
         stopProcessing(): void {
             var self = this;
             self.timer.end();
+            nts.uk.ui.windows.setShared("closeDialog", false, true);
+            $('#successful').css('display', 'none');
+            $('#stop').css('display', 'none');
+            $('#error').css('display', '');
+            nts.uk.ui.windows.getSelf().setHeight(595);
         }
     }
 

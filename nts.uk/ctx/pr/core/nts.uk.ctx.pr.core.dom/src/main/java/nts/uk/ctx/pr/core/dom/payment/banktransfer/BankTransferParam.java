@@ -1,15 +1,15 @@
-package nts.uk.ctx.pr.core.dom.payment.banktranfer;
+package nts.uk.ctx.pr.core.dom.payment.banktransfer;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 
 /**
- * Include all information for query bank tranfer
+ * Include all information for query bank transfer
  * @author chinhbv
  *
  */
 @Value
-public class BankTranferParam {
+public class BankTransferParam {
 	String companyCode;
 	String personId;
 	

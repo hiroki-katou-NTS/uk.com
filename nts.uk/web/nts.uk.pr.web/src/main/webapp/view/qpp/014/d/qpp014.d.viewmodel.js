@@ -28,7 +28,9 @@ var qpp014;
                     nts.uk.ui.windows.setShared("processingDate", self.processingDate(), true);
                     nts.uk.ui.windows.setShared("transferDate", self.transferDate(), true);
                     nts.uk.ui.windows.sub.modal("/view/qpp/014/e/index.xhtml", { title: "振込データの作成結果一覧", dialogClass: "no-close" }).onClosed(function () {
-                        $('#wizard').ntsWizard("next");
+                        if (!nts.uk.ui.windows.getShared("closeDialog")) {
+                            $('#wizard').ntsWizard("next");
+                        }
                     });
                 };
                 return ScreenModel;

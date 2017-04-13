@@ -38,7 +38,10 @@ module qpp014.d.viewmodel {
             nts.uk.ui.windows.setShared("processingDate", self.processingDate(), true);
             nts.uk.ui.windows.setShared("transferDate", self.transferDate(), true);
             nts.uk.ui.windows.sub.modal("/view/qpp/014/e/index.xhtml", { title: "振込データの作成結果一覧", dialogClass: "no-close" }).onClosed(function() {
-                $('#wizard').ntsWizard("next");
+                //if close button, not next screen
+                if (!nts.uk.ui.windows.getShared("closeDialog")) {
+                    $('#wizard').ntsWizard("next");
+                }
             });
         }
     }

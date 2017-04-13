@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.infra.entity.payment.banktranfer;
+package nts.uk.ctx.pr.core.infra.entity.payment.banktransfer;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;

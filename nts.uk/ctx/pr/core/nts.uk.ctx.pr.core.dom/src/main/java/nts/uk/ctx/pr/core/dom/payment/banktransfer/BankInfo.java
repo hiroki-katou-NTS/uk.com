@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.dom.payment.banktranfer;
+package nts.uk.ctx.pr.core.dom.payment.banktransfer;
 
 import lombok.Value;
 
