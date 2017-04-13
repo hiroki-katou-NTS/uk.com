@@ -29,7 +29,7 @@ public interface PositionRepository {
 	 * @param jobCode
 	 * @param historyId
 	 */
-	void delete (String companyCode,JobCode jobCode,String historyId);
+	void delete (String companyCode,String historyId,JobCode jobCode);
 	/**
 	 * Delete JobTitle By HistoryId
 	 * @param companyCode

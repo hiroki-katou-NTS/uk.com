@@ -143,10 +143,10 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 				position.getHistoryId(),
 				position.getJobCode().v());
 		cmnmtJobTitle.setJobName(position.getJobName().v());
+		cmnmtJobTitle.setPresenceCheckScopeSet(0);
 		cmnmtJobTitle.setJobOutCode(position.getJobOutCode().v());
 		cmnmtJobTitle.setMemo(position.getMemo().v());
 		cmnmtJobTitle.setHierarchyOrderCode(position.getHiterarchyOrderCode().v());
-		cmnmtJobTitle.setPresenceCheckScopeSet(0);
 		cmnmtJobTitle.setCmnmtJobTitlePK(cmnmtJobTitlePK);
 		return cmnmtJobTitle;
 	}
@@ -192,8 +192,8 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 	 * Delete Job Title Select
 	 */
 	@Override
-	public void delete(String companyCode, JobCode jobCode, String historyId) {
-		CmnmtJobTitlePK cmnmtClassPK = new CmnmtJobTitlePK(companyCode, jobCode.toString(), historyId);
+	public void delete(String companyCode, String historyId, JobCode jobCode) {
+		CmnmtJobTitlePK cmnmtClassPK = new CmnmtJobTitlePK(companyCode, historyId, jobCode.toString());
 		this.commandProxy().remove(CmnmtJobTitle.class, cmnmtClassPK);
 	}
 	/**

@@ -5,24 +5,20 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.basic.dom.organization.position.JobCode;
 import nts.uk.ctx.basic.dom.organization.position.PositionRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-
 @Stateless
-public class DeletePositionCommandHandler extends CommandHandler<DeletePositionCommand>{
-
+public class DeleteJobTitleRefCommandHandler extends CommandHandler<DeleteJobTitleRefCommand> {
 	@Inject
 	private PositionRepository positionRepository;
-	
+
 	@Override
-	protected void handle(CommandHandlerContext<DeletePositionCommand> context) {
+	protected void handle(CommandHandlerContext<DeleteJobTitleRefCommand> context) {
 
 		String companyCode = AppContexts.user().companyCode();
-		positionRepository.delete(companyCode,
-				context.getCommand().getHistoryId(),
-				new JobCode(context.getCommand().getJobCode()));
-	}
+		positionRepository.deleteJobTitleRef(companyCode, context.getCommand().getHistoryId(),
+				context.getCommand().getJobCode(), context.getCommand().getAuthCode());
 
+	}
 }

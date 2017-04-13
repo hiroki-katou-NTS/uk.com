@@ -73,7 +73,7 @@ module cmm013.a.viewmodel {
             self.currentCode = ko.observable();
             self.clickChange = ko.observable(false);
             self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'jobCode', width: 80 },
+                { headerText: 'コード', key: 'jobCode', width: 90 },
                 { headerText: '名称', key: 'jobName', width: 100 }
             ]);
             self.roundingRules = ko.observableArray([
@@ -87,18 +87,29 @@ module cmm013.a.viewmodel {
                 new BoxModel(2, 'ロール毎に設定')
             ]);
             self.selectedId = ko.observable(0);
+            if (self.selectedId() == 0) { $('#lst_003').addClass('disableClass'); }
             self.enable = ko.observable(true);
             self.notAlert = ko.observable(true);
-            self.dirty = new nts.uk.ui.DirtyChecker(self.listbox);
+            self.dirty = new nts.uk.ui.DirtyChecker(self.dataSource);
             //change history
             $("#list-box").click(function(evt, ui) {
                 self.clickChange(true);
             });
             self.selectedCode.subscribe(function(codeChanged) {
+                              
                 self.itemHist(self.findHist(codeChanged));
                 self.oldStartDate(self.itemHist().startDate);
                 self.oldEndDate(self.itemHist().endDate);
                 self.srtDateLast(self.listbox()[0].startDate);
+                 if (codeChanged == null) {
+                    return;
+                }
+                if (!self.notAlert()) {
+                    self.notAlert(true);
+                    return;
+                }
+                
+                
                 var chkCopy = nts.uk.ui.windows.getShared('cmm013Copy');
                 if (codeChanged === '1' && chkCopy) {
                     //set lai disable cho input code
@@ -112,7 +123,8 @@ module cmm013.a.viewmodel {
                         }
                         self.listbox.shift();
                     }
-                    //tim kiem position tuong ung voi history                    
+                   
+                    //tim kiem position tuong ung voi history                                        
                     service.findAllJobTitle(codeChanged).done(function(position_arr: Array<model.ListPositionDto>) {
                         self.dataSource(position_arr);
                         if (self.dataSource().length > 0) {
@@ -130,6 +142,7 @@ module cmm013.a.viewmodel {
                     })
                     //set lai disable cho input code
                     //self.inp_002_enable(false);
+                         
                 }
             });
             //change position
@@ -150,24 +163,38 @@ module cmm013.a.viewmodel {
                 self.inp_002_enable(false);
                 self.createdMode(false);
                 //tim kiem quyen theo historyId va position code
-               
-                service.getAllJobTitleAuth(self.currentItem().historyId, self.currentItem().jobCode).done(function(jTref) {
-                    //neu nhu ko co du lieu thi an list di
-                    if (jTref.length === 0) {
-                        $('.trLst003').hide();
-                    } else {
-                        $('.trLst003').show();
-                        self.dataRef([]);
-                        _.map(jTref, function(item) {
-                            var tmp = new model.GetAuth(item.jobCode, item.authCode, item.authName, item.referenceSettings);
-                            self.dataRef.push(tmp);
-                            return tmp;
+                service.findByUseKt().done(function(res: any) {
+                    if (res.use_Kt_Set === 1) {
+
+                        service.getAllJobTitleAuth(self.currentItem().historyId, self.currentItem().jobCode).done(function(jTref) {
+                            //neu nhu ko co du lieu thi an list di
+                            if (jTref.length === 0) {
+                                $('.trLst003').hide();
+                            } else {
+                                $('.trLst003').show();
+                                self.dataRef([]);
+                                _.map(jTref, function(item) {
+                                    var tmp = new model.GetAuth(item.jobCode, item.authCode, item.authName, item.referenceSettings);
+                                    self.dataRef.push(tmp);
+                                    return tmp;
+                                });
+                                self.dataRefNew(self.dataRef());
+                                self.createdMode(true);
+                            }
                         });
-                        self.dataRefNew(self.dataRef());
-                        self.createdMode(true);
                     }
-                });
-           
+                    self.selectedId.subscribe(function(codeChanged) {
+                        $('#lst_003').removeClass('disableClass');
+                        if (codeChanged == 0) {
+                            $('#lst_003').show();
+                            $('#lst_003').addClass('disableClass');
+                        } else if (codeChanged == 1) {
+                            $('#lst_003').hide();
+                        } else {
+                            $('#lst_003').show();
+                        }
+                    })
+                })
             }
         }
 
@@ -285,7 +312,7 @@ module cmm013.a.viewmodel {
             }
             if (self.inp_003_name() === "" || self.inp_003_name() === null) {
                 nts.uk.ui.dialog.alert("名称が入力されていません");
-                $('inp_003').focus();
+                $('#inp_003').focus();
                 return false;
             }
             return true;
@@ -303,7 +330,7 @@ module cmm013.a.viewmodel {
                 return obj.historyId === value;
             })
         }
-        
+
 
         clearInit() {
             var self = this;
@@ -319,32 +346,16 @@ module cmm013.a.viewmodel {
         initPosition() {
             var self = this;
             if (self.checkChangeData() == false || self.checkChangeData() === undefined) {
-
                 if (self.dirty.isDirty()) {
                     nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
-                        self.inp_002_enable(true);
-                        self.inp_002_code("");
-                        self.inp_003_name("");
-                        self.selectedId(1);
-                        self.inp_005_memo("");
-                        self.currentCode(null);
-                        $("#inp_002").focus();
+                        self.clearInit()
                     }).ifNo(function() {
                     });
                 } else {
-                    self.inp_002_enable(true);
-                    self.inp_002_code("");
-                    self.inp_003_name("");
-                    self.dataRef([]);
-                    self.selectedId(1);
-                    self.inp_005_memo("");
-                    self.currentCode(null);
-                    $("#inp_002").focus();
+                    self.clearInit()
                 }
-
             }
         }
-
 
         //kiểm tra dữ liệu
         checkChangeData(): boolean {
@@ -366,7 +377,9 @@ module cmm013.a.viewmodel {
         }
 
         //thực hiện với Dialog C
+
         openCDialog() {
+
             var self = this;
             if (self.checkChangeData() == false || self.checkChangeData() === undefined) {
                 var lstTmp = self.listbox();
@@ -466,15 +479,18 @@ module cmm013.a.viewmodel {
                 var dfd = $.Deferred<any>();
                 var item = new model.DeleteJobTitle(self.selectedCode(), self.currentItem().jobCode);
                 self.index_of_itemDelete = self.dataSource().indexOf(self.currentItem());
-                nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
-                    service.deleteJobTitle(item).done(function(res) {
-                        self.dirty.reset();
-                        self.getPositionList_afterDelete();
-                    }).fail(function(res) {
-                        dfd.reject(res);
-                    })
-                }).ifNo(function() {
-                });
+                if (self.dataSource().length == 1) {
+                    nts.uk.ui.dialog.confirm("選択している履歴の職位が1件のみのため、\r\n履歴の編集ボタンから履歴削除を行ってください。")
+                } else {
+                    nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
+                        service.deleteJobTitle(item).done(function(res) {
+                            self.getPositionList_afterDelete();
+                        }).fail(function(res) {
+                            dfd.reject(res);
+                        })
+                    }).ifNo(function() {
+                    });
+                }
             }
         }
         //get position sau khi xóa 
@@ -546,7 +562,7 @@ module cmm013.a.viewmodel {
         export class ListPositionDto {
             historyId: string;
             jobCode: string;
-            jobName: string;           
+            jobName: string;
             presenceCheckScopeSet: number;
             memo: string;
             constructor(jobCode: string, jobName: string, presenceCheckScopeSet: number, memo: string) {
@@ -590,12 +606,12 @@ module cmm013.a.viewmodel {
                 this.jobCode = jobCode;
             }
         }
-           export class DeleteobRefAuth {
+        export class DeleteobRefAuth {
             companyCode: string;
             historyId: string;
             jobCode: string;
             authCode: string;
-            
+
             constructor(companyCode: string, historyId: string, jobCode: string, authCode: string) {
                 this.companyCode = companyCode;
                 this.historyId = historyId;
@@ -644,6 +660,18 @@ module cmm013.a.viewmodel {
                 this.referenceSettings = referenceSettings;
             }
         }
-
+  
+        export class InputField {
+            inp_002_enable: KnockoutObservable<boolean>;
+            inp_003_name: KnockoutObservable<string>;
+            inp_004_notes: KnockoutObservable<string>;
+            inp_002_code: KnockoutObservable<string>;
+            constructor(position: ListPositionDto, enable) {
+                this.inp_002_code = ko.observable(position.jobCode);
+                this.inp_003_name = ko.observable(position.jobName);
+                this.inp_004_notes = ko.observable(position.memo);
+                this.inp_002_enable = ko.observable(enable);
+            }
+        }
     }
 }

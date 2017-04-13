@@ -32,8 +32,6 @@ public class CmnmtJobTitleRefPK implements Serializable{
 	@Column(name = "JOBCD")
 	public String jobCode;
 	
-	
-	
 	@Basic(optional = false)
 	@Column(name = "AUTHCD")
 	public String authCode;
