@@ -12,17 +12,27 @@ var nts;
                     (function (simplehistory) {
                         var viewmodel;
                         (function (viewmodel) {
+                            /**
+                             * Base screen model for simple history.
+                             */
                             var ScreenBaseModel = (function () {
+                                /**
+                                 * Constructor.
+                                 */
                                 function ScreenBaseModel(options) {
                                     var self = this;
+                                    // Set.
                                     self.options = options;
                                     self.service = options.service;
+                                    // Init.
                                     self.isNewMode = ko.observable(true);
                                     self.masterHistoryDatasource = ko.observableArray([]);
+                                    // On searched result.
                                     self.igGridSelectedHistoryUuid = ko.observable(undefined);
                                     self.selectedHistoryUuid = ko.observable(undefined);
                                     self.selectedNode = ko.observable(undefined);
                                     self.isClickHistory = ko.observable(false);
+                                    // Can update history flag.
                                     self.canUpdateHistory = ko.computed(function () {
                                         return self.selectedNode() && self.selectedHistoryUuid() != undefined;
                                     });
@@ -31,17 +41,20 @@ var nts;
                                     });
                                     self.igGridSelectedHistoryUuid.subscribe(function (id) {
                                         var inlineFunc = function () {
+                                            // Not select.
                                             if (!id) {
                                                 self.selectedNode(undefined);
                                                 return;
                                             }
                                             var selectedNode = self.getNode(id);
+                                            // History node.
                                             if (!selectedNode.isMaster) {
                                                 self.isNewMode(false);
                                                 self.selectedHistoryUuid(selectedNode.id);
                                                 self.onSelectHistory(id);
                                             }
                                             else {
+                                                // Parent node.
                                                 self.onSelectMaster(id);
                                             }
                                             self.selectedNode(selectedNode);
@@ -60,15 +73,20 @@ var nts;
                                         }
                                     });
                                 }
+                                /**
+                                 * Start page.
+                                 */
                                 ScreenBaseModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     $.when(self.loadMasterHistory(), self.start()).done(function (res1, res2) {
                                         if (!self.masterHistoryList || self.masterHistoryList.length == 0) {
+                                            // Set new mode.
                                             self.isNewMode(true);
                                             self.onRegistNew();
                                         }
                                         else {
+                                            // Not new mode and select first history.
                                             self.isNewMode(false);
                                             if (self.masterHistoryDatasource()[0].childs &&
                                                 self.masterHistoryDatasource()[0].childs.length > 0) {
@@ -78,15 +96,20 @@ var nts;
                                                 self.igGridSelectedHistoryUuid(self.masterHistoryDatasource()[0].id);
                                             }
                                         }
+                                        // resolve.
                                         dfd.resolve();
                                     }).fail(dfd.fail);
                                     return dfd.promise();
                                 };
+                                /**
+                                 * Load master history.
+                                 */
                                 ScreenBaseModel.prototype.loadMasterHistory = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     self.service.loadMasterModelList().done(function (res) {
                                         var nodeList = _.map(res, function (master) {
+                                            // Current node.
                                             var masterNode = {
                                                 id: master.code,
                                                 searchText: master.code + ' ' + master.name,
@@ -94,6 +117,7 @@ var nts;
                                                 isMaster: true,
                                                 data: master
                                             };
+                                            // Child node.
                                             var masterChild = _.map(master.historyList, function (history) {
                                                 var node = {
                                                     id: history.uuid,
@@ -114,6 +138,9 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
+                                /**
+                                 * Confirm dirty state and execute function.
+                                 */
                                 ScreenBaseModel.prototype.confirmDirtyAndExecute = function (functionToExecute, functionToExecuteIfNo) {
                                     var self = this;
                                     if (self.isDirty()) {
@@ -129,14 +156,21 @@ var nts;
                                         functionToExecute();
                                     }
                                 };
+                                /**
+                                 * Start regist new.
+                                 */
                                 ScreenBaseModel.prototype.registBtnClick = function () {
                                     var self = this;
                                     self.confirmDirtyAndExecute(function () {
                                         self.isNewMode(true);
                                         self.onRegistNew();
+                                        // Clear select history uuid.
                                         self.igGridSelectedHistoryUuid(undefined);
                                     });
                                 };
+                                /**
+                                 * Save current master and history data.
+                                 */
                                 ScreenBaseModel.prototype.saveBtnClick = function () {
                                     var self = this;
                                     self.onSave().done(function (uuid) {
@@ -144,8 +178,12 @@ var nts;
                                             self.igGridSelectedHistoryUuid(uuid);
                                         });
                                     }).fail(function () {
+                                        // Do nothing.
                                     });
                                 };
+                                /**
+                                 * Open add new history dialog.
+                                 */
                                 ScreenBaseModel.prototype.addNewHistoryBtnClick = function () {
                                     var self = this;
                                     self.confirmDirtyAndExecute(function () {
@@ -155,6 +193,7 @@ var nts;
                                             name: self.options.functionName,
                                             master: currentNode.isMaster ? currentNode.data : currentNode.parent.data,
                                             lastest: latestNode ? latestNode.data : undefined,
+                                            // Copy.
                                             onCopyCallBack: function (data) {
                                                 var dfd = $.Deferred();
                                                 self.service.createHistory(data.masterCode, data.startYearMonth, true)
@@ -166,6 +205,7 @@ var nts;
                                                 });
                                                 return dfd.promise();
                                             },
+                                            // Init.
                                             onCreateCallBack: function (data) {
                                                 var dfd = $.Deferred();
                                                 self.service.createHistory(data.masterCode, data.startYearMonth, false)
@@ -186,6 +226,9 @@ var nts;
                                         nts.uk.ui.windows.sub.modal('/view/base/simplehistory/newhistory/index.xhtml', ntsDialogOptions);
                                     });
                                 };
+                                /**
+                                 * Open update history btn.
+                                 */
                                 ScreenBaseModel.prototype.updateHistoryBtnClick = function () {
                                     var self = this;
                                     var currentNode = self.getNode(self.selectedHistoryUuid());
@@ -194,11 +237,13 @@ var nts;
                                         master: currentNode.parent.data,
                                         history: currentNode.data,
                                         removeMasterOnLastHistoryRemove: self.options.removeMasterOnLastHistoryRemove,
+                                        // Delete callback.
                                         onDeleteCallBack: function (data) {
                                             self.service.deleteHistory(data.masterCode, data.historyId).done(function () {
                                                 self.reloadMasterHistory(null);
                                             });
                                         },
+                                        // Update call back.
                                         onUpdateCallBack: function (data) {
                                             var dfd = $.Deferred();
                                             self.service.updateHistoryStart(data.masterCode, data.historyId, data.startYearMonth).done(function () {
@@ -217,9 +262,13 @@ var nts;
                                     };
                                     nts.uk.ui.windows.sub.modal('/view/base/simplehistory/updatehistory/index.xhtml', ntsDialogOptions);
                                 };
+                                /**
+                                 * Reload master history then set.
+                                 */
                                 ScreenBaseModel.prototype.reloadMasterHistory = function (uuid) {
                                     var self = this;
                                     self.loadMasterHistory().done(function () {
+                                        // Set new mode if masterHistoryList has 0 element.
                                         if (!self.masterHistoryList || self.masterHistoryList.length == 0) {
                                             self.isNewMode(true);
                                             self.onRegistNew();
@@ -239,13 +288,24 @@ var nts;
                                         }
                                     });
                                 };
+                                /**
+                                 * Internal start for each page.
+                                 * Override if you need to do any thing.
+                                 */
                                 ScreenBaseModel.prototype.start = function () {
                                     var dfd = $.Deferred();
                                     dfd.resolve();
                                     return dfd.promise();
                                 };
+                                /**
+                                 * On select master data.
+                                 */
                                 ScreenBaseModel.prototype.onSelectMaster = function (code) {
+                                    // Override your self if need.
                                 };
+                                /**
+                                 * Get node using id.
+                                 */
                                 ScreenBaseModel.prototype.getNode = function (id) {
                                     var self = this;
                                     var nodeList = _.flatMap(self.masterHistoryDatasource(), function (node) {
@@ -270,4 +330,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=viewmodel.js.map

@@ -21,7 +21,6 @@ __viewContext.ready(function () {
         }, end: function () {
             this.timer.end();
         }
-    };
+    }; // developer's view model
     this.bind(vm);
 });
-//# sourceMappingURL=start.js.map
