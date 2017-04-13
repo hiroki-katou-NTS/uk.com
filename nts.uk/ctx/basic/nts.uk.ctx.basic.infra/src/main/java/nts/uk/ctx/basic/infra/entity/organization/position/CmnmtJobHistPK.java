@@ -18,17 +18,12 @@ import lombok.Setter;
 @Embeddable
 public class CmnmtJobHistPK implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-
 	
 	@Basic(optional = false)	
 	@Column(name = "CCD")
 	public String companyCode;
 		
-	
 	@Basic(optional = false)
 	@Column(name = "HIST_ID")
 	public String historyId;

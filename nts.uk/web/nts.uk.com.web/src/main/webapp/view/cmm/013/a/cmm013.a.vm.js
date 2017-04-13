@@ -27,10 +27,8 @@ var cmm013;
                     self.checkRegister = ko.observable('0');
                     self.oldStartDate = ko.observable(null);
                     self.endDateUpdate = ko.observable(null);
-                    self.histIdUpdate = ko.observable(null);
                     self.startDateUpdateNew = ko.observable(null);
                     self.oldEndDate = ko.observable(null);
-                    self.startDateLastEnd = ko.observable(null);
                     self.checkCoppyJtitle = ko.observable(true);
                     self.historyIdUpdate = ko.observable(null);
                     self.dataSource = ko.observableArray([]);
@@ -62,6 +60,7 @@ var cmm013;
                         self.itemHist(self.findHist(codeChanged));
                         self.oldStartDate(self.itemHist().startDate);
                         self.oldEndDate(self.itemHist().endDate);
+                        self.srtDateLast(self.listbox()[0].startDate);
                         var chkCopy = nts.uk.ui.windows.getShared('cmm013Copy');
                         if (codeChanged === '1' && chkCopy) {
                             self.inp_002_enable(true);
@@ -75,7 +74,7 @@ var cmm013;
                                 }
                                 self.listbox.shift();
                             }
-                            a.service.findAllPosition(codeChanged).done(function (position_arr) {
+                            a.service.findAllJobTitle(codeChanged).done(function (position_arr) {
                                 self.dataSource(position_arr);
                                 if (self.dataSource().length > 0) {
                                     var changedCode = self.clickChange() ? self.dataSource()[0].jobCode : self.inp_002_code() || self.dataSource()[0].jobCode;
@@ -135,32 +134,33 @@ var cmm013;
                 ScreenModel.prototype.getHistory = function (dfd, selectedHistory) {
                     var self = this;
                     a.service.getAllHistory().done(function (history_arr) {
-                        self.listbox(history_arr);
+                        var listHistory = _.map(history_arr, function (item) {
+                            return new model.ListHistoryDto(item.companyCode, item.startDate, item.endDate, item.historyId);
+                        });
+                        self.listbox(listHistory);
                         if (history_arr.length > 0) {
                             if (selectedHistory !== undefined && selectedHistory !== "1") {
                                 var currentHist = self.findHist(selectedHistory);
                                 self.selectedCode(currentHist.historyId);
-                                self.srtDateLast(currentHist.startDate);
                                 self.endDateUpdate(currentHist.endDate);
-                                self.histIdUpdate(currentHist.historyId);
                                 self.startDateLast(currentHist.startDate);
                                 self.historyIdUpdate(currentHist.historyId);
                             }
                             else {
                                 var histStart = _.first(history_arr);
                                 self.selectedCode(histStart.historyId);
-                                self.srtDateLast(histStart.startDate);
                                 self.endDateUpdate(histStart.endDate);
-                                self.histIdUpdate(histStart.historyId);
                                 self.startDateLast(histStart.startDate);
                                 self.historyIdUpdate(histStart.historyId);
                             }
                             var hisEnd = _.last(history_arr);
-                            self.startDateLastEnd(hisEnd.startDate);
                             self.oldStartDate();
                             dfd.resolve(history_arr);
                         }
                         else {
+                            self.dataSource([]);
+                            self.initPosition();
+                            self.srtDateLast(null);
                             self.openCDialog();
                             dfd.resolve();
                         }
@@ -204,6 +204,13 @@ var cmm013;
                             nts.uk.ui.windows.setShared('cmm013C_startDateNew', '', true);
                             self.selectedCode.valueHasMutated();
                             self.getHistory(dfd, selectedHistory_1);
+                        }).fail(function (error) {
+                            if (error.message === "ER005") {
+                                alert("入力した*は既に存在しています。\r\n*を確認してください。");
+                            }
+                            if (error.message === "ER026") {
+                                alert("更新対象のデータが存在しません。");
+                            }
                         });
                         return dfd.promise();
                     }
@@ -264,6 +271,7 @@ var cmm013;
                             self.inp_002_enable(true);
                             self.inp_002_code("");
                             self.inp_003_name("");
+                            self.dataRef([]);
                             self.selectedId(1);
                             self.inp_005_memo("");
                             self.currentCode(null);
@@ -294,7 +302,7 @@ var cmm013;
                     if (self.checkChangeData() == false || self.checkChangeData() === undefined) {
                         var lstTmp = self.listbox();
                         nts.uk.ui.windows.setShared('CMM013_historyId', self.index_selected(), true);
-                        nts.uk.ui.windows.setShared('CMM013_startDateLast', self.startDateLast(), true);
+                        nts.uk.ui.windows.setShared('CMM013_startDateLast', self.srtDateLast());
                         nts.uk.ui.windows.sub.modal('/view/cmm/013/c/index.xhtml', { title: '履歴の追加', })
                             .onClosed(function () {
                             self.startDateUpdateNew('');
@@ -317,7 +325,6 @@ var cmm013;
                                         self.listbox.splice(1, 1, update);
                                         self.listbox.valueHasMutated();
                                     }
-                                    console.log(self.listbox());
                                 }
                                 else {
                                     return;
@@ -334,7 +341,7 @@ var cmm013;
                                     var update = new model.ListHistoryDto('', self.startDateLast(), strStartDate, self.historyIdUpdate());
                                     if (self.listbox().length > 1) {
                                         self.listbox.splice(1, 1, update);
-                                        a.service.findAllPosition(self.listbox()[1].historyId).done(function (position_arr) {
+                                        a.service.findAllJobTitle(self.listbox()[1].historyId).done(function (position_arr) {
                                             self.dataSource(position_arr);
                                             if (self.dataSource().length > 0) {
                                                 self.currentCode(self.dataSource()[0].jobCode);
@@ -345,7 +352,6 @@ var cmm013;
                                         self.listbox.valueHasMutated();
                                         self.inp_002_enable(false);
                                     }
-                                    console.log(self.listbox());
                                 }
                                 else {
                                     return;
@@ -356,6 +362,7 @@ var cmm013;
                 };
                 ScreenModel.prototype.openDDialog = function () {
                     var self = this;
+                    var dfd = $.Deferred();
                     if (self.checkChangeData() == false || self.checkChangeData() === undefined) {
                         var lstTmp = [];
                         self.startDateUpdateNew('');
@@ -365,10 +372,10 @@ var cmm013;
                         nts.uk.ui.windows.setShared('cmm013OldEndDate', self.oldEndDate(), true);
                         nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '履歴の編集', })
                             .onClosed(function () {
-                            var dfd = $.Deferred();
-                            self.getHistory(dfd);
-                            self.dataSource([]);
-                            self.clearInit();
+                            if (!nts.uk.ui.windows.getShared('cancelDialog')) {
+                                self.currentCode(self.selectedCode);
+                                self.getHistory(dfd);
+                            }
                             dfd.promise();
                         });
                     }
@@ -383,7 +390,7 @@ var cmm013;
                         var item = new model.DeleteJobTitle(self.selectedCode(), self.currentItem().jobCode);
                         self.index_of_itemDelete = self.dataSource().indexOf(self.currentItem());
                         nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
-                            a.service.deletePosition(item).done(function (res) {
+                            a.service.deleteJobTitle(item).done(function (res) {
                                 self.dirty.reset();
                                 self.getPositionList_afterDelete();
                             }).fail(function (res) {
@@ -396,7 +403,7 @@ var cmm013;
                 ScreenModel.prototype.getPositionList_afterDelete = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    a.service.findAllPosition(self.selectedCode()).done(function (position_arr) {
+                    a.service.findAllJobTitle(self.selectedCode()).done(function (position_arr) {
                         self.dataSource = ko.observableArray([]);
                         self.dataSource(position_arr);
                         if (self.dataSource().length > 0) {
@@ -452,8 +459,8 @@ var cmm013;
                     function ListHistoryDto(companyCode, startDate, endDate, historyId) {
                         var self = this;
                         self.companyCode = companyCode;
-                        self.startDate = startDate;
-                        self.endDate = endDate;
+                        self.startDate = moment.utc(startDate).format("YYYY/MM/DD");
+                        self.endDate = moment.utc(endDate).format("YYYY/MM/DD");
                         self.historyId = historyId;
                     }
                     return ListHistoryDto;
@@ -498,6 +505,16 @@ var cmm013;
                     return DeleteJobTitle;
                 }());
                 model.DeleteJobTitle = DeleteJobTitle;
+                var DeleteobRefAuth = (function () {
+                    function DeleteobRefAuth(companyCode, historyId, jobCode, authCode) {
+                        this.companyCode = companyCode;
+                        this.historyId = historyId;
+                        this.jobCode = jobCode;
+                        this.authCode = authCode;
+                    }
+                    return DeleteobRefAuth;
+                }());
+                model.DeleteobRefAuth = DeleteobRefAuth;
                 var registryCommand = (function () {
                     function registryCommand(historyId, startDate, chkCopy, jobCode, chkInsert, positionCommand, refCommand) {
                         this.historyId = historyId;

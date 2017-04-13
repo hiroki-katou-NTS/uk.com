@@ -7,13 +7,11 @@ import nts.arc.primitive.StringPrimitiveValue;
 @StringMaxLength(20)
 public class JobName extends StringPrimitiveValue<PrimitiveValue<String>>{
 	/**
-	 * 
+	 * JOBNAME
 	 */
 	private static final long serialVersionUID = 1L;
-
 	public JobName(String rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
 
 }

@@ -9,36 +9,24 @@ import nts.arc.time.GeneralDate;
 @Getter
 public class JobHistory extends AggregateRoot {
 	
+	private String companyCode;
+	
 	private String historyId;
 
-	private String companyCode;
+	private GeneralDate startDate;
 	
 	private GeneralDate endDate;
 	
-	private GeneralDate startDate;
-	
-	
-	
-	
-	
-	
-	public JobHistory( String companyCode,String historyId,GeneralDate endDate,GeneralDate startDate) {
-
+	public JobHistory( String companyCode,String historyId,GeneralDate startDate,GeneralDate endDate) {
 		super();
-		
 		this.companyCode = companyCode;
 		this.historyId = historyId;
-		this.endDate = endDate;
 		this.startDate = startDate;
-	}
-
-	public static JobHistory createFromJavaType( String companyCode,String historyId,GeneralDate endDate,GeneralDate startDate) {
-		return new JobHistory(companyCode,historyId,endDate,startDate);
-
-	}
-
-	public void setEndDate(GeneralDate endDate) {
 		this.endDate = endDate;
 	}
 
+	public static JobHistory createFromJavaType( String companyCode,String historyId,GeneralDate startDate,GeneralDate endDate) {
+		return new JobHistory(companyCode,historyId,startDate,endDate);
+
+	}
 }

@@ -1,10 +1,10 @@
 @CHARSET "UTF-8";
 /**dudt**/
-#header{
-	display:none;
+#header {
+	display: none;
 }
 
-#tblContent{
+#tblContent {
 	margin: 25px !important;
 }
 
@@ -12,32 +12,38 @@
 	margin-top: 5px;
 }
 /**dudt**/
-
 .separate-button {
 	margin-left: 10px;
-	margin-top:	5px;
+	margin-top: 5px;
 }
 
 .header {
 	margin: 5px;
-	padding:5px;
+	padding: 5px;
 	border-bottom: 1px solid #aaa;
 	height: 30px;
 	width: 100%;
 }
 
 .body {
-	padding:10px;
+	padding: 10px;
 }
+
 .row {
-	padding:10px;
+	padding: 10px;
 }
+
 #lbl_003 {
 	/**dudt**/
 	/**float: right;**/
 	/**dudt**/
 	margin-left: 10px;
 }
+
+#radio {
+	display: inline-block;
+	}
+
 #inp_001 {
 	/**dudt**/
 	/**float: left;**/
@@ -56,7 +62,7 @@
 	margin-left: 100px;
 	padding-bottom: 10px;
 }**/
-.div{
+.div {
 	text-align: center;
 	padding-top: 20px;
 }

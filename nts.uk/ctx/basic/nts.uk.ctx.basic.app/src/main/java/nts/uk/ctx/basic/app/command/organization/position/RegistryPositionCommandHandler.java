@@ -55,7 +55,7 @@ public class RegistryPositionCommandHandler extends CommandHandler<RegistryPosit
 				// ---lay position cua lich su ngay truoc no
 				Optional<JobHistory> historyByEndate = positionRepository.getHistoryByEdate(companyCode, endDate);
 				String historyBefore = historyByEndate.get().getHistoryId();
-				lstPositionBefor = positionRepository.findAllPosition(companyCode, historyBefore);
+				lstPositionBefor = positionRepository.findAllJobTitle(companyCode, historyBefore);
 				List<JobTitle> lstPositionNow = lstPositionBefor.stream().map(org -> {
 					return JobTitle.createFromJavaType(companyCode, 
 							historyIdNew, 
@@ -102,9 +102,7 @@ public class RegistryPositionCommandHandler extends CommandHandler<RegistryPosit
 				positionRepository.updateHistory(jobHis);
 				
 			}
- 			positionRepository.addHistory(historyInfor);
- 			
-			
+ 			positionRepository.addHistory(historyInfor);		
 			// neu history != null thuc hien add or update position
 		} else {
 			PositionCommand commandInfor = rePositionCommand.getPositionCommand();
@@ -125,8 +123,8 @@ public class RegistryPositionCommandHandler extends CommandHandler<RegistryPosit
 				JobTitle jobInfor = upJobInfor.get();
 				jobInfor.setJobCode(new JobCode(rePositionCommand.getJobCode()));
 				jobInfor.setJobName(new JobName(commandInfor.getJobName()));
-				jobInfor.setJobOutCode(new JobCode(commandInfor.getJobOutCode()));
 				jobInfor.setHiterarchyOrderCode(new HiterarchyOrderCode(commandInfor.getHiterarchyOrderCode()));
+				jobInfor.setJobOutCode(new JobCode(commandInfor.getJobOutCode()));
 				jobInfor.setMemo(new Memo(commandInfor.getMemo()));
 				jobInfor.setPresenceCheckScopeSet(EnumAdaptor.valueOf(commandInfor.getPresenceCheckScopeSet(), PresenceCheckScopeSet.class));
 				//update position				

@@ -3,7 +3,9 @@ package nts.uk.ctx.basic.dom.organization.position;
 import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum EmpScopeAtr {
-	
+	/**
+	 * EMP_SCOPE_ATR
+	 */
 		/**0: 全員*/
 		AllMember(0),
 		/**1: 所属部門配下全て*/

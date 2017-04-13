@@ -12,7 +12,7 @@
 			<script>var dialogSize = { width: 550, height: 450 };</script>
 			<!--dudt -->
 			<com:ValidatorScript>
-			nts.uk.ctx.basic.dom.organization.position.JobCode			
+			nts.uk.ctx.basic.dom.organization.position.JobCode
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cmm013.c.main.css" />
@@ -42,12 +42,17 @@
 									required: true
 									}">期間</div>
 						</td>
+					<!-- 	<td><input id="inp_001"
+							data-bind="ntsTimeEditor: {
+						 					value: inp_003,
+						 					inputFormat: 'date'}" />
+							<label id="lbl_003"> ~ 9999/12/31</label></td> -->
 						<td><input id="inp_001"
 							data-bind="ntsTextEditor: {
 						 					value: inp_003,
 						 					constraint: '', 
 						 					enable: true}" />
-							<label id="lbl_003"> ~ 9999-12-31</label> <!--dudt upd--></td>
+							<label id="lbl_003"> ~ 9999/12/31</label></td>
 					</tr>
 					<tr>
 						<td class="row" data-bind="with: label_002">
@@ -60,7 +65,7 @@
 						</td>
 						<td>
 							<!-- C_SEL_001 -->
-							<div
+							<div id = "radio"
 								data-bind="ntsRadioBoxGroup: {
 								options: itemList,
 								optionsValue: 'id',

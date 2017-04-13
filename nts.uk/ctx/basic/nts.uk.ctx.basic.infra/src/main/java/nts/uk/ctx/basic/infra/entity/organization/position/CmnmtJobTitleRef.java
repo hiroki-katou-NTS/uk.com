@@ -24,11 +24,9 @@ public class CmnmtJobTitleRef extends UkJpaEntity implements Serializable{
 	@EmbeddedId
     public CmnmtJobTitleRefPK cmnmtJobTitleRefPK;
 
-
 	@Basic(optional = false)
 	@Column(name = "REF_SET")
 	public int referenceSettings;
-
 
 	@Override
 	protected CmnmtJobTitleRefPK getKey() {

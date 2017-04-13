@@ -44,7 +44,6 @@ public class CmnmtJobHist extends UkJpaEntity implements Serializable{
 
 	@Override
 	protected CmnmtJobHistPK getKey() {
-		// TODO Auto-generated method stub
 		return this.cmnmtJobHistPK;
 	}
 

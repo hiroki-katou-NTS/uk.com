@@ -10,16 +10,22 @@ module cmm013.c.viewmodel {
         selectedId: KnockoutObservable<number>;
         enable: KnockoutObservable<boolean>;
         res: KnockoutObservableArray<string>;
+        yearmonthdateeditor: any;
 
         constructor() {
             var self = this;
             self.label_002 = ko.observable(new Labels());
-            self.inp_003 = ko.observable(null);
+            self.inp_003 = ko.observable("");
             self.historyId = ko.observable(null);
             self.startDateLast = ko.observable('');
             //C_SEL_001
             self.selectedId = ko.observable(1);
             self.enable = ko.observable(true);
+            self.yearmonthdateeditor = {
+                option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
+                    inputFormat: 'date'
+                })),
+            };
         }
         /**
          * Start page
@@ -30,18 +36,21 @@ module cmm013.c.viewmodel {
             var dfd = $.Deferred();
             self.historyId(nts.uk.ui.windows.getShared('CMM013_historyId'));
             self.startDateLast(nts.uk.ui.windows.getShared('CMM013_startDateLast'));
+           
+            self.selectedId = ko.observable(0);
+    //!nts.uk.text.isNullOrEmpty(self.historyId()) && !nts.uk.text.isNullOrEmpty(self.startDateLast()) && 
             
             if (self.startDateLast()) {
-                debugger;
                 self.itemList = ko.observableArray([
                     new BoxModel(0, '最新の履歴（' + self.startDateLast() + '）から引き継ぐ  '),
                     new BoxModel(1, '初めから作成する')
+                   
                 ]);
-
+                 self.selectedId = ko.observable(1);
                 self.enable(true);
             } else {
                 self.enable(false);
-                self.setValueForRadio();
+                 self.setValueForRadio();
             }
             dfd.resolve();
             return dfd.promise();
@@ -54,10 +63,10 @@ module cmm013.c.viewmodel {
         setValueForRadio(): any {
             var self = this;
             self.itemList = ko.observableArray([
-                new BoxModel(1, ' 初めから作成する '),  
-                new BoxModel(2, ' 初めから作成する')
+                new BoxModel(0, ' 初めから作成する '),
+                new BoxModel(1, ' 初めから作成する')
             ]);
-            self.selectedId = ko.observable(2);
+            self.selectedId = ko.observable(0);
         }
 
         closeDialog() {
@@ -105,8 +114,9 @@ module cmm013.c.viewmodel {
         checkTypeInput(): boolean {
             var self = this;
             var date = new Date(self.inp_003());
+
             if (date.toDateString() == 'Invalid Date') {
-                alert("nhap lai ngay theo dinh dang YYYY-MM-DD hoac YYYY/MM/DD hoac YYYY.MM.DD");
+                alert("Input by YYYY/MM/DD");
                 return false;
             } else {
                 return true;

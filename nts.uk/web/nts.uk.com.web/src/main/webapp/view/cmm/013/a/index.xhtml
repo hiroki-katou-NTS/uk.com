@@ -50,8 +50,8 @@
 								rows: 3,
 								required: true,
 								columns: [
-									{ key: 'startDate', length: 8, },
-									{ key: 'endDate', length: 8}
+									{ key: 'startDate', length: 8, inputFormat: 'date' },
+									{ key: 'endDate', length: 8,inputFormat: 'date'}
 								]}"></div>
 					<div>
 						<span style="margin-left: 100px"
@@ -129,7 +129,7 @@
 								</div>
 							</td>
 						</tr>
-						<tr class="trLst003" data-bind="visible: dataRefNew().length">
+						<tr class="trLst003" data-bind="visible: dataRef().length > 0">
 							<td></td>
 							<td>
 								<div id="lst_003" data-bind="if: dataRef" style="width: 225px">

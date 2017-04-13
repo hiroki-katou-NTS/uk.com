@@ -73,15 +73,13 @@ module cmm013.d.viewmodel {
         }
         //<---clear set share--->
         clearShared(): any {
-            nts.uk.ui.windows.setShared('cmm013StartDate', '', true);
-            nts.uk.ui.windows.setShared('cmm013EndDate', '', true);
-            nts.uk.ui.windows.setShared('cmm013HistoryId', '', true);
+            nts.uk.ui.windows.setShared('cmm013StartDate', '');
+            nts.uk.ui.windows.setShared('cmm013EndDate', '');
+            nts.uk.ui.windows.setShared('cmm013HistoryId', '');
         }
         //<---close dialog--->       
         closeDialog() {
-            var self = this;
-                            
-            self.clearShared();
+            nts.uk.ui.windows.setShared('cancelDialog', true);
             nts.uk.ui.windows.close();
         }
         positionHis() {

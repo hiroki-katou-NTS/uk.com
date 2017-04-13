@@ -7,6 +7,7 @@ package nts.uk.pr.file.infra.entity;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
@@ -15,6 +16,7 @@ import lombok.Setter;
 /**
  * The Class ReportCmnmtEmpPK.
  */
+@Embeddable
 @Setter
 @Getter
 public class ReportCmnmtEmpPK implements Serializable {

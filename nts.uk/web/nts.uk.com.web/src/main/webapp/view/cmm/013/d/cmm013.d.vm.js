@@ -62,13 +62,12 @@ var cmm013;
                     self.lstMessage.push(new ItemMessage("ER023", "履歴の期間が重複しています。"));
                 };
                 ScreenModel.prototype.clearShared = function () {
-                    nts.uk.ui.windows.setShared('cmm013StartDate', '', true);
-                    nts.uk.ui.windows.setShared('cmm013EndDate', '', true);
-                    nts.uk.ui.windows.setShared('cmm013HistoryId', '', true);
+                    nts.uk.ui.windows.setShared('cmm013StartDate', '');
+                    nts.uk.ui.windows.setShared('cmm013EndDate', '');
+                    nts.uk.ui.windows.setShared('cmm013HistoryId', '');
                 };
                 ScreenModel.prototype.closeDialog = function () {
-                    var self = this;
-                    self.clearShared();
+                    nts.uk.ui.windows.setShared('cancelDialog', true);
                     nts.uk.ui.windows.close();
                 };
                 ScreenModel.prototype.positionHis = function () {

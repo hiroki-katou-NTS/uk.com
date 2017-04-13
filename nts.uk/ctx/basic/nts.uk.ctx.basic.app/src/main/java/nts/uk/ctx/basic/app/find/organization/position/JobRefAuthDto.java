@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.basic.dom.organization.position.JobRef_Auth;
+import nts.uk.ctx.basic.dom.organization.position.JobRefAuth;
 @Getter
 @Setter
 @AllArgsConstructor
@@ -18,10 +18,8 @@ public class JobRefAuthDto {
 	
 	private int referenceSettings;
 	
-	public static JobRefAuthDto fromDomain(String authCode, String authName, int referenceSettings) {
-		return new JobRefAuthDto(authCode, authName, referenceSettings);
-	}
-	public static JobRefAuthDto fromDomain(JobRef_Auth domain) {
+
+	public static JobRefAuthDto fromDomain(JobRefAuth domain) {
 		return new JobRefAuthDto(
 				domain.getAuthCode().v(),
 				domain.getAuthName().v(),

@@ -8,7 +8,7 @@ import nts.uk.ctx.basic.dom.organization.position.AuthorizationLevel;
 @Getter
 @Setter
 @AllArgsConstructor
-public class AuthLevel {
+public class AuthLevelDto {
 
 	private String companyCode;
 	
@@ -24,8 +24,8 @@ public class AuthLevel {
 	
 	private String memo;
 	
-	public static AuthLevel fromDomain(AuthorizationLevel domain) {
-		return new AuthLevel(domain.getCompanyCode(),
+	public static AuthLevelDto fromDomain(AuthorizationLevel domain) {
+		return new AuthLevelDto(domain.getCompanyCode(),
 				domain.getAuthScopeAtr().v(),
 				domain.getAuthCode().v(),
 				domain.getAuthName().v(),

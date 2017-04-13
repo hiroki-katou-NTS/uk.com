@@ -5,7 +5,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 @Getter
 @Setter
-public class JobRef_Auth {
+public class JobRefAuth {
 
 	private AuthorizationCode authCode;
 	
@@ -13,22 +13,20 @@ public class JobRef_Auth {
 	
 	private ReferenceSettings referenceSettings;
 	
-	public JobRef_Auth(AuthorizationCode authCode,
+	public JobRefAuth(AuthorizationCode authCode,
 			AuthorizationName authName,ReferenceSettings referenceSettings) {
 		super();
 		this.authCode = authCode;
 		this.authName = authName;
 		this.referenceSettings = referenceSettings;
 	}
-
-
-	public static JobRef_Auth createSimpleFromJavaType(
+	
+	public static JobRefAuth createSimpleFromJavaType(
 			String authCode, 
 			String authName, 
 			int referenceSettings){
-		return new JobRef_Auth(	new AuthorizationCode(authCode),
+		return new JobRefAuth(	new AuthorizationCode(authCode),
 								new AuthorizationName(authName),
-								EnumAdaptor.valueOf(referenceSettings, ReferenceSettings.class)
-								);
+								EnumAdaptor.valueOf(referenceSettings, ReferenceSettings.class));
 	}
 }

@@ -14,16 +14,15 @@ public class JobRefAuthFinder {
 	@Inject
 	private PositionRepository positionRepo;
 
-
 	/**
 	 * get all authorization
+	 * 
 	 * @return
 	 */
-	public List<JobRefAuthDto> getAllRefAuth(String historyId, String jobCode){
-		List<JobRefAuthDto> listRefAuth = this.positionRepo.getAllAuth(AppContexts.user().companyCode(), historyId, jobCode, "KT")
-										.stream()
-										.map(c->JobRefAuthDto.fromDomain(c))
-										.collect(Collectors.toList());
+	public List<JobRefAuthDto> getAllRefAuth(String historyId, String jobCode) {
+		List<JobRefAuthDto> listRefAuth = this.positionRepo
+				.getAllAuth(AppContexts.user().companyCode(), historyId, jobCode, "KT").stream()
+				.map(c -> JobRefAuthDto.fromDomain(c)).collect(Collectors.toList());
 		return listRefAuth;
 	}
 }

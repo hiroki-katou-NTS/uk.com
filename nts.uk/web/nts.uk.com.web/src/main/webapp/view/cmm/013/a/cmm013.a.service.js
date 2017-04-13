@@ -5,125 +5,55 @@ var cmm013;
         var service;
         (function (service) {
             var paths = {
-                findAllPosition: "basic/organization/position/findallposition/",
-                addPosition: "basic/organization/position/addPosition",
-                deletePosition: "basic/organization/position/deletePosition",
-                updatePosition: "basic/organization/position/updatePosition",
-                getAllHistory: "basic/organization/position/getallhist",
+                findAllJobTitle: "basic/organization/position/findAllJobTitle/",
+                deleteJobTitle: "basic/organization/position/deleteJobTitle",
+                getAllHistory: "basic/organization/position/getAllHist",
                 regitry: "basic/organization/position/registryPosition",
-                updateHist: "basic/organization/position/updateHist",
-                deleteHist: "basic/organization/position/deleteHist",
-                getRef: "basic/organization/position/getalljobtitleref/",
-                getAuthLevel: "basic/organization/position/getallauthlevel/",
                 getAllUseKt: "ctx/proto/company/findByUseKtSet/",
-                getAuth: "basic/organization/position/getalljobrefauth/"
+                getAuth: "basic/organization/position/getAllJobRefAuth/",
+                deleteJobTitleRef: "basic/organization/position/deleteJobTitleRef/",
+                findAuth: "basic/organization/position/findAuth/"
             };
-            function findAllPosition(historyId) {
+            function findAllJobTitle(historyId) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.findAllPosition + historyId)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax("com", paths.findAllJobTitle + historyId);
             }
-            service.findAllPosition = findAllPosition;
+            service.findAllJobTitle = findAllJobTitle;
             function findByUseKt() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.getAllUseKt + "1")
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax("com", paths.getAllUseKt + "1");
             }
             service.findByUseKt = findByUseKt;
-            function addPosition(position) {
+            function deleteJobTitle(position) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.addPosition, position)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax("com", paths.deleteJobTitle, position);
             }
-            service.addPosition = addPosition;
-            function updatePosition(position) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.updatePosition, position).done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.updatePosition = updatePosition;
-            function deletePosition(position) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.deletePosition, position).done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.deletePosition = deletePosition;
+            service.deleteJobTitle = deleteJobTitle;
             function getAllHistory() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.getAllHistory)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax("com", paths.getAllHistory);
             }
             service.getAllHistory = getAllHistory;
             function registry(addHandler) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.regitry, addHandler)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax("com", paths.regitry, addHandler);
             }
             service.registry = registry;
-            function getAllJobTitleRef(historyId, jobCode) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.getRef + historyId + "/" + jobCode)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.getAllJobTitleRef = getAllJobTitleRef;
             function getAllJobTitleAuth(historyId, jobCode) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.getAuth + historyId + "/" + jobCode)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax("com", paths.getAuth + historyId + "/" + jobCode);
             }
             service.getAllJobTitleAuth = getAllJobTitleAuth;
+            function deleteJobRefAuth(jobRefAuth) {
+                var dfd = $.Deferred();
+                return nts.uk.request.ajax("com", paths.deleteJobTitleRef, jobRefAuth);
+            }
+            service.deleteJobRefAuth = deleteJobRefAuth;
+            function findAuth() {
+                var dfd = $.Deferred();
+                return nts.uk.request.ajax("com", paths.findAuth + "KT");
+            }
+            service.findAuth = findAuth;
             var GetJobAuth = (function () {
                 function GetJobAuth(historyId, jobCode, authCode, authName, referenceSettings, authScopeAtr) {
                     this.historyId = historyId;
@@ -136,18 +66,6 @@ var cmm013;
                 return GetJobAuth;
             }());
             service.GetJobAuth = GetJobAuth;
-            function updateHist(update) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.updateHist, update)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.updateHist = updateHist;
         })(service = a.service || (a.service = {}));
     })(a = cmm013.a || (cmm013.a = {}));
 })(cmm013 || (cmm013 = {}));

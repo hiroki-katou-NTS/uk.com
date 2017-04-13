@@ -7,24 +7,24 @@ import nts.arc.layer.dom.AggregateRoot;
 @Getter
 public class JobTitleRef extends AggregateRoot{
 	
-	private AuthorizationCode authCode;
-			
-	private String historyId;
-	
 	private String companyCode;
 	
+	private String historyId;
+	
 	private JobCode jobCode;
+	
+	private AuthorizationCode authCode;
 	
 	private ReferenceSettings referenceSettings;
 	
 	public JobTitleRef(String companyCode, String historyId,JobCode jobCode,AuthorizationCode authCode,ReferenceSettings referenceSettings ) {
 		super();
-		this.referenceSettings = referenceSettings;
-		this.historyId = historyId;
 		this.companyCode = companyCode;
+		this.historyId = historyId;
 		this.jobCode = jobCode;
 		this.authCode = authCode;
-		;
+		this.referenceSettings = referenceSettings;
+		
 	}
 
 	public static JobTitleRef createFromJavaType(  

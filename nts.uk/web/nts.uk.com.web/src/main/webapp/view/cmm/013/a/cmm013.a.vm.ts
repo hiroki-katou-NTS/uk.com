@@ -27,9 +27,7 @@ module cmm013.a.viewmodel {
         oldEndDate: KnockoutObservable<string>;
         oldStartDate: KnockoutObservable<string>;
         endDateUpdate: KnockoutObservable<string>;
-        histIdUpdate: KnockoutObservable<string>;
         startDateUpdateNew: KnockoutObservable<string>;
-        startDateLastEnd: KnockoutObservable<string>;
         checkCoppyJtitle: KnockoutObservable<boolean>;
         checkAddJhist: KnockoutObservable<string>;
         checkAddJtitle: KnockoutObservable<string>;
@@ -66,10 +64,8 @@ module cmm013.a.viewmodel {
             self.checkRegister = ko.observable('0');
             self.oldStartDate = ko.observable(null);
             self.endDateUpdate = ko.observable(null);
-            self.histIdUpdate = ko.observable(null);
             self.startDateUpdateNew = ko.observable(null);
             self.oldEndDate = ko.observable(null);
-            self.startDateLastEnd = ko.observable(null);
             self.checkCoppyJtitle = ko.observable(true);
             self.historyIdUpdate = ko.observable(null);
             self.dataSource = ko.observableArray([]);
@@ -102,7 +98,7 @@ module cmm013.a.viewmodel {
                 self.itemHist(self.findHist(codeChanged));
                 self.oldStartDate(self.itemHist().startDate);
                 self.oldEndDate(self.itemHist().endDate);
-
+                self.srtDateLast(self.listbox()[0].startDate);
                 var chkCopy = nts.uk.ui.windows.getShared('cmm013Copy');
                 if (codeChanged === '1' && chkCopy) {
                     //set lai disable cho input code
@@ -117,7 +113,7 @@ module cmm013.a.viewmodel {
                         self.listbox.shift();
                     }
                     //tim kiem position tuong ung voi history                    
-                    service.findAllPosition(codeChanged).done(function(position_arr: Array<model.ListPositionDto>) {
+                    service.findAllJobTitle(codeChanged).done(function(position_arr: Array<model.ListPositionDto>) {
                         self.dataSource(position_arr);
                         if (self.dataSource().length > 0) {
                             //set select position & history
@@ -154,7 +150,7 @@ module cmm013.a.viewmodel {
                 self.inp_002_enable(false);
                 self.createdMode(false);
                 //tim kiem quyen theo historyId va position code
-
+               
                 service.getAllJobTitleAuth(self.currentItem().historyId, self.currentItem().jobCode).done(function(jTref) {
                     //neu nhu ko co du lieu thi an list di
                     if (jTref.length === 0) {
@@ -171,6 +167,7 @@ module cmm013.a.viewmodel {
                         self.createdMode(true);
                     }
                 });
+           
             }
         }
 
@@ -185,36 +182,38 @@ module cmm013.a.viewmodel {
         getHistory(dfd: any, selectedHistory?: string): any {
             var self = this;
             service.getAllHistory().done(function(history_arr: Array<model.ListHistoryDto>) {
-                self.listbox(history_arr);
-              
+                var listHistory = _.map(history_arr, function(item) {
+                    return new model.ListHistoryDto(item.companyCode, item.startDate, item.endDate, item.historyId);
+                });
+                self.listbox(listHistory);
+
                 if (history_arr.length > 0) {
                     if (selectedHistory !== undefined && selectedHistory !== "1") {
                         let currentHist = self.findHist(selectedHistory);
                         self.selectedCode(currentHist.historyId);
-                        self.srtDateLast(currentHist.startDate);
                         self.endDateUpdate(currentHist.endDate);
-                        self.histIdUpdate(currentHist.historyId);
                         self.startDateLast(currentHist.startDate);
                         self.historyIdUpdate(currentHist.historyId);
                     } else {
                         var histStart = _.first(history_arr);
                         self.selectedCode(histStart.historyId);
-                        self.srtDateLast(histStart.startDate);
                         self.endDateUpdate(histStart.endDate);
-                        self.histIdUpdate(histStart.historyId);
                         self.startDateLast(histStart.startDate);
                         self.historyIdUpdate(histStart.historyId);
                     }
                     var hisEnd = _.last(history_arr);
-                    self.startDateLastEnd(hisEnd.startDate);
                     self.oldStartDate();
                     dfd.resolve(history_arr);
                 } else {
+                    self.dataSource([]);
+                    self.initPosition();
+                    self.srtDateLast(null);
                     self.openCDialog();
                     dfd.resolve();
                 }
             })
         }
+
         //thuc hien nut 登録
         registerPosition(): any {
             var self = this;
@@ -262,6 +261,13 @@ module cmm013.a.viewmodel {
                     nts.uk.ui.windows.setShared('cmm013C_startDateNew', '', true);
                     self.selectedCode.valueHasMutated();
                     self.getHistory(dfd, selectedHistory);
+                }).fail(function(error: any) {
+                    if (error.message === "ER005") {
+                        alert("入力した*は既に存在しています。\r\n*を確認してください。");
+                    }
+                    if (error.message === "ER026") {
+                        alert("更新対象のデータが存在しません。");
+                    }
                 });
                 return dfd.promise();
 
@@ -297,6 +303,7 @@ module cmm013.a.viewmodel {
                 return obj.historyId === value;
             })
         }
+        
 
         clearInit() {
             var self = this;
@@ -328,6 +335,7 @@ module cmm013.a.viewmodel {
                     self.inp_002_enable(true);
                     self.inp_002_code("");
                     self.inp_003_name("");
+                    self.dataRef([]);
                     self.selectedId(1);
                     self.inp_005_memo("");
                     self.currentCode(null);
@@ -363,7 +371,7 @@ module cmm013.a.viewmodel {
             if (self.checkChangeData() == false || self.checkChangeData() === undefined) {
                 var lstTmp = self.listbox();
                 nts.uk.ui.windows.setShared('CMM013_historyId', self.index_selected(), true);
-                nts.uk.ui.windows.setShared('CMM013_startDateLast', self.startDateLast(), true);
+                nts.uk.ui.windows.setShared('CMM013_startDateLast', self.srtDateLast());
                 nts.uk.ui.windows.sub.modal('/view/cmm/013/c/index.xhtml', { title: '履歴の追加', })
                     .onClosed(function(): any {
                         self.startDateUpdateNew('');
@@ -386,7 +394,6 @@ module cmm013.a.viewmodel {
                                     self.listbox.splice(1, 1, update);
                                     self.listbox.valueHasMutated();
                                 }
-                                console.log(self.listbox());
                             } else {
                                 return;
                             }
@@ -403,7 +410,7 @@ module cmm013.a.viewmodel {
                                 if (self.listbox().length > 1) {
                                     self.listbox.splice(1, 1, update);
                                     //tim kiem position tuong ung voi history
-                                    service.findAllPosition(self.listbox()[1].historyId).done(function(position_arr: Array<model.ListPositionDto>) {
+                                    service.findAllJobTitle(self.listbox()[1].historyId).done(function(position_arr: Array<model.ListPositionDto>) {
                                         self.dataSource(position_arr);
                                         if (self.dataSource().length > 0) {
                                             //set select position & history
@@ -415,7 +422,6 @@ module cmm013.a.viewmodel {
                                     self.listbox.valueHasMutated();
                                     self.inp_002_enable(false);
                                 }
-                                console.log(self.listbox());
                             } else {
                                 return;
                             }
@@ -427,6 +433,7 @@ module cmm013.a.viewmodel {
         //thực hiện với Dialog D
         openDDialog() {
             var self = this;
+            var dfd = $.Deferred();
             if (self.checkChangeData() == false || self.checkChangeData() === undefined) {
                 var lstTmp = [];
                 self.startDateUpdateNew('');
@@ -434,12 +441,18 @@ module cmm013.a.viewmodel {
                 nts.uk.ui.windows.setShared('cmm013StartDate', self.oldStartDate(), true);
                 nts.uk.ui.windows.setShared('cmm013EndDate', self.endDateUpdate(), true);
                 nts.uk.ui.windows.setShared('cmm013OldEndDate', self.oldEndDate(), true);
+
                 nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '履歴の編集', })
                     .onClosed(function() {
-                        let dfd = $.Deferred();
-                        self.getHistory(dfd);
-                          self.dataSource([]);
-                self.clearInit();
+                        //                        if (self.listbox().length === 0) {
+                        //                            self.getHistory(dfd);
+                        //                            self.dataSource([]);
+                        //                            self.clearInit();
+                        //                        } else {
+                        if (!nts.uk.ui.windows.getShared('cancelDialog')) {
+                            self.currentCode(self.selectedCode);
+                            self.getHistory(dfd);
+                        }
                         dfd.promise();
                     });
             }
@@ -454,7 +467,7 @@ module cmm013.a.viewmodel {
                 var item = new model.DeleteJobTitle(self.selectedCode(), self.currentItem().jobCode);
                 self.index_of_itemDelete = self.dataSource().indexOf(self.currentItem());
                 nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
-                    service.deletePosition(item).done(function(res) {
+                    service.deleteJobTitle(item).done(function(res) {
                         self.dirty.reset();
                         self.getPositionList_afterDelete();
                     }).fail(function(res) {
@@ -468,7 +481,7 @@ module cmm013.a.viewmodel {
         getPositionList_afterDelete(): any {
             var self = this;
             var dfd = $.Deferred<any>();
-            service.findAllPosition(self.selectedCode()).done(function(position_arr: Array<model.ListPositionDto>) {
+            service.findAllJobTitle(self.selectedCode()).done(function(position_arr: Array<model.ListPositionDto>) {
                 self.dataSource = ko.observableArray([]);
                 self.dataSource(position_arr);
                 if (self.dataSource().length > 0) {
@@ -525,15 +538,15 @@ module cmm013.a.viewmodel {
             constructor(companyCode: string, startDate: string, endDate: string, historyId: string) {
                 var self = this;
                 self.companyCode = companyCode;
-                self.startDate = startDate;
-                self.endDate = endDate;
+                self.startDate = moment.utc(startDate).format("YYYY/MM/DD");
+                self.endDate = moment.utc(endDate).format("YYYY/MM/DD");
                 self.historyId = historyId;
             }
         }
         export class ListPositionDto {
-            jobCode: string;
-            jobName: string;
             historyId: string;
+            jobCode: string;
+            jobName: string;           
             presenceCheckScopeSet: number;
             memo: string;
             constructor(jobCode: string, jobName: string, presenceCheckScopeSet: number, memo: string) {
@@ -575,6 +588,19 @@ module cmm013.a.viewmodel {
             constructor(historyId: string, jobCode: string) {
                 this.historyId = historyId;
                 this.jobCode = jobCode;
+            }
+        }
+           export class DeleteobRefAuth {
+            companyCode: string;
+            historyId: string;
+            jobCode: string;
+            authCode: string;
+            
+            constructor(companyCode: string, historyId: string, jobCode: string, authCode: string) {
+                this.companyCode = companyCode;
+                this.historyId = historyId;
+                this.jobCode = jobCode;
+                this.authCode = authCode;
             }
         }
         export class registryCommand {

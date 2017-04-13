@@ -9,9 +9,13 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+@Getter
+@Setter
 @Entity
 @Table(name="CMNMT_JOB_TITLE")
 @AllArgsConstructor
@@ -21,10 +25,6 @@ public class CmnmtJobTitle extends UkJpaEntity implements Serializable{
 
 	@EmbeddedId
     public CmnmtJobTitlePK cmnmtJobTitlePK;
-
-	@Basic(optional = false)
-	@Column(name = "EXCLUS_VER")
-	public int exclusVersion;
 	
 	@Basic(optional = false)
 	@Column(name = "JOBNAME")
@@ -45,67 +45,7 @@ public class CmnmtJobTitle extends UkJpaEntity implements Serializable{
 	@Basic(optional = false)
 	@Column(name = "HIERARCHY_ORDER_CD")
 	public String hierarchyOrderCode;
-
-	public CmnmtJobTitlePK getCmnmtJobTitlePK() {
-		return cmnmtJobTitlePK;
-	}
-
-	public void setCmnmtJobTitlePK(CmnmtJobTitlePK cmnmtJobTitlePK) {
-		this.cmnmtJobTitlePK = cmnmtJobTitlePK;
-	}
-
-	public int getExclusVersion() {
-		return exclusVersion;
-	}
-
-	public void setExclusVersion(int exclusVersion) {
-		this.exclusVersion = exclusVersion;
-	}
-
-	public String getJobName() {
-		return jobName;
-	}
-
-	public void setJobName(String jobName) {
-		this.jobName = jobName;
-	}
-
-	public int getPresenceCheckScopeSet() {
-		return presenceCheckScopeSet;
-	}
-
-	public void setPresenceCheckScopeSet(int presenceCheckScopeSet) {
-		this.presenceCheckScopeSet = presenceCheckScopeSet;
-	}
-
-	public String getJobOutCode() {
-		return jobOutCode;
-	}
-
-	public void setJobOutCode(String jobOutCode) {
-		this.jobOutCode = jobOutCode;
-	}
-
-	public String getMemo() {
-		return memo;
-	}
-
-	public void setMemo(String memo) {
-		this.memo = memo;
-	}
-
-	public String getHierarchyOrderCode() {
-		return hierarchyOrderCode;
-	}
-
-	public void setHierarchyOrderCode(String hierarchyOrderCode) {
-		this.hierarchyOrderCode = hierarchyOrderCode;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
+	
 	@Override
 	protected CmnmtJobTitlePK getKey() {
 		// TODO Auto-generated method stub

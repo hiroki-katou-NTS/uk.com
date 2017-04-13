@@ -8,11 +8,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.basic.app.find.organization.position.JobHistFinder;
 import nts.uk.ctx.basic.dom.organization.position.JobHistory;
 import nts.uk.ctx.basic.dom.organization.position.PositionRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -22,8 +20,7 @@ public class DeleteHistoryCommandHandler extends CommandHandler<DeleteHistoryCom
 
 	@Inject
 	private PositionRepository repository;
-	@Inject
-	private JobHistFinder jobHistFinder;
+
 	
 	@Override
 
@@ -33,8 +30,9 @@ public class DeleteHistoryCommandHandler extends CommandHandler<DeleteHistoryCom
 			
 			DeleteHistoryCommand command = context.getCommand();
 			String companyCode = AppContexts.user().companyCode();
-
 			
+			String jobCode = command.getJobCode();
+			String authCode = command.getAuthCode();
 			String historyId = command.getHistoryId();
 			//check xem lich su co ton tai khong
 //			repository.findSingleHistory(companyCode, historyId).ifPresent(x -> {throw new BusinessException("ER010");});
@@ -46,7 +44,7 @@ public class DeleteHistoryCommandHandler extends CommandHandler<DeleteHistoryCom
 			//xoa tat ca postition cua lich su
 			repository.deleteJobTitleByHisId(companyCode, historyId);
 			//xoa tat ca ref cua lich su
-			repository.deleteJobRef(companyCode, historyId);
+			repository.deleteJobTitleRef(companyCode, historyId, jobCode, authCode);
 			//update tat ca ngay ket thuc cua lich su truoc ve 1999-12-31
 			//---Tim lich su cua thang dang truoc
 			GeneralDate endDate = GeneralDate.localDate(LocalDate.parse(command.getOldStartDate())).addDays(-1);
