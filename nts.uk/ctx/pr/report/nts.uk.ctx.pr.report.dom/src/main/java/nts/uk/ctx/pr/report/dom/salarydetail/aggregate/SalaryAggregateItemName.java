@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.salarydetail.aggregate;
@@ -17,7 +17,7 @@ public class SalaryAggregateItemName extends StringPrimitiveValue<SalaryAggregat
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Instantiates a new output setting name.
+	 * Instantiates a new salary aggregate item name.
 	 *
 	 * @param rawValue the raw value
 	 */

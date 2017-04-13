@@ -31,7 +31,7 @@
 				<button id="new-button" data-bind="click: onNewModeBtnClicked">新規</button>
 				<button id="register-button" class="proceed" data-bind="click: onSaveBtnClicked">登録</button>
 				<button id="setting-button" data-bind="click: onCommonSettingBtnClicked">集計項目の設定</button>
-				<button id="delete-button" class="danger" data-bind="click: onRemoveBtnClicked">削除</button>
+				<button id="delete-button" class="danger" data-bind="disable: isNewMode, click: onRemoveBtnClicked">削除</button>
 				<button id="close-button" data-bind="click: onCloseBtnClicked">閉じる</button>
 			</div>
 
