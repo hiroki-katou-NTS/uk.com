@@ -9,7 +9,7 @@ import nts.uk.ctx.pr.core.dom.paymentdata.PaymentDetailCode;
 
 @Getter
 @AllArgsConstructor
-public class getEmployeeList extends AggregateRoot{
+public class EmployeeAllSetting extends AggregateRoot{
 private CompanyCode companyCode;
 	
 	private String historyId;
@@ -26,8 +26,8 @@ private CompanyCode companyCode;
 	
 	private BonusDetailName bonusDetailName;
 	
-	public static getEmployeeList createFromJavaType(String companyCode, String historyId, String employeeCode,String employeeName,String paymentDetailCode,String paymentDetailName, String bonusDetailCode, String bonusDetailName){
-		return new getEmployeeList(
+	public static EmployeeAllSetting createFromJavaType(String companyCode, String historyId, String employeeCode,String employeeName,String paymentDetailCode,String paymentDetailName, String bonusDetailCode, String bonusDetailName){
+		return new EmployeeAllSetting(
 				new CompanyCode(companyCode), 
 				historyId,
 				new EmployeeCode(employeeCode),

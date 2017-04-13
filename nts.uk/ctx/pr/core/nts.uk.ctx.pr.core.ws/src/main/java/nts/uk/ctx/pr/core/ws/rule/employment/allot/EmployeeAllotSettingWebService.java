@@ -5,11 +5,12 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.pr.core.app.find.rule.employment.allot.EmployeeAllSettingDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.allot.EmployeeAllotSettingDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.allot.EmployeeAllotSettingFinder;
-import nts.uk.ctx.pr.core.app.find.rule.employment.allot.getEmploymentListDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("pr/core/allot")
@@ -25,9 +26,9 @@ public class EmployeeAllotSettingWebService {
 	}
 	
 	@POST
-	@Path("findAllEmployeeAllotSettingList")
-	public List<getEmploymentListDto> getAllEmployeeAllotSettingList(String historyID, String employeeCode ){
-		return this.find.getAllEmployeeAllotSettingList(AppContexts.user().companyCode(), historyID, employeeCode);
+	@Path("findAllEmployeeAllotSettingList/{histId}")
+	public List<EmployeeAllSettingDto> getAllEmployeeAllotSettingList(@PathParam("histId") String histid ){
+		return this.find.getAllEmployeeAllotSettingList(AppContexts.user().companyCode(), histid);
 	}
 	
 }

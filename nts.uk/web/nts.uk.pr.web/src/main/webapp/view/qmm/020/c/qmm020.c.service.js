@@ -8,7 +8,7 @@ var qmm020;
             var paths = {
                 getEmployAllotSettingHeaderList: "pr/core/allot/findallemployeeallotheader",
                 getEmployAllotSettingDetailList: "pr/core/allot/findallemployeeallotdetail",
-                getAllEmployeeAllotSettingList: "pr/core/allot/findAllEmployeeAllotSettingList"
+                getAllEmployeeAllotSettingList: "pr/core/allot/findAllEmployeeAllotSettingList/{0}"
             };
             /**
              * Get list payment date processing.
@@ -40,15 +40,14 @@ var qmm020;
                 return dfd.promise();
             }
             service.getEmployeeAllotDetailList = getEmployeeAllotDetailList;
-            function getAllEmployeeAllotSetting() {
+            function getAllEmployeeAllotSetting(histId) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getAllEmployeeAllotSettingList)
-                    .done(funtion(res, Array(), {
-                    dfd: .resolve(res)
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                }));
+                var _path = nts.uk.text.format(paths.getAllEmployeeAllotSettingList, histId);
+                nts.uk.request.ajax(_path).done(function (res) {
+                    dfd.resolve(res);
+                }).fail(function (error) {
+                    dfd.reject(error);
+                });
                 return dfd.promise();
             }
             service.getAllEmployeeAllotSetting = getAllEmployeeAllotSetting;

@@ -7,10 +7,27 @@ var qmm020;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
+                    var dfd = $.Deferred();
                     self.itemList = ko.observableArray([]);
                     self.selectedCode = ko.observableArray([]);
                     self.isEnable = ko.observable(true);
                     self.selectedList = ko.observableArray([]);
+                    self.itemHist = ko.observable(null);
+                    self.histId = ko.observable(null);
+                    self.selectedCode.subscribe(function (codeChange) {
+                        c.service.getAllEmployeeAllotSetting(ko.toJS(codeChange)).done(function (data) {
+                            if (data && data.length > 0) {
+                                _.forEach(data, function (item) {
+                                    self.itemListDetail.push(new EmployeeAllotSettingDto(item.companyCode(), item.historyId(), item.employeeCode(), item.employeeName(), item.paymentDetailCode(), item.paymentDetailName(), item.bonusDetailCode(), item.bonusDetailName()));
+                                });
+                            }
+                            dfd.resolve();
+                        }).fail(function (res) {
+                            // Alert message
+                            alert(res);
+                        });
+                        dfd.promise();
+                    });
                     // Array Data 1 
                     var employment1 = ko.mapping.fromJS([
                         { "NO": 1, "ID": "000000001", "Name": "正社員", "PaymentDocID": "K001", "PaymentDocName": "給与明細書001", "BonusDocID": "S001", "BonusDocName": "賞与明細書001" },
@@ -57,19 +74,7 @@ var qmm020;
                         width: "800px",
                         height: "240px",
                         primaryKey: "ID",
-                        dataSource: ko.mapping.toJS(employment1())
-                    });
-                    //subcribe list box's change
-                    self.selectedCode.subscribe(function (codeChange) {
-                        if (codeChange.length > 0) {
-                            //get ValueName when click to item in HistoryList
-                            var row = _.find(self.itemList(), function (item) {
-                                var code = self.selectedCode();
-                                //                        if (code === item.code) {
-                                //                            //self.selectedName(item.name);
-                                //                        }
-                            });
-                        }
+                        dataSource: self.itemListDetail
                     });
                     //SCREEN C
                     //Event : Click to button Sentaku on igGrid
@@ -84,6 +89,13 @@ var qmm020;
                     };
                     self.start();
                 }
+                //find histId to subscribe
+                ScreenModel.prototype.getHist = function (value) {
+                    var self = this;
+                    return _.find(self.itemList(), function (item) {
+                        return item.historyId === value;
+                    });
+                };
                 //Selected changed
                 ScreenModel.prototype.selectionChanged = function (evt, ui) {
                     //console.log(evt.type);
@@ -102,7 +114,6 @@ var qmm020;
                     //Get list startDate, endDate of History  
                     c.service.getEmployeeAllotHeaderList().done(function (data) {
                         if (data.length > 0) {
-                            //TODO 2017.03.14
                             _.forEach(data, function (item) {
                                 self.itemList.push(new ItemModel(item.historyId, item.startYm + ' ~ ' + item.endYm));
                             });
@@ -114,18 +125,6 @@ var qmm020;
                         // Alert message
                         alert(res);
                     });
-                    //            service.getEmployeeAllotDetailList().done(funtion(dataDetail: Array<EmployeeSettingDetailModel>){
-                    //                if(dataDetail.length > 0) {
-                    //                    _.forEach(dataDetail, function(item) {
-                    //                        self.itemListDetail.push(new EmployeeAllotModel(item.histId, item.empCode, item.paymentCode, item.paymentName, item.bonusCode, item.bonusName ));
-                    //                    });
-                    //                } else {
-                    //                    dfd.resolve();
-                    //                }
-                    //            }).fail(function(res) {
-                    //                // Alert message
-                    //                alert(res);
-                    //            });
                     // Return.
                     return dfd.promise();
                 };
@@ -153,11 +152,15 @@ var qmm020;
             }());
             viewmodel.ItemModel = ItemModel;
             var EmployeeAllotSettingDto = (function () {
-                function EmployeeAllotSettingDto(companyCode, historyId, employeeCode, bonusDetailCode, paymentDetailCode) {
+                function EmployeeAllotSettingDto(companyCode, historyId, employeeCode, employeeName, paymentDetailCode, paymentDetailName, bonusDetailCode, bonusDetailName) {
                     this.companyCode = ko.observable(companyCode);
                     this.historyId = ko.observable(historyId);
-                    this.bonusDetailCode = ko.observable(bonusDetailCode);
+                    this.employeeCode = ko.observable(employeeCode);
+                    this.employeeName = ko.observable(employeeName);
                     this.paymentDetailCode = ko.observable(paymentDetailCode);
+                    this.paymentDetailName = ko.observable(paymentDetailName);
+                    this.bonusDetailCode = ko.observable(bonusDetailCode);
+                    this.bonusDetailName = ko.observable(bonusDetailName);
                 }
                 return EmployeeAllotSettingDto;
             }());

@@ -4,13 +4,15 @@ module qmm020.c.viewmodel {
     export class ScreenModel {
         // listbox
         itemList: KnockoutObservableArray<ItemModel>;
-        itemListDetail: KnockoutObservableArray<EmployeeAllotModel>;
+        itemListDetail: KnockoutObservableArray<EmployeeAllotSettingDto>;
         itemName: KnockoutObservable<string>;
         currentCode: KnockoutObservable<number>
         selectedName: KnockoutObservable<string>;
         selectedCode: KnockoutObservableArray<string>;
         selectedCodes: KnockoutObservableArray<string>;
         isEnable: KnockoutObservable<boolean>;
+        histId: KnockoutObservable<string>;
+        itemHist: KnockoutObservable<EmployeeSettingHeaderModel>;
         //selectedCode: KnockoutObservable<string>;
 
 
@@ -20,12 +22,29 @@ module qmm020.c.viewmodel {
 
         constructor() {
             var self = this;
+            let dfd = $.Deferred<any>();
             self.itemList = ko.observableArray([]);
             self.selectedCode = ko.observableArray([]);
             self.isEnable = ko.observable(true);
             self.selectedList = ko.observableArray([]);
+            self.itemHist = ko.observable(null);
+            self.histId = ko.observable(null);
+            self.selectedCode.subscribe(function(codeChange) {
+                service.getAllEmployeeAllotSetting(ko.toJS(codeChange)).done(function(data: Array<EmployeeAllotSettingDto>) {
+                    if (data && data.length > 0) {
+                        _.forEach(data, function(item) {
+                            self.itemListDetail.push(new EmployeeAllotSettingDto(item.companyCode(), item.historyId(), item.employeeCode(), item.employeeName(), item.paymentDetailCode()
+                                , item.paymentDetailName(), item.bonusDetailCode(), item.bonusDetailName()));
+                        });
 
-
+                    }
+                    dfd.resolve();
+                }).fail(function(res) {
+                    // Alert message
+                    alert(res);
+                });
+                dfd.promise();
+            });
             // Array Data 1 
             let employment1 = ko.mapping.fromJS([
                 { "NO": 1, "ID": "000000001", "Name": "正社員", "PaymentDocID": "K001", "PaymentDocName": "給与明細書001", "BonusDocID": "S001", "BonusDocName": "賞与明細書001" },
@@ -73,22 +92,10 @@ module qmm020.c.viewmodel {
                 width: "800px",
                 height: "240px",
                 primaryKey: "ID",
-                dataSource: ko.mapping.toJS(employment1())
+                dataSource: self.itemListDetail
             });
 
 
-            //subcribe list box's change
-            self.selectedCode.subscribe(function(codeChange) {
-                if (codeChange.length > 0) {
-                    //get ValueName when click to item in HistoryList
-                    let row = _.find(self.itemList(), function(item) {
-                        let code = self.selectedCode();
-                        //                        if (code === item.code) {
-                        //                            //self.selectedName(item.name);
-                        //                        }
-                    });
-                }
-            });
             //SCREEN C
             //Event : Click to button Sentaku on igGrid
             var openPaymentDialog = function(evt, ui) {
@@ -104,6 +111,13 @@ module qmm020.c.viewmodel {
             }
             self.start();
         }
+        //find histId to subscribe
+        getHist(value: any) {
+            let self = this;
+            return _.find(self.itemList(), function(item: EmployeeSettingHeaderModel) {
+                return item.historyId === value;
+            });
+        }
         //Selected changed
         selectionChanged(evt, ui) {
             //console.log(evt.type);
@@ -115,9 +129,6 @@ module qmm020.c.viewmodel {
             this.selectedList(arr);
         };
 
-
-
-
         // start function
         start(): JQueryPromise<any> {
             var self = this;
@@ -125,7 +136,6 @@ module qmm020.c.viewmodel {
             //Get list startDate, endDate of History  
             service.getEmployeeAllotHeaderList().done(function(data: Array<EmployeeSettingHeaderModel>) {
                 if (data.length > 0) {
-                    //TODO 2017.03.14
                     _.forEach(data, function(item) {
                         self.itemList.push(new ItemModel(item.historyId, item.startYm + ' ~ ' + item.endYm));
                     });
@@ -137,24 +147,12 @@ module qmm020.c.viewmodel {
                 // Alert message
                 alert(res);
             });
-//            service.getEmployeeAllotDetailList().done(funtion(dataDetail: Array<EmployeeSettingDetailModel>){
-//                if(dataDetail.length > 0) {
-//                    _.forEach(dataDetail, function(item) {
-//                        self.itemListDetail.push(new EmployeeAllotModel(item.histId, item.empCode, item.paymentCode, item.paymentName, item.bonusCode, item.bonusName ));
-//                    });
-//                } else {
-//                    dfd.resolve();
-//                }
-//            }).fail(function(res) {
-//                // Alert message
-//                alert(res);
-//            });
 
             // Return.
             return dfd.promise();
         }
         //Open dialog Add History
-        openJDialog() {}
+        openJDialog() { }
         //Open dialog Edit History
         openKDialog() {
             var self = this;
@@ -181,15 +179,23 @@ module qmm020.c.viewmodel {
         companyCode: KnockoutObservable<string>;
         historyId: KnockoutObservable<string>;
         employeeCode: KnockoutObservable<string>;
-        bonusDetailCode: KnockoutObservable<string>;
+        employeeName: KnockoutObservable<string>;
         paymentDetailCode: KnockoutObservable<string>;
-        constructor(companyCode: string, historyId: string, employeeCode: string, bonusDetailCode: string, paymentDetailCode: string) {
+        paymentDetailName: KnockoutObservable<string>;
+        bonusDetailCode: KnockoutObservable<string>;
+        bonusDetailName: KnockoutObservable<string>;
+        constructor(companyCode: string, historyId: string, employeeCode: string, employeeName: string, paymentDetailCode: string, paymentDetailName: string, bonusDetailCode: string, bonusDetailName: string) {
             this.companyCode = ko.observable(companyCode);
             this.historyId = ko.observable(historyId);
-            this.bonusDetailCode = ko.observable(bonusDetailCode);
+            this.employeeCode = ko.observable(employeeCode);
+            this.employeeName = ko.observable(employeeName);
             this.paymentDetailCode = ko.observable(paymentDetailCode);
+            this.paymentDetailName = ko.observable(paymentDetailName);
+            this.bonusDetailCode = ko.observable(bonusDetailCode);
+            this.bonusDetailName = ko.observable(bonusDetailName);
         }
     }
+
 
     export class EmployeeSettingHeaderModel {
         companyCode: string;

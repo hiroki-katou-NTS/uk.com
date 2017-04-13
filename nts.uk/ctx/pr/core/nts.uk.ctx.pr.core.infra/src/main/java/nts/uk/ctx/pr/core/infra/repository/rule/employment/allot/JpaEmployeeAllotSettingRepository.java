@@ -8,77 +8,62 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.EmployeeAllSetting;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.EmployeeAllotSetting;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.EmployeeAllotSettingRepository;
-import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.getEmployeeList;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.allot.QstmtStmtAllotEm;
+
 @Stateless
-public class JpaEmployeeAllotSettingRepository extends JpaRepository implements EmployeeAllotSettingRepository{
+public class JpaEmployeeAllotSettingRepository extends JpaRepository implements EmployeeAllotSettingRepository {
 	private final String SEL_1 = "SELECT c FROM QstmtStmtAllotEm c"
 			+ " WHERE c.qstmtStmtAllotEmPK.companyCode = :companyCode"
-			+ " AND c.qstmtStmtAllotEmPK.employeeCd = :employeeCd"
-			+ " AND c.qstmtStmtAllotEmPK.histId = :histId"
-			+ " AND ( c.paymentDetailCode != '00'"
-			+ " OR c.bonusDetailCode != '00')";
-	
+			+ " AND c.qstmtStmtAllotEmPK.employeeCd = :employeeCd" + " AND c.qstmtStmtAllotEmPK.histId = :histId"
+			+ " AND ( c.paymentDetailCode != '00'" + " OR c.bonusDetailCode != '00')";
+
 	private final String SEL_2 = "SELECT c FROM QstmtStmtAllotEm c "
-			+ " WHERE c.qstmtStmtAllotEmPK.companyCode = :companyCode"
-			+ " AND c.qstmtStmtAllotEmPK.histId = :histId";
-	private final String AllEmpSetting = "SELLECT q.QstmtStmtLayoutHeadPK.companyCd, q.QstmtStmtLayoutHeadPK.stmtCd, q.stmtName, e.employmentName"
-			+ "FROM QSTMTSTMT_LAYOUT_HEAD q" + "INNER JOIN CMNMT_EMP e" + "INNER JOIN QSTMT_STMT_ALLOT_EM a"
-			+ "ON e.CmnmtEmpPK.companyCode = q.QstmtStmtLayoutHeadPK.companyCd"
-			+ "AND e.CmnmtEmpPK.employmentCode = a.QstmtStmtAllotEmPK.employeeCd"
-			+ "AND a.QstmtStmtAllotEmPK.companyCode= :companyCode"
-			+ "AND a.QstmtStmtAllotEmPK.histId = :histId"
-			+ "AND a.QstmtStmtAllotEmPK.employeeCd = :employeeCd";
+			+ " WHERE c.qstmtStmtAllotEmPK.companyCode = :companyCode" + " AND c.qstmtStmtAllotEmPK.histId = :histId";
+
+	private final String ALL_EMPLOYEE_SETTING = "SELECT e.cmnmtEmpPk.companyCode, e.cmnmtEmpPk.employmentCode, e.employmentName, q.stmtName"
+			+ " FROM CmnmtEmp e LEFT JOIN QstmtStmtAllotEm a"
+			+ " ON e.cmnmtEmpPk.companyCode = a.qstmtStmtAllotEmPK.companyCode AND e.cmnmtEmpPk.employmentCode = a.qstmtStmtAllotEmPK.employeeCd"
+			+ " LEFT JOIN QstmtStmtLayoutHead q"
+			+ " ON a.QstmtStmtAllotEmPK.companyCode = q.qstmtStmtLayoutHeadPK.companyCode AND"
+			+ " a.paymentDetailCode = q.qstmtStmtLayoutHeadPK.stmtCd AND a.bonusDetailCode = q.qstmtStmtLayoutHeadPK.stmtCd"
+			+ " AND a.QstmtStmtAllotEmPK.companyCode = :companyCode AND a.QstmtStmtAllotEmPK.histId = :histId";
 
 	@Override
 	public Optional<EmployeeAllotSetting> find(String companyCode, String historyID, String employeeCd) {
 		Optional<QstmtStmtAllotEm> empAllot = this.queryProxy().query(SEL_1, QstmtStmtAllotEm.class)
-				.setParameter("companyCode", companyCode)
-				.setParameter("employeeCd", employeeCd)
+				.setParameter("companyCode", companyCode).setParameter("employeeCd", employeeCd)
 				.setParameter("histId", historyID).getSingle();
 
 		if (!empAllot.isPresent()) {
 			return Optional.empty();
 		}
-		
+
 		return Optional.of(toDomain(empAllot.get()));
 	}
 
 	private EmployeeAllotSetting toDomain(QstmtStmtAllotEm empAllot) {
-		val domain = EmployeeAllotSetting.createFromJavaType(empAllot.QstmtStmtAllotEmPK.companyCode, 
-				empAllot.QstmtStmtAllotEmPK.histId, 
-				empAllot.QstmtStmtAllotEmPK.employeeCd, 
-				empAllot.paymentDetailCode, 
+		val domain = EmployeeAllotSetting.createFromJavaType(empAllot.QstmtStmtAllotEmPK.companyCode,
+				empAllot.QstmtStmtAllotEmPK.histId, empAllot.QstmtStmtAllotEmPK.employeeCd, empAllot.paymentDetailCode,
 				empAllot.bonusDetailCode);
 		return domain;
 	}
 
 	@Override
 	public List<EmployeeAllotSetting> findAll(String companyCode, String historyID) {
-		return this.queryProxy().query(SEL_2, QstmtStmtAllotEm.class)
-					.setParameter("companyCode", companyCode)
-					.setParameter("histId", historyID)
-				.getList(c -> toDomain(c));
+		return this.queryProxy().query(SEL_2, QstmtStmtAllotEm.class).setParameter("companyCode", companyCode)
+				.setParameter("histId", historyID).getList(c -> toDomain(c));
 	}
 
 	@Override
-	public List<getEmployeeList> findAllEm(String companyCode, String historyID, String employeeCode) {
-		return this.queryProxy().query(AllEmpSetting, Object[].class  )
-				.setParameter("companyCode", companyCode)
+	public List<EmployeeAllSetting> findAllEm(String companyCode, String historyID) {
+		return this.queryProxy().query(ALL_EMPLOYEE_SETTING, Object[].class).setParameter("companyCode", companyCode)
 				.setParameter("historyID", historyID)
-				.setParameter("employeeCode", employeeCode)
-				.getList(s ->{
-						String companyCode = String)s[0];
-						String historyID = String)s[1];
-						String employeeCode = (String)s[2];
-						String employmentName = (String)s[3];
-						String 
-						String stmtName = (String)s[1];
-						return getEmployeeList.createFromJavaType(companyCode, historyId, employeeCode, employeeName, paymentDetailCode, paymentDetailName, bonusDetailCode, bonusDetailName)
-				});
+				.getList(s -> EmployeeAllSetting.createFromJavaType(s[0].toString(), s[1].toString(), s[2].toString(),
+						s[3].toString(), s[4].toString(), s[5].toString(), s[6].toString(), s[7].toString()));
+
 	}
-   
 
 }
