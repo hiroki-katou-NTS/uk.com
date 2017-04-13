@@ -21,6 +21,7 @@ var nts;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
                         var immediate = ko.unwrap(data.immediate !== undefined ? data.immediate : 'false');
+                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
                         var valueUpdate = (immediate === true) ? 'input' : 'change';
                         var characterWidth = 9;
                         if (constraint && constraint.maxLength && !$input.is("textarea")) {
@@ -43,11 +44,13 @@ var nts;
                             }
                         });
                         $input.blur(function () {
-                            var formatter = _this.getFormatter(data);
-                            var newText = $input.val();
-                            var result = validator.validate(newText);
-                            if (result.isValid) {
-                                $input.val(formatter.format(result.parsedValue));
+                            if (!readonly) {
+                                var formatter = _this.getFormatter(data);
+                                var newText = $input.val();
+                                var result = validator.validate(newText);
+                                if (result.isValid) {
+                                    $input.val(formatter.format(result.parsedValue));
+                                }
                             }
                         });
                         $input.on('validate', (function (e) {
@@ -97,6 +100,7 @@ var nts;
                         var value = data.value;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
+                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
                         var characterWidth = 9;
                         if (constraint && constraint.maxLength && !$input.is("textarea")) {
                             var autoWidth = constraint.maxLength * characterWidth;
@@ -114,20 +118,22 @@ var nts;
                             }
                         });
                         $input.on("blur", function (e) {
-                            var newText = $input.val();
-                            var result = validator.validate(newText, { isCheckExpression: true });
-                            $input.ntsError('clear');
-                            if (result.isValid) {
-                                if (value() === result.parsedValue) {
-                                    $input.val(result.parsedValue);
+                            if (!readonly) {
+                                var newText = $input.val();
+                                var result = validator.validate(newText, { isCheckExpression: true });
+                                $input.ntsError('clear');
+                                if (result.isValid) {
+                                    if (value() === result.parsedValue) {
+                                        $input.val(result.parsedValue);
+                                    }
+                                    else {
+                                        value(result.parsedValue);
+                                    }
                                 }
                                 else {
-                                    value(result.parsedValue);
+                                    $input.ntsError('set', result.errorMessage);
+                                    value(newText);
                                 }
-                            }
-                            else {
-                                $input.ntsError('set', result.errorMessage);
-                                value(newText);
                             }
                         });
                         $input.on('validate', (function (e) {
@@ -339,3 +345,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=editor-ko-ext.js.map
