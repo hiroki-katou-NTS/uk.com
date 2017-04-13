@@ -143,20 +143,33 @@ var nts;
                 self.easyFormulaFixMoney = ko.observable(0);
                 self.easyFormulaDetail = ko.observable(new nts.qmm017.model.FormulaEasyDetailDto());
                 self.easyFormulaName = ko.observable('');
+                self.easyFormulaCode = ko.observable('');
+                self.formulaCode = ko.observable(root().formulaCode());
+                root().formulaCode.subscribe(function (formulaCode) {
+                    self.formulaCode(formulaCode);
+                });
+                self.historyId = ko.observable(root().historyId());
+                root().historyId.subscribe(function (historyId) {
+                    self.historyId(historyId);
+                });
             }
             EasyFormula.prototype.openDialogL = function () {
                 var self = this;
-                var param = {
-                    isUpdate: (self.easyFormulaName() !== '' && self.easyFormulaName() !== null),
-                    dirtyData: self.easyFormulaDetail(),
-                    startYm: self.startYm()
-                };
-                nts.uk.ui.windows.setShared('paramFromScreenC', param);
-                nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(function () {
-                    if (nts.uk.ui.windows.getShared('easyFormulaDetail')) {
-                        self.easyFormulaDetail(nts.uk.ui.windows.getShared('easyFormulaDetail'));
-                        self.easyFormulaName(self.easyFormulaDetail().easyFormulaName);
-                    }
+                qmm017.service.getFormulaEasyDetail(self.formulaCode(), self.historyId(), self.easyFormulaCode())
+                    .done(function (formulaEasyDetail) {
+                    self.easyFormulaDetail(formulaEasyDetail);
+                    var param = {
+                        isUpdate: (self.easyFormulaName() !== '' && self.easyFormulaName() !== null),
+                        dirtyData: self.easyFormulaDetail(),
+                        startYm: self.startYm()
+                    };
+                    nts.uk.ui.windows.setShared('paramFromScreenC', param);
+                    nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(function () {
+                        if (nts.uk.ui.windows.getShared('easyFormulaDetail')) {
+                            self.easyFormulaDetail(nts.uk.ui.windows.getShared('easyFormulaDetail'));
+                            self.easyFormulaName(self.easyFormulaDetail().easyFormulaName);
+                        }
+                    });
                 });
             };
             return EasyFormula;

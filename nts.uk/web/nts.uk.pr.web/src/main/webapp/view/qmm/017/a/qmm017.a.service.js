@@ -14,7 +14,8 @@ var nts;
                 getListPersonalUnitPrice: "pr/core/rule/employment/unitprice/personal/find/all",
                 getListItemMaster: "pr/core/item/findall/category/",
                 findOtherFormulas: "pr/formula/formulaMaster/findOtherFormulas/",
-                getListWageTable: "pr/proto/wagetable/findbymonth/"
+                getListWageTable: "pr/proto/wagetable/findbymonth/",
+                getFormulaEasyDetail: "pr/formula/formulaMaster/getFormulaEasyDetail/"
             };
             function getAllFormula() {
                 var dfd = $.Deferred();
@@ -52,6 +53,18 @@ var nts;
                 return dfd.promise();
             }
             service.getFormulaDetail = getFormulaDetail;
+            function getFormulaEasyDetail(formulaCode, historyId, easyFormulaCode) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("pr", paths.getFormulaEasyDetail + formulaCode + "/" + historyId + "/" + easyFormulaCode)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getFormulaEasyDetail = getFormulaEasyDetail;
             function findOtherFormulas(formulaCode, baseYearMonth) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("pr", paths.findOtherFormulas + formulaCode + "/" + baseYearMonth)

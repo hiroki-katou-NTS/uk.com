@@ -48,6 +48,7 @@ var nts;
                         var foundNode = findNode(self.treeGridHistory().items()[order], self.treeGridHistory().singleSelectedCode());
                         if (foundNode) {
                             self.currentNode(foundNode);
+                            self.viewModel017b().historyId(foundNode.code);
                             self.currentParentNode(self.treeGridHistory().items()[order]);
                         }
                     }
@@ -75,7 +76,6 @@ var nts;
                             else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 0) {
                                 self.viewModel017c().noneConditionalEasyFormula(new qmm017.EasyFormula(0, self.viewModel017b));
                                 if (currentFormulaDetail.easyFormula[0]) {
-                                    self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail(currentFormulaDetail.easyFormula[0].formulaEasyDetail);
                                     self.viewModel017c().noneConditionalEasyFormula().easyFormulaName(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaName);
                                 }
                             }
@@ -84,7 +84,7 @@ var nts;
                                 if (currentFormulaDetail.easyFormula[0]) {
                                     self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(currentFormulaDetail.easyFormula[0].value);
                                     self.viewModel017c().defaultEasyFormula().selectedRuleCodeEasySettings(currentFormulaDetail.easyFormula[0].fixFormulaAtr);
-                                    self.viewModel017c().defaultEasyFormula().easyFormulaDetail(currentFormulaDetail.easyFormula[0].formulaEasyDetail);
+                                    self.viewModel017c().defaultEasyFormula().easyFormulaCode(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaCode);
                                     self.viewModel017c().defaultEasyFormula().easyFormulaName(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaName);
                                 }
                             }
@@ -95,7 +95,7 @@ var nts;
                                         self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(easyFormula.value);
                                         self.viewModel017c().defaultEasyFormula().selectedRuleCodeEasySettings(easyFormula.fixFormulaAtr);
                                         if (easyFormula.fixFormulaAtr === 1) {
-                                            self.viewModel017c().defaultEasyFormula().easyFormulaDetail(easyFormula.formulaEasyDetail);
+                                            self.viewModel017c().defaultEasyFormula().easyFormulaCode(easyFormula.formulaEasyDetail.easyFormulaCode);
                                             self.viewModel017c().defaultEasyFormula().easyFormulaName(easyFormula.formulaEasyDetail.easyFormulaName);
                                         }
                                     }
@@ -103,7 +103,7 @@ var nts;
                                         self.viewModel017c().monthlyEasyFormula().easyFormulaFixMoney(easyFormula.value);
                                         self.viewModel017c().monthlyEasyFormula().selectedRuleCodeEasySettings(easyFormula.fixFormulaAtr);
                                         if (easyFormula.fixFormulaAtr === 1) {
-                                            self.viewModel017c().monthlyEasyFormula().easyFormulaDetail(easyFormula.formulaEasyDetail);
+                                            self.viewModel017c().monthlyEasyFormula().easyFormulaCode(easyFormula.formulaEasyDetail.easyFormulaCode);
                                             self.viewModel017c().monthlyEasyFormula().easyFormulaName(easyFormula.formulaEasyDetail.easyFormulaName);
                                         }
                                     }
@@ -111,7 +111,7 @@ var nts;
                                         self.viewModel017c().dailyMonthlyEasyFormula().easyFormulaFixMoney(easyFormula.value);
                                         self.viewModel017c().dailyMonthlyEasyFormula().selectedRuleCodeEasySettings(easyFormula.fixFormulaAtr);
                                         if (easyFormula.fixFormulaAtr === 1) {
-                                            self.viewModel017c().dailyMonthlyEasyFormula().easyFormulaDetail(easyFormula.formulaEasyDetail);
+                                            self.viewModel017c().dailyMonthlyEasyFormula().easyFormulaCode(easyFormula.formulaEasyDetail.easyFormulaCode);
                                             self.viewModel017c().dailyMonthlyEasyFormula().easyFormulaName(easyFormula.formulaEasyDetail.easyFormulaName);
                                         }
                                     }
@@ -119,7 +119,7 @@ var nts;
                                         self.viewModel017c().dailyEasyFormula().easyFormulaFixMoney(easyFormula.value);
                                         self.viewModel017c().dailyEasyFormula().selectedRuleCodeEasySettings(easyFormula.fixFormulaAtr);
                                         if (easyFormula.fixFormulaAtr === 1) {
-                                            self.viewModel017c().dailyEasyFormula().easyFormulaDetail(easyFormula.formulaEasyDetail);
+                                            self.viewModel017c().dailyEasyFormula().easyFormulaCode(easyFormula.formulaEasyDetail.easyFormulaCode);
                                             self.viewModel017c().dailyEasyFormula().easyFormulaName(easyFormula.formulaEasyDetail.easyFormulaName);
                                         }
                                     }
@@ -127,7 +127,7 @@ var nts;
                                         self.viewModel017c().hourlyEasyFormula().easyFormulaFixMoney(easyFormula.value);
                                         self.viewModel017c().hourlyEasyFormula().selectedRuleCodeEasySettings(easyFormula.fixFormulaAtr);
                                         if (easyFormula.fixFormulaAtr === 1) {
-                                            self.viewModel017c().hourlyEasyFormula().easyFormulaDetail(easyFormula.formulaEasyDetail);
+                                            self.viewModel017c().hourlyEasyFormula().easyFormulaCode(easyFormula.formulaEasyDetail.easyFormulaCode);
                                             self.viewModel017c().hourlyEasyFormula().easyFormulaName(easyFormula.formulaEasyDetail.easyFormulaName);
                                         }
                                     }
