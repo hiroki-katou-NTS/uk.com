@@ -36,7 +36,7 @@ var cmm009;
                 }
                 ScreenModel.prototype.createHistory = function () {
                     var self = this;
-                    var inputYm = $('#INP_001').val();
+                    var inputYm = $('#INP_STARTYMD').val();
                     if (!nts.uk.time.parseYearMonthDate(inputYm).success) {
                         alert(nts.uk.time.parseYearMonthDate(inputYm).msg);
                         return false;
