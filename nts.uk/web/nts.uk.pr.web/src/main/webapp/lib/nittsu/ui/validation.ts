@@ -46,7 +46,7 @@ module nts.uk.ui.validation {
             var result = new ValidationResult();
             // Check Required
             if (this.required !== undefined && this.required !== false) {
-                if (!checkRequired(inputText)) {
+                if (util.isNullOrEmpty(inputText)) {
                     result.fail('This field is required');
                     return result;
                 }
@@ -121,7 +121,7 @@ module nts.uk.ui.validation {
         valueType: string;
         constructor(primitiveValueName: string, option?: any) {
             this.constraint = getConstraint(primitiveValueName);
-            this.outputFormat = (option && option.inputFormat) ? option.inputFormat : "";
+            this.outputFormat = (option && option.outputFormat) ? option.outputFormat : "";
             this.required = (option && option.required) ? option.required : false;
             this.valueType = (option && option.valueType) ? option.valueType : "string";
         }
@@ -129,15 +129,18 @@ module nts.uk.ui.validation {
         validate(inputText: string): any {
             var result = new ValidationResult();
             // Check required
-            if (this.required !== undefined && this.required !== false) {
-                if (!checkRequired(inputText)) {
+            if (util.isNullOrEmpty(inputText)) {
+                if (this.required === true) {
                     result.fail('This field is required');
+                    return result;
+                }
+                else {
+                    result.success("");
                     return result;
                 }
             }
             // Create Parser
-            var parseResult;
-            parseResult = time.parseMoment(inputText, this.outputFormat);
+            var parseResult = time.parseMoment(inputText, this.outputFormat);
             // Parse
             if (parseResult.success) {
                 if (this.valueType === "string")
@@ -160,13 +163,6 @@ module nts.uk.ui.validation {
             }
             return result;
         }
-    }
-
-    function checkRequired(value: any): boolean {
-        if (value === undefined || value === null || value.length == 0) {
-            return false;
-        }
-        return true;
     }
 
     export function getConstraint(primitiveValueName: string) {
