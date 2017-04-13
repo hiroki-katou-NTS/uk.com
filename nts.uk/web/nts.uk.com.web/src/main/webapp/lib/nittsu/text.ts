@@ -47,6 +47,61 @@
             }
             return count;
         }
+        
+        export function toOneByteAlphaNumberic(text: string){
+            return text.replace(/[！-～　]/g, function(s) {
+                if(s === "　" ){
+                    return String.fromCharCode(s.charCodeAt(0) - 12256)
+                }
+                return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+            });        
+        }
+        
+        export function toTwoByteAlphaNumberic(text: string){
+            return text.replace(/[\!-\~ ]/g, function(s) {
+                if(s === " " ){
+                    return String.fromCharCode(s.charCodeAt(0) + 12256)
+                }
+                return String.fromCharCode(s.charCodeAt(0) + 0xFEE0);
+            });        
+        }
+        
+        export function katakanaToHiragana (text : string) {
+            text = text.replace(/[ァ-ヴ]/g, function (s) {
+                        return String.fromCharCode(s.charCodeAt(0) - 0x60);
+                    })
+                    .replace(/ﾞ/g, '゛')
+                    .replace(/ﾟ/g, '゜')
+                    .replace(/(う゛)/g, 'ゔ')
+                    .replace(/ヷ/g, 'わ゛')
+                    .replace(/ヸ/g, 'ゐ゛')
+                    .replace(/ヹ/g, 'ゑ゛')
+                    .replace(/ヺ/g, 'を゛')
+                    .replace(/(ヽ゛)/g, 'ゞ')
+                    .replace(/ヽ/g, 'ゝ')
+                    .replace(/ヾ/g, 'ゞ');
+            return text;
+        };
+        
+        export function hiraganaToKatakana (text : string, opt? : boolean) {
+            text = text.replace(/[ぁ-ゔ]/g, function (s) {
+                        return String.fromCharCode(s.charCodeAt(0) + 0x60);
+                    })
+                    .replace(/ﾞ/g, '゛')
+                    .replace(/ﾟ/g, '゜')
+                    .replace(/(ウ゛)/g, 'ヴ')
+                    .replace(/(ワ゛)/g, 'ヷ')
+                    .replace(/(ヰ゛)/g, 'ヸ')
+                    .replace(/(ヱ゛)/g, 'ヹ')
+                    .replace(/(ヲ゛)/g, 'ヺ')
+                    .replace(/(ゝ゛)/g, 'ヾ')
+                    .replace(/ゝ/g, 'ヽ')
+                    .replace(/ゞ/g, 'ヾ');
+            if (opt !== false) {
+                text = text.replace(/ゕ/g, 'ヵ').replace(/ゖ/g, 'ヶ');
+            }
+            return text;
+        };
 
         /**
          * 文字列が半角数字のみで構成された1文字以上の文字列かどうか判断する
