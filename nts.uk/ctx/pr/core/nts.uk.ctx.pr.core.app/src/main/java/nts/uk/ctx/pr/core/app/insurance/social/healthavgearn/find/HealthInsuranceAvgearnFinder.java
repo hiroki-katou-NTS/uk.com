@@ -30,7 +30,7 @@ public class HealthInsuranceAvgearnFinder {
 	 *            the id
 	 * @return the list health insurance avgearn dto
 	 */
-	public ListHealthInsuranceAvgearnModel find(String id) {
+	public HealthInsAvgearnsModel find(String id) {
 		List<HealthInsuranceAvgearn> listDomain = repository.findById(id);
 
 		// Map to list Dto.
@@ -39,7 +39,7 @@ public class HealthInsuranceAvgearnFinder {
 			dto.fromDomain(domain);
 			return dto;
 		}).collect(Collectors.toList());
-		ListHealthInsuranceAvgearnModel listHealthInsuranceAvgearnDto = ListHealthInsuranceAvgearnModel
+		HealthInsAvgearnsModel listHealthInsuranceAvgearnDto = HealthInsAvgearnsModel
 				.builder().listHealthInsuranceAvgearnDto(listDto).historyId(id).build();
 		return listHealthInsuranceAvgearnDto;
 	}

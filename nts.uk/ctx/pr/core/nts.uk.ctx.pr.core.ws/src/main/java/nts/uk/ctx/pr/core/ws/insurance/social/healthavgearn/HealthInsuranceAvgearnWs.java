@@ -14,7 +14,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.command.UpdateHealthInsuranceAvgearnCommand;
 import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.command.UpdateHealthInsuranceAvgearnCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find.HealthInsuranceAvgearnFinder;
-import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find.ListHealthInsuranceAvgearnModel;
+import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find.HealthInsAvgearnsModel;
 
 /**
  * The Class HealthInsuranceAvgearnWs.
@@ -50,7 +50,7 @@ public class HealthInsuranceAvgearnWs extends WebService {
 	 */
 	@POST
 	@Path("find/{id}")
-	public ListHealthInsuranceAvgearnModel find(@PathParam("id") String id) {
+	public HealthInsAvgearnsModel find(@PathParam("id") String id) {
 		return healthInsuranceAvgearnFinder.find(id);
 	}
 }
