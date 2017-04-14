@@ -1,58 +1,37 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate;
 
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 
 /**
  * The Class UnemployeeInsuranceRate.
  */
-
-/**
- * Gets the rate items.
- *
- * @return the rate items
- */
 @Getter
 public class UnemployeeInsuranceRate extends DomainObject {
 
 	/** The history id. */
-	// historyId
 	private String historyId;
 
 	/** The company code. */
 	private String companyCode;
 
 	/** The apply range. */
-
-	/**
-	 * Sets the apply range.
-	 *
-	 * @param applyRange
-	 *            the new apply range
-	 */
 	@Setter
 	private MonthRange applyRange;
 
 	/** The rate items. */
-
-	/**
-	 * Sets the rate items.
-	 *
-	 * @param rateItems
-	 *            the new rate items
-	 */
 	@Setter
 	private Set<UnemployeeInsuranceRateItem> rateItems;
 
@@ -92,6 +71,48 @@ public class UnemployeeInsuranceRate extends DomainObject {
 	}
 
 	/**
+	 * Copy with date.
+	 *
+	 * @param start
+	 *            the start
+	 * @return the unemployee insurance rate
+	 */
+	public UnemployeeInsuranceRate copyWithDate(YearMonth start) {
+		UnemployeeInsuranceRate newDomain = new UnemployeeInsuranceRate();
+		newDomain.companyCode = this.companyCode;
+		newDomain.applyRange = MonthRange.range(start, this.applyRange.getEndMonth());
+		newDomain.rateItems = this.rateItems;
+		return newDomain;
+	}
+
+	/**
+	 * Creates the with intial.
+	 *
+	 * @param companyCode
+	 *            the company code
+	 * @param startYearMonth
+	 *            the start year month
+	 * @return the unemployee insurance rate
+	 */
+	public static final UnemployeeInsuranceRate createWithIntial(String companyCode,
+			YearMonth startYearMonth) {
+		// Create domain
+		UnemployeeInsuranceRate domain = new UnemployeeInsuranceRate();
+
+		// Set data
+		domain.companyCode = companyCode;
+		domain.applyRange = MonthRange.toMaxDate(startYearMonth);
+		domain.rateItems = Arrays
+				.asList(UnemployeeInsuranceRateItem.valueIntial(CareerGroup.Agroforestry),
+						UnemployeeInsuranceRateItem.valueIntial(CareerGroup.Contruction),
+						UnemployeeInsuranceRateItem.valueIntial(CareerGroup.Other))
+				.stream().collect(Collectors.toSet());
+
+		// Return
+		return domain;
+	}
+
+	/**
 	 * Gets the start.
 	 *
 	 * @return the start
@@ -127,43 +148,6 @@ public class UnemployeeInsuranceRate extends DomainObject {
 	 */
 	public void setEnd(YearMonth yearMonth) {
 		this.applyRange = MonthRange.range(this.applyRange.getStartMonth(), yearMonth);
-	}
-
-	/**
-	 * Copy with date.
-	 *
-	 * @param start
-	 *            the start
-	 * @return the unemployee insurance rate
-	 */
-	public UnemployeeInsuranceRate copyWithDate(YearMonth start) {
-		UnemployeeInsuranceRate newDomain = new UnemployeeInsuranceRate();
-		newDomain.companyCode = this.companyCode;
-		newDomain.applyRange = MonthRange.range(start, this.applyRange.getEndMonth());
-		newDomain.rateItems = this.rateItems;
-		return newDomain;
-	}
-
-	/**
-	 * Creates the with intial.
-	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param startYearMonth
-	 *            the start year month
-	 * @return the unemployee insurance rate
-	 */
-	public static final UnemployeeInsuranceRate createWithIntial(String companyCode,
-		YearMonth startYearMonth) {
-		UnemployeeInsuranceRate domain = new UnemployeeInsuranceRate();
-		domain.companyCode = companyCode;
-		domain.applyRange = MonthRange.toMaxDate(startYearMonth);
-		Set<UnemployeeInsuranceRateItem> setItem = new HashSet<>();
-		setItem.add(UnemployeeInsuranceRateItem.valueIntial(CareerGroup.Agroforestry));
-		setItem.add(UnemployeeInsuranceRateItem.valueIntial(CareerGroup.Contruction));
-		setItem.add(UnemployeeInsuranceRateItem.valueIntial(CareerGroup.Other));
-		domain.rateItems = setItem;
-		return domain;
 	}
 
 	/**

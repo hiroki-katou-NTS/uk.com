@@ -42,6 +42,10 @@
 	float: right;
 }
 
+.floatLeft {
+	float: left;
+}
+
 #contents-left, #contents-right {
 	padding: 20px;
 	vertical-align: top !important;
@@ -51,9 +55,6 @@
 	padding-left: 40px !important;
 }
 
-#SCH_001 {
-	width: 100%;
-}
 
 .spanSearch {
 	float: right;
@@ -73,14 +74,8 @@
 	width: 100%;
 }
 
-
 button.nts-switch-button {
 	min-width: 80px;
-}
-
-
-#search_001 {
-	margin-top: 20px;
 }
 
 .contentvalue {
@@ -118,6 +113,10 @@ button.nts-switch-button {
 .text_center {
 	text-align: center;
 	height: 30px;
+}
+
+.text_right {
+	text-align: right;
 }
 
 .hr_width {
@@ -171,4 +170,12 @@ th, td {
 .right {
 	width: 62%;
 	float: left;
+}
+
+#tabpanel-1 {
+	min-width: 1360px;
+}
+
+#tabpanel-2 {
+	min-width: 1360px;
 }

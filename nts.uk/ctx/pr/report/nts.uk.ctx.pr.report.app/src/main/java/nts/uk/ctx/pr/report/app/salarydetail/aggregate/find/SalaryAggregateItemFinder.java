@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.salarydetail.aggregate.find;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -47,6 +49,23 @@ public class SalaryAggregateItemFinder {
 			optionalSalaryAggregateItem.get().saveToMemento(salaryAggregateItemFindDto);
 			return salaryAggregateItemFindDto;
 		}
-		return null;
+		salaryAggregateItemFindDto.defaultData(salaryAggregateItemInDto);
+		return salaryAggregateItemFindDto;
+	}
+
+	/**
+	 * Find all.
+	 *
+	 * @return the list
+	 */
+	public List<SalaryAggregateItemFindDto> findAll() {
+		List<SalaryAggregateItem> listAggregateItem = this.salaryAggregateItemRepository
+				.findAll(AppContexts.user().companyCode());
+		List<SalaryAggregateItemFindDto> mappedList = listAggregateItem.stream().map(domain -> {
+			SalaryAggregateItemFindDto dto = new SalaryAggregateItemFindDto();
+			domain.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
+		return mappedList;
 	}
 }

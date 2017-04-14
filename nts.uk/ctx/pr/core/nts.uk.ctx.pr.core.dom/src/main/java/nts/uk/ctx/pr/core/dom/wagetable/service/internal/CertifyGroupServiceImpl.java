@@ -5,16 +5,12 @@
 package nts.uk.ctx.pr.core.dom.wagetable.service.internal;
 
 import java.util.Optional;
-import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.service.CertifyGroupService;
@@ -25,26 +21,23 @@ import nts.uk.ctx.pr.core.dom.wagetable.certification.service.CertifyGroupServic
 @Stateless
 public class CertifyGroupServiceImpl implements CertifyGroupService {
 
-	/** The certify group repository. */
+	/** The repository. */
 	@Inject
-	private CertifyGroupRepository certifyGroupRepository;
-
-	/** The certification reponsitory. */
-	@Inject
-	private CertificationRepository certificationReponsitory;
+	private CertifyGroupRepository repository;
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.wagetable.certification.service.
 	 * CertifyGroupService#validateRequiredItem(nts.uk.ctx.pr.core.dom.wagetable
 	 * .certification.CertifyGroup)
 	 */
 	@Override
 	public void validateRequiredItem(CertifyGroup certifyGroup) {
-		if (certifyGroup.getCode() == null
-				|| StringUtil.isNullOrEmpty(certifyGroup.getCode().v(), true)
+		// Validate required item
+		if (certifyGroup.getCode() == null 
 				|| certifyGroup.getName() == null
+				|| StringUtil.isNullOrEmpty(certifyGroup.getCode().v(), true)
 				|| StringUtil.isNullOrEmpty(certifyGroup.getName().v(), true)) {
 			throw new BusinessException("ER001");
 		}
@@ -53,16 +46,20 @@ public class CertifyGroupServiceImpl implements CertifyGroupService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.wagetable.certification.service.
 	 * CertifyGroupService#checkDuplicateCode(nts.uk.ctx.pr.core.dom.wagetable.
 	 * certification.CertifyGroup)
 	 */
 	@Override
 	public void checkDuplicateCode(CertifyGroup certifyGroup) {
-		Optional<CertifyGroup> optionalCheck = this.certifyGroupRepository
-				.findById(certifyGroup.getCompanyCode(), certifyGroup.getCode().v());
-		if (optionalCheck.isPresent()) {
+
+		// find data
+		Optional<CertifyGroup> data = this.repository.findById(certifyGroup.getCompanyCode(),
+			certifyGroup.getCode().v());
+
+		// check exist
+		if (data.isPresent()) {
 			throw new BusinessException("ER005");
 		}
 
@@ -70,51 +67,19 @@ public class CertifyGroupServiceImpl implements CertifyGroupService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.wagetable.certification.service.
 	 * CertifyGroupService#checkDulicateCertification(nts.uk.ctx.pr.core.dom.
 	 * wagetable.certification.CertifyGroup, java.lang.String)
 	 */
 	@Override
-	public void checkDulicateCertification(CertifyGroup certifyGroup, String certifyGroupCode) {
-		if (this.checkDulicateCertification(certifyGroup.getCompanyCode(),
-				certifyGroup.getCertifies(), certifyGroupCode)) {
+	public void checkCertificationIsBelong(CertifyGroup certifyGroup) {
+		// Check certification is belong to exist group.
+		if (certifyGroup.getCertifies().stream()
+			.anyMatch(item -> this.repository.isBelongToExistGroup(certifyGroup.getCompanyCode(),
+				certifyGroup.getCode().v(), item.getCode()))) {
 			throw new BusinessException("ER005");
 		}
-
-	}
-
-	/**
-	 * Check dulicate certification.
-	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param setCertification
-	 *            the set certification
-	 * @param certifyGroupCode
-	 *            the certify group code
-	 * @return true, if successful
-	 */
-	boolean checkDulicateCertification(String companyCode, Set<Certification> setCertification,
-			String certifyGroupCode) {
-
-		// none data => false
-		if (CollectionUtil.isEmpty(setCertification)) {
-			return false;
-		}
-
-		// not none data
-		boolean resvalue = false;
-		for (Certification certification : setCertification) {
-			Optional<Certification> optionalCheck = this.certificationReponsitory
-					.findById(companyCode, certification.getCode(), certifyGroupCode);
-			if (optionalCheck.isPresent()) {
-				resvalue = true;
-				break;
-			}
-		}
-		// res
-		return resvalue;
 	}
 
 }

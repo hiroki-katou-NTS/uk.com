@@ -13,7 +13,7 @@ var nts;
                         var service;
                         (function (service) {
                             var servicePath = {
-                                findAllInsuranceOffice: "screen/pr/QPP018/findAllOffice",
+                                findAllInsuranceOffice: "pr/insurance/social/findall",
                                 saveAsPdf: "screen/pr/QPP018/saveAsPdf"
                             };
                             function findAllInsuranceOffice() {

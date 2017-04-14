@@ -1,5 +1,8 @@
 module nts.uk.pr.view.qpp007.c {
     export module service {
+        import OutputSettingDto =  nts.uk.pr.view.qpp007.c.viewmodel.OutputSettingDto;
+        import OutputSettingHeader = nts.uk.pr.view.qpp007.c.viewmodel.OutputSettingDto;
+
         /**
          *  Service paths
          */
@@ -8,12 +11,13 @@ module nts.uk.pr.view.qpp007.c {
             remove: "ctx/pr/report/salary/outputsetting/remove",
             findOutputSettingDetail: "ctx/pr/report/salary/outputsetting/find",
             findAllOutputSettings: "ctx/pr/report/salary/outputsetting/findall",
+            findAllAggregateItems: "ctx/pr/report/salary/aggregate/item/findall"
         };
 
         /**
          *  Update
          */
-        export function save(data: any): JQueryPromise<any> {
+        export function save(data: OutputSettingDto): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.save, data);
         }
         /**
@@ -25,14 +29,41 @@ module nts.uk.pr.view.qpp007.c {
         /**
          *  Find outputSetting detail
          */
-        export function findOutputSettingDetail(id: string): JQueryPromise<any> {
+        export function findOutputSettingDetail(id: string): JQueryPromise<OutputSettingDto> {
             return nts.uk.request.ajax(paths.findOutputSettingDetail + "/" + id);
         }
         /**
          *  Find all outputSettings
          */
-        export function findAllOutputSettings(): JQueryPromise<any> {
+        export function findAllOutputSettings(): JQueryPromise<Array<OutputSettingHeader>> {
             return nts.uk.request.ajax(paths.findAllOutputSettings);
+        }
+        /**
+         *  Find all aggregateItems.
+         */
+        export function findAllAggregateItems(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.findAllAggregateItems);
+        }
+        /**
+         * Find all masterItems.
+         */
+        export function findAllMasterItems(): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            // mock data
+            var masterItems: any = [];
+            for (let i = 1; i <= 9; i++) {
+                masterItems.push({ code: 'F00' + i, name: '基本給' + i, category: 'Payment' });
+            }
+            for (let i = 1; i <= 9; i++) {
+                masterItems.push({ code: 'F10' + i, name: '基本給' + i, category: 'Deduction' });
+            }
+            for (let i = 1; i <= 9; i++) {
+                masterItems.push({ code: 'F20' + i, name: '基本給' + i, category: 'Attendance' });
+            }
+            for (let i = 1; i <= 9; i++) {
+                masterItems.push({ code: 'F30' + i, name: '基本給' + i, category: 'ArticleOthers' });
+            }
+            return dfd.resolve(masterItems).promise();
         }
 
     }

@@ -28,18 +28,6 @@ public class QpdmtSystemDay extends TableEntity implements Serializable {
 	public int payStdDay;
 
 	@Basic(optional = false)
-	@Column(name = "RESITAX_BEGIN_MON")
-	public int resitaxBeginMon;
-
-	@Basic(optional = false)
-	@Column(name = "RESITAX_STD_MON")
-	public int resitaxStdMon;
-
-	@Basic(optional = false)
-	@Column(name = "RESITAX_STD_DAY")
-	public int resitaxStdDay;
-
-	@Basic(optional = false)
 	@Column(name = "PICKUP_STD_MON_ATR")
 	public int pickupStdMonAtr;
 
@@ -60,6 +48,6 @@ public class QpdmtSystemDay extends TableEntity implements Serializable {
 	public int accountDueDay;
 
 	@Basic(optional = false)
-	@Column(name = "PAYSLIP_PRINT_MONTH")
+	@Column(name = "PAYSLIP_PRINT_MONTH_ATR")
 	public int payslipPrintMonthAtr;
 }

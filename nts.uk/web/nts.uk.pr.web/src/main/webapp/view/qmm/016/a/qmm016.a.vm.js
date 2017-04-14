@@ -62,6 +62,9 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
+                                ScreenModel.prototype.isDirty = function () {
+                                    return false;
+                                };
                                 ScreenModel.prototype.onSelectHistory = function (id) {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -101,6 +104,14 @@ var nts;
                                     self.selectedTab('tab-1');
                                     self.head.reset();
                                 };
+                                ScreenModel.prototype.btnGroupSettingClick = function () {
+                                    var self = this;
+                                    var ntsDialogOptions = {
+                                        title: '資格グループの設定',
+                                        dialogClass: 'no-close'
+                                    };
+                                    nts.uk.ui.windows.sub.modal('/view/qmm/016/l/index.xhtml', ntsDialogOptions);
+                                };
                                 return ScreenModel;
                             }(view.base.simplehistory.viewmodel.ScreenBaseModel));
                             viewmodel.ScreenModel = ScreenModel;
@@ -113,6 +124,26 @@ var nts;
                                     self.memo = ko.observable(undefined);
                                     self.demensionType = ko.computed(function () {
                                         return qmm016.model.demensionMap[self.demensionSet()];
+                                    });
+                                    self.lblContent = ko.computed(function () {
+                                        var contentMap = [
+                                            '１つの要素でテーブルを作成します。',
+                                            '２つの要素でテーブルを作成します。',
+                                            '３つの要素でテーブルを作成します。',
+                                            '資格手当用のテーブルを作成します。',
+                                            '精皆勤手当て用のテーブルを作成します。'
+                                        ];
+                                        return contentMap[self.demensionSet()];
+                                    });
+                                    self.lblSampleImgLink = ko.computed(function () {
+                                        var linkMap = [
+                                            '１.png',
+                                            '２.png',
+                                            '３.png',
+                                            '4.png',
+                                            '5.png'
+                                        ];
+                                        return linkMap[self.demensionSet()];
                                     });
                                     self.demensionItemList = ko.observableArray([]);
                                     self.demensionSet.subscribe(function (val) {
@@ -208,6 +239,12 @@ var nts;
                                 HeadViewModel.prototype.onSelectDemensionBtnClick = function (demension) {
                                     var self = this;
                                     var dlgOptions = {
+                                        selectedDemensionDto: _.map(self.demensionItemList(), function (item) {
+                                            var dto = {};
+                                            dto.type = item.elementType();
+                                            dto.code = item.elementCode();
+                                            return dto;
+                                        }),
                                         onSelectItem: function (data) {
                                             demension.elementType(data.demension.type);
                                             demension.elementCode(data.demension.code);
@@ -263,10 +300,17 @@ var nts;
                                         return new HistoryElementSettingViewModel(head, el);
                                     });
                                     self.elements(elementSettingViewModel);
-                                    self.detailViewModel = new qmm016.a.history.OneDemensionViewModel(history);
+                                    if ($('#detailContainer').children().length > 0) {
+                                        var element = $('#detailContainer').children().get(0);
+                                        ko.cleanNode(element);
+                                        $('#detailContainer').empty();
+                                    }
+                                    self.detailViewModel = this.getDetailViewModelByType(head.mode);
                                     $('#detailContainer').load(self.detailViewModel.htmlPath, function () {
                                         var element = $('#detailContainer').children().get(0);
-                                        ko.applyBindings(self.detailViewModel, element);
+                                        self.detailViewModel.onLoad().done(function () {
+                                            ko.applyBindings(self.detailViewModel, element);
+                                        });
                                     });
                                 };
                                 HistoryViewModel.prototype.generateItem = function () {
@@ -295,6 +339,23 @@ var nts;
                                     var self = this;
                                     self.history.valueItems = self.detailViewModel.getCellItem();
                                     return self.history;
+                                };
+                                HistoryViewModel.prototype.getDetailViewModelByType = function (typeCode) {
+                                    var self = this;
+                                    switch (typeCode) {
+                                        case 0:
+                                            return new qmm016.a.history.OneDemensionViewModel(self.history);
+                                        case 1:
+                                            return new qmm016.a.history.TwoDemensionViewModel(self.history);
+                                        case 2:
+                                            return new qmm016.a.history.ThreeDemensionViewModel(self.history);
+                                        case 3:
+                                            return new qmm016.a.history.CertificateViewModel(self.history);
+                                        case 4:
+                                            return new qmm016.a.history.ThreeDemensionViewModel(self.history);
+                                        default:
+                                            return new qmm016.a.history.OneDemensionViewModel(self.history);
+                                    }
                                 };
                                 HistoryViewModel.prototype.unapplyBindings = function ($node, remove) {
                                     $node.find("*").each(function () {

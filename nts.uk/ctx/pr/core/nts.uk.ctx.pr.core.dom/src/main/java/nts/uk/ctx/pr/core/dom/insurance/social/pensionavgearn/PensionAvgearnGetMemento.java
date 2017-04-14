@@ -1,10 +1,10 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn;
 
-import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
+import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 
 /**
  * The Interface PensionAvgearnGetMemento.
@@ -30,7 +30,7 @@ public interface PensionAvgearnGetMemento {
 	 *
 	 * @return the child contribution amount
 	 */
-	InsuranceAmount getChildContributionAmount();
+	CommonAmount getChildContributionAmount();
 
 	/**
 	 * Gets the company fund.

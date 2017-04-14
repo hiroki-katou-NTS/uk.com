@@ -5,9 +5,10 @@
 	margin-top: 10px;
 }
 
-#functions-area{
+#functions-area {
 	margin-top: 10px;
 }
+
 .control-group {
 	margin-bottom: 15px;
 }
@@ -24,17 +25,18 @@
 
 .right-content-left {
 	float: left;
-	width: 18%
+	width: 30%
 }
 
 .right-content-right {
 	float: left;
-	width: 82%
+	width: 70%
 }
 
-#LBL_001, #LBL_002{
+#LBL_001, #LBL_002 {
 	margin-bottom: 10px;
 }
+
 
 .text-editor1 {
 	border: 1px solid #4F4F4F;

@@ -33,7 +33,6 @@ public class ItemDeductBDWebService extends WebService {
 	@POST
 	@Path("find/{itemCode}")
 	public List<ItemDeductBDDto> findAllItemDeductDB(@PathParam("itemCode") String itemCode) {
-
 		return this.itemDeductBDFinder.findAll(itemCode);
 	}
 

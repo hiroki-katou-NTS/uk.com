@@ -7,7 +7,10 @@ package nts.uk.ctx.pr.core.dom.wagetable.history;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
@@ -16,6 +19,7 @@ import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.History;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
+import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.ctx.pr.core.dom.wagetable.WtHead;
@@ -23,6 +27,8 @@ import nts.uk.ctx.pr.core.dom.wagetable.element.WtElement;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.ElementSetting;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.RangeLimit;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.StepElementSetting;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.CodeItem;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.RangeItem;
 
 /**
  * The Class WageTableHistory.
@@ -76,6 +82,7 @@ public class WtHistory extends DomainObject implements History<WtHistory> {
 		List<WtElement> elementList = head.getElements();
 		for (WtElement element : elementList) {
 			ElementType type = element.getType();
+
 			// Code mode.
 			if (type.isCodeMode) {
 				elementSettings.add(new ElementSetting(element.getDemensionNo(), element.getType(),
@@ -87,7 +94,7 @@ public class WtHistory extends DomainObject implements History<WtHistory> {
 				StepElementSetting stepElementSetting = new StepElementSetting(
 						element.getDemensionNo(), element.getType(), Collections.emptyList());
 				stepElementSetting.setSetting(new RangeLimit(BigDecimal.ZERO),
-						new RangeLimit(BigDecimal.ZERO), new RangeLimit(BigDecimal.ONE));
+						new RangeLimit(BigDecimal.ZERO), new RangeLimit(BigDecimal.ZERO));
 				elementSettings.add(stepElementSetting);
 			}
 		}
@@ -206,10 +213,72 @@ public class WtHistory extends DomainObject implements History<WtHistory> {
 		history.companyCode = this.companyCode;
 		history.wageTableCode = this.wageTableCode;
 		history.applyRange = MonthRange.toMaxDate(start);
-		history.elementSettings = this.elementSettings;
 
-		// TODO NEED A DEEP CLONE HERE
-		history.valueItems = Collections.emptyList();
+		Map<ElementId, ElementId> mapUuids = new HashMap<>();
+
+		// Create new element setting.
+		history.elementSettings = this.elementSettings.stream().map(item -> {
+
+			// Check mode: is code mode
+			if (item.getType().isCodeMode) {
+				// Create new code items.
+				List<CodeItem> itemList = item.getItemList().stream().map(subItem -> {
+					CodeItem codeItem = (CodeItem) subItem;
+
+					// Create new element id.
+					ElementId newUuid = new ElementId(IdentifierUtil.randomUniqueId());
+
+					// Mapping old id with new id.
+					mapUuids.put(codeItem.getUuid(), newUuid);
+
+					// Ret.
+					return new CodeItem(codeItem.getReferenceCode(), newUuid);
+				}).collect(Collectors.toList());
+
+				// Return new setting.
+				return new ElementSetting(item.getDemensionNo(), item.getType(), itemList);
+			}
+
+			// Check mode: is range mode
+			if (item.getType().isRangeMode) {
+				// Create new range items.
+				List<RangeItem> itemList = item.getItemList().stream().map(subItem -> {
+					RangeItem rangeItem = (RangeItem) subItem;
+
+					// Create new element id.
+					ElementId newUuid = new ElementId(IdentifierUtil.randomUniqueId());
+
+					// Mapping old id with new id.
+					mapUuids.put(rangeItem.getUuid(), newUuid);
+
+					// Ret.
+					return new RangeItem(rangeItem.getOrderNumber(), rangeItem.getStartVal(),
+							rangeItem.getEndVal(), newUuid);
+				}).collect(Collectors.toList());
+
+				// Create new step setting.
+				StepElementSetting stepElementSetting = (StepElementSetting) item;
+				StepElementSetting el = new StepElementSetting(stepElementSetting.getDemensionNo(),
+						stepElementSetting.getType(), itemList);
+				el.setSetting(stepElementSetting.getLowerLimit(),
+						stepElementSetting.getUpperLimit(), stepElementSetting.getInterval());
+
+				// Ret
+				return el;
+			}
+
+			// Ret
+			return null;
+		}).collect(Collectors.toList());
+
+		// Create new item mapping with old uuid.
+		history.valueItems = this.valueItems.stream()
+				.map(item -> new WtItem(mapUuids.get(item.getElement1Id()),
+						mapUuids.getOrDefault(item.getElement2Id(), ElementId.DEFAULT_VALUE),
+						mapUuids.getOrDefault(item.getElement3Id(), ElementId.DEFAULT_VALUE),
+						item.getAmount()))
+				.collect(Collectors.toList());
+
 		return history;
 	}
 

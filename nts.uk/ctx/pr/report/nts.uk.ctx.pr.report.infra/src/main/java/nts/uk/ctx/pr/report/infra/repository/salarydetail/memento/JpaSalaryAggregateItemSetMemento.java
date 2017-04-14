@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemCode;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemName;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemSetMemento;
@@ -25,6 +24,12 @@ import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstAggreHeadPK;
 public class JpaSalaryAggregateItemSetMemento implements SalaryAggregateItemSetMemento {
 
 	/** The agger head. */
+
+	/**
+	 * Gets the agger head.
+	 *
+	 * @return the agger head
+	 */
 
 	/**
 	 * Gets the agger head.
@@ -52,9 +57,9 @@ public class JpaSalaryAggregateItemSetMemento implements SalaryAggregateItemSetM
 	 * company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		QlsptPaylstAggreHeadPK pk = new QlsptPaylstAggreHeadPK();
-		pk.setCcd(companyCode.v());
+		pk.setCcd(companyCode);
 		this.aggerHead.setQlsptPaylstAggreHeadPK(pk);
 
 	}
@@ -94,12 +99,11 @@ public class JpaSalaryAggregateItemSetMemento implements SalaryAggregateItemSetM
 	@Override
 	public void setSubItemCodes(Set<SalaryItem> subItemCodes) {
 		this.aggerHead.setQlsptPaylstAggreDetailList(subItemCodes.stream().map(item -> {
-			QlsptPaylstAggreDetail detail = new QlsptPaylstAggreDetail();
 			QlsptPaylstAggreDetailPK pk = new QlsptPaylstAggreDetailPK();
 			pk.setItemCd(item.getSalaryItemCode());
 			pk.setCcd(this.aggerHead.getQlsptPaylstAggreHeadPK().getCcd());
 			pk.setAggregateCd(this.aggerHead.getQlsptPaylstAggreHeadPK().getAggregateCd());
-			detail.setQlsptPaylstAggreDetailPK(pk);
+			QlsptPaylstAggreDetail detail = new QlsptPaylstAggreDetail(pk);
 			return detail;
 		}).collect(Collectors.toList()));
 	}

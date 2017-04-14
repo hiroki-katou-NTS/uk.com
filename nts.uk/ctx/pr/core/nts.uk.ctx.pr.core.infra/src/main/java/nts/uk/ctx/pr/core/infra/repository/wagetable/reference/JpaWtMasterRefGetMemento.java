@@ -14,7 +14,7 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.reference.QwtmtWagetableRefTabl
 public class JpaWtMasterRefGetMemento implements WtMasterRefGetMemento {
 
 	/** The type value. */
-	protected QwtmtWagetableRefTable typeValue;
+	private QwtmtWagetableRefTable typeValue;
 
 	/**
 	 * Instantiates a new jpa wage table master ref get memento.

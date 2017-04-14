@@ -44,11 +44,4 @@ public interface AvgEarnLevelMasterSettingSetMemento {
 	 */
 	void setSalLimit(Long salLimit);
 
-	/**
-	 * Sets the version.
-	 *
-	 * @param version the new version
-	 */
-	void setVersion(Long version);
-
 }

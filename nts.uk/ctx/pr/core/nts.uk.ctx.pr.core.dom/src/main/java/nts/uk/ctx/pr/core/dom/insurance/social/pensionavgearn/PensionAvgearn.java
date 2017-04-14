@@ -7,9 +7,9 @@ package nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn;
 import java.math.BigDecimal;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
-import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 
 /**
  * The Class PensionAvgearn.
@@ -18,14 +18,14 @@ import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 public class PensionAvgearn extends DomainObject {
 
 	/** The history id. */
-	// historyId
+	@Setter
 	private String historyId;
 
 	/** The level code. */
 	private Integer levelCode;
 
 	/** The child contribution amount. */
-	private InsuranceAmount childContributionAmount;
+	private CommonAmount childContributionAmount;
 
 	/** The company fund. */
 	private PensionAvgearnValue companyFund;
@@ -48,8 +48,9 @@ public class PensionAvgearn extends DomainObject {
 	/**
 	 * Health insurance avgearn.
 	 */
-	private PensionAvgearn() {
-	};
+	private PensionAvgearn(String historyId) {
+		this.historyId = historyId;
+	}
 	
 	// =================== Memento State Support Method ===================
 	/**
@@ -95,8 +96,7 @@ public class PensionAvgearn extends DomainObject {
 	 * @return the pension avgearn
 	 */
 	public PensionAvgearn copyWithNewHistoryId(String newHistoryId) {
-		PensionAvgearn pensionAvgearn = new PensionAvgearn();
-		pensionAvgearn.historyId = newHistoryId;
+		PensionAvgearn pensionAvgearn = new PensionAvgearn(newHistoryId);
 		pensionAvgearn.levelCode = this.levelCode;
 		pensionAvgearn.personalFund = this.personalFund;
 		pensionAvgearn.personalFundExemption = this.personalFundExemption;
@@ -116,8 +116,7 @@ public class PensionAvgearn extends DomainObject {
 	 * @return the object
 	 */
 	public static PensionAvgearn createWithIntial(String newHistoryId, Integer levelCode) {
-		PensionAvgearn pensionAvgearn = new PensionAvgearn();
-		pensionAvgearn.historyId = newHistoryId;
+		PensionAvgearn pensionAvgearn = new PensionAvgearn(newHistoryId);
 		pensionAvgearn.levelCode = levelCode;
 		CommonAmount defaultAmount = new CommonAmount(BigDecimal.ZERO);
 		PensionAvgearnValue defaultValue = new PensionAvgearnValue(defaultAmount, defaultAmount, defaultAmount);
@@ -127,7 +126,7 @@ public class PensionAvgearn extends DomainObject {
 		pensionAvgearn.companyFund = defaultValue;
 		pensionAvgearn.companyFundExemption = defaultValue;
 		pensionAvgearn.companyPension = defaultValue;
-		pensionAvgearn.childContributionAmount = new InsuranceAmount(BigDecimal.ZERO);
+		pensionAvgearn.childContributionAmount = defaultAmount;
 		return pensionAvgearn;
 	}
 

@@ -18,9 +18,6 @@ public class CbkmtBranchPK {
    @Column(name="CCD")
    public String companyCode;
    
-   @Column(name="BANK_CD")
-   public String bankCode;
-   
-   @Column(name="BRANCH_CD")
-   public String branchCode;
+   @Column(name="BRANCH_ID")
+   public String branchId;
 }

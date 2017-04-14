@@ -22,6 +22,7 @@ var nts;
                             initWageTable: 'pr/proto/wagetable/init',
                             genitem: 'pr/proto/wagetable/reference/genitem',
                             updateHistory: 'pr/proto/wagetable/update',
+                            certificateInfo: 'pr/proto/wagetable/sp/certifies'
                         };
                         var Service = (function (_super) {
                             __extends(Service, _super);
@@ -42,6 +43,9 @@ var nts;
                             };
                             Service.prototype.updateHistory = function (data) {
                                 return nts.uk.request.ajax(path.updateHistory, data);
+                            };
+                            Service.prototype.loadCertificate = function () {
+                                return nts.uk.request.ajax(path.certificateInfo);
                             };
                             Service.prototype.genearetItemSetting = function (data) {
                                 var dfd = $.Deferred();

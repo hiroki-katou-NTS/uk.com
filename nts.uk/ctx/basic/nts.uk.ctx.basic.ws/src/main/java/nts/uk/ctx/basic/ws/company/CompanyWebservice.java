@@ -13,8 +13,6 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.basic.app.command.company.AddCompanyCommand;
 import nts.uk.ctx.basic.app.command.company.AddCompanyCommandHandler;
-import nts.uk.ctx.basic.app.command.company.DeleteCompanyCommand;
-import nts.uk.ctx.basic.app.command.company.DeleteCompanyCommandHandler;
 import nts.uk.ctx.basic.app.command.company.UpdateCompanyCommand;
 import nts.uk.ctx.basic.app.command.company.UpdateCompanyCommandHandler;
 import nts.uk.ctx.basic.app.find.company.CompanyDto;
@@ -31,36 +29,34 @@ public class CompanyWebservice extends WebService{
 	@Inject
 	private AddCompanyCommandHandler addData;
 	@Inject
-	private DeleteCompanyCommandHandler deleteData;
-	@Inject
 	private UpdateCompanyCommandHandler updateData;
 	@Inject
 	private CompanyFinder finder;
+	
 	@POST
 	@Path("findallcompany")
 	public List<CompanyDto> getAllCompanys(){
-		
 		return this.finder.getAllCompanys();
-		
 	}
 	@POST
-	@Path("findBycompanyCode")
+	@Path("findCompany")
 	public CompanyDto getCompanyDetail(){
-		return this.finder.getCompany()
+		return this.finder.getCompany().get();
+	}
+	@POST
+	@Path("findCompanyDetail/{companyCd}")
+	public CompanyDto getCompanyDetail(@PathParam("companyCd") String companyCd){
+		return this.finder.getCompanyDetail(companyCd)
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not found company")));
-		
 	}
+
 	@POST
-	@Path("deletedata")
-	public void deleteData(DeleteCompanyCommand command){
-		this.deleteData.handle(command);
+	@Path("findByUseKtSet/{useKtSet}")
+	public CompanyDto getCompanyByUserKtSet(@PathParam("useKtSet") int useKtSet){
+		return this.finder.getCompanyByUserKtSet(useKtSet)
+				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not Found Company")));
 	}
-	@POST
-	@Path("updatedata")
-	public void updateData(UpdateCompanyCommand command){
-		this.updateData.handle(command);
-		
-	}
+	
 	@POST
 	@Path("adddata")
 	public void addData(AddCompanyCommand command){
@@ -68,12 +64,9 @@ public class CompanyWebservice extends WebService{
 	}
 	
 	@POST
-	@Path("findByUseKtSet/{useKtSet}")
-	public CompanyDto getCompanyByUserKtSet(@PathParam("use_Kt_Set")int  use_Kt_Set){
-		return this.finder.getCompanyByUserKtSet(use_Kt_Set)
-				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not Found Company")));
-		
+	@Path("updatedata")
+	public void updateData(UpdateCompanyCommand command){
+		this.updateData.handle(command);
 	}
-	
 	
 }

@@ -27,7 +27,9 @@
 				<table class="form-default">
 					<ui:include src="../dialogbase/namepart.xhtml"/>
 					<tr>
-						<td><div data-bind="ntsFormLabel: { required: true }">期間</div></td>
+						<td>
+							<div style="min-width: 130px" data-bind="ntsFormLabel: { required: true }">期間</div>
+						</td>
 						<td>
 							<span id="startYearMonth" data-name="期間"
 							data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yyyy/MM', disabled: false}"/>
@@ -35,11 +37,12 @@
 						</td>
 					</tr>
 					<tr>
-						<td><div data-bind="ntsFormLabel: { required: true }">履歴の引継ぎ</div></td>
+						<td style="vertical-align: top">
+							<div data-bind="ntsFormLabel: { required: true }">履歴の引継ぎ</div>
+						</td>
 						<td>
-						<div id="actionOption">
 							<com:ko tag="if" bind="dialogOptions.lastest != undefined">
-								<div>
+								<div style="padding-top: 5px">
 									<label class="ntsRadioBox">
 										<input type="radio"
 											name="createType"
@@ -51,7 +54,7 @@
 								</div>
 							</com:ko>
 							<div>
-								<label class="ntsRadioBox">
+								<label class="ntsRadioBox" style="padding-top: 10px; padding-bottom: 20px;">
 									<input type="radio"
 										name="createType"
 										id="createTypeInit"
@@ -60,12 +63,11 @@
 									<label for="createTypeInit" class="label" data-bind="text: '初めから作成する'"/>
 								</label>
 							</div>
-						</div>
 						</td>
 					</tr>
 				</table>
 				<com:ko tag="if" bind="dialogOptions.lastest == undefined">
-					<div style="height: 40px; line-height: 40px;"/>
+					<div style="height: 25px; line-height: 25px;"/>
 				</com:ko>
 			</div>
 			<hr />

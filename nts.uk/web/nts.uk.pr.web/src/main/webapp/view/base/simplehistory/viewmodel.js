@@ -30,20 +30,36 @@ var nts;
                                         return self.selectedNode() != null;
                                     });
                                     self.igGridSelectedHistoryUuid.subscribe(function (id) {
-                                        if (!id) {
-                                            self.selectedNode(undefined);
-                                            return;
-                                        }
-                                        var selectedNode = self.getNode(id);
-                                        if (!selectedNode.isMaster) {
-                                            self.isNewMode(false);
-                                            self.selectedHistoryUuid(selectedNode.id);
-                                            self.onSelectHistory(id);
+                                        var inlineFunc = function () {
+                                            if (!id) {
+                                                self.selectedNode(undefined);
+                                                return;
+                                            }
+                                            var selectedNode = self.getNode(id);
+                                            if (!selectedNode.isMaster) {
+                                                self.isNewMode(false);
+                                                self.selectedHistoryUuid(selectedNode.id);
+                                                if (nts.uk.ui._viewModel) {
+                                                    self.clearErrors();
+                                                }
+                                                self.onSelectHistory(id);
+                                            }
+                                            else {
+                                                self.onSelectMaster(id);
+                                            }
+                                            self.selectedNode(selectedNode);
+                                        };
+                                        if (self.selectedHistoryUuid() &&
+                                            id != self.selectedHistoryUuid()) {
+                                            self.confirmDirtyAndExecute(inlineFunc, function () {
+                                                self.igGridSelectedHistoryUuid(self.selectedHistoryUuid());
+                                            });
                                         }
                                         else {
-                                            self.onSelectMaster(id);
+                                            if (!self.selectedHistoryUuid()) {
+                                                inlineFunc();
+                                            }
                                         }
-                                        self.selectedNode(selectedNode);
                                     });
                                 }
                                 ScreenBaseModel.prototype.startPage = function () {
@@ -100,12 +116,15 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
-                                ScreenBaseModel.prototype.confirmDirtyAndExecute = function (functionToExecute) {
+                                ScreenBaseModel.prototype.confirmDirtyAndExecute = function (functionToExecute, functionToExecuteIfNo) {
                                     var self = this;
                                     if (self.isDirty()) {
                                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                                             functionToExecute();
                                         }).ifNo(function () {
+                                            if (functionToExecuteIfNo) {
+                                                functionToExecuteIfNo();
+                                            }
                                         });
                                     }
                                     else {
@@ -116,8 +135,11 @@ var nts;
                                     var self = this;
                                     self.confirmDirtyAndExecute(function () {
                                         self.isNewMode(true);
-                                        self.igGridSelectedHistoryUuid(undefined);
                                         self.onRegistNew();
+                                        if (nts.uk.ui._viewModel) {
+                                            self.clearErrors();
+                                        }
+                                        self.igGridSelectedHistoryUuid(undefined);
                                     });
                                 };
                                 ScreenBaseModel.prototype.saveBtnClick = function () {
@@ -216,6 +238,11 @@ var nts;
                                                 }
                                             }
                                         }
+                                        if (!self.masterHistoryList || self.masterHistoryList.length == 0) {
+                                            self.isNewMode(true);
+                                            self.selectedNode(null);
+                                            self.onRegistNew();
+                                        }
                                     });
                                 };
                                 ScreenBaseModel.prototype.start = function () {
@@ -224,6 +251,8 @@ var nts;
                                     return dfd.promise();
                                 };
                                 ScreenBaseModel.prototype.onSelectMaster = function (code) {
+                                };
+                                ScreenBaseModel.prototype.clearErrors = function () {
                                 };
                                 ScreenBaseModel.prototype.getNode = function (id) {
                                     var self = this;

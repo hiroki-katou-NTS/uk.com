@@ -13,10 +13,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto.AccidentInsuranceRateHistoryFindOutDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto.AccidentInsuranceRateHistoryFindDto;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.history.command.AccidentInsuranceHistoryUpdateCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.history.command.AccidentInsuranceHistoryUpdateCommandHandler;
-import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.history.find.AccidentInsuranceHistoryF‌inder;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.history.find.AccidentInsuranceHistoryFinder;
 
 /**
  * The Class AccidentInsuranceHistoryWs.
@@ -27,7 +27,7 @@ public class AccidentInsuranceHistoryWs extends WebService {
 
 	/** The find. */
 	@Inject
-	private AccidentInsuranceHistoryF‌inder find;
+	private AccidentInsuranceHistoryFinder find;
 
 	/** The update. */
 	@Inject
@@ -40,7 +40,7 @@ public class AccidentInsuranceHistoryWs extends WebService {
 	 */
 	@POST
 	@Path("findall")
-	public List<AccidentInsuranceRateHistoryFindOutDto> findAll() {
+	public List<AccidentInsuranceRateHistoryFindDto> findAll() {
 		return this.find.findAll();
 	}
 
@@ -53,7 +53,7 @@ public class AccidentInsuranceHistoryWs extends WebService {
 	 */
 	@POST
 	@Path("find/{historyId}")
-	public AccidentInsuranceRateHistoryFindOutDto find(@PathParam("historyId") String historyId) {
+	public AccidentInsuranceRateHistoryFindDto find(@PathParam("historyId") String historyId) {
 		return this.find.find(historyId);
 	}
 

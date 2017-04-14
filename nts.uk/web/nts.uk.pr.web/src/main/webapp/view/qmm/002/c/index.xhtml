@@ -12,9 +12,9 @@
 					nts.uk.shr.com.primitive.PersonId
    				</com:ValidatorScript>
 			<com:stylefile path="main.css" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="service.js" />
+			<com:scriptfile path="qmm002.c.start.js" />
+			<com:scriptfile path="qmm002.c.vm.js" />
+			<com:scriptfile path="qmm002.c.service.js" />
 			<com:scriptfile set="IGNITE" />
 
 		</ui:define>
@@ -59,7 +59,7 @@
 											selectedValues: selectedCodes,								
 											optionsValue: 'treeCode',
 											optionsChild: 'childs',
-											optionsText: 'name',
+											optionsText: 'displayName',
 											multiple: true,
 											enable: true,										
 											showCheckBox: true}"
@@ -82,7 +82,7 @@
 											comId: 'treegrid2',
 											items: lst_002, 
 											selected: singleSelectedCode, 
-											selectedKey: 'code', 
+											selectedKey: 'treeCode', 
 											childField: 'childs', 
 											fields: ['name', 'code']}" />
 									<br />
@@ -94,7 +94,7 @@
 											value: singleSelectedCode,								
 											optionsValue: 'treeCode',
 											optionsChild: 'childs',
-											optionsText: 'name',
+											optionsText: 'displayName',
 											multiple: false,
 											enable: true,										
 											showCheckBox: false}"

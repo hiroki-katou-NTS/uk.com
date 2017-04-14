@@ -56,11 +56,11 @@ var nts;
                             function findAllRounding() {
                                 var dfd = $.Deferred();
                                 var roundingList = [
-                                    new model.finder.Enum('0', '切り上げ'),
-                                    new model.finder.Enum('1', '切捨て'),
+                                    new model.finder.Enum('0', '切捨て'),
+                                    new model.finder.Enum('1', '切り上げ'),
                                     new model.finder.Enum('2', '四捨五入'),
-                                    new model.finder.Enum('3', '五捨五超入'),
-                                    new model.finder.Enum('4', '五捨六入')
+                                    new model.finder.Enum('3', '五捨六入'),
+                                    new model.finder.Enum('4', '五捨五超入')
                                 ];
                                 dfd.resolve(roundingList);
                                 return dfd.promise();

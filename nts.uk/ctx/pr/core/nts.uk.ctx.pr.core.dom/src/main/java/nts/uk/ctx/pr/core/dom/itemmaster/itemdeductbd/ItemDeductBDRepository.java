@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface ItemDeductBDRepository {
 	
-	List<ItemDeductBD> findAll(String companyCode, String itemCode);
+	List<ItemDeductBD> findAll( String itemCode);
 
 	void add(ItemDeductBD itemDeductBD);
 

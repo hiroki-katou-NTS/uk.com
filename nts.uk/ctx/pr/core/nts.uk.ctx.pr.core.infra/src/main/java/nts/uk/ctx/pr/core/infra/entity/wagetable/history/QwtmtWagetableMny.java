@@ -5,18 +5,20 @@
 package nts.uk.ctx.pr.core.infra.entity.wagetable.history;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class QwtmtWagetableMny.
@@ -25,7 +27,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "QWTMT_WAGETABLE_MNY")
-public class QwtmtWagetableMny implements Serializable {
+public class QwtmtWagetableMny extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -34,49 +36,18 @@ public class QwtmtWagetableMny implements Serializable {
 	@EmbeddedId
 	protected QwtmtWagetableMnyPK qwtmtWagetableMnyPK;
 
-	/** The ins date. */
-	@Column(name = "INS_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date insDate;
-
-	/** The ins ccd. */
-	@Column(name = "INS_CCD")
-	private String insCcd;
-
-	/** The ins scd. */
-	@Column(name = "INS_SCD")
-	private String insScd;
-
-	/** The ins pg. */
-	@Column(name = "INS_PG")
-	private String insPg;
-
-	/** The upd date. */
-	@Column(name = "UPD_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updDate;
-
-	/** The upd ccd. */
-	@Column(name = "UPD_CCD")
-	private String updCcd;
-
-	/** The upd scd. */
-	@Column(name = "UPD_SCD")
-	private String updScd;
-
-	/** The upd pg. */
-	@Column(name = "UPD_PG")
-	private String updPg;
-
-	/** The exclus ver. */
-	@Basic(optional = false)
-	@Column(name = "EXCLUS_VER")
-	private int exclusVer;
-
 	/** The value mny. */
 	@Basic(optional = false)
 	@Column(name = "VALUE_MNY")
 	private long valueMny;
+
+	/** The qwtmt wagetable hist. */
+	@JoinColumns({
+			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
+			@JoinColumn(name = "WAGE_TABLE_CD", referencedColumnName = "WAGE_TABLE_CD", insertable = false, updatable = false),
+			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false) })
+	@ManyToOne(cascade = CascadeType.ALL)
+	private QwtmtWagetableHist qwtmtWagetableHist;
 
 	/**
 	 * Instantiates a new qwtmt wagetable mny.
@@ -98,22 +69,6 @@ public class QwtmtWagetableMny implements Serializable {
 	/**
 	 * Instantiates a new qwtmt wagetable mny.
 	 *
-	 * @param qwtmtWagetableMnyPK
-	 *            the qwtmt wagetable mny PK
-	 * @param exclusVer
-	 *            the exclus ver
-	 * @param valueMny
-	 *            the value mny
-	 */
-	public QwtmtWagetableMny(QwtmtWagetableMnyPK qwtmtWagetableMnyPK, int exclusVer, long valueMny) {
-		this.qwtmtWagetableMnyPK = qwtmtWagetableMnyPK;
-		this.exclusVer = exclusVer;
-		this.valueMny = valueMny;
-	}
-
-	/**
-	 * Instantiates a new qwtmt wagetable mny.
-	 *
 	 * @param ccd
 	 *            the ccd
 	 * @param wageTableCd
@@ -127,10 +82,10 @@ public class QwtmtWagetableMny implements Serializable {
 	 * @param element3Id
 	 *            the element 3 id
 	 */
-	public QwtmtWagetableMny(String ccd, String wageTableCd, String histId, String element1Id, String element2Id,
-			String element3Id) {
-		this.qwtmtWagetableMnyPK = new QwtmtWagetableMnyPK(ccd, wageTableCd, histId, element1Id, element2Id,
-				element3Id);
+	public QwtmtWagetableMny(String ccd, String wageTableCd, String histId, String element1Id,
+			String element2Id, String element3Id) {
+		this.qwtmtWagetableMnyPK = new QwtmtWagetableMnyPK(ccd, wageTableCd, histId, element1Id,
+				element2Id, element3Id);
 	}
 
 	/*
@@ -157,9 +112,20 @@ public class QwtmtWagetableMny implements Serializable {
 		}
 		QwtmtWagetableMny other = (QwtmtWagetableMny) object;
 		if ((this.qwtmtWagetableMnyPK == null && other.qwtmtWagetableMnyPK != null)
-				|| (this.qwtmtWagetableMnyPK != null && !this.qwtmtWagetableMnyPK.equals(other.qwtmtWagetableMnyPK))) {
+				|| (this.qwtmtWagetableMnyPK != null
+						&& !this.qwtmtWagetableMnyPK.equals(other.qwtmtWagetableMnyPK))) {
 			return false;
 		}
 		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.qwtmtWagetableMnyPK;
 	}
 }

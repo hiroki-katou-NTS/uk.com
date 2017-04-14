@@ -1,12 +1,11 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.labor.businesstype;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.BusinessName;
 
 /**
@@ -25,7 +24,7 @@ public class InsuranceBusinessType extends DomainObject {
 	private BusinessName bizName;
 
 	/**
-	 * Instantiates a new insurance business type.
+	 * Instantiates a new insurance business type.	
 	 */
 	public InsuranceBusinessType() {
 		super();

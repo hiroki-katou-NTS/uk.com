@@ -17,35 +17,28 @@ module nts.uk.pr.view.qmm016.l {
 
         //Function connection service FindAll CertifyGroup
         export function findAllCertifyGroup(): JQueryPromise<model.CertifyGroupFindOutDto[]> {
-            //set up data respone
-            var dfd = $.Deferred<model.CertifyGroupFindOutDto[]>();
-            //call service server
             return nts.uk.request.ajax(paths.findAllCertifyGroup);
         }
 
         //Function connection service FindA CertifyGroup
         export function findCertifyGroup(code: string): JQueryPromise<model.CertifyGroupDto> {
-            var dfd = $.Deferred<model.CertifyGroupDto>();
             return nts.uk.request.ajax(paths.findCertifyGroup + "/" + code);
         }
 
         //Function connection service Add CertifyGroup
         export function addCertifyGroup(certifyGroupDto: model.CertifyGroupDto): JQueryPromise<void> {
-            var dfd = $.Deferred<any>();
             var data = { certifyGroupDto: certifyGroupDto };
             return nts.uk.request.ajax(paths.addCertifyGroup, data);
         }
 
         //Function connection service Update CertifyGroup
         export function updateCertifyGroup(certifyGroupDto: model.CertifyGroupDto): JQueryPromise<void> {
-            var dfd = $.Deferred<any>();
             var data = { certifyGroupDto: certifyGroupDto };
             return nts.uk.request.ajax(paths.updateCertifyGroup, data);
         }
 
         //Function connection service Delete CertifyGroup
         export function deleteCertifyGroup(certifyGroupDeleteDto: model.CertifyGroupDeleteDto): JQueryPromise<void> {
-            var dfd = $.Deferred<any>();
             var data = { certifyGroupDeleteDto: certifyGroupDeleteDto };
             return nts.uk.request.ajax(paths.deleteCertifyGroup, data);
         }

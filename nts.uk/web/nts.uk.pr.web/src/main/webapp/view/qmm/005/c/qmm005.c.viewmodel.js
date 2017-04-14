@@ -132,18 +132,13 @@ var qmm005;
             ViewModel.prototype.saveData = function () {
                 var self = this, date = new Date(), stdYear = date.getFullYear(), stdMonth = date.getMonth(), stdDate = date.getDate();
                 var data = {
-                    payBonusAtr: 0,
-                    sparePayAtr: 0,
                     processingNo: self.index(),
                     processingName: self.inp001(),
                     dispSet: 0,
                     currentProcessingYm: parseInt(nts.uk.time.formatDate(new Date(stdYear, stdDate <= self.sel001() ? stdMonth + 1 : stdMonth, 1), 'yyyyMM')),
                     bonusAtr: 0,
-                    bCurrentProcessingYm: 0,
+                    bcurrentProcessingYm: parseInt(nts.uk.time.formatDate(new Date(stdYear, stdDate <= self.sel001() ? stdMonth + 1 : stdMonth, 1), 'yyyyMM')),
                     payStdDay: self.sel001(),
-                    resitaxBeginMon: 6,
-                    resitaxStdMon: 1,
-                    resitaxStdDay: 1,
                     pickupStdMonAtr: self.sel002(),
                     pickupStdDay: self.sel003(),
                     accountDueMonAtr: self.sel004(),

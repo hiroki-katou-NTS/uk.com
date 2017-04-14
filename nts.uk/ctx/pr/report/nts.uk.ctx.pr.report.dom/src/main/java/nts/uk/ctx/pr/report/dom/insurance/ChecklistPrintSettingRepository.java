@@ -12,11 +12,18 @@ import java.util.Optional;
 public interface ChecklistPrintSettingRepository {
 
 	/**
-	 * Save.
+	 * create.
 	 *
 	 * @param printSetting the print setting
 	 */
-	void save(ChecklistPrintSetting printSetting);
+	void create(ChecklistPrintSetting printSetting);
+	
+	/**
+	 * Update.
+	 *
+	 * @param printSetting the print setting
+	 */
+	void update(ChecklistPrintSetting printSetting);
 
 	/**
 	 * Find by company code.

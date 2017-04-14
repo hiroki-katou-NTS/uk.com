@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.healthrate.command;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -11,10 +13,11 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.service.HealthInsuranceAvgearnService;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.service.HealthInsuranceRateService;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class UpdateHealthInsuranceCommandHandler.
@@ -30,6 +33,9 @@ public class UpdateHealthInsuranceCommandHandler
 	/** The health insurance rate repository. */
 	@Inject
 	private HealthInsuranceRateRepository healthInsuranceRateRepository;
+	
+	@Inject 
+	private HealthInsuranceAvgearnService healthInsuranceAvgearnService;
 
 	/*
 	 * (non-Javadoc)
@@ -44,27 +50,33 @@ public class UpdateHealthInsuranceCommandHandler
 		// Get command.
 		UpdateHealthInsuranceCommand command = context.getCommand();
 
-		// Get the current company code.
-		String companyCode = AppContexts.user().companyCode();
-
 		// Get the history.
-		HealthInsuranceRate findhealthInsuranceRate = healthInsuranceRateRepository
-				.findById(command.getHistoryId()).get();
+		Optional<HealthInsuranceRate> optHealthInsuranceRate = this.healthInsuranceRateRepository
+				.findById(command.getHistoryId());
 
-		// if not exsits
-		if (findhealthInsuranceRate == null) {
-			throw new BusinessException("ER010");
-		} else {
+		// if is found
+		if (optHealthInsuranceRate.isPresent()) {
 			// Transfer data
-			HealthInsuranceRate updatedHealthInsuranceRate = command.toDomain(companyCode,
-					findhealthInsuranceRate.getHistoryId(),
-					findhealthInsuranceRate.getOfficeCode());
-			updatedHealthInsuranceRate.validate();
-			// Validate
-			healthInsuranceRateService.validateRequiredItem(updatedHealthInsuranceRate);
+			HealthInsuranceRate healthInsuranceRate = optHealthInsuranceRate.get();
+			healthInsuranceRate.setAutoCalculate(command.getAutoCalculate());
+			healthInsuranceRate.setMaxAmount(command.getMaxAmount());
+			healthInsuranceRate.setRateItems(command.getRateItems());
+			healthInsuranceRate.setRoundingMethods(command.getRoundingMethods());
 
-			// Update to db.
-			healthInsuranceRateRepository.update(updatedHealthInsuranceRate);
+			// Validate
+			healthInsuranceRate.validate();
+			this.healthInsuranceRateService.validateRequiredItem(healthInsuranceRate);
+
+			this.healthInsuranceRateRepository.update(healthInsuranceRate);
+			
+			// if Autocalculate update avg earn
+			if (healthInsuranceRate.getAutoCalculate().equals(CalculateMethod.Auto)) {
+				healthInsuranceAvgearnService.updateHealthInsuranceRateAvgEarn(healthInsuranceRate);
+			}
+		}
+		// if is not found.
+		else {
+			throw new BusinessException("ER010");
 		}
 	}
 

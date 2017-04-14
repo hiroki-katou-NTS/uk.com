@@ -10,20 +10,22 @@ package nts.uk.ctx.pr.core.dom.insurance;
  */
 public enum RoundingMethod {
 
-	/** The Round up. */
-	RoundUp(0, "RoundUp"),
-
 	/** The Truncation. */
-	Truncation(1, "Truncation"),
+	Truncation(0, "Truncation"),
+	
+	/** The Round up. */
+	RoundUp(1, "RoundUp"),
 
-	/** The Round down. */
-	RoundDown(2, "RoundDown"),
+	/** The Down 4 up 5. */
+	Down4_Up5(2, "Down4_Up5"),
 
 	/** The Down 5 up 6. */
 	Down5_Up6(3, "Down5_Up6"),
+	
+	/** The Round down. */
+	RoundDown(4, "RoundDown");
 
-	/** The Down 4 up 5. */
-	Down4_Up5(4, "Down4_Up5");
+
 
 	/** The value. */
 	public int value;
