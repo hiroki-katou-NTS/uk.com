@@ -50,7 +50,9 @@ module nts.uk.pr.view.qmm008.h {
             }
 
             export interface HealthInsuranceAvgEarnDto {
-                levelCode: number;
+                grade: number;
+                avgEarn: number;
+                upperLimit: number;
                 companyAvg: HealthInsuranceAvgEarnValue;
                 personalAvg: HealthInsuranceAvgEarnValue;
             }

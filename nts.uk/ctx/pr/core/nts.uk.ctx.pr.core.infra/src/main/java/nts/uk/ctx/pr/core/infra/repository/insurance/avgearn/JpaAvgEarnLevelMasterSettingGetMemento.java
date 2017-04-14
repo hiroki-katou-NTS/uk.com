@@ -29,34 +29,10 @@ public class JpaAvgEarnLevelMasterSettingGetMemento implements AvgEarnLevelMaste
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.avgearn.
-	 * AvgEarnLevelMasterSettingGetMemento#getCode()
+	 * AvgEarnLevelMasterSettingGetMemento#getGrade()
 	 */
 	@Override
-	public Integer getCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.avgearn.
-	 * AvgEarnLevelMasterSettingGetMemento#getHealthLevel()
-	 */
-	@Override
-	public Integer getHealthLevel() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.avgearn.
-	 * AvgEarnLevelMasterSettingGetMemento#getPensionLevel()
-	 */
-	@Override
-	public Integer getPensionLevel() {
+	public Integer getGrade() {
 		// TODO Auto-generated method stub
 		return null;
 	}

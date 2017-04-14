@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.avgearn;
@@ -10,25 +10,11 @@ package nts.uk.ctx.pr.core.dom.insurance.avgearn;
 public interface AvgEarnLevelMasterSettingGetMemento {
 
 	/**
-	 * Gets the code.
+	 * Gets the grade.
 	 *
-	 * @return the code
+	 * @return the grade
 	 */
-	Integer getCode();
-
-	/**
-	 * Gets the health level.
-	 *
-	 * @return the health level
-	 */
-	Integer getHealthLevel();
-
-	/**
-	 * Gets the pension level.
-	 *
-	 * @return the pension level
-	 */
-	Integer getPensionLevel();
+	Integer getGrade();
 
 	/**
 	 * Gets the avg earn.

@@ -29,34 +29,10 @@ public class JpaAvgEarnLevelMasterSettingSetMemento implements AvgEarnLevelMaste
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.avgearn.
-	 * AvgEarnLevelMasterSettingSetMemento#setCode(java.lang.Integer)
+	 * AvgEarnLevelMasterSettingSetMemento#setGrade(java.lang.Integer)
 	 */
 	@Override
-	public void setCode(Integer code) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.avgearn.
-	 * AvgEarnLevelMasterSettingSetMemento#setHealthLevel(java.lang.Integer)
-	 */
-	@Override
-	public void setHealthLevel(Integer healthLevel) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.avgearn.
-	 * AvgEarnLevelMasterSettingSetMemento#setPensionLevel(java.lang.Integer)
-	 */
-	@Override
-	public void setPensionLevel(Integer pensionLevel) {
+	public void setGrade(Integer grade) {
 		// TODO Auto-generated method stub
 
 	}

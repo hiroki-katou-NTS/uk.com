@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate;
@@ -12,7 +12,8 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.QismtSocialInsuOffice;
-import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn.QismtHealthInsuAvgearn;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn.QismtHealInsuAvgearnD;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn.QismtHealthInsuAmount;
 
 /**
  * The Class QismtHealthInsuRate_.
@@ -20,8 +21,14 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn.QismtHealt
 @StaticMetamodel(QismtHealthInsuRate.class)
 public class QismtHealthInsuRate_ {
 
-	/** The qismt health insu rate PK. */
-	public static volatile SingularAttribute<QismtHealthInsuRate, QismtHealthInsuRatePK> qismtHealthInsuRatePK;
+	/** The ccd. */
+	public static volatile SingularAttribute<QismtHealthInsuRate, String> ccd;
+
+	/** The si office cd. */
+	public static volatile SingularAttribute<QismtHealthInsuRate, String> siOfficeCd;
+
+	/** The hist id. */
+	public static volatile SingularAttribute<QismtHealthInsuRate, String> histId;
 
 	/** The ins date. */
 	public static volatile SingularAttribute<QismtHealthInsuRate, Date> insDate;
@@ -122,8 +129,11 @@ public class QismtHealthInsuRate_ {
 	/** The keep entry flg. */
 	public static volatile SingularAttribute<QismtHealthInsuRate, Integer> keepEntryFlg;
 
-	/** The qismt health insu avgearn list. */
-	public static volatile ListAttribute<QismtHealthInsuRate, QismtHealthInsuAvgearn> qismtHealthInsuAvgearnList;
+	/** The qismt heal insu avgearn D list. */
+	public static volatile ListAttribute<QismtHealthInsuRate, QismtHealInsuAvgearnD> qismtHealInsuAvgearnDList;
+	
+	/** The qismt health insu amount list. */
+	public static volatile ListAttribute<QismtHealthInsuRate, QismtHealthInsuAmount> qismtHealthInsuAmountList;
 
 	/** The qismt social insu office. */
 	public static volatile SingularAttribute<QismtHealthInsuRate, QismtSocialInsuOffice> qismtSocialInsuOffice;

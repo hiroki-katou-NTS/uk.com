@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate;
@@ -12,7 +12,8 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.QismtSocialInsuOffice;
-import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPensionAvgearn;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPensionAmount;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPensionAvgearnD;
 
 /**
  * The Class QismtPensionRate_.
@@ -20,8 +21,14 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPens
 @StaticMetamodel(QismtPensionRate.class)
 public class QismtPensionRate_ {
 
-	/** The qismt pension rate PK. */
-	public static volatile SingularAttribute<QismtPensionRate, QismtPensionRatePK> qismtPensionRatePK;
+	/** The ccd. */
+	public static volatile SingularAttribute<QismtPensionRate, String> ccd;
+
+	/** The si office cd. */
+	public static volatile SingularAttribute<QismtPensionRate, String> siOfficeCd;
+
+	/** The hist id. */
+	public static volatile SingularAttribute<QismtPensionRate, String> histId;
 
 	/** The ins date. */
 	public static volatile SingularAttribute<QismtPensionRate, Date> insDate;
@@ -188,8 +195,11 @@ public class QismtPensionRate_ {
 	/** The keep entry flg. */
 	public static volatile SingularAttribute<QismtPensionRate, Integer> keepEntryFlg;
 
-	/** The qismt pension avgearn list. */
-	public static volatile ListAttribute<QismtPensionRate, QismtPensionAvgearn> qismtPensionAvgearnList;
+	/** The qismt pension avgearn D list. */
+	public static volatile ListAttribute<QismtPensionRate, QismtPensionAvgearnD> qismtPensionAvgearnDList;
+
+	/** The qismt pension amount list. */
+	public static volatile ListAttribute<QismtPensionRate, QismtPensionAmount> qismtPensionAmountList;
 
 	/** The qismt social insu office. */
 	public static volatile SingularAttribute<QismtPensionRate, QismtSocialInsuOffice> qismtSocialInsuOffice;

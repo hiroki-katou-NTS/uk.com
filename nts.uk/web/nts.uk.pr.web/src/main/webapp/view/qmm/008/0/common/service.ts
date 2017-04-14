@@ -37,9 +37,7 @@ module nts.uk.pr.view.qmm008._0.common {
         */
         export module model {
             export interface AvgEarnLevelMasterSettingDto {
-                code: number;
-                healthLevel: number;
-                pensionLevel: number;
+                grade: number;
                 avgEarn: number;
                 salLimit: number;
                 salMin: number;

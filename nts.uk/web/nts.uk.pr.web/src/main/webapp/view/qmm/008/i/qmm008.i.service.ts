@@ -43,7 +43,9 @@ module nts.uk.pr.view.qmm008.i {
         export module model {
 
             export interface PensionAvgearnDto {
-                levelCode: number;
+                grade: number;
+                avgEarn: number;
+                upperLimit: number;
                 companyFund: PensionAvgearnValue;
                 companyFundExemption: PensionAvgearnValue;
                 companyPension: PensionAvgearnValue;

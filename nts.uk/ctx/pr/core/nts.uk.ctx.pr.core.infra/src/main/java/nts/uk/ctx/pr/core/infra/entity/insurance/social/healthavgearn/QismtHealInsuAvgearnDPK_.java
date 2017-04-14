@@ -2,7 +2,9 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate;
+package nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn;
+
+import java.math.BigDecimal;
 
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
@@ -10,15 +12,13 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class QismtHealthInsuAvgearnPK_.
  */
-@StaticMetamodel(QismtPensionRatePK.class)
-public class QismtPensionRatePK_ {
-
-	/** The ccd. */
-	public static volatile SingularAttribute<QismtPensionRatePK, String> ccd;
-
-	/** The si office cd. */
-	public static volatile SingularAttribute<QismtPensionRatePK, String> siOfficeCd;
+@StaticMetamodel(QismtHealInsuAvgearnDPK.class)
+public class QismtHealInsuAvgearnDPK_ {
 
 	/** The hist id. */
-	public static volatile SingularAttribute<QismtPensionRatePK, String> histId;
+	public static volatile SingularAttribute<QismtHealInsuAvgearnDPK, String> histId;
+
+	/** The health insu grade. */
+	public static volatile SingularAttribute<QismtHealInsuAvgearnDPK, BigDecimal> healthInsuGrade;
+	
 }

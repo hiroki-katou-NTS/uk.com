@@ -49,44 +49,61 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 	/** The Constant OneThousand. */
 	public static final BigDecimal OneThousand = BigDecimal.valueOf(1000);
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.service.HealthInsuranceAvgearnService#validateRequiredItem(nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.service.
+	 * HealthInsuranceAvgearnService#validateRequiredItem(nts.uk.ctx.pr.core.dom
+	 * .insurance.social.healthavgearn.HealthInsuranceAvgearn)
 	 */
 	@Override
 	public void validateRequiredItem(HealthInsuranceAvgearn healthInsuranceAvgearn) {
-		if (healthInsuranceAvgearn.getCompanyAvg() == null || healthInsuranceAvgearn.getPersonalAvg() == null) {
+		if (healthInsuranceAvgearn.getCompanyAvg() == null
+				|| healthInsuranceAvgearn.getPersonalAvg() == null) {
 			throw new BusinessException("ER001");
 		}
 
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.service.HealthInsuranceAvgearnService#updateHealthInsuranceRateAvgEarn(nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.service.
+	 * HealthInsuranceAvgearnService#updateHealthInsuranceRateAvgEarn(nts.uk.ctx
+	 * .pr.core.dom.insurance.social.healthrate.HealthInsuranceRate)
 	 */
 	@Override
 	public void updateHealthInsuranceRateAvgEarn(HealthInsuranceRate healthInsuranceRate) {
 		List<AvgEarnLevelMasterSetting> listAvgEarnLevelMasterSetting = avgEarnLevelMasterSettingRepository
 				.findAll(healthInsuranceRate.getCompanyCode());
 		// convert to Domain
-		List<HealthInsuranceAvgearn> healthInsuranceAvgearns = listAvgEarnLevelMasterSetting.stream().map(item -> {
-			return new HealthInsuranceAvgearn(new HiaGetMemento(item, healthInsuranceRate.getRateItems(),
-					healthInsuranceRate.getRoundingMethods(), healthInsuranceRate.getHistoryId()));
-		}).collect(Collectors.toList());
-		healthInsuranceAvgearnRepository.update(healthInsuranceAvgearns, healthInsuranceRate.getCompanyCode(),
-				healthInsuranceRate.getOfficeCode().v());
+		List<HealthInsuranceAvgearn> healthInsuranceAvgearns = listAvgEarnLevelMasterSetting
+				.stream().map(item -> {
+					return new HealthInsuranceAvgearn(
+							new HiaGetMemento(item, healthInsuranceRate.getRateItems(),
+									healthInsuranceRate.getRoundingMethods(),
+									healthInsuranceRate.getHistoryId()));
+				}).collect(Collectors.toList());
+		healthInsuranceAvgearnRepository.update(healthInsuranceAvgearns,
+				healthInsuranceRate.getCompanyCode(), healthInsuranceRate.getOfficeCode().v());
 	}
 
 	/**
 	 * Calculate avgearn value.
 	 *
-	 * @param roundingMethods the rounding methods
-	 * @param masterRate the master rate
-	 * @param rateItems the rate items
-	 * @param isPersonal the is personal
+	 * @param roundingMethods
+	 *            the rounding methods
+	 * @param masterRate
+	 *            the master rate
+	 * @param rateItems
+	 *            the rate items
+	 * @param isPersonal
+	 *            the is personal
 	 * @return the health insurance avgearn value
 	 */
-	private HealthInsuranceAvgearnValue calculateAvgearnValue(Set<HealthInsuranceRounding> roundingMethods,
-			BigDecimal masterRate, Set<InsuranceRateItem> rateItems, boolean isPersonal) {
+	private HealthInsuranceAvgearnValue calculateAvgearnValue(
+			Set<HealthInsuranceRounding> roundingMethods, BigDecimal masterRate,
+			Set<InsuranceRateItem> rateItems, boolean isPersonal) {
 		HealthInsuranceRounding salaryRound = new HealthInsuranceRounding();
 		HealthInsuranceRounding bonusRound = new HealthInsuranceRounding();
 		roundingMethods.forEach(item -> {
@@ -107,15 +124,19 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 				// check if personal
 				if (isPersonal) {
 					// for general and nursing
-					val = roundingNumber.healthRounding(salaryRound.getRoundAtrs().getPersonalRoundAtr(),
+					val = roundingNumber.healthRounding(
+							salaryRound.getRoundAtrs().getPersonalRoundAtr(),
 							calculateChargeRate(masterRate, rateItem, isPersonal), 1);
-					val2 = roundingNumber.healthRounding(salaryRound.getRoundAtrs().getPersonalRoundAtr(),
+					val2 = roundingNumber.healthRounding(
+							salaryRound.getRoundAtrs().getPersonalRoundAtr(),
 							calculateChargeRate(masterRate, rateItem, isPersonal), 3);
 				} else// company
 				{
-					val = roundingNumber.healthRounding(salaryRound.getRoundAtrs().getCompanyRoundAtr(),
+					val = roundingNumber.healthRounding(
+							salaryRound.getRoundAtrs().getCompanyRoundAtr(),
 							calculateChargeRate(masterRate, rateItem, isPersonal), 1);
-					val2 = roundingNumber.healthRounding(salaryRound.getRoundAtrs().getCompanyRoundAtr(),
+					val2 = roundingNumber.healthRounding(
+							salaryRound.getRoundAtrs().getCompanyRoundAtr(),
 							calculateChargeRate(masterRate, rateItem, isPersonal), 3);
 				}
 				switch (rateItem.getInsuranceType()) {
@@ -141,42 +162,50 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 	/**
 	 * Calculate charge rate.
 	 *
-	 * @param masterRate the master rate
-	 * @param rateItem the rate item
-	 * @param isPersonal the is personal
+	 * @param masterRate
+	 *            the master rate
+	 * @param rateItem
+	 *            the rate item
+	 * @param isPersonal
+	 *            the is personal
 	 * @return the big decimal
 	 */
-	private BigDecimal calculateChargeRate(BigDecimal masterRate, InsuranceRateItem rateItem, boolean isPersonal) {
+	private BigDecimal calculateChargeRate(BigDecimal masterRate, InsuranceRateItem rateItem,
+			boolean isPersonal) {
 		if (isPersonal) {
-			return masterRate.multiply(rateItem.getChargeRate().getPersonalRate().v()).divide(OneThousand);
+			return masterRate.multiply(rateItem.getChargeRate().getPersonalRate().v())
+					.divide(OneThousand);
 		}
-		return masterRate.multiply(rateItem.getChargeRate().getCompanyRate().v()).divide(OneThousand);
+		return masterRate.multiply(rateItem.getChargeRate().getCompanyRate().v())
+				.divide(OneThousand);
 	}
 
 	/**
-	 * The Class GetMemento.
+	 * The Class HiaGetMemento.
 	 */
 	private class HiaGetMemento implements HealthInsuranceAvgearnGetMemento {
 
 		/** The setting. */
-		private final AvgEarnLevelMasterSetting setting;
+		private AvgEarnLevelMasterSetting setting;
 
 		/** The rate items. */
-		private final Set<InsuranceRateItem> rateItems;
+		private Set<InsuranceRateItem> rateItems;
 
 		/** The rounding methods. */
-		private final Set<HealthInsuranceRounding> roundingMethods;
+		private Set<HealthInsuranceRounding> roundingMethods;
 
 		/** The history id. */
-		private final String historyId;
+		private String historyId;
 
 		/**
-		 * Instantiates a new gets the memento.
+		 * Instantiates a new hia get memento.
 		 *
 		 * @param setting
 		 *            the setting
 		 * @param rateItems
 		 *            the rate items
+		 * @param roundingMethods
+		 *            the rounding methods
 		 * @param historyId
 		 *            the history id
 		 */
@@ -196,18 +225,18 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 		 */
 		@Override
 		public String getHistoryId() {
-			return historyId;
+			return this.historyId;
 		}
 
 		/*
 		 * (non-Javadoc)
 		 * 
 		 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
-		 * HealthInsuranceAvgearnGetMemento#getLevelCode()
+		 * HealthInsuranceAvgearnGetMemento#getGrade()
 		 */
 		@Override
 		public Integer getGrade() {
-			return setting.getCode();
+			return this.setting.getGrade();
 		}
 
 		/*
@@ -218,7 +247,8 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 		 */
 		@Override
 		public HealthInsuranceAvgearnValue getCompanyAvg() {
-			return calculateAvgearnValue(roundingMethods, BigDecimal.valueOf(setting.getAvgEarn()), rateItems, false);
+			return calculateAvgearnValue(this.roundingMethods,
+					BigDecimal.valueOf(this.setting.getAvgEarn()), this.rateItems, false);
 		}
 
 		/*
@@ -229,7 +259,30 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 		 */
 		@Override
 		public HealthInsuranceAvgearnValue getPersonalAvg() {
-			return calculateAvgearnValue(roundingMethods, BigDecimal.valueOf(setting.getAvgEarn()), rateItems, true);
+			return calculateAvgearnValue(this.roundingMethods,
+					BigDecimal.valueOf(this.setting.getAvgEarn()), this.rateItems, true);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
+		 * HealthInsuranceAvgearnGetMemento#getAvgEarn()
+		 */
+		@Override
+		public Long getAvgEarn() {
+			return this.setting.getAvgEarn();
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
+		 * HealthInsuranceAvgearnGetMemento#getUpperLimit()
+		 */
+		@Override
+		public Long getUpperLimit() {
+			return this.setting.getSalLimit();
 		}
 
 	}

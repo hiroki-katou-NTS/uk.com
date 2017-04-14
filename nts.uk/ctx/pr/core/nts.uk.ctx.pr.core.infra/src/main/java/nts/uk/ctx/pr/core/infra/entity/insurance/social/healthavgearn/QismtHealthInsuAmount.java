@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -22,99 +21,91 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthIn
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class QismtHealthInsuAvgearn.
+ * The Class QismtHealthInsuAmount.
  */
-@Setter
 @Getter
+@Setter
 @Entity
-@Table(name = "QISMT_HEALTH_INSU_AVGEARN")
-public class QismtHealthInsuAvgearn extends UkJpaEntity implements Serializable {
+@Table(name = "QISMT_HEALTH_INSU_AMOUNT")
+public class QismtHealthInsuAmount extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The qismt health insu avgearn PK. */
+	/** The ccd. */
+	@Column(name = "CCD")
+	private String ccd;
+
+	/** The si office cd. */
+	@Column(name = "SI_OFFICE_CD")
+	private String siOfficeCd;
+
+	/** The qismt health insu amount PK. */
 	@EmbeddedId
-	protected QismtHealthInsuAvgearnPK qismtHealthInsuAvgearnPK;
-
-	/** The health insu avg earn. */
-	@Basic(optional = false)
-	@Column(name = "HEALTH_INSU_AVG_EARN")
-	private BigDecimal healthInsuAvgEarn;
-
-	/** The health insu upper limit. */
-	@Basic(optional = false)
-	@Column(name = "HEALTH_INSU_UPPER_LIMIT")
-	private BigDecimal healthInsuUpperLimit;
+	protected QismtHealthInsuAmountPK qismtHealthInsuAmountPK;
 
 	/** The p health general mny. */
-	@Basic(optional = false)
 	@Column(name = "P_HEALTH_GENERAL_MNY")
 	private BigDecimal pHealthGeneralMny;
 
 	/** The p health nursing mny. */
-	@Basic(optional = false)
 	@Column(name = "P_HEALTH_NURSING_MNY")
 	private BigDecimal pHealthNursingMny;
-	// @Max(value=?) @Min(value=?)//if you know range of your decimal fields
+
 	/** The p health specific mny. */
-	// consider using these annotations to enforce field validation
-	@Basic(optional = false)
 	@Column(name = "P_HEALTH_SPECIFIC_MNY")
 	private BigDecimal pHealthSpecificMny;
 
 	/** The p health basic mny. */
-	@Basic(optional = false)
 	@Column(name = "P_HEALTH_BASIC_MNY")
 	private BigDecimal pHealthBasicMny;
 
 	/** The c health general mny. */
-	@Basic(optional = false)
 	@Column(name = "C_HEALTH_GENERAL_MNY")
 	private BigDecimal cHealthGeneralMny;
 
 	/** The c health nursing mny. */
-	@Basic(optional = false)
 	@Column(name = "C_HEALTH_NURSING_MNY")
 	private BigDecimal cHealthNursingMny;
 
 	/** The c health specific mny. */
-	@Basic(optional = false)
 	@Column(name = "C_HEALTH_SPECIFIC_MNY")
 	private BigDecimal cHealthSpecificMny;
 
 	/** The c health basic mny. */
-	@Basic(optional = false)
 	@Column(name = "C_HEALTH_BASIC_MNY")
 	private BigDecimal cHealthBasicMny;
 
 	/** The qismt health insu rate. */
 	@JoinColumns({
-			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
-			@JoinColumn(name = "SI_OFFICE_CD", referencedColumnName = "SI_OFFICE_CD", insertable = false, updatable = false),
 			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false) })
 	@ManyToOne(optional = false)
 	private QismtHealthInsuRate qismtHealthInsuRate;
 
+	@JoinColumns({
+			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false),
+			@JoinColumn(name = "HEALTH_INSU_GRADE", referencedColumnName = "HEALTH_INSU_GRADE", insertable = false, updatable = false) })
+	@ManyToOne(optional = false)
+	private QismtHealInsuAvgearnD qismtHealInsuAvgearnD;
+
 	/**
-	 * Instantiates a new qismt health insu avgearn.
+	 * Instantiates a new qismt health insu amount.
 	 */
-	public QismtHealthInsuAvgearn() {
-		super();
+	public QismtHealthInsuAmount() {
 	}
 
 	/**
-	 * Instantiates a new qismt health insu avgearn.
+	 * Instantiates a new qismt health insu amount.
 	 *
-	 * @param qismtHealthInsuAvgearnPK
-	 *            the qismt health insu avgearn PK
+	 * @param qismtHealthInsuAmountPK
+	 *            the qismt health insu amount PK
 	 */
-	public QismtHealthInsuAvgearn(QismtHealthInsuAvgearnPK qismtHealthInsuAvgearnPK) {
-		this.qismtHealthInsuAvgearnPK = qismtHealthInsuAvgearnPK;
+	public QismtHealthInsuAmount(QismtHealthInsuAmountPK qismtHealthInsuAmountPK) {
+		this.qismtHealthInsuAmountPK = qismtHealthInsuAmountPK;
 	}
 
 	/**
-	 * Instantiates a new qismt health insu avgearn.
+	 * Instantiates a new qismt health insu amount.
 	 *
 	 * @param ccd
 	 *            the ccd
@@ -125,38 +116,38 @@ public class QismtHealthInsuAvgearn extends UkJpaEntity implements Serializable 
 	 * @param healthInsuGrade
 	 *            the health insu grade
 	 */
-	public QismtHealthInsuAvgearn(String ccd, String siOfficeCd, String histId,
+	public QismtHealthInsuAmount(String ccd, String siOfficeCd, String histId,
 			BigDecimal healthInsuGrade) {
-		this.qismtHealthInsuAvgearnPK = new QismtHealthInsuAvgearnPK(ccd, siOfficeCd, histId,
+		this.qismtHealthInsuAmountPK = new QismtHealthInsuAmountPK(ccd, siOfficeCd, histId,
 				healthInsuGrade);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see java.lang.Object#hashCode()
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
 	 */
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (qismtHealthInsuAvgearnPK != null ? qismtHealthInsuAvgearnPK.hashCode() : 0);
+		hash += (qismtHealthInsuAmountPK != null ? qismtHealthInsuAmountPK.hashCode() : 0);
 		return hash;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof QismtHealthInsuAvgearn)) {
+		if (!(object instanceof QismtHealthInsuAmount)) {
 			return false;
 		}
-		QismtHealthInsuAvgearn other = (QismtHealthInsuAvgearn) object;
-		if ((this.qismtHealthInsuAvgearnPK == null && other.qismtHealthInsuAvgearnPK != null)
-				|| (this.qismtHealthInsuAvgearnPK != null
-						&& !this.qismtHealthInsuAvgearnPK.equals(other.qismtHealthInsuAvgearnPK))) {
+		QismtHealthInsuAmount other = (QismtHealthInsuAmount) object;
+		if ((this.qismtHealthInsuAmountPK == null && other.qismtHealthInsuAmountPK != null)
+				|| (this.qismtHealthInsuAmountPK != null
+						&& !this.qismtHealthInsuAmountPK.equals(other.qismtHealthInsuAmountPK))) {
 			return false;
 		}
 		return true;
@@ -169,6 +160,7 @@ public class QismtHealthInsuAvgearn extends UkJpaEntity implements Serializable 
 	 */
 	@Override
 	protected Object getKey() {
-		return this.qismtHealthInsuAvgearnPK;
+		return this.qismtHealthInsuAmountPK;
 	}
+
 }
