@@ -46,7 +46,7 @@ var nts;
                                     masterItems.push({ code: 'MI' + i, name: '基本給' + i, paymentType: 'Salary', taxDivision: 'Payment' });
                                 }
                                 for (var i = 1; i < 15; i++) {
-                                    masterItems.push({ code: 'MI0' + i, name: '基本給' + i, paymentType: 'Salary', taxDivision: 'Deduction' });
+                                    masterItems.push({ code: 'M0' + i, name: '基本給' + i, paymentType: 'Salary', taxDivision: 'Deduction' });
                                 }
                                 return dfd.resolve(masterItems).promise();
                             }
