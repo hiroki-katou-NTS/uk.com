@@ -9,7 +9,7 @@ var nts;
                 var NoValidator = (function () {
                     function NoValidator() {
                     }
-                    NoValidator.prototype.validate = function (inputText) {
+                    NoValidator.prototype.validate = function (inputText, option) {
                         var result = new ValidationResult();
                         result.isValid = true;
                         result.parsedValue = inputText;
@@ -39,7 +39,7 @@ var nts;
                         this.charType = uk.text.getCharType(primitiveValueName);
                         this.required = option.required;
                     }
-                    StringValidator.prototype.validate = function (inputText) {
+                    StringValidator.prototype.validate = function (inputText, option) {
                         var result = new ValidationResult();
                         if (this.required !== undefined && this.required !== false) {
                             if (uk.util.isNullOrEmpty(inputText)) {
@@ -48,6 +48,12 @@ var nts;
                             }
                         }
                         if (this.charType !== null && this.charType !== undefined) {
+                            if (this.charType.viewName === '半角数字' || this.charType.viewName === '半角英数字') {
+                                inputText = uk.text.toOneByteAlphaNumberic(inputText);
+                            }
+                            else if (this.charType.viewName === 'カタカナ') {
+                                inputText = uk.text.oneByteKatakanaToTwoByte(inputText);
+                            }
                             if (!this.charType.validate(inputText)) {
                                 result.fail('Invalid text');
                                 return result;
@@ -58,9 +64,11 @@ var nts;
                                 result.fail('Max length for this input is ' + this.constraint.maxLength);
                                 return result;
                             }
-                            if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
-                                result.fail('This field is not valid with pattern!');
-                                return result;
+                            if (!uk.util.isNullOrUndefined(option) && option.isCheckExpression === true) {
+                                if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
+                                    result.fail('This field is not valid with pattern!');
+                                    return result;
+                                }
                             }
                         }
                         result.success(inputText);
