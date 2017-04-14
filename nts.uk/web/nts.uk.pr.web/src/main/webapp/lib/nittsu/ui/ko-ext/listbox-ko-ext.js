@@ -123,7 +123,7 @@ var nts;
                             var isMulti = container.data("multiple");
                             var itemsSelected = selectListBoxContainer.data('value');
                             document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
-                            if (!changingEvent.returnValue) {
+                            if (changingEvent.returnValue !== undefined && !changingEvent.returnValue) {
                                 console.log(selectedValue);
                                 selectListBoxContainer.data('value', data.value());
                                 if (isMulti) {

@@ -198,9 +198,9 @@ var nts;
                         var currentColumns = $grid.igGrid("option", "columns");
                         currentColumns.push({
                             dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
-                            width: 30, formatter: function createButton(deleteField, row) {
+                            width: 60, formatter: function createButton(deleteField, row) {
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
-                                var result = $('<input class="delete-button" value="delete" type="button"/>');
+                                var result = $('<button class="small delete-button">Delete</button>');
                                 result.attr("data-value", row[primaryKey]);
                                 if (deleteField === true && primaryKey !== null && !uk.util.isNullOrUndefined(row[primaryKey])) {
                                     return result[0].outerHTML;
@@ -355,7 +355,10 @@ var nts;
                     };
                     function validate($editor) {
                         var validateEvent = new CustomEvent("validate", {});
-                        document.getElementById($editor.attr('id')).dispatchEvent(validateEvent);
+                        $editor.each(function (index) {
+                            var $input = $(this);
+                            document.getElementById($input.attr('id')).dispatchEvent(validateEvent);
+                        });
                     }
                 })(ntsEditor || (ntsEditor = {}));
                 var ntsWizard;

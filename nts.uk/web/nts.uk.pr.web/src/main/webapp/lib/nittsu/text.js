@@ -38,6 +38,77 @@ var nts;
                 return count;
             }
             text_1.countHalf = countHalf;
+            function toOneByteAlphaNumberic(text) {
+                return text.replace(/[！-～　]/g, function (s) {
+                    if (s === "　") {
+                        return String.fromCharCode(s.charCodeAt(0) - 12256);
+                    }
+                    return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+                });
+            }
+            text_1.toOneByteAlphaNumberic = toOneByteAlphaNumberic;
+            function toTwoByteAlphaNumberic(text) {
+                return text.replace(/[\!-\~ ]/g, function (s) {
+                    if (s === " ") {
+                        return String.fromCharCode(s.charCodeAt(0) + 12256);
+                    }
+                    return String.fromCharCode(s.charCodeAt(0) + 0xFEE0);
+                });
+            }
+            text_1.toTwoByteAlphaNumberic = toTwoByteAlphaNumberic;
+            function katakanaToHiragana(text) {
+                text = text.replace(/[ァ-ヴ]/g, function (s) {
+                    return String.fromCharCode(s.charCodeAt(0) - 0x60);
+                }).replace(/ﾞ/g, '゛').replace(/ﾟ/g, '゜')
+                    .replace(/(う゛)/g, 'ゔ').replace(/ヷ/g, 'わ゛')
+                    .replace(/ヸ/g, 'ゐ゛').replace(/ヹ/g, 'ゑ゛')
+                    .replace(/ヺ/g, 'を゛').replace(/(ヽ゛)/g, 'ゞ')
+                    .replace(/ヽ/g, 'ゝ').replace(/ヾ/g, 'ゞ');
+                return text;
+            }
+            text_1.katakanaToHiragana = katakanaToHiragana;
+            function hiraganaToKatakana(text, opt) {
+                text = text.replace(/[ぁ-ゔ]/g, function (s) {
+                    return String.fromCharCode(s.charCodeAt(0) + 0x60);
+                }).replace(/ﾞ/g, '゛').replace(/ﾟ/g, '゜')
+                    .replace(/(ウ゛)/g, 'ヴ').replace(/(ワ゛)/g, 'ヷ')
+                    .replace(/(ヰ゛)/g, 'ヸ').replace(/(ヱ゛)/g, 'ヹ')
+                    .replace(/(ヲ゛)/g, 'ヺ').replace(/(ゝ゛)/g, 'ヾ')
+                    .replace(/ゝ/g, 'ヽ').replace(/ゞ/g, 'ヾ');
+                if (opt !== false) {
+                    text = text.replace(/ゕ/g, 'ヵ').replace(/ゖ/g, 'ヶ');
+                }
+                return text;
+            }
+            text_1.hiraganaToKatakana = hiraganaToKatakana;
+            function oneByteKatakanaToTwoByte(text) {
+                var katakanaMap = {
+                    'ｶﾞ': 'ガ', 'ｷﾞ': 'ギ', 'ｸﾞ': 'グ', 'ｹﾞ': 'ゲ', 'ｺﾞ': 'ゴ',
+                    'ｻﾞ': 'ザ', 'ｼﾞ': 'ジ', 'ｽﾞ': 'ズ', 'ｾﾞ': 'ゼ', 'ｿﾞ': 'ゾ',
+                    'ﾀﾞ': 'ダ', 'ﾁﾞ': 'ヂ', 'ﾂﾞ': 'ヅ', 'ﾃﾞ': 'デ', 'ﾄﾞ': 'ド',
+                    'ﾊﾞ': 'バ', 'ﾋﾞ': 'ビ', 'ﾌﾞ': 'ブ', 'ﾍﾞ': 'ベ', 'ﾎﾞ': 'ボ',
+                    'ﾊﾟ': 'パ', 'ﾋﾟ': 'ピ', 'ﾌﾟ': 'プ', 'ﾍﾟ': 'ペ', 'ﾎﾟ': 'ポ',
+                    'ｳﾞ': 'ヴ', 'ﾜﾞ': 'ヷ', 'ｦﾞ': 'ヺ',
+                    'ｱ': 'ア', 'ｲ': 'イ', 'ｳ': 'ウ', 'ｴ': 'エ', 'ｵ': 'オ',
+                    'ｶ': 'カ', 'ｷ': 'キ', 'ｸ': 'ク', 'ｹ': 'ケ', 'ｺ': 'コ',
+                    'ｻ': 'サ', 'ｼ': 'シ', 'ｽ': 'ス', 'ｾ': 'セ', 'ｿ': 'ソ',
+                    'ﾀ': 'タ', 'ﾁ': 'チ', 'ﾂ': 'ツ', 'ﾃ': 'テ', 'ﾄ': 'ト',
+                    'ﾅ': 'ナ', 'ﾆ': 'ニ', 'ﾇ': 'ヌ', 'ﾈ': 'ネ', 'ﾉ': 'ノ',
+                    'ﾊ': 'ハ', 'ﾋ': 'ヒ', 'ﾌ': 'フ', 'ﾍ': 'ヘ', 'ﾎ': 'ホ',
+                    'ﾏ': 'マ', 'ﾐ': 'ミ', 'ﾑ': 'ム', 'ﾒ': 'メ', 'ﾓ': 'モ',
+                    'ﾔ': 'ヤ', 'ﾕ': 'ユ', 'ﾖ': 'ヨ',
+                    'ﾗ': 'ラ', 'ﾘ': 'リ', 'ﾙ': 'ル', 'ﾚ': 'レ', 'ﾛ': 'ロ',
+                    'ﾜ': 'ワ', 'ｦ': 'ヲ', 'ﾝ': 'ン',
+                    'ｧ': 'ァ', 'ｨ': 'ィ', 'ｩ': 'ゥ', 'ｪ': 'ェ', 'ｫ': 'ォ',
+                    'ｯ': 'ッ', 'ｬ': 'ャ', 'ｭ': 'ュ', 'ｮ': 'ョ',
+                    '｡': '。', '､': '、', 'ｰ': 'ー', '｢': '「', '｣': '」', '･': '・'
+                };
+                var expression = new RegExp('(' + Object.keys(katakanaMap).join('|') + ')', 'g');
+                return text.replace(expression, function (match) {
+                    return katakanaMap[match];
+                }).replace(/ﾞ/g, '゛').replace(/ﾟ/g, '゜');
+            }
+            text_1.oneByteKatakanaToTwoByte = oneByteKatakanaToTwoByte;
             function allHalfNumeric(text) {
                 return regexp.allHalfNumeric.test(text);
             }
@@ -262,6 +333,21 @@ var nts;
                     return "top";
             }
             text_1.reverseDirection = reverseDirection;
+            function getISOFormat(format) {
+                if (format.toLowerCase() === "iso")
+                    return "YYYY-MM-DD[T]HH:mm:ss.SSS[Z]";
+                if (format.toLowerCase() === "date")
+                    return "YYYY/MM/DD";
+                if (format.toLowerCase() === "yearmonth")
+                    return "YYYY/MM";
+                if (format.toLowerCase() === "time")
+                    return "HH:mm";
+                if (format.toLowerCase() === "datetime")
+                    return "YYYY/MM/DD HH:mm";
+                format = format.replace(/y/g, "Y");
+                return format;
+            }
+            text_1.getISOFormat = getISOFormat;
             var StringFormatter = (function () {
                 function StringFormatter(args) {
                     this.args = args;
@@ -296,18 +382,22 @@ var nts;
                 }
                 TimeFormatter.prototype.format = function (source) {
                     var result;
-                    if (this.option.option.inputFormat === "yearmonth") {
+                    if (this.option.inputFormat === "yearmonth") {
                         result = uk.time.parseYearMonth(source);
                     }
-                    else if (this.option.option.inputFormat === "time") {
+                    else if (this.option.inputFormat === "time") {
                         result = uk.time.parseTime(source, true);
                     }
                     else {
-                        result = uk.time.ResultParseTime.failed();
+                        result = moment(source, "YYYYMMDD");
+                        if (result.isValid()) {
+                            var format = getISOFormat(this.option.inputFormat);
+                            return result.format(format);
+                        }
+                        return source;
                     }
-                    if (result.success) {
+                    if (result.success)
                         return result.format();
-                    }
                     return source;
                 };
                 return TimeFormatter;

@@ -213,12 +213,8 @@ var nts;
                                         }
                                     });
                                 };
-                                /**
-                                 * Check firt Node
-                                 */
                                 ScreenModel.prototype.checkFirtNode = function () {
                                     var self = this;
-                                    //self.confirmDirty = true;
                                     self.singleSelectedCode('');
                                     if (self.lst_001()[0].childs.length != 0) {
                                         self.singleSelectedCode(self.lst_001()[0].childs[0].treeCode);
@@ -235,9 +231,6 @@ var nts;
                                         self.A_INP_006.value(self.currentNode().memo);
                                     }
                                 };
-                                /**
-                                 * Open dialog QMM002b(一括削除)
-                                 */
                                 ScreenModel.prototype.OpenBdialog = function () {
                                     var self = this;
                                     if (self.lst_001().length != 0) {
@@ -264,9 +257,6 @@ var nts;
                                         nts.uk.ui.dialog.alert(self.messages()[5].message);
                                     }
                                 };
-                                /**
-                                 * Open dialog QMM002c(銀行の統合)
-                                 */
                                 ScreenModel.prototype.OpenCdialog = function () {
                                     var self = this;
                                     a.service.checkBankList().done(function () {
@@ -290,9 +280,6 @@ var nts;
                                         nts.uk.ui.dialog.alert(self.messages()[5].message);
                                     });
                                 };
-                                /**
-                                 * Open dialog QMM002d(銀行の追加)
-                                 */
                                 ScreenModel.prototype.OpenDdialog = function () {
                                     var self = this;
                                     if (!self.checkDirty()) {
@@ -315,9 +302,6 @@ var nts;
                                         });
                                     }
                                 };
-                                /**
-                                 * add and update bank
-                                 */
                                 ScreenModel.prototype.addBranch = function () {
                                     var self = this;
                                     self.confirmDirty = false;
@@ -333,7 +317,6 @@ var nts;
                                         memo: self.A_INP_006.value()
                                     };
                                     a.service.addBank(self.isCreated(), branchInfo).done(function () {
-                                        // reload tree
                                         self.getBankList().done(function () {
                                             var treecode = branchInfo.bankCode + "-" + branchInfo.branchCode;
                                             self.singleSelectedCode(treecode);
@@ -353,9 +336,6 @@ var nts;
                                         }
                                     });
                                 };
-                                /**
-                                 * validate input before add or update data
-                                 */
                                 ScreenModel.prototype.validateBeforeAdd = function () {
                                     var self = this;
                                     $('#A_INP_003').ntsEditor('validate');
@@ -365,9 +345,6 @@ var nts;
                                     }
                                     return true;
                                 };
-                                /**
-                                 * select node
-                                 */
                                 ScreenModel.prototype.getNode = function (codeNew, parentId) {
                                     var self = this;
                                     self.clearError();
@@ -391,9 +368,6 @@ var nts;
                                         return false;
                                     }
                                 };
-                                /**
-                                 * get data for treeview
-                                 */
                                 ScreenModel.prototype.getBankList = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -434,9 +408,6 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
-                                /**
-                                 * remove bank and bank branch
-                                 */
                                 ScreenModel.prototype.removeBranch = function () {
                                     var self = this;
                                     self.confirmDirty = true;
@@ -455,9 +426,6 @@ var nts;
                                                 parentCode = self.singleSelectedCode();
                                             }
                                             a.service.removeBank(!check, parentCode, self.currentNode().branchId).done(function () {
-                                                // reload tree
-                                                //To Do
-                                                //self.cleanBranch();
                                                 self.getBankList().done(function () {
                                                     if (self.lst_001().length > 0) {
                                                         var code = "";
@@ -465,7 +433,6 @@ var nts;
                                                         if (index < 0) {
                                                             index = 0;
                                                         }
-                                                        // parent
                                                         if (!check) {
                                                             code = self.lst_001()[index].treeCode;
                                                         }
@@ -498,9 +465,6 @@ var nts;
                                     }
                                 };
                                 ;
-                                /**
-                                 * Check bank exists data
-                                 */
                                 ScreenModel.prototype.checkBankList = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -513,9 +477,6 @@ var nts;
                                     return dfd.promise();
                                 };
                                 ;
-                                /**
-                                 * clean form
-                                 */
                                 ScreenModel.prototype.cleanBranch = function () {
                                     var self = this;
                                     self.clearError();
@@ -566,9 +527,6 @@ var nts;
                                     $('#A_INP_003').ntsError('clear');
                                     $('#A_INP_004').ntsError('clear');
                                 };
-                                /**
-                                 * Switch another screen QMM006
-                                 */
                                 ScreenModel.prototype.jumpToQmm006A = function () {
                                     var self = this;
                                     if (!self.checkDirty()) {
@@ -606,3 +564,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qmm002.a.vm.js.map

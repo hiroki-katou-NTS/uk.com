@@ -1895,28 +1895,17 @@ button.nts-switch-button[disabled]:hover {
 .ui-widget.ui-tabs.vertical .ui-tabs-nav li {
   clear: left;
   width: 100%;
-  border-width: 0;
-  margin: 0;
+  margin: -1px 0 0 0;
   border-radius: 0;
+  border-width: 1px 0;
 }
 /* line 51, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs.vertical .ui-tabs-nav li.ui-tabs-active {
   padding: 0;
   margin: 0;
+  border-color: #00B050;
 }
-/* line 55, ../sass/components/_tabpanel.scss */
-.ui-widget.ui-tabs.vertical .ui-tabs-nav li:first-child {
-  border-top-width: 1px;
-}
-/* line 56, ../sass/components/_tabpanel.scss */
-.ui-widget.ui-tabs.vertical .ui-tabs-nav li:last-child {
-  border-bottom-width: 1px;
-}
-/* line 57, ../sass/components/_tabpanel.scss */
-.ui-widget.ui-tabs.vertical .ui-tabs-nav li a {
-  display: block;
-}
-/* line 60, ../sass/components/_tabpanel.scss */
+/* line 58, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs.vertical .ui-tabs-panel {
   width: 100%;
   overflow: hidden;
