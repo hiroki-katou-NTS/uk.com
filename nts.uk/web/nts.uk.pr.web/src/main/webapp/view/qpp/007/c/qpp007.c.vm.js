@@ -416,7 +416,7 @@ var nts;
                                                 }
                                             });
                                             masterItems().forEach(function (item) {
-                                                if (item.taxDivision == TaxDivision.PAYMENT) {
+                                                if (item.category == SalaryCategory.PAYMENT) {
                                                     self.masterItems.push(item);
                                                 }
                                             });
@@ -428,21 +428,21 @@ var nts;
                                                 }
                                             });
                                             masterItems().forEach(function (item) {
-                                                if (item.taxDivision == TaxDivision.DEDUCTION) {
+                                                if (item.category == SalaryCategory.DEDUCTION) {
                                                     self.masterItems.push(item);
                                                 }
                                             });
                                             break;
                                         case SalaryCategory.ATTENDANCE:
                                             masterItems().forEach(function (item) {
-                                                if (item.taxDivision == TaxDivision.DEDUCTION) {
+                                                if (item.category == SalaryCategory.ATTENDANCE) {
                                                     self.masterItems.push(item);
                                                 }
                                             });
                                             break;
                                         case SalaryCategory.ARTICLE_OTHERS:
                                             masterItems().forEach(function (item) {
-                                                if (item.taxDivision == TaxDivision.PAYMENT) {
+                                                if (item.category == SalaryCategory.ARTICLE_OTHERS) {
                                                     self.masterItems.push(item);
                                                 }
                                             });
@@ -535,15 +535,14 @@ var nts;
                                         self.aggregateItems.push({
                                             code: selectedItem.code,
                                             name: selectedItem.name,
-                                            taxDivision: TaxDivision.PAYMENT,
+                                            taxDivision: TaxDivision.PAYMENT
                                         });
                                         return;
                                     }
                                     self.masterItems.push({
                                         code: selectedItem.code,
                                         name: selectedItem.name,
-                                        paymentType: PaymentType.SALARY,
-                                        taxDivision: TaxDivision.DEDUCTION
+                                        category: SalaryCategory.PAYMENT
                                     });
                                 };
                                 return CategorySettingModel;
@@ -593,14 +592,6 @@ var nts;
                                 return SalaryOutputDistinction;
                             }());
                             viewmodel.SalaryOutputDistinction = SalaryOutputDistinction;
-                            var PaymentType = (function () {
-                                function PaymentType() {
-                                }
-                                PaymentType.SALARY = 'Salary';
-                                PaymentType.BONUS = 'Bonus';
-                                return PaymentType;
-                            }());
-                            viewmodel.PaymentType = PaymentType;
                         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
                     })(c = qpp007.c || (qpp007.c = {}));
                 })(qpp007 = view.qpp007 || (view.qpp007 = {}));
