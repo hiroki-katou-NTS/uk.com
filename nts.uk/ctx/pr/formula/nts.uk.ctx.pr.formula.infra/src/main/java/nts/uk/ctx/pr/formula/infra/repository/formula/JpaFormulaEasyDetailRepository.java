@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.formula.infra.repository.formula;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -28,13 +29,31 @@ public class JpaFormulaEasyDetailRepository extends JpaRepository implements For
 			+ " AND a.qcfmtFormulaEasyDetailPK.formulaCode = :formulaCode "
 			+ " AND a.qcfmtFormulaEasyDetailPK.historyId = :historyId ";
 
+	private final String FIND_WITH_PRI_KEYS = "SELECT a FROM QcfmtFormulaEasyDetail a "
+			+ " WHERE a.qcfmtFormulaEasyDetailPK.companyCode = :companyCode "
+			+ " AND a.qcfmtFormulaEasyDetailPK.formulaCode = :formulaCode "
+			+ " AND a.qcfmtFormulaEasyDetailPK.historyId = :historyId "
+			+ " AND a.qcfmtFormulaEasyDetailPK.easyFormulaCd IN :easyFormulaCodes ";
+
 	@Override
 	public Optional<FormulaEasyDetail> findByPriKey(String companyCode, FormulaCode formulaCode, String historyId,
 			EasyFormulaCode easyFormulaCode) {
-		Optional<QcfmtFormulaEasyDetail> qcfmtFormulaEasyDetail = this.queryProxy()
-				.find(new QcfmtFormulaEasyDetailPK(companyCode, formulaCode.v(), historyId, easyFormulaCode.v()),
-						QcfmtFormulaEasyDetail.class);
+		Optional<QcfmtFormulaEasyDetail> qcfmtFormulaEasyDetail = this.queryProxy().find(
+				new QcfmtFormulaEasyDetailPK(companyCode, formulaCode.v(), historyId, easyFormulaCode.v()),
+				QcfmtFormulaEasyDetail.class);
 		return qcfmtFormulaEasyDetail.map(f -> toDomain(f));
+	}
+
+	@Override
+	public List<FormulaEasyDetail> findByPriKeys(String companyCode, FormulaCode formulaCode, String historyId,
+			List<EasyFormulaCode> easyFormulaCodes) {
+		return this.getEntityManager().createQuery(FIND_WITH_PRI_KEYS, QcfmtFormulaEasyDetail.class)
+				.setParameter("companyCode", companyCode).setParameter("formulaCode", formulaCode.v())
+				.setParameter("historyId", historyId)
+				.setParameter("easyFormulaCodes", easyFormulaCodes.stream().map(item -> {
+					return item.v();
+				}).collect(Collectors.toList())).getResultList().stream().map(f -> toDomain(f))
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -50,8 +69,7 @@ public class JpaFormulaEasyDetailRepository extends JpaRepository implements For
 	}
 
 	@Override
-	public List<FormulaEasyDetail> findWithOutPriKey(String companyCode, FormulaCode formulaCode,
-			String historyId) {
+	public List<FormulaEasyDetail> findWithOutPriKey(String companyCode, FormulaCode formulaCode, String historyId) {
 		return this.queryProxy().query(FIND_WITHOUT_PRI_KEY, QcfmtFormulaEasyDetail.class)
 				.setParameter("companyCode", companyCode).setParameter("formulaCode", formulaCode.v())
 				.setParameter("historyId", historyId).getList(f -> toDomain(f));
@@ -78,8 +96,10 @@ public class JpaFormulaEasyDetailRepository extends JpaRepository implements For
 		entity.coefficientFixedValue = formulaEasyDetail.getCoefficientFixedValue().v();
 		entity.adjustmentDevision = new BigDecimal(formulaEasyDetail.getAdjustmentDevision().value);
 		entity.totalRounding = new BigDecimal(formulaEasyDetail.getTotalRounding().value);
-		entity.minLimitValue = formulaEasyDetail.getMinValue() != null ? formulaEasyDetail.getMinValue().v() : new BigDecimal(1);
-		entity.maxLimitValue = formulaEasyDetail.getMaxValue() != null ? formulaEasyDetail.getMaxValue().v() : new BigDecimal(2);
+		entity.minLimitValue = formulaEasyDetail.getMinValue() != null ? formulaEasyDetail.getMinValue().v()
+				: new BigDecimal(1);
+		entity.maxLimitValue = formulaEasyDetail.getMaxValue() != null ? formulaEasyDetail.getMaxValue().v()
+				: new BigDecimal(2);
 
 		return entity;
 	}
@@ -89,8 +109,7 @@ public class JpaFormulaEasyDetailRepository extends JpaRepository implements For
 				qcfmtFormulaEasyDetail.qcfmtFormulaEasyDetailPK.companyCode,
 				qcfmtFormulaEasyDetail.qcfmtFormulaEasyDetailPK.formulaCode,
 				qcfmtFormulaEasyDetail.qcfmtFormulaEasyDetailPK.historyId,
-				qcfmtFormulaEasyDetail.qcfmtFormulaEasyDetailPK.easyFormulaCd, 
-				qcfmtFormulaEasyDetail.easyFormulaName,
+				qcfmtFormulaEasyDetail.qcfmtFormulaEasyDetailPK.easyFormulaCd, qcfmtFormulaEasyDetail.easyFormulaName,
 				qcfmtFormulaEasyDetail.easyFormulaTypeAttribute, qcfmtFormulaEasyDetail.baseFixedAmount,
 				qcfmtFormulaEasyDetail.baseAmountDevision, qcfmtFormulaEasyDetail.baseFixedValue,
 				qcfmtFormulaEasyDetail.baseValueDevision, qcfmtFormulaEasyDetail.premiumRate,

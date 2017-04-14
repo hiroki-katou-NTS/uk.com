@@ -8,10 +8,10 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="style.css" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="service.js" />
+			<com:stylefile path="qmm017.l.style.css" />
+			<com:scriptfile path="qmm017.l.start.js" />
+			<com:scriptfile path="qmm017.l.vm.js" />
+			<com:scriptfile path="qmm017.l.service.js" />
 			<com:ValidatorScript>
 				nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaName
 				nts.uk.ctx.pr.formula.dom.primitive.Money
@@ -23,7 +23,7 @@
 
 		<ui:define name="content">
 			<div id="contents-area" style="padding-left: 20px">
-				<div id="l_lbl_001" class="separate-vertical" data-bind="ntsFormLabel: {constraint: 'EasyFormulaName', required: true}">名称</div>
+				<div id="easy_formula_name_lbl" class="separate-vertical" data-bind="ntsFormLabel: {constraint: 'EasyFormulaName', required: true}">名称</div>
 				<input style="margin-left: 25px;" data-bind="ntsTextEditor: { value: easyFormulaName, required: true, constraint: 'EasyFormulaName'}" />
 				<hr/>	
 				<table>

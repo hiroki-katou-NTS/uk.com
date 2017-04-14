@@ -33,15 +33,22 @@ public class UpdateFormulaHistoryCommandHandler extends CommandHandler<UpdateFor
 		UpdateFormulaHistoryCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 
+		// select previous history with startDate
+		Optional<FormulaHistory> previousFormulaHistory = this.formulaHistoryrepository.findPreviousHistory(companyCode,
+				new FormulaCode(command.getFormulaCode()), new YearMonth(command.getStartDate()));
+		if (previousFormulaHistory.isPresent()
+				&& (previousFormulaHistory.get().getStartDate().v() >= command.getStartDate()
+						|| command.getStartDate() > previousFormulaHistory.get().getEndDate().v())) {
+			throw new BusinessException("ER023");
+		} else if (!previousFormulaHistory.isPresent()
+				&& (command.getStartDate() < 190001 || 999912 < command.getStartDate())) {
+			throw new BusinessException("ER023");
+		}
 		try {
 			this.formulaHistoryrepository.updateByKey(companyCode, new FormulaCode(command.getFormulaCode()),
 					command.getHistoryId(), new YearMonth(command.getStartDate()));
 			if (this.formulaHistoryrepository.isNewestHistory(companyCode, new FormulaCode(command.getFormulaCode()),
 					new YearMonth(command.getStartDate()))) {
-
-				// select previous history with startDate
-				Optional<FormulaHistory> previousFormulaHistory = this.formulaHistoryrepository.findPreviousHistory(
-						companyCode, new FormulaCode(command.getFormulaCode()), new YearMonth(command.getStartDate()));
 
 				if (previousFormulaHistory.isPresent()) {
 					this.formulaHistoryrepository.update(new FormulaHistory(companyCode,
