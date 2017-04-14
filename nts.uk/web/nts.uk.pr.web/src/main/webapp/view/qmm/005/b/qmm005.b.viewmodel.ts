@@ -246,7 +246,7 @@ module qmm005.b {
                             stmtOutputMon: parseInt(item.inp005["formatYearMonth"]())
                         });
                     } else {
-                        // update bonus infomation
+                        // update exist bonus infomation
                         let bonus = _.find(filterProcessings, function(item) { return item.payBonusAtr == 1; });
                         if (bonus) {
                             //bonus.processingNo = self.processingNo();
