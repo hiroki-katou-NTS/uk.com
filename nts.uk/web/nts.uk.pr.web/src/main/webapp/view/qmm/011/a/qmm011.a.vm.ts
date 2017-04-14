@@ -697,10 +697,10 @@ module nts.uk.pr.view.qmm011.a {
                         //call detail history unemployee insurance rate
                         self.detailUnemployeeInsuranceRateHistory(historyId).done(data => {
                             //set enable input viewmodel
-                            self.unemployeeInsuranceRateModel().setEnable(true);
+                            self.isEnableSaveUnemployeeInsurance(true);
+                            self.isEnableEditUnemployeeInsurance(true);
                         });
-                        self.isEnableSaveUnemployeeInsurance(true);
-                        self.isEnableEditUnemployeeInsurance(true);
+
                     } else {
                         //set history unemployee insurance rate is empty
                         self.newmodelEmptyDataUnemployeeInsuranceRate();
@@ -728,11 +728,11 @@ module nts.uk.pr.view.qmm011.a {
                 var self = this;
                 //reset view model history unemployee insurance rate
                 self.unemployeeInsuranceRateModel().resetValue(self.rateInputOptions, self.selectionRoundingMethod);
-                //reset enable input viewmodel
+                //reset enable input view model
                 self.unemployeeInsuranceRateModel().setEnable(false);
-                //set ismode type action add
+                //set is mode type action add
                 self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
-                //reset selection history unemployee insurance rate
+                //reset selection history un employee insurance rate
                 self.selectionUnemployeeInsuranceRateHistory('');
             }
 
@@ -742,14 +742,15 @@ module nts.uk.pr.view.qmm011.a {
                 var dfd = $.Deferred<void>();
 
                 if (historyId != null && historyId != undefined && historyId != '') {
-                    //call service detail history unemployee insurance rate by historyId
+                    //call service detail history un employee insurance rate by historyId
                     service.detailUnemployeeInsuranceRateHistory(historyId).done(data => {
-                        //set viewmode by data
+                        //set view mode by data
                         self.unemployeeInsuranceRateModel().setListItem(data.rateItems);
                         self.unemployeeInsuranceRateModel().setHistoryData(data.historyInsurance);
-                        //set ismode type action is update
+                        //set is mode type action is update
                         self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.update);
                         self.beginHistoryStartUnemployeeInsuranceRate(nts.uk.time.formatYearMonth(data.historyInsurance.startMonth));
+                        self.unemployeeInsuranceRateModel().setEnable(true);
                         self.dirtyUnemployeeInsurance.reset();
                         dfd.resolve();
                     });

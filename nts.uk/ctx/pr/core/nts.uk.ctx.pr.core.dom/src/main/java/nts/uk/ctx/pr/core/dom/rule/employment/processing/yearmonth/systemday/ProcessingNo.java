@@ -3,9 +3,9 @@ package nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.systemday;
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerMaxValue;
 import nts.arc.primitive.constraint.IntegerMinValue;
+import nts.arc.primitive.constraint.IntegerRange;
 
-@IntegerMinValue(1)
-@IntegerMaxValue(5)
+@IntegerRange(max = 5, min = 1)
 public class ProcessingNo extends IntegerPrimitiveValue<ProcessingNo> {
 
 	/** serialVersionUID */

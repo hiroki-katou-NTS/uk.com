@@ -39,7 +39,7 @@ var nts;
                                     self.selectedAggregateItem = ko.observable('001');
                                     self.salaryAggregateItemModel = ko.observable(new SalaryAggregateItemModel());
                                     self.columns = ko.observableArray([
-                                        { headerText: 'コード', key: 'salaryItemCode', width: 100 },
+                                        { headerText: 'コード', key: 'salaryItemCode', width: 50 },
                                         { headerText: '名称', key: 'salaryItemName', width: 150 }
                                     ]);
                                     self.selectedAggregateItem.subscribe(function (selectedAggregateItem) {
@@ -62,6 +62,9 @@ var nts;
                                     return self.showDataModel(salaryAggregateItemInDto);
                                 };
                                 ScreenModel.prototype.onShowDataChange = function (selectedDivision, selectedAggregateItem) {
+                                    if (nts.uk.ui._viewModel) {
+                                        $('#inpDisplayName').ntsError('clear');
+                                    }
                                     var self = this;
                                     var salaryAggregateItemInDto;
                                     salaryAggregateItemInDto = new SalaryAggregateItemInDto();
@@ -97,6 +100,10 @@ var nts;
                                     nts.uk.ui.windows.close();
                                 };
                                 ScreenModel.prototype.saveSalaryAggregateItem = function () {
+                                    $('#inpDisplayName').ntsEditor('validate');
+                                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                                        return;
+                                    }
                                     var self = this;
                                     if (self.selectedDivision() === TaxDivision.PAYMENT) {
                                         self.convertModelToDto(0);

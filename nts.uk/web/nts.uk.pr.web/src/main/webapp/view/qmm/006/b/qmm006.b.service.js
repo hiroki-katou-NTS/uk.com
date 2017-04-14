@@ -1,15 +1,15 @@
-var qmm006;
-(function (qmm006) {
+var qmm018;
+(function (qmm018) {
     var b;
     (function (b) {
         var service;
         (function (service) {
             var paths = {
-                findBankAll: "basic/system/bank/find/all"
+                itemSelect: "pr/core/item/findall/category/{0}"
             };
-            function findBankAll() {
+            function itemSelect(categoryAtr) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.findBankAll)
+                nts.uk.request.ajax(nts.uk.text.format(paths.itemSelect, categoryAtr))
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -18,8 +18,7 @@ var qmm006;
                 });
                 return dfd.promise();
             }
-            service.findBankAll = findBankAll;
+            service.itemSelect = itemSelect;
         })(service = b.service || (b.service = {}));
-    })(b = qmm006.b || (qmm006.b = {}));
-})(qmm006 || (qmm006 = {}));
-//# sourceMappingURL=qmm006.b.service.js.map
+    })(b = qmm018.b || (qmm018.b = {}));
+})(qmm018 || (qmm018 = {}));

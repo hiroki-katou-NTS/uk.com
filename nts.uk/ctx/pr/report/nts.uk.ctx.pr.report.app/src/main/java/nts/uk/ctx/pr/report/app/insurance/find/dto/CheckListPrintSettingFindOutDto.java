@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.insurance.find.dto;
@@ -36,6 +36,21 @@ public class CheckListPrintSettingFindOutDto implements ChecklistPrintSettingSet
 
 	/** The show total. */
 	private Boolean showTotal;
+	
+	/**
+	 * Creates the default setting.
+	 *
+	 * @return the check list print setting dto
+	 */
+	public static CheckListPrintSettingDto createDefaultSetting( ) {
+		CheckListPrintSettingDto dto = new CheckListPrintSettingDto();
+		dto.showCategoryInsuranceItem = true;
+		dto.showDeliveryNoticeAmount = true;
+		dto.showDetail = true;
+		dto.showOffice = true;
+		dto.showTotal = true;
+		return dto;
+	}
 
 	/*
 	 * (non-Javadoc)

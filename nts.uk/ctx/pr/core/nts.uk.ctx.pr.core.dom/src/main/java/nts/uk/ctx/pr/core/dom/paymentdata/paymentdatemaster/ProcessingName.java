@@ -1,11 +1,13 @@
 package nts.uk.ctx.pr.core.dom.paymentdata.paymentdatemaster;
 
 import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * Primitive Value: Processing Name
  *
  */
+@StringMaxLength(12)
 public class ProcessingName extends StringPrimitiveValue<ProcessingName>  {
 
 	/** serialVersionUID */

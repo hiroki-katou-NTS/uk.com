@@ -34,7 +34,7 @@ public class Qmm005dCommandHandler extends CommandHandler<Qmm005dCommand> {
 
 		try {
 			PaydayProcessing paydayProcessingDomain = command.toPaydayProcessingDomain(companyCode);
-			PaydayProcessing paydayProcessingDomainUpdate = paydayProcessingRepo.select1(companyCode,
+			PaydayProcessing paydayProcessingDomainUpdate = paydayProcessingRepo.selectOne(companyCode,
 					paydayProcessingDomain.getProcessingNo().v());
 
 			if (paydayProcessingDomainUpdate != null) {
@@ -54,11 +54,9 @@ public class Qmm005dCommandHandler extends CommandHandler<Qmm005dCommand> {
 			if (systemDayDomainUpdate != null) {
 				SystemDay domain = SystemDay.createSimpleFromJavaType(companyCode,
 						systemDayDomainUpdate.getProcessingNo().v(), systemDayDomain.getSocialInsLevyMonAtr().value,
-						systemDayDomain.getResitaxStdMon().v(), systemDayDomain.getResitaxStdDay().v(),
-						systemDayDomain.getResitaxBeginMon().v(), systemDayDomain.getPickupStdMonAtr().value,
-						systemDayDomain.getPickupStdDay().v(), systemDayDomain.getPayStdDay().v(),
-						systemDayDomain.getAccountDueMonAtr().value, systemDayDomain.getAccountDueDay().v(),
-						systemDayDomain.getPayslipPrintMonth().value);
+						systemDayDomain.getPickupStdMonAtr().value, systemDayDomain.getPickupStdDay().v(),
+						systemDayDomain.getPayStdDay().v(), systemDayDomain.getAccountDueMonAtr().value,
+						systemDayDomain.getAccountDueDay().v(), systemDayDomain.getPayslipPrintMonthAtr().value);
 				systemDayRepo.update1(domain);
 			}
 

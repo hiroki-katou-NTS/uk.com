@@ -1,30 +1,3 @@
-class TextEditorBindingHandler implements KnockoutBindingHandler {
-    constructor() {
-    }
-
-    init(element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-        ko.bindingHandlers['ntsTextEditor'].init(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
-
-        if (valueAccessor().valueUpdate) {
-            switch (valueAccessor().valueUpdate) {
-                case 'keyup':
-                    element.onkeyup = function() { valueAccessor().value(this.value); };
-                    break;
-                case 'keypress':
-                    element.onkeypress = function() { valueAccessor().value(this.value); };
-                    break;
-                case 'afterkeydown':
-                    element.onkeydown = function() { valueAccessor().value(this.value); };
-                    break;
-            }
-        }
-    }
-
-    update(element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-        ko.bindingHandlers['ntsTextEditor'].update(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
-    }
-}
-
 class CheckBoxWithHelpBindingHandler implements KnockoutBindingHandler {
     constructor() {
     }
@@ -44,7 +17,6 @@ class CheckBoxWithHelpBindingHandler implements KnockoutBindingHandler {
     }
 }
 
-ko.bindingHandlers['ntsTextEditor2'] = new TextEditorBindingHandler();
 ko.bindingHandlers['ntsCheckBox2'] = new CheckBoxWithHelpBindingHandler();
 
 module qmm005.common {

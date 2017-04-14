@@ -42,8 +42,7 @@ var nts;
                                     if (self.validate()) {
                                         return;
                                     }
-                                    var command = self.toJSObject();
-                                    c.service.saveCheckListPrintSetting(command).done(function (res) {
+                                    c.service.saveCheckListPrintSetting(self).done(function (res) {
                                         dfd.resolve(res);
                                     }).fail(function (res) {
                                         dfd.reject(res);
@@ -73,25 +72,7 @@ var nts;
                                 ScreenModel.prototype.initUI = function (res) {
                                     var self = this;
                                     var checklistSetting = self.checklistPrintSettingModel();
-                                    if (res) {
-                                        checklistSetting.setData(res);
-                                    }
-                                    else {
-                                        checklistSetting.defaultValue();
-                                    }
-                                };
-                                ScreenModel.prototype.toJSObject = function () {
-                                    var self = this;
-                                    var checklistSetting = self.checklistPrintSettingModel();
-                                    var command = {};
-                                    var checkListPrintSetting = {};
-                                    checkListPrintSetting.showCategoryInsuranceItem = checklistSetting.showCategoryInsuranceItem();
-                                    checkListPrintSetting.showDetail = checklistSetting.showDetail();
-                                    checkListPrintSetting.showOffice = checklistSetting.showOffice();
-                                    checkListPrintSetting.showTotal = checklistSetting.showTotal();
-                                    checkListPrintSetting.showDeliveryNoticeAmount = checklistSetting.showDeliveryNoticeAmount();
-                                    command.checkListPrintSettingDto = checkListPrintSetting;
-                                    return command;
+                                    checklistSetting.setData(res);
                                 };
                                 return ScreenModel;
                             }());
@@ -106,10 +87,10 @@ var nts;
                                         }
                                         return false;
                                     }, self);
-                                    self.showDetail = ko.observable(false);
-                                    self.showOffice = ko.observable(false);
-                                    self.showTotal = ko.observable(false);
-                                    self.showDeliveryNoticeAmount = ko.observable(false);
+                                    self.showDetail = ko.observable(true);
+                                    self.showOffice = ko.observable(true);
+                                    self.showTotal = ko.observable(true);
+                                    self.showDeliveryNoticeAmount = ko.observable(true);
                                     self.healthInsuranceItems = ko.observableArray([
                                         { code: "indicate", name: "表示する" },
                                         { code: "hide", name: "表示しない" }
@@ -117,23 +98,12 @@ var nts;
                                 }
                                 ChecklistPrintSettingModel.prototype.setData = function (dto) {
                                     var self = this;
-                                    if (dto.showCategoryInsuranceItem) {
-                                        self.selectedHealthInsuranceItem("indicate");
-                                    }
-                                    else {
-                                        self.selectedHealthInsuranceItem("hide");
-                                    }
+                                    var insuranceItemCode = dto.showCategoryInsuranceItem ? 'indicate' : 'hide';
+                                    self.selectedHealthInsuranceItem(insuranceItemCode);
                                     self.showDetail(dto.showDetail);
                                     self.showOffice(dto.showOffice);
                                     self.showTotal(dto.showTotal);
                                     self.showDeliveryNoticeAmount(dto.showDeliveryNoticeAmount);
-                                };
-                                ChecklistPrintSettingModel.prototype.defaultValue = function () {
-                                    var self = this;
-                                    self.selectedHealthInsuranceItem("indicate");
-                                    self.showOffice(false);
-                                    self.showTotal(false);
-                                    self.showDeliveryNoticeAmount(false);
                                 };
                                 return ChecklistPrintSettingModel;
                             }());

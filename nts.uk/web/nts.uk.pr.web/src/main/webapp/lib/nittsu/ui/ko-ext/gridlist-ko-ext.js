@@ -20,6 +20,7 @@ var nts;
                         var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
                         var deleteOptions = ko.unwrap(data.deleteOptions);
                         var observableColumns = ko.unwrap(data.columns);
+                        var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
                         var iggridColumns = _.map(observableColumns, function (c) {
                             c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
                             c["dataType"] = 'string';
@@ -28,7 +29,9 @@ var nts;
                         var features = [];
                         features.push({ name: 'Selection', multipleSelection: data.multiple });
                         features.push({ name: 'Sorting', type: 'local' });
-                        features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: true });
+                        if (data.multiple) {
+                            features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: showNumbering });
+                        }
                         $grid.igGrid({
                             width: data.width,
                             height: (data.height) + "px",
@@ -77,7 +80,18 @@ var nts;
                         var currentSource = $grid.igGrid('option', 'dataSource');
                         var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
                         if (!_.isEqual(currentSource, sources)) {
-                            $grid.igGrid('option', 'dataSource', sources.slice());
+                            var currentSources = sources.slice();
+                            var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
+                                c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
+                                return c["isDateColumn"] !== undefined && c["isDateColumn"] !== null && c["isDateColumn"] === true;
+                            });
+                            _.forEach(currentSources, function (s) {
+                                _.forEach(observableColumns, function (c) {
+                                    var key = c["key"] === undefined ? c["prop"] : c["key"];
+                                    s[key] = moment(s[key]).format(c["format"]);
+                                });
+                            });
+                            $grid.igGrid('option', 'dataSource', currentSources);
                             $grid.igGrid("dataBind");
                         }
                         var currentSelectedItems = $grid.ntsGridList('getSelected');
@@ -98,4 +112,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=gridlist-ko-ext.js.map

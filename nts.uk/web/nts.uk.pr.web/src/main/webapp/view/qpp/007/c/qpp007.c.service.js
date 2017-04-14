@@ -17,6 +17,7 @@ var nts;
                                 remove: "ctx/pr/report/salary/outputsetting/remove",
                                 findOutputSettingDetail: "ctx/pr/report/salary/outputsetting/find",
                                 findAllOutputSettings: "ctx/pr/report/salary/outputsetting/findall",
+                                findAllAggregateItems: "ctx/pr/report/salary/aggregate/item/findall"
                             };
                             function save(data) {
                                 return nts.uk.request.ajax(paths.save, data);
@@ -34,6 +35,22 @@ var nts;
                                 return nts.uk.request.ajax(paths.findAllOutputSettings);
                             }
                             service.findAllOutputSettings = findAllOutputSettings;
+                            function findAllAggregateItems() {
+                                return nts.uk.request.ajax(paths.findAllAggregateItems);
+                            }
+                            service.findAllAggregateItems = findAllAggregateItems;
+                            function findAllMasterItems() {
+                                var dfd = $.Deferred();
+                                var masterItems = [];
+                                for (var i = 1; i < 15; i++) {
+                                    masterItems.push({ code: 'MI' + i, name: '基本給' + i, paymentType: 'Salary', taxDivision: 'Payment' });
+                                }
+                                for (var i = 1; i < 15; i++) {
+                                    masterItems.push({ code: 'M0' + i, name: '基本給' + i, paymentType: 'Salary', taxDivision: 'Deduction' });
+                                }
+                                return dfd.resolve(masterItems).promise();
+                            }
+                            service.findAllMasterItems = findAllMasterItems;
                         })(service = c.service || (c.service = {}));
                     })(c = qpp007.c || (qpp007.c = {}));
                 })(qpp007 = view.qpp007 || (view.qpp007 = {}));

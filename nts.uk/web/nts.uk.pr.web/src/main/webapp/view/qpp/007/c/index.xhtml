@@ -5,8 +5,12 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingCode
+				nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingName
+  			</com:ValidatorScript>
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../j/qpp007.j.service.js" />
@@ -24,19 +28,20 @@
 		<ui:define name="content">
 			<!-- BEGIN FUNCTION AREA -->
 			<div id="functions-area">
-				<button id="new-button" data-bind="click: newModeBtnClick">新規</button>
-				<button id="register-button" class="proceed" data-bind="click: save, enable: $root.errors.isEmpty">登録</button>
-				<button id="setting-button" data-bind="click: commonSettingBtnClick">集計項目の設定</button>
-				<button id="delete-button" class="danger" data-bind="click: remove">削除</button>
-				<button id="close-button" data-bind="">閉じる</button>
+				<button id="new-button" data-bind="click: onNewModeBtnClicked">新規</button>
+				<button id="register-button" class="proceed" data-bind="click: onSaveBtnClicked">登録</button>
+				<button id="setting-button" data-bind="click: onCommonSettingBtnClicked">集計項目の設定</button>
+				<button id="delete-button" class="danger" data-bind="disable: isNewMode, click: onRemoveBtnClicked">削除</button>
+				<button id="close-button" data-bind="click: onCloseBtnClicked">閉じる</button>
 			</div>
 
 			<!-- END FUNCTION AREA -->
 
 			<!-- BEGIN CONTENT AREA -->
-			<div id="contents-area" data-bind="visible: !isLoading()" style="display: none">
+			<div id="contents-area" data-bind="visible: true" style="display: none">
 				<!-- BEGIN CONTENT LEFT -->
 				<div id="contents-left" class="bg-green caret-right caret-background pull-left">
+					<i class="icon icon-searchbox"></i>
 					<div id="inpSearch" class="ntsSearchBox"
 						data-bind="ntsSearchBox: {
 										comId: 'outputSettings',
@@ -53,9 +58,9 @@
 							primaryKey: 'code',
 							columns: ko.observableArray([
 			                    { headerText: 'コード', key: 'code', width: 50 },
-			                    { headerText: '名称', key: 'name', width: 50 }
+			                    { headerText: '名称', key: 'name', width: 100 }
 			                ]),
-							value: outputSettingSelectedCode
+							value: temporarySelectedCode
 						}"
 							class="cf"></table>
 					</div>
@@ -66,10 +71,11 @@
 				<div id="contents-center" class="caret-right caret-background pull-left" data-bind="with: outputSettingDetailModel">
 					<div class="flex valign-center">
 						<div id="lblCodeName" data-bind="ntsFormLabel: {required: true}">コード/名称</div>
-						<input id="inpCode"
-							data-bind="ntsTextEditor: {value: settingCode, required: true, enable: $parent.isNewMode()}"></input>
-						<input id="inpName"
-							data-bind="ntsTextEditor: {value: settingName, required: true}"></input>
+						<input id="inpCode" data-name="コード"
+							data-bind="ntsTextEditor: {constraint: 'SalaryOutputSettingCode', value: settingCode, required: true, enable: $parent.isNewMode()}">
+						</input>
+						<input id="inpName" data-name="名称"
+							data-bind="ntsTextEditor: {constraint: 'SalaryOutputSettingName', value: settingName, required: true}"></input>
 					</div>
 
 					<!-- BEGIN TAB PANEL -->
@@ -182,15 +188,18 @@
 					<button class="btn-help"
 						data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true }">?</button>
 					<div id="contents-right-grid-list">
-						<table id="reportItems"
+						<table id="aggregateOutputItems"
 							data-bind="ntsGridList: {
 							height: 500,
 							width: 300,
-							options: reportItems,
+							options: aggregateOutputItems,
 							primaryKey: 'code',
-							columns: reportItemColumns,
-							value: reportItemSelected}"
+							columns: aggregateOutputItemColumns,
+							value: aggregateOutputItemSelected}"
 							class="cf"></table>
+					</div>
+					<div id="aggregateOutputItemCounter" style="margin-left: 30px; margin-top: 20px;" 
+						data-bind="text: '(' + aggregateOutputItems().length + '件)'">
 					</div>
 				</div>
 				<!-- END CONTENT RIGHT-->

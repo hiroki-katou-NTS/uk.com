@@ -46,7 +46,7 @@ public class HealthInsuranceAvgearnDto implements HealthInsuranceAvgearnSetMemen
 	 * HealthInsuranceAvgearnSetMemento#setLevelCode(java.lang.Integer)
 	 */
 	@Override
-	public void setLevelCode(Integer levelCode) {
+	public void setGrade(Integer levelCode) {
 		this.levelCode = levelCode;
 	}
 
