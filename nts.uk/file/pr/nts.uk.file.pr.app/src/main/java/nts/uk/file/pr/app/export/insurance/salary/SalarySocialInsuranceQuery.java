@@ -7,6 +7,7 @@
  */
 package nts.uk.file.pr.app.export.insurance.salary;
 
+import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
@@ -24,7 +25,7 @@ import nts.uk.file.pr.app.export.insurance.data.InsuranceOfficeDto;
 public class SalarySocialInsuranceQuery {
 
     /** The year month. */
-    private int yearMonth;
+    private Integer yearMonth;
     
     /** The is equal. */
     private boolean isEqual;

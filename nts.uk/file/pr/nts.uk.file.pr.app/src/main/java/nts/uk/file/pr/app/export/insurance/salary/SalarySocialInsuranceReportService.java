@@ -48,14 +48,18 @@ public class SalarySocialInsuranceReportService extends ExportService<SalarySoci
         String companyCode = AppContexts.user().companyCode();
         String loginPersonID = "000000000000000000000000000000000001"; //AppContexts.user().personId();
         
-        SalarySocialInsuranceReportData rawReportData = repository.findReportData(companyCode, loginPersonID, query);
+        List<SalarySocialInsuranceReportData> dataReports = repository.findReportData(companyCode, loginPersonID, query);
+        // dataReports.get(0): report data of person.
+        SalarySocialInsuranceReportData reportData = dataReports.get(0);
+        // dataReports.get(1): report data of office.
         
         ChecklistPrintSettingDto configOutput = salarySocialInsuQueryProcessor.findConfigureOutputSetting();
         
         // fake data
-        SalarySocialInsuranceReportData reportData = fakeData();
+//        SalarySocialInsuranceReportData reportData = fakeData();
         reportData.setConfigureOutput(configOutput);
-//        this.generator.generate(context.getGeneratorContext(), reportData);
+        processData(reportData);
+        this.generator.generate(context.getGeneratorContext(), reportData);
     }
     
     private DataRowItem calculateTotal(List<DataRowItem> rowItems) {
@@ -125,6 +129,28 @@ public class SalarySocialInsuranceReportService extends ExportService<SalarySoci
         rowItem.setChildRaisingContributionMoney(childRaisingContributionMoney);
         
         return rowItem;
+    }
+    
+    private void processData(SalarySocialInsuranceReportData reportData) {
+        SalarySocialInsuranceHeaderReportData headerData = new SalarySocialInsuranceHeaderReportData();
+        headerData.setNameCompany("【日通 システム株式会社】");
+        headerData.setTitleReport("会社保険料チェックリスト(被保険者)");
+        headerData.setInformationOffice("【事業所:本社 ~ 福岡支社(3事業所)】");
+        headerData.setTargetYearMonth("【対象年月:平成19年12月 給与】 ");
+        headerData.setCondition("【出カ条件:算定月数と対象月控除が全て同じ、不定、超過】 ");
+        headerData.setFormalCalculation("【計算方法:全体の保険料より被保険者分を差し引く方法】");
+        reportData.setHeaderData(headerData);
+        
+        List<InsuranceOfficeDto> officeItems = reportData.getOfficeItems();
+        reportData.setOfficeItems(officeItems);
+        List<DataRowItem> totalEachOffices = new ArrayList<>();
+        for (InsuranceOfficeDto office : officeItems) {
+            DataRowItem totalEachOffice = calculateTotal(office.getEmployeeDtos());
+            office.setTotalEachOffice(totalEachOffice);
+            totalEachOffices.add(totalEachOffice);
+        }
+        DataRowItem totalAllOffice = calculateTotal(totalEachOffices);
+        reportData.setTotalAllOffice(totalAllOffice);
     }
     
     private SalarySocialInsuranceReportData fakeData() {

@@ -7,6 +7,8 @@
  */
 package nts.uk.file.pr.app.export.insurance.salary;
 
+import java.util.List;
+
 import nts.uk.file.pr.app.export.insurance.data.SalarySocialInsuranceReportData;
 
 /**
@@ -23,5 +25,5 @@ public interface SalarySocialInsuranceRepository {
      *            the query
      * @return the salary social insurance report data
      */
-    SalarySocialInsuranceReportData findReportData(String companyCode, String loginPersonId, SalarySocialInsuranceQuery salaryQuery);
+    List<SalarySocialInsuranceReportData> findReportData(String companyCode, String loginPersonId, SalarySocialInsuranceQuery salaryQuery);
 }

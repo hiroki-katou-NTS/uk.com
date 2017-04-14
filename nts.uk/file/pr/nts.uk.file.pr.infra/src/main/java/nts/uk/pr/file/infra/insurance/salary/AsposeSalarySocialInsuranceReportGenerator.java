@@ -686,13 +686,13 @@ public class AsposeSalarySocialInsuranceReportGenerator extends AsposeCellsRepor
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     private List convertObjectToList(Object obj) {
+        List valueOfAttributes = new ArrayList<>();
         if (obj == null) {
-            return null;
+            return valueOfAttributes;
         }
         if (obj instanceof DataRowItem) {
             obj = (DataRowItem) obj;
         }
-        List valueOfAttributes = new ArrayList<>();
         Field[] fields = obj.getClass().getDeclaredFields();
         for (Field field : fields) {
             Object val = ReflectionUtil.getFieldValue(field, obj);
