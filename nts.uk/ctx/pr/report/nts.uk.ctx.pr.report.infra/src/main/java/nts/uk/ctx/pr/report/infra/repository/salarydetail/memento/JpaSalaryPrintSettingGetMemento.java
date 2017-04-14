@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.repository.salarydetail.memento;
 
+import java.util.Arrays;
+
 import lombok.Getter;
 import nts.uk.ctx.pr.report.dom.salarydetail.printsetting.SalaryPrintSettingGetMemento;
 import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstPrintSet;
@@ -46,7 +48,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getShowPayment() {
-		return this.entity.getShowPayment() == 1 ? true : false;
+		return OutputSetting.valueOf(this.entity.getShowPayment()).bol;
 	}
 
 	/*
@@ -57,7 +59,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getSumPersonSet() {
-		return this.entity.getSumPersonSet() == 1 ? true : false;
+		return OutputSetting.valueOf(this.entity.getSumPersonSet()).bol;
 	}
 
 	/*
@@ -68,7 +70,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getSumMonthPersonSet() {
-		return this.entity.getSumMonthPersonSet() == 1 ? true : false;
+		return OutputSetting.valueOf(this.entity.getSumMonthPersonSet()).bol;
 	}
 
 	/*
@@ -79,7 +81,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getSumEachDeprtSet() {
-		return this.entity.getSumEachDeprtSet() == 1 ? true : false;
+		return OutputSetting.valueOf(this.entity.getSumEachDeprtSet()).bol;
 	}
 
 	/*
@@ -90,7 +92,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getSumMonthDeprtSet() {
-		return this.entity.getSumMonthDeprtSet() == 1 ? true : false;
+		return OutputSetting.valueOf(this.entity.getSumMonthDeprtSet()).bol;
 	}
 
 	/*
@@ -101,7 +103,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getSumDepHrchyIndexSet() {
-		return this.entity.getSumDepHrchyIndexSet() == 1 ? true : false;
+		return OutputSetting.valueOf(this.entity.getSumDepHrchyIndexSet()).bol;
 	}
 
 	/*
@@ -112,7 +114,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getSumMonthDepHrchySet() {
-		return this.entity.getSumMonthDepHrchySet() == 1 ? true : false;
+		return OutputSetting.valueOf(this.entity.getSumMonthDepHrchySet()).bol;
 	}
 
 	/*
@@ -123,7 +125,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getHrchyIndex1() {
-		return this.entity.getHrchyIndex1() == 1 ? true : false;
+		return this.getHrchyOptionFromDb(HierarchicalIndex.HIERARCHICAL_INDEX_1);
 	}
 
 	/*
@@ -134,7 +136,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getHrchyIndex2() {
-		return this.entity.getHrchyIndex2() == 1 ? true : false;
+		return this.getHrchyOptionFromDb(HierarchicalIndex.HIERARCHICAL_INDEX_2);
 	}
 
 	/*
@@ -145,7 +147,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getHrchyIndex3() {
-		return this.entity.getHrchyIndex3() == 1 ? true : false;
+		return this.getHrchyOptionFromDb(HierarchicalIndex.HIERARCHICAL_INDEX_3);
 	}
 
 	/*
@@ -156,7 +158,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getHrchyIndex4() {
-		return this.entity.getHrchyIndex4() == 1 ? true : false;
+		return this.getHrchyOptionFromDb(HierarchicalIndex.HIERARCHICAL_INDEX_4);
 	}
 
 	/*
@@ -167,7 +169,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getHrchyIndex5() {
-		return this.entity.getHrchyIndex5() == 1 ? true : false;
+		return this.getHrchyOptionFromDb(HierarchicalIndex.HIERARCHICAL_INDEX_5);
 	}
 
 	/*
@@ -178,8 +180,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getHrchyIndex6() {
-		// TODO Khong co trong db.
-		return this.entity.getHrchyIndex5() == 1 ? true : false;
+		return this.getHrchyOptionFromDb(HierarchicalIndex.HIERARCHICAL_INDEX_6);
 	}
 
 	/*
@@ -190,8 +191,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getHrchyIndex7() {
-		// TODO Khong co trong db.
-		return this.entity.getHrchyIndex5() == 1 ? true : false;
+		return this.getHrchyOptionFromDb(HierarchicalIndex.HIERARCHICAL_INDEX_7);
 	}
 
 	/*
@@ -202,8 +202,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getHrchyIndex8() {
-		// TODO Khong co trong db.
-		return this.entity.getHrchyIndex5() == 1 ? true : false;
+		return this.getHrchyOptionFromDb(HierarchicalIndex.HIERARCHICAL_INDEX_8);
 	}
 
 	/*
@@ -214,8 +213,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getHrchyIndex9() {
-		// TODO Khong co trong db.
-		return this.entity.getHrchyIndex5() == 1 ? true : false;
+		return this.getHrchyOptionFromDb(HierarchicalIndex.HIERARCHICAL_INDEX_9);
 	}
 
 	/*
@@ -226,7 +224,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getTotalSet() {
-		return this.entity.getTotalSet() == 1 ? true : false;
+		return OutputSetting.valueOf(this.entity.getTotalSet()).bol;
 	}
 
 	/*
@@ -237,7 +235,22 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getMonthTotalSet() {
-		return this.entity.getMonthTotalSet() == 1 ? true : false;
+		return OutputSetting.valueOf(this.entity.getMonthTotalSet()).bol;
+	}
+
+	/**
+	 * Convert hrchy option.
+	 *
+	 * @param index
+	 *            the index
+	 * @return true, if successful
+	 */
+	private boolean getHrchyOptionFromDb(HierarchicalIndex index) {
+		return Arrays.asList(HierarchicalIndex.valueOf(this.entity.getHrchyIndex1()),
+				HierarchicalIndex.valueOf(this.entity.getHrchyIndex2()),
+				HierarchicalIndex.valueOf(this.entity.getHrchyIndex3()),
+				HierarchicalIndex.valueOf(this.entity.getHrchyIndex4()),
+				HierarchicalIndex.valueOf(this.entity.getHrchyIndex5())).contains(index);
 	}
 
 }
