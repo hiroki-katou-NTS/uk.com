@@ -2,7 +2,6 @@ package nts.uk.ctx.basic.infra.repository.organization.payclassification;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;

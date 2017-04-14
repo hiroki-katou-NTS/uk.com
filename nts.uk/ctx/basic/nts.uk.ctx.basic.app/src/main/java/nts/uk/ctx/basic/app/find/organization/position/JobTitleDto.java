@@ -2,8 +2,6 @@ package nts.uk.ctx.basic.app.find.organization.position;
 
 import lombok.Data;
 
-
-
 @Data
 public class JobTitleDto {
 	
@@ -21,7 +19,6 @@ public class JobTitleDto {
 
 	String memo;
 
-	private String hiterarchyOrderCode;
+	String hiterarchyOrderCode;
 
-	
 }
