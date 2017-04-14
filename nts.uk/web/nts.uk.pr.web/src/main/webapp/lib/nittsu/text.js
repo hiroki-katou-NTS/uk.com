@@ -38,6 +38,63 @@ var nts;
                 return count;
             }
             text_1.countHalf = countHalf;
+            function toOneByteAlphaNumberic(text) {
+                return text.replace(/[！-～　]/g, function (s) {
+                    if (s === "　") {
+                        return String.fromCharCode(s.charCodeAt(0) - 12256);
+                    }
+                    return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+                });
+            }
+            text_1.toOneByteAlphaNumberic = toOneByteAlphaNumberic;
+            function toTwoByteAlphaNumberic(text) {
+                return text.replace(/[\!-\~ ]/g, function (s) {
+                    if (s === " ") {
+                        return String.fromCharCode(s.charCodeAt(0) + 12256);
+                    }
+                    return String.fromCharCode(s.charCodeAt(0) + 0xFEE0);
+                });
+            }
+            text_1.toTwoByteAlphaNumberic = toTwoByteAlphaNumberic;
+            function katakanaToHiragana(text) {
+                text = text.replace(/[ァ-ヴ]/g, function (s) {
+                    return String.fromCharCode(s.charCodeAt(0) - 0x60);
+                })
+                    .replace(/ﾞ/g, '゛')
+                    .replace(/ﾟ/g, '゜')
+                    .replace(/(う゛)/g, 'ゔ')
+                    .replace(/ヷ/g, 'わ゛')
+                    .replace(/ヸ/g, 'ゐ゛')
+                    .replace(/ヹ/g, 'ゑ゛')
+                    .replace(/ヺ/g, 'を゛')
+                    .replace(/(ヽ゛)/g, 'ゞ')
+                    .replace(/ヽ/g, 'ゝ')
+                    .replace(/ヾ/g, 'ゞ');
+                return text;
+            }
+            text_1.katakanaToHiragana = katakanaToHiragana;
+            ;
+            function hiraganaToKatakana(text, opt) {
+                text = text.replace(/[ぁ-ゔ]/g, function (s) {
+                    return String.fromCharCode(s.charCodeAt(0) + 0x60);
+                })
+                    .replace(/ﾞ/g, '゛')
+                    .replace(/ﾟ/g, '゜')
+                    .replace(/(ウ゛)/g, 'ヴ')
+                    .replace(/(ワ゛)/g, 'ヷ')
+                    .replace(/(ヰ゛)/g, 'ヸ')
+                    .replace(/(ヱ゛)/g, 'ヹ')
+                    .replace(/(ヲ゛)/g, 'ヺ')
+                    .replace(/(ゝ゛)/g, 'ヾ')
+                    .replace(/ゝ/g, 'ヽ')
+                    .replace(/ゞ/g, 'ヾ');
+                if (opt !== false) {
+                    text = text.replace(/ゕ/g, 'ヵ').replace(/ゖ/g, 'ヶ');
+                }
+                return text;
+            }
+            text_1.hiraganaToKatakana = hiraganaToKatakana;
+            ;
             function allHalfNumeric(text) {
                 return regexp.allHalfNumeric.test(text);
             }
@@ -262,7 +319,9 @@ var nts;
                     return "top";
             }
             text_1.reverseDirection = reverseDirection;
-            function getISO8601Format(format) {
+            function getISOFormat(format) {
+                if (format.toLowerCase() === "iso")
+                    return "YYYY-MM-DD[T]HH:mm:ss.SSS[Z]";
                 if (format.toLowerCase() === "date")
                     return "YYYY/MM/DD";
                 if (format.toLowerCase() === "yearmonth")
@@ -274,7 +333,7 @@ var nts;
                 format = format.replace(/y/g, "Y");
                 return format;
             }
-            text_1.getISO8601Format = getISO8601Format;
+            text_1.getISOFormat = getISOFormat;
             var StringFormatter = (function () {
                 function StringFormatter(args) {
                     this.args = args;
@@ -316,9 +375,11 @@ var nts;
                         result = uk.time.parseTime(source, true);
                     }
                     else {
-                        result = moment(source);
-                        if (result.isValid())
-                            return result.format(this.option.inputFormat);
+                        result = moment(source, "YYYYMMDD");
+                        if (result.isValid()) {
+                            var format = getISOFormat(this.option.inputFormat);
+                            return result.format(format);
+                        }
                         return source;
                     }
                     if (result.success)
@@ -331,3 +392,4 @@ var nts;
         })(text = uk.text || (uk.text = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=text.js.map

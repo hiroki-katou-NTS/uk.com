@@ -24,3 +24,4 @@ __viewContext.ready(function () {
     };
     this.bind(vm);
 });
+//# sourceMappingURL=start.js.map

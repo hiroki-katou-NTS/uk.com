@@ -103,6 +103,10 @@ var nts;
                 return target === null || target === undefined;
             }
             util.isNullOrUndefined = isNullOrUndefined;
+            function isNullOrEmpty(target) {
+                return (target === undefined || target === null || target.length == 0);
+            }
+            util.isNullOrEmpty = isNullOrEmpty;
             function randomId() {
                 return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
                     var r = Math.random() * 16 | 0;
@@ -485,6 +489,77 @@ var nts;
                 return count;
             }
             text_1.countHalf = countHalf;
+            function toOneByteAlphaNumberic(text) {
+                return text.replace(/[！-～　]/g, function (s) {
+                    if (s === "　") {
+                        return String.fromCharCode(s.charCodeAt(0) - 12256);
+                    }
+                    return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+                });
+            }
+            text_1.toOneByteAlphaNumberic = toOneByteAlphaNumberic;
+            function toTwoByteAlphaNumberic(text) {
+                return text.replace(/[\!-\~ ]/g, function (s) {
+                    if (s === " ") {
+                        return String.fromCharCode(s.charCodeAt(0) + 12256);
+                    }
+                    return String.fromCharCode(s.charCodeAt(0) + 0xFEE0);
+                });
+            }
+            text_1.toTwoByteAlphaNumberic = toTwoByteAlphaNumberic;
+            function katakanaToHiragana(text) {
+                text = text.replace(/[ァ-ヴ]/g, function (s) {
+                    return String.fromCharCode(s.charCodeAt(0) - 0x60);
+                }).replace(/ﾞ/g, '゛').replace(/ﾟ/g, '゜')
+                    .replace(/(う゛)/g, 'ゔ').replace(/ヷ/g, 'わ゛')
+                    .replace(/ヸ/g, 'ゐ゛').replace(/ヹ/g, 'ゑ゛')
+                    .replace(/ヺ/g, 'を゛').replace(/(ヽ゛)/g, 'ゞ')
+                    .replace(/ヽ/g, 'ゝ').replace(/ヾ/g, 'ゞ');
+                return text;
+            }
+            text_1.katakanaToHiragana = katakanaToHiragana;
+            function hiraganaToKatakana(text, opt) {
+                text = text.replace(/[ぁ-ゔ]/g, function (s) {
+                    return String.fromCharCode(s.charCodeAt(0) + 0x60);
+                }).replace(/ﾞ/g, '゛').replace(/ﾟ/g, '゜')
+                    .replace(/(ウ゛)/g, 'ヴ').replace(/(ワ゛)/g, 'ヷ')
+                    .replace(/(ヰ゛)/g, 'ヸ').replace(/(ヱ゛)/g, 'ヹ')
+                    .replace(/(ヲ゛)/g, 'ヺ').replace(/(ゝ゛)/g, 'ヾ')
+                    .replace(/ゝ/g, 'ヽ').replace(/ゞ/g, 'ヾ');
+                if (opt !== false) {
+                    text = text.replace(/ゕ/g, 'ヵ').replace(/ゖ/g, 'ヶ');
+                }
+                return text;
+            }
+            text_1.hiraganaToKatakana = hiraganaToKatakana;
+            function oneByteKatakanaToTwoByte(text) {
+                var katakanaMap = {
+                    'ｶﾞ': 'ガ', 'ｷﾞ': 'ギ', 'ｸﾞ': 'グ', 'ｹﾞ': 'ゲ', 'ｺﾞ': 'ゴ',
+                    'ｻﾞ': 'ザ', 'ｼﾞ': 'ジ', 'ｽﾞ': 'ズ', 'ｾﾞ': 'ゼ', 'ｿﾞ': 'ゾ',
+                    'ﾀﾞ': 'ダ', 'ﾁﾞ': 'ヂ', 'ﾂﾞ': 'ヅ', 'ﾃﾞ': 'デ', 'ﾄﾞ': 'ド',
+                    'ﾊﾞ': 'バ', 'ﾋﾞ': 'ビ', 'ﾌﾞ': 'ブ', 'ﾍﾞ': 'ベ', 'ﾎﾞ': 'ボ',
+                    'ﾊﾟ': 'パ', 'ﾋﾟ': 'ピ', 'ﾌﾟ': 'プ', 'ﾍﾟ': 'ペ', 'ﾎﾟ': 'ポ',
+                    'ｳﾞ': 'ヴ', 'ﾜﾞ': 'ヷ', 'ｦﾞ': 'ヺ',
+                    'ｱ': 'ア', 'ｲ': 'イ', 'ｳ': 'ウ', 'ｴ': 'エ', 'ｵ': 'オ',
+                    'ｶ': 'カ', 'ｷ': 'キ', 'ｸ': 'ク', 'ｹ': 'ケ', 'ｺ': 'コ',
+                    'ｻ': 'サ', 'ｼ': 'シ', 'ｽ': 'ス', 'ｾ': 'セ', 'ｿ': 'ソ',
+                    'ﾀ': 'タ', 'ﾁ': 'チ', 'ﾂ': 'ツ', 'ﾃ': 'テ', 'ﾄ': 'ト',
+                    'ﾅ': 'ナ', 'ﾆ': 'ニ', 'ﾇ': 'ヌ', 'ﾈ': 'ネ', 'ﾉ': 'ノ',
+                    'ﾊ': 'ハ', 'ﾋ': 'ヒ', 'ﾌ': 'フ', 'ﾍ': 'ヘ', 'ﾎ': 'ホ',
+                    'ﾏ': 'マ', 'ﾐ': 'ミ', 'ﾑ': 'ム', 'ﾒ': 'メ', 'ﾓ': 'モ',
+                    'ﾔ': 'ヤ', 'ﾕ': 'ユ', 'ﾖ': 'ヨ',
+                    'ﾗ': 'ラ', 'ﾘ': 'リ', 'ﾙ': 'ル', 'ﾚ': 'レ', 'ﾛ': 'ロ',
+                    'ﾜ': 'ワ', 'ｦ': 'ヲ', 'ﾝ': 'ン',
+                    'ｧ': 'ァ', 'ｨ': 'ィ', 'ｩ': 'ゥ', 'ｪ': 'ェ', 'ｫ': 'ォ',
+                    'ｯ': 'ッ', 'ｬ': 'ャ', 'ｭ': 'ュ', 'ｮ': 'ョ',
+                    '｡': '。', '､': '、', 'ｰ': 'ー', '｢': '「', '｣': '」', '･': '・'
+                };
+                var expression = new RegExp('(' + Object.keys(katakanaMap).join('|') + ')', 'g');
+                return text.replace(expression, function (match) {
+                    return katakanaMap[match];
+                }).replace(/ﾞ/g, '゛').replace(/ﾟ/g, '゜');
+            }
+            text_1.oneByteKatakanaToTwoByte = oneByteKatakanaToTwoByte;
             function allHalfNumeric(text) {
                 return regexp.allHalfNumeric.test(text);
             }
@@ -709,7 +784,9 @@ var nts;
                     return "top";
             }
             text_1.reverseDirection = reverseDirection;
-            function getISO8601Format(format) {
+            function getISOFormat(format) {
+                if (format.toLowerCase() === "iso")
+                    return "YYYY-MM-DD[T]HH:mm:ss.SSS[Z]";
                 if (format.toLowerCase() === "date")
                     return "YYYY/MM/DD";
                 if (format.toLowerCase() === "yearmonth")
@@ -721,7 +798,7 @@ var nts;
                 format = format.replace(/y/g, "Y");
                 return format;
             }
-            text_1.getISO8601Format = getISO8601Format;
+            text_1.getISOFormat = getISOFormat;
             var StringFormatter = (function () {
                 function StringFormatter(args) {
                     this.args = args;
@@ -763,9 +840,11 @@ var nts;
                         result = uk.time.parseTime(source, true);
                     }
                     else {
-                        result = moment(source);
-                        if (result.isValid())
-                            return result.format(this.option.inputFormat);
+                        result = moment(source, "YYYYMMDD");
+                        if (result.isValid()) {
+                            var format = getISOFormat(this.option.inputFormat);
+                            return result.format(format);
+                        }
                         return source;
                     }
                     if (result.success)
@@ -860,15 +939,6 @@ var nts;
         var time;
         (function (time_1) {
             var dotW = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
-            function formatYearMonth(yearMonth) {
-                var result;
-                var num = parseInt(String(yearMonth));
-                var year = String(Math.floor(num / 100));
-                var month = uk.text.charPadding(String(num % 100), '0', true, 2);
-                result = year + '/' + month;
-                return result;
-            }
-            time_1.formatYearMonth = formatYearMonth;
             function getYearMonthJapan(year, month) {
                 if (month)
                     return year + "年 " + month + " 月";
@@ -897,11 +967,8 @@ var nts;
                 return JapanYearMonth;
             }());
             time_1.JapanYearMonth = JapanYearMonth;
-            function yearInJapanEmpire(year) {
-                if (!(year instanceof String)) {
-                    year = "" + year;
-                }
-                year = parseInt(year);
+            function yearInJapanEmpire(date) {
+                var year = moment.utc(date).year();
                 if (year == 1868) {
                     return new JapanYearMonth("明治元年");
                 }
@@ -977,6 +1044,48 @@ var nts;
                     .replace(/ss/g, ss);
             }
             time_1.formatSeconds = formatSeconds;
+            function formatDate(date, format) {
+                if (!format)
+                    format = 'yyyy-MM-dd hh:mm:ss.SSS';
+                format = format.replace(/yyyy/g, date.getFullYear());
+                format = format.replace(/yy/g, ('0' + (date.getFullYear() % 100)).slice(-2));
+                format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
+                format = format.replace(/dd/g, ('0' + date.getDate()).slice(-2));
+                if (format.indexOf("DDD") != -1) {
+                    var daystr = "(" + dotW[date.getDay()] + ")";
+                    format = format.replace("DDD", daystr);
+                }
+                else if (format.indexOf("D") != -1) {
+                    var daystr = "(" + dotW[date.getDay()].substring(0, 1) + ")";
+                    format = format.replace("D", daystr);
+                }
+                format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2));
+                format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
+                format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));
+                if (format.match(/S/g)) {
+                    var milliSeconds = ('00' + date.getMilliseconds()).slice(-3);
+                    var length = format.match(/S/g).length;
+                    for (var i = 0; i < length; i++)
+                        format = format.replace(/S/, milliSeconds.substring(i, i + 1));
+                }
+                return format;
+            }
+            time_1.formatDate = formatDate;
+            function formatYearMonth(yearMonth) {
+                var result;
+                var num = parseInt(String(yearMonth));
+                var year = String(Math.floor(num / 100));
+                var month = uk.text.charPadding(String(num % 100), '0', true, 2);
+                result = year + '/' + month;
+                return result;
+            }
+            time_1.formatYearMonth = formatYearMonth;
+            function formatPattern(date, inputFormat, outputFormat) {
+                outputFormat = uk.text.getISOFormat(outputFormat);
+                var inputFormats = (inputFormat) ? inputFormat : ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm"];
+                return moment.utc(date, inputFormats).format(outputFormat);
+            }
+            time_1.formatPattern = formatPattern;
             var ParseResult = (function () {
                 function ParseResult(success) {
                     this.success = success;
@@ -1167,7 +1276,7 @@ var nts;
                     this.msg = msg || "must yyyymm or yyyy/mm format: year in [1900-9999] and month in [1-12] ";
                 }
                 ResultParseYearMonthDate.succeeded = function (year, month, date) {
-                    return new ResultParseYearMonthDate(true, year, month, date);
+                    return new ResultParseYearMonthDate(true, "", year, month, date);
                 };
                 ResultParseYearMonthDate.failed = function (msg) {
                     return new ResultParseYearMonthDate(false, msg);
@@ -1241,39 +1350,83 @@ var nts;
                 return ResultParseYearMonthDate.succeeded(year, month, date);
             }
             time_1.parseYearMonthDate = parseYearMonthDate;
-            function formatDate(date, format) {
-                if (!format)
-                    format = 'yyyy-MM-dd hh:mm:ss.SSS';
-                format = format.replace(/yyyy/g, date.getFullYear());
-                format = format.replace(/yy/g, ('0' + (date.getFullYear() % 100)).slice(-2));
-                format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
-                format = format.replace(/dd/g, ('0' + date.getDate()).slice(-2));
-                if (format.indexOf("DDD") != -1) {
-                    var daystr = "(" + dotW[date.getDay()] + ")";
-                    format = format.replace("DDD", daystr);
+            var MomentResult = (function (_super) {
+                __extends(MomentResult, _super);
+                function MomentResult(momentObject, outputFormat) {
+                    _super.call(this, true);
+                    this.momentObject = momentObject;
+                    this.outputFormat = uk.text.getISOFormat(outputFormat);
                 }
-                else if (format.indexOf("D") != -1) {
-                    var daystr = "(" + dotW[date.getDay()].substring(0, 1) + ")";
-                    format = format.replace("D", daystr);
-                }
-                format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2));
-                format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
-                format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));
-                if (format.match(/S/g)) {
-                    var milliSeconds = ('00' + date.getMilliseconds()).slice(-3);
-                    var length = format.match(/S/g).length;
-                    for (var i = 0; i < length; i++)
-                        format = format.replace(/S/, milliSeconds.substring(i, i + 1));
-                }
-                return format;
+                MomentResult.prototype.succeeded = function () {
+                    this.success = true;
+                };
+                MomentResult.prototype.failed = function (msg) {
+                    this.msg = (msg) ? msg : "Invalid format";
+                    this.success = false;
+                };
+                MomentResult.prototype.format = function () {
+                    if (!this.success)
+                        return "";
+                    return this.momentObject.format(this.outputFormat);
+                };
+                MomentResult.prototype.toValue = function () {
+                    if (!this.success)
+                        return null;
+                    return this.momentObject;
+                };
+                MomentResult.prototype.toNumber = function (outputFormat) {
+                    var dateFormats = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "date"];
+                    var yearMonthFormats = ["YYYY/MM", "YYYY-MM", "YYYYMM", "yearmonth"];
+                    if (!this.success)
+                        return null;
+                    if (dateFormats.indexOf(outputFormat) != -1) {
+                        return this.momentObject.year() * 10000 + (this.momentObject.month() + 1) * 100 + this.momentObject.date();
+                    }
+                    else if (yearMonthFormats.indexOf(outputFormat) != -1) {
+                        return this.momentObject.year() * 100 + (this.momentObject.month() + 1);
+                    }
+                    else {
+                        return parseInt(this.momentObject.format(outputFormat).replace(/[^\d]/g, ""));
+                    }
+                };
+                MomentResult.prototype.getMsg = function () { return this.msg; };
+                return MomentResult;
+            }(ParseResult));
+            time_1.MomentResult = MomentResult;
+            function parseMoment(datetime, outputFormat, inputFormat) {
+                var inputFormats = (inputFormat) ? inputFormat : ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm"];
+                var momentObject = moment.utc(datetime, inputFormats);
+                var result = new MomentResult(momentObject, outputFormat);
+                if (momentObject.isValid())
+                    result.succeeded();
+                else
+                    result.failed();
+                return result;
             }
-            time_1.formatDate = formatDate;
-            function formatPattern(date, inputFormat, outputFormat) {
-                outputFormat = uk.text.getISO8601Format(outputFormat);
-                inputFormat = uk.text.getISO8601Format(inputFormat);
-                return moment(date, inputFormat).format(outputFormat);
+            time_1.parseMoment = parseMoment;
+            function UTCDate(year, month, date, hours, minutes, seconds, milliseconds) {
+                if (uk.util.isNullOrUndefined(year)) {
+                    var currentDate = new Date();
+                    year = currentDate.getUTCFullYear();
+                    month = (uk.util.isNullOrUndefined(month)) ? currentDate.getUTCMonth() : month;
+                    date = (uk.util.isNullOrUndefined(date)) ? currentDate.getUTCDate() : date;
+                    hours = (uk.util.isNullOrUndefined(hours)) ? currentDate.getUTCHours() : hours;
+                    minutes = (uk.util.isNullOrUndefined(minutes)) ? currentDate.getUTCMinutes() : minutes;
+                    seconds = (uk.util.isNullOrUndefined(seconds)) ? currentDate.getUTCSeconds() : seconds;
+                    milliseconds = (uk.util.isNullOrUndefined(milliseconds)) ? currentDate.getUTCMilliseconds() : milliseconds;
+                    return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
+                }
+                else {
+                    month = (uk.util.isNullOrUndefined(month)) ? 0 : month;
+                    date = (uk.util.isNullOrUndefined(date)) ? 1 : date;
+                    hours = (uk.util.isNullOrUndefined(hours)) ? 0 : hours;
+                    minutes = (uk.util.isNullOrUndefined(minutes)) ? 0 : minutes;
+                    seconds = (uk.util.isNullOrUndefined(seconds)) ? 1 : seconds;
+                    milliseconds = (uk.util.isNullOrUndefined(milliseconds)) ? 0 : milliseconds;
+                    return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
+                }
             }
-            time_1.formatPattern = formatPattern;
+            time_1.UTCDate = UTCDate;
         })(time = uk.time || (uk.time = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -1561,7 +1714,7 @@ var nts;
                 var NoValidator = (function () {
                     function NoValidator() {
                     }
-                    NoValidator.prototype.validate = function (inputText) {
+                    NoValidator.prototype.validate = function (inputText, option) {
                         var result = new ValidationResult();
                         result.isValid = true;
                         result.parsedValue = inputText;
@@ -1585,40 +1738,27 @@ var nts;
                     return ValidationResult;
                 }());
                 validation.ValidationResult = ValidationResult;
-                function createValidator(constraintName, option) {
-                    var constraint = getConstraint(constraintName);
-                    if (constraint === null) {
-                        return new NoValidator();
-                    }
-                    if (constraint.valueType === 'String') {
-                        return new StringValidator(constraintName);
-                    }
-                    if (option) {
-                        if (option.inputFormat) {
-                            return new TimeValidator(constraintName, option);
-                        }
-                        else {
-                            return new NumberValidator(constraintName, option);
-                        }
-                    }
-                    return new NoValidator();
-                }
-                validation.createValidator = createValidator;
                 var StringValidator = (function () {
-                    function StringValidator(primitiveValueName, required) {
+                    function StringValidator(primitiveValueName, option) {
                         this.constraint = getConstraint(primitiveValueName);
                         this.charType = uk.text.getCharType(primitiveValueName);
-                        this.required = required;
+                        this.required = option.required;
                     }
-                    StringValidator.prototype.validate = function (inputText) {
+                    StringValidator.prototype.validate = function (inputText, option) {
                         var result = new ValidationResult();
                         if (this.required !== undefined && this.required !== false) {
-                            if (!checkRequired(inputText)) {
+                            if (uk.util.isNullOrEmpty(inputText)) {
                                 result.fail('This field is required');
                                 return result;
                             }
                         }
                         if (this.charType !== null && this.charType !== undefined) {
+                            if (this.charType.viewName === '半角数字' || this.charType.viewName === '半角英数字') {
+                                inputText = uk.text.toOneByteAlphaNumberic(inputText);
+                            }
+                            else if (this.charType.viewName === 'カタカナ') {
+                                inputText = uk.text.oneByteKatakanaToTwoByte(inputText);
+                            }
                             if (!this.charType.validate(inputText)) {
                                 result.fail('Invalid text');
                                 return result;
@@ -1629,9 +1769,11 @@ var nts;
                                 result.fail('Max length for this input is ' + this.constraint.maxLength);
                                 return result;
                             }
-                            if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
-                                result.fail('This field is not valid with pattern!');
-                                return result;
+                            if (!uk.util.isNullOrUndefined(option) && option.isCheckExpression === true) {
+                                if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
+                                    result.fail('This field is not valid with pattern!');
+                                    return result;
+                                }
                             }
                         }
                         result.success(inputText);
@@ -1677,28 +1819,38 @@ var nts;
                 var TimeValidator = (function () {
                     function TimeValidator(primitiveValueName, option) {
                         this.constraint = getConstraint(primitiveValueName);
-                        this.option = option;
+                        this.outputFormat = (option && option.outputFormat) ? option.outputFormat : "";
+                        this.required = (option && option.required) ? option.required : false;
+                        this.valueType = (option && option.valueType) ? option.valueType : "string";
                     }
                     TimeValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
-                        var parseResult;
-                        if (this.option.inputFormat === "yearmonth") {
-                            parseResult = uk.time.parseYearMonth(inputText);
+                        if (uk.util.isNullOrEmpty(inputText)) {
+                            if (this.required === true) {
+                                result.fail('This field is required');
+                                return result;
+                            }
+                            else {
+                                result.success("");
+                                return result;
+                            }
                         }
-                        else if (this.option.inputFormat === "time") {
-                            parseResult = uk.time.parseTime(inputText, false);
-                        }
-                        else if (this.option.inputFormat === "timeofday") {
-                            parseResult = uk.time.parseTimeOfTheDay(inputText);
-                        }
-                        else if (this.option.inputFormat === "yearmonthdate") {
-                            parseResult = uk.time.parseYearMonthDate(inputText);
-                        }
-                        else {
-                            parseResult = uk.time.ResultParseTime.failed();
-                        }
+                        var parseResult = uk.time.parseMoment(inputText, this.outputFormat);
                         if (parseResult.success) {
-                            result.success(parseResult.toValue());
+                            if (this.valueType === "string")
+                                result.success(parseResult.format());
+                            else if (this.valueType === "number") {
+                                result.success(parseResult.toNumber(this.outputFormat));
+                            }
+                            else if (this.valueType === "date") {
+                                result.success(parseResult.toValue().toDate());
+                            }
+                            else if (this.valueType === "moment") {
+                                result.success(parseResult.toValue());
+                            }
+                            else {
+                                result.success(parseResult.format());
+                            }
                         }
                         else {
                             result.fail(parseResult.getMsg());
@@ -1708,12 +1860,6 @@ var nts;
                     return TimeValidator;
                 }());
                 validation.TimeValidator = TimeValidator;
-                function checkRequired(value) {
-                    if (value === undefined || value === null || value.length == 0) {
-                        return false;
-                    }
-                    return true;
-                }
                 function getConstraint(primitiveValueName) {
                     var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
                     if (constraint === undefined)
@@ -1723,86 +1869,6 @@ var nts;
                 }
                 validation.getConstraint = getConstraint;
             })(validation = ui.validation || (ui.validation = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var errors;
-            (function (errors) {
-                var ErrorsViewModel = (function () {
-                    function ErrorsViewModel() {
-                        var _this = this;
-                        this.title = "エラー一覧";
-                        this.errors = ko.observableArray([]);
-                        this.errors.extend({ rateLimit: 1 });
-                        this.option = ko.mapping.fromJS(new ui.option.ErrorDialogOption());
-                        this.occurs = ko.computed(function () { return _this.errors().length !== 0; });
-                        this.allResolved = $.Callbacks();
-                        this.errors.subscribe(function () {
-                            if (_this.errors().length === 0) {
-                                _this.allResolved.fire();
-                            }
-                        });
-                        this.allResolved.add(function () {
-                            _this.hide();
-                        });
-                    }
-                    ErrorsViewModel.prototype.closeButtonClicked = function () {
-                    };
-                    ErrorsViewModel.prototype.open = function () {
-                        this.option.show(true);
-                    };
-                    ErrorsViewModel.prototype.hide = function () {
-                        this.option.show(false);
-                    };
-                    ErrorsViewModel.prototype.addError = function (error) {
-                        var duplicate = _.filter(this.errors(), function (e) { return e.$control.is(error.$control) && e.message == error.message; });
-                        if (duplicate.length == 0)
-                            this.errors.push(error);
-                    };
-                    ErrorsViewModel.prototype.removeErrorByElement = function ($element) {
-                        var removeds = _.filter(this.errors(), function (e) { return e.$control.is($element); });
-                        this.errors.removeAll(removeds);
-                    };
-                    return ErrorsViewModel;
-                }());
-                errors.ErrorsViewModel = ErrorsViewModel;
-                var ErrorHeader = (function () {
-                    function ErrorHeader(name, text, width, visible) {
-                        this.name = name;
-                        this.text = text;
-                        this.width = width;
-                        this.visible = visible;
-                    }
-                    return ErrorHeader;
-                }());
-                errors.ErrorHeader = ErrorHeader;
-                function errorsViewModel() {
-                    return nts.uk.ui._viewModel.kiban.errorDialogViewModel;
-                }
-                errors.errorsViewModel = errorsViewModel;
-                function show() {
-                    errorsViewModel().open();
-                }
-                errors.show = show;
-                function hide() {
-                    errorsViewModel().hide();
-                }
-                errors.hide = hide;
-                function add(error) {
-                    errorsViewModel().addError(error);
-                }
-                errors.add = add;
-                function removeByElement($control) {
-                    errorsViewModel().removeErrorByElement($control);
-                }
-                errors.removeByElement = removeByElement;
-            })(errors = ui.errors || (ui.errors = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -2568,7 +2634,7 @@ var nts;
                         this.textmode = (option !== undefined && option.textmode !== undefined) ? option.textmode : "text";
                         this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
-                        this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "left";
+                        this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "";
                         this.filldirection = (option !== undefined && option.filldirection !== undefined) ? option.filldirection : "right";
                         this.fillcharacter = (option !== undefined && option.fillcharacter !== undefined) ? option.fillcharacter : "0";
                     }
@@ -2579,10 +2645,10 @@ var nts;
                     __extends(TimeEditorOption, _super);
                     function TimeEditorOption(option) {
                         _super.call(this);
-                        this.inputFormat = (option !== undefined && option.inputFormat !== undefined) ? option.inputFormat : "yearmonthdate";
+                        this.inputFormat = (option !== undefined && option.inputFormat !== undefined) ? option.inputFormat : "date";
                         this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
-                        this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "left";
+                        this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
                     }
                     return TimeEditorOption;
                 }(EditorOptionBase));
@@ -2597,7 +2663,7 @@ var nts;
                         this.decimallength = (option !== undefined && option.decimallength !== undefined) ? option.decimallength : 0;
                         this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
-                        this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "left";
+                        this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
                         this.symbolChar = (option !== undefined && option.symbolChar !== undefined) ? option.symbolChar : "";
                         this.symbolPosition = (option !== undefined && option.symbolPosition !== undefined) ? option.symbolPosition : "right";
                     }
@@ -2617,7 +2683,7 @@ var nts;
                             ? option.currencyposition : getCurrencyPosition(this.currencyformat);
                         this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
-                        this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "left";
+                        this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
                     }
                     return CurrencyEditorOption;
                 }(NumberEditorOption));
@@ -2632,7 +2698,7 @@ var nts;
                         this.resizeable = (option !== undefined && option.resizeable !== undefined) ? option.resizeable : false;
                         this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
-                        this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "left";
+                        this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "";
                     }
                     return MultilineEditorOption;
                 }(EditorOptionBase));
@@ -3586,6 +3652,143 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
+                var DatePickerBindingHandler = (function () {
+                    function DatePickerBindingHandler() {
+                    }
+                    DatePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var value = data.value;
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
+                        var ISOFormat = uk.text.getISOFormat(dateFormat);
+                        var hasDayofWeek = (ISOFormat.indexOf("ddd") !== -1);
+                        var dayofWeekFormat = ISOFormat.replace(/[^d]/g, "");
+                        ISOFormat = ISOFormat.replace(/d/g, "").trim();
+                        var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : "";
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+                        var button = (data.button !== undefined) ? ko.unwrap(data.button) : false;
+                        var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
+                        var endDate = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
+                        var autoHide = (data.autoHide !== undefined) ? ko.unwrap(data.autoHide) : true;
+                        var valueType = typeof value();
+                        if (valueType === "string") {
+                            valueFormat = (valueFormat) ? valueFormat : uk.text.getISOFormat("ISO");
+                        }
+                        else if (valueType === "number") {
+                            valueFormat = (valueFormat) ? valueFormat : ISOFormat;
+                        }
+                        else if (valueType === "object") {
+                            if (moment.isDate(value())) {
+                                valueType = "date";
+                            }
+                            else if (moment.isMoment(value())) {
+                                valueType = "moment";
+                            }
+                        }
+                        var container = $(element);
+                        if (!container.attr("id")) {
+                            var idString = nts.uk.util.randomId();
+                            container.attr("id", idString);
+                        }
+                        container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
+                        var inputClass = (ISOFormat.length < 10) ? "yearmonth-picker" : "";
+                        var $input = $("<input id='" + container.attr("id") + "-input' class='ntsDatepicker nts-input' />").addClass(inputClass);
+                        container.append($input);
+                        if (hasDayofWeek) {
+                            var lengthClass = (dayofWeekFormat.length > 3) ? "long-day" : "short-day";
+                            var $label = $("<label id='" + container.attr("id") + "-label' for='" + container.attr("id") + "-input' class='dayofweek-label' />");
+                            $input.addClass(lengthClass);
+                            container.append($label);
+                        }
+                        $input.datepicker({
+                            language: 'ja-JP',
+                            format: ISOFormat,
+                            startDate: startDate,
+                            endDate: endDate,
+                            autoHide: autoHide,
+                        });
+                        var validator = new ui.validation.TimeValidator(constraintName, { required: required, outputFormat: valueFormat, valueType: valueType });
+                        $input.on("change", function (e) {
+                            var newText = $input.val();
+                            var result = validator.validate(newText);
+                            $input.ntsError('clear');
+                            if (result.isValid) {
+                                if (hasDayofWeek) {
+                                    if (uk.util.isNullOrEmpty(result.parsedValue))
+                                        $label.text("");
+                                    else
+                                        $label.text("(" + uk.time.formatPattern(newText, "", dayofWeekFormat) + ")");
+                                }
+                                value(result.parsedValue);
+                            }
+                            else {
+                                $input.ntsError('set', result.errorMessage);
+                                value(newText);
+                            }
+                        });
+                        $input.on('validate', (function (e) {
+                            var newText = $input.val();
+                            var result = validator.validate(newText);
+                            $input.ntsError('clear');
+                            if (result.isValid) {
+                                $input.ntsError('set', "Invalid format");
+                            }
+                        }));
+                    };
+                    DatePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var value = data.value;
+                        var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
+                        var ISOFormat = uk.text.getISOFormat(dateFormat);
+                        var hasDayofWeek = (ISOFormat.indexOf("ddd") !== -1);
+                        var dayofWeekFormat = ISOFormat.replace(/[^d]/g, "");
+                        ISOFormat = ISOFormat.replace(/d/g, "").trim();
+                        var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : ISOFormat;
+                        var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : undefined;
+                        var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
+                        var endDate = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
+                        var container = $(element);
+                        var init = container.data("init");
+                        var $input = container.find(".nts-input");
+                        var $label = container.find(".dayofweek-label");
+                        var dateFormatValue = (value() !== "") ? uk.time.formatPattern(value(), valueFormat, ISOFormat) : "";
+                        if (init === true || uk.time.formatPattern($input.datepicker("getDate", true), "", ISOFormat) !== dateFormatValue) {
+                            if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
+                                $input.datepicker('setDate', dateFormatValue);
+                                if (hasDayofWeek) {
+                                    if (uk.util.isNullOrEmpty(dateFormatValue))
+                                        $label.text("");
+                                    else
+                                        $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
+                                }
+                            }
+                        }
+                        container.data("init", false);
+                        $input.datepicker('setStartDate', startDate);
+                        $input.datepicker('setEndDate', endDate);
+                        if (enable !== undefined)
+                            $input.prop("disabled", !enable);
+                        else
+                            $input.prop("disabled", disabled);
+                        if (data.button)
+                            container.find('.datepicker-btn').prop("disabled", disabled);
+                    };
+                    return DatePickerBindingHandler;
+                }());
+                ko.bindingHandlers['ntsDatePicker'] = new DatePickerBindingHandler();
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
                 var NtsDialogBindingHandler = (function () {
                     function NtsDialogBindingHandler() {
                     }
@@ -3764,6 +3967,7 @@ var nts;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
                         var immediate = ko.unwrap(data.immediate !== undefined ? data.immediate : 'false');
+                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
                         var valueUpdate = (immediate === true) ? 'input' : 'change';
                         var characterWidth = 9;
                         if (constraint && constraint.maxLength && !$input.is("textarea")) {
@@ -3786,11 +3990,13 @@ var nts;
                             }
                         });
                         $input.blur(function () {
-                            var formatter = _this.getFormatter(data);
-                            var newText = $input.val();
-                            var result = validator.validate(newText);
-                            if (result.isValid) {
-                                $input.val(formatter.format(result.parsedValue));
+                            if (!readonly) {
+                                var formatter = _this.getFormatter(data);
+                                var newText = $input.val();
+                                var result = validator.validate(newText);
+                                if (result.isValid) {
+                                    $input.val(formatter.format(result.parsedValue));
+                                }
                             }
                         });
                         $input.on('validate', (function (e) {
@@ -3807,20 +4013,17 @@ var nts;
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
-                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
-                        var placeholder = ko.unwrap(option.placeholder || '');
-                        var width = ko.unwrap(option.width || '');
-                        var textalign = ko.unwrap(option.textalign || '');
+                        var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+                        var placeholder = option.placeholder;
+                        var textalign = option.textalign;
+                        var width = option.width;
                         (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled', 'disabled');
                         (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
                         $input.attr('placeholder', placeholder);
+                        $input.css('text-align', textalign);
                         if (width.trim() != "")
                             $input.width(width);
-                        if (textalign.trim() != "")
-                            $input.css('text-align', textalign);
-                        var formatted = $input.ntsError('hasError')
-                            ? value()
-                            : this.getFormatter(data).format(value());
+                        var formatted = $input.ntsError('hasError') ? value() : this.getFormatter(data).format(value());
                         $input.val(formatted);
                     };
                     EditorProcessor.prototype.getDefaultOption = function () {
@@ -3839,6 +4042,57 @@ var nts;
                     function TextEditorProcessor() {
                         _super.apply(this, arguments);
                     }
+                    TextEditorProcessor.prototype.init = function ($input, data) {
+                        var value = data.value;
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        var constraint = validation.getConstraint(constraintName);
+                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
+                        var characterWidth = 9;
+                        if (constraint && constraint.maxLength && !$input.is("textarea")) {
+                            var autoWidth = constraint.maxLength * characterWidth;
+                            $input.width(autoWidth);
+                        }
+                        $input.addClass('nts-editor nts-input');
+                        $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
+                        var validator = this.getValidator(data);
+                        $input.on("keyup", function (e) {
+                            if (!readonly) {
+                                var newText = $input.val();
+                                var result = validator.validate(newText);
+                                $input.ntsError('clear');
+                                if (!result.isValid) {
+                                    $input.ntsError('set', result.errorMessage);
+                                }
+                            }
+                        });
+                        $input.on("blur", function (e) {
+                            if (!readonly) {
+                                var newText = $input.val();
+                                var result = validator.validate(newText, { isCheckExpression: true });
+                                $input.ntsError('clear');
+                                if (result.isValid) {
+                                    if (value() === result.parsedValue) {
+                                        $input.val(result.parsedValue);
+                                    }
+                                    else {
+                                        value(result.parsedValue);
+                                    }
+                                }
+                                else {
+                                    $input.ntsError('set', result.errorMessage);
+                                    value(newText);
+                                }
+                            }
+                        });
+                        $input.on('validate', (function (e) {
+                            var newText = $input.val();
+                            var result = validator.validate(newText);
+                            $input.ntsError('clear');
+                            if (!result.isValid) {
+                                $input.ntsError('set', result.errorMessage);
+                            }
+                        }));
+                    };
                     TextEditorProcessor.prototype.update = function ($input, data) {
                         var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         var textmode = editorOption.textmode;
@@ -3857,9 +4111,36 @@ var nts;
                     TextEditorProcessor.prototype.getValidator = function (data) {
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        return new validation.StringValidator(constraintName, required);
+                        return new validation.StringValidator(constraintName, { required: required });
                     };
                     return TextEditorProcessor;
+                }(EditorProcessor));
+                var MultilineEditorProcessor = (function (_super) {
+                    __extends(MultilineEditorProcessor, _super);
+                    function MultilineEditorProcessor() {
+                        _super.apply(this, arguments);
+                    }
+                    MultilineEditorProcessor.prototype.update = function ($input, data) {
+                        var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+                        var resizeable = editorOption.resizeable;
+                        $input.css('resize', (resizeable) ? "both" : "none");
+                        _super.prototype.update.call(this, $input, data);
+                    };
+                    MultilineEditorProcessor.prototype.getDefaultOption = function () {
+                        return new ui.option.MultilineEditorOption();
+                    };
+                    MultilineEditorProcessor.prototype.getFormatter = function (data) {
+                        var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        var constraint = validation.getConstraint(constraintName);
+                        return new uk.text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: editorOption });
+                    };
+                    MultilineEditorProcessor.prototype.getValidator = function (data) {
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        return new validation.StringValidator(constraintName, { required: required });
+                    };
+                    return MultilineEditorProcessor;
                 }(EditorProcessor));
                 var NumberEditorProcessor = (function (_super) {
                     __extends(NumberEditorProcessor, _super);
@@ -3880,23 +4161,22 @@ var nts;
                     NumberEditorProcessor.prototype.update = function ($input, data) {
                         _super.prototype.update.call(this, $input, data);
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-                        var align = option.textalign !== "left" ? "right" : "left";
-                        $input.css({ 'text-align': align, "box-sizing": "border-box" });
                         var $parent = $input.parent();
                         var width = option.width;
                         var parentTag = $parent.parent().prop("tagName").toLowerCase();
                         if (parentTag === "td" || parentTag === "th" || parentTag === "a" || width === "100%") {
                             $parent.css({ 'width': '100%' });
                         }
+                        $input.css("box-sizing", "border-box");
+                        if (width.trim() != "")
+                            $input.width(width);
                         if (option.currencyformat !== undefined && option.currencyformat !== null) {
                             $parent.addClass("symbol").addClass(option.currencyposition === 'left' ? 'symbol-left' : 'symbol-right');
-                            $input.width(width);
                             var format = option.currencyformat === "JPY" ? "\u00A5" : '$';
                             $parent.attr("data-content", format);
                         }
                         else if (option.symbolChar !== undefined && option.symbolChar !== "" && option.symbolPosition !== undefined) {
                             $parent.addClass("symbol").addClass(option.symbolPosition === 'right' ? 'symbol-right' : 'symbol-left');
-                            $input.width(width);
                             $parent.attr("data-content", option.symbolChar);
                         }
                     };
@@ -3922,56 +4202,29 @@ var nts;
                     TimeEditorProcessor.prototype.update = function ($input, data) {
                         _super.prototype.update.call(this, $input, data);
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-                        $input.css({ 'text-align': 'right', "box-sizing": "border-box" });
-                        var parent = $input.parent();
-                        parent.css({ "display": "inline-block" });
-                        var parentTag = parent.parent().prop("tagName").toLowerCase();
                         var width = option.width;
+                        var parent = $input.parent();
+                        var parentTag = parent.parent().prop("tagName").toLowerCase();
                         if (parentTag === "td" || parentTag === "th" || parentTag === "a" || width === "100%") {
                             parent.css({ 'width': '100%' });
                         }
-                        $input.css({ 'paddingLeft': '12px', 'width': width });
                     };
                     TimeEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.TimeEditorOption();
                     };
                     TimeEditorProcessor.prototype.getFormatter = function (data) {
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-                        return new uk.text.TimeFormatter({ inputFormat: option.inputFormat });
+                        var inputFormat = (data.inputFormat !== undefined) ? ko.unwrap(data.inputFormat) : option.inputFormat;
+                        return new uk.text.TimeFormatter({ inputFormat: inputFormat });
                     };
                     TimeEditorProcessor.prototype.getValidator = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-                        return new validation.TimeValidator(constraintName, option);
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+                        var inputFormat = (data.inputFormat !== undefined) ? ko.unwrap(data.inputFormat) : option.inputFormat;
+                        return new validation.TimeValidator(constraintName, { required: required, outputFormat: inputFormat });
                     };
                     return TimeEditorProcessor;
-                }(EditorProcessor));
-                var MultilineEditorProcessor = (function (_super) {
-                    __extends(MultilineEditorProcessor, _super);
-                    function MultilineEditorProcessor() {
-                        _super.apply(this, arguments);
-                    }
-                    MultilineEditorProcessor.prototype.update = function ($input, data) {
-                        var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-                        var resizeable = ko.unwrap(editorOption.resizeable);
-                        $input.css('resize', (resizeable) ? "both" : "none");
-                        _super.prototype.update.call(this, $input, data);
-                    };
-                    MultilineEditorProcessor.prototype.getDefaultOption = function () {
-                        return new ui.option.MultilineEditorOption();
-                    };
-                    MultilineEditorProcessor.prototype.getFormatter = function (data) {
-                        var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        var constraint = validation.getConstraint(constraintName);
-                        return new uk.text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: editorOption });
-                    };
-                    MultilineEditorProcessor.prototype.getValidator = function (data) {
-                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
-                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        return new validation.StringValidator(constraintName, required);
-                    };
-                    return MultilineEditorProcessor;
                 }(EditorProcessor));
                 var NtsEditorBindingHandler = (function () {
                     function NtsEditorBindingHandler() {
@@ -4139,7 +4392,9 @@ var nts;
                         var features = [];
                         features.push({ name: 'Selection', multipleSelection: data.multiple });
                         features.push({ name: 'Sorting', type: 'local' });
-                        features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: true });
+                        if (data.multiple) {
+                            features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: false });
+                        }
                         $grid.igGrid({
                             width: data.width,
                             height: (data.height) + "px",
@@ -5545,120 +5800,77 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui) {
-            var koExtentions;
-            (function (koExtentions) {
-                var DatePickerBindingHandler = (function () {
-                    function DatePickerBindingHandler() {
+            var errors;
+            (function (errors) {
+                var ErrorsViewModel = (function () {
+                    function ErrorsViewModel() {
+                        var _this = this;
+                        this.title = "エラー一覧";
+                        this.errors = ko.observableArray([]);
+                        this.errors.extend({ rateLimit: 1 });
+                        this.option = ko.mapping.fromJS(new ui.option.ErrorDialogOption());
+                        this.occurs = ko.computed(function () { return _this.errors().length !== 0; });
+                        this.allResolved = $.Callbacks();
+                        this.errors.subscribe(function () {
+                            if (_this.errors().length === 0) {
+                                _this.allResolved.fire();
+                            }
+                        });
+                        this.allResolved.add(function () {
+                            _this.hide();
+                        });
                     }
-                    DatePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var value = data.value;
-                        var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
-                        dateFormat = uk.text.getISO8601Format(dateFormat);
-                        var hasDayofWeek = (dateFormat.indexOf("ddd") !== -1);
-                        var dayofWeekFormat = dateFormat.replace(/[^d]/g, "");
-                        dateFormat = dateFormat.replace(/d/g, "").trim();
-                        var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : dateFormat;
-                        var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
-                        var button = (data.button !== undefined) ? ko.unwrap(data.button) : false;
-                        var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
-                        var endDate = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
-                        var autoHide = (data.autoHide !== undefined) ? ko.unwrap(data.autoHide) : true;
-                        var container = $(element);
-                        if (!container.attr("id")) {
-                            var idString = nts.uk.util.randomId();
-                            container.attr("id", idString);
-                        }
-                        container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
-                        var inputClass = "";
-                        if (dateFormat.length < 10)
-                            inputClass = "yearmonth-picker";
-                        var $input = $("<input id='" + container.attr("id") + "-input' class='ntsDatepicker nts-input' />")
-                            .addClass(inputClass);
-                        container.append($input);
-                        if (hasDayofWeek) {
-                            var lengthClass = (dayofWeekFormat.length > 3) ? "long-day" : "short-day";
-                            var $label = $("<label id='" + container.attr("id") + "-label' for='" + container.attr("id") + "-input' class='dayofweek-label' />");
-                            $input.addClass(lengthClass);
-                            container.append($label);
-                        }
-                        $input.datepicker({
-                            date: value(),
-                            language: 'ja-JP',
-                            format: dateFormat,
-                            startDate: startDate,
-                            endDate: endDate,
-                            autoHide: autoHide,
-                        });
-                        $input.on("change", function (e) {
-                            var newText = $input.val();
-                            var isValid = moment(newText, valueFormat).isValid();
-                            $input.ntsError('clear');
-                            if (isValid) {
-                                var dateFormatValue = moment(newText, valueFormat).format(dateFormat);
-                                var valueFormatValue = moment(newText, valueFormat).format(valueFormat);
-                                $input.val(dateFormatValue);
-                                if (hasDayofWeek)
-                                    $label.text("(" + moment(newText, valueFormat).format(dayofWeekFormat) + ")");
-                                value(valueFormatValue);
-                            }
-                            else {
-                                $input.ntsError('set', "Invalid format");
-                                value(newText);
-                            }
-                        });
-                        $input.on('validate', (function (e) {
-                            var newText = $input.val();
-                            var isValid = moment(newText, valueFormat).isValid();
-                            $input.ntsError('clear');
-                            if (!isValid) {
-                                $input.ntsError('set', "Invalid format");
-                            }
-                        }));
-                        var length = 10, atomWidth = 9.5;
+                    ErrorsViewModel.prototype.closeButtonClicked = function () {
                     };
-                    DatePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var value = data.value;
-                        var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
-                        dateFormat = uk.text.getISO8601Format(dateFormat);
-                        var hasDayofWeek = (dateFormat.indexOf("ddd") !== -1);
-                        var dayofWeekFormat = dateFormat.replace(/[^d]/g, "");
-                        dateFormat = dateFormat.replace(/d/g, "").trim();
-                        var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : dateFormat;
-                        var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
-                        var button = (data.button !== undefined) ? ko.unwrap(data.button) : false;
-                        var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
-                        var endDate = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
-                        var autoHide = (data.autoHide !== undefined) ? ko.unwrap(data.autoHide) : true;
-                        var container = $(element);
-                        var init = container.data("init");
-                        container.data("init", false);
-                        var $input = container.find(".nts-input");
-                        var $label = container.find(".dayofweek-label");
-                        var isValid = moment(value(), valueFormat).isValid();
-                        if (isValid) {
-                            var dateFormatValue = moment(value(), valueFormat).format(dateFormat);
-                            if (init === true || (moment($input.datepicker('getDate')).format(dateFormat) !== dateFormatValue)) {
-                                $input.datepicker('setDate', dateFormatValue);
-                                if (hasDayofWeek)
-                                    $label.text("(" + moment(value(), valueFormat).format(dayofWeekFormat) + ")");
-                            }
-                        }
-                        else {
-                            $input.ntsError('set', "Invalid format");
-                            $input.val(value());
-                        }
-                        $input.datepicker('setStartDate', startDate);
-                        $input.datepicker('setEndDate', endDate);
-                        $input.prop("disabled", disabled);
-                        if (data.button)
-                            container.find('.datepicker-btn').prop("disabled", disabled);
+                    ErrorsViewModel.prototype.open = function () {
+                        this.option.show(true);
                     };
-                    return DatePickerBindingHandler;
+                    ErrorsViewModel.prototype.hide = function () {
+                        this.option.show(false);
+                    };
+                    ErrorsViewModel.prototype.addError = function (error) {
+                        var duplicate = _.filter(this.errors(), function (e) { return e.$control.is(error.$control) && e.message == error.message; });
+                        if (duplicate.length == 0)
+                            this.errors.push(error);
+                    };
+                    ErrorsViewModel.prototype.removeErrorByElement = function ($element) {
+                        var removeds = _.filter(this.errors(), function (e) { return e.$control.is($element); });
+                        this.errors.removeAll(removeds);
+                    };
+                    return ErrorsViewModel;
                 }());
-                ko.bindingHandlers['ntsDatePicker'] = new DatePickerBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+                errors.ErrorsViewModel = ErrorsViewModel;
+                var ErrorHeader = (function () {
+                    function ErrorHeader(name, text, width, visible) {
+                        this.name = name;
+                        this.text = text;
+                        this.width = width;
+                        this.visible = visible;
+                    }
+                    return ErrorHeader;
+                }());
+                errors.ErrorHeader = ErrorHeader;
+                function errorsViewModel() {
+                    return nts.uk.ui._viewModel.kiban.errorDialogViewModel;
+                }
+                errors.errorsViewModel = errorsViewModel;
+                function show() {
+                    errorsViewModel().open();
+                }
+                errors.show = show;
+                function hide() {
+                    errorsViewModel().hide();
+                }
+                errors.hide = hide;
+                function add(error) {
+                    errorsViewModel().addError(error);
+                }
+                errors.add = add;
+                function removeByElement($control) {
+                    errorsViewModel().removeErrorByElement($control);
+                }
+                errors.removeByElement = removeByElement;
+            })(errors = ui.errors || (ui.errors = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -5747,32 +5959,59 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui) {
-            var koExtentions;
-            (function (koExtentions) {
-                var NtsLinkButtonBindingHandler = (function () {
-                    function NtsLinkButtonBindingHandler() {
+            var file;
+            (function (file_1) {
+                var FileDownload = (function () {
+                    function FileDownload(servicePath, data) {
+                        var self = this;
+                        self.servicePath = servicePath;
+                        self.data = data;
+                        self.isFinishTask = ko.observable(false);
+                        self.isFinishTask.subscribe(function (value) {
+                            if (value) {
+                                clearInterval(self.interval);
+                                self.isFinishTask(false);
+                                self.download();
+                            }
+                        });
                     }
-                    NtsLinkButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var jump = ko.unwrap(data.jump);
-                        var action = data.action;
-                        var linkText = $(element).text();
-                        var $linkButton = $(element).wrap('<div class="ntsControl"/>')
-                            .addClass('link-button')
-                            .click(function () {
-                            event.preventDefault();
-                            if (!nts.uk.util.isNullOrUndefined(action))
-                                action.call(viewModel);
-                            else if (!nts.uk.util.isNullOrUndefined(jump))
-                                nts.uk.request.jump(jump);
+                    FileDownload.prototype.isTaskFinished = function (file) {
+                        var options = {
+                            dataType: 'text',
+                            contentType: 'text/plain'
+                        };
+                        uk.request.ajax("file/file/isfinished", file.taskId).done(function (res) {
+                            file.isFinishTask(res);
+                        }).fail(function (error) {
+                            file.reject(error);
                         });
                     };
-                    NtsLinkButtonBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    FileDownload.prototype.print = function () {
+                        var self = this;
+                        self.deferred = $.Deferred();
+                        var options = {
+                            dataType: 'text',
+                            contentType: 'application/json'
+                        };
+                        uk.request.ajax(self.servicePath, self.data, options).done(function (res) {
+                            self.taskId = res;
+                            self.interval = setInterval(self.isTaskFinished, 1000, self);
+                        }).fail(function (error) {
+                            self.deferred.reject(error);
+                        });
+                        return self.deferred.promise();
                     };
-                    return NtsLinkButtonBindingHandler;
+                    FileDownload.prototype.download = function () {
+                        var self = this;
+                        window.location.href = ("http://localhost:8080/nts.uk.pr.web/webapi/file/file/dl/" + self.taskId);
+                        if (self.deferred) {
+                            self.deferred.resolve();
+                        }
+                    };
+                    return FileDownload;
                 }());
-                ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+                file_1.FileDownload = FileDownload;
+            })(file = ui.file || (ui.file = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -5830,59 +6069,33 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui) {
-            var file;
-            (function (file_1) {
-                var FileDownload = (function () {
-                    function FileDownload(servicePath, data) {
-                        var self = this;
-                        self.servicePath = servicePath;
-                        self.data = data;
-                        self.isFinishTask = ko.observable(false);
-                        self.isFinishTask.subscribe(function (value) {
-                            if (value) {
-                                clearInterval(self.interval);
-                                self.isFinishTask(false);
-                                self.download();
-                            }
-                        });
+            var koExtentions;
+            (function (koExtentions) {
+                var NtsLinkButtonBindingHandler = (function () {
+                    function NtsLinkButtonBindingHandler() {
                     }
-                    FileDownload.prototype.isTaskFinished = function (file) {
-                        var options = {
-                            dataType: 'text',
-                            contentType: 'text/plain'
-                        };
-                        uk.request.ajax("file/file/isfinished", file.taskId).done(function (res) {
-                            file.isFinishTask(res);
-                        }).fail(function (error) {
-                            file.reject(error);
+                    NtsLinkButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var jump = ko.unwrap(data.jump);
+                        var action = data.action;
+                        var linkText = $(element).text();
+                        var $linkButton = $(element).wrap('<div class="ntsControl"/>')
+                            .addClass('link-button')
+                            .click(function () {
+                            event.preventDefault();
+                            if (!nts.uk.util.isNullOrUndefined(action))
+                                action.call(viewModel);
+                            else if (!nts.uk.util.isNullOrUndefined(jump))
+                                nts.uk.request.jump(jump);
                         });
                     };
-                    FileDownload.prototype.print = function () {
-                        var self = this;
-                        self.deferred = $.Deferred();
-                        var options = {
-                            dataType: 'text',
-                            contentType: 'application/json'
-                        };
-                        uk.request.ajax(self.servicePath, self.data, options).done(function (res) {
-                            self.taskId = res;
-                            self.interval = setInterval(self.isTaskFinished, 1000, self);
-                        }).fail(function (error) {
-                            self.deferred.reject(error);
-                        });
-                        return self.deferred.promise();
+                    NtsLinkButtonBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                     };
-                    FileDownload.prototype.download = function () {
-                        var self = this;
-                        window.location.href = ("http://localhost:8080/nts.uk.pr.web/webapi/file/file/dl/" + self.taskId);
-                        if (self.deferred) {
-                            self.deferred.resolve();
-                        }
-                    };
-                    return FileDownload;
+                    return NtsLinkButtonBindingHandler;
                 }());
-                file_1.FileDownload = FileDownload;
-            })(file = ui.file || (ui.file = {}));
+                ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map

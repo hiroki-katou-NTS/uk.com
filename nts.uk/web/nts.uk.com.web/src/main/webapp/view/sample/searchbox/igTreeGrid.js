@@ -75,3 +75,4 @@ __viewContext.ready(function () {
     }());
     this.bind(new ScreenModel());
 });
+//# sourceMappingURL=igTreeGrid.js.map

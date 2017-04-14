@@ -66,9 +66,6 @@ public class HealthInsuranceBaseCommand implements HealthInsuranceRateGetMemento
 	 */
 	@Override
 	public Set<HealthInsuranceRounding> getRoundingMethods() {
-		if (this.roundingMethods.isEmpty()) {
-			return null;
-		}
 		return new HashSet<HealthInsuranceRounding>(this.roundingMethods);
 	}
 

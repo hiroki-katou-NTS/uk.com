@@ -9,7 +9,6 @@ module qmm012.b {
         );
         let screenModelB = new viewmodel.ScreenModel(screenModel);
         __viewContext.bind(screenModelB);
-
     });
 
     export class ScreenModel {

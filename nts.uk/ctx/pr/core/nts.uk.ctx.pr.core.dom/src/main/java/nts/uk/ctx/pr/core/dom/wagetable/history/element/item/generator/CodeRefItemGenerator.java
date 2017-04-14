@@ -82,9 +82,12 @@ public class CodeRefItemGenerator implements ItemGenerator {
 
 		// Generate uuid of code items.
 		return wtRefItems.stream().map(item -> {
+			// Create code item
 			CodeItem codeItem = new CodeItem(item.getReferenceCode(), mapCodeItems.getOrDefault(
 					item.getReferenceCode(), new ElementId(IdentifierUtil.randomUniqueId())));
 			codeItem.setDisplayName(item.getDisplayName());
+			
+			// Return
 			return codeItem;
 		}).collect(Collectors.toList());
 	}

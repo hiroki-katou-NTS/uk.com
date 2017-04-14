@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemCode;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemName;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemSetMemento;
@@ -18,7 +19,8 @@ import nts.uk.ctx.pr.report.dom.salarydetail.item.SalaryItem;
 /**
  * Instantiates a new salary aggregate item find dto.
  */
-@Data
+@Getter
+@Setter
 public class SalaryAggregateItemFindDto implements SalaryAggregateItemSetMemento {
 
 	/** The salary aggregate item code. */

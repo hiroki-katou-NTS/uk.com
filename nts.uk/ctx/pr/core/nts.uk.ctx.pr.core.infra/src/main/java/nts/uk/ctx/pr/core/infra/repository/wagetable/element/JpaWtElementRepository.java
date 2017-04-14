@@ -35,8 +35,11 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableHist_;
 @Stateless
 public class JpaWtElementRepository extends JpaRepository implements WtElementRepository {
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.wagetable.element.WtElementRepository#findByHistoryId(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.wagetable.element.WtElementRepository#
+	 * findByHistoryId(java.lang.String)
 	 */
 	@Override
 	public Optional<WtElement> findByHistoryId(String hitsoryId) {
@@ -59,8 +62,10 @@ public class JpaWtElementRepository extends JpaRepository implements WtElementRe
 		predicateList.add(cb.equal(histRoot.get(QwtmtWagetableHist_.qwtmtWagetableHistPK)
 				.get(QwtmtWagetableHistPK_.histId), hitsoryId));
 
+		// Add where clause
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
+		// Get result
 		List<QwtmtWagetableElement> result = em.createQuery(cq).getResultList();
 
 		// Check empty.

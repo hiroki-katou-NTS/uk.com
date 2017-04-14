@@ -4,7 +4,6 @@ package nts.uk.ctx.pr.core.dom.rule.employment.averagepay;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.gul.text.StringUtil;
 
 /**
  * 平均賃金計算設定マスタ
@@ -17,32 +16,40 @@ public class AveragePay extends AggregateRoot {
 	private String companyCode;
 	
 	@Getter
-	private AttendDayGettingSet attendDayGettingSet;
+	private RoundTimingSet roundTimingSet;
 	
 	@Getter
-	private ExceptionPayRate exceptionPayRate;
+	private AttendDayGettingSet attendDayGettingSet;
 	
 	@Getter
 	private RoundDigitSet roundDigitSet;
 	
 	@Getter
-	private RoundTimingSet roundTimingSet;
+	private ExceptionPayRate exceptionPayRate;
 	
 	@Override
 	public void validate() {
-		super.validate();
-		if (StringUtil.isNullOrEmpty(this.roundDigitSet.toString(), true) ) {
+		if(this.exceptionPayRate.v()==null) {
 			throw new BusinessException("ER001");
 		}
+		super.validate();
 	} 
 	
-	public AveragePay(String companyCode, AttendDayGettingSet attendDayGettingSet, ExceptionPayRate exceptionPayRate,
-			RoundDigitSet roundDigitSet, RoundTimingSet roundTimingSet) {
+	public AveragePay(String companyCode, RoundTimingSet roundTimingSet, AttendDayGettingSet attendDayGettingSet,
+			RoundDigitSet roundDigitSet, ExceptionPayRate exceptionPayRate) {
 		super();
 		this.companyCode = companyCode;
-		this.attendDayGettingSet = attendDayGettingSet;
-		this.exceptionPayRate = exceptionPayRate;
-		this.roundDigitSet = roundDigitSet;
 		this.roundTimingSet = roundTimingSet;
+		this.attendDayGettingSet = attendDayGettingSet;
+		this.roundDigitSet = roundDigitSet;
+		this.exceptionPayRate = exceptionPayRate;
+	}
+	
+	/**
+	 * check attend day select
+	 * @return attend day statement
+	 */
+	public boolean isAttenDayStatementItem() {
+		 return AttendDayGettingSet.SELECT_FROM_STATEMENT_ITEM.equals(this.attendDayGettingSet);
 	}
 }
