@@ -571,7 +571,7 @@ module nts.uk.pr.view.qpp007.c {
                             }
                         });
                         masterItems().forEach(item => {
-                            if (item.taxDivision == TaxDivision.PAYMENT) {
+                            if (item.category == SalaryCategory.PAYMENT) {
                                 self.masterItems.push(item);
                             }
                         });
@@ -583,21 +583,21 @@ module nts.uk.pr.view.qpp007.c {
                             }
                         });
                         masterItems().forEach(item => {
-                            if (item.taxDivision == TaxDivision.DEDUCTION) {
+                            if (item.category == SalaryCategory.DEDUCTION) {
                                 self.masterItems.push(item);
                             }
                         });
                         break;
                     case SalaryCategory.ATTENDANCE:
                         masterItems().forEach(item => {
-                            if (item.taxDivision == TaxDivision.DEDUCTION) {
+                            if (item.category == SalaryCategory.ATTENDANCE) {
                                 self.masterItems.push(item);
                             }
                         });
                         break;
                     case SalaryCategory.ARTICLE_OTHERS:
                         masterItems().forEach(item => {
-                            if (item.taxDivision == TaxDivision.PAYMENT) {
+                            if (item.category == SalaryCategory.ARTICLE_OTHERS) {
                                 self.masterItems.push(item);
                             }
                         });
@@ -717,7 +717,7 @@ module nts.uk.pr.view.qpp007.c {
                     self.aggregateItems.push({
                         code: selectedItem.code,
                         name: selectedItem.name,
-                        taxDivision: TaxDivision.PAYMENT,
+                        taxDivision: TaxDivision.PAYMENT
                     });
                     return;
                 }
@@ -725,8 +725,7 @@ module nts.uk.pr.view.qpp007.c {
                 self.masterItems.push({
                     code: selectedItem.code,
                     name: selectedItem.name,
-                    paymentType: PaymentType.SALARY,
-                    taxDivision: TaxDivision.DEDUCTION
+                    category: SalaryCategory.PAYMENT 
                 });
             }
 
@@ -739,8 +738,7 @@ module nts.uk.pr.view.qpp007.c {
         export class MasterItem {
             code: string;
             name: string;
-            paymentType: PaymentType;
-            taxDivision: TaxDivision;
+            category: SalaryCategory;
         }
         export class OutputItem {
             code: string;
@@ -761,10 +759,6 @@ module nts.uk.pr.view.qpp007.c {
         export class SalaryOutputDistinction {
             static HOURLY = 'Hourly';
             static MINUTLY = 'Minutely';
-        }
-        export class PaymentType {
-            static SALARY = 'Salary';
-            static BONUS = 'Bonus';
         }
     }
 }
