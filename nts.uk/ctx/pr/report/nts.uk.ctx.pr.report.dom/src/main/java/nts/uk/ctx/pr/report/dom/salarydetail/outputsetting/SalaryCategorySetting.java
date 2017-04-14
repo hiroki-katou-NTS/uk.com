@@ -16,34 +16,6 @@ import nts.uk.ctx.pr.report.dom.salarydetail.SalaryCategory;
 @Getter
 public class SalaryCategorySetting extends DomainObject {
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((category == null) ? 0 : category.hashCode());
-		return result;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		SalaryCategorySetting other = (SalaryCategorySetting) obj;
-		if (category != other.category)
-			return false;
-		return true;
-	}
-
 	/** The category. */
 	private SalaryCategory category;
 
@@ -69,5 +41,37 @@ public class SalaryCategorySetting extends DomainObject {
 	public void saveToMemento(SalaryCategorySettingSetMemento memento) {
 		memento.setSalaryOutputItems(this.items);
 		memento.setSalaryCategory(this.category);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((category == null) ? 0 : category.hashCode());
+		return result;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SalaryCategorySetting other = (SalaryCategorySetting) obj;
+		if (category != other.category)
+			return false;
+		return true;
 	}
 }

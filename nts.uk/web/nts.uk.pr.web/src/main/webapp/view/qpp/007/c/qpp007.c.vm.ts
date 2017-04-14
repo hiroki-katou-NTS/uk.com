@@ -6,32 +6,35 @@ module nts.uk.pr.view.qpp007.c {
             temporarySelectedCode: KnockoutObservable<string>;
             outputSettingColumns: KnockoutObservableArray<any>;
             outputSettingDetailModel: KnockoutObservable<OutputSettingDetailModel>;
-            reportItems: KnockoutObservableArray<ReportItem>;
-            reportItemSelected: KnockoutObservable<string>;
-            reportItemColumns: KnockoutObservableArray<any>;
+            aggregateOutputItems: KnockoutObservableArray<AggregateOutputItem>;
+            aggregateOutputItemSelected: KnockoutObservable<string>;
+            aggregateOutputItemColumns: KnockoutObservableArray<any>;
             allAggregateItems: KnockoutObservableArray<AggregateItem>;
+            allMasterItems: KnockoutObservableArray<MasterItem>;
             isLoading: KnockoutObservable<boolean>;
             isNewMode: KnockoutObservable<boolean>;
+            isSomethingChanged: KnockoutObservable<boolean>;
             dirtyChecker: nts.uk.ui.DirtyChecker;
 
             constructor() {
                 var self = this;
                 self.isLoading = ko.observable(true);
                 self.isNewMode = ko.observable(true);
+                self.isSomethingChanged = ko.observable(false);
                 self.outputSettings = ko.observableArray<OutputSettingHeader>([]);
                 self.outputSettingSelectedCode = ko.observable('');
                 self.temporarySelectedCode = ko.observable('');
-                self.outputSettingDetailModel = ko.observable(new OutputSettingDetailModel(ko.observableArray<AggregateItem>([])));
-                self.reportItems = ko.observableArray<ReportItem>([]);
-                self.reportItemSelected = ko.observable('');
+                self.outputSettingDetailModel = ko.observable(new OutputSettingDetailModel(
+                    ko.observableArray<MasterItem>([]),
+                    ko.observableArray<AggregateItem>([])));
+                self.aggregateOutputItems = ko.observableArray<AggregateOutputItem>([]);
+                self.aggregateOutputItemSelected = ko.observable('');
                 self.allAggregateItems = ko.observableArray<AggregateItem>([]);
+                self.allMasterItems = ko.observableArray<MasterItem>([]);
                 self.dirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetailModel);
 
-                for (let i = 1; i < 30; i++) {
-                    this.outputSettings.push(new OutputSettingHeader('00' + i, '基本給' + i));
-                }
-
-                this.reportItemColumns = ko.observableArray<any>([
+                // Define aggregateOutputItems column.
+                self.aggregateOutputItemColumns = ko.observableArray<any>([
                     { headerText: '区分', prop: 'categoryNameJPN', width: 50 },
                     {
                         headerText: '集約', prop: 'isAggregate', width: 40,
@@ -42,13 +45,13 @@ module nts.uk.pr.view.qpp007.c {
                             return '';
                         }
                     },
-                    { headerText: 'コード', prop: 'code', width: 100 },
+                    { headerText: 'コード', prop: 'code', width: 50 },
                     { headerText: '名称', prop: 'name', width: 100 },
                 ]);
 
                 self.outputSettingDetailModel.subscribe((data: OutputSettingDetailModel) => {
-                    self.reloadReportItems();
-                    data.reloadReportItems = self.reloadReportItems.bind(self);
+                    self.reloadAggregateOutputItems();
+                    data.reloadAggregateOutputItems = self.reloadAggregateOutputItems.bind(self);
                 });
 
                 self.temporarySelectedCode.subscribe(code => {
@@ -82,15 +85,18 @@ module nts.uk.pr.view.qpp007.c {
             public startPage(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                $.when(self.loadAllOutputSetting(), self.loadMasterItems(), self.loadAggregateItems()).done(() => {
+                var outputSettings: OutputSettingHeader[] = nts.uk.ui.windows.getShared('outputSettings');
+                var selectedCode: string = nts.uk.ui.windows.getShared('selectedCode');
+                $.when(self.loadMasterItems(), self.loadAggregateItems()).done(() => {
                     self.isLoading(false);
                     // New mode if there is 0 outputSettings. 
-                    if (!self.outputSettings || self.outputSettings().length == 0) {
+                    if (!outputSettings || outputSettings.length == 0) {
                         self.enableNewMode();
                     }
-                    // else select first outputSetting.
+                    // else select selected code from caller screen.
                     else {
-                        self.temporarySelectedCode(self.outputSettings()[0].code);
+                        self.outputSettings(outputSettings);
+                        self.temporarySelectedCode(selectedCode);
                     }
                     dfd.resolve();
                 });
@@ -126,6 +132,8 @@ module nts.uk.pr.view.qpp007.c {
              */
             public onSaveBtnClicked(): void {
                 var self = this;
+                // Clear errors.
+                self.clearError();
                 // Validate.
                 self.validate();
                 if (!nts.uk.ui._viewModel.errors.isEmpty()) {
@@ -141,11 +149,13 @@ module nts.uk.pr.view.qpp007.c {
                 // Save.
                 service.save(data).done(() => {
                     self.isNewMode(false);
+                    self.isSomethingChanged(true);
                     self.dirtyChecker.reset();
                     self.loadAllOutputSetting();
                 }).fail(res => {
-                    // TODO: ...
-                    console.log(res);
+                    if (res.messageId == 'ER005') {
+                        $('#inpCode').ntsError('set', '入力した＊は既に存在しています。\r\n ＊を確認してください。');
+                    }
                 });
             }
 
@@ -154,15 +164,36 @@ module nts.uk.pr.view.qpp007.c {
              */
             public onRemoveBtnClicked(): void {
                 var self = this;
-                if (self.outputSettingSelectedCode) {
+                var selectedCode = self.outputSettingSelectedCode();
+                if (selectedCode) {
                     nts.uk.ui.dialog.confirm("データを削除します。\r\n よろしいですか？").ifYes(function() {
-                        service.remove(self.outputSettingSelectedCode()).done(() => {
-                            self.loadAllOutputSetting();
-                            // Set new mode if outputSettings has 0 element.
-                            if (!self.outputSettings || self.outputSettings.length == 0) {
+                        service.remove(selectedCode).done(() => {
+                            self.isSomethingChanged(true);
+
+                            // Find selected outputSetting.
+                            var selectedOutputSetting = self.outputSettings().filter(item => item.code == selectedCode)[0];
+                            var selectedIndex = self.outputSettings().indexOf(selectedOutputSetting);
+
+                            // Remove selected setting from list.
+                            self.outputSettings.remove(selectedOutputSetting);
+
+                            if (self.outputSettings() && self.outputSettings().length > 0) {
+                                var currentSetting = self.outputSettings()[selectedIndex];
+                                // Select setting with the same index.
+                                if (currentSetting) {
+                                    self.temporarySelectedCode(currentSetting.code);
+                                }
+                                // Select next setting.
+                                else {
+                                    self.temporarySelectedCode(self.outputSettings()[selectedIndex - 1].code);
+                                }
+                            }
+                            // Set new mode if all setting is removed.
+                            else {
                                 self.clearError();
                                 self.enableNewMode();
                             }
+
                         });
                     });
                 }
@@ -174,6 +205,7 @@ module nts.uk.pr.view.qpp007.c {
             public onCloseBtnClicked(): void {
                 var self = this;
                 self.confirmDirtyAndExecute(function() {
+                    nts.uk.ui.windows.setShared('isSomethingChanged', self.isSomethingChanged());
                     nts.uk.ui.windows.close();
                 });
             }
@@ -196,24 +228,36 @@ module nts.uk.pr.view.qpp007.c {
             private collectData(): OutputSettingDto {
                 var self = this;
                 var model = self.outputSettingDetailModel();
-                var data = new OutputSettingDto();
-                data.code = model.settingCode();
-                data.name = model.settingName();
-                var settings = new Array<CategorySettingDto>();
+                // Convert model to dto.
+                var dto = new OutputSettingDto();
+                dto.code = model.settingCode();
+                dto.name = model.settingName();
+
+                var categorySettingDto = new Array<CategorySettingDto>();
                 model.categorySettings().forEach(setting => {
-                    settings.push(new CategorySettingDto(setting.categoryName, setting.outputItems().map(item => {
+                    // Set order number.
+                    for (var i = 0; i < setting.outputItems().length; i++) {
+                        setting.outputItems()[i].orderNumber = i;
+                    }
+                    categorySettingDto.push(new CategorySettingDto(setting.categoryName, setting.outputItems().map(item => {
                         var mappedItem = item;
+                        // map Attendance && ArticleOthers item.
                         if (!item.isAggregateItem) {
                             mappedItem = new OutputItem();
                             mappedItem.code = item.code;
                             mappedItem.name = item.name;
+                            mappedItem.orderNumber = item.orderNumber;
                             mappedItem.isAggregateItem = false;
                         }
                         return mappedItem;
                     })));
                 });
-                data.categorySettings = settings;
-                return data;
+
+                // Set categorySettings.
+                dto.categorySettings = categorySettingDto;
+
+                // return dto.
+                return dto;
             }
 
             /**
@@ -257,31 +301,31 @@ module nts.uk.pr.view.qpp007.c {
             */
             private enableNewMode(): void {
                 var self = this;
-                self.outputSettingDetailModel(new OutputSettingDetailModel(ko.observableArray<AggregateItem>([])));
+                self.outputSettingDetailModel(new OutputSettingDetailModel(self.allMasterItems, self.allAggregateItems));
                 self.outputSettingSelectedCode(null);
                 self.dirtyChecker.reset();
                 self.isNewMode(true);
             }
 
             /**
-            * Reload report items.
+            * Reload aggregateOutput items.
             */
-            private reloadReportItems(): void {
+            private reloadAggregateOutputItems(): void {
                 var self = this;
                 var data = self.outputSettingDetailModel();
                 if (!data || data.categorySettings().length == 0) {
-                    self.reportItems([]);
+                    self.aggregateOutputItems([]);
                     return;
                 }
                 // Set data to report item list.
-                var reportItemList: ReportItem[] = [];
+                var reportItemList: AggregateOutputItem[] = [];
                 data.categorySettings().forEach((setting) => {
                     var categoryName: SalaryCategory = setting.categoryName;
                     setting.outputItems().forEach((item) => {
-                        reportItemList.push(new ReportItem(item.code, item.name, categoryName, item.isAggregateItem));
+                        reportItemList.push(new AggregateOutputItem(item.code, item.name, categoryName, item.isAggregateItem));
                     });
                 });
-                self.reportItems(reportItemList);
+                self.aggregateOutputItems(reportItemList);
             }
 
             /**
@@ -294,7 +338,6 @@ module nts.uk.pr.view.qpp007.c {
                     self.outputSettings(data);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res);
                     dfd.reject();
                 })
                 return dfd.promise();
@@ -306,14 +349,17 @@ module nts.uk.pr.view.qpp007.c {
             private loadOutputSettingDetail(code: string): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                service.findOutputSettingDetail(code).done(function(data: OutputSettingDto) {
-                    self.outputSettingDetailModel(new OutputSettingDetailModel(self.allAggregateItems, data));
-                    self.dirtyChecker.reset();
-                    dfd.resolve();
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res);
-                    dfd.reject();
-                })
+                if (code) {
+                    service.findOutputSettingDetail(code).done(function(data: OutputSettingDto) {
+                        self.outputSettingDetailModel(new OutputSettingDetailModel(self.allMasterItems, self.allAggregateItems, data));
+                        self.dirtyChecker.reset();
+                        dfd.resolve();
+                    }).fail(function(res) {
+                        dfd.reject();
+                    });
+                } else {
+                    self.outputSettingDetailModel(new OutputSettingDetailModel(self.allMasterItems, self.allAggregateItems));
+                }
                 return dfd.promise();
             }
 
@@ -341,8 +387,12 @@ module nts.uk.pr.view.qpp007.c {
             * Load master items
             */
             private loadMasterItems(): JQueryPromise<void> {
+                var self = this;
                 var dfd = $.Deferred<void>();
-                dfd.resolve();
+                service.findAllMasterItems().done(res => {
+                    self.allMasterItems(res);
+                    dfd.resolve();
+                });
                 return dfd.promise();
             }
 
@@ -380,11 +430,15 @@ module nts.uk.pr.view.qpp007.c {
             selectedCategory: KnockoutObservable<string>;
             categorySettings: KnockoutObservableArray<CategorySettingModel>;
             aggregateItems: KnockoutObservableArray<AggregateItem>;
-            reloadReportItems: () => void;
-            constructor(aggregateItems: KnockoutObservableArray<AggregateItem>, outputSetting?: OutputSettingDto) {
+            masterItems: KnockoutObservableArray<MasterItem>;
+            reloadAggregateOutputItems: () => void;
+            constructor(masterItems: KnockoutObservableArray<MasterItem>, aggregateItems: KnockoutObservableArray<AggregateItem>, outputSetting?: OutputSettingDto) {
                 this.settingCode = ko.observable(outputSetting != undefined ? outputSetting.code : '');
                 this.settingName = ko.observable(outputSetting != undefined ? outputSetting.name : '');
                 this.aggregateItems = aggregateItems;
+                this.masterItems = masterItems;
+
+                // construct categorySettings.
                 var settings: CategorySettingModel[] = [];
                 if (outputSetting == undefined) {
                     settings = this.toModel();
@@ -392,6 +446,7 @@ module nts.uk.pr.view.qpp007.c {
                     settings = this.toModel(outputSetting.categorySettings);
                 }
                 this.categorySettings = ko.observableArray<CategorySettingModel>(settings);
+
                 this.categorySettingTabs = ko.observableArray<nts.uk.ui.NtsTabPanelModel>([
                     { id: SalaryCategory.PAYMENT, title: '支給', content: '#payment', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: SalaryCategory.DEDUCTION, title: '控除', content: '#deduction', enable: ko.observable(true), visible: ko.observable(true) },
@@ -402,7 +457,7 @@ module nts.uk.pr.view.qpp007.c {
                 var self = this;
                 self.categorySettings().forEach((setting) => {
                     setting.outputItems.subscribe((newValue) => {
-                        self.reloadReportItems();
+                        self.reloadAggregateOutputItems();
                     });
                 });
             }
@@ -412,30 +467,29 @@ module nts.uk.pr.view.qpp007.c {
             */
             private toModel(categorySettings?: CategorySettingDto[]): CategorySettingModel[] {
                 var settings: CategorySettingModel[] = [];
-                var test: CategorySettingDto[];
-                if (categorySettings != undefined && categorySettings.length > 0) {
-                    test = categorySettings;
+                var categorySettingDtos: CategorySettingDto[];
+                if (categorySettings && categorySettings.length > 0) {
+                    categorySettingDtos = categorySettings;
                 }
 
-                // TODO... change later.
-                settings[0] = this.filterSettingByCategory(SalaryCategory.PAYMENT, test);
-                settings[1] = this.filterSettingByCategory(SalaryCategory.DEDUCTION, test);
-                settings[2] = this.filterSettingByCategory(SalaryCategory.ATTENDANCE, test);
-                settings[3] = this.filterSettingByCategory(SalaryCategory.ARTICLE_OTHERS, test);
+                settings[0] = this.filterSettingByCategory(SalaryCategory.PAYMENT, categorySettingDtos);
+                settings[1] = this.filterSettingByCategory(SalaryCategory.DEDUCTION, categorySettingDtos);
+                settings[2] = this.filterSettingByCategory(SalaryCategory.ATTENDANCE, categorySettingDtos);
+                settings[3] = this.filterSettingByCategory(SalaryCategory.ARTICLE_OTHERS, categorySettingDtos);
                 return settings;
             }
 
             private filterSettingByCategory(category: SalaryCategory, categorySettings?: CategorySettingDto[]): CategorySettingModel {
                 var cateTempSetting: CategorySettingDto = { category: category, outputItems: [] };
                 if (categorySettings == undefined) {
-                    return new CategorySettingModel(category, this.aggregateItems, cateTempSetting);
+                    return new CategorySettingModel(category, this.masterItems, this.aggregateItems, cateTempSetting);
                 }
 
                 var categorySetting = categorySettings.filter(item => item.category == category)[0];
                 if (categorySetting == undefined) {
                     categorySetting = cateTempSetting;
                 }
-                return new CategorySettingModel(category, this.aggregateItems, categorySetting);
+                return new CategorySettingModel(category, this.masterItems, this.aggregateItems, categorySetting);
             }
 
         }
@@ -456,7 +510,7 @@ module nts.uk.pr.view.qpp007.c {
         /**
          * ReportItem model.
          */
-        export class ReportItem {
+        export class AggregateOutputItem {
             code: string;
             name: string;
             categoryNameJPN: string;
@@ -498,7 +552,7 @@ module nts.uk.pr.view.qpp007.c {
             outputItemSelected: KnockoutObservable<string>;
             outputItemsSelected: KnockoutObservableArray<string>;
             outputItemColumns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-            constructor(categoryName: SalaryCategory, aggregateItems: KnockoutObservableArray<AggregateItem>, categorySetting?: CategorySettingDto) {
+            constructor(categoryName: SalaryCategory, masterItems: KnockoutObservableArray<MasterItem>, aggregateItems: KnockoutObservableArray<AggregateItem>, categorySetting?: CategorySettingDto) {
                 var self = this;
                 self.categoryName = categoryName;
                 self.aggregateItems = ko.observableArray<AggregateItem>([]);
@@ -509,25 +563,46 @@ module nts.uk.pr.view.qpp007.c {
                 self.outputItemSelected = ko.observable(null);
                 self.outputItemsSelected = ko.observableArray<string>([]);
 
-                if (categoryName == SalaryCategory.PAYMENT) {
-                    aggregateItems().forEach(item => {
-                        if (item.taxDivision == TaxDivision.PAYMENT) {
-                            self.aggregateItems.push(item);
-                        }
-                    })
-                }
-
-                if (categoryName == SalaryCategory.DEDUCTION) {
-                    aggregateItems().forEach(item => {
-                        if (item.taxDivision == TaxDivision.DEDUCTION) {
-                            self.aggregateItems.push(item);
-                        }
-                    })
-                }
-
-                // mock data
-                for (let i = 1; i < 15; i++) {
-                    this.masterItems.push({ code: '00' + i, name: '基本給' + i, paymentType: 'Salary', taxDivision: 'Deduction' });
+                switch (categoryName) {
+                    case SalaryCategory.PAYMENT:
+                        aggregateItems().forEach(item => {
+                            if (item.taxDivision == TaxDivision.PAYMENT) {
+                                self.aggregateItems.push(item);
+                            }
+                        });
+                        masterItems().forEach(item => {
+                            if (item.taxDivision == TaxDivision.PAYMENT) {
+                                self.masterItems.push(item);
+                            }
+                        });
+                        break;
+                    case SalaryCategory.DEDUCTION:
+                        aggregateItems().forEach(item => {
+                            if (item.taxDivision == TaxDivision.DEDUCTION) {
+                                self.aggregateItems.push(item);
+                            }
+                        });
+                        masterItems().forEach(item => {
+                            if (item.taxDivision == TaxDivision.DEDUCTION) {
+                                self.masterItems.push(item);
+                            }
+                        });
+                        break;
+                    case SalaryCategory.ATTENDANCE:
+                        masterItems().forEach(item => {
+                            if (item.taxDivision == TaxDivision.DEDUCTION) {
+                                self.masterItems.push(item);
+                            }
+                        });
+                        break;
+                    case SalaryCategory.ARTICLE_OTHERS:
+                        masterItems().forEach(item => {
+                            if (item.taxDivision == TaxDivision.PAYMENT) {
+                                self.masterItems.push(item);
+                            }
+                        });
+                        break;
+                    default: // Do nothing.
                 }
 
                 // Define outputItemColumns.
@@ -542,7 +617,7 @@ module nts.uk.pr.view.qpp007.c {
                         }
                     },
                     { headerText: 'コード', prop: 'code', width: 50 },
-                    { headerText: '名称', prop: 'name', width: 60 },
+                    { headerText: '名称', prop: 'name', width: 120 },
                     {
                         headerText: '削除', prop: 'code', width: 60,
                         formatter: function(code: string) {
@@ -590,6 +665,7 @@ module nts.uk.pr.view.qpp007.c {
                             code: item.code,
                             name: item.name,
                             isAggregateItem: false,
+                            orderNumber: 1
                         });
                     });
                     self.masterItemsSelected([]);
@@ -618,6 +694,7 @@ module nts.uk.pr.view.qpp007.c {
                             code: item.code,
                             name: item.name,
                             isAggregateItem: true,
+                            orderNumber: 1
                         });
                     });
                     self.aggregateItemsSelected([]);
@@ -669,7 +746,7 @@ module nts.uk.pr.view.qpp007.c {
             code: string;
             name: string;
             isAggregateItem: boolean;
-            //orderNumber: number; no use?
+            orderNumber: number;
         }
         export class SalaryCategory {
             static PAYMENT = 'Payment';

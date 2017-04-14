@@ -6,6 +6,7 @@ package nts.uk.ctx.pr.report.infra.repository.insurance;
 
 import nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingGetMemento;
 import nts.uk.ctx.pr.report.infra.entity.insurance.QismtChecklistPrintSet;
+import nts.uk.ctx.pr.report.infra.util.JpaUtil;
 
 /**
  * The Class JpaChecklistPrintSettingGetMemento.
@@ -42,7 +43,7 @@ public class JpaChecklistPrintSettingGetMemento implements ChecklistPrintSetting
 	 */
 	@Override
 	public Boolean getShowCategoryInsuranceItem() {
-		return this.entity.getIsShowBreakdownItem() == 1;
+		return JpaUtil.short2Boolean(this.entity.getIsShowBreakdownItem());
 	}
 
 	/*
@@ -52,7 +53,7 @@ public class JpaChecklistPrintSettingGetMemento implements ChecklistPrintSetting
 	 */
 	@Override
 	public Boolean getShowDeliveryNoticeAmount() {
-		return this.entity.getIsShowTotalPayMny() == 1;
+		return JpaUtil.short2Boolean(this.entity.getIsShowTotalPayMny());
 	}
 
 	/*
@@ -62,7 +63,7 @@ public class JpaChecklistPrintSettingGetMemento implements ChecklistPrintSetting
 	 */
 	@Override
 	public Boolean getShowDetail() {
-		return this.entity.getIsShowPersonSumMny() == 1;
+		return JpaUtil.short2Boolean(this.entity.getIsShowPersonSumMny());
 	}
 
 	/*
@@ -72,7 +73,7 @@ public class JpaChecklistPrintSettingGetMemento implements ChecklistPrintSetting
 	 */
 	@Override
 	public Boolean getShowOffice() {
-		return this.entity.getIsShowTotalMnyCol() == 1;
+		return JpaUtil.short2Boolean(this.entity.getIsShowTotalMnyCol());
 	}
 
 	/*
@@ -82,7 +83,7 @@ public class JpaChecklistPrintSettingGetMemento implements ChecklistPrintSetting
 	 */
 	@Override
 	public Boolean getShowTotal() {
-		return this.entity.getIsShowOfficeSumMny() == 1;
+		return JpaUtil.short2Boolean(this.entity.getIsShowOfficeSumMny());
 	}
 
 }

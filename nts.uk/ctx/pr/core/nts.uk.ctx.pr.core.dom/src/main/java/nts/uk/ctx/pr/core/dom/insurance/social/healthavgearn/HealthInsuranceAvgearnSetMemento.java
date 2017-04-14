@@ -19,9 +19,9 @@ public interface HealthInsuranceAvgearnSetMemento {
 	/**
 	 * Sets the level code.
 	 *
-	 * @param levelCode the new level code
+	 * @param grade the new level code
 	 */
-	void setLevelCode(Integer levelCode);
+	void setGrade(Integer grade);
 
 	/**
 	 * Sets the company avg.
