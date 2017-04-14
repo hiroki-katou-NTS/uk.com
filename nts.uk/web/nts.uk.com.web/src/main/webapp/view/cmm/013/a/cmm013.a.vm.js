@@ -130,7 +130,9 @@ var cmm013;
                     }
                     a.service.findByUseKt().done(function (res) {
                         if (res.use_Kt_Set === 1) {
-                            a.service.getAllJobTitleAuth(self.currentItem().historyId, self.currentItem().jobCode).done(function (jTref) {
+                            var historyId = (self.currentItem() && self.currentItem().historyId) ? self.currentItem().historyId : "NULL";
+                            var jobCode = (self.currentItem() && self.currentItem().jobCode) ? self.currentItem().jobCode : "NULL";
+                            a.service.getAllJobTitleAuth(historyId, jobCode).done(function (jTref) {
                                 if (jTref.length === 0) {
                                     $('.trLst003').hide();
                                 }

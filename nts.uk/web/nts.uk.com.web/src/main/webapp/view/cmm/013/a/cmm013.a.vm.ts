@@ -176,7 +176,9 @@ module cmm013.a.viewmodel {
             //find auth by historyId and job title code
             service.findByUseKt().done(function(res: any) {
                 if (res.use_Kt_Set === 1) {
-                    service.getAllJobTitleAuth(self.currentItem().historyId, self.currentItem().jobCode).done(function(jTref) {
+                    var historyId = (self.currentItem() && self.currentItem().historyId) ? self.currentItem().historyId : "NULL";
+                    var jobCode = (self.currentItem() && self.currentItem().jobCode) ? self.currentItem().jobCode : "NULL";
+                    service.getAllJobTitleAuth(historyId, jobCode).done(function(jTref) {
                         //show or hide list 003
                         if (jTref.length === 0) {
                             $('.trLst003').hide();

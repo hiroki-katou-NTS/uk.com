@@ -63,7 +63,7 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		SELECT_AUTHLEVEL = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("SELECT a.catmtAuthPk.authCode, a.authName, coalesce(b.referenceSettings,1) referenceSettings");
+		builderString.append("SELECT a.catmtAuthPk.authCode, a.authName, coalesce(b.referenceSettings,0) referenceSettings");
 		builderString.append(" FROM CatmtAuth a LEFT JOIN CmnmtJobTitleRef b");
 		builderString.append(" ON a.catmtAuthPk.authCode = b.cmnmtJobTitleRefPK.authCode");
 		builderString.append(" AND a.catmtAuthPk.companyCode = b.cmnmtJobTitleRefPK.companyCode");
