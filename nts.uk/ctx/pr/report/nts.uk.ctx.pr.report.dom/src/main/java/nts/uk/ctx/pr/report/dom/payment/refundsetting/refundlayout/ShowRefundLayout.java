@@ -41,12 +41,14 @@ public class ShowRefundLayout {
 	private ShowZeroInMny showZeroInMny;
 
 	private ShowProductsPayMny showProductsPayMny;
+	
+	private ShowAttendItemName showAttendItemName;
 
 	public static ShowRefundLayout createFromJavaType(int showCompName, int showCompAddInSurface,
 			int showCompNameInSurface, int showDependencePerNum, int showInsuranceLevel, int showMnyItemName,
 			int showPerAddInSurface, int showPerNameInSurface, int showRemainAnnualLeave, int showTotalTaxMny,
 			int showZeroInAttend, int showPerTaxCatalog, int showDepartment, int showZeroInMny,
-			int showProductsPayMny) {
+			int showProductsPayMny, int showAttendItemName) {
 		return new ShowRefundLayout(EnumAdaptor.valueOf(showCompName, ShowCompanyName.class),
 				EnumAdaptor.valueOf(showCompAddInSurface, ShowCompAddInSurface.class),
 				EnumAdaptor.valueOf(showCompNameInSurface, ShowCompNameInSurface.class),
@@ -61,6 +63,7 @@ public class ShowRefundLayout {
 				EnumAdaptor.valueOf(showPerTaxCatalog, ShowPerTaxCatalog.class),
 				EnumAdaptor.valueOf(showDepartment, ShowDepartment.class),
 				EnumAdaptor.valueOf(showZeroInMny, ShowZeroInMny.class),
-				EnumAdaptor.valueOf(showProductsPayMny, ShowProductsPayMny.class));
+				EnumAdaptor.valueOf(showProductsPayMny, ShowProductsPayMny.class),
+				EnumAdaptor.valueOf(showAttendItemName, ShowAttendItemName.class));
 	}
 }

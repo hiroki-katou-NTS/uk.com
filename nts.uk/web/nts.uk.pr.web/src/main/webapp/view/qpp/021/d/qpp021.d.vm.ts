@@ -1,58 +1,34 @@
 module qpp021.d.viewmodel {
     export class ScreenModel {
+        
         isEnaleFromParent: KnockoutObservable<boolean> = ko.observable(true);
-        isvisibleItem: KnockoutObservable<boolean> = ko.observable(true);
+        //isvisibleItem: KnockoutObservable<boolean> = ko.observable(true);
+        refundLayoutItem: KnockoutObservable<RefundLayoutModel>;
+        
         zeroItemSetting: KnockoutObservableArray<ItemModel>;
-        zeroItemSettingCode: KnockoutObservable<number>;
-
         switchItemList: KnockoutObservableArray<ItemModel>;
-        //zeroAmountOutput: KnockoutObservableArray<ItemModel>;
-        zeroAmountOutputCode: KnockoutObservable<number>;
-        zeroTimeClassificationCode: KnockoutObservable<number>;
-        totalTaxableOutputCode: KnockoutObservable<number>;
-        yearlyHolidaysClassificationCode: KnockoutObservable<number>;
-        kindPaymentOutputCode: KnockoutObservable<number>;
-
         selectPrintYearMonth: KnockoutObservableArray<ItemModel>;
-        selectPrintYearMonthCode: KnockoutObservable<number>;
-
         outputNameDesignation: KnockoutObservableArray<ItemModel>;
-        outputNameDesignationCode: KnockoutObservable<number>;
-
         outputDepartment: KnockoutObservableArray<ItemModel>;
-        outputDepartmentCode: KnockoutObservable<number>;
-
         borderLineWidth: KnockoutObservableArray<ItemModel>;
-        borderLineWidthCode: KnockoutObservable<number>;
-
-        outputCompanyNameCode: KnockoutObservable<number>;
-        shadedSectionCode: KnockoutObservable<number>;
-        
-        numberOutputDependentCode: KnockoutObservable<number>;
-        incomeTaxClassificationCode: KnockoutObservable<number>;
-        insuranceFollowingOutputCode: KnockoutObservable<number>;
-        personalAddressCode: KnockoutObservable<number>;
-        personNameCode: KnockoutObservable<number>;
-        companyAddressCode: KnockoutObservable<number>;
-        companyNameCode: KnockoutObservable<number>;
-        
         constructor() {
+            let self = this;
+            self._init();
+            self.refundLayoutItem = ko.observable(new RefundLayoutModel(null));
+            
+        }
+
+        _init(): void {
             let self = this;
             self.zeroItemSetting = ko.observableArray([
                 new ItemModel(1, "項目名の登録の設定を優先する"),
                 new ItemModel(2, "個別にッ設定する")
             ]);
-            self.zeroItemSettingCode = ko.observable(2);
 
             self.switchItemList = ko.observableArray([
                 new ItemModel(1, "する"),
                 new ItemModel(2, "しない")
             ]);
-            self.zeroAmountOutputCode = ko.observable(2);
-            self.zeroTimeClassificationCode = ko.observable(1);
-            self.totalTaxableOutputCode = ko.observable(1);
-            self.yearlyHolidaysClassificationCode = ko.observable(1);
-            self.kindPaymentOutputCode = ko.observable(1);
 
             self.selectPrintYearMonth = ko.observableArray([
                 new ItemModel(1, "現在処理年月の2ヶ月前"),
@@ -61,77 +37,182 @@ module qpp021.d.viewmodel {
                 new ItemModel(4, "現在処理年月の翌月"),
                 new ItemModel(5, "現在処理年月の2ヶ月後")
             ]);
-            self.selectPrintYearMonthCode = ko.observable(3);
 
             self.outputNameDesignation = ko.observableArray([
                 new ItemModel(1, "個人情報より取得する"),
                 new ItemModel(2, "項目名より取得する"),
             ]);
-            self.outputNameDesignationCode = ko.observable(1);
-
+ 
             self.outputDepartment = ko.observableArray([
                 new ItemModel(1, "部門コードを出力する"),
                 new ItemModel(2, "部門名を出力する"),
                 new ItemModel(3, "出力しない"),
             ]);
-            self.outputDepartmentCode = ko.observable(2);
 
             self.borderLineWidth = ko.observableArray([
                 new ItemModel(1, "太い"),
                 new ItemModel(2, "標準"),
                 new ItemModel(3, "細い    "),
             ]);
-            self.borderLineWidthCode = ko.observable(2);
-
-            self.outputCompanyNameCode = ko.observable(1);
-            self.shadedSectionCode = ko.observable(1);
-            
-            // Screen D2
-            self.numberOutputDependentCode = ko.observable(1);
-            self.incomeTaxClassificationCode = ko.observable(1);
-            self.insuranceFollowingOutputCode = ko.observable(1);
-            self.personalAddressCode = ko.observable(1);
-            self.personNameCode = ko.observable(1);
-            self.companyAddressCode = ko.observable(1);
-            self.companyNameCode = ko.observable(1);
-            
         }
 
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            let printTyle = 1;
+            service.getRefundLayout(printTyle).done(function(data: any) {
+                self.refundLayoutItem(new RefundLayoutModel(data));
+            }).fail(function(error: any) {
+
+            });
             dfd.resolve();
             return dfd.promise();
         }
-    }
-
-    class RadioBoxGroupModel {
-        rbCode: number;
-        rbName: string;
-        constructor(rbCode: number, rbName: string) {
-            this.rbCode = rbCode;
-            this.rbName = rbName;
+        
+        registration(){
+            let self = this;
+            service.insertUpdateData(new RegisRefundLayoutModel(self.refundLayoutItem())).done(function() {
+                alert("registration complete");
+                nts.uk.ui.windows.close();
+            }).fail(function(error: any) {
+                alert("registration error");
+            });
         }
     }
-
-    class SwitchButtonModel {
-        sbCode: number;
-        sbName: string;
-        constructor(sbCode: number, sbName: string) {
-            this.sbCode = sbCode;
-            this.sbName = sbName;
-        }
-    }
-
 
     class ItemModel {
         code: number;
         name: string;
-
         constructor(code: number, name: string) {
             this.code = code;
             this.name = name;
         }
     }
 
+    class RefundLayoutModel {
+        printType: KnockoutObservable<number>;
+        usingZeroSettingCtg: KnockoutObservable<number>;
+        printYearMonth: KnockoutObservable<number>;
+        paymentCellNameCtg: KnockoutObservable<number>;
+        isShaded: KnockoutObservable<number>;
+        bordWidth: KnockoutObservable<number>;
+        showCompName: KnockoutObservable<number>;
+        showCompAddInSurface: KnockoutObservable<number>;
+        showCompNameInSurface: KnockoutObservable<number>;
+        showDependencePerNum: KnockoutObservable<number>;
+        showInsuranceLevel: KnockoutObservable<number>;
+        showMnyItemName: KnockoutObservable<boolean>;
+        showPerAddInSurface: KnockoutObservable<number>;
+        showPerNameInSurface: KnockoutObservable<number>;
+        showRemainAnnualLeave: KnockoutObservable<number>;
+        showTotalTaxMny: KnockoutObservable<number>;
+        showZeroInAttend: KnockoutObservable<number>;
+        showPerTaxCatalog: KnockoutObservable<number>;
+        showDepartment: KnockoutObservable<number>;
+        showZeroInMny: KnockoutObservable<number>;
+        showProductsPayMny: KnockoutObservable<number>;
+        showAttendItemName: KnockoutObservable<boolean>;
+        isvisibleItem: KnockoutObservable<boolean>;
+        
+        constructor(refundMapping: any) {
+            let self = this;
+            if (refundMapping) {
+                self.printType = ko.observable(refundMapping.printType);
+                self.usingZeroSettingCtg = ko.observable(refundMapping.usingZeroSettingCtg);
+                self.printYearMonth = ko.observable(refundMapping.printYearMonth);
+                self.paymentCellNameCtg = ko.observable(refundMapping.paymentCellNameCtg);
+                self.isShaded = ko.observable(refundMapping.isShaded);
+                self.bordWidth = ko.observable(refundMapping.bordWidth);
+                self.showCompName = ko.observable(refundMapping.showCompName);
+                self.showCompAddInSurface = ko.observable(refundMapping.showCompAddInSurface);
+                self.showCompNameInSurface = ko.observable(refundMapping.showCompNameInSurface);
+                self.showDependencePerNum = ko.observable(refundMapping.showDependencePerNum);
+                self.showInsuranceLevel = ko.observable(refundMapping.showInsuranceLevel);
+                self.showMnyItemName = ko.observable(refundMapping.showMnyItemName === 1 ? true : false);
+                self.showPerAddInSurface = ko.observable(refundMapping.showPerAddInSurface);
+                self.showPerNameInSurface = ko.observable(refundMapping.showPerNameInSurface);
+                self.showRemainAnnualLeave = ko.observable(refundMapping.showRemainAnnualLeave);
+                self.showTotalTaxMny = ko.observable(refundMapping.showTotalTaxMny);
+                self.showZeroInAttend = ko.observable(refundMapping.showZeroInAttend);
+                self.showPerTaxCatalog = ko.observable(refundMapping.showPerTaxCatalog);
+                self.showDepartment = ko.observable(refundMapping.showDepartment);
+                self.showZeroInMny = ko.observable(refundMapping.showZeroInMny);
+                self.showProductsPayMny = ko.observable(refundMapping.showProductsPayMny);
+                self.showAttendItemName = ko.observable(refundMapping.showAttendItemName === 1 ? true : false);
+            } else {
+                self.printType = ko.observable(1);
+                self.usingZeroSettingCtg = ko.observable(1);
+                self.printYearMonth = ko.observable(3);
+                self.paymentCellNameCtg = ko.observable(1);
+                self.isShaded = ko.observable(1);
+                self.bordWidth = ko.observable(1);
+                self.showCompName = ko.observable(1);
+                self.showCompAddInSurface = ko.observable(1);
+                self.showCompNameInSurface = ko.observable(1);
+                self.showDependencePerNum = ko.observable(1);
+                self.showInsuranceLevel = ko.observable(1);
+                self.showMnyItemName = ko.observable(false);
+                self.showPerAddInSurface = ko.observable(1);
+                self.showPerNameInSurface = ko.observable(1);
+                self.showRemainAnnualLeave = ko.observable(1);
+                self.showTotalTaxMny = ko.observable(1);
+                self.showZeroInAttend = ko.observable(1);
+                self.showPerTaxCatalog = ko.observable(1);
+                self.showDepartment = ko.observable(1);
+                self.showZeroInMny = ko.observable(1);
+                self.showProductsPayMny = ko.observable(1);
+                self.showAttendItemName = ko.observable(false);
+            }
+        }
+    }
+    class RegisRefundLayoutModel {
+        printType: number;
+        usingZeroSettingCtg: number;
+        printYearMonth: number;
+        paymentCellNameCtg: number;
+        isShaded: number;
+        bordWidth: number;
+        showCompName: number;
+        showCompAddInSurface: number;
+        showCompNameInSurface: number;
+        showDependencePerNum: number;
+        showInsuranceLevel: number;
+        showMnyItemName: number;
+        showPerAddInSurface: number;
+        showPerNameInSurface: number;
+        showRemainAnnualLeave: number;
+        showTotalTaxMny: number;
+        showZeroInAttend: number;
+        showPerTaxCatalog: number;
+        showDepartment: number;
+        showZeroInMny: number;
+        showProductsPayMny: number;
+        showAttendItemName: number;
+
+        constructor(refundLayout: RefundLayoutModel) {
+            let self = this;
+            self.printType = refundLayout.printType();
+            self.usingZeroSettingCtg = refundLayout.usingZeroSettingCtg();
+            self.printYearMonth = refundLayout.printYearMonth();
+            self.paymentCellNameCtg = refundLayout.paymentCellNameCtg();
+            self.isShaded = refundLayout.isShaded();
+            self.bordWidth = refundLayout.bordWidth();
+            self.showCompName = refundLayout.showCompName();
+            self.showCompAddInSurface = refundLayout.showCompAddInSurface();
+            self.showCompNameInSurface = refundLayout.showCompNameInSurface();
+            self.showDependencePerNum = refundLayout.showDependencePerNum();
+            self.showInsuranceLevel = refundLayout.showInsuranceLevel();
+            self.showMnyItemName = refundLayout.showMnyItemName() === true ? 1 : 2;
+            self.showPerAddInSurface = refundLayout.showPerAddInSurface();
+            self.showPerNameInSurface = refundLayout.showPerNameInSurface();
+            self.showRemainAnnualLeave = refundLayout.showRemainAnnualLeave();
+            self.showTotalTaxMny = refundLayout.showTotalTaxMny();
+            self.showZeroInAttend = refundLayout.showZeroInAttend();
+            self.showPerTaxCatalog = refundLayout.showPerTaxCatalog();
+            self.showDepartment = refundLayout.showDepartment();
+            self.showZeroInMny = refundLayout.showZeroInMny();
+            self.showProductsPayMny = refundLayout.showProductsPayMny();
+            self.showAttendItemName = refundLayout.showAttendItemName() === true ? 1 : 2;
+        }
+    }
 }

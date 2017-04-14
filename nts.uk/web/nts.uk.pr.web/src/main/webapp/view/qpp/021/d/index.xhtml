@@ -25,16 +25,16 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div class="d-label-001">詳細設定を行ってください。 ※この設定は翌月以降の明細書にも反映されます。</div>
-				<div class="contents-area-right-left">
+				<div class="contents-area-right-left" data-bind = "with: refundLayoutItem">
 					<div id="left-contents-area">
 						<div class="d-label-001">値がゼロの項目の印刷方法</div>
 						<hr />
 						<div id="zero-item-setting-list"
 							data-bind="ntsRadioBoxGroup: {
-							options: zeroItemSetting,
+							options: $parent.zeroItemSetting,
 							optionsValue: 'code',
 							optionsText: 'name',
-							value: zeroItemSettingCode,
+							value: usingZeroSettingCtg,
 							enable: true 
 							}">
 						</div>
@@ -42,27 +42,27 @@
 							<div class="d-div-label" data-bind="ntsFormLabel: {}">金額ゼロ出力</div>
 							<span
 								data-bind="ntsSwitchButton: {
-								options: switchItemList,
+								options: $parent.switchItemList,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: zeroAmountOutputCode,
+								value: showZeroInMny,
 								enable: true }">
 							</span>
 							<div class="zero-output-checkbox"
-								data-bind="ntsCheckBox: { checked: true, enable: true, text: '項目名も表示しない' }"></div>
+								data-bind="ntsCheckBox: { checked: showMnyItemName, enable: true, text: '項目名も表示しない' }"></div>
 						</div>
 						<div class="valign-center control-group div-zero-setting">
 							<div class="d-div-label" data-bind="ntsFormLabel: {}">金額ゼロ出力</div>
 							<span
 								data-bind="ntsSwitchButton: {
-								options: switchItemList,
+								options: $parent.switchItemList,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: zeroTimeClassificationCode,
+								value: showZeroInAttend,
 								enable: true }">
 							</span>
 							<div class="zero-output-checkbox"
-								data-bind="ntsCheckBox: { checked: false, enable: false, text: '項目名も表示しない' }"></div>
+								data-bind="ntsCheckBox: { checked: showAttendItemName, enable: false, text: '項目名も表示しない' }"></div>
 						</div>
 
 						<div class="d-label-005">明細書に出力する年月</div>
@@ -72,9 +72,9 @@
 								data-bind="ntsFormLabel: {}">印字する年月を選択してください。</div>
 							<div id="combo-box-select-print-YM"
 								data-bind="ntsComboBox: {
-									options: selectPrintYearMonth,
+									options: $parent.selectPrintYearMonth,
 									optionsValue: 'code',
-									value: selectPrintYearMonthCode,
+									value: printYearMonth,
 									optionsText: 'name',
 									editable: false,
 									enable: true,
@@ -94,10 +94,10 @@
 								data-bind="ntsFormLabel: {}">課税対象累計出力</div>
 							<span
 								data-bind="ntsSwitchButton: {
-								options: switchItemList,
+								options: $parent.switchItemList,
 								optionsValue: 'code',
 								optionsText: 'name',
-							    value: totalTaxableOutputCode,
+							    value: showTotalTaxMny,
 								enable: true
 								},visible: true ">
 							</span>
@@ -107,10 +107,10 @@
 								data-bind="ntsFormLabel: {}">年休残数出力</div>
 							<span
 								data-bind="ntsSwitchButton: {
-								options: switchItemList,
+								options: $parent.switchItemList,
 								optionsValue: 'code',
 								optionsText: 'name',
-							    value: yearlyHolidaysClassificationCode,
+							    value: showRemainAnnualLeave,
 								enable: true 
 								}">
 							</span>
@@ -120,10 +120,10 @@
 								data-bind="ntsFormLabel: {}">現物支給額出力</div>
 							<span
 								data-bind="ntsSwitchButton: {
-								options: switchItemList,
+								options: $parent.switchItemList,
 								optionsValue: 'code',
 								optionsText: 'name',
-							    value: kindPaymentOutputCode,
+							    value: showProductsPayMny,
 								enable: true 
 								}">
 							</span>
@@ -133,9 +133,9 @@
 								data-bind="ntsFormLabel: {}">支払枠出力名称指定</div>
 							<span class="right-contents-area-comobox"
 								data-bind="ntsComboBox: {
-									options: outputNameDesignation,
+									options: $parent.outputNameDesignation,
 									optionsValue: 'code',
-									value: outputNameDesignationCode,
+									value: paymentCellNameCtg,
 									optionsText: 'name',
 									editable: false,
 									enable: true,
@@ -150,10 +150,10 @@
 								data-bind="ntsFormLabel: {}">会社名出力</div>
 							<span
 								data-bind="ntsSwitchButton: {
-								options: switchItemList,
+								options: $parent.switchItemList,
 								optionsValue: 'code',
 								optionsText: 'name',
-							    value: outputCompanyNameCode,
+							    value: showCompName,
 								enable: true 
 								}">
 							</span>
@@ -163,9 +163,9 @@
 								data-bind="ntsFormLabel: {}">部門出力</div>
 							<span class="right-contents-area-comobox"
 								data-bind="ntsComboBox: {
-									options: outputDepartment,
+									options: $parent.outputDepartment,
 									optionsValue: 'code',
-									value: outputDepartmentCode,
+									value: showDepartment,
 									optionsText: 'name',
 									editable: false,
 									enable: true,
@@ -180,10 +180,10 @@
 								data-bind="ntsFormLabel: {}">網掛け</div>
 							<span
 								data-bind="ntsSwitchButton: {
-								options: switchItemList,
+								options: $parent.switchItemList,
 								optionsValue: 'code',
 								optionsText: 'name',
-							    value: shadedSectionCode,
+							    value: isShaded,
 								enable: true 
 								}">
 							</span>
@@ -193,9 +193,9 @@
 								data-bind="ntsFormLabel: {}">枠線幅</div>
 							<span class="right-contents-area-comobox"
 								data-bind="ntsComboBox: {
-									options: borderLineWidth,
+									options: $parent.borderLineWidth,
 									optionsValue: 'code',
-									value: borderLineWidthCode,
+									value: bordWidth,
 									optionsText: 'name',
 									editable: false,
 									enable: true,
@@ -213,10 +213,10 @@
 								data-bind="ntsFormLabel: {},visible: isvisibleItem ">扶養親族等の数出力</div>
 							<span
 								data-bind="ntsSwitchButton: {
-								options: switchItemList,
+								options: $parent.switchItemList,
 								optionsValue: 'code',
 								optionsText: 'name',
-							    value: numberOutputDependentCode,
+							    value: showDependencePerNum,
 								enable: true 
 								}, visible: isvisibleItem  ">
 							</span>
@@ -226,10 +226,10 @@
 								data-bind="ntsFormLabel: {}, visible: isvisibleItem ">所得税区分出力</div>
 							<span
 								data-bind="ntsSwitchButton: {
-								options: switchItemList,
+								options: $parent.switchItemList,
 								optionsValue: 'code',
 								optionsText: 'name',
-							    value: incomeTaxClassificationCode,
+							    value: showPerTaxCatalog,
 								enable: true 
 								}, visible: isvisibleItem ">
 							</span>
@@ -239,10 +239,10 @@
 								data-bind="ntsFormLabel: {}, visible: isvisibleItem ">保険踏襲出力</div>
 							<span
 								data-bind="ntsSwitchButton: {
-								options: switchItemList,
+								options: $parent.switchItemList,
 								optionsValue: 'code',
 								optionsText: 'name',
-							    value: insuranceFollowingOutputCode,
+							    value: showInsuranceLevel,
 								enable: true 
 								}, visible: isvisibleItem ">
 							</span>
@@ -256,10 +256,10 @@
 								data-bind="ntsFormLabel: {}, visible: isvisibleItem ">個人住所</div>
 							<span
 								data-bind="ntsSwitchButton: {
-								options: switchItemList,
+								options: $parent.switchItemList,
 								optionsValue: 'code',
 								optionsText: 'name',
-							    value: personalAddressCode,
+							    value: showPerAddInSurface,
 								enable: true 
 								}, visible: isvisibleItem ">
 							</span>
@@ -269,10 +269,10 @@
 								data-bind="ntsFormLabel: {}, visible: isvisibleItem ">個人氏名</div>
 							<span
 								data-bind="ntsSwitchButton: {
-								options: switchItemList,
+								options: $parent.switchItemList,
 								optionsValue: 'code',
 								optionsText: 'name',
-							    value: personNameCode,
+							    value: showPerNameInSurface,
 								enable: true 
 								}, visible: isvisibleItem ">
 							</span>
@@ -282,10 +282,10 @@
 								data-bind="ntsFormLabel: {}, visible: isvisibleItem ">会社住所</div>
 							<span
 								data-bind="ntsSwitchButton: {
-								options: switchItemList,
+								options: $parent.switchItemList,
 								optionsValue: 'code',
 								optionsText: 'name',
-							    value: companyAddressCode,
+							    value: showCompAddInSurface,
 								enable: true 
 								}, visible: isvisibleItem ">
 							</span>
@@ -295,10 +295,10 @@
 								data-bind="ntsFormLabel: {}, visible: isvisibleItem ">会社名</div>
 							<span
 								data-bind="ntsSwitchButton: {
-								options: switchItemList,
+								options: $parent.switchItemList,
 								optionsValue: 'code',
 								optionsText: 'name',
-							    value: companyNameCode,
+							    value: showCompNameInSurface,
 								enable: true 
 								}, visible: isvisibleItem ">
 							</span>
@@ -308,7 +308,7 @@
 				</div>
 				<div id="div-button-bottom">
 					<hr />
-					<button class="x-large proceed">登録</button>
+					<button class="x-large proceed" data-bind = "click: registration">登録</button>
 					<button class="small">キャンセル</button>
 				</div>
 			</div>

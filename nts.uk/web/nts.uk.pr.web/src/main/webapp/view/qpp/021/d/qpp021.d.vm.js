@@ -7,22 +7,20 @@ var qpp021;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     this.isEnaleFromParent = ko.observable(true);
-                    this.isvisibleItem = ko.observable(true);
+                    var self = this;
+                    self._init();
+                    self.refundLayoutItem = ko.observable(new RefundLayoutModel(null));
+                }
+                ScreenModel.prototype._init = function () {
                     var self = this;
                     self.zeroItemSetting = ko.observableArray([
                         new ItemModel(1, "項目名の登録の設定を優先する"),
                         new ItemModel(2, "個別にッ設定する")
                     ]);
-                    self.zeroItemSettingCode = ko.observable(2);
                     self.switchItemList = ko.observableArray([
                         new ItemModel(1, "する"),
                         new ItemModel(2, "しない")
                     ]);
-                    self.zeroAmountOutputCode = ko.observable(2);
-                    self.zeroTimeClassificationCode = ko.observable(1);
-                    self.totalTaxableOutputCode = ko.observable(1);
-                    self.yearlyHolidaysClassificationCode = ko.observable(1);
-                    self.kindPaymentOutputCode = ko.observable(1);
                     self.selectPrintYearMonth = ko.observableArray([
                         new ItemModel(1, "現在処理年月の2ヶ月前"),
                         new ItemModel(2, "現在処理年月の1か月前"),
@@ -30,63 +28,132 @@ var qpp021;
                         new ItemModel(4, "現在処理年月の翌月"),
                         new ItemModel(5, "現在処理年月の2ヶ月後")
                     ]);
-                    self.selectPrintYearMonthCode = ko.observable(3);
                     self.outputNameDesignation = ko.observableArray([
                         new ItemModel(1, "個人情報より取得する"),
                         new ItemModel(2, "項目名より取得する"),
                     ]);
-                    self.outputNameDesignationCode = ko.observable(1);
                     self.outputDepartment = ko.observableArray([
                         new ItemModel(1, "部門コードを出力する"),
                         new ItemModel(2, "部門名を出力する"),
                         new ItemModel(3, "出力しない"),
                     ]);
-                    self.outputDepartmentCode = ko.observable(2);
                     self.borderLineWidth = ko.observableArray([
                         new ItemModel(1, "太い"),
                         new ItemModel(2, "標準"),
                         new ItemModel(3, "細い    "),
                     ]);
-                    self.borderLineWidthCode = ko.observable(2);
-                    self.outputCompanyNameCode = ko.observable(1);
-                    self.shadedSectionCode = ko.observable(1);
-                    self.numberOutputDependentCode = ko.observable(1);
-                    self.incomeTaxClassificationCode = ko.observable(1);
-                    self.insuranceFollowingOutputCode = ko.observable(1);
-                    self.personalAddressCode = ko.observable(1);
-                    self.personNameCode = ko.observable(1);
-                    self.companyAddressCode = ko.observable(1);
-                    self.companyNameCode = ko.observable(1);
-                }
+                };
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
+                    var printTyle = 1;
+                    d.service.getRefundLayout(printTyle).done(function (data) {
+                        self.refundLayoutItem(new RefundLayoutModel(data));
+                    }).fail(function (error) {
+                    });
                     dfd.resolve();
                     return dfd.promise();
+                };
+                ScreenModel.prototype.registration = function () {
+                    var self = this;
+                    d.service.insertUpdateData(new RegisRefundLayoutModel(self.refundLayoutItem())).done(function () {
+                        alert("registration complete");
+                        nts.uk.ui.windows.close();
+                    }).fail(function (error) {
+                        alert("registration error");
+                    });
                 };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            var RadioBoxGroupModel = (function () {
-                function RadioBoxGroupModel(rbCode, rbName) {
-                    this.rbCode = rbCode;
-                    this.rbName = rbName;
-                }
-                return RadioBoxGroupModel;
-            }());
-            var SwitchButtonModel = (function () {
-                function SwitchButtonModel(sbCode, sbName) {
-                    this.sbCode = sbCode;
-                    this.sbName = sbName;
-                }
-                return SwitchButtonModel;
-            }());
             var ItemModel = (function () {
                 function ItemModel(code, name) {
                     this.code = code;
                     this.name = name;
                 }
                 return ItemModel;
+            }());
+            var RefundLayoutModel = (function () {
+                function RefundLayoutModel(refundMapping) {
+                    var self = this;
+                    if (refundMapping) {
+                        self.printType = ko.observable(refundMapping.printType);
+                        self.usingZeroSettingCtg = ko.observable(refundMapping.usingZeroSettingCtg);
+                        self.printYearMonth = ko.observable(refundMapping.printYearMonth);
+                        self.paymentCellNameCtg = ko.observable(refundMapping.paymentCellNameCtg);
+                        self.isShaded = ko.observable(refundMapping.isShaded);
+                        self.bordWidth = ko.observable(refundMapping.bordWidth);
+                        self.showCompName = ko.observable(refundMapping.showCompName);
+                        self.showCompAddInSurface = ko.observable(refundMapping.showCompAddInSurface);
+                        self.showCompNameInSurface = ko.observable(refundMapping.showCompNameInSurface);
+                        self.showDependencePerNum = ko.observable(refundMapping.showDependencePerNum);
+                        self.showInsuranceLevel = ko.observable(refundMapping.showInsuranceLevel);
+                        self.showMnyItemName = ko.observable(refundMapping.showMnyItemName === 1 ? true : false);
+                        self.showPerAddInSurface = ko.observable(refundMapping.showPerAddInSurface);
+                        self.showPerNameInSurface = ko.observable(refundMapping.showPerNameInSurface);
+                        self.showRemainAnnualLeave = ko.observable(refundMapping.showRemainAnnualLeave);
+                        self.showTotalTaxMny = ko.observable(refundMapping.showTotalTaxMny);
+                        self.showZeroInAttend = ko.observable(refundMapping.showZeroInAttend);
+                        self.showPerTaxCatalog = ko.observable(refundMapping.showPerTaxCatalog);
+                        self.showDepartment = ko.observable(refundMapping.showDepartment);
+                        self.showZeroInMny = ko.observable(refundMapping.showZeroInMny);
+                        self.showProductsPayMny = ko.observable(refundMapping.showProductsPayMny);
+                        self.showAttendItemName = ko.observable(refundMapping.showAttendItemName === 1 ? true : false);
+                    }
+                    else {
+                        self.printType = ko.observable(1);
+                        self.usingZeroSettingCtg = ko.observable(1);
+                        self.printYearMonth = ko.observable(3);
+                        self.paymentCellNameCtg = ko.observable(1);
+                        self.isShaded = ko.observable(1);
+                        self.bordWidth = ko.observable(1);
+                        self.showCompName = ko.observable(1);
+                        self.showCompAddInSurface = ko.observable(1);
+                        self.showCompNameInSurface = ko.observable(1);
+                        self.showDependencePerNum = ko.observable(1);
+                        self.showInsuranceLevel = ko.observable(1);
+                        self.showMnyItemName = ko.observable(false);
+                        self.showPerAddInSurface = ko.observable(1);
+                        self.showPerNameInSurface = ko.observable(1);
+                        self.showRemainAnnualLeave = ko.observable(1);
+                        self.showTotalTaxMny = ko.observable(1);
+                        self.showZeroInAttend = ko.observable(1);
+                        self.showPerTaxCatalog = ko.observable(1);
+                        self.showDepartment = ko.observable(1);
+                        self.showZeroInMny = ko.observable(1);
+                        self.showProductsPayMny = ko.observable(1);
+                        self.showAttendItemName = ko.observable(false);
+                    }
+                }
+                return RefundLayoutModel;
+            }());
+            var RegisRefundLayoutModel = (function () {
+                function RegisRefundLayoutModel(refundLayout) {
+                    var self = this;
+                    self.printType = refundLayout.printType();
+                    self.usingZeroSettingCtg = refundLayout.usingZeroSettingCtg();
+                    self.printYearMonth = refundLayout.printYearMonth();
+                    self.paymentCellNameCtg = refundLayout.paymentCellNameCtg();
+                    self.isShaded = refundLayout.isShaded();
+                    self.bordWidth = refundLayout.bordWidth();
+                    self.showCompName = refundLayout.showCompName();
+                    self.showCompAddInSurface = refundLayout.showCompAddInSurface();
+                    self.showCompNameInSurface = refundLayout.showCompNameInSurface();
+                    self.showDependencePerNum = refundLayout.showDependencePerNum();
+                    self.showInsuranceLevel = refundLayout.showInsuranceLevel();
+                    self.showMnyItemName = refundLayout.showMnyItemName() === true ? 1 : 2;
+                    self.showPerAddInSurface = refundLayout.showPerAddInSurface();
+                    self.showPerNameInSurface = refundLayout.showPerNameInSurface();
+                    self.showRemainAnnualLeave = refundLayout.showRemainAnnualLeave();
+                    self.showTotalTaxMny = refundLayout.showTotalTaxMny();
+                    self.showZeroInAttend = refundLayout.showZeroInAttend();
+                    self.showPerTaxCatalog = refundLayout.showPerTaxCatalog();
+                    self.showDepartment = refundLayout.showDepartment();
+                    self.showZeroInMny = refundLayout.showZeroInMny();
+                    self.showProductsPayMny = refundLayout.showProductsPayMny();
+                    self.showAttendItemName = refundLayout.showAttendItemName() === true ? 1 : 2;
+                }
+                return RegisRefundLayoutModel;
             }());
         })(viewmodel = d.viewmodel || (d.viewmodel = {}));
     })(d = qpp021.d || (qpp021.d = {}));

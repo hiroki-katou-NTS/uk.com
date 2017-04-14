@@ -5,14 +5,30 @@ var qpp021;
         var service;
         (function (service) {
             var paths = {
-                printService: "/file/paymentdata/print",
+                getRefundLayout: "report/payment/refundsetting/refundlayout/find/{0}",
+                insertUpdateData: "report/payment/refundsetting/refundlayout/insertUpdateData",
             };
-            function printD(query) {
+            function getRefundLayout(printType) {
                 var dfd = $.Deferred();
-                dfd.resolve();
+                var _path = nts.uk.text.format(paths.getRefundLayout, printType);
+                nts.uk.request.ajax(_path).done(function (data) {
+                    dfd.resolve(data);
+                }).fail(function (error) {
+                    dfd.reject(error);
+                });
                 return dfd.promise();
             }
-            service.printD = printD;
+            service.getRefundLayout = getRefundLayout;
+            function insertUpdateData(data) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.insertUpdateData, ko.toJS(data)).done(function () {
+                    dfd.resolve();
+                }).fail(function (error) {
+                    dfd.reject(error);
+                });
+                return dfd.promise();
+            }
+            service.insertUpdateData = insertUpdateData;
         })(service = d.service || (d.service = {}));
     })(d = qpp021.d || (qpp021.d = {}));
 })(qpp021 || (qpp021 = {}));
