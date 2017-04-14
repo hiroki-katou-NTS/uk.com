@@ -36,7 +36,7 @@ public class PaymentSalaryQuery {
 	private String outputSettingCode;
 
 	/** The employee codes. */
-	private List<String> employeeCodes;
+	private List<String> personIds;
 
 	/** The start date. */
 	private Integer startDate;

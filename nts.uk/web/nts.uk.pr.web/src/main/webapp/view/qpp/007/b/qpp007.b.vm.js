@@ -16,11 +16,6 @@ var nts;
                                 function ScreenModel() {
                                     var self = this;
                                     self.salaryPrintSettingModel = ko.observable();
-                                    self.switchButtonDataSource = ko.observableArray([
-                                        { code: 'Hourly', name: '時間' },
-                                        { code: 'Minutely', name: '分' }
-                                    ]);
-                                    self.switchValue = ko.observable('Apply');
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
@@ -70,7 +65,6 @@ var nts;
                                     this.hrchyIndex9 = ko.observable(dto.hrchyIndex9);
                                     this.totalSet = ko.observable(dto.totalSet);
                                     this.monthTotalSet = ko.observable(dto.monthTotalSet);
-                                    this.outputDistinction = ko.observable(dto.outputDistinction);
                                 }
                                 return SalaryPrintSettingModel;
                             }());

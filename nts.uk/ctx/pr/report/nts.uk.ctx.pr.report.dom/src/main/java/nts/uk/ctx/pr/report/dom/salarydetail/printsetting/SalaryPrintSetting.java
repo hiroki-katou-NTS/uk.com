@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.report.dom.salarydetail.printsetting;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.pr.report.dom.salarydetail.SalaryOutputDistinction;
 
 /**
  * The Class SalaryPrintSetting.
@@ -90,10 +89,6 @@ public class SalaryPrintSetting extends DomainObject {
 	@Setter
 	private Boolean monthTotalSet;
 
-	/** The output distinction. */
-	@Setter
-	private SalaryOutputDistinction outputDistinction;
-
 	/**
 	 * Instantiates a new salary print setting.
 	 */
@@ -127,7 +122,6 @@ public class SalaryPrintSetting extends DomainObject {
 		this.hrchyIndex9 = memento.getHrchyIndex9();
 		this.totalSet = memento.getTotalSet();
 		this.monthTotalSet = memento.getMonthTotalSet();
-		this.outputDistinction = memento.getOutputDistinction();
 	}
 
 	/**
@@ -148,7 +142,6 @@ public class SalaryPrintSetting extends DomainObject {
 		memento.setHrchyIndex9(this.hrchyIndex9);
 		memento.setMonthTotalSet(this.monthTotalSet);
 		memento.setTotalSet(this.totalSet);
-		memento.setOutputDistinction(this.outputDistinction);
 		memento.setShowPayment(this.showPayment);
 		memento.setSumDepHrchyIndexSet(this.sumDepHrchyIndexSet);
 		memento.setSumEachDeprtSet(this.sumEachDeprtSet);
@@ -177,7 +170,6 @@ public class SalaryPrintSetting extends DomainObject {
 		setting.hrchyIndex8 = false;
 		setting.hrchyIndex9 = false;
 		setting.monthTotalSet = false;
-		setting.outputDistinction = SalaryOutputDistinction.Hourly;
 		setting.showPayment = false;
 		setting.sumDepHrchyIndexSet = false;
 		setting.sumEachDeprtSet = false;

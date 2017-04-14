@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.report.app.salarydetail.printsetting.command;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.report.dom.salarydetail.SalaryOutputDistinction;
 import nts.uk.ctx.pr.report.dom.salarydetail.printsetting.SalaryPrintSettingGetMemento;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -70,9 +69,6 @@ public class SalaryPrintSettingSaveCommand implements SalaryPrintSettingGetMemen
 
 	/** The month total set. */
 	private Boolean monthTotalSet;
-
-	/** The output distinction. */
-	private SalaryOutputDistinction outputDistinction;
 
 	/*
 	 * (non-Javadoc)

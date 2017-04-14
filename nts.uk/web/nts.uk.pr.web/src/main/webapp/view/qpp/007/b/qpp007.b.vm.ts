@@ -3,19 +3,11 @@ module nts.uk.pr.view.qpp007.b {
         import SalaryPrintSettingDto = service.model.SalaryPrintSettingDto;
 
         export class ScreenModel {
-            // Switch button data source
-            switchButtonDataSource: KnockoutObservableArray<any>;
-            switchValue: KnockoutObservable<string>;
             salaryPrintSettingModel: KnockoutObservable<SalaryPrintSettingModel>;
 
             constructor() {
                 var self = this;
                 self.salaryPrintSettingModel = ko.observable<SalaryPrintSettingModel>();
-                self.switchButtonDataSource = ko.observableArray([
-                    { code: 'Hourly', name: '時間' },
-                    { code: 'Minutely', name: '分' }
-                ]);
-                self.switchValue = ko.observable('Apply');
             }
 
             /**
@@ -77,7 +69,6 @@ module nts.uk.pr.view.qpp007.b {
             hrchyIndex9: KnockoutObservable<boolean>;
             totalSet: KnockoutObservable<boolean>;
             monthTotalSet: KnockoutObservable<boolean>;
-            outputDistinction: KnockoutObservable<string>;
             constructor(dto: SalaryPrintSettingDto) {
                 this.showPayment = ko.observable(dto.showPayment);
                 this.sumPersonSet = ko.observable(dto.sumPersonSet);
@@ -97,7 +88,6 @@ module nts.uk.pr.view.qpp007.b {
                 this.hrchyIndex9 = ko.observable(dto.hrchyIndex9);
                 this.totalSet = ko.observable(dto.totalSet);
                 this.monthTotalSet = ko.observable(dto.monthTotalSet);
-                this.outputDistinction = ko.observable(dto.outputDistinction);
             }
         }
     }

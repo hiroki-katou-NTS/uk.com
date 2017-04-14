@@ -5,7 +5,6 @@
 package nts.uk.ctx.pr.report.infra.repository.salarydetail.memento;
 
 import lombok.Getter;
-import nts.uk.ctx.pr.report.dom.salarydetail.SalaryOutputDistinction;
 import nts.uk.ctx.pr.report.dom.salarydetail.printsetting.SalaryPrintSettingSetMemento;
 import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstPrintSet;
 import nts.uk.ctx.pr.report.infra.util.JpaUtil;
@@ -237,17 +236,5 @@ public class JpaSalaryPrintSettingSetMemento implements SalaryPrintSettingSetMem
 	@Override
 	public void setMonthTotalSet(boolean monthTotalSet) {
 		this.entity.setMonthTotalSet(JpaUtil.boolean2Short(monthTotalSet));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.printsetting.
-	 * SalaryPrintSettingSetMemento#setOutputDistinction(nts.uk.ctx.pr.report.
-	 * dom.salarydetail.SalaryOutputDistinction)
-	 */
-	@Override
-	public void setOutputDistinction(SalaryOutputDistinction outputDistinction) {
-		// TODO: khong co trong db.
 	}
 }

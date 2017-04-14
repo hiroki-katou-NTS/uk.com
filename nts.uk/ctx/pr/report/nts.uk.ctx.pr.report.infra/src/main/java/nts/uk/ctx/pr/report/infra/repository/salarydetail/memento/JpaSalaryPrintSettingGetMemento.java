@@ -5,7 +5,6 @@
 package nts.uk.ctx.pr.report.infra.repository.salarydetail.memento;
 
 import lombok.Getter;
-import nts.uk.ctx.pr.report.dom.salarydetail.SalaryOutputDistinction;
 import nts.uk.ctx.pr.report.dom.salarydetail.printsetting.SalaryPrintSettingGetMemento;
 import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstPrintSet;
 
@@ -239,18 +238,6 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	@Override
 	public Boolean getMonthTotalSet() {
 		return this.entity.getMonthTotalSet() == 1 ? true : false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.printsetting.
-	 * SalaryPrintSettingGetMemento#getOutputDistinction()
-	 */
-	@Override
-	public SalaryOutputDistinction getOutputDistinction() {
-		// TODO Khong co trong db.
-		return SalaryOutputDistinction.Hourly;
 	}
 
 }

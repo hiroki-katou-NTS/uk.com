@@ -35,7 +35,7 @@ module nts.uk.pr.view.qpp007.j {
                 ]);
 
                 self.selectedDivision = ko.observable(TaxDivision.PAYMENT);
-                self.selectedAggregateItem = ko.observable('002');
+                self.selectedAggregateItem = ko.observable('001');
                 self.salaryAggregateItemModel = ko.observable(new SalaryAggregateItemModel());
                 self.columns = ko.observableArray<nts.uk.ui.NtsGridListColumn>([
                     { headerText: 'コード', key: 'salaryItemCode', width: 50 },
@@ -66,6 +66,9 @@ module nts.uk.pr.view.qpp007.j {
             }
 
             public onShowDataChange(selectedDivision: string, selectedAggregateItem: string) {
+                if (nts.uk.ui._viewModel) {
+                    $('#inpDisplayName').ntsError('clear');
+                }
                 var self = this;
                 var salaryAggregateItemInDto: SalaryAggregateItemInDto;
                 salaryAggregateItemInDto = new SalaryAggregateItemInDto();
@@ -102,6 +105,10 @@ module nts.uk.pr.view.qpp007.j {
                 nts.uk.ui.windows.close();
             }
             private saveSalaryAggregateItem() {
+                $('#inpDisplayName').ntsEditor('validate');
+                if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                    return;
+                }
                 var self = this;
                 if (self.selectedDivision() === TaxDivision.PAYMENT) {
                     self.convertModelToDto(0);
