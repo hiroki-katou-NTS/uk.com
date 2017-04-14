@@ -88,18 +88,18 @@
 									<th colspan="1" >
 									
 		                           <div >
-										<input id="A_INP_002"  data-bind="ntsTextEditor: {
+										<input id="A_INP_002"  class="save-error"  data-bind="ntsTextEditor: {
 												value: resiTaxCode,
 												constraint: 'ResiTaxCode',
 												required: true,
-												enable: $parent.isUpdate ,
+												enable: $parent.isNew ,
 												readonly: false }
 												, hasFocus: hasFocus" />
 								  </div>
 									</th>
 									<th colspan="2" >
 		                           <div >
-										<input id="A_INP_003" data-bind="ntsTextEditor: {
+										<input id="A_INP_003"  class="save-error"  data-bind="ntsTextEditor: {
 												value: resiTaxAutonomy,
 												constraint: 'ResiTaxAutonomy',
 												required: true,
@@ -108,7 +108,7 @@
 								  </div>										
 									</th>								
 									<th colspan="3" >
-										<button id="A_BTN_007" data-bind="click: openBDialog,enable: $parent.isUpdate" class="small" style="margin-left: 5px;">参照</button>													 		
+										<button id="A_BTN_007" data-bind="click: openBDialog,enable: $parent.isNew" class="small" style="margin-left: 5px;">参照</button>													 		
 									</th>								
 								</tr>							
 
@@ -150,7 +150,7 @@
 										<button id="A_BTN_009" data-bind="click: openCDialog, enable: enableBTN009" class="small">参照</button>													 		
 									</th>										
 									<th colspan="2" >
- 			 							 <label id="A_LBL_012"  data-bind="text: resiTaxReportCode"></label>					
+ 			 							 <label id="A_LBL_012"   class="save-error"  data-bind="text: resiTaxReportCode"></label>					
 									</th>							
 								</tr>							
 								<!--  2  -->
@@ -165,7 +165,7 @@
 
 									<th colspan="2" class="th">
 									<div >
-										<input id="A_INP_004" data-bind="ntsTextEditor: {
+										<input id="A_INP_004"  class="save-error"  data-bind="ntsTextEditor: {
 												value: companyAccountNo,
 												constraint: 'CompanyAccountNo',
 												enable: true,
@@ -184,7 +184,7 @@
 
 									<th colspan="2" class="th">
 									<div >
-										<input id="A_INP_005"  data-bind="ntsTextEditor: {
+										<input id="A_INP_005"   class="save-error"  data-bind="ntsTextEditor: {
 												value: registeredName,
 												constraint: 'RegisteredName',
 												required: true,
@@ -212,7 +212,7 @@
 
 								<th colspan="2" class='th' >
 								<div >
-										<input id="A_INP_006"  data-bind="ntsTextEditor: {
+										<input id="A_INP_006"  class="save-error"  data-bind="ntsTextEditor: {
 												value: companySpecifiedNo,
 												constraint: 'CompanySpecifiedNo',
 												required: true,
@@ -234,7 +234,7 @@
 
 								<th colspan="2" class='th'>
 								<div >
-										<input id="A_INP_007"  data-bind="ntsTextEditor: {
+										<input id="A_INP_007"   class="save-error"  data-bind="ntsTextEditor: {
 												value: cordinatePostalCode,
 												constraint: 'CordinatePostalCode',
 												enable: true,
@@ -256,7 +256,7 @@
 
 								<th colspan="2" class="th">
 								<div >
-										<input id="A_INP_008"  data-bind="ntsTextEditor: {
+										<input id="A_INP_008"  class="save-error"  data-bind="ntsTextEditor: {
 												value: cordinatePostOffice,
 												constraint: 'CordinatePostOffice',
 												enable: true,
@@ -276,7 +276,7 @@
 
 								<th colspan="2" class="th">
 								<div >
-										<textarea id="A_INP_009" data-bind="ntsMultilineEditor:{
+										<textarea id="A_INP_009"  class="save-error"  data-bind="ntsMultilineEditor:{
 												value: memo,
 												constraint: 'Memo',
 												required: true,

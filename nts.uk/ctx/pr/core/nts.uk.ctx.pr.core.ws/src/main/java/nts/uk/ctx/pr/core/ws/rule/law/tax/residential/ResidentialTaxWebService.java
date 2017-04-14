@@ -20,7 +20,6 @@ import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.UpdateResidential
 import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.ResidentialTaxDetailDto;
 import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.ResidentialTaxDto;
 import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.ResidentialTaxFinder;
-import nts.uk.shr.com.context.AppContexts;
 
 @Path("pr/core/residential")
 @Produces("application/json")
@@ -76,18 +75,18 @@ public class ResidentialTaxWebService extends WebService {
 	public List<ResidentialTaxDto> getAllResidential(String resiTaxCode, String resiTaxReportCode) {
 		return this.finder.getAllResidentialTax();
 	}
-	@POST
-	@Path("findallresidential1/{resiTaxReportCode}")
-	public List<ResidentialTaxDetailDto> getAllResiTax( @PathParam("resiTaxReportCode") String resiTaxReportCode){
-		String companyCode ="";
-		if(AppContexts.user() != null){
-			companyCode = AppContexts.user().companyCode();
-			return this.finder.getAllResiTax(companyCode, resiTaxReportCode);
-		}else{
-			
-			return null;
-		}
-	}
+//	@POST
+//	@Path("findallresidential1/{resiTaxReportCode}")
+//	public List<ResidentialTaxDetailDto> getAllResiTax( @PathParam("resiTaxReportCode") String resiTaxReportCode){
+//		String companyCode ="";
+//		if(AppContexts.user() != null){
+//			companyCode = AppContexts.user().companyCode();
+//			return this.finder.getAllResiTax(companyCode, resiTaxReportCode);
+//		}else{
+//			
+//			return null;
+//		}
+//	}
 
 	@POST
 	@Path("addresidential")

@@ -23,8 +23,9 @@ public class JpaResidentialTaxRepository extends JpaRepository implements Reside
 	private final String SEL_2 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd AND c.qtxmtResidentialTaxPk.resiTaxCode <>:resiTaxCode AND c.resiTaxReportCode =:resiTaxReportCode ";
 	// key CCD RESI_TAX_CD
 	private final String SEL_3 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd AND c.qtxmtResidentialTaxPk.resiTaxCode =:resiTaxCode";
-	private final String SEL_5 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd AND c.resiTaxReportCode =:resiTaxReportCode";
-
+	private final String SEL_5 = "SELECT c.qtxmtResidentialTaxPk.resiTaxCode FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd AND c.resiTaxReportCode =:resiTaxReportCode";
+	private final String UPD_2 = "UPDATE QtxmtResidentialTax c SET c.resiTaxReportCode = :resiTaxReportCode WHERE  c.qtxmtResidentialTaxPk.companyCd = :companyCd"
+			+ " AND c.qtxmtResidentialTaxPk.resiTaxCode =:resiTaxCode";
 	private static ResidentialTax toDomain(QtxmtResidentialTax entity) {
 		val domain = ResidentialTax.createFromJavaType(entity.qtxmtResidentialTaxPk.companyCd, entity.companyAccountNo,
 				entity.companySpecifiedNo, entity.cordinatePostOffice, entity.cordinatePostalCode, entity.memo,
@@ -98,9 +99,15 @@ public class JpaResidentialTaxRepository extends JpaRepository implements Reside
 	}
 
 	@Override
-	public List<ResidentialTax> getAllResidentialTax(String companyCd, String resiTaxReportCode) {
+	public List<?> getAllResidentialTaxCode(String companyCd, String resiTaxReportCode) {
 		return this.queryProxy().query(SEL_5, QtxmtResidentialTax.class).setParameter("companyCd", companyCd)
-				.setParameter("resiTaxReportCode", resiTaxReportCode).getList(c -> toDomain(c));
+				.setParameter("resiTaxReportCode", resiTaxReportCode).getList();
+	}
+
+	@Override
+	public void update(String companyCode, String resiTaxCode, String resiTaxReportCode) {
+		this.getEntityManager().createQuery(UPD_2).setParameter("companyCd", companyCode).setParameter("resiTaxCode", resiTaxCode)
+		.setParameter("resiTaxReportCode", resiTaxReportCode).executeUpdate();		
 	}
 
 }

@@ -51,14 +51,19 @@ module qmm003.e.viewmodel {
                 service.getPersonResidentialTax(self.year(), self.resiTaxCodeLeft()[i]).done(function(data: any) {
                     _.each(data, function(value) {
                         service.updateResidenceCode(self.resiTaxCodeRight(), value, self.year()).done(function(data) {
-                            console.log(data);
+                        }).fail(function(res: any) {
+                            nts.uk.ui.dialog.alert(res.message);
                         })
                     });
-                    self.residenceSourceList.push(data);
+                }).fail(function(res: any) {
+                    nts.uk.ui.dialog.alert(res.message);
                 });
-
+                service.updateReportCode(self.resiTaxCodeLeft()[i], self.resiTaxCodeRight()).done(function(data: any) {
+                    console.log(self.resiTaxCodeLeft()[i]);
+                }).fail(function(res: any) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
             }
-
             nts.uk.ui.windows.close();
 
         }

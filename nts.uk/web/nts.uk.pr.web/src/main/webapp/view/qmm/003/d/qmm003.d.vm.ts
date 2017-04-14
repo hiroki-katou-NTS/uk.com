@@ -64,15 +64,17 @@ module qmm003.d.viewmodel {
             let resiTaxCodes = [];
             let resiTax = [];
             for (let i = 0; i < self.arrayNode().length; i++) {
-                if(self.arrayNode()[i].length == 2){
+                if (self.arrayNode()[i].length == 2) {
                     console.log(self.arrayNode()[i]);
                 }
                 resiTaxCodes.push(self.arrayNode()[i]);
             }
-            
+
             qmm003.d.service.deleteResidential(resiTaxCodes).done(function(data) {
                 self.items([]);
                 self.nodeRegionPrefectures([]);
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.message);
             });
             nts.uk.ui.windows.close();
         }

@@ -38,7 +38,7 @@ public class DeleteResidentialTaxCommandHandler extends CommandHandler<DeleteRes
 				this.resiTaxRepository.delele(companyCode, delete.getResiTaxCodes().get(0));
 			} else {
 
-				throw new BusinessException(new RawErrorMessage("選択された  住民税納付先マスタ object  は使用されているため削除できません。"));
+				throw new BusinessException(new RawErrorMessage("選択された  住民税納付先マスタ   は使用されているため削除できません。"));
 			}
 		} else {
 			for (int i = 0; i < delete.getResiTaxCodes().size(); i++) {

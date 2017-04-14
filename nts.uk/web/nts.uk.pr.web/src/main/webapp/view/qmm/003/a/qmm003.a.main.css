@@ -13,7 +13,11 @@
 }
 
 #header {
-	color: #ccc;
+	height: 40px;
+}
+
+#functions-area {
+	height: 50px;
 }
 
 #contents-area {
@@ -22,13 +26,13 @@
 }
 
 .group-button-1 {
-	margin-top: 2px;
+	margin-top: 10px;
 	margin-left: 10px;
 }
 
 .group-button-2 {
 	width: 100px;
-	margin-top: 2px;
+	margin-top: 10px;
 	margin-left: 10px;
 }
 
@@ -45,8 +49,9 @@
 }
 
 .icon.icon-searchbox {
-    margin-left: -6px;
+	margin-left: -6px;
 }
+
 #A_BTN_005 {
 	margin-left: 150px;
 	background-color: #fed3c6;
@@ -73,6 +78,7 @@
 	padding: 20px;
 	width: 800px;
 	margin-top: -15px;
+	margin-left: 20px;
 }
 
 #A_LBL_002 {

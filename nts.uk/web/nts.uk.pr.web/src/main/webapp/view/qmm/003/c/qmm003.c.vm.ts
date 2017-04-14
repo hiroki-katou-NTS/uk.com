@@ -39,7 +39,7 @@ module qmm003.c.viewmodel {
             let self = this;
             service.getResidentialTaxDetail(newValue).done(function(data: service.model.ResidentialTax) {
                 if (data) {
-                    self.currentResidential = ((data));;
+                    self.currentResidential = data;
                 } else {
                     return;
                 }

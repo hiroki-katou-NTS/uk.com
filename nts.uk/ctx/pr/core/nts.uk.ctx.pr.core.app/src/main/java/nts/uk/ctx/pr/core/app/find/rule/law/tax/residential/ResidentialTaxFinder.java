@@ -45,14 +45,15 @@ public class ResidentialTaxFinder {
 		return allResidential;
 	}
 
-	// SEL3 get detail of  residential Tax CCD=0000
+	// SEL3 get detail of residential Tax CCD=0000
 	public Optional<ResidentialTaxDetailDto> getResidentialTax(String companyCode, String resiTaxCode) {
-		
+
 		return this.resiTaxRepository.getResidentialTax(companyCode, resiTaxCode)
 				.map(c -> ResidentialTaxDetailDto.fromDomain(c));
 
 	}
-	// SEL3 get detail of  residential Tax CCD!=0000
+
+	// SEL3 get detail of residential Tax CCD!=0000
 	public Optional<ResidentialTaxDetailDto> getResidentialTax(String resiTaxCode) {
 		String companyCode = "";
 		if (AppContexts.user() != null) {
@@ -63,12 +64,12 @@ public class ResidentialTaxFinder {
 			return null;
 		}
 	}
-	
-	//SEL 5
-	public List<ResidentialTaxDetailDto> getAllResiTax(String companyCode, String resiTaxReportCode){
-		
-		return this.resiTaxRepository.getAllResidentialTax(companyCode,resiTaxReportCode).stream()
-				.map(c -> ResidentialTaxDetailDto.fromDomain(c)).collect(Collectors.toList());
-	}
+
+/*	// SEL 5
+	public List<String> getAllResiTax(String companyCode, String resiTaxReportCode) {
+
+		return (List<String>) this.resiTaxRepository.getAllResidentialTax(companyCode, resiTaxReportCode).stream()
+				.collect(Collectors.toList());
+	}*/
 
 }

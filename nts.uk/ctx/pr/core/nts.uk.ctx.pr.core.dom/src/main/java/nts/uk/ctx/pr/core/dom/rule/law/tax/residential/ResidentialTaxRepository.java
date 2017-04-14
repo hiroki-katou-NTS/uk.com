@@ -36,15 +36,20 @@ public interface ResidentialTaxRepository {
 	 * SEL_5
 	 * get list residental by company code, resiTaxReportCode
 	 * @param companyCode, resiTaxCode
-	 * @return Optional<ResidentialTax>
+	 * @return List<String> contains resitaxCode
 	 */
-	List<ResidentialTax> getAllResidentialTax(String companyCode, String resiTaxReportCode);
+	List<?> getAllResidentialTaxCode(String companyCode, String resiTaxReportCode);
 
 	void add(ResidentialTax residentalTax);
+	
 	//void update(String companyCode,String resiTaxCode);
 	void delele(String companyCode,String resiTaxCode);
-	//void delete(String resiTaxCode, String resiTaxReportCode);
+	
+	//UPD_1
 	void update(ResidentialTax residentalTax);
+	
+	//UPD-2
+	void update(String companyCode,String resiTaxCode, String resiTaxReportCode);
 	
 
 }

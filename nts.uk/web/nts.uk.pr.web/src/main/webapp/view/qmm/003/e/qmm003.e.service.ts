@@ -71,8 +71,12 @@ module qmm003.e.service {
     /**
     * update ReportCode
     */
-    export function updateReportCode(residential: model.ResidentialTax) {
+    export function updateReportCode(resiTaxCode: string, resiTaxReportCode: string) {
         let dfd = $.Deferred<Array<any>>();
+        var residential = {
+            resiTaxCode: resiTaxCode,
+            resiTaxReportCode: resiTaxReportCode
+        };
         nts.uk.request.ajax(paths.updateReportCode, residential)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);

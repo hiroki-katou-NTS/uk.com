@@ -5,7 +5,7 @@ module qmm003.a.viewmodel {
         singleSelectedCode: KnockoutObservable<string>;
         firstSelectedCode: KnockoutObservable<string> = ko.observable("");
         enableBTN009: KnockoutObservable<boolean>;
-        isUpdate: KnockoutObservable<boolean> = ko.observable(true);
+        isNew: KnockoutObservable<boolean> = ko.observable(true); // mode update , new mode if true
         filteredData: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
         nodeRegionPrefectures: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
         japanLocation: Array<service.model.RegionObject> = [];
@@ -39,7 +39,7 @@ module qmm003.a.viewmodel {
                     return;
                 }
 
-                if (!nts.uk.text.isNullOrEmpty(newValue) && (self.singleSelectedCode() !== self.previousCurrentCode) && self.currentResidential().editMode) {
+                if (!nts.uk.text.isNullOrEmpty(newValue) && (self.singleSelectedCode() !== self.previousCurrentCode)) {
                     if (self.dirtyObject.isDirty()) {
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
                             self.processWhenCurrentCodeChange(newValue);
@@ -47,7 +47,7 @@ module qmm003.a.viewmodel {
 
                             if (nts.uk.text.isNullOrEmpty(self.previousCurrentCode)) {
                                 self.singleSelectedCode('');
-                                self.isUpdate(true);
+                                self.isNew(true);
                             } else {
                                 self.singleSelectedCode(self.previousCurrentCode);
                             }
@@ -56,8 +56,6 @@ module qmm003.a.viewmodel {
                     } else {
                         self.processWhenCurrentCodeChange(newValue);
                     }
-                } else {
-                    self.currentResidential().editMode = true;
                 }
             });
         }
@@ -86,6 +84,9 @@ module qmm003.a.viewmodel {
             let self = this;
             service.getResidentialTaxDetail(newValue).done(function(data: service.model.ResidentialTaxDetailDto) {
                 if (data) {
+                    if ($('.nts-editor').ntsError("hasError")) {
+                        $('.save-error').ntsError('clear');
+                    }
                     if (data.resiTaxReportCode) {
                         let residential: service.model.ResidentialTaxDto;
                         _.each(self.residentalTaxList000(), function(objResi: service.model.ResidentialTaxDto) {
@@ -102,10 +103,7 @@ module qmm003.a.viewmodel {
                         }
                         data.resiTaxReportCode = residential.resiTaxCode + " " + residential.resiTaxAutonomy;
                     }
-                    if ($('.nts-editor').ntsError("hasError")) {
-                        $('.save-error').ntsError('clear');
-                    }
-                    self.isUpdate(false);
+                    self.isNew(false);
                     self.currentResidential().setData(data);
                     self.previousCurrentCode = newValue;
                     self.dirtyObject.reset();
@@ -140,9 +138,11 @@ module qmm003.a.viewmodel {
         // reset Data
         resetData(): void {
             let self = this;
-            self.currentResidential().editMode = false;
+            if ($('.nts-editor').ntsError("hasError")) {
+                $('.save-error').ntsError('clear');
+            }
             self.currentResidential().enableBTN009(true);
-            self.isUpdate(true);
+            self.isNew(true);
             self.currentResidential().resiTaxCode('');
             self.currentResidential().resiTaxAutonomy('');
             self.currentResidential().prefectureCode('');
@@ -164,7 +164,6 @@ module qmm003.a.viewmodel {
             let self = this;
             // data of treegrid
             self.redensitalTaxNodeList = ko.observableArray([]);
-            //self.enableBTN009 = ko.observable(null);
             self.singleSelectedCode = ko.observable("");
             self.currentResidential = ko.observable(new ResidentialTax(({
                 resiTaxCode: '',
@@ -184,7 +183,7 @@ module qmm003.a.viewmodel {
                 items = nts.uk.ui.windows.getShared('items');
                 self.redensitalTaxNodeList([]);
                 self.nodeRegionPrefectures([]);
-                self.start(undefined);
+                self.reload(undefined);
             });
         }
 
@@ -199,6 +198,8 @@ module qmm003.a.viewmodel {
                 self.redensitalTaxNodeList([]);
                 self.nodeRegionPrefectures([]);
                 self.reload(self.firstSelectedCode());
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.message);
             });
         }
 
@@ -208,8 +209,9 @@ module qmm003.a.viewmodel {
             let self = this;
             let labelSubsub: any;
             nts.uk.ui.windows.sub.modeless("/view/qmm/003/e/index.xhtml", { title: '住民税納付先の登録＞納付先の統合', dialogClass: "no-close" }).onClosed(function(): any {
-                labelSubsub = nts.uk.ui.windows.getShared('labelSubsub');
-
+                self.redensitalTaxNodeList([]);
+                self.nodeRegionPrefectures([]);
+                self.reload(undefined);
             });
         }
         //11.初期データ取得処理 11. Initial data acquisition processing
@@ -227,6 +229,7 @@ module qmm003.a.viewmodel {
                     self.getJapanLocation(currentSelectedCode);
                 } else {
                     self.settingNewMode();
+                    self.currentResidential().enableBTN009(false);
                 }
 
                 dfd.resolve();
@@ -254,12 +257,14 @@ module qmm003.a.viewmodel {
                     self.resetData();
                     self.numberOfResidentialTax(" 【登録件数】" + data.length + "  件");
                     self.settingNewMode();
+                    self.currentResidential().enableBTN009(false);
                 }
 
                 dfd.resolve();
 
             }).fail(function(res) {
-
+                nts.uk.ui.dialog.alert(res.message);
+                dfd.reject();
             });
 
             return dfd.promise();
@@ -284,7 +289,7 @@ module qmm003.a.viewmodel {
                     self.singleSelectedCode(currentSelectedCode);
                 }
                 self.currentResidential().enableBTN009(true);
-                self.isUpdate(false)
+                self.isNew(false)
             });
         }
 
@@ -298,9 +303,7 @@ module qmm003.a.viewmodel {
             });
             self.numberOfResidentialTax(" 【登録件数】 0  件");
             self.currentResidential().editMode = false;// false, new mode
-            self.isUpdate(true);
-            self.currentResidential().enableBTN009(true);
-
+            self.isNew(true);
         }
 
         // hàm xây dựng tree
@@ -386,12 +389,16 @@ module qmm003.a.viewmodel {
                     self.nodeRegionPrefectures([]);
                     self.start(objResi.resiTaxCode);
 
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
                 });
             } else {
                 qmm003.a.service.updateData(objResi).done(function() {
                     self.redensitalTaxNodeList([]);
                     self.nodeRegionPrefectures([]);
                     self.start(objResi.resiTaxCode);
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
                 });
             }
         }
