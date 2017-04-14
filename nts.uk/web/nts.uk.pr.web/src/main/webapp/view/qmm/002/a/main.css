@@ -4,6 +4,12 @@
 	margin-top: 10px;
 }
 
+#functions-area button,
+#functions-area .nts-control {
+	display: inline-block;
+	vertical-align: middle;
+}
+
 #contents-area {
 	width: 1300px;
 	margin-top: 10px;
