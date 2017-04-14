@@ -14,15 +14,12 @@ import nts.uk.ctx.pr.core.dom.wagetable.WtValue;
 @Getter
 public class WtItem {
 
-	// Demension no 1.
 	/** The element 1 id. */
 	private ElementId element1Id;
 
-	// Demension no 2.
 	/** The element 2 id. */
 	private ElementId element2Id;
 
-	// Demension no 3.
 	/** The element 3 id. */
 	private ElementId element3Id;
 

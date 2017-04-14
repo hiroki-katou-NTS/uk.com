@@ -36,7 +36,7 @@
 						<h3>Date (YYYY/MM/DD)</h3>
 						<input data-name="Date Editor" data-bind="ntsTimeEditor: {value: date, inputFormat: 'date', enable: enable, readonly: readonly, required: false}" />
 						<h3>Time (HH:mm)</h3>
-						<input data-name="Time Editor" data-bind="ntsTimeEditor: {value: time, option: new nts.uk.ui.option.TimeEditorOption({inputFormat: 'time'}), enable: enable, readonly: readonly, required: true}" />
+						<input data-name="Time Editor" data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable, readonly: readonly, required: true}" />
 						<hr/>
 						<!-- Binding with Object -->
 						<div data-bind="with: yearmontheditor">
@@ -112,7 +112,7 @@
 											<tr>
 												<td>value</td>
 												<td>
-													<b>Type:</b> KnockoutObservable&lt;string&gt;<br/>
+													<b>Type:</b> KnockoutObservable&lt;string|number|Date|Moment&gt;<br/>
 												</td>
 											</tr>
 											<tr>

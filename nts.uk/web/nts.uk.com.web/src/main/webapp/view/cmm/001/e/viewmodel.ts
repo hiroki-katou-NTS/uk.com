@@ -17,9 +17,9 @@ module nts.uk.pr.view.base.postcode {
                 self.zipCode = ko.observable('');
                 var strZipCode: string = nts.uk.ui.windows.getShared('zipCode');
                 self.columns = ko.observableArray([
-                    { headerText: '郵便番号', prop: 'postcode', width: 100 },
-                    { headerText: '住所', prop: 'address', width: 150 },
-                    { headerText: 'ｶﾅ', prop: 'kana', width: 150 }
+                    { headerText: '郵便番号', prop: 'postcode', width: 100, hidden: true },
+                    { headerText: '住所', prop: 'address', width: 245 },
+                    { headerText: 'カナ', prop: 'kana', width: 220 }
                 ]);
                 service.findPostCodeZipCode(strZipCode).done(data => {
                     var postcodeList: PostCodeModel[];

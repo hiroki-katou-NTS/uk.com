@@ -1,4 +1,3 @@
-/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -42,21 +41,18 @@ var nts;
                     }
                     StringValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
-                        // Check Required
                         if (this.required !== undefined && this.required !== false) {
-                            if (!checkRequired(inputText)) {
+                            if (uk.util.isNullOrEmpty(inputText)) {
                                 result.fail('This field is required');
                                 return result;
                             }
                         }
-                        // Check CharType
                         if (this.charType !== null && this.charType !== undefined) {
                             if (!this.charType.validate(inputText)) {
                                 result.fail('Invalid text');
                                 return result;
                             }
                         }
-                        // Check Constraint
                         if (this.constraint !== undefined && this.constraint !== null) {
                             if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
                                 result.fail('Max length for this input is ' + this.constraint.maxLength);
@@ -110,23 +106,23 @@ var nts;
                 var TimeValidator = (function () {
                     function TimeValidator(primitiveValueName, option) {
                         this.constraint = getConstraint(primitiveValueName);
-                        this.outputFormat = (option && option.inputFormat) ? option.inputFormat : "";
+                        this.outputFormat = (option && option.outputFormat) ? option.outputFormat : "";
                         this.required = (option && option.required) ? option.required : false;
                         this.valueType = (option && option.valueType) ? option.valueType : "string";
                     }
                     TimeValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
-                        // Check required
-                        if (this.required !== undefined && this.required !== false) {
-                            if (!checkRequired(inputText)) {
+                        if (uk.util.isNullOrEmpty(inputText)) {
+                            if (this.required === true) {
                                 result.fail('This field is required');
                                 return result;
                             }
+                            else {
+                                result.success("");
+                                return result;
+                            }
                         }
-                        // Create Parser
-                        var parseResult;
-                        parseResult = uk.time.parseMoment(inputText, this.outputFormat);
-                        // Parse
+                        var parseResult = uk.time.parseMoment(inputText, this.outputFormat);
                         if (parseResult.success) {
                             if (this.valueType === "string")
                                 result.success(parseResult.format());
@@ -151,12 +147,6 @@ var nts;
                     return TimeValidator;
                 }());
                 validation.TimeValidator = TimeValidator;
-                function checkRequired(value) {
-                    if (value === undefined || value === null || value.length == 0) {
-                        return false;
-                    }
-                    return true;
-                }
                 function getConstraint(primitiveValueName) {
                     var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
                     if (constraint === undefined)
@@ -169,3 +159,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=validation.js.map

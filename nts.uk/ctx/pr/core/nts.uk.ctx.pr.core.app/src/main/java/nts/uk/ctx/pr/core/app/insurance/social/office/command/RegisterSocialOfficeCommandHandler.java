@@ -52,6 +52,5 @@ public class RegisterSocialOfficeCommandHandler
 		insuranceSocialService.checkDuplicateCode(socialInsuranceOffice);
 
 		socialInsuranceOfficeRepository.add(socialInsuranceOffice);
-		return;
 	}
 }

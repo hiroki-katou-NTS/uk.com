@@ -57,13 +57,13 @@ public class SalaryTableReportService extends ExportService<SalaryTableReportQue
 			query1.setIsCalculateTotal(true);
 			query1.setIsPrintDepHierarchy(true);
 			query1.setIsPrintTotalOfDepartment(true);
-			query1.setSelectedBreakPageCode(2);
+			query1.setSelectedBreakPageCode(3);
 			query1.setSelectedUse2000yen(0);
 			query1.setIsPrintDepHierarchy(true);
 			query1.setSelectedLevels(selectedLevels);
 			query1.setTargetYear(2016);
 			query1.setSelectedBreakPageHierarchyCode(4);
-			query1.setIsPrintDetailItem(false);
+			query1.setIsPrintDetailItem(true);
 
 		List<EmployeeData> empList = this.createData(query1);
 

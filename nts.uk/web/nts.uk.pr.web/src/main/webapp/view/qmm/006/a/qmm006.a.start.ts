@@ -5,7 +5,6 @@ module qmm006.a {
         screenModel.startPage().done(function() {
             nts.uk.ui.confirmSave(screenModel.dirty);
             __viewContext.bind(screenModel);
-
         });
     });
 }

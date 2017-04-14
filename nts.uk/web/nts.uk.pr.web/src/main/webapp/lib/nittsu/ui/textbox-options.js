@@ -25,7 +25,7 @@ var nts;
                         this.textmode = (option !== undefined && option.textmode !== undefined) ? option.textmode : "text";
                         this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
-                        this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "left";
+                        this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "";
                         this.filldirection = (option !== undefined && option.filldirection !== undefined) ? option.filldirection : "right";
                         this.fillcharacter = (option !== undefined && option.fillcharacter !== undefined) ? option.fillcharacter : "0";
                     }
@@ -40,7 +40,7 @@ var nts;
                         this.inputFormat = (option !== undefined && option.inputFormat !== undefined) ? option.inputFormat : "date";
                         this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
-                        this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "left";
+                        this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
                     }
                     return TimeEditorOption;
                 }(EditorOptionBase));
@@ -56,7 +56,7 @@ var nts;
                         this.decimallength = (option !== undefined && option.decimallength !== undefined) ? option.decimallength : 0;
                         this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
-                        this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "left";
+                        this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
                         this.symbolChar = (option !== undefined && option.symbolChar !== undefined) ? option.symbolChar : "";
                         this.symbolPosition = (option !== undefined && option.symbolPosition !== undefined) ? option.symbolPosition : "right";
                     }
@@ -77,7 +77,7 @@ var nts;
                             ? option.currencyposition : getCurrencyPosition(this.currencyformat);
                         this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
-                        this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "left";
+                        this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
                     }
                     return CurrencyEditorOption;
                 }(NumberEditorOption));
@@ -93,7 +93,7 @@ var nts;
                         this.resizeable = (option !== undefined && option.resizeable !== undefined) ? option.resizeable : false;
                         this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
-                        this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "left";
+                        this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "";
                     }
                     return MultilineEditorOption;
                 }(EditorOptionBase));

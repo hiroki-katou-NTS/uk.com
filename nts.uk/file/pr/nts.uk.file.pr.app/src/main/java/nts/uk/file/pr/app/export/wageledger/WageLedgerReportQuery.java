@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.file.pr.app.export.wageledger;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,6 +32,9 @@ public class WageLedgerReportQuery {
 	
 	/** The employee ids. */
 	public List<String> employeeIds;
+	
+	/** The base date. */
+	public Date baseDate;
 	
 	/**
 	 * The Enum LayoutType.
