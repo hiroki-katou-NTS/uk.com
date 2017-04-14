@@ -64,7 +64,6 @@
 						</div>
 					</div>
 				</div>
-				<i class="icon icon-searchbox"></i>
 				<div class="right-content" data-bind="with: currentItem">
 					<div class="right-content-left">
 						<div id="LBL_002"
@@ -226,12 +225,11 @@
 									data-bind="ntsMultilineEditor: {
 									value: memo,
 									constraint: 'Memo',
-									option: {
-											resizeable: true,
+									option: new nts.uk.ui.option.MultilineEditorOption({
 						                    placeholder: '',
 						                    width: '450px',
 						                    textalign: 'left'
-									},
+									}),
 									enable: true,
 									readonly: false}" />
 							</span>
