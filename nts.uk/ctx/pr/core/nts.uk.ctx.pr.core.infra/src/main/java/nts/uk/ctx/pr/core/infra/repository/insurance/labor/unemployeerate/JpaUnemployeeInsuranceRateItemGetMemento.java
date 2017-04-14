@@ -11,7 +11,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate;
 
 /**
- * The Class JpaUnemployeeInsuranceRateItemGetMemento.
+ * The Class JpaUnemployeeInsuranceRateItemGeneralGetMemento.
  */
 public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsuranceRateItemGetMemento {
 
@@ -22,12 +22,11 @@ public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsur
 	private CareerGroup careerGroup;
 
 	/**
-	 * Instantiates a new jpa unemployee insurance rate item get memento.
+	 * Instantiates a new jpa unemployee insurance rate item general get
+	 * memento.
 	 *
 	 * @param typeValue
 	 *            the type value
-	 * @param careerGroup
-	 *            the career group
 	 */
 	public JpaUnemployeeInsuranceRateItemGetMemento(QismtEmpInsuRate typeValue, CareerGroup careerGroup) {
 		this.typeValue = typeValue;
@@ -54,26 +53,29 @@ public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsur
 	@Override
 	public UnemployeeInsuranceRateItemSetting getCompanySetting() {
 		UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSetting;
-
+		
 		unemployeeInsuranceRateItemSetting = new UnemployeeInsuranceRateItemSetting();
 		switch (this.careerGroup) {
-
+		
 		case Agroforestry:
-			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getCEmpRateGeneral().doubleValue());
+			unemployeeInsuranceRateItemSetting
+				.setRate(Double.valueOf(String.valueOf(this.typeValue.getCEmpRateGeneral())));
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundGeneral()));
 			break;
 
-		case Other:
-			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getCEmpRateOther().doubleValue());
-			unemployeeInsuranceRateItemSetting
-				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundOther()));
-			break;
-
 		case Contruction:
-			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getCEmpRateConst().doubleValue());
+			unemployeeInsuranceRateItemSetting
+				.setRate(Double.valueOf(String.valueOf(this.typeValue.getCEmpRateConst())));
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundConst()));
+			break;
+
+		case Other:
+			unemployeeInsuranceRateItemSetting
+				.setRate(Double.valueOf(String.valueOf(this.typeValue.getCEmpRateOther())));
+			unemployeeInsuranceRateItemSetting
+				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundOther()));
 			break;
 		}
 		return unemployeeInsuranceRateItemSetting;
@@ -88,25 +90,28 @@ public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsur
 	@Override
 	public UnemployeeInsuranceRateItemSetting getPersonalSetting() {
 		UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSetting;
-
+		
 		unemployeeInsuranceRateItemSetting = new UnemployeeInsuranceRateItemSetting();
 		switch (this.careerGroup) {
 		case Agroforestry:
-			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getPEmpRateGeneral().doubleValue());
+			unemployeeInsuranceRateItemSetting
+				.setRate(Double.valueOf(String.valueOf(this.typeValue.getPEmpRateGeneral())));
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundGeneral()));
 			break;
 
-		case Other:
-			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getPEmpRateOther().doubleValue());
-			unemployeeInsuranceRateItemSetting
-				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundOther()));
-			break;
-
 		case Contruction:
-			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getPEmpRateConst().doubleValue());
+			unemployeeInsuranceRateItemSetting
+				.setRate(Double.valueOf(String.valueOf(this.typeValue.getPEmpRateConst())));
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundConst()));
+			break;
+
+		case Other:
+			unemployeeInsuranceRateItemSetting
+				.setRate(Double.valueOf(String.valueOf(this.typeValue.getPEmpRateOther())));
+			unemployeeInsuranceRateItemSetting
+				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundOther()));
 			break;
 		}
 		return unemployeeInsuranceRateItemSetting;

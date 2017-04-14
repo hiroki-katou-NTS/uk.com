@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.core.infra.repository.insurance.social.pensionavgearn;
 
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValue;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPensionAvgearn;
@@ -15,7 +16,7 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPens
 public class JpaPensionAvgearnGetMemento implements PensionAvgearnGetMemento {
 
 	/** The entity. */
-	private QismtPensionAvgearn entity;
+	protected QismtPensionAvgearn entity;
 
 	/**
 	 * Instantiates a new jpa pension avgearn get memento.
@@ -102,8 +103,8 @@ public class JpaPensionAvgearnGetMemento implements PensionAvgearnGetMemento {
 	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento#getChildContributionAmount()
 	 */
 	@Override
-	public CommonAmount getChildContributionAmount() {
-		return new CommonAmount(this.entity.getChildContributionMny());
+	public InsuranceAmount getChildContributionAmount() {
+		return new InsuranceAmount(this.entity.getChildContributionMny());
 	}
 
 }

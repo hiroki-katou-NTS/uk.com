@@ -60,7 +60,7 @@ public class WtHistoryDto {
 
 		// Transfer data
 		WtHistory wageTableHistory = new WtHistory(
-				new WhdGetMemento(new WtCode(wageTableCode), dto));
+				new WageTableHistoryDtoGetMemento(new WtCode(wageTableCode), dto));
 
 		return wageTableHistory;
 	}
@@ -72,11 +72,10 @@ public class WtHistoryDto {
 	 *            the wt history
 	 * @return the wt history dto
 	 */
-	public WtHistoryDto fromDomain(WtHistory wtHistory, List<ElementSetting> generSettings) {
+	public WtHistoryDto fromDomain(WtHistory wtHistory) {
 		WtHistoryDto dto = this;
 
-		// Transfer data
-		wtHistory.saveToMemento(new WhdSetMemento(dto, generSettings));
+		wtHistory.saveToMemento(new WageTableHistoryDtoSetMemento(dto));
 
 		return dto;
 	}
@@ -84,13 +83,10 @@ public class WtHistoryDto {
 	/**
 	 * The Class WageTableHistoryDtoSetMemento.
 	 */
-	private class WhdSetMemento implements WtHistorySetMemento {
+	private class WageTableHistoryDtoSetMemento implements WtHistorySetMemento {
 
 		/** The dto. */
-		private WtHistoryDto dto;
-
-		/** The element settings. */
-		private List<ElementSetting> elementSettings;
+		protected WtHistoryDto dto;
 
 		/**
 		 * Instantiates a new wage table history dto set memento.
@@ -98,9 +94,8 @@ public class WtHistoryDto {
 		 * @param dto
 		 *            the dto
 		 */
-		public WhdSetMemento(WtHistoryDto dto, List<ElementSetting> generSettings) {
+		public WageTableHistoryDtoSetMemento(WtHistoryDto dto) {
 			this.dto = dto;
-			this.elementSettings = generSettings;
 		}
 
 		/*
@@ -176,8 +171,7 @@ public class WtHistoryDto {
 		 */
 		@Override
 		public void setElementSettings(List<ElementSetting> elementSettings) {
-			// Create new setting as the current items.
-			this.dto.elements = this.elementSettings.stream().map(item -> {
+			this.dto.elements = elementSettings.stream().map(item -> {
 				ElementSettingDto elementSettingDto = new ElementSettingDto();
 				elementSettingDto.setDemensionNo(item.getDemensionNo().value);
 				elementSettingDto.setType(item.getType().value);
@@ -187,8 +181,7 @@ public class WtHistoryDto {
 					elementSettingDto.setItemList(item.getItemList().stream().map(subItem -> {
 						CodeItem codeItem = (CodeItem) subItem;
 						return ElementItemDto.builder().uuid(codeItem.getUuid().v())
-								.referenceCode(codeItem.getReferenceCode())
-								.displayName(codeItem.getDisplayName()).build();
+								.referenceCode(codeItem.getReferenceCode()).build();
 					}).collect(Collectors.toList()));
 				}
 
@@ -203,7 +196,7 @@ public class WtHistoryDto {
 						return ElementItemDto.builder().uuid(rangeItem.getUuid().v())
 								.orderNumber(rangeItem.getOrderNumber())
 								.startVal(rangeItem.getStartVal()).endVal(rangeItem.getEndVal())
-								.displayName(rangeItem.getDisplayName()).build();
+								.build();
 					}).collect(Collectors.toList()));
 				}
 
@@ -215,13 +208,13 @@ public class WtHistoryDto {
 	/**
 	 * The Class WageTableHistoryDtoGetMemento.
 	 */
-	private class WhdGetMemento implements WtHistoryGetMemento {
+	private class WageTableHistoryDtoGetMemento implements WtHistoryGetMemento {
 
 		/** The wage table code. */
-		private WtCode wageTableCode;
+		protected WtCode wageTableCode;
 
 		/** The dto. */
-		private WtHistoryDto dto;
+		protected WtHistoryDto dto;
 
 		/**
 		 * Instantiates a new wage table history dto get memento.
@@ -231,7 +224,7 @@ public class WtHistoryDto {
 		 * @param dto
 		 *            the dto
 		 */
-		public WhdGetMemento(WtCode wageTableCode, WtHistoryDto dto) {
+		public WageTableHistoryDtoGetMemento(WtCode wageTableCode, WtHistoryDto dto) {
 			this.wageTableCode = wageTableCode;
 			this.dto = dto;
 		}

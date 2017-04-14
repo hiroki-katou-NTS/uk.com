@@ -4,11 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.labor;
 
-import nts.uk.ctx.pr.core.dom.insurance.Address1;
-import nts.uk.ctx.pr.core.dom.insurance.Address2;
-import nts.uk.ctx.pr.core.dom.insurance.AddressKana1;
-import nts.uk.ctx.pr.core.dom.insurance.AddressKana2;
+import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.CitySign;
+import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeMark;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
@@ -84,28 +82,28 @@ public interface LaborInsuranceOfficeGetMemento {
 	 *
 	 * @return the address 1 st
 	 */
-	Address1 getAddress1st();
+	Address getAddress1st();
 
 	/**
 	 * Gets the address 2 nd.
 	 *
 	 * @return the address 2 nd
 	 */
-	Address2 getAddress2nd();
+	Address getAddress2nd();
 
 	/**
 	 * Gets the kana address 1 st.
 	 *
 	 * @return the kana address 1 st
 	 */
-	AddressKana1 getKanaAddress1st();
+	KanaAddress getKanaAddress1st();
 
 	/**
 	 * Gets the kana address 2 nd.
 	 *
 	 * @return the kana address 2 nd
 	 */
-	AddressKana2 getKanaAddress2nd();
+	KanaAddress getKanaAddress2nd();
 
 	/**
 	 * Gets the phone number.

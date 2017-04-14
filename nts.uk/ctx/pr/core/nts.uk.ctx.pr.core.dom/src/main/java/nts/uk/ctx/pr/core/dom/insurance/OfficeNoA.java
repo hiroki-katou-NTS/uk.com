@@ -5,15 +5,12 @@
 package nts.uk.ctx.pr.core.dom.insurance;
 
 import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * The Class OfficeNoA.
  */
-@StringCharType(CharType.NUMERIC)
-@StringMaxLength(4)
+@StringMaxLength(2)
 public class OfficeNoA extends StringPrimitiveValue<OfficeNoA> {
 
 	/** The Constant serialVersionUID. */

@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.history.element.item.generator;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -54,33 +53,18 @@ public class MasterRefItemGenerator implements ItemGenerator {
 	@Override
 	public List<? extends Item> generate(String companyCode, String historyId,
 			ElementSetting elementSetting) {
-		// Get the element.
-		Optional<WtElement> optWtElement = this.wtElementRepo.findByHistoryId(historyId);
+		Optional<WtElement> optWtHistory = this.wtElementRepo.findByHistoryId(historyId);
 
-		// Check element is existed.
-		if (!optWtElement.isPresent()) {
-			return Collections.emptyList();
-		}
-
-		// Get the master ref.
 		Optional<WtMasterRef> optMasterRef = this.wtMasterRefRepo.findByCode(companyCode,
-				optWtElement.get().getReferenceCode());
+				optWtHistory.get().getReferenceCode());
 
-		// Check master ref is existed.
-		if (!optMasterRef.isPresent()) {
-			return Collections.emptyList();
-		}
-
-		// Get ref items.
 		List<WtCodeRefItem> wtRefItems = this.wtReferenceRepo.getMasterRefItem(optMasterRef.get());
 
-		// Create map: unique code - old uuid.
 		@SuppressWarnings("unchecked")
 		List<CodeItem> codeItems = (List<CodeItem>) elementSetting.getItemList();
 		Map<String, ElementId> mapCodeItems = codeItems.stream()
 				.collect(Collectors.toMap(CodeItem::getReferenceCode, CodeItem::getUuid));
 
-		// Generate uuid of code items.
 		return wtRefItems.stream().map(item -> {
 			CodeItem codeItem = new CodeItem(item.getReferenceCode(), mapCodeItems.getOrDefault(
 					item.getReferenceCode(), new ElementId(IdentifierUtil.randomUniqueId())));

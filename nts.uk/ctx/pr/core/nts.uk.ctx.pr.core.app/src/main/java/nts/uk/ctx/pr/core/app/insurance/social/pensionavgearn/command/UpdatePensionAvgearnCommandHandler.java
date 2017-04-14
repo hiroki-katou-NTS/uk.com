@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearn;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -40,15 +41,15 @@ public class UpdatePensionAvgearnCommandHandler extends CommandHandler<UpdatePen
 		// Get command.
 		UpdatePensionAvgearnCommand command = context.getCommand();
 
+		// Get the current company code.
+		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
+
 		// Map to domain
-		List<PensionAvgearn> updatedPensionAvgearns = command.getListPensionAvgearnDto().stream().map(item -> {
-			PensionAvgearn domain = new PensionAvgearn(item);
-			domain.setHistoryId(command.getHistoryId());
-			return domain;
+		List<PensionAvgearn> updatedPensionAvgearns = command.getListPensionAvgearn().stream().map(item -> {
+			return item.toDomain();
 		}).collect(Collectors.toList());
 
 		// Update
-		pensionAvgearnRepository.update(updatedPensionAvgearns, AppContexts.user().companyCode(),
-				command.getOfficeCode());
+		pensionAvgearnRepository.update(updatedPensionAvgearns, companyCode.v(), command.getOfficeCode());
 	}
 }

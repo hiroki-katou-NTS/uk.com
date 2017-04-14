@@ -38,11 +38,7 @@ public class CompanyWebservice extends WebService{
 	public List<CompanyDto> getAllCompanys(){
 		return this.finder.getAllCompanys();
 	}
-	@POST
-	@Path("findCompany")
-	public CompanyDto getCompanyDetail(){
-		return this.finder.getCompany().get();
-	}
+	
 	@POST
 	@Path("findCompanyDetail/{companyCd}")
 	public CompanyDto getCompanyDetail(@PathParam("companyCd") String companyCd){
@@ -52,8 +48,8 @@ public class CompanyWebservice extends WebService{
 
 	@POST
 	@Path("findByUseKtSet/{useKtSet}")
-	public CompanyDto getCompanyByUserKtSet(@PathParam("useKtSet") int useKtSet){
-		return this.finder.getCompanyByUserKtSet(useKtSet)
+	public CompanyDto getCompanyByUserKtSet(@PathParam("use_Kt_Set") int use_Kt_Set){
+		return this.finder.getCompanyByUserKtSet(use_Kt_Set)
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not Found Company")));
 	}
 	

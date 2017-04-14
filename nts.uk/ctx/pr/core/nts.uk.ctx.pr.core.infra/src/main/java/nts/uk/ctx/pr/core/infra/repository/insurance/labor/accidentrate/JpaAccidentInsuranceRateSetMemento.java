@@ -21,7 +21,7 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAcc
 public class JpaAccidentInsuranceRateSetMemento implements AccidentInsuranceRateSetMemento {
 
 	/** The type value. */
-	private List<QismtWorkAccidentInsu> typeValue;
+	protected List<QismtWorkAccidentInsu> typeValue;
 
 	/**
 	 * Instantiates a new jpa accident insurance rate set memento.

@@ -216,7 +216,6 @@ public class QismtHealthInsuRate implements Serializable {
 	 * Instantiates a new qismt health insu rate.
 	 */
 	public QismtHealthInsuRate() {
-		super();
 	}
 
 	/**

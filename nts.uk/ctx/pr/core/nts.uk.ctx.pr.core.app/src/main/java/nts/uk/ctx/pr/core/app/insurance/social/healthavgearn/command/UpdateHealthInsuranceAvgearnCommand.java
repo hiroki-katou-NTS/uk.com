@@ -17,10 +17,7 @@ import lombok.Setter;
 public class UpdateHealthInsuranceAvgearnCommand {
 
 	/** The list health insurance avgearn. */
-	private List<HealthInsuranceAvgearnCommandDto> listHealthInsuranceAvgearnDto;
-
-	/** The history id. */
-	private String historyId;
+	private List<HealthInsuranceAvgearnCommandDto> listHealthInsuranceAvgearn;
 
 	/** The office code. */
 	private String officeCode;

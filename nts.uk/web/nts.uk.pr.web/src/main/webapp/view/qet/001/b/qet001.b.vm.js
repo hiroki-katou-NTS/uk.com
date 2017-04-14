@@ -11,24 +11,6 @@ var qet001;
                     this.outputSettingDetail = ko.observable(new OutputSettingDetail([], []));
                     this.reportItems = ko.observableArray([]);
                     this.isLoading = ko.observable(true);
-                    this.outputItemColumns = ko.observableArray([
-                        { headerText: '集約', prop: 'isAggregateItem', width: 40,
-                            formatter: function (data) {
-                                if (data == 'true') {
-                                    return '<div class="center"><i class="icon icon-dot"></i></div>';
-                                }
-                                return '';
-                            }
-                        },
-                        { headerText: 'コード', prop: 'code', width: 50 },
-                        { headerText: '名称', prop: 'name', width: 50 },
-                        { headerText: '削除', prop: 'code', width: 50,
-                            formatter: function (data) {
-                                return '<button class="delete-button icon icon-close" id="' + data + '" >'
-                                    + '</button>';
-                            }
-                        },
-                    ]);
                     this.reportItemColumns = ko.observableArray([
                         { headerText: '区分', prop: 'categoryNameJa', width: 50 },
                         { headerText: '集約', prop: 'isAggregate', width: 40,
@@ -56,7 +38,6 @@ var qet001;
                             self.dirty.reset();
                             return;
                         }
-                        // load detail output setting.
                         self.loadOutputSettingDetail(newVal);
                         self.isLoading(false);
                     });
@@ -65,9 +46,6 @@ var qet001;
                         data.reloadReportItems = self.reloadReportItem.bind(self);
                     });
                 }
-                /**
-                 * Reload report items.
-                 */
                 ScreenModel.prototype.reloadReportItem = function () {
                     var self = this;
                     var data = self.outputSettingDetail();
@@ -75,7 +53,6 @@ var qet001;
                         self.reportItems([]);
                         return;
                     }
-                    // Set data to report item list.
                     var reportItemList = [];
                     data.categorySettings().forEach(function (setting) {
                         var categoryName = setting.category;
@@ -85,21 +62,15 @@ var qet001;
                     });
                     self.reportItems(reportItemList);
                 };
-                /**
-                 * Start load data for this screen.
-                 */
                 ScreenModel.prototype.start = function () {
                     var dfd = $.Deferred();
                     var self = this;
                     var outputSettings = nts.uk.ui.windows.getShared('outputSettings');
                     var selectedSettingCode = nts.uk.ui.windows.getShared('selectedCode');
-                    // Load master items and aggregate items.
                     $.when(self.loadAggregateItems(), self.loadMasterItems()).done(function () {
-                        // Check output setting is empty.
                         var isHasData = outputSettings && outputSettings.length > 0;
                         if (!isHasData) {
-                            self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
-                            self.outputSettings().outputSettingSelectedCode('');
+                            self.switchToCreateMode();
                             dfd.resolve();
                             return;
                         }
@@ -110,9 +81,6 @@ var qet001;
                     });
                     return dfd.promise();
                 };
-                /**
-                * Load all output setting.
-                */
                 ScreenModel.prototype.loadAllOutputSetting = function () {
                     var dfd = $.Deferred();
                     var self = this;
@@ -125,34 +93,28 @@ var qet001;
                     });
                     return dfd.promise();
                 };
-                /**
-                 * Close dialog.
-                 */
                 ScreenModel.prototype.close = function () {
-                    // Dirty check.
                     var self = this;
                     if (self.dirty.isDirty()) {
                         nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function () {
                             nts.uk.ui.windows.close();
                         });
                     }
-                    else {
-                        nts.uk.ui.windows.close();
-                    }
                 };
-                /**
-                 * Save output setting.
-                 */
                 ScreenModel.prototype.save = function () {
                     var self = this;
-                    // clear error.
                     $('#code-input').ntsError('clear');
                     $('#name-input').ntsError('clear');
-                    // Validate.
-                    $('#code-input').ntsEditor('validate');
-                    $('#name-input').ntsEditor('validate');
-                    // Check has error.
-                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                    var hasError = false;
+                    if (self.outputSettingDetail().settingCode() == '') {
+                        $('#code-input').ntsError('set', 'コードが入力されていません。');
+                        hasError = true;
+                    }
+                    if (self.outputSettingDetail().settingName() == '') {
+                        $('#name-input').ntsError('set', '名称が入力されていません。');
+                        hasError = true;
+                    }
+                    if (hasError) {
                         return;
                     }
                     var currentSelectedCode = self.outputSettings().outputSettingSelectedCode();
@@ -160,50 +122,36 @@ var qet001;
                         nts.uk.ui.windows.setShared('isHasUpdate', true, false);
                         nts.uk.ui.dialog.alert('save success!').then(function () {
                             self.loadAllOutputSetting();
-                            self.dirty.reset();
                         });
                     }).fail(function (res) {
-                        $('#code-input').ntsError('set', res.message);
+                        nts.uk.ui.dialog.alert(res.message);
                     });
                 };
-                /**
-                 * Remove Output setting.
-                 */
                 ScreenModel.prototype.remove = function () {
                     var self = this;
-                    // Check selected output setting.
                     var selectedCode = self.outputSettings().outputSettingSelectedCode();
-                    if (!selectedCode || selectedCode == '') {
+                    if (selectedCode == '') {
+                        nts.uk.ui.dialog.alert('未選択エラー');
                         return;
                     }
-                    nts.uk.ui.dialog.confirm('出力項目設定からもデータを削除します。\r\nよろしいですか？').ifYes(function () {
-                        b.service.removeOutputSetting(selectedCode).done(function () {
-                            nts.uk.ui.windows.setShared('isHasUpdate', true, false);
-                            // Find item selected.
-                            var itemSelected = self.outputSettings().outputSettingList().filter(function (item) { return item.code == selectedCode; })[0];
-                            var indexSelected = self.outputSettings().outputSettingList().indexOf(itemSelected);
-                            // Remove item selected in list.
-                            self.outputSettings().outputSettingList.remove(itemSelected);
-                            // If list is empty -> new mode.
-                            if (self.outputSettings().outputSettingList().length == 0) {
-                                self.outputSettings().outputSettingSelectedCode(null);
-                                return;
-                            }
-                            // Select same row with item selected.
-                            if (self.outputSettings().outputSettingList()[indexSelected]) {
-                                self.outputSettings().outputSettingSelectedCode(self.outputSettings().outputSettingList()[indexSelected].code);
-                                return;
-                            }
-                            // Select next higher row.
-                            self.outputSettings().outputSettingSelectedCode(self.outputSettings().outputSettingList()[indexSelected - 1].code);
-                        }).fail(function (res) {
-                            nts.uk.ui.dialog.alert(res.message);
-                        });
+                    b.service.removeOutputSetting(selectedCode).done(function () {
+                        nts.uk.ui.windows.setShared('isHasUpdate', true, false);
+                        var itemSelected = self.outputSettings().outputSettingList().filter(function (item) { return item.code == selectedCode; })[0];
+                        var indexSelected = self.outputSettings().outputSettingList().indexOf(itemSelected);
+                        self.outputSettings().outputSettingList.remove(itemSelected);
+                        if (self.outputSettings().outputSettingList().length == 0) {
+                            self.outputSettings().outputSettingSelectedCode(null);
+                            return;
+                        }
+                        if (self.outputSettings().outputSettingList()[indexSelected]) {
+                            self.outputSettings().outputSettingSelectedCode(self.outputSettings().outputSettingList()[indexSelected].code);
+                            return;
+                        }
+                        self.outputSettings().outputSettingSelectedCode(self.outputSettings().outputSettingList()[indexSelected - 1].code);
+                    }).fail(function (res) {
+                        nts.uk.ui.dialog.alert(res.message);
                     });
                 };
-                /**
-                 * Load detail output setting.
-                 */
                 ScreenModel.prototype.loadOutputSettingDetail = function (selectedCode) {
                     var dfd = $.Deferred();
                     var self = this;
@@ -217,9 +165,6 @@ var qet001;
                     });
                     return dfd.promise();
                 };
-                /**
-                 * Load Aggregate items.
-                 */
                 ScreenModel.prototype.loadAggregateItems = function () {
                     var dfd = $.Deferred();
                     var self = this;
@@ -232,9 +177,6 @@ var qet001;
                     });
                     return dfd.promise();
                 };
-                /**
-                 * Load master item.
-                 */
                 ScreenModel.prototype.loadMasterItems = function () {
                     var dfd = $.Deferred();
                     var self = this;
@@ -247,14 +189,7 @@ var qet001;
                     });
                     return dfd.promise();
                 };
-                /**
-                 * Switch to create mode.
-                 */
                 ScreenModel.prototype.switchToCreateMode = function () {
-                    // clear error.
-                    $('#code-input').ntsError('clear');
-                    $('#name-input').ntsError('clear');
-                    // Dirty check.
                     var self = this;
                     if (self.dirty.isDirty()) {
                         nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function () {
@@ -271,9 +206,6 @@ var qet001;
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            /**
-             * 登録済みの出力項目設定
-             */
             var OutputSettings = (function () {
                 function OutputSettings() {
                     this.searchText = ko.observable(null);
@@ -286,9 +218,6 @@ var qet001;
                 return OutputSettings;
             }());
             viewmodel.OutputSettings = OutputSettings;
-            /**
-             * Output setting detail.
-             */
             var OutputSettingDetail = (function () {
                 function OutputSettingDetail(aggregateItems, masterItem, outputSetting) {
                     this.settingCode = ko.observable(outputSetting != undefined ? outputSetting.code : '');
@@ -325,9 +254,6 @@ var qet001;
                         });
                     });
                 }
-                /**
-                 * Convert category setting data to screen model.
-                 */
                 OutputSettingDetail.prototype.convertCategorySettings = function (aggregateItems, masterItem, categorySettings) {
                     var settings = [];
                     settings[0] = this.createCategorySetting(Category.PAYMENT, PaymentType.SALARY, aggregateItems, masterItem, categorySettings);
@@ -339,7 +265,6 @@ var qet001;
                     return settings;
                 };
                 OutputSettingDetail.prototype.createCategorySetting = function (category, paymentType, aggregateItems, masterItem, categorySettings) {
-                    //var categorySetting: CategorySetting;
                     var aggregateItemsInCategory = aggregateItems.filter(function (item) { return item.category == category; });
                     var masterItemsInCategory = masterItem.filter(function (item) { return item.category == category; });
                     var cateTempSetting = { category: category, paymentType: paymentType, outputItems: [] };
@@ -356,15 +281,11 @@ var qet001;
                 return OutputSettingDetail;
             }());
             viewmodel.OutputSettingDetail = OutputSettingDetail;
-            /**
-             * Category setting class.
-             */
             var CategorySetting = (function () {
                 function CategorySetting(aggregateItems, masterItems, categorySetting) {
                     this.category = categorySetting.category;
                     this.paymentType = categorySetting.paymentType;
                     this.fullCategoryName = this.getFullCategoryName(this.category, this.paymentType);
-                    // exclude item contain in setting.
                     var settingItemCode = [];
                     if (categorySetting != undefined) {
                         settingItemCode = categorySetting.outputItems.map(function (item) {
@@ -379,12 +300,29 @@ var qet001;
                     this.outputItemsSelected = ko.observable(null);
                     this.aggregateItemSelected = ko.observable(null);
                     this.masterItemSelected = ko.observable(null);
+                    this.outputItemColumns = ko.observableArray([
+                        { headerText: '集約', prop: 'isAggregateItem', width: 40,
+                            formatter: function (data) {
+                                if (data == 'true') {
+                                    return '<div class="center"><i class="icon icon-dot"></i></div>';
+                                }
+                                return '';
+                            }
+                        },
+                        { headerText: 'コード', prop: 'code', width: 50 },
+                        { headerText: '名称', prop: 'name', width: 50 },
+                        { headerText: '削除', prop: 'code', width: 50,
+                            formatter: function (data) {
+                                return '<button class="delete-button icon icon-close" id="' + data + '" >'
+                                    + '</button>';
+                            }
+                        },
+                    ]);
                     var self = this;
                     self.outputItemCache = categorySetting != undefined ? categorySetting.outputItems : [];
                     self.outputItems.subscribe(function (items) {
                         self.outputItemCache = items;
                     });
-                    // Create Customs handle For event rened nts grid.
                     ko.bindingHandlers.rended = {
                         init: function (element, valueAccessor, allBindings, viewModel, bindingContext) { },
                         update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
@@ -405,9 +343,7 @@ var qet001;
                         return item.code == self.outputItemsSelected();
                     })[0];
                     self.outputItems.remove(selectedItem);
-                    // Return item.
                     if (selectedItem.isAggregateItem) {
-                        // Return to Aggregate items table.
                         self.aggregateItemsList.push({
                             code: selectedItem.code,
                             name: selectedItem.name,
@@ -416,7 +352,6 @@ var qet001;
                         });
                         return;
                     }
-                    // Return to master items table.
                     self.masterItemList.push({
                         code: selectedItem.code,
                         name: selectedItem.name,
@@ -424,11 +359,7 @@ var qet001;
                         category: self.category,
                     });
                 };
-                /**
-                 * Move master item to outputItems.
-                 */
                 CategorySetting.prototype.masterItemToDisplay = function () {
-                    // If master item is unselected => return.
                     if (this.masterItemSelected() == undefined || this.masterItemSelected() == null) {
                         return;
                     }
@@ -436,9 +367,7 @@ var qet001;
                     var selectedItem = self.masterItemList().filter(function (item) {
                         return item.code == self.masterItemSelected();
                     })[0];
-                    // Remove form master list.
                     self.masterItemList.remove(selectedItem);
-                    // Add to outputItems.
                     self.outputItems.push({
                         code: selectedItem.code,
                         name: selectedItem.name,
@@ -447,7 +376,6 @@ var qet001;
                     self.masterItemSelected(null);
                 };
                 CategorySetting.prototype.aggregateItemToDisplay = function () {
-                    // If master item is unselected => return.
                     if (this.aggregateItemSelected() == undefined || this.aggregateItemSelected() == null) {
                         return;
                     }
@@ -455,9 +383,7 @@ var qet001;
                     var selectedItem = self.aggregateItemsList().filter(function (item) {
                         return item.code == self.aggregateItemSelected();
                     })[0];
-                    // Remove form master list.
                     self.aggregateItemsList.remove(selectedItem);
-                    // Add to outputItems.
                     self.outputItems.push({
                         code: selectedItem.code,
                         name: selectedItem.name,
@@ -465,9 +391,6 @@ var qet001;
                     });
                     self.aggregateItemSelected(null);
                 };
-                /**
-                 * Get full category name by category and payment type.
-                 */
                 CategorySetting.prototype.getFullCategoryName = function (category, paymentType) {
                     var categoryName = '';
                     switch (category) {
@@ -489,9 +412,6 @@ var qet001;
                 return CategorySetting;
             }());
             viewmodel.CategorySetting = CategorySetting;
-            /**
-             * Report Item class.
-             */
             var ReportItem = (function () {
                 function ReportItem(categoryName, isAggregate, itemCode, itemName) {
                     this.categoryName = categoryName;
@@ -499,7 +419,6 @@ var qet001;
                     this.itemCode = itemCode;
                     this.itemName = itemName;
                     var self = this;
-                    // Convert category name to japanese.
                     switch (categoryName) {
                         case Category.PAYMENT:
                             self.categoryNameJa = '支給';
@@ -517,74 +436,35 @@ var qet001;
                 return ReportItem;
             }());
             viewmodel.ReportItem = ReportItem;
-            /**
-             * 出力するレイアウト.
-             */
             var LayoutOutput = (function () {
                 function LayoutOutput() {
                 }
-                /**
-                 * 賃金台帳（A4横1ページ）を出力する
-                 */
                 LayoutOutput.WAGE_LEDGER = 0;
-                /**
-                 * 賃金一覧表を出力する
-                 */
                 LayoutOutput.WAGE_LIST = 1;
                 return LayoutOutput;
             }());
             viewmodel.LayoutOutput = LayoutOutput;
-            /**
-             * 出力する項目の選択
-             */
             var OutputType = (function () {
                 function OutputType() {
                 }
-                /**
-                 * 明細書項目を出力する
-                 */
                 OutputType.DETAIL_ITEM = 0;
-                /**
-                 * 明細書の集約項目を出力する
-                 */
                 OutputType.SUMMARY_DETAIL_ITEMS = 1;
                 return OutputType;
             }());
             viewmodel.OutputType = OutputType;
-            /**
-             * Wage ledger category.
-             */
             var Category = (function () {
                 function Category() {
                 }
-                /**
-                 * 支給
-                 */
                 Category.PAYMENT = 'Payment';
-                /**
-                 * 控除
-                 */
                 Category.DEDUCTION = 'Deduction';
-                /**
-                 * 勤怠
-                 */
                 Category.ATTENDANCE = 'Attendance';
                 return Category;
             }());
             viewmodel.Category = Category;
-            /**
-             * Wage ledger payment type.
-             */
             var PaymentType = (function () {
                 function PaymentType() {
                 }
-                /**
-                 * Salary.
-                 */
                 PaymentType.SALARY = 'Salary';
-                /**
-                 * Bonus.
-                 */
                 PaymentType.BONUS = 'Bonus';
                 return PaymentType;
             }());
@@ -592,3 +472,4 @@ var qet001;
         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
     })(b = qet001.b || (qet001.b = {}));
 })(qet001 || (qet001 = {}));
+//# sourceMappingURL=qet001.b.vm.js.map

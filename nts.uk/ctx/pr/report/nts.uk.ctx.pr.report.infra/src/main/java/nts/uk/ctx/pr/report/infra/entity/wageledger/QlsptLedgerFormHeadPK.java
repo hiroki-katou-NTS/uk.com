@@ -38,7 +38,6 @@ public class QlsptLedgerFormHeadPK implements Serializable {
 	 * Instantiates a new qlspt ledger form head PK.
 	 */
 	public QlsptLedgerFormHeadPK() {
-		super();
 	}
 
 	/**

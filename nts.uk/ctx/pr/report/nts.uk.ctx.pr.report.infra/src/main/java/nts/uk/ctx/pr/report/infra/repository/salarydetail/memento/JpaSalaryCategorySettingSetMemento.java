@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.salarydetail.SalaryCategory;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryCategorySettingSetMemento;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputItem;
@@ -24,7 +25,7 @@ public class JpaSalaryCategorySettingSetMemento implements SalaryCategorySetting
 	private List<QlsptPaylstFormDetail> categoryEntities;
 
 	/** The company code. */
-	private String companyCode;
+	private CompanyCode companyCode;
 
 	/** The code. */
 	private SalaryOutputSettingCode code;
@@ -35,28 +36,21 @@ public class JpaSalaryCategorySettingSetMemento implements SalaryCategorySetting
 	 * @param companyCode the company code
 	 * @param code the code
 	 */
-	public JpaSalaryCategorySettingSetMemento(String companyCode, SalaryOutputSettingCode code) {
+	public JpaSalaryCategorySettingSetMemento(CompanyCode companyCode, SalaryOutputSettingCode code) {
 		this.companyCode = companyCode;
 		this.code = code;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.
-	 * SalaryCategorySettingSetMemento#setSalaryCategory(nts.uk.ctx.pr.report.
-	 * dom.salarydetail.SalaryCategory)
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryCategorySettingSetMemento#setSalaryCategory(nts.uk.ctx.pr.report.dom.salarydetail.SalaryCategory)
 	 */
 	@Override
 	public void setSalaryCategory(SalaryCategory salaryCategory) {
 		categoryEntities.forEach(category -> category.getQlsptPaylstFormDetailPK().setCtgAtr(salaryCategory.value));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.
-	 * SalaryCategorySettingSetMemento#setSalaryOutputItems(java.util.List)
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryCategorySettingSetMemento#setSalaryOutputItems(java.util.List)
 	 */
 	@Override
 	public void setSalaryOutputItems(List<SalaryOutputItem> listSalaryOutputItem) {

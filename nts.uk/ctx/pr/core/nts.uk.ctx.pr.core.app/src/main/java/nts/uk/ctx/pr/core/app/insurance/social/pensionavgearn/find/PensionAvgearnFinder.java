@@ -26,16 +26,13 @@ public class PensionAvgearnFinder {
 	 * Find.
 	 *
 	 * @param id the id
-	 * @return the list pension avgearn dto
+	 * @return the list
 	 */
-	public ListPensionAvgearnDto find(String id) {
-		List<PensionAvgearnDto> list = repository.find(id).stream().map(domain -> {
+	public List<PensionAvgearnDto> find(String id) {
+		return repository.find(id).stream().map(domain -> {
 			PensionAvgearnDto dto = PensionAvgearnDto.builder().build();
 			domain.saveToMemento(dto);
 			return dto;
 		}).collect(Collectors.toList());
-		ListPensionAvgearnDto listPensionAvgearnDto = ListPensionAvgearnDto.builder().historyId(id)
-				.listPensionAvgearnDto(list).build();
-		return listPensionAvgearnDto;
 	}
 }

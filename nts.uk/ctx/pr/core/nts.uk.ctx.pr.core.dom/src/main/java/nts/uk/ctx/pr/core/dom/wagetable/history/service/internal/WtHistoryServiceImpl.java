@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.history.service.internal;
@@ -22,18 +22,18 @@ import nts.uk.ctx.pr.core.dom.wagetable.history.service.WtHistoryService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class WtHistoryServiceImpl.
+ * The Class WageTableHistoryServiceImpl.
  */
 @Stateless
 public class WtHistoryServiceImpl extends WtHistoryService {
 
 	/** The wage table head repo. */
 	@Inject
-	private WtHeadRepository wtHeadRepo;
+	private WtHeadRepository wageTableHeadRepo;
 
 	/** The wage table history repo. */
 	@Inject
-	private WtHistoryRepository wtHistoryRepo;
+	private WtHistoryRepository wageTableHistoryRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -43,11 +43,9 @@ public class WtHistoryServiceImpl extends WtHistoryService {
 	 * employment.unitprice.WageTableHistory)
 	 */
 	public void validateRequiredItem(WtHistory history) {
-		if (history.getWageTableCode() == null 
-				|| history.getApplyRange() == null
-				|| StringUtil.isNullOrEmpty(history.getHistoryId(), true)
+		if (history.getWageTableCode() == null
 				|| StringUtil.isNullOrEmpty(history.getWageTableCode().v(), true)
-				|| CollectionUtil.isEmpty(history.getElementSettings())) {
+				|| history.getApplyRange() == null) {
 			throw new BusinessException("ER001");
 		}
 	}
@@ -60,7 +58,7 @@ public class WtHistoryServiceImpl extends WtHistoryService {
 	 * employment.unitprice.WageTableHistory)
 	 */
 	public void validateDateRange(WtHistory history) {
-		if (!wtHistoryRepo.isValidDateRange(history.getCompanyCode(),
+		if (!wageTableHistoryRepo.isValidDateRange(history.getCompanyCode(),
 				history.getWageTableCode().v(), history.getApplyRange().getStartMonth().v())) {
 			// History after start date and time exists
 			throw new BusinessException("ER010");
@@ -75,19 +73,15 @@ public class WtHistoryServiceImpl extends WtHistoryService {
 	 */
 	@Override
 	public void deleteHistory(String uuid) {
-		// Get the history.
-		WtHistory history = this.wtHistoryRepo.findHistoryByUuid(uuid).get();
-
-		// Get histories of master.
-		List<WtHistory> wtHistoryList = this.wtHistoryRepo.findAllHistoryByMasterCode(
+		WtHistory history = this.wageTableHistoryRepo.findHistoryByUuid(uuid).get();
+		List<WtHistory> unitPriceHistoryList = this.wageTableHistoryRepo.findAllHistoryByMasterCode(
 				AppContexts.user().companyCode(), history.getMasterCode().v());
 
-		// Delete history.
 		super.deleteHistory(uuid);
 
 		// Remove unit price.
-		if (!CollectionUtil.isEmpty(wtHistoryList) && wtHistoryList.size() == 1) {
-			this.wtHeadRepo.remove(history.getCompanyCode(), history.getMasterCode().v());
+		if (!CollectionUtil.isEmpty(unitPriceHistoryList) && unitPriceHistoryList.size() == 1) {
+			this.wageTableHeadRepo.remove(history.getCompanyCode(), history.getMasterCode().v());
 		}
 	}
 
@@ -98,8 +92,9 @@ public class WtHistoryServiceImpl extends WtHistoryService {
 	 * WageTableHistoryService#checkDuplicateCode(nts.uk.ctx.pr.core.dom.rule.
 	 * employment.unitprice.WageTableHistory)
 	 */
-	public void checkDuplicateCode(WtHistory history) {
-		if (wtHeadRepo.isExistCode(history.getCompanyCode(), history.getWageTableCode().v())) {
+	public void checkDuplicateCode(WtHistory unitPriceHistory) {
+		if (wageTableHeadRepo.isExistCode(unitPriceHistory.getCompanyCode(),
+				unitPriceHistory.getWageTableCode().v())) {
 			throw new BusinessException("ER005");
 		}
 	}
@@ -112,7 +107,7 @@ public class WtHistoryServiceImpl extends WtHistoryService {
 	 */
 	@Override
 	public SimpleHistoryRepository<WtHistory> getRepository() {
-		return this.wtHistoryRepo;
+		return this.wageTableHistoryRepo;
 	}
 
 	/*

@@ -20,19 +20,19 @@ import nts.uk.shr.com.context.LoginUserContext;
 
 @Stateless
 public class UnemployeeInsuranceRateAddCommandHandler
-	extends CommandHandler<UnemployeeInsuranceRateAddCommand> {
+		extends CommandHandler<UnemployeeInsuranceRateAddCommand> {
 
 	/** CompanyRepository */
 	@Inject
-	private UnemployeeInsuranceRateRepository repository;
+	private UnemployeeInsuranceRateRepository unemployeeInsuranceRateRepository;
 
 	/** The unemployee insurance rate service. */
 	@Inject
-	private UnemployeeInsuranceRateService service;
+	private UnemployeeInsuranceRateService unemployeeInsuranceRateService;
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see
 	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
 	 * .CommandHandlerContext)
@@ -51,24 +51,24 @@ public class UnemployeeInsuranceRateAddCommandHandler
 		UnemployeeInsuranceRateAddCommand command = context.getCommand();
 
 		// to domain
-		UnemployeeInsuranceRate insuranceRate = command.toDomain(companyCode);
+		UnemployeeInsuranceRate unemployeeInsuranceRate = command.toDomain(companyCode);
 
 		// validate
-		insuranceRate.validate();
-		this.service.validateDateRange(insuranceRate);
+		unemployeeInsuranceRate.validate();
+		unemployeeInsuranceRateService.validateDateRange(unemployeeInsuranceRate);
 
 		// find first data
-		Optional<UnemployeeInsuranceRate> dataFisrt = this.repository
-			.findFirstData(insuranceRate.getCompanyCode());
-
-		// check exist
-		if (dataFisrt.isPresent()) {
-			dataFisrt.get().setEnd(insuranceRate.getApplyRange().getStartMonth().previousMonth());
-			this.repository.update(dataFisrt.get());
+		Optional<UnemployeeInsuranceRate> optionalFisrtData = this.unemployeeInsuranceRateRepository
+				.findFirstData(unemployeeInsuranceRate.getCompanyCode());
+		if (optionalFisrtData.isPresent()) {
+			optionalFisrtData.get().setEnd(
+					unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+			this.unemployeeInsuranceRateRepository.update(optionalFisrtData.get());
 		}
 
 		// call repository add (insert database)
-		this.repository.add(insuranceRate.copyWithDate(insuranceRate.getStart()));
+		this.unemployeeInsuranceRateRepository
+				.add(unemployeeInsuranceRate.copyWithDate(unemployeeInsuranceRate.getStart()));
 	}
 
 }

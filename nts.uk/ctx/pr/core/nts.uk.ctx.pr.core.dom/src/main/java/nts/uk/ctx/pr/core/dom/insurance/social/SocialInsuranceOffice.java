@@ -7,25 +7,14 @@ package nts.uk.ctx.pr.core.dom.insurance.social;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.Master;
-import nts.uk.ctx.pr.core.dom.insurance.Address1;
-import nts.uk.ctx.pr.core.dom.insurance.Address2;
-import nts.uk.ctx.pr.core.dom.insurance.AddressKana1;
-import nts.uk.ctx.pr.core.dom.insurance.AddressKana2;
-import nts.uk.ctx.pr.core.dom.insurance.CityCode;
-import nts.uk.ctx.pr.core.dom.insurance.HealthInsuAssoCode;
-import nts.uk.ctx.pr.core.dom.insurance.HealthInsuOfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.Address;
+import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
-import nts.uk.ctx.pr.core.dom.insurance.OfficePensionFundCode;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeRefCode1;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeRefCode2;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeSign;
-import nts.uk.ctx.pr.core.dom.insurance.PhoneNumber;
 import nts.uk.ctx.pr.core.dom.insurance.PicName;
 import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
 import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
 import nts.uk.ctx.pr.core.dom.insurance.ShortName;
-import nts.uk.ctx.pr.core.dom.insurance.WelfarePensionFundCode;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -56,56 +45,56 @@ public class SocialInsuranceOffice extends DomainObject implements Master {
 	private PotalCode potalCode;
 
 	/** The address 1 st. */
-	private Address1 address1st;
+	private Address address1st;
 
 	/** The address 2 nd. */
-	private Address2 address2nd;
+	private Address address2nd;
 
 	/** The kana address 1 st. */
-	private AddressKana1 kanaAddress1st;
+	private KanaAddress kanaAddress1st;
 
 	/** The kana address 2 nd. */
-	private AddressKana2 kanaAddress2nd;
+	private KanaAddress kanaAddress2nd;
 
 	/** The phone number. */
 	// TODO: TelephoneNo
-	private PhoneNumber phoneNumber;
+	private String phoneNumber;
 
 	/** The health insu office ref code 1 st. */
-	private OfficeRefCode1 healthInsuOfficeRefCode1st;
+	private String healthInsuOfficeRefCode1st;
 
 	/** The health insu office ref code 2 nd. */
-	private OfficeRefCode2 healthInsuOfficeRefCode2nd;
+	private String healthInsuOfficeRefCode2nd;
 
 	/** The pension office ref code 1 st. */
-	private OfficeRefCode1 pensionOfficeRefCode1st;
+	private String pensionOfficeRefCode1st;
 
 	/** The pension office ref code 2 nd. */
-	private OfficeRefCode2 pensionOfficeRefCode2nd;
+	private String pensionOfficeRefCode2nd;
 
 	/** The welfare pension fund code. */
-	private WelfarePensionFundCode welfarePensionFundCode;
+	private String welfarePensionFundCode;
 
 	/** The office pension fund code. */
-	private OfficePensionFundCode officePensionFundCode;
+	private String officePensionFundCode;
 
 	/** The health insu city code. */
-	private CityCode healthInsuCityCode;
+	private String healthInsuCityCode;
 
 	/** The health insu office sign. */
-	private OfficeSign healthInsuOfficeSign;
+	private String healthInsuOfficeSign;
 
 	/** The pension city code. */
-	private CityCode pensionCityCode;
+	private String pensionCityCode;
 
 	/** The pension office sign. */
-	private OfficeSign pensionOfficeSign;
+	private String pensionOfficeSign;
 
 	/** The health insu office code. */
-	private HealthInsuOfficeCode healthInsuOfficeCode;
+	private String healthInsuOfficeCode;
 
 	/** The health insu asso code. */
-	private HealthInsuAssoCode healthInsuAssoCode;
+	private String healthInsuAssoCode;
 
 	/** The memo. */
 	private Memo memo;

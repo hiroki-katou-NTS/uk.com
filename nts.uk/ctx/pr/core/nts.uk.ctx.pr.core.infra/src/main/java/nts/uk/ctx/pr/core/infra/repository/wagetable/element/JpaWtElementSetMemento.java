@@ -16,7 +16,7 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.element.QwtmtWagetableElementPK
 public class JpaWtElementSetMemento implements WtElementSetMemento {
 
 	/** The type value. */
-	private QwtmtWagetableElement typeValue;
+	protected QwtmtWagetableElement typeValue;
 
 	/**
 	 * Instantiates a new jpa wt element set memento.

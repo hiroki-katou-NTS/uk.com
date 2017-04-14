@@ -37,7 +37,8 @@ public class RemoveLineBankCommandHandler extends CommandHandler<RemoveLineBankC
 		List<String> lineBankCodeList = new ArrayList<String>();
 		lineBankCodeList.add(lineBankCode);
 
-		// check exists linebank in database PERSON_BANK_ACCOUNT  
+		// check exists linebank in person_bank_account (xem linebank co ng nao
+		// su dung k, neu co ng su dung thi k dc xoa)
 		if (personBankAccountRepository.checkExistsLineBankAccount(companyCode, lineBankCodeList)) {
 			throw new BusinessException("ER008");
 		}

@@ -91,7 +91,6 @@ public class QlsptLedgerFormHead implements Serializable {
 	 * Instantiates a new qlspt ledger form head.
 	 */
 	public QlsptLedgerFormHead() {
-		super();
 	}
 
 	/**

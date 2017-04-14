@@ -6,7 +6,6 @@ module nts.uk.pr.view.qmm016.a {
                 return el.value == val;
             })[0];
         }
-
         export class ScreenModel extends base.simplehistory.viewmodel.ScreenBaseModel<model.WageTable, model.WageTableHistory> {
             // For UI Tab.
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
@@ -73,13 +72,6 @@ module nts.uk.pr.view.qmm016.a {
                 return dfd.promise();
             }
 
-            /**
-             * Do check dirty later.
-             */
-            isDirty(): boolean {
-                return false;
-            }
-            
              /**
              * Load wage table detail.
              */
@@ -133,19 +125,6 @@ module nts.uk.pr.view.qmm016.a {
                 self.selectedTab('tab-1');
                 self.head.reset();
             }
-            
-            /**
-             * Show group setting screen.
-             */
-            btnGroupSettingClick(): void {
-                var self = this;
-                var ntsDialogOptions = {
-                    title: '資格グループの設定',
-                    dialogClass: 'no-close'
-                };
-                nts.uk.ui.windows.sub.modal('/view/qmm/016/l/index.xhtml', ntsDialogOptions);
-            
-            }
         }
 
         /**
@@ -162,10 +141,6 @@ module nts.uk.pr.view.qmm016.a {
             demensionSet: KnockoutObservable<number>;
 
             demensionType: KnockoutObservable<model.DemensionElementCountType>;
-            
-            lblContent: KnockoutComputed<string>;
-            
-            lblSampleImgLink: KnockoutComputed<string>;
 
             /** The memo. */
             memo: KnockoutObservable<string>;
@@ -190,31 +165,6 @@ module nts.uk.pr.view.qmm016.a {
                 self.demensionType = ko.computed(() => {
                     return model.demensionMap[self.demensionSet()];
                 });
-                
-                self.lblContent = ko.computed(() => {
-                    var contentMap = [
-                        '１つの要素でテーブルを作成します。',
-                        '２つの要素でテーブルを作成します。',
-                        '３つの要素でテーブルを作成します。',
-                        '資格手当用のテーブルを作成します。',
-                        '精皆勤手当て用のテーブルを作成します。'
-                    ];
-                    
-                    return contentMap[self.demensionSet()];
-                });
-                
-                self.lblSampleImgLink = ko.computed(() => {
-                    var linkMap = [
-                        '１.png',
-                        '２.png',
-                        '３.png',
-                        '4.png',
-                        '5.png'
-                    ];
-                    
-                    return linkMap[self.demensionSet()];
-                });
-                
                 self.demensionItemList = ko.observableArray<DemensionItemViewModel>([]);
                 
                 self.demensionSet.subscribe(val => {
@@ -340,12 +290,6 @@ module nts.uk.pr.view.qmm016.a {
             onSelectDemensionBtnClick(demension: DemensionItemViewModel) {
                 var self = this;
                 var dlgOptions: k.viewmodel.Option = {
-                    selectedDemensionDto: _.map(self.demensionItemList(), (item) => {
-                        var dto = <model.DemensionItemDto>{};
-                        dto.type = item.elementType();
-                        dto.code = item.elementCode();
-                        return dto;
-                    }),
                     onSelectItem: (data) => {
                         demension.elementType(data.demension.type);
                         demension.elementCode(data.demension.code);
@@ -431,18 +375,10 @@ module nts.uk.pr.view.qmm016.a {
                 self.elements(elementSettingViewModel);
                 
                 // Load detail.
-                if ($('#detailContainer').children().length > 0) {
-                    var element = $('#detailContainer').children().get(0);
-                    ko.cleanNode(element);
-                    $('#detailContainer').empty();
-                }
-
-                self.detailViewModel = this.getDetailViewModelByType(head.mode);
+                self.detailViewModel = new qmm016.a.history.OneDemensionViewModel(history);
                 $('#detailContainer').load(self.detailViewModel.htmlPath, () => {
                     var element = $('#detailContainer').children().get(0);
-                    self.detailViewModel.onLoad().done(() => {
-                        ko.applyBindings(self.detailViewModel, element);
-                    });
+                    ko.applyBindings(self.detailViewModel, element);
                 })
             }
 
@@ -483,29 +419,6 @@ module nts.uk.pr.view.qmm016.a {
                 var self = this;
                 self.history.valueItems = self.detailViewModel.getCellItem();
                 return self.history;
-            }
-
-            
-            /**
-             * Get default demension item list by default.
-             */
-            getDetailViewModelByType(typeCode: number) : history.base.BaseHistoryViewModel {
-                // Regenerate.
-                var self = this;
-                switch (typeCode) {
-                    case 0:
-                        return new qmm016.a.history.OneDemensionViewModel(self.history);
-                    case 1:
-                        return new qmm016.a.history.TwoDemensionViewModel(self.history);
-                    case 2:
-                        return new qmm016.a.history.ThreeDemensionViewModel(self.history);
-                    case 3:
-                        return new qmm016.a.history.CertificateViewModel(self.history);
-                    case 4:
-                        return new qmm016.a.history.ThreeDemensionViewModel(self.history);
-                    default:
-                        return new qmm016.a.history.OneDemensionViewModel(self.history);
-                }
             }
 
             /**

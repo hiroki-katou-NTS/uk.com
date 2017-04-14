@@ -4,8 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable.history;
 
+import java.math.BigDecimal;
+
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
-import nts.uk.ctx.pr.core.dom.wagetable.WtValue;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtItemSetMemento;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableMny;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableMnyPK;
@@ -16,7 +17,7 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableMnyPK;
 public class JpaWtItemSetMemento implements WtItemSetMemento {
 
 	/** The type value. */
-	private QwtmtWagetableMny typeValue;
+	protected QwtmtWagetableMny typeValue;
 
 	/**
 	 * Instantiates a new jpa wage table item set memento.
@@ -48,9 +49,6 @@ public class JpaWtItemSetMemento implements WtItemSetMemento {
 	 */
 	@Override
 	public void setElement1Id(ElementId element1Id) {
-		if (element1Id == null) {
-			return;
-		}
 		QwtmtWagetableMnyPK qwtmtWagetableMnyPK = this.typeValue.getQwtmtWagetableMnyPK();
 		qwtmtWagetableMnyPK.setElement1Id(element1Id.v());
 		this.typeValue.setQwtmtWagetableMnyPK(qwtmtWagetableMnyPK);
@@ -64,9 +62,6 @@ public class JpaWtItemSetMemento implements WtItemSetMemento {
 	 */
 	@Override
 	public void setElement2Id(ElementId element2Id) {
-		if (element2Id == null) {
-			return;
-		}
 		QwtmtWagetableMnyPK qwtmtWagetableMnyPK = this.typeValue.getQwtmtWagetableMnyPK();
 		qwtmtWagetableMnyPK.setElement2Id(element2Id.v());
 		this.typeValue.setQwtmtWagetableMnyPK(qwtmtWagetableMnyPK);
@@ -80,9 +75,6 @@ public class JpaWtItemSetMemento implements WtItemSetMemento {
 	 */
 	@Override
 	public void setElement3Id(ElementId element3Id) {
-		if (element3Id == null) {
-			return;
-		}
 		QwtmtWagetableMnyPK qwtmtWagetableMnyPK = this.typeValue.getQwtmtWagetableMnyPK();
 		qwtmtWagetableMnyPK.setElement3Id(element3Id.v());
 		this.typeValue.setQwtmtWagetableMnyPK(qwtmtWagetableMnyPK);
@@ -95,8 +87,8 @@ public class JpaWtItemSetMemento implements WtItemSetMemento {
 	 * setAmount(java.math.BigDecimal)
 	 */
 	@Override
-	public void setAmount(WtValue amount) {
-		this.typeValue.setValueMny(amount.v());
+	public void setAmount(BigDecimal amount) {
+		this.typeValue.setValueMny(amount.longValue());
 	}
 
 }

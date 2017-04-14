@@ -11,7 +11,9 @@ var qmm005;
             ViewModel.prototype.start = function () {
                 var self = this;
                 var _records = [];
+                /// Service trả về một mảng 2 chiều gồm 2 bảng paydayProcessing và payDay
                 a.services.getData().done(function (resp) {
+                    /// Lặp từng dòng, số dòng cố định là 5 được
                     var _loop_1 = function(i) {
                         var index = parseInt(i) + 1;
                         var _row = new TableRowItem({
@@ -39,6 +41,7 @@ var qmm005;
                                 payDays = _.orderBy(item[1], ['processingYm'], ['desc']);
                                 for (var j = 0; j < payDays.length; j++) {
                                     var rec = payDays[j], payDate = new Date(rec.payDate), month = payDate.getMonth() + 1, stdDate = new Date(rec.stdDate), label = nts.uk.time.formatDate(payDate, "yyyy/MM/dd") + '(' + payDate['getDayJP']() + ')|' + nts.uk.time.formatDate(stdDate, "yyyy/MM/dd");
+                                    // Trường hợp là lương
                                     if (rec.payBonusAtr === 0 && rec.sparePayAtr === 0) {
                                         ym = nts.uk.time.parseYearMonth(rec.processingYm);
                                         if (ym.success) {
@@ -49,6 +52,7 @@ var qmm005;
                                             cspd = month;
                                         }
                                     }
+                                    // Chưa thấy cập nhật trường hợp dữ liệu của thưởng?
                                     if (rec.payBonusAtr === 1 && rec.sparePayAtr === 0) {
                                         var pym = nts.uk.time.parseYearMonth(rec.processingYm);
                                         if (pym.success) {
@@ -66,11 +70,12 @@ var qmm005;
                             _row.sel004Data(_sel004Data);
                             _sel005Data = _.uniqWith(_sel005Data, _.isEqual);
                             _row.sel005Data(_sel005Data);
-                            _row.sel001(cym.year);
-                            _row.sel002(cspd);
-                            _row.sel003(item[0].bonusAtr == 1 ? true : false);
-                            _row.sel004(bcym.year);
-                            _row.sel005(bcym.month);
+                            // Năm được là năm hiện tại
+                            _row.sel001(cym.year); // năm xử lý
+                            _row.sel002(cspd); // Năm tháng của năm xử lý
+                            _row.sel003(item[0].bonusAtr == 1 ? true : false); // Năm có thưởng hay không?
+                            _row.sel004(bcym.year); // Thường vào năm nào (khác năm có thưởng = năm xử lý), VD: Năm 2017 có thưởng nhưng năm 2018 mới nhận thưởng
+                            _row.sel005(bcym.month); //Thưởng vào tháng nào.
                         }
                         _records.push(_row);
                     };
@@ -100,6 +105,7 @@ var qmm005;
                     self.start();
                 });
             };
+            // Navigate to qmp/005/b/index.xhtml
             ViewModel.prototype.btn002Click = function (item, event) {
                 location.href = "../../../qmp/005/b/index.xhtml";
             };
@@ -155,4 +161,3 @@ var qmm005;
         }());
     })(a = qmm005.a || (qmm005.a = {}));
 })(qmm005 || (qmm005 = {}));
-//# sourceMappingURL=qmm005.a.viewmodel.js.map

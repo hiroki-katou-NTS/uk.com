@@ -13,26 +13,67 @@ var qmm006;
                 checkExistBankAndBranch: "basic/system/bank/find/check"
             };
             function remove(command) {
-                return nts.uk.request.ajax("com", paths.remove, command);
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", paths.remove, command)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
             }
             service.remove = remove;
             function saveData(isEnable, command) {
+                var dfd = $.Deferred();
                 var path = isEnable ? paths.saveData : paths.update;
-                return nts.uk.request.ajax("com", path, command);
+                nts.uk.request.ajax("com", path, command)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
             }
             service.saveData = saveData;
             function findAll() {
-                return nts.uk.request.ajax("com", paths.findAll);
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", paths.findAll)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
             }
             service.findAll = findAll;
             function findBankAll() {
-                return nts.uk.request.ajax("com", paths.findBankAll);
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", paths.findBankAll)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
             }
             service.findBankAll = findBankAll;
             function checkExistBankAndBranch() {
-                return nts.uk.request.ajax("com", paths.checkExistBankAndBranch);
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", paths.checkExistBankAndBranch)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
             }
             service.checkExistBankAndBranch = checkExistBankAndBranch;
         })(service = a.service || (a.service = {}));
     })(a = qmm006.a || (qmm006.a = {}));
 })(qmm006 || (qmm006 = {}));
+//# sourceMappingURL=qmm006.a.service.js.map

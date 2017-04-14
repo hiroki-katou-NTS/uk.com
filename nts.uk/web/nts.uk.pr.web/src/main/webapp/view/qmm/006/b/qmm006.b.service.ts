@@ -3,10 +3,15 @@ module qmm006.b.service {
         findBankAll: "basic/system/bank/find/all"
     }
 
-    /**
-     * get data of Bank
-     */
     export function findBankAll(): JQueryPromise<Array<any>> {
-        return nts.uk.request.ajax("com", paths.findBankAll);
+        var dfd = $.Deferred<any>();
+        nts.uk.request.ajax("com", paths.findBankAll)
+            .done(function(res: Array<any>) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
     }
 }

@@ -11,8 +11,8 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
-import nts.uk.file.pr.app.export.salarytable.SalaryTableReportService;
-import nts.uk.file.pr.app.export.salarytable.query.SalaryTableReportQuery;
+import nts.uk.ctx.pr.screen.app.report.salarychart.SalaryChartReportService;
+import nts.uk.ctx.pr.screen.app.report.salarychart.query.SalaryChartReportQuery;
 
 /**
  * The Class QPP009WebService.
@@ -23,7 +23,7 @@ public class QPP009WebService extends WebService {
 	
 	/** The export service. */
 	@Inject
-	private SalaryTableReportService exportService;
+	private SalaryChartReportService exportService;
 	
 	/**
 	 * Generate.
@@ -33,7 +33,7 @@ public class QPP009WebService extends WebService {
 	 */
 	@POST
 	@Path("generate")
-	public ExportServiceResult generate(SalaryTableReportQuery query) {
+	public ExportServiceResult generate(SalaryChartReportQuery query) {
 	// TODO:
 		return this.exportService.start(query);
 	}

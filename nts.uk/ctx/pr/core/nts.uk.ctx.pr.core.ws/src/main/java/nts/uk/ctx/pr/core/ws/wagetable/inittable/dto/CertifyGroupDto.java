@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import lombok.Data;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupName;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupSetMemento;
@@ -20,7 +19,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.certification.MultipleTargetSetting;
  * The Class CodeItem.
  */
 @Data
-public class CertifyGroupDto {
+public class CertifyGroupDto implements CertifyGroupSetMemento {
 
 	/** The code. */
 	private String code;
@@ -34,67 +33,33 @@ public class CertifyGroupDto {
 	/** The certify items. */
 	private List<CertifyItemDto> certifyItems;
 
-	/**
-	 * From domain.
-	 *
-	 * @param wtHistory
-	 *            the wt history
-	 * @return the wt history dto
-	 */
-	public CertifyGroupDto fromDomain(CertifyGroup certifyGroup) {
-		CertifyGroupDto dto = this;
-
-		certifyGroup.saveToMemento(new CgSetMemento(dto));
-
-		return dto;
+	@Override
+	public void setCompanyCode(String companyCode) {
+		// Do nothing.
 	}
 
-	/**
-	 * The Class CgSetMemento.
-	 */
-	private class CgSetMemento implements CertifyGroupSetMemento {
+	@Override
+	public void setCode(CertifyGroupCode code) {
+		this.code = code.v();
+	}
 
-		/** The dto. */
-		private CertifyGroupDto dto;
+	@Override
+	public void setName(CertifyGroupName name) {
+		this.name = name.v();
+	}
 
-		/**
-		 * Instantiates a new cg set memento.
-		 *
-		 * @param dto
-		 *            the dto
-		 */
-		public CgSetMemento(CertifyGroupDto dto) {
-			this.dto = dto;
-		}
+	@Override
+	public void setMultiApplySet(MultipleTargetSetting multiApplySet) {
+		this.multiApplySet = multiApplySet.value;
+	}
 
-		@Override
-		public void setCompanyCode(String companyCode) {
-			// Do nothing.
-		}
-
-		@Override
-		public void setCode(CertifyGroupCode code) {
-			this.dto.code = code.v();
-		}
-
-		@Override
-		public void setName(CertifyGroupName name) {
-			this.dto.name = name.v();
-		}
-
-		@Override
-		public void setMultiApplySet(MultipleTargetSetting multiApplySet) {
-			this.dto.multiApplySet = multiApplySet.value;
-		}
-
-		@Override
-		public void setCertifies(Set<Certification> certifies) {
-			this.dto.certifyItems = certifies.stream().map(item -> {
-				CertifyItemDto certifyItemDto = new CertifyItemDto();
-				item.saveToMemento(certifyItemDto);
-				return certifyItemDto;
-			}).collect(Collectors.toList());
-		}
+	@Override
+	public void setCertifies(Set<Certification> certifies) {
+		this.certifyItems = certifies.stream().map(item -> {
+			CertifyItemDto certifyItemDto = new CertifyItemDto();
+			item.saveToMemento(certifyItemDto);
+			return certifyItemDto;
+		}).collect(Collectors.toList());
 	}
 
 }

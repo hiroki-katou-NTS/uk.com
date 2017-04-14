@@ -22,6 +22,7 @@ public class ElementSetting {
 	private DemensionNo demensionNo;
 
 	/** The type. */
+	// SHOULD WE USE?
 	private ElementType type;
 
 	/** The item list. */

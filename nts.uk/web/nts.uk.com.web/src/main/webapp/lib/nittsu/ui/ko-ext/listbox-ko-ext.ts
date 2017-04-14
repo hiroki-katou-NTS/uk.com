@@ -303,18 +303,11 @@ module nts.uk.ui.koExtentions {
             container.data("init", false);
 
             // Set value
-            var haveData = isMultiSelect ? !uk.text.isNullOrEmpty(selectedValue) && selectedValue.length > 0 
+            var haveDate = isMultiSelect ? !uk.text.isNullOrEmpty(selectedValue) && selectedValue.length > 0 
                 : !uk.text.isNullOrEmpty(selectedValue);
-            if (haveData && (!_.isEqual(originalSelected, selectedValue) || init)) {
+            if (haveDate && (!_.isEqual(originalSelected, selectedValue) || init)) {
                 selectListBoxContainer.data('value', selectedValue);
-                if(isMultiSelect){
-                    selectMultiRow(selectListBoxContainer, selectedValue);
-                } else {
-                    selectOneRow(selectListBoxContainer, selectedValue);
-                }
                 container.trigger('selectionChange');
-            } else if (!haveData){
-                container.ntsListBox("deselectAll");    
             }
             
             if (isMultiSelect) {

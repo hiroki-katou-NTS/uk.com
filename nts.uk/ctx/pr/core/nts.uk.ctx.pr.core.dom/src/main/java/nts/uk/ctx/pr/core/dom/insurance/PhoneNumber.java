@@ -5,15 +5,12 @@
 package nts.uk.ctx.pr.core.dom.insurance;
 
 import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * The Class PhoneNumber.
  */
-@StringCharType(CharType.NUMERIC)
-@StringMaxLength(20)
+@StringMaxLength(13)
 public class PhoneNumber extends StringPrimitiveValue<PhoneNumber>{
 	
 	/** The Constant serialVersionUID. */

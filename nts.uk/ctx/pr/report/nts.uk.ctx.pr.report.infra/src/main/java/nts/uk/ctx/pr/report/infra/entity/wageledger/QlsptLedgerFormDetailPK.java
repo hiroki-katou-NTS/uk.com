@@ -58,7 +58,6 @@ public class QlsptLedgerFormDetailPK implements Serializable {
 	 * Instantiates a new qlspt ledger form detail PK.
 	 */
 	public QlsptLedgerFormDetailPK() {
-		super();
 	}
 
 	/**

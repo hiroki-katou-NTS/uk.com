@@ -16,6 +16,8 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.DeleteHealthInsuranceCommand;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.DeleteHealthInsuranceCommandHandler;
+import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.RegisterHealthInsuranceCommand;
+import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.RegisterHealthInsuranceCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.UpdateHealthInsuranceCommand;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.UpdateHealthInsuranceCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.HealthInsuranceOfficeItemDto;
@@ -44,6 +46,10 @@ public class HealthInsuranceRateWs
 	/** The health insurance rate finder. */
 	@Inject
 	private HealthInsuranceRateFinder healthInsuranceRateFinder;
+
+	/** The register health insurance command handler. */
+	@Inject
+	private RegisterHealthInsuranceCommandHandler registerHealthInsuranceCommandHandler;
 
 	/** The update health insurance command handler. */
 	@Inject
@@ -89,6 +95,18 @@ public class HealthInsuranceRateWs
 	@Path("findAllHistory")
 	public List<HealthInsuranceOfficeItemDto> findbyCode() {
 		return healthInsuranceRateFinder.findAllHistory();
+	}
+
+	/**
+	 * Creates the.
+	 *
+	 * @param command
+	 *            the command
+	 */
+	@POST
+	@Path("create")
+	public void create(RegisterHealthInsuranceCommand command) {
+		registerHealthInsuranceCommandHandler.handle(command);
 	}
 
 	/**

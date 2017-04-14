@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 import lombok.Builder;
 import lombok.Getter;
-import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnSetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValue;
 
@@ -18,6 +18,9 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValu
 @Builder
 @Getter
 public class PensionAvgearnDto implements PensionAvgearnSetMemento {
+
+	/** The history id. */
+	private String historyId;
 
 	/** The level code. */
 	private Integer levelCode;
@@ -51,7 +54,7 @@ public class PensionAvgearnDto implements PensionAvgearnSetMemento {
 	 */
 	@Override
 	public void setHistoryId(String historyId) {
-		// Do nothing.
+		this.historyId = historyId;
 	}
 
 	/*
@@ -73,7 +76,7 @@ public class PensionAvgearnDto implements PensionAvgearnSetMemento {
 	 * dom.insurance.InsuranceAmount)
 	 */
 	@Override
-	public void setChildContributionAmount(CommonAmount childContributionAmount) {
+	public void setChildContributionAmount(InsuranceAmount childContributionAmount) {
 		this.childContributionAmount = childContributionAmount.v();
 	}
 

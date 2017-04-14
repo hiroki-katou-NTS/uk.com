@@ -31,36 +31,33 @@ public class UnitPriceWs {
 	private UnitPriceRepository unitPriceRepo;
 
 	/**
-	 * Find by month.
+	 * Findbydate.
 	 *
-	 * @param baseMonth
-	 *            the base month
+	 * @param baseDate the base date
 	 * @return the list
 	 */
 	@POST
-	@Path("findbymonth/{baseMonth}")
-	public List<UnitPriceModel> findByMonth(@PathParam("baseMonth") Integer baseMonth) {
-		List<UnitPriceModel> listUnitPriceCode = unitPriceRepo.getCompanyUnitPrice(baseMonth)
-				.stream().map(item -> UnitPriceModel.builder().unitPriceCode(item.getCode().v())
-						.unitPriceName(item.getName().v()).build())
+	@Path("findbydate/{baseDate}")
+	public List<UnitPriceModel> findbydate(@PathParam("baseDate") Integer baseDate) {
+		List<UnitPriceModel> listUnitPriceCode = unitPriceRepo
+				.getCompanyUnitPrice(baseDate).stream().map(item -> UnitPriceModel.builder()
+						.unitPriceCode(item.getCode().v()).unitPriceName(item.getName().v()).build())
 				.collect(Collectors.toList());
 		return listUnitPriceCode;
 	}
 
 	/**
-	 * Find by codes.
+	 * Findbycode.
 	 *
-	 * @param model
-	 *            the model
+	 * @param model the model
 	 * @return the list
 	 */
 	@POST
 	@Path("findbycodes")
-	public List<UnitPriceModel> findByCodes(ListUnitPriceCodeModel model) {
+	public List<UnitPriceModel> findbycode(ListUnitPriceCodeModel model) {
 		List<UnitPriceModel> listUnitPriceCode = unitPriceRepo
-				.findByCodes(AppContexts.user().companyCode(), model.getCodes()).stream()
-				.map(item -> UnitPriceModel.builder().unitPriceCode(item.getCode().v())
-						.unitPriceName(item.getName().v()).build())
+				.findByCodes(AppContexts.user().companyCode(), model.getCodes()).stream().map(item -> UnitPriceModel
+						.builder().unitPriceCode(item.getCode().v()).unitPriceName(item.getName().v()).build())
 				.collect(Collectors.toList());
 		return listUnitPriceCode;
 	}

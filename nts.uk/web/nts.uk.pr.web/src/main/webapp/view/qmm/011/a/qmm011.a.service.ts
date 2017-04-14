@@ -131,11 +131,19 @@ module nts.uk.pr.view.qmm011.a {
 
         //Function connection service add Accident Insurance Rate
         export function addAccidentInsuranceRate(
-            accidentInsuranceRateModel: viewmodel.AccIRModel): JQueryPromise<void> {
+            accidentInsuranceRateModel: viewmodel.AccidentInsuranceRateModel): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
             var data = {
                 accidentInsuranceRate: service.convertAccidentInsuranceRateModelDTO(accidentInsuranceRateModel)
             };
-            return nts.uk.request.ajax(paths.addAccidentInsuranceRate, data);
+            nts.uk.request.ajax(paths.addAccidentInsuranceRate, data)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res: any) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
         }
 
 
@@ -147,11 +155,20 @@ module nts.uk.pr.view.qmm011.a {
 
         //Function connection service update Accident Insurance Rate
         export function updateAccidentInsuranceRate(
-            accidentInsuranceRateModel: viewmodel.AccIRModel): JQueryPromise<void> {
+            accidentInsuranceRateModel: viewmodel.AccidentInsuranceRateModel): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
             var data = {
                 accidentInsuranceRate: service.convertAccidentInsuranceRateModelDTO(accidentInsuranceRateModel)
             };
-            return nts.uk.request.ajax(paths.updateAccidentInsuranceRate, data);
+            nts.uk.request.ajax(paths.updateAccidentInsuranceRate, data)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                    //xyz
+                })
+                .fail(function(res: any) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
         }
 
         //Function connection service find All AccidentInsuranceHistory 
@@ -275,7 +292,7 @@ module nts.uk.pr.view.qmm011.a {
 
         //Function convert Model => DTO (InsuBizRateItemModel) 
         export function convertInsuBizRateItemModelDTO(insuBizType: number,
-            accidentInsuranceRateDetailModel: viewmodel.AccIRDetailModel)
+            accidentInsuranceRateDetailModel: viewmodel.AccidentInsuranceRateDetailModel)
             : model.InsuBizRateItemDto {
             var insuBizRateItemDto: model.InsuBizRateItemDto;
             insuBizRateItemDto = new model.InsuBizRateItemDto(insuBizType,
@@ -286,7 +303,7 @@ module nts.uk.pr.view.qmm011.a {
 
         //Function convert Model => DTO (AccidentInsuranceHistoryDto)
         export function convertAccidentInsuranceHistoryDto(
-            accidentInsuranceRateHistoryModel: viewmodel.AccIRHistoryModel)
+            accidentInsuranceRateHistoryModel: viewmodel.AccidentInsuranceRateHistoryModel)
             : model.AccidentInsuranceHistoryDto {
             var accidentInsuranceHistoryDto: model.AccidentInsuranceHistoryDto;
             accidentInsuranceHistoryDto = new model.AccidentInsuranceHistoryDto();
@@ -300,7 +317,7 @@ module nts.uk.pr.view.qmm011.a {
 
         //Function convert Model => DTO (AccidentInsuranceModel)
         export function convertAccidentInsuranceRateModelDTO(
-            accidentInsuranceRateModel: viewmodel.AccIRModel)
+            accidentInsuranceRateModel: viewmodel.AccidentInsuranceRateModel)
             : model.AccidentInsuranceRateDto {
             var accidentInsuranceRateDto: model.AccidentInsuranceRateDto;
             accidentInsuranceRateDto = new model.AccidentInsuranceRateDto();
@@ -310,34 +327,34 @@ module nts.uk.pr.view.qmm011.a {
             accidentInsuranceRateDto.rateItems = [];
             accidentInsuranceRateDto.rateItems
                 .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz1St,
-                    accidentInsuranceRateModel.biz1StModel));
+                    accidentInsuranceRateModel.accidentInsuranceRateBiz1StModel));
             accidentInsuranceRateDto.rateItems
                 .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz2Nd,
-                    accidentInsuranceRateModel.biz2NdModel));
+                    accidentInsuranceRateModel.accidentInsuranceRateBiz2NdModel));
             accidentInsuranceRateDto.rateItems
                 .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz3Rd,
-                    accidentInsuranceRateModel.biz3RdModel));
+                    accidentInsuranceRateModel.accidentInsuranceRateBiz3RdModel));
             accidentInsuranceRateDto.rateItems
                 .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz4Th,
-                    accidentInsuranceRateModel.biz4ThModel));
+                    accidentInsuranceRateModel.accidentInsuranceRateBiz4ThModel));
             accidentInsuranceRateDto.rateItems
                 .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz5Th,
-                    accidentInsuranceRateModel.biz5ThModel));
+                    accidentInsuranceRateModel.accidentInsuranceRateBiz5ThModel));
             accidentInsuranceRateDto.rateItems
                 .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz6Th,
-                    accidentInsuranceRateModel.biz6ThModel));
+                    accidentInsuranceRateModel.accidentInsuranceRateBiz6ThModel));
             accidentInsuranceRateDto.rateItems
                 .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz7Th,
-                    accidentInsuranceRateModel.biz7ThModel));
+                    accidentInsuranceRateModel.accidentInsuranceRateBiz7ThModel));
             accidentInsuranceRateDto.rateItems
                 .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz8Th,
-                    accidentInsuranceRateModel.biz8ThModel));
+                    accidentInsuranceRateModel.accidentInsuranceRateBiz8ThModel));
             accidentInsuranceRateDto.rateItems
                 .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz9Th,
-                    accidentInsuranceRateModel.biz9ThModel));
+                    accidentInsuranceRateModel.accidentInsuranceRateBiz9ThModel));
             accidentInsuranceRateDto.rateItems
                 .push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz10Th,
-                    accidentInsuranceRateModel.biz10ThModel));
+                    accidentInsuranceRateModel.accidentInsuranceRateBiz10ThModel));
             return accidentInsuranceRateDto;
         }
 
@@ -583,8 +600,8 @@ module nts.uk.pr.view.qmm011.a {
 
             export enum CareerGroupDto {
                 Agroforestry = 0,
-                Other = 1,
-                Contruction = 2
+                Contruction = 1,
+                Other = 2
             }
 
             export enum BusinessTypeEnumDto {

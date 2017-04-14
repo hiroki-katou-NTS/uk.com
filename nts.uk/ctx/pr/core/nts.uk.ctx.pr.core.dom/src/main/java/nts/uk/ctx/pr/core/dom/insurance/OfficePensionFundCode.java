@@ -13,7 +13,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * The Class OfficePensionFundCode.
  */
 @StringCharType(CharType.ALPHA_NUMERIC)
-@StringMaxLength(6)
+@StringMaxLength(7)
 public class OfficePensionFundCode extends StringPrimitiveValue<OfficePensionFundCode> {
 
 	/** serialVersionUID. */

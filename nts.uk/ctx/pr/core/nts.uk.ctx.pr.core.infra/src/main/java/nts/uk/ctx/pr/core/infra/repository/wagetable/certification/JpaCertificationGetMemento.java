@@ -13,7 +13,7 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertificatio
 public class JpaCertificationGetMemento implements CertificationGetMemento {
 
 	/** The type value. */
-	private QcemtCertification typeValue;
+	protected QcemtCertification typeValue;
 
 	/**
 	 * Instantiates a new jpa certification get memento.

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import lombok.Data;
 import nts.uk.ctx.pr.report.app.salarydetail.aggregate.find.dto.SalaryItemDto;
+import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItem;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemCode;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemGetMemento;
@@ -19,6 +20,10 @@ import nts.uk.ctx.pr.report.dom.salarydetail.item.SalaryItem;
 
 /**
  * The Class SalaryAggregateItemSaveDto.
+ */
+
+/**
+ * Instantiates a new salary aggregate item save dto.
  */
 @Data
 public class SalaryAggregateItemSaveDto {
@@ -70,44 +75,32 @@ public class SalaryAggregateItemSaveDto {
 			this.companyCode = companyCode;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
-		 * SalaryAggregateItemGetMemento#getCompanyCode()
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemGetMemento#getCompanyCode()
 		 */
 		@Override
-		public String getCompanyCode() {
-			return this.companyCode;
+		public CompanyCode getCompanyCode() {
+			return new CompanyCode(this.companyCode);
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
-		 * SalaryAggregateItemGetMemento#getSalaryAggregateItemCode()
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemGetMemento#getSalaryAggregateItemCode()
 		 */
 		@Override
 		public SalaryAggregateItemCode getSalaryAggregateItemCode() {
 			return new SalaryAggregateItemCode(this.dto.salaryAggregateItemCode);
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
-		 * SalaryAggregateItemGetMemento#getSalaryAggregateItemName()
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemGetMemento#getSalaryAggregateItemName()
 		 */
 		@Override
 		public SalaryAggregateItemName getSalaryAggregateItemName() {
 			return new SalaryAggregateItemName(this.dto.salaryAggregateItemName);
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
-		 * SalaryAggregateItemGetMemento#getSubItemCodes()
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemGetMemento#getSubItemCodes()
 		 */
 		@Override
 		public Set<SalaryItem> getSubItemCodes() {
@@ -119,22 +112,16 @@ public class SalaryAggregateItemSaveDto {
 			}).collect(Collectors.toSet());
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
-		 * SalaryAggregateItemGetMemento#getTaxDivision()
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemGetMemento#getTaxDivision()
 		 */
 		@Override
 		public TaxDivision getTaxDivision() {
 			return TaxDivision.valueOf(this.dto.taxDivision);
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
-		 * SalaryAggregateItemGetMemento#getItemCategory()
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemGetMemento#getItemCategory()
 		 */
 		@Override
 		public int getItemCategory() {

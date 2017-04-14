@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 
 import nts.arc.primitive.DecimalPrimitiveValue;
 import nts.arc.primitive.constraint.DecimalRange;
+import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * The Class InsuranceAmount.

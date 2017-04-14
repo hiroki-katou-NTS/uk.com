@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command;
@@ -22,19 +22,20 @@ import nts.uk.shr.com.context.LoginUserContext;
  * The Class AccidentInsuranceRateAddCommandHandler.
  */
 @Stateless
-public class AccidentInsuranceRateAddCommandHandler extends CommandHandler<AccidentInsuranceRateAddCommand> {
+public class AccidentInsuranceRateAddCommandHandler
+		extends CommandHandler<AccidentInsuranceRateAddCommand> {
 
 	/** The accident insurance rate repo. */
 	@Inject
-	private AccidentInsuranceRateRepository repository;
+	private AccidentInsuranceRateRepository accidentInsuranceRateRepo;
 
 	/** The accident insurance rate service. */
 	@Inject
-	private AccidentInsuranceRateService service;
+	private AccidentInsuranceRateService accidentInsuranceRateService;
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see
 	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
 	 * .CommandHandlerContext)
@@ -46,32 +47,33 @@ public class AccidentInsuranceRateAddCommandHandler extends CommandHandler<Accid
 		// get user login
 		LoginUserContext loginUserContext = AppContexts.user();
 
-		// get company code user login
+		// get commpany user login
 		String companyCode = loginUserContext.companyCode();
 
 		// get command
 		AccidentInsuranceRateAddCommand command = context.getCommand();
 
 		// get domain by action request
-		AccidentInsuranceRate insuranceRate = command.toDomain(companyCode);
+		AccidentInsuranceRate accidentInsuranceRate = command.toDomain(companyCode);
 
 		// validate domain
-		insuranceRate.validate();
+		accidentInsuranceRate.validate();
 
-		// validate input domain
-		this.service.validateDateRange(insuranceRate);
+		// validate input domian
+		accidentInsuranceRateService.validateDateRange(accidentInsuranceRate);
 
 		// get first data
-		Optional<AccidentInsuranceRate> dataFirst = this.repository.findFirstData(companyCode);
+		Optional<AccidentInsuranceRate> optionalFirst = this.accidentInsuranceRateRepo
+				.findFirstData(companyCode);
 
-		// exist data
-		if (dataFirst.isPresent()) {
-			dataFirst.get().setEnd(insuranceRate.getApplyRange().getStartMonth().previousMonth());
-			this.repository.update(dataFirst.get());
+		if (optionalFirst.isPresent()) {
+			optionalFirst.get()
+					.setEnd(accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+			this.accidentInsuranceRateRepo.update(optionalFirst.get());
 		}
 
 		// connection repository running add
-		this.repository.add(insuranceRate);
+		this.accidentInsuranceRateRepo.add(accidentInsuranceRate);
 	}
 
 }

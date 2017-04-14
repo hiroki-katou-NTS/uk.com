@@ -26,6 +26,9 @@ public class CreateEmploymentCommandHandler extends CommandHandler<CreateEmploym
 		this.repository.findEmployment(companyCode, command.getEmploymentCode()).ifPresent(x -> {throw new BusinessException("ER005");});
 		
 		Optional<Employment> employmentByDisplayFlg = repository.findEmploymnetByDisplayFlg(companyCode);
+		if(!employmentByDisplayFlg.isPresent()){			
+			employ.setDisplayFlg(ManageOrNot.MANAGE);
+		}
 		
 		//employ.validate();
 		this.repository.add(employ);

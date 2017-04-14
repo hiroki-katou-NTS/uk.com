@@ -4,10 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.command.dto;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
-import nts.uk.ctx.pr.core.dom.wagetable.WtValue;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtItem;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtItemGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtItemSetMemento;
@@ -29,7 +30,7 @@ public class WtItemDto {
 	private String element3Id;
 
 	/** The amount. */
-	private Long amount;
+	private BigDecimal amount;
 
 	/**
 	 * To domain.
@@ -42,30 +43,23 @@ public class WtItemDto {
 		WtItemDto dto = this;
 
 		// Transfer data
-		WtItem wtItem = new WtItem(new WidGetMemento(dto));
+		WtItem wtItem = new WtItem(new WtItemDtoGetMemento(dto));
 
 		return wtItem;
 	}
 
-	/**
-	 * From domain.
-	 *
-	 * @param wtHistory
-	 *            the wt history
-	 * @return the wt item dto
-	 */
 	public WtItemDto fromDomain(WtItem wtHistory) {
 		WtItemDto dto = this;
 
-		wtHistory.saveToMemento(new WidSetMemento(dto));
+		wtHistory.saveToMemento(new WtItemDtoSetMemento(dto));
 
 		return dto;
 	}
 
-	private class WidSetMemento implements WtItemSetMemento {
+	private class WtItemDtoSetMemento implements WtItemSetMemento {
 
 		/** The type value. */
-		private WtItemDto dto;
+		protected WtItemDto dto;
 
 		/**
 		 * Instantiates a new jpa accident insurance rate get memento.
@@ -73,7 +67,7 @@ public class WtItemDto {
 		 * @param typeValue
 		 *            the type value
 		 */
-		public WidSetMemento(WtItemDto dto) {
+		public WtItemDtoSetMemento(WtItemDto dto) {
 			this.dto = dto;
 		}
 
@@ -118,15 +112,15 @@ public class WtItemDto {
 		 * java. math.BigDecimal)
 		 */
 		@Override
-		public void setAmount(WtValue amount) {
-			this.dto.amount = amount.v();
+		public void setAmount(BigDecimal amount) {
+			this.dto.amount = amount;
 		}
 	}
 
-	private class WidGetMemento implements WtItemGetMemento {
+	private class WtItemDtoGetMemento implements WtItemGetMemento {
 
 		/** The type value. */
-		private WtItemDto dto;
+		protected WtItemDto dto;
 
 		/**
 		 * Instantiates a new jpa accident insurance rate get memento.
@@ -134,7 +128,7 @@ public class WtItemDto {
 		 * @param typeValue
 		 *            the type value
 		 */
-		public WidGetMemento(WtItemDto dto) {
+		public WtItemDtoGetMemento(WtItemDto dto) {
 			this.dto = dto;
 		}
 
@@ -182,8 +176,8 @@ public class WtItemDto {
 		 * getAmount()
 		 */
 		@Override
-		public WtValue getAmount() {
-			return new WtValue(this.dto.amount);
+		public BigDecimal getAmount() {
+			return this.dto.amount;
 		}
 	}
 }

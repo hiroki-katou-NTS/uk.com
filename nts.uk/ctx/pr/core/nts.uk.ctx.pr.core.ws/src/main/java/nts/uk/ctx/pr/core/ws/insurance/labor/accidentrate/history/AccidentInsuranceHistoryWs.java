@@ -16,7 +16,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto.AccidentInsuranceRateHistoryFindOutDto;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.history.command.AccidentInsuranceHistoryUpdateCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.history.command.AccidentInsuranceHistoryUpdateCommandHandler;
-import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.history.find.AccidentInsuranceHistoryFinder;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.history.find.AccidentInsuranceHistoryF‌inder;
 
 /**
  * The Class AccidentInsuranceHistoryWs.
@@ -27,7 +27,7 @@ public class AccidentInsuranceHistoryWs extends WebService {
 
 	/** The find. */
 	@Inject
-	private AccidentInsuranceHistoryFinder find;
+	private AccidentInsuranceHistoryF‌inder find;
 
 	/** The update. */
 	@Inject

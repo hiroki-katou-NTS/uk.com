@@ -39,7 +39,6 @@ public class QlsptPaylstFormHeadPK implements Serializable {
 	 * Instantiates a new qlspt paylst form head PK.
 	 */
 	public QlsptPaylstFormHeadPK() {
-		super();
 	}
 
 	/**

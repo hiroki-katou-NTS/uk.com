@@ -6,11 +6,9 @@ package nts.uk.ctx.pr.core.app.insurance.labor.find.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.core.dom.insurance.Address1;
-import nts.uk.ctx.pr.core.dom.insurance.Address2;
-import nts.uk.ctx.pr.core.dom.insurance.AddressKana1;
-import nts.uk.ctx.pr.core.dom.insurance.AddressKana2;
+import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.CitySign;
+import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeMark;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
@@ -60,6 +58,7 @@ public class LaborInsuranceOfficeFindOutDto implements LaborInsuranceOfficeSetMe
 	 */
 	@Override
 	public void setCode(OfficeCode code) {
+		// Nothing code
 		this.code = code.v();
 
 	}
@@ -73,6 +72,7 @@ public class LaborInsuranceOfficeFindOutDto implements LaborInsuranceOfficeSetMe
 	 */
 	@Override
 	public void setName(OfficeName name) {
+		// Nothing code
 		this.name = name.v();
 
 	}
@@ -137,7 +137,7 @@ public class LaborInsuranceOfficeFindOutDto implements LaborInsuranceOfficeSetMe
 	 * setAddress1st(nts.uk.ctx.pr.core.dom.insurance.Address)
 	 */
 	@Override
-	public void setAddress1st(Address1 address1st) {
+	public void setAddress1st(Address address1st) {
 		// Nothing code
 
 	}
@@ -150,7 +150,7 @@ public class LaborInsuranceOfficeFindOutDto implements LaborInsuranceOfficeSetMe
 	 * setAddress2nd(nts.uk.ctx.pr.core.dom.insurance.Address)
 	 */
 	@Override
-	public void setAddress2nd(Address2 address2nd) {
+	public void setAddress2nd(Address address2nd) {
 		// Nothing code
 
 	}
@@ -163,7 +163,7 @@ public class LaborInsuranceOfficeFindOutDto implements LaborInsuranceOfficeSetMe
 	 * setKanaAddress1st(nts.uk.ctx.pr.core.dom.insurance.KanaAddress)
 	 */
 	@Override
-	public void setKanaAddress1st(AddressKana1 kanaAddress1st) {
+	public void setKanaAddress1st(KanaAddress kanaAddress1st) {
 		// Nothing code
 
 	}
@@ -176,7 +176,7 @@ public class LaborInsuranceOfficeFindOutDto implements LaborInsuranceOfficeSetMe
 	 * setKanaAddress2nd(nts.uk.ctx.pr.core.dom.insurance.KanaAddress)
 	 */
 	@Override
-	public void setKanaAddress2nd(AddressKana2 kanaAddress2nd) {
+	public void setKanaAddress2nd(KanaAddress kanaAddress2nd) {
 		// Nothing code
 
 	}
@@ -271,4 +271,5 @@ public class LaborInsuranceOfficeFindOutDto implements LaborInsuranceOfficeSetMe
 		// Nothing code
 
 	}
+
 }

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.repository.salarydetail.memento;
 
+import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.salarydetail.SalaryItemType;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputItemSetMemento;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingCode;
@@ -25,13 +26,13 @@ public class JpaSalaryOutputItemSetMemento implements SalaryOutputItemSetMemento
 	 * @param companyCode the company code
 	 * @param code the code
 	 */
-	public JpaSalaryOutputItemSetMemento(QlsptPaylstFormDetail entity, String companyCode,
+	public JpaSalaryOutputItemSetMemento(QlsptPaylstFormDetail entity, CompanyCode companyCode,
 			SalaryOutputSettingCode code) {
 		this.entity = entity;
 		if (this.entity.getQlsptPaylstFormDetailPK() == null) {
 			this.entity.setQlsptPaylstFormDetailPK(new QlsptPaylstFormDetailPK());
 		}
-		this.entity.getQlsptPaylstFormDetailPK().setCcd(companyCode);
+		this.entity.getQlsptPaylstFormDetailPK().setCcd(companyCode.v());
 		this.entity.getQlsptPaylstFormDetailPK().setFormCd(code.v());
 	}
 

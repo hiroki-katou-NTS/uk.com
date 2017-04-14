@@ -2,7 +2,7 @@ module nts.uk.pr.view.qmm008.h {
     export module viewmodel {
         import commonService = nts.uk.pr.view.qmm008._0.common.service;
         import AvgEarnLevelMasterSettingDto = nts.uk.pr.view.qmm008._0.common.service.model.AvgEarnLevelMasterSettingDto;
-        import ListHealthInsuranceAvgEarnDto = service.model.ListHealthInsuranceAvgEarnDto;
+        import HealthInsuranceAvgEarnDto = service.model.HealthInsuranceAvgEarnDto;
         import HealthInsuranceAvgEarnValue = service.model.HealthInsuranceAvgEarnValue;
         import HealthInsuranceRateItemModel = nts.uk.pr.view.qmm008.b.viewmodel.HealthInsuranceRateItemModel;
         import HealthInsuranceRoundingModel = nts.uk.pr.view.qmm008.b.viewmodel.HealthInsuranceRoundingModel;
@@ -75,9 +75,10 @@ module nts.uk.pr.view.qmm008.h {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 service.findHealthInsuranceAvgEarn(self.healthInsuranceRateModel.historyId).done(res => {
-                    res.listHealthInsuranceAvgearnDto.forEach(item => {
+                    res.forEach(item => {
                         self.listHealthInsuranceAvgearn.push(
                             new HealthInsuranceAvgEarnModel(
+                                item.historyId,
                                 item.levelCode,
                                 new HealthInsuranceAvgEarnValueModel(
                                     item.personalAvg.healthGeneralMny,
@@ -101,11 +102,11 @@ module nts.uk.pr.view.qmm008.h {
             /**
              * Collect data from input.
              */
-            private collectData(): ListHealthInsuranceAvgEarnDto {
+            private collectData(): Array<HealthInsuranceAvgEarnDto> {
                 var self = this;
-                var data: ListHealthInsuranceAvgEarnDto = { historyId: self.healthInsuranceRateModel.historyId, listHealthInsuranceAvgearnDto: [] };
+                var data:any = [];
                 self.listHealthInsuranceAvgearn().forEach(item => {
-                    data.listHealthInsuranceAvgearnDto.push(ko.toJS(item));
+                    data.push(ko.toJS(item));
                 });
                 return data;
             }
@@ -115,16 +116,8 @@ module nts.uk.pr.view.qmm008.h {
              */
             private save(): void {
                 var self = this;
-                // Return if has error.
-                if (!nts.uk.ui._viewModel.errors.isEmpty()) {
-                    return;
-                }
                 service.updateHealthInsuranceAvgearn(self.collectData(), self.healthInsuranceRateModel.officeCode).done(() =>
                     self.closeDialog());
-            }
-
-            private clearError(): void {
-                $('.has-error').ntsError('clear');
             }
 
             /**
@@ -132,7 +125,6 @@ module nts.uk.pr.view.qmm008.h {
              */
             private reCalculate(): void {
                 var self = this;
-                self.clearError();
                 // Clear current listHealthInsuranceAvgearn
                 self.listHealthInsuranceAvgearn.removeAll();
                 // Recalculate listHealthInsuranceAvgearn
@@ -146,31 +138,43 @@ module nts.uk.pr.view.qmm008.h {
              */
             private calculateHealthInsuranceAvgEarnModel(levelMasterSetting: AvgEarnLevelMasterSettingDto): HealthInsuranceAvgEarnModel {
                 var self = this;
+                var historyId = self.healthInsuranceRateModel.historyId;
                 var rateItems: HealthInsuranceRateItemModel = self.healthInsuranceRateModel.rateItems;
                 var roundingMethods: HealthInsuranceRoundingModel = self.healthInsuranceRateModel.roundingMethods;
                 var personalRounding = self.convertToRounding(roundingMethods.healthSalaryPersonalComboBoxSelectedCode());
                 var companyRounding = self.convertToRounding(roundingMethods.healthSalaryCompanyComboBoxSelectedCode());
                 var rate = levelMasterSetting.avgEarn / 1000;
                 var autoCalculate = self.healthInsuranceRateModel.autoCalculate;
-                return new HealthInsuranceAvgEarnModel(
-                    levelMasterSetting.code,
-                    new HealthInsuranceAvgEarnValueModel(
-                        self.rounding(personalRounding, rateItems.healthSalaryPersonalGeneral() * rate, Number.One),
-                        self.rounding(personalRounding, rateItems.healthSalaryPersonalNursing() * rate, Number.One),
-                        self.rounding(personalRounding, rateItems.healthSalaryPersonalBasic() * rate, Number.Three),
-                        self.rounding(personalRounding, rateItems.healthSalaryPersonalSpecific() * rate, Number.Three)
-                    ),
-                    new HealthInsuranceAvgEarnValueModel(
-                        self.rounding(companyRounding, rateItems.healthSalaryCompanyGeneral() * rate, Number.One),
-                        self.rounding(companyRounding, rateItems.healthSalaryCompanyNursing() * rate, Number.One),
-                        self.rounding(companyRounding, rateItems.healthSalaryCompanyBasic() * rate, Number.Three),
-                        self.rounding(companyRounding, rateItems.healthSalaryCompanySpecific() * rate, Number.Three)
-                    )
-                );
+                if (autoCalculate == AutoCalculate.Auto) {
+                    return new HealthInsuranceAvgEarnModel(
+                        historyId,
+                        levelMasterSetting.code,
+                        new HealthInsuranceAvgEarnValueModel(
+                            self.rounding(personalRounding, rateItems.healthSalaryPersonalGeneral() * rate,Number.One),
+                            self.rounding(personalRounding, rateItems.healthSalaryPersonalNursing() * rate,Number.One),
+                            self.rounding(personalRounding, rateItems.healthSalaryPersonalBasic() * rate,Number.Three),
+                            self.rounding(personalRounding, rateItems.healthSalaryPersonalSpecific() * rate,Number.Three)
+                        ),
+                        new HealthInsuranceAvgEarnValueModel(
+                            self.rounding(companyRounding, rateItems.healthSalaryCompanyGeneral() * rate,Number.One),
+                            self.rounding(companyRounding, rateItems.healthSalaryCompanyNursing() * rate,Number.One),
+                            self.rounding(companyRounding, rateItems.healthSalaryCompanyBasic() * rate,Number.Three),
+                            self.rounding(companyRounding, rateItems.healthSalaryCompanySpecific() * rate,Number.Three)
+                        )
+                    );
+                }
+                else {
+                    return new HealthInsuranceAvgEarnModel(
+                        historyId,
+                        levelMasterSetting.code,
+                        new HealthInsuranceAvgEarnValueModel(Number.Zero,Number.Zero,Number.Zero,Number.Zero),
+                        new HealthInsuranceAvgEarnValueModel(Number.Zero,Number.Zero,Number.Zero,Number.Zero)
+                    );
+                }
             }
             
             // rounding 
-            private rounding(roudingMethod: string,roundValue: number,roundType: number): number{
+            private rounding(roudingMethod: string,roundValue: number,roundType: number){
                 var self = this;
                 var getLevel = Math.pow(10,roundType);
                 var backupValue = roundValue*(getLevel/10);
@@ -186,27 +190,27 @@ module nts.uk.pr.view.qmm008.h {
                     case Rounding.DOWN5_UP6: return self.roudingDownUp(backupValue, 5)/(getLevel/10);
                 }
             }
-            private roudingDownUp(value: number, down: number): number {
+            private roudingDownUp(value: number, down: number) {
                 var newVal = Math.round(value * 10) / 10;
                 if ((newVal * 10) % 10 > down)
                     return Math.ceil(value);
                 else
                     return Math.floor(value);
             }
-
+            
               //value to string rounding
             public convertToRounding(stringValue: string) {
                 switch (stringValue) {
-                    case "0": return Rounding.TRUNCATION;
-                    case "1": return Rounding.ROUNDUP;
+                    case "0": return Rounding.ROUNDUP;
+                    case "1": return Rounding.TRUNCATION;
                     case "2": return Rounding.DOWN4_UP5;
-                    case "3": return Rounding.DOWN5_UP6;
-                    case "4": return Rounding.ROUNDDOWN;
-                    default: return Rounding.TRUNCATION;
+                    case "3": return Rounding.ROUNDDOWN;
+                    case "4": return Rounding.DOWN5_UP6;
+                    default: return Rounding.ROUNDUP;
                 }
             }
-
-            private closeDialogWithDirtyCheck(): void {
+            
+            private closeDialogWithDirtyCheck() {
                 var self = this;
                 if (self.dirty.isDirty()) {
                     nts.uk.ui.dialog.confirm(self.errorList()[0].message).ifYes(function() {
@@ -219,7 +223,7 @@ module nts.uk.pr.view.qmm008.h {
                     self.closeDialog();
                 }
             }
-
+            
             /**
              * Close dialog.
              */
@@ -256,10 +260,12 @@ module nts.uk.pr.view.qmm008.h {
          * HealthInsuranceAvgEarn Model
          */
         export class HealthInsuranceAvgEarnModel {
+            historyId: string;
             levelCode: number;
             companyAvg: HealthInsuranceAvgEarnValueModel;
             personalAvg: HealthInsuranceAvgEarnValueModel;
-            constructor(levelCode: number, personalAvg: HealthInsuranceAvgEarnValueModel, companyAvg: HealthInsuranceAvgEarnValueModel) {
+            constructor(historyId: string, levelCode: number, personalAvg: HealthInsuranceAvgEarnValueModel, companyAvg: HealthInsuranceAvgEarnValueModel) {
+                this.historyId = historyId;
                 this.levelCode = levelCode;
                 this.companyAvg = companyAvg;
                 this.personalAvg = personalAvg;

@@ -6,7 +6,7 @@ package nts.uk.ctx.pr.core.infra.repository.insurance.social.pensionavgearn;
 
 import java.math.BigDecimal;
 
-import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnSetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValue;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPensionAvgearn;
@@ -18,7 +18,7 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPens
 public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 
 	/** The type value. */
-	private QismtPensionAvgearn typeValue;
+	protected QismtPensionAvgearn typeValue;
 
 	/**
 	 * Instantiates a new jpa pension avgearn set memento.
@@ -63,7 +63,7 @@ public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 	 * dom.insurance.InsuranceAmount)
 	 */
 	@Override
-	public void setChildContributionAmount(CommonAmount childContributionAmount) {
+	public void setChildContributionAmount(InsuranceAmount childContributionAmount) {
 		this.typeValue.setChildContributionMny(childContributionAmount.v());
 	}
 

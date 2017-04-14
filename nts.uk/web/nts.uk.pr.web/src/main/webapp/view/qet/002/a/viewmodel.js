@@ -12,19 +12,12 @@ var qet002;
                     this.lowerLimitValue = ko.observable(null);
                     this.upperLimitValue = ko.observable(null);
                 }
-                /**
-                 * Start screen.
-                 */
                 ScreenModel.prototype.start = function () {
                     var dfd = $.Deferred();
                     dfd.resolve();
                     return dfd.promise();
                 };
-                /**
-                 * Print Report
-                 */
                 ScreenModel.prototype.printData = function () {
-                    // Validate
                     var hasError = false;
                     if (this.targetYear() == null) {
                         hasError = true;
@@ -57,7 +50,6 @@ var qet002;
                     if (hasError) {
                         return;
                     }
-                    //Print Report
                     a.service.printService(this).done(function (data) {
                     }).fail(function (res) {
                         nts.uk.ui.dialog.alert(res.message);
@@ -66,9 +58,6 @@ var qet002;
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            /**
-             * Accumulated Payment Result Dto
-             */
             var AccumulatedPaymentResultViewModel = (function () {
                 function AccumulatedPaymentResultViewModel(empDesignation, empCode, empName, taxAmount, socialInsuranceAmount, widthHoldingTaxAmount, enrollmentStatus, directionalStatus, amountAfterTaxDeduction) {
                     var self = this;
@@ -88,3 +77,4 @@ var qet002;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qet002.a || (qet002.a = {}));
 })(qet002 || (qet002 = {}));
+//# sourceMappingURL=viewmodel.js.map

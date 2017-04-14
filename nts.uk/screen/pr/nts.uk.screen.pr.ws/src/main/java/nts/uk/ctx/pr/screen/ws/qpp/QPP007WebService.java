@@ -14,8 +14,8 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
-import nts.uk.file.pr.app.export.detailpaymentsalary.PaymentSalaryQuery;
 import nts.uk.file.pr.app.export.detailpaymentsalary.PaymentSalaryReportService;
+import nts.uk.file.pr.app.export.detailpaymentsalary.query.PaymentSalaryQuery;
 
 /**
  * The Class QPP007WebService.

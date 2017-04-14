@@ -13,11 +13,11 @@ public enum CareerGroup {
 	/** The Agroforestry. */
 	Agroforestry(0, "Agroforestry"),
 
-	/** The Other. */
-	Other(1, "Other"),
-
 	/** The Contruction. */
-	Contruction(2, "Contruction");
+	Contruction(1, "Contruction"),
+
+	/** The Other. */
+	Other(2, "Other");
 
 	/** The value. */
 	public int value;

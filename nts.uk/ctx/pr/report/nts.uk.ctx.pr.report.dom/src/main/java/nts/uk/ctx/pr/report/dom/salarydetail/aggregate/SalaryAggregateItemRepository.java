@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.salarydetail.aggregate;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,12 +40,4 @@ public interface SalaryAggregateItemRepository {
 	 * @return the salary aggregate item
 	 */
 	Optional<SalaryAggregateItem> findByCode(String companyCode, String aggregateItemCode, int categoryCode);
-
-	/**
-	 * Find all.
-	 *
-	 * @param companyCode the company code
-	 * @return the list
-	 */
-	List<SalaryAggregateItem> findAll(String companyCode);
 }

@@ -7,11 +7,11 @@
 	margin-right: 5px;
 }
 
-#btnDelete {
+#BTN_004 {
 	margin-left: 200px;
 }
 
-#lblTitle {
+#LBL_001 {
 	float: right;
 }
 
@@ -51,14 +51,14 @@
 	width: 100%;
 }
 
-#inpCode, #INP_004 {
+#INP_002, #INP_004 {
 	width: 80px;
 }
 
-#inpName {
+#INP_003 {
 	width: 240px !important;
 }
-#selDisplay{
+#SEL_001{
 	padding-left: 5%;
 }
 
@@ -66,7 +66,7 @@ button.nts-switch-button {
 	min-width: 100px;
 }
 
-#selCloseDate, #selProcessingDate {
+#SEL-002, #SEL-004 {
 	min-width: 0px !important;
 	max-width: 220px !important;
 }
@@ -75,7 +75,7 @@ button.nts-switch-button {
 	height: 150px; 
 	margin-top: 5px;
 }
-#lstDataEmployment_container{
+#LST_001_container{
 	padding-top: 20px !important;
 }
 

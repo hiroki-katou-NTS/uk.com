@@ -58,9 +58,8 @@ public class CertifyGroupUpdateCommandHandler extends CommandHandler<CertifyGrou
 
 		// validate
 		certifyGroupService.validateRequiredItem(certifyGroup);
-		
 		// check duplicate
-		certifyGroupService.checkCertificationIsBelong(certifyGroup);
+		certifyGroupService.checkDulicateCertification(certifyGroup, certifyGroup.getCode().v());
 
 		// update
 		this.certifyGroupRepository.update(certifyGroup);

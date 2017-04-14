@@ -41,7 +41,6 @@ public class QismtWorkAccidentInsuPK implements Serializable {
 	 * Instantiates a new qismt work accident insu PK.
 	 */
 	public QismtWorkAccidentInsuPK() {
-		super();
 	}
 
 	/**

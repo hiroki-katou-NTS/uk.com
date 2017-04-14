@@ -394,6 +394,7 @@ var nts;
                                                 && self.typeActionUnemployeeInsurance() == TypeActionInsuranceRate.update) {
                                                 nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
                                                     self.isShowDirtyUnemployeeInsurance(false);
+                                                    self.clearErrorSaveUnemployeeInsurance();
                                                     self.detailUnemployeeInsuranceRateHistory(selectionUnemployeeInsuranceRateHistory);
                                                 }).ifNo(function () {
                                                     self.selectionUnemployeeInsuranceRateHistory(self.preSelectUnemployeeInsuranceRateHistory());
@@ -401,6 +402,7 @@ var nts;
                                             }
                                         }
                                         else {
+                                            self.clearErrorSaveUnemployeeInsurance();
                                             self.detailUnemployeeInsuranceRateHistory(selectionUnemployeeInsuranceRateHistory);
                                         }
                                     }
@@ -621,10 +623,9 @@ var nts;
                                             //call detail history unemployee insurance rate
                                             self.detailUnemployeeInsuranceRateHistory(historyId).done(function (data) {
                                                 //set enable input viewmodel
-                                                self.unemployeeInsuranceRateModel().setEnable(true);
+                                                self.isEnableSaveUnemployeeInsurance(true);
+                                                self.isEnableEditUnemployeeInsurance(true);
                                             });
-                                            self.isEnableSaveUnemployeeInsurance(true);
-                                            self.isEnableEditUnemployeeInsurance(true);
                                         }
                                         else {
                                             //set history unemployee insurance rate is empty
@@ -672,6 +673,7 @@ var nts;
                                             //set ismode type action is update
                                             self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.update);
                                             self.beginHistoryStartUnemployeeInsuranceRate(nts.uk.time.formatYearMonth(data.historyInsurance.startMonth));
+                                            self.unemployeeInsuranceRateModel().setEnable(true);
                                             self.dirtyUnemployeeInsurance.reset();
                                             self.isShowDirtyUnemployeeInsurance(true);
                                             self.preSelectUnemployeeInsuranceRateHistory(historyId);

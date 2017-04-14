@@ -22,7 +22,7 @@ import nts.uk.shr.com.primitive.Memo;
 public class JpaWtHeadGetMemento implements WtHeadGetMemento {
 
 	/** The type value. */
-	private QwtmtWagetableHead typeValue;
+	protected QwtmtWagetableHead typeValue;
 
 	/**
 	 * Instantiates a new jpa wage table head get memento.

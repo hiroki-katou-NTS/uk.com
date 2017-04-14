@@ -31,7 +31,4 @@ public class HeaderReportData {
 	
 	/** The position. */
 	public String position;
-	
-	/** The target year. */
-	public int targetYear;
 }

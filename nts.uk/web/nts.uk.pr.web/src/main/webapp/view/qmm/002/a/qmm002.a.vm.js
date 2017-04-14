@@ -16,10 +16,10 @@ var nts;
                                 function ScreenModel() {
                                     this.confirmDirty = false;
                                     var self = this;
-                                    self.dirty1 = new nts.uk.ui.DirtyChecker(ko.observable(""));
-                                    self.dirty2 = new nts.uk.ui.DirtyChecker(ko.observable(""));
-                                    self.dirty3 = new nts.uk.ui.DirtyChecker(ko.observable(""));
-                                    self.dirty4 = new nts.uk.ui.DirtyChecker(ko.observable(""));
+                                    self.dirty1 = new nts.uk.ui.DirtyChecker(ko.observable(null));
+                                    self.dirty2 = new nts.uk.ui.DirtyChecker(ko.observable(null));
+                                    self.dirty3 = new nts.uk.ui.DirtyChecker(ko.observable(null));
+                                    self.dirty4 = new nts.uk.ui.DirtyChecker(ko.observable(null));
                                     self.lst_001 = ko.observableArray([]);
                                     self.filteredData = ko.observableArray([]);
                                     self.singleSelectedCode = ko.observable('');
@@ -77,7 +77,6 @@ var nts;
                                             width: "130px",
                                             textalign: "left"
                                         })),
-                                        required: ko.observable(true),
                                         enable: ko.observable(false),
                                         readonly: ko.observable(false)
                                     };
@@ -101,7 +100,7 @@ var nts;
                                         self.lst_002(nts.uk.util.flatArray(self.lst_001(), "childs"));
                                         var parentCode = null;
                                         var childCode = null;
-                                        var check = _.includes(self.singleSelectedCode(), "-");
+                                        var check = self.singleSelectedCode().includes("-");
                                         if (check) {
                                             self.checkDisabled(true);
                                             self.displayButtonSave(true);
@@ -121,7 +120,7 @@ var nts;
                                             return item.treeCode == parentCode;
                                         });
                                         self.indexlast_c_node(node.childs.length + indexParen);
-                                        var isParentNode = _.includes(self.singleSelectedCode(), "-");
+                                        var isParentNode = self.singleSelectedCode().includes("-");
                                         if (!isParentNode) {
                                             var index = _.findIndex(self.lst_001(), function (item) {
                                                 return item.treeCode == codeChanged;
@@ -151,10 +150,14 @@ var nts;
                                             self.isCreated(false);
                                             self.A_INP_003.enable(false);
                                             if (self.currentNode().treeCode == undefined) {
-                                                self.dirty1 = new nts.uk.ui.DirtyChecker(ko.observable(""));
-                                                self.dirty2 = new nts.uk.ui.DirtyChecker(ko.observable(""));
-                                                self.dirty3 = new nts.uk.ui.DirtyChecker(ko.observable(""));
-                                                self.dirty4 = new nts.uk.ui.DirtyChecker(ko.observable(""));
+                                                self.A_INP_003.value(null);
+                                                self.A_INP_004.value(null);
+                                                self.A_INP_005.value(null);
+                                                self.A_INP_006.value(null);
+                                                self.dirty1 = new nts.uk.ui.DirtyChecker(self.A_INP_003.value);
+                                                self.dirty2 = new nts.uk.ui.DirtyChecker(self.A_INP_004.value);
+                                                self.dirty3 = new nts.uk.ui.DirtyChecker(self.A_INP_005.value);
+                                                self.dirty4 = new nts.uk.ui.DirtyChecker(self.A_INP_006.value);
                                             }
                                             else {
                                                 self.dirty1 = new nts.uk.ui.DirtyChecker(self.A_INP_003.value);
@@ -185,10 +188,14 @@ var nts;
                                                 self.isCreated(false);
                                                 self.A_INP_003.enable(false);
                                                 if (self.currentNode().treeCode == undefined) {
-                                                    self.dirty1 = new nts.uk.ui.DirtyChecker(ko.observable(""));
-                                                    self.dirty2 = new nts.uk.ui.DirtyChecker(ko.observable(""));
-                                                    self.dirty3 = new nts.uk.ui.DirtyChecker(ko.observable(""));
-                                                    self.dirty4 = new nts.uk.ui.DirtyChecker(ko.observable(""));
+                                                    self.A_INP_003.value(null);
+                                                    self.A_INP_004.value(null);
+                                                    self.A_INP_005.value(null);
+                                                    self.A_INP_006.value(null);
+                                                    self.dirty1 = new nts.uk.ui.DirtyChecker(self.A_INP_003.value);
+                                                    self.dirty2 = new nts.uk.ui.DirtyChecker(self.A_INP_004.value);
+                                                    self.dirty3 = new nts.uk.ui.DirtyChecker(self.A_INP_005.value);
+                                                    self.dirty4 = new nts.uk.ui.DirtyChecker(self.A_INP_006.value);
                                                 }
                                                 else {
                                                     self.dirty1 = new nts.uk.ui.DirtyChecker(self.A_INP_003.value);
@@ -214,22 +221,24 @@ var nts;
                                         }
                                     });
                                 };
-                                /**
-                                 * Check firt Node
-                                 */
                                 ScreenModel.prototype.checkFirtNode = function () {
                                     var self = this;
                                     self.singleSelectedCode('');
                                     if (self.lst_001()[0].childs.length != 0) {
                                         self.singleSelectedCode(self.lst_001()[0].childs[0].treeCode);
+                                        self.A_INP_003.value(self.currentNode().code);
+                                        self.A_INP_004.value(self.currentNode().name);
+                                        self.A_INP_005.value(self.currentNode().nameKata);
+                                        self.A_INP_006.value(self.currentNode().memo);
                                     }
                                     else {
                                         self.singleSelectedCode(self.lst_001()[0].treeCode);
+                                        self.A_INP_003.value(self.currentNode().code);
+                                        self.A_INP_004.value(self.currentNode().name);
+                                        self.A_INP_005.value(self.currentNode().nameKata);
+                                        self.A_INP_006.value(self.currentNode().memo);
                                     }
                                 };
-                                /**
-                                 * Open dialog QMM002b(一括削除)
-                                 */
                                 ScreenModel.prototype.OpenBdialog = function () {
                                     var self = this;
                                     if (self.lst_001().length != 0) {
@@ -256,9 +265,6 @@ var nts;
                                         nts.uk.ui.dialog.alert(self.messages()[5].message);
                                     }
                                 };
-                                /**
-                                 * Open dialog QMM002c(銀行の統合)
-                                 */
                                 ScreenModel.prototype.OpenCdialog = function () {
                                     var self = this;
                                     a.service.checkBankList().done(function () {
@@ -270,6 +276,10 @@ var nts;
                                         else {
                                             nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                                                 nts.uk.ui.windows.sub.modal("/view/qmm/002/c/index.xhtml", { title: "銀行の登録　＞　銀行の統合" }).onClosed(function () {
+                                                    self.A_INP_003.value(self.currentNode().code);
+                                                    self.A_INP_004.value(self.currentNode().name);
+                                                    self.A_INP_005.value(self.currentNode().nameKata);
+                                                    self.A_INP_006.value(self.currentNode().memo);
                                                 });
                                                 nts.uk.ui.windows.setShared('listItem', self.lst_001());
                                             });
@@ -278,9 +288,6 @@ var nts;
                                         nts.uk.ui.dialog.alert(self.messages()[5].message);
                                     });
                                 };
-                                /**
-                                 * Open dialog QMM002d(銀行の追加)
-                                 */
                                 ScreenModel.prototype.OpenDdialog = function () {
                                     var self = this;
                                     if (!self.checkDirty()) {
@@ -295,19 +302,24 @@ var nts;
                                     else {
                                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                                             nts.uk.ui.windows.sub.modal("/view/qmm/002/d/index.xhtml", { title: "銀行の登録　＞　銀行の追加", dialogClass: "no-close" }).onClosed(function () {
+                                                self.A_INP_003.value(null);
+                                                self.A_INP_004.value(null);
+                                                self.A_INP_005.value(null);
+                                                self.A_INP_006.value(null);
                                                 if (self.lst_001().length != 0) {
+                                                    self.confirmDirty = true;
                                                     self.checkFirtNode();
                                                 }
                                             });
                                         });
                                     }
                                 };
-                                /**
-                                 * add and update bank
-                                 */
                                 ScreenModel.prototype.addBranch = function () {
                                     var self = this;
                                     self.confirmDirty = true;
+                                    if ($("#A_INP_003").ntsError("hasError") || $("#A_INP_004").ntsError("hasError") || $("#A_INP_005").ntsError("hasError") || $("#A_INP_006").ntsError("hasError")) {
+                                        return;
+                                    }
                                     var branchInfo = {
                                         bankCode: self.nodeParent().code,
                                         branchId: self.isCreated() ? "" : self.currentNode().branchId,
@@ -317,7 +329,6 @@ var nts;
                                         memo: self.A_INP_006.value()
                                     };
                                     a.service.addBank(self.isCreated(), branchInfo).done(function () {
-                                        // reload tree
                                         self.getBankList().done(function () {
                                             var treecode = branchInfo.bankCode + "-" + branchInfo.branchCode;
                                             self.singleSelectedCode(treecode);
@@ -337,9 +348,6 @@ var nts;
                                         }
                                     });
                                 };
-                                /**
-                                 * validate input before add or update data
-                                 */
                                 ScreenModel.prototype.validateBeforeAdd = function () {
                                     var self = this;
                                     $('#A_INP_003').ntsEditor('validate');
@@ -349,9 +357,6 @@ var nts;
                                     }
                                     return true;
                                 };
-                                /**
-                                 * select node
-                                 */
                                 ScreenModel.prototype.getNode = function (codeNew, parentId) {
                                     var self = this;
                                     self.clearError();
@@ -375,9 +380,6 @@ var nts;
                                         return false;
                                     }
                                 };
-                                /**
-                                 * get data for treeview
-                                 */
                                 ScreenModel.prototype.getBankList = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -418,9 +420,6 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
-                                /**
-                                 * remove bank and bank branch
-                                 */
                                 ScreenModel.prototype.removeBranch = function () {
                                     var self = this;
                                     self.confirmDirty = true;
@@ -429,7 +428,7 @@ var nts;
                                         nts.uk.ui.dialog.confirm(self.messages()[4].message).ifYes(function () {
                                             var parentCode = null;
                                             var childCode = null;
-                                            var check = _.includes(self.singleSelectedCode(), "-");
+                                            var check = self.singleSelectedCode().includes("-");
                                             if (check) {
                                                 var codes = self.singleSelectedCode().split("-");
                                                 parentCode = codes[0];
@@ -439,9 +438,6 @@ var nts;
                                                 parentCode = self.singleSelectedCode();
                                             }
                                             a.service.removeBank(!check, parentCode, self.currentNode().branchId).done(function () {
-                                                // reload tree
-                                                //To Do
-                                                //self.cleanBranch();
                                                 self.getBankList().done(function () {
                                                     if (self.lst_001().length > 0) {
                                                         var code = "";
@@ -449,7 +445,6 @@ var nts;
                                                         if (index < 0) {
                                                             index = 0;
                                                         }
-                                                        // parent
                                                         if (!check) {
                                                             code = self.lst_001()[index].treeCode;
                                                         }
@@ -461,10 +456,10 @@ var nts;
                                                                 code = self.lst_002()[self.index()].treeCode;
                                                             }
                                                         }
-                                                        self.dirty1 = new nts.uk.ui.DirtyChecker(ko.observable(""));
-                                                        self.dirty2 = new nts.uk.ui.DirtyChecker(ko.observable(""));
-                                                        self.dirty3 = new nts.uk.ui.DirtyChecker(ko.observable(""));
-                                                        self.dirty4 = new nts.uk.ui.DirtyChecker(ko.observable(""));
+                                                        self.dirty1 = new nts.uk.ui.DirtyChecker(ko.observable(null));
+                                                        self.dirty2 = new nts.uk.ui.DirtyChecker(ko.observable(null));
+                                                        self.dirty3 = new nts.uk.ui.DirtyChecker(ko.observable(null));
+                                                        self.dirty4 = new nts.uk.ui.DirtyChecker(ko.observable(null));
                                                         self.singleSelectedCode(code);
                                                     }
                                                     else {
@@ -482,9 +477,6 @@ var nts;
                                     }
                                 };
                                 ;
-                                /**
-                                 * Check bank exists data
-                                 */
                                 ScreenModel.prototype.checkBankList = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -497,22 +489,19 @@ var nts;
                                     return dfd.promise();
                                 };
                                 ;
-                                /**
-                                 * clean form
-                                 */
                                 ScreenModel.prototype.cleanBranch = function () {
                                     var self = this;
                                     self.clearError();
                                     if (!self.checkDirty()) {
-                                        self.dirty1 = new nts.uk.ui.DirtyChecker(ko.observable(""));
-                                        self.dirty2 = new nts.uk.ui.DirtyChecker(ko.observable(""));
-                                        self.dirty3 = new nts.uk.ui.DirtyChecker(ko.observable(""));
-                                        self.dirty4 = new nts.uk.ui.DirtyChecker(ko.observable(""));
                                         self.A_INP_003.value(null);
                                         self.A_INP_004.value(null);
                                         self.A_INP_005.value(null);
                                         self.A_INP_006.value(null);
-                                        var check = _.includes(self.singleSelectedCode(), "-");
+                                        self.dirty1 = new nts.uk.ui.DirtyChecker(self.A_INP_003.value);
+                                        self.dirty2 = new nts.uk.ui.DirtyChecker(self.A_INP_004.value);
+                                        self.dirty3 = new nts.uk.ui.DirtyChecker(self.A_INP_005.value);
+                                        self.dirty4 = new nts.uk.ui.DirtyChecker(self.A_INP_006.value);
+                                        var check = self.singleSelectedCode().includes("-");
                                         if (check) {
                                             var codes = self.singleSelectedCode().split("-");
                                             self.singleSelectedCode(codes[0]);
@@ -524,15 +513,15 @@ var nts;
                                     }
                                     else {
                                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
-                                            self.dirty1 = new nts.uk.ui.DirtyChecker(ko.observable(""));
-                                            self.dirty2 = new nts.uk.ui.DirtyChecker(ko.observable(""));
-                                            self.dirty3 = new nts.uk.ui.DirtyChecker(ko.observable(""));
-                                            self.dirty4 = new nts.uk.ui.DirtyChecker(ko.observable(""));
                                             self.A_INP_003.value(null);
                                             self.A_INP_004.value(null);
                                             self.A_INP_005.value(null);
                                             self.A_INP_006.value(null);
-                                            var check = _.includes(self.singleSelectedCode(), "-");
+                                            self.dirty1 = new nts.uk.ui.DirtyChecker(self.A_INP_003.value);
+                                            self.dirty2 = new nts.uk.ui.DirtyChecker(self.A_INP_004.value);
+                                            self.dirty3 = new nts.uk.ui.DirtyChecker(self.A_INP_005.value);
+                                            self.dirty4 = new nts.uk.ui.DirtyChecker(self.A_INP_006.value);
+                                            var check = self.singleSelectedCode().includes("-");
                                             if (check) {
                                                 var codes = self.singleSelectedCode().split("-");
                                                 self.singleSelectedCode(codes[0]);
@@ -548,9 +537,6 @@ var nts;
                                     $('#A_INP_003').ntsError('clear');
                                     $('#A_INP_004').ntsError('clear');
                                 };
-                                /**
-                                 * Switch another screen QMM006
-                                 */
                                 ScreenModel.prototype.jumpToQmm006A = function () {
                                     var self = this;
                                     if (!self.checkDirty()) {
@@ -588,3 +574,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qmm002.a.vm.js.map

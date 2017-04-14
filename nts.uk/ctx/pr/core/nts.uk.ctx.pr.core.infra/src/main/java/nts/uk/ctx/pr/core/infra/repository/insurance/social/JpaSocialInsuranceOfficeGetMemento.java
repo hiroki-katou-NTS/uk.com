@@ -4,27 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.social;
 
-import java.math.BigDecimal;
 
-import nts.uk.ctx.pr.core.dom.insurance.Address1;
-import nts.uk.ctx.pr.core.dom.insurance.Address2;
-import nts.uk.ctx.pr.core.dom.insurance.AddressKana1;
-import nts.uk.ctx.pr.core.dom.insurance.AddressKana2;
-import nts.uk.ctx.pr.core.dom.insurance.CityCode;
-import nts.uk.ctx.pr.core.dom.insurance.HealthInsuAssoCode;
-import nts.uk.ctx.pr.core.dom.insurance.HealthInsuOfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.Address;
+import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
-import nts.uk.ctx.pr.core.dom.insurance.OfficePensionFundCode;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeRefCode1;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeRefCode2;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeSign;
-import nts.uk.ctx.pr.core.dom.insurance.PhoneNumber;
 import nts.uk.ctx.pr.core.dom.insurance.PicName;
 import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
 import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
 import nts.uk.ctx.pr.core.dom.insurance.ShortName;
-import nts.uk.ctx.pr.core.dom.insurance.WelfarePensionFundCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeGetMemento;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.QismtSocialInsuOffice;
 import nts.uk.shr.com.primitive.Memo;
@@ -35,7 +23,7 @@ import nts.uk.shr.com.primitive.Memo;
 public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOfficeGetMemento {
 
 	/** The type value. */
-	private QismtSocialInsuOffice typeValue;
+	protected QismtSocialInsuOffice typeValue;
 
 	/**
 	 * Instantiates a new jpa social insurance office get memento.
@@ -139,8 +127,8 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 * getAddress1st()
 	 */
 	@Override
-	public Address1 getAddress1st() {
-		return new Address1(this.typeValue.getAddress1());
+	public Address getAddress1st() {
+		return new Address(this.typeValue.getAddress1());
 	}
 
 	/*
@@ -151,8 +139,8 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 * getAddress2nd()
 	 */
 	@Override
-	public Address2 getAddress2nd() {
-		return new Address2(this.typeValue.getAddress2());
+	public Address getAddress2nd() {
+		return new Address(this.typeValue.getAddress2());
 	}
 
 	/*
@@ -163,8 +151,8 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 * getKanaAddress1st()
 	 */
 	@Override
-	public AddressKana1 getKanaAddress1st() {
-		return new AddressKana1(this.typeValue.getKnAddress1());
+	public KanaAddress getKanaAddress1st() {
+		return new KanaAddress(this.typeValue.getKnAddress1());
 	}
 
 	/*
@@ -175,8 +163,8 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 * getKanaAddress2nd()
 	 */
 	@Override
-	public AddressKana2 getKanaAddress2nd() {
-		return new AddressKana2(this.typeValue.getKnAddress2());
+	public KanaAddress getKanaAddress2nd() {
+		return new KanaAddress(this.typeValue.getKnAddress2());
 	}
 
 	/*
@@ -187,8 +175,8 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 * getPhoneNumber()
 	 */
 	@Override
-	public PhoneNumber getPhoneNumber() {
-		return new PhoneNumber(this.typeValue.getTelNo());
+	public String getPhoneNumber() {
+		return this.typeValue.getTelNo();
 	}
 
 	/*
@@ -199,8 +187,8 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 * getHealthInsuOfficeRefCode1st()
 	 */
 	@Override
-	public OfficeRefCode1 getHealthInsuOfficeRefCode1st() {
-		return new OfficeRefCode1(this.typeValue.getHealthInsuOfficeRefno1());
+	public String getHealthInsuOfficeRefCode1st() {
+		return this.typeValue.getHealthInsuOfficeRefno1();
 	}
 
 	/*
@@ -211,8 +199,8 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 * getHealthInsuOfficeRefCode2nd()
 	 */
 	@Override
-	public OfficeRefCode2 getHealthInsuOfficeRefCode2nd() {
-		return new OfficeRefCode2(this.typeValue.getHealthInsuOfficeRefno2());
+	public String getHealthInsuOfficeRefCode2nd() {
+		return this.typeValue.getHealthInsuOfficeRefno2();
 	}
 
 	/*
@@ -223,8 +211,8 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 * getPensionOfficeRefCode1st()
 	 */
 	@Override
-	public OfficeRefCode1 getPensionOfficeRefCode1st() {
-		return new OfficeRefCode1(this.typeValue.getPensionOfficeRefno1());
+	public String getPensionOfficeRefCode1st() {
+		return this.typeValue.getPensionOfficeRefno1();
 	}
 
 	/*
@@ -235,8 +223,8 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 * getPensionOfficeRefCode2nd()
 	 */
 	@Override
-	public OfficeRefCode2 getPensionOfficeRefCode2nd() {
-		return new OfficeRefCode2(this.typeValue.getPensionOfficeRefno2());
+	public String getPensionOfficeRefCode2nd() {
+		return this.typeValue.getPensionOfficeRefno2();
 	}
 
 	/*
@@ -247,12 +235,8 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 * getWelfarePensionFundCode()
 	 */
 	@Override
-	public WelfarePensionFundCode getWelfarePensionFundCode() {
-		if (this.typeValue.getPensionFundNo() == null || this.typeValue.getPensionFundNo().equals("")) {
-			return null;
-		} else {
-			return new WelfarePensionFundCode(new BigDecimal(this.typeValue.getPensionFundNo()));
-		}
+	public String getWelfarePensionFundCode() {
+		return this.typeValue.getPensionFundNo();
 	}
 
 	/*
@@ -263,8 +247,8 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 * getOfficePensionFundCode()
 	 */
 	@Override
-	public OfficePensionFundCode getOfficePensionFundCode() {
-		return new OfficePensionFundCode(this.typeValue.getPensionFundOfficeNo());
+	public String getOfficePensionFundCode() {
+		return this.typeValue.getPensionFundOfficeNo();
 	}
 
 	/*
@@ -275,8 +259,8 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 * getHealthInsuCityCode()
 	 */
 	@Override
-	public CityCode getHealthInsuCityCode() {
-		return new CityCode(this.typeValue.getHealthInsuCityMark());
+	public String getHealthInsuCityCode() {
+		return this.typeValue.getHealthInsuCityMark();
 	}
 
 	/*
@@ -287,8 +271,8 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 * getHealthInsuOfficeSign()
 	 */
 	@Override
-	public OfficeSign getHealthInsuOfficeSign() {
-		return new OfficeSign(this.typeValue.getHealthInsuOfficeMark());
+	public String getHealthInsuOfficeSign() {
+		return this.typeValue.getHealthInsuOfficeMark();
 	}
 
 	/*
@@ -299,8 +283,8 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 * getPensionCityCode()
 	 */
 	@Override
-	public CityCode getPensionCityCode() {
-		return new CityCode(this.typeValue.getPensionCityMark());
+	public String getPensionCityCode() {
+		return this.typeValue.getPensionCityMark();
 	}
 
 	/*
@@ -311,8 +295,8 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 * getPensionOfficeSign()
 	 */
 	@Override
-	public OfficeSign getPensionOfficeSign() {
-		return new OfficeSign(this.typeValue.getPensionOfficeMark());
+	public String getPensionOfficeSign() {
+		return this.typeValue.getPensionOfficeMark();
 	}
 
 	/*
@@ -323,12 +307,8 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 * getHealthInsuOfficeCode()
 	 */
 	@Override
-	public HealthInsuOfficeCode getHealthInsuOfficeCode() {
-		if (this.typeValue.getHealthInsuOfficeNo() == null||this.typeValue.getHealthInsuOfficeNo().equals("")) {
-			return null;
-		} else {
-			return new HealthInsuOfficeCode(new BigDecimal(this.typeValue.getHealthInsuOfficeNo()));
-		}
+	public String getHealthInsuOfficeCode() {
+		return this.typeValue.getHealthInsuOfficeNo();
 	}
 
 	/*
@@ -339,8 +319,8 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 * getHealthInsuAssoCode()
 	 */
 	@Override
-	public HealthInsuAssoCode getHealthInsuAssoCode() {
-		return new HealthInsuAssoCode(this.typeValue.getHealthInsuAssoNo());
+	public String getHealthInsuAssoCode() {
+		return this.typeValue.getHealthInsuAssoNo();
 	}
 
 	/*

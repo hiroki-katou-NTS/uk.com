@@ -38,7 +38,7 @@
 }
 
 .tab-content {
-	width: 850px;
+	width: 700px;
 }
 
 .tab-inline {
@@ -72,8 +72,4 @@
 
 #masterInfo .lblData div:nth-child(2) {
 	width: 50%;
-}
-
-.bgIgCol {
-	background-color: #CFF1A5;
 }

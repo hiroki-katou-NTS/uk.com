@@ -26,7 +26,7 @@ public class LaborInsuranceOfficeFinder {
 
 	/** The labor insurance office repository. */
 	@Inject
-	private LaborInsuranceOfficeRepository repository;
+	private LaborInsuranceOfficeRepository laborInsuranceOfficeRepository;
 
 	/**
 	 * Find by id.
@@ -44,15 +44,16 @@ public class LaborInsuranceOfficeFinder {
 		String companyCode = loginUserContext.companyCode();
 
 		// to Dto
-		LaborInsuranceOfficeFindDto dataOuput = new LaborInsuranceOfficeFindDto();
+		LaborInsuranceOfficeFindDto laborInsuranceOfficeDto = new LaborInsuranceOfficeFindDto();
 
 		// call service find Id
-		Optional<LaborInsuranceOffice> data = this.repository.findById(companyCode, officeCode);
+		Optional<LaborInsuranceOffice> optionalLaborInsuranceOffice = laborInsuranceOfficeRepository
+			.findById(companyCode, officeCode);
 
-		// value exist
-		if (data.isPresent()) {
-			data.get().saveToMemento(dataOuput);
-			return dataOuput;
+		// value exsit
+		if (optionalLaborInsuranceOffice.isPresent()) {
+			optionalLaborInsuranceOffice.get().saveToMemento(laborInsuranceOfficeDto);
+			return laborInsuranceOfficeDto;
 		}
 
 		return null;
@@ -71,17 +72,15 @@ public class LaborInsuranceOfficeFinder {
 		// get companycode by user login
 		String companyCode = loginUserContext.companyCode();
 
-		// find data
-		List<LaborInsuranceOffice> data = this.repository.findAll(companyCode);
-
 		// to Dto
-		List<LaborInsuranceOfficeFindOutDto> dataOutput = data.stream().map(office -> {
-			LaborInsuranceOfficeFindOutDto dto = new LaborInsuranceOfficeFindOutDto();
-			office.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
+		List<LaborInsuranceOfficeFindOutDto> lstLaborInsuranceOfficeFindOutDto;
+		lstLaborInsuranceOfficeFindOutDto = this.laborInsuranceOfficeRepository.findAll(companyCode).stream()
+			.map(laborInsuranceOffice -> {
+				LaborInsuranceOfficeFindOutDto laborInsuranceOfficeFindOutDto = new LaborInsuranceOfficeFindOutDto();
+				laborInsuranceOffice.saveToMemento(laborInsuranceOfficeFindOutDto);
+				return laborInsuranceOfficeFindOutDto;
+			}).collect(Collectors.toList());
 
-		return dataOutput;
+		return lstLaborInsuranceOfficeFindOutDto;
 	}
-
 }

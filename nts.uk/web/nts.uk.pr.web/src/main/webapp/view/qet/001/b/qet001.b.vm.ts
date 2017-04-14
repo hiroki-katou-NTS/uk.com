@@ -17,31 +17,12 @@ module qet001.b.viewmodel {
         isLoading: KnockoutObservable<boolean>;
         hasUpdate: KnockoutObservable<boolean>;
         dirty: nts.uk.ui.DirtyChecker;
-        outputItemColumns: KnockoutObservableArray<any>;
         
         constructor() {
             this.outputSettings = ko.observable(new OutputSettings());
             this.outputSettingDetail= ko.observable(new OutputSettingDetail([], []));
             this.reportItems = ko.observableArray([]);
             this.isLoading = ko.observable(true);
-            this.outputItemColumns = ko.observableArray([
-                    {headerText: '集約', prop: 'isAggregateItem', width: 40,
-                        formatter: function(data: string) {
-                            if (data == 'true') {
-                                return '<div class="center"><i class="icon icon-dot"></i></div>';
-                            }
-                            return '';
-                        }
-                    },
-                    {headerText: 'コード', prop: 'code', width: 50},
-                    {headerText: '名称', prop: 'name', width: 50},
-                    {headerText: '削除', prop: 'code', width: 50,
-                        formatter: function(data: string) {
-                            return '<button class="delete-button icon icon-close" id="' + data + '" >'
-                                + '</button>';
-                        }
-                    },
-                ]);
             this.reportItemColumns = ko.observableArray([
                     {headerText: '区分', prop: 'categoryNameJa', width: 50},
                     {headerText: '集約', prop: 'isAggregate', width: 40,
@@ -116,8 +97,7 @@ module qet001.b.viewmodel {
                 // Check output setting is empty.
                 var isHasData = outputSettings && outputSettings.length > 0;
                 if (!isHasData) {
-                    self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
-                    self.outputSettings().outputSettingSelectedCode('');
+                    self.switchToCreateMode();
                     dfd.resolve();
                     return;
                 }
@@ -155,8 +135,6 @@ module qet001.b.viewmodel {
                 nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function() {
                     nts.uk.ui.windows.close();
                 });
-            } else {
-                nts.uk.ui.windows.close();
             }
         }
         
@@ -169,10 +147,16 @@ module qet001.b.viewmodel {
             $('#code-input').ntsError('clear');
             $('#name-input').ntsError('clear');
             // Validate.
-            $('#code-input').ntsEditor('validate');
-            $('#name-input').ntsEditor('validate');
-            // Check has error.
-            if(!nts.uk.ui._viewModel.errors.isEmpty()) {
+            var hasError = false;
+            if (self.outputSettingDetail().settingCode() == '') {
+                $('#code-input').ntsError('set', 'コードが入力されていません。');
+                hasError = true;
+            }
+            if(self.outputSettingDetail().settingName() == '') {
+                $('#name-input').ntsError('set', '名称が入力されていません。');
+                hasError = true;
+            }
+            if(hasError) {
                 return;
             }
             var currentSelectedCode = self.outputSettings().outputSettingSelectedCode();
@@ -180,10 +164,10 @@ module qet001.b.viewmodel {
                 nts.uk.ui.windows.setShared('isHasUpdate', true, false);
                 nts.uk.ui.dialog.alert('save success!').then(function() {
                     self.loadAllOutputSetting();
-                    self.dirty.reset();
                 })
             }).fail(function(res) {
-                $('#code-input').ntsError('set', res.message);
+                // TODO: Show message duplicate code.
+                nts.uk.ui.dialog.alert(res.message);
             })
         }
         
@@ -194,39 +178,38 @@ module qet001.b.viewmodel {
             var self = this;
             // Check selected output setting.
             var selectedCode = self.outputSettings().outputSettingSelectedCode();
-            if (!selectedCode || selectedCode == '') {
+            if (selectedCode == '') {
+                // TODO: Add error message 'AL006'.
+                nts.uk.ui.dialog.alert('未選択エラー');
                 return;
             }
-            nts.uk.ui.dialog.confirm('出力項目設定からもデータを削除します。\r\nよろしいですか？').ifYes(function() {
-                service.removeOutputSetting(selectedCode).done(function() {
-                    nts.uk.ui.windows.setShared('isHasUpdate', true, false);
-                    // Find item selected.
-                    var itemSelected = self.outputSettings().outputSettingList().filter(item => item.code == selectedCode)[0];
-                    var indexSelected = self.outputSettings().outputSettingList().indexOf(itemSelected);
-                    // Remove item selected in list.
-                    self.outputSettings().outputSettingList.remove(itemSelected);
-
-                    // If list is empty -> new mode.
-                    if (self.outputSettings().outputSettingList().length == 0) {
-                        self.outputSettings().outputSettingSelectedCode(null);
-                        return;
-                    }
-
-                    // Select same row with item selected.
-                    if (self.outputSettings().outputSettingList()[indexSelected]) {
-                        self.outputSettings().outputSettingSelectedCode(
-                            self.outputSettings().outputSettingList()[indexSelected].code);
-                        return;
-                    }
-
-                    // Select next higher row.
+            service.removeOutputSetting(selectedCode).done(function() {
+                nts.uk.ui.windows.setShared('isHasUpdate', true, false);
+                // Find item selected.
+                var itemSelected = self.outputSettings().outputSettingList().filter(item => item.code == selectedCode)[0];
+                var indexSelected = self.outputSettings().outputSettingList().indexOf(itemSelected);
+                // Remove item selected in list.
+                self.outputSettings().outputSettingList.remove(itemSelected);
+                
+                // If list is empty -> new mode.
+                if (self.outputSettings().outputSettingList().length == 0) {
+                    self.outputSettings().outputSettingSelectedCode(null);
+                    return;
+                }
+                
+                // Select same row with item selected.
+                if (self.outputSettings().outputSettingList()[indexSelected]) {
                     self.outputSettings().outputSettingSelectedCode(
-                        self.outputSettings().outputSettingList()[indexSelected - 1].code)
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
-                });
+                        self.outputSettings().outputSettingList()[indexSelected].code);
+                    return;
+                }
+                
+                // Select next higher row.
+                self.outputSettings().outputSettingSelectedCode(
+                    self.outputSettings().outputSettingList()[indexSelected - 1].code)
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.message);
             });
-            
         }
         
         /**
@@ -283,9 +266,6 @@ module qet001.b.viewmodel {
          * Switch to create mode.
          */
         public switchToCreateMode() {
-            // clear error.
-            $('#code-input').ntsError('clear');
-            $('#name-input').ntsError('clear');
             // Dirty check.
             var self = this;
             if (self.dirty.isDirty()) {
@@ -425,6 +405,7 @@ module qet001.b.viewmodel {
         aggregateItemSelected: KnockoutObservable<string>;
         masterItemSelected: KnockoutObservable<string>;
         outputItemsSelected: KnockoutObservable<string>;
+        outputItemColumns: KnockoutObservableArray<any>;
         outputItemCache: WageLedgerSettingItem[];
         fullCategoryName: string;
 
@@ -449,12 +430,30 @@ module qet001.b.viewmodel {
             this.outputItemsSelected = ko.observable(null);
             this.aggregateItemSelected = ko.observable(null);
             this.masterItemSelected = ko.observable(null);
+            this.outputItemColumns = ko.observableArray([
+                    {headerText: '集約', prop: 'isAggregateItem', width: 40,
+                        formatter: function(data: string) {
+                            if (data == 'true') {
+                                return '<div class="center"><i class="icon icon-dot"></i></div>';
+                            }
+                            return '';
+                        }
+                    },
+                    {headerText: 'コード', prop: 'code', width: 50},
+                    {headerText: '名称', prop: 'name', width: 50},
+                    {headerText: '削除', prop: 'code', width: 50,
+                        formatter: function(data: string) {
+                            return '<button class="delete-button icon icon-close" id="' + data + '" >'
+                                + '</button>';
+                        }
+                    },
+                ]);
             var self = this;
             self.outputItemCache = categorySetting != undefined ? categorySetting.outputItems : [];
             self.outputItems.subscribe(function(items) {
                 self.outputItemCache = items;
             });
-            // Create Customs handle For event rened nts grid.
+            // Customs handle.
             (<any>ko.bindingHandlers).rended = {
               init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {},
               update: function(element, valueAccessor, allBindings, viewModel: CategorySetting, bindingContext) {

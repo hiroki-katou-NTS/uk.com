@@ -8,21 +8,20 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.WtHead;
 import nts.uk.ctx.pr.core.dom.wagetable.WtHeadRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.history.service.WtHeadService;
 
 /**
- * The Class WtHeadServiceImpl.
+ * The Class WageTableHeadServiceImpl.
  */
 @Stateless
 public class WtHeadServiceImpl extends WtHeadService {
 
 	/** The wage table head repo. */
 	@Inject
-	private WtHeadRepository wtHeadRepo;
+	private WtHeadRepository wageTableHeadRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -33,11 +32,8 @@ public class WtHeadServiceImpl extends WtHeadService {
 	 */
 	@Override
 	public void validateRequiredItem(WtHead head) {
-		if (head.getCode() == null 
-				|| head.getName() == null
-				|| StringUtil.isNullOrEmpty(head.getCode().v(), true)
-				|| StringUtil.isNullOrEmpty(head.getName().v(), true)
-				|| CollectionUtil.isEmpty(head.getElements())) {
+		// TODO: recode
+		if (head.getCode() == null || StringUtil.isNullOrEmpty(head.getCode().v(), true)) {
 			throw new BusinessException("ER001");
 		}
 	}
@@ -51,7 +47,7 @@ public class WtHeadServiceImpl extends WtHeadService {
 	 */
 	@Override
 	public void checkDuplicateCode(WtHead head) {
-		if (wtHeadRepo.isExistCode(head.getCompanyCode(), head.getCode().v())) {
+		if (wageTableHeadRepo.isExistCode(head.getCompanyCode(), head.getCode().v())) {
 			throw new BusinessException("ER005");
 		}
 	}

@@ -18,6 +18,5 @@ public interface WLOldLayoutReportGenerator {
 	 * @param fileContext the file context
 	 * @param reportData the report data
 	 */
-	void generate(FileGeneratorContext fileContext, 
-			WLOldLayoutReportData reportData, WageLedgerReportQuery query);
+	void generate(FileGeneratorContext fileContext, WLOldLayoutReportData reportData);
 }

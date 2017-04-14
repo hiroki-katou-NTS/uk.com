@@ -70,10 +70,10 @@ module qmm006.a.viewmodel {
             self.indexLineBank = ko.observable(0);
 
             self.messageList = ko.observableArray([
-                { messageId: "ER001", message: "が入力されていません。" },
-                { messageId: "ER005", message: "入力したコードは既に存在しています。\r\n コードを確認してください。" },
-                { messageId: "ER007", message: "が選択されていません。" },
-                { messageId: "ER008", message: "選択された{0}は使用されているため削除できません。" },
+                { messageId: "ER001", message: "＊が入力されていません。" },
+                { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                { messageId: "ER007", message: "＊が選択されていません。" },
+                { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
                 { messageId: "ER010", message: "対象データがありません。" },
             ]);
 
@@ -99,7 +99,7 @@ module qmm006.a.viewmodel {
                     nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
                         //data is changed
                         self.setCurrentLineBank(codeChange);
-                    }).ifCancel(function() {
+                    }).ifNo(function() {
                         self.notLoopAlert(false);
                         self.currentCode(self.currentLineBank().lineBankCode());
                     });
@@ -110,7 +110,7 @@ module qmm006.a.viewmodel {
             });
         }
 
-        startPage(): JQueryPromise<any> {
+        startPage() {
             var self = this;
             var dfd = $.Deferred();
             $.when(self.findBankAll()).done(function() {
@@ -125,10 +125,7 @@ module qmm006.a.viewmodel {
             return dfd.promise();
         }
 
-        /**
-         * get data from database, set into screen
-         */
-        setCurrentLineBank(codeChange): void {
+        setCurrentLineBank(codeChange) {
             var self = this;
             var lineBank = self.getLineBank(codeChange);
             self.getInfoBankBranch(lineBank);
@@ -146,11 +143,9 @@ module qmm006.a.viewmodel {
                 self.isEnable(true);
             }
         }
-
-        /**
-         * get data from DB
-         */
-        findAll(): JQueryPromise<any> {
+        
+        //get data from DB
+        findAll() {
             var self = this;
             var dfd = $.Deferred();
             qmm006.a.service.findAll()
@@ -184,14 +179,11 @@ module qmm006.a.viewmodel {
             return dfd.promise();
         }
 
-        /**
-         * save data from screen to database
-         */
-        saveData(): void {
+
+        saveData() {
             var self = this;
-            //if input 0-9, auto insert '0' before
-            if (self.currentLineBank().lineBankCode() != null && self.currentLineBank().lineBankCode().length == 1) {
-                self.currentLineBank().lineBankCode("0" + self.currentLineBank().lineBankCode());
+            if (self.currentLineBank().lineBankCode().length == 1) {
+                var lineBankCode = '0' + self.currentLineBank().lineBankCode();
             }
             var command = {
                 accountAtr: self.currentLineBank().accountAtr(),
@@ -244,12 +236,10 @@ module qmm006.a.viewmodel {
                 });
         }
 
-        /**
-         * remove data in dababase
-         */
-        remove(): void {
+        remove() {
             var self = this;
-            nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？")//AL002
+            //"データを削除します。\r\nよろしいですか？"---AL002
+            nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？")
                 .ifYes(function() {
                     var command = {
                         lineBankCode: self.currentLineBank().lineBankCode(),
@@ -267,20 +257,14 @@ module qmm006.a.viewmodel {
                                 }
                             })
                         }).fail(function(error) {
-                            if (error.messageId == self.messageList()[3].messageId) { // ER008
-                                var messageError = nts.uk.text.format(self.messageList()[3].message, self.currentLineBank().lineBankName());
-                                nts.uk.ui.dialog.alert(messageError);
-                            }
+                            nts.uk.ui.dialog.alert(self.messageList()[3].message);
                         });
                 })
-                .ifCancel(function() {
+                .ifNo(function() {
                 });
         }
 
-        /**
-         * open B dialog
-         */
-        openBDialog(): void {
+        openBDialog() {
             var self = this;
             qmm006.a.service.checkExistBankAndBranch()
                 .done(function() {
@@ -301,21 +285,20 @@ module qmm006.a.viewmodel {
                 .fail(function(error) {
                     nts.uk.ui.dialog.alert(self.messageList()[4].message);
                 });
+
+
         }
 
-        /**
-         * open C dialog
-         */
-        openCDialog(): void {
+        openCDialog() {
             var self = this;
             //bt003 disable if list has 1 row or less
             //in case user can fix css in screen to enable bt003
             if (self.items().length > 1) {
                 if (self.dirty.isDirty()) {
-                    //AL001 
+                    //"変更された内容が登録されていません。"---AL001 
                     nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
                         self.afterCloseCDialog();
-                    }).ifCancel(function() {
+                    }).ifNo(function() {
                     })
                 } else {
                     self.afterCloseCDialog();
@@ -326,10 +309,7 @@ module qmm006.a.viewmodel {
             }
         }
 
-        /**
-         * set value for currentCode property
-         */
-        afterCloseCDialog(): void {
+        afterCloseCDialog() {
             var self = this;
             nts.uk.ui.windows.sub.modal("/view/qmm/006/c/index.xhtml", { title: "振込元銀行の登録　＞　振込元銀行", dialogClass: "no-close" }).onClosed(function() {
                 self.findAll().done(function() {
@@ -340,33 +320,27 @@ module qmm006.a.viewmodel {
             });
         }
 
-        btn007(): void {
+        btn007() {
             //to-do
         }
 
-        /**
-         * go to screen A of QMM002
-         */
-        jumpToQmm002A(): void {
+        jumpToQmm002A() {
             var self = this;
             if (self.dirty.isDirty()) {
-                //AL001 
+                //"変更された内容が登録されていません。"---AL001 
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
                     nts.uk.request.jump("/view/qmm/002/a/index.xhtml");
-                }).ifCancel(function() {
+                }).ifNo(function() {
                 })
             } else {
                 nts.uk.request.jump("/view/qmm/002/a/index.xhtml");
             }
         }
 
-        /**
-         * clear data on screen, new mode
-         */
-        clearForm(): void {
+        clearForm(): any {
             var self = this;
             if (self.dirty.isDirty() && !self.isNotCheckDirty()) {
-                //AL001 
+                //"変更された内容が登録されていません。"---AL001 
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。")
                     .ifYes(function() {
                         if (self.currentCode(null)) {
@@ -378,16 +352,13 @@ module qmm006.a.viewmodel {
                             self.currentCode(null);
                         }
                     })
-                    .ifCancel(function() { })
+                    .ifNo(function() { })
             } else {
                 self.currentCode(null);
             }
         }
 
-        /**
-         * clear error on screen
-         */
-        clearError(): void {
+        clearError() {
             $('#A_INP_001').ntsError('clear');
             $('#A_INP_002').ntsError('clear');
             $('#A_INP_003').ntsError('clear');
@@ -396,10 +367,7 @@ module qmm006.a.viewmodel {
             $('#A_INP_004').ntsError('clear');
         }
 
-        /**
-         * get data base-on currentCode
-         */
-        getLineBank(curCode): LineBank {
+        getLineBank(curCode) {
             var self = this;
             let data = _.find(self.items(), function(x) {
                 return x.lineBankCode === curCode;
@@ -410,11 +378,9 @@ module qmm006.a.viewmodel {
             return new LineBank(data.branchId, data.lineBankCode, data.lineBankName,
                 data.accountAtr, data.accountNo, data.memo, data.requesterName, data.consignors);
         }
-
-        /**
-         * get data for bankName, bankCode, branchName, branchCode
-         */
-        getInfoBankBranch(lineBank): void {
+        
+        //get data for bankName, bankCode, branchName, branchCode
+        getInfoBankBranch(lineBank) {
             var self = this;
             if (lineBank.branchId() == null) {
                 self.bankCode('');
@@ -432,11 +398,9 @@ module qmm006.a.viewmodel {
                 self.branchName(tmp.name);
             }
         }
-
-        /**
-         * get info of Bank from database
-         */
-        findBankAll(): JQueryPromise<any> {
+        
+        //find list Bank
+        findBankAll() {
             var self = this;
             var lineBank = self.currentLineBank();
             var dfd = $.Deferred();
@@ -471,8 +435,7 @@ module qmm006.a.viewmodel {
         requesterName: KnockoutObservable<string>;
         branchId: KnockoutObservable<string>;
 
-        constructor(branchId: string, lineBankCode: string, lineBankName: string, accountAtr: number,
-            accountNo: string, memo: string, requesterName: string, consignors: Array<any>) {
+        constructor(branchId: string, lineBankCode: string, lineBankName: string, accountAtr: number, accountNo: string, memo: string, requesterName: string, consignors: Array<any>) {
 
             this.branchId = ko.observable(branchId);
             this.lineBankCode = ko.observable(lineBankCode);
@@ -488,37 +451,45 @@ module qmm006.a.viewmodel {
                 var consignorItem = consignors[i];
                 switch (i) {
                     case 0:
-                        this.createConsignorItem(consignorItem, "①");
+                        if (consignorItem) {
+                            this.consignors.push(new Consignor("①", consignorItem.code, consignorItem.memo));
+                        } else {
+                            this.consignors.push(new Consignor("①", "", ""));
+                        }
+
                         break;
                     case 1:
-                        this.createConsignorItem(consignorItem, "②");
+                        if (consignorItem) {
+                            this.consignors.push(new Consignor("②", consignorItem.code, consignorItem.memo));
+                        } else {
+                            this.consignors.push(new Consignor("②", "", ""));
+                        }
                         break;
                     case 2:
-                        this.createConsignorItem(consignorItem, "③");
+                        if (consignorItem) {
+                            this.consignors.push(new Consignor("③", consignorItem.code, consignorItem.memo));
+                        } else {
+                            this.consignors.push(new Consignor("③", "", ""));
+                        }
                         break;
                     case 3:
-                        this.createConsignorItem(consignorItem, "④");
+                        if (consignorItem) {
+                            this.consignors.push(new Consignor("④", consignorItem.code, consignorItem.memo));
+                        } else {
+                            this.consignors.push(new Consignor("④", "", ""));
+                        }
                         break;
                     case 4:
-                        this.createConsignorItem(consignorItem, "⑤");
+                        if (consignorItem) {
+                            this.consignors.push(new Consignor("⑤", consignorItem.code, consignorItem.memo));
+                        } else {
+                            this.consignors.push(new Consignor("⑤", "", ""));
+                        }
                         break;
                     default:
                         break;
                 }
             }
-        }
-
-        /**
-         * create consignor on screen
-         */
-        private createConsignorItem(item: any, icon: string): void {
-            var self = this;
-            if (item) {
-                self.consignors.push(new Consignor(icon, item.code, item.memo));
-            } else {
-                self.consignors.push(new Consignor(icon, "", ""));
-            }
-
         }
     }
 

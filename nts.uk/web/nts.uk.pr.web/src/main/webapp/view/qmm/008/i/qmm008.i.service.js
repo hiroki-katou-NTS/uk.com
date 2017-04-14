@@ -12,30 +12,19 @@ var nts;
                     (function (i) {
                         var service;
                         (function (service) {
-                            /**
-                             *  Service paths
-                             */
                             var paths = {
                                 updatePensionAvgearn: "ctx/pr/core/insurance/social/pensionavgearn/update",
                                 findPensionAvgearn: "ctx/pr/core/insurance/social/pensionavgearn/find"
                             };
-                            /**
-                             *  Save list pensionAvgearn
-                             */
-                            function updatePensionAvgearn(list, officeCode) {
+                            function updatePensionAvgearn(listPensionAvgearn, officeCode) {
                                 var dfd = $.Deferred();
-                                var data = { listPensionAvgearnDto: list.listPensionAvgearnDto,
-                                    historyId: list.historyId,
-                                    officeCode: officeCode };
+                                var data = { listPensionAvgearn: listPensionAvgearn, officeCode: officeCode };
                                 nts.uk.request.ajax(paths.updatePensionAvgearn, data).done(function () {
                                     return dfd.resolve();
                                 });
                                 return dfd.promise();
                             }
                             service.updatePensionAvgearn = updatePensionAvgearn;
-                            /**
-                            *  Find list PensionAvgearn by historyId
-                            */
                             function findPensionAvgearn(id) {
                                 var dfd = $.Deferred();
                                 nts.uk.request.ajax(paths.findPensionAvgearn + '/' + id)
@@ -55,3 +44,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qmm008.i.service.js.map

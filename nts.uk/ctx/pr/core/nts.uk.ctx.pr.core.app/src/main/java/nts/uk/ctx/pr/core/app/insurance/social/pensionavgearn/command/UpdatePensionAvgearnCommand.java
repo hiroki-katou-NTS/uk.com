@@ -17,10 +17,7 @@ import lombok.Setter;
 public class UpdatePensionAvgearnCommand {
 
 	/** The list pension avgearn. */
-	private List<PensionAvgearnCommandDto> listPensionAvgearnDto;
-
-	/** The history id. */
-	private String historyId;
+	private List<PensionAvgearnCommandDto> listPensionAvgearn;
 
 	/** The office code. */
 	private String officeCode;

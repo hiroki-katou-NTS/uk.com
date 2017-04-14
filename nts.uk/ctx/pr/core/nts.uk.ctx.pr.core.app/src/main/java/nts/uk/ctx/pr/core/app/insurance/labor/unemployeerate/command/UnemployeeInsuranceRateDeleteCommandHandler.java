@@ -17,16 +17,13 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
-/**
- * The Class UnemployeeInsuranceRateDeleteCommandHandler.
- */
 @Stateless
 public class UnemployeeInsuranceRateDeleteCommandHandler
 	extends CommandHandler<UnemployeeInsuranceRateDeleteCommand> {
 
-	/** The unemployee insurance rate repository. */
+	/** CompanyRepository */
 	@Inject
-	private UnemployeeInsuranceRateRepository repository;
+	private UnemployeeInsuranceRateRepository unemployeeInsuranceRateRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -49,17 +46,20 @@ public class UnemployeeInsuranceRateDeleteCommandHandler
 		UnemployeeInsuranceRateDeleteCommand command = context.getCommand();
 
 		// get first data (remove)
-		Optional<UnemployeeInsuranceRate> data = this.repository.findFirstData(companyCode);
+		Optional<UnemployeeInsuranceRate> optionalRemove = this.unemployeeInsuranceRateRepository
+			.findFirstData(companyCode);
 
-		// remove data by exist and equal code
-		if (data.isPresent() && data.get().getHistoryId().equals(command.getCode())) {
-			this.repository.remove(companyCode, command.getCode(), command.getVersion());
-			Optional<UnemployeeInsuranceRate> dataFirst = this.repository.findFirstData(companyCode);
+		// remove data
+		if (optionalRemove.isPresent() && optionalRemove.get().getHistoryId().equals(command.getCode())) {
+			this.unemployeeInsuranceRateRepository.remove(companyCode, command.getCode(),
+				command.getVersion());
+			Optional<UnemployeeInsuranceRate> optionalUpdate = this.unemployeeInsuranceRateRepository
+				.findFirstData(companyCode);
 
 			// update second data
-			if (dataFirst.isPresent()) {
-				dataFirst.get().setMaxDate();
-				this.repository.update(dataFirst.get());
+			if (optionalUpdate.isPresent()) {
+				optionalUpdate.get().setMaxDate();
+				this.unemployeeInsuranceRateRepository.update(optionalUpdate.get());
 			}
 		}
 	}

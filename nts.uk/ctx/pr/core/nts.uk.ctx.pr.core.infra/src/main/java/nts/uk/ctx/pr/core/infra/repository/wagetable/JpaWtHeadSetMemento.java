@@ -24,7 +24,7 @@ import nts.uk.shr.com.primitive.Memo;
 public class JpaWtHeadSetMemento implements WtHeadSetMemento {
 
 	/** The type value. */
-	private QwtmtWagetableHead typeValue;
+	protected QwtmtWagetableHead typeValue;
 
 	/**
 	 * Instantiates a new jpa wage table head set memento.

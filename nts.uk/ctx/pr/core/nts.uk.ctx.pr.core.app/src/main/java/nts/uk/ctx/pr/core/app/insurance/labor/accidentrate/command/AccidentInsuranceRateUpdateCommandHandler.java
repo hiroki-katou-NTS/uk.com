@@ -27,11 +27,11 @@ public class AccidentInsuranceRateUpdateCommandHandler
 
 	/** The accident insurance rate repo. */
 	@Inject
-	private AccidentInsuranceRateRepository repository;
+	private AccidentInsuranceRateRepository accidentInsuranceRateRepo;
 
 	/** The accident insurance rate service. */
 	@Inject
-	private AccidentInsuranceRateService service;
+	private AccidentInsuranceRateService accidentInsuranceRateService;
 
 	/*
 	 * (non-Javadoc)
@@ -54,27 +54,27 @@ public class AccidentInsuranceRateUpdateCommandHandler
 		AccidentInsuranceRateUpdateCommand command = context.getCommand();
 
 		// to domain
-		AccidentInsuranceRate insuranceRate = command.toDomain(companyCode);
+		AccidentInsuranceRate accidentInsuranceRate = command.toDomain(companyCode);
 
 		// validate domain
-		insuranceRate.validate();
+		accidentInsuranceRate.validate();
 
 		// validate input
-		this.service.validateDateRangeUpdate(insuranceRate);
+		this.accidentInsuranceRateService.validateDateRangeUpdate(accidentInsuranceRate);
 
 		// get first by update
-		Optional<AccidentInsuranceRate> data = this.repository.findBetweenUpdate(
-			insuranceRate.getCompanyCode(), insuranceRate.getApplyRange().getStartMonth(),
-			insuranceRate.getHistoryId());
+		Optional<AccidentInsuranceRate> optionalUpdate = this.accidentInsuranceRateRepo.findBetweenUpdate(
+			accidentInsuranceRate.getCompanyCode(), accidentInsuranceRate.getApplyRange().getStartMonth(),
+			accidentInsuranceRate.getHistoryId());
 
-		// exist data
-		if (data.isPresent()) {
-			data.get().setEnd(insuranceRate.getApplyRange().getStartMonth().previousMonth());
-			this.repository.update(data.get());
+		if (optionalUpdate.isPresent()) {
+			optionalUpdate.get()
+				.setEnd(accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+			this.accidentInsuranceRateRepo.update(optionalUpdate.get());
 		}
 
 		// connection service update
-		this.repository.update(insuranceRate);
+		this.accidentInsuranceRateRepo.update(accidentInsuranceRate);
 	}
 
 }

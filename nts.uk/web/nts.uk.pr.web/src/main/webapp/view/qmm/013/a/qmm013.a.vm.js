@@ -10,16 +10,13 @@ var qmm013;
                     var self = this;
                     self.items = ko.observableArray([]);
                     self.currentItem = ko.observable(new PersonalUnitPrice(null, null, null, null, null, null, null, null, null, null, null, null, null));
-                    self.listItems = ko.observableArray([]);
                     self.currentCode = ko.observable();
                     self.displayAll = ko.observable(true);
+                    self.selectedId = ko.observable(0);
                     self.isCreated = ko.observable(true);
                     self.isEnableDelete = ko.observable(true);
-                    self.isFirstGetData = ko.observable(false);
-                    self.notCheckDirty = ko.observable(false);
                     self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                     self.indexRow = ko.observable(0);
-                    self.notLoop = ko.observable(false);
                     self.columns = ko.observableArray([
                         { headerText: 'コード', width: 100, key: 'code', formatter: _.escape },
                         { headerText: '名称', width: 150, key: 'name', formatter: _.escape },
@@ -27,10 +24,9 @@ var qmm013;
                     ]);
                     self.messages = ko.observableArray([
                         { messageId: "AL001", message: "変更された内容が登録されていません。\r\nよろしいですか。" },
-                        { messageId: "ER001", message: "が入力されていません。" },
-                        { messageId: "ER005", message: "入力したコードは既に存在しています。\r\nコードを確認してください。" },
-                        { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" },
-                        { messageId: "ER026", message: "更新対象のデータが存在しません。" },
+                        { messageId: "ER001", message: "＊が入力されていません。" },
+                        { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n＊を確認してください。" },
+                        { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" }
                     ]);
                     self.itemList = ko.observableArray([
                         new BoxModel(0, '全員一律で指定する'),
@@ -46,27 +42,14 @@ var qmm013;
                         { code: '2', name: 'その他' },
                     ]);
                     self.currentCode.subscribe(function (newCode) {
-                        //in case first getData, no error so not jump clearError()
-                        if (self.isFirstGetData()) {
-                            self.clearError();
-                        }
-                        self.isFirstGetData(true);
-                        //don't allow checkDirty
-                        if (self.notCheckDirty()) {
-                            self.selectedUnitPrice(newCode);
-                            self.notCheckDirty(false);
-                            return;
-                        }
                         if (!self.checkDirty()) {
                             self.selectedUnitPrice(newCode);
                             self.isCreated(false);
                             self.isEnableDelete(true);
                         }
                         else {
-                            //don't loop subscribe function
                             if (self.confirmDirty) {
                                 self.confirmDirty = false;
-                                self.isEnableDelete(true);
                                 return;
                             }
                             nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function () {
@@ -80,64 +63,19 @@ var qmm013;
                         }
                     });
                     self.displayAll.subscribe(function (newValue) {
-                        // don't loop subscribe function
-                        // in case change data, change state button SEL_001 and choise 'NO'
-                        if (self.notLoop()) {
-                            self.notLoop(false);
-                            return;
-                        }
                         if (!self.checkDirty()) {
                             self.getPersonalUnitPriceList().done(function () {
-                                //in case no dirty
-                                //if row is chose has column '廃止' is 'X', select first row in new list
-                                if (!self.currentItem().displaySet() && self.currentCode() != "") {
-                                    var tmp = _.find(self.listItems(), function (x) {
-                                        return x.personalUnitPriceCode === self.currentCode();
-                                    });
-                                    var tmp1 = new PersonalUnitPrice(tmp.personalUnitPriceCode, tmp.personalUnitPriceName, tmp.personalUnitPriceShortName, tmp.displaySet ? false : true, null, tmp.paymentSettingType, tmp.fixPaymentAtr, tmp.fixPaymentMonthly, tmp.fixPaymentDayMonth, tmp.fixPaymentDaily, tmp.fixPaymentHoursly, tmp.unitPriceAtr, tmp.memo);
-                                    self.currentItem(tmp1);
-                                    self.dirty.reset();
-                                }
-                                else {
-                                    self.selectedFirstUnitPrice();
-                                }
+                                self.selectedFirstUnitPrice();
                             });
                         }
                         else {
-                            nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。")
-                                .ifYes(function () {
-                                //self.notCheckDirty(true);
+                            nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function () {
                                 self.getPersonalUnitPriceList().done(function () {
-                                    //in case dirty
-                                    if (self.currentCode() == "") {
-                                        self.notCheckDirty(true);
-                                        self.selectedFirstUnitPrice();
-                                    }
-                                    //if row is chose has column '廃止' is 'X', select first row in new list
-                                    if (self.currentItem().displaySet()) {
-                                        self.notCheckDirty(true);
-                                        self.selectedFirstUnitPrice();
-                                    }
-                                    else {
-                                        //if row is chose has column '廃止' isn't 'X', keep the same position in new list
-                                        var tmp = _.find(self.listItems(), function (x) {
-                                            return x.personalUnitPriceCode === self.currentCode();
-                                        });
-                                        var tmp1 = new PersonalUnitPrice(tmp.personalUnitPriceCode, tmp.personalUnitPriceName, tmp.personalUnitPriceShortName, tmp.displaySet ? false : true, null, tmp.paymentSettingType, tmp.fixPaymentAtr, tmp.fixPaymentMonthly, tmp.fixPaymentDayMonth, tmp.fixPaymentDaily, tmp.fixPaymentHoursly, tmp.unitPriceAtr, tmp.memo);
-                                        self.currentItem(tmp1);
-                                        self.dirty.reset();
-                                    }
+                                    self.selectedFirstUnitPrice();
                                 });
-                            })
-                                .ifNo(function () {
-                                self.notLoop(true);
-                                self.displayAll(!self.displayAll());
                             });
                         }
                     });
-                    /**
-                     * paymentSettingType is number, convert to boolean type
-                     */
                     self.isCompany = ko.computed(function () {
                         return !(self.currentItem().paymentSettingType() == 0);
                     });
@@ -151,18 +89,14 @@ var qmm013;
                     });
                     return dfd.promise();
                 };
-                /**
-                 * get data from data base to screen
-                 */
                 ScreenModel.prototype.getPersonalUnitPriceList = function () {
                     var self = this;
                     var dfd = $.Deferred();
                     a.service.getPersonalUnitPriceList(self.displayAll()).done(function (data) {
                         var items = _.map(data, function (item) {
-                            var abolition = item.displaySet == true ? "" : '<i class="icon icon-close"></i>';
+                            var abolition = item.displaySet == 0 ? '<i class="icon icon-close"></i>' : "";
                             return new ItemModel(item.personalUnitPriceCode, item.personalUnitPriceName, abolition);
                         });
-                        self.listItems(data);
                         self.items(items);
                         dfd.resolve();
                     }).fail(function (res) {
@@ -177,14 +111,14 @@ var qmm013;
                     }
                     a.service.getPersonalUnitPrice(code).done(function (res) {
                         self.currentItem(self.selectedFirst(res));
-                        self.dirty.reset();
+                        self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                     }).fail(function (res) {
                         alert(res.message);
                     });
                 };
                 ScreenModel.prototype.selectedFirst = function (item) {
                     var self = this;
-                    return new PersonalUnitPrice(item.personalUnitPriceCode, item.personalUnitPriceName, item.personalUnitPriceShortName, item.displaySet ? false : true, item.uniteCode, item.paymentSettingType, item.fixPaymentAtr, item.fixPaymentMonthly, item.fixPaymentDayMonth, item.fixPaymentDaily, item.fixPaymentHoursly, item.unitPriceAtr, item.memo);
+                    return new PersonalUnitPrice(item.personalUnitPriceCode, item.personalUnitPriceName, item.personalUnitPriceShortName, item.displaySet == 0, item.uniteCode, item.paymentSettingType, item.fixPaymentAtr, item.fixPaymentMonthly, item.fixPaymentDayMonth, item.fixPaymentDaily, item.fixPaymentHoursly, item.unitPriceAtr, item.memo);
                 };
                 ScreenModel.prototype.checkDirty = function () {
                     var self = this;
@@ -196,52 +130,37 @@ var qmm013;
                     }
                 };
                 ;
-                /**
-                 * 新規(Clear form)
-                 */
                 ScreenModel.prototype.btn_001 = function () {
                     var self = this;
-                    if (self.isFirstGetData()) {
-                        self.clearError();
-                    }
-                    if (!self.checkDirty() || self.notCheckDirty()) {
-                        self.currentItem(new PersonalUnitPrice(null, null, null, false, "unitCode", 0, 1, 1, 1, 1, 1, 0, null));
-                        self.dirty.reset();
+                    self.confirmDirty = true;
+                    if (!self.checkDirty()) {
+                        self.currentItem(new PersonalUnitPrice(null, null, null, false, "2", 0, true, true, true, true, true, 0, null));
+                        self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                         self.currentCode("");
                         self.isCreated(true);
                         self.isEnableDelete(false);
                     }
                     else {
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function () {
-                            self.currentItem(new PersonalUnitPrice(null, null, null, false, "unitCode", 0, 1, 1, 1, 1, 1, 0, null));
-                            self.dirty.reset();
+                            self.currentItem(new PersonalUnitPrice(null, null, null, false, "2", 0, true, true, true, true, true, 0, null));
+                            self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                             self.currentCode("");
                             self.isCreated(true);
                             self.isEnableDelete(false);
                         });
                     }
                 };
-                ScreenModel.prototype.closeDialog = function () {
+                ScreenModel.prototype.openDialog = function () {
                     var self = this;
-                    if (!self.checkDirty()) {
-                        nts.uk.ui.windows.close();
-                    }
-                    else {
-                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。")
-                            .ifYes(function () {
-                            nts.uk.ui.windows.close();
-                        })
-                            .ifNo(function () { });
-                    }
+                    nts.uk.ui.windows.sub.modal("/view/qmm/013/b/index.xhtml", { title: "個人情報の登録 ＞ 単価名の登録ボタン", dialogClass: "no-close" });
                 };
-                /**
-                 * 登録(Add button)
-                 */
+                ScreenModel.prototype.closeDialog = function () {
+                    nts.uk.ui.windows.close();
+                };
                 ScreenModel.prototype.btn_002 = function () {
                     var self = this;
-                    //self.confirmDirty = true;
-                    //if input 0-9, auto insert '0' before
-                    if (self.currentItem().personalUnitPriceCode() != null && self.currentItem().personalUnitPriceCode().length == 1) {
+                    self.confirmDirty = true;
+                    if (self.currentItem().personalUnitPriceCode().length == 1) {
                         self.currentItem().personalUnitPriceCode("0" + self.currentItem().personalUnitPriceCode());
                     }
                     var PersonalUnitPrice = {
@@ -250,44 +169,29 @@ var qmm013;
                         personalUnitPriceShortName: self.currentItem().personalUnitPriceShortName(),
                         displaySet: self.currentItem().displaySet() ? 0 : 1,
                         uniteCode: null,
-                        paymentSettingType: self.currentItem().paymentSettingType(),
-                        fixPaymentAtr: self.currentItem().fixPaymentAtr(),
-                        fixPaymentMonthly: self.currentItem().fixPaymentMonthly(),
-                        fixPaymentDayMonth: self.currentItem().fixPaymentDayMonth(),
-                        fixPaymentDaily: self.currentItem().fixPaymentDaily(),
-                        fixPaymentHoursly: self.currentItem().fixPaymentHoursly(),
+                        paymentSettingType: self.currentItem().paymentSettingType() ? 0 : 1,
+                        fixPaymentAtr: self.currentItem().fixPaymentAtr() ? 0 : 1,
+                        fixPaymentMonthly: self.currentItem().fixPaymentMonthly() ? 0 : 1,
+                        fixPaymentDayMonth: self.currentItem().fixPaymentDayMonth() ? 0 : 1,
+                        fixPaymentDaily: self.currentItem().fixPaymentDaily() ? 0 : 1,
+                        fixPaymentHoursly: self.currentItem().fixPaymentHoursly() ? 0 : 1,
                         unitPriceAtr: self.currentItem().unitPriceAtr(),
                         memo: self.currentItem().memo()
                     };
                     a.service.addPersonalUnitPrice(self.isCreated(), PersonalUnitPrice).done(function () {
                         self.getPersonalUnitPriceList();
-                        //define update mode or insert mode
-                        if (self.currentItem().personalUnitPriceCode() != self.currentCode()) {
-                            self.confirmDirty = true;
-                        }
                         self.currentCode(PersonalUnitPrice.personalUnitPriceCode);
-                        self.isCreated(false);
-                        self.dirty.reset();
+                        self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                     }).fail(function (error) {
                         if (error.messageId == self.messages()[2].messageId) {
-                            $('#INP_002').ntsError('set', self.messages()[2].message);
+                            nts.uk.ui.dialog.alert(self.messages()[2].message);
                         }
                         else if (error.messageId == self.messages()[1].messageId) {
-                            if (!PersonalUnitPrice.personalUnitPriceCode) {
-                                $('#INP_002').ntsError('set', self.messages()[1].message);
-                            }
-                            if (!PersonalUnitPrice.personalUnitPriceName) {
-                                $('#INP_003').ntsError('set', self.messages()[1].message);
-                            }
-                        }
-                        else if (error.messageId == self.messages()[4].messageId) {
-                            nts.uk.ui.dialog.alert(self.messages()[4].message);
+                            $('#INP_002').ntsError('set', self.messages()[1].message);
+                            $('#INP_003').ntsError('set', self.messages()[1].message);
                         }
                     });
                 };
-                /**
-                 * 削除(Delete button)
-                 */
                 ScreenModel.prototype.btn_004 = function () {
                     var self = this;
                     nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
@@ -298,9 +202,7 @@ var qmm013;
                             return x.code === self.currentCode();
                         }));
                         a.service.removePersonalUnitPrice(data).done(function () {
-                            // reload list   
                             self.getPersonalUnitPriceList().done(function () {
-                                self.notCheckDirty(true);
                                 if (self.items().length > self.indexRow()) {
                                     self.currentCode(self.items()[self.indexRow()].code);
                                 }
@@ -370,3 +272,4 @@ var qmm013;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm013.a || (qmm013.a = {}));
 })(qmm013 || (qmm013 = {}));
+//# sourceMappingURL=qmm013.a.vm.js.map

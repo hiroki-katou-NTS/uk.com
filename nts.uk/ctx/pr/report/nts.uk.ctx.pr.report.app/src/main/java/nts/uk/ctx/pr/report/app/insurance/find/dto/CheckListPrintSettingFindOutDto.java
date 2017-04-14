@@ -1,10 +1,11 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.insurance.find.dto;
 
 import lombok.Data;
+import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingSetMemento;
 
 /**
@@ -35,6 +36,21 @@ public class CheckListPrintSettingFindOutDto implements ChecklistPrintSettingSet
 
 	/** The show total. */
 	private Boolean showTotal;
+	
+	/**
+	 * Creates the default setting.
+	 *
+	 * @return the check list print setting dto
+	 */
+	public static CheckListPrintSettingDto createDefaultSetting( ) {
+		CheckListPrintSettingDto dto = new CheckListPrintSettingDto();
+		dto.showCategoryInsuranceItem = true;
+		dto.showDeliveryNoticeAmount = true;
+		dto.showDetail = true;
+		dto.showOffice = true;
+		dto.showTotal = true;
+		return dto;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -43,7 +59,7 @@ public class CheckListPrintSettingFindOutDto implements ChecklistPrintSettingSet
 	 * setCompanyCode(nts.uk.ctx.pr.report.dom.company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(String companyCode) {
+	public void setCompanyCode(CompanyCode companyCode) {
 		// Do nothing.
 	}
 

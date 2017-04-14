@@ -5,25 +5,14 @@
 package nts.uk.ctx.pr.core.app.insurance.social.office.find;
 
 import lombok.Builder;
-import nts.uk.ctx.pr.core.dom.insurance.Address1;
-import nts.uk.ctx.pr.core.dom.insurance.Address2;
-import nts.uk.ctx.pr.core.dom.insurance.AddressKana1;
-import nts.uk.ctx.pr.core.dom.insurance.AddressKana2;
-import nts.uk.ctx.pr.core.dom.insurance.CityCode;
-import nts.uk.ctx.pr.core.dom.insurance.HealthInsuAssoCode;
-import nts.uk.ctx.pr.core.dom.insurance.HealthInsuOfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.Address;
+import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
-import nts.uk.ctx.pr.core.dom.insurance.OfficePensionFundCode;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeRefCode1;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeRefCode2;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeSign;
-import nts.uk.ctx.pr.core.dom.insurance.PhoneNumber;
 import nts.uk.ctx.pr.core.dom.insurance.PicName;
 import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
 import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
 import nts.uk.ctx.pr.core.dom.insurance.ShortName;
-import nts.uk.ctx.pr.core.dom.insurance.WelfarePensionFundCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento;
 import nts.uk.shr.com.primitive.Memo;
 
@@ -134,7 +123,7 @@ public class SocialInsuranceOfficeItemDto implements SocialInsuranceOfficeSetMem
 	 * setAddress1st(nts.uk.ctx.pr.core.dom.insurance.Address)
 	 */
 	@Override
-	public void setAddress1st(Address1 address1st) {
+	public void setAddress1st(Address address1st) {
 
 	}
 
@@ -146,7 +135,7 @@ public class SocialInsuranceOfficeItemDto implements SocialInsuranceOfficeSetMem
 	 * setAddress2nd(nts.uk.ctx.pr.core.dom.insurance.Address)
 	 */
 	@Override
-	public void setAddress2nd(Address2 address2nd) {
+	public void setAddress2nd(Address address2nd) {
 
 	}
 
@@ -158,7 +147,7 @@ public class SocialInsuranceOfficeItemDto implements SocialInsuranceOfficeSetMem
 	 * setKanaAddress1st(nts.uk.ctx.pr.core.dom.insurance.KanaAddress)
 	 */
 	@Override
-	public void setKanaAddress1st(AddressKana1 kanaAddress1st) {
+	public void setKanaAddress1st(KanaAddress kanaAddress1st) {
 
 	}
 
@@ -170,7 +159,7 @@ public class SocialInsuranceOfficeItemDto implements SocialInsuranceOfficeSetMem
 	 * setKanaAddress2nd(nts.uk.ctx.pr.core.dom.insurance.KanaAddress)
 	 */
 	@Override
-	public void setKanaAddress2nd(AddressKana2 kanaAddress2nd) {
+	public void setKanaAddress2nd(KanaAddress kanaAddress2nd) {
 
 	}
 
@@ -182,7 +171,7 @@ public class SocialInsuranceOfficeItemDto implements SocialInsuranceOfficeSetMem
 	 * setPhoneNumber(java.lang.String)
 	 */
 	@Override
-	public void setPhoneNumber(PhoneNumber phoneNumber) {
+	public void setPhoneNumber(String phoneNumber) {
 
 	}
 
@@ -194,7 +183,7 @@ public class SocialInsuranceOfficeItemDto implements SocialInsuranceOfficeSetMem
 	 * setHealthInsuOfficeRefCode1st(java.lang.String)
 	 */
 	@Override
-	public void setHealthInsuOfficeRefCode1st(OfficeRefCode1 healthInsuOfficeRefCode1st) {
+	public void setHealthInsuOfficeRefCode1st(String healthInsuOfficeRefCode1st) {
 
 	}
 
@@ -206,7 +195,7 @@ public class SocialInsuranceOfficeItemDto implements SocialInsuranceOfficeSetMem
 	 * setHealthInsuOfficeRefCode2nd(java.lang.String)
 	 */
 	@Override
-	public void setHealthInsuOfficeRefCode2nd(OfficeRefCode2 healthInsuOfficeRefCode2nd) {
+	public void setHealthInsuOfficeRefCode2nd(String healthInsuOfficeRefCode2nd) {
 
 	}
 
@@ -218,7 +207,7 @@ public class SocialInsuranceOfficeItemDto implements SocialInsuranceOfficeSetMem
 	 * setPensionOfficeRefCode1st(java.lang.String)
 	 */
 	@Override
-	public void setPensionOfficeRefCode1st(OfficeRefCode1 pensionOfficeRefCode1st) {
+	public void setPensionOfficeRefCode1st(String pensionOfficeRefCode1st) {
 
 	}
 
@@ -230,7 +219,7 @@ public class SocialInsuranceOfficeItemDto implements SocialInsuranceOfficeSetMem
 	 * setPensionOfficeRefCode2nd(java.lang.String)
 	 */
 	@Override
-	public void setPensionOfficeRefCode2nd(OfficeRefCode2 pensionOfficeRefCode2nd) {
+	public void setPensionOfficeRefCode2nd(String pensionOfficeRefCode2nd) {
 
 	}
 
@@ -242,7 +231,7 @@ public class SocialInsuranceOfficeItemDto implements SocialInsuranceOfficeSetMem
 	 * setWelfarePensionFundCode(java.lang.String)
 	 */
 	@Override
-	public void setWelfarePensionFundCode(WelfarePensionFundCode welfarePensionFundCode) {
+	public void setWelfarePensionFundCode(String welfarePensionFundCode) {
 
 	}
 
@@ -254,7 +243,7 @@ public class SocialInsuranceOfficeItemDto implements SocialInsuranceOfficeSetMem
 	 * setOfficePensionFundCode(java.lang.String)
 	 */
 	@Override
-	public void setOfficePensionFundCode(OfficePensionFundCode officePensionFundCode) {
+	public void setOfficePensionFundCode(String officePensionFundCode) {
 
 	}
 
@@ -266,7 +255,7 @@ public class SocialInsuranceOfficeItemDto implements SocialInsuranceOfficeSetMem
 	 * setHealthInsuCityCode(java.lang.String)
 	 */
 	@Override
-	public void setHealthInsuCityCode(CityCode healthInsuCityCode) {
+	public void setHealthInsuCityCode(String healthInsuCityCode) {
 
 	}
 
@@ -278,7 +267,7 @@ public class SocialInsuranceOfficeItemDto implements SocialInsuranceOfficeSetMem
 	 * setHealthInsuOfficeSign(java.lang.String)
 	 */
 	@Override
-	public void setHealthInsuOfficeSign(OfficeSign healthInsuOfficeSign) {
+	public void setHealthInsuOfficeSign(String healthInsuOfficeSign) {
 
 	}
 
@@ -290,19 +279,19 @@ public class SocialInsuranceOfficeItemDto implements SocialInsuranceOfficeSetMem
 	 * setPensionCityCode(java.lang.String)
 	 */
 	@Override
-	public void setPensionCityCode(CityCode pensionCityCode) {
+	public void setPensionCityCode(String pensionCityCode) {
 
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @sees
+	 * @see
 	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
 	 * setPensionOfficeSign(java.lang.String)
 	 */
 	@Override
-	public void setPensionOfficeSign(OfficeSign pensionOfficeSign) {
+	public void setPensionOfficeSign(String pensionOfficeSign) {
 
 	}
 
@@ -314,7 +303,7 @@ public class SocialInsuranceOfficeItemDto implements SocialInsuranceOfficeSetMem
 	 * setHealthInsuOfficeCode(java.lang.String)
 	 */
 	@Override
-	public void setHealthInsuOfficeCode(HealthInsuOfficeCode healthInsuOfficeCode) {
+	public void setHealthInsuOfficeCode(String healthInsuOfficeCode) {
 
 	}
 
@@ -326,7 +315,7 @@ public class SocialInsuranceOfficeItemDto implements SocialInsuranceOfficeSetMem
 	 * setHealthInsuAssoCode(java.lang.String)
 	 */
 	@Override
-	public void setHealthInsuAssoCode(HealthInsuAssoCode healthInsuAssoCode) {
+	public void setHealthInsuAssoCode(String healthInsuAssoCode) {
 
 	}
 

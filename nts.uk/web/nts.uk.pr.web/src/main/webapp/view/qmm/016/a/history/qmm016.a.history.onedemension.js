@@ -17,9 +17,6 @@ var nts;
                     (function (a) {
                         var history;
                         (function (history_1) {
-                            /**
-                             * For one demension view.
-                             */
                             var OneDemensionViewModel = (function (_super) {
                                 __extends(OneDemensionViewModel, _super);
                                 function OneDemensionViewModel(history) {
@@ -27,33 +24,17 @@ var nts;
                                     this.igGridDataSource = ko.observableArray([]);
                                     if (history.valueItems && history.valueItems.length > 0) {
                                         var element = history.elements[0];
-                                        var itemVmList = _.map(element.itemList, function (item) {
+                                        _.map(element.itemList, function (item) {
                                             var vm = new ItemViewModel(a.viewmodel.getElementTypeByValue(element.type), item);
-                                            // Filter value.
                                             vm.amount(_.filter(history.valueItems, function (vi) {
                                                 return vi.element1Id == item.uuid;
                                             })[0].amount);
-                                            return vm;
                                         });
-                                        this.igGridDataSource(itemVmList);
                                     }
+                                    this.initIgGrid();
                                 }
-                                /**
-                                 * On load processing.
-                                 */
-                                OneDemensionViewModel.prototype.onLoad = function () {
-                                    var self = this;
-                                    var dfd = $.Deferred();
-                                    dfd.resolve();
-                                    self.initIgGrid();
-                                    return dfd.promise();
-                                };
-                                /**
-                                 * Init ig grid.
-                                 */
                                 OneDemensionViewModel.prototype.initIgGrid = function () {
                                     var self = this;
-                                    // IgGrid
                                     self.igGrid = ko.observable({
                                         dataSource: self.igGridDataSource,
                                         width: '60%',
@@ -62,7 +43,7 @@ var nts;
                                         features: [
                                             {
                                                 name: 'Updating',
-                                                editMode: 'row',
+                                                editMode: 'cell',
                                                 enableAddRow: false,
                                                 excelNavigatorMode: false,
                                                 enableDeleteRow: false,
@@ -77,12 +58,6 @@ var nts;
                                                     },
                                                     {
                                                         columnKey: 'amount',
-                                                        editorProvider: new $.ig.NtsNumberEditor(),
-                                                        editorOptions: {
-                                                            constraint: 'WtValue',
-                                                            option: {},
-                                                            required: true
-                                                        },
                                                         readOnly: false
                                                     }
                                                 ],
@@ -91,27 +66,19 @@ var nts;
                                         autoCommit: true,
                                         columns: [
                                             { headerText: 'Element Name', dataType: 'string', key: 'uuid', hidden: true },
-                                            { headerText: self.elementSettings[0].demensionName, dataType: 'string', key: 'name', width: '50%', columnCssClass: "bgIgCol" },
+                                            { headerText: self.history.elements[0].demensionName, dataType: 'string', key: 'name', width: '50%' },
                                             { headerText: '値', dataType: 'number', key: 'amount', width: '50%', columnCssClass: "halign-right" }
                                         ]
                                     });
                                 };
-                                /**
-                                 * On refresh element.
-                                 */
                                 OneDemensionViewModel.prototype.onRefreshElement = function () {
                                     var self = this;
-                                    // First element.
                                     var element = self.elementSettings[0];
                                     var itemVmList = _.map(element.itemList, function (item) {
                                         return new ItemViewModel(a.viewmodel.getElementTypeByValue(element.type), item);
                                     });
-                                    // Update source
                                     self.igGridDataSource(itemVmList);
                                 };
-                                /**
-                                 * Get setting cell item.
-                                 */
                                 OneDemensionViewModel.prototype.getCellItem = function () {
                                     return _.map(this.igGridDataSource(), function (item) {
                                         var dto = {};
@@ -120,27 +87,22 @@ var nts;
                                         return dto;
                                     });
                                 };
-                                /**
-                                 * Paste data from excel.
-                                 */
                                 OneDemensionViewModel.prototype.pasteFromExcel = function () {
-                                    // Do parsing.
                                     return;
                                 };
                                 return OneDemensionViewModel;
                             }(history_1.base.BaseHistoryViewModel));
                             history_1.OneDemensionViewModel = OneDemensionViewModel;
-                            /**
-                             * Item view model.
-                             */
                             var ItemViewModel = (function () {
-                                /**
-                                 * Constructor.
-                                 */
                                 function ItemViewModel(type, item) {
                                     var self = this;
                                     self.uuid = item.uuid;
-                                    self.name = item.displayName;
+                                    if (type.isRangeMode) {
+                                        self.name = item.startVal + '～' + item.endVal;
+                                    }
+                                    else {
+                                        self.name = 'Code';
+                                    }
                                     self.amount = ko.observable(0);
                                 }
                                 return ItemViewModel;
@@ -152,3 +114,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qmm016.a.history.onedemension.js.map

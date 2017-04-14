@@ -4,9 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.dto;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,7 +36,8 @@ public class AccidentInsuranceRateDto {
 	 * @return the accident insurance rate
 	 */
 	public AccidentInsuranceRate toDomain(String companyCode) {
-		return new AccidentInsuranceRate(new AccidentInsuranceRateGetMementoImpl(companyCode, this));
+		return new AccidentInsuranceRate(
+				new AccidentInsuranceRateGetMementoImpl(companyCode, this));
 	}
 
 	/**
@@ -58,7 +59,8 @@ public class AccidentInsuranceRateDto {
 		 * @param dto
 		 *            the dto
 		 */
-		public AccidentInsuranceRateGetMementoImpl(String companyCode, AccidentInsuranceRateDto dto) {
+		public AccidentInsuranceRateGetMementoImpl(String companyCode,
+				AccidentInsuranceRateDto dto) {
 			super();
 			this.dto = dto;
 			this.companyCode = companyCode;
@@ -105,7 +107,11 @@ public class AccidentInsuranceRateDto {
 		 */
 		@Override
 		public Set<InsuBizRateItem> getRateItems() {
-			return dto.rateItems.stream().map(rateDto -> rateDto.toDomain()).collect(Collectors.toSet());
+			Set<InsuBizRateItem> setInsuBizRateItem = new HashSet<>();
+			for (InsuBizRateItemDto insuBizRateItemDto : dto.rateItems) {
+				setInsuBizRateItem.add(insuBizRateItemDto.toDomain());
+			}
+			return setInsuBizRateItem;
 		}
 
 	}

@@ -78,19 +78,11 @@ module cmm008.a.viewmodel{
             var widthScreen =  $(window).width();
             var heightHeader = $('#header').height() + $('#functions-area').height();
             var height = heightScreen-heightHeader - 80;
-            $('#contents-left').css({height: height, width: widthScreen*40/100});
-            $('#contents-right').css({height: height, width: widthScreen*60/100});
-            
+            $('#contents-left').css({height: height, width: widthScreen*38/100});
+            $('#contents-right').css({height: height, width: widthScreen*62/100});
+            //self.userKtSet();            
             self.listMessage();
-            
-            $.when(self.userKtSet()).done(function(){
-                self.closeDateListItem();
-                self.processingDateItem();
-                self.managementHolidaylist();
-                self.dataSourceItem();
-                dfd.resolve(self.holidayCode()); 
-            })  
-            
+            self.dataSourceItem();
             
             //list data click
             self.currentCode.subscribe(function(newValue){
@@ -100,10 +92,12 @@ module cmm008.a.viewmodel{
                     })
                     if(!self.isMess()){
                         nts.uk.ui.dialog.confirm(AL001.messName).ifCancel(function(){
+                             //self.reloadScreenWhenListClick(newValue);
                             self.isMess(true);
                             self.currentCode(self.employmentCode());
                             return;    
                         }).ifYes(function(){
+                            //self.createEmployment();
                             self.isMess(false);
                             self.reloadScreenWhenListClick(newValue);
                         })   
@@ -116,26 +110,31 @@ module cmm008.a.viewmodel{
                 }
                 
             });
+            
+            service.getProcessingNo();
+            
+            dfd.resolve();
+            // Return.
             return dfd.promise();
         }
         
         //就業権限
         userKtSet(): any {
-            var def = $.Deferred();
             var self = this;
             service.getCompanyInfor().done(function(companyInfor: any){
                 if(companyInfor !== undefined){
                     self.isUseKtSet(companyInfor.use_Kt_Set);
                     if(self.isUseKtSet() === 0){
                         $('.UseKtSet').css('display', 'none');
+                    }else{
+                        self.closeDateListItem();
+                        self.managementHolidaylist();
+                        self.processingDateItem();
                     }
                 }
-                def.resolve(self.isUseKtSet());
             }).fail(function(res: any){
                 nts.uk.ui.dialog.alert(res.message);
-                def.reject();
-            });
-            return def.promise();
+            })
         }
         
         reloadScreenWhenListClick(newValue: string){
@@ -172,7 +171,6 @@ module cmm008.a.viewmodel{
         }
         //公休の管理
         managementHolidaylist(): any{
-           
             var self = this;
             self.managementHolidays = ko.observableArray([
                 {code: 0, name: 'する'},
@@ -201,7 +199,7 @@ module cmm008.a.viewmodel{
                      })
                           
                  }
-            }).fail(function(res: any){
+            }).fail(function(res){
                 var ER010 = _.find(self.lstMessage(), function(mess){
                     return  mess.messCode === "ER010";
                 })
@@ -245,22 +243,14 @@ module cmm008.a.viewmodel{
                     }
                 }
                 dfd.resolve(listResult);
-            }) 
-            if(self.isUseKtSet() === 0){
-                this.columns = ko.observableArray([
-                    { headerText: 'コード', prop: 'employmentCode', width: '30%' },
-                    { headerText: '名称', prop: 'employmentName', width: '50%' },
-                    { headerText: '初期表示', prop: 'displayStr', width: '20%' }
-                ]);
-            }else{
-                this.columns = ko.observableArray([
-                    { headerText: 'コード', prop: 'employmentCode', width: '18%' },
-                    { headerText: '名称', prop: 'employmentName', width: '28%' },
-                    { headerText: '締め日', prop: 'closeDateNoStr', width: '23%' },
-                    { headerText: '処理日区分', prop: 'processingStr', width: '17%' },
-                    { headerText: '初期表示', prop: 'displayStr', width: '14%' }
-                ]);
-            }
+            })            
+            this.columns = ko.observableArray([
+                { headerText: 'コード', prop: 'employmentCode', width: '18%' },
+                { headerText: '名称', prop: 'employmentName', width: '28%' },
+                { headerText: '締め日', prop: 'closeDateNoStr', width: '20%' },
+                { headerText: '処理日区分', prop: 'processingStr', width: '20%' },
+                { headerText: '初期表示', prop: 'displayStr', width: '14%' }
+            ]);
             self.singleSelectedCode = ko.observable(null);
             return dfd.promise();
         }
@@ -274,12 +264,12 @@ module cmm008.a.viewmodel{
             })
             if(self.employmentCode() === ""){
                 nts.uk.ui.dialog.alert(ER001.messName.replace('*','コード'));   
-                $("#inpCode").focus(); 
+                $("#INP_002").focus(); 
                 return;
             }
             if(self.employmentName() === ""){
                 nts.uk.ui.dialog.alert(ER001.messName.replace('*','名称'));  
-                $("#inpName").focus();  
+                $("#INP_003").focus();  
                 return;
             }
             var employment = new service.model.employmentDto();
@@ -293,7 +283,7 @@ module cmm008.a.viewmodel{
             employment.employementOutCd = self.employmentOutCode();
             employment.memo = self.multilineeditor.memoValue();
             if(self.dataSource().length === 0){
-                self.isCheckbox(true);
+                    self.isCheckbox(true);
             }
             if(self.isCheckbox())
                 employment.displayFlg = 1;
@@ -307,13 +297,13 @@ module cmm008.a.viewmodel{
                             self.currentCode(employment.employmentCode);
                         })    
                     })
-                }).fail(function(error: any){
+                }).fail(function(error){
                     var newMess = _.find(self.lstMessage(), function(mess){
                         return  mess.messCode === error.message;
                     })
                     nts.uk.ui.dialog.alert(newMess.messName.split('*').join('コード'));    
                     self.isEnable(true);
-                    $("#inpCode").focus();
+                    $("#INP_002").focus();
                 })   
             //更新の時 
             }else{
@@ -342,6 +332,7 @@ module cmm008.a.viewmodel{
                     return;    
                 }).ifYes(function(){
                     self.clearItem();
+                    //self.createEmployment();    
                 })            
             }else{
                 self.clearItem();    
@@ -385,7 +376,7 @@ module cmm008.a.viewmodel{
             self.isDelete(false);
             self.holidayCode(0);
             self.selectedProcessNo(0);
-            $("#inpCode").focus();
+            $("#INP_002").focus();
         }
         
         //削除
@@ -424,7 +415,7 @@ module cmm008.a.viewmodel{
                             }
                         }
                     })
-                }).fail(function(res: any){
+                }).fail(function(res){
                     var delMess = _.find(self.lstMessage(), function(mess){
                         return  mess.messCode === res.message;
                     })

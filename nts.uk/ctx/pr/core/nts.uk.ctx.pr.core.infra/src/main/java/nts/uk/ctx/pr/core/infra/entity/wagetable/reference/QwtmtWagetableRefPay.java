@@ -92,7 +92,6 @@ public class QwtmtWagetableRefPay implements Serializable {
 	 * Instantiates a new qwtmt wagetable ref pay.
 	 */
 	public QwtmtWagetableRefPay() {
-		super();
 	}
 
 	/**

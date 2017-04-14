@@ -16,7 +16,7 @@ import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitprice
 public class JpaUnitPriceSetMemento implements UnitPriceSetMemento {
 
 	/** The type value. */
-	private QupmtCUnitpriceHeader typeValue;
+	protected QupmtCUnitpriceHeader typeValue;
 
 	/**
 	 * Instantiates a new jpa unit price set memento.

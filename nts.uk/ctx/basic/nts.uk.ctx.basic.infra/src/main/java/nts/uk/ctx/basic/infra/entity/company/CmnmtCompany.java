@@ -10,10 +10,9 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.TableEntity;
 /**
  * @author lanlt
  *
@@ -22,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name="CMNMT_COMPANY")
 @AllArgsConstructor
 @NoArgsConstructor
-public class CmnmtCompany extends UkJpaEntity implements Serializable{
+public class CmnmtCompany extends TableEntity implements Serializable{
 	public static final long serialVersionUID = 1L;
 
 	@EmbeddedId
@@ -160,9 +159,4 @@ public class CmnmtCompany extends UkJpaEntity implements Serializable{
 	@Basic(optional = false)
 	@Column(name="USE_RS10_SET")
 	public int use_Rs10_Set;
-
-	@Override
-	protected Object getKey() {
-		return this.cmnmtCompanyPk;
-	}
 }

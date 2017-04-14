@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 
 import lombok.Data;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
-import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnValue;
 
 /* (non-Javadoc)
@@ -60,9 +59,9 @@ public class HealthInsuranceAvgearnValueDto {
 	 * @return the health insurance avgearn value
 	 */
 	public static HealthInsuranceAvgearnValue toDomain(HealthInsuranceAvgearnValueDto dto) {
-		return new HealthInsuranceAvgearnValue(new InsuranceAmount(dto.getHealthBasicMny()),
+		return new HealthInsuranceAvgearnValue(new CommonAmount(dto.getHealthBasicMny()),
 				new CommonAmount(dto.getHealthGeneralMny()), new CommonAmount(dto.getHealthNursingMny()),
-				new InsuranceAmount(dto.getHealthSpecificMny()));
+				new CommonAmount(dto.getHealthSpecificMny()));
 	}
 
 	/**

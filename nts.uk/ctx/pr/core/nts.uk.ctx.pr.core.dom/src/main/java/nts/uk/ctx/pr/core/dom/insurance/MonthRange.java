@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.core.dom.insurance;
 import java.io.Serializable;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.arc.time.DateTimeConstraints;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.util.PrimitiveUtil;
@@ -37,12 +36,6 @@ public class MonthRange implements Serializable {
 	 */
 	private MonthRange(YearMonth startMonth, YearMonth endMonth) {
 		super();
-
-		// Check required.
-		if (startMonth == null || endMonth == null) {
-			throw new BusinessException("ER001");
-		}
-
 		this.startMonth = startMonth;
 		this.endMonth = endMonth;
 	}
@@ -55,8 +48,8 @@ public class MonthRange implements Serializable {
 	 * @return the month range
 	 */
 	public static MonthRange toMaxDate(YearMonth startMonth) {
-		return new MonthRange(startMonth, YearMonth.of(DateTimeConstraints.LIMIT_YEAR.max(),
-				DateTimeConstraints.LIMIT_MONTH.max()));
+		return new MonthRange(startMonth,
+				YearMonth.of(DateTimeConstraints.LIMIT_YEAR.max(), DateTimeConstraints.LIMIT_MONTH.max()));
 	}
 
 	/**
@@ -67,8 +60,8 @@ public class MonthRange implements Serializable {
 	 * @return the month range
 	 */
 	public static MonthRange toMinDate(YearMonth endMonth) {
-		return new MonthRange(YearMonth.of(DateTimeConstraints.LIMIT_YEAR.min(),
-				DateTimeConstraints.LIMIT_MONTH.min()), endMonth);
+		return new MonthRange(YearMonth.of(DateTimeConstraints.LIMIT_YEAR.min(), DateTimeConstraints.LIMIT_MONTH.min()),
+				endMonth);
 	}
 
 	/**

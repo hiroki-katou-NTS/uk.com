@@ -10,8 +10,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.gul.collection.CollectionUtil;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.service.UnemployeeInsuranceRateService;
@@ -21,9 +19,6 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.service.UnemployeeI
  */
 @Stateless
 public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRateService {
-
-	/** The rate item count. */
-	public static final int RATE_ITEM_COUNT = 3;
 
 	/** The unemployee insurance rate repo. */
 	@Inject
@@ -38,8 +33,7 @@ public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRa
 	 */
 	@Override
 	public void validateRequiredItem(UnemployeeInsuranceRate rate) {
-		if (StringUtil.isNullOrEmpty(rate.getHistoryId(), true) || CollectionUtil.isEmpty(rate.getRateItems())
-			|| rate.getRateItems() == null || rate.getRateItems().size() != RATE_ITEM_COUNT) {
+		if (rate.getApplyRange() == null) {
 			throw new BusinessException("ER001");
 		}
 	}
@@ -72,10 +66,10 @@ public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRa
 		}
 
 		Optional<UnemployeeInsuranceRate> optionalFirst = this.unemployeeInsuranceRateRepo
-			.findFirstData(rate.getCompanyCode());
+				.findFirstData(rate.getCompanyCode());
 
-		if (optionalFirst.isPresent() && optionalFirst.get().getApplyRange().getStartMonth().nextMonth()
-			.v() > rate.getApplyRange().getStartMonth().v()) {
+		if (optionalFirst.isPresent() && optionalFirst.get().getApplyRange().getStartMonth()
+				.nextMonth().v() > rate.getApplyRange().getStartMonth().v()) {
 			resvalue = true;
 		}
 		return resvalue;
@@ -113,20 +107,21 @@ public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRa
 		if (!resvalue) {
 			// data is begin update
 			Optional<UnemployeeInsuranceRate> optionalUnemployeeInsuranceRate;
-			optionalUnemployeeInsuranceRate = this.unemployeeInsuranceRateRepo.findById(rate.getCompanyCode(),
-				rate.getHistoryId());
+			optionalUnemployeeInsuranceRate = this.unemployeeInsuranceRateRepo
+					.findById(rate.getCompanyCode(), rate.getHistoryId());
 			if (!optionalUnemployeeInsuranceRate.isPresent()) {
 				resvalue = true;
 			}
 			if (!resvalue) {
 				// get first data update
 				Optional<UnemployeeInsuranceRate> optionalBetweenUpdate = this.unemployeeInsuranceRateRepo
-					.findBetweenUpdate(rate.getCompanyCode(),
-						optionalUnemployeeInsuranceRate.get().getApplyRange().getStartMonth(),
-						optionalUnemployeeInsuranceRate.get().getHistoryId());
+						.findBetweenUpdate(rate.getCompanyCode(),
+								optionalUnemployeeInsuranceRate.get().getApplyRange()
+										.getStartMonth(),
+								optionalUnemployeeInsuranceRate.get().getHistoryId());
 				if (optionalBetweenUpdate.isPresent()) {
 					if (optionalBetweenUpdate.get().getApplyRange().getStartMonth().v() >= rate
-						.getApplyRange().getStartMonth().v()) {
+							.getApplyRange().getStartMonth().v()) {
 						resvalue = true;
 					}
 				}

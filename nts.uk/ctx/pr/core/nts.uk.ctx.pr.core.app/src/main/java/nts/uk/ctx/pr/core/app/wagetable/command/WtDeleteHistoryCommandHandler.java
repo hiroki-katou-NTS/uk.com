@@ -17,7 +17,8 @@ import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistoryRepository;
  */
 @Stateless
 @Transactional
-public class WtDeleteHistoryCommandHandler extends CommandHandler<WtDeleteHistoryCommand> {
+public class WtDeleteHistoryCommandHandler
+		extends CommandHandler<WtDeleteHistoryCommand> {
 
 	/** The wage table history repo. */
 	@Inject
@@ -32,10 +33,9 @@ public class WtDeleteHistoryCommandHandler extends CommandHandler<WtDeleteHistor
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<WtDeleteHistoryCommand> context) {
-		// Get command
+
 		WtDeleteHistoryCommand command = context.getCommand();
 
-		// Delete history.
 		this.wageTableHistoryRepo.deleteHistory(command.getHistoryId());
 	}
 

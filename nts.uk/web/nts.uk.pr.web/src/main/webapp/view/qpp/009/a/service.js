@@ -11,8 +11,6 @@ var qpp009;
                 var dfd = $.Deferred();
                 var reportQuery = {
                     targetYear: data.targetYear(),
-                    //                detailItemsSetting: ko.toJS(data.detailItemsSetting()),
-                    //                printSetting: ko.toJS(data.printSetting())
                     selectedDivision: data.selectedDivision(),
                     isPrintDetailItem: data.detailItemsSetting().isPrintDetailItem(),
                     isPrintTotalOfDepartment: data.detailItemsSetting().isPrintTotalOfDepartment(),
@@ -20,8 +18,6 @@ var qpp009;
                     selectedLevels: data.detailItemsSetting().selectedLevels(),
                     isCalculateTotal: data.detailItemsSetting().isCalculateTotal(),
                     selectedBreakPageCode: data.printSetting().selectedBreakPageCode(),
-                    // isBreakPageByEmployee: data.printSetting().
-                    //isBreakPageByDepartment
                     selectedUse2000yen: data.printSetting().selectedUse2000yen(),
                     selectedBreakPageHierarchyCode: data.printSetting().selectedBreakPageHierarchyCode(),
                     isBreakPageByAccumulated: data.printSetting().isBreakPageByAccumulated()
@@ -38,3 +34,4 @@ var qpp009;
         })(service = a.service || (a.service = {}));
     })(a = qpp009.a || (qpp009.a = {}));
 })(qpp009 || (qpp009 = {}));
+//# sourceMappingURL=service.js.map

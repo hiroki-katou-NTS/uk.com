@@ -12,11 +12,9 @@ module nts.uk.pr.view.qmm008.i {
         /**
          *  Save list pensionAvgearn
          */
-        export function updatePensionAvgearn(list: model.ListPensionAvgearnDto, officeCode: string): JQueryPromise<any> {
+        export function updatePensionAvgearn(listPensionAvgearn: model.PensionAvgearnDto, officeCode: string): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
-            var data = { listPensionAvgearnDto: list.listPensionAvgearnDto,
-                historyId: list.historyId, 
-                officeCode: officeCode };
+            var data = { listPensionAvgearn: listPensionAvgearn, officeCode: officeCode };
             nts.uk.request.ajax(paths.updatePensionAvgearn, data).done(() =>
                 dfd.resolve());
             return dfd.promise();
@@ -25,13 +23,13 @@ module nts.uk.pr.view.qmm008.i {
         /**
         *  Find list PensionAvgearn by historyId
         */
-        export function findPensionAvgearn(id: string): JQueryPromise<model.ListPensionAvgearnDto> {
-            var dfd = $.Deferred<model.ListPensionAvgearnDto>();
+        export function findPensionAvgearn(id: string): JQueryPromise<Array<model.PensionAvgearnDto>> {
+            var dfd = $.Deferred<any>();
             nts.uk.request.ajax(paths.findPensionAvgearn + '/' + id)
-                .done(function(res: model.ListPensionAvgearnDto) {
+                .done(function(res: Array<model.PensionAvgearnDto>) {
                     dfd.resolve(res);
                 })
-                .fail(function(res: any) {
+                .fail(function(res: Array<model.PensionAvgearnDto>) {
                     dfd.reject(res);
                 });
             return dfd.promise();
@@ -43,6 +41,7 @@ module nts.uk.pr.view.qmm008.i {
         export module model {
 
             export interface PensionAvgearnDto {
+                historyId: string;
                 levelCode: number;
                 companyFund: PensionAvgearnValue;
                 companyFundExemption: PensionAvgearnValue;
@@ -51,11 +50,6 @@ module nts.uk.pr.view.qmm008.i {
                 personalFundExemption: PensionAvgearnValue;
                 personalPension: PensionAvgearnValue;
                 childContributionAmount: number;
-            }
-
-            export interface ListPensionAvgearnDto {
-                listPensionAvgearnDto: Array<PensionAvgearnDto>;
-                historyId: string;
             }
 
             export interface PensionAvgearnValue {

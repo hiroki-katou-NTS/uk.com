@@ -7,9 +7,6 @@ package nts.uk.ctx.pr.core.dom.wagetable.certification;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * The Interface CertifyGroupRepository.
- */
 public interface CertifyGroupRepository {
 
 	/**
@@ -38,7 +35,6 @@ public interface CertifyGroupRepository {
 	/**
 	 * Find all.
 	 *
-	 * @param companyCode the company code
 	 * @return the list
 	 */
 	List<CertifyGroup> findAll(String companyCode);
@@ -48,18 +44,7 @@ public interface CertifyGroupRepository {
 	 *
 	 * @param companyCode the company code
 	 * @param code the code
-	 * @return the optional
+	 * @return the certify group
 	 */
 	Optional<CertifyGroup> findById(String companyCode, String code);
-
-	/**
-	 * Checks if is belong to exist group.
-	 *
-	 * @param companyCode the company code
-	 * @param groupCode the group code
-	 * @param certificationCode the certification code
-	 * @return the boolean
-	 */
-	Boolean isBelongToExistGroup(String companyCode, String groupCode, String certificationCode);
-
 }

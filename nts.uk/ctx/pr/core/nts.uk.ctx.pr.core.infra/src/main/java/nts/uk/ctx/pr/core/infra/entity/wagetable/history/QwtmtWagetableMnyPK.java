@@ -40,14 +40,17 @@ public class QwtmtWagetableMnyPK implements Serializable {
 	private String histId;
 
 	/** The element 1 id. */
+	@Basic(optional = false)
 	@Column(name = "ELEMENT1_ID")
 	private String element1Id;
 
 	/** The element 2 id. */
+	@Basic(optional = false)
 	@Column(name = "ELEMENT2_ID")
 	private String element2Id;
 
 	/** The element 3 id. */
+	@Basic(optional = false)
 	@Column(name = "ELEMENT3_ID")
 	private String element3Id;
 
@@ -55,7 +58,6 @@ public class QwtmtWagetableMnyPK implements Serializable {
 	 * Instantiates a new qwtmt wagetable mny PK.
 	 */
 	public QwtmtWagetableMnyPK() {
-		super();
 	}
 
 	/**
@@ -74,8 +76,8 @@ public class QwtmtWagetableMnyPK implements Serializable {
 	 * @param element3Id
 	 *            the element 3 id
 	 */
-	public QwtmtWagetableMnyPK(String ccd, String wageTableCd, String histId, String element1Id,
-			String element2Id, String element3Id) {
+	public QwtmtWagetableMnyPK(String ccd, String wageTableCd, String histId, String element1Id, String element2Id,
+			String element3Id) {
 		this.ccd = ccd;
 		this.wageTableCd = wageTableCd;
 		this.histId = histId;
@@ -112,8 +114,7 @@ public class QwtmtWagetableMnyPK implements Serializable {
 			return false;
 		}
 		QwtmtWagetableMnyPK other = (QwtmtWagetableMnyPK) object;
-		if ((this.ccd == null && other.ccd != null)
-				|| (this.ccd != null && !this.ccd.equals(other.ccd))) {
+		if ((this.ccd == null && other.ccd != null) || (this.ccd != null && !this.ccd.equals(other.ccd))) {
 			return false;
 		}
 		if ((this.wageTableCd == null && other.wageTableCd != null)
