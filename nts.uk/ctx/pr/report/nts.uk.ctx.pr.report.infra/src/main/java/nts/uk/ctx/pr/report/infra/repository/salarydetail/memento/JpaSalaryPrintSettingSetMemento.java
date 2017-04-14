@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.report.infra.repository.salarydetail.memento;
 import lombok.Getter;
 import nts.uk.ctx.pr.report.dom.salarydetail.printsetting.SalaryPrintSettingSetMemento;
 import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstPrintSet;
-import nts.uk.ctx.pr.report.infra.util.JpaUtil;
 
 /**
  * The Class JpaSalaryPrintSettingSetMemento.
@@ -21,10 +20,18 @@ public class JpaSalaryPrintSettingSetMemento implements SalaryPrintSettingSetMem
 	/**
 	 * Instantiates a new jpa salary print setting set memento.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 */
 	public JpaSalaryPrintSettingSetMemento(QlsptPaylstPrintSet entity) {
 		this.entity = entity;
+
+		// Set default values
+		this.entity.setHrchyIndex1(HierarchicalIndex.NO_SETTING.value);
+		this.entity.setHrchyIndex2(HierarchicalIndex.NO_SETTING.value);
+		this.entity.setHrchyIndex3(HierarchicalIndex.NO_SETTING.value);
+		this.entity.setHrchyIndex4(HierarchicalIndex.NO_SETTING.value);
+		this.entity.setHrchyIndex5(HierarchicalIndex.NO_SETTING.value);
 	}
 
 	/*
@@ -35,8 +42,7 @@ public class JpaSalaryPrintSettingSetMemento implements SalaryPrintSettingSetMem
 	 */
 	@Override
 	public void setSumPersonSet(boolean sumPersonSet) {
-		this.entity.setSumPersonSet(JpaUtil.boolean2Short(sumPersonSet));
-
+		this.entity.setSumPersonSet(OutputSetting.bolOf(sumPersonSet).value);
 	}
 
 	/*
@@ -59,7 +65,7 @@ public class JpaSalaryPrintSettingSetMemento implements SalaryPrintSettingSetMem
 	 */
 	@Override
 	public void setShowPayment(boolean showPayment) {
-		this.entity.setShowPayment(JpaUtil.boolean2Short(showPayment));
+		this.entity.setShowPayment(OutputSetting.bolOf(showPayment).value);
 	}
 
 	/*
@@ -70,7 +76,7 @@ public class JpaSalaryPrintSettingSetMemento implements SalaryPrintSettingSetMem
 	 */
 	@Override
 	public void setSumMonthPersonSet(boolean sumMonthPersonSet) {
-		this.entity.setSumMonthPersonSet(JpaUtil.boolean2Short(sumMonthPersonSet));
+		this.entity.setSumMonthPersonSet(OutputSetting.bolOf(sumMonthPersonSet).value);
 	}
 
 	/*
@@ -81,7 +87,7 @@ public class JpaSalaryPrintSettingSetMemento implements SalaryPrintSettingSetMem
 	 */
 	@Override
 	public void setSumEachDeprtSet(boolean sumEachDeprtSet) {
-		this.entity.setSumEachDeprtSet(JpaUtil.boolean2Short(sumEachDeprtSet));
+		this.entity.setSumEachDeprtSet(OutputSetting.bolOf(sumEachDeprtSet).value);
 	}
 
 	/*
@@ -92,7 +98,7 @@ public class JpaSalaryPrintSettingSetMemento implements SalaryPrintSettingSetMem
 	 */
 	@Override
 	public void setSumMonthDeprtSet(boolean sumMonthDeprtSet) {
-		this.entity.setSumMonthDeprtSet(JpaUtil.boolean2Short(sumMonthDeprtSet));
+		this.entity.setSumMonthDeprtSet(OutputSetting.bolOf(sumMonthDeprtSet).value);
 	}
 
 	/*
@@ -103,7 +109,7 @@ public class JpaSalaryPrintSettingSetMemento implements SalaryPrintSettingSetMem
 	 */
 	@Override
 	public void setSumDepHrchyIndexSet(boolean sumDepHrchyIndexSet) {
-		this.entity.setSumDepHrchyIndexSet(JpaUtil.boolean2Short(sumDepHrchyIndexSet));
+		this.entity.setSumDepHrchyIndexSet(OutputSetting.bolOf(sumDepHrchyIndexSet).value);
 	}
 
 	/*
@@ -114,7 +120,7 @@ public class JpaSalaryPrintSettingSetMemento implements SalaryPrintSettingSetMem
 	 */
 	@Override
 	public void setSumMonthDepHrchySet(boolean sumMonthDepHrchySet) {
-		this.entity.setSumMonthDepHrchySet(JpaUtil.boolean2Short(sumMonthDepHrchySet));
+		this.entity.setSumMonthDepHrchySet(OutputSetting.bolOf(sumMonthDepHrchySet).value);
 	}
 
 	/*
@@ -125,7 +131,9 @@ public class JpaSalaryPrintSettingSetMemento implements SalaryPrintSettingSetMem
 	 */
 	@Override
 	public void setHrchyIndex1(boolean hrchyIndex) {
-		this.entity.setHrchyIndex1(JpaUtil.boolean2Short(hrchyIndex));
+		if (hrchyIndex) {
+			this.putHrchyOptionIntoDb(HierarchicalIndex.HIERARCHICAL_INDEX_1);
+		}
 	}
 
 	/*
@@ -136,7 +144,9 @@ public class JpaSalaryPrintSettingSetMemento implements SalaryPrintSettingSetMem
 	 */
 	@Override
 	public void setHrchyIndex2(boolean hrchyIndex) {
-		this.entity.setHrchyIndex2(JpaUtil.boolean2Short(hrchyIndex));
+		if (hrchyIndex) {
+			this.putHrchyOptionIntoDb(HierarchicalIndex.HIERARCHICAL_INDEX_2);
+		}
 	}
 
 	/*
@@ -147,7 +157,9 @@ public class JpaSalaryPrintSettingSetMemento implements SalaryPrintSettingSetMem
 	 */
 	@Override
 	public void setHrchyIndex3(boolean hrchyIndex) {
-		this.entity.setHrchyIndex3(JpaUtil.boolean2Short(hrchyIndex));
+		if (hrchyIndex) {
+			this.putHrchyOptionIntoDb(HierarchicalIndex.HIERARCHICAL_INDEX_3);
+		}
 	}
 
 	/*
@@ -158,7 +170,9 @@ public class JpaSalaryPrintSettingSetMemento implements SalaryPrintSettingSetMem
 	 */
 	@Override
 	public void setHrchyIndex4(boolean hrchyIndex) {
-		this.entity.setHrchyIndex4(JpaUtil.boolean2Short(hrchyIndex));
+		if (hrchyIndex) {
+			this.putHrchyOptionIntoDb(HierarchicalIndex.HIERARCHICAL_INDEX_4);
+		}
 	}
 
 	/*
@@ -169,7 +183,9 @@ public class JpaSalaryPrintSettingSetMemento implements SalaryPrintSettingSetMem
 	 */
 	@Override
 	public void setHrchyIndex5(boolean hrchyIndex) {
-		this.entity.setHrchyIndex5(JpaUtil.boolean2Short(hrchyIndex));
+		if (hrchyIndex) {
+			this.putHrchyOptionIntoDb(HierarchicalIndex.HIERARCHICAL_INDEX_5);
+		}
 	}
 
 	/*
@@ -180,7 +196,9 @@ public class JpaSalaryPrintSettingSetMemento implements SalaryPrintSettingSetMem
 	 */
 	@Override
 	public void setHrchyIndex6(boolean hrchyIndex) {
-		// TODO: khong co trong db.
+		if (hrchyIndex) {
+			this.putHrchyOptionIntoDb(HierarchicalIndex.HIERARCHICAL_INDEX_6);
+		}
 	}
 
 	/*
@@ -191,7 +209,9 @@ public class JpaSalaryPrintSettingSetMemento implements SalaryPrintSettingSetMem
 	 */
 	@Override
 	public void setHrchyIndex7(boolean hrchyIndex) {
-		// TODO: khong co trong db.
+		if (hrchyIndex) {
+			this.putHrchyOptionIntoDb(HierarchicalIndex.HIERARCHICAL_INDEX_7);
+		}
 	}
 
 	/*
@@ -202,7 +222,9 @@ public class JpaSalaryPrintSettingSetMemento implements SalaryPrintSettingSetMem
 	 */
 	@Override
 	public void setHrchyIndex8(boolean hrchyIndex) {
-		// TODO: khong co trong db.
+		if (hrchyIndex) {
+			this.putHrchyOptionIntoDb(HierarchicalIndex.HIERARCHICAL_INDEX_8);
+		}
 	}
 
 	/*
@@ -213,7 +235,9 @@ public class JpaSalaryPrintSettingSetMemento implements SalaryPrintSettingSetMem
 	 */
 	@Override
 	public void setHrchyIndex9(boolean hrchyIndex) {
-		// TODO: khong co trong db.
+		if (hrchyIndex) {
+			this.putHrchyOptionIntoDb(HierarchicalIndex.HIERARCHICAL_INDEX_9);
+		}
 	}
 
 	/*
@@ -224,7 +248,7 @@ public class JpaSalaryPrintSettingSetMemento implements SalaryPrintSettingSetMem
 	 */
 	@Override
 	public void setTotalSet(boolean totalSet) {
-		this.entity.setTotalSet(JpaUtil.boolean2Short(totalSet));
+		this.entity.setTotalSet(OutputSetting.bolOf(totalSet).value);
 	}
 
 	/*
@@ -235,6 +259,52 @@ public class JpaSalaryPrintSettingSetMemento implements SalaryPrintSettingSetMem
 	 */
 	@Override
 	public void setMonthTotalSet(boolean monthTotalSet) {
-		this.entity.setMonthTotalSet(JpaUtil.boolean2Short(monthTotalSet));
+		this.entity.setMonthTotalSet(OutputSetting.bolOf(monthTotalSet).value);
+	}
+
+	/**
+	 * Put hrchy option into db.
+	 *
+	 * @param index
+	 *            the index
+	 */
+	private void putHrchyOptionIntoDb(HierarchicalIndex index) {
+		// Check free slot
+		if (this.isFreeSlot(this.entity.getHrchyIndex1())) {
+			this.entity.setHrchyIndex1(index.value);
+			return;
+		}
+		// Check free slot
+		if (this.isFreeSlot(this.entity.getHrchyIndex2())) {
+			this.entity.setHrchyIndex2(index.value);
+			return;
+		}
+		// Check free slot
+		if (this.isFreeSlot(this.entity.getHrchyIndex3())) {
+			this.entity.setHrchyIndex3(index.value);
+			return;
+		}
+		// Check free slot
+		if (this.isFreeSlot(this.entity.getHrchyIndex4())) {
+			this.entity.setHrchyIndex4(index.value);
+			return;
+		}
+		// Check free slot
+		if (this.isFreeSlot(this.entity.getHrchyIndex5())) {
+			this.entity.setHrchyIndex5(index.value);
+			return;
+		}
+	}
+
+	/**
+	 * Checks if is free slot.
+	 *
+	 * @param hrchyIndex
+	 *            the hrchy index
+	 * @return true, if is free slot
+	 */
+	private boolean isFreeSlot(Integer hrchyIndex) {
+		return hrchyIndex == null
+				|| HierarchicalIndex.NO_SETTING.equals(HierarchicalIndex.valueOf(hrchyIndex));
 	}
 }
