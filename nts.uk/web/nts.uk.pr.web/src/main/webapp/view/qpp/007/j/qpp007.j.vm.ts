@@ -98,6 +98,7 @@ module nts.uk.pr.view.qpp007.j {
                     self.salaryAggregateItemModel().setFullItemCode(fullItemCodes);
                     dfd.resolve(self);
                 }).fail(function(error: any) {
+                    
                 });
                 return dfd.promise();
             }
