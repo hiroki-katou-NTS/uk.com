@@ -49,7 +49,7 @@ public class JpaHealthInsuranceAvgearnGetMemento implements HealthInsuranceAvgea
 	 * HealthInsuranceAvgearnGetMemento#getLevelCode()
 	 */
 	@Override
-	public Integer getLevelCode() {
+	public Integer getGrade() {
 		return entity.getQismtHealthInsuAvgearnPK().getHealthInsuGrade().intValue();
 	}
 

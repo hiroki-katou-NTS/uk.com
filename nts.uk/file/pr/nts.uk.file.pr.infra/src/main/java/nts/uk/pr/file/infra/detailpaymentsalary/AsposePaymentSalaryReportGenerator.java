@@ -94,6 +94,7 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
             DateFormat dateFormat = new SimpleDateFormat(ReportConstant.DATE_TIME_FORMAT);
             Date date = new Date();
             String fileName = REPORT_FILE_NAME.concat(dateFormat.format(date).toString()).concat(EXTENSION_PDF);
+            workbook.save("C:/Work/temp/" + REPORT_FILE_NAME.concat(dateFormat.format(date).toString()).concat(EXTENSION_EXCEL));
             reportContext.saveAsPdf(this.createNewFile(fileContext, fileName));
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -102,17 +103,17 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
     
     private void testGeneratorReport() {
         try {
-            FileInputStream fstream = new FileInputStream(TEMPLATE_FILE);
-            Workbook workbook = new Workbook(fstream);
-            WorksheetCollection worksheets = workbook.getWorksheets();
-            PaymentSalaryReportService service = new PaymentSalaryReportService();
-            PaymentSalaryReportData reportData = service.initData();
-            createNewSheet(worksheets, reportData);
-            workbook.calculateFormula(true);
-            DateFormat dateFormat = new SimpleDateFormat(ReportConstant.DATE_TIME_FORMAT);
-            Date date = new Date();
-            String fileName = REPORT_FILE_NAME.concat(dateFormat.format(date).toString());
-            workbook.save(fileName.concat(EXTENSION_EXCEL));
+//            FileInputStream fstream = new FileInputStream(TEMPLATE_FILE);
+//            Workbook workbook = new Workbook(fstream);
+//            WorksheetCollection worksheets = workbook.getWorksheets();
+//            PaymentSalaryReportService service = new PaymentSalaryReportService();
+//            PaymentSalaryReportData reportData = service.initData();
+//            createNewSheet(worksheets, reportData);
+//            workbook.calculateFormula(true);
+//            DateFormat dateFormat = new SimpleDateFormat(ReportConstant.DATE_TIME_FORMAT);
+//            Date date = new Date();
+//            String fileName = REPORT_FILE_NAME.concat(dateFormat.format(date).toString());
+//            workbook.save(fileName.concat(EXTENSION_EXCEL));
             
 //            PdfSaveOptions saveOptions = new PdfSaveOptions(SaveFormat.PDF);
 //            saveOptions.setAllColumnsInOnePagePerSheet(true);
@@ -155,24 +156,24 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
             printProcess.category = SalaryCategory.Payment;
             writeCategoryItem(printProcess);
         }
-//        Map<EmployeeKey, Double> mapDeduction = findMapCategory(mapAmount, SalaryCategory.Deduction);
-//        if (!mapDeduction.isEmpty()) {
-//            printProcess.mapAmount = mapDeduction;
-//            printProcess.category = SalaryCategory.Deduction;
-//            writeCategoryItem(printProcess);
-//        }
-//        Map<EmployeeKey, Double> mapAttendance = findMapCategory(mapAmount, SalaryCategory.Attendance);
-//        if (!mapAttendance.isEmpty()) {
-//            printProcess.mapAmount = mapAttendance;
-//            printProcess.category = SalaryCategory.Attendance;
-//            writeCategoryItem(printProcess);
-//        }
-//        Map<EmployeeKey, Double> mapArticleOthers = findMapCategory(mapAmount, SalaryCategory.ArticleOthers);
-//        if (!mapArticleOthers.isEmpty()) {
-//            printProcess.mapAmount = mapArticleOthers;
-//            printProcess.category = SalaryCategory.ArticleOthers;
-//            writeCategoryItem(printProcess);
-//        }
+        Map<EmployeeKey, Double> mapDeduction = findMapCategory(mapAmount, SalaryCategory.Deduction);
+        if (!mapDeduction.isEmpty()) {
+            printProcess.mapAmount = mapDeduction;
+            printProcess.category = SalaryCategory.Deduction;
+            writeCategoryItem(printProcess);
+        }
+        Map<EmployeeKey, Double> mapAttendance = findMapCategory(mapAmount, SalaryCategory.Attendance);
+        if (!mapAttendance.isEmpty()) {
+            printProcess.mapAmount = mapAttendance;
+            printProcess.category = SalaryCategory.Attendance;
+            writeCategoryItem(printProcess);
+        }
+        Map<EmployeeKey, Double> mapArticleOthers = findMapCategory(mapAmount, SalaryCategory.ArticleOthers);
+        if (!mapArticleOthers.isEmpty()) {
+            printProcess.mapAmount = mapArticleOthers;
+            printProcess.category = SalaryCategory.ArticleOthers;
+            writeCategoryItem(printProcess);
+        }
         writeTitleRow(printProcess);
     }
     

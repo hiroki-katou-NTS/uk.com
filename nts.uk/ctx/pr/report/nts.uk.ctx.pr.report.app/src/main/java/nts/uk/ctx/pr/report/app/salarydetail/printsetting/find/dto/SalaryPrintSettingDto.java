@@ -1,77 +1,72 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.report.app.salarydetail.printsetting.find.dto;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.report.dom.salarydetail.SalaryOutputDistinction;
 
 @Getter
 @Setter
 @Builder
 public class SalaryPrintSettingDto {
+
 	/** The company code. */
 	private String companyCode;
 
-	/** The output distinction. */
-	private SalaryOutputDistinction outputDistinction;
+	/** The show payment. */
+	private Boolean showPayment;
 
-	/** The show department monthly amount. */
-	private Boolean showDepartmentMonthlyAmount;
+	/** The sum person set. */
+	private Boolean sumPersonSet;
 
-	/** The show detail. */
-	private Boolean showDetail;
+	/** The sum month person set. */
+	private Boolean sumMonthPersonSet;
 
-	/** The show division monthly total. */
-	private Boolean showDivisionMonthlyTotal;
+	/** The sum each deprt set. */
+	private Boolean sumEachDeprtSet;
 
-	/** The show division total. */
-	private Boolean showDivisionTotal;
+	/** The sum month deprt set. */
+	private Boolean sumMonthDeprtSet;
 
-	/** The show hierarchy 1. */
-	private Boolean showHierarchy1;
+	/** The sum dep hrchy index set. */
+	private Boolean sumDepHrchyIndexSet;
 
-	/** The show hierarchy 2. */
-	private Boolean showHierarchy2;
+	/** The sum month dep hrchy set. */
+	private Boolean sumMonthDepHrchySet;
 
-	/** The show hierarchy 3. */
-	private Boolean showHierarchy3;
+	/** The hrchy index 1. */
+	private Boolean hrchyIndex1;
 
-	/** The show hierarchy 4. */
-	private Boolean showHierarchy4;
+	/** The hrchy index 2. */
+	private Boolean hrchyIndex2;
 
-	/** The show hierarchy 5. */
-	private Boolean showHierarchy5;
+	/** The hrchy index 3. */
+	private Boolean hrchyIndex3;
 
-	/** The show hierarchy 6. */
-	private Boolean showHierarchy6;
+	/** The hrchy index 4. */
+	private Boolean hrchyIndex4;
 
-	/** The show hierarchy 7. */
-	private Boolean showHierarchy7;
+	/** The hrchy index 5. */
+	private Boolean hrchyIndex5;
 
-	/** The show hierarchy 8. */
-	private Boolean showHierarchy8;
+	/** The hrchy index 6. */
+	private Boolean hrchyIndex6;
 
-	/** The show hierarchy 9. */
-	private Boolean showHierarchy9;
+	/** The hrchy index 7. */
+	private Boolean hrchyIndex7;
 
-	/** The show hierarchy accumulation. */
-	private Boolean showHierarchyAccumulation;
+	/** The hrchy index 8. */
+	private Boolean hrchyIndex8;
 
-	/** The show hierarchy monthly accumulation. */
-	private Boolean showHierarchyMonthlyAccumulation;
+	/** The hrchy index 9. */
+	private Boolean hrchyIndex9;
 
-	/** The show monthly amount. */
-	private Boolean showMonthlyAmount;
+	/** The total set. */
+	private Boolean totalSet;
 
-	/** The show personal monthly amount. */
-	private Boolean showPersonalMonthlyAmount;
-
-	/** The show personal total. */
-	private Boolean showPersonalTotal;
-
-	/** The show sectional calculation. */
-	private Boolean showSectionalCalculation;
-
-	/** The show total. */
-	private Boolean showTotal;
+	/** The month total set. */
+	private Boolean monthTotalSet;
 }
