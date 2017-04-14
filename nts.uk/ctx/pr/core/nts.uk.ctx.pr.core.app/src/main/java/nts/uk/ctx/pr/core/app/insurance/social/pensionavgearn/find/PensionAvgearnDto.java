@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.find;
@@ -20,7 +20,7 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValu
 public class PensionAvgearnDto implements PensionAvgearnSetMemento {
 
 	/** The level code. */
-	private Integer levelCode;
+	private Integer grade;
 
 	/** The child contribution amount. */
 	private BigDecimal childContributionAmount;
@@ -58,11 +58,11 @@ public class PensionAvgearnDto implements PensionAvgearnSetMemento {
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
-	 * PensionAvgearnSetMemento#setLevelCode(java.lang.Integer)
+	 * PensionAvgearnSetMemento#setGrade(java.lang.Integer)
 	 */
 	@Override
-	public void setLevelCode(Integer levelCode) {
-		this.levelCode = levelCode;
+	public void setGrade(Integer grade) {
+		this.grade = grade;
 	}
 
 	/*
@@ -147,5 +147,17 @@ public class PensionAvgearnDto implements PensionAvgearnSetMemento {
 	@Override
 	public void setPersonalPension(PensionAvgearnValue personalPension) {
 		this.personalPension = PensionAvgearnValueDto.fromDomain(personalPension);
+	}
+
+	@Override
+	public void setAvgEarn(Long avgEarn) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setUpperLimit(Long upperLimit) {
+		// TODO Auto-generated method stub
+
 	}
 }

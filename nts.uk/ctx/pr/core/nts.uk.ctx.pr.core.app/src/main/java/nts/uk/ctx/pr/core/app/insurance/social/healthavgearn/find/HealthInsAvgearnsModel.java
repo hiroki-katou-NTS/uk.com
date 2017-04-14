@@ -14,7 +14,7 @@ import lombok.Data;
  */
 @Builder
 @Data
-public class ListHealthInsuranceAvgearnModel {
+public class HealthInsAvgearnsModel {
 
 	/** The history id. */
 	private String historyId;
