@@ -34,59 +34,59 @@ public class QlsptPaylstPrintSet extends UkJpaEntity implements Serializable {
 
 	/** The show payment. */
 	@Column(name = "SHOW_PAYMENT")
-	private short showPayment;
+	private int showPayment;
 
 	/** The sum person set. */
 	@Column(name = "SUM_PERSON_SET")
-	private short sumPersonSet;
+	private int sumPersonSet;
 
 	/** The sum month person set. */
 	@Column(name = "SUM_MONTH_PERSON_SET")
-	private short sumMonthPersonSet;
+	private int sumMonthPersonSet;
 
 	/** The sum each deprt set. */
 	@Column(name = "SUM_EACH_DEPRT_SET")
-	private short sumEachDeprtSet;
+	private int sumEachDeprtSet;
 
 	/** The sum month deprt set. */
 	@Column(name = "SUM_MONTH_DEPRT_SET")
-	private short sumMonthDeprtSet;
+	private int sumMonthDeprtSet;
 
 	/** The sum dep hrchy index set. */
 	@Column(name = "SUM_DEP_HRCHY_INDEX_SET")
-	private short sumDepHrchyIndexSet;
+	private int sumDepHrchyIndexSet;
 
 	/** The sum month dep hrchy set. */
 	@Column(name = "SUM_MONTH_DEP_HRCHY_SET")
-	private short sumMonthDepHrchySet;
+	private int sumMonthDepHrchySet;
 
 	/** The hrchy index 1. */
 	@Column(name = "HRCHY_INDEX1")
-	private short hrchyIndex1;
+	private int hrchyIndex1;
 
 	/** The hrchy index 2. */
 	@Column(name = "HRCHY_INDEX2")
-	private short hrchyIndex2;
+	private int hrchyIndex2;
 
 	/** The hrchy index 3. */
 	@Column(name = "HRCHY_INDEX3")
-	private short hrchyIndex3;
+	private int hrchyIndex3;
 
 	/** The hrchy index 4. */
 	@Column(name = "HRCHY_INDEX4")
-	private short hrchyIndex4;
+	private int hrchyIndex4;
 
 	/** The hrchy index 5. */
 	@Column(name = "HRCHY_INDEX5")
-	private short hrchyIndex5;
+	private int hrchyIndex5;
 
 	/** The total set. */
 	@Column(name = "TOTAL_SET")
-	private short totalSet;
+	private int totalSet;
 
 	/** The month total set. */
 	@Column(name = "MONTH_TOTAL_SET")
-	private short monthTotalSet;
+	private int monthTotalSet;
 
 	/**
 	 * Instantiates a new qlspt paylst print set.

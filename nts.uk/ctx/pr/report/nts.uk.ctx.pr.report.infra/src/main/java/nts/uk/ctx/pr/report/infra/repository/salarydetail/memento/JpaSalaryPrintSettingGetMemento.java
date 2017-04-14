@@ -46,7 +46,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getShowPayment() {
-		return this.entity.getShowPayment() == 1 ? true : false;
+		return OutputSetting.valueOf(this.entity.getShowPayment()).bol;
 	}
 
 	/*
@@ -57,7 +57,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getSumPersonSet() {
-		return this.entity.getSumPersonSet() == 1 ? true : false;
+		return OutputSetting.valueOf(this.entity.getSumPersonSet()).bol;
 	}
 
 	/*
@@ -68,7 +68,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getSumMonthPersonSet() {
-		return this.entity.getSumMonthPersonSet() == 1 ? true : false;
+		return OutputSetting.valueOf(this.entity.getSumMonthPersonSet()).bol;
 	}
 
 	/*
@@ -79,7 +79,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getSumEachDeprtSet() {
-		return this.entity.getSumEachDeprtSet() == 1 ? true : false;
+		return OutputSetting.valueOf(this.entity.getSumEachDeprtSet()).bol;
 	}
 
 	/*
@@ -90,7 +90,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getSumMonthDeprtSet() {
-		return this.entity.getSumMonthDeprtSet() == 1 ? true : false;
+		return OutputSetting.valueOf(this.entity.getSumMonthDeprtSet()).bol;
 	}
 
 	/*
@@ -101,7 +101,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getSumDepHrchyIndexSet() {
-		return this.entity.getSumDepHrchyIndexSet() == 1 ? true : false;
+		return OutputSetting.valueOf(this.entity.getSumDepHrchyIndexSet()).bol;
 	}
 
 	/*
@@ -112,7 +112,7 @@ public class JpaSalaryPrintSettingGetMemento implements SalaryPrintSettingGetMem
 	 */
 	@Override
 	public Boolean getSumMonthDepHrchySet() {
-		return this.entity.getSumMonthDepHrchySet() == 1 ? true : false;
+		return OutputSetting.valueOf(this.entity.getSumMonthDepHrchySet()).bol;
 	}
 
 	/*
