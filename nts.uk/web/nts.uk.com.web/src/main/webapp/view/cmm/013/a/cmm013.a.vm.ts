@@ -110,11 +110,11 @@ module cmm013.a.viewmodel {
                 self.clickChange(true);
             });
             self.selectedCode.subscribe(function(codeChanged) {
+                self.isDeleteEnable(true);
                 self.itemHist(self.findHist(codeChanged));
                 self.oldStartDate(self.itemHist().startDate);
                 self.oldEndDate(self.itemHist().endDate);
                 self.srtDateLast(self.listbox()[0].startDate);
-                self.isDeleteEnable = ko.observable(true);
 
                 var chkCopy = nts.uk.ui.windows.getShared('cmm013Copy');
                 if (codeChanged === '1' && chkCopy) {
@@ -143,9 +143,6 @@ module cmm013.a.viewmodel {
                             }
                         }
                         self.clickChange(false);
-                        self.isDeleteEnable = ko.observable(true);
-
-
                     }).fail(function(err: any) {
                         nts.uk.ui.dialog.alert(err.message);
                     })                   
@@ -156,7 +153,6 @@ module cmm013.a.viewmodel {
                 if (codeChanged !== null && codeChanged !== undefined) {
                     self.changedCode(codeChanged);
                 }
-
             });
 
         }
@@ -202,7 +198,6 @@ module cmm013.a.viewmodel {
             self.getHistory(dfd);
             self.dirty.reset();
             return dfd.promise();
-
         }
 
         //get all history
@@ -231,7 +226,6 @@ module cmm013.a.viewmodel {
                     var hisEnd = _.last(history_arr);
                     self.oldStartDate();
                     dfd.resolve(history_arr);
-                    self.isDeleteEnable = ko.observable(true);
 
                 } else {
                     self.dataSource([]);
@@ -239,8 +233,6 @@ module cmm013.a.viewmodel {
                     self.srtDateLast(null);
                     self.openCDialog();
                     dfd.resolve();
-                    self.isDeleteEnable = ko.observable(true);
-
                 }
             })
             
@@ -291,7 +283,6 @@ module cmm013.a.viewmodel {
                     nts.uk.ui.windows.setShared('cmm013C_startDateNew', '', true);
                     self.selectedCode.valueHasMutated();
                     self.getHistory(dfd, selectedHistory);
-                    self.isDeleteEnable(true);
                 }).fail(function(error: any) {
                     if (error.message === "ER005") {
                         alert("入力した*は既に存在しています。\r\n職位コードを確認してください。");
@@ -352,9 +343,7 @@ module cmm013.a.viewmodel {
         initPosition() {
             var self = this;
             if (self.checkChangeData() == false || self.checkChangeData() === undefined) {
-
                 self.clearInit()
-
             }
         }
         checkChangeData(): boolean {

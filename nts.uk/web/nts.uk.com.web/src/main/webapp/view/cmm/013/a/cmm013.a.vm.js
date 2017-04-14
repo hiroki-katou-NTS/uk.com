@@ -71,11 +71,11 @@ var cmm013;
                         self.clickChange(true);
                     });
                     self.selectedCode.subscribe(function (codeChanged) {
+                        self.isDeleteEnable(true);
                         self.itemHist(self.findHist(codeChanged));
                         self.oldStartDate(self.itemHist().startDate);
                         self.oldEndDate(self.itemHist().endDate);
                         self.srtDateLast(self.listbox()[0].startDate);
-                        self.isDeleteEnable = ko.observable(true);
                         var chkCopy = nts.uk.ui.windows.getShared('cmm013Copy');
                         if (codeChanged === '1' && chkCopy) {
                             self.inp_002_enable(true);
@@ -101,7 +101,6 @@ var cmm013;
                                     }
                                 }
                                 self.clickChange(false);
-                                self.isDeleteEnable = ko.observable(true);
                             }).fail(function (err) {
                                 nts.uk.ui.dialog.alert(err.message);
                             });
@@ -177,7 +176,6 @@ var cmm013;
                             var hisEnd = _.last(history_arr);
                             self.oldStartDate();
                             dfd.resolve(history_arr);
-                            self.isDeleteEnable = ko.observable(true);
                         }
                         else {
                             self.dataSource([]);
@@ -185,7 +183,6 @@ var cmm013;
                             self.srtDateLast(null);
                             self.openCDialog();
                             dfd.resolve();
-                            self.isDeleteEnable = ko.observable(true);
                         }
                     });
                 };
@@ -227,7 +224,6 @@ var cmm013;
                             nts.uk.ui.windows.setShared('cmm013C_startDateNew', '', true);
                             self.selectedCode.valueHasMutated();
                             self.getHistory(dfd, selectedHistory_1);
-                            self.isDeleteEnable(true);
                         }).fail(function (error) {
                             if (error.message === "ER005") {
                                 alert("入力した*は既に存在しています。\r\n職位コードを確認してください。");
