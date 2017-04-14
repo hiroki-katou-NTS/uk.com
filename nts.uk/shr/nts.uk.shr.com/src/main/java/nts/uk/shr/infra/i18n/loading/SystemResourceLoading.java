@@ -61,12 +61,15 @@ public class SystemResourceLoading implements ISystemResourceBundle {
 	@Override
 	public Map<String, String> getCodeNameOfProgram(Locale locale, String programId) {
 
-		Map<ResourceType, Map<String, Map<String, String>>> resource = systemResourceGroupByProgram.get(locale);
+		Map<ResourceType, Map<String, Map<String, String>>> resource = systemResourceGroupByProgram.getOrDefault(locale,
+				new HashMap<ResourceType, Map<String, Map<String, String>>>());
 		// get default language resource if specify language not found
 		if (resource == null) {
 			resource = systemResourceGroupByProgram.get(SystemProperties.DEFAULT_LANGUAGE);
 		}
-		Map<String, String> result = resource.get(ResourceType.CODE_NAME).get(programId);
+
+		Map<String, String> result = resource
+				.getOrDefault(ResourceType.CODE_NAME, new HashMap<String, Map<String, String>>()).get(programId);
 
 		return result == null ? new HashMap<String, String>() : Collections.unmodifiableMap(result);
 	}
@@ -93,6 +96,9 @@ public class SystemResourceLoading implements ISystemResourceBundle {
 		// get default language resource if specify language not found
 		if (resource == null) {
 			resource = systemResourceGroupByProgram.get(SystemProperties.DEFAULT_LANGUAGE);
+		}
+		if (resource == null) {
+			return Collections.unmodifiableMap(result);
 		}
 
 		Collection<Map<String, String>> allPrograms = resource.get(type).values();
