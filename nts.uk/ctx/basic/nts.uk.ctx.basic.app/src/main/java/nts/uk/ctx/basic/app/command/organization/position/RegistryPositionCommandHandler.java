@@ -41,7 +41,7 @@ public class RegistryPositionCommandHandler extends CommandHandler<RegistryPosit
 		String companyCode = AppContexts.user().companyCode();
 		List<JobTitle> lstPositionBefor;
 		List<JobTitleRef> lstJobTitleRef;
-		// neu history = null thuc hien insert history isert position
+		// if history = null insert history and position
 		if (historyId.equals("1")) {
 			GeneralDate endDate = GeneralDate.localDate(LocalDate.parse("9999-12-31"));
 
@@ -50,9 +50,9 @@ public class RegistryPositionCommandHandler extends CommandHandler<RegistryPosit
 			GeneralDate startDate = GeneralDate.localDate(LocalDate.parse(rePositionCommand.getStartDate().replaceAll("/", "-")));
 			JobHistory historyInfor = new JobHistory(companyCode, historyIdNew,startDate,endDate);
 
-			// add position neu duoc copy tu lich su khac
+			// add position if copy from other history
 			if (rePositionCommand.isChkCopy()) {
-				// ---lay position cua lich su ngay truoc no
+				// ---get position of prev history
 				Optional<JobHistory> historyByEndate = positionRepository.getHistoryByEdate(companyCode, endDate);
 				String historyBefore = historyByEndate.get().getHistoryId();
 				lstPositionBefor = positionRepository.findAllJobTitle(companyCode, historyBefore);
@@ -68,24 +68,23 @@ public class RegistryPositionCommandHandler extends CommandHandler<RegistryPosit
 				// isert postition
 				positionRepository.add(lstPositionNow);
 				// insert quyen
-				// - lay list du lieu CMNMT_JOB_TITLE_REF
+				// get data CMNMT_JOB_TITLE_REF
 
 				lstJobTitleRef = positionRepository.findAllJobTitleRef(companyCode, historyIdNew,
-						rePositionCommand.getJobCode());
-				// - gan lai thong tin
+						rePositionCommand.getJobCode());	
 				List<JobTitleRef> lstTitleRef = lstJobTitleRef.stream().map(org -> {
-					return JobTitleRef.createFromJavaType(
-							org.getAuthCode().v(), 
+					return JobTitleRef.createFromJavaType(							
 							companyCode, 
-							historyIdNew,
-							org.getJobCode().v(), 
+							historyIdNew,							
+							org.getJobCode().v(),
+							org.getAuthCode().v(), 
 							org.getReferenceSettings().value);
 				}).collect(Collectors.toList());
-				// - add quyen
+				// - add auth
 				positionRepository.addJobTitleRef(lstTitleRef);
 
 			} else {
-				// neu them moi tu dau
+				// if add new
 				
 				InsertPositionAndRef(rePositionCommand, companyCode, historyIdNew);
 			}
@@ -103,18 +102,18 @@ public class RegistryPositionCommandHandler extends CommandHandler<RegistryPosit
 				
 			}
  			positionRepository.addHistory(historyInfor);		
-			// neu history != null thuc hien add or update position
+			// if history != null add or update position
 		} else {
 			PositionCommand commandInfor = rePositionCommand.getPositionCommand();
-			// add moi position
+			// add all position
 			if(rePositionCommand.isChkInsert()){
 				
-				//check xem cai jobcode nay da ton tai hay chua
+				//check jobcode
 				positionRepository.getJobTitleByCode(companyCode, historyId, rePositionCommand.getJobCode()).ifPresent(x -> {throw new BusinessException("ER005");});
 				InsertPositionAndRef(rePositionCommand, companyCode, historyId);
 				
 			}else{
-				//check xem cai jobcode con ton tai ko
+				//checkjobcode
 				Optional<JobTitle> upJobInfor = positionRepository.getJobTitleByCode(companyCode, historyId, rePositionCommand.getJobCode());
 				if(!upJobInfor.isPresent()){
 					throw new BusinessException("ER026");
@@ -134,9 +133,9 @@ public class RegistryPositionCommandHandler extends CommandHandler<RegistryPosit
 				if(refInforUpdate.isEmpty()){
 					return;
 				}
-				//- check xem quyen ton tai ko
+				//check auth exist
 				List<JobTitleRef> refInfor = positionRepository.findAllJobTitleRef(companyCode, historyId, rePositionCommand.getJobCode());
-				//-- neu chua co thi insert
+				//if exist then insert
 				if(refInfor.isEmpty()){
 					InsertRefInfor(rePositionCommand, companyCode, historyId);
 				}else{
@@ -150,7 +149,7 @@ public class RegistryPositionCommandHandler extends CommandHandler<RegistryPosit
 								EnumAdaptor.valueOf(jobTitleRef.getReferenceSettings(), ReferenceSettings.class));
 						newRefInfor.add(titleRef);
 					}
-					//update quyen 
+					//update auth 
 					positionRepository.updateRef(newRefInfor);
 				}
 			}
@@ -169,7 +168,7 @@ public class RegistryPositionCommandHandler extends CommandHandler<RegistryPosit
 				, new Memo(addPositionCommand.getMemo())
 				, new HiterarchyOrderCode(addPositionCommand.getHiterarchyOrderCode()));
 		positionRepository.add(positionInfo);
-		// add quyen
+		// add auth
 		InsertRefInfor(rePositionCommand, companyCode, historyId);
 	}
 	

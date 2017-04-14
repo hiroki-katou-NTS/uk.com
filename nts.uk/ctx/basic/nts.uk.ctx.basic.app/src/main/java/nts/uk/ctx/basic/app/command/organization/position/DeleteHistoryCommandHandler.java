@@ -21,11 +21,7 @@ public class DeleteHistoryCommandHandler extends CommandHandler<DeleteHistoryCom
 	@Inject
 	private PositionRepository repository;
 
-	
 	@Override
-
-		
-
 		protected void handle(CommandHandlerContext<DeleteHistoryCommand> context) {
 			
 			DeleteHistoryCommand command = context.getCommand();
@@ -34,30 +30,23 @@ public class DeleteHistoryCommandHandler extends CommandHandler<DeleteHistoryCom
 			String jobCode = command.getJobCode();
 			String authCode = command.getAuthCode();
 			String historyId = command.getHistoryId();
-			//check xem lich su co ton tai khong
-//			repository.findSingleHistory(companyCode, historyId).ifPresent(x -> {throw new BusinessException("ER010");});
+			//check history
 			if(!repository.findSingleHistory(companyCode, historyId).isPresent()){
 				throw new BusinessException("ER010");
 			}
-			//xoa lich su
+			//delete
 			repository.deleteHist(companyCode, historyId);
-			//xoa tat ca postition cua lich su
+			//delete all postition of history
 			repository.deleteJobTitleByHisId(companyCode, historyId);
-			//xoa tat ca ref cua lich su
+			//delete all ref of history
 			repository.deleteJobTitleRef(companyCode, historyId, jobCode, authCode);
-			//update tat ca ngay ket thuc cua lich su truoc ve 1999-12-31
-			//---Tim lich su cua thang dang truoc
 			GeneralDate endDate = GeneralDate.localDate(LocalDate.parse(command.getOldStartDate())).addDays(-1);
 			Optional<JobHistory> getHistoryByEndDate = repository.getHistoryByEdate(companyCode, endDate);
 			if(getHistoryByEndDate.isPresent()){
 				JobHistory history = getHistoryByEndDate.get();
 				history.setEndDate(GeneralDate.localDate(LocalDate.parse("9999-12-31")));
-				//---update ngay ket thuc cua thang truoc
 				repository.updateHistory(history);
-			}
-			//Xoa tat ca quyen cua position
-					
-			
+			}		
 		}
 	}
 

@@ -36,6 +36,7 @@ var cmm013;
                     self.currentCode = ko.observable();
                     self.clickChange = ko.observable(false);
                     self.enableListBoxAuth = ko.observable(true);
+                    self.isDeleteEnable = ko.observable(true);
                     self.columns = ko.observableArray([
                         { headerText: 'コード', key: 'jobCode', width: 90 },
                         { headerText: '名称', key: 'jobName', width: 100 }
@@ -74,13 +75,7 @@ var cmm013;
                         self.oldStartDate(self.itemHist().startDate);
                         self.oldEndDate(self.itemHist().endDate);
                         self.srtDateLast(self.listbox()[0].startDate);
-                        if (codeChanged == null) {
-                            return;
-                        }
-                        if (!self.notAlert()) {
-                            self.notAlert(true);
-                            return;
-                        }
+                        self.isDeleteEnable = ko.observable(true);
                         var chkCopy = nts.uk.ui.windows.getShared('cmm013Copy');
                         if (codeChanged === '1' && chkCopy) {
                             self.inp_002_enable(true);
@@ -106,6 +101,7 @@ var cmm013;
                                     }
                                 }
                                 self.clickChange(false);
+                                self.isDeleteEnable = ko.observable(true);
                             }).fail(function (err) {
                                 nts.uk.ui.dialog.alert(err.message);
                             });
@@ -181,6 +177,7 @@ var cmm013;
                             var hisEnd = _.last(history_arr);
                             self.oldStartDate();
                             dfd.resolve(history_arr);
+                            self.isDeleteEnable = ko.observable(true);
                         }
                         else {
                             self.dataSource([]);
@@ -188,6 +185,7 @@ var cmm013;
                             self.srtDateLast(null);
                             self.openCDialog();
                             dfd.resolve();
+                            self.isDeleteEnable = ko.observable(true);
                         }
                     });
                 };
@@ -229,9 +227,10 @@ var cmm013;
                             nts.uk.ui.windows.setShared('cmm013C_startDateNew', '', true);
                             self.selectedCode.valueHasMutated();
                             self.getHistory(dfd, selectedHistory_1);
+                            self.isDeleteEnable(true);
                         }).fail(function (error) {
                             if (error.message === "ER005") {
-                                alert("入力した*は既に存在しています。\r\n*を確認してください。");
+                                alert("入力した*は既に存在しています。\r\n職位コードを確認してください。");
                             }
                             if (error.message === "ER026") {
                                 alert("更新対象のデータが存在しません。");
@@ -279,19 +278,12 @@ var cmm013;
                         item.referenceSettings(0);
                     });
                     $("#inp_002").focus();
+                    self.isDeleteEnable(false);
                 };
                 ScreenModel.prototype.initPosition = function () {
                     var self = this;
                     if (self.checkChangeData() == false || self.checkChangeData() === undefined) {
-                        if (self.dirty.isDirty()) {
-                            nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
-                                self.clearInit();
-                            }).ifNo(function () {
-                            });
-                        }
-                        else {
-                            self.clearInit();
-                        }
+                        self.clearInit();
                     }
                 };
                 ScreenModel.prototype.checkChangeData = function () {
@@ -388,7 +380,7 @@ var cmm013;
                         nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '履歴の編集', })
                             .onClosed(function () {
                             if (!nts.uk.ui.windows.getShared('cancelDialog')) {
-                                self.currentCode(self.selectedCode);
+                                self.currentCode(self.selectedCode());
                                 self.getHistory(dfd);
                             }
                             dfd.promise();

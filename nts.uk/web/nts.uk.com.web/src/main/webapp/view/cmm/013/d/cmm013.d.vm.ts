@@ -63,7 +63,6 @@ module cmm013.d.viewmodel {
         //<---list  message--->
         listMessage(): any {
             var self = this;
-            self.lstMessage.push(new ItemMessage("ER001", "*が入力されていません。"));
             self.lstMessage.push(new ItemMessage("ER005", "入力した*は既に存在しています。\r\n*を確認してください。"));
             self.lstMessage.push(new ItemMessage("ER010", "対象データがありません。"));
             self.lstMessage.push(new ItemMessage("AL001", "変更された内容が登録されていません。\r\nよろしいですか。"));
