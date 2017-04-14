@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.formula.app.find.formula;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,7 +43,7 @@ public class FormulaItemSelectFinder {
 			formulaDto = formulaMasterRepository
 					.findByCompanyCodeAndFormulaCodes(companyCode, formulaHistoryDto.stream().map(item -> {
 						return new FormulaCode(item.getFormulaCode());
-					}).collect(Collectors.toList())).stream().map(f -> FormulaItemSelectDto.fromDomain(f))
+					}).collect(Collectors.toList()), new BigDecimal(1)).stream().map(f -> FormulaItemSelectDto.fromDomain(f))
 					.collect(Collectors.toList());
 		}
 		return formulaDto;
