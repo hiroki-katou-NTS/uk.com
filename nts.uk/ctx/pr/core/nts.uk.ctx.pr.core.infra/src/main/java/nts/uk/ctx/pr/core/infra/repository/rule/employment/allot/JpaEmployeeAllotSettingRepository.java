@@ -24,12 +24,17 @@ public class JpaEmployeeAllotSettingRepository extends JpaRepository implements 
 			+ " WHERE c.qstmtStmtAllotEmPK.companyCode = :companyCode" + " AND c.qstmtStmtAllotEmPK.histId = :histId";
 
 	private final String ALL_EMPLOYEE_SETTING = "SELECT e.cmnmtEmpPk.companyCode, e.cmnmtEmpPk.employmentCode, e.employmentName, q.stmtName"
-			+ " FROM CmnmtEmp e LEFT JOIN QstmtStmtAllotEm a"
-			+ " ON e.cmnmtEmpPk.companyCode = a.qstmtStmtAllotEmPK.companyCode AND e.cmnmtEmpPk.employmentCode = a.qstmtStmtAllotEmPK.employeeCd"
+			+ " FROM CmnmtEmp e LEFT JOIN QstmtStmtAllotEm a "
+//			+ " ON e.cmnmtEmpPk.companyCode = a.qstmtStmtAllotEmPK.companyCode AND e.cmnmtEmpPk.employmentCode = a.qstmtStmtAllotEmPK.employeeCd"
 			+ " LEFT JOIN QstmtStmtLayoutHead q"
-			+ " ON a.QstmtStmtAllotEmPK.companyCode = q.qstmtStmtLayoutHeadPK.companyCode AND"
-			+ " a.paymentDetailCode = q.qstmtStmtLayoutHeadPK.stmtCd AND a.bonusDetailCode = q.qstmtStmtLayoutHeadPK.stmtCd"
-			+ " AND a.QstmtStmtAllotEmPK.companyCode = :companyCode AND a.QstmtStmtAllotEmPK.histId = :histId";
+//			+ " ON a.QstmtStmtAllotEmPK.companyCode = q.qstmtStmtLayoutHeadPK.companyCd AND"
+//			+ " a.paymentDetailCode = q.qstmtStmtLayoutHeadPK.stmtCd AND a.bonusDetailCode = q.qstmtStmtLayoutHeadPK.stmtCd"
+			+ " WHERE a.QstmtStmtAllotEmPK.companyCode = :companyCode AND a.QstmtStmtAllotEmPK.histId = :histId";
+	
+	// private final String ALL_EMP_SETIING = "SELECT l FROM (SELECT ALL FROM
+	// CmnmtEmp e LEFT JOIN QstmtStmtAllotEm a ON ON e.cmnmtEmpPk.companyCode =
+	// a.qstmtStmtAllotEmPK.companyCode AND e.cmnmtEmpPk.employmentCode =
+	// a.qstmtStmtAllotEmPK.employeeCd) l";
 
 	@Override
 	public Optional<EmployeeAllotSetting> find(String companyCode, String historyID, String employeeCd) {
@@ -60,10 +65,9 @@ public class JpaEmployeeAllotSettingRepository extends JpaRepository implements 
 	@Override
 	public List<EmployeeAllSetting> findAllEm(String companyCode, String historyID) {
 		return this.queryProxy().query(ALL_EMPLOYEE_SETTING, Object[].class).setParameter("companyCode", companyCode)
-				.setParameter("historyID", historyID)
+				.setParameter("histId", historyID)
 				.getList(s -> EmployeeAllSetting.createFromJavaType(s[0].toString(), s[1].toString(), s[2].toString(),
 						s[3].toString(), s[4].toString(), s[5].toString(), s[6].toString(), s[7].toString()));
-
 	}
 
 }

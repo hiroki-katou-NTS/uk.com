@@ -129,7 +129,14 @@ var qmm020;
                     return dfd.promise();
                 };
                 //Open dialog Add History
-                ScreenModel.prototype.openJDialog = function () { };
+                ScreenModel.prototype.openJDialog = function () {
+                    var historyScreenType = "2";
+                    var valueShareJDialog = historyScreenType + "~" + "201701";
+                    nts.uk.ui.windows.setShared('valJDialog', valueShareJDialog);
+                    nts.uk.ui.windows.sub.modal('/view/qmm/020/j/index.xhtml', { title: '明細書の紐ずけ＞履歴追加' })
+                        .onClosed(function () {
+                    });
+                };
                 //Open dialog Edit History
                 ScreenModel.prototype.openKDialog = function () {
                     var self = this;

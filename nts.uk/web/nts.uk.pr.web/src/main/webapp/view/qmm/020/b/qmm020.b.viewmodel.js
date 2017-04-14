@@ -106,7 +106,7 @@ var qmm020;
                             // Goi cap nhat vao currentItem
                             // Trong truong hop them moi NHANH, copy payCode, bonusCode tu Previous Item
                             if (modeRadio === "1") {
-                                debugger;
+                                //debugger;
                                 self.currentItem().histId(addItem.histId());
                                 self.currentItem().startYm(returnValue);
                                 self.currentItem().endYm('999912');

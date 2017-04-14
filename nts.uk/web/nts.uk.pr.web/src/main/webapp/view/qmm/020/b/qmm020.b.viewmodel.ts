@@ -113,7 +113,7 @@ module qmm020.b.viewmodel {
                         // Goi cap nhat vao currentItem
                         // Trong truong hop them moi NHANH, copy payCode, bonusCode tu Previous Item
                         if (modeRadio === "1") {
-                            debugger;
+                            //debugger;
                             self.currentItem().histId(addItem.histId());
                             self.currentItem().startYm(returnValue);
                             self.currentItem().endYm('999912');
@@ -150,7 +150,6 @@ module qmm020.b.viewmodel {
                             self.currentItem().payName('');
                             self.currentItem().bonusName('');
                         }
-
                         self.itemList([]);
                         self.itemList(items);
                     }
