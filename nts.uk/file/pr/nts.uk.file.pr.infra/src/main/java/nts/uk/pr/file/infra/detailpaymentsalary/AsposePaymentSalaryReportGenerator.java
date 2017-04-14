@@ -103,17 +103,17 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
     
     private void testGeneratorReport() {
         try {
-            FileInputStream fstream = new FileInputStream(TEMPLATE_FILE);
-            Workbook workbook = new Workbook(fstream);
-            WorksheetCollection worksheets = workbook.getWorksheets();
-            PaymentSalaryReportService service = new PaymentSalaryReportService();
-            PaymentSalaryReportData reportData = service.initData();
-            createNewSheet(worksheets, reportData);
-            workbook.calculateFormula(true);
-            DateFormat dateFormat = new SimpleDateFormat(ReportConstant.DATE_TIME_FORMAT);
-            Date date = new Date();
-            String fileName = REPORT_FILE_NAME.concat(dateFormat.format(date).toString());
-            workbook.save(fileName.concat(EXTENSION_EXCEL));
+//            FileInputStream fstream = new FileInputStream(TEMPLATE_FILE);
+//            Workbook workbook = new Workbook(fstream);
+//            WorksheetCollection worksheets = workbook.getWorksheets();
+//            PaymentSalaryReportService service = new PaymentSalaryReportService();
+//            PaymentSalaryReportData reportData = service.initData();
+//            createNewSheet(worksheets, reportData);
+//            workbook.calculateFormula(true);
+//            DateFormat dateFormat = new SimpleDateFormat(ReportConstant.DATE_TIME_FORMAT);
+//            Date date = new Date();
+//            String fileName = REPORT_FILE_NAME.concat(dateFormat.format(date).toString());
+//            workbook.save(fileName.concat(EXTENSION_EXCEL));
             
 //            PdfSaveOptions saveOptions = new PdfSaveOptions(SaveFormat.PDF);
 //            saveOptions.setAllColumnsInOnePagePerSheet(true);

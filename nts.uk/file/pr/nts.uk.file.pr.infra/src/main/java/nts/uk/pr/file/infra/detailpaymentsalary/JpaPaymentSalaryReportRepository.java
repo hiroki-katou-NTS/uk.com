@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.detailpaymentsalary;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -16,15 +15,11 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import org.eclipse.persistence.internal.jpa.parsing.GroupByNode;
-
-import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.basic.dom.organization.department.Department;
 import nts.uk.ctx.basic.dom.organization.department.DepartmentRepository;
 import nts.uk.ctx.basic.infra.entity.organization.department.CmnmtDep;
-import nts.uk.ctx.basic.infra.entity.organization.employment.CmnmtEmp;
 import nts.uk.ctx.basic.infra.entity.report.PbsmtPersonBase;
 import nts.uk.ctx.basic.infra.entity.report.PcpmtPersonCom;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItem;
@@ -77,19 +72,22 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository implements P
 		 * (CollectionUtil.isEmpty(paymentDetails)) { throw new
 		 * BusinessException("ER010"); }
 		 */
-		List<QstdtPaymentDetail> paydetails = this.findAllDetail(companyCode, query);
+		List<Object[]> paydetails = this.findAllDetail(companyCode, query);
 
 		List<EmployeeDto> employees = this.sortEmployees(companyCode, query.getPersonIds());
 
 		Map<EmployeeKey, Double> mapEmployeeAmount = new HashMap<>();
 		paydetails.stream().forEach(pay -> {
+			QstdtPaymentDetail detail = (QstdtPaymentDetail) pay[0];
+			PcpmtPersonCom com = (PcpmtPersonCom) pay[1];
+			QcamtItem item = (QcamtItem) pay[2];
 			EmployeeKey key = new EmployeeKey();
-			key.setEmployeeCode(pay.employeeCode);
-			key.setItemName(String.valueOf(pay.itemAtr));
-			key.setSalaryCategory(SalaryCategory.valueOf(pay.qstdtPaymentDetailPK.categoryATR));
-			key.setYearMonth(String.valueOf(pay.qstdtPaymentDetailPK.processingYM));
+			key.setEmployeeCode(com.getScd());
+			key.setItemName(item.itemName);
+			key.setSalaryCategory(SalaryCategory.valueOf(detail.qstdtPaymentDetailPK.categoryATR));
+			key.setYearMonth(String.valueOf(detail.qstdtPaymentDetailPK.processingYM));
 			if (!mapEmployeeAmount.containsKey(key)) {
-				mapEmployeeAmount.put(key, pay.value.doubleValue());
+				mapEmployeeAmount.put(key, detail.value.doubleValue());
 			}
 		});
 		data.setMapEmployeeAmount(mapEmployeeAmount);
@@ -115,10 +113,9 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository implements P
 		// PcpmtPersonCom
 		// PogmtPersonDepRgl
 		// CmnmtDep
-		
+
 		String query = "SELECT header,dep,com FROM QstdtPaymentHeader header, CmnmtDep dep ,"
-			+ " PcpmtPersonCom com WHERE "
-			+ "header.qstdtPaymentHeaderPK.companyCode = :companyCode "
+			+ " PcpmtPersonCom com WHERE " + "header.qstdtPaymentHeaderPK.companyCode = :companyCode "
 			+ "AND header.qstdtPaymentHeaderPK.personId IN :personIds "
 			+ "AND header.qstdtPaymentHeaderPK.companyCode = dep.cmnmtDepPK.companyCode "
 			+ "AND header.departmentCode = dep.cmnmtDepPK.departmentCode "
@@ -264,11 +261,16 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository implements P
 	 *            the query
 	 * @return the list
 	 */
-	private List<QstdtPaymentDetail> findAllDetail(String companyCode, PaymentSalaryQuery query) {
+	private List<Object[]> findAllDetail(String companyCode, PaymentSalaryQuery query) {
 		EntityManager em = this.getEntityManager();
-		String queryString = "SELECT h FROM QstdtPaymentDetail h "
-			+ "WHERE h.qstdtPaymentDetailPK.companyCode = :companyCode "
-			+ "AND h.qstdtPaymentDetailPK.personId IN :personIds ";
+		String queryString = "SELECT detail,com,item FROM QstdtPaymentDetail detail, PcpmtPersonCom com, "
+			+ "QcamtItem item " + "WHERE detail.qstdtPaymentDetailPK.companyCode = :companyCode "
+			+ "AND detail.qstdtPaymentDetailPK.personId IN :personIds "
+			+ "AND com.pcpmtPersonComPK.ccd = detail.qstdtPaymentDetailPK.companyCode "
+			+ "AND com.pcpmtPersonComPK.pid = detail.qstdtPaymentDetailPK.personId "
+			+ "AND detail.qstdtPaymentDetailPK.categoryATR = item.qcamtItemPK.ctgAtr "
+			+ "AND detail.qstdtPaymentDetailPK.itemCode = item.qcamtItemPK.itemCd "
+			+ "AND item.qcamtItemPK.ccd = detail.qstdtPaymentDetailPK.companyCode ";
 		/*
 		 * + "AND h.qstdtPaymentDetailPK.payBonusAttribute = 0 " +
 		 * "AND h.qstdtPaymentDetailPK.processingYM >= :startDate " +
@@ -283,7 +285,7 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository implements P
 		 * // set end date typedQuery.setParameter("endDate",
 		 * query.getEndDate());
 		 */
-		TypedQuery<QstdtPaymentDetail> typedQuery = em.createQuery(queryString, QstdtPaymentDetail.class);
+		TypedQuery<Object[]> typedQuery = em.createQuery(queryString, Object[].class);
 
 		// set eq companyCode
 		typedQuery.setParameter("companyCode", companyCode);
