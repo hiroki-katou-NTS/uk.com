@@ -247,6 +247,17 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 			// =============== Total bonus item ===========================
 			ReportItemDto totalBonusItem = this.findItem(detailData, PaymentType.Bonus.value,
 					ARTICLE_CATEGORY, TOTAL_REAL_ITEM_CODE);
+			
+			// =============== Salary Attendance Data ===========================
+			// Filter result list by payment type and category.
+			List<Object[]> salaryAttendanceResultList = detailData.stream().filter(res -> {
+				QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) res[0];
+				return paymentDetail.qstdtPaymentDetailPK.categoryATR == WLCategory.Attendance.value
+						&& paymentDetail.qstdtPaymentDetailPK.payBonusAttribute == PaymentType.Salary.value;
+			}).collect(Collectors.toList());
+			// Convert result list to item map.
+			Map<QcamtItem, ReportItemDto> salaryAttendanceItemsMap = this
+					.convertMasterResultDatasToItemMap(salaryAttendanceResultList);
 
 			WLOldLayoutReportData data = WLOldLayoutReportData.builder()
 					.headerData(headerDataMap.get(personId))
@@ -256,6 +267,7 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 					.bonusDeductionData(bonusDeductionData)
 					.netSalaryData(netSalaryItem)
 					.totalBonusData(totalBonusItem)
+					.salaryAttendanceDatas(new ArrayList<>(salaryAttendanceItemsMap.values()))
 					.build();
 			
 			// Add to report data list.
