@@ -4,20 +4,25 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnSetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnValue;
 
-/* (non-Javadoc)
- * @see java.lang.Object#toString()
+/**
+ * The Class HealthInsuranceAvgearnDto.
  */
-@Builder
-@Getter
-public class HealthInsuranceAvgearnDto implements HealthInsuranceAvgearnSetMemento {
+@Data
+public class HealthInsuranceAvgearnDto {
 
 	/** The grade. */
 	private Integer grade;
+
+	/** The avg earn. */
+	private Long avgEarn;
+
+	/** The upper limit. */
+	private Long upperLimit;
 
 	/** The company avg. */
 	private HealthInsuranceAvgearnValueDto companyAvg;
@@ -25,61 +30,106 @@ public class HealthInsuranceAvgearnDto implements HealthInsuranceAvgearnSetMemen
 	/** The personal avg. */
 	private HealthInsuranceAvgearnValueDto personalAvg;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
-	 * HealthInsuranceAvgearnSetMemento#setHistoryId(java.lang.String)
+	/**
+	 * From domain.
+	 *
+	 * @param domain
+	 *            the domain
+	 * @return the health insurance avgearn dto
 	 */
-	@Override
-	public void setHistoryId(String historyId) {
-		// Do nothing.
+	public HealthInsuranceAvgearnDto fromDomain(HealthInsuranceAvgearn domain) {
+		HealthInsuranceAvgearnDto dto = this;
+
+		domain.saveToMemento(new SetMemento(dto));
+
+		return dto;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
-	 * HealthInsuranceAvgearnSetMemento#setGrade(java.lang.Integer)
+	/**
+	 * The Class SetMemento.
 	 */
-	@Override
-	public void setGrade(Integer grade) {
-		this.grade = grade;
-	}
+	private class SetMemento implements HealthInsuranceAvgearnSetMemento {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
-	 * HealthInsuranceAvgearnSetMemento#setCompanyAvg(nts.uk.ctx.pr.core.dom.
-	 * insurance.social.healthavgearn.HealthInsuranceAvgearnValue)
-	 */
-	@Override
-	public void setCompanyAvg(HealthInsuranceAvgearnValue companyAvg) {
-		this.companyAvg = HealthInsuranceAvgearnValueDto.fromDomain(companyAvg);
-	}
+		/** The dto. */
+		private HealthInsuranceAvgearnDto dto;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
-	 * HealthInsuranceAvgearnSetMemento#setPersonalAvg(nts.uk.ctx.pr.core.dom.
-	 * insurance.social.healthavgearn.HealthInsuranceAvgearnValue)
-	 */
-	@Override
-	public void setPersonalAvg(HealthInsuranceAvgearnValue personalAvg) {
-		this.personalAvg = HealthInsuranceAvgearnValueDto.fromDomain(personalAvg);
-	}
+		/**
+		 * Instantiates a new sets the memento.
+		 *
+		 * @param dto
+		 *            the dto
+		 */
+		public SetMemento(HealthInsuranceAvgearnDto dto) {
+			this.dto = dto;
+		}
 
-	@Override
-	public void setAvgEarn(Long avgEarn) {
-		// TODO Auto-generated method stub
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
+		 * HealthInsuranceAvgearnSetMemento#setHistoryId(java.lang.String)
+		 */
+		@Override
+		public void setHistoryId(String historyId) {
+			// Do nothing.
+		}
 
-	}
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
+		 * HealthInsuranceAvgearnSetMemento#setGrade(java.lang.Integer)
+		 */
+		@Override
+		public void setGrade(Integer grade) {
+			this.dto.grade = grade;
+		}
 
-	@Override
-	public void setUpperLimit(Long upperLimit) {
-		// TODO Auto-generated method stub
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
+		 * HealthInsuranceAvgearnSetMemento#setCompanyAvg(nts.uk.ctx.pr.core.
+		 * dom. insurance.social.healthavgearn.HealthInsuranceAvgearnValue)
+		 */
+		@Override
+		public void setCompanyAvg(HealthInsuranceAvgearnValue companyAvg) {
+			this.dto.companyAvg = HealthInsuranceAvgearnValueDto.fromDomain(companyAvg);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
+		 * HealthInsuranceAvgearnSetMemento#setPersonalAvg(nts.uk.ctx.pr.core.
+		 * dom. insurance.social.healthavgearn.HealthInsuranceAvgearnValue)
+		 */
+		@Override
+		public void setPersonalAvg(HealthInsuranceAvgearnValue personalAvg) {
+			this.dto.personalAvg = HealthInsuranceAvgearnValueDto.fromDomain(personalAvg);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
+		 * HealthInsuranceAvgearnSetMemento#setAvgEarn(java.lang.Long)
+		 */
+		@Override
+		public void setAvgEarn(Long avgEarn) {
+			this.dto.avgEarn = avgEarn;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
+		 * HealthInsuranceAvgearnSetMemento#setUpperLimit(java.lang.Long)
+		 */
+		@Override
+		public void setUpperLimit(Long upperLimit) {
+			this.dto.upperLimit = upperLimit;
+		}
 
 	}
 

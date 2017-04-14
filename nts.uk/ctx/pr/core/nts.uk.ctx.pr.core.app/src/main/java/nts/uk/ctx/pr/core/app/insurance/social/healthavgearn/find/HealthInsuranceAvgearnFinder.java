@@ -26,7 +26,8 @@ public class HealthInsuranceAvgearnFinder {
 	/**
 	 * Find.
 	 *
-	 * @param id the id
+	 * @param id
+	 *            the id
 	 * @return the list health insurance avgearn dto
 	 */
 	public ListHealthInsuranceAvgearnModel find(String id) {
@@ -34,12 +35,12 @@ public class HealthInsuranceAvgearnFinder {
 
 		// Map to list Dto.
 		List<HealthInsuranceAvgearnDto> listDto = listDomain.stream().map(domain -> {
-			HealthInsuranceAvgearnDto dto = HealthInsuranceAvgearnDto.builder().build();
-			domain.saveToMemento(dto);
+			HealthInsuranceAvgearnDto dto = new HealthInsuranceAvgearnDto();
+			dto.fromDomain(domain);
 			return dto;
 		}).collect(Collectors.toList());
-		ListHealthInsuranceAvgearnModel listHealthInsuranceAvgearnDto = ListHealthInsuranceAvgearnModel.builder()
-				.listHealthInsuranceAvgearnDto(listDto).historyId(id).build();
+		ListHealthInsuranceAvgearnModel listHealthInsuranceAvgearnDto = ListHealthInsuranceAvgearnModel
+				.builder().listHealthInsuranceAvgearnDto(listDto).historyId(id).build();
 		return listHealthInsuranceAvgearnDto;
 	}
 }
