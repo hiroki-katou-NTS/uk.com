@@ -110,12 +110,11 @@ var nts;
                         if (init === true || uk.time.formatPattern($input.datepicker("getDate", true), "", ISOFormat) !== dateFormatValue) {
                             if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
                                 $input.datepicker('setDate', dateFormatValue);
-                                if (hasDayofWeek) {
-                                    if (uk.util.isNullOrEmpty(dateFormatValue))
-                                        $label.text("");
-                                    else
-                                        $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
-                                }
+                                $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
+                            }
+                            else {
+                                $input.val("");
+                                $label.text("");
                             }
                         }
                         container.data("init", false);
