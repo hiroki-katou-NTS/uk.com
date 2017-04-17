@@ -4741,12 +4741,12 @@ var nts;
                         }
                         else {
                             if (!enable) {
-                                container.off("click", "li");
+                                selectListBoxContainer.off("click", "li");
                                 container.addClass('disabled');
                             }
                             else {
                                 if (container.hasClass("disabled")) {
-                                    container.on("click", "li", { event: container.data("selectionChange") }, selectOnListBox);
+                                    selectListBoxContainer.on("click", "li", { event: container.data("selectionChange") }, selectOnListBox);
                                     container.removeClass('disabled');
                                 }
                             }
@@ -5890,12 +5890,11 @@ var nts;
                         if (init === true || uk.time.formatPattern($input.datepicker("getDate", true), "", ISOFormat) !== dateFormatValue) {
                             if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
                                 $input.datepicker('setDate', dateFormatValue);
-                                if (hasDayofWeek) {
-                                    if (uk.util.isNullOrEmpty(dateFormatValue))
-                                        $label.text("");
-                                    else
-                                        $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
-                                }
+                                $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
+                            }
+                            else {
+                                $input.val("");
+                                $label.text("");
                             }
                         }
                         container.data("init", false);
