@@ -31,6 +31,18 @@ public class SalarySocialInsuranceReportData {
     /** The total all office. */
     private DataRowItem totalAllOffice;
     
+    /** The delivery notice amount. */
+    private double deliveryNoticeAmount;
+    
+    /** The insured collect amount. */
+    private double insuredCollectAmount;
+    
+    /** The child raising total business. */
+    private double childRaisingTotalBusiness;
+    
+    private Boolean isPrintBusiness;
+    
     /** The configure output. */
     private ChecklistPrintSettingDto configureOutput;
+    
 }

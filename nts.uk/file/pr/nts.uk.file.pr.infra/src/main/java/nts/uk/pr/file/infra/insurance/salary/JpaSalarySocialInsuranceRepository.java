@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -27,12 +28,14 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.infra.entity.organization.employment.CmnmtEmp;
 import nts.uk.ctx.basic.infra.entity.report.PbsmtPersonBase;
+import nts.uk.ctx.basic.infra.entity.report.PismtPersonInsuCare;
 import nts.uk.ctx.basic.infra.entity.report.PismtPersonInsuHealB;
 import nts.uk.ctx.basic.infra.entity.report.PismtPersonInsuPensB;
 import nts.uk.ctx.basic.infra.entity.report.PismtPersonInsuSocial;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearn;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.QismtSocialInsuOffice;
-import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn.QismtHealthInsuAvgearn;
-import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPensionAvgearn;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRate;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentDetail;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentHeader;
 import nts.uk.ctx.pr.core.infra.entity.personalinfo.employmentcontract.PclmtPersonEmpContract;
@@ -106,13 +109,11 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
             + "AND ppb.strYm <= :yearMonth "
             + "AND ppb.endYm >= :yearMonth ";
     
-    private static final String FIND_PERSON_DEDUCTION = "SELECT ph, pd, hr, ha, pr, pa "
+    private static final String FIND_PERSON_DEDUCTION = "SELECT ph, pd, hr, pr "
             + "FROM QstdtPaymentHeader ph, "
             + "QstdtPaymentDetail pd, "
             + "QismtHealthInsuRate hr, "
-            + "QismtHealthInsuAvgearn ha, "
-            + "QismtPensionRate pr, "
-            + "QismtPensionAvgearn pa "
+            + "QismtPensionRate pr "
             + "WHERE ph.qstdtPaymentHeaderPK.companyCode = :companyCode "
             + "AND ph.qstdtPaymentHeaderPK.personId IN :personIds "
             + "AND ph.qstdtPaymentHeaderPK.payBonusAtr = 0 "
@@ -128,19 +129,15 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
             + "AND hr.qismtHealthInsuRatePK.siOfficeCd = :officeCode "
             + "AND hr.strYm <= :yearMonth "
             + "AND hr.endYm >= :yearMonth "
-            + "AND ha.qismtHealthInsuAvgearnPK.ccd = ph.qstdtPaymentHeaderPK.companyCode "
-            + "AND ha.qismtHealthInsuAvgearnPK.siOfficeCd = hr.qismtHealthInsuRatePK.siOfficeCd "
-            + "AND ha.qismtHealthInsuAvgearnPK.histId =  hr.qismtHealthInsuRatePK.histId "
             + "AND pr.qismtPensionRatePK.ccd = ph.qstdtPaymentHeaderPK.companyCode "
             + "AND pr.qismtPensionRatePK.siOfficeCd = hr.qismtHealthInsuRatePK.siOfficeCd "
             + "AND pr.strYm <= :yearMonth "
-            + "AND pr.endYm >= :yearMonth "
-            + "AND pa.qismtPensionAvgearnPK.ccd = ph.qstdtPaymentHeaderPK.companyCode "
-            + "AND pa.qismtPensionAvgearnPK.siOfficeCd = hr.qismtHealthInsuRatePK.siOfficeCd "
-            + "AND pa.qismtPensionAvgearnPK.histId = pr.qismtPensionRatePK.histId ";
+            + "AND pr.endYm >= :yearMonth ";
     
     private static final String DATE_FORMAT = "yyyyMMdd";
     private static final String FIRST_DAY = "01";
+    private static List<String> LIST_ITEM_CODE = Arrays.asList("F101", "F102", "F103", "F109", "F110", "F111", "F112", "F115", "F116",
+            "F117", "F118", "F119", "F120", "F121", "F124");
     
     /*
      * (non-Javadoc)
@@ -151,12 +148,16 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
      */
     @Override
     public List<SalarySocialInsuranceReportData> findReportData(String companyCode, String loginPersonId,
-            SalarySocialInsuranceQuery salaryQuery) {
+            SalarySocialInsuranceQuery salaryQuery, List<HealthInsuranceAvgearn> healInsuAvgearns,
+            List<PensionAvgearn> pensionAvgearns) {
+        ReportData reportData = new ReportData();
+        reportData.listHealInsuAvgearn = healInsuAvgearns;
+        reportData.listPensAvgearn = pensionAvgearns;
         List<String> officeCodes = salaryQuery.getInsuranceOffices().stream()
                 .map(p -> p.getCode())
                 .collect(Collectors.toList());
         int yearMonth = salaryQuery.getYearMonth();
-        List<Object[]> itemList = findPersonOffices(companyCode, officeCodes, yearMonth, loginPersonId);
+        List<Object[]> itemList = findOffices(companyCode, officeCodes, yearMonth, loginPersonId);
         if (itemList.isEmpty()) {
             // TODO: throw message ER010
             throw new BusinessException("ER010");
@@ -172,6 +173,7 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
         List<InsuranceOfficeDto> listBusiness = new ArrayList<>();
         ItemDeduction itemDeductionPersonal = initDeductionPersonal();
         ItemDeduction itemDeductionBusiness = initDeductionBusiness();
+        double deliveryAmount = 0;
         for (QismtSocialInsuOffice office : entityOffices) {
             String officeCode = office.getQismtSocialInsuOfficePK().getSiOfficeCd();
             List<String> personIds = itemList.stream()
@@ -186,27 +188,37 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
                     })
                     .distinct()
                     .collect(Collectors.toList());
-            List<Object[]> objectNormals = findPersonNormal(companyCode, officeCode, personIds, yearMonth);
-            List<Object[]> objectDeductions = findPersonDeduction(companyCode, officeCode, personIds, yearMonth);
-            if (objectNormals.isEmpty() || objectDeductions.isEmpty()) {
+            reportData.objectNormals = findPersonNormal(companyCode, officeCode, personIds, yearMonth);
+            reportData.objectDeductions = findPersonDeduction(companyCode, officeCode, personIds, yearMonth);
+            
+            if (reportData.objectNormals.isEmpty() || reportData.objectDeductions.isEmpty()) {
                 // TODO: throw message ER010
                 throw new BusinessException("ER010");
             }
             List<DataRowItem> listRowItemPersonal = new ArrayList<>();
             List<DataRowItem> listRowItemBusiness = new ArrayList<>();
+            List<String> tmpPersonIds = new ArrayList<>();
             for (String personId : personIds) {
-                // set row item for personal.
-                DataRowItem rowItemPersonal = convertNormalToDataItem(objectNormals, objectDeductions, personId, false);
-                // rowItemPersonal is passed reference parameter.
-                convertDeductionToDataItem(rowItemPersonal, objectDeductions, personId, itemDeductionPersonal);
-                listRowItemPersonal.add(rowItemPersonal);
-                
                 // set row item for business.
-                DataRowItem rowItemBusiness = convertNormalToDataItem(objectNormals, objectDeductions, personId, true);
+                DataRowItem rowItemBusiness = convertNormalToDataItem(reportData, personId, true);
                 // rowItemBusiness is passed reference parameter.
-                convertDeductionToDataItem(rowItemBusiness, objectDeductions, personId, itemDeductionBusiness);
+                convertDeductionToDataItem(reportData, rowItemBusiness, personId, itemDeductionBusiness);
                 listRowItemBusiness.add(rowItemBusiness);
+                
+             // set row item for personal.
+                DataRowItem rowItemPersonal = convertNormalToDataItem(reportData, personId, false);
+                // rowItemPersonal is passed reference parameter.
+                convertDeductionToDataItem(reportData, rowItemPersonal, personId, itemDeductionPersonal);
+                // valid output condition.
+                if (isPrintedOutput(rowItemPersonal, salaryQuery)) {
+                    listRowItemPersonal.add(rowItemPersonal);
+                    tmpPersonIds.add(personId);
+                }
             }
+            personIds.clear();
+            // adding employees is printed.
+            personIds.addAll(tmpPersonIds);
+            
             // set data insurance office for personal.
             InsuranceOfficeDto officePersonal = new InsuranceOfficeDto();
             officePersonal.setCode(officeCode);
@@ -224,11 +236,15 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
             officeBusiness.setNumberOfEmployee(listRowItemBusiness.size());
             // set information office of business.
             listBusiness.add(officeBusiness);
+            
+            // calculate delivery amount.
+            deliveryAmount += calDeliveryAmount(reportData, personIds);
         }
         List<SalarySocialInsuranceReportData> listReport = new ArrayList<>();
         // set list office for personal.
         SalarySocialInsuranceReportData reportPersonal = new SalarySocialInsuranceReportData();
         reportPersonal.setOfficeItems(listPersonal);
+        reportPersonal.setDeliveryNoticeAmount(deliveryAmount);
         listReport.add(reportPersonal);
         
         // set list office for business.
@@ -240,7 +256,7 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
     }
     
     @SuppressWarnings("unchecked")
-    private List<Object[]> findPersonOffices(String companyCode, List<String> officeCodes, Integer yearMonth,
+    private List<Object[]> findOffices(String companyCode, List<String> officeCodes, Integer yearMonth,
             String loginPersonId) {
         EntityManager em = this.getEntityManager();
         Query query = em.createQuery(FIND_PERSON_OFFICES);
@@ -272,15 +288,53 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
     private List<Object[]> findPersonDeduction(String companyCode, String officeCode, List<String> personIds,
             Integer yearMonth) {
         EntityManager em = this.getEntityManager();
-        List<String> itemCodes = Arrays.asList("F101", "F102", "F103", "F109", "F110", "F111", "F112", "F115", "F116",
-                "F117", "F118", "F119", "F120", "F121", "F124");
         Query query = em.createQuery(FIND_PERSON_DEDUCTION);
         query.setParameter("personIds", personIds);
         query.setParameter("companyCode", companyCode);
         query.setParameter("yearMonth", yearMonth);
-        query.setParameter("itemCodes", itemCodes);
+        query.setParameter("itemCodes", LIST_ITEM_CODE);
         query.setParameter("officeCode", officeCode);
         return query.getResultList();
+    }
+    
+    private double calDeliveryAmount(ReportData reportData, List<String> personIds) {
+        double deliveryAmount = 0;
+        for (String personId : personIds) {
+            Object[] objects = reportData.objectNormals.stream()
+                    .filter(p -> {
+                        PbsmtPersonBase baseEntity = (PbsmtPersonBase) p[0];
+                        return personId.equals(baseEntity.getPid());
+                    })
+                    .findFirst()
+                    .get();
+            Optional<QismtHealthInsuRate> objectOptional = reportData.objectDeductions.stream()
+                    .filter(p -> {
+                        QstdtPaymentHeader headerEntity = (QstdtPaymentHeader) p[0];
+                        return personId.equals(headerEntity.qstdtPaymentHeaderPK.personId);
+                    })
+                    .map(p -> (QismtHealthInsuRate) p[2])
+                    .findFirst();
+            if (!objectOptional.isPresent()) {
+                continue;
+            }
+            QismtHealthInsuRate healInsuRate = objectOptional.get();
+            PismtPersonInsuCare penInsuCare = (PismtPersonInsuCare) objects[4];
+            PismtPersonInsuHealB penInsuHeal = (PismtPersonInsuHealB) objects[5];
+            PismtPersonInsuPensB penInsuPens = (PismtPersonInsuPensB) objects[6];
+            double avgEearnTarget = 0;
+            double avgEearnNonTarget = 0;
+            if (penInsuCare.getCareInsuAtr() == 1 || penInsuCare.getCareInsuAtr() == 2) {
+                avgEearnTarget = penInsuHeal.getHealthInsuAvgEarn();
+            } else {
+                avgEearnNonTarget = penInsuPens.getPensionAvgEarn();
+            }
+            double generalRate = healInsuRate.getPPayGeneralRate().doubleValue() 
+                    + healInsuRate.getCPayGeneralRate().doubleValue();
+            double nursingRate = healInsuRate.getPPayNursingRate().doubleValue() 
+                    + healInsuRate.getCPayNursingRate().doubleValue();
+            deliveryAmount = avgEearnTarget * generalRate + avgEearnNonTarget * (generalRate + nursingRate);
+        }
+        return deliveryAmount;
     }
     
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
@@ -288,8 +342,8 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
         return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
     
-    private DataRowItem convertNormalToDataItem(List<Object[]> objectNormals, List<Object[]> objectDeductions, String personId, boolean isFindBusiness) {
-        Object[] objects = objectNormals.stream()
+    private DataRowItem convertNormalToDataItem(ReportData reportData, String personId, boolean isFindBusiness) {
+        Object[] objects = reportData.objectNormals.stream()
                 .filter(p -> {
                     PbsmtPersonBase baseEntity = (PbsmtPersonBase) p[0];
                     return baseEntity.getPid().equals(personId);
@@ -302,23 +356,19 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
         DataRowItem item = new DataRowItem();
         item.setCode(empContract.empCd);
         item.setName(cmEmp.employmentName);
-        // TODO: cast object entity
+        
         PismtPersonInsuHealB insuHealBEntity = (PismtPersonInsuHealB) objects[5];
-        QismtHealthInsuAvgearn healInsuAvgearn = objectDeductions.stream()
-                .map(p -> (QismtHealthInsuAvgearn) p[3])
+        HealthInsuranceAvgearn healInsuAvgearn = reportData.listHealInsuAvgearn.stream()
                 .filter(p -> {
-                    return insuHealBEntity.getHealthInsuGrade()
-                            .compareTo(p.getQismtHealthInsuAvgearnPK().getHealthInsuGrade()) == 0;
+                    return insuHealBEntity.getHealthInsuGrade().intValue() == p.getGrade();
                 })
                 .findFirst()
                 .get();
         
         PismtPersonInsuPensB insuPensBEntity = (PismtPersonInsuPensB) objects[6];
-        QismtPensionAvgearn pensAvgearn = objectDeductions.stream()
-                .map(p -> (QismtPensionAvgearn) p[5])
+        PensionAvgearn pensAvgearn = reportData.listPensAvgearn.stream()
                 .filter(p -> {
-                    return insuPensBEntity.getPensionInsuGrade()
-                            .compareTo(p.getQismtPensionAvgearnPK().getPensionGrade()) == 0;
+                    return insuPensBEntity.getPensionInsuGrade().intValue() == p.getLevelCode();
                 })
                 .findFirst()
                 .get();
@@ -327,68 +377,68 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
         // set data row item for business.
         if (isFindBusiness) {
             // set monthly health insurance normal.
-            double healInsuNormal = healInsuAvgearn.getCHealthGeneralMny().doubleValue()
-                    + healInsuAvgearn.getCHealthNursingMny().doubleValue();
+            double healInsuNormal = healInsuAvgearn.getCompanyAvg().getHealthGeneralMny().v().doubleValue()
+                    + healInsuAvgearn.getCompanyAvg().getHealthNursingMny().v().doubleValue();
             item.setMonthlyHealthInsuranceNormal(healInsuNormal);
             // set monthly general insurance normal.
-            double generalInsuNormal = healInsuAvgearn.getCHealthGeneralMny().doubleValue();
+            double generalInsuNormal = healInsuAvgearn.getCompanyAvg().getHealthGeneralMny().v().doubleValue();
             item.setMonthlyGeneralInsuranceNormal(generalInsuNormal);
             // set monthly long term insurance normal.
-            double longTermInsuNormal = healInsuAvgearn.getCHealthNursingMny().doubleValue();
+            double longTermInsuNormal = healInsuAvgearn.getCompanyAvg().getHealthNursingMny().v().doubleValue();
             item.setMonthlyLongTermInsuranceNormal(longTermInsuNormal);
             // set monthly specific insurance normal.
-            double specificInsuNormal = healInsuAvgearn.getCHealthSpecificMny().doubleValue();
+            double specificInsuNormal = healInsuAvgearn.getCompanyAvg().getHealthSpecificMny().v().doubleValue();
             item.setMonthlySpecificInsuranceNormal(specificInsuNormal);
             // set monthly basic insurance normal.
-            double basicInsuNormal = healInsuAvgearn.getCHealthBasicMny().doubleValue();
+            double basicInsuNormal = healInsuAvgearn.getCompanyAvg().getHealthBasicMny().v().doubleValue();
             item.setMonthlyBasicInsuranceNormal(basicInsuNormal);
             if (personBase.getGendar() == 0) {// male
                 // set welfare pension insurance normal.
-                double welfarePensInsu = pensAvgearn.getCPensionMaleMny().doubleValue();
+                double welfarePensInsu = pensAvgearn.getCompanyPension().getMaleAmount().v().doubleValue();
                 item.setWelfarePensionInsuranceNormal(welfarePensInsu);
                 // set welfare pension fund normal.
-                double welfarePensFund = pensAvgearn.getCFundMaleMny().doubleValue();
+                double welfarePensFund = pensAvgearn.getCompanyFund().getFemaleAmount().v().doubleValue();
                 item.setWelfarePensionFundNormal(welfarePensFund);
             } else { // Female
                 // set welfare pension insurance normal.
-                double welfarePensInsu = pensAvgearn.getCPensionFemMny().doubleValue();
+                double welfarePensInsu = pensAvgearn.getCompanyPension().getFemaleAmount().v().doubleValue();
                 item.setWelfarePensionInsuranceNormal(welfarePensInsu);
                 // set welfare pension fund normal.
-                double welfarePensFund = pensAvgearn.getCFundFemMny().doubleValue();
+                double welfarePensFund = pensAvgearn.getCompanyFund().getFemaleAmount().v().doubleValue();
                 item.setWelfarePensionFundNormal(welfarePensFund);
             }
         }
         // set data row item for personal.
         else {
             // set monthly health insurance normal.
-            double healInsuNormal = healInsuAvgearn.getPHealthGeneralMny().doubleValue()
-                    + healInsuAvgearn.getPHealthNursingMny().doubleValue();
+            double healInsuNormal = healInsuAvgearn.getPersonalAvg().getHealthGeneralMny().v().doubleValue()
+                    + healInsuAvgearn.getPersonalAvg().getHealthNursingMny().v().doubleValue();
             item.setMonthlyHealthInsuranceNormal(healInsuNormal);
             // set monthly general insurance normal.
-            double generalInsuNormal = healInsuAvgearn.getPHealthGeneralMny().doubleValue();
+            double generalInsuNormal = healInsuAvgearn.getPersonalAvg().getHealthGeneralMny().v().doubleValue();
             item.setMonthlyGeneralInsuranceNormal(generalInsuNormal);
             // set monthly long term insurance normal.
-            double longTermInsuNormal = healInsuAvgearn.getPHealthNursingMny().doubleValue();
+            double longTermInsuNormal = healInsuAvgearn.getPersonalAvg().getHealthNursingMny().v().doubleValue();
             item.setMonthlyLongTermInsuranceNormal(longTermInsuNormal);
             // set monthly specific insurance normal.
-            double specificInsuNormal = healInsuAvgearn.getPHealthSpecificMny().doubleValue();
+            double specificInsuNormal = healInsuAvgearn.getPersonalAvg().getHealthSpecificMny().v().doubleValue();
             item.setMonthlySpecificInsuranceNormal(specificInsuNormal);
             // set monthly basic insurance normal.
-            double basicInsuNormal = healInsuAvgearn.getPHealthBasicMny().doubleValue();
+            double basicInsuNormal = healInsuAvgearn.getPersonalAvg().getHealthBasicMny().v().doubleValue();
             item.setMonthlyBasicInsuranceNormal(basicInsuNormal);
             if (personBase.getGendar() == 0) {// male
                 // set welfare pension insurance normal.
-                double welfarePensInsu = pensAvgearn.getPPensionMaleMny().doubleValue();
+                double welfarePensInsu = pensAvgearn.getPersonalPension().getMaleAmount().v().doubleValue();
                 item.setWelfarePensionInsuranceNormal(welfarePensInsu);
                 // set welfare pension fund normal.
-                double welfarePensFund = pensAvgearn.getPFundMaleMny().doubleValue();
+                double welfarePensFund = pensAvgearn.getPersonalFund().getMaleAmount().v().doubleValue();
                 item.setWelfarePensionFundNormal(welfarePensFund);
             } else {
                 // set welfare pension insurance normal.
-                double welfarePensInsu = pensAvgearn.getPPensionFemMny().doubleValue();
+                double welfarePensInsu = pensAvgearn.getPersonalPension().getFemaleAmount().v().doubleValue();
                 item.setWelfarePensionInsuranceNormal(welfarePensInsu);
                 // set welfare pension fund normal.
-                double welfarePensFund = pensAvgearn.getPFundFemMny().doubleValue();
+                double welfarePensFund = pensAvgearn.getPersonalFund().getFemaleAmount().v().doubleValue();
                 item.setWelfarePensionFundNormal(welfarePensFund);
             }
         }
@@ -396,9 +446,9 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
         return item;
     }
     
-    private void convertDeductionToDataItem(DataRowItem rowItem, List<Object[]> objectDeductions, String personId,
+    private void convertDeductionToDataItem(ReportData reportData, DataRowItem rowItem, String personId,
             ItemDeduction itemDeduction) {
-        List<Object[]> objectList = objectDeductions.stream()
+        List<Object[]> objectList = reportData.objectDeductions.stream()
                 .filter(p -> {
                     QstdtPaymentHeader headerEntity = (QstdtPaymentHeader) p[0];
                     return headerEntity.qstdtPaymentHeaderPK.personId.equals(personId);
@@ -447,6 +497,47 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
                 .sum();
     }
     
+    private boolean isPrintedOutput(DataRowItem item, SalarySocialInsuranceQuery query) {
+        // equal
+        if (query.getIsEqual()) {
+            if (item.getMonthlyHealthInsuranceNormal() == item.getMonthlyHealthInsuranceDeduction()
+                    && item.getMonthlyGeneralInsuranceNormal() == item.getMonthlyGeneralInsuranceDeduction()
+                    && item.getMonthlyLongTermInsuranceNormal() == item.getMonthlyLongTermInsuranceDeduction()
+                    && item.getMonthlySpecificInsuranceNormal() == item.getMonthlySpecificInsuranceDeduction()
+                    && item.getMonthlyBasicInsuranceNormal() == item.getMonthlyBasicInsuranceDeduction()
+                    && item.getWelfarePensionInsuranceNormal() == item.getWelfarePensionInsuranceDeduction()
+                    && item.getWelfarePensionFundNormal() == item.getWelfarePensionFundDeduction()) {
+                return true;
+            }
+        }
+        // less than
+        if (query.getIsDeficient()) {
+            if (item.getMonthlyHealthInsuranceNormal() < item.getMonthlyHealthInsuranceDeduction()
+                    && item.getMonthlyGeneralInsuranceNormal() < item.getMonthlyGeneralInsuranceDeduction()
+                    && item.getMonthlyLongTermInsuranceNormal() < item.getMonthlyLongTermInsuranceDeduction()
+                    && item.getMonthlySpecificInsuranceNormal() < item.getMonthlySpecificInsuranceDeduction()
+                    && item.getMonthlyBasicInsuranceNormal() < item.getMonthlyBasicInsuranceDeduction()
+                    && item.getWelfarePensionInsuranceNormal() < item.getWelfarePensionInsuranceDeduction()
+                    && item.getWelfarePensionFundNormal() < item.getWelfarePensionFundDeduction()) {
+                return true;
+            }
+        }
+        // greater than
+        if(query.getIsRedundant()) {
+            if (item.getMonthlyHealthInsuranceNormal() > item.getMonthlyHealthInsuranceDeduction()
+                    && item.getMonthlyGeneralInsuranceNormal() > item.getMonthlyGeneralInsuranceDeduction()
+                    && item.getMonthlyLongTermInsuranceNormal() > item.getMonthlyLongTermInsuranceDeduction()
+                    && item.getMonthlySpecificInsuranceNormal() > item.getMonthlySpecificInsuranceDeduction()
+                    && item.getMonthlyBasicInsuranceNormal() > item.getMonthlyBasicInsuranceDeduction()
+                    && item.getWelfarePensionInsuranceNormal() < item.getWelfarePensionInsuranceDeduction()
+                    && item.getWelfarePensionFundNormal() > item.getWelfarePensionFundDeduction()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
     private ItemDeduction initDeductionPersonal() {
         ItemDeduction item = new ItemDeduction();
         item.setItemCodeHealthInsu("F101");
@@ -472,6 +563,13 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
         return item;
     }
     
+}
+
+class ReportData {
+    List<Object[]> objectNormals;
+    List<Object[]> objectDeductions;
+    List<HealthInsuranceAvgearn> listHealInsuAvgearn;
+    List<PensionAvgearn> listPensAvgearn;
 }
 
 @Setter

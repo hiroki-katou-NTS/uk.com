@@ -48,7 +48,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
  */
 
 @Stateless
-public class AsposeSalarySocialInsuranceReportGenerator extends AsposeCellsReportGenerator
+public class AsposeSocialInsuReportGenerator extends AsposeCellsReportGenerator
         implements SalarySocialInsuranceGenerator {
 
     /** The Constant TEMPLATE_FILE. */
@@ -70,7 +70,7 @@ public class AsposeSalarySocialInsuranceReportGenerator extends AsposeCellsRepor
     private static final int NUMBER_SECOND = 2;
 
     /** The Constant INDEX_ROW_CONTENT_AREA. */
-    private static final int INDEX_ROW_CONTENT_AREA = 20;
+    private static final int INDEX_ROW_CONTENT_AREA = 18;
 
     /** The Constant RADIX. */
     private static final int RADIX = 16;
@@ -102,12 +102,6 @@ public class AsposeSalarySocialInsuranceReportGenerator extends AsposeCellsRepor
     /** The Constant RANGE_CHILD_RAISING. */
     private static final String RANGE_CHILD_RAISING = "RangeChildRaising";
 
-    /** The Constant RANGE_DELIVERY_NOTICE_AMOUNT_MANUAL. */
-    private static final String RANGE_DELIVERY_NOTICE_AMOUNT_MANUAL = "RangeDeliveryNoticeAmountManual";
-
-    /** The Constant RANGE_CHILD_RAISING_MANUAL. */
-    private static final String RANGE_CHILD_RAISING_MANUAL = "RangeChildRaisingManual";
-
     /** The Constant NUMBER_COLUMN. */
     private static final int NUMBER_COLUMN = 17;
 
@@ -119,15 +113,6 @@ public class AsposeSalarySocialInsuranceReportGenerator extends AsposeCellsRepor
 
     /** The Constant INDEX_COLUMN_EMPLOYEE. */
     private static final int INDEX_COLUMN_EMPLOYEE = 12;
-
-    /** The Constant INDEX_COLUMN_DELIVERY_MANUAL. */
-    private static final int INDEX_COLUMN_DELIVERY_MANUAL = 1;
-
-    /** The Constant INDEX_COLUMN_INSURED_MANUAL. */
-    private static final int INDEX_COLUMN_INSURED_MANUAL = 12;
-
-    /** The Constant INDEX_COLUMN_EMPLOYEE_MANUAL. */
-    private static final int INDEX_COLUMN_EMPLOYEE_MANUAL = 15;
 
     /** The Constant ALPHABET_A. */
     private static final String ALPHABET_A = "A";
@@ -155,10 +140,6 @@ public class AsposeSalarySocialInsuranceReportGenerator extends AsposeCellsRepor
     
     /** The Constant COLUMN_WIDTH_OFFICE_CODE. */
     private static final double COLUMN_WIDTH_OFFICE_CODE = 14;
-
-    /** The Constant indexColumnCategoryInsuItems. */
-    private static final List<Integer> indexColumnCategoryInsuItems = new ArrayList<>(
-            Arrays.asList(3, 4, 5, 6, 8, 9, 10, 11));
 
     /*
      * (non-Javadoc)
@@ -216,8 +197,6 @@ public class AsposeSalarySocialInsuranceReportGenerator extends AsposeCellsRepor
         mapRange.put(RANGE_FOOTER_EACH_OFFICE, rangeFooterEachOffice);
         Range rangeDeliveryNoticeAmount = worksheets.getRangeByName(RANGE_DELIVERY_NOTICE_AMOUNT);
         Range rangeChildRaising = worksheets.getRangeByName(RANGE_CHILD_RAISING);
-        Range rangeDeliveryNoticeAmountManual = worksheets.getRangeByName(RANGE_DELIVERY_NOTICE_AMOUNT_MANUAL);
-        Range rangeChildRaisingManual = worksheets.getRangeByName(RANGE_CHILD_RAISING_MANUAL);
 
         ChecklistPrintSettingDto configOutput = reportData.getConfigureOutput();
 
@@ -229,23 +208,19 @@ public class AsposeSalarySocialInsuranceReportGenerator extends AsposeCellsRepor
         if (configOutput.getShowDeliveryNoticeAmount()) {
             Range rangeDelivery = rangeDeliveryNoticeAmount;
             Range rangeChild = rangeChildRaising;
-            if (!configOutput.getShowCategoryInsuranceItem()) {
-                rangeDelivery = rangeDeliveryNoticeAmountManual;
-                rangeChild = rangeChildRaisingManual;
-                double columnWidth = 14;
-                setColumnWidth(worksheet, numberOfColumn, columnWidth);
+            // it is printing for business(not personal).
+            if (reportData.getIsPrintBusiness()) {
+                writeFooterPage(worksheet, reportData, indexRowCurrent + NUMBER_SECOND, rangeDelivery, rangeChild);
             }
-            writeFooterPage(worksheet, reportData.getOfficeItems(), indexRowCurrent + NUMBER_SECOND, rangeDelivery,
-                    rangeChild, configOutput.getShowDeliveryNoticeAmount());
         } else {
             totalRowFooter = NUMBER_ZERO;
         }
-        showColumnCategoryInsuranceItem(worksheet, configOutput.getShowCategoryInsuranceItem());
         removeRowTemplate(worksheets.getNamedRanges().length, worksheet, mapRange);
         int totalRow = indexRowCurrent + totalRowFooter;
         String printArea = PRINT_AREA.concat(String.valueOf(totalRow));
         settingPage(worksheet, printArea);
         drawBorderLinePageBreak(worksheet, totalRow, numberOfColumn);
+        
     }
 
     /**
@@ -262,23 +237,6 @@ public class AsposeSalarySocialInsuranceReportGenerator extends AsposeCellsRepor
         worksheet.getCells().setColumnWidth(NUMBER_ZERO, COLUMN_WIDTH_OFFICE_CODE);
         for (int i = NUMBER_ONE; i < numberColumn - NUMBER_ONE; i++) {
             worksheet.getCells().setColumnWidth(i, columnWidth);
-        }
-    }
-
-    /**
-     * Show column category insurance item.
-     *
-     * @param worksheet
-     *            the worksheet
-     * @param isShowCategoryInsuItem
-     *            the is show category insu item
-     */
-    private void showColumnCategoryInsuranceItem(Worksheet worksheet, boolean isShowCategoryInsuItem) {
-        if (isShowCategoryInsuItem) {
-            return;
-        }
-        for (Integer indexColum : indexColumnCategoryInsuItems) {
-            worksheet.getCells().hideColumn(indexColum);
         }
     }
 
@@ -337,9 +295,10 @@ public class AsposeSalarySocialInsuranceReportGenerator extends AsposeCellsRepor
             HashMap<String, Range> mapRange, ChecklistPrintSettingDto configOutput) throws Exception {
         List<InsuranceOfficeDto> offices = reportData.getOfficeItems();
         int indexRowHeaderOffice = INDEX_ROW_CONTENT_AREA;
+        boolean isPrintBusiness = reportData.getIsPrintBusiness();
         for (InsuranceOfficeDto office : offices) {
             int indexRowContentOffice = indexRowHeaderOffice;
-            writeHeaderOffice(worksheet, office, indexRowHeaderOffice, mapRange.get(RANGE_OFFICE));
+            writeHeaderOffice(worksheet, office, indexRowHeaderOffice, mapRange.get(RANGE_OFFICE), isPrintBusiness);
             indexRowContentOffice += NUMBER_ONE;
             int indexRowFooterOffice = indexRowContentOffice;
             if (configOutput.getShowDetail()) {
@@ -377,13 +336,13 @@ public class AsposeSalarySocialInsuranceReportGenerator extends AsposeCellsRepor
      *             the exception
      */
     private void writeHeaderOffice(Worksheet worksheet, InsuranceOfficeDto office, int indexRowHeader,
-            Range rangeOffice) throws Exception {
+            Range rangeOffice, boolean isPrintBusiness) throws Exception {
         Range newRange = createRangeFromOtherRange(worksheet, indexRowHeader, rangeOffice);
         String officeCode = OFFICE_JP.concat(office.getCode());
         setDataRangeFirstRow(worksheet, newRange, NUMBER_ZERO, officeCode, office.getName());
         
         if (!office.getEmployeeDtos().isEmpty()
-                && office.getEmployeeDtos().get(NUMBER_ZERO).getChildRaisingContributionMoney() == NUMBER_ZERO) {
+                && !isPrintBusiness) {
             int indexColumnLast = NUMBER_COLUMN - NUMBER_ONE;
             worksheet.getCells().hideColumn(indexColumnLast);
             Style style = newRange.get(NUMBER_ZERO, indexColumnLast - NUMBER_ONE).getStyle();
@@ -478,25 +437,18 @@ public class AsposeSalarySocialInsuranceReportGenerator extends AsposeCellsRepor
      * @param isShowDeliveryNoticeAmount the is show delivery notice amount
      * @throws Exception the exception
      */
-    private void writeFooterPage(Worksheet worksheet, List<InsuranceOfficeDto> offices, int indexRow,
-            Range rangeDeliveryNoticeAmount, Range rangeChildRaising, boolean isShowDeliveryNoticeAmount)
+    private void writeFooterPage(Worksheet worksheet, SalarySocialInsuranceReportData reportData, int indexRow,
+            Range rangeDeliveryNoticeAmount, Range rangeChildRaising)
                    throws Exception {
         Range newRangeDeliveryNoticeAmount = createRangeFromOtherRange(worksheet, indexRow, rangeDeliveryNoticeAmount);
         indexRow++;
         Range newRangeChildRaising = createRangeFromOtherRange(worksheet, indexRow, rangeChildRaising);
-        int indexColumnDelivery = INDEX_COLUMN_DELIVERY;
-        int indexColumnInsured = INDEX_COLUMN_INSURED;
-        int indexColumnEmployee = INDEX_COLUMN_EMPLOYEE;
-        if (!isShowDeliveryNoticeAmount) {
-            indexColumnDelivery = INDEX_COLUMN_DELIVERY_MANUAL;
-            indexColumnInsured = INDEX_COLUMN_INSURED_MANUAL;
-            indexColumnEmployee = INDEX_COLUMN_EMPLOYEE_MANUAL;
-        }
-        setDataRangeFirstRow(worksheet, newRangeDeliveryNoticeAmount, indexColumnDelivery, 80);
-        setDataRangeFirstRow(worksheet, newRangeDeliveryNoticeAmount, indexColumnInsured, 30);
-        // setDataRangeFirstRow(worksheet, newRange, 3, "納入告知額", 30);
-        setDataRangeRowCalculateSub(worksheet, newRangeDeliveryNoticeAmount, newRangeChildRaising, indexColumnDelivery,
-                indexColumnInsured, indexColumnEmployee);
+        setDataRangeFirstRow(worksheet, newRangeDeliveryNoticeAmount, INDEX_COLUMN_DELIVERY, 
+                reportData.getDeliveryNoticeAmount());
+        setDataRangeFirstRow(worksheet, newRangeDeliveryNoticeAmount, INDEX_COLUMN_INSURED, 
+                reportData.getInsuredCollectAmount());
+        setDataRangeRowCalculateSub(worksheet, newRangeDeliveryNoticeAmount, newRangeChildRaising, INDEX_COLUMN_DELIVERY,
+                INDEX_COLUMN_INSURED, INDEX_COLUMN_EMPLOYEE, reportData.getChildRaisingTotalBusiness());
     }
 
     /**
@@ -588,14 +540,17 @@ public class AsposeSalarySocialInsuranceReportGenerator extends AsposeCellsRepor
      *            the index column employee
      */
     private void setDataRangeRowCalculateSub(Worksheet worksheet, Range newRangeDeliveryNoticeAmount,
-            Range newRangeChildRaising, int indexColumnDelivery, int indexColumnInsured, int indexColumnEmployee) {
+            Range newRangeChildRaising, int indexColumnDelivery, int indexColumnInsured, int indexColumnEmployee, 
+            double totalChildRaisingBusiness) {
         Cells cells = worksheet.getCells();
         int indexRowCurrent = newRangeDeliveryNoticeAmount.getFirstRow();
         String cellStart = cells.get(indexRowCurrent, indexColumnDelivery).getName();
         String cellEnd = cells.get(indexRowCurrent, indexColumnInsured).getName();
         String formulaSubtract = cellStart.concat(OPERATOR_SUB).concat(cellEnd);
-        cells.get(indexRowCurrent, indexColumnEmployee).setFormula(formulaSubtract);
-        cells.get(newRangeChildRaising.getFirstRow(), indexColumnEmployee).setValue(20);
+        Cell cellBurden = cells.get(indexRowCurrent, indexColumnEmployee);
+        cellBurden.setFormula(formulaSubtract);
+        String formSubRaising = cellBurden.getName().concat(OPERATOR_SUB) + totalChildRaisingBusiness;
+        cells.get(newRangeChildRaising.getFirstRow(), indexColumnEmployee).setFormula(formSubRaising);
     }
 
     /**

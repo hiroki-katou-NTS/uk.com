@@ -7,7 +7,6 @@
  */
 package nts.uk.file.pr.app.export.insurance.salary;
 
-import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
@@ -28,13 +27,13 @@ public class SalarySocialInsuranceQuery {
     private Integer yearMonth;
     
     /** The is equal. */
-    private boolean isEqual;
+    private Boolean isEqual;
     
     /** The is deficient. */
-    private boolean isDeficient;
+    private Boolean isDeficient;
     
     /** The is redundant. */
-    private boolean isRedundant;
+    private Boolean isRedundant;
     
     /** The insurance offices. */
     private List<InsuranceOfficeDto> insuranceOffices;

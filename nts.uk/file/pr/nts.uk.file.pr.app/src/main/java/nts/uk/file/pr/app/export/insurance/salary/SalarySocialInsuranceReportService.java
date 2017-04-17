@@ -9,12 +9,15 @@ package nts.uk.file.pr.app.export.insurance.salary;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearn;
 import nts.uk.file.pr.app.export.insurance.data.ChecklistPrintSettingDto;
 import nts.uk.file.pr.app.export.insurance.data.DataRowItem;
 import nts.uk.file.pr.app.export.insurance.data.InsuranceOfficeDto;
@@ -34,7 +37,7 @@ public class SalarySocialInsuranceReportService extends ExportService<SalarySoci
     private SalarySocialInsuranceGenerator generator;
     
     @Inject
-    private SalarySocialInsuranceQueryProcessor salarySocialInsuQueryProcessor;
+    private SalarySocialInsuranceQueryProcessor queryProcessor;
     
     @Inject
     private SalarySocialInsuranceRepository repository;
@@ -48,18 +51,74 @@ public class SalarySocialInsuranceReportService extends ExportService<SalarySoci
         String companyCode = AppContexts.user().companyCode();
         String loginPersonID = "000000000000000000000000000000000001"; //AppContexts.user().personId();
         
-        List<SalarySocialInsuranceReportData> dataReports = repository.findReportData(companyCode, loginPersonID, query);
-        // dataReports.get(0): report data of person.
-        SalarySocialInsuranceReportData reportData = dataReports.get(0);
+        List<String> officeCodes = query.getInsuranceOffices().stream()
+                .map(office -> office.getCode())
+                .collect(Collectors.toList());
+        List<HealthInsuranceAvgearn> listhealInsuAvgearn = queryProcessor.findHealInsuAvgearnByOffice(officeCodes);
+        List<PensionAvgearn> listPensionAvgearn = queryProcessor.findPensAvgearnByOffice(officeCodes);
+        
+        List<SalarySocialInsuranceReportData> dataReports = repository.findReportData(companyCode, loginPersonID, query,
+                listhealInsuAvgearn, listPensionAvgearn);
+        ChecklistPrintSettingDto configOutput = queryProcessor.findConfigureOutputSetting();
+        // dataReports.get(0): report data of personal.
+        SalarySocialInsuranceReportData reportPersonal = dataReports.get(0);
+        reportPersonal.setIsPrintBusiness(true);
+        reportPersonal.setConfigureOutput(configOutput);
+        processData(reportPersonal, query);
+        
         // dataReports.get(1): report data of office.
+        SalarySocialInsuranceReportData reportBusiness = dataReports.get(1);
+        reportBusiness.setConfigureOutput(configOutput);
+        reportBusiness.setIsPrintBusiness(false);
+        processData(reportBusiness, query);
         
-        ChecklistPrintSettingDto configOutput = salarySocialInsuQueryProcessor.findConfigureOutputSetting();
+        // Fake
+        boolean isPrintReportPersonal = true;
         
-        // fake data
-//        SalarySocialInsuranceReportData reportData = fakeData();
-        reportData.setConfigureOutput(configOutput);
-        processData(reportData);
-        this.generator.generate(context.getGeneratorContext(), reportData);
+        // set child raising contribution money of business.
+        if (isPrintReportPersonal) {
+            reportPersonal.setChildRaisingTotalBusiness(reportBusiness.getTotalAllOffice()
+                    .getChildRaisingContributionMoney());
+        }
+        // print report for personal.
+        this.generator.generate(context.getGeneratorContext(), reportPersonal);
+    }
+    
+    private void processData(SalarySocialInsuranceReportData reportData, SalarySocialInsuranceQuery query) {
+        SalarySocialInsuranceHeaderReportData headerData = new SalarySocialInsuranceHeaderReportData();
+        headerData.setNameCompany("【日通 システム株式会社】");
+        headerData.setTitleReport("会社保険料チェックリスト(被保険者)");
+        headerData.setInformationOffice("【事業所:本社 ~ 福岡支社(3事業所)】");
+        // TODO: convert to year Japan.
+        headerData.setTargetYearMonth("【対象年月:平成19年12月 給与】 ");
+        String headerCondition = "【出カ条件:算定月額と対象月控除額が";
+        if (query.getIsEqual()) {
+            headerCondition += "全て同じ、";
+        }
+        if (query.getIsDeficient()) {
+            headerCondition += "不足、";
+        }
+        if (query.getIsRedundant()) {
+            headerCondition += "超過";
+        }
+        headerCondition += "】 ";
+        headerData.setCondition(headerCondition);
+        headerData.setFormalCalculation("【計算方法:全体の保険料より被保険者分を差し引く方法】");
+        reportData.setHeaderData(headerData);
+        
+        List<InsuranceOfficeDto> officeItems = reportData.getOfficeItems();
+        reportData.setOfficeItems(officeItems);
+        List<DataRowItem> totalEachOffices = new ArrayList<>();
+        for (InsuranceOfficeDto office : officeItems) {
+            DataRowItem totalEachOffice = calculateTotal(office.getEmployeeDtos());
+            office.setTotalEachOffice(totalEachOffice);
+            totalEachOffices.add(totalEachOffice);
+        }
+        DataRowItem totalAllOffice = calculateTotal(totalEachOffices);
+        reportData.setTotalAllOffice(totalAllOffice);
+        
+        double insuredCollectAmount = calInsuredCollectAmount(totalAllOffice);
+        reportData.setInsuredCollectAmount(insuredCollectAmount);
     }
     
     private DataRowItem calculateTotal(List<DataRowItem> rowItems) {
@@ -131,105 +190,10 @@ public class SalarySocialInsuranceReportService extends ExportService<SalarySoci
         return rowItem;
     }
     
-    private void processData(SalarySocialInsuranceReportData reportData) {
-        SalarySocialInsuranceHeaderReportData headerData = new SalarySocialInsuranceHeaderReportData();
-        headerData.setNameCompany("【日通 システム株式会社】");
-        headerData.setTitleReport("会社保険料チェックリスト(被保険者)");
-        headerData.setInformationOffice("【事業所:本社 ~ 福岡支社(3事業所)】");
-        headerData.setTargetYearMonth("【対象年月:平成19年12月 給与】 ");
-        headerData.setCondition("【出カ条件:算定月数と対象月控除が全て同じ、不定、超過】 ");
-        headerData.setFormalCalculation("【計算方法:全体の保険料より被保険者分を差し引く方法】");
-        reportData.setHeaderData(headerData);
-        
-        List<InsuranceOfficeDto> officeItems = reportData.getOfficeItems();
-        reportData.setOfficeItems(officeItems);
-        List<DataRowItem> totalEachOffices = new ArrayList<>();
-        for (InsuranceOfficeDto office : officeItems) {
-            DataRowItem totalEachOffice = calculateTotal(office.getEmployeeDtos());
-            office.setTotalEachOffice(totalEachOffice);
-            totalEachOffices.add(totalEachOffice);
-        }
-        DataRowItem totalAllOffice = calculateTotal(totalEachOffices);
-        reportData.setTotalAllOffice(totalAllOffice);
+    private double calInsuredCollectAmount(DataRowItem totalAllOffice) {
+        return (totalAllOffice.getMonthlyHealthInsuranceDeduction()
+                + totalAllOffice.getWelfarePensionInsuranceDeduction()
+                + totalAllOffice.getWelfarePensionFundDeduction());
     }
     
-    private SalarySocialInsuranceReportData fakeData() {
-        SalarySocialInsuranceReportData reportData = new SalarySocialInsuranceReportData();
-        
-        SalarySocialInsuranceHeaderReportData headerData = new SalarySocialInsuranceHeaderReportData();
-        headerData.setNameCompany("【日通 システム株式会社】");
-        headerData.setTitleReport("会社保険料チェックリスト(被保険者)");
-        headerData.setInformationOffice("【事業所:本社 ~ 福岡支社(3事業所)】");
-        headerData.setTargetYearMonth("【対象年月:平成19年12月 給与】 ");
-        headerData.setCondition("【出カ条件:算定月数と対象月控除が全て同じ、不定、超過】 ");
-        headerData.setFormalCalculation("【計算方法:全体の保険料より被保険者分を差し引く方法】");
-        reportData.setHeaderData(headerData);
-        
-        List<InsuranceOfficeDto> officeItems = fakeOffice();
-        reportData.setOfficeItems(officeItems);
-        List<DataRowItem> totalEachOffices = new ArrayList<>();
-        for (InsuranceOfficeDto office : officeItems) {
-            DataRowItem totalEachOffice = calculateTotal(office.getEmployeeDtos());
-            office.setTotalEachOffice(totalEachOffice);
-            totalEachOffices.add(totalEachOffice);
-        }
-        DataRowItem totalAllOffice = calculateTotal(totalEachOffices);
-        reportData.setTotalAllOffice(totalAllOffice);
-        
-        return reportData;
-    }
-    
-    private List<InsuranceOfficeDto> fakeOffice() {
-        List<InsuranceOfficeDto> offices = new ArrayList<>();
-        for(int i=0; i<20; i++) {
-            InsuranceOfficeDto office = setOffice(i + 1);
-            offices.add(office);
-        }
-        return offices;
-    }
-    private InsuranceOfficeDto setOffice(int index) {
-        InsuranceOfficeDto office = new InsuranceOfficeDto();
-        
-        office.setNumberOfEmployee(5);
-        office.setCode("A000" + index);
-        office.setName("Office " + index);
-        
-        List<DataRowItem> employees = new ArrayList<>();
-        for (int i=0; i< office.getNumberOfEmployee(); i++) {
-            DataRowItem employee = setEmployee("Employee", 1);
-            employees.add(employee);
-        }
-        office.setEmployeeDtos(employees);
-        
-        return office;
-    }
-    
-    private DataRowItem setEmployee(String name, int indexRaw) {
-        double index = indexRaw * 10000000;
-        DataRowItem employee = new DataRowItem();
-        
-        employee.setCode("E000" + index);
-        employee.setName(name +" " + index);
-        
-        employee.setMonthlyHealthInsuranceNormal(index);index++;
-        employee.setMonthlyGeneralInsuranceNormal(index);index++;
-        employee.setMonthlyLongTermInsuranceNormal(index);index++;
-        employee.setMonthlySpecificInsuranceNormal(index);index++;
-        employee.setMonthlyBasicInsuranceNormal(index);index++;
-        
-        employee.setMonthlyHealthInsuranceDeduction(index);index++;
-        employee.setMonthlyGeneralInsuranceDeduction(index);index++;
-        employee.setMonthlyLongTermInsuranceDeduction(index);index++;
-        employee.setMonthlySpecificInsuranceDeduction(index);index++;
-        employee.setMonthlyBasicInsuranceDeduction(index);index++;
-        
-        employee.setWelfarePensionInsuranceNormal(index);index++;
-        employee.setWelfarePensionInsuranceDeduction(index);index++;
-        employee.setWelfarePensionFundNormal(index);index++;
-        employee.setWelfarePensionFundDeduction(index);index++;
-        employee.setChildRaisingContributionMoney(index);index++;
-        
-        return employee;
-    }
-
 }
