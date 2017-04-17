@@ -5,9 +5,7 @@ var qmm005;
         var ViewModel = (function () {
             function ViewModel() {
                 var self = this;
-                // processingNo
                 self.index = ko.observable(nts.uk.ui.windows.getShared('dataRow').index());
-                // define all data
                 var C_SEL_001_DATA = [];
                 for (var i = 1; i < 31; i++) {
                     C_SEL_001_DATA.push(new qmm005.common.SelectItem({ index: i, label: i + '日' }));
@@ -84,7 +82,6 @@ var qmm005;
                     C_SEL_015_DATA.push(new qmm005.common.SelectItem({ index: i, label: i + '日' }));
                 }
                 C_SEL_015_DATA.push(new qmm005.common.SelectItem({ index: 31, label: '末日' }));
-                // observables all values
                 self.inp001 = ko.observable('');
                 self.sel001 = ko.observable(1);
                 self.sel002 = ko.observable(0);
@@ -101,7 +98,6 @@ var qmm005;
                 self.sel013 = ko.observable(1);
                 self.sel014 = ko.observable(1);
                 self.sel015 = ko.observable(1);
-                // observable all datas
                 self.sel001Data = ko.observableArray(C_SEL_001_DATA);
                 self.sel002Data = ko.observableArray(C_SEL_002_DATA);
                 self.sel003Data = ko.observableArray(C_SEL_003_DATA);
@@ -135,7 +131,6 @@ var qmm005;
             };
             ViewModel.prototype.saveData = function () {
                 var self = this, date = new Date(), stdYear = date.getFullYear(), stdMonth = date.getMonth(), stdDate = date.getDate();
-                // Chưa thấy đề cập tới các trường hợp ngày > số ngày trong tháng.
                 var data = {
                     processingNo: self.index(),
                     processingName: self.inp001(),
@@ -144,9 +139,6 @@ var qmm005;
                     bonusAtr: 0,
                     bcurrentProcessingYm: parseInt(nts.uk.time.formatDate(new Date(stdYear, stdDate <= self.sel001() ? stdMonth + 1 : stdMonth, 1), 'yyyyMM')),
                     payStdDay: self.sel001(),
-                    resitaxBeginMon: 6,
-                    resitaxStdMon: 1,
-                    resitaxStdDay: 1,
                     pickupStdMonAtr: self.sel002(),
                     pickupStdDay: self.sel003(),
                     accountDueMonAtr: self.sel004(),
@@ -163,7 +155,6 @@ var qmm005;
                     incometaxStdDay: self.sel015(),
                     payDays: []
                 };
-                /// Khởi tạo dữ liệu lương & thưởng cho 12 tháng trong năm
                 for (var month = 0; month < 12; month++) {
                     data.payDays.push({
                         processingNo: data.processingNo,
@@ -189,3 +180,4 @@ var qmm005;
         c.ViewModel = ViewModel;
     })(c = qmm005.c || (qmm005.c = {}));
 })(qmm005 || (qmm005 = {}));
+//# sourceMappingURL=qmm005.c.viewmodel.js.map

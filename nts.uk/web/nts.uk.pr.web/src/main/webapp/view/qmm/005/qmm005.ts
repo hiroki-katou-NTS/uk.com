@@ -1,30 +1,3 @@
-class TextEditorBindingHandler implements KnockoutBindingHandler {
-    constructor() {
-    }
-
-    init(element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-        ko.bindingHandlers['ntsTextEditor'].init(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
-
-        if (valueAccessor().valueUpdate) {
-            switch (valueAccessor().valueUpdate) {
-                case 'keyup':
-                    element.onkeyup = function() { valueAccessor().value(this.value); };
-                    break;
-                case 'keypress':
-                    element.onkeypress = function() { valueAccessor().value(this.value); };
-                    break;
-                case 'afterkeydown':
-                    element.onkeydown = function() { valueAccessor().value(this.value); };
-                    break;
-            }
-        }
-    }
-
-    update(element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-        ko.bindingHandlers['ntsTextEditor'].update(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
-    }
-}
-
 class CheckBoxWithHelpBindingHandler implements KnockoutBindingHandler {
     constructor() {
     }
@@ -44,8 +17,18 @@ class CheckBoxWithHelpBindingHandler implements KnockoutBindingHandler {
     }
 }
 
-ko.bindingHandlers['ntsTextEditor2'] = new TextEditorBindingHandler();
 ko.bindingHandlers['ntsCheckBox2'] = new CheckBoxWithHelpBindingHandler();
+
+Date.prototype["getWorkDays"] = function() {
+    let workDays = 0, lastDate = moment(this).daysInMonth();
+    for (let day = 1; day <= lastDate; day++) {
+        let date = new Date(this.getFullYear(), this.getMonth(), day);
+        if(date.getDay() != 0 && date.getDay() != 6) {
+           workDays++; 
+        }         
+    }
+    return workDays;
+}
 
 Date.prototype["getDayJP"] = function() {
     return ['日', '月', '火', '水', '木', '金', '土'][this.getDay()];
@@ -119,6 +102,10 @@ module qmm005.common {
             'qmm005d': {
                 'update': 'pr/core/qmm005d/update',
                 'getdata': 'pr/core/qmm005d/getdata'
+            },
+            'qmm005e': {
+                'update': 'pr/core/qmm005e/update',
+                'getdata': 'pr/core/qmm005e/getdata'
             }
         }
     }

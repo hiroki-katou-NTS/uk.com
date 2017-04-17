@@ -72,12 +72,10 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findPostCodeZipCodeSelection = findPostCodeZipCodeSelection;
-                            //to address => UI
                             function toAddress(postCode) {
                                 return postCode.prefectureName + ' ' + postCode.municipalityName + ' ' + postCode.townName;
                             }
                             service.toAddress = toAddress;
-                            //to kana => UI
                             function toKana(postCode) {
                                 return postCode.prefectureNameKn + ' ' + postCode.municipalityNameKn + ' ' + postCode.townNameKn;
                             }
@@ -107,3 +105,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=cmm001.e.service.js.map

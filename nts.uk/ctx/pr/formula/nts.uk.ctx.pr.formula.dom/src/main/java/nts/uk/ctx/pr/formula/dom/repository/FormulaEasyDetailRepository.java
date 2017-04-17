@@ -22,7 +22,9 @@ public interface FormulaEasyDetailRepository {
 	 * @param easyFormulaCode
 	 * @return formulaEasyDetail
 	 */
-	Optional<FormulaEasyDetail> findByPriKey (String companyCode, FormulaCode formulaCode, String historyId, EasyFormulaCode easyFormulaCode);
+	Optional<FormulaEasyDetail> findByPriKey(String companyCode, FormulaCode formulaCode, String historyId, EasyFormulaCode easyFormulaCode);
+	
+	List<FormulaEasyDetail> findByPriKeys(String companyCode, FormulaCode formulaCode, String historyId, List<EasyFormulaCode> easyFormulaCodes);
 	
 	List<FormulaEasyDetail> findWithOutPriKey(String companyCode, FormulaCode formulaCode, String historyId);
 	

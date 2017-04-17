@@ -9,6 +9,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalaryperiod.AddItemSalaryPeriodCommand;
 import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalaryperiod.AddItemSalaryPeriodCommandHandler;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalaryperiod.DeleteItemSalaryPeriodCommand;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalaryperiod.DeleteItemSalaryPeriodCommandHandler;
 import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalaryperiod.UpdateItemSalaryPeriodCommand;
 import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalaryperiod.UpdateItemSalaryPeriodCommandHandler;
 import nts.uk.ctx.pr.core.app.find.itemmaster.dto.itemsalaryperiod.ItemSalaryPeriodDto;
@@ -23,6 +25,8 @@ public class ItemSalaryPeriodWebService extends WebService {
 	AddItemSalaryPeriodCommandHandler addHandler;
 	@Inject
 	UpdateItemSalaryPeriodCommandHandler updateHandler;
+	@Inject
+	DeleteItemSalaryPeriodCommandHandler deleteHandler;
 
 	@POST
 	@Path("find/{itemCode}")
@@ -37,6 +41,12 @@ public class ItemSalaryPeriodWebService extends WebService {
 
 	}
 
+	@POST
+	@Path("delete")
+	public void deleteItemSalaryPeriod(DeleteItemSalaryPeriodCommand command) {
+		this.deleteHandler.handle(command);
+
+	}
 
 	@POST
 	@Path("update")

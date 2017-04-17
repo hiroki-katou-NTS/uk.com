@@ -6,16 +6,12 @@ var qmm034;
         (function (service) {
             var paths = {
                 getAllEras: "ctx/basic/era/finderas",
-                //        getEraDetail: "ctx/basic/era/find/{0}",
                 deleteEra: "ctx/basic/era/deleteData",
                 updateEra: "ctx/basic/era/updateData",
                 addEra: "ctx/basic/era/addData",
                 getFixAttribute: "ctx/basic/era/getFixAttribute/{0}",
                 checkStartDate: "ctx/basic/era/checkStartDate/{0}/"
             };
-            /**
-             * get list era
-             */
             function getAllEras() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getAllEras).done(function (res) {
@@ -26,24 +22,6 @@ var qmm034;
                 return dfd.promise();
             }
             service.getAllEras = getAllEras;
-            /**
-             * get a company
-             */
-            //    export function getEraDetail(eraHist: string): JQueryPromise<model.EraDto> {
-            //        let dfd = $.Deferred<model.EraDto>();
-            //        let self = this;
-            //        let _path = nts.uk.text.format(paths.getEraDetail, eraHist);
-            //        nts.uk.request.ajax(_path).done(function(res: model.EraDto) {
-            //            dfd.resolve(res);
-            //        }).fail(function(res) {
-            //            dfd.reject(res);
-            //        })
-            //        return dfd.promise();
-            //
-            //    }
-            /**
-             * get a company
-             */
             function getFixAttribute(eraHist) {
                 var dfd = $.Deferred();
                 var self = this;
@@ -74,7 +52,6 @@ var qmm034;
             service.addData = addData;
             function deleteData(command) {
                 var dfd = $.Deferred();
-                //var dateObject = ko.mapping.toJS(command);
                 nts.uk.request.ajax(paths.deleteEra, command)
                     .done(function (res) {
                     dfd.resolve(res);
@@ -123,3 +100,4 @@ var qmm034;
         })(service = a.service || (a.service = {}));
     })(a = qmm034.a || (qmm034.a = {}));
 })(qmm034 || (qmm034 = {}));
+//# sourceMappingURL=service.js.map
