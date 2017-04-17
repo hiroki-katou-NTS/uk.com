@@ -5,11 +5,13 @@
 package nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.service.internal;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSetting;
+import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingRepository;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.service.SalaryOutputSettingService;
 
 /**
@@ -17,6 +19,10 @@ import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.service.SalaryOutputS
  */
 @Stateless
 public class SalaryOutputSettingServiceImpl implements SalaryOutputSettingService {
+
+	/** The repository. */
+	@Inject
+	private SalaryOutputSettingRepository repository;
 
 	/*
 	 * (non-Javadoc)
@@ -33,6 +39,13 @@ public class SalaryOutputSettingServiceImpl implements SalaryOutputSettingServic
 				|| CollectionUtil.isEmpty(salaryOutputSetting.getCategorySettings())) {
 			throw new BusinessException("ER001");
 		}
+	}
+
+	@Override
+	public void checkDuplicateCode(String companyCode, String salaryOutputSettingCode) {
+		if (repository.isExist(companyCode, salaryOutputSettingCode)) {
+			throw new BusinessException("ER005");
+		};
 	}
 
 }

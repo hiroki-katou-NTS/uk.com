@@ -4,6 +4,7 @@ module cmm001.a {
 
         gridColumns: KnockoutObservableArray<any>;
         currentCompany: KnockoutObservable<CompanyModel>;
+        company: service.model.CompanyDto = null;
         currentCompanyCode: KnockoutObservable<string>;
         sel001Data: KnockoutObservableArray<CompanyModel>;
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
@@ -50,12 +51,12 @@ module cmm001.a {
                             self.displayAttribute(self.previousDisplayAttribute);
                         })
                     } else {
-                        self.processWhenDisplayAttributeChanged(newValue);    
+                        self.processWhenDisplayAttributeChanged(newValue);
                     }
                 }
             });
         }
-        
+
         processWhenDisplayAttributeChanged(newValue: boolean) {
             let self = this;
             let $grid = $("#gridCompany");
@@ -104,7 +105,7 @@ module cmm001.a {
                     }
                 });
             }
-            $grid.igGrid("option", "columns", currentColumns);    
+            $grid.igGrid("option", "columns", currentColumns);
             self.previousDisplayAttribute = newValue;
         }
 
@@ -159,7 +160,6 @@ module cmm001.a {
 
             self.currentCompany = ko.observable(null);
             self.currentCompanyCode = ko.observable('');
-
             self.sel001Data = ko.observableArray([]);
         }
 
@@ -309,12 +309,22 @@ module cmm001.a {
                     cmm001.a.service.updateData(company).done(function() {
                         self.sel001Data([]);
                         self.reload(company.companyCode);
+                    }).fail(function(res: any) {
+                        nts.uk.ui.dialog.alert(res.message);
                     });
                 } else {
-                    cmm001.a.service.addData(company).done(function() {
-                        self.sel001Data([]);
-                        self.reload(company.companyCode);
-                    })
+                    service.getCompanyDetail(company.companyCode).done(function(data) {
+                        self.company = data;
+                    });
+                    if (!self.company) {
+                        $.when(cmm001.a.service.addData(company)).done(function() {
+                            self.sel001Data([]);
+                            self.reload(company.companyCode);
+                        });
+
+                    } else {
+                        nts.uk.ui.dialog.alert("入力したコードは既に存在しています。 コードを確認してください。");
+                    }
                 }
             } else {
                 if (self.isUpdate()) {
@@ -340,25 +350,33 @@ module cmm001.a {
                             }
                         });
 
-                    });
-                } else {
-                    cmm001.a.service.addData(company).done(function() {
-                        self.sel001Data([]);
-                        service.getAllCompanys().done(function(data: Array<service.model.CompanyDto>) {
-                            if (data.length > 0) {
-                                _.each(data, function(obj: service.model.CompanyDto) {
-                                    let companyModel: CompanyModel;
-                                    companyModel = ko.mapping.fromJS(obj);
-                                    if (obj.displayAttribute === 1) {
-                                        companyModel.displayAttribute('');
-                                        self.sel001Data.push(ko.toJS(companyModel));
-                                    }
-                                });
-                                self.dirtyObject.reset();
-                                self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
-                            }
-                        });
                     })
+                } else {
+
+                    service.getCompanyDetail(company.companyCode).done(function(data) {
+                        self.company = data;
+                    });
+                    if (!self.company) {
+                        $.when(cmm001.a.service.addData(company)).done(function() {
+                            self.sel001Data([]);
+                            service.getAllCompanys().done(function(data: Array<service.model.CompanyDto>) {
+                                if (data.length > 0) {
+                                    _.each(data, function(obj: service.model.CompanyDto) {
+                                        let companyModel: CompanyModel;
+                                        companyModel = ko.mapping.fromJS(obj);
+                                        if (obj.displayAttribute === 1) {
+                                            companyModel.displayAttribute('');
+                                            self.sel001Data.push(ko.toJS(companyModel));
+                                        }
+                                    });
+                                    self.dirtyObject.reset();
+                                    self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
+                                }
+                            });
+                        });
+                    } else {
+                        nts.uk.ui.dialog.alert("入力したコードは既に存在しています。 コードを確認してください。");
+                    }
                 }
 
 
@@ -673,6 +691,15 @@ module cmm001.a {
         }
 
 
+    }
+
+    export class ItemMessage {
+        messCode: string;
+        messName: string;
+        constructor(messCode: string, messName: string) {
+            this.messCode = messCode;
+            this.messName = messName;
+        }
     }
 
 }

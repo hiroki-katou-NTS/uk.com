@@ -206,7 +206,7 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 		 * HealthInsuranceAvgearnGetMemento#getLevelCode()
 		 */
 		@Override
-		public Integer getLevelCode() {
+		public Integer getGrade() {
 			return setting.getCode();
 		}
 
