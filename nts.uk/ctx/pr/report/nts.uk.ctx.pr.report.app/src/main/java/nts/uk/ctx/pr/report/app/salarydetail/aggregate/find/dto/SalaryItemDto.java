@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.salarydetail.aggregate.find.dto;
@@ -7,15 +7,15 @@ package nts.uk.ctx.pr.report.app.salarydetail.aggregate.find.dto;
 import lombok.Data;
 
 /**
- * Instantiates a new master item dto.
+ * The Class SalaryItemDto.
  */
 @Data
 public class SalaryItemDto {
 
-	/** The master code. */
+	/** The salary item code. */
 	private String salaryItemCode;
 
-	/** The master name. */
+	/** The salary item name. */
 	private String salaryItemName;
 	
 
