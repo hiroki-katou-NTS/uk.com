@@ -19,8 +19,8 @@
 					nts.arc.time.YearMonth
    				</com:ValidatorScript>
 				<com:stylefile path="../catalog/catalog.css" />
-				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../catalog/catalog.js" />
+				<com:scriptfile path="start.js" />
             </ui:define>
             
             <ui:define name="content">
@@ -62,7 +62,8 @@ $('.save-error').ntsError('clear');]]></pre>
 									<pre><![CDATA[nts.uk.ui.errors.hasError()]]></pre>
 									<h3>Get viewmodel</h3>
 									<pre><![CDATA[nts.uk.ui.errors.errorsViewModel()]]></pre>
-									
+									<h3>Binding in HTML</h3>
+									<pre><![CDATA[<button class="proceed" data-bind="enable: $root.errors.isEmpty">登録</button>]]></pre>
 								</div>
 								<div id="tabs-api" class="cf">
 									<article>
