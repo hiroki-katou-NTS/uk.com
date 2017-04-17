@@ -7,7 +7,7 @@ var cmm009;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.C_INP_002 = ko.observable(null);
+                    self.C_INP_MEMO = ko.observable(null);
                     self.valueSel001 = ko.observable("");
                     self.startYmHis = ko.observable(null);
                     self.object = ko.observable(null);
@@ -45,7 +45,7 @@ var cmm009;
                 }
                 ScreenModel.prototype.createHistory = function () {
                     var self = this;
-                    var inputYm = $('#INP_001').val();
+                    var inputYm = $('#INP_STARTYMD').val();
                     if (!nts.uk.time.parseYearMonthDate(inputYm).success) {
                         alert(nts.uk.time.parseYearMonthDate(inputYm).msg);
                         return false;
@@ -65,7 +65,7 @@ var cmm009;
                 };
                 ScreenModel.prototype.createData = function () {
                     var self = this;
-                    var startYearMonthDay = $('#INP_001').val();
+                    var startYearMonthDay = $('#INP_STARTYMD').val();
                     var checked = null;
                     if (self.isRadioCheck() === 1 && self.enable() === true) {
                         checked = true;
@@ -73,7 +73,7 @@ var cmm009;
                     else {
                         checked = false;
                     }
-                    var memo = self.C_INP_002();
+                    var memo = self.C_INP_MEMO();
                     var obj = new Object(startYearMonthDay, checked, memo);
                     self.object(obj);
                     nts.uk.ui.windows.setShared('itemHistory', self.object());

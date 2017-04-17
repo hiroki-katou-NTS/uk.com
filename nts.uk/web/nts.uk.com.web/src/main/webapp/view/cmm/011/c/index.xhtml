@@ -40,17 +40,17 @@
 			<div id="contents-area">
 				<div class="cf">
 					<div>
-						<label id="C_LBL_001">新たに作成する履歴の、作成情報を入力してください。</label>
+						<label id="C_LBL_TITLE">新たに作成する履歴の、作成情報を入力してください。</label>
 					</div>
 					<br /> <br /> <br />
 					<div class="timeInput">
 						<div data-bind="ntsFormLabel: { required: true }">期間</div>
-						<div class="C_INP_001">
-							<input id="INP_001" style="ime-mode: inactive" maxlength="10"
+						<div class="C_INP_STARTYMD">
+							<input id="INP_STARTYMD" style="ime-mode: inactive" maxlength="10"
 								data-bind="ntsTimeEditor: {value: selectStartYm, inputFormat: 'date'}" />
 						</div>
 						<div>
-							<label id="C_LBL_003"> ～ 9999/12/31</label>
+							<label id="C_LBL_ENDYMD"> ～ 9999/12/31</label>
 						</div>
 					</div>
 					<br />
@@ -79,7 +79,7 @@
 						<br /> <br />
 						<div>
 							<textarea style="width: 350px; height: 100px"
-								data-bind="ntsMultilineEditor: { value: C_INP_002, constraint: 'Memo' }" />
+								data-bind="ntsMultilineEditor: { value: C_INP_MEMO, constraint: 'Memo' }" />
 						</div>
 
 					</div>
@@ -88,9 +88,9 @@
 				<br />
 				<hr></hr>
 				<div class="bottomStype">
-					<button class="x-large proceed" id="BTN_001"
+					<button class="x-large proceed" id="BTN_DECIDE"
 						data-bind="click: createHistory">決定</button>
-					<button class="large" id="BTN_002" data-bind="click: closeDialog">キャンセル</button>
+					<button class="large" id="BTN_CANCEL" data-bind="click: closeDialog">キャンセル</button>
 					<br />
 				</div>
 			</div>

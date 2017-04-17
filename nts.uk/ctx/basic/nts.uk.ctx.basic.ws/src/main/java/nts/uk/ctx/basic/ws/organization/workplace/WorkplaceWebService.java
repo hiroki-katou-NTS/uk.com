@@ -10,11 +10,13 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.basic.app.command.organization.department.AddDepartmentCommand;
+import nts.uk.ctx.basic.app.command.organization.department.RemoveDepartmentCommand;
 import nts.uk.ctx.basic.app.command.organization.department.UpdateDepartmentCommand;
 import nts.uk.ctx.basic.app.command.organization.department.UpdateStartDateandEndDateHistoryCommand;
 import nts.uk.ctx.basic.app.command.organization.workplace.AddWorkPlaceCommand;
 import nts.uk.ctx.basic.app.command.organization.workplace.AddWorkPlaceCommandHandler;
 import nts.uk.ctx.basic.app.command.organization.workplace.RemoveHistoryWkPCommandHandler;
+import nts.uk.ctx.basic.app.command.organization.workplace.RemoveWorkPlaceCommand;
 import nts.uk.ctx.basic.app.command.organization.workplace.RemoveWorkPlaceCommandHandler;
 import nts.uk.ctx.basic.app.command.organization.workplace.UpdateEndDateWorkPalceByHistoryIdCommandHandler;
 import nts.uk.ctx.basic.app.command.organization.workplace.UpdateStartDateAndEndDateByHistoryIdWkPCommandHandler;
@@ -112,6 +114,12 @@ public class WorkplaceWebService extends WebService {
 	@POST
 	public void updateStartDateandEndDateByHistId(UpdateStartDateandEndDateWKPHistoryCommand command) {
 		this.updateStartDateandEndDate.handle(command);
+	}
+	
+	@Path("deleteworkplace")
+	@POST
+	public void deleteDepartment(RemoveWorkPlaceCommand command) {
+		this.removeWorkPlace.handle(command);
 	}
 
 }

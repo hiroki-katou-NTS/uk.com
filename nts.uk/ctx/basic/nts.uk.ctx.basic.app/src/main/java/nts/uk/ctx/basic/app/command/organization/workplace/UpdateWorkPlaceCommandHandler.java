@@ -95,7 +95,6 @@ public class UpdateWorkPlaceCommandHandler extends CommandHandler<List<UpdateWor
 					startDate1 = formatter.parse(context.getCommand().get(i).getStartDate());
 					endDate1 = formatter.parse(context.getCommand().get(i).getEndDate());
 				} catch (ParseException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 

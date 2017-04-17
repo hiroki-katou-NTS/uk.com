@@ -5,25 +5,18 @@ var cmm011;
         var service;
         (function (service) {
             var paths = {
-                getCodeOfDepWP: "basic/organization/getcode",
-                getAllDepartment: "basic/organization/getalldepartment",
-                getAllDepartmentByHistId: "basic/organization/getalldepbyhistid/",
-                getMemoByHistId: "basic/organization/getmemobyhistid/",
                 getAllWorkPlace: "basic/organization/getallworkplace",
                 getAllWorkPlaceByHistId: "basic/organization/getallwkpbyhistid/",
                 getMemoWkpByHistId: "basic/organization/getmemowkpbyhistid/",
-                addDepartment: "basic/organization/adddepartment",
-                updateDepartment: "basic/organization/updatedepartment",
-                updatelistDepartment: "basic/organization/updatedepartment",
                 updateEndDateofWkp: "basic/organization/updateenddateofwkp",
                 updateEndDateByHistId: "basic/organization/updateenddatewkpbyhistoryid",
                 deleteHistory: "basic/organization/deletehistorywkp",
                 updateStartDateandEndDate: "basic/organization/updatestartdateandenddatewkp",
-                deleteDep: "basic/organization/deletedep",
+                deleteWorkPLace: "basic/organization/deleteworkplace",
                 getAllWorkPLaceByHistId: "basic/organization/getallwkpbyhistid/",
                 getMemoWorkPLaceByHistId: "basic/organization/getmemowkpbyhistid/",
                 addWorkPlace: "basic/organization/addworkplace",
-                updatelistWorkPLace: "basic/organization/updateworkplace",
+                updatelistWorkPLace: "basic/organization/updateworkplace"
             };
             function upDateListWorkplace(listworkplace) {
                 var dfd = $.Deferred();
@@ -82,9 +75,9 @@ var cmm011;
                 return dfd.promise();
             }
             service.getMemoWorkPLaceByHistId = getMemoWorkPLaceByHistId;
-            function deleteDepartment(department) {
+            function deleteWorkPalce(workplace) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.deleteDep, department).done(function (res) {
+                nts.uk.request.ajax("com", paths.deleteWorkPLace, workplace).done(function (res) {
                     dfd.resolve(res);
                 })
                     .fail(function (res) {
@@ -92,7 +85,7 @@ var cmm011;
                 });
                 return dfd.promise();
             }
-            service.deleteDepartment = deleteDepartment;
+            service.deleteWorkPalce = deleteWorkPalce;
             function upDateStartDateandEndDate(updateYMD) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.updateStartDateandEndDate, updateYMD).done(function (res) {
@@ -126,28 +119,6 @@ var cmm011;
                 return dfd.promise();
             }
             service.updateEndDateByHistoryId = updateEndDateByHistoryId;
-            function addDepartment(department) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.addDepartment, department).done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.addDepartment = addDepartment;
-            function upDateDepartment(department) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.updateDepartment, department).done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.upDateDepartment = upDateDepartment;
             function upDateEndDateWkp(obj) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.updateEndDateofWkp, obj).done(function (res) {
@@ -159,75 +130,6 @@ var cmm011;
                 return dfd.promise();
             }
             service.upDateEndDateWkp = upDateEndDateWkp;
-            function upDateListDepartment(listdepartment) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.updatelistDepartment, listdepartment).done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.upDateListDepartment = upDateListDepartment;
-            function addListDepartment(listdepartment) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.addDepartment, listdepartment).done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.addListDepartment = addListDepartment;
-            function getCodeOfDepWP() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.getCodeOfDepWP)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                }).fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.getCodeOfDepWP = getCodeOfDepWP;
-            function getAllDepartment() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.getAllDepartment)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.getAllDepartment = getAllDepartment;
-            function getAllDepartmentByHistId(historyId) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.getAllDepartmentByHistId + historyId)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.getAllDepartmentByHistId = getAllDepartmentByHistId;
-            function getMemoByHistId(historyId) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.getMemoByHistId + historyId)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.getMemoByHistId = getMemoByHistId;
             function getAllWorkplace() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.getAllWorkPlace)

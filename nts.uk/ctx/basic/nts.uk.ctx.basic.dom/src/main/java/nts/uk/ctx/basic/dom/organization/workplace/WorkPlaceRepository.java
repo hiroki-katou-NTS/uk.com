@@ -19,7 +19,7 @@ public interface WorkPlaceRepository {
 
 	void updateAll(List<WorkPlace> list);
 
-	void remove(String companyCode, WorkPlaceCode workPlaceCode, String historyId);
+	void remove(String companyCode, String historyId, String hierachyId);
 
 	void registerMemo(String companyCode, String historyId, Memo memo);
 
