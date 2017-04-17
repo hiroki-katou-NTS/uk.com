@@ -1,14 +1,11 @@
 var cmm009;
 (function (cmm009) {
-    var d;
-    (function (d) {
+    var c;
+    (function (c) {
         var service;
         (function (service) {
-            var paths = {
-                getLayoutInfor: "pr/proto/layout/findlayoutwithmaxstartym",
-                createlayouthistory: "pr/proto/layout/createlayouthistory"
-            };
-        })(service = d.service || (d.service = {}));
-    })(d = cmm009.d || (cmm009.d = {}));
+            var paths = {};
+        })(service = c.service || (c.service = {}));
+    })(c = cmm009.c || (cmm009.c = {}));
 })(cmm009 || (cmm009 = {}));
 //# sourceMappingURL=cmm009.c.service.js.map

@@ -20,7 +20,7 @@ module cmm009.d.viewmodel {
         constructor() {
             var self = this;
             self.isEnable = ko.observable(true);
-            self.startDate = ko.observable("1900");
+            self.startDate = ko.observable("");
             self.yearmonthdayeditor = {
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
                     inputFormat: 'date'
@@ -50,7 +50,7 @@ module cmm009.d.viewmodel {
 
         createHistory(): any {
             var self = this;
-            var inputYm = $('#INP_001').val();
+            var inputYm = $('#INP_STARTYMD').val();
             //check YM
             if (!nts.uk.time.parseYearMonthDate(inputYm).success) {
                 alert(nts.uk.time.parseYearMonthDate(inputYm).msg);

@@ -9,10 +9,8 @@ var cmm009;
                     this.allowClick = ko.observable(true);
                     var self = this;
                     self.itemHistId = ko.observableArray([]);
-                    self.itemName_histId = ko.observable('');
                     self.historyId = ko.observable('');
-                    self.selectedCodes_His = ko.observable('');
-                    self.isEnable_histId = ko.observable(true);
+                    self.selectedCodes_His = ko.observable(null);
                     self.itemHist = ko.observable(null);
                     self.arr = ko.observableArray([]);
                     self.dataSource = ko.observableArray([]);
@@ -21,38 +19,38 @@ var cmm009;
                     self.selectedCodes_treegrid = ko.observableArray([]);
                     self.headers = ko.observableArray(["", ""]);
                     self.lengthTreeCurrent = ko.observable(null);
-                    self.lengthTreeBegin = ko.observable(null);
                     self.numberItemNew = ko.observable(0);
-                    self.A_INP_002 = ko.observable(null);
-                    self.A_INP_002_enable = ko.observable(false);
-                    self.A_INP_003 = ko.observable(null);
-                    self.A_INP_004 = ko.observable(null);
-                    self.A_INP_007 = ko.observable(null);
-                    self.A_INP_008 = ko.observable(null);
+                    self.A_INP_CODE = ko.observable(null);
+                    self.A_INP_CODE_ENABLE = ko.observable(false);
+                    self.A_INP_DEPNAME = ko.observable(null);
+                    self.A_INP_FULLNAME = ko.observable(null);
+                    self.A_INP_OUTCODE = ko.observable(null);
+                    self.A_INP_MEMO = ko.observable(null);
                     self.currentItem_treegrid = ko.observable(null);
                     self.checknull = ko.observable(null);
-                    self.listDtothaydoi = ko.observable(null);
+                    self.listDtoUpdateHierachy = ko.observable(null);
                     self.dtoAdd = ko.observable(null);
-                    self.checkAddHist1 = ko.observable('');
+                    self.checkConditionAddHist = ko.observable('');
                     self.newEndDate = ko.observable(null);
+                    self.arrayItemEdit = ko.observableArray([]);
                     self.singleSelectedCode.subscribe(function (codeChangeds) {
                         var _dt = self.dataSource();
                         var _code = self.singleSelectedCode();
                         var current = self.findHira(_code, _dt);
                         if (current.historyId == "") {
-                            self.A_INP_002_enable(true);
-                            self.A_INP_002("");
-                            self.A_INP_003("");
-                            self.A_INP_004("");
-                            self.A_INP_007("");
-                            $("#A_INP_002").focus();
+                            self.A_INP_CODE_ENABLE(true);
+                            self.A_INP_CODE("");
+                            self.A_INP_DEPNAME("");
+                            self.A_INP_FULLNAME("");
+                            self.A_INP_OUTCODE("");
+                            $("#A_INP_CODE").focus();
                         }
                         else {
-                            self.A_INP_002(current.departmentCode);
-                            self.A_INP_003(current.name);
-                            self.A_INP_004(current.fullName);
-                            self.A_INP_007(current.externalCode);
-                            self.A_INP_002_enable(false);
+                            self.A_INP_CODE(current.departmentCode);
+                            self.A_INP_DEPNAME(current.name);
+                            self.A_INP_FULLNAME(current.fullName);
+                            self.A_INP_OUTCODE(current.externalCode);
+                            self.A_INP_CODE_ENABLE(false);
                         }
                     });
                     self.selectedCodes_His.subscribe((function (codeChanged) {
@@ -73,10 +71,10 @@ var cmm009;
                                     if (self.dataSource().length > 0) {
                                         self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "children"));
                                         self.singleSelectedCode(self.dataSource()[0].departmentCode);
-                                        self.A_INP_003(self.dataSource()[0].name);
-                                        self.A_INP_004(self.dataSource()[0].fullName);
+                                        self.A_INP_DEPNAME(self.dataSource()[0].name);
+                                        self.A_INP_FULLNAME(self.dataSource()[0].fullName);
                                         if (self.dataSource()[0].externalCode != null)
-                                            self.A_INP_007(self.dataSource()[0].externalCode);
+                                            self.A_INP_OUTCODE(self.dataSource()[0].externalCode);
                                     }
                                 }).fail(function (error) {
                                     alert(error.message);
@@ -84,7 +82,7 @@ var cmm009;
                                 a.service.getMemoByHistId(self.historyId())
                                     .done(function (memo) {
                                     if (memo != null) {
-                                        self.A_INP_008(memo.memo);
+                                        self.A_INP_MEMO(memo.memo);
                                     }
                                 }).fail(function (error) {
                                     alert(error.message);
@@ -93,27 +91,29 @@ var cmm009;
                                 return dfd.promise();
                             }
                             else {
-                                console.log("=== historyId null");
                             }
                         }
                     }));
                     $(document).delegate("#tree-up-down-up", "click", function () {
-                        console.log(self.dataSource());
-                        self.checkAddHist1("clickbtnup");
+                        self.checkConditionAddHist("clickbtnupdown");
+                        self.updateHirechyOfBtnUpDown();
                     });
                     $(document).delegate("#tree-up-down-down", "click", function () {
-                        console.log(self.dataSource());
-                        self.checkAddHist1("clickbtndown");
+                        self.checkConditionAddHist("clickbtnupdown");
+                        self.updateHirechyOfBtnUpDown();
                     });
                 }
                 ScreenModel.prototype.register = function () {
                     var self = this;
+                    var itemhistselected = self.selectedCodes_His();
+                    var itemdepselected = self.A_INP_CODE();
                     if (self.checknull() === "landau" && self.itemHistId().length == 1 && self.checkInput()) {
-                        var dto = new model.AddDepartmentDto(self.A_INP_002(), "", "9999-12-31", self.A_INP_007(), self.A_INP_004(), "001", self.A_INP_003(), self.itemaddHist.startDate, self.A_INP_008(), null);
+                        var dto = new model.AddDepartmentDto(self.A_INP_CODE(), null, "9999/12/31", self.A_INP_OUTCODE(), self.A_INP_FULLNAME(), "001", self.A_INP_DEPNAME(), self.itemaddHist.startDate, self.A_INP_MEMO(), null);
+                        var arr = new Array;
+                        arr.push(dto);
                         var dfd = $.Deferred();
-                        a.service.addDepartment(dto)
+                        a.service.addDepartment(arr)
                             .done(function (mess) {
-                            self.start();
                             location.reload();
                         }).fail(function (error) {
                             if (error.message == "ER026") {
@@ -123,16 +123,15 @@ var cmm009;
                         dfd.resolve();
                         return dfd.promise();
                     }
-                    if (self.A_INP_002_enable() == false && self.checkInput() && self.checkAddHist1() == '') {
+                    if (self.A_INP_CODE_ENABLE() == false && self.checkInput() && self.checkConditionAddHist() == '') {
                         var dfd = $.Deferred();
                         var hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
                         var _dt = self.dataSource();
                         var _code = self.singleSelectedCode();
                         var current = self.findHira(_code, _dt);
-                        var dto = new model.AddDepartmentDto(self.A_INP_002(), current.historyId, hisdto.endDate, self.A_INP_007(), self.A_INP_004(), current.hierarchyCode, self.A_INP_003(), hisdto.startDate, self.A_INP_008(), null);
+                        var dto = new model.AddDepartmentDto(self.A_INP_CODE(), current.historyId, hisdto.endDate, self.A_INP_OUTCODE(), self.A_INP_FULLNAME(), current.hierarchyCode, self.A_INP_DEPNAME(), hisdto.startDate, self.A_INP_MEMO(), null);
                         var arr = new Array;
                         arr.push(dto);
-                        debugger;
                         a.service.upDateListDepartment(arr)
                             .done(function (mess) {
                             location.reload();
@@ -148,11 +147,10 @@ var cmm009;
                         var self = this;
                         var dfd = $.Deferred();
                         var hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
-                        var _dto_1 = new model.AddDepartmentDto(self.A_INP_002(), hisdto.historyId, hisdto.endDate, self.A_INP_007(), self.A_INP_004(), self.dtoAdd().hierarchyCode, self.A_INP_003(), hisdto.startDate, self.A_INP_008(), null);
-                        var data = self.listDtothaydoi();
+                        var _dto_1 = new model.AddDepartmentDto(self.A_INP_CODE(), hisdto.historyId, hisdto.endDate, self.A_INP_OUTCODE(), self.A_INP_FULLNAME(), self.dtoAdd().hierarchyCode, self.A_INP_DEPNAME(), hisdto.startDate, self.A_INP_MEMO(), null);
+                        var data = self.listDtoUpdateHierachy();
                         var arr_1 = new Array;
                         arr_1.push(_dto_1);
-                        debugger;
                         if (data != null) {
                             a.service.upDateListDepartment(data)
                                 .done(function (mess) {
@@ -193,11 +191,10 @@ var cmm009;
                             return dfd2.promise();
                         }
                     }
-                    if (self.checkAddHist1() == "AddhistoryFromLatest") {
-                        console.log(self.dataSource2());
+                    if (self.checkConditionAddHist() == "AddhistoryFromLatest") {
                         var _dt_1 = self.dataSource2();
                         if (_dt_1.length > 0) {
-                            _dt_1[0].memo = self.A_INP_008();
+                            _dt_1[0].memo = self.A_INP_MEMO();
                         }
                         self.dataSource2(_dt_1);
                         var dfd2 = $.Deferred();
@@ -218,9 +215,9 @@ var cmm009;
                         dfd2.resolve();
                         return dfd2.promise();
                     }
-                    if (self.checkAddHist1() == "AddhistoryFromBeggin") {
+                    if (self.checkConditionAddHist() == "AddhistoryFromBeggin") {
                         if (self.checkInput()) {
-                            var _dto = new model.AddDepartmentDto(self.A_INP_002(), null, self.itemHistId()[0].endDate, self.A_INP_007(), self.A_INP_004(), "001", self.A_INP_003(), self.itemHistId()[0].startDate, self.A_INP_008(), null);
+                            var _dto = new model.AddDepartmentDto(self.A_INP_CODE(), null, self.itemHistId()[0].endDate, self.A_INP_OUTCODE(), self.A_INP_FULLNAME(), "001", self.A_INP_DEPNAME(), self.itemHistId()[0].startDate, self.A_INP_MEMO(), null);
                             var arr1 = new Array;
                             arr1.push(_dto);
                             var dfd2 = $.Deferred();
@@ -242,21 +239,116 @@ var cmm009;
                             return dfd2.promise();
                         }
                     }
-                    if (self.checkAddHist1() == "clickbtnup") {
-                        var _dt_2 = self.dataSource();
+                    if (self.checkConditionAddHist() == "clickbtnupdown") {
+                        var _dt_2 = self.arrayItemEdit();
+                        var dfd = $.Deferred();
+                        if (self.arrayItemEdit().length > 1) {
+                            a.service.upDateListDepartment(_dt_2)
+                                .done(function (done) {
+                                location.reload();
+                            }).fail(function (error) {
+                                alert(error.message);
+                            });
+                            dfd.resolve();
+                            return dfd.promise();
+                        }
                     }
-                    if (self.checkAddHist1() == "clickbtndown") {
-                        var _dt_3 = self.dataSource();
+                };
+                ScreenModel.prototype.updateHirechyOfBtnUpDown = function () {
+                    var self = this;
+                    var _dt = self.dataSource();
+                    var _code = self.singleSelectedCode();
+                    var current = self.findHira(_code, _dt);
+                    var parrent = self.findParent(_code, _dt);
+                    var hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
+                    if (parrent) {
+                        var phc = parrent.hierarchyCode;
+                        var changeIndexChild = _.filter(parrent['children'], function (item) {
+                            return item;
+                        });
+                        for (var i in changeIndexChild) {
+                            var item = changeIndexChild[i];
+                            var itemHierachy = item.hierarchyCode;
+                            var j = parseInt(i) + 1;
+                            item.hierarchyCode = item.hierarchyCode.substr(0, item.hierarchyCode.length - 1) + j;
+                            item.startDate = hisdto.startDate;
+                            item.endDate = hisdto.endDate;
+                            item.memo = self.A_INP_MEMO();
+                            if (self.arrayItemEdit().length > 0) {
+                                var _dt2 = self.arrayItemEdit();
+                                var isDuplicateItem = _.filter(_dt2, function (item1) {
+                                    return item1.departmentCode == item.departmentCode;
+                                });
+                                if (isDuplicateItem.length > 0) {
+                                    _dt2 = jQuery.grep(_dt2, function (value) {
+                                        return value.departmentCode != isDuplicateItem[0].departmentCode;
+                                    });
+                                    self.arrayItemEdit(_dt2);
+                                    self.arrayItemEdit().push(item);
+                                }
+                                else {
+                                    self.arrayItemEdit().push(item);
+                                }
+                            }
+                            else {
+                                self.arrayItemEdit().push(item);
+                            }
+                            if (item.children.length > 0) {
+                                self.updateHierachy1(item);
+                            }
+                        }
+                    }
+                    else {
+                        var chc = current.hierarchyCode;
+                        var changeIndexChild = _.filter(_dt, function (item) {
+                            return item;
+                        });
+                        for (var i in changeIndexChild) {
+                            var item = changeIndexChild[i];
+                            var itemHierachy = item.hierarchyCode;
+                            var j = parseInt(i) + 1;
+                            item.hierarchyCode = item.hierarchyCode.substr(0, item.hierarchyCode.length - 1) + j;
+                            item.startDate = hisdto.startDate;
+                            item.endDate = hisdto.endDate;
+                            item.memo = self.A_INP_MEMO();
+                            if (self.arrayItemEdit().length > 0) {
+                                var _dt2 = self.arrayItemEdit();
+                                var isDuplicateItem = _.filter(_dt2, function (item1) {
+                                    return item1.departmentCode == item.departmentCode;
+                                });
+                                if (isDuplicateItem.length > 0) {
+                                    _dt2 = jQuery.grep(_dt2, function (value) {
+                                        return value.departmentCode != isDuplicateItem[0].departmentCode;
+                                    });
+                                    self.arrayItemEdit(_dt2);
+                                    self.arrayItemEdit().push(item);
+                                }
+                                else {
+                                    self.arrayItemEdit().push(item);
+                                }
+                            }
+                            else {
+                                self.arrayItemEdit().push(item);
+                            }
+                            if (item.children.length > 0) {
+                                self.updateHierachy1(item);
+                            }
+                        }
                     }
                 };
                 ScreenModel.prototype.deletebtn = function () {
                     var self = this;
                     var _dt = self.dataSource();
                     var _dtflat = nts.uk.util.flatArray(_dt, 'children');
-                    debugger;
                     var _code = self.singleSelectedCode();
                     var current = self.findHira(_code, _dt);
                     var deleteobj = new model.DepartmentDeleteDto(current.departmentCode, current.historyId, current.hierarchyCode);
+                    if (_dtflat.length < 2) {
+                        return;
+                    }
+                    else if (_dt.length < 2 && current.hierarchyCode.length == 3) {
+                        return;
+                    }
                     nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
                         var dfd2 = $.Deferred();
                         a.service.deleteDepartment(deleteobj)
@@ -272,7 +364,6 @@ var cmm009;
                                 var changeIndexChild = _.filter(parrent['children'], function (item) {
                                     return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) > chc;
                                 });
-                                debugger;
                                 for (var i in changeIndexChild) {
                                     var item1 = changeIndexChild[i];
                                     var itemAddH = (parseInt(item1.hierarchyCode.substr(item1.hierarchyCode.length - 3, 3)) - 1) + "";
@@ -290,10 +381,10 @@ var cmm009;
                                     for (var k = 0; k < editObjs.length; k++) {
                                         editObjs[k].startDate = currentHis.startDate;
                                         editObjs[k].endDate = currentHis.endDate;
-                                        editObjs[k].memo = self.A_INP_008();
+                                        editObjs[k].memo = self.A_INP_MEMO();
                                     }
                                 }
-                                self.listDtothaydoi(editObjs);
+                                self.listDtoUpdateHierachy(editObjs);
                             }
                             else {
                                 var index = _dt.indexOf(current);
@@ -319,12 +410,12 @@ var cmm009;
                                     for (var k = 0; k < editObjs.length; k++) {
                                         editObjs[k].startDate = currentHis.startDate;
                                         editObjs[k].endDate = currentHis.endDate;
-                                        editObjs[k].memo = self.A_INP_008();
+                                        editObjs[k].memo = self.A_INP_MEMO();
                                     }
                                 }
-                                self.listDtothaydoi(editObjs);
+                                self.listDtoUpdateHierachy(editObjs);
                             }
-                            var data = self.listDtothaydoi();
+                            var data = self.listDtoUpdateHierachy();
                             if (data != null) {
                                 a.service.upDateListDepartment(data)
                                     .done(function (mess) {
@@ -359,7 +450,6 @@ var cmm009;
                     }
                     sources = nts.uk.util.flatArray(sources, 'children');
                     self.lengthTreeCurrent(sources.length + 1);
-                    console.log(self.lengthTreeCurrent());
                     return _.find(sources, function (item) { return _.find(item.children, function (child) { return child.departmentCode == value; }); });
                 };
                 ScreenModel.prototype.findHist_Dep = function (items, newValue) {
@@ -370,7 +460,6 @@ var cmm009;
                             if (obj.startDate == newValue) {
                                 node = obj;
                                 self.itemHist(node);
-                                console.log("===" + self.currentItem_treegrid());
                             }
                         }
                     });
@@ -389,19 +478,14 @@ var cmm009;
                 };
                 ScreenModel.prototype.checkInput = function () {
                     var self = this;
-                    if (self.A_INP_002() == "") {
+                    if (self.A_INP_CODE() == "") {
                         alert("コードが入力されていません。");
-                        $("#A_INP_002").focus();
+                        $("#A_INP_CODE").focus();
                         return false;
                     }
-                    else if (self.A_INP_003() == "") {
+                    else if (self.A_INP_DEPNAME() == "") {
                         alert("名称 が入力されていません。");
-                        $("#A_INP_003").focus();
-                        return false;
-                    }
-                    else if (self.A_INP_004() == "") {
-                        alert("表示名称 が入力されていません。");
-                        $("#A_INP_004").focus();
+                        $("#A_INP_DEPNAME").focus();
                         return false;
                     }
                     return true;
@@ -417,14 +501,14 @@ var cmm009;
                                 self.itemaddHist = itemadd;
                                 self.itemHistId().push(self.itemaddHist);
                                 self.selectedCodes_His(self.itemaddHist.startDate);
-                                self.A_INP_002_enable(true);
-                                self.A_INP_002("");
-                                self.A_INP_003("");
-                                self.A_INP_004("");
-                                self.A_INP_007("");
-                                $("#A_INP_002").focus();
+                                self.A_INP_CODE_ENABLE(true);
+                                self.A_INP_CODE("");
+                                self.A_INP_DEPNAME("");
+                                self.A_INP_FULLNAME("");
+                                self.A_INP_OUTCODE("");
+                                $("#A_INP_CODE").focus();
                                 if (itemAddHistory.memo !== null) {
-                                    self.A_INP_008(itemAddHistory.memo);
+                                    self.A_INP_MEMO(itemAddHistory.memo);
                                 }
                             }
                         });
@@ -432,14 +516,12 @@ var cmm009;
                     else {
                         if (self.selectedCodes_His() == null)
                             return false;
-                        console.log(self.selectedCodes_His() + "=== test== " + self.historyId());
                         nts.uk.ui.windows.setShared('datanull', "notnull");
                         nts.uk.ui.windows.setShared('startDateOfHis', self.itemHistId()[0].startDate);
                         nts.uk.ui.windows.sub.modal('/view/cmm/009/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function () {
                             var itemAddHistory = nts.uk.ui.windows.getShared('itemHistory');
                             if (itemAddHistory.checked == true) {
                                 var add = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");
-                                console.log(add);
                                 var arr = self.itemHistId();
                                 arr.unshift(add);
                                 var startDate = new Date(itemAddHistory.startYearMonth);
@@ -448,8 +530,9 @@ var cmm009;
                                 arr[1].endDate = strStartDate;
                                 self.itemHistId(arr);
                                 self.selectedCodes_His(itemAddHistory.startYearMonth);
-                                self.A_INP_008(itemAddHistory.memo);
-                                console.log(self.selectedCodes_His());
+                                if (itemAddHistory.memo !== null) {
+                                    self.A_INP_MEMO(itemAddHistory.memo);
+                                }
                                 var _dt = self.dataSource();
                                 var hisdto_1 = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
                                 var _dt2 = _.forEach(nts.uk.util.flatArray(self.dataSource(), 'children'), function (item) {
@@ -457,13 +540,11 @@ var cmm009;
                                     item.startDate = hisdto_1.startDate;
                                     item.endDate = hisdto_1.endDate;
                                 });
-                                self.checkAddHist1("AddhistoryFromLatest");
+                                self.checkConditionAddHist("AddhistoryFromLatest");
                                 self.dataSource2(_dt2);
-                                debugger;
                             }
                             else {
                                 var add = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");
-                                console.log(add);
                                 var arr = self.itemHistId();
                                 arr.unshift(add);
                                 var startDate = new Date(itemAddHistory.startYearMonth);
@@ -472,14 +553,17 @@ var cmm009;
                                 arr[1].endDate = strStartDate;
                                 self.itemHistId(arr);
                                 self.selectedCodes_His(self.itemHistId()[0].startDate);
+                                if (itemAddHistory.memo !== null) {
+                                    self.A_INP_MEMO(itemAddHistory.memo);
+                                }
                                 self.dataSource(null);
-                                self.A_INP_002("");
-                                self.A_INP_002_enable(true);
-                                self.A_INP_003("");
-                                self.A_INP_004("");
-                                self.A_INP_007("");
-                                $("#A_INP_002").focus();
-                                self.checkAddHist1("AddhistoryFromBeggin");
+                                self.A_INP_CODE("");
+                                self.A_INP_CODE_ENABLE(true);
+                                self.A_INP_DEPNAME("");
+                                self.A_INP_FULLNAME("");
+                                self.A_INP_OUTCODE("");
+                                $("#A_INP_CODE").focus();
+                                self.checkConditionAddHist("AddhistoryFromBeggin");
                             }
                         });
                     }
@@ -491,20 +575,18 @@ var cmm009;
                     var hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
                     var index = _.findIndex(self.itemHistId(), function (obj) { return obj == hisdto; });
                     hisdto.index = index;
-                    console.log(hisdto);
-                    console.log(index);
-                    debugger;
                     nts.uk.ui.windows.setShared('itemHist', hisdto);
                     nts.uk.ui.windows.sub.modal('/view/cmm/009/d/index.xhtml', { title: '明細レイアウトの作成＞履歴の編集' }).onClosed(function () {
                         var newstartDate = nts.uk.ui.windows.getShared('newstartDate');
                         var isRadiocheck = nts.uk.ui.windows.getShared('isradio');
-                        debugger;
                         if (isRadiocheck == "1") {
                             var dfd = $.Deferred();
                             a.service.deleteHistory(self.itemHistId()[0].historyId)
                                 .done(function () {
-                                console.log("done");
                                 var dfd = $.Deferred();
+                                if (self.itemHistId().length < 2) {
+                                    location.reload();
+                                }
                                 a.service.updateEndDateByHistoryId(self.itemHistId()[1].historyId)
                                     .done(function () {
                                     location.reload();
@@ -585,12 +667,12 @@ var cmm009;
                                     for (var k = 0; k < editObjs.length; k++) {
                                         editObjs[k].startDate = currentHis.startDate;
                                         editObjs[k].endDate = currentHis.endDate;
-                                        editObjs[k].memo = self.A_INP_008();
+                                        editObjs[k].memo = self.A_INP_MEMO();
                                         editObjs[k].workPlaceCode = editObjs[k].departmentCode;
                                     }
                                 }
                                 self.dtoAdd(newObj);
-                                self.listDtothaydoi(editObjs);
+                                self.listDtoUpdateHierachy(editObjs);
                             }
                             else {
                                 var index = _dt.indexOf(current);
@@ -617,12 +699,12 @@ var cmm009;
                                     for (var k = 0; k < editObjs.length; k++) {
                                         editObjs[k].startDate = currentHis.startDate;
                                         editObjs[k].endDate = currentHis.endDate;
-                                        editObjs[k].memo = self.A_INP_008();
+                                        editObjs[k].memo = self.A_INP_MEMO();
                                         editObjs[k].workPlaceCode = editObjs[k].departmentCode;
                                     }
                                 }
                                 self.dtoAdd(newObj);
-                                self.listDtothaydoi(editObjs);
+                                self.listDtoUpdateHierachy(editObjs);
                                 _dt.splice(index, 0, newObj);
                             }
                             self.dataSource(_dt);
@@ -637,12 +719,47 @@ var cmm009;
                 };
                 ScreenModel.prototype.resetInput = function () {
                     var self = this;
-                    self.A_INP_002("");
-                    self.A_INP_002_enable(true);
-                    self.A_INP_003("");
-                    self.A_INP_004("");
-                    self.A_INP_007("");
-                    $("#A_INP_002").focus();
+                    self.A_INP_CODE("");
+                    self.A_INP_CODE_ENABLE(true);
+                    self.A_INP_DEPNAME("");
+                    self.A_INP_FULLNAME("");
+                    self.A_INP_OUTCODE("");
+                    $("#A_INP_CODE").focus();
+                };
+                ScreenModel.prototype.updateHierachy1 = function (item) {
+                    var self = this;
+                    var hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
+                    for (var i in item.children) {
+                        var itemCon = item.children[i];
+                        var j = parseInt(i) + 1;
+                        while ((j + "").length < 3)
+                            j = "0" + j;
+                        itemCon.hierarchyCode = item.hierarchyCode.substr(0, item.hierarchyCode.length) + j;
+                        itemCon.startDate = hisdto.startDate;
+                        itemCon.endDate = hisdto.endDate;
+                        if (self.arrayItemEdit().length > 0) {
+                            var _dt2 = self.arrayItemEdit();
+                            var isDuplicateItem = _.filter(_dt2, function (item1) {
+                                return item1.departmentCode == itemCon.departmentCode;
+                            });
+                            if (isDuplicateItem.length > 0) {
+                                _dt2 = jQuery.grep(_dt2, function (value) {
+                                    return value.departmentCode != isDuplicateItem[0].departmentCode;
+                                });
+                                self.arrayItemEdit(_dt2);
+                                self.arrayItemEdit().push(itemCon);
+                            }
+                            else {
+                                self.arrayItemEdit().push(itemCon);
+                            }
+                        }
+                        else {
+                            self.arrayItemEdit().push(itemCon);
+                        }
+                        if (itemCon.children.length > 0) {
+                            self.updateHierachy1(itemCon);
+                        }
+                    }
                 };
                 ScreenModel.prototype.updateHierachy2 = function (item, hierarchyCode) {
                     var self = this;
@@ -696,15 +813,15 @@ var cmm009;
                                     for (var k = 0; k < editObjs.length; k++) {
                                         editObjs[k].startDate = currentHis.startDate;
                                         editObjs[k].endDate = currentHis.endDate;
-                                        editObjs[k].memo = self.A_INP_008();
+                                        editObjs[k].memo = self.A_INP_MEMO();
                                     }
                                 }
                                 self.dtoAdd(newObj);
                                 if (editObjs.length > 0) {
-                                    self.listDtothaydoi(editObjs);
+                                    self.listDtoUpdateHierachy(editObjs);
                                 }
                                 else {
-                                    self.listDtothaydoi();
+                                    self.listDtoUpdateHierachy();
                                 }
                             }
                             else {
@@ -732,15 +849,15 @@ var cmm009;
                                     for (var k = 0; k < editObjs.length; k++) {
                                         editObjs[k].startDate = currentHis.startDate;
                                         editObjs[k].endDate = currentHis.endDate;
-                                        editObjs[k].memo = self.A_INP_008();
+                                        editObjs[k].memo = self.A_INP_MEMO();
                                     }
                                 }
                                 self.dtoAdd(newObj);
                                 if (editObjs.length > 0) {
-                                    self.listDtothaydoi(editObjs);
+                                    self.listDtoUpdateHierachy(editObjs);
                                 }
                                 else {
-                                    self.listDtothaydoi();
+                                    self.listDtoUpdateHierachy();
                                 }
                                 _dt.splice(index + 1, 0, newObj);
                             }
@@ -772,21 +889,20 @@ var cmm009;
                                 var currentHis = self.itemHist();
                                 newObj.startDate = currentHis.startDate;
                                 newObj.endDate = currentHis.endDate;
-                                newObj.memo = self.A_INP_008();
+                                newObj.memo = self.A_INP_MEMO();
                                 self.dtoAdd(newObj);
-                                self.listDtothaydoi();
+                                self.listDtoUpdateHierachy();
                                 self.dataSource(_dt);
                                 self.numberItemNew(1);
                                 self.singleSelectedCode(newObj.departmentCode);
-                                self.A_INP_002("");
-                                self.A_INP_003("");
-                                $("#A_INP_002").focus();
+                                self.A_INP_CODE("");
+                                self.A_INP_DEPNAME("");
+                                $("#A_INP_CODE").focus();
                             }
                             else {
                                 alert("hierarchy item current = 10 ,not push item child to tree");
                             }
                         }
-                        console.log(self.dataSource());
                     }
                     else {
                         alert("more than 889 item");
@@ -800,9 +916,18 @@ var cmm009;
                         if (departmentQueryResult.departments.length > 0) {
                             self.dataSource(departmentQueryResult.departments);
                         }
+                        if (departmentQueryResult.memo) {
+                            self.A_INP_MEMO(departmentQueryResult.memo.memo);
+                        }
+                        if (departmentQueryResultmodel.histories.length > 0) {
+                            self.itemHistId(departmentQueryResultmodel.histories);
+                            if (self.dataSource().length > 0) {
+                                self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "children"));
+                                self.numberItemNew(0);
+                            }
+                        }
                         dfd.resolve();
                     }).fail(function (error) {
-                        console.log(error);
                     });
                     return dfd.promise();
                 };
@@ -811,7 +936,6 @@ var cmm009;
                     var dfd = $.Deferred();
                     a.service.getAllDepartment().done(function (departmentQueryResult) {
                         var departmentQueryResultmodel = departmentQueryResult;
-                        console.log(departmentQueryResult);
                         if (departmentQueryResultmodel.histories == null) {
                             nts.uk.ui.windows.setShared('datanull', "datanull");
                             self.checknull("landau");
@@ -822,7 +946,7 @@ var cmm009;
                                 self.dataSource(departmentQueryResult.departments);
                             }
                             if (departmentQueryResult.memo) {
-                                self.A_INP_008(departmentQueryResult.memo.memo);
+                                self.A_INP_MEMO(departmentQueryResult.memo.memo);
                             }
                             if (departmentQueryResultmodel.histories.length > 0) {
                                 self.itemHistId(departmentQueryResultmodel.histories);
@@ -836,7 +960,6 @@ var cmm009;
                         }
                         dfd.resolve();
                     }).fail(function (error) {
-                        console.log(error);
                     });
                     return dfd.promise();
                 };

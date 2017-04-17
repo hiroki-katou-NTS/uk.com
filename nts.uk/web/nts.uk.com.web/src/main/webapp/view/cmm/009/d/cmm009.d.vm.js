@@ -8,7 +8,7 @@ var cmm009;
                 function ScreenModel() {
                     var self = this;
                     self.isEnable = ko.observable(true);
-                    self.startDate = ko.observable("1900");
+                    self.startDate = ko.observable("");
                     self.yearmonthdayeditor = {
                         option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
                             inputFormat: 'date'
@@ -36,7 +36,7 @@ var cmm009;
                 }
                 ScreenModel.prototype.createHistory = function () {
                     var self = this;
-                    var inputYm = $('#INP_001').val();
+                    var inputYm = $('#INP_STARTYMD').val();
                     if (!nts.uk.time.parseYearMonthDate(inputYm).success) {
                         alert(nts.uk.time.parseYearMonthDate(inputYm).msg);
                         return false;
