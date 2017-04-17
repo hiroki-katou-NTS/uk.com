@@ -21,12 +21,14 @@ var nts;
                                     self.outputSettings = ko.observableArray([]);
                                     self.outputSettingSelectedCode = ko.observable('');
                                     self.temporarySelectedCode = ko.observable('');
-                                    self.outputSettingDetailModel = ko.observable(new OutputSettingDetailModel(ko.observableArray([]), ko.observableArray([])));
-                                    self.aggregateOutputItems = ko.observableArray([]);
-                                    self.aggregateOutputItemSelected = ko.observable('');
                                     self.allAggregateItems = ko.observableArray([]);
                                     self.allMasterItems = ko.observableArray([]);
-                                    self.dirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetailModel);
+                                    self.outputSettingDetailModel = ko.observable(new OutputSettingDetailModel(self.allMasterItems, self.allAggregateItems));
+                                    self.aggregateOutputItems = ko.observableArray([]);
+                                    self.aggregateOutputItemSelected = ko.observable('');
+                                    self.outputItemsDirtyChecker = new nts.uk.ui.DirtyChecker(self.aggregateOutputItems);
+                                    self.codeDirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetailModel().settingCode);
+                                    self.nameDirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetailModel().settingName);
                                     self.aggregateOutputItemColumns = ko.observableArray([
                                         { headerText: '区分', prop: 'categoryNameJPN', width: 50 },
                                         {
@@ -41,9 +43,8 @@ var nts;
                                         { headerText: 'コード', prop: 'code', width: 50 },
                                         { headerText: '名称', prop: 'name', width: 100 },
                                     ]);
-                                    self.outputSettingDetailModel.subscribe(function (data) {
+                                    self.outputSettingDetailModel().categorySettings.subscribe(function () {
                                         self.reloadAggregateOutputItems();
-                                        data.reloadAggregateOutputItems = self.reloadAggregateOutputItems.bind(self);
                                     });
                                     self.temporarySelectedCode.subscribe(function (code) {
                                         if (!code) {
@@ -115,7 +116,7 @@ var nts;
                                     c.service.save(data).done(function () {
                                         self.isNewMode(false);
                                         self.isSomethingChanged(true);
-                                        self.dirtyChecker.reset();
+                                        self.resetDirty();
                                         self.loadAllOutputSetting();
                                     }).fail(function (res) {
                                         if (res.messageId == 'ER005') {
@@ -203,7 +204,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.confirmDirtyAndExecute = function (functionToExecute, functionToExecuteIfNo) {
                                     var self = this;
-                                    if (self.dirtyChecker.isDirty()) {
+                                    if (self.isDirty()) {
                                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                                             functionToExecute();
                                         }).ifNo(function () {
@@ -218,26 +219,39 @@ var nts;
                                 };
                                 ScreenModel.prototype.enableNewMode = function () {
                                     var self = this;
-                                    self.outputSettingDetailModel(new OutputSettingDetailModel(self.allMasterItems, self.allAggregateItems));
+                                    self.outputSettingDetailModel().updateData();
                                     self.outputSettingSelectedCode(null);
-                                    self.dirtyChecker.reset();
+                                    self.resetDirty();
                                     self.isNewMode(true);
+                                };
+                                ScreenModel.prototype.isDirty = function () {
+                                    var self = this;
+                                    if (self.codeDirtyChecker.isDirty()
+                                        || self.nameDirtyChecker.isDirty()
+                                        || self.outputItemsDirtyChecker.isDirty()) {
+                                        return true;
+                                    }
+                                    return false;
+                                };
+                                ScreenModel.prototype.resetDirty = function () {
+                                    var self = this;
+                                    self.codeDirtyChecker.reset();
+                                    self.nameDirtyChecker.reset();
+                                    self.outputItemsDirtyChecker.reset();
                                 };
                                 ScreenModel.prototype.reloadAggregateOutputItems = function () {
                                     var self = this;
-                                    var data = self.outputSettingDetailModel();
-                                    if (!data || data.categorySettings().length == 0) {
-                                        self.aggregateOutputItems([]);
-                                        return;
-                                    }
-                                    var reportItemList = [];
-                                    data.categorySettings().forEach(function (setting) {
-                                        var categoryName = setting.categoryName;
-                                        setting.outputItems().forEach(function (item) {
-                                            reportItemList.push(new AggregateOutputItem(item.code, item.name, categoryName, item.isAggregateItem));
+                                    var data = self.outputSettingDetailModel().categorySettings();
+                                    var list = [];
+                                    if (data && data.length > 0) {
+                                        data.forEach(function (setting) {
+                                            var categoryName = setting.categoryName;
+                                            setting.outputItems().forEach(function (item) {
+                                                list.push(new AggregateOutputItem(item.code, item.name, categoryName, item.isAggregateItem));
+                                            });
                                         });
-                                    });
-                                    self.aggregateOutputItems(reportItemList);
+                                    }
+                                    self.aggregateOutputItems(list);
                                 };
                                 ScreenModel.prototype.loadAllOutputSetting = function () {
                                     var self = this;
@@ -255,15 +269,12 @@ var nts;
                                     var dfd = $.Deferred();
                                     if (code) {
                                         c.service.findOutputSettingDetail(code).done(function (data) {
-                                            self.outputSettingDetailModel(new OutputSettingDetailModel(self.allMasterItems, self.allAggregateItems, data));
-                                            self.dirtyChecker.reset();
+                                            self.outputSettingDetailModel().updateData(data);
+                                            self.resetDirty();
                                             dfd.resolve();
                                         }).fail(function (res) {
                                             dfd.reject();
                                         });
-                                    }
-                                    else {
-                                        self.outputSettingDetailModel(new OutputSettingDetailModel(self.allMasterItems, self.allAggregateItems));
                                     }
                                     return dfd.promise();
                                 };
@@ -324,7 +335,8 @@ var nts;
                                     }
                                     this.categorySettings = ko.observableArray(settings);
                                     this.categorySettingTabs = ko.observableArray([
-                                        { id: SalaryCategory.PAYMENT, title: '支給', content: '#payment', enable: ko.observable(true), visible: ko.observable(true) },
+                                        { id: SalaryCategory.PAYMENT, title: '支給', content: '#payment',
+                                            enable: ko.observable(true), visible: ko.observable(true) },
                                         { id: SalaryCategory.DEDUCTION, title: '控除', content: '#deduction', enable: ko.observable(true), visible: ko.observable(true) },
                                         { id: SalaryCategory.ATTENDANCE, title: '勤怠', content: '#attendance', enable: ko.observable(true), visible: ko.observable(true) },
                                         { id: SalaryCategory.ARTICLE_OTHERS, title: '記事・その他', content: '#article-others', enable: ko.observable(true), visible: ko.observable(true) }
@@ -332,11 +344,22 @@ var nts;
                                     this.selectedCategory = ko.observable(SalaryCategory.PAYMENT);
                                     var self = this;
                                     self.categorySettings().forEach(function (setting) {
-                                        setting.outputItems.subscribe(function (newValue) {
-                                            self.reloadAggregateOutputItems();
+                                        setting.outputItems.subscribe(function () {
                                         });
                                     });
                                 }
+                                OutputSettingDetailModel.prototype.updateData = function (outputSetting) {
+                                    this.settingCode(outputSetting != undefined ? outputSetting.code : '');
+                                    this.settingName(outputSetting != undefined ? outputSetting.name : '');
+                                    var settings = [];
+                                    if (outputSetting == undefined) {
+                                        settings = this.toModel();
+                                    }
+                                    else {
+                                        settings = this.toModel(outputSetting.categorySettings);
+                                    }
+                                    this.categorySettings(settings);
+                                };
                                 OutputSettingDetailModel.prototype.toModel = function (categorySettings) {
                                     var settings = [];
                                     var categorySettingDtos;
@@ -408,6 +431,8 @@ var nts;
                                     self.outputItems = ko.observableArray(categorySetting != undefined ? categorySetting.outputItems : []);
                                     self.outputItemSelected = ko.observable(null);
                                     self.outputItemsSelected = ko.observableArray([]);
+                                    self.outputItems.subscribe(function () {
+                                    });
                                     switch (categoryName) {
                                         case SalaryCategory.PAYMENT:
                                             aggregateItems().forEach(function (item) {
@@ -449,6 +474,14 @@ var nts;
                                             break;
                                         default:
                                     }
+                                    var existCodes = [];
+                                    if (categorySetting != undefined) {
+                                        existCodes = categorySetting.outputItems.map(function (item) {
+                                            return item.code;
+                                        });
+                                    }
+                                    self.masterItems(self.masterItems().filter(function (item) { return existCodes.indexOf(item.code) == -1; }));
+                                    self.aggregateItems(self.aggregateItems().filter(function (item) { return existCodes.indexOf(item.code) == -1; }));
                                     this.outputItemColumns = ko.observableArray([
                                         {
                                             headerText: '集約', prop: 'isAggregateItem', width: 40,
@@ -469,7 +502,7 @@ var nts;
                                             }
                                         }
                                     ]);
-                                    ko.bindingHandlers.rended = {
+                                    ko.bindingHandlers.delete = {
                                         init: function (element, valueAccessor, allBindings, viewModel, bindingContext) { },
                                         update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
                                             var code = valueAccessor();
