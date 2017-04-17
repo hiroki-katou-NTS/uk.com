@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.app.command.rule.law.tax.residential;
 
+import java.util.List;
+
 import lombok.Getter;
 
 /**
@@ -10,6 +12,7 @@ import lombok.Getter;
  */
 @Getter
 public class UpdateResidentialTaxReportCommand {
-	private String resiTaxCode;
+	private List<String> resiTaxCodes;
 	private String resiTaxReportCode;
+	private int yearKey;
 }

@@ -5,7 +5,6 @@ package nts.uk.ctx.pr.core.dom.rule.law.tax.residential;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.shr.com.primitive.Memo;
@@ -43,7 +42,7 @@ public class ResidentialTax  extends AggregateRoot{
 			String resiTaxAutonomy,
 			String resiTaxCode, String resiTaxReportCode){
 		if(resiTaxCode.isEmpty() || resiTaxAutonomy.isEmpty()){
-			throw new BusinessException(new RawErrorMessage("明細書名が入力されていません。"));
+			throw new BusinessException("明細書名が入力されていません。");
 		}
 		 
 		return new ResidentialTax(

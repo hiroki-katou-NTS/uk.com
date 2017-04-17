@@ -107,6 +107,19 @@ module qmm003.e.service {
             })
         return dfd.promise();
     }
+    
+    export function updateAllReportCode(param: Array<string>, resiTaxReportCode: string) {
+        let dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax(paths.updateReportCode, { resiTaxCodes: param, resiTaxReportCode: resiTaxReportCode})
+            .done(function(res: Array<any>) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+
 
     export module model {
         export class ResidentialTax {

@@ -77,7 +77,6 @@ module qmm003.c.viewmodel {
                         self.items(self.nodeRegionPrefectures());
                     });
                 }
-
                 dfd.resolve();
 
             }).fail(function(res) {

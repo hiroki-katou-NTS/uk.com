@@ -52,12 +52,12 @@
 	margin-left: -6px;
 }
 
-#A_BTN_005 {
+#DELETE_ONE {
 	margin-left: 150px;
 	background-color: #fed3c6;
 }
 
-#A_BTN_006 {
+#DELELE_MORE {
 	width: 85px;
 	height: 30px;
 	background-color: #fed3c6;
@@ -99,8 +99,8 @@
 }
 
 #A_LBL_012 {
-	width: 40px;
-	height: 25px;
+/* 	width: 40px; */
+/* 	height: 25px; */
 	margin-left: 15px;
 }
 

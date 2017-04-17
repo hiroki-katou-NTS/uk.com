@@ -19,38 +19,9 @@ module qmm003.d.viewmodel {
         constructor() {
             let self = this;
             self.init();
-
             self.selectedCode.subscribe(function(newValue) {
                 self.arrayNode(newValue);
             });
-        }
-        // tìm index để khi chọn root thì ra hiển thị ra thằng đầu tiên của 1 thằng root
-        findIndex(items: Array<RedensitalTaxNode>, newValue: string): any {
-            let indexOfValue1: number;
-            if (newValue.length === 1) {
-                indexOfValue1 = _.findIndex(items, function(obj: RedensitalTaxNode) {
-                    return obj.code === newValue;
-
-                });
-                this.indexOfRoot.push(indexOfValue1);
-
-            } else if (newValue.length === 2) {
-                let index: number;
-                let count: number = -1;
-                let array = [];
-                _.each(items, function(obj: RedensitalTaxNode) {
-                    count++;
-                    index = _.findIndex(obj.childs, function(obj1: RedensitalTaxNode) {
-                        return obj1.code === newValue;
-                    });
-                    if (index > -1) {
-                        array.push(count, index);
-                    }
-
-                });
-                this.indexOfPrefecture = array;
-                return array;
-            }
         }
 
         init(): void {
@@ -147,32 +118,6 @@ module qmm003.d.viewmodel {
                     });
                 });
 
-            });
-        }
-        removeNodeByCode(items: Array<RedensitalTaxNode>, newValue: string): any {
-            let self = this;
-            _.remove(items, function(obj: RedensitalTaxNode) {
-                if (obj.code == newValue) {
-                    return obj.code == newValue;
-                } else {
-                    return self.removeNodeByCode(obj.childs, newValue);
-
-                }
-            })
-        };
-        removeData1(items: Array<RedensitalTaxNode>): any {
-            _.remove(items, function(obj: RedensitalTaxNode) {
-                return obj.code.length == 1;
-            });
-        }
-        removeData2(items: Array<RedensitalTaxNode>): any {
-            _.remove(items, function(obj: RedensitalTaxNode) {
-                return obj.code.length == 2;
-            });
-        }
-        removeData3(items: Array<RedensitalTaxNode>): any {
-            _.remove(items, function(obj: RedensitalTaxNode) {
-                return obj.code.length > 3;
             });
         }
     }
