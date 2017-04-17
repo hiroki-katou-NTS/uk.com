@@ -66,7 +66,7 @@
 								<div id="B_LBL_005" data-bind="ntsFormLabel: { required: true }">プリンタの選択</div>
 								<span class="ntsControl"> <label class="ntsRadioBox">
 										<input type="radio" name="textRadioPrintType"
-										data-bind="checkedValue: 1, checked: selectPrintType, enable: true" /> <span
+										data-bind="checkedValue: 1, checked: selectPrinterCategory, enable: true" /> <span
 										class="box"></span><span class="label"
 										data-bind="text: 'レーザープリンタ用帳表（圧着式用も含みます）'"></span>
 								</label>
@@ -75,7 +75,7 @@
 									<span class="ntsControl" id="radio-ntsControl"> <label
 										class="ntsRadioBox"> <input type="radio"
 											name="textRadioPrintType"
-											data-bind="checkedValue: 2, checked: selectPrintType, enable: true" />
+											data-bind="checkedValue: 2, checked: selectPrinterCategory, enable: true" />
 											<span class="box"></span><span class="label"
 											data-bind="text: 'ドットプリンタ用帳表'"></span>
 									</label>
@@ -95,10 +95,10 @@
 								<br />
 								<div id="B_SEL_004"
 									data-bind="ntsRadioBoxGroup: {
-									options: selectCategorys,
+									options: selectPrintTypes,
 									optionsValue: 'rbCode',
 									optionsText: 'rbName',
-									value: selectedRbCode,
+									value: selectPrintTypeCode,
 									enable: true 
 									}">
 								</div>
@@ -109,7 +109,7 @@
 										<table id="B_LST_001"
 											data-bind="ntsGridList: {								
 											height: 210,
-											dataSource: selectPrintTypes,
+											dataSource: selectPrintTypesList,
 											primaryKey: 'printTypeCode',
 											columns: [
 												{ headerText: 'コード', key: 'printTypeCode', width: 100, hidden: true},
@@ -117,7 +117,7 @@
 											],
 											deleteOptions : {visible : false, deleteField: 'deletable'},
 											multiple: false,
-											value: selectPrintTypeCode,
+											value: selectPrintTypeListCode,
 											} "
 											class="cf">
 										</table>
@@ -127,7 +127,7 @@
 											data-bind="ntsGridList: {								
 											height: 210,
 											dataSource: selectLineItemLayout,
-											primaryKey: 'statementCode',
+											primaryKey: 'layoutAttributeId',
 											columns: [
 												{ headerText: '', key: 'statementCode', width: 100, hidden: true },
                     							{ headerText: '明細書レイアウト', key: 'statementName', width: 140 },

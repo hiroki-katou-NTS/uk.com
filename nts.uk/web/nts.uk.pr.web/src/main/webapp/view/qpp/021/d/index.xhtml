@@ -34,7 +34,7 @@
 							options: $parent.zeroItemSetting,
 							optionsValue: 'code',
 							optionsText: 'name',
-							value: usingZeroSettingCtg,
+							value: $parent.usingZeroSettingCtg,
 							enable: true 
 							}">
 						</div>
@@ -45,11 +45,11 @@
 								options: $parent.switchItemList,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: showZeroInMny,
-								enable: true }">
+								value: $parent.showZeroInMny,
+								enable: $parent.isEnableShowZeroInMny }">
 							</span>
 							<div class="zero-output-checkbox"
-								data-bind="ntsCheckBox: { checked: showMnyItemName, enable: true, text: '項目名も表示しない' }"></div>
+								data-bind="ntsCheckBox: { checked: showMnyItemName, enable: $parent.isEnableShowMnyItemName, text: '項目名も表示しない' }"></div>
 						</div>
 						<div class="valign-center control-group div-zero-setting">
 							<div class="d-div-label" data-bind="ntsFormLabel: {}">金額ゼロ出力</div>
@@ -58,11 +58,11 @@
 								options: $parent.switchItemList,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: showZeroInAttend,
-								enable: true }">
+								value: $parent.showZeroInAttend,
+								enable: $parent.isEnableShowZeroInAttend }">
 							</span>
 							<div class="zero-output-checkbox"
-								data-bind="ntsCheckBox: { checked: showAttendItemName, enable: false, text: '項目名も表示しない' }"></div>
+								data-bind="ntsCheckBox: { checked: showAttendItemName, enable: $parent.isEnableShowAttendItemName, text: '項目名も表示しない' }"></div>
 						</div>
 
 						<div class="d-label-005">明細書に出力する年月</div>
@@ -175,7 +175,7 @@
 							</span>
 						</div>
 
-						<div class="valign-center control-group">
+						<div class="valign-center control-group" data-bind = "visible: $parent.isVisibleShadedBorder ">
 							<div class="right-contents-area-label"
 								data-bind="ntsFormLabel: {}">網掛け</div>
 							<span
@@ -184,11 +184,11 @@
 								optionsValue: 'code',
 								optionsText: 'name',
 							    value: isShaded,
-								enable: true 
-								}">
+								enable: $parent.isEnableShadedBorder
+								} ">
 							</span>
 						</div>
-						<div class="valign-center control-group">
+						<div class="valign-center control-group" data-bind = "visible: $parent.isVisibleShadedBorder ">
 							<div class="right-contents-area-label"
 								data-bind="ntsFormLabel: {}">枠線幅</div>
 							<span class="right-contents-area-comobox"
@@ -198,19 +198,20 @@
 									value: bordWidth,
 									optionsText: 'name',
 									editable: false,
-									enable: true,
+									enable: $parent.isEnableShadedBorder,
 									columns: [
 										{ prop: 'name', length: 10 },
-									]}">
+									]} ">
 							</span>
+							<span><button data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true}">?</button></span>
 						</div>
 						<!--End right-contents Screen D -->
 
 
 						<!--Start right-contents Screen E -->
-						<div class="valign-center control-group">
+						<div class="valign-center control-group" data-bind = "visible: $parent.isvisibleItem">
 							<div class="right-contents-area-label"
-								data-bind="ntsFormLabel: {},visible: isvisibleItem ">扶養親族等の数出力</div>
+								data-bind="ntsFormLabel: {}">扶養親族等の数出力</div>
 							<span
 								data-bind="ntsSwitchButton: {
 								options: $parent.switchItemList,
@@ -218,12 +219,12 @@
 								optionsText: 'name',
 							    value: showDependencePerNum,
 								enable: true 
-								}, visible: isvisibleItem  ">
+								} ">
 							</span>
 						</div>
-						<div class="valign-center control-group">
+						<div class="valign-center control-group" data-bind = "visible: $parent.isvisibleItem">
 							<div class="right-contents-area-label"
-								data-bind="ntsFormLabel: {}, visible: isvisibleItem ">所得税区分出力</div>
+								data-bind="ntsFormLabel: {} ">所得税区分出力</div>
 							<span
 								data-bind="ntsSwitchButton: {
 								options: $parent.switchItemList,
@@ -231,12 +232,12 @@
 								optionsText: 'name',
 							    value: showPerTaxCatalog,
 								enable: true 
-								}, visible: isvisibleItem ">
+								} ">
 							</span>
 						</div>
-						<div class="valign-center control-group">
+						<div class="valign-center control-group" data-bind = "visible: $parent.isvisibleItem">
 							<div class="right-contents-area-label"
-								data-bind="ntsFormLabel: {}, visible: isvisibleItem ">保険踏襲出力</div>
+								data-bind="ntsFormLabel: {} ">保険踏襲出力</div>
 							<span
 								data-bind="ntsSwitchButton: {
 								options: $parent.switchItemList,
@@ -244,16 +245,16 @@
 								optionsText: 'name',
 							    value: showInsuranceLevel,
 								enable: true 
-								}, visible: isvisibleItem ">
+								} ">
 							</span>
 						</div>
-						<div data-bind="visible: isvisibleItem ">
+						<div data-bind="visible: $parent.isvisibleItem ">
 							<div class="d-label-019">表面出力項目の指定</div>
-							<hr />
+							<hr/>
 						</div>
-						<div class="valign-center control-group">
+						<div class="valign-center control-group" data-bind = "visible: $parent.isvisibleItem">
 							<div class="right-contents-area-label"
-								data-bind="ntsFormLabel: {}, visible: isvisibleItem ">個人住所</div>
+								data-bind="ntsFormLabel: {} ">個人住所</div>
 							<span
 								data-bind="ntsSwitchButton: {
 								options: $parent.switchItemList,
@@ -261,12 +262,12 @@
 								optionsText: 'name',
 							    value: showPerAddInSurface,
 								enable: true 
-								}, visible: isvisibleItem ">
+								} ">
 							</span>
 						</div>
-						<div class="valign-center control-group">
+						<div class="valign-center control-group" data-bind = "visible: $parent.isvisibleItem">
 							<div class="right-contents-area-label"
-								data-bind="ntsFormLabel: {}, visible: isvisibleItem ">個人氏名</div>
+								data-bind="ntsFormLabel: {} ">個人氏名</div>
 							<span
 								data-bind="ntsSwitchButton: {
 								options: $parent.switchItemList,
@@ -274,12 +275,12 @@
 								optionsText: 'name',
 							    value: showPerNameInSurface,
 								enable: true 
-								}, visible: isvisibleItem ">
+								} ">
 							</span>
 						</div>
-						<div class="valign-center control-group">
+						<div class="valign-center control-group" data-bind = "visible: $parent.isvisibleItem">
 							<div class="right-contents-area-label"
-								data-bind="ntsFormLabel: {}, visible: isvisibleItem ">会社住所</div>
+								data-bind="ntsFormLabel: {} ">会社住所</div>
 							<span
 								data-bind="ntsSwitchButton: {
 								options: $parent.switchItemList,
@@ -287,12 +288,12 @@
 								optionsText: 'name',
 							    value: showCompAddInSurface,
 								enable: true 
-								}, visible: isvisibleItem ">
+								} ">
 							</span>
 						</div>
-						<div class="valign-center control-group">
+						<div class="valign-center control-group" data-bind = "visible: $parent.isvisibleItem">
 							<div class="right-contents-area-label"
-								data-bind="ntsFormLabel: {}, visible: isvisibleItem ">会社名</div>
+								data-bind="ntsFormLabel: {} ">会社名</div>
 							<span
 								data-bind="ntsSwitchButton: {
 								options: $parent.switchItemList,
@@ -300,7 +301,7 @@
 								optionsText: 'name',
 							    value: showCompNameInSurface,
 								enable: true 
-								}, visible: isvisibleItem ">
+								} ">
 							</span>
 						</div>
 						<!--End right-contents Screen E -->

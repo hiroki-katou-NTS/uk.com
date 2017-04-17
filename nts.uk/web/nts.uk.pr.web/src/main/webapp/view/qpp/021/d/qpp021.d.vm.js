@@ -6,10 +6,50 @@ var qpp021;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
-                    this.isEnaleFromParent = ko.observable(true);
                     var self = this;
                     self._init();
+                    self.isEnableShadedBorder = ko.observable(false);
+                    self.isVisibleShadedBorder = ko.observable(false);
+                    self.isvisibleItem = ko.observable(false);
+                    self.isEnableShowZeroInMny = ko.observable(false);
+                    self.isEnableShowZeroInAttend = ko.observable(false);
+                    self.isEnableShowMnyItemName = ko.observable(false);
+                    self.isEnableShowAttendItemName = ko.observable(false);
+                    self.usingZeroSettingCtg = ko.observable(1);
+                    self.showZeroInMny = ko.observable(1);
+                    self.showZeroInAttend = ko.observable(1);
                     self.refundLayoutItem = ko.observable(new RefundLayoutModel(null));
+                    self.usingZeroSettingCtg.subscribe(function (changeValue) {
+                        self.refundLayoutItem().usingZeroSettingCtg(changeValue);
+                        if (changeValue == 2) {
+                            self.isEnableShowZeroInMny(true);
+                            self.isEnableShowZeroInAttend(true);
+                        }
+                        else {
+                            self.isEnableShowZeroInMny(false);
+                            self.isEnableShowZeroInAttend(false);
+                            self.isEnableShowMnyItemName(false);
+                            self.isEnableShowAttendItemName(false);
+                        }
+                    });
+                    self.showZeroInMny.subscribe(function (changeValue) {
+                        self.refundLayoutItem().showZeroInMny(changeValue);
+                        if (changeValue && changeValue == 2) {
+                            self.isEnableShowMnyItemName(true);
+                        }
+                        else {
+                            self.isEnableShowMnyItemName(false);
+                        }
+                    });
+                    self.showZeroInAttend.subscribe(function (changeValue) {
+                        self.refundLayoutItem().showZeroInAttend(changeValue);
+                        if (changeValue && changeValue == 2) {
+                            self.isEnableShowAttendItemName(true);
+                        }
+                        else {
+                            self.isEnableShowAttendItemName(false);
+                        }
+                    });
                 }
                 ScreenModel.prototype._init = function () {
                     var self = this;
@@ -46,12 +86,27 @@ var qpp021;
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    var printTyle = 1;
-                    d.service.getRefundLayout(printTyle).done(function (data) {
+                    var printTyle = nts.uk.ui.windows.getShared('QPP021_print_type');
+                    var visibleEnable = nts.uk.ui.windows.getShared('QPP021_visible_Enable');
+                    var isVisible = nts.uk.ui.windows.getShared('QPP021_visible');
+                    self.isvisibleItem(true);
+                    if (visibleEnable == 1) {
+                        self.isEnableShadedBorder(true);
+                        self.isVisibleShadedBorder(true);
+                    }
+                    else if (visibleEnable == 2) {
+                        alert(self.isEnableShadedBorder());
+                        self.isEnableShadedBorder(false);
+                        self.isVisibleShadedBorder(true);
+                    }
+                    d.service.getRefundLayout(1).done(function (data) {
                         self.refundLayoutItem(new RefundLayoutModel(data));
+                        dfd.resolve();
                     }).fail(function (error) {
                     });
-                    dfd.resolve();
+                    self.usingZeroSettingCtg(self.refundLayoutItem().usingZeroSettingCtg());
+                    self.showZeroInMny(self.refundLayoutItem().showZeroInMny());
+                    self.showZeroInAttend(self.refundLayoutItem().showZeroInAttend());
                     return dfd.promise();
                 };
                 ScreenModel.prototype.registration = function () {

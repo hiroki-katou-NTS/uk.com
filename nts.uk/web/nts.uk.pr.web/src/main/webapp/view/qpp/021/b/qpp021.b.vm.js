@@ -7,7 +7,7 @@ var qpp021;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.selectPrintType = ko.observable(1);
+                    self.selectPrinterCategory = ko.observable(1);
                     self.stepList = [
                         { content: '.A_LBL_002-step' },
                         { content: '.A_LBL_003-step' },
@@ -22,12 +22,12 @@ var qpp021;
                         new ComboBoxModel('05', '基本給')
                     ]);
                     self.selectedCbCode = ko.observable('02');
-                    self.selectCategorys = ko.observableArray([
+                    self.selectPrintTypes = ko.observableArray([
                         new RadioBoxModel(1, '印刷タイプから選択する'),
                         new RadioBoxModel(2, '明細レイアウトから選択する'),
                     ]);
-                    self.selectedRbCode = ko.observable(1);
-                    self.selectPrintTypes = ko.observableArray([
+                    self.selectPrintTypeCode = ko.observable(1);
+                    self.selectPrintTypesList = ko.observableArray([
                         new PrintTypeModel(0, 'レーザー　A4　縦向き　1人'),
                         new PrintTypeModel(1, 'レーザー　A4　縦向き　2人'),
                         new PrintTypeModel(2, 'レーザー　A4　縦向き　3人'),
@@ -38,12 +38,17 @@ var qpp021;
                         new PrintTypeModel(7, 'PAYS単票'),
                         new PrintTypeModel(8, 'PAYS連続')
                     ]);
-                    self.selectPrintTypeCode = ko.observable("01");
+                    self.selectPrintTypeListCode = ko.observable(0);
                     self.selectLineItemLayout = ko.observableArray([
-                        new LineItemLayoutModel('01', 'Screen A', 0, "A4　縦向き　1人"),
-                        new LineItemLayoutModel('02', 'Screen B', 1, "A4　縦向き　2人"),
-                        new LineItemLayoutModel('03', 'Screen C', 2, "A4　縦向き　3人"),
-                        new LineItemLayoutModel('04', 'Screen D', 3, "A4　縦向き　4人"),
+                        new LineItemLayoutModel('01', 'Screen A', 0, "レーザー　A4　縦向き　1人"),
+                        new LineItemLayoutModel('02', 'Screen B', 1, "レーザー　A4　縦向き　2人"),
+                        new LineItemLayoutModel('03', 'Screen C', 2, "レーザー　A4　縦向き　3人"),
+                        new LineItemLayoutModel('04', 'Screen D', 3, "レーザー　A4　横向き　2人"),
+                        new LineItemLayoutModel('05', 'Screen E', 4, "レーザー(圧着式)　縦向き　1人"),
+                        new LineItemLayoutModel('06', 'Screen F', 5, "レーザー(圧着式)　横向き　1人"),
+                        new LineItemLayoutModel('07', 'Screen G', 6, "ドットプリンタ　連続用紙　1人"),
+                        new LineItemLayoutModel('08', 'Screen H', 7, "PAYS単票"),
+                        new LineItemLayoutModel('09', 'Screen D', 8, "PAYS連続"),
                     ]);
                     self.selectLineItemCodes = ko.observableArray([]);
                 }
@@ -60,6 +65,32 @@ var qpp021;
                     $('#wizard').ntsWizard("prev");
                 };
                 ScreenModel.prototype.openDialogScreenD = function () {
+                    var self = this;
+                    var printType;
+                    var visibleEnable;
+                    var isVisible;
+                    if (self.selectPrintTypeCode() == 1) {
+                        printType = 1;
+                        if (self.selectPrintTypeListCode() == 4 || self.selectPrintTypeListCode() == 5) {
+                            isVisible = true;
+                            visibleEnable = 3;
+                        }
+                        else {
+                            isVisible = false;
+                            visibleEnable = 2;
+                            if (self.selectPrinterCategory() == 1) {
+                                visibleEnable = 1;
+                            }
+                        }
+                    }
+                    else {
+                        printType = 2;
+                        isVisible = false;
+                        visibleEnable = 1;
+                    }
+                    nts.uk.ui.windows.setShared('QPP021_print_type', printType, true);
+                    nts.uk.ui.windows.setShared('QPP021_visible_Enable', visibleEnable, true);
+                    nts.uk.ui.windows.setShared('QPP021_visible', isVisible, true);
                     nts.uk.ui.windows.sub.modal('/view/qpp/021/d/index.xhtml', { title: '詳細設定', });
                 };
                 return ScreenModel;

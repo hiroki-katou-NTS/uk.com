@@ -5,7 +5,7 @@
 }
 
 .control-group {
-    margin-bottom: 7px !important;
+	margin-bottom: 7px !important;
 }
 
 /* ====================== div css =============================*/
@@ -30,19 +30,22 @@
 .d-div-label {
 	margin-right: 30px;
 }
-.right-contents-area-label{
-	width: 170px !important;
+
+.right-contents-area-label {
+	width: 150px !important;
 	height: 35px !important;
 }
+
 .select-print-year-month {
 	margin-top: 10px;
 }
+
 #div-button-bottom {
 	text-align: center !important;
 	width: 820px;
-	
 }
-#div-button-bottom > button {
+
+#div-button-bottom>button {
 	margin: 0px 10px 10px 10px;
 	width: 100px !important;
 }
@@ -65,6 +68,7 @@
 	padding-left: 40px;
 	padding-top: 10px;
 }
+
 button.nts-switch-button {
 	width: 90px !important;
 	height: 30px !important;
@@ -78,6 +82,7 @@ button.nts-switch-button {
 #combo-box-select-print-YM {
 	margin: 10px 0px 0px 20px !important;
 }
-.right-contents-area-comobox{
+
+.right-contents-area-comobox {
 	width: 180px !important;
 }
