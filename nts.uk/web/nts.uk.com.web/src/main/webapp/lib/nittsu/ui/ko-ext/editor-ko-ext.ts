@@ -7,13 +7,17 @@ module nts.uk.ui.koExtentions {
      * BaseEditor Processor
      */
     class EditorProcessor {
+        editorOption: any;
 
         init($input: JQuery, data: any) {
             var value: (newText: string) => {} = data.value;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
             var immediate: boolean = ko.unwrap(data.immediate !== undefined ? data.immediate : 'false');
+            var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
             var valueUpdate: string = (immediate === true) ? 'input' : 'change';
+            var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : {};
+            this.editorOption = $.extend(this.getDefaultOption(), option);
             var characterWidth: number = 9;
             if (constraint && constraint.maxLength && !$input.is("textarea")) {
                 var autoWidth = constraint.maxLength * characterWidth;
@@ -37,11 +41,13 @@ module nts.uk.ui.koExtentions {
 
             // Format on blur
             $input.blur(() => {
-                var formatter = this.getFormatter(data);
-                var newText = $input.val();
-                var result = validator.validate(newText);
-                if (result.isValid) {
-                    $input.val(formatter.format(result.parsedValue));
+                if (!readonly) {
+                    var formatter = this.getFormatter(data);
+                    var newText = $input.val();
+                    var result = validator.validate(newText);
+                    if (result.isValid) {
+                        $input.val(formatter.format(result.parsedValue));
+                    }
                 }
             });
 
@@ -60,10 +66,11 @@ module nts.uk.ui.koExtentions {
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
-            var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-            var placeholder: string = option.placeholder;
-            var textalign: string = option.textalign;
-            var width: string = option.width;
+            var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : {};
+            this.editorOption = $.extend(this.getDefaultOption(), option);
+            var placeholder: string = this.editorOption.placeholder;
+            var textalign: string = this.editorOption.textalign;
+            var width: string = this.editorOption.width;
             // Properties
             (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled', 'disabled');
             (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
@@ -98,6 +105,7 @@ module nts.uk.ui.koExtentions {
             var value: KnockoutObservable<string> = data.value;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
+            var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
             var characterWidth: number = 9;
             if (constraint && constraint.maxLength && !$input.is("textarea")) {
                 var autoWidth = constraint.maxLength * characterWidth;
@@ -108,30 +116,34 @@ module nts.uk.ui.koExtentions {
 
             let validator = this.getValidator(data);
             $input.on("keyup", (e) => {
-                var newText = $input.val();
-                var result = validator.validate(newText);
-                $input.ntsError('clear');
-                if (!result.isValid) {
-                    $input.ntsError('set', result.errorMessage);
+                if (!readonly) {
+                    var newText = $input.val();
+                    var result = validator.validate(newText);
+                    $input.ntsError('clear');
+                    if (!result.isValid) {
+                        $input.ntsError('set', result.errorMessage);
+                    }
                 }
             });
 
             $input.on("blur", (e) => {
-                var newText = $input.val();
-                var result = validator.validate(newText, {isCheckExpression: true});
-                $input.ntsError('clear');
-                if (result.isValid) {
-                    if(value() === result.parsedValue){
-                        $input.val(result.parsedValue);    
+                if (!readonly) {
+                    var newText = $input.val();
+                    var result = validator.validate(newText, { isCheckExpression: true });
+                    $input.ntsError('clear');
+                    if (result.isValid) {
+                        if (value() === result.parsedValue) {
+                            $input.val(result.parsedValue);
+                        } else {
+                            value(result.parsedValue);
+                        }
                     } else {
-                        value(result.parsedValue);    
+                        $input.ntsError('set', result.errorMessage);
+                        value(newText);
                     }
-                } else {
-                    $input.ntsError('set', result.errorMessage);
-                    value(newText);
                 }
             });
-            
+
             $input.on('validate', (function(e: Event) {
                 var newText = $input.val();
                 var result = validator.validate(newText);
@@ -141,12 +153,11 @@ module nts.uk.ui.koExtentions {
                 }
             }));
         }
-        
+
         update($input: JQuery, data: any) {
-            var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-            var textmode: string = editorOption.textmode;
-            $input.attr('type', textmode);
             super.update($input, data);
+            var textmode: string = this.editorOption.textmode;
+            $input.attr('type', textmode);
         }
 
         getDefaultOption(): any {
@@ -154,16 +165,15 @@ module nts.uk.ui.koExtentions {
         }
 
         getFormatter(data: any): format.IFormatter {
-            var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
-            return new text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: editorOption });
+            return new text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: this.editorOption });
         }
 
         getValidator(data: any): validation.IValidator {
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            return new validation.StringValidator(constraintName, {required: required});
+            return new validation.StringValidator(constraintName, { required: required });
         }
     }
 
@@ -173,10 +183,9 @@ module nts.uk.ui.koExtentions {
     class MultilineEditorProcessor extends EditorProcessor {
 
         update($input: JQuery, data: any) {
-            var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-            var resizeable: string = editorOption.resizeable;
-            $input.css('resize', (resizeable) ? "both" : "none");
             super.update($input, data);
+            var resizeable: string = this.editorOption.resizeable;
+            $input.css('resize', (resizeable) ? "both" : "none");
         }
 
         getDefaultOption(): any {
@@ -184,16 +193,15 @@ module nts.uk.ui.koExtentions {
         }
 
         getFormatter(data: any): format.IFormatter {
-            var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
-            return new text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: editorOption });
+            return new text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: this.editorOption });
         }
 
         getValidator(data: any): validation.IValidator {
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            return new validation.StringValidator(constraintName, {required: required});
+            return new validation.StringValidator(constraintName, { required: required });
         }
     }
 
@@ -203,26 +211,23 @@ module nts.uk.ui.koExtentions {
     class NumberEditorProcessor extends EditorProcessor {
 
         init($input: JQuery, data: any) {
-            var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+            super.init($input, data);
             $input.focus(() => {
                 var selectionType = document.getSelection().type;
-                // remove separator (comma)
+                // Remove separator (comma)
                 $input.val(data.value());
-                
-                // if focusing is caused by Tab key, select text.
+                // If focusing is caused by Tab key, select text
                 // this code is needed because removing separator deselects.
                 if (selectionType === 'Range') {
                     $input.select();
                 }
             });
-            super.init($input, data);
         }
 
         update($input: JQuery, data: any) {
             super.update($input, data);
-            var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             var $parent = $input.parent();
-            var width: string = option.width;
+            var width: string = this.editorOption.width;
             var parentTag = $parent.parent().prop("tagName").toLowerCase();
             if (parentTag === "td" || parentTag === "th" || parentTag === "a" || width === "100%") {
                 $parent.css({ 'width': '100%' });
@@ -230,13 +235,13 @@ module nts.uk.ui.koExtentions {
             $input.css("box-sizing", "border-box");
             if (width.trim() != "")
                 $input.width(width);
-            if (option.currencyformat !== undefined && option.currencyformat !== null) {
-                $parent.addClass("symbol").addClass(option.currencyposition === 'left' ? 'symbol-left' : 'symbol-right');
-                var format = option.currencyformat === "JPY" ? "\u00A5" : '$';
+            if (this.editorOption.currencyformat !== undefined && this.editorOption.currencyformat !== null) {
+                $parent.addClass("symbol").addClass(this.editorOption.currencyposition === 'left' ? 'symbol-left' : 'symbol-right');
+                var format = this.editorOption.currencyformat === "JPY" ? "\u00A5" : '$';
                 $parent.attr("data-content", format);
-            } else if (option.symbolChar !== undefined && option.symbolChar !== "" && option.symbolPosition !== undefined) {
-                $parent.addClass("symbol").addClass(option.symbolPosition === 'right' ? 'symbol-right' : 'symbol-left');
-                $parent.attr("data-content", option.symbolChar);
+            } else if (this.editorOption.symbolChar !== undefined && this.editorOption.symbolChar !== "" && this.editorOption.symbolPosition !== undefined) {
+                $parent.addClass("symbol").addClass(this.editorOption.symbolPosition === 'right' ? 'symbol-right' : 'symbol-left');
+                $parent.attr("data-content", this.editorOption.symbolChar);
             }
         }
 
@@ -245,14 +250,12 @@ module nts.uk.ui.koExtentions {
         }
 
         getFormatter(data: any): format.IFormatter {
-            var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-            return new text.NumberFormatter({ option: option });
+            return new text.NumberFormatter({ option: this.editorOption });
         }
 
         getValidator(data: any): validation.IValidator {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-            return new validation.NumberValidator(constraintName, option);
+            return new validation.NumberValidator(constraintName, this.editorOption);
         }
     }
 
@@ -287,7 +290,7 @@ module nts.uk.ui.koExtentions {
             var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var inputFormat: string = (data.inputFormat !== undefined) ? ko.unwrap(data.inputFormat) : option.inputFormat;
-            return new validation.TimeValidator(constraintName, {required: required, outputFormat: inputFormat});
+            return new validation.TimeValidator(constraintName, { required: required, outputFormat: inputFormat });
         }
     }
 

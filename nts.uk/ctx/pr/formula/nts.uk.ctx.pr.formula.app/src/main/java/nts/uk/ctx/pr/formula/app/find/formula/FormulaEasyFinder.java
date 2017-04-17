@@ -16,9 +16,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
 /**
- * @author Nam-PT
- *	L screen
- *	activity 24
+ * @author Nam-PT L screen activity 24
  */
 @Stateless
 public class FormulaEasyFinder {
@@ -29,14 +27,14 @@ public class FormulaEasyFinder {
 	@Inject
 	private FormulaEasyDetailRepository formulaEasyDetailRepository;
 
-	public FormulaEasyFinderDto init(String formulaCode, String historyId, String easyFormulaCode, int baseAmount) {
+	public FormulaEasyFinderDto init(String formulaCode, String historyId, String easyFormulaCode) {
 		LoginUserContext login = AppContexts.user();
 		String companyCode = login.companyCode();
 
 		Optional<FormulaEasyDetailDto> formulaEasyDetailDto = formulaEasyDetailRepository.findByPriKey(companyCode,
 				new FormulaCode(formulaCode), historyId, new EasyFormulaCode(easyFormulaCode))
 				.map(f -> FormulaEasyDetailDto.fromDomain(f));
-		if(!formulaEasyDetailDto.isPresent()){
+		if (!formulaEasyDetailDto.isPresent()) {
 			return null;
 		}
 
@@ -58,7 +56,10 @@ public class FormulaEasyFinder {
 		formulaEasyFinderDto.setMinLimitValue(formulaEasyDetailDto.get().getMinLimitValue());
 
 		/* baseAmount = 基準金額 */
-		if (baseAmount == 1 || baseAmount == 2 || baseAmount == 3 || baseAmount == 4) {
+		if (formulaEasyDetailDto.get().getBaseAmountDevision().intValue() == 1
+				|| formulaEasyDetailDto.get().getBaseAmountDevision().intValue() == 2
+				|| formulaEasyDetailDto.get().getBaseAmountDevision().intValue() == 3
+				|| formulaEasyDetailDto.get().getBaseAmountDevision().intValue() == 4) {
 			List<FormulaEasyStandardItemDto> formulaEasyStandardItemDtos = formulaEasyStandardItemRepository
 					.findAll(companyCode, new FormulaCode(formulaCode), historyId, new EasyFormulaCode(easyFormulaCode))
 					.stream().map(f -> FormulaEasyStandardItemDto.fromDomain(f)).collect(Collectors.toList());

@@ -70,11 +70,7 @@ module nts.uk.pr.view.qpp018.c {
             initUI(res: service.model.CheckListPrintSettingDto): void {
                 let self = this;
                 let checklistSetting = self.checklistPrintSettingModel();
-                if (res) {
-                    checklistSetting.setData(res);
-                } else {
-                    checklistSetting.defaultValue();
-                }
+                checklistSetting.setData(res);
             }
         }
         
@@ -112,25 +108,12 @@ module nts.uk.pr.view.qpp018.c {
             
             setData(dto: service.model.CheckListPrintSettingDto): void {
                 let self = this;
-                if (dto.showCategoryInsuranceItem == null || dto.showCategoryInsuranceItem == undefined) {
-                    self.selectedHealthInsuranceItem("indicate");
-                } else {
-                    var insuranceItemCode = dto.showCategoryInsuranceItem ? 'indicate' : 'hide';
-                    self.selectedHealthInsuranceItem(insuranceItemCode);
-                }
-                self.showDetail(dto.showDetail ? dto.showDetail : true);
-                self.showOffice(dto.showOffice ? dto.showOffice : true);
-                self.showTotal(dto.showTotal ? dto.showTotal : true);
-                self.showDeliveryNoticeAmount(dto.showDeliveryNoticeAmount 
-                    ? dto.showDeliveryNoticeAmount : true);
-            }
-            
-            defaultValue(): void {
-                let self = this;
-                self.selectedHealthInsuranceItem("indicate");
-                self.showOffice(false);
-                self.showTotal(false);
-                self.showDeliveryNoticeAmount(false);
+                var insuranceItemCode = dto.showCategoryInsuranceItem ? 'indicate' : 'hide';
+                self.selectedHealthInsuranceItem(insuranceItemCode);
+                self.showDetail(dto.showDetail);
+                self.showOffice(dto.showOffice);
+                self.showTotal(dto.showTotal);
+                self.showDeliveryNoticeAmount(dto.showDeliveryNoticeAmount);
             }
         }
     }

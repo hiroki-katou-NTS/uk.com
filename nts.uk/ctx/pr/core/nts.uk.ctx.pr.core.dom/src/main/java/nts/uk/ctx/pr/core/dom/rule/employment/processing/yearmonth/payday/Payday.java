@@ -33,7 +33,7 @@ public class Payday extends AggregateRoot {
 
 	private GeneralDate accountingClosing;
 
-	private SocialInsLevyMon socialInsLevyMon;
+	private YearMonth socialInsLevyMon;
 
 	private GeneralDate socialInsStdDate;
 
@@ -43,7 +43,7 @@ public class Payday extends AggregateRoot {
 
 	private GeneralDate empInsStdDate;
 
-	private StmtOutputMon stmtOutputMon;
+	private YearMonth stmtOutputMon;
 
 	public static Payday createSimpleFromJavaType(String companyCode, int processingNo, int payBonusAtr,
 			int processingYm, int sparePayAtr, GeneralDate payDate, GeneralDate stdDate, GeneralDate accountingClosing,
@@ -53,7 +53,7 @@ public class Payday extends AggregateRoot {
 		return new Payday(new CompanyCode(companyCode), new ProcessingNo(processingNo),
 				EnumAdaptor.valueOf(payBonusAtr, PayBonusAtr.class), YearMonth.of(processingYm),
 				EnumAdaptor.valueOf(sparePayAtr, SparePayAtr.class), payDate, stdDate,
-				accountingClosing, new SocialInsLevyMon(socialInsLevyMon), socialInsStdDate,
-				incomeTaxStdDate, new NeededWorkDay(neededWorkDay), empInsStdDate, new StmtOutputMon(stmtOutputMon));
+				accountingClosing, YearMonth.of(socialInsLevyMon), socialInsStdDate,
+				incomeTaxStdDate, new NeededWorkDay(neededWorkDay), empInsStdDate, YearMonth.of(stmtOutputMon));
 	}
 }
