@@ -2,12 +2,12 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.insurance.avgearn;
+package nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.limit;
 
 /**
- * The Interface AvgEarnLevelMasterSettingGetMemento.
+ * The Interface HealthAvgEarnLimitGetMemento.
  */
-public interface AvgEarnLevelMasterSettingGetMemento {
+public interface HealthAvgEarnLimitGetMemento {
 
 	/**
 	 * Gets the grade.

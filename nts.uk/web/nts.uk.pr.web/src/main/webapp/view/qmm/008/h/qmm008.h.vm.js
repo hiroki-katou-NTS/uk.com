@@ -17,7 +17,7 @@ var nts;
                                 function ScreenModel(officeName, healthModel) {
                                     var self = this;
                                     self.healthInsuranceRateModel = new HealthInsuranceRateModel(healthModel.officeCode(), officeName, healthModel.historyId, healthModel.startMonth(), healthModel.endMonth(), healthModel.autoCalculate(), healthModel.rateItems(), healthModel.roundingMethods());
-                                    self.listAvgEarnLevelMasterSetting = [];
+                                    self.listHealthAvgEarnLimit = [];
                                     self.listHealthInsuranceAvgearn = ko.observableArray([]);
                                     self.numberEditorCommonOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                                         grouplength: 3
@@ -31,18 +31,18 @@ var nts;
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    self.loadAvgEarnLevelMasterSetting().done(function () {
+                                    self.loadHealthAvgEarnLimit().done(function () {
                                         return self.loadHealthInsuranceAvgearn().done(function () {
                                             return dfd.resolve();
                                         });
                                     });
                                     return dfd.promise();
                                 };
-                                ScreenModel.prototype.loadAvgEarnLevelMasterSetting = function () {
+                                ScreenModel.prototype.loadHealthAvgEarnLimit = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    commonService.getAvgEarnLevelMasterSettingList().done(function (res) {
-                                        self.listAvgEarnLevelMasterSetting = res;
+                                    commonService.getHealthAvgEarnLimitList().done(function (res) {
+                                        self.listHealthAvgEarnLimit = res;
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
@@ -83,7 +83,7 @@ var nts;
                                     var self = this;
                                     self.clearError();
                                     self.listHealthInsuranceAvgearn.removeAll();
-                                    self.listAvgEarnLevelMasterSetting.forEach(function (item) {
+                                    self.listHealthAvgEarnLimit.forEach(function (item) {
                                         self.listHealthInsuranceAvgearn.push(self.calculateHealthInsuranceAvgEarnModel(item));
                                     });
                                 };

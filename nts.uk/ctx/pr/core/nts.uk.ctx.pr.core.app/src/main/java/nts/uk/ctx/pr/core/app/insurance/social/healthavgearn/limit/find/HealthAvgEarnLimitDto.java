@@ -2,18 +2,18 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.app.insurance.avgearn.find;
+package nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.limit.find;
 
 import lombok.Builder;
 import lombok.Getter;
-import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSetting;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.limit.HealthAvgEarnLimit;
 
 /**
- * The Class AvgEarnLevelMasterSettingDto.
+ * The Class HealthAvgEarnLimitDto.
  */
 @Builder
 @Getter
-public class AvgEarnLevelMasterSettingDto {
+public class HealthAvgEarnLimitDto {
 
 	/** The pension level. */
 	private Integer grade;
@@ -27,12 +27,11 @@ public class AvgEarnLevelMasterSettingDto {
 	/**
 	 * From domain.
 	 *
-	 * @param domain
-	 *            the domain
-	 * @return the avg earn level master setting dto
+	 * @param domain the domain
+	 * @return the health avg earn limit dto
 	 */
-	public static AvgEarnLevelMasterSettingDto fromDomain(AvgEarnLevelMasterSetting domain) {
-		return AvgEarnLevelMasterSettingDto.builder().grade(domain.getGrade())
+	public static HealthAvgEarnLimitDto fromDomain(HealthAvgEarnLimit domain) {
+		return HealthAvgEarnLimitDto.builder().grade(domain.getGrade())
 				.avgEarn(domain.getAvgEarn()).salLimit(domain.getSalLimit()).build();
 	}
 

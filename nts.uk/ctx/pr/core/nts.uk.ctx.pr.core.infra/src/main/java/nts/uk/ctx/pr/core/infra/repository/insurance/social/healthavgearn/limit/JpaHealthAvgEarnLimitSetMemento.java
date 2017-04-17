@@ -2,14 +2,14 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.infra.repository.insurance.avgearn;
+package nts.uk.ctx.pr.core.infra.repository.insurance.social.healthavgearn.limit;
 
-import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSettingSetMemento;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.limit.HealthAvgEarnLimitSetMemento;
 
 /**
- * The Class JpaAvgEarnLevelMasterSettingSetMemento.
+ * The Class JpaHealthAvgEarnLimitSetMemento.
  */
-public class JpaAvgEarnLevelMasterSettingSetMemento implements AvgEarnLevelMasterSettingSetMemento {
+public class JpaHealthAvgEarnLimitSetMemento implements HealthAvgEarnLimitSetMemento {
 
 	/** The type value. */
 	// TODO: Object -> entity class.
@@ -21,7 +21,7 @@ public class JpaAvgEarnLevelMasterSettingSetMemento implements AvgEarnLevelMaste
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaAvgEarnLevelMasterSettingSetMemento(Object typeValue) {
+	public JpaHealthAvgEarnLimitSetMemento(Object typeValue) {
 		this.typeValue = typeValue;
 	}
 
@@ -29,7 +29,7 @@ public class JpaAvgEarnLevelMasterSettingSetMemento implements AvgEarnLevelMaste
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.avgearn.
-	 * AvgEarnLevelMasterSettingSetMemento#setGrade(java.lang.Integer)
+	 * HealthAvgEarnLimitSetMemento#setGrade(java.lang.Integer)
 	 */
 	@Override
 	public void setGrade(Integer grade) {
@@ -41,7 +41,7 @@ public class JpaAvgEarnLevelMasterSettingSetMemento implements AvgEarnLevelMaste
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.avgearn.
-	 * AvgEarnLevelMasterSettingSetMemento#setAvgEarn(java.lang.Long)
+	 * HealthAvgEarnLimitSetMemento#setAvgEarn(java.lang.Long)
 	 */
 	@Override
 	public void setAvgEarn(Long avgEarn) {
@@ -53,7 +53,7 @@ public class JpaAvgEarnLevelMasterSettingSetMemento implements AvgEarnLevelMaste
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.avgearn.
-	 * AvgEarnLevelMasterSettingSetMemento#setSalLimit(java.lang.Long)
+	 * HealthAvgEarnLimitSetMemento#setSalLimit(java.lang.Long)
 	 */
 	@Override
 	public void setSalLimit(Long salLimit) {
