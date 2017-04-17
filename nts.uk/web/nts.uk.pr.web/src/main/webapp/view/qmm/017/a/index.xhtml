@@ -12,55 +12,95 @@
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="service.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.pr.formula.dom.primitive.Money
+			</com:ValidatorScript>
+			
+			<com:stylefile path="../../../../view/qmm/017/b/style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/b/viewmodel.js" />
+			<com:scriptfile path="../../../../view/qmm/017/b/service.js" />
+			
+			<com:stylefile path="../../../../view/qmm/017/c/style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/c/viewmodel.js" />
+			<com:scriptfile path="../../../../view/qmm/017/c/service.js" />
+			
+			<com:stylefile path="../../../../view/qmm/017/d/style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/d/viewmodel.js" />
+			<com:scriptfile path="../../../../view/qmm/017/d/service.js" />
+			
+			<com:stylefile path="../../../../view/qmm/017/e/style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/e/viewmodel.js" />
+			<com:scriptfile path="../../../../view/qmm/017/e/service.js" />
+			
+			<com:stylefile path="../../../../view/qmm/017/f/style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/f/viewmodel.js" />
+			<com:scriptfile path="../../../../view/qmm/017/f/service.js" />
+			
+			<com:stylefile path="../../../../view/qmm/017/g/style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/g/viewmodel.js" />
+			<com:scriptfile path="../../../../view/qmm/017/g/service.js" />
+			
+			<com:stylefile path="../../../../view/qmm/017/h/style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/h/viewmodel.js" />
+			<com:scriptfile path="../../../../view/qmm/017/h/service.js" />
+			
+			<com:stylefile path="../../../../view/qmm/017/i/style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/i/viewmodel.js" />
+			<com:scriptfile path="../../../../view/qmm/017/i/service.js" />
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area">
-				<button id="btn_001" class="button separate-button fix-button">新規</button>
-				<button id="btn_002"
-					class="button proceed separate-button fix-button">登録</button>
-				<button id="btn_003" class="button separate-button fix-button">コピー</button>
-				<button id="btn_004" class="button separate-button fix-button">Excel出力</button>
-				<button id="btn_007" class="button separate-button fix-button">マスタ修正ログ</button>
-			</div>
-			<div id="contents-area">
-				<div id="left-content" class="bg-green caret-right caret-background">
-					<div id="lbl_002" data-bind="ntsFormLabel: {}">コード/名称</div>
-					<input id="inp_001" class="fix-input" />
-					<button id="sch_001">検索</button>
-					<br />
-					<button id="btn_005">履歴追加</button>
-					<button id="btn_006">履歴編集</button>
-					<br />
-					<div id="lst_001" data-bind="with: lst_001">
-						<table id="treeGrid"
-							data-bind="ntsTreeGridView:{
-									width: 280,
-									height: 550,
-									options: items,
-									value: singleSelectedCode,
-									optionsValue: 'code',
-									optionsChild: 'childs',
-									optionsText: 'nodeText',
-									multiple: false,
-									enable: true,
-									showCheckBox: false}"
-							class="cf"></table>
-					</div>
-
+				<div id="functions-area" style="padding-top: 5px;" class="cf">
+				<button id="a_btn_001" class="button separate-button fix-button" data-bind="click: start,enable: !isNewMode()">新規</button>
+				<button id="a_btn_002"
+					class="button proceed separate-button fix-button" data-bind="click: registerFormulaMaster">登録</button>
+				<button id="a_btn_003" class="button separate-button fix-button">コピー</button>
+				<button id="a_btn_004" class="button separate-button fix-button">Excel出力</button>
+				<button id="a_btn_007" class="button separate-button fix-button">マスタ修正ログ</button>
+				<span id="a_lbl_001">計算式の登録</span>
 				</div>
-				<div id="right-content">
-					<div id="sel_001"
-						data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-						<div class="tab-content-1">
-							<ui:include src="../b/index.xhtml" />
-						</div>
-						<div class="tab-content-2">
-							<span>Tab Content 2</span><br />
+				<div id="contents-area" style="width: 1366px;" class="cf">
+					<div id="left-content" class="bg-green caret-right caret-background">
+						<div id="a_lbl_002" data-bind="ntsFormLabel: {}">コード/名称</div>
+						<div style="width: 200px; display: inline-block" data-bind="ntsSearchBox: {
+							comId: 'treeGrid',
+							items: treeGridHistory().items, 		
+							selected: treeGridHistory().singleSelectedCode, 
+							selectedKey: 'code', 
+							childField: 'childs', 
+							fields: ['name', 'code']}" />	
+						<br />
+						<button id="a_btn_005" data-bind="click: openDialogJ, enable: !isNewMode()">履歴追加</button>
+						<button id="a_btn_006" data-bind="click: openDialogK, enable: !isNewMode()">履歴編集</button>
+						<br />
+						<div id="a_lst_001" data-bind="with: treeGridHistory">
+							<table id="treeGrid"
+								data-bind="ntsTreeGridView:{
+										width: 288,
+										height: 400,
+										options: items,
+										value: singleSelectedCode,
+										optionsValue: 'code',
+										optionsChild: 'childs',
+										optionsText: 'nodeText',
+										multiple: false,
+										enable: true,
+										showCheckBox: false}"
+								class="cf"></table>
 						</div>
 					</div>
+					<div id="right-content">
+						<div id="a_sel_001"
+							data-bind="ntsTabPanel: { dataSource: a_sel_001, active: selectedTabASel001}">
+							<div class="tab-content-1" data-bind="with: viewModel017b">
+								<ui:include src="../b/index.xhtml" />
+							</div>
+							<div class="tab-content-2" data-bind="with: viewModel017c">
+								<ui:include src="../c/index.xhtml" />
+							</div>
+						</div>
+					</div>
 				</div>
-			</div>
 		</ui:define>
 	</ui:composition>
 </body>

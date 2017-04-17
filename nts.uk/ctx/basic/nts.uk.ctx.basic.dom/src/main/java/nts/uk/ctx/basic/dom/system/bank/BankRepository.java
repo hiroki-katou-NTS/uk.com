@@ -37,5 +37,5 @@ public interface BankRepository {
 	 * @param companyCode
 	 * @param bankCode
 	 */
-	void remove(Bank bank);
+	void remove(String companyCode, String bankCode);
 }

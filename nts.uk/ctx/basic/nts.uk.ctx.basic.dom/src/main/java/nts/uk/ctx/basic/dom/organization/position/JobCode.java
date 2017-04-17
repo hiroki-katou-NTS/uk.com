@@ -1,18 +1,24 @@
 package nts.uk.ctx.basic.dom.organization.position;
+/*
+ * Code of JobCode
+ */
 
-import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
+import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
-	@StringMaxLength(10)
-	public class JobCode extends StringPrimitiveValue<JobCode> {
 
-		public JobCode(String rawValue) {
-			super(rawValue);
-			// TODO Auto-generated constructor stub
-		}
 
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
+@StringCharType(CharType.ALPHA_NUMERIC)
+@StringMaxLength(10)
+public class JobCode extends CodePrimitiveValue<JobCode>{
+	
+	/** serialVersionUID */
+	private static final long serialVersionUID = 1L;
+
+	public JobCode(String rawValue) {
+		super(rawValue);
+	}
+
 }

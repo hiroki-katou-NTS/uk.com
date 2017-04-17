@@ -1,0 +1,246 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:com="http://xmlns.jcp.org/jsf/component"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+	<body>
+		
+		<ui:composition template="../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 300, height: 200 };</script>
+				<com:stylefile path="../catalog/catalog.css" />
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js" />
+				<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js" />
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="../catalog/catalog.js" />				
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="contents-area">
+					<div id="side-menu" class="cf"></div>
+					<div id="content" class="cf">
+						<h1>Custom NtsComponents on igGrid</h1>
+						<h2>Overview</h2>
+						<br />
+						
+						<table id="grid1" data-bind="igGrid: {
+					        width: '600px',
+					        height: '400px',
+					        dataSource: items,
+					        primaryKey: 'id',
+					        virtualization: true,
+					        virtualizationMode: 'continuous',
+					        columns: [
+					        	{ headerText: 'ID', key: 'id', dataType: 'number', width: '200px' },
+					        	{ headerText: 'FLAG', key: 'flag', dataType: 'boolean', width: '200px', template: flagTemplate },
+					        	{ headerText: 'RULECODE', key: 'ruleCode', dataType: 'string', width: '200px' }
+					        ],
+					        rowsRendered: rowsRendered
+						}"></table>
+
+						<article class="cf">
+							<div class="tabs">
+								<ol>
+									<li><a href="#tabs-html">HTML Binding</a></li>
+									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+									<li><a href="#tabs-method">Methods</a></li>
+								</ol>
+								<div id="tabs-html" class="cf">
+									<h2>HTML</h2>
+									<p>Using Ignite library so you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
+<pre><![CDATA[<ui:define name="htmlHead">
+	<com:scriptfile set="IGNITE" />
+</ui:define>]]></pre>
+<pre><![CDATA[<!--SINGLE SELECTION EXAMPLE-->
+<table id="single-list" data-bind="ntsGridList: {
+	width: 550,
+	height: 110,
+	dataSource: items,
+	primaryKey: 'code',
+	columns: columns,
+	multiple: false,
+	value: currentCode
+}"></table>
+<!--MULTI SELECTION EXAMPLE-->
+Multiple selectng mode
+<table id="multi-list" data-bind="ntsGridList: {
+		height: 350,
+		options: items,
+		optionsValue: 'code',
+		columns: columns,
+		multiple: true,
+		value: currentCodeList
+	}"
+	class="cf"></table>
+<br />
+currentCodeList: <span data-bind="text: currentCodeList"></span>]]></pre>
+									<h2>API</h2>
+									<table>
+										<colgroup>
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Binding</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>width</td>
+												<td>
+													<b>Type:</b> null | string | number<br/>
+													<b>Members:</b><br/>
+													<i>null:</i> Will stretch to fit the sum of the columns widths.<br/>
+													<i>number:</i> The widget width can be set in pixels as a number. Example values: 800, 700.<br/>
+													<i>string:</i> The widget width can be set in pixels (px) or percentage (%). Example values: "800px", "800" (defaults to pixels), "100%".
+												</td>
+											</tr>
+											<tr>
+												<td>height</td>
+												<td>
+													<b>Type:</b> null | string | number<br/>
+													<b>Members:</b><br/>
+													<i>null:</i> Will stretch vertically to fit data.<br/>
+													<i>string:</i> The widget height can be set in pixels (px) and percentage (%).<br/>
+													<i>number:</i> The height can be set as a number in pixels.
+												</td>
+											</tr>
+											<tr>
+												<td>options / data.dataSource</td>
+												<td>
+													<b>Type:</b> array&lt;any&gt;<br/>
+													List data to generate GridList
+												</td>
+											</tr>
+											<tr>
+												<td>optionsValue</td>
+												<td>
+													<b>Type:</b> string<br/>
+													Field in data will be set as primaryKey
+												</td>
+											</tr>
+											<tr>
+												<td>columns</td>
+												<td>
+													<b>Type:</b> array&lt;column&gt;<br/>
+													An array of column objects:<br/>
+													<i>headerText:</i> Text for header<br/>
+													<i>prop:</i> Property in data array for column<br/>
+													<i>width:</i> Width for column
+												</td>
+											</tr>
+											<tr>
+												<td>multiple</td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													Enables/disables multiple selection
+												</td>
+											</tr>
+											<tr>
+												<td>value</td>
+												<td>
+													<b>Type:</b> array&lt;any&gt;<br/>
+													List selected value
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div id="tabs-viewmodel" class="cf">
+									<h2>TypeScript</h2>
+<pre><![CDATA[class ScreenModel {
+	items: KnockoutObservableArray<ItemModel>;
+	columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+	currentCode: KnockoutObservable<any>;
+	currentCodeList: KnockoutObservableArray<any>;
+	
+	constructor() {
+		this.items = ko.observableArray([
+			new ItemModel('001', '基本給', "description 1"),
+			new ItemModel('150', '役職手当', "description 2"),
+			new ItemModel('ABC', '基12本ghj給', "description 3")
+		]);
+		this.columns = ko.observableArray([
+			{ headerText: 'コード', prop: 'code', width: 100 },
+			{ headerText: '名称', prop: 'name', width: 150 },
+			{ headerText: '説明', prop: 'description', width: 200 }
+		]);
+		this.currentCode = ko.observable();
+		this.currentCodeList = ko.observableArray([]);
+	}
+	
+	selectSomeItems() {
+		this.currentCode('150');
+		this.currentCodeList.removeAll();
+		this.currentCodeList.push('001');
+		this.currentCodeList.push('ABC');
+	}
+	
+	deselectAll() {
+		this.currentCode(null);
+		this.currentCodeList.removeAll();
+	}
+}
+
+class ItemModel {
+	code: string;
+	name: string;
+	description: string;
+	
+	constructor(code: string, name: string, description: string) {
+		this.code = code;
+		this.name = name;
+		this.description = description;
+	}
+}]]></pre>
+								</div>
+								<div id="tabs-method" class="cf">
+									<table>
+										<colgroup>
+											<col width="400px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Methods</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>$("#multi-list").ntsGridList('getSelected');</td>
+												<td>
+													Get selected values
+												</td>
+											</tr>
+											<tr>
+												<td>$("#multi-list").ntsGridList('setSelected', ids);</td>
+												<td>
+													<b>ids: array&lt;number&gt;</b> List selected id for select<br/>
+													Set selected values by ids
+												</td>
+											</tr>											
+											<tr>
+												<td>$("#multi-list").ntsGridList('deselectAll');</td>
+												<td>
+													Deselect all values
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</article>
+						<div class="footer cf">
+							<button class="previous large">Previous</button>
+							<button class="next proceed large">Next</button>
+						</div>
+					</div>
+		   		</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

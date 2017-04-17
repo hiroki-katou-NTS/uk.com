@@ -10,7 +10,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.personalinfo.holiday.HolidayPaid;
 import nts.uk.ctx.pr.core.dom.personalinfo.holiday.HolidayPaidRepository;
 import nts.uk.ctx.pr.core.infra.entity.personalinfo.holiday.PhldtHolidayPaid;
@@ -25,7 +25,7 @@ public class JpaHolidayPaidRepository extends JpaRepository implements HolidayPa
 	@Override
 	public List<HolidayPaid> findAll(String companyCode, List<String> personIds) {
 		List<HolidayPaid> results = new ArrayList<>();
-		ListUtil.split(personIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, personIdList -> {
+		CollectionUtil.split(personIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, personIdList -> {
 			this.queryProxy().query(SELECT_BY_CCD_AND_PID, PhldtHolidayPaid.class)
 			.setParameter("ccd", companyCode).setParameter("pIds", personIdList)
 			.getList().stream().forEach(e -> results.add(toDomain(e)));
@@ -62,5 +62,4 @@ public class JpaHolidayPaidRepository extends JpaRepository implements HolidayPa
 		
 		return Optional.of(holidayList.get(0));
 	}
-
 }

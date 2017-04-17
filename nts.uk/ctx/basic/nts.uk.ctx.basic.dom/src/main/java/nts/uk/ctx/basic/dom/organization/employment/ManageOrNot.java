@@ -1,7 +1,7 @@
 package nts.uk.ctx.basic.dom.organization.employment;
 
-import lombok.AllArgsConstructor;
 
+import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum ManageOrNot {
 	/**1:管理する	 */
@@ -12,5 +12,4 @@ public enum ManageOrNot {
      * value.
      */
     public final int value; 
-	
-}
+    }

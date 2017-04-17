@@ -22,4 +22,14 @@ public interface PaymentDateProcessingMasterRepository {
 	 * @return PaymentDateProcessingMaster
 	 */
 	List<PaymentDateProcessingMaster> findAll(String companyCode, int paymentBonusAtribute);
+	
+	//========================================//
+	
+	/**
+	 * Find pay day processing
+	 * @param companyCode companyCode
+	 * @param processingNo processingNo
+	 * @return PaymentDateProcessingMaster
+	 */
+	Optional<PaymentDateProcessingMaster> find(String companyCode, int processingNo);
 }

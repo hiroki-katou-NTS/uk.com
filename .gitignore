@@ -5,10 +5,13 @@ taskArtifacts/
 .classpath
 .project
 .settings/
-ctionInitializer.mark
 nts.uk/.metadata/
-nts.uk/pr/nts.uk.pr.web/WebContent/META-INF/MANIFEST.MF
+nts.uk/pr/nts.uk.pr.web/WebContent/META-INF/
 gradle_eclipse_all.bat
 gradle_eclipse_one.bat
-.metadata/
-.recommenders/
+nts.uk/file/pr/nts.uk.file.pr.app/bin/
+nts.uk/file/pr/nts.uk.file.pr.app/.gitignore
+nts.uk/pr/shr/nts.uk.shr.com/bin/
+nts.uk/pr/proto/nts.uk.pr.proto.ws/bin/
+nts.uk/pr/file/nts.uk.pr.file.infra/bin/
+*.class

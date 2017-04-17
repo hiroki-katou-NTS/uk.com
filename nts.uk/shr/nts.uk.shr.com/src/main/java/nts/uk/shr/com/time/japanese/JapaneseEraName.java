@@ -5,13 +5,9 @@ import nts.arc.time.GeneralDate;
 import nts.gul.util.Range;
 
 /**
- * Japanese Era (元号)
+ * Name of Japanese Era (元号)
  */
 public class JapaneseEraName {
-
-	/** code */
-	@Getter
-	private final String code;
 	
 	/** name (ex. "平成") */
 	@Getter
@@ -24,11 +20,14 @@ public class JapaneseEraName {
 	/** span */
 	private Range<GeneralDate> span;
 	
-	public JapaneseEraName(String code, String name, String symbol, GeneralDate startDate, GeneralDate endDate) {
-		this.code = code;
+	public JapaneseEraName(String name, String symbol, Range<GeneralDate> span) {
 		this.name = name;
 		this.symbol = symbol;
-		this.span = Range.between(startDate, endDate);
+		this.span = span;
+	}
+	
+	public JapaneseEraName(String name, String symbol, GeneralDate startDate, GeneralDate endDate) {
+		this(name, symbol, Range.between(startDate, endDate));
 	}
 	
 	public GeneralDate startDate() {

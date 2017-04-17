@@ -6,7 +6,7 @@ module cmm013.a.viewmodel {
         isEnable: KnockoutObservable<boolean>;
         selectStmtCode: KnockoutObservable<string>;
         selectStmtName: KnockoutObservable<string>;
-     
+
         constructor() {
             var self = this;
             self.selectLayoutAtr = ko.observable("3");
@@ -14,7 +14,7 @@ module cmm013.a.viewmodel {
             self.isEnable = ko.observable(true);
             self.selectStmtCode = ko.observable(null);
             self.selectStmtName = ko.observable(null);
-            
+
         }
 
         start(): JQueryPromise<any> {
@@ -22,10 +22,10 @@ module cmm013.a.viewmodel {
             var dfd = $.Deferred<any>();
             //list data
             self.buildItemList();
-            $('#LST_001').on('selectionChanging', function(event) {
+            $('#LST_001').on('selectionChanging', function (event) {
                 console.log('Selecting value:' + (<any>event.originalEvent).detail);
             })
-            $('#LST_001').on('selectionChanged', function(event: any) {
+            $('#LST_001').on('selectionChanged', function (event: any) {
                 console.log('Selected value:' + (<any>event.originalEvent).detail)
             })
             //fill data to dialog

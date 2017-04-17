@@ -33,7 +33,6 @@ public class QstdtPaymentHeader {
 	
 	@Basic(optional = false)
 	@Column(name = "STD_DATE")
-	@Temporal(TemporalType.DATE)
 	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate standardDate;
 	

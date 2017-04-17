@@ -1,0 +1,36 @@
+package nts.uk.ctx.basic.infra.entity.organization.position;
+
+import java.io.Serializable;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Id;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Embeddable
+public class CmnmtJobHistPK implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	
+	@Basic(optional = false)	
+	@Column(name = "CCD")
+	public String companyCode;
+		
+	
+	@Basic(optional = false)
+	@Column(name = "HIST_ID")
+	public String historyId;
+}

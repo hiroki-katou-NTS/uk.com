@@ -1,3 +1,5 @@
+/// <reference path="../reference.ts"/>
+
 module nts.uk.ui {
      
     import option = nts.uk.ui.option;

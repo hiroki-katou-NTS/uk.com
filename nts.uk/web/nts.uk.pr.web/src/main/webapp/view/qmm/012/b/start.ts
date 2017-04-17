@@ -1,33 +1,36 @@
 module qmm012.b {
     __viewContext.ready(function() {
-        let screenModelB = new viewmodel.ScreenModel();
-        let screenModelC = new c.viewmodel.ScreenModel();
-        let screenModelD = new d.viewmodel.ScreenModel();
-        let screenModelE = new e.viewmodel.ScreenModel();
-        let screenModelF = new f.viewmodel.ScreenModel();
-        let screenModel = {
-            screenB: screenModelB,
-            screenC: screenModelC,
-            screenD: screenModelD,
-            screenE: screenModelE,
-            screenF: screenModelF
-        }
-        __viewContext.bind(screenModel);
-        screenModel.screenB.start();
-        screenModel.screenC.start();
-        screenModel.screenD.start();
-        screenModel.screenE.start();
-        screenModel.screenF.start();
+        let screenModel = new qmm012.b.ScreenModel(
+            new c.viewmodel.ScreenModel(),
+            new d.viewmodel.ScreenModel(),
+            new e.viewmodel.ScreenModel(),
+            new f.viewmodel.ScreenModel(),
+            new g.viewmodel.ScreenModel()
+        );
+        let screenModelB = new viewmodel.ScreenModel(screenModel);
+        __viewContext.bind(screenModelB);
     });
-}
-//module qmm012.c {
-//    __viewContext.ready(function() {
-//        var screenModel = new viewmodel.ScreenModel();
-//        __viewContext.bind(screenModel);
-//        screenModel.start();
-//    });
-//}
 
-function closeDialog() {
-    nts.uk.ui.windows.close();
+    export class ScreenModel {
+        screenModelC: c.viewmodel.ScreenModel;
+        screenModelD: d.viewmodel.ScreenModel;
+        screenModelE: e.viewmodel.ScreenModel;
+        screenModelF: f.viewmodel.ScreenModel;
+        screenModelG: g.viewmodel.ScreenModel;
+
+        constructor(
+            screenModelC: c.viewmodel.ScreenModel,
+            screenModelD: d.viewmodel.ScreenModel,
+            screenModelE: e.viewmodel.ScreenModel,
+            screenModelF: f.viewmodel.ScreenModel,
+            screenModelG: g.viewmodel.ScreenModel
+        ) {
+            this.screenModelC = screenModelC;
+            this.screenModelD = screenModelD;
+            this.screenModelE = screenModelE;
+            this.screenModelF = screenModelF;
+            this.screenModelG = screenModelG;
+        }
+
+    }
 }

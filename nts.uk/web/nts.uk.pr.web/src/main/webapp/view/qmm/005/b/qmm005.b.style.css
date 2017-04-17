@@ -1,0 +1,222 @@
+@import url("../qmm005.css");
+
+#functions-area #B_BTN_002 {
+	background-color: rgb(164, 238, 176);
+}
+
+#functions-area #B_BTN_003 {
+	margin-left: 35px;
+	background-color: rgb(254, 211, 198);
+}
+
+#contents-area {
+	padding-bottom: 0;
+}
+
+#contents-area .blst001-container {
+	padding: 10px;
+	border-radius: 3px;
+	background-color: rgb(224, 245, 158);
+}
+
+#contents-area .blst001-container>div {
+	position: relative;
+	padding-top: 27px;
+	border: 1px solid rgb(128, 128, 128);
+	display: block;
+	width: 200px;
+	height: 309px;
+	background-color: #d1f2a6;
+}
+
+#contents-area #B_INP_001 {
+	width: 60px;
+	text-align: center;
+}
+
+#contents-area .blst001-container>div .divider {
+	position: absolute;
+	width: 28px;
+	top: 0;
+	bottom: 0;
+	border-right: 1px solid rgb(128, 128, 128);
+}
+
+#contents-area .blst001-container>div #B_LST_001 {
+	border: none;
+	border-top: 1px solid rgb(128, 128, 128);
+	width: 198px !important;
+	overflow-y: scroll !important;
+	background: rgb(117, 255, 131); /* Old browsers */
+	background: -moz-linear-gradient(left, #d1f2a6 0%, #d1f2a6 27px, #fff 27px, #fff
+		100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(left, #d1f2a6 0%, #d1f2a6 27px, #fff 27px, #fff
+		100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to right, #d1f2a6 0%, #d1f2a6 27px, #fff 27px, #fff 100%
+		); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d1f2a6',
+		endColorstr='#ffffff', GradientType=1); /* IE6-9 */
+}
+
+#B_LST_001 .nts-column:first-child {
+	text-align: center;
+	min-width: 28px;
+	border-right: 1px solid rgb(128, 128, 128);
+	background-color: #d1f2a6;
+}
+
+#contents-area .right-panel, #contents-area .blst001-container {
+	float: left;
+}
+
+#contents-area .right-panel {
+	float: right;
+}
+
+#contents-area .right-panel-bottom {
+	margin-top: -35px;
+}
+
+#contents-area table.table th {
+	height: 37px;
+	background-color: rgb(226, 247, 159);
+}
+
+#contents-area table.table th.text-left {
+	text-align: left;
+}
+
+#contents-area table.table button.btn-collapse {
+	width: 25px;
+	min-width: 25px;
+	max-height: 18px;
+}
+
+#contents-area table.table .double-border {
+	border-right: 3px double #999;
+}
+
+#contents-area table.table .index-cols {
+	width: 57px;
+	min-width: 57px;
+	max-width: 57px;
+}
+
+#contents-area table.table .checkbox-cols {
+	width: 40px;
+	max-width: 40px;
+	min-width: 40px;
+	text-align: center;
+}
+
+#contents-area table.table th.checkbox-cols {
+	white-space: pre-wrap;
+}
+
+#contents-area table.table div.form-group {
+	margin: 0;
+	max-width: 150px;
+	min-height: initial;
+}
+
+.ntsControl>label {
+	width: initial;
+}
+
+td>.ntsControl span.label {
+	display: none;
+}
+
+#contents-area .right-panel .form-label, #contents-area .right-panel .table
+	{
+	margin-top: 0;
+}
+
+.ntsListBox .nts-list-box .ui-selected {
+	background: #CBF4F9;
+}
+
+.ntsListBox .nts-list-box li {
+	border-bottom: 1px solid #808080;
+}
+
+.ntsListBox .nts-list-box li:nth-child(n + 10):last-child {
+	border-bottom: none;
+}
+
+#B_SEL_002 {
+	display: inline-table;
+	width: 130px;
+	margin-left: -3px;
+}
+
+#B_SEL_002+div {
+	display: inline-table;
+	margin-right: 5px;
+}
+
+#B_SEL_002+div:before {
+	content: '(';
+}
+
+#B_SEL_002+div:after {
+	content: ')';
+}
+
+#B_INP_003-input {
+	width: 105px !important;
+}
+
+#B_INP_004-input {
+	width: 80px !important;
+}
+
+#B_INP_005-input {
+	padding-left: 12px;
+	padding-right: 12px;
+	width: 85px !important;
+}
+
+#B_INP_006-input, #B_INP_007-input, #B_INP_008-input, #B_INP_009-input {
+	display: inline-table;
+	width: 105px !important;
+}
+
+#B_INP_010 {
+	width: 65px !important;
+}
+
+#B_LST_002 tbody th:nth-child(2) {
+	min-width: 80px;
+	max-width: 80px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#B_LBL_005 {
+	padding-left: 5px;
+	padding-right: 25px;
+	min-width: 130px;
+}
+
+#contents-area table.table td span.ntsControl {
+	width: auto !important;
+	width: initial !important;
+}
+
+#contents-area table.table td span.ntsControl, #contents-area table.table td span.ntsControl+span
+	{
+	display: inline-table;
+}
+
+#contents-area  #B_INP_004 {
+	margin-left: -3px;
+}
+
+#contents-area  #B_INP_004+div {
+	margin-right: 5px;
+}
+
+#contents-area  #B_INP_004, #contents-area  #B_INP_004+div {
+	display: inline-table;
+}

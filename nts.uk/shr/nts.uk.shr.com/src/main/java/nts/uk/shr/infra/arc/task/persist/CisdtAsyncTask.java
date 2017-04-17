@@ -27,8 +27,8 @@ public class CisdtAsyncTask implements Serializable {
 	@Column(name = "TASK_STS")
 	public int taskSts;
 
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
 	@Column(name = "CREATED_AT")
+	@Convert(converter = GeneralDateTimeToDBConverter.class)
     public GeneralDateTime createdAt;
 
 	@Convert(converter = GeneralDateTimeToDBConverter.class)

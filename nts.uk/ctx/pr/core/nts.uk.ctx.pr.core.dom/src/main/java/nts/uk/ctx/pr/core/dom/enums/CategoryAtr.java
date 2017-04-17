@@ -6,22 +6,23 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum CategoryAtr {
 	// 0:支給
-	PAYMENT(0),
+	PAYMENT(0,"支給"),
 	// 1:控除
-	DEDUCTION(1),
+	DEDUCTION(1,"控除"),
 	// 2:勤怠
-	PERSONAL_TIME(2),
+	PERSONAL_TIME(2,"勤怠"),
 	// 3:記事
-	ARTICLES(3),
+	ARTICLES(3,"記事"),
 	// 9:その他
-	OTHER(9),
+	OTHER(9,"その他"),
 
 	/**
 	 * 印字しない
 	 */
-	DO_NOT_PRINT(-1);
+	DO_NOT_PRINT(-1,"印字しない");
 
 	public final int value;
+	public final String name;
 
 	public String toName() {
 		String name;

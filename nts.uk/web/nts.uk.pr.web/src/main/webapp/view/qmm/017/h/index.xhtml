@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition>
+		<div class="wrap-sel-006">
+			<div class="ib h-col-1">
+				<div id="h_lst_001" class="ib va-middle caret-right caret-background" data-bind="with: hList001">
+				<div id="list-box-h" data-bind="ntsListBox: {
+					options: itemList,
+					optionsValue: 'code',
+					optionsText: 'name',
+					multiple: false,
+					value: selectedCodes,
+					enable: isEnable(),
+					rows: 5}"></div>
+				</div>
+			</div>
+			<div id="h_lst_002" class="ib va-middle" data-bind="with: hList002">
+				<div data-bind="ntsSearchBox: {comId: 'multi-list', items: itemList, selected: selectedCode, selectedKey: 'code', fields: ['name', 'code']}" />
+				<div id="list-box-h" data-bind="ntsListBox: {
+					options: itemList,
+					optionsValue: 'code',
+					optionsText: 'name',
+					multiple: true,
+					value: selectedCodes,
+					enable: isEnable(),
+					columns: [
+						{ prop: 'code', length: 4 },
+						{ prop: 'name', length: 10 }
+					],
+					rows: 5}"></div>
+				<button id="h_btn_001" class="caret-bottom">計算式挿入ボタン</button>
+			</div>
+		</div>
+	</ui:composition>
+</body>
+</html>
+	

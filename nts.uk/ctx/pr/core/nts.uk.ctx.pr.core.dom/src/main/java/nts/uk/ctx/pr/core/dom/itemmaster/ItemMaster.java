@@ -1,169 +1,65 @@
 package nts.uk.ctx.pr.core.dom.itemmaster;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.gul.util.Range;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.enums.DisplayAtr;
-import nts.uk.ctx.pr.core.dom.enums.UseOrNot;
-import nts.uk.ctx.pr.core.dom.layout.detail.RangeChecker;
 
-/**
- * 
- * 項目マスタ
- *
- */
-public class ItemMaster extends AggregateRoot{
-	/** 会社コード */
-	@Getter
-	private CompanyCode companyCode;	
-	/** カテゴリ区分 */
-	@Getter
-	private CategoryAtr categoryAtr;
-	/** 項目コード */
-	@Getter
+@Getter
+public class ItemMaster extends AggregateRoot {
+	private CompanyCode companyCode;
 	private ItemCode itemCode;
-	/** 項目名称 */
-	@Getter
 	private ItemName itemName;
-	/** 略名 */
-	@Getter
 	private ItemName itemAbName;
-	/** 表示区分 */
-	@Getter
-	private DisplayAtr displayAtr;
-	/** 平均賃金対象区分 */
-	@Getter
-	private WageClassificationAtr avgPaidAtr;
-	@Getter
-	private List<RangeChecker> alarm;
-	@Getter
-	private List<RangeChecker> error;
-	
-	/** 控除種類 */
-	@Getter
-	private DeductionAtr deductAttribute;
-	/** 固定的賃金対象区分 */
-	@Getter
-	private WageClassificationAtr fixedPaidAtr;
-	/** 統合項目コード */
-	@Getter
-	private IntegratedItemCode integratedItemCode;
-	
-	/** 項目属性 */
-	@Getter
-	private ItemAtr itemAtr;	
-	/** 項目名表示区分 */
-	@Getter
-	private ItemNameDisplayAtr itemNameDisplayAtr;
-	/** 労働保険対象区分 */
-	@Getter
-	private WageClassificationAtr laborInsuranceAtr;
-	/** 限度金額 */
-	@Getter
-	private LimitMoney limitMoney;
-	/** メモ */
-	@Getter
-	private Memo memo;
-	/** 社会保険対象区分 */
-	@Getter
-	private WageClassificationAtr socialInsuranceAtr;
-	/** 課税区分 */
-	@Getter
-	private TaxAtr taxAtr;
-	/** ゼロ表示区分 */
-	@Getter
-	private DisplayAtr zeroDisplayAtr;
-	
-	
-	public ItemMaster(CompanyCode companyCode, 
-			ItemCode itemCode, 
-			CategoryAtr categoryAtr, 
-			ItemName itemName, 
-			ItemName itemAbName, 
-			TaxAtr taxAtr, 
-			ItemAtr itemAtr) {
-		super();
-		this.companyCode = companyCode;
-		this.itemCode = itemCode;
-		this.categoryAtr = categoryAtr;
-		this.itemName = itemName;
-		this.itemAbName = itemAbName;
-		this.taxAtr = taxAtr;
-		this.itemAtr = itemAtr;
-	}
-	/**
-	 * Validate
-	 */
+	private ItemName itemAbNameE;
+	private ItemName itemAbNameO;
+	private CategoryAtr categoryAtr;
+	private int fixAtr;
+	private DisplayAtr displaySet;
+	private UniteCode uniteCode;
+	private DisplayAtr zeroDisplaySet;
+	private ItemDisplayAtr itemDisplayAtr;
+
 	@Override
 	public void validate() {
 		super.validate();
-	}	
-	
-	public static ItemMaster createSimpleFromJavaType(
-			String companyCode, 
-			String itemCode, 
-			int categoryAtr, 
-			String itemName,
-			String itemAbName,
-			int taxAtr,
-			int itemAtr
-			)
-	{
-		return new ItemMaster(new CompanyCode(companyCode),
-				new ItemCode(itemCode),
-				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
-				new ItemName(itemName), new ItemName(itemAbName), EnumAdaptor.valueOf(taxAtr, TaxAtr.class),
-				EnumAdaptor.valueOf(itemAtr, ItemAtr.class)
-				);
-		
+		if (StringUtil.isNullOrEmpty(this.itemCode.v(), true) || StringUtil.isNullOrEmpty(this.companyCode.v(), true)
+				|| StringUtil.isNullOrEmpty(this.itemName.v(), true)
+				|| StringUtil.isNullOrEmpty(this.itemAbName.v(), true) || this.displaySet == null) {
+			throw new BusinessException("pika");
+		}
 	}
-	
-	/**
-	 * additional Info 
-	 * @param limitMoney
-	 * @param fixedPaidAtr
-	 * @param laborInsuranceAtr
-	 * @param socialInsuranceAtr
-	 * @return
-	 */
-	public ItemMaster additionalInfo(int limitMoney, int fixedPaidAtr, int laborInsuranceAtr, int socialInsuranceAtr, int avgPaidAtr, int deductAttribute) {
-		this.limitMoney = new LimitMoney(limitMoney);
-		this.fixedPaidAtr = EnumAdaptor.valueOf(fixedPaidAtr, WageClassificationAtr.class);
-		this.laborInsuranceAtr = EnumAdaptor.valueOf(laborInsuranceAtr, WageClassificationAtr.class);
-		this.socialInsuranceAtr = EnumAdaptor.valueOf(socialInsuranceAtr, WageClassificationAtr.class);
-		this.avgPaidAtr = EnumAdaptor.valueOf(avgPaidAtr, WageClassificationAtr.class);
-		this.deductAttribute = EnumAdaptor.valueOf(deductAttribute, DeductionAtr.class);
-		return this;
+
+	public ItemMaster(CompanyCode companyCode, ItemCode itemCode, ItemName itemName, ItemName itemAbName,
+			ItemName itemAbNameE, ItemName itemAbNameO, CategoryAtr categoryAtr, int fixAtr, DisplayAtr displaySet,
+			UniteCode uniteCode, DisplayAtr zeroDisplaySet, ItemDisplayAtr itemDisplayAtr) {
+		super();
+		this.companyCode = companyCode;
+		this.itemCode = itemCode;
+		this.itemName = itemName;
+		this.itemAbName = itemAbName;
+		this.itemAbNameE = itemAbNameE;
+		this.itemAbNameO = itemAbNameO;
+		this.categoryAtr = categoryAtr;
+		this.fixAtr = fixAtr;
+		this.displaySet = displaySet;
+		this.uniteCode = uniteCode;
+		this.zeroDisplaySet = zeroDisplaySet;
+		this.itemDisplayAtr = itemDisplayAtr;
 	}
-	
-	public ItemMaster additionalErrorAlarm(int isUseHighError, int errRangeHigh, int isUseLowError, int errRangeLow, int isUseHighAlam, int alamRangeHigh, int isUseLowAlam, int alamRangeLow){
-		this.error = new ArrayList<>();
-		this.alarm = new ArrayList<>();
-		this.error.add(new RangeChecker(EnumAdaptor.valueOf(isUseHighError, UseOrNot.class),  EnumAdaptor.valueOf(isUseLowError, UseOrNot.class), Range.between(errRangeLow, errRangeHigh)));
-		this.alarm.add(new RangeChecker(EnumAdaptor.valueOf(isUseHighAlam, UseOrNot.class),  EnumAdaptor.valueOf(isUseLowAlam, UseOrNot.class), Range.between(alamRangeLow, alamRangeHigh)));
-		return this;
-	}
-	
-	/**
-	 * Check tax = COMMUTING_COST || COMMUTING_EXPENSE
-	 * (using for calculate payment create data)
-	 * @return
-	 */
-	public boolean isTaxCommutingoCostOrCommutingExpense() {
-		return this.taxAtr == TaxAtr.COMMUTING_COST || this.taxAtr == TaxAtr.COMMUTING_EXPENSE;
-	}
-	
-	/**
-	 * Check tax = TAXATION || TAX_FREE_LIMIT || TAX_FREE_UN_LIMIT
-	 * (using for calculate payment create data)
-	 * @return
-	 */
-	public boolean isTaxTaxationOrTaxFreeLimitOrTaxFreeUnLimit() {
-		return this.taxAtr ==  TaxAtr.TAXATION || this.taxAtr == TaxAtr.TAX_FREE_LIMIT || this.taxAtr == TaxAtr.TAX_FREE_UN_LIMIT;
+
+	public static ItemMaster createFromJavaType(String companyCode, String itemCode, String itemName, String itemAbName,
+			String itemAbNameE, String itemAbNameO, int categoryAtr, int fixAtr, int displaySet, String uniteCode,
+			int zeroDisplaySet, int itemDisplayAtr) {
+		return new ItemMaster(new CompanyCode(companyCode), new ItemCode(itemCode), new ItemName(itemName),
+				new ItemName(itemAbName), new ItemName(itemAbNameE), new ItemName(itemAbNameO),
+				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class), fixAtr,
+				EnumAdaptor.valueOf(displaySet, DisplayAtr.class), new UniteCode(uniteCode),
+				EnumAdaptor.valueOf(zeroDisplaySet, DisplayAtr.class),
+				EnumAdaptor.valueOf(itemDisplayAtr, ItemDisplayAtr.class));
 	}
 }

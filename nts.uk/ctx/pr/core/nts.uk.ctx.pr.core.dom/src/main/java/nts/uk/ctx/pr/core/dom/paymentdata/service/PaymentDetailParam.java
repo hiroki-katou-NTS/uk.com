@@ -5,13 +5,13 @@ import java.util.List;
 import lombok.Value;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.allot.PersonalAllotSetting;
-import nts.uk.ctx.pr.core.dom.layout.detail.LayoutMasterDetail;
-import nts.uk.ctx.pr.core.dom.layout.line.LayoutMasterLine;
 import nts.uk.ctx.pr.core.dom.paymentdata.PaymentCalculationBasicInformation;
 import nts.uk.ctx.pr.core.dom.paymentdata.paymentdatemaster.PaymentDateMaster;
 import nts.uk.ctx.pr.core.dom.personalinfo.employmentcontract.PersonalEmploymentContract;
 import nts.uk.ctx.pr.core.dom.personalinfo.holiday.HolidayPaid;
 import nts.uk.ctx.pr.core.dom.personalinfo.wage.PersonalWage;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.detail.LayoutMasterDetail;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LayoutMasterLine;
 import nts.uk.shr.com.primitive.PersonId;
 
 @Value

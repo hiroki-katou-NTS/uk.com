@@ -3,7 +3,9 @@
 @import url("../a/base.css");
 
 #C_INP_006 {
-	border-radius: 5px;
+	
+	width: 340px;
+	height: 90px;
 }
 
 #C_SEL_011 button {
@@ -14,10 +16,15 @@
 
 .switchNomalSize button {
 	height: 30px;
-	width: 70px;
 	font-size: 0.8rem;
+	padding: 0px 15px;
 }
 
+#C_SEL_002 button, #C_SEL_003 button, #C_SEL_005 button, #C_SEL_006 button,
+	#C_SEL_007 button, #C_SEL_008 button, #C_SEL_009 button, #C_SEL_010 button
+	{
+	width: 80px;
+}
 
 #right-content-bottom-right {
 	margin-left: 40px;
@@ -29,7 +36,7 @@
 }
 
 #C_LBL_006 {
-	margin-left: 75px;
+	margin-left: 55px;
 }
 
 #C_SEL_006, #C_SEL_008, #C_SEL_009 {
@@ -44,10 +51,6 @@
 	margin-left: 244px;
 }
 
-#C_INP_002 {
-	margin-left: 40px;
-}
-
 #C_SEL_012 {
 	margin-left: 10px;
 }
@@ -56,24 +59,12 @@
 	margin-left: 20px;
 }
 
-#C_INP_003 {
-	margin-left: 40px;
-}
-
 #C_LBL_014 {
 	margin-left: 20px;
 }
 
-#C_INP_004 {
-	margin-left: 40px;
-}
-
 #C_LBL_016 {
 	margin-left: 20px;
-}
-
-#C_INP_005 {
-	margin-left: 40px;
 }
 
 #C_LBL_017 {
@@ -101,4 +92,8 @@
 #C_SEL_017 button {
 	height: 55px;
 	border-radius: 5px;
+}
+
+#C_LBL_019 label {
+	line-height: 25px;
 }

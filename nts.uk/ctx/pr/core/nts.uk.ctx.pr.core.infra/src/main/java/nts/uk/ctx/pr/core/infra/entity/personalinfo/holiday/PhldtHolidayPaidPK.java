@@ -29,5 +29,4 @@ public class PhldtHolidayPaidPK implements Serializable{
 	@Column(name = "GRANT_DATE")
 	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate grantDate;
-
 }

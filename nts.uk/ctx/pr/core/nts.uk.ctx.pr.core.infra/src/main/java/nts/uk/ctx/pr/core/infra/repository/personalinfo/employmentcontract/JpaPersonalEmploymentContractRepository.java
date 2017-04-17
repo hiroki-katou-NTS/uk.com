@@ -10,7 +10,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.personalinfo.employmentcontract.PersonalEmploymentContract;
 import nts.uk.ctx.pr.core.dom.personalinfo.employmentcontract.PersonalEmploymentContractRepository;
 import nts.uk.ctx.pr.core.infra.entity.personalinfo.employmentcontract.PclmtPersonEmpContract;
@@ -33,7 +33,7 @@ public class JpaPersonalEmploymentContractRepository extends JpaRepository
 	@Override
 	public List<PersonalEmploymentContract> findAll(String companyCode, List<String> personIds, GeneralDate baseYmd) {
 		List<PersonalEmploymentContract> results = new ArrayList<>();
-		ListUtil.split(personIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, personIdList -> {
+		CollectionUtil.split(personIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, personIdList -> {
 			this.queryProxy().query(SELECT_BY_CCD_PID_STRD_ENDD, PclmtPersonEmpContract.class)
 			.setParameter("ccd", companyCode).setParameter("pIds", personIdList).setParameter("baseYmd", baseYmd)
 			.getList().stream().forEach(e -> results.add(toDomain(e)));
@@ -70,5 +70,4 @@ public class JpaPersonalEmploymentContractRepository extends JpaRepository
 		
 		return Optional.of(empContractList.get(0));
 	}
-
 }

@@ -11,7 +11,6 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.find.item.ItemDto;
 import nts.uk.ctx.pr.core.app.find.item.ItemFinder;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemAtr;
 
 
 @Path("pr/proto/item")
@@ -33,9 +32,4 @@ public class ItemWebService extends WebService {
 		return itemFinder.getItem(categoryAtr, itemCode).get();
 	}
 	
-	@POST
-	@Path("findall/avepay/time")
-	public List<ItemDto> getItemsByAvePayAtrTime(){
-		return itemFinder.findAllByItemAtr(ItemAtr.TIMES);
-	}
 }

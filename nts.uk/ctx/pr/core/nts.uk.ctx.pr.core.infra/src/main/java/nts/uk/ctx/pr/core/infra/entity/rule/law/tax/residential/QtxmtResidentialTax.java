@@ -25,6 +25,10 @@ public class QtxmtResidentialTax extends TableEntity implements Serializable{
 	public QtxmtResidentialTaxPk qtxmtResidentialTaxPk;
 	
 	@Basic(optional = false)
+	@Column(name = "EXCLUS_VER")
+	public int exclusVer;
+	
+	@Basic(optional = false)
 	@Column(name ="RESI_TAX_AUTONOMY")
 	public String resiTaxAutonomy;
 
@@ -34,7 +38,7 @@ public class QtxmtResidentialTax extends TableEntity implements Serializable{
 	
 	@Basic(optional = true)
 	@Column(name ="RESI_TAX_REPORT_CD")
-	public String resiReportCode;
+	public String resiTaxReportCode;
 	
 	@Basic(optional = true)
 	@Column(name ="REGISTERED_NAME")
