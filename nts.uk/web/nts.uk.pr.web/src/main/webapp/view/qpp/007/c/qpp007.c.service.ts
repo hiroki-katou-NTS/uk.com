@@ -51,11 +51,17 @@ module nts.uk.pr.view.qpp007.c {
             var dfd = $.Deferred<any>();
             // mock data
             var masterItems: any = [];
-            for (let i = 1; i < 15; i++) {
-                masterItems.push({ code: 'MI' + i, name: '基本給' + i, paymentType: 'Salary', taxDivision: 'Payment' });
+            for (let i = 1; i <= 9; i++) {
+                masterItems.push({ code: 'F00' + i, name: '基本給' + i, category: 'Payment' });
             }
-            for (let i = 1; i < 15; i++) {
-                masterItems.push({ code: 'MI0' + i, name: '基本給' + i, paymentType: 'Salary', taxDivision: 'Deduction' });
+            for (let i = 1; i <= 9; i++) {
+                masterItems.push({ code: 'F10' + i, name: '基本給' + i, category: 'Deduction' });
+            }
+            for (let i = 1; i <= 9; i++) {
+                masterItems.push({ code: 'F20' + i, name: '基本給' + i, category: 'Attendance' });
+            }
+            for (let i = 1; i <= 9; i++) {
+                masterItems.push({ code: 'F30' + i, name: '基本給' + i, category: 'ArticleOthers' });
             }
             return dfd.resolve(masterItems).promise();
         }

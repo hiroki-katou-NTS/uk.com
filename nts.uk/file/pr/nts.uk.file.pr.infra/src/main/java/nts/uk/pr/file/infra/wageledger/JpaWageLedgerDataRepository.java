@@ -33,6 +33,7 @@ import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery;
 import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery.OutputType;
 import nts.uk.file.pr.app.export.wageledger.data.WLNewLayoutReportData;
 import nts.uk.file.pr.app.export.wageledger.data.WLOldLayoutReportData;
+import nts.uk.file.pr.app.export.wageledger.data.oldlayout.DeductionData;
 import nts.uk.file.pr.app.export.wageledger.data.oldlayout.PaymentData;
 import nts.uk.file.pr.app.export.wageledger.data.share.HeaderReportData;
 import nts.uk.file.pr.app.export.wageledger.data.share.MonthlyData;
@@ -77,7 +78,14 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 	
 	private static final String TOTAL_TAX_EXEMPTION_ITEM_CODE = "F002";
 	
-	private static final String TOTAL_SALARY_PAYMENT_ITEM_CODE = "F003";
+	private static final String TOTAL_PAYMENT_ITEM_CODE = "F003";
+	
+	private static final String TOTAL_DEDUCTION_ITEM_CODE = "F114";
+	
+	private static final String TOTAL_REAL_ITEM_CODE = "F309";
+	
+	private static final int ARTICLE_CATEGORY = 3;
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.file.pr.app.export.wageledger.WageLedgerDataRepository
 	 * #findReportDatas(java.lang.String, nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery)
@@ -193,31 +201,105 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 								&& paymentDetail.qstdtPaymentDetailPK.payBonusAttribute == PaymentType.Salary.value;
 					}).collect(Collectors.toList());
 			// Convert result list to item map.
-			Map<QcamtItem, ReportItemDto> salaryItemsMap = this.convertMasterResultDatasToItemMap(salaryPaymentResultList);
-			PaymentData salaryPaymentData = this.convertToPaymentData(salaryItemsMap);
+			Map<QcamtItem, ReportItemDto> salaryPaymentItemsMap = this.convertMasterResultDatasToItemMap(salaryPaymentResultList);
+			PaymentData salaryPaymentData = this.convertToPaymentData(salaryPaymentItemsMap);
 			
 			// =============== Bonus payment data ===========================
 			// Filter result list by payment type and category.
 			List<Object[]> bonusPaymentResultList = detailData.stream().filter(res -> {
 				QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) res[0];
 				return paymentDetail.qstdtPaymentDetailPK.categoryATR == WLCategory.Payment.value
+						&& paymentDetail.qstdtPaymentDetailPK.payBonusAttribute == PaymentType.Bonus.value;
+			}).collect(Collectors.toList());
+			// Convert result list to item map.
+			Map<QcamtItem, ReportItemDto> bonusPaymentItemsMap = this
+					.convertMasterResultDatasToItemMap(bonusPaymentResultList);
+			PaymentData bonusPaymentData = this.convertToPaymentData(bonusPaymentItemsMap);
+			
+			// =============== Salary Deduction data ===========================
+			// Filter result list by payment type and category.
+			List<Object[]> salaryDeductionResultList = detailData.stream().filter(res -> {
+				QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) res[0];
+				return paymentDetail.qstdtPaymentDetailPK.categoryATR == WLCategory.Deduction.value
 						&& paymentDetail.qstdtPaymentDetailPK.payBonusAttribute == PaymentType.Salary.value;
 			}).collect(Collectors.toList());
 			// Convert result list to item map.
-			Map<QcamtItem, ReportItemDto> bonusItemsMap = this
-					.convertMasterResultDatasToItemMap(bonusPaymentResultList);
-			PaymentData bonusPaymentData = this.convertToPaymentData(bonusItemsMap);
+			Map<QcamtItem, ReportItemDto> salaryDeductionItemsMap = this
+					.convertMasterResultDatasToItemMap(salaryDeductionResultList);
+			DeductionData salaryDeductionData = this.convertToDeductionData(salaryDeductionItemsMap);
 			
+			// =============== Bonus Deduction data ===========================
+			// Filter result list by payment type and category.
+			List<Object[]> bonusDeductionResultList = detailData.stream().filter(res -> {
+				QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) res[0];
+				return paymentDetail.qstdtPaymentDetailPK.categoryATR == WLCategory.Deduction.value
+						&& paymentDetail.qstdtPaymentDetailPK.payBonusAttribute == PaymentType.Bonus.value;
+			}).collect(Collectors.toList());
+			// Convert result list to item map.
+			Map<QcamtItem, ReportItemDto> bonusDeductionItemsMap = this
+					.convertMasterResultDatasToItemMap(bonusDeductionResultList);
+			DeductionData bonusDeductionData = this.convertToDeductionData(bonusDeductionItemsMap);
+			
+			// =============== Net salary item ===========================
+			ReportItemDto netSalaryItem = this.findItem(detailData, PaymentType.Salary.value,
+					ARTICLE_CATEGORY, TOTAL_REAL_ITEM_CODE);
+			
+			// =============== Total bonus item ===========================
+			ReportItemDto totalBonusItem = this.findItem(detailData, PaymentType.Bonus.value,
+					ARTICLE_CATEGORY, TOTAL_REAL_ITEM_CODE);
+			
+			// =============== Salary Attendance Data ===========================
+			// Filter result list by payment type and category.
+			List<Object[]> salaryAttendanceResultList = detailData.stream().filter(res -> {
+				QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) res[0];
+				return paymentDetail.qstdtPaymentDetailPK.categoryATR == WLCategory.Attendance.value
+						&& paymentDetail.qstdtPaymentDetailPK.payBonusAttribute == PaymentType.Salary.value;
+			}).collect(Collectors.toList());
+			// Convert result list to item map.
+			Map<QcamtItem, ReportItemDto> salaryAttendanceItemsMap = this
+					.convertMasterResultDatasToItemMap(salaryAttendanceResultList);
+
 			WLOldLayoutReportData data = WLOldLayoutReportData.builder()
 					.headerData(headerDataMap.get(personId))
 					.salaryPaymentData(salaryPaymentData)
 					.bonusPaymentData(bonusPaymentData)
+					.salaryDeductionData(salaryDeductionData)
+					.bonusDeductionData(bonusDeductionData)
+					.netSalaryData(netSalaryItem)
+					.totalBonusData(totalBonusItem)
+					.salaryAttendanceDatas(new ArrayList<>(salaryAttendanceItemsMap.values()))
 					.build();
 			
 			// Add to report data list.
 			dataList.add(data);
 		}
 		return dataList;
+	}
+	
+	private ReportItemDto findItem(List<Object[]> results, int paymentType,
+			int category, String itemCode) {
+		
+		// Filter by conditions
+		List<Object[]> itemDataResultList = results.stream().filter(res -> {
+			QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) res[0];
+			return paymentDetail.qstdtPaymentDetailPK.categoryATR == category
+					&& paymentDetail.qstdtPaymentDetailPK.payBonusAttribute == paymentType
+					&& paymentDetail.qstdtPaymentDetailPK.itemCode == itemCode;
+		}).collect(Collectors.toList());
+		
+		// Convert data.
+		List<MonthlyData> monthlyDatas = itemDataResultList.stream().map(data -> {
+			QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) data[0];
+			YearMonth processYM = YearMonth.of(paymentDetail.qstdtPaymentDetailPK.processingYM);
+			return MonthlyData.builder()
+					.month(processYM.month())
+					.amount(paymentDetail.value.longValue())
+					.build();
+		}).collect(Collectors.toList());
+		return  ReportItemDto.builder()
+				.name(((QcamtItem) itemDataResultList.get(0)[1]).itemName)
+				.monthlyDatas(monthlyDatas)
+				.build();
 	}
 	
 	private PaymentData convertToPaymentData(Map<QcamtItem, ReportItemDto> resultsMap) {
@@ -238,7 +320,7 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		
 		// Create total salary payment item.
 		QcamtItem totalSalaryPaymentResultItem = resultsMap.keySet().stream()
-				.filter(item -> item.qcamtItemPK.itemCd.equals(TOTAL_SALARY_PAYMENT_ITEM_CODE))
+				.filter(item -> item.qcamtItemPK.itemCd.equals(TOTAL_PAYMENT_ITEM_CODE))
 				.findFirst().get();
 		ReportItemDto totalSalaryPaymentReportItem = resultsMap.get(totalSalaryPaymentResultItem);
 		items.remove(totalSalaryPaymentReportItem);
@@ -247,6 +329,22 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 				.totalTax(totalTaxReportItem)
 				.totalTaxExemption(totalTaxExemptionReportItem)
 				.totalSalaryPayment(totalSalaryPaymentReportItem)
+				.build();
+	}
+	
+	private DeductionData convertToDeductionData(Map<QcamtItem, ReportItemDto> resultsMap) {
+		List<ReportItemDto> items = new ArrayList<>(resultsMap.values());
+		
+		// Create total deduction item.
+		QcamtItem totalDeductionItem = resultsMap.keySet().stream()
+				.filter(item -> item.qcamtItemPK.itemCd.equals(TOTAL_DEDUCTION_ITEM_CODE))
+				.findFirst().get();
+		ReportItemDto totalDeductionReportItem = resultsMap.get(totalDeductionItem);
+		items.remove(totalDeductionReportItem);
+		
+		return DeductionData.builder()
+				.aggregateItemList(items)
+				.totalDeduction(totalDeductionReportItem)
 				.build();
 	}
 	

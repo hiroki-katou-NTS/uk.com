@@ -16,15 +16,13 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.service.AccidentInsuranceRateService;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class AccidentInsuranceHistoryUpdateCommandHandler.
  */
 @Stateless
 public class AccidentInsuranceHistoryUpdateCommandHandler
-	extends CommandHandler<AccidentInsuranceHistoryUpdateCommand> {
+		extends CommandHandler<AccidentInsuranceHistoryUpdateCommand> {
 
 	/** The accident insurance rate repository. */
 	@Inject
@@ -46,16 +44,10 @@ public class AccidentInsuranceHistoryUpdateCommandHandler
 	@Transactional
 	protected void handle(CommandHandlerContext<AccidentInsuranceHistoryUpdateCommand> context) {
 
-		// get user login info
-		LoginUserContext loginUserContext = AppContexts.user();
-
-		// get companyCode by user login
-		String companyCode = loginUserContext.companyCode();
-
 		// get command
 		AccidentInsuranceHistoryUpdateCommand command = context.getCommand();
 
-		Optional<AccidentInsuranceRate> data = this.repository.findById(companyCode, command.getHistoryId());
+		Optional<AccidentInsuranceRate> data = this.repository.findById(command.getHistoryId());
 
 		// exist data
 		if (data.isPresent()) {
@@ -68,19 +60,20 @@ public class AccidentInsuranceHistoryUpdateCommandHandler
 
 			// call get by id
 			Optional<AccidentInsuranceRate> dataFirst = this.repository
-				.findById(insuranceRate.getCompanyCode(), insuranceRate.getHistoryId());
+					.findById(insuranceRate.getHistoryId());
 
 			if (!dataFirst.isPresent()) {
 				return;
 			}
 			// get <= start
 			Optional<AccidentInsuranceRate> dataPrevious = this.repository.findBetweenUpdate(
-				insuranceRate.getCompanyCode(), data.get().getApplyRange().getStartMonth(),
-				data.get().getHistoryId());
+					insuranceRate.getCompanyCode(), data.get().getApplyRange().getStartMonth(),
+					data.get().getHistoryId());
 
 			// update end year month start previous
 			if (dataPrevious.isPresent()) {
-				dataPrevious.get().setEnd(insuranceRate.getApplyRange().getStartMonth().previousMonth());
+				dataPrevious.get()
+						.setEnd(insuranceRate.getApplyRange().getStartMonth().previousMonth());
 				this.repository.update(dataPrevious.get());
 			}
 

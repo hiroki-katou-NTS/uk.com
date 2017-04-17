@@ -16,7 +16,7 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel(officeName, pensionModel) {
                                     var self = this;
-                                    self.listAvgEarnLevelMasterSetting = [];
+                                    self.listHealthAvgEarnLimit = [];
                                     self.listPensionAvgearnModel = ko.observableArray([]);
                                     self.pensionRateModel = new PensionRateModel(pensionModel.historyId, pensionModel.officeCode(), officeName, pensionModel.startMonth(), pensionModel.endMonth(), pensionModel.autoCalculate(), pensionModel.fundInputApply(), pensionModel.rateItems(), pensionModel.fundRateItems(), pensionModel.roundingMethods(), pensionModel.childContributionRate());
                                     self.leftShow = ko.observable(true);
@@ -25,7 +25,6 @@ var nts;
                                         return "—"; return "+"; });
                                     self.rightBtnText = ko.computed(function () { if (self.rightShow())
                                         return "—"; return "+"; });
-                                    // Common NtsNumberEditor Option
                                     self.numberEditorCommonOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                                         grouplength: 3
                                     }));
@@ -35,47 +34,35 @@ var nts;
                                         { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" },
                                     ]);
                                 }
-                                /**
-                                 * Start page.
-                                 */
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    $.when(self.loadAvgEarnLevelMasterSetting(), self.loadPensionAvgearn()).done(function () {
+                                    $.when(self.loadHealthAvgEarnLimit(), self.loadPensionAvgearn()).done(function () {
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
                                 };
-                                /**
-                                 * Load AvgEarnLevelMasterSetting list.
-                                 */
-                                ScreenModel.prototype.loadAvgEarnLevelMasterSetting = function () {
+                                ScreenModel.prototype.loadHealthAvgEarnLimit = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    commonService.getAvgEarnLevelMasterSettingList().done(function (res) {
-                                        self.listAvgEarnLevelMasterSetting = res;
+                                    commonService.getHealthAvgEarnLimitList().done(function (res) {
+                                        self.listHealthAvgEarnLimit = res;
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
                                 };
-                                /**
-                                 * Load PensionAvgEarn.
-                                 */
                                 ScreenModel.prototype.loadPensionAvgearn = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     i.service.findPensionAvgearn(self.pensionRateModel.historyId).done(function (res) {
                                         res.listPensionAvgearnDto.forEach(function (item) {
-                                            self.listPensionAvgearnModel.push(new PensionAvgearnModel(item.levelCode, new PensionAvgearnValueModel(item.companyFund.maleAmount, item.companyFund.femaleAmount, item.companyFund.unknownAmount), new PensionAvgearnValueModel(item.companyFundExemption.maleAmount, item.companyFundExemption.femaleAmount, item.companyFundExemption.unknownAmount), new PensionAvgearnValueModel(item.companyPension.maleAmount, item.companyPension.femaleAmount, item.companyPension.unknownAmount), new PensionAvgearnValueModel(item.personalFund.maleAmount, item.personalFund.femaleAmount, item.personalFund.unknownAmount), new PensionAvgearnValueModel(item.personalFundExemption.maleAmount, item.personalFundExemption.femaleAmount, item.personalFundExemption.unknownAmount), new PensionAvgearnValueModel(item.personalPension.maleAmount, item.personalPension.femaleAmount, item.personalPension.unknownAmount), item.childContributionAmount));
+                                            self.listPensionAvgearnModel.push(new PensionAvgearnModel(item.grade, item.avgEarn, item.upperLimit, new PensionAvgearnValueModel(item.companyFund.maleAmount, item.companyFund.femaleAmount, item.companyFund.unknownAmount), new PensionAvgearnValueModel(item.companyFundExemption.maleAmount, item.companyFundExemption.femaleAmount, item.companyFundExemption.unknownAmount), new PensionAvgearnValueModel(item.companyPension.maleAmount, item.companyPension.femaleAmount, item.companyPension.unknownAmount), new PensionAvgearnValueModel(item.personalFund.maleAmount, item.personalFund.femaleAmount, item.personalFund.unknownAmount), new PensionAvgearnValueModel(item.personalFundExemption.maleAmount, item.personalFundExemption.femaleAmount, item.personalFundExemption.unknownAmount), new PensionAvgearnValueModel(item.personalPension.maleAmount, item.personalPension.femaleAmount, item.personalPension.unknownAmount), item.childContributionAmount));
                                         });
                                         self.dirty.reset();
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
                                 };
-                                /**
-                                 * Collect data from input.
-                                 */
                                 ScreenModel.prototype.collectData = function () {
                                     var self = this;
                                     var data = { historyId: self.pensionRateModel.historyId, listPensionAvgearnDto: [] };
@@ -84,49 +71,31 @@ var nts;
                                     });
                                     return data;
                                 };
-                                /**
-                                 * Call service to save pensionAvgearn.
-                                 */
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
-                                    // Return if has error.
                                     if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                                         return;
                                     }
                                     i.service.updatePensionAvgearn(self.collectData(), self.pensionRateModel.officeCode)
                                         .done(function () { return self.closeDialog(); });
                                 };
-                                /**
-                                 * Button toggle Pension welfare pension.
-                                 */
                                 ScreenModel.prototype.leftToggle = function () {
                                     this.leftShow(!this.leftShow());
                                 };
-                                /**
-                                 * Button toggle right.
-                                 */
                                 ScreenModel.prototype.rightToggle = function () {
                                     this.rightShow(!this.rightShow());
                                 };
                                 ScreenModel.prototype.clearError = function () {
                                     $('.has-error').ntsError('clear');
                                 };
-                                /**
-                                 * ReCalculate the listPensionAvgearnModel
-                                 */
                                 ScreenModel.prototype.reCalculate = function () {
                                     var self = this;
                                     self.clearError();
-                                    // Clear current listPensionAvgearnModel
                                     self.listPensionAvgearnModel.removeAll();
-                                    // Recalculate listPensionAvgearnModel
-                                    self.listAvgEarnLevelMasterSetting.forEach(function (item) {
+                                    self.listHealthAvgEarnLimit.forEach(function (item) {
                                         self.listPensionAvgearnModel.push(self.calculatePensionAvgearn(item));
                                     });
                                 };
-                                /**
-                                 * Calculate the PensionAvgearn
-                                 */
                                 ScreenModel.prototype.calculatePensionAvgearn = function (levelMasterSetting) {
                                     var self = this;
                                     var model = self.pensionRateModel;
@@ -144,7 +113,6 @@ var nts;
                                         return new PensionAvgearnModel(levelMasterSetting.code, new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero), new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero), new PensionAvgearnValueModel(self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanySon() * rate), self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanyDaughter() * rate), self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanyUnknown() * rate)), new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero), new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero), new PensionAvgearnValueModel(self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalSon() * rate), self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalDaughter() * rate), self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalUnknown() * rate)), model.childContributionRate() * rate);
                                     }
                                 };
-                                // rounding 
                                 ScreenModel.prototype.rounding = function (roudingMethod, roundValue) {
                                     var self = this;
                                     var backupValue = roundValue;
@@ -167,7 +135,6 @@ var nts;
                                     else
                                         return Math.floor(value);
                                 };
-                                //value to string rounding
                                 ScreenModel.prototype.convertToRounding = function (stringValue) {
                                     switch (stringValue) {
                                         case "0": return Rounding.TRUNCATION;
@@ -190,18 +157,12 @@ var nts;
                                         self.closeDialog();
                                     }
                                 };
-                                /**
-                                 * Close dialog.
-                                 */
                                 ScreenModel.prototype.closeDialog = function () {
                                     nts.uk.ui.windows.close();
                                 };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
-                            /**
-                             * PensionRate Model
-                             */
                             var PensionRateModel = (function () {
                                 function PensionRateModel(historyId, officeCode, officeName, startMonth, endMonth, autoCalculate, fundInputApply, rateItems, fundRateItems, roundingMethods, childContributionRate) {
                                     this.historyId = historyId;
@@ -219,12 +180,11 @@ var nts;
                                 return PensionRateModel;
                             }());
                             viewmodel.PensionRateModel = PensionRateModel;
-                            /**
-                             * PensionAvgearn Model
-                             */
                             var PensionAvgearnModel = (function () {
-                                function PensionAvgearnModel(levelCode, companyFund, companyFundExemption, companyPension, personalFund, personalFundExemption, personalPension, childContributionAmount) {
-                                    this.levelCode = levelCode;
+                                function PensionAvgearnModel(grade, avgEarn, upperLimit, companyFund, companyFundExemption, companyPension, personalFund, personalFundExemption, personalPension, childContributionAmount) {
+                                    this.grade = grade;
+                                    this.avgEarn = avgEarn;
+                                    this.upperLimit = upperLimit;
                                     this.companyFund = companyFund;
                                     this.companyFundExemption = companyFundExemption;
                                     this.companyPension = companyPension;
@@ -236,9 +196,6 @@ var nts;
                                 return PensionAvgearnModel;
                             }());
                             viewmodel.PensionAvgearnModel = PensionAvgearnModel;
-                            /**
-                             * PensionAvgearnValue Model
-                             */
                             var PensionAvgearnValueModel = (function () {
                                 function PensionAvgearnValueModel(maleAmount, femaleAmount, unknownAmount) {
                                     this.maleAmount = ko.observable(maleAmount);
@@ -277,3 +234,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qmm008.i.vm.js.map

@@ -1,7 +1,7 @@
 module nts.uk.pr.view.qmm008.h {
     export module viewmodel {
         import commonService = nts.uk.pr.view.qmm008._0.common.service;
-        import AvgEarnLevelMasterSettingDto = nts.uk.pr.view.qmm008._0.common.service.model.AvgEarnLevelMasterSettingDto;
+        import AvgEarnLimitDto = nts.uk.pr.view.qmm008._0.common.service.model.AvgEarnLimitDto;
         import ListHealthInsuranceAvgEarnDto = service.model.ListHealthInsuranceAvgEarnDto;
         import HealthInsuranceAvgEarnValue = service.model.HealthInsuranceAvgEarnValue;
         import HealthInsuranceRateItemModel = nts.uk.pr.view.qmm008.b.viewmodel.HealthInsuranceRateItemModel;
@@ -10,7 +10,7 @@ module nts.uk.pr.view.qmm008.h {
         import InsuranceOfficeItemDto = nts.uk.pr.view.qmm008.b.service.model.finder.InsuranceOfficeItemDto;
 
         export class ScreenModel {
-            listAvgEarnLevelMasterSetting: Array<AvgEarnLevelMasterSettingDto>;
+            listHealthAvgEarnLimit: Array<AvgEarnLimitDto>;
             listHealthInsuranceAvgearn: KnockoutObservableArray<HealthInsuranceAvgEarnModel>;
             healthInsuranceRateModel: HealthInsuranceRateModel;
             numberEditorCommonOption: KnockoutObservable<nts.uk.ui.option.NumberEditorOption>;
@@ -28,7 +28,7 @@ module nts.uk.pr.view.qmm008.h {
                     healthModel.rateItems(),
                     healthModel.roundingMethods());
 
-                self.listAvgEarnLevelMasterSetting = [];
+                self.listHealthAvgEarnLimit = [];
                 self.listHealthInsuranceAvgearn = ko.observableArray<HealthInsuranceAvgEarnModel>([]);
 
                 // Common NtsNumberEditor Option
@@ -49,20 +49,20 @@ module nts.uk.pr.view.qmm008.h {
             public startPage(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                self.loadAvgEarnLevelMasterSetting().done(() =>
+                self.loadHealthAvgEarnLimit().done(() =>
                     self.loadHealthInsuranceAvgearn().done(() =>
                         dfd.resolve()));
                 return dfd.promise();
             }
 
             /**
-             * Load AvgEarnLevelMasterSetting list.
+             * Load HealthAvgEarnLimit list.
              */
-            private loadAvgEarnLevelMasterSetting(): JQueryPromise<void> {
+            private loadHealthAvgEarnLimit(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                commonService.getAvgEarnLevelMasterSettingList().done(res => {
-                    self.listAvgEarnLevelMasterSetting = res;
+                commonService.getHealthAvgEarnLimitList().done(res => {
+                    self.listHealthAvgEarnLimit = res;
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -78,7 +78,9 @@ module nts.uk.pr.view.qmm008.h {
                     res.listHealthInsuranceAvgearnDto.forEach(item => {
                         self.listHealthInsuranceAvgearn.push(
                             new HealthInsuranceAvgEarnModel(
-                                item.levelCode,
+                                item.grade,
+                                item.avgEarn,
+                                item.upperLimit,
                                 new HealthInsuranceAvgEarnValueModel(
                                     item.personalAvg.healthGeneralMny,
                                     item.personalAvg.healthNursingMny,
@@ -136,7 +138,7 @@ module nts.uk.pr.view.qmm008.h {
                 // Clear current listHealthInsuranceAvgearn
                 self.listHealthInsuranceAvgearn.removeAll();
                 // Recalculate listHealthInsuranceAvgearn
-                self.listAvgEarnLevelMasterSetting.forEach(item => {
+                self.listHealthAvgEarnLimit.forEach(item => {
                     self.listHealthInsuranceAvgearn.push(self.calculateHealthInsuranceAvgEarnModel(item));
                 });
             }
@@ -144,7 +146,7 @@ module nts.uk.pr.view.qmm008.h {
             /**
              * Calculate the healthInsuranceAvgearn
              */
-            private calculateHealthInsuranceAvgEarnModel(levelMasterSetting: AvgEarnLevelMasterSettingDto): HealthInsuranceAvgEarnModel {
+            private calculateHealthInsuranceAvgEarnModel(levelMasterSetting: AvgEarnLimitDto): HealthInsuranceAvgEarnModel {
                 var self = this;
                 var rateItems: HealthInsuranceRateItemModel = self.healthInsuranceRateModel.rateItems;
                 var roundingMethods: HealthInsuranceRoundingModel = self.healthInsuranceRateModel.roundingMethods;
@@ -153,7 +155,9 @@ module nts.uk.pr.view.qmm008.h {
                 var rate = levelMasterSetting.avgEarn / 1000;
                 var autoCalculate = self.healthInsuranceRateModel.autoCalculate;
                 return new HealthInsuranceAvgEarnModel(
-                    levelMasterSetting.code,
+                    levelMasterSetting.grade,
+                    levelMasterSetting.avgEarn,
+                    levelMasterSetting.salLimit,
                     new HealthInsuranceAvgEarnValueModel(
                         self.rounding(personalRounding, rateItems.healthSalaryPersonalGeneral() * rate, Number.One),
                         self.rounding(personalRounding, rateItems.healthSalaryPersonalNursing() * rate, Number.One),
@@ -168,22 +172,22 @@ module nts.uk.pr.view.qmm008.h {
                     )
                 );
             }
-            
+
             // rounding 
-            private rounding(roudingMethod: string,roundValue: number,roundType: number): number{
+            private rounding(roudingMethod: string, roundValue: number, roundType: number): number {
                 var self = this;
-                var getLevel = Math.pow(10,roundType);
-                var backupValue = roundValue*(getLevel/10);
-                switch(roudingMethod){
-                    case Rounding.ROUNDUP: return Math.ceil(backupValue)/(getLevel/10);
-                    case Rounding.TRUNCATION: return Math.floor(backupValue)/(getLevel/10);
+                var getLevel = Math.pow(10, roundType);
+                var backupValue = roundValue * (getLevel / 10);
+                switch (roudingMethod) {
+                    case Rounding.ROUNDUP: return Math.ceil(backupValue) / (getLevel / 10);
+                    case Rounding.TRUNCATION: return Math.floor(backupValue) / (getLevel / 10);
                     case Rounding.ROUNDDOWN:
                         if ((backupValue * getLevel) % 10 > 5)
-                            return (Math.ceil(backupValue))/(getLevel/10);
+                            return (Math.ceil(backupValue)) / (getLevel / 10);
                         else
-                            return Math.floor(backupValue)/(getLevel/10);
-                    case Rounding.DOWN4_UP5: return self.roudingDownUp(backupValue, 4)/(getLevel/10);
-                    case Rounding.DOWN5_UP6: return self.roudingDownUp(backupValue, 5)/(getLevel/10);
+                            return Math.floor(backupValue) / (getLevel / 10);
+                    case Rounding.DOWN4_UP5: return self.roudingDownUp(backupValue, 4) / (getLevel / 10);
+                    case Rounding.DOWN5_UP6: return self.roudingDownUp(backupValue, 5) / (getLevel / 10);
                 }
             }
             private roudingDownUp(value: number, down: number): number {
@@ -194,7 +198,7 @@ module nts.uk.pr.view.qmm008.h {
                     return Math.floor(value);
             }
 
-              //value to string rounding
+            //value to string rounding
             public convertToRounding(stringValue: string) {
                 switch (stringValue) {
                     case "0": return Rounding.TRUNCATION;
@@ -240,7 +244,7 @@ module nts.uk.pr.view.qmm008.h {
             autoCalculate: number;
             rateItems: HealthInsuranceRateItemModel;
             roundingMethods: HealthInsuranceRoundingModel;
-            constructor(officeCode: string, officeName: string, historyId: string, startMonth: string, endMonth: string,autoCalculate: number,rateItems: HealthInsuranceRateItemModel,roundingMethods: HealthInsuranceRoundingModel) {
+            constructor(officeCode: string, officeName: string, historyId: string, startMonth: string, endMonth: string, autoCalculate: number, rateItems: HealthInsuranceRateItemModel, roundingMethods: HealthInsuranceRoundingModel) {
                 this.officeCode = officeCode;
                 this.officeName = officeName;
                 this.historyId = historyId;
@@ -256,11 +260,17 @@ module nts.uk.pr.view.qmm008.h {
          * HealthInsuranceAvgEarn Model
          */
         export class HealthInsuranceAvgEarnModel {
-            levelCode: number;
+            grade: number;
+            avgEarn: number;
+            upperLimit: number;
             companyAvg: HealthInsuranceAvgEarnValueModel;
             personalAvg: HealthInsuranceAvgEarnValueModel;
-            constructor(levelCode: number, personalAvg: HealthInsuranceAvgEarnValueModel, companyAvg: HealthInsuranceAvgEarnValueModel) {
-                this.levelCode = levelCode;
+            constructor(grade: number, avgEarn: number,
+                upperLimit: number, personalAvg: HealthInsuranceAvgEarnValueModel,
+                companyAvg: HealthInsuranceAvgEarnValueModel) {
+                this.grade = grade;
+                this.avgEarn = avgEarn;
+                this.upperLimit = upperLimit;
                 this.companyAvg = companyAvg;
                 this.personalAvg = personalAvg;
             }
@@ -288,14 +298,14 @@ module nts.uk.pr.view.qmm008.h {
             static DOWN5_UP6 = 'Down5_Up6';
             static DOWN4_UP5 = 'Down4_Up5'
         }
-        export enum Number{
-                Zero = 0,
-                One = 1,
-                Three = 3
+        export enum Number {
+            Zero = 0,
+            One = 1,
+            Three = 3
         }
-        export enum AutoCalculate{
-                Auto = 0,
-                Manual = 1
+        export enum AutoCalculate {
+            Auto = 0,
+            Manual = 1
         }
     }
 }

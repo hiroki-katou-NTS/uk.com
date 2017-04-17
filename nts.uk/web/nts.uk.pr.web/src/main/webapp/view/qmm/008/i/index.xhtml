@@ -150,15 +150,14 @@
 								</com:ko>
 								<th class="halign-center" data-bind="text: pensionRateModel.childContributionRate"></th> 
 							</tr>
-							<com:ko-foreach bind="listAvgEarnLevelMasterSetting">
+							<com:ko-foreach bind="listHealthAvgEarnLimit">
 								<tr class="inp-money">
-									<td class="bg-green"><span data-bind="text: healthLevel"></span></td>
-									<td class="bg-green"><span data-bind="text: pensionLevel"></span></td>
+									<td class="bg-green"><span data-bind="text: grade"></span></td>
 									<td class="bg-green"><span data-bind="text: avgEarn"></span></td>
 									<td class="bg-green"><span data-bind="text: salMin"></span></td>
 									<td class="bg-green"><span data-bind="text: salLimit"></span></td>
 									<com:ko-foreach bind="$parent.listPensionAvgearnModel">
-										<com:ko-if bind="$parent.code == levelCode">
+										<com:ko-if bind="$parent.grade == grade">
 											<com:ko tag="if" bind="$parents[1].pensionRateModel.fundInputApply == 0">
 												<th data-bind="css: { hidden: $parents[1].leftShow() }"
 													class="bg-green border_none"></th>
