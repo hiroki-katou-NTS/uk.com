@@ -1,7 +1,7 @@
 module nts.uk.pr.view.qmm008.h {
     export module viewmodel {
         import commonService = nts.uk.pr.view.qmm008._0.common.service;
-        import AvgEarnLevelMasterSettingDto = nts.uk.pr.view.qmm008._0.common.service.model.AvgEarnLevelMasterSettingDto;
+        import AvgEarnLimitDto = nts.uk.pr.view.qmm008._0.common.service.model.AvgEarnLimitDto;
         import ListHealthInsuranceAvgEarnDto = service.model.ListHealthInsuranceAvgEarnDto;
         import HealthInsuranceAvgEarnValue = service.model.HealthInsuranceAvgEarnValue;
         import HealthInsuranceRateItemModel = nts.uk.pr.view.qmm008.b.viewmodel.HealthInsuranceRateItemModel;
@@ -10,7 +10,7 @@ module nts.uk.pr.view.qmm008.h {
         import InsuranceOfficeItemDto = nts.uk.pr.view.qmm008.b.service.model.finder.InsuranceOfficeItemDto;
 
         export class ScreenModel {
-            listAvgEarnLevelMasterSetting: Array<AvgEarnLevelMasterSettingDto>;
+            listHealthAvgEarnLimit: Array<AvgEarnLimitDto>;
             listHealthInsuranceAvgearn: KnockoutObservableArray<HealthInsuranceAvgEarnModel>;
             healthInsuranceRateModel: HealthInsuranceRateModel;
             numberEditorCommonOption: KnockoutObservable<nts.uk.ui.option.NumberEditorOption>;
@@ -28,7 +28,7 @@ module nts.uk.pr.view.qmm008.h {
                     healthModel.rateItems(),
                     healthModel.roundingMethods());
 
-                self.listAvgEarnLevelMasterSetting = [];
+                self.listHealthAvgEarnLimit = [];
                 self.listHealthInsuranceAvgearn = ko.observableArray<HealthInsuranceAvgEarnModel>([]);
 
                 // Common NtsNumberEditor Option
@@ -49,20 +49,20 @@ module nts.uk.pr.view.qmm008.h {
             public startPage(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                self.loadAvgEarnLevelMasterSetting().done(() =>
+                self.loadHealthAvgEarnLimit().done(() =>
                     self.loadHealthInsuranceAvgearn().done(() =>
                         dfd.resolve()));
                 return dfd.promise();
             }
 
             /**
-             * Load AvgEarnLevelMasterSetting list.
+             * Load HealthAvgEarnLimit list.
              */
-            private loadAvgEarnLevelMasterSetting(): JQueryPromise<void> {
+            private loadHealthAvgEarnLimit(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                commonService.getAvgEarnLevelMasterSettingList().done(res => {
-                    self.listAvgEarnLevelMasterSetting = res;
+                commonService.getHealthAvgEarnLimitList().done(res => {
+                    self.listHealthAvgEarnLimit = res;
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -138,7 +138,7 @@ module nts.uk.pr.view.qmm008.h {
                 // Clear current listHealthInsuranceAvgearn
                 self.listHealthInsuranceAvgearn.removeAll();
                 // Recalculate listHealthInsuranceAvgearn
-                self.listAvgEarnLevelMasterSetting.forEach(item => {
+                self.listHealthAvgEarnLimit.forEach(item => {
                     self.listHealthInsuranceAvgearn.push(self.calculateHealthInsuranceAvgEarnModel(item));
                 });
             }
@@ -146,7 +146,7 @@ module nts.uk.pr.view.qmm008.h {
             /**
              * Calculate the healthInsuranceAvgearn
              */
-            private calculateHealthInsuranceAvgEarnModel(levelMasterSetting: AvgEarnLevelMasterSettingDto): HealthInsuranceAvgEarnModel {
+            private calculateHealthInsuranceAvgEarnModel(levelMasterSetting: AvgEarnLimitDto): HealthInsuranceAvgEarnModel {
                 var self = this;
                 var rateItems: HealthInsuranceRateItemModel = self.healthInsuranceRateModel.rateItems;
                 var roundingMethods: HealthInsuranceRoundingModel = self.healthInsuranceRateModel.roundingMethods;

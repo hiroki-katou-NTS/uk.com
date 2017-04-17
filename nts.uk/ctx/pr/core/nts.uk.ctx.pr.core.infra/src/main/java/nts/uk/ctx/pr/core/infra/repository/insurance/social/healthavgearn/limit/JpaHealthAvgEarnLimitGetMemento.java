@@ -2,14 +2,14 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.infra.repository.insurance.avgearn;
+package nts.uk.ctx.pr.core.infra.repository.insurance.social.healthavgearn.limit;
 
-import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSettingGetMemento;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.limit.HealthAvgEarnLimitGetMemento;
 
 /**
- * The Class JpaAvgEarnLevelMasterSettingGetMemento.
+ * The Class JpaHealthAvgEarnLimitGetMemento.
  */
-public class JpaAvgEarnLevelMasterSettingGetMemento implements AvgEarnLevelMasterSettingGetMemento {
+public class JpaHealthAvgEarnLimitGetMemento implements HealthAvgEarnLimitGetMemento {
 
 	/** The type value. */
 	// TODO: Object -> entity class.
@@ -21,7 +21,7 @@ public class JpaAvgEarnLevelMasterSettingGetMemento implements AvgEarnLevelMaste
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaAvgEarnLevelMasterSettingGetMemento(Object typeValue) {
+	public JpaHealthAvgEarnLimitGetMemento(Object typeValue) {
 		this.typeValue = typeValue;
 	}
 
@@ -29,7 +29,7 @@ public class JpaAvgEarnLevelMasterSettingGetMemento implements AvgEarnLevelMaste
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.avgearn.
-	 * AvgEarnLevelMasterSettingGetMemento#getGrade()
+	 * HealthAvgEarnLimitGetMemento#getGrade()
 	 */
 	@Override
 	public Integer getGrade() {
@@ -41,7 +41,7 @@ public class JpaAvgEarnLevelMasterSettingGetMemento implements AvgEarnLevelMaste
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.avgearn.
-	 * AvgEarnLevelMasterSettingGetMemento#getAvgEarn()
+	 * HealthAvgEarnLimitGetMemento#getAvgEarn()
 	 */
 	@Override
 	public Long getAvgEarn() {
@@ -53,7 +53,7 @@ public class JpaAvgEarnLevelMasterSettingGetMemento implements AvgEarnLevelMaste
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.avgearn.
-	 * AvgEarnLevelMasterSettingGetMemento#getSalLimit()
+	 * HealthAvgEarnLimitGetMemento#getSalLimit()
 	 */
 	@Override
 	public Long getSalLimit() {

@@ -2,15 +2,15 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.insurance.avgearn;
+package nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.limit;
 
 import lombok.Data;
 
 /**
- * The Class AvgEarnLevelMasterSetting.
+ * The Class PensionAvgEarnLimit.
  */
 @Data
-public class AvgEarnLevelMasterSetting {
+public class PensionAvgEarnLimit {
 
 	/** The grade. */
 	private Integer grade;
@@ -24,7 +24,7 @@ public class AvgEarnLevelMasterSetting {
 	/**
 	 * Instantiates a new avg earn level master setting.
 	 */
-	public AvgEarnLevelMasterSetting() {
+	public PensionAvgEarnLimit() {
 		super();
 	}
 
@@ -35,7 +35,7 @@ public class AvgEarnLevelMasterSetting {
 	 * @param avgEarn the avg earn
 	 * @param salLimit the sal limit
 	 */
-	public AvgEarnLevelMasterSetting(Integer grade, Long avgEarn, Long salLimit) {
+	public PensionAvgEarnLimit(Integer grade, Long avgEarn, Long salLimit) {
 		super();
 		this.grade = grade;
 		this.avgEarn = avgEarn;
@@ -49,7 +49,7 @@ public class AvgEarnLevelMasterSetting {
 	 * @param memento
 	 *            the memento
 	 */
-	public AvgEarnLevelMasterSetting(AvgEarnLevelMasterSettingGetMemento memento) {
+	public PensionAvgEarnLimit(PensionAvgEarnLimitGetMemento memento) {
 		this.grade = memento.getGrade();
 		this.avgEarn = memento.getAvgEarn();
 		this.salLimit = memento.getSalLimit();
@@ -61,7 +61,7 @@ public class AvgEarnLevelMasterSetting {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(AvgEarnLevelMasterSettingSetMemento memento) {
+	public void saveToMemento(PensionAvgEarnLimitSetMemento memento) {
 		memento.setGrade(this.grade);
 		memento.setAvgEarn(this.avgEarn);
 		memento.setSalLimit(this.salLimit);

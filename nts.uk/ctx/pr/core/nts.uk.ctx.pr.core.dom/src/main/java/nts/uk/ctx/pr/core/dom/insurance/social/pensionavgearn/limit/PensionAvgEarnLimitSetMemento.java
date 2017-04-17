@@ -2,12 +2,12 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.insurance.avgearn;
+package nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.limit;
 
 /**
- * The Interface AvgEarnLevelMasterSettingSetMemento.
+ * The Interface PensionAvgEarnLimitSetMemento.
  */
-public interface AvgEarnLevelMasterSettingSetMemento {
+public interface PensionAvgEarnLimitSetMemento {
 
 	/**
 	 * Sets the grade.

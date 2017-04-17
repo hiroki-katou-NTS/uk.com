@@ -1,15 +1,15 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.insurance.avgearn;
+package nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.limit;
 
 import java.util.List;
 
 /**
- * The Interface AvgEarnLevelMasterSettingRepository.
+ * The Interface PensionAvgEarnLimitRepository.
  */
-public interface AvgEarnLevelMasterSettingRepository {
+public interface PensionAvgEarnLimitRepository {
 
 	/**
 	 * Find all.
@@ -17,6 +17,6 @@ public interface AvgEarnLevelMasterSettingRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<AvgEarnLevelMasterSetting> findAll(String companyCode);
+	List<PensionAvgEarnLimit> findAll(String companyCode);
 
 }

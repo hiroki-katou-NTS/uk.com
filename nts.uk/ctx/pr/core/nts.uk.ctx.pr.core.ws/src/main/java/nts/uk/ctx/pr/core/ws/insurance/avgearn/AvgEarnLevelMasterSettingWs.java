@@ -12,8 +12,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.insurance.avgearn.find.AvgEarnLevelMasterSettingDto;
-import nts.uk.ctx.pr.core.app.insurance.avgearn.find.AvgEarnLevelMasterSettingFinder;
+import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.limit.find.HealthAvgEarnLimitDto;
+import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.limit.find.HealthAvgEarnLimitFinder;
+import nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.limit.find.PensionAvgEarnLimitDto;
+import nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.limit.find.PensionAvgEarnLimitFinder;
 
 /**
  * The Class AvgEarnLevelMasterSettingWs.
@@ -21,20 +23,34 @@ import nts.uk.ctx.pr.core.app.insurance.avgearn.find.AvgEarnLevelMasterSettingFi
 @Path("ctx/pr/core/insurance/avgearnmaster")
 @Produces("application/json")
 public class AvgEarnLevelMasterSettingWs extends WebService {
-	
-	/** The avg earn level master setting finder. */
+
+	/** The health avg earn limit finder. */
 	@Inject
-	private AvgEarnLevelMasterSettingFinder avgEarnLevelMasterSettingFinder;
+	private HealthAvgEarnLimitFinder healthAvgEarnLimitFinder;
+
+	/** The pension avg earn limit finder. */
+	@Inject
+	private PensionAvgEarnLimitFinder pensionAvgEarnLimitFinder;
 
 	/**
-	 * Find.
+	 * Find health avg earn limit.
 	 *
 	 * @return the list
 	 */
 	@POST
-	@Path("find")
-	public List<AvgEarnLevelMasterSettingDto> find() {
-		return avgEarnLevelMasterSettingFinder.findAll();
+	@Path("health/find")
+	public List<HealthAvgEarnLimitDto> findHealthAvgEarnLimit() {
+		return healthAvgEarnLimitFinder.findAll();
 	}
 
+	/**
+	 * Find pension avg earn limit.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("pension/find")
+	public List<PensionAvgEarnLimitDto> findPensionAvgEarnLimit() {
+		return pensionAvgEarnLimitFinder.findAll();
+	}
 }

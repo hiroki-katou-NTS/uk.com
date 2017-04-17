@@ -17,12 +17,12 @@ import nts.uk.ctx.pr.core.dom.base.service.RoundingNumber;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
-import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSetting;
-import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSettingRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnValue;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.limit.HealthAvgEarnLimit;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.limit.HealthAvgEarnLimitRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.service.HealthInsuranceAvgearnService;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRounding;
@@ -36,7 +36,7 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 
 	/** The avg earn level master setting repository. */
 	@Inject
-	private AvgEarnLevelMasterSettingRepository avgEarnLevelMasterSettingRepository;
+	private HealthAvgEarnLimitRepository avgEarnLimitRepo;
 
 	/** The health insurance avgearn repository. */
 	@Inject
@@ -74,7 +74,7 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 	 */
 	@Override
 	public void updateHealthInsuranceRateAvgEarn(HealthInsuranceRate healthInsuranceRate) {
-		List<AvgEarnLevelMasterSetting> listAvgEarnLevelMasterSetting = avgEarnLevelMasterSettingRepository
+		List<HealthAvgEarnLimit> listAvgEarnLevelMasterSetting = avgEarnLimitRepo
 				.findAll(healthInsuranceRate.getCompanyCode());
 		// convert to Domain
 		List<HealthInsuranceAvgearn> healthInsuranceAvgearns = listAvgEarnLevelMasterSetting
@@ -186,7 +186,7 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 	private class HiaGetMemento implements HealthInsuranceAvgearnGetMemento {
 
 		/** The setting. */
-		private AvgEarnLevelMasterSetting setting;
+		private HealthAvgEarnLimit setting;
 
 		/** The rate items. */
 		private Set<InsuranceRateItem> rateItems;
@@ -209,7 +209,7 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 		 * @param historyId
 		 *            the history id
 		 */
-		public HiaGetMemento(AvgEarnLevelMasterSetting setting, Set<InsuranceRateItem> rateItems,
+		public HiaGetMemento(HealthAvgEarnLimit setting, Set<InsuranceRateItem> rateItems,
 				Set<HealthInsuranceRounding> roundingMethods, String historyId) {
 			this.setting = setting;
 			this.rateItems = rateItems;

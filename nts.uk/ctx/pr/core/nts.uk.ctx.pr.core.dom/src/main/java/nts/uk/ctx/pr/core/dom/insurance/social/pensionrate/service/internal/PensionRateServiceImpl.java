@@ -16,10 +16,10 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
-import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSetting;
-import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSettingRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearn;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnRepository;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.limit.PensionAvgEarnLimit;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.limit.PensionAvgEarnLimitRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.service.PensionRateService;
@@ -42,11 +42,11 @@ public class PensionRateServiceImpl extends PensionRateService {
 
 	/** The avg earn level master setting repository. */
 	@Inject
-	private AvgEarnLevelMasterSettingRepository avgEarnLevelMasterSettingRepository;
+	private PensionAvgEarnLimitRepository avgEarnLimitRepo;
 
 	/** The pension avgearn repository. */
 	@Inject
-	private PensionAvgearnRepository pensionAvgearnRepository;
+	private PensionAvgearnRepository pensionAvgearnRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -112,7 +112,7 @@ public class PensionRateServiceImpl extends PensionRateService {
 			PensionRate newHistory) {
 
 		// Get listAvgEarn of copiedHistory.
-		List<PensionAvgearn> listPensionAvgearn = pensionAvgearnRepository
+		List<PensionAvgearn> listPensionAvgearn = pensionAvgearnRepo
 				.find(copiedHistory.getHistoryId());
 
 		// Update newHistoryId.
@@ -120,7 +120,7 @@ public class PensionRateServiceImpl extends PensionRateService {
 			return item.copyWithNewHistoryId(newHistory.getHistoryId());
 		}).collect(Collectors.toList());
 
-		this.pensionAvgearnRepository.update(updatedList, companyCode,
+		this.pensionAvgearnRepo.update(updatedList, companyCode,
 				newHistory.getOfficeCode().v());
 	}
 
@@ -134,16 +134,16 @@ public class PensionRateServiceImpl extends PensionRateService {
 	@Override
 	protected void onCreateHistory(String companyCode, String masterCode, PensionRate newHistory) {
 
-		// Get listAvgEarnLevelMasterSetting.
-		List<AvgEarnLevelMasterSetting> listAvgEarnLevelMasterSetting = avgEarnLevelMasterSettingRepository
+		// Get listHealthAvgEarnLimit.
+		List<PensionAvgEarnLimit> listHealthAvgEarnLimit = avgEarnLimitRepo
 				.findAll(companyCode);
 
 		// Create HealthInsuranceAvgearn list with initial values.
-		List<PensionAvgearn> newList = listAvgEarnLevelMasterSetting.stream().map(setting -> {
+		List<PensionAvgearn> newList = listHealthAvgEarnLimit.stream().map(setting -> {
 			return PensionAvgearn.createWithIntial(newHistory.getHistoryId(), setting.getGrade(),
 					setting.getAvgEarn(), setting.getSalLimit());
 		}).collect(Collectors.toList());
 
-		this.pensionAvgearnRepository.update(newList, companyCode, newHistory.getOfficeCode().v());
+		this.pensionAvgearnRepo.update(newList, companyCode, newHistory.getOfficeCode().v());
 	}
 }

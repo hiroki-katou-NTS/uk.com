@@ -15,21 +15,34 @@ var nts;
                             var service;
                             (function (service) {
                                 var paths = {
-                                    getAvgEarnLevelMasterSettingList: "ctx/pr/core/insurance/avgearnmaster/find",
+                                    getHealthAvgEarnLimitList: "ctx/pr/core/insurance/avgearnmaster/health/find",
+                                    getPensionAvgEarnLimitList: "ctx/pr/core/insurance/avgearnmaster/pension/find"
                                 };
-                                function getAvgEarnLevelMasterSettingList() {
+                                function getHealthAvgEarnLimitList() {
                                     var dfd = $.Deferred();
-                                    nts.uk.request.ajax(paths.getAvgEarnLevelMasterSettingList)
+                                    nts.uk.request.ajax(paths.getHealthAvgEarnLimitList)
                                         .done(function (res) {
-                                        dfd.resolve(convertToAvgEarnLevelMasterSettingModel(res));
+                                        dfd.resolve(convertToHealthAvgEarnLimitModel(res));
                                     })
                                         .fail(function (res) {
                                         dfd.reject(res);
                                     });
                                     return dfd.promise();
                                 }
-                                service.getAvgEarnLevelMasterSettingList = getAvgEarnLevelMasterSettingList;
-                                function convertToAvgEarnLevelMasterSettingModel(listDto) {
+                                service.getHealthAvgEarnLimitList = getHealthAvgEarnLimitList;
+                                function getPensionAvgEarnLimitList() {
+                                    var dfd = $.Deferred();
+                                    nts.uk.request.ajax(paths.getPensionAvgEarnLimitList)
+                                        .done(function (res) {
+                                        dfd.resolve(convertToHealthAvgEarnLimitModel(res));
+                                    })
+                                        .fail(function (res) {
+                                        dfd.reject(res);
+                                    });
+                                    return dfd.promise();
+                                }
+                                service.getPensionAvgEarnLimitList = getPensionAvgEarnLimitList;
+                                function convertToHealthAvgEarnLimitModel(listDto) {
                                     var salMin = 0;
                                     for (var i_1 in listDto) {
                                         var dto = listDto[i_1];

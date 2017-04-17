@@ -54,15 +54,19 @@ public class PensionAvgearn extends DomainObject {
 	private PensionAvgearnValue personalPension;
 
 	/**
-	 * Health insurance avgearn.
+	 * Instantiates a new pension avgearn.
+	 *
+	 * @param historyId
+	 *            the history id
 	 */
 	private PensionAvgearn(String historyId) {
 		this.historyId = historyId;
 	}
 
 	// =================== Memento State Support Method ===================
+
 	/**
-	 * Instantiates a new health insurance rate.
+	 * Instantiates a new pension avgearn.
 	 *
 	 * @param memento
 	 *            the memento
@@ -132,7 +136,8 @@ public class PensionAvgearn extends DomainObject {
 	 *            the level code
 	 * @return the object
 	 */
-	public static PensionAvgearn createWithIntial(String newHistoryId, Integer grade, Long avgEarn, Long upperLimit) {
+	public static PensionAvgearn createWithIntial(String newHistoryId, Integer grade, Long avgEarn,
+			Long upperLimit) {
 		PensionAvgearn pensionAvgearn = new PensionAvgearn(newHistoryId);
 		pensionAvgearn.grade = grade;
 		pensionAvgearn.avgEarn = avgEarn;

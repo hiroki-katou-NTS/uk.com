@@ -16,7 +16,7 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel(officeName, pensionModel) {
                                     var self = this;
-                                    self.listAvgEarnLevelMasterSetting = [];
+                                    self.listHealthAvgEarnLimit = [];
                                     self.listPensionAvgearnModel = ko.observableArray([]);
                                     self.pensionRateModel = new PensionRateModel(pensionModel.historyId, pensionModel.officeCode(), officeName, pensionModel.startMonth(), pensionModel.endMonth(), pensionModel.autoCalculate(), pensionModel.fundInputApply(), pensionModel.rateItems(), pensionModel.fundRateItems(), pensionModel.roundingMethods(), pensionModel.childContributionRate());
                                     self.leftShow = ko.observable(true);
@@ -37,16 +37,16 @@ var nts;
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    $.when(self.loadAvgEarnLevelMasterSetting(), self.loadPensionAvgearn()).done(function () {
+                                    $.when(self.loadHealthAvgEarnLimit(), self.loadPensionAvgearn()).done(function () {
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
                                 };
-                                ScreenModel.prototype.loadAvgEarnLevelMasterSetting = function () {
+                                ScreenModel.prototype.loadHealthAvgEarnLimit = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    commonService.getAvgEarnLevelMasterSettingList().done(function (res) {
-                                        self.listAvgEarnLevelMasterSetting = res;
+                                    commonService.getHealthAvgEarnLimitList().done(function (res) {
+                                        self.listHealthAvgEarnLimit = res;
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
@@ -92,7 +92,7 @@ var nts;
                                     var self = this;
                                     self.clearError();
                                     self.listPensionAvgearnModel.removeAll();
-                                    self.listAvgEarnLevelMasterSetting.forEach(function (item) {
+                                    self.listHealthAvgEarnLimit.forEach(function (item) {
                                         self.listPensionAvgearnModel.push(self.calculatePensionAvgearn(item));
                                     });
                                 };

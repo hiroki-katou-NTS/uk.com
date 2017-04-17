@@ -18,11 +18,11 @@ import nts.uk.ctx.pr.core.dom.base.service.internal.RoundingNumberImpl;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
 import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
-import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSetting;
-import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSettingRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearn;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValue;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.limit.PensionAvgEarnLimit;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.limit.PensionAvgEarnLimitRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.service.PensionAvgearnService;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.FundRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionChargeRateItem;
@@ -38,7 +38,7 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 
 	/** The avg earn level master setting repository. */
 	@Inject
-	private AvgEarnLevelMasterSettingRepository avgEarnLevelMasterSettingRepository;
+	private PensionAvgEarnLimitRepository avgEarnLimitRepo;
 
 	/** The rouding service. */
 	@Inject
@@ -77,12 +77,12 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 	 */
 	@Override
 	public List<PensionAvgearn> calculateListPensionAvgearn(PensionRate pensionRate) {
-		// Get listAvgEarnLevelMasterSetting.
-		List<AvgEarnLevelMasterSetting> listAvgEarnLevelMasterSetting = this.avgEarnLevelMasterSettingRepository
+		// Get listPensionAvgEarnLimit.
+		List<PensionAvgEarnLimit> listPensionAvgEarnLimit = this.avgEarnLimitRepo
 				.findAll(pensionRate.getCompanyCode());
 
 		// Calculate listPensionAvgearn.
-		List<PensionAvgearn> listPensionAvgearn = listAvgEarnLevelMasterSetting.stream()
+		List<PensionAvgearn> listPensionAvgearn = listPensionAvgEarnLimit.stream()
 				.map(setting -> new PensionAvgearn(
 						new PensionAvgearnGetMementoImpl(pensionRate.getHistoryId(), setting,
 								pensionRate.getFundRateItems(), pensionRate.getPremiumRateItems(),
@@ -140,7 +140,7 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 		 * @param roundingMethods
 		 *            the rounding methods
 		 */
-		public PensionAvgearnGetMementoImpl(String historyId, AvgEarnLevelMasterSetting setting,
+		public PensionAvgearnGetMementoImpl(String historyId, PensionAvgEarnLimit setting,
 				Set<FundRateItem> rateItems, Set<PensionPremiumRateItem> premiumRateItems,
 				BigDecimal childContributionRate, Set<PensionRateRounding> roundingMethods) {
 			this.grade = setting.getGrade();
