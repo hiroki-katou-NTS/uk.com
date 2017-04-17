@@ -992,7 +992,7 @@ module cmm009.a.viewmodel {
                         self.A_INP_DEPNAME("");
                         $("#A_INP_CODE").focus();
                     } else {
-                        alert("hierarchy item current = 10 ,not push item child to tree");
+                        alert("hierarchy item current is 10 ,not push item child to tree");
                     }
                 }
             } else {
