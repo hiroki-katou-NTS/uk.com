@@ -5,8 +5,11 @@ module qmm020.c.viewmodel {
         // listbox
         itemList: KnockoutObservableArray<ItemModel>;
         itemListDetail: KnockoutObservableArray<EmployeeAllotSettingDto>;
+        itemSetShareList: KnockoutObservableArray<EmployeeSettingHeaderModel>;
+        itemTotalList: KnockoutObservableArray<TotalModel>;
         itemName: KnockoutObservable<string>;
-        currentCode: KnockoutObservable<number>
+        currentCode: KnockoutObservable<number>;
+        currentItem: KnockoutObservable<TotalModel>;
         selectedName: KnockoutObservable<string>;
         selectedCode: KnockoutObservableArray<string>;
         selectedCodes: KnockoutObservableArray<string>;
@@ -28,7 +31,16 @@ module qmm020.c.viewmodel {
             self.isEnable = ko.observable(true);
             self.selectedList = ko.observableArray([]);
             self.itemHist = ko.observable(null);
+            self.itemTotalList = ko.observableArray([]);
             self.histId = ko.observable(null);
+            self.currentItem = ko.observable(new TotalModel({
+                historyId: '',
+                employeeCode: '',
+                paymentDetailCode: '',
+                bonusDetailCode: '',
+                startYm: '',
+                endYm: ''
+            }));
             self.selectedCode.subscribe(function(codeChange) {
                 service.getAllEmployeeAllotSetting(ko.toJS(codeChange)).done(function(data: Array<EmployeeAllotSettingDto>) {
                     if (data && data.length > 0) {
@@ -152,15 +164,46 @@ module qmm020.c.viewmodel {
             return dfd.promise();
         }
         //Open dialog Add History
-        openJDialog() { 
-            var historyScreenType = "2";
+        openJDialog() {
+            var self = this;
+            var historyScreenType = "1";
             let valueShareJDialog = historyScreenType + "~" + "201701";
 
             nts.uk.ui.windows.setShared('valJDialog', valueShareJDialog);
-            
+
             nts.uk.ui.windows.sub.modal('/view/qmm/020/j/index.xhtml', { title: '明細書の紐ずけ＞履歴追加' })
                 .onClosed(function() {
-                    
+                    let returnJDialog: string = nts.uk.ui.windows.getShared('returnJDialog');
+                    var modeRadio = returnJDialog.split("~")[0];
+                    var returnValue = returnJDialog.split("~")[1];
+                    if (returnValue != '') {
+                        //                        let employeeAllotSettings = new Array<EmployeeAllotSettingDto>();
+                        var items = self.itemTotalList;
+                        var addItem = new TotalModel({
+                            historyId: new Date().getTime().toString(),
+                            employeeCode: '',
+                            paymentDetailCode: '',
+                            bonusDetailCode: '',
+                            startYm: returnValue,
+                            endYm: '999912'
+                        });
+                        items.push(addItem);
+                        if (modeRadio === "2") {
+                            self.currentItem().historyId(addItem.historyId());
+                            self.currentItem().startYm(returnValue);
+                            self.currentItem().endYm('999912');
+
+                            self.currentItem().paymentDetailCode('');
+                            self.currentItem().bonusDetailCode('');
+                            self.currentItem().paymentDetailName('');
+                            self.currentItem().bonusDetailName('');
+                        }
+                        self.itemTotalList([]);
+                        self.itemTotalList(items);
+                    }
+
+
+
                 });
         }
         //Open dialog Edit History
@@ -238,4 +281,41 @@ module qmm020.c.viewmodel {
         }
     }
 
+    interface IModel {
+        companyCode?: string;
+        historyId: string;
+        employeeCode: string;
+        employeeName?: string;
+        paymentDetailCode: string;
+        paymentDetailName?: string;
+        bonusDetailCode: string;
+        bonusDetailName?: string;
+        startYm: string;
+        endYm: string;
+    }
+
+    class TotalModel {
+        companyCode: KnockoutObservable<string>;
+        historyId: KnockoutObservable<string>;
+        employeeCode: KnockoutObservable<string>;
+        employeeName: KnockoutObservable<string>;
+        paymentDetailCode: KnockoutObservable<string>;
+        paymentDetailName: KnockoutObservable<string>;
+        bonusDetailCode: KnockoutObservable<string>;
+        bonusDetailName: KnockoutObservable<string>;
+        startYm: KnockoutObservable<string>;
+        endYm: KnockoutObservable<string>;
+        constructor(param: IModel) {
+            this.companyCode = ko.observable(param.companyCode);
+            this.historyId = ko.observable(param.historyId);
+            this.employeeCode = ko.observable(param.employeeCode);
+            this.employeeName = ko.observable(param.employeeName);
+            this.paymentDetailCode = ko.observable(param.paymentDetailCode);
+            this.paymentDetailName = ko.observable(param.paymentDetailName);
+            this.bonusDetailCode = ko.observable(param.bonusDetailCode);
+            this.bonusDetailName = ko.observable(param.bonusDetailName);
+            this.startYm = ko.observable(param.startYm);
+            this.endYm = ko.observable(param.endYm);
+        }
+    }
 }
