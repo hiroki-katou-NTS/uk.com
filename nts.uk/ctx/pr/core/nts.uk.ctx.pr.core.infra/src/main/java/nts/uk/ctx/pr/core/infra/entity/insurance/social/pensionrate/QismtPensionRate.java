@@ -12,15 +12,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.core.infra.entity.insurance.social.QismtSocialInsuOffice;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPensionAmount;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPensionAvgearnD;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -241,13 +237,6 @@ public class QismtPensionRate extends UkJpaEntity implements Serializable {
 	/** The qismt pension amount list. */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qismtPensionRate")
 	private List<QismtPensionAmount> qismtPensionAmountList;
-
-	/** The qismt social insu office. */
-	@JoinColumns({
-			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
-			@JoinColumn(name = "SI_OFFICE_CD", referencedColumnName = "SI_OFFICE_CD", insertable = false, updatable = false) })
-	@ManyToOne(optional = false)
-	private QismtSocialInsuOffice qismtSocialInsuOffice;
 
 	/**
 	 * Instantiates a new qismt pension rate.

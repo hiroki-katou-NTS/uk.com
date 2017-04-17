@@ -36,11 +36,12 @@ public class HealthInsuranceAvgearnFinder {
 		// Map to list Dto.
 		List<HealthInsuranceAvgearnDto> listDto = listDomain.stream().map(domain -> {
 			HealthInsuranceAvgearnDto dto = new HealthInsuranceAvgearnDto();
-			dto.fromDomain(domain);
-			return dto;
+			return dto.fromDomain(domain);
 		}).collect(Collectors.toList());
+		
 		HealthInsAvgearnsModel listHealthInsuranceAvgearnDto = HealthInsAvgearnsModel
 				.builder().listHealthInsuranceAvgearnDto(listDto).historyId(id).build();
+		
 		return listHealthInsuranceAvgearnDto;
 	}
 }

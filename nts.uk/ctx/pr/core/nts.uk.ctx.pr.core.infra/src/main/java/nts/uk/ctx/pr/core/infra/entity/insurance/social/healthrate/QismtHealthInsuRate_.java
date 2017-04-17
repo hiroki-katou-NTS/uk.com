@@ -11,7 +11,6 @@ import javax.persistence.metamodel.ListAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
-import nts.uk.ctx.pr.core.infra.entity.insurance.social.QismtSocialInsuOffice;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn.QismtHealInsuAvgearnD;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn.QismtHealthInsuAmount;
 
@@ -134,8 +133,5 @@ public class QismtHealthInsuRate_ {
 	
 	/** The qismt health insu amount list. */
 	public static volatile ListAttribute<QismtHealthInsuRate, QismtHealthInsuAmount> qismtHealthInsuAmountList;
-
-	/** The qismt social insu office. */
-	public static volatile SingularAttribute<QismtHealthInsuRate, QismtSocialInsuOffice> qismtSocialInsuOffice;
 
 }

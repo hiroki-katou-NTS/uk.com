@@ -212,21 +212,5 @@ module nts.uk.pr.view.qmm008.h {
                 this.healthSpecificMny = ko.observable(specific);
             }
         }
-        export class Rounding {
-            static ROUNDUP = 'RoundUp';
-            static TRUNCATION = 'Truncation';
-            static ROUNDDOWN = 'RoundDown';
-            static DOWN5_UP6 = 'Down5_Up6';
-            static DOWN4_UP5 = 'Down4_Up5'
-        }
-        export enum Number {
-            Zero = 0,
-            One = 1,
-            Three = 3
-        }
-        export enum AutoCalculate {
-            Auto = 0,
-            Manual = 1
-        }
     }
 }

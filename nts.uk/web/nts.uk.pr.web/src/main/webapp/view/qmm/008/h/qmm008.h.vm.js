@@ -128,28 +128,6 @@ var nts;
                                 return HealthInsuranceAvgEarnValueModel;
                             }());
                             viewmodel.HealthInsuranceAvgEarnValueModel = HealthInsuranceAvgEarnValueModel;
-                            var Rounding = (function () {
-                                function Rounding() {
-                                }
-                                Rounding.ROUNDUP = 'RoundUp';
-                                Rounding.TRUNCATION = 'Truncation';
-                                Rounding.ROUNDDOWN = 'RoundDown';
-                                Rounding.DOWN5_UP6 = 'Down5_Up6';
-                                Rounding.DOWN4_UP5 = 'Down4_Up5';
-                                return Rounding;
-                            }());
-                            viewmodel.Rounding = Rounding;
-                            (function (Number) {
-                                Number[Number["Zero"] = 0] = "Zero";
-                                Number[Number["One"] = 1] = "One";
-                                Number[Number["Three"] = 3] = "Three";
-                            })(viewmodel.Number || (viewmodel.Number = {}));
-                            var Number = viewmodel.Number;
-                            (function (AutoCalculate) {
-                                AutoCalculate[AutoCalculate["Auto"] = 0] = "Auto";
-                                AutoCalculate[AutoCalculate["Manual"] = 1] = "Manual";
-                            })(viewmodel.AutoCalculate || (viewmodel.AutoCalculate = {}));
-                            var AutoCalculate = viewmodel.AutoCalculate;
                         })(viewmodel = h.viewmodel || (h.viewmodel = {}));
                     })(h = qmm008.h || (qmm008.h = {}));
                 })(qmm008 = view.qmm008 || (view.qmm008 = {}));
