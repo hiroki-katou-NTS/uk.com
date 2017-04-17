@@ -459,6 +459,9 @@ module qmm003.a.viewmodel {
                 self.resiTaxCode(currentNode.resiTaxCode);
                 self.resiTaxAutonomy(currentNode.resiTaxAutonomy);
                 self.prefectureCode(currentNode.prefectureCode);
+                if ($('.nts-editor').ntsError("hasError")) {
+                    $('.save-error').ntsError('clear');
+                }
             });
         }
 
