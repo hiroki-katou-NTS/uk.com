@@ -50,7 +50,7 @@
 					<table id="health_insurance_per_month">
 						<tbody>
 							<tr class="bg-green">
-								<th class="halign-center" colspan="2" rowspan="2">等級</th>
+								<th class="halign-center" rowspan="4">等級</th>
 								<th class="halign-center" rowspan="4">標準月額</th>
 								<th class="halign-center" colspan="2" rowspan="2">報酬月額</th>
 								<th class="border_none"><button class="small"
@@ -84,8 +84,6 @@
 								</com:ko>
 							</tr>
 							<tr class="bg-green">
-								<th class="halign-center" rowspan="2">健保</th>
-								<th class="halign-center" rowspan="2">厚保</th>
 								<th class="halign-center" rowspan="2">以上</th>
 								<th class="halign-center" rowspan="2">末満</th>
 
@@ -198,7 +196,7 @@
 													</com:ko-if>
 												</com:ko>
 											</com:ko>
-											<td><input data-bind="ntsNumberEditor: {value: childContributionAmount, constraint:'CommonAmount', option: {grouplength: 3}}"></input></td>
+											<td><input data-bind="ntsNumberEditor: {value: childContributionAmount, constraint:'CommonAmount', option: new nts.uk.ui.option.NumberEditorOption({grouplength: 3})}"></input></td>
 										</com:ko-if>
 									</com:ko-foreach>
 								</tr>

@@ -383,7 +383,7 @@
 								data-bind="ntsNumberEditor: {
 									value: maxAmount, 
 									constraint: 'CommonAmount', 
-									option: {grouplength: 3,currencyformat: 'JPY',currencyposition: 'right'}, 
+									option: new nts.uk.ui.option.NumberEditorOption({grouplength: 3,currencyformat: 'JPY',currencyposition: 'right'}), 
 									required: true, 
 									enable: true, 
 									readonly: false}" />
