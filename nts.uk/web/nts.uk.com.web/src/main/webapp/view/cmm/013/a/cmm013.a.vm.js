@@ -45,7 +45,7 @@ var cmm013;
                         { code: '0', name: '可能' },
                         { code: '1', name: '不可' },
                     ]);
-                    self.selectedRuleCode = ko.observable(0);
+                    self.referenceSettings = ko.observable(0);
                     self.itemList = ko.observableArray([
                         new BoxModel(0, '全員参照可能'),
                         new BoxModel(1, '全員参照不可'),
@@ -53,17 +53,9 @@ var cmm013;
                     ]);
                     self.selectedId = ko.observable(0);
                     self.selectedId.subscribe(function (codeChanged) {
-                        $('#lst_003').removeClass('disableClass');
-                        if (codeChanged == 0 || codeChanged == 1) {
-                            $('#lst_003').show();
-                            $('#lst_003').addClass('disableClass');
-                            self.enableListBoxAuth(false);
-                        }
-                        else {
-                            $('#lst_003').show();
-                            self.enableListBoxAuth(true);
-                        }
+                        self.disableRadioBox(codeChanged);
                     });
+                    self.disableRadioBox(0);
                     self.enable = ko.observable(true);
                     self.notAlert = ko.observable(true);
                     self.dirty = new nts.uk.ui.DirtyChecker(self.dataSource);
@@ -101,8 +93,8 @@ var cmm013;
                                     }
                                 }
                                 self.clickChange(false);
-                            }).fail(function (err) {
-                                nts.uk.ui.dialog.alert(err.message);
+                            }).fail(function (res) {
+                                nts.uk.ui.dialog.alert("対象データがありません。");
                             });
                         }
                     });
@@ -112,6 +104,19 @@ var cmm013;
                         }
                     });
                 }
+                ScreenModel.prototype.disableRadioBox = function (value) {
+                    var self = this;
+                    $('#lst_003').removeClass('disableClass');
+                    if (value == 0 || value == 1) {
+                        $('#lst_003').show();
+                        $('#lst_003').addClass('disableClass');
+                        self.enableListBoxAuth(false);
+                    }
+                    else {
+                        $('#lst_003').show();
+                        self.enableListBoxAuth(true);
+                    }
+                };
                 ScreenModel.prototype.changedCode = function (value) {
                     var self = this;
                     self.currentItem(self.findPosition(value));
@@ -125,7 +130,9 @@ var cmm013;
                     }
                     a.service.findByUseKt().done(function (res) {
                         if (res.use_Kt_Set === 1) {
-                            a.service.getAllJobTitleAuth(self.currentItem().historyId, self.currentItem().jobCode).done(function (jTref) {
+                            var historyId = (self.currentItem() && self.currentItem().historyId) ? self.currentItem().historyId : "NULL";
+                            var jobCode = (self.currentItem() && self.currentItem().jobCode) ? self.currentItem().jobCode : "NULL";
+                            a.service.getAllJobTitleAuth(historyId, jobCode).done(function (jTref) {
                                 if (jTref.length === 0) {
                                     $('.trLst003').hide();
                                 }
@@ -140,6 +147,8 @@ var cmm013;
                                     self.dataRefNew(self.dataRef());
                                     self.createdMode(true);
                                 }
+                            }).fail(function (res) {
+                                nts.uk.ui.dialog.alert("対象データがありません。");
                             });
                         }
                     });
@@ -184,6 +193,8 @@ var cmm013;
                             self.openCDialog();
                             dfd.resolve();
                         }
+                    }).fail(function (res) {
+                        nts.uk.ui.dialog.alert("対象データがありません。");
                     });
                 };
                 ScreenModel.prototype.registerPosition = function () {
@@ -224,6 +235,7 @@ var cmm013;
                             nts.uk.ui.windows.setShared('cmm013C_startDateNew', '', true);
                             self.selectedCode.valueHasMutated();
                             self.getHistory(dfd, selectedHistory_1);
+                            self.referenceSettings = ko.observable(0);
                         }).fail(function (error) {
                             if (error.message === "ER005") {
                                 alert("入力した*は既に存在しています。\r\n職位コードを確認してください。");
@@ -373,11 +385,12 @@ var cmm013;
                         nts.uk.ui.windows.setShared('cmm013StartDate', self.oldStartDate(), true);
                         nts.uk.ui.windows.setShared('cmm013EndDate', self.endDateUpdate(), true);
                         nts.uk.ui.windows.setShared('cmm013OldEndDate', self.oldEndDate(), true);
+                        nts.uk.ui.windows.setShared('cmm013JobCode', self.inp_002_code(), true);
                         nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '履歴の編集', })
                             .onClosed(function () {
                             if (!nts.uk.ui.windows.getShared('cancelDialog')) {
-                                self.currentCode(self.selectedCode());
                                 self.getHistory(dfd);
+                                self.currentCode(self.dataSource()[0].jobCode);
                             }
                             dfd.promise();
                         });

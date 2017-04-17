@@ -22,7 +22,7 @@ var nts;
                                 function ScreenModel() {
                                     var self = this;
                                     self.columnsLstCertifyGroup = ko.observableArray([
-                                        { headerText: 'コード', key: 'code', width: 120 },
+                                        { headerText: 'コー�?', key: 'code', width: 120 },
                                         { headerText: '名称', key: 'name', width: 120 }
                                     ]);
                                     self.selectedMultipleTargetSetting = ko.observable(MultipleTargetSetting.BigestMethod);
@@ -31,6 +31,16 @@ var nts;
                                     self.typeAction = ko.observable(TypeActionCertifyGroup.update);
                                     self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
                                     self.isEmpty = ko.observable(true);
+                                    self.messageList = ko.observableArray([
+                                        { messageId: "ER001", message: "?�が入力されて�?��せん�?" },
+                                        { messageId: "ER005", message: "入力した＊�?既に存在して�?��す�??r\n ?�を確認してください�?" },
+                                        { messageId: "AL001", message: "変更された�?容が登録されて�?��せん�?r\n よろしいですか�?" },
+                                        { messageId: "ER010", message: "対象�??タがありません�?" },
+                                        { messageId: "AL002", message: "�??タを削除します�??r\n よろしいですか?��??" }
+                                    ]);
+                                    self.showDelete = ko.observable(true);
+                                    self.certifyGroupModel = ko.observable(new CertifyGroupModel(new CertifyGroupDto()));
+                                    self.dirty = new nts.uk.ui.DirtyChecker(self.certifyGroupModel);
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
@@ -61,9 +71,8 @@ var nts;
                                             self.selectCodeLstLstCertifyGroup.subscribe(function (selectionCodeLstLstCertifyGroup) {
                                                 self.showchangeCertifyGroup(selectionCodeLstLstCertifyGroup);
                                             });
-                                            self.findCertifyGroup(data[0].code).done(function (res) {
-                                                dfd.resolve(res);
-                                            });
+                                            self.detailCertifyGroup(data[0].code);
+                                            dfd.resolve(self);
                                         }
                                         else {
                                             self.newmodeEmptyData();
@@ -77,7 +86,7 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     l.service.findCertifyGroup(code).done(function (data) {
-                                        self.certifyGroupModel = ko.observable(new CertifyGroupModel(data));
+                                        self.certifyGroupModel(new CertifyGroupModel(data));
                                         l.service.findAllCertification().done(function (data) {
                                             self.certifyGroupModel().lstCertification(data);
                                             self.lstCertification = data;
@@ -87,7 +96,7 @@ var nts;
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.detailCertifyGroup = function (code) {
-                                    if (code != null && code != undefined && code != '') {
+                                    if (code && code != '') {
                                         var self = this;
                                         l.service.findCertifyGroup(code).done(function (data) {
                                             if (self.isEmpty()) {
@@ -103,8 +112,12 @@ var nts;
                                             self.certifyGroupModel().certifies(data.certifies);
                                             self.typeAction(TypeActionCertifyGroup.update);
                                             self.certifyGroupModel().setReadOnly(true);
+                                            self.showDelete(true);
                                             l.service.findAllCertification().done(function (dataCertification) {
                                                 self.certifyGroupModel().setLstCertification(dataCertification);
+                                                self.dirty.reset();
+                                            }).fail(function () {
+                                                self.dirty.reset();
                                             });
                                         });
                                     }
@@ -114,6 +127,18 @@ var nts;
                                     self.detailCertifyGroup(selectionCodeLstLstCertifyGroup);
                                 };
                                 ScreenModel.prototype.resetValueCertifyGroup = function () {
+                                    var self = this;
+                                    if (self.dirty.isDirty()) {
+                                        nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
+                                            self.onResetValueCertifyGroup();
+                                        }).ifNo(function () {
+                                        });
+                                    }
+                                    else {
+                                        self.onResetValueCertifyGroup();
+                                    }
+                                };
+                                ScreenModel.prototype.onResetValueCertifyGroup = function () {
                                     var self = this;
                                     if (self.certifyGroupModel == null || self.certifyGroupModel == undefined) {
                                         self.certifyGroupModel = ko.observable(new CertifyGroupModel(new CertifyGroupDto()));
@@ -125,18 +150,24 @@ var nts;
                                     self.selectCodeLstLstCertifyGroup('');
                                     self.certifyGroupModel().setReadOnly(false);
                                     self.certifyGroupModel().certifies([]);
+                                    self.showDelete(false);
                                     l.service.findAllCertification().done(function (data) {
                                         self.certifyGroupModel().lstCertification(data);
+                                        self.dirty.reset();
                                     });
                                 };
                                 ScreenModel.prototype.saveCertifyGroup = function () {
                                     var self = this;
+                                    self.clearErrorSave();
+                                    self.validateData();
+                                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                                        return;
+                                    }
                                     if (self.typeAction() == TypeActionCertifyGroup.add) {
                                         l.service.addCertifyGroup(self.convertDataModel()).done(function () {
                                             self.reloadDataByAction(self.certifyGroupModel().code());
                                         }).fail(function (error) {
                                             self.showMessageSave(error.message);
-                                            self.reloadDataByAction('');
                                         });
                                     }
                                     else {
@@ -145,7 +176,6 @@ var nts;
                                             self.clearErrorSave();
                                         }).fail(function (error) {
                                             self.showMessageSave(error.message);
-                                            self.reloadDataByAction(self.certifyGroupModel().code());
                                         });
                                     }
                                 };
@@ -153,7 +183,7 @@ var nts;
                                     var self = this;
                                     l.service.findAllCertifyGroup().done(function (data) {
                                         self.lstCertifyGroup(data);
-                                        if (code != null && code != undefined && code != '') {
+                                        if (code && code != '') {
                                             self.selectCodeLstLstCertifyGroup(code);
                                             self.detailCertifyGroup(code);
                                         }
@@ -173,18 +203,19 @@ var nts;
                                     var self = this;
                                     l.service.findAllCertification().done(function (data) {
                                         self.lstCertification = data;
-                                        self.resetValueCertifyGroup();
+                                        self.onResetValueCertifyGroup();
                                         self.isEmpty(true);
                                         self.certifyGroupModel().setReadOnly(false);
+                                        self.showDelete(false);
                                     });
                                 };
                                 ScreenModel.prototype.deleteCertifyGroup = function () {
                                     var self = this;
-                                    nts.uk.ui.dialog.confirm("Do you delete Item?").ifYes(function () {
+                                    nts.uk.ui.dialog.confirm(self.messageList()[4].message).ifYes(function () {
                                         var certifyGroupDeleteDto = new CertifyGroupDeleteDto();
                                         certifyGroupDeleteDto.groupCode = self.certifyGroupModel().code();
                                         certifyGroupDeleteDto.version = 12;
-                                        l.service.deleteCertifyGroup(certifyGroupDeleteDto).done(function (data) {
+                                        l.service.deleteCertifyGroup(certifyGroupDeleteDto).done(function () {
                                             self.reloadDataByAction('');
                                         });
                                     }).ifNo(function () {
@@ -207,14 +238,27 @@ var nts;
                                     certifyGroupDto.certifies = self.certifyGroupModel().certifies();
                                     return certifyGroupDto;
                                 };
-                                ScreenModel.prototype.showMessageSave = function (message) {
-                                    $('#btn_saveCertifyGroup').ntsError('set', message);
-                                    nts.uk.ui.dialog.alert(message);
+                                ScreenModel.prototype.showMessageSave = function (messageId) {
+                                    var self = this;
+                                    if (messageId == self.messageList()[0]) {
+                                        if (!self.certifyGroupModel().code()) {
+                                            $('#inp_code').ntsError('set', self.messageList()[0].message);
+                                        }
+                                        if (!self.certifyGroupModel().name()) {
+                                            $('#inp_name').ntsError('set', self.messageList()[0].message);
+                                        }
+                                    }
+                                    if (messageId == self.messageList()[1]) {
+                                        $('#btn_saveCertifyGroup').ntsError('set', self.messageList()[1].message);
+                                    }
                                 };
                                 ScreenModel.prototype.clearErrorSave = function () {
-                                    var self = this;
                                     $('.save-error').ntsError('clear');
                                     $('#btn_saveCertifyGroup').ntsError('clear');
+                                };
+                                ScreenModel.prototype.validateData = function () {
+                                    $("#inp_code").ntsEditor("validate");
+                                    $("#inp_name").ntsEditor("validate");
                                 };
                                 return ScreenModel;
                             }());
@@ -225,11 +269,11 @@ var nts;
                                     this.name = ko.observable(certifyGroupDto.name);
                                     this.multiApplySet = ko.observable(certifyGroupDto.multiApplySet);
                                     this.columnsCertification = ko.observableArray([
-                                        { headerText: 'コード', key: 'code', width: 60 },
+                                        { headerText: 'コー�?', key: 'code', width: 60 },
                                         { headerText: '名称', key: 'name', width: 180 }
                                     ]);
-                                    this.selectionMultipleTargetSetting = ko.observableArray([new MultipleTargetSettingDto(MultipleTargetSetting.BigestMethod, "BigestMethod"),
-                                        new MultipleTargetSettingDto(MultipleTargetSetting.TotalMethod, "TotalMethod")
+                                    this.selectionMultipleTargetSetting = ko.observableArray([new MultipleTargetSettingDto(MultipleTargetSetting.BigestMethod, "�?番高い手当を1つ�?け支給する"),
+                                        new MultipleTargetSettingDto(MultipleTargetSetting.TotalMethod, "�?��該当した��額を�?算す�?")
                                     ]);
                                     this.certifies = ko.observableArray(certifyGroupDto.certifies);
                                     this.lstCertification = ko.observableArray([]);

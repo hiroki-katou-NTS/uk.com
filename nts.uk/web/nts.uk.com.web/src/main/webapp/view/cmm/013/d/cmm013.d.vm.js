@@ -15,6 +15,7 @@ var cmm013;
                     self.lstMessage = ko.observableArray([]);
                     self.histIdUpdate = ko.observable('');
                     self.oldEndDate = ko.observable('');
+                    self.jobCode = ko.observable('');
                 }
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
@@ -23,6 +24,7 @@ var cmm013;
                     self.oldEndDate(nts.uk.ui.windows.getShared('cmm013OldEndDate'));
                     self.oldStartDate(nts.uk.ui.windows.getShared('cmm013StartDate'));
                     self.histIdUpdate(nts.uk.ui.windows.getShared('cmm013HistoryId'));
+                    self.jobCode(nts.uk.ui.windows.getShared('cmm013JobCode'));
                     self.listMessage();
                     self.setValueForRadio();
                     self.selectedId.subscribe(function (newValue) {
@@ -71,7 +73,7 @@ var cmm013;
                 };
                 ScreenModel.prototype.positionHis = function () {
                     var self = this;
-                    var historyInfo = new model.ListHistoryDto(self.histIdUpdate(), self.oldStartDate(), self.inp_003());
+                    var historyInfo = new model.ListHistoryDto(self.histIdUpdate(), self.oldStartDate(), self.inp_003(), self.jobCode());
                     if (self.selectedId() === 1) {
                         var AL002 = _.find(self.lstMessage(), function (mess) {
                             return mess.messCode === "AL002";
@@ -125,10 +127,11 @@ var cmm013;
             var model;
             (function (model) {
                 var ListHistoryDto = (function () {
-                    function ListHistoryDto(historyId, oldStartDate, newStartDate) {
+                    function ListHistoryDto(historyId, oldStartDate, newStartDate, jobCode) {
                         this.historyId = historyId;
                         this.oldStartDate = oldStartDate;
                         this.newStartDate = newStartDate;
+                        this.jobCode = jobCode;
                     }
                     return ListHistoryDto;
                 }());

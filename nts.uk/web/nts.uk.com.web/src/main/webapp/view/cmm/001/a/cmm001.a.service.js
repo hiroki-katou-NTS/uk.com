@@ -39,6 +39,7 @@ var cmm001;
                 nts.uk.request.ajax(paths.addCompany, company).done(function (res) {
                     dfd.resolve(res);
                 }).fail(function (res) {
+                    nts.uk.ui.dialog.alert(res.messName);
                     dfd.reject(res);
                 });
                 return dfd.promise();

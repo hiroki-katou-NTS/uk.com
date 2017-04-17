@@ -13,7 +13,7 @@ var nts;
                         var service;
                         (function (service) {
                             var pathService = {
-                                findPostCodeZipCode: "ctx/basic/postcode/find"
+                                findPostCodeZipCode: "ctx/pr/core/postcode/find"
                             };
                             function findPostCodeZipCode(zipCode) {
                                 return nts.uk.request.ajax(pathService.findPostCodeZipCode + '/' + zipCode);
@@ -58,7 +58,7 @@ var nts;
                                 var postCodeRespone;
                                 postCodeRespone = new model.PostCodeRespone('0', '', null);
                                 nts.uk.ui.windows.setShared('zipCode', zipCode);
-                                nts.uk.ui.windows.sub.modal("../e/index.xhtml", { height: 400, width: 530, title: "郵便番号" }).onClosed(function () {
+                                nts.uk.ui.windows.sub.modal("/view/base/postcode/index.xhtml", { height: 400, width: 530, title: "郵便番号" }).onClosed(function () {
                                     var zipCodeRes = nts.uk.ui.windows.getShared('zipCodeRes');
                                     if (zipCodeRes) {
                                         postCodeRespone = new model.PostCodeRespone('1', '', zipCodeRes);
@@ -72,12 +72,10 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findPostCodeZipCodeSelection = findPostCodeZipCodeSelection;
-                            //to address => UI
                             function toAddress(postCode) {
                                 return postCode.prefectureName + ' ' + postCode.municipalityName + ' ' + postCode.townName;
                             }
                             service.toAddress = toAddress;
-                            //to kana => UI
                             function toKana(postCode) {
                                 return postCode.prefectureNameKn + ' ' + postCode.municipalityNameKn + ' ' + postCode.townNameKn;
                             }
@@ -107,3 +105,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=service.js.map

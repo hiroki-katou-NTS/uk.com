@@ -11,6 +11,7 @@ module cmm013.d.viewmodel {
         histIdUpdate: KnockoutObservable<string>;
         oldStartDate: KnockoutObservable<string>;
         oldEndDate: KnockoutObservable<string>;
+        jobCode: KnockoutObservable<string>;
 
         constructor() {
             var self = this;
@@ -23,6 +24,7 @@ module cmm013.d.viewmodel {
             self.lstMessage = ko.observableArray([]);
             self.histIdUpdate = ko.observable('');
             self.oldEndDate= ko.observable('');
+            self.jobCode= ko.observable('');
         }
 
         startPage(): JQueryPromise<any> {
@@ -32,6 +34,7 @@ module cmm013.d.viewmodel {
             self.oldEndDate(nts.uk.ui.windows.getShared('cmm013OldEndDate'));
             self.oldStartDate(nts.uk.ui.windows.getShared('cmm013StartDate'))
             self.histIdUpdate(nts.uk.ui.windows.getShared('cmm013HistoryId'));
+            self.jobCode(nts.uk.ui.windows.getShared('cmm013JobCode'));
             self.listMessage();
             self.setValueForRadio();
             self.selectedId.subscribe(function(newValue) {
@@ -84,7 +87,7 @@ module cmm013.d.viewmodel {
         positionHis() {
             let self = this;
             //<---If delete--->
-            var historyInfo = new model.ListHistoryDto(self.histIdUpdate(), self.oldStartDate(), self.inp_003());
+            var historyInfo = new model.ListHistoryDto(self.histIdUpdate(), self.oldStartDate(), self.inp_003(),self.jobCode());
             if (self.selectedId() === 1 ) {
                 //<---Delete?--->
                 
@@ -145,10 +148,12 @@ module cmm013.d.viewmodel {
             historyId: string;
             oldStartDate: string;
             newStartDate: string;
-            constructor(historyId: string, oldStartDate: string, newStartDate: string) {
+            jobCode: string;
+            constructor(historyId: string, oldStartDate: string, newStartDate: string, jobCode: string) {
                 this.historyId = historyId;
                 this.oldStartDate = oldStartDate;
                 this.newStartDate = newStartDate;
+                this.jobCode = jobCode;
             }
         }
     }

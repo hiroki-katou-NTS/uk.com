@@ -20,15 +20,13 @@ var nts;
                                 return nts.uk.request.ajax(paths.findCheckListPrintSetting);
                             }
                             service.findCheckListPrintSetting = findCheckListPrintSetting;
-                            function saveCheckListPrintSetting(command) {
-                                return nts.uk.request.ajax(paths.saveCheckListPrintSetting, command);
-                            }
-                            service.saveCheckListPrintSetting = saveCheckListPrintSetting;
-                        })(service = c.service || (c.service = {}));
-                    })(c = qpp018.c || (qpp018.c = {}));
-                })(qpp018 = view.qpp018 || (view.qpp018 = {}));
-            })(view = pr.view || (pr.view = {}));
-        })(pr = uk.pr || (uk.pr = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-//# sourceMappingURL=qpp018.c.service.js.map
+                            function saveCheckListPrintSetting(data) {
+                                var checklistSetting = data.checklistPrintSettingModel();
+                                var jsonData = {
+                                    showCategoryInsuranceItem: checklistSetting.showCategoryInsuranceItem(),
+                                    showDetail: checklistSetting.showDetail(),
+                                    showOffice: checklistSetting.showOffice(),
+                                    showTotal: checklistSetting.showTotal(),
+                                    showDeliveryNoticeAmount: checklistSetting.showDeliveryNoticeAmount()
+                                };
+                                return nts.uk.request.ajax(paths.saveCheckListPrintSetting, jsonData);

@@ -27,7 +27,7 @@ var nts;
                                 __extends(ScreenModel, _super);
                                 function ScreenModel() {
                                     _super.call(this, {
-                                        functionName: '賃金テープル',
+                                        functionName: '�?���??プル',
                                         service: qmm016.service.instance,
                                         removeMasterOnLastHistoryRemove: true });
                                     var self = this;
@@ -37,13 +37,13 @@ var nts;
                                     self.tabs = ko.observableArray([
                                         {
                                             id: 'tab-1',
-                                            title: '基本情報',
+                                            title: '基本�??�',
                                             content: '#tab-content-1',
                                             enable: ko.observable(true),
                                             visible: ko.observable(true) },
                                         {
                                             id: 'tab-2',
-                                            title: '賃金テーブルの情報',
+                                            title: '�?���??ブルの�??�',
                                             content: '#tab-content-2',
                                             enable: ko.computed(function () {
                                                 return !self.isNewMode();
@@ -61,6 +61,9 @@ var nts;
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
+                                };
+                                ScreenModel.prototype.isDirty = function () {
+                                    return false;
                                 };
                                 ScreenModel.prototype.onSelectHistory = function (id) {
                                     var self = this;
@@ -101,6 +104,14 @@ var nts;
                                     self.selectedTab('tab-1');
                                     self.head.reset();
                                 };
+                                ScreenModel.prototype.btnGroupSettingClick = function () {
+                                    var self = this;
+                                    var ntsDialogOptions = {
+                                        title: '�??�グループ�?設�?',
+                                        dialogClass: 'no-close'
+                                    };
+                                    nts.uk.ui.windows.sub.modal('/view/qmm/016/l/index.xhtml', ntsDialogOptions);
+                                };
                                 return ScreenModel;
                             }(view.base.simplehistory.viewmodel.ScreenBaseModel));
                             viewmodel.ScreenModel = ScreenModel;
@@ -113,6 +124,26 @@ var nts;
                                     self.memo = ko.observable(undefined);
                                     self.demensionType = ko.computed(function () {
                                         return qmm016.model.demensionMap[self.demensionSet()];
+                                    });
+                                    self.lblContent = ko.computed(function () {
+                                        var contentMap = [
+                                            '?�つの要�?で�??ブルを作�?します�??',
+                                            '?�つの要�?で�??ブルを作�?します�??',
+                                            '?�つの要�?で�??ブルを作�?します�??',
+                                            '�??�手当用の�??ブルを作�?します�??',
+                                            '精�?��手当て用の�??ブルを作�?します�??'
+                                        ];
+                                        return contentMap[self.demensionSet()];
+                                    });
+                                    self.lblSampleImgLink = ko.computed(function () {
+                                        var linkMap = [
+                                            '??.png',
+                                            '??.png',
+                                            '??.png',
+                                            '4.png',
+                                            '5.png'
+                                        ];
+                                        return linkMap[self.demensionSet()];
                                     });
                                     self.demensionItemList = ko.observableArray([]);
                                     self.demensionSet.subscribe(function (val) {
@@ -169,7 +200,7 @@ var nts;
                                             {
                                                 var cert = new DemensionItemViewModel(1);
                                                 cert.elementType(6);
-                                                cert.elementName('資格名称');
+                                                cert.elementName('�??�名称');
                                                 newDemensionItemList.push(cert);
                                             }
                                             break;
@@ -177,10 +208,10 @@ var nts;
                                             {
                                                 var workDay = new DemensionItemViewModel(1);
                                                 workDay.elementType(7);
-                                                workDay.elementName('欠勤日数');
+                                                workDay.elementName('�?勤日数');
                                                 var late = new DemensionItemViewModel(2);
                                                 late.elementType(8);
-                                                late.elementName('遅刻・早退回数');
+                                                late.elementName('�?��・早�?回数');
                                                 var level = new DemensionItemViewModel(3);
                                                 level.elementType(9);
                                                 level.elementName('レベル');
@@ -208,6 +239,12 @@ var nts;
                                 HeadViewModel.prototype.onSelectDemensionBtnClick = function (demension) {
                                     var self = this;
                                     var dlgOptions = {
+                                        selectedDemensionDto: _.map(self.demensionItemList(), function (item) {
+                                            var dto = {};
+                                            dto.type = item.elementType();
+                                            dto.code = item.elementCode();
+                                            return dto;
+                                        }),
                                         onSelectItem: function (data) {
                                             demension.elementType(data.demension.type);
                                             demension.elementCode(data.demension.code);
@@ -215,7 +252,7 @@ var nts;
                                         }
                                     };
                                     nts.uk.ui.windows.setShared('options', dlgOptions);
-                                    var ntsDialogOptions = { title: '要素の選択', dialogClass: 'no-close' };
+                                    var ntsDialogOptions = { title: '要�?の選�?', dialogClass: 'no-close' };
                                     nts.uk.ui.windows.sub.modal('/view/qmm/016/k/index.xhtml', ntsDialogOptions);
                                 };
                                 return HeadViewModel;
@@ -250,7 +287,7 @@ var nts;
                                         return nts.uk.time.formatYearMonth(self.endYearMonth());
                                     });
                                     self.startYearMonthJpText = ko.computed(function () {
-                                        return nts.uk.text.format('（{0}）', nts.uk.time.yearmonthInJapanEmpire(self.startYearMonth()).toString());
+                                        return nts.uk.text.format('??0}??', nts.uk.time.yearmonthInJapanEmpire(self.startYearMonth()).toString());
                                     });
                                     self.elements = ko.observableArray([]);
                                 }
@@ -263,10 +300,17 @@ var nts;
                                         return new HistoryElementSettingViewModel(head, el);
                                     });
                                     self.elements(elementSettingViewModel);
-                                    self.detailViewModel = new qmm016.a.history.OneDemensionViewModel(history);
+                                    if ($('#detailContainer').children().length > 0) {
+                                        var element = $('#detailContainer').children().get(0);
+                                        ko.cleanNode(element);
+                                        $('#detailContainer').empty();
+                                    }
+                                    self.detailViewModel = this.getDetailViewModelByType(head.mode);
                                     $('#detailContainer').load(self.detailViewModel.htmlPath, function () {
                                         var element = $('#detailContainer').children().get(0);
-                                        ko.applyBindings(self.detailViewModel, element);
+                                        self.detailViewModel.onLoad().done(function () {
+                                            ko.applyBindings(self.detailViewModel, element);
+                                        });
                                     });
                                 };
                                 HistoryViewModel.prototype.generateItem = function () {
@@ -295,6 +339,23 @@ var nts;
                                     var self = this;
                                     self.history.valueItems = self.detailViewModel.getCellItem();
                                     return self.history;
+                                };
+                                HistoryViewModel.prototype.getDetailViewModelByType = function (typeCode) {
+                                    var self = this;
+                                    switch (typeCode) {
+                                        case 0:
+                                            return new qmm016.a.history.OneDemensionViewModel(self.history);
+                                        case 1:
+                                            return new qmm016.a.history.TwoDemensionViewModel(self.history);
+                                        case 2:
+                                            return new qmm016.a.history.ThreeDemensionViewModel(self.history);
+                                        case 3:
+                                            return new qmm016.a.history.CertificateViewModel(self.history);
+                                        case 4:
+                                            return new qmm016.a.history.ThreeDemensionViewModel(self.history);
+                                        default:
+                                            return new qmm016.a.history.OneDemensionViewModel(self.history);
+                                    }
                                 };
                                 HistoryViewModel.prototype.unapplyBindings = function ($node, remove) {
                                     $node.find("*").each(function () {

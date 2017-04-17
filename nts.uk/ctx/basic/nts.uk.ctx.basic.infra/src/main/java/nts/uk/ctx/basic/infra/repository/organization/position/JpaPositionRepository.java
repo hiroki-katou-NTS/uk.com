@@ -34,6 +34,7 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 	private static final String FIND_SINGLE;
 	private static final String SELECT_HISTORY_BY_END_DATE;
 	private static final String SELECT_JOBTITLEREF;
+	private static final String SELECT_JOBTITLEREF_BY_HIST;
 	private static final String SELECT_AUTHNAME;
 	private static final String SELECT_AUTHLEVEL;
 
@@ -49,13 +50,20 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
+		builderString.append(" FROM CmnmtJobTitleRef e");
+		builderString.append(" WHERE e.cmnmtJobTitleRefPK.companyCode = :companyCode");
+		builderString.append(" AND e.cmnmtJobTitleRefPK.historyId = :historyId");
+		SELECT_JOBTITLEREF_BY_HIST = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
 		builderString.append(" FROM CatmtAuth e");
 		builderString.append(" WHERE e.catmtAuthPK.companyCode = :companyCode");
 		builderString.append(" AND e.catmtAuthPK.authScopeAtr = :authScopeAtr");
 		SELECT_AUTHLEVEL = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("SELECT a.catmtAuthPk.authCode, a.authName, coalesce(b.referenceSettings,1) referenceSettings");
+		builderString.append("SELECT a.catmtAuthPk.authCode, a.authName, coalesce(b.referenceSettings,0) referenceSettings");
 		builderString.append(" FROM CatmtAuth a LEFT JOIN CmnmtJobTitleRef b");
 		builderString.append(" ON a.catmtAuthPk.authCode = b.cmnmtJobTitleRefPK.authCode");
 		builderString.append(" AND a.catmtAuthPk.companyCode = b.cmnmtJobTitleRefPK.companyCode");
@@ -261,7 +269,7 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 				}).orElse(Optional.empty());
 	}
 	/**
-	 * Find Single History
+	 * 
 	 */
 	@Override
 	public List<JobTitleRef> findAllJobTitleRef(String companyCode, String historyId, String jobCode) {
@@ -270,7 +278,16 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 				.setParameter("historyId", historyId)
 				.setParameter("jobCode", jobCode).getList(c -> convertToDomainRef(c));
 	}
-
+	/**
+	 * 
+	 */
+	@Override
+	public List<JobTitleRef> findAllJobTitleRefByJobHist(String companyCode, String historyId) {
+		return this.queryProxy().query(SELECT_JOBTITLEREF_BY_HIST, CmnmtJobTitleRef.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("historyId", historyId)
+				.getList(c -> convertToDomainRef(c));
+	}
 	/**
 	 * Get JobTitle By Code
 	 */
@@ -330,8 +347,18 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 	/**
 	 * Delete JobTitle Ref
 	 */
-	public void deleteJobTitleRef(String companyCode, String historyId, String jobCode, String authorizationCode) {
-		List<JobTitleRef> newRefInfor = new ArrayList<JobTitleRef>();
+	public void deleteJobTitleRef(String companyCode, String historyId,String jobCode) {
+		List<JobTitleRef> newRefInfor = this.findAllJobTitleRef(companyCode, historyId, jobCode);
+		List<CmnmtJobTitleRefPK> cmnmtJobTitleRefPK = newRefInfor.stream().map(detail -> {
+			return this.toEntityTitlePkRef(detail);
+		}).collect(Collectors.toList());
+		this.commandProxy().removeAll(CmnmtJobTitleRef.class, cmnmtJobTitleRefPK);
+	}
+	/**
+	 * Delete JobTitle Ref By JobHist
+	 */
+	public void deleteJobTitleRefByJobHist(String companyCode, String historyId) {
+		List<JobTitleRef> newRefInfor = this.findAllJobTitleRefByJobHist(companyCode, historyId);
 		List<CmnmtJobTitleRefPK> cmnmtJobTitleRefPK = newRefInfor.stream().map(detail -> {
 			return this.toEntityTitlePkRef(detail);
 		}).collect(Collectors.toList());

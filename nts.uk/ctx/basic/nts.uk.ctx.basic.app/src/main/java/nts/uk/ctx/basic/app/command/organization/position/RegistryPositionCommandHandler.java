@@ -70,8 +70,7 @@ public class RegistryPositionCommandHandler extends CommandHandler<RegistryPosit
 				// insert quyen
 				// get data CMNMT_JOB_TITLE_REF
 
-				lstJobTitleRef = positionRepository.findAllJobTitleRef(companyCode, historyIdNew,
-						rePositionCommand.getJobCode());	
+				lstJobTitleRef = positionRepository.findAllJobTitleRef(companyCode, historyIdNew,rePositionCommand.getJobCode());	
 				List<JobTitleRef> lstTitleRef = lstJobTitleRef.stream().map(org -> {
 					return JobTitleRef.createFromJavaType(							
 							companyCode, 

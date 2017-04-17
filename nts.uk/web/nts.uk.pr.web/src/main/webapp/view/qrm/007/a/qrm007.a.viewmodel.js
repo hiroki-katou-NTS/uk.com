@@ -1,28 +1,9 @@
-var qrm007;
-(function (qrm007) {
-    var a;
-    (function (a) {
-        var viewmodel;
-        (function (viewmodel) {
-            var ScreenModel = (function () {
-                function ScreenModel() {
-                    var self = this;
-                    self.retirementPayItemList = ko.observableArray([]);
-                    self.currentCode = ko.observable("");
-                    self.currentItem = ko.observable(new RetirementPayItem("", 0, "", "", "", "", "", ""));
-                    self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
-                }
-                ScreenModel.prototype.startPage = function () {
-                    var self = this;
-                    var dfd = $.Deferred();
-                    self.findRetirementPayItemList(false)
-                        .done(function () {
-                        $(document).delegate("#LST_001", "iggridselectionrowselectionchanging", function (evt, ui) {
+                        $(document).delegate("#lst-1", "iggridselectionrowselectionchanging", function (evt, ui) {
                             if (self.dirty.isDirty()) {
-                                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。 ").
+                                nts.uk.ui.dialog.confirm("変更された�?容が登録されて�?��せん�?r\nよろしいですか�? ").
                                     ifYes(function () {
-                                    $('#INP_001').ntsError('clear');
-                                    $('#INP_002').ntsError('clear');
+                                    $('#inp-1').ntsError('clear');
+                                    $('#inp-2').ntsError('clear');
                                     self.currentCode(ui.row.id);
                                     self.currentItem(RetirementPayItem.converToObject(_.find(self.retirementPayItemList(), function (o) { return o.itemCode == self.currentCode(); })));
                                     self.dirty.reset();
@@ -31,8 +12,8 @@ var qrm007;
                                 });
                             }
                             else {
-                                $('#INP_001').ntsError('clear');
-                                $('#INP_002').ntsError('clear');
+                                $('#inp-1').ntsError('clear');
+                                $('#inp-2').ntsError('clear');
                                 self.currentCode(ui.row.id);
                                 self.currentItem(RetirementPayItem.converToObject(_.find(self.retirementPayItemList(), function (o) { return o.itemCode == self.currentCode(); })));
                                 self.dirty.reset();

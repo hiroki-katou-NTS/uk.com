@@ -60,10 +60,6 @@ var qmm002;
                 };
                 ScreenModel.prototype.addBank = function () {
                     var self = this;
-                    self.confirmDirty = false;
-                    if ($("#INP_001").ntsError("hasError") || $("#INP_002").ntsError("hasError") || $("#INP_003").ntsError("hasError") || $("#INP_004").ntsError("hasError")) {
-                        return;
-                    }
                     var bankInfo = {
                         bankCode: self.currentItem().code(),
                         bankName: self.currentItem().name(),
@@ -127,7 +123,6 @@ var qmm002;
                         self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                         self.currentCode("");
                         self.isCreated(true);
-                        $("#INP_001").focus();
                     }
                     else {
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
@@ -135,7 +130,6 @@ var qmm002;
                             self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                             self.currentCode("");
                             self.isCreated(true);
-                            $("#INP_001").focus();
                         });
                     }
                 };

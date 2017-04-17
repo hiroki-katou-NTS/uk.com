@@ -36,12 +36,12 @@ var qmm002;
                         return;
                     }
                     if (self.selectedCodes().length) {
-                        nts.uk.ui.dialog.confirm("統合元から統合先へデータを置換えます。\r\nよろしいですか？").ifYes(function () {
-                            _.forEach(self.selectedCodes(), function (item) {
-                                if (item == self.singleSelectedCode()) {
-                                    nts.uk.ui.dialog.alert("統合元と統合先で同じコードの" + self.singleSelectedCode() + "が選択されています。\r\n");
-                                }
-                                else {
+                        _.forEach(self.selectedCodes(), function (item) {
+                            if (item == self.singleSelectedCode()) {
+                                nts.uk.ui.dialog.alert("統合元と統合先で同じコードの＊が選択されています。\r\n");
+                            }
+                            else {
+                                nts.uk.ui.dialog.confirm("統合元から統合先へデータを置換えます。\r\nよろしいですか？").ifYes(function () {
                                     var branchId = new Array();
                                     _.forEach(self.selectedCodes(), function (item) {
                                         var code = item.split('-');
@@ -58,8 +58,8 @@ var qmm002;
                                     };
                                     c.service.tranferBranch(data).done(function () {
                                     });
-                                }
-                            });
+                                });
+                            }
                         });
                     }
                 };

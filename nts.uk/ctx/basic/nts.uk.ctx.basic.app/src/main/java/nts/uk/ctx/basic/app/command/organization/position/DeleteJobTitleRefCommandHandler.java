@@ -17,8 +17,7 @@ public class DeleteJobTitleRefCommandHandler extends CommandHandler<DeleteJobTit
 	protected void handle(CommandHandlerContext<DeleteJobTitleRefCommand> context) {
 
 		String companyCode = AppContexts.user().companyCode();
-		positionRepository.deleteJobTitleRef(companyCode, context.getCommand().getHistoryId(),
-				context.getCommand().getJobCode(), context.getCommand().getAuthCode());
+		positionRepository.deleteJobTitleRef(companyCode, context.getCommand().getHistoryId(),context.getCommand().getJobCode());
 
 	}
 }

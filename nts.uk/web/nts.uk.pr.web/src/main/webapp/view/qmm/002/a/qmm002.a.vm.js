@@ -16,10 +16,10 @@ var nts;
                                 function ScreenModel() {
                                     this.confirmDirty = false;
                                     var self = this;
-                                    self.dirty1 = new nts.uk.ui.DirtyChecker(ko.observable(null));
-                                    self.dirty2 = new nts.uk.ui.DirtyChecker(ko.observable(null));
-                                    self.dirty3 = new nts.uk.ui.DirtyChecker(ko.observable(null));
-                                    self.dirty4 = new nts.uk.ui.DirtyChecker(ko.observable(null));
+                                    self.dirty1 = new nts.uk.ui.DirtyChecker(ko.observable(""));
+                                    self.dirty2 = new nts.uk.ui.DirtyChecker(ko.observable(""));
+                                    self.dirty3 = new nts.uk.ui.DirtyChecker(ko.observable(""));
+                                    self.dirty4 = new nts.uk.ui.DirtyChecker(ko.observable(""));
                                     self.lst_001 = ko.observableArray([]);
                                     self.filteredData = ko.observableArray([]);
                                     self.singleSelectedCode = ko.observable('');
@@ -77,6 +77,7 @@ var nts;
                                             width: "130px",
                                             textalign: "left"
                                         })),
+                                        required: ko.observable(true),
                                         enable: ko.observable(false),
                                         readonly: ko.observable(false)
                                     };
@@ -100,7 +101,7 @@ var nts;
                                         self.lst_002(nts.uk.util.flatArray(self.lst_001(), "childs"));
                                         var parentCode = null;
                                         var childCode = null;
-                                        var check = self.singleSelectedCode().includes("-");
+                                        var check = _.includes(self.singleSelectedCode(), "-");
                                         if (check) {
                                             self.checkDisabled(true);
                                             self.displayButtonSave(true);
@@ -120,7 +121,7 @@ var nts;
                                             return item.treeCode == parentCode;
                                         });
                                         self.indexlast_c_node(node.childs.length + indexParen);
-                                        var isParentNode = self.singleSelectedCode().includes("-");
+                                        var isParentNode = _.includes(self.singleSelectedCode(), "-");
                                         if (!isParentNode) {
                                             var index = _.findIndex(self.lst_001(), function (item) {
                                                 return item.treeCode == codeChanged;
@@ -150,14 +151,10 @@ var nts;
                                             self.isCreated(false);
                                             self.A_INP_003.enable(false);
                                             if (self.currentNode().treeCode == undefined) {
-                                                self.A_INP_003.value(null);
-                                                self.A_INP_004.value(null);
-                                                self.A_INP_005.value(null);
-                                                self.A_INP_006.value(null);
-                                                self.dirty1 = new nts.uk.ui.DirtyChecker(self.A_INP_003.value);
-                                                self.dirty2 = new nts.uk.ui.DirtyChecker(self.A_INP_004.value);
-                                                self.dirty3 = new nts.uk.ui.DirtyChecker(self.A_INP_005.value);
-                                                self.dirty4 = new nts.uk.ui.DirtyChecker(self.A_INP_006.value);
+                                                self.dirty1 = new nts.uk.ui.DirtyChecker(ko.observable(""));
+                                                self.dirty2 = new nts.uk.ui.DirtyChecker(ko.observable(""));
+                                                self.dirty3 = new nts.uk.ui.DirtyChecker(ko.observable(""));
+                                                self.dirty4 = new nts.uk.ui.DirtyChecker(ko.observable(""));
                                             }
                                             else {
                                                 self.dirty1 = new nts.uk.ui.DirtyChecker(self.A_INP_003.value);
@@ -188,14 +185,10 @@ var nts;
                                                 self.isCreated(false);
                                                 self.A_INP_003.enable(false);
                                                 if (self.currentNode().treeCode == undefined) {
-                                                    self.A_INP_003.value(null);
-                                                    self.A_INP_004.value(null);
-                                                    self.A_INP_005.value(null);
-                                                    self.A_INP_006.value(null);
-                                                    self.dirty1 = new nts.uk.ui.DirtyChecker(self.A_INP_003.value);
-                                                    self.dirty2 = new nts.uk.ui.DirtyChecker(self.A_INP_004.value);
-                                                    self.dirty3 = new nts.uk.ui.DirtyChecker(self.A_INP_005.value);
-                                                    self.dirty4 = new nts.uk.ui.DirtyChecker(self.A_INP_006.value);
+                                                    self.dirty1 = new nts.uk.ui.DirtyChecker(ko.observable(""));
+                                                    self.dirty2 = new nts.uk.ui.DirtyChecker(ko.observable(""));
+                                                    self.dirty3 = new nts.uk.ui.DirtyChecker(ko.observable(""));
+                                                    self.dirty4 = new nts.uk.ui.DirtyChecker(ko.observable(""));
                                                 }
                                                 else {
                                                     self.dirty1 = new nts.uk.ui.DirtyChecker(self.A_INP_003.value);
@@ -226,17 +219,9 @@ var nts;
                                     self.singleSelectedCode('');
                                     if (self.lst_001()[0].childs.length != 0) {
                                         self.singleSelectedCode(self.lst_001()[0].childs[0].treeCode);
-                                        self.A_INP_003.value(self.currentNode().code);
-                                        self.A_INP_004.value(self.currentNode().name);
-                                        self.A_INP_005.value(self.currentNode().nameKata);
-                                        self.A_INP_006.value(self.currentNode().memo);
                                     }
                                     else {
                                         self.singleSelectedCode(self.lst_001()[0].treeCode);
-                                        self.A_INP_003.value(self.currentNode().code);
-                                        self.A_INP_004.value(self.currentNode().name);
-                                        self.A_INP_005.value(self.currentNode().nameKata);
-                                        self.A_INP_006.value(self.currentNode().memo);
                                     }
                                 };
                                 ScreenModel.prototype.OpenBdialog = function () {
@@ -276,10 +261,6 @@ var nts;
                                         else {
                                             nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                                                 nts.uk.ui.windows.sub.modal("/view/qmm/002/c/index.xhtml", { title: "銀行の登録　＞　銀行の統合" }).onClosed(function () {
-                                                    self.A_INP_003.value(self.currentNode().code);
-                                                    self.A_INP_004.value(self.currentNode().name);
-                                                    self.A_INP_005.value(self.currentNode().nameKata);
-                                                    self.A_INP_006.value(self.currentNode().memo);
                                                 });
                                                 nts.uk.ui.windows.setShared('listItem', self.lst_001());
                                             });
@@ -302,12 +283,7 @@ var nts;
                                     else {
                                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                                             nts.uk.ui.windows.sub.modal("/view/qmm/002/d/index.xhtml", { title: "銀行の登録　＞　銀行の追加", dialogClass: "no-close" }).onClosed(function () {
-                                                self.A_INP_003.value(null);
-                                                self.A_INP_004.value(null);
-                                                self.A_INP_005.value(null);
-                                                self.A_INP_006.value(null);
                                                 if (self.lst_001().length != 0) {
-                                                    self.confirmDirty = true;
                                                     self.checkFirtNode();
                                                 }
                                             });
@@ -317,9 +293,6 @@ var nts;
                                 ScreenModel.prototype.addBranch = function () {
                                     var self = this;
                                     self.confirmDirty = true;
-                                    if ($("#A_INP_003").ntsError("hasError") || $("#A_INP_004").ntsError("hasError") || $("#A_INP_005").ntsError("hasError") || $("#A_INP_006").ntsError("hasError")) {
-                                        return;
-                                    }
                                     var branchInfo = {
                                         bankCode: self.nodeParent().code,
                                         branchId: self.isCreated() ? "" : self.currentNode().branchId,
@@ -428,7 +401,7 @@ var nts;
                                         nts.uk.ui.dialog.confirm(self.messages()[4].message).ifYes(function () {
                                             var parentCode = null;
                                             var childCode = null;
-                                            var check = self.singleSelectedCode().includes("-");
+                                            var check = _.includes(self.singleSelectedCode(), "-");
                                             if (check) {
                                                 var codes = self.singleSelectedCode().split("-");
                                                 parentCode = codes[0];
@@ -456,10 +429,10 @@ var nts;
                                                                 code = self.lst_002()[self.index()].treeCode;
                                                             }
                                                         }
-                                                        self.dirty1 = new nts.uk.ui.DirtyChecker(ko.observable(null));
-                                                        self.dirty2 = new nts.uk.ui.DirtyChecker(ko.observable(null));
-                                                        self.dirty3 = new nts.uk.ui.DirtyChecker(ko.observable(null));
-                                                        self.dirty4 = new nts.uk.ui.DirtyChecker(ko.observable(null));
+                                                        self.dirty1 = new nts.uk.ui.DirtyChecker(ko.observable(""));
+                                                        self.dirty2 = new nts.uk.ui.DirtyChecker(ko.observable(""));
+                                                        self.dirty3 = new nts.uk.ui.DirtyChecker(ko.observable(""));
+                                                        self.dirty4 = new nts.uk.ui.DirtyChecker(ko.observable(""));
                                                         self.singleSelectedCode(code);
                                                     }
                                                     else {
@@ -493,15 +466,15 @@ var nts;
                                     var self = this;
                                     self.clearError();
                                     if (!self.checkDirty()) {
+                                        self.dirty1 = new nts.uk.ui.DirtyChecker(ko.observable(""));
+                                        self.dirty2 = new nts.uk.ui.DirtyChecker(ko.observable(""));
+                                        self.dirty3 = new nts.uk.ui.DirtyChecker(ko.observable(""));
+                                        self.dirty4 = new nts.uk.ui.DirtyChecker(ko.observable(""));
                                         self.A_INP_003.value(null);
                                         self.A_INP_004.value(null);
                                         self.A_INP_005.value(null);
                                         self.A_INP_006.value(null);
-                                        self.dirty1 = new nts.uk.ui.DirtyChecker(self.A_INP_003.value);
-                                        self.dirty2 = new nts.uk.ui.DirtyChecker(self.A_INP_004.value);
-                                        self.dirty3 = new nts.uk.ui.DirtyChecker(self.A_INP_005.value);
-                                        self.dirty4 = new nts.uk.ui.DirtyChecker(self.A_INP_006.value);
-                                        var check = self.singleSelectedCode().includes("-");
+                                        var check = _.includes(self.singleSelectedCode(), "-");
                                         if (check) {
                                             var codes = self.singleSelectedCode().split("-");
                                             self.singleSelectedCode(codes[0]);
@@ -513,15 +486,15 @@ var nts;
                                     }
                                     else {
                                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
+                                            self.dirty1 = new nts.uk.ui.DirtyChecker(ko.observable(""));
+                                            self.dirty2 = new nts.uk.ui.DirtyChecker(ko.observable(""));
+                                            self.dirty3 = new nts.uk.ui.DirtyChecker(ko.observable(""));
+                                            self.dirty4 = new nts.uk.ui.DirtyChecker(ko.observable(""));
                                             self.A_INP_003.value(null);
                                             self.A_INP_004.value(null);
                                             self.A_INP_005.value(null);
                                             self.A_INP_006.value(null);
-                                            self.dirty1 = new nts.uk.ui.DirtyChecker(self.A_INP_003.value);
-                                            self.dirty2 = new nts.uk.ui.DirtyChecker(self.A_INP_004.value);
-                                            self.dirty3 = new nts.uk.ui.DirtyChecker(self.A_INP_005.value);
-                                            self.dirty4 = new nts.uk.ui.DirtyChecker(self.A_INP_006.value);
-                                            var check = self.singleSelectedCode().includes("-");
+                                            var check = _.includes(self.singleSelectedCode(), "-");
                                             if (check) {
                                                 var codes = self.singleSelectedCode().split("-");
                                                 self.singleSelectedCode(codes[0]);

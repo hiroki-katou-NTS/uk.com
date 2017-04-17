@@ -148,7 +148,7 @@ public class SalaryPrintSetting extends DomainObject {
 		memento.setSumMonthDepHrchySet(this.sumMonthDepHrchySet);
 		memento.setSumPersonSet(this.sumPersonSet);
 		memento.setSumMonthPersonSet(this.sumMonthPersonSet);
-		memento.setSumMonthDeprtSet(this.sumMonthDepHrchySet);
+		memento.setSumMonthDeprtSet(this.sumMonthDeprtSet);
 	}
 
 	/**

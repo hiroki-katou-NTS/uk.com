@@ -1,7 +1,7 @@
 module cmm013.a.viewmodel {
     export class ScreenModel {
         label_003: KnockoutObservable<Labels>;
-        selectedRuleCode: KnockoutObservable<number>;
+        referenceSettings: KnockoutObservable<number>;
         roundingRules: KnockoutObservableArray<any>;
         inp_002_code: KnockoutObservable<string>;
         inp_002_enable: KnockoutObservable<boolean>;
@@ -84,7 +84,7 @@ module cmm013.a.viewmodel {
                 { code: '0', name: '可能' },
                 { code: '1', name: '不可' },
             ]);
-            self.selectedRuleCode = ko.observable(0);
+            self.referenceSettings = ko.observable(0);
             self.itemList = ko.observableArray([
                 new BoxModel(0, '全員参照可能'),
                 new BoxModel(1, '全員参照不可'),
@@ -92,16 +92,9 @@ module cmm013.a.viewmodel {
             ]);
             self.selectedId = ko.observable(0);
             self.selectedId.subscribe(function(codeChanged) {
-                $('#lst_003').removeClass('disableClass');
-                if (codeChanged == 0 || codeChanged == 1) {
-                    $('#lst_003').show();
-                    $('#lst_003').addClass('disableClass');
-                    self.enableListBoxAuth(false);
-                } else {
-                    $('#lst_003').show();
-                    self.enableListBoxAuth(true);
-                }
+                self.disableRadioBox(codeChanged);
             });
+            self.disableRadioBox(0);
             self.enable = ko.observable(true);
             self.notAlert = ko.observable(true);
             self.dirty = new nts.uk.ui.DirtyChecker(self.dataSource);
@@ -131,7 +124,7 @@ module cmm013.a.viewmodel {
                     }
                     //find position by history                                        
                     service.findAllJobTitle(codeChanged).done(function(position_arr: Array<model.ListPositionDto>) {
-                        
+
                         self.dataSource(position_arr);
                         if (self.dataSource().length > 0) {
                             //set select position & history
@@ -143,9 +136,9 @@ module cmm013.a.viewmodel {
                             }
                         }
                         self.clickChange(false);
-                    }).fail(function(err: any) {
-                        nts.uk.ui.dialog.alert(err.message);
-                    })                   
+                    }).fail(function(res: any) {
+                        nts.uk.ui.dialog.alert("対象データがありません。");
+                    })
                 }
             });
             //change position
@@ -154,8 +147,21 @@ module cmm013.a.viewmodel {
                     self.changedCode(codeChanged);
                 }
             });
-
         }
+
+        disableRadioBox(value: number) {
+            var self = this;
+            $('#lst_003').removeClass('disableClass');
+            if (value == 0 || value == 1) {
+                $('#lst_003').show();
+                $('#lst_003').addClass('disableClass');
+                self.enableListBoxAuth(false);
+            } else {
+                $('#lst_003').show();
+                self.enableListBoxAuth(true);
+            }
+        }
+
         changedCode(value) {
             var self = this;
             self.currentItem(self.findPosition(value));
@@ -170,7 +176,9 @@ module cmm013.a.viewmodel {
             //find auth by historyId and job title code
             service.findByUseKt().done(function(res: any) {
                 if (res.use_Kt_Set === 1) {
-                    service.getAllJobTitleAuth(self.currentItem().historyId, self.currentItem().jobCode).done(function(jTref) {
+                    var historyId = (self.currentItem() && self.currentItem().historyId) ? self.currentItem().historyId : "NULL";
+                    var jobCode = (self.currentItem() && self.currentItem().jobCode) ? self.currentItem().jobCode : "NULL";
+                    service.getAllJobTitleAuth(historyId, jobCode).done(function(jTref) {
                         //show or hide list 003
                         if (jTref.length === 0) {
                             $('.trLst003').hide();
@@ -185,6 +193,8 @@ module cmm013.a.viewmodel {
                             self.dataRefNew(self.dataRef());
                             self.createdMode(true);
                         }
+                    }).fail(function(res: any) {
+                        nts.uk.ui.dialog.alert("対象データがありません。");
                     });
                 }
 
@@ -234,13 +244,15 @@ module cmm013.a.viewmodel {
                     self.openCDialog();
                     dfd.resolve();
                 }
+            }).fail(function(res: any) {
+                nts.uk.ui.dialog.alert("対象データがありません。");
             })
-            
+
         }
 
         //Button 登録
         registerPosition(): any {
-            var self = this;                     
+            var self = this;
             if (!self.checkPositionValue()) {
                 return;
             } else {
@@ -283,6 +295,7 @@ module cmm013.a.viewmodel {
                     nts.uk.ui.windows.setShared('cmm013C_startDateNew', '', true);
                     self.selectedCode.valueHasMutated();
                     self.getHistory(dfd, selectedHistory);
+                    self.referenceSettings = ko.observable(0);
                 }).fail(function(error: any) {
                     if (error.message === "ER005") {
                         alert("入力した*は既に存在しています。\r\n職位コードを確認してください。");
@@ -296,7 +309,7 @@ module cmm013.a.viewmodel {
 
             }
         }
-   
+
         checkPositionValue(): boolean {
             var self = this;
             if (self.inp_002_code() === "" || self.inp_002_code() === null) {
@@ -406,7 +419,7 @@ module cmm013.a.viewmodel {
                                 let strStartDate = startDate.getFullYear() + '/' + (startDate.getMonth() + 1) + '/' + startDate.getDate();
                                 let update = new model.ListHistoryDto('', self.historyIdUpdate(), self.startDateLast(), strStartDate);
                                 if (self.listbox().length > 1) {
-                                    self.listbox.splice(1, 1, update);                                  
+                                    self.listbox.splice(1, 1, update);
                                     service.findAllJobTitle(self.listbox()[1].historyId).done(function(position_arr: Array<model.ListPositionDto>) {
                                         self.dataSource(position_arr);
                                         if (self.dataSource().length > 0) {
@@ -426,7 +439,7 @@ module cmm013.a.viewmodel {
 
                     });
             }
-        }     
+        }
         openDDialog() {
             var self = this;
             var dfd = $.Deferred();
@@ -437,12 +450,13 @@ module cmm013.a.viewmodel {
                 nts.uk.ui.windows.setShared('cmm013StartDate', self.oldStartDate(), true);
                 nts.uk.ui.windows.setShared('cmm013EndDate', self.endDateUpdate(), true);
                 nts.uk.ui.windows.setShared('cmm013OldEndDate', self.oldEndDate(), true);
-
+                nts.uk.ui.windows.setShared('cmm013JobCode', self.inp_002_code(), true);
                 nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '履歴の編集', })
-                    .onClosed(function() {                   
+                    .onClosed(function() {
                         if (!nts.uk.ui.windows.getShared('cancelDialog')) {
-                            self.currentCode(self.selectedCode());
                             self.getHistory(dfd);
+                            self.currentCode(self.dataSource()[0].jobCode);
+                            //self.currentCode(self.selectedCode());
                         }
                         dfd.promise();
                     });

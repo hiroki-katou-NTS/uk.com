@@ -36,34 +36,44 @@ var qmm006;
                     self.countLineBank = ko.observable(0);
                     self.indexLineBank = ko.observable(0);
                     self.messageList = ko.observableArray([
-                        { messageId: "ER001", message: "＊が入力されていません。" },
-                        { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
-                        { messageId: "ER007", message: "＊が選択されていません。" },
-                        { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
+                        { messageId: "ER001", message: "が入力されていません。" },
+                        { messageId: "ER005", message: "入力したコードは既に存在しています。\r\n コードを確認してください。" },
+                        { messageId: "ER007", message: "が選択されていません。" },
+                        { messageId: "ER008", message: "選択された{0}は使用されているため削除できません。" },
                         { messageId: "ER010", message: "対象データがありません。" },
                     ]);
                     self.currentCode.subscribe(function (codeChange) {
-                        if (!self.isFirstFindAll()) {
-                            self.clearError();
-                        }
-                        if (!self.notLoopAlert()) {
-                            self.notLoopAlert(true);
-                            return;
-                        }
-                        if (codeChange == null || self.isNotCheckDirty()) {
-                            self.isNotCheckDirty(false);
-                            self.setCurrentLineBank(codeChange);
-                            return;
-                        }
                         if (self.dirty.isDirty()) {
-                            nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
+                            if (!self.notLoopAlert()) {
+                                self.notLoopAlert(true);
+                                return;
+                            }
+                            if (codeChange == null || self.isNotCheckDirty()) {
+                                self.isNotCheckDirty(false);
                                 self.setCurrentLineBank(codeChange);
-                            }).ifNo(function () {
+                                return;
+                            }
+                            nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
+                                self.clearError();
+                                self.setCurrentLineBank(codeChange);
+                            }).ifCancel(function () {
                                 self.notLoopAlert(false);
                                 self.currentCode(self.currentLineBank().lineBankCode());
                             });
                         }
                         else {
+                            if (!self.isFirstFindAll()) {
+                                self.clearError();
+                            }
+                            if (!self.notLoopAlert()) {
+                                self.notLoopAlert(true);
+                                return;
+                            }
+                            if (codeChange == null || self.isNotCheckDirty()) {
+                                self.isNotCheckDirty(false);
+                                self.setCurrentLineBank(codeChange);
+                                return;
+                            }
                             self.setCurrentLineBank(codeChange);
                         }
                     });
@@ -133,8 +143,8 @@ var qmm006;
                 };
                 ScreenModel.prototype.saveData = function () {
                     var self = this;
-                    if (self.currentLineBank().lineBankCode().length == 1) {
-                        var lineBankCode = '0' + self.currentLineBank().lineBankCode();
+                    if (self.currentLineBank().lineBankCode() != null && self.currentLineBank().lineBankCode().length == 1) {
+                        self.currentLineBank().lineBankCode("0" + self.currentLineBank().lineBankCode());
                     }
                     var command = {
                         accountAtr: self.currentLineBank().accountAtr(),
@@ -163,25 +173,25 @@ var qmm006;
                         if (error.messageId == self.messageList()[0].messageId) {
                             var message = self.messageList()[0].message;
                             if (!command.lineBankCode) {
-                                $('#A_INP_001').ntsError('set', message);
+                                $('#inp_lineBankCode').ntsError('set', message);
                             }
                             if (!command.lineBankName) {
-                                $('#A_INP_002').ntsError('set', message);
+                                $('#inp_lineBankName').ntsError('set', message);
                             }
                             if (!command.accountNo) {
-                                $('#A_INP_003').ntsError('set', message);
+                                $('#inp_accountNumber').ntsError('set', message);
                             }
                         }
                         else if (error.messageId == self.messageList()[2].messageId) {
                             var message = self.messageList()[2].message;
                             if (!command.branchId) {
-                                $('#A_LBL_004').ntsError('set', message);
-                                $('#A_LBL_007').ntsError('set', message);
+                                $('#lbl_bankCode').ntsError('set', message);
+                                $('#lbl_branchCode').ntsError('set', message);
                             }
                         }
                         else if (error.messageId == self.messageList()[1].messageId) {
                             var message = self.messageList()[1].message;
-                            $('#A_INP_001').ntsError('set', message);
+                            $('#inp_lineBankCode').ntsError('set', message);
                         }
                     });
                 };
@@ -207,10 +217,14 @@ var qmm006;
                                 }
                             });
                         }).fail(function (error) {
-                            nts.uk.ui.dialog.alert(self.messageList()[3].message);
+                            if (error.messageId == self.messageList()[3].messageId) {
+                                self.isNotCheckDirty(false);
+                                var messageError = nts.uk.text.format(self.messageList()[3].message, self.currentLineBank().lineBankName());
+                                nts.uk.ui.dialog.alert(messageError);
+                            }
                         });
                     })
-                        .ifNo(function () {
+                        .ifCancel(function () {
                     });
                 };
                 ScreenModel.prototype.openBDialog = function () {
@@ -225,8 +239,8 @@ var qmm006;
                                 self.bankCode(nts.uk.ui.windows.getShared("selectedBank").parentCode);
                                 self.branchName(nts.uk.ui.windows.getShared("selectedBank").name);
                                 lineBank.branchId(nts.uk.ui.windows.getShared("selectedBank").branchId);
-                                $('#A_LBL_004').ntsError('clear');
-                                $('#A_LBL_007').ntsError('clear');
+                                $('#lbl_bankCode').ntsError('clear');
+                                $('#lbl_branchCode').ntsError('clear');
                             }
                         });
                     })
@@ -239,8 +253,9 @@ var qmm006;
                     if (self.items().length > 1) {
                         if (self.dirty.isDirty()) {
                             nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
+                                self.setCurrentLineBank(self.currentCode());
                                 self.afterCloseCDialog();
-                            }).ifNo(function () {
+                            }).ifCancel(function () {
                             });
                         }
                         else {
@@ -269,7 +284,7 @@ var qmm006;
                     if (self.dirty.isDirty()) {
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                             nts.uk.request.jump("/view/qmm/002/a/index.xhtml");
-                        }).ifNo(function () {
+                        }).ifCancel(function () {
                         });
                     }
                     else {
@@ -289,19 +304,21 @@ var qmm006;
                                 self.currentCode(null);
                             }
                         })
-                            .ifNo(function () { });
+                            .ifCancel(function () { });
                     }
                     else {
                         self.currentCode(null);
                     }
                 };
                 ScreenModel.prototype.clearError = function () {
-                    $('#A_INP_001').ntsError('clear');
-                    $('#A_INP_002').ntsError('clear');
-                    $('#A_INP_003').ntsError('clear');
-                    $('#A_LBL_004').ntsError('clear');
-                    $('#A_LBL_007').ntsError('clear');
-                    $('#A_INP_004').ntsError('clear');
+                    $('#inp_lineBankCode').ntsError('clear');
+                    $('#inp_lineBankName').ntsError('clear');
+                    $('#inp_accountNumber').ntsError('clear');
+                    $('#lbl_bankCode').ntsError('clear');
+                    $('#lbl_branchCode').ntsError('clear');
+                    $('#inp_transferRequestName').ntsError('clear');
+                    $('#inp_memo').ntsError('clear');
+                    $('.consignor').ntsError('clear');
                 };
                 ScreenModel.prototype.getLineBank = function (curCode) {
                     var self = this;
@@ -372,50 +389,34 @@ var qmm006;
                         var consignorItem = consignors[i];
                         switch (i) {
                             case 0:
-                                if (consignorItem) {
-                                    this.consignors.push(new Consignor("①", consignorItem.code, consignorItem.memo));
-                                }
-                                else {
-                                    this.consignors.push(new Consignor("①", "", ""));
-                                }
+                                this.createConsignorItem(consignorItem, "①");
                                 break;
                             case 1:
-                                if (consignorItem) {
-                                    this.consignors.push(new Consignor("②", consignorItem.code, consignorItem.memo));
-                                }
-                                else {
-                                    this.consignors.push(new Consignor("②", "", ""));
-                                }
+                                this.createConsignorItem(consignorItem, "②");
                                 break;
                             case 2:
-                                if (consignorItem) {
-                                    this.consignors.push(new Consignor("③", consignorItem.code, consignorItem.memo));
-                                }
-                                else {
-                                    this.consignors.push(new Consignor("③", "", ""));
-                                }
+                                this.createConsignorItem(consignorItem, "③");
                                 break;
                             case 3:
-                                if (consignorItem) {
-                                    this.consignors.push(new Consignor("④", consignorItem.code, consignorItem.memo));
-                                }
-                                else {
-                                    this.consignors.push(new Consignor("④", "", ""));
-                                }
+                                this.createConsignorItem(consignorItem, "④");
                                 break;
                             case 4:
-                                if (consignorItem) {
-                                    this.consignors.push(new Consignor("⑤", consignorItem.code, consignorItem.memo));
-                                }
-                                else {
-                                    this.consignors.push(new Consignor("⑤", "", ""));
-                                }
+                                this.createConsignorItem(consignorItem, "⑤");
                                 break;
                             default:
                                 break;
                         }
                     }
                 }
+                LineBank.prototype.createConsignorItem = function (item, icon) {
+                    var self = this;
+                    if (item) {
+                        self.consignors.push(new Consignor(icon, item.code, item.memo));
+                    }
+                    else {
+                        self.consignors.push(new Consignor(icon, "", ""));
+                    }
+                };
                 return LineBank;
             }());
             var Consignor = (function () {
