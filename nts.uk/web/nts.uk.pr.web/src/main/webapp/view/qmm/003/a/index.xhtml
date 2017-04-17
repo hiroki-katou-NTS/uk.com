@@ -115,7 +115,7 @@
 								<!--  3  -->
 								<tr class= "flex">
 									<th colspan="1" class="th flex">
-										<div data-bind="ntsFormLabel: {constraint:'PrefectureCode',required: true}" class="form-label ">
+										<div data-bind="ntsFormLabel: {required: true}" class="form-label ">
 											<label id="A_LBL_003">都道府県</label>
 										</div>
 									</th>
@@ -142,7 +142,7 @@
 							<tbody>
 								<tr class= "flex">
 									<th colspan="1" class="th">
-										<div data-bind="ntsFormLabel: {constraint: 'ResiTaxReportCode'}">
+										<div data-bind="ntsFormLabel: {}">
 											<label id="A_LBL_004"> 住民税報告先 </label>
 										</div>
 									</th>
@@ -278,7 +278,6 @@
 										<textarea id="A_INP_009"  class="save-error"  data-bind="ntsMultilineEditor:{
 												value: memo,
 												constraint: 'Memo',
-												required: true,
 												enable: true,
 												readonly: false }" />									
 								</div>

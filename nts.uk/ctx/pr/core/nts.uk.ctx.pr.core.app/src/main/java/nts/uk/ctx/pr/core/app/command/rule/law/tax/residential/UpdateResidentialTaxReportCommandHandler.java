@@ -30,14 +30,14 @@ public class UpdateResidentialTaxReportCommandHandler extends CommandHandler<Upd
 	protected void handle(CommandHandlerContext<UpdateResidentialTaxReportCommand> context) {
 		UpdateResidentialTaxReportCommand update = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
-		List<String> lstResiTax = update.getResiTaxCodes();
-		lstResiTax.stream().forEach(c -> {
-			List<?> lstResidential = this.resiTaxRepository.getAllResidentialTaxCode(companyCode, c.toString());
-			lstResidential.stream().forEach(b -> {
-				this.resiTaxRepository.update(companyCode, c.toString(), update.getResiTaxReportCode());
+		List<String> lstResidentaxCode = update.getResiTaxCodes();
+		lstResidentaxCode.stream().forEach(c -> {
+			List<?> lstResiTaxUpdate = this.resiTaxRepository.getAllResidentialTaxCode(companyCode, c.toString());
+			lstResiTaxUpdate.stream().forEach(resiTaxUpdate -> {
+				this.resiTaxRepository.update(companyCode, resiTaxUpdate.toString(), update.getResiTaxReportCode());
 			});
-			List<?> lstPerson = this.personTaxRepository.findByResidenceCode(companyCode, c, update.getYearKey());
-			lstPerson.stream().forEach(personId -> {
+			List<?> lstPersonId = this.personTaxRepository.findByResidenceCode(companyCode, c, update.getYearKey());
+			lstPersonId.stream().forEach(personId -> {
 				this.personTaxRepository.updateResendence(companyCode, update.getResiTaxReportCode(), personId.toString(),
 						update.getYearKey());
 			});

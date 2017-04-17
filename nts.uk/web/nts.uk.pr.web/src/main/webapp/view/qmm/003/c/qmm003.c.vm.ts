@@ -58,7 +58,7 @@ module qmm003.c.viewmodel {
         init(): void {
             let self = this;
             self.items = ko.observableArray([]);
-            self.singleSelectedCode = ko.observable("");
+            self.singleSelectedCode = ko.observable(null);
         }
         //11.初期データ取得処理 11. Initial data acquisition processing
         start(): JQueryPromise<any> {
@@ -76,6 +76,8 @@ module qmm003.c.viewmodel {
                         self.filteredData(node);
                         self.items(self.nodeRegionPrefectures());
                     });
+                } else {
+                    nts.uk.ui.dialog.alert("対象データがありません。");
                 }
                 dfd.resolve();
 
@@ -104,7 +106,7 @@ module qmm003.c.viewmodel {
 
             return array;
         }
-        
+
         buildResidentalTaxTree() {
             let self = this;
             var child = [];

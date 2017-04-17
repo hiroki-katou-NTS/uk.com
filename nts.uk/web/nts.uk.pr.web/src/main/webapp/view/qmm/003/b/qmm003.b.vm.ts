@@ -50,7 +50,7 @@ module qmm003.b.viewmodel {
         init(): void {
             let self = this;
             self.items = ko.observableArray([]);
-            self.singleSelectedCode = ko.observable(nts.uk.ui.windows.getShared("singleSelectedCode"));
+            self.singleSelectedCode = ko.observable('');
         }
         
         //11.初期データ取得処理 11. Initial data acquisition processing

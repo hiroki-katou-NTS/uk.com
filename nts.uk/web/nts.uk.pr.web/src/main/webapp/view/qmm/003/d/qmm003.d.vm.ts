@@ -35,12 +35,9 @@ module qmm003.d.viewmodel {
             let resiTaxCodes = [];
             let resiTax = [];
             for (let i = 0; i < self.arrayNode().length; i++) {
-                if (self.arrayNode()[i].length == 2) {
-                    console.log(self.arrayNode()[i]);
-                }
                 resiTaxCodes.push(self.arrayNode()[i]);
             }
-
+            nts.uk.ui.windows.setShared('arrayNode', self.arrayNode(), true);
             qmm003.d.service.deleteResidential(resiTaxCodes).done(function(data) {
                 self.items([]);
                 self.nodeRegionPrefectures([]);
@@ -76,6 +73,8 @@ module qmm003.d.viewmodel {
                         self.filteredData3(node3);
                         self.items(self.nodeRegionPrefectures());
                     });
+                } else {
+                    nts.uk.ui.dialog.alert("対象データがありません。");
                 }
                 dfd.resolve();
 

@@ -18,10 +18,11 @@ module qmm003.e.viewmodel {
             let self = this;
             self.init();
             self.year.subscribe(function(value) {
-                self.yearJapan(nts.uk.time.yearInJapanEmpire(self.year()).toString());
+                self.yearJapan("("+ nts.uk.time.yearInJapanEmpire(self.year()).toString()+ ")");
             });
 
         }
+
         clickButton(): any {
             let self = this;
             service.updateAllReportCode(self.resiTaxCodeLeft(), self.resiTaxCodeRight()).done(function(data: any) {
@@ -30,9 +31,11 @@ module qmm003.e.viewmodel {
             });
             nts.uk.ui.windows.close();
         }
+
         cancelButton(): void {
             nts.uk.ui.windows.close();
         }
+
         init(): void {
             let self = this;
             self.treeLeft = ko.observableArray([]);
@@ -57,15 +60,12 @@ module qmm003.e.viewmodel {
                         self.treeLeft(self.nodeRegionPrefectures());
                         self.treeRight(self.nodeRegionPrefectures());
                     });
+                } else {
+                    nts.uk.ui.dialog.alert("対象データがありません。");
                 }
-
-
                 dfd.resolve();
-
             }).fail(function(res) {
-
             });
-
             return dfd.promise();
         }
 
