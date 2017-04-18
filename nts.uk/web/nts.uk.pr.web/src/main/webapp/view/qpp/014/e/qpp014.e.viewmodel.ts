@@ -8,7 +8,7 @@ module qpp014.e {
         timer: nts.uk.ui.sharedvm.KibanTimer;
         processingDate: KnockoutObservable<any>;
         dateOfPayment: KnockoutObservable<any>;
-        dataFixed: KnockoutObservableArray<TestArray>;
+        dataFixed: KnockoutObservableArray<any>;
         constructor() {
             var self = this;
             $('#successful').css('display', 'none');
@@ -57,6 +57,7 @@ module qpp014.e {
                 fromBank: { branchId: "50000000021", bankNameKana: "frBankKNName3", branchNameKana: "frBranchKNName", accountAtr: 1, accountNo: "300" },
                 toBank: { branchId: "50000000031", bankNameKana: "toBankKNName3", branchNameKana: "toBranchKNName", accountAtr: 0, accountNo: "300", accountNameKana: "toAccKNName3" },
             }
+            self.dataFixed = ko.observableArray([]);
             self.dataFixed.push(command1);
             self.dataFixed.push(command2);
             self.dataFixed.push(command3);
