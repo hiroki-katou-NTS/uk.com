@@ -100,7 +100,7 @@ module nts.uk.pr.view.qmm008.h {
             /**
              * Call service to save healthInsuaranceAvgearn.
              */
-            private save(): void {
+            public save(): void {
                 var self = this;
                 // Return if has error.
                 if (!nts.uk.ui._viewModel.errors.isEmpty()) {
@@ -117,16 +117,37 @@ module nts.uk.pr.view.qmm008.h {
             /**
              * ReCalculate the healthInsuranceAvgearn list
              */
-            private reCalculate(): void {
-                // TODO: LÀM LẠI
+            public reCalculate(): void {
                 var self = this;
                 self.clearError();
                 // Clear current listHealthInsuranceAvgearn
                 self.listHealthInsuranceAvgearn.removeAll();
+
                 // Recalculate listHealthInsuranceAvgearn
-                //                self.listHealthAvgEarnLimit.forEach(item => {
-                //                    self.listHealthInsuranceAvgearn.push(self.calculateHealthInsuranceAvgEarnModel(item));
-                //                });
+                service.recalculateHealthInsuranceAvgearn(self.healthInsuranceRateModel.historyId).done(res => {
+                    var salMin: number = 0;
+                    res.listHealthInsuranceAvgearnDto.forEach(item => {
+                        self.listHealthInsuranceAvgearn.push(
+                            new HealthInsuranceAvgEarnModel(
+                                item.grade,
+                                item.avgEarn,
+                                salMin,
+                                item.upperLimit,
+                                new HealthInsuranceAvgEarnValueModel(
+                                    item.personalAvg.healthGeneralMny,
+                                    item.personalAvg.healthNursingMny,
+                                    item.personalAvg.healthBasicMny,
+                                    item.personalAvg.healthSpecificMny),
+                                new HealthInsuranceAvgEarnValueModel(
+                                    item.companyAvg.healthGeneralMny,
+                                    item.companyAvg.healthNursingMny,
+                                    item.companyAvg.healthBasicMny,
+                                    item.companyAvg.healthSpecificMny)
+                            )
+                        );
+                        salMin = item.upperLimit;
+                    });
+                });
             }
 
             private closeDialogWithDirtyCheck(): void {

@@ -118,10 +118,11 @@ var nts;
                                         self.isNewMode(false);
                                         self.isSomethingChanged(true);
                                         self.resetDirty();
-                                        self.loadAllOutputSetting();
+                                        self.loadAllOutputSetting()
+                                            .done(function () { return self.temporarySelectedCode(self.outputSettingDetailModel().settingCode()); });
                                     }).fail(function (res) {
                                         if (res.messageId == 'ER005') {
-                                            $('#inpCode').ntsError('set', '入力した＊は既に存在しています。\r\n ＊を確認してください。');
+                                            $('#inpCode').ntsError('set', '入力したコードは既に存在しています。\r\n コードを確認してください。');
                                         }
                                     });
                                 };
@@ -135,6 +136,7 @@ var nts;
                                                 var selectedOutputSetting = self.outputSettings().filter(function (item) { return item.code == selectedCode; })[0];
                                                 var selectedIndex = self.outputSettings().indexOf(selectedOutputSetting);
                                                 self.outputSettings.remove(selectedOutputSetting);
+                                                self.resetDirty();
                                                 if (self.outputSettings() && self.outputSettings().length > 0) {
                                                     var currentSetting = self.outputSettings()[selectedIndex];
                                                     if (currentSetting) {

@@ -100,6 +100,7 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 			Set<HealthInsuranceRounding> roundingMethods, BigDecimal masterRate,
 			Set<InsuranceRateItem> rateItems, boolean isPersonal) {
 		HealthInsuranceRounding salaryRound = new HealthInsuranceRounding();
+
 		HealthInsuranceRounding bonusRound = new HealthInsuranceRounding();
 		roundingMethods.forEach(item -> {
 			if (item.getPayType().equals(PaymentType.Salary)) {
@@ -111,11 +112,13 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 				bonusRound.setRoundAtrs(item.getRoundAtrs());
 			}
 		});
+
 		HealthInsuranceAvgearnValue value = new HealthInsuranceAvgearnValue();
 		rateItems.forEach(rateItem -> {
 			if (rateItem.getPayType() == PaymentType.Salary) {
 				BigDecimal val = BigDecimal.ZERO;
 				BigDecimal val2 = BigDecimal.ZERO;
+
 				// check if personal
 				if (isPersonal) {
 					// for general and nursing
@@ -134,6 +137,7 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 							salaryRound.getRoundAtrs().getCompanyRoundAtr(),
 							calculateChargeRate(masterRate, rateItem, isPersonal), 3);
 				}
+
 				switch (rateItem.getInsuranceType()) {
 				case Basic:
 					value.setHealthBasicMny(new InsuranceAmount(val2));

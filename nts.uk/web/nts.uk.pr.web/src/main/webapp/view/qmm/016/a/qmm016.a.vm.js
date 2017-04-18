@@ -112,6 +112,15 @@ var nts;
                                     };
                                     nts.uk.ui.windows.sub.modal('/view/qmm/016/l/index.xhtml', ntsDialogOptions);
                                 };
+                                ScreenModel.prototype.btnInputFileDownload = function () {
+                                    var self = this;
+                                    nts.uk.request.exportFile('/screen/pr/qmm016/inputfile', {
+                                        code: self.head.code(),
+                                        name: self.head.name(),
+                                        memo: self.head.memo(),
+                                        wtHistoryDto: self.history.getWageTableHistoryDto()
+                                    });
+                                };
                                 return ScreenModel;
                             }(view.base.simplehistory.viewmodel.ScreenBaseModel));
                             viewmodel.ScreenModel = ScreenModel;

@@ -4,9 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.social.healthavgearn;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -14,12 +11,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.command.RecalculateHealthInsuAvgearnCommand;
+import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.command.RecalculateHealthInsuAvgearnCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.command.UpdateHealthInsuranceAvgearnCommand;
 import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.command.UpdateHealthInsuranceAvgearnCommandHandler;
-import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find.HealthInsuranceAvgearnFinder;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
 import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find.HealthInsAvgearnsModel;
-import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find.HealthInsuranceAvgearnDto;
+import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find.HealthInsuranceAvgearnFinder;
 
 /**
  * The Class HealthInsuranceAvgearnWs.
@@ -34,7 +31,11 @@ public class HealthInsuranceAvgearnWs extends WebService {
 
 	/** The update health insurance avgearn command handler. */
 	@Inject
-	private UpdateHealthInsuranceAvgearnCommandHandler updateHealthInsuranceAvgearnCommandHandler;
+	private UpdateHealthInsuranceAvgearnCommandHandler updateCommandHandler;
+
+	/** The recalculate health insu avgearn command handler. */
+	@Inject
+	private RecalculateHealthInsuAvgearnCommandHandler recalculateCommandHandler;
 
 	/**
 	 * Update.
@@ -45,7 +46,7 @@ public class HealthInsuranceAvgearnWs extends WebService {
 	@POST
 	@Path("update")
 	public void update(UpdateHealthInsuranceAvgearnCommand command) {
-		updateHealthInsuranceAvgearnCommandHandler.handle(command);
+		updateCommandHandler.handle(command);
 	}
 
 	/**
@@ -61,12 +62,15 @@ public class HealthInsuranceAvgearnWs extends WebService {
 		return healthInsuranceAvgearnFinder.find(id);
 	}
 
+	/**
+	 * Re calculate.
+	 *
+	 * @param command
+	 *            the command
+	 */
 	@POST
-	@Path("recal/{id}")
-	public HealthInsAvgearnsModel reCalculate(@PathParam("id") String id) {
-
-		
-		
-		return healthInsuranceAvgearnFinder.find(id);
+	@Path("recalculate")
+	public HealthInsAvgearnsModel reCalculate(RecalculateHealthInsuAvgearnCommand command) {
+		return recalculateCommandHandler.handle(command);
 	}
 }

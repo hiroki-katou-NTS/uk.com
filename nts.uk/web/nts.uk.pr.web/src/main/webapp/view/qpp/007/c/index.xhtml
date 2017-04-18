@@ -45,10 +45,10 @@
 					<div id="inpSearch" class="ntsSearchBox"
 						data-bind="ntsSearchBox: {
 										comId: 'outputSettings',
-										items: 'items', 
-										selected: 'currentCode', 
+										items: outputSettings, 
+										selected: temporarySelectedCode, 
 										selectedKey: 'code', 
-										fields: ['name', 'code', 'description']}"></div>
+										fields: ['name', 'code']}"></div>
 					<div id="left-grid-list">
 						<table id="outputSettings"
 							data-bind="ntsGridList: {
@@ -70,7 +70,7 @@
 				<!-- BEGIN CONTENT CENTER-->
 				<div id="contents-center" class="caret-right caret-background pull-left" data-bind="with: outputSettingDetailModel">
 					<div class="flex valign-center">
-						<div id="lblCodeName" data-bind="ntsFormLabel: {required: true}">コード/名称</div>
+						<div id="lblCodeName" data-bind="ntsFormLabel: {constraint: ['SalaryOutputSettingCode', 'SalaryOutputSettingName'], required: true}">コード/名称</div>
 						<input id="inpCode" data-name="コード"
 							data-bind="ntsTextEditor: {constraint: 'SalaryOutputSettingCode', value: settingCode, required: true, enable: $parent.isNewMode()}">
 						</input>

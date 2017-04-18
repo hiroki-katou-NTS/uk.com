@@ -7,6 +7,7 @@ module nts.uk.pr.view.qmm008.h {
         var paths: any = {
             updateHealthInsuranceAvgearn: "ctx/pr/core/insurance/social/healthavgearn/update",
             findHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthavgearn/find",
+            recalculateHealthInsuranceAvgearn: "ctx/pr/core/insurance/social/healthavgearn/recalculate"
         };
 
         /**
@@ -14,11 +15,30 @@ module nts.uk.pr.view.qmm008.h {
          */
         export function updateHealthInsuranceAvgearn(list: model.ListHealthInsuranceAvgEarnDto, officeCode: string): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
-            var data = { listHealthInsuranceAvgearnDto: list.listHealthInsuranceAvgearnDto, 
-                historyId: list.historyId, 
-                officeCode: officeCode };
+            var data = {
+                listHealthInsuranceAvgearnDto: list.listHealthInsuranceAvgearnDto,
+                historyId: list.historyId,
+                officeCode: officeCode
+            };
             nts.uk.request.ajax(paths.updateHealthInsuranceAvgearn, data).done(() =>
                 dfd.resolve());
+            return dfd.promise();
+        }
+
+        // Re-calculate values
+        export function recalculateHealthInsuranceAvgearn(historyId: string): JQueryPromise<model.ListHealthInsuranceAvgEarnDto> {
+            var dfd = $.Deferred<any>();
+
+            var data = {
+                historyId: historyId,
+            };
+
+            nts.uk.request.ajax(paths.recalculateHealthInsuranceAvgearn, data).done(function(res: model.ListHealthInsuranceAvgEarnDto) {
+                dfd.resolve(res);
+            }).fail(function(res: any) {
+                dfd.reject(res);
+            });
+
             return dfd.promise();
         }
 
