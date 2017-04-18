@@ -88,20 +88,15 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 				healthInsuranceRate.getCompanyCode(), healthInsuranceRate.getOfficeCode().v());
 	}
 
-	/**
-	 * Calculate avgearn value.
-	 *
-	 * @param roundingMethods
-	 *            the rounding methods
-	 * @param masterRate
-	 *            the master rate
-	 * @param rateItems
-	 *            the rate items
-	 * @param isPersonal
-	 *            the is personal
-	 * @return the health insurance avgearn value
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.service.
+	 * HealthInsuranceAvgearnService#calculateAvgearnValue(java.util.Set,
+	 * java.math.BigDecimal, java.util.Set, boolean)
 	 */
-	private HealthInsuranceAvgearnValue calculateAvgearnValue(
+	@Override
+	public HealthInsuranceAvgearnValue calculateAvgearnValue(
 			Set<HealthInsuranceRounding> roundingMethods, BigDecimal masterRate,
 			Set<InsuranceRateItem> rateItems, boolean isPersonal) {
 		HealthInsuranceRounding salaryRound = new HealthInsuranceRounding();

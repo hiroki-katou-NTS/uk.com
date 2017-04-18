@@ -23,8 +23,8 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.service.HealthInsuranc
  * The Class UpdateHealthInsuranceCommandHandler.
  */
 @Stateless
-public class UpdateHealthInsuranceCommandHandler
-		extends CommandHandler<UpdateHealthInsuranceCommand> {
+public class UpdateHealthInsuRateCommandHandler
+		extends CommandHandler<UpdateHealthInsuRateCommand> {
 
 	/** The health insurance rate service. */
 	@Inject
@@ -46,9 +46,9 @@ public class UpdateHealthInsuranceCommandHandler
 	 */
 	@Override
 	@Transactional
-	protected void handle(CommandHandlerContext<UpdateHealthInsuranceCommand> context) {
+	protected void handle(CommandHandlerContext<UpdateHealthInsuRateCommand> context) {
 		// Get command.
-		UpdateHealthInsuranceCommand command = context.getCommand();
+		UpdateHealthInsuRateCommand command = context.getCommand();
 
 		// Get the history.
 		Optional<HealthInsuranceRate> optHealthInsuranceRate = this.healthInsuranceRateRepository

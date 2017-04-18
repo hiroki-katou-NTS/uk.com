@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command;
@@ -24,7 +24,7 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.service.PensionRateSe
  * The Class UpdatePensionCommandHandler.
  */
 @Stateless
-public class UpdatePensionCommandHandler extends CommandHandler<UpdatePensionCommand> {
+public class UpdatePensionRateCommandHandler extends CommandHandler<UpdatePensionRateCommand> {
 
 	/** The pension rate service. */
 	@Inject
@@ -34,9 +34,11 @@ public class UpdatePensionCommandHandler extends CommandHandler<UpdatePensionCom
 	@Inject
 	private PensionRateRepository pensionRateRepository;
 
+	/** The pension avgearn service. */
 	@Inject
 	private PensionAvgearnService pensionAvgearnService;
 
+	/** The pension avgearn repository. */
 	@Inject
 	private PensionAvgearnRepository pensionAvgearnRepository;
 
@@ -49,14 +51,14 @@ public class UpdatePensionCommandHandler extends CommandHandler<UpdatePensionCom
 	 */
 	@Override
 	@Transactional
-	protected void handle(CommandHandlerContext<UpdatePensionCommand> context) {
+	protected void handle(CommandHandlerContext<UpdatePensionRateCommand> context) {
 		// Get command.
-		UpdatePensionCommand command = context.getCommand();
+		UpdatePensionRateCommand command = context.getCommand();
 
 		String historyId = command.getHistoryId();
 		// Get the history.
 		PensionRate pensionRate = this.pensionRateRepository.findById(historyId).get();
-		
+
 		// Update data
 		pensionRate.setAutoCalculate(command.getAutoCalculate());
 		pensionRate.setChildContributionRate(command.getChildContributionRate());
@@ -75,7 +77,8 @@ public class UpdatePensionCommandHandler extends CommandHandler<UpdatePensionCom
 
 		if (pensionRate.getAutoCalculate() == CalculateMethod.Auto) {
 			// Auto calculate listPensionAvgearn.
-			List<PensionAvgearn> listPensionAvgearn = pensionAvgearnService.calculateListPensionAvgearn(pensionRate);
+			List<PensionAvgearn> listPensionAvgearn = pensionAvgearnService
+					.calculateListPensionAvgearn(pensionRate);
 			this.pensionAvgearnRepository.update(listPensionAvgearn, pensionRate.getCompanyCode(),
 					pensionRate.getOfficeCode().v());
 		}

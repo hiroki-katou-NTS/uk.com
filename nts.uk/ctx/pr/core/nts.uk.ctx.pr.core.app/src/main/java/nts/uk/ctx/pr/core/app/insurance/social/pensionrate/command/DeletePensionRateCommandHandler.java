@@ -15,7 +15,7 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRepository
  * The Class DeletePensionCommandHandler.
  */
 @Stateless
-public class DeletePensionCommandHandler extends CommandHandler<DeletePensionCommand> {
+public class DeletePensionRateCommandHandler extends CommandHandler<DeletePensionRateCommand> {
 
 	/** The pension rate repository. */
 	@Inject
@@ -25,7 +25,7 @@ public class DeletePensionCommandHandler extends CommandHandler<DeletePensionCom
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<DeletePensionCommand> command) {
+	protected void handle(CommandHandlerContext<DeletePensionRateCommand> command) {
 		String historyId = command.getCommand().getHistoryId();
 		
 		pensionRateRepository.remove(historyId);

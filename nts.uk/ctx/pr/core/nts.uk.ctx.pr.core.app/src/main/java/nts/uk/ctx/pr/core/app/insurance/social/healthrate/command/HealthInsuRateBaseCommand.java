@@ -29,7 +29,7 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
  */
 @Getter
 @Setter
-public class HealthInsuranceBaseCommand implements HealthInsuranceRateGetMemento {
+public class HealthInsuRateBaseCommand implements HealthInsuranceRateGetMemento {
 
 	/** The history id. */
 	private String historyId;

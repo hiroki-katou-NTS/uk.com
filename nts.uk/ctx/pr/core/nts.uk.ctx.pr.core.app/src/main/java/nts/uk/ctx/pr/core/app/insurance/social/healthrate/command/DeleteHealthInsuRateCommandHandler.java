@@ -15,7 +15,7 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRep
  * The Class DeleteHealthInsuranceCommandHandler.
  */
 @Stateless
-public class DeleteHealthInsuranceCommandHandler extends CommandHandler<DeleteHealthInsuranceCommand> {
+public class DeleteHealthInsuRateCommandHandler extends CommandHandler<DeleteHealthInsuRateCommand> {
 
 	/** The health insurance rate repository. */
 	@Inject
@@ -25,7 +25,7 @@ public class DeleteHealthInsuranceCommandHandler extends CommandHandler<DeleteHe
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<DeleteHealthInsuranceCommand> command) {
+	protected void handle(CommandHandlerContext<DeleteHealthInsuRateCommand> command) {
 		String historyId = command.getCommand().getHistoryId();
 		
 		healthInsuranceRateRepository.remove(historyId);

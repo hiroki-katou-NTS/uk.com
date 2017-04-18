@@ -17,7 +17,6 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPensionRate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -119,12 +118,6 @@ public class QismtPensionAmount extends UkJpaEntity implements Serializable {
 	/** The child contribution mny. */
 	@Column(name = "CHILD_CONTRIBUTION_MNY")
 	private BigDecimal childContributionMny;
-
-	/** The qismt pension rate. */
-	@JoinColumns({
-			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false) })
-	@ManyToOne(optional = false)
-	private QismtPensionRate qismtPensionRate;
 
 	/** The qismt pension avgearn D. */
 	@JoinColumns({
