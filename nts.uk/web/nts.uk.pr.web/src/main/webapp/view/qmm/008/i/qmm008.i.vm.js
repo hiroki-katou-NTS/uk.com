@@ -83,6 +83,15 @@ var nts;
                                     var self = this;
                                     self.clearError();
                                     self.listPensionAvgearnModel.removeAll();
+                                    i.service.recalculatePensionAvgearn(self.pensionRateModel.historyId)
+                                        .done(function (res) {
+                                        var salMin = 0;
+                                        res.listPensionAvgearnDto.forEach(function (item) {
+                                            self.listPensionAvgearnModel.push(new PensionAvgearnModel(item.grade, item.avgEarn, salMin, item.upperLimit, new PensionAvgearnValueModel(item.companyFund.maleAmount, item.companyFund.femaleAmount, item.companyFund.unknownAmount), new PensionAvgearnValueModel(item.companyFundExemption.maleAmount, item.companyFundExemption.femaleAmount, item.companyFundExemption.unknownAmount), new PensionAvgearnValueModel(item.companyPension.maleAmount, item.companyPension.femaleAmount, item.companyPension.unknownAmount), new PensionAvgearnValueModel(item.personalFund.maleAmount, item.personalFund.femaleAmount, item.personalFund.unknownAmount), new PensionAvgearnValueModel(item.personalFundExemption.maleAmount, item.personalFundExemption.femaleAmount, item.personalFundExemption.unknownAmount), new PensionAvgearnValueModel(item.personalPension.maleAmount, item.personalPension.femaleAmount, item.personalPension.unknownAmount), item.childContributionAmount));
+                                            salMin = item.upperLimit;
+                                        });
+                                        self.dirty.reset();
+                                    });
                                 };
                                 ScreenModel.prototype.closeDialogWithDirtyCheck = function () {
                                     var self = this;

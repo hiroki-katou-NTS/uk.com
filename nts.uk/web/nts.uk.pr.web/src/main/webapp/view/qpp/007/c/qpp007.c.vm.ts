@@ -154,12 +154,14 @@ module nts.uk.pr.view.qpp007.c {
                 // Save.
                 service.save(data).done(() => {
                     self.isNewMode(false);
+                    // Used for parent screen.
                     self.isSomethingChanged(true);
                     self.resetDirty();
-                    self.loadAllOutputSetting();
+                    self.loadAllOutputSetting()
+                        .done(() => self.temporarySelectedCode(self.outputSettingDetailModel().settingCode()));
                 }).fail(res => {
                     if (res.messageId == 'ER005') {
-                        $('#inpCode').ntsError('set', '入力した＊は既に存在しています。\r\n ＊を確認してください。');
+                        $('#inpCode').ntsError('set', '入力したコードは既に存在しています。\r\n コードを確認してください。');
                     }
                 });
             }
@@ -173,6 +175,7 @@ module nts.uk.pr.view.qpp007.c {
                 if (selectedCode) {
                     nts.uk.ui.dialog.confirm("データを削除します。\r\n よろしいですか？").ifYes(function() {
                         service.remove(selectedCode).done(() => {
+                            // Used for parent screen.
                             self.isSomethingChanged(true);
 
                             // Find selected outputSetting.
@@ -181,6 +184,8 @@ module nts.uk.pr.view.qpp007.c {
 
                             // Remove selected setting from list.
                             self.outputSettings.remove(selectedOutputSetting);
+                            // Reset dirty.
+                            self.resetDirty();
 
                             if (self.outputSettings() && self.outputSettings().length > 0) {
                                 var currentSetting = self.outputSettings()[selectedIndex];

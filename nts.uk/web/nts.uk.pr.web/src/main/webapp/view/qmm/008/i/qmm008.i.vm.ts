@@ -156,7 +156,7 @@ module nts.uk.pr.view.qmm008.i {
             /**
              * ReCalculate the listPensionAvgearnModel
              */
-            private reCalculate(): void {
+            public reCalculate(): void {
                 // TODO: LÀM LẠI
                 var self = this;
                 self.clearError();
@@ -164,9 +164,44 @@ module nts.uk.pr.view.qmm008.i {
                 self.listPensionAvgearnModel.removeAll();
 
                 // Recalculate listPensionAvgearnModel
-//                self.listHealthAvgEarnLimit.forEach(item => {
-//                    self.listPensionAvgearnModel.push(self.calculatePensionAvgearn(item));
-//                });
+                service.recalculatePensionAvgearn(self.pensionRateModel.historyId)
+                    .done(res => {
+                        var salMin: number = 0;
+                        res.listPensionAvgearnDto.forEach(item => {
+                            self.listPensionAvgearnModel.push(new PensionAvgearnModel(
+                                item.grade,
+                                item.avgEarn,
+                                salMin,
+                                item.upperLimit,
+                                new PensionAvgearnValueModel(
+                                    item.companyFund.maleAmount,
+                                    item.companyFund.femaleAmount,
+                                    item.companyFund.unknownAmount),
+                                new PensionAvgearnValueModel(
+                                    item.companyFundExemption.maleAmount,
+                                    item.companyFundExemption.femaleAmount,
+                                    item.companyFundExemption.unknownAmount),
+                                new PensionAvgearnValueModel(
+                                    item.companyPension.maleAmount,
+                                    item.companyPension.femaleAmount,
+                                    item.companyPension.unknownAmount),
+                                new PensionAvgearnValueModel(
+                                    item.personalFund.maleAmount,
+                                    item.personalFund.femaleAmount,
+                                    item.personalFund.unknownAmount),
+                                new PensionAvgearnValueModel(
+                                    item.personalFundExemption.maleAmount,
+                                    item.personalFundExemption.femaleAmount,
+                                    item.personalFundExemption.unknownAmount),
+                                new PensionAvgearnValueModel(
+                                    item.personalPension.maleAmount,
+                                    item.personalPension.femaleAmount,
+                                    item.personalPension.unknownAmount),
+                                item.childContributionAmount));
+                            salMin = item.upperLimit;
+                        });
+                        self.dirty.reset();
+                    });
             }
 
             private closeDialogWithDirtyCheck(): void {
