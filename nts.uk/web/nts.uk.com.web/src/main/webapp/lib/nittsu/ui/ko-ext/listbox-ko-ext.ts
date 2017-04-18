@@ -329,12 +329,12 @@ module nts.uk.ui.koExtentions {
             } else {
                 if (!enable) {
                     //selectListBoxContainer.selectable("disable");;
-                    container.off("click", "li");
+                    selectListBoxContainer.off("click", "li");
                     container.addClass('disabled');
                 } else {
                     //selectListBoxContainer.selectable("enable");
                     if (container.hasClass("disabled")) {
-                        container.on("click", "li", { event: container.data("selectionChange") }, selectOnListBox);
+                        selectListBoxContainer.on("click", "li", { event: container.data("selectionChange") }, selectOnListBox);
                         container.removeClass('disabled');
                     }
                 }

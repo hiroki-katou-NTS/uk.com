@@ -43,6 +43,7 @@ public class JpaFormulaMasterRepository extends JpaRepository implements Formula
 		builderString.append("FROM QcfmtFormula a ");
 		builderString.append("WHERE a.qcfmtFormulaPK.ccd = :companyCode ");
 		builderString.append("AND a.qcfmtFormulaPK.formulaCd IN :formulaCd ");
+		builderString.append("WHERE a.difficultyAtr = :difficultyAtr ");
 		builderString.append("ORDER BY a.qcfmtFormulaPK.ccd, a.qcfmtFormulaPK.formulaCd ");
 		FIND_FORMULA_NAME_BY_CODES = builderString.toString();
 	}
@@ -105,9 +106,10 @@ public class JpaFormulaMasterRepository extends JpaRepository implements Formula
 	}
 
 	@Override
-	public List<FormulaMaster> findByCompanyCodeAndFormulaCodes(String companyCode, List<FormulaCode> FormulaCode) {
+	public List<FormulaMaster> findByCompanyCodeAndFormulaCodes(String companyCode, List<FormulaCode> formulaCode, BigDecimal difficultyAtr ) {
 		return this.queryProxy().query(FIND_FORMULA_NAME_BY_CODES, QcfmtFormula.class)
-				.setParameter("companyCode", companyCode).setParameter("formulaCd", FormulaCode)
+				.setParameter("companyCode", companyCode).setParameter("formulaCd", formulaCode)
+				.setParameter("difficultyAtr", difficultyAtr)
 				.getList(f -> toDomain(f));
 	}
 
