@@ -2,10 +2,11 @@ module qpp014.b.viewmodel {
     export class ScreenModel {
         b_stepList: Array<nts.uk.ui.NtsWizardStep>;
         b_stepSelected: KnockoutObservable<nts.uk.ui.NtsWizardStep>;
-        viewmodeld : qpp014.d.viewmodel.ScreenModel;
-        viewmodelg : qpp014.g.viewmodel.ScreenModel;
-        viewmodelh : qpp014.h.viewmodel.ScreenModel;
-        
+        viewmodeld: qpp014.d.viewmodel.ScreenModel;
+        viewmodelg: qpp014.g.viewmodel.ScreenModel;
+        viewmodelh: qpp014.h.viewmodel.ScreenModel;
+        data: any;
+
         constructor(data: any) {
             let self = this;
             self.b_stepList = [
@@ -14,8 +15,9 @@ module qpp014.b.viewmodel {
             ];
             self.b_stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
             self.viewmodeld = new qpp014.d.viewmodel.ScreenModel(data);
-            self.viewmodelg = new qpp014.g.viewmodel.ScreenModel();
-            self.viewmodelh = new qpp014.h.viewmodel.ScreenModel();
+            self.viewmodelg = new qpp014.g.viewmodel.ScreenModel(data);
+            self.viewmodelh = new qpp014.h.viewmodel.ScreenModel(data);
+            self.data = data;
         }
 
         startPage(): JQueryPromise<any> {
@@ -36,6 +38,9 @@ module qpp014.b.viewmodel {
          * go to screen J
          */
         goToScreenJ(): void {
+            var self = this;
+            nts.uk.ui.windows.setShared("data", self.data, true);
+            nts.uk.ui.windows.setShared("dateOfPayment", self.viewmodeld.dateOfPayment(), true);
             nts.uk.ui.windows.sub.modal("/view/qpp/014/j/index.xhtml", { title: "振込チェックリスト", dialogClass: "no-close" });
         }
     }

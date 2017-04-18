@@ -20,8 +20,12 @@
 					<div id="G_LBL_003" data-bind="ntsFormLabel: {required: false}">処理年月</div>
 				</div>
 				<div class="divLine-col-2">
-					<label id="G_LBL_004">04</label> <label id="G_LBL_005">05</label> <label
-						id="G_LBL_016">16</label> <label id="G_LBL_017">17</label>
+					<label id="G_LBL_004" data-bind="text: viewmodelg.processingDate"></label>
+					<span>(<label id="G_LBL_005"
+						data-bind="text: viewmodelg.processingDateInJapanEmprire"></label>)
+					</span> <label id="G_LBL_016">(対象となる処理区分 </label> <label id="G_LBL_017"
+						data-bind="text: viewmodelg.processingNo"></label><label
+						id="G_LBL_018" data-bind="text: viewmodelg.processingName"></label>
 				</div>
 			</div>
 
@@ -31,8 +35,9 @@
 				</div>
 				<div class="divLine-col-2">
 					<div id="G_INP_001"
-						data-bind="ntsDatePicker: { value: viewmodelg.g_INP_001, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
-					<label id="G_LBL_007">07</label>
+						data-bind="ntsDatePicker: { value: viewmodelg.g_INP_001, dateFormat: 'YYYY/MM/DD'}"></div>
+					<label id="G_LBL_007"
+						data-bind="text: viewmodelg.yearMonthDateInJapanEmpire"></label>
 				</div>
 			</div>
 			<div class="divLine">
@@ -43,7 +48,7 @@
 					<div id="G_SEL_001"
 						data-bind="ntsComboBox: {
 									options: viewmodelg.g_SEL_001_items,
-									optionsValue: 'code',
+									optionsValue: 'nts-combo-label',
 									value: viewmodelg.g_SEL_001_itemSelected,
 									editable: false,
 									enable: true,
@@ -123,7 +128,8 @@
 				</div>
 			</div>
 			<div class="divLine" style="width: 100%;">
-				<button id="G_BTN_001" class="x-large proceed" data-bind="click: viewmodelg.openIDialog">テキスト出力</button>
+				<button id="G_BTN_001" class="x-large proceed"
+					data-bind="click: viewmodelg.openIDialog.bind(viewmodelg)">テキスト出力</button>
 			</div>
 		</div>
 	</ui:composition>

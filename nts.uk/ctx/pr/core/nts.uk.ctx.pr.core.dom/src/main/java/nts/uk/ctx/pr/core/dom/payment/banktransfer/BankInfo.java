@@ -1,8 +1,12 @@
 package nts.uk.ctx.pr.core.dom.payment.banktransfer;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class BankInfo {
 	private String branchId;
 	private String bankNameKana;

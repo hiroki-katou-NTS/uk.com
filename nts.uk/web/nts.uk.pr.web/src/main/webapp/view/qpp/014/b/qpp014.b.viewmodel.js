@@ -13,8 +13,9 @@ var qpp014;
                     ];
                     self.b_stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
                     self.viewmodeld = new qpp014.d.viewmodel.ScreenModel(data);
-                    self.viewmodelg = new qpp014.g.viewmodel.ScreenModel();
-                    self.viewmodelh = new qpp014.h.viewmodel.ScreenModel();
+                    self.viewmodelg = new qpp014.g.viewmodel.ScreenModel(data);
+                    self.viewmodelh = new qpp014.h.viewmodel.ScreenModel(data);
+                    self.data = data;
                 }
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
@@ -26,6 +27,9 @@ var qpp014;
                     nts.uk.request.jump("/view/qpp/014/a/index.xhtml");
                 };
                 ScreenModel.prototype.goToScreenJ = function () {
+                    var self = this;
+                    nts.uk.ui.windows.setShared("data", self.data, true);
+                    nts.uk.ui.windows.setShared("dateOfPayment", self.viewmodeld.dateOfPayment(), true);
                     nts.uk.ui.windows.sub.modal("/view/qpp/014/j/index.xhtml", { title: "振込チェックリスト", dialogClass: "no-close" });
                 };
                 return ScreenModel;

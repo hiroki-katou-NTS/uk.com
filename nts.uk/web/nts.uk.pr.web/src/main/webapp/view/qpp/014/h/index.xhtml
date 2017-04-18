@@ -19,8 +19,12 @@
 					<div id="H_LBL_001" data-bind="ntsFormLabel: {required: false}">処理年月</div>
 				</div>
 				<div class="divLine-col-2">
-					<label id="H_LBL_002">02</label> <label id="H_LBL_003">03</label> <label
-						id="H_LBL_009">09</label> <label id="H_LBL_010">10</label> <label id="H_LBL_011">11</label>
+					<label id="H_LBL_002" data-bind="text: viewmodelh.processingDate"></label>
+					<label id="H_LBL_003"
+						data-bind="text: viewmodelh.processingDateInJapanEmprire"></label>
+					<label id="H_LBL_009">(対象となる処理区分</label> <label id="H_LBL_010"
+						data-bind="text: viewmodelh.processingNo"></label> <label
+						id="H_LBL_011" data-bind="text: viewmodelh.processingName"></label>
 				</div>
 			</div>
 			<div class="divLine">
@@ -29,8 +33,9 @@
 				</div>
 				<div class="divLine-col-2">
 					<div id="H_INP_001"
-						data-bind="ntsDatePicker: { value: viewmodelh.h_INP_001, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
-					<label id="H_LBL_005">05</label>
+						data-bind="ntsDatePicker: { value: viewmodelh.h_INP_001, dateFormat: 'YYYY/MM/DD'}"></div>
+					<label id="H_LBL_005"
+						data-bind="text: viewmodelh.yearMonthDateInJapanEmpire"></label>
 				</div>
 			</div>
 			<div class="divLine">

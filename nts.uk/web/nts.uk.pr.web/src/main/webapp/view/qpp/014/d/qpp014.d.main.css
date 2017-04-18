@@ -67,6 +67,10 @@
 	text-align: center;
 }
 
+.unit {
+	vertical-align: -webkit-baseline-middle
+}
+
 #D_LBL_007>label:FIRST-CHILD {
 	font-size: xx-large;
 	vertical-align: top;

@@ -7,7 +7,7 @@ var qpp014;
             var ScreenModel = (function () {
                 function ScreenModel(data) {
                     var self = this;
-                    self.transferDate = ko.observable('2016/12/12');
+                    self.dateOfPayment = ko.observable('2016/12/01');
                     self.d_SEL_001_selectedCode = ko.observable(1);
                     self.d_SEL_002_selectedCode = ko.observable(1);
                     self.d_LST_001_items = ko.observableArray([]);
@@ -26,7 +26,7 @@ var qpp014;
                 ScreenModel.prototype.openEDialog = function () {
                     var self = this;
                     nts.uk.ui.windows.setShared("processingDate", self.processingDate(), true);
-                    nts.uk.ui.windows.setShared("transferDate", self.transferDate(), true);
+                    nts.uk.ui.windows.setShared("dateOfPayment", self.dateOfPayment(), true);
                     nts.uk.ui.windows.sub.modal("/view/qpp/014/e/index.xhtml", { title: "振込データの作成結果一覧", dialogClass: "no-close" }).onClosed(function () {
                         if (!nts.uk.ui.windows.getShared("closeDialog")) {
                             $('#wizard').ntsWizard("next");

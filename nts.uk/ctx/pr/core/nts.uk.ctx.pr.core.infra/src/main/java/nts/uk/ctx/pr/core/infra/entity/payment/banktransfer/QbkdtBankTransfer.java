@@ -8,12 +8,16 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "QBKDT_BANK_TRANSFER")
-public class QbkdtBankTransfer extends TableEntity {
+public class QbkdtBankTransfer extends UkJpaEntity {
 
 	@EmbeddedId
 	public QbkdtBankTransferPK qbkdtBankTransferPK;
@@ -46,26 +50,8 @@ public class QbkdtBankTransfer extends TableEntity {
 	@Column(name = "PROCESSING_YM")
 	public int processingYm;
 
-	public QbkdtBankTransfer() {
-	}
-
 	public QbkdtBankTransfer(QbkdtBankTransferPK qbkdtBankTransferPK) {
 		this.qbkdtBankTransferPK = qbkdtBankTransferPK;
-	}
-
-	public QbkdtBankTransfer(QbkdtBankTransferPK qbkdtBankTransferPK, String cnameKana, String fromBankKnName,
-			String fromBranchKnName, String toBankKnName, String toBranchKnName, String toAccountKnName, String depcd,
-			BigDecimal paymentMny, int processingYm) {
-		this.qbkdtBankTransferPK = qbkdtBankTransferPK;
-		this.cnameKana = cnameKana;
-		this.fromBankKnName = fromBankKnName;
-		this.fromBranchKnName = fromBranchKnName;
-		this.toBankKnName = toBankKnName;
-		this.toBranchKnName = toBranchKnName;
-		this.toAccountKnName = toAccountKnName;
-		this.depcd = depcd;
-		this.paymentMny = paymentMny;
-		this.processingYm = processingYm;
 	}
 
 	public QbkdtBankTransfer(String ccd, String pid, String fromBranchId, int fromAccountAtr, String fromAccountNo,
@@ -73,5 +59,10 @@ public class QbkdtBankTransfer extends TableEntity {
 			GeneralDate payDate, int sparePayAtr) {
 		this.qbkdtBankTransferPK = new QbkdtBankTransferPK(ccd, pid, fromBranchId, fromAccountAtr, fromAccountNo,
 				toBranchId, toAccountAtr, toAccountNo, payBonusAtr, processingNo, payDate, sparePayAtr);
+	}
+
+	@Override
+	protected QbkdtBankTransferPK getKey() {
+		return this.qbkdtBankTransferPK;
 	}
 }

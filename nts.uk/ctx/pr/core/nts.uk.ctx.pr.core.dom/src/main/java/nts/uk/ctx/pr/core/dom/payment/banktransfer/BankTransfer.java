@@ -11,19 +11,30 @@ import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
 import nts.uk.ctx.pr.core.dom.enums.SparePayAtr;
 import nts.uk.shr.com.primitive.PersonId;
 
-@Getter
 public class BankTransfer extends AggregateRoot {
+	@Getter
 	private String companyCode;
+	@Getter
 	private String companyNameKana;
+	@Getter
 	private PersonId personId;
+	@Getter
 	private BankInfo fromBank;
+	@Getter
 	private BankInfo toBank;
+	@Getter
 	private String departmentCode;
+	@Getter
 	private PayMoney paymentMoney;
+	@Getter
 	private PayBonusAtr paymentBonusAtr;
+	@Getter
 	private int processingNo;
+	@Getter
 	private YearMonth processingYM;
+	@Getter
 	private GeneralDate paymentDate;
+	@Getter
 	private SparePayAtr sparePaymentAtr;
 
 	/**

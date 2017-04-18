@@ -15,6 +15,8 @@ module qpp014.j {
         items_J_LST_001: KnockoutObservableArray<ItemModel_J_LST_001>;
         currentCode_J_LST_001: KnockoutObservable<any>;
         currentCode_J_SEL_004: KnockoutObservable<any>;
+        currentProcessingYm: any;
+        dateOfPayment: any;
 
         constructor() {
             let self = this;
@@ -43,6 +45,11 @@ module qpp014.j {
             }
             self.currentCode_J_LST_001 = ko.observable();
             self.currentCode_J_SEL_004 = ko.observable(1);
+            self.currentProcessingYm = nts.uk.time.parseYearMonth(nts.uk.ui.windows.getShared("data").currentProcessingYm).format() + "(" +
+                nts.uk.time.yearmonthInJapanEmpire(nts.uk.time.parseYearMonth(nts.uk.ui.windows.getShared("data").currentProcessingYm).format()) + ")";
+            self.dateOfPayment = ko.observable(moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("YYYY/MM/DD") + 
+                                    "(" + nts.uk.time.yearmonthInJapanEmpire(moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("YYYY/MM")).toString() +
+                                     moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("DD") + "日)");
         }
 
         closeDialog(): void {

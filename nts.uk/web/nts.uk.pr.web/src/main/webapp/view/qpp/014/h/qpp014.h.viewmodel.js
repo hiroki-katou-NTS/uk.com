@@ -5,7 +5,7 @@ var qpp014;
         var viewmodel;
         (function (viewmodel) {
             var ScreenModel = (function () {
-                function ScreenModel() {
+                function ScreenModel(data) {
                     var self = this;
                     self.h_INP_001 = ko.observable(new Date('2016/12/01'));
                     self.h_LST_001_items = ko.observableArray([]);
@@ -13,6 +13,16 @@ var qpp014;
                         self.h_LST_001_items.push(new ItemModel_H_LST_001('00' + i_1, '基本給', "description " + i_1));
                     }
                     self.h_LST_001_itemsSelected = ko.observable();
+                    self.yearMonthDateInJapanEmpire = ko.computed(function () {
+                        return "(" + nts.uk.time.yearInJapanEmpire(moment(self.h_INP_001()).format('YYYY')).toString() +
+                            moment(self.h_INP_001()).format('MM') + "月" + moment(self.h_INP_001()).format('DD') + "日)";
+                    });
+                    self.processingDate = ko.observable(nts.uk.time.formatYearMonth(data.currentProcessingYm));
+                    self.processingDateInJapanEmprire = ko.computed(function () {
+                        return "(" + nts.uk.time.yearmonthInJapanEmpire(self.processingDate()).toString() + ")";
+                    });
+                    self.processingNo = ko.observable(data.processingNo + ' : ');
+                    self.processingName = ko.observable(data.processingName + ' )');
                 }
                 return ScreenModel;
             }());

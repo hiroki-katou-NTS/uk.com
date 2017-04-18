@@ -5,9 +5,13 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Embeddable
 public class QbkdtBankTransferPK {
 	@Basic(optional = false)
@@ -47,25 +51,4 @@ public class QbkdtBankTransferPK {
 	@Basic(optional = false)
 	@Column(name = "SPARE_PAY_ATR")
 	public int sparePayAtr;
-
-	public QbkdtBankTransferPK() {
-	}
-
-	public QbkdtBankTransferPK(String ccd, String pid, String fromBranchId, int fromAccountAtr, String fromAccountNo,
-			String toBranchId, int toAccountAtr, String toAccountNo, int payBonusAtr, int processingNo,
-			GeneralDate payDate, int sparePayAtr) {
-		this.ccd = ccd;
-		this.pid = pid;
-		this.fromBranchId = fromBranchId;
-		this.fromAccountAtr = fromAccountAtr;
-		this.fromAccountNo = fromAccountNo;
-		this.toBranchId = toBranchId;
-		this.toAccountAtr = toAccountAtr;
-		this.toAccountNo = toAccountNo;
-		this.payBonusAtr = payBonusAtr;
-		this.processingNo = processingNo;
-		this.payDate = payDate;
-		this.sparePayAtr = sparePayAtr;
-	}
-
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.payment.banktransfer.BankTransfer;
@@ -13,6 +14,7 @@ import nts.uk.ctx.pr.core.infra.entity.payment.banktransfer.QbkdtBankTransfer;
 import nts.uk.ctx.pr.core.infra.entity.payment.banktransfer.QbkdtBankTransferPK;
 
 @Stateless
+@Transactional
 public class JpaBankTransferRepository extends JpaRepository implements BankTransferRepository {
 
 	private final String SEL = "SELECT b FROM QbkdtBankTransfer b ";

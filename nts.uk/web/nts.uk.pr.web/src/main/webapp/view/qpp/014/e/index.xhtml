@@ -10,6 +10,7 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 635, height: 380 };</script>
 			<com:stylefile path="qpp014.e.main.css" />
+			<com:scriptfile path="qpp014.e.service.js" />
 			<com:scriptfile path="qpp014.e.start.js" />
 			<com:scriptfile path="qpp014.e.viewmodel.js" />
 			<com:scriptfile set="IGNITE" />
@@ -39,7 +40,7 @@
 								</tr>
 								<tr>
 									<td>エラー件数</td>
-									<td><span></span>
+									<td>
 									<!-- <span data-bind="text: countError()"></span> -->
 									件</td>
 								</tr>
@@ -62,7 +63,7 @@
 								</tr>
 								<tr>
 									<td>振込日</td>
-									<td data-bind="text: transferDate()"></td>
+									<td data-bind="text: dateOfPayment()"></td>
 								</tr>
 							</tbody>
 						</table>
@@ -90,7 +91,7 @@
 								data-bind="ntsGridList: {
 							width: 590,
 							height: 150,
-							dataSource: items_E_LST_003,
+							dataSource: e_errorList,
 							primaryKey: 'code',
 							columns: ko.observableArray([
 				                { headerText: '処理状態', prop: 'code', width: 120 },

@@ -6,16 +6,27 @@ var qpp014;
             function ScreenModel() {
                 var self = this;
                 $('#successful').css('display', 'none');
-                $('#stop').css('display', 'none');
-                nts.uk.ui.windows.getSelf().setHeight(570);
+                $('#error').css('display', 'none');
+                self.timer = new nts.uk.ui.sharedvm.KibanTimer('timer');
                 self.items_I_LST_003 = ko.observableArray([]);
                 for (var i_2 = 1; i_2 < 14; i_2++) {
                     self.items_I_LST_003.push(new ItemModel_I_LST_003('00' + i_2, '基本給', "description " + i_2));
                 }
                 self.currentCode_I_LST_003 = ko.observable();
+                self.processingDateInJapanEmprire = ko.observable(nts.uk.ui.windows.getShared("processingDateInJapanEmprire"));
+                self.transferBank = ko.observable(nts.uk.ui.windows.getShared("transferBank"));
             }
             ScreenModel.prototype.closeDialog = function () {
                 nts.uk.ui.windows.close();
+            };
+            ScreenModel.prototype.stopProcessing = function () {
+                var self = this;
+                self.timer.end();
+                nts.uk.ui.windows.setShared("closeDialog", false, true);
+                $('#successful').css('display', 'none');
+                $('#stop').css('display', 'none');
+                $('#error').css('display', '');
+                nts.uk.ui.windows.getSelf().setHeight(570);
             };
             return ScreenModel;
         }());

@@ -1,18 +1,13 @@
 module qpp014.e.service {
     var paths: any = {
-        getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
+        addBankTransfer: "pr/proto/payment/banktransfer/add"
     }
     
-    export function getPaymentDateProcessingList(): JQueryPromise<Array<any>> {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.getPaymentDateProcessingList)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+    /**
+     * insert data into DB BANK_TRANSFER
+     */
+    export function addBankTransfer(command): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.addBankTransfer, command);
     }
 }
 

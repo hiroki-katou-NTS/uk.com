@@ -9,7 +9,7 @@
 
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1210, height: 560 };</script>
+			<script>var dialogSize = { width: 1225, height: 560 };</script>
 			<com:scriptfile path="qpp014.j.start.js" />
 			<com:scriptfile path="qpp014.j.viewmodel.js" />
 			<com:stylefile path="qpp014.j.main.css" />
@@ -27,7 +27,7 @@
 							<div id="J_LBL_001" data-bind="ntsFormLabel: {required: false}">処理年月</div>
 						</div>
 						<div class="divLine-col-2">
-							<label id="J_LBL_002">処理年月</label>
+							<label id="J_LBL_002" data-bind="text: currentProcessingYm"></label>
 						</div>
 					</div>
 					<div class="divLine">
@@ -35,7 +35,7 @@
 							<div id="J_LBL_003" data-bind="ntsFormLabel: {required: false}">振込日</div>
 						</div>
 						<div class="divLine-col-2">
-							<label id="J_LBL_004">振込指定日</label>
+							<label id="J_LBL_004" data-bind="text: dateOfPayment"></label>
 						</div>
 					</div>
 					<div class="divLine">

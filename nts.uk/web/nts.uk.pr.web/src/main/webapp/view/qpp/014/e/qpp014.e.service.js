@@ -5,20 +5,12 @@ var qpp014;
         var service;
         (function (service) {
             var paths = {
-                getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
+                addBankTransfer: "pr/proto/payment/banktransfer/add"
             };
-            function getPaymentDateProcessingList() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getPaymentDateProcessingList)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+            function addBankTransfer(command) {
+                return nts.uk.request.ajax(paths.addBankTransfer, command);
             }
-            service.getPaymentDateProcessingList = getPaymentDateProcessingList;
+            service.addBankTransfer = addBankTransfer;
         })(service = e.service || (e.service = {}));
     })(e = qpp014.e || (qpp014.e = {}));
 })(qpp014 || (qpp014 = {}));
