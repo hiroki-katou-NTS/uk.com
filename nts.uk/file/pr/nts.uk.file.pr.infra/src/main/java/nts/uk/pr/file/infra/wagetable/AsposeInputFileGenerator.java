@@ -36,10 +36,13 @@ public class AsposeInputFileGenerator extends AsposeCellsReportGenerator impleme
 	@Override
 	public void generate(ExportServiceContext<WtUpdateCommand> context) {
 		FileGeneratorContext rptContext = context.getGeneratorContext();
-		AsposeCellsReportContext ctx = this.createContext(TEMPLATE_PATH);
-		Generator generator = this.factory.createGenerator(context.getQuery().getCode());
-		generator.generate(ctx, context.getQuery());
-		ctx.saveAsPdf(this.createNewFile(rptContext, "賃金テープル.pdf"));
+		try (AsposeCellsReportContext ctx = this.createContext(TEMPLATE_PATH)) {
+			Generator generator = this.factory.createGenerator(context.getQuery().getCode());
+			generator.generate(ctx, context.getQuery());
+			ctx.saveAsPdf(this.createNewFile(rptContext, "賃金テープル.pdf"));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }
