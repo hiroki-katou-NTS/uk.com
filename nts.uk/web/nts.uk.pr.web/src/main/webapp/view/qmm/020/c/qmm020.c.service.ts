@@ -3,7 +3,8 @@ module qmm020.c.service {
     var paths = {
         getEmployAllotSettingHeaderList: "pr/core/allot/findallemployeeallotheader",
         getEmployAllotSettingDetailList: "pr/core/allot/findallemployeeallotdetail",
-        getAllEmployeeAllotSettingList: "pr/core/allot/findAllEmployeeAllotSettingList/{0}"
+        getAllEmployeeAllotSettingList: "pr/core/allot/findAllEmployeeAllotSettingList/{0}",
+        getMaxDate: "pr/core/allot/findallemployeeallotheaderMax"
     }
     /**
      * Get list payment date processing.
@@ -43,6 +44,17 @@ module qmm020.c.service {
         }).fail(function(error) {
             dfd.reject(error);
         })
+        return dfd.promise();
+    }
+    export function getAllotCompanyMaxDate(): JQueryPromise<any> {
+        var dfd = $.Deferred<any>();
+        nts.uk.request.ajax(paths.getMaxDate)
+            .done(function(res: any) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
         return dfd.promise();
     }
 
