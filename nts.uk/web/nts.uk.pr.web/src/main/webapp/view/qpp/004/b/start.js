@@ -8,3 +8,4 @@ __viewContext.ready(function () {
         this.bind(screenModel);
     }
 });
+//# sourceMappingURL=start.js.map

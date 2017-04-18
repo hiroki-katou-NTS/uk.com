@@ -21,6 +21,7 @@ module nts.uk.ui.koExtentions {
             var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
             var deleteOptions = ko.unwrap(data.deleteOptions);
             var observableColumns = ko.unwrap(data.columns);
+            var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
             var iggridColumns = _.map(observableColumns, c => {
                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
                 c["dataType"] = 'string';
@@ -30,8 +31,8 @@ module nts.uk.ui.koExtentions {
             var features = [];
             features.push({ name: 'Selection', multipleSelection: data.multiple });
             features.push({ name: 'Sorting', type: 'local' });
-            if(data.multiple){
-                features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: false });        
+            if(data.multiple){ 
+                features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: showNumbering });        
             }
 
             $grid.igGrid({

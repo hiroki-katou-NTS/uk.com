@@ -1,50 +1,74 @@
 package nts.uk.ctx.basic.dom.organization.department;
 
+import java.time.LocalDate;
+
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.basic.dom.company.CompanyCode;
 import nts.uk.ctx.basic.dom.organization.shr.HierarchyCode;
-import nts.uk.ctx.basic.dom.organization.shr.HierarchyLevelCd;
+import nts.uk.shr.com.primitive.Memo;
 
 @Getter
 public class Department {
 
-	private final String companyCode;
+	private String companyCode;
 
-	private final DepartmentCode departmentCode;
+	private DepartmentCode departmentCode;
 
-	private final String historyId;
+	private String historyId;
 
 	private GeneralDate endDate;
 
 	private DepartmentCode externalCode;
 
-	private DepartmentGenericName genericName;
+	private DepartmentGenericName fullName;
 
 	private HierarchyCode hierarchyCode;
 
-	private DepartmentName name;
-
-	private DepartmentShortName shortName;
+	private DepartmentName departmentName;
 
 	private GeneralDate startDate;
 
-	private HierarchyLevelCd hierarchyLevelCd;
-
 	public Department(String companyCode, DepartmentCode departmentCode, String historyId, GeneralDate endDate,
-			DepartmentCode externalCode, DepartmentGenericName genericName, HierarchyCode hierarchyCode,
-			DepartmentName name, DepartmentShortName shortName, GeneralDate startDate,
-			HierarchyLevelCd hierarchyLevelCd) {
+			DepartmentCode externalCode, DepartmentGenericName fullName, HierarchyCode hierarchyCode,
+			DepartmentName name, GeneralDate startDate) {
 		this.companyCode = companyCode;
 		this.departmentCode = departmentCode;
 		this.historyId = historyId;
 		this.endDate = endDate;
 		this.externalCode = externalCode;
-		this.genericName = genericName;
+		this.fullName = fullName;
 		this.hierarchyCode = hierarchyCode;
-		this.name = name;
-		this.shortName = shortName;
+		this.departmentName = name;
 		this.startDate = startDate;
-		this.hierarchyLevelCd = hierarchyLevelCd;
+	}
+
+	public Department(String companyCode, DepartmentCode departmentCode, GeneralDate endDate,
+			DepartmentCode externalCode, DepartmentGenericName fullName, HierarchyCode hierarchyCode,
+			DepartmentName name, GeneralDate startDate) {
+		this.companyCode = companyCode;
+		this.departmentCode = departmentCode;
+		this.historyId = IdentifierUtil.randomUniqueId();
+		this.endDate = endDate;
+		this.externalCode = externalCode;
+		this.fullName = fullName;
+		this.hierarchyCode = hierarchyCode;
+		this.departmentName = name;
+		this.startDate = startDate;
+	}
+
+	
+	public Department(String historyId, GeneralDate startDate, GeneralDate endDate) {
+		super();
+		this.historyId = historyId;
+		this.endDate = endDate;
+		this.startDate = startDate;
+	}
+
+	public static Department createSimpleFromJavaType(String startDate, String endDate, String historyId) {
+		return new Department(historyId, GeneralDate.localDate(LocalDate.parse(startDate)),
+				GeneralDate.localDate(LocalDate.parse(endDate)));
 	}
 
 }

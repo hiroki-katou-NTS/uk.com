@@ -11,7 +11,6 @@ var qmm012;
                     this.checked_F_002 = ko.observable(false);
                     this.CurrentItemDisplayAtr = ko.observable(1);
                     var self = this;
-                    //F_001
                     self.roundingRules_F_001 = ko.observableArray([
                         { code: 1, name: 'ゼロを表示する' },
                         { code: 0, name: 'ゼロを表示しない' }
@@ -30,3 +29,4 @@ var qmm012;
         })(viewmodel = f.viewmodel || (f.viewmodel = {}));
     })(f = qmm012.f || (qmm012.f = {}));
 })(qmm012 || (qmm012 = {}));
+//# sourceMappingURL=viewmodel.js.map

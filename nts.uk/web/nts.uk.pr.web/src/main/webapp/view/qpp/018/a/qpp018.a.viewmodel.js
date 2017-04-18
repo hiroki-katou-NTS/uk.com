@@ -15,15 +15,15 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    self.yearMonth = ko.observable(0);
+                                    self.yearMonth = ko.observable(null);
                                     self.isEqual = ko.observable(true);
                                     self.isDeficient = ko.observable(true);
                                     self.isRedundant = ko.observable(true);
                                     self.insuranceOffice = ko.observable(new InsuranceOfficeModel());
+                                    self.japanYearmonth = ko.computed(function () {
+                                        return nts.uk.time.yearmonthInJapanEmpire(self.yearMonth()).toString();
+                                    });
                                 }
-                                /**
-                                 * start page
-                                 */
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -36,9 +36,6 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
-                                /**
-                                 *  Export Data
-                                 */
                                 ScreenModel.prototype.exportData = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -53,9 +50,6 @@ var nts;
                                         nts.uk.ui.dialog.alert(res.message);
                                     });
                                 };
-                                /**
-                                 * to JSon Object
-                                 */
                                 ScreenModel.prototype.toJSObjet = function () {
                                     var self = this;
                                     var command = {};
@@ -66,41 +60,32 @@ var nts;
                                     command.insuranceOffices = self.insuranceOffice().getSelectedOffice();
                                     return command;
                                 };
-                                /**
-                                 *  Show dialog ChecklistPrintSetting
-                                 */
                                 ScreenModel.prototype.showDialogChecklistPrintSetting = function () {
                                     nts.uk.ui.windows.setShared("socialInsuranceFeeChecklist", null);
-                                    nts.uk.ui.windows.sub.modal("/view/qpp/018/c/index.xhtml", { title: "印刷の設定" }).onClosed(function () {
-                                        //                    let returnValue = nts.uk.ui.windows.getShared("printSettingValue");
-                                    });
+                                    nts.uk.ui.windows.sub.modal("/view/qpp/018/c/index.xhtml", { title: "印刷の設定" });
                                 };
-                                /**
-                                 * validate
-                                 */
                                 ScreenModel.prototype.validate = function () {
                                     var self = this;
                                     var isError = false;
-                                    if (self.insuranceOffice().selectedOfficeCodeList().length <= 0) {
-                                        $('.grid-error').ntsError('set', 'You must choose at least item of grid');
+                                    $('#date-picker').ntsEditor('validate');
+                                    if (!self.isEqual() && !self.isDeficient() && !self.isRedundant()) {
+                                        $('.extract-condition-error').ntsError('set', '出力条件が入力されていません。');
                                         isError = true;
                                     }
-                                    if (!self.isEqual() && !self.isDeficient() && !self.isRedundant()) {
-                                        // message ER001
-                                        $('.extract-condition-error').ntsError('set', '必須の入力項目が入力されていません。');
+                                    if (self.insuranceOffice().selectedOfficeCodeList().length <= 0) {
+                                        $('.grid-error').ntsError('set', '社会保険事業所が入力されていません。');
+                                        isError = true;
                                     }
-                                    return isError;
+                                    return isError || !nts.uk.ui._viewModel.errors.isEmpty();
                                 };
                                 ScreenModel.prototype.clearAllError = function () {
+                                    $('#date-picker').ntsError('clear');
                                     $('.grid-error').ntsError('clear');
                                     $('.extract-condition-error').ntsError('clear');
                                 };
-                                /**
-                                 * get year and month current.
-                                 */
                                 ScreenModel.prototype.getCurrentYearMonth = function () {
                                     var today = new Date();
-                                    var month = today.getMonth() + 1; //January is 0!
+                                    var month = today.getMonth() + 1;
                                     var year = today.getFullYear();
                                     var yearMonth = year * 100 + month;
                                     return yearMonth;
@@ -108,9 +93,6 @@ var nts;
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
-                            /**
-                              * Class InsuranceOfficeModel
-                              */
                             var InsuranceOfficeModel = (function () {
                                 function InsuranceOfficeModel() {
                                     var self = this;
@@ -121,9 +103,6 @@ var nts;
                                         { headerText: '名称 ', key: 'name', width: 200 }
                                     ]);
                                 }
-                                /**
-                                 * find list insurance office.
-                                 */
                                 InsuranceOfficeModel.prototype.findAllInsuranceOffice = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -172,3 +151,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qpp018.a.viewmodel.js.map

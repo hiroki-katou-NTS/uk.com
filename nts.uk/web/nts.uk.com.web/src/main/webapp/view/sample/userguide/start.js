@@ -2,7 +2,6 @@ __viewContext.ready(function () {
     var ScreenModel = (function () {
         function ScreenModel() {
             var self = this;
-            // Init UserGuide
             $("[data-toggle='userguide']").ntsUserGuide();
         }
         ScreenModel.prototype.showOverlayTop = function () {

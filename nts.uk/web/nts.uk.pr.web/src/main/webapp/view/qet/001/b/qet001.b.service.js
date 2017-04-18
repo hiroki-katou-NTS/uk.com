@@ -4,7 +4,6 @@ var qet001;
     (function (b) {
         var service;
         (function (service) {
-            // Service paths.
             var servicePath = {
                 findOutputSettingDetail: 'ctx/pr/report/wageledger/outputsetting/find',
                 findAggregateItems: 'ctx/pr/report/wageledger/aggregateitem/findAll',
@@ -12,27 +11,17 @@ var qet001;
                 saveOutputSetting: 'ctx/pr/report/wageledger/outputsetting/save',
                 removeOutputSetting: 'ctx/pr/report/wageledger/outputsetting/remove',
             };
-            /**
-             * Find output setting detail.
-             */
             function findOutputSettingDetail(settingCode) {
                 return nts.uk.request.ajax(servicePath.findOutputSettingDetail + '/' + settingCode);
             }
             service.findOutputSettingDetail = findOutputSettingDetail;
-            /**
-             * Find all Aggregate items.
-             */
             function findAggregateItems() {
                 return nts.uk.request.ajax(servicePath.findAggregateItems);
             }
             service.findAggregateItems = findAggregateItems;
-            /**
-             * Save Output setting to DB.
-             */
             function saveOutputSetting(settingDetail) {
                 var dfd = $.Deferred();
                 var categorySettingData = [];
-                // Set order number to item list.
                 settingDetail.categorySettings().forEach(function (setting) {
                     for (var i = 0; i < setting.outputItems().length; i++) {
                         setting.outputItems()[i].orderNumber = i;
@@ -53,9 +42,6 @@ var qet001;
                 return dfd.promise();
             }
             service.saveOutputSetting = saveOutputSetting;
-            /**
-             * Remove Output setting to DB.
-             */
             function removeOutputSetting(code) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(servicePath.removeOutputSetting, { code: code }).done(function () {
@@ -66,12 +52,8 @@ var qet001;
                 return dfd.promise();
             }
             service.removeOutputSetting = removeOutputSetting;
-            /**
-             * Find master items.
-             */
             function findMasterItems() {
                 var dfd = $.Deferred();
-                // Fake data.
                 var data = [];
                 for (var i = 0; i < 10; i++) {
                     data.push({ code: 'MI' + i, name: 'Master item' + i, category: 'Payment' });
@@ -86,3 +68,4 @@ var qet001;
         })(service = b.service || (b.service = {}));
     })(b = qet001.b || (qet001.b = {}));
 })(qet001 || (qet001 = {}));
+//# sourceMappingURL=qet001.b.service.js.map

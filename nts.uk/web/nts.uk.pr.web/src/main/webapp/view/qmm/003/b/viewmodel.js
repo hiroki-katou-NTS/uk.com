@@ -45,7 +45,6 @@ var qmm003;
                     var self = this;
                     self.items = ko.observableArray([]);
                     self.singleSelectedCode = ko.observable(nts.uk.ui.windows.getShared("singleSelectedCode"));
-                    //self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
                     self.currentNode = ko.observable((new Node("", "", [])));
                 };
                 ScreenModel.prototype.register = function () {
@@ -56,7 +55,6 @@ var qmm003;
                     else {
                         $('#B_SCH_001').ntsError('clear');
                     }
-                    // errror search
                     var error;
                     _.find(this.filteredData(), function (obj) {
                         if (obj.code !== inputSearch) {
@@ -70,7 +68,6 @@ var qmm003;
                         $('#B_SCH_001').ntsError('clear');
                     }
                 };
-                //11.初期データ取得処理 11. Initial data acquisition processing
                 ScreenModel.prototype.start = function () {
                     var dfd = $.Deferred();
                     var self = this;
@@ -144,3 +141,4 @@ var qmm003;
     })(b = qmm003.b || (qmm003.b = {}));
 })(qmm003 || (qmm003 = {}));
 ;
+//# sourceMappingURL=viewmodel.js.map
