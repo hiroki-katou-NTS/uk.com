@@ -34,6 +34,7 @@ module nts.uk.pr.view.qmm008.b {
             errorList: KnockoutObservableArray<any>;
             dirty: nts.uk.ui.DirtyChecker;
             backupDataDirty : KnockoutObservable<HealthInsuranceRateDto>;
+            canOpenOfficeRegisterDialog : KnockoutObservable<boolean>;
             constructor() {
                 super({
                     functionName: '健康保険',
@@ -78,6 +79,7 @@ module nts.uk.pr.view.qmm008.b {
                 ]);
                 self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
                 self.backupDataDirty = ko.observable<HealthInsuranceRateDto>();
+                self.canOpenOfficeRegisterDialog = ko.observable(true);
             } //end constructor
 
             // Start
@@ -272,7 +274,6 @@ module nts.uk.pr.view.qmm008.b {
                     self.loadHealth(dto);
                     self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
                     self.isLoading(false);
-                    $('.save-error').ntsError('clear');
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -288,6 +289,11 @@ module nts.uk.pr.view.qmm008.b {
                 }
                 return dfd.promise();
             }
+            clearErrors(): void {
+                if(nts.uk.ui._viewModel) {
+                    $('.save-error').ntsError('clear');
+                }
+            }
 
             /**
              * On select master data.
@@ -295,6 +301,7 @@ module nts.uk.pr.view.qmm008.b {
             onSelectMaster(code: string): void {
                 var self = this;
                 self.isClickHistory(false);
+                self.clearErrors();
             }
 
             public getCurrentOfficeCode(childId: string): string {
@@ -322,8 +329,12 @@ module nts.uk.pr.view.qmm008.b {
              */
             onRegistNew(): void {
                 var self = this;
-                //                $('.save-error').ntsError('clear');
-                self.OpenModalOfficeRegister();
+                if (self.canOpenOfficeRegisterDialog())
+                {
+                    self.OpenModalOfficeRegister();
+                }
+                self.isClickHistory(false);
+                self.canOpenOfficeRegisterDialog(false);
             }
 
             isDirty(): boolean {
@@ -338,7 +349,7 @@ module nts.uk.pr.view.qmm008.b {
                         self.loadHealth(self.backupDataDirty());
                         self.OpenModalOfficeRegister();
                         self.dirty.reset();
-                    }).ifCancel(function() {
+                    }).ifNo(function() {
                     });
                 }
                 else {
@@ -351,8 +362,8 @@ module nts.uk.pr.view.qmm008.b {
                 // Set parent value
                 nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録", dialogClass: 'no-close' }).onClosed(() => {
                     //when close dialog -> reload office list
-                    self.loadMasterHistory();
                     var codeOfNewOffice = nts.uk.ui.windows.getShared("codeOfNewOffice");
+                    self.reloadMasterHistory(codeOfNewOffice);
                     //                    self.igGridSelectedHistoryUuid(codeOfNewOffice);
                 });
             }
@@ -364,7 +375,7 @@ module nts.uk.pr.view.qmm008.b {
                         self.loadHealth(self.backupDataDirty());
                         self.OpenModalStandardMonthlyPriceHealth();
                         self.dirty.reset();
-                    }).ifCancel(function() {
+                    }).ifNo(function() {
                     });
                 }
                 else {

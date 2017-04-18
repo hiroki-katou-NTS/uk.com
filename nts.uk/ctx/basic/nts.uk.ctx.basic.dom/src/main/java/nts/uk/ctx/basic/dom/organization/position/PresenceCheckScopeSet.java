@@ -1,5 +1,9 @@
 package nts.uk.ctx.basic.dom.organization.position;
-
+/**
+ * PRESENCE_CHECK_SCOPE_SET
+ * @author phongtq
+ *
+ */
 public enum PresenceCheckScopeSet {
 	EveryoneCanSee(0),
 	NotVisibleToEveryone(1),
@@ -10,7 +14,4 @@ public enum PresenceCheckScopeSet {
 	private PresenceCheckScopeSet(int value) {
 		this.value = value;
 	}
-
-	
-
 }

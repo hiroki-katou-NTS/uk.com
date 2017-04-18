@@ -5,6 +5,7 @@ __viewContext.ready(function () {
         selectedIds: KnockoutObservableArray<number>;
         enable: KnockoutObservable<boolean>;
         count: any = 10;
+        value: KnockoutObservable<number>;
         
         constructor() {
             var self = this;
@@ -18,6 +19,7 @@ __viewContext.ready(function () {
             ]);
             self.selectedIds = ko.observableArray([1,2]);
             self.enable = ko.observable(true);
+            self.value = ko.observable(0);
         }
         
         addBoxes() {
@@ -30,15 +32,24 @@ __viewContext.ready(function () {
             var self = this;
             self.itemList.pop();
         }
+        
+        enableCheckBox() {
+            var self = this;
+            if(self.value() < self.itemList().length - 1){
+                self.itemList()[self.value()].enable(true);
+            }
+        }
     }
     
     class BoxModel {
         id: number;
         name: string;
+        enable: KnockoutObservable<boolean>;
         constructor(id, name){
             var self = this;
             self.id = id;
             self.name = name;
+            self.enable = ko.observable(id % 3 === 0);
         }
     }
     

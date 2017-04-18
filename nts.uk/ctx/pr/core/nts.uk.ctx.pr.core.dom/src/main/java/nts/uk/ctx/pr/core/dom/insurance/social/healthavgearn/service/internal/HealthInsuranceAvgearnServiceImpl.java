@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.service.internal;
 
 import java.math.BigDecimal;
@@ -8,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.pr.core.dom.base.service.RoundingNumber;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
@@ -23,6 +28,9 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRounding;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
 
+/**
+ * The Class HealthInsuranceAvgearnServiceImpl.
+ */
 @Stateless
 public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearnService {
 
@@ -34,18 +42,27 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 	@Inject
 	private HealthInsuranceAvgearnRepository healthInsuranceAvgearnRepository;
 
+	/** The rounding number. */
 	@Inject
 	private RoundingNumber roundingNumber;
 
 	/** The Constant OneThousand. */
 	public static final BigDecimal OneThousand = BigDecimal.valueOf(1000);
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.service.HealthInsuranceAvgearnService#validateRequiredItem(nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn)
+	 */
 	@Override
 	public void validateRequiredItem(HealthInsuranceAvgearn healthInsuranceAvgearn) {
-		// TODO check null then throw new BusinessException("ER001");
+		if (healthInsuranceAvgearn.getCompanyAvg() == null || healthInsuranceAvgearn.getPersonalAvg() == null) {
+			throw new BusinessException("ER001");
+		}
 
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.service.HealthInsuranceAvgearnService#updateHealthInsuranceRateAvgEarn(nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate)
+	 */
 	@Override
 	public void updateHealthInsuranceRateAvgEarn(HealthInsuranceRate healthInsuranceRate) {
 		List<AvgEarnLevelMasterSetting> listAvgEarnLevelMasterSetting = avgEarnLevelMasterSettingRepository
@@ -62,12 +79,10 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 	/**
 	 * Calculate avgearn value.
 	 *
-	 * @param masterRate
-	 *            the master rate
-	 * @param rateItems
-	 *            the rate items
-	 * @param isPersonal
-	 *            the is personal
+	 * @param roundingMethods the rounding methods
+	 * @param masterRate the master rate
+	 * @param rateItems the rate items
+	 * @param isPersonal the is personal
 	 * @return the health insurance avgearn value
 	 */
 	private HealthInsuranceAvgearnValue calculateAvgearnValue(Set<HealthInsuranceRounding> roundingMethods,
@@ -96,7 +111,7 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 							calculateChargeRate(masterRate, rateItem, isPersonal), 1);
 					val2 = roundingNumber.healthRounding(salaryRound.getRoundAtrs().getPersonalRoundAtr(),
 							calculateChargeRate(masterRate, rateItem, isPersonal), 3);
-				} else// compnany
+				} else// company
 				{
 					val = roundingNumber.healthRounding(salaryRound.getRoundAtrs().getCompanyRoundAtr(),
 							calculateChargeRate(masterRate, rateItem, isPersonal), 1);
@@ -105,33 +120,16 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 				}
 				switch (rateItem.getInsuranceType()) {
 				case Basic:
-					if (isPersonal) {
-						value.setHealthBasicMny(new InsuranceAmount(val2));
-					} else {
-						value.setHealthBasicMny(new InsuranceAmount(val2));
-					}
+					value.setHealthBasicMny(new InsuranceAmount(val2));
 					break;
 				case General:
-					if (isPersonal) {
-						value.setHealthGeneralMny(new CommonAmount(val));
-					} else {
-						value.setHealthGeneralMny(new CommonAmount(val));
-					}
+					value.setHealthGeneralMny(new CommonAmount(val));
 					break;
-
 				case Nursing:
-					if (isPersonal) {
-						value.setHealthNursingMny(new CommonAmount(val));
-					} else {
-						value.setHealthNursingMny(new CommonAmount(val));
-					}
+					value.setHealthNursingMny(new CommonAmount(val));
 					break;
 				case Special:
-					if (isPersonal) {
-						value.setHealthSpecificMny(new InsuranceAmount(val2));
-					} else {
-						value.setHealthSpecificMny(new InsuranceAmount(val2));
-					}
+					value.setHealthSpecificMny(new InsuranceAmount(val2));
 					break;
 				}
 			}
@@ -143,12 +141,9 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 	/**
 	 * Calculate charge rate.
 	 *
-	 * @param masterRate
-	 *            the master rate
-	 * @param rateItem
-	 *            the rate item
-	 * @param isPersonal
-	 *            the is personal
+	 * @param masterRate the master rate
+	 * @param rateItem the rate item
+	 * @param isPersonal the is personal
 	 * @return the big decimal
 	 */
 	private BigDecimal calculateChargeRate(BigDecimal masterRate, InsuranceRateItem rateItem, boolean isPersonal) {
@@ -164,16 +159,16 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 	private class HiaGetMemento implements HealthInsuranceAvgearnGetMemento {
 
 		/** The setting. */
-		protected AvgEarnLevelMasterSetting setting;
+		private final AvgEarnLevelMasterSetting setting;
 
 		/** The rate items. */
-		protected Set<InsuranceRateItem> rateItems;
+		private final Set<InsuranceRateItem> rateItems;
 
 		/** The rounding methods. */
-		protected Set<HealthInsuranceRounding> roundingMethods;
+		private final Set<HealthInsuranceRounding> roundingMethods;
 
 		/** The history id. */
-		protected String historyId;
+		private final String historyId;
 
 		/**
 		 * Instantiates a new gets the memento.
@@ -211,7 +206,7 @@ public class HealthInsuranceAvgearnServiceImpl implements HealthInsuranceAvgearn
 		 * HealthInsuranceAvgearnGetMemento#getLevelCode()
 		 */
 		@Override
-		public Integer getLevelCode() {
+		public Integer getGrade() {
 			return setting.getCode();
 		}
 
