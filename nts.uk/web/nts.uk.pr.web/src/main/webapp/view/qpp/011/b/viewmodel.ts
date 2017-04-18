@@ -137,7 +137,7 @@ module qpp011.b {
             //end number editer
             //Set Tree Data 
 
-            service.findAllResidential().done(function(data: Array<any>) {
+            qpp011.b.service.findAllResidential().done(function(data: Array<any>) {
                 service.getlistLocation().done(function(listLocation: Array<any>) {
                     self.ResidentialData(data);
                     self.ListLocation = listLocation;
@@ -165,7 +165,7 @@ module qpp011.b {
                     self.C_SEL_003_ComboBoxItemList.push(new C_SEL_003_ComboboxItemModel(object.bankCode, object.branchCode, object.lineBankCode, object.lineBankName))
                 }
                 if (self.C_SEL_003_ComboBoxItemList.length > 0)
-                    self.C_SEL_003_selectedCode(self.C_SEL_003_ComboBoxItemList[0].lineBankCode);
+                    self.C_SEL_003_selectedCode(self.C_SEL_003_ComboBoxItemList()[0].lineBankCode);
             }).fail(function(res) {
                 alert(res.message);
             });
@@ -200,7 +200,7 @@ module qpp011.b {
                         self.C_SEL_004_ComboBoxItemList.push(new C_SEL_004_ComboboxItemModel(object.code, object.memo))
                     }
                     if (self.C_SEL_004_ComboBoxItemList.length > 0)
-                        self.C_SEL_004_selectedCode(self.C_SEL_004_ComboBoxItemList[0].code);
+                        self.C_SEL_004_selectedCode(self.C_SEL_004_ComboBoxItemList()[0].code);
                 }).fail(function(res) {
                     alert(res);
                 })
@@ -362,42 +362,42 @@ module qpp011.b {
             });
             //B
             //001
-            self.B_INP_001_yearMonth = ko.observable('2016/12');
+            self.B_INP_001_yearMonth = ko.observable('2017/12');
             self.B_INP_001_yearMonth.subscribe(function(newValue) {
                 self.yearInJapanEmpire_B_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_001_yearMonth()).toString() + ")");
             });
             self.yearInJapanEmpire_B_LBL_005 = ko.observable();
             self.yearInJapanEmpire_B_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_001_yearMonth()).toString() + ")");
             //002
-            self.B_INP_002_yearMonth = ko.observable('2016/12');
+            self.B_INP_002_yearMonth = ko.observable('2017/12');
             self.B_INP_002_yearMonth.subscribe(function(newValue) {
                 self.yearInJapanEmpire_B_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_002_yearMonth()).toString() + ")");
             });
             self.yearInJapanEmpire_B_LBL_008 = ko.observable();
             self.yearInJapanEmpire_B_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_002_yearMonth()).toString() + ")");
             //003
-            self.B_INP_003_yearMonth = ko.observable(new Date('2016/12/01'));
+            self.B_INP_003_yearMonth = ko.observable('2017/12/01');
             self.B_INP_003_yearMonth.subscribe(function(newValue) {
                 self.yearInJapanEmpire_B_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_003_yearMonth()).toString() + ")");
             });
             self.yearInJapanEmpire_B_LBL_010 = ko.observable();
             self.yearInJapanEmpire_B_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_003_yearMonth()).toString() + ")");
             //C
-            self.C_INP_001_yearMonth = ko.observable('2016/12');
+            self.C_INP_001_yearMonth = ko.observable('2017/12');
             self.C_INP_001_yearMonth.subscribe(function(newValue) {
                 self.yearInJapanEmpire_C_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_001_yearMonth()).toString() + ")");
             });
             self.yearInJapanEmpire_C_LBL_005 = ko.observable();
             self.yearInJapanEmpire_C_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_001_yearMonth()).toString() + ")");
             //002
-            self.C_INP_002_yearMonth = ko.observable('2016/12');
+            self.C_INP_002_yearMonth = ko.observable('2017/12');
             self.C_INP_002_yearMonth.subscribe(function(newValue) {
                 self.yearInJapanEmpire_C_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_002_yearMonth()).toString() + ")");
             });
             self.yearInJapanEmpire_C_LBL_008 = ko.observable();
             self.yearInJapanEmpire_C_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_002_yearMonth()).toString() + ")");
             //003
-            self.C_INP_003_yearMonth = ko.observable(new Date('2016/12/01'));
+            self.C_INP_003_yearMonth = ko.observable('2017/12/01');
             self.C_INP_003_yearMonth.subscribe(function(newValue) {
                 self.yearInJapanEmpire_C_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_003_yearMonth()).toString() + ")");
             });
@@ -420,26 +420,27 @@ module qpp011.b {
             nts.uk.ui.windows.sub.modal('/view/qpp/011/d/index.xhtml', { height: 550, width: 1020, dialogClass: 'no-close' }).onClosed(function(): any {
             });
         }
-        
+
         exportPdf(): void {
             var self = this;
             var command = {
-                    residentTaxCodeList: self.selectedValue_B_LST_001(),
-                    companyLogin: null,
-                    regalDocCompanyCode: null,
-                    yearMonth: 201612,
-                    processingYearMonth: 201703,
-                    endDate: self.B_INP_003_yearMonth()
+                residentTaxCodeList: self.selectedValue_B_LST_001(),
+                companyLogin: null,
+                regalDocCompanyCode: null,
+                yearMonth: 201612,
+                processingYearMonth: 201703,
+                endDate: self.B_INP_003_yearMonth()
             };
-            
+
             service.saveAsPdf(command).done(function() {
                 //
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);
-            });    
+            });
         }
     }
 
+  
     export class BoxModel {
         id: number;
         name: string;

@@ -9,8 +9,8 @@ module qpp011.e {
             var self = this;
             self.enable = ko.observable(true);
             self.roundingRules = ko.observableArray([
-                { code: '1', name: 'Item1' },
-                { code: '2', name: 'Item2' }
+                { code: '1', name: '付加する' },
+                { code: '2', name: '付加しない' }
             ]);
             self.selectedRuleCode = ko.observable(1);
         }

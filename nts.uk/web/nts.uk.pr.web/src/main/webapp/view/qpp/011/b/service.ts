@@ -116,11 +116,11 @@ module qpp011.b.service {
             })
         return dfd.promise();
     }
-    
+
     export function saveAsPdf(command: any): JQueryPromise<any> {
         return nts.uk.request.exportFile(paths.saveAsPdf, command);
     }
-    
+
     export module model {
         export class residentialTax {
             resimentTaxCode: string;
@@ -167,6 +167,8 @@ module qpp011.b.service {
                 this.prefectureTaxMoney = prefectureTaxMoney;
             }
         }
+
+  
     }
 
 

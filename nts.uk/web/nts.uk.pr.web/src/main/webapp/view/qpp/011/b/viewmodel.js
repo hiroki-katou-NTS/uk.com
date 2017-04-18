@@ -1,4 +1,3 @@
-// TreeGrid Node
 var qpp011;
 (function (qpp011) {
     var b;
@@ -7,8 +6,6 @@ var qpp011;
             function ScreenModel() {
                 this.currentIndex = 0;
                 var self = this;
-                //start radiogroup data
-                //B_01
                 self.B_SEL_001_RadioItemList = ko.observableArray([
                     new BoxModel(1, '本社'),
                     new BoxModel(2, '法定調書出力用会社')
@@ -23,7 +20,6 @@ var qpp011;
                         self.B_SEL_002_Enable(true);
                     }
                 });
-                //02
                 self.C_SEL_002_Enable = ko.observable(false);
                 self.C_SEL_001_selectedId = ko.observable(1);
                 self.C_SEL_001_selectedId.subscribe(function (newValue) {
@@ -48,8 +44,6 @@ var qpp011;
                         self.enable(true);
                     }
                 });
-                //end radiogroup data
-                //start cobobox data
                 self.ComboBoxItemList = ko.observableArray([
                     new ComboboxItemModel('0001', 'Item1'),
                     new ComboboxItemModel('0002', 'Item2'),
@@ -59,11 +53,6 @@ var qpp011;
                 self.selectedCode = ko.observable('0001');
                 self.isEnable = ko.observable(true);
                 self.isEditable = ko.observable(true);
-                //end combobox data
-                // start gridlist
-                //B_LST_001
-                //end gridlist
-                //start number editer
                 self.numbereditor = {
                     value: ko.observable(),
                     constraint: '',
@@ -80,9 +69,7 @@ var qpp011;
                 };
                 self.B_LST_001_Data = ko.observable([]);
                 self.ResidentialData = ko.observable([]);
-                //end number editer
-                //Set Tree Data 
-                b.service.findAllResidential().done(function (data) {
+                qpp011.b.service.findAllResidential().done(function (data) {
                     b.service.getlistLocation().done(function (listLocation) {
                         self.ResidentialData(data);
                         self.ListLocation = listLocation;
@@ -91,11 +78,9 @@ var qpp011;
                         BindTreeGrid("#B_LST_001", self.B_LST_001_Data(), self.selectedValue_B_LST_001);
                         BindTreeGrid("#C_LST_001", self.B_LST_001_Data(), self.selectedValue_C_LST_001);
                     }).fail(function (res) {
-                        // Alert message
                         alert(res.message);
                     });
                 }).fail(function (res) {
-                    // Alert message
                     alert(res.message);
                 });
                 self.C_SEL_003_ComboBoxItemList = ko.observableArray([]);
@@ -108,7 +93,7 @@ var qpp011;
                         self.C_SEL_003_ComboBoxItemList.push(new C_SEL_003_ComboboxItemModel(object.bankCode, object.branchCode, object.lineBankCode, object.lineBankName));
                     }
                     if (self.C_SEL_003_ComboBoxItemList.length > 0)
-                        self.C_SEL_003_selectedCode(self.C_SEL_003_ComboBoxItemList[0].lineBankCode);
+                        self.C_SEL_003_selectedCode(self.C_SEL_003_ComboBoxItemList()[0].lineBankCode);
                 }).fail(function (res) {
                     alert(res.message);
                 });
@@ -144,18 +129,16 @@ var qpp011;
                             self.C_SEL_004_ComboBoxItemList.push(new C_SEL_004_ComboboxItemModel(object.code, object.memo));
                         }
                         if (self.C_SEL_004_ComboBoxItemList.length > 0)
-                            self.C_SEL_004_selectedCode(self.C_SEL_004_ComboBoxItemList[0].code);
+                            self.C_SEL_004_selectedCode(self.C_SEL_004_ComboBoxItemList()[0].code);
                     }).fail(function (res) {
                         alert(res);
                     });
                 });
                 self.columns = [
-                    //   { headerText: "p", key: "position", width: "30px", dataType: "string", hidden: true },
                     { headerText: "position", key: "position", width: "30px", dataType: "string", hidden: true },
                     { headerText: "code", key: "code", width: "30px", dataType: "string", hidden: true },
                     { headerText: "コード/名称", key: "displayText", width: "230px", dataType: "string" },
                 ];
-                //Create Tree Data
                 function CreateDataArray(TreeData, Data) {
                     self.TreeArray = [];
                     var parentPositionIndex = 0;
@@ -245,7 +228,6 @@ var qpp011;
                         return returnValue;
                     }
                 }
-                //End Create Tree Data
                 function BindTreeGrid(gridID, Data, selectedValue) {
                     $(gridID).igTreeGrid({
                         width: "480px",
@@ -305,44 +287,37 @@ var qpp011;
                         });
                     }
                 });
-                //B
-                //001
-                self.B_INP_001_yearMonth = ko.observable('2016/12');
+                self.B_INP_001_yearMonth = ko.observable('2017/12');
                 self.B_INP_001_yearMonth.subscribe(function (newValue) {
                     self.yearInJapanEmpire_B_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_001_yearMonth()).toString() + ")");
                 });
                 self.yearInJapanEmpire_B_LBL_005 = ko.observable();
                 self.yearInJapanEmpire_B_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_001_yearMonth()).toString() + ")");
-                //002
-                self.B_INP_002_yearMonth = ko.observable('2016/12');
+                self.B_INP_002_yearMonth = ko.observable('2017/12');
                 self.B_INP_002_yearMonth.subscribe(function (newValue) {
                     self.yearInJapanEmpire_B_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_002_yearMonth()).toString() + ")");
                 });
                 self.yearInJapanEmpire_B_LBL_008 = ko.observable();
                 self.yearInJapanEmpire_B_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_002_yearMonth()).toString() + ")");
-                //003
-                self.B_INP_003_yearMonth = ko.observable(new Date('2016/12/01'));
+                self.B_INP_003_yearMonth = ko.observable('2017/12/01');
                 self.B_INP_003_yearMonth.subscribe(function (newValue) {
                     self.yearInJapanEmpire_B_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_003_yearMonth()).toString() + ")");
                 });
                 self.yearInJapanEmpire_B_LBL_010 = ko.observable();
                 self.yearInJapanEmpire_B_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_003_yearMonth()).toString() + ")");
-                //C
-                self.C_INP_001_yearMonth = ko.observable('2016/12');
+                self.C_INP_001_yearMonth = ko.observable('2017/12');
                 self.C_INP_001_yearMonth.subscribe(function (newValue) {
                     self.yearInJapanEmpire_C_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_001_yearMonth()).toString() + ")");
                 });
                 self.yearInJapanEmpire_C_LBL_005 = ko.observable();
                 self.yearInJapanEmpire_C_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_001_yearMonth()).toString() + ")");
-                //002
-                self.C_INP_002_yearMonth = ko.observable('2016/12');
+                self.C_INP_002_yearMonth = ko.observable('2017/12');
                 self.C_INP_002_yearMonth.subscribe(function (newValue) {
                     self.yearInJapanEmpire_C_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_002_yearMonth()).toString() + ")");
                 });
                 self.yearInJapanEmpire_C_LBL_008 = ko.observable();
                 self.yearInJapanEmpire_C_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_002_yearMonth()).toString() + ")");
-                //003
-                self.C_INP_003_yearMonth = ko.observable(new Date('2016/12/01'));
+                self.C_INP_003_yearMonth = ko.observable('2017/12/01');
                 self.C_INP_003_yearMonth.subscribe(function (newValue) {
                     self.yearInJapanEmpire_C_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_003_yearMonth()).toString() + ")");
                 });
@@ -376,7 +351,6 @@ var qpp011;
                     endDate: self.B_INP_003_yearMonth()
                 };
                 b.service.saveAsPdf(command).done(function () {
-                    //
                 }).fail(function (res) {
                     nts.uk.ui.dialog.alert(res.message);
                 });
@@ -419,7 +393,6 @@ var qpp011;
             return C_SEL_004_ComboboxItemModel;
         }());
         b.C_SEL_004_ComboboxItemModel = C_SEL_004_ComboboxItemModel;
-        //Tree Data Class
         var TreeItem = (function () {
             function TreeItem(code, name, child, position, displayText, typeBranch) {
                 this.code = code;
@@ -432,7 +405,6 @@ var qpp011;
             return TreeItem;
         }());
         b.TreeItem = TreeItem;
-        // End Tree Data Class
         var ComboboxItemModel = (function () {
             function ComboboxItemModel(code, name) {
                 this.code = code;
@@ -444,3 +416,4 @@ var qpp011;
     })(b = qpp011.b || (qpp011.b = {}));
 })(qpp011 || (qpp011 = {}));
 ;
+//# sourceMappingURL=viewmodel.js.map

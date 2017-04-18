@@ -16,9 +16,6 @@ var qpp011;
                 findallRegalDoc: "pr/core/rule/law/tax/residential/output/findallRegalDoc",
                 saveAsPdf: "screen/pr/QPP011/saveAsPdf"
             };
-            /**
-             * Get list payment date processing.
-             */
             function findresidentialTax(resimentTaxCode, yearMonth) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.find + "/" + resimentTaxCode + "/" + yearMonth)
@@ -154,3 +151,4 @@ var qpp011;
         })(service = b.service || (b.service = {}));
     })(b = qpp011.b || (qpp011.b = {}));
 })(qpp011 || (qpp011 = {}));
+//# sourceMappingURL=service.js.map
