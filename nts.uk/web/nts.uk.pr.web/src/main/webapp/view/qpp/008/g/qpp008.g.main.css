@@ -1,0 +1,167 @@
+#functions-area {
+	height: 50px !important;
+	padding-left: 50px;
+}
+
+#functions-area button {
+	margin-top: 8px;
+	padding: 0 25px;
+}
+
+#contents-area {
+	padding-left: 20px;
+}
+
+#register-g-btn-001, #PDF-output-g-btn-002 {
+	margin-right: 10px;
+}
+
+#close-dialog-g-btn-003 {
+	margin-left: 100px;
+}
+
+.div-contents-one {
+	width: 700px !important;
+}
+
+.div-contents-two {
+	width: 700px !important;
+	height: 75px;
+}
+
+.col-100px .ntsCheckBox {
+	width: 100px !important;
+}
+
+#comparative-date-value-lbl-002 {
+	margin: 0 120px;
+}
+
+#mumber-people-lbl-003 {
+	margin-right: 50px;
+}
+
+#confirmation-status-lbl-007 {
+	float: left;
+	width: 150px;
+}
+
+#div-contents-two-right {
+	width: 550px;
+	float: left;
+}
+
+#div-contents-two-right button {
+	height: 26px !important;
+	width: 120px;
+	margin: 5px;
+}
+
+#check-item-lbl-005 {
+	margin-right: 58px;
+}
+
+#confirmed-Squeezing-lbl-006 {
+	margin-right: 40px;
+}
+
+.setting-filter-g {
+	margin-left: 30px;
+	border: 1px solid gray;
+	width: 470px;
+	padding: 10px 5px 0 10px;
+	float: left;
+}
+
+.confirmed-Squeezing-sel-004 button {
+	width: 90px;
+	height: 26px !important;
+}
+
+#search-btn-sch-001 {
+	margin-top: 17px;
+	margin-left: 15px; height : 45px;
+	width: 90px;
+	height: 45px;
+}
+
+#div-contents-three {
+	width: 700px;
+}
+
+/** old css*/
+.function-area button {za a s65` Q2 - margin-left:40px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#G_BTN_003 {
+	margin-left: 90px !important;
+}
+
+#G_LBL_002 {
+	margin-left: 101px;
+}
+
+.divLbl2 {
+	display: inline-block;
+}
+
+.divLbl2.valign-top.control-group>* {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+#G_LBL_004 {
+	margin-left: 117px;
+}
+
+.divLbl3.valign-top.control-group>* {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.divLbl3.ntsCheckBox>span {
+	margin-left: 20px;
+}
+
+.checkBox123 {
+	margin-left: 53px;
+}
+
+.checkBox123 div {
+	padding-right: 40px;
+}
+
+.divLbl4.valign-top.control-group>* {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.divLbl4 {
+	margin-top: 5px;
+}
+
+.switchButton {
+	margin-left: 35px;
+}
+
+.red {
+	background-color: red !important;
+}
+
+.blue {
+	background-color: 33CC66 !important;
+}
+
+.yellow {
+	background-color: yellow;
+}
+
+.ui-iggrid-header, .ui-widget-header {
+	text-align: center !important;
+}
+.ui-widget-header{
+	border: 1px solid #fff;
+	background: none !important;
+}

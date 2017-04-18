@@ -5,58 +5,73 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 300,
-					height : 200
+					width : 700,
+					height : 500
 				};
 			</script>
-			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
-   				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="main.css" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="service.js" />
+			<com:stylefile path="qpp008.g.main.css" />
+			<com:scriptfile path="qpp008.g.start.js" />
+			<com:scriptfile path="qpp008.g.vm.js" />
+			<com:scriptfile path="qpp008.g.service.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area" class="function-area">
-				<button id="G_BTN_001" class="proceed">登録</button>
-				<button id="G_BTN_002">PDF出力</button>
-				<button id="G_BTN_003">閉じる</button>
+				<button id="register-g-btn-001" class="proceed">登録</button>
+				<button id="PDF-output-g-btn-002">PDF出力</button>
+				<button id="close-dialog-g-btn-003">閉じる</button>
 			</div>
 			<div id="contents-area">
-				<div class="divLbl1 valign-top control-group">
-					<div id="G_LBL_001" data-bind="ntsFormLabel: {}">比較年月</div>
-					<label id="G_LBL_002">「”比較年月1”と"比較年月2”を比較」</label>
+
+				<div class="div-contents-one valign-center control-group">
+					<div id="comparative-date-lbl-001" data-bind="ntsFormLabel: {}">比較年月</div>
+					<label id="comparative-date-value-lbl-002">2017/03 と
+						2017/04 を比較</label>
+					<div id="mumber-people-lbl-003" data-bind="ntsFormLabel: {}">対象者</div>
+					<label id="mumber-people-value-lbl-004">2人</label>
+					<hr />
 				</div>
-				<br />
-				<div class="divLbl2 valign-top control-group">
-					<div id="G_LBL_003" data-bind="ntsFormLabel: {}">対象者</div>
-					<label id="G_LBL_004">対象人数は呼び出し元画面から取得する</label>
+				<div class="div-contents-two">
+					<div id="confirmation-status-lbl-007" data-bind="ntsFormLabel: {}">確認状況の一括変更</div>
+					<div id="div-contents-two-right">
+						<button>チェックをつける</button>
+						<span>表示されているデータを全て確認済みにします（チェックをつけます）</span>
+						<button>チェックをはずす</button>
+						<span>表示されているデータを全て未確認にします（チェックをはずします）</span>
+					</div>
+
 				</div>
-				<div class="divLbl3 valign-top control-group">
-					<div id="G_LBL_005" data-bind="ntsFormLabel: {}">確認する項目区分</div>
-					<div class="checkBox123">
-						<div id="G_SEL_001"
-							data-bind="ntsCheckBox: { checked: checked, enable: enable, text: '支給' }"></div>
-						<div id="G_SEL_002"
-							data-bind="ntsCheckBox: { checked: checked, enable: enable, text: '控除' }"></div>
-						<div id="G_SEL_003"
-							data-bind="ntsCheckBox: { checked: checked, enable: enable, text: '記事' }"></div>
-					</div><br/>
-					<div class="divLbl4 valign-top control-group">
-						<div id="G_LBL_006" data-bind="ntsFormLabel: {}">確認済みのしぼり込み</div>
-						<div id="G_SEL_004" class="cf switchButton" data-bind="ntsSwitchButton: {
-													options: roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selectedRuleCode,
-													enable: enable }"></div>
+				<div id="div-contents-three">
+					<div id="G_LBL_010" data-bind="ntsFormLabel: {}">対象データの絞り込み設定</div>
+					<div class="valign-center control-group">
+						<div class = "setting-filter-g">
+							<div class="valign-center control-group">
+								<label id="check-item-lbl-005">確認する項目区分</label>
+								<div class="col-100px"
+									data-bind="ntsMultiCheckBox: {
+									options: itemCategoryChecked,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedItemCategoryCode,
+									enable: enable }"></div>
+							</div>
+							<div class="confirmed-Squeezing-div valign-top control-group">
+								<label id="confirmed-Squeezing-lbl-006">確認済みのしぼり込み</label>
+								<span class = "confirmed-Squeezing-sel-004" data-bind="ntsSwitchButton: {
+									options: confirmedSqueezingSwitch,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedconfirmedCode,
+									enable: enable }">
+								</span>
+							</div>
+						</div>
+						<button class="large search-btn caret-bottom" id = "search-btn-sch-001">絞り込み</button>
 					</div>
 				</div>
 				<div>
