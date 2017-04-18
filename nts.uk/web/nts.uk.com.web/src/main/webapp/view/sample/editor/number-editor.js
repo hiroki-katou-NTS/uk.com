@@ -6,9 +6,7 @@ __viewContext.ready(function () {
             self.numbereditor = {
                 value: ko.observable(12),
                 constraint: 'CommonAmount',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
-                    grouplength: 3,
-                    width: "200" })),
+                option: { width: "200" },
                 required: ko.observable(false),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
@@ -16,11 +14,11 @@ __viewContext.ready(function () {
             self.numbereditor2 = {
                 value: ko.observable(12),
                 constraint: 'CommonAmount',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                option: ko.mapping.fromJS({
                     grouplength: 3,
                     decimallength: 2,
-                    symbolChar: '%',
-                    symbolPosition: 'right' })),
+                    symbolChar: '$',
+                    symbolPosition: 'right' }),
                 required: ko.observable(false),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
