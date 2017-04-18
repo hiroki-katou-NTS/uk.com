@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.formula.dom.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +30,7 @@ public interface FormulaMasterRepository {
 	
 	Optional<FormulaMaster> findByCompanyCodeAndFormulaCode(String companyCode, FormulaCode formulaCode);
 	
-	List<FormulaMaster> findByCompanyCodeAndFormulaCodes(String companyCode, List<FormulaCode> formulaCode);
+	List<FormulaMaster> findByCompanyCodeAndFormulaCodes(String companyCode, List<FormulaCode> formulaCode, BigDecimal difficultyAtr);
 	
 	void add(FormulaMaster formulaMaster);
 	
