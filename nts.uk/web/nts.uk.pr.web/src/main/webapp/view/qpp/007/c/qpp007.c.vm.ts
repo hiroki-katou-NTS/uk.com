@@ -53,9 +53,10 @@ module nts.uk.pr.view.qpp007.c {
                     { headerText: '名称', prop: 'name', width: 100 },
                 ]);
 
+                // Init subscribe
                 self.outputSettingDetailModel().categorySettings.subscribe(() => {
                     self.reloadAggregateOutputItems();
-                    //self.outputSettingDetailModel().reloadAggregateOutputItems = self.reloadAggregateOutputItems.bind(self);
+                    self.outputSettingDetailModel().reloadAggregateOutputItems = self.reloadAggregateOutputItems.bind(self);
                 });
 
                 self.temporarySelectedCode.subscribe(code => {
@@ -484,9 +485,8 @@ module nts.uk.pr.view.qpp007.c {
                 var self = this;
                 self.categorySettings().forEach(setting => {
                     setting.outputItems.subscribe(() => {
-                        
+                        self.reloadAggregateOutputItems();
                     })
-                    //setting.reloadAggregateOutputItems = self.reloadAggregateOutputItems.bind(self);
                 });
             }
 
@@ -494,16 +494,23 @@ module nts.uk.pr.view.qpp007.c {
              * Update masterItems, aggregateItems, categorySettings.
              */
             public updateData(outputSetting?: OutputSettingDto): void {
-                this.settingCode(outputSetting != undefined ? outputSetting.code : '');
-                this.settingName(outputSetting != undefined ? outputSetting.name : '');
+                var self = this;
+                self.settingCode(outputSetting != undefined ? outputSetting.code : '');
+                self.settingName(outputSetting != undefined ? outputSetting.name : '');
                 // construct categorySettings.
                 var settings: CategorySettingModel[] = [];
                 if (outputSetting == undefined) {
-                    settings = this.toModel();
+                    settings = self.toModel();
                 } else {
-                    settings = this.toModel(outputSetting.categorySettings);
+                    settings = self.toModel(outputSetting.categorySettings);
                 }
-                this.categorySettings(settings);
+                self.categorySettings(settings);
+                // ReSubscribe.
+                self.categorySettings().forEach(setting => {
+                    setting.outputItems.subscribe(() => {
+                        self.reloadAggregateOutputItems();
+                    })
+                });
             }
 
             /**
@@ -596,7 +603,6 @@ module nts.uk.pr.view.qpp007.c {
             outputItemSelected: KnockoutObservable<string>;
             outputItemsSelected: KnockoutObservableArray<string>;
             outputItemColumns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-            //reloadAggregateOutputItems: () => void;
             constructor(categoryName: SalaryCategory,
                 masterItems: KnockoutObservableArray<MasterItem>,
                 aggregateItems: KnockoutObservableArray<AggregateItem>,
@@ -610,10 +616,6 @@ module nts.uk.pr.view.qpp007.c {
                 self.outputItems = ko.observableArray<OutputItem>(categorySetting != undefined ? categorySetting.outputItems : []);
                 self.outputItemSelected = ko.observable(null);
                 self.outputItemsSelected = ko.observableArray<string>([]);
-
-                self.outputItems.subscribe(() => {
-                    //self.reloadAggregateOutputItems();
-                });
 
                 // Filter masterItems & aggregateItems by category.
                 switch (categoryName) {
@@ -658,7 +660,7 @@ module nts.uk.pr.view.qpp007.c {
                     default: // Do nothing.
                 }
 
-                // exclude item contain in setting.
+                // exclude items contain in setting.
                 var existCodes: string[] = [];
                 if (categorySetting != undefined) {
                     existCodes = categorySetting.outputItems.map(item => {
