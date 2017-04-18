@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -21,6 +22,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.basic.infra.entity.organization.department.CmnmtDep;
 import nts.uk.ctx.basic.infra.entity.organization.position.CmnmtJobTitle;
 import nts.uk.ctx.basic.infra.entity.report.PbsmtPersonBase;
+import nts.uk.ctx.basic.infra.entity.report.PclmtPersonTitleRgl;
 import nts.uk.ctx.basic.infra.entity.report.PcpmtPersonCom;
 import nts.uk.ctx.basic.infra.entity.report.PogmtPersonDepRgl;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItem;
@@ -47,22 +49,38 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 
 	/** The Constant CHECK_HAS_DATA_QUERY_STRING. */
 	private static final String CHECK_HAS_DATA_QUERY_STRING = "SELECT COUNT(h.qstdtPaymentHeaderPK.personId) "
-			+ "FROM QstdtPaymentHeader h " + "WHERE h.qstdtPaymentHeaderPK.companyCode = :companyCode "
+			+ "FROM QstdtPaymentHeader h "
+			+ "WHERE h.qstdtPaymentHeaderPK.companyCode = :companyCode "
 			+ "AND h.qstdtPaymentHeaderPK.personId IN :personIds "
 			+ "AND h.qstdtPaymentHeaderPK.sparePayAtr = :sparePayAtr "
 			+ "AND h.qstdtPaymentHeaderPK.processingYM >= :startProcessingYM "
 			+ "AND h.qstdtPaymentHeaderPK.processingYM <= :endProcessingYM ";
 
 	/** The Constant HEADER_QUERY_STRING. */
-	private static final String HEADER_QUERY_STRING = "SELECT p, pc, pd, cd, cj " + "FROM PbsmtPersonBase p,"
-			+ "PcpmtPersonCom pc, " + "PogmtPersonDepRgl pd, " + "CmnmtDep cd, " + "PclmtPersonTitleRgl pt, "
-			+ "CmnmtJobHist jh, " + "CmnmtJobTitle cj " + "WHERE pc.pcpmtPersonComPK.pid = p.pid "
-			+ "AND pd.pogmtPersonDepRglPK.pid = p.pid " + "AND cd.cmnmtDepPK.departmentCode = pd.depcd "
-			+ "AND pt.pclmtPersonTitleRglPK.pid = p.pid"
-			+ "AND jh.cmnmtJobHistPK.historyId = pt.pclmtPersonTitleRglPK.histId "
-			+ "AND cj.cmnmtJobTitlePK.companyCode = m.qcamtItemPK.ccd " + "AND cj.cmnmtJobTitlePK.jobCode = pt.jobcd "
-			+ "AND cj.cmnmtJobTitlePK.historyId = jh.cmnmtJobHistPK.historyId " + "AND p.pid in :personIds "
-			+ "AND pc.pcpmtPersonComPK.ccd = :companyCode " + "AND pd.strD <= :baseDate " + "AND pd.endD >= :baseDate ";
+	private static final String HEADER_QUERY_STRING = "SELECT p, pc, pd, cd, pt "
+			+ "FROM PbsmtPersonBase p, "
+			+ "PcpmtPersonCom pc, "
+			+ "PogmtPersonDepRgl pd, "
+			+ "CmnmtDep cd, "
+			+ "PclmtPersonTitleRgl pt "
+			+ "WHERE pc.pcpmtPersonComPK.pid = p.pid "
+			+ "AND pd.pogmtPersonDepRglPK.pid = p.pid "
+			+ "AND cd.cmnmtDepPK.departmentCode = pd.depcd "
+			+ "AND pt.pclmtPersonTitleRglPK.pid = p.pid "
+			+ "AND p.pid IN :personIds "
+			+ "AND pc.pcpmtPersonComPK.ccd = :companyCode "
+			+ "AND pd.strD <= :baseDate "
+			+ "AND pd.endD >= :baseDate ";
+	
+	/** The Constant POSITION_QUERY_STRING. */
+	private static final String POSITION_QUERY_STRING = "SELECT jt "
+			+ "FROM CmnmtJobHist jh, "
+			+ "CmnmtJobTitle jt "
+			+ "WHERE jt.cmnmtJobTitlePK.companyCode = :companyCode "
+			+ "AND jt.cmnmtJobTitlePK.jobCode IN :jobCode "
+			+ "AND jt.cmnmtJobTitlePK.historyId = jh.cmnmtJobHistPK.historyId "
+			+ "AND jh.startDate <= :baseDate "
+			+ "AND jh.endDate >= :baseDate";
 
 	/** The Constant TOTAL_TAX_ITEM_CODE. */
 	private static final String TOTAL_TAX_ITEM_CODE = "F001";
@@ -101,10 +119,10 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		}
 
 		// Covert to Data model.
-		if (returnType.isInstance(WLOldLayoutReportData.class)) {
+		if (returnType.getName().equals(WLOldLayoutReportData.class.getName())) {
 			return (List<T>) this.convertToOldLayoutDataList(itemResultList, query, companyCode);
 		}
-		if (returnType.isInstance(WLNewLayoutReportData.class)) {
+		if (returnType.getName().equals(WLNewLayoutReportData.class)) {
 			return (List<T>) this.covertToNewLayoutDataList(itemResultList);
 		}
 
@@ -153,19 +171,21 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		YearMonth endYearMonth = YearMonth.of(query.targetYear, 12);
 
 		// Create Query String.
-		String queryString = "SELECT d, m " + "FROM QcamtItem m, " + "QstdtPaymentDetail d "
+		String queryString = "SELECT d, m "
+				+ "FROM QcamtItem m, "
+				+ "QstdtPaymentDetail d "
 				+ "WHERE d.qstdtPaymentDetailPK.itemCode = m.qcamtItemPK.itemCd "
-				+ "AND d.qstdtPaymentDetailPK.ccd = m.qcamtItemPK.ccd " + "AND m.qcamtItemPK.ccd = :companyCode "
+				+ "AND d.qstdtPaymentDetailPK.companyCode = m.qcamtItemPK.ccd "
+				+ "AND m.qcamtItemPK.ccd = :companyCode "
 				+ "AND d.qstdtPaymentDetailPK.personId in :personIds "
-				+ "AND d.qstdtPaymentDetailPK.processingYM <= :startProcessingYM "
-				+ "AND d.qstdtPaymentDetailPK.processingYM >= :endProcessingYM "
-				+ "AND d.qstdtPaymentDetailPK.sparePayAttribute = :sparePayAtr " + "AND pd.strD <= :baseDate "
-				+ "AND pd.endD >= :baseDate ";
+				+ "AND d.qstdtPaymentDetailPK.processingYM >= :startProcessingYM "
+				+ "AND d.qstdtPaymentDetailPK.processingYM <= :endProcessingYM "
+				+ "AND d.qstdtPaymentDetailPK.sparePayAttribute = :sparePayAtr ";
 
 		Query typeQuery = em.createQuery(queryString).setParameter("companyCode", companyCode)
 				.setParameter("sparePayAtr", query.isAggreatePreliminaryMonth ? 1 : 0)
-				.setParameter("startProcessingYM", startYearMonth.v()).setParameter("endProcessingYM", endYearMonth.v())
-				.setParameter("baseDate", query.baseDate);
+				.setParameter("startProcessingYM", startYearMonth.v())
+				.setParameter("endProcessingYM", endYearMonth.v());
 
 		// Query data.
 		List<Object[]> masterResultList = new ArrayList<>();
@@ -357,6 +377,7 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 	 */
 	private PaymentData convertToPaymentData(Map<QcamtItem, ReportItemDto> resultsMap) {
 		List<ReportItemDto> items = new ArrayList<>(resultsMap.values());
+		
 		// Create total tax item.
 		QcamtItem totalTaxResultItem = resultsMap.keySet().stream()
 				.filter(item -> item.qcamtItemPK.itemCd.equals(TOTAL_TAX_ITEM_CODE)).findFirst().get();
@@ -448,7 +469,8 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		EntityManager em = this.getEntityManager();
 
 		// Create Query.
-		Query query = em.createQuery(HEADER_QUERY_STRING).setParameter("companyCode", companyCode)
+		Query query = em.createQuery(HEADER_QUERY_STRING)
+				.setParameter("companyCode", companyCode)
 				.setParameter("baseDate", queryData.baseDate);
 
 		// Query data.
@@ -456,6 +478,21 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		CollectionUtil.split(queryData.employeeIds, 1000, (subList) -> {
 			headerDatasResult.addAll(query.setParameter("personIds", subList).getResultList());
 		});
+		
+		// Query position of employee.
+		List<String> jobCodes = headerDatasResult.stream().map(data -> {
+			
+			PclmtPersonTitleRgl personTitle = (PclmtPersonTitleRgl) data[4];
+			return personTitle.getJobcd();
+		}).distinct().collect(Collectors.toList());
+
+		List<CmnmtJobTitle> jobList = em.createQuery(POSITION_QUERY_STRING, CmnmtJobTitle.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("jobCode", jobCodes)
+				.setParameter("baseDate", queryData.baseDate)
+				.getResultList();
+		Map<String, CmnmtJobTitle> jobMap = jobList.stream()
+				.collect(Collectors.toMap(job -> job.cmnmtJobTitlePK.jobCode, Function.identity()));
 
 		// Convert to header data model.
 		return headerDatasResult.stream().collect(Collectors.toMap(key -> {
@@ -466,8 +503,9 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 			PcpmtPersonCom personCompany = (PcpmtPersonCom) data[1];
 			PogmtPersonDepRgl personDepartment = (PogmtPersonDepRgl) data[2];
 			CmnmtDep departmentMaster = (CmnmtDep) data[3];
-			CmnmtJobTitle jobTitle = (CmnmtJobTitle) data[4];
-
+			PclmtPersonTitleRgl personTitle = (PclmtPersonTitleRgl) data[4];
+			CmnmtJobTitle jobTitle = jobMap.get(personTitle.getJobcd());
+			
 			// Build Header Data.
 			HeaderReportData headerReportData = HeaderReportData.builder().employeeCode(personCompany.getScd())
 					.employeeName(personBase.getNameOfficial()).sex(personBase.getGendar() == 0 ? "男性" : "女性")

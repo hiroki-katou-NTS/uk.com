@@ -21,8 +21,6 @@ import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery.LayoutType;
 import nts.uk.file.pr.app.export.wageledger.data.WLNewLayoutReportData;
 import nts.uk.file.pr.app.export.wageledger.data.WLOldLayoutReportData;
 import nts.uk.file.pr.app.export.wageledger.data.newlayout.TotalData;
-import nts.uk.file.pr.app.export.wageledger.data.oldlayout.DeductionData;
-import nts.uk.file.pr.app.export.wageledger.data.oldlayout.PaymentData;
 import nts.uk.file.pr.app.export.wageledger.data.share.HeaderReportData;
 import nts.uk.file.pr.app.export.wageledger.data.share.MonthlyData;
 import nts.uk.file.pr.app.export.wageledger.data.share.ReportItemDto;
