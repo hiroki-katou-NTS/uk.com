@@ -1,17 +1,15 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.repository.salarydetail.memento;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import lombok.Getter;
-import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemCode;
+import nts.gul.collection.LazySet;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemGetMemento;
+import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemHeader;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemName;
-import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.TaxDivision;
 import nts.uk.ctx.pr.report.dom.salarydetail.item.SalaryItem;
 import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstAggreHead;
 
@@ -20,46 +18,16 @@ import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstAggreHead;
  */
 public class JpaSalaryAggregateItemGetMemento implements SalaryAggregateItemGetMemento {
 
-	/** The agger head. */
-
-	/**
-	 * Gets the agger head.
-	 *
-	 * @return the agger head
-	 */
-	@Getter
-	private QlsptPaylstAggreHead aggerHead;
+	/** The aggregate head. */
+	private QlsptPaylstAggreHead aggregateHead;
 
 	/**
 	 * Instantiates a new jpa salary aggregate item get memento.
 	 *
-	 * @param aggerHead
-	 *            the agger head
+	 * @param aggregateHead the aggregate head
 	 */
-	public JpaSalaryAggregateItemGetMemento(QlsptPaylstAggreHead aggerHead) {
-		this.aggerHead = aggerHead;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
-	 * SalaryAggregateItemGetMemento#getCompanyCode()
-	 */
-	@Override
-	public String getCompanyCode() {
-		return this.aggerHead.getQlsptPaylstAggreHeadPK().getCcd();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
-	 * SalaryAggregateItemGetMemento#getSalaryAggregateItemCode()
-	 */
-	@Override
-	public SalaryAggregateItemCode getSalaryAggregateItemCode() {
-		return new SalaryAggregateItemCode(this.aggerHead.getQlsptPaylstAggreHeadPK().getAggregateCd());
+	public JpaSalaryAggregateItemGetMemento(QlsptPaylstAggreHead aggregateHead) {
+		this.aggregateHead = aggregateHead;
 	}
 
 	/*
@@ -70,7 +38,7 @@ public class JpaSalaryAggregateItemGetMemento implements SalaryAggregateItemGetM
 	 */
 	@Override
 	public SalaryAggregateItemName getSalaryAggregateItemName() {
-		return new SalaryAggregateItemName(this.aggerHead.getAggregateName());
+		return new SalaryAggregateItemName(this.aggregateHead.getAggregateName());
 	}
 
 	/*
@@ -81,34 +49,23 @@ public class JpaSalaryAggregateItemGetMemento implements SalaryAggregateItemGetM
 	 */
 	@Override
 	public Set<SalaryItem> getSubItemCodes() {
-		return this.aggerHead.getQlsptPaylstAggreDetailList().stream().map(item -> {
+		return LazySet.withMap(() -> this.aggregateHead.getQlsptPaylstAggreDetailList(), item -> {
 			SalaryItem salaryItem = new SalaryItem();
 			salaryItem.setSalaryItemCode(item.getQlsptPaylstAggreDetailPK().getItemCd());
 			salaryItem.setSalaryItemName("基本給 " + item.getQlsptPaylstAggreDetailPK().getItemCd());
 			return salaryItem;
-		}).collect(Collectors.toSet());
+		});
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
-	 * SalaryAggregateItemGetMemento#getTaxDivision()
+	 * SalaryAggregateItemGetMemento#getSalaryAggregateItem()
 	 */
 	@Override
-	public TaxDivision getTaxDivision() {
-		return TaxDivision.valueOf(this.aggerHead.getQlsptPaylstAggreHeadPK().getCtgAtr());
+	public SalaryAggregateItemHeader getSalaryAggregateItemHeader() {
+		return new SalaryAggregateItemHeader(
+				new JpaSalaryAggregateItemHeaderGetMemento(this.aggregateHead.getQlsptPaylstAggreHeadPK()));
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
-	 * SalaryAggregateItemGetMemento#getItemCategory()
-	 */
-	@Override
-	public int getItemCategory() {
-		return 1;
-	}
-
 }

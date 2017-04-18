@@ -93,7 +93,7 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 		List<QismtPensionRate> result = em.createQuery(cq).getResultList();
 
 		// If have no record.
-		if (!CollectionUtil.isEmpty(result)) {
+		if (CollectionUtil.isEmpty(result)) {
 			// not found delete element
 			throw new BusinessException("ER010");
 		}

@@ -17,7 +17,6 @@
 				nts.uk.ctx.pr.core.dom.insurance.CommonAmount
   			</com:ValidatorScript>
 			<com:scriptfile path="../h/qmm008.h.service.js" />
-			<com:scriptfile path="../0/common/service.js" />
 			<com:scriptfile path="qmm008.b.service.js" />
 			<com:scriptfile path="qmm008.b.vm.js" />
 			<com:scriptfile path="qmm008.b.start.js" />
@@ -252,7 +251,7 @@
 						data-bind="ntsNumberEditor: {
 							value: maxAmount, 
 							constraint: 'CommonAmount', 
-							option: {grouplength: 3,currencyformat: 'JPY',currencyposition: 'right'}, 
+							option: new nts.uk.ui.option.NumberEditorOption({grouplength: 3,currencyformat: 'JPY',currencyposition: 'right'}), 
 							required: true, 
 							enable: $parent.isClickHistory(), 
 							readonly: false}" />

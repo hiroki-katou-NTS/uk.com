@@ -14,13 +14,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.core.infra.entity.insurance.social.QismtSocialInsuOffice;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn.QismtHealInsuAvgearnD;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn.QismtHealthInsuAmount;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -147,19 +145,16 @@ public class QismtHealthInsuRate extends UkJpaEntity implements Serializable {
 	private int keepEntryFlg;
 
 	/** The qismt health insu avgearn list. */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qismtHealthInsuRate", orphanRemoval = true)
+	@JoinColumns({
+			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false) })
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<QismtHealInsuAvgearnD> qismtHealInsuAvgearnDList;
 
 	/** The qismt health insu avgearn list. */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qismtHealthInsuRate", orphanRemoval = true)
-	private List<QismtHealthInsuAmount> qismtHealthInsuAmountList;
-
-	/** The qismt social insu office. */
 	@JoinColumns({
-			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
-			@JoinColumn(name = "SI_OFFICE_CD", referencedColumnName = "SI_OFFICE_CD", insertable = false, updatable = false) })
-	@ManyToOne(optional = false)
-	private QismtSocialInsuOffice qismtSocialInsuOffice;
+			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false) })
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<QismtHealthInsuAmount> qismtHealthInsuAmountList;
 
 	/**
 	 * Instantiates a new qismt health insu rate.

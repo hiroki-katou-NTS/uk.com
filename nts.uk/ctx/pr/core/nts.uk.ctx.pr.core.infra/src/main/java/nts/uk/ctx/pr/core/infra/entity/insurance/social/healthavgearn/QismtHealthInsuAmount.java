@@ -7,6 +7,7 @@ package nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -17,7 +18,6 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -76,16 +76,11 @@ public class QismtHealthInsuAmount extends UkJpaEntity implements Serializable {
 	@Column(name = "C_HEALTH_BASIC_MNY")
 	private BigDecimal cHealthBasicMny;
 
-	/** The qismt health insu rate. */
-	@JoinColumns({
-			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false) })
-	@ManyToOne(optional = false)
-	private QismtHealthInsuRate qismtHealthInsuRate;
-
+	/** The qismt heal insu avgearn D. */
 	@JoinColumns({
 			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false),
 			@JoinColumn(name = "HEALTH_INSU_GRADE", referencedColumnName = "HEALTH_INSU_GRADE", insertable = false, updatable = false) })
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, cascade = CascadeType.DETACH)
 	private QismtHealInsuAvgearnD qismtHealInsuAvgearnD;
 
 	/**

@@ -54,8 +54,6 @@ module nts.uk.pr.view.qpp007.j {
                 /** The tax division. */
                 taxDivision: number;
 
-                /** The category code. */
-                categoryCode: string;
             }
         }
     }
