@@ -1,18 +1,17 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * The Class DeletePensionCommand.
+ * The Class UpdatePensionCommand.
  */
-@Data
-public class DeletePensionCommand {
-	
-	/** The history id. */
-	private String historyId;
-	
+@Getter
+@Setter
+public class UpdatePensionRateCommand extends PensionRateBaseCommand {
+
 }

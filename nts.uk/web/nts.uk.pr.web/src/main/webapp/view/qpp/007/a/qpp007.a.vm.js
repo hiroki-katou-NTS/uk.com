@@ -12,6 +12,7 @@ var nts;
                     (function (a) {
                         var viewmodel;
                         (function (viewmodel) {
+                            var NUMBER_OF_HIERACHY = 9;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     this.isUsuallyAMonth = ko.observable(true);
@@ -34,12 +35,11 @@ var nts;
                                         new SelectionModel('4', '部門階層')
                                     ]);
                                     this.selectedpageBreakSetting = ko.observable('1');
-                                    this.departmentHierarchyList = ko.observableArray([
-                                        new SelectionModel('1', '1'), new SelectionModel('2', '2'), new SelectionModel('3', '3'),
-                                        new SelectionModel('4', '4'), new SelectionModel('5', '5'), new SelectionModel('6', '6'),
-                                        new SelectionModel('7', '7'), new SelectionModel('8', '8'), new SelectionModel('9', '9')
-                                    ]);
-                                    this.selectedHierachy = ko.observable('1');
+                                    this.departmentHierarchyList = ko.observableArray([]);
+                                    for (var i = 0; i < NUMBER_OF_HIERACHY; i++) {
+                                        this.departmentHierarchyList.push(new SelectionModel(i.toString(), (i + 1).toString()));
+                                    }
+                                    this.selectedHierachy = ko.observable('0');
                                     this.outputLanguage = ko.observableArray([
                                         new SelectionModel('1', '日本語'),
                                         new SelectionModel('2', '英語')

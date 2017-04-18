@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
@@ -21,8 +22,6 @@ import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery.LayoutType;
 import nts.uk.file.pr.app.export.wageledger.data.WLNewLayoutReportData;
 import nts.uk.file.pr.app.export.wageledger.data.WLOldLayoutReportData;
 import nts.uk.file.pr.app.export.wageledger.data.newlayout.TotalData;
-import nts.uk.file.pr.app.export.wageledger.data.oldlayout.DeductionData;
-import nts.uk.file.pr.app.export.wageledger.data.oldlayout.PaymentData;
 import nts.uk.file.pr.app.export.wageledger.data.share.HeaderReportData;
 import nts.uk.file.pr.app.export.wageledger.data.share.MonthlyData;
 import nts.uk.file.pr.app.export.wageledger.data.share.ReportItemDto;
@@ -58,7 +57,7 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 		query.baseDate = GeneralDate.today();
 		query.employeeIds = Arrays.asList("999000000000000000000000000000000001");
 		if (!this.repository.hasReportData(companyCode, query)) {
-			throw new RuntimeException("None Data!");
+			throw new BusinessException("対象データがありません。");
 		}
 		
 		// Query Data.

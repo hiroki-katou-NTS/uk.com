@@ -12,6 +12,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -231,11 +233,15 @@ public class QismtPensionRate extends UkJpaEntity implements Serializable {
 	private int keepEntryFlg;
 
 	/** The qismt pension avgearn D list. */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qismtPensionRate")
+	@JoinColumns({
+			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false) })
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<QismtPensionAvgearnD> qismtPensionAvgearnDList;
 
 	/** The qismt pension amount list. */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qismtPensionRate")
+	@JoinColumns({
+			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false) })
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<QismtPensionAmount> qismtPensionAmountList;
 
 	/**

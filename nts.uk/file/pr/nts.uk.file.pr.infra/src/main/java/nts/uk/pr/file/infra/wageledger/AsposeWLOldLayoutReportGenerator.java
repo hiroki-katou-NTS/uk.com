@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.wageledger;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -64,8 +65,8 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 	@Override
 	public void generate(FileGeneratorContext fileContext, WLOldLayoutReportData reportData, WageLedgerReportQuery query) {
 		
-		try {
-			AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE);
+		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
+			
 			Worksheet ws = reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
 			HeaderReportData headerData = reportData.headerData;
 			
@@ -263,14 +264,14 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 		printData.currentColumn += amountColumn;
 		
 		// Fill item data cells.
-		Map<Integer, MonthlyData> dataMap = item.monthlyDatas.stream()
-				.collect(Collectors.toMap(d -> d.month, Function.identity()));
+		Map<Integer, MonthlyData> dataMap = item != null ? item.monthlyDatas.stream()
+				.collect(Collectors.toMap(d -> d.month, Function.identity())) : new HashMap<>();
 		List<Integer> monthList = printData.isSalaryPath ? printData.reportData.salaryMonthList
 						: printData.reportData.bonusMonthList;
 		for (int j = 0; j < monthList.size(); j++) {
 			MonthlyData data = dataMap.get(monthList.get(j));
 			Cell monthCell = cells.get(printData.currentRow, printData.currentColumn);
-			monthCell.setValue(data.amount);
+			monthCell.setValue(data != null ? data.amount : 0);
 
 			// Set style for cell.
 			StyleModel dataCellStyle = StyleModel
@@ -396,7 +397,7 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 		styleFlag.setHorizontalAlignment(true);
 		styleFlag.setVerticalAlignment(true);
 		styleFlag.setWrapText(true);
-		range.applyStyle(style, styleFlag);;
+		range.applyStyle(style, styleFlag);
 	}
 	
 	/**

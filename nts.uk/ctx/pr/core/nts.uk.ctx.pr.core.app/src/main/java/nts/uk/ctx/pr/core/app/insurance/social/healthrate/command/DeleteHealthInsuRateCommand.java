@@ -4,13 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.healthrate.command;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
- * The Class UpdateHealthInsuranceCommand.
+ * The Class DeleteHealthInsuranceCommand.
  */
-@Getter
-@Setter
-public class UpdateHealthInsuranceCommand extends HealthInsuranceBaseCommand {
+@Data
+public class DeleteHealthInsuRateCommand {
+	
+	/** The history id. */
+	private String historyId;
+	
 }
