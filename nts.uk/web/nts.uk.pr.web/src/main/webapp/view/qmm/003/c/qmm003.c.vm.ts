@@ -49,10 +49,12 @@ module qmm003.c.viewmodel {
         clickButton(): any {
             let self = this;
             nts.uk.ui.windows.setShared('currentResidential', self.currentResidential, true);
+            nts.uk.ui.windows.setShared('items', self.items(), true);
             nts.uk.ui.windows.close();
 
         }
         cancelButton(): void {
+            nts.uk.ui.windows.setShared('items', this.items(), true);
             nts.uk.ui.windows.close();
         }
         init(): void {

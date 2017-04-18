@@ -13,26 +13,38 @@ module qmm003.e.viewmodel {
         selectedCode: KnockoutObservable<string> = ko.observable("");
         year: KnockoutObservable<number> = ko.observable(null);
         yearJapan: KnockoutObservable<string> = ko.observable("");
+        yes: boolean = true;
 
         constructor() {
             let self = this;
             self.init();
             self.year.subscribe(function(value) {
-                self.yearJapan("("+ nts.uk.time.yearInJapanEmpire(self.year()).toString()+ ")");
+                self.yearJapan("(" + nts.uk.time.yearInJapanEmpire(self.year()).toString() + ")");
             });
 
         }
 
         clickButton(): any {
             let self = this;
-            service.updateAllReportCode(self.resiTaxCodeLeft(), self.resiTaxCodeRight()).done(function(data: any) {
-            }).fail(function(res: any) {
-                nts.uk.ui.dialog.alert("not update success");
-            });
+            self.yes = true;
+            nts.uk.ui.windows.setShared('resiTaxCodeLeft', self.resiTaxCodeLeft(), true);
+            nts.uk.ui.windows.setShared('year', self.year(), true);
+            nts.uk.ui.windows.setShared('resiTaxCodeRight', self.resiTaxCodeRight(), true);
+            nts.uk.ui.windows.setShared('yes', self.yes, true);
+            nts.uk.ui.windows.setShared('treeLeft', self.treeLeft(), true);
+            if (self.resiTaxCodeLeft() && self.resiTaxCodeRight() && self.year()) {
+                service.updateAllReportCode(self.resiTaxCodeLeft(), self.resiTaxCodeRight(), self.year()).done(function(data: any) {
+                }).fail(function(res: any) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
+            }
             nts.uk.ui.windows.close();
         }
 
         cancelButton(): void {
+            this.yes = false;
+            nts.uk.ui.windows.setShared('yes', this.yes, true);
+            nts.uk.ui.windows.setShared('treeLeft', this.treeLeft(), true);
             nts.uk.ui.windows.close();
         }
 
@@ -65,6 +77,7 @@ module qmm003.e.viewmodel {
                 }
                 dfd.resolve();
             }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.message);
             });
             return dfd.promise();
         }

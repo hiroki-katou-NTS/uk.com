@@ -108,9 +108,9 @@ module qmm003.e.service {
         return dfd.promise();
     }
     
-    export function updateAllReportCode(param: Array<string>, resiTaxReportCode: string) {
+    export function updateAllReportCode(param: Array<string>, resiTaxReportCode: string, yearKey: number) {
         let dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.updateReportCode, { resiTaxCodes: param, resiTaxReportCode: resiTaxReportCode})
+        nts.uk.request.ajax(paths.updateReportCode, { resiTaxCodes: param, resiTaxReportCode: resiTaxReportCode, yearKey: yearKey})
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })

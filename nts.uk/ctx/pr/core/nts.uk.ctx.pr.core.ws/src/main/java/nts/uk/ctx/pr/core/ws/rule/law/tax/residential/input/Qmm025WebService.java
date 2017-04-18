@@ -13,8 +13,6 @@ import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.input.RemovePerso
 import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.input.RemovePersonResiTaxCommandHandler;
 import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.input.UpdatePersonResiTaxCommand;
 import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.input.UpdatePersonResiTaxCommandHandler;
-import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.input.UpdateResidenceCodeCommand;
-import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.input.UpdateResidenceCodeCommandHandler;
 import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.input.PersonResiTaxDto;
 import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.input.PersonResiTaxFinder;
 
@@ -29,9 +27,6 @@ public class Qmm025WebService extends WebService {
 
 	@Inject
 	private UpdatePersonResiTaxCommandHandler updatePersonResiTaxCommandHandler;
-
-	@Inject
-	private UpdateResidenceCodeCommandHandler updateResidenceCodeCommandHandler;
 
 	@POST
 	@Path("findAll/{yearKey}")
@@ -56,12 +51,6 @@ public class Qmm025WebService extends WebService {
 	@Path("update")
 	public void update(UpdatePersonResiTaxCommand command) {
 		this.updatePersonResiTaxCommandHandler.handle(command);
-	}
-
-	@POST
-	@Path("update2")
-	public void update(UpdateResidenceCodeCommand command) {
-		this.updateResidenceCodeCommandHandler.handle(command);
 	}
 
 }

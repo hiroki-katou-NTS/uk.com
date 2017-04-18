@@ -5,6 +5,8 @@ module qmm003.a.viewmodel {
         singleSelectedCode: KnockoutObservable<string>;
         firstSelectedCode: KnockoutObservable<string> = ko.observable("");
         enableBTN009: KnockoutObservable<boolean>;
+        enableBTN005: KnockoutObservable<boolean> = ko.observable(null);
+        enableBTN006: KnockoutObservable<boolean> = ko.observable(null);
         isNew: KnockoutObservable<boolean> = ko.observable(true); // mode update , new mode if true
         filteredData: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
         nodeRegionPrefectures: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
@@ -48,6 +50,7 @@ module qmm003.a.viewmodel {
                             if (nts.uk.text.isNullOrEmpty(self.previousCurrentCode)) {
                                 self.singleSelectedCode('');
                                 self.isNew(true);
+                                self.enableBTN005(false);
                             } else {
                                 self.singleSelectedCode(self.previousCurrentCode);
                             }
@@ -104,6 +107,7 @@ module qmm003.a.viewmodel {
                         data.resiTaxReportCode = residential.resiTaxCode + " " + residential.resiTaxAutonomy;
                     }
                     self.isNew(false);
+                    self.enableBTN005(true);
                     self.currentResidential().setData(data);
                     self.previousCurrentCode = newValue;
                     self.dirtyObject.reset();
@@ -132,6 +136,7 @@ module qmm003.a.viewmodel {
             }
             self.currentResidential().enableBTN009(true);
             self.isNew(true);
+            self.enableBTN005(false);
             self.currentResidential().resiTaxCode('');
             self.currentResidential().resiTaxAutonomy('');
             self.currentResidential().prefectureCode('');
@@ -168,16 +173,21 @@ module qmm003.a.viewmodel {
         openDDialog() {
             let self = this;
             let arrayNode: any;
+            let yes: any;
             nts.uk.ui.windows.sub.modeless("/view/qmm/003/d/index.xhtml", { title: '住民税納付先の登録　＞　一括削除', dialogClass: "no-close" }).onClosed(function(): any {
                 arrayNode = nts.uk.ui.windows.getShared("arrayNode");
-                if (arrayNode) {
-                    self.redensitalTaxNodeList([]);
-                    self.nodeRegionPrefectures([]);
-                    self.reload(undefined);
-                } else {
-                    nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。す。");
+                yes = nts.uk.ui.windows.getShared("yes");
+                if (yes) {
+                    if (arrayNode.length > 0) {
+                        self.redensitalTaxNodeList([]);
+                        self.nodeRegionPrefectures([]);
+                        self.reload(undefined);
+                    } else {
+                        nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。");
+                    }
                 }
             });
+
         }
 
         // xóa một đối tượng 
@@ -187,27 +197,57 @@ module qmm003.a.viewmodel {
             objResidential = (ko.toJS(self.currentResidential()));
             let resiTaxCodes = [];
             resiTaxCodes.push(objResidential.resiTaxCode);
-            if (resiTaxCodes) {
-                qmm003.a.service.deleteResidential(resiTaxCodes).done(function(data) {
-                    self.redensitalTaxNodeList([]);
-                    self.nodeRegionPrefectures([]);
-                    self.reload(self.firstSelectedCode());
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
-                });
-            } else {
-                nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。す。");
-            }
+            nts.uk.ui.dialog.confirm("データを削除します。\r\n よろしいですか？").ifYes(function() {
+                if (resiTaxCodes) {
+                    qmm003.a.service.deleteResidential(resiTaxCodes).done(function(data) {
+                        self.redensitalTaxNodeList([]);
+                        self.nodeRegionPrefectures([]);
+                        self.reload(self.firstSelectedCode());
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alert(res.message);
+                    });
+                } else {
+                    nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。す。");
+                }
+            })
+
         }
 
         // khi click btn004 mở ra màn hình E - chức năng hợp nhất nơi đăng kí thuế cư trú
         openEDialog() {
             let self = this;
-            nts.uk.ui.windows.sub.modeless("/view/qmm/003/e/index.xhtml", { title: '住民税納付先の登録＞納付先の統合', dialogClass: "no-close" }).onClosed(function(): any {
-                self.redensitalTaxNodeList([]);
-                self.nodeRegionPrefectures([]);
-                self.reload(undefined);
-            });
+            let resiTaxCodeLeft: any;
+            let resiTaxCodeRight: any;
+            let yes: any;
+            let year: any;
+            let treeLeft: any;
+            if (self.redensitalTaxNodeList().length > 0) {
+                nts.uk.ui.windows.sub.modeless("/view/qmm/003/e/index.xhtml", { title: '住民税納付先の登録＞納付先の統合', dialogClass: "no-close" }).onClosed(function(): any {
+                    treeLeft = nts.uk.ui.windows.getShared('treeLeft');
+                    resiTaxCodeLeft = nts.uk.ui.windows.getShared('resiTaxCodeLeft');
+                    resiTaxCodeRight = nts.uk.ui.windows.getShared('resiTaxCodeRight');
+                    year = nts.uk.ui.windows.getShared('year');
+                    yes = nts.uk.ui.windows.getShared('yes');
+                    if (treeLeft) {
+                        if (yes) {
+
+                            if (resiTaxCodeRight && resiTaxCodeLeft) {
+                                self.redensitalTaxNodeList([]);
+                                self.nodeRegionPrefectures([]);
+                                self.reload(undefined);
+                            } else {
+                                if (!year) {
+                                    //error 07, 01
+                                    nts.uk.ui.dialog.alert("対象年度  が入力されていません。 \r\n 住民税納付先コード が選択されていません。");
+                                } else {
+                                    //error 07
+                                    nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。");
+                                }
+                            }
+                        }
+                    }
+                });
+            }
         }
 
         //11.初期データ取得処理 11. Initial data acquisition processing
@@ -220,11 +260,14 @@ module qmm003.a.viewmodel {
             (qmm003.a.service.getResidentialTax()).done(function(data: Array<service.model.ResidentialTaxDto>) {
                 if (data.length > 0) {
                     self.isNew(false);
+                    self.enableBTN005(true);
+                    self.enableBTN006(true);
                     self.residentalTaxList(data);
                     self.numberOfResidentialTax(" 【登録件数】" + data.length + "  件");
                     self.getJapanLocation(currentSelectedCode);
                 } else {
                     self.settingNewMode();
+                    self.enableBTN006(false);
                     self.currentResidential().enableBTN009(false);
                 }
 
@@ -251,11 +294,14 @@ module qmm003.a.viewmodel {
                     self.numberOfResidentialTax(" 【登録件数】" + data.length + "  件");
                     self.getJapanLocation(currentSelectedCode);
                     self.isNew(false);
+                    self.enableBTN005(true);
+                    self.enableBTN006(true);
                 } else {
                     self.resetData();
                     self.numberOfResidentialTax(" 【登録件数】" + data.length + "  件");
                     self.settingNewMode();
                     self.currentResidential().enableBTN009(false);
+                    self.enableBTN006(false);
                 }
 
                 dfd.resolve();
@@ -287,7 +333,8 @@ module qmm003.a.viewmodel {
                     self.singleSelectedCode(currentSelectedCode);
                 }
                 self.currentResidential().enableBTN009(true);
-                self.isNew(false)
+                self.isNew(false);
+                self.enableBTN005(true);
             });
         }
 
@@ -301,6 +348,7 @@ module qmm003.a.viewmodel {
             });
             self.numberOfResidentialTax(" 【登録件数】 0  件");
             self.isNew(true);
+            self.enableBTN005(false);
         }
 
         // hàm xây dựng tree
@@ -468,17 +516,16 @@ module qmm003.a.viewmodel {
         openCDialog() {
             let self = this;
             let currentResidential: service.model.ResidentialTaxDetailDto;
+            let items: any;
             nts.uk.ui.windows.sub.modeless("/view/qmm/003/c/index.xhtml", { title: '住民税納付先の登録＞住民税報告先一覧', dialogClass: "no-close" }).onClosed(function(): any {
                 currentResidential = nts.uk.ui.windows.getShared('currentResidential');
-                if (currentResidential) {
-                    self.resiTaxReportCode(currentResidential.resiTaxCode + " " + currentResidential.resiTaxAutonomy);
-                } else {
-                    nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。");
-                }
+                    if (currentResidential) {
+                        self.resiTaxReportCode(currentResidential.resiTaxCode + " " + currentResidential.resiTaxAutonomy);
+                    } else {
+                        nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。");
+                    }
             });
-
         }
-
     }
 
     interface ResidentialTaxBase {

@@ -15,6 +15,7 @@ module qmm003.d.viewmodel {
         currentResidential: KnockoutObservable<service.model.ResidentialTax> = ko.observable(null);
         indexOfRoot = [];
         indexOfPrefecture = [];
+        yes: boolean = null; // cancel or register
 
         constructor() {
             let self = this;
@@ -34,10 +35,13 @@ module qmm003.d.viewmodel {
             let self = this;
             let resiTaxCodes = [];
             let resiTax = [];
+            self.yes = true;
             for (let i = 0; i < self.arrayNode().length; i++) {
                 resiTaxCodes.push(self.arrayNode()[i]);
             }
+            nts.uk.ui.windows.setShared('items', self.items(), true);
             nts.uk.ui.windows.setShared('arrayNode', self.arrayNode(), true);
+            nts.uk.ui.windows.setShared('yes', self.yes, true);
             qmm003.d.service.deleteResidential(resiTaxCodes).done(function(data) {
                 self.items([]);
                 self.nodeRegionPrefectures([]);
@@ -47,6 +51,9 @@ module qmm003.d.viewmodel {
             nts.uk.ui.windows.close();
         }
         cancelButton(): void {
+            this.yes = false;
+            nts.uk.ui.windows.setShared('items', this.items(), true);
+            nts.uk.ui.windows.setShared('yes', this.yes, true);
             nts.uk.ui.windows.close();
         }
         //11.初期データ取得処理 11. Initial data acquisition processing
