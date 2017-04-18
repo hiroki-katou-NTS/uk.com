@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.core.infra.repository.wagetable.reference;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -21,12 +22,6 @@ import nts.uk.ctx.pr.core.dom.wagetable.reference.WtReferenceRepository;
  */
 @Stateless
 public class JpaWtReferenceRepository extends JpaRepository implements WtReferenceRepository {
-
-	/** The alias table. */
-	private final String aliasTable = "c";
-
-	/** The dot. */
-	private final String dot = ".";
 
 	/** The comma. */
 	private final String comma = ",";
@@ -51,20 +46,15 @@ public class JpaWtReferenceRepository extends JpaRepository implements WtReferen
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
-		TypedQuery<Object[]> query = em
-				.createQuery("SELECT c.name, c.capital.name FROM Country AS c", Object[].class);
+		TypedQuery<Object[]> query = em.createQuery(strBuilder.toString(), Object[].class);
 
 		List<Object[]> results = query.getResultList();
 
-		for (Object[] result : results) {
-			System.out.println("Country: " + result[0] + ", Capital: " + result[1]);
-		}
+		List<WtCodeRefItem> codeRefItems = results.stream()
+				.map(result -> new WtCodeRefItem((String) result[0], (String) result[1]))
+				.collect(Collectors.toList());
 
-		return this.queryProxy().query(codeRef.getWagePersonQuery(), WtCodeRefItem.class)
-				// .setParameter("companyCode", companyCode)
-				// .setParameter("categoryAtr", categoryAtr)
-				// .setParameter("itemCodeList", itemCode)
-				.getList();
+		return codeRefItems;
 	}
 
 	/*
@@ -89,20 +79,15 @@ public class JpaWtReferenceRepository extends JpaRepository implements WtReferen
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
-		TypedQuery<Object[]> query = em
-				.createQuery("SELECT c.name, c.capital.name FROM Country AS c", Object[].class);
+		TypedQuery<Object[]> query = em.createQuery(strBuilder.toString(), Object[].class);
 
 		List<Object[]> results = query.getResultList();
 
-		for (Object[] result : results) {
-			System.out.println("Country: " + result[0] + ", Capital: " + result[1]);
-		}
+		List<WtCodeRefItem> codeRefItems = results.stream()
+				.map(result -> new WtCodeRefItem((String) result[0], (String) result[1]))
+				.collect(Collectors.toList());
 
-		return this.queryProxy().query(masterRef.getWagePersonQuery(), WtCodeRefItem.class)
-				// .setParameter("companyCode", companyCode)
-				// .setParameter("categoryAtr", categoryAtr)
-				// .setParameter("itemCodeList", itemCode)
-				.getList();
+		return codeRefItems;
 	}
 
 }

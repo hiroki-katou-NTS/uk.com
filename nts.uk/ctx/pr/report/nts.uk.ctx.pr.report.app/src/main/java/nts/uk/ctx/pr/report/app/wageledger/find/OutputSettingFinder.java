@@ -5,11 +5,15 @@
 package nts.uk.ctx.pr.report.app.wageledger.find;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.pr.report.app.itemmaster.find.ItemMaterFinder;
+import nts.uk.ctx.pr.report.app.itemmaster.find.MasterItemDto;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.HeaderSettingDto;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.OutputSettingDto;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSetting;
@@ -27,6 +31,9 @@ public class OutputSettingFinder {
 	@Inject
 	private WLOutputSettingRepository repository;
 	
+	@Inject
+	private ItemMaterFinder finder;
+	
 	/**
 	 * Find.
 	 *
@@ -34,23 +41,29 @@ public class OutputSettingFinder {
 	 * @return the output setting dto
 	 */
 	public OutputSettingDto find(String code) {
-		WLOutputSetting outputSetting = this.repository.findByCode(
-				AppContexts.user().companyCode(),
+		String companyCode = AppContexts.user().companyCode();
+		WLOutputSetting outputSetting = this.repository.findByCode(companyCode,
 				new WLOutputSettingCode(code));
 		
 		OutputSettingDto dto = OutputSettingDto.builder().build();
 		outputSetting.saveToMemento(dto);
-		// TODO: Find item name in Setting items.
-		// Fake master item name.
-		if (dto.categorySettings != null) {
-			dto.categorySettings.forEach(cate -> {
-				cate.outputItems.forEach(item -> {
-					if (!item.isAggregateItem) {
-						item.name = "Master item " + item.code;
-					}
-				});
+		
+		// Add master item name to output setting.
+		List<String> masterItemCode = dto.categorySettings.stream()
+				.map(category -> category.outputItems.stream()
+						.map(item -> item.code)
+						.collect(Collectors.toList()))
+				.flatMap(item -> item.stream())
+				.collect(Collectors.toList());
+		Map<String, MasterItemDto> masterItemMap = this.finder.findByCodes(companyCode, masterItemCode)
+				.stream().collect(Collectors.toMap(item -> item.code, Function.identity()));
+		dto.categorySettings.forEach(cate -> {
+			cate.outputItems.forEach(item -> {
+				if (!item.isAggregateItem) {
+					item.name = masterItemMap.get(item.code).name;
+				}
 			});
-		}
+		});
 		return dto;
 	}
 	

@@ -230,7 +230,7 @@
                 result = convertValue.length === 0;
             }
             return result;
-        }
+        } 
 
         /**
         * 指定した文字列の各書式項目を、対応するオブジェクトの値と等価のテキストに置換する
@@ -451,6 +451,7 @@
         }
         
         export function getISOFormat(format: string): string {
+            format = util.orDefault(format, "ISO");
             if (format.toLowerCase() === "iso")
                 return "YYYY-MM-DD[T]HH:mm:ss.SSS[Z]";
             if (format.toLowerCase() === "date")
