@@ -69,7 +69,7 @@
 						<div class="div-table">
 							<table id="gridCompany"
 								data-bind="ntsGridList: {								
-								height: 400,
+								height: 380,
 								width: 400,
 								options: sel001Data,
 								optionsValue: 'companyCode',
@@ -134,7 +134,7 @@
 									</th>
 
 									<th colspan="2" class="th-col2">
-										<div>
+										<div style="margin-top: 5px">
 											<input id="companyNameKana" class="save-error" data-name="会社名カナ"
 												data-bind="ntsTextEditor: {value: companyNameKana,
 												 constraint: 'CompanyNameKana',
@@ -253,7 +253,7 @@
 												</th>
 
 												<th colspan="1" class="th-col-sub">
-													<div>
+													<div id="colum1">
 														<input id="postal" class="save-error" data-name="郵便番号"
 															data-bind="ntsTextEditor: {value: postal,
 															 constraint: 'Postal',
@@ -263,7 +263,7 @@
 												</th>
 
 												<th colspan="1">
-													<button data-bind="click: searchZipCode">
+													<button id="searchZipCode" data-bind="click: searchZipCode">
 														<label class="labelRed">〒</label>検索
 													</button>
 												</th>
@@ -282,7 +282,7 @@
 												</th>
 
 												<th colspan="2" class="th-col2">
-													<div>
+													<div id="colum1">
 														<input id="address1" class="save-error" data-name="住所１"
 															data-bind="ntsTextEditor: {value: address1,
 															 constraint: 'Address1',
@@ -299,7 +299,7 @@
 											<tr style="margin-top: 5px;">
 												<th colspan="1" class="th-col1"><label id="LBLAddress2">建物名など</label></th>
 												<th colspan="2" class="th-col2">
-													<div>
+													<div id="colum1">
 														<input id="address2" class="save-error" data-name="住所２"
 															data-bind="ntsTextEditor: {value: address2,
 															 constraint: 'Address2',
@@ -322,7 +322,7 @@
 												</th>
 
 												<th colspan="2" class="th-col2">
-													<div style="width: 200px">
+													<div id="colum1" style="width: 200px">
 														<input id="addressKana1" class="save-error" data-name="住所カナ１"
 															data-bind="ntsTextEditor: {value: addressKana1, 
 															constraint: 'AddressKana1',
@@ -335,7 +335,7 @@
 											<tr style="margin-top: 5px;">
 												<th colspan="1" class="th-col1"><label id="LBLAddressKana2">建物名など</label></th>
 												<th colspan="2" class="th-col2">
-													<div>
+													<div id="colum1">
 														<input id="addressKana2" class="save-error" data-name="住所カナ２"
 															data-bind="ntsTextEditor: {value: addressKana2, 
 															constraint: 'AddressKana2',
@@ -353,7 +353,7 @@
 												</th>
 
 												<th colspan="2" class="th-col2">
-													<div>
+													<div id="colum1">
 														<input id="telephoneNo" class="save-error" data-name="電話番号"
 															data-bind="ntsTextEditor: {value: telephoneNo,
 																					    constraint: 'TelephoneNo',
@@ -365,14 +365,14 @@
 											<!--  10  -->
 											<tr style="margin-top: 5px;">
 												<th colspan="1" class="th-col1">
-													<div class=" border_none"
+													<div class=" border_none left20"
 														data-bind="ntsFormLabel:{required: true, constraint:'FaxNo'}">
 														<label >FAX</label>
 													</div>
 												</th>
 
 												<th colspan="2" class="th-col2">
-													<div>
+													<div id="colum1">
 														<input id="faxNo" class="save-error" data-name="FAX番号"
 															data-bind="ntsTextEditor: {value: faxNo,
 																					   constraint: 'FaxNo',

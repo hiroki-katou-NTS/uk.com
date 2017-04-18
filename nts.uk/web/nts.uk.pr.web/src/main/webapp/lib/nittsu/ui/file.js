@@ -1,4 +1,3 @@
-/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -61,3 +60,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=file.js.map

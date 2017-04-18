@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.salarydetail.aggregate.find.dto;
@@ -11,15 +11,16 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemCode;
+import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemHeader;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemName;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemSetMemento;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.TaxDivision;
 import nts.uk.ctx.pr.report.dom.salarydetail.item.SalaryItem;
 
 /**
- * Instantiates a new salary aggregate item find dto.
+ * The Class SalaryAggregateItemFindDto.
  */
+
 @Getter
 @Setter
 public class SalaryAggregateItemFindDto implements SalaryAggregateItemSetMemento {
@@ -39,25 +40,14 @@ public class SalaryAggregateItemFindDto implements SalaryAggregateItemSetMemento
 	/**
 	 * Default data.
 	 *
-	 * @return the salary aggregate item find dto
+	 * @param dto
+	 *            the dto
 	 */
 	public void defaultData(SalaryAggregateItemInDto dto) {
 		this.salaryAggregateItemCode = dto.getAggregateItemCode();
 		this.salaryAggregateItemName = dto.getAggregateItemCode();
 		this.taxDivision = TaxDivision.valueOf(dto.getTaxDivision());
 		this.subItemCodes = Collections.emptyList();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
-	 * SalaryAggregateItemSetMemento#setSalaryAggregateItemCode(nts.uk.ctx.pr.
-	 * report.dom.salarydetail.aggregate.SalaryAggregateItemCode)
-	 */
-	@Override
-	public void setSalaryAggregateItemCode(SalaryAggregateItemCode salaryAggregateItemCode) {
-		this.salaryAggregateItemCode = salaryAggregateItemCode.v();
 	}
 
 	/*
@@ -93,36 +83,13 @@ public class SalaryAggregateItemFindDto implements SalaryAggregateItemSetMemento
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
-	 * SalaryAggregateItemSetMemento#setCompanyCode(java.lang.String)
+	 * SalaryAggregateItemSetMemento#setSalaryAggregateItemHeader(nts.uk.ctx.pr.
+	 * report.dom.salarydetail.aggregate.SalaryAggregateItemHeader)
 	 */
 	@Override
-	public void setCompanyCode(String companyCode) {
-		// No thing
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
-	 * SalaryAggregateItemSetMemento#setTaxDivision(nts.uk.ctx.pr.report.dom.
-	 * salarydetail.aggregate.TaxDivision)
-	 */
-	@Override
-	public void setTaxDivision(TaxDivision taxDivision) {
-		this.taxDivision = taxDivision;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
-	 * SalaryAggregateItemSetMemento#setItemCategory(int)
-	 */
-	@Override
-	public void setItemCategory(int itemCategory) {
-		// No thing
-
+	public void setSalaryAggregateItemHeader(SalaryAggregateItemHeader header) {
+		this.salaryAggregateItemCode = header.getAggregateItemCode().v();
+		this.taxDivision = header.getTaxDivision();
 	}
 
 }

@@ -11,7 +11,6 @@ import javax.persistence.metamodel.ListAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
-import nts.uk.ctx.pr.core.infra.entity.insurance.social.QismtSocialInsuOffice;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPensionAmount;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPensionAvgearnD;
 
@@ -200,7 +199,4 @@ public class QismtPensionRate_ {
 
 	/** The qismt pension amount list. */
 	public static volatile ListAttribute<QismtPensionRate, QismtPensionAmount> qismtPensionAmountList;
-
-	/** The qismt social insu office. */
-	public static volatile SingularAttribute<QismtPensionRate, QismtSocialInsuOffice> qismtSocialInsuOffice;
 }

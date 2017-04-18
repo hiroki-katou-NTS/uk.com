@@ -18,7 +18,6 @@
   			</com:ValidatorScript>
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="../0/common/service.js" />
 			<com:scriptfile path="qmm008.h.service.js" />
 			<com:scriptfile path="qmm008.h.vm.js" />
 			<com:scriptfile path="qmm008.h.start.js" />
@@ -94,22 +93,18 @@
 										data-bind="text: healthSalaryCompanyBasic()+'/1000'"></span></th>
 								</com:ko>
 							</tr>
-							<com:ko-foreach bind="listHealthAvgEarnLimit">
+							<com:ko-foreach bind="listHealthInsuranceAvgearn">
 								<tr class="inp-money">
 									<td class="bg-green"><span data-bind="text: grade"></span></td>
 									<td class="bg-green"><span data-bind="text: avgEarn"></span></td>
-									<td class="bg-green"><span data-bind="text: salMin"></span></td>
-									<td class="bg-green"><span data-bind="text: salLimit"></span></td>
-									<com:ko-foreach bind="$parent.listHealthInsuranceAvgearn">
-										<com:ko-if bind="$parent.grade == grade">
-											<com:ko tag="with" bind="personalAvg">
-												<com:ko tag="template" bind="{name: 'inpAvgEarn'}"></com:ko>
-											</com:ko>
-											<com:ko tag="with" bind="companyAvg">
-												<com:ko tag="template" bind="{name: 'inpAvgEarn'}"></com:ko>
-											</com:ko>
-										</com:ko-if>
-									</com:ko-foreach>
+									<td class="bg-green"><span data-bind="text: lowerLimit"></span></td>
+									<td class="bg-green"><span data-bind="text: upperLimit"></span></td>
+									<com:ko tag="with" bind="personalAvg">
+										<com:ko tag="template" bind="{name: 'inpAvgEarn'}"></com:ko>
+									</com:ko>
+									<com:ko tag="with" bind="companyAvg">
+										<com:ko tag="template" bind="{name: 'inpAvgEarn'}"></com:ko>
+									</com:ko>
 								</tr>
 							</com:ko-foreach>
 						</tbody>
@@ -129,8 +124,8 @@
 			<script type="text/html" id="inpAvgEarn">
 			<td><input class="has-error" data-bind="ntsNumberEditor: {value: healthGeneralMny, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
 			<td><input class="has-error" data-bind="ntsNumberEditor: {value: healthNursingMny, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
-			<td><input class="has-error" data-bind="ntsNumberEditor: {value: healthSpecificMny, constraint:'CommonAmount', option: {grouplength: 3, decimallength: 2}}"></input></td>
-			<td><input class="has-error" data-bind="ntsNumberEditor: {value: healthBasicMny, constraint:'CommonAmount', option: {grouplength: 3, decimallength: 2}}"></input></td>
+			<td><input class="has-error" data-bind="ntsNumberEditor: {value: healthSpecificMny, constraint:'CommonAmount', option: new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 2})}"></input></td>
+			<td><input class="has-error" data-bind="ntsNumberEditor: {value: healthBasicMny, constraint:'CommonAmount', option: new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 2})}"></input></td>
 			</script>
 		</ui:define>
 	</ui:composition>

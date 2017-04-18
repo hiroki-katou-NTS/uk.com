@@ -10,14 +10,10 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -47,13 +43,6 @@ public class QismtHealInsuAvgearnD extends UkJpaEntity implements Serializable {
 	/** The health insu upper limit. */
 	@Column(name = "HEALTH_INSU_UPPER_LIMIT")
 	private long healthInsuUpperLimit;
-
-	/** The qismt health insu rate. */
-	@JoinColumns({
-			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
-			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false) })
-	@ManyToOne(optional = false)
-	private QismtHealthInsuRate qismtHealthInsuRate;
 
 	/**
 	 * Instantiates a new qismt heal insu avgearn D.

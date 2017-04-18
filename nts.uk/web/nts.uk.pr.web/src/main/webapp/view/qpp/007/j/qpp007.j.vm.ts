@@ -133,7 +133,6 @@ module nts.uk.pr.view.qpp007.j {
                     salaryAggregateItemSaveDto.subItemCodes.push(itemModel);
                 }
                 salaryAggregateItemSaveDto.taxDivision = taxDivision;
-                salaryAggregateItemSaveDto.categoryCode = self.selectedAggregateItem();
 
                 service.saveSalaryAggregateItem(salaryAggregateItemSaveDto).done(function() {
                     //reload

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.healthrate.service.internal;
@@ -40,7 +40,7 @@ public class HealthInsuranceRateServiceImpl extends HealthInsuranceRateService {
 	@Inject
 	private HealthInsuranceRateRepository healthInsuranceRateRepo;
 
-	/** The avg earn level master setting repository. */
+	/** The avg earn limit repo. */
 	@Inject
 	private HealthAvgEarnLimitRepository avgEarnLimitRepo;
 
@@ -66,11 +66,17 @@ public class HealthInsuranceRateServiceImpl extends HealthInsuranceRateService {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService#getRepository()
+	 */
 	@Override
 	public SimpleHistoryRepository<HealthInsuranceRate> getRepository() {
 		return this.healthInsuranceRateRepo;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService#createInitalHistory(java.lang.String, java.lang.String, nts.arc.time.YearMonth)
+	 */
 	@Override
 	public HealthInsuranceRate createInitalHistory(String companyCode, String officeCode,
 			YearMonth startTime) {

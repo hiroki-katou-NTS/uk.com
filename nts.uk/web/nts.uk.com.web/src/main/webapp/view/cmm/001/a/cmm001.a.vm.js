@@ -4,6 +4,7 @@ var cmm001;
     (function (a) {
         var ViewModel = (function () {
             function ViewModel() {
+                this.company = null;
                 this.previousDisplayAttribute = true;
                 this.isUpdate = ko.observable(null);
                 this.previousCurrentCode = null;
@@ -33,6 +34,7 @@ var cmm001;
                     if (self.displayAttribute() !== self.previousDisplayAttribute) {
                         if (self.dirtyObject.isDirty()) {
                             nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function () {
+                                self.dirtyObject.reset();
                                 self.processWhenDisplayAttributeChanged(newValue);
                             }).ifCancel(function () {
                                 self.displayAttribute(self.previousDisplayAttribute);
@@ -293,13 +295,23 @@ var cmm001;
                         cmm001.a.service.updateData(company).done(function () {
                             self.sel001Data([]);
                             self.reload(company.companyCode);
+                        }).fail(function (res) {
+                            nts.uk.ui.dialog.alert(res.message);
                         });
                     }
                     else {
-                        cmm001.a.service.addData(company).done(function () {
-                            self.sel001Data([]);
-                            self.reload(company.companyCode);
+                        a.service.getCompanyDetail(company.companyCode).done(function (data) {
+                            self.company = data;
                         });
+                        if (!self.company) {
+                            $.when(cmm001.a.service.addData(company)).done(function () {
+                                self.sel001Data([]);
+                                self.reload(company.companyCode);
+                            });
+                        }
+                        else {
+                            nts.uk.ui.dialog.alert("入力したコードは既に存在しています。 コードを確認してください。");
+                        }
                     }
                 }
                 else {
@@ -329,23 +341,31 @@ var cmm001;
                         });
                     }
                     else {
-                        cmm001.a.service.addData(company).done(function () {
-                            self.sel001Data([]);
-                            a.service.getAllCompanys().done(function (data) {
-                                if (data.length > 0) {
-                                    _.each(data, function (obj) {
-                                        var companyModel;
-                                        companyModel = ko.mapping.fromJS(obj);
-                                        if (obj.displayAttribute === 1) {
-                                            companyModel.displayAttribute('');
-                                            self.sel001Data.push(ko.toJS(companyModel));
-                                        }
-                                    });
-                                    self.dirtyObject.reset();
-                                    self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
-                                }
-                            });
+                        a.service.getCompanyDetail(company.companyCode).done(function (data) {
+                            self.company = data;
                         });
+                        if (!self.company) {
+                            $.when(cmm001.a.service.addData(company)).done(function () {
+                                self.sel001Data([]);
+                                a.service.getAllCompanys().done(function (data) {
+                                    if (data.length > 0) {
+                                        _.each(data, function (obj) {
+                                            var companyModel;
+                                            companyModel = ko.mapping.fromJS(obj);
+                                            if (obj.displayAttribute === 1) {
+                                                companyModel.displayAttribute('');
+                                                self.sel001Data.push(ko.toJS(companyModel));
+                                            }
+                                        });
+                                        self.dirtyObject.reset();
+                                        self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
+                                    }
+                                });
+                            });
+                        }
+                        else {
+                            nts.uk.ui.dialog.alert("入力したコードは既に存在しています。 コードを確認してください。");
+                        }
                     }
                 }
             };
@@ -584,6 +604,14 @@ var cmm001;
             }
             return RoundingRule;
         }());
+        var ItemMessage = (function () {
+            function ItemMessage(messCode, messName) {
+                this.messCode = messCode;
+                this.messName = messName;
+            }
+            return ItemMessage;
+        }());
+        a.ItemMessage = ItemMessage;
     })(a = cmm001.a || (cmm001.a = {}));
 })(cmm001 || (cmm001 = {}));
 //# sourceMappingURL=cmm001.a.vm.js.map

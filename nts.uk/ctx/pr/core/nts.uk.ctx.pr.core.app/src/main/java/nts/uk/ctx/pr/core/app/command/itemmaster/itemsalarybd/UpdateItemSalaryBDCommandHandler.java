@@ -17,9 +17,9 @@ public class UpdateItemSalaryBDCommandHandler extends CommandHandler<UpdateItemS
 	private ItemSalaryBDRepository itemSalaryBDRepository;
 	@Override
 	protected void handle(CommandHandlerContext<UpdateItemSalaryBDCommand> context) {
-		String itemCd = context.getCommand().getItemCd();
-		String itemBreakdownCd = context.getCommand().getItemBreakdownCd();
-		if(!this.itemSalaryBDRepository.find(itemCd, itemBreakdownCd).isPresent())
+		String itemCode = context.getCommand().getItemCode();
+		String itemBreakdownCode = context.getCommand().getItemBreakdownCode();
+		if(!this.itemSalaryBDRepository.find(itemCode, itemBreakdownCode).isPresent())
 			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
 		this.itemSalaryBDRepository.update(context.getCommand().toDomain());
 	}

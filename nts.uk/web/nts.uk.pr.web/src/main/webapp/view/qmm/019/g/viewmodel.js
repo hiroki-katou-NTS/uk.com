@@ -6,9 +6,6 @@ var qmm019;
         (function (viewmodel) {
             var option = nts.uk.ui.option;
             var ScreenModel = (function () {
-                /**
-                 * Init screen model.
-                 */
                 function ScreenModel() {
                     var self = this;
                     self.isEnable = ko.observable(true);
@@ -31,20 +28,15 @@ var qmm019;
                     self.createlayout = ko.observable(null);
                     self.createNewSelect = ko.observable(null);
                     self.startYmCopy = ko.observable(null);
-                    //---radio
                     self.itemsRadio = ko.observableArray([
                         { value: 1, text: '新規に作成' },
                         { value: 2, text: '既存のレイアウトをコピーして作成' }
                     ]);
                     self.isRadioCheck = ko.observable(1);
-                    //---input code
                     self.layoutCode = ko.observable("");
-                    //---input name
                     self.layoutName = ko.observable("");
                     self.yearMonthEra = ko.observable("");
-                    //self.yearMonthEra = ko.observable("(" + nts.uk.time.yearmonthInJapanEmpire(self.selectStartYm()) + ")");
                 }
-                // start function
                 ScreenModel.prototype.start = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -55,14 +47,12 @@ var qmm019;
                     $('#LST_001').on('selectionChanged', function (event) {
                         console.log('Selected value:' + event.originalEvent.detail);
                     });
-                    //combobox 
                     g.service.getLayoutHeadInfor().done(function (layout) {
                         if (layout.length > 0) {
                             self.layouts(layout);
                         }
                         self.buildCombobox();
                     });
-                    //radio button change
                     self.isRadioCheck.subscribe(function (newValue) {
                         if (newValue === 1) {
                             self.isEnable(true);
@@ -73,16 +63,13 @@ var qmm019;
                             self.isEnableCombox(true);
                         }
                     });
-                    //change combobox
                     self.selectLayoutCode.subscribe(function (newValue) {
                         self.selectLayoutCode(newValue);
                         self.createNewSelect(newValue);
                         self.buildComboboxChange(newValue);
                     });
                     $('#INP_001').focus();
-                    //self.yearMonthEra("(" + nts.uk.time.yearmonthInJapanEmpire(self.selectStartYm()) + ")");
                     dfd.resolve();
-                    // Return.
                     return dfd.promise();
                 };
                 ScreenModel.prototype.buildItemList = function () {
@@ -108,8 +95,6 @@ var qmm019;
                     var self = this;
                     _.forEach(self.layouts(), function (layout) {
                         if (layout.stmtCode == layoutCd) {
-                            //                    self.startYmCopy(layout.startYm);
-                            //                    self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm));
                             return false;
                         }
                     });
@@ -125,13 +110,10 @@ var qmm019;
                             if (self.layouts().length === 0) {
                                 return false;
                             }
-                            //印字行数　＞　最大印字行数　の場合
-                            //メッセージ( ER030 )を表示する
                             self.createlayout().checkCopy = true;
                         }
                         g.service.createLayout(self.createlayout()).done(function () {
                             alert(self.createlayout());
-                            //alert('追加しました。');    
                             nts.uk.ui.windows.close();
                         }).fail(function (res) {
                             alert(res);
@@ -140,9 +122,7 @@ var qmm019;
                 };
                 ScreenModel.prototype.checkData = function () {
                     var self = this;
-                    //登録時チェック処理
                     var mess = "が入力されていません。";
-                    //必須項目の未入力チェックを行う
                     if (self.layoutCode().trim() == '') {
                         alert("コード" + mess);
                         $('#INP_001').focus();
@@ -158,19 +138,16 @@ var qmm019;
                         $('#INP_003').focus();
                         return false;
                     }
-                    //
                     if (isNaN($('#INP_001').val())) {
                         alert('コードを確認してください。');
                         $('#INP_001').focus();
                         return false;
                     }
-                    //check YM
                     var Ym = self.selectStartYm();
                     if (!nts.uk.time.parseYearMonth(Ym).success) {
                         alert(nts.uk.time.parseYearMonth(Ym).msg);
                         return false;
                     }
-                    //コードの重複チェックを行う
                     var isStorage = false;
                     var stmtCd = self.layoutCode().trim();
                     if (stmtCd.length < 2)
@@ -211,9 +188,6 @@ var qmm019;
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            /**
-         * Class Item model.
-         */
             var ItemModel = (function () {
                 function ItemModel(stt, printType, paperType, direction, numberPeople, numberDisplayItems, reference) {
                     this.stt = stt;
@@ -238,3 +212,4 @@ var qmm019;
         })(viewmodel = g.viewmodel || (g.viewmodel = {}));
     })(g = qmm019.g || (qmm019.g = {}));
 })(qmm019 || (qmm019 = {}));
+//# sourceMappingURL=viewmodel.js.map

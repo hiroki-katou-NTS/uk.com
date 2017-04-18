@@ -55,11 +55,11 @@ public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 	 */
 	@Override
 	public void setHistoryId(String historyId) {
-		QismtPensionAvgearnDPK pensionAvgearnDPK = this.avgearnDetail.getQismtPensionAvgearnDPK();
+		QismtPensionAvgearnDPK pensionAvgearnDPK = new QismtPensionAvgearnDPK();
 		pensionAvgearnDPK.setHistId(historyId);
 		this.avgearnDetail.setQismtPensionAvgearnDPK(pensionAvgearnDPK);
 
-		QismtPensionAmountPK pensionAmountPK = this.pensionAmount.getQismtPensionAmountPK();
+		QismtPensionAmountPK pensionAmountPK = new QismtPensionAmountPK();
 		pensionAmountPK.setHistId(historyId);
 		this.pensionAmount.setQismtPensionAmountPK(pensionAmountPK);
 	}

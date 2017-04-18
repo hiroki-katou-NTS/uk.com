@@ -14,18 +14,11 @@ import nts.uk.ctx.pr.report.dom.salarydetail.item.SalaryItem;
 public interface SalaryAggregateItemGetMemento {
 
 	/**
-	 * Gets the company code.
+	 * Gets the salary aggregate item header.
 	 *
-	 * @return the company code
+	 * @return the salary aggregate item header
 	 */
-	String getCompanyCode();
-
-	/**
-	 * Gets the salary aggregate item code.
-	 *
-	 * @return the salary aggregate item code
-	 */
-	SalaryAggregateItemCode getSalaryAggregateItemCode();
+	SalaryAggregateItemHeader getSalaryAggregateItemHeader();
 
 	/**
 	 * Gets the salary aggregate item name.
@@ -41,18 +34,4 @@ public interface SalaryAggregateItemGetMemento {
 	 */
 	Set<SalaryItem> getSubItemCodes();
 
-	/**
-	 * Gets the tax division.
-	 *
-	 * @return the tax division
-	 */
-	TaxDivision getTaxDivision();
-
-	/**
-	 * Gets the item category.
-	 *
-	 * @return the item category
-	 */
-	// TODO: need review with EAP.
-	int getItemCategory();
 }

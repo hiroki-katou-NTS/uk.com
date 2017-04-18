@@ -126,7 +126,6 @@ var nts;
                                         salaryAggregateItemSaveDto.subItemCodes.push(itemModel);
                                     }
                                     salaryAggregateItemSaveDto.taxDivision = taxDivision;
-                                    salaryAggregateItemSaveDto.categoryCode = self.selectedAggregateItem();
                                     j.service.saveSalaryAggregateItem(salaryAggregateItemSaveDto).done(function () {
                                     }).fail(function () {
                                     });

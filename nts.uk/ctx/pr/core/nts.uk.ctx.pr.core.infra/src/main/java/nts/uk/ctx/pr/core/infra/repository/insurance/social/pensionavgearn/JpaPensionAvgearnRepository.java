@@ -80,9 +80,9 @@ public class JpaPensionAvgearnRepository extends JpaRepository implements Pensio
 
 		EntityManager em = getEntityManager();
 
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<QismtPensionAmount> cq = criteriaBuilder
-				.createQuery(QismtPensionAmount.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+
+		CriteriaQuery<QismtPensionAmount> cq = cb.createQuery(QismtPensionAmount.class);
 
 		Root<QismtPensionAmount> root = cq.from(QismtPensionAmount.class);
 
@@ -90,10 +90,13 @@ public class JpaPensionAvgearnRepository extends JpaRepository implements Pensio
 
 		List<Predicate> listpredicate = new ArrayList<>();
 
-		listpredicate.add(criteriaBuilder.equal(root.get(QismtPensionAmount_.qismtPensionAmountPK)
+		listpredicate.add(cb.equal(root.get(QismtPensionAmount_.qismtPensionAmountPK)
 				.get(QismtPensionAmountPK_.histId), historyId));
 
 		cq.where(listpredicate.toArray(new Predicate[] {}));
+
+		cq.orderBy(cb.asc(root.get(QismtPensionAmount_.qismtPensionAmountPK)
+				.get(QismtPensionAmountPK_.pensionGrade)));
 
 		TypedQuery<QismtPensionAmount> query = em.createQuery(cq);
 

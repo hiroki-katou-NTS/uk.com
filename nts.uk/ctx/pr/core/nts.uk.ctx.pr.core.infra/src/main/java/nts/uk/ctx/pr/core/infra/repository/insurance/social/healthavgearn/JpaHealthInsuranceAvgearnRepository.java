@@ -92,8 +92,7 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository
 
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 
-		CriteriaQuery<QismtHealthInsuAmount> cq = cb
-				.createQuery(QismtHealthInsuAmount.class);
+		CriteriaQuery<QismtHealthInsuAmount> cq = cb.createQuery(QismtHealthInsuAmount.class);
 
 		Root<QismtHealthInsuAmount> root = cq.from(QismtHealthInsuAmount.class);
 
@@ -101,11 +100,13 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository
 
 		List<Predicate> listpredicate = new ArrayList<>();
 
-		listpredicate
-				.add(cb.equal(root.get(QismtHealthInsuAmount_.qismtHealthInsuAmountPK)
-						.get(QismtHealthInsuAmountPK_.histId), historyId));
+		listpredicate.add(cb.equal(root.get(QismtHealthInsuAmount_.qismtHealthInsuAmountPK)
+				.get(QismtHealthInsuAmountPK_.histId), historyId));
 
 		cq.where(listpredicate.toArray(new Predicate[] {}));
+
+		cq.orderBy(cb.asc(root.get(QismtHealthInsuAmount_.qismtHealthInsuAmountPK)
+				.get(QismtHealthInsuAmountPK_.healthInsuGrade)));
 
 		TypedQuery<QismtHealthInsuAmount> query = em.createQuery(cq);
 
