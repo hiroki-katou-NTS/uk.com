@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.social.healthavgearn;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -14,7 +17,9 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.command.UpdateHealthInsuranceAvgearnCommand;
 import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.command.UpdateHealthInsuranceAvgearnCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find.HealthInsuranceAvgearnFinder;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
 import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find.HealthInsAvgearnsModel;
+import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find.HealthInsuranceAvgearnDto;
 
 /**
  * The Class HealthInsuranceAvgearnWs.
@@ -26,7 +31,7 @@ public class HealthInsuranceAvgearnWs extends WebService {
 	/** The health insurance avgearn finder. */
 	@Inject
 	private HealthInsuranceAvgearnFinder healthInsuranceAvgearnFinder;
-	
+
 	/** The update health insurance avgearn command handler. */
 	@Inject
 	private UpdateHealthInsuranceAvgearnCommandHandler updateHealthInsuranceAvgearnCommandHandler;
@@ -34,7 +39,8 @@ public class HealthInsuranceAvgearnWs extends WebService {
 	/**
 	 * Update.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("update")
@@ -45,12 +51,22 @@ public class HealthInsuranceAvgearnWs extends WebService {
 	/**
 	 * Find.
 	 *
-	 * @param id the id
+	 * @param id
+	 *            the id
 	 * @return the list
 	 */
 	@POST
 	@Path("find/{id}")
 	public HealthInsAvgearnsModel find(@PathParam("id") String id) {
+		return healthInsuranceAvgearnFinder.find(id);
+	}
+
+	@POST
+	@Path("recal/{id}")
+	public HealthInsAvgearnsModel reCalculate(@PathParam("id") String id) {
+
+		
+		
 		return healthInsuranceAvgearnFinder.find(id);
 	}
 }

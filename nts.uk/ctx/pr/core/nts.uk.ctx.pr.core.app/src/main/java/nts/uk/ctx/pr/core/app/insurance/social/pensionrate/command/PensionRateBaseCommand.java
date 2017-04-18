@@ -30,7 +30,7 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRounding;
  */
 @Getter
 @Setter
-public class PensionBaseCommand implements PensionRateGetMemento {
+public class PensionRateBaseCommand implements PensionRateGetMemento {
 
 	/** The history id. */
 	private String historyId;
