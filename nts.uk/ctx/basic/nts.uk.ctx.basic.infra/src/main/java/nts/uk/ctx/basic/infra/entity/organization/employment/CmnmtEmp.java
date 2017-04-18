@@ -9,12 +9,14 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @Table(name="CMNMT_EMP")
 @AllArgsConstructor
 @NoArgsConstructor
-public class CmnmtEmp implements Serializable {
+public class CmnmtEmp extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public CmnmtEmpPK cmnmtEmpPk;
@@ -39,4 +41,10 @@ public class CmnmtEmp implements Serializable {
 	
 	@Column(name = "INIT_SELECT_SET")
 	public int displayFlg;
+
+	@Override
+	protected Object getKey() {
+		// TODO Auto-generated method stub
+		return cmnmtEmpPk;
+	}
 }

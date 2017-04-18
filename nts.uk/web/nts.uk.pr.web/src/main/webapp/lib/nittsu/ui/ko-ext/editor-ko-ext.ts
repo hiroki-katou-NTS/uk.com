@@ -44,7 +44,7 @@ module nts.uk.ui.koExtentions {
                     $input.val(formatter.format(result.parsedValue));
                 }
             });
-            
+
             $input.on('validate', (function(e: Event) {
                 var newText = $input.val();
                 var result = validator.validate(newText);
@@ -118,7 +118,37 @@ module nts.uk.ui.koExtentions {
         getValidator(data: any): validation.IValidator {
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            return new validation.StringValidator(constraintName, required);
+            return new validation.StringValidator(constraintName, {required: required});
+        }
+    }
+
+    /**
+     * MultilineEditor Processor
+     */
+    class MultilineEditorProcessor extends EditorProcessor {
+
+        update($input: JQuery, data: any) {
+            var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+            var resizeable: string = ko.unwrap(editorOption.resizeable);
+            $input.css('resize', (resizeable) ? "both" : "none");
+            super.update($input, data);
+        }
+
+        getDefaultOption(): any {
+            return new option.MultilineEditorOption();
+        }
+
+        getFormatter(data: any): format.IFormatter {
+            var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            var constraint = validation.getConstraint(constraintName);
+            return new text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: editorOption });
+        }
+
+        getValidator(data: any): validation.IValidator {
+            var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            return new validation.StringValidator(constraintName, {required: required});
         }
     }
 
@@ -211,6 +241,7 @@ module nts.uk.ui.koExtentions {
 
         getFormatter(data: any): format.IFormatter {
             var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+            //var inputFormat: string = (data.inputFormat !== undefined) ? ko.unwrap(data.inputFormat) : option.inputFormat;
             return new text.TimeFormatter({ inputFormat: option.inputFormat });
         }
 
@@ -218,36 +249,6 @@ module nts.uk.ui.koExtentions {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             return new validation.TimeValidator(constraintName, option);
-        }
-    }
-
-    /**
-     * MultilineEditor Processor
-     */
-    class MultilineEditorProcessor extends EditorProcessor {
-
-        update($input: JQuery, data: any) {
-            var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-            var resizeable: string = ko.unwrap(editorOption.resizeable);
-            $input.css('resize', (resizeable) ? "both" : "none");
-            super.update($input, data);
-        }
-
-        getDefaultOption(): any {
-            return new option.MultilineEditorOption();
-        }
-
-        getFormatter(data: any): format.IFormatter {
-            var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            var constraint = validation.getConstraint(constraintName);
-            return new text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: editorOption });
-        }
-
-        getValidator(data: any): validation.IValidator {
-            var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
-            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            return new validation.StringValidator(constraintName, required);
         }
     }
 
@@ -351,7 +352,7 @@ module nts.uk.ui.koExtentions {
             new MultilineEditorProcessor().update($(element), valueAccessor());
         }
     }
-    
+
     ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
     ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
     ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();

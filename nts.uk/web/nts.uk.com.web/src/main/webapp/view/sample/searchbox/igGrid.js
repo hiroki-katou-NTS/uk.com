@@ -56,6 +56,7 @@ __viewContext.ready(function () {
             $("#grid").setupSearchScroll("igGrid", true);
         }
         ScreenModel.prototype.selectionChanged = function (evt, ui) {
+            //console.log(evt.type);
             var selectedRows = ui.selectedRows;
             var arr = [];
             for (var i = 0; i < selectedRows.length; i++) {

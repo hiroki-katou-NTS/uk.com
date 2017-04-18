@@ -18,11 +18,11 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.RangeAtr;
 @Getter
 public class ItemDeductBD extends AggregateRoot {
 
-	private ItemCode itemCd;
-	private ItemCode itemBreakdownCd;
+	private ItemCode itemCode;
+	private ItemCode itemBreakdownCode;
 	private ItemName itemBreakdownName;
 	private ItemName itemBreakdownAbName;
-	private UniteCode uniteCd;
+	private UniteCode uniteCode;
 	private DisplayAtr zeroDispSet;
 	private DisplayAtr itemDispAtr;
 	private RangeAtr errRangeLowAtr;
@@ -37,14 +37,14 @@ public class ItemDeductBD extends AggregateRoot {
 	
 
 	public static ItemDeductBD createFromJavaType(
-			String itemCd, String itemBreakdownCd, String itemBreakdownName, String itemBreakdownAbName, String uniteCd,
+			String itemCode, String itemBreakdownCode, String itemBreakdownName, String itemBreakdownAbName, String uniteCode,
 			int zeroDispSet, int itemDispAtr, int errRangeLowAtr, BigDecimal errRangeLow, int errRangeHighAtr,
 			BigDecimal errRangeHigh, int alRangeLowAtr, BigDecimal alRangeLow, int alRangeHighAtr,
 			BigDecimal alRangeHigh
 	) {
-		return new ItemDeductBD(new ItemCode(itemCd), new ItemCode(itemBreakdownCd),
+		return new ItemDeductBD(new ItemCode(itemCode), new ItemCode(itemBreakdownCode),
 				new ItemName(itemBreakdownName), new ItemName(itemBreakdownAbName),
-				new UniteCode(uniteCd), EnumAdaptor.valueOf(zeroDispSet, DisplayAtr.class),
+				new UniteCode(uniteCode), EnumAdaptor.valueOf(zeroDispSet, DisplayAtr.class),
 				EnumAdaptor.valueOf(itemDispAtr, DisplayAtr.class), EnumAdaptor.valueOf(errRangeLowAtr, RangeAtr.class),
 				new ErrRangeLow(errRangeLow), EnumAdaptor.valueOf(errRangeHighAtr, RangeAtr.class),
 				new ErrRangeHigh(errRangeHigh), EnumAdaptor.valueOf(alRangeLowAtr, RangeAtr.class),
@@ -54,16 +54,16 @@ public class ItemDeductBD extends AggregateRoot {
 
 
 
-	public ItemDeductBD( ItemCode itemCd, ItemCode itemBreakdownCd, ItemName itemBreakdownName,
-			ItemName itemBreakdownAbName, UniteCode uniteCd, DisplayAtr zeroDispSet, DisplayAtr itemDispAtr,
+	public ItemDeductBD( ItemCode itemCode, ItemCode itemBreakdownCode, ItemName itemBreakdownName,
+			ItemName itemBreakdownAbName, UniteCode uniteCode, DisplayAtr zeroDispSet, DisplayAtr itemDispAtr,
 			RangeAtr errRangeLowAtr, ErrRangeLow errRangeLow, RangeAtr errRangeHighAtr, ErrRangeHigh errRangeHigh,
 			RangeAtr alRangeLowAtr, AlRangeLow alRangeLow, RangeAtr alRangeHighAtr, AlRangeHigh alRangeHigh) {
 		super();
-		this.itemCd = itemCd;
-		this.itemBreakdownCd = itemBreakdownCd;
+		this.itemCode = itemCode;
+		this.itemBreakdownCode = itemBreakdownCode;
 		this.itemBreakdownName = itemBreakdownName;
 		this.itemBreakdownAbName = itemBreakdownAbName;
-		this.uniteCd = uniteCd;
+		this.uniteCode = uniteCode;
 		this.zeroDispSet = zeroDispSet;
 		this.itemDispAtr = itemDispAtr;
 		this.errRangeLowAtr = errRangeLowAtr;

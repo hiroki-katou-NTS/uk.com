@@ -16,6 +16,7 @@ __viewContext.ready(function () {
     var ScreenModel = (function () {
         function ScreenModel() {
             var _this = this;
+            //----------------------------------------------------------------------------
             this.autoComplete = ko.observableArray([
                 new ItemModel2('001', '基本給', "description 1"),
                 new ItemModel2('150', '役職手当', "description 2"),
@@ -34,6 +35,7 @@ __viewContext.ready(function () {
             this.index = ko.observable(1);
             this.error = ko.observable("");
             this.autoSelected.subscribe(function (value) {
+                //                $("#auto-complete-containner").show()
                 if (value !== undefined) {
                     var currentString = $("#input-text").val();
                     var index = this.index() + 1;
@@ -51,6 +53,9 @@ __viewContext.ready(function () {
             this.textArea = ko.observable("");
             this.divValue = ko.observable("");
             $("#error-containner").hide();
+            //            $("#error-content").mouseout(function(event){
+            //                $("#error-containner").hide();
+            //            }
             $("#input-text").keyup(function (event) {
                 if (!event.shiftKey && event.keyCode === 16 && event.key === "@") {
                     return;
@@ -59,9 +64,16 @@ __viewContext.ready(function () {
                 var start = $("#input-text")[0].selectionStart;
                 var end = $("#input-text")[0].selectionEnd;
                 var maxWidthCharacter = 15;
+                //                if(event.keyCode === 8){
+                //                      
+                //                }else 
                 if (((event.shiftKey && event.keyCode === 50) || event.keyCode === 192) && event.key === "@") {
+                    //                    $("#auto-complete-containner").css("top": start);
                     _this.testError();
                     var currentRow = _this.getCurrentPosition(end);
+                    //                    var currentCol = this.getCurrentColumn(currentRow, end);
+                    //                    this.row(currentRow);
+                    //                    this.col(currentCol);
                     _this.index(end);
                     $("#auto-complete-containner").show();
                     $("#auto-complete-containner").css({ "top": (currentRow.top + 17) + "px", "left": (currentRow.left + 15) + "px" });
@@ -260,10 +272,16 @@ __viewContext.ready(function () {
             return previousCount + nextCount;
         };
         ScreenModel.prototype.countPreviousElement = function (element, x, index) {
+            //        var count = 0;
             var x2 = element.slice(0, index);
             return _.filter(x2, function (d) {
                 return d === x;
             }).length;
+            //        for(var i = index; i >= 0; i--){
+            //            if(element[i] === x){
+            //                count++;             
+            //            }                       
+            //        }     
         };
         ScreenModel.prototype.toArrayChar = function (element) {
             return _.map(element, function (data) {

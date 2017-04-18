@@ -15,6 +15,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -22,6 +23,7 @@ import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableHead;
 
 /**
  * The Class QwtmtWagetableHist.
@@ -87,6 +89,13 @@ public class QwtmtWagetableHist implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "END_YM")
 	private int endYm;
+
+	/** The qwtmt wagetable head. */
+	@JoinColumns({
+			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
+			@JoinColumn(name = "WAGE_TABLE_CD", referencedColumnName = "WAGE_TABLE_CD", insertable = false, updatable = false) })
+	@ManyToOne
+	private QwtmtWagetableHead qwtmtWagetableHead;
 
 	/** The qwtmt wagetable ele hist list. */
 	@JoinColumns({

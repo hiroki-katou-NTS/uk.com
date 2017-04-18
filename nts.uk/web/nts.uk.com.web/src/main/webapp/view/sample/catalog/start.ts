@@ -3,7 +3,7 @@ __viewContext.ready(function () {
         
         constructor() {
             var self = this;
-        }
+        } 
     }
     
     this.bind(new ScreenModel());

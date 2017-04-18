@@ -33,13 +33,11 @@
 									<label>期間</label>
 								</div>
 							</td>
-							<td class="contentsRR"><div
-									data-bind="text: startJapStartMonth" /></td>
-							<td><label> ~ </label></td>
-							<td><label data-bind="text: endMonthRage"> </label></td>
+							<td><label data-bind="text: startJapStartMonth"></label></td>
+							<td> ~ <label data-bind="text: endMonthRage"> </label></td>
 						</tr>
 					</table>
-					<table id="tableRight" >
+					<table id="tableRight">
 						<tr>
 							<td colspan="2"><hr /></td>
 						</tr>
@@ -108,7 +106,7 @@
 											</td>
 										</tr>
 										<tr
-											data-bind="with: unemployeeInsuranceRateItemContructionModel">
+											data-bind="with: unemployeeInsuranceRateItemOtherModel">
 											<td class="bg-green">農林水産清酒製造の事業</td>
 											<td><div>
 													<input class="rate-input"
@@ -157,7 +155,7 @@
 												</div>
 											</td>
 										</tr>
-										<tr data-bind="with: unemployeeInsuranceRateItemOtherModel">
+										<tr data-bind="with: unemployeeInsuranceRateItemContructionModel">
 											<td class="bg-green">建設の事業</td>
 											<td><div>
 													<input class="rate-input"

@@ -18,6 +18,12 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 /**
  * The Class AccidentInsuranceRate.
  */
+
+/**
+ * Gets the rate items.
+ *
+ * @return the rate items
+ */
 @Getter
 public class AccidentInsuranceRate extends DomainObject {
 
@@ -120,7 +126,7 @@ public class AccidentInsuranceRate extends DomainObject {
 	 * @return the insu biz rate item
 	 */
 	public static final InsuBizRateItem valueIntial(BusinessTypeEnum businessTypeEnum) {
-		return new InsuBizRateItem(businessTypeEnum, Double.valueOf(0d), RoundingMethod.RoundUp);
+		return new InsuBizRateItem(businessTypeEnum, Double.valueOf("0"), RoundingMethod.RoundUp);
 	}
 
 	/**
@@ -149,4 +155,5 @@ public class AccidentInsuranceRate extends DomainObject {
 	public void setEnd(YearMonth yearMonth) {
 		this.applyRange = MonthRange.range(this.applyRange.getStartMonth(), yearMonth);
 	}
+
 }

@@ -33,16 +33,24 @@ public class SalaryAggregateItemFindDto implements SalaryAggregateItemSetMemento
 	/** The sub item codes. */
 	private List<SalaryItemDto> subItemCodes;
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemSetMemento#setSalaryAggregateItemCode(nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemCode)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
+	 * SalaryAggregateItemSetMemento#setSalaryAggregateItemCode(nts.uk.ctx.pr.
+	 * report.dom.salarydetail.aggregate.SalaryAggregateItemCode)
 	 */
 	@Override
 	public void setSalaryAggregateItemCode(SalaryAggregateItemCode salaryAggregateItemCode) {
 		this.salaryAggregateItemCode = salaryAggregateItemCode.v();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemSetMemento#setSalaryAggregateItemName(nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemName)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
+	 * SalaryAggregateItemSetMemento#setSalaryAggregateItemName(nts.uk.ctx.pr.
+	 * report.dom.salarydetail.aggregate.SalaryAggregateItemName)
 	 */
 	@Override
 	public void setSalaryAggregateItemName(SalaryAggregateItemName salaryAggregateItemName) {
@@ -50,8 +58,11 @@ public class SalaryAggregateItemFindDto implements SalaryAggregateItemSetMemento
 
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemSetMemento#setSubItemCodes(java.util.Set)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
+	 * SalaryAggregateItemSetMemento#setSubItemCodes(java.util.Set)
 	 */
 	@Override
 	public void setSubItemCodes(Set<SalaryItem> subItemCodes) {
@@ -63,8 +74,11 @@ public class SalaryAggregateItemFindDto implements SalaryAggregateItemSetMemento
 		}).collect(Collectors.toList());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemSetMemento#setCompanyCode(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
+	 * SalaryAggregateItemSetMemento#setCompanyCode(java.lang.String)
 	 */
 	@Override
 	public void setCompanyCode(String companyCode) {
@@ -72,16 +86,23 @@ public class SalaryAggregateItemFindDto implements SalaryAggregateItemSetMemento
 
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemSetMemento#setTaxDivision(nts.uk.ctx.pr.report.dom.salarydetail.aggregate.TaxDivision)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
+	 * SalaryAggregateItemSetMemento#setTaxDivision(nts.uk.ctx.pr.report.dom.
+	 * salarydetail.aggregate.TaxDivision)
 	 */
 	@Override
 	public void setTaxDivision(TaxDivision taxDivision) {
 		this.taxDivision = taxDivision;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemSetMemento#setItemCategory(int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
+	 * SalaryAggregateItemSetMemento#setItemCategory(int)
 	 */
 	@Override
 	public void setItemCategory(int itemCategory) {

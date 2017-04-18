@@ -27,7 +27,7 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPension
 public class JpaPensionRateSetMemento implements PensionRateSetMemento {
 
 	/** The type value. */
-	protected QismtPensionRate typeValue;
+	private QismtPensionRate typeValue;
 
 	/**
 	 * Instantiates a new jpa pension rate set memento.

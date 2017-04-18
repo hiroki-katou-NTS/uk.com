@@ -114,7 +114,7 @@ public class JpaPensionAvgearnRepository extends JpaRepository implements Pensio
 	 * @param entity the entity
 	 * @return the pension avgearn
 	 */
-	private static PensionAvgearn toDomain(QismtPensionAvgearn entity) {
+	private PensionAvgearn toDomain(QismtPensionAvgearn entity) {
 		PensionAvgearn domain = new PensionAvgearn(new JpaPensionAvgearnGetMemento(entity));
 		return domain;
 	}

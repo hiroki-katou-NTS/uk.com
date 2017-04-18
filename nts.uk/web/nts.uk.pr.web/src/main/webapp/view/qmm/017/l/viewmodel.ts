@@ -21,11 +21,16 @@ module nts.uk.pr.view.qmm017.l {
             paramIsUpdate: any;
             paramDirtyData: any;
             companyUnitPriceItems: KnockoutObservableArray<any>;
+            personalUnitPriceItems: KnockoutObservableArray<any>;
+            paymentItems: KnockoutObservableArray<any>;
+            deductionItems: KnockoutObservableArray<any>;
+            startYm: any;
 
             constructor(param) {
                 var self = this;
                 self.paramIsUpdate = param.isUpdate;
                 self.paramDirtyData = param.dirtyData;
+                self.startYm = param.startYm;
                 self.initOriginal();
                 if (self.paramIsUpdate === true) {
                     self.easyFormulaName(self.paramDirtyData.easyFormulaName);
@@ -43,6 +48,14 @@ module nts.uk.pr.view.qmm017.l {
                     self.comboBoxAdjustmentAtr().selectedCode(self.paramDirtyData.adjustmentDevision.toString());
                 }
 
+            }
+
+            exportTextListItemName(lstItem: Array<ItemModel>, lstItemCode: Array<string>) {
+                var textListItemName = '';
+                _.forEach(lstItemCode, function(itemCode) {
+                    textListItemName += (_.find(lstItem, function(item) { return item.code == itemCode }).name + ' ');
+                });
+                return textListItemName;
             }
 
             initOriginal() {
@@ -161,13 +174,21 @@ module nts.uk.pr.view.qmm017.l {
                     new ItemModel('2', 'マイナス調整'),
                     new ItemModel('3', 'プラスマイナス反転')
                 ]));
-                
-                self.itemsBag = ko.observableArray([]);
+
+                self.companyUnitPriceItems = ko.observableArray([]);
+                self.personalUnitPriceItems = ko.observableArray([]);
+                self.paymentItems = ko.observableArray([]);
+                self.deductionItems = ko.observableArray([]);
             }
 
             start(): JQueryPromise<any> {
                 var self = this;
-                var dfd = $.Deferred<any>();
+                var dfdMaster = $.Deferred<any>();
+                var dfdGetListCompanyUP = $.Deferred<any>();
+                var dfdGetListPersonalUP = $.Deferred<any>();
+                var dfdGetPaymentItems = $.Deferred<any>();
+                var dfdGetDeductionItems = $.Deferred<any>();
+                var dfdGetTimeItems = $.Deferred<any>();
                 service.getListItemMaster(2)
                     .done(function(lstItem: Array<model.ItemMasterDto>) {
                         if (lstItem && lstItem.length > 0) {
@@ -175,23 +196,135 @@ module nts.uk.pr.view.qmm017.l {
                                 self.comboBoxCoefficient().itemList.push(new ItemModel(item.itemCode, item.itemName));
                             });
                         }
-                        dfd.resolve();
+                        dfdGetTimeItems.resolve();
                     })
                     .fail(function() {
                         // Alert message
                         alert(res);
+                        dfdGetTimeItems.reject();
                     });
-                if(self.baseAmountListItem().length > 0) {
-                    if(self.comboBoxFormulaType().selectedCode() === '1'){
-                        
-                    }
-                }
+                service.getListCompanyUnitPrice(self.startYm)
+                    .done(function(lstCompanyUnitPrice: Array<model.CompanyUnitPriceDto>) {
+                        if (lstCompanyUnitPrice && lstCompanyUnitPrice.length > 0) {
+                            _.forEach(lstCompanyUnitPrice, item => {
+                                self.companyUnitPriceItems.push(new ItemModel(item.companyUnitPriceCode, item.companyUnitPriceName));
+                            });
+                        }
+                        dfdGetListCompanyUP.resolve();
+                    }).fail(function() {
+                        dfdGetListCompanyUP.reject();
+                    });
+
+                service.getListPersonalUnitPrice()
+                    .done(function(lstPersonalUnitPrice: Array<model.PersonalUnitPriceDto>) {
+                        if (lstPersonalUnitPrice && lstPersonalUnitPrice.length > 0) {
+                            _.forEach(lstPersonalUnitPrice, item => {
+                                self.personalUnitPriceItems.push(new ItemModel(item.personalUnitPriceCode, item.personalUnitPriceName));
+                            });
+                        }
+                        dfdGetListPersonalUP.resolve();
+                    }).fail(function() {
+                        dfdGetListPersonalUP.reject();
+                    });
+
+                service.getListItemMaster(0)
+                    .done(function(lstItem: Array<model.ItemMasterDto>) {
+                        if (lstItem && lstItem.length > 0) {
+                            _.forEach(lstItem, item => {
+                                self.paymentItems.push(new ItemModel(item.itemCode, item.itemName));
+                            });
+                        }
+                        dfdGetPaymentItems.resolve();
+                    })
+                    .fail(function() {
+                        // Alert message
+                        alert(res);
+                        dfdGetPaymentItems.reject();
+                    });
+
+                service.getListItemMaster(1)
+                    .done(function(lstItem: Array<model.ItemMasterDto>) {
+                        if (lstItem && lstItem.length > 0) {
+                            _.forEach(lstItem, item => {
+                                self.deductionItems.push(new ItemModel(item.itemCode, item.itemName));
+                            });
+                        }
+                        dfdGetDeductionItems.resolve();
+                    })
+                    .fail(function() {
+                        // Alert message
+                        alert(res);
+                        dfdGetDeductionItems.reject();
+                    });
+
+                $.when(dfdGetTimeItems.promise(), dfdGetListCompanyUP.promise(), dfdGetListPersonalUP.promise(), dfdGetPaymentItems.promise(), dfdGetDeductionItems.promise())
+                    .done(function() {
+                        if ( self.baseAmountListItem().length > 0) {
+                            var textListItemName = '';
+                            if (self.comboBoxBaseAmount().selectedCode() === '1') {
+                                textListItemName = self.exportTextListItemName(self.companyUnitPriceItems(), self.baseAmountListItem());
+                            } else if (self.comboBoxBaseAmount().selectedCode() === '2') {
+                                textListItemName = self.exportTextListItemName(self.personalUnitPriceItems(), self.baseAmountListItem());
+                            } else if (self.comboBoxBaseAmount().selectedCode() === '3') {
+                                textListItemName = self.exportTextListItemName(self.paymentItems(), self.baseAmountListItem());
+                            } else if (self.comboBoxBaseAmount().selectedCode() === '4') {
+                                textListItemName = self.exportTextListItemName(self.deductionItems(), self.baseAmountListItem());
+                            }
+                        } else {
+                            self.baseAmountSelectionItems('');
+                        };
+                        self.baseAmountSelectionItems(textListItemName);
+                        self.baseAmountListItem.subscribe(function(lstItem) {
+                            if (lstItem && lstItem.length > 0) {
+                                var textListItemName = '';
+                                if (self.comboBoxBaseAmount().selectedCode() === '1') {
+                                    textListItemName = self.exportTextListItemName(self.companyUnitPriceItems(), lstItem);
+                                } else if (self.comboBoxBaseAmount().selectedCode() === '2') {
+                                    textListItemName = self.exportTextListItemName(self.personalUnitPriceItems(), lstItem);
+                                } else if (self.comboBoxBaseAmount().selectedCode() === '3') {
+                                    textListItemName = self.exportTextListItemName(self.paymentItems(), lstItem);
+                                } else if (self.comboBoxBaseAmount().selectedCode() === '4') {
+                                    textListItemName = self.exportTextListItemName(self.deductionItems(), lstItem);
+                                }
+                                self.baseAmountSelectionItems(textListItemName);
+                            } else {
+                                self.baseAmountSelectionItems('');
+                            }
+                        });
+                        dfdMaster.resolve();
+                    })
+                    .fail(function() {
+                        dfdMaster.reject();
+                    });
                 // Return.
-                return dfd.promise();
+                return dfdMaster.promise();
             }
-            
+
             openDialogP() {
-                
+                var self = this;
+                let param = {
+                    subject: '',
+                    itemList: [],
+                    selectedItems: self.baseAmountListItem()
+                };
+                if (self.comboBoxBaseAmount().selectedCode() === '1') {
+                    param.subject = '会社単価';
+                    param.itemList = self.companyUnitPriceItems();
+                } else if (self.comboBoxBaseAmount().selectedCode() === '2') {
+                    param.subject = '個人単価';
+                    param.itemList = self.personalUnitPriceItems();
+                } else if (self.comboBoxBaseAmount().selectedCode() === '3') {
+                    param.subject = '支給項目';
+                    param.itemList = self.paymentItems();
+                } else if (self.comboBoxBaseAmount().selectedCode() === '4') {
+                    param.subject = '控除項目';
+                    param.itemList = self.deductionItems();
+                }
+                nts.uk.ui.windows.setShared('paramFromScreenL', param);
+                nts.uk.ui.windows.sub.modal('/view/qmm/017/p/index.xhtml', { title: '項目の選択', width: 350, height: 480 }).onClosed(() => {
+                    let baseAmountListItem = nts.uk.ui.windows.getShared('baseAmountListItem');
+                    self.baseAmountListItem(baseAmountListItem);
+                });
             }
 
             closeAndReturnData() {
@@ -212,6 +345,17 @@ module nts.uk.pr.view.qmm017.l {
                     coefficientFixedValue: self.coefficientFixedValue(),
                     adjustmentDevision: self.comboBoxAdjustmentAtr().selectedCode()
                 };
+                if(easyFormulaDetail.baseAmountDevision === '0') {
+                    easyFormulaDetail.referenceItemCodes = [];
+                } else {
+                    easyFormulaDetail.baseFixedAmount = 0;
+                }
+                if(easyFormulaDetail.baseValueDevision !== '0') {
+                    easyFormulaDetail.baseFixedValue = 0;
+                }
+                if(easyFormulaDetail.coefficientDivision !== '0') {
+                    easyFormulaDetail.coefficientFixedValue = 0;
+                }
                 nts.uk.ui.windows.setShared('easyFormulaDetail', easyFormulaDetail);
                 nts.uk.ui.windows.close();
             }

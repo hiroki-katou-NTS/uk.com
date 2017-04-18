@@ -38,6 +38,7 @@ public class QwtmtWagetableRefCdPK implements Serializable {
 	 * Instantiates a new qwtmt wagetable ref cd PK.
 	 */
 	public QwtmtWagetableRefCdPK() {
+		super();
 	}
 
 	/**
@@ -77,7 +78,8 @@ public class QwtmtWagetableRefCdPK implements Serializable {
 			return false;
 		}
 		QwtmtWagetableRefCdPK other = (QwtmtWagetableRefCdPK) object;
-		if ((this.ccd == null && other.ccd != null) || (this.ccd != null && !this.ccd.equals(other.ccd))) {
+		if ((this.ccd == null && other.ccd != null)
+				|| (this.ccd != null && !this.ccd.equals(other.ccd))) {
 			return false;
 		}
 		if ((this.refCdNo == null && other.refCdNo != null)

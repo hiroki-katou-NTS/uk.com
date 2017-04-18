@@ -13,7 +13,7 @@ public class JpaAvgEarnLevelMasterSettingSetMemento implements AvgEarnLevelMaste
 
 	/** The type value. */
 	// TODO: Object -> entity class.
-	protected Object typeValue;
+	private Object typeValue;
 
 	/**
 	 * Instantiates a new jpa avg earn level master setting set memento.

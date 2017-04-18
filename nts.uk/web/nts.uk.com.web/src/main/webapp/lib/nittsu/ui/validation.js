@@ -1,3 +1,4 @@
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -43,6 +44,7 @@ var nts;
                     }
                     if (option) {
                         if (option.inputFormat) {
+                            //If inputFormat presented, this is Date or Time Editor                 
                             return new TimeValidator(constraintName, option);
                         }
                         else {
@@ -139,11 +141,18 @@ var nts;
                         else if (this.option.inputFormat === "timeofday") {
                             parseResult = uk.time.parseTimeOfTheDay(inputText);
                         }
-                        else if (this.option.inputFormat === "yearmonthdate") {
+                        else if (this.option.inputFormat === "date") {
                             parseResult = uk.time.parseYearMonthDate(inputText);
                         }
                         else {
-                            parseResult = uk.time.ResultParseTime.failed();
+                            // TODO : Validate base on moment
+                            var format = uk.text.getISOFormat(this.option.inputFormat);
+                            var momentObject = moment(inputText);
+                            if (momentObject.isValid()) {
+                                var format = uk.text.getISOFormat(this.option.inputFormat);
+                                return momentObject.format(format);
+                            }
+                            return inputText;
                         }
                         if (parseResult.success) {
                             result.success(parseResult.toValue());

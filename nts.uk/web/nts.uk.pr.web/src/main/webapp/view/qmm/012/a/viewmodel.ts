@@ -37,8 +37,10 @@ module qmm012.a.viewmodel {
         }
         submitInfo() {
             let self = this;
+            //get and set selected code to session
             let groupCode = self.selectedRuleCode();
             nts.uk.ui.windows.setShared('groupCode', groupCode);
+            //then close dialog
             nts.uk.ui.windows.close();
         }
         closeDialog() {

@@ -95,6 +95,7 @@ public class QwtmtWagetableCd implements Serializable {
 	 * Instantiates a new qwtmt wagetable cd.
 	 */
 	public QwtmtWagetableCd() {
+		super();
 	}
 
 	/**
@@ -105,23 +106,6 @@ public class QwtmtWagetableCd implements Serializable {
 	 */
 	public QwtmtWagetableCd(QwtmtWagetableCdPK qwtmtWagetableCdPK) {
 		this.qwtmtWagetableCdPK = qwtmtWagetableCdPK;
-	}
-
-	/**
-	 * Instantiates a new qwtmt wagetable cd.
-	 *
-	 * @param qwtmtWagetableCdPK
-	 *            the qwtmt wagetable cd PK
-	 * @param exclusVer
-	 *            the exclus ver
-	 * @param elementId
-	 *            the element id
-	 */
-	public QwtmtWagetableCd(QwtmtWagetableCdPK qwtmtWagetableCdPK, int exclusVer,
-			String elementId) {
-		this.qwtmtWagetableCdPK = qwtmtWagetableCdPK;
-		this.exclusVer = exclusVer;
-		this.elementId = elementId;
 	}
 
 	/**
