@@ -64,7 +64,7 @@
 								data-bind="ntsNumberEditor: {
 									value: unitPriceHistoryModel().budget,
 									constraint: 'Money',
-									option: {decimallength: 2, currencyformat: 'JPY',currencyposition: 'right'}, 
+									option: new nts.uk.ui.option.NumberEditorOption({ decimallength: 2, currencyformat: 'JPY',currencyposition: 'right'}), 
 									required: true}" />
 							</td>
 						</tr>

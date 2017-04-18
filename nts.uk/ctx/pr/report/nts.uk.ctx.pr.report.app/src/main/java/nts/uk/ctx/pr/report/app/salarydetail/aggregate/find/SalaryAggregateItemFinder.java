@@ -49,7 +49,8 @@ public class SalaryAggregateItemFinder {
 			optionalSalaryAggregateItem.get().saveToMemento(salaryAggregateItemFindDto);
 			return salaryAggregateItemFindDto;
 		}
-		return null;
+		salaryAggregateItemFindDto.defaultData(salaryAggregateItemInDto);
+		return salaryAggregateItemFindDto;
 	}
 
 	/**

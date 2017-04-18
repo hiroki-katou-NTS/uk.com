@@ -5,6 +5,7 @@
 package nts.uk.pr.file.infra.wageledger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,23 +17,75 @@ import javax.persistence.TypedQuery;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.basic.infra.entity.organization.department.CmnmtDep;
+import nts.uk.ctx.basic.infra.entity.organization.position.CmnmtJobTitle;
 import nts.uk.ctx.basic.infra.entity.report.PbsmtPersonBase;
 import nts.uk.ctx.basic.infra.entity.report.PcpmtPersonCom;
 import nts.uk.ctx.basic.infra.entity.report.PogmtPersonDepRgl;
+import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItem;
+import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentDetail;
+import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
+import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
+import nts.uk.ctx.pr.report.infra.util.JpaUtil;
 import nts.uk.file.pr.app.export.wageledger.WageLedgerDataRepository;
 import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery;
 import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery.OutputType;
 import nts.uk.file.pr.app.export.wageledger.data.WLNewLayoutReportData;
 import nts.uk.file.pr.app.export.wageledger.data.WLOldLayoutReportData;
+import nts.uk.file.pr.app.export.wageledger.data.oldlayout.DeductionData;
+import nts.uk.file.pr.app.export.wageledger.data.oldlayout.PaymentData;
 import nts.uk.file.pr.app.export.wageledger.data.share.HeaderReportData;
+import nts.uk.file.pr.app.export.wageledger.data.share.MonthlyData;
+import nts.uk.file.pr.app.export.wageledger.data.share.ReportItemDto;
 
 /**
  * The Class JpaWageLedgerDataRepository.
  */
 @Stateless
 public class JpaWageLedgerDataRepository extends JpaRepository implements WageLedgerDataRepository {
-
+	
+	private static final String CHECK_HAS_DATA_QUERY_STRING = "SELECT COUNT(h.qstdtPaymentHeaderPK.personId) "
+			+ "FROM QstdtPaymentHeader h "
+			+ "WHERE h.qstdtPaymentHeaderPK.companyCode = :companyCode "
+			+ "AND h.qstdtPaymentHeaderPK.personId IN :personIds "
+			+ "AND h.qstdtPaymentHeaderPK.sparePayAtr = :sparePayAtr "
+			+ "AND h.qstdtPaymentHeaderPK.processingYM <= :startProcessingYM "
+			+ "AND h.qstdtPaymentHeaderPK.processingYM >= :endProcessingYM ";
+	
+	private static final String HEADER_QUERY_STRING = "SELECT p, pc, pd, cd, cj "
+			+ "FROM PbsmtPersonBase p,"
+			+ "PcpmtPersonCom pc, "
+			+ "PogmtPersonDepRgl pd, "
+			+ "CmnmtDep cd, "
+			+ "PclmtPersonTitleRgl pt, "
+			+ "CmnmtJobHist jh, "
+			+ "CmnmtJobTitle cj "
+			+ "WHERE pc.pcpmtPersonComPK.pid = p.pid "
+			+ "AND pd.pogmtPersonDepRglPK.pid = p.pid "
+			+ "AND cd.cmnmtDepPK.departmentCode = pd.depcd "
+			+ "AND pt.pclmtPersonTitleRglPK.pid = p.pid"
+			+ "AND jh.cmnmtJobHistPK.historyId = pt.pclmtPersonTitleRglPK.histId "
+			+ "AND cj.cmnmtJobTitlePK.companyCode = m.qcamtItemPK.ccd "
+			+ "AND cj.cmnmtJobTitlePK.jobCode = pt.jobcd "
+			+ "AND cj.cmnmtJobTitlePK.historyId = jh.cmnmtJobHistPK.historyId "
+			+ "AND p.pid in :personIds "
+			+ "AND pc.pcpmtPersonComPK.ccd = :companyCode "
+			+ "AND pd.strD <= :baseDate "
+			+ "AND pd.endD >= :baseDate ";
+	
+	private static final String TOTAL_TAX_ITEM_CODE = "F001";
+	
+	private static final String TOTAL_TAX_EXEMPTION_ITEM_CODE = "F002";
+	
+	private static final String TOTAL_PAYMENT_ITEM_CODE = "F003";
+	
+	private static final String TOTAL_DEDUCTION_ITEM_CODE = "F114";
+	
+	private static final String TOTAL_REAL_ITEM_CODE = "F309";
+	
+	private static final int ARTICLE_CATEGORY = 3;
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.file.pr.app.export.wageledger.WageLedgerDataRepository
 	 * #findReportDatas(java.lang.String, nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery)
@@ -51,7 +104,7 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		
 		// Covert to Data model.
 		if (returnType.isInstance(WLOldLayoutReportData.class)) {
-			return (List<T>) this.convertToOldLayoutDataList(itemResultList);
+			return (List<T>) this.convertToOldLayoutDataList(itemResultList, query, companyCode);
 		}
 		if (returnType.isInstance(WLNewLayoutReportData.class)) {
 			return (List<T>) this.covertToNewLayoutDataList(itemResultList);
@@ -69,29 +122,20 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 	public boolean hasReportData(String companyCode, WageLedgerReportQuery query) {
 		EntityManager em = this.getEntityManager();
 		
-		// Create Query String.
-		String queryString = "SELECT COUNT(h.qstdtPaymentHeaderPK.personId) FROM QstdtPaymentHeader h "
-			+ "WHERE h.qstdtPaymentHeaderPK.companyCode = :companyCode "
-			+ "AND h.qstdtPaymentHeaderPK.personId IN :personIds "
-			+ "AND h.qstdtPaymentHeaderPK.sparePayAtr = :sparePayAtr "
-			+ "AND h.qstdtPaymentHeaderPk.processingYM <= :startProcessingYM "
-			+ "AND h.qstdtPaymentHeaderPk.processingYM >= :endProcessingYM ";
-		
 		// Create Year Month.
 		YearMonth startYearMonth = YearMonth.of(query.targetYear, 1);
 		YearMonth endYearMonth = YearMonth.of(query.targetYear, 12);
-		TypedQuery<Long> typedQuery = em.createQuery(queryString, Long.class)
+		TypedQuery<Long> typedQuery = em.createQuery(CHECK_HAS_DATA_QUERY_STRING, Long.class)
 				.setParameter("companyCode", companyCode)
-				.setParameter("sparePayAtr", query.isAggreatePreliminaryMonth ? 1 : 0)
+				.setParameter("sparePayAtr", JpaUtil.boolean2Short(query.isAggreatePreliminaryMonth))
 				.setParameter("startProcessingYM", startYearMonth.v())
 				.setParameter("endProcessingYM", endYearMonth.v());
 		
-		List<List<String>> subPersonIdsList = this.splitInParamList(query.employeeIds);
-		long amountData = 0;
-		for (List<String> personIds : subPersonIdsList) {
-			amountData += typedQuery.setParameter("personIds", personIds).getFirstResult();
-		}
-		return amountData > 0;
+		List<Long> resultList = new ArrayList<>();
+		CollectionUtil.split(query.employeeIds, 1000, (subList) -> {
+			resultList.add((long) typedQuery.setParameter("personIds", subList).getFirstResult());
+		});
+		return resultList.stream().mapToLong(Long::longValue).sum() > 0;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -102,23 +146,13 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		YearMonth endYearMonth = YearMonth.of(query.targetYear, 12);
 		
 		// Create Query String.
-		String queryString = "SELECT p, m, d, pc, pd, cd "
-				+ "FROM PbsmtPersonBase p, ReportQcamtItem m, "
-				+ "QstdtPaymentDetail d, "
-				+ "PcpmtPersonCom pc, "
-				+ "PogmtPersonDepRgl pd, "
-				+ "CmnmtDep cd "
-				+ "WHERE p.pid = d.qstdtPaymentDetailPK.personId "
-				+ "AND d.qstdtPaymentDetailPK.itemCode = m.qcamtItemPK.itemCd "
+		String queryString = "SELECT d, m "
+				+ "FROM QcamtItem m, "
+				+ "QstdtPaymentDetail d "
+				+ "WHERE d.qstdtPaymentDetailPK.itemCode = m.qcamtItemPK.itemCd "
 				+ "AND d.qstdtPaymentDetailPK.ccd = m.qcamtItemPK.ccd "
-				+ "AND pc.pcpmtPersonComPK.ccd = m.qcamtItemPK.ccd "
-				+ "AND pc.pcpmtPersonComPK.pid = p.pid "
-				+ "AND pd.pogmtPersonDepRglPK.ccd = m.qcamtItemPK.ccd "
-				+ "AND pd.pogmtPersonDepRglPK.pid = p.pid "
-				+ "AND cd.cmnmtDepPK.companyCode = m.qcamtItemPK.ccd "
-				+ "AND cd.cmnmtDepPK.departmentCode = pd.depcd"
-				+ "AND p.pid in :personIds "
 				+ "AND m.qcamtItemPK.ccd = :companyCode "
+				+ "AND d.qstdtPaymentDetailPK.personId in :personIds "
 				+ "AND d.qstdtPaymentDetailPK.processingYM <= :startProcessingYM "
 				+ "AND d.qstdtPaymentDetailPK.processingYM >= :endProcessingYM "
 				+ "AND d.qstdtPaymentDetailPK.sparePayAttribute = :sparePayAtr "
@@ -130,11 +164,12 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 				.setParameter("startProcessingYM", startYearMonth.v())
 				.setParameter("endProcessingYM", endYearMonth.v())
 				.setParameter("baseDate", query.baseDate);
-		List<List<String>> subPersonIdsList = this.splitInParamList(query.employeeIds);
+		
+		// Query data.
 		List<Object[]> masterResultList = new ArrayList<>();
-		for (List<String> personIds : subPersonIdsList) {
-			masterResultList.addAll(typeQuery.setParameter("personIds", personIds).getResultList());
-		}
+		CollectionUtil.split(query.employeeIds, 1000, (subList) -> {
+			masterResultList.addAll(typeQuery.setParameter("personIds", subList).getResultList());
+		});
 		return masterResultList;
 	}
 	
@@ -145,30 +180,82 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 	private List<WLNewLayoutReportData> covertToNewLayoutDataList(List<Object[]> itemList) {
 		return null;
 	}
-	private List<WLOldLayoutReportData> convertToOldLayoutDataList(List<Object[]> itemList) {
+	private List<WLOldLayoutReportData> convertToOldLayoutDataList(List<Object[]> itemList, WageLedgerReportQuery query, 
+			String companyCode) {
 		List<WLOldLayoutReportData> dataList = new ArrayList<>();
+		// Query Header data.
+		Map<String, HeaderReportData> headerDataMap = this.findHeaderDatas(companyCode, query);
+		
 		// Group by user.
-		Map<Object, List<Object[]>> userMap = itemList.stream().collect(Collectors.groupingBy(item -> item[0])); 
-		for (Object user : userMap.keySet()) {
-			PbsmtPersonBase personBase = (PbsmtPersonBase) user;
-			List<Object[]> detail = userMap.get(user);
-			PcpmtPersonCom personCompany = (PcpmtPersonCom) detail.get(0)[3];
-			PogmtPersonDepRgl personDepartment = (PogmtPersonDepRgl) detail.get(0)[4];
-			CmnmtDep departmentMaster = (CmnmtDep) detail.get(0)[5];
+		Map<String, List<Object[]>> userMap = itemList.stream()
+				.collect(Collectors.groupingBy(item -> ((QstdtPaymentDetail) item[0]).qstdtPaymentDetailPK.personId));
+		for (String personId : userMap.keySet()) {
+			List<Object[]> detailData = userMap.get(personId);
 			
-			// Convert to header data.
-			// TODO: Wait QA #82348
-			HeaderReportData headerReportData = HeaderReportData.builder()
-					.employeeCode(personCompany.getScd())
-					.employeeName(personBase.getNameOfficial())
-					.sex(personBase.getGendar() == 0 ? "男性" : "女性")
-					.departmentCode(personDepartment.getDepcd())
-					.departmentName(departmentMaster.getName())
-					.build();
+			// =============== Salary payment data ===========================
+			// Filter result list by payment type and category.
+			List<Object[]> salaryPaymentResultList = detailData.stream()
+					.filter(res -> {
+						QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) res[0];
+						return paymentDetail.qstdtPaymentDetailPK.categoryATR == WLCategory.Payment.value
+								&& paymentDetail.qstdtPaymentDetailPK.payBonusAttribute == PaymentType.Salary.value;
+					}).collect(Collectors.toList());
+			// Convert result list to item map.
+			Map<QcamtItem, ReportItemDto> salaryPaymentItemsMap = this.convertMasterResultDatasToItemMap(salaryPaymentResultList);
+			PaymentData salaryPaymentData = this.convertToPaymentData(salaryPaymentItemsMap);
 			
-			// Convert To data model.
+			// =============== Bonus payment data ===========================
+			// Filter result list by payment type and category.
+			List<Object[]> bonusPaymentResultList = detailData.stream().filter(res -> {
+				QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) res[0];
+				return paymentDetail.qstdtPaymentDetailPK.categoryATR == WLCategory.Payment.value
+						&& paymentDetail.qstdtPaymentDetailPK.payBonusAttribute == PaymentType.Bonus.value;
+			}).collect(Collectors.toList());
+			// Convert result list to item map.
+			Map<QcamtItem, ReportItemDto> bonusPaymentItemsMap = this
+					.convertMasterResultDatasToItemMap(bonusPaymentResultList);
+			PaymentData bonusPaymentData = this.convertToPaymentData(bonusPaymentItemsMap);
+			
+			// =============== Salary Deduction data ===========================
+			// Filter result list by payment type and category.
+			List<Object[]> salaryDeductionResultList = detailData.stream().filter(res -> {
+				QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) res[0];
+				return paymentDetail.qstdtPaymentDetailPK.categoryATR == WLCategory.Deduction.value
+						&& paymentDetail.qstdtPaymentDetailPK.payBonusAttribute == PaymentType.Salary.value;
+			}).collect(Collectors.toList());
+			// Convert result list to item map.
+			Map<QcamtItem, ReportItemDto> salaryDeductionItemsMap = this
+					.convertMasterResultDatasToItemMap(salaryDeductionResultList);
+			DeductionData salaryDeductionData = this.convertToDeductionData(salaryDeductionItemsMap);
+			
+			// =============== Bonus Deduction data ===========================
+			// Filter result list by payment type and category.
+			List<Object[]> bonusDeductionResultList = detailData.stream().filter(res -> {
+				QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) res[0];
+				return paymentDetail.qstdtPaymentDetailPK.categoryATR == WLCategory.Deduction.value
+						&& paymentDetail.qstdtPaymentDetailPK.payBonusAttribute == PaymentType.Bonus.value;
+			}).collect(Collectors.toList());
+			// Convert result list to item map.
+			Map<QcamtItem, ReportItemDto> bonusDeductionItemsMap = this
+					.convertMasterResultDatasToItemMap(bonusDeductionResultList);
+			DeductionData bonusDeductionData = this.convertToDeductionData(bonusDeductionItemsMap);
+			
+			// =============== Net salary item ===========================
+			ReportItemDto netSalaryItem = this.findItem(detailData, PaymentType.Salary.value,
+					ARTICLE_CATEGORY, TOTAL_REAL_ITEM_CODE);
+			
+			// =============== Total bonus item ===========================
+			ReportItemDto totalBonusItem = this.findItem(detailData, PaymentType.Bonus.value,
+					ARTICLE_CATEGORY, TOTAL_REAL_ITEM_CODE);
+
 			WLOldLayoutReportData data = WLOldLayoutReportData.builder()
-					.headerData(headerReportData)
+					.headerData(headerDataMap.get(personId))
+					.salaryPaymentData(salaryPaymentData)
+					.bonusPaymentData(bonusPaymentData)
+					.salaryDeductionData(salaryDeductionData)
+					.bonusDeductionData(bonusDeductionData)
+					.netSalaryData(netSalaryItem)
+					.totalBonusData(totalBonusItem)
 					.build();
 			
 			// Add to report data list.
@@ -176,30 +263,140 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		}
 		return dataList;
 	}
-
-	private <T> List<List<T>> splitInParamList(List<T> inputList) {
-		List<List<T>> resultList = new ArrayList<>();
-		int fromIndex = 0;
-		// NOTE: DURING TO LIMITATION OF NUMBER PARAMETER
-		// WE MUST LIMIT EMPLOYEE SIZE WHEN QUERY.
-		int maxParamSize = 1000;
-		int nextIndex = fromIndex;
-
-		// Split into sub user id h.
-		do {
-			// Cal next index of sublist.
-			nextIndex = fromIndex + maxParamSize;
-			if (nextIndex > inputList.size()) {
-				nextIndex = inputList.size();
-			}
-
-			// Extract sub user id list.
-			List<T> subUserIdH = inputList.subList(fromIndex, nextIndex);
-			resultList.add(subUserIdH);
-			fromIndex = nextIndex;
-		} while (nextIndex < inputList.size());
-
-		// Ret.
-		return resultList;
+	
+	private ReportItemDto findItem(List<Object[]> results, int paymentType,
+			int category, String itemCode) {
+		
+		// Filter by conditions
+		List<Object[]> itemDataResultList = results.stream().filter(res -> {
+			QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) res[0];
+			return paymentDetail.qstdtPaymentDetailPK.categoryATR == category
+					&& paymentDetail.qstdtPaymentDetailPK.payBonusAttribute == paymentType
+					&& paymentDetail.qstdtPaymentDetailPK.itemCode == itemCode;
+		}).collect(Collectors.toList());
+		
+		// Convert data.
+		List<MonthlyData> monthlyDatas = itemDataResultList.stream().map(data -> {
+			QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) data[0];
+			YearMonth processYM = YearMonth.of(paymentDetail.qstdtPaymentDetailPK.processingYM);
+			return MonthlyData.builder()
+					.month(processYM.month())
+					.amount(paymentDetail.value.longValue())
+					.build();
+		}).collect(Collectors.toList());
+		return  ReportItemDto.builder()
+				.name(((QcamtItem) itemDataResultList.get(0)[1]).itemName)
+				.monthlyDatas(monthlyDatas)
+				.build();
+	}
+	
+	private PaymentData convertToPaymentData(Map<QcamtItem, ReportItemDto> resultsMap) {
+		List<ReportItemDto> items = new ArrayList<>(resultsMap.values());
+		// Create total tax item.
+		QcamtItem totalTaxResultItem = resultsMap.keySet().stream()
+				.filter(item -> item.qcamtItemPK.itemCd.equals(TOTAL_TAX_ITEM_CODE))
+				.findFirst().get();
+		ReportItemDto totalTaxReportItem = resultsMap.get(totalTaxResultItem);
+		items.remove(totalTaxReportItem);
+		
+		// Create total tax exemption item.
+		QcamtItem totalTaxExemptionResultItem = resultsMap.keySet().stream()
+				.filter(item -> item.qcamtItemPK.itemCd.equals(TOTAL_TAX_EXEMPTION_ITEM_CODE))
+				.findFirst().get();
+		ReportItemDto totalTaxExemptionReportItem = resultsMap.get(totalTaxExemptionResultItem);
+		items.remove(totalTaxExemptionReportItem);
+		
+		// Create total salary payment item.
+		QcamtItem totalSalaryPaymentResultItem = resultsMap.keySet().stream()
+				.filter(item -> item.qcamtItemPK.itemCd.equals(TOTAL_PAYMENT_ITEM_CODE))
+				.findFirst().get();
+		ReportItemDto totalSalaryPaymentReportItem = resultsMap.get(totalSalaryPaymentResultItem);
+		items.remove(totalSalaryPaymentReportItem);
+		return PaymentData.builder()
+				.aggregateItemList(items)
+				.totalTax(totalTaxReportItem)
+				.totalTaxExemption(totalTaxExemptionReportItem)
+				.totalSalaryPayment(totalSalaryPaymentReportItem)
+				.build();
+	}
+	
+	private DeductionData convertToDeductionData(Map<QcamtItem, ReportItemDto> resultsMap) {
+		List<ReportItemDto> items = new ArrayList<>(resultsMap.values());
+		
+		// Create total deduction item.
+		QcamtItem totalDeductionItem = resultsMap.keySet().stream()
+				.filter(item -> item.qcamtItemPK.itemCd.equals(TOTAL_DEDUCTION_ITEM_CODE))
+				.findFirst().get();
+		ReportItemDto totalDeductionReportItem = resultsMap.get(totalDeductionItem);
+		items.remove(totalDeductionReportItem);
+		
+		return DeductionData.builder()
+				.aggregateItemList(items)
+				.totalDeduction(totalDeductionReportItem)
+				.build();
+	}
+	
+	private Map<QcamtItem, ReportItemDto> convertMasterResultDatasToItemMap(List<Object[]> results) {
+		
+		 Map<QcamtItem, ReportItemDto> items = new HashMap<>();
+		// Group result list by master item.
+		Map<QcamtItem, List<Object[]>> itemListMap = results.stream()
+				.collect(Collectors.groupingBy(res -> (QcamtItem) res[1]));
+		itemListMap.forEach((masterItem, datas) -> {
+			List<MonthlyData> monthlyDatas = datas.stream().map(data -> {
+				QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) data[0];
+				YearMonth processYM = YearMonth.of(paymentDetail.qstdtPaymentDetailPK.processingYM);
+				return MonthlyData.builder()
+						.month(processYM.month())
+						.amount(paymentDetail.value.longValue())
+						.build();
+			}).collect(Collectors.toList());
+			items.put(masterItem, ReportItemDto.builder()
+					.name(masterItem.itemName)
+					.monthlyDatas(monthlyDatas)
+					.build());
+		});
+		
+		return items;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private Map<String, HeaderReportData> findHeaderDatas(String companyCode, WageLedgerReportQuery queryData) {
+		EntityManager em = this.getEntityManager();
+		
+		// Create Query.
+		Query query = em.createQuery(HEADER_QUERY_STRING)
+				.setParameter("companyCode", companyCode)
+				.setParameter("baseDate", queryData.baseDate);
+		
+		// Query data.
+		List<Object[]> headerDatasResult = new ArrayList<>();
+		CollectionUtil.split(queryData.employeeIds, 1000, (subList) -> {
+			headerDatasResult.addAll(query.setParameter("personIds", subList).getResultList());
+		});
+		
+		// Convert to header data model.
+		return headerDatasResult.stream().collect(Collectors.toMap(key -> {
+			PbsmtPersonBase personBase = (PbsmtPersonBase) key[0];
+			return personBase.getPid();
+		}, data -> {
+			PbsmtPersonBase personBase = (PbsmtPersonBase) data[0];
+			PcpmtPersonCom personCompany = (PcpmtPersonCom) data[1];
+			PogmtPersonDepRgl personDepartment = (PogmtPersonDepRgl) data[2];
+			CmnmtDep departmentMaster = (CmnmtDep) data[3];
+			CmnmtJobTitle jobTitle = (CmnmtJobTitle) data[4];
+			
+			// Build Header Data.
+			HeaderReportData headerReportData = HeaderReportData.builder()
+					.employeeCode(personCompany.getScd())
+					.employeeName(personBase.getNameOfficial())
+					.sex(personBase.getGendar() == 0 ? "男性" : "女性")
+					.departmentCode(personDepartment.getDepcd())
+					.departmentName(departmentMaster.getDepName())
+					.targetYear(queryData.targetYear)
+					.position(jobTitle.jobName)
+					.build();
+			return headerReportData;
+		}));
 	}
 }

@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.salarydetail.printsetting;
 
-import nts.uk.ctx.pr.report.dom.salarydetail.SalaryOutputDistinction;
-
 /**
  * The Interface SalaryPrintSettingGetMemento.
  */
@@ -16,75 +14,148 @@ public interface SalaryPrintSettingGetMemento {
 	 *
 	 * @return the company code
 	 */
-	 String getCompanyCode();
+	String getCompanyCode();
 
 	/**
-	 * Gets the output distinction.
+	 * Gets the show payment.
 	 *
-	 * @return the output distinction
+	 * @return the show payment
 	 */
-		SalaryOutputDistinction getOutputDistinction();
+	Boolean getShowPayment();
 
 	/**
-	 * Gets the show department monthly amount.
+	 * Gets the sum person set.
 	 *
-	 * @return the show department monthly amount
+	 * @return the sum person set
 	 */
-		Boolean getShowDepartmentMonthlyAmount();
+	
+	Boolean getSumPersonSet();
 
 	/**
-	 * Gets the show detail.
+	 * Gets the sum month person set.
 	 *
-	 * @return the show detail
+	 * @return the sum month person set
 	 */
-		Boolean getShowDetail();
+	
+	Boolean getSumMonthPersonSet();
 
 	/**
-	 * Gets the show division monthly total.
+	 * Gets the sum each deprt set.
 	 *
-	 * @return the show division monthly total
+	 * @return the sum each deprt set
 	 */
-		Boolean getShowDivisionMonthlyTotal();
+	
+	Boolean getSumEachDeprtSet();
 
 	/**
-	 * Gets the show division total.
+	 * Gets the sum month deprt set.
 	 *
-	 * @return the show division total
+	 * @return the sum month deprt set
 	 */
-		Boolean getShowDivisionTotal();
+	
+	Boolean getSumMonthDeprtSet();
 
 	/**
-	 * Gets the show hierarchy 1.
+	 * Gets the sum dep hrchy index set.
 	 *
-	 * @return the show hierarchy 1
+	 * @return the sum dep hrchy index set
 	 */
-		Boolean getShowHierarchy1();
+	
+	Boolean getSumDepHrchyIndexSet();
 
 	/**
-	 * Gets the showierarchy 2.
+	 * Gets the sum month dep hrchy set.
 	 *
-	 * @return the showierarchy 2
+	 * @return the sum month dep hrchy set
 	 */
-		Boolean getShowierarchy2();
+	
+	Boolean getSumMonthDepHrchySet();
 
 	/**
-	 * Gets the showierarchy 3.
+	 * Gets the hrchy index 1.
 	 *
-	 * @return the showierarchy 3
+	 * @return the hrchy index 1
 	 */
-		Boolean getShowierarchy3();
+	
+	Boolean getHrchyIndex1();
 
 	/**
-	 * Gets the shwowierarchy 4.
+	 * Gets the hrchy index 2.
 	 *
-	 * @return the shwowierarchy 4
+	 * @return the hrchy index 2
 	 */
-		Boolean getShwowierarchy4();
+	
+	Boolean getHrchyIndex2();
 
 	/**
-	 * Gets the showierarchy 5.
+	 * Gets the hrchy index 3.
 	 *
-	 * @return the showierarchy 5
+	 * @return the hrchy index 3
 	 */
-		Boolean getShowierarchy5();
+	
+	Boolean getHrchyIndex3();
+
+	/**
+	 * Gets the hrchy index 4.
+	 *
+	 * @return the hrchy index 4
+	 */
+	
+	Boolean getHrchyIndex4();
+
+	/**
+	 * Gets the hrchy index 5.
+	 *
+	 * @return the hrchy index 5
+	 */
+	
+	Boolean getHrchyIndex5();
+
+	/**
+	 * Gets the hrchy index 6.
+	 *
+	 * @return the hrchy index 6
+	 */
+	
+	Boolean getHrchyIndex6();
+
+	/**
+	 * Gets the hrchy index 7.
+	 *
+	 * @return the hrchy index 7
+	 */
+	
+	Boolean getHrchyIndex7();
+
+	/**
+	 * Gets the hrchy index 8.
+	 *
+	 * @return the hrchy index 8
+	 */
+	
+	Boolean getHrchyIndex8();
+
+	/**
+	 * Gets the hrchy index 9.
+	 *
+	 * @return the hrchy index 9
+	 */
+	
+	Boolean getHrchyIndex9();
+
+	/**
+	 * Gets the total set.
+	 *
+	 * @return the total set
+	 */
+	
+	Boolean getTotalSet();
+
+	/**
+	 * Gets the month total set.
+	 *
+	 * @return the month total set
+	 */
+	
+	Boolean getMonthTotalSet();
 }
