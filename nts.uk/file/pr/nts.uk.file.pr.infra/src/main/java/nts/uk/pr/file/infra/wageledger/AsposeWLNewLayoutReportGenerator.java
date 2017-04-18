@@ -69,8 +69,8 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 	 */
 	@Override
 	public void generate(FileGeneratorContext fileContext, WLNewLayoutReportData reportData, WageLedgerReportQuery query) {
-		try {
-			AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE);
+		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)){
+			
 			// Create Print Data.
 			PrintData printData = new PrintData();
 			printData.amountItemLeftOnCurrentPage = MAX_RECORD_ON_ONE_PAGE;
