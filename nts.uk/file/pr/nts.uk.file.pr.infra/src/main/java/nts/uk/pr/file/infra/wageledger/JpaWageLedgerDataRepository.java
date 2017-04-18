@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -247,7 +248,7 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 			// Convert result list to item map.
 			Map<QcamtItem, ReportItemDto> salaryPaymentItemsMap = this
 					.convertMasterResultDatasToItemMap(salaryPaymentResultList, monthData);
-			PaymentData salaryPaymentData = this.convertToPaymentData(salaryPaymentItemsMap);
+			PaymentData salaryPaymentData = this.convertToPaymentData(salaryPaymentItemsMap, new ArrayList<>());
 
 			// =============== Bonus payment data ===========================
 			// Filter result list by payment type and category.
@@ -259,7 +260,7 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 			// Convert result list to item map.
 			Map<QcamtItem, ReportItemDto> bonusPaymentItemsMap = this
 					.convertMasterResultDatasToItemMap(bonusPaymentResultList, monthData);
-			PaymentData bonusPaymentData = this.convertToPaymentData(bonusPaymentItemsMap);
+			PaymentData bonusPaymentData = this.convertToPaymentData(bonusPaymentItemsMap, new ArrayList<>());
 
 			// =============== Salary Deduction data ===========================
 			// Filter result list by payment type and category.
@@ -375,28 +376,42 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 	 * @param resultsMap the results map
 	 * @return the payment data
 	 */
-	private PaymentData convertToPaymentData(Map<QcamtItem, ReportItemDto> resultsMap) {
+	private PaymentData convertToPaymentData(Map<QcamtItem, ReportItemDto> resultsMap, List<QcamtItem> masterItems) {
 		List<ReportItemDto> items = new ArrayList<>(resultsMap.values());
 		
 		// Create total tax item.
-		QcamtItem totalTaxResultItem = resultsMap.keySet().stream()
-				.filter(item -> item.qcamtItemPK.itemCd.equals(TOTAL_TAX_ITEM_CODE)).findFirst().get();
-		ReportItemDto totalTaxReportItem = resultsMap.get(totalTaxResultItem);
-		items.remove(totalTaxReportItem);
+		ReportItemDto totalTaxReportItem = null;
+		QcamtItem totalTaxResultItem = masterItems.stream()
+				.filter(item -> item.qcamtItemPK.itemCd.equals(TOTAL_TAX_ITEM_CODE))
+				.findFirst().get();
+//		if (totalTaxResultItem.isPresent()) {
+//			totalTaxReportItem = resultsMap.get(totalTaxResultItem.get());
+//			items.remove(totalTaxReportItem);
+//		};
 
 		// Create total tax exemption item.
-		QcamtItem totalTaxExemptionResultItem = resultsMap.keySet().stream()
-				.filter(item -> item.qcamtItemPK.itemCd.equals(TOTAL_TAX_EXEMPTION_ITEM_CODE)).findFirst().get();
-		ReportItemDto totalTaxExemptionReportItem = resultsMap.get(totalTaxExemptionResultItem);
-		items.remove(totalTaxExemptionReportItem);
+		ReportItemDto totalTaxExemptionReportItem = null;
+		Optional<QcamtItem> totalTaxExemptionResultItem = resultsMap.keySet().stream()
+				.filter(item -> item.qcamtItemPK.itemCd.equals(TOTAL_TAX_EXEMPTION_ITEM_CODE)).findFirst();
+		if (totalTaxExemptionResultItem.isPresent()) {
+			totalTaxExemptionReportItem = resultsMap.get(totalTaxExemptionResultItem.get());
+			items.remove(totalTaxExemptionReportItem);
+		}
 
 		// Create total salary payment item.
-		QcamtItem totalSalaryPaymentResultItem = resultsMap.keySet().stream()
-				.filter(item -> item.qcamtItemPK.itemCd.equals(TOTAL_PAYMENT_ITEM_CODE)).findFirst().get();
-		ReportItemDto totalSalaryPaymentReportItem = resultsMap.get(totalSalaryPaymentResultItem);
-		items.remove(totalSalaryPaymentReportItem);
-		return PaymentData.builder().aggregateItemList(items).totalTax(totalTaxReportItem)
-				.totalTaxExemption(totalTaxExemptionReportItem).totalSalaryPayment(totalSalaryPaymentReportItem)
+		ReportItemDto totalSalaryPaymentReportItem = null;
+		Optional<QcamtItem> totalSalaryPaymentResultItem = resultsMap.keySet().stream()
+				.filter(item -> item.qcamtItemPK.itemCd.equals(TOTAL_PAYMENT_ITEM_CODE)).findFirst();
+		if (totalSalaryPaymentResultItem.isPresent()) {
+			totalSalaryPaymentReportItem = resultsMap.get(totalSalaryPaymentResultItem.get());
+			items.remove(totalSalaryPaymentReportItem);
+		}
+		
+		return PaymentData.builder()
+				.aggregateItemList(items)
+				.totalTax(totalTaxReportItem)
+				.totalTaxExemption(totalTaxExemptionReportItem)
+				.totalSalaryPayment(totalSalaryPaymentReportItem)
 				.build();
 	}
 
@@ -410,12 +425,18 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		List<ReportItemDto> items = new ArrayList<>(resultsMap.values());
 
 		// Create total deduction item.
-		QcamtItem totalDeductionItem = resultsMap.keySet().stream()
-				.filter(item -> item.qcamtItemPK.itemCd.equals(TOTAL_DEDUCTION_ITEM_CODE)).findFirst().get();
-		ReportItemDto totalDeductionReportItem = resultsMap.get(totalDeductionItem);
-		items.remove(totalDeductionReportItem);
+		ReportItemDto totalDeductionReportItem = null;
+		Optional<QcamtItem> totalDeductionItem = resultsMap.keySet().stream()
+				.filter(item -> item.qcamtItemPK.itemCd.equals(TOTAL_DEDUCTION_ITEM_CODE)).findFirst();
+		if (totalDeductionItem.isPresent()) {
+			totalDeductionReportItem = resultsMap.get(totalDeductionItem.get());
+			items.remove(totalDeductionReportItem);
+		}
 
-		return DeductionData.builder().aggregateItemList(items).totalDeduction(totalDeductionReportItem).build();
+		return DeductionData.builder()
+				.aggregateItemList(items)
+				.totalDeduction(totalDeductionReportItem)
+				.build();
 	}
 
 	/**

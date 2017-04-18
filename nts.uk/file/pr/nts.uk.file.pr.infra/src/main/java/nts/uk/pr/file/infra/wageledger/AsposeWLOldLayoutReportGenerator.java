@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.wageledger;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -263,14 +264,14 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 		printData.currentColumn += amountColumn;
 		
 		// Fill item data cells.
-		Map<Integer, MonthlyData> dataMap = item.monthlyDatas.stream()
-				.collect(Collectors.toMap(d -> d.month, Function.identity()));
+		Map<Integer, MonthlyData> dataMap = item != null ? item.monthlyDatas.stream()
+				.collect(Collectors.toMap(d -> d.month, Function.identity())) : new HashMap<>();
 		List<Integer> monthList = printData.isSalaryPath ? printData.reportData.salaryMonthList
 						: printData.reportData.bonusMonthList;
 		for (int j = 0; j < monthList.size(); j++) {
 			MonthlyData data = dataMap.get(monthList.get(j));
 			Cell monthCell = cells.get(printData.currentRow, printData.currentColumn);
-			monthCell.setValue(data.amount);
+			monthCell.setValue(data != null ? data.amount : 0);
 
 			// Set style for cell.
 			StyleModel dataCellStyle = StyleModel
