@@ -65,8 +65,8 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 	@Override
 	public void generate(FileGeneratorContext fileContext, WLOldLayoutReportData reportData, WageLedgerReportQuery query) {
 		
-		try {
-			AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE);
+		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
+			
 			Worksheet ws = reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
 			HeaderReportData headerData = reportData.headerData;
 			
@@ -397,7 +397,7 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 		styleFlag.setHorizontalAlignment(true);
 		styleFlag.setVerticalAlignment(true);
 		styleFlag.setWrapText(true);
-		range.applyStyle(style, styleFlag);;
+		range.applyStyle(style, styleFlag);
 	}
 	
 	/**

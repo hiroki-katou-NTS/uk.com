@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
@@ -56,7 +57,7 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 		query.baseDate = GeneralDate.today();
 		query.employeeIds = Arrays.asList("999000000000000000000000000000000001");
 		if (!this.repository.hasReportData(companyCode, query)) {
-			throw new RuntimeException("None Data!");
+			throw new BusinessException("対象データがありません。");
 		}
 		
 		// Query Data.
