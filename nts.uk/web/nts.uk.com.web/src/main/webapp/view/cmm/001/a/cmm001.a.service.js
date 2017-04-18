@@ -39,6 +39,7 @@ var cmm001;
                 nts.uk.request.ajax(paths.addCompany, company).done(function (res) {
                     dfd.resolve(res);
                 }).fail(function (res) {
+                    nts.uk.ui.dialog.alert(res.messName);
                     dfd.reject(res);
                 });
                 return dfd.promise();
@@ -116,3 +117,4 @@ var cmm001;
         })(service = a.service || (a.service = {}));
     })(a = cmm001.a || (cmm001.a = {}));
 })(cmm001 || (cmm001 = {}));
+//# sourceMappingURL=cmm001.a.service.js.map

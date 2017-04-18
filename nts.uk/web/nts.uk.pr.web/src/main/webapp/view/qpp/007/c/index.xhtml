@@ -31,7 +31,7 @@
 				<button id="new-button" data-bind="click: onNewModeBtnClicked">新規</button>
 				<button id="register-button" class="proceed" data-bind="click: onSaveBtnClicked">登録</button>
 				<button id="setting-button" data-bind="click: onCommonSettingBtnClicked">集計項目の設定</button>
-				<button id="delete-button" class="danger" data-bind="click: onRemoveBtnClicked">削除</button>
+				<button id="delete-button" class="danger" data-bind="disable: isNewMode, click: onRemoveBtnClicked">削除</button>
 				<button id="close-button" data-bind="click: onCloseBtnClicked">閉じる</button>
 			</div>
 
@@ -41,6 +41,7 @@
 			<div id="contents-area" data-bind="visible: true" style="display: none">
 				<!-- BEGIN CONTENT LEFT -->
 				<div id="contents-left" class="bg-green caret-right caret-background pull-left">
+					<i class="icon icon-searchbox"></i>
 					<div id="inpSearch" class="ntsSearchBox"
 						data-bind="ntsSearchBox: {
 										comId: 'outputSettings',
@@ -57,7 +58,7 @@
 							primaryKey: 'code',
 							columns: ko.observableArray([
 			                    { headerText: 'コード', key: 'code', width: 50 },
-			                    { headerText: '名称', key: 'name', width: 50 }
+			                    { headerText: '名称', key: 'name', width: 100 }
 			                ]),
 							value: temporarySelectedCode
 						}"
@@ -187,18 +188,18 @@
 					<button class="btn-help"
 						data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true }">?</button>
 					<div id="contents-right-grid-list">
-						<table id="reportItems"
+						<table id="aggregateOutputItems"
 							data-bind="ntsGridList: {
 							height: 500,
 							width: 300,
-							options: reportItems,
+							options: aggregateOutputItems,
 							primaryKey: 'code',
-							columns: reportItemColumns,
-							value: reportItemSelected}"
+							columns: aggregateOutputItemColumns,
+							value: aggregateOutputItemSelected}"
 							class="cf"></table>
 					</div>
-					<div id="reportItemCounter" style="margin-left: 30px; margin-top: 20px;" 
-						data-bind="text: '(' + reportItems().length + '件)'">
+					<div id="aggregateOutputItemCounter" style="margin-left: 30px; margin-top: 20px;" 
+						data-bind="text: '(' + aggregateOutputItems().length + '件)'">
 					</div>
 				</div>
 				<!-- END CONTENT RIGHT-->

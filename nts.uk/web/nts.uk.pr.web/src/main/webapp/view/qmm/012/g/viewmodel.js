@@ -14,3 +14,4 @@ var qmm012;
     })(g = qmm012.g || (qmm012.g = {}));
 })(qmm012 || (qmm012 = {}));
 ;
+//# sourceMappingURL=viewmodel.js.map

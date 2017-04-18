@@ -14,7 +14,7 @@ import nts.uk.ctx.pr.report.dom.salarydetail.printsetting.SalaryPrintSettingRepo
 import nts.uk.ctx.pr.report.dom.salarydetail.printsetting.service.SalaryPrintSettingService;
 
 /**
- * The Class SaveSalaryPrintSettingCommandHandler.
+ * The Class SalaryPrintSettingSaveCommandHandler.
  */
 @Stateless
 public class SalaryPrintSettingSaveCommandHandler extends CommandHandler<SalaryPrintSettingSaveCommand> {
@@ -23,6 +23,7 @@ public class SalaryPrintSettingSaveCommandHandler extends CommandHandler<SalaryP
 	@Inject
 	private SalaryPrintSettingRepository repository;
 
+	/** The service. */
 	@Inject
 	private SalaryPrintSettingService service;
 
@@ -41,7 +42,7 @@ public class SalaryPrintSettingSaveCommandHandler extends CommandHandler<SalaryP
 		// Validate
 		salaryPrintSetting.validate();
 		service.validateRequiredItem(salaryPrintSetting);
-		
+
 		repository.save(salaryPrintSetting);
 	}
 }

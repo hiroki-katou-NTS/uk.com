@@ -256,3 +256,4 @@ var qmm019;
     })(a = qmm019.a || (qmm019.a = {}));
 })(qmm019 || (qmm019 = {}));
 ;
+//# sourceMappingURL=viewmodel.js.map

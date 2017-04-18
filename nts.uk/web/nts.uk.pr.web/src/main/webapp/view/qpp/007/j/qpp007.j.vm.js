@@ -36,7 +36,7 @@ var nts;
                                         { id: '010', title: '集計項目10', content: '#aggregate10', enable: ko.observable(true), visible: ko.observable(true) }
                                     ]);
                                     self.selectedDivision = ko.observable(TaxDivision.PAYMENT);
-                                    self.selectedAggregateItem = ko.observable('002');
+                                    self.selectedAggregateItem = ko.observable('001');
                                     self.salaryAggregateItemModel = ko.observable(new SalaryAggregateItemModel());
                                     self.columns = ko.observableArray([
                                         { headerText: 'コード', key: 'salaryItemCode', width: 50 },
@@ -62,6 +62,9 @@ var nts;
                                     return self.showDataModel(salaryAggregateItemInDto);
                                 };
                                 ScreenModel.prototype.onShowDataChange = function (selectedDivision, selectedAggregateItem) {
+                                    if (nts.uk.ui._viewModel) {
+                                        $('#inpDisplayName').ntsError('clear');
+                                    }
                                     var self = this;
                                     var salaryAggregateItemInDto;
                                     salaryAggregateItemInDto = new SalaryAggregateItemInDto();
@@ -97,6 +100,10 @@ var nts;
                                     nts.uk.ui.windows.close();
                                 };
                                 ScreenModel.prototype.saveSalaryAggregateItem = function () {
+                                    $('#inpDisplayName').ntsEditor('validate');
+                                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                                        return;
+                                    }
                                     var self = this;
                                     if (self.selectedDivision() === TaxDivision.PAYMENT) {
                                         self.convertModelToDto(0);
@@ -214,3 +221,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qpp007.j.vm.js.map

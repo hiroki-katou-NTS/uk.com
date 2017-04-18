@@ -15,11 +15,14 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    self.yearMonth = ko.observable(0);
+                                    self.yearMonth = ko.observable(null);
                                     self.isEqual = ko.observable(true);
                                     self.isDeficient = ko.observable(true);
                                     self.isRedundant = ko.observable(true);
                                     self.insuranceOffice = ko.observable(new InsuranceOfficeModel());
+                                    self.japanYearmonth = ko.computed(function () {
+                                        return nts.uk.time.yearmonthInJapanEmpire(self.yearMonth()).toString();
+                                    });
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
@@ -59,22 +62,24 @@ var nts;
                                 };
                                 ScreenModel.prototype.showDialogChecklistPrintSetting = function () {
                                     nts.uk.ui.windows.setShared("socialInsuranceFeeChecklist", null);
-                                    nts.uk.ui.windows.sub.modal("/view/qpp/018/c/index.xhtml", { title: "印刷の設定" }).onClosed(function () {
-                                    });
+                                    nts.uk.ui.windows.sub.modal("/view/qpp/018/c/index.xhtml", { title: "印刷の設定" });
                                 };
                                 ScreenModel.prototype.validate = function () {
                                     var self = this;
                                     var isError = false;
-                                    if (self.insuranceOffice().selectedOfficeCodeList().length <= 0) {
-                                        $('.grid-error').ntsError('set', 'You must choose at least item of grid');
+                                    $('#date-picker').ntsEditor('validate');
+                                    if (!self.isEqual() && !self.isDeficient() && !self.isRedundant()) {
+                                        $('.extract-condition-error').ntsError('set', '出力条件が入力されていません。');
                                         isError = true;
                                     }
-                                    if (!self.isEqual() && !self.isDeficient() && !self.isRedundant()) {
-                                        $('.extract-condition-error').ntsError('set', '必須の入力項目が入力されていません。');
+                                    if (self.insuranceOffice().selectedOfficeCodeList().length <= 0) {
+                                        $('.grid-error').ntsError('set', '社会保険事業所が入力されていません。');
+                                        isError = true;
                                     }
-                                    return isError;
+                                    return isError || !nts.uk.ui._viewModel.errors.isEmpty();
                                 };
                                 ScreenModel.prototype.clearAllError = function () {
+                                    $('#date-picker').ntsError('clear');
                                     $('.grid-error').ntsError('clear');
                                     $('.extract-condition-error').ntsError('clear');
                                 };
@@ -146,3 +151,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qpp018.a.viewmodel.js.map

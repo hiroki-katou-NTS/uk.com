@@ -113,3 +113,4 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 ;
+//# sourceMappingURL=viewmodel.js.map

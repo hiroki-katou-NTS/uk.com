@@ -22,6 +22,7 @@ var qmm012;
                     this.categoryAtr = -1;
                     this.checked_B_002 = ko.observable(false);
                     this.enable_B_INP_002 = ko.observable(false);
+                    this.B_BTN_004_enable = ko.observable(true);
                     var self = this;
                     self.screenModel = screenModel;
                     self.ComboBoxItemList_B_001 = ko.observableArray([
@@ -87,7 +88,7 @@ var qmm012;
                         self.GridCurrentDisplaySet_B_001(itemModel ? itemModel.displaySet == 1 ? true : false : false);
                         self.GridCurrentItemAbName_B_001(itemModel ? itemModel.itemAbName : '');
                         self.GridCurrentCategoryAtrName_B_001(itemModel ? itemModel.categoryAtrName : '');
-                        if (self.GridlistCurrentCode_B_001() != undefined) {
+                        if (itemModel != undefined) {
                             self.enable_B_INP_002(false);
                         }
                     });
@@ -119,6 +120,14 @@ var qmm012;
                         }
                     }
                     self.LoadGridList();
+                    self.enable_B_INP_002.subscribe(function (newValue) {
+                        if (newValue) {
+                            self.setNewItemMode();
+                        }
+                        else {
+                            self.setUpdateItemMode();
+                        }
+                    });
                     self.texteditor_B_INP_002 = {
                         value: self.B_INP_002_text,
                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -145,9 +154,26 @@ var qmm012;
                         }))
                     };
                 }
+                ScreenModel.prototype.setNewItemMode = function () {
+                    var self = this;
+                    self.GridlistCurrentCode_B_001('');
+                    self.B_BTN_004_enable(false);
+                    self.screenModel.screenModelC.C_BTN_001_enable(false);
+                    self.screenModel.screenModelC.C_BTN_002_enable(false);
+                    self.screenModel.screenModelD.D_BTN_001_enable(false);
+                    self.screenModel.screenModelD.D_BTN_002_enable(false);
+                };
+                ScreenModel.prototype.setUpdateItemMode = function () {
+                    var self = this;
+                    $('#B_INP_002').ntsError('clear');
+                    self.B_BTN_004_enable(true);
+                    self.screenModel.screenModelC.C_BTN_001_enable(true);
+                    self.screenModel.screenModelC.C_BTN_002_enable(true);
+                    self.screenModel.screenModelD.D_BTN_001_enable(true);
+                    self.screenModel.screenModelD.D_BTN_002_enable(true);
+                };
                 ScreenModel.prototype.GetCurrentItemMaster = function () {
                     var self = this;
-                    var CurrentGroup = self.GridCurrentCategoryAtr_B_001();
                     var itemMaster = new b.service.model.ItemMaster(self.B_INP_002_text(), self.GridCurrentItemName_B_001(), self.GridCurrentCategoryAtr_B_001(), self.GridCurrentCategoryAtrName_B_001(), self.GridCurrentItemAbName_B_001(), self.GridlistCurrentItem_B_001() ? self.GridlistCurrentItem_B_001().itemAbNameO : self.GridCurrentItemAbName_B_001(), self.GridlistCurrentItem_B_001() ? self.GridlistCurrentItem_B_001().itemAbNameE : self.GridCurrentItemAbName_B_001(), self.GridCurrentDisplaySet_B_001() == true ? 1 : 0, self.GridCurrentUniteCode_B_001(), self.getCurrentZeroDisplaySet(), self.getCurrentItemDisplayAtr(), 1);
                     itemMaster.itemSalary = self.screenModel.screenModelC.GetCurrentItemSalary();
                     itemMaster.itemDeduct = self.screenModel.screenModelD.GetCurrentItemDeduct();
@@ -169,26 +195,28 @@ var qmm012;
                         alert(res);
                     });
                 };
-                ScreenModel.prototype.DeleteDialog = function () {
+                ScreenModel.prototype.deleteItem = function () {
                     var self = this;
                     var ItemMaster = self.GetCurrentItemMaster();
                     var index = self.GridlistItems_B_001.indexOf(self.GridlistCurrentItem_B_001());
-                    b.service.deleteItemMaster(ItemMaster).done(function (any) {
-                        if (index) {
-                            var selectItemCode = void 0;
-                            if (self.GridlistItems_B_001().length - 1 > 1) {
-                                if (index < self.GridlistItems_B_001().length - 1)
-                                    selectItemCode = self.GridlistItems_B_001()[index - 1].itemCode;
+                    if (index >= 0) {
+                        nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
+                            b.service.deleteItemMaster(ItemMaster).done(function (any) {
+                                var selectItemCode;
+                                if (self.GridlistItems_B_001().length - 1 > 1) {
+                                    if (index < self.GridlistItems_B_001().length - 1)
+                                        selectItemCode = self.GridlistItems_B_001()[index - 1].itemCode;
+                                    else
+                                        selectItemCode = self.GridlistItems_B_001()[index - 2].itemCode;
+                                }
                                 else
-                                    selectItemCode = self.GridlistItems_B_001()[index - 2].itemCode;
-                            }
-                            else
-                                selectItemCode = '';
-                            self.LoadGridList(selectItemCode);
-                        }
-                    }).fail(function (res) {
-                        alert(res);
-                    });
+                                    selectItemCode = '';
+                                self.LoadGridList(selectItemCode);
+                            }).fail(function (res) {
+                                alert(res);
+                            });
+                        });
+                    }
                 };
                 ScreenModel.prototype.getCurrentZeroDisplaySet = function () {
                     var Result;
@@ -203,6 +231,9 @@ var qmm012;
                             break;
                         case 2:
                             Result = self.screenModel.screenModelE.CurrentZeroDisplaySet();
+                            break;
+                        case 3:
+                            Result = self.screenModel.screenModelF.CurrentZeroDisplaySet();
                             break;
                     }
                     return Result;
@@ -221,6 +252,9 @@ var qmm012;
                         case 2:
                             Result = self.screenModel.screenModelE.CurrentItemDisplayAtr();
                             break;
+                        case 3:
+                            Result = self.screenModel.screenModelF.CurrentItemDisplayAtr();
+                            break;
                     }
                     return Result;
                 };
@@ -229,9 +263,8 @@ var qmm012;
                     nts.uk.ui.windows.sub.modal('../a/index.xhtml', { height: 480, width: 630, dialogClass: "no-close" }).onClosed(function () {
                         if (nts.uk.ui.windows.getShared('groupCode') != undefined) {
                             var groupCode = Number(nts.uk.ui.windows.getShared('groupCode'));
-                            self.GridlistCurrentCode_B_001('');
-                            self.GridCurrentCategoryAtr_B_001(groupCode);
                             self.enable_B_INP_002(true);
+                            self.GridCurrentCategoryAtr_B_001(groupCode);
                         }
                     });
                 };
@@ -279,3 +312,4 @@ var qmm012;
         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
     })(b = qmm012.b || (qmm012.b = {}));
 })(qmm012 || (qmm012 = {}));
+//# sourceMappingURL=viewmodel.js.map

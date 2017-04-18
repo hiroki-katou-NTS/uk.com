@@ -13,7 +13,7 @@ var nts;
                         var service;
                         (function (service) {
                             var servicePath = {
-                                findAllInsuranceOffice: "screen/pr/QPP018/findAllOffice",
+                                findAllInsuranceOffice: "pr/insurance/social/findall",
                                 saveAsPdf: "screen/pr/QPP018/saveAsPdf"
                             };
                             function findAllInsuranceOffice() {
@@ -50,3 +50,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qpp018.a.service.js.map

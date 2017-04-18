@@ -13,6 +13,7 @@ module nts.uk.ui.koExtentions {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
             var immediate: boolean = ko.unwrap(data.immediate !== undefined ? data.immediate : 'false');
+            var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
             var valueUpdate: string = (immediate === true) ? 'input' : 'change';
             var characterWidth: number = 9;
             if (constraint && constraint.maxLength && !$input.is("textarea")) {
@@ -37,11 +38,13 @@ module nts.uk.ui.koExtentions {
 
             // Format on blur
             $input.blur(() => {
-                var formatter = this.getFormatter(data);
-                var newText = $input.val();
-                var result = validator.validate(newText);
-                if (result.isValid) {
-                    $input.val(formatter.format(result.parsedValue));
+                if (!readonly) {
+                    var formatter = this.getFormatter(data);
+                    var newText = $input.val();
+                    var result = validator.validate(newText);
+                    if (result.isValid) {
+                        $input.val(formatter.format(result.parsedValue));
+                    }
                 }
             });
 
@@ -98,6 +101,7 @@ module nts.uk.ui.koExtentions {
             var value: KnockoutObservable<string> = data.value;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
+            var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
             var characterWidth: number = 9;
             if (constraint && constraint.maxLength && !$input.is("textarea")) {
                 var autoWidth = constraint.maxLength * characterWidth;
@@ -108,27 +112,31 @@ module nts.uk.ui.koExtentions {
 
             let validator = this.getValidator(data);
             $input.on("keyup", (e) => {
-                var newText = $input.val();
-                var result = validator.validate(newText);
-                $input.ntsError('clear');
-                if (!result.isValid) {
-                    $input.ntsError('set', result.errorMessage);
+                if (!readonly) {
+                    var newText = $input.val();
+                    var result = validator.validate(newText);
+                    $input.ntsError('clear');
+                    if (!result.isValid) {
+                        $input.ntsError('set', result.errorMessage);
+                    }
                 }
             });
 
             $input.on("blur", (e) => {
-                var newText = $input.val();
-                var result = validator.validate(newText, {isCheckExpression: true});
-                $input.ntsError('clear');
-                if (result.isValid) {
-                    if(value() === result.parsedValue){
-                        $input.val(result.parsedValue);    
+                if (!readonly) {
+                    var newText = $input.val();
+                    var result = validator.validate(newText, {isCheckExpression: true});
+                    $input.ntsError('clear');
+                    if (result.isValid) {
+                        if(value() === result.parsedValue){
+                            $input.val(result.parsedValue);    
+                        } else {
+                            value(result.parsedValue);    
+                        }
                     } else {
-                        value(result.parsedValue);    
+                        $input.ntsError('set', result.errorMessage);
+                        value(newText);
                     }
-                } else {
-                    $input.ntsError('set', result.errorMessage);
-                    value(newText);
                 }
             });
             

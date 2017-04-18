@@ -39,6 +39,24 @@ var nts;
                                 return nts.uk.request.ajax(paths.findAllAggregateItems);
                             }
                             service.findAllAggregateItems = findAllAggregateItems;
+                            function findAllMasterItems() {
+                                var dfd = $.Deferred();
+                                var masterItems = [];
+                                for (var i = 1; i <= 9; i++) {
+                                    masterItems.push({ code: 'F00' + i, name: '基本給' + i, category: 'Payment' });
+                                }
+                                for (var i = 1; i <= 9; i++) {
+                                    masterItems.push({ code: 'F10' + i, name: '基本給' + i, category: 'Deduction' });
+                                }
+                                for (var i = 1; i <= 9; i++) {
+                                    masterItems.push({ code: 'F20' + i, name: '基本給' + i, category: 'Attendance' });
+                                }
+                                for (var i = 1; i <= 9; i++) {
+                                    masterItems.push({ code: 'F30' + i, name: '基本給' + i, category: 'ArticleOthers' });
+                                }
+                                return dfd.resolve(masterItems).promise();
+                            }
+                            service.findAllMasterItems = findAllMasterItems;
                         })(service = c.service || (c.service = {}));
                     })(c = qpp007.c || (qpp007.c = {}));
                 })(qpp007 = view.qpp007 || (view.qpp007 = {}));
@@ -46,3 +64,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qpp007.c.service.js.map
