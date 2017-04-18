@@ -81,7 +81,7 @@ public class RecalculateHealthInsuAvgearnCommandHandler extends
 			HealthInsuranceAvgearnDto dto = new HealthInsuranceAvgearnDto();
 			dto = dto.fromDomain(domain);
 
-			// TODO: Re-calculate Check lại process
+			// Re-calculate
 			// Company item
 			HealthInsuranceAvgearnValue companyAvg = healthInsuranceAvgearnService
 					.calculateAvgearnValue(roundingMethods, BigDecimal.valueOf(domain.getAvgEarn()),
@@ -90,11 +90,10 @@ public class RecalculateHealthInsuAvgearnCommandHandler extends
 					companyAvg.getHealthGeneralMny().v(), companyAvg.getHealthNursingMny().v(),
 					companyAvg.getHealthSpecificMny().v()));
 
-			// TODO: Re-calculate Check lại process
 			// Personal item
 			HealthInsuranceAvgearnValue personalAvg = healthInsuranceAvgearnService
 					.calculateAvgearnValue(roundingMethods, BigDecimal.valueOf(domain.getAvgEarn()),
-							healthInsuranceRate.getRateItems(), false);
+							healthInsuranceRate.getRateItems(), true);
 			dto.setPersonalAvg(new HealthInsuranceAvgearnValueDto(
 					personalAvg.getHealthBasicMny().v(), personalAvg.getHealthGeneralMny().v(),
 					personalAvg.getHealthNursingMny().v(), personalAvg.getHealthSpecificMny().v()));

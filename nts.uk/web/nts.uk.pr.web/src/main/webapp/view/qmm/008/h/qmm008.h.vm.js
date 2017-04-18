@@ -72,6 +72,13 @@ var nts;
                                     var self = this;
                                     self.clearError();
                                     self.listHealthInsuranceAvgearn.removeAll();
+                                    h.service.recalculateHealthInsuranceAvgearn(self.healthInsuranceRateModel.historyId).done(function (res) {
+                                        var salMin = 0;
+                                        res.listHealthInsuranceAvgearnDto.forEach(function (item) {
+                                            self.listHealthInsuranceAvgearn.push(new HealthInsuranceAvgEarnModel(item.grade, item.avgEarn, salMin, item.upperLimit, new HealthInsuranceAvgEarnValueModel(item.personalAvg.healthGeneralMny, item.personalAvg.healthNursingMny, item.personalAvg.healthBasicMny, item.personalAvg.healthSpecificMny), new HealthInsuranceAvgEarnValueModel(item.companyAvg.healthGeneralMny, item.companyAvg.healthNursingMny, item.companyAvg.healthBasicMny, item.companyAvg.healthSpecificMny)));
+                                            salMin = item.upperLimit;
+                                        });
+                                    });
                                 };
                                 ScreenModel.prototype.closeDialogWithDirtyCheck = function () {
                                     var self = this;
