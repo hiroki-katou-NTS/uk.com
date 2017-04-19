@@ -42,10 +42,10 @@ module qmm012.j.viewmodel {
                             $("#sidebar").ntsSideBar("active", self.oldGroupCode());
                         });
                 }
-
             });
             self.LoadGridData();
         }
+
         genTitleText(GroupCode) {
             let result = ""
             switch (GroupCode) {
@@ -67,6 +67,7 @@ module qmm012.j.viewmodel {
             }
             return result
         }
+
         reLoadGridData() {
             let self = this;
             service.findAllItemMasterByCategory(self.currentGroupCode()).done(function(MasterItems: Array<qmm012.b.service.model.ItemMaster>) {
@@ -76,6 +77,7 @@ module qmm012.j.viewmodel {
                 self.oldGroupCode(self.currentGroupCode());
             })
         }
+
         LoadGridData() {
             let self = this;
             service.findAllItemMasterByCategory(self.currentGroupCode()).done(function(MasterItems: Array<qmm012.b.service.model.ItemMaster>) {
@@ -85,10 +87,12 @@ module qmm012.j.viewmodel {
                 self.oldGroupCode(self.currentGroupCode());
             })
         }
+
         ChangeGroup(GroupCode) {
             let self = this;
             self.currentGroupCode(GroupCode);
         }
+
         BindGrid() {
             let self = this;
             $("#J_Lst_ItemList").igGrid({

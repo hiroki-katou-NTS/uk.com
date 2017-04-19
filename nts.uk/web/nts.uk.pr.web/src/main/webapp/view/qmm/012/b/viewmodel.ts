@@ -163,7 +163,6 @@ module qmm012.b.viewmodel {
                         self.dirty.reset();
                     self.dirtyOldValue.lstCode = self.GridlistCurrentCode();
                 });
-
             });
             //first load , need call loadGridList
             self.loadGridList();
@@ -359,12 +358,19 @@ module qmm012.b.viewmodel {
                         self.GridlistCurrentCode(self.GridlistItems()[0].itemCode);
                     else {
                         //set  selected == param itemcode
-                        self.dirtyOldValue.lstCode = ItemCode;
-                        self.GridlistCurrentCode(ItemCode);
                         var item = _.find(self.GridlistItems(), function(ItemModel: service.model.ItemMaster) {
                             return ItemModel.itemCode == ItemCode;
                         });
-                        self.GridlistCurrentItem(item);
+                        if (item) {
+                            self.GridlistCurrentItem(item);
+                            self.dirtyOldValue.lstCode = ItemCode;
+                            self.GridlistCurrentCode(ItemCode);
+                        }
+                        else {
+                            self.GridlistCurrentItem(self.GridlistItems()[0]);
+                            self.dirtyOldValue.lstCode = self.GridlistItems()[0].itemCode;
+                            self.GridlistCurrentCode(self.GridlistItems()[0].itemCode);
+                        }
                     }
                     self.dirtyItemMaster(self.getCurrentItemMaster());
                     self.dirty = new nts.uk.ui.DirtyChecker(self.dirtyItemMaster);
