@@ -12,18 +12,14 @@ module nts.uk.pr.view.qpp007.b {
          *  Save SalaryPrintSetting.
          */
         export function saveSalaryPrintSetting(data: model.SalaryPrintSettingDto): JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
-            nts.uk.request.ajax(paths.saveSalaryPrintSetting, data).done(() =>
-                dfd.resolve());
-            return dfd.promise();
+            return nts.uk.request.ajax(paths.saveSalaryPrintSetting, data);
         }
 
         /**
          *  Load SalaryPrintSetting.
          */
         export function findSalaryPrintSetting(): JQueryPromise<model.SalaryPrintSettingDto> {
-            var dfd = $.Deferred<Array<any>>();
-           return  nts.uk.request.ajax(paths.findSalaryPrintSetting);
+            return nts.uk.request.ajax(paths.findSalaryPrintSetting);
         }
 
         /**
@@ -32,27 +28,24 @@ module nts.uk.pr.view.qpp007.b {
         export module model {
 
             export interface SalaryPrintSettingDto {
-                outputDistinction: string;
-                showDepartmentMonthlyAmount: boolean;
-                showDetail: boolean;
-                showDivisionMonthlyTotal: boolean;
-                showDivisionTotal: boolean;
-                showHierarchy1: boolean;
-                showHierarchy2: boolean;
-                showHierarchy3: boolean;
-                showHierarchy4: boolean;
-                showHierarchy5: boolean;
-                showHierarchy6: boolean;
-                showHierarchy7: boolean;
-                showHierarchy8: boolean;
-                showHierarchy9: boolean;
-                showHierarchyAccumulation: boolean;
-                showHierarchyMonthlyAccumulation: boolean;
-                showMonthlyAmount: boolean;
-                showPersonalMonthlyAmount: boolean;
-                showPersonalTotal: boolean;
-                showSectionalCalculation: boolean;
-                showTotal: boolean;
+                showPayment: boolean;
+                sumPersonSet: boolean;
+                sumMonthPersonSet: boolean;
+                sumEachDeprtSet: boolean;
+                sumMonthDeprtSet: boolean;
+                sumDepHrchyIndexSet: boolean;
+                sumMonthDepHrchySet: boolean;
+                hrchyIndex1: boolean;
+                hrchyIndex2: boolean;
+                hrchyIndex3: boolean;
+                hrchyIndex4: boolean;
+                hrchyIndex5: boolean;
+                hrchyIndex6: boolean;
+                hrchyIndex7: boolean;
+                hrchyIndex8: boolean;
+                hrchyIndex9: boolean;
+                totalSet: boolean;
+                monthTotalSet: boolean;
             }
 
         }

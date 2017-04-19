@@ -19,10 +19,8 @@
 					nts.arc.time.YearMonth
    				</com:ValidatorScript>
 				<com:stylefile path="../catalog/catalog.css" />
-				<com:scriptfile path="/lib/nittsu/ui/file.js" />
-				<com:scriptfile path="/lib/nittsu/ui/textbox-options.js" />
-				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../catalog/catalog.js" />
+				<com:scriptfile path="number-editor.js" />
 			</ui:define>
 			
 			<ui:define name="content">
@@ -31,218 +29,19 @@
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
 						<h1>NumberEditor</h1>
-						<h2>Overview</h2>
 						<div data-bind="with: numbereditor">
 							<input id="number-1" data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						</div>
-						<br /><br />
+						<br/>
 						<div data-bind="with: numbereditor2">
-							<div data-bind="ntsFormLabel: { constraint: 'CommonAmount', enable: false }">CommonAmount</div><br /><br />
 							<input id="number-2" data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						</div>
-						<article class="cf">
-							<div class="tabs">
-								<ol>
-									<li><a href="#tabs-html">HTML Binding</a></li>
-									<li><a href="#tabs-viewmodel">ViewModel</a></li>
-								</ol>
-								<div id="tabs-html" class="cf">
-									<h2>HTML</h2>
-<pre><![CDATA[<!-- Simple -->
-<input data-bind="ntsNumberEditor: { value: value, constraint: 'ResidenceCode'}" />
-
-<!-- Full Options -->
-<div data-bind="with: numbereditor">
-	<input data-bind="ntsNumberEditor: {
-		value: value,
-		constraint: constraint,
-		option: option,
-		required: required,
-		enable: enable,
-		readonly: readonly,
-		immediate: false}" />
-</div>]]></pre>
-									<div class="pull-left">
-										<h2>API</h2>
-										<table>
-											<colgroup>
-												<col width="200px" />
-											</colgroup>
-											<thead>
-												<tr>
-													<th><h4>ViewModel</h4></th>
-													<th><h4>Description</h4></th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>value</td>
-													<td>
-														<b>Type:</b> string<br/>
-													</td>
-												</tr>
-												<tr>
-													<td>constraint<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> string<br/>
-														Validate constraint for editor
-													</td>
-												</tr>
-												<tr>
-													<td>required<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> boolean<br/>
-														<b>Default:</b> false<br/>
-														Set required for editor
-													</td>
-												</tr>
-												<tr>
-													<td>enable<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> boolean<br/>
-														<b>Default:</b> true<br/>
-														Set enable/disable for editor
-													</td>
-												</tr>
-												<tr>
-													<td>readonly<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> boolean<br/>
-														<b>Default:</b> false<br/>
-														Set readonly for editor
-													</td>
-												</tr>
-												<tr>
-													<td>immediate<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> boolean<br/>
-														<b>Default:</b> false<br/>
-														Set update event trigger immediate for editor.<br/>
-														Can't change after init.
-													</td>
-												</tr>
-												<tr>
-													<td>option<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> object<br/>
-														<b>Default:</b> NumberEditorOption()<br/>
-														<b>Members:</b><br/>
-														<a href="#numbereditoroption"><i class="color">NumberEditorOption</i></a>: Option for text editor<br/>
-														<a href="#currencyeditoroption"><i class="color">CurrencyEditorOption</i></a>: Option for text editor
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
-									<div id="numbereditoroption" class="feature-box pull-right" style="width:50%;">
-										<div class="header"><h3 >NumberEditorOption</h3></div>
-										<div class="content">
-											<table style="width:100%;">
-												<colgroup>
-													<col width="200px" />
-												</colgroup>
-												<thead>
-													<tr>
-														<th><h4>Properties</h4></th>
-														<th><h4>Description</h4></th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr>
-														<td>grouplength<br/><i>(optional)</i></td>
-														<td>
-															<b>Type:</b> number<br/>
-															<b>Default:</b> 0<br/>
-															Length to group number
-														</td>
-													</tr>
-													<tr>
-														<td>decimallength<br/><i>(optional)</i></td>
-														<td>
-															<b>Type:</b> number<br/>
-															<b>Default:</b> 0<br/>
-															Length for decimal
-														</td>
-													</tr>
-													<tr>
-														<td>symbolChar<br/><i>(optional)</i></td>
-														<td>
-															<b>Type:</b> string<br/>
-															<b>Default:</b> ""<br/>
-															symbol like '%', etc..
-														</td>
-													</tr>
-													<tr>
-														<td>symbolPosition<br/><i>(optional)</i></td>
-														<td>
-															<b>Type:</b> string<br/>
-															<b>Default:</b> 'right'<br/>
-															position for symbol
-														</td>
-													</tr>
-													<tr>
-														<td>placeholder<br/><i>(optional)</i></td>
-														<td>
-															<b>Type:</b> string<br/>
-															<b>Default:</b> ""<br/>
-															Hint text for the control
-														</td>
-													</tr>
-													<tr>
-														<td>width<br/><i>(optional)</i></td>
-														<td>
-															<b>Type:</b> string<br/>
-															<b>Default:</b> ""<br/>
-															Set width for the control
-														</td>
-													</tr>
-													<tr>
-														<td>textalign<br/><i>(optional)</i></td>
-														<td>
-															<b>Type:</b> string<br/>
-															<b>Default:</b> "right"<br/>
-															<b>Members:</b><br/>
-															<i>left</i>: Align text to left<br/>
-															<i>right</i>: Align text to right<br/>
-															<i>center</i>: Align text to center
-														</td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
-									</div>
-								</div>
-								<div id="tabs-viewmodel" class="cf">
-									<h2>TypeScript</h2>
-<pre><![CDATA[class ScreenModel {
-	numbereditor: any;
-	
-	constructor() {
-		var self = this;				  
-		self.numbereditor = {
-			value: ko.observable(12),
-			constraint: '',
-			option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
-				grouplength: 3,
-				decimallength: 2,
-				placeholder: "Placeholder for number editor",
-				width: "",
-				textalign: "left"
-			})),
-			enable: ko.observable(true),
-			readonly: ko.observable(false)
-		};
-	}
-}]]></pre>
-								</div>
-							</div>
-						</article>
+						<hr/>
 						<h1>CurrencyEditor</h1>
-						<h2>Overview</h2>
 						<div data-bind="with: currencyeditor">
 							<h3>Yen</h3>
 							<input id="currency-1" data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
@@ -259,13 +58,53 @@
 						<article class="cf">
 							<div class="tabs">
 								<ol>
-									<li><a href="#tabs-currency-html">HTML Binding</a></li>
-									<li><a href="#tabs-currency-viewmodel">ViewModel</a></li>
+									<li><a href="#tabs-html-number">Number Binding</a></li>
+									<li><a href="#tabs-html-currency">Currency Binding</a></li>
+									<li><a href="#tabs-api">API</a></li>
 								</ol>
-								<div id="tabs-currency-html" class="cf">
+								<div id="tabs-html-number" class="cf">
 									<h2>HTML</h2>
 <pre><![CDATA[<!-- Simple -->
-<input data-bind="ntsNumberEditor: { value: value, constraint: 'ResidenceCode' }" />
+<input data-bind="ntsNumberEditor: {value: value}" />
+
+<!-- Full Options -->
+<div data-bind="with: numbereditor">
+	<input data-bind="ntsNumberEditor: {
+		value: value,
+		constraint: 'ResidenceCode',
+		option: option,
+		required: required,
+		enable: enable,
+		readonly: readonly}" />
+</div>]]></pre>
+									<h2>ViewModel</h2>
+<pre><![CDATA[class ScreenModel {
+	value: KnockoutObservable<number>;
+	numbereditor: any;
+	
+	constructor() {
+		var self = this;
+		self.value = ko.observable(12);
+		self.numbereditor = {
+			value: ko.observable(12),
+			constraint: '',
+			option: new nts.uk.ui.option.NumberEditorOption({
+				grouplength: 3,
+				decimallength: 2,
+				placeholder: "Placeholder for number editor",
+				width: "",
+				textalign: "left"
+			}),
+			enable: ko.observable(true),
+			readonly: ko.observable(false)
+		};
+	}
+}]]></pre>
+								</div>
+								<div id="tabs-html-currency" class="cf">
+									<h2>HTML</h2>
+<pre><![CDATA[<!-- Simple -->
+<input data-bind="ntsNumberEditor: { value: value, constraint: 'ResidenceCode'}" />
 
 <!-- Full Options -->
 <div data-bind="with: currencyeditor">
@@ -278,184 +117,244 @@
 		readonly: readonly,
 		immediate: false}" />
 </div>]]></pre>
-									<div class="pull-left">
-										<h2>API</h2>
-										<table>
-											<colgroup>
-												<col width="200px" />
-											</colgroup>
-											<thead>
-												<tr>
-													<th><h4>ViewModel</h4></th>
-													<th><h4>Description</h4></th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>value</td>
-													<td>
-														<b>Type:</b> string<br/>
-													</td>
-												</tr>
-												<tr>
-													<td>constraint<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> string<br/>
-														Validate constraint for editor
-													</td>
-												</tr>
-												<tr>
-													<td>required<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> boolean<br/>
-														<b>Default:</b> false<br/>
-														Set required for editor
-													</td>
-												</tr>
-												<tr>
-													<td>enable<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> boolean<br/>
-														<b>Default:</b> true<br/>
-														Set enable/disable for editor
-													</td>
-												</tr>
-												<tr>
-													<td>readonly<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> boolean<br/>
-														<b>Default:</b> false<br/>
-														Set readonly for editor
-													</td>
-												</tr>
-												<tr>
-													<td>immediate<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> boolean<br/>
-														<b>Default:</b> false<br/>
-														Set update event trigger immediate for editor.<br/>
-														Can't change after init.
-													</td>
-												</tr>
-												<tr>
-													<td>option<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> object<br/>
-														<b>Default:</b> NumberEditorOption()<br/>
-														<b>Members:</b><br/>
-														<a href="#numbereditoroption"><i class="color">NumberEditorOption</i></a>: Option for text editor<br/>
-														<a href="#currencyeditoroption"><i class="color">CurrencyEditorOption</i></a>: Option for text editor
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
-									<div id="currencyeditoroption" class="feature-box pull-right" style="width:50%;">
-										<div class="header"><h3 >CurrencyEditorOption</h3></div>
-										<div class="content">
-											<table style="width:100%;">
-												<colgroup>
-													<col width="200px" />
-												</colgroup>
-												<thead>
-													<tr>
-														<th><h4>Properties</h4></th>
-														<th><h4>Description</h4></th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr>
-														<td>grouplength<br/><i>(optional)</i></td>
-														<td>
-															<b>Type:</b> number<br/>
-															<b>Default:</b> 0<br/>
-															Length to group number
-														</td>
-													</tr>
-													<tr>
-														<td>decimallength<br/><i>(optional)</i></td>
-														<td>
-															<b>Type:</b> number<br/>
-															<b>Default:</b> 0<br/>
-															Length for decimal
-														</td>
-													</tr>
-													<tr>
-														<td>currencyformat<br/><i>(optional)</i></td>
-														<td>
-															<b>Type:</b> string<br/>
-															<b>Default:</b> ""<br/>
-															<b>Members:</b><br/>
-															<i>JPY</i>: Japan Yen<br/>
-															<i>USD</i>: United States dollar<br/>
-															Currency symbol
-														</td>
-													</tr>
-													<tr>
-														<td>currencyposition<br/><i>(optional)</i></td>
-														<td>
-															<b>Type:</b> string<br/>
-															<b>Default:</b> depend on <i>currencyformat</i><br/>
-															<b>Members:</b><br/>
-															<i>left</i>: Display at left. Default for JPY<br/>
-															<i>right</i>: Display at right. Default for USD<br/>
-															Currency position
-														</td>
-													</tr>					
-													<tr>
-														<td>placeholder<br/><i>(optional)</i></td>
-														<td>
-															<b>Type:</b> string<br/>
-															<b>Default:</b> ""<br/>
-															Hint text for the control
-														</td>
-													</tr>
-													<tr>
-														<td>width<br/><i>(optional)</i></td>
-														<td>
-															<b>Type:</b> string<br/>
-															<b>Default:</b> ""<br/>
-															Set width for the control
-														</td>
-													</tr>
-													<tr>
-														<td>textalign<br/><i>(optional)</i></td>
-														<td>
-															<b>Type:</b> string<br/>
-															<b>Default:</b> "right"<br/>
-															<b>Members:</b><br/>
-															<i>left</i>: Align text to left<br/>
-															<i>right</i>: Align text to right<br/>
-															<i>center</i>: Align text to center
-														</td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
-									</div>
-								</div>
-								<div id="tabs-currency-viewmodel" class="cf">
-									<h2>TypeScript</h2>
+									<h2>ViewModel</h2>
 <pre><![CDATA[class ScreenModel {
+	value: KnockoutObservable<number>;
 	currencyeditor: any;
 	
 	constructor() {
 		var self = this;				  
 		self.currencyeditor = {
-			value: ko.observable(1200),
-			constraint: '',
-			option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
-				grouplength: 3,
-				decimallength: 2,
-				currencyformat: "JPY",
-				currencyposition: 'right'
-			})),
-			required: ko.observable(false),
-			enable: ko.observable(true),
-			readonly: ko.observable(false)
-		};
+            value: ko.observable(1200),
+            constraint: '',
+            option: new nts.uk.ui.option.CurrencyEditorOption({
+                grouplength: 3,
+                decimallength: 2,
+                currencyformat: "JPY"
+            }),
+            required: ko.observable(false),
+            enable: ko.observable(true),
+            readonly: ko.observable(false)
+        };
 	}
 }]]></pre>
+								</div>
+								<div id="tabs-api" class="cf">
+									<h2>Properties</h2>
+									<table class="table">
+										<colgroup>
+											<col width="150px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Name</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>value</td>
+												<td>
+													<b>Type:</b> KnockoutObservable&lt;number|string&gt;<br/>
+												</td>
+											</tr>
+											<tr>
+												<td>constraint<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> string<br/>
+													Validate constraint for editor
+												</td>
+											</tr>
+											<tr>
+												<td>required<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> KnockoutObservable&lt;boolean&gt; | boolean<br/>
+													<b>Default:</b> false<br/>
+													Set required for editor
+												</td>
+											</tr>
+											<tr>
+												<td>enable<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> KnockoutObservable&lt;boolean&gt; | boolean<br/>
+													<b>Default:</b> true<br/>
+													Set enable/disable for editor
+												</td>
+											</tr>
+											<tr>
+												<td>readonly<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> KnockoutObservable&lt;boolean&gt; | boolean<br/>
+													<b>Default:</b> false<br/>
+													Set readonly for editor
+												</td>
+											</tr>
+											<tr>
+												<td>option<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> KnockoutObservable&lt;NumberEditorOption&gt; | NumberEditorOption<br/>
+													<b>Default:</b> NumberEditorOption<br/>
+													<b>Members:</b><br/>
+													<div class="catalog-accordion">
+														<a href="#numbereditoroption">NumberEditorOption</a>
+														<table class="table">
+															<colgroup>
+																<col width="150px" />
+															</colgroup>
+															<thead>
+																<tr>
+																	<th><h4>Name</h4></th>
+																	<th><h4>Description</h4></th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr>
+																	<td>grouplength<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> KnockoutObservable&lt;number&gt; | number<br/>
+																		<b>Default:</b> 0<br/>
+																		Length to group number
+																	</td>
+																</tr>
+																<tr>
+																	<td>decimallength<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> KnockoutObservable&lt;number&gt; | number<br/>
+																		<b>Default:</b> 0<br/>
+																		Length for decimal
+																	</td>
+																</tr>
+																<tr>
+																	<td>symbolChar<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> KnockoutObservable&lt;string&gt; | string<br/>
+																		<b>Default:</b> ""<br/>
+																		symbol like '%', etc..
+																	</td>
+																</tr>
+																<tr>
+																	<td>symbolPosition<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> KnockoutObservable&lt;string&gt; | string<br/>
+																		<b>Default:</b> 'right'<br/>
+																		position for symbol
+																	</td>
+																</tr>
+																<tr>
+																	<td>placeholder<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> KnockoutObservable&lt;string&gt; | string<br/>
+																		<b>Default:</b> ""<br/>
+																		Hint text for the control
+																	</td>
+																</tr>
+																<tr>
+																	<td>width<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> KnockoutObservable&lt;string&gt; | string<br/>
+																		<b>Default:</b> ""<br/>
+																		Set width for the control
+																	</td>
+																</tr>
+																<tr>
+																	<td>textalign<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> KnockoutObservable&lt;string&gt; | string<br/>
+																		<b>Default:</b> "right"<br/>
+																		<b>Members:</b><br/>
+																		<i>left</i>: Align text to left<br/>
+																		<i>right</i>: Align text to right<br/>
+																		<i>center</i>: Align text to center
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+													<div class="catalog-accordion">
+														<a href="#currencyeditoroption">CurrencyEditorOption</a>
+														<table class="table">
+															<colgroup>
+																<col width="150px" />
+															</colgroup>
+															<thead>
+																<tr>
+																	<th><h4>Name</h4></th>
+																	<th><h4>Description</h4></th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr>
+																	<td>grouplength<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> KnockoutObservable&lt;number&gt; | number<br/>
+																		<b>Default:</b> 0<br/>
+																		Length to group number
+																	</td>
+																</tr>
+																<tr>
+																	<td>decimallength<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> KnockoutObservable&lt;number&gt; | number<br/>
+																		<b>Default:</b> 0<br/>
+																		Length for decimal
+																	</td>
+																</tr>
+																<tr>
+																	<td>currencyformat<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> KnockoutObservable&lt;string&gt; | string<br/>
+																		<b>Default:</b> ""<br/>
+																		<b>Members:</b><br/>
+																		<i>JPY</i>: Japan Yen<br/>
+																		<i>USD</i>: United States dollar<br/>
+																		Currency symbol
+																	</td>
+																</tr>
+																<tr>
+																	<td>currencyposition<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> KnockoutObservable&lt;string&gt; | string<br/>
+																		<b>Default:</b> depend on <i>currencyformat</i><br/>
+																		<b>Members:</b><br/>
+																		<i>left</i>: Display at left. Default for JPY<br/>
+																		<i>right</i>: Display at right. Default for USD<br/>
+																		Currency position
+																	</td>
+																</tr>					
+																<tr>
+																	<td>placeholder<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> KnockoutObservable&lt;string&gt; | string<br/>
+																		<b>Default:</b> ""<br/>
+																		Hint text for the control
+																	</td>
+																</tr>
+																<tr>
+																	<td>width<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> KnockoutObservable&lt;string&gt; | string<br/>
+																		<b>Default:</b> ""<br/>
+																		Set width for the control
+																	</td>
+																</tr>
+																<tr>
+																	<td>textalign<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> KnockoutObservable&lt;string&gt; | string<br/>
+																		<b>Default:</b> "right"<br/>
+																		<b>Members:</b><br/>
+																		<i>left</i>: Align text to left<br/>
+																		<i>right</i>: Align text to right<br/>
+																		<i>center</i>: Align text to center
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
 								</div>
 							</div>
 						</article>

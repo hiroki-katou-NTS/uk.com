@@ -15,16 +15,18 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessType;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class InsuranceBusinessTypeUpdateCommandHandler.
  */
 @Stateless
-public class InsuranceBusinessTypeUpdateCommandHandler extends CommandHandler<InsuranceBusinessTypeUpdateCommand> {
+public class InsuranceBusinessTypeUpdateCommandHandler
+	extends CommandHandler<InsuranceBusinessTypeUpdateCommand> {
 
 	/** The insurance business type repository. */
 	@Inject
-	private InsuranceBusinessTypeRepository insBizTypeRepo;
+	private InsuranceBusinessTypeRepository repository;
 
 	/*
 	 * (non-Javadoc)
@@ -36,9 +38,19 @@ public class InsuranceBusinessTypeUpdateCommandHandler extends CommandHandler<In
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<InsuranceBusinessTypeUpdateCommand> context) {
-		List<InsuranceBusinessType> lsInsuranceBusinessType = context.getCommand()
-				.toDomain((AppContexts.user().companyCode()));
-		this.insBizTypeRepo.update(lsInsuranceBusinessType);
+
+		// get login user
+		LoginUserContext loginUserContext = AppContexts.user();
+
+		// get command
+		InsuranceBusinessTypeUpdateCommand command = context.getCommand();
+
+		// company code by user
+		String companyCode = loginUserContext.companyCode();
+
+		// update data
+		List<InsuranceBusinessType> data = command.toDomain(companyCode);
+		this.repository.update(data);
 	}
 
 }

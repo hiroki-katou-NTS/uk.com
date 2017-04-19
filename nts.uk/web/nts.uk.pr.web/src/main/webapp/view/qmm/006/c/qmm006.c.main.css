@@ -12,27 +12,16 @@
 	margin-left: 10px;
 }
 
-#C_LBL_001, #C_LBL_002 {
+#lbl_navigationMessage1, #lbl_navigationMessage2 {
 	margin: 5px 0px
 }
 
-#C_INP_001 {
-	width: 370px;
-	border: 1px solid #4F4F4F;
-	border-radius: 5px;
-	padding: 5px 0px
-}
-
-#C_SCH_001 {
-	padding: 0px 20px
-}
-
-#C_BTN_001 {
+#btn_execute {
 	margin-left: 370px;
 	margin-top: 1px;
 }
 
-#C_BTN_002 {
+#btn_close {
 	margin-left: 80px
 }
 

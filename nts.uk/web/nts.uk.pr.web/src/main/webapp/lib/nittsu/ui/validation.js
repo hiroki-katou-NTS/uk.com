@@ -1,4 +1,3 @@
-/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -10,7 +9,7 @@ var nts;
                 var NoValidator = (function () {
                     function NoValidator() {
                     }
-                    NoValidator.prototype.validate = function (inputText) {
+                    NoValidator.prototype.validate = function (inputText, option) {
                         var result = new ValidationResult();
                         result.isValid = true;
                         result.parsedValue = inputText;
@@ -34,41 +33,27 @@ var nts;
                     return ValidationResult;
                 }());
                 validation.ValidationResult = ValidationResult;
-                function createValidator(constraintName, option) {
-                    var constraint = getConstraint(constraintName);
-                    if (constraint === null) {
-                        return new NoValidator();
-                    }
-                    if (constraint.valueType === 'String') {
-                        return new StringValidator(constraintName);
-                    }
-                    if (option) {
-                        if (option.inputFormat) {
-                            //If inputFormat presented, this is Date or Time Editor                 
-                            return new TimeValidator(constraintName, option);
-                        }
-                        else {
-                            return new NumberValidator(constraintName, option);
-                        }
-                    }
-                    return new NoValidator();
-                }
-                validation.createValidator = createValidator;
                 var StringValidator = (function () {
-                    function StringValidator(primitiveValueName, required) {
+                    function StringValidator(primitiveValueName, option) {
                         this.constraint = getConstraint(primitiveValueName);
                         this.charType = uk.text.getCharType(primitiveValueName);
-                        this.required = required;
+                        this.required = option.required;
                     }
-                    StringValidator.prototype.validate = function (inputText) {
+                    StringValidator.prototype.validate = function (inputText, option) {
                         var result = new ValidationResult();
                         if (this.required !== undefined && this.required !== false) {
-                            if (!checkRequired(inputText)) {
+                            if (uk.util.isNullOrEmpty(inputText)) {
                                 result.fail('This field is required');
                                 return result;
                             }
                         }
                         if (this.charType !== null && this.charType !== undefined) {
+                            if (this.charType.viewName === '半角数字' || this.charType.viewName === '半角英数字') {
+                                inputText = uk.text.toOneByteAlphaNumberic(inputText);
+                            }
+                            else if (this.charType.viewName === 'カタカナ') {
+                                inputText = uk.text.oneByteKatakanaToTwoByte(inputText);
+                            }
                             if (!this.charType.validate(inputText)) {
                                 result.fail('Invalid text');
                                 return result;
@@ -79,9 +64,11 @@ var nts;
                                 result.fail('Max length for this input is ' + this.constraint.maxLength);
                                 return result;
                             }
-                            if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
-                                result.fail('This field is not valid with pattern!');
-                                return result;
+                            if (!uk.util.isNullOrUndefined(option) && option.isCheckExpression === true) {
+                                if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
+                                    result.fail('This field is not valid with pattern!');
+                                    return result;
+                                }
                             }
                         }
                         result.success(inputText);
@@ -127,28 +114,38 @@ var nts;
                 var TimeValidator = (function () {
                     function TimeValidator(primitiveValueName, option) {
                         this.constraint = getConstraint(primitiveValueName);
-                        this.option = option;
+                        this.outputFormat = (option && option.outputFormat) ? option.outputFormat : "";
+                        this.required = (option && option.required) ? option.required : false;
+                        this.valueType = (option && option.valueType) ? option.valueType : "string";
                     }
                     TimeValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
-                        var parseResult;
-                        if (this.option.inputFormat === "yearmonth") {
-                            parseResult = uk.time.parseYearMonth(inputText);
+                        if (uk.util.isNullOrEmpty(inputText)) {
+                            if (this.required === true) {
+                                result.fail('This field is required');
+                                return result;
+                            }
+                            else {
+                                result.success("");
+                                return result;
+                            }
                         }
-                        else if (this.option.inputFormat === "time") {
-                            parseResult = uk.time.parseTime(inputText, false);
-                        }
-                        else if (this.option.inputFormat === "timeofday") {
-                            parseResult = uk.time.parseTimeOfTheDay(inputText);
-                        }
-                        else if (this.option.inputFormat === "yearmonthdate") {
-                            parseResult = uk.time.parseYearMonthDate(inputText);
-                        }
-                        else {
-                            parseResult = uk.time.ResultParseTime.failed();
-                        }
+                        var parseResult = uk.time.parseMoment(inputText, this.outputFormat);
                         if (parseResult.success) {
-                            result.success(parseResult.toValue());
+                            if (this.valueType === "string")
+                                result.success(parseResult.format());
+                            else if (this.valueType === "number") {
+                                result.success(parseResult.toNumber(this.outputFormat));
+                            }
+                            else if (this.valueType === "date") {
+                                result.success(parseResult.toValue().toDate());
+                            }
+                            else if (this.valueType === "moment") {
+                                result.success(parseResult.toValue());
+                            }
+                            else {
+                                result.success(parseResult.format());
+                            }
                         }
                         else {
                             result.fail(parseResult.getMsg());
@@ -158,12 +155,6 @@ var nts;
                     return TimeValidator;
                 }());
                 validation.TimeValidator = TimeValidator;
-                function checkRequired(value) {
-                    if (value === undefined || value === null || value.length == 0) {
-                        return false;
-                    }
-                    return true;
-                }
                 function getConstraint(primitiveValueName) {
                     var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
                     if (constraint === undefined)

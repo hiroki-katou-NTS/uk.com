@@ -82,6 +82,7 @@ public class WtHistory extends DomainObject implements History<WtHistory> {
 		List<WtElement> elementList = head.getElements();
 		for (WtElement element : elementList) {
 			ElementType type = element.getType();
+
 			// Code mode.
 			if (type.isCodeMode) {
 				elementSettings.add(new ElementSetting(element.getDemensionNo(), element.getType(),
@@ -214,36 +215,59 @@ public class WtHistory extends DomainObject implements History<WtHistory> {
 		history.applyRange = MonthRange.toMaxDate(start);
 
 		Map<ElementId, ElementId> mapUuids = new HashMap<>();
+
 		// Create new element setting.
 		history.elementSettings = this.elementSettings.stream().map(item -> {
+
+			// Check mode: is code mode
 			if (item.getType().isCodeMode) {
+				// Create new code items.
 				List<CodeItem> itemList = item.getItemList().stream().map(subItem -> {
 					CodeItem codeItem = (CodeItem) subItem;
+
+					// Create new element id.
 					ElementId newUuid = new ElementId(IdentifierUtil.randomUniqueId());
+
+					// Mapping old id with new id.
 					mapUuids.put(codeItem.getUuid(), newUuid);
+
+					// Ret.
 					return new CodeItem(codeItem.getReferenceCode(), newUuid);
 				}).collect(Collectors.toList());
 
+				// Return new setting.
 				return new ElementSetting(item.getDemensionNo(), item.getType(), itemList);
 			}
 
+			// Check mode: is range mode
 			if (item.getType().isRangeMode) {
+				// Create new range items.
 				List<RangeItem> itemList = item.getItemList().stream().map(subItem -> {
 					RangeItem rangeItem = (RangeItem) subItem;
+
+					// Create new element id.
 					ElementId newUuid = new ElementId(IdentifierUtil.randomUniqueId());
+
+					// Mapping old id with new id.
 					mapUuids.put(rangeItem.getUuid(), newUuid);
+
+					// Ret.
 					return new RangeItem(rangeItem.getOrderNumber(), rangeItem.getStartVal(),
 							rangeItem.getEndVal(), newUuid);
 				}).collect(Collectors.toList());
 
+				// Create new step setting.
 				StepElementSetting stepElementSetting = (StepElementSetting) item;
 				StepElementSetting el = new StepElementSetting(stepElementSetting.getDemensionNo(),
 						stepElementSetting.getType(), itemList);
 				el.setSetting(stepElementSetting.getLowerLimit(),
 						stepElementSetting.getUpperLimit(), stepElementSetting.getInterval());
+
+				// Ret
 				return el;
 			}
 
+			// Ret
 			return null;
 		}).collect(Collectors.toList());
 

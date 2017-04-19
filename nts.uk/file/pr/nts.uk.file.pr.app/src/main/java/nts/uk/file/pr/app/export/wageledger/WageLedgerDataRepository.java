@@ -6,8 +6,6 @@ package nts.uk.file.pr.app.export.wageledger;
 
 import java.util.List;
 
-import nts.uk.file.pr.app.export.wageledger.data.WLOldLayoutReportData;
-
 /**
  * The Interface WageLedgerDataRepository.
  */
@@ -19,7 +17,7 @@ public interface WageLedgerDataRepository {
 	 * @param query the query
 	 * @return the wage ledger report data
 	 */
-	List<WLOldLayoutReportData> findReportDatas(String companyCode, WageLedgerReportQuery query);
+	<T> List<T> findReportDatas(String companyCode, WageLedgerReportQuery query, Class<T> returnType);
 	
 	/**
 	 * Check has report data.

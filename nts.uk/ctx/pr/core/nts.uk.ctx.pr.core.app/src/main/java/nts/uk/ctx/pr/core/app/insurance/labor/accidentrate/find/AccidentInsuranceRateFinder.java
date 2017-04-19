@@ -9,7 +9,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto.AccidentInsuranceRateFindOutDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto.AccidentInsuranceRateFindDto;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -23,7 +23,7 @@ public class AccidentInsuranceRateFinder {
 
 	/** The accident insurance rate repository. */
 	@Inject
-	private AccidentInsuranceRateRepository accidentInsuranceRateRepo;
+	private AccidentInsuranceRateRepository repository;
 
 	/**
 	 * Find.
@@ -32,7 +32,7 @@ public class AccidentInsuranceRateFinder {
 	 *            the history accident insurance rate find in dto
 	 * @return the history accident insurance rate dto
 	 */
-	public AccidentInsuranceRateFindOutDto find(String historyId) {
+	public AccidentInsuranceRateFindDto find(String historyId) {
 
 		// get user login
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -41,18 +41,16 @@ public class AccidentInsuranceRateFinder {
 		String companyCode = loginUserContext.companyCode();
 
 		// call repository finder
-		AccidentInsuranceRateFindOutDto accidentInsuranceRateFindOutDto;
-		accidentInsuranceRateFindOutDto = new AccidentInsuranceRateFindOutDto();
+		AccidentInsuranceRateFindDto dto = new AccidentInsuranceRateFindDto();
 		// find by id
-		Optional<AccidentInsuranceRate> optionalAccidentInsuranceRate = accidentInsuranceRateRepo
-				.findById(companyCode, historyId);
+		Optional<AccidentInsuranceRate> data = this.repository.findById(companyCode, historyId);
 
-		//exist data finder
-		if (optionalAccidentInsuranceRate.isPresent()) {
-			optionalAccidentInsuranceRate.get().saveToMemento(accidentInsuranceRateFindOutDto);
+		// exist data finder
+		if (data.isPresent()) {
+			data.get().saveToMemento(dto);
 		}
-		// respone => .....
-		return accidentInsuranceRateFindOutDto;
+		
+		return dto;
 	}
 
 }

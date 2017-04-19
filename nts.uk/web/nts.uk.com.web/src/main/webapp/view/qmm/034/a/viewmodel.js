@@ -6,23 +6,22 @@ var qmm034;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
-                    this.countStartDateChange = 1; //Biến này để tránh việc chạy hàm startDate.subscribe 2 lần
-                    this.previousCurrentCode = null; //lưu giá trị của currentCode trước khi nó bị thay đổi
+                    this.countStartDateChange = 1;
+                    this.previousCurrentCode = null;
                     var self = this;
                     self.init();
                     self.date = ko.observable("");
                     self.startDate = ko.observable(moment().format("YYYY/MM/DD"));
                     self.startDate.subscribe(function (dateChange) {
                         if (self.countStartDateChange === 1) {
-                            // event datePicker onchange
-                            if ($('#A_INP_003').ntsError("hasError")) {
-                                $("#A_INP_003").ntsError('clear');
+                            if ($('#txtStartDate').ntsError("hasError")) {
+                                $("#txtStartDate").ntsError('clear');
                             }
                         }
                         else {
                             self.countStartDateChange = 1;
                         }
-                        //self.currentEra().startDate(dateChange);
+                        self.currentEra().startDate(dateChange);
                         self.dateTime(nts.uk.time.yearInJapanEmpire(dateChange).toString());
                     });
                     self.currentCode.subscribe(function (codeChanged) {
@@ -39,7 +38,6 @@ var qmm034;
                             }
                         }
                     });
-                    //convert to Japan Emprise year
                     self.dateTime = ko.observable(nts.uk.time.yearInJapanEmpire(self.currentEra().startDate()).toString());
                 }
                 ScreenModel.prototype.processWhenCurrentCodeChange = function (codeChanged) {
@@ -67,7 +65,7 @@ var qmm034;
                         { headerText: 'KEY', key: 'eraHist', width: 50, hidden: true },
                         { headerText: '元号', key: 'eraName', width: 50 },
                         { headerText: '記号', key: 'eraMark', width: 50 },
-                        { headerText: '開始年月日', key: 'startDate', width: 80 },
+                        { headerText: '開始年月日', key: 'startDate', width: 80, isDateColumn: true, format: 'YYYY/MM/DD' },
                     ]);
                     self.currentEra = ko.observable((new EraModel('', '', moment.utc().toISOString(), 1, '', moment.utc().toISOString())));
                     self.currentCode = ko.observable(null);
@@ -79,8 +77,8 @@ var qmm034;
                 };
                 ScreenModel.prototype.validateData = function () {
                     $(".nts-editor").ntsEditor("validate");
-                    $("#A_INP_003").ntsEditor("validate");
-                    if ($(".nts-editor").ntsError('hasError') || $("#A_INP_003").ntsError('hasError')) {
+                    $("#txtStartDate").ntsEditor("validate");
+                    if ($(".nts-editor").ntsError('hasError') || $("#txtStartDate").ntsError('hasError')) {
                         return false;
                     }
                     return true;
@@ -88,9 +86,9 @@ var qmm034;
                 ScreenModel.prototype.insertData = function () {
                     var self = this;
                     var eraName;
-                    eraName = $('#A_INP_001').val();
+                    eraName = $('#txtEraName').val();
                     var eraMark;
-                    eraMark = $('#A_INP_002').val();
+                    eraMark = $('#txtEraMark').val();
                     var startDate = self.startDate();
                     var endDate;
                     var eraHist = self.currentEra().eraHist();
@@ -114,7 +112,7 @@ var qmm034;
                             dfd.resolve();
                         });
                     }).fail(function (res) {
-                        $("#A_INP_003").ntsError("set", res.message);
+                        $("#txtStartDate").ntsError("set", res.message);
                     });
                     return dfd.promise();
                 };
@@ -131,8 +129,6 @@ var qmm034;
                         self.items([]);
                         if (data.length > 0) {
                             self.items(data);
-                            //self.date(self.currentEra().startDate().toString());
-                            //self.currentCode(self.currentEra().eraHist());
                             self.isDeleteEnable(true);
                         }
                         dfd.resolve(data);
@@ -143,9 +139,9 @@ var qmm034;
                 ScreenModel.prototype.deleteData = function () {
                     var self = this;
                     var eraName;
-                    eraName = $('#A_INP_001').val();
+                    eraName = $('#txtEraName').val();
                     var eraMark;
-                    eraMark = $('#A_INP_002').val();
+                    eraMark = $('#txtEraMark').val();
                     var eraHist = self.currentEra().eraHist();
                     var startDate = self.startDate();
                     var dfd = $.Deferred();
@@ -189,9 +185,7 @@ var qmm034;
                 };
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
-                    // Page load dfd.
                     var dfd = $.Deferred();
-                    // Resolve start page dfd after load all data.
                     $.when(qmm034.a.service.getAllEras()).done(function (data) {
                         if (data.length > 0) {
                             self.items(data);
@@ -205,7 +199,7 @@ var qmm034;
                         }
                         dfd.resolve();
                     }).fail(function (res) {
-                        $("#A_INP_001").ntsError("set", res.message);
+                        $("#txtEraName").ntsError("set", res.message);
                     });
                     return dfd.promise();
                 };
@@ -220,7 +214,7 @@ var qmm034;
                     self.isUpdate(false);
                     if (self.dirtyObject !== undefined)
                         self.dirtyObject.reset();
-                    $("#A_INP_001").focus();
+                    $("#txtEraName").focus();
                 };
                 ScreenModel.prototype.startWithEmptyData = function () {
                     var self = this;
@@ -232,8 +226,8 @@ var qmm034;
                 ScreenModel.prototype.clearError = function () {
                     if ($(".nts-editor").ntsError('hasError'))
                         $(".nts-editor").ntsError('clear');
-                    if ($("#A_INP_003").ntsError('hasError'))
-                        $("#A_INP_003").ntsError('clear');
+                    if ($("#txtStartDate").ntsError('hasError'))
+                        $("#txtStartDate").ntsError('clear');
                 };
                 return ScreenModel;
             }());

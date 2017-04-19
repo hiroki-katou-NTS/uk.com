@@ -7,7 +7,6 @@ var qmm012;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    //gridlist
                     self.items = ko.observableArray([
                         new ItemModel('001', 'name1', "name1"),
                         new ItemModel('002', 'name1', "name1"),
@@ -38,7 +37,6 @@ var qmm012;
                     self.currentCode = ko.observable();
                 }
                 ScreenModel.prototype.changeGrid = function (value) {
-                    //    alert(value);
                 };
                 ScreenModel.prototype.SubmitDialog = function () {
                     nts.uk.ui.windows.close();
