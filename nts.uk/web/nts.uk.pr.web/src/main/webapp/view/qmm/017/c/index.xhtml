@@ -28,7 +28,7 @@
 								</div>
 								<div class="col col-3">
 									<com:ko-if bind="selectedRuleCodeEasySettings() == 0">
-										<input style="width: 150px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
+										<input class="check-error" style="width: 150px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
 																														constraint: 'Money',
 																													 	required: true,
 																													 	enable: true,
@@ -64,7 +64,7 @@
 											</div>
 											<div class="col col-4">
 												<com:ko-if bind="selectedRuleCodeEasySettings() == 0">
-													<input style="width: 150px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
+													<input class="check-error" style="width: 150px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
 																																	constraint: 'Money',
 																																 	required: true,
 																																 	enable: true,
@@ -87,7 +87,7 @@
 											</div>
 											<div class="col col-4">
 												<com:ko-if bind="selectedRuleCodeEasySettings() == 0">
-													<input style="width: 150px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
+													<input class="check-error" style="width: 150px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
 													                                                                                constraint: 'Money',
 																																 	required: true,
 																																 	enable: true,
@@ -110,7 +110,7 @@
 											</div>
 											<div class="col col-4">
 												<com:ko-if bind="selectedRuleCodeEasySettings() == 0">
-													<input style="width: 150px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
+													<input class="check-error" style="width: 150px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
 													                                                                                constraint: 'Money',
 																																 	required: true,
 																																 	enable: true,
@@ -133,7 +133,7 @@
 											</div>
 											<div class="col col-4">
 												<com:ko-if bind="selectedRuleCodeEasySettings() == 0">
-													<input style="width: 150px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
+													<input class="check-error" style="width: 150px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
 													                                                                                constraint: 'Money',
 																																 	required: true,
 																																 	enable: true,
@@ -231,7 +231,7 @@
 										</div>
 										<div id="input-content-area" data-bind="html: contentValue"></div>
 										<div id="input-area">
-											<TEXTAREA id="input-text" maxlength="3000" rows="12" cols="68" data-bind="value: textArea"></TEXTAREA>
+											<TEXTAREA id="input-text" maxlength="3000" rows="12" cols="68" data-bind="value: textArea" autofocus="autofocus"></TEXTAREA>
 										</div>
 									</div>
 						  		</div>
