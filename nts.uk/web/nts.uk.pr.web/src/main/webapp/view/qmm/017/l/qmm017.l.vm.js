@@ -310,7 +310,7 @@ var nts;
                                     if (easyFormulaDetail.baseValueDevision !== '0') {
                                         easyFormulaDetail.baseFixedValue = 0;
                                     }
-                                    if (easyFormulaDetail.coefficientDivision !== '0') {
+                                    if (easyFormulaDetail.coefficientDivision !== '0000') {
                                         easyFormulaDetail.coefficientFixedValue = 0;
                                     }
                                     nts.uk.ui.windows.setShared('easyFormulaDetail', easyFormulaDetail);

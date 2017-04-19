@@ -18,10 +18,14 @@ var nts;
                                     self.items = ko.observableArray([]);
                                     self.personalUPItems = ko.observableArray([]);
                                     self.currentCodeList = ko.observableArray([]);
-                                    self.formulaContent = data.formulaContent;
-                                    self.buildListItemModel(data.itemsBag);
-                                    self.bindGridListItem();
-                                    self.calculator = new Calculator();
+                                    self.formulaContent = ko.observable(data.formulaContent);
+                                    self.extractOtherFormulaContents(data.itemsBag)
+                                        .done(function () {
+                                        self.replaceCodesToNames(data.itemsBag);
+                                        self.buildListItemModel(data.itemsBag);
+                                        self.bindGridListItem();
+                                        self.calculator = new Calculator();
+                                    });
                                 }
                                 ScreenModel.prototype.isDuplicated = function (itemName) {
                                     var self = this;
@@ -30,10 +34,40 @@ var nts;
                                     });
                                     return foundItem !== undefined;
                                 };
+                                ScreenModel.prototype.replaceCodesToNames = function (itemsBag) {
+                                    var self = this;
+                                    var replacedContent = self.formulaContent();
+                                    _.forEach(itemsBag, function (item) {
+                                        if (replacedContent.indexOf(item.code) !== -1) {
+                                            replacedContent = replacedContent.replace(item.code, item.name);
+                                        }
+                                    });
+                                    self.formulaContent(replacedContent);
+                                };
+                                ScreenModel.prototype.extractOtherFormulaContents = function (itemsBag) {
+                                    var self = this;
+                                    var dfdExtraction = $.Deferred();
+                                    var replacedValue = self.formulaContent();
+                                    _.forEach(itemsBag, function (item) {
+                                        if (item.name.indexOf('計算式＠') !== -1 && self.formulaContent().indexOf(item.name) !== -1) {
+                                            var itemCodeSplited = item.code.split('＠');
+                                            q.service.findLastestFormulaManual(itemCodeSplited[1])
+                                                .done(function (formulaManual) {
+                                                replacedValue = replacedValue.replace(new RegExp(item.name, 'g'), "（" + formulaManual.formulaContent + "）");
+                                                self.formulaContent(replacedValue);
+                                                dfdExtraction.resolve();
+                                            })
+                                                .fail(function () {
+                                                dfdExtraction.reject();
+                                            });
+                                        }
+                                    });
+                                    return dfdExtraction.promise();
+                                };
                                 ScreenModel.prototype.buildListItemModel = function (itemsBag) {
                                     var self = this;
                                     _.forEach(itemsBag, function (item) {
-                                        if (item.name.indexOf('関数') === -1 && self.formulaContent.indexOf(item.name) !== -1 && !self.isDuplicated(item.name)) {
+                                        if (item.name.indexOf('関数') === -1 && self.formulaContent().indexOf(item.name) !== -1 && !self.isDuplicated(item.name)) {
                                             if (item.name.indexOf('個人単価＠') !== -1) {
                                                 self.personalUPItems.push(new ItemModel(item.name, 0));
                                             }
@@ -73,7 +107,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.calculationTrial = function () {
                                     var self = this;
-                                    var replacedValue = self.formulaContent + '+ 0';
+                                    var replacedValue = self.formulaContent() + '+ 0';
                                     _.forEach(self.items(), function (item) {
                                         replacedValue = replacedValue.replace(new RegExp(item.code, 'g'), item.value);
                                     });
@@ -202,7 +236,7 @@ var nts;
                                 return _.min(lstValue);
                             };
                             Calculator.prototype.calculateNumberOfFamily = function (minAge, maxAge) {
-                                return 0;
+                                return 1;
                             };
                             Calculator.prototype.calculateAddMonth = function (yearMonth, month) {
                                 return moment(yearMonth, "YYYY/MM").add(month, 'months').format("YYYY/MM");

@@ -124,7 +124,7 @@
         /**
          * Returns true if the target is null or undefined or blank.
          * @param  {any} [target] Target need to check
-         * @return {boolean}      Formatted duration
+         * @return {boolean}      True for blank
          */
         export function isNullOrEmpty(target: any): boolean {
             return (target === undefined || target === null || target.length == 0);
