@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.reference.WtCodeRef;
 import nts.uk.ctx.pr.core.dom.wagetable.reference.WtCodeRefItem;
 import nts.uk.ctx.pr.core.dom.wagetable.reference.WtMasterRef;
@@ -73,8 +74,12 @@ public class JpaWtReferenceRepository extends JpaRepository implements WtReferen
 		strBuilder.append(masterRef.getWageRefDispField());
 		strBuilder.append(" FROM ");
 		strBuilder.append(masterRef.getWageRefTable());
-		strBuilder.append(" WHERE ");
-		strBuilder.append(masterRef.getWageRefQuery());
+		strBuilder.append(" WHERE CCD = ");
+		strBuilder.append(masterRef.getCompanyCode());
+		if (!StringUtil.isNullOrEmpty(masterRef.getWageRefQuery(), true)) {
+			strBuilder.append(" AND ");
+			strBuilder.append(masterRef.getWageRefQuery());
+		}
 
 		// Get entity manager
 		EntityManager em = this.getEntityManager();

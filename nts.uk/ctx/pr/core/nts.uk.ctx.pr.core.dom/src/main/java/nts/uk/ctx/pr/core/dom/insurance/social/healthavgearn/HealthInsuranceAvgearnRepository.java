@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn;
@@ -28,6 +28,15 @@ public interface HealthInsuranceAvgearnRepository {
 	 * @return the list
 	 */
 	List<HealthInsuranceAvgearn> findById(String id);
+
+	/**
+	 * Find by office.
+	 *
+	 * @param companyCode the company code
+	 * @param officeCodes the office codes
+	 * @return the list
+	 */
+	List<HealthInsuranceAvgearn> findByOfficeCodes(String companyCode, List<String> officeCodes);
 
 	/**
 	 * Find.

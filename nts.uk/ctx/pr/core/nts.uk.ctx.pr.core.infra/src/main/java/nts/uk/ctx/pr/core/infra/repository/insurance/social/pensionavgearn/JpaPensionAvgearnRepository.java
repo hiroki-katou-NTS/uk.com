@@ -76,7 +76,7 @@ public class JpaPensionAvgearnRepository extends JpaRepository implements Pensio
 	 * PensionAvgearnRepository#find(java.lang.String)
 	 */
 	@Override
-	public List<PensionAvgearn> find(String historyId) {
+	public List<PensionAvgearn> findById(String historyId) {
 
 		EntityManager em = getEntityManager();
 
@@ -92,6 +92,45 @@ public class JpaPensionAvgearnRepository extends JpaRepository implements Pensio
 
 		listpredicate.add(cb.equal(root.get(QismtPensionAmount_.qismtPensionAmountPK)
 				.get(QismtPensionAmountPK_.histId), historyId));
+
+		cq.where(listpredicate.toArray(new Predicate[] {}));
+
+		cq.orderBy(cb.asc(root.get(QismtPensionAmount_.qismtPensionAmountPK)
+				.get(QismtPensionAmountPK_.pensionGrade)));
+
+		TypedQuery<QismtPensionAmount> query = em.createQuery(cq);
+
+		List<PensionAvgearn> listPensionAvgearn = query.getResultList().stream()
+				.map(entity -> toDomain(entity.getQismtPensionAvgearnD(), entity))
+				.collect(Collectors.toList());
+
+		return listPensionAvgearn;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnRepository#findbyOfficeCode(java.lang.String,
+	 * java.util.List)
+	 */
+	@Override
+	public List<PensionAvgearn> findbyOfficeCodes(String companyCode, List<String> officeCodes) {
+
+		EntityManager em = getEntityManager();
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+
+		CriteriaQuery<QismtPensionAmount> cq = cb.createQuery(QismtPensionAmount.class);
+
+		Root<QismtPensionAmount> root = cq.from(QismtPensionAmount.class);
+
+		cq.select(root);
+
+		List<Predicate> listpredicate = new ArrayList<>();
+
+		listpredicate.add(cb.equal(root.get(QismtPensionAmount_.ccd), companyCode));
+		listpredicate.add(root.get(QismtPensionAmount_.siOfficeCd).in(officeCodes));
 
 		cq.where(listpredicate.toArray(new Predicate[] {}));
 

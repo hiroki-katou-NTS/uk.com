@@ -31,7 +31,7 @@ public class PensionAvgearnFinder {
 	 */
 	public ListPensionAvgearnModel find(String id) {
 		
-		List<PensionAvgearnDto> list = repository.find(id).stream().map(domain -> {
+		List<PensionAvgearnDto> list = repository.findById(id).stream().map(domain -> {
 			PensionAvgearnDto dto = PensionAvgearnDto.builder().build();
 			return dto.fromDomain(domain);
 		}).collect(Collectors.toList());

@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn;
 
 import java.util.List;
@@ -23,7 +27,16 @@ public interface PensionAvgearnRepository {
 	 * @param historyId the history id
 	 * @return the list
 	 */
-	List<PensionAvgearn> find(String historyId);
+	List<PensionAvgearn> findById(String historyId);
+
+	/**
+	 * Findby office code.
+	 *
+	 * @param companyCode the company code
+	 * @param officeCodes the office codes
+	 * @return the list
+	 */
+	List<PensionAvgearn> findbyOfficeCodes(String companyCode, List<String> officeCodes);
 
 	/**
 	 * Find.
