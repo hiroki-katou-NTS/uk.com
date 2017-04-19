@@ -267,7 +267,7 @@ module qmm012.b.viewmodel {
             let self = this;
             self.dirtyOldValue.lstCode = '';
             self.GridlistCurrentCode('');
-            self.clearContent(true);
+            self.clearContent();
             //disable delete button
             self.B_Btn_DeleteButton_enable(false);
             //disable 有効期間設定 button
@@ -276,7 +276,7 @@ module qmm012.b.viewmodel {
             self.screenModel.screenModelD.D_Btn_PeriodSetting_enable(false);
             self.screenModel.screenModelD.D_Btn_BreakdownSetting_enable(false);
         }
-        clearContent(activeItemCode) {
+        clearContent() {
             let self = this;
             self.clearAllValidateError();
             self.GridCurrentItemName('');
@@ -288,7 +288,7 @@ module qmm012.b.viewmodel {
             self.GridCurrentItemAbName('');
             self.GridCurrentCategoryAtrName('');
             //when itemModel != undefined , need disable INP_002
-            self.enable_B_Inp_Code(activeItemCode);
+            self.enable_B_Inp_Code(true);
             self.GridlistCurrentItem(self.getCurrentItemMaster());
         }
         setUpdateItemMode() {
@@ -378,7 +378,9 @@ module qmm012.b.viewmodel {
                     self.dirtyItemMaster(self.getCurrentItemMaster());
                     self.dirty = new nts.uk.ui.DirtyChecker(self.dirtyItemMaster);
                 } else {
-                    self.clearContent(false);
+                    //if no item, show message set new mode
+                    alert("対象データがありません。");
+                    self.setNewItemMode();
                 }
             }).fail(function(res) {
                 alert(res);

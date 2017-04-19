@@ -75,15 +75,16 @@
 .form-label span {
 	font-size: 0.8rem;
 }
+
 #B_Inp_Code {
 	width: 35px !important;
 }
 
-#B_Inp_Name , #B_Inp_Code, #B_Inp_AbbreviatedName  {
+#B_Inp_Name, #B_Inp_Code, #B_Inp_AbbreviatedName {
 	height: 17px;
 }
 
-#B_Inp_Name  {
+#B_Inp_Name {
 	margin-left: 5px;
 	width: 270px;
 }
@@ -105,7 +106,7 @@
 	margin-top: -2px;
 }
 
-#B_Inp_AbbreviatedName  {
+#B_Inp_AbbreviatedName {
 	width: 250px;
 	margin-top: 5px;
 }

@@ -184,7 +184,7 @@ module qmm012.i.viewmodel {
             service.findAllItemBD(self.CurrentItemMaster()).done(function(ItemBDs: Array<service.model.ItemBD>) {
                 self.ItemBDList(ItemBDs);
                 //set selected 
-                if (self.ItemBDList().length)
+                if (self.ItemBDList().length) {
                     if (itemCode == undefined)
                         //if param itemCode == undefined => select first item in grid list
                         self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCode);
@@ -197,8 +197,14 @@ module qmm012.i.viewmodel {
                         self.oldGridListCurrentCode(itemCode);
                         self.gridListCurrentCode(itemCode);
                     }
-                self.dirtyItemBD(self.getCurrentItemBD());
-                self.dirty = new nts.uk.ui.DirtyChecker(self.dirtyItemBD);
+                    self.dirtyItemBD(self.getCurrentItemBD());
+                    self.dirty = new nts.uk.ui.DirtyChecker(self.dirtyItemBD);
+                } else {
+                    //if no item, show message set new mode
+                    alert("対象データがありません。");
+                    self.setNewMode();
+                }
+
             });
         }
         getCurrentItemBD() {
