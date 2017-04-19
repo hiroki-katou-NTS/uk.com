@@ -133,7 +133,7 @@ module nts.uk.pr.view.qmm016.a {
                 self.selectedTab('tab-1');
                 self.head.reset();
             }
-            
+
             /**
              * Show group setting screen.
              */
@@ -144,7 +144,19 @@ module nts.uk.pr.view.qmm016.a {
                     dialogClass: 'no-close'
                 };
                 nts.uk.ui.windows.sub.modal('/view/qmm/016/l/index.xhtml', ntsDialogOptions);
-            
+            }
+
+            /**
+             * Download input file.
+             */
+            btnInputFileDownload(): void {
+                var self = this;
+                nts.uk.request.exportFile('/screen/pr/qmm016/inputfile', {
+                        code: self.head.code(),
+                        name: self.head.name(),
+                        memo: self.head.memo(),
+                        wtHistoryDto: self.history.getWageTableHistoryDto()
+                    });
             }
         }
 

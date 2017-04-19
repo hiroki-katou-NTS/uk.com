@@ -50,6 +50,7 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 		hisOpt = this.getRepository().findLastestHistoryByMasterCode(
 				history.getCompanyCode(),
 				history.getMasterCode().v());
+		
 		if (hisOpt.isPresent()) {
 			history = hisOpt.get();
 			history.setEnd(YearMonth.of(DateTimeConstraints.LIMIT_YEAR.max(), DateTimeConstraints.LIMIT_MONTH.max()));

@@ -1,27 +1,3 @@
-var TextEditorBindingHandler = (function () {
-    function TextEditorBindingHandler() {
-    }
-    TextEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-        ko.bindingHandlers['ntsTextEditor'].init(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
-        if (valueAccessor().valueUpdate) {
-            switch (valueAccessor().valueUpdate) {
-                case 'keyup':
-                    element.onkeyup = function () { valueAccessor().value(this.value); };
-                    break;
-                case 'keypress':
-                    element.onkeypress = function () { valueAccessor().value(this.value); };
-                    break;
-                case 'afterkeydown':
-                    element.onkeydown = function () { valueAccessor().value(this.value); };
-                    break;
-            }
-        }
-    };
-    TextEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-        ko.bindingHandlers['ntsTextEditor'].update(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
-    };
-    return TextEditorBindingHandler;
-}());
 var CheckBoxWithHelpBindingHandler = (function () {
     function CheckBoxWithHelpBindingHandler() {
     }
@@ -39,8 +15,17 @@ var CheckBoxWithHelpBindingHandler = (function () {
     };
     return CheckBoxWithHelpBindingHandler;
 }());
-ko.bindingHandlers['ntsTextEditor2'] = new TextEditorBindingHandler();
 ko.bindingHandlers['ntsCheckBox2'] = new CheckBoxWithHelpBindingHandler();
+Date.prototype["getWorkDays"] = function () {
+    var workDays = 0, lastDate = moment(this).daysInMonth();
+    for (var day = 1; day <= lastDate; day++) {
+        var date = new Date(this.getFullYear(), this.getMonth(), day);
+        if (date.getDay() != 0 && date.getDay() != 6) {
+            workDays++;
+        }
+    }
+    return workDays;
+};
 Date.prototype["getDayJP"] = function () {
     return ['日', '月', '火', '水', '木', '金', '土'][this.getDay()];
 };
@@ -106,6 +91,10 @@ var qmm005;
                 'qmm005d': {
                     'update': 'pr/core/qmm005d/update',
                     'getdata': 'pr/core/qmm005d/getdata'
+                },
+                'qmm005e': {
+                    'update': 'pr/core/qmm005e/update',
+                    'getdata': 'pr/core/qmm005e/getdata'
                 }
             };
         }

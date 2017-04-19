@@ -55,4 +55,28 @@ public enum OutputSetting {
 		// Not found.
 		return null;
 	}
+
+	/**
+	 * Bol of.
+	 *
+	 * @param bol
+	 *            the bol
+	 * @return the output setting
+	 */
+	public static OutputSetting bolOf(Boolean bol) {
+		// Invalid object.
+		if (bol == null) {
+			return null;
+		}
+
+		// Find value.
+		for (OutputSetting val : OutputSetting.values()) {
+			if (val.bol == bol) {
+				return val;
+			}
+		}
+
+		// Not found.
+		return null;
+	}
 }

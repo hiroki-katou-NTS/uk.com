@@ -7,6 +7,9 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemName
+  			</com:ValidatorScript>
 			<com:stylefile path="qpp007.j.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="qpp007.j.service.js" />
@@ -131,9 +134,9 @@
 			<script type="text/html" id="aggregateItem">
 								<div class="control-group">
 									<div id="lblDisplayName"
-										data-bind="ntsFormLabel: {required: true}">表示名</div>
+										data-bind="ntsFormLabel: {constraint: 'SalaryAggregateItemName', required: true}">表示名</div>
 									<input id="inpDisplayName" data-name="表示名"
-										data-bind="ntsTextEditor: {value: salaryAggregateItemName, required: true}"></input>
+										data-bind="ntsTextEditor: {constraint: 'SalaryAggregateItemName', value: salaryAggregateItemName, required: true}"></input>
 								</div>
 								<div class="control-group">
 									<table>

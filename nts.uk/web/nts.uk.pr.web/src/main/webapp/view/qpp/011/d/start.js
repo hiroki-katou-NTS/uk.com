@@ -2,7 +2,6 @@ __viewContext.ready(function () {
     var ScreenModel = (function () {
         function ScreenModel() {
             var self = this;
-            //gridlist data
             self.items = ko.observableArray([
                 new GridItemModel('001', '陜難ｽｺ隴幢ｽｬ驍ｨ�ｽｦ'),
                 new GridItemModel('150', '陟厄ｽｹ髢ｨ�ｽｷ隰�蜿･�ｽｽ�ｿｽ'),
@@ -26,7 +25,6 @@ __viewContext.ready(function () {
             ]);
             self.gridListCurrentCode = ko.observable();
             self.currentCodeList = ko.observableArray([]);
-            //currencyeditor
             self.currencyeditor = {
                 value: ko.observable(),
                 constraint: '',
@@ -40,14 +38,12 @@ __viewContext.ready(function () {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
-            //Switch
             self.enable = ko.observable(true);
             self.roundingRules = ko.observableArray([
                 { code: '1', name: 'Item1' },
                 { code: '2', name: 'Item2' }
             ]);
             self.selectedRuleCode = ko.observable(1);
-            //search box 
             self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
         }
         return ScreenModel;
@@ -68,3 +64,4 @@ function closeDialog() {
 function submitInfo() {
     nts.uk.ui.windows.close();
 }
+//# sourceMappingURL=start.js.map

@@ -2,22 +2,8 @@ __viewContext.ready(function () {
     var ScreenModel = (function () {
         function ScreenModel() {
             var self = this;
-            // TextEditor
-            self.texteditor = {
-                value: ko.observable('123'),
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
-            // NumberEditor
-            self.numbereditor = {
-                value: ko.observable(12),
-                constraint: '',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({ grouplength: 3, decimallength: 2 })),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
+            self.ResidentCode = ko.observable('123');
+            self.NumberValue = ko.observable(5);
         }
         ScreenModel.prototype.setErrorToResidenceCode = function () {
             $('#residence-code').ntsError('set', 'えらーです');
@@ -32,3 +18,4 @@ __viewContext.ready(function () {
     }());
     this.bind(new ScreenModel());
 });
+//# sourceMappingURL=start.js.map

@@ -127,12 +127,12 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
             + "AND pd.qstdtPaymentDetailPK.sparePayAttribute = ph.qstdtPaymentHeaderPK.sparePayAtr "
             + "AND pd.qstdtPaymentDetailPK.categoryATR = 1 "
             + "AND pd.qstdtPaymentDetailPK.itemCode IN :itemCodes "
-            + "AND hr.qismtHealthInsuRatePK.ccd = ph.qstdtPaymentHeaderPK.companyCode "
-            + "AND hr.qismtHealthInsuRatePK.siOfficeCd = :officeCode "
+            + "AND hr.ccd = ph.qstdtPaymentHeaderPK.companyCode "
+            + "AND hr.siOfficeCd = :officeCode "
             + "AND hr.strYm <= :yearMonth "
             + "AND hr.endYm >= :yearMonth "
-            + "AND pr.qismtPensionRatePK.ccd = ph.qstdtPaymentHeaderPK.companyCode "
-            + "AND pr.qismtPensionRatePK.siOfficeCd = hr.qismtHealthInsuRatePK.siOfficeCd "
+            + "AND pr.ccd = ph.qstdtPaymentHeaderPK.companyCode "
+            + "AND pr.siOfficeCd = hr.siOfficeCd "
             + "AND pr.strYm <= :yearMonth "
             + "AND pr.endYm >= :yearMonth ";
     
@@ -491,7 +491,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         PismtPersonInsuPensB insuPensBEntity = (PismtPersonInsuPensB) objects[6];
         PensionAvgearn pensAvgearn = reportData.listPensAvgearn.stream()
                 .filter(p -> {
-                    return insuPensBEntity.getPensionInsuGrade().intValue() == p.getLevelCode();
+                    return insuPensBEntity.getPensionInsuGrade().intValue() == p.getGrade();
                 })
                 .findFirst()
                 .get();
@@ -651,7 +651,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         PismtPersonInsuPensB insuPensBEntity = (PismtPersonInsuPensB) objectNormals[6];
         PensionAvgearn pensAvgearn = reportData.listPensAvgearn.stream()
                 .filter(p -> {
-                    return insuPensBEntity.getPensionInsuGrade().intValue() == p.getLevelCode();
+                    return insuPensBEntity.getPensionInsuGrade().intValue() == p.getGrade();
                 })
                 .findFirst()
                 .get();

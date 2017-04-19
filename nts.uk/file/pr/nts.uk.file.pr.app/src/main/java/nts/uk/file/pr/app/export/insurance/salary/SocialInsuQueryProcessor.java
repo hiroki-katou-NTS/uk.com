@@ -26,7 +26,6 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * The Class SocialInsuQueryProcessor.
  */
-
 @Stateless
 public class SocialInsuQueryProcessor {
     
@@ -34,13 +33,13 @@ public class SocialInsuQueryProcessor {
     @Inject
     private ChecklistPrintSettingRepository printSettingRepository;
     
-    /** The repository insu avgearn. */
+    /** The insu avgearn repo. */
     @Inject
-    private HealthInsuranceAvgearnRepository repositoryInsuAvgearn;
+    private HealthInsuranceAvgearnRepository insuAvgearnRepo;
     
-    /** The repository pens avgearn. */
+    /** The pens avgearn repo. */
     @Inject
-    private PensionAvgearnRepository repositoryPensAvgearn;
+    private PensionAvgearnRepository pensAvgearnRepo;
 
     /**
      * Find configure output setting.
@@ -76,11 +75,11 @@ public class SocialInsuQueryProcessor {
      */
     public List<HealthInsuranceAvgearn> findHealInsuAvgearnByOffice(List<String> officeCodes) {
         String companyCode = AppContexts.user().companyCode();
-        List<HealthInsuranceAvgearn> healInsuAngearns = repositoryInsuAvgearn.findByOffice(companyCode, officeCodes);
-        if (healInsuAngearns.isEmpty()) {
+        List<HealthInsuranceAvgearn> healInsuAvgearns = insuAvgearnRepo.findByOfficeCodes(companyCode, officeCodes);
+        if (healInsuAvgearns.isEmpty()) {
             throw new BusinessException("対象データがありません。");
         }
-        return healInsuAngearns;
+        return healInsuAvgearns;
     }
     
     /**
@@ -91,7 +90,7 @@ public class SocialInsuQueryProcessor {
      */
     public List<PensionAvgearn> findPensAvgearnByOffice(List<String> officeCodes) {
         String companyCode = AppContexts.user().companyCode();
-        List<PensionAvgearn> pensionAvgearns = repositoryPensAvgearn.findByOffice(companyCode, officeCodes);
+        List<PensionAvgearn> pensionAvgearns = pensAvgearnRepo.findbyOfficeCodes(companyCode, officeCodes);
         if (pensionAvgearns.isEmpty()) {
             throw new BusinessException("対象データがありません。");
         }

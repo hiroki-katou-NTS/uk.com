@@ -19,7 +19,6 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionPremiumRateIte
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRounding;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateSetMemento;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPensionRate;
-import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPensionRatePK;
 
 /**
  * The Class JpaPensionRateSetMemento.
@@ -48,9 +47,7 @@ public class JpaPensionRateSetMemento implements PensionRateSetMemento {
 	 */
 	@Override
 	public void setHistoryId(String historyId) {
-		QismtPensionRatePK qismtPensionRatePK = new QismtPensionRatePK();
-		qismtPensionRatePK.setHistId(historyId);
-		this.typeValue.setQismtPensionRatePK(qismtPensionRatePK);
+		this.typeValue.setHistId(historyId);
 	}
 
 	/*
@@ -62,9 +59,7 @@ public class JpaPensionRateSetMemento implements PensionRateSetMemento {
 	 */
 	@Override
 	public void setCompanyCode(String companyCode) {
-		QismtPensionRatePK qismtPensionRatePK = this.typeValue.getQismtPensionRatePK();
-		qismtPensionRatePK.setCcd(companyCode);
-		this.typeValue.setQismtPensionRatePK(qismtPensionRatePK);
+		this.typeValue.setCcd(companyCode);
 	}
 
 	/*
@@ -76,9 +71,7 @@ public class JpaPensionRateSetMemento implements PensionRateSetMemento {
 	 */
 	@Override
 	public void setOfficeCode(OfficeCode officeCode) {
-		QismtPensionRatePK qismtPensionRatePK = this.typeValue.getQismtPensionRatePK();
-		qismtPensionRatePK.setSiOfficeCd(officeCode.v());
-		this.typeValue.setQismtPensionRatePK(qismtPensionRatePK);
+		this.typeValue.setSiOfficeCd(officeCode.v());
 	}
 
 	/*

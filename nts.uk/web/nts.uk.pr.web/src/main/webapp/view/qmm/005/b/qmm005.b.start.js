@@ -3,7 +3,8 @@ var qmm005;
     var b;
     (function (b) {
         __viewContext.ready(function () {
-            __viewContext.bind(new b.ViewModel());
+            __viewContext["viewModel"] = new b.ViewModel();
+            __viewContext.bind(__viewContext["viewModel"]);
         });
     })(b = qmm005.b || (qmm005.b = {}));
 })(qmm005 || (qmm005 = {}));

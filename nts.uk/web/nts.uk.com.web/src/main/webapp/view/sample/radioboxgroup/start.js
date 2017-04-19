@@ -10,6 +10,7 @@ __viewContext.ready(function () {
             self.selectedValue = ko.observable(new BoxModel(3, 'box 3'));
             self.selectedId = ko.observable(1);
             self.enable = ko.observable(true);
+            self.value = ko.observable(0);
         }
         ScreenModel.prototype.addBoxes = function () {
             var self = this;
@@ -20,6 +21,12 @@ __viewContext.ready(function () {
             var self = this;
             self.itemList.pop();
         };
+        ScreenModel.prototype.enableCheckBox = function () {
+            var self = this;
+            if (self.value() < self.itemList().length - 1) {
+                self.itemList()[self.value()].enable(true);
+            }
+        };
         return ScreenModel;
     }());
     var BoxModel = (function () {
@@ -27,8 +34,10 @@ __viewContext.ready(function () {
             var self = this;
             self.id = id;
             self.name = name;
+            self.enable = ko.observable(id % 3 === 0);
         }
         return BoxModel;
     }());
     this.bind(new ScreenModel());
 });
+//# sourceMappingURL=start.js.map

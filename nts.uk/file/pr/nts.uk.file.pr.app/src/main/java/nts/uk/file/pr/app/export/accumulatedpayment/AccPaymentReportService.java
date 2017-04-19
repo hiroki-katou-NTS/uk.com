@@ -57,7 +57,7 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 					.widthHoldingTaxAmount(1016.0 + 10*i)
 					.amountAfterTaxDeduction(5567.0 + 100*i)
 					.enrollmentStatus("退職")
-					.directionalStatus("xxxxxxxxxxxxx   から　  出向")
+					.directionalStatus("から　  出向")
 					.build();
 			accumulatedPaymentList.add(accumulatedPayment);
 		}

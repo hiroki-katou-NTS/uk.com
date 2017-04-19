@@ -36,6 +36,7 @@
 								columns: columns2,
 								deleteOptions : {visible : true, deleteField: 'deletable'},
 								multiple: false,
+								features: [{name: 'Switch', options: switchOptions, optionsValue: 'code', optionsText: 'name'}],
 								value: currentCode
 							}"
 							class="cf"></table>
@@ -112,6 +113,13 @@ currentCodeList: <span data-bind="text: currentCodeList"></span>]]></pre>
 													<i>null:</i> Will stretch to fit the sum of the columns widths.<br/>
 													<i>number:</i> The widget width can be set in pixels as a number. Example values: 800, 700.<br/>
 													<i>string:</i> The widget width can be set in pixels (px) or percentage (%). Example values: "800px", "800" (defaults to pixels), "100%".
+												</td>
+											</tr>
+											<tr>
+												<td>showNumbering</td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													<i>number:</i> Show index number for each row.
 												</td>
 											</tr>
 											<tr>

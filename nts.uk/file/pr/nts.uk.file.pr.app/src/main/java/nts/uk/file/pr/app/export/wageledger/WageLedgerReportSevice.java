@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
@@ -21,8 +22,6 @@ import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery.LayoutType;
 import nts.uk.file.pr.app.export.wageledger.data.WLNewLayoutReportData;
 import nts.uk.file.pr.app.export.wageledger.data.WLOldLayoutReportData;
 import nts.uk.file.pr.app.export.wageledger.data.newlayout.TotalData;
-import nts.uk.file.pr.app.export.wageledger.data.oldlayout.DeductionData;
-import nts.uk.file.pr.app.export.wageledger.data.oldlayout.PaymentData;
 import nts.uk.file.pr.app.export.wageledger.data.share.HeaderReportData;
 import nts.uk.file.pr.app.export.wageledger.data.share.MonthlyData;
 import nts.uk.file.pr.app.export.wageledger.data.share.ReportItemDto;
@@ -58,73 +57,72 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 		query.baseDate = GeneralDate.today();
 		query.employeeIds = Arrays.asList("999000000000000000000000000000000001");
 		if (!this.repository.hasReportData(companyCode, query)) {
-			throw new RuntimeException("None Data!");
+			throw new BusinessException("対象データがありません。");
 		}
 		
 		// Query Data.
-		@SuppressWarnings("unused")
 		List<WLOldLayoutReportData> reportData = this.repository.findReportDatas(companyCode, query, WLOldLayoutReportData.class);
 		
-		// Fake data.
-		WLOldLayoutReportData fakeReportData = WLOldLayoutReportData.builder()
-				.bonusMonthList(Arrays.asList(1, 3, 7, 9, 12))
-				.salaryMonthList(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12))
-				.headerData(HeaderReportData.builder()
-						.departmentCode("DEP1")
-						.departmentName("Department 1")
-						.employeeCode("EM1")
-						.employeeName("Employee 1")
-						.position("Project manager")
-						.sex("Man")
-						.targetYear(query.targetYear)
-						.build())
-				.salaryPaymentData(PaymentData.builder()
-						.totalTax(ReportItemDto.builder()
-								.name("Total Tax")
-								.monthlyDatas(this.fakeMonthlyData())
-								.build())
-						.totalTaxExemption(ReportItemDto.builder()
-								.monthlyDatas(this.fakeMonthlyData())
-								.name("Total Tax Exemption")
-								.build())
-						.aggregateItemList(this.fakeReportItems())
-						.build())
-				.bonusPaymentData(PaymentData.builder()
-						.totalTax(ReportItemDto.builder()
-								.name("Total Tax")
-								.monthlyDatas(this.fakeMonthlyData())
-								.build())
-						.totalTaxExemption(ReportItemDto.builder()
-								.monthlyDatas(this.fakeMonthlyData())
-								.name("Total Tax Exemption")
-								.build())
-						.aggregateItemList(this.fakeReportItems())
-						.build())
-				.netSalaryData(ReportItemDto.builder()
-						.name("Net salary")
-						.monthlyDatas(this.fakeMonthlyData())
-						.build())
-				.salaryAttendanceDatas(this.fakeReportItems())
-				.salaryDeductionData(DeductionData.builder()
-						.aggregateItemList(this.fakeReportItems())
-						.totalDeduction(ReportItemDto.builder()
-								.name("Total Salary Deduction")
-								.monthlyDatas(this.fakeMonthlyData())
-								.build())
-						.build())
-				.bonusDeductionData(DeductionData.builder()
-						.aggregateItemList(this.fakeReportItems())
-						.totalDeduction(ReportItemDto.builder()
-								.name("Total Bonus Deduction")
-								.monthlyDatas(this.fakeMonthlyData())
-								.build())
-						.build())
-				.totalBonusData(ReportItemDto.builder()
-						.name("Total bonus")
-						.monthlyDatas(this.fakeMonthlyData())
-						.build())
-				.bonusAttendanceDatas(this.fakeReportItems())
-				.build();
+//		// Fake data.
+//		WLOldLayoutReportData fakeReportData = WLOldLayoutReportData.builder()
+//				.bonusMonthList(Arrays.asList(1, 3, 7, 9, 12))
+//				.salaryMonthList(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12))
+//				.headerData(HeaderReportData.builder()
+//						.departmentCode("DEP1")
+//						.departmentName("Department 1")
+//						.employeeCode("EM1")
+//						.employeeName("Employee 1")
+//						.position("Project manager")
+//						.sex("Man")
+//						.targetYear(query.targetYear)
+//						.build())
+//				.salaryPaymentData(PaymentData.builder()
+//						.totalTax(ReportItemDto.builder()
+//								.name("Total Tax")
+//								.monthlyDatas(this.fakeMonthlyData())
+//								.build())
+//						.totalTaxExemption(ReportItemDto.builder()
+//								.monthlyDatas(this.fakeMonthlyData())
+//								.name("Total Tax Exemption")
+//								.build())
+//						.aggregateItemList(this.fakeReportItems())
+//						.build())
+//				.bonusPaymentData(PaymentData.builder()
+//						.totalTax(ReportItemDto.builder()
+//								.name("Total Tax")
+//								.monthlyDatas(this.fakeMonthlyData())
+//								.build())
+//						.totalTaxExemption(ReportItemDto.builder()
+//								.monthlyDatas(this.fakeMonthlyData())
+//								.name("Total Tax Exemption")
+//								.build())
+//						.aggregateItemList(this.fakeReportItems())
+//						.build())
+//				.netSalaryData(ReportItemDto.builder()
+//						.name("Net salary")
+//						.monthlyDatas(this.fakeMonthlyData())
+//						.build())
+//				.salaryAttendanceDatas(this.fakeReportItems())
+//				.salaryDeductionData(DeductionData.builder()
+//						.aggregateItemList(this.fakeReportItems())
+//						.totalDeduction(ReportItemDto.builder()
+//								.name("Total Salary Deduction")
+//								.monthlyDatas(this.fakeMonthlyData())
+//								.build())
+//						.build())
+//				.bonusDeductionData(DeductionData.builder()
+//						.aggregateItemList(this.fakeReportItems())
+//						.totalDeduction(ReportItemDto.builder()
+//								.name("Total Bonus Deduction")
+//								.monthlyDatas(this.fakeMonthlyData())
+//								.build())
+//						.build())
+//				.totalBonusData(ReportItemDto.builder()
+//						.name("Total bonus")
+//						.monthlyDatas(this.fakeMonthlyData())
+//						.build())
+//				.bonusAttendanceDatas(this.fakeReportItems())
+//				.build();
 		
 		// Fake data for new layout report.
 		WLNewLayoutReportData newLayoutReportData = WLNewLayoutReportData.builder()
@@ -175,7 +173,7 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 		if (query.layoutType == LayoutType.NewLayout) {
 			this.newGenerator.generate(context.getGeneratorContext(), newLayoutReportData, query);
 		} else {
-			this.oldGenerator.generate(context.getGeneratorContext(), fakeReportData, query);
+			this.oldGenerator.generate(context.getGeneratorContext(), reportData.get(0), query);
 		}
 	}
 	

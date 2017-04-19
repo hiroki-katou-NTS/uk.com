@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.basic.infra.entity.report;
@@ -21,15 +21,17 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class PogmtPersonDepRgl.
  */
-@Entity
-@Table(name = "POGMT_PERSON_DEP_RGL")
+
 @Setter
 @Getter
-public class PogmtPersonDepRgl implements Serializable {
+@Entity
+@Table(name = "POGMT_PERSON_DEP_RGL")
+public class PogmtPersonDepRgl extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -37,45 +39,6 @@ public class PogmtPersonDepRgl implements Serializable {
 	/** The pogmt person dep rgl PK. */
 	@EmbeddedId
 	protected PogmtPersonDepRglPK pogmtPersonDepRglPK;
-
-	/** The ins date. */
-	@Column(name = "INS_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date insDate;
-
-	/** The ins ccd. */
-	@Column(name = "INS_CCD")
-	private String insCcd;
-
-	/** The ins scd. */
-	@Column(name = "INS_SCD")
-	private String insScd;
-
-	/** The ins pg. */
-	@Column(name = "INS_PG")
-	private String insPg;
-
-	/** The upd date. */
-	@Column(name = "UPD_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updDate;
-
-	/** The upd ccd. */
-	@Column(name = "UPD_CCD")
-	private String updCcd;
-
-	/** The upd scd. */
-	@Column(name = "UPD_SCD")
-	private String updScd;
-
-	/** The upd pg. */
-	@Column(name = "UPD_PG")
-	private String updPg;
-
-	/** The exclus ver. */
-	@Basic(optional = false)
-	@Column(name = "EXCLUS_VER")
-	private int exclusVer;
 
 	/** The inv scd. */
 	@Column(name = "INV_SCD")
@@ -204,6 +167,7 @@ public class PogmtPersonDepRgl implements Serializable {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -215,6 +179,7 @@ public class PogmtPersonDepRgl implements Serializable {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -224,7 +189,8 @@ public class PogmtPersonDepRgl implements Serializable {
 		}
 		PogmtPersonDepRgl other = (PogmtPersonDepRgl) object;
 		if ((this.pogmtPersonDepRglPK == null && other.pogmtPersonDepRglPK != null)
-				|| (this.pogmtPersonDepRglPK != null && !this.pogmtPersonDepRglPK.equals(other.pogmtPersonDepRglPK))) {
+				|| (this.pogmtPersonDepRglPK != null
+						&& !this.pogmtPersonDepRglPK.equals(other.pogmtPersonDepRglPK))) {
 			return false;
 		}
 		return true;
@@ -232,11 +198,12 @@ public class PogmtPersonDepRgl implements Serializable {
 
 	/*
 	 * (non-Javadoc)
-	 * @see java.lang.Object#toString()
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	@Override
-	public String toString() {
-		return "entity.PogmtPersonDepRgl[ pogmtPersonDepRglPK=" + pogmtPersonDepRglPK + " ]";
+	protected Object getKey() {
+		return this.pogmtPersonDepRglPK;
 	}
 
 }
