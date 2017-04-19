@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.formula.dom.formula.BasicPayroll;
+import nts.uk.ctx.pr.formula.dom.adapter.SystemVariableAdapter;
 import nts.uk.ctx.pr.formula.dom.repository.BasicPayrollRepository;
 import nts.uk.ctx.pr.formula.dom.repository.SystemVariableRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -29,6 +29,9 @@ public class SystemVariableFinder {
 	
 	@Inject
 	private BasicPayrollRepository basicPayrollRepository;
+	
+	@Inject
+	private SystemVariableAdapter systemVariableAdapter;
 
 	public List<SystemVariableDto> init() {
 		
@@ -51,7 +54,8 @@ public class SystemVariableFinder {
 			} else if (item.getSystemVariableCode().equals("3")) {				
 				item.setResult(String.valueOf(GeneralDate.today().year()));
 			} else if(item.getSystemVariableCode().equals("4")){
-				
+				BigDecimal numbersOfWorkingDay = systemVariableAdapter.getNumbersOfWorkingDay(companyCode, 1, 0, GeneralDate.today().yearMonth().v(), 0);
+				item.setResult(numbersOfWorkingDay.toString());
 			} else if (item.getSystemVariableCode().equals("5")){
 				Optional<BasicPayrollDto> basicPayroll = basicPayrollRepository.findAll(companyCode).map(f -> BasicPayrollDto.fromDomain(f));				
 				item.setResult(basicPayroll.get().getBaseDay().toString());
