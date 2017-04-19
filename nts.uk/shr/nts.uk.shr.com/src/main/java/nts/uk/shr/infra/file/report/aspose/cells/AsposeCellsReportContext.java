@@ -57,6 +57,14 @@ public class AsposeCellsReportContext implements AutoCloseable {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public void saveAsExcel(OutputStream outputStream) {
+		try {
+			this.workbook.save(outputStream, SaveFormat.XLSX);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	@Override
 	public void close() throws Exception {

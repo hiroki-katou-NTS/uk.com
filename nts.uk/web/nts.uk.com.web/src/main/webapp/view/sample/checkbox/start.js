@@ -4,6 +4,7 @@ __viewContext.ready(function () {
             var self = this;
             self.checked = ko.observable(true);
             self.enable = ko.observable(true);
+            self.readonly = ko.observable(false);
         }
         return ScreenModel;
     }());
