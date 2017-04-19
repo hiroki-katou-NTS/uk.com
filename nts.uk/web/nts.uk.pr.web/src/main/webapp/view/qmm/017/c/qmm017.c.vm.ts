@@ -643,7 +643,8 @@ module nts.qmm017 {
 
         validateContentFunction(contentFunction) {
             var self = this;
-            let treeFunction = nts.uk.util.createTreeFromString(contentFunction, "（", "）", ",");
+//            let treeObjects = contentFunction;
+            let treeFunction = nts.uk.util.createTreeFromString(contentFunction, "（", "）", ",", []);
             self.validateTreeFunction(treeFunction[0]);
         }
 

@@ -304,11 +304,28 @@ var nts;
                                 return item.code === self.viewModel017i().listBoxItems().selectedCode();
                             });
                             itemDetailDisplayName = '賃金TBL＠' + itemDetail.name;
+                            self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemDetailDisplayName, $("#input-text")[0].selectionStart));
                         }
                     }
+                    else {
+                        nts.uk.ui.dialog.alert("計算式に挿入する項目が選択されていません。");
+                    }
                 }
-                else {
-                    nts.uk.ui.dialog.alert("計算式に挿入する項目が選択されていません。");
+                else if (mode === 2) {
+                    if (self.viewModel017f().listBoxItems().selectedCode() !== '' && self.viewModel017f().listBoxItemType().selectedCode() !== '') {
+                        var currentTextArea = self.viewModel017c().formulaManualContent().textArea();
+                        var itemDetailDisplayName = '';
+                        if (self.viewModel017f().listBoxItems().selectedCode() !== '') {
+                            var itemDetail = _.find(self.viewModel017f().listBoxItems().itemList(), function (item) {
+                                return item.code === self.viewModel017f().listBoxItems().selectedCode();
+                            });
+                            itemDetailDisplayName = '変数＠' + itemDetail.name;
+                            self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemDetailDisplayName, $("#input-text")[0].selectionStart));
+                        }
+                    }
+                    else {
+                        nts.uk.ui.dialog.alert("計算式に挿入する項目が選択されていません。");
+                    }
                 }
             };
             ScreenModel.prototype.replaceNamesToCodes = function (content) {
@@ -364,6 +381,12 @@ var nts;
                     qmm017.service.getListItemMaster(2).done(function (lstItem) {
                         _.forEach(lstItem, function (item) {
                             self.itemsBagRepository.push({ code: '2＠' + item.itemCode, name: '勤怠＠' + item.itemName });
+                        });
+                    });
+                }).then(function () {
+                    qmm017.service.getListSystemVariable().done(function (lstItem) {
+                        _.forEach(lstItem, function (item) {
+                            self.itemsBagRepository.push({ code: '4＠' + item.systemVariableCode, name: '変数＠' + item.systemVariableName, value: item.result });
                         });
                     });
                 }).then(function () {
@@ -812,4 +835,3 @@ var nts;
         qmm017.Node = Node;
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm017.a.vm.js.map

@@ -40,7 +40,7 @@ public class SystemVariableFinder {
 
 		List<SystemVariableDto> systemVariables = new ArrayList<>();
 
-		systemVariables.add(new SystemVariableDto("システム日付(年月日)", "1"));
+		systemVariables.add(new SystemVariableDto("システム日付（年月日）", "1"));
 		systemVariables.add(new SystemVariableDto("システム日付（年月）", "2"));
 		systemVariables.add(new SystemVariableDto("システム日付（年）", "3"));
 		systemVariables.addAll(systemVariableRepository.findAll().stream().map(f -> SystemVariableDto.fromDomain(f))
