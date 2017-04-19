@@ -137,10 +137,7 @@ module nts.uk.pr.view.qpp007.c {
              */
             public onSaveBtnClicked(): void {
                 var self = this;
-                // Clear errors.
-                self.clearError();
                 // Validate.
-                self.validate();
                 if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                     return;
                 }
@@ -160,8 +157,25 @@ module nts.uk.pr.view.qpp007.c {
                     self.loadAllOutputSetting()
                         .done(() => self.temporarySelectedCode(self.outputSettingDetailModel().settingCode()));
                 }).fail(res => {
-                    if (res.messageId == 'ER005') {
-                        $('#inpCode').ntsError('set', '入力したコードは既に存在しています。\r\n コードを確認してください。');
+                    // Clear old error messages & set new error messages.
+                    self.clearError();
+                    switch (res.messageId) {
+                        case 'ER011':
+                            $('#inpCode').ntsError('set', '入力したコードは既に存在しています。\r\n コードを確認してください。');
+                            break;
+                        case 'ER026':
+                            $('#contents-area').ntsError('set', '更新対象のデータが存在しません。');
+                            break;
+                        case 'ER027':
+                            if (!self.outputSettingDetailModel().settingCode()) {
+                                $('#inpCode').ntsError('set', '入力にエラーがあります。');
+                            }
+                            if (!self.outputSettingDetailModel().settingName()) {
+                                $('#inpName').ntsError('set', '入力にエラーがあります。');
+                            }
+                            break;
+                        default:
+                            console.log(res);
                     }
                 });
             }
@@ -277,15 +291,8 @@ module nts.uk.pr.view.qpp007.c {
                 if (nts.uk.ui._viewModel) {
                     $('#inpCode').ntsError('clear');
                     $('#inpName').ntsError('clear');
+                    $('#contents-area').ntsError('clear');
                 }
-            }
-
-            /**
-            * Validate all inputs.
-            */
-            private validate(): void {
-                $('#inpCode').ntsEditor('validate');
-                $('#inpName').ntsEditor('validate');
             }
 
             /**
@@ -312,7 +319,7 @@ module nts.uk.pr.view.qpp007.c {
             private enableNewMode(): void {
                 var self = this;
                 self.outputSettingDetailModel().updateData();
-                self.outputSettingSelectedCode(null);
+                self.temporarySelectedCode(null);
                 self.resetDirty();
                 self.isNewMode(true);
             }

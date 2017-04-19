@@ -37,14 +37,14 @@ public class SalaryOutputSettingServiceImpl implements SalaryOutputSettingServic
 				|| StringUtil.isNullOrEmpty(salaryOutputSetting.getCode().v(), true)
 				|| StringUtil.isNullOrEmpty(salaryOutputSetting.getName().v(), true)
 				|| CollectionUtil.isEmpty(salaryOutputSetting.getCategorySettings())) {
-			throw new BusinessException("ER001");
+			throw new BusinessException("ER027");
 		}
 	}
 
 	@Override
 	public void checkDuplicateCode(String companyCode, String salaryOutputSettingCode) {
 		if (repository.isExist(companyCode, salaryOutputSettingCode)) {
-			throw new BusinessException("ER005");
+			throw new BusinessException("ER011");
 		};
 	}
 

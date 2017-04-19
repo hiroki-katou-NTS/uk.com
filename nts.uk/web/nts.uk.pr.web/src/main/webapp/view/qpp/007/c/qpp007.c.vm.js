@@ -102,8 +102,6 @@ var nts;
                                 };
                                 ScreenModel.prototype.onSaveBtnClicked = function () {
                                     var self = this;
-                                    self.clearError();
-                                    self.validate();
                                     if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                                         return;
                                     }
@@ -121,8 +119,24 @@ var nts;
                                         self.loadAllOutputSetting()
                                             .done(function () { return self.temporarySelectedCode(self.outputSettingDetailModel().settingCode()); });
                                     }).fail(function (res) {
-                                        if (res.messageId == 'ER005') {
-                                            $('#inpCode').ntsError('set', '入力したコードは既に存在しています。\r\n コードを確認してください。');
+                                        self.clearError();
+                                        switch (res.messageId) {
+                                            case 'ER011':
+                                                $('#inpCode').ntsError('set', '入力したコードは既に存在しています。\r\n コードを確認してください。');
+                                                break;
+                                            case 'ER026':
+                                                $('#contents-area').ntsError('set', '更新対象のデータが存在しません。');
+                                                break;
+                                            case 'ER027':
+                                                if (!self.outputSettingDetailModel().settingCode()) {
+                                                    $('#inpCode').ntsError('set', '入力にエラーがあります。');
+                                                }
+                                                if (!self.outputSettingDetailModel().settingName()) {
+                                                    $('#inpName').ntsError('set', '入力にエラーがあります。');
+                                                }
+                                                break;
+                                            default:
+                                                console.log(res);
                                         }
                                     });
                                 };
@@ -199,11 +213,8 @@ var nts;
                                     if (nts.uk.ui._viewModel) {
                                         $('#inpCode').ntsError('clear');
                                         $('#inpName').ntsError('clear');
+                                        $('#contents-area').ntsError('clear');
                                     }
-                                };
-                                ScreenModel.prototype.validate = function () {
-                                    $('#inpCode').ntsEditor('validate');
-                                    $('#inpName').ntsEditor('validate');
                                 };
                                 ScreenModel.prototype.confirmDirtyAndExecute = function (functionToExecute, functionToExecuteIfNo) {
                                     var self = this;
@@ -223,7 +234,7 @@ var nts;
                                 ScreenModel.prototype.enableNewMode = function () {
                                     var self = this;
                                     self.outputSettingDetailModel().updateData();
-                                    self.outputSettingSelectedCode(null);
+                                    self.temporarySelectedCode(null);
                                     self.resetDirty();
                                     self.isNewMode(true);
                                 };
