@@ -42,7 +42,7 @@ public class AsposeInputFileGenerator extends AsposeCellsReportGenerator impleme
 		try (AsposeCellsReportContext ctx = this.createContext(TEMPLATE_PATH)) {
 			Generator generator = this.factory.createGenerator(context.getQuery().getCode());
 			generator.generate(ctx, context.getQuery());
-			ctx.saveAsExcel(this.createNewFile(rptContext, OUTPUT_NAME));
+			ctx.saveAsExcel(this.createNewFile(rptContext, this.getReportName(OUTPUT_NAME)));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
