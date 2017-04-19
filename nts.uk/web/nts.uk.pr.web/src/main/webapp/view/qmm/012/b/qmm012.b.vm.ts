@@ -267,7 +267,7 @@ module qmm012.b.viewmodel {
             let self = this;
             self.dirtyOldValue.lstCode = '';
             self.GridlistCurrentCode('');
-            self.clearContent();
+            self.clearContent(true);
             //disable delete button
             self.B_Btn_DeleteButton_enable(false);
             //disable 有効期間設定 button
@@ -276,7 +276,7 @@ module qmm012.b.viewmodel {
             self.screenModel.screenModelD.D_Btn_PeriodSetting_enable(false);
             self.screenModel.screenModelD.D_Btn_BreakdownSetting_enable(false);
         }
-        clearContent() {
+        clearContent(activeItemCode) {
             let self = this;
             self.clearAllValidateError();
             self.GridCurrentItemName('');
@@ -288,7 +288,7 @@ module qmm012.b.viewmodel {
             self.GridCurrentItemAbName('');
             self.GridCurrentCategoryAtrName('');
             //when itemModel != undefined , need disable INP_002
-            self.enable_B_Inp_Code(true);
+            self.enable_B_Inp_Code(activeItemCode);
             self.GridlistCurrentItem(self.getCurrentItemMaster());
         }
         setUpdateItemMode() {
@@ -353,9 +353,12 @@ module qmm012.b.viewmodel {
                     self.dirty.reset();
                 if (self.GridlistItems().length > 0) {
                     // if not itemcode parameter
-                    if (!ItemCode)
+                    if (!ItemCode) {
                         //set GridlistCurrentCode selected first item in gridlist
+                        self.GridlistCurrentItem(self.GridlistItems()[0]);
+                        self.dirtyOldValue.lstCode = self.GridlistItems()[0].itemCode;
                         self.GridlistCurrentCode(self.GridlistItems()[0].itemCode);
+                    }
                     else {
                         //set  selected == param itemcode
                         var item = _.find(self.GridlistItems(), function(ItemModel: service.model.ItemMaster) {
@@ -374,6 +377,8 @@ module qmm012.b.viewmodel {
                     }
                     self.dirtyItemMaster(self.getCurrentItemMaster());
                     self.dirty = new nts.uk.ui.DirtyChecker(self.dirtyItemMaster);
+                } else {
+                    self.clearContent(false);
                 }
             }).fail(function(res) {
                 alert(res);

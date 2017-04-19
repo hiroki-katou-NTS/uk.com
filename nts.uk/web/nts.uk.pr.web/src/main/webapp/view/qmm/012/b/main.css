@@ -2,13 +2,13 @@
 
 @import url("../a/base.css");
 
-@import url("../c/style.css");
+@import url("../c/main.css");
 
-@import url("../d/style.css");
+@import url("../d/main.css");
 
-@import url("../e/style.css");
+@import url("../e/main.css");
 
-@import url("../g/style.css");
+@import url("../g/main.css");
 
 #B_Btn_NewButton {
 	margin-left: 15px;

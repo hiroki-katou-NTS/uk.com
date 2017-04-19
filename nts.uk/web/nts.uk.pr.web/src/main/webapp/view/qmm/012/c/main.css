@@ -19,9 +19,10 @@
 	padding: 0px 15px;
 }
 
-#C_Sel_DiscriminationSocial button, #C_Sel_DistinguishBetween button, #C_Sel_AlwaysFixed button, #C_Sel_MonthFixed button,
-	#C_Sel_DayToMonthFixed button, #C_Sel_DayFixed button, #C_Sel_DonorFixed button, #C_Sel_AverageWage button
-	{
+#C_Sel_DiscriminationSocial button, #C_Sel_DistinguishBetween button,
+	#C_Sel_AlwaysFixed button, #C_Sel_MonthFixed button,
+	#C_Sel_DayToMonthFixed button, #C_Sel_DayFixed button,
+	#C_Sel_DonorFixed button, #C_Sel_AverageWage button {
 	width: 80px;
 }
 
@@ -70,7 +71,8 @@
 	margin-left: 20px;
 }
 
-#C_Inp_LimitAmount, #C_Inp_ErrorUpper, #C_Inp_AlarmUpper, #C_Inp_ErrorLower, #C_Inp_AlarmLower {
+#C_Inp_LimitAmount, #C_Inp_ErrorUpper, #C_Inp_AlarmUpper,
+	#C_Inp_ErrorLower, #C_Inp_AlarmLower {
 	width: 100px;
 }
 
@@ -94,4 +96,8 @@
 
 #C_LBL_019 label {
 	line-height: 25px;
+}
+
+#C_Lbl_ValidityPeriodAndCycle>label {
+	line-height: 23px !important;
 }
