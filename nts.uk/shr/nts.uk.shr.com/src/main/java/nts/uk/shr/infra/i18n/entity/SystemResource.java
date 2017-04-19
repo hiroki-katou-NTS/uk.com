@@ -10,29 +10,34 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.i18n.ResourceType;
+import nts.arc.i18n.custom.ResourceType;
 
 @Entity
-@Table(name = "SYSTEM_RESOURCE")
+@Table(name = "CISMT_SYSTEM_RESOURCE")
 @Getter
 @Setter
 public class SystemResource {
 	@Id
 	private String code;
+
 	@Column(name = "ITEM_CONTENT")
 	private String content;
+
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "RESOURCE_TYPE")
 	private ResourceType type;
+
 	@Column(name = "LANGUAGE_CODE")
 	private String languageCode;
 	/**
-	 * see: SystemProperties ,if is used for all program it will be "SYSTEM"
+	 * @see: SystemProperties ,if is used for all program it will be "SYSTEM"
 	 */
 	@NotNull
 	@Column(name = "PROGRAM_ID")
 	private String programId;
-	@Column(name = "CUSTOMIZABLE")
+
+	// use for 予約
+	@Column
 	private boolean customizable;
 
 }

@@ -163,7 +163,7 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 					.employeeName(personBase.getNameOfficial())
 					.sex(personBase.getGendar() == 0 ? "男性" : "女性")
 					.departmentCode(personDepartment.getDepcd())
-					.departmentName(departmentMaster.getName())
+					.departmentName(departmentMaster.getDepName())
 					.build();
 			
 			// Convert To data model.
