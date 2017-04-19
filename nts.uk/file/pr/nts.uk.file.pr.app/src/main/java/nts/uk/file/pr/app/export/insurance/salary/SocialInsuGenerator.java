@@ -8,14 +8,13 @@
 package nts.uk.file.pr.app.export.insurance.salary;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.file.pr.app.export.insurance.data.SalarySocialInsuranceReportData;
+import nts.uk.file.pr.app.export.insurance.data.SocialInsuReportData;
 
 /**
  * The Interface SocialInsuranceGenerator.
  *
- * @author duongnd
  */
-public interface SalarySocialInsuranceGenerator {
+public interface SocialInsuGenerator {
 
     /**
      * Generate.
@@ -23,5 +22,5 @@ public interface SalarySocialInsuranceGenerator {
      * @param fileContext the file context
      * @param socialInsuranceReportData the social insurance report data
      */
-    void generate(FileGeneratorContext fileContext, SalarySocialInsuranceReportData reportData);
+    void generate(FileGeneratorContext fileContext, SocialInsuReportData reportData);
 }

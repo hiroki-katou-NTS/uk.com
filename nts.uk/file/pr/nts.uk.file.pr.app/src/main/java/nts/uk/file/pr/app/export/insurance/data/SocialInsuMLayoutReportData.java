@@ -13,23 +13,22 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class SocialInsuranceReportData.
+ * The Class SocialInsuMLayoutReportData.
  *
- * @author duongnd
  */
 
 @Setter
 @Getter
-public class SalarySocialInsuranceReportData {
+public class SocialInsuMLayoutReportData {
 
     /** The header data. */
-    private SalarySocialInsuranceHeaderReportData headerData;
+    private HeaderReportData headerData;
     
     /** The report item. */
-    private List<InsuranceOfficeDto> officeItems;
+    private List<MLayoutInsuOfficeDto> officeItems;
     
     /** The total all office. */
-    private DataRowItem totalAllOffice;
+    private MLayoutRowItem totalAllOffice;
     
     /** The delivery notice amount. */
     private double deliveryNoticeAmount;
@@ -37,12 +36,6 @@ public class SalarySocialInsuranceReportData {
     /** The insured collect amount. */
     private double insuredCollectAmount;
     
-    /** The child raising total business. */
-    private double childRaisingTotalBusiness;
-    
-    private Boolean isPrintBusiness;
-    
     /** The configure output. */
     private ChecklistPrintSettingDto configureOutput;
-    
 }

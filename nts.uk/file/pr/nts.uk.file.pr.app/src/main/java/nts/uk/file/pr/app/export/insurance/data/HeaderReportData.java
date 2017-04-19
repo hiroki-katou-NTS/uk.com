@@ -13,12 +13,11 @@ import lombok.Setter;
 /**
  * The Class SalarySocialInsuranceHeaderReportData.
  *
- * @author duongnd
  */
 
 @Getter
 @Setter
-public class SalarySocialInsuranceHeaderReportData {
+public class HeaderReportData {
 
     /** The name company. */
     private String nameCompany;

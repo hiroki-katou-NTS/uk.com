@@ -12,9 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -41,20 +38,23 @@ import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentHeader;
 import nts.uk.ctx.pr.core.infra.entity.personalinfo.employmentcontract.PclmtPersonEmpContract;
 import nts.uk.file.pr.app.export.insurance.data.DataRowItem;
 import nts.uk.file.pr.app.export.insurance.data.InsuranceOfficeDto;
-import nts.uk.file.pr.app.export.insurance.data.SalarySocialInsuranceReportData;
-import nts.uk.file.pr.app.export.insurance.salary.SalarySocialInsuranceQuery;
-import nts.uk.file.pr.app.export.insurance.salary.SalarySocialInsuranceRepository;
+import nts.uk.file.pr.app.export.insurance.data.MLayoutInsuOfficeDto;
+import nts.uk.file.pr.app.export.insurance.data.MLayoutRowItem;
+import nts.uk.file.pr.app.export.insurance.data.SocialInsuMLayoutReportData;
+import nts.uk.file.pr.app.export.insurance.data.SocialInsuReportData;
+import nts.uk.file.pr.app.export.insurance.salary.SocialInsuQuery;
+import nts.uk.file.pr.app.export.insurance.salary.SocialInsuRepository;
 
 /**
  * The Class JpaSalarySocialInsuranceRepository.
  *
- * @author duongnd
  */
 
 @Stateless
-public class JpaSalarySocialInsuranceRepository extends JpaRepository implements SalarySocialInsuranceRepository {
+public class JpaSocialInsuRepository extends JpaRepository implements SocialInsuRepository {
     
-    private static final String FIND_PERSON_OFFICES = "SELECT so, pp, mp, ps "
+    /** The Constant FIND_PERSON_OFFICES. */
+    private static final String FIND_PERSON_OFFICES = "SELECT so, ps "
             + "FROM QismtSocialInsuOffice so, "
             + "QpdptPayday pp, "
             + "QpdmtPayday mp, "
@@ -73,6 +73,7 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
             + "AND ps.endD >= :baseDate "
             + "AND ps.siOfficeCd = so.qismtSocialInsuOfficePK.siOfficeCd ";
     
+    /** The Constant FIND_PERSON_NORMAL. */
     private static final String FIND_PERSON_NORMAL = "SELECT pb, pc, pec, ce, pic, phb, ppb "
             + "FROM PbsmtPersonBase pb, "
             + "PcpmtPersonCom pc, "
@@ -109,6 +110,7 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
             + "AND ppb.strYm <= :yearMonth "
             + "AND ppb.endYm >= :yearMonth ";
     
+    /** The Constant FIND_PERSON_DEDUCTION. */
     private static final String FIND_PERSON_DEDUCTION = "SELECT ph, pd, hr, pr "
             + "FROM QstdtPaymentHeader ph, "
             + "QstdtPaymentDetail pd, "
@@ -134,10 +136,15 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
             + "AND pr.strYm <= :yearMonth "
             + "AND pr.endYm >= :yearMonth ";
     
+    /** The Constant DATE_FORMAT. */
     private static final String DATE_FORMAT = "yyyyMMdd";
+    
+    /** The Constant FIRST_DAY. */
     private static final String FIRST_DAY = "01";
-    private static List<String> LIST_ITEM_CODE = Arrays.asList("F101", "F102", "F103", "F109", "F110", "F111", "F112", "F115", "F116",
-            "F117", "F118", "F119", "F120", "F121", "F124");
+    
+    /** The list item code. */
+    private static List<String> LIST_ITEM_CODE = Arrays.asList("F101", "F102", "F103", "F109", "F110", "F111", "F112",
+            "F115", "F116", "F117", "F118", "F119", "F120", "F121", "F124");
     
     /*
      * (non-Javadoc)
@@ -147,8 +154,8 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
      * insurance.salary.SalarySocialInsuranceQuery)
      */
     @Override
-    public List<SalarySocialInsuranceReportData> findReportData(String companyCode, String loginPersonId,
-            SalarySocialInsuranceQuery salaryQuery, List<HealthInsuranceAvgearn> healInsuAvgearns,
+    public List<SocialInsuReportData> findReportData(String companyCode, String loginPersonId,
+            SocialInsuQuery salaryQuery, List<HealthInsuranceAvgearn> healInsuAvgearns,
             List<PensionAvgearn> pensionAvgearns) {
         ReportData reportData = new ReportData();
         reportData.listHealInsuAvgearn = healInsuAvgearns;
@@ -157,47 +164,46 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
                 .map(p -> p.getCode())
                 .collect(Collectors.toList());
         int yearMonth = salaryQuery.getYearMonth();
-        List<Object[]> itemList = findOffices(companyCode, officeCodes, yearMonth, loginPersonId);
+        List<Object[]> itemList = findOffice(companyCode, officeCodes, yearMonth, loginPersonId);
         if (itemList.isEmpty()) {
-            // TODO: throw message ER010
-            throw new BusinessException("ER010");
+            throw new BusinessException("対象データがありません。");
         }
-        // find list offices.
-        List<QismtSocialInsuOffice> entityOffices = itemList.stream()
-        .map(p -> {
-            return (QismtSocialInsuOffice) p[0];
-        })
-        .filter(distinctByKey(p -> p.getQismtSocialInsuOfficePK().getSiOfficeCd()))
-        .collect(Collectors.toList());
+        Map<Object, List<Object[]>> mapOffice = itemList.stream()
+                .collect(Collectors.groupingBy(item -> ((QismtSocialInsuOffice) item[0]))
+                 );
         List<InsuranceOfficeDto> listPersonal = new ArrayList<>();
         List<InsuranceOfficeDto> listBusiness = new ArrayList<>();
         ItemDeduction itemDeductionPersonal = initDeductionPersonal();
         ItemDeduction itemDeductionBusiness = initDeductionBusiness();
         double deliveryAmount = 0;
-        for (QismtSocialInsuOffice office : entityOffices) {
-            String officeCode = office.getQismtSocialInsuOfficePK().getSiOfficeCd();
-            List<String> personIds = itemList.stream()
-                    .filter(p -> {
-                        QismtSocialInsuOffice entity = (QismtSocialInsuOffice) p[0];
-                        return entity.getQismtSocialInsuOfficePK().getSiOfficeCd()
-                                .equals(office.getQismtSocialInsuOfficePK().getSiOfficeCd());
-                    })
+        
+        // ============== FIND INFROMATION OFFICE ==================
+        for (Object object : mapOffice.keySet()) {
+            QismtSocialInsuOffice office = (QismtSocialInsuOffice) object;
+            List<Object[]> listDetail = mapOffice.get(object);
+            
+            // find list employee in a office.
+            List<String> personIds = listDetail.stream()
                     .map(p -> {
-                        PismtPersonInsuSocial entity = (PismtPersonInsuSocial) p[3];
+                        PismtPersonInsuSocial entity = (PismtPersonInsuSocial) p[1];
                         return entity.getPismtPersonInsuSocialPK().getPid();
                     })
                     .distinct()
                     .collect(Collectors.toList());
+            String officeCode = office.getQismtSocialInsuOfficePK().getSiOfficeCd();
+            // find information of employees monthly
             reportData.objectNormals = findPersonNormal(companyCode, officeCode, personIds, yearMonth);
+            // find information deduction of employees monthly 
             reportData.objectDeductions = findPersonDeduction(companyCode, officeCode, personIds, yearMonth);
             
             if (reportData.objectNormals.isEmpty() || reportData.objectDeductions.isEmpty()) {
-                // TODO: throw message ER010
-                throw new BusinessException("ER010");
+                throw new BusinessException("対象データがありません。");
             }
             List<DataRowItem> listRowItemPersonal = new ArrayList<>();
             List<DataRowItem> listRowItemBusiness = new ArrayList<>();
+            // list employee is printed output.
             List<String> tmpPersonIds = new ArrayList<>();
+            // ============== FIND INFROMATION EMPLOYEE ==================
             for (String personId : personIds) {
                 // set row item for business.
                 DataRowItem rowItemBusiness = convertNormalToDataItem(reportData, personId, true);
@@ -205,12 +211,12 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
                 convertDeductionToDataItem(reportData, rowItemBusiness, personId, itemDeductionBusiness);
                 listRowItemBusiness.add(rowItemBusiness);
                 
-             // set row item for personal.
+                // set row item for personal.
                 DataRowItem rowItemPersonal = convertNormalToDataItem(reportData, personId, false);
                 // rowItemPersonal is passed reference parameter.
                 convertDeductionToDataItem(reportData, rowItemPersonal, personId, itemDeductionPersonal);
                 // valid output condition.
-                if (isPrintedOutput(rowItemPersonal, salaryQuery)) {
+                if (isPrintedPersonal(rowItemPersonal, salaryQuery)) {
                     listRowItemPersonal.add(rowItemPersonal);
                     tmpPersonIds.add(personId);
                 }
@@ -240,23 +246,112 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
             // calculate delivery amount.
             deliveryAmount += calDeliveryAmount(reportData, personIds);
         }
-        List<SalarySocialInsuranceReportData> listReport = new ArrayList<>();
+        List<SocialInsuReportData> listReport = new ArrayList<>();
         // set list office for personal.
-        SalarySocialInsuranceReportData reportPersonal = new SalarySocialInsuranceReportData();
+        SocialInsuReportData reportPersonal = new SocialInsuReportData();
         reportPersonal.setOfficeItems(listPersonal);
         reportPersonal.setDeliveryNoticeAmount(deliveryAmount);
         listReport.add(reportPersonal);
         
         // set list office for business.
-        SalarySocialInsuranceReportData reportBusiness = new SalarySocialInsuranceReportData();
+        SocialInsuReportData reportBusiness = new SocialInsuReportData();
         reportBusiness.setOfficeItems(listBusiness);
         listReport.add(reportBusiness);
         
         return listReport;
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.file.pr.app.export.insurance.salary.
+     * SalarySocialInsuranceRepository#findReportMLayout(java.lang.String,
+     * java.lang.String,
+     * nts.uk.file.pr.app.export.insurance.salary.SalarySocialInsuranceQuery,
+     * java.util.List, java.util.List)
+     */
+    @Override
+    public SocialInsuMLayoutReportData findReportMLayout(String companyCode, String loginPid,
+            SocialInsuQuery salaryQuery, List<HealthInsuranceAvgearn> healInsuAvgearns,
+            List<PensionAvgearn> pensionAvgearns) {
+        ReportData reportData = new ReportData();
+        reportData.listHealInsuAvgearn = healInsuAvgearns;
+        reportData.listPensAvgearn = pensionAvgearns;
+        
+        List<String> officeCodes = salaryQuery.getInsuranceOffices().stream()
+                .map(p -> p.getCode())
+                .collect(Collectors.toList());
+        int yearMonth = salaryQuery.getYearMonth();
+        List<Object[]> itemList = findOffice(companyCode, officeCodes, yearMonth, loginPid);
+        if (itemList.isEmpty()) {
+            throw new BusinessException("対象データがありません。");
+        }
+        Map<Object, List<Object[]>> mapOffice = itemList.stream()
+                .collect(Collectors.groupingBy(item -> ((QismtSocialInsuOffice) item[0]))
+                 );
+        ItemDeduction itemDePersonal = initDeductionPersonal();
+        ItemDeduction itemDeBusiness = initDeductionBusiness();
+        double deliveryAmount = 0;
+        List<MLayoutInsuOfficeDto> listOffice = new ArrayList<>();
+        
+        // ============== FIND INFROMATION OFFICE ==================
+        for (Object object : mapOffice.keySet()) {
+            QismtSocialInsuOffice office = (QismtSocialInsuOffice) object;
+            List<Object[]> listDetail = mapOffice.get(object);
+            List<String> personIds = listDetail.stream()
+                    .map(p -> {
+                        PismtPersonInsuSocial entity = (PismtPersonInsuSocial) p[1];
+                        return entity.getPismtPersonInsuSocialPK().getPid();
+                    })
+                    .distinct()
+                    .collect(Collectors.toList());
+            String officeCode = office.getQismtSocialInsuOfficePK().getSiOfficeCd();
+            // find information of employees monthly
+            reportData.objectNormals = findPersonNormal(companyCode, officeCode, personIds, yearMonth);
+            // find information deduction of employees monthly
+            reportData.objectDeductions = findPersonDeduction(companyCode, officeCode, personIds, yearMonth);
+            
+            if (reportData.objectNormals.isEmpty() || reportData.objectDeductions.isEmpty()) {
+                throw new BusinessException("対象データがありません。");
+            }
+            List<MLayoutRowItem> listRowItem = new ArrayList<>();
+            
+            // ============== FIND INFROMATION EMPLOYEE ==================
+            for (String personId : personIds) {
+                MLayoutRowItem emp = convertMLayoutItem(reportData, personId, itemDePersonal, itemDeBusiness);
+                // valid print output condition
+                if (isPrintedPersonalMLayout(emp, salaryQuery)) {
+                    listRowItem.add(emp);
+                }
+            }
+            MLayoutInsuOfficeDto officeMLayout = new MLayoutInsuOfficeDto();
+            officeMLayout.setCode(officeCode);
+            officeMLayout.setName(office.getSiOfficeName());
+            officeMLayout.setNumberOfEmployee(personIds.size());
+            officeMLayout.setEmployees(listRowItem);
+            
+            listOffice.add(officeMLayout);
+            // calculate delivery amount.
+            deliveryAmount += calDeliveryAmount(reportData, personIds);
+        }
+        SocialInsuMLayoutReportData report = new SocialInsuMLayoutReportData();
+        report.setOfficeItems(listOffice);
+        report.setDeliveryNoticeAmount(deliveryAmount);
+        
+        return report;
+    }
+    
+    /**
+     * Find office.
+     *
+     * @param companyCode the company code
+     * @param officeCodes the office codes
+     * @param yearMonth the year month
+     * @param loginPersonId the login person id
+     * @return the list
+     */
     @SuppressWarnings("unchecked")
-    private List<Object[]> findOffices(String companyCode, List<String> officeCodes, Integer yearMonth,
+    private List<Object[]> findOffice(String companyCode, List<String> officeCodes, Integer yearMonth,
             String loginPersonId) {
         EntityManager em = this.getEntityManager();
         Query query = em.createQuery(FIND_PERSON_OFFICES);
@@ -270,6 +365,15 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
         return query.getResultList();
     }
     
+    /**
+     * Find person normal.
+     *
+     * @param companyCode the company code
+     * @param officeCode the office code
+     * @param personIds the person ids
+     * @param yearMonth the year month
+     * @return the list
+     */
     @SuppressWarnings("unchecked")
     private List<Object[]> findPersonNormal(String companyCode, String officeCode, List<String> personIds,
             Integer yearMonth) {
@@ -284,6 +388,15 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
         return query.getResultList(); 
     }
     
+    /**
+     * Find person deduction.
+     *
+     * @param companyCode the company code
+     * @param officeCode the office code
+     * @param personIds the person ids
+     * @param yearMonth the year month
+     * @return the list
+     */
     @SuppressWarnings("unchecked")
     private List<Object[]> findPersonDeduction(String companyCode, String officeCode, List<String> personIds,
             Integer yearMonth) {
@@ -297,6 +410,13 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
         return query.getResultList();
     }
     
+    /**
+     * Cal delivery amount.
+     *
+     * @param reportData the report data
+     * @param personIds the person ids
+     * @return the double
+     */
     private double calDeliveryAmount(ReportData reportData, List<String> personIds) {
         double deliveryAmount = 0;
         for (String personId : personIds) {
@@ -337,11 +457,14 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
         return deliveryAmount;
     }
     
-    private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
-        Map<Object, Boolean> map = new ConcurrentHashMap<>();
-        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
-    }
-    
+    /**
+     * Convert normal to data item.
+     *
+     * @param reportData the report data
+     * @param personId the person id
+     * @param isFindBusiness the is find business
+     * @return the data row item
+     */
     private DataRowItem convertNormalToDataItem(ReportData reportData, String personId, boolean isFindBusiness) {
         Object[] objects = reportData.objectNormals.stream()
                 .filter(p -> {
@@ -446,6 +569,14 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
         return item;
     }
     
+    /**
+     * Convert deduction to data item.
+     *
+     * @param reportData the report data
+     * @param rowItem the row item
+     * @param personId the person id
+     * @param itemDeduction the item deduction
+     */
     private void convertDeductionToDataItem(ReportData reportData, DataRowItem rowItem, String personId,
             ItemDeduction itemDeduction) {
         List<Object[]> objectList = reportData.objectDeductions.stream()
@@ -484,6 +615,136 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
         }
     }
     
+    /**
+     * Convert M layout item.
+     *
+     * @param reportData the report data
+     * @param personId the person id
+     * @param itemDPersonal the item D personal
+     * @param itemDBusiness the item D business
+     * @return the m layout row item
+     */
+    private MLayoutRowItem convertMLayoutItem(ReportData reportData, String personId, ItemDeduction itemDPersonal,
+            ItemDeduction itemDBusiness) {
+        Object[] objectNormals = reportData.objectNormals.stream()
+                .filter(p -> {
+                    PbsmtPersonBase baseEntity = (PbsmtPersonBase) p[0];
+                    return baseEntity.getPid().equals(personId);
+                })
+                .findFirst()
+                .get();
+        
+        PclmtPersonEmpContract empContract = (PclmtPersonEmpContract) objectNormals[2];
+        CmnmtEmp cmEmp = (CmnmtEmp) objectNormals[3];
+        MLayoutRowItem item = new MLayoutRowItem();
+        item.setCode(empContract.empCd);
+        item.setName(cmEmp.employmentName);
+        
+        PismtPersonInsuHealB insuHealBEntity = (PismtPersonInsuHealB) objectNormals[5];
+        HealthInsuranceAvgearn healInsuAvgearn = reportData.listHealInsuAvgearn.stream()
+                .filter(p -> {
+                    return insuHealBEntity.getHealthInsuGrade().intValue() == p.getGrade();
+                })
+                .findFirst()
+                .get();
+        
+        PismtPersonInsuPensB insuPensBEntity = (PismtPersonInsuPensB) objectNormals[6];
+        PensionAvgearn pensAvgearn = reportData.listPensAvgearn.stream()
+                .filter(p -> {
+                    return insuPensBEntity.getPensionInsuGrade().intValue() == p.getLevelCode();
+                })
+                .findFirst()
+                .get();
+        PbsmtPersonBase personBase = (PbsmtPersonBase) objectNormals[0];
+        
+        // set heal insurance fee personal
+        double healInsuFeePersonal = healInsuAvgearn.getPersonalAvg().getHealthBasicMny().v().doubleValue() 
+                + healInsuAvgearn.getPersonalAvg().getHealthNursingMny().v().doubleValue();
+        item.setHealInsuFeePersonal(healInsuFeePersonal);
+        // set heal insurance fee business
+        double healInsuFeeBusiness = healInsuAvgearn.getCompanyAvg().getHealthBasicMny().v().doubleValue()
+                + healInsuAvgearn.getCompanyAvg().getHealthNursingMny().v().doubleValue();
+        item.setHealInsuFeeBusiness(healInsuFeeBusiness);
+        
+        // find list object item code.
+        List<Object[]> listObjectItem = reportData.objectDeductions.stream()
+                .filter(p -> {
+                    QstdtPaymentHeader headerEntity = (QstdtPaymentHeader) p[0];
+                    return headerEntity.qstdtPaymentHeaderPK.personId.equals(personId);
+                })
+                .collect(Collectors.toList());
+        
+        // set deduction heal insurance personal
+        double healInsuDPersonal = findValueDeductionByItemCode(listObjectItem, itemDPersonal.getItemCodeHealthInsu());
+        item.setDeductionHealInsuPersonal(healInsuDPersonal);
+        // set deduction heal insurance business
+        double healInsuDBusiness = findValueDeductionByItemCode(listObjectItem, itemDBusiness.getItemCodeHealthInsu());
+        item.setDeductionHealInsuBusiness(healInsuDBusiness);
+        if (personBase.getGendar() == 0) {// male
+            // set welfare pen insurance personal
+            double welfarePensInsuPersonal = pensAvgearn.getPersonalPension().getMaleAmount().v().doubleValue();
+            item.setWelfarePenInsuBusiness(welfarePensInsuPersonal);
+            // set set welfare pen insurance business
+            double welfarePensInsuBusiness = pensAvgearn.getCompanyPension().getMaleAmount().v().doubleValue();
+            item.setWelfarePenInsuBusiness(welfarePensInsuBusiness);
+            
+            // welfare pen fund personal.
+            double welfarePensFundDPersonal = findValueDeductionByItemCode(listObjectItem, 
+                    itemDPersonal.getItemCodeWelfarePensionFund());
+            item.setWelfarePenFundPersonal(welfarePensFundDPersonal);
+            // welfare pen fund business.
+            double welfarePensFundBusiness = findValueDeductionByItemCode(listObjectItem, 
+                    itemDBusiness.getItemCodeWelfarePensionFund());
+            item.setWelfarePenFundBusiness(welfarePensFundBusiness);
+        } else { // Female
+            // set welfare pen insurance personal
+            double welfarePensInsuPersonal = pensAvgearn.getPersonalPension().getFemaleAmount().v().doubleValue();
+            item.setWelfarePenInsuBusiness(welfarePensInsuPersonal);
+            // set set welfare pen insurance business
+            double welfarePensInsuBusiness = pensAvgearn.getCompanyPension().getFemaleAmount().v().doubleValue();
+            item.setWelfarePenInsuBusiness(welfarePensInsuBusiness);
+            
+            // deduction welfare pen insurance personal.
+            double welfarePensFundDPersonal = findValueDeductionByItemCode(listObjectItem, 
+                    itemDPersonal.getItemCodeWelfarePensionFund());
+            item.setWelfarePenFundPersonal(welfarePensFundDPersonal);
+            // deduction welfare pen insurance business.
+            double welfarePensFundBusiness = findValueDeductionByItemCode(listObjectItem, 
+                    itemDBusiness.getItemCodeWelfarePensionFund());
+            item.setWelfarePenFundBusiness(welfarePensFundBusiness);
+        }
+        // set deduction welfare pen insurance personal
+        double welfarePenInsuDPersonal = findValueDeductionByItemCode(listObjectItem, 
+                itemDPersonal.getItemCodeWelfarePensionInsu());
+        item.setDeductionWelfarePenInsuPersonal(welfarePenInsuDPersonal);
+        // set deduction welfare pen insurance business
+        double welfarePenInsuDBusiness = findValueDeductionByItemCode(listObjectItem, 
+                itemDBusiness.getItemCodeWelfarePensionInsu());
+        item.setDeductionWelfarePenInsuBusiness(welfarePenInsuDBusiness);
+        
+        // set deduction welfare pen fund personal
+        double welfarePenFundPersonal = findValueDeductionByItemCode(listObjectItem, 
+                itemDPersonal.getItemCodeWelfarePensionFund());
+        item.setDeductionWelfarePenFundPersonal(welfarePenFundPersonal);
+        // set deduction welfare pen fund business
+        double welfarePenFundBusiness = findValueDeductionByItemCode(listObjectItem, 
+                itemDBusiness.getItemCodeWelfarePensionFund());
+        item.setDeductionWelfarePenFundPersonal(welfarePenFundBusiness);
+        
+        // set child raising
+        double childRaising = findValueDeductionByItemCode(listObjectItem, itemDBusiness.getItemCodeChildRaising());
+        item.setChildRaising(childRaising);
+        
+        return item;
+    }
+    
+    /**
+     * Find value deduction by item code.
+     *
+     * @param objectList the object list
+     * @param itemCode the item code
+     * @return the double
+     */
     private double findValueDeductionByItemCode(List<Object[]> objectList, String itemCode) {
         return objectList.stream()
                 .filter(p -> {
@@ -497,7 +758,14 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
                 .sum();
     }
     
-    private boolean isPrintedOutput(DataRowItem item, SalarySocialInsuranceQuery query) {
+    /**
+     * Checks if is printed personal.
+     *
+     * @param item the item
+     * @param query the query
+     * @return true, if is printed personal
+     */
+    private boolean isPrintedPersonal(DataRowItem item, SocialInsuQuery query) {
         // equal
         if (query.getIsEqual()) {
             if (item.getMonthlyHealthInsuranceNormal() == item.getMonthlyHealthInsuranceDeduction()
@@ -538,6 +806,43 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
         return false;
     }
     
+    /**
+     * Checks if is printed personal M layout.
+     *
+     * @param item the item
+     * @param query the query
+     * @return true, if is printed personal M layout
+     */
+    private boolean isPrintedPersonalMLayout(MLayoutRowItem item, SocialInsuQuery query) {
+        if (query.getIsEqual()) {
+            if (item.getHealInsuFeePersonal() == item.getDeductionHealInsuPersonal()
+                    && item.getWelfarePenInsuPersonal() == item.getDeductionWelfarePenInsuPersonal()
+                    && item.getWelfarePenFundPersonal() == item.getDeductionWelfarePenFundPersonal()) {
+                return true;
+            }
+        }
+        if (query.getIsDeficient()) {
+            if (item.getHealInsuFeePersonal() < item.getDeductionHealInsuPersonal()
+                    && item.getWelfarePenInsuPersonal() < item.getDeductionWelfarePenInsuPersonal()
+                    && item.getWelfarePenFundPersonal() < item.getDeductionWelfarePenFundPersonal()) {
+                return true;
+            }
+        }
+        if (query.getIsRedundant()) {
+            if (item.getHealInsuFeePersonal() == item.getDeductionHealInsuPersonal()
+                    && item.getWelfarePenInsuPersonal() > item.getDeductionWelfarePenInsuPersonal()
+                    && item.getWelfarePenFundPersonal() > item.getDeductionWelfarePenFundPersonal()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Inits the deduction personal.
+     *
+     * @return the item deduction
+     */
     private ItemDeduction initDeductionPersonal() {
         ItemDeduction item = new ItemDeduction();
         item.setItemCodeHealthInsu("F101");
@@ -550,6 +855,11 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
         return item;
     }
     
+    /**
+     * Inits the deduction business.
+     *
+     * @return the item deduction
+     */
     private ItemDeduction initDeductionBusiness() {
         ItemDeduction item = new ItemDeduction();
         item.setItemCodeHealthInsu("F115");
@@ -562,25 +872,48 @@ public class JpaSalarySocialInsuranceRepository extends JpaRepository implements
         item.setItemCodeChildRaising("F124");
         return item;
     }
-    
 }
 
 class ReportData {
+    
+    /** The object normals. */
     List<Object[]> objectNormals;
+    
+    /** The object deductions. */
     List<Object[]> objectDeductions;
+    
+    /** The list heal insu avgearn. */
     List<HealthInsuranceAvgearn> listHealInsuAvgearn;
+    
+    /** The list pens avgearn. */
     List<PensionAvgearn> listPensAvgearn;
 }
 
 @Setter
 @Getter
 class ItemDeduction {
+    
+    /** The item code health insu. */
     String itemCodeHealthInsu;
+    
+    /** The item code general insu. */
     String itemCodeGeneralInsu;
+    
+    /** The item code long term insu. */
     String itemCodeLongTermInsu;
+    
+    /** The item code specific insu. */
     String itemCodeSpecificInsu;
+    
+    /** The item code basic insu. */
     String itemCodeBasicInsu;
+    
+    /** The item code welfare pension insu. */
     String itemCodeWelfarePensionInsu;
+    
+    /** The item code welfare pension fund. */
     String itemCodeWelfarePensionFund;
+    
+    /** The item code child raising. */
     String itemCodeChildRaising;
 }

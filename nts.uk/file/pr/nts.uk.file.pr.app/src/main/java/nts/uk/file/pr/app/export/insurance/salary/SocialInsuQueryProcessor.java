@@ -13,6 +13,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearn;
@@ -23,19 +24,21 @@ import nts.uk.file.pr.app.export.insurance.data.ChecklistPrintSettingDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * @author duongnd
- *
+ * The Class SocialInsuQueryProcessor.
  */
+
 @Stateless
-public class SalarySocialInsuranceQueryProcessor {
+public class SocialInsuQueryProcessor {
     
     /** The checklist print setting repository. */
     @Inject
     private ChecklistPrintSettingRepository printSettingRepository;
     
+    /** The repository insu avgearn. */
     @Inject
     private HealthInsuranceAvgearnRepository repositoryInsuAvgearn;
     
+    /** The repository pens avgearn. */
     @Inject
     private PensionAvgearnRepository repositoryPensAvgearn;
 
@@ -65,15 +68,33 @@ public class SalarySocialInsuranceQueryProcessor {
       return dto;
     }
     
+    /**
+     * Find heal insu avgearn by office.
+     *
+     * @param officeCodes the office codes
+     * @return the list
+     */
     public List<HealthInsuranceAvgearn> findHealInsuAvgearnByOffice(List<String> officeCodes) {
         String companyCode = AppContexts.user().companyCode();
         List<HealthInsuranceAvgearn> healInsuAngearns = repositoryInsuAvgearn.findByOffice(companyCode, officeCodes);
+        if (healInsuAngearns.isEmpty()) {
+            throw new BusinessException("対象データがありません。");
+        }
         return healInsuAngearns;
     }
     
+    /**
+     * Find pens avgearn by office.
+     *
+     * @param officeCodes the office codes
+     * @return the list
+     */
     public List<PensionAvgearn> findPensAvgearnByOffice(List<String> officeCodes) {
         String companyCode = AppContexts.user().companyCode();
         List<PensionAvgearn> pensionAvgearns = repositoryPensAvgearn.findByOffice(companyCode, officeCodes);
+        if (pensionAvgearns.isEmpty()) {
+            throw new BusinessException("対象データがありません。");
+        }
         return pensionAvgearns;
     }
 }

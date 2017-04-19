@@ -16,12 +16,11 @@ import nts.uk.file.pr.app.export.insurance.data.InsuranceOfficeDto;
 /**
  * The Class SocialInsuranceQuery.
  *
- * @author duongnd
  */
 
 @Setter
 @Getter
-public class SalarySocialInsuranceQuery {
+public class SocialInsuQuery {
 
     /** The year month. */
     private Integer yearMonth;

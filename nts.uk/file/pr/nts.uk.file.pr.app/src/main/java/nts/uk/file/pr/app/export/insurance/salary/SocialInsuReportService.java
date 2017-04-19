@@ -1,0 +1,379 @@
+/******************************************************************
+ * Copyright (c) 2015 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+/**
+ * 
+ */
+package nts.uk.file.pr.app.export.insurance.salary;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.arc.layer.app.file.export.ExportService;
+import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearn;
+import nts.uk.file.pr.app.export.insurance.data.ChecklistPrintSettingDto;
+import nts.uk.file.pr.app.export.insurance.data.DataRowItem;
+import nts.uk.file.pr.app.export.insurance.data.InsuranceOfficeDto;
+import nts.uk.file.pr.app.export.insurance.data.MLayoutInsuOfficeDto;
+import nts.uk.file.pr.app.export.insurance.data.MLayoutRowItem;
+import nts.uk.file.pr.app.export.insurance.data.HeaderReportData;
+import nts.uk.file.pr.app.export.insurance.data.SocialInsuMLayoutReportData;
+import nts.uk.file.pr.app.export.insurance.data.SocialInsuReportData;
+import nts.uk.shr.com.context.AppContexts;
+
+/**
+ * The Class SocialInsuReportService.
+ */
+
+@Stateless
+public class SocialInsuReportService extends ExportService<SocialInsuQuery> {
+
+    /** The generator. */
+    @Inject
+    private SocialInsuGenerator generator;
+    
+    /** The generator M layout. */
+    @Inject
+    private SocialInsuMergeLayoutGenerator generatorMLayout;
+    
+    /** The query processor. */
+    @Inject
+    private SocialInsuQueryProcessor queryProcessor;
+    
+    /** The repository. */
+    @Inject
+    private SocialInsuRepository repository;
+    
+    /* (non-Javadoc)
+     * @see nts.arc.layer.app.file.export.ExportService#handle(nts.arc.layer.app.file.export.ExportServiceContext)
+     */
+    @Override
+    protected void handle(ExportServiceContext<SocialInsuQuery> context) {
+        SocialInsuQuery query = context.getQuery();
+        String companyCode = AppContexts.user().companyCode();
+        String loginPersonID = "000000000000000000000000000000000001"; //AppContexts.user().personId();
+        
+        List<String> officeCodes = query.getInsuranceOffices().stream()
+                .map(office -> office.getCode())
+                .collect(Collectors.toList());
+        // find list health insurance average earn
+        List<HealthInsuranceAvgearn> listhealInsuAvgearn = queryProcessor.findHealInsuAvgearnByOffice(officeCodes);
+        // find list pension average earn
+        List<PensionAvgearn> listPensionAvgearn = queryProcessor.findPensAvgearnByOffice(officeCodes);
+        // find configure print output.
+        ChecklistPrintSettingDto configOutput = queryProcessor.findConfigureOutputSetting();
+        
+        // ================== 表示する ==================
+        if (configOutput.getShowCategoryInsuranceItem()) {
+            List<SocialInsuReportData> dataReports = repository.findReportData(companyCode, loginPersonID, query,
+                    listhealInsuAvgearn, listPensionAvgearn);
+            // dataReports.get(0): report data of personal.
+            SocialInsuReportData reportPersonal = dataReports.get(0);
+            reportPersonal.setIsPrintBusiness(false);
+            reportPersonal.setConfigureOutput(configOutput);
+            processData(reportPersonal, query);
+            
+            // dataReports.get(1): report data of office.
+            SocialInsuReportData reportBusiness = dataReports.get(1);
+            reportBusiness.setConfigureOutput(configOutput);
+            reportBusiness.setIsPrintBusiness(true);
+            processData(reportBusiness, query);
+            // Fake
+            boolean isPrintReportPersonal = true;
+            
+            // set child raising contribution money of business.
+            if (isPrintReportPersonal) {
+                reportPersonal.setChildRaisingTotalBusiness(reportBusiness.getTotalAllOffice()
+                        .getChildRaisingContributionMoney());
+            }
+            // print report for personal.
+            this.generator.generate(context.getGeneratorContext(), reportPersonal);
+        }
+        // ================== 表示しない ==================
+        else {
+            SocialInsuMLayoutReportData reportData = this.repository.findReportMLayout(companyCode, loginPersonID,
+                    query, listhealInsuAvgearn, listPensionAvgearn);
+            reportData.setConfigureOutput(configOutput);
+            processDataMLayout(reportData, query);
+            this.generatorMLayout.generate(context.getGeneratorContext(), reportData);
+        }
+    }
+    
+    /**
+     * Process data.
+     *
+     * @param reportData the report data
+     * @param query the query
+     */
+    private void processData(SocialInsuReportData reportData, SocialInsuQuery query) {
+        // find header of report.
+        HeaderReportData header = findReportHeader(query);
+        reportData.setHeaderData(header);
+        List<InsuranceOfficeDto> officeItems = reportData.getOfficeItems();
+        List<DataRowItem> totalEachOffices = new ArrayList<>();
+        // calculate total each office monthly
+        for (InsuranceOfficeDto office : officeItems) {
+            // calculate each office total.
+            DataRowItem totalEachOffice = calculateTotal(office.getEmployeeDtos());
+            office.setTotalEachOffice(totalEachOffice);
+            totalEachOffices.add(totalEachOffice);
+        }
+        // calculate all office total.
+        DataRowItem totalAllOffice = calculateTotal(totalEachOffices);
+        reportData.setTotalAllOffice(totalAllOffice);
+        
+        // insured collect amount.
+        double insuredCollectAmount = calInsuredCollectAmount(totalAllOffice);
+        reportData.setInsuredCollectAmount(insuredCollectAmount);
+    }
+    
+    /**
+     * Process data M layout.
+     *
+     * @param reportData the report data
+     * @param query the query
+     */
+    private void processDataMLayout(SocialInsuMLayoutReportData reportData, SocialInsuQuery query) {
+     // find header of report.
+        HeaderReportData header = findReportHeader(query);
+        header.setTitleReport("社会保険チェックリスト");
+        reportData.setHeaderData(header);
+        List<MLayoutInsuOfficeDto> officeItems = reportData.getOfficeItems();
+        List<MLayoutRowItem> totalEachOffices = new ArrayList<>();
+        // calculate total each office monthly
+        for (MLayoutInsuOfficeDto office : officeItems) {
+            // calculate each office total.
+            MLayoutRowItem totalEachOffice = calculateTotalMLayout(office.getEmployees());
+            office.setTotalEachOffice(totalEachOffice);
+            totalEachOffices.add(totalEachOffice);
+        }
+        // calculate all office total.
+        MLayoutRowItem totalAllOffice = calculateTotalMLayout(totalEachOffices);
+        reportData.setTotalAllOffice(totalAllOffice);
+        
+        // insured collect amount.
+        double insuredCollectAmount = calInsuCollectMLayout(totalAllOffice);
+        reportData.setInsuredCollectAmount(insuredCollectAmount);
+    }
+    
+    /**
+     * Find report header.
+     *
+     * @param query the query
+     * @return the social insu header report data
+     */
+    private HeaderReportData findReportHeader(SocialInsuQuery query) {
+        HeaderReportData headerData = new HeaderReportData();
+        headerData.setNameCompany("【日通 システム株式会社】");
+        headerData.setTitleReport("会社保険料チェックリスト(被保険者)");
+        headerData.setInformationOffice("【事業所:本社 ~ 福岡支社(3事業所)】");
+        // TODO: convert to year Japan.
+        headerData.setTargetYearMonth("【対象年月:平成19年12月 給与】 ");
+        String headerCondition = "【出カ条件:算定月額と対象月控除額が";
+        if (query.getIsEqual()) {
+            headerCondition += "全て同じ、";
+        }
+        if (query.getIsDeficient()) {
+            headerCondition += "不足、";
+        }
+        if (query.getIsRedundant()) {
+            headerCondition += "超過";
+        }
+        headerCondition += "】 ";
+        headerData.setCondition(headerCondition);
+        headerData.setFormalCalculation("【計算方法:全体の保険料より被保険者分を差し引く方法】");
+        return headerData;
+    }
+    
+    /**
+     * Calculate total.
+     *
+     * @param rowItems the row items
+     * @return the data row item
+     */
+    private DataRowItem calculateTotal(List<DataRowItem> rowItems) {
+        DataRowItem rowItem = new DataRowItem();
+        double monthlyHealthInsuranceNormal = rowItems.stream()
+                .mapToDouble(item -> item.getMonthlyHealthInsuranceNormal())
+                .sum();
+        rowItem.setMonthlyHealthInsuranceNormal(monthlyHealthInsuranceNormal);
+        
+        double monthlyGeneralInsuranceNormal = rowItems.stream()
+                .mapToDouble(item -> item.getMonthlyGeneralInsuranceNormal())
+                .sum();
+        rowItem.setMonthlyGeneralInsuranceNormal(monthlyGeneralInsuranceNormal);
+        
+        double monthlyLongTermInsuranceNormal = rowItems.stream()
+                .mapToDouble(item -> item.getMonthlyLongTermInsuranceNormal())
+                .sum();
+        rowItem.setMonthlyLongTermInsuranceNormal(monthlyLongTermInsuranceNormal);
+        
+        double monthlySpecificInsuranceNormal = rowItems.stream()
+                .mapToDouble(item -> item.getMonthlySpecificInsuranceNormal())
+                .sum();
+        rowItem.setMonthlySpecificInsuranceNormal(monthlySpecificInsuranceNormal);
+        
+        double monthlyBasicInsuranceNormal = rowItems.stream()
+                .mapToDouble(item -> item.getMonthlyBasicInsuranceNormal())
+                .sum();
+        rowItem.setMonthlyBasicInsuranceNormal(monthlyBasicInsuranceNormal);
+        
+        double monthlyHealthInsuranceDeduction = rowItems.stream()
+                .mapToDouble(item -> item.getMonthlyHealthInsuranceDeduction())
+                .sum();
+        rowItem.setMonthlyHealthInsuranceDeduction(monthlyHealthInsuranceDeduction);
+        
+        double monthlyGeneralInsuranceDeduction = rowItems.stream()
+                .mapToDouble(item -> item.getMonthlyGeneralInsuranceDeduction())
+                .sum();
+        rowItem.setMonthlyGeneralInsuranceDeduction(monthlyGeneralInsuranceDeduction);
+        
+        double monthlyLongTermInsuranceDeduction = rowItems.stream()
+                .mapToDouble(item -> item.getMonthlyLongTermInsuranceDeduction())
+                .sum();
+        rowItem.setMonthlyLongTermInsuranceDeduction(monthlyLongTermInsuranceDeduction);
+        
+        double monthlySpecificInsuranceDeduction = rowItems.stream()
+                .mapToDouble(item -> item.getMonthlySpecificInsuranceDeduction())
+                .sum();
+        rowItem.setMonthlySpecificInsuranceDeduction(monthlySpecificInsuranceDeduction);
+        
+        double monthlyBasicInsuranceDeduction = rowItems.stream()
+                .mapToDouble(item -> item.getMonthlyBasicInsuranceDeduction())
+                .sum();
+        rowItem.setMonthlyBasicInsuranceDeduction(monthlyBasicInsuranceDeduction);
+        
+        double welfarePensionInsuranceNormal = rowItems.stream()
+                .mapToDouble(item -> item.getWelfarePensionInsuranceNormal())
+                .sum();
+        rowItem.setWelfarePensionInsuranceNormal(welfarePensionInsuranceNormal);
+        
+        double welfarePensionInsuranceDeduction = rowItems.stream()
+                .mapToDouble(item -> item.getWelfarePensionInsuranceDeduction())
+                .sum();
+        rowItem.setWelfarePensionInsuranceDeduction(welfarePensionInsuranceDeduction);
+        
+        double welfarePensionFundNormal = rowItems.stream()
+                .mapToDouble(item -> item.getWelfarePensionFundNormal())
+                .sum();
+        rowItem.setWelfarePensionFundNormal(welfarePensionFundNormal);
+        
+        double welfarePensionFundDeduction = rowItems.stream()
+                .mapToDouble(item -> item.getWelfarePensionFundDeduction())
+                .sum();
+        rowItem.setWelfarePensionFundDeduction(welfarePensionFundDeduction);
+        
+        double childRaisingContributionMoney = rowItems.stream()
+                .mapToDouble(item -> item.getChildRaisingContributionMoney())
+                .sum();
+        rowItem.setChildRaisingContributionMoney(childRaisingContributionMoney);
+        
+        return rowItem;
+    }
+    
+    /**
+     * Calculate total M layout.
+     *
+     * @param rowItems the row items
+     * @return the m layout row item
+     */
+    private MLayoutRowItem calculateTotalMLayout(List<MLayoutRowItem> rowItems) {
+        MLayoutRowItem item = new MLayoutRowItem();
+        
+        double healInsuFeePersonal = rowItems.stream()
+                .mapToDouble(p -> p.getHealInsuFeePersonal())
+                .sum();
+        item.setHealInsuFeePersonal(healInsuFeePersonal);
+        
+        double healInsuFeeBusiness = rowItems.stream()
+                .mapToDouble(p -> p.getHealInsuFeeBusiness())
+                .sum();
+        item.setHealInsuFeeBusiness(healInsuFeeBusiness);
+        
+        double deductionHealInsuPersonal = rowItems.stream()
+                .mapToDouble(p -> p.getDeductionHealInsuPersonal())
+                .sum();
+        item.setDeductionHealInsuPersonal(deductionHealInsuPersonal);
+        
+        double deductionHealInsuBusiness = rowItems.stream()
+                .mapToDouble(p -> p.getDeductionHealInsuBusiness())
+                .sum();
+        item.setDeductionHealInsuBusiness(deductionHealInsuBusiness);
+        
+        double welfarePenInsuPersonal = rowItems.stream()
+                .mapToDouble(p -> p.getWelfarePenInsuPersonal())
+                .sum();
+        item.setWelfarePenInsuPersonal(welfarePenInsuPersonal);
+        
+        double welfarePenInsuBusiness = rowItems.stream()
+                .mapToDouble(p -> p.getWelfarePenInsuBusiness())
+                .sum();
+        item.setWelfarePenInsuBusiness(welfarePenInsuBusiness);
+        
+        double deductionWelfarePenInsuPersonal = rowItems.stream()
+                .mapToDouble(p -> p.getDeductionWelfarePenInsuPersonal())
+                .sum();
+        item.setDeductionWelfarePenInsuPersonal(deductionWelfarePenInsuPersonal);
+        
+        double deductionWelfarePenInsuBusiness = rowItems.stream()
+                .mapToDouble(p -> p.getDeductionWelfarePenInsuBusiness())
+                .sum();
+        item.setDeductionWelfarePenInsuBusiness(deductionWelfarePenInsuBusiness);
+        
+        double welfarePenFundPersonal = rowItems.stream()
+                .mapToDouble(p -> p.getWelfarePenFundPersonal())
+                .sum();
+        item.setWelfarePenFundPersonal(welfarePenFundPersonal);
+        
+        double welfarePenFundBusiness = rowItems.stream()
+                .mapToDouble(p -> p.getWelfarePenFundBusiness())
+                .sum();
+        item.setWelfarePenFundBusiness(welfarePenFundBusiness);
+        
+        double deductionWelfarePenFundPersonal = rowItems.stream()
+                .mapToDouble(p -> p.getDeductionWelfarePenFundPersonal())
+                .sum();
+        item.setDeductionWelfarePenFundPersonal(deductionWelfarePenFundPersonal);
+        
+        double deductionWelfarePenFundBusiness = rowItems.stream()
+                .mapToDouble(p -> p.getDeductionWelfarePenFundBusiness())
+                .sum();
+        item.setDeductionWelfarePenFundBusiness(deductionWelfarePenFundBusiness);
+        
+        double childRaising = rowItems.stream()
+                .mapToDouble(p -> p.getChildRaising())
+                .sum();
+        item.setChildRaising(childRaising);
+        
+        return item;
+    }
+    
+    /**
+     * Cal insured collect amount.
+     *
+     * @param totalAllOffice the total all office
+     * @return the double
+     */
+    private double calInsuredCollectAmount(DataRowItem totalAllOffice) {
+        return (totalAllOffice.getMonthlyHealthInsuranceDeduction()
+                + totalAllOffice.getWelfarePensionInsuranceDeduction()
+                + totalAllOffice.getWelfarePensionFundDeduction());
+    }
+    
+    /**
+     * Cal insu collect M layout.
+     *
+     * @param item the item
+     * @return the double
+     */
+    private double calInsuCollectMLayout(MLayoutRowItem item) {
+        return (item.getHealInsuFeePersonal() + item.getWelfarePenInsuPersonal() + item.getWelfarePenFundPersonal());
+    }
+}
