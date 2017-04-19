@@ -37,13 +37,11 @@ var qmm018;
                     return dfd.promise();
                 };
                 ScreenModel.prototype.submitData = function () {
-                    // return new data
                     var self = this;
                     nts.uk.ui.windows.setShared('selectedItemList', self.currentCodeListSwap());
                     nts.uk.ui.windows.close();
                 };
                 ScreenModel.prototype.closeWindow = function () {
-                    // return old data
                     var self = this;
                     nts.uk.ui.windows.setShared('selectedItemList', self.oldCurrentCodeListSwap());
                     nts.uk.ui.windows.close();
@@ -54,3 +52,4 @@ var qmm018;
         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
     })(b = qmm018.b || (qmm018.b = {}));
 })(qmm018 || (qmm018 = {}));
+//# sourceMappingURL=qmm018.b.viewmodel.js.map

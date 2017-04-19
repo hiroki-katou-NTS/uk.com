@@ -7,7 +7,12 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
@@ -20,12 +25,12 @@ public class CmnmtJobTitleRefPK implements Serializable{
 	public String companyCode;
 	
 	@Basic(optional = false)
-	@Column(name = "JOBCD")
-	public String jobCode;
-	
-	@Basic(optional = false)
 	@Column(name = "HIST_ID")
 	public String historyId;
+	
+	@Basic(optional = false)
+	@Column(name = "JOBCD")
+	public String jobCode;
 	
 	@Basic(optional = false)
 	@Column(name = "AUTHCD")
