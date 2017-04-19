@@ -7,7 +7,7 @@ var qet001;
             var servicePath = {
                 findOutputSettingDetail: 'ctx/pr/report/wageledger/outputsetting/find',
                 findAggregateItems: 'ctx/pr/report/wageledger/aggregateitem/findAll',
-                findMasterItems: '???',
+                findMasterItems: 'ctx/pr/report/masteritem/findAll',
                 saveOutputSetting: 'ctx/pr/report/wageledger/outputsetting/save',
                 removeOutputSetting: 'ctx/pr/report/wageledger/outputsetting/remove',
             };
@@ -54,15 +54,7 @@ var qet001;
             service.removeOutputSetting = removeOutputSetting;
             function findMasterItems() {
                 var dfd = $.Deferred();
-                var data = [];
-                for (var i = 0; i < 10; i++) {
-                    data.push({ code: 'MI' + i, name: 'Master item' + i, category: 'Payment' });
-                }
-                for (var i = 0; i < 10; i++) {
-                    data.push({ code: 'MI' + i, name: 'Master item' + i, category: 'Deduction' });
-                }
-                dfd.resolve(data);
-                return dfd.promise();
+                return nts.uk.request.ajax(servicePath.findMasterItems);
             }
             service.findMasterItems = findMasterItems;
         })(service = b.service || (b.service = {}));

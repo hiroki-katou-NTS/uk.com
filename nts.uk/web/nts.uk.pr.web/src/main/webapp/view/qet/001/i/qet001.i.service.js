@@ -1,27 +1,18 @@
 var qet001;
 (function (qet001) {
     var i;
-    (function (i_1) {
+    (function (i) {
         var service;
         (function (service) {
             var servicePath = {
                 findAggregateItemsByCategory: 'ctx/pr/report/wageledger/aggregateitem/findByCate',
                 findAggregateItemDetail: 'ctx/pr/report/wageledger/aggregateitem/findBySubject',
-                findMasterItems: '???',
+                findMasterItems: 'ctx/pr/report/masteritem/findAll',
                 saveAggregateItem: 'ctx/pr/report/wageledger/aggregateitem/save',
                 removeAggegateItem: 'ctx/pr/report/wageledger/aggregateitem/remove'
             };
             function findMasterItems() {
-                var dfd = $.Deferred();
-                var data = [];
-                for (var i = 0; i < 10; i++) {
-                    data.push({ code: 'MI' + i, name: 'Master item' + i, category: 'Payment' });
-                }
-                for (var i = 0; i < 10; i++) {
-                    data.push({ code: 'MI' + i, name: 'Master item' + i, category: 'Deduction' });
-                }
-                dfd.resolve(data);
-                return dfd.promise();
+                return nts.uk.request.ajax(servicePath.findMasterItems);
             }
             service.findMasterItems = findMasterItems;
             function findAggregateItemsByCategory(category, paymentType) {
@@ -62,7 +53,7 @@ var qet001;
                 return nts.uk.request.ajax(servicePath.removeAggegateItem, { subject: subject });
             }
             service.remove = remove;
-        })(service = i_1.service || (i_1.service = {}));
+        })(service = i.service || (i.service = {}));
     })(i = qet001.i || (qet001.i = {}));
 })(qet001 || (qet001 = {}));
 //# sourceMappingURL=qet001.i.service.js.map

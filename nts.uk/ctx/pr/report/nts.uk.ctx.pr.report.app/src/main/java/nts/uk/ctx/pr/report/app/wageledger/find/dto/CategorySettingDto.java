@@ -17,7 +17,7 @@ import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLSettingItem;
  * The Class CategorySettingDto.
  */
 @Builder
-public class CategorySettingDto implements WLCategorySettingSetMemento{
+public class CategorySettingDto implements WLCategorySettingSetMemento {
 	
 	/** The category. */
 	public WLCategory category;
