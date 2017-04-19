@@ -13,4 +13,3 @@ function OpenModalSubWindow(option) {
 function OpenModelessSubWindow(option) {
     nts.uk.ui.windows.sub.modeless("/view/sample/subwindow/subwindow.xhtml", option);
 }
-//# sourceMappingURL=start.js.map

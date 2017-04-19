@@ -334,7 +334,6 @@ var nts;
             }
             text_1.reverseDirection = reverseDirection;
             function getISOFormat(format) {
-                format = uk.util.orDefault(format, "ISO");
                 if (format.toLowerCase() === "iso")
                     return "YYYY-MM-DD[T]HH:mm:ss.SSS[Z]";
                 if (format.toLowerCase() === "date")
@@ -407,4 +406,3 @@ var nts;
         })(text = uk.text || (uk.text = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=text.js.map
