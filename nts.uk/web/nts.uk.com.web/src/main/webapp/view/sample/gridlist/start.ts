@@ -29,7 +29,7 @@ module nts.uk.ui.gridlist {
                     { headerText: 'コード', key: 'code', width: 100, hidden: true },
                     { headerText: '名称', key: 'name', width: 150 },
                     { headerText: '説明', key: 'description', width: 150 },
-                    { headerText: '説明1', key: 'other1', width: 150 },
+                    { headerText: '説明1', key: 'other1', width: 150 }, 
                     { headerText: '説明2', key: 'other2', width: 150 },
                     { headerText: 'Switch', key: 'switchValue', width: 300, controlType: 'switch' }
                 ]);
