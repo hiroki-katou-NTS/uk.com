@@ -40,6 +40,7 @@ public class UpdateItemMasterCommandHandler extends CommandHandler<UpdateItemMas
 		String itemCode = context.getCommand().getItemCode();
 		ItemMaster itemMaster = context.getCommand().toDomain();
 		itemMaster.validate();
+		// Check the data exists
 		if (!this.itemMasterRepository.find(companyCode, categoryAtr, itemCode).isPresent())
 			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。"));
 		this.itemMasterRepository.update(context.getCommand().toDomain());
@@ -58,15 +59,14 @@ public class UpdateItemMasterCommandHandler extends CommandHandler<UpdateItemMas
 			updateItemAttend(companyCode, context);
 			break;
 		}
-
-		// TODO Auto-generated method stub
-
 	}
 
 	private void updateItemSalary(String companyCode, CommandHandlerContext<UpdateItemMasterCommand> context) {
 		UpdateItemMasterCommand itemCommand = context.getCommand();
 		String itemCode = itemCommand.getItemCode();
 		itemCommand.getItemSalary().setItemCode(itemCode);
+		if (!this.itemSalaryRespository.find(companyCode, itemCode).isPresent())
+			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。"));
 		this.itemSalaryRespository.update(companyCode, itemCommand.getItemSalary().toDomain());
 	}
 
@@ -74,6 +74,8 @@ public class UpdateItemMasterCommandHandler extends CommandHandler<UpdateItemMas
 		UpdateItemMasterCommand itemCommand = context.getCommand();
 		String itemCode = itemCommand.getItemCode();
 		itemCommand.getItemDeduct().setItemCode(itemCode);
+		if (!this.itemDeductRespository.find(companyCode, itemCode).isPresent())
+			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。"));
 		this.itemDeductRespository.update(companyCode, itemCommand.getItemDeduct().toDomain());
 
 	}
@@ -82,6 +84,8 @@ public class UpdateItemMasterCommandHandler extends CommandHandler<UpdateItemMas
 		UpdateItemMasterCommand itemCommand = context.getCommand();
 		String itemCode = itemCommand.getItemCode();
 		itemCommand.getItemAttend().setItemCode(itemCode);
+		if (!this.itemAttendRespository.find(companyCode, itemCode).isPresent())
+			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。"));
 		this.itemAttendRespository.update(companyCode, itemCommand.getItemAttend().toDomain());
 	}
 

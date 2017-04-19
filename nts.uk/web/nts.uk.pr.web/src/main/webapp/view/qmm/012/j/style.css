@@ -2,12 +2,12 @@
 
 @import url("../a/base.css");
 
-#J_BTN_001 {
+#J_Btn_RegisterButton {
 	margin-left: 80px;
 	width: 80px;
 }
 
-#J_BTN_002 {
+#J_Btn_CloseUp {
 	margin-left: 20px;
 	width: 80px;
 }
@@ -16,7 +16,11 @@
 	padding: 40px 0px 0px 50px;
 }
 
-body {
-	width: 870px;
-	height: 645px;
+.ui-state-disabled, .ui-widget-content .ui-state-disabled,
+	.ui-widget-header .ui-state-disabled {
+	opacity: 0;
+}
+
+.errorValidate {
+	border-color: red !important;
 }

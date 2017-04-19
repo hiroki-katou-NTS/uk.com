@@ -1,25 +1,25 @@
 module qmm012.e.viewmodel {
     export class ScreenModel {
         enable: KnockoutObservable<boolean>;
-        currencyeditor_E_001: any;
-        currencyeditor_E_002: any;
-        currencyeditor_E_003: any;
-        currencyeditor_E_004: any;
+        Currencyeditor_ErrorUpper: any;
+        Currencyeditor_AlarmUpper: any;
+        Currencyeditor_ErrorLower: any;
+        Currencyeditor_AlarmLower: any;
         //E_004
-        checked_E_004: KnockoutObservable<boolean> = ko.observable(false);
+        Checked_NoDisplay: KnockoutObservable<boolean> = ko.observable(false);
         //E_005
-        checked_E_005: KnockoutObservable<boolean> = ko.observable(false);
+        Checked_ErrorUpper: KnockoutObservable<boolean> = ko.observable(false);
         //E_006
-        checked_E_006: KnockoutObservable<boolean> = ko.observable(false);
+        Checked_AlarmHigh: KnockoutObservable<boolean> = ko.observable(false);
         //E_007
-        checked_E_007: KnockoutObservable<boolean> = ko.observable(false);
+        Checked_ErrorLower: KnockoutObservable<boolean> = ko.observable(false);
         //E_008
-        checked_E_008: KnockoutObservable<boolean> = ko.observable(false);
+        Checked_AlarmLower: KnockoutObservable<boolean> = ko.observable(false);
         //E_001To003
-        roundingRules_E_001: KnockoutObservableArray<any>;
-        roundingRules_E_002: KnockoutObservableArray<any>;
-        roundingRules_E_003: KnockoutObservableArray<any>;
-        selectedRuleCode_E_003: any;
+       Roundingrules_TimeNumberClassification: KnockoutObservableArray<any>;
+        Roundingrules_WorkingDaysPerYear: KnockoutObservableArray<any>;
+        Roundingrules_ZeroDisplay: KnockoutObservableArray<any>;
+        selected_ZeroDisplay: any;
         CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMaster> = ko.observable(null);
         CurrentItemAttend: KnockoutObservable<service.model.ItemAttend> = ko.observable(null);
         CurrentAvePayAtr: KnockoutObservable<number> = ko.observable(0);
@@ -37,21 +37,21 @@ module qmm012.e.viewmodel {
             let self = this;
             //E_001 To 003
             //E_001To003
-            self.roundingRules_E_001 = ko.observableArray([
+            self.Roundingrules_TimeNumberClassification = ko.observableArray([
                 { code: 0, name: '時間' },
                 { code: 1, name: '回数' }
             ]);
-            self.roundingRules_E_002 = ko.observableArray([
+            self.Roundingrules_WorkingDaysPerYear = ko.observableArray([
                 { code: 1, name: '対象' },
                 { code: 0, name: '対象外' }
             ]);
-            self.roundingRules_E_003 = ko.observableArray([
+            self.Roundingrules_ZeroDisplay = ko.observableArray([
                 { code: 1, name: 'ゼロを表示する' },
                 { code: 0, name: 'ゼロを表示しない' }
             ]);
             self.enable = ko.observable(false);
             //E_001
-            self.currencyeditor_E_001 = {
+            self.Currencyeditor_ErrorUpper = {
                 value: self.CurrentErrRangeHigh,
                 constraint: 'ErrRangeHigh',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -61,7 +61,7 @@ module qmm012.e.viewmodel {
                 }))
             };
             //E_002
-            self.currencyeditor_E_002 = {
+            self.Currencyeditor_AlarmUpper = {
                 value: self.CurrentAlRangeHigh,
                 constraint: 'AlRangeHigh',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -71,7 +71,7 @@ module qmm012.e.viewmodel {
                 }))
             };
             //E_003
-            self.currencyeditor_E_003 = {
+            self.Currencyeditor_ErrorLower = {
                 value: self.CurrentErrRangeLow,
                 constraint: 'ErrRangeLow',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -81,7 +81,7 @@ module qmm012.e.viewmodel {
                 }))
             };
             //E_004
-            self.currencyeditor_E_004 = {
+            self.Currencyeditor_AlarmLower = {
                 value: self.CurrentAlRangeLow,
                 constraint: 'AlRangeLow',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -90,22 +90,6 @@ module qmm012.e.viewmodel {
                     currencyposition: 'right'
                 }))
             };
-
-
-            self.CurrentItemMaster.subscribe(function(ItemMaster: qmm012.b.service.model.ItemMaster) {
-                if (ItemMaster) {
-                    service.findItemAttend(ItemMaster.itemCode).done(function(ItemAttend: service.model.ItemAttend) {
-                        self.CurrentItemAttend(ItemAttend);
-                    }).fail(function(res) {
-                        // Alert message
-                        alert(res);
-                    });
-                } else {
-                    self.CurrentItemAttend(null);
-                }
-                self.CurrentZeroDisplaySet(ItemMaster ? ItemMaster.zeroDisplaySet : 1);
-                self.checked_E_004(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
-            });
             self.CurrentItemAttend.subscribe(function(ItemAttend: service.model.ItemAttend) {
                 self.CurrentAvePayAtr(ItemAttend ? ItemAttend.avePayAtr : 0);
                 self.CurrentItemAtr(ItemAttend ? ItemAttend.itemAtr : 0);
@@ -115,14 +99,58 @@ module qmm012.e.viewmodel {
                 self.CurrentAlRangeHigh(ItemAttend ? ItemAttend.alRangeHigh : 0);
                 self.CurrentWorkDaysScopeAtr(ItemAttend ? ItemAttend.workDaysScopeAtr : 1);
                 self.CurrentMemo(ItemAttend ? ItemAttend.memo : "");
-                self.checked_E_005(ItemAttend ? ItemAttend.errRangeHighAtr == 0 ? false : true : false);
-                self.checked_E_006(ItemAttend ? ItemAttend.errRangeLowAtr == 0 ? false : true : false);
-                self.checked_E_007(ItemAttend ? ItemAttend.alRangeHighAtr == 0 ? false : true : false);
-                self.checked_E_008(ItemAttend ? ItemAttend.alRangeLowAtr == 0 ? false : true : false);
+                self.Checked_ErrorUpper(ItemAttend ? ItemAttend.errRangeHighAtr == 0 ? false : true : false);
+                self.Checked_AlarmHigh(ItemAttend ? ItemAttend.errRangeLowAtr == 0 ? false : true : false);
+                self.Checked_ErrorLower(ItemAttend ? ItemAttend.alRangeHighAtr == 0 ? false : true : false);
+                self.Checked_AlarmLower(ItemAttend ? ItemAttend.alRangeLowAtr == 0 ? false : true : false);
             });
-            self.checked_E_004.subscribe(function(NewValue) {
+            self.Checked_NoDisplay.subscribe(function(NewValue) {
                 self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
             });
+        }
+        loadData(itemMaster: qmm012.b.service.model.ItemMaster): JQueryPromise<any> {
+            let self = this;
+            var dfd = $.Deferred<any>();
+            self.CurrentItemMaster(itemMaster);
+            if (itemMaster.itemCode) {
+                self.loadItemAttend(itemMaster).done(function() {
+                    dfd.resolve("done");
+                });
+            } else {
+                self.clearContent();
+                dfd.resolve("done");
+            }
+            self.CurrentZeroDisplaySet(itemMaster ? itemMaster.zeroDisplaySet : 1);
+            self.Checked_NoDisplay(itemMaster ? itemMaster.itemDisplayAtr == 0 ? true : false : false);
+            return dfd.promise();
+        }
+        clearContent() {
+            let self = this;
+            self.CurrentAvePayAtr(0);
+            self.CurrentItemAtr(0);
+            self.CurrentErrRangeLow(0);
+            self.CurrentErrRangeHigh(0);
+            self.CurrentAlRangeLow(0);
+            self.CurrentAlRangeHigh(0);
+            self.CurrentWorkDaysScopeAtr(1);
+            self.CurrentMemo("");
+            self.Checked_ErrorUpper(false);
+            self.Checked_AlarmHigh(false);
+            self.Checked_ErrorLower(false);
+            self.Checked_AlarmLower(false);
+
+        }
+        loadItemAttend(itemMaster: qmm012.b.service.model.ItemMaster): JQueryPromise<any> {
+            let self = this;
+            var dfd = $.Deferred<any>();
+            service.findItemAttend(itemMaster.itemCode).done(function(ItemAttend: service.model.ItemAttend) {
+                self.CurrentItemAttend(ItemAttend);
+                dfd.resolve(ItemAttend);
+            }).fail(function(res) {
+                // Alert message
+                alert(res);
+            });
+            return dfd.promise();
         }
         getCurrentItemAttend() {
             //return Item Attend customer input on form
@@ -130,13 +158,13 @@ module qmm012.e.viewmodel {
             let itemAttend = new service.model.ItemAttend(
                 self.CurrentAvePayAtr(),
                 self.CurrentItemAtr(),
-                self.checked_E_006() ? 1 : 0,
+                self.Checked_AlarmHigh() ? 1 : 0,
                 self.CurrentErrRangeLow(),
-                self.checked_E_005() ? 1 : 0,
+                self.Checked_ErrorUpper() ? 1 : 0,
                 self.CurrentErrRangeHigh(),
-                self.checked_E_008() ? 1 : 0,
+                self.Checked_AlarmLower() ? 1 : 0,
                 self.CurrentAlRangeLow(),
-                self.checked_E_007() ? 1 : 0,
+                self.Checked_ErrorLower() ? 1 : 0,
                 self.CurrentAlRangeHigh(),
                 self.CurrentWorkDaysScopeAtr(),
                 self.CurrentMemo());

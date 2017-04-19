@@ -10,7 +10,7 @@ module qmm012.c {
                 .done(function(res: qmm023.a.service.model.CommuteNoTaxLimitDto) {
                     dfd.resolve(res);
                 }).fail(function(res) {
-                    dfd.reject(res);
+                    dfd.reject(res.message);
                 })
             return dfd.promise();
         }
@@ -21,7 +21,7 @@ module qmm012.c {
                     dfd.resolve(res);
                 })
                 .fail(function(res) {
-                    dfd.reject(res);
+                    dfd.reject(res.message);
                 })
             return dfd.promise();
         }

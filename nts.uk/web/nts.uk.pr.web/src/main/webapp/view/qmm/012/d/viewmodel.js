@@ -8,15 +8,15 @@ var qmm012;
                 function ScreenModel() {
                     //Checkbox
                     //D_003
-                    this.checked_D_003 = ko.observable(true);
+                    this.Checked_NoDisplayNames = ko.observable(true);
                     //D_003
-                    this.checked_D_004 = ko.observable(false);
+                    this.Checked_ErrorUpper = ko.observable(false);
                     //D_003
-                    this.checked_D_005 = ko.observable(false);
+                    this.Checked_AlarmHigh = ko.observable(false);
                     //D_003
-                    this.checked_D_006 = ko.observable(false);
+                    this.Checked_ErrorLower = ko.observable(false);
                     //D_003
-                    this.checked_D_007 = ko.observable(false);
+                    this.Checked_AlarmLower = ko.observable(false);
                     this.CurrentItemMaster = ko.observable(null);
                     this.CurrentItemDeduct = ko.observable(null);
                     this.CurrentAlRangeHigh = ko.observable(0);
@@ -28,16 +28,16 @@ var qmm012;
                     this.CurrentItemDisplayAtr = ko.observable(1);
                     this.CurrentZeroDisplaySet = ko.observable(1);
                     this.currentItemPeriod = ko.observable(null);
-                    this.D_LBL_011_Text = ko.observable('設定なし');
+                    this.D_Lbl_SettingClassification_Text = ko.observable('設定なし');
                     this.currentItemBDs = ko.observableArray([]);
-                    this.D_LBL_012_Text = ko.observable("設定なし");
-                    this.D_BTN_001_enable = ko.observable(true);
-                    this.D_BTN_002_enable = ko.observable(true);
+                    this.D_Lbl_BreakdownItem_Text = ko.observable("設定なし");
+                    this.D_Btn_PeriodSetting_enable = ko.observable(true);
+                    this.D_Btn_BreakdownSetting_enable = ko.observable(true);
                     var self = this;
                     self.isEditable = ko.observable(true);
                     self.isEnable = ko.observable(true);
                     self.enable = ko.observable(true);
-                    self.ComboBoxItemList_D_001 = ko.observableArray([
+                    self.D_Sel_DeductionItem = ko.observableArray([
                         new ComboboxItemModel(0, '任意控除項目'),
                         new ComboboxItemModel(1, '社会保険項目'),
                         new ComboboxItemModel(2, '所得税項目'),
@@ -45,13 +45,13 @@ var qmm012;
                     ]);
                     //end combobox data
                     //D_002
-                    self.roundingRules_D_002 = ko.observableArray([
+                    self.roundingRules_ZeroDisplayIndicator = ko.observableArray([
                         { code: 1, name: 'ゼロを表示する' },
                         { code: 0, name: 'ゼロを表示しない' }
                     ]);
                     //currencyeditor
                     //001
-                    self.currencyeditor_D_001 = {
+                    self.currencyeditor_ErrorUpper = {
                         value: self.CurrentErrRangeHigh,
                         constraint: 'ErrRangeHigh',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -64,7 +64,7 @@ var qmm012;
                         readonly: ko.observable(false)
                     };
                     //002
-                    self.currencyeditor_D_002 = {
+                    self.currencyeditor_AlarmUpper = {
                         value: self.CurrentAlRangeHigh,
                         constraint: 'AlRangeHigh',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -77,7 +77,7 @@ var qmm012;
                         readonly: ko.observable(false)
                     };
                     //003
-                    self.currencyeditor_D_003 = {
+                    self.currencyeditor_ErrorLower = {
                         value: self.CurrentErrRangeLow,
                         constraint: 'ErrRangeLow',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -90,7 +90,7 @@ var qmm012;
                         readonly: ko.observable(false)
                     };
                     //004
-                    self.currencyeditor_D_004 = {
+                    self.currencyeditor_AlarmLower = {
                         value: self.CurrentAlRangeLow,
                         constraint: 'AlRangeLow',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -102,23 +102,6 @@ var qmm012;
                         enable: ko.observable(true),
                         readonly: ko.observable(false)
                     };
-                    self.CurrentItemMaster.subscribe(function (ItemMaster) {
-                        if (ItemMaster) {
-                            d.service.findItemDeduct(ItemMaster.itemCode).done(function (ItemDeduct) {
-                                self.CurrentItemDeduct(ItemDeduct);
-                            }).fail(function (res) {
-                                // Alert message
-                                alert(res);
-                            });
-                        }
-                        else {
-                            self.CurrentItemDeduct(null);
-                        }
-                        self.loadItemPeriod();
-                        self.loadItemBDs();
-                        self.checked_D_003(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
-                        self.CurrentZeroDisplaySet(ItemMaster ? ItemMaster.zeroDisplaySet : 1);
-                    });
                     self.CurrentItemDeduct.subscribe(function (ItemDeduct) {
                         self.CurrentAlRangeHigh(ItemDeduct ? ItemDeduct.alRangeHigh : 0);
                         self.CurrentAlRangeLow(ItemDeduct ? ItemDeduct.alRangeLow : 0);
@@ -126,47 +109,92 @@ var qmm012;
                         self.CurrentErrRangeHigh(ItemDeduct ? ItemDeduct.errRangeHigh : 0);
                         self.CurrentErrRangeLow(ItemDeduct ? ItemDeduct.errRangeLow : 0);
                         self.CurrentMemo(ItemDeduct ? ItemDeduct.memo : "");
-                        self.checked_D_004(ItemDeduct ? ItemDeduct.errRangeHighAtr == 0 ? false : true : false);
-                        self.checked_D_005(ItemDeduct ? ItemDeduct.alRangeHighAtr == 0 ? false : true : false);
-                        self.checked_D_006(ItemDeduct ? ItemDeduct.errRangeLowAtr == 0 ? false : true : false);
-                        self.checked_D_007(ItemDeduct ? ItemDeduct.alRangeLowAtr == 0 ? false : true : false);
+                        self.Checked_ErrorUpper(ItemDeduct ? ItemDeduct.errRangeHighAtr == 0 ? false : true : false);
+                        self.Checked_AlarmHigh(ItemDeduct ? ItemDeduct.alRangeHighAtr == 0 ? false : true : false);
+                        self.Checked_ErrorLower(ItemDeduct ? ItemDeduct.errRangeLowAtr == 0 ? false : true : false);
+                        self.Checked_AlarmLower(ItemDeduct ? ItemDeduct.alRangeLowAtr == 0 ? false : true : false);
                     });
-                    self.checked_D_003.subscribe(function (NewValue) {
+                    self.Checked_NoDisplayNames.subscribe(function (NewValue) {
                         self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
                     });
                     self.currentItemPeriod.subscribe(function (newValue) {
-                        self.D_LBL_011_Text(newValue ? newValue.periodAtr == 1 ? '設定あり' : '設定なし' : '設定なし');
+                        self.D_Lbl_SettingClassification_Text(newValue ? newValue.periodAtr == 1 ? '設定あり' : '設定なし' : '設定なし');
                     });
                     self.currentItemBDs.subscribe(function (newValue) {
-                        self.D_LBL_012_Text(newValue.length ? '設定あり' : '設定なし');
+                        self.D_Lbl_BreakdownItem_Text(newValue.length ? '設定あり' : '設定なし');
                     });
                 }
-                ScreenModel.prototype.loadItemPeriod = function () {
+                ScreenModel.prototype.loadData = function (itemMaster) {
                     var self = this;
-                    //Load Screen H  Data
-                    if (self.CurrentItemMaster()) {
-                        qmm012.h.service.findItemPeriod(self.CurrentItemMaster()).done(function (ItemPeriod) {
-                            self.currentItemPeriod(ItemPeriod);
-                        }).fail(function (res) {
-                            // Alert message
-                            alert(res);
+                    var dfd = $.Deferred();
+                    self.CurrentItemMaster(itemMaster);
+                    if (itemMaster.itemCode) {
+                        self.loadItemDeduct(itemMaster).done(function () {
+                            self.loadItemPeriod(itemMaster).done(function () {
+                                self.loadItemBDs(itemMaster).done(function () {
+                                    dfd.resolve("done");
+                                });
+                            });
                         });
                     }
-                    else
-                        self.currentItemPeriod(undefined);
+                    else {
+                        self.clearContent();
+                        dfd.resolve("done");
+                    }
+                    self.Checked_NoDisplayNames(itemMaster ? itemMaster.itemDisplayAtr == 0 ? true : false : false);
+                    self.CurrentZeroDisplaySet(itemMaster ? itemMaster.zeroDisplaySet : 1);
+                    return dfd.promise();
                 };
-                ScreenModel.prototype.loadItemBDs = function () {
+                ScreenModel.prototype.clearContent = function () {
                     var self = this;
-                    if (self.CurrentItemMaster()) {
-                        qmm012.i.service.findAllItemBD(self.CurrentItemMaster()).done(function (ItemBDs) {
-                            self.currentItemBDs(ItemBDs);
-                        }).fail(function (res) {
-                            // Alert message
-                            alert(res);
-                        });
-                    }
-                    else
-                        self.currentItemBDs([]);
+                    self.CurrentAlRangeHigh(0);
+                    self.CurrentAlRangeLow(0);
+                    self.CurrentDeductAtr(0);
+                    self.CurrentErrRangeHigh(0);
+                    self.CurrentErrRangeLow(0);
+                    self.CurrentMemo("");
+                    self.Checked_ErrorUpper(false);
+                    self.Checked_AlarmHigh(false);
+                    self.Checked_ErrorLower(false);
+                    self.Checked_AlarmLower(false);
+                    self.D_Lbl_SettingClassification_Text('設定なし');
+                    self.D_Lbl_BreakdownItem_Text('設定なし');
+                };
+                ScreenModel.prototype.loadItemDeduct = function (itemMaster) {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    d.service.findItemDeduct(itemMaster.itemCode).done(function (ItemDeduct) {
+                        self.CurrentItemDeduct(ItemDeduct);
+                        dfd.resolve(ItemDeduct);
+                    }).fail(function (res) {
+                        // Alert message
+                        alert(res);
+                    });
+                    return dfd.promise();
+                };
+                ScreenModel.prototype.loadItemPeriod = function (itemMaster) {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    qmm012.h.service.findItemPeriod(itemMaster).done(function (ItemPeriod) {
+                        self.currentItemPeriod(ItemPeriod);
+                        dfd.resolve(ItemPeriod);
+                    }).fail(function (res) {
+                        // Alert message
+                        alert(res);
+                    });
+                    return dfd.promise();
+                };
+                ScreenModel.prototype.loadItemBDs = function (itemMaster) {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    qmm012.i.service.findAllItemBD(itemMaster).done(function (ItemBDs) {
+                        self.currentItemBDs(ItemBDs);
+                        dfd.resolve(ItemBDs);
+                    }).fail(function (res) {
+                        // Alert message
+                        alert(res);
+                    });
+                    return dfd.promise();
                 };
                 ScreenModel.prototype.openHDialog = function () {
                     var self = this;
@@ -186,7 +214,7 @@ var qmm012;
                 };
                 ScreenModel.prototype.GetCurrentItemDeduct = function () {
                     var self = this;
-                    var ItemDeduct = new d.service.model.ItemDeduct(self.CurrentDeductAtr(), self.checked_D_006() ? 1 : 0, self.CurrentErrRangeLow(), self.checked_D_004() ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_D_007() ? 1 : 0, self.CurrentAlRangeLow(), self.checked_D_005() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentMemo());
+                    var ItemDeduct = new d.service.model.ItemDeduct(self.CurrentDeductAtr(), self.Checked_ErrorLower() ? 1 : 0, self.CurrentErrRangeLow(), self.Checked_ErrorUpper() ? 1 : 0, self.CurrentErrRangeHigh(), self.Checked_AlarmLower() ? 1 : 0, self.CurrentAlRangeLow(), self.Checked_AlarmHigh() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentMemo());
                     return ItemDeduct;
                 };
                 return ScreenModel;

@@ -39,7 +39,7 @@ module qmm012.h {
                     dfd.resolve(ItemPeriod);
                 }).fail(function(res) {
                     // Alert message
-                    dfd.reject(res);
+                    dfd.reject(res.message);
                 });
             }
             if (categoryAtr == 1) {
@@ -47,7 +47,7 @@ module qmm012.h {
                     dfd.resolve(ItemPeriod);
                 }).fail(function(res) {
                     // Alert message
-                    dfd.reject(res);
+                    dfd.reject(res.message);
                 });
             }
             return dfd.promise();
@@ -82,19 +82,19 @@ module qmm012.h {
             let categoryAtr = itemMaster.categoryAtr;
             let itemCode = itemMaster.itemCode;
             if (categoryAtr == 0) {
-                addItemSalaryPeriod(itemPeriod).done(function(any) {
-                    dfd.resolve(any);
-                }).fail(function(res) {
+                addItemSalaryPeriod(itemPeriod).done(function(res: any) {
+                    dfd.resolve(res);
+                }).fail(function(res: any) {
                     // Alert message
-                    dfd.reject(res);
+                    dfd.reject(res.message);
                 });
             }
             if (categoryAtr == 1) {
-                addItemDeductPeriod(itemPeriod).done(function(any) {
-                    dfd.resolve(any);
-                }).fail(function(res) {
+                addItemDeductPeriod(itemPeriod).done(function(res: any) {
+                    dfd.resolve(res);
+                }).fail(function(res: any) {
                     // Alert message
-                    dfd.reject(res);
+                    dfd.reject(res.message);
                 });
             }
             return dfd.promise();
@@ -131,19 +131,19 @@ module qmm012.h {
             let categoryAtr = itemMaster.categoryAtr;
             let itemCode = itemMaster.itemCode;
             if (categoryAtr == 0) {
-                updateItemSalaryPeriod(itemPeriod).done(function(any) {
-                    dfd.resolve(any);
-                }).fail(function(res) {
+                updateItemSalaryPeriod(itemPeriod).done(function(res: any) {
+                    dfd.resolve(res);
+                }).fail(function(res: any) {
                     // Alert message
-                    dfd.reject(res);
+                    dfd.reject(res.message);
                 });
             }
             if (categoryAtr == 1) {
-                updateItemDeductPeriod(itemPeriod).done(function(any) {
-                    dfd.resolve(any);
-                }).fail(function(res) {
+                updateItemDeductPeriod(itemPeriod).done(function(res: any) {
+                    dfd.resolve(res);
+                }).fail(function(res: any) {
                     // Alert message
-                    dfd.reject(res);
+                    dfd.reject(res.message);
                 });
             }
             return dfd.promise();
@@ -170,7 +170,7 @@ module qmm012.h {
                 constructor(itemCode: string, periodAtr: number, strY: number, endY: number, cycleAtr: number, cycle01Atr: number, cycle02Atr: number,
                     cycle03Atr: number, cycle04Atr: number, cycle05Atr: number, cycle06Atr: number, cycle07Atr: number, cycle08Atr: number, cycle09Atr: number,
                     cycle10Atr: number, cycle11Atr: number, cycle12Atr: number) {
-                    this.itemCode= itemCode;
+                    this.itemCode = itemCode;
                     this.periodAtr = periodAtr;
                     this.strY = strY;
                     this.endY = endY;

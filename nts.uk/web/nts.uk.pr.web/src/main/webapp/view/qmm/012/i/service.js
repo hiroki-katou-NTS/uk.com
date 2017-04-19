@@ -174,21 +174,21 @@ var qmm012;
             (function (model) {
                 var ItemBD = (function () {
                     function ItemBD(itemCode, itemBreakdownCode, itemBreakdownName, itemBreakdownAbName, uniteCode, zeroDispSet, itemDispAtr, errRangeLowAtr, errRangeLow, errRangeHighAtr, errRangeHigh, alRangeLowAtr, alRangeLow, alRangeHighAtr, alRangeHigh) {
-                        this.itemCode = itemCode;
-                        this.itemBreakdownCode = itemBreakdownCode;
-                        this.itemBreakdownName = itemBreakdownName;
-                        this.itemBreakdownAbName = itemBreakdownAbName;
-                        this.uniteCode = uniteCode;
-                        this.zeroDispSet = zeroDispSet;
-                        this.itemDispAtr = itemDispAtr;
-                        this.errRangeLowAtr = errRangeLowAtr;
-                        this.errRangeLow = errRangeLow;
-                        this.errRangeHighAtr = errRangeHighAtr;
-                        this.errRangeHigh = errRangeHigh;
-                        this.alRangeLowAtr = alRangeLowAtr;
-                        this.alRangeLow = alRangeLow;
-                        this.alRangeHighAtr = alRangeHighAtr;
-                        this.alRangeHigh = alRangeHigh;
+                        this.itemCode = itemCode ? itemCode : '';
+                        this.itemBreakdownCode = itemBreakdownCode ? itemBreakdownCode : '';
+                        this.itemBreakdownName = itemBreakdownName ? itemBreakdownName : '';
+                        this.itemBreakdownAbName = itemBreakdownAbName ? itemBreakdownAbName : '';
+                        this.uniteCode = uniteCode ? uniteCode : '';
+                        this.zeroDispSet = zeroDispSet ? zeroDispSet : 0;
+                        this.itemDispAtr = itemDispAtr ? itemDispAtr : 0;
+                        this.errRangeLowAtr = errRangeLowAtr ? errRangeLowAtr : 0;
+                        this.errRangeLow = errRangeLow ? errRangeLow : 0;
+                        this.errRangeHighAtr = errRangeHighAtr ? errRangeHighAtr : 0;
+                        this.errRangeHigh = errRangeHigh ? errRangeHigh : 0;
+                        this.alRangeLowAtr = alRangeLowAtr ? alRangeLowAtr : 0;
+                        this.alRangeLow = alRangeLow ? alRangeLow : 0;
+                        this.alRangeHighAtr = alRangeHighAtr ? alRangeHighAtr : 0;
+                        this.alRangeHigh = alRangeHigh ? alRangeHigh : 0;
                     }
                     return ItemBD;
                 }());

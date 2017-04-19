@@ -19,11 +19,12 @@ public interface ItemMasterRepository {
 
 	/**
 	 * Find all item master
+	 * 
 	 * @param companyCode
 	 * @return
 	 */
 	List<ItemMaster> findAll(String companyCode);
-	
+
 	/**
 	 * Find all item by
 	 * 
@@ -47,7 +48,7 @@ public interface ItemMasterRepository {
 	 * @return
 	 */
 	List<ItemMaster> findAll(String companyCode, List<String> itemCode);
-	
+
 	/**
 	 * Find all item by
 	 * 
@@ -108,5 +109,6 @@ public interface ItemMasterRepository {
 	void update(ItemMaster itemMaster);
 
 	List<ItemMaster> findAllNoAvePayAtr(String companyCode, int ctgAtr, int dispSet);
+
 
 }

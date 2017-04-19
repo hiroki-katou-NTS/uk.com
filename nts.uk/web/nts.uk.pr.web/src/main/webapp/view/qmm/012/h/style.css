@@ -11,11 +11,11 @@
 	display: inline-block;
 }
 
-#H_BTN_002 {
+#H_Btn_CancelButton {
 	margin-left: 20px;
 }
 
-#H_Text_001 {
+#NavigationMessage1Title {
 	width: 700px;
 }
 
@@ -61,10 +61,10 @@
 	vertical-align: middle;
 }
 
-#H_INP_001, #H_INP_002 {
+#H_Inp_StartYear, #H_Inp_EndYear {
 	width: 56px;
 }
 
-#H_INP_002 {
+#H_Inp_EndYear {
 	margin-left: 8px;
 }

@@ -8,17 +8,17 @@ var qmm012;
                 function ScreenModel() {
                     //textediter
                     //Checkbox
-                    this.checked_002 = ko.observable(false);
-                    this.checked_003 = ko.observable(false);
-                    this.checked_004 = ko.observable(false);
-                    this.checked_005 = ko.observable(false);
-                    this.checked_006 = ko.observable(false);
+                    this.Checked_NoDisplay = ko.observable(false);
+                    this.Checked_ErrorUpper = ko.observable(false);
+                    this.Checked_AlarmUpper = ko.observable(false);
+                    this.Checked_ErrorLower = ko.observable(false);
+                    this.Checked_AlarmLower = ko.observable(false);
                     this.gridListCurrentCode = ko.observable('');
-                    this.selectedRuleCode_001 = ko.observable(1);
                     this.CurrentItemMaster = ko.observable(null);
                     this.ItemBDList = ko.observableArray([]);
                     this.CurrentCategoryAtrName = ko.observable('');
                     this.CurrentItemBD = ko.observable(null);
+                    this.dirtyItemBD = ko.observable(null);
                     this.CurrentItemBreakdownCode = ko.observable('');
                     this.CurrentItemBreakdownName = ko.observable('');
                     this.CurrentItemBreakdownAbName = ko.observable('');
@@ -29,20 +29,21 @@ var qmm012;
                     this.CurrentErrRangeHigh = ko.observable(0);
                     this.CurrentAlRangeLow = ko.observable(0);
                     this.CurrentAlRangeHigh = ko.observable(0);
-                    this.enable_I_INP_002 = ko.observable(false);
-                    this.I_BTN_003_enable = ko.observable(true);
+                    this.enable_I_Inp_Code = ko.observable(false);
+                    this.I_Btn_DeleteButton_enable = ko.observable(true);
                     this.currentItemCode = ko.observable('');
+                    this.oldGridListCurrentCode = ko.observable('');
                     var self = this;
                     //start Switch Data
                     self.enable = ko.observable(true);
-                    self.roundingRules_001 = ko.observableArray([
+                    self.roundingRules_ZeroDisplayIndicator = ko.observableArray([
                         { code: 1, name: 'ゼロを表示する' },
                         { code: 0, name: 'ゼロを表示しない' }
                     ]);
                     //endSwitch Data
                     //currencyeditor
                     //005
-                    self.currencyeditor_I_INP_005 = {
+                    self.currencyeditor_I_Inp_ErrorUpper = {
                         value: self.CurrentErrRangeHigh,
                         constraint: 'ErrRangeHigh',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -52,7 +53,7 @@ var qmm012;
                         }))
                     };
                     //006
-                    self.currencyeditor_I_INP_006 = {
+                    self.currencyeditor_I_Inp_AlarmUpper = {
                         value: self.CurrentAlRangeHigh,
                         constraint: 'AlRangeHigh',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -62,7 +63,7 @@ var qmm012;
                         }))
                     };
                     //007
-                    self.currencyeditor_I_INP_007 = {
+                    self.currencyeditor_I_Inp_ErrorLower = {
                         value: self.CurrentErrRangeLow,
                         constraint: 'ErrRangeLow',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -72,7 +73,7 @@ var qmm012;
                         }))
                     };
                     //008
-                    self.currencyeditor_I_INP_008 = {
+                    self.currencyeditor_I_Inp_AlarmLower = {
                         value: self.CurrentAlRangeLow,
                         constraint: 'AlRangeLow',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -90,58 +91,65 @@ var qmm012;
                         { headerText: '名', prop: 'itemBreakdownName', width: 150 }
                     ]);
                     self.gridListCurrentCode.subscribe(function (newValue) {
-                        var item = _.find(self.ItemBDList(), function (ItemBD) {
-                            return ItemBD.itemBreakdownCode == newValue;
-                        });
-                        self.CurrentItemBD(item);
-                    });
-                    self.CurrentItemBD.subscribe(function (ItemBD) {
-                        self.CurrentItemBreakdownCode(ItemBD ? ItemBD.itemBreakdownCode : '');
-                        self.CurrentItemBreakdownName(ItemBD ? ItemBD.itemBreakdownName : '');
-                        self.CurrentItemBreakdownAbName(ItemBD ? ItemBD.itemBreakdownAbName : '');
-                        self.CurrentUniteCode(ItemBD ? ItemBD.uniteCode : '');
-                        self.CurrentZeroDispSet(ItemBD ? ItemBD.zeroDispSet : 1);
-                        self.checked_002(ItemBD ? ItemBD.itemDispAtr == 1 ? false : true : false);
-                        self.CurrentItemDispAtr(ItemBD ? ItemBD.itemDispAtr : 0);
-                        self.checked_005(ItemBD ? ItemBD.errRangeLowAtr == 1 ? true : false : false);
-                        self.CurrentErrRangeLow(ItemBD ? ItemBD.errRangeLow : 0);
-                        self.checked_003(ItemBD ? ItemBD.errRangeHighAtr == 1 ? true : false : false);
-                        self.CurrentErrRangeHigh(ItemBD ? ItemBD.errRangeHigh : 0);
-                        self.checked_006(ItemBD ? ItemBD.alRangeLowAtr == 1 ? true : false : false);
-                        self.CurrentAlRangeLow(ItemBD ? ItemBD.alRangeLow : 0);
-                        self.checked_004(ItemBD ? ItemBD.alRangeHighAtr == 1 ? true : false : false);
-                        self.CurrentAlRangeHigh(ItemBD ? ItemBD.alRangeHigh : 0);
-                        if (ItemBD != undefined) {
-                            //if item not undefined it mean active update mode
-                            self.enable_I_INP_002(false);
+                        if (self.oldGridListCurrentCode() != newValue) {
+                            var item = _.find(self.ItemBDList(), function (ItemBD) {
+                                return ItemBD.itemBreakdownCode == newValue;
+                            });
+                            self.activeDirty(function () { self.CurrentItemBD(item ? item : new i.service.model.ItemBD()); }, function () { self.CurrentItemBD(item ? item : new i.service.model.ItemBD()); }, function () { self.gridListCurrentCode(self.oldGridListCurrentCode()); });
                         }
                     });
-                    self.enable_I_INP_002.subscribe(function (newValue) {
+                    self.CurrentItemBD.subscribe(function (itemBD) {
+                        self.clearAllValidateError();
+                        self.CurrentItemBreakdownCode(itemBD ? itemBD.itemBreakdownCode : '');
+                        self.CurrentItemBreakdownName(itemBD ? itemBD.itemBreakdownName : '');
+                        self.CurrentItemBreakdownAbName(itemBD ? itemBD.itemBreakdownAbName : '');
+                        self.CurrentUniteCode(itemBD ? itemBD.uniteCode : '');
+                        self.CurrentZeroDispSet(itemBD ? itemBD.zeroDispSet : 0);
+                        self.Checked_NoDisplay(itemBD ? itemBD.itemDispAtr == 1 ? false : true : false);
+                        self.CurrentItemDispAtr(itemBD ? itemBD.itemDispAtr : 0);
+                        self.Checked_ErrorLower(itemBD ? itemBD.errRangeLowAtr == 1 ? true : false : false);
+                        self.CurrentErrRangeLow(itemBD ? itemBD.errRangeLow : 0);
+                        self.Checked_ErrorUpper(itemBD ? itemBD.errRangeHighAtr == 1 ? true : false : false);
+                        self.CurrentErrRangeHigh(itemBD ? itemBD.errRangeHigh : 0);
+                        self.Checked_AlarmLower(itemBD ? itemBD.alRangeLowAtr == 1 ? true : false : false);
+                        self.CurrentAlRangeLow(itemBD ? itemBD.alRangeLow : 0);
+                        self.Checked_AlarmUpper(itemBD ? itemBD.alRangeHighAtr == 1 ? true : false : false);
+                        self.CurrentAlRangeHigh(itemBD ? itemBD.alRangeHigh : 0);
+                        if (itemBD ? itemBD.itemCode != '' : false) {
+                            //if item not undefined it mean active update mode
+                            self.enable_I_Inp_Code(false);
+                        }
+                        self.dirtyItemBD(self.getCurrentItemBD());
+                        if (self.dirty)
+                            self.dirty.reset();
+                        self.oldGridListCurrentCode(self.gridListCurrentCode());
+                    });
+                    self.enable_I_Inp_Code.subscribe(function (newValue) {
                         if (newValue) {
                             //it mean new mode 
-                            self.I_BTN_003_enable(false);
-                            self.gridListCurrentCode('');
+                            self.I_Btn_DeleteButton_enable(false);
                         }
                         else {
                             //it mean update mode
-                            self.I_BTN_003_enable(true);
-                            $('#I_INP_002').ntsError('clear');
+                            self.I_Btn_DeleteButton_enable(true);
+                            $('#I_Inp_Code').ntsError('clear');
                         }
                     });
                     self.CurrentItemBreakdownCode.subscribe(function (newValue) {
                         //validate item for not duplicate on client
-                        if (self.enable_I_INP_002()) {
+                        if (self.enable_I_Inp_Code()) {
                             var item = _.find(self.ItemBDList(), function (ItemBD) {
                                 return ItemBD.itemBreakdownCode == newValue;
                             });
                             if (item)
-                                $('#I_INP_002').ntsError('set', 'えらーです');
-                            else
-                                $('#I_INP_002').ntsError('clear');
+                                $('#I_Inp_Code').ntsError('set', '入力したコードは既に存在しています');
                         }
                     });
                     self.loadItemBDs();
                 }
+                ScreenModel.prototype.clearAllValidateError = function () {
+                    $('.save-error').ntsError('clear');
+                };
                 ScreenModel.prototype.loadItemBDs = function () {
                     var self = this;
                     self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
@@ -162,23 +170,43 @@ var qmm012;
                             if (itemCode == undefined)
                                 //if param itemCode == undefined => select first item in grid list
                                 self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCode);
-                            else
+                            else {
                                 //else set itemCode 
+                                var item = _.find(self.ItemBDList(), function (ItemBD) {
+                                    return ItemBD.itemBreakdownCode == itemCode;
+                                });
+                                self.CurrentItemBD(item);
+                                self.oldGridListCurrentCode(itemCode);
                                 self.gridListCurrentCode(itemCode);
+                            }
+                        self.dirtyItemBD(self.getCurrentItemBD());
+                        self.dirty = new nts.uk.ui.DirtyChecker(self.dirtyItemBD);
                     });
                 };
                 ScreenModel.prototype.getCurrentItemBD = function () {
                     //get item customer has input on form 
                     var self = this;
-                    return new i.service.model.ItemBD(self.CurrentItemMaster().itemCode, self.CurrentItemBreakdownCode(), self.CurrentItemBreakdownName(), self.CurrentItemBreakdownAbName(), self.CurrentUniteCode(), self.CurrentZeroDispSet(), self.checked_002() == true ? 0 : 1, self.checked_005() == true ? 1 : 0, self.CurrentErrRangeLow(), self.checked_003() == true ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_006() == true ? 1 : 0, self.CurrentAlRangeLow(), self.checked_004() == true ? 1 : 0, self.CurrentAlRangeHigh());
+                    return new i.service.model.ItemBD(self.CurrentItemMaster().itemCode, self.CurrentItemBreakdownCode(), self.CurrentItemBreakdownName(), self.CurrentItemBreakdownAbName(), self.CurrentUniteCode(), self.CurrentZeroDispSet(), self.Checked_NoDisplay() == true ? 0 : 1, self.Checked_ErrorLower() == true ? 1 : 0, self.CurrentErrRangeLow(), self.Checked_ErrorUpper() == true ? 1 : 0, self.CurrentErrRangeHigh(), self.Checked_AlarmLower() == true ? 1 : 0, self.CurrentAlRangeLow(), self.Checked_AlarmUpper() == true ? 1 : 0, self.CurrentAlRangeHigh());
+                };
+                ScreenModel.prototype.validateItemBD = function () {
+                    $('#I_Inp_Code').ntsEditor('validate');
+                    $('#I_Inp_Name').ntsEditor('validate');
+                    $('#I_Inp_AbbreviatedName').ntsEditor('validate');
+                    if ($('.nts-editor').ntsError("hasError")) {
+                        return true;
+                    }
+                    return false;
                 };
                 ScreenModel.prototype.saveItem = function () {
                     var self = this;
-                    //if I_INP_002 is enable is mean add new mode
-                    if (self.enable_I_INP_002())
-                        self.addItemBD();
-                    else
-                        self.updateItemBD();
+                    //if I_Inp_Code is enable is mean add new mode
+                    if (!self.validateItemBD()) {
+                        var itemBD = self.getCurrentItemBD();
+                        if (self.enable_I_Inp_Code())
+                            self.addItemBD(itemBD);
+                        else
+                            self.updateItemBD(itemBD);
+                    }
                 };
                 ScreenModel.prototype.deleteItem = function () {
                     var self = this;
@@ -207,37 +235,88 @@ var qmm012;
                         });
                     }
                 };
-                ScreenModel.prototype.addItemBD = function () {
+                ScreenModel.prototype.activeDirty = function (MainFunction, YesFunction, NoFunction) {
+                    var self = this;
+                    self.dirtyItemBD(self.getCurrentItemBD());
+                    if (self.dirty ? !self.dirty.isDirty() : true) {
+                        MainFunction();
+                    }
+                    else {
+                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。  ").ifYes(function () {
+                            //reset data on form when not save 
+                            self.gridListCurrentCode(self.gridListCurrentCode());
+                            if (YesFunction)
+                                YesFunction();
+                        }).ifNo(function () {
+                            if (NoFunction)
+                                NoFunction();
+                        });
+                    }
+                };
+                ScreenModel.prototype.addItemBD = function (itemBD) {
                     var self = this;
                     //get itemBD on form
-                    var itemBD = self.getCurrentItemBD();
                     i.service.addItemBD(itemBD, self.CurrentItemMaster()).done(function (any) {
                         // set selected code
+                        self.CurrentItemBD(itemBD);
                         self.reloadAndSetSelectedCode(itemBD.itemBreakdownCode);
                     }).fail(function (res) {
                         alert(res.value);
                     });
                 };
-                ScreenModel.prototype.updateItemBD = function () {
+                ScreenModel.prototype.updateItemBD = function (itemBD) {
                     var self = this;
-                    var itemBD = self.getCurrentItemBD();
                     var itemCode = itemBD.itemBreakdownCode;
                     //update item 
                     i.service.updateItemBD(itemBD, self.CurrentItemMaster()).done(function (any) {
                         // set selected code
-                        self.reloadAndSetSelectedCode(itemBD.itemBreakdownCode);
+                        self.reloadAndSetSelectedCode(itemCode);
                     }).fail(function (res) {
                         alert(res.value);
                     });
                 };
                 ScreenModel.prototype.closeDialog = function () {
                     var self = this;
-                    nts.uk.ui.windows.setShared('itemBDs', self.ItemBDList());
-                    nts.uk.ui.windows.close();
+                    self.activeDirty(function () {
+                        nts.uk.ui.windows.setShared('itemBDs', self.ItemBDList());
+                        nts.uk.ui.windows.close();
+                    }, function () {
+                        nts.uk.ui.windows.setShared('itemBDs', self.ItemBDList());
+                        nts.uk.ui.windows.close();
+                    });
+                };
+                ScreenModel.prototype.setNewMode = function () {
+                    var self = this;
+                    self.enable_I_Inp_Code(true);
+                    self.clearForm();
+                };
+                ScreenModel.prototype.clearForm = function () {
+                    var self = this;
+                    self.clearAllValidateError();
+                    self.CurrentItemBreakdownCode('');
+                    self.CurrentItemBreakdownName('');
+                    self.CurrentItemBreakdownAbName('');
+                    self.CurrentUniteCode('');
+                    self.CurrentZeroDispSet(0);
+                    self.Checked_NoDisplay(false);
+                    self.CurrentItemDispAtr(0);
+                    self.Checked_ErrorLower(false);
+                    self.CurrentErrRangeLow(0);
+                    self.Checked_ErrorUpper(false);
+                    self.CurrentErrRangeHigh(0);
+                    self.Checked_AlarmLower(false);
+                    self.CurrentAlRangeLow(0);
+                    self.Checked_AlarmUpper(false);
+                    self.CurrentAlRangeHigh(0);
+                    self.dirtyItemBD(self.getCurrentItemBD());
+                    if (self.dirty)
+                        self.dirty.reset();
+                    self.oldGridListCurrentCode('');
+                    self.gridListCurrentCode('');
                 };
                 ScreenModel.prototype.addNewItem = function () {
                     var self = this;
-                    self.enable_I_INP_002(true);
+                    self.activeDirty(function () { self.setNewMode(); }, function () { self.setNewMode(); });
                 };
                 return ScreenModel;
             }());

@@ -39,6 +39,7 @@ module qmm012.k.viewmodel {
             let self = this;
             nts.uk.ui.windows.setShared('CommuteNoTaxLimitDto', self.GridlistCurrentItem());
             nts.uk.ui.windows.close();
+
         }
         CloseDialog() {
             nts.uk.ui.windows.close();

@@ -8,7 +8,7 @@ var qmm012;
                 function ScreenModel() {
                     this.selectedRuleCode = ko.observable(0);
                     this.enable = ko.observable(true);
-                    this.lBL_004_Text = ko.observable('社員に対して支払う金額の種類を登録します。」と表記');
+                    this.NavigationMessage = ko.observable('社員に対して支払う金額の種類を登録します。」と表記');
                     var self = this;
                     //start Switch Data
                     self.enable;
@@ -19,9 +19,9 @@ var qmm012;
                     ]);
                     //endSwitch Data
                     self.selectedRuleCode.subscribe(function (NewValue) {
-                        self.lBL_004_Text(Gen_LBL_004_Text(NewValue));
+                        self.NavigationMessage(Gen_NavigationMessage_Text(NewValue));
                     });
-                    function Gen_LBL_004_Text(NewValue) {
+                    function Gen_NavigationMessage_Text(NewValue) {
                         var text;
                         switch (NewValue) {
                             case 0:

@@ -1,20 +1,14 @@
 @CHARSET "UTF-8";
 
-#D_SCH_001 input {
-	width: 165px;
-	height: 30px;
-}
-
-#D_INP_001 input, #D_INP_002 input, #D_INP_003 input, #D_INP_004 input {
+#D_Inp_ErrorUpper, #D_Inp_AlarmUpper, #D_Inp_ErrorLower, #D_Inp_AlarmLower {
 	width: 100px;
 }
 
-#D_BTN_001, #D_BTN_002 {
+#D_Btn_PeriodSetting, #D_Btn_BreakdownSetting {
 	width: 120px;
 }
 
-
-#D_INP_005 {
+#D_Inp_Remarks {
 	width: 340px;
 	height: 90px;
 }

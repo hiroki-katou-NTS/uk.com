@@ -8,6 +8,7 @@ module qmm012.b {
             new g.viewmodel.ScreenModel()
         );
         let screenModelB = new viewmodel.ScreenModel(screenModel);
+        nts.uk.ui.confirmSave(screenModelB.dirty);
         __viewContext.bind(screenModelB);
     });
 

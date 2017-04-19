@@ -43,7 +43,7 @@ public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCom
 		itemMaster.validate();
 		String itemCode = itemMaster.getItemCode().v();
 		if (this.itemMasterRepository.find(companyCode, CategoryAtr, itemCode).isPresent())
-			throw new BusinessException(" 明細書名が入力されていません。");
+			throw new BusinessException("入力したコードは既に存在しています。\r\nを確認してください。");
 		itemMasterRepository.add(itemMaster);
 		// add sub item after add ItemMaster
 		switch (CategoryAtr) {
@@ -67,6 +67,8 @@ public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCom
 		String itemCode = context.getCommand().toDomain().getItemCode().v();
 		context.getCommand().getItemAttend().setItemCode(itemCode);
 		// use interface for add sub item
+		if (this.itemAttendRespository.find(companyCode, itemCode).isPresent())
+			throw new BusinessException("入力したコードは既に存在しています。\r\nを確認してください。");
 		this.itemAttendRespository.add(companyCode, context.getCommand().getItemAttend().toDomain());
 
 	}
@@ -74,6 +76,8 @@ public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCom
 	private void addItemDeduct(String companyCode, CommandHandlerContext<AddItemMasterCommand> context) {
 		String itemCode = context.getCommand().toDomain().getItemCode().v();
 		context.getCommand().getItemDeduct().setItemCode(itemCode);
+		if (this.itemDeductRespository.find(companyCode, itemCode).isPresent())
+			throw new BusinessException("入力したコードは既に存在しています。\r\nを確認してください。");
 		this.itemDeductRespository.add(companyCode, context.getCommand().getItemDeduct().toDomain());
 
 	}
@@ -81,6 +85,8 @@ public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCom
 	private void addItemSalary(String companyCode, CommandHandlerContext<AddItemMasterCommand> context) {
 		String itemCode = context.getCommand().toDomain().getItemCode().v();
 		context.getCommand().getItemSalary().setItemCode(itemCode);
+		if (this.itemSalaryRespository.find(companyCode, itemCode).isPresent())
+			throw new BusinessException("入力したコードは既に存在しています。\r\nを確認してください。");
 		this.itemSalaryRespository.add(companyCode, context.getCommand().getItemSalary().toDomain());
 
 	}

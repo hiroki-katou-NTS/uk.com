@@ -43,7 +43,7 @@ var qmm012;
                         dfd.resolve(ItemPeriod);
                     }).fail(function (res) {
                         // Alert message
-                        dfd.reject(res);
+                        dfd.reject(res.message);
                     });
                 }
                 if (categoryAtr == 1) {
@@ -51,7 +51,7 @@ var qmm012;
                         dfd.resolve(ItemPeriod);
                     }).fail(function (res) {
                         // Alert message
-                        dfd.reject(res);
+                        dfd.reject(res.message);
                     });
                 }
                 return dfd.promise();
@@ -84,19 +84,19 @@ var qmm012;
                 var categoryAtr = itemMaster.categoryAtr;
                 var itemCode = itemMaster.itemCode;
                 if (categoryAtr == 0) {
-                    addItemSalaryPeriod(itemPeriod).done(function (any) {
-                        dfd.resolve(any);
+                    addItemSalaryPeriod(itemPeriod).done(function (res) {
+                        dfd.resolve(res);
                     }).fail(function (res) {
                         // Alert message
-                        dfd.reject(res);
+                        dfd.reject(res.message);
                     });
                 }
                 if (categoryAtr == 1) {
-                    addItemDeductPeriod(itemPeriod).done(function (any) {
-                        dfd.resolve(any);
+                    addItemDeductPeriod(itemPeriod).done(function (res) {
+                        dfd.resolve(res);
                     }).fail(function (res) {
                         // Alert message
-                        dfd.reject(res);
+                        dfd.reject(res.message);
                     });
                 }
                 return dfd.promise();
@@ -129,19 +129,19 @@ var qmm012;
                 var categoryAtr = itemMaster.categoryAtr;
                 var itemCode = itemMaster.itemCode;
                 if (categoryAtr == 0) {
-                    updateItemSalaryPeriod(itemPeriod).done(function (any) {
-                        dfd.resolve(any);
+                    updateItemSalaryPeriod(itemPeriod).done(function (res) {
+                        dfd.resolve(res);
                     }).fail(function (res) {
                         // Alert message
-                        dfd.reject(res);
+                        dfd.reject(res.message);
                     });
                 }
                 if (categoryAtr == 1) {
-                    updateItemDeductPeriod(itemPeriod).done(function (any) {
-                        dfd.resolve(any);
+                    updateItemDeductPeriod(itemPeriod).done(function (res) {
+                        dfd.resolve(res);
                     }).fail(function (res) {
                         // Alert message
-                        dfd.reject(res);
+                        dfd.reject(res.message);
                     });
                 }
                 return dfd.promise();

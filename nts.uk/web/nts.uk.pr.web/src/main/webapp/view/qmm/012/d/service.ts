@@ -11,7 +11,7 @@ module qmm012.d {
                     dfd.resolve(res);
                 })
                 .fail(function(res) {
-                    dfd.reject(res);
+                    dfd.reject(res.message);
                 })
             return dfd.promise();
         }

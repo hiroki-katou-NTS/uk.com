@@ -4,7 +4,7 @@ module qmm012.a.viewmodel {
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any = ko.observable(0);
         enable: KnockoutObservable<boolean> = ko.observable(true);
-        lBL_004_Text: KnockoutObservable<string> = ko.observable('社員に対して支払う金額の種類を登録します。」と表記');
+        NavigationMessage: KnockoutObservable<string> = ko.observable('社員に対して支払う金額の種類を登録します。」と表記');
         constructor() {
             let self = this;
             //start Switch Data
@@ -16,9 +16,9 @@ module qmm012.a.viewmodel {
             ]);
             //endSwitch Data
             self.selectedRuleCode.subscribe(function(NewValue) {
-                self.lBL_004_Text(Gen_LBL_004_Text(NewValue))
+                self.NavigationMessage(Gen_NavigationMessage_Text(NewValue))
             });
-            function Gen_LBL_004_Text(NewValue) {
+            function Gen_NavigationMessage_Text(NewValue) {
                 let text;
                 switch (NewValue) {
                     case 0:

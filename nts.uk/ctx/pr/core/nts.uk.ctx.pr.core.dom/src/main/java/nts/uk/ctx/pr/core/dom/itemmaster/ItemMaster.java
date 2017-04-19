@@ -27,11 +27,22 @@ public class ItemMaster extends AggregateRoot {
 	@Override
 	public void validate() {
 		super.validate();
-		if (StringUtil.isNullOrEmpty(this.itemCode.v(), true) || StringUtil.isNullOrEmpty(this.companyCode.v(), true)
-				|| StringUtil.isNullOrEmpty(this.itemName.v(), true)
-				|| StringUtil.isNullOrEmpty(this.itemAbName.v(), true) || this.displaySet == null) {
-			throw new BusinessException("pika");
+		String ErrorMessage = "";
+		if (StringUtil.isNullOrEmpty(this.itemCode.v(), true)) {
+			ErrorMessage += " コード";
 		}
+		if (StringUtil.isNullOrEmpty(this.itemName.v(), true)) {
+			ErrorMessage += " 名称";
+		}
+		if (StringUtil.isNullOrEmpty(this.itemAbName.v(), true)) {
+			ErrorMessage += " 名称";
+		}
+		if (this.displaySet == null) {
+			ErrorMessage += " この項目名を廃止する";
+		}
+		ErrorMessage += " が入力されていません";
+		if (ErrorMessage.length() > " が入力されていません".length())
+			throw new BusinessException(ErrorMessage);
 	}
 
 	public ItemMaster(CompanyCode companyCode, ItemCode itemCode, ItemName itemName, ItemName itemAbName,

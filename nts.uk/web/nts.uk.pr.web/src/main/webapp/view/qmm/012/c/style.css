@@ -2,13 +2,12 @@
 
 @import url("../a/base.css");
 
-#C_INP_006 {
-	
+#C_Inp_Remarks {
 	width: 340px;
 	height: 90px;
 }
 
-#C_SEL_011 button {
+#C_Sel_ZeroDisplayIndicator button {
 	height: 30px;
 	font-size: 0.8rem;
 	width: 130px;
@@ -20,8 +19,8 @@
 	padding: 0px 15px;
 }
 
-#C_SEL_002 button, #C_SEL_003 button, #C_SEL_005 button, #C_SEL_006 button,
-	#C_SEL_007 button, #C_SEL_008 button, #C_SEL_009 button, #C_SEL_010 button
+#C_Sel_DiscriminationSocial button, #C_Sel_DistinguishBetween button, #C_Sel_AlwaysFixed button, #C_Sel_MonthFixed button,
+	#C_Sel_DayToMonthFixed button, #C_Sel_DayFixed button, #C_Sel_DonorFixed button, #C_Sel_AverageWage button
 	{
 	width: 80px;
 }
@@ -31,65 +30,64 @@
 	margin-top: 4px;
 }
 
-#C_SEL_005 {
+#C_Sel_AlwaysFixed {
 	margin-left: 25px;
 }
 
-#C_LBL_006 {
+#C_Lbl_MonthlyPerson {
 	margin-left: 55px;
 }
 
-#C_SEL_006, #C_SEL_008, #C_SEL_009 {
+#C_Sel_MonthFixed, #C_Sel_DayFixed, #C_Sel_DonorFixed {
 	margin-left: 80px;
 }
 
-#C_SEL_007 {
+#C_Sel_DayToMonthFixed {
 	margin-left: 52px;
 }
 
-#C_LBL_007, #C_LBL_008, #C_LBL_009 {
+#C_Lbl_MonthlySalaryPerDay, #C_Lbl_ADayPayee, #C_Lbl_HourlyPay {
 	margin-left: 244px;
 }
 
-#C_SEL_012 {
+#C_Sel_NoItemNames {
 	margin-left: 10px;
 }
 
-#C_LBL_013 {
+#C_Lbl_ExceedsAndError {
 	margin-left: 20px;
 }
 
-#C_LBL_014 {
+#C_Lbl_ExceedsAlarm {
 	margin-left: 20px;
 }
 
-#C_LBL_016 {
+#C_Lbl_ErrorLess {
 	margin-left: 20px;
 }
 
-#C_LBL_017 {
+#C_Lbl_AlarmLess {
 	margin-left: 20px;
 }
 
-#C_INP_001 input, #C_INP_002 input, #C_INP_003 input, #C_INP_004 input,
-	#C_INP_005 input {
+#C_Inp_LimitAmount, #C_Inp_ErrorUpper, #C_Inp_AlarmUpper, #C_Inp_ErrorLower, #C_Inp_AlarmLower {
 	width: 100px;
 }
 
-#C_BTN_001, #C_BTN_002 {
+#C_Btn_PeriodSetting, #C_Btn_BreakdownSetting {
 	width: 120px;
 	margin-top: 5px;
 }
 
-#C_LBL_020, #C_LBL_022 {
+#C_Lbl_SettingClassification, #C_Lbl_BreakdownClassification {
 	margin-left: 5px;
 }
 
-#C_SEL_004 .ntsRadioBox:NTH-CHILD(2) {
+#C_Sel_FixedGold .ntsRadioBox:NTH-CHILD(2) {
 	margin-left: 165px;
 }
 
-#C_SEL_017 button {
+#C_Sel_LimitAmount button {
 	height: 55px;
 	border-radius: 5px;
 }

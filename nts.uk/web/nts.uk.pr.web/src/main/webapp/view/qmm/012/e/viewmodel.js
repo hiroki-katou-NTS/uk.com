@@ -7,15 +7,15 @@ var qmm012;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     //E_004
-                    this.checked_E_004 = ko.observable(false);
+                    this.Checked_NoDisplay = ko.observable(false);
                     //E_005
-                    this.checked_E_005 = ko.observable(false);
+                    this.Checked_ErrorUpper = ko.observable(false);
                     //E_006
-                    this.checked_E_006 = ko.observable(false);
+                    this.Checked_AlarmHigh = ko.observable(false);
                     //E_007
-                    this.checked_E_007 = ko.observable(false);
+                    this.Checked_ErrorLower = ko.observable(false);
                     //E_008
-                    this.checked_E_008 = ko.observable(false);
+                    this.Checked_AlarmLower = ko.observable(false);
                     this.CurrentItemMaster = ko.observable(null);
                     this.CurrentItemAttend = ko.observable(null);
                     this.CurrentAvePayAtr = ko.observable(0);
@@ -31,21 +31,21 @@ var qmm012;
                     var self = this;
                     //E_001 To 003
                     //E_001To003
-                    self.roundingRules_E_001 = ko.observableArray([
+                    self.Roundingrules_TimeNumberClassification = ko.observableArray([
                         { code: 0, name: '時間' },
                         { code: 1, name: '回数' }
                     ]);
-                    self.roundingRules_E_002 = ko.observableArray([
+                    self.Roundingrules_WorkingDaysPerYear = ko.observableArray([
                         { code: 1, name: '対象' },
                         { code: 0, name: '対象外' }
                     ]);
-                    self.roundingRules_E_003 = ko.observableArray([
+                    self.Roundingrules_ZeroDisplay = ko.observableArray([
                         { code: 1, name: 'ゼロを表示する' },
                         { code: 0, name: 'ゼロを表示しない' }
                     ]);
                     self.enable = ko.observable(false);
                     //E_001
-                    self.currencyeditor_E_001 = {
+                    self.Currencyeditor_ErrorUpper = {
                         value: self.CurrentErrRangeHigh,
                         constraint: 'ErrRangeHigh',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -55,7 +55,7 @@ var qmm012;
                         }))
                     };
                     //E_002
-                    self.currencyeditor_E_002 = {
+                    self.Currencyeditor_AlarmUpper = {
                         value: self.CurrentAlRangeHigh,
                         constraint: 'AlRangeHigh',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -65,7 +65,7 @@ var qmm012;
                         }))
                     };
                     //E_003
-                    self.currencyeditor_E_003 = {
+                    self.Currencyeditor_ErrorLower = {
                         value: self.CurrentErrRangeLow,
                         constraint: 'ErrRangeLow',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -75,7 +75,7 @@ var qmm012;
                         }))
                     };
                     //E_004
-                    self.currencyeditor_E_004 = {
+                    self.Currencyeditor_AlarmLower = {
                         value: self.CurrentAlRangeLow,
                         constraint: 'AlRangeLow',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -84,21 +84,6 @@ var qmm012;
                             currencyposition: 'right'
                         }))
                     };
-                    self.CurrentItemMaster.subscribe(function (ItemMaster) {
-                        if (ItemMaster) {
-                            e.service.findItemAttend(ItemMaster.itemCode).done(function (ItemAttend) {
-                                self.CurrentItemAttend(ItemAttend);
-                            }).fail(function (res) {
-                                // Alert message
-                                alert(res);
-                            });
-                        }
-                        else {
-                            self.CurrentItemAttend(null);
-                        }
-                        self.CurrentZeroDisplaySet(ItemMaster ? ItemMaster.zeroDisplaySet : 1);
-                        self.checked_E_004(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
-                    });
                     self.CurrentItemAttend.subscribe(function (ItemAttend) {
                         self.CurrentAvePayAtr(ItemAttend ? ItemAttend.avePayAtr : 0);
                         self.CurrentItemAtr(ItemAttend ? ItemAttend.itemAtr : 0);
@@ -108,19 +93,63 @@ var qmm012;
                         self.CurrentAlRangeHigh(ItemAttend ? ItemAttend.alRangeHigh : 0);
                         self.CurrentWorkDaysScopeAtr(ItemAttend ? ItemAttend.workDaysScopeAtr : 1);
                         self.CurrentMemo(ItemAttend ? ItemAttend.memo : "");
-                        self.checked_E_005(ItemAttend ? ItemAttend.errRangeHighAtr == 0 ? false : true : false);
-                        self.checked_E_006(ItemAttend ? ItemAttend.errRangeLowAtr == 0 ? false : true : false);
-                        self.checked_E_007(ItemAttend ? ItemAttend.alRangeHighAtr == 0 ? false : true : false);
-                        self.checked_E_008(ItemAttend ? ItemAttend.alRangeLowAtr == 0 ? false : true : false);
+                        self.Checked_ErrorUpper(ItemAttend ? ItemAttend.errRangeHighAtr == 0 ? false : true : false);
+                        self.Checked_AlarmHigh(ItemAttend ? ItemAttend.errRangeLowAtr == 0 ? false : true : false);
+                        self.Checked_ErrorLower(ItemAttend ? ItemAttend.alRangeHighAtr == 0 ? false : true : false);
+                        self.Checked_AlarmLower(ItemAttend ? ItemAttend.alRangeLowAtr == 0 ? false : true : false);
                     });
-                    self.checked_E_004.subscribe(function (NewValue) {
+                    self.Checked_NoDisplay.subscribe(function (NewValue) {
                         self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
                     });
                 }
+                ScreenModel.prototype.loadData = function (itemMaster) {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    self.CurrentItemMaster(itemMaster);
+                    if (itemMaster.itemCode) {
+                        self.loadItemAttend(itemMaster).done(function () {
+                            dfd.resolve("done");
+                        });
+                    }
+                    else {
+                        self.clearContent();
+                        dfd.resolve("done");
+                    }
+                    self.CurrentZeroDisplaySet(itemMaster ? itemMaster.zeroDisplaySet : 1);
+                    self.Checked_NoDisplay(itemMaster ? itemMaster.itemDisplayAtr == 0 ? true : false : false);
+                    return dfd.promise();
+                };
+                ScreenModel.prototype.clearContent = function () {
+                    var self = this;
+                    self.CurrentAvePayAtr(0);
+                    self.CurrentItemAtr(0);
+                    self.CurrentErrRangeLow(0);
+                    self.CurrentErrRangeHigh(0);
+                    self.CurrentAlRangeLow(0);
+                    self.CurrentAlRangeHigh(0);
+                    self.CurrentWorkDaysScopeAtr(1);
+                    self.CurrentMemo("");
+                    self.Checked_ErrorUpper(false);
+                    self.Checked_AlarmHigh(false);
+                    self.Checked_ErrorLower(false);
+                    self.Checked_AlarmLower(false);
+                };
+                ScreenModel.prototype.loadItemAttend = function (itemMaster) {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    e.service.findItemAttend(itemMaster.itemCode).done(function (ItemAttend) {
+                        self.CurrentItemAttend(ItemAttend);
+                        dfd.resolve(ItemAttend);
+                    }).fail(function (res) {
+                        // Alert message
+                        alert(res);
+                    });
+                    return dfd.promise();
+                };
                 ScreenModel.prototype.getCurrentItemAttend = function () {
                     //return Item Attend customer input on form
                     var self = this;
-                    var itemAttend = new e.service.model.ItemAttend(self.CurrentAvePayAtr(), self.CurrentItemAtr(), self.checked_E_006() ? 1 : 0, self.CurrentErrRangeLow(), self.checked_E_005() ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_E_008() ? 1 : 0, self.CurrentAlRangeLow(), self.checked_E_007() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentWorkDaysScopeAtr(), self.CurrentMemo());
+                    var itemAttend = new e.service.model.ItemAttend(self.CurrentAvePayAtr(), self.CurrentItemAtr(), self.Checked_AlarmHigh() ? 1 : 0, self.CurrentErrRangeLow(), self.Checked_ErrorUpper() ? 1 : 0, self.CurrentErrRangeHigh(), self.Checked_AlarmLower() ? 1 : 0, self.CurrentAlRangeLow(), self.Checked_ErrorLower() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentWorkDaysScopeAtr(), self.CurrentMemo());
                     return itemAttend;
                 };
                 return ScreenModel;

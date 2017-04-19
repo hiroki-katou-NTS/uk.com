@@ -27,67 +27,67 @@ var qmm012;
                     this.CurrentLimitMnyAtr = ko.observable(0);
                     this.CurrentItemDisplayAtr = ko.observable(1);
                     this.CurrentZeroDisplaySet = ko.observable(1);
-                    this.C_SEL_012_Selected = ko.observable(false);
-                    this.C_SEL_013_Selected = ko.observable(false);
-                    this.C_SEL_014_Selected = ko.observable(false);
-                    this.C_SEL_015_Selected = ko.observable(false);
-                    this.C_SEL_016_Selected = ko.observable(false);
+                    this.C_Sel_NoItemNames_Selected = ko.observable(false);
+                    this.C_Sel_ErrorUpper_Selected = ko.observable(false);
+                    this.C_Sel_AlarmHigh_Selected = ko.observable(false);
+                    this.C_Sel_ErrorLower_Selected = ko.observable(false);
+                    this.C_Sel_AlarmLower_Selected = ko.observable(false);
                     this.CurrentLimitCode = ko.observable("");
-                    this.C_LBL_028_Value = ko.observable("");
+                    this.C_Lbl_LimitAmountItem_Value = ko.observable("");
                     this.currentCommuteNoTaxLimitDto = ko.observable(null);
                     this.currentItemPeriod = ko.observable(null);
-                    this.C_LBL_020_Text = ko.observable("設定なし");
+                    this.C_Lbl_SettingClassification_Text = ko.observable("設定なし");
                     this.currentItemBDs = ko.observableArray([]);
-                    this.C_LBL_022_Text = ko.observable("設定なし");
-                    this.C_BTN_001_enable = ko.observable(true);
-                    this.C_BTN_002_enable = ko.observable(true);
+                    this.C_Lbl_BreakdownClassification_Text = ko.observable("設定なし");
+                    this.C_Btn_PeriodSetting_enable = ko.observable(true);
+                    this.C_Btn_BreakdownSetting_enable = ko.observable(true);
                     var self = this;
-                    self.ComboBoxItemList_C_SEL_001 = ko.observableArray([
-                        new C_SEL_001_ComboboxItemModel(0, '課税'),
-                        new C_SEL_001_ComboboxItemModel(1, '非課税(限度あり）'),
-                        new C_SEL_001_ComboboxItemModel(2, '非課税(限度なし）'),
-                        new C_SEL_001_ComboboxItemModel(3, '通勤費(手入力)'),
-                        new C_SEL_001_ComboboxItemModel(4, '通勤費(定期券利用)')
+                    self.ComboBoxItemList_C_Sel_Taxation = ko.observableArray([
+                        new C_Sel_Taxation_ComboboxItemModel(0, '課税'),
+                        new C_Sel_Taxation_ComboboxItemModel(1, '非課税(限度あり）'),
+                        new C_Sel_Taxation_ComboboxItemModel(2, '非課税(限度なし）'),
+                        new C_Sel_Taxation_ComboboxItemModel(3, '通勤費(手入力)'),
+                        new C_Sel_Taxation_ComboboxItemModel(4, '通勤費(定期券利用)')
                     ]);
                     //end combobox data
                     //start Switch Data
                     //005 006 007 008 009 010
-                    self.roundingRules_C_002_003_005To010 = ko.observableArray([
+                    self.Roundingrules_ObjectNotCovered = ko.observableArray([
                         { code: 0, name: '対象' },
                         { code: 1, name: '対象外' }
                     ]);
-                    self.selectedRuleCode_C_003 = ko.observable(1);
-                    self.selectedRuleCode_C_005 = ko.observable(1);
-                    self.selectedRuleCode_C_006 = ko.observable(1);
-                    self.selectedRuleCode_C_007 = ko.observable(1);
-                    self.selectedRuleCode_C_008 = ko.observable(1);
-                    self.selectedRuleCode_C_009 = ko.observable(1);
-                    self.selectedRuleCode_C_010 = ko.observable(1);
+                    self.Selectedrulecode_DistinguishBetween = ko.observable(1);
+                    self.Selectedrulecode_AlwaysFixed = ko.observable(1);
+                    self.Selectedrulecode_MonthFixed = ko.observable(1);
+                    self.Selectedrulecode_DayToMonthFixed = ko.observable(1);
+                    self.Selectedrulecode_DayFixed = ko.observable(1);
+                    self.Selectedrulecode_DonorFixed = ko.observable(1);
+                    self.Selectedrulecode_AverageWage = ko.observable(1);
                     //011
-                    self.roundingRules_C_011 = ko.observableArray([
+                    self.Roundingrules_ZeroDisplayIndicator = ko.observableArray([
                         { code: 1, name: 'ゼロを表示する' },
                         { code: 0, name: 'ゼロを表示しない' }
                     ]);
-                    self.selectedRuleCode_C_011 = ko.observable(1);
+                    self.Selected_ZeroDisplayIndicator = ko.observable(1);
                     //017
-                    self.roundingRules_C_017 = ko.observableArray([
+                    self.Roundingrules_LimitAmount = ko.observableArray([
                         { code: 0, name: '固定額' },
                         { code: 1, name: '非課税限度額' },
                         { code: 2, name: '個人の交通機' },
                         { code: 3, name: '個人の交通用' },
                     ]);
-                    self.selectedRuleCode_C_017 = ko.observable(1);
+                    self.Selected_LimitAmount = ko.observable(1);
                     //endSwitch Data
                     //start radiogroup data
                     //004
-                    self.RadioItemList_C_004 = ko.observableArray([
+                    self.Radioitemlist_FixedGold = ko.observableArray([
                         new BoxModel(0, '全員一律で指定する'),
                         new BoxModel(1, '給与契約形態ごとに指定する')
                     ]);
-                    self.selectedId_C_004 = ko.observable(1);
+                    self.Selected_FixedGold = ko.observable(1);
                     //end radiogroup data
-                    //currencyeditor_C_001
-                    self.currencyeditor_C_001 = {
+                    //Currencyeditor_LimitAmount
+                    self.Currencyeditor_LimitAmount = {
                         value: ko.observable(),
                         constraint: '',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -100,7 +100,7 @@ var qmm012;
                         readonly: ko.observable(false)
                     };
                     //C_001
-                    self.currencyeditor_C_INP_001 = {
+                    self.currencyeditor_LimitAmount = {
                         value: self.CurrentLimitMny,
                         constraint: 'LimitMny',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -111,7 +111,7 @@ var qmm012;
                         required: ko.observable(false)
                     };
                     //C_002
-                    self.currencyeditor_C_INP_002 = {
+                    self.currencyeditor_ErrorUpper = {
                         value: self.CurrentErrRangeHigh,
                         constraint: 'ErrRangeHigh',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -122,7 +122,7 @@ var qmm012;
                         required: ko.observable(false)
                     };
                     //C_003
-                    self.currencyeditor_C_INP_003 = {
+                    self.currencyeditor_AlarmUpper = {
                         value: self.CurrentAlRangeHigh,
                         constraint: 'AlRangeHigh',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -133,7 +133,7 @@ var qmm012;
                         required: ko.observable(false)
                     };
                     //C_004
-                    self.currencyeditor_C_INP_004 = {
+                    self.currencyeditor_ErrorLower = {
                         value: self.CurrentErrRangeLow,
                         constraint: 'ErrRangeLow',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -144,7 +144,7 @@ var qmm012;
                         required: ko.observable(false)
                     };
                     //C_005
-                    self.currencyeditor_C_INP_005 = {
+                    self.currencyeditor_AlarmLower = {
                         value: self.CurrentAlRangeLow,
                         constraint: 'AlRangeLow',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -157,9 +157,9 @@ var qmm012;
                     //end currencyeditor
                     //end textarea
                     self.CurrentTaxAtr.subscribe(function (newValue) {
-                        $('#C_LBL_002').show();
+                        $('#C_Lbl_LimitAmount').show();
                         $('#C_Div_002').show();
-                        $('#C_BTN_003').show();
+                        $('#C_Btn_TaxExemption').show();
                         $('#C_Div_004').show();
                         switch (newValue) {
                             case 0:
@@ -172,33 +172,15 @@ var qmm012;
                                 break;
                             case 4:
                                 $('#C_Div_001').show();
-                                $('#C_LBL_002').hide();
+                                $('#C_Lbl_LimitAmount').hide();
                                 $('#C_Div_002').hide();
                                 $('#C_Div_003').show();
-                                $('#C_BTN_003').hide();
+                                $('#C_Btn_TaxExemption').hide();
                                 $('#C_Div_004').hide();
                                 break;
                         }
                     });
-                    self.CurrentItemMaster.subscribe(function (ItemMaster) {
-                        if (ItemMaster) {
-                            c.service.findItemSalary(ItemMaster.itemCode).done(function (ItemSalary) {
-                                self.CurrentItemSalary(ItemSalary);
-                            }).fail(function (res) {
-                                // Alert message
-                                alert(res);
-                            });
-                        }
-                        else {
-                            self.CurrentItemSalary(null);
-                        }
-                        //load subitem of item master 
-                        self.loadItemPeriod();
-                        self.loadItemBDs();
-                        self.CurrentZeroDisplaySet(ItemMaster ? ItemMaster.zeroDisplaySet : 1);
-                        self.C_SEL_012_Selected(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
-                    });
-                    self.C_SEL_012_Selected.subscribe(function (NewValue) {
+                    self.C_Sel_NoItemNames_Selected.subscribe(function (NewValue) {
                         self.CurrentItemDisplayAtr(NewValue == true ? 0 : 1);
                     });
                     self.CurrentItemSalary.subscribe(function (NewValue) {
@@ -220,10 +202,10 @@ var qmm012;
                         self.CurrentAvePayAtr(NewValue ? NewValue.avePayAtr : 0);
                         self.CurrentLimitMnyAtr(NewValue ? NewValue.limitMnyAtr : 0);
                         self.CurrentLimitCode(NewValue ? NewValue.limitMnyRefItemCode : "");
-                        self.C_SEL_013_Selected(NewValue ? NewValue.errRangeHighAtr == 0 ? false : true : false);
-                        self.C_SEL_014_Selected(NewValue ? NewValue.alRangeHighAtr == 0 ? false : true : false);
-                        self.C_SEL_015_Selected(NewValue ? NewValue.errRangeLowAtr == 0 ? false : true : false);
-                        self.C_SEL_016_Selected(NewValue ? NewValue.alRangeLowAtr == 0 ? false : true : false);
+                        self.C_Sel_ErrorUpper_Selected(NewValue ? NewValue.errRangeHighAtr == 0 ? false : true : false);
+                        self.C_Sel_AlarmHigh_Selected(NewValue ? NewValue.alRangeHighAtr == 0 ? false : true : false);
+                        self.C_Sel_ErrorLower_Selected(NewValue ? NewValue.errRangeLowAtr == 0 ? false : true : false);
+                        self.C_Sel_AlarmLower_Selected(NewValue ? NewValue.alRangeLowAtr == 0 ? false : true : false);
                     });
                     self.CurrentLimitMnyAtr.subscribe(function (newValue) {
                         $('#C_Div_002').hide();
@@ -240,7 +222,7 @@ var qmm012;
                         }
                     });
                     self.currentCommuteNoTaxLimitDto.subscribe(function (NewValue) {
-                        self.C_LBL_028_Value(NewValue ? NewValue.commuNoTaxLimitCode + "  " + NewValue.commuNoTaxLimitName : "");
+                        self.C_Lbl_LimitAmountItem_Value(NewValue ? NewValue.commuNoTaxLimitCode + "  " + NewValue.commuNoTaxLimitName : "");
                     });
                     self.CurrentLimitCode.subscribe(function (NewValue) {
                         if (NewValue) {
@@ -257,43 +239,100 @@ var qmm012;
                         }
                     });
                     self.currentItemPeriod.subscribe(function (newValue) {
-                        self.C_LBL_020_Text(newValue ? newValue.periodAtr == 1 ? '設定あり' : '設定なし' : '設定なし');
+                        self.C_Lbl_SettingClassification_Text(newValue ? newValue.periodAtr == 1 ? '設定あり' : '設定なし' : '設定なし');
                     });
                     self.currentItemBDs.subscribe(function (newValue) {
-                        self.C_LBL_022_Text(newValue.length ? '設定あり' : '設定なし');
+                        self.C_Lbl_BreakdownClassification_Text(newValue.length ? '設定あり' : '設定なし');
                     });
                 }
-                ScreenModel.prototype.loadItemPeriod = function () {
+                ScreenModel.prototype.loadData = function (itemMaster) {
                     var self = this;
-                    if (self.CurrentItemMaster()) {
-                        qmm012.h.service.findItemPeriod(self.CurrentItemMaster()).done(function (ItemPeriod) {
-                            self.currentItemPeriod(ItemPeriod);
-                        }).fail(function (res) {
-                            // Alert message
-                            alert(res);
+                    var dfd = $.Deferred();
+                    self.CurrentItemMaster(itemMaster);
+                    self.CurrentZeroDisplaySet(itemMaster ? itemMaster.zeroDisplaySet : 1);
+                    self.C_Sel_NoItemNames_Selected(itemMaster ? itemMaster.itemDisplayAtr == 0 ? true : false : false);
+                    //load subitem of item master 
+                    if (itemMaster.itemCode) {
+                        self.loadItemSalary(itemMaster).done(function () {
+                            self.loadItemPeriod(itemMaster).done(function () {
+                                self.loadItemBDs(itemMaster).done(function () {
+                                    dfd.resolve("done");
+                                });
+                            });
                         });
                     }
-                    else
-                        self.currentItemPeriod(undefined);
+                    else {
+                        self.clearContent();
+                        dfd.resolve("done");
+                    }
+                    return dfd.promise();
                 };
-                ScreenModel.prototype.loadItemBDs = function () {
+                ScreenModel.prototype.clearContent = function () {
                     var self = this;
-                    if (self.CurrentItemMaster()) {
-                        qmm012.i.service.findAllItemBD(self.CurrentItemMaster()).done(function (ItemBDs) {
-                            self.currentItemBDs(ItemBDs);
-                        }).fail(function (res) {
-                            // Alert message
-                            alert(res);
-                        });
-                    }
-                    else
-                        self.currentItemBDs([]);
+                    self.CurrentLimitMny(0);
+                    self.CurrentErrRangeHigh(0);
+                    self.CurrentAlRangeHigh(0);
+                    self.CurrentErrRangeLow(0);
+                    self.CurrentAlRangeLow(0);
+                    self.CurrentMemo("");
+                    self.CurrentTaxAtr(0);
+                    self.CurrentSocialInsAtr(0);
+                    self.CurrentLaborInsAtr(0);
+                    self.CurrentFixPayAtr(0);
+                    self.CurrentApplyForAllEmpFlg(0);
+                    self.CurrentApplyForMonthlyPayEmp(0);
+                    self.CurrentApplyForDaymonthlyPayEmp(0);
+                    self.CurrentApplyForDaylyPayEmp(0);
+                    self.CurrentApplyForHourlyPayEmp(0);
+                    self.CurrentAvePayAtr(0);
+                    self.CurrentLimitMnyAtr(0);
+                    self.CurrentLimitCode("");
+                    self.C_Sel_ErrorUpper_Selected(false);
+                    self.C_Sel_AlarmHigh_Selected(false);
+                    self.C_Sel_ErrorLower_Selected(false);
+                    self.C_Sel_AlarmLower_Selected(false);
+                };
+                ScreenModel.prototype.loadItemSalary = function (itemMaster) {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    c.service.findItemSalary(itemMaster.itemCode).done(function (ItemSalary) {
+                        self.CurrentItemSalary(ItemSalary);
+                        dfd.resolve(ItemSalary);
+                    }).fail(function (res) {
+                        // Alert message
+                        alert(res);
+                    });
+                    return dfd.promise();
+                };
+                ScreenModel.prototype.loadItemPeriod = function (itemMaster) {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    qmm012.h.service.findItemPeriod(itemMaster).done(function (ItemPeriod) {
+                        self.currentItemPeriod(ItemPeriod);
+                        dfd.resolve(ItemPeriod);
+                    }).fail(function (res) {
+                        // Alert message
+                        alert(res);
+                    });
+                    return dfd.promise();
+                };
+                ScreenModel.prototype.loadItemBDs = function (itemMaster) {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    qmm012.i.service.findAllItemBD(itemMaster).done(function (ItemBDs) {
+                        self.currentItemBDs(ItemBDs);
+                        dfd.resolve(ItemBDs);
+                    }).fail(function (res) {
+                        // Alert message
+                        alert(res);
+                    });
+                    return dfd.promise();
                 };
                 ScreenModel.prototype.GetCurrentItemSalary = function () {
                     //get ItemSalary customer input in form
                     var self = this;
-                    var ItemSalary = new c.service.model.ItemSalary(self.CurrentTaxAtr(), self.CurrentSocialInsAtr(), self.CurrentLaborInsAtr(), self.CurrentFixPayAtr(), self.CurrentApplyForAllEmpFlg(), self.CurrentApplyForMonthlyPayEmp(), self.CurrentApplyForDaymonthlyPayEmp(), self.CurrentApplyForDaylyPayEmp(), self.CurrentApplyForHourlyPayEmp(), self.CurrentAvePayAtr(), self.C_SEL_015_Selected() ? 1 : 0, self.CurrentErrRangeLow(), self.C_SEL_013_Selected() ? 1 : 0, self.CurrentErrRangeHigh(), self.C_SEL_016_Selected() ? 1 : 0, self.CurrentAlRangeLow(), self.C_SEL_014_Selected() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentMemo(), self.CurrentLimitMnyAtr(), self.currentCommuteNoTaxLimitDto() ? self.currentCommuteNoTaxLimitDto().commuNoTaxLimitCode : '', self.CurrentLimitMny());
-                    return ItemSalary;
+                    var itemSalary = new c.service.model.ItemSalary(self.CurrentTaxAtr(), self.CurrentSocialInsAtr(), self.CurrentLaborInsAtr(), self.CurrentFixPayAtr(), self.CurrentApplyForAllEmpFlg(), self.CurrentApplyForMonthlyPayEmp(), self.CurrentApplyForDaymonthlyPayEmp(), self.CurrentApplyForDaylyPayEmp(), self.CurrentApplyForHourlyPayEmp(), self.CurrentAvePayAtr(), self.C_Sel_ErrorLower_Selected() ? 1 : 0, self.CurrentErrRangeLow(), self.C_Sel_ErrorUpper_Selected() ? 1 : 0, self.CurrentErrRangeHigh(), self.C_Sel_AlarmLower_Selected() ? 1 : 0, self.CurrentAlRangeLow(), self.C_Sel_AlarmHigh_Selected() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentMemo(), self.CurrentLimitMnyAtr(), self.currentCommuteNoTaxLimitDto() ? self.currentCommuteNoTaxLimitDto().commuNoTaxLimitCode : '', self.CurrentLimitMny());
+                    return itemSalary;
                 };
                 ScreenModel.prototype.openKDialog = function () {
                     var self = this;
@@ -330,12 +369,12 @@ var qmm012;
                 }
                 return BoxModel;
             }());
-            var C_SEL_001_ComboboxItemModel = (function () {
-                function C_SEL_001_ComboboxItemModel(code, name) {
+            var C_Sel_Taxation_ComboboxItemModel = (function () {
+                function C_Sel_Taxation_ComboboxItemModel(code, name) {
                     this.code = code;
                     this.name = name;
                 }
-                return C_SEL_001_ComboboxItemModel;
+                return C_Sel_Taxation_ComboboxItemModel;
             }());
         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
     })(c = qmm012.c || (qmm012.c = {}));

@@ -32,52 +32,17 @@
 	width: 740px;
 }
 
-#F_INP_005 {
-	border-radius: 5px;
-}
-
-#F_SEL_011 button {
-	height: 30px;
-	font-size: 0.8rem;
-	width: 130px;
-}
-
-#F_SEL_002 button {
+#F_Sel_NoDisplay button {
 	height: 30px;
 	width: 120px;
 	font-size: 0.8rem;
-}
-
-#F_SCH_001 input {
-	width: 165px;
-	height: 30px;
 }
 
 #right-content-bottom-right {
 	margin-left: 40px;
 	margin-top: 4px;
 }
-#F_SEL_012 {
-	margin-left: 10px;
-}
 
-#F_LBL_013 {
-	margin-left: 20px;
-}
-
-
-#F_LBL_014 {
-	margin-left: 20px;
-}
-#F_INP_001 input, #F_INP_002 input, #F_INP_003 input, #F_INP_004 input,
-	#F_INP_005 input {
-	width: 100px;
-}
-
-#F_BTN_001, #F_BTN_002 {
-	width: 120px;
-	margin-top: 5px;
-}
 .divLineCol1 {
 	width: 130px;
 	min-height: 1px;

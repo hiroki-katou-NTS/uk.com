@@ -11,11 +11,11 @@
 	height: 350px;
 }
 
-#A_LBL_001 {
+#A_LBL_Guide {
 	margin: 20px 0px 0px 20px;
 }
 
-#A_LBL_002 {
+#A_LBL_MainlyUsedItems {
 	font-weight: bold;
 	margin-left: 30px;
 }
@@ -33,16 +33,16 @@
 	margin-top: 10px;
 }
 
-#A_LBL_003 {
+#A_LBL_ItemDescription {
 	padding: 10px 0px 0px 30px;
 	display: inline-block;
 }
 
-#A_BTN_005 {
+#A_BTN_Close {
 	margin-left: 20px;
 }
 
-#A_SEL_001 button {
+#A_SEL_TypeItem button {
 	display: flex;
 	margin-bottom: 10px;
 	width: 170px;
@@ -50,12 +50,12 @@
 	box-shadow: 0 3px rgba(0, 0, 0, 0.4);
 }
 
-#A_SEL_001 button:ACTIVE {
+#A_SEL_TypeItem button:ACTIVE {
 	top: 3px;
 	box-shadow: 0 0 #999;
 }
 
-#A_SEL_001 {
+#A_SEL_TypeItem {
 	margin: 10px 0px 0px 50px;
 }
 
@@ -63,12 +63,12 @@
 	display: none;
 }
 
-#A_LBL_004 {
+#A_LBL_NavigationMessage {
 	padding-left: 20px;
 	padding-right: 20px;
 	display: block;
 	text-indent: 20px;
 }
-#A_LBL_002 {
+#A_LBL_MainlyUsedItems {
 	font-weight: bold;
 }

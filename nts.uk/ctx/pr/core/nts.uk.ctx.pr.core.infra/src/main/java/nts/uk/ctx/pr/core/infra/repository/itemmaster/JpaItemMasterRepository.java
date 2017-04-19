@@ -37,24 +37,21 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 
 	@Override
 	public List<ItemMaster> findAll(String companyCode) {
-		return this.queryProxy().query(SEL_1, QcamtItem.class)
-				.setParameter("companyCode", companyCode)
+		return this.queryProxy().query(SEL_1, QcamtItem.class).setParameter("companyCode", companyCode)
 				.getList(c -> toDomain(c));
 	}
-	
+
 	@Override
 	public List<ItemMaster> findAll(String companyCode, int categoryAtr, List<String> itemCode) {
 		return this.queryProxy().query(SEL_11, QcamtItem.class).setParameter("companyCode", companyCode)
 				.setParameter("categoryAtr", categoryAtr).setParameter("itemCodeList", itemCode)
 				.getList(c -> toDomain(c));
 	}
-	
+
 	@Override
 	public List<ItemMaster> findAll(String companyCode, List<String> itemCode) {
-		return this.queryProxy().query(SEL_11_1, QcamtItem.class)
-				.setParameter("companyCode", companyCode)
-				.setParameter("itemCodeList", itemCode)
-				.getList(c -> toDomain(c));
+		return this.queryProxy().query(SEL_11_1, QcamtItem.class).setParameter("companyCode", companyCode)
+				.setParameter("itemCodeList", itemCode).getList(c -> toDomain(c));
 	}
 
 	@Override
@@ -138,5 +135,7 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 	public void update(ItemMaster itemMaster) {
 		this.commandProxy().update(toEntity(itemMaster));
 	}
+
+	
 
 }

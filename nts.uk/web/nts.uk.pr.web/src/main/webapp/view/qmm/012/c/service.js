@@ -14,7 +14,7 @@ var qmm012;
                     .done(function (res) {
                     dfd.resolve(res);
                 }).fail(function (res) {
-                    dfd.reject(res);
+                    dfd.reject(res.message);
                 });
                 return dfd.promise();
             }
@@ -26,7 +26,7 @@ var qmm012;
                     dfd.resolve(res);
                 })
                     .fail(function (res) {
-                    dfd.reject(res);
+                    dfd.reject(res.message);
                 });
                 return dfd.promise();
             }

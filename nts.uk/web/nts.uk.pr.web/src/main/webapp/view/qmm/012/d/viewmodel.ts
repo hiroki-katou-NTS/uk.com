@@ -4,25 +4,25 @@ module qmm012.d.viewmodel {
         isEnable: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
         //001
-        ComboBoxItemList_D_001: KnockoutObservableArray<ComboboxItemModel>;
+        D_Sel_DeductionItem: KnockoutObservableArray<ComboboxItemModel>;
         //Checkbox
         //D_003
-        checked_D_003: KnockoutObservable<boolean> = ko.observable(true);
+        Checked_NoDisplayNames: KnockoutObservable<boolean> = ko.observable(true);
         //D_003
-        checked_D_004: KnockoutObservable<boolean> = ko.observable(false);
+        Checked_ErrorUpper: KnockoutObservable<boolean> = ko.observable(false);
         //D_003
-        checked_D_005: KnockoutObservable<boolean> = ko.observable(false);
+        Checked_AlarmHigh: KnockoutObservable<boolean> = ko.observable(false);
         //D_003
-        checked_D_006: KnockoutObservable<boolean> = ko.observable(false);
+        Checked_ErrorLower: KnockoutObservable<boolean> = ko.observable(false);
         //D_003
-        checked_D_007: KnockoutObservable<boolean> = ko.observable(false);
+        Checked_AlarmLower: KnockoutObservable<boolean> = ko.observable(false);
         //Switch
-        currencyeditor_D_001: any;
-        currencyeditor_D_002: any;
-        currencyeditor_D_003: any;
-        currencyeditor_D_004: any;
+        currencyeditor_ErrorUpper: any;
+        currencyeditor_AlarmUpper: any;
+        currencyeditor_ErrorLower: any;
+        currencyeditor_AlarmLower: any;
         //D_002
-        roundingRules_D_002: KnockoutObservableArray<any>;
+        roundingRules_ZeroDisplayIndicator: KnockoutObservableArray<any>;
 
         CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMaster> = ko.observable(null);
         CurrentItemDeduct: KnockoutObservable<service.model.ItemDeduct> = ko.observable(null);
@@ -35,17 +35,17 @@ module qmm012.d.viewmodel {
         CurrentItemDisplayAtr: KnockoutObservable<number> = ko.observable(1);
         CurrentZeroDisplaySet: KnockoutObservable<number> = ko.observable(1);
         currentItemPeriod: KnockoutObservable<qmm012.h.service.model.ItemPeriod> = ko.observable(null);
-        D_LBL_011_Text: KnockoutObservable<string> = ko.observable('設定なし');
+        D_Lbl_SettingClassification_Text: KnockoutObservable<string> = ko.observable('設定なし');
         currentItemBDs: KnockoutObservableArray<qmm012.i.service.model.ItemBD> = ko.observableArray([]);
-        D_LBL_012_Text: KnockoutObservable<string> = ko.observable("設定なし");
-        D_BTN_001_enable: KnockoutObservable<boolean> = ko.observable(true);
-        D_BTN_002_enable: KnockoutObservable<boolean> = ko.observable(true);
+        D_Lbl_BreakdownItem_Text: KnockoutObservable<string> = ko.observable("設定なし");
+        D_Btn_PeriodSetting_enable: KnockoutObservable<boolean> = ko.observable(true);
+        D_Btn_BreakdownSetting_enable: KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             var self = this;
             self.isEditable = ko.observable(true);
             self.isEnable = ko.observable(true);
             self.enable = ko.observable(true);
-            self.ComboBoxItemList_D_001 = ko.observableArray([
+            self.D_Sel_DeductionItem = ko.observableArray([
                 new ComboboxItemModel(0, '任意控除項目'),
                 new ComboboxItemModel(1, '社会保険項目'),
                 new ComboboxItemModel(2, '所得税項目'),
@@ -53,13 +53,13 @@ module qmm012.d.viewmodel {
             ]);
             //end combobox data
             //D_002
-            self.roundingRules_D_002 = ko.observableArray([
+            self.roundingRules_ZeroDisplayIndicator = ko.observableArray([
                 { code: 1, name: 'ゼロを表示する' },
                 { code: 0, name: 'ゼロを表示しない' }
             ]);
             //currencyeditor
             //001
-            self.currencyeditor_D_001 = {
+            self.currencyeditor_ErrorUpper = {
                 value: self.CurrentErrRangeHigh,
                 constraint: 'ErrRangeHigh',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -72,7 +72,7 @@ module qmm012.d.viewmodel {
                 readonly: ko.observable(false)
             };
             //002
-            self.currencyeditor_D_002 = {
+            self.currencyeditor_AlarmUpper = {
                 value: self.CurrentAlRangeHigh,
                 constraint: 'AlRangeHigh',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -85,7 +85,7 @@ module qmm012.d.viewmodel {
                 readonly: ko.observable(false)
             };
             //003
-            self.currencyeditor_D_003 = {
+            self.currencyeditor_ErrorLower = {
                 value: self.CurrentErrRangeLow,
                 constraint: 'ErrRangeLow',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -98,7 +98,7 @@ module qmm012.d.viewmodel {
                 readonly: ko.observable(false)
             };
             //004
-            self.currencyeditor_D_004 = {
+            self.currencyeditor_AlarmLower = {
                 value: self.CurrentAlRangeLow,
                 constraint: 'AlRangeLow',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -111,22 +111,7 @@ module qmm012.d.viewmodel {
                 readonly: ko.observable(false)
             };
 
-            self.CurrentItemMaster.subscribe(function(ItemMaster: qmm012.b.service.model.ItemMaster) {
-                if (ItemMaster) {
-                    service.findItemDeduct(ItemMaster.itemCode).done(function(ItemDeduct: service.model.ItemDeduct) {
-                        self.CurrentItemDeduct(ItemDeduct);
-                    }).fail(function(res) {
-                        // Alert message
-                        alert(res);
-                    });
-                } else {
-                    self.CurrentItemDeduct(null);
-                }
-                self.loadItemPeriod();
-                self.loadItemBDs();
-                self.checked_D_003(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
-                self.CurrentZeroDisplaySet(ItemMaster ? ItemMaster.zeroDisplaySet : 1);
-            });
+
             self.CurrentItemDeduct.subscribe(function(ItemDeduct: service.model.ItemDeduct) {
                 self.CurrentAlRangeHigh(ItemDeduct ? ItemDeduct.alRangeHigh : 0);
                 self.CurrentAlRangeLow(ItemDeduct ? ItemDeduct.alRangeLow : 0);
@@ -134,49 +119,95 @@ module qmm012.d.viewmodel {
                 self.CurrentErrRangeHigh(ItemDeduct ? ItemDeduct.errRangeHigh : 0);
                 self.CurrentErrRangeLow(ItemDeduct ? ItemDeduct.errRangeLow : 0);
                 self.CurrentMemo(ItemDeduct ? ItemDeduct.memo : "");
-                self.checked_D_004(ItemDeduct ? ItemDeduct.errRangeHighAtr == 0 ? false : true : false);
-                self.checked_D_005(ItemDeduct ? ItemDeduct.alRangeHighAtr == 0 ? false : true : false);
-                self.checked_D_006(ItemDeduct ? ItemDeduct.errRangeLowAtr == 0 ? false : true : false);
-                self.checked_D_007(ItemDeduct ? ItemDeduct.alRangeLowAtr == 0 ? false : true : false);
+                self.Checked_ErrorUpper(ItemDeduct ? ItemDeduct.errRangeHighAtr == 0 ? false : true : false);
+                self.Checked_AlarmHigh(ItemDeduct ? ItemDeduct.alRangeHighAtr == 0 ? false : true : false);
+                self.Checked_ErrorLower(ItemDeduct ? ItemDeduct.errRangeLowAtr == 0 ? false : true : false);
+                self.Checked_AlarmLower(ItemDeduct ? ItemDeduct.alRangeLowAtr == 0 ? false : true : false);
             });
 
-            self.checked_D_003.subscribe(function(NewValue) {
+            self.Checked_NoDisplayNames.subscribe(function(NewValue) {
                 self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
             });
             self.currentItemPeriod.subscribe(function(newValue) {
-                self.D_LBL_011_Text(newValue ? newValue.periodAtr == 1 ? '設定あり' : '設定なし' : '設定なし');
+                self.D_Lbl_SettingClassification_Text(newValue ? newValue.periodAtr == 1 ? '設定あり' : '設定なし' : '設定なし');
             });
             self.currentItemBDs.subscribe(function(newValue) {
-                self.D_LBL_012_Text(newValue.length ? '設定あり' : '設定なし');
+                self.D_Lbl_BreakdownItem_Text(newValue.length ? '設定あり' : '設定なし');
             });
 
         }
-        loadItemPeriod() {
-            let self = this;
-            //Load Screen H  Data
-            if (self.CurrentItemMaster()) {
-                qmm012.h.service.findItemPeriod(self.CurrentItemMaster()).done(function(ItemPeriod: qmm012.h.service.model.ItemPeriod) {
-                    self.currentItemPeriod(ItemPeriod);
-                }).fail(function(res) {
-                    // Alert message
-                    alert(res);
-                });
-            } else
-                self.currentItemPeriod(undefined);
-        }
-        loadItemBDs() {
-            let self = this;
-            if (self.CurrentItemMaster()) {
-                qmm012.i.service.findAllItemBD(self.CurrentItemMaster()).done(function(ItemBDs: Array<qmm012.i.service.model.ItemBD>) {
-                    self.currentItemBDs(ItemBDs);
-                }).fail(function(res) {
-                    // Alert message
-                    alert(res);
-                });
-            } else
-                self.currentItemBDs([]);
-        }
 
+        loadData(itemMaster: qmm012.b.service.model.ItemMaster): JQueryPromise<any> {
+            let self = this;
+            var dfd = $.Deferred<any>();
+            self.CurrentItemMaster(itemMaster);
+            if (itemMaster.itemCode) {
+                self.loadItemDeduct(itemMaster).done(function() {
+                    self.loadItemPeriod(itemMaster).done(function() {
+                        self.loadItemBDs(itemMaster).done(function() {
+                            dfd.resolve("done");
+                        });
+                    });
+                });
+            } else {
+                self.clearContent();
+                dfd.resolve("done");
+            }
+            self.Checked_NoDisplayNames(itemMaster ? itemMaster.itemDisplayAtr == 0 ? true : false : false);
+            self.CurrentZeroDisplaySet(itemMaster ? itemMaster.zeroDisplaySet : 1);
+            return dfd.promise();
+        }
+        clearContent() {
+            let self = this;
+            self.CurrentAlRangeHigh(0);
+            self.CurrentAlRangeLow(0);
+            self.CurrentDeductAtr(0);
+            self.CurrentErrRangeHigh(0);
+            self.CurrentErrRangeLow(0);
+            self.CurrentMemo("");
+            self.Checked_ErrorUpper(false);
+            self.Checked_AlarmHigh(false);
+            self.Checked_ErrorLower(false);
+            self.Checked_AlarmLower(false);
+            self.D_Lbl_SettingClassification_Text('設定なし');
+            self.D_Lbl_BreakdownItem_Text('設定なし');
+        }
+        loadItemDeduct(itemMaster: qmm012.b.service.model.ItemMaster): JQueryPromise<any> {
+            let self = this;
+            var dfd = $.Deferred<any>();
+            service.findItemDeduct(itemMaster.itemCode).done(function(ItemDeduct: service.model.ItemDeduct) {
+                self.CurrentItemDeduct(ItemDeduct);
+                dfd.resolve(ItemDeduct);
+            }).fail(function(res) {
+                // Alert message
+                alert(res);
+            });
+            return dfd.promise();
+        }
+        loadItemPeriod(itemMaster: qmm012.b.service.model.ItemMaster): JQueryPromise<any> {
+            let self = this;
+            var dfd = $.Deferred<any>();
+            qmm012.h.service.findItemPeriod(itemMaster).done(function(ItemPeriod: qmm012.h.service.model.ItemPeriod) {
+                self.currentItemPeriod(ItemPeriod);
+                dfd.resolve(ItemPeriod);
+            }).fail(function(res) {
+                // Alert message
+                alert(res);
+            });
+            return dfd.promise();
+        }
+        loadItemBDs(itemMaster: qmm012.b.service.model.ItemMaster): JQueryPromise<any> {
+            let self = this;
+            var dfd = $.Deferred<any>();
+            qmm012.i.service.findAllItemBD(itemMaster).done(function(ItemBDs: Array<qmm012.i.service.model.ItemBD>) {
+                self.currentItemBDs(ItemBDs);
+                dfd.resolve(ItemBDs);
+            }).fail(function(res) {
+                // Alert message
+                alert(res);
+            });
+            return dfd.promise();
+        }
         openHDialog() {
             let self = this;
             nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
@@ -198,13 +229,13 @@ module qmm012.d.viewmodel {
             let self = this;
             let ItemDeduct = new service.model.ItemDeduct(
                 self.CurrentDeductAtr(),
-                self.checked_D_006() ? 1 : 0,
+                self.Checked_ErrorLower() ? 1 : 0,
                 self.CurrentErrRangeLow(),
-                self.checked_D_004() ? 1 : 0,
+                self.Checked_ErrorUpper() ? 1 : 0,
                 self.CurrentErrRangeHigh(),
-                self.checked_D_007() ? 1 : 0,
+                self.Checked_AlarmLower() ? 1 : 0,
                 self.CurrentAlRangeLow(),
-                self.checked_D_005() ? 1 : 0,
+                self.Checked_AlarmHigh() ? 1 : 0,
                 self.CurrentAlRangeHigh(),
                 self.CurrentMemo());
             return ItemDeduct;

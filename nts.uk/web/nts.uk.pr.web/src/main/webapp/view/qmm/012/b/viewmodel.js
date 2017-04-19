@@ -7,30 +7,32 @@ var qmm012;
             var ScreenModel = (function () {
                 function ScreenModel(screenModel) {
                     this.enable = ko.observable(true);
-                    this.selectedCode_B_001 = ko.observable(1);
+                    this.B_Selected_ItemClassification = ko.observable(1);
                     //gridlist
-                    this.GridlistItems_B_001 = ko.observableArray([]);
-                    this.GridlistCurrentCode_B_001 = ko.observable('');
-                    this.GridlistCurrentItem_B_001 = ko.observable(null);
-                    this.GridCurrentItemAbName_B_001 = ko.observable('');
-                    this.GridCurrentItemName_B_001 = ko.observable('');
-                    this.GridCurrentDisplaySet_B_001 = ko.observable(false);
-                    this.GridCurrentUniteCode_B_001 = ko.observable('');
-                    this.GridCurrentCategoryAtr_B_001 = ko.observable(0);
-                    this.GridCurrentCategoryAtrName_B_001 = ko.observable('');
-                    this.GridCurrentCodeAndName_B_001 = ko.observable('');
-                    this.B_INP_002_text = ko.observable('');
+                    this.GridlistItems = ko.observableArray([]);
+                    this.GridlistCurrentCode = ko.observable('');
+                    this.GridlistCurrentItem = ko.observable(null);
+                    this.GridCurrentItemAbName = ko.observable('');
+                    this.GridCurrentItemName = ko.observable('');
+                    this.GridCurrentDisplaySet = ko.observable(false);
+                    this.GridCurrentUniteCode = ko.observable('');
+                    this.GridCurrentCategoryAtr = ko.observable(0);
+                    this.GridCurrentCategoryAtrName = ko.observable('');
+                    this.GridCurrentCodeAndName = ko.observable('');
+                    this.B_Inp_Code_text = ko.observable('');
                     this.categoryAtr = -1;
                     //Checkbox
                     //B_002
-                    this.checked_B_002 = ko.observable(false);
-                    this.enable_B_INP_002 = ko.observable(false);
-                    this.B_BTN_004_enable = ko.observable(true);
+                    this.Checked_AlsoDisplayAbolition = ko.observable(false);
+                    this.enable_B_Inp_Code = ko.observable(false);
+                    this.B_Btn_DeleteButton_enable = ko.observable(true);
+                    this.dirtyItemMaster = ko.observable(null);
+                    this.dirtyOldValue = new DirtyValue(1, '', false);
                     var self = this;
                     self.screenModel = screenModel;
                     //set combobox data
                     //001
-                    self.ComboBoxItemList_B_001 = ko.observableArray([
+                    self.B_Sel_ItemClassification = ko.observableArray([
                         new ComboboxItemModel(1, '全件'),
                         new ComboboxItemModel(2, '支給項目'),
                         new ComboboxItemModel(3, '控除項目'),
@@ -38,44 +40,69 @@ var qmm012;
                         new ComboboxItemModel(5, '記事項目'),
                         new ComboboxItemModel(6, 'その他項目')
                     ]);
-                    self.selectedCode_B_001.subscribe(function (newValue) {
-                        var categoryAtr;
-                        switch (newValue) {
-                            case 1:
-                                //select  all  
-                                categoryAtr = -1;
-                                break;
-                            case 2:
-                                // 支給
-                                categoryAtr = 0;
-                                break;
-                            case 3:
-                                // 控除
-                                categoryAtr = 1;
-                                break;
-                            case 4:
-                                // 勤怠
-                                categoryAtr = 2;
-                                break;
-                            case 5:
-                                //記事
-                                categoryAtr = 3;
-                                break;
-                            case 6:
-                                //その他
-                                categoryAtr = 9;
-                                break;
+                    self.B_Selected_ItemClassification.subscribe(function (newValue) {
+                        if (self.dirtyOldValue.selItemClassification != newValue) {
+                            self.dirtyItemMaster(self.getCurrentItemMaster());
+                            var categoryAtr_1;
+                            switch (newValue) {
+                                case 1:
+                                    //select  all  
+                                    categoryAtr_1 = -1;
+                                    break;
+                                case 2:
+                                    // 支給
+                                    categoryAtr_1 = 0;
+                                    break;
+                                case 3:
+                                    // 控除
+                                    categoryAtr_1 = 1;
+                                    break;
+                                case 4:
+                                    // 勤怠
+                                    categoryAtr_1 = 2;
+                                    break;
+                                case 5:
+                                    //記事
+                                    categoryAtr_1 = 3;
+                                    break;
+                                case 6:
+                                    //その他
+                                    categoryAtr_1 = 9;
+                                    break;
+                            }
+                            self.activeDirty(function () {
+                                self.dirtyOldValue.selItemClassification = newValue;
+                                self.categoryAtr = categoryAtr_1;
+                                //then load gridlist
+                                self.loadGridList();
+                            }, function () {
+                                self.dirtyOldValue.selItemClassification = newValue;
+                                self.categoryAtr = categoryAtr_1;
+                                self.GridlistCurrentItem(self.GridlistCurrentItem());
+                                //then load gridlist
+                                self.loadGridList();
+                            }, function () {
+                                self.B_Selected_ItemClassification(self.dirtyOldValue.selItemClassification);
+                            });
                         }
-                        self.categoryAtr = categoryAtr;
-                        //then load gridlist
-                        self.LoadGridList();
                     });
-                    self.checked_B_002.subscribe(function () {
-                        self.LoadGridList();
+                    self.Checked_AlsoDisplayAbolition.subscribe(function (newValue) {
+                        if (self.dirtyOldValue.selAlsoDisplayAbolition != newValue) {
+                            self.activeDirty(function () {
+                                self.dirtyOldValue.selAlsoDisplayAbolition = newValue;
+                                self.loadGridList();
+                            }, function () {
+                                self.dirtyOldValue.selAlsoDisplayAbolition = newValue;
+                                //then load gridlist
+                                self.loadGridList();
+                            }, function () {
+                                self.Checked_AlsoDisplayAbolition(self.dirtyOldValue.selAlsoDisplayAbolition);
+                            });
+                        }
                     });
                     // set gridlist data
                     //gridlist column
-                    self.GridColumns_B_001 = ko.observableArray([
+                    self.GridColumns = ko.observableArray([
                         { headerText: '項目区分', prop: 'categoryAtrName', width: 80 },
                         { headerText: 'コード', prop: 'itemCode', width: 50 },
                         { headerText: '名称', prop: 'itemName', width: 150 },
@@ -87,90 +114,64 @@ var qmm012;
                             return "<div class = 'NoIcon' > </div>";
                         return "";
                     }
-                    self.GridlistCurrentCode_B_001.subscribe(function (newValue) {
-                        //get ItemModel by itemCode has selected
-                        var item = _.find(self.GridlistItems_B_001(), function (ItemModel) {
-                            return ItemModel.itemCode == newValue;
-                        });
-                        //set it to GridlistCurrentItem_B_001 for trigger subscribe
-                        self.GridlistCurrentItem_B_001(item);
-                        //set text for B_INP_002
-                        self.B_INP_002_text(newValue);
+                    self.GridlistCurrentCode.subscribe(function (newValue) {
+                        if (newValue != self.dirtyOldValue.lstCode) {
+                            var item = _.find(self.GridlistItems(), function (ItemModel) {
+                                return ItemModel.itemCode == newValue;
+                            });
+                            self.activeDirty(function () {
+                                self.GridlistCurrentItem(item);
+                            }, function () {
+                                self.GridlistCurrentItem(item);
+                            }, function () {
+                                self.GridlistCurrentCode(self.dirtyOldValue.lstCode);
+                            });
+                        }
                     });
-                    self.GridlistCurrentItem_B_001.subscribe(function (itemModel) {
-                        self.GridCurrentItemName_B_001(itemModel ? itemModel.itemName : '');
-                        self.GridCurrentUniteCode_B_001(itemModel ? itemModel.uniteCode : '');
-                        self.GridCurrentCategoryAtr_B_001(itemModel ? itemModel.categoryAtr : 0);
-                        // If set same group, GridCurrentCategoryAtr_B_001 will not trigger subscribe => can't call ChangeGroup function for load that item data so call ChangeGroup function here
-                        ChangeGroup(self.GridCurrentCategoryAtr_B_001());
-                        self.GridCurrentCodeAndName_B_001(itemModel ? itemModel.itemCode + ' ' + itemModel.itemName : '');
-                        self.GridCurrentDisplaySet_B_001(itemModel ? itemModel.displaySet == 1 ? true : false : false);
-                        self.GridCurrentItemAbName_B_001(itemModel ? itemModel.itemAbName : '');
-                        self.GridCurrentCategoryAtrName_B_001(itemModel ? itemModel.categoryAtrName : '');
+                    self.GridlistCurrentItem.subscribe(function (itemModel) {
+                        self.clearAllValidateError();
+                        self.GridCurrentItemName(itemModel ? itemModel.itemName : '');
+                        self.GridCurrentUniteCode(itemModel ? itemModel.uniteCode : '');
+                        //set text for B_Inp_Code
+                        self.B_Inp_Code_text(itemModel ? itemModel.itemCode : '');
+                        self.GridCurrentCodeAndName(itemModel ? itemModel.itemCode + ' ' + itemModel.itemName : '');
+                        self.GridCurrentDisplaySet(itemModel ? itemModel.displaySet == 1 ? true : false : false);
+                        self.GridCurrentItemAbName(itemModel ? itemModel.itemAbName : '');
+                        self.GridCurrentCategoryAtrName(itemModel ? itemModel.categoryAtrName : '');
                         //when itemModel != undefined , need disable INP_002
-                        if (itemModel != undefined) {
-                            self.enable_B_INP_002(false);
+                        if (itemModel ? itemModel.itemCode != '' : false) {
+                            self.enable_B_Inp_Code(false);
+                            self.GridCurrentCategoryAtr(itemModel.categoryAtr);
                         }
+                        self.ChangeGroup(self.GridCurrentCategoryAtr()).done(function () {
+                            self.dirtyItemMaster(self.getCurrentItemMaster());
+                            if (self.dirty)
+                                self.dirty.reset();
+                            self.dirtyOldValue.lstCode = self.GridlistCurrentCode();
+                        });
                     });
-                    self.GridCurrentCategoryAtr_B_001.subscribe(function (newValue) {
-                        //when change to different group, need  call ChangeGroup function for Set Value to layout
-                        ChangeGroup(newValue);
-                    });
-                    function ChangeGroup(newValue) {
-                        $('#screenC').hide();
-                        $('#screenD').hide();
-                        $('#screenE').hide();
-                        $('#screenF').hide();
-                        switch (newValue) {
-                            case 0:
-                                //支給
-                                $('#screenC').show();
-                                self.screenModel.screenModelC.CurrentItemMaster(self.GridlistCurrentItem_B_001());
-                                break;
-                            case 1:
-                                //控除
-                                $('#screenD').show();
-                                self.screenModel.screenModelD.CurrentItemMaster(self.GridlistCurrentItem_B_001());
-                                break;
-                            case 2:
-                                //勤怠
-                                $('#screenE').show();
-                                self.screenModel.screenModelE.CurrentItemMaster(self.GridlistCurrentItem_B_001());
-                                break;
-                            case 3:
-                                //記事
-                                $('#screenF').show();
-                                self.screenModel.screenModelF.CurrentItemMaster(self.GridlistCurrentItem_B_001());
-                                break;
-                        }
-                        //why don't have その他 ? because it show nothing
-                    }
-                    //first load , need call LoadGridList
-                    self.LoadGridList();
-                    self.enable_B_INP_002.subscribe(function (newValue) {
-                        if (newValue) {
-                            //it mean new item mode
-                            self.setNewItemMode();
-                        }
-                        else {
+                    //first load , need call loadGridList
+                    self.loadGridList();
+                    self.enable_B_Inp_Code.subscribe(function (newValue) {
+                        if (!newValue) {
                             //it mean update item mode
                             self.setUpdateItemMode();
                         }
                     });
                     //set text editer data
                     //INP_002
-                    self.texteditor_B_INP_002 = {
-                        value: self.B_INP_002_text,
+                    self.texteditor_B_Inp_Code = {
+                        value: self.B_Inp_Code_text,
                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                             textmode: "text",
                             placeholder: "",
                             textalign: "left"
                         })),
-                        enable: self.enable_B_INP_002
+                        enable: self.enable_B_Inp_Code
                     };
                     //INP_003
-                    self.texteditor_B_INP_003 = {
-                        value: self.GridCurrentItemName_B_001,
+                    self.texteditor_B_Inp_Name = {
+                        value: self.GridCurrentItemName,
                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                             textmode: "text",
                             placeholder: "",
@@ -178,78 +179,175 @@ var qmm012;
                         }))
                     };
                     //INP_004
-                    self.texteditor_B_INP_004 = {
-                        value: self.GridCurrentItemAbName_B_001,
+                    self.texteditor_B_Inp_AbbreviatedName = {
+                        value: self.GridCurrentItemAbName,
                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                             textmode: "text",
                             placeholder: "",
                             textalign: "left"
                         }))
                     };
+                    self.B_Inp_Code_text.subscribe(function (newValue) {
+                        if (self.enable_B_Inp_Code()) {
+                            var item = _.find(self.GridlistItems(), function (ItemModel) {
+                                return ItemModel.itemCode == newValue;
+                            });
+                            if (item) {
+                                $('#B_Inp_Code').ntsError('set', '入力したコードは既に存在しています。');
+                            }
+                        }
+                    });
                 }
+                ScreenModel.prototype.ChangeGroup = function (newValue) {
+                    var dfd = $.Deferred();
+                    var self = this;
+                    $('#screenC').hide();
+                    $('#screenD').hide();
+                    $('#screenE').hide();
+                    $('#screenF').hide();
+                    switch (newValue) {
+                        case 0:
+                            //支給
+                            $('#screenC').show();
+                            self.screenModel.screenModelC.loadData(self.GridlistCurrentItem()).done(function () {
+                                dfd.resolve("done");
+                            });
+                            break;
+                        case 1:
+                            //控除
+                            $('#screenD').show();
+                            self.screenModel.screenModelD.loadData(self.GridlistCurrentItem()).done(function () {
+                                dfd.resolve("done");
+                            });
+                            break;
+                        case 2:
+                            //勤怠
+                            $('#screenE').show();
+                            self.screenModel.screenModelE.loadData(self.GridlistCurrentItem()).done(function () {
+                                dfd.resolve("done");
+                            });
+                            break;
+                        case 3:
+                            //記事
+                            $('#screenF').show();
+                            self.screenModel.screenModelF.loadData(self.GridlistCurrentItem()).done(function () {
+                                dfd.resolve("done");
+                            });
+                            break;
+                        case 9:
+                            dfd.resolve("done");
+                            break;
+                    }
+                    return dfd.promise();
+                    //why don't have その他 ? because it show nothing
+                };
+                ScreenModel.prototype.clearAllValidateError = function () {
+                    $('.save-error').ntsError('clear');
+                };
+                ScreenModel.prototype.reload = function () {
+                    var self = this;
+                    location.reload(true);
+                };
                 ScreenModel.prototype.setNewItemMode = function () {
                     var self = this;
-                    //set selected code is '' for trigger subscribe
-                    self.GridlistCurrentCode_B_001('');
+                    self.dirtyOldValue.lstCode = '';
+                    self.GridlistCurrentCode('');
+                    self.clearContent();
                     //disable delete button
-                    self.B_BTN_004_enable(false);
+                    self.B_Btn_DeleteButton_enable(false);
                     //disable 有効期間設定 button
-                    self.screenModel.screenModelC.C_BTN_001_enable(false);
-                    self.screenModel.screenModelC.C_BTN_002_enable(false);
-                    self.screenModel.screenModelD.D_BTN_001_enable(false);
-                    self.screenModel.screenModelD.D_BTN_002_enable(false);
+                    self.screenModel.screenModelC.C_Btn_PeriodSetting_enable(false);
+                    self.screenModel.screenModelC.C_Btn_BreakdownSetting_enable(false);
+                    self.screenModel.screenModelD.D_Btn_PeriodSetting_enable(false);
+                    self.screenModel.screenModelD.D_Btn_BreakdownSetting_enable(false);
+                };
+                ScreenModel.prototype.clearContent = function () {
+                    var self = this;
+                    self.clearAllValidateError();
+                    self.GridCurrentItemName('');
+                    self.GridCurrentUniteCode('');
+                    //set text for B_Inp_Code
+                    self.B_Inp_Code_text('');
+                    self.GridCurrentCodeAndName('');
+                    self.GridCurrentDisplaySet(false);
+                    self.GridCurrentItemAbName('');
+                    self.GridCurrentCategoryAtrName('');
+                    //when itemModel != undefined , need disable INP_002
+                    self.enable_B_Inp_Code(true);
+                    self.GridlistCurrentItem(self.getCurrentItemMaster());
                 };
                 ScreenModel.prototype.setUpdateItemMode = function () {
                     var self = this;
                     //if from new mode change to update mode , need clear all ntsError 
-                    $('#B_INP_002').ntsError('clear');
+                    $('#B_Inp_Code').ntsError('clear');
                     //enable delete button
-                    self.B_BTN_004_enable(true);
+                    self.B_Btn_DeleteButton_enable(true);
                     //enable 有効期間設定 button
-                    self.screenModel.screenModelC.C_BTN_001_enable(true);
-                    self.screenModel.screenModelC.C_BTN_002_enable(true);
-                    self.screenModel.screenModelD.D_BTN_001_enable(true);
-                    self.screenModel.screenModelD.D_BTN_002_enable(true);
+                    self.screenModel.screenModelC.C_Btn_PeriodSetting_enable(true);
+                    self.screenModel.screenModelC.C_Btn_BreakdownSetting_enable(true);
+                    self.screenModel.screenModelD.D_Btn_PeriodSetting_enable(true);
+                    self.screenModel.screenModelD.D_Btn_BreakdownSetting_enable(true);
                 };
-                ScreenModel.prototype.GetCurrentItemMaster = function () {
+                ScreenModel.prototype.getCurrentItemMaster = function () {
                     //get item master The user entered on the form 
                     var self = this;
                     //this is item master Constructor
-                    var itemMaster = new b.service.model.ItemMaster(self.B_INP_002_text(), self.GridCurrentItemName_B_001(), self.GridCurrentCategoryAtr_B_001(), self.GridCurrentCategoryAtrName_B_001(), self.GridCurrentItemAbName_B_001(), self.GridlistCurrentItem_B_001() ? self.GridlistCurrentItem_B_001().itemAbNameO : self.GridCurrentItemAbName_B_001(), self.GridlistCurrentItem_B_001() ? self.GridlistCurrentItem_B_001().itemAbNameE : self.GridCurrentItemAbName_B_001(), self.GridCurrentDisplaySet_B_001() == true ? 1 : 0, self.GridCurrentUniteCode_B_001(), self.getCurrentZeroDisplaySet(), self.getCurrentItemDisplayAtr(), 1);
+                    var itemMaster = new b.service.model.ItemMaster(self.B_Inp_Code_text(), self.GridCurrentItemName(), self.GridCurrentCategoryAtr(), self.GridCurrentCategoryAtrName(), self.GridCurrentItemAbName(), self.GridlistCurrentItem() ? self.GridlistCurrentItem().itemAbNameO : "", self.GridlistCurrentItem() ? self.GridlistCurrentItem().itemAbNameE : "", self.GridCurrentDisplaySet() == true ? 1 : 0, self.GridCurrentUniteCode(), self.getCurrentZeroDisplaySet(), self.getCurrentItemDisplayAtr(), 1);
                     //set sub item constructor
                     itemMaster.itemSalary = self.screenModel.screenModelC.GetCurrentItemSalary();
                     itemMaster.itemDeduct = self.screenModel.screenModelD.GetCurrentItemDeduct();
                     itemMaster.itemAttend = self.screenModel.screenModelE.getCurrentItemAttend();
                     return itemMaster;
                 };
-                ScreenModel.prototype.LoadGridList = function (ItemCode) {
+                ScreenModel.prototype.validateItemMaster = function () {
+                    var self = this;
+                    $("#B_Inp_Code").ntsEditor("validate");
+                    $("#B_Inp_Name").ntsEditor("validate");
+                    $("#B_Inp_AbbreviatedName").ntsEditor("validate");
+                    if ($('.nts-editor').ntsError("hasError")) {
+                        return true;
+                    }
+                    return false;
+                };
+                ScreenModel.prototype.loadGridList = function (ItemCode) {
                     var self = this;
                     var categoryAtr = self.categoryAtr;
                     //load dispSet 
                     //if 0  mean
-                    // no view この項目名を廃止する 
+                    // no only view この項目名を廃止する 
                     //else view all
-                    var dispSet = self.checked_B_002() ? -1 : 0;
+                    var dispSet = self.Checked_AlsoDisplayAbolition() ? -1 : 0;
                     //call service load findAllItemMaster
                     b.service.findAllItemMaster(categoryAtr, dispSet).done(function (MasterItems) {
-                        self.GridlistItems_B_001(MasterItems);
+                        self.GridlistItems(MasterItems);
                         //set selected first item in list
-                        if (self.GridlistItems_B_001().length > 0)
+                        if (self.dirty)
+                            self.dirty.reset();
+                        if (self.GridlistItems().length > 0) {
                             // if not itemcode parameter
                             if (!ItemCode)
-                                //set GridlistCurrentCode_B_001 selected first item in gridlist
-                                self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[0].itemCode);
-                            else
+                                //set GridlistCurrentCode selected first item in gridlist
+                                self.GridlistCurrentCode(self.GridlistItems()[0].itemCode);
+                            else {
                                 //set  selected == param itemcode
-                                self.GridlistCurrentCode_B_001(ItemCode);
+                                self.dirtyOldValue.lstCode = ItemCode;
+                                self.GridlistCurrentCode(ItemCode);
+                                var item = _.find(self.GridlistItems(), function (ItemModel) {
+                                    return ItemModel.itemCode == ItemCode;
+                                });
+                                self.GridlistCurrentItem(item);
+                            }
+                            self.dirtyItemMaster(self.getCurrentItemMaster());
+                            self.dirty = new nts.uk.ui.DirtyChecker(self.dirtyItemMaster);
+                        }
                     }).fail(function (res) {
                         alert(res);
                     });
                 };
                 ScreenModel.prototype.deleteItem = function () {
                     var self = this;
-                    var ItemMaster = self.GetCurrentItemMaster();
-                    var index = self.GridlistItems_B_001.indexOf(self.GridlistCurrentItem_B_001());
+                    var ItemMaster = self.getCurrentItemMaster();
+                    var index = self.GridlistItems.indexOf(self.GridlistCurrentItem());
                     //if has item selected
                     if (index >= 0) {
                         //show dialog
@@ -259,19 +357,19 @@ var qmm012;
                                 //reload grid and set select code after delete item success
                                 var selectItemCode;
                                 //if after delete gridlist length >0
-                                if (self.GridlistItems_B_001().length - 1 > 1) {
-                                    if (index < self.GridlistItems_B_001().length - 1)
+                                if (self.GridlistItems().length - 1 > 1) {
+                                    if (index < self.GridlistItems().length - 1)
                                         //if not last selected item , set selected same position
-                                        selectItemCode = self.GridlistItems_B_001()[index - 1].itemCode;
+                                        selectItemCode = self.GridlistItems()[index + 1].itemCode;
                                     else
                                         //else selected item Before it
-                                        selectItemCode = self.GridlistItems_B_001()[index - 2].itemCode;
+                                        selectItemCode = self.GridlistItems()[index - 1].itemCode;
                                 }
                                 else
                                     //length < 0 no select any thing
                                     selectItemCode = '';
                                 //reload gruid list
-                                self.LoadGridList(selectItemCode);
+                                self.loadGridList(selectItemCode);
                             }).fail(function (res) {
                                 alert(res);
                             });
@@ -281,7 +379,7 @@ var qmm012;
                 ScreenModel.prototype.getCurrentZeroDisplaySet = function () {
                     var Result;
                     var self = this;
-                    var CurrentGroup = self.GridCurrentCategoryAtr_B_001();
+                    var CurrentGroup = self.GridCurrentCategoryAtr();
                     switch (CurrentGroup) {
                         case 0:
                             //支給
@@ -306,7 +404,7 @@ var qmm012;
                     //like getCurrentZeroDisplaySet
                     var Result;
                     var self = this;
-                    var CurrentGroup = self.GridCurrentCategoryAtr_B_001();
+                    var CurrentGroup = self.GridCurrentCategoryAtr();
                     switch (CurrentGroup) {
                         case 0:
                             Result = self.screenModel.screenModelC.CurrentItemDisplayAtr();
@@ -324,28 +422,37 @@ var qmm012;
                     return Result;
                 };
                 ScreenModel.prototype.openADialog = function () {
-                    //open select type dialog for new item
                     var self = this;
                     nts.uk.ui.windows.sub.modal('../a/index.xhtml', { height: 480, width: 630, dialogClass: "no-close" }).onClosed(function () {
                         if (nts.uk.ui.windows.getShared('groupCode') != undefined) {
                             //get group from session
                             var groupCode = Number(nts.uk.ui.windows.getShared('groupCode'));
                             //set layout for new.
-                            self.enable_B_INP_002(true);
-                            self.GridCurrentCategoryAtr_B_001(groupCode);
+                            self.GridCurrentCategoryAtr(groupCode);
+                            self.setNewItemMode();
                         }
                     });
                 };
+                ScreenModel.prototype.copyButtonClick = function () {
+                    var self = this;
+                    self.activeDirty(function () { });
+                };
+                ScreenModel.prototype.exportExcelButtonClick = function () {
+                    var self = this;
+                    self.activeDirty(function () { });
+                };
                 ScreenModel.prototype.submitData = function () {
                     var self = this;
-                    var ItemMaster = self.GetCurrentItemMaster();
-                    //if self.enable_B_INP_002 == true is mean New mode
-                    if (self.enable_B_INP_002()) {
-                        self.addNewItemMaster(ItemMaster);
-                    }
-                    else {
-                        //else update mode
-                        self.updateItemMaster(ItemMaster);
+                    if (!self.validateItemMaster()) {
+                        var ItemMaster = self.getCurrentItemMaster();
+                        //if self.enable_B_Inp_Code == true is mean New mode
+                        if (self.enable_B_Inp_Code()) {
+                            self.addNewItemMaster(ItemMaster);
+                        }
+                        else {
+                            //else update mode
+                            self.updateItemMaster(ItemMaster);
+                        }
                     }
                 };
                 ScreenModel.prototype.addNewItemMaster = function (ItemMaster) {
@@ -353,7 +460,7 @@ var qmm012;
                     //call add service
                     b.service.addItemMaster(ItemMaster).done(function (any) {
                         //after add , reload grid list
-                        self.LoadGridList(ItemMaster.itemCode);
+                        self.loadGridList(ItemMaster.itemCode);
                     }).fail(function (res) {
                         alert(res);
                     });
@@ -363,19 +470,55 @@ var qmm012;
                     //call update service
                     b.service.updateItemMaster(ItemMaster).done(function (any) {
                         //after add , reload grid list
-                        self.LoadGridList(ItemMaster.itemCode);
+                        self.loadGridList(ItemMaster.itemCode);
                     }).fail(function (res) {
                         alert(res);
                     });
                 };
+                ScreenModel.prototype.registerPrintingNameButtonClick = function () {
+                    var self = this;
+                    self.activeDirty(function () { self.openJDialog(); }, function () { self.openJDialog(); });
+                };
+                ScreenModel.prototype.addNewButtonClick = function () {
+                    var self = this;
+                    //set value client has input on form 
+                    self.activeDirty(function () { self.openADialog(); }, function () { self.openADialog(); });
+                };
                 ScreenModel.prototype.openJDialog = function () {
                     var self = this;
                     nts.uk.ui.windows.sub.modal('../j/index.xhtml', { height: 700, width: 970, dialogClass: "no-close" }).onClosed(function () {
+                        self.loadGridList(self.GridlistCurrentCode());
                     });
+                };
+                ScreenModel.prototype.activeDirty = function (MainFunction, YesFunction, NoFunction) {
+                    var self = this;
+                    self.dirtyItemMaster(self.getCurrentItemMaster());
+                    if (self.dirty ? !self.dirty.isDirty() : true) {
+                        MainFunction();
+                    }
+                    else {
+                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。  ").ifYes(function () {
+                            //reset data on form when not save 
+                            self.GridlistCurrentItem(self.GridlistCurrentItem());
+                            if (YesFunction)
+                                YesFunction();
+                        }).ifNo(function () {
+                            if (NoFunction)
+                                NoFunction();
+                        });
+                    }
                 };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
+            var DirtyValue = (function () {
+                function DirtyValue(selItemClassification, lstCode, selAlsoDisplayAbolition) {
+                    this.selItemClassification = selItemClassification;
+                    this.lstCode = lstCode;
+                    this.selAlsoDisplayAbolition = selAlsoDisplayAbolition;
+                }
+                return DirtyValue;
+            }());
             var ComboboxItemModel = (function () {
                 function ComboboxItemModel(code, name) {
                     this.code = code;

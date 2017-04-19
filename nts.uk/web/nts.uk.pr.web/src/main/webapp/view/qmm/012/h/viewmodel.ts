@@ -11,8 +11,8 @@ module qmm012.h.viewmodel {
         gridListCurrentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
         //Switch
-        roundingRules_H_SEL_001: KnockoutObservableArray<any>;
-        roundingRules_H_SEL_002: KnockoutObservableArray<any>;
+        Roundingrules_ValidityPeriod: KnockoutObservableArray<any>;
+        Roundingrules_CycleSetting: KnockoutObservableArray<any>;
 
         enable: KnockoutObservable<boolean> = ko.observable(true);
 
@@ -24,28 +24,28 @@ module qmm012.h.viewmodel {
         CurrentStrY: KnockoutObservable<number> = ko.observable(1900);
         CurrentEndY: KnockoutObservable<number> = ko.observable(1900);
         CurrentCycleAtr: KnockoutObservable<number> = ko.observable(0);
-        H_SEL_003_checked: KnockoutObservable<boolean> = ko.observable(false);
-        H_SEL_004_checked: KnockoutObservable<boolean> = ko.observable(false);
-        H_SEL_005_checked: KnockoutObservable<boolean> = ko.observable(false);
-        H_SEL_006_checked: KnockoutObservable<boolean> = ko.observable(false);
-        H_SEL_007_checked: KnockoutObservable<boolean> = ko.observable(false);
-        H_SEL_008_checked: KnockoutObservable<boolean> = ko.observable(false);
-        H_SEL_009_checked: KnockoutObservable<boolean> = ko.observable(false);
-        H_SEL_010_checked: KnockoutObservable<boolean> = ko.observable(false);
-        H_SEL_011_checked: KnockoutObservable<boolean> = ko.observable(false);
-        H_SEL_012_checked: KnockoutObservable<boolean> = ko.observable(false);
-        H_SEL_013_checked: KnockoutObservable<boolean> = ko.observable(false);
-        H_SEL_014_checked: KnockoutObservable<boolean> = ko.observable(false);
+        H_Sel_January: KnockoutObservable<boolean> = ko.observable(false);
+        H_Sel_February: KnockoutObservable<boolean> = ko.observable(false);
+        H_Sel_InMarch: KnockoutObservable<boolean> = ko.observable(false);
+        H_Sel_April: KnockoutObservable<boolean> = ko.observable(false);
+        H_Sel_May: KnockoutObservable<boolean> = ko.observable(false);
+        H_Sel_June: KnockoutObservable<boolean> = ko.observable(false);
+        H_Sel_July: KnockoutObservable<boolean> = ko.observable(false);
+        H_Sel_August: KnockoutObservable<boolean> = ko.observable(false);
+        H_Sel_September: KnockoutObservable<boolean> = ko.observable(false);
+        H_Sel_October: KnockoutObservable<boolean> = ko.observable(false);
+        H_Sel_November: KnockoutObservable<boolean> = ko.observable(false);
+        H_Sel_December: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             var self = this;
             //set Switch Data
-            self.roundingRules_H_SEL_001 = ko.observableArray([
+            self.Roundingrules_ValidityPeriod = ko.observableArray([
                 { code: 1, name: '設定する' },
                 { code: 0, name: '設定しない' }
             ]);
             //005 006 007 008 009 010
 
-            self.roundingRules_H_SEL_002 = ko.observableArray([
+            self.Roundingrules_CycleSetting = ko.observableArray([
                 { code: 1, name: 'する' },
                 { code: 0, name: 'しない' }
             ]);
@@ -55,18 +55,18 @@ module qmm012.h.viewmodel {
                 self.CurrentStrY(ItemPeriod ? ItemPeriod.strY : 1900);
                 self.CurrentEndY(ItemPeriod ? ItemPeriod.endY : 1900);
                 self.CurrentCycleAtr(ItemPeriod ? ItemPeriod.cycleAtr : 0);
-                self.H_SEL_003_checked(ItemPeriod ? ItemPeriod.cycle01Atr == 1 ? true : false : false);
-                self.H_SEL_004_checked(ItemPeriod ? ItemPeriod.cycle02Atr == 1 ? true : false : false);
-                self.H_SEL_005_checked(ItemPeriod ? ItemPeriod.cycle03Atr == 1 ? true : false : false);
-                self.H_SEL_006_checked(ItemPeriod ? ItemPeriod.cycle04Atr == 1 ? true : false : false);
-                self.H_SEL_007_checked(ItemPeriod ? ItemPeriod.cycle05Atr == 1 ? true : false : false);
-                self.H_SEL_008_checked(ItemPeriod ? ItemPeriod.cycle06Atr == 1 ? true : false : false);
-                self.H_SEL_009_checked(ItemPeriod ? ItemPeriod.cycle07Atr == 1 ? true : false : false);
-                self.H_SEL_010_checked(ItemPeriod ? ItemPeriod.cycle08Atr == 1 ? true : false : false);
-                self.H_SEL_011_checked(ItemPeriod ? ItemPeriod.cycle09Atr == 1 ? true : false : false);
-                self.H_SEL_012_checked(ItemPeriod ? ItemPeriod.cycle10Atr == 1 ? true : false : false);
-                self.H_SEL_013_checked(ItemPeriod ? ItemPeriod.cycle11Atr == 1 ? true : false : false);
-                self.H_SEL_014_checked(ItemPeriod ? ItemPeriod.cycle12Atr == 1 ? true : false : false);
+                self.H_Sel_January(ItemPeriod ? ItemPeriod.cycle01Atr == 1 ? true : false : false);
+                self.H_Sel_February(ItemPeriod ? ItemPeriod.cycle02Atr == 1 ? true : false : false);
+                self.H_Sel_InMarch(ItemPeriod ? ItemPeriod.cycle03Atr == 1 ? true : false : false);
+                self.H_Sel_April(ItemPeriod ? ItemPeriod.cycle04Atr == 1 ? true : false : false);
+                self.H_Sel_May(ItemPeriod ? ItemPeriod.cycle05Atr == 1 ? true : false : false);
+                self.H_Sel_June(ItemPeriod ? ItemPeriod.cycle06Atr == 1 ? true : false : false);
+                self.H_Sel_July(ItemPeriod ? ItemPeriod.cycle07Atr == 1 ? true : false : false);
+                self.H_Sel_August(ItemPeriod ? ItemPeriod.cycle08Atr == 1 ? true : false : false);
+                self.H_Sel_September(ItemPeriod ? ItemPeriod.cycle09Atr == 1 ? true : false : false);
+                self.H_Sel_October(ItemPeriod ? ItemPeriod.cycle10Atr == 1 ? true : false : false);
+                self.H_Sel_November(ItemPeriod ? ItemPeriod.cycle11Atr == 1 ? true : false : false);
+                self.H_Sel_December(ItemPeriod ? ItemPeriod.cycle12Atr == 1 ? true : false : false);
 
             });
             self.LoadItemPeriod();
@@ -92,18 +92,18 @@ module qmm012.h.viewmodel {
                 self.CurrentStrY(),
                 self.CurrentEndY(),
                 self.CurrentCycleAtr(),
-                self.H_SEL_003_checked() == true ? 1 : 0,
-                self.H_SEL_004_checked() == true ? 1 : 0,
-                self.H_SEL_005_checked() == true ? 1 : 0,
-                self.H_SEL_006_checked() == true ? 1 : 0,
-                self.H_SEL_007_checked() == true ? 1 : 0,
-                self.H_SEL_008_checked() == true ? 1 : 0,
-                self.H_SEL_009_checked() == true ? 1 : 0,
-                self.H_SEL_010_checked() == true ? 1 : 0,
-                self.H_SEL_011_checked() == true ? 1 : 0,
-                self.H_SEL_012_checked() == true ? 1 : 0,
-                self.H_SEL_013_checked() == true ? 1 : 0,
-                self.H_SEL_014_checked() == true ? 1 : 0
+                self.H_Sel_January() == true ? 1 : 0,
+                self.H_Sel_February() == true ? 1 : 0,
+                self.H_Sel_InMarch() == true ? 1 : 0,
+                self.H_Sel_April() == true ? 1 : 0,
+                self.H_Sel_May() == true ? 1 : 0,
+                self.H_Sel_June() == true ? 1 : 0,
+                self.H_Sel_July() == true ? 1 : 0,
+                self.H_Sel_August() == true ? 1 : 0,
+                self.H_Sel_September() == true ? 1 : 0,
+                self.H_Sel_October() == true ? 1 : 0,
+                self.H_Sel_November() == true ? 1 : 0,
+                self.H_Sel_December() == true ? 1 : 0
             );
         }
         SubmitDialog() {
