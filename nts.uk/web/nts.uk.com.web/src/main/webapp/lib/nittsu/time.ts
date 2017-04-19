@@ -2,6 +2,13 @@
 
 ﻿module nts.uk.time {
 
+    var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm"];
+    var listEmpire: { [year: string]: string } = {
+        "明治": "1868/01/01",
+        "大正": "1912/07/30",
+        "昭和": "1926/12/25",
+        "平成": "1989/01/08"
+    };
     var dotW = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
 
     function getYearMonthJapan(year, month?) {
@@ -102,12 +109,37 @@
         return new JapanYearMonth("平成 ", diff, month);
     }
 
-    /**
-    * Format by pattern
-    * @param  {number} [seconds]      Input seconds
-    * @param  {string} [formatOption] Format option
-    * @return {string}                Formatted duration
-    */
+    export class JapanDateMoment {
+        moment: moment.Moment;
+        empire: string;
+        year: number;
+        month: number;
+        day: number;
+
+        constructor(date: any, outputFormat?: string) {
+            var MomentResult = parseMoment(date, outputFormat);
+            var year = MomentResult.momentObject.year();
+            var month = MomentResult.momentObject.month() + 1;
+        }
+
+        public toString() {
+            return (this.empire === undefined ? "" : this.empire + " ")
+                + (this.year === undefined ? "" : this.year + " 年 ")
+                + (this.month === undefined ? "" : this.month + " 月")
+                + (this.day === undefined ? "" : this.day + " ");
+        }
+    }
+
+    export function dateInJapanEmpire(date: any): JapanDateMoment {
+        return new JapanDateMoment(date);
+    }
+
+	/**
+	* Format by pattern
+	* @param  {number} [seconds]	  Input seconds
+	* @param  {string} [formatOption] Format option
+	* @return {string}				Formatted duration
+	*/
     export function formatSeconds(seconds: number, formatOption: string) {
         seconds = parseInt(String(seconds));
 
@@ -124,12 +156,12 @@
             .replace(/ss/g, ss);
     }
 
-    /**
-    * 日付をフォーマットする
-    * @param  {Date}   date     日付
-    * @param  {String} [format] フォーマット
-    * @return {String}          フォーマット済み日付
-    */
+	/**
+	* 日付をフォーマットする
+	* @param  {Date}   date	 日付
+	* @param  {String} [format] フォーマット
+	* @return {String}		  フォーマット済み日付
+	*/
     export function formatDate(date: Date, format: any) {
         if (!format)
             format = 'yyyy-MM-dd hh:mm:ss.SSS';
@@ -157,11 +189,11 @@
         return format;
     }
 
-    /**
-    * Format YearMonth
-    * @param  {Number} [yearMonth]    Input Yearmonth
-    * @return {String}                Formatted YearMonth
-    */
+	/**
+	* Format YearMonth
+	* @param  {Number} [yearMonth]	Input Yearmonth
+	* @return {String}				Formatted YearMonth
+	*/
     export function formatYearMonth(yearMonth: number) {
         var result: string;
         var num = parseInt(String(yearMonth));
@@ -171,16 +203,16 @@
         return result;
     }
 
-    /**
-    * Format by pattern
-    * @param  {Date}   [date]         Input date
-    * @param  {String} [inputFormat]  Input format
-    * @param  {String} [outputFormat] Output format
-    * @return {String}                Formatted date
-    */
+	/**
+	* Format by pattern
+	* @param  {Date}   [date]		 Input date
+	* @param  {String} [inputFormat]  Input format
+	* @param  {String} [outputFormat] Output format
+	* @return {String}				Formatted date
+	*/
     export function formatPattern(date: any, inputFormat?: string, outputFormat?: string) {
         outputFormat = text.getISOFormat(outputFormat);
-        var inputFormats = (inputFormat) ? inputFormat : ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm"];
+        var inputFormats = (inputFormat) ? inputFormat : defaultInputFormat;
         return moment.utc(date, inputFormats).format(outputFormat);
     }
 
@@ -513,7 +545,7 @@
 
 
     export function parseMoment(datetime: any, outputFormat?: any, inputFormat?: any): MomentResult {
-        var inputFormats = (inputFormat) ? inputFormat : ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm"];
+        var inputFormats = (inputFormat) ? inputFormat : defaultInputFormat;
         var momentObject = moment.utc(datetime, inputFormats);
         var result = new MomentResult(momentObject, outputFormat);
         if (momentObject.isValid())

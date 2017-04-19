@@ -24,7 +24,9 @@ module nts.uk.ui.koExtentions {
 
             // Container
             var container = $(element);
-            container.addClass("ntsControl");
+            container.addClass("ntsControl").on("click", (e) => {
+                if (container.data("readonly") === true) e.preventDefault();
+            });
 
             if (textId) {
                 checkBoxText = textId;
@@ -33,15 +35,15 @@ module nts.uk.ui.koExtentions {
                 container.text('');
             }
 
-            var checkBoxLabel = $("<label class='ntsCheckBox'></label>");
-            var checkBox = $('<input type="checkbox">').on("change", function() {
+            var $checkBoxLabel = $("<label class='ntsCheckBox'></label>");
+            var $checkBox = $('<input type="checkbox">').on("change", function() {
                 if (typeof setChecked === "function")
                     setChecked($(this).is(":checked"));
-            }).appendTo(checkBoxLabel);
-            var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
+            }).appendTo($checkBoxLabel);
+            var $box = $("<span class='box'></span>").appendTo($checkBoxLabel);
             if(checkBoxText && checkBoxText.length > 0)
-                var label = $("<span class='label'></span>").text(checkBoxText).appendTo(checkBoxLabel);
-            checkBoxLabel.appendTo(container);
+                var label = $("<span class='label'></span>").text(checkBoxText).appendTo($checkBoxLabel);
+            $checkBoxLabel.appendTo(container);
         }
 
         /**
@@ -51,16 +53,18 @@ module nts.uk.ui.koExtentions {
             // Get data
             var data = valueAccessor();
             var checked: boolean = ko.unwrap(data.checked);
+            var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
 
             // Container
             var container = $(element);
-            var checkBox = $(element).find("input[type='checkbox']");
+            container.data("readonly", readonly);
+            var $checkBox = $(element).find("input[type='checkbox']");
 
             // Checked
-            checkBox.prop("checked", checked);
+            $checkBox.prop("checked", checked);
             // Enable
-            (enable === true) ? checkBox.removeAttr("disabled") : checkBox.attr("disabled", "disabled");
+            (enable === true) ? $checkBox.removeAttr("disabled") : $checkBox.attr("disabled", "disabled");
         }
     }
 
@@ -72,11 +76,14 @@ module nts.uk.ui.koExtentions {
         constructor() { }
 
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext) {
-            
             var data = valueAccessor();
-            $(element).addClass("ntsControl");
+            var container = $(element);
+            container.addClass("ntsControl").on("click", (e) => {
+                if (container.data("readonly") === true) e.preventDefault();
+            });
             let enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-            $(element).data("enable", _.clone(enable));
+            container.data("enable", _.clone(enable));
+            
         }
 
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
@@ -86,10 +93,12 @@ module nts.uk.ui.koExtentions {
             var optionValue: string = ko.unwrap(data.optionsValue);
             var optionText: string = ko.unwrap(data.optionsText);
             var selectedValue: any = data.value;
+            var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
 
             // Container
             var container = $(element);
+            container.data("readonly", readonly);
 
             // Get option or option[optionValue]
             var getOptionValue = (item) => {
@@ -132,7 +141,7 @@ module nts.uk.ui.koExtentions {
             });
             // Enable
             if(!_.isEqual(container.data("enable"), enable)){
-                container.data("enable",  _.clone(enable));
+                container.data("enable", _.clone(enable));
                 (enable === true) ? container.find("input[type='checkbox']").removeAttr("disabled") : container.find("input[type='checkbox']").attr("disabled", "disabled");
                 _.forEach(data.options(), (option) => {
                     if (typeof option["enable"] === "function"){
