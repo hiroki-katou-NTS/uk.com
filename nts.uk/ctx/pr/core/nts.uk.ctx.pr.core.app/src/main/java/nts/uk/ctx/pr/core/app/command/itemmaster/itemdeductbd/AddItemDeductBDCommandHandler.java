@@ -9,7 +9,9 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBD;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBDRepository;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemsalarybd.ItemSalaryBD;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -28,9 +30,11 @@ public class AddItemDeductBDCommandHandler extends CommandHandler<AddItemDeductB
 		val itemCode = context.getCommand().getItemCode();
 		val itemBreakdownCode = context.getCommand().getItemBreakdownCode();
 		String companyCode = AppContexts.user().companyCode();
+		ItemDeductBD itemDeductBD = context.getCommand().toDomain();
+		itemDeductBD.validate();
 		// Check if the data already exists
 		if (this.itemDeductBDRepo.find(companyCode, itemCode, itemBreakdownCode).isPresent())
 			throw new BusinessException(" 明細書名が入力されていません。");
-		this.itemDeductBDRepo.add(companyCode, context.getCommand().toDomain());
+		this.itemDeductBDRepo.add(companyCode, itemDeductBD);
 	}
 }

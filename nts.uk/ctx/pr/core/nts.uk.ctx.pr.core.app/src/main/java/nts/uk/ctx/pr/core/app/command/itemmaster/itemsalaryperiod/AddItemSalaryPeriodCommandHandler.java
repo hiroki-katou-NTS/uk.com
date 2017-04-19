@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemsalaryperiod.ItemSalaryPeriod;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalaryperiod.ItemSalaryPeriodRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -20,9 +21,11 @@ public class AddItemSalaryPeriodCommandHandler extends CommandHandler<AddItemSal
 	protected void handle(CommandHandlerContext<AddItemSalaryPeriodCommand> context) {
 		String itemCode = context.getCommand().getItemCode();
 		String companyCode = AppContexts.user().companyCode();
+		ItemSalaryPeriod itemSalaryPeriod = context.getCommand().toDomain();
+		itemSalaryPeriod.validate();
 		if (this.itemSalaryPeriodRepository.find(companyCode, itemCode).isPresent())
 			throw new BusinessException(" 明細書名が入力されていません。");
-		this.itemSalaryPeriodRepository.add(companyCode, context.getCommand().toDomain());
+		this.itemSalaryPeriodRepository.add(companyCode, itemSalaryPeriod);
 	}
 
 }
