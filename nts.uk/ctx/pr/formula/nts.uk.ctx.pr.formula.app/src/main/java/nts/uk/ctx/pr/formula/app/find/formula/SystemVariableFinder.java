@@ -4,13 +4,18 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.formula.dom.formula.BasicPayroll;
+import nts.uk.ctx.pr.formula.dom.repository.BasicPayrollRepository;
 import nts.uk.ctx.pr.formula.dom.repository.SystemVariableRepository;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * @author nampt
@@ -21,8 +26,14 @@ public class SystemVariableFinder {
 
 	@Inject
 	private SystemVariableRepository systemVariableRepository;
+	
+	@Inject
+	private BasicPayrollRepository basicPayrollRepository;
 
 	public List<SystemVariableDto> init() {
+		
+		LoginUserContext login = AppContexts.user();
+		String companyCode = login.companyCode();
 
 		List<SystemVariableDto> systemVariables = new ArrayList<>();
 
@@ -37,11 +48,17 @@ public class SystemVariableFinder {
 				item.setResult(GeneralDate.today().toString());
 			} else if (item.getSystemVariableCode().equals("2")) {
 				item.setResult(GeneralDate.today().yearMonth().toString());
-			} else if (item.getSystemVariableCode().equals("3")) {
+			} else if (item.getSystemVariableCode().equals("3")) {				
 				item.setResult(String.valueOf(GeneralDate.today().year()));
+			} else if(item.getSystemVariableCode().equals("4")){
+				
+			} else if (item.getSystemVariableCode().equals("5")){
+				Optional<BasicPayrollDto> basicPayroll = basicPayrollRepository.findAll(companyCode).map(f -> BasicPayrollDto.fromDomain(f));				
+				item.setResult(basicPayroll.get().getBaseDay().toString());
 			} else if (item.getSystemVariableCode().equals("6")) {
-				BigDecimal timeNotationSet = new BigDecimal("");
-				BigDecimal baseHours = new BigDecimal("");
+				Optional<BasicPayrollDto> basicPayroll = basicPayrollRepository.findAll(companyCode).map(f -> BasicPayrollDto.fromDomain(f));
+				BigDecimal timeNotationSet = basicPayroll.get().getTimeNotationSetting();
+				BigDecimal baseHours = basicPayroll.get().getBaseDay();
 				if (timeNotationSet == BigDecimal.ONE) {
 					item.setResult(baseHours.divide(new BigDecimal(60), 2, RoundingMode.HALF_UP).toString());
 				} else {
