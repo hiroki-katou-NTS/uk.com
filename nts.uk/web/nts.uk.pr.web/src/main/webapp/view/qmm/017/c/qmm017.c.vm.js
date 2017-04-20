@@ -604,7 +604,7 @@ var nts;
             };
             TextEditor.prototype.validateContentFunction = function (contentFunction) {
                 var self = this;
-                var treeFunction = nts.uk.util.createTreeFromString(contentFunction, "（", "）", ",");
+                var treeFunction = nts.uk.util.createTreeFromString(contentFunction, "（", "）", ",", []);
                 self.validateTreeFunction(treeFunction[0]);
             };
             TextEditor.prototype.validateTreeFunction = function (treeObject) {
@@ -804,4 +804,3 @@ var nts;
         qmm017.TextEditor = TextEditor;
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm017.c.vm.js.map

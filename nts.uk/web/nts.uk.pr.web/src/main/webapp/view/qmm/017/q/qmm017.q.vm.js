@@ -17,15 +17,24 @@ var nts;
                                     var self = this;
                                     self.items = ko.observableArray([]);
                                     self.personalUPItems = ko.observableArray([]);
+                                    self.systemVariableItems = ko.observableArray([]);
                                     self.currentCodeList = ko.observableArray([]);
                                     self.formulaContent = ko.observable(data.formulaContent);
-                                    self.extractOtherFormulaContents(data.itemsBag)
-                                        .done(function () {
+                                    if (self.formulaContent().indexOf('計算式＠') !== -1) {
+                                        self.extractOtherFormulaContents(data.itemsBag)
+                                            .done(function () {
+                                            self.replaceCodesToNames(data.itemsBag);
+                                            self.buildListItemModel(data.itemsBag);
+                                            self.bindGridListItem();
+                                            self.replaceSystemVariableToValue();
+                                        });
+                                    }
+                                    else {
                                         self.replaceCodesToNames(data.itemsBag);
                                         self.buildListItemModel(data.itemsBag);
                                         self.bindGridListItem();
-                                        self.calculator = new Calculator();
-                                    });
+                                        self.replaceSystemVariableToValue();
+                                    }
                                 }
                                 ScreenModel.prototype.isDuplicated = function (itemName) {
                                     var self = this;
@@ -40,6 +49,16 @@ var nts;
                                     _.forEach(itemsBag, function (item) {
                                         if (replacedContent.indexOf(item.code) !== -1) {
                                             replacedContent = replacedContent.replace(item.code, item.name);
+                                        }
+                                    });
+                                    self.formulaContent(replacedContent);
+                                };
+                                ScreenModel.prototype.replaceSystemVariableToValue = function () {
+                                    var self = this;
+                                    var replacedContent = self.formulaContent();
+                                    _.forEach(self.systemVariableItems(), function (item) {
+                                        if (replacedContent.indexOf(item.code) !== -1) {
+                                            replacedContent = replacedContent.replace(item.code, item.value);
                                         }
                                     });
                                     self.formulaContent(replacedContent);
@@ -70,6 +89,9 @@ var nts;
                                         if (item.name.indexOf('関数') === -1 && self.formulaContent().indexOf(item.name) !== -1 && !self.isDuplicated(item.name)) {
                                             if (item.name.indexOf('個人単価＠') !== -1) {
                                                 self.personalUPItems.push(new ItemModel(item.name, 0));
+                                            }
+                                            else if (item.name.indexOf('変数＠') !== -1) {
+                                                self.systemVariableItems.push(new ItemModel(item.name, item.value));
                                             }
                                             else {
                                                 self.items.push(new ItemModel(item.name, 0));
@@ -199,57 +221,6 @@ var nts;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
                         })(viewmodel = q.viewmodel || (q.viewmodel = {}));
-                        var Calculator = (function () {
-                            function Calculator() {
-                            }
-                            Calculator.prototype.calculateConditionExpression = function (condition, result1, result2) {
-                                if (condition) {
-                                    return result1;
-                                }
-                                else {
-                                    return result2;
-                                }
-                            };
-                            Calculator.prototype.calculateAndExpression = function (lstCondition) {
-                                _.forEach(lstCondition, function (condition) {
-                                    if (!condition || condition !== 'true') {
-                                        return false;
-                                    }
-                                });
-                                return true;
-                            };
-                            Calculator.prototype.calculateOrExpression = function (lstCondition) {
-                                _.forEach(lstCondition, function (condition) {
-                                    if (condition || condition === 'true') {
-                                        return true;
-                                    }
-                                });
-                                return false;
-                            };
-                            Calculator.prototype.calculateCeil = function (value) {
-                                return _.ceil(value);
-                            };
-                            Calculator.prototype.calculateMax = function (lstValue) {
-                                return _.max(lstValue);
-                            };
-                            Calculator.prototype.calculateMin = function (lstValue) {
-                                return _.min(lstValue);
-                            };
-                            Calculator.prototype.calculateNumberOfFamily = function (minAge, maxAge) {
-                                return 1;
-                            };
-                            Calculator.prototype.calculateAddMonth = function (yearMonth, month) {
-                                return moment(yearMonth, "YYYY/MM").add(month, 'months').format("YYYY/MM");
-                            };
-                            Calculator.prototype.calculateExportYear = function (yearMonth) {
-                                return moment(yearMonth, "YYYY/MM").year();
-                            };
-                            Calculator.prototype.calculateExportMonth = function (yearMonth) {
-                                return moment(yearMonth, "YYYY/MM").month() + 1;
-                            };
-                            return Calculator;
-                        }());
-                        q.Calculator = Calculator;
                         var ItemModel = (function () {
                             function ItemModel(code, value) {
                                 this.code = code;
@@ -263,4 +234,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm017.q.vm.js.map
