@@ -72,36 +72,36 @@ public class SocialInsuReportService extends ExportService<SocialInsuQuery> {
         
         // ================== 表示する ==================
         if (configOutput.getShowCategoryInsuranceItem()) {
-            List<SocialInsuReportData> dataReports = repository.findReportData(companyCode, loginPersonID, query,
+            List<SocialInsuReportData> listReport = repository.findReportData(companyCode, loginPersonID, query,
                     listhealInsuAvgearn, listPensionAvgearn);
+            // dataReports.get(1): report data of office.
+            SocialInsuReportData reportCompany = listReport.get(1);
+            reportCompany.setConfigureOutput(configOutput);
+            reportCompany.setIsCompany(true);
+            processData(reportCompany, query);
+            
             // dataReports.get(0): report data of personal.
-            SocialInsuReportData reportPersonal = dataReports.get(0);
-            reportPersonal.setIsPrintBusiness(false);
+            SocialInsuReportData reportPersonal = listReport.get(0);
+            reportPersonal.setIsCompany(false);
             reportPersonal.setConfigureOutput(configOutput);
             processData(reportPersonal, query);
             
-            // dataReports.get(1): report data of office.
-            SocialInsuReportData reportBusiness = dataReports.get(1);
-            reportBusiness.setConfigureOutput(configOutput);
-            reportBusiness.setIsPrintBusiness(true);
-            processData(reportBusiness, query);
-            // Fake
-            boolean isPrintReportPersonal = true;
+            // set child raising contribution money of company for personal.
+            reportPersonal.setChildRaisingTotalCompany(reportCompany.getTotalAllOffice()
+                    .getChildRaisingContributionMoney());
             
-            // set child raising contribution money of business.
-            if (isPrintReportPersonal) {
-                reportPersonal.setChildRaisingTotalBusiness(reportBusiness.getTotalAllOffice()
-                        .getChildRaisingContributionMoney());
-            }
-            // print report for personal.
-            this.generator.generate(context.getGeneratorContext(), reportPersonal);
+            // generator report
+            this.generator.generate(context.getGeneratorContext(), listReport);
         }
         // ================== 表示しない ==================
         else {
             SocialInsuMLayoutReportData reportData = this.repository.findReportMLayout(companyCode, loginPersonID,
                     query, listhealInsuAvgearn, listPensionAvgearn);
             reportData.setConfigureOutput(configOutput);
+            
             processDataMLayout(reportData, query);
+            
+            // generator report
             this.generatorMLayout.generate(context.getGeneratorContext(), reportData);
         }
     }
@@ -115,9 +115,14 @@ public class SocialInsuReportService extends ExportService<SocialInsuQuery> {
     private void processData(SocialInsuReportData reportData, SocialInsuQuery query) {
         // find header of report.
         HeaderReportData header = findReportHeader(query);
+        if (reportData.getIsCompany()) {
+            header.setTitleReport("会社保険料チェックリスト(事業主)");
+        }
         reportData.setHeaderData(header);
+        
         List<InsuranceOfficeDto> officeItems = reportData.getOfficeItems();
         List<DataRowItem> totalEachOffices = new ArrayList<>();
+        
         // calculate total each office monthly
         for (InsuranceOfficeDto office : officeItems) {
             // calculate each office total.
@@ -141,12 +146,14 @@ public class SocialInsuReportService extends ExportService<SocialInsuQuery> {
      * @param query the query
      */
     private void processDataMLayout(SocialInsuMLayoutReportData reportData, SocialInsuQuery query) {
-     // find header of report.
+        // find header of report.
         HeaderReportData header = findReportHeader(query);
         header.setTitleReport("社会保険チェックリスト");
         reportData.setHeaderData(header);
+        
         List<MLayoutInsuOfficeDto> officeItems = reportData.getOfficeItems();
         List<MLayoutRowItem> totalEachOffices = new ArrayList<>();
+        
         // calculate total each office monthly
         for (MLayoutInsuOfficeDto office : officeItems) {
             // calculate each office total.
@@ -292,60 +299,60 @@ public class SocialInsuReportService extends ExportService<SocialInsuQuery> {
                 .sum();
         item.setHealInsuFeePersonal(healInsuFeePersonal);
         
-        double healInsuFeeBusiness = rowItems.stream()
-                .mapToDouble(p -> p.getHealInsuFeeBusiness())
+        double healInsuFeeCompany = rowItems.stream()
+                .mapToDouble(p -> p.getHealInsuFeeCompany())
                 .sum();
-        item.setHealInsuFeeBusiness(healInsuFeeBusiness);
+        item.setHealInsuFeeCompany(healInsuFeeCompany);
         
         double deductionHealInsuPersonal = rowItems.stream()
                 .mapToDouble(p -> p.getDeductionHealInsuPersonal())
                 .sum();
         item.setDeductionHealInsuPersonal(deductionHealInsuPersonal);
         
-        double deductionHealInsuBusiness = rowItems.stream()
-                .mapToDouble(p -> p.getDeductionHealInsuBusiness())
+        double deductionHealInsuCompany = rowItems.stream()
+                .mapToDouble(p -> p.getDeductionHealInsuCompany())
                 .sum();
-        item.setDeductionHealInsuBusiness(deductionHealInsuBusiness);
+        item.setDeductionHealInsuCompany(deductionHealInsuCompany);
         
         double welfarePenInsuPersonal = rowItems.stream()
                 .mapToDouble(p -> p.getWelfarePenInsuPersonal())
                 .sum();
         item.setWelfarePenInsuPersonal(welfarePenInsuPersonal);
         
-        double welfarePenInsuBusiness = rowItems.stream()
-                .mapToDouble(p -> p.getWelfarePenInsuBusiness())
+        double welfarePenInsuCompany = rowItems.stream()
+                .mapToDouble(p -> p.getWelfarePenInsuCompany())
                 .sum();
-        item.setWelfarePenInsuBusiness(welfarePenInsuBusiness);
+        item.setWelfarePenInsuCompany(welfarePenInsuCompany);
         
         double deductionWelfarePenInsuPersonal = rowItems.stream()
                 .mapToDouble(p -> p.getDeductionWelfarePenInsuPersonal())
                 .sum();
         item.setDeductionWelfarePenInsuPersonal(deductionWelfarePenInsuPersonal);
         
-        double deductionWelfarePenInsuBusiness = rowItems.stream()
-                .mapToDouble(p -> p.getDeductionWelfarePenInsuBusiness())
+        double deductionWelfarePenInsuCompany = rowItems.stream()
+                .mapToDouble(p -> p.getDeductionWelfarePenInsuCompany())
                 .sum();
-        item.setDeductionWelfarePenInsuBusiness(deductionWelfarePenInsuBusiness);
+        item.setDeductionWelfarePenInsuCompany(deductionWelfarePenInsuCompany);
         
         double welfarePenFundPersonal = rowItems.stream()
                 .mapToDouble(p -> p.getWelfarePenFundPersonal())
                 .sum();
         item.setWelfarePenFundPersonal(welfarePenFundPersonal);
         
-        double welfarePenFundBusiness = rowItems.stream()
-                .mapToDouble(p -> p.getWelfarePenFundBusiness())
+        double welfarePenFundCompany = rowItems.stream()
+                .mapToDouble(p -> p.getWelfarePenFundCompany())
                 .sum();
-        item.setWelfarePenFundBusiness(welfarePenFundBusiness);
+        item.setWelfarePenFundCompany(welfarePenFundCompany);
         
         double deductionWelfarePenFundPersonal = rowItems.stream()
                 .mapToDouble(p -> p.getDeductionWelfarePenFundPersonal())
                 .sum();
         item.setDeductionWelfarePenFundPersonal(deductionWelfarePenFundPersonal);
         
-        double deductionWelfarePenFundBusiness = rowItems.stream()
-                .mapToDouble(p -> p.getDeductionWelfarePenFundBusiness())
+        double deductionWelfarePenFundCompany = rowItems.stream()
+                .mapToDouble(p -> p.getDeductionWelfarePenFundCompany())
                 .sum();
-        item.setDeductionWelfarePenFundBusiness(deductionWelfarePenFundBusiness);
+        item.setDeductionWelfarePenFundCompany(deductionWelfarePenFundCompany);
         
         double childRaising = rowItems.stream()
                 .mapToDouble(p -> p.getChildRaising())

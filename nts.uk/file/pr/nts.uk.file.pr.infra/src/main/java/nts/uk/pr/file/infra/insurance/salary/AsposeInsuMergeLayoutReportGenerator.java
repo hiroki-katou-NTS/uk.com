@@ -42,6 +42,7 @@ import nts.uk.file.pr.app.export.insurance.data.SocialInsuMLayoutReportData;
 import nts.uk.file.pr.app.export.insurance.salary.SocialInsuMergeLayoutGenerator;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class AsposeSalarySocialInsuranceReportGenerator.
  *
@@ -55,7 +56,7 @@ public class AsposeInsuMergeLayoutReportGenerator extends AsposeCellsReportGener
     private static final String TEMPLATE_FILE = "report/SocialInsuMergeLayoutTemplate.xlsx";
 
     /** The Constant REPORT_FILE_NAME. */
-    private static final String REPORT_FILE_NAME = "給与社会保険料チェックリスト_表示しない_";
+    private static final String REPORT_FILE_NAME = "給与社会保険料チェックリスト-表示しない-";
     
     /** The Constant REPORT_FILE_NAME. */
     private static final String EXTENSION = ".pdf";
@@ -261,6 +262,8 @@ public class AsposeInsuMergeLayoutReportGenerator extends AsposeCellsReportGener
         pageSetup.setCenterVertically(false);
         
         // set header
+        pageSetup.setHeader(0,"&\"IPAPGothic\"&11 " + header.getNameCompany());
+        
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm");
         pageSetup.setHeader(2,"&\"IPAPGothic\"&11 " + dateFormat.format(new Date()) + "\n&P ページ");
     }
@@ -401,7 +404,8 @@ public class AsposeInsuMergeLayoutReportGenerator extends AsposeCellsReportGener
      * @param isForegroundColor the is foreground color
      */
     @SuppressWarnings("rawtypes")
-    private void writeDataEmployee(PrintProcess printProcess, MLayoutRowItem rowData, Range range, boolean isForegroundColor) {
+    private void writeDataEmployee(PrintProcess printProcess, MLayoutRowItem rowData, Range range,
+            boolean isForegroundColor) {
         Cells cells = printProcess.worksheet.getCells();
         int indexRowCurrent = range.getFirstRow();
         List valueOfAttributes = convertObjectToList(rowData);
@@ -572,16 +576,19 @@ public class AsposeInsuMergeLayoutReportGenerator extends AsposeCellsReportGener
         }
         return valueOfAttributes;
     }
-}
-
-class PrintProcess {
     
-    /** The worksheet. */
-    Worksheet worksheet;
-    
-    /** The index row. */
-    int indexRow;
-    
-    /** The configure output. */
-    ChecklistPrintSettingDto configOutput;
+    /**
+     * The Class PrintProcess.
+     */
+    class PrintProcess {
+        
+        /** The worksheet. */
+        Worksheet worksheet;
+        
+        /** The index row. */
+        int indexRow;
+        
+        /** The configure output. */
+        ChecklistPrintSettingDto configOutput;
+    }
 }

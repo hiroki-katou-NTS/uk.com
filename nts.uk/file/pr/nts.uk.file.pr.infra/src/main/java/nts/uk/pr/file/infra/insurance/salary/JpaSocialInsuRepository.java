@@ -172,9 +172,9 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
                 .collect(Collectors.groupingBy(item -> ((QismtSocialInsuOffice) item[0]))
                  );
         List<InsuranceOfficeDto> listPersonal = new ArrayList<>();
-        List<InsuranceOfficeDto> listBusiness = new ArrayList<>();
+        List<InsuranceOfficeDto> listCompany = new ArrayList<>();
         ItemDeduction itemDeductionPersonal = initDeductionPersonal();
-        ItemDeduction itemDeductionBusiness = initDeductionBusiness();
+        ItemDeduction itemDeductionCompany = initDeductionCompany();
         double deliveryAmount = 0;
         
         // ============== FIND INFROMATION OFFICE ==================
@@ -200,25 +200,31 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
                 throw new BusinessException("対象データがありません。");
             }
             List<DataRowItem> listRowItemPersonal = new ArrayList<>();
-            List<DataRowItem> listRowItemBusiness = new ArrayList<>();
+            List<DataRowItem> listRowItemCompany = new ArrayList<>();
             // list employee is printed output.
             List<String> tmpPersonIds = new ArrayList<>();
             // ============== FIND INFROMATION EMPLOYEE ==================
             for (String personId : personIds) {
-                // set row item for business.
-                DataRowItem rowItemBusiness = convertNormalToDataItem(reportData, personId, true);
-                // rowItemBusiness is passed reference parameter.
-                convertDeductionToDataItem(reportData, rowItemBusiness, personId, itemDeductionBusiness);
-                listRowItemBusiness.add(rowItemBusiness);
+                boolean isFindCompany = true;
+                // set row item for company.
+                DataRowItem rowItemCompany = convertNormalToDataItem(reportData, personId, isFindCompany);
+                if (rowItemCompany != null) {
+                    // rowItemCompany is passed reference parameter.
+                    convertDeductionToDataItem(reportData, rowItemCompany, personId, itemDeductionCompany);
+                    listRowItemCompany.add(rowItemCompany);
+                }
                 
                 // set row item for personal.
-                DataRowItem rowItemPersonal = convertNormalToDataItem(reportData, personId, false);
-                // rowItemPersonal is passed reference parameter.
-                convertDeductionToDataItem(reportData, rowItemPersonal, personId, itemDeductionPersonal);
-                // valid output condition.
-                if (isPrintedPersonal(rowItemPersonal, salaryQuery)) {
-                    listRowItemPersonal.add(rowItemPersonal);
-                    tmpPersonIds.add(personId);
+                isFindCompany = false;
+                DataRowItem rowItemPersonal = convertNormalToDataItem(reportData, personId, isFindCompany);
+                if (rowItemPersonal != null) {
+                    // rowItemPersonal is passed reference parameter.
+                    convertDeductionToDataItem(reportData, rowItemPersonal, personId, itemDeductionPersonal);
+                    // valid output condition.
+                    if (isPrintedPersonal(rowItemPersonal, salaryQuery)) {
+                        listRowItemPersonal.add(rowItemPersonal);
+                        tmpPersonIds.add(personId);
+                    }
                 }
             }
             personIds.clear();
@@ -234,14 +240,14 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
             // set information office of personal.
             listPersonal.add(officePersonal);
             
-            // set data insurance office for business.
-            InsuranceOfficeDto officeBusiness = new InsuranceOfficeDto();
-            officeBusiness.setCode(officeCode);
-            officeBusiness.setName(office.getSiOfficeName());
-            officeBusiness.setEmployeeDtos(listRowItemBusiness);
-            officeBusiness.setNumberOfEmployee(listRowItemBusiness.size());
-            // set information office of business.
-            listBusiness.add(officeBusiness);
+            // set data insurance office for company.
+            InsuranceOfficeDto officeCompany = new InsuranceOfficeDto();
+            officeCompany.setCode(officeCode);
+            officeCompany.setName(office.getSiOfficeName());
+            officeCompany.setEmployeeDtos(listRowItemCompany);
+            officeCompany.setNumberOfEmployee(listRowItemCompany.size());
+            // set information office of company.
+            listCompany.add(officeCompany);
             
             // calculate delivery amount.
             deliveryAmount += calDeliveryAmount(reportData, personIds);
@@ -253,10 +259,10 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         reportPersonal.setDeliveryNoticeAmount(deliveryAmount);
         listReport.add(reportPersonal);
         
-        // set list office for business.
-        SocialInsuReportData reportBusiness = new SocialInsuReportData();
-        reportBusiness.setOfficeItems(listBusiness);
-        listReport.add(reportBusiness);
+        // set list office for company.
+        SocialInsuReportData reportCompany = new SocialInsuReportData();
+        reportCompany.setOfficeItems(listCompany);
+        listReport.add(reportCompany);
         
         return listReport;
     }
@@ -290,7 +296,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
                 .collect(Collectors.groupingBy(item -> ((QismtSocialInsuOffice) item[0]))
                  );
         ItemDeduction itemDePersonal = initDeductionPersonal();
-        ItemDeduction itemDeBusiness = initDeductionBusiness();
+        ItemDeduction itemDeCompany = initDeductionCompany();
         double deliveryAmount = 0;
         List<MLayoutInsuOfficeDto> listOffice = new ArrayList<>();
         
@@ -318,7 +324,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
             
             // ============== FIND INFROMATION EMPLOYEE ==================
             for (String personId : personIds) {
-                MLayoutRowItem emp = convertMLayoutItem(reportData, personId, itemDePersonal, itemDeBusiness);
+                MLayoutRowItem emp = convertMLayoutItem(reportData, personId, itemDePersonal, itemDeCompany);
                 // valid print output condition
                 if (isPrintedPersonalMLayout(emp, salaryQuery)) {
                     listRowItem.add(emp);
@@ -462,10 +468,10 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
      *
      * @param reportData the report data
      * @param personId the person id
-     * @param isFindBusiness the is find business
+     * @param isFindCompany the is find company
      * @return the data row item
      */
-    private DataRowItem convertNormalToDataItem(ReportData reportData, String personId, boolean isFindBusiness) {
+    private DataRowItem convertNormalToDataItem(ReportData reportData, String personId, boolean isFindCompany) {
         Object[] objects = reportData.objectNormals.stream()
                 .filter(p -> {
                     PbsmtPersonBase baseEntity = (PbsmtPersonBase) p[0];
@@ -481,40 +487,53 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         item.setName(cmEmp.employmentName);
         
         PismtPersonInsuHealB insuHealBEntity = (PismtPersonInsuHealB) objects[5];
-        HealthInsuranceAvgearn healInsuAvgearn = reportData.listHealInsuAvgearn.stream()
+        Optional<HealthInsuranceAvgearn> healAvgearnOptional = reportData.listHealInsuAvgearn.stream()
                 .filter(p -> {
                     return insuHealBEntity.getHealthInsuGrade().intValue() == p.getGrade();
                 })
-                .findFirst()
-                .get();
-        
+                .findFirst();
         PismtPersonInsuPensB insuPensBEntity = (PismtPersonInsuPensB) objects[6];
-        PensionAvgearn pensAvgearn = reportData.listPensAvgearn.stream()
+        Optional<PensionAvgearn> pensAvgOptional = reportData.listPensAvgearn.stream()
                 .filter(p -> {
                     return insuPensBEntity.getPensionInsuGrade().intValue() == p.getGrade();
                 })
-                .findFirst()
-                .get();
+                .findFirst();
+        if (!healAvgearnOptional.isPresent() || !pensAvgOptional.isPresent()) {
+          return null;
+        }
+        HealthInsuranceAvgearn healInsuAvgearn = healAvgearnOptional.get();
+        PensionAvgearn pensAvgearn = pensAvgOptional.get();
         PbsmtPersonBase personBase = (PbsmtPersonBase) objects[0];
-        
-        // set data row item for business.
-        if (isFindBusiness) {
+        PismtPersonInsuCare penInsuCare = (PismtPersonInsuCare) objects[4];
+        // set data row item for company.
+        if (isFindCompany) {
             // set monthly health insurance normal.
-            double healInsuNormal = healInsuAvgearn.getCompanyAvg().getHealthGeneralMny().v().doubleValue()
-                    + healInsuAvgearn.getCompanyAvg().getHealthNursingMny().v().doubleValue();
-            item.setMonthlyHealthInsuranceNormal(healInsuNormal);
+            // TODO: fixed value
+//            double healInsuNormal = healInsuAvgearn.getCompanyAvg().getHealthGeneralMny().v().doubleValue()
+//                    + healInsuAvgearn.getCompanyAvg().getHealthNursingMny().v().doubleValue();
+            item.setMonthlyHealthInsuranceNormal(75);
+            
             // set monthly general insurance normal.
-            double generalInsuNormal = healInsuAvgearn.getCompanyAvg().getHealthGeneralMny().v().doubleValue();
-            item.setMonthlyGeneralInsuranceNormal(generalInsuNormal);
-            // set monthly long term insurance normal.
-            double longTermInsuNormal = healInsuAvgearn.getCompanyAvg().getHealthNursingMny().v().doubleValue();
+            // TODO: fix value
+//            double generalInsuNormal = healInsuAvgearn.getCompanyAvg().getHealthGeneralMny().v().doubleValue();
+            item.setMonthlyGeneralInsuranceNormal(75);
+            
+         // set monthly long term insurance normal.
+            double longTermInsuNormal = 0;
+            // valid target (1 or 2), non-target(0 or 3)
+            if (penInsuCare.getCareInsuAtr() == 1 || penInsuCare.getCareInsuAtr() == 2) {
+                longTermInsuNormal = healInsuAvgearn.getCompanyAvg().getHealthNursingMny().v().doubleValue();
+            }
             item.setMonthlyLongTermInsuranceNormal(longTermInsuNormal);
+            
             // set monthly specific insurance normal.
-            double specificInsuNormal = healInsuAvgearn.getCompanyAvg().getHealthSpecificMny().v().doubleValue();
-            item.setMonthlySpecificInsuranceNormal(specificInsuNormal);
+            // TODO: fix value
+//            double specificInsuNormal = healInsuAvgearn.getCompanyAvg().getHealthSpecificMny().v().doubleValue();
+            item.setMonthlySpecificInsuranceNormal(75);
             // set monthly basic insurance normal.
-            double basicInsuNormal = healInsuAvgearn.getCompanyAvg().getHealthBasicMny().v().doubleValue();
-            item.setMonthlyBasicInsuranceNormal(basicInsuNormal);
+            // TODO: fix value
+//            double basicInsuNormal = healInsuAvgearn.getCompanyAvg().getHealthBasicMny().v().doubleValue();
+            item.setMonthlyBasicInsuranceNormal(75);
             if (personBase.getGendar() == 0) {// male
                 // set welfare pension insurance normal.
                 double welfarePensInsu = pensAvgearn.getCompanyPension().getMaleAmount().v().doubleValue();
@@ -534,32 +553,51 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         // set data row item for personal.
         else {
             // set monthly health insurance normal.
-            double healInsuNormal = healInsuAvgearn.getPersonalAvg().getHealthGeneralMny().v().doubleValue()
-                    + healInsuAvgearn.getPersonalAvg().getHealthNursingMny().v().doubleValue();
-            item.setMonthlyHealthInsuranceNormal(healInsuNormal);
+//            double healInsuNormal = healInsuAvgearn.getPersonalAvg().getHealthGeneralMny().v().doubleValue()
+//                    + healInsuAvgearn.getPersonalAvg().getHealthNursingMny().v().doubleValue();
+            // TODO: fixed value.
+            item.setMonthlyHealthInsuranceNormal(75);
+            
             // set monthly general insurance normal.
-            double generalInsuNormal = healInsuAvgearn.getPersonalAvg().getHealthGeneralMny().v().doubleValue();
-            item.setMonthlyGeneralInsuranceNormal(generalInsuNormal);
+         // TODO: fixed value.
+//            double generalInsuNormal = healInsuAvgearn.getPersonalAvg().getHealthGeneralMny().v().doubleValue();
+            item.setMonthlyGeneralInsuranceNormal(75);
+            
             // set monthly long term insurance normal.
-            double longTermInsuNormal = healInsuAvgearn.getPersonalAvg().getHealthNursingMny().v().doubleValue();
+            double longTermInsuNormal = 0;
+            // valid target (1 or 2), non-target(0 or 3)
+            if (penInsuCare.getCareInsuAtr() == 1 || penInsuCare.getCareInsuAtr() == 2) {
+                longTermInsuNormal = healInsuAvgearn.getPersonalAvg().getHealthNursingMny().v().doubleValue();
+            }
             item.setMonthlyLongTermInsuranceNormal(longTermInsuNormal);
+            
             // set monthly specific insurance normal.
-            double specificInsuNormal = healInsuAvgearn.getPersonalAvg().getHealthSpecificMny().v().doubleValue();
-            item.setMonthlySpecificInsuranceNormal(specificInsuNormal);
+         // TODO: fixed value.
+//            double specificInsuNormal = healInsuAvgearn.getPersonalAvg().getHealthSpecificMny().v().doubleValue();
+            item.setMonthlySpecificInsuranceNormal(75);
+            
             // set monthly basic insurance normal.
-            double basicInsuNormal = healInsuAvgearn.getPersonalAvg().getHealthBasicMny().v().doubleValue();
-            item.setMonthlyBasicInsuranceNormal(basicInsuNormal);
+         // TODO: fixed value.
+//            double basicInsuNormal = healInsuAvgearn.getPersonalAvg().getHealthBasicMny().v().doubleValue();
+            item.setMonthlyBasicInsuranceNormal(75);
+            
+            // TODO: fix value
+            // set welfare pension insurance normal.
+            item.setWelfarePensionInsuranceNormal(70);
+            
             if (personBase.getGendar() == 0) {// male
                 // set welfare pension insurance normal.
-                double welfarePensInsu = pensAvgearn.getPersonalPension().getMaleAmount().v().doubleValue();
-                item.setWelfarePensionInsuranceNormal(welfarePensInsu);
+//                double welfarePensInsu = pensAvgearn.getPersonalPension().getMaleAmount().v().doubleValue();
+//                item.setWelfarePensionInsuranceNormal(welfarePensInsu);
+                
                 // set welfare pension fund normal.
                 double welfarePensFund = pensAvgearn.getPersonalFund().getMaleAmount().v().doubleValue();
                 item.setWelfarePensionFundNormal(welfarePensFund);
             } else {
                 // set welfare pension insurance normal.
-                double welfarePensInsu = pensAvgearn.getPersonalPension().getFemaleAmount().v().doubleValue();
-                item.setWelfarePensionInsuranceNormal(welfarePensInsu);
+//                double welfarePensInsu = pensAvgearn.getPersonalPension().getFemaleAmount().v().doubleValue();
+//                item.setWelfarePensionInsuranceNormal(welfarePensInsu);
+                
                 // set welfare pension fund normal.
                 double welfarePensFund = pensAvgearn.getPersonalFund().getFemaleAmount().v().doubleValue();
                 item.setWelfarePensionFundNormal(welfarePensFund);
@@ -621,11 +659,11 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
      * @param reportData the report data
      * @param personId the person id
      * @param itemDPersonal the item D personal
-     * @param itemDBusiness the item D business
+     * @param itemDCompany the item D company
      * @return the m layout row item
      */
     private MLayoutRowItem convertMLayoutItem(ReportData reportData, String personId, ItemDeduction itemDPersonal,
-            ItemDeduction itemDBusiness) {
+            ItemDeduction itemDCompany) {
         Object[] objectNormals = reportData.objectNormals.stream()
                 .filter(p -> {
                     PbsmtPersonBase baseEntity = (PbsmtPersonBase) p[0];
@@ -640,31 +678,34 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         item.setCode(empContract.empCd);
         item.setName(cmEmp.employmentName);
         
-        PismtPersonInsuHealB insuHealBEntity = (PismtPersonInsuHealB) objectNormals[5];
-        HealthInsuranceAvgearn healInsuAvgearn = reportData.listHealInsuAvgearn.stream()
-                .filter(p -> {
-                    return insuHealBEntity.getHealthInsuGrade().intValue() == p.getGrade();
-                })
-                .findFirst()
-                .get();
+//        PismtPersonInsuHealB insuHealBEntity = (PismtPersonInsuHealB) objectNormals[5];
+//        HealthInsuranceAvgearn healInsuAvgearn = reportData.listHealInsuAvgearn.stream()
+//                .filter(p -> {
+//                    return insuHealBEntity.getHealthInsuGrade().intValue() == p.getGrade();
+//                })
+//                .findFirst()
+//                .get();
         
-        PismtPersonInsuPensB insuPensBEntity = (PismtPersonInsuPensB) objectNormals[6];
-        PensionAvgearn pensAvgearn = reportData.listPensAvgearn.stream()
-                .filter(p -> {
-                    return insuPensBEntity.getPensionInsuGrade().intValue() == p.getGrade();
-                })
-                .findFirst()
-                .get();
+//        PismtPersonInsuPensB insuPensBEntity = (PismtPersonInsuPensB) objectNormals[6];
+//        PensionAvgearn pensAvgearn = reportData.listPensAvgearn.stream()
+//                .filter(p -> {
+//                    return insuPensBEntity.getPensionInsuGrade().intValue() == p.getGrade();
+//                })
+//                .findFirst()
+//                .get();
         PbsmtPersonBase personBase = (PbsmtPersonBase) objectNormals[0];
         
         // set heal insurance fee personal
-        double healInsuFeePersonal = healInsuAvgearn.getPersonalAvg().getHealthBasicMny().v().doubleValue() 
-                + healInsuAvgearn.getPersonalAvg().getHealthNursingMny().v().doubleValue();
-        item.setHealInsuFeePersonal(healInsuFeePersonal);
-        // set heal insurance fee business
-        double healInsuFeeBusiness = healInsuAvgearn.getCompanyAvg().getHealthBasicMny().v().doubleValue()
-                + healInsuAvgearn.getCompanyAvg().getHealthNursingMny().v().doubleValue();
-        item.setHealInsuFeeBusiness(healInsuFeeBusiness);
+        // TODO: fix value
+//        double healInsuFeePersonal = healInsuAvgearn.getPersonalAvg().getHealthBasicMny().v().doubleValue() 
+//                + healInsuAvgearn.getPersonalAvg().getHealthNursingMny().v().doubleValue();
+        item.setHealInsuFeePersonal(75);
+        
+        // set heal insurance fee company
+        // TODO: fix value
+//        double healInsuFeeCompany = healInsuAvgearn.getCompanyAvg().getHealthBasicMny().v().doubleValue()
+//                + healInsuAvgearn.getCompanyAvg().getHealthNursingMny().v().doubleValue();
+        item.setHealInsuFeeCompany(75);
         
         // find list object item code.
         List<Object[]> listObjectItem = reportData.objectDeductions.stream()
@@ -677,62 +718,69 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         // set deduction heal insurance personal
         double healInsuDPersonal = findValueDeductionByItemCode(listObjectItem, itemDPersonal.getItemCodeHealthInsu());
         item.setDeductionHealInsuPersonal(healInsuDPersonal);
-        // set deduction heal insurance business
-        double healInsuDBusiness = findValueDeductionByItemCode(listObjectItem, itemDBusiness.getItemCodeHealthInsu());
-        item.setDeductionHealInsuBusiness(healInsuDBusiness);
+        // set deduction heal insurance company
+        double healInsuDCompany = findValueDeductionByItemCode(listObjectItem, itemDCompany.getItemCodeHealthInsu());
+        item.setDeductionHealInsuCompany(healInsuDCompany);
+        
+        // TODO: fix value
+        item.setWelfarePenInsuCompany(70);
+        item.setWelfarePenInsuCompany(70);
+        
         if (personBase.getGendar() == 0) {// male
             // set welfare pen insurance personal
-            double welfarePensInsuPersonal = pensAvgearn.getPersonalPension().getMaleAmount().v().doubleValue();
-            item.setWelfarePenInsuBusiness(welfarePensInsuPersonal);
-            // set set welfare pen insurance business
-            double welfarePensInsuBusiness = pensAvgearn.getCompanyPension().getMaleAmount().v().doubleValue();
-            item.setWelfarePenInsuBusiness(welfarePensInsuBusiness);
+//            double welfarePensInsuPersonal = pensAvgearn.getPersonalPension().getMaleAmount().v().doubleValue();
+//            item.setWelfarePenInsuCompany(welfarePensInsuPersonal);
+            
+            // set set welfare pen insurance company
+//            double welfarePensInsuCompany = pensAvgearn.getCompanyPension().getMaleAmount().v().doubleValue();
+//            item.setWelfarePenInsuCompany(welfarePensInsuCompany);
             
             // welfare pen fund personal.
             double welfarePensFundDPersonal = findValueDeductionByItemCode(listObjectItem, 
                     itemDPersonal.getItemCodeWelfarePensionFund());
             item.setWelfarePenFundPersonal(welfarePensFundDPersonal);
-            // welfare pen fund business.
-            double welfarePensFundBusiness = findValueDeductionByItemCode(listObjectItem, 
-                    itemDBusiness.getItemCodeWelfarePensionFund());
-            item.setWelfarePenFundBusiness(welfarePensFundBusiness);
+            // welfare pen fund company.
+            double welfarePensFundCompany = findValueDeductionByItemCode(listObjectItem, 
+                    itemDCompany.getItemCodeWelfarePensionFund());
+            item.setWelfarePenFundCompany(welfarePensFundCompany);
         } else { // Female
             // set welfare pen insurance personal
-            double welfarePensInsuPersonal = pensAvgearn.getPersonalPension().getFemaleAmount().v().doubleValue();
-            item.setWelfarePenInsuBusiness(welfarePensInsuPersonal);
-            // set set welfare pen insurance business
-            double welfarePensInsuBusiness = pensAvgearn.getCompanyPension().getFemaleAmount().v().doubleValue();
-            item.setWelfarePenInsuBusiness(welfarePensInsuBusiness);
+//            double welfarePensInsuPersonal = pensAvgearn.getPersonalPension().getFemaleAmount().v().doubleValue();
+//            item.setWelfarePenInsuCompany(welfarePensInsuPersonal);
+            
+            // set set welfare pen insurance company
+//            double welfarePensInsuCompany = pensAvgearn.getCompanyPension().getFemaleAmount().v().doubleValue();
+//            item.setWelfarePenInsuCompany(welfarePensInsuCompany);
             
             // deduction welfare pen insurance personal.
             double welfarePensFundDPersonal = findValueDeductionByItemCode(listObjectItem, 
                     itemDPersonal.getItemCodeWelfarePensionFund());
             item.setWelfarePenFundPersonal(welfarePensFundDPersonal);
-            // deduction welfare pen insurance business.
-            double welfarePensFundBusiness = findValueDeductionByItemCode(listObjectItem, 
-                    itemDBusiness.getItemCodeWelfarePensionFund());
-            item.setWelfarePenFundBusiness(welfarePensFundBusiness);
+            // deduction welfare pen insurance company.
+            double welfarePensFundCompany = findValueDeductionByItemCode(listObjectItem, 
+                    itemDCompany.getItemCodeWelfarePensionFund());
+            item.setWelfarePenFundCompany(welfarePensFundCompany);
         }
         // set deduction welfare pen insurance personal
         double welfarePenInsuDPersonal = findValueDeductionByItemCode(listObjectItem, 
                 itemDPersonal.getItemCodeWelfarePensionInsu());
         item.setDeductionWelfarePenInsuPersonal(welfarePenInsuDPersonal);
-        // set deduction welfare pen insurance business
-        double welfarePenInsuDBusiness = findValueDeductionByItemCode(listObjectItem, 
-                itemDBusiness.getItemCodeWelfarePensionInsu());
-        item.setDeductionWelfarePenInsuBusiness(welfarePenInsuDBusiness);
+        // set deduction welfare pen insurance company
+        double welfarePenInsuDCompany = findValueDeductionByItemCode(listObjectItem, 
+                itemDCompany.getItemCodeWelfarePensionInsu());
+        item.setDeductionWelfarePenInsuCompany(welfarePenInsuDCompany);
         
         // set deduction welfare pen fund personal
         double welfarePenFundPersonal = findValueDeductionByItemCode(listObjectItem, 
                 itemDPersonal.getItemCodeWelfarePensionFund());
         item.setDeductionWelfarePenFundPersonal(welfarePenFundPersonal);
-        // set deduction welfare pen fund business
-        double welfarePenFundBusiness = findValueDeductionByItemCode(listObjectItem, 
-                itemDBusiness.getItemCodeWelfarePensionFund());
-        item.setDeductionWelfarePenFundPersonal(welfarePenFundBusiness);
+        // set deduction welfare pen fund company
+        double welfarePenFundCompany = findValueDeductionByItemCode(listObjectItem, 
+                itemDCompany.getItemCodeWelfarePensionFund());
+        item.setDeductionWelfarePenFundPersonal(welfarePenFundCompany);
         
         // set child raising
-        double childRaising = findValueDeductionByItemCode(listObjectItem, itemDBusiness.getItemCodeChildRaising());
+        double childRaising = findValueDeductionByItemCode(listObjectItem, itemDCompany.getItemCodeChildRaising());
         item.setChildRaising(childRaising);
         
         return item;
@@ -856,11 +904,11 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
     }
     
     /**
-     * Inits the deduction business.
+     * Inits the deduction company.
      *
      * @return the item deduction
      */
-    private ItemDeduction initDeductionBusiness() {
+    private ItemDeduction initDeductionCompany() {
         ItemDeduction item = new ItemDeduction();
         item.setItemCodeHealthInsu("F115");
         item.setItemCodeGeneralInsu("F116");

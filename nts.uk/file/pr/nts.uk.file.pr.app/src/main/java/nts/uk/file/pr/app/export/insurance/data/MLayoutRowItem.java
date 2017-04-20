@@ -28,38 +28,38 @@ public class MLayoutRowItem {
     /** The heal insu fee personal. */
     private double healInsuFeePersonal;
     
-    /** The heal insu fee business. */
-    private double healInsuFeeBusiness;
+    /** The heal insu fee company. */
+    private double healInsuFeeCompany;
     
     /** The deduction heal insu personal. */
     private double deductionHealInsuPersonal;
     
-    /** The deduction heal insu business. */
-    private double deductionHealInsuBusiness;
+    /** The deduction heal insu company. */
+    private double deductionHealInsuCompany;
     
     /** The welfare pen insu personal. */
     private double welfarePenInsuPersonal;
     
-    /** The welfare pen insu business. */
-    private double welfarePenInsuBusiness;
+    /** The welfare pen insu company. */
+    private double welfarePenInsuCompany;
     
     /** The deduction welfare pen insu personal. */
     private double deductionWelfarePenInsuPersonal;
     
-    /** The deduction welfare pen insu business. */
-    private double deductionWelfarePenInsuBusiness;
+    /** The deduction welfare pen insu company. */
+    private double deductionWelfarePenInsuCompany;
     
     /** The welfare pen fund personal. */
     private double welfarePenFundPersonal;
     
-    /** The welfare pen fund business. */
-    private double welfarePenFundBusiness;
+    /** The welfare pen fund company. */
+    private double welfarePenFundCompany;
     
     /** The deduction welfare pen fund personal. */
     private double deductionWelfarePenFundPersonal;
     
-    /** The deduction welfare pen fund business. */
-    private double deductionWelfarePenFundBusiness;
+    /** The deduction welfare pen fund company. */
+    private double deductionWelfarePenFundCompany;
     
     /** The child raising. */
     private double childRaising;

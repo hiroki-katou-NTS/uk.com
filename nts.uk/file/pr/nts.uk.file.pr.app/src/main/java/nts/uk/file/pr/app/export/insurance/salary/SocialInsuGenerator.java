@@ -7,6 +7,8 @@
  */
 package nts.uk.file.pr.app.export.insurance.salary;
 
+import java.util.List;
+
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.file.pr.app.export.insurance.data.SocialInsuReportData;
 
@@ -20,7 +22,7 @@ public interface SocialInsuGenerator {
      * Generate.
      *
      * @param fileContext the file context
-     * @param socialInsuranceReportData the social insurance report data
+     * @param listReport the list report
      */
-    void generate(FileGeneratorContext fileContext, SocialInsuReportData reportData);
+    void generate(FileGeneratorContext fileContext, List<SocialInsuReportData> listReport);
 }

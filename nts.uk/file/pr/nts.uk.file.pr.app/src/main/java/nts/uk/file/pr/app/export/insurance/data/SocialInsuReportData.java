@@ -36,10 +36,10 @@ public class SocialInsuReportData {
     /** The insured collect amount. */
     private double insuredCollectAmount;
     
-    /** The child raising total business. */
-    private double childRaisingTotalBusiness;
+    /** The child raising total company. */
+    private double childRaisingTotalCompany;
     
-    private Boolean isPrintBusiness;
+    private Boolean isCompany;
     
     /** The configure output. */
     private ChecklistPrintSettingDto configureOutput;
