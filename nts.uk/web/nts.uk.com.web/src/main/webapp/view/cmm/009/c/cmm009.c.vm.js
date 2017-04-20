@@ -27,7 +27,7 @@ var cmm009;
                     var day = startDateofHisFromScreena.getDate();
                     if (day < 10)
                         day = "0" + day;
-                    startDateofHisFromScreenatoString = year + "" + month + "" + day;
+                    self.startDateofHisFromScreenatoString = year + "" + month + "" + day;
                     if (self.data == "datanull") {
                         self.isRadioCheck = ko.observable(2);
                         self.enable = ko.observable(false);
@@ -52,8 +52,8 @@ var cmm009;
                     var selectYm = self.startYmHis();
                     var inputYm2 = inputYm.replace('/', '');
                     inputYm2 = inputYm2.replace('/', '');
-                    if (+inputYm2 < +startDateofHisFromScreenatoString
-                        || +inputYm2 == +startDateofHisFromScreenatoString) {
+                    if (+inputYm2 < +self.startDateofHisFromScreenatoString
+                        || +inputYm2 == +self.startDateofHisFromScreenatoString) {
                         alert('履歴の期間が正しくありません。');
                         return false;
                     }

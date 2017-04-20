@@ -42,7 +42,7 @@ module cmm009.c.viewmodel {
             if (month < 10) month = "0" + month;
             var day = startDateofHisFromScreena.getDate();
             if (day < 10) day = "0" + day;
-            startDateofHisFromScreenatoString = year+""+month+""+day;
+            self.startDateofHisFromScreenatoString = year+""+month+""+day;
 
             //---radio
             if (self.data == "datanull") {
@@ -71,8 +71,8 @@ module cmm009.c.viewmodel {
             var selectYm = self.startYmHis();
             var inputYm2 = inputYm.replace('/', '');
             inputYm2 = inputYm2.replace('/', '');
-            if (+inputYm2 < +startDateofHisFromScreenatoString
-                || +inputYm2 == +startDateofHisFromScreenatoString) {
+            if (+inputYm2 < +self.startDateofHisFromScreenatoString
+                || +inputYm2 == +self.startDateofHisFromScreenatoString) {
                 alert('履歴の期間が正しくありません。');
                 return false;
             }
