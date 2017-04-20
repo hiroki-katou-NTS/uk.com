@@ -4,14 +4,18 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.wageledger;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -29,7 +33,12 @@ import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItem;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentDetail;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
+import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItem;
+import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemRepository;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLItemType;
+import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSetting;
+import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingCode;
+import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingRepository;
 import nts.uk.ctx.pr.report.infra.util.JpaUtil;
 import nts.uk.file.pr.app.export.wageledger.WageLedgerDataRepository;
 import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery;
@@ -47,6 +56,14 @@ import nts.uk.file.pr.app.export.wageledger.data.share.ReportItemDto;
  */
 @Stateless
 public class JpaWageLedgerDataRepository extends JpaRepository implements WageLedgerDataRepository {
+	
+	/** The output setting repository. */
+	@Inject
+	private WLOutputSettingRepository outputSettingRepository;
+	
+	/** The aggregate item repository. */
+	@Inject
+	private WLAggregateItemRepository aggregateItemRepository;
 
 	/** The Constant CHECK_HAS_DATA_QUERY_STRING. */
 	private static final String CHECK_HAS_DATA_QUERY_STRING = "SELECT COUNT(h.qstdtPaymentHeaderPK.personId) "
@@ -73,6 +90,18 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 			+ "AND pd.strD <= :baseDate "
 			+ "AND pd.endD >= :baseDate ";
 	
+	/** The Constant ALL_DETAIL_DATA_QUERY_STRING. */
+	private static final String ALL_DETAIL_DATA_QUERY_STRING = "SELECT d, m "
+			+ "FROM QcamtItem m, "
+			+ "QstdtPaymentDetail d "
+			+ "WHERE d.qstdtPaymentDetailPK.itemCode = m.qcamtItemPK.itemCd "
+			+ "AND d.qstdtPaymentDetailPK.companyCode = m.qcamtItemPK.ccd "
+			+ "AND m.qcamtItemPK.ccd = :companyCode "
+			+ "AND d.qstdtPaymentDetailPK.personId in :personIds "
+			+ "AND d.qstdtPaymentDetailPK.processingYM >= :startProcessingYM "
+			+ "AND d.qstdtPaymentDetailPK.processingYM <= :endProcessingYM "
+			+ "AND d.qstdtPaymentDetailPK.sparePayAttribute = :sparePayAtr ";
+	
 	/** The Constant DETAIL_DATA_QUERY_STRING. */
 	private static final String DETAIL_DATA_QUERY_STRING = "SELECT d, m "
 			+ "FROM QcamtItem m, "
@@ -83,7 +112,8 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 			+ "AND d.qstdtPaymentDetailPK.personId in :personIds "
 			+ "AND d.qstdtPaymentDetailPK.processingYM >= :startProcessingYM "
 			+ "AND d.qstdtPaymentDetailPK.processingYM <= :endProcessingYM "
-			+ "AND d.qstdtPaymentDetailPK.sparePayAttribute = :sparePayAtr ";
+			+ "AND d.qstdtPaymentDetailPK.sparePayAttribute = :sparePayAtr "
+			+ "AND m.qcamtItemPK.itemCd IN :masterItemCode";
 	
 	/** The Constant MASTER_ITEM_QUERY_STRING. */
 	private static final String MASTER_ITEM_QUERY_STRING = "SELECT mi FROM QcamtItem mi "
@@ -182,38 +212,121 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 	 */
 	@SuppressWarnings("unchecked")
 	private List<Object[]> queryDataList(String companyCode, WageLedgerReportQuery query) {
+		
 		EntityManager em = this.getEntityManager();
 		// Create Year Month.
 		YearMonth startYearMonth = YearMonth.of(query.targetYear, 1);
 		YearMonth endYearMonth = YearMonth.of(query.targetYear, 12);
 		
-		// ===================== Query master item only.=====================
-		if (query.outputSetting == null) {
-	
-			// Create Query Master item only.
-			Query typeQuery = em.createQuery(DETAIL_DATA_QUERY_STRING)
-					.setParameter("companyCode", companyCode)
-					.setParameter("sparePayAtr", query.isAggreatePreliminaryMonth ? 1 : 0)
-					.setParameter("startProcessingYM", startYearMonth.v())
-					.setParameter("endProcessingYM", endYearMonth.v());
-	
-			// Query data.
-			List<Object[]> masterResultList = new ArrayList<>();
-			CollectionUtil.split(query.employeeIds, 1000, (subList) -> {
-				masterResultList.addAll(typeQuery.setParameter("personIds", subList).getResultList());
-			});
+		// ===================== Query all master item.=====================
+		// Create Query Master item only.
+		Query typeQuery = em.createQuery(ALL_DETAIL_DATA_QUERY_STRING)
+				.setParameter("companyCode", companyCode)
+				.setParameter("sparePayAtr", query.isAggreatePreliminaryMonth ? 1 : 0)
+				.setParameter("startProcessingYM", startYearMonth.v())
+				.setParameter("endProcessingYM", endYearMonth.v());
+
+		// Query data.
+		List<Object[]> masterResultList = new ArrayList<>();
+		CollectionUtil.split(query.employeeIds, 1000, (subList) -> {
+			masterResultList.addAll(typeQuery.setParameter("personIds", subList).getResultList());
+		});
+		if (query.outputType == OutputType.MasterItems) {
 			return masterResultList;
 		}
+		
 		// ===================== Query by output setting.=====================
-		// Query master item in output setting.
-		List<String> masterItemCode = query.outputSetting.getCategorySettings().stream()
+		// Find Output setting.
+		WLOutputSetting outputSetting = this.outputSettingRepository.findByCode(companyCode,
+				new WLOutputSettingCode(query.outputSettingCode));
+		
+		// Find Aggregate item in output setting.
+		List<String> aggregateItemCode = outputSetting.getCategorySettings().stream()
+				.map(cate -> cate.getOutputItems().stream().filter(item -> item.getType() == WLItemType.Aggregate)
+						.map(item -> item.getLinkageCode()).collect(Collectors.toList()))
+				.flatMap(items -> items.stream()).collect(Collectors.toList());
+		List<WLAggregateItem> aggregateItems = this.aggregateItemRepository.findByCodes(companyCode, aggregateItemCode);
+		List<String> masterItemCodesInAggregate = aggregateItems.stream().map(item -> item.getSubItems()).flatMap(item -> item.stream())
+		.collect(Collectors.toList());
+		
+		// Query master item in output setting & aggregate.
+		List<String> masterItemCodes = outputSetting.getCategorySettings().stream()
 				.map(cate -> cate.getOutputItems().stream().filter(item -> item.getType() == WLItemType.Master)
 						.map(item -> item.getLinkageCode()).collect(Collectors.toList()))
 				.flatMap(items -> items.stream()).collect(Collectors.toList());
+		// Create Query.
+		Query masterItemQuery = em.createQuery(DETAIL_DATA_QUERY_STRING)
+				.setParameter("companyCode", companyCode)
+				.setParameter("sparePayAtr", query.isAggreatePreliminaryMonth ? 1 : 0)
+				.setParameter("startProcessingYM", startYearMonth.v())
+				.setParameter("endProcessingYM", endYearMonth.v())
+				.setParameter("masterItemCode", Stream.concat(masterItemCodesInAggregate.stream(), masterItemCodes.stream())
+						.collect(Collectors.toList()));
+		// Query data.
+		CollectionUtil.split(query.employeeIds, 1000, (subList) -> {
+			masterResultList.addAll(masterItemQuery.setParameter("personIds", subList).getResultList());
+		});
+		
+		// Aggregate master item and aggregate item in output setting.
+		List<Object[]> outputSettingResultList = new ArrayList<>();
+		// Remove master
+		
 		return null;
 	}
 	
-//	private List<Object[]> queryData
+	private List<Object[]> filterDataByOutputSetting(String companyCode, Map<QcamtItem, List<Object[]>> dataMaps,
+			WLOutputSetting outputSetting, List<WLAggregateItem> aggregateItems) {
+		List<Object[]> results = new ArrayList<>();
+		outputSetting.getCategorySettings().forEach(category -> {
+			category.getOutputItems().forEach(outputItem -> {
+				// Master item.
+				if (outputItem.getType() == WLItemType.Master) {
+					QcamtItem masterItem = new QcamtItem();
+					masterItem.qcamtItemPK.ccd = companyCode;
+					masterItem.qcamtItemPK.ctgAtr = category.getCategory().value;
+					masterItem.qcamtItemPK.itemCd = outputItem.getLinkageCode();
+					results.addAll(dataMaps.get(masterItem));
+					return;
+				}
+				
+				// Aggregate item.
+				WLAggregateItem aggregateItem = aggregateItems.stream()
+						.filter(item -> item.getSubject().getCategory() == category.getCategory()
+								&& item.getSubject().getPaymentType() == category.getPaymentType()
+								&& item.getSubject().getCode().v().equals(outputItem.getLinkageCode()))
+						.findFirst().get();
+				List<QcamtItem> masterItemList = aggregateItem.getSubItems().stream()
+						.map(subItem -> {
+							QcamtItem masterItem = new QcamtItem();
+							masterItem.qcamtItemPK.ccd = companyCode;
+							masterItem.qcamtItemPK.ctgAtr = category.getCategory().value;
+							masterItem.qcamtItemPK.itemCd = subItem;
+							return new QcamtItem();
+						}).collect(Collectors.toList());
+				
+				// Calculate aggregate item.
+				double aggregateValue = masterItemList.stream().mapToDouble(item -> {
+					return dataMaps.get(item).stream()
+							.mapToDouble(data -> ((QstdtPaymentDetail) data[1]).value.doubleValue())
+							.sum();
+				}).sum();
+				
+				Object[] aggreateItemData = new Object[2];
+				QcamtItem masterItem = masterItemList.get(0);
+				masterItem.qcamtItemPK.itemCd = aggregateItem.getSubject().getCode().v();
+				masterItem.itemName = aggregateItem.getName().v();
+				aggreateItemData[0] = masterItem;
+				QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) dataMaps.get(masterItemList.get(0)).get(0)[1];
+				paymentDetail.qstdtPaymentDetailPK.categoryATR = category.getCategory().value;
+				paymentDetail.qstdtPaymentDetailPK.companyCode = companyCode;
+				paymentDetail.qstdtPaymentDetailPK.itemCode = aggregateItem.getSubject().getCode().v();
+				paymentDetail.value = new BigDecimal(aggregateValue);
+				aggreateItemData[1] = paymentDetail;
+				results.add(aggreateItemData);
+			});
+		});
+		return results;
+	}
 
 	/**
 	 * Query by output setting.
