@@ -39,7 +39,7 @@ var qet001;
                                 return '';
                             }
                         },
-                        { headerText: 'コード', prop: 'itemCode', width: 100 },
+                        { headerText: 'コード', prop: 'itemCode', width: 50 },
                         { headerText: '名称', prop: 'itemName', width: 100 },
                     ]);
                     this.reportItemSelected = ko.observable(null);
@@ -47,13 +47,15 @@ var qet001;
                     this.masterItemList = [];
                     this.hasUpdate = ko.observable(false);
                     var self = this;
-                    self.dirty = new nts.uk.ui.DirtyChecker(self.outputSettingDetail);
+                    self.codeDirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetail().settingCode);
+                    self.nameDirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetail().settingName);
+                    self.reportItemsDirtyChecker = new nts.uk.ui.DirtyChecker(self.reportItems);
                     self.outputSettings().outputSettingSelectedCode.subscribe(function (newVal) {
                         self.isLoading(true);
                         if (!newVal || newVal == '') {
                             self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
                             self.isLoading(false);
-                            self.dirty.reset();
+                            self.resetDirty();
                             return;
                         }
                         self.loadOutputSettingDetail(newVal);
@@ -64,6 +66,21 @@ var qet001;
                         data.reloadReportItems = self.reloadReportItem.bind(self);
                     });
                 }
+                ScreenModel.prototype.resetDirty = function () {
+                    var self = this;
+                    self.codeDirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetail().settingCode);
+                    self.nameDirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetail().settingName);
+                    self.reportItemsDirtyChecker.reset();
+                };
+                ScreenModel.prototype.isDirty = function () {
+                    var self = this;
+                    if (self.codeDirtyChecker.isDirty()
+                        || self.nameDirtyChecker.isDirty()
+                        || self.reportItemsDirtyChecker.isDirty()) {
+                        return true;
+                    }
+                    return false;
+                };
                 ScreenModel.prototype.reloadReportItem = function () {
                     var self = this;
                     var data = self.outputSettingDetail();
@@ -114,7 +131,7 @@ var qet001;
                 };
                 ScreenModel.prototype.close = function () {
                     var self = this;
-                    if (self.dirty.isDirty()) {
+                    if (self.isDirty()) {
                         nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function () {
                             nts.uk.ui.windows.close();
                         });
@@ -137,7 +154,7 @@ var qet001;
                         nts.uk.ui.windows.setShared('isHasUpdate', true, false);
                         nts.uk.ui.dialog.alert('save success!').then(function () {
                             self.loadAllOutputSetting();
-                            self.dirty.reset();
+                            self.resetDirty();
                         });
                     }).fail(function (res) {
                         $('#code-input').ntsError('set', res.message);
@@ -174,7 +191,7 @@ var qet001;
                     var self = this;
                     b.service.findOutputSettingDetail(selectedCode).done(function (data) {
                         self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList, data));
-                        self.dirty.reset();
+                        self.resetDirty();
                         dfd.resolve();
                     }).fail(function (res) {
                         nts.uk.ui.dialog.alert(res.message);
@@ -210,7 +227,7 @@ var qet001;
                     $('#code-input').ntsError('clear');
                     $('#name-input').ntsError('clear');
                     var self = this;
-                    if (self.dirty.isDirty()) {
+                    if (self.isDirty()) {
                         nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function () {
                             self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
                             self.outputSettings().outputSettingSelectedCode('');
@@ -231,7 +248,7 @@ var qet001;
                     this.outputSettingList = ko.observableArray([]);
                     this.outputSettingSelectedCode = ko.observable(null);
                     this.outputSettingColumns = ko.observableArray([
-                        { headerText: 'コード', prop: 'code', width: 90 },
+                        { headerText: 'コード', prop: 'code', width: 50 },
                         { headerText: '名称', prop: 'name', width: 100 }]);
                 }
                 return OutputSettings;
@@ -345,10 +362,6 @@ var qet001;
                             });
                         }
                     };
-                    console.log(self.aggregateItemsList());
-                    self.aggregateItemsList.subscribe(function (newVal) {
-                        console.log(newVal);
-                    });
                 }
                 CategorySetting.prototype.remove = function () {
                     var self = this;
