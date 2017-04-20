@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pr.report.dom.payment.comparing.ComparingFormHeaderRepository;
+import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFormHeaderRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

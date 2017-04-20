@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.report.dom.payment.comparing;
+package nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

@@ -9,9 +9,9 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nts.uk.ctx.pr.report.dom.payment.comparing.CategoryAtr;
-import nts.uk.ctx.pr.report.dom.payment.comparing.ComparingFormDetailRepository;
-import nts.uk.ctx.pr.report.dom.payment.comparing.ItemMasterAdapter;
+import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.CategoryAtr;
+import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFormDetailRepository;
+import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ItemMasterAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

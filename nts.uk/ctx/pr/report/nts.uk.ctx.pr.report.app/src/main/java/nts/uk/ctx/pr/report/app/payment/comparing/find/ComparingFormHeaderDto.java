@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.report.app.payment.comparing.find;
 
 import lombok.Value;
-import nts.uk.ctx.pr.report.dom.payment.comparing.ComparingFormHeader;
+import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFormHeader;
 
 @Value
 public class ComparingFormHeaderDto {

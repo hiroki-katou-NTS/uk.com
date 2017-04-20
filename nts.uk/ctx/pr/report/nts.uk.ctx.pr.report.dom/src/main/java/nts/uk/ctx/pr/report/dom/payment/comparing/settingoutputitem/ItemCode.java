@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.report.dom.payment.comparing;
+package nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem;
 
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;

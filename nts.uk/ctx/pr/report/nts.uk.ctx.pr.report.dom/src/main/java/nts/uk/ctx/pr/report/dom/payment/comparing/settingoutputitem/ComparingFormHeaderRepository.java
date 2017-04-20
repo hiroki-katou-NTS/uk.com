@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.report.dom.payment.comparing;
+package nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem;
 
 import java.util.List;
 import java.util.Optional;

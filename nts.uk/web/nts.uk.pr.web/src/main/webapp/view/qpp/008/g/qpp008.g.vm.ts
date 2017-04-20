@@ -6,9 +6,6 @@ module qpp008.g.viewmodel {
         /*checkBox*/
         checked: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
-        /*switchButton*/
-        roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: KnockoutObservable<any>;
 
         itemCategoryChecked: KnockoutObservableArray<ItemModel>;
         selectedItemCategoryCode: KnockoutObservableArray<number>;
@@ -19,9 +16,10 @@ module qpp008.g.viewmodel {
         detailsEmployerList: KnockoutObservableArray<ItemModel>;
 
         constructor() {
-            var self = this;
+            let self = this;
             self.paymentDateProcessingList = ko.observableArray([]);
             self.selectedPaymentDate = ko.observable(null);
+
             self.itemCategoryChecked = ko.observableArray([
                 new ItemModel(0, '支給'),
                 new ItemModel(1, '控除'),
@@ -35,29 +33,24 @@ module qpp008.g.viewmodel {
                 new ItemModel(2, '確認済み'),
             ]);
             self.selectedconfirmedCode = ko.observable(0);
+
             /*checkBox*/
-            var self = this;
             self.checked = ko.observable(true);
             self.enable = ko.observable(true);
-            /*switchButton*/
-            self.roundingRules = ko.observableArray([
-                { code: '1', name: 'すべて' },
-                { code: '2', name: '未確認' },
-                { code: '3', name: '確認済み' }
-            ]);
+
             /*iggrid*/
             self.firstLoad = ko.observable(true);
-            var _isDataBound = false;
-            var _checkAll = false;
-            var _checkAllValue = false;
+            let _isDataBound = false;
+            let _checkAll = false;
+            let _checkAllValue = false;
             // event
 
-            $("#grid10").on("iggridupdatingdatadirty", function(event, ui) {
+            $("#grid10").on("iggridupdatingdatadirty", function(event: any, ui: any) {
                 $("#grid10").igGrid("saveChanges");
                 return false;
             });
 
-            $("#grid10").on("iggriddatabound", function(event, ui) {
+            $("#grid10").on("iggriddatabound", function(event: any, ui: any) {
                 if (_checkAll) {
                     //                    return true;
                 } else if (_isDataBound === false) {
@@ -73,29 +66,22 @@ module qpp008.g.viewmodel {
 
                 for (i = 0; i < dataLength; i++) {
                     if (_checkAll) {
-                        if (data[i]["UnitPrice"] < 100 || data[i]["UnitPrice"] > 270) {
-                            data[i]["IsPromotion"] = _checkAllValue;
+                        if (data[i]["difference"] != 0) {
+                            data[i]["confirmedStatus"] = _checkAllValue;
                         }
                     }
                     else if (self.firstLoad()) {
-                        if (data[i]["UnitPrice"] < 100 || data[i]["UnitPrice"] > 270) {
-                            data[i]["IsPromotion"] = true;
+                        if (data[i]["difference"] != 0) {
+                            data[i]["confirmedStatus"] = true;
                         }
-                        //                    else {
-                        //                        data[i]["IsPromotion"] = false;
-                        //                    }
                     }
 
-                    //                _checkAll = false;
                 }
                 self.firstLoad = ko.observable(false);
             });
-            //Bind after initialization  
-            //            $(document).delegate("#grid10", "iggridupdatingeditcellstarted", function(evt, ui) {
-            //                alert(ui.columnIndex);
-            //            };
+
             $(document).delegate("#grid10", "iggridupdatingeditrowstarting", function(evt: any, ui: any) {
-                let $cell = $($("#grid10").igGrid("cellById", ui.rowID, "UnitPrice"));
+                let $cell = $($("#grid10").igGrid("cellById", ui.rowID, "difference"));
                 //var $cell1 = $($("#grid10").igGrid("cellAt", 4, ui.rowID));
                 if (!($cell.hasClass("red") || $cell.hasClass("yellow"))) {
                     return false;
@@ -103,86 +89,80 @@ module qpp008.g.viewmodel {
                 }
                 //return the triggered event
                 evt;
-
                 // get reference to igGridUpdating widget
                 ui.owner;
-
                 // to get key or index of row
                 ui.rowID;
-
                 // check if that event is raised while new-row-adding
                 ui.rowAdding;
             });
             //change color by delegate
             $(document).delegate("#grid10", "iggriddatarendered", function(evt: any, ui: any) {
-                //var x = _.find($(event.target).find(".ui-iggrid-modifiedrecord").children(), function(cell) { return $(cell).attr("aria-describedby").indexOf("UnitPrice") >= 0 })
                 _.forEach(ui.owner.dataSource.dataView(), function(item, index) {
-                    if (item["UnitPrice"] > 270) {
-                        let cell1 = $("#grid10").igGrid("cellById", item["ProductID"], "UnitPrice");
+                    item["confirmedStatus"] = false;
+                    if (item["difference"] < 0) {
+                        let cell1 = $("#grid10").igGrid("cellById", item["employeeCode"], "difference");
                         $(cell1).addClass('red').attr('data-class', 'red');
                         $(window).on('resize', () => { $(cell1).addClass('red'); });
-                        //item["IsPromotion"] = true;
-                    } else if (item["UnitPrice"] < 100) {
-                        let cell1 = $("#grid10").igGrid("cellById", item["ProductID"], "UnitPrice");
+                        item["confirmedStatus"] = true;
+                    } else if (item["difference"] > 0) {
+                        let cell1 = $("#grid10").igGrid("cellById", item["employeeCode"], "difference");
                         $(cell1).addClass('yellow').attr('data-class', 'yellow');
                         $(window).on('resize', () => { $(cell1).addClass('yellow'); });
-
-                        //item["IsPromotion"] = true;
-                    } else {
-                        //item["IsPromotion"] = false;
+                        item["confirmedStatus"] = true;
                     }
                 });
             });
-
-            //            $("#grid10").on("iggridupdatingeditrowended", function(event, ui) {
-            //                if (ui.update) {
-            //
-            //                    var unitPrice = ui.values["UnitPrice"];
-            //                    var unitsInStock = ui.values["UnitsInStock"];
-            //                    var totalValue = (unitPrice * unitsInStock) || ui.values["Total"];
-            //
-            //                    if (totalValue < 1000) {
-            //                        $("#grid10").igGridUpdating("setCellValue", ui.rowID, "IsPromotion", true);
-            //                    }
-            //                    else {
-            //                        $("#grid10").igGridUpdating("setCellValue", ui.rowID, "IsPromotion", false);
-            //                    }
-            //                }
-            //            });
-
             //instantiation
             let iggridData = new Array();
-            let str = ['a0', 'b0', 'c0', 'd0', 'eo', 'f0', 'g0'];
+            let str = ['A00000', 'b00000', 'c00000', 'd00000', 'e00000', 'f00000', 'g00000'];
             for (let j = 0; j < 4; j++) {
                 for (let i = 1; i < 41; i++) {
                     let code = i < 10 ? str[j] + '0' + i : str[j] + i;
-                    let codeUnisInStock = Math.floor((Math.random() * 20) + 3);
-                    let UnitPrice = Math.floor((Math.random() * 5000) + 150);
-                    iggridData.push({ "ProductID": i, "ProductName": code, "UnitsInStock": 100, "UnitPrice": i * 15, "PromotionExpDate": new Date("2017/05/05"), "IsPromotion": true, "Total": 1000 });
+                    let itemCode = i < 10 ? "000" + i : "00" + i;
+                    let comparisonDate1 = Math.floor(Math.random() * 20);
+                    let comparisonDate2 = Math.floor(Math.random() * 20);
+                    let difference = comparisonDate2 - comparisonDate1;
+                    let reasonDifference = "";
+                    let confirmedStatus = false;
+                    if (difference < 0) {
+                        reasonDifference = "reason of difference.";
+                        confirmedStatus = true;
+                    }
+                    let registrationStatus1 = "registrationStatus1";
+                    let registrationStatus2 = "registrationStatus2";
+
+                    iggridData.push(
+                        {   
+                            "itemCode" : itemCode,
+                            "employeeCode": code, "employeeName": code, "categoryAtr": "支", "itemName": "Mr Person Name",
+                            "comparisonDate1": comparisonDate1, "comparisonDate2": comparisonDate2,
+                            "difference": difference, "reasonDifference": reasonDifference, "registrationStatus1": registrationStatus1,
+                            "registrationStatus2": registrationStatus2, "confirmedStatus": confirmedStatus
+                        });
                 }
             }
 
             $("#grid10").igGrid({
-                primaryKey: "ProductID",
-                dataSource: iggridData,//Datasources
+                primaryKey: "employeeCode",
+                dataSource: iggridData,
                 width: "100%",
                 autoGenerateColumns: false,
                 dataSourceType: "json",
                 responseDataKey: "results",
                 columns: [
-                    { headerText: "Product ID", key: "ProductID", dataType: "number" },
-                    { headerText: "Product Name", key: "ProductName", dataType: "string" },
-                    { headerText: "Units in Stock", key: "UnitsInStock", dataType: "number" },
-                    { headerText: "Unit Price", key: "UnitPrice", dataType: "number", format: "currency", columnCssClass: "colStyle" },
-                    {
-                        headerText: "Promotion Exp Date", key: "PromotionExpDate", dataType: "date", unbound: true, format: "date",
-                        unboundValues: [new Date("4/24/2012"), new Date("8/24/2012"), new Date("6/24/2012"), new Date("7/24/2012"), new Date("9/24/2012"), new Date("10/24/2012"), new Date("11/24/2012")]
-                    },
-                    { headerText: "Is Promotion<br/><input type='checkbox' id='cb1'/>", key: "IsPromotion", dataType: "bool", unbound: true, format: "checkbox" },
-//                    {
-//                        headerText: "Total Price", key: "Total", dataType: "number", unbound: true, format: "currency",
-//                        formula: function CalculateTotal(data: any, grid: any) { return data["UnitPrice"] * data["UnitsInStock"]; }
-//                    }
+                    { headerText: "itemCode", key: "itemCode", dataType: "string", allowHiding: true, hidden: true },
+                    { headerText: "社員コード", key: "employeeCode", dataType: "string" },
+                    { headerText: "氏名", key: "employeeName", dataType: "string" },
+                    { headerText: "区分", key: "categoryAtr", dataType: "string" },
+                    { headerText: "項目名", key: "itemName", dataType: "string" },
+                    { headerText: "比較年月1", key: "comparisonDate1", dataType: "number", format: "currency" },
+                    { headerText: "比較年月2", key: "comparisonDate2", dataType: "number", format: "currency" },
+                    { headerText: "差額", key: "difference", dataType: "number", format: "currency", columnCssClass: "colStyle" },
+                    { headerText: "差異理由", key: "reasonDifference", dataType: "string" },
+                    { headerText: "登録状況（比較年月１）", key: "registrationStatus1", dataType: "string" },
+                    { headerText: "登録状況（比較年月2）", key: "registrationStatus2", dataType: "string" },
+                    { headerText: "確認済", key: "confirmedStatus", dataType: "bool", unbound: true, format: "checkbox" },
                 ],
                 features:
                 [
@@ -191,7 +171,7 @@ module qpp008.g.viewmodel {
                         enableVerticalRendering: false,
                         columnSettings: [
                             {
-                                columnKey: "ProductID",
+                                columnKey: "employeeCode",
                                 classes: "ui-hidden-tablet"
                             }
                         ]
@@ -219,36 +199,55 @@ module qpp008.g.viewmodel {
                         enableDeleteRow: true,
                         columnSettings: [
                             {
-                                columnKey: "ProductID",
-                                readOnly: true
-                            },
-//                            {
-//                                columnKey: "Total",
-//                                editorType: "numeric",
-//                                readOnly: true
-//                            },
-                            {
-                                columnKey: "ProductName",
+                                columnKey: "itemCode",
                                 readOnly: true
                             },
                             {
-                                columnKey: "UnitsInStock",
+                                columnKey: "employeeCode",
                                 readOnly: true
                             },
                             {
-                                columnKey: "UnitPrice",
+                                columnKey: "employeeName",
                                 readOnly: true
                             },
                             {
-                                columnKey: "IsPromotion",
+                                columnKey: "categoryAtr",
+                                readOnly: true
+                            },
+                            {
+                                columnKey: "itemName",
+                                readOnly: true
+                            },
+                            {
+                                columnKey: "comparisonDate1",
+                                readOnly: true
+                            },
+                            {
+                                columnKey: "comparisonDate2",
+                                readOnly: true
+                            },
+                            {
+                                columnKey: "difference",
+                                readOnly: true
+                            },
+                            {
+                                columnKey: "reasonDifference",
+                                editorType: "text",
+                                readOnly: false
+                            },
+                            {
+                                columnKey: "registrationStatus1",
+                                readOnly: true
+                            },
+                            {
+                                columnKey: "registrationStatus2",
+                                readOnly: true
+                            },
+                            {
+                                columnKey: "confirmedStatus",
                                 editorType: "checkbox",
                                 readOnly: false
-
                             },
-                            {
-                                columnKey: "UnitPrice",
-                                readOnly: true
-                            }
                         ]
                     }
                 ]
@@ -258,14 +257,8 @@ module qpp008.g.viewmodel {
                 let value = $(this).is(":checked");
                 _checkAll = true;
                 _checkAllValue = value;
-                //                var dataSource = $("#grid10").igGrid("option", "dataSource");
-                //                _.forEach(dataSource, function(item){
-                //                    item["IsPromotion"] = value;
-                //                });
-                //                $("#grid10").igGrid("option", "dataSource", dataSource);
                 $("#grid10").igGrid("dataBind");
             });
-            self.selectedRuleCode = ko.observable(1);
         }
 
         startPage(): JQueryPromise<any> {
@@ -289,10 +282,12 @@ module qpp008.g.viewmodel {
     }
 
     class DetailsEmployeer {
+        id: KnockoutObservable<number>;
         employeeCode: KnockoutObservable<string>;
         employeeName: KnockoutObservable<string>;
-        classification: KnockoutObservable<string>;
+        categoryAtr: KnockoutObservable<string>;
         itemName: KnockoutObservable<string>;
+        itemCode: KnockoutObservable<string>;
         comparisonDate1: KnockoutObservable<number>;
         comparisonDate2: KnockoutObservable<number>;
         difference: KnockoutObservable<number>;
@@ -300,13 +295,15 @@ module qpp008.g.viewmodel {
         registrationStatus1: KnockoutObservable<string>;
         registrationStatus2: KnockoutObservable<string>;
         confirmedStatus: KnockoutObservable<boolean>;
-        constructor(data: any) {
+        constructor(data: any, id: number) {
             let self = this;
             if (data) {
+                self.id = ko.observable(id);
                 self.employeeCode = ko.observable(data.employeeCode);
                 self.employeeName = ko.observable(data.employeeName);
-                self.classification = ko.observable(data.classification);
+                self.categoryAtr = ko.observable(data.categoryAtr);
                 self.itemName = ko.observable(data.itemName);
+                self.itemCode = ko.observable(data.itemCode);
                 self.comparisonDate1 = ko.observable(data.comparisonDate1);
                 self.comparisonDate2 = ko.observable(data.comparisonDate2);
                 self.difference = ko.observable(data.difference);
@@ -314,19 +311,7 @@ module qpp008.g.viewmodel {
                 self.registrationStatus1 = ko.observable(data.registrationStatus1);
                 self.registrationStatus2 = ko.observable(data.registrationStatus2);
                 self.confirmedStatus = ko.observable(data.confirmedStatus);
-            } else {
-                self.employeeCode = ko.observable(data.employeeCode);
-                self.employeeName = ko.observable(data.employeeName);
-                self.classification = ko.observable(data.classification);
-                self.itemName = ko.observable(data.itemName);
-                self.comparisonDate1 = ko.observable(data.comparisonDate1);
-                self.comparisonDate2 = ko.observable(data.comparisonDate2);
-                self.difference = ko.observable(data.difference);
-                self.reasonDifference = ko.observable(data.reasonDifference);
-                self.registrationStatus1 = ko.observable(data.registrationStatus1);
-                self.registrationStatus2 = ko.observable(data.registrationStatus2);
-                self.confirmedStatus = ko.observable(data.confirmedStatus);
-            }
+            } 
         }
     }
 }
