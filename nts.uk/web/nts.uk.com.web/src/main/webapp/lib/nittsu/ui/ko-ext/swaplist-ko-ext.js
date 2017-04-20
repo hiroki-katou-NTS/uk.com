@@ -1,4 +1,8 @@
-/// <reference path="../../reference.ts"/>
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var nts;
 (function (nts) {
     var uk;
@@ -7,19 +11,10 @@ var nts;
         (function (ui_1) {
             var koExtentions;
             (function (koExtentions) {
-                /**
-                 * SwapList binding handler
-                 */
-                class NtsSwapListBindingHandler {
-                    /**
-                     * Constructor.
-                     */
-                    constructor() {
+                var NtsSwapListBindingHandler = (function () {
+                    function NtsSwapListBindingHandler() {
                     }
-                    /**
-                     * Init.
-                     */
-                    init(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    NtsSwapListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var HEADER_HEIGHT = 27;
                         var CHECKBOX_WIDTH = 70;
                         var SEARCH_AREA_HEIGHT = 45;
@@ -32,7 +27,6 @@ var nts;
                         }
                         var data = valueAccessor();
                         var originalSource = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
-                        //            var selectedValues = ko.unwrap(data.value);
                         var totalWidth = ko.unwrap(data.width);
                         var height = ko.unwrap(data.height);
                         var showSearchBox = ko.unwrap(data.showSearchBox);
@@ -44,10 +38,10 @@ var nts;
                         }
                         $swap.parent().height(height);
                         $swap.addClass("ntsSwapList-container");
-                        var gridWidth = _.sumBy(columns(), c => {
+                        var gridWidth = _.sumBy(columns(), function (c) {
                             return c.width;
                         });
-                        var iggridColumns = _.map(columns(), c => {
+                        var iggridColumns = _.map(columns(), function (c) {
                             c["key"] = c.key === undefined ? c.prop : c.key;
                             c["dataType"] = 'string';
                             return c;
@@ -99,7 +93,7 @@ var nts;
                             { name: 'Sorting', type: 'local' },
                             { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: true }];
                         $swap.find(".nstSwapGridArea").width(gridWidth + CHECKBOX_WIDTH);
-                        var criterion = _.map(columns(), c => { return c.key === undefined ? c.prop : c.key; });
+                        var criterion = _.map(columns(), function (c) { return c.key === undefined ? c.prop : c.key; });
                         var swapParts = new Array();
                         swapParts.push(new GridSwapPart().listControl($grid1)
                             .searchControl($swap.find(".ntsSwapSearchLeft").find(".ntsSearchButton"))
@@ -164,11 +158,8 @@ var nts;
                         $moveBack.click(function () {
                             swapper.Model.move(false, data.value);
                         });
-                    }
-                    /**
-                     * Update
-                     */
-                    update(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    };
+                    NtsSwapListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var elementId = this.swapper.Model.$container.attr('id');
                         var primaryKey = this.swapper.Model.swapParts[0].primaryKey;
@@ -192,11 +183,8 @@ var nts;
                         if (!_.isEqual(currentSelectedList, newSelectedList)) {
                             this.swapper.Model.swapParts[1].bindData(newSelectedList.slice());
                         }
-                    }
-                    /**
-                     * Share swapper b/w init and update
-                     */
-                    makeBindings() {
+                    };
+                    NtsSwapListBindingHandler.prototype.makeBindings = function () {
                         var handler = this;
                         return {
                             init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
@@ -212,20 +200,25 @@ var nts;
                                 }
                             }
                         };
-                    }
-                }
+                    };
+                    return NtsSwapListBindingHandler;
+                }());
                 ko.bindingHandlers['ntsSwapList'] = new NtsSwapListBindingHandler().makeBindings();
-                class SwapHandler {
-                    constructor() {
+                var SwapHandler = (function () {
+                    function SwapHandler() {
                     }
-                    setModel(model) {
+                    SwapHandler.prototype.setModel = function (model) {
                         this.model = model;
                         return this;
-                    }
-                    get Model() {
-                        return this.model;
-                    }
-                    handle(parts) {
+                    };
+                    Object.defineProperty(SwapHandler.prototype, "Model", {
+                        get: function () {
+                            return this.model;
+                        },
+                        enumerable: true,
+                        configurable: true
+                    });
+                    SwapHandler.prototype.handle = function (parts) {
                         var self = this;
                         var model = this.model;
                         for (var id in parts) {
@@ -249,10 +242,9 @@ var nts;
                             };
                             this.model.swapParts[parts[id]].initDraggable(options);
                         }
-                    }
-                    _createHelper(evt, ui) {
+                    };
+                    SwapHandler.prototype._createHelper = function (evt, ui) {
                         var selectedRowElms = $(evt.currentTarget).igGrid("selectedRows");
-                        // Set the orders same as on grid
                         selectedRowElms.sort(function (one, two) {
                             return one.index - two.index;
                         });
@@ -280,12 +272,11 @@ var nts;
                             });
                         }
                         return $helper[0];
-                    }
-                    _beforeStop(model, evt, ui) {
+                    };
+                    SwapHandler.prototype._beforeStop = function (model, evt, ui) {
                         var partId = model.transportBuilder.startAt === "first" ? 0 : 1;
                         var destPartId = model.receiver(ui) === "first" ? 0 : 1;
                         model.transportBuilder.toAdjacent(model.neighbor(ui)).target(model.target(ui));
-                        // In case of muliple selections
                         if (ui.helper.hasClass("select-drag") === true) {
                             var rowsInHelper = ui.helper.find("tr");
                             var rows = rowsInHelper.toArray();
@@ -312,7 +303,6 @@ var nts;
                                 }
                                 model.swapParts[destPartId].$listControl.find("tbody").children()
                                     .eq(standardIdx - 1).before(rowsBefore).after(rowsAfter);
-                                // Remove rows in source
                                 var sourceRows = model.swapParts[partId].$listControl.find("tbody").children();
                                 for (var index = rowsAfter.length - 1; index >= 0; index--) {
                                     if ($(rows[index]).data("row-idx") === targetIdx)
@@ -330,8 +320,8 @@ var nts;
                                 && model.transportBuilder.startAt !== model.receiver(ui))) {
                             $(this).sortable("cancel");
                         }
-                    }
-                    _update(model, evt, ui) {
+                    };
+                    SwapHandler.prototype._update = function (model, evt, ui) {
                         if (ui.item.closest("table").length === 0)
                             return;
                         model.transportBuilder.directTo(model.receiver(ui)).update();
@@ -345,79 +335,82 @@ var nts;
                             model.swapParts[1].bindData(model.transportBuilder.getSecond());
                         }
                         setTimeout(function () { model.dropDone(); }, 0);
-                    }
-                    enableDragDrop(parts) {
+                    };
+                    SwapHandler.prototype.enableDragDrop = function (parts) {
                         parts = parts || [0, 1];
                         this.model.enableDrag(this, parts, this.handle);
-                    }
-                }
-                class SwapModel {
-                    constructor($container, swapParts) {
+                    };
+                    return SwapHandler;
+                }());
+                var SwapModel = (function () {
+                    function SwapModel($container, swapParts) {
                         this.$container = $container;
                         this.swapParts = swapParts;
                         this.transportBuilder = new ListItemTransporter(this.swapParts[0].dataSource, this.swapParts[1].dataSource)
                             .primary(this.swapParts[0].primaryKey);
                     }
-                }
-                class SearchResult {
-                    constructor(results, indices) {
+                    return SwapModel;
+                }());
+                var SearchResult = (function () {
+                    function SearchResult(results, indices) {
                         this.data = results;
                         this.indices = indices;
                     }
-                }
-                class SwapPart {
-                    constructor() {
-                        this.searchMode = "highlight"; // highlight & filter - Default: highlight
+                    return SearchResult;
+                }());
+                var SwapPart = (function () {
+                    function SwapPart() {
+                        this.searchMode = "highlight";
                         this.innerDrop = true;
                         this.outerDrop = true;
                     }
-                    listControl($listControl) {
+                    SwapPart.prototype.listControl = function ($listControl) {
                         this.$listControl = $listControl;
                         return this;
-                    }
-                    searchControl($searchControl) {
+                    };
+                    SwapPart.prototype.searchControl = function ($searchControl) {
                         this.$searchControl = $searchControl;
                         return this;
-                    }
-                    searchBox($searchBox) {
+                    };
+                    SwapPart.prototype.searchBox = function ($searchBox) {
                         this.$searchBox = $searchBox;
                         return this;
-                    }
-                    setSearchMode(searchMode) {
+                    };
+                    SwapPart.prototype.setSearchMode = function (searchMode) {
                         this.searchMode = searchMode;
                         return this;
-                    }
-                    setSearchCriterion(searchCriterion) {
+                    };
+                    SwapPart.prototype.setSearchCriterion = function (searchCriterion) {
                         this.searchCriterion = searchCriterion;
                         return this;
-                    }
-                    setDataSource(dataSource) {
+                    };
+                    SwapPart.prototype.setDataSource = function (dataSource) {
                         this.dataSource = dataSource;
                         return this;
-                    }
-                    setColumns(columns) {
+                    };
+                    SwapPart.prototype.setColumns = function (columns) {
                         this.columns = columns;
                         return this;
-                    }
-                    setPrimaryKey(primaryKey) {
+                    };
+                    SwapPart.prototype.setPrimaryKey = function (primaryKey) {
                         this.primaryKey = primaryKey;
                         return this;
-                    }
-                    setInnerDrop(innerDrop) {
+                    };
+                    SwapPart.prototype.setInnerDrop = function (innerDrop) {
                         this.innerDrop = innerDrop;
                         return this;
-                    }
-                    setOuterDrop(outerDrop) {
+                    };
+                    SwapPart.prototype.setOuterDrop = function (outerDrop) {
                         this.outerDrop = outerDrop;
                         return this;
-                    }
-                    initDraggable(opts) {
+                    };
+                    SwapPart.prototype.initDraggable = function (opts) {
                         this.$listControl.sortable(opts).disableSelection();
-                    }
-                    resetOriginalDataSource() {
+                    };
+                    SwapPart.prototype.resetOriginalDataSource = function () {
                         this.originalDataSource = this.dataSource;
-                    }
-                    search() {
+                    };
+                    SwapPart.prototype.search = function () {
                         var searchContents = this.$searchBox.val();
                         var orders = new Array();
                         if (searchContents === "") {
@@ -442,12 +435,12 @@ var nts;
                             return found;
                         });
                         return new SearchResult(results, orders);
-                    }
-                    bindData(src) {
+                    };
+                    SwapPart.prototype.bindData = function (src) {
                         this.bindIn(src);
                         this.dataSource = src;
-                    }
-                    bindSearchEvent() {
+                    };
+                    SwapPart.prototype.bindSearchEvent = function () {
                         var self = this;
                         var proceedSearch = this.proceedSearch;
                         this.$searchControl.click(function (evt, ui) {
@@ -458,8 +451,8 @@ var nts;
                                 proceedSearch.apply(self);
                             }
                         });
-                    }
-                    proceedSearch() {
+                    };
+                    SwapPart.prototype.proceedSearch = function () {
                         if (this.searchMode === "filter") {
                             var results = this.search();
                             if (results === null)
@@ -469,17 +462,22 @@ var nts;
                         else {
                             this.highlightSearch();
                         }
-                    }
-                    build() {
+                    };
+                    SwapPart.prototype.build = function () {
                         this.bindSearchEvent();
                         return this;
+                    };
+                    return SwapPart;
+                }());
+                var GridSwapPart = (function (_super) {
+                    __extends(GridSwapPart, _super);
+                    function GridSwapPart() {
+                        _super.apply(this, arguments);
                     }
-                }
-                class GridSwapPart extends SwapPart {
-                    search() {
-                        return super.search();
-                    }
-                    highlightSearch() {
+                    GridSwapPart.prototype.search = function () {
+                        return _super.prototype.search.call(this);
+                    };
+                    GridSwapPart.prototype.highlightSearch = function () {
                         var value = this.$searchBox.val();
                         var source = this.dataSource.slice();
                         var selected = this.$listControl.ntsGridList("getSelected");
@@ -487,7 +485,7 @@ var nts;
                             var gotoEnd = source.splice(0, selected[0].index + 1);
                             source = source.concat(gotoEnd);
                         }
-                        var iggridColumns = _.map(this.columns, c => {
+                        var iggridColumns = _.map(this.columns, function (c) {
                             c["key"] = c.key === undefined ? c.prop : c.key;
                             c["dataType"] = 'string';
                             return c;
@@ -506,32 +504,37 @@ var nts;
                                     ? current[0].index : current[0].index + 1);
                             }
                         }
-                    }
-                    bindIn(src) {
+                    };
+                    GridSwapPart.prototype.bindIn = function (src) {
                         this.$listControl.igGrid("option", "dataSource", src);
+                    };
+                    return GridSwapPart;
+                }(SwapPart));
+                var GridSwapList = (function (_super) {
+                    __extends(GridSwapList, _super);
+                    function GridSwapList() {
+                        _super.apply(this, arguments);
                     }
-                }
-                class GridSwapList extends SwapModel {
-                    sender(opts) {
+                    GridSwapList.prototype.sender = function (opts) {
                         return opts.item.closest("table")[0].id == this.swapParts[0].$listControl.attr("id")
                             ? "first" : "second";
-                    }
-                    receiver(opts) {
+                    };
+                    GridSwapList.prototype.receiver = function (opts) {
                         return opts.item.closest("table")[0].id == this.swapParts[1].$listControl.attr("id")
                             ? "second" : "first";
-                    }
-                    target(opts) {
+                    };
+                    GridSwapList.prototype.target = function (opts) {
                         if (opts.helper !== undefined && opts.helper.hasClass("select-drag")) {
                             return opts.helper.find("tr").map(function () {
                                 return $(this).data("id");
                             });
                         }
                         return [opts.item.data("id")];
-                    }
-                    neighbor(opts) {
+                    };
+                    GridSwapList.prototype.neighbor = function (opts) {
                         return opts.item.prev().length === 0 ? "ceil" : opts.item.prev().data("id");
-                    }
-                    dropDone() {
+                    };
+                    GridSwapList.prototype.dropDone = function () {
                         var self = this;
                         self.swapParts[0].$listControl.igGridSelection("clearSelection");
                         self.swapParts[1].$listControl.igGridSelection("clearSelection");
@@ -543,16 +546,16 @@ var nts;
                                 ? self.swapParts[0].$listControl
                                 : self.swapParts[1].$listControl).igGrid("virtualScrollTo", self.transportBuilder.outcomeIndex + 1);
                         }, 0);
-                    }
-                    enableDrag(ctx, parts, cb) {
+                    };
+                    GridSwapList.prototype.enableDrag = function (ctx, parts, cb) {
                         var self = this;
                         for (var idx in parts) {
                             this.swapParts[parts[idx]].$listControl.on("iggridrowsrendered", function (evt, ui) {
                                 cb.call(ctx, parts);
                             });
                         }
-                    }
-                    move(forward, value) {
+                    };
+                    GridSwapList.prototype.move = function (forward, value) {
                         var $source = forward === true ? this.swapParts[0].$listControl : this.swapParts[1].$listControl;
                         var sourceList = forward === true ? this.swapParts[0].dataSource : this.swapParts[1].dataSource;
                         var $dest = forward === true ? this.swapParts[1].$listControl : this.swapParts[0].$listControl;
@@ -573,53 +576,55 @@ var nts;
                                 ? selectedRows[0].index - 1 : selectedRows[0].index + 1);
                             $dest.igGrid("virtualScrollTo", destList.length - 1);
                         }, 10);
-                    }
-                }
-                class ListItemTransporter {
-                    constructor(firstList, secondList) {
+                    };
+                    return GridSwapList;
+                }(SwapModel));
+                var ListItemTransporter = (function () {
+                    function ListItemTransporter(firstList, secondList) {
                         this.firstList = firstList;
                         this.secondList = secondList;
                     }
-                    first(firstList) {
+                    ListItemTransporter.prototype.first = function (firstList) {
                         this.firstList = firstList;
                         return this;
-                    }
-                    second(secondList) {
+                    };
+                    ListItemTransporter.prototype.second = function (secondList) {
                         this.secondList = secondList;
                         return this;
-                    }
-                    at(startAt) {
+                    };
+                    ListItemTransporter.prototype.at = function (startAt) {
                         this.startAt = startAt;
                         return this;
-                    }
-                    directTo(direction) {
+                    };
+                    ListItemTransporter.prototype.directTo = function (direction) {
                         this.direction = direction;
                         return this;
-                    }
-                    out(index) {
+                    };
+                    ListItemTransporter.prototype.out = function (index) {
                         this.outcomeIndex = index;
                         return this;
-                    }
-                    into(index) {
+                    };
+                    ListItemTransporter.prototype.into = function (index) {
                         this.incomeIndex = index;
                         return this;
-                    }
-                    primary(primaryKey) {
+                    };
+                    ListItemTransporter.prototype.primary = function (primaryKey) {
                         this.primaryKey = primaryKey;
                         return this;
-                    }
-                    target(targetIds) {
+                    };
+                    ListItemTransporter.prototype.target = function (targetIds) {
                         this.targetIds = targetIds;
                         return this;
-                    }
-                    toAdjacent(adjId) {
+                    };
+                    ListItemTransporter.prototype.toAdjacent = function (adjId) {
                         this.adjacentIncomeId = adjId;
                         return this;
-                    }
-                    indexOf(list, targetId) {
-                        return _.findIndex(list, elm => elm[this.primaryKey].toString() === targetId.toString());
-                    }
-                    move(src, dest) {
+                    };
+                    ListItemTransporter.prototype.indexOf = function (list, targetId) {
+                        var _this = this;
+                        return _.findIndex(list, function (elm) { return elm[_this.primaryKey].toString() === targetId.toString(); });
+                    };
+                    ListItemTransporter.prototype.move = function (src, dest) {
                         for (var i = 0; i < this.targetIds.length; i++) {
                             this.outcomeIndex = this.indexOf(src, this.targetIds[i]);
                             if (this.outcomeIndex === -1)
@@ -636,8 +641,8 @@ var nts;
                             }
                             dest.splice(this.incomeIndex + i, 0, target[0]);
                         }
-                    }
-                    determineDirection() {
+                    };
+                    ListItemTransporter.prototype.determineDirection = function () {
                         if (this.startAt.toLowerCase() !== this.direction.toLowerCase()
                             && this.direction.toLowerCase() === "second") {
                             return "firstToSecond";
@@ -652,8 +657,8 @@ var nts;
                         }
                         else
                             return "insideSecond";
-                    }
-                    update() {
+                    };
+                    ListItemTransporter.prototype.update = function () {
                         switch (this.determineDirection()) {
                             case "firstToSecond":
                                 this.move(this.firstList, this.secondList);
@@ -668,14 +673,15 @@ var nts;
                                 this.move(this.secondList, this.secondList);
                                 break;
                         }
-                    }
-                    getFirst() {
+                    };
+                    ListItemTransporter.prototype.getFirst = function () {
                         return this.firstList;
-                    }
-                    getSecond() {
+                    };
+                    ListItemTransporter.prototype.getSecond = function () {
                         return this.secondList;
-                    }
-                }
+                    };
+                    return ListItemTransporter;
+                }());
             })(koExtentions = ui_1.koExtentions || (ui_1.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));

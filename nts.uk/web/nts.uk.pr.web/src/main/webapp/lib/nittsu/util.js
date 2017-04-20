@@ -8,17 +8,10 @@ var nts;
         })(KeyCodes = uk.KeyCodes || (uk.KeyCodes = {}));
         var util;
         (function (util) {
-            /**
-             * 常にtrueを返す関数が必要になったらこれ
-             */
             function alwaysTrue() {
                 return true;
             }
             util.alwaysTrue = alwaysTrue;
-            /**
-             * function find an item index in array
-             * if key presented will perform find index of item in array which contain key equal to the 'item' parameter
-             */
             function findIndex(arr, value, key) {
                 for (var i = 0; i < arr.length; i++) {
                     var item = arr[i];
@@ -28,16 +21,9 @@ var nts;
                 return -1;
             }
             util.findIndex = findIndex;
-            /**
-             * function add item to array, this function is used in combine with visitDfs function
-             * visitDfs(node, addToArray, childField, arr) will return flatArray by DFS order, start by node and following by each child belong to it.
-             */
             function addToArray(node, arr) {
                 arr.push(node);
             }
-            /**
-             * DFS algorithm function to iterate over an object with structre like tree
-             */
             function visitDfs(node, func, childField, arr) {
                 if (func) {
                     if (arr)
@@ -51,9 +37,6 @@ var nts;
                 });
             }
             util.visitDfs = visitDfs;
-            /**
-             * return flatern array of array of tree-like objects
-             */
             function flatArray(arr, childField) {
                 var flatArr = [];
                 if (!childField)
@@ -65,15 +48,7 @@ var nts;
                 return flatArr;
             }
             util.flatArray = flatArray;
-            /**
-             * return filtered array
-             * @param {Array} array of items
-             * @param {String} user input
-             * @param {Array} array of fields used to search on
-             * @param {String} if not null, search will perform in flatarray of arr
-             */
             function searchArray(arr, searchTerm, fields, childField) {
-                //if items is empty return empty array
                 if (!arr) {
                     return [];
                 }
@@ -82,11 +57,9 @@ var nts;
                 }
                 var flatArr = flatArray(arr, childField);
                 var filter = searchTerm.toLowerCase();
-                //if filter is empty return all the items
                 if (!filter) {
                     return flatArr;
                 }
-                //filter data
                 var filtered = flatArr.filter(function (item) {
                     var i = fields.length;
                     while (i--) {
@@ -102,9 +75,6 @@ var nts;
                 return filtered;
             }
             util.searchArray = searchArray;
-            /**
-             * SearchBox helper function to jump next search
-             */
             function nextSelectionSearch(selected, arr, selectedKey, isArray) {
                 var current = null;
                 if (isArray) {
@@ -129,25 +99,14 @@ var nts;
                 return undefined;
             }
             util.nextSelectionSearch = nextSelectionSearch;
-            /**
-             * Returns true if the target is null or undefined.
-             */
             function isNullOrUndefined(target) {
                 return target === null || target === undefined;
             }
             util.isNullOrUndefined = isNullOrUndefined;
-            /**
-             * Returns true if the target is null or undefined or blank.
-             * @param  {any} [target] Target need to check
-             * @return {boolean}      True for blank
-             */
             function isNullOrEmpty(target) {
                 return (target === undefined || target === null || target.length == 0);
             }
             util.isNullOrEmpty = isNullOrEmpty;
-            /**
-             * Generate random identifier string (UUIDv4)
-             */
             function randomId() {
                 return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
                     var r = Math.random() * 16 | 0;
@@ -155,24 +114,14 @@ var nts;
                 });
             }
             util.randomId = randomId;
-            /**
-             * Returns true if current window is in frame.
-             */
             function isInFrame() {
                 return window.parent != window;
             }
             util.isInFrame = isInFrame;
-            /**
-             * valueMaybeEmptyがnullまたはundefinedの場合、defaultValueを返す。
-             * そうでなければ、valueMaybeEmptyを返す。
-             */
             function orDefault(valueMaybeEmpty, defaultValue) {
                 return isNullOrUndefined(valueMaybeEmpty) ? defaultValue : valueMaybeEmpty;
             }
             util.orDefault = orDefault;
-            /**
-             * Returns true if expects contains actual.
-             */
             function isIn(actual, expects) {
                 for (var i = 0; i < expects.length; i++) {
                     if (actual === expects[i])
@@ -183,13 +132,12 @@ var nts;
             util.isIn = isIn;
             ;
             function createTreeFromString(original, openChar, closeChar, seperatorChar, operatorChar) {
-                let result = convertToTree(original, openChar, closeChar, seperatorChar, 1, operatorChar).result;
-                //            result = moveToParentIfEmpty(result);
+                var result = convertToTree(original, openChar, closeChar, seperatorChar, 1, operatorChar).result;
                 return result;
             }
             util.createTreeFromString = createTreeFromString;
             function moveToParentIfEmpty(tree) {
-                let result = [];
+                var result = [];
                 _.forEach(tree, function (e) {
                     if (e.children.length > 0) {
                         e.children = moveToParentIfEmpty(e.children);
@@ -207,15 +155,15 @@ var nts;
                 return result;
             }
             function convertToTree(original, openChar, closeChar, separatorChar, index, operatorChar) {
-                let result = [];
+                var result = [];
                 while (original.trim().length > 0) {
-                    let firstOpenIndex = original.indexOf(openChar);
+                    var firstOpenIndex = original.indexOf(openChar);
                     if (firstOpenIndex < 0) {
-                        let values = original.split(separatorChar);
+                        var values = original.split(separatorChar);
                         _.forEach(values, function (value) {
-                            let data = splitByArray(value, operatorChar.slice());
+                            var data = splitByArray(value, operatorChar.slice());
                             _.each(data, function (v) {
-                                let object = new TreeObject();
+                                var object = new TreeObject();
                                 object.value = v;
                                 object.children = [];
                                 object.isOperator = operatorChar.indexOf(v) >= 0;
@@ -228,17 +176,17 @@ var nts;
                         };
                     }
                     else {
-                        let object = new TreeObject();
+                        var object = new TreeObject();
                         object.value = original.substring(0, firstOpenIndex).trim();
                         object.index = index;
-                        let closeIndex = findIndexOfCloseChar(original, openChar, closeChar, firstOpenIndex);
+                        var closeIndex = findIndexOfCloseChar(original, openChar, closeChar, firstOpenIndex);
                         if (closeIndex >= 0) {
                             index++;
-                            let res = convertToTree(original.substring(firstOpenIndex + 1, closeIndex).trim(), openChar, closeChar, separatorChar, index, operatorChar);
+                            var res = convertToTree(original.substring(firstOpenIndex + 1, closeIndex).trim(), openChar, closeChar, separatorChar, index, operatorChar);
                             object.children = res.result;
                             index = res.index++;
                             result.push(object);
-                            let firstSeperatorIndex = original.indexOf(separatorChar, closeIndex);
+                            var firstSeperatorIndex = original.indexOf(separatorChar, closeIndex);
                             if (firstSeperatorIndex >= 0) {
                                 original = original.substring(firstSeperatorIndex + 1, original.length).trim();
                             }
@@ -263,17 +211,17 @@ var nts;
                 };
             }
             function splitByArray(original, operatorChar) {
-                let temp = [];
-                let result = [];
+                var temp = [];
+                var result = [];
                 if (original.trim().length <= 0) {
                     return temp;
                 }
                 if (operatorChar.length <= 0) {
                     return [original];
                 }
-                let operator = operatorChar.shift();
+                var operator = operatorChar.shift();
                 while (original.trim().length > 0) {
-                    let index = original.indexOf(operator);
+                    var index = original.indexOf(operator);
                     if (index >= 0) {
                         temp.push(original.substring(0, index).trim());
                         temp.push(original.substring(index, index + 1).trim());
@@ -290,8 +238,8 @@ var nts;
                 return result;
             }
             function findIndexOfCloseChar(original, openChar, closeChar, firstOpenIndex) {
-                let openCount = 0;
-                let closeCount = 0;
+                var openCount = 0;
+                var closeCount = 0;
                 for (var i = firstOpenIndex; i < original.length; i++) {
                     if (original.charAt(i) === openChar) {
                         openCount++;
@@ -305,19 +253,17 @@ var nts;
                 }
                 return -1;
             }
-            class TreeObject {
-                constructor(value, children, index, isOperator) {
+            var TreeObject = (function () {
+                function TreeObject(value, children, index, isOperator) {
                     var self = this;
                     self.value = value;
                     self.children = children;
                     self.index = index;
                     self.isOperator = isOperator;
                 }
-            }
+                return TreeObject;
+            }());
             util.TreeObject = TreeObject;
-            /**
-             * Like Java Optional
-             */
             var optional;
             (function (optional) {
                 function of(value) {
@@ -328,69 +274,70 @@ var nts;
                     return new Optional(null);
                 }
                 optional.empty = empty;
-                class Optional {
-                    constructor(value) {
+                var Optional = (function () {
+                    function Optional(value) {
                         this.value = orDefault(value, null);
                     }
-                    ifPresent(consumer) {
+                    Optional.prototype.ifPresent = function (consumer) {
                         if (this.isPresent) {
                             consumer(this.value);
                         }
                         return this;
-                    }
-                    ifEmpty(action) {
+                    };
+                    Optional.prototype.ifEmpty = function (action) {
                         if (!this.isPresent) {
                             action();
                         }
                         return this;
-                    }
-                    map(mapper) {
+                    };
+                    Optional.prototype.map = function (mapper) {
                         return this.isPresent ? of(mapper(this.value)) : empty();
-                    }
-                    isPresent() {
+                    };
+                    Optional.prototype.isPresent = function () {
                         return this.value !== null;
-                    }
-                    get() {
+                    };
+                    Optional.prototype.get = function () {
                         if (!this.isPresent) {
                             throw new Error('not present');
                         }
                         return this.value;
-                    }
-                    orElse(stead) {
+                    };
+                    Optional.prototype.orElse = function (stead) {
                         return this.isPresent ? this.value : stead;
-                    }
-                    orElseThrow(errorBuilder) {
+                    };
+                    Optional.prototype.orElseThrow = function (errorBuilder) {
                         if (!this.isPresent) {
                             throw errorBuilder();
                         }
-                    }
-                }
+                    };
+                    return Optional;
+                }());
                 optional.Optional = Optional;
             })(optional = util.optional || (util.optional = {}));
-            class Range {
-                constructor(start, end) {
+            var Range = (function () {
+                function Range(start, end) {
                     if (start > end) {
                         throw new Error('start is larger than end');
                     }
                     this.start = start;
                     this.end = end;
                 }
-                contains(value) {
+                Range.prototype.contains = function (value) {
                     return this.start <= value && value <= this.end;
-                }
-                greaterThan(value) {
+                };
+                Range.prototype.greaterThan = function (value) {
                     return value < this.start;
-                }
-                greaterThanOrEqualTo(value) {
+                };
+                Range.prototype.greaterThanOrEqualTo = function (value) {
                     return value <= this.start;
-                }
-                lessThan(value) {
+                };
+                Range.prototype.lessThan = function (value) {
                     return this.end < value;
-                }
-                lessThanOrEqualTo(value) {
+                };
+                Range.prototype.lessThanOrEqualTo = function (value) {
                     return this.end <= value;
-                }
-                distanceFrom(value) {
+                };
+                Range.prototype.distanceFrom = function (value) {
                     if (this.greaterThan(value)) {
                         return value - this.start;
                     }
@@ -400,55 +347,51 @@ var nts;
                     else {
                         return 0;
                     }
-                }
-            }
+                };
+                return Range;
+            }());
             util.Range = Range;
         })(util = uk.util || (uk.util = {}));
-        class WebStorageWrapper {
-            constructor(nativeStorage) {
+        var WebStorageWrapper = (function () {
+            function WebStorageWrapper(nativeStorage) {
                 this.nativeStorage = nativeStorage;
             }
-            setItem(key, value) {
+            WebStorageWrapper.prototype.setItem = function (key, value) {
                 if (value === undefined) {
                     return;
                 }
                 this.nativeStorage.setItem(key, value);
-            }
-            setItemAsJson(key, value) {
+            };
+            WebStorageWrapper.prototype.setItemAsJson = function (key, value) {
                 this.setItem(key, JSON.stringify(value));
-            }
-            containsKey(key) {
+            };
+            WebStorageWrapper.prototype.containsKey = function (key) {
                 return this.getItem(key) !== null;
-            }
+            };
             ;
-            getItem(key) {
+            WebStorageWrapper.prototype.getItem = function (key) {
                 var value = this.nativeStorage.getItem(key);
                 if (value === null || value === undefined || value === 'undefined') {
                     return util.optional.empty();
                 }
                 return util.optional.of(value);
-            }
-            getItemAndRemove(key) {
+            };
+            WebStorageWrapper.prototype.getItemAndRemove = function (key) {
                 var item = this.getItem(key);
                 this.removeItem(key);
                 return item;
-            }
-            removeItem(key) {
+            };
+            WebStorageWrapper.prototype.removeItem = function (key) {
                 this.nativeStorage.removeItem(key);
-            }
-            clear() {
+            };
+            WebStorageWrapper.prototype.clear = function () {
                 this.nativeStorage.clear();
-            }
-        }
+            };
+            return WebStorageWrapper;
+        }());
         uk.WebStorageWrapper = WebStorageWrapper;
-        /**
-         * Utilities about jquery deferred
-         */
         var deferred;
         (function (deferred) {
-            /**
-             * Repeats a task with jQuery Deferred
-             */
             function repeat(configurator) {
                 var conf = repeater.createConfiguration();
                 configurator(conf);
@@ -465,74 +408,80 @@ var nts;
                     return new Configuration();
                 }
                 repeater.createConfiguration = createConfiguration;
-                class Configuration {
-                    constructor() {
+                var Configuration = (function () {
+                    function Configuration() {
                         this.pauseMilliseconds = 0;
                     }
-                    task(taskFunction) {
+                    Configuration.prototype.task = function (taskFunction) {
                         this.taskFunction = taskFunction;
                         return this;
-                    }
-                    while(whileCondition) {
+                    };
+                    Configuration.prototype.while = function (whileCondition) {
                         this.whileCondition = whileCondition;
                         return this;
-                    }
-                    pause(pauseMilliseconds) {
+                    };
+                    Configuration.prototype.pause = function (pauseMilliseconds) {
                         this.pauseMilliseconds = pauseMilliseconds;
                         return this;
-                    }
-                    run() {
-                        let dfd = $.Deferred();
+                    };
+                    Configuration.prototype.run = function () {
+                        var dfd = $.Deferred();
                         this.repeat(dfd);
                         return dfd.promise();
-                    }
-                    repeat(dfd) {
-                        this.taskFunction().done(res => {
-                            if (this.whileCondition(res)) {
-                                setTimeout(() => this.repeat(dfd), this.pauseMilliseconds);
+                    };
+                    Configuration.prototype.repeat = function (dfd) {
+                        var _this = this;
+                        this.taskFunction().done(function (res) {
+                            if (_this.whileCondition(res)) {
+                                setTimeout(function () { return _this.repeat(dfd); }, _this.pauseMilliseconds);
                             }
                             else {
                                 dfd.resolve(res);
                             }
-                        }).fail(res => {
+                        }).fail(function (res) {
                             dfd.reject(res);
                         });
-                    }
-                }
+                    };
+                    return Configuration;
+                }());
             })(repeater || (repeater = {}));
         })(deferred = uk.deferred || (uk.deferred = {}));
         var resource;
         (function (resource) {
             function getText(code) {
-                return __viewContext.codeNames[code];
+                return names[code];
             }
             resource.getText = getText;
-            function getMessage(messageId, ...params) {
-                let message = __viewContext.messages[messageId];
+            function getMessage(messageId) {
+                var params = [];
+                for (var _i = 1; _i < arguments.length; _i++) {
+                    params[_i - 1] = arguments[_i];
+                }
+                var message = messages[messageId];
                 message = formatParams(message, params);
                 message = formatCompDependParam(message);
                 return message;
             }
             resource.getMessage = getMessage;
             function formatCompDependParam(message) {
-                let compDependceParamRegex = /{#(\w*)}/;
-                let matches;
+                var compDependceParamRegex = /｛#(\w*)｝/;
+                var matches;
                 while (matches = compDependceParamRegex.exec(message)) {
-                    let code = matches[1];
-                    let text = __viewContext.codeNames[code];
-                    message = message.replace(compDependceParamRegex, text);
+                    var code = matches[1];
+                    var text_1 = getText(code);
+                    message = message.replace(compDependceParamRegex, text_1);
                 }
                 return message;
             }
             function formatParams(message, args) {
                 if (args == undefined)
                     return message;
-                let paramRegex = /{([0-9])+(:\\w+)?}/;
-                let matches;
+                var paramRegex = /｛([0-9])+(:\\w+)?｝/;
+                var matches;
                 while (matches = paramRegex.exec(message)) {
-                    let code = matches[1];
-                    let text = args[parseInt(code)];
-                    message = message.replace(paramRegex, text);
+                    var code = matches[1];
+                    var text_2 = args[parseInt(code)];
+                    message = message.replace(paramRegex, text_2);
                 }
                 return message;
             }
