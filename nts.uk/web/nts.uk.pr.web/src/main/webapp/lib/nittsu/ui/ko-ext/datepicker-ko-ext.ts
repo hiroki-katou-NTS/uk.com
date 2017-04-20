@@ -126,13 +126,11 @@ module nts.uk.ui.koExtentions {
             if (init === true || time.formatPattern($input.datepicker("getDate",true),"",ISOFormat) !== dateFormatValue) {
                 if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
                     $input.datepicker('setDate', dateFormatValue);
-                    // Day of Week
-                    if (hasDayofWeek) {
-                        if (util.isNullOrEmpty(dateFormatValue))
-                            $label.text("");
-                        else
-                            $label.text("(" + time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
-                    }
+                    $label.text("(" + time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
+                }
+                else {
+                    $input.val("");
+                    $label.text("");
                 }
             }
             container.data("init", false);

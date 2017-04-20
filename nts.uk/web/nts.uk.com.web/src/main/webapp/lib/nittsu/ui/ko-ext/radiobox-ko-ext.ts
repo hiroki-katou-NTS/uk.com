@@ -13,7 +13,11 @@ module nts.uk.ui.koExtentions {
          * Init
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext) {
+            var data = valueAccessor();
             $(element).addClass("ntsControl");
+            let enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+            $(element).data("enable", _.clone(enable));
+
         }
         
         /**
@@ -22,7 +26,7 @@ module nts.uk.ui.koExtentions {
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             // Get data
             var data = valueAccessor();
-            var options: any = ko.unwrap(data.options);
+            var options: any = data.options === undefined ? [] : JSON.parse(ko.toJSON(data.options));
             var optionValue: string = ko.unwrap(data.optionsValue);
             var optionText: string = ko.unwrap(data.optionsText);
             var selectedValue: any = data.value;
@@ -45,7 +49,12 @@ module nts.uk.ui.koExtentions {
                         var self = this;
                         if ($(self).is(":checked"))
                             selectedValue($(self).data("value"));
-                    }).appendTo(radioBoxLabel);
+                    });
+                    let disableOption = option["enable"];
+                    if(!nts.uk.util.isNullOrUndefined(disableOption) && (disableOption === false)){
+                        radioBox.attr("disabled", "disabled");    
+                    }
+                    radioBox.appendTo(radioBoxLabel);
                     var box = $("<span class='box'></span>").appendTo(radioBoxLabel);
                     if (option[optionText] && option[optionText].length > 0)
                         var label = $("<span class='label'></span>").text(option[optionText]).appendTo(radioBoxLabel);
@@ -53,7 +62,7 @@ module nts.uk.ui.koExtentions {
                 });
 
                 // Save a clone
-                container.data("options", options.slice());
+                container.data("options", _.cloneDeep(options));
             }
 
             // Checked
@@ -64,7 +73,17 @@ module nts.uk.ui.koExtentions {
                 $(checkedRadio).prop("checked", true);
 
             // Enable
-            (enable === true) ? container.find("input[type='radio']").removeAttr("disabled") : container.find("input[type='radio']").attr("disabled", "disabled");
+            if(!_.isEqual(container.data("enable"), enable)){
+                container.data("enable",  _.clone(enable));
+                (enable === true) ? container.find("input[type='radio']").removeAttr("disabled") : container.find("input[type='radio']").attr("disabled", "disabled");
+                _.forEach(data.options(), (option) => {
+                    if (typeof option["enable"] === "function"){
+                        option["enable"](enable);
+                    } else {
+                        option["enable"] = (enable);    
+                    }
+                });      
+            }
         }
     }
     

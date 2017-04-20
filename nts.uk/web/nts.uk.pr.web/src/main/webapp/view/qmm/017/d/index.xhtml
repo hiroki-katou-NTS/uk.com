@@ -9,7 +9,7 @@
 	<ui:composition>
 		<div class="wrap-sel-006">
 			<div class="ib d-col-1">
-				<div id="d_lst_001" class="ib va-middle caret-right caret-background" data-bind="with: listBoxItemType">
+				<div id="listBox_itemType_d_screen" class="ib va-middle caret-right caret-background" data-bind="with: listBoxItemType">
 					<div id="list-box-d" class="list-box-1" data-bind="ntsListBox: {
 						options: itemList,
 						optionsValue: 'code',
@@ -20,7 +20,7 @@
 						rows: 5}"></div>
 				</div>
 			</div>
-			<div id="d_lst_002" class="ib va-middle" data-bind="with: listBoxItems">
+			<div id="listBox_items_d_screen" class="ib va-middle" data-bind="with: listBoxItems">
 				<div style="width: 282px" data-bind="ntsSearchBox: {comId: 'list-box', items: itemList, selected: selectedCode, selectedKey: 'code', fields: ['name', 'code']}" />
 					<div id="list-box-d2" data-bind="ntsListBox: {
 						options: itemList,
@@ -34,10 +34,10 @@
 							{ prop: 'name', length: 10 }
 						],
 						rows: 5}"></div>
-				<button id="d_btn_001" class="caret-bottom" data-bind="click: $root.content.placeItemNameToTextArea.bind($data, 0, $root.content)">計算式に挿入する</button>
+				<button id="insert_in_calculation_btn_d_screen" class="caret-bottom" data-bind="click: $root.content.placeItemNameToTextArea.bind($data, 0, $root.content)">計算式に挿入する</button>
 			</div>
 			<div class="ib block-detail">
-				<span class="lbl_001">項目説明</span>
+				<span class="item_description_lbl">項目説明</span>
 				<hr/>
 			</div>
 		</div>

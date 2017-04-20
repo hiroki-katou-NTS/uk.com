@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.infra.repository.rule.employment.processing.yearmonth;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -40,16 +41,18 @@ public class JpaPaydayRepository extends JpaRepository implements PaydayReposito
 	private final String SELECT_ALL_12 = SELECT_ALL_BY_CCD
 			+ " AND c.qpdmtPaydayPK.payBonusAtr = :payBonusAtr AND c.qpdmtPaydayPK.sparePayAtr = :sparePayAtr";
 
-	private final String SELECT_ALL_12_B = SELECT_ALL_BY_CCD
-			+ " AND c.qpdmtPaydayPK.processingNo = :processingNo";
+	@Override
+	public BigDecimal select1(String companyCode, int processingNo, int payBonusAtr, int processingYm,
+			int sparePayAtr) {
+		return select3(companyCode, processingNo, payBonusAtr, processingYm, sparePayAtr).getNeededWorkDay().v();
+	}
 
 	@Override
-	public List<Payday> select1_3(String companyCode, int processingNo, int payBonusAtr, int processingYm,
-			int sparePayAtr) {
+	public Payday select3(String companyCode, int processingNo, int payBonusAtr, int processingYm, int sparePayAtr) {
 		return this.queryProxy().query(SELECT_ALL_1_3, QpdmtPayday.class).setParameter("companyCode", companyCode)
 				.setParameter("processingNo", processingNo).setParameter("payBonusAtr", payBonusAtr)
 				.setParameter("processingYm", processingYm).setParameter("sparePayAtr", sparePayAtr)
-				.getList(c -> toDomain(c));
+				.getList(c -> toDomain(c)).get(0);
 	}
 
 	@Override
@@ -101,17 +104,15 @@ public class JpaPaydayRepository extends JpaRepository implements PaydayReposito
 				.setParameter("payBonusAtr", payBonusAtr).setParameter("sparePayAtr", sparePayAtr)
 				.getList(c -> toDomain(c));
 	}
-	
-	/// Hàm 12b viết ra để giảm số lần truy vấn vào DB và số lần request lên server của client.
-	@Override
-	public List<Payday> select12b(String companyCode, int processingNo) {
-		return this.queryProxy().query(SELECT_ALL_12_B, QpdmtPayday.class).setParameter("companyCode", companyCode)
-				.setParameter("processingNo", processingNo).getList(c -> toDomain(c));
-	}
 
 	@Override
 	public void insert1(Payday domain) {
 		this.commandProxy().insert(toEntity(domain));
+	}
+
+	@Override
+	public void update1(Payday domain) {
+		this.commandProxy().update(toEntity(domain));
 	}
 
 	private Payday toDomain(QpdmtPayday entity) {

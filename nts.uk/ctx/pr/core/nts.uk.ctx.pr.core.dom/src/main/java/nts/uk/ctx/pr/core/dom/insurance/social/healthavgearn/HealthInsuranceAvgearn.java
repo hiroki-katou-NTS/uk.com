@@ -6,6 +6,7 @@ package nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn;
 
 import java.math.BigDecimal;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
@@ -16,6 +17,7 @@ import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
  * The Class HealthInsuranceAvgearn.
  */
 @Getter
+@EqualsAndHashCode(callSuper = true, of = { "historyId", "grade" })
 public class HealthInsuranceAvgearn extends DomainObject {
 
 	/** The history id. */
@@ -23,7 +25,7 @@ public class HealthInsuranceAvgearn extends DomainObject {
 	private String historyId;
 
 	/** The level code. */
-	private Integer levelCode;
+	private Integer grade;
 
 	/** The company avg. */
 	private HealthInsuranceAvgearnValue companyAvg;
@@ -34,8 +36,10 @@ public class HealthInsuranceAvgearn extends DomainObject {
 	/**
 	 * Instantiates a new HealthInsuranceAvgearn.
 	 */
-	private HealthInsuranceAvgearn() {
-	};
+	private HealthInsuranceAvgearn(String historyId) {
+		super();
+		this.historyId = historyId;
+	}
 
 	// =================== Memento State Support Method ===================
 	/**
@@ -46,7 +50,7 @@ public class HealthInsuranceAvgearn extends DomainObject {
 	 */
 	public HealthInsuranceAvgearn(HealthInsuranceAvgearnGetMemento memento) {
 		this.historyId = memento.getHistoryId();
-		this.levelCode = memento.getLevelCode();
+		this.grade = memento.getGrade();
 		this.companyAvg = memento.getCompanyAvg();
 		this.personalAvg = memento.getPersonalAvg();
 	}
@@ -59,7 +63,7 @@ public class HealthInsuranceAvgearn extends DomainObject {
 	 */
 	public void saveToMemento(HealthInsuranceAvgearnSetMemento memento) {
 		memento.setHistoryId(this.historyId);
-		memento.setLevelCode(this.levelCode);
+		memento.setGrade(this.grade);
 		memento.setCompanyAvg(this.companyAvg);
 		memento.setPersonalAvg(this.personalAvg);
 	}
@@ -72,9 +76,9 @@ public class HealthInsuranceAvgearn extends DomainObject {
 	 * @return the health insurance avgearn
 	 */
 	public HealthInsuranceAvgearn copyWithNewHistoryId(String newHistoryId) {
-		HealthInsuranceAvgearn healthInsuranceAvgearn = new HealthInsuranceAvgearn();
+		HealthInsuranceAvgearn healthInsuranceAvgearn = new HealthInsuranceAvgearn(newHistoryId);
 		healthInsuranceAvgearn.historyId = newHistoryId;
-		healthInsuranceAvgearn.levelCode = this.levelCode;
+		healthInsuranceAvgearn.grade = this.grade;
 		healthInsuranceAvgearn.companyAvg = this.companyAvg;
 		healthInsuranceAvgearn.personalAvg = this.personalAvg;
 		return healthInsuranceAvgearn;
@@ -91,13 +95,13 @@ public class HealthInsuranceAvgearn extends DomainObject {
 	 */
 	public static HealthInsuranceAvgearn createWithIntial(String newHistoryId, Integer levelCode) {
 		// Create new object
-		HealthInsuranceAvgearn healthInsAvgearn = new HealthInsuranceAvgearn();
+		HealthInsuranceAvgearn healthInsAvgearn = new HealthInsuranceAvgearn(newHistoryId);
 		CommonAmount defComAmount = new CommonAmount(BigDecimal.ZERO);
 		InsuranceAmount defInsAmount = new InsuranceAmount(BigDecimal.ZERO);
 
 		// Set data
 		healthInsAvgearn.historyId = newHistoryId;
-		healthInsAvgearn.levelCode = levelCode;
+		healthInsAvgearn.grade = levelCode;
 		healthInsAvgearn.companyAvg = new HealthInsuranceAvgearnValue(defInsAmount, defComAmount,
 				defComAmount, defInsAmount);
 		healthInsAvgearn.personalAvg = new HealthInsuranceAvgearnValue(defInsAmount, defComAmount,
@@ -106,46 +110,5 @@ public class HealthInsuranceAvgearn extends DomainObject {
 		// Return
 		return healthInsAvgearn;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((historyId == null) ? 0 : historyId.hashCode());
-		result = prime * result + ((levelCode == null) ? 0 : levelCode.hashCode());
-		return result;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof HealthInsuranceAvgearn))
-			return false;
-		HealthInsuranceAvgearn other = (HealthInsuranceAvgearn) obj;
-		if (historyId == null) {
-			if (other.historyId != null)
-				return false;
-		} else if (!historyId.equals(other.historyId))
-			return false;
-		if (levelCode == null) {
-			if (other.levelCode != null)
-				return false;
-		} else if (!levelCode.equals(other.levelCode))
-			return false;
-		return true;
-	}
-
+	
 }

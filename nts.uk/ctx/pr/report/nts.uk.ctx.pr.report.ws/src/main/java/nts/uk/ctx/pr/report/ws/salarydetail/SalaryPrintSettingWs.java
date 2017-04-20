@@ -13,6 +13,7 @@ import javax.ws.rs.Produces;
 import nts.uk.ctx.pr.report.app.salarydetail.printsetting.command.SalaryPrintSettingSaveCommand;
 import nts.uk.ctx.pr.report.app.salarydetail.printsetting.command.SalaryPrintSettingSaveCommandHandler;
 import nts.uk.ctx.pr.report.app.salarydetail.printsetting.find.SalaryPrintSettingFinder;
+import nts.uk.ctx.pr.report.app.salarydetail.printsetting.find.dto.SalaryPrintSettingDto;
 
 /**
  * The Class SalaryPrintSettingWs.
@@ -35,8 +36,8 @@ public class SalaryPrintSettingWs {
 	 */
 	@POST
 	@Path("find")
-	public void find() {
-		//this.finder.find();
+	public SalaryPrintSettingDto find() {
+		return this.finder.find();
 	}
 
 	/**

@@ -24,24 +24,32 @@ public class SalaryCategorySettingDto implements SalaryCategorySettingSetMemento
 	/** The output items. */
 	public List<SalaryOutputSettingItemDto> outputItems;
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryCategorySettingSetMemento#setSalaryCategory(nts.uk.ctx.pr.report.dom.salarydetail.SalaryCategory)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.
+	 * SalaryCategorySettingSetMemento#setSalaryCategory(nts.uk.ctx.pr.report.
+	 * dom.salarydetail.SalaryCategory)
 	 */
 	@Override
 	public void setSalaryCategory(SalaryCategory salaryCategory) {
 		this.category = salaryCategory;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryCategorySettingSetMemento#setSalaryOutputItems(java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.
+	 * SalaryCategorySettingSetMemento#setSalaryOutputItems(java.util.List)
 	 */
 	@Override
 	public void setSalaryOutputItems(List<SalaryOutputItem> listSalaryOutputItem) {
 		this.outputItems = listSalaryOutputItem.stream().map(item -> {
 			SalaryOutputSettingItemDto itemDto = SalaryOutputSettingItemDto.builder().build();
 			item.saveToMemento(itemDto);
+			itemDto.name = "FakeName" + itemDto.code;
 			return itemDto;
-		}).collect(Collectors.toList());
+		}).sorted((a, b) -> Integer.compare(a.orderNumber, b.orderNumber)).collect(Collectors.toList());
 	}
 
 }

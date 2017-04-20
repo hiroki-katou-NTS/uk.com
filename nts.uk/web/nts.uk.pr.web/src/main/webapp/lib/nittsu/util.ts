@@ -124,7 +124,7 @@
         /**
          * Returns true if the target is null or undefined or blank.
          * @param  {any} [target] Target need to check
-         * @return {boolean}      Formatted duration
+         * @return {boolean}      True for blank
          */
         export function isNullOrEmpty(target: any): boolean {
             return (target === undefined || target === null || target.length == 0);
@@ -537,7 +537,41 @@
             }
         }
     }
-    
+    export module resource {
+
+
+        export function getText(code: string): string {
+            return __viewContext.codeNames[code];
+        }
+
+        export function getMessage(messageId: string, ...params: any[]): string {
+            let message = __viewContext.messages[messageId];
+            message = formatParams(message, params);
+            message = formatCompDependParam(message);
+            return message;
+        }
+        function formatCompDependParam(message: string) {
+            let compDependceParamRegex = /{#(\w*)}/;
+            let matches: string[];
+            while (matches = compDependceParamRegex.exec(message)) {
+                let code = matches[1];
+                let text = __viewContext.codeNames[code];
+                message = message.replace(compDependceParamRegex, text);
+            }
+            return message;
+        }
+        function formatParams(message: string, args: string[]) {
+            if (args == undefined) return message;
+            let paramRegex = /{([0-9])+(:\\w+)?}/;
+            let matches: string[];
+            while (matches = paramRegex.exec(message)) {
+                let code = matches[1];
+                let text = args[parseInt(code)];
+                message = message.replace(paramRegex, text);
+            }
+            return message;
+        }
+    }
     export var sessionStorage = new WebStorageWrapper(window.sessionStorage);
     
 }
