@@ -3,4 +3,3 @@ __viewContext.ready(function () {
     screenModel.startPage();
     this.bind(screenModel);
 });
-//# sourceMappingURL=qmm002.a.start.js.map

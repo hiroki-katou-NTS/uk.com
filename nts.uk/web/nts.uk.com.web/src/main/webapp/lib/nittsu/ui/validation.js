@@ -1,3 +1,4 @@
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -6,47 +7,45 @@ var nts;
         (function (ui) {
             var validation;
             (function (validation) {
-                var NoValidator = (function () {
-                    function NoValidator() {
-                    }
-                    NoValidator.prototype.validate = function (inputText, option) {
+                class NoValidator {
+                    validate(inputText, option) {
                         var result = new ValidationResult();
                         result.isValid = true;
                         result.parsedValue = inputText;
                         return result;
-                    };
-                    return NoValidator;
-                }());
+                    }
+                }
                 validation.NoValidator = NoValidator;
-                var ValidationResult = (function () {
-                    function ValidationResult() {
+                class ValidationResult {
+                    constructor() {
                         this.errorMessage = 'error message';
                     }
-                    ValidationResult.prototype.fail = function (errorMessage) {
+                    fail(errorMessage) {
                         this.errorMessage = errorMessage;
                         this.isValid = false;
-                    };
-                    ValidationResult.prototype.success = function (parsedValue) {
+                    }
+                    success(parsedValue) {
                         this.parsedValue = parsedValue;
                         this.isValid = true;
-                    };
-                    return ValidationResult;
-                }());
+                    }
+                }
                 validation.ValidationResult = ValidationResult;
-                var StringValidator = (function () {
-                    function StringValidator(primitiveValueName, option) {
+                class StringValidator {
+                    constructor(primitiveValueName, option) {
                         this.constraint = getConstraint(primitiveValueName);
                         this.charType = uk.text.getCharType(primitiveValueName);
                         this.required = option.required;
                     }
-                    StringValidator.prototype.validate = function (inputText, option) {
+                    validate(inputText, option) {
                         var result = new ValidationResult();
+                        // Check Required
                         if (this.required !== undefined && this.required !== false) {
                             if (uk.util.isNullOrEmpty(inputText)) {
                                 result.fail('This field is required');
                                 return result;
                             }
                         }
+                        // Check CharType
                         if (this.charType !== null && this.charType !== undefined) {
                             if (this.charType.viewName === '半角数字' || this.charType.viewName === '半角英数字') {
                                 inputText = uk.text.toOneByteAlphaNumberic(inputText);
@@ -59,6 +58,7 @@ var nts;
                                 return result;
                             }
                         }
+                        // Check Constraint
                         if (this.constraint !== undefined && this.constraint !== null) {
                             if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
                                 result.fail('Max length for this input is ' + this.constraint.maxLength);
@@ -73,16 +73,15 @@ var nts;
                         }
                         result.success(inputText);
                         return result;
-                    };
-                    return StringValidator;
-                }());
+                    }
+                }
                 validation.StringValidator = StringValidator;
-                var NumberValidator = (function () {
-                    function NumberValidator(primitiveValueName, option) {
+                class NumberValidator {
+                    constructor(primitiveValueName, option) {
                         this.constraint = getConstraint(primitiveValueName);
                         this.option = option;
                     }
-                    NumberValidator.prototype.validate = function (inputText) {
+                    validate(inputText) {
                         var result = new ValidationResult();
                         var isDecimalNumber = false;
                         if (this.option !== undefined) {
@@ -107,19 +106,19 @@ var nts;
                         }
                         result.success(inputText === "0" ? inputText : uk.text.removeFromStart(inputText, "0"));
                         return result;
-                    };
-                    return NumberValidator;
-                }());
+                    }
+                }
                 validation.NumberValidator = NumberValidator;
-                var TimeValidator = (function () {
-                    function TimeValidator(primitiveValueName, option) {
+                class TimeValidator {
+                    constructor(primitiveValueName, option) {
                         this.constraint = getConstraint(primitiveValueName);
                         this.outputFormat = (option && option.outputFormat) ? option.outputFormat : "";
                         this.required = (option && option.required) ? option.required : false;
                         this.valueType = (option && option.valueType) ? option.valueType : "string";
                     }
-                    TimeValidator.prototype.validate = function (inputText) {
+                    validate(inputText) {
                         var result = new ValidationResult();
+                        // Check required
                         if (uk.util.isNullOrEmpty(inputText)) {
                             if (this.required === true) {
                                 result.fail('This field is required');
@@ -130,7 +129,9 @@ var nts;
                                 return result;
                             }
                         }
+                        // Create Parser
                         var parseResult = uk.time.parseMoment(inputText, this.outputFormat);
+                        // Parse
                         if (parseResult.success) {
                             if (this.valueType === "string")
                                 result.success(parseResult.format());
@@ -151,9 +152,8 @@ var nts;
                             result.fail(parseResult.getMsg());
                         }
                         return result;
-                    };
-                    return TimeValidator;
-                }());
+                    }
+                }
                 validation.TimeValidator = TimeValidator;
                 function getConstraint(primitiveValueName) {
                     var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
@@ -167,4 +167,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=validation.js.map
