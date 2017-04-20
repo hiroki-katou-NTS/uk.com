@@ -16,24 +16,23 @@ import nts.uk.file.pr.app.export.insurance.data.InsuranceOfficeDto;
 /**
  * The Class SocialInsuranceQuery.
  *
- * @author duongnd
  */
 
 @Setter
 @Getter
-public class SalarySocialInsuranceQuery {
+public class SocialInsuQuery {
 
     /** The year month. */
-    private String yearMonth;
+    private Integer yearMonth;
     
     /** The is equal. */
-    private boolean isEqual;
+    private Boolean isEqual;
     
     /** The is deficient. */
-    private boolean isDeficient;
+    private Boolean isDeficient;
     
     /** The is redundant. */
-    private boolean isRedundant;
+    private Boolean isRedundant;
     
     /** The insurance offices. */
     private List<InsuranceOfficeDto> insuranceOffices;

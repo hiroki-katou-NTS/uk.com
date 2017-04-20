@@ -18,7 +18,6 @@
 					width : 1300,
 					height : 800
 				};
-				// TODO: Code validate.
 			</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingCode
@@ -34,7 +33,7 @@
 						<button id="register-button" class="proceed" data-bind="click: save">登録</button>
 					</div>
 					<div class="function-middle">
-						<button id="delete-button" data-bind="click: remove, enable: !outputSettingDetail().isCreateMode()">削除</button>
+						<button id="delete-button" class="danger" data-bind="click: remove, enable: !outputSettingDetail().isCreateMode()">削除</button>
 						<button id="close-button" data-bind="click: close">閉じる</button>
 					</div>
 				</div>
@@ -150,7 +149,7 @@
  														}"></table> 
 												</div>
 												<div class="ntsMoveDataArea ntsSwapComponent">
-													<button class="move-button move-forward" data-bind="click: masterItemToDisplay">forward</button>
+													<button class="move-button move-forward" data-bind="click: masterItemToDisplay"><i class="icon icon-button-arrow-right"></i></button>
 												</div>
 													
 												<div class="left-table">
@@ -170,7 +169,7 @@
  														}"></table>
 												</div>
 												<div class="ntsMoveDataArea ntsSwapComponent">
-													<button class="move-button move-forward" data-bind="click: aggregateItemToDisplay">forward</button>
+													<button class="move-button move-forward" data-bind="click: aggregateItemToDisplay"><i class="icon icon-button-arrow-right"></i></button>
 												</div>
 											</td>
 											<td class="tab-contents-right">
