@@ -486,7 +486,9 @@ var nts;
                                             break;
                                         case SalaryCategory.ARTICLE_OTHERS:
                                             masterItems().forEach(function (item) {
-                                                if (item.category == SalaryCategory.ARTICLE_OTHERS) {
+                                                if (item.category == SalaryCategory.ARTICLE_OTHERS
+                                                    || item.category == 'Other'
+                                                    || item.category == 'Articles') {
                                                     self.masterItems.push(item);
                                                 }
                                             });
@@ -499,8 +501,30 @@ var nts;
                                             return item.code;
                                         });
                                     }
-                                    self.masterItems(self.masterItems().filter(function (item) { return existCodes.indexOf(item.code) == -1; }));
-                                    self.aggregateItems(self.aggregateItems().filter(function (item) { return existCodes.indexOf(item.code) == -1; }));
+                                    existCodes.forEach(function (code) {
+                                        var outputItem;
+                                        var aggrItem = self.aggregateItems().filter(function (item) { return code == item.code; })[0];
+                                        var masterItem = self.masterItems().filter(function (item) { return code == item.code; })[0];
+                                        if (aggrItem) {
+                                            self.aggregateItems.remove(aggrItem);
+                                            outputItem = {
+                                                code: aggrItem.code,
+                                                name: aggrItem.name,
+                                                isAggregateItem: true,
+                                                orderNumber: 1
+                                            };
+                                        }
+                                        else {
+                                            self.masterItems.remove(masterItem);
+                                            outputItem = {
+                                                code: masterItem.code,
+                                                name: masterItem.name,
+                                                isAggregateItem: false,
+                                                orderNumber: 1
+                                            };
+                                        }
+                                        self.outputItems.replace(self.outputItems().filter(function (item) { return code == item.code; })[0], outputItem);
+                                    });
                                     this.outputItemColumns = ko.observableArray([
                                         {
                                             headerText: '集約', prop: 'isAggregateItem', width: 40,

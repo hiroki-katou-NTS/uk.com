@@ -664,7 +664,9 @@ module nts.uk.pr.view.qpp007.c {
                         break;
                     case SalaryCategory.ARTICLE_OTHERS:
                         masterItems().forEach(item => {
-                            if (item.category == SalaryCategory.ARTICLE_OTHERS) {
+                            if (item.category == SalaryCategory.ARTICLE_OTHERS
+                                || item.category == 'Other'
+                                || item.category == 'Articles') {
                                 self.masterItems.push(item);
                             }
                         });
@@ -672,15 +674,39 @@ module nts.uk.pr.view.qpp007.c {
                     default: // Do nothing.
                 }
 
-                // exclude items contain in setting.
+                /**
+                 * Remove aggregate & master items exist in outputItems.
+                 * Replace output item with name.
+                 */
                 var existCodes: string[] = [];
                 if (categorySetting != undefined) {
                     existCodes = categorySetting.outputItems.map(item => {
                         return item.code;
                     });
                 }
-                self.masterItems(self.masterItems().filter(item => existCodes.indexOf(item.code) == -1));
-                self.aggregateItems(self.aggregateItems().filter(item => existCodes.indexOf(item.code) == -1));
+                existCodes.forEach(code => {
+                    let outputItem: OutputItem;
+                    let aggrItem = self.aggregateItems().filter(item => code == item.code)[0];
+                    let masterItem = self.masterItems().filter(item => code == item.code)[0];
+                    if (aggrItem) {
+                        self.aggregateItems.remove(aggrItem);
+                        outputItem = {
+                            code: aggrItem.code,
+                            name: aggrItem.name,
+                            isAggregateItem: true,
+                            orderNumber: 1
+                        };
+                    } else {
+                        self.masterItems.remove(masterItem);
+                        outputItem = {
+                            code: masterItem.code,
+                            name: masterItem.name,
+                            isAggregateItem: false,
+                            orderNumber: 1
+                        };
+                    }
+                    self.outputItems.replace(self.outputItems().filter(item => code == item.code)[0], outputItem);
+                });
 
                 // Define outputItemColumns.
                 this.outputItemColumns = ko.observableArray<any>([

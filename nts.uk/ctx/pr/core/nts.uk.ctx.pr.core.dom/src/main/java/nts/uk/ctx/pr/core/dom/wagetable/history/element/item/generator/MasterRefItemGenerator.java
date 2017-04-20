@@ -18,6 +18,8 @@ import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 import nts.uk.ctx.pr.core.dom.wagetable.element.WtElement;
 import nts.uk.ctx.pr.core.dom.wagetable.element.WtElementRepository;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistory;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistoryRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.ElementSetting;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.CodeItem;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.Item;
@@ -31,6 +33,10 @@ import nts.uk.ctx.pr.core.dom.wagetable.reference.WtReferenceRepository;
  */
 @Stateless
 public class MasterRefItemGenerator implements ItemGenerator {
+
+	/** The wt history repo. */
+	@Inject
+	private WtHistoryRepository wtHistoryRepo;
 
 	/** The wt element repo. */
 	@Inject
@@ -54,11 +60,14 @@ public class MasterRefItemGenerator implements ItemGenerator {
 	@Override
 	public List<? extends Item> generate(String companyCode, String historyId,
 			ElementSetting elementSetting) {
+		// Get the history
+		Optional<WtHistory> optWtHistory = wtHistoryRepo.findHistoryByUuid(historyId);
+
 		// Get the element.
 		Optional<WtElement> optWtElement = this.wtElementRepo.findByHistoryId(historyId);
 
-		// Check element is existed.
-		if (!optWtElement.isPresent()) {
+		// Check history and element is existed.
+		if (!optWtElement.isPresent() || !optWtHistory.isPresent()) {
 			return Collections.emptyList();
 		}
 
@@ -72,7 +81,8 @@ public class MasterRefItemGenerator implements ItemGenerator {
 		}
 
 		// Get ref items.
-		List<WtCodeRefItem> wtRefItems = this.wtReferenceRepo.getMasterRefItem(optMasterRef.get());
+		List<WtCodeRefItem> wtRefItems = this.wtReferenceRepo.getMasterRefItem(optMasterRef.get(),
+				optWtHistory.get().getStart());
 
 		// Create map: unique code - old uuid.
 		@SuppressWarnings("unchecked")
