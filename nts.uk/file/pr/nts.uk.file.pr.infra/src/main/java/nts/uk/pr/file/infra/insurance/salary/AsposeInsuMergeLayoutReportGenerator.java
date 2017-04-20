@@ -395,13 +395,13 @@ public class AsposeInsuMergeLayoutReportGenerator extends AsposeCellsReportGener
             Range newRangeChildRaising, double totalChildRaisingBusiness) {
         Cells cells = worksheet.getCells();
         int indexRowCurrent = newRangeDeliveryNoticeAmount.getFirstRow();
-        String cellStart = cells.get(indexRowCurrent, ReportConstant.INDEX_COLUMN_DELIVERY).getName();
-        String cellEnd = cells.get(indexRowCurrent, ReportConstant.INDEX_COLUMN_INSURED).getName();
-        String formulaSubtract = cellStart.concat(ReportConstant.OPERATOR_SUB).concat(cellEnd);
+        double cellStartValue = (double) cells.get(indexRowCurrent, ReportConstant.INDEX_COLUMN_DELIVERY).getValue();
+        double cellEndValue = (double) cells.get(indexRowCurrent, ReportConstant.INDEX_COLUMN_INSURED).getValue();
+        double valueBurden = cellStartValue - cellEndValue;
         Cell cellBurden = cells.get(indexRowCurrent, ReportConstant.INDEX_COLUMN_CHILD_RAISING);
-        cellBurden.setFormula(formulaSubtract);
-        String formSubRaising = cellBurden.getName().concat(ReportConstant.OPERATOR_SUB) + totalChildRaisingBusiness;
-        cells.get(newRangeChildRaising.getFirstRow(), ReportConstant.INDEX_COLUMN_CHILD_RAISING).setFormula(formSubRaising);
+        cellBurden.setValue(valueBurden);
+        double childRaising = valueBurden -  totalChildRaisingBusiness;
+        cells.get(newRangeChildRaising.getFirstRow(), ReportConstant.INDEX_COLUMN_CHILD_RAISING).setValue(childRaising);
     }
 
     /**

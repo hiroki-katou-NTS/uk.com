@@ -39,6 +39,7 @@ public class SocialInsuReportData {
     /** The child raising total company. */
     private double childRaisingTotalCompany;
     
+    /** The is company. */
     private Boolean isCompany;
     
     /** The configure output. */

@@ -15,6 +15,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -28,6 +29,7 @@ import nts.uk.ctx.pr.core.infra.entity.personalinfo.employmentcontract.PclmtPers
 import nts.uk.file.pr.app.export.accumulatedpayment.AccPaymentRepository;
 import nts.uk.file.pr.app.export.accumulatedpayment.data.AccPaymentItemData;
 import nts.uk.file.pr.app.export.accumulatedpayment.query.AccPaymentReportQuery;
+
 /**
  * The Class JpaAccPaymentReportRepository.
  */
@@ -38,10 +40,10 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 
 	private static final String DATE_FORMAT = "yyyyMMdd";
 	
-	/** The Constant START_DATE. */
+	/** The Constant START_DATE_OF_YEAR. */
 	private static final String START_DATE_OF_YEAR = "0101";
 	
-	/** The Constant END_DATE. */
+	/** The Constant END_DATE_OF_YEAR. */
 	private static final String END_DATE_OF_YEAR = "1231";
 	
 	/** The Constant PAY_BONUS_ATR. */
@@ -128,41 +130,42 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 			+ "AND pdt.qstdtPaymentDetailPK.companyCode = pd.qpdmtPaydayPK.ccd "
 			+ "AND pdt.qstdtPaymentDetailPK.personId = p.pid "
 			+ "AND pdt.qstdtPaymentDetailPK.processingNo = pd.qpdmtPaydayPK.processingNo "
-			+ "AND pdt.qstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR "//1
-			+ "AND pdt.qstdtPaymentDetailPK.processingYM = pd.qpdmtPaydayPK.processingYm "
-			+ "AND pdt.qstdtPaymentDetailPK.sparePayAttribute = :SPARE_PAY_ATR "// 0
-			+ "AND yd.qyedtYearendDetailPK.ccd = pdt.qstdtPaymentDetailPK.companyCode "
-			+ "AND yd.qyedtYearendDetailPK.pid = p.pid "
-			+ "AND yd.qyedtYearendDetailPK.yearK = :YEAR_k ";
+//			+ "AND pdt.qstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR "//1
+//			+ "AND pdt.qstdtPaymentDetailPK.processingYM = pd.qpdmtPaydayPK.processingYm "
+			+ "AND pdt.qstdtPaymentDetailPK.sparePayAttribute = :SPARE_PAY_ATR ";// 0
+//			+ "AND yd.qyedtYearendDetailPK.ccd = pdt.qstdtPaymentDetailPK.companyCode "
+//			+ "AND yd.qyedtYearendDetailPK.pid = p.pid "
+//			+ "AND yd.qyedtYearendDetailPK.yearK = :YEAR_k ";
 	
+
 	/** The Constant CHECK_AT_PRINTING_QUERY. */
-	private static final String CHECK_AT_PRINTING_QUERY = "SELECT ec.pclmtPersonEmpContractPK.pId, sum(pdt.value)"
-			+ "FROM PclmtPersonEmpContract ec, "
-			+ "CmnmtEmp e, "
-			+ "QpdmtPayday pd, "
-			+ "QstdtPaymentDetail pdt "
-			+ "WHERE ec.pclmtPersonEmpContractPK.pId in :PIDs "
-			+ "AND ec.pclmtPersonEmpContractPK.ccd = :CCD "
-			+ "AND ec.pclmtPersonEmpContractPK.strD <= :BASE_YMD "
-			+ "AND ec.endD >= :BASE_YMD "
-			+ "AND e.cmnmtEmpPk.companyCode = ec.pclmtPersonEmpContractPK.ccd "
-			+ "AND e.cmnmtEmpPk.employmentCode = ec.empCd "
-			+ "AND pd.qpdmtPaydayPK.ccd = e.cmnmtEmpPk.companyCode "
-			+ "AND pd.qpdmtPaydayPK.payBonusAtr = :PAY_BONUS_ATR " //1
-			+ "AND pd.qpdmtPaydayPK.processingNo = e.processingNo "
-			+ "AND pd.payDate >= :STR_YMD "
-			+ "AND pd.payDate <= :END_YMD "
-			+ "AND pdt.qstdtPaymentDetailPK.companyCode = pd.qpdmtPaydayPK.ccd "
-			+ "AND pdt.qstdtPaymentDetailPK.personId = p.pid "
-			+ "AND pdt.qstdtPaymentDetailPK.processingNo = pd.qpdmtPaydayPK.processingNo "
-			+ "AND pdt.qstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR "//1
-			+ "AND pdt.qstdtPaymentDetailPK.processingYM = pd.qpdmtPaydayPK.processingYm "
-			+ "AND pdt.qstdtPaymentDetailPK.sparePayAttribute = :SPARE_PAY_ATR "// 0
-			+ "AND pdt.qstdtPaymentDetailPK.categoryATR = :CTG_ATR_0 "//0
-			+ "AND pdt.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F001 "//"F001"
-			+ "GROUP BY ec.pclmtPersonEmpContractPK.pId "
-			+ "HAVING SUM(pdt.value) >= :LOWER_LIMIT_VALUE"
-			+ "AND SUM(pdt.value) <= :UPPER_LIMIT_VALUE";
+	private static final String CHECK_AT_PRINTING_QUERY = "SELECT pdt.qstdtPaymentDetailPK.personId, sum(pdt.value) "
+				+ "FROM QstdtPaymentDetail pdt,"
+				+ "CmnmtEmp e, "
+				+ "QpdmtPayday pd, "
+				+ "PclmtPersonEmpContract ec "
+				+ "WHERE ec.pclmtPersonEmpContractPK.pId in :PIDs "
+				+ "AND ec.pclmtPersonEmpContractPK.ccd = :CCD "
+				+ "AND ec.pclmtPersonEmpContractPK.strD <= :BASE_YMD "
+				+ "AND ec.endD >= :BASE_YMD "
+				+ "AND e.cmnmtEmpPk.companyCode = ec.pclmtPersonEmpContractPK.ccd "
+				+ "AND e.cmnmtEmpPk.employmentCode = ec.empCd "
+				+ "AND pd.qpdmtPaydayPK.ccd = e.cmnmtEmpPk.companyCode "
+//				+ "AND pd.qpdmtPaydayPK.payBonusAtr = :PAY_BONUS_ATR " //1
+//				+ "AND pd.qpdmtPaydayPK.processingNo = e.processingNo "
+				+ "AND pd.payDate >= :STR_YMD "
+				+ "AND pd.payDate <= :END_YMD "
+				+ "AND pdt.qstdtPaymentDetailPK.companyCode = pd.qpdmtPaydayPK.ccd "
+				+ "AND pdt.qstdtPaymentDetailPK.personId = ec.pclmtPersonEmpContractPK.pId "
+				+ "AND pdt.qstdtPaymentDetailPK.processingNo = pd.qpdmtPaydayPK.processingNo "
+				+ "AND pdt.qstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR "//1
+				+ "AND pdt.qstdtPaymentDetailPK.processingYM = pd.qpdmtPaydayPK.processingYm "
+				+ "AND pdt.qstdtPaymentDetailPK.sparePayAttribute = :SPARE_PAY_ATR "// 0
+				+ "AND pdt.qstdtPaymentDetailPK.categoryATR = :CTG_ATR_0 "//0
+				+ "AND pdt.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F001 "//"F001"
+				+ "GROUP BY pdt.qstdtPaymentDetailPK.personId ";
+//				+ "HAVING SUM(pdt.value) >= :LOWER_LIMIT_VALUE "
+//				+ "AND SUM(pdt.value) <= :UPPER_LIMIT_VALUE ";
 
 	/**
 	 * Filter data.
@@ -170,6 +173,7 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 	 * @param itemList the item list
 	 * @param companyCode the company code
 	 * @param query the query
+	 * @return the list
 	 */
 	private List<AccPaymentItemData> filterData(List<Object[]> itemList, String companyCode, AccPaymentReportQuery query) {
 		List<AccPaymentItemData> resultDataList = new ArrayList<>();
@@ -281,12 +285,29 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 
 		return masterResultList;
 	}
-	/* (non-Javadoc)
- * @see nts.uk.file.pr.app.export.accumulatedpayment.AccPaymentRepository#getItems(java.lang.String, nts.uk.file.pr.app.export.accumulatedpayment.query.AccPaymentReportQuery)
- */
-@SuppressWarnings("unchecked")
-@Override
+
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.file.pr.app.export.accumulatedpayment.AccPaymentRepository#
+	 * getItems(java.lang.String,
+	 * nts.uk.file.pr.app.export.accumulatedpayment.query.AccPaymentReportQuery)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
 	public List<AccPaymentItemData> getItems(String companyCode, AccPaymentReportQuery query) {
+		// Check Having Conditions
+		String havingQuery = "";
+		List<String> havingCondition = new ArrayList<>();
+		if(query.getIsLowerLimit()){
+			havingCondition.add("SUM(pdt.value) >= :LOWER_LIMIT_VALUE");
+		}
+		if (query.getIsUpperLimit()) {
+			havingCondition.add("SUM(pdt.value) <= :UPPER_LIMIT_VALUE");
+		}
+		if (!CollectionUtil.isEmpty(havingCondition)) {
+			havingQuery += " Having " + havingCondition.stream().collect(Collectors.joining(" AND "));
+		}
+		
 		List<AccPaymentItemData> filtedData = new ArrayList<>();
 		EntityManager em = this.getEntityManager();
 		List<Object[]> masterResultList = new ArrayList<>();
@@ -296,17 +317,22 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 		GeneralDate strYMD = GeneralDate.fromString(startDate, DATE_FORMAT);
 		GeneralDate endYMD = GeneralDate.fromString(endDate, DATE_FORMAT);
 		
-		Query typedQuery = em.createQuery(CHECK_AT_PRINTING_QUERY)
+		Query typedQuery = em.createQuery(CHECK_AT_PRINTING_QUERY + havingQuery)
 				.setParameter("CCD", companyCode)
 				.setParameter("BASE_YMD", query.getBaseDate())
 				.setParameter("PAY_BONUS_ATR", PAY_BONUS_ATR)
 				.setParameter("STR_YMD", strYMD)
 				.setParameter("END_YMD", endYMD)
 				.setParameter("SPARE_PAY_ATR", SPARE_PAY_ATR)
-				.setParameter("CTG_ATR", PAYMENT_CATEGORY)
-				.setParameter("ITEM_CD_F001", ITEM_CD_F001)
-				.setParameter("LOWER_LIMIT_VALUE", query.getLowerLimitValue())
-				.setParameter("UPPER_LIMIT_VALUE", query.getUpperLimitValue());
+				.setParameter("CTG_ATR_0", PAYMENT_CATEGORY)
+				.setParameter("ITEM_CD_F001", ITEM_CD_F001);
+		
+		if (query.getIsLowerLimit()) {
+			typedQuery.setParameter("LOWER_LIMIT_VALUE", query.getLowerLimitValue());
+		}
+		if (query.getIsUpperLimit()) {
+			typedQuery.setParameter("UPPER_LIMIT_VALUE", query.getUpperLimitValue());
+		}
 		
 		// 
 		List<Object[]> resultList = new ArrayList<>();
@@ -315,15 +341,19 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 		});
 		List<String> pIdList = new ArrayList<>();
 		resultList.stream().forEach(record -> {
-			pIdList.add((String)record[0]);
+			pIdList.add((String) record[0]);
 		});
-		if(resultList.isEmpty()){
+		if (resultList.isEmpty()) {
 			// Throw Error message and stop
-			throw new RuntimeException("ER010");
-		}else{
+			throw new BusinessException("ER010");
+		} else {
 			// Get Master Result List
 			masterResultList = this.getMasterResultList(pIdList, query);
+			if (masterResultList.isEmpty()) {
+				// Throw Error message and stop
+				throw new BusinessException("ER010");
 			}
+		}
 		filtedData = this.filterData(masterResultList, companyCode, query);
 		return filtedData;
 	}
