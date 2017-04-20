@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.CategoryAtr;
@@ -12,6 +13,7 @@ import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ItemCode;
 import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ItemName;
 
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class DetailDifferential extends AggregateRoot {

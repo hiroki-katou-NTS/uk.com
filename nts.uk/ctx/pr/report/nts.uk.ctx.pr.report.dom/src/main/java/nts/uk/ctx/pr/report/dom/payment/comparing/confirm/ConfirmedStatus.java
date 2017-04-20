@@ -14,7 +14,12 @@ public enum ConfirmedStatus {
 	/**
 	 * 1:確認済み
 	 */
-	CONFIRMED(1);
-
+	CONFIRMED(1),
+	
+	/**
+	 * 2:Other
+	 */
+	OTHER(-1);
+	
 	public final int value;
 }
