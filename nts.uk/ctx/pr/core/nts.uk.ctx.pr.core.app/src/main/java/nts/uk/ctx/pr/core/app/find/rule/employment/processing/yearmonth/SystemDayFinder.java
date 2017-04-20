@@ -14,6 +14,7 @@ public class SystemDayFinder {
 
 	public SystemDayDto select1(String companyCode, int processingNo) {
 		SystemDay domain = repository.select1(companyCode, processingNo);
+		
 		if (domain != null) {
 			return SystemDayDto.fromDomain(domain);
 		} else {

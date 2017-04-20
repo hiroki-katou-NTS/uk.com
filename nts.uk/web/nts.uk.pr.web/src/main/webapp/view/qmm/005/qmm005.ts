@@ -6,7 +6,20 @@ class CheckBoxWithHelpBindingHandler implements KnockoutBindingHandler {
         ko.bindingHandlers['ntsCheckBox'].init(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
         if (valueAccessor().helper) {
             var span = document.createElement('span');
-            span.innerHTML = '(' + valueAccessor().helper + ')';
+            if (typeof valueAccessor().helper == 'function') {
+                span.innerHTML = '(' + valueAccessor().helper() + ')';
+            }
+            else if (typeof valueAccessor().helper == 'string') {
+                span.innerHTML = '(' + valueAccessor().helper + ')';
+            } else if (typeof valueAccessor().helper == 'object') {
+                span.id = valueAccessor().helper.id;
+                if (typeof valueAccessor().helper.text == 'function') {
+                    span.innerHTML = '(' + valueAccessor().helper.text() + ')';
+                }
+                else if (typeof valueAccessor().helper.text == 'string') {
+                    span.innerHTML = '(' + valueAccessor().helper.text + ')';
+                }
+            }
             span.setAttribute('class', 'label helper');
             element.getElementsByTagName('label')[0].appendChild(span);
         }
@@ -14,6 +27,29 @@ class CheckBoxWithHelpBindingHandler implements KnockoutBindingHandler {
 
     update(element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext): void {
         ko.bindingHandlers['ntsCheckBox'].update(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
+        if (valueAccessor().helper) {
+            var span = document.createElement('span');
+            if (typeof valueAccessor().helper == 'function') {
+                span.innerHTML = '(' + valueAccessor().helper() + ')';
+            }
+            else if (typeof valueAccessor().helper == 'string') {
+                span.innerHTML = '(' + valueAccessor().helper + ')';
+            } else if (typeof valueAccessor().helper == 'object') {
+                span.id = valueAccessor().helper.id;
+                
+                //remove child helper
+                element.getElementsByClassName("helper")[0].remove();
+                
+                if (typeof valueAccessor().helper.text == 'function') {
+                    span.innerHTML = '(' + valueAccessor().helper.text() + ')';
+                }
+                else if (typeof valueAccessor().helper.text == 'string') {
+                    span.innerHTML = '(' + valueAccessor().helper.text + ')';
+                }
+            }
+            span.setAttribute('class', 'label helper');
+            element.getElementsByTagName('label')[0].appendChild(span);
+        }
     }
 }
 
@@ -23,9 +59,9 @@ Date.prototype["getWorkDays"] = function() {
     let workDays = 0, lastDate = moment(this).daysInMonth();
     for (let day = 1; day <= lastDate; day++) {
         let date = new Date(this.getFullYear(), this.getMonth(), day);
-        if(date.getDay() != 0 && date.getDay() != 6) {
-           workDays++; 
-        }         
+        if (date.getDay() != 0 && date.getDay() != 6) {
+            workDays++;
+        }
     }
     return workDays;
 }
@@ -147,14 +183,14 @@ module qmm005.common {
 
     interface ICheckBoxItem {
         text: string;
-        helper?: string;
+        helper?: any;
         enable?: boolean;
         checked?: boolean;
     }
 
     export class CheckBoxItem {
         text: string;
-        helper: string;
+        helper: any;
         enable: KnockoutObservable<boolean>;
         checked: KnockoutObservable<boolean>;
         constructor(param: ICheckBoxItem) {

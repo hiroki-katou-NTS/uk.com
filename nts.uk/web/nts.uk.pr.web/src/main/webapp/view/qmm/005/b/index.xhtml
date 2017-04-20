@@ -20,7 +20,7 @@
 			<div id="functions-area">
 				<div class="btn-group-left">
 					<button id="B_BTN_001" data-bind="click: newData">新規</button>
-					<button id="B_BTN_002" data-bind="click: saveData">登録</button>
+					<button id="B_BTN_002" data-bind="click: saveData, enable: inp001() != null">登録</button>
 					<button id="B_BTN_003" data-bind="click: deleteData">削除</button>
 					<button id="B_BTN_004" data-bind="click: closeDialog">閉じる</button>
 				</div>
@@ -45,17 +45,17 @@
 				<div class="right-panel">
 					<div class="right-panel-top">
 						<div class="form-group">
-							<div id="B_LBL_001" data-bind="ntsFormLabel: {}">処理区分</div>
+							<div id="B_LBL_001" data-bind="ntsFormLabel: { required: true }">処理区分</div>
 							<label id="B_LBL_002" data-bind="text: lbl002">1</label>
 							<label>.</label>
 							<label id="B_LBL_003" data-bind="text: lbl003">25日払い</label>
 						</div>
 						<div class="form-group">
-							<div id="B_LBL_004" data-bind="ntsFormLabel: {}">処理年</div>
+							<div id="B_LBL_004" data-bind="ntsFormLabel: { required: true }">処理年</div>
 							<input class="form-control" id="B_INP_001" type="text"
-								data-bind="value: inp001" /> <label id="B_LBL_005"
+								data-bind="ntsNumberEditor: {value: inp001, required: true, enable: !enabled(), constraint: 'processingYear'}" /> <label id="B_LBL_005"
 								data-bind="text: lbl005">（平成28年）</label>
-							<button id="B_BTN_005" data-bind="click: showModalDialogE">システム基準日の情報を反映する</button>
+							<button id="B_BTN_005" data-bind="click: showModalDialogE, enable: inp001() != null">システム基準日の情報を反映する</button>
 						</div>
 					</div>
 					<div class="right-panel-bottom">

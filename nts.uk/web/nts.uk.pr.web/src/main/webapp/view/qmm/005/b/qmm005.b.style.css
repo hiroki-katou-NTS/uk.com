@@ -97,12 +97,6 @@
 	border-right: 3px double #999;
 }
 
-#contents-area table.table .index-cols {
-	width: 57px;
-	min-width: 57px;
-	max-width: 57px;
-}
-
 #contents-area table.table .checkbox-cols {
 	width: 40px;
 	max-width: 40px;
@@ -220,4 +214,37 @@ td>.ntsControl span.label {
 
 #contents-area  #B_INP_004, #contents-area  #B_INP_004+div {
 	display: inline-table;
+}
+
+#contents-area table.table th {
+	width: initial;
+}
+
+#contents-area #B_LST_002.table>thead>tr:nth-child(2) th:first-child {
+	width: 105px;
+}
+
+#contents-area #B_LST_002.table>thead>tr:nth-child(2) th:nth-child(2) {
+	width: 605px;
+}
+
+#contents-area #B_LST_002.table>thead>tr:nth-child(3) th:nth-child(1) {
+	width: 170px;
+}
+
+#contents-area #B_LST_002.table>thead>tr:nth-child(3) th:nth-child(2) {
+	width: 110px;
+}
+
+#contents-area #B_LST_002.table>thead>tr:nth-child(3) th:nth-child(3) {
+	width: 145px;
+}
+
+#contents-area #B_LST_002.table>thead>tr:nth-child(3) th:nth-child(4),
+#contents-area #B_LST_002.table>thead>tr:nth-child(3) th:nth-child(5) {
+	width: 90px;
+}
+
+#contents-area #B_LST_002.table>tbody th:first-child {
+	width: 25px;
 }
