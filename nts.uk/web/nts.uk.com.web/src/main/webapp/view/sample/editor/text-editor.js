@@ -36,3 +36,4 @@ __viewContext.ready(function () {
     var viewmodel = new ScreenModel();
     this.bind(viewmodel);
 });
+//# sourceMappingURL=text-editor.js.map

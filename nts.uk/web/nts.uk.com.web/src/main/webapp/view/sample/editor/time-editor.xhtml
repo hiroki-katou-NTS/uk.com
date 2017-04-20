@@ -35,8 +35,10 @@
 						<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						<h3>Date (YYYY/MM/DD)</h3>
 						<input data-name="Date Editor" data-bind="ntsTimeEditor: {value: date, inputFormat: 'date', enable: enable, readonly: readonly, required: false}" />
+						<h3>Time Of Day(HH:mm)</h3>
+						<input data-name="Time Of Days Editor" data-bind="ntsTimeEditor: {value: timeOfDay, inputFormat: 'time', enable: enable, readonly: readonly, required: true}" />
 						<h3>Time (HH:mm)</h3>
-						<input data-name="Time Editor" data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', enable: enable, readonly: readonly, required: true}" />
+						<input data-name="Time Editor" data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', mode: 'time', enable: enable, readonly: readonly, required: true}" />
 						<hr/>
 						<!-- Binding with Object -->
 						<div data-bind="with: yearmontheditor">
@@ -166,6 +168,14 @@
 													<b>Type:</b> KnockoutObservable&lt;boolean&gt; | boolean<br/>
 													<b>Default:</b> false<br/>
 													Set readonly for editor
+												</td>
+											</tr>
+											<tr>
+												<td>mode<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> string<br/>
+													<b>Default:</b> none<br/>
+													If not set this property, default for time is time of days. Set mode is 'time' for use time duration.
 												</td>
 											</tr>
 											<tr>

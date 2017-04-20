@@ -271,7 +271,8 @@ var nts;
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var inputFormat = (data.inputFormat !== undefined) ? ko.unwrap(data.inputFormat) : option.inputFormat;
-                        return new validation.TimeValidator(constraintName, { required: required, outputFormat: inputFormat });
+                        var mode = (data.mode !== undefined) ? ko.unwrap(data.mode) : "";
+                        return new validation.TimeValidator(constraintName, { required: required, outputFormat: inputFormat, mode: mode });
                     };
                     return TimeEditorProcessor;
                 }(EditorProcessor));
@@ -342,3 +343,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=editor-ko-ext.js.map

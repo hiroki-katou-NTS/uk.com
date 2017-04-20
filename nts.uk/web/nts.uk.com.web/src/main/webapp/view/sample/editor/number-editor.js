@@ -53,3 +53,4 @@ __viewContext.ready(function () {
     var viewmodel = new ScreenModel();
     this.bind(viewmodel);
 });
+//# sourceMappingURL=number-editor.js.map

@@ -979,7 +979,7 @@ var nts;
     (function (uk) {
         var time;
         (function (time_1) {
-            var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm"];
+            var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm", "HHmm"];
             var listEmpire = {
                 "明治": "1868/01/01",
                 "大正": "1912/07/30",
@@ -1462,7 +1462,7 @@ var nts;
             time_1.MomentResult = MomentResult;
             function parseMoment(datetime, outputFormat, inputFormat) {
                 var inputFormats = (inputFormat) ? inputFormat : defaultInputFormat;
-                var momentObject = moment.utc(datetime, inputFormats);
+                var momentObject = moment.utc(datetime, inputFormats, true);
                 var result = new MomentResult(momentObject, outputFormat);
                 if (momentObject.isValid())
                     result.succeeded();
@@ -1889,6 +1889,7 @@ var nts;
                         this.outputFormat = (option && option.outputFormat) ? option.outputFormat : "";
                         this.required = (option && option.required) ? option.required : false;
                         this.valueType = (option && option.valueType) ? option.valueType : "string";
+                        this.mode = (option && option.mode) ? option.mode : "";
                     }
                     TimeValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
@@ -1901,6 +1902,16 @@ var nts;
                                 result.success("");
                                 return result;
                             }
+                        }
+                        if (this.mode === "time") {
+                            var timeParse = uk.time.parseTime(inputText, false);
+                            if (timeParse.success) {
+                                result.success(timeParse.toValue());
+                            }
+                            else {
+                                result.fail(timeParse.getMsg());
+                            }
+                            return result;
                         }
                         var parseResult = uk.time.parseMoment(inputText, this.outputFormat);
                         if (parseResult.success) {
@@ -4304,7 +4315,8 @@ var nts;
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var inputFormat = (data.inputFormat !== undefined) ? ko.unwrap(data.inputFormat) : option.inputFormat;
-                        return new validation.TimeValidator(constraintName, { required: required, outputFormat: inputFormat });
+                        var mode = (data.mode !== undefined) ? ko.unwrap(data.mode) : "";
+                        return new validation.TimeValidator(constraintName, { required: required, outputFormat: inputFormat, mode: mode });
                     };
                     return TimeEditorProcessor;
                 }(EditorProcessor));
@@ -4733,6 +4745,82 @@ var nts;
                             }
                         }));
                         container.data("multiple", isMultiSelect);
+                        container.bind('mousedown', function (evt, ui) {
+                            var OUTSIDE_AUTO_SCROLL_SPEED = {
+                                RATIO: 0.2,
+                                MAX: 30
+                            };
+                            var $target = $(evt.target);
+                            var $row = $target.closest(".ui-selectee");
+                            var rowIndex = parseInt($row.attr("data-idx"));
+                            var scrollHeight = container[0].scrollHeight;
+                            var divHeight = container.height();
+                            var gridVerticalRange = new uk.util.Range(container.offset().top, container.offset().top + divHeight);
+                            var mousePos = {
+                                x: evt.pageX,
+                                y: evt.pageY,
+                                rowIndex: rowIndex,
+                                target: evt.target
+                            };
+                            var timerAutoScroll = setInterval(function () {
+                                var distance = gridVerticalRange.distanceFrom(mousePos.y);
+                                var delta = Math.min(distance * OUTSIDE_AUTO_SCROLL_SPEED.RATIO, OUTSIDE_AUTO_SCROLL_SPEED.MAX);
+                                var currentScrolls = container.scrollTop() + delta;
+                                if (container.data("multiple")) {
+                                    if (distance === 0) {
+                                        return;
+                                    }
+                                    container.ntsListBox("deselectAll");
+                                    container.scrollTop(currentScrolls);
+                                    if (distance > 0) {
+                                        var height_1 = 0;
+                                        var rowSelect = _.filter(container.find(".ui-selectee"), function (e) {
+                                            var flag = parseInt($(e).attr("data-idx")) >= rowIndex &&
+                                                ((currentScrolls + divHeight >= scrollHeight) ? true : +height_1 <= currentScrolls);
+                                            height_1 += $(e).height();
+                                            return flag;
+                                        });
+                                        $(rowSelect).addClass("ui-selected");
+                                    }
+                                    else {
+                                        var height_2 = 0;
+                                        var rowSelect = _.filter(container.find(".ui-selectee"), function (e) {
+                                            var flag = parseInt($(e).attr("data-idx")) <= rowIndex &&
+                                                ((currentScrolls <= 0) ? true : +height_2 >= currentScrolls);
+                                            height_2 += $(e).height();
+                                            return flag;
+                                        });
+                                        $(rowSelect).addClass("ui-selected");
+                                    }
+                                }
+                                else {
+                                    container.scrollTop(currentScrolls);
+                                    var $currentTarget = $(mousePos.target);
+                                    var $movedRow = $currentTarget.closest(".ui-selectee");
+                                    container.ntsListBox("deselectAll");
+                                    $movedRow.addClass("ui-selected");
+                                    data.value($movedRow.data('value'));
+                                }
+                            }, 20);
+                            $(window).bind('mousemove.NtsListBoxDragging', function (e) {
+                                var $currentTarget = $(e.target);
+                                var $movedRow = $currentTarget.closest(".ui-selectee");
+                                var movedRowIndex = parseInt($movedRow.attr("data-idx"));
+                                if (mousePos.rowIndex !== undefined && mousePos.rowIndex === movedRowIndex) {
+                                    return;
+                                }
+                                mousePos = {
+                                    x: e.pageX,
+                                    y: e.pageY,
+                                    rowIndex: movedRowIndex,
+                                    target: e.target
+                                };
+                            });
+                            $(window).one('mouseup', function (e) {
+                                $(window).unbind('mousemove.NtsListBoxDragging');
+                                clearInterval(timerAutoScroll);
+                            });
+                        });
                     };
                     ListBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
@@ -4812,7 +4900,7 @@ var nts;
                                     else {
                                         itemTemplate = '<div class="nts-column nts-list-box-column-0">' + item[optionText] + '</div>';
                                     }
-                                    $('<li/>').addClass(selectedClass).attr("data-idx", idx)
+                                    $('<li/>').addClass("ui-selectee").addClass(selectedClass).attr("data-idx", idx)
                                         .html(itemTemplate).data('value', getOptionValue(item))
                                         .appendTo(selectListBoxContainer);
                                 }

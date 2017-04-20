@@ -117,6 +117,7 @@ var nts;
                         this.outputFormat = (option && option.outputFormat) ? option.outputFormat : "";
                         this.required = (option && option.required) ? option.required : false;
                         this.valueType = (option && option.valueType) ? option.valueType : "string";
+                        this.mode = (option && option.mode) ? option.mode : "";
                     }
                     TimeValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
@@ -129,6 +130,16 @@ var nts;
                                 result.success("");
                                 return result;
                             }
+                        }
+                        if (this.mode === "time") {
+                            var timeParse = uk.time.parseTime(inputText, false);
+                            if (timeParse.success) {
+                                result.success(timeParse.toValue());
+                            }
+                            else {
+                                result.fail(timeParse.getMsg());
+                            }
+                            return result;
                         }
                         var parseResult = uk.time.parseMoment(inputText, this.outputFormat);
                         if (parseResult.success) {
@@ -167,3 +178,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=validation.js.map
