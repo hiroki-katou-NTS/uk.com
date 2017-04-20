@@ -9,12 +9,17 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../qmm005.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.core.dom.company.CompanyCode
+				nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.ProcessingNo
+				nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.payday.SocialInsLevyMon				
+			</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="btn-group-left">
-					<button id="B_BTN_001" data-bind="click: checkNewData">新規</button>
+					<button id="B_BTN_001" data-bind="click: newData">新規</button>
 					<button id="B_BTN_002" data-bind="click: saveData">登録</button>
 					<button id="B_BTN_003" data-bind="click: deleteData">削除</button>
 					<button id="B_BTN_004" data-bind="click: closeDialog">閉じる</button>
@@ -41,7 +46,8 @@
 					<div class="right-panel-top">
 						<div class="form-group">
 							<div id="B_LBL_001" data-bind="ntsFormLabel: {}">処理区分</div>
-							<label id="B_LBL_002" data-bind="text: lbl002">1.</label>
+							<label id="B_LBL_002" data-bind="text: lbl002">1</label>
+							<label>.</label>
 							<label id="B_LBL_003" data-bind="text: lbl003">25日払い</label>
 						</div>
 						<div class="form-group">
@@ -58,13 +64,13 @@
 								<tr>
 									<th class="hide" colspan="7"></th>
 									<td class="checkbox-cols text-left no-border"><button
-											class="btn-collapse" data-bind="click: toggleColumns">+</button></td>
+											class="btn-collapse" data-bind="text: toggle() ? '+' : '-', click: toggleColumns"></button></td>
 								</tr>
 								<tr>
 									<th colspan="2" rowspan="2" class="index-cols"></th>
 									<th colspan="5" class="double-border text-left">処理年</th>
-									<th colspan="4" class="toggle hidden"></th>
-									<th class="checkbox-cols" rowspan="2">賞与支給指定</th>
+									<th colspan="4" data-bind="css: {'hidden' : toggle}"></th>
+									<th class='checkbox-cols' rowspan="2">賞与支給指定</th>
 								</tr>
 								<tr>
 									<th>支払年月日</th>
@@ -72,16 +78,16 @@
 									<th>社会保険徴収月</th>
 									<th>明細書印字年月</th>
 									<th class="double-border">要勤務日数</th>
-									<th class="toggle hidden">社会保険基準日</th>
-									<th class="toggle hidden">雇用保険基準日</th>
-									<th class="toggle hidden">所得税基準日</th>
-									<th class="toggle hidden">経理締め日</th>
+									<th class="hidden" data-bind="css: {'hidden' : toggle}">社会保険基準日</th>
+									<th class="hidden" data-bind="css: {'hidden' : toggle}">雇用保険基準日</th>
+									<th class="hidden" data-bind="css: {'hidden' : toggle}">所得税基準日</th>
+									<th class="hidden" data-bind="css: {'hidden' : toggle}">経理締め日</th>
 								</tr>
 							</thead>
 							<tbody data-bind="foreach: lst002Data">
 								<tr>
-									<th data-bind="text: index"></th>
-									<th data-bind="text: label"></th>
+									<th data-bind="text: month"></th>
+									<th data-bind="text: month() + '月の設定'"></th>
 									<td>
 										<div id="B_SEL_002"
 											data-bind="ntsComboBox: {
@@ -119,23 +125,23 @@
 											enable: true,
 											readonly: false}" />
 										<span>日</span></td>
-									<td class="toggle hidden">
+									<td data-bind="css: {'hidden' : $parent.toggle}">
 										<div id="B_INP_006"
 											data-bind="ntsDatePicker: { value: inp006, dateFormat: 'YYYY/MM/DD'}"></div>
 									</td>
-									<td class="toggle hidden">
+									<td data-bind="css: {'hidden' : $parent.toggle}">
 										<div id="B_INP_007"
 											data-bind="ntsDatePicker: { value: inp007, dateFormat: 'YYYY/MM/DD'}"></div>
 									</td>
-									<td class="toggle hidden">
+									<td data-bind="css: {'hidden' : $parent.toggle}">
 										<div id="B_INP_008"
 											data-bind="ntsDatePicker: { value: inp008, dateFormat: 'YYYY/MM/DD'}"></div>
 									</td>
-									<td class="toggle hidden">
+									<td data-bind="css: {'hidden' : $parent.toggle}">
 										<div id="B_INP_009"
 											data-bind="ntsDatePicker: { value: inp009, dateFormat: 'YYYY/MM/DD'}"></div>
 									</td>
-									<td class="checkbox-cols"><span id="B_SEL_00"
+									<td class="checkbox-cols"><span id="B_SEL_001"
 										data-bind="ntsCheckBox: { checked: sel001, enable: true, text: '' }"></span>
 									</td>
 								</tr>

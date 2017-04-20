@@ -268,47 +268,7 @@ $wizard_image_size: 60px;
 	    height: 95%;
 	    padding: 2.5%;
 	}
-	
-	> .content > .body ul {
-	    list-style: disc !important;
-	}
-	
-	> .content > .body ul > li {
-	    display: list-item;
-	}
-	
-	> .content > .body > iframe {
-	    border: 0 none;
-	    width: 100%;
-	    height: 100%;
-	}
-	
-	> .content > .body input {
-	    display: block;
-	    border: 1px solid #ccc;
-	}
-	
-	> .content > .body input[type="checkbox"] {
-	    display: inline-block;
-	}
-	
-	> .content > .body input.error {
-	    background: rgb(251, 227, 228);
-	    border: 1px solid #fbc2c4;
-	    color: #8a1f11;
-	}
-	
-	> .content > .body label {
-	    display: inline-block;
-	    margin-bottom: 0.5em;
-	}
-	
-	> .content > .body label.error {
-	    color: #8a1f11;
-	    display: inline-block;
-	    margin-left: 1.5em;
-	}
-	
+			
 	> .actions {
 	    position: relative;
 	    display: block;

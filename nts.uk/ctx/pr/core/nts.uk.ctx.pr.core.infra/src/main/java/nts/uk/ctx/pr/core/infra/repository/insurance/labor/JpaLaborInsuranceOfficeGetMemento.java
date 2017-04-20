@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.labor;
@@ -30,7 +30,7 @@ import nts.uk.shr.com.primitive.Memo;
 public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGetMemento {
 
 	/** The type value. */
-	protected QismtLaborInsuOffice typeValue;
+	private QismtLaborInsuOffice typeValue;
 
 	/**
 	 * Instantiates a new jpa labor insurance office get memento.
@@ -51,7 +51,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public String getCompanyCode() {
-		return typeValue.getQismtLaborInsuOfficePK().getCcd();
+		return this.typeValue.getQismtLaborInsuOfficePK().getCcd();
 	}
 
 	/*
@@ -63,7 +63,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public OfficeCode getCode() {
-		return new OfficeCode(typeValue.getQismtLaborInsuOfficePK().getLiOfficeCd());
+		return new OfficeCode(this.typeValue.getQismtLaborInsuOfficePK().getLiOfficeCd());
 	}
 
 	/*
@@ -75,7 +75,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public OfficeName getName() {
-		return new OfficeName(typeValue.getLiOfficeName());
+		return new OfficeName(this.typeValue.getLiOfficeName());
 	}
 
 	/*
@@ -87,7 +87,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public ShortName getShortName() {
-		return new ShortName(typeValue.getLiOfficeAbName());
+		return new ShortName(this.typeValue.getLiOfficeAbName());
 	}
 
 	/*
@@ -99,7 +99,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public PicName getPicName() {
-		return new PicName(typeValue.getPresidentName());
+		return new PicName(this.typeValue.getPresidentName());
 	}
 
 	/*
@@ -111,7 +111,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public PicPosition getPicPosition() {
-		return new PicPosition(typeValue.getPresidentTitle());
+		return new PicPosition(this.typeValue.getPresidentTitle());
 	}
 
 	/*
@@ -123,7 +123,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public PotalCode getPotalCode() {
-		return new PotalCode(typeValue.getPostal());
+		return new PotalCode(this.typeValue.getPostal());
 	}
 
 	/*
@@ -135,7 +135,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public Address1 getAddress1st() {
-		return new Address1(typeValue.getAddress1());
+		return new Address1(this.typeValue.getAddress1());
 	}
 
 	/*
@@ -147,7 +147,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public Address2 getAddress2nd() {
-		return new Address2(typeValue.getAddress2());
+		return new Address2(this.typeValue.getAddress2());
 	}
 
 	/*
@@ -159,7 +159,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public AddressKana1 getKanaAddress1st() {
-		return new AddressKana1(typeValue.getKnAddress1());
+		return new AddressKana1(this.typeValue.getKnAddress1());
 	}
 
 	/*
@@ -171,7 +171,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public AddressKana2 getKanaAddress2nd() {
-		return new AddressKana2(typeValue.getKnAddress2());
+		return new AddressKana2(this.typeValue.getKnAddress2());
 	}
 
 	/*
@@ -183,7 +183,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public PhoneNumber getPhoneNumber() {
-		return new PhoneNumber(typeValue.getTelNo());
+		return new PhoneNumber(this.typeValue.getTelNo());
 	}
 
 	/*
@@ -195,7 +195,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public CitySign getCitySign() {
-		return new CitySign(typeValue.getCitySign());
+		return new CitySign(this.typeValue.getCitySign());
 	}
 
 	/*
@@ -207,7 +207,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public OfficeMark getOfficeMark() {
-		return new OfficeMark(typeValue.getOfficeMark());
+		return new OfficeMark(this.typeValue.getOfficeMark());
 	}
 
 	/*
@@ -219,7 +219,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public OfficeNoA getOfficeNoA() {
-		return new OfficeNoA(typeValue.getOfficeNoA());
+		return new OfficeNoA(this.typeValue.getOfficeNoA());
 	}
 
 	/*
@@ -231,7 +231,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public OfficeNoB getOfficeNoB() {
-		return new OfficeNoB(typeValue.getOfficeNoB());
+		return new OfficeNoB(this.typeValue.getOfficeNoB());
 	}
 
 	/*
@@ -243,7 +243,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public OfficeNoC getOfficeNoC() {
-		return new OfficeNoC(typeValue.getOfficeNoC());
+		return new OfficeNoC(this.typeValue.getOfficeNoC());
 	}
 
 	/*
@@ -255,7 +255,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public Memo getMemo() {
-		return new Memo(typeValue.getMemo());
+		return new Memo(this.typeValue.getMemo());
 	}
 
 }

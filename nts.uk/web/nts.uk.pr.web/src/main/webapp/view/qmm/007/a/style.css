@@ -24,8 +24,14 @@
 	min-width: 80px;
 }
 textarea {
-	height: 120px;
+	height: 130px;
 }
 .form-default td{
 	padding-bottom: 6px;
+}
+.btn-switch {
+	padding-left: 20px;
+}
+.lbl-switch {
+	padding-left: 20px;
 }

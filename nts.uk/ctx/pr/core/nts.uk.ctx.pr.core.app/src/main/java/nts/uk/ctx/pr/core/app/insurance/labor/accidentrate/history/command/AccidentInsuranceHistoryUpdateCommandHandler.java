@@ -19,17 +19,20 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.service.AccidentInsur
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
+/**
+ * The Class AccidentInsuranceHistoryUpdateCommandHandler.
+ */
 @Stateless
 public class AccidentInsuranceHistoryUpdateCommandHandler
-		extends CommandHandler<AccidentInsuranceHistoryUpdateCommand> {
+	extends CommandHandler<AccidentInsuranceHistoryUpdateCommand> {
 
 	/** The accident insurance rate repository. */
 	@Inject
-	private AccidentInsuranceRateRepository accidentInsuranceRateRepository;
+	private AccidentInsuranceRateRepository repository;
 
 	/** The accident insurance rate service. */
 	@Inject
-	private AccidentInsuranceRateService accidentInsuranceRateService;
+	private AccidentInsuranceRateService service;
 
 	/*
 	 * (non-Javadoc)
@@ -38,6 +41,7 @@ public class AccidentInsuranceHistoryUpdateCommandHandler
 	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
 	 * .CommandHandlerContext)
 	 */
+
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<AccidentInsuranceHistoryUpdateCommand> context) {
@@ -51,41 +55,37 @@ public class AccidentInsuranceHistoryUpdateCommandHandler
 		// get command
 		AccidentInsuranceHistoryUpdateCommand command = context.getCommand();
 
-		Optional<AccidentInsuranceRate> optionalUpdate = this.accidentInsuranceRateRepository
-				.findById(companyCode, command.getHistoryId());
+		Optional<AccidentInsuranceRate> data = this.repository.findById(companyCode, command.getHistoryId());
 
 		// exist data
-		if (optionalUpdate.isPresent()) {
-			AccidentInsuranceRate accidentInsuranceRate = optionalUpdate.get();
-			accidentInsuranceRate.setStart(YearMonth.of(command.getStartMonth()));
-			accidentInsuranceRate.setEnd(YearMonth.of(command.getEndMonth()));
-
+		if (data.isPresent()) {
+			AccidentInsuranceRate insuranceRate = data.get();
+			insuranceRate.setStart(YearMonth.of(command.getStartMonth()));
+			insuranceRate.setEnd(YearMonth.of(command.getEndMonth()));
 			// validate
-			accidentInsuranceRate.validate();
-			this.accidentInsuranceRateService.validateDateRangeUpdate(accidentInsuranceRate);
+			insuranceRate.validate();
+			this.service.validateDateRangeUpdate(insuranceRate);
 
 			// call get by id
-			Optional<AccidentInsuranceRate> optionalFirst;
-			optionalFirst = this.accidentInsuranceRateRepository.findById(
-					accidentInsuranceRate.getCompanyCode(), accidentInsuranceRate.getHistoryId());
+			Optional<AccidentInsuranceRate> dataFirst = this.repository
+				.findById(insuranceRate.getCompanyCode(), insuranceRate.getHistoryId());
 
-			// get <= start
-			if (optionalFirst.isPresent()) {
-				Optional<AccidentInsuranceRate> optionalBetweenUpdate = this.accidentInsuranceRateRepository
-						.findBetweenUpdate(accidentInsuranceRate.getCompanyCode(),
-								optionalFirst.get().getApplyRange().getStartMonth(),
-								optionalFirst.get().getHistoryId());
-
-				// update end year month start previous
-				if (optionalBetweenUpdate.isPresent()) {
-					optionalBetweenUpdate.get().setEnd(
-							accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());
-					this.accidentInsuranceRateRepository.update(optionalBetweenUpdate.get());
-				}
-
-				// update value
-				this.accidentInsuranceRateRepository.update(accidentInsuranceRate);
+			if (!dataFirst.isPresent()) {
+				return;
 			}
+			// get <= start
+			Optional<AccidentInsuranceRate> dataPrevious = this.repository.findBetweenUpdate(
+				insuranceRate.getCompanyCode(), data.get().getApplyRange().getStartMonth(),
+				data.get().getHistoryId());
+
+			// update end year month start previous
+			if (dataPrevious.isPresent()) {
+				dataPrevious.get().setEnd(insuranceRate.getApplyRange().getStartMonth().previousMonth());
+				this.repository.update(dataPrevious.get());
+			}
+
+			// update value
+			this.repository.update(insuranceRate);
 		}
 	}
 

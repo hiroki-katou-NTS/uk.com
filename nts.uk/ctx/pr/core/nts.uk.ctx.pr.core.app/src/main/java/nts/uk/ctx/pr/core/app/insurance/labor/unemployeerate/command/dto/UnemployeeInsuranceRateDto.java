@@ -4,9 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.dto;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +19,20 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
 /**
  * The Class UnemployeeInsuranceRateDto.
  */
+
+/**
+ * Gets the rate items.
+ *
+ * @return the rate items
+ */
 @Getter
+
+/**
+ * Sets the rate items.
+ *
+ * @param rateItems
+ *            the new rate items
+ */
 @Setter
 public class UnemployeeInsuranceRateDto {
 
@@ -41,7 +54,7 @@ public class UnemployeeInsuranceRateDto {
 	}
 
 	/**
-	 * The Class UnemployeeInsuranceRateGetMementoImpl.
+	 * The Class UirGetMemento.
 	 */
 	private class UirGetMemento implements UnemployeeInsuranceRateGetMemento {
 
@@ -52,7 +65,7 @@ public class UnemployeeInsuranceRateDto {
 		private UnemployeeInsuranceRateDto dto;
 
 		/**
-		 * Instantiates a new unemployee insurance rate get memento impl.
+		 * Instantiates a new uir get memento.
 		 *
 		 * @param companyCode
 		 *            the company code
@@ -73,11 +86,8 @@ public class UnemployeeInsuranceRateDto {
 		 */
 		@Override
 		public Set<UnemployeeInsuranceRateItem> getRateItems() {
-			Set<UnemployeeInsuranceRateItem> setUnemployeeInsuranceRateItem = new HashSet<>();
-			dto.rateItems.forEach(rateItem -> {
-				setUnemployeeInsuranceRateItem.add(rateItem.toDomain(companyCode));
-			});
-			return setUnemployeeInsuranceRateItem;
+			return dto.rateItems.stream().map(rateItem -> rateItem.toDomain(this.companyCode))
+				.collect(Collectors.toSet());
 		}
 
 		/*
@@ -111,7 +121,7 @@ public class UnemployeeInsuranceRateDto {
 		@Override
 		public MonthRange getApplyRange() {
 			return MonthRange.range(YearMonth.of(dto.getHistoryInsurance().getStartMonth()),
-					YearMonth.of(dto.getHistoryInsurance().getEndMonth()));
+				YearMonth.of(dto.getHistoryInsurance().getEndMonth()));
 		}
 
 	}

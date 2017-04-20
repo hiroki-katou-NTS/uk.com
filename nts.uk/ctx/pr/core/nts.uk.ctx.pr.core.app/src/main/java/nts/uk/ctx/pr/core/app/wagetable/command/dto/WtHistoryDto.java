@@ -75,6 +75,7 @@ public class WtHistoryDto {
 	public WtHistoryDto fromDomain(WtHistory wtHistory, List<ElementSetting> generSettings) {
 		WtHistoryDto dto = this;
 
+		// Transfer data
 		wtHistory.saveToMemento(new WhdSetMemento(dto, generSettings));
 
 		return dto;
@@ -86,9 +87,10 @@ public class WtHistoryDto {
 	private class WhdSetMemento implements WtHistorySetMemento {
 
 		/** The dto. */
-		protected WtHistoryDto dto;
+		private WtHistoryDto dto;
 
-		protected List<ElementSetting> elementSettings;
+		/** The element settings. */
+		private List<ElementSetting> elementSettings;
 
 		/**
 		 * Instantiates a new wage table history dto set memento.
@@ -216,10 +218,10 @@ public class WtHistoryDto {
 	private class WhdGetMemento implements WtHistoryGetMemento {
 
 		/** The wage table code. */
-		protected WtCode wageTableCode;
+		private WtCode wageTableCode;
 
 		/** The dto. */
-		protected WtHistoryDto dto;
+		private WtHistoryDto dto;
 
 		/**
 		 * Instantiates a new wage table history dto get memento.

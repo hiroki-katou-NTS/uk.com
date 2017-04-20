@@ -1,7 +1,8 @@
 /// <reference path="../qmm005.ts"/>
 module qmm005.b {
     export class ViewModel {
-        index: KnockoutObservable<number> = ko.observable(0);
+        toggle: KnockoutObservable<boolean> = ko.observable(true);
+        processingNo: KnockoutObservable<number> = ko.observable(0);
         lbl002: KnockoutObservable<string> = ko.observable('');
         lbl003: KnockoutObservable<string> = ko.observable('');
         lbl005: KnockoutObservable<string> = ko.observable('');
@@ -9,139 +10,190 @@ module qmm005.b {
         lst001: KnockoutObservable<number> = ko.observable(0);
         lst001Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
         lst002Data: KnockoutObservableArray<TableRowItem> = ko.observableArray([]);
-        dirty: any = {
-            inp001: nts.uk.ui.DirtyChecker,
-            lst001: nts.uk.ui.DirtyChecker,
-            lst002: nts.uk.ui.DirtyChecker,
+        dataSources: Array<PaydayDto> = [];
+        dirty: IDirty = {
+            inp001: new nts.uk.ui.DirtyChecker(this.inp001),
+            lst001: new nts.uk.ui.DirtyChecker(this.lst001),
+            lst002: new nts.uk.ui.DirtyChecker(this.lst002Data),
             isDirty: function() {
-                debugger;
+                return this.inp001.isDirty() || this.lst002.isDirty();
+            },
+            reset: function() {
+                this.inp001.reset();
+                this.lst001.reset();
+                this.lst002.reset();
             }
         };
         constructor() {
             let self = this;
+            
+            // toggle width of dialog
+            self.toggle.subscribe(function(v) {
+                if (v) {
+                    nts.uk.ui.windows.getSelf().setWidth(1020);
+                } else {
+                    nts.uk.ui.windows.getSelf().setWidth(1465);
+                }
+            });
+            self.toggle.valueHasMutated();
+
             // processingNo
             let dataRow = nts.uk.ui.windows.getShared('dataRow');
-            self.index(dataRow.index());
-            self.lbl002(dataRow.index() + '.');
+            self.processingNo(dataRow.index());
+            self.lbl002(dataRow.index());
             self.lbl003(dataRow.label());
 
             self.lst001.subscribe(function(v) {
-                if (v) {
-                    let lst001Data = self.lst001Data(),
-                        currentItem = _.find(lst001Data, function(item) { return item.index == v; });
-                    if (currentItem) {
-                        self.inp001(currentItem.value);
+                if (v && v != 0 && v != parseInt(self.dirty.lst001.initialState)) {
+                    if (self.dirty.isDirty()) {
+                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
+                            let lst001Data = self.lst001Data(),
+                                currentItem = _.find(lst001Data, function(item) { return item.index == v; });
+                            if (currentItem) {
+                                self.inp001(currentItem.value);
+                                self.reloadData(currentItem.value);
+                            }
+                        }).ifNo(function() {
+                            self.lst001(parseInt(self.dirty.lst001.initialState));
+                        });
+                    } else {
+                        let lst001Data = self.lst001Data(),
+                            currentItem = _.find(lst001Data, function(item) { return item.index == v; });
+                        if (currentItem) {
+                            self.inp001(currentItem.value);
+                            self.reloadData(currentItem.value);
+                        }
                     }
                 }
             });
-
-            self.dirty.isDirty();
 
             self.inp001.subscribe(function(v) {
                 if (v) {
                     self.lbl005("(" + v["yearInJapanEmpire"]() + ")");
                 } else {
                     self.lbl005("");
-
-                    // Clear all selected value
-                    $('#B_LST_001').ntsListBox('deselectAll');
+                }
+                if (self.lst001() == null) {
+                    for (let i = 0; i < 12; i++) {
+                        let row = self.lst002Data()[i] as TableRowItem;
+                        if (row) {
+                            row.year(v || new Date().getFullYear());
+                            row.year.valueHasMutated();
+                        }
+                    }
                 }
             });
             self.start();
         }
 
         start() {
-            let self = this;
-            services.getData(self.index()).done(function(resp: Array<PaydayDto>) {
+            let self = this,
+                lst001Data: Array<common.SelectItem> = [],
+                dataRow = nts.uk.ui.windows.getShared('dataRow');
+
+            services.getData(self.processingNo()).done(function(resp: Array<PaydayDto>) {
                 if (resp && resp.length > 0) {
-                    resp = _.orderBy(resp, ["processingYm"], ["asc"]);
-                    let lst001Data: Array<common.SelectItem> = [],
-                        lst002Data: Array<TableRowItem> = [],
-                        dataRow = nts.uk.ui.windows.getShared('dataRow');
-                    for (let i: number = 0, rec: PaydayDto; i <= 11, rec = resp[i]; i++) {
-                        if (rec) {
-                            let year = rec.processingYm["getYearInYm"](),
-                                yearIJE = year + "(" + year["yearInJapanEmpire"]() + ")",
-                                index = i + 1,
-                                $moment = moment(rec.payDate),
-                                sel002Data: Array<common.SelectItem> = [];
+                    self.dataSources = _.orderBy(resp, ["processingYm"], ["asc"]);
+                    for (let i: number = 0, rec: PaydayDto; rec = self.dataSources[i]; i++) {
+                        let year = rec.processingYm["getYearInYm"](),
+                            yearIJE = year + "(" + year["yearInJapanEmpire"]() + ")";
 
-                            //row.sel002($moment.date());
-                            for (var j: number = 1; j <= $moment.daysInMonth(); j++) {
-                                var date = moment(new Date($moment.year(), $moment.month(), j));
-                                sel002Data.push(new common.SelectItem({
-                                    index: j,
-                                    label: date.format("YYYY/MM/DD"),
-                                    value: date.toDate()
-                                }));
-                            }
-
-                            let row = new TableRowItem({
-                                index: index,
-                                label: index + '月の設定',
-                                sel001: rec.payBonusAtr == 1 ? true : false,
-                                sel002: $moment.date(),
-                                sel002Data: sel002Data,
-                                inp003: new Date(rec.stdDate),
-                                inp004: rec.socialInsLevyMon["formatYearMonth"]("/"),
-                                inp005: rec.stmtOutputMon["formatYearMonth"]("/"),
-                                inp006: new Date(rec.socialInsStdDate),
-                                inp007: new Date(rec.empInsStdDate),
-                                inp008: new Date(rec.incomeTaxStdDate),
-                                inp009: new Date(rec.accountingClosing),
-                                inp010: rec.neededWorkDay
-                            });
-
-                            lst002Data.push(row);
-
-                            if (!_.find(lst001Data, function(item) { return item.value == year; })) {
-                                lst001Data.push(new common.SelectItem({ index: i + 1, label: yearIJE, value: year, selected: year == dataRow.sel001() }));
-                            }
+                        if (!_.find(lst001Data, function(item) { return item.value == year; })) {
+                            lst001Data.push(new common.SelectItem({ index: lst001Data.length + 1, label: yearIJE, value: year, selected: year == dataRow.sel001() }));
                         }
                     }
                     self.lst001Data(lst001Data);
-                    self.lst002Data(lst002Data);
 
-                    /// Select tạm ra một object (kiband có sửa phần này)
+                    // Selected year match with parent row
                     let selectRow = _.find(lst001Data, function(item) { return item.selected; });
                     if (selectRow) {
                         self.lst001(selectRow.index);
+                        self.lst001.valueHasMutated();
+                        // Load data to table
+                        self.reloadData(selectRow.value);
                     }
                 }
             });
         }
 
-        toggleColumns(item, event): void {
-            $('.toggle').toggleClass('hidden');
-            $(event.currentTarget).parent('td').toggleClass('checkbox-cols');
-            ($(event.currentTarget).text() == "-" && $(event.currentTarget).text('+')) || $(event.currentTarget).text('-');
-            if (!$('.toggle').hasClass('hidden')) {
-                nts.uk.ui.windows.getSelf().setWidth(1465);
-            } else {
-                nts.uk.ui.windows.getSelf().setWidth(1020);
+        reloadData(year) {
+            console.log(_.filter(this.dataSources, (item) => { return item.processingYm == 201707; }));
+            let self = this,
+                lst002Data: Array<TableRowItem> = [],
+                dataRow = nts.uk.ui.windows.getShared('dataRow');
+
+            // Redefined year value
+            year = year || dataRow.sel001();
+
+            let dataSources = self.dataSources.filter(function(item) { return item.processingYm["getYearInYm"]() == year; });
+
+            for (let i: number = 0, rec: PaydayDto; rec = self.dataSources[i]; i++) {
+                let rec: PaydayDto = dataSources[i];
+                if (rec) {
+                    let $moment = moment(new Date(rec.payDate)),
+                        month = $moment.month() + 1,
+                        sel002Data: Array<common.SelectItem> = [];
+
+                    for (var j: number = 1; j <= $moment.daysInMonth(); j++) {
+                        var date = moment(new Date($moment.year(), $moment.month(), j));
+                        sel002Data.push(new common.SelectItem({
+                            index: j,
+                            label: date.format("YYYY/MM/DD"),
+                            value: date.toDate()
+                        }));
+                    }
+
+                    let row = _.find(lst002Data, function(item) { return item.month() == month; });
+                    if (!row) {
+                        row = new TableRowItem({
+                            month: month,
+                            year: year,
+                            sel001: rec.payBonusAtr == 1 ? true : false,
+                            sel002: $moment.date(),
+                            sel002Data: sel002Data,
+                            inp003: new Date(rec.stdDate),
+                            inp004: rec.socialInsLevyMon["formatYearMonth"]("/"),
+                            inp005: rec.stmtOutputMon["formatYearMonth"]("/"),
+                            inp006: new Date(rec.socialInsStdDate),
+                            inp007: new Date(rec.empInsStdDate),
+                            inp008: new Date(rec.incomeTaxStdDate),
+                            inp009: new Date(rec.accountingClosing),
+                            inp010: rec.neededWorkDay
+                        });
+                        lst002Data.push(row);
+                    } else {
+                        row.sel001(rec.payBonusAtr == 1 ? true : false);
+                    }
+                }
             }
+            self.lst002Data(lst002Data);
+            self.dirty.reset();
         }
 
-        showModalDialogC(item, event): void {
-            nts.uk.ui.windows.sub.modal("../c/index.xhtml", { width: 682, height: 370, title: '処理区分の追加' })
-                .onClosed(() => { });
-        }
-
-        showModalDialogD(item, event): void {
-            nts.uk.ui.windows.sub.modal("../d/index.xhtml", { width: 682, height: 410, title: '処理区分の追加' })
-                .onClosed(() => { });
+        toggleColumns(item, event): void {
+            let self = this;
+            self.toggle(!self.toggle());
         }
 
         showModalDialogE(item, event): void {
-            nts.uk.ui.windows.sub.modal("../e/index.xhtml", { width: 540, height: 600, title: '処理区分の追加' })
+            nts.uk.ui.windows.setShared('viewModelB', item);
+            nts.uk.ui.windows.sub.modal("../e/index.xhtml", { width: 540, height: 600, title: '処理区分の追加', dialogClass: "no-close" })
                 .onClosed(() => { });
         }
 
-        checkNewData(item, event) {
+        newData(item, event) {
             let self = this;
-            debugger;
-            self.inp001(null);
-            self.lst001(null);
+            if (self.dirty.isDirty()) {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。よろしいですか。?").ifYes(function() {
+                    self.lst001(null);
+                    self.inp001(null);
+                    self.dirty.reset();
+                });
+            } else {
+                self.lst001(null);
+                self.inp001(null);
+                self.dirty.reset();
+            }
         }
 
         saveData(item, event) {
@@ -151,21 +203,23 @@ module qmm005.b {
 
         deleteData(item, event) {
             let self = this;
-            debugger;
+            // Note
+            /// No document for this action
         }
 
-        closeDialog(item, event) { nts.uk.ui.windows.close(); }
-    }
-
-    class Model {
-        processingNo: KnockoutObservable<number>;
-        processingYm: KnockoutObservable<number>;
-
+        closeDialog(item, event) {
+            let self = this;
+            if (self.dirty.isDirty()) {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。よろしいですか。?").ifYes(function() { nts.uk.ui.windows.close(); });
+            } else {
+                nts.uk.ui.windows.close();
+            }
+        }
     }
 
     interface ITableRowItem {
-        index: number;
-        label: string;
+        month: number;
+        year: number;
         sel001: boolean;
         sel002: number;
         sel002Data: Array<common.SelectItem>;
@@ -180,8 +234,8 @@ module qmm005.b {
     }
 
     class TableRowItem {
-        index: KnockoutObservable<number> = ko.observable(0);
-        label: KnockoutObservable<string> = ko.observable('');
+        month: KnockoutObservable<number> = ko.observable(0);
+        year: KnockoutObservable<number> = ko.observable(0);
         sel001: KnockoutObservable<boolean> = ko.observable(false);
         sel002: KnockoutObservable<number> = ko.observable(0);
         sel002L: KnockoutObservable<string> = ko.observable('');
@@ -198,10 +252,43 @@ module qmm005.b {
 
         constructor(param: ITableRowItem) {
             let self = this;
-            self.index(param.index);
-            self.label(param.label);
+            self.month(param.month);
+            self.year(param.year);
+            self.year.subscribe(function(v) {
+                self.sel001(false);
+                let sel002Data: Array<common.SelectItem> = [], $moment = moment(new Date(v, self.month() - 1, 1));
+                for (let i = 1; i <= $moment.daysInMonth(); i++) {
+                    let date = moment(new Date(v, self.month() - 1, i));
+                    sel002Data.push(new common.SelectItem({
+                        index: i,
+                        label: date.format("YYYY/MM/DD"),
+                        value: date.toDate()
+                    }));
+                }
+                self.sel002Data(sel002Data);
+                self.sel002.valueHasMutated();
+                self.inp003(new Date(v, self.month() - 1, 1))
+                self.inp004(new Date(v, self.month() - 1, 0)["formatYearMonth"]("/"))
+                self.inp005(new Date(v, self.month() - 1, 1)["formatYearMonth"]("/"));
+                self.inp006(new Date(v, self.month() - 1, 0));
+                self.inp007(new Date(v, self.month() - 1, 1));
+                self.inp008(new Date(v + 1, 0, 1));
+                self.inp009(new Date(v, self.month(), 0));
+                self.inp010(new Date(v, self.month() - 1, 1)["getWorkDays"]());
+            });
+            self.year.valueHasMutated();
+
             self.sel001(param.sel001);
             self.sel002(param.sel002);
+            self.sel002.subscribe(function(v) {
+                if (v) {
+                    let currentSel002 = _.find(self.sel002Data(), function(item) { return item.index == v; });
+                    if (currentSel002) {
+                        self.sel002L(currentSel002.value["getDayJP"]());
+                    }
+                }
+            });
+            self.sel002.valueHasMutated();
 
             self.inp003(param.inp003);
             self.inp004(param.inp004);
@@ -214,19 +301,7 @@ module qmm005.b {
 
             self.sel002Data(param.sel002Data);
 
-            self.sel002.subscribe(function(v) {
-                if (v) {
-                    let currentSel002 = _.find(param.sel002Data, function(item) { return item.index == v; });
-                    if (currentSel002) {
-                        self.sel002L(currentSel002.value["getDayJP"]());
-                    }
-                }
-            });
-            self.sel002.valueHasMutated();
-        }
 
-        toggleCalendar(item, event): void {
-            $(event.currentTarget).parent('div').find('input[type=text]').trigger('click');
         }
     }
 
@@ -250,5 +325,7 @@ module qmm005.b {
         inp001: nts.uk.ui.DirtyChecker,
         lst001: nts.uk.ui.DirtyChecker,
         lst002: nts.uk.ui.DirtyChecker,
+        isDirty: any,
+        reset: any
     }
 }

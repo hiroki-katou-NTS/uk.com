@@ -36,7 +36,6 @@ module nts.uk.ui.jqueryExtentions {
             switch (action) {
                 case 'set':
                     return setError($control, message);
-
                 case 'clear':
                     return clearErrors($control);
             }
@@ -49,18 +48,14 @@ module nts.uk.ui.jqueryExtentions {
                 message: message,
                 $control: $control
             });
-
             $control.parent().addClass('error');
-
             return $control;
         }
 
         function clearErrors($control: JQuery) {
             $control.data(DATA_HAS_ERROR, false);
             ui.errors.removeByElement($control);
-
             $control.parent().removeClass('error');
-
             return $control;
         }
 
@@ -73,7 +68,6 @@ module nts.uk.ui.jqueryExtentions {
         let DATA_INSTANCE_NAME = 'nts-popup-panel';
 
         $.fn.ntsPopup = function() {
-
             if (arguments.length === 1) {
                 var p: any = arguments[0];
                 if (_.isPlainObject(p)) {
@@ -240,9 +234,9 @@ module nts.uk.ui.jqueryExtentions {
 
             currentColumns.push({
                 dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
-                width: 30, formatter: function createButton(deleteField, row) {
+                width: 60, formatter: function createButton(deleteField, row) {
                     var primaryKey = $grid.igGrid("option", "primaryKey");
-                    var result = $('<input class="delete-button" value="delete" type="button"/>');
+                    var result = $('<button class="small delete-button">Delete</button>');
                     result.attr("data-value", row[primaryKey]);
                     if (deleteField === true && primaryKey !== null && !util.isNullOrUndefined(row[primaryKey])) {
                         return result[0].outerHTML;

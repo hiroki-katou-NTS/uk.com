@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.insurance;
@@ -12,11 +12,18 @@ import java.util.Optional;
 public interface ChecklistPrintSettingRepository {
 
 	/**
-	 * Save.
+	 * create.
 	 *
 	 * @param printSetting the print setting
 	 */
-	void save(ChecklistPrintSetting printSetting);
+	void create(ChecklistPrintSetting printSetting);
+	
+	/**
+	 * Update.
+	 *
+	 * @param printSetting the print setting
+	 */
+	void update(ChecklistPrintSetting printSetting);
 
 	/**
 	 * Find by company code.

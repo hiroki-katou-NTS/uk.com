@@ -103,6 +103,10 @@ var nts;
                 return target === null || target === undefined;
             }
             util.isNullOrUndefined = isNullOrUndefined;
+            function isNullOrEmpty(target) {
+                return (target === undefined || target === null || target.length == 0);
+            }
+            util.isNullOrEmpty = isNullOrEmpty;
             function randomId() {
                 return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
                     var r = Math.random() * 16 | 0;
@@ -442,6 +446,46 @@ var nts;
                 }());
             })(repeater || (repeater = {}));
         })(deferred = uk.deferred || (uk.deferred = {}));
+        var resource;
+        (function (resource) {
+            function getText(code) {
+                return __viewContext.codeNames[code];
+            }
+            resource.getText = getText;
+            function getMessage(messageId) {
+                var params = [];
+                for (var _i = 1; _i < arguments.length; _i++) {
+                    params[_i - 1] = arguments[_i];
+                }
+                var message = __viewContext.messages[messageId];
+                message = formatParams(message, params);
+                message = formatCompDependParam(message);
+                return message;
+            }
+            resource.getMessage = getMessage;
+            function formatCompDependParam(message) {
+                var compDependceParamRegex = /{#(\w*)}/;
+                var matches;
+                while (matches = compDependceParamRegex.exec(message)) {
+                    var code = matches[1];
+                    var text_1 = __viewContext.codeNames[code];
+                    message = message.replace(compDependceParamRegex, text_1);
+                }
+                return message;
+            }
+            function formatParams(message, args) {
+                if (args == undefined)
+                    return message;
+                var paramRegex = /{([0-9])+(:\\w+)?}/;
+                var matches;
+                while (matches = paramRegex.exec(message)) {
+                    var code = matches[1];
+                    var text_2 = args[parseInt(code)];
+                    message = message.replace(paramRegex, text_2);
+                }
+                return message;
+            }
+        })(resource = uk.resource || (uk.resource = {}));
         uk.sessionStorage = new WebStorageWrapper(window.sessionStorage);
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

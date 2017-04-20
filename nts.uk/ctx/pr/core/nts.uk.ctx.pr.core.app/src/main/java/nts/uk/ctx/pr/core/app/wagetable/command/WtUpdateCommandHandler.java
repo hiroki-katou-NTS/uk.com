@@ -55,28 +55,38 @@ public class WtUpdateCommandHandler extends CommandHandler<WtUpdateCommand> {
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<WtUpdateCommand> context) {
-
+		// Get infos
 		WtUpdateCommand command = context.getCommand();
 
+		// Get the company code
 		String companyCode = AppContexts.user().companyCode();
 
+		// Get the header info.
 		Optional<WtHead> optHeader = this.wtHeadRepo.findByCode(companyCode, command.getCode());
 
+		// Check exist
 		if (!optHeader.isPresent()) {
 			// TODO: need msg id.
 			throw new BusinessException("errorMessage");
 		}
 
+		// Update new data
 		WtHead header = optHeader.get();
 		header.setName(new WtName(command.getName()));
 		header.setMemo(new Memo(command.getMemo()));
+
+		// Validate
 		header.validate();
 		headService.validateRequiredItem(header);
 
+		// Create history from cmd.
 		WtHistory history = command.getWtHistoryDto().toDomain(header.getCode().v());
+
+		// Validate
 		history.validate();
 		historyService.validateRequiredItem(history);
 
+		// Update into db.
 		this.wtHeadRepo.update(header);
 		this.wtHistoryRepo.updateHistory(history);
 	}

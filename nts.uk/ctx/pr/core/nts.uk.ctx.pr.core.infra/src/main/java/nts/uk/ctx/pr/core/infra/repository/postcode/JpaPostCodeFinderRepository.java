@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.postcode;
@@ -61,22 +61,30 @@ public class JpaPostCodeFinderRepository extends JpaRepository implements PostCo
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// like zipcode
-		lstpredicateWhere.add(criteriaBuilder.like(root.get(CpcstPostcode_.postcode), zipCode + "%"));
+		lstpredicateWhere
+				.add(criteriaBuilder.like(root.get(CpcstPostcode_.postcode), zipCode + "%"));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// creat query
 		TypedQuery<CpcstPostcode> query = em.createQuery(cq).setFirstResult(FIRST_RESULT)
-			.setMaxResults(MAX_RESULT);
+				.setMaxResults(MAX_RESULT);
 
 		// exclude select
 		List<PostCode> lstPostCode = query.getResultList().stream().map(item -> toPostCode(item))
-			.collect(Collectors.toList());
+				.collect(Collectors.toList());
 
 		return lstPostCode;
 	}
 
+	/**
+	 * To post code.
+	 *
+	 * @param entity
+	 *            the entity
+	 * @return the post code
+	 */
 	private PostCode toPostCode(CpcstPostcode entity) {
 		PostCode postCode = new PostCode();
 		postCode.setId(entity.getId());

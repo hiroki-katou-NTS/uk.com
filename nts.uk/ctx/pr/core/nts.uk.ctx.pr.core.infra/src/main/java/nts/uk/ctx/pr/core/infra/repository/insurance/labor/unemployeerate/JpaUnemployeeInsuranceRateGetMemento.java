@@ -76,14 +76,20 @@ public class JpaUnemployeeInsuranceRateGetMemento implements UnemployeeInsurance
 	public Set<UnemployeeInsuranceRateItem> getRateItems() {
 
 		Set<UnemployeeInsuranceRateItem> setUnemployeeInsuranceRateItem = new HashSet<>();
+
+		//add Agroforestry
 		setUnemployeeInsuranceRateItem
 				.add(new UnemployeeInsuranceRateItem(new JpaUnemployeeInsuranceRateItemGetMemento(
 						this.typeValue, CareerGroup.Agroforestry)));
+		
+		//add Other
 		setUnemployeeInsuranceRateItem
 				.add(new UnemployeeInsuranceRateItem(new JpaUnemployeeInsuranceRateItemGetMemento(
-						this.typeValue, CareerGroup.Contruction)));
+						this.typeValue, CareerGroup.Other)));
+		
+		//add Contruction
 		setUnemployeeInsuranceRateItem.add(new UnemployeeInsuranceRateItem(
-				new JpaUnemployeeInsuranceRateItemGetMemento(this.typeValue, CareerGroup.Other)));
+				new JpaUnemployeeInsuranceRateItemGetMemento(this.typeValue, CareerGroup.Contruction)));
 
 		return setUnemployeeInsuranceRateItem;
 	}
