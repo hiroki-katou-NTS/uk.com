@@ -5,6 +5,7 @@
 package nts.uk.file.pr.app.export.accumulatedpayment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -40,32 +41,39 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 
 		// Get Query
 		AccPaymentReportQuery query = context.getQuery();
+		String personIds[] = { "999000000000000000000000000000000001", "999000000000000000000000000000000002",
+				"999000000000000000000000000000000003", "999000000000000000000000000000000004",
+				"999000000000000000000000000000000005", "999000000000000000000000000000000006",
+				"999000000000000000000000000000000007", "999000000000000000000000000000000008",
+				"999000000000000000000000000000000009", "999000000000000000000000000000000010" };
+			query.setEmpIdList(Arrays.asList(personIds));
+		
 		
 		// Query data.
 		List<AccPaymentItemData> items = this.repository.getItems(AppContexts.user().companyCode(), query);
 		
-		// Fake List of AccumulatedItemData
-		List<AccPaymentItemData> accumulatedPaymentList = new ArrayList<>();
-		for (int i = 0; i < 255; i++) {
-			AccPaymentItemData accumulatedPayment = AccPaymentItemData
-					.builder()
-					.empDesignation("Designation" + (i + 1))
-					.empCode("code000000")
-					.empName("氏名 " + (i + 1))
-					.taxAmount(13456.0 + 100*i)
-					.socialInsuranceAmount(1346.0 + 10*i)
-					.widthHoldingTaxAmount(1016.0 + 10*i)
-					.amountAfterTaxDeduction(5567.0 + 100*i)
-					.enrollmentStatus("退職")
-					.directionalStatus("から　  出向")
-					.build();
-			accumulatedPaymentList.add(accumulatedPayment);
-		}
+//		// Fake List of AccumulatedItemData
+//		List<AccPaymentItemData> accumulatedPaymentList = new ArrayList<>();
+//		for (int i = 0; i < 255; i++) {
+//			AccPaymentItemData accumulatedPayment = AccPaymentItemData
+//					.builder()
+//					.empDesignation("Designation" + (i + 1))
+//					.empCode("code000000")
+//					.empName("氏名 " + (i + 1))
+//					.taxAmount(13456.0 + 100*i)
+//					.socialInsuranceAmount(1346.0 + 10*i)
+//					.widthHoldingTaxAmount(1016.0 + 10*i)
+//					.amountAfterTaxDeduction(5567.0 + 100*i)
+//					.enrollmentStatus("退職")
+//					.directionalStatus("から　  出向")
+//					.build();
+//			accumulatedPaymentList.add(accumulatedPayment);
+//		}
 		
 		
-		if(items == null){
-			items = accumulatedPaymentList;
-		}
+//		if(items == null){
+//			items = accumulatedPaymentList;
+//		}
 		// Create header object.
 		
 

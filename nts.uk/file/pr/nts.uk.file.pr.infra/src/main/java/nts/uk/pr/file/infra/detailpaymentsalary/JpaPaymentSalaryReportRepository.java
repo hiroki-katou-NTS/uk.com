@@ -60,18 +60,21 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository implements P
 			"999000000000000000000000000000000009", "999000000000000000000000000000000010" };
 		query.setPersonIds(Arrays.asList(personIds));
 		PaymentSalaryReportData data = new PaymentSalaryReportData();
-		/*
-		 * QlsptPaylstFormHead headerForm = this.findHeaderFrom(companyCode,
-		 * query.getOutputSettingCode()); //QcamtItem item =
-		 * this.findItem(companyCode); QlsptPaylstAggreHead payHead =
-		 * this.findAggreHeader(companyCode); // hea // if
-		 * (CollectionUtil.isEmpty(payHead.getQlsptPaylstAggreDetailList())) {
-		 * throw new BusinessException("ER010"); } List<PbsmtPersonBase> persons
-		 * = this.findAllPerson(query.getPersonIds()); List<QstdtPaymentDetail>
-		 * paymentDetails = this.findAllDetail(companyCode, query); if
-		 * (CollectionUtil.isEmpty(paymentDetails)) { throw new
-		 * BusinessException("ER010"); }
-		 */
+
+		/*QlsptPaylstFormHead headerForm = this.findHeaderFrom(companyCode, query.getOutputSettingCode());
+		this.findItem(companyCode);
+		QlsptPaylstAggreHead payHead = this.findAggreHeader(companyCode); // hea
+																			// //
+		if (CollectionUtil.isEmpty(payHead.getQlsptPaylstAggreDetailList())) {
+			throw new BusinessException("ER010");
+		}
+		List<PbsmtPersonBase> persons = this.findAllPerson(query.getPersonIds());
+		List<QstdtPaymentDetail> paymentDetails = this.findAllDetail(companyCode, query);
+		if (CollectionUtil.isEmpty(paymentDetails)) {
+			throw new BusinessException("ER010");
+		}
+		*/
+
 		List<Object[]> paydetails = this.findAllDetail(companyCode, query);
 
 		List<EmployeeDto> employees = this.sortEmployees(companyCode, query.getPersonIds());
@@ -263,14 +266,20 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository implements P
 	 */
 	private List<Object[]> findAllDetail(String companyCode, PaymentSalaryQuery query) {
 		EntityManager em = this.getEntityManager();
-		String queryString = "SELECT detail,com,item FROM QstdtPaymentDetail detail, PcpmtPersonCom com, "
-			+ "QcamtItem item " + "WHERE detail.qstdtPaymentDetailPK.companyCode = :companyCode "
+		String queryString = "SELECT detail,com,item, detailheader "
+			+ "FROM QstdtPaymentDetail detail, PcpmtPersonCom com, QcamtItem item , "
+			+ "QlsptPaylstFormDetail detailheader "
+			+ "WHERE detail.qstdtPaymentDetailPK.companyCode = :companyCode "
 			+ "AND detail.qstdtPaymentDetailPK.personId IN :personIds "
 			+ "AND com.pcpmtPersonComPK.ccd = detail.qstdtPaymentDetailPK.companyCode "
 			+ "AND com.pcpmtPersonComPK.pid = detail.qstdtPaymentDetailPK.personId "
 			+ "AND detail.qstdtPaymentDetailPK.categoryATR = item.qcamtItemPK.ctgAtr "
 			+ "AND detail.qstdtPaymentDetailPK.itemCode = item.qcamtItemPK.itemCd "
-			+ "AND item.qcamtItemPK.ccd = detail.qstdtPaymentDetailPK.companyCode ";
+			+ "AND item.qcamtItemPK.ccd = detail.qstdtPaymentDetailPK.companyCode "
+			+ "AND detailheader.qlsptPaylstFormDetailPK.ccd = detail.qstdtPaymentDetailPK.companyCode "
+			+ "AND detailheader.qlsptPaylstFormDetailPK.formCd = :formCd "
+			+ "AND detailheader.qlsptPaylstFormDetailPK.ctgAtr = detail.qstdtPaymentDetailPK.categoryATR "
+			+ "AND detailheader.qlsptPaylstFormDetailPK.itemAgreCd = detail.qstdtPaymentDetailPK.itemCode ";
 		/*
 		 * + "AND h.qstdtPaymentDetailPK.payBonusAttribute = 0 " +
 		 * "AND h.qstdtPaymentDetailPK.processingYM >= :startDate " +
@@ -292,6 +301,7 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository implements P
 
 		// set in persionId
 		typedQuery.setParameter("personIds", query.getPersonIds());
+		typedQuery.setParameter("formCd", query.getOutputSettingCode());
 
 		return typedQuery.getResultList();
 	}
@@ -322,7 +332,7 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository implements P
 
 	/**
 	 * Find paymend detail.
-	 *
+	 * 
 	 * @param companyCode
 	 *            the company code
 	 * @param query
