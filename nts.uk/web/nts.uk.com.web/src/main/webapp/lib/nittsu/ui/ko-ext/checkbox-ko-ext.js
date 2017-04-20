@@ -1,4 +1,3 @@
-/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -7,27 +6,16 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                /**
-                 * CheckBox binding handler
-                 */
-                class NtsCheckboxBindingHandler {
-                    /**
-                     * Constructor.
-                     */
-                    constructor() {
+                var NtsCheckboxBindingHandler = (function () {
+                    function NtsCheckboxBindingHandler() {
                     }
-                    /**
-                     * Init.
-                     */
-                    init(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data
+                    NtsCheckboxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var setChecked = data.checked;
                         var textId = data.text;
                         var checkBoxText;
-                        // Container
                         var container = $(element);
-                        container.addClass("ntsControl").on("click", (e) => {
+                        container.addClass("ntsControl").on("click", function (e) {
                             if (container.data("readonly") === true)
                                 e.preventDefault();
                         });
@@ -47,44 +35,34 @@ var nts;
                         if (checkBoxText && checkBoxText.length > 0)
                             var label = $("<span class='label'></span>").text(checkBoxText).appendTo($checkBoxLabel);
                         $checkBoxLabel.appendTo(container);
-                    }
-                    /**
-                     * Update
-                     */
-                    update(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data
+                    };
+                    NtsCheckboxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var checked = ko.unwrap(data.checked);
                         var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        // Container
                         var container = $(element);
                         container.data("readonly", readonly);
                         var $checkBox = $(element).find("input[type='checkbox']");
-                        // Checked
                         $checkBox.prop("checked", checked);
-                        // Enable
                         (enable === true) ? $checkBox.removeAttr("disabled") : $checkBox.attr("disabled", "disabled");
+                    };
+                    return NtsCheckboxBindingHandler;
+                }());
+                var NtsMultiCheckBoxBindingHandler = (function () {
+                    function NtsMultiCheckBoxBindingHandler() {
                     }
-                }
-                /**
-                 * MultiCheckbox binding handler
-                 */
-                class NtsMultiCheckBoxBindingHandler {
-                    constructor() {
-                    }
-                    init(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    NtsMultiCheckBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var container = $(element);
-                        container.addClass("ntsControl").on("click", (e) => {
+                        container.addClass("ntsControl").on("click", function (e) {
                             if (container.data("readonly") === true)
                                 e.preventDefault();
                         });
-                        let enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         container.data("enable", _.clone(enable));
-                    }
-                    update(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data
+                    };
+                    NtsMultiCheckBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var options = data.options === undefined ? [] : JSON.parse(ko.toJSON(data.options));
                         var optionValue = ko.unwrap(data.optionsValue);
@@ -92,28 +70,26 @@ var nts;
                         var selectedValue = data.value;
                         var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        // Container
                         var container = $(element);
                         container.data("readonly", readonly);
-                        // Get option or option[optionValue]
-                        var getOptionValue = (item) => {
+                        var getOptionValue = function (item) {
                             return (optionValue === undefined) ? item : item[optionValue];
                         };
-                        // Render
                         if (!_.isEqual(container.data("options"), options)) {
                             container.empty();
-                            _.forEach(options, (option) => {
+                            _.forEach(options, function (option) {
                                 var checkBoxLabel = $("<label class='ntsCheckBox'></label>");
                                 var checkBox = $('<input type="checkbox">').data("value", getOptionValue(option)).on("change", function () {
+                                    var _this = this;
                                     var self = this;
                                     if ($(self).is(":checked"))
                                         selectedValue.push($(self).data("value"));
                                     else
-                                        selectedValue.remove(_.find(selectedValue(), (value) => {
-                                            return _.isEqual(value, $(this).data("value"));
+                                        selectedValue.remove(_.find(selectedValue(), function (value) {
+                                            return _.isEqual(value, $(_this).data("value"));
                                         }));
                                 });
-                                let disableOption = option["enable"];
+                                var disableOption = option["enable"];
                                 if (!nts.uk.util.isNullOrUndefined(disableOption) && (disableOption === false)) {
                                     checkBox.attr("disabled", "disabled");
                                 }
@@ -123,20 +99,18 @@ var nts;
                                     var label = $("<span class='label'></span>").text(option[optionText]).appendTo(checkBoxLabel);
                                 checkBoxLabel.appendTo(container);
                             });
-                            // Save a clone
                             container.data("options", _.cloneDeep(options));
                         }
-                        // Checked
                         container.find("input[type='checkbox']").prop("checked", function () {
-                            return (_.find(selectedValue(), (value) => {
-                                return _.isEqual(value, $(this).data("value"));
+                            var _this = this;
+                            return (_.find(selectedValue(), function (value) {
+                                return _.isEqual(value, $(_this).data("value"));
                             }) !== undefined);
                         });
-                        // Enable
                         if (!_.isEqual(container.data("enable"), enable)) {
                             container.data("enable", _.clone(enable));
                             (enable === true) ? container.find("input[type='checkbox']").removeAttr("disabled") : container.find("input[type='checkbox']").attr("disabled", "disabled");
-                            _.forEach(data.options(), (option) => {
+                            _.forEach(data.options(), function (option) {
                                 if (typeof option["enable"] === "function") {
                                     option["enable"](enable);
                                 }
@@ -145,11 +119,13 @@ var nts;
                                 }
                             });
                         }
-                    }
-                }
+                    };
+                    return NtsMultiCheckBoxBindingHandler;
+                }());
                 ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
                 ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=checkbox-ko-ext.js.map

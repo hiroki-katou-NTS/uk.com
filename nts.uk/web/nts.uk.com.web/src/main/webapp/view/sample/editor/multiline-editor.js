@@ -22,3 +22,4 @@ __viewContext.ready(function () {
     var viewmodel = new ScreenModel();
     this.bind(viewmodel);
 });
+//# sourceMappingURL=multiline-editor.js.map
