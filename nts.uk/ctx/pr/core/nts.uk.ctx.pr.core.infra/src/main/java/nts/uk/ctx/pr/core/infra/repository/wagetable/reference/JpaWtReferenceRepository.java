@@ -77,24 +77,22 @@ public class JpaWtReferenceRepository extends JpaRepository implements WtReferen
 
 		// Add ref query
 		String refQuery = masterRef.getWageRefQuery();
+		Map<String, Object> mapValues = new HashMap<>();
 		if (!StringUtil.isNullOrEmpty(refQuery, true)) {
 
 			List<String> params = this.detectParams(refQuery);
-			Map<String, String> mapValues = new HashMap<>();
-
 			params.stream().forEach(param -> {
 				// Check is base date
 				if (param.contains(PREFIX_BASEDATE_PARAM)) {
 					mapValues.put(param,
-							this.getBaseDate(masterRef.getCompanyCode(), startMonth.v(), param)
-									.toString());
+							this.getBaseDate(masterRef.getCompanyCode(), startMonth.v(), param));
 				}
 			});
 
 			// TODO: apply setParameter after change prefix :
-			mapValues.keySet().stream().forEach(item -> {
-				refQuery.replaceAll(item, "'" + mapValues.get(item) + "'");
-			});
+			// mapValues.keySet().stream().forEach(item -> {
+			// refQuery.replaceAll(item, "'" + mapValues.get(item) + "'");
+			// });
 
 			strBuilder.append(" AND ");
 			strBuilder.append(refQuery);
@@ -105,6 +103,14 @@ public class JpaWtReferenceRepository extends JpaRepository implements WtReferen
 
 		// Create query
 		TypedQuery<Object[]> query = em.createQuery(strBuilder.toString(), Object[].class);
+
+		// TODO: apply setParameter after change prefix :
+		if (!StringUtil.isNullOrEmpty(refQuery, true)) {
+			// Set parameter
+			mapValues.keySet().stream().forEach(item -> {
+				query.setParameter(item, mapValues.get(item));
+			});
+		}
 
 		// Get results
 		List<Object[]> results = query.getResultList();
@@ -194,8 +200,8 @@ public class JpaWtReferenceRepository extends JpaRepository implements WtReferen
 		List<String> params = new ArrayList<>();
 
 		// TODO: change prefix :
-		// String pattern = "(?:^|\\s)(:[^ ]+)";
-		String pattern = "(?:^|\\s)(@[^ ]+)";
+		String pattern = "(?:^|\\s)(:[^ ]+)";
+		// String pattern = "(?:^|\\s)(@[^ ]+)";
 
 		// Create a Pattern object
 		Pattern r = Pattern.compile(pattern);
