@@ -22,10 +22,8 @@ module qmm012.c.viewmodel {
         //end switch
         //radiogroup
         //004
-        Radioitemlist_FixedGold: KnockoutObservableArray<any>;
-        Selected_FixedGold: KnockoutObservable<number>;
+        Radioitemlist_FixPayAtr: KnockoutObservableArray<any>;
         //Currencyeditor_LimitAmount
-        Currencyeditor_LimitAmount: any;
         currencyeditor_LimitAmount: any;
         currencyeditor_ErrorUpper: any;
         currencyeditor_AlarmUpper: any;
@@ -42,9 +40,9 @@ module qmm012.c.viewmodel {
         CurrentAlRangeLow: KnockoutObservable<number> = ko.observable(0);
         CurrentMemo: KnockoutObservable<string> = ko.observable("");
         CurrentTaxAtr: KnockoutObservable<number> = ko.observable(0);
-        CurrentSocialInsAtr: KnockoutObservable<number> = ko.observable(0);
-        CurrentLaborInsAtr: KnockoutObservable<number> = ko.observable(0);
-        CurrentFixPayAtr: KnockoutObservable<number> = ko.observable(0);
+        CurrentSocialInsAtr: KnockoutObservable<number> = ko.observable(1);
+        CurrentLaborInsAtr: KnockoutObservable<number> = ko.observable(1);
+        CurrentFixPayAtr: KnockoutObservable<number> = ko.observable(1);
         CurrentApplyForAllEmpFlg: KnockoutObservable<number> = ko.observable(0);
         CurrentApplyForMonthlyPayEmp: KnockoutObservable<number> = ko.observable(0);
         CurrentApplyForDaymonthlyPayEmp: KnockoutObservable<number> = ko.observable(0);
@@ -68,6 +66,8 @@ module qmm012.c.viewmodel {
         C_Lbl_BreakdownClassification_Text: KnockoutObservable<string> = ko.observable("設定なし");
         C_Btn_PeriodSetting_enable: KnockoutObservable<boolean> = ko.observable(true);
         C_Btn_BreakdownSetting_enable: KnockoutObservable<boolean> = ko.observable(true);
+        alwaysFixed_Enable: KnockoutObservable<boolean> = ko.observable(true);
+        noDisplayNames_Enable: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             var self = this;
             self.ComboBoxItemList_C_Sel_Taxation = ko.observableArray([
@@ -81,8 +81,8 @@ module qmm012.c.viewmodel {
             //start Switch Data
             //005 006 007 008 009 010
             self.Roundingrules_ObjectNotCovered = ko.observableArray([
-                { code: 0, name: '対象' },
-                { code: 1, name: '対象外' }
+                { code: 1, name: '対象' },
+                { code: 0, name: '対象外' }
             ]);
             self.Selectedrulecode_DistinguishBetween = ko.observable(1);
             self.Selectedrulecode_AlwaysFixed = ko.observable(1);
@@ -109,25 +109,11 @@ module qmm012.c.viewmodel {
 
             //start radiogroup data
             //004
-            self.Radioitemlist_FixedGold = ko.observableArray([
-                new BoxModel(0, '全員一律で指定する'),
-                new BoxModel(1, '給与契約形態ごとに指定する')
+            self.Radioitemlist_FixPayAtr = ko.observableArray([
+                new BoxModel(1, '全員一律で指定する'),
+                new BoxModel(0, '給与契約形態ごとに指定する')
             ]);
-            self.Selected_FixedGold = ko.observable(1);
             //end radiogroup data
-            //Currencyeditor_LimitAmount
-            self.Currencyeditor_LimitAmount = {
-                value: ko.observable(),
-                constraint: '',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
-                    grouplength: 3,
-                    currencyformat: "JPY",
-                    currencyposition: 'right'
-                })),
-                required: ko.observable(false),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
             //C_001
             self.currencyeditor_LimitAmount = {
                 value: self.CurrentLimitMny,
@@ -186,26 +172,12 @@ module qmm012.c.viewmodel {
             //end currencyeditor
             //end textarea
             self.CurrentTaxAtr.subscribe(function(newValue) {
-                $('#C_Lbl_LimitAmount').show();
-                $('#C_Div_002').show();
-                $('#C_Btn_TaxExemption').show();
-                $('#C_Div_004').show();
+                $('#C_Div_001').hide();
                 switch (newValue) {
-                    case 0:
-                        $('#C_Div_001').hide();
-                        break;
                     case 1:
-                    case 2:
                     case 3:
+                        self.CurrentLimitMnyAtr(0);
                         $('#C_Div_001').show();
-                        break;
-                    case 4:
-                        $('#C_Div_001').show();
-                        $('#C_Lbl_LimitAmount').hide();
-                        $('#C_Div_002').hide();
-                        $('#C_Div_003').show();
-                        $('#C_Btn_TaxExemption').hide();
-                        $('#C_Div_004').hide();
                         break;
                 }
             });
@@ -222,7 +194,7 @@ module qmm012.c.viewmodel {
                 self.CurrentTaxAtr(NewValue ? NewValue.taxAtr : 0);
                 self.CurrentSocialInsAtr(NewValue ? NewValue.socialInsAtr : 0);
                 self.CurrentLaborInsAtr(NewValue ? NewValue.laborInsAtr : 0);
-                self.CurrentFixPayAtr(NewValue ? NewValue.fixPayAtr : 0);
+                self.CurrentFixPayAtr(NewValue ? NewValue.fixPayAtr : 1);
                 self.CurrentApplyForAllEmpFlg(NewValue ? NewValue.applyForAllEmpFlg : 0);
                 self.CurrentApplyForMonthlyPayEmp(NewValue ? NewValue.applyForMonthlyPayEmp : 0);
                 self.CurrentApplyForDaymonthlyPayEmp(NewValue ? NewValue.applyForDaymonthlyPayEmp : 0);
@@ -240,16 +212,28 @@ module qmm012.c.viewmodel {
             self.CurrentLimitMnyAtr.subscribe(function(newValue) {
                 $('#C_Div_002').hide();
                 $('#C_Div_003').hide();
+                $('#C_Lbl_LimitAmount').hide();
+                $('#C_Div_004').show();
                 switch (newValue) {
                     case 0:
-                    case 1:
                         $('#C_Div_002').show();
+                        $('#C_Lbl_LimitAmount').show();
+                        break;
+                    case 1:
+                        $('#C_Div_003').show();
                         break;
                     case 2:
                     case 3:
-                        $('#C_Div_003').show();
+                        $('#C_Div_004').hide();
                         break;
                 }
+            });
+
+            self.CurrentFixPayAtr.subscribe(function(newValue) {
+                if (newValue == 0)
+                    self.alwaysFixed_Enable(false);
+                else
+                    self.alwaysFixed_Enable(true);
             });
 
             self.currentCommuteNoTaxLimitDto.subscribe(function(NewValue) {
@@ -273,6 +257,13 @@ module qmm012.c.viewmodel {
             });
             self.currentItemBDs.subscribe(function(newValue) {
                 self.C_Lbl_BreakdownClassification_Text(newValue.length ? '設定あり' : '設定なし');
+            });
+            self.CurrentZeroDisplaySet.subscribe(function(newValue) {
+                if (newValue == 0) {
+                    self.noDisplayNames_Enable(true);
+                } else {
+                    self.noDisplayNames_Enable(false);
+                }
             });
         }
         loadData(itemMaster: qmm012.b.service.model.ItemMaster): JQueryPromise<any> {
@@ -305,9 +296,10 @@ module qmm012.c.viewmodel {
             self.CurrentAlRangeLow(0);
             self.CurrentMemo("");
             self.CurrentTaxAtr(0);
-            self.CurrentSocialInsAtr(0);
-            self.CurrentLaborInsAtr(0);
-            self.CurrentFixPayAtr(0);
+            self.CurrentSocialInsAtr(1);
+            self.CurrentLaborInsAtr(1);
+            self.CurrentFixPayAtr(1);
+            self.CurrentZeroDisplaySet(1);
             self.CurrentApplyForAllEmpFlg(0);
             self.CurrentApplyForMonthlyPayEmp(0);
             self.CurrentApplyForDaymonthlyPayEmp(0);

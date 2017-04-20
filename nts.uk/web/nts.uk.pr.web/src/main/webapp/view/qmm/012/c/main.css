@@ -101,3 +101,7 @@
 #C_Lbl_ValidityPeriodAndCycle>label {
 	line-height: 23px !important;
 }
+
+#LimitAmountDiv {
+	display: none;
+}

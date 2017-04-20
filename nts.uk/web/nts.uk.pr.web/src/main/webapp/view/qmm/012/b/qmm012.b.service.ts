@@ -11,14 +11,25 @@ module qmm012.b {
             var dfd = $.Deferred<Array<model.ItemMaster>>();
             nts.uk.request.ajax(paths.findAllItemMaster + "/" + ctgAtr + "/" + dispSet)
                 .done(function(res: Array<model.ItemMaster>) {
-                    dfd.resolve(res);
+                    function compare(a, b) {
+                        const genreA = a.itemName.toUpperCase();
+                        const genreB = b.itemName.toUpperCase();
+                        let comparison = 0;
+                        if (genreA > genreB) {
+                            comparison = 1;
+                        } else if (genreA < genreB) {
+                            comparison = -1;
+                        }
+                        return comparison;
+                    }
+                    dfd.resolve(res.sort(compare));
                 })
                 .fail(function(res) {
                     dfd.reject(res.message);
                 })
             return dfd.promise();
         }
-       
+
 
 
 
