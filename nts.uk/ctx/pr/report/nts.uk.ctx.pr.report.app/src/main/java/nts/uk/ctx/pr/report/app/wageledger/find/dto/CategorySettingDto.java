@@ -57,6 +57,6 @@ public class CategorySettingDto implements WLCategorySettingSetMemento {
 			SettingItemDto itemDto = SettingItemDto.builder().build();
 			item.saveToMemento(itemDto);
 			return itemDto;
-		}).collect(Collectors.toList());
+		}).sorted((a, b) -> Integer.compare(a.orderNumber, b.orderNumber)).collect(Collectors.toList());
 	}
 }
