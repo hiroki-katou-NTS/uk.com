@@ -217,8 +217,6 @@ module nts.qmm017 {
             coefficientFixedValue: number;
             adjustmentDevision: number;
             totalRounding: number;
-            maxLimitValue: number;
-            minLimitValue: number;
             referenceItemCodes: Array<string>;
             constructor() {
             }

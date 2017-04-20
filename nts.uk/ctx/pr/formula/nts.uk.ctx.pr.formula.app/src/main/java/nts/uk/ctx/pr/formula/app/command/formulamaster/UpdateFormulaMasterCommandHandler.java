@@ -91,8 +91,7 @@ public class UpdateFormulaMasterCommandHandler extends CommandHandler<UpdateForm
 							EnumAdaptor.valueOf(easyFormulaDto.getFormulaDetail().getAdjustmentDevision().intValue(),
 									AdjustmentAtr.class),
 							EnumAdaptor.valueOf(easyFormulaDto.getFormulaDetail().getTotalRounding().intValue(),
-									RoundAtr.class),
-							null, null);
+									RoundAtr.class));
 					listFormulaEasyDetail.add(formulaEasyDetail);
 				}
 			});

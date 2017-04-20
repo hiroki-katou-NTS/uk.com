@@ -60,10 +60,6 @@ public class FormulaEasyDetail extends AggregateRoot {
 
 	private RoundAtr totalRounding;
 
-	private MaxValue maxValue;
-	
-	private MinValue minValue;
-
 	/**
 	 * @param companyCode
 	 * @param formulaCode
@@ -88,7 +84,7 @@ public class FormulaEasyDetail extends AggregateRoot {
 			Money baseFixedAmount, BaseMoneyAtr baseAmountDevision, DivideValue baseFixedValue,
 			DivideValueSet baseValueDevision, PremiumRate premiumRate, RoundAtr roundProcessingDevision,
 			WorkItemCode coefficientDivision, WorkValue coefficientFixedValue, AdjustmentAtr adjustmentDevision,
-			RoundAtr totalRounding, MaxValue maxValue, MinValue minValue) {
+			RoundAtr totalRounding) {
 		super();
 		this.companyCode = companyCode;
 		this.formulaCode = formulaCode;
@@ -106,21 +102,19 @@ public class FormulaEasyDetail extends AggregateRoot {
 		this.coefficientFixedValue = coefficientFixedValue;
 		this.adjustmentDevision = adjustmentDevision;
 		this.totalRounding = totalRounding;
-		this.maxValue = maxValue;
-		this.minValue = minValue;
 	}
 	
 	public static FormulaEasyDetail createFromJavaType (String companyCode, String formulaCode, String historyId,
 			String easyFormulaCode,String easyFormulaName, BigDecimal easyFormulaTypeAtr,BigDecimal baseFixedAmount,
 			BigDecimal baseAmountDevision, BigDecimal baseFixedValue, BigDecimal baseValueDevision, BigDecimal premiumRate,
 			BigDecimal roundProcessingDevision, String coefficientDivision, BigDecimal coefficientFixedValue, BigDecimal adjustmentDevision,
-			BigDecimal totalRounding, BigDecimal minValue, BigDecimal maxValue){
+			BigDecimal totalRounding){
 		return new FormulaEasyDetail(companyCode, new FormulaCode(formulaCode), historyId,
 				new EasyFormulaCode(easyFormulaCode), new EasyFormulaName(easyFormulaName), EnumAdaptor.valueOf(easyFormulaTypeAtr.intValue(), EasyFormulaTypeAtr.class)
 				, new Money(baseFixedAmount), EnumAdaptor.valueOf(baseAmountDevision.intValue(), BaseMoneyAtr.class), new DivideValue(baseFixedValue)
 				, EnumAdaptor.valueOf(baseValueDevision.intValue(), DivideValueSet.class), new PremiumRate(premiumRate), EnumAdaptor.valueOf(roundProcessingDevision.intValue(), RoundAtr.class)
 				, new WorkItemCode(coefficientDivision), new WorkValue(coefficientFixedValue), EnumAdaptor.valueOf(adjustmentDevision.intValue(), AdjustmentAtr.class)
-				,EnumAdaptor.valueOf(totalRounding.intValue(), RoundAtr.class), new MaxValue(maxValue), new MinValue(minValue));
+				,EnumAdaptor.valueOf(totalRounding.intValue(), RoundAtr.class));
 	}
 
 }

@@ -564,8 +564,6 @@ var nts;
                         if (self.viewModel017b().selectedConditionAtr() == 0) {
                             var noneConditionalEasyFormulaDetail = self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail();
                             noneConditionalEasyFormulaDetail.easyFormulaCode = '000';
-                            noneConditionalEasyFormulaDetail.maxLimitValue = 0;
-                            noneConditionalEasyFormulaDetail.minLimitValue = 0;
                             command.easyFormulaDto.push({
                                 easyFormulaCode: '000',
                                 value: self.viewModel017c().noneConditionalEasyFormula().easyFormulaFixMoney(),
@@ -577,8 +575,6 @@ var nts;
                         else if (self.viewModel017b().selectedConditionAtr() == 1 && self.viewModel017b().comboBoxUseMaster().selectedCode() < 6) {
                             var defaultEasyFormulaDetail = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
                             defaultEasyFormulaDetail.easyFormulaCode = '000';
-                            defaultEasyFormulaDetail.maxLimitValue = 0;
-                            defaultEasyFormulaDetail.minLimitValue = 0;
                             command.easyFormulaDto.push({
                                 easyFormulaCode: '000',
                                 value: self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(),
@@ -593,8 +589,6 @@ var nts;
                         else if (self.viewModel017b().selectedConditionAtr() == 1 && self.viewModel017b().comboBoxUseMaster().selectedCode() === '6') {
                             var defaultEasyFormulaDetail = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
                             defaultEasyFormulaDetail.easyFormulaCode = '000';
-                            defaultEasyFormulaDetail.maxLimitValue = 0;
-                            defaultEasyFormulaDetail.minLimitValue = 0;
                             command.easyFormulaDto.push({
                                 easyFormulaCode: '000',
                                 value: self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(),
@@ -608,8 +602,6 @@ var nts;
                             if (self.viewModel017c().monthlyEasyFormula().selectedRuleCodeEasySettings() !== '2') {
                                 var monthlyEasyFormulaDetail = self.viewModel017c().monthlyEasyFormula().easyFormulaDetail();
                                 monthlyEasyFormulaDetail.easyFormulaCode = '001';
-                                monthlyEasyFormulaDetail.maxLimitValue = 0;
-                                monthlyEasyFormulaDetail.minLimitValue = 0;
                                 command.easyFormulaDto.push({
                                     easyFormulaCode: '001',
                                     value: self.viewModel017c().monthlyEasyFormula().easyFormulaFixMoney(),
@@ -621,8 +613,6 @@ var nts;
                             else {
                                 var defaultEasyFormulaDetail_1 = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
                                 defaultEasyFormulaDetail_1.easyFormulaCode = '001';
-                                defaultEasyFormulaDetail_1.maxLimitValue = 0;
-                                defaultEasyFormulaDetail_1.minLimitValue = 0;
                                 command.easyFormulaDto.push({
                                     easyFormulaCode: '001',
                                     value: self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(),
@@ -634,8 +624,6 @@ var nts;
                             if (self.viewModel017c().dailyMonthlyEasyFormula().selectedRuleCodeEasySettings() !== '2') {
                                 var dailyMonthlyEasyFormulaDetail = self.viewModel017c().dailyMonthlyEasyFormula().easyFormulaDetail();
                                 dailyMonthlyEasyFormulaDetail.easyFormulaCode = '002';
-                                dailyMonthlyEasyFormulaDetail.maxLimitValue = 0;
-                                dailyMonthlyEasyFormulaDetail.minLimitValue = 0;
                                 command.easyFormulaDto.push({
                                     easyFormulaCode: '002',
                                     value: self.viewModel017c().dailyMonthlyEasyFormula().easyFormulaFixMoney(),
@@ -647,8 +635,6 @@ var nts;
                             else {
                                 var defaultEasyFormulaDetail_2 = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
                                 defaultEasyFormulaDetail_2.easyFormulaCode = '002';
-                                defaultEasyFormulaDetail_2.maxLimitValue = 0;
-                                defaultEasyFormulaDetail_2.minLimitValue = 0;
                                 command.easyFormulaDto.push({
                                     easyFormulaCode: '002',
                                     value: self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(),
@@ -660,8 +646,6 @@ var nts;
                             if (self.viewModel017c().dailyEasyFormula().selectedRuleCodeEasySettings() !== '2') {
                                 var dailyEasyFormulaDetail = self.viewModel017c().dailyEasyFormula().easyFormulaDetail();
                                 dailyEasyFormulaDetail.easyFormulaCode = '003';
-                                dailyEasyFormulaDetail.maxLimitValue = 0;
-                                dailyEasyFormulaDetail.minLimitValue = 0;
                                 command.easyFormulaDto.push({
                                     easyFormulaCode: '003',
                                     value: self.viewModel017c().dailyEasyFormula().easyFormulaFixMoney(),
@@ -673,8 +657,6 @@ var nts;
                             else {
                                 var defaultEasyFormulaDetail_3 = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
                                 defaultEasyFormulaDetail_3.easyFormulaCode = '003';
-                                defaultEasyFormulaDetail_3.maxLimitValue = 0;
-                                defaultEasyFormulaDetail_3.minLimitValue = 0;
                                 command.easyFormulaDto.push({
                                     easyFormulaCode: '003',
                                     value: self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(),
@@ -686,8 +668,6 @@ var nts;
                             if (self.viewModel017c().hourlyEasyFormula().selectedRuleCodeEasySettings() !== '2') {
                                 var hourlyEasyFormulaDetail = self.viewModel017c().hourlyEasyFormula().easyFormulaDetail();
                                 hourlyEasyFormulaDetail.easyFormulaCode = '004';
-                                hourlyEasyFormulaDetail.maxLimitValue = 0;
-                                hourlyEasyFormulaDetail.minLimitValue = 0;
                                 command.easyFormulaDto.push({
                                     easyFormulaCode: '004',
                                     value: self.viewModel017c().hourlyEasyFormula().easyFormulaFixMoney(),
@@ -699,8 +679,6 @@ var nts;
                             else {
                                 var defaultEasyFormulaDetail_4 = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
                                 defaultEasyFormulaDetail_4.easyFormulaCode = '004';
-                                defaultEasyFormulaDetail_4.maxLimitValue = 0;
-                                defaultEasyFormulaDetail_4.minLimitValue = 0;
                                 command.easyFormulaDto.push({
                                     easyFormulaCode: '004',
                                     value: self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(),

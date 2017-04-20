@@ -608,8 +608,6 @@ module nts.qmm017 {
                     if (self.viewModel017b().selectedConditionAtr() == 0) {
                         let noneConditionalEasyFormulaDetail = self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail();
                         noneConditionalEasyFormulaDetail.easyFormulaCode = '000';
-                        noneConditionalEasyFormulaDetail.maxLimitValue = 0;
-                        noneConditionalEasyFormulaDetail.minLimitValue = 0;
                         command.easyFormulaDto.push({
                             easyFormulaCode: '000',
                             value: self.viewModel017c().noneConditionalEasyFormula().easyFormulaFixMoney(),
@@ -620,8 +618,6 @@ module nts.qmm017 {
                     } else if (self.viewModel017b().selectedConditionAtr() == 1 && self.viewModel017b().comboBoxUseMaster().selectedCode() < 6) {
                         let defaultEasyFormulaDetail = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
                         defaultEasyFormulaDetail.easyFormulaCode = '000';
-                        defaultEasyFormulaDetail.maxLimitValue = 0;
-                        defaultEasyFormulaDetail.minLimitValue = 0;
                         command.easyFormulaDto.push(
                             {
                                 easyFormulaCode: '000',
@@ -637,8 +633,6 @@ module nts.qmm017 {
                     } else if (self.viewModel017b().selectedConditionAtr() == 1 && self.viewModel017b().comboBoxUseMaster().selectedCode() === '6') {
                         let defaultEasyFormulaDetail = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
                         defaultEasyFormulaDetail.easyFormulaCode = '000';
-                        defaultEasyFormulaDetail.maxLimitValue = 0;
-                        defaultEasyFormulaDetail.minLimitValue = 0;
                         command.easyFormulaDto.push(
                             {
                                 easyFormulaCode: '000',
@@ -654,8 +648,6 @@ module nts.qmm017 {
                         if (self.viewModel017c().monthlyEasyFormula().selectedRuleCodeEasySettings() !== '2') {
                             let monthlyEasyFormulaDetail = self.viewModel017c().monthlyEasyFormula().easyFormulaDetail();
                             monthlyEasyFormulaDetail.easyFormulaCode = '001';
-                            monthlyEasyFormulaDetail.maxLimitValue = 0;
-                            monthlyEasyFormulaDetail.minLimitValue = 0;
                             command.easyFormulaDto.push(
                                 {
                                     easyFormulaCode: '001',
@@ -668,8 +660,6 @@ module nts.qmm017 {
                         } else {
                             let defaultEasyFormulaDetail = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
                             defaultEasyFormulaDetail.easyFormulaCode = '001';
-                            defaultEasyFormulaDetail.maxLimitValue = 0;
-                            defaultEasyFormulaDetail.minLimitValue = 0;
                             command.easyFormulaDto.push(
                                 {
                                     easyFormulaCode: '001',
@@ -683,8 +673,6 @@ module nts.qmm017 {
                         if (self.viewModel017c().dailyMonthlyEasyFormula().selectedRuleCodeEasySettings() !== '2') {
                             let dailyMonthlyEasyFormulaDetail = self.viewModel017c().dailyMonthlyEasyFormula().easyFormulaDetail();
                             dailyMonthlyEasyFormulaDetail.easyFormulaCode = '002';
-                            dailyMonthlyEasyFormulaDetail.maxLimitValue = 0;
-                            dailyMonthlyEasyFormulaDetail.minLimitValue = 0;
                             command.easyFormulaDto.push(
                                 {
                                     easyFormulaCode: '002',
@@ -697,8 +685,6 @@ module nts.qmm017 {
                         } else {
                             let defaultEasyFormulaDetail = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
                             defaultEasyFormulaDetail.easyFormulaCode = '002';
-                            defaultEasyFormulaDetail.maxLimitValue = 0;
-                            defaultEasyFormulaDetail.minLimitValue = 0;
                             command.easyFormulaDto.push(
                                 {
                                     easyFormulaCode: '002',
@@ -712,8 +698,6 @@ module nts.qmm017 {
                         if (self.viewModel017c().dailyEasyFormula().selectedRuleCodeEasySettings() !== '2') {
                             let dailyEasyFormulaDetail = self.viewModel017c().dailyEasyFormula().easyFormulaDetail();
                             dailyEasyFormulaDetail.easyFormulaCode = '003';
-                            dailyEasyFormulaDetail.maxLimitValue = 0;
-                            dailyEasyFormulaDetail.minLimitValue = 0;
                             command.easyFormulaDto.push(
                                 {
                                     easyFormulaCode: '003',
@@ -726,8 +710,6 @@ module nts.qmm017 {
                         } else {
                             let defaultEasyFormulaDetail = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
                             defaultEasyFormulaDetail.easyFormulaCode = '003';
-                            defaultEasyFormulaDetail.maxLimitValue = 0;
-                            defaultEasyFormulaDetail.minLimitValue = 0;
                             command.easyFormulaDto.push(
                                 {
                                     easyFormulaCode: '003',
@@ -741,8 +723,6 @@ module nts.qmm017 {
                         if (self.viewModel017c().hourlyEasyFormula().selectedRuleCodeEasySettings() !== '2') {
                             let hourlyEasyFormulaDetail = self.viewModel017c().hourlyEasyFormula().easyFormulaDetail();
                             hourlyEasyFormulaDetail.easyFormulaCode = '004';
-                            hourlyEasyFormulaDetail.maxLimitValue = 0;
-                            hourlyEasyFormulaDetail.minLimitValue = 0;
                             command.easyFormulaDto.push(
                                 {
                                     easyFormulaCode: '004',
@@ -755,8 +735,6 @@ module nts.qmm017 {
                         } else {
                             let defaultEasyFormulaDetail = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
                             defaultEasyFormulaDetail.easyFormulaCode = '004';
-                            defaultEasyFormulaDetail.maxLimitValue = 0;
-                            defaultEasyFormulaDetail.minLimitValue = 0;
                             command.easyFormulaDto.push(
                                 {
                                     easyFormulaCode: '004',
