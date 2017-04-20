@@ -40,6 +40,7 @@ module qmm012.d.viewmodel {
         D_Lbl_BreakdownItem_Text: KnockoutObservable<string> = ko.observable("設定なし");
         D_Btn_PeriodSetting_enable: KnockoutObservable<boolean> = ko.observable(true);
         D_Btn_BreakdownSetting_enable: KnockoutObservable<boolean> = ko.observable(true);
+        noDisplayNames_Enable: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             var self = this;
             self.isEditable = ko.observable(true);
@@ -134,7 +135,13 @@ module qmm012.d.viewmodel {
             self.currentItemBDs.subscribe(function(newValue) {
                 self.D_Lbl_BreakdownItem_Text(newValue.length ? '設定あり' : '設定なし');
             });
-
+            self.CurrentZeroDisplaySet.subscribe(function(newValue) {
+                if (newValue == 0) {
+                    self.noDisplayNames_Enable(true);
+                } else {
+                    self.noDisplayNames_Enable(false);
+                }
+            });
         }
 
         loadData(itemMaster: qmm012.b.service.model.ItemMaster): JQueryPromise<any> {
