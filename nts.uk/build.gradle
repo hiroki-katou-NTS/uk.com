@@ -242,6 +242,8 @@ project (':ctx:pr:formula:nts.uk.ctx.pr.formula.infra') {
 project (':ctx:pr:formula:nts.uk.ctx.pr.formula.ac') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.pub')
+		compile project(':ctx:pr:formula:nts.uk.ctx.pr.formula.app')
 		compile project(':ctx:pr:formula:nts.uk.ctx.pr.formula.dom')
 	}
 }
@@ -347,11 +349,15 @@ project (':web:nts.uk.com.web') {
 		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.app')
 		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.infra')
 		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.pubimp')
+		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.ac')
 		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.app')
 		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.infra')
+		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.pubimp')
 		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.ac')
 		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.app')
 		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.infra')
+		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.pubimp')
+		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.ac')
 	}
 }
 
