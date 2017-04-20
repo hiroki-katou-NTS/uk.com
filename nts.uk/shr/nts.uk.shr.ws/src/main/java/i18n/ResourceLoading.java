@@ -27,11 +27,13 @@ public class ResourceLoading {
 	@Inject
 	private IInternationalization i18n;
 
+	private static int YEAR = 31536000;
+
 	@GET
 	public Response getSystemResource(@Context Request request) {
 		CacheControl cacheControl = new CacheControl();
 		cacheControl.setNoCache(true);
-		cacheControl.setMaxAge(600);
+		cacheControl.setMaxAge(YEAR);
 		cacheControl.setPrivate(false);
 
 		EntityTag eTag = new EntityTag(createEtag());
@@ -47,10 +49,13 @@ public class ResourceLoading {
 	}
 
 	private String createEtag() {
+		// tag's format companycode_languagecode_programid_version
 		StringBuilder builder = new StringBuilder();
 		builder.append(SystemProperties.companyCode);
 		builder.append("_");
 		builder.append(currentLanguage.getSessionLocale().getLanguage());
+		builder.append("_");
+		builder.append(SystemProperties.programId);
 		builder.append("_");
 		builder.append(currentLanguage.getVersion());
 		return builder.toString();
@@ -63,7 +68,8 @@ public class ResourceLoading {
 		String codeNameObject = createJsObject(
 				i18n.getResourceForProgram(SystemProperties.programId).get(ResourceType.CODE_NAME));
 		builder.append("var names=");
-		builder.append(codeNameObject);
+		for (int i = 0; i < 100000; i++)
+			builder.append(codeNameObject);
 		builder.append(";");
 		builder.append("var messages=");
 		builder.append(messageObject);
