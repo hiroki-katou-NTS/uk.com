@@ -48,6 +48,18 @@ public class JpaHealthAvgEarnLimitRepository extends JpaRepository
 		listHealthAvgEarnLimit.add(new HealthAvgEarnLimit(17, 200000L, 210000L));
 		listHealthAvgEarnLimit.add(new HealthAvgEarnLimit(18, 220000L, 230000L));
 		listHealthAvgEarnLimit.add(new HealthAvgEarnLimit(19, 240000L, 250000L));
+		
+		int grade = 20;
+		long avgEarn = 240000L;
+		long salLimit = 250000L;
+		
+		for (int i=0; i< 20; i++) {
+		    grade++;
+		    avgEarn = salLimit + 10000;
+            salLimit = avgEarn + 10000;
+		    listHealthAvgEarnLimit.add(new HealthAvgEarnLimit(grade, avgEarn, salLimit));
+		}
+		
 		return listHealthAvgEarnLimit;
 	}
 
