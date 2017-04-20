@@ -48,6 +48,7 @@
 							optionsValue: 'startDate',
 							optionsText: 'endDate',
 							multiple: false,
+							enable : true,
 							value: selectedCodes_His,
 							rows: 3,
 							columns: [
@@ -56,7 +57,7 @@
 								
 							]}"></div>
 						<!-- INP_008 -->
-						<div class="in-second-line multi">
+						<div class="in-second-line multi"  data-bind="with: memo">
 							<textarea class="A_INP_MEMO"
 								data-bind="ntsMultilineEditor: { 
 											value: A_INP_MEMO, 
@@ -127,8 +128,8 @@
 
 				</div>
 
-				<div id="right-content">
-					<table class="table_content">
+				<div id="right-content" >
+					<table class="table_content"  data-bind="with: currentItem">
 						<colgroup>
 							<col width="150px" />
 							<col width="*" />

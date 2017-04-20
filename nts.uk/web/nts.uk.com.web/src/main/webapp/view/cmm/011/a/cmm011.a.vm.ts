@@ -21,16 +21,10 @@ module cmm011.a.viewmodel {
         lengthTreeBegin: KnockoutObservable<number>;
         lengthTreeCurrent: KnockoutObservable<number>;
 
-        A_INP_CODE: KnockoutObservable<string>;
-        A_INP_CODE_enable: KnockoutObservable<boolean>;
-        A_INP_NAME: KnockoutObservable<string>;
-        A_INP_FULLNAME: KnockoutObservable<string>;
-        A_INP_OUTCODE: KnockoutObservable<string>;
-        A_INP_MEMO: KnockoutObservable<string>;
         allowClick: KnockoutObservable<boolean> = ko.observable(true);
         checknull: KnockoutObservable<string>; // biến để check trường hợp HistoryList có null hay không?
         dataSourceFlat: any; // dataSource sau khi Flat
-        itemaddHist: any;  
+        itemaddHist: any;
         numberItemNew: KnockoutObservable<number>;
         // listDtoUpdateHierachy : chứa list workplace bị thay đổi hirachy khi thêm mới workplace.
         // gửi list này lên để update hirachy.
@@ -41,6 +35,19 @@ module cmm011.a.viewmodel {
         // arrayItemEdit : chứa list workplace để update hirachy khi click button updaown
         arrayItemEdit: KnockoutObservableArray<any>;
 
+        checkDirtyBtn: KnockoutObservable<boolean>;
+        memobyHistoryId: KnockoutObservable<string>;
+        // Dirty check
+        dirty_ListHistory: nts.uk.ui.DirtyChecker;
+        dirty_ListDepartment: nts.uk.ui.DirtyChecker;
+        dirty_Memo: nts.uk.ui.DirtyChecker;
+        dirty_DetailPartment: nts.uk.ui.DirtyChecker;
+        notAlert: KnockoutObservable<boolean>;
+        notAlertHist: KnockoutObservable<boolean>;
+
+        currentItem: KnockoutObservable<viewmodel.model.InputField>;
+        memo: KnockoutObservable<viewmodel.model.InputMemo>;
+
         constructor() {
             var self = this;
             self.itemHistId = ko.observableArray([]);
@@ -48,6 +55,14 @@ module cmm011.a.viewmodel {
             self.selectedCodes_His = ko.observable('');
             self.itemHist = ko.observable(null);
             self.arr = ko.observableArray([]);
+            self.currentItem = ko.observable(new viewmodel.model.InputField(new viewmodel.model.Dto(), true));
+            self.memo = ko.observable(new viewmodel.model.InputMemo(new viewmodel.model.MemoDto));
+            self.dirty_DetailPartment = new nts.uk.ui.DirtyChecker(self.currentItem);
+            self.dirty_Memo = new nts.uk.ui.DirtyChecker(self.memo);
+            self.dirty_ListHistory = new nts.uk.ui.DirtyChecker(self.itemHistId);
+            self.notAlert = ko.observable(true);
+            self.notAlertHist = ko.observable(true);
+            self.checkDirtyBtn = ko.observable(false);
 
             self.dataSource = ko.observableArray([]);
             self.dataSource2 = ko.observableArray([]);
@@ -58,11 +73,7 @@ module cmm011.a.viewmodel {
             self.lengthTreeBegin = ko.observable(null);
             self.numberItemNew = ko.observable(0);
 
-            self.A_INP_CODE = ko.observable(null);
-            self.A_INP_CODE_enable = ko.observable(false);
-            self.A_INP_NAME = ko.observable(null);
-            self.A_INP_FULLNAME = ko.observable(null);
-            self.A_INP_OUTCODE = ko.observable(null);
+
             self.A_INP_MEMO = ko.observable(null);
             self.currentItem_treegrid = ko.observable(null);
             self.checknull = ko.observable(null);
@@ -71,67 +82,160 @@ module cmm011.a.viewmodel {
             self.checkAddHist1 = ko.observable('');
             self.newEndDate = ko.observable(null);
             self.arrayItemEdit = ko.observableArray([]);
+            self.memobyHistoryId = ko.observable(null);
 
             self.singleSelectedCode.subscribe(function(codeChangeds) {
                 var _dt = self.dataSource();
                 var _code = self.singleSelectedCode();
                 var current = self.findHira(_code, _dt);
-                if (current.historyId == "") {
-                    self.A_INP_CODE_enable(true);
-                    self.A_INP_CODE("");
-                    self.A_INP_NAME("");
-                    self.A_INP_FULLNAME("");
-                    self.A_INP_OUTCODE(""); $("#A_INP_CODE").focus();
+                if (codeChangeds == null) {
+                    return;
                 }
-                else {
-                    self.A_INP_CODE(current.departmentCode);
-                    self.A_INP_NAME(current.name);
-                    self.A_INP_FULLNAME(current.fullName);
-                    self.A_INP_OUTCODE(current.externalCode);
-                    self.A_INP_CODE_enable(false);
+                if (!self.notAlert()) {
+                    self.notAlert(true);
+                    return;
+                }
+
+                if (self.dirty_DetailPartment.isDirty() || self.dirty_Memo.isDirty() || self.dirty_ListHistory.isDirty()) {
+                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。 select").ifYes(function() {
+                        self.currentItem(new viewmodel.model.InputField(current, false));
+                        self.memo().A_INP_MEMO(self.memobyHistoryId());
+                        if (current.historyId == "") {
+                            self.resetInput();
+                        }
+                        if (self.dirty_ListHistory.isDirty()) {
+                            let _dt = self.itemHistId();
+                            _dt.splice(0, 1);
+                            _dt[0].endDate = "9999/12/31";
+                            self.itemHistId(_dt);
+                            self.notAlertHist(false);
+                            self.selectedCodes_His(self.itemHistId()[0].startDate);
+                            self.dirty_ListHistory.reset();
+                        }
+                        self.resetDirty();
+
+                    }).ifNo(function() {
+                        self.notAlert(false);
+                        if (current.historyId == "") {
+                            self.resetInput();
+                        } else if (self.checkDirtyBtn() == true) {
+                            self.singleSelectedCode("999");
+                            $("#A_INP_CODE").focus();
+                        } else {
+                            self.singleSelectedCode(self.currentItem().A_INP_CODE());
+                        }
+                    });
+                } else {
+                    self.currentItem(new viewmodel.model.InputField(current, false));
+                    if (current.historyId == "") {
+                        self.resetInput();
+                    }
+                    self.resetDirty();
                 }
             });
 
             self.selectedCodes_His.subscribe((function(codeChanged) {
-                self.findHist_Dep(self.itemHistId(), codeChanged);
-                if (self.itemHist() != null) {
-                    if (self.itemHist().historyId != "") {
-                        for (var i = 0; i < self.itemHistId().length; i++) {
-                            if (self.itemHistId()[i].historyId == "") {
-                                let item = self.itemHistId()[i];
-                                self.itemHistId.remove(item);
+
+                if (codeChanged == null) {
+                    return;
+                }
+                if (!self.notAlertHist()) {
+                    self.notAlertHist(true);
+                    return;
+                }
+                let itemHisCurrent = self.itemHist();
+                if (self.dirty_DetailPartment.isDirty() || self.dirty_Memo.isDirty() || self.dirty_ListHistory.isDirty()) {
+                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。 select").ifYes(function() {
+                        self.findHist_Dep(self.itemHistId(), codeChanged);
+                        if (self.itemHist() != null) {
+                            if (self.itemHist().historyId != "") {
+                                if (self.dirty_ListHistory.isDirty()) {
+                                    for (var i = 0; i < self.itemHistId().length; i++) {
+                                        if (self.itemHistId()[i].historyId == "") {
+                                            let item = self.itemHistId()[i];
+                                            self.itemHistId.remove(item);
+                                        }
+                                    }
+                                    self.notAlertHist(false);
+                                    self.selectedCodes_His(self.itemHistId()[0].startDate);
+                                    self.dirty_ListHistory.reset();
+                                }
+                                self.historyId(self.itemHist().historyId);
+                                //get position by historyId
+                                var dfd = $.Deferred();
+                                service.getAllWorkPLaceByHistId(self.historyId())
+                                    .done(function(department_arr: Array<viewmodel.model.DtoWKP>) {
+                                        self.dataSource(department_arr);
+                                        if (self.dataSource().length > 0) {
+                                            self.dataSourceFlat = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "children"));
+                                            self.singleSelectedCode(self.dataSource()[0].departmentCode);
+                                            self.currentItem().A_INP_NAME(self.dataSource()[0].name);
+                                            self.currentItem().A_INP_FULLNAME(self.dataSource()[0].fullName);
+                                            if (self.dataSource()[0].externalCode != null)
+                                                self.currentItem().A_INP_OUTCODE(self.dataSource()[0].externalCode);
+                                        }
+                                    }).fail(function(error) {
+                                        alert(error.message);
+                                    })
+                                service.getMemoWorkPLaceByHistId(self.historyId())
+                                    .done(function(memo: viewmodel.model.MemoDto) {
+                                        if (memo != null) {
+                                            self.memo().A_INP_MEMO(memo.memo);
+                                        }
+                                    }).fail(function(error) {
+                                        alert(error.message);
+                                    })
+                                dfd.resolve();
+                                return dfd.promise();
+                            } else {
                             }
                         }
-                        self.historyId(self.itemHist().historyId);
-                        //get position by historyId
-                        var dfd = $.Deferred();
-                        service.getAllWorkPLaceByHistId(self.historyId())
-                            .done(function(department_arr: Array<viewmodel.model.DtoWKP>) {
-                                self.dataSource(department_arr);
-                                if (self.dataSource().length > 0) {
-                                    self.dataSourceFlat = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "children"));
-                                    self.singleSelectedCode(self.dataSource()[0].departmentCode);
-                                    self.A_INP_NAME(self.dataSource()[0].name);
-                                    self.A_INP_FULLNAME(self.dataSource()[0].fullName);
-                                    if (self.dataSource()[0].externalCode != null)
-                                        self.A_INP_OUTCODE(self.dataSource()[0].externalCode);
+                    }).ifNo(function() {
+                        self.notAlertHist(false);
+                        self.selectedCodes_His(itemHisCurrent.startDate);
+                    });
+                } else {
+                    self.findHist_Dep(self.itemHistId(), codeChanged);
+                    if (self.itemHist() != null) {
+                        if (self.itemHist().historyId != "") {
+                            for (var i = 0; i < self.itemHistId().length; i++) {
+                                if (self.itemHistId()[i].historyId == "") {
+                                    let item = self.itemHistId()[i];
+                                    self.itemHistId.remove(item);
                                 }
-                            }).fail(function(error) {
-                                alert(error.message);
-                            })
-                        service.getMemoWorkPLaceByHistId(self.historyId())
-                            .done(function(memo: viewmodel.model.MemoDto) {
-                                if (memo != null) {
-                                    self.A_INP_MEMO(memo.memo);
-                                }
-                            }).fail(function(error) {
-                                alert(error.message);
-                            })
-                        dfd.resolve();
-                        return dfd.promise();
-                    } else {
+                            }
+                            self.historyId(self.itemHist().historyId);
+                            //get position by historyId
+                            var dfd = $.Deferred();
+                            service.getAllWorkPLaceByHistId(self.historyId())
+                                .done(function(department_arr: Array<viewmodel.model.DtoWKP>) {
+                                    self.dataSource(department_arr);
+                                    if (self.dataSource().length > 0) {
+                                        self.dataSourceFlat = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "children"));
+                                        self.singleSelectedCode(self.dataSource()[0].departmentCode);
+                                        self.currentItem().A_INP_NAME(self.dataSource()[0].name);
+                                        self.currentItem().A_INP_FULLNAME(self.dataSource()[0].fullName);
+                                        if (self.dataSource()[0].externalCode != null)
+                                            self.currentItem().A_INP_OUTCODE(self.dataSource()[0].externalCode);
+                                    }
+                                }).fail(function(error) {
+                                    alert(error.message);
+                                })
+                            service.getMemoWorkPLaceByHistId(self.historyId())
+                                .done(function(memo: viewmodel.model.MemoDto) {
+                                    if (memo != null) {
+                                        self.memo().A_INP_MEMO(memo.memo);
+                                    }
+                                }).fail(function(error) {
+                                    alert(error.message);
+                                })
+                            dfd.resolve();
+                            return dfd.promise();
+                        } else {
+                        }
                     }
                 }
+
             }));
             // event khi click button up
             $(document).delegate("#tree-up-down-up", "click", function() {
@@ -146,11 +250,18 @@ module cmm011.a.viewmodel {
             });
         }
 
+        resetDirty() {
+            var self = this;
+            self.dirty_DetailPartment.reset();
+            self.dirty_Memo.reset();
+            self.dirty_ListHistory.reset();
+        }
+
         register() {
             var self = this;
             /*case add item lần đầu khi history == null*/
             if (self.checknull() === "landau" && self.itemHistId().length == 1 && self.checkInput()) {
-                let dto = new model.AddWorkplaceDto(self.A_INP_CODE(), null, "9999/12/31", self.A_INP_OUTCODE(), self.A_INP_FULLNAME(), "001", self.A_INP_NAME(), self.itemaddHist.startDate, self.A_INP_MEMO(), self.A_INP_NAME(), "1", "1", null, null, null);
+                let dto = new model.AddWorkplaceDto(self.currentItem().A_INP_CODE(), null, "9999/12/31", self.currentItem().A_INP_OUTCODE(), self.currentItem().A_INP_FULLNAME(), "001", self.currentItem().A_INP_NAME(), self.itemaddHist.startDate, self.memo().A_INP_MEMO(), self.currentItem().A_INP_NAME(), "1", "1", null, null, null);
                 var dfd = $.Deferred();
                 let arr = new Array;
                 arr.push(dto);
@@ -166,13 +277,13 @@ module cmm011.a.viewmodel {
                 return dfd.promise();
             }
             /*case update item*/
-            if (self.A_INP_CODE_enable() == false && self.checkInput() && self.checkAddHist1() == '') {
+            if (self.currentItem().A_INP_CODE_enable() == false && self.checkInput() && self.checkAddHist1() == '') {
                 var dfd = $.Deferred();
                 let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
                 var _dt = self.dataSource();
                 var _code = self.singleSelectedCode();
                 var current = self.findHira(_code, _dt);
-                let dto = new model.AddWorkplaceDto(self.A_INP_CODE(), hisdto.historyId, hisdto.endDate, self.A_INP_OUTCODE(), self.A_INP_FULLNAME(), current.hierarchyCode, self.A_INP_NAME(), hisdto.startDate, self.A_INP_MEMO(), current.shortName, current.parentChildAttribute1, current.parentChildAttribute2, null, null, null);
+                let dto = new model.AddWorkplaceDto(self.currentItem().A_INP_CODE(), hisdto.historyId, hisdto.endDate, self.currentItem().A_INP_OUTCODE(), self.currentItem().A_INP_FULLNAME(), current.hierarchyCode, self.currentItem().A_INP_NAME(), hisdto.startDate, self.currentItem().A_INP_MEMO(), current.shortName, current.parentChildAttribute1, current.parentChildAttribute2, null, null, null);
                 let arr = new Array;
                 arr.push(dto);
                 service.upDateListWorkplace(arr)
@@ -183,7 +294,6 @@ module cmm011.a.viewmodel {
                             alert("ko ton tai");
                         }
                     })
-
                 dfd.resolve();
                 return dfd.promise();
             }
@@ -192,7 +302,7 @@ module cmm011.a.viewmodel {
                 var self = this;
                 var dfd = $.Deferred();
                 let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
-                let _dto = new model.AddWorkplaceDto(self.A_INP_CODE(), hisdto.historyId, hisdto.endDate, self.A_INP_OUTCODE(), self.A_INP_FULLNAME(), self.dtoAdd().hierarchyCode, self.A_INP_NAME(), hisdto.startDate, self.A_INP_MEMO(), self.A_INP_FULLNAME(), "1", "1", null, null, null);
+                let _dto = new model.AddWorkplaceDto(self.currentItem().A_INP_CODE(), hisdto.historyId, hisdto.endDate, self.currentItem().A_INP_OUTCODE(), self.currentItem().A_INP_FULLNAME(), self.dtoAdd().hierarchyCode, self.currentItem().A_INP_NAME(), hisdto.startDate, self.memo().A_INP_MEMO(), self.currentItem().A_INP_FULLNAME(), "1", "1", null, null, null);
                 let data = self.listDtoUpdateHierachy();
                 let arr = new Array;
                 arr.push(_dto);
@@ -235,11 +345,11 @@ module cmm011.a.viewmodel {
                     return dfd2.promise();
                 }
             }
-             /*case add list workplace trong trường hợp thêm mới lịch sử từ lịch sử mới nhất*/
+            /*case add list workplace trong trường hợp thêm mới lịch sử từ lịch sử mới nhất*/
             if (self.checkAddHist1() == "AddhistoryFromLatest") {
                 let _dt = self.dataSource2();
                 if (_dt.length > 0) {
-                    _dt[0].memo = self.A_INP_MEMO();
+                    _dt[0].memo = self.memo().A_INP_MEMO();
                 }
                 self.dataSource2(_dt);
                 var dfd2 = $.Deferred();
@@ -263,7 +373,7 @@ module cmm011.a.viewmodel {
             /*case add  workplace trong trường hợp thêm mới lịch sử , listworkplace = null*/
             if (self.checkAddHist1() == "AddhistoryFromBeggin") {
                 if (self.checkInput()) {
-                    let _dto = new model.AddWorkplaceDto(self.A_INP_CODE(), null, self.itemHistId()[0].endDate, self.A_INP_OUTCODE(), self.A_INP_FULLNAME(), "001", self.A_INP_NAME(), self.itemHistId()[0].startDate, self.A_INP_MEMO(), null, "1", "1", null, null, null);
+                    let _dto = new model.AddWorkplaceDto(self.currentItem().A_INP_CODE(), null, self.itemHistId()[0].endDate, self.currentItem().A_INP_OUTCODE(), self.currentItem().A_INP_FULLNAME(), "001", self.currentItem().A_INP_NAME(), self.itemHistId()[0].startDate, self.memo().A_INP_MEMO(), null, "1", "1", null, null, null);
                     let arr1 = new Array;
                     arr1.push(_dto);
                     var dfd2 = $.Deferred();
@@ -324,6 +434,7 @@ module cmm011.a.viewmodel {
                     item.startDate = hisdto.startDate;
                     item.endDate = hisdto.endDate;
                     item.workPlaceCode = item.departmentCode;
+                    item.memo = self.memo().A_INP_MEMO();
                     if (self.arrayItemEdit().length > 0) {
                         let _dt2 = self.arrayItemEdit();
                         var isDuplicateItem = _.filter(_dt2, function(item1) {
@@ -361,6 +472,7 @@ module cmm011.a.viewmodel {
                     item.startDate = hisdto.startDate;
                     item.endDate = hisdto.endDate;
                     item.workPlaceCode = item.departmentCode;
+                    item.memo = self.memo().A_INP_MEMO();
                     if (self.arrayItemEdit().length > 0) {
                         let _dt2 = self.arrayItemEdit();
                         var isDuplicateItem = _.filter(_dt2, function(item1) {
@@ -560,6 +672,32 @@ module cmm011.a.viewmodel {
 
         openCDialog() {
             var self = this;
+            if (self.dirty_DetailPartment.isDirty() || self.dirty_Memo.isDirty() || self.dirty_ListHistory.isDirty()) {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                    var current = self.findHira(self.singleSelectedCode(), self.dataSource());
+                    if (self.dirty_ListHistory.isDirty()) {
+                        let _dt = self.itemHistId();
+                        _dt.splice(0, 1);
+                        _dt[0].endDate = "9999/12/31";
+                        self.itemHistId(_dt);
+                        self.dirty_ListHistory.reset();
+                        self.selectedCodes_His(_dt[0].startDate);
+                    }
+                    self.memo().A_INP_MEMO(self.memobyHistoryId());
+                    self.currentItem().A_INP_NAME(current.name);
+                    self.currentItem().A_INP_FULLNAME(current.fullName);
+                    self.currentItem().A_INP_OUTCODE(current.externalCode);
+                    self.OpenCDialogCheckDirty();
+                    self.resetDirty();
+                }).ifNo(function() {
+                });
+            } else {
+                self.OpenCDialogCheckDirty();
+            }
+        }
+
+        OpenCDialogCheckDirty() {
+            var self = this;
             if (self.checknull() == "landau") {
                 nts.uk.ui.windows.setShared('datanull', "datanull");
                 nts.uk.ui.windows.sub.modal('/view/cmm/011/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
@@ -569,14 +707,9 @@ module cmm011.a.viewmodel {
                         self.itemaddHist = itemadd;
                         self.itemHistId().push(self.itemaddHist);
                         self.selectedCodes_His(self.itemaddHist.startDate);
-                        self.A_INP_CODE_enable(true);
-                        self.A_INP_CODE("");
-                        self.A_INP_NAME("");
-                        self.A_INP_FULLNAME("");
-                        self.A_INP_OUTCODE("");
-                        $("#A_INP_CODE").focus();
+                        self.resetInput();
                         if (itemAddHistory.memo !== null) {
-                            self.A_INP_MEMO(itemAddHistory.memo);
+                            self.memo().A_INP_MEMO(itemAddHistory.memo);
                         }
                     }
                 });
@@ -598,7 +731,7 @@ module cmm011.a.viewmodel {
                         arr[1].endDate = strStartDate;
                         self.itemHistId(arr);
                         self.selectedCodes_His(itemAddHistory.startYearMonth);
-                        self.A_INP_MEMO(itemAddHistory.memo);
+                        self.memo().A_INP_MEMO(itemAddHistory.memo);
                         var _dt = self.dataSource();
                         let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
                         var _dt2 = _.forEach(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item) {
@@ -607,7 +740,6 @@ module cmm011.a.viewmodel {
                             item.endDate = hisdto.endDate;
                             item.workPlaceCode = item.departmentCode;
                         });
-
                         self.checkAddHist1("AddhistoryFromLatest");
                         self.dataSource2(_dt2);
                     } else {
@@ -620,15 +752,10 @@ module cmm011.a.viewmodel {
                         let strStartDate = startDate.getFullYear() + '/' + (startDate.getMonth() + 1) + '/' + startDate.getDate();
                         arr[1].endDate = strStartDate;
                         self.itemHistId(arr);
-                        self.A_INP_MEMO(itemAddHistory.memo);
+                        self.memo().A_INP_MEMO(itemAddHistory.memo);
                         self.selectedCodes_His(self.itemHistId()[0].startDate);
                         self.dataSource(null);
-                        self.A_INP_CODE("");
-                        self.A_INP_CODE_enable(true);
-                        self.A_INP_NAME("");
-                        self.A_INP_FULLNAME("");
-                        self.A_INP_OUTCODE("");
-                        $("#A_INP_CODE").focus();
+                        self.resetInput();
                         self.checkAddHist1("AddhistoryFromBeggin");
                     }
                 });
@@ -636,6 +763,40 @@ module cmm011.a.viewmodel {
         }
 
         openDDialog() {
+            var self = this;
+            if (self.dirty_DetailPartment.isDirty() || self.dirty_Memo.isDirty() || self.dirty_ListHistory.isDirty()) {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                    var current = self.findHira(self.singleSelectedCode(), self.dataSource());
+                    if (self.dirty_ListHistory.isDirty()) {
+                        let _dt = self.itemHistId();
+                        _dt.splice(0, 1);
+                        _dt[0].endDate = "9999/12/31";
+                        self.itemHistId(_dt);
+                        self.selectedCodes_His(_dt[0].startDate);
+                        self.memo().A_INP_MEMO(self.memobyHistoryId());
+                        self.currentItem().A_INP_NAME(current.name);
+                        self.currentItem().A_INP_FULLNAME(current.fullName);
+                        self.currentItem().A_INP_OUTCODE(current.externalCode);
+                    }
+
+                    self.memo().A_INP_MEMO(self.memobyHistoryId());
+                    self.currentItem().A_INP_NAME(current.name);
+                    self.currentItem().A_INP_FULLNAME(current.fullName);
+                    self.currentItem().A_INP_OUTCODE(current.externalCode);
+                    self.openDDialogCheckDirty();
+                    self.resetDirty();
+                }).ifNo(function() {
+                });
+            } else {
+                self.openDDialogCheckDirty();
+                self.dirty_DetailPartment.reset();
+                self.dirty_Memo.reset();
+                self.dirty_ListHistory.isDirty(false);
+            }
+
+        }
+
+        openDDialogCheckDirty() {
             var self = this;
             if (self.selectedCodes_His() == null)
                 return false;
@@ -654,7 +815,7 @@ module cmm011.a.viewmodel {
                             // cap nhat endate thang sau --> 9999/12/31
                             var dfd = $.Deferred();
                             if (self.itemHistId().length < 2) {
-                                 location.reload();
+                                location.reload();
                             }
                             service.updateEndDateByHistoryId(self.itemHistId()[1].historyId)
                                 .done(function() {
@@ -698,8 +859,45 @@ module cmm011.a.viewmodel {
                 }
             });
         }
-        
+
         insertItemUp() {
+            var self = this;
+            if (self.dirty_DetailPartment.isDirty() || self.dirty_Memo.isDirty() || self.dirty_ListHistory.isDirty()) {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。 up").ifYes(function() {
+                    var current = self.findHira(self.singleSelectedCode(), self.dataSource());
+                    self.memo().A_INP_MEMO(self.memobyHistoryId());
+                    self.currentItem().A_INP_NAME(current.name);
+                    self.currentItem().A_INP_FULLNAME(current.fullName);
+                    self.currentItem().A_INP_OUTCODE(current.externalCode);
+                    self.insertItemUpCheckDirty();
+
+                    if (self.dirty_ListHistory.isDirty()) {
+                        let _dt = self.itemHistId();
+                        _dt.splice(0, 1);
+                        _dt[0].endDate = "9999/12/31";
+                        self.itemHistId(_dt);
+                        let _dt2 = self.listDtoUpdateHierachy();
+                        if (_dt2 != null) {
+                            _.forEach(nts.uk.util.flatArray(_dt2, 'children'), function(item) {
+                                item.historyId = self.itemHistId()[0].historyId;
+                                item.startDate = self.itemHistId()[0].startDate;
+                                item.endDate = self.itemHistId()[0].endDate;
+                            });
+                        }
+                        self.notAlertHist(false);
+                        self.selectedCodes_His(self.itemHistId()[0].startDate);
+                        self.dirty_ListHistory.reset();
+                    }
+                    self.resetDirty();
+                }).ifNo(function() {
+                });
+            } else {
+                self.insertItemUpCheckDirty();
+            }
+            self.checkDirtyBtn(true);
+        }
+
+        insertItemUpCheckDirty() {
             var self = this;
             if (self.lengthTreeCurrent() < 889) {
                 if (self.numberItemNew() == 0) {
@@ -745,7 +943,7 @@ module cmm011.a.viewmodel {
                             for (var k = 0; k < editObjs.length; k++) {
                                 editObjs[k].startDate = currentHis.startDate;
                                 editObjs[k].endDate = currentHis.endDate;
-                                editObjs[k].memo = self.A_INP_MEMO();
+                                editObjs[k].memo = self.memo().A_INP_MEMO();
                                 editObjs[k].workPlaceCode = editObjs[k].departmentCode;
                             }
                         }
@@ -780,7 +978,7 @@ module cmm011.a.viewmodel {
                             for (var k = 0; k < editObjs.length; k++) {
                                 editObjs[k].startDate = currentHis.startDate;
                                 editObjs[k].endDate = currentHis.endDate;
-                                editObjs[k].memo = self.A_INP_MEMO();
+                                editObjs[k].memo = self.memo().A_INP_MEMO();
                                 editObjs[k].workPlaceCode = editObjs[k].departmentCode;
                             }
                         }
@@ -790,6 +988,7 @@ module cmm011.a.viewmodel {
                     }
                     self.dataSource(_dt);
                     self.numberItemNew(1);
+                    self.notAlert(false);
                     self.singleSelectedCode(newObj.departmentCode);
                     self.resetInput();
                 }
@@ -808,6 +1007,7 @@ module cmm011.a.viewmodel {
             self.A_INP_OUTCODE("");
             $("#A_INP_CODE").focus();
         }
+
 
         updateHierachy1(item: any) {
             var self = this;
@@ -862,7 +1062,42 @@ module cmm011.a.viewmodel {
 
         insertItemDown() {
             var self = this;
+            if (self.dirty_DetailPartment.isDirty() || self.dirty_Memo.isDirty()) {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                    var current = self.findHira(self.singleSelectedCode(), self.dataSource());
+                    self.memo().A_INP_MEMO(self.memobyHistoryId());
+                    self.currentItem().A_INP_NAME(current.name);
+                    self.currentItem().A_INP_FULLNAME(current.fullName);
+                    self.currentItem().A_INP_OUTCODE(current.externalCode);
+                    self.insertItemDownCheckDirty();
+                    if (self.dirty_ListHistory.isDirty()) {
+                        let _dt = self.itemHistId();
+                        _dt.splice(0, 1);
+                        _dt[0].endDate = "9999/12/31";
+                        self.itemHistId(_dt);
+                        let _dt2 = self.listDtoUpdateHierachy();
+                        if (_dt2 != null) {
+                            _.forEach(nts.uk.util.flatArray(_dt2, 'children'), function(item) {
+                                item.historyId = self.itemHistId()[0].historyId;
+                                item.startDate = self.itemHistId()[0].startDate;
+                                item.endDate = self.itemHistId()[0].endDate;
+                            });
+                        }
+                        self.notAlertHist(false);
+                        self.selectedCodes_His(self.itemHistId()[0].startDate);
+                        self.dirty_ListHistory.reset();
+                    }
+                    self.resetDirty();
+                }).ifNo(function() {
+                });
+            } else {
+                self.insertItemDownCheckDirty();
+            }
+            self.checkDirtyBtn(true);
+        }
 
+        insertItemDownCheckDirty() {
+            var self = this;
             if (self.lengthTreeCurrent() < 889) {
                 if (self.numberItemNew() == 0) {
                     var _dt = self.dataSource();
@@ -906,7 +1141,7 @@ module cmm011.a.viewmodel {
                             for (var k = 0; k < editObjs.length; k++) {
                                 editObjs[k].startDate = currentHis.startDate;
                                 editObjs[k].endDate = currentHis.endDate;
-                                editObjs[k].memo = self.A_INP_MEMO();
+                                editObjs[k].memo = self.memo().A_INP_MEMO();
                                 editObjs[k].workPlaceCode = editObjs[k].departmentCode;
                             }
                         }
@@ -944,7 +1179,7 @@ module cmm011.a.viewmodel {
                             for (var k = 0; k < editObjs.length; k++) {
                                 editObjs[k].startDate = currentHis.startDate;
                                 editObjs[k].endDate = currentHis.endDate;
-                                editObjs[k].memo = self.A_INP_MEMO();
+                                editObjs[k].memo = self.memo().A_INP_MEMO();
                                 editObjs[k].workPlaceCode = editObjs[k].departmentCode;
                             }
                         }
@@ -958,6 +1193,7 @@ module cmm011.a.viewmodel {
                     }
                     self.dataSource(_dt);
                     self.numberItemNew(1);
+                    self.notAlert(false);
                     self.singleSelectedCode(newObj.departmentCode);
                     self.resetInput();
                 }
@@ -968,6 +1204,42 @@ module cmm011.a.viewmodel {
         }
 
         insertItemEnd() {
+            var self = this;
+            if (self.dirty_DetailPartment.isDirty() || self.dirty_Memo.isDirty()) {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                    var current = self.findHira(self.singleSelectedCode(), self.dataSource());
+                    self.memo().A_INP_MEMO(self.memobyHistoryId());
+                    self.currentItem().A_INP_NAME(current.name);
+                    self.currentItem().A_INP_FULLNAME(current.fullName);
+                    self.currentItem().A_INP_OUTCODE(current.externalCode);
+                    self.insertItemEndCheckDirty();
+                    if (self.dirty_ListHistory.isDirty()) {
+                        let _dt = self.itemHistId();
+                        _dt.splice(0, 1);
+                        _dt[0].endDate = "9999/12/31";
+                        self.itemHistId(_dt);
+                        let _dt2 = self.listDtoUpdateHierachy();
+                        if (_dt2 != null) {
+                            _.forEach(nts.uk.util.flatArray(_dt2, 'children'), function(item) {
+                                item.historyId = self.itemHistId()[0].historyId;
+                                item.startDate = self.itemHistId()[0].startDate;
+                                item.endDate = self.itemHistId()[0].endDate;
+                            });
+                        }
+                        self.notAlertHist(false);
+                        self.selectedCodes_His(self.itemHistId()[0].startDate);
+                        self.dirty_ListHistory.reset();
+                    }
+                }).ifNo(function() {
+                });
+            } else {
+                self.insertItemEndCheckDirty();
+            }
+            self.checkDirtyBtn(true);
+
+        }
+
+        insertItemEndCheckDirty() {
             var self = this;
             if (self.lengthTreeCurrent() < 889) {
                 if (self.numberItemNew() == 0) {
@@ -980,7 +1252,7 @@ module cmm011.a.viewmodel {
                         var hierachyItemadd = length + "";
                         while ((hierachyItemadd + "").length < 3)
                             hierachyItemadd = "0" + hierachyItemadd;
-                        var newObj = new model.Dto('', new Date().getTime() + "", "", "",
+                        var newObj = new model.Dto('', "999", "", "",
                             "", "", hierachy_current + hierachyItemadd,
                             "情報を登録してください",
                             current.startDate,
@@ -989,14 +1261,15 @@ module cmm011.a.viewmodel {
                         let currentHis = self.itemHist();
                         newObj.startDate = currentHis.startDate;
                         newObj.endDate = currentHis.endDate;
-                        newObj.memo = self.A_INP_MEMO();
+                        newObj.memo = self.memo().A_INP_MEMO();
                         self.dtoAdd(newObj);
                         self.listDtoUpdateHierachy();
                         self.dataSource(_dt);
                         self.numberItemNew(1);
+                        self.notAlert(false);
                         self.singleSelectedCode(newObj.departmentCode);
-                        self.A_INP_CODE("");
-                        self.A_INP_NAME("");
+                        self.currentItem().A_INP_CODE("");
+                        self.currentItem().A_INP_NAME("");
                         $("#A_INP_CODE").focus();
                     } else {
                         alert("hierarchy item current is 10 ,not push item child to tree");
@@ -1005,6 +1278,7 @@ module cmm011.a.viewmodel {
             } else {
                 alert("more than 889 item");
             }
+
         }
 
 
@@ -1023,10 +1297,13 @@ module cmm011.a.viewmodel {
                         self.dataSource(workplaceQueryResult.workPlaces);
                     }
                     if (workplaceQueryResult.memo) {
-                        self.A_INP_MEMO(workplaceQueryResult.memo.memo);
+                        self.memo().A_INP_MEMO(workplaceQueryResult.memo.memo);
+                        self.memobyHistoryId(workplaceQueryResult.memo.memo);
+                        self.dirty_Memo.reset();
                     }
                     if (workplaceQueryResult.histories.length > 0) {
                         self.itemHistId(workplaceQueryResult.histories);
+                        self.dirty_ListHistory.reset();
                         if (self.dataSource().length > 0) {
                             self.dataSourceFlat = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "children"));
                             self.singleSelectedCode(workplaceQueryResult.workPlaces[0].departmentCode);
@@ -1046,6 +1323,39 @@ module cmm011.a.viewmodel {
           * Model namespace.
        */
     export module model {
+
+        export class InputField {
+            A_INP_CODE: KnockoutObservable<string>;
+            A_INP_CODE_enable: KnockoutObservable<boolean>;
+            A_INP_NAME: KnockoutObservable<string>;
+            A_INP_FULLNAME: KnockoutObservable<string>;
+            A_INP_OUTCODE: KnockoutObservable<string>;
+            constructor(workplacedto: Dto, enable) {
+                var self = this;
+                self.A_INP_CODE = ko.observable(workplacedto.departmentCode);
+                self.A_INP_NAME = ko.observable(workplacedto.name);
+                self.A_INP_FULLNAME = ko.observable(workplacedto.fullName);
+                self.A_INP_OUTCODE = ko.observable(workplacedto.externalCode);
+                self.A_INP_CODE_enable = ko.observable(enable);
+            }
+
+            refresh() {
+                var self = this;
+                self.A_INP_CODE_enable(true);
+                self.A_INP_CODE("");
+                self.A_INP_NAME("");
+                self.A_INP_FULLNAME("");
+                self.A_INP_OUTCODE("");
+            }
+        }
+
+        export class InputMemo {
+            A_INP_MEMO: KnockoutObservable<string>;
+            constructor(memodto: MemoDto) {
+                var self = this;
+                self.A_INP_MEMO = ko.observable(memodto.memo);
+            }
+        }
 
         export class DepartmentQueryResult {
             histories: Array<HistoryDto>;
