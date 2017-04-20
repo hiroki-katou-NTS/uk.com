@@ -113,10 +113,10 @@ module qet001.b.viewmodel {
             
             // Load master items and aggregate items.
             $.when(self.loadAggregateItems(), self.loadMasterItems()).done(() => {
+                self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
                 // Check output setting is empty.
                 var isHasData = outputSettings && outputSettings.length > 0;
                 if (!isHasData) {
-                    self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
                     self.outputSettings().outputSettingSelectedCode('');
                     dfd.resolve();
                     return;
@@ -396,17 +396,16 @@ module qet001.b.viewmodel {
         private createCategorySetting(category: string, paymentType: string,
                 aggregateItems: service.Item[], masterItem: service.Item[], 
                 categorySettings?: WageledgerCategorySetting[]): CategorySetting {
-            //var categorySetting: CategorySetting;
-            var aggregateItemsInCategory = aggregateItems.filter((item) => item.category == category);
+            var aggregateItemsInCategory = aggregateItems.filter((item) => item.category == category && item.paymentType == paymentType);
             var masterItemsInCategory = masterItem.filter((item) => item.category == category);
             var cateTempSetting: WageledgerCategorySetting = {category: category, paymentType: paymentType, outputItems: []};
-            if (categorySettings == undefined) {
+            if (!categorySettings) {
                 return new CategorySetting(aggregateItemsInCategory, masterItemsInCategory, cateTempSetting);
             }
             
             var categorySetting = categorySettings.filter((item) => item.category == category 
                 && item.paymentType == paymentType)[0];
-            if (categorySetting == undefined) {
+            if (!categorySetting) {
                 categorySetting = cateTempSetting;
             }
             return new CategorySetting(aggregateItemsInCategory, masterItemsInCategory, categorySetting);
@@ -435,15 +434,23 @@ module qet001.b.viewmodel {
             this.fullCategoryName = this.getFullCategoryName(this.category, this.paymentType);
 
             // exclude item contain in setting.
-            var settingItemCode: string[] = [];
+            var masterSettingItemCode: string[] = [];
+            var aggregateSettingItemCode : string[] = [];
             if (categorySetting != undefined) {
-                settingItemCode = categorySetting.outputItems.map((item) => {
-                    return item.code;
-                });
+                masterSettingItemCode = categorySetting.outputItems
+                    .filter(item => !item.isAggregateItem)
+                    .map((item) => {
+                        return item.code;
+                    });
+                aggregateSettingItemCode = categorySetting.outputItems
+                    .filter(item => item.isAggregateItem)
+                    .map((item) => {
+                        return item.code;
+                    });
             }
             this.outputItems = ko.observableArray(categorySetting != undefined ? categorySetting.outputItems : []);
-            var aggregateItemsExcluded = aggregateItems.filter((item) => settingItemCode.indexOf(item.code) == -1);
-            var masterItemsExcluded = masterItems.filter((item) => settingItemCode.indexOf(item.code) == -1);
+            var aggregateItemsExcluded = aggregateItems.filter((item) => aggregateSettingItemCode.indexOf(item.code) == -1);
+            var masterItemsExcluded = masterItems.filter((item) => masterSettingItemCode.indexOf(item.code) == -1);
             this.aggregateItemsList = ko.observableArray(aggregateItemsExcluded);
             this.masterItemList = ko.observableArray(masterItemsExcluded);
             this.outputItemsSelected = ko.observable(null);
@@ -468,6 +475,10 @@ module qet001.b.viewmodel {
                   });
               }
             };
+            console.log(self.aggregateItemsList())
+            self.aggregateItemsList.subscribe((newVal) => {
+                console.log(newVal)
+            })
         }
         
         public remove() {

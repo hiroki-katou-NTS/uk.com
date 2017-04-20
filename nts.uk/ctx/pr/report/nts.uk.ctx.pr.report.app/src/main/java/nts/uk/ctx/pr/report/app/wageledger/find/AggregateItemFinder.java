@@ -4,13 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.wageledger.find;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.uk.ctx.pr.report.app.itemmaster.find.ItemMaterFinder;
+import nts.uk.ctx.pr.report.app.itemmaster.find.MasterItemDto;
 import nts.uk.ctx.pr.report.app.wageledger.command.dto.ItemSubjectDto;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.AggregateItemDto;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.HeaderSettingDto;
@@ -28,6 +33,10 @@ public class AggregateItemFinder {
 	/** The repository. */
 	@Inject
 	private WLAggregateItemRepository repository;
+	
+	/** The item mater finder. */
+	@Inject
+	private ItemMaterFinder itemMaterFinder;
 	
 	/**
 	 * Find all.
@@ -79,10 +88,15 @@ public class AggregateItemFinder {
 		// Return dto.
 		val dto = AggregateItemDto.builder().build();
 		aggregateItem.saveToMemento(dto);
-		// TODO: Get master item name.
+		
+		// Find master item name.
+		Map<String, MasterItemDto> itemMap = this.itemMaterFinder
+				.findByCodes(companyCode, new ArrayList<>(aggregateItem.getSubItems())).stream()
+				.filter(item -> item.category.value == subject.getCategory().value)
+				.collect(Collectors.toMap(item -> item.code, Function.identity()));
 		// Fake master item name.
 		dto.subItems.forEach(item -> {
-			item.name = "Master Item " + item.code;
+			item.name = itemMap.get(item.code).name;
 		});
 		return dto;
 	}

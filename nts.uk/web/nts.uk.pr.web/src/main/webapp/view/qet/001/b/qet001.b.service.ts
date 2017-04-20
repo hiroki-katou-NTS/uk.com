@@ -70,14 +70,6 @@ module qet001.b {
          */
         export function findMasterItems() : JQueryPromise<Item[]> {
             var dfd = $.Deferred<Item[]>();
-            // Fake data.
-//            var data = [];
-//            for (var i = 0; i < 10; i++) {
-//                data.push({code: 'MI' + i, name: 'Master item' + i, category: 'Payment'});
-//            }
-//            for (var i = 0; i < 10; i++) {
-//                data.push({code: 'MI' + i, name: 'Master item' + i, category: 'Deduction'});
-//            }
             return nts.uk.request.ajax(servicePath.findMasterItems);
         }
         

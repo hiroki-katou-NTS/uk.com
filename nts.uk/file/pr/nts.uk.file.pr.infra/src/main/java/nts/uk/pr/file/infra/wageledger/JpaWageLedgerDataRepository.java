@@ -29,6 +29,7 @@ import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItem;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentDetail;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
+import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLItemType;
 import nts.uk.ctx.pr.report.infra.util.JpaUtil;
 import nts.uk.file.pr.app.export.wageledger.WageLedgerDataRepository;
 import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery;
@@ -128,7 +129,7 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		List<Object[]> itemResultList;
 		// Case: Query master item only.
 		if (query.outputType == OutputType.MasterItems) {
-			itemResultList = this.queryMasterDataList(companyCode, query);
+			itemResultList = this.queryDataList(companyCode, query);
 		} else {
 			// Case: Query by output setting.
 			itemResultList = this.queryByOutputSetting(companyCode, query);
@@ -180,26 +181,39 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 	 * @return the list
 	 */
 	@SuppressWarnings("unchecked")
-	private List<Object[]> queryMasterDataList(String companyCode, WageLedgerReportQuery query) {
+	private List<Object[]> queryDataList(String companyCode, WageLedgerReportQuery query) {
 		EntityManager em = this.getEntityManager();
 		// Create Year Month.
 		YearMonth startYearMonth = YearMonth.of(query.targetYear, 1);
 		YearMonth endYearMonth = YearMonth.of(query.targetYear, 12);
-
-		// Create Query.
-		Query typeQuery = em.createQuery(DETAIL_DATA_QUERY_STRING)
-				.setParameter("companyCode", companyCode)
-				.setParameter("sparePayAtr", query.isAggreatePreliminaryMonth ? 1 : 0)
-				.setParameter("startProcessingYM", startYearMonth.v())
-				.setParameter("endProcessingYM", endYearMonth.v());
-
-		// Query data.
-		List<Object[]> masterResultList = new ArrayList<>();
-		CollectionUtil.split(query.employeeIds, 1000, (subList) -> {
-			masterResultList.addAll(typeQuery.setParameter("personIds", subList).getResultList());
-		});
-		return masterResultList;
+		
+		// ===================== Query master item only.=====================
+		if (query.outputSetting == null) {
+	
+			// Create Query Master item only.
+			Query typeQuery = em.createQuery(DETAIL_DATA_QUERY_STRING)
+					.setParameter("companyCode", companyCode)
+					.setParameter("sparePayAtr", query.isAggreatePreliminaryMonth ? 1 : 0)
+					.setParameter("startProcessingYM", startYearMonth.v())
+					.setParameter("endProcessingYM", endYearMonth.v());
+	
+			// Query data.
+			List<Object[]> masterResultList = new ArrayList<>();
+			CollectionUtil.split(query.employeeIds, 1000, (subList) -> {
+				masterResultList.addAll(typeQuery.setParameter("personIds", subList).getResultList());
+			});
+			return masterResultList;
+		}
+		// ===================== Query by output setting.=====================
+		// Query master item in output setting.
+		List<String> masterItemCode = query.outputSetting.getCategorySettings().stream()
+				.map(cate -> cate.getOutputItems().stream().filter(item -> item.getType() == WLItemType.Master)
+						.map(item -> item.getLinkageCode()).collect(Collectors.toList()))
+				.flatMap(items -> items.stream()).collect(Collectors.toList());
+		return null;
 	}
+	
+//	private List<Object[]> queryData
 
 	/**
 	 * Query by output setting.
@@ -209,6 +223,7 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 	 * @return the list
 	 */
 	private List<Object[]> queryByOutputSetting(String companyCode, WageLedgerReportQuery query) {
+		
 		return null;
 	}
 
@@ -325,7 +340,8 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 			// Convert result list to item map.
 			Map<QcamtItem, ReportItemDto> bonusAttendanceItemsMap = this
 					.convertMasterResultDatasToItemMap(bonusAttendanceResultList, monthData);
-
+			
+			// Create report data model.
 			WLOldLayoutReportData data = WLOldLayoutReportData.builder()
 					.headerData(headerDataMap.get(personId))
 					.salaryPaymentData(salaryPaymentData)
