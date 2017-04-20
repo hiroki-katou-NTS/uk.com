@@ -42,19 +42,28 @@ module nts.uk.ui.errors {
         addError(error: ErrorListItem) {
             // defer無しでerrorsを呼び出すと、なぜか全てのKnockoutBindingHandlerのupdateが呼ばれてしまうので、
             // 原因がわかるまでひとまずdeferを使っておく
-            //            _.defer(() => {
+            //_.defer(() => {
             var duplicate = _.filter(this.errors(), e => e.$control.is(error.$control) && e.message == error.message);
             if (duplicate.length == 0)
                 this.errors.push(error);
-            //            });
+            //});
+        }
+        
+        hasError() {
+            return this.occurs();
+        }
+
+        clearError() {
+            $(".error").removeClass('error');
+            this.errors.removeAll();
         }
 
         removeErrorByElement($element: JQuery) {
             // addErrorと同じ対応
-            //            _.defer(() => {
+            //_.defer(() => {
             var removeds = _.filter(this.errors(), e => e.$control.is($element));
             this.errors.removeAll(removeds);
-            //            });
+            //});
         }
     }
 
@@ -79,23 +88,34 @@ module nts.uk.ui.errors {
         }
     }
 
+    /** 
+     *  Public API
+    **/
     export function errorsViewModel(): ErrorsViewModel {
         return nts.uk.ui._viewModel.kiban.errorDialogViewModel;
     }
 
-    export function show() {
+    export function show(): void {
         errorsViewModel().open();
     }
 
-    export function hide() {
+    export function hide(): void {
         errorsViewModel().hide();
     }
 
-    export function add(error: ErrorListItem) {
+    export function add(error: ErrorListItem): void {
         errorsViewModel().addError(error);
     }
+    
+    export function hasError(): boolean {
+        return errorsViewModel().hasError();
+    }
 
-    export function removeByElement($control: JQuery) {
+    export function clearAll(): void {
+        errorsViewModel().clearError();
+    }
+
+    export function removeByElement($control: JQuery): void {
         errorsViewModel().removeErrorByElement($control);
     }
 }

@@ -4,8 +4,8 @@ var qmm012;
     (function (c) {
         var viewmodel;
         (function (viewmodel) {
-            var ScreenModel = (function () {
-                function ScreenModel() {
+            class ScreenModel {
+                constructor() {
                     this.CurrentItemSalary = ko.observable(null);
                     this.CurrentItemMaster = ko.observable(null);
                     this.CurrentLimitMny = ko.observable(0);
@@ -39,6 +39,8 @@ var qmm012;
                     this.C_LBL_020_Text = ko.observable("設定なし");
                     this.currentItemBDs = ko.observableArray([]);
                     this.C_LBL_022_Text = ko.observable("設定なし");
+                    this.C_BTN_001_enable = ko.observable(true);
+                    this.C_BTN_002_enable = ko.observable(true);
                     var self = this;
                     self.ComboBoxItemList_C_SEL_001 = ko.observableArray([
                         new C_SEL_001_ComboboxItemModel(0, '課税'),
@@ -190,6 +192,7 @@ var qmm012;
                         else {
                             self.CurrentItemSalary(null);
                         }
+                        //load subitem of item master 
                         self.loadItemPeriod();
                         self.loadItemBDs();
                         self.CurrentZeroDisplaySet(ItemMaster ? ItemMaster.zeroDisplaySet : 1);
@@ -216,7 +219,7 @@ var qmm012;
                         self.CurrentApplyForHourlyPayEmp(NewValue ? NewValue.applyForHourlyPayEmp : 0);
                         self.CurrentAvePayAtr(NewValue ? NewValue.avePayAtr : 0);
                         self.CurrentLimitMnyAtr(NewValue ? NewValue.limitMnyAtr : 0);
-                        self.CurrentLimitCode(NewValue ? NewValue.limitMnyRefItemCd : "");
+                        self.CurrentLimitCode(NewValue ? NewValue.limitMnyRefItemCode : "");
                         self.C_SEL_013_Selected(NewValue ? NewValue.errRangeHighAtr == 0 ? false : true : false);
                         self.C_SEL_014_Selected(NewValue ? NewValue.alRangeHighAtr == 0 ? false : true : false);
                         self.C_SEL_015_Selected(NewValue ? NewValue.errRangeLowAtr == 0 ? false : true : false);
@@ -241,6 +244,7 @@ var qmm012;
                     });
                     self.CurrentLimitCode.subscribe(function (NewValue) {
                         if (NewValue) {
+                            //call service getCommuteNoTaxLimit
                             c.service.getCommuteNoTaxLimit(NewValue).done(function (CommuteNoTaxLimit) {
                                 self.currentCommuteNoTaxLimitDto(CommuteNoTaxLimit);
                             }).fail(function (res) {
@@ -259,8 +263,8 @@ var qmm012;
                         self.C_LBL_022_Text(newValue.length ? '設定あり' : '設定なし');
                     });
                 }
-                ScreenModel.prototype.loadItemPeriod = function () {
-                    var self = this;
+                loadItemPeriod() {
+                    let self = this;
                     if (self.CurrentItemMaster()) {
                         qmm012.h.service.findItemPeriod(self.CurrentItemMaster()).done(function (ItemPeriod) {
                             self.currentItemPeriod(ItemPeriod);
@@ -271,9 +275,9 @@ var qmm012;
                     }
                     else
                         self.currentItemPeriod(undefined);
-                };
-                ScreenModel.prototype.loadItemBDs = function () {
-                    var self = this;
+                }
+                loadItemBDs() {
+                    let self = this;
                     if (self.CurrentItemMaster()) {
                         qmm012.i.service.findAllItemBD(self.CurrentItemMaster()).done(function (ItemBDs) {
                             self.currentItemBDs(ItemBDs);
@@ -283,51 +287,53 @@ var qmm012;
                         });
                     }
                     else
-                        self.currentItemPeriod(undefined);
-                };
-                ScreenModel.prototype.GetCurrentItemSalary = function () {
-                    var self = this;
-                    var ItemSalary = new c.service.model.ItemSalary(self.CurrentTaxAtr(), self.CurrentSocialInsAtr(), self.CurrentLaborInsAtr(), self.CurrentFixPayAtr(), self.CurrentApplyForAllEmpFlg(), self.CurrentApplyForMonthlyPayEmp(), self.CurrentApplyForDaymonthlyPayEmp(), self.CurrentApplyForDaylyPayEmp(), self.CurrentApplyForHourlyPayEmp(), self.CurrentAvePayAtr(), self.C_SEL_015_Selected() ? 1 : 0, self.CurrentErrRangeLow(), self.C_SEL_013_Selected() ? 1 : 0, self.CurrentErrRangeHigh(), self.C_SEL_016_Selected() ? 1 : 0, self.CurrentAlRangeLow(), self.C_SEL_014_Selected() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentMemo(), self.CurrentLimitMnyAtr(), self.currentCommuteNoTaxLimitDto() ? self.currentCommuteNoTaxLimitDto().commuNoTaxLimitCode : '', self.CurrentLimitMny());
+                        self.currentItemBDs([]);
+                }
+                GetCurrentItemSalary() {
+                    //get ItemSalary customer input in form
+                    let self = this;
+                    let ItemSalary = new c.service.model.ItemSalary(self.CurrentTaxAtr(), self.CurrentSocialInsAtr(), self.CurrentLaborInsAtr(), self.CurrentFixPayAtr(), self.CurrentApplyForAllEmpFlg(), self.CurrentApplyForMonthlyPayEmp(), self.CurrentApplyForDaymonthlyPayEmp(), self.CurrentApplyForDaylyPayEmp(), self.CurrentApplyForHourlyPayEmp(), self.CurrentAvePayAtr(), self.C_SEL_015_Selected() ? 1 : 0, self.CurrentErrRangeLow(), self.C_SEL_013_Selected() ? 1 : 0, self.CurrentErrRangeHigh(), self.C_SEL_016_Selected() ? 1 : 0, self.CurrentAlRangeLow(), self.C_SEL_014_Selected() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentMemo(), self.CurrentLimitMnyAtr(), self.currentCommuteNoTaxLimitDto() ? self.currentCommuteNoTaxLimitDto().commuNoTaxLimitCode : '', self.CurrentLimitMny());
                     return ItemSalary;
-                };
-                ScreenModel.prototype.openKDialog = function () {
-                    var self = this;
+                }
+                openKDialog() {
+                    let self = this;
+                    //set selected code to session
+                    nts.uk.ui.windows.setShared('commuNoTaxLimitCode', self.currentCommuteNoTaxLimitDto() ? self.currentCommuteNoTaxLimitDto().commuNoTaxLimitCode : '');
                     nts.uk.ui.windows.sub.modal('../k/index.xhtml', { height: 530, width: 350, dialogClass: "no-close" }).onClosed(function () {
                         if (nts.uk.ui.windows.getShared('CommuteNoTaxLimitDto'))
                             self.currentCommuteNoTaxLimitDto(nts.uk.ui.windows.getShared('CommuteNoTaxLimitDto'));
                     });
-                };
-                ScreenModel.prototype.openHDialog = function () {
-                    var self = this;
+                }
+                openHDialog() {
+                    let self = this;
                     nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
+                    nts.uk.ui.windows.setShared('itemPeriod', self.currentItemPeriod());
                     nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close" }).onClosed(function () {
-                        self.loadItemPeriod();
+                        self.currentItemPeriod(nts.uk.ui.windows.getShared('itemPeriod'));
                     });
-                };
-                ScreenModel.prototype.openIDialog = function () {
-                    var self = this;
+                }
+                openIDialog() {
+                    let self = this;
                     nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
+                    nts.uk.ui.windows.setShared('itemBDs', self.currentItemBDs());
                     nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close" }).onClosed(function () {
-                        self.loadItemBDs();
+                        self.currentItemBDs(nts.uk.ui.windows.getShared('itemBDs'));
                     });
-                };
-                return ScreenModel;
-            }());
+                }
+            }
             viewmodel.ScreenModel = ScreenModel;
-            var BoxModel = (function () {
-                function BoxModel(id, name) {
+            class BoxModel {
+                constructor(id, name) {
                     this.id = id;
                     this.name = name;
                 }
-                return BoxModel;
-            }());
-            var C_SEL_001_ComboboxItemModel = (function () {
-                function C_SEL_001_ComboboxItemModel(code, name) {
+            }
+            class C_SEL_001_ComboboxItemModel {
+                constructor(code, name) {
                     this.code = code;
                     this.name = name;
                 }
-                return C_SEL_001_ComboboxItemModel;
-            }());
+            }
         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
     })(c = qmm012.c || (qmm012.c = {}));
 })(qmm012 || (qmm012 = {}));

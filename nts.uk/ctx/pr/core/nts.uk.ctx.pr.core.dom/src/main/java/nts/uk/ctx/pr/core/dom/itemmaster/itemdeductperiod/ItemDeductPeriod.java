@@ -10,7 +10,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalaryperiod.PeriodAtr;
 
 @Getter
 public class ItemDeductPeriod extends AggregateRoot {
-	private ItemCode itemCd;
+	private ItemCode itemCode;
 	private PeriodAtr periodAtr;
 	private Year strY;
 	private Year endY;
@@ -28,13 +28,13 @@ public class ItemDeductPeriod extends AggregateRoot {
 	private UsageClassification cycle11Atr;
 	private UsageClassification cycle12Atr;
 
-	public ItemDeductPeriod(ItemCode itemCd, PeriodAtr periodAtr, Year strY, Year endY, UsageClassification cycleAtr,
+	public ItemDeductPeriod(ItemCode itemCode, PeriodAtr periodAtr, Year strY, Year endY, UsageClassification cycleAtr,
 			UsageClassification cycle01Atr, UsageClassification cycle02Atr, UsageClassification cycle03Atr,
 			UsageClassification cycle04Atr, UsageClassification cycle05Atr, UsageClassification cycle06Atr,
 			UsageClassification cycle07Atr, UsageClassification cycle08Atr, UsageClassification cycle09Atr,
 			UsageClassification cycle10Atr, UsageClassification cycle11Atr, UsageClassification cycle12Atr) {
 		super();
-		this.itemCd = itemCd;
+		this.itemCode = itemCode;
 		this.periodAtr = periodAtr;
 		this.strY = strY;
 		this.endY = endY;
@@ -53,11 +53,11 @@ public class ItemDeductPeriod extends AggregateRoot {
 		this.cycle12Atr = cycle12Atr;
 	}
 
-	public static ItemDeductPeriod createFromJavaType(String itemCd, int periodAtr, int strY, int endY, int cycleAtr,
+	public static ItemDeductPeriod createFromJavaType(String itemCode, int periodAtr, int strY, int endY, int cycleAtr,
 			int cycle01Atr, int cycle02Atr, int cycle03Atr, int cycle04Atr, int cycle05Atr, int cycle06Atr,
 			int cycle07Atr, int cycle08Atr, int cycle09Atr, int cycle10Atr, int cycle11Atr, int cycle12Atr) {
 
-		return new ItemDeductPeriod(new ItemCode(itemCd), EnumAdaptor.valueOf(periodAtr, PeriodAtr.class),
+		return new ItemDeductPeriod(new ItemCode(itemCode), EnumAdaptor.valueOf(periodAtr, PeriodAtr.class),
 				new Year(strY), new Year(endY), EnumAdaptor.valueOf(cycleAtr, UsageClassification.class),
 				EnumAdaptor.valueOf(cycle01Atr, UsageClassification.class),
 				EnumAdaptor.valueOf(cycle02Atr, UsageClassification.class),

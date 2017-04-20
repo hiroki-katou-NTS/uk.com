@@ -4,8 +4,8 @@ var qmm012;
     (function (d) {
         var viewmodel;
         (function (viewmodel) {
-            var ScreenModel = (function () {
-                function ScreenModel() {
+            class ScreenModel {
+                constructor() {
                     //Checkbox
                     //D_003
                     this.checked_D_003 = ko.observable(true);
@@ -31,6 +31,8 @@ var qmm012;
                     this.D_LBL_011_Text = ko.observable('設定なし');
                     this.currentItemBDs = ko.observableArray([]);
                     this.D_LBL_012_Text = ko.observable("設定なし");
+                    this.D_BTN_001_enable = ko.observable(true);
+                    this.D_BTN_002_enable = ko.observable(true);
                     var self = this;
                     self.isEditable = ko.observable(true);
                     self.isEnable = ko.observable(true);
@@ -139,8 +141,8 @@ var qmm012;
                         self.D_LBL_012_Text(newValue.length ? '設定あり' : '設定なし');
                     });
                 }
-                ScreenModel.prototype.loadItemPeriod = function () {
-                    var self = this;
+                loadItemPeriod() {
+                    let self = this;
                     //Load Screen H  Data
                     if (self.CurrentItemMaster()) {
                         qmm012.h.service.findItemPeriod(self.CurrentItemMaster()).done(function (ItemPeriod) {
@@ -152,9 +154,9 @@ var qmm012;
                     }
                     else
                         self.currentItemPeriod(undefined);
-                };
-                ScreenModel.prototype.loadItemBDs = function () {
-                    var self = this;
+                }
+                loadItemBDs() {
+                    let self = this;
                     if (self.CurrentItemMaster()) {
                         qmm012.i.service.findAllItemBD(self.CurrentItemMaster()).done(function (ItemBDs) {
                             self.currentItemBDs(ItemBDs);
@@ -164,37 +166,37 @@ var qmm012;
                         });
                     }
                     else
-                        self.currentItemPeriod(undefined);
-                };
-                ScreenModel.prototype.openHDialog = function () {
-                    var self = this;
+                        self.currentItemBDs([]);
+                }
+                openHDialog() {
+                    let self = this;
                     nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
+                    nts.uk.ui.windows.setShared('itemPeriod', self.currentItemPeriod());
                     nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close" }).onClosed(function () {
-                        self.loadItemPeriod();
+                        self.currentItemPeriod(nts.uk.ui.windows.getShared('itemPeriod'));
                     });
-                };
-                ScreenModel.prototype.openIDialog = function () {
-                    var self = this;
+                }
+                openIDialog() {
+                    let self = this;
                     nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
+                    nts.uk.ui.windows.setShared('itemBDs', self.currentItemBDs());
                     nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close" }).onClosed(function () {
-                        self.loadItemBDs();
+                        self.currentItemBDs(nts.uk.ui.windows.getShared('itemBDs'));
                     });
-                };
-                ScreenModel.prototype.GetCurrentItemDeduct = function () {
-                    var self = this;
-                    var ItemDeduct = new d.service.model.ItemDeduct(self.CurrentDeductAtr(), self.checked_D_006() ? 1 : 0, self.CurrentErrRangeLow(), self.checked_D_004() ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_D_007() ? 1 : 0, self.CurrentAlRangeLow(), self.checked_D_005() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentMemo());
+                }
+                GetCurrentItemDeduct() {
+                    let self = this;
+                    let ItemDeduct = new d.service.model.ItemDeduct(self.CurrentDeductAtr(), self.checked_D_006() ? 1 : 0, self.CurrentErrRangeLow(), self.checked_D_004() ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_D_007() ? 1 : 0, self.CurrentAlRangeLow(), self.checked_D_005() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentMemo());
                     return ItemDeduct;
-                };
-                return ScreenModel;
-            }());
+                }
+            }
             viewmodel.ScreenModel = ScreenModel;
-            var ComboboxItemModel = (function () {
-                function ComboboxItemModel(code, name) {
+            class ComboboxItemModel {
+                constructor(code, name) {
                     this.code = code;
                     this.name = name;
                 }
-                return ComboboxItemModel;
-            }());
+            }
         })(viewmodel = d.viewmodel || (d.viewmodel = {}));
     })(d = qmm012.d || (qmm012.d = {}));
 })(qmm012 || (qmm012 = {}));

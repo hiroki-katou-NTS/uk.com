@@ -14,8 +14,8 @@ var nts;
                         (function (viewmodel) {
                             var bservice = nts.uk.pr.view.qmm008.b.service;
                             var postcodeService = nts.uk.pr.view.base.postcode.service;
-                            var ScreenModel = (function () {
-                                function ScreenModel() {
+                            class ScreenModel {
+                                constructor() {
                                     var self = this;
                                     self.enabled = ko.observable(true);
                                     self.deleteButtonControll = ko.observable(true);
@@ -60,7 +60,7 @@ var nts;
                                                     self.showConfirmDialog(false);
                                                     self.dirty.reset();
                                                     self.loadItemOffice(selectedOfficeCode);
-                                                }).ifCancel(function () {
+                                                }).ifNo(function () {
                                                     self.selectedOfficeCode(self.previousSelectedOfficeCode());
                                                 });
                                             }
@@ -73,7 +73,7 @@ var nts;
                                         }
                                     });
                                 }
-                                ScreenModel.prototype.loadItemOffice = function (selectedOfficeCode) {
+                                loadItemOffice(selectedOfficeCode) {
                                     var self = this;
                                     $('.save-error').ntsError('clear');
                                     if (selectedOfficeCode != null && selectedOfficeCode != undefined && selectedOfficeCode != "") {
@@ -87,9 +87,9 @@ var nts;
                                             //when load data error
                                         });
                                     }
-                                };
+                                }
                                 // start
-                                ScreenModel.prototype.start = function () {
+                                start() {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     //first load
@@ -106,9 +106,9 @@ var nts;
                                     });
                                     // Return.
                                     return dfd.promise();
-                                };
+                                }
                                 //
-                                ScreenModel.prototype.loadAllInsuranceOfficeData = function () {
+                                loadAllInsuranceOfficeData() {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     // find all insurance office 
@@ -117,7 +117,7 @@ var nts;
                                         if (data != null) {
                                             self.officeItems([]);
                                             // Set data get from service to list.
-                                            data.forEach(function (item, index) {
+                                            data.forEach((item, index) => {
                                                 self.officeItems.push(new ItemModel(item.code, item.name));
                                             });
                                             dfd.resolve(data);
@@ -128,8 +128,8 @@ var nts;
                                     });
                                     // Return.
                                     return dfd.promise();
-                                };
-                                ScreenModel.prototype.load = function (officeCode) {
+                                }
+                                load(officeCode) {
                                     if (officeCode != null && officeCode != '') {
                                         var self = this;
                                         e.service.getOfficeItemDetail(officeCode).done(function (data) {
@@ -162,28 +162,27 @@ var nts;
                                         });
                                     }
                                     return;
-                                };
-                                ScreenModel.prototype.convertDatatoList = function (data) {
+                                }
+                                convertDatatoList(data) {
                                     var OfficeItemList = [];
                                     // 
-                                    data.forEach(function (item, index) {
+                                    data.forEach((item, index) => {
                                         OfficeItemList.push(new ItemModel(item.code, item.name));
                                     });
                                     return OfficeItemList;
-                                };
+                                }
                                 //save (mode: update or create new)
-                                ScreenModel.prototype.save = function () {
+                                save() {
                                     var self = this;
-                                    self.dirty.reset();
                                     //if update office
                                     if (!self.enabled())
                                         self.updateOffice();
                                     else {
                                         self.registerOffice();
                                     }
-                                };
+                                }
                                 //update office
-                                ScreenModel.prototype.updateOffice = function () {
+                                updateOffice() {
                                     var self = this;
                                     e.service.update(self.collectData()).done(function () {
                                         //when update done
@@ -191,12 +190,13 @@ var nts;
                                             //focus add new item
                                             self.selectedOfficeCode(self.officeModel().officeCode());
                                         });
+                                        self.dirty.reset();
                                     }).fail(function () {
-                                        //update fail    
+                                        //update fail
                                     });
-                                };
+                                }
                                 //create new Office
-                                ScreenModel.prototype.registerOffice = function () {
+                                registerOffice() {
                                     var self = this;
                                     e.service.register(self.collectData()).done(function () {
                                         // when register done
@@ -204,6 +204,7 @@ var nts;
                                             //focus add new item
                                             self.selectedOfficeCode(self.officeModel().officeCode());
                                         });
+                                        self.dirty.reset();
                                     }).fail(function (res) {
                                         if (res.messageId == self.errorList()[2].messageId) {
                                             $('#officeCode').ntsError('set', self.errorList()[2].message);
@@ -217,17 +218,17 @@ var nts;
                                                 $('#picPosition').ntsError('set', self.errorList()[0].message);
                                         }
                                     });
-                                };
-                                ScreenModel.prototype.removeWithDirtyCheck = function () {
+                                }
+                                removeWithDirtyCheck() {
                                     var self = this;
                                     nts.uk.ui.dialog.confirm(self.errorList()[5].message).ifYes(function () {
                                         self.dirty.reset();
                                         self.remove();
-                                    }).ifCancel(function () {
+                                    }).ifNo(function () {
                                     });
-                                };
+                                }
                                 //remove office  by office Code
-                                ScreenModel.prototype.remove = function () {
+                                remove() {
                                     var self = this;
                                     if (self.selectedOfficeCode() != '') {
                                         e.service.remove(self.selectedOfficeCode()).done(function () {
@@ -246,28 +247,29 @@ var nts;
                                             }
                                         });
                                     }
-                                };
+                                }
                                 //collect all data
-                                ScreenModel.prototype.collectData = function () {
+                                collectData() {
                                     var self = this;
                                     var a = new e.service.model.finder.OfficeItemDto("company code", self.officeModel().officeCode(), self.officeModel().officeName(), self.officeModel().shortName(), self.officeModel().PicName(), self.officeModel().PicPosition(), self.officeModel().potalCode(), self.officeModel().address1st(), self.officeModel().address2nd(), self.officeModel().kanaAddress1st(), self.officeModel().kanaAddress2nd(), self.officeModel().phoneNumber(), self.officeModel().healthInsuOfficeRefCode1st(), self.officeModel().healthInsuOfficeRefCode2nd(), self.officeModel().pensionOfficeRefCode1st(), self.officeModel().pensionOfficeRefCode2nd(), self.officeModel().welfarePensionFundCode(), self.officeModel().officePensionFundCode(), self.officeModel().healthInsuCityCode(), self.officeModel().healthInsuOfficeSign(), self.officeModel().pensionCityCode(), self.officeModel().pensionOfficeSign(), self.officeModel().healthInsuOfficeCode(), self.officeModel().healthInsuAssoCode(), self.officeModel().memo());
                                     return a;
-                                };
-                                ScreenModel.prototype.addNewWithDirtyCheck = function () {
+                                }
+                                addNewWithDirtyCheck() {
                                     var self = this;
                                     if (self.dirty.isDirty()) {
                                         nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function () {
                                             self.addNew();
                                             self.dirty.reset();
-                                        }).ifCancel(function () {
+                                        }).ifNo(function () {
                                         });
                                     }
                                     else {
                                         self.addNew();
+                                        self.showConfirmDialog(true);
                                     }
-                                };
+                                }
                                 //reset all field when click add new office button
-                                ScreenModel.prototype.addNew = function () {
+                                addNew() {
                                     var self = this;
                                     //reset all input fields to blank
                                     self.officeModel().officeCode('');
@@ -302,32 +304,33 @@ var nts;
                                     self.selectedOfficeCode('');
                                     self.showConfirmDialog(false);
                                     self.previousSelectedOfficeCode('');
-                                };
-                                ScreenModel.prototype.closeDialogWithDirtyCheck = function () {
+                                    self.dirty = new nts.uk.ui.DirtyChecker(self.officeModel);
+                                }
+                                closeDialogWithDirtyCheck() {
                                     var self = this;
                                     if (self.dirty.isDirty()) {
                                         nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function () {
-                                            self.closeDialog();
+                                            nts.uk.ui.windows.setShared("codeOfNewOffice", null, this.isTransistReturnData());
+                                            nts.uk.ui.windows.close();
                                             self.dirty.reset();
-                                        }).ifCancel(function () {
+                                        }).ifNo(function () {
                                         });
                                     }
                                     else {
                                         self.closeDialog();
                                     }
-                                };
-                                ScreenModel.prototype.closeDialog = function () {
+                                }
+                                closeDialog() {
                                     var self = this;
                                     // Set child value
                                     nts.uk.ui.windows.setShared("codeOfNewOffice", self.officeModel().officeCode(), this.isTransistReturnData());
                                     nts.uk.ui.windows.close();
-                                };
-                                return ScreenModel;
-                            }());
+                                }
+                            }
                             viewmodel.ScreenModel = ScreenModel;
                             //Models
-                            var SocialInsuranceOfficeModel = (function () {
-                                function SocialInsuranceOfficeModel() {
+                            class SocialInsuranceOfficeModel {
+                                constructor() {
                                     //basic info input
                                     this.officeCode = ko.observable('');
                                     this.officeName = ko.observable('');
@@ -355,23 +358,22 @@ var nts;
                                     this.healthInsuAssoCode = ko.observable('');
                                     this.memo = ko.observable('');
                                 }
-                                SocialInsuranceOfficeModel.prototype.setPostCode = function (postcode) {
+                                setPostCode(postcode) {
                                     var self = this;
                                     self.potalCode(postcode.postcode);
                                     self.address1st(postcodeService.toAddress(postcode));
                                     self.kanaAddress1st(postcodeService.toKana(postcode));
-                                };
-                                SocialInsuranceOfficeModel.prototype.searchPostCode = function () {
+                                }
+                                searchPostCode() {
                                     var self = this;
                                     var messageList = [
                                         { messageId: "ER001", message: "＊が入力されていません。" },
                                         { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
                                         { messageId: "ER010", message: "対象データがありません。" }
                                     ];
-                                    postcodeService.findPostCodeZipCodeToRespone(self.potalCode()).done(function (data) {
+                                    postcodeService.findPostCodeZipCodeToRespone(self.potalCode()).done(data => {
                                         if (data.errorCode == '0') {
-                                            for (var _i = 0, messageList_1 = messageList; _i < messageList_1.length; _i++) {
-                                                var datamessage = messageList_1[_i];
+                                            for (var datamessage of messageList) {
                                                 if (datamessage.messageId == data.message) {
                                                     $('#inp_postCode').ntsError('set', datamessage.message);
                                                 }
@@ -382,10 +384,9 @@ var nts;
                                             $('#inp_postCode').ntsError('clear');
                                         }
                                         else {
-                                            postcodeService.findPostCodeZipCodeSelection(self.potalCode()).done(function (res) {
+                                            postcodeService.findPostCodeZipCodeSelection(self.potalCode()).done(res => {
                                                 if (res.errorCode == '0') {
-                                                    for (var _i = 0, messageList_2 = messageList; _i < messageList_2.length; _i++) {
-                                                        var datamessage = messageList_2[_i];
+                                                    for (var datamessage of messageList) {
                                                         if (datamessage.messageId == res.message) {
                                                             $('#inp_postCode').ntsError('set', datamessage.message);
                                                         }
@@ -402,26 +403,23 @@ var nts;
                                     }).fail(function (error) {
                                         console.log(error);
                                     });
-                                };
-                                return SocialInsuranceOfficeModel;
-                            }());
+                                }
+                            }
                             viewmodel.SocialInsuranceOfficeModel = SocialInsuranceOfficeModel;
-                            var ItemModel = (function () {
-                                function ItemModel(code, name) {
+                            class ItemModel {
+                                constructor(code, name) {
                                     this.code = code;
                                     this.name = name;
                                 }
-                                return ItemModel;
-                            }());
+                            }
                             viewmodel.ItemModel = ItemModel;
-                            var optionsModel = (function () {
-                                function optionsModel(id, name) {
+                            class optionsModel {
+                                constructor(id, name) {
                                     var self = this;
                                     self.id = id;
                                     self.name = name;
                                 }
-                                return optionsModel;
-                            }());
+                            }
                             viewmodel.optionsModel = optionsModel;
                         })(viewmodel = e.viewmodel || (e.viewmodel = {}));
                     })(e = qmm008.e || (qmm008.e = {}));

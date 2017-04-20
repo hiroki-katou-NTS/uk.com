@@ -1,6 +1,6 @@
 __viewContext.ready(function () {
-    var ScreenModel = (function () {
-        function ScreenModel() {
+    class ScreenModel {
+        constructor() {
             this.itemsSwap = ko.observableArray([]);
             var array = [];
             for (var i = 0; i < 10000; i++) {
@@ -18,19 +18,17 @@ __viewContext.ready(function () {
             this.currentCodeListSwap = ko.observableArray(x);
             this.test = ko.observableArray([]);
         }
-        ScreenModel.prototype.remove = function () {
+        remove() {
             this.itemsSwap.shift();
-        };
-        return ScreenModel;
-    }());
-    var ItemModel = (function () {
-        function ItemModel(code, name, description) {
+        }
+    }
+    class ItemModel {
+        constructor(code, name, description) {
             this.code = code;
             this.name = name;
             this.description = description;
             this.deletable = code % 3 === 0;
         }
-        return ItemModel;
-    }());
+    }
     this.bind(new ScreenModel());
 });

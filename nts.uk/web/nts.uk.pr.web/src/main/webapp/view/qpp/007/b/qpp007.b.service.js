@@ -23,18 +23,13 @@ var nts;
                              *  Save SalaryPrintSetting.
                              */
                             function saveSalaryPrintSetting(data) {
-                                var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.saveSalaryPrintSetting, data).done(function () {
-                                    return dfd.resolve();
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.saveSalaryPrintSetting, data);
                             }
                             service.saveSalaryPrintSetting = saveSalaryPrintSetting;
                             /**
                              *  Load SalaryPrintSetting.
                              */
                             function findSalaryPrintSetting() {
-                                var dfd = $.Deferred();
                                 return nts.uk.request.ajax(paths.findSalaryPrintSetting);
                             }
                             service.findSalaryPrintSetting = findSalaryPrintSetting;

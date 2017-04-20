@@ -13,7 +13,7 @@ var nts;
                         var service;
                         (function (service) {
                             // Service paths.
-                            var paths = {
+                            let paths = {
                                 findCheckListPrintSetting: "ctx/pr/report/insurance/checklist/find",
                                 saveCheckListPrintSetting: "ctx/pr/report/insurance/checklist/save"
                             };
@@ -27,8 +27,16 @@ var nts;
                             /**
                              * save checklist print setting
                              */
-                            function saveCheckListPrintSetting(command) {
-                                return nts.uk.request.ajax(paths.saveCheckListPrintSetting, command);
+                            function saveCheckListPrintSetting(data) {
+                                var checklistSetting = data.checklistPrintSettingModel();
+                                var jsonData = {
+                                    showCategoryInsuranceItem: checklistSetting.showCategoryInsuranceItem(),
+                                    showDetail: checklistSetting.showDetail(),
+                                    showOffice: checklistSetting.showOffice(),
+                                    showTotal: checklistSetting.showTotal(),
+                                    showDeliveryNoticeAmount: checklistSetting.showDeliveryNoticeAmount()
+                                };
+                                return nts.uk.request.ajax(paths.saveCheckListPrintSetting, jsonData);
                             }
                             service.saveCheckListPrintSetting = saveCheckListPrintSetting;
                         })(service = c.service || (c.service = {}));

@@ -12,81 +12,70 @@ var nts;
                     (function (b) {
                         var viewmodel;
                         (function (viewmodel) {
-                            var ScreenModel = (function () {
-                                function ScreenModel() {
+                            class ScreenModel {
+                                constructor() {
                                     var self = this;
                                     self.salaryPrintSettingModel = ko.observable();
-                                    self.switchButtonDataSource = ko.observableArray([
-                                        { code: 'Hourly', name: '時間' },
-                                        { code: 'Minutely', name: '分' }
-                                    ]);
-                                    self.switchValue = ko.observable('Apply');
                                 }
                                 /**
                                  * Start page.
                                  */
-                                ScreenModel.prototype.startPage = function () {
+                                startPage() {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    self.loadSalaryPrintSetting().done(function () {
-                                        return dfd.resolve();
-                                    });
+                                    self.loadSalaryPrintSetting().done(() => dfd.resolve());
                                     return dfd.promise();
-                                };
+                                }
                                 /**
                                  * Call service to load salary print setting.
                                  */
-                                ScreenModel.prototype.loadSalaryPrintSetting = function () {
+                                loadSalaryPrintSetting() {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    b.service.findSalaryPrintSetting().then(function (res) {
-                                        self.salaryPrintSettingModel(new SalaryPrintSettingModel('Minutely', false, true, true, false, true, true, false, true, false, true, false, true, false, true, false, false, false, true, false, true));
+                                    b.service.findSalaryPrintSetting().done(function (res) {
+                                        self.salaryPrintSettingModel(new SalaryPrintSettingModel(res));
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
-                                };
+                                }
                                 /**
                                  * Call service to save print setting.
                                  */
-                                ScreenModel.prototype.saveSetting = function () {
+                                saveSetting() {
                                     var self = this;
                                     b.service.saveSalaryPrintSetting(ko.toJS(self.salaryPrintSettingModel));
-                                };
+                                    nts.uk.ui.windows.close();
+                                }
                                 /**
                                  * Cancel and close dialog.
                                  */
-                                ScreenModel.prototype.cancel = function () {
+                                cancel() {
                                     nts.uk.ui.windows.close();
-                                };
-                                return ScreenModel;
-                            }());
-                            viewmodel.ScreenModel = ScreenModel;
-                            var SalaryPrintSettingModel = (function () {
-                                function SalaryPrintSettingModel(outputDistinction, showDepartmentMonthlyAmount, showDetail, showDivisionMonthlyTotal, showDivisionTotal, showHierarchy1, showHierarchy2, showHierarchy3, showHierarchy4, showHierarchy5, showHierarchy6, showHierarchy7, showHierarchy8, showHierarchy9, showHierarchyAccumulation, showHierarchyMonthlyAccumulation, showMonthlyAmount, showPersonalMonthlyAmount, showPersonalTotal, showSectionalCalculation, showTotal) {
-                                    this.outputDistinction = ko.observable(outputDistinction);
-                                    this.showDepartmentMonthlyAmount = ko.observable(showDepartmentMonthlyAmount);
-                                    this.showDetail = ko.observable(showDetail);
-                                    this.showDivisionMonthlyTotal = ko.observable(showDivisionMonthlyTotal);
-                                    this.showDivisionTotal = ko.observable(showDivisionTotal);
-                                    this.showHierarchy1 = ko.observable(showHierarchy1);
-                                    this.showHierarchy2 = ko.observable(showHierarchy2);
-                                    this.showHierarchy3 = ko.observable(showHierarchy3);
-                                    this.showHierarchy4 = ko.observable(showHierarchy4);
-                                    this.showHierarchy5 = ko.observable(showHierarchy5);
-                                    this.showHierarchy6 = ko.observable(showHierarchy6);
-                                    this.showHierarchy7 = ko.observable(showHierarchy7);
-                                    this.showHierarchy8 = ko.observable(showHierarchy8);
-                                    this.showHierarchy9 = ko.observable(showHierarchy9);
-                                    this.showHierarchyAccumulation = ko.observable(showHierarchyAccumulation);
-                                    this.showHierarchyMonthlyAccumulation = ko.observable(showHierarchyMonthlyAccumulation);
-                                    this.showMonthlyAmount = ko.observable(showMonthlyAmount);
-                                    this.showPersonalMonthlyAmount = ko.observable(showPersonalMonthlyAmount);
-                                    this.showPersonalTotal = ko.observable(showPersonalTotal);
-                                    this.showSectionalCalculation = ko.observable(showSectionalCalculation);
-                                    this.showTotal = ko.observable(showTotal);
                                 }
-                                return SalaryPrintSettingModel;
-                            }());
+                            }
+                            viewmodel.ScreenModel = ScreenModel;
+                            class SalaryPrintSettingModel {
+                                constructor(dto) {
+                                    this.showPayment = ko.observable(dto.showPayment);
+                                    this.sumPersonSet = ko.observable(dto.sumPersonSet);
+                                    this.sumMonthPersonSet = ko.observable(dto.sumMonthPersonSet);
+                                    this.sumEachDeprtSet = ko.observable(dto.sumEachDeprtSet);
+                                    this.sumMonthDeprtSet = ko.observable(dto.sumMonthDeprtSet);
+                                    this.sumDepHrchyIndexSet = ko.observable(dto.sumDepHrchyIndexSet);
+                                    this.sumMonthDepHrchySet = ko.observable(dto.sumMonthDepHrchySet);
+                                    this.hrchyIndex1 = ko.observable(dto.hrchyIndex1);
+                                    this.hrchyIndex2 = ko.observable(dto.hrchyIndex2);
+                                    this.hrchyIndex3 = ko.observable(dto.hrchyIndex3);
+                                    this.hrchyIndex4 = ko.observable(dto.hrchyIndex4);
+                                    this.hrchyIndex5 = ko.observable(dto.hrchyIndex5);
+                                    this.hrchyIndex6 = ko.observable(dto.hrchyIndex6);
+                                    this.hrchyIndex7 = ko.observable(dto.hrchyIndex7);
+                                    this.hrchyIndex8 = ko.observable(dto.hrchyIndex8);
+                                    this.hrchyIndex9 = ko.observable(dto.hrchyIndex9);
+                                    this.totalSet = ko.observable(dto.totalSet);
+                                    this.monthTotalSet = ko.observable(dto.monthTotalSet);
+                                }
+                            }
                             viewmodel.SalaryPrintSettingModel = SalaryPrintSettingModel;
                         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
                     })(b = qpp007.b || (qpp007.b = {}));

@@ -14,7 +14,7 @@ var nts;
                         (function (service) {
                             // Service paths.
                             var servicePath = {
-                                findAllInsuranceOffice: "screen/pr/QPP018/findAllOffice",
+                                findAllInsuranceOffice: "pr/insurance/social/findall",
                                 saveAsPdf: "screen/pr/QPP018/saveAsPdf"
                             };
                             /**
@@ -40,14 +40,13 @@ var nts;
                              */
                             var model;
                             (function (model) {
-                                var InsuranceOffice = (function () {
-                                    function InsuranceOffice(code, name) {
-                                        var self = this;
+                                class InsuranceOffice {
+                                    constructor(code, name) {
+                                        let self = this;
                                         self.code = code;
                                         self.name = name;
                                     }
-                                    return InsuranceOffice;
-                                }());
+                                }
                                 model.InsuranceOffice = InsuranceOffice;
                             })(model = service.model || (service.model = {}));
                         })(service = a.service || (a.service = {}));

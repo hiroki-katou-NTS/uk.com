@@ -42,30 +42,34 @@ public class JpaAveragePayRepository extends JpaRepository implements AveragePay
 	}
 	/**
 	 * convert domain item to entity item
-	 * @param averagePay domain item
+	 * 
+	 * @param averagePay 
+	 * 				domain item
 	 * @return entity item
 	 */
 	private QapmtAvePay convertToEntity(AveragePay averagePay) {
 		return new QapmtAvePay(
 				averagePay.getCompanyCode(), 
-				averagePay.getRoundDigitSet().value, 
+				averagePay.getRoundTimingSet().value,
 				averagePay.getAttendDayGettingSet().value, 
-				averagePay.getRoundTimingSet().value, 
+				averagePay.getRoundDigitSet().value,  
 				averagePay.getExceptionPayRate().v());
 	}
 	
 	/**
 	 * convert entity to domain item
-	 * @param qapmtAvePay entity item
+	 * 
+	 * @param qapmtAvePay 
+	 * 				entity item
 	 * @return domain item
 	 */
 	private AveragePay convertToDomain(QapmtAvePay qapmtAvePay) {
 		return new AveragePay(
 				qapmtAvePay.companyCode,
-				EnumAdaptor.valueOf(qapmtAvePay.attendDayGettingSet, AttendDayGettingSet.class) ,
-				new ExceptionPayRate(qapmtAvePay.exceptionPayRate), 
+				EnumAdaptor.valueOf(qapmtAvePay.roundTimingSet, RoundTimingSet.class),
+				EnumAdaptor.valueOf(qapmtAvePay.attendDayGettingSet, AttendDayGettingSet.class),
 				EnumAdaptor.valueOf(qapmtAvePay.roundDigitSet, RoundDigitSet.class),
-				EnumAdaptor.valueOf(qapmtAvePay.roundTimingSet, RoundTimingSet.class));
+				new ExceptionPayRate(qapmtAvePay.exceptionPayRate));
 	}
 	
 }

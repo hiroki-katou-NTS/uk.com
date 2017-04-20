@@ -12,22 +12,21 @@ var nts;
                     (function (a) {
                         var viewmodel;
                         (function (viewmodel) {
-                            var ScreenModel = (function () {
-                                function ScreenModel() {
+                            class ScreenModel {
+                                constructor() {
                                     this.isUsuallyAMonth = ko.observable(true);
-                                    this.isPreliminaryMonth = ko.observable(true);
+                                    this.isPreliminaryMonth = ko.observable(false);
                                     this.startYearMonth = ko.observable('2016/12');
                                     this.endYearMonth = ko.observable('2017/03');
-                                    this.enable = ko.observable(true);
                                     this.selectedOutputFormat = ko.observable('1');
                                     this.outputFormatType = ko.observableArray([
                                         new SelectionModel('1', '明細一覧表'),
                                         new SelectionModel('2', '明細累計表')
                                     ]);
-                                    this.outputItemSetting = ko.observableArray([]);
+                                    this.outputSettings = ko.observableArray([]);
                                     this.selectedOutputSetting = ko.observable('1');
-                                    this.isVerticalLine = ko.observable(true);
-                                    this.isHorizontalRuledLine = ko.observable(true);
+                                    this.isVerticalLine = ko.observable(false);
+                                    this.isHorizontalRuledLine = ko.observable(false);
                                     this.pageBreakSetting = ko.observableArray([
                                         new SelectionModel('1', 'なし'),
                                         new SelectionModel('2', '社員毎'),
@@ -50,66 +49,130 @@ var nts;
                                     this.isDepartmentHierarchy = ko.computed(function () {
                                         return self.selectedpageBreakSetting() == '4';
                                     });
+                                    self.hourMinuteOutputClassification = ko.observableArray([
+                                        new SelectionModel('0', '時間'),
+                                        new SelectionModel('1', '分')
+                                    ]);
+                                    self.selectedHourMinuteOutputClassification = ko.observable('0');
                                 }
                                 /**
                                  * Start srceen.
                                  */
-                                ScreenModel.prototype.start = function () {
+                                start() {
                                     var dfd = $.Deferred();
                                     var self = this;
                                     $.when(self.loadAllOutputSetting()).done(function () {
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
-                                };
-                                ScreenModel.prototype.loadAllOutputSetting = function () {
+                                }
+                                /**
+                                 * Load all OutputSetting.
+                                 */
+                                loadAllOutputSetting() {
                                     var dfd = $.Deferred();
                                     var self = this;
                                     a.service.findAllSalaryOutputSetting().done(function (data) {
-                                        self.outputItemSetting(data);
+                                        self.outputSettings(data);
                                         dfd.resolve();
                                     }).fail(function (res) {
                                         nts.uk.ui.dialog.alert(res.message);
                                         dfd.reject();
                                     });
                                     return dfd.promise();
-                                };
-                                ScreenModel.prototype.openPrintSettingDialog = function () {
-                                    // Set parent value
-                                    nts.uk.ui.windows.setShared("data", "nothing");
-                                    nts.uk.ui.windows.sub.modal("/view/qpp/007/b/index.xhtml", { title: "印刷設定", dialogClass: 'no-close' }).onClosed(function () {
-                                        // Get child value
-                                        var returnValue = nts.uk.ui.windows.getShared("childData");
-                                    });
-                                };
-                                ScreenModel.prototype.openSalaryOuputSettingDialog = function () {
-                                    nts.uk.ui.windows.sub.modal("/view/qpp/007/c/index.xhtml", { title: "出力項目の設定", dialogClass: 'no-close' }).onClosed(function () {
-                                        // Get child value
-                                    });
-                                };
-                                ScreenModel.prototype.saveAsPdf = function () {
+                                }
+                                /**
+                                 * Open PrintSetting dialog
+                                 */
+                                openPrintSettingDialog() {
+                                    nts.uk.ui.windows.sub.modal("/view/qpp/007/b/index.xhtml", { title: "印刷設定", dialogClass: 'no-close' });
+                                }
+                                /**
+                                 * Open SalaryOuputSetting dialog
+                                 */
+                                openSalaryOuputSettingDialog() {
                                     var self = this;
-                                    var dfd = $.Deferred();
-                                    var command = {};
-                                    a.service.saveAsPdf(command).done(function () {
-                                        dfd.resolve();
-                                    }).fail(function (res) {
-                                        nts.uk.ui.dialog.alert(res.message);
+                                    // Set parent value
+                                    nts.uk.ui.windows.setShared("selectedCode", self.selectedOutputSetting());
+                                    nts.uk.ui.windows.setShared("outputSettings", self.outputSettings());
+                                    nts.uk.ui.windows.sub.modal("/view/qpp/007/c/index.xhtml", { title: "出力項目の設定", dialogClass: 'no-close' }).onClosed(() => {
+                                        if (nts.uk.ui.windows.getShared('isSomethingChanged')) {
+                                            // Reload output setting list.
+                                            self.loadAllOutputSetting();
+                                        }
                                     });
-                                };
-                                return ScreenModel;
-                            }());
+                                }
+                                /**
+                                 * Print selected Employee.
+                                 */
+                                printSelectedEmployee() {
+                                    let self = this;
+                                    // Validate
+                                    self.validate();
+                                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                                        return;
+                                    }
+                                    let command = self.toJsObject();
+                                    a.service.saveAsPdf(command)
+                                        .fail(function (res) {
+                                        //TODO ...
+                                    });
+                                }
+                                /**
+                                 * Output text.
+                                 */
+                                outputText() {
+                                    let self = this;
+                                    // Validate
+                                    self.validate();
+                                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                                        return;
+                                    }
+                                }
+                                /**
+                                 * Collect data from model then convert to JsObject.
+                                 */
+                                toJsObject() {
+                                    let self = this;
+                                    let command = {};
+                                    command.outputFormatType = self.selectedOutputFormat();
+                                    command.outputSettingCode = self.selectedOutputSetting();
+                                    command.isVerticalLine = self.isVerticalLine();
+                                    command.isHorizontalLine = self.isHorizontalRuledLine();
+                                    command.outputLanguage = self.selectedOutputLanguage();
+                                    command.pageBreakSetting = self.selectedpageBreakSetting();
+                                    if (self.isDepartmentHierarchy()) {
+                                        command.hierarchy = self.selectedHierachy();
+                                    }
+                                    return command;
+                                }
+                                /**
+                                * Clear all input errors.
+                                */
+                                clearErrors() {
+                                    if (nts.uk.ui._viewModel) {
+                                        $('#start-ym').ntsError('clear');
+                                        $('#end-ym').ntsError('clear');
+                                    }
+                                }
+                                /**
+                                * Validate all inputs.
+                                */
+                                validate() {
+                                    $('#start-ym').ntsEditor('validate');
+                                    $('#end-ym').ntsEditor('validate');
+                                }
+                            }
                             viewmodel.ScreenModel = ScreenModel;
                             /**
-                             *  Class Page Break setting
+                             *  Class SelectionModel.
                              */
-                            var SelectionModel = (function () {
-                                function SelectionModel(code, name) {
+                            class SelectionModel {
+                                constructor(code, name) {
                                     this.code = code;
                                     this.name = name;
                                 }
-                                return SelectionModel;
-                            }());
+                            }
                             viewmodel.SelectionModel = SelectionModel;
                         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
                     })(a = qpp007.a || (qpp007.a = {}));

@@ -7,16 +7,16 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                var DatePickerBindingHandler = (function () {
+                class DatePickerBindingHandler {
                     /**
                      * Constructor.
                      */
-                    function DatePickerBindingHandler() {
+                    constructor() {
                     }
                     /**
                      * Init.
                      */
-                    DatePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    init(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var value = data.value;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
@@ -69,15 +69,19 @@ var nts;
                             endDate: endDate,
                             autoHide: autoHide,
                         });
-                        var validator = new ui.validation.TimeValidator(constraintName, { required: required, inputFormat: valueFormat, valueType: valueType });
-                        $input.on("change", function (e) {
+                        var validator = new ui.validation.TimeValidator(constraintName, { required: required, outputFormat: valueFormat, valueType: valueType });
+                        $input.on("change", (e) => {
                             var newText = $input.val();
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (result.isValid) {
                                 // Day of Week
-                                if (hasDayofWeek)
-                                    $label.text("(" + uk.time.formatPattern(newText, "", dayofWeekFormat) + ")");
+                                if (hasDayofWeek) {
+                                    if (uk.util.isNullOrEmpty(result.parsedValue))
+                                        $label.text("");
+                                    else
+                                        $label.text("(" + uk.time.formatPattern(newText, "", dayofWeekFormat) + ")");
+                                }
                                 value(result.parsedValue);
                             }
                             else {
@@ -93,11 +97,11 @@ var nts;
                                 $input.ntsError('set', "Invalid format");
                             }
                         }));
-                    };
+                    }
                     /**
                      * Update
                      */
-                    DatePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    update(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var value = data.value;
                         var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
@@ -119,9 +123,11 @@ var nts;
                         if (init === true || uk.time.formatPattern($input.datepicker("getDate", true), "", ISOFormat) !== dateFormatValue) {
                             if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
                                 $input.datepicker('setDate', dateFormatValue);
-                                // Day of Week
-                                if (hasDayofWeek)
-                                    $label.text("(" + moment.utc(value(), valueFormat).format(dayofWeekFormat) + ")");
+                                $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
+                            }
+                            else {
+                                $input.val("");
+                                $label.text("");
                             }
                         }
                         container.data("init", false);
@@ -134,9 +140,8 @@ var nts;
                             $input.prop("disabled", disabled);
                         if (data.button)
                             container.find('.datepicker-btn').prop("disabled", disabled);
-                    };
-                    return DatePickerBindingHandler;
-                }());
+                    }
+                }
                 ko.bindingHandlers['ntsDatePicker'] = new DatePickerBindingHandler();
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));

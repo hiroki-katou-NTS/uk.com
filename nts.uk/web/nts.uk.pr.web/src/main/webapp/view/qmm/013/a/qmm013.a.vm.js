@@ -4,8 +4,8 @@ var qmm013;
     (function (a) {
         var viewmodel;
         (function (viewmodel) {
-            var ScreenModel = (function () {
-                function ScreenModel() {
+            class ScreenModel {
+                constructor() {
                     this.confirmDirty = false;
                     var self = this;
                     self.items = ko.observableArray([]);
@@ -46,23 +46,29 @@ var qmm013;
                         { code: '2', name: 'その他' },
                     ]);
                     self.currentCode.subscribe(function (newCode) {
-                        //in case first getData, no error so not jump clearError()
-                        if (self.isFirstGetData()) {
-                            self.clearError();
-                        }
-                        self.isFirstGetData(true);
-                        //don't allow checkDirty
-                        if (self.notCheckDirty()) {
-                            self.selectedUnitPrice(newCode);
-                            self.notCheckDirty(false);
-                            return;
-                        }
                         if (!self.checkDirty()) {
+                            //in case first getData, no error so not jump clearError()
+                            if (self.isFirstGetData()) {
+                                self.clearError();
+                            }
+                            self.isFirstGetData(true);
+                            //don't allow checkDirty
+                            if (self.notCheckDirty()) {
+                                self.selectedUnitPrice(newCode);
+                                self.notCheckDirty(false);
+                                return;
+                            }
                             self.selectedUnitPrice(newCode);
                             self.isCreated(false);
                             self.isEnableDelete(true);
                         }
                         else {
+                            //don't allow checkDirty
+                            if (self.notCheckDirty()) {
+                                self.selectedUnitPrice(newCode);
+                                self.notCheckDirty(false);
+                                return;
+                            }
                             //don't loop subscribe function
                             if (self.confirmDirty) {
                                 self.confirmDirty = false;
@@ -70,10 +76,12 @@ var qmm013;
                                 return;
                             }
                             nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function () {
+                                self.clearError();
+                                self.isFirstGetData(true);
                                 self.selectedUnitPrice(newCode);
                                 self.isCreated(false);
                                 self.isEnableDelete(true);
-                            }).ifNo(function () {
+                            }).ifCancel(function () {
                                 self.confirmDirty = true;
                                 self.currentCode(self.currentItem().personalUnitPriceCode());
                             });
@@ -129,7 +137,7 @@ var qmm013;
                                     }
                                 });
                             })
-                                .ifNo(function () {
+                                .ifCancel(function () {
                                 self.notLoop(true);
                                 self.displayAll(!self.displayAll());
                             });
@@ -142,7 +150,7 @@ var qmm013;
                         return !(self.currentItem().paymentSettingType() == 0);
                     });
                 }
-                ScreenModel.prototype.startPage = function () {
+                startPage() {
                     var self = this;
                     var dfd = $.Deferred();
                     self.getPersonalUnitPriceList().done(function () {
@@ -150,11 +158,11 @@ var qmm013;
                         dfd.resolve();
                     });
                     return dfd.promise();
-                };
+                }
                 /**
                  * get data from data base to screen
                  */
-                ScreenModel.prototype.getPersonalUnitPriceList = function () {
+                getPersonalUnitPriceList() {
                     var self = this;
                     var dfd = $.Deferred();
                     a.service.getPersonalUnitPriceList(self.displayAll()).done(function (data) {
@@ -169,8 +177,8 @@ var qmm013;
                         dfd.reject(res);
                     });
                     return dfd.promise();
-                };
-                ScreenModel.prototype.selectedUnitPrice = function (code) {
+                }
+                selectedUnitPrice(code) {
                     var self = this;
                     if (!code) {
                         return;
@@ -181,12 +189,12 @@ var qmm013;
                     }).fail(function (res) {
                         alert(res.message);
                     });
-                };
-                ScreenModel.prototype.selectedFirst = function (item) {
+                }
+                selectedFirst(item) {
                     var self = this;
                     return new PersonalUnitPrice(item.personalUnitPriceCode, item.personalUnitPriceName, item.personalUnitPriceShortName, item.displaySet ? false : true, item.uniteCode, item.paymentSettingType, item.fixPaymentAtr, item.fixPaymentMonthly, item.fixPaymentDayMonth, item.fixPaymentDaily, item.fixPaymentHoursly, item.unitPriceAtr, item.memo);
-                };
-                ScreenModel.prototype.checkDirty = function () {
+                }
+                checkDirty() {
                     var self = this;
                     if (self.dirty.isDirty()) {
                         return true;
@@ -194,12 +202,12 @@ var qmm013;
                     else {
                         return false;
                     }
-                };
+                }
                 ;
                 /**
                  * 新規(Clear form)
                  */
-                ScreenModel.prototype.btn_001 = function () {
+                btn_001() {
                     var self = this;
                     if (self.isFirstGetData()) {
                         self.clearError();
@@ -218,10 +226,11 @@ var qmm013;
                             self.currentCode("");
                             self.isCreated(true);
                             self.isEnableDelete(false);
-                        });
+                        })
+                            .ifCancel(function () { });
                     }
-                };
-                ScreenModel.prototype.closeDialog = function () {
+                }
+                closeDialog() {
                     var self = this;
                     if (!self.checkDirty()) {
                         nts.uk.ui.windows.close();
@@ -231,13 +240,13 @@ var qmm013;
                             .ifYes(function () {
                             nts.uk.ui.windows.close();
                         })
-                            .ifNo(function () { });
+                            .ifCancel(function () { });
                     }
-                };
+                }
                 /**
                  * 登録(Add button)
                  */
-                ScreenModel.prototype.btn_002 = function () {
+                btn_002() {
                     var self = this;
                     //self.confirmDirty = true;
                     //if input 0-9, auto insert '0' before
@@ -284,11 +293,11 @@ var qmm013;
                             nts.uk.ui.dialog.alert(self.messages()[4].message);
                         }
                     });
-                };
+                }
                 /**
                  * 削除(Delete button)
                  */
-                ScreenModel.prototype.btn_004 = function () {
+                btn_004() {
                     var self = this;
                     nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
                         var data = {
@@ -314,9 +323,9 @@ var qmm013;
                         }).fail(function (error) {
                             alert(error.message);
                         });
-                    });
-                };
-                ScreenModel.prototype.selectedFirstUnitPrice = function () {
+                    }).ifCancel(function () { });
+                }
+                selectedFirstUnitPrice() {
                     var self = this;
                     if (self.items().length > 0) {
                         self.currentCode(self.items()[0].code);
@@ -325,32 +334,31 @@ var qmm013;
                     else {
                         self.btn_001();
                     }
-                };
-                ScreenModel.prototype.clearError = function () {
+                }
+                clearError() {
                     $('#INP_002').ntsError('clear');
                     $('#INP_003').ntsError('clear');
-                };
-                return ScreenModel;
-            }());
+                    $('#INP_004').ntsError('clear');
+                    $('#INP_005').ntsError('clear');
+                }
+            }
             viewmodel.ScreenModel = ScreenModel;
-            var ItemModel = (function () {
-                function ItemModel(code, name, abolition) {
+            class ItemModel {
+                constructor(code, name, abolition) {
                     this.code = code;
                     this.name = name;
                     this.abolition = abolition;
                 }
-                return ItemModel;
-            }());
-            var BoxModel = (function () {
-                function BoxModel(id, name) {
+            }
+            class BoxModel {
+                constructor(id, name) {
                     var self = this;
                     self.id = id;
                     self.name = name;
                 }
-                return BoxModel;
-            }());
-            var PersonalUnitPrice = (function () {
-                function PersonalUnitPrice(personalUnitPriceCode, personalUnitPriceName, personalUnitPriceShortName, displaySet, uniteCode, paymentSettingType, fixPaymentAtr, fixPaymentMonthly, fixPaymentDayMonth, fixPaymentDaily, fixPaymentHoursly, unitPriceAtr, memo) {
+            }
+            class PersonalUnitPrice {
+                constructor(personalUnitPriceCode, personalUnitPriceName, personalUnitPriceShortName, displaySet, uniteCode, paymentSettingType, fixPaymentAtr, fixPaymentMonthly, fixPaymentDayMonth, fixPaymentDaily, fixPaymentHoursly, unitPriceAtr, memo) {
                     this.personalUnitPriceCode = ko.observable(personalUnitPriceCode);
                     this.personalUnitPriceName = ko.observable(personalUnitPriceName);
                     this.personalUnitPriceShortName = ko.observable(personalUnitPriceShortName);
@@ -365,8 +373,7 @@ var qmm013;
                     this.unitPriceAtr = ko.observable(unitPriceAtr);
                     this.memo = ko.observable(memo);
                 }
-                return PersonalUnitPrice;
-            }());
+            }
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm013.a || (qmm013.a = {}));
 })(qmm013 || (qmm013 = {}));

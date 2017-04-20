@@ -6,6 +6,7 @@
 
 #functions-area #B_BTN_003 {
 	margin-left: 35px;
+	visibility: hidden;
 	background-color: rgb(254, 211, 198);
 }
 
@@ -187,7 +188,10 @@ td>.ntsControl span.label {
 }
 
 #B_LST_002 tbody th:nth-child(2) {
-	min-width: 120px;
+	min-width: 80px;
+	max-width: 80px;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 #B_LBL_005 {

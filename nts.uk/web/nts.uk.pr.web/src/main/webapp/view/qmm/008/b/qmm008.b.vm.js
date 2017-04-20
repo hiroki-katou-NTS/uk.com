@@ -1,8 +1,3 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var nts;
 (function (nts) {
     var uk;
@@ -22,10 +17,9 @@ var nts;
                             var HealthInsuranceRateItemDto = b.service.model.finder.HealthInsuranceRateItemDto;
                             var ChargeRateItemDto = b.service.model.finder.ChargeRateItemDto;
                             var ScreenBaseModel = view.base.simplehistory.viewmodel.ScreenBaseModel;
-                            var ScreenModel = (function (_super) {
-                                __extends(ScreenModel, _super);
-                                function ScreenModel() {
-                                    _super.call(this, {
+                            class ScreenModel extends ScreenBaseModel {
+                                constructor() {
+                                    super({
                                         functionName: '健康保険',
                                         service: b.service.instance,
                                         removeMasterOnLastHistoryRemove: false
@@ -67,9 +61,10 @@ var nts;
                                     ]);
                                     self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
                                     self.backupDataDirty = ko.observable();
+                                    self.canOpenOfficeRegisterDialog = ko.observable(true);
                                 } //end constructor
                                 // Start
-                                ScreenModel.prototype.start = function () {
+                                start() {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     self.getAllRounding().done(function () {
@@ -78,9 +73,9 @@ var nts;
                                     });
                                     // Return.
                                     return dfd.promise();
-                                };
+                                }
                                 //load All rounding method
-                                ScreenModel.prototype.getAllRounding = function () {
+                                getAllRounding() {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     // Invoked service method
@@ -91,9 +86,9 @@ var nts;
                                     });
                                     // Return.
                                     return dfd.promise();
-                                };
+                                }
                                 //string rounding to value
-                                ScreenModel.prototype.convertRounding = function (stringRounding) {
+                                convertRounding(stringRounding) {
                                     switch (stringRounding) {
                                         case Rounding.TRUNCATION: return "0";
                                         case Rounding.ROUNDUP: return "1";
@@ -102,9 +97,9 @@ var nts;
                                         case Rounding.ROUNDDOWN: return "4";
                                         default: return "0";
                                     }
-                                };
+                                }
                                 //value to string rounding
-                                ScreenModel.prototype.convertToRounding = function (stringValue) {
+                                convertToRounding(stringValue) {
                                     switch (stringValue) {
                                         case "0": return Rounding.TRUNCATION;
                                         case "1": return Rounding.ROUNDUP;
@@ -113,9 +108,9 @@ var nts;
                                         case "4": return Rounding.ROUNDDOWN;
                                         default: return Rounding.TRUNCATION;
                                     }
-                                };
+                                }
                                 //load health data by history code
-                                ScreenModel.prototype.loadHealth = function (data) {
+                                loadHealth(data) {
                                     var self = this;
                                     if (data == null) {
                                         return;
@@ -179,8 +174,8 @@ var nts;
                                         }
                                     });
                                     self.healthModel().maxAmount(data.maxAmount);
-                                };
-                                ScreenModel.prototype.healthCollectData = function () {
+                                }
+                                healthCollectData() {
                                     var self = this;
                                     var rates = self.healthModel().rateItems();
                                     var rateItems = [];
@@ -197,9 +192,9 @@ var nts;
                                     roundingMethods.push(new RoundingDto(PaymentType.SALARY, new RoundingItemDto(self.convertToRounding(self.healthModel().roundingMethods().healthSalaryPersonalComboBoxSelectedCode()), self.convertToRounding(self.healthModel().roundingMethods().healthSalaryCompanyComboBoxSelectedCode()))));
                                     roundingMethods.push(new RoundingDto(PaymentType.BONUS, new RoundingItemDto(self.convertToRounding(self.healthModel().roundingMethods().healthBonusPersonalComboBoxSelectedCode()), self.convertToRounding(self.healthModel().roundingMethods().healthBonusCompanyComboBoxSelectedCode()))));
                                     return new b.service.model.finder.HealthInsuranceRateDto(self.healthModel().historyId, self.healthModel().companyCode, self.currentOfficeCode(), self.healthModel().startMonth(), self.healthModel().endMonth(), self.healthModel().autoCalculate(), rateItems, roundingMethods, self.healthModel().maxAmount());
-                                };
+                                }
                                 //get current item office 
-                                ScreenModel.prototype.getDataOfHealthSelectedOffice = function () {
+                                getDataOfHealthSelectedOffice() {
                                     var self = this;
                                     var saveVal = null;
                                     // Set parent value
@@ -209,8 +204,8 @@ var nts;
                                         }
                                     });
                                     return saveVal;
-                                };
-                                ScreenModel.prototype.save = function () {
+                                }
+                                save() {
                                     var self = this;
                                     //check auto calculate
                                     if (self.healthModel().autoCalculate() == AutoCalculateType.Auto) {
@@ -230,11 +225,11 @@ var nts;
                                             self.backupDataDirty(self.healthCollectData());
                                         }).fail();
                                     }
-                                };
+                                }
                                 /**
                                  * Load History detail.
                                  */
-                                ScreenModel.prototype.onSelectHistory = function (id) {
+                                onSelectHistory(id) {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     self.isLoading(true);
@@ -242,17 +237,16 @@ var nts;
                                     //get current office
                                     self.currentOfficeCode(self.getCurrentOfficeCode(id));
                                     // clear all error
-                                    b.service.instance.findHistoryByUuid(id).done(function (dto) {
+                                    b.service.instance.findHistoryByUuid(id).done(dto => {
                                         self.backupDataDirty(dto);
                                         self.loadHealth(dto);
                                         self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
                                         self.isLoading(false);
-                                        $('.save-error').ntsError('clear');
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
-                                };
-                                ScreenModel.prototype.onSave = function () {
+                                }
+                                onSave() {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     if (nts.uk.ui._viewModel.errors.isEmpty()) {
@@ -261,15 +255,21 @@ var nts;
                                     else {
                                     }
                                     return dfd.promise();
-                                };
+                                }
+                                clearErrors() {
+                                    if (nts.uk.ui._viewModel) {
+                                        $('.save-error').ntsError('clear');
+                                    }
+                                }
                                 /**
                                  * On select master data.
                                  */
-                                ScreenModel.prototype.onSelectMaster = function (code) {
+                                onSelectMaster(code) {
                                     var self = this;
                                     self.isClickHistory(false);
-                                };
-                                ScreenModel.prototype.getCurrentOfficeCode = function (childId) {
+                                    self.clearErrors();
+                                }
+                                getCurrentOfficeCode(childId) {
                                     var self = this;
                                     var returnValue;
                                     if (self.masterHistoryList.length > 0) {
@@ -288,78 +288,80 @@ var nts;
                                         });
                                     }
                                     return returnValue;
-                                };
+                                }
                                 /**
                                  * Clear all input and switch to new mode.
                                  */
-                                ScreenModel.prototype.onRegistNew = function () {
+                                onRegistNew() {
                                     var self = this;
-                                    //                $('.save-error').ntsError('clear');
-                                    self.OpenModalOfficeRegister();
-                                };
-                                ScreenModel.prototype.isDirty = function () {
+                                    if (self.canOpenOfficeRegisterDialog()) {
+                                        self.OpenModalOfficeRegister();
+                                    }
+                                    self.isClickHistory(false);
+                                    self.canOpenOfficeRegisterDialog(false);
+                                }
+                                isDirty() {
                                     var self = this;
                                     return self.dirty.isDirty();
-                                };
-                                ScreenModel.prototype.OpenModalOfficeRegisterWithDirtyCheck = function () {
+                                }
+                                OpenModalOfficeRegisterWithDirtyCheck() {
                                     var self = this;
                                     if (self.dirty.isDirty()) {
                                         nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function () {
                                             self.loadHealth(self.backupDataDirty());
                                             self.OpenModalOfficeRegister();
                                             self.dirty.reset();
-                                        }).ifCancel(function () {
+                                        }).ifNo(function () {
                                         });
                                     }
                                     else {
                                         self.OpenModalOfficeRegister();
                                     }
-                                };
+                                }
                                 //open office register dialog
-                                ScreenModel.prototype.OpenModalOfficeRegister = function () {
+                                OpenModalOfficeRegister() {
                                     var self = this;
                                     // Set parent value
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録", dialogClass: 'no-close' }).onClosed(function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録", dialogClass: 'no-close' }).onClosed(() => {
                                         //when close dialog -> reload office list
-                                        self.loadMasterHistory();
                                         var codeOfNewOffice = nts.uk.ui.windows.getShared("codeOfNewOffice");
+                                        self.reloadMasterHistory(codeOfNewOffice);
                                         //                    self.igGridSelectedHistoryUuid(codeOfNewOffice);
                                     });
-                                };
-                                ScreenModel.prototype.OpenModalStandardMonthlyPriceHealthWithDirtyCheck = function () {
+                                }
+                                OpenModalStandardMonthlyPriceHealthWithDirtyCheck() {
                                     var self = this;
                                     if (self.dirty.isDirty()) {
                                         nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function () {
                                             self.loadHealth(self.backupDataDirty());
                                             self.OpenModalStandardMonthlyPriceHealth();
                                             self.dirty.reset();
-                                        }).ifCancel(function () {
+                                        }).ifNo(function () {
                                         });
                                     }
                                     else {
                                         self.OpenModalStandardMonthlyPriceHealth();
                                     }
-                                };
+                                }
                                 //open modal standard monthly price health
-                                ScreenModel.prototype.OpenModalStandardMonthlyPriceHealth = function () {
+                                OpenModalStandardMonthlyPriceHealth() {
                                     var self = this;
                                     // Set parent value
                                     nts.uk.ui.windows.setShared("officeName", this.sendOfficeData());
                                     nts.uk.ui.windows.setShared("healthModel", this.healthModel());
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/h/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表", dialogClass: 'no-close' }).onClosed(function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/h/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表", dialogClass: 'no-close' }).onClosed(() => {
                                         // Get child value
                                         var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
                                     });
-                                };
-                                ScreenModel.prototype.goToPension = function () {
+                                }
+                                goToPension() {
                                     nts.uk.request.jump("/view/qmm/008/c/index.xhtml");
-                                };
-                                return ScreenModel;
-                            }(ScreenBaseModel));
+                                }
+                            }
                             viewmodel.ScreenModel = ScreenModel;
-                            var HealthInsuranceRateModel = (function () {
-                                function HealthInsuranceRateModel() {
+                            class HealthInsuranceRateModel {
+                                constructor() {
                                     this.startMonth = ko.observable("");
                                     this.endMonth = ko.observable("");
                                     this.officeCode = ko.observable('');
@@ -368,11 +370,10 @@ var nts;
                                     this.roundingMethods = ko.observable(new HealthInsuranceRoundingModel());
                                     this.maxAmount = ko.observable(0);
                                 }
-                                return HealthInsuranceRateModel;
-                            }());
+                            }
                             viewmodel.HealthInsuranceRateModel = HealthInsuranceRateModel;
-                            var HealthInsuranceRateItemModel = (function () {
-                                function HealthInsuranceRateItemModel() {
+                            class HealthInsuranceRateItemModel {
+                                constructor() {
                                     this.healthSalaryPersonalGeneral = ko.observable(0);
                                     this.healthSalaryCompanyGeneral = ko.observable(0);
                                     this.healthBonusPersonalGeneral = ko.observable(0);
@@ -390,11 +391,10 @@ var nts;
                                     this.healthBonusPersonalSpecific = ko.observable(0);
                                     this.healthBonusCompanySpecific = ko.observable(0);
                                 }
-                                return HealthInsuranceRateItemModel;
-                            }());
+                            }
                             viewmodel.HealthInsuranceRateItemModel = HealthInsuranceRateItemModel;
-                            var HealthInsuranceRoundingModel = (function () {
-                                function HealthInsuranceRoundingModel() {
+                            class HealthInsuranceRoundingModel {
+                                constructor() {
                                     this.healthSalaryPersonalComboBox = ko.observableArray(null);
                                     this.healthSalaryPersonalComboBoxItemName = ko.observable('');
                                     this.healthSalaryPersonalComboBoxCurrentCode = ko.observable(1);
@@ -412,61 +412,42 @@ var nts;
                                     this.healthBonusCompanyComboBoxCurrentCode = ko.observable(3);
                                     this.healthBonusCompanyComboBoxSelectedCode = ko.observable('002');
                                 }
-                                return HealthInsuranceRoundingModel;
-                            }());
+                            }
                             viewmodel.HealthInsuranceRoundingModel = HealthInsuranceRoundingModel;
                         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
-                        var ChargeRateItem = (function () {
-                            function ChargeRateItem() {
-                            }
-                            return ChargeRateItem;
-                        }());
+                        class ChargeRateItem {
+                        }
                         b.ChargeRateItem = ChargeRateItem;
-                        var PaymentType = (function () {
-                            function PaymentType() {
-                            }
-                            PaymentType.SALARY = 'Salary';
-                            PaymentType.BONUS = 'Bonus';
-                            return PaymentType;
-                        }());
+                        class PaymentType {
+                        }
+                        PaymentType.SALARY = 'Salary';
+                        PaymentType.BONUS = 'Bonus';
                         b.PaymentType = PaymentType;
-                        var HealthInsuranceType = (function () {
-                            function HealthInsuranceType() {
-                            }
-                            HealthInsuranceType.GENERAL = 'General';
-                            HealthInsuranceType.NURSING = 'Nursing';
-                            HealthInsuranceType.BASIC = 'Basic';
-                            HealthInsuranceType.SPECIAL = 'Special';
-                            return HealthInsuranceType;
-                        }());
+                        class HealthInsuranceType {
+                        }
+                        HealthInsuranceType.GENERAL = 'General';
+                        HealthInsuranceType.NURSING = 'Nursing';
+                        HealthInsuranceType.BASIC = 'Basic';
+                        HealthInsuranceType.SPECIAL = 'Special';
                         b.HealthInsuranceType = HealthInsuranceType;
-                        var Rounding = (function () {
-                            function Rounding() {
-                            }
-                            Rounding.ROUNDUP = 'RoundUp';
-                            Rounding.TRUNCATION = 'Truncation';
-                            Rounding.ROUNDDOWN = 'RoundDown';
-                            Rounding.DOWN5_UP6 = 'Down5_Up6';
-                            Rounding.DOWN4_UP5 = 'Down4_Up5';
-                            return Rounding;
-                        }());
+                        class Rounding {
+                        }
+                        Rounding.ROUNDUP = 'RoundUp';
+                        Rounding.TRUNCATION = 'Truncation';
+                        Rounding.ROUNDDOWN = 'RoundDown';
+                        Rounding.DOWN5_UP6 = 'Down5_Up6';
+                        Rounding.DOWN4_UP5 = 'Down4_Up5';
                         b.Rounding = Rounding;
-                        var InsuranceGender = (function () {
-                            function InsuranceGender() {
-                            }
-                            InsuranceGender.MALE = "Male";
-                            InsuranceGender.FEMALE = "Female";
-                            InsuranceGender.UNKNOW = "Unknow";
-                            return InsuranceGender;
-                        }());
+                        class InsuranceGender {
+                        }
+                        InsuranceGender.MALE = "Male";
+                        InsuranceGender.FEMALE = "Female";
+                        InsuranceGender.UNKNOW = "Unknow";
                         b.InsuranceGender = InsuranceGender;
-                        var AutoCalculate = (function () {
-                            function AutoCalculate() {
-                            }
-                            AutoCalculate.AUTO = "Auto";
-                            AutoCalculate.MANUAL = "Manual";
-                            return AutoCalculate;
-                        }());
+                        class AutoCalculate {
+                        }
+                        AutoCalculate.AUTO = "Auto";
+                        AutoCalculate.MANUAL = "Manual";
                         b.AutoCalculate = AutoCalculate;
                         (function (Number) {
                             Number[Number["Zero"] = 0] = "Zero";

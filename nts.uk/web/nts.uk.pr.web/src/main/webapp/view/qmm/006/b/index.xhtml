@@ -23,12 +23,13 @@
 			<div id="contents-area">
 				<div class="content-1">
 					<div>
-						<label id="B_LBL_001">支店情報を選択してください。</label>
+						<label>支店情報を選択してください。</label>
 					</div>
 					<br />
 					<div class="cf">
 						<div style="float: left">
-							<i class="icon icon-searchbox" style="margin-top: 50px; margin-left: 38px"></i>
+							<i class="icon icon-searchbox"
+								style="margin-top: 50px; margin-left: 38px"></i>
 							<div style="width: 400px; margin-left: 42px; margin-bottom: 10px"
 								data-bind="ntsSearchBox: {
 									comId: 'treegrid1',
@@ -56,8 +57,9 @@
 				</div>
 				<hr></hr>
 				<div>
-					<button class="x-large proceed" data-bind="click: transferData" id="B_BTN_001">決定</button>
-					<button class="large" id="B_BTN_002" data-bind="click: closeDialog">キャンセル</button>
+					<button class="x-large proceed" data-bind="click: transferData"
+						id="btn_decide">決定</button>
+					<button class="large" id="btn_cancel" data-bind="click: closeDialog">キャンセル</button>
 					<br />
 				</div>
 

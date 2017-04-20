@@ -46,7 +46,7 @@
 #ntsleft {
 	float: left;
 	width: 440px;
-	height: 550px;
+	height: 500px;
 	margin-top: 2px;
 }
 
@@ -153,6 +153,10 @@ button.search-btn {
 	margin-bottom: 0px !important;
 }
 
+#companyName{
+	width: 360px !important;
+}
+
 #companyNameKana {
 	width: 360px !important;
 	margin-bottom: 10px;
@@ -160,6 +164,7 @@ button.search-btn {
 
 #companyNameAbb {
 	width: 360px !important;
+	margin-top: -20px;
 }
 
 #presidentName {
@@ -182,22 +187,22 @@ button.search-btn {
 }
 
 #address1 {
-	width: 360px !important;
+	width: 310px !important;
 	margin-bottom: 10px !important;
 }
 
 #address2 {
-	width: 360px !important;
+	width: 310px !important;
 	margin-bottom: 10px !important;
 }
 
 #addressKana1 {
-	width: 360px !important;
+	width: 310px !important;
 	margin-bottom: 10px !important;
 }
 
 #addressKana2 {
-	width: 360px !important;
+	width: 310px !important;
 	margin-bottom: 10px !important;
 }
 
@@ -214,18 +219,21 @@ button.search-btn {
 	height: 40px;
 	line-height: 30px;
 }
+
 #LBLAddressKana1 {
-    margin-left: 24px;
-    display: inline-block;
-    line-height: 30px;
-    height: 40px;
+	margin-left: 24px;
+	display: inline-block;
+	line-height: 30px;
+	height: 40px;
 }
+
 #LBLAddressKana2 {
-    margin-left: 24px;
-    display: inline-block;
-    height: 40px;
-    line-height: 30px;
+	margin-left: 24px;
+	display: inline-block;
+	height: 40px;
+	line-height: 30px;
 }
+
 #help {
 	margin-left: 10px;
 	margin-top: 6px;
@@ -259,4 +267,12 @@ body>div:nth-child(4) {
 
 .left20 {
 	margin-left: 20px;
+}
+
+#colum1 {
+	width: 120px;
+	margin-left: -50px;	
+}
+#searchZipCode{
+	margin-left: -60px;
 }

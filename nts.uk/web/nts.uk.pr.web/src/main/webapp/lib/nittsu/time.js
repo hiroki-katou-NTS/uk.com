@@ -1,46 +1,47 @@
 /// <reference path="reference.ts"/>
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var nts;
 (function (nts) {
     var uk;
     (function (uk) {
         var time;
         (function (time_1) {
+            var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm"];
+            var listEmpire = {
+                "明治": "1868/01/01",
+                "大正": "1912/07/30",
+                "昭和": "1926/12/25",
+                "平成": "1989/01/08"
+            };
             var dotW = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
             function getYearMonthJapan(year, month) {
                 if (month)
                     return year + "年 " + month + " 月";
                 return year;
             }
-            var JapanYearMonth = (function () {
-                function JapanYearMonth(empire, year, month) {
+            class JapanYearMonth {
+                constructor(empire, year, month) {
                     this.empire = empire;
                     this.year = year;
                     this.month = month;
                 }
-                JapanYearMonth.prototype.getEmpire = function () {
+                getEmpire() {
                     return this.empire;
-                };
-                JapanYearMonth.prototype.getYear = function () {
+                }
+                getYear() {
                     return this.year;
-                };
-                JapanYearMonth.prototype.getMonth = function () {
+                }
+                getMonth() {
                     return this.month;
-                };
-                JapanYearMonth.prototype.toString = function () {
+                }
+                toString() {
                     return (this.empire === undefined ? "" : this.empire + " ")
                         + (this.year === undefined ? "" : this.year + " 年 ")
                         + (this.month === undefined ? "" : this.month + " 月");
-                };
-                return JapanYearMonth;
-            }());
+                }
+            }
             time_1.JapanYearMonth = JapanYearMonth;
             function yearInJapanEmpire(date) {
-                var year = moment.utc(date).year();
+                let year = moment.utc(date).year();
                 if (year == 1868) {
                     return new JapanYearMonth("明治元年");
                 }
@@ -103,11 +104,29 @@ var nts;
                 return new JapanYearMonth("平成 ", diff, month);
             }
             time_1.yearmonthInJapanEmpire = yearmonthInJapanEmpire;
+            class JapanDateMoment {
+                constructor(date, outputFormat) {
+                    var MomentResult = parseMoment(date, outputFormat);
+                    var year = MomentResult.momentObject.year();
+                    var month = MomentResult.momentObject.month() + 1;
+                }
+                toString() {
+                    return (this.empire === undefined ? "" : this.empire + " ")
+                        + (this.year === undefined ? "" : this.year + " 年 ")
+                        + (this.month === undefined ? "" : this.month + " 月")
+                        + (this.day === undefined ? "" : this.day + " ");
+                }
+            }
+            time_1.JapanDateMoment = JapanDateMoment;
+            function dateInJapanEmpire(date) {
+                return new JapanDateMoment(date);
+            }
+            time_1.dateInJapanEmpire = dateInJapanEmpire;
             /**
             * Format by pattern
-            * @param  {number} [seconds]      Input seconds
+            * @param  {number} [seconds]	  Input seconds
             * @param  {string} [formatOption] Format option
-            * @return {string}                Formatted duration
+            * @return {string}				Formatted duration
             */
             function formatSeconds(seconds, formatOption) {
                 seconds = parseInt(String(seconds));
@@ -125,9 +144,9 @@ var nts;
             time_1.formatSeconds = formatSeconds;
             /**
             * 日付をフォーマットする
-            * @param  {Date}   date     日付
+            * @param  {Date}   date	 日付
             * @param  {String} [format] フォーマット
-            * @return {String}          フォーマット済み日付
+            * @return {String}		  フォーマット済み日付
             */
             function formatDate(date, format) {
                 if (!format)
@@ -158,8 +177,8 @@ var nts;
             time_1.formatDate = formatDate;
             /**
             * Format YearMonth
-            * @param  {Number} [yearMonth]    Input Yearmonth
-            * @return {String}                Formatted YearMonth
+            * @param  {Number} [yearMonth]	Input Yearmonth
+            * @return {String}				Formatted YearMonth
             */
             function formatYearMonth(yearMonth) {
                 var result;
@@ -172,51 +191,48 @@ var nts;
             time_1.formatYearMonth = formatYearMonth;
             /**
             * Format by pattern
-            * @param  {Date}   [date]         Input date
+            * @param  {Date}   [date]		 Input date
             * @param  {String} [inputFormat]  Input format
             * @param  {String} [outputFormat] Output format
-            * @return {String}                Formatted date
+            * @return {String}				Formatted date
             */
             function formatPattern(date, inputFormat, outputFormat) {
                 outputFormat = uk.text.getISOFormat(outputFormat);
-                var inputFormats = (inputFormat) ? inputFormat : ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm", "HHmm"];
+                var inputFormats = (inputFormat) ? inputFormat : defaultInputFormat;
                 return moment.utc(date, inputFormats).format(outputFormat);
             }
             time_1.formatPattern = formatPattern;
-            var ParseResult = (function () {
-                function ParseResult(success) {
+            class ParseResult {
+                constructor(success) {
                     this.success = success;
                 }
-                return ParseResult;
-            }());
-            var ResultParseTime = (function (_super) {
-                __extends(ResultParseTime, _super);
-                function ResultParseTime(success, minus, hours, minutes, msg) {
-                    _super.call(this, success);
+            }
+            class ResultParseTime extends ParseResult {
+                constructor(success, minus, hours, minutes, msg) {
+                    super(success);
                     this.minus = minus;
                     this.hours = hours;
                     this.minutes = minutes;
                     this.msg = msg || "invalid time format";
                 }
-                ResultParseTime.succeeded = function (minus, hours, minutes) {
+                static succeeded(minus, hours, minutes) {
                     return new ResultParseTime(true, minus, hours, minutes);
-                };
-                ResultParseTime.failed = function () {
+                }
+                static failed() {
                     return new ResultParseTime(false);
-                };
-                ResultParseTime.prototype.format = function () {
+                }
+                format() {
                     if (!this.success)
                         return "";
                     return (this.minus ? '-' : '') + this.hours + ':' + uk.text.padLeft(String(this.minutes), '0', 2);
-                };
-                ResultParseTime.prototype.toValue = function () {
+                }
+                toValue() {
                     if (!this.success)
                         return 0;
                     return (this.minus ? -1 : 1) * (this.hours * 60 + this.minutes);
-                };
-                ResultParseTime.prototype.getMsg = function () { return this.msg; };
-                return ResultParseTime;
-            }(ParseResult));
+                }
+                getMsg() { return this.msg; }
+            }
             time_1.ResultParseTime = ResultParseTime;
             function parseTime(time, isMinutes) {
                 if (time === undefined || time === null) {
@@ -256,35 +272,33 @@ var nts;
                 return ResultParseTime.succeeded(minusNumber, parseInt(hours), parseInt(minutes));
             }
             time_1.parseTime = parseTime;
-            var ResultParseYearMonth = (function (_super) {
-                __extends(ResultParseYearMonth, _super);
-                function ResultParseYearMonth(success, msg, year, month) {
-                    _super.call(this, success);
+            class ResultParseYearMonth extends ParseResult {
+                constructor(success, msg, year, month) {
+                    super(success);
                     this.year = year;
                     this.month = month;
                     this.msg = msg || "must yyyymm or yyyy/mm format: year in [1900-9999] and month in [1-12] ";
                 }
-                ResultParseYearMonth.succeeded = function (year, month) {
+                static succeeded(year, month) {
                     return new ResultParseYearMonth(true, "", year, month);
-                };
-                ResultParseYearMonth.failed = function (msg) {
+                }
+                static failed(msg) {
                     return new ResultParseYearMonth(false, msg);
-                };
-                ResultParseYearMonth.prototype.format = function () {
+                }
+                format() {
                     if (!this.success) {
                         return "";
                     }
                     return this.year + '/' + uk.text.padLeft(String(this.month), '0', 2);
-                };
-                ResultParseYearMonth.prototype.toValue = function () {
+                }
+                toValue() {
                     if (!this.success) {
                         return 0;
                     }
                     return (this.year * 100 + this.month);
-                };
-                ResultParseYearMonth.prototype.getMsg = function () { return this.msg; };
-                return ResultParseYearMonth;
-            }(ParseResult));
+                }
+                getMsg() { return this.msg; }
+            }
             time_1.ResultParseYearMonth = ResultParseYearMonth;
             function parseYearMonth(yearMonth) {
                 if (yearMonth === undefined || yearMonth === null) {
@@ -310,35 +324,33 @@ var nts;
                 return ResultParseYearMonth.succeeded(year, month);
             }
             time_1.parseYearMonth = parseYearMonth;
-            var ResultParseTimeOfTheDay = (function (_super) {
-                __extends(ResultParseTimeOfTheDay, _super);
-                function ResultParseTimeOfTheDay(success, msg, hour, minute) {
-                    _super.call(this, success);
+            class ResultParseTimeOfTheDay extends ParseResult {
+                constructor(success, msg, hour, minute) {
+                    super(success);
                     this.hour = hour;
                     this.minute = minute;
                     this.msg = msg || "time of the days must in format hh:mm with hour in range 0-23; minute in range 00-59";
                 }
-                ResultParseTimeOfTheDay.succeeded = function (hour, minute) {
+                static succeeded(hour, minute) {
                     return new ResultParseTimeOfTheDay(true, "", hour, minute);
-                };
-                ResultParseTimeOfTheDay.failed = function (msg) {
+                }
+                static failed(msg) {
                     return new ResultParseTimeOfTheDay(false, msg);
-                };
-                ResultParseTimeOfTheDay.prototype.format = function () {
+                }
+                format() {
                     if (!this.success) {
                         return "";
                     }
                     return this.hour + ':' + uk.text.padLeft(String(this.minute), '0', 2);
-                };
-                ResultParseTimeOfTheDay.prototype.toValue = function () {
+                }
+                toValue() {
                     if (!this.success) {
                         return 0;
                     }
                     return (this.hour * 100 + this.minute);
-                };
-                ResultParseTimeOfTheDay.prototype.getMsg = function () { return this.msg; };
-                return ResultParseTimeOfTheDay;
-            }(ParseResult));
+                }
+                getMsg() { return this.msg; }
+            }
             time_1.ResultParseTimeOfTheDay = ResultParseTimeOfTheDay;
             function parseTimeOfTheDay(timeOfDay) {
                 if (timeOfDay === undefined || timeOfDay === null) {
@@ -364,36 +376,34 @@ var nts;
                 return ResultParseTimeOfTheDay.succeeded(hour, minute);
             }
             time_1.parseTimeOfTheDay = parseTimeOfTheDay;
-            var ResultParseYearMonthDate = (function (_super) {
-                __extends(ResultParseYearMonthDate, _super);
-                function ResultParseYearMonthDate(success, msg, year, month, date) {
-                    _super.call(this, success);
+            class ResultParseYearMonthDate extends ParseResult {
+                constructor(success, msg, year, month, date) {
+                    super(success);
                     this.year = year;
                     this.month = month;
                     this.date = date;
                     this.msg = msg || "must yyyymm or yyyy/mm format: year in [1900-9999] and month in [1-12] ";
                 }
-                ResultParseYearMonthDate.succeeded = function (year, month, date) {
+                static succeeded(year, month, date) {
                     return new ResultParseYearMonthDate(true, "", year, month, date);
-                };
-                ResultParseYearMonthDate.failed = function (msg) {
+                }
+                static failed(msg) {
                     return new ResultParseYearMonthDate(false, msg);
-                };
-                ResultParseYearMonthDate.prototype.format = function () {
+                }
+                format() {
                     if (!this.success) {
                         return "";
                     }
                     return this.year + '/' + uk.text.padLeft(String(this.month), '0', 2) + uk.text.padLeft(String(this.date), '0', 2);
-                };
-                ResultParseYearMonthDate.prototype.toValue = function () {
+                }
+                toValue() {
                     if (!this.success) {
                         return 0;
                     }
                     return (this.year * 10000 + this.month * 100 + this.date);
-                };
-                ResultParseYearMonthDate.prototype.getMsg = function () { return this.msg; };
-                return ResultParseYearMonthDate;
-            }(ParseResult));
+                }
+                getMsg() { return this.msg; }
+            }
             time_1.ResultParseYearMonthDate = ResultParseYearMonthDate;
             function parseYearMonthDate(yearMonthDate) {
                 if (yearMonthDate === undefined || yearMonthDate === null) {
@@ -448,31 +458,30 @@ var nts;
                 return ResultParseYearMonthDate.succeeded(year, month, date);
             }
             time_1.parseYearMonthDate = parseYearMonthDate;
-            var MomentResult = (function (_super) {
-                __extends(MomentResult, _super);
-                function MomentResult(momentObject, outputFormat) {
-                    _super.call(this, true);
+            class MomentResult extends ParseResult {
+                constructor(momentObject, outputFormat) {
+                    super(true);
                     this.momentObject = momentObject;
                     this.outputFormat = uk.text.getISOFormat(outputFormat);
                 }
-                MomentResult.prototype.succeeded = function () {
+                succeeded() {
                     this.success = true;
-                };
-                MomentResult.prototype.failed = function (msg) {
+                }
+                failed(msg) {
                     this.msg = (msg) ? msg : "Invalid format";
                     this.success = false;
-                };
-                MomentResult.prototype.format = function () {
+                }
+                format() {
                     if (!this.success)
                         return "";
                     return this.momentObject.format(this.outputFormat);
-                };
-                MomentResult.prototype.toValue = function () {
+                }
+                toValue() {
                     if (!this.success)
                         return null;
                     return this.momentObject;
-                };
-                MomentResult.prototype.toNumber = function (outputFormat) {
+                }
+                toNumber(outputFormat) {
                     var dateFormats = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "date"];
                     var yearMonthFormats = ["YYYY/MM", "YYYY-MM", "YYYYMM", "yearmonth"];
                     if (!this.success)
@@ -486,13 +495,12 @@ var nts;
                     else {
                         return parseInt(this.momentObject.format(outputFormat).replace(/[^\d]/g, ""));
                     }
-                };
-                MomentResult.prototype.getMsg = function () { return this.msg; };
-                return MomentResult;
-            }(ParseResult));
+                }
+                getMsg() { return this.msg; }
+            }
             time_1.MomentResult = MomentResult;
             function parseMoment(datetime, outputFormat, inputFormat) {
-                var inputFormats = (inputFormat) ? inputFormat : ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm", "HHmm"];
+                var inputFormats = (inputFormat) ? inputFormat : defaultInputFormat;
                 var momentObject = moment.utc(datetime, inputFormats);
                 var result = new MomentResult(momentObject, outputFormat);
                 if (momentObject.isValid())
@@ -503,6 +511,7 @@ var nts;
             }
             time_1.parseMoment = parseMoment;
             function UTCDate(year, month, date, hours, minutes, seconds, milliseconds) {
+                // Return local time in UTC
                 if (uk.util.isNullOrUndefined(year)) {
                     var currentDate = new Date();
                     year = currentDate.getUTCFullYear();

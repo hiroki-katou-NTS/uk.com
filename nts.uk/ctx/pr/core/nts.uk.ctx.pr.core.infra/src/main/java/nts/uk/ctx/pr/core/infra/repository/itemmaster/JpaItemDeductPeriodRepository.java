@@ -16,7 +16,8 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaItemDeductPeriodRepository extends JpaRepository implements ItemDeductPeriodRepository {
 
 	@Override
-	public Optional<ItemDeductPeriod> find(String companyCode, String itemCode) {
+	public Optional<ItemDeductPeriod> find(String itemCode) {
+		String companyCode = AppContexts.user().companyCode();
 		QcamtItemDeductPeriodPK key = new QcamtItemDeductPeriodPK(companyCode, itemCode);
 		return this.queryProxy().find(key, QcamtItemDeductPeriod.class).map(x -> toDomain(x));
 
@@ -46,7 +47,7 @@ public class JpaItemDeductPeriodRepository extends JpaRepository implements Item
 
 	private QcamtItemDeductPeriod toEntity(ItemDeductPeriod domain) {
 		String campanyCode = AppContexts.user().companyCode();
-		QcamtItemDeductPeriodPK key = new QcamtItemDeductPeriodPK(campanyCode, domain.getItemCd().v());
+		QcamtItemDeductPeriodPK key = new QcamtItemDeductPeriodPK(campanyCode, domain.getItemCode().v());
 		return new QcamtItemDeductPeriod(key, domain.getPeriodAtr().value, domain.getStrY().v(), domain.getEndY().v(),
 				domain.getCycleAtr().value, domain.getCycle01Atr().value, domain.getCycle02Atr().value,
 				domain.getCycle03Atr().value, domain.getCycle04Atr().value, domain.getCycle05Atr().value,

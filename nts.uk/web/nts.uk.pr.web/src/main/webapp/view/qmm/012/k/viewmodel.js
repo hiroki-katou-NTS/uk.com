@@ -4,12 +4,12 @@ var qmm012;
     (function (k) {
         var viewmodel;
         (function (viewmodel) {
-            var ScreenModel = (function () {
-                function ScreenModel() {
+            class ScreenModel {
+                constructor() {
                     this.GridlistItems_K_001 = ko.observableArray([]);
                     this.GridlistCurrentCode_K_001 = ko.observable('');
                     this.GridlistCurrentItem = ko.observable(null);
-                    var self = this;
+                    let self = this;
                     self.GridColumns_K_001 = ko.observableArray([
                         { headerText: 'コード', prop: 'commuNoTaxLimitCode', width: 40 },
                         { headerText: '名称', prop: 'commuNoTaxLimitName', width: 110 },
@@ -23,24 +23,31 @@ var qmm012;
                         self.GridlistCurrentItem(item);
                     });
                 }
-                ScreenModel.prototype.LoadData = function () {
-                    var self = this;
+                LoadData() {
+                    let self = this;
                     k.service.getCommutelimitsByCompanyCode().done(function (CommuteNoTaxLimits) {
                         self.GridlistItems_K_001(CommuteNoTaxLimits);
+                        let selectedCode = nts.uk.ui.windows.getShared('commuNoTaxLimitCode');
+                        if (!selectedCode) {
+                            if (CommuteNoTaxLimits.length) {
+                                self.GridlistCurrentCode_K_001(CommuteNoTaxLimits[0].commuNoTaxLimitCode);
+                            }
+                        }
+                        else
+                            self.GridlistCurrentCode_K_001(selectedCode);
                     }).fail(function (res) {
                         alert(res);
                     });
-                };
-                ScreenModel.prototype.SubmitDialog = function () {
-                    var self = this;
+                }
+                SubmitDialog() {
+                    let self = this;
                     nts.uk.ui.windows.setShared('CommuteNoTaxLimitDto', self.GridlistCurrentItem());
                     nts.uk.ui.windows.close();
-                };
-                ScreenModel.prototype.CloseDialog = function () {
+                }
+                CloseDialog() {
                     nts.uk.ui.windows.close();
-                };
-                return ScreenModel;
-            }());
+                }
+            }
             viewmodel.ScreenModel = ScreenModel;
         })(viewmodel = k.viewmodel || (k.viewmodel = {}));
     })(k = qmm012.k || (qmm012.k = {}));

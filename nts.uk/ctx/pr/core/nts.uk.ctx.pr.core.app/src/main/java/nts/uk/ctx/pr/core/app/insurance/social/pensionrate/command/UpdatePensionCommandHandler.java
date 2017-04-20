@@ -53,9 +53,10 @@ public class UpdatePensionCommandHandler extends CommandHandler<UpdatePensionCom
 		// Get command.
 		UpdatePensionCommand command = context.getCommand();
 
+		String historyId = command.getHistoryId();
 		// Get the history.
-		PensionRate pensionRate = this.pensionRateRepository.findById(command.getHistoryId()).get();
-
+		PensionRate pensionRate = this.pensionRateRepository.findById(historyId).get();
+		
 		// Update data
 		pensionRate.setAutoCalculate(command.getAutoCalculate());
 		pensionRate.setChildContributionRate(command.getChildContributionRate());

@@ -1,4 +1,3 @@
-/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -7,15 +6,9 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                /**
-                 * LinkButton
-                 */
                 var NtsLinkButtonBindingHandler = (function () {
                     function NtsLinkButtonBindingHandler() {
                     }
-                    /**
-                     * Init.
-                     */
                     NtsLinkButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var jump = ko.unwrap(data.jump);
@@ -31,9 +24,6 @@ var nts;
                                 nts.uk.request.jump(jump);
                         });
                     };
-                    /**
-                     * Update
-                     */
                     NtsLinkButtonBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                     };
                     return NtsLinkButtonBindingHandler;
@@ -43,3 +33,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=linkbutton-ko-ext.js.map

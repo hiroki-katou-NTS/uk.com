@@ -6,7 +6,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.formula.app.find.formulahistory.FormulaHistoryDto;
-import nts.uk.ctx.pr.formula.app.find.formulamaster.FormulaDto;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
 import nts.uk.ctx.pr.formula.dom.repository.FormulaEasyHeaderRepository;
 import nts.uk.ctx.pr.formula.dom.repository.FormulaHistoryRepository;
@@ -45,7 +44,7 @@ public class FormulaBasicInformationFinder {
 
 		FormulaBasicInformationDto formulaBasicInformationDto = new FormulaBasicInformationDto();
 
-		formulaBasicInformationDto.setFormulaCode(formulaDto.isPresent() ? formulaDto.get().getCcd() : null);
+		formulaBasicInformationDto.setFormulaCode(formulaDto.isPresent() ? formulaDto.get().getFormulaCode() : null);
 		formulaBasicInformationDto.setFormulaName(formulaDto.isPresent() ? formulaDto.get().getFormulaName() : null);
 		formulaBasicInformationDto.setDifficultyAtr(formulaDto.isPresent() ? formulaDto.get().getDifficultyAtr() : null);
 		formulaBasicInformationDto.setStartDate(formulaHistoryDto.isPresent() ? formulaHistoryDto.get().getStartDate() : null);

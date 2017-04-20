@@ -68,15 +68,19 @@ module nts.uk.ui.koExtentions {
                 autoHide: autoHide,
             });
 
-            var validator = new validation.TimeValidator(constraintName, {required: required, inputFormat: valueFormat, valueType: valueType});
+            var validator = new validation.TimeValidator(constraintName, {required: required, outputFormat: valueFormat, valueType: valueType});
             $input.on("change", (e) => {
                 var newText = $input.val();
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
                 if (result.isValid) {
                     // Day of Week
-                    if (hasDayofWeek)
-                        $label.text("(" + time.formatPattern(newText, "", dayofWeekFormat) + ")");
+                    if (hasDayofWeek) {
+                        if (util.isNullOrEmpty(result.parsedValue))
+                            $label.text("");
+                        else
+                            $label.text("(" + time.formatPattern(newText, "", dayofWeekFormat) + ")");
+                    }
                     value(result.parsedValue);
                 }
                 else {
@@ -122,9 +126,11 @@ module nts.uk.ui.koExtentions {
             if (init === true || time.formatPattern($input.datepicker("getDate",true),"",ISOFormat) !== dateFormatValue) {
                 if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
                     $input.datepicker('setDate', dateFormatValue);
-                    // Day of Week
-                    if (hasDayofWeek)
-                        $label.text("(" + moment.utc(value(), valueFormat).format(dayofWeekFormat) + ")");
+                    $label.text("(" + time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
+                }
+                else {
+                    $input.val("");
+                    $label.text("");
                 }
             }
             container.data("init", false);

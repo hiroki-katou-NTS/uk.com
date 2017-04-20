@@ -4,9 +4,6 @@ module cmm008.a{
         screenModel.start().done(function() {
             __viewContext.bind(screenModel);
             
-            
-            
-            
         });
     });
 }

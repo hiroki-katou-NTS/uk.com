@@ -26,7 +26,7 @@
 				<div id="contents-area">
 						<div class="pull-left">
 							<div class="caret-right caret-background bg-green">
-								<table id="LST_001" data-bind="ntsGridList: {
+								<table id="lst-1" data-bind="ntsGridList: {
 										width: 550, height: 290,
 										options: retirementPayItemList,
 										optionsValue: 'itemCode',
@@ -54,7 +54,7 @@
 								</div>
 								<div class="cell valign-center">
 									<div data-bind="with: currentItem">
-										<input id="INP_001" data-name="印刷用名称" class="data-required" data-bind="ntsTextEditor: {
+										<input id="inp-1" data-name="印刷用名称" class="data-required" data-bind="ntsTextEditor: {
 											value: printName,
 											constraint: 'RetirementPayItemPrintName',
 											option: { width: '110px' },
@@ -69,7 +69,7 @@
 								</div>
 								<div class="cell">
 									<div data-bind="with: currentItem">
-										<textarea id="INP_002" data-name="メモ" data-bind="ntsMultilineEditor: {
+										<textarea id="inp-2" data-name="メモ" data-bind="ntsMultilineEditor: {
 											value: memo,
 											constraint: 'Memo'}" />
 									</div>

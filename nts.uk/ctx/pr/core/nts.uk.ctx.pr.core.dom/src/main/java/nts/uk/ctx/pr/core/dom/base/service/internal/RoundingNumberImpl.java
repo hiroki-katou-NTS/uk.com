@@ -13,7 +13,7 @@ public class RoundingNumberImpl extends RoundingNumber {
 	@Override
 	public BigDecimal healthRounding(RoundingMethod roudingMethod, BigDecimal roundValue, double roundType) {
 		double getLevel = Math.pow(10, roundType);
-		double backupValue = roundValue.doubleValue() * (getLevel / 10);
+		final double backupValue = roundValue.doubleValue() * (getLevel / 10);
 		double returnValue = BigDecimal.ZERO.doubleValue();
 		switch (roudingMethod) {
 		case RoundUp:
@@ -23,10 +23,11 @@ public class RoundingNumberImpl extends RoundingNumber {
 			returnValue = Math.floor(backupValue) / (getLevel / 10);
 			break;
 		case RoundDown:
-			if ((backupValue * getLevel) % 10 > 5)
+			if ((backupValue * getLevel) % 10 > 5) {
 				returnValue = (Math.ceil(backupValue)) / (getLevel / 10);
-			else
+			} else {
 				returnValue = Math.floor(backupValue) / (getLevel / 10);
+			}
 			break;
 		case Down4_Up5:
 			returnValue = this.roudingDownUp(backupValue, 4) / (getLevel / 10);
@@ -42,7 +43,7 @@ public class RoundingNumberImpl extends RoundingNumber {
 
 	@Override
 	public BigDecimal pensionRounding(RoundingMethod roudingMethod, BigDecimal roundValue) {
-		double backupValue = roundValue.doubleValue();
+		final double backupValue = roundValue.doubleValue();
 		double returnValue = BigDecimal.ZERO.doubleValue();
 		switch (roudingMethod) {
 		case RoundUp:

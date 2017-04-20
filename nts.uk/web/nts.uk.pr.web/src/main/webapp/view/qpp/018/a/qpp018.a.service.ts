@@ -3,7 +3,7 @@ module nts.uk.pr.view.qpp018.a {
 
         // Service paths.
         var servicePath = {
-            findAllInsuranceOffice: "screen/pr/QPP018/findAllOffice",
+            findAllInsuranceOffice: "pr/insurance/social/findall",
             saveAsPdf: "screen/pr/QPP018/saveAsPdf"
         };
         

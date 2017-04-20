@@ -4,8 +4,8 @@ var qmm012;
     (function (e) {
         var viewmodel;
         (function (viewmodel) {
-            var ScreenModel = (function () {
-                function ScreenModel() {
+            class ScreenModel {
+                constructor() {
                     //E_004
                     this.checked_E_004 = ko.observable(false);
                     //E_005
@@ -28,7 +28,7 @@ var qmm012;
                     this.CurrentMemo = ko.observable("");
                     this.CurrentZeroDisplaySet = ko.observable(1);
                     this.CurrentItemDisplayAtr = ko.observable(1);
-                    var self = this;
+                    let self = this;
                     //E_001 To 003
                     //E_001To003
                     self.roundingRules_E_001 = ko.observableArray([
@@ -117,13 +117,13 @@ var qmm012;
                         self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
                     });
                 }
-                ScreenModel.prototype.getCurrentItemAttend = function () {
-                    var self = this;
-                    var itemAttend = new e.service.model.ItemAttend(self.CurrentAvePayAtr(), self.CurrentItemAtr(), self.checked_E_006() ? 1 : 0, self.CurrentErrRangeLow(), self.checked_E_005() ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_E_008() ? 1 : 0, self.CurrentAlRangeLow(), self.checked_E_007() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentWorkDaysScopeAtr(), self.CurrentMemo());
+                getCurrentItemAttend() {
+                    //return Item Attend customer input on form
+                    let self = this;
+                    let itemAttend = new e.service.model.ItemAttend(self.CurrentAvePayAtr(), self.CurrentItemAtr(), self.checked_E_006() ? 1 : 0, self.CurrentErrRangeLow(), self.checked_E_005() ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_E_008() ? 1 : 0, self.CurrentAlRangeLow(), self.checked_E_007() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentWorkDaysScopeAtr(), self.CurrentMemo());
                     return itemAttend;
-                };
-                return ScreenModel;
-            }());
+                }
+            }
             viewmodel.ScreenModel = ScreenModel;
         })(viewmodel = e.viewmodel || (e.viewmodel = {}));
     })(e = qmm012.e || (qmm012.e = {}));

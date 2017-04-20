@@ -60,8 +60,8 @@ var qmm012;
             service.updateItemMaster = updateItemMaster;
             var model;
             (function (model) {
-                var ItemMaster = (function () {
-                    function ItemMaster(itemCode, itemName, categoryAtr, categoryAtrName, itemAbName, itemAbNameO, itemAbNameE, displaySet, uniteCode, zeroDisplaySet, itemDisplayAtr, fixAtr) {
+                class ItemMaster {
+                    constructor(itemCode, itemName, categoryAtr, categoryAtrName, itemAbName, itemAbNameO, itemAbNameE, displaySet, uniteCode, zeroDisplaySet, itemDisplayAtr, fixAtr) {
                         this.itemCode = itemCode;
                         this.itemName = itemName;
                         this.categoryAtr = categoryAtr;
@@ -75,8 +75,7 @@ var qmm012;
                         this.itemDisplayAtr = itemDisplayAtr;
                         this.fixAtr = fixAtr;
                     }
-                    return ItemMaster;
-                }());
+                }
                 model.ItemMaster = ItemMaster;
             })(model = service.model || (service.model = {}));
         })(service = b.service || (b.service = {}));

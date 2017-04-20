@@ -14,15 +14,9 @@ var nts;
                         (function (common) {
                             var service;
                             (function (service) {
-                                /**
-                                 *  Service paths
-                                 */
                                 var paths = {
                                     getAvgEarnLevelMasterSettingList: "ctx/pr/core/insurance/avgearnmaster/find",
                                 };
-                                /**
-                                *  Get AvgEarnLevelMasterSetting list
-                                */
                                 function getAvgEarnLevelMasterSettingList() {
                                     var dfd = $.Deferred();
                                     nts.uk.request.ajax(paths.getAvgEarnLevelMasterSettingList)
@@ -52,3 +46,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=service.js.map

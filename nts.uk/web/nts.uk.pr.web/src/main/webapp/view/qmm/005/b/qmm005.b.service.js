@@ -1,3 +1,4 @@
+/// <reference path="../qmm005.ts"/>
 var qmm005;
 (function (qmm005) {
     var b;

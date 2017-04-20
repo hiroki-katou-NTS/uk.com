@@ -22,7 +22,7 @@
 					<button id="print-excution-log-button">印刷実行ログ</button>					
 				</div>
 			</div>
-			<div id="contents-area">
+			<div id="contents-area" data-bind="visible: true" style="display: none;">
 				<div id="detail-contents" style="margin-left: 20px">
 				<table id="tblDetail-contents">
 					<tbody>
@@ -39,7 +39,7 @@
 							</td>
 							<td colspan="2">
 								<div style="margin-top: 20px">
-									<label id="lblJapan-year" style="padding-left: 5px;">月度</label>
+									<label id="lblJapan-year" style="padding-left: 5px;" data-bind="text: japanYearmonth() + ' 月度'"></label>
 								</div>
 							</td>
 						</tr>							

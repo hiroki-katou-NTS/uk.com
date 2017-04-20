@@ -1,8 +1,3 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var nts;
 (function (nts) {
     var uk;
@@ -18,10 +13,9 @@ var nts;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenBaseModel = view.base.simplehistory.viewmodel.ScreenBaseModel;
-                            var ScreenModel = (function (_super) {
-                                __extends(ScreenModel, _super);
-                                function ScreenModel() {
-                                    _super.call(this, {
+                            class ScreenModel extends ScreenBaseModel {
+                                constructor() {
+                                    super({
                                         functionName: '会社一律金額',
                                         service: qmm007.service.instance,
                                         removeMasterOnLastHistoryRemove: true
@@ -35,7 +29,7 @@ var nts;
                                         { code: ApplySetting.NOTAPPLY, name: '対象外' }
                                     ]);
                                     // Setting type
-                                    self.isContractSettingEnabled = ko.computed(function () {
+                                    self.isContractSettingEnabled = ko.computed(() => {
                                         return self.unitPriceHistoryModel().fixPaySettingType() == SettingType.CONTRACT;
                                     });
                                     // Nts text editor options
@@ -46,13 +40,14 @@ var nts;
                                     }));
                                 }
                                 /**
+                                 * Override
                                  * Create or Update UnitPriceHistory.
                                  */
-                                ScreenModel.prototype.onSave = function () {
+                                onSave() {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     // Clear errors.
-                                    self.clearError();
+                                    self.clearErrors();
                                     // Validate.
                                     self.validate();
                                     // Return if has error.
@@ -61,52 +56,60 @@ var nts;
                                         return dfd.promise();
                                     }
                                     if (self.isNewMode()) {
-                                        qmm007.service.instance.create(ko.toJS(self.unitPriceHistoryModel())).done(function (res) {
+                                        qmm007.service.instance.create(ko.toJS(self.unitPriceHistoryModel())).done(res => {
                                             dfd.resolve(res.uuid);
                                             self.dirtyChecker.reset();
-                                        }).fail(function (res) {
+                                        }).fail(res => {
                                             dfd.reject();
                                             self.setMessages(res.messageId);
                                         });
                                     }
                                     else {
-                                        qmm007.service.instance.update(ko.toJS(self.unitPriceHistoryModel())).done(function (res) {
+                                        qmm007.service.instance.update(ko.toJS(self.unitPriceHistoryModel())).done((res) => {
                                             dfd.resolve(self.unitPriceHistoryModel().id);
                                             self.dirtyChecker.reset();
-                                        }).fail(function (res) {
+                                        }).fail(res => {
                                             dfd.reject();
                                             self.setMessages(res.messageId);
                                         });
                                     }
                                     return dfd.promise();
-                                };
+                                }
                                 /**
-                                * Load UnitPriceHistory detail.
-                                */
-                                ScreenModel.prototype.onSelectHistory = function (id) {
+                                 * Override
+                                 * Load UnitPriceHistory detail.
+                                 */
+                                onSelectHistory(id) {
                                     var self = this;
                                     self.isLoading(true);
-                                    qmm007.service.instance.findHistoryByUuid(id).done(function (dto) {
+                                    qmm007.service.instance.findHistoryByUuid(id).done(dto => {
                                         self.setUnitPriceHistoryModel(dto);
                                         self.dirtyChecker.reset();
                                         self.isLoading(false);
-                                        self.clearError();
                                     });
-                                };
+                                }
                                 /**
+                                 * Override
                                  * Clear all input and switch to new mode.
                                  */
-                                ScreenModel.prototype.onRegistNew = function () {
+                                onRegistNew() {
                                     var self = this;
-                                    self.clearError();
                                     self.clearInput();
                                     self.dirtyChecker.reset();
-                                };
-                                ScreenModel.prototype.isDirty = function () {
+                                }
+                                // Override
+                                isDirty() {
                                     var self = this;
                                     return self.dirtyChecker.isDirty();
-                                };
-                                ScreenModel.prototype.setMessages = function (messageId) {
+                                }
+                                // Override
+                                clearErrors() {
+                                    $('#inpCode').ntsError('clear');
+                                    $('#inpName').ntsError('clear');
+                                    $('#inpStartMonth').ntsError('clear');
+                                    $('#inpBudget').ntsError('clear');
+                                }
+                                setMessages(messageId) {
                                     var self = this;
                                     switch (messageId) {
                                         case 'ER005':
@@ -118,11 +121,11 @@ var nts;
                                         default:
                                             break;
                                     }
-                                };
+                                }
                                 /**
                                  * Set the UnitPriceHistoryModel
                                  */
-                                ScreenModel.prototype.setUnitPriceHistoryModel = function (dto) {
+                                setUnitPriceHistoryModel(dto) {
                                     var model = this.unitPriceHistoryModel();
                                     model.id = dto.id;
                                     model.unitPriceCode(dto.unitPriceCode);
@@ -137,27 +140,21 @@ var nts;
                                     model.fixPayAtrDaily(dto.fixPayAtrDaily);
                                     model.fixPayAtrHourly(dto.fixPayAtrHourly);
                                     model.memo(dto.memo);
-                                };
-                                ScreenModel.prototype.clearError = function () {
-                                    $('#inpCode').ntsError('clear');
-                                    $('#inpName').ntsError('clear');
-                                    $('#inpStartMonth').ntsError('clear');
-                                    $('#inpBudget').ntsError('clear');
-                                };
-                                ScreenModel.prototype.validate = function () {
+                                }
+                                validate() {
                                     $('#inpCode').ntsEditor('validate');
                                     $('#inpName').ntsEditor('validate');
                                     $('#inpStartMonth').ntsEditor('validate');
                                     $('#inpBudget').ntsEditor('validate');
-                                };
-                                ScreenModel.prototype.clearInput = function () {
+                                }
+                                clearInput() {
                                     var self = this;
                                     self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
-                                };
+                                }
                                 /**
                                  * Get default history
                                  */
-                                ScreenModel.prototype.getDefaultUnitPriceHistory = function () {
+                                getDefaultUnitPriceHistory() {
                                     var defaultHist = {};
                                     defaultHist.id = '';
                                     defaultHist.unitPriceCode = '';
@@ -173,12 +170,11 @@ var nts;
                                     defaultHist.fixPayAtrHourly = ApplySetting.APPLY;
                                     defaultHist.memo = '';
                                     return defaultHist;
-                                };
-                                return ScreenModel;
-                            }(ScreenBaseModel));
+                                }
+                            }
                             viewmodel.ScreenModel = ScreenModel;
-                            var UnitPriceHistoryModel = (function () {
-                                function UnitPriceHistoryModel(historyDto) {
+                            class UnitPriceHistoryModel {
+                                constructor(historyDto) {
                                     this.id = historyDto.id;
                                     this.unitPriceCode = ko.observable(historyDto.unitPriceCode);
                                     this.unitPriceName = ko.observable(historyDto.unitPriceName);
@@ -193,24 +189,17 @@ var nts;
                                     this.fixPayAtrHourly = ko.observable(historyDto.fixPayAtrHourly);
                                     this.memo = ko.observable(historyDto.memo);
                                 }
-                                return UnitPriceHistoryModel;
-                            }());
+                            }
                             viewmodel.UnitPriceHistoryModel = UnitPriceHistoryModel;
-                            var SettingType = (function () {
-                                function SettingType() {
-                                }
-                                SettingType.COMPANY = 'Company';
-                                SettingType.CONTRACT = 'Contract';
-                                return SettingType;
-                            }());
+                            class SettingType {
+                            }
+                            SettingType.COMPANY = 'Company';
+                            SettingType.CONTRACT = 'Contract';
                             viewmodel.SettingType = SettingType;
-                            var ApplySetting = (function () {
-                                function ApplySetting() {
-                                }
-                                ApplySetting.APPLY = 'Apply';
-                                ApplySetting.NOTAPPLY = 'NotApply';
-                                return ApplySetting;
-                            }());
+                            class ApplySetting {
+                            }
+                            ApplySetting.APPLY = 'Apply';
+                            ApplySetting.NOTAPPLY = 'NotApply';
                             viewmodel.ApplySetting = ApplySetting;
                         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
                     })(a = qmm007.a || (qmm007.a = {}));
