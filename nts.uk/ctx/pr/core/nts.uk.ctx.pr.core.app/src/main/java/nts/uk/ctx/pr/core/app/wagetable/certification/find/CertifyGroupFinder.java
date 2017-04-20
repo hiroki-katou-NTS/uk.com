@@ -6,15 +6,23 @@ package nts.uk.ctx.pr.core.app.wagetable.certification.find;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.app.wagetable.certification.find.dto.CertifyGroupFindDto;
 import nts.uk.ctx.pr.core.app.wagetable.certification.find.dto.CertifyGroupFindOutDto;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupCode;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupName;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.MultipleTargetSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -24,9 +32,57 @@ import nts.uk.shr.com.context.LoginUserContext;
 @Stateless
 public class CertifyGroupFinder {
 
-	/** The find. */
+	/** The certify repository. */
 	@Inject
-	private CertifyGroupRepository repository;
+	private CertifyGroupRepository certifyRepository;
+
+	/** The certifi repository. */
+	@Inject
+	private CertificationRepository certifiRepository;
+
+	public List<CertifyGroup> initAll() {
+
+		// Get the company login
+		String companyCode = AppContexts.user().companyCode();
+
+		// Get all
+		List<CertifyGroup> certifyGroups = this.certifyRepository.findAll(companyCode);
+
+		List<Certification> certifyNoneGroupItems = certifiRepository.findAllNoneOfGroup(companyCode);
+
+		// Check exist none group item.
+		if (!CollectionUtil.isEmpty(certifyNoneGroupItems)) {
+			// Add group of none group items.
+			certifyGroups.add(new CertifyGroup(new CertifyGroupGetMemento() {
+
+				@Override
+				public CertifyGroupName getName() {
+					return new CertifyGroupName("グループ なし");
+				}
+
+				@Override
+				public MultipleTargetSetting getMultiApplySet() {
+					return MultipleTargetSetting.TotalMethod;
+				}
+
+				@Override
+				public String getCompanyCode() {
+					return companyCode;
+				}
+
+				@Override
+				public CertifyGroupCode getCode() {
+					return new CertifyGroupCode("000");
+				}
+
+				@Override
+				public Set<Certification> getCertifies() {
+					return certifyNoneGroupItems.stream().collect(Collectors.toSet());
+				}
+			}));
+		}
+		return certifyGroups;
+	}
 
 	/**
 	 * Find all.
@@ -39,7 +95,7 @@ public class CertifyGroupFinder {
 		LoginUserContext loginUserContext = AppContexts.user();
 
 		// call findAll
-		List<CertifyGroup> data = this.repository.findAll(loginUserContext.companyCode());
+		List<CertifyGroup> data = this.certifyRepository.findAll(loginUserContext.companyCode());
 
 		// to Dto
 		return data.stream().map(certifyGroup -> {
@@ -63,7 +119,7 @@ public class CertifyGroupFinder {
 		CertifyGroupFindDto dataOutput = new CertifyGroupFindDto();
 
 		// call findById
-		Optional<CertifyGroup> data = this.repository.findById(loginUserContext.companyCode(), code);
+		Optional<CertifyGroup> data = this.certifyRepository.findById(loginUserContext.companyCode(), code);
 
 		// not value find
 		if (!data.isPresent()) {
