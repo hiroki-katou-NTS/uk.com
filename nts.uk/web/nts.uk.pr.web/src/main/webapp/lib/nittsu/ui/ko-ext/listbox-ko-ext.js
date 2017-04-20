@@ -280,12 +280,12 @@ var nts;
                         }
                         else {
                             if (!enable) {
-                                container.off("click", "li");
+                                selectListBoxContainer.off("click", "li");
                                 container.addClass('disabled');
                             }
                             else {
                                 if (container.hasClass("disabled")) {
-                                    container.on("click", "li", { event: container.data("selectionChange") }, selectOnListBox);
+                                    selectListBoxContainer.on("click", "li", { event: container.data("selectionChange") }, selectOnListBox);
                                     container.removeClass('disabled');
                                 }
                             }

@@ -82,7 +82,7 @@ var qmm005;
                     self.dirty.reset();
                 });
             };
-            ViewModel.prototype.btn001Click = function (item, event) {
+            ViewModel.prototype.saveData = function (item, event) {
                 var self = this, items = self.items();
                 var data = [];
                 for (var i = 0, row; row = items[i]; i++) {

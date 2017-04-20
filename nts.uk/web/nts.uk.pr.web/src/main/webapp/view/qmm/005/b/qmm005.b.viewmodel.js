@@ -179,8 +179,67 @@ var qmm005;
                 }
             };
             ViewModel.prototype.saveData = function (item, event) {
-                var self = this;
+                var self = this, lst002Data = ko.toJS(self.lst002Data()), data = [];
+                var _loop_3 = function() {
+                    var item_1 = lst002Data[i], dataSources = _.clone(self.dataSources), processingYm = parseInt((item_1.year + '' + item_1.month)['formatYearMonth']()), filterProcessings = _.filter(dataSources, function (item) { return item.processingYm == processingYm; });
+                    var salary = _.find(filterProcessings, function (item) { return item.payBonusAtr == 0; });
+                    {
+                        salary.processingNo = self.processingNo();
+                        salary.payBonusAtr = 0;
+                        salary.processingYm = parseInt((item_1.year + '' + item_1.month)['formatYearMonth']());
+                        salary.sparePayAtr = 0;
+                        salary.payDate = moment.utc(item_1.sel002Data[item_1.sel002 - 1].label).toISOString();
+                        salary.stdDate = moment.utc(item_1.inp003).toISOString();
+                        salary.accountingClosing = moment.utc(item_1.inp009).toISOString();
+                        salary.socialInsLevyMon = parseInt(item_1.inp004["formatYearMonth"]());
+                        salary.socialInsStdDate = moment.utc(item_1.inp006).toISOString();
+                        salary.incomeTaxStdDate = moment.utc(item_1.inp008).toISOString();
+                        salary.neededWorkDay = item_1.inp010;
+                        salary.empInsStdDate = moment.utc(item_1.inp007).toISOString();
+                        salary.stmtOutputMon = parseInt(item_1.inp005["formatYearMonth"]());
+                    }
+                    if (item_1.sel001 == true) {
+                        if (filterProcessings.length == 1) {
+                            filterProcessings.push({
+                                processingNo: self.processingNo(),
+                                payBonusAtr: 1,
+                                processingYm: parseInt((item_1.year + '' + item_1.month)['formatYearMonth']()),
+                                sparePayAtr: 0,
+                                payDate: moment.utc(item_1.sel002Data[item_1.sel002 - 1].label).toISOString(),
+                                stdDate: moment.utc(item_1.inp003).toISOString(),
+                                accountingClosing: moment.utc(item_1.inp009).toISOString(),
+                                socialInsLevyMon: parseInt(item_1.inp004["formatYearMonth"]()),
+                                socialInsStdDate: moment.utc(item_1.inp006).toISOString(),
+                                incomeTaxStdDate: moment.utc(item_1.inp008).toISOString(),
+                                neededWorkDay: item_1.inp010,
+                                empInsStdDate: moment.utc(item_1.inp007).toISOString(),
+                                stmtOutputMon: parseInt(item_1.inp005["formatYearMonth"]())
+                            });
+                        }
+                        else {
+                            var bonus = _.find(filterProcessings, function (item) { return item.payBonusAtr == 1; });
+                            if (bonus) {
+                                bonus.payDate = moment.utc(bonus.payDate).toISOString();
+                                bonus.stdDate = moment.utc(bonus.stdDate).toISOString();
+                                bonus.accountingClosing = moment.utc(bonus.accountingClosing).toISOString();
+                                bonus.socialInsStdDate = moment.utc(bonus.socialInsStdDate).toISOString();
+                                bonus.incomeTaxStdDate = moment.utc(bonus.incomeTaxStdDate).toISOString();
+                                bonus.neededWorkDay = item_1.inp010;
+                                bonus.empInsStdDate = moment.utc(bonus.empInsStdDate).toISOString();
+                            }
+                        }
+                    }
+                    else {
+                        filterProcessings = _.filter(filterProcessings, function (item) { return item.payBonusAtr == 0; });
+                    }
+                    data = data.concat(filterProcessings);
+                };
+                for (var i in lst002Data) {
+                    _loop_3();
+                }
+                data = _.orderBy(data, ["payBonusAtr", "processingYm"], ["asc", "asc"]);
                 debugger;
+                b.services.updatData({ processingNo: self.processingNo(), payDays: data }).done(function () { });
             };
             ViewModel.prototype.deleteData = function (item, event) {
                 var self = this;
@@ -229,14 +288,14 @@ var qmm005;
                     }
                     self.sel002Data(sel002Data);
                     self.sel002.valueHasMutated();
-                    self.inp003(new Date(v, self.month() - 1, 1));
-                    self.inp004(new Date(v, self.month() - 1, 0)["formatYearMonth"]("/"));
-                    self.inp005(new Date(v, self.month() - 1, 1)["formatYearMonth"]("/"));
-                    self.inp006(new Date(v, self.month() - 1, 0));
-                    self.inp007(new Date(v, self.month() - 1, 1));
-                    self.inp008(new Date(v + 1, 0, 1));
-                    self.inp009(new Date(v, self.month(), 0));
-                    self.inp010(new Date(v, self.month() - 1, 1)["getWorkDays"]());
+                    self.inp003(moment.utc([v, self.month() - 1, 1]).toDate());
+                    self.inp004(moment.utc([v, self.month() - 1, 0]).format("YYYY/MM"));
+                    self.inp005(moment.utc([v, self.month() - 1, 1]).format("YYYY/MM"));
+                    self.inp006(moment.utc([v, self.month() - 1, 0]).toDate());
+                    self.inp007(moment.utc([v, self.month() - 1, 1]).toDate());
+                    self.inp008(moment.utc([v + 1, 0, 1]).toDate());
+                    self.inp009(moment.utc([v, self.month(), 0]).toDate());
+                    self.inp010(moment.utc([v, self.month() - 1, 1]).toDate()["getWorkDays"]());
                 });
                 self.year.valueHasMutated();
                 self.sel001(param.sel001);
