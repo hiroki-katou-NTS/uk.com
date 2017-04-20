@@ -12,8 +12,8 @@ var nts;
                     (function (j) {
                         var viewmodel;
                         (function (viewmodel) {
-                            var ScreenModelJScreen = (function () {
-                                function ScreenModelJScreen(data) {
+                            class ScreenModelJScreen {
+                                constructor(data) {
                                     var self = this;
                                     self.lastestHistory = data;
                                     self.formulaCode = ko.observable(data.formulaCode);
@@ -52,12 +52,12 @@ var nts;
                                     self.textCreateNew = "初めから作成する";
                                     self.selectedMode = ko.observable(0);
                                 }
-                                ScreenModelJScreen.prototype.closeDialog = function () {
+                                closeDialog() {
                                     nts.uk.ui.windows.close();
-                                };
-                                ScreenModelJScreen.prototype.registerFormulaHistory = function () {
+                                }
+                                registerFormulaHistory() {
                                     var self = this;
-                                    var command = {};
+                                    let command = {};
                                     if (self.selectedMode() === 0) {
                                         command = {
                                             formulaCode: self.lastestHistory.formulaCode,
@@ -83,23 +83,20 @@ var nts;
                                         .fail(function (res) {
                                         alert(res);
                                     });
-                                };
-                                return ScreenModelJScreen;
-                            }());
+                                }
+                            }
                             viewmodel.ScreenModelJScreen = ScreenModelJScreen;
                         })(viewmodel = j.viewmodel || (j.viewmodel = {}));
-                        var BoxModel = (function () {
-                            function BoxModel(id, name) {
+                        class BoxModel {
+                            constructor(id, name) {
                                 var self = this;
                                 self.id = id;
                                 self.name = name;
                             }
-                            return BoxModel;
-                        }());
+                        }
                     })(j = qmm017.j || (qmm017.j = {}));
                 })(qmm017 = view.qmm017 || (view.qmm017 = {}));
             })(view = pr.view || (pr.view = {}));
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm017.j.vm.js.map

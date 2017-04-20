@@ -1,3 +1,4 @@
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -6,13 +7,14 @@ var nts;
         (function (ui_1) {
             var koExtentions;
             (function (koExtentions) {
-                var NtsGridListBindingHandler = (function () {
-                    function NtsGridListBindingHandler() {
-                    }
-                    NtsGridListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                /**
+                 * GridList binding handler
+                 */
+                class NtsGridListBindingHandler {
+                    init(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var HEADER_HEIGHT = 27;
                         var $grid = $(element);
-                        var gridId = $grid.attr('id');
+                        let gridId = $grid.attr('id');
                         if (nts.uk.util.isNullOrUndefined(gridId)) {
                             throw new Error('the element NtsGridList must have id attribute.');
                         }
@@ -29,24 +31,24 @@ var nts;
                             features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: showNumbering });
                         }
                         var gridFeatures = ko.unwrap(data.features);
-                        var iggridColumns = _.map(observableColumns, function (c) {
+                        var iggridColumns = _.map(observableColumns, c => {
                             c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
                             c["dataType"] = 'string';
                             if (c["controlType"] === "switch") {
-                                var switchF = _.find(gridFeatures, function (s) {
+                                let switchF = _.find(gridFeatures, function (s) {
                                     return s["name"] === "Switch";
                                 });
                                 if (!uk.util.isNullOrUndefined(switchF)) {
                                     features.push({ name: 'Updating', enableAddRow: false, enableDeleteRow: false, editMode: 'none' });
-                                    var switchOptions_1 = ko.unwrap(switchF.options);
-                                    var switchValue_1 = switchF.optionsValue;
-                                    var switchText_1 = switchF.optionsText;
+                                    let switchOptions = ko.unwrap(switchF.options);
+                                    let switchValue = switchF.optionsValue;
+                                    let switchText = switchF.optionsText;
                                     c["formatter"] = function createButton(val, row) {
-                                        var result = $('<div class="ntsControl"/>');
-                                        _.forEach(switchOptions_1, function (opt) {
-                                            var value = opt[switchValue_1];
-                                            var text = opt[switchText_1];
-                                            var btn = $('<button>').text(text)
+                                        let result = $('<div class="ntsControl"/>');
+                                        _.forEach(switchOptions, function (opt) {
+                                            let value = opt[switchValue];
+                                            let text = opt[switchText];
+                                            let btn = $('<button>').text(text)
                                                 .addClass('nts-switch-button');
                                             btn.attr('data-value', value);
                                             if (val == value) {
@@ -57,9 +59,9 @@ var nts;
                                         return result[0].outerHTML;
                                     };
                                     $grid.on("click", ".nts-switch-button", function (evt, ui) {
-                                        var $element = $(this);
-                                        var selectedValue = $element.attr('data-value');
-                                        var $tr = $element.closest("tr");
+                                        let $element = $(this);
+                                        let selectedValue = $element.attr('data-value');
+                                        let $tr = $element.closest("tr");
                                         $grid.ntsGridListFeature('switch', 'setValue', $tr.attr("data-id"), c["key"], selectedValue);
                                     });
                                 }
@@ -84,18 +86,18 @@ var nts;
                             });
                         }
                         $grid.ntsGridList('setupSelecting');
-                        $grid.bind('selectionchanged', function () {
+                        $grid.bind('selectionchanged', () => {
                             if (data.multiple) {
-                                var selected = $grid.ntsGridList('getSelected');
+                                let selected = $grid.ntsGridList('getSelected');
                                 if (selected) {
-                                    data.value(_.map(selected, function (s) { return s.id; }));
+                                    data.value(_.map(selected, s => s.id));
                                 }
                                 else {
                                     data.value([]);
                                 }
                             }
                             else {
-                                var selected = $grid.ntsGridList('getSelected');
+                                let selected = $grid.ntsGridList('getSelected');
                                 if (selected) {
                                     data.value(selected.id);
                                 }
@@ -106,24 +108,25 @@ var nts;
                         });
                         var gridId = $grid.attr('id');
                         $grid.setupSearchScroll("igGrid", true);
-                    };
-                    NtsGridListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    }
+                    update(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $grid = $(element);
                         var data = valueAccessor();
                         var optionsValue = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
                         var currentSource = $grid.igGrid('option', 'dataSource');
                         var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
                         if (!_.isEqual(currentSource, sources)) {
-                            var currentSources = sources.slice();
+                            let currentSources = sources.slice();
                             var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
                                 return c["isDateColumn"] !== undefined && c["isDateColumn"] !== null && c["isDateColumn"] === true;
                             });
                             _.forEach(currentSources, function (s) {
                                 _.forEach(observableColumns, function (c) {
-                                    var key = c["key"] === undefined ? c["prop"] : c["key"];
+                                    let key = c["key"] === undefined ? c["prop"] : c["key"];
                                     s[key] = moment(s[key]).format(c["format"]);
                                 });
+                                //                    currentSources.push(s);
                             });
                             $grid.igGrid('option', 'dataSource', currentSources);
                             $grid.igGrid("dataBind");
@@ -138,12 +141,10 @@ var nts;
                             $grid.ntsGridList('setSelected', data.value());
                         }
                         $grid.closest('.ui-iggrid').addClass('nts-gridlist').height(data.height);
-                    };
-                    return NtsGridListBindingHandler;
-                }());
+                    }
+                }
                 ko.bindingHandlers['ntsGridList'] = new NtsGridListBindingHandler();
             })(koExtentions = ui_1.koExtentions || (ui_1.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=gridlist-ko-ext.js.map

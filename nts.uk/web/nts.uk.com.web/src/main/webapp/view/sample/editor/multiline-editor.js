@@ -1,8 +1,9 @@
 __viewContext.ready(function () {
-    var ScreenModel = (function () {
-        function ScreenModel() {
+    class ScreenModel {
+        constructor() {
             var self = this;
             self.simpleValue = ko.observable("123");
+            // MultilineEditor
             self.multilineeditor = {
                 value: ko.observable(''),
                 constraint: 'ResidenceCode',
@@ -17,9 +18,7 @@ __viewContext.ready(function () {
                 readonly: ko.observable(false)
             };
         }
-        return ScreenModel;
-    }());
+    }
     var viewmodel = new ScreenModel();
     this.bind(viewmodel);
 });
-//# sourceMappingURL=multiline-editor.js.map

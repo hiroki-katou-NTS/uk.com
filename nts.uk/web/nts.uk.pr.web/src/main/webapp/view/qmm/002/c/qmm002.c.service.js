@@ -21,7 +21,7 @@ var qmm002;
             }
             service.tranferBranch = tranferBranch;
             function getBankList() {
-                var dfd = $.Deferred();
+                let dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.getBankList)
                     .done(function (res) {
                     dfd.resolve(res);
@@ -35,4 +35,3 @@ var qmm002;
         })(service = c.service || (c.service = {}));
     })(c = qmm002.c || (qmm002.c = {}));
 })(qmm002 || (qmm002 = {}));
-//# sourceMappingURL=qmm002.c.service.js.map

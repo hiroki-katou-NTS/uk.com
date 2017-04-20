@@ -2,8 +2,8 @@ var nts;
 (function (nts) {
     var qmm017;
     (function (qmm017) {
-        var ListBox = (function () {
-            function ListBox(data) {
+        class ListBox {
+            constructor(data) {
                 var self = this;
                 self.itemList = ko.observableArray(data);
                 self.itemName = ko.observable('');
@@ -11,11 +11,10 @@ var nts;
                 self.selectedCode = ko.observable('');
                 self.isEnable = ko.observable(true);
             }
-            return ListBox;
-        }());
+        }
         qmm017.ListBox = ListBox;
-        var DScreen = (function () {
-            function DScreen() {
+        class DScreen {
+            constructor() {
                 var self = this;
                 var dList001 = [
                     { code: '1', name: '支給項目（支給＠）' },
@@ -51,9 +50,7 @@ var nts;
                     }
                 });
             }
-            return DScreen;
-        }());
+        }
         qmm017.DScreen = DScreen;
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm017.d.vm.js.map

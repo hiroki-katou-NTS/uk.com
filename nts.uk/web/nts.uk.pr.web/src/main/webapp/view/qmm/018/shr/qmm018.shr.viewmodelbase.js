@@ -4,13 +4,12 @@ var qmm018;
     (function (shr) {
         var viewmodelbase;
         (function (viewmodelbase) {
-            var ItemModel = (function () {
-                function ItemModel(itemCode, itemAbName) {
+            class ItemModel {
+                constructor(itemCode, itemAbName) {
                     this.itemCode = itemCode;
                     this.itemAbName = itemAbName;
                 }
-                return ItemModel;
-            }());
+            }
             viewmodelbase.ItemModel = ItemModel;
             (function (CategoryAtr) {
                 CategoryAtr[CategoryAtr["PAYMENT"] = 0] = "PAYMENT";
@@ -29,4 +28,3 @@ var qmm018;
         })(viewmodelbase = shr.viewmodelbase || (shr.viewmodelbase = {}));
     })(shr = qmm018.shr || (qmm018.shr = {}));
 })(qmm018 || (qmm018 = {}));
-//# sourceMappingURL=qmm018.shr.viewmodelbase.js.map
