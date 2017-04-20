@@ -171,8 +171,8 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         Map<Object, List<Object[]>> mapOffice = itemList.stream()
                 .collect(Collectors.groupingBy(item -> ((QismtSocialInsuOffice) item[0]))
                  );
-        List<InsuranceOfficeDto> listPersonal = new ArrayList<>();
-        List<InsuranceOfficeDto> listCompany = new ArrayList<>();
+        List<InsuranceOfficeDto> listOfficePersonal = new ArrayList<>();
+        List<InsuranceOfficeDto> listOfficeCompany = new ArrayList<>();
         ItemDeduction itemDeductionPersonal = initDeductionPersonal();
         ItemDeduction itemDeductionCompany = initDeductionCompany();
         double deliveryAmount = 0;
@@ -191,8 +191,10 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
                     .distinct()
                     .collect(Collectors.toList());
             String officeCode = office.getQismtSocialInsuOfficePK().getSiOfficeCd();
+            
             // find information of employees monthly
             reportData.objectNormals = findPersonNormal(companyCode, officeCode, personIds, yearMonth);
+            
             // find information deduction of employees monthly 
             reportData.objectDeductions = findPersonDeduction(companyCode, officeCode, personIds, yearMonth);
             
@@ -238,7 +240,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
             officePersonal.setEmployeeDtos(listRowItemPersonal);
             officePersonal.setNumberOfEmployee(listRowItemPersonal.size());
             // set information office of personal.
-            listPersonal.add(officePersonal);
+            listOfficePersonal.add(officePersonal);
             
             // set data insurance office for company.
             InsuranceOfficeDto officeCompany = new InsuranceOfficeDto();
@@ -247,7 +249,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
             officeCompany.setEmployeeDtos(listRowItemCompany);
             officeCompany.setNumberOfEmployee(listRowItemCompany.size());
             // set information office of company.
-            listCompany.add(officeCompany);
+            listOfficeCompany.add(officeCompany);
             
             // calculate delivery amount.
             deliveryAmount += calDeliveryAmount(reportData, personIds);
@@ -255,13 +257,13 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         List<SocialInsuReportData> listReport = new ArrayList<>();
         // set list office for personal.
         SocialInsuReportData reportPersonal = new SocialInsuReportData();
-        reportPersonal.setOfficeItems(listPersonal);
+        reportPersonal.setOfficeItems(listOfficePersonal);
         reportPersonal.setDeliveryNoticeAmount(deliveryAmount);
         listReport.add(reportPersonal);
         
         // set list office for company.
         SocialInsuReportData reportCompany = new SocialInsuReportData();
-        reportCompany.setOfficeItems(listCompany);
+        reportCompany.setOfficeItems(listOfficeCompany);
         listReport.add(reportCompany);
         
         return listReport;
@@ -321,6 +323,8 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
                 throw new BusinessException("対象データがありません。");
             }
             List<MLayoutRowItem> listRowItem = new ArrayList<>();
+            // list employee is printed output.
+            List<String> tmpPersonIds = new ArrayList<>();
             
             // ============== FIND INFROMATION EMPLOYEE ==================
             for (String personId : personIds) {
@@ -328,8 +332,13 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
                 // valid print output condition
                 if (isPrintedPersonalMLayout(emp, salaryQuery)) {
                     listRowItem.add(emp);
+                    tmpPersonIds.add(personId);
                 }
             }
+            personIds.clear();
+            // adding employees is printed.
+            personIds.addAll(tmpPersonIds);
+            
             MLayoutInsuOfficeDto officeMLayout = new MLayoutInsuOfficeDto();
             officeMLayout.setCode(officeCode);
             officeMLayout.setName(office.getSiOfficeName());
@@ -498,6 +507,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
                     return insuPensBEntity.getPensionInsuGrade().intValue() == p.getGrade();
                 })
                 .findFirst();
+        // TODO: When person is existed, HealthInsuranceAvgearn do not exist? 
         if (!healAvgearnOptional.isPresent() || !pensAvgOptional.isPresent()) {
           return null;
         }
@@ -816,42 +826,45 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
     private boolean isPrintedPersonal(DataRowItem item, SocialInsuQuery query) {
         // equal
         if (query.getIsEqual()) {
-            if (item.getMonthlyHealthInsuranceNormal() == item.getMonthlyHealthInsuranceDeduction()
+            boolean isEqual = item.getMonthlyHealthInsuranceNormal() == item.getMonthlyHealthInsuranceDeduction()
                     && item.getMonthlyGeneralInsuranceNormal() == item.getMonthlyGeneralInsuranceDeduction()
                     && item.getMonthlyLongTermInsuranceNormal() == item.getMonthlyLongTermInsuranceDeduction()
                     && item.getMonthlySpecificInsuranceNormal() == item.getMonthlySpecificInsuranceDeduction()
                     && item.getMonthlyBasicInsuranceNormal() == item.getMonthlyBasicInsuranceDeduction()
                     && item.getWelfarePensionInsuranceNormal() == item.getWelfarePensionInsuranceDeduction()
-                    && item.getWelfarePensionFundNormal() == item.getWelfarePensionFundDeduction()) {
-                return true;
+                    && item.getWelfarePensionFundNormal() == item.getWelfarePensionFundDeduction();
+            if (!isEqual) {
+                return false;
             }
         }
         // less than
         if (query.getIsDeficient()) {
-            if (item.getMonthlyHealthInsuranceNormal() < item.getMonthlyHealthInsuranceDeduction()
+            boolean isLessThan = item.getMonthlyHealthInsuranceNormal() < item.getMonthlyHealthInsuranceDeduction()
                     && item.getMonthlyGeneralInsuranceNormal() < item.getMonthlyGeneralInsuranceDeduction()
                     && item.getMonthlyLongTermInsuranceNormal() < item.getMonthlyLongTermInsuranceDeduction()
                     && item.getMonthlySpecificInsuranceNormal() < item.getMonthlySpecificInsuranceDeduction()
                     && item.getMonthlyBasicInsuranceNormal() < item.getMonthlyBasicInsuranceDeduction()
                     && item.getWelfarePensionInsuranceNormal() < item.getWelfarePensionInsuranceDeduction()
-                    && item.getWelfarePensionFundNormal() < item.getWelfarePensionFundDeduction()) {
-                return true;
+                    && item.getWelfarePensionFundNormal() < item.getWelfarePensionFundDeduction();
+            if (!isLessThan) {
+                return false;
             }
         }
         // greater than
         if(query.getIsRedundant()) {
-            if (item.getMonthlyHealthInsuranceNormal() > item.getMonthlyHealthInsuranceDeduction()
+            boolean isGreaterThan = item.getMonthlyHealthInsuranceNormal() > item.getMonthlyHealthInsuranceDeduction()
                     && item.getMonthlyGeneralInsuranceNormal() > item.getMonthlyGeneralInsuranceDeduction()
                     && item.getMonthlyLongTermInsuranceNormal() > item.getMonthlyLongTermInsuranceDeduction()
                     && item.getMonthlySpecificInsuranceNormal() > item.getMonthlySpecificInsuranceDeduction()
                     && item.getMonthlyBasicInsuranceNormal() > item.getMonthlyBasicInsuranceDeduction()
                     && item.getWelfarePensionInsuranceNormal() < item.getWelfarePensionInsuranceDeduction()
-                    && item.getWelfarePensionFundNormal() > item.getWelfarePensionFundDeduction()) {
-                return true;
+                    && item.getWelfarePensionFundNormal() > item.getWelfarePensionFundDeduction();
+            if (!isGreaterThan) {
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
     
     /**
@@ -862,28 +875,35 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
      * @return true, if is printed personal M layout
      */
     private boolean isPrintedPersonalMLayout(MLayoutRowItem item, SocialInsuQuery query) {
+        // equal
         if (query.getIsEqual()) {
-            if (item.getHealInsuFeePersonal() == item.getDeductionHealInsuPersonal()
+            boolean isEqual = item.getHealInsuFeePersonal() == item.getDeductionHealInsuPersonal()
                     && item.getWelfarePenInsuPersonal() == item.getDeductionWelfarePenInsuPersonal()
-                    && item.getWelfarePenFundPersonal() == item.getDeductionWelfarePenFundPersonal()) {
-                return true;
+                    && item.getWelfarePenFundPersonal() == item.getDeductionWelfarePenFundPersonal();
+            if (!isEqual) {
+                return false;
             }
         }
+        // less than
         if (query.getIsDeficient()) {
-            if (item.getHealInsuFeePersonal() < item.getDeductionHealInsuPersonal()
+            boolean isLessThan = item.getHealInsuFeePersonal() < item.getDeductionHealInsuPersonal()
                     && item.getWelfarePenInsuPersonal() < item.getDeductionWelfarePenInsuPersonal()
-                    && item.getWelfarePenFundPersonal() < item.getDeductionWelfarePenFundPersonal()) {
-                return true;
+                    && item.getWelfarePenFundPersonal() < item.getDeductionWelfarePenFundPersonal();
+            if (!isLessThan) {
+                return false;
             }
         }
+        // greater than
         if (query.getIsRedundant()) {
-            if (item.getHealInsuFeePersonal() == item.getDeductionHealInsuPersonal()
+            boolean isGreaterThan = item.getHealInsuFeePersonal() == item.getDeductionHealInsuPersonal()
                     && item.getWelfarePenInsuPersonal() > item.getDeductionWelfarePenInsuPersonal()
-                    && item.getWelfarePenFundPersonal() > item.getDeductionWelfarePenFundPersonal()) {
-                return true;
+                    && item.getWelfarePenFundPersonal() > item.getDeductionWelfarePenFundPersonal();
+            if (!isGreaterThan) {
+                return false;
             }
         }
-        return false;
+        
+        return true;
     }
     
     /**
