@@ -2,14 +2,14 @@ var nts;
 (function (nts) {
     var qmm017;
     (function (qmm017) {
-        var EScreen = (function () {
-            function EScreen() {
+        class EScreen {
+            constructor() {
                 var self = this;
                 self.description = ko.observableArray([]);
                 var eList001 = [
                     { code: '1', name: '全て' }
                 ];
-                var eList002 = [
+                let eList002 = [
                     { code: '1', name: '条件式' },
                     { code: '2', name: 'かつ' },
                     { code: '3', name: 'または' },
@@ -116,9 +116,7 @@ var nts;
                     }
                 });
             }
-            return EScreen;
-        }());
+        }
         qmm017.EScreen = EScreen;
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm017.e.vm.js.map

@@ -1,8 +1,9 @@
 __viewContext.ready(function () {
-    var ScreenModel = (function () {
-        function ScreenModel() {
+    class ScreenModel {
+        constructor() {
             var self = this;
             self.value = ko.observable(123);
+            // NumberEditor
             self.numbereditor = {
                 value: ko.observable(12),
                 constraint: 'CommonAmount',
@@ -11,6 +12,7 @@ __viewContext.ready(function () {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
+            // NumberEditor
             self.numbereditor2 = {
                 value: ko.observable(12),
                 constraint: 'CommonAmount',
@@ -23,6 +25,7 @@ __viewContext.ready(function () {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
+            // CurrencyEditor
             self.currencyeditor = {
                 value: ko.observable(1200),
                 constraint: '',
@@ -35,6 +38,7 @@ __viewContext.ready(function () {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
+            // CurrencyEditor
             self.currencyeditor2 = {
                 value: ko.observable(200000),
                 constraint: '',
@@ -48,8 +52,7 @@ __viewContext.ready(function () {
                 readonly: ko.observable(false)
             };
         }
-        return ScreenModel;
-    }());
+    }
     var viewmodel = new ScreenModel();
     this.bind(viewmodel);
 });

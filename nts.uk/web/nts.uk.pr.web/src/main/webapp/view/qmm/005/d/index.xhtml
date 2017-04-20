@@ -9,6 +9,10 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../qmm005.js" />
+			<com:ValidatorScript>
+				nts.arc.time.YearMonth
+				nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.paydayprocessing.ProcessingName
+			</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
@@ -21,15 +25,15 @@
 			</div>
 			<div id="contents-area">
 				<div class="form-group no-margin-bottom">
-					<div id="D_LBL_001" data-bind="ntsFormLabel: {}">支払日区分1</div>
-					<input type="text" id="D_INP_001" data-bind="ntsTextEditor2: { value: inp001, constraint: 'ProcessingName', required: true, valueUpdate: 'keyup' }"/>
+					<div id="D_LBL_001" data-bind="ntsFormLabel: { required: true, constraint: 'ProcessingName' }">支払日区分1</div>
+					<input type="text" id="D_INP_001" data-bind="ntsTextEditor: { value: inp001, constraint: 'ProcessingName', required: true, immediate: true }"/>
 				</div>
 				<hr />
 				<div>
 					<label id="D_LBL_002">「以下の設定を変更する場合は、基準日の詳細設定も行ってください。」と表記</label>
 				</div>
 				<div class="form-group">
-					<div id="D_LBL_003" data-bind="ntsFormLabel: {}">毎月の支払日</div>
+					<div id="D_LBL_003" data-bind="ntsFormLabel: { required: true}">毎月の支払日</div>
 					<label id="D_LBL_004" class="label">支払月の</label>
 					<div id="D_SEL_001"
 						data-bind="ntsComboBox: {
@@ -42,7 +46,7 @@
 						columns: [{ prop: 'label', length: 4 }]}"></div>
 				</div>
 				<div class="form-group">
-					<div id="D_LBL_005" data-bind="ntsFormLabel: {}">
+					<div id="D_LBL_005" data-bind="ntsFormLabel: { required: true}">
 						個人情報の履歴参照日
 						<button id="">?</button>
 					</div>
@@ -69,7 +73,7 @@
 					<label id="D_LBL_008">を基準にします</label>
 				</div>
 				<div class="form-group">
-					<div id="D_LBL_009" data-bind="ntsFormLabel: {}">経理締め日</div>
+					<div id="D_LBL_009" data-bind="ntsFormLabel: { required: true}">経理締め日</div>
 					<label id="D_LBL_010" class="label">処理月の</label>
 					<div id="D_SEL_004"
 						data-bind="ntsComboBox: {
@@ -96,7 +100,7 @@
 					※原則変更の必要がないシステムパラメータです。</a>
 				<div class="form-extent hidden">
 					<div class="form-group">
-						<div id="D_LBL_013" data-bind="ntsFormLabel: {}">給与明細書の印字月</div>
+						<div id="D_LBL_013" data-bind="ntsFormLabel: { required: true}">給与明細書の印字月</div>
 						<label id="D_LBL_014" class="label">処理月の</label>
 						<div id="D_SEL_006"
 							data-bind="ntsComboBox: {
@@ -110,7 +114,7 @@
 						<label id="D_LBL_015">を印字する</label>
 					</div>
 					<div class="form-group">
-						<div id="D_LBL_016" data-bind="ntsFormLabel: {}">給与社会保険徴収月</div>
+						<div id="D_LBL_016" data-bind="ntsFormLabel: { required: true}">給与社会保険徴収月</div>
 						<label id="D_LBL_017" class="label">処理月の</label>
 						<div id="D_SEL_007"
 							data-bind="ntsComboBox: {
@@ -125,7 +129,7 @@
 					</div>
 					<label id="D_LBL_019" class="label">※賞与は常に支払月分を徴収となります</label>
 					<div class="form-group">
-						<div id="D_LBL_020" data-bind="ntsFormLabel: {}">社会保険基準年月日</div>
+						<div id="D_LBL_020" data-bind="ntsFormLabel: { required: true}">社会保険基準年月日</div>
 						<label id="D_LBL_021" class="label">処理年月の</label>
 						<div class="inline" style="width: 400px;">
 							<div id="D_SEL_008"
@@ -158,7 +162,7 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<div id="D_LBL_022" data-bind="ntsFormLabel: {}">雇用保険基準日</div>
+						<div id="D_LBL_022" data-bind="ntsFormLabel: { required: true}">雇用保険基準日</div>
 						<label id="D_LBL_023" class="label">処理年月の直前の</label>
 						<div class="inline" style="width: 400px;">
 							<div id="D_SEL_011"
@@ -187,7 +191,7 @@
 						</label>
 					</div>
 					<div class="form-group">
-						<div id="D_LBL_026" data-bind="ntsFormLabel: {}">所得税基準年月日</div>
+						<div id="D_LBL_026" data-bind="ntsFormLabel: { required: true}">所得税基準年月日</div>
 						<label id="D_LBL_027" class="label">処理年月の</label>
 						<div class="inline" style="width: 400px;">
 							<div id="D_SEL_013"
