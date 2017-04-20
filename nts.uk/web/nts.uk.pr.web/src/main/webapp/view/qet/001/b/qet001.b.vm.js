@@ -114,8 +114,10 @@ var qet001;
                     return false;
                 };
                 ScreenModel.prototype.clearError = function () {
-                    $('#code-input').ntsError('clear');
-                    $('#name-input').ntsError('clear');
+                    if (nts.uk.ui._viewModel) {
+                        $('#code-input').ntsError('clear');
+                        $('#name-input').ntsError('clear');
+                    }
                 };
                 ScreenModel.prototype.reloadReportItem = function () {
                     var self = this;
@@ -184,13 +186,10 @@ var qet001;
                     if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                         return;
                     }
-                    var currentSelectedCode = self.outputSettings().temporarySelectedCode();
                     b.service.saveOutputSetting(self.outputSettingDetail()).done(function () {
                         nts.uk.ui.windows.setShared('isHasUpdate', true, false);
-                        nts.uk.ui.dialog.alert('save success!').then(function () {
-                            self.loadAllOutputSetting();
-                            self.resetDirty();
-                        });
+                        self.loadAllOutputSetting();
+                        self.resetDirty();
                     }).fail(function (res) {
                         $('#code-input').ntsError('set', res.message);
                     });

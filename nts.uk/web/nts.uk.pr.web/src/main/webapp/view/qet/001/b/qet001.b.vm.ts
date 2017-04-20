@@ -133,8 +133,10 @@ module qet001.b.viewmodel {
             }
 
         private clearError(): void {
-            $('#code-input').ntsError('clear');
-            $('#name-input').ntsError('clear');
+            if (nts.uk.ui._viewModel) {
+                $('#code-input').ntsError('clear');
+                $('#name-input').ntsError('clear');
+            }
         }
 
         /**
@@ -230,13 +232,10 @@ module qet001.b.viewmodel {
             if(!nts.uk.ui._viewModel.errors.isEmpty()) {
                 return;
             }
-            var currentSelectedCode = self.outputSettings().temporarySelectedCode();
             service.saveOutputSetting(self.outputSettingDetail()).done(function() {
                 nts.uk.ui.windows.setShared('isHasUpdate', true, false);
-                nts.uk.ui.dialog.alert('save success!').then(function() {
-                    self.loadAllOutputSetting();
-                    self.resetDirty();
-                })
+                self.loadAllOutputSetting();
+                self.resetDirty();
             }).fail(function(res) {
                 $('#code-input').ntsError('set', res.message);
             })
