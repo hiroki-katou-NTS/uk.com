@@ -25,9 +25,7 @@ var nts;
                         var features = [];
                         features.push({ name: 'Selection', multipleSelection: data.multiple });
                         features.push({ name: 'Sorting', type: 'local' });
-                        if (data.multiple) {
-                            features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: showNumbering });
-                        }
+                        features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: showNumbering });
                         var gridFeatures = ko.unwrap(data.features);
                         var iggridColumns = _.map(observableColumns, function (c) {
                             c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -104,7 +102,6 @@ var nts;
                                 }
                             }
                         });
-                        var gridId = $grid.attr('id');
                         $grid.setupSearchScroll("igGrid", true);
                     };
                     NtsGridListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {

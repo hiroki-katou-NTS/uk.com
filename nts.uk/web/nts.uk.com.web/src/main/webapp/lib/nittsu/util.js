@@ -449,7 +449,7 @@ var nts;
         var resource;
         (function (resource) {
             function getText(code) {
-                return __viewContext.codeNames[code];
+                return names[code];
             }
             resource.getText = getText;
             function getMessage(messageId) {
@@ -457,18 +457,18 @@ var nts;
                 for (var _i = 1; _i < arguments.length; _i++) {
                     params[_i - 1] = arguments[_i];
                 }
-                var message = __viewContext.messages[messageId];
+                var message = messages[messageId];
                 message = formatParams(message, params);
                 message = formatCompDependParam(message);
                 return message;
             }
             resource.getMessage = getMessage;
             function formatCompDependParam(message) {
-                var compDependceParamRegex = /{#(\w*)}/;
+                var compDependceParamRegex = /｛#(\w*)｝/;
                 var matches;
                 while (matches = compDependceParamRegex.exec(message)) {
                     var code = matches[1];
-                    var text_1 = __viewContext.codeNames[code];
+                    var text_1 = getText(code);
                     message = message.replace(compDependceParamRegex, text_1);
                 }
                 return message;
@@ -476,7 +476,7 @@ var nts;
             function formatParams(message, args) {
                 if (args == undefined)
                     return message;
-                var paramRegex = /{([0-9])+(:\\w+)?}/;
+                var paramRegex = /｛([0-9])+(:\\w+)?｝/;
                 var matches;
                 while (matches = paramRegex.exec(message)) {
                     var code = matches[1];

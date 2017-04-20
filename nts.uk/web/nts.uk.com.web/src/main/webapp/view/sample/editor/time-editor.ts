@@ -3,7 +3,8 @@ __viewContext.ready(function () {
         enable: KnockoutObservable<boolean>;
         readonly: KnockoutObservable<boolean>;
         date: KnockoutObservable<string>;
-        time: KnockoutObservable<string>;
+        timeOfDay: KnockoutObservable<string>;
+        time: KnockoutObservable<number>;
         yearmontheditor: any;
         
         constructor() {
@@ -12,7 +13,8 @@ __viewContext.ready(function () {
             self.readonly = ko.observable(false);
             
             self.date = ko.observable("1990/01/01");
-            self.time = ko.observable("12:00");
+            self.timeOfDay = ko.observable("12:00");
+            self.time = ko.observable(1200);
             // YearMonth Editor
             self.yearmontheditor = {
                 value: ko.observable(200001),

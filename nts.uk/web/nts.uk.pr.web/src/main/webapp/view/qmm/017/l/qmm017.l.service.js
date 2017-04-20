@@ -56,23 +56,14 @@ var nts;
                         })(service = l.service || (l.service = {}));
                         var model;
                         (function (model) {
-                            var CompanyUnitPriceDto = (function () {
-                                function CompanyUnitPriceDto() {
-                                }
-                                return CompanyUnitPriceDto;
-                            }());
+                            class CompanyUnitPriceDto {
+                            }
                             model.CompanyUnitPriceDto = CompanyUnitPriceDto;
-                            var PersonalUnitPriceDto = (function () {
-                                function PersonalUnitPriceDto() {
-                                }
-                                return PersonalUnitPriceDto;
-                            }());
+                            class PersonalUnitPriceDto {
+                            }
                             model.PersonalUnitPriceDto = PersonalUnitPriceDto;
-                            var ItemMasterDto = (function () {
-                                function ItemMasterDto() {
-                                }
-                                return ItemMasterDto;
-                            }());
+                            class ItemMasterDto {
+                            }
                             model.ItemMasterDto = ItemMasterDto;
                         })(model = l.model || (l.model = {}));
                     })(l = qmm017.l || (qmm017.l = {}));
@@ -81,4 +72,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm017.l.service.js.map

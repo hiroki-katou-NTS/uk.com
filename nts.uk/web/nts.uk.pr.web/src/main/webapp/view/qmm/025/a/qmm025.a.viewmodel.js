@@ -4,8 +4,8 @@ var qmm025;
     (function (a) {
         var viewmodel;
         (function (viewmodel) {
-            var ScreenModel = (function () {
-                function ScreenModel() {
+            class ScreenModel {
+                constructor() {
                     var self = this;
                     self.items = ko.observableArray([]);
                     self.isDeleteEnable = ko.observable(false);
@@ -28,9 +28,10 @@ var qmm025;
                     self.resiTax02 = ko.observable(0);
                     self.resiTax03 = ko.observable(0);
                     self.resiTax04 = ko.observable(0);
+                    // checkbox square
                     $.ig.checkboxMarkupClasses = "ui-state-default ui-corner-all ui-igcheckbox-small";
                 }
-                ScreenModel.prototype.startPage = function () {
+                startPage() {
                     var self = this;
                     var dfd = $.Deferred();
                     $.when(self.getYearKey()).done(function () {
@@ -43,8 +44,8 @@ var qmm025;
                         dfd.reject(res);
                     });
                     return dfd.promise();
-                };
-                ScreenModel.prototype.findAll = function () {
+                }
+                findAll() {
                     var self = this;
                     var dfd = $.Deferred();
                     qmm025.a.service.findAll(self.yearKey())
@@ -74,16 +75,16 @@ var qmm025;
                         dfd.reject(res);
                     });
                     return dfd.promise();
-                };
-                ScreenModel.prototype.getData = function (perResiTaxData, data) {
-                    if (perResiTaxData === void 0) { perResiTaxData = []; }
+                }
+                //lay du lieu tu DB de hien thi ra man hinh
+                getData(perResiTaxData = [], data) {
                     var self = this;
                     perResiTaxData.push(new ResidenceTax('NSVC', '0000001', 'name', 'Vietnam', false, data[0].residenceTax[0].value, data[0].residenceTax[1].value, data[0].residenceTax[2].value, data[0].residenceTax[3].value, data[0].residenceTax[4].value, data[0].residenceTax[5].value, data[0].residenceTax[6].value, data[0].residenceTax[7].value, data[0].residenceTax[8].value, data[0].residenceTax[9].value, data[0].residenceTax[10].value, data[0].residenceTax[11].value));
                     perResiTaxData.push(new ResidenceTax('NSVC', '0000002', 'name1', 'Japan', false, 25000, 25000, 25000, 25000, 25000, 15000, 25000, 25000, 25000, 25000, 25000, 25000));
                     self.items(perResiTaxData);
                     self.bindGrid(self.items());
-                };
-                ScreenModel.prototype.getYearKey = function () {
+                }
+                getYearKey() {
                     var self = this;
                     var dfd = $.Deferred();
                     qmm025.a.service.getYearKey()
@@ -95,8 +96,8 @@ var qmm025;
                         dfd.reject(res);
                     });
                     return dfd.promise();
-                };
-                ScreenModel.prototype.saveData = function () {
+                }
+                saveData() {
                     var self = this;
                     var obj = {
                         residenceCode: '000010',
@@ -120,8 +121,8 @@ var qmm025;
                     })
                         .fail(function () {
                     });
-                };
-                ScreenModel.prototype.remove = function () {
+                }
+                remove() {
                     var self = this;
                     var obj = {
                         personId: self.personId(),
@@ -133,9 +134,10 @@ var qmm025;
                     })
                         .fail(function () {
                     });
-                };
-                ScreenModel.prototype.bindGrid = function (items) {
+                }
+                bindGrid(items) {
                     var self = this;
+                    //tinh lai tong khi row bi thay doi- updating when row edited
                     $("#grid").on("iggridupdatingeditrowended", function (event, ui) {
                         var grid = ui.owner.grid;
                         self.resiTax05(ui.values["residenceTax05"]);
@@ -144,6 +146,8 @@ var qmm025;
                         var totalValue = 0;
                         if (ui.values["checkAllMonth"]) {
                             totalValue = self.resiTax05() + self.resiTax06() + self.resiTax07() * 10 || ui.values["residenceTaxPerYear"];
+                            //                    $("#grid").igGridUpdating("setCellValue", ui.rowID, "residenceTax08", residenceTax07);
+                            //set color khi thay doi trang thai cua totalValue
                             for (var i = 3; i < 12; i++) {
                                 $(grid.cellAt(i, 0)).removeClass('columnCss');
                             }
@@ -159,6 +163,7 @@ var qmm025;
                         }
                         else {
                             totalValue = self.resiTax05() + self.resiTax06() + self.resiTax07() || ui.values["residenceTaxPerYear"];
+                            //set color khi thay doi trang thai cua totalValue
                             for (var i = 3; i < 12; i++) {
                                 $(grid.cellAt(i, 0)).addClass('columnCss');
                             }
@@ -238,7 +243,9 @@ var qmm025;
                                 name: 'Selection',
                                 mode: "cell",
                                 multipleSelection: true,
+                                //allow use arrow keys for the selection of cells/rows
                                 activation: true,
+                                // click vao row, sau khi chuyen sang trang khac roi quay lai van click tai row do
                                 persist: true,
                                 rowSelectionChanging: function (evt, ui) {
                                     var grid = ui.owner.grid;
@@ -246,6 +253,7 @@ var qmm025;
                                         self.isFiredFromCheckbox(false);
                                     }
                                     else {
+                                        //in this case selection is caused by regular selection and it is canceled by returning false
                                         return false;
                                     }
                                 },
@@ -255,8 +263,17 @@ var qmm025;
                                 editMode: "row",
                                 enableAddRow: false,
                                 enableDeleteRow: false,
+                                //                        startEditTriggers: 'enter dblclick',
+                                //                        editCellStarting: function(evt, ui) {
+                                //                            if (ui.columnKey === "checkAllMonth") {
+                                //                                ui.value = !ui.value;
+                                //                            }
+                                //                        },
                                 editCellStarting: function (evt, ui) {
+                                    // Test for condition on which to cancel cell editing
+                                    // Here I use columnIndex property. This will disable from editing the first column in the grid.
                                     if (ui.columnIndex === 0 || ui.columnIndex === 1 || ui.columnIndex === 2 || ui.columnIndex === 12)
+                                        // cancel the editing
                                         return false;
                                 },
                                 columnSettings: [
@@ -281,11 +298,14 @@ var qmm025;
                             },
                             {
                                 name: 'RowSelectors',
+                                //hien checkbox dau tien
                                 enableCheckBoxes: true,
+                                //enableSelectAllForPaging: false -> khong hien dong chu selectAllRow
                                 enableSelectAllForPaging: false,
                                 checkBoxStateChanging: function (evt, ui) {
                                     self.isFiredFromCheckbox(true);
                                 },
+                                //lay rowId de xac dinh xem xoa row nao
                                 checkBoxStateChanged: function (evt, ui) {
                                     if (ui.state == "on") {
                                         self.personId().push(ui.rowKey);
@@ -305,12 +325,11 @@ var qmm025;
                             }
                         ]
                     });
-                };
-                return ScreenModel;
-            }());
+                }
+            }
             viewmodel.ScreenModel = ScreenModel;
-            var ResidenceTax = (function () {
-                function ResidenceTax(department, code, name, add, checkAllMonth, residenceTax01, residenceTax02, residenceTax03, residenceTax04, residenceTax05, residenceTax06, residenceTax07, residenceTax08, residenceTax09, residenceTax10, residenceTax11, residenceTax12) {
+            class ResidenceTax {
+                constructor(department, code, name, add, checkAllMonth, residenceTax01, residenceTax02, residenceTax03, residenceTax04, residenceTax05, residenceTax06, residenceTax07, residenceTax08, residenceTax09, residenceTax10, residenceTax11, residenceTax12) {
                     this.department = department;
                     this.code = code;
                     this.name = name;
@@ -330,9 +349,7 @@ var qmm025;
                     this.residenceTax12 = residenceTax12;
                     this.residenceTaxPerYear = this.residenceTax05 + this.residenceTax06 + this.residenceTax07;
                 }
-                return ResidenceTax;
-            }());
+            }
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm025.a || (qmm025.a = {}));
 })(qmm025 || (qmm025 = {}));
-//# sourceMappingURL=qmm025.a.viewmodel.js.map

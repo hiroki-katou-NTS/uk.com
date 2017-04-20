@@ -52,8 +52,6 @@ public class FormulaEasyFinder {
 		formulaEasyFinderDto.setCoefficientFixedValue(formulaEasyDetailDto.get().getCoefficientFixedValue());
 		formulaEasyFinderDto.setAdjustmentDevision(formulaEasyDetailDto.get().getAdjustmentDevision());
 		formulaEasyFinderDto.setTotalRounding(formulaEasyDetailDto.get().getTotalRounding());
-		formulaEasyFinderDto.setMaxLimitValue(formulaEasyDetailDto.get().getMaxLimitValue());
-		formulaEasyFinderDto.setMinLimitValue(formulaEasyDetailDto.get().getMinLimitValue());
 		List<String> referenceItemCodes = new ArrayList<>();
 		/* baseAmount = 基準金額 */
 		if (formulaEasyDetailDto.get().getBaseAmountDevision().intValue() == 1
