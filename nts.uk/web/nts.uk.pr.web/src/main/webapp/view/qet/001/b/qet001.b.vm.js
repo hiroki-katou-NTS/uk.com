@@ -86,9 +86,9 @@ var qet001;
                     var outputSettings = nts.uk.ui.windows.getShared('outputSettings');
                     var selectedSettingCode = nts.uk.ui.windows.getShared('selectedCode');
                     $.when(self.loadAggregateItems(), self.loadMasterItems()).done(function () {
+                        self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
                         var isHasData = outputSettings && outputSettings.length > 0;
                         if (!isHasData) {
-                            self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
                             self.outputSettings().outputSettingSelectedCode('');
                             dfd.resolve();
                             return;
@@ -284,15 +284,15 @@ var qet001;
                     return settings;
                 };
                 OutputSettingDetail.prototype.createCategorySetting = function (category, paymentType, aggregateItems, masterItem, categorySettings) {
-                    var aggregateItemsInCategory = aggregateItems.filter(function (item) { return item.category == category; });
+                    var aggregateItemsInCategory = aggregateItems.filter(function (item) { return item.category == category && item.paymentType == paymentType; });
                     var masterItemsInCategory = masterItem.filter(function (item) { return item.category == category; });
                     var cateTempSetting = { category: category, paymentType: paymentType, outputItems: [] };
-                    if (categorySettings == undefined) {
+                    if (!categorySettings) {
                         return new CategorySetting(aggregateItemsInCategory, masterItemsInCategory, cateTempSetting);
                     }
                     var categorySetting = categorySettings.filter(function (item) { return item.category == category
                         && item.paymentType == paymentType; })[0];
-                    if (categorySetting == undefined) {
+                    if (!categorySetting) {
                         categorySetting = cateTempSetting;
                     }
                     return new CategorySetting(aggregateItemsInCategory, masterItemsInCategory, categorySetting);
@@ -305,15 +305,23 @@ var qet001;
                     this.category = categorySetting.category;
                     this.paymentType = categorySetting.paymentType;
                     this.fullCategoryName = this.getFullCategoryName(this.category, this.paymentType);
-                    var settingItemCode = [];
+                    var masterSettingItemCode = [];
+                    var aggregateSettingItemCode = [];
                     if (categorySetting != undefined) {
-                        settingItemCode = categorySetting.outputItems.map(function (item) {
+                        masterSettingItemCode = categorySetting.outputItems
+                            .filter(function (item) { return !item.isAggregateItem; })
+                            .map(function (item) {
+                            return item.code;
+                        });
+                        aggregateSettingItemCode = categorySetting.outputItems
+                            .filter(function (item) { return item.isAggregateItem; })
+                            .map(function (item) {
                             return item.code;
                         });
                     }
                     this.outputItems = ko.observableArray(categorySetting != undefined ? categorySetting.outputItems : []);
-                    var aggregateItemsExcluded = aggregateItems.filter(function (item) { return settingItemCode.indexOf(item.code) == -1; });
-                    var masterItemsExcluded = masterItems.filter(function (item) { return settingItemCode.indexOf(item.code) == -1; });
+                    var aggregateItemsExcluded = aggregateItems.filter(function (item) { return aggregateSettingItemCode.indexOf(item.code) == -1; });
+                    var masterItemsExcluded = masterItems.filter(function (item) { return masterSettingItemCode.indexOf(item.code) == -1; });
                     this.aggregateItemsList = ko.observableArray(aggregateItemsExcluded);
                     this.masterItemList = ko.observableArray(masterItemsExcluded);
                     this.outputItemsSelected = ko.observable(null);
@@ -337,6 +345,10 @@ var qet001;
                             });
                         }
                     };
+                    console.log(self.aggregateItemsList());
+                    self.aggregateItemsList.subscribe(function (newVal) {
+                        console.log(newVal);
+                    });
                 }
                 CategorySetting.prototype.remove = function () {
                     var self = this;
