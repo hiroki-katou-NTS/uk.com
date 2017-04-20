@@ -50,16 +50,48 @@ var qet001;
                     self.codeDirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetail().settingCode);
                     self.nameDirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetail().settingName);
                     self.reportItemsDirtyChecker = new nts.uk.ui.DirtyChecker(self.reportItems);
-                    self.outputSettings().outputSettingSelectedCode.subscribe(function (newVal) {
+                    self.outputSettings().outputSettingSelectedCode.subscribe(function (code) {
                         self.isLoading(true);
-                        if (!newVal || newVal == '') {
-                            self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
-                            self.isLoading(false);
-                            self.resetDirty();
+                        if (self.outputSettings().temporarySelectedCode() == code) {
                             return;
                         }
-                        self.loadOutputSettingDetail(newVal);
-                        self.isLoading(false);
+                        else if (code) {
+                            if (self.isDirty()) {
+                                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
+                                    self.outputSettings().temporarySelectedCode(code);
+                                    self.loadOutputSettingDetail(code);
+                                }).ifNo(function () {
+                                    self.outputSettings().outputSettingSelectedCode(self.outputSettings().temporarySelectedCode());
+                                });
+                            }
+                            else {
+                                self.outputSettings().temporarySelectedCode(code);
+                                self.loadOutputSettingDetail(code);
+                            }
+                            self.isLoading(false);
+                        }
+                        else {
+                            if (self.isDirty()) {
+                                nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function () {
+                                    self.clearError();
+                                    self.outputSettings().temporarySelectedCode('');
+                                    self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
+                                    self.isLoading(false);
+                                    self.resetDirty();
+                                    return;
+                                }).ifNo(function () {
+                                    self.outputSettings().outputSettingSelectedCode(self.outputSettings().temporarySelectedCode());
+                                });
+                            }
+                            else {
+                                self.clearError();
+                                self.outputSettings().temporarySelectedCode('');
+                                self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
+                                self.isLoading(false);
+                                self.resetDirty();
+                                return;
+                            }
+                        }
                     });
                     self.outputSettingDetail.subscribe(function (data) {
                         self.reloadReportItem();
@@ -80,6 +112,10 @@ var qet001;
                         return true;
                     }
                     return false;
+                };
+                ScreenModel.prototype.clearError = function () {
+                    $('#code-input').ntsError('clear');
+                    $('#name-input').ntsError('clear');
                 };
                 ScreenModel.prototype.reloadReportItem = function () {
                     var self = this;
@@ -142,14 +178,13 @@ var qet001;
                 };
                 ScreenModel.prototype.save = function () {
                     var self = this;
-                    $('#code-input').ntsError('clear');
-                    $('#name-input').ntsError('clear');
+                    self.clearError();
                     $('#code-input').ntsEditor('validate');
                     $('#name-input').ntsEditor('validate');
                     if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                         return;
                     }
-                    var currentSelectedCode = self.outputSettings().outputSettingSelectedCode();
+                    var currentSelectedCode = self.outputSettings().temporarySelectedCode();
                     b.service.saveOutputSetting(self.outputSettingDetail()).done(function () {
                         nts.uk.ui.windows.setShared('isHasUpdate', true, false);
                         nts.uk.ui.dialog.alert('save success!').then(function () {
@@ -162,7 +197,7 @@ var qet001;
                 };
                 ScreenModel.prototype.remove = function () {
                     var self = this;
-                    var selectedCode = self.outputSettings().outputSettingSelectedCode();
+                    var selectedCode = self.outputSettings().temporarySelectedCode();
                     if (!selectedCode || selectedCode == '') {
                         return;
                     }
@@ -190,6 +225,7 @@ var qet001;
                     var dfd = $.Deferred();
                     var self = this;
                     b.service.findOutputSettingDetail(selectedCode).done(function (data) {
+                        self.clearError();
                         self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList, data));
                         self.resetDirty();
                         dfd.resolve();
@@ -224,20 +260,8 @@ var qet001;
                     return dfd.promise();
                 };
                 ScreenModel.prototype.switchToCreateMode = function () {
-                    $('#code-input').ntsError('clear');
-                    $('#name-input').ntsError('clear');
                     var self = this;
-                    if (self.isDirty()) {
-                        nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function () {
-                            self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
-                            self.outputSettings().outputSettingSelectedCode('');
-                        }).ifNo(function () {
-                            return;
-                        });
-                        return;
-                    }
-                    this.outputSettingDetail(new OutputSettingDetail(this.aggregateItemsList, this.masterItemList));
-                    this.outputSettings().outputSettingSelectedCode('');
+                    self.outputSettings().outputSettingSelectedCode('');
                 };
                 return ScreenModel;
             }());
@@ -246,6 +270,7 @@ var qet001;
                 function OutputSettings() {
                     this.searchText = ko.observable(null);
                     this.outputSettingList = ko.observableArray([]);
+                    this.temporarySelectedCode = ko.observable(null);
                     this.outputSettingSelectedCode = ko.observable(null);
                     this.outputSettingColumns = ko.observableArray([
                         { headerText: 'コード', prop: 'code', width: 50 },
@@ -350,7 +375,6 @@ var qet001;
                         self.outputItemCache = items;
                     });
                     ko.bindingHandlers.rended = {
-                        init: function (element, valueAccessor, allBindings, viewModel, bindingContext) { },
                         update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
                             var code = valueAccessor();
                             viewModel.outputItems().forEach(function (item) {
