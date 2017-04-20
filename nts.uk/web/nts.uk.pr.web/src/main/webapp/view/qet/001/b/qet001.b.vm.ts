@@ -66,19 +66,49 @@ module qet001.b.viewmodel {
             self.codeDirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetail().settingCode);
             self.nameDirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetail().settingName);
             self.reportItemsDirtyChecker = new nts.uk.ui.DirtyChecker(self.reportItems);
-            self.outputSettings().outputSettingSelectedCode.subscribe((newVal: string) => {
+            self.outputSettings().outputSettingSelectedCode.subscribe((code: string) => {
                 self.isLoading(true);
-                if (!newVal || newVal == '') {
-                    self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
-                    self.isLoading(false);
-                    self.resetDirty();
+                // Do nothing if selected same code.
+                if (self.outputSettings().temporarySelectedCode() == code) {
                     return;
                 }
-                // load detail output setting.
-                self.loadOutputSettingDetail(newVal);
-                self.isLoading(false);
-            })
-            
+                else if (code) {
+                    if (self.isDirty()) {
+                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                            self.outputSettings().temporarySelectedCode(code);
+                            self.loadOutputSettingDetail(code);
+                        }).ifNo(function() {
+                            self.outputSettings().outputSettingSelectedCode(self.outputSettings().temporarySelectedCode());
+                        });
+                    } else {
+                        self.outputSettings().temporarySelectedCode(code);
+                        self.loadOutputSettingDetail(code);
+                    }
+                    self.isLoading(false);
+
+                } else {
+                    if (self.isDirty()) {
+                        nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function() {
+                            self.clearError();
+                            self.outputSettings().temporarySelectedCode('');
+                            self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
+                            self.isLoading(false);
+                            self.resetDirty();
+                            return;
+                        }).ifNo(function() {
+                            self.outputSettings().outputSettingSelectedCode(self.outputSettings().temporarySelectedCode());
+                        });
+                    } else {
+                        self.clearError();
+                        self.outputSettings().temporarySelectedCode('');
+                        self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
+                        self.isLoading(false);
+                        self.resetDirty();
+                        return;
+                    }
+                }
+            });
+
             self.outputSettingDetail.subscribe((data: OutputSettingDetail) => {
                 self.reloadReportItem();
                 data.reloadReportItems = self.reloadReportItem.bind(self);
@@ -101,6 +131,11 @@ module qet001.b.viewmodel {
                 }
                 return false;
             }
+
+        private clearError(): void {
+            $('#code-input').ntsError('clear');
+            $('#name-input').ntsError('clear');
+        }
 
         /**
          * Reload report items.
@@ -187,8 +222,7 @@ module qet001.b.viewmodel {
         public save() {
             var self = this;
             // clear error.
-            $('#code-input').ntsError('clear');
-            $('#name-input').ntsError('clear');
+            self.clearError();
             // Validate.
             $('#code-input').ntsEditor('validate');
             $('#name-input').ntsEditor('validate');
@@ -196,7 +230,7 @@ module qet001.b.viewmodel {
             if(!nts.uk.ui._viewModel.errors.isEmpty()) {
                 return;
             }
-            var currentSelectedCode = self.outputSettings().outputSettingSelectedCode();
+            var currentSelectedCode = self.outputSettings().temporarySelectedCode();
             service.saveOutputSetting(self.outputSettingDetail()).done(function() {
                 nts.uk.ui.windows.setShared('isHasUpdate', true, false);
                 nts.uk.ui.dialog.alert('save success!').then(function() {
@@ -214,7 +248,7 @@ module qet001.b.viewmodel {
         public remove() {
             var self = this;
             // Check selected output setting.
-            var selectedCode = self.outputSettings().outputSettingSelectedCode();
+            var selectedCode = self.outputSettings().temporarySelectedCode();
             if (!selectedCode || selectedCode == '') {
                 return;
             }
@@ -258,6 +292,7 @@ module qet001.b.viewmodel {
             var self = this;
             
             service.findOutputSettingDetail(selectedCode).done(function(data: WageLedgerOutputSetting){
+                self.clearError();
                 self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList, data));
                 self.resetDirty();
                 dfd.resolve();
@@ -304,23 +339,8 @@ module qet001.b.viewmodel {
          * Switch to create mode.
          */
         public switchToCreateMode() {
-            // clear error.
-            $('#code-input').ntsError('clear');
-            $('#name-input').ntsError('clear');
-            // Dirty check.
             var self = this;
-            if (self.isDirty()) {
-                nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function() {
-                    self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
-                    self.outputSettings().outputSettingSelectedCode('');
-                }).ifNo(function() {
-                    return;
-                })
-                return;
-            }
-            
-            this.outputSettingDetail(new OutputSettingDetail(this.aggregateItemsList, this.masterItemList));
-            this.outputSettings().outputSettingSelectedCode('');
+            self.outputSettings().outputSettingSelectedCode('');
         }
     }
     
@@ -330,12 +350,14 @@ module qet001.b.viewmodel {
     export class OutputSettings {
         searchText: KnockoutObservable<string>;
         outputSettingList: KnockoutObservableArray<WageLedgerOutputSetting>;
+        temporarySelectedCode: KnockoutObservable<string>;
         outputSettingSelectedCode: KnockoutObservable<string>;
         outputSettingColumns: KnockoutObservableArray<any>;
         
         constructor() {
             this.searchText = ko.observable(null);
             this.outputSettingList = ko.observableArray([]);
+            this.temporarySelectedCode = ko.observable(null);
             this.outputSettingSelectedCode = ko.observable(null);
             this.outputSettingColumns = ko.observableArray([
                 {headerText: 'コード', prop: 'code', width: 50}, 
@@ -484,17 +506,20 @@ module qet001.b.viewmodel {
             });
             // Create Customs handle For event rened nts grid.
             (<any>ko.bindingHandlers).rended = {
-              init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {},
-              update: function(element, valueAccessor, allBindings, viewModel: CategorySetting, bindingContext) {
-                  var code = valueAccessor();
-                  viewModel.outputItems().forEach(item => {
-                      $('#' + item.code).on('click', function() {
-                          code(item.code);
-                          viewModel.remove();
-                          code(null);
-                      })
-                  });
-              }
+                update: function(element: any,
+                    valueAccessor: () => any,
+                    allBindings: KnockoutAllBindingsAccessor,
+                    viewModel: CategorySetting,
+                    bindingContext: KnockoutBindingContext) {
+                    var code = valueAccessor();
+                    viewModel.outputItems().forEach(item => {
+                        $('#' + item.code).on('click', function() {
+                            code(item.code);
+                            viewModel.remove();
+                            code(null);
+                        })
+                    });
+                }
             };
         }
         

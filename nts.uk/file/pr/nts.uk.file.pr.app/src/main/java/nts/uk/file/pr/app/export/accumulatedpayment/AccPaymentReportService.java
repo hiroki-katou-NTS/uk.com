@@ -5,6 +5,7 @@
 package nts.uk.file.pr.app.export.accumulatedpayment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -40,6 +41,13 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 
 		// Get Query
 		AccPaymentReportQuery query = context.getQuery();
+		String personIds[] = { "999000000000000000000000000000000001", "999000000000000000000000000000000002",
+				"999000000000000000000000000000000003", "999000000000000000000000000000000004",
+				"999000000000000000000000000000000005", "999000000000000000000000000000000006",
+				"999000000000000000000000000000000007", "999000000000000000000000000000000008",
+				"999000000000000000000000000000000009", "999000000000000000000000000000000010" };
+			query.setEmpIdList(Arrays.asList(personIds));
+		
 		
 		// Query data.
 		List<AccPaymentItemData> items = this.repository.getItems(AppContexts.user().companyCode(), query);

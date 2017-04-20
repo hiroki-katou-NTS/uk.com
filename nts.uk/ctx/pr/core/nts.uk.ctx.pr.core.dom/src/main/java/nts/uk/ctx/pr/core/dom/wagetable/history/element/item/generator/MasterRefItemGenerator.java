@@ -75,7 +75,7 @@ public class MasterRefItemGenerator implements ItemGenerator {
 		Optional<WtMasterRef> optMasterRef = this.wtMasterRefRepo.findByCode(companyCode,
 				optWtElement.get().getReferenceCode());
 
-		// Check master ref is existed.
+		// Check master ref is not existed.
 		if (!optMasterRef.isPresent()) {
 			return Collections.emptyList();
 		}

@@ -40,7 +40,10 @@ public class JpaWtReferenceRepository extends JpaRepository implements WtReferen
 	/** The comma. */
 	private final String COMMA = " , ";
 
-	/** The Payday repository. */
+	/** The jpa argument prefix. */
+	private final String JPA_ARGUMENT_PREFIX = ":";
+
+	/** The payday repository. */
 	@Inject
 	private PaydayRepository paydayRepository;
 
@@ -51,6 +54,7 @@ public class JpaWtReferenceRepository extends JpaRepository implements WtReferen
 	 * getMasterRefItem(nts.uk.ctx.pr.core.dom.wagetable.reference.WtMasterRef)
 	 */
 	@Override
+	// TODO: Delayed.
 	public List<WtCodeRefItem> getMasterRefItem(WtMasterRef masterRef, YearMonth startMonth) {
 		// Create query string.
 		StringBuilder strBuilder = new StringBuilder();
@@ -71,6 +75,8 @@ public class JpaWtReferenceRepository extends JpaRepository implements WtReferen
 		// Add ref query
 		String refQuery = masterRef.getWageRefQuery();
 		Map<String, Object> mapValues = new HashMap<>();
+
+		// Check exist condition string
 		if (!StringUtil.isNullOrEmpty(refQuery, true)) {
 			// Detect argument
 			List<String> params = this.detectArguments(refQuery);
@@ -94,11 +100,11 @@ public class JpaWtReferenceRepository extends JpaRepository implements WtReferen
 		TypedQueryWrapper<Object[]> query = this.queryProxy().query(strBuilder.toString(),
 				Object[].class);
 
-		// TODO: apply setParameter after change prefix :
+		// Set parameter
 		if (!StringUtil.isNullOrEmpty(refQuery, true)) {
 			// Set parameter
 			mapValues.keySet().stream().forEach(item -> {
-				query.setParameter(item.replace(":", ""), mapValues.get(item));
+				query.setParameter(item.replace(JPA_ARGUMENT_PREFIX, ""), mapValues.get(item));
 			});
 		}
 
@@ -113,6 +119,7 @@ public class JpaWtReferenceRepository extends JpaRepository implements WtReferen
 	 * getCodeRefItem(nts.uk.ctx.pr.core.dom.wagetable.reference.WtCodeRef)
 	 */
 	@Override
+	// TODO: Delayed.
 	public List<WtCodeRefItem> getCodeRefItem(WtCodeRef codeRef) {
 		// Create query string.
 		StringBuilder strBuilder = new StringBuilder();
@@ -161,17 +168,20 @@ public class JpaWtReferenceRepository extends JpaRepository implements WtReferen
 	 */
 	private GeneralDate getBaseDate(String companyCode, Integer processingYm,
 			String baseDateParam) {
+		// Get processingNo
 		Integer processingNo = Integer
 				.parseInt(baseDateParam.replace(ParamType.BASEDATE.prefix, ""));
 
+		// Get the base date from db
 		List<Payday> paydays = paydayRepository.select1_3(companyCode, processingNo,
 				PayBonusAtr.SALARY.value, processingYm, SparePayAtr.NORMAL.value);
 
+		// Return
 		return paydays.get(0).getStdDate();
 	}
 
 	/**
-	 * Detect params.
+	 * Detect arguments.
 	 *
 	 * @param conditionStr
 	 *            the condition str
@@ -180,29 +190,22 @@ public class JpaWtReferenceRepository extends JpaRepository implements WtReferen
 	private List<String> detectArguments(String conditionStr) {
 		List<String> arguments = new ArrayList<>();
 
-		// TODO: change prefix :
+		// Detect Jpa prefix :
 		String pattern = "(?:^|\\s)(:[^ ]+)";
-		// String pattern = "(?:^|\\s)(@[^ ]+)";
 
 		// Create a Pattern object
 		Pattern r = Pattern.compile(pattern);
 
 		// Now create matcher object.
 		Matcher m = r.matcher(conditionStr);
+
+		// Find arguments
 		while (m.find()) {
 			arguments.add(m.group(1));
 		}
 
+		// Return
 		return arguments;
 	}
-
-	// public static void main(String[] args) {
-	// JpaWtReferenceRepository repo = new JpaWtReferenceRepository();
-	// repo.detectArguments("c.startDate <= :BASEDATE_1 AND c.endDate >=
-	// :BASEDATE_1")
-	// .forEach(item -> {
-	// System.out.println(item);
-	// });
-	// }
 
 }
