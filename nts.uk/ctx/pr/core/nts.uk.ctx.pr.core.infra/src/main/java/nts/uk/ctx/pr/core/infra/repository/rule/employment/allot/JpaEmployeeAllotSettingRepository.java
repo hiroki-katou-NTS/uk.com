@@ -11,8 +11,11 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.EmployeeAllSetting;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.EmployeeAllotSetting;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.EmployeeAllotSettingHeader;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.EmployeeAllotSettingRepository;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.allot.QstmtStmtAllotCp;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.allot.QstmtStmtAllotEm;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.allot.QstmtStmtAllotHEm;
 
 @Stateless
 public class JpaEmployeeAllotSettingRepository extends JpaRepository implements EmployeeAllotSettingRepository {
@@ -34,12 +37,10 @@ public class JpaEmployeeAllotSettingRepository extends JpaRepository implements 
 			+ " a.QstmtStmtAllotEmPK.companyCode = q.qstmtStmtLayoutHeadPK.companyCd AND "
 			+ " (a.paymentDetailCode = q.qstmtStmtLayoutHeadPK.stmtCd OR a.bonusDetailCode = q.qstmtStmtLayoutHeadPK.stmtCd) AND"
 			+ " a.QstmtStmtAllotEmPK.companyCode = :companyCode AND a.QstmtStmtAllotEmPK.histId = :histId";
+//	private final String MAX_END = "SELECT c FROM QstmtStmtAllotHEm c"
+//			+ " WHERE c.QstmtStmtAllotHEmPK.companyCode = :companyCode "
+//			+ " AND c.endDate = (SELECT MAX(d.endDate) FROM QstmtStmtAllotHEm d)";
 	
-	// private final String ALL_EMP_SETIING = "SELECT l FROM (SELECT ALL FROM
-	// CmnmtEmp e LEFT JOIN QstmtStmtAllotEm a ON ON e.cmnmtEmpPk.companyCode =
-	// a.qstmtStmtAllotEmPK.companyCode AND e.cmnmtEmpPk.employmentCode =
-	// a.qstmtStmtAllotEmPK.employeeCd) l";
-
 	@Override
 	public Optional<EmployeeAllotSetting> find(String companyCode, String historyID, String employeeCd) {
 		Optional<QstmtStmtAllotEm> empAllot = this.queryProxy().query(SEL_1, QstmtStmtAllotEm.class)
@@ -59,6 +60,12 @@ public class JpaEmployeeAllotSettingRepository extends JpaRepository implements 
 				empAllot.bonusDetailCode);
 		return domain;
 	}
+	private final EmployeeAllotSettingHeader toDomain(QstmtStmtAllotHEm entity) {
+		// return null;
+		val domain = EmployeeAllotSettingHeader.createFromJavaType(entity.QstmtStmtAllotHEmPK.companyCode,
+				entity.QstmtStmtAllotHEmPK.histId, entity.startYm, entity.endYm);
+		return domain;
+	}
 
 	@Override
 	public List<EmployeeAllotSetting> findAll(String companyCode, String historyID) {
@@ -74,5 +81,13 @@ public class JpaEmployeeAllotSettingRepository extends JpaRepository implements 
 						s[3].toString(), s[4].toString(), s[5].toString(), s[4].toString(), s[5].toString()));
 		return result;
 	}
+
+//	@Override
+//	public Optional<EmployeeAllotSettingHeader> findMaxEnd(String companyCode) {
+//		return this.queryProxy().query(MAX_END, QstmtStmtAllotHEm.class).setParameter("companyCode", companyCode)
+//				.getSingle(c-> toDomain(c));
+//	}
+
+	
 
 }

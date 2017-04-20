@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.app.find.rule.employment.allot;
 
 import lombok.Value;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.CompanyAllotSetting;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.EmployeeAllSetting;
 
 @Value
@@ -25,5 +26,4 @@ public class EmployeeAllSettingDto {
 				employeeAllSetting.getEmployeeName().v());
 		
 	}
-	
 }

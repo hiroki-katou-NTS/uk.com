@@ -4,7 +4,9 @@ module qmm020.c.service {
         getEmployAllotSettingHeaderList: "pr/core/allot/findallemployeeallotheader",
         getEmployAllotSettingDetailList: "pr/core/allot/findallemployeeallotdetail",
         getAllEmployeeAllotSettingList: "pr/core/allot/findAllEmployeeAllotSettingList/{0}",
-        getMaxDate: "pr/core/allot/findallemployeeallotheaderMax"
+        getMaxDate: "pr/core/allot/findallemployeeallotheaderMax",
+        insertAllotEmployeeSetting: "pr/core/allot/insertAllEmployeeSetting"
+        
     }
     /**
      * Get list payment date processing.
@@ -46,16 +48,49 @@ module qmm020.c.service {
         })
         return dfd.promise();
     }
-    export function getAllotCompanyMaxDate(): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(paths.getMaxDate)
-            .done(function(res: any) {
+    export function getAllotEmployeeMaxDate(): JQueryPromise<any> {
+        let dfd = $.Deferred<any>();
+        let _path = nts.uk.text.format(paths.getMaxDate);
+        
+            nts.uk.request.ajax(_path).done(function(res: any) {
+                dfd.resolve(res);
+            })
+            .fail(function(error) {
+                dfd.reject(error);
+            })
+        return dfd.promise();
+    }
+    export function insertAllotEm(insertAllotEmployeeCommand : any) {
+        var dfd = $.Deferred<Array<any>>();
+         let command = {} as IEmployeeModel;
+        command.historyId = insertAllotEmployeeCommand.historyId;
+        command.employeeCode = insertAllotEmployeeCommand.employeeCode;
+        command.paymentDetailCode = insertAllotEmployeeCommand.paymentDetailCode;
+        command.bonusDetailCode = insertAllotEmployeeCommand.bonusDetailCode;
+        command.startYm = insertAllotEmployeeCommand.startYm;
+        command.endYm = insertAllotEmployeeCommand.endYm;
+        nts.uk.request.ajax(paths.insertAllotEmployeeSetting, command)
+            .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })
             .fail(function(res) {
                 dfd.reject(res);
             })
-        return dfd.promise();
+        
+    }
+    interface IEmployeeModel {
+        companyCode?: string;
+        historyId?: string;
+
+        employeeCode?: string;
+        employeeName?: string;
+        paymentDetailCode?: string;
+        paymentDetailName?: string;
+        bonusDetailCode?: string;
+        bonusDetailName?: string;
+        startYm?: string;
+        endYm?: string;
+        startEnd?: string;
     }
 
 }

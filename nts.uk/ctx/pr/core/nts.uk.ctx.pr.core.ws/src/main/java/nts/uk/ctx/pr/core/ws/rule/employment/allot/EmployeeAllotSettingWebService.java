@@ -8,9 +8,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.InsertAllotCompanyCommand;
+import nts.uk.ctx.pr.core.app.find.rule.employment.allot.CompanyAllotSettingDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.allot.EmployeeAllSettingDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.allot.EmployeeAllotSettingDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.allot.EmployeeAllotSettingFinder;
+import nts.uk.ctx.pr.core.app.find.rule.employment.allot.EmployeeAllotSettingHeaderFinder;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("pr/core/allot")
@@ -19,6 +22,8 @@ public class EmployeeAllotSettingWebService {
 	
 	@Inject
 	private EmployeeAllotSettingFinder find;
+	@Inject
+	private EmployeeAllotSettingHeaderFinder finder;
 	@POST
 	@Path("findallemployeeallotdetail")
 	public List<EmployeeAllotSettingDto> GetAllEmployeeAllotSettingDetailList(String histId){
@@ -30,5 +35,10 @@ public class EmployeeAllotSettingWebService {
 	public List<EmployeeAllSettingDto> getAllEmployeeAllotSettingList(@PathParam("histId") String histid ){
 		return this.find.getAllEmployeeAllotSettingList(AppContexts.user().companyCode(), histid);
 	}
+//	@POST
+//	@Path("insert")
+//	public void insert(insertAllotEmployeeCommand command) {
+//		this.insert.handle(command);
+//	}
 	
 }

@@ -16,7 +16,9 @@ module qmm020.c.viewmodel {
         isEnable: KnockoutObservable<boolean>;
         histId: KnockoutObservable<string>;
         itemHist: KnockoutObservable<EmployeeSettingHeaderModel>;
-        maxItem: KnockoutObservable<ItemModel>;
+        maxItem: KnockoutObservable<TotalModel>;
+        maxDate: string;
+        firstLoad: boolean = false;
         //selectedCode: KnockoutObservable<string>;
 
 
@@ -36,6 +38,7 @@ module qmm020.c.viewmodel {
             self.itemListDetail = ko.observableArray([]);
             self.histId = ko.observable(null);
             self.maxItem = ko.observable(null);
+            self.maxDate = "";
             self.currentItem = ko.observable(new TotalModel({
                 historyId: '',
                 employeeCode: '',
@@ -53,46 +56,20 @@ module qmm020.c.viewmodel {
                                 , item.paymentDetailName, item.bonusDetailCode, item.bonusDetailName));
                         });
 
-                        $("#C_LST_001").igGrid({
-                            columns: [
-                                { headerText: "", key: "NO", dataType: "string", width: "20px" },
-                                { headerText: "コード", key: "employeeCode", dataType: "string", width: "100px" },
-                                { headerText: "名称", key: "employeeName", dataType: "string", width: "200px" },
-                                { headerText: "", key: "paymentDetailCode", dataType: "string", hidden: true },
-                                { headerText: "", key: "paymentDetailName", dataType: "string", hidden: true },
-                                { headerText: "", key: "bonusDetailCode", dataType: "string", hidden: true },
-                                { headerText: "", key: "bonusDetailName", dataType: "string", hidden: true },
-                                {
-                                    headerText: "給与明細書", key: "paymentDetailCode", dataType: "string", width: "250px", unbound: true,
-                                    template: "<input type='button' id='" + "C_BTN_001" + "' value='選択'/><label style='margin-left:5px;'>${paymentDetailCode}</label><label style='margin-left:15px;'>${paymentDetailName}</label>"
-                                },
-                                {
-                                    headerText: "賞与明細書", key: "bonusDetailCode", dataType: "string", width: "20%", unbound: true,
-                                    template: "<input type='button' id='" + "C_BTN_002" + "' value='選択'/><label style='margin-left:5px;'>${bonusDetailCode}</label><label style='margin-left:15px;'>${bonusDetailName}</label>"
-                                },
-                            ],
-                            features: [{
-                                name: 'Selection',
-                                mode: 'row',
-                                multipleSelection: true,
-                                activation: false,
-                                //                    rowSelectionChanged: this.selectionChanged.bind(this)
-                            }],
-                            virtualization: true,
-                            virtualizationMode: 'continuous',
-                            width: "800px",
-                            height: "240px",
-                            primaryKey: "ID",
-                            dataSource: ko.mapping.toJS(self.itemListDetail)
-                        });
                     }
+                    if (self.firstLoad)
+                        $("#C_LST_001").igGrid("option", "dataSource", ko.mapping.toJS(self.itemListDetail));
+                    else
+                        self.LoadData(self.itemListDetail);
                     dfd.resolve();
                 }).fail(function(res) {
                     // Alert message
                     alert(res);
                 });
                 dfd.promise();
+
             });
+
             // Array Data 1 
             let employment1 = ko.mapping.fromJS([
                 { "NO": 1, "ID": "000000001", "Name": "正社員", "PaymentDocID": "K001", "PaymentDocName": "給与明細書001", "BonusDocID": "S001", "BonusDocName": "賞与明細書001" },
@@ -126,7 +103,42 @@ module qmm020.c.viewmodel {
              */
 
 
-
+        }
+        LoadData(itemList) {
+            let self = this;
+            $("#C_LST_001").igGrid({
+                columns: [
+                    { headerText: "", key: "NO", dataType: "string", width: "20px" },
+                    { headerText: "コード", key: "employeeCode", dataType: "string", width: "100px" },
+                    { headerText: "名称", key: "employeeName", dataType: "string", width: "200px" },
+                    { headerText: "", key: "paymentDetailCode", dataType: "string", hidden: true },
+                    { headerText: "", key: "paymentDetailName", dataType: "string", hidden: true },
+                    { headerText: "", key: "bonusDetailCode", dataType: "string", hidden: true },
+                    { headerText: "", key: "bonusDetailName", dataType: "string", hidden: true },
+                    {
+                        headerText: "給与明細書", key: "paymentDetailCode", dataType: "string", width: "250px", unbound: true,
+                        template: "<input type='button' id='" + "C_BTN_001" + "' value='選択'/><label style='margin-left:5px;'>${paymentDetailCode}</label><label style='margin-left:15px;'>${paymentDetailName}</label>"
+                    },
+                    {
+                        headerText: "賞与明細書", key: "bonusDetailCode", dataType: "string", width: "20%", unbound: true,
+                        template: "<input type='button' id='" + "C_BTN_002" + "' value='選択'/><label style='margin-left:5px;'>${bonusDetailCode}</label><label style='margin-left:15px;'>${bonusDetailName}</label>"
+                    },
+                ],
+                features: [{
+                    name: 'Selection',
+                    mode: 'row',
+                    multipleSelection: true,
+                    activation: false,
+                    //                    rowSelectionChanged: this.selectionChanged.bind(this)
+                }],
+                virtualization: true,
+                virtualizationMode: 'continuous',
+                width: "800px",
+                height: "240px",
+                primaryKey: "ID",
+                dataSource: ko.mapping.toJS(itemList)
+            });
+            self.firstLoad = true;
         }
         //find histId to subscribe
         getHist(value: any) {
@@ -151,12 +163,14 @@ module qmm020.c.viewmodel {
             var self = this;
             var dfd = $.Deferred<any>();
             //Get list startDate, endDate of History  
-            service.getEmployeeAllotHeaderList().done(function(data: Array<EmployeeSettingHeaderModel>) {
+            let totalItem: Array<TotalModel> = [];
+            service.getEmployeeAllotHeaderList().done(function(data: Array<IModel>) {
                 if (data.length > 0) {
                     _.forEach(data, function(item) {
-                        self.itemList.push(new ItemModel(item.historyId, item.startYm + ' ~ ' + item.endYm, item.endYm));
+                        totalItem.push(new TotalModel({ historyId: item.historyId, startEnd: item.startYm + ' ~ ' + item.endYm, endYm: item.endYm }));
                     });
-                          let max = _.maxBy(self.itemList(), (item) => { return item.endYm });
+                    self.itemTotalList(totalItem);
+                    //                    let max = _.maxBy(self.itemList(), (itemMax) => { return itemMax.endYm });
                 } else {
                     dfd.resolve();
                 }
@@ -164,13 +178,38 @@ module qmm020.c.viewmodel {
                 // Alert message
                 alert(res);
             });
+            console.log(ko.toJSON(self.itemTotalList()));
+            service.getAllotEmployeeMaxDate().done(function(itemMax: number) {
+                //                self.maxDate = (itemMax.startYm || "").toString();
+                //                self.maxItem(itemMax);
+                let maxDate: TotalModel = _.find(self.itemTotalList(), function(obj) { return parseInt(obj.endYm()) == itemMax; });
+                self.maxDate = (maxDate.startYm || "").toString();
+                self.maxItem(maxDate);
+            }).fail(function(res) {
+                alert(res);
+            });
+
 
             // Return.
             return dfd.promise();
         }
+        //click register button
+        
+        register() {
+            var self = this;
+            var current = _.find(self.itemTotalList(), function(item: IModel) { return item.historyId == self.currentItem().historyId(); });
+//            debugger;
+            if (current) {
+//                service.insertEmAllot(current).done(function() {
+//                }).fail(function(res) {
+//                    alert(res);
+//                });
+            }
+        }
         //Open dialog Add History
         openJDialog() {
             var self = this;
+            //            debugger;
             var historyScreenType = "1";
             let valueShareJDialog = historyScreenType + "~" + "201701";
 
@@ -184,28 +223,71 @@ module qmm020.c.viewmodel {
                     if (returnValue != '') {
                         //                        let employeeAllotSettings = new Array<EmployeeAllotSettingDto>();
                         var items = self.itemTotalList();
-                        var addItem = new TotalModel({
+                        var addItem;
+                        var copItem ;
+                        if (modeRadio === "2") {
+                            addItem = new TotalModel({
+                                historyId: '',
+                                employeeCode: '',
+                                paymentDetailCode: '',
+                                bonusDetailCode: '',
+                                startYm: returnValue,
+                                endYm: '999912',
+                                startEnd: (returnValue + ' ~ ' + '999912')
+                            });
+                            items.push(addItem);
+                        } else {
+                            copItem = new TotalModel({
                             historyId: '',
                             employeeCode: '',
+                            employeeName: '',
                             paymentDetailCode: '',
+                            paymentDetailName: '',
                             bonusDetailCode: '',
+                            bonusDetailName: '',
                             startYm: returnValue,
-                            endYm: '999912'
+                            endYm: '999912',
+                            startEnd: (returnValue + ' ~ ' + '999912')
                         });
-                        items.push(addItem);
-                        if (modeRadio === "2") {
-                            self.currentItem().historyId('');
+                            self.currentItem().historyId(copItem.historyId());
                             self.currentItem().startYm(returnValue);
                             self.currentItem().endYm('999912');
-                            self.currentItem().paymentDetailCode('');
-                             self.currentItem().bonusDetailCode('');
+                            self.currentItem().employeeCode(self.maxItem().historyId());
+                            //get employeeName, paymentDetailName, paymentDetailCode
+                            let dfd = $.Deferred<any>();
+                            service.getAllEmployeeAllotSetting(ko.toJS(self.maxItem().historyId())).done(function(data) {
+                                self.itemListDetail([]);
+                                if (data && data.length > 0) {
+                                    _.map(data, function(item: IModel) {
+                                        self.itemListDetail.push(new copItem(item.historyId, item.employeeCode, item.employeeName, item.paymentDetailCode
+                                            , item.paymentDetailName, item.bonusDetailCode, item.bonusDetailName, item.startYm, item.endYm, item.startEnd));
+                                    });
+                                    self.currentItem().employeeCode(ko.toJS(self.itemListDetail()[0].employeeCode));
+                                    self.currentItem().employeeName(ko.toJS(self.itemListDetail()[0].employeeName));
+                                    self.currentItem().paymentDetailCode(ko.toJS(self.itemListDetail()[0].paymentDetailCode));
+                                    self.currentItem().paymentDetailName(ko.toJS(self.itemListDetail()[0].paymentDetailName));
+                                    self.currentItem().bonusDetailCode(ko.toJS(self.itemListDetail()[0].bonusDetailCode));
+                                    self.currentItem().bonusDetailName(ko.toJS(self.itemListDetail()[0].bonusDetailName));
+                                
+                                }
+                                if (self.firstLoad)
+                                    $("#C_LST_001").igGrid("option", "dataSource", ko.mapping.toJS(self.itemListDetail));
+                                else
+                                    self.LoadData(self.itemListDetail);
+                                dfd.resolve();
+                            }).fail(function(res) {
+                                // Alert message
+                                alert(res);
+                            });
+                            dfd.promise();
+
+                        items.push(copItem);
+
                         }
+                        
                         self.itemTotalList([]);
                         self.itemTotalList(items);
                     }
-
-
-
                 });
         }
         //Open dialog Edit History
@@ -222,7 +304,7 @@ module qmm020.c.viewmodel {
     export class ItemModel {
         histId: string;
         startEnd: string;
-        endYm : string;
+        endYm: string;
 
         constructor(histId: string, startEnd: string, endYm: string) {
             let self = this;
@@ -288,19 +370,22 @@ module qmm020.c.viewmodel {
     interface IModel {
         companyCode?: string;
         historyId: string;
-        employeeCode: string;
+
+        employeeCode?: string;
         employeeName?: string;
-        paymentDetailCode: string;
+        paymentDetailCode?: string;
         paymentDetailName?: string;
-        bonusDetailCode: string;
+        bonusDetailCode?: string;
         bonusDetailName?: string;
-        startYm: string;
-        endYm: string;
+        startYm?: string;
+        endYm?: string;
+        startEnd?: string;
     }
 
     class TotalModel {
         companyCode: KnockoutObservable<string>;
         historyId: KnockoutObservable<string>;
+
         employeeCode: KnockoutObservable<string>;
         employeeName: KnockoutObservable<string>;
         paymentDetailCode: KnockoutObservable<string>;
@@ -309,9 +394,11 @@ module qmm020.c.viewmodel {
         bonusDetailName: KnockoutObservable<string>;
         startYm: KnockoutObservable<string>;
         endYm: KnockoutObservable<string>;
+        startEnd: string;
         constructor(param: IModel) {
             this.companyCode = ko.observable(param.companyCode);
             this.historyId = ko.observable(param.historyId);
+            this.startEnd = param.startEnd;
             this.employeeCode = ko.observable(param.employeeCode);
             this.employeeName = ko.observable(param.employeeName);
             this.paymentDetailCode = ko.observable(param.paymentDetailCode);
