@@ -73,8 +73,8 @@ public class SalaryAggregateItemFindDto implements SalaryAggregateItemSetMemento
 	public void setSubItemCodes(Set<SalaryItem> subItemCodes) {
 		this.subItemCodes = subItemCodes.stream().map(item -> {
 			SalaryItemDto salaryItemDto = new SalaryItemDto();
-			salaryItemDto.setSalaryItemCode(item.getSalaryItemCode());
-			salaryItemDto.setSalaryItemName(item.getSalaryItemName());
+			salaryItemDto.setCode(item.getSalaryItemCode());
+			salaryItemDto.setName(item.getSalaryItemName());
 			return salaryItemDto;
 		}).collect(Collectors.toList());
 	}
