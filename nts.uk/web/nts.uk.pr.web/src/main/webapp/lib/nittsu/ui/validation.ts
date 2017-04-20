@@ -127,11 +127,13 @@ module nts.uk.ui.validation {
         outputFormat: string;
         required: boolean;
         valueType: string;
+        mode: string;
         constructor(primitiveValueName: string, option?: any) {
             this.constraint = getConstraint(primitiveValueName);
             this.outputFormat = (option && option.outputFormat) ? option.outputFormat : "";
             this.required = (option && option.required) ? option.required : false;
             this.valueType = (option && option.valueType) ? option.valueType : "string";
+            this.mode = (option && option.mode) ? option.mode : "";
         }
 
         validate(inputText: string): any {
@@ -148,6 +150,15 @@ module nts.uk.ui.validation {
                 }
             }
             // Create Parser
+            if(this.mode === "time"){
+                var timeParse = time.parseTime(inputText, false) 
+                if (timeParse.success) {
+                    result.success(timeParse.toValue());
+                } else {
+                    result.fail(timeParse.getMsg()); 
+                }
+                return result;   
+            }
             var parseResult = time.parseMoment(inputText, this.outputFormat);
             // Parse
             if (parseResult.success) {
