@@ -68,8 +68,7 @@ public class ResourceLoading {
 		String codeNameObject = createJsObject(
 				i18n.getResourceForProgram(SystemProperties.programId).get(ResourceType.CODE_NAME));
 		builder.append("var names=");
-		for (int i = 0; i < 100000; i++)
-			builder.append(codeNameObject);
+		builder.append(codeNameObject);
 		builder.append(";");
 		builder.append("var messages=");
 		builder.append(messageObject);
