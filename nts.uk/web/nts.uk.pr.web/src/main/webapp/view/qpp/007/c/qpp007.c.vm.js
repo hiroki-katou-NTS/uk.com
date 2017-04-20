@@ -102,8 +102,6 @@ var nts;
                                 };
                                 ScreenModel.prototype.onSaveBtnClicked = function () {
                                     var self = this;
-                                    self.clearError();
-                                    self.validate();
                                     if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                                         return;
                                     }
@@ -121,8 +119,24 @@ var nts;
                                         self.loadAllOutputSetting()
                                             .done(function () { return self.temporarySelectedCode(self.outputSettingDetailModel().settingCode()); });
                                     }).fail(function (res) {
-                                        if (res.messageId == 'ER005') {
-                                            $('#inpCode').ntsError('set', '入力したコードは既に存在しています。\r\n コードを確認してください。');
+                                        self.clearError();
+                                        switch (res.messageId) {
+                                            case 'ER011':
+                                                $('#inpCode').ntsError('set', '入力したコードは既に存在しています。\r\n コードを確認してください。');
+                                                break;
+                                            case 'ER026':
+                                                $('#contents-area').ntsError('set', '更新対象のデータが存在しません。');
+                                                break;
+                                            case 'ER027':
+                                                if (!self.outputSettingDetailModel().settingCode()) {
+                                                    $('#inpCode').ntsError('set', '入力にエラーがあります。');
+                                                }
+                                                if (!self.outputSettingDetailModel().settingName()) {
+                                                    $('#inpName').ntsError('set', '入力にエラーがあります。');
+                                                }
+                                                break;
+                                            default:
+                                                console.log(res);
                                         }
                                     });
                                 };
@@ -199,11 +213,8 @@ var nts;
                                     if (nts.uk.ui._viewModel) {
                                         $('#inpCode').ntsError('clear');
                                         $('#inpName').ntsError('clear');
+                                        $('#contents-area').ntsError('clear');
                                     }
-                                };
-                                ScreenModel.prototype.validate = function () {
-                                    $('#inpCode').ntsEditor('validate');
-                                    $('#inpName').ntsEditor('validate');
                                 };
                                 ScreenModel.prototype.confirmDirtyAndExecute = function (functionToExecute, functionToExecuteIfNo) {
                                     var self = this;
@@ -223,7 +234,7 @@ var nts;
                                 ScreenModel.prototype.enableNewMode = function () {
                                     var self = this;
                                     self.outputSettingDetailModel().updateData();
-                                    self.outputSettingSelectedCode(null);
+                                    self.temporarySelectedCode(null);
                                     self.resetDirty();
                                     self.isNewMode(true);
                                 };
@@ -475,7 +486,9 @@ var nts;
                                             break;
                                         case SalaryCategory.ARTICLE_OTHERS:
                                             masterItems().forEach(function (item) {
-                                                if (item.category == SalaryCategory.ARTICLE_OTHERS) {
+                                                if (item.category == SalaryCategory.ARTICLE_OTHERS
+                                                    || item.category == 'Other'
+                                                    || item.category == 'Articles') {
                                                     self.masterItems.push(item);
                                                 }
                                             });
@@ -488,8 +501,30 @@ var nts;
                                             return item.code;
                                         });
                                     }
-                                    self.masterItems(self.masterItems().filter(function (item) { return existCodes.indexOf(item.code) == -1; }));
-                                    self.aggregateItems(self.aggregateItems().filter(function (item) { return existCodes.indexOf(item.code) == -1; }));
+                                    existCodes.forEach(function (code) {
+                                        var outputItem;
+                                        var aggrItem = self.aggregateItems().filter(function (item) { return code == item.code; })[0];
+                                        var masterItem = self.masterItems().filter(function (item) { return code == item.code; })[0];
+                                        if (aggrItem) {
+                                            self.aggregateItems.remove(aggrItem);
+                                            outputItem = {
+                                                code: aggrItem.code,
+                                                name: aggrItem.name,
+                                                isAggregateItem: true,
+                                                orderNumber: 1
+                                            };
+                                        }
+                                        else {
+                                            self.masterItems.remove(masterItem);
+                                            outputItem = {
+                                                code: masterItem.code,
+                                                name: masterItem.name,
+                                                isAggregateItem: false,
+                                                orderNumber: 1
+                                            };
+                                        }
+                                        self.outputItems.replace(self.outputItems().filter(function (item) { return code == item.code; })[0], outputItem);
+                                    });
                                     this.outputItemColumns = ko.observableArray([
                                         {
                                             headerText: '集約', prop: 'isAggregateItem', width: 40,

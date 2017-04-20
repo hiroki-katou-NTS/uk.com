@@ -17,7 +17,8 @@ var nts;
                                 remove: "ctx/pr/report/salary/outputsetting/remove",
                                 findOutputSettingDetail: "ctx/pr/report/salary/outputsetting/find",
                                 findAllOutputSettings: "ctx/pr/report/salary/outputsetting/findall",
-                                findAllAggregateItems: "ctx/pr/report/salary/aggregate/item/findall"
+                                findAllAggregateItems: "ctx/pr/report/salary/aggregate/item/findall",
+                                findAllMasterItems: "ctx/pr/report/masteritem/findAll"
                             };
                             function save(data) {
                                 return nts.uk.request.ajax(paths.save, data);
@@ -41,20 +42,7 @@ var nts;
                             service.findAllAggregateItems = findAllAggregateItems;
                             function findAllMasterItems() {
                                 var dfd = $.Deferred();
-                                var masterItems = [];
-                                for (var i = 1; i <= 9; i++) {
-                                    masterItems.push({ code: 'F00' + i, name: '基本給' + i, category: 'Payment' });
-                                }
-                                for (var i = 1; i <= 9; i++) {
-                                    masterItems.push({ code: 'F10' + i, name: '基本給' + i, category: 'Deduction' });
-                                }
-                                for (var i = 1; i <= 9; i++) {
-                                    masterItems.push({ code: 'F20' + i, name: '基本給' + i, category: 'Attendance' });
-                                }
-                                for (var i = 1; i <= 9; i++) {
-                                    masterItems.push({ code: 'F30' + i, name: '基本給' + i, category: 'ArticleOthers' });
-                                }
-                                return dfd.resolve(masterItems).promise();
+                                return nts.uk.request.ajax(paths.findAllMasterItems);
                             }
                             service.findAllMasterItems = findAllMasterItems;
                         })(service = c.service || (c.service = {}));

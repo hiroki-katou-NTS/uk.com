@@ -55,12 +55,14 @@ public class OutputSettingFinder {
 						.collect(Collectors.toList()))
 				.flatMap(item -> item.stream())
 				.collect(Collectors.toList());
-		Map<String, MasterItemDto> masterItemMap = this.finder.findByCodes(companyCode, masterItemCode)
-				.stream().collect(Collectors.toMap(item -> item.code, Function.identity()));
+		List<MasterItemDto> masterItemMap = this.finder.findByCodes(companyCode, masterItemCode);
 		dto.categorySettings.forEach(cate -> {
 			cate.outputItems.forEach(item -> {
 				if (!item.isAggregateItem) {
-					item.name = masterItemMap.get(item.code).name;
+					MasterItemDto masterItem = masterItemMap.stream()
+							.filter(mi -> mi.code.equals(item.code) && mi.category.value == cate.category.value)
+							.findFirst().get();
+					item.name = masterItem.name;
 				}
 			});
 		});
@@ -72,7 +74,7 @@ public class OutputSettingFinder {
 	 *
 	 * @return the list
 	 */
-	public List<HeaderSettingDto> findAll(){
+	public List<HeaderSettingDto> findAll() {
 		String companyCode = AppContexts.user().companyCode(); 
 		return this.repository.findAll(companyCode).stream().map(setting -> {
 			return HeaderSettingDto.builder()

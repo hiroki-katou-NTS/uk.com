@@ -113,7 +113,7 @@ public class PensionRateServiceImpl extends PensionRateService {
 
 		// Get listAvgEarn of copiedHistory.
 		List<PensionAvgearn> listPensionAvgearn = pensionAvgearnRepo
-				.find(copiedHistory.getHistoryId());
+				.findById(copiedHistory.getHistoryId());
 
 		// Update newHistoryId.
 		List<PensionAvgearn> updatedList = listPensionAvgearn.stream().map(item -> {

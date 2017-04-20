@@ -24,8 +24,8 @@ public class AsposeInputFileGenerator extends AsposeCellsReportGenerator impleme
 	private static final String TEMPLATE_PATH = "report/QMM016_InputFile.xlsx";
 
 	/** The Constant OUTPUT_NAME. */
-	private static final String OUTPUT_NAME = "賃金テープル.pdf";
-	
+	private static final String OUTPUT_NAME = "賃金テープル.xlsx";
+
 	/** The factory. */
 	@Inject
 	private GeneratorFactory factory;
@@ -42,7 +42,7 @@ public class AsposeInputFileGenerator extends AsposeCellsReportGenerator impleme
 		try (AsposeCellsReportContext ctx = this.createContext(TEMPLATE_PATH)) {
 			Generator generator = this.factory.createGenerator(context.getQuery().getCode());
 			generator.generate(ctx, context.getQuery());
-			ctx.saveAsPdf(this.createNewFile(rptContext, OUTPUT_NAME));
+			ctx.saveAsExcel(this.createNewFile(rptContext, this.getReportName(OUTPUT_NAME)));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

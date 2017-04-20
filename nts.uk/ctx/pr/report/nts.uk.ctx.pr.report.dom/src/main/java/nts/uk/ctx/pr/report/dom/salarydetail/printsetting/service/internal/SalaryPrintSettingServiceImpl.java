@@ -96,7 +96,7 @@ public class SalaryPrintSettingServiceImpl implements SalaryPrintSettingService 
 		return setting.getShowPayment() || setting.getTotalSet() || setting.getMonthTotalSet()
 				|| setting.getSumPersonSet() || setting.getSumMonthPersonSet()
 				|| setting.getSumEachDeprtSet() || setting.getSumMonthDeprtSet()
-				|| setting.getSumDepHrchyIndexSet() || setting.getSumMonthDepHrchySet() || false;
+				|| setting.getSumDepHrchyIndexSet() || setting.getSumMonthDepHrchySet();
 	}
 
 }

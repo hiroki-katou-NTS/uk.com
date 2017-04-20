@@ -190,6 +190,52 @@ module nts.uk.ui.jqueryExtentions {
                     return setupDeleteButton($grid, param);
             }
         };
+        
+        $.fn.ntsGridListFeature = function(feature: string, action: string, ...params: any[]): any {
+
+            var $grid = $(this);
+
+            switch (feature) {
+                case 'switch':
+                    switch (action){
+                        case 'setValue':
+                            return setSwitchValue($grid, params);    
+                    }
+            }
+        };
+        
+        function setSwitchValue($grid: JQuery, ...params: any[]): any {
+            let rowId: any = params[0][0];
+            let columnKey: string = params[0][1];
+            let selectedValue: any = params[0][2];   
+            let $row = $($grid.igGrid("rowById", rowId));
+            let $parent = $row.find(".ntsControl");
+//            let currentElement = _.find($parent.find(".nts-switch-button"), function (e){
+//                return $(e).hasClass('selected');    
+//            });
+//            let currentSelect = currentElement === undefined ? undefined : $(currentElement).attr('data-value');
+            let currentSelect = $parent.attr('data-value');  
+            if(selectedValue !== currentSelect){   
+//                let $tr = $parent.closest("tr");   
+                let rowKey = $row.attr("data-id");
+                $parent.find(".nts-switch-button").removeClass("selected");   
+                let element = _.find($parent.find(".nts-switch-button"), function (e){
+                    return selectedValue === $(e).attr('data-value');    
+                });
+                if(element !== undefined){
+                    $(element).addClass('selected');
+                    $parent.attr('data-value', selectedValue);
+//                    let $scroll = $("#" + $grid.attr("id") + "_scrollContainer")
+//                    let currentPosition = $scroll[0].scrollTop;
+                    $grid.igGridUpdating("setCellValue", rowKey, columnKey, selectedValue);  
+                    $grid.igGrid("commit");  
+                    if ($grid.igGrid("hasVerticalScrollbar")) {
+                        let current = $grid.ntsGridList("getSelected");
+                        $grid.igGrid("virtualScrollTo", (typeof current === 'object' ? current.index : current[0].index) + 1);
+                    }    
+                }
+            }         
+        }
 
         function getSelected($grid: JQuery): any {
             if ($grid.igGridSelection('option', 'multipleSelection')) {

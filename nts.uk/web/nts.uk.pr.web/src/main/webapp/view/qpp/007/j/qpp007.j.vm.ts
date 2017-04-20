@@ -36,7 +36,6 @@ module nts.uk.pr.view.qpp007.j {
                     self.aggregateItemTab.push(item);
                 };
 
-
                 self.selectedDivision = ko.observable(TaxDivision.PAYMENT);
                 self.selectedAggregateItem = ko.observable('001');
                 self.salaryAggregateItemModel = ko.observable(new SalaryAggregateItemModel());
@@ -51,6 +50,7 @@ module nts.uk.pr.view.qpp007.j {
                     self.onShowDataChange(selectedDivision, self.selectedAggregateItem());
                 });
             }
+
             /**
              * Start page.
              */
@@ -105,9 +105,11 @@ module nts.uk.pr.view.qpp007.j {
                 });
                 return dfd.promise();
             }
+
             public closeDialogBtnClicked() {
                 nts.uk.ui.windows.close();
             }
+
             private saveSalaryAggregateItem() {
                 $('#inpDisplayName').ntsEditor('validate');
                 if (!nts.uk.ui._viewModel.errors.isEmpty()) {
@@ -146,6 +148,7 @@ module nts.uk.pr.view.qpp007.j {
             }
 
         }
+
         export class SalaryItemModel {
 
             salaryItemCode: string;

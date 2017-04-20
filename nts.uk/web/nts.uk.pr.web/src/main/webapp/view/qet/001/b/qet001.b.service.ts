@@ -6,7 +6,7 @@ module qet001.b {
         var servicePath = {
             findOutputSettingDetail: 'ctx/pr/report/wageledger/outputsetting/find',
             findAggregateItems: 'ctx/pr/report/wageledger/aggregateitem/findAll',
-            findMasterItems: '???',
+            findMasterItems: 'ctx/pr/report/masteritem/findAll',
             saveOutputSetting: 'ctx/pr/report/wageledger/outputsetting/save',
             removeOutputSetting: 'ctx/pr/report/wageledger/outputsetting/remove',
         }
@@ -71,15 +71,14 @@ module qet001.b {
         export function findMasterItems() : JQueryPromise<Item[]> {
             var dfd = $.Deferred<Item[]>();
             // Fake data.
-            var data = [];
-            for (var i = 0; i < 10; i++) {
-                data.push({code: 'MI' + i, name: 'Master item' + i, category: 'Payment'});
-            }
-            for (var i = 0; i < 10; i++) {
-                data.push({code: 'MI' + i, name: 'Master item' + i, category: 'Deduction'});
-            }
-            dfd.resolve(data);
-            return dfd.promise();
+//            var data = [];
+//            for (var i = 0; i < 10; i++) {
+//                data.push({code: 'MI' + i, name: 'Master item' + i, category: 'Payment'});
+//            }
+//            for (var i = 0; i < 10; i++) {
+//                data.push({code: 'MI' + i, name: 'Master item' + i, category: 'Deduction'});
+//            }
+            return nts.uk.request.ajax(servicePath.findMasterItems);
         }
         
         /**

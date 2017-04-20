@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn;
@@ -17,6 +17,12 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPension
  */
 @StaticMetamodel(QismtPensionAmount.class)
 public class QismtPensionAmount_ {
+
+	/** The ccd. */
+	public static volatile SingularAttribute<QismtPensionAmount, String> ccd;
+
+	/** The si office cd. */
+	public static volatile SingularAttribute<QismtPensionAmount, String> siOfficeCd;
 
 	/** The qismt pension avgearn PK. */
 	public static volatile SingularAttribute<QismtPensionAmount, QismtPensionAmountPK> qismtPensionAmountPK;

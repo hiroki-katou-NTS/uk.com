@@ -133,6 +133,44 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository
 				.map(c -> toDomain(c.getQismtHealInsuAvgearnD(), c));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
+	 * HealthInsuranceAvgearnRepository#findByOffice(java.lang.String,
+	 * java.util.List)
+	 */
+	@Override
+	public List<HealthInsuranceAvgearn> findByOfficeCodes(String companyCode, List<String> officeCodes) {
+		EntityManager em = getEntityManager();
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+
+		CriteriaQuery<QismtHealthInsuAmount> cq = cb.createQuery(QismtHealthInsuAmount.class);
+
+		Root<QismtHealthInsuAmount> root = cq.from(QismtHealthInsuAmount.class);
+
+		cq.select(root);
+
+		List<Predicate> listpredicate = new ArrayList<>();
+
+		listpredicate.add(cb.equal(root.get(QismtHealthInsuAmount_.ccd), companyCode));
+		listpredicate.add(root.get(QismtHealthInsuAmount_.siOfficeCd).in(officeCodes));
+
+		cq.where(listpredicate.toArray(new Predicate[] {}));
+
+		cq.orderBy(cb.asc(root.get(QismtHealthInsuAmount_.qismtHealthInsuAmountPK)
+				.get(QismtHealthInsuAmountPK_.healthInsuGrade)));
+
+		TypedQuery<QismtHealthInsuAmount> query = em.createQuery(cq);
+
+		List<HealthInsuranceAvgearn> listHealthInsuranceAvgearn = query.getResultList().stream()
+				.map(entity -> toDomain(entity.getQismtHealInsuAvgearnD(), entity))
+				.collect(Collectors.toList());
+
+		return listHealthInsuranceAvgearn;
+	}
+
 	/**
 	 * To domain.
 	 *
