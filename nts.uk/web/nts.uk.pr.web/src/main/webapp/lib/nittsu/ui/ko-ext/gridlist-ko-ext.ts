@@ -26,9 +26,9 @@ module nts.uk.ui.koExtentions {
             var features = [];
             features.push({ name: 'Selection', multipleSelection: data.multiple });
             features.push({ name: 'Sorting', type: 'local' });
-            if(data.multiple){ 
+//            if(data.multiple){ 
                 features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: showNumbering });        
-            }
+//            }
             
             var gridFeatures = ko.unwrap(data.features);
             var iggridColumns = _.map(observableColumns, c => {
@@ -109,7 +109,6 @@ module nts.uk.ui.koExtentions {
                 }
 
             });
-            var gridId = $grid.attr('id');
             $grid.setupSearchScroll("igGrid", true); 
         }
 
