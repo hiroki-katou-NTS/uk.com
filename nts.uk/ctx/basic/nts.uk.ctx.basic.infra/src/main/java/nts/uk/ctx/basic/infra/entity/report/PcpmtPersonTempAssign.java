@@ -9,6 +9,7 @@ import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -17,6 +18,8 @@ import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
+import nts.arc.time.GeneralDate;
 
 /**
  * The Class PcpmtPersonTempAssign.
@@ -37,7 +40,8 @@ public class PcpmtPersonTempAssign implements Serializable {
 	/** The ins date. */
 	@Column(name = "INS_DATE")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date insDate;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	private GeneralDate insDate;
 	
 	/** The ins ccd. */
 	@Column(name = "INS_CCD")
@@ -54,7 +58,8 @@ public class PcpmtPersonTempAssign implements Serializable {
 	/** The upd date. */
 	@Column(name = "UPD_DATE")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date updDate;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	private GeneralDate updDate;
 	
 	/** The upd ccd. */
 	@Column(name = "UPD_CCD")
@@ -81,18 +86,21 @@ public class PcpmtPersonTempAssign implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "STR_D")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date strD;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	private GeneralDate strD;
 	
 	/** The end D. */
 	@Basic(optional = false)
 	@Column(name = "END_D")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date endD;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	private GeneralDate endD;
 	
 	/** The issue date. */
 	@Column(name = "ISSUE_DATE")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date issueDate;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	private GeneralDate issueDate;
 	
 	/** The issue sts. */
 	@Basic(optional = false)
