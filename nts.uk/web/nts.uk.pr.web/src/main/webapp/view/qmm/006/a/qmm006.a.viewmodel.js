@@ -4,10 +4,11 @@ var qmm006;
     (function (a) {
         var viewmodel;
         (function (viewmodel) {
-            var ScreenModel = (function () {
-                function ScreenModel() {
+            class ScreenModel {
+                constructor() {
                     var self = this;
                     self.items = ko.observableArray([]);
+                    //set currentCode = '' vi khi findAll k co du lieu se vao ham clearForm vs currentCode = null, khi do moi vao dc ham subscribe
                     self.currentCode = ko.observable('');
                     self.dataSource = ko.observableArray([]);
                     self.dataSource2 = ko.observableArray([]);
@@ -44,17 +45,22 @@ var qmm006;
                     ]);
                     self.currentCode.subscribe(function (codeChange) {
                         if (self.dirty.isDirty()) {
+                            // dont allow loop checkDirty when change data and change row 
                             if (!self.notLoopAlert()) {
                                 self.notLoopAlert(true);
                                 return;
                             }
+                            // only checkDirty in clearForm, not checkDirty in subscribe
+                            // when remove(), not check dirty
                             if (codeChange == null || self.isNotCheckDirty()) {
                                 self.isNotCheckDirty(false);
                                 self.setCurrentLineBank(codeChange);
                                 return;
                             }
+                            //"変更された内容が登録されていません。"---AL001 
                             nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                                 self.clearError();
+                                //data is changed
                                 self.setCurrentLineBank(codeChange);
                             }).ifCancel(function () {
                                 self.notLoopAlert(false);
@@ -62,23 +68,28 @@ var qmm006;
                             });
                         }
                         else {
+                            // no error in the first findAll(), so dont allow jump to clearError() 
                             if (!self.isFirstFindAll()) {
                                 self.clearError();
                             }
+                            // dont allow loop checkDirty when change data and change row 
                             if (!self.notLoopAlert()) {
                                 self.notLoopAlert(true);
                                 return;
                             }
+                            // only checkDirty in clearForm, not checkDirty in subscribe
+                            // when remove(), not check dirty
                             if (codeChange == null || self.isNotCheckDirty()) {
                                 self.isNotCheckDirty(false);
                                 self.setCurrentLineBank(codeChange);
                                 return;
                             }
+                            //data isn't changed
                             self.setCurrentLineBank(codeChange);
                         }
                     });
                 }
-                ScreenModel.prototype.startPage = function () {
+                startPage() {
                     var self = this;
                     var dfd = $.Deferred();
                     $.when(self.findBankAll()).done(function () {
@@ -91,8 +102,11 @@ var qmm006;
                         dfd.reject(res);
                     });
                     return dfd.promise();
-                };
-                ScreenModel.prototype.setCurrentLineBank = function (codeChange) {
+                }
+                /**
+                 * get data from database, set into screen
+                 */
+                setCurrentLineBank(codeChange) {
                     var self = this;
                     var lineBank = self.getLineBank(codeChange);
                     self.getInfoBankBranch(lineBank);
@@ -103,17 +117,22 @@ var qmm006;
                     self.indexLineBank(_.findIndex(self.items(), function (x) {
                         return x.lineBankCode === codeChange;
                     }));
+                    //when clearForm, codeChange = null
                     if (codeChange == null) {
                         self.isDeleteEnable(false);
                         self.isEnable(true);
                     }
-                };
-                ScreenModel.prototype.findAll = function () {
+                }
+                /**
+                 * get data from DB
+                 */
+                findAll() {
                     var self = this;
                     var dfd = $.Deferred();
                     qmm006.a.service.findAll()
                         .done(function (data) {
                         self.countLineBank(data.length);
+                        //if data exist
                         if (data.length > 0) {
                             if (data.length > 1) {
                                 self.enableBtn003(true);
@@ -122,6 +141,7 @@ var qmm006;
                                 self.enableBtn003(false);
                             }
                             self.items(data);
+                            //only select first row in the first
                             if (self.isFirstFindAll()) {
                                 self.dirty.reset();
                                 self.currentCode(data[0].lineBankCode);
@@ -140,9 +160,13 @@ var qmm006;
                         dfd.reject(res);
                     });
                     return dfd.promise();
-                };
-                ScreenModel.prototype.saveData = function () {
+                }
+                /**
+                 * save data from screen to database
+                 */
+                saveData() {
                     var self = this;
+                    //if input 0-9, auto insert '0' before
                     if (self.currentLineBank().lineBankCode() != null && self.currentLineBank().lineBankCode().length == 1) {
                         self.currentLineBank().lineBankCode("0" + self.currentLineBank().lineBankCode());
                     }
@@ -164,7 +188,9 @@ var qmm006;
                     };
                     qmm006.a.service.saveData(self.isEnable(), command)
                         .done(function () {
+                        //load data and select new data
                         $.when(self.findAll()).done(function () {
+                            //select new data which is inserted or updated
                             self.dirty.reset();
                             self.currentCode(command.lineBankCode);
                         });
@@ -194,10 +220,13 @@ var qmm006;
                             $('#inp_lineBankCode').ntsError('set', message);
                         }
                     });
-                };
-                ScreenModel.prototype.remove = function () {
+                }
+                /**
+                 * remove data in dababase
+                 */
+                remove() {
                     var self = this;
-                    nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？")
+                    nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？") //AL002
                         .ifYes(function () {
                         var command = {
                             lineBankCode: self.currentLineBank().lineBankCode(),
@@ -226,8 +255,11 @@ var qmm006;
                     })
                         .ifCancel(function () {
                     });
-                };
-                ScreenModel.prototype.openBDialog = function () {
+                }
+                /**
+                 * open B dialog
+                 */
+                openBDialog() {
                     var self = this;
                     qmm006.a.service.checkExistBankAndBranch()
                         .done(function () {
@@ -239,6 +271,7 @@ var qmm006;
                                 self.bankCode(nts.uk.ui.windows.getShared("selectedBank").parentCode);
                                 self.branchName(nts.uk.ui.windows.getShared("selectedBank").name);
                                 lineBank.branchId(nts.uk.ui.windows.getShared("selectedBank").branchId);
+                                //only clear error of LBL004 & LBL007
                                 $('#lbl_bankCode').ntsError('clear');
                                 $('#lbl_branchCode').ntsError('clear');
                             }
@@ -247,12 +280,19 @@ var qmm006;
                         .fail(function (error) {
                         nts.uk.ui.dialog.alert(self.messageList()[4].message);
                     });
-                };
-                ScreenModel.prototype.openCDialog = function () {
+                }
+                /**
+                 * open C dialog
+                 */
+                openCDialog() {
                     var self = this;
+                    //bt003 disable if list has 1 row or less
+                    //in case user can fix css in screen to enable bt003
                     if (self.items().length > 1) {
                         if (self.dirty.isDirty()) {
+                            //AL001 
                             nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
+                                //delete the data being changed
                                 self.setCurrentLineBank(self.currentCode());
                                 self.afterCloseCDialog();
                             }).ifCancel(function () {
@@ -266,8 +306,11 @@ var qmm006;
                         nts.uk.ui.dialog.alert(self.messageList()[4].message);
                         self.enableBtn003(false);
                     }
-                };
-                ScreenModel.prototype.afterCloseCDialog = function () {
+                }
+                /**
+                 * set value for currentCode property
+                 */
+                afterCloseCDialog() {
                     var self = this;
                     nts.uk.ui.windows.sub.modal("/view/qmm/006/c/index.xhtml", { title: "振込元銀行の登録　＞　振込元銀行", dialogClass: "no-close" }).onClosed(function () {
                         self.findAll().done(function () {
@@ -276,12 +319,17 @@ var qmm006;
                             }
                         });
                     });
-                };
-                ScreenModel.prototype.btn007 = function () {
-                };
-                ScreenModel.prototype.jumpToQmm002A = function () {
+                }
+                btn007() {
+                    //to-do
+                }
+                /**
+                 * go to screen A of QMM002
+                 */
+                jumpToQmm002A() {
                     var self = this;
                     if (self.dirty.isDirty()) {
+                        //AL001 
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                             nts.uk.request.jump("/view/qmm/002/a/index.xhtml");
                         }).ifCancel(function () {
@@ -290,13 +338,19 @@ var qmm006;
                     else {
                         nts.uk.request.jump("/view/qmm/002/a/index.xhtml");
                     }
-                };
-                ScreenModel.prototype.clearForm = function () {
+                }
+                /**
+                 * clear data on screen, new mode
+                 */
+                clearForm() {
                     var self = this;
                     if (self.dirty.isDirty() && !self.isNotCheckDirty()) {
+                        //AL001 
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。")
                             .ifYes(function () {
                             if (self.currentCode(null)) {
+                                // clearForm  -> change data -> clearForm
+                                // press button clearForm, fix data and press button clearForm again, display notice, press Yes.
                                 self.clearError();
                                 self.setCurrentLineBank(null);
                             }
@@ -309,8 +363,11 @@ var qmm006;
                     else {
                         self.currentCode(null);
                     }
-                };
-                ScreenModel.prototype.clearError = function () {
+                }
+                /**
+                 * clear error on screen
+                 */
+                clearError() {
                     $('#inp_lineBankCode').ntsError('clear');
                     $('#inp_lineBankName').ntsError('clear');
                     $('#inp_accountNumber').ntsError('clear');
@@ -319,18 +376,24 @@ var qmm006;
                     $('#inp_transferRequestName').ntsError('clear');
                     $('#inp_memo').ntsError('clear');
                     $('.consignor').ntsError('clear');
-                };
-                ScreenModel.prototype.getLineBank = function (curCode) {
+                }
+                /**
+                 * get data base-on currentCode
+                 */
+                getLineBank(curCode) {
                     var self = this;
-                    var data = _.find(self.items(), function (x) {
+                    let data = _.find(self.items(), function (x) {
                         return x.lineBankCode === curCode;
                     });
                     if (!data) {
                         return new LineBank(null, null, null, 0, null, null, null, []);
                     }
                     return new LineBank(data.branchId, data.lineBankCode, data.lineBankName, data.accountAtr, data.accountNo, data.memo, data.requesterName, data.consignors);
-                };
-                ScreenModel.prototype.getInfoBankBranch = function (lineBank) {
+                }
+                /**
+                 * get data for bankName, bankCode, branchName, branchCode
+                 */
+                getInfoBankBranch(lineBank) {
                     var self = this;
                     if (lineBank.branchId() == null) {
                         self.bankCode('');
@@ -339,6 +402,7 @@ var qmm006;
                         self.branchName('');
                     }
                     else {
+                        //find bankName, bankCode, branchName, branchCode
                         var tmp = _.find(this.dataSource2(), function (x) {
                             return x.branchId === lineBank.branchId();
                         });
@@ -347,8 +411,11 @@ var qmm006;
                         self.branchCode(tmp.code);
                         self.branchName(tmp.name);
                     }
-                };
-                ScreenModel.prototype.findBankAll = function () {
+                }
+                /**
+                 * get info of Bank from database
+                 */
+                findBankAll() {
                     var self = this;
                     var lineBank = self.currentLineBank();
                     var dfd = $.Deferred();
@@ -370,12 +437,11 @@ var qmm006;
                         dfd.reject(res);
                     });
                     return dfd.promise();
-                };
-                return ScreenModel;
-            }());
+                }
+            }
             viewmodel.ScreenModel = ScreenModel;
-            var LineBank = (function () {
-                function LineBank(branchId, lineBankCode, lineBankName, accountAtr, accountNo, memo, requesterName, consignors) {
+            class LineBank {
+                constructor(branchId, lineBankCode, lineBankName, accountAtr, accountNo, memo, requesterName, consignors) {
                     this.branchId = ko.observable(branchId);
                     this.lineBankCode = ko.observable(lineBankCode);
                     this.lineBankName = ko.observable(lineBankName);
@@ -408,7 +474,10 @@ var qmm006;
                         }
                     }
                 }
-                LineBank.prototype.createConsignorItem = function (item, icon) {
+                /**
+                 * create consignor on screen
+                 */
+                createConsignorItem(item, icon) {
                     var self = this;
                     if (item) {
                         self.consignors.push(new Consignor(icon, item.code, item.memo));
@@ -416,19 +485,17 @@ var qmm006;
                     else {
                         self.consignors.push(new Consignor(icon, "", ""));
                     }
-                };
-                return LineBank;
-            }());
-            var Consignor = (function () {
-                function Consignor(noIcon, consignorCode, consignorMemo) {
+                }
+            }
+            class Consignor {
+                constructor(noIcon, consignorCode, consignorMemo) {
                     this.noIcon = ko.observable(noIcon);
                     this.consignorCode = ko.observable(consignorCode);
                     this.consignorMemo = ko.observable(consignorMemo);
                 }
-                return Consignor;
-            }());
-            var BankBranch = (function () {
-                function BankBranch(code, branchId, name, parentCode, parentName, treeCode, childs) {
+            }
+            class BankBranch {
+                constructor(code, branchId, name, parentCode, parentName, treeCode, childs) {
                     var self = this;
                     self.code = code;
                     self.name = name;
@@ -439,9 +506,7 @@ var qmm006;
                     self.treeCode = treeCode;
                     self.branchId = branchId;
                 }
-                return BankBranch;
-            }());
+            }
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm006.a || (qmm006.a = {}));
 })(qmm006 || (qmm006 = {}));
-//# sourceMappingURL=qmm006.a.viewmodel.js.map

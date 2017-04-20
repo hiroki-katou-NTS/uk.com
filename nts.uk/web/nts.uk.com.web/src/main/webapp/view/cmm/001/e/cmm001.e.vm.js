@@ -12,8 +12,8 @@ var nts;
                     (function (postcode_1) {
                         var viewmodel;
                         (function (viewmodel) {
-                            var ScreenModel = (function () {
-                                function ScreenModel() {
+                            class ScreenModel {
+                                constructor() {
                                     var self = this;
                                     self.postCodeList = ko.observableArray([]);
                                     self.addressList = ko.observableArray([]);
@@ -24,11 +24,10 @@ var nts;
                                         { headerText: '住所', prop: 'address', width: 245 },
                                         { headerText: 'カナ', prop: 'kana', width: 220 }
                                     ]);
-                                    postcode_1.service.findPostCodeZipCode(strZipCode).done(function (data) {
+                                    postcode_1.service.findPostCodeZipCode(strZipCode).done(data => {
                                         var postcodeList;
                                         postcodeList = [];
-                                        for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
-                                            var itemData = data_1[_i];
+                                        for (var itemData of data) {
                                             postcodeList.push(new PostCodeModel(itemData));
                                         }
                                         self.postCodeList(postcodeList);
@@ -37,29 +36,26 @@ var nts;
                                         console.log(error);
                                     });
                                 }
-                                ScreenModel.prototype.chooseZipCode = function () {
+                                chooseZipCode() {
                                     var self = this;
-                                    for (var _i = 0, _a = self.addressList(); _i < _a.length; _i++) {
-                                        var itemZipCode = _a[_i];
+                                    for (var itemZipCode of self.addressList()) {
                                         if (itemZipCode.postcode == self.zipCode()) {
                                             nts.uk.ui.windows.setShared('zipCodeRes', itemZipCode);
                                             break;
                                         }
                                     }
                                     nts.uk.ui.windows.close();
-                                };
-                                return ScreenModel;
-                            }());
+                                }
+                            }
                             viewmodel.ScreenModel = ScreenModel;
-                            var PostCodeModel = (function () {
-                                function PostCodeModel(postcode) {
+                            class PostCodeModel {
+                                constructor(postcode) {
                                     this.address = postcode_1.service.toAddress(postcode);
                                     this.postcode = postcode.postcode;
                                     this.id = postcode.id;
                                     this.kana = postcode_1.service.toKana(postcode);
                                 }
-                                return PostCodeModel;
-                            }());
+                            }
                             viewmodel.PostCodeModel = PostCodeModel;
                         })(viewmodel = postcode_1.viewmodel || (postcode_1.viewmodel = {}));
                     })(postcode = base.postcode || (base.postcode = {}));
@@ -68,4 +64,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=cmm001.e.vm.js.map
