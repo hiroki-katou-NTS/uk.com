@@ -59,21 +59,8 @@ var nts;
                                     $grid.on("click", ".nts-switch-button", function (evt, ui) {
                                         var $element = $(this);
                                         var selectedValue = $element.attr('data-value');
-                                        var $parent = $element.parent();
-                                        var currentSelect = $parent.attr('data-value');
-                                        if (selectedValue !== currentSelect) {
-                                            var $tr = $parent.closest("tr");
-                                            var rowKey = $tr.attr("data-id");
-                                            $parent.find("nts-switch-button").removeClass("selected");
-                                            $element.addClass('selected');
-                                            var $scroll = $("#" + gridId + "_scrollContainer");
-                                            var currentPosition = $scroll[0].scrollTop;
-                                            $grid.igGridUpdating("setCellValue", rowKey, c["key"], selectedValue);
-                                            $grid.igGrid("commit");
-                                            if ($grid.igGrid("hasVerticalScrollbar")) {
-                                                $scroll[0].scrollTop = currentPosition;
-                                            }
-                                        }
+                                        var $tr = $element.closest("tr");
+                                        $grid.ntsGridListFeature('switch', 'setValue', $tr.attr("data-id"), c["key"], selectedValue);
                                     });
                                 }
                             }
@@ -159,3 +146,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=gridlist-ko-ext.js.map

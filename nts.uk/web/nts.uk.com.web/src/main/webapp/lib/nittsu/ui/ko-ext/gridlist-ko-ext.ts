@@ -62,21 +62,8 @@ module nts.uk.ui.koExtentions {
                         $grid.on("click", ".nts-switch-button", function(evt, ui) {
                             let $element = $(this);
                             let selectedValue = $element.attr('data-value');
-                            let $parent = $element.parent();
-                            let currentSelect = $parent.attr('data-value');
-                            if(selectedValue !== currentSelect){  
-                                let $tr = $parent.closest("tr");   
-                                let rowKey = $tr.attr("data-id");
-                                $parent.find("nts-switch-button").removeClass("selected");   
-                                $element.addClass('selected');
-                                let $scroll = $("#" + gridId + "_scrollContainer")
-                                let currentPosition = $scroll[0].scrollTop;
-                                $grid.igGridUpdating("setCellValue", rowKey, c["key"], selectedValue);  
-                                $grid.igGrid("commit");  
-                                if ($grid.igGrid("hasVerticalScrollbar")) {
-                                    $scroll[0].scrollTop = currentPosition;
-                                }
-                            }
+                            let $tr = $element.closest("tr");  
+                            $grid.ntsGridListFeature('switch', 'setValue', $tr.attr("data-id"), c["key"], selectedValue);
                         });      
                     }       
                 }

@@ -29,14 +29,14 @@ public class ItemMasterPubImp implements ItemMasterPub {
 	@Override
 	public List<ItemMasterDto> findAll(String companyCode) {
 		return itemMasterRepo.findAll(companyCode).stream()
-				.map(item -> new ItemMasterDto(item.getItemName().v(), item.getItemCode().v(), item.getCategoryAtr().value, item.getDisplaySet().value))
+				.map(item -> new ItemMasterDto(item.getItemCode().v(), item.getItemName().v(), item.getCategoryAtr().value, item.getDisplaySet().value))
 				.collect(Collectors.toList());
 	}
 	
 	@Override
 	public List<ItemMasterDto> findBy(String companyCode, List<String> itemCodes) {
 		return itemMasterRepo.findAll(companyCode, itemCodes).stream()
-				.map(item -> new ItemMasterDto(item.getItemName().v(), item.getItemCode().v(), item.getCategoryAtr().value, item.getDisplaySet().value))
+				.map(item -> new ItemMasterDto(item.getItemCode().v(), item.getItemName().v(), item.getCategoryAtr().value, item.getDisplaySet().value))
 				.collect(Collectors.toList());
 	}
 	

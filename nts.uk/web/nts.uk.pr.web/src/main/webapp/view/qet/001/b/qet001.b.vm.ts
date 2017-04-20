@@ -16,7 +16,9 @@ module qet001.b.viewmodel {
         masterItemList: service.Item[];
         isLoading: KnockoutObservable<boolean>;
         hasUpdate: KnockoutObservable<boolean>;
-        dirty: nts.uk.ui.DirtyChecker;
+        codeDirtyChecker: nts.uk.ui.DirtyChecker;
+        nameDirtyChecker: nts.uk.ui.DirtyChecker;
+        reportItemsDirtyChecker: nts.uk.ui.DirtyChecker;
         outputItemColumns: KnockoutObservableArray<any>;
         
         constructor() {
@@ -45,14 +47,14 @@ module qet001.b.viewmodel {
             this.reportItemColumns = ko.observableArray([
                     {headerText: '区分', prop: 'categoryNameJa', width: 50},
                     {headerText: '集約', prop: 'isAggregate', width: 40,
-                        formatter: function(data: string) {
+                        formatter: function(data: string): string {
                             if (data == 'true') {
                                 return '<div class="center"><i class="icon icon-dot"></i></div>';
                             }
                             return '';
                         }
                     },
-                    {headerText: 'コード', prop: 'itemCode', width: 100},
+                    {headerText: 'コード', prop: 'itemCode', width: 50},
                     {headerText: '名称', prop: 'itemName', width: 100},
                 ]);
             this.reportItemSelected = ko.observable(null);
@@ -61,13 +63,15 @@ module qet001.b.viewmodel {
             this.hasUpdate = ko.observable(false);
             
             var self = this;
-            self.dirty = new nts.uk.ui.DirtyChecker(self.outputSettingDetail);
+            self.codeDirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetail().settingCode);
+            self.nameDirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetail().settingName);
+            self.reportItemsDirtyChecker = new nts.uk.ui.DirtyChecker(self.reportItems);
             self.outputSettings().outputSettingSelectedCode.subscribe((newVal: string) => {
                 self.isLoading(true);
                 if (!newVal || newVal == '') {
                     self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
                     self.isLoading(false);
-                    self.dirty.reset();
+                    self.resetDirty();
                     return;
                 }
                 // load detail output setting.
@@ -80,7 +84,24 @@ module qet001.b.viewmodel {
                 data.reloadReportItems = self.reloadReportItem.bind(self);
             });
         }
-        
+
+        private resetDirty(): void {
+            var self = this;
+            self.codeDirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetail().settingCode);
+            self.nameDirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetail().settingName);
+            self.reportItemsDirtyChecker.reset();
+        }
+
+        private isDirty(): boolean {
+                var self = this;
+                if (self.codeDirtyChecker.isDirty()
+                    || self.nameDirtyChecker.isDirty()
+                    || self.reportItemsDirtyChecker.isDirty()) {
+                    return true;
+                }
+                return false;
+            }
+
         /**
          * Reload report items.
          */
@@ -113,10 +134,10 @@ module qet001.b.viewmodel {
             
             // Load master items and aggregate items.
             $.when(self.loadAggregateItems(), self.loadMasterItems()).done(() => {
+                self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
                 // Check output setting is empty.
                 var isHasData = outputSettings && outputSettings.length > 0;
                 if (!isHasData) {
-                    self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
                     self.outputSettings().outputSettingSelectedCode('');
                     dfd.resolve();
                     return;
@@ -151,7 +172,7 @@ module qet001.b.viewmodel {
         public close() {
             // Dirty check.
             var self = this;
-            if (self.dirty.isDirty()) {
+            if (self.isDirty()) {
                 nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function() {
                     nts.uk.ui.windows.close();
                 });
@@ -180,7 +201,7 @@ module qet001.b.viewmodel {
                 nts.uk.ui.windows.setShared('isHasUpdate', true, false);
                 nts.uk.ui.dialog.alert('save success!').then(function() {
                     self.loadAllOutputSetting();
-                    self.dirty.reset();
+                    self.resetDirty();
                 })
             }).fail(function(res) {
                 $('#code-input').ntsError('set', res.message);
@@ -238,7 +259,7 @@ module qet001.b.viewmodel {
             
             service.findOutputSettingDetail(selectedCode).done(function(data: WageLedgerOutputSetting){
                 self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList, data));
-                self.dirty.reset();
+                self.resetDirty();
                 dfd.resolve();
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);
@@ -288,7 +309,7 @@ module qet001.b.viewmodel {
             $('#name-input').ntsError('clear');
             // Dirty check.
             var self = this;
-            if (self.dirty.isDirty()) {
+            if (self.isDirty()) {
                 nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function() {
                     self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
                     self.outputSettings().outputSettingSelectedCode('');
@@ -317,7 +338,7 @@ module qet001.b.viewmodel {
             this.outputSettingList = ko.observableArray([]);
             this.outputSettingSelectedCode = ko.observable(null);
             this.outputSettingColumns = ko.observableArray([
-                {headerText: 'コード', prop: 'code', width: 90}, 
+                {headerText: 'コード', prop: 'code', width: 50}, 
                 {headerText: '名称', prop: 'name',  width: 100}]);
         }
     }
@@ -396,17 +417,16 @@ module qet001.b.viewmodel {
         private createCategorySetting(category: string, paymentType: string,
                 aggregateItems: service.Item[], masterItem: service.Item[], 
                 categorySettings?: WageledgerCategorySetting[]): CategorySetting {
-            //var categorySetting: CategorySetting;
-            var aggregateItemsInCategory = aggregateItems.filter((item) => item.category == category);
+            var aggregateItemsInCategory = aggregateItems.filter((item) => item.category == category && item.paymentType == paymentType);
             var masterItemsInCategory = masterItem.filter((item) => item.category == category);
             var cateTempSetting: WageledgerCategorySetting = {category: category, paymentType: paymentType, outputItems: []};
-            if (categorySettings == undefined) {
+            if (!categorySettings) {
                 return new CategorySetting(aggregateItemsInCategory, masterItemsInCategory, cateTempSetting);
             }
             
             var categorySetting = categorySettings.filter((item) => item.category == category 
                 && item.paymentType == paymentType)[0];
-            if (categorySetting == undefined) {
+            if (!categorySetting) {
                 categorySetting = cateTempSetting;
             }
             return new CategorySetting(aggregateItemsInCategory, masterItemsInCategory, categorySetting);
@@ -435,15 +455,23 @@ module qet001.b.viewmodel {
             this.fullCategoryName = this.getFullCategoryName(this.category, this.paymentType);
 
             // exclude item contain in setting.
-            var settingItemCode: string[] = [];
+            var masterSettingItemCode: string[] = [];
+            var aggregateSettingItemCode : string[] = [];
             if (categorySetting != undefined) {
-                settingItemCode = categorySetting.outputItems.map((item) => {
-                    return item.code;
-                });
+                masterSettingItemCode = categorySetting.outputItems
+                    .filter(item => !item.isAggregateItem)
+                    .map((item) => {
+                        return item.code;
+                    });
+                aggregateSettingItemCode = categorySetting.outputItems
+                    .filter(item => item.isAggregateItem)
+                    .map((item) => {
+                        return item.code;
+                    });
             }
             this.outputItems = ko.observableArray(categorySetting != undefined ? categorySetting.outputItems : []);
-            var aggregateItemsExcluded = aggregateItems.filter((item) => settingItemCode.indexOf(item.code) == -1);
-            var masterItemsExcluded = masterItems.filter((item) => settingItemCode.indexOf(item.code) == -1);
+            var aggregateItemsExcluded = aggregateItems.filter((item) => aggregateSettingItemCode.indexOf(item.code) == -1);
+            var masterItemsExcluded = masterItems.filter((item) => masterSettingItemCode.indexOf(item.code) == -1);
             this.aggregateItemsList = ko.observableArray(aggregateItemsExcluded);
             this.masterItemList = ko.observableArray(masterItemsExcluded);
             this.outputItemsSelected = ko.observable(null);

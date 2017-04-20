@@ -4,15 +4,28 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable.reference;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.pr.core.dom.paymentdata.PayBonusAtr;
+import nts.uk.ctx.pr.core.dom.paymentdata.SparePayAtr;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.PaydayRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.payday.Payday;
 import nts.uk.ctx.pr.core.dom.wagetable.reference.WtCodeRef;
 import nts.uk.ctx.pr.core.dom.wagetable.reference.WtCodeRefItem;
 import nts.uk.ctx.pr.core.dom.wagetable.reference.WtMasterRef;
@@ -25,38 +38,11 @@ import nts.uk.ctx.pr.core.dom.wagetable.reference.WtReferenceRepository;
 public class JpaWtReferenceRepository extends JpaRepository implements WtReferenceRepository {
 
 	/** The comma. */
-	private final String comma = ",";
+	private final String COMMA = " , ";
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.wagetable.reference.WtReferenceRepository#
-	 * getCodeRefItem(nts.uk.ctx.pr.core.dom.wagetable.reference.WtCodeRef)
-	 */
-	@Override
-	public List<WtCodeRefItem> getCodeRefItem(WtCodeRef codeRef, Object... params) {
-		// Create query string.
-		StringBuilder strBuilder = new StringBuilder();
-		strBuilder.append("SELECT ");
-		strBuilder.append(codeRef.getWagePersonField());
-		strBuilder.append(comma);
-		strBuilder.append(codeRef.getWagePersonField());
-		strBuilder.append(" FROM ");
-		strBuilder.append(codeRef.getWagePersonTable());
-
-		// Get entity manager
-		EntityManager em = this.getEntityManager();
-
-		TypedQuery<Object[]> query = em.createQuery(strBuilder.toString(), Object[].class);
-
-		List<Object[]> results = query.getResultList();
-
-		List<WtCodeRefItem> codeRefItems = results.stream()
-				.map(result -> new WtCodeRefItem((String) result[0], (String) result[1]))
-				.collect(Collectors.toList());
-
-		return codeRefItems;
-	}
+	/** The Payday repository. */
+	@Inject
+	private PaydayRepository paydayRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -65,34 +51,158 @@ public class JpaWtReferenceRepository extends JpaRepository implements WtReferen
 	 * getMasterRefItem(nts.uk.ctx.pr.core.dom.wagetable.reference.WtMasterRef)
 	 */
 	@Override
-	public List<WtCodeRefItem> getMasterRefItem(WtMasterRef masterRef, Object... params) {
+	public List<WtCodeRefItem> getMasterRefItem(WtMasterRef masterRef, YearMonth startMonth) {
 		// Create query string.
 		StringBuilder strBuilder = new StringBuilder();
+
+		// Add query fields
 		strBuilder.append("SELECT ");
 		strBuilder.append(masterRef.getWageRefField());
-		strBuilder.append(comma);
+		strBuilder.append(COMMA);
 		strBuilder.append(masterRef.getWageRefDispField());
+
+		// from table
 		strBuilder.append(" FROM ");
 		strBuilder.append(masterRef.getWageRefTable());
-		strBuilder.append(" WHERE CCD = ");
-		strBuilder.append(masterRef.getCompanyCode());
-		if (!StringUtil.isNullOrEmpty(masterRef.getWageRefQuery(), true)) {
-			strBuilder.append(" AND ");
-			strBuilder.append(masterRef.getWageRefQuery());
+
+		// Add conditions
+		strBuilder.append(" WHERE ");
+
+		// Add ref query
+		String refQuery = masterRef.getWageRefQuery();
+		Map<String, Object> mapValues = new HashMap<>();
+		if (!StringUtil.isNullOrEmpty(refQuery, true)) {
+			// Detect argument
+			List<String> params = this.detectArguments(refQuery);
+			params.stream().forEach(param -> {
+				// Check is company code
+				if (param.toLowerCase().contains(ParamType.COMPANY_CODE.prefix.toLowerCase())) {
+					mapValues.put(param, masterRef.getCompanyCode());
+				}
+
+				// Check is base date
+				if (param.toLowerCase().contains(ParamType.BASEDATE.prefix.toLowerCase())) {
+					mapValues.put(param,
+							this.getBaseDate(masterRef.getCompanyCode(), startMonth.v(), param));
+				}
+			});
+
+			strBuilder.append(refQuery);
 		}
+
+		// Create query
+		TypedQueryWrapper<Object[]> query = this.queryProxy().query(strBuilder.toString(),
+				Object[].class);
+
+		// TODO: apply setParameter after change prefix :
+		if (!StringUtil.isNullOrEmpty(refQuery, true)) {
+			// Set parameter
+			mapValues.keySet().stream().forEach(item -> {
+				query.setParameter(item.replace(":", ""), mapValues.get(item));
+			});
+		}
+
+		// Get results
+		return query.getList(result -> new WtCodeRefItem((String) result[0], (String) result[1]));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.wagetable.reference.WtReferenceRepository#
+	 * getCodeRefItem(nts.uk.ctx.pr.core.dom.wagetable.reference.WtCodeRef)
+	 */
+	@Override
+	public List<WtCodeRefItem> getCodeRefItem(WtCodeRef codeRef) {
+		// Create query string.
+		StringBuilder strBuilder = new StringBuilder();
+
+		// Add query fields
+		strBuilder.append("SELECT ");
+		strBuilder.append(codeRef.getWagePersonField());
+		strBuilder.append(COMMA);
+		strBuilder.append(codeRef.getWagePersonField());
+
+		// from table
+		strBuilder.append(" FROM ");
+		strBuilder.append(codeRef.getWagePersonTable());
+
+		// Add conditions
+		// strBuilder.append(" WHERE ");
 
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
+		// Create query
 		TypedQuery<Object[]> query = em.createQuery(strBuilder.toString(), Object[].class);
 
+		// Get results
 		List<Object[]> results = query.getResultList();
 
+		// Convert data
 		List<WtCodeRefItem> codeRefItems = results.stream()
 				.map(result -> new WtCodeRefItem((String) result[0], (String) result[1]))
 				.collect(Collectors.toList());
 
+		// Return
 		return codeRefItems;
 	}
+
+	/**
+	 * Gets the base date.
+	 *
+	 * @param companyCode
+	 *            the company code
+	 * @param processingYm
+	 *            the processing ym
+	 * @param baseDateParam
+	 *            the base date param
+	 * @return the base date
+	 */
+	private GeneralDate getBaseDate(String companyCode, Integer processingYm,
+			String baseDateParam) {
+		Integer processingNo = Integer
+				.parseInt(baseDateParam.replace(ParamType.BASEDATE.prefix, ""));
+
+		List<Payday> paydays = paydayRepository.select1_3(companyCode, processingNo,
+				PayBonusAtr.SALARY.value, processingYm, SparePayAtr.NORMAL.value);
+
+		return paydays.get(0).getStdDate();
+	}
+
+	/**
+	 * Detect params.
+	 *
+	 * @param conditionStr
+	 *            the condition str
+	 * @return the list
+	 */
+	private List<String> detectArguments(String conditionStr) {
+		List<String> arguments = new ArrayList<>();
+
+		// TODO: change prefix :
+		String pattern = "(?:^|\\s)(:[^ ]+)";
+		// String pattern = "(?:^|\\s)(@[^ ]+)";
+
+		// Create a Pattern object
+		Pattern r = Pattern.compile(pattern);
+
+		// Now create matcher object.
+		Matcher m = r.matcher(conditionStr);
+		while (m.find()) {
+			arguments.add(m.group(1));
+		}
+
+		return arguments;
+	}
+
+	// public static void main(String[] args) {
+	// JpaWtReferenceRepository repo = new JpaWtReferenceRepository();
+	// repo.detectArguments("c.startDate <= :BASEDATE_1 AND c.endDate >=
+	// :BASEDATE_1")
+	// .forEach(item -> {
+	// System.out.println(item);
+	// });
+	// }
 
 }

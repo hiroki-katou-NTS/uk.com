@@ -45,8 +45,8 @@ var qet001;
                         self.aggregateItemCategories.push(new AggregateCategory(PaymentType.BONUS, Category.DEDUCTION, res));
                         self.aggregateItemCategories.push(new AggregateCategory(PaymentType.BONUS, Category.ATTENDANCE, res));
                         self.aggregateItemCategories()[0].loadAggregateItemByCategory();
+                        dfd.resolve();
                     });
-                    dfd.resolve();
                     return dfd.promise();
                 };
                 ScreenModel.prototype.afterRender = function () {

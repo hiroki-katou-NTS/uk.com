@@ -87,7 +87,7 @@
 							<table>
 							    <tr>
 							        <td>
-							            <div data-bind="ntsFormLabel: {required: false}">表に追加できる支給項目</div>
+							            <div data-bind="ntsFormLabel: {required: false}">表に追加できる<span class="big-text">支給</span>項目</div>
 							            <hr />
 							            <com:ko tag="template" bind="{name: 'masterlist'}"></com:ko>
 							        </td>
@@ -119,7 +119,7 @@
 							<table>
 							    <tr>
 							        <td>
-							            <div data-bind="ntsFormLabel: {required: false}">表に追加できる控除項目</div>
+							            <div data-bind="ntsFormLabel: {required: false}">表に追加できる<span class="big-text">控除</span>項目</div>
 							            <hr />
 							            <com:ko tag="template" bind="{name: 'masterlist'}"></com:ko>
 							        </td>
@@ -150,7 +150,7 @@
 							<com:ko tag="with" bind="categorySettings()[2]">
 							<table>
 								<tr>
-								<td><div data-bind="ntsFormLabel: {required: false}">表に追加できる勤怠項目</div></td>
+								<td><div data-bind="ntsFormLabel: {required: false}">表に追加できる<span class="big-text">勤怠</span>項目</div></td>
 								<td style="padding-left: 75px"><div data-bind="ntsFormLabel: {required: false}">表に追加した項目</div></td>
 								</tr>
 								<tr>
@@ -166,7 +166,7 @@
 							<com:ko tag="with" bind="categorySettings()[3]">
 							<table>
 								<tr>
-								<td><div data-bind="ntsFormLabel: {required: false}">表に追加できる記事・その他項目</div></td>
+								<td><div data-bind="ntsFormLabel: {required: false}">表に追加できる<span class="big-text">記事・その他</span>項目</div></td>
 								<td style="padding-left: 75px"><div data-bind="ntsFormLabel: {required: false}">表に追加した項目</div></td>
 								</tr>
 								<tr>
@@ -218,7 +218,7 @@
 				value: masterItemsSelected, multiple: true}"></table>
 				</script>
 				<script type="text/html" id="aggregatelist">
-				<div style="margin-top: 40px" data-bind="ntsFormLabel: {required: false}">表に追加できる集約項目</div>
+				<div style="margin-top: 40px" data-bind="ntsFormLabel: {required: false}">表に追加できる<span class="big-text">集約</span>項目</div>
 				<hr />
 				<table id="aggregate-items" data-bind="ntsGridList: {
 				width: 250,

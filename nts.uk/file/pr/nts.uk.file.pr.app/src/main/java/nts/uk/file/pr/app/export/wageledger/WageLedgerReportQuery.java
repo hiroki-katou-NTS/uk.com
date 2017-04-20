@@ -7,6 +7,7 @@ package nts.uk.file.pr.app.export.wageledger;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSetting;
 
 /**
  * The Class WageLedgerReportQuery.
@@ -36,6 +37,9 @@ public class WageLedgerReportQuery {
 	
 	/** The base date. */
 	public GeneralDate baseDate;
+	
+	/** The output setting. */
+	public WLOutputSetting outputSetting;
 	
 	/**
 	 * The Enum LayoutType.

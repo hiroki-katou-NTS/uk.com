@@ -57,8 +57,8 @@ module qet001.i.viewmodel {
                 self.aggregateItemCategories.push(new AggregateCategory(PaymentType.BONUS, Category.ATTENDANCE, res));
                 
                 self.aggregateItemCategories()[0].loadAggregateItemByCategory();
+                dfd.resolve();
             })
-            dfd.resolve();
             return dfd.promise();
         }
         

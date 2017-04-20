@@ -5,8 +5,6 @@
 package nts.uk.ctx.pr.report.app.wageledger.find;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -16,6 +14,8 @@ import nts.uk.ctx.pr.report.app.itemmaster.find.ItemMaterFinder;
 import nts.uk.ctx.pr.report.app.itemmaster.find.MasterItemDto;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.HeaderSettingDto;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.OutputSettingDto;
+import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItem;
+import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemRepository;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSetting;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingRepository;
@@ -31,8 +31,13 @@ public class OutputSettingFinder {
 	@Inject
 	private WLOutputSettingRepository repository;
 	
+	/** The finder. */
 	@Inject
 	private ItemMaterFinder finder;
+	
+	/** The aggregate item repository. */
+	@Inject
+	private WLAggregateItemRepository aggregateItemRepository;
 	
 	/**
 	 * Find.
@@ -48,20 +53,47 @@ public class OutputSettingFinder {
 		OutputSettingDto dto = OutputSettingDto.builder().build();
 		outputSetting.saveToMemento(dto);
 		
-		// Add master item name to output setting.
+		// Find master item name.
 		List<String> masterItemCode = dto.categorySettings.stream()
 				.map(category -> category.outputItems.stream()
+						.filter(item -> !item.isAggregateItem)
 						.map(item -> item.code)
 						.collect(Collectors.toList()))
 				.flatMap(item -> item.stream())
 				.collect(Collectors.toList());
-		Map<String, MasterItemDto> masterItemMap = this.finder.findByCodes(companyCode, masterItemCode)
-				.stream().collect(Collectors.toMap(item -> item.code, Function.identity()));
+		List<MasterItemDto> masterItemMap = this.finder.findByCodes(companyCode, masterItemCode);
+		
+		// Find aggregate item name.
+		List<String> aggregateItemCode = dto.categorySettings.stream()
+				.map(category -> category.outputItems.stream()
+						.filter(item -> item.isAggregateItem)
+						.map(item -> item.code)
+						.collect(Collectors.toList()))
+				.flatMap(item -> item.stream())
+				.collect(Collectors.toList());
+		List<WLAggregateItem> aggregateItems = this.aggregateItemRepository
+				.findByCodes(companyCode, aggregateItemCode);
+		
+		// Add master item name to output setting. 
 		dto.categorySettings.forEach(cate -> {
 			cate.outputItems.forEach(item -> {
+				
+				// Master item.
 				if (!item.isAggregateItem) {
-					item.name = masterItemMap.get(item.code).name;
+					MasterItemDto masterItem = masterItemMap.stream()
+							.filter(mi -> mi.code.equals(item.code) 
+									&& mi.category.value == cate.category.value)
+							.findFirst().get();
+					item.name = masterItem.name;
+					return;
 				}
+				
+				// Aggregate item.
+				WLAggregateItem aggregateItem = aggregateItems.stream()
+						.filter(ai -> ai.getSubject().getCode().v().equals(item.code)
+								&& ai.getSubject().getCategory() == cate.category)
+						.findFirst().get();
+				item.name = aggregateItem.getName().v();
 			});
 		});
 		return dto;
@@ -72,7 +104,7 @@ public class OutputSettingFinder {
 	 *
 	 * @return the list
 	 */
-	public List<HeaderSettingDto> findAll(){
+	public List<HeaderSettingDto> findAll() {
 		String companyCode = AppContexts.user().companyCode(); 
 		return this.repository.findAll(companyCode).stream().map(setting -> {
 			return HeaderSettingDto.builder()
