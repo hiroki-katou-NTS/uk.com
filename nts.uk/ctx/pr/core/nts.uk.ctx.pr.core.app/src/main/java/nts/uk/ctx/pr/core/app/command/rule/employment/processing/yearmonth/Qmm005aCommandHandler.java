@@ -24,7 +24,7 @@ public class Qmm005aCommandHandler extends CommandHandler<Qmm005aCommand> {
 		try {
 			for (PaydayProcessingCommand cmd : command.getPaydayProcessings()) {
 				PaydayProcessing paydayProcessing = cmd.toDomain(companyCode);
-				PaydayProcessing paydayProcessingUpdate = paydayProcessingRepo.select1(companyCode,
+				PaydayProcessing paydayProcessingUpdate = paydayProcessingRepo.selectOne(companyCode,
 						paydayProcessing.getProcessingNo().v());
 				if (paydayProcessingUpdate != null) {
 					PaydayProcessing domain = PaydayProcessing.createSimpleFromJavaType(companyCode,

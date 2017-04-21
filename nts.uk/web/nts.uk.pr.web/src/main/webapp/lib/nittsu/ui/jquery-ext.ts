@@ -36,7 +36,6 @@ module nts.uk.ui.jqueryExtentions {
             switch (action) {
                 case 'set':
                     return setError($control, message);
-
                 case 'clear':
                     return clearErrors($control);
             }
@@ -49,18 +48,14 @@ module nts.uk.ui.jqueryExtentions {
                 message: message,
                 $control: $control
             });
-
             $control.parent().addClass('error');
-
             return $control;
         }
 
         function clearErrors($control: JQuery) {
             $control.data(DATA_HAS_ERROR, false);
             ui.errors.removeByElement($control);
-
             $control.parent().removeClass('error');
-
             return $control;
         }
 
@@ -73,7 +68,6 @@ module nts.uk.ui.jqueryExtentions {
         let DATA_INSTANCE_NAME = 'nts-popup-panel';
 
         $.fn.ntsPopup = function() {
-
             if (arguments.length === 1) {
                 var p: any = arguments[0];
                 if (_.isPlainObject(p)) {

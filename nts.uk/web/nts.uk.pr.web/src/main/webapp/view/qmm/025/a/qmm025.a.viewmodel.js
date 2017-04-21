@@ -28,7 +28,6 @@ var qmm025;
                     self.resiTax02 = ko.observable(0);
                     self.resiTax03 = ko.observable(0);
                     self.resiTax04 = ko.observable(0);
-                    // checkbox square
                     $.ig.checkboxMarkupClasses = "ui-state-default ui-corner-all ui-igcheckbox-small";
                 }
                 ScreenModel.prototype.startPage = function () {
@@ -76,7 +75,6 @@ var qmm025;
                     });
                     return dfd.promise();
                 };
-                //lay du lieu tu DB de hien thi ra man hinh
                 ScreenModel.prototype.getData = function (perResiTaxData, data) {
                     if (perResiTaxData === void 0) { perResiTaxData = []; }
                     var self = this;
@@ -138,7 +136,6 @@ var qmm025;
                 };
                 ScreenModel.prototype.bindGrid = function (items) {
                     var self = this;
-                    //tinh lai tong khi row bi thay doi- updating when row edited
                     $("#grid").on("iggridupdatingeditrowended", function (event, ui) {
                         var grid = ui.owner.grid;
                         self.resiTax05(ui.values["residenceTax05"]);
@@ -147,8 +144,6 @@ var qmm025;
                         var totalValue = 0;
                         if (ui.values["checkAllMonth"]) {
                             totalValue = self.resiTax05() + self.resiTax06() + self.resiTax07() * 10 || ui.values["residenceTaxPerYear"];
-                            //                    $("#grid").igGridUpdating("setCellValue", ui.rowID, "residenceTax08", residenceTax07);
-                            //set color khi thay doi trang thai cua totalValue
                             for (var i = 3; i < 12; i++) {
                                 $(grid.cellAt(i, 0)).removeClass('columnCss');
                             }
@@ -164,7 +159,6 @@ var qmm025;
                         }
                         else {
                             totalValue = self.resiTax05() + self.resiTax06() + self.resiTax07() || ui.values["residenceTaxPerYear"];
-                            //set color khi thay doi trang thai cua totalValue
                             for (var i = 3; i < 12; i++) {
                                 $(grid.cellAt(i, 0)).addClass('columnCss');
                             }
@@ -244,9 +238,7 @@ var qmm025;
                                 name: 'Selection',
                                 mode: "cell",
                                 multipleSelection: true,
-                                //allow use arrow keys for the selection of cells/rows
                                 activation: true,
-                                // click vao row, sau khi chuyen sang trang khac roi quay lai van click tai row do
                                 persist: true,
                                 rowSelectionChanging: function (evt, ui) {
                                     var grid = ui.owner.grid;
@@ -254,7 +246,6 @@ var qmm025;
                                         self.isFiredFromCheckbox(false);
                                     }
                                     else {
-                                        //in this case selection is caused by regular selection and it is canceled by returning false
                                         return false;
                                     }
                                 },
@@ -264,17 +255,8 @@ var qmm025;
                                 editMode: "row",
                                 enableAddRow: false,
                                 enableDeleteRow: false,
-                                //                        startEditTriggers: 'enter dblclick',
-                                //                        editCellStarting: function(evt, ui) {
-                                //                            if (ui.columnKey === "checkAllMonth") {
-                                //                                ui.value = !ui.value;
-                                //                            }
-                                //                        },
                                 editCellStarting: function (evt, ui) {
-                                    // Test for condition on which to cancel cell editing
-                                    // Here I use columnIndex property. This will disable from editing the first column in the grid.
                                     if (ui.columnIndex === 0 || ui.columnIndex === 1 || ui.columnIndex === 2 || ui.columnIndex === 12)
-                                        // cancel the editing
                                         return false;
                                 },
                                 columnSettings: [
@@ -299,14 +281,11 @@ var qmm025;
                             },
                             {
                                 name: 'RowSelectors',
-                                //hien checkbox dau tien
                                 enableCheckBoxes: true,
-                                //enableSelectAllForPaging: false -> khong hien dong chu selectAllRow
                                 enableSelectAllForPaging: false,
                                 checkBoxStateChanging: function (evt, ui) {
                                     self.isFiredFromCheckbox(true);
                                 },
-                                //lay rowId de xac dinh xem xoa row nao
                                 checkBoxStateChanged: function (evt, ui) {
                                     if (ui.state == "on") {
                                         self.personId().push(ui.rowKey);

@@ -140,7 +140,7 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 		List<ReportItemDto> reportItems = paymentData.aggregateItemList;
 		reportItems.add(paymentData.totalTax);
 		reportItems.add(paymentData.totalTaxExemption);
-		reportItems.add(paymentData.totalSubsidy);
+		reportItems.add(paymentData.totalSalaryPayment);
 		
 		// Fill item list.
 		printData.headerLabel = "支給";

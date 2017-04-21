@@ -6,7 +6,7 @@ var qmm003;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
-                    this.editMode = true; // true là mode thêm mới, false là mode sửa 
+                    this.editMode = true;
                     this.filteredData = ko.observableArray([]);
                     this.testNode = [];
                     this.nodeRegionPrefectures = ko.observableArray([]);
@@ -33,7 +33,6 @@ var qmm003;
                         }
                     });
                 }
-                // find Node By code (singleSelectedCode)
                 ScreenModel.prototype.findByCode = function (items, newValue) {
                     var self = this;
                     var node;
@@ -51,7 +50,6 @@ var qmm003;
                     return node;
                 };
                 ;
-                // find  Node by resiTaxCode
                 ScreenModel.prototype.findResidentialByCode = function (items, newValue) {
                     var self = this;
                     var objResi;
@@ -65,7 +63,6 @@ var qmm003;
                     return objResi;
                 };
                 ;
-                // find Node by name
                 ScreenModel.prototype.findByName = function (items, name) {
                     var self = this;
                     var node;
@@ -78,7 +75,6 @@ var qmm003;
                     });
                     return node;
                 };
-                //  set selectedcode by prefectureCode
                 ScreenModel.prototype.findPrefectureByResiTax = function (code) {
                     var self = this;
                     _.each(self.items(), function (objRegion) {
@@ -91,7 +87,6 @@ var qmm003;
                         });
                     });
                 };
-                // create array prefecture from japan location
                 ScreenModel.prototype.buildPrefectureArray = function () {
                     var self = this;
                     _.map(self.japanLocation, function (region) {
@@ -100,7 +95,6 @@ var qmm003;
                         });
                     });
                 };
-                // reset Data
                 ScreenModel.prototype.resetData = function () {
                     var self = this;
                     self.editMode = false;
@@ -122,7 +116,6 @@ var qmm003;
                     self.singleSelectedCode("");
                     self.selectedCode("");
                 };
-                // function not use
                 ScreenModel.prototype.search = function () {
                     var inputSearch = $("#search").find("input.ntsSearchBox").val();
                     if (inputSearch === '') {
@@ -131,7 +124,6 @@ var qmm003;
                     else {
                         $('#search').ntsError('clear');
                     }
-                    // errror search
                     var error;
                     _.find(this.filteredData(), function (obj) {
                         if (obj.code !== inputSearch) {
@@ -145,10 +137,8 @@ var qmm003;
                         $('#search').ntsError('clear');
                     }
                 };
-                // init menu
                 ScreenModel.prototype.init = function () {
                     var self = this;
-                    // data of treegrid
                     self.items = ko.observableArray([]);
                     self.mode = ko.observable(null);
                     var node;
@@ -184,7 +174,6 @@ var qmm003;
                         self.editMode = false;
                         self.singleSelectedCode(singleSelectedCode);
                         self.currentNode(ko.mapping.fromJS(currentNode));
-                        //console.log(ko.mapping.fromJS(self.currentNode()));
                     });
                 };
                 ScreenModel.prototype.openCDialog = function () {
@@ -193,9 +182,6 @@ var qmm003;
                     nts.uk.ui.windows.sub.modeless("/view/qmm/003/c/index.xhtml", { title: '住民税納付先の登録＞住民税報告先一覧', dialogClass: "no-close" }).onClosed(function () {
                         currentNode = nts.uk.ui.windows.getShared('currentNode');
                         self.residentialReportCode(currentNode.nodeText);
-                        //                self.currentResi().resiTaxReportCode = ko.mapping.fromJS(currentNode.nodeText);
-                        //                console.log(self.residentialReportCode());
-                        //                console.log(self.currentResi().resiTaxReportCode);
                     });
                 };
                 ScreenModel.prototype.openDDialog = function () {
@@ -216,13 +202,12 @@ var qmm003;
                         console.log(labelSubsub);
                     });
                 };
-                //11.初期データ取得処理 11. Initial data acquisition processing
                 ScreenModel.prototype.start = function () {
                     var dfd = $.Deferred();
                     var self = this;
                     (qmm003.a.service.getResidentialTax()).done(function (data) {
                         if (data.length > 0) {
-                            self.mode(true); // true, update mode 
+                            self.mode(true);
                             self.residentalTaxList(data);
                             (qmm003.a.service.getRegionPrefecture()).done(function (locationData) {
                                 self.japanLocation = locationData;
@@ -236,7 +221,7 @@ var qmm003;
                             });
                         }
                         else {
-                            self.mode(false); // false, new mode
+                            self.mode(false);
                         }
                         dfd.resolve();
                     }).fail(function (res) {
@@ -314,3 +299,4 @@ var qmm003;
     })(a = qmm003.a || (qmm003.a = {}));
 })(qmm003 || (qmm003 = {}));
 ;
+//# sourceMappingURL=viewmodel.js.map

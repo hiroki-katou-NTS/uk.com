@@ -250,9 +250,8 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	public WelfarePensionFundCode getWelfarePensionFundCode() {
 		if (this.typeValue.getPensionFundNo() == null || this.typeValue.getPensionFundNo().equals("")) {
 			return null;
-		} else {
-			return new WelfarePensionFundCode(new BigDecimal(this.typeValue.getPensionFundNo()));
 		}
+		return new WelfarePensionFundCode(new BigDecimal(this.typeValue.getPensionFundNo()));
 	}
 
 	/*

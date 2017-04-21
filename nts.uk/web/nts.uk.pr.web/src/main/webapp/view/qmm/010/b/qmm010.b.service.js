@@ -14,7 +14,6 @@ var nts;
                         (function (service) {
                             var model;
                             (function (model) {
-                                //Import SocialInsuranceOffice =>  SocialInsuranceOfficeInDto
                                 var SocialInsuranceOfficeImportDto = (function () {
                                     function SocialInsuranceOfficeImportDto() {
                                     }
@@ -29,3 +28,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qmm010.b.service.js.map

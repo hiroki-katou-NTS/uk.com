@@ -1,4 +1,3 @@
-/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -7,9 +6,6 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                /**
-                 * GridList binding handler
-                 */
                 var NtsGridListBindingHandler = (function () {
                     function NtsGridListBindingHandler() {
                     }
@@ -24,6 +20,7 @@ var nts;
                         var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
                         var deleteOptions = ko.unwrap(data.deleteOptions);
                         var observableColumns = ko.unwrap(data.columns);
+                        var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
                         var iggridColumns = _.map(observableColumns, function (c) {
                             c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
                             c["dataType"] = 'string';
@@ -33,7 +30,7 @@ var nts;
                         features.push({ name: 'Selection', multipleSelection: data.multiple });
                         features.push({ name: 'Sorting', type: 'local' });
                         if (data.multiple) {
-                            features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: false });
+                            features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: showNumbering });
                         }
                         $grid.igGrid({
                             width: data.width,
@@ -93,7 +90,6 @@ var nts;
                                     var key = c["key"] === undefined ? c["prop"] : c["key"];
                                     s[key] = moment(s[key]).format(c["format"]);
                                 });
-                                //                    currentSources.push(s);
                             });
                             $grid.igGrid('option', 'dataSource', currentSources);
                             $grid.igGrid("dataBind");

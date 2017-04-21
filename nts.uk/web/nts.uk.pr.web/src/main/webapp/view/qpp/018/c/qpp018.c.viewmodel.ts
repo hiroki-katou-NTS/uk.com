@@ -36,8 +36,7 @@ module nts.uk.pr.view.qpp018.c {
                 if (self.validate()) {
                     return;
                 }
-                let command = self.toJSObject();
-                service.saveCheckListPrintSetting(command).done(function(res: any) {
+                service.saveCheckListPrintSetting(self).done(function(res: any) {
                     dfd.resolve(res);
                 }).fail(function(res) {
                     dfd.reject(res);
@@ -71,25 +70,7 @@ module nts.uk.pr.view.qpp018.c {
             initUI(res: service.model.CheckListPrintSettingDto): void {
                 let self = this;
                 let checklistSetting = self.checklistPrintSettingModel();
-                if (res) {
-                    checklistSetting.setData(res);
-                } else {
-                    checklistSetting.defaultValue();
-                }
-            }
-            
-            toJSObject(): any {
-                let self = this;
-                let checklistSetting = self.checklistPrintSettingModel();
-                let command: any = {};
-                let checkListPrintSetting: any = {};
-                checkListPrintSetting.showCategoryInsuranceItem = checklistSetting.showCategoryInsuranceItem(); 
-                checkListPrintSetting.showDetail = checklistSetting.showDetail();
-                checkListPrintSetting.showOffice = checklistSetting.showOffice();
-                checkListPrintSetting.showTotal = checklistSetting.showTotal();
-                checkListPrintSetting.showDeliveryNoticeAmount = checklistSetting.showDeliveryNoticeAmount();
-                command.checkListPrintSettingDto = checkListPrintSetting;
-                return command;
+                checklistSetting.setData(res);
             }
         }
         
@@ -115,10 +96,10 @@ module nts.uk.pr.view.qpp018.c {
                     }
                     return false;
                 }, self);
-                self.showDetail = ko.observable(false);
-                self.showOffice = ko.observable(false);
-                self.showTotal = ko.observable(false);
-                self.showDeliveryNoticeAmount = ko.observable(false);
+                self.showDetail = ko.observable(true);
+                self.showOffice = ko.observable(true);
+                self.showTotal = ko.observable(true);
+                self.showDeliveryNoticeAmount = ko.observable(true);
                 self.healthInsuranceItems = ko.observableArray([
                     {code: "indicate", name: "表示する"},
                     {code: "hide", name: "表示しない"}
@@ -127,23 +108,12 @@ module nts.uk.pr.view.qpp018.c {
             
             setData(dto: service.model.CheckListPrintSettingDto): void {
                 let self = this;
-                if (dto.showCategoryInsuranceItem) {
-                    self.selectedHealthInsuranceItem("indicate");
-                } else {
-                    self.selectedHealthInsuranceItem("hide");
-                }
+                var insuranceItemCode = dto.showCategoryInsuranceItem ? 'indicate' : 'hide';
+                self.selectedHealthInsuranceItem(insuranceItemCode);
                 self.showDetail(dto.showDetail);
                 self.showOffice(dto.showOffice);
                 self.showTotal(dto.showTotal);
                 self.showDeliveryNoticeAmount(dto.showDeliveryNoticeAmount);
-            }
-            
-            defaultValue(): void {
-                let self = this;
-                self.selectedHealthInsuranceItem("indicate");
-                self.showOffice(false);
-                self.showTotal(false);
-                self.showDeliveryNoticeAmount(false);
             }
         }
     }
