@@ -15,8 +15,8 @@
 			<com:scriptfile path="qet001.b.start.js" />
 			<script type="text/javascript">
 				var dialogSize = {
-					width : 1300,
-					height : 800
+					width : 1350,
+					height : 850
 				};
 			</script>
 			<com:ValidatorScript>
@@ -41,7 +41,9 @@
 			<div id="contents-area">
 				<table>
 					<tr>
-						<td id="contents-left" data-bind="with: outputSettings, visible: true" style="display: none;">
+						<td data-bind="with: outputSettings, visible: true" style="display: none; vertical-align: top;">
+							<div id="contents-left" class="bg-green caret-right caret-background">
+								<i class="icon icon-searchbox"></i>
 							<div id="search-grid">
 								<div id="search-input" class="ntsSearchBox"
 									data-bind="ntsSearchBox: {comId: 'output-settings', 
@@ -54,13 +56,14 @@
 							<div id="output-setting-list">
 								<table id="output-settings" data-bind="ntsGridList: {
 										width: 250,
-										height: 550,
+										height: 400,
 										options: outputSettingList,
 										optionsValue: 'code',
 										columns: outputSettingColumns,
 										multiple: false,
 										value: outputSettingSelectedCode
 									}"></table>
+							</div>
 							</div>
 						</td>
 						<td id="contents-center" data-bind="with: outputSettingDetail, visible: true" style="display: none;">
@@ -112,11 +115,12 @@
 						</td>
 						<td id="contents-right" data-bind="visible: true" style="display: none;">
 							<div id="report-items-label" data-bind="ntsFormLabel: {required: true}">帳票出力項目の一覧</div>
+							<button class="help-button">?</button>
 							<div class="head-end"></div>
 							<div id="report-item-list">
 								<table id="report-items" data-bind="ntsGridList: {
 										width: 300,
-										height: 500,
+										height: 600,
  										options: reportItems,
  										optionsValue: 'itemCode',
  										columns: reportItemColumns,

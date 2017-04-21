@@ -21,7 +21,7 @@ var qet001;
                             }
                         },
                         { headerText: 'コード', prop: 'code', width: 50 },
-                        { headerText: '名称', prop: 'name', width: 50 },
+                        { headerText: '名称', prop: 'name', width: 100 },
                         { headerText: '削除', prop: 'code', width: 50,
                             formatter: function (data) {
                                 return '<button class="delete-button icon icon-close" id="' + data + '" >'
