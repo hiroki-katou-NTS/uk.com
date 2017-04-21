@@ -10,6 +10,7 @@ var qmm012;
                     this.CurrentZeroDisplaySet = ko.observable(1);
                     this.checked_NoDisplay = ko.observable(false);
                     this.CurrentItemDisplayAtr = ko.observable(1);
+                    this.noDisplayNames_Enable = ko.observable(false);
                     var self = this;
                     //F_001
                     self.roundingRules_ZeroDisplay = ko.observableArray([
@@ -18,6 +19,14 @@ var qmm012;
                     ]);
                     self.checked_NoDisplay.subscribe(function (NewValue) {
                         self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
+                    });
+                    self.CurrentZeroDisplaySet.subscribe(function (newValue) {
+                        if (newValue == 0) {
+                            self.noDisplayNames_Enable(true);
+                        }
+                        else {
+                            self.noDisplayNames_Enable(false);
+                        }
                     });
                 }
                 ScreenModel.prototype.loadData = function (itemMaster) {

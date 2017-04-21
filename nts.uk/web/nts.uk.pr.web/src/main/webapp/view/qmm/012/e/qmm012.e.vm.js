@@ -28,6 +28,7 @@ var qmm012;
                     this.CurrentMemo = ko.observable("");
                     this.CurrentZeroDisplaySet = ko.observable(1);
                     this.CurrentItemDisplayAtr = ko.observable(1);
+                    this.noDisplayNames_Enable = ko.observable(false);
                     var self = this;
                     //E_001 To 003
                     //E_001To003
@@ -52,7 +53,8 @@ var qmm012;
                             grouplength: 3,
                             currencyformat: "JPY",
                             currencyposition: 'right'
-                        }))
+                        })),
+                        enable: self.Checked_ErrorUpper
                     };
                     //E_002
                     self.Currencyeditor_AlarmUpper = {
@@ -62,7 +64,8 @@ var qmm012;
                             grouplength: 3,
                             currencyformat: "JPY",
                             currencyposition: 'right'
-                        }))
+                        })),
+                        enable: self.Checked_AlarmHigh
                     };
                     //E_003
                     self.Currencyeditor_ErrorLower = {
@@ -72,7 +75,8 @@ var qmm012;
                             grouplength: 3,
                             currencyformat: "JPY",
                             currencyposition: 'right'
-                        }))
+                        })),
+                        enable: self.Checked_ErrorLower
                     };
                     //E_004
                     self.Currencyeditor_AlarmLower = {
@@ -82,7 +86,8 @@ var qmm012;
                             grouplength: 3,
                             currencyformat: "JPY",
                             currencyposition: 'right'
-                        }))
+                        })),
+                        enable: self.Checked_AlarmLower
                     };
                     self.CurrentItemAttend.subscribe(function (ItemAttend) {
                         self.CurrentAvePayAtr(ItemAttend ? ItemAttend.avePayAtr : 0);
@@ -100,6 +105,14 @@ var qmm012;
                     });
                     self.Checked_NoDisplay.subscribe(function (NewValue) {
                         self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
+                    });
+                    self.CurrentZeroDisplaySet.subscribe(function (newValue) {
+                        if (newValue == 0) {
+                            self.noDisplayNames_Enable(true);
+                        }
+                        else {
+                            self.noDisplayNames_Enable(false);
+                        }
                     });
                 }
                 ScreenModel.prototype.loadData = function (itemMaster) {
@@ -126,6 +139,7 @@ var qmm012;
                     self.CurrentErrRangeLow(0);
                     self.CurrentErrRangeHigh(0);
                     self.CurrentAlRangeLow(0);
+                    self.CurrentZeroDisplaySet(1);
                     self.CurrentAlRangeHigh(0);
                     self.CurrentWorkDaysScopeAtr(1);
                     self.CurrentMemo("");
@@ -142,7 +156,7 @@ var qmm012;
                         dfd.resolve(ItemAttend);
                     }).fail(function (res) {
                         // Alert message
-                        alert(res);
+                        nts.uk.ui.dialog.alert(res);
                     });
                     return dfd.promise();
                 };

@@ -7,7 +7,7 @@
 
 <body>
 
-	<ui:composition template="../a/master/dialog.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile path="qmm012.i.start.js" />
 			<com:scriptfile path="qmm012.i.service.js" />
@@ -40,12 +40,14 @@
 				<div class="nts-left-content caret-right caret-background ">
 					<i class="icon icon-searchbox"></i>
 					<div class="divLine">
-						<div id="I_Lbl_ItemCategoryTitle" data-bind="ntsFormLabel: {  required: false }">項目区分</div>
-						<label id="I_Lbl_ItemCategoryValue">項目 </label>
+						<div id="I_Lbl_ItemCategoryTitle"
+							data-bind="ntsFormLabel: {  required: false }">項目区分</div>
+						<label id="I_Lbl_ItemCategoryValue"
+							data-bind="text: ItemCategoryName">項目 </label>
 					</div>
 					<div class="divLine">
-						<div id="I_Lbl_CodeNameSearch" data-bind="ntsFormLabel: {  required: false }">コード/名称
-						</div>
+						<div id="I_Lbl_CodeNameSearch"
+							data-bind="ntsFormLabel: {  required: false }">コード/名称</div>
 						<div id="I_Sch_SearchButton"
 							data-bind="ntsSearchBox: {
 								comId: 'I_Lst_BreakdownList',
@@ -89,7 +91,8 @@
 									data-bind="ntsFormLabel: {  required: true, constraint : 'ItemName' }">略名</div>
 							</div>
 							<div class="divLineCol2">
-								<input id="I_Inp_AbbreviatedName" data-name="略名" class="save-error"
+								<input id="I_Inp_AbbreviatedName" data-name="略名"
+									class="save-error"
 									data-bind="ntsTextEditor: {required: true, value: CurrentItemBreakdownAbName  , constraint : 'ItemName'}"></input>
 							</div>
 						</div>
@@ -100,7 +103,8 @@
 									data-bind="ntsFormLabel: {  required: true }">項目区分</div>
 							</div>
 							<div class="divLineCol2">
-								<label id="I_Lbl_ItemCategoryValue"> 項目区分 </label>
+								<label id="I_Lbl_ItemCategoryValue"
+									data-bind="text: ItemCategoryName"> 項目区分 </label>
 							</div>
 						</div>
 						<div class="divLine">
@@ -111,7 +115,8 @@
 							</div>
 							<div class="divLineCol2">
 								<button id="I_Btn_ReferenceButton" class="small">参照</button>
-								<label id="I_Lbl_IntegrationCodeValue" data-bind="text:CurrentUniteCode">統合コード</label>
+								<label id="I_Lbl_IntegrationCodeValue"
+									data-bind="text:( CurrentItemBreakdownCode() + '  ' +  CurrentItemBreakdownName() )">統合コード</label>
 							</div>
 						</div>
 					</div>
@@ -127,10 +132,9 @@
 										options: roundingRules_ZeroDisplayIndicator ,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: CurrentZeroDispSet,
-										enable: enable }"></div>
+										value: CurrentZeroDispSet }"></div>
 								<div id="I_Sel_NoDisplay"
-									data-bind="ntsCheckBox: { checked: Checked_NoDisplay, enable: enable, text: '' }"></div>
+									data-bind="ntsCheckBox: { checked: Checked_NoDisplay, enable: noDisplay_Enable, text: '項目名も表示しない' }"></div>
 
 							</div>
 						</div>
@@ -141,13 +145,15 @@
 							</div>
 							<div class="divLineCol2">
 								<div id="I_Sel_ErrorUpper"
-									data-bind="ntsCheckBox: { checked: Checked_ErrorUpper, enable: enable }"></div>
+									data-bind="ntsCheckBox: { checked: Checked_ErrorUpper}"></div>
 								<div data-bind="with: currencyeditor_I_Inp_ErrorUpper">
-									<input data-name="エラー範囲" id="I_Inp_ErrorUpper" class="save-error"
+									<input data-name="エラー範囲" id="I_Inp_ErrorUpper"
+										class="save-error"
 										data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
-										option: option}" />
+										option: option,
+										enable:enable}" />
 								</div>
 								<label id="I_Lbl_ExceedsError">を超える場合にエラーとする</label>
 							</div>
@@ -156,13 +162,15 @@
 							<div class="divLineCol1"></div>
 							<div class="divLineCol2">
 								<div id="I_Sel_ErrorLower"
-									data-bind="ntsCheckBox: { checked: Checked_ErrorLower, enable: enable }"></div>
+									data-bind="ntsCheckBox: { checked: Checked_ErrorLower}"></div>
 								<div data-bind="with: currencyeditor_I_Inp_ErrorLower">
-									<input data-name="エラー範囲" id="I_Inp_ErrorLower" class="save-error"
+									<input data-name="エラー範囲" id="I_Inp_ErrorLower"
+										class="save-error"
 										data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
-										option: option}" />
+										option: option,
+										enable:enable}" />
 								</div>
 								<label id="I_Lbl_ErrorLess">未満の場合にエラーとする</label>
 							</div>
@@ -174,13 +182,15 @@
 							</div>
 							<div class="divLineCol2 verticalAlignBottom">
 								<div id="I_Sel_AlarmUpper"
-									data-bind="ntsCheckBox: { checked: Checked_AlarmUpper, enable: enable }"></div>
+									data-bind="ntsCheckBox: { checked: Checked_AlarmUpper }"></div>
 								<div data-bind="with: currencyeditor_I_Inp_AlarmUpper">
-									<input data-name="アラーム範囲" class="save-error" id="I_Inp_AlarmUpper"
+									<input data-name="アラーム範囲" class="save-error"
+										id="I_Inp_AlarmUpper"
 										data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
-										option: option}" />
+										option: option,
+										enable:enable}" />
 								</div>
 								<label id="I_Lbl_ExceedsAlarm">を超える場合にアラームとする</label>
 							</div>
@@ -189,13 +199,16 @@
 							<div class="divLineCol1"></div>
 							<div class="divLineCol2">
 								<div id="I_Sel_AlarmLower"
-									data-bind="ntsCheckBox: { checked: Checked_AlarmLower, enable: enable }"></div>
+									data-bind="ntsCheckBox: { checked: Checked_AlarmLower}"></div>
 								<div data-bind="with: currencyeditor_I_Inp_AlarmLower">
-									<input data-name="アラーム範囲" id="I_Inp_AlarmLower" class="save-error"
+									<input data-name="アラーム範囲" id="I_Inp_AlarmLower"
+										class="save-error"
 										data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
-										option: option}" />
+										option: option,
+										enable:enable
+										}" />
 								</div>
 								<label id="I_Lbl_AlarmLess">未満の場合にアラームとする</label>
 							</div>

@@ -27,13 +27,13 @@ var qmm012;
                     this.H_Sel_October = ko.observable(false);
                     this.H_Sel_November = ko.observable(false);
                     this.H_Sel_December = ko.observable(false);
+                    this.CycleSetting = ko.observable(false);
                     var self = this;
                     //set Switch Data
                     self.Roundingrules_ValidityPeriod = ko.observableArray([
                         { code: 1, name: '設定する' },
                         { code: 0, name: '設定しない' }
                     ]);
-                    //005 006 007 008 009 010
                     self.Roundingrules_CycleSetting = ko.observableArray([
                         { code: 1, name: 'する' },
                         { code: 0, name: 'しない' }
@@ -57,6 +57,12 @@ var qmm012;
                         self.H_Sel_December(ItemPeriod ? ItemPeriod.cycle12Atr == 1 ? true : false : false);
                     });
                     self.LoadItemPeriod();
+                    self.CurrentCycleAtr.subscribe(function (newValue) {
+                        if (newValue == 1)
+                            self.CycleSetting(true);
+                        else
+                            self.CycleSetting(false);
+                    });
                 }
                 ScreenModel.prototype.LoadItemPeriod = function () {
                     //this dialog only load data in session from parrent call it
@@ -85,7 +91,7 @@ var qmm012;
                             nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);
                             nts.uk.ui.windows.close();
                         }).fail(function (res) {
-                            alert(res.value);
+                            nts.uk.ui.dialog.alert(res.value);
                         });
                     }
                     else {
@@ -93,7 +99,7 @@ var qmm012;
                             nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);
                             nts.uk.ui.windows.close();
                         }).fail(function (res) {
-                            alert(res.value);
+                            nts.uk.ui.dialog.alert(res.value);
                         });
                     }
                 };

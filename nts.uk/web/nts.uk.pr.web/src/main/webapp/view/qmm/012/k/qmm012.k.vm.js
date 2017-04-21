@@ -36,7 +36,7 @@ var qmm012;
                         else
                             self.taxLimitGridCurrentCode(selectedCode);
                     }).fail(function (res) {
-                        alert(res);
+                        nts.uk.ui.dialog.alert(res);
                     });
                 };
                 ScreenModel.prototype.SubmitDialog = function () {

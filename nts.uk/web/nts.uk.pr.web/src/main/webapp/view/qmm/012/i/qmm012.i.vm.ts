@@ -14,8 +14,7 @@ module qmm012.i.viewmodel {
         gridListCurrentCode: KnockoutObservable<string> = ko.observable('');
         //Switch
         roundingRules_ZeroDisplayIndicator: KnockoutObservableArray<any>;
-
-        enable: KnockoutObservable<boolean>;
+        noDisplay_Enable: KnockoutObservable<boolean> = ko.observable(false);
         //currencyeditor
         currencyeditor_I_Inp_ErrorUpper: any;
         currencyeditor_I_Inp_AlarmUpper: any;
@@ -44,11 +43,10 @@ module qmm012.i.viewmodel {
         currentItemCode: KnockoutObservable<string> = ko.observable('');
         dirty: nts.uk.ui.DirtyChecker;
         oldGridListCurrentCode: KnockoutObservable<string> = ko.observable('');
-
+        ItemCategoryName: KnockoutObservable<string> = ko.observable('');
         constructor() {
             var self = this;
             //start Switch Data
-            self.enable = ko.observable(true);
             self.roundingRules_ZeroDisplayIndicator = ko.observableArray([
                 { code: 1, name: 'ゼロを表示する' },
                 { code: 0, name: 'ゼロを表示しない' }
@@ -63,7 +61,8 @@ module qmm012.i.viewmodel {
                     grouplength: 3,
                     currencyformat: "JPY",
                     currencyposition: 'right'
-                }))
+                })),
+                enable: self.Checked_ErrorUpper
             };
             //006
             self.currencyeditor_I_Inp_AlarmUpper = {
@@ -73,7 +72,8 @@ module qmm012.i.viewmodel {
                     grouplength: 3,
                     currencyformat: "JPY",
                     currencyposition: 'right'
-                }))
+                })),
+                enable: self.Checked_AlarmUpper
             };
             //007
             self.currencyeditor_I_Inp_ErrorLower = {
@@ -83,7 +83,8 @@ module qmm012.i.viewmodel {
                     grouplength: 3,
                     currencyformat: "JPY",
                     currencyposition: 'right'
-                }))
+                })),
+                enable: self.Checked_ErrorLower
             };
             //008
             self.currencyeditor_I_Inp_AlarmLower = {
@@ -93,7 +94,8 @@ module qmm012.i.viewmodel {
                     grouplength: 3,
                     currencyformat: "JPY",
                     currencyposition: 'right'
-                }))
+                })),
+                enable: self.Checked_AlarmLower
             };
             //end currencyeditor
             // start search box 
@@ -121,7 +123,7 @@ module qmm012.i.viewmodel {
                 self.CurrentItemBreakdownName(itemBD ? itemBD.itemBreakdownName : '');
                 self.CurrentItemBreakdownAbName(itemBD ? itemBD.itemBreakdownAbName : '');
                 self.CurrentUniteCode(itemBD ? itemBD.uniteCode : '');
-                self.CurrentZeroDispSet(itemBD ? itemBD.zeroDispSet : 0);
+                self.CurrentZeroDispSet(itemBD ? itemBD.zeroDispSet : 1);
                 self.Checked_NoDisplay(itemBD ? itemBD.itemDispAtr == 1 ? false : true : false);
                 self.CurrentItemDispAtr(itemBD ? itemBD.itemDispAtr : 0);
                 self.Checked_ErrorLower(itemBD ? itemBD.errRangeLowAtr == 1 ? true : false : false);
@@ -162,7 +164,15 @@ module qmm012.i.viewmodel {
                     if (item)
                         $('#I_Inp_Code').ntsError('set', '入力したコードは既に存在しています');
                 }
-            })
+            });
+            self.CurrentZeroDispSet.subscribe(function(newValue) {
+                if (newValue == 0) {
+                    self.noDisplay_Enable(true);
+                } else {
+                    self.noDisplay_Enable(false);
+                }
+            });
+
             self.loadItemBDs();
         }
         clearAllValidateError() {
@@ -177,6 +187,20 @@ module qmm012.i.viewmodel {
                 self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
                 self.currentItemCode(itemMaster.itemCode);
             }
+            self.ItemCategoryName(self.genCategoryName(self.CurrentItemMaster().categoryAtr));
+        }
+        genCategoryName(categoryAtr) {
+            let CategoryName = '';
+            switch (categoryAtr) {
+                case 0:
+                    CategoryName = "支給内訳項目";
+                    break;
+                case 1:
+                    CategoryName = "控除内訳項目";
+                    break;
+
+            }
+            return CategoryName;
         }
         reloadAndSetSelectedCode(itemCode?) {
             let self = this;
@@ -201,7 +225,7 @@ module qmm012.i.viewmodel {
                     self.dirty = new nts.uk.ui.DirtyChecker(self.dirtyItemBD);
                 } else {
                     //if no item, show message set new mode
-                    alert("対象データがありません。");
+                    nts.uk.ui.dialog.alert("対象データがありません。");
                     self.setNewMode();
                 }
 
@@ -270,7 +294,7 @@ module qmm012.i.viewmodel {
                         // set selected code
                         self.reloadAndSetSelectedCode(itemCode);
                     }).fail(function(res) {
-                        alert(res.value);
+                        nts.uk.ui.dialog.alert(res.value);
                     });
 
                 })
@@ -301,7 +325,7 @@ module qmm012.i.viewmodel {
                 self.CurrentItemBD(itemBD);
                 self.reloadAndSetSelectedCode(itemBD.itemBreakdownCode);
             }).fail(function(res) {
-                alert(res.value);
+                nts.uk.ui.dialog.alert(res.value);
             });
         }
         updateItemBD(itemBD) {
@@ -312,7 +336,7 @@ module qmm012.i.viewmodel {
                 // set selected code
                 self.reloadAndSetSelectedCode(itemCode);
             }).fail(function(res) {
-                alert(res.value);
+                nts.uk.ui.dialog.alert(res.value);
             });
         }
         closeDialog() {
@@ -338,7 +362,7 @@ module qmm012.i.viewmodel {
             self.CurrentItemBreakdownName('');
             self.CurrentItemBreakdownAbName('');
             self.CurrentUniteCode('');
-            self.CurrentZeroDispSet(0);
+            self.CurrentZeroDispSet(1);
             self.Checked_NoDisplay(false);
             self.CurrentItemDispAtr(0);
             self.Checked_ErrorLower(false);

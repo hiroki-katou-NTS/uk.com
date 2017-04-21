@@ -36,6 +36,7 @@ module qmm012.h.viewmodel {
         H_Sel_October: KnockoutObservable<boolean> = ko.observable(false);
         H_Sel_November: KnockoutObservable<boolean> = ko.observable(false);
         H_Sel_December: KnockoutObservable<boolean> = ko.observable(false);
+        CycleSetting: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             var self = this;
             //set Switch Data
@@ -43,7 +44,6 @@ module qmm012.h.viewmodel {
                 { code: 1, name: '設定する' },
                 { code: 0, name: '設定しない' }
             ]);
-            //005 006 007 008 009 010
 
             self.Roundingrules_CycleSetting = ko.observableArray([
                 { code: 1, name: 'する' },
@@ -70,6 +70,12 @@ module qmm012.h.viewmodel {
 
             });
             self.LoadItemPeriod();
+            self.CurrentCycleAtr.subscribe(function(newValue) {
+                if (newValue == 1)
+                    self.CycleSetting(true);
+                else
+                    self.CycleSetting(false);
+            })
         }
         LoadItemPeriod() {
             //this dialog only load data in session from parrent call it
@@ -116,14 +122,14 @@ module qmm012.h.viewmodel {
                     nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);
                     nts.uk.ui.windows.close();
                 }).fail(function(res: any) {
-                    alert(res.value);
+                    nts.uk.ui.dialog.alert(res.value);
                 });
             } else {
                 service.addItemPeriod(itemPeriod, self.CurrentItemMaster()).done(function(res: any) {
                     nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);
                     nts.uk.ui.windows.close();
                 }).fail(function(res: any) {
-                    alert(res.value);
+                    nts.uk.ui.dialog.alert(res.value);
                 });
             }
         }

@@ -7,7 +7,7 @@
 
 <body>
 
-	<ui:composition template="../a/master/dialog.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile path="qmm012.h.start.js" />
 			<com:scriptfile path="qmm012.h.service.js" />
@@ -30,17 +30,19 @@
 					</div>
 					<div class="divLine">
 						<div class="divLineCol1">
-							<div id="H_Lbl_ItemClassificationTitle" data-bind="ntsFormLabel: {  required: true }">項目区分</div>
+							<div id="H_Lbl_ItemClassificationTitle"
+								data-bind="ntsFormLabel: {  required: true }">項目区分</div>
 						</div>
 						<div class="divLineCol2">
-							<label id="H_Lbl_ItemClassificationValue" data-bind="text:CurrentCategoryAtrName">項目
-							</label>
+							<label id="H_Lbl_ItemClassificationValue"
+								data-bind="text:CurrentCategoryAtrName">項目 </label>
 						</div>
 
 					</div>
 					<div class="divLine">
 						<div class="divLineCol1">
-							<div id="H_Lbl_CodeTitle" data-bind="ntsFormLabel: {  required: true }">コード・名称</div>
+							<div id="H_Lbl_CodeTitle"
+								data-bind="ntsFormLabel: {  required: true }">コード・名称</div>
 						</div>
 						<div class="divLineCol2">
 							<label id="H_Lbl_CodeValue" data-bind="text:CurrentItemCode">項目
@@ -52,7 +54,8 @@
 				<div id="content-header-bottom">
 					<div class="divLine">
 						<div class="divLineCol1">
-							<div id="H_Lbl_ValidityPeriod" data-bind="ntsFormLabel: {  required: true }">有効期間</div>
+							<div id="H_Lbl_ValidityPeriod"
+								data-bind="ntsFormLabel: {  required: true }">有効期間</div>
 						</div>
 						<div class="divLineCol2">
 							<div id="H_Sel_ValidityPeriod" class="cf switchMediumSize"
@@ -82,7 +85,7 @@
 					<div class="divLine">
 						<div class="divLineCol1">
 							<div id="H_Lbl_CycleSetting"
-								data-bind="ntsFormLabel: {  required: false }">項目区分</div>
+								data-bind="ntsFormLabel: {  required: false }">サイクル設定</div>
 						</div>
 						<div class="divLineCol2">
 							<div id="H_Sel_CycleSetting" class="cf switchMediumSize"
@@ -107,42 +110,43 @@
 						<div class="divLineCol1"></div>
 						<div class="divLineCol2">
 							<div id="H_Sel_January" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: H_Sel_January , text: '1月' }"></div>
+								data-bind="ntsCheckBox: { checked: H_Sel_January , text: '1月' , enable:CycleSetting }"></div>
 							<div id="H_Sel_February" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: H_Sel_February , text: '2月' }"></div>
+								data-bind="ntsCheckBox: { checked: H_Sel_February , text: '2月'  , enable:CycleSetting}"></div>
 							<div id="H_Sel_InMarch" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: H_Sel_InMarch , text: '3月'  }"></div>
+								data-bind="ntsCheckBox: { checked: H_Sel_InMarch , text: '3月'  , enable:CycleSetting }"></div>
 							<div id="H_Sel_April" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: H_Sel_April , text: '4月'  }"></div>
+								data-bind="ntsCheckBox: { checked: H_Sel_April , text: '4月'  , enable:CycleSetting }"></div>
 							<div id="H_Sel_May" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: H_Sel_May , text: '5月'  }"></div>
+								data-bind="ntsCheckBox: { checked: H_Sel_May , text: '5月'  , enable:CycleSetting }"></div>
 							<div id="H_Sel_June" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: H_Sel_June , text: '6月'  }"></div>
+								data-bind="ntsCheckBox: { checked: H_Sel_June , text: '6月'  , enable:CycleSetting }"></div>
 						</div>
 					</div>
 					<div class="divLine">
 						<div class="divLineCol1"></div>
 						<div class="divLineCol2">
 							<div id="H_Sel_July" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: H_Sel_July , text: '7月'  }"></div>
+								data-bind="ntsCheckBox: { checked: H_Sel_July , text: '7月'   , enable:CycleSetting}"></div>
 							<div id="H_Sel_August" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: {checked: H_Sel_August ,text: '8月'  }"></div>
+								data-bind="ntsCheckBox: {checked: H_Sel_August ,text: '8月'  , enable:CycleSetting }"></div>
 							<div id="H_Sel_September" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: H_Sel_September , text: '9月'  }"></div>
+								data-bind="ntsCheckBox: { checked: H_Sel_September , text: '9月' , enable:CycleSetting  }"></div>
 							<div id="H_Sel_October" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: H_Sel_October ,text: '10月' }"></div>
+								data-bind="ntsCheckBox: { checked: H_Sel_October ,text: '10月' , enable:CycleSetting }"></div>
 							<div id="H_Sel_November" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: H_Sel_November ,text: '11月' }"></div>
+								data-bind="ntsCheckBox: { checked: H_Sel_November ,text: '11月'  , enable:CycleSetting}"></div>
 							<div id="H_Sel_December" class="checkboxLightGreen"
-								data-bind="ntsCheckBox: { checked: H_Sel_December ,text: '12月'  }"></div>
+								data-bind="ntsCheckBox: { checked: H_Sel_December ,text: '12月'   , enable:CycleSetting}"></div>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div id="contents-area">
 				<button id="H_Btn_SettingButton" class="x-large proceed"
-					data-bind="click:SubmitDialog,enable: $root.errors.isEmpty">選択ボタン</button>
-				<button id="H_Btn_CancelButton" class="large" data-bind="click:CloseDialog">キャンセルボタン</button>
+					data-bind="click:SubmitDialog,enable: $root.errors.isEmpty">設定</button>
+				<button id="H_Btn_CancelButton" class="large"
+					data-bind="click:CloseDialog">キャンセル</button>
 			</div>
 		</ui:define>
 	</ui:composition>

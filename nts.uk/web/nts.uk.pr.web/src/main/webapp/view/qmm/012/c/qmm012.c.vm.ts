@@ -122,8 +122,7 @@ module qmm012.c.viewmodel {
                     grouplength: 3,
                     currencyformat: "JPY",
                     currencyposition: 'right'
-                })),
-                required: ko.observable(false)
+                }))
             };
             //C_002
             self.currencyeditor_ErrorUpper = {
@@ -134,7 +133,7 @@ module qmm012.c.viewmodel {
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 })),
-                required: ko.observable(false)
+                enable:self.C_Sel_ErrorUpper_Selected
             };
             //C_003
             self.currencyeditor_AlarmUpper = {
@@ -145,7 +144,7 @@ module qmm012.c.viewmodel {
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 })),
-                required: ko.observable(false)
+                enable:self.C_Sel_AlarmHigh_Selected
             };
             //C_004
             self.currencyeditor_ErrorLower = {
@@ -156,7 +155,7 @@ module qmm012.c.viewmodel {
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 })),
-                required: ko.observable(false)
+                enable:self.C_Sel_ErrorLower_Selected
             };
             //C_005
             self.currencyeditor_AlarmLower = {
@@ -167,7 +166,7 @@ module qmm012.c.viewmodel {
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 })),
-                required: ko.observable(false)
+                enable:self.C_Sel_AlarmLower_Selected
             };
             //end currencyeditor
             //end textarea
@@ -176,6 +175,8 @@ module qmm012.c.viewmodel {
                 switch (newValue) {
                     case 1:
                     case 3:
+                        $('#C_Div_004').show();
+                        $('#C_Div_002').show();
                         self.CurrentLimitMnyAtr(0);
                         $('#C_Div_001').show();
                         break;
@@ -212,12 +213,10 @@ module qmm012.c.viewmodel {
             self.CurrentLimitMnyAtr.subscribe(function(newValue) {
                 $('#C_Div_002').hide();
                 $('#C_Div_003').hide();
-                $('#C_Lbl_LimitAmount').hide();
                 $('#C_Div_004').show();
                 switch (newValue) {
                     case 0:
                         $('#C_Div_002').show();
-                        $('#C_Lbl_LimitAmount').show();
                         break;
                     case 1:
                         $('#C_Div_003').show();
@@ -246,7 +245,7 @@ module qmm012.c.viewmodel {
                         self.currentCommuteNoTaxLimitDto(CommuteNoTaxLimit);
                     }).fail(function(res) {
                         // Alert message
-                        alert(res);
+                        nts.uk.ui.dialog.alert(res);
                     });
                 } else {
                     self.currentCommuteNoTaxLimitDto(undefined);
@@ -321,7 +320,7 @@ module qmm012.c.viewmodel {
                 dfd.resolve(ItemSalary);
             }).fail(function(res) {
                 // Alert message
-                alert(res);
+                nts.uk.ui.dialog.alert(res);
             });
             return dfd.promise();
         }
@@ -333,7 +332,7 @@ module qmm012.c.viewmodel {
                 dfd.resolve(ItemPeriod);
             }).fail(function(res) {
                 // Alert message
-                alert(res);
+                nts.uk.ui.dialog.alert(res);
             });
             return dfd.promise();
         }
@@ -345,7 +344,7 @@ module qmm012.c.viewmodel {
                 dfd.resolve(ItemBDs);
             }).fail(function(res) {
                 // Alert message
-                alert(res);
+                nts.uk.ui.dialog.alert(res);
             });
             return dfd.promise();
         }

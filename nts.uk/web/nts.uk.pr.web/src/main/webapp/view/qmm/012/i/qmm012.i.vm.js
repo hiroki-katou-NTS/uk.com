@@ -14,6 +14,7 @@ var qmm012;
                     this.Checked_ErrorLower = ko.observable(false);
                     this.Checked_AlarmLower = ko.observable(false);
                     this.gridListCurrentCode = ko.observable('');
+                    this.noDisplay_Enable = ko.observable(false);
                     this.CurrentItemMaster = ko.observable(null);
                     this.ItemBDList = ko.observableArray([]);
                     this.CurrentCategoryAtrName = ko.observable('');
@@ -33,9 +34,9 @@ var qmm012;
                     this.I_Btn_DeleteButton_enable = ko.observable(true);
                     this.currentItemCode = ko.observable('');
                     this.oldGridListCurrentCode = ko.observable('');
+                    this.ItemCategoryName = ko.observable('');
                     var self = this;
                     //start Switch Data
-                    self.enable = ko.observable(true);
                     self.roundingRules_ZeroDisplayIndicator = ko.observableArray([
                         { code: 1, name: 'ゼロを表示する' },
                         { code: 0, name: 'ゼロを表示しない' }
@@ -50,7 +51,8 @@ var qmm012;
                             grouplength: 3,
                             currencyformat: "JPY",
                             currencyposition: 'right'
-                        }))
+                        })),
+                        enable: self.Checked_ErrorUpper
                     };
                     //006
                     self.currencyeditor_I_Inp_AlarmUpper = {
@@ -60,7 +62,8 @@ var qmm012;
                             grouplength: 3,
                             currencyformat: "JPY",
                             currencyposition: 'right'
-                        }))
+                        })),
+                        enable: self.Checked_AlarmUpper
                     };
                     //007
                     self.currencyeditor_I_Inp_ErrorLower = {
@@ -70,7 +73,8 @@ var qmm012;
                             grouplength: 3,
                             currencyformat: "JPY",
                             currencyposition: 'right'
-                        }))
+                        })),
+                        enable: self.Checked_ErrorLower
                     };
                     //008
                     self.currencyeditor_I_Inp_AlarmLower = {
@@ -80,7 +84,8 @@ var qmm012;
                             grouplength: 3,
                             currencyformat: "JPY",
                             currencyposition: 'right'
-                        }))
+                        })),
+                        enable: self.Checked_AlarmLower
                     };
                     //end currencyeditor
                     // start search box 
@@ -104,7 +109,7 @@ var qmm012;
                         self.CurrentItemBreakdownName(itemBD ? itemBD.itemBreakdownName : '');
                         self.CurrentItemBreakdownAbName(itemBD ? itemBD.itemBreakdownAbName : '');
                         self.CurrentUniteCode(itemBD ? itemBD.uniteCode : '');
-                        self.CurrentZeroDispSet(itemBD ? itemBD.zeroDispSet : 0);
+                        self.CurrentZeroDispSet(itemBD ? itemBD.zeroDispSet : 1);
                         self.Checked_NoDisplay(itemBD ? itemBD.itemDispAtr == 1 ? false : true : false);
                         self.CurrentItemDispAtr(itemBD ? itemBD.itemDispAtr : 0);
                         self.Checked_ErrorLower(itemBD ? itemBD.errRangeLowAtr == 1 ? true : false : false);
@@ -145,6 +150,14 @@ var qmm012;
                                 $('#I_Inp_Code').ntsError('set', '入力したコードは既に存在しています');
                         }
                     });
+                    self.CurrentZeroDispSet.subscribe(function (newValue) {
+                        if (newValue == 0) {
+                            self.noDisplay_Enable(true);
+                        }
+                        else {
+                            self.noDisplay_Enable(false);
+                        }
+                    });
                     self.loadItemBDs();
                 }
                 ScreenModel.prototype.clearAllValidateError = function () {
@@ -159,6 +172,19 @@ var qmm012;
                         self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
                         self.currentItemCode(itemMaster.itemCode);
                     }
+                    self.ItemCategoryName(self.genCategoryName(self.CurrentItemMaster().categoryAtr));
+                };
+                ScreenModel.prototype.genCategoryName = function (categoryAtr) {
+                    var CategoryName = '';
+                    switch (categoryAtr) {
+                        case 0:
+                            CategoryName = "支給内訳項目";
+                            break;
+                        case 1:
+                            CategoryName = "控除内訳項目";
+                            break;
+                    }
+                    return CategoryName;
                 };
                 ScreenModel.prototype.reloadAndSetSelectedCode = function (itemCode) {
                     var self = this;
@@ -184,7 +210,7 @@ var qmm012;
                         }
                         else {
                             //if no item, show message set new mode
-                            alert("対象データがありません。");
+                            nts.uk.ui.dialog.alert("対象データがありません。");
                             self.setNewMode();
                         }
                     });
@@ -236,7 +262,7 @@ var qmm012;
                                 // set selected code
                                 self.reloadAndSetSelectedCode(itemCode);
                             }).fail(function (res) {
-                                alert(res.value);
+                                nts.uk.ui.dialog.alert(res.value);
                             });
                         });
                     }
@@ -267,7 +293,7 @@ var qmm012;
                         self.CurrentItemBD(itemBD);
                         self.reloadAndSetSelectedCode(itemBD.itemBreakdownCode);
                     }).fail(function (res) {
-                        alert(res.value);
+                        nts.uk.ui.dialog.alert(res.value);
                     });
                 };
                 ScreenModel.prototype.updateItemBD = function (itemBD) {
@@ -278,7 +304,7 @@ var qmm012;
                         // set selected code
                         self.reloadAndSetSelectedCode(itemCode);
                     }).fail(function (res) {
-                        alert(res.value);
+                        nts.uk.ui.dialog.alert(res.value);
                     });
                 };
                 ScreenModel.prototype.closeDialog = function () {
@@ -303,7 +329,7 @@ var qmm012;
                     self.CurrentItemBreakdownName('');
                     self.CurrentItemBreakdownAbName('');
                     self.CurrentUniteCode('');
-                    self.CurrentZeroDispSet(0);
+                    self.CurrentZeroDispSet(1);
                     self.Checked_NoDisplay(false);
                     self.CurrentItemDispAtr(0);
                     self.Checked_ErrorLower(false);

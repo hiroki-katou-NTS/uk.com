@@ -121,7 +121,7 @@ var qmm012;
                             return ItemModel.itemCode == ui.rowID;
                         });
                         if (item) {
-                            if (self.validate(ui.value)) {
+                            if (self.validate(ui.value, ui.columnKey)) {
                                 var itemUpdate = _.find(self.updateSource(), function (ItemModel) {
                                     return ItemModel.itemCode == ui.rowID;
                                 });
@@ -140,24 +140,31 @@ var qmm012;
                         }
                     }
                 };
-                ScreenModel.prototype.validate = function (value) {
+                ScreenModel.prototype.validate = function (value, columnKey) {
                     var result = true;
-                    var n = 0;
-                    $('#J_Lst_ItemList').ntsError('clear');
-                    $('.ui-igedit').removeClass("errorValidate");
-                    for (var _i = 0, value_1 = value; _i < value_1.length; _i++) {
-                        var char = value_1[_i];
-                        var p = value.charCodeAt(value.indexOf(char));
-                        if (p < 128) {
-                            n++;
+                    if (value != "") {
+                        var n = 0;
+                        $('#J_Lst_ItemList').ntsError('clear');
+                        $('.ui-igedit').removeClass("errorValidate");
+                        for (var _i = 0, value_1 = value; _i < value_1.length; _i++) {
+                            var char = value_1[_i];
+                            var p = value.charCodeAt(value.indexOf(char));
+                            if (p < 128) {
+                                n++;
+                            }
+                            else
+                                n += 2;
                         }
-                        else
-                            n += 2;
-                    }
-                    if (n > 20) {
-                        $('#J_Lst_ItemList').ntsError('set', 'Max length for this input is 20');
-                        $('.ui-igedit').addClass("errorValidate");
-                        result = false;
+                        if (n > 12) {
+                            $('#J_Lst_ItemList').ntsError('set', 'Max length for this input is 12');
+                            $('.ui-igedit').addClass("errorValidate");
+                            result = false;
+                        }
+                        if (columnKey == "itemAbNameO") {
+                            $('#J_Lst_ItemList').ntsError('set', 'Min length for this input is 6');
+                            $('.ui-igedit').addClass("errorValidate");
+                            result = false;
+                        }
                     }
                     return result;
                 };
@@ -170,7 +177,7 @@ var qmm012;
                             self.updateSource([]);
                             self.reLoadGridData();
                         }).fail(function (res) {
-                            alert(res);
+                            nts.uk.ui.dialog.alert(res);
                         });
                     }
                 };

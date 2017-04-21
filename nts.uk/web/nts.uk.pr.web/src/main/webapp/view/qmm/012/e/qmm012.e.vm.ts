@@ -16,7 +16,7 @@ module qmm012.e.viewmodel {
         //E_008
         Checked_AlarmLower: KnockoutObservable<boolean> = ko.observable(false);
         //E_001To003
-       Roundingrules_TimeNumberClassification: KnockoutObservableArray<any>;
+        Roundingrules_TimeNumberClassification: KnockoutObservableArray<any>;
         Roundingrules_WorkingDaysPerYear: KnockoutObservableArray<any>;
         Roundingrules_ZeroDisplay: KnockoutObservableArray<any>;
         selected_ZeroDisplay: any;
@@ -32,7 +32,7 @@ module qmm012.e.viewmodel {
         CurrentMemo: KnockoutObservable<string> = ko.observable("");
         CurrentZeroDisplaySet: KnockoutObservable<number> = ko.observable(1);
         CurrentItemDisplayAtr: KnockoutObservable<number> = ko.observable(1);
-
+        noDisplayNames_Enable: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
             //E_001 To 003
@@ -58,7 +58,8 @@ module qmm012.e.viewmodel {
                     grouplength: 3,
                     currencyformat: "JPY",
                     currencyposition: 'right'
-                }))
+                })),
+                enable : self.Checked_ErrorUpper
             };
             //E_002
             self.Currencyeditor_AlarmUpper = {
@@ -68,7 +69,8 @@ module qmm012.e.viewmodel {
                     grouplength: 3,
                     currencyformat: "JPY",
                     currencyposition: 'right'
-                }))
+                })),
+                enable : self.Checked_AlarmHigh
             };
             //E_003
             self.Currencyeditor_ErrorLower = {
@@ -78,7 +80,8 @@ module qmm012.e.viewmodel {
                     grouplength: 3,
                     currencyformat: "JPY",
                     currencyposition: 'right'
-                }))
+                })),
+                enable : self.Checked_ErrorLower
             };
             //E_004
             self.Currencyeditor_AlarmLower = {
@@ -88,7 +91,8 @@ module qmm012.e.viewmodel {
                     grouplength: 3,
                     currencyformat: "JPY",
                     currencyposition: 'right'
-                }))
+                })),
+                enable : self.Checked_AlarmLower
             };
             self.CurrentItemAttend.subscribe(function(ItemAttend: service.model.ItemAttend) {
                 self.CurrentAvePayAtr(ItemAttend ? ItemAttend.avePayAtr : 0);
@@ -106,6 +110,13 @@ module qmm012.e.viewmodel {
             });
             self.Checked_NoDisplay.subscribe(function(NewValue) {
                 self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
+            });
+            self.CurrentZeroDisplaySet.subscribe(function(newValue) {
+                if (newValue == 0) {
+                    self.noDisplayNames_Enable(true);
+                } else {
+                    self.noDisplayNames_Enable(false);
+                }
             });
         }
         loadData(itemMaster: qmm012.b.service.model.ItemMaster): JQueryPromise<any> {
@@ -131,6 +142,7 @@ module qmm012.e.viewmodel {
             self.CurrentErrRangeLow(0);
             self.CurrentErrRangeHigh(0);
             self.CurrentAlRangeLow(0);
+            self.CurrentZeroDisplaySet(1);
             self.CurrentAlRangeHigh(0);
             self.CurrentWorkDaysScopeAtr(1);
             self.CurrentMemo("");
@@ -148,7 +160,7 @@ module qmm012.e.viewmodel {
                 dfd.resolve(ItemAttend);
             }).fail(function(res) {
                 // Alert message
-                alert(res);
+                nts.uk.ui.dialog.alert(res);
             });
             return dfd.promise();
         }

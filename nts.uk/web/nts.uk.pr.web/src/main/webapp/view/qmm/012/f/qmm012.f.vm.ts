@@ -6,6 +6,7 @@ module qmm012.f.viewmodel {
         CurrentZeroDisplaySet: KnockoutObservable<number> = ko.observable(1);
         checked_NoDisplay: KnockoutObservable<boolean> = ko.observable(false);
         CurrentItemDisplayAtr: KnockoutObservable<number> = ko.observable(1);
+        noDisplayNames_Enable: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
             //F_001
@@ -16,6 +17,13 @@ module qmm012.f.viewmodel {
 
             self.checked_NoDisplay.subscribe(function(NewValue: boolean) {
                 self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
+            });
+            self.CurrentZeroDisplaySet.subscribe(function(newValue) {
+                if (newValue == 0) {
+                    self.noDisplayNames_Enable(true);
+                } else {
+                    self.noDisplayNames_Enable(false);
+                }
             });
         }
         loadData(itemMaster: qmm012.b.service.model.ItemMaster): JQueryPromise<any> {

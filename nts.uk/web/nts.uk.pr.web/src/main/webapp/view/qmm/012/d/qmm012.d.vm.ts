@@ -68,9 +68,7 @@ module qmm012.d.viewmodel {
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 })),
-                required: ko.observable(false),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
+                enable:self.Checked_ErrorUpper
             };
             //002
             self.currencyeditor_AlarmUpper = {
@@ -81,9 +79,7 @@ module qmm012.d.viewmodel {
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 })),
-                required: ko.observable(false),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
+                enable:self.Checked_AlarmHigh
             };
             //003
             self.currencyeditor_ErrorLower = {
@@ -94,9 +90,8 @@ module qmm012.d.viewmodel {
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 })),
-                required: ko.observable(false),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
+                enable:self.Checked_ErrorLower
+                
             };
             //004
             self.currencyeditor_AlarmLower = {
@@ -107,9 +102,7 @@ module qmm012.d.viewmodel {
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 })),
-                required: ko.observable(false),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
+                enable:self.Checked_AlarmLower
             };
 
 
@@ -169,6 +162,7 @@ module qmm012.d.viewmodel {
             self.CurrentAlRangeHigh(0);
             self.CurrentAlRangeLow(0);
             self.CurrentDeductAtr(0);
+            self.CurrentZeroDisplaySet(1);
             self.CurrentErrRangeHigh(0);
             self.CurrentErrRangeLow(0);
             self.CurrentMemo("");
@@ -187,7 +181,7 @@ module qmm012.d.viewmodel {
                 dfd.resolve(ItemDeduct);
             }).fail(function(res) {
                 // Alert message
-                alert(res);
+                nts.uk.ui.dialog.alert(res);
             });
             return dfd.promise();
         }
@@ -199,7 +193,7 @@ module qmm012.d.viewmodel {
                 dfd.resolve(ItemPeriod);
             }).fail(function(res) {
                 // Alert message
-                alert(res);
+                nts.uk.ui.dialog.alert(res);
             });
             return dfd.promise();
         }
@@ -211,7 +205,7 @@ module qmm012.d.viewmodel {
                 dfd.resolve(ItemBDs);
             }).fail(function(res) {
                 // Alert message
-                alert(res);
+                nts.uk.ui.dialog.alert(res);
             });
             return dfd.promise();
         }

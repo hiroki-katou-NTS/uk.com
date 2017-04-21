@@ -43,8 +43,8 @@
 		</div>
 		<div class="divLine" id="C_Div_004" style="display: none;">
 			<div class="divLineCol1">
-				<div id="C_Lbl_LimitAmount" style="display: none;"
-					data-bind="ntsFormLabel: {  required: true }">限度金額</div>
+				<div id="C_Lbl_LimitAmount"
+					data-bind="ntsFormLabel: {  required: false }">限度金額</div>
 			</div>
 			<div class="divLineCol2">
 				<div id="C_Div_002" style="display: none;">
@@ -53,8 +53,7 @@
 							data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
-										option: option,
-										required: required}" />
+										option: option}" />
 					</div>
 				</div>
 				<div id="C_Div_003" style="display: none;">
@@ -219,7 +218,9 @@
 					data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
-										option: option}" />
+										option: option,
+										enable:enable
+										}" />
 			</div>
 			<label id="C_Lbl_ExceedsAndError">を超える場合にエラーとする</label>
 
@@ -236,7 +237,8 @@
 					data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
-										option: option" />
+										option: option,
+										enable:enable}" />
 			</div>
 			<label id="C_Lbl_ErrorLess">未満の場合にエラーとする</label>
 		</div>
@@ -257,7 +259,8 @@
 					data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
-										option: option}" />
+										option: option,
+										enable:enable}" />
 			</div>
 			<label id="C_Lbl_ExceedsAlarm">を超える場合にアラームとする</label>
 		</div>
@@ -272,7 +275,8 @@
 					data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
-										option: option}" />
+										option: option,
+										enable:enable}" />
 			</div>
 			<label id="C_Lbl_AlarmLess">未満の場合にアラームとする</label>
 		</div>

@@ -332,6 +332,7 @@ module qmm012.b.viewmodel {
             $("#B_Inp_Code").ntsEditor("validate");
             $("#B_Inp_Name").ntsEditor("validate");
             $("#B_Inp_AbbreviatedName").ntsEditor("validate");
+            $("#C_Inp_LimitAmount").ntsEditor("validate");
             if ($('.nts-editor').ntsError("hasError")) {
                 return true;
             }
@@ -379,11 +380,11 @@ module qmm012.b.viewmodel {
                     self.dirty = new nts.uk.ui.DirtyChecker(self.dirtyItemMaster);
                 } else {
                     //if no item, show message set new mode
-                    alert("対象データがありません。");
+                    nts.uk.ui.dialog.alert("対象データがありません。");
                     self.setNewItemMode();
                 }
             }).fail(function(res) {
-                alert(res);
+                nts.uk.ui.dialog.alert(res);
             });
         }
 
@@ -413,7 +414,7 @@ module qmm012.b.viewmodel {
                         //reload gruid list
                         self.loadGridList(selectItemCode);
                     }).fail(function(res) {
-                        alert(res);
+                        nts.uk.ui.dialog.alert(res);
                     });
                 });
             }
@@ -507,7 +508,7 @@ module qmm012.b.viewmodel {
                 //after add , reload grid list
                 self.loadGridList(ItemMaster.itemCode);
             }).fail(function(res) {
-                alert(res);
+                nts.uk.ui.dialog.alert(res);
             });
         }
 
@@ -518,7 +519,7 @@ module qmm012.b.viewmodel {
                 //after add , reload grid list
                 self.loadGridList(ItemMaster.itemCode);
             }).fail(function(res) {
-                alert(res);
+                nts.uk.ui.dialog.alert(res);
             });
         }
         registerPrintingNameButtonClick() {

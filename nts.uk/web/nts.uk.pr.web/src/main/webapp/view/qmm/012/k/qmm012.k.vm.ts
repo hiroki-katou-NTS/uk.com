@@ -32,7 +32,7 @@ module qmm012.k.viewmodel {
                 } else
                     self.taxLimitGridCurrentCode(selectedCode);
             }).fail(function(res) {
-                alert(res);
+                nts.uk.ui.dialog.alert(res);
             });
         }
         SubmitDialog() {

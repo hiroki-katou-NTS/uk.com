@@ -6,7 +6,8 @@
 <body>
 	<div class="divLine">
 		<div class="divLineCol1">
-			<div id="E_Lbl_TimeNumberClassification" data-bind="ntsFormLabel: {  required: true }">時間/回数区分</div>
+			<div id="E_Lbl_TimeNumberClassification"
+				data-bind="ntsFormLabel: {  required: true }">時間/回数区分</div>
 		</div>
 		<div class="divLineCol2">
 			<div id="E_Sel_TimeNumberClassification" class="cf switchNomalSize"
@@ -19,7 +20,8 @@
 	</div>
 	<div class="divLine">
 		<div class="divLineCol1">
-			<div id="E_Lbl_WorkingDaysPerYear" data-bind="ntsFormLabel: {  required: true }">年間所定労働日数</div>
+			<div id="E_Lbl_WorkingDaysPerYear"
+				data-bind="ntsFormLabel: {  required: true }">年間所定労働日数</div>
 		</div>
 		<div class="divLineCol2">
 			<div id="E_Sel_WorkingDaysPerYear" class="cf switchNomalSize"
@@ -33,7 +35,8 @@
 	</div>
 	<div class="divLine">
 		<div class="divLineCol1">
-			<div id="E_Lbl_AverageWage" data-bind="ntsFormLabel: {  required: true }">平均賃金</div>
+			<div id="E_Lbl_AverageWage"
+				data-bind="ntsFormLabel: {  required: true }">平均賃金</div>
 		</div>
 		<div class="divLineCol2">
 			<div id="E_Sel_AverageWage" class="cf switchNomalSize"
@@ -46,7 +49,8 @@
 	</div>
 	<div class="divLine">
 		<div class="divLineCol1">
-			<div id="E_Lbl_ZeroDisplay" data-bind="ntsFormLabel: {  required: false }">ゼロ表示区分</div>
+			<div id="E_Lbl_ZeroDisplay"
+				data-bind="ntsFormLabel: {  required: false }">ゼロ表示区分</div>
 		</div>
 		<div class="divLineCol2">
 			<div id="E_Sel_ZeroDisplay" class="cf switchNomalSize"
@@ -56,13 +60,14 @@
 										optionsText: 'name',
 										value: CurrentZeroDisplaySet}"></div>
 			<div id="E_Sel_NoDisplay"
-				data-bind="ntsCheckBox: { checked: Checked_NoDisplay, text: '項目名も表示しない' }"></div>
+				data-bind="ntsCheckBox: { checked: Checked_NoDisplay, text: '項目名も表示しない'  , enable: noDisplayNames_Enable}"></div>
 
 		</div>
 	</div>
 	<div class="divLine">
 		<div class="divLineCol1">
-			<div id="E_Lbl_ErrorRange" data-bind="ntsFormLabel: {  required: false }">エラー範囲</div>
+			<div id="E_Lbl_ErrorRange"
+				data-bind="ntsFormLabel: {  required: false }">エラー範囲</div>
 		</div>
 		<div class="divLineCol2">
 			<div id="E_Sel_ErrorUpper"
@@ -72,7 +77,9 @@
 					data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
-										option: option}" />
+										option: option,
+										enable: enable
+										}" />
 			</div>
 			<label id="E_Lbl_ExceedsError">を超える場合にエラーとする</label>
 		</div>
@@ -83,18 +90,21 @@
 			<div id="E_Sel_AlarmHigh"
 				data-bind="ntsCheckBox: { checked: Checked_AlarmHigh, text: '' }"></div>
 			<div data-bind="with: Currencyeditor_AlarmUpper">
-				<input id="Currencyeditor_AlarmUpper" data-name="エラー範囲" class="save-error"
+				<input id="Currencyeditor_AlarmUpper" data-name="エラー範囲"
+					class="save-error"
 					data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
-										option: option}" />
+										option: option,
+										enable: enable}" />
 			</div>
 			<label id="E_Lbl_ErrorLess">未満の場合にエラーとする</label>
 		</div>
 	</div>
 	<div class="divLine">
 		<div class="divLineCol1">
-			<div id="E_Lbl_AlarmRange" data-bind="ntsFormLabel: {  required: false }">アラーム範囲</div>
+			<div id="E_Lbl_AlarmRange"
+				data-bind="ntsFormLabel: {  required: false }">アラーム範囲</div>
 		</div>
 		<div class="divLineCol2 verticalAlignBottom">
 			<div id="E_Sel_ErrorLower"
@@ -104,7 +114,8 @@
 					data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
-										option: option}" />
+										option: option,
+										enable: enable}" />
 			</div>
 			<label id="E_Lbl_ExceedsAlarm">を超える場合にアラームとする</label>
 		</div>
@@ -119,7 +130,8 @@
 					data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
-										option: option}" />
+										option: option,
+										enable: enable}" />
 			</div>
 			<label id="E_Lbl_AlarmLess">未満の場合にアラームとする</label>
 		</div>
@@ -136,7 +148,8 @@
 	</div>
 	<div class="divLine">
 		<div class="divLineCol1 verticalAlignTop">
-			<div id="E_Lbl_Remarks" data-bind="ntsFormLabel: {  required: false }">備考</div>
+			<div id="E_Lbl_Remarks"
+				data-bind="ntsFormLabel: {  required: false }">備考</div>
 		</div>
 		<div class="divLineCol2">
 			<textarea id="E_Inp_Remarks" data-name="備考" class="save-error"

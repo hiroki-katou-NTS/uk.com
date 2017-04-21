@@ -128,7 +128,7 @@ module qmm012.j.viewmodel {
                     return ItemModel.itemCode == ui.rowID;
                 });
                 if (item) {
-                    if (self.validate(ui.value)) {
+                    if (self.validate(ui.value, ui.columnKey)) {
                         let itemUpdate = _.find(self.updateSource(), function(ItemModel: qmm012.b.service.model.ItemMaster) {
                             return ItemModel.itemCode == ui.rowID;
                         });
@@ -145,22 +145,29 @@ module qmm012.j.viewmodel {
                 }
             }
         }
-        validate(value) {
+        validate(value, columnKey) {
             let result = true;
-            var n = 0;
-            $('#J_Lst_ItemList').ntsError('clear');
-            $('.ui-igedit').removeClass("errorValidate");
-            for (let char of value) {
-                let p = value.charCodeAt(value.indexOf(char));
-                if (p < 128) {
-                    n++;
-                } else
-                    n += 2;
-            }
-            if (n > 20) {
-                $('#J_Lst_ItemList').ntsError('set', 'Max length for this input is 20');
-                $('.ui-igedit').addClass("errorValidate");
-                result = false;
+            if (value != "") {
+                var n = 0;
+                $('#J_Lst_ItemList').ntsError('clear');
+                $('.ui-igedit').removeClass("errorValidate");
+                for (let char of value) {
+                    let p = value.charCodeAt(value.indexOf(char));
+                    if (p < 128) {
+                        n++;
+                    } else
+                        n += 2;
+                }
+                if (n > 12) {
+                    $('#J_Lst_ItemList').ntsError('set', 'Max length for this input is 12');
+                    $('.ui-igedit').addClass("errorValidate");
+                    result = false;
+                }
+                if (columnKey == "itemAbNameO") {
+                    $('#J_Lst_ItemList').ntsError('set', 'Min length for this input is 6');
+                    $('.ui-igedit').addClass("errorValidate");
+                    result = false;
+                }
             }
             return result;
         }
@@ -174,7 +181,7 @@ module qmm012.j.viewmodel {
                     self.updateSource([]);
                     self.reLoadGridData();
                 }).fail(function(res: any) {
-                    alert(res);
+                    nts.uk.ui.dialog.alert(res);
                 });
             }
         }

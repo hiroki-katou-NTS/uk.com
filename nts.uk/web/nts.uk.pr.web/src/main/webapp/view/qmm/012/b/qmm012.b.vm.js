@@ -304,6 +304,7 @@ var qmm012;
                     $("#B_Inp_Code").ntsEditor("validate");
                     $("#B_Inp_Name").ntsEditor("validate");
                     $("#B_Inp_AbbreviatedName").ntsEditor("validate");
+                    $("#C_Inp_LimitAmount").ntsEditor("validate");
                     if ($('.nts-editor').ntsError("hasError")) {
                         return true;
                     }
@@ -352,11 +353,11 @@ var qmm012;
                         }
                         else {
                             //if no item, show message set new mode
-                            alert("対象データがありません。");
+                            nts.uk.ui.dialog.alert("対象データがありません。");
                             self.setNewItemMode();
                         }
                     }).fail(function (res) {
-                        alert(res);
+                        nts.uk.ui.dialog.alert(res);
                     });
                 };
                 ScreenModel.prototype.deleteItem = function () {
@@ -386,7 +387,7 @@ var qmm012;
                                 //reload gruid list
                                 self.loadGridList(selectItemCode);
                             }).fail(function (res) {
-                                alert(res);
+                                nts.uk.ui.dialog.alert(res);
                             });
                         });
                     }
@@ -477,7 +478,7 @@ var qmm012;
                         //after add , reload grid list
                         self.loadGridList(ItemMaster.itemCode);
                     }).fail(function (res) {
-                        alert(res);
+                        nts.uk.ui.dialog.alert(res);
                     });
                 };
                 ScreenModel.prototype.updateItemMaster = function (ItemMaster) {
@@ -487,7 +488,7 @@ var qmm012;
                         //after add , reload grid list
                         self.loadGridList(ItemMaster.itemCode);
                     }).fail(function (res) {
-                        alert(res);
+                        nts.uk.ui.dialog.alert(res);
                     });
                 };
                 ScreenModel.prototype.registerPrintingNameButtonClick = function () {
