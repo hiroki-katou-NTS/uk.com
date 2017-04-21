@@ -24,9 +24,9 @@ public class UpdateItemMasterNameCommandHandler extends CommandHandler<List<Upda
 
 	@Override
 	protected void handle(CommandHandlerContext<List<UpdateItemMasterCommand>> context) {
+		String companyCode = AppContexts.user().companyCode();
 		for (UpdateItemMasterCommand updateCommand : context.getCommand()) {
 			int categoryAtr = updateCommand.getCategoryAtr();
-			String companyCode = AppContexts.user().companyCode();
 			String itemCode = updateCommand.getItemCode();
 			Optional<ItemMaster> itemmaster = this.itemMasterRepository.find(companyCode, categoryAtr, itemCode);
 			if (!itemmaster.isPresent())
