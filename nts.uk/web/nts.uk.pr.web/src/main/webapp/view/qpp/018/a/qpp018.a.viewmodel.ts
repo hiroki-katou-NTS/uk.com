@@ -90,7 +90,7 @@ module nts.uk.pr.view.qpp018.a {
                 $('#date-picker').ntsEditor('validate');
                 if (!self.isEqual() && !self.isDeficient() && !self.isRedundant()){
                     // message ER001
-                    $('.extract-condition-error').ntsError('set', '出力条件が入力されていません。');
+                    $('.extract-condition-error').ntsError('set', 'が入力されていません。');
                     isError = true;
                 }
                 if (self.insuranceOffice().selectedOfficeCodeList().length <= 0) {
