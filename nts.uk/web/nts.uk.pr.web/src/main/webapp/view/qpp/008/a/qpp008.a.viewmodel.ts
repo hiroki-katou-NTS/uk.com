@@ -5,13 +5,21 @@ module qpp008.a.viewmodel {
         singleSelectedCode: KnockoutObservable<string>;
         texteditor1: any;
         texteditor2: any;
-        textLbl006:KnockoutObservable<string>;
+        textLbl006: KnockoutObservable<string>;
 
         /*Multiple selecting GridList*/
         items: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
+
+        /*
+        
+                /*Multiple selecting GridList*/
+        itemLeft: KnockoutObservableArray<Employee>;
+        columnsLeft: KnockoutObservableArray<any>;
+        currentCodeLeft: KnockoutObservable<any>;
+        currentCodeListLeft: KnockoutObservableArray<any>;
 
         /*
                 *label
@@ -77,13 +85,30 @@ module qpp008.a.viewmodel {
                 new ItemModel('基本給1')
             ]);
 
+            self.itemLeft = ko.observableArray([
+                new Employee("A0001", "A", ""),
+                new Employee("A0002", "A", ""),
+                new Employee("A0003", "A", ""),
+                new Employee("A0004", "A", ""),
+                new Employee("A0005", "A", "")
+            ]);
+
             self.columns = ko.observableArray([
                 { headerText: '印刷内容', prop: 'name', width: 150 }
 
             ]);
-
             self.currentCode = ko.observable();
             self.currentCodeList = ko.observableArray([]);
+
+            self.columnsLeft = ko.observableArray([
+                { headerText: '印刷内容', prop: 'code', width: 150 },
+                { headerText: '印刷内容', prop: 'name', width: 150 },
+                { headerText: '印刷内容', prop: 'note', width: 250 }
+
+            ]);
+            self.currentCodeLeft = ko.observable();
+            self.currentCodeListLeft = ko.observableArray([]);
+
             /* Label  */
             self.inline = ko.observable(true);
             self.required = ko.observable(true)
@@ -159,7 +184,19 @@ module qpp008.a.viewmodel {
                 readonly: ko.observable(false)
             };
         }
+        /**
+         *  Export Data
+         */
+        exportData(): void {
+            let self = this;
+            let dfd = $.Deferred<void>();
+            service.saveAsPdf().done(function() {
+                dfd.resolve();
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.message);
+            });
 
+        }
         openBDialog() {
             var self = this;
             nts.uk.ui.windows.sub.modal('/view/qpp/008/b/index.xhtml', { title: '印刷設定', dialogClass: 'no-close' }).onClosed(function(): any {
@@ -170,10 +207,10 @@ module qpp008.a.viewmodel {
             nts.uk.ui.windows.sub.modal('/view/qpp/008/c/index.xhtml', { title: '出力項目の設定（共通）', dialogClass: 'no-close' }).onClosed(function(): any {
             });
         }
-    /* ItemModelCbb1 of combobox */
+        /* ItemModelCbb1 of combobox */
     }
-    
-    
+
+
     class ItemModelCbb1 {
         codeCbb1: string;
         nameCbb1: string;
@@ -210,6 +247,17 @@ module qpp008.a.viewmodel {
         constructor(name: string) {
             this.name = name;
         }
+    }
+    class Employee {
+        code: string;
+        name: string;
+        note: string;
+        constructor(code: string, name: string, note: string) {
+            this.code = code;
+            this.name = name;
+            this.note = note;
+        }
+
     }
 
 }

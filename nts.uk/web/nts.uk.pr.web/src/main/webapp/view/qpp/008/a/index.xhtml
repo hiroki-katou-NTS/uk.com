@@ -26,7 +26,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 
-				<button id="A_BTN_001" class="proceed">選択した社員を印刷</button>
+				<button id="A_BTN_001" class="proceed" data-bind="click: exportData">選択した社員を印刷</button>
 				<button id="A_BTN_002">Excel出力</button>
 				<button id="A_BTN_003">差異を確認</button>
 				<button id="A_BTN_004" data-bind="click: openBDialog">印刷設定</button>
@@ -36,8 +36,7 @@
 				<div class="nts-left-content">
 					<div class="nts-left-contentTop">
 						<div class="nts-left-contentTopUp valign-center control-group">
-							<span id="A_LBL_002" class="label">比較年月</span> 
-							<span 
+							<span id="A_LBL_002" class="label">比較年月</span> <span
 								data-bind="with: yearmontheditor"> <input id="A_INP_001"
 								data-name="テスト"
 								data-bind="ntsTimeEditor: 
@@ -46,9 +45,7 @@
 									required: required, 
 									enable: enable, 
 									readonly: readonly}" />
-							</span> 
-							<span id="A_LBL_003" class="label">月度と</span> 
-							<span
+							</span> <span id="A_LBL_003" class="label">月度と</span> <span
 								data-bind="with: yearmontheditor"> <input id="A_INP_002"
 								data-name="テスト"
 								data-bind="ntsTimeEditor: 
@@ -57,17 +54,28 @@
 									required: required, 
 									enable: enable, 
 									readonly: readonly}" />
-							</span> 
-							<span id="A_LBL_004" class="label">月度を比較します。</span>
+							</span> <span id="A_LBL_004" class="label">月度を比較します。</span>
 						</div>
 						<div class="nts-left-contentTopDown">
 							<span id="A_LBL_005" class="label" style="margin-bottom: 15px;">部門と社員を抽出する基準日:
-							</span>
-							<span id="A_LBL_006" class="label" style="margin-bottom: 15px;" data-bind="text: textLbl006">
-							</span>
+							</span> <span id="A_LBL_006" class="label" style="margin-bottom: 15px;"
+								data-bind="text: textLbl006"> </span>
 						</div>
 					</div>
-					<div class="nts-left-contentBottom">cccc</div>
+					<div class="nts-left-contentBottom" style="margin-top: 10px">
+						<table id="multi-list"
+							data-bind="ntsGridList: {
+													height: 450,
+													width: 450,
+													options: itemLeft,
+													optionsValue: 'code',
+													columns: columnsLeft,
+													multiple: true,
+													value: currentCodeListLeft
+												}"
+							class="cf">
+						</table>
+					</div>
 				</div>
 				<div class="nts-right-content">
 					<div>
@@ -78,15 +86,15 @@
 						<table class="tableRight">
 							<tr>
 								<td>
-									<div id="A_LBL_008" data-bind="ntsFormLabel: { required: true }">必須項目見出し
-									</div>
+									<div id="A_LBL_008"
+										data-bind="ntsFormLabel: { required: true }">必須項目見出し</div>
 								</td>
 								<td><button id="A_BTN_005" data-bind="click: openCDialog">設定</button></td>
 							</tr>
 							<tr>
 								<td></td>
 								<td><div id="A_SEL_001"
-											data-bind="ntsComboBox: {
+										data-bind="ntsComboBox: {
 													options: itemListCbb1,
 													optionsValue: 'codeCbb1',
 													value: selectedCodeCbb1,
@@ -97,18 +105,16 @@
 														{ prop: 'codeCbb1', length: 4 },
 														{ prop: 'nameCbb1', length: 10 },
 													]}">
-									</div>
-								</td>
+									</div></td>
 							</tr>
 							<tr>
 								<td>
 									<div id="A_LBL_009"
-										data-bind="ntsFormLabel: { required: true }">改ページ
-									</div>
+										data-bind="ntsFormLabel: { required: true }">改ページ</div>
 								</td>
 								<td class="flex valign-center">
 									<div id="A_SEL_002"
-											data-bind="ntsComboBox: {
+										data-bind="ntsComboBox: {
 													options: itemListCbb2,
 													optionsValue: 'nameCbb2',
 													value: selectedCodeCbb2,
@@ -122,9 +128,9 @@
 									<div>
 										<span id="A_LBL_010" class="label" style="margin-bottom: 5px;">階層指定
 										</span>
-									</div> 
-								<div id="A_SEL_003"
-											data-bind="ntsComboBox: {
+									</div>
+									<div id="A_SEL_003"
+										data-bind="ntsComboBox: {
 													options: itemListCbb3,
 													optionsValue: 'codeCbb3',
 													value: selectedCodeCbb3,
@@ -135,19 +141,20 @@
 														{ prop: 'codeCbb3', length: 4 },
 														{ prop: 'nameCbb3', length: 10 }
 													]}">
-								</div>
+									</div>
 								</td>
 							</tr>
 							<tr>
-								<td colspan="1" style="width: 200px; border: none; vertical-align: top;">
-										<div class="flex">
-											<div id="A_LBL_011" data-bind="ntsFormLabel: {}">登録状況の印刷
-											</div>
+								<td colspan="1"
+									style="width: 200px; border: none; vertical-align: top;">
+									<div class="flex">
+										<div id="A_LBL_011" data-bind="ntsFormLabel: {}">登録状況の印刷
 										</div>
+									</div>
 								</td>
 								<td>
 									<table id="multi-list"
-											data-bind="ntsGridList: {
+										data-bind="ntsGridList: {
 													height: 150,
 													width: 300,
 													options: items,
@@ -156,7 +163,7 @@
 													multiple: true,
 													value: currentCodeList
 												}"
-											class="cf">
+										class="cf">
 									</table>
 								</td>
 							</tr>
