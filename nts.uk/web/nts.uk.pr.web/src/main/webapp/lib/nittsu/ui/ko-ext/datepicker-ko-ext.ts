@@ -88,6 +88,15 @@ module nts.uk.ui.koExtentions {
                     value(newText);
                 }
             });
+            
+            $input.on("blur", () => {
+                var newText = $input.val();
+                var result = validator.validate(newText);
+                if (!result.isValid) {
+                    $input.ntsError('set', result.errorMessage);
+                }
+            });
+
 
             $input.on('validate', (function(e: Event) {
                 var newText = $input.val();
