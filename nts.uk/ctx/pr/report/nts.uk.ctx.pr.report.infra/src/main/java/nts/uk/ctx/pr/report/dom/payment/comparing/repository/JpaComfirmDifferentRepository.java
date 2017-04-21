@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.ComfirmDifferentRepository;
 import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.ConfirmedStatus;
 import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.DetailDifferential;
@@ -20,29 +21,53 @@ import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.ValueDifference;
 @Stateless
 public class JpaComfirmDifferentRepository extends JpaRepository implements ComfirmDifferentRepository {
 
-	private final String SELECT_DETAIL_DIFFERENT_YM = "SELECT d.paymentDetailPK.personId , d.paymentDetailPK.itemCD, i.itemName, i.qcamtItemPK.categoryAtr, "
-			+ "d.valueComparing , h.makeMethodFLG, c.diffAmount ,c.diffReason, c.confirmSTS "
-			+ "FROM QstdtPaymentDetail as d " + "INNER JOIN  QSTDT_PAYMENT_HEADER as h "
-			+ "on h.paymentHeaderPK.companyCode = d.paymentDetailPK.companyCode AND  h.paymentHeaderPK.personId = d.paymentDetailPK.personId "
-			+ "AND h.paymentHeaderPK.processNo = d.paymentDetailPK.processNo AND h.paymentHeaderPK.payBonusAtr = d.paymentDetailPK.payBonusAtr "
-			+ "AND h.paymentHeaderPK.sparePayAtr =  d.paymentDetailPK.sparePayAtr AND h.paymentHeaderPK.processYM = d.paymentDetailPK.processYM "
-			+ "INNER JOIN QCAMT_ITEM as i " + "ON h.paymentHeaderPK.companyCode = i.qcamtItemPK.companyCode "
-			+ "AND d.paymentDetailPK.categoryAtr = i.qcamtItemPK.categoryAtr AND d.paymentDetailPK.itemCD = i.qcamtItemPK.itemCD "
-			+ "LEFT JOIN QLSDT_PAYCOMP_CONFIRM as c "
-			+ "ON c.paycompConfirmPK.companyCode = d.paymentDetailPK.companyCode "
-			+ "AND c.paycompConfirmPK.personId = d.paymentDetailPK.personId AND c.paycompConfirmPK.itemCD = d.paymentDetailPK.itemCD "
-			+ "AND c.paycompConfirmPK.categoryAtr = d.paymentDetailPK.categoryAtr AND c.paycompConfirmPK.processYM = d.paymentDetailPK.processYM "
-			+ "WHERE d.paymentDetailPK.companyCode = :ccd AND d.paymentDetailPK.processYM = :processYM "
-			+ "AND d.paymentDetailPK.categoryAtr in (0,1,3) ORDER BY  d.paymentDetailPK.personId, d.paymentDetailPK.itemCD";
+	/*
+	 * private final String SELECT_DETAIL_DIFFERENT_YM =
+	 * "SELECT d.qstdtPaymentDetailPK.personId, d.qstdtPaymentDetailPK.itemCode, "
+	 * +
+	 * "i.itemAbName, i.qcamtItemPK.ctgAtr, d.value , h.makeMethodFlag, c.diffAmount, c.diffReason, c.confirmSTS, d.qstdtPaymentDetailPK.companyCode "
+	 * + "FROM QstdtPaymentDetail d " + "INNER JOIN  QstdtPaymentHeader h " +
+	 * "ON h.qstdtPaymentHeaderPK.companyCode = d.qstdtPaymentDetailPK.companyCode AND h.qstdtPaymentHeaderPK.personId = d.qstdtPaymentDetailPK.personId "
+	 * +
+	 * "AND h.qstdtPaymentHeaderPK.processingNo = d.qstdtPaymentDetailPK.processingNo AND h.qstdtPaymentHeaderPK.payBonusAtr = d.qstdtPaymentDetailPK.payBonusAttribute "
+	 * +
+	 * "AND h.qstdtPaymentHeaderPK.sparePayAtr = d.qstdtPaymentDetailPK.sparePayAttribute AND h.qstdtPaymentHeaderPK.processingYM = d.qstdtPaymentDetailPK.processingYM "
+	 * + "INNER JOIN QcamtItem_v1 i " +
+	 * "ON h.qstdtPaymentHeaderPK.companyCode = i.qcamtItemPK.ccd " +
+	 * "AND d.qstdtPaymentDetailPK.categoryATR = i.qcamtItemPK.ctgAtr AND d.qstdtPaymentDetailPK.itemCode = i.qcamtItemPK.itemCd "
+	 * + "LEFT JOIN QlsdtPaycompConfirm c " +
+	 * "ON c.paycompConfirmPK.companyCode = d.qstdtPaymentDetailPK.companyCode "
+	 * +
+	 * "AND c.paycompConfirmPK.personId = d.qstdtPaymentDetailPK.personId AND c.paycompConfirmPK.itemCD = d.qstdtPaymentDetailPK.itemCode "
+	 * +
+	 * "AND c.paycompConfirmPK.categoryAtr = d.qstdtPaymentDetailPK.categoryATR AND c.paycompConfirmPK.processYM = d.qstdtPaymentDetailPK.processingYM "
+	 * +
+	 * "WHERE d.qstdtPaymentDetailPK.companyCode = :ccd AND d.qstdtPaymentDetailPK.processingYM = :processYM "
+	 * +
+	 * "AND d.qstdtPaymentDetailPK.categoryATR in (0,1,3) ORDER BY d.qstdtPaymentDetailPK.personId, d.qstdtPaymentDetailPK.itemCode"
+	 * ;
+	 */
+
+	private final String SELECT_DETAIL_DIFFERENT_YM = "SELECT d.qstdtPaymentDetailPK.personId, d.qstdtPaymentDetailPK.itemCode, "
+			+ "i.itemAbName, i.qcamtItemPK.ctgAtr, d.value , h.makeMethodFlag, d.qstdtPaymentDetailPK.companyCode "
+			+ "FROM QstdtPaymentDetail d " + "INNER JOIN  QstdtPaymentHeader h "
+			+ "ON h.qstdtPaymentHeaderPK.companyCode = d.qstdtPaymentDetailPK.companyCode AND h.qstdtPaymentHeaderPK.personId = d.qstdtPaymentDetailPK.personId "
+			+ "AND h.qstdtPaymentHeaderPK.processingNo = d.qstdtPaymentDetailPK.processingNo AND h.qstdtPaymentHeaderPK.payBonusAtr = d.qstdtPaymentDetailPK.payBonusAttribute "
+			+ "AND h.qstdtPaymentHeaderPK.sparePayAtr = d.qstdtPaymentDetailPK.sparePayAttribute AND h.qstdtPaymentHeaderPK.processingYM = d.qstdtPaymentDetailPK.processingYM "
+			+ "INNER JOIN QcamtItem_v1 i " + "ON h.qstdtPaymentHeaderPK.companyCode = i.qcamtItemPK.ccd "
+			+ "AND d.qstdtPaymentDetailPK.categoryATR = i.qcamtItemPK.ctgAtr AND d.qstdtPaymentDetailPK.itemCode = i.qcamtItemPK.itemCd "
+			+ "WHERE d.qstdtPaymentDetailPK.companyCode = :ccd AND d.qstdtPaymentDetailPK.processingYM = :processYM "
+			+ "AND d.qstdtPaymentDetailPK.categoryATR in (0,1,3) ORDER BY d.qstdtPaymentDetailPK.personId, d.qstdtPaymentDetailPK.itemCode";
 
 	@Override
 	public List<DetailDifferential> getDetailDifferential(String companyCode, int processingYMEarlier,
 			int processingYMLater) {
+
 		List<DetailDifferential> detailDifferential1 = getDetailDifferentialWithEarlyYM(companyCode,
 				processingYMEarlier);
 		List<DetailDifferential> detailDifferential2 = getDetailDifferentialWithLaterYM(companyCode, processingYMLater);
 
-		List<DetailDifferential> detailDifferential  = detailDifferential1.stream().map(s -> {
+		List<DetailDifferential> detailDifferential = detailDifferential1.stream().map(s -> {
 			Optional<DetailDifferential> detalDiff = detailDifferential2.stream()
 					.filter(f -> s.getEmployeeCode().equals(f.getEmployeeCode())
 							&& s.getItemCode().equals(f.getItemCode()) && s.getCategoryAtr().equals(f.getCategoryAtr()))
@@ -50,11 +75,12 @@ public class JpaComfirmDifferentRepository extends JpaRepository implements Comf
 			detalDiff.ifPresent(d -> {
 				s.setComparisonValue2(d.getComparisonValue2());
 				s.setRegistrationStatus2(d.getRegistrationStatus2());
-				if (s.getConfirmedStatus().value == -1) {
+				/*if (s.getConfirmedStatus().value == -1) {
 					BigDecimal diff = s.getComparisonValue1().v().subtract(d.getComparisonValue2().v());
 					s.setValueDifference(new ValueDifference(diff));
 					s.setConfirmedStatus(EnumAdaptor.valueOf(0, ConfirmedStatus.class));
-				}
+				}*/
+				
 			});
 			return s;
 		}).collect(Collectors.toList());
@@ -75,7 +101,7 @@ public class JpaComfirmDifferentRepository extends JpaRepository implements Comf
 		return this.queryProxy().query(SELECT_DETAIL_DIFFERENT_YM, Object[].class).setParameter("ccd", companyCode)
 				.setParameter("processYM", processingYMEarlier).getList(s -> {
 					String employeeCode = s[0].toString();
-					String employeeName = employeeCode;
+					String employeeName = employeeCode.substring(0,10);
 					String itemCode = s[1].toString();
 					String itemName = s[2].toString();
 					int categoryAtr = Integer.valueOf(s[3].toString());
@@ -83,19 +109,10 @@ public class JpaComfirmDifferentRepository extends JpaRepository implements Comf
 					BigDecimal comparisonValue2 = BigDecimal.valueOf(0);
 					int registrationStatus1 = Integer.valueOf(s[5].toString());
 					int registrationStatus2 = 0;
-					String strDiffAmount = s[6].toString();
-					BigDecimal valueDifference = BigDecimal.valueOf(0);
-					if (!StringUtils.isBlank(strDiffAmount)) {
-						valueDifference = BigDecimal.valueOf(Double.valueOf(strDiffAmount));
-					}
-					String reasonDifference = s[7].toString();
-					int confirmedStatus = Integer.valueOf(-1);
-					if (!StringUtils.isBlank(s[8].toString())) {
-						confirmedStatus = Integer.valueOf(s[8].toString());
-					}
-					return convertToDomain(companyCode, employeeCode, employeeName, itemCode, itemName, categoryAtr,
-							comparisonValue1, comparisonValue2, valueDifference, reasonDifference, registrationStatus1,
-							registrationStatus2, confirmedStatus);
+					String companyCd = s[6].toString();
+					return convertToDomain(companyCd, employeeCode, employeeName, itemCode, itemName, categoryAtr,
+							comparisonValue1, comparisonValue2, new BigDecimal(0), "", registrationStatus1,
+							registrationStatus2, 0);
 				});
 	}
 
@@ -103,7 +120,7 @@ public class JpaComfirmDifferentRepository extends JpaRepository implements Comf
 		return this.queryProxy().query(SELECT_DETAIL_DIFFERENT_YM, Object[].class).setParameter("ccd", companyCode)
 				.setParameter("processYM", processingYMLater).getList(s -> {
 					String employeeCode = s[0].toString();
-					String employeeName = employeeCode;
+					String employeeName = employeeCode.substring(0,10);
 					String itemCode = s[1].toString();
 					String itemName = s[2].toString();
 					int categoryAtr = Integer.valueOf(s[3].toString());
@@ -111,19 +128,10 @@ public class JpaComfirmDifferentRepository extends JpaRepository implements Comf
 					BigDecimal comparisonValue2 = BigDecimal.valueOf(Double.valueOf(s[4].toString()));
 					int registrationStatus1 = 0;
 					int registrationStatus2 = Integer.valueOf(s[5].toString());
-					String strDiffAmount = s[6].toString();
-					BigDecimal valueDifference = BigDecimal.valueOf(0);
-					if (!StringUtils.isBlank(strDiffAmount)) {
-						valueDifference = BigDecimal.valueOf(Double.valueOf(strDiffAmount));
-					}
-					String reasonDifference = s[7].toString();
-					int confirmedStatus = Integer.valueOf(-1);
-					if (!StringUtils.isBlank(s[8].toString())) {
-						confirmedStatus = Integer.valueOf(s[8].toString());
-					}
-					return convertToDomain(companyCode, employeeCode, employeeName, itemCode, itemName, categoryAtr,
-							comparisonValue1, comparisonValue2, valueDifference, reasonDifference, registrationStatus1,
-							registrationStatus2, confirmedStatus);
+					String companyCd = s[6].toString();
+					return convertToDomain(companyCd, employeeCode, employeeName, itemCode, itemName, categoryAtr,
+							comparisonValue1, comparisonValue2, new BigDecimal(0), "", registrationStatus1,
+							registrationStatus2, 0);
 				});
 	}
 

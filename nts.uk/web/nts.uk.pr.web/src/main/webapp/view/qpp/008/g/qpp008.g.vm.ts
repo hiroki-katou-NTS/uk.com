@@ -1,7 +1,7 @@
 module qpp008.g.viewmodel {
     export class ScreenModel {
-        paymentDateProcessingList: KnockoutObservableArray<any>;
-        selectedPaymentDate: KnockoutObservable<any>;
+        detailDifferentList: KnockoutObservableArray<DetailsEmployeer>;
+        selectedDetailDiff: KnockoutObservable<number>;
         firstLoad: KnockoutObservable<boolean>;
         /*checkBox*/
         checked: KnockoutObservable<boolean>;
@@ -17,8 +17,8 @@ module qpp008.g.viewmodel {
 
         constructor() {
             let self = this;
-            self.paymentDateProcessingList = ko.observableArray([]);
-            self.selectedPaymentDate = ko.observable(null);
+            self.detailDifferentList = ko.observableArray([]);
+            self.selectedDetailDiff = ko.observable(0);
 
             self.itemCategoryChecked = ko.observableArray([
                 new ItemModel(0, '支給'),
@@ -133,8 +133,8 @@ module qpp008.g.viewmodel {
                     let registrationStatus2 = "registrationStatus2";
 
                     iggridData.push(
-                        {   
-                            "itemCode" : itemCode,
+                        {
+                            "itemCode": itemCode,
                             "employeeCode": code, "employeeName": code, "categoryAtr": "支", "itemName": "Mr Person Name",
                             "comparisonDate1": comparisonDate1, "comparisonDate2": comparisonDate2,
                             "difference": difference, "reasonDifference": reasonDifference, "registrationStatus1": registrationStatus1,
@@ -263,10 +263,19 @@ module qpp008.g.viewmodel {
 
         startPage(): JQueryPromise<any> {
             let self = this;
-
+            let processingYMEarlier = 201702;
+            let processingYMLater = 201703;
             let dfd = $.Deferred();
-            dfd.resolve();
+            self.detailDifferentList([]);
+            service.getDetailDifferentials(processingYMEarlier, processingYMLater).done(function(data: any) {
+                let mapDetailDiff = _.map(data, function(item, i) {
+                    return new DetailsEmployeer(item, i);
+                });
+                self.detailDifferentList(mapDetailDiff);
+                dfd.resolve();
+            }).fail(function(error: any) {
 
+            });
             return dfd.promise();
         }
     }
@@ -306,12 +315,12 @@ module qpp008.g.viewmodel {
                 self.itemCode = ko.observable(data.itemCode);
                 self.comparisonDate1 = ko.observable(data.comparisonDate1);
                 self.comparisonDate2 = ko.observable(data.comparisonDate2);
-                self.difference = ko.observable(data.difference);
+                self.difference = ko.observable(data.valueDifference);
                 self.reasonDifference = ko.observable(data.reasonDifference);
                 self.registrationStatus1 = ko.observable(data.registrationStatus1);
                 self.registrationStatus2 = ko.observable(data.registrationStatus2);
                 self.confirmedStatus = ko.observable(data.confirmedStatus);
-            } 
+            }
         }
     }
 }

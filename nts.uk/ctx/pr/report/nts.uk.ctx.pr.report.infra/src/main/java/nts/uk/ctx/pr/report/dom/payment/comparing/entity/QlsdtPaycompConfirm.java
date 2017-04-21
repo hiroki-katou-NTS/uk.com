@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
-@Table(name = "QCAMT_ITEM")
+@Table(name = "QLSDT_PAYCOMP_CONFIRM")
 public class QlsdtPaycompConfirm extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -31,6 +31,7 @@ public class QlsdtPaycompConfirm extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "DIFF_REASON")
 	public String diffReason;
+	
 	
 	@Override
 	protected Object getKey() {
