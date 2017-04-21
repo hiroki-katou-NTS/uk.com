@@ -133,7 +133,7 @@ module qmm012.c.viewmodel {
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 })),
-                enable:self.C_Sel_ErrorUpper_Selected
+                enable: self.C_Sel_ErrorUpper_Selected
             };
             //C_003
             self.currencyeditor_AlarmUpper = {
@@ -144,7 +144,7 @@ module qmm012.c.viewmodel {
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 })),
-                enable:self.C_Sel_AlarmHigh_Selected
+                enable: self.C_Sel_AlarmHigh_Selected
             };
             //C_004
             self.currencyeditor_ErrorLower = {
@@ -155,7 +155,7 @@ module qmm012.c.viewmodel {
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 })),
-                enable:self.C_Sel_ErrorLower_Selected
+                enable: self.C_Sel_ErrorLower_Selected
             };
             //C_005
             self.currencyeditor_AlarmLower = {
@@ -166,7 +166,7 @@ module qmm012.c.viewmodel {
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 })),
-                enable:self.C_Sel_AlarmLower_Selected
+                enable: self.C_Sel_AlarmLower_Selected
             };
             //end currencyeditor
             //end textarea
@@ -380,7 +380,7 @@ module qmm012.c.viewmodel {
             let self = this;
             //set selected code to session
             nts.uk.ui.windows.setShared('commuNoTaxLimitCode', self.currentCommuteNoTaxLimitDto() ? self.currentCommuteNoTaxLimitDto().commuNoTaxLimitCode : '');
-            nts.uk.ui.windows.sub.modal('../k/index.xhtml', { height: 530, width: 350, dialogClass: "no-close" }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('../k/index.xhtml', { height: 530, width: 350, dialogClass: "no-close", title: "非課税限度額の設定" }).onClosed(function(): any {
                 if (nts.uk.ui.windows.getShared('CommuteNoTaxLimitDto'))
                     self.currentCommuteNoTaxLimitDto(nts.uk.ui.windows.getShared('CommuteNoTaxLimitDto'));
             });
@@ -390,7 +390,7 @@ module qmm012.c.viewmodel {
             let self = this;
             nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
             nts.uk.ui.windows.setShared('itemPeriod', self.currentItemPeriod());
-            nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close" }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close" , title: "項目名の登録"}).onClosed(function(): any {
                 self.currentItemPeriod(nts.uk.ui.windows.getShared('itemPeriod'));
             });
         }
@@ -399,7 +399,7 @@ module qmm012.c.viewmodel {
             let self = this;
             nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
             nts.uk.ui.windows.setShared('itemBDs', self.currentItemBDs());
-            nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close" }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close", title: "項目名の登録" }).onClosed(function(): any {
                 self.currentItemBDs(nts.uk.ui.windows.getShared('itemBDs'));
             });
         }

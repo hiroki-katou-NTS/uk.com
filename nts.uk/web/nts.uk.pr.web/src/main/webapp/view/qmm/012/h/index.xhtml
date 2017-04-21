@@ -70,12 +70,12 @@
 					<div class="divLine">
 						<div class="divLineCol1"></div>
 						<div class="divLineCol2">
-							<input id="H_Inp_StartYear"
-								data-bind="ntsNumberEditor: { value: CurrentStrY, constraint: 'Year' }" />
+							<input id="H_Inp_StartYear" data-name="有効期間開始年"
+								data-bind="ntsNumberEditor: { value: CurrentStrY, constraint: 'Year' ,required: true }" />
 							<label id="H_Lbl_StartYearJapaneseCalendar"
 								data-bind="text:nts.uk.time.yearInJapanEmpire(CurrentStrY()) + ' ~ '">項目
-								~ </label> <input id="H_Inp_EndYear"
-								data-bind="ntsNumberEditor: { value: CurrentEndY , constraint: 'Year' }" />
+								~ </label> <input id="H_Inp_EndYear" data-name="有効期間終了年"
+								data-bind="ntsNumberEditor: { value: CurrentEndY , constraint: 'Year' ,required: true }" />
 
 							<label id="H_Lbl_EndYearJapaneseCalendar"
 								data-bind="text:nts.uk.time.yearInJapanEmpire(CurrentEndY())">項目

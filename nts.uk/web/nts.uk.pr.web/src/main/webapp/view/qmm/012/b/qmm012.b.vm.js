@@ -439,7 +439,7 @@ var qmm012;
                 };
                 ScreenModel.prototype.openADialog = function () {
                     var self = this;
-                    nts.uk.ui.windows.sub.modal('../a/index.xhtml', { height: 480, width: 630, dialogClass: "no-close" }).onClosed(function () {
+                    nts.uk.ui.windows.sub.modal('../a/index.xhtml', { height: 480, width: 630, dialogClass: "no-close", title: "項目名の登録＞項目区分の選択" }).onClosed(function () {
                         if (nts.uk.ui.windows.getShared('groupCode') != undefined) {
                             //get group from session
                             var groupCode = Number(nts.uk.ui.windows.getShared('groupCode'));
@@ -502,7 +502,9 @@ var qmm012;
                 };
                 ScreenModel.prototype.openJDialog = function () {
                     var self = this;
-                    nts.uk.ui.windows.sub.modal('../j/index.xhtml', { height: 700, width: 970, dialogClass: "no-close" }).onClosed(function () {
+                    nts.uk.ui.windows.sub.modal('../j/index.xhtml', {
+                        height: 700, width: 970, dialogClass: "no-close", title: "印字名称の登録"
+                    }).onClosed(function () {
                         self.loadGridList(self.GridlistCurrentCode());
                     });
                 };

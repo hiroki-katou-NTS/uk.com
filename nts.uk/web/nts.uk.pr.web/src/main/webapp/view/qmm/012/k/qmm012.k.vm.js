@@ -32,6 +32,9 @@ var qmm012;
                             if (CommuteNoTaxLimits.length) {
                                 self.taxLimitGridCurrentCode(CommuteNoTaxLimits[0].commuNoTaxLimitCode);
                             }
+                            else {
+                                nts.uk.ui.dialog.alert("対象データがありません。");
+                            }
                         }
                         else
                             self.taxLimitGridCurrentCode(selectedCode);

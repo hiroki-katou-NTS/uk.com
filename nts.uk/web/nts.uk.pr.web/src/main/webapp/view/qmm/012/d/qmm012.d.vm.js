@@ -202,7 +202,7 @@ var qmm012;
                     var self = this;
                     nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
                     nts.uk.ui.windows.setShared('itemPeriod', self.currentItemPeriod());
-                    nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close" }).onClosed(function () {
+                    nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close", title: "項目名の登録" }).onClosed(function () {
                         self.currentItemPeriod(nts.uk.ui.windows.getShared('itemPeriod'));
                     });
                 };
@@ -210,7 +210,7 @@ var qmm012;
                     var self = this;
                     nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
                     nts.uk.ui.windows.setShared('itemBDs', self.currentItemBDs());
-                    nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close" }).onClosed(function () {
+                    nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close", title: "項目名の登録" }).onClosed(function () {
                         self.currentItemBDs(nts.uk.ui.windows.getShared('itemBDs'));
                     });
                 };

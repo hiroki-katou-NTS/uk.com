@@ -56,13 +56,13 @@ var qmm012;
                         self.H_Sel_November(ItemPeriod ? ItemPeriod.cycle11Atr == 1 ? true : false : false);
                         self.H_Sel_December(ItemPeriod ? ItemPeriod.cycle12Atr == 1 ? true : false : false);
                     });
-                    self.LoadItemPeriod();
                     self.CurrentCycleAtr.subscribe(function (newValue) {
                         if (newValue == 1)
                             self.CycleSetting(true);
                         else
                             self.CycleSetting(false);
                     });
+                    self.LoadItemPeriod();
                 }
                 ScreenModel.prototype.LoadItemPeriod = function () {
                     //this dialog only load data in session from parrent call it
@@ -81,26 +81,45 @@ var qmm012;
                     var self = this;
                     return new h.service.model.ItemPeriod(self.CurrentItemMaster().itemCode, self.CurrentPeriodAtr(), self.CurrentStrY(), self.CurrentEndY(), self.CurrentCycleAtr(), self.H_Sel_January() == true ? 1 : 0, self.H_Sel_February() == true ? 1 : 0, self.H_Sel_InMarch() == true ? 1 : 0, self.H_Sel_April() == true ? 1 : 0, self.H_Sel_May() == true ? 1 : 0, self.H_Sel_June() == true ? 1 : 0, self.H_Sel_July() == true ? 1 : 0, self.H_Sel_August() == true ? 1 : 0, self.H_Sel_September() == true ? 1 : 0, self.H_Sel_October() == true ? 1 : 0, self.H_Sel_November() == true ? 1 : 0, self.H_Sel_December() == true ? 1 : 0);
                 };
+                ScreenModel.prototype.validateForm = function () {
+                    var self = this;
+                    var returnResult = true;
+                    if (self.CurrentStrY() > self.CurrentEndY()) {
+                        nts.uk.ui.dialog.alert("範囲の指定が正しくありません。");
+                        return false;
+                    }
+                    if (self.CurrentCycleAtr() == 1 && !self.H_Sel_January() && !self.H_Sel_December()) {
+                        nts.uk.ui.dialog.alert("1月か12月が選択されていません。");
+                        return false;
+                    }
+                    return returnResult;
+                };
+                ScreenModel.prototype.clearError = function () {
+                    $('#H_Inp_StartYear').ntsError('clear');
+                    $('#H_Inp_EndYear').ntsError('clear');
+                };
                 ScreenModel.prototype.SubmitDialog = function () {
                     var self = this;
                     var itemPeriodOld = self.CurrentItemPeriod();
                     var itemPeriod = self.getCurrentItemPeriod();
-                    if (itemPeriodOld) {
-                        //it mean this item has been created before
-                        h.service.updateItemPeriod(itemPeriod, self.CurrentItemMaster()).done(function (res) {
-                            nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);
-                            nts.uk.ui.windows.close();
-                        }).fail(function (res) {
-                            nts.uk.ui.dialog.alert(res.value);
-                        });
-                    }
-                    else {
-                        h.service.addItemPeriod(itemPeriod, self.CurrentItemMaster()).done(function (res) {
-                            nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);
-                            nts.uk.ui.windows.close();
-                        }).fail(function (res) {
-                            nts.uk.ui.dialog.alert(res.value);
-                        });
+                    if (self.validateForm()) {
+                        if (itemPeriodOld) {
+                            //it mean this item has been created before
+                            h.service.updateItemPeriod(itemPeriod, self.CurrentItemMaster()).done(function (res) {
+                                nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);
+                                nts.uk.ui.windows.close();
+                            }).fail(function (res) {
+                                nts.uk.ui.dialog.alert(res.value);
+                            });
+                        }
+                        else {
+                            h.service.addItemPeriod(itemPeriod, self.CurrentItemMaster()).done(function (res) {
+                                nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);
+                                nts.uk.ui.windows.close();
+                            }).fail(function (res) {
+                                nts.uk.ui.dialog.alert(res.value);
+                            });
+                        }
                     }
                 };
                 ScreenModel.prototype.CloseDialog = function () {

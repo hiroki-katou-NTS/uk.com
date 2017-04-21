@@ -68,7 +68,7 @@ module qmm012.d.viewmodel {
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 })),
-                enable:self.Checked_ErrorUpper
+                enable: self.Checked_ErrorUpper
             };
             //002
             self.currencyeditor_AlarmUpper = {
@@ -79,7 +79,7 @@ module qmm012.d.viewmodel {
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 })),
-                enable:self.Checked_AlarmHigh
+                enable: self.Checked_AlarmHigh
             };
             //003
             self.currencyeditor_ErrorLower = {
@@ -90,8 +90,8 @@ module qmm012.d.viewmodel {
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 })),
-                enable:self.Checked_ErrorLower
-                
+                enable: self.Checked_ErrorLower
+
             };
             //004
             self.currencyeditor_AlarmLower = {
@@ -102,7 +102,7 @@ module qmm012.d.viewmodel {
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 })),
-                enable:self.Checked_AlarmLower
+                enable: self.Checked_AlarmLower
             };
 
 
@@ -213,7 +213,7 @@ module qmm012.d.viewmodel {
             let self = this;
             nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
             nts.uk.ui.windows.setShared('itemPeriod', self.currentItemPeriod());
-            nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close" }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close", title: "項目名の登録" }).onClosed(function(): any {
                 self.currentItemPeriod(nts.uk.ui.windows.getShared('itemPeriod'));
             });
         }
@@ -222,7 +222,7 @@ module qmm012.d.viewmodel {
             let self = this;
             nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
             nts.uk.ui.windows.setShared('itemBDs', self.currentItemBDs());
-            nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close" }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close", title: "項目名の登録" }).onClosed(function(): any {
                 self.currentItemBDs(nts.uk.ui.windows.getShared('itemBDs'));
             });
         }

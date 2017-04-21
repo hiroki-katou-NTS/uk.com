@@ -467,7 +467,7 @@ module qmm012.b.viewmodel {
         }
         openADialog() {
             let self = this;
-            nts.uk.ui.windows.sub.modal('../a/index.xhtml', { height: 480, width: 630, dialogClass: "no-close" }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('../a/index.xhtml', { height: 480, width: 630, dialogClass: "no-close", title: "項目名の登録＞項目区分の選択" }).onClosed(function(): any {
                 if (nts.uk.ui.windows.getShared('groupCode') != undefined) {
                     //get group from session
                     let groupCode = Number(nts.uk.ui.windows.getShared('groupCode'));
@@ -533,7 +533,9 @@ module qmm012.b.viewmodel {
         }
         openJDialog() {
             let self = this;
-            nts.uk.ui.windows.sub.modal('../j/index.xhtml', { height: 700, width: 970, dialogClass: "no-close" }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('../j/index.xhtml', {
+                height: 700, width: 970, dialogClass: "no-close", title: "印字名称の登録"
+            }).onClosed(function(): any {
                 self.loadGridList(self.GridlistCurrentCode());
             });
         }
