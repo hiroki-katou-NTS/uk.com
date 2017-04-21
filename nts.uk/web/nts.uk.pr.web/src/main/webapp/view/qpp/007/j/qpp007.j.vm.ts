@@ -90,10 +90,17 @@ module nts.uk.pr.view.qpp007.j {
                 var dfd = $.Deferred<any>();
                 service.findSalaryAggregateItem(salaryAggregateItemInDto).done(data => {
                     self.salaryAggregateItemModel().convertDtoToData(data);
-                    
+
                     service.findAllMasterItem().done(masterData => {
-                        self.salaryAggregateItemModel().setFullItemCode(masterData);
-                        dfd.resolve(self);                        
+                        var dataMasterModel: SalaryItemDto[];
+                        dataMasterModel = [];
+                        for (var item of masterData) {
+                            if (item.category == self.selectedDivision()) {
+                                dataMasterModel.push(item);
+                            }
+                        }
+                        self.salaryAggregateItemModel().setFullItemCode(dataMasterModel);
+                        dfd.resolve(self);
                     });
                 }).fail(function(error: any) {
 

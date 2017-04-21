@@ -85,7 +85,15 @@ var nts;
                                     j.service.findSalaryAggregateItem(salaryAggregateItemInDto).done(function (data) {
                                         self.salaryAggregateItemModel().convertDtoToData(data);
                                         j.service.findAllMasterItem().done(function (masterData) {
-                                            self.salaryAggregateItemModel().setFullItemCode(masterData);
+                                            var dataMasterModel;
+                                            dataMasterModel = [];
+                                            for (var _i = 0, masterData_1 = masterData; _i < masterData_1.length; _i++) {
+                                                var item = masterData_1[_i];
+                                                if (item.category == self.selectedDivision()) {
+                                                    dataMasterModel.push(item);
+                                                }
+                                            }
+                                            self.salaryAggregateItemModel().setFullItemCode(dataMasterModel);
                                             dfd.resolve(self);
                                         });
                                     }).fail(function (error) {
