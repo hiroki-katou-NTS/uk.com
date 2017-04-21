@@ -180,17 +180,17 @@ var qet001;
                 };
                 ScreenModel.prototype.save = function () {
                     var self = this;
-                    self.clearError();
-                    $('#code-input').ntsEditor('validate');
-                    $('#name-input').ntsEditor('validate');
                     if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                         return;
                     }
                     b.service.saveOutputSetting(self.outputSettingDetail()).done(function () {
                         nts.uk.ui.windows.setShared('isHasUpdate', true, false);
-                        self.loadAllOutputSetting();
-                        self.resetDirty();
+                        self.loadAllOutputSetting().done(function () {
+                            self.resetDirty();
+                            self.outputSettings().outputSettingSelectedCode(self.outputSettingDetail().settingCode());
+                        });
                     }).fail(function (res) {
+                        self.clearError();
                         $('#code-input').ntsError('set', res.message);
                     });
                 };

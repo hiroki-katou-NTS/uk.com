@@ -223,20 +223,18 @@ module qet001.b.viewmodel {
          */
         public save() {
             var self = this;
-            // clear error.
-            self.clearError();
-            // Validate.
-            $('#code-input').ntsEditor('validate');
-            $('#name-input').ntsEditor('validate');
             // Check has error.
             if(!nts.uk.ui._viewModel.errors.isEmpty()) {
                 return;
             }
             service.saveOutputSetting(self.outputSettingDetail()).done(function() {
                 nts.uk.ui.windows.setShared('isHasUpdate', true, false);
-                self.loadAllOutputSetting();
-                self.resetDirty();
+                self.loadAllOutputSetting().done(() => {
+                    self.resetDirty();
+                    self.outputSettings().outputSettingSelectedCode(self.outputSettingDetail().settingCode());
+                });
             }).fail(function(res) {
+                self.clearError();
                 $('#code-input').ntsError('set', res.message);
             })
         }
@@ -289,7 +287,6 @@ module qet001.b.viewmodel {
         public loadOutputSettingDetail(selectedCode: string): JQueryPromise<void> {
             var dfd = $.Deferred<void>();
             var self = this;
-            
             service.findOutputSettingDetail(selectedCode).done(function(data: WageLedgerOutputSetting){
                 self.clearError();
                 self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList, data));
