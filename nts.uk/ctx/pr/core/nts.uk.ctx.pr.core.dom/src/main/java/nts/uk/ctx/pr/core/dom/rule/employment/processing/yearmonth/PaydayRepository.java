@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
@@ -7,7 +8,9 @@ import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.payday.Payday
 
 public interface PaydayRepository {
 
-	List<Payday> select1_3(String companyCode, int processingNo, int payBonusAtr, int processingYm, int sparePayAtr);
+	BigDecimal select1(String companyCode, int processingNo, int payBonusAtr, int processingYm, int sparePayAtr);
+
+	Payday select3(String companyCode, int processingNo, int payBonusAtr, int processingYm, int sparePayAtr);
 
 	List<Payday> select2(String companyCode, int payBonusAtr, int processingYm, int sparePayAtr);
 
@@ -24,4 +27,6 @@ public interface PaydayRepository {
 	List<Payday> select12(String companyCode, int payBonusAtr, int sparePayAtr);
 
 	void insert1(Payday domain);
+	
+	void update1(Payday domain);
 }

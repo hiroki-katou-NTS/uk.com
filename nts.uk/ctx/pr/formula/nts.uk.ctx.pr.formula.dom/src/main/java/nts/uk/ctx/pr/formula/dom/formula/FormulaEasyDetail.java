@@ -4,14 +4,14 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.DomainObject;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.formula.dom.enums.AdjustmentAtr;
 import nts.uk.ctx.pr.formula.dom.enums.BaseMoneyAtr;
 import nts.uk.ctx.pr.formula.dom.enums.DivideValueSet;
 import nts.uk.ctx.pr.formula.dom.enums.EasyFormulaTypeAtr;
 import nts.uk.ctx.pr.formula.dom.enums.RoundAtr;
 import nts.uk.ctx.pr.formula.dom.primitive.DivideValue;
-import nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaCode;	
+import nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaCode;
 import nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaName;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
 import nts.uk.ctx.pr.formula.dom.primitive.MaxValue;
@@ -26,7 +26,7 @@ import nts.uk.ctx.pr.formula.dom.primitive.WorkValue;
  *
  */
 @Getter
-public class FormulaEasyDetail extends DomainObject {
+public class FormulaEasyDetail extends AggregateRoot {
 
 	private String companyCode;
 

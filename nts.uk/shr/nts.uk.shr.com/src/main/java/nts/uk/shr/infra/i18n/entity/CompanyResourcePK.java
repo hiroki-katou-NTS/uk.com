@@ -10,8 +10,6 @@ import lombok.Setter;
 @Setter
 @Getter
 public class CompanyResourcePK {
-	@Column(name = "CONTRACT_CODE")
-	private String contractCode;
 	@Column(name = "COMPANY_CODE")
 	private String companyCode;
 	@Column(name = "CODE")

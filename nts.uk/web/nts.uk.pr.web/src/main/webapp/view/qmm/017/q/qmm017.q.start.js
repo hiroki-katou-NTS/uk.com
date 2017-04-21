@@ -3,4 +3,3 @@ __viewContext.ready(function () {
     var screenModel = new nts.uk.pr.view.qmm017.q.viewmodel.ScreenModel(param);
     this.bind(screenModel);
 });
-//# sourceMappingURL=qmm017.q.start.js.map

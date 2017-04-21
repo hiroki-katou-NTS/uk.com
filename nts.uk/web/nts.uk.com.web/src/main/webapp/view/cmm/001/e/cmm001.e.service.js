@@ -24,7 +24,7 @@ var nts;
                                 var postCodeRespone;
                                 postCodeRespone = new model.PostCodeRespone('0', '', null);
                                 if (zipCode && zipCode != '') {
-                                    service.findPostCodeZipCode(zipCode).done(function (data) {
+                                    service.findPostCodeZipCode(zipCode).done(data => {
                                         var datalength = 0;
                                         if (data != null) {
                                             datalength = data.length;
@@ -58,7 +58,7 @@ var nts;
                                 var postCodeRespone;
                                 postCodeRespone = new model.PostCodeRespone('0', '', null);
                                 nts.uk.ui.windows.setShared('zipCode', zipCode);
-                                nts.uk.ui.windows.sub.modal("../e/index.xhtml", { height: 400, width: 530, title: "郵便番号" }).onClosed(function () {
+                                nts.uk.ui.windows.sub.modal("../e/index.xhtml", { height: 400, width: 530, title: "郵便番号" }).onClosed(() => {
                                     var zipCodeRes = nts.uk.ui.windows.getShared('zipCodeRes');
                                     if (zipCodeRes) {
                                         postCodeRespone = new model.PostCodeRespone('1', '', zipCodeRes);
@@ -72,30 +72,28 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findPostCodeZipCodeSelection = findPostCodeZipCodeSelection;
+                            //to address => UI
                             function toAddress(postCode) {
                                 return postCode.prefectureName + ' ' + postCode.municipalityName + ' ' + postCode.townName;
                             }
                             service.toAddress = toAddress;
+                            //to kana => UI
                             function toKana(postCode) {
                                 return postCode.prefectureNameKn + ' ' + postCode.municipalityNameKn + ' ' + postCode.townNameKn;
                             }
                             service.toKana = toKana;
                             var model;
                             (function (model) {
-                                var PostCode = (function () {
-                                    function PostCode() {
-                                    }
-                                    return PostCode;
-                                }());
+                                class PostCode {
+                                }
                                 model.PostCode = PostCode;
-                                var PostCodeRespone = (function () {
-                                    function PostCodeRespone(errorCode, message, postcode) {
+                                class PostCodeRespone {
+                                    constructor(errorCode, message, postcode) {
                                         this.errorCode = errorCode;
                                         this.message = message;
                                         this.postcode = postcode;
                                     }
-                                    return PostCodeRespone;
-                                }());
+                                }
                                 model.PostCodeRespone = PostCodeRespone;
                             })(model = service.model || (service.model = {}));
                         })(service = postcode_1.service || (postcode_1.service = {}));
@@ -105,4 +103,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=cmm001.e.service.js.map

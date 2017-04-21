@@ -11,7 +11,7 @@ public class FormulaItemSelectDto {
 	private String formulaName;
 	
 	public static FormulaItemSelectDto fromDomain(FormulaMaster domain){
-		return new FormulaItemSelectDto(domain.getCompanyCode(), domain.getFormulaCode().v());
+		return new FormulaItemSelectDto(domain.getFormulaCode().v(), domain.getFormulaName().v());
 	}
 
 	/**

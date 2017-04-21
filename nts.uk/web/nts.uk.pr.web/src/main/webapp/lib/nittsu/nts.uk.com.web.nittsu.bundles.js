@@ -449,7 +449,7 @@ var nts;
         var resource;
         (function (resource) {
             function getText(code) {
-                return __viewContext.codeNames[code];
+                return names[code];
             }
             resource.getText = getText;
             function getMessage(messageId) {
@@ -457,18 +457,18 @@ var nts;
                 for (var _i = 1; _i < arguments.length; _i++) {
                     params[_i - 1] = arguments[_i];
                 }
-                var message = __viewContext.messages[messageId];
+                var message = messages[messageId];
                 message = formatParams(message, params);
                 message = formatCompDependParam(message);
                 return message;
             }
             resource.getMessage = getMessage;
             function formatCompDependParam(message) {
-                var compDependceParamRegex = /{#(\w*)}/;
+                var compDependceParamRegex = /｛#(\w*)｝/;
                 var matches;
                 while (matches = compDependceParamRegex.exec(message)) {
                     var code = matches[1];
-                    var text_1 = __viewContext.codeNames[code];
+                    var text_1 = getText(code);
                     message = message.replace(compDependceParamRegex, text_1);
                 }
                 return message;
@@ -476,7 +476,7 @@ var nts;
             function formatParams(message, args) {
                 if (args == undefined)
                     return message;
-                var paramRegex = /{([0-9])+(:\\w+)?}/;
+                var paramRegex = /｛([0-9])+(:\\w+)?｝/;
                 var matches;
                 while (matches = paramRegex.exec(message)) {
                     var code = matches[1];
@@ -825,6 +825,7 @@ var nts;
             }
             text_3.reverseDirection = reverseDirection;
             function getISOFormat(format) {
+                format = uk.util.orDefault(format, "ISO");
                 if (format.toLowerCase() === "iso")
                     return "YYYY-MM-DD[T]HH:mm:ss.SSS[Z]";
                 if (format.toLowerCase() === "date")
@@ -978,6 +979,13 @@ var nts;
     (function (uk) {
         var time;
         (function (time_1) {
+            var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm", "HHmm"];
+            var listEmpire = {
+                "明治": "1868/01/01",
+                "大正": "1912/07/30",
+                "昭和": "1926/12/25",
+                "平成": "1989/01/08"
+            };
             var dotW = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
             function getYearMonthJapan(year, month) {
                 if (month)
@@ -1071,6 +1079,25 @@ var nts;
                 return new JapanYearMonth("平成 ", diff, month);
             }
             time_1.yearmonthInJapanEmpire = yearmonthInJapanEmpire;
+            var JapanDateMoment = (function () {
+                function JapanDateMoment(date, outputFormat) {
+                    var MomentResult = parseMoment(date, outputFormat);
+                    var year = MomentResult.momentObject.year();
+                    var month = MomentResult.momentObject.month() + 1;
+                }
+                JapanDateMoment.prototype.toString = function () {
+                    return (this.empire === undefined ? "" : this.empire + " ")
+                        + (this.year === undefined ? "" : this.year + " 年 ")
+                        + (this.month === undefined ? "" : this.month + " 月")
+                        + (this.day === undefined ? "" : this.day + " ");
+                };
+                return JapanDateMoment;
+            }());
+            time_1.JapanDateMoment = JapanDateMoment;
+            function dateInJapanEmpire(date) {
+                return new JapanDateMoment(date);
+            }
+            time_1.dateInJapanEmpire = dateInJapanEmpire;
             function formatSeconds(seconds, formatOption) {
                 seconds = parseInt(String(seconds));
                 var ss = uk.text.padLeft(String(seconds % 60), '0', 2);
@@ -1122,7 +1149,7 @@ var nts;
             time_1.formatYearMonth = formatYearMonth;
             function formatPattern(date, inputFormat, outputFormat) {
                 outputFormat = uk.text.getISOFormat(outputFormat);
-                var inputFormats = (inputFormat) ? inputFormat : ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm"];
+                var inputFormats = (inputFormat) ? inputFormat : defaultInputFormat;
                 return moment.utc(date, inputFormats).format(outputFormat);
             }
             time_1.formatPattern = formatPattern;
@@ -1434,8 +1461,8 @@ var nts;
             }(ParseResult));
             time_1.MomentResult = MomentResult;
             function parseMoment(datetime, outputFormat, inputFormat) {
-                var inputFormats = (inputFormat) ? inputFormat : ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm"];
-                var momentObject = moment.utc(datetime, inputFormats);
+                var inputFormats = (inputFormat) ? inputFormat : defaultInputFormat;
+                var momentObject = moment.utc(datetime, inputFormats, true);
                 var result = new MomentResult(momentObject, outputFormat);
                 if (momentObject.isValid())
                     result.succeeded();
@@ -1862,6 +1889,7 @@ var nts;
                         this.outputFormat = (option && option.outputFormat) ? option.outputFormat : "";
                         this.required = (option && option.required) ? option.required : false;
                         this.valueType = (option && option.valueType) ? option.valueType : "string";
+                        this.mode = (option && option.mode) ? option.mode : "";
                     }
                     TimeValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
@@ -1874,6 +1902,16 @@ var nts;
                                 result.success("");
                                 return result;
                             }
+                        }
+                        if (this.mode === "time") {
+                            var timeParse = uk.time.parseTime(inputText, false);
+                            if (timeParse.success) {
+                                result.success(timeParse.toValue());
+                            }
+                            else {
+                                result.fail(timeParse.getMsg());
+                            }
+                            return result;
                         }
                         var parseResult = uk.time.parseMoment(inputText, this.outputFormat);
                         if (parseResult.success) {
@@ -3007,6 +3045,49 @@ var nts;
                                 return setupDeleteButton($grid, param);
                         }
                     };
+                    $.fn.ntsGridListFeature = function (feature, action) {
+                        var params = [];
+                        for (var _i = 2; _i < arguments.length; _i++) {
+                            params[_i - 2] = arguments[_i];
+                        }
+                        var $grid = $(this);
+                        switch (feature) {
+                            case 'switch':
+                                switch (action) {
+                                    case 'setValue':
+                                        return setSwitchValue($grid, params);
+                                }
+                        }
+                    };
+                    function setSwitchValue($grid) {
+                        var params = [];
+                        for (var _i = 1; _i < arguments.length; _i++) {
+                            params[_i - 1] = arguments[_i];
+                        }
+                        var rowId = params[0][0];
+                        var columnKey = params[0][1];
+                        var selectedValue = params[0][2];
+                        var $row = $($grid.igGrid("rowById", rowId));
+                        var $parent = $row.find(".ntsControl");
+                        var currentSelect = $parent.attr('data-value');
+                        if (selectedValue !== currentSelect) {
+                            var rowKey = $row.attr("data-id");
+                            $parent.find(".nts-switch-button").removeClass("selected");
+                            var element = _.find($parent.find(".nts-switch-button"), function (e) {
+                                return selectedValue === $(e).attr('data-value');
+                            });
+                            if (element !== undefined) {
+                                $(element).addClass('selected');
+                                $parent.attr('data-value', selectedValue);
+                                $grid.igGridUpdating("setCellValue", rowKey, columnKey, selectedValue);
+                                $grid.igGrid("commit");
+                                if ($grid.igGrid("hasVerticalScrollbar")) {
+                                    var current = $grid.ntsGridList("getSelected");
+                                    $grid.igGrid("virtualScrollTo", (typeof current === 'object' ? current.index : current[0].index) + 1);
+                                }
+                            }
+                        }
+                    }
                     function getSelected($grid) {
                         if ($grid.igGridSelection('option', 'multipleSelection')) {
                             var selectedRows = $grid.igGridSelection('selectedRows');
@@ -3569,7 +3650,10 @@ var nts;
                         var textId = data.text;
                         var checkBoxText;
                         var container = $(element);
-                        container.addClass("ntsControl");
+                        container.addClass("ntsControl").on("click", function (e) {
+                            if (container.data("readonly") === true)
+                                e.preventDefault();
+                        });
                         if (textId) {
                             checkBoxText = textId;
                         }
@@ -3577,24 +3661,26 @@ var nts;
                             checkBoxText = container.text();
                             container.text('');
                         }
-                        var checkBoxLabel = $("<label class='ntsCheckBox'></label>");
-                        var checkBox = $('<input type="checkbox">').on("change", function () {
+                        var $checkBoxLabel = $("<label class='ntsCheckBox'></label>");
+                        var $checkBox = $('<input type="checkbox">').on("change", function () {
                             if (typeof setChecked === "function")
                                 setChecked($(this).is(":checked"));
-                        }).appendTo(checkBoxLabel);
-                        var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
+                        }).appendTo($checkBoxLabel);
+                        var $box = $("<span class='box'></span>").appendTo($checkBoxLabel);
                         if (checkBoxText && checkBoxText.length > 0)
-                            var label = $("<span class='label'></span>").text(checkBoxText).appendTo(checkBoxLabel);
-                        checkBoxLabel.appendTo(container);
+                            var label = $("<span class='label'></span>").text(checkBoxText).appendTo($checkBoxLabel);
+                        $checkBoxLabel.appendTo(container);
                     };
                     NtsCheckboxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var checked = ko.unwrap(data.checked);
+                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var container = $(element);
-                        var checkBox = $(element).find("input[type='checkbox']");
-                        checkBox.prop("checked", checked);
-                        (enable === true) ? checkBox.removeAttr("disabled") : checkBox.attr("disabled", "disabled");
+                        container.data("readonly", readonly);
+                        var $checkBox = $(element).find("input[type='checkbox']");
+                        $checkBox.prop("checked", checked);
+                        (enable === true) ? $checkBox.removeAttr("disabled") : $checkBox.attr("disabled", "disabled");
                     };
                     return NtsCheckboxBindingHandler;
                 }());
@@ -3602,16 +3688,25 @@ var nts;
                     function NtsMultiCheckBoxBindingHandler() {
                     }
                     NtsMultiCheckBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        $(element).addClass("ntsControl");
+                        var data = valueAccessor();
+                        var container = $(element);
+                        container.addClass("ntsControl").on("click", function (e) {
+                            if (container.data("readonly") === true)
+                                e.preventDefault();
+                        });
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        container.data("enable", _.clone(enable));
                     };
                     NtsMultiCheckBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
-                        var options = ko.unwrap(data.options);
+                        var options = data.options === undefined ? [] : JSON.parse(ko.toJSON(data.options));
                         var optionValue = ko.unwrap(data.optionsValue);
                         var optionText = ko.unwrap(data.optionsText);
                         var selectedValue = data.value;
+                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var container = $(element);
+                        container.data("readonly", readonly);
                         var getOptionValue = function (item) {
                             return (optionValue === undefined) ? item : item[optionValue];
                         };
@@ -3628,13 +3723,18 @@ var nts;
                                         selectedValue.remove(_.find(selectedValue(), function (value) {
                                             return _.isEqual(value, $(_this).data("value"));
                                         }));
-                                }).appendTo(checkBoxLabel);
+                                });
+                                var disableOption = option["enable"];
+                                if (!nts.uk.util.isNullOrUndefined(disableOption) && (disableOption === false)) {
+                                    checkBox.attr("disabled", "disabled");
+                                }
+                                checkBox.appendTo(checkBoxLabel);
                                 var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
                                 if (option[optionText] && option[optionText].length > 0)
                                     var label = $("<span class='label'></span>").text(option[optionText]).appendTo(checkBoxLabel);
                                 checkBoxLabel.appendTo(container);
                             });
-                            container.data("options", options.slice());
+                            container.data("options", _.cloneDeep(options));
                         }
                         container.find("input[type='checkbox']").prop("checked", function () {
                             var _this = this;
@@ -3642,7 +3742,18 @@ var nts;
                                 return _.isEqual(value, $(_this).data("value"));
                             }) !== undefined);
                         });
-                        (enable === true) ? container.find("input[type='checkbox']").removeAttr("disabled") : container.find("input[type='checkbox']").attr("disabled", "disabled");
+                        if (!_.isEqual(container.data("enable"), enable)) {
+                            container.data("enable", _.clone(enable));
+                            (enable === true) ? container.find("input[type='checkbox']").removeAttr("disabled") : container.find("input[type='checkbox']").attr("disabled", "disabled");
+                            _.forEach(data.options(), function (option) {
+                                if (typeof option["enable"] === "function") {
+                                    option["enable"](enable);
+                                }
+                                else {
+                                    option["enable"] = (enable);
+                                }
+                            });
+                        }
                     };
                     return NtsMultiCheckBoxBindingHandler;
                 }());
@@ -3776,142 +3887,6 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
             })(koExtentions = ui_3.koExtentions || (ui_3.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var koExtentions;
-            (function (koExtentions) {
-                var DatePickerBindingHandler = (function () {
-                    function DatePickerBindingHandler() {
-                    }
-                    DatePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var value = data.value;
-                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
-                        var ISOFormat = uk.text.getISOFormat(dateFormat);
-                        var hasDayofWeek = (ISOFormat.indexOf("ddd") !== -1);
-                        var dayofWeekFormat = ISOFormat.replace(/[^d]/g, "");
-                        ISOFormat = ISOFormat.replace(/d/g, "").trim();
-                        var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : "";
-                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
-                        var button = (data.button !== undefined) ? ko.unwrap(data.button) : false;
-                        var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
-                        var endDate = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
-                        var autoHide = (data.autoHide !== undefined) ? ko.unwrap(data.autoHide) : true;
-                        var valueType = typeof value();
-                        if (valueType === "string") {
-                            valueFormat = (valueFormat) ? valueFormat : uk.text.getISOFormat("ISO");
-                        }
-                        else if (valueType === "number") {
-                            valueFormat = (valueFormat) ? valueFormat : ISOFormat;
-                        }
-                        else if (valueType === "object") {
-                            if (moment.isDate(value())) {
-                                valueType = "date";
-                            }
-                            else if (moment.isMoment(value())) {
-                                valueType = "moment";
-                            }
-                        }
-                        var container = $(element);
-                        if (!container.attr("id")) {
-                            var idString = nts.uk.util.randomId();
-                            container.attr("id", idString);
-                        }
-                        container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
-                        var inputClass = (ISOFormat.length < 10) ? "yearmonth-picker" : "";
-                        var $input = $("<input id='" + container.attr("id") + "-input' class='ntsDatepicker nts-input' />").addClass(inputClass);
-                        container.append($input);
-                        if (hasDayofWeek) {
-                            var lengthClass = (dayofWeekFormat.length > 3) ? "long-day" : "short-day";
-                            var $label = $("<label id='" + container.attr("id") + "-label' for='" + container.attr("id") + "-input' class='dayofweek-label' />");
-                            $input.addClass(lengthClass);
-                            container.append($label);
-                        }
-                        $input.datepicker({
-                            language: 'ja-JP',
-                            format: ISOFormat,
-                            startDate: startDate,
-                            endDate: endDate,
-                            autoHide: autoHide,
-                        });
-                        var validator = new ui.validation.TimeValidator(constraintName, { required: required, outputFormat: valueFormat, valueType: valueType });
-                        $input.on("change", function (e) {
-                            var newText = $input.val();
-                            var result = validator.validate(newText);
-                            $input.ntsError('clear');
-                            if (result.isValid) {
-                                if (hasDayofWeek) {
-                                    if (uk.util.isNullOrEmpty(result.parsedValue))
-                                        $label.text("");
-                                    else
-                                        $label.text("(" + uk.time.formatPattern(newText, "", dayofWeekFormat) + ")");
-                                }
-                                value(result.parsedValue);
-                            }
-                            else {
-                                $input.ntsError('set', result.errorMessage);
-                                value(newText);
-                            }
-                        });
-                        $input.on('validate', (function (e) {
-                            var newText = $input.val();
-                            var result = validator.validate(newText);
-                            $input.ntsError('clear');
-                            if (result.isValid) {
-                                $input.ntsError('set', "Invalid format");
-                            }
-                        }));
-                    };
-                    DatePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var value = data.value;
-                        var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
-                        var ISOFormat = uk.text.getISOFormat(dateFormat);
-                        var hasDayofWeek = (ISOFormat.indexOf("ddd") !== -1);
-                        var dayofWeekFormat = ISOFormat.replace(/[^d]/g, "");
-                        ISOFormat = ISOFormat.replace(/d/g, "").trim();
-                        var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : ISOFormat;
-                        var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
-                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : undefined;
-                        var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
-                        var endDate = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
-                        var container = $(element);
-                        var init = container.data("init");
-                        var $input = container.find(".nts-input");
-                        var $label = container.find(".dayofweek-label");
-                        var dateFormatValue = (value() !== "") ? uk.time.formatPattern(value(), valueFormat, ISOFormat) : "";
-                        if (init === true || uk.time.formatPattern($input.datepicker("getDate", true), "", ISOFormat) !== dateFormatValue) {
-                            if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
-                                $input.datepicker('setDate', dateFormatValue);
-                                $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
-                            }
-                            else {
-                                $input.val("");
-                                $label.text("");
-                            }
-                        }
-                        container.data("init", false);
-                        $input.datepicker('setStartDate', startDate);
-                        $input.datepicker('setEndDate', endDate);
-                        if (enable !== undefined)
-                            $input.prop("disabled", !enable);
-                        else
-                            $input.prop("disabled", disabled);
-                        if (data.button)
-                            container.find('.datepicker-btn').prop("disabled", disabled);
-                    };
-                    return DatePickerBindingHandler;
-                }());
-                ko.bindingHandlers['ntsDatePicker'] = new DatePickerBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -4351,7 +4326,8 @@ var nts;
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var inputFormat = (data.inputFormat !== undefined) ? ko.unwrap(data.inputFormat) : option.inputFormat;
-                        return new validation.TimeValidator(constraintName, { required: required, outputFormat: inputFormat });
+                        var mode = (data.mode !== undefined) ? ko.unwrap(data.mode) : "";
+                        return new validation.TimeValidator(constraintName, { required: required, outputFormat: inputFormat, mode: mode });
                     };
                     return TimeEditorProcessor;
                 }(EditorProcessor));
@@ -4496,7 +4472,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui) {
+        (function (ui_4) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsGridListBindingHandler = (function () {
@@ -4505,7 +4481,8 @@ var nts;
                     NtsGridListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var HEADER_HEIGHT = 27;
                         var $grid = $(element);
-                        if (nts.uk.util.isNullOrUndefined($grid.attr('id'))) {
+                        var gridId = $grid.attr('id');
+                        if (nts.uk.util.isNullOrUndefined(gridId)) {
                             throw new Error('the element NtsGridList must have id attribute.');
                         }
                         var data = valueAccessor();
@@ -4514,17 +4491,48 @@ var nts;
                         var deleteOptions = ko.unwrap(data.deleteOptions);
                         var observableColumns = ko.unwrap(data.columns);
                         var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
-                        var iggridColumns = _.map(observableColumns, function (c) {
-                            c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
-                            c["dataType"] = 'string';
-                            return c;
-                        });
                         var features = [];
                         features.push({ name: 'Selection', multipleSelection: data.multiple });
                         features.push({ name: 'Sorting', type: 'local' });
-                        if (data.multiple) {
-                            features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: showNumbering });
-                        }
+                        features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: showNumbering });
+                        var gridFeatures = ko.unwrap(data.features);
+                        var iggridColumns = _.map(observableColumns, function (c) {
+                            c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
+                            c["dataType"] = 'string';
+                            if (c["controlType"] === "switch") {
+                                var switchF = _.find(gridFeatures, function (s) {
+                                    return s["name"] === "Switch";
+                                });
+                                if (!uk.util.isNullOrUndefined(switchF)) {
+                                    features.push({ name: 'Updating', enableAddRow: false, enableDeleteRow: false, editMode: 'none' });
+                                    var switchOptions_1 = ko.unwrap(switchF.options);
+                                    var switchValue_1 = switchF.optionsValue;
+                                    var switchText_1 = switchF.optionsText;
+                                    c["formatter"] = function createButton(val, row) {
+                                        var result = $('<div class="ntsControl"/>');
+                                        _.forEach(switchOptions_1, function (opt) {
+                                            var value = opt[switchValue_1];
+                                            var text = opt[switchText_1];
+                                            var btn = $('<button>').text(text)
+                                                .addClass('nts-switch-button');
+                                            btn.attr('data-value', value);
+                                            if (val == value) {
+                                                btn.addClass('selected');
+                                            }
+                                            btn.appendTo(result);
+                                        }, result.attr("data-value", val));
+                                        return result[0].outerHTML;
+                                    };
+                                    $grid.on("click", ".nts-switch-button", function (evt, ui) {
+                                        var $element = $(this);
+                                        var selectedValue = $element.attr('data-value');
+                                        var $tr = $element.closest("tr");
+                                        $grid.ntsGridListFeature('switch', 'setValue', $tr.attr("data-id"), c["key"], selectedValue);
+                                    });
+                                }
+                            }
+                            return c;
+                        });
                         $grid.igGrid({
                             width: data.width,
                             height: (data.height) + "px",
@@ -4563,7 +4571,6 @@ var nts;
                                 }
                             }
                         });
-                        var gridId = $grid.attr('id');
                         $grid.setupSearchScroll("igGrid", true);
                     };
                     NtsGridListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -4601,7 +4608,7 @@ var nts;
                     return NtsGridListBindingHandler;
                 }());
                 ko.bindingHandlers['ntsGridList'] = new NtsGridListBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+            })(koExtentions = ui_4.koExtentions || (ui_4.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -4610,7 +4617,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_4) {
+        (function (ui_5) {
             var koExtentions;
             (function (koExtentions) {
                 function selectOnListBox(event) {
@@ -4746,6 +4753,82 @@ var nts;
                             }
                         }));
                         container.data("multiple", isMultiSelect);
+                        container.bind('mousedown', function (evt, ui) {
+                            var OUTSIDE_AUTO_SCROLL_SPEED = {
+                                RATIO: 0.2,
+                                MAX: 30
+                            };
+                            var $target = $(evt.target);
+                            var $row = $target.closest(".ui-selectee");
+                            var rowIndex = parseInt($row.attr("data-idx"));
+                            var scrollHeight = container[0].scrollHeight;
+                            var divHeight = container.height();
+                            var gridVerticalRange = new uk.util.Range(container.offset().top, container.offset().top + divHeight);
+                            var mousePos = {
+                                x: evt.pageX,
+                                y: evt.pageY,
+                                rowIndex: rowIndex,
+                                target: evt.target
+                            };
+                            var timerAutoScroll = setInterval(function () {
+                                var distance = gridVerticalRange.distanceFrom(mousePos.y);
+                                var delta = Math.min(distance * OUTSIDE_AUTO_SCROLL_SPEED.RATIO, OUTSIDE_AUTO_SCROLL_SPEED.MAX);
+                                var currentScrolls = container.scrollTop() + delta;
+                                if (container.data("multiple")) {
+                                    if (distance === 0) {
+                                        return;
+                                    }
+                                    container.ntsListBox("deselectAll");
+                                    container.scrollTop(currentScrolls);
+                                    if (distance > 0) {
+                                        var height_1 = 0;
+                                        var rowSelect = _.filter(container.find(".ui-selectee"), function (e) {
+                                            var flag = parseInt($(e).attr("data-idx")) >= rowIndex &&
+                                                ((currentScrolls + divHeight >= scrollHeight) ? true : +height_1 <= currentScrolls);
+                                            height_1 += $(e).height();
+                                            return flag;
+                                        });
+                                        $(rowSelect).addClass("ui-selected");
+                                    }
+                                    else {
+                                        var height_2 = 0;
+                                        var rowSelect = _.filter(container.find(".ui-selectee"), function (e) {
+                                            var flag = parseInt($(e).attr("data-idx")) <= rowIndex &&
+                                                ((currentScrolls <= 0) ? true : +height_2 >= currentScrolls);
+                                            height_2 += $(e).height();
+                                            return flag;
+                                        });
+                                        $(rowSelect).addClass("ui-selected");
+                                    }
+                                }
+                                else {
+                                    container.scrollTop(currentScrolls);
+                                    var $currentTarget = $(mousePos.target);
+                                    var $movedRow = $currentTarget.closest(".ui-selectee");
+                                    container.ntsListBox("deselectAll");
+                                    $movedRow.addClass("ui-selected");
+                                    data.value($movedRow.data('value'));
+                                }
+                            }, 20);
+                            $(window).bind('mousemove.NtsListBoxDragging', function (e) {
+                                var $currentTarget = $(e.target);
+                                var $movedRow = $currentTarget.closest(".ui-selectee");
+                                var movedRowIndex = parseInt($movedRow.attr("data-idx"));
+                                if (mousePos.rowIndex !== undefined && mousePos.rowIndex === movedRowIndex) {
+                                    return;
+                                }
+                                mousePos = {
+                                    x: e.pageX,
+                                    y: e.pageY,
+                                    rowIndex: movedRowIndex,
+                                    target: e.target
+                                };
+                            });
+                            $(window).one('mouseup', function (e) {
+                                $(window).unbind('mousemove.NtsListBoxDragging');
+                                clearInterval(timerAutoScroll);
+                            });
+                        });
                     };
                     ListBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
@@ -4825,7 +4908,7 @@ var nts;
                                     else {
                                         itemTemplate = '<div class="nts-column nts-list-box-column-0">' + item[optionText] + '</div>';
                                     }
-                                    $('<li/>').addClass(selectedClass).attr("data-idx", idx)
+                                    $('<li/>').addClass("ui-selectee").addClass(selectedClass).attr("data-idx", idx)
                                         .html(itemTemplate).data('value', getOptionValue(item))
                                         .appendTo(selectListBoxContainer);
                                 }
@@ -4887,12 +4970,12 @@ var nts;
                         }
                         else {
                             if (!enable) {
-                                container.off("click", "li");
+                                selectListBoxContainer.off("click", "li");
                                 container.addClass('disabled');
                             }
                             else {
                                 if (container.hasClass("disabled")) {
-                                    container.on("click", "li", { event: container.data("selectionChange") }, selectOnListBox);
+                                    selectListBoxContainer.on("click", "li", { event: container.data("selectionChange") }, selectOnListBox);
                                     container.removeClass('disabled');
                                 }
                             }
@@ -4902,7 +4985,7 @@ var nts;
                     return ListBoxBindingHandler;
                 }());
                 ko.bindingHandlers['ntsListBox'] = new ListBoxBindingHandler();
-            })(koExtentions = ui_4.koExtentions || (ui_4.koExtentions = {}));
+            })(koExtentions = ui_5.koExtentions || (ui_5.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -4918,11 +5001,14 @@ var nts;
                     function NtsRadioBoxGroupBindingHandler() {
                     }
                     NtsRadioBoxGroupBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
                         $(element).addClass("ntsControl");
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        $(element).data("enable", _.clone(enable));
                     };
                     NtsRadioBoxGroupBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
-                        var options = ko.unwrap(data.options);
+                        var options = data.options === undefined ? [] : JSON.parse(ko.toJSON(data.options));
                         var optionValue = ko.unwrap(data.optionsValue);
                         var optionText = ko.unwrap(data.optionsText);
                         var selectedValue = data.value;
@@ -4940,20 +5026,36 @@ var nts;
                                     var self = this;
                                     if ($(self).is(":checked"))
                                         selectedValue($(self).data("value"));
-                                }).appendTo(radioBoxLabel);
+                                });
+                                var disableOption = option["enable"];
+                                if (!nts.uk.util.isNullOrUndefined(disableOption) && (disableOption === false)) {
+                                    radioBox.attr("disabled", "disabled");
+                                }
+                                radioBox.appendTo(radioBoxLabel);
                                 var box = $("<span class='box'></span>").appendTo(radioBoxLabel);
                                 if (option[optionText] && option[optionText].length > 0)
                                     var label = $("<span class='label'></span>").text(option[optionText]).appendTo(radioBoxLabel);
                                 radioBoxLabel.appendTo(container);
                             });
-                            container.data("options", options.slice());
+                            container.data("options", _.cloneDeep(options));
                         }
                         var checkedRadio = _.find(container.find("input[type='radio']"), function (item) {
                             return _.isEqual($(item).data("value"), selectedValue());
                         });
                         if (checkedRadio !== undefined)
                             $(checkedRadio).prop("checked", true);
-                        (enable === true) ? container.find("input[type='radio']").removeAttr("disabled") : container.find("input[type='radio']").attr("disabled", "disabled");
+                        if (!_.isEqual(container.data("enable"), enable)) {
+                            container.data("enable", _.clone(enable));
+                            (enable === true) ? container.find("input[type='radio']").removeAttr("disabled") : container.find("input[type='radio']").attr("disabled", "disabled");
+                            _.forEach(data.options(), function (option) {
+                                if (typeof option["enable"] === "function") {
+                                    option["enable"](enable);
+                                }
+                                else {
+                                    option["enable"] = (enable);
+                                }
+                            });
+                        }
                     };
                     return NtsRadioBoxGroupBindingHandler;
                 }());
@@ -5122,7 +5224,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_5) {
+        (function (ui_6) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsSwapListBindingHandler = (function () {
@@ -5164,29 +5266,6 @@ var nts;
                         var grid1Id = "#" + elementId + "-grid1";
                         var grid2Id = "#" + elementId + "-grid2";
                         if (!uk.util.isNullOrUndefined(showSearchBox) && (showSearchBox.showLeft || showSearchBox.showEright)) {
-                            var search = function ($swap, gridId, primaryKey) {
-                                var value = $swap.find(".ntsSearchInput").val();
-                                var source = $(gridId).igGrid("option", "dataSource").slice();
-                                var selected = $(gridId).ntsGridList("getSelected");
-                                if (selected.length > 0) {
-                                    var gotoEnd = source.splice(0, selected[0].index + 1);
-                                    source = source.concat(gotoEnd);
-                                }
-                                var searchedValues = _.find(source, function (val) {
-                                    return _.find(iggridColumns, function (x) {
-                                        return x !== undefined && x !== null && val[x["key"]].toString().indexOf(value) >= 0;
-                                    }) !== undefined;
-                                });
-                                $(gridId).ntsGridList('setSelected', searchedValues !== undefined ? [searchedValues[primaryKey]] : []);
-                                if (searchedValues !== undefined && (selected.length === 0 ||
-                                    selected[0].id !== searchedValues[primaryKey])) {
-                                    var current = $(gridId).igGrid("selectedRows");
-                                    if (current.length > 0 && $(gridId).igGrid("hasVerticalScrollbar")) {
-                                        $(gridId).igGrid("virtualScrollTo", current[0].index === source.length - 1
-                                            ? current[0].index : current[0].index + 1);
-                                    }
-                                }
-                            };
                             var initSearchArea = function ($SearchArea, targetId) {
                                 $SearchArea.append("<div class='ntsSearchTextContainer'/>")
                                     .append("<div class='ntsSearchButtonContainer'/>");
@@ -5194,14 +5273,8 @@ var nts;
                                     .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSearchBox'/>");
                                 $SearchArea.find(".ntsSearchButtonContainer")
                                     .append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn caret-bottom'/>");
-                                $SearchArea.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・").keyup(function (event, ui) {
-                                    if (event.which === 13) {
-                                        search($SearchArea, targetId, primaryKey);
-                                    }
-                                });
-                                $SearchArea.find(".ntsSearchButton").text("検索").click(function (event, ui) {
-                                    search($SearchArea, targetId, primaryKey);
-                                });
+                                $SearchArea.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・");
+                                $SearchArea.find(".ntsSearchButton").text("検索");
                             };
                             var searchAreaId = elementId + "-search-area";
                             $swap.append("<div class = 'ntsSearchArea' id = " + searchAreaId + "/>");
@@ -5236,6 +5309,31 @@ var nts;
                             { name: 'Sorting', type: 'local' },
                             { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: true }];
                         $swap.find(".nstSwapGridArea").width(gridWidth + CHECKBOX_WIDTH);
+                        var criterion = _.map(columns(), function (c) { return c.key === undefined ? c.prop : c.key; });
+                        var swapParts = new Array();
+                        swapParts.push(new GridSwapPart().listControl($grid1)
+                            .searchControl($swap.find(".ntsSwapSearchLeft").find(".ntsSearchButton"))
+                            .searchBox($swap.find(".ntsSwapSearchLeft").find(".ntsSearchBox"))
+                            .setDataSource(originalSource)
+                            .setSearchCriterion(data.searchCriterion || criterion)
+                            .setSearchMode(data.searchMode || "highlight")
+                            .setColumns(columns())
+                            .setPrimaryKey(primaryKey)
+                            .setInnerDrop((data.innerDrag && data.innerDrag.left !== undefined) ? data.innerDrag.left : true)
+                            .setOuterDrop((data.outerDrag && data.outerDrag.left !== undefined) ? data.outerDrag.left : true)
+                            .build());
+                        swapParts.push(new GridSwapPart().listControl($grid2)
+                            .searchControl($swap.find(".ntsSwapSearchRight").find(".ntsSearchButton"))
+                            .searchBox($swap.find(".ntsSwapSearchRight").find(".ntsSearchBox"))
+                            .setDataSource(data.value())
+                            .setSearchCriterion(data.searchCriterion || criterion)
+                            .setSearchMode(data.searchMode || "highlight")
+                            .setColumns(columns())
+                            .setPrimaryKey(primaryKey)
+                            .setInnerDrop((data.innerDrag && data.innerDrag.right !== undefined) ? data.innerDrag.right : true)
+                            .setOuterDrop((data.outerDrag && data.outerDrag.right !== undefined) ? data.outerDrag.right : true)
+                            .build());
+                        this.swapper = new SwapHandler().setModel(new GridSwapList($swap, swapParts));
                         $grid1.igGrid({
                             width: gridWidth + CHECKBOX_WIDTH,
                             height: (gridHeight) + "px",
@@ -5258,6 +5356,8 @@ var nts;
                             virtualizationMode: 'continuous',
                             features: features
                         });
+                        if (data.draggable === true)
+                            this.swapper.enableDragDrop();
                         $grid2.closest('.ui-iggrid')
                             .addClass('nts-gridlist')
                             .height(gridHeight);
@@ -5267,88 +5367,538 @@ var nts;
                             .append("<button class = 'move-button move-back'><i class='icon icon-button-arrow-left'></i></button>");
                         var $moveForward = $moveArea.find(".move-forward");
                         var $moveBack = $moveArea.find(".move-back");
-                        var move = function (id1, id2, key, currentSource, value, isForward) {
-                            var selectedEmployees = _.sortBy($(isForward ? id1 : id2).igGrid("selectedRows"), 'id');
-                            if (selectedEmployees.length > 0) {
-                                $(isForward ? id1 : id2).igGridSelection("clearSelection");
-                                var source = $(isForward ? id1 : id2).igGrid("option", "dataSource");
-                                var employeeList = [];
-                                for (var i = 0; i < selectedEmployees.length; i++) {
-                                    var current = source[selectedEmployees[i].index];
-                                    if (current[key].toString() === selectedEmployees[i].id.toString()) {
-                                        employeeList.push(current);
-                                    }
-                                    else {
-                                        var sameCodes = _.find(source, function (subject) {
-                                            return subject[key].toString() === selectedEmployees[i].id.toString();
-                                        });
-                                        if (sameCodes !== undefined) {
-                                            employeeList.push(sameCodes);
-                                        }
-                                    }
-                                }
-                                var length = value().length;
-                                var notExisted = _.filter(employeeList, function (list) {
-                                    return _.find(currentSource, function (data) {
-                                        return data[key].toString() === list[key].toString();
-                                    }) === undefined;
-                                });
-                                if (notExisted.length > 0) {
-                                    $(id1).igGrid("virtualScrollTo", 0);
-                                    $(id2).igGrid("virtualScrollTo", 0);
-                                    var newSource = _.filter(source, function (list) {
-                                        return _.find(notExisted, function (data) {
-                                            return data[key].toString() === list[key].toString();
-                                        }) === undefined;
-                                    });
-                                    var sources = currentSource.concat(notExisted);
-                                    value(isForward ? sources : newSource);
-                                    $(id1).igGrid("option", "dataSource", isForward ? newSource : sources);
-                                    $(id1).igGrid("option", "dataBind");
-                                    $(id1).igGrid("virtualScrollTo", isForward ? selectedEmployees[0].index - 1 : sources.length - selectedEmployees.length);
-                                    $(id2).igGrid("virtualScrollTo", isForward ? value().length : selectedEmployees[0].index);
-                                }
-                            }
-                        };
+                        var swapper = this.swapper;
                         $moveForward.click(function () {
-                            move(grid1Id, grid2Id, primaryKey, data.value(), data.value, true);
+                            swapper.Model.move(true, data.value);
                         });
                         $moveBack.click(function () {
-                            move(grid1Id, grid2Id, primaryKey, $(grid1Id).igGrid("option", "dataSource"), data.value, false);
+                            swapper.Model.move(false, data.value);
                         });
                     };
                     NtsSwapListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var $swap = $(element);
                         var data = valueAccessor();
-                        var elementId = $swap.attr('id');
-                        var primaryKey = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
+                        var elementId = this.swapper.Model.$container.attr('id');
+                        var primaryKey = this.swapper.Model.swapParts[0].primaryKey;
                         if (nts.uk.util.isNullOrUndefined(elementId)) {
                             throw new Error('the element NtsSwapList must have id attribute.');
                         }
-                        var $grid1 = $swap.find("#" + elementId + "-grid1");
-                        var $grid2 = $swap.find("#" + elementId + "-grid2");
+                        var $grid1 = this.swapper.Model.swapParts[0].$listControl;
+                        var $grid2 = this.swapper.Model.swapParts[1].$listControl;
                         var currentSource = $grid1.igGrid('option', 'dataSource');
-                        var currentSelected = $grid2.igGrid('option', 'dataSource');
-                        var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
-                        var selectedSources = data.value();
-                        _.remove(sources, function (item) {
-                            return _.find(selectedSources, function (selected) {
+                        var currentSelectedList = $grid2.igGrid('option', 'dataSource');
+                        var newSources = (data.dataSource !== undefined ? data.dataSource() : data.options());
+                        var newSelectedList = data.value();
+                        _.remove(newSources, function (item) {
+                            return _.find(newSelectedList, function (selected) {
                                 return selected[primaryKey] === item[primaryKey];
                             }) !== undefined;
                         });
-                        if (!_.isEqual(currentSource, sources)) {
-                            $grid1.igGrid('option', 'dataSource', sources.slice());
-                            $grid1.igGrid("dataBind");
+                        if (!_.isEqual(currentSource, newSources)) {
+                            this.swapper.Model.swapParts[0].bindData(newSources.slice());
                         }
-                        if (!_.isEqual(currentSelected, selectedSources)) {
-                            $grid2.igGrid('option', 'dataSource', selectedSources.slice());
-                            $grid2.igGrid("dataBind");
+                        if (!_.isEqual(currentSelectedList, newSelectedList)) {
+                            this.swapper.Model.swapParts[1].bindData(newSelectedList.slice());
                         }
+                    };
+                    NtsSwapListBindingHandler.prototype.makeBindings = function () {
+                        var handler = this;
+                        return {
+                            init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                                var newHandler = Object.create(handler);
+                                if (handler.init) {
+                                    handler.init.call(newHandler, element, valueAccessor, allBindings, viewModel, bindingContext);
+                                }
+                                if (handler.update) {
+                                    ko.computed({
+                                        read: handler.update.bind(newHandler, element, valueAccessor, allBindings, viewModel, bindingContext),
+                                        disposeWhenNodeIsRemoved: element
+                                    });
+                                }
+                            }
+                        };
                     };
                     return NtsSwapListBindingHandler;
                 }());
-                ko.bindingHandlers['ntsSwapList'] = new NtsSwapListBindingHandler();
-            })(koExtentions = ui_5.koExtentions || (ui_5.koExtentions = {}));
+                ko.bindingHandlers['ntsSwapList'] = new NtsSwapListBindingHandler().makeBindings();
+                var SwapHandler = (function () {
+                    function SwapHandler() {
+                    }
+                    SwapHandler.prototype.setModel = function (model) {
+                        this.model = model;
+                        return this;
+                    };
+                    Object.defineProperty(SwapHandler.prototype, "Model", {
+                        get: function () {
+                            return this.model;
+                        },
+                        enumerable: true,
+                        configurable: true
+                    });
+                    SwapHandler.prototype.handle = function (parts) {
+                        var self = this;
+                        var model = this.model;
+                        for (var id in parts) {
+                            var options = {
+                                items: "tbody > tr",
+                                containment: this.model.$container,
+                                cursor: "move",
+                                connectWith: ".ntsSwapGrid",
+                                placeholder: "ui-state-highlight",
+                                helper: this._createHelper,
+                                appendTo: this.model.$container,
+                                start: function (evt, ui) {
+                                    model.transportBuilder.at(model.sender(ui));
+                                },
+                                beforeStop: function (evt, ui) {
+                                    self._beforeStop.call(this, model, evt, ui);
+                                },
+                                update: function (evt, ui) {
+                                    self._update.call(this, model, evt, ui);
+                                }
+                            };
+                            this.model.swapParts[parts[id]].initDraggable(options);
+                        }
+                    };
+                    SwapHandler.prototype._createHelper = function (evt, ui) {
+                        var selectedRowElms = $(evt.currentTarget).igGrid("selectedRows");
+                        selectedRowElms.sort(function (one, two) {
+                            return one.index - two.index;
+                        });
+                        var $helper;
+                        if (selectedRowElms.length > 1) {
+                            $helper = $("<div><table><tbody></tbody></table></div>").addClass("select-drag");
+                            var rowId = ui.data("row-idx");
+                            var selectedItems = selectedRowElms.map(function (elm) { return elm.element; });
+                            var height = 0;
+                            $.each(selectedItems, function () {
+                                $helper.find("tbody").append($(this).clone());
+                                height += $(this).outerHeight();
+                                if (rowId !== this.data("row-idx"))
+                                    $(this).hide();
+                            });
+                            $helper.height(height);
+                            $helper.find("tr").first().children().each(function (idx) {
+                                $(this).width(ui.children().eq(idx).width());
+                            });
+                        }
+                        else {
+                            $helper = ui.clone();
+                            $helper.children().each(function (idx) {
+                                $(this).width(ui.children().eq(idx).width());
+                            });
+                        }
+                        return $helper[0];
+                    };
+                    SwapHandler.prototype._beforeStop = function (model, evt, ui) {
+                        var partId = model.transportBuilder.startAt === "first" ? 0 : 1;
+                        var destPartId = model.receiver(ui) === "first" ? 0 : 1;
+                        model.transportBuilder.toAdjacent(model.neighbor(ui)).target(model.target(ui));
+                        if (ui.helper.hasClass("select-drag") === true) {
+                            var rowsInHelper = ui.helper.find("tr");
+                            var rows = rowsInHelper.toArray();
+                            if (model.transportBuilder.startAt === model.receiver(ui)
+                                || (model.swapParts[partId].outerDrop === false
+                                    && model.transportBuilder.startAt !== model.receiver(ui))) {
+                                $(this).sortable("cancel");
+                                for (var idx in rows) {
+                                    model.swapParts[partId].$listControl.find("tbody").children()
+                                        .eq($(rows[idx]).data("row-idx")).show();
+                                }
+                                return;
+                            }
+                            else {
+                                var standardIdx = ui.placeholder.index();
+                                var targetIdx = ui.item.data("row-idx");
+                                var rowsBefore = new Array();
+                                var rowsAfter = new Array();
+                                for (var id in rows) {
+                                    if ($(rows[id]).data("row-idx") < targetIdx)
+                                        rowsBefore.push(rows[id]);
+                                    else if ($(rows[id]).data("row-idx") > targetIdx)
+                                        rowsAfter.push(rows[id]);
+                                }
+                                model.swapParts[destPartId].$listControl.find("tbody").children()
+                                    .eq(standardIdx - 1).before(rowsBefore).after(rowsAfter);
+                                var sourceRows = model.swapParts[partId].$listControl.find("tbody").children();
+                                for (var index = rowsAfter.length - 1; index >= 0; index--) {
+                                    if ($(rows[index]).data("row-idx") === targetIdx)
+                                        continue;
+                                    sourceRows.eq($(rowsAfter[index]).data("row-idx") - 1).remove();
+                                }
+                                for (var val in rowsBefore) {
+                                    sourceRows.eq($(rowsBefore[val]).data("row-idx")).remove();
+                                }
+                            }
+                        }
+                        else if ((model.swapParts[partId].innerDrop === false
+                            && model.transportBuilder.startAt === model.receiver(ui))
+                            || (model.swapParts[partId].outerDrop === false
+                                && model.transportBuilder.startAt !== model.receiver(ui))) {
+                            $(this).sortable("cancel");
+                        }
+                    };
+                    SwapHandler.prototype._update = function (model, evt, ui) {
+                        if (ui.item.closest("table").length === 0)
+                            return;
+                        model.transportBuilder.directTo(model.receiver(ui)).update();
+                        if (model.transportBuilder.startAt === model.transportBuilder.direction) {
+                            model.transportBuilder.startAt === "first"
+                                ? model.swapParts[0].bindData(model.transportBuilder.getFirst())
+                                : model.swapParts[1].bindData(model.transportBuilder.getSecond());
+                        }
+                        else {
+                            model.swapParts[0].bindData(model.transportBuilder.getFirst());
+                            model.swapParts[1].bindData(model.transportBuilder.getSecond());
+                        }
+                        setTimeout(function () { model.dropDone(); }, 0);
+                    };
+                    SwapHandler.prototype.enableDragDrop = function (parts) {
+                        parts = parts || [0, 1];
+                        this.model.enableDrag(this, parts, this.handle);
+                    };
+                    return SwapHandler;
+                }());
+                var SwapModel = (function () {
+                    function SwapModel($container, swapParts) {
+                        this.$container = $container;
+                        this.swapParts = swapParts;
+                        this.transportBuilder = new ListItemTransporter(this.swapParts[0].dataSource, this.swapParts[1].dataSource)
+                            .primary(this.swapParts[0].primaryKey);
+                    }
+                    return SwapModel;
+                }());
+                var SearchResult = (function () {
+                    function SearchResult(results, indices) {
+                        this.data = results;
+                        this.indices = indices;
+                    }
+                    return SearchResult;
+                }());
+                var SwapPart = (function () {
+                    function SwapPart() {
+                        this.searchMode = "highlight";
+                        this.innerDrop = true;
+                        this.outerDrop = true;
+                    }
+                    SwapPart.prototype.listControl = function ($listControl) {
+                        this.$listControl = $listControl;
+                        return this;
+                    };
+                    SwapPart.prototype.searchControl = function ($searchControl) {
+                        this.$searchControl = $searchControl;
+                        return this;
+                    };
+                    SwapPart.prototype.searchBox = function ($searchBox) {
+                        this.$searchBox = $searchBox;
+                        return this;
+                    };
+                    SwapPart.prototype.setSearchMode = function (searchMode) {
+                        this.searchMode = searchMode;
+                        return this;
+                    };
+                    SwapPart.prototype.setSearchCriterion = function (searchCriterion) {
+                        this.searchCriterion = searchCriterion;
+                        return this;
+                    };
+                    SwapPart.prototype.setDataSource = function (dataSource) {
+                        this.dataSource = dataSource;
+                        return this;
+                    };
+                    SwapPart.prototype.setColumns = function (columns) {
+                        this.columns = columns;
+                        return this;
+                    };
+                    SwapPart.prototype.setPrimaryKey = function (primaryKey) {
+                        this.primaryKey = primaryKey;
+                        return this;
+                    };
+                    SwapPart.prototype.setInnerDrop = function (innerDrop) {
+                        this.innerDrop = innerDrop;
+                        return this;
+                    };
+                    SwapPart.prototype.setOuterDrop = function (outerDrop) {
+                        this.outerDrop = outerDrop;
+                        return this;
+                    };
+                    SwapPart.prototype.initDraggable = function (opts) {
+                        this.$listControl.sortable(opts).disableSelection();
+                    };
+                    SwapPart.prototype.resetOriginalDataSource = function () {
+                        this.originalDataSource = this.dataSource;
+                    };
+                    SwapPart.prototype.search = function () {
+                        var searchContents = this.$searchBox.val();
+                        var orders = new Array();
+                        if (searchContents === "") {
+                            if (this.originalDataSource === undefined)
+                                return null;
+                            return new SearchResult(this.originalDataSource, orders);
+                        }
+                        var searchCriterion = this.searchCriterion;
+                        if (this.originalDataSource === undefined)
+                            this.resetOriginalDataSource();
+                        var results = _.filter(this.originalDataSource, function (value, index) {
+                            var found = false;
+                            _.forEach(searchCriterion, function (criteria) {
+                                if (value[criteria].toString().indexOf(searchContents) !== -1) {
+                                    found = true;
+                                    return false;
+                                }
+                                else
+                                    return true;
+                            });
+                            orders.push(index);
+                            return found;
+                        });
+                        return new SearchResult(results, orders);
+                    };
+                    SwapPart.prototype.bindData = function (src) {
+                        this.bindIn(src);
+                        this.dataSource = src;
+                    };
+                    SwapPart.prototype.bindSearchEvent = function () {
+                        var self = this;
+                        var proceedSearch = this.proceedSearch;
+                        this.$searchControl.click(function (evt, ui) {
+                            proceedSearch.apply(self);
+                        });
+                        this.$searchBox.keyup(function (evt, ui) {
+                            if (evt.which === 13) {
+                                proceedSearch.apply(self);
+                            }
+                        });
+                    };
+                    SwapPart.prototype.proceedSearch = function () {
+                        if (this.searchMode === "filter") {
+                            var results = this.search();
+                            if (results === null)
+                                return;
+                            this.bindData(results.data);
+                        }
+                        else {
+                            this.highlightSearch();
+                        }
+                    };
+                    SwapPart.prototype.build = function () {
+                        this.bindSearchEvent();
+                        return this;
+                    };
+                    return SwapPart;
+                }());
+                var GridSwapPart = (function (_super) {
+                    __extends(GridSwapPart, _super);
+                    function GridSwapPart() {
+                        _super.apply(this, arguments);
+                    }
+                    GridSwapPart.prototype.search = function () {
+                        return _super.prototype.search.call(this);
+                    };
+                    GridSwapPart.prototype.highlightSearch = function () {
+                        var value = this.$searchBox.val();
+                        var source = this.dataSource.slice();
+                        var selected = this.$listControl.ntsGridList("getSelected");
+                        if (selected.length > 0) {
+                            var gotoEnd = source.splice(0, selected[0].index + 1);
+                            source = source.concat(gotoEnd);
+                        }
+                        var iggridColumns = _.map(this.columns, function (c) {
+                            c["key"] = c.key === undefined ? c.prop : c.key;
+                            c["dataType"] = 'string';
+                            return c;
+                        });
+                        var searchedValues = _.find(source, function (val) {
+                            return _.find(iggridColumns, function (x) {
+                                return x !== undefined && x !== null && val[x["key"]].toString().indexOf(value) >= 0;
+                            }) !== undefined;
+                        });
+                        this.$listControl.ntsGridList('setSelected', searchedValues !== undefined ? [searchedValues[this.primaryKey]] : []);
+                        if (searchedValues !== undefined && (selected.length === 0 ||
+                            selected[0].id !== searchedValues[this.primaryKey])) {
+                            var current = this.$listControl.igGrid("selectedRows");
+                            if (current.length > 0 && this.$listControl.igGrid("hasVerticalScrollbar")) {
+                                this.$listControl.igGrid("virtualScrollTo", current[0].index === source.length - 1
+                                    ? current[0].index : current[0].index + 1);
+                            }
+                        }
+                    };
+                    GridSwapPart.prototype.bindIn = function (src) {
+                        this.$listControl.igGrid("option", "dataSource", src);
+                    };
+                    return GridSwapPart;
+                }(SwapPart));
+                var GridSwapList = (function (_super) {
+                    __extends(GridSwapList, _super);
+                    function GridSwapList() {
+                        _super.apply(this, arguments);
+                    }
+                    GridSwapList.prototype.sender = function (opts) {
+                        return opts.item.closest("table")[0].id == this.swapParts[0].$listControl.attr("id")
+                            ? "first" : "second";
+                    };
+                    GridSwapList.prototype.receiver = function (opts) {
+                        return opts.item.closest("table")[0].id == this.swapParts[1].$listControl.attr("id")
+                            ? "second" : "first";
+                    };
+                    GridSwapList.prototype.target = function (opts) {
+                        if (opts.helper !== undefined && opts.helper.hasClass("select-drag")) {
+                            return opts.helper.find("tr").map(function () {
+                                return $(this).data("id");
+                            });
+                        }
+                        return [opts.item.data("id")];
+                    };
+                    GridSwapList.prototype.neighbor = function (opts) {
+                        return opts.item.prev().length === 0 ? "ceil" : opts.item.prev().data("id");
+                    };
+                    GridSwapList.prototype.dropDone = function () {
+                        var self = this;
+                        self.swapParts[0].$listControl.igGridSelection("clearSelection");
+                        self.swapParts[1].$listControl.igGridSelection("clearSelection");
+                        setTimeout(function () {
+                            (self.transportBuilder.direction === "first"
+                                ? self.swapParts[0].$listControl
+                                : self.swapParts[1].$listControl).igGrid("virtualScrollTo", self.transportBuilder.incomeIndex);
+                            (self.transportBuilder.startAt === "first"
+                                ? self.swapParts[0].$listControl
+                                : self.swapParts[1].$listControl).igGrid("virtualScrollTo", self.transportBuilder.outcomeIndex + 1);
+                        }, 0);
+                    };
+                    GridSwapList.prototype.enableDrag = function (ctx, parts, cb) {
+                        var self = this;
+                        for (var idx in parts) {
+                            this.swapParts[parts[idx]].$listControl.on("iggridrowsrendered", function (evt, ui) {
+                                cb.call(ctx, parts);
+                            });
+                        }
+                    };
+                    GridSwapList.prototype.move = function (forward, value) {
+                        var $source = forward === true ? this.swapParts[0].$listControl : this.swapParts[1].$listControl;
+                        var sourceList = forward === true ? this.swapParts[0].dataSource : this.swapParts[1].dataSource;
+                        var $dest = forward === true ? this.swapParts[1].$listControl : this.swapParts[0].$listControl;
+                        var destList = forward === true ? this.swapParts[1].dataSource : this.swapParts[0].dataSource;
+                        var selectedRows = $source.igGrid("selectedRows");
+                        selectedRows.sort(function (one, two) {
+                            return one.index - two.index;
+                        });
+                        var selectedIds = selectedRows.map(function (row) { return row.id; });
+                        this.transportBuilder.at(forward ? "first" : "second").directTo(forward ? "second" : "first")
+                            .target(selectedIds).toAdjacent(destList[destList.length - 1][this.swapParts[0].primaryKey]).update();
+                        this.swapParts[0].bindData(this.transportBuilder.getFirst());
+                        this.swapParts[1].bindData(this.transportBuilder.getSecond());
+                        $source.igGridSelection("clearSelection");
+                        $dest.igGridSelection("clearSelection");
+                        setTimeout(function () {
+                            $source.igGrid("virtualScrollTo", sourceList.length - 1 === selectedRows[0].index
+                                ? selectedRows[0].index - 1 : selectedRows[0].index + 1);
+                            $dest.igGrid("virtualScrollTo", destList.length - 1);
+                        }, 10);
+                    };
+                    return GridSwapList;
+                }(SwapModel));
+                var ListItemTransporter = (function () {
+                    function ListItemTransporter(firstList, secondList) {
+                        this.firstList = firstList;
+                        this.secondList = secondList;
+                    }
+                    ListItemTransporter.prototype.first = function (firstList) {
+                        this.firstList = firstList;
+                        return this;
+                    };
+                    ListItemTransporter.prototype.second = function (secondList) {
+                        this.secondList = secondList;
+                        return this;
+                    };
+                    ListItemTransporter.prototype.at = function (startAt) {
+                        this.startAt = startAt;
+                        return this;
+                    };
+                    ListItemTransporter.prototype.directTo = function (direction) {
+                        this.direction = direction;
+                        return this;
+                    };
+                    ListItemTransporter.prototype.out = function (index) {
+                        this.outcomeIndex = index;
+                        return this;
+                    };
+                    ListItemTransporter.prototype.into = function (index) {
+                        this.incomeIndex = index;
+                        return this;
+                    };
+                    ListItemTransporter.prototype.primary = function (primaryKey) {
+                        this.primaryKey = primaryKey;
+                        return this;
+                    };
+                    ListItemTransporter.prototype.target = function (targetIds) {
+                        this.targetIds = targetIds;
+                        return this;
+                    };
+                    ListItemTransporter.prototype.toAdjacent = function (adjId) {
+                        this.adjacentIncomeId = adjId;
+                        return this;
+                    };
+                    ListItemTransporter.prototype.indexOf = function (list, targetId) {
+                        var _this = this;
+                        return _.findIndex(list, function (elm) { return elm[_this.primaryKey].toString() === targetId.toString(); });
+                    };
+                    ListItemTransporter.prototype.move = function (src, dest) {
+                        for (var i = 0; i < this.targetIds.length; i++) {
+                            this.outcomeIndex = this.indexOf(src, this.targetIds[i]);
+                            if (this.outcomeIndex === -1)
+                                return;
+                            var target = src.splice(this.outcomeIndex, 1);
+                            this.incomeIndex = this.indexOf(dest, this.adjacentIncomeId) + 1;
+                            if (this.incomeIndex === 0) {
+                                if (this.adjacentIncomeId === "ceil")
+                                    this.incomeIndex = 0;
+                                else if (target !== undefined) {
+                                    src.splice(this.outcomeIndex, 0, target[0]);
+                                    return;
+                                }
+                            }
+                            dest.splice(this.incomeIndex + i, 0, target[0]);
+                        }
+                    };
+                    ListItemTransporter.prototype.determineDirection = function () {
+                        if (this.startAt.toLowerCase() !== this.direction.toLowerCase()
+                            && this.direction.toLowerCase() === "second") {
+                            return "firstToSecond";
+                        }
+                        else if (this.startAt.toLowerCase() !== this.direction.toLowerCase()
+                            && this.direction.toLowerCase() === "first") {
+                            return "secondToFirst";
+                        }
+                        else if (this.startAt.toLowerCase() === this.direction.toLowerCase()
+                            && this.direction.toLowerCase() === "first") {
+                            return "insideFirst";
+                        }
+                        else
+                            return "insideSecond";
+                    };
+                    ListItemTransporter.prototype.update = function () {
+                        switch (this.determineDirection()) {
+                            case "firstToSecond":
+                                this.move(this.firstList, this.secondList);
+                                break;
+                            case "secondToFirst":
+                                this.move(this.secondList, this.firstList);
+                                break;
+                            case "insideFirst":
+                                this.move(this.firstList, this.firstList);
+                                break;
+                            case "insideSecond":
+                                this.move(this.secondList, this.secondList);
+                                break;
+                        }
+                    };
+                    ListItemTransporter.prototype.getFirst = function () {
+                        return this.firstList;
+                    };
+                    ListItemTransporter.prototype.getSecond = function () {
+                        return this.secondList;
+                    };
+                    return ListItemTransporter;
+                }());
+            })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -5433,7 +5983,75 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_6) {
+        (function (ui_7) {
+            var koExtentions;
+            (function (koExtentions) {
+                var TabPanelBindingHandler = (function () {
+                    function TabPanelBindingHandler() {
+                    }
+                    TabPanelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var tabs = ko.unwrap(data.dataSource);
+                        var direction = ko.unwrap(data.direction || "horizontal");
+                        var container = $(element);
+                        container.prepend('<ul></ul>');
+                        var titleContainer = container.children('ul');
+                        for (var i = 0; i < tabs.length; i++) {
+                            var id = tabs[i].id;
+                            var title = tabs[i].title;
+                            titleContainer.append('<li><a href="#' + id + '">' + title + '</a></li>');
+                            var content = tabs[i].content;
+                            container.children(content).wrap('<div id="' + id + '"></div>');
+                        }
+                        container.tabs({
+                            activate: function (evt, ui) {
+                                data.active(ui.newPanel[0].id);
+                                container.children('ul').children('.ui-tabs-active').addClass('active');
+                                container.children('ul').children('li').not('.ui-tabs-active').removeClass('active');
+                                container.children('ul').children('.ui-state-disabled').addClass('disabled');
+                                container.children('ul').children('li').not('.ui-state-disabled').removeClass('disabled');
+                            }
+                        }).addClass(direction);
+                    };
+                    TabPanelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var tabs = ko.unwrap(data.dataSource);
+                        var container = $(element);
+                        var activeTab = tabs.filter(function (tab) { return tab.id == data.active(); })[0];
+                        var indexActive = tabs.indexOf(activeTab);
+                        container.tabs("option", "active", indexActive);
+                        tabs.forEach(function (tab) {
+                            if (tab.enable()) {
+                                container.tabs("enable", '#' + tab.id);
+                                container.children('#' + tab.id).children('div').show();
+                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').removeClass('disabled');
+                            }
+                            else {
+                                container.tabs("disable", '#' + tab.id);
+                                container.children('#' + tab.id).children('div').hide();
+                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').addClass('disabled');
+                            }
+                            if (!tab.visible()) {
+                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').hide();
+                            }
+                            else {
+                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').show();
+                            }
+                        });
+                    };
+                    return TabPanelBindingHandler;
+                }());
+                ko.bindingHandlers['ntsTabPanel'] = new TabPanelBindingHandler();
+            })(koExtentions = ui_7.koExtentions || (ui_7.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui_8) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsTreeGridViewBindingHandler = (function () {
@@ -5545,7 +6163,7 @@ var nts;
                     return NtsTreeGridViewBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();
-            })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
+            })(koExtentions = ui_8.koExtentions || (ui_8.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -5554,7 +6172,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_7) {
+        (function (ui_9) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsUpDownBindingHandler = (function () {
@@ -5778,7 +6396,7 @@ var nts;
                     return NtsUpDownBindingHandler;
                 }());
                 ko.bindingHandlers['ntsUpDown'] = new NtsUpDownBindingHandler();
-            })(koExtentions = ui_7.koExtentions || (ui_7.koExtentions = {}));
+            })(koExtentions = ui_9.koExtentions || (ui_9.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -5861,128 +6479,134 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_8) {
+        (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                var TabPanelBindingHandler = (function () {
-                    function TabPanelBindingHandler() {
+                var DatePickerBindingHandler = (function () {
+                    function DatePickerBindingHandler() {
                     }
-                    TabPanelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    DatePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
-                        var tabs = ko.unwrap(data.dataSource);
-                        var direction = ko.unwrap(data.direction || "horizontal");
-                        var container = $(element);
-                        container.prepend('<ul></ul>');
-                        var titleContainer = container.children('ul');
-                        for (var i = 0; i < tabs.length; i++) {
-                            var id = tabs[i].id;
-                            var title = tabs[i].title;
-                            titleContainer.append('<li><a href="#' + id + '">' + title + '</a></li>');
-                            var content = tabs[i].content;
-                            container.children(content).wrap('<div id="' + id + '"></div>');
+                        var value = data.value;
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
+                        var ISOFormat = uk.text.getISOFormat(dateFormat);
+                        var hasDayofWeek = (ISOFormat.indexOf("ddd") !== -1);
+                        var dayofWeekFormat = ISOFormat.replace(/[^d]/g, "");
+                        ISOFormat = ISOFormat.replace(/d/g, "").trim();
+                        var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : "";
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+                        var button = (data.button !== undefined) ? ko.unwrap(data.button) : false;
+                        var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
+                        var endDate = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
+                        var autoHide = (data.autoHide !== undefined) ? ko.unwrap(data.autoHide) : true;
+                        var valueType = typeof value();
+                        if (valueType === "string") {
+                            valueFormat = (valueFormat) ? valueFormat : uk.text.getISOFormat("ISO");
                         }
-                        container.tabs({
-                            activate: function (evt, ui) {
-                                data.active(ui.newPanel[0].id);
-                                container.children('ul').children('.ui-tabs-active').addClass('active');
-                                container.children('ul').children('li').not('.ui-tabs-active').removeClass('active');
-                                container.children('ul').children('.ui-state-disabled').addClass('disabled');
-                                container.children('ul').children('li').not('.ui-state-disabled').removeClass('disabled');
+                        else if (valueType === "number") {
+                            valueFormat = (valueFormat) ? valueFormat : ISOFormat;
+                        }
+                        else if (valueType === "object") {
+                            if (moment.isDate(value())) {
+                                valueType = "date";
                             }
-                        }).addClass(direction);
-                    };
-                    TabPanelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var tabs = ko.unwrap(data.dataSource);
+                            else if (moment.isMoment(value())) {
+                                valueType = "moment";
+                            }
+                        }
                         var container = $(element);
-                        var activeTab = tabs.filter(function (tab) { return tab.id == data.active(); })[0];
-                        var indexActive = tabs.indexOf(activeTab);
-                        container.tabs("option", "active", indexActive);
-                        tabs.forEach(function (tab) {
-                            if (tab.enable()) {
-                                container.tabs("enable", '#' + tab.id);
-                                container.children('#' + tab.id).children('div').show();
-                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').removeClass('disabled');
+                        if (!container.attr("id")) {
+                            var idString = nts.uk.util.randomId();
+                            container.attr("id", idString);
+                        }
+                        container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
+                        var inputClass = (ISOFormat.length < 10) ? "yearmonth-picker" : "";
+                        var $input = $("<input id='" + container.attr("id") + "-input' class='ntsDatepicker nts-input' />").addClass(inputClass);
+                        container.append($input);
+                        if (hasDayofWeek) {
+                            var lengthClass = (dayofWeekFormat.length > 3) ? "long-day" : "short-day";
+                            var $label = $("<label id='" + container.attr("id") + "-label' for='" + container.attr("id") + "-input' class='dayofweek-label' />");
+                            $input.addClass(lengthClass);
+                            container.append($label);
+                        }
+                        $input.datepicker({
+                            language: 'ja-JP',
+                            format: ISOFormat,
+                            startDate: startDate,
+                            endDate: endDate,
+                            autoHide: autoHide,
+                        });
+                        var validator = new ui.validation.TimeValidator(constraintName, { required: required, outputFormat: valueFormat, valueType: valueType });
+                        $input.on("change", function (e) {
+                            var newText = $input.val();
+                            var result = validator.validate(newText);
+                            $input.ntsError('clear');
+                            if (result.isValid) {
+                                if (hasDayofWeek) {
+                                    if (uk.util.isNullOrEmpty(result.parsedValue))
+                                        $label.text("");
+                                    else
+                                        $label.text("(" + uk.time.formatPattern(newText, "", dayofWeekFormat) + ")");
+                                }
+                                value(result.parsedValue);
                             }
                             else {
-                                container.tabs("disable", '#' + tab.id);
-                                container.children('#' + tab.id).children('div').hide();
-                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').addClass('disabled');
+                                $input.ntsError('set', result.errorMessage);
+                                value(newText);
                             }
-                            if (!tab.visible()) {
-                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').hide();
+                        });
+                        $input.on('validate', (function (e) {
+                            var newText = $input.val();
+                            var result = validator.validate(newText);
+                            $input.ntsError('clear');
+                            if (result.isValid) {
+                                $input.ntsError('set', "Invalid format");
+                            }
+                        }));
+                    };
+                    DatePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var value = data.value;
+                        var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
+                        var ISOFormat = uk.text.getISOFormat(dateFormat);
+                        var hasDayofWeek = (ISOFormat.indexOf("ddd") !== -1);
+                        var dayofWeekFormat = ISOFormat.replace(/[^d]/g, "");
+                        ISOFormat = ISOFormat.replace(/d/g, "").trim();
+                        var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : ISOFormat;
+                        var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : undefined;
+                        var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
+                        var endDate = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
+                        var container = $(element);
+                        var init = container.data("init");
+                        var $input = container.find(".nts-input");
+                        var $label = container.find(".dayofweek-label");
+                        var dateFormatValue = (value() !== "") ? uk.time.formatPattern(value(), valueFormat, ISOFormat) : "";
+                        if (init === true || uk.time.formatPattern($input.datepicker("getDate", true), "", ISOFormat) !== dateFormatValue) {
+                            if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
+                                $input.datepicker('setDate', dateFormatValue);
+                                $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
                             }
                             else {
-                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').show();
+                                $input.val("");
+                                $label.text("");
                             }
-                        });
-                    };
-                    return TabPanelBindingHandler;
-                }());
-                ko.bindingHandlers['ntsTabPanel'] = new TabPanelBindingHandler();
-            })(koExtentions = ui_8.koExtentions || (ui_8.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var file;
-            (function (file_1) {
-                var FileDownload = (function () {
-                    function FileDownload(servicePath, data) {
-                        var self = this;
-                        self.servicePath = servicePath;
-                        self.data = data;
-                        self.isFinishTask = ko.observable(false);
-                        self.isFinishTask.subscribe(function (value) {
-                            if (value) {
-                                clearInterval(self.interval);
-                                self.isFinishTask(false);
-                                self.download();
-                            }
-                        });
-                    }
-                    FileDownload.prototype.isTaskFinished = function (file) {
-                        var options = {
-                            dataType: 'text',
-                            contentType: 'text/plain'
-                        };
-                        uk.request.ajax("file/file/isfinished", file.taskId).done(function (res) {
-                            file.isFinishTask(res);
-                        }).fail(function (error) {
-                            file.reject(error);
-                        });
-                    };
-                    FileDownload.prototype.print = function () {
-                        var self = this;
-                        self.deferred = $.Deferred();
-                        var options = {
-                            dataType: 'text',
-                            contentType: 'application/json'
-                        };
-                        uk.request.ajax(self.servicePath, self.data, options).done(function (res) {
-                            self.taskId = res;
-                            self.interval = setInterval(self.isTaskFinished, 1000, self);
-                        }).fail(function (error) {
-                            self.deferred.reject(error);
-                        });
-                        return self.deferred.promise();
-                    };
-                    FileDownload.prototype.download = function () {
-                        var self = this;
-                        window.location.href = ("http://localhost:8080/nts.uk.pr.web/webapi/file/file/dl/" + self.taskId);
-                        if (self.deferred) {
-                            self.deferred.resolve();
                         }
+                        container.data("init", false);
+                        $input.datepicker('setStartDate', startDate);
+                        $input.datepicker('setEndDate', endDate);
+                        if (enable !== undefined)
+                            $input.prop("disabled", !enable);
+                        else
+                            $input.prop("disabled", disabled);
+                        if (data.button)
+                            container.find('.datepicker-btn').prop("disabled", disabled);
                     };
-                    return FileDownload;
+                    return DatePickerBindingHandler;
                 }());
-                file_1.FileDownload = FileDownload;
-            })(file = ui.file || (ui.file = {}));
+                ko.bindingHandlers['ntsDatePicker'] = new DatePickerBindingHandler();
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6071,6 +6695,41 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                var NtsLinkButtonBindingHandler = (function () {
+                    function NtsLinkButtonBindingHandler() {
+                    }
+                    NtsLinkButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var jump = ko.unwrap(data.jump);
+                        var action = data.action;
+                        var linkText = $(element).text();
+                        var $linkButton = $(element).wrap('<div class="ntsControl"/>')
+                            .addClass('link-button')
+                            .click(function () {
+                            event.preventDefault();
+                            if (!nts.uk.util.isNullOrUndefined(action))
+                                action.call(viewModel);
+                            else if (!nts.uk.util.isNullOrUndefined(jump))
+                                nts.uk.request.jump(jump);
+                        });
+                    };
+                    NtsLinkButtonBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    };
+                    return NtsLinkButtonBindingHandler;
+                }());
+                ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
             var sharedvm;
             (function (sharedvm) {
                 var KibanTimer = (function () {
@@ -6119,32 +6778,59 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui) {
-            var koExtentions;
-            (function (koExtentions) {
-                var NtsLinkButtonBindingHandler = (function () {
-                    function NtsLinkButtonBindingHandler() {
+            var file;
+            (function (file_1) {
+                var FileDownload = (function () {
+                    function FileDownload(servicePath, data) {
+                        var self = this;
+                        self.servicePath = servicePath;
+                        self.data = data;
+                        self.isFinishTask = ko.observable(false);
+                        self.isFinishTask.subscribe(function (value) {
+                            if (value) {
+                                clearInterval(self.interval);
+                                self.isFinishTask(false);
+                                self.download();
+                            }
+                        });
                     }
-                    NtsLinkButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var jump = ko.unwrap(data.jump);
-                        var action = data.action;
-                        var linkText = $(element).text();
-                        var $linkButton = $(element).wrap('<div class="ntsControl"/>')
-                            .addClass('link-button')
-                            .click(function () {
-                            event.preventDefault();
-                            if (!nts.uk.util.isNullOrUndefined(action))
-                                action.call(viewModel);
-                            else if (!nts.uk.util.isNullOrUndefined(jump))
-                                nts.uk.request.jump(jump);
+                    FileDownload.prototype.isTaskFinished = function (file) {
+                        var options = {
+                            dataType: 'text',
+                            contentType: 'text/plain'
+                        };
+                        uk.request.ajax("file/file/isfinished", file.taskId).done(function (res) {
+                            file.isFinishTask(res);
+                        }).fail(function (error) {
+                            file.reject(error);
                         });
                     };
-                    NtsLinkButtonBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    FileDownload.prototype.print = function () {
+                        var self = this;
+                        self.deferred = $.Deferred();
+                        var options = {
+                            dataType: 'text',
+                            contentType: 'application/json'
+                        };
+                        uk.request.ajax(self.servicePath, self.data, options).done(function (res) {
+                            self.taskId = res;
+                            self.interval = setInterval(self.isTaskFinished, 1000, self);
+                        }).fail(function (error) {
+                            self.deferred.reject(error);
+                        });
+                        return self.deferred.promise();
                     };
-                    return NtsLinkButtonBindingHandler;
+                    FileDownload.prototype.download = function () {
+                        var self = this;
+                        window.location.href = ("http://localhost:8080/nts.uk.pr.web/webapi/file/file/dl/" + self.taskId);
+                        if (self.deferred) {
+                            self.deferred.resolve();
+                        }
+                    };
+                    return FileDownload;
                 }());
-                ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+                file_1.FileDownload = FileDownload;
+            })(file = ui.file || (ui.file = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
