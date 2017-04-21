@@ -3,7 +3,7 @@ module qet001.i.viewmodel {
     import WageLedgerOutputSetting = qet001.a.service.model.WageLedgerOutputSetting;
     import WageledgerCategorySetting = qet001.a.service.model.WageledgerCategorySetting;
     import WageLedgerSettingItem = qet001.a.service.model.WageLedgerSettingItem;
-    
+
     export class ScreenModel {
         aggregateItemCategories: KnockoutObservableArray<AggregateCategory>;
         masterItems: KnockoutObservableArray<service.Item>;
@@ -11,22 +11,22 @@ module qet001.i.viewmodel {
         swapListColumns: KnockoutObservableArray<any>;
         switchs: KnockoutObservableArray<any>;
         itemListColumns: KnockoutObservableArray<any>;
-        
+
         constructor() {
             this.aggregateItemCategories = ko.observableArray([]);
             this.masterItems = ko.observableArray([]);
             this.selectedTab = ko.observable(0);
             this.switchs = ko.observableArray([
-                    { code: '0', name: '表示する' },
-                    { code: '1', name: '表示しない' }
-                ]);
+                { code: '0', name: '表示する' },
+                { code: '1', name: '表示しない' }
+            ]);
             this.swapListColumns = ko.observableArray([
-                { headerText: 'コード', key: 'code', width: 100 },
-                { headerText: '名称', key: 'name', width: 160 }
+                { headerText: 'コード', key: 'code', width: 50 },
+                { headerText: '名称', key: 'name', width: 180 }
             ]);
             this.itemListColumns = ko.observableArray([
-                {headerText: 'コード', prop: 'code', width: 90}, 
-                {headerText: '名称', prop: 'name',  width: 100}]);
+                { headerText: 'コード', prop: 'code', width: 50 },
+                { headerText: '名称', prop: 'name', width: 180 }]);
             var self = this;
             $("#sidebar-area > div > ul > li").on('click', function() {
                 var index = $("#sidebar-area > div > ul > li").index(this);
@@ -41,13 +41,13 @@ module qet001.i.viewmodel {
                 self.aggregateItemCategories()[val].loadAggregateItemByCategory();
             })
         }
-        
-        start(): JQueryPromise<void>{
+
+        start(): JQueryPromise<void> {
             var dfd = $.Deferred<void>();
             var self = this;
             service.findMasterItems().done(function(res) {
                 self.masterItems(res);
-                
+
                 // init aggregate categories.
                 self.aggregateItemCategories.push(new AggregateCategory(PaymentType.SALARY, Category.PAYMENT, res));
                 self.aggregateItemCategories.push(new AggregateCategory(PaymentType.SALARY, Category.DEDUCTION, res));
@@ -55,14 +55,13 @@ module qet001.i.viewmodel {
                 self.aggregateItemCategories.push(new AggregateCategory(PaymentType.BONUS, Category.PAYMENT, res));
                 self.aggregateItemCategories.push(new AggregateCategory(PaymentType.BONUS, Category.DEDUCTION, res));
                 self.aggregateItemCategories.push(new AggregateCategory(PaymentType.BONUS, Category.ATTENDANCE, res));
-                
+
                 self.aggregateItemCategories()[0].loadAggregateItemByCategory();
                 dfd.resolve();
             })
             return dfd.promise();
         }
-        
-        
+
         /**
          * After rended template.
          */
@@ -72,7 +71,7 @@ module qet001.i.viewmodel {
             $('.sub-table-label').width($('#swap-list-gridArea2').width())
         }
     }
-    
+
     export class AggregateCategory {
         itemList: KnockoutObservableArray<service.Item>;
         category: string;
@@ -80,20 +79,20 @@ module qet001.i.viewmodel {
         aggregateItemSelectedCode: KnockoutObservable<string>;
         aggregateItemDetail: KnockoutObservable<AggregateItemDetail>;
         dirty: nts.uk.ui.DirtyChecker;
-        
+
         constructor(paymentType: string, categoryName: string, masterItems: service.Item[]) {
             this.itemList = ko.observableArray([]);
             this.category = categoryName;
             this.paymentType = paymentType;
             this.aggregateItemSelectedCode = ko.observable(null);
-            
+
             // Filter master item by category and payment type.
             var masterItemInCate = masterItems.filter(item => item.category == categoryName);
-            this.aggregateItemDetail = ko.observable(new AggregateItemDetail(paymentType, 
+            this.aggregateItemDetail = ko.observable(new AggregateItemDetail(paymentType,
                 categoryName, masterItemInCate));
             var self = this;
             self.dirty = new nts.uk.ui.DirtyChecker(self.aggregateItemDetail);
-            
+
             // When selected aggregate item => load detail.
             self.aggregateItemSelectedCode.subscribe((code) => {
                 if (code == undefined || code == null || code == '') {
@@ -110,13 +109,13 @@ module qet001.i.viewmodel {
                     self.setStyle();
                 });
             });
-            
+
         }
-        
+
         /**
          * Load Aggregate items by category.
          */
-        public loadAggregateItemByCategory() : JQueryPromise<void> {
+        public loadAggregateItemByCategory(): JQueryPromise<void> {
             var dfd = $.Deferred<void>();
             // Fake data.
             var self = this;
@@ -130,7 +129,7 @@ module qet001.i.viewmodel {
             });
             return dfd.promise();
         }
-        
+
         /**
          * Load detail aggregate item.
          */
@@ -144,7 +143,7 @@ module qet001.i.viewmodel {
             })
             return dfd.promise();
         }
-        
+
         /**
          * Switch to create mode.
          */
@@ -155,9 +154,11 @@ module qet001.i.viewmodel {
                 nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function() {
                     self.aggregateItemSelectedCode(null);
                 });
-            } 
+            } else {
+                self.aggregateItemSelectedCode(null);
+            }
         }
-        
+
         public save() {
             var self = this;
             // clear error.
@@ -167,20 +168,18 @@ module qet001.i.viewmodel {
             $('#code-input').ntsEditor('validate');
             $('#name-input').ntsEditor('validate');
             // Check has error.
-            if(!nts.uk.ui._viewModel.errors.isEmpty()) {
+            if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                 return;
             }
-            
+
             // save.
             service.save(self.aggregateItemDetail()).done(function() {
-                // TODO: Show message save success.
-                nts.uk.ui.dialog.alert('Save success!');
                 self.loadAggregateItemByCategory();
             }).fail(function(res) {
                 $('#code-input').ntsError('set', res.message);
             });
         }
-        
+
         public remove() {
             var self = this;
             if (self.aggregateItemSelectedCode() == null) {
@@ -193,26 +192,26 @@ module qet001.i.viewmodel {
                 var indexSelected = self.itemList().indexOf(itemSelected);
                 // Remove item selected in list.
                 self.itemList.remove(itemSelected);
-                
+
                 // If list is empty -> new mode.
                 if (self.itemList.length == 0) {
                     self.aggregateItemSelectedCode(null);
                     return;
                 }
-                
+
                 // Select same row with item selected.
                 if (self.itemList()[indexSelected]) {
                     self.aggregateItemSelectedCode(self.itemList()[indexSelected].code);
                     return;
                 }
-                
+
                 // Select next higher row.
                 self.aggregateItemSelectedCode(self.itemList()[indexSelected - 1].code)
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);
             });
         }
-        
+
         /**
          * Close dialog.
          */
@@ -227,17 +226,17 @@ module qet001.i.viewmodel {
                 nts.uk.ui.windows.close();
             }
         }
-        
+
         /**
          * Set style when re-rending list.
          */
         public setStyle() {
             // set width when swap list is rended.
-            $('.master-table-label').attr('style','width: ' + $('#swap-list-gridArea1').width() + 'px');
-            $('.sub-table-label').attr('style','width: ' + $('#swap-list-gridArea2').width() + 'px');
+            $('.master-table-label').attr('style', 'width: ' + $('#swap-list-gridArea1').width() + 'px');
+            $('.sub-table-label').attr('style', 'width: ' + $('#swap-list-gridArea2').width() + 'px');
         }
     }
-    
+
     /**
      * Aggregate detail model.
      */
@@ -255,14 +254,14 @@ module qet001.i.viewmodel {
         showNameZeroCode: KnockoutObservable<string>;
         showValueZeroCode: KnockoutObservable<string>;
         createMode: KnockoutObservable<boolean>;
-        
-        constructor(paymentType: string, category: string, 
-                masterItems: service.Item[], item?: service.Item) {
+
+        constructor(paymentType: string, category: string,
+            masterItems: service.Item[], item?: service.Item) {
             this.code = item == undefined ? ko.observable('') : ko.observable(item.code);
             this.name = item == undefined ? ko.observable('') : ko.observable(item.name);
             this.paymentType = paymentType;
             this.category = category;
-            this.showNameZeroValue = item == undefined ? ko.observable(true) 
+            this.showNameZeroValue = item == undefined ? ko.observable(true)
                 : ko.observable(item.showNameZeroValue);
             this.showValueZeroValue = item == undefined ? ko.observable(true)
                 : ko.observable(item.showValueZeroValue);
@@ -271,7 +270,7 @@ module qet001.i.viewmodel {
             this.showValueZeroCode = ko.observable(this.showValueZeroValue() ? '0' : '1');
             this.createMode = ko.observable(item == undefined);
             var self = this;
-            
+
             // Computed show values variable.
             self.showNameZeroValue = ko.computed(function() {
                 return self.showNameZeroCode() == '0';
@@ -279,14 +278,14 @@ module qet001.i.viewmodel {
             self.showValueZeroValue = ko.computed(function() {
                 return self.showValueZeroCode() == '0';
             })
-            
+
             // exclude items contain in sub items.
             var subItemCodes = self.subItems().map(item => item.code);
             var masterItemsExcluded = masterItems.filter((item) => subItemCodes.indexOf(item.code) == -1);
             self.masterItems = ko.observableArray(masterItemsExcluded);
         }
     }
-    
+
     /**
      * Wage ledger category.
      */
@@ -295,18 +294,18 @@ module qet001.i.viewmodel {
          * 支給
          */
         static PAYMENT = 'Payment';
-        
+
         /**
          * 控除
          */
         static DEDUCTION = 'Deduction';
-        
+
         /**
          * 勤怠
          */
         static ATTENDANCE = 'Attendance';
     }
-    
+
     /**
      * Wage ledger payment type.
      */
@@ -315,7 +314,7 @@ module qet001.i.viewmodel {
          * Salary.
          */
         static SALARY = 'Salary';
-        
+
         /**
          * Bonus.
          */
