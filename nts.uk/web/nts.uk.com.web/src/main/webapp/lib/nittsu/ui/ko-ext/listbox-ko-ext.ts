@@ -14,7 +14,7 @@ module nts.uk.ui.koExtentions {
         $target.selectable("destroy");
     }
     
-    function bindMultible($target: JQuery, changeEvent: CustomEvent){
+    function bindMultible($target: JQuery, changeEvent: CustomEvent){ 
         $target.selectable({
             filter: 'li',
             selected: function(event, ui) {

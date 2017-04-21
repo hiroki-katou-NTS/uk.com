@@ -2,7 +2,7 @@
 
 ﻿module nts.uk.time {
 
-    var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm"];
+    var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm", "HHmm"];
     var listEmpire: { [year: string]: string } = {
         "明治": "1868/01/01",
         "大正": "1912/07/30",
@@ -546,7 +546,7 @@
 
     export function parseMoment(datetime: any, outputFormat?: any, inputFormat?: any): MomentResult {
         var inputFormats = (inputFormat) ? inputFormat : defaultInputFormat;
-        var momentObject = moment.utc(datetime, inputFormats);
+        var momentObject = moment.utc(datetime, inputFormats, true);
         var result = new MomentResult(momentObject, outputFormat);
         if (momentObject.isValid())
             result.succeeded();
