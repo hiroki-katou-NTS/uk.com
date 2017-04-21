@@ -84,7 +84,7 @@ public class FormulaHistoryDomainServiceImpl implements FormulaHistoryDomainServ
 				// update history by historyId of last history, startDate = startDate input
 				if (lastFormulaHistory.isPresent()) {
 					this.formulaHistoryRepository.update(new FormulaHistory(companyCode, new FormulaCode(formulaCode),
-							lastFormulaHistory.get().getHistoryId(), new YearMonth(startDate),
+							lastFormulaHistory.get().getHistoryId(), lastFormulaHistory.get().getStartDate(),
 							new YearMonth(GeneralDate.max().year() * 100 + GeneralDate.max().month())));
 				}
 			}

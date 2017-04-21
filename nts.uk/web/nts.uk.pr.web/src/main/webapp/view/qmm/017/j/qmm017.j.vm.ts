@@ -80,7 +80,7 @@ module nts.uk.pr.view.qmm017.j {
                         referenceMasterNo: self.comboBoxReferenceMasterNo().selectedCode(),
                     }
                 }
-                if (moment(command.startDate) <= moment(self.lastestHistory.startYm)) {
+                if (moment(command.startDate, "YYYYMM").isAfter(moment(self.lastestHistory.startYm, "YYYY/MM"))) {
                     service.registerFormulaHistory(command)
                         .done(function() {
                             nts.uk.ui.windows.close();

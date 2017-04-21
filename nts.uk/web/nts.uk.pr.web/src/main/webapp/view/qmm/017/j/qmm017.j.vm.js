@@ -78,7 +78,7 @@ var nts;
                                             referenceMasterNo: self.comboBoxReferenceMasterNo().selectedCode(),
                                         };
                                     }
-                                    if (moment(command.startDate) <= moment(self.lastestHistory.startYm)) {
+                                    if (moment(command.startDate, "YYYYMM").isAfter(moment(self.lastestHistory.startYm, "YYYY/MM"))) {
                                         j.service.registerFormulaHistory(command)
                                             .done(function () {
                                             nts.uk.ui.windows.close();
@@ -109,4 +109,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm017.j.vm.js.map
