@@ -154,8 +154,8 @@ module nts.uk.pr.view.qmm008.h {
                 var self = this;
                 if (self.dirty.isDirty()) {
                     nts.uk.ui.dialog.confirm(self.errorList()[0].message).ifYes(function() {
-                        self.closeDialog();
                         self.dirty.reset();
+                        self.closeDialog();
                     }).ifCancel(function() {
                     });
                 }
