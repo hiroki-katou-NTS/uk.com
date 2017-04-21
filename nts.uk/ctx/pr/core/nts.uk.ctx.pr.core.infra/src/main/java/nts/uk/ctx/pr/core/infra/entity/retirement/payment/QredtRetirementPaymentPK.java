@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nts.uk.pr.file.infra.entity;
+package nts.uk.ctx.pr.core.infra.entity.retirement.payment;
 
 import java.util.Date;
 
@@ -14,12 +14,8 @@ import javax.persistence.TemporalType;
 
 import nts.arc.time.GeneralDate;
 
-/**
- *
- * @author chinhbv
- */
 @Embeddable
-public class ReportQredtRetirementPaymentPK {
+public class QredtRetirementPaymentPK {
 
     @Column(name = "CCD")
     public String ccd;
@@ -29,10 +25,10 @@ public class ReportQredtRetirementPaymentPK {
     @Temporal(TemporalType.TIMESTAMP)
     public GeneralDate payDate;
 
-    public ReportQredtRetirementPaymentPK() {
+    public QredtRetirementPaymentPK() {
     }
 
-    public ReportQredtRetirementPaymentPK(String ccd, String pid, GeneralDate payDate) {
+    public QredtRetirementPaymentPK(String ccd, String pid, GeneralDate payDate) {
         this.ccd = ccd;
         this.pid = pid;
         this.payDate = payDate;

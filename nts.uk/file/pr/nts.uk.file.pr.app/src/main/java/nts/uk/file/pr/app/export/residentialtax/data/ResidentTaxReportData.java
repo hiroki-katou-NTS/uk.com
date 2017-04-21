@@ -90,12 +90,12 @@ public class ResidentTaxReportData {
 	/**
 	 * DBD_016(市町村民税)
 	 */
-	private String cityTaxMny2;
+	private String cityTaxMny;
 	
 	/**
 	 * DBD_017(道府県民税)
 	 */
-	private String prefectureTaxMny2;
+	private String prefectureTaxMny;
 	
 	/**
 	 * DBD_018(延滞金)

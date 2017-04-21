@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nts.uk.pr.file.infra.entity;
+package nts.uk.ctx.pr.core.infra.entity.retirement.payment;
 
 import java.math.BigDecimal;
 
@@ -16,17 +16,13 @@ import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-/**
- *
- * @author chinhbv
- */
 @AllArgsConstructor
 @Entity
 @Table(name = "QREDT_RETIREMENT_PAYMENT")
-public class ReportQredtRetirementPayment extends UkJpaEntity {
+public class QredtRetirementPayment extends UkJpaEntity {
 
     @EmbeddedId
-    public ReportQredtRetirementPaymentPK qredtRetirementPaymentPK;
+    public QredtRetirementPaymentPK qredtRetirementPaymentPK;
     
     @Column(name = "TRIAL_PERIOD_SET")
     public int trialPeriodSet;
@@ -83,28 +79,28 @@ public class ReportQredtRetirementPayment extends UkJpaEntity {
     @Column(name = "STATEMENT_MEMO")
     public String statementMemo;
 
-    public ReportQredtRetirementPayment() {
+    public QredtRetirementPayment() {
     }
 
-    public ReportQredtRetirementPayment(ReportQredtRetirementPaymentPK qredtRetirementPaymentPK) {
+    public QredtRetirementPayment(QredtRetirementPaymentPK qredtRetirementPaymentPK) {
         this.qredtRetirementPaymentPK = qredtRetirementPaymentPK;
     }
 
 
-    public ReportQredtRetirementPayment(String ccd, String pid, GeneralDate payDate) {
-        this.qredtRetirementPaymentPK = new ReportQredtRetirementPaymentPK(ccd, pid, payDate);
+    public QredtRetirementPayment(String ccd, String pid, GeneralDate payDate) {
+        this.qredtRetirementPaymentPK = new QredtRetirementPaymentPK(ccd, pid, payDate);
     }
 
-    public ReportQredtRetirementPaymentPK getQredtRetirementPaymentPK() {
+    public QredtRetirementPaymentPK getQredtRetirementPaymentPK() {
         return qredtRetirementPaymentPK;
     }
 
-    public void setQredtRetirementPaymentPK(ReportQredtRetirementPaymentPK qredtRetirementPaymentPK) {
+    public void setQredtRetirementPaymentPK(QredtRetirementPaymentPK qredtRetirementPaymentPK) {
         this.qredtRetirementPaymentPK = qredtRetirementPaymentPK;
     }
 
 	@Override
-	protected ReportQredtRetirementPaymentPK getKey() {
+	protected QredtRetirementPaymentPK getKey() {
 		return this.qredtRetirementPaymentPK;
 	}
     
