@@ -32,6 +32,7 @@
 								searchMode: 'filter',
 								searchCriterion: ['code'],
 								draggable: true,
+								multipleDrag: { left: true, right: false },
 								innerDrag: { left: false, right: true },
 								outerDrag: { left: true, right: true } 
 							}"></div></div>
@@ -62,7 +63,13 @@
 	dataSource: itemsSwap,
 	primaryKey: 'code',
 	columns: columns,
-	value: currentCodeListSwap
+	value: currentCodeListSwap,
+	searchMode: 'filter',
+	searchCriterion: ['code'],
+	draggable: true,
+	multipleDrag: { left: true, right: false },
+	innerDrag: { left: false, right: true },
+	outerDrag: { left: true, right: true } 
 }"></div>]]></pre>
 								</div>
 								<div id="tabs-viewmodel" class="cf">
