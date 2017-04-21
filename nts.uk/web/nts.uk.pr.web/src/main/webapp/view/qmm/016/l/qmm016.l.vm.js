@@ -41,6 +41,8 @@ var nts;
                                     self.showDelete = ko.observable(true);
                                     self.certifyGroupModel = ko.observable(new CertifyGroupModel(new CertifyGroupDto()));
                                     self.dirty = new nts.uk.ui.DirtyChecker(self.certifyGroupModel);
+                                    self.selectLstCodeCertifyGroupnPre = ko.observable('');
+                                    self.isShowDirty = ko.observable(true);
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
@@ -68,9 +70,12 @@ var nts;
                                         if (data != null && data.length > 0) {
                                             self.lstCertifyGroup = ko.observableArray(data);
                                             self.selectCodeLstLstCertifyGroup(data[0].code);
-                                            self.selectCodeLstLstCertifyGroup.subscribe(function (selectionCodeLstLstCertifyGroup) {
-                                                self.showchangeCertifyGroup(selectionCodeLstLstCertifyGroup);
-                                            });
+                                            if (self.isEmpty()) {
+                                                self.selectCodeLstLstCertifyGroup.subscribe(function (code) {
+                                                    self.showchangeCertifyGroup(code);
+                                                });
+                                                self.isEmpty(false);
+                                            }
                                             self.detailCertifyGroup(data[0].code);
                                             dfd.resolve(self);
                                         }
@@ -101,8 +106,8 @@ var nts;
                                         l.service.findCertifyGroup(code).done(function (data) {
                                             if (self.isEmpty()) {
                                                 self.selectCodeLstLstCertifyGroup(code);
-                                                self.selectCodeLstLstCertifyGroup.subscribe(function (selectionCodeLstLstCertifyGroup) {
-                                                    self.showchangeCertifyGroup(selectionCodeLstLstCertifyGroup);
+                                                self.selectCodeLstLstCertifyGroup.subscribe(function (code) {
+                                                    self.showchangeCertifyGroup(code);
                                                 });
                                                 self.isEmpty(false);
                                             }
@@ -115,6 +120,8 @@ var nts;
                                             self.showDelete(true);
                                             l.service.findAllCertification().done(function (dataCertification) {
                                                 self.certifyGroupModel().setLstCertification(dataCertification);
+                                                self.selectLstCodeCertifyGroupnPre(code);
+                                                self.isShowDirty(true);
                                                 self.dirty.reset();
                                             }).fail(function () {
                                                 self.dirty.reset();
@@ -124,7 +131,41 @@ var nts;
                                 };
                                 ScreenModel.prototype.showchangeCertifyGroup = function (selectionCodeLstLstCertifyGroup) {
                                     var self = this;
-                                    self.detailCertifyGroup(selectionCodeLstLstCertifyGroup);
+                                    console.log(selectionCodeLstLstCertifyGroup);
+                                    if (self.typeAction() == TypeActionCertifyGroup.add) {
+                                        if (self.dirty.isDirty() && self.isShowDirty()) {
+                                            nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
+                                                self.isShowDirty(false);
+                                                self.typeAction(TypeActionCertifyGroup.update);
+                                                self.detailCertifyGroup(selectionCodeLstLstCertifyGroup);
+                                            }).ifNo(function () {
+                                                self.isShowDirty(false);
+                                                self.selectCodeLstLstCertifyGroup(self.selectLstCodeCertifyGroupnPre());
+                                                self.isShowDirty(true);
+                                            });
+                                        }
+                                        else {
+                                            self.typeAction(TypeActionCertifyGroup.update);
+                                            self.detailCertifyGroup(selectionCodeLstLstCertifyGroup);
+                                        }
+                                    }
+                                    else {
+                                        if (self.dirty.isDirty() && self.isShowDirty()) {
+                                            if (selectionCodeLstLstCertifyGroup !== self.selectLstCodeCertifyGroupnPre()) {
+                                                nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
+                                                    self.isShowDirty(false);
+                                                    self.typeAction(TypeActionCertifyGroup.update);
+                                                    self.detailCertifyGroup(selectionCodeLstLstCertifyGroup);
+                                                }).ifNo(function () {
+                                                    self.selectCodeLstLstCertifyGroup(self.selectLstCodeCertifyGroupnPre());
+                                                });
+                                            }
+                                        }
+                                        else {
+                                            self.typeAction(TypeActionCertifyGroup.update);
+                                            self.detailCertifyGroup(selectionCodeLstLstCertifyGroup);
+                                        }
+                                    }
                                 };
                                 ScreenModel.prototype.resetValueCertifyGroup = function () {
                                     var self = this;

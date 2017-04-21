@@ -5,8 +5,8 @@ module nts.uk.pr.view.qpp007.a {
         const NUMBER_OF_HIERACHY = 9;
 
         export class ScreenModel {
-            startYearMonth: KnockoutObservable<string>;
-            endYearMonth: KnockoutObservable<string>;
+            startYearMonth: KnockoutObservable<number>;
+            endYearMonth: KnockoutObservable<number>;
             isUsuallyAMonth: KnockoutObservable<boolean>;
             isPreliminaryMonth: KnockoutObservable<boolean>;
             outputFormatType: KnockoutObservableArray<SelectionModel>;
@@ -28,8 +28,8 @@ module nts.uk.pr.view.qpp007.a {
             constructor() {
                 this.isUsuallyAMonth = ko.observable(true);
                 this.isPreliminaryMonth = ko.observable(false);
-                this.startYearMonth = ko.observable('2016/12');
-                this.endYearMonth = ko.observable('2017/03');
+                this.startYearMonth = ko.observable(201612);
+                this.endYearMonth = ko.observable(201703);
                 this.selectedOutputFormat = ko.observable('1');
                 this.outputFormatType = ko.observableArray<SelectionModel>([
                     new SelectionModel('1', '明細一覧表'),
@@ -162,6 +162,8 @@ module nts.uk.pr.view.qpp007.a {
                 command.isHorizontalLine = self.isHorizontalRuledLine();
                 command.outputLanguage =  self.selectedOutputLanguage();
                 command.pageBreakSetting = self.selectedpageBreakSetting();
+                command.startDate = self.startYearMonth();
+                command.endDate = self.endYearMonth();
                 if (self.isDepartmentHierarchy()) {
                     command.hierarchy  = self.selectedHierachy();
                 }

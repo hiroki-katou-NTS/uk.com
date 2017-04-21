@@ -28,11 +28,12 @@ var nts;
                                 function ScreenModel() {
                                     _super.call(this, {
                                         functionName: '賃金テープル',
-                                        service: qmm016.service.instance,
-                                        removeMasterOnLastHistoryRemove: true });
+                                        service: a.service.instance,
+                                        removeMasterOnLastHistoryRemove: true
+                                    });
                                     var self = this;
-                                    self.head = new HeadViewModel();
-                                    self.history = new HistoryViewModel();
+                                    self.head = ko.observable(new HeadViewModel());
+                                    self.history = ko.observable(new HistoryViewModel());
                                     self.selectedTab = ko.observable('tab-1');
                                     self.tabs = ko.observableArray([
                                         {
@@ -40,7 +41,8 @@ var nts;
                                             title: '基本情報',
                                             content: '#tab-content-1',
                                             enable: ko.observable(true),
-                                            visible: ko.observable(true) },
+                                            visible: ko.observable(true)
+                                        },
                                         {
                                             id: 'tab-2',
                                             title: '賃金テーブルの情報',
@@ -48,29 +50,42 @@ var nts;
                                             enable: ko.computed(function () {
                                                 return !self.isNewMode();
                                             }),
-                                            visible: ko.observable(true) }
+                                            visible: ko.observable(true)
+                                        }
                                     ]);
-                                    self.generalTableTypes = ko.observableArray(qmm016.model.normalDemension);
-                                    self.specialTableTypes = ko.observableArray(qmm016.model.specialDemension);
+                                    self.generalTableTypes = ko.observableArray(a.model.normalDemension);
+                                    self.specialTableTypes = ko.observableArray(a.model.specialDemension);
+                                    self.valueItems = ko.observable([]);
+                                    self.headDirtyChecker = new nts.uk.ui.DirtyChecker(self.head);
+                                    self.settingDirtyChecker = new nts.uk.ui.DirtyChecker(self.history().elements);
+                                    self.valuesDirtyChecker = new nts.uk.ui.DirtyChecker(self.valueItems);
                                 }
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    qmm016.service.instance.loadElementList().done(function (res) {
+                                    a.service.instance.loadElementList().done(function (res) {
                                         viewmodel.elementTypes = res;
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.isDirty = function () {
-                                    return false;
+                                    var self = this;
+                                    self.valueItems(self.history().detailViewModel.getCellItem());
+                                    return self.headDirtyChecker.isDirty() ||
+                                        self.settingDirtyChecker.isDirty() ||
+                                        self.valuesDirtyChecker.isDirty();
                                 };
                                 ScreenModel.prototype.onSelectHistory = function (id) {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    qmm016.service.instance.loadHistoryByUuid(id).done(function (model) {
-                                        self.head.resetBy(model.head);
-                                        self.history.resetBy(model.head, model.history);
+                                    a.service.instance.loadHistoryByUuid(id).done(function (model) {
+                                        $.when(self.head().resetBy(model.head), self.history().resetBy(model.head, model.history)).done(function () {
+                                            self.valueItems(self.history().detailViewModel.getCellItem());
+                                            self.headDirtyChecker.reset();
+                                            self.settingDirtyChecker.reset();
+                                            self.valuesDirtyChecker.reset();
+                                        });
                                     });
                                     dfd.resolve();
                                     return dfd.promise();
@@ -79,22 +94,30 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     if (self.isNewMode()) {
-                                        var wagetableDto = self.head.getWageTableDto();
-                                        qmm016.service.instance.initWageTable({
+                                        var wagetableDto = self.head().getWageTableDto();
+                                        a.service.instance.initWageTable({
                                             wageTableHeadDto: wagetableDto,
-                                            startMonth: self.history.startYearMonth()
+                                            startMonth: self.history().startYearMonth()
                                         }).done(function (res) {
                                             dfd.resolve(res.uuid);
+                                            self.valueItems(self.history().detailViewModel.getCellItem());
+                                            self.headDirtyChecker.reset();
+                                            self.settingDirtyChecker.reset();
+                                            self.valuesDirtyChecker.reset();
                                         });
                                     }
                                     else {
-                                        qmm016.service.instance.updateHistory({
-                                            code: self.head.code(),
-                                            name: self.head.name(),
-                                            memo: self.head.memo(),
-                                            wtHistoryDto: self.history.getWageTableHistoryDto()
+                                        a.service.instance.updateHistory({
+                                            code: self.head().code(),
+                                            name: self.head().name(),
+                                            memo: self.head().memo(),
+                                            wtHistoryDto: self.history().getWageTableHistoryDto()
                                         }).done(function () {
-                                            dfd.resolve(self.history.history.historyId);
+                                            dfd.resolve(self.history().history.historyId);
+                                            self.valueItems(self.history().detailViewModel.getCellItem());
+                                            self.headDirtyChecker.reset();
+                                            self.settingDirtyChecker.reset();
+                                            self.valuesDirtyChecker.reset();
                                         });
                                     }
                                     return dfd.promise();
@@ -102,7 +125,11 @@ var nts;
                                 ScreenModel.prototype.onRegistNew = function () {
                                     var self = this;
                                     self.selectedTab('tab-1');
-                                    self.head.reset();
+                                    self.head().reset();
+                                    self.valueItems(self.history().detailViewModel.getCellItem());
+                                    self.headDirtyChecker.reset();
+                                    self.settingDirtyChecker.reset();
+                                    self.valuesDirtyChecker.reset();
                                 };
                                 ScreenModel.prototype.btnGroupSettingClick = function () {
                                     var self = this;
@@ -115,10 +142,10 @@ var nts;
                                 ScreenModel.prototype.btnInputFileDownload = function () {
                                     var self = this;
                                     nts.uk.request.exportFile('/screen/pr/qmm016/inputfile', {
-                                        code: self.head.code(),
-                                        name: self.head.name(),
-                                        memo: self.head.memo(),
-                                        wtHistoryDto: self.history.getWageTableHistoryDto()
+                                        code: self.head().code(),
+                                        name: self.head().name(),
+                                        memo: self.head().memo(),
+                                        wtHistoryDto: self.history().getWageTableHistoryDto()
                                     });
                                 };
                                 return ScreenModel;
@@ -132,7 +159,7 @@ var nts;
                                     self.demensionSet = ko.observable(undefined);
                                     self.memo = ko.observable(undefined);
                                     self.demensionType = ko.computed(function () {
-                                        return qmm016.model.demensionMap[self.demensionSet()];
+                                        return a.model.demensionMap[self.demensionSet()];
                                     });
                                     self.lblContent = ko.computed(function () {
                                         var contentMap = [
@@ -169,7 +196,7 @@ var nts;
                                     self.isNewMode(true);
                                     self.code('');
                                     self.name('');
-                                    self.demensionSet(qmm016.model.allDemension[0].code);
+                                    self.demensionSet(a.model.allDemension[0].code);
                                     self.demensionItemList(self.getDemensionItemListByType(self.demensionSet()));
                                     self.memo('');
                                 };
@@ -234,6 +261,7 @@ var nts;
                                 };
                                 HeadViewModel.prototype.resetBy = function (head) {
                                     var self = this;
+                                    var dfd = $.Deferred();
                                     self.isNewMode(false);
                                     self.code(head.code);
                                     self.name(head.name);
@@ -244,6 +272,8 @@ var nts;
                                         return itemViewModel;
                                     }));
                                     self.memo(head.memo);
+                                    dfd.resolve();
+                                    return dfd.promise();
                                 };
                                 HeadViewModel.prototype.onSelectDemensionBtnClick = function (demension) {
                                     var self = this;
@@ -302,6 +332,7 @@ var nts;
                                 }
                                 HistoryViewModel.prototype.resetBy = function (head, history) {
                                     var self = this;
+                                    var dfd = $.Deferred();
                                     self.history = history;
                                     self.startYearMonth(history.startMonth);
                                     self.endYearMonth(history.endMonth);
@@ -319,18 +350,38 @@ var nts;
                                         var element = $('#detailContainer').children().get(0);
                                         self.detailViewModel.onLoad().done(function () {
                                             ko.applyBindings(self.detailViewModel, element);
+                                            dfd.resolve();
                                         });
                                     });
+                                    return dfd.promise();
                                 };
                                 HistoryViewModel.prototype.generateItem = function () {
+                                    var _this = this;
                                     var self = this;
-                                    qmm016.service.instance.genearetItemSetting({
+                                    a.service.instance.genearetItemSetting({
                                         historyId: self.history.historyId,
-                                        settings: self.getElementSettings() })
+                                        settings: self.getElementSettings()
+                                    })
                                         .done(function (res) {
+                                        if (res.length == null || !_this.validateElementSettingDto(res)) {
+                                            nts.uk.ui.dialog.alert("Cann't generate items with the current setting. Please check again!");
+                                        }
                                         self.history.elements = res;
                                         self.detailViewModel.refreshElementSettings(res);
+                                    }).fail(function (error) {
+                                        nts.uk.ui.dialog.alert("Cann't generate items with the current setting. Please check again!");
                                     });
+                                };
+                                HistoryViewModel.prototype.validateElementSettingDto = function (res) {
+                                    if (res == null || res.length <= 0) {
+                                        return false;
+                                    }
+                                    for (var i = 0; i < res.length; i++) {
+                                        if (res[i].itemList == null || res[i].itemList.length <= 0) {
+                                            return false;
+                                        }
+                                    }
+                                    return true;
                                 };
                                 HistoryViewModel.prototype.getElementSettings = function () {
                                     var self = this;

@@ -1,5 +1,7 @@
 module nts.uk.pr.view.qmm016.a {
     export module viewmodel {
+        import ElementSettingDto = model.ElementSettingDto;
+
         export var elementTypes: Array<model.ElementTypeDto>;
         export function getElementTypeByValue(val: number): model.ElementTypeDto {
             return _.filter(viewmodel.elementTypes, (el) => {
@@ -10,31 +12,39 @@ module nts.uk.pr.view.qmm016.a {
         export class ScreenModel extends base.simplehistory.viewmodel.ScreenBaseModel<model.WageTable, model.WageTableHistory> {
             // For UI Tab.
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
-            selectedTab: KnockoutObservable<any>; 
+            selectedTab: KnockoutObservable<any>;
 
             wageTableList: any;
             monthRange: KnockoutComputed<string>;
 
             // Head part viewmodel.
-            head: HeadViewModel;
+            head: KnockoutObservable<HeadViewModel>;
 
             // History part viewmodel.
-            history: HistoryViewModel;
+            history: KnockoutObservable<HistoryViewModel>;
 
             // FIXED PART
             generalTableTypes: KnockoutObservableArray<model.DemensionElementCountType>;
             specialTableTypes: KnockoutObservableArray<model.DemensionElementCountType>;
-            
+
+            // Dirty checker
+            headDirtyChecker: nts.uk.ui.DirtyChecker;
+            settingDirtyChecker: nts.uk.ui.DirtyChecker;
+            valuesDirtyChecker: nts.uk.ui.DirtyChecker;
+            valueItems: KnockoutObservable<Array<model.CellItemDto>>;
+
+
             constructor() {
                 super({
                     functionName: '賃金テープル',
                     service: service.instance,
-                    removeMasterOnLastHistoryRemove: true});
+                    removeMasterOnLastHistoryRemove: true
+                });
                 var self = this;
 
                 // Head view model.
-                self.head = new HeadViewModel();
-                self.history = new HistoryViewModel();
+                self.head = ko.observable<HeadViewModel>(new HeadViewModel());
+                self.history = ko.observable<HistoryViewModel>(new HistoryViewModel());
 
                 // Tabs.
                 self.selectedTab = ko.observable('tab-1');
@@ -44,7 +54,8 @@ module nts.uk.pr.view.qmm016.a {
                         title: '基本情報',
                         content: '#tab-content-1',
                         enable: ko.observable(true),
-                        visible: ko.observable(true)},
+                        visible: ko.observable(true)
+                    },
                     {
                         id: 'tab-2',
                         title: '賃金テーブルの情報',
@@ -52,14 +63,22 @@ module nts.uk.pr.view.qmm016.a {
                         enable: ko.computed(() => {
                             return !self.isNewMode();
                         }),
-                        visible: ko.observable(true)}
+                        visible: ko.observable(true)
+                    }
                 ]);
 
                 // General table type init.
                 self.generalTableTypes = ko.observableArray(model.normalDemension);
                 self.specialTableTypes = ko.observableArray(model.specialDemension);
+
+                // Set dirtyChecker
+                self.valueItems = ko.observable<Array<model.CellItemDto>>([]);
+                self.headDirtyChecker = new nts.uk.ui.DirtyChecker(self.head);
+                self.settingDirtyChecker = new nts.uk.ui.DirtyChecker(self.history().elements);
+                self.valuesDirtyChecker = new nts.uk.ui.DirtyChecker(self.valueItems);
+
             }
-            
+
             /**
              * Start load data.
              */
@@ -77,49 +96,65 @@ module nts.uk.pr.view.qmm016.a {
              * Do check dirty later.
              */
             isDirty(): boolean {
-                return false;
+                var self = this;
+                self.valueItems(self.history().detailViewModel.getCellItem());
+                return self.headDirtyChecker.isDirty() ||
+                    self.settingDirtyChecker.isDirty() || 
+                    self.valuesDirtyChecker.isDirty();
             }
-            
-             /**
-             * Load wage table detail.
-             */
+
+            /**
+            * Load wage table detail.
+            */
             onSelectHistory(id: string): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 service.instance.loadHistoryByUuid(id).done(model => {
-                    self.head.resetBy(model.head);
-                    self.history.resetBy(model.head, model.history);
+                    $.when(self.head().resetBy(model.head), self.history().resetBy(model.head, model.history)).done(function() {
+                        self.valueItems(self.history().detailViewModel.getCellItem());
+                        self.headDirtyChecker.reset();
+                        self.settingDirtyChecker.reset();
+                        self.valuesDirtyChecker.reset();
+                    })
                 })
                 dfd.resolve();
                 return dfd.promise();
             }
-            
+
             /**
              * Create or Update UnitPriceHistory.
              */
             onSave(): JQueryPromise<string> {
                 var self = this;
                 var dfd = $.Deferred<string>();
-                
+
                 // New mode.
                 if (self.isNewMode()) {
                     // Reg new.
-                    var wagetableDto = self.head.getWageTableDto();
+                    var wagetableDto = self.head().getWageTableDto();
                     service.instance.initWageTable({
                         wageTableHeadDto: wagetableDto,
-                        startMonth: self.history.startYearMonth()
+                        startMonth: self.history().startYearMonth()
                     }).done(res => {
                         dfd.resolve(res.uuid);
+                        self.valueItems(self.history().detailViewModel.getCellItem());
+                        self.headDirtyChecker.reset();
+                        self.settingDirtyChecker.reset();
+                        self.valuesDirtyChecker.reset();
                     });
                 } else {
                     // Update mode.
                     service.instance.updateHistory({
-                        code: self.head.code(),
-                        name: self.head.name(),
-                        memo: self.head.memo(),
-                        wtHistoryDto: self.history.getWageTableHistoryDto()
+                        code: self.head().code(),
+                        name: self.head().name(),
+                        memo: self.head().memo(),
+                        wtHistoryDto: self.history().getWageTableHistoryDto()
                     }).done(() => {
-                        dfd.resolve(self.history.history.historyId);
+                        dfd.resolve(self.history().history.historyId);
+                        self.valueItems(self.history().detailViewModel.getCellItem());
+                        self.headDirtyChecker.reset();
+                        self.settingDirtyChecker.reset();
+                        self.valuesDirtyChecker.reset();
                     })
                 }
                 return dfd.promise();
@@ -131,7 +166,11 @@ module nts.uk.pr.view.qmm016.a {
             onRegistNew(): void {
                 var self = this;
                 self.selectedTab('tab-1');
-                self.head.reset();
+                self.head().reset();
+                self.valueItems(self.history().detailViewModel.getCellItem());
+                self.headDirtyChecker.reset();
+                self.settingDirtyChecker.reset();
+                self.valuesDirtyChecker.reset();
             }
 
             /**
@@ -152,11 +191,11 @@ module nts.uk.pr.view.qmm016.a {
             btnInputFileDownload(): void {
                 var self = this;
                 nts.uk.request.exportFile('/screen/pr/qmm016/inputfile', {
-                        code: self.head.code(),
-                        name: self.head.name(),
-                        memo: self.head.memo(),
-                        wtHistoryDto: self.history.getWageTableHistoryDto()
-                    });
+                    code: self.head().code(),
+                    name: self.head().name(),
+                    memo: self.head().memo(),
+                    wtHistoryDto: self.history().getWageTableHistoryDto()
+                });
             }
         }
 
@@ -166,22 +205,22 @@ module nts.uk.pr.view.qmm016.a {
         export class HeadViewModel {
             /** The code. */
             code: KnockoutObservable<string>;
-            
+
             /** The name. */
             name: KnockoutObservable<string>;
-            
+
             /** The demension set. */
             demensionSet: KnockoutObservable<number>;
 
             demensionType: KnockoutObservable<model.DemensionElementCountType>;
-            
+
             lblContent: KnockoutComputed<string>;
-            
+
             lblSampleImgLink: KnockoutComputed<string>;
 
             /** The memo. */
             memo: KnockoutObservable<string>;
-            
+
             /**
              * The demension item list.
              */
@@ -202,7 +241,7 @@ module nts.uk.pr.view.qmm016.a {
                 self.demensionType = ko.computed(() => {
                     return model.demensionMap[self.demensionSet()];
                 });
-                
+
                 self.lblContent = ko.computed(() => {
                     var contentMap = [
                         '１つの要素でテーブルを作成します。',
@@ -211,10 +250,10 @@ module nts.uk.pr.view.qmm016.a {
                         '資格手当用のテーブルを作成します。',
                         '精皆勤手当て用のテーブルを作成します。'
                     ];
-                    
+
                     return contentMap[self.demensionSet()];
                 });
-                
+
                 self.lblSampleImgLink = ko.computed(() => {
                     var linkMap = [
                         '１.png',
@@ -223,12 +262,12 @@ module nts.uk.pr.view.qmm016.a {
                         '4.png',
                         '5.png'
                     ];
-                    
+
                     return linkMap[self.demensionSet()];
                 });
-                
+
                 self.demensionItemList = ko.observableArray<DemensionItemViewModel>([]);
-                
+
                 self.demensionSet.subscribe(val => {
                     // Not new mode.
                     if (!self.isNewMode()) {
@@ -236,11 +275,11 @@ module nts.uk.pr.view.qmm016.a {
                     }
                     self.demensionItemList(self.getDemensionItemListByType(val));
                 })
-                
+
                 self.isNewMode = ko.observable(true);
                 self.reset();
             }
-            
+
             /**
              * Reset.
              */
@@ -278,7 +317,7 @@ module nts.uk.pr.view.qmm016.a {
             /**
              * Get default demension item list by default.
              */
-            getDemensionItemListByType(typeCode: number) : Array<DemensionItemViewModel> {
+            getDemensionItemListByType(typeCode: number): Array<DemensionItemViewModel> {
                 // Regenerate.
                 var newDemensionItemList = new Array<DemensionItemViewModel>();
                 switch (typeCode) {
@@ -290,7 +329,7 @@ module nts.uk.pr.view.qmm016.a {
                         newDemensionItemList.push(new DemensionItemViewModel(2));
                         break;
 
-                    case 2: 
+                    case 2:
                         newDemensionItemList.push(new DemensionItemViewModel(1));
                         newDemensionItemList.push(new DemensionItemViewModel(2));
                         newDemensionItemList.push(new DemensionItemViewModel(3));
@@ -305,7 +344,7 @@ module nts.uk.pr.view.qmm016.a {
                             newDemensionItemList.push(cert);
                         }
                         break;
-                        
+
                     // Attendance.
                     case 4:
                         {
@@ -332,8 +371,9 @@ module nts.uk.pr.view.qmm016.a {
             /**
              * Reset by wage table.
              */
-            resetBy(head: model.WageTableHeadDto): void {
+            resetBy(head: model.WageTableHeadDto): JQueryPromise<void> {
                 var self = this;
+                var dfd = $.Deferred();
                 self.isNewMode(false);
                 self.code(head.code);
                 self.name(head.name);
@@ -344,8 +384,10 @@ module nts.uk.pr.view.qmm016.a {
                     return itemViewModel;
                 }));
                 self.memo(head.memo);
+                dfd.resolve();
+                return dfd.promise();
             }
-            
+
             /**
              * On select demension btn click.
              */
@@ -365,11 +407,11 @@ module nts.uk.pr.view.qmm016.a {
                     }
                 };
                 nts.uk.ui.windows.setShared('options', dlgOptions);
-                var ntsDialogOptions = { title: '要素の選択', dialogClass: 'no-close' }; 
+                var ntsDialogOptions = { title: '要素の選択', dialogClass: 'no-close' };
                 nts.uk.ui.windows.sub.modal('/view/qmm/016/k/index.xhtml', ntsDialogOptions);
             }
         }
-        
+
         /**
          * Wage table demension detail dto.
          */
@@ -389,7 +431,7 @@ module nts.uk.pr.view.qmm016.a {
                 self.elementCode = ko.observable('');
                 self.elementName = ko.observable('');
             }
-            
+
             resetBy(element: model.ElementDto) {
                 var self = this;
                 self.elementType(element.type);
@@ -397,7 +439,7 @@ module nts.uk.pr.view.qmm016.a {
                 self.elementName(element.demensionName);
             }
         }
-        
+
         /**
          * History model.
          */
@@ -432,8 +474,9 @@ module nts.uk.pr.view.qmm016.a {
             /**
              * Reset.
              */
-            resetBy(head: model.WageTableHeadDto, history: model.WageTableHistoryDto) {
+            public resetBy(head: model.WageTableHeadDto, history: model.WageTableHistoryDto): JQueryPromise<any> {
                 var self = this;
+                var dfd = $.Deferred();
                 self.history = history;
                 self.startYearMonth(history.startMonth);
                 self.endYearMonth(history.endMonth);
@@ -441,7 +484,7 @@ module nts.uk.pr.view.qmm016.a {
                     return new HistoryElementSettingViewModel(head, el);
                 })
                 self.elements(elementSettingViewModel);
-                
+
                 // Load detail.
                 if ($('#detailContainer').children().length > 0) {
                     var element = $('#detailContainer').children().get(0);
@@ -454,28 +497,55 @@ module nts.uk.pr.view.qmm016.a {
                     var element = $('#detailContainer').children().get(0);
                     self.detailViewModel.onLoad().done(() => {
                         ko.applyBindings(self.detailViewModel, element);
+                        dfd.resolve();
                     });
                 })
+
+                return dfd.promise();
             }
 
             /**
              * Generate item.
              */
-            generateItem(): void {
+            public generateItem(): void {
                 var self = this;
                 service.instance.genearetItemSetting({
                     historyId: self.history.historyId,
-                    settings: self.getElementSettings()})
-                .done((res) => {
-                    self.history.elements = res;
-                    self.detailViewModel.refreshElementSettings(res);
-                });
+                    settings: self.getElementSettings()
+                })
+                    .done((res: Array<ElementSettingDto>) => {
+                        // Validate items
+                        if (res.length == null || !this.validateElementSettingDto(res)) {
+                            nts.uk.ui.dialog.alert("Cann't generate items with the current setting. Please check again!");
+                        }
+
+                        self.history.elements = res;
+                        self.detailViewModel.refreshElementSettings(res);
+                    }).fail(function(error) {
+                        //                    if (error.message === '1') {
+                        nts.uk.ui.dialog.alert("Cann't generate items with the current setting. Please check again!");
+                        //                    }
+                    });
+            }
+
+            private validateElementSettingDto(res: Array<ElementSettingDto>): boolean {
+                if (res == null || res.length <= 0) {
+                    return false;
+                }
+
+                for (var i = 0; i < res.length; i++) {
+                    if (res[i].itemList == null || res[i].itemList.length <= 0) {
+                        return false;
+                    }
+                }
+
+                return true;
             }
 
             /**
              * Get element setting dto.
              */
-            getElementSettings(): Array<model.ElementSettingDto> {
+            public getElementSettings(): Array<model.ElementSettingDto> {
                 var self = this;
                 return _.map(self.elements(), (el) => {
                     var dto = <model.ElementSettingDto>{};
@@ -491,17 +561,17 @@ module nts.uk.pr.view.qmm016.a {
             /**
              * Get history dto.
              */
-            getWageTableHistoryDto(): model.WageTableHistoryDto {
+            public getWageTableHistoryDto(): model.WageTableHistoryDto {
                 var self = this;
                 self.history.valueItems = self.detailViewModel.getCellItem();
                 return self.history;
             }
 
-            
+
             /**
              * Get default demension item list by default.
              */
-            getDetailViewModelByType(typeCode: number) : history.base.BaseHistoryViewModel {
+            private getDetailViewModelByType(typeCode: number): history.base.BaseHistoryViewModel {
                 // Regenerate.
                 var self = this;
                 switch (typeCode) {
@@ -523,12 +593,12 @@ module nts.uk.pr.view.qmm016.a {
             /**
              * Unapply bindings.
              */
-            unapplyBindings($node:any, remove:boolean): void {
+            unapplyBindings($node: any, remove: boolean): void {
                 // unbind events
-                $node.find("*").each(function () {
+                $node.find("*").each(function() {
                     $(this).unbind();
                 });
-            
+
                 // Remove KO subscriptions and references
                 if (remove) {
                     ko.removeNode($node[0]);
@@ -537,7 +607,7 @@ module nts.uk.pr.view.qmm016.a {
                 }
             }
         }
-        
+
         /**
          * Element history setting view model.
          */
@@ -584,7 +654,7 @@ module nts.uk.pr.view.qmm016.a {
                 self.upperLimit(element.upperLimit);
                 self.lowerLimit(element.lowerLimit);
                 self.interval(element.interval);
-                
+
                 // Set type.
                 self.type = _.filter(elementTypes, (type) => {
                     return type.value == self.elementType();

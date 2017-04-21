@@ -12,11 +12,11 @@
 				<div id="masterInfo">
 					<div class="lblData">
 						<div data-bind="ntsFormLabel: { required: false }">コード/名称</div>
-						<div data-bind="text: head.code() + '   ' + head.name()"/>
+						<div data-bind="text: head().code() + '   ' + head().name()"/>
 					</div>
 					<div class="lblData">
 						<div data-bind="ntsFormLabel: { required: false }">有効期間</div>
-						<div data-bind="text: history.startYearMonthText() + ' ~ ' + history.endYearMonthText()"/>
+						<div data-bind="text: history().startYearMonthText() + ' ~ ' + history().endYearMonthText()"/>
 					</div>
 					<div class="cf"/>
 					<hr/>
@@ -45,7 +45,7 @@
 									<tr>
 										<td class="bgIgCol halign-center" data-bind="text: demensionNo"/>
 										<td>
-											<com:ko tag="ifnot" bind="$root.content.head.demensionType().isAttendance || $root.content.head.demensionType().isCertification">
+											<com:ko tag="ifnot" bind="$root.content.head().demensionType().isAttendance || $root.content.head().demensionType().isCertification">
 											</com:ko>
 											<span data-bind="text: elementName"/>
 										</td>
@@ -87,7 +87,7 @@
 													style="width: 80px;"
 													data-bind="ntsNumberEditor: {
 														value: interval,
-														constraint: 'RangeLimit',
+														constraint: 'Interval',
 														option: {placeholder: '0',
 															grouplength: 3,
 															decimallength: 2},

@@ -14,12 +14,12 @@ var qet001;
                         { code: '1', name: '表示しない' }
                     ]);
                     this.swapListColumns = ko.observableArray([
-                        { headerText: 'コード', key: 'code', width: 100 },
-                        { headerText: '名称', key: 'name', width: 160 }
+                        { headerText: 'コード', key: 'code', width: 50 },
+                        { headerText: '名称', key: 'name', width: 180 }
                     ]);
                     this.itemListColumns = ko.observableArray([
-                        { headerText: 'コード', prop: 'code', width: 90 },
-                        { headerText: '名称', prop: 'name', width: 100 }]);
+                        { headerText: 'コード', prop: 'code', width: 50 },
+                        { headerText: '名称', prop: 'name', width: 180 }]);
                     var self = this;
                     $("#sidebar-area > div > ul > li").on('click', function () {
                         var index = $("#sidebar-area > div > ul > li").index(this);
@@ -110,6 +110,9 @@ var qet001;
                             self.aggregateItemSelectedCode(null);
                         });
                     }
+                    else {
+                        self.aggregateItemSelectedCode(null);
+                    }
                 };
                 AggregateCategory.prototype.save = function () {
                     var self = this;
@@ -121,7 +124,6 @@ var qet001;
                         return;
                     }
                     i.service.save(self.aggregateItemDetail()).done(function () {
-                        nts.uk.ui.dialog.alert('Save success!');
                         self.loadAggregateItemByCategory();
                     }).fail(function (res) {
                         $('#code-input').ntsError('set', res.message);

@@ -115,8 +115,17 @@ module nts.uk.pr.view.qpp007.c {
                 var self = this;
                 nts.uk.ui.windows.sub.modal('/view/qpp/007/j/index.xhtml', { title: '集計項目の設定', dialogClass: 'no-close' })
                     .onClosed(function() {
+                        // Reload aggregateItems.
                         self.loadAggregateItems().done(() => {
-                            self.loadOutputSettingDetail(self.outputSettingDetailModel().settingCode());
+                            let selectedCode = self.outputSettingDetailModel().settingCode();
+                            // Update mode.
+                            if (selectedCode) {
+                                self.loadOutputSettingDetail(selectedCode);
+                            } 
+                            // New mode.
+                            else {
+                                self.outputSettingDetailModel().updateData();
+                            }
                         });
                     });
             }

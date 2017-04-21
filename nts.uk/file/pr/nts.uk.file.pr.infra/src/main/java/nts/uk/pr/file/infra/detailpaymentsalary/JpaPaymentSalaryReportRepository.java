@@ -20,14 +20,11 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.basic.dom.organization.department.Department;
 import nts.uk.ctx.basic.dom.organization.department.DepartmentRepository;
 import nts.uk.ctx.basic.infra.entity.organization.department.CmnmtDep;
-import nts.uk.ctx.basic.infra.entity.report.PbsmtPersonBase;
 import nts.uk.ctx.basic.infra.entity.report.PcpmtPersonCom;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItem;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentDetail;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentHeader;
 import nts.uk.ctx.pr.report.dom.salarydetail.SalaryCategory;
-import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstAggreHead;
-import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstFormHead;
 import nts.uk.file.pr.app.export.detailpaymentsalary.PaymentSalaryReportRepository;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.DepartmentDto;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.EmployeeDto;
@@ -40,6 +37,40 @@ import nts.uk.file.pr.app.export.detailpaymentsalary.query.PaymentSalaryQuery;
  */
 @Stateless
 public class JpaPaymentSalaryReportRepository extends JpaRepository implements PaymentSalaryReportRepository {
+
+	public static final int PAY_BONUS_ATR = 0;
+	public static final int SPARE_PAY_ATR = 0;
+
+	public static final String QUERY_EMPLOYEE_SORT = "SELECT header,dep,com FROM QstdtPaymentHeader header, "
+		+ "CmnmtDep dep, PcpmtPersonCom com WHERE header.qstdtPaymentHeaderPK.companyCode = :companyCode "
+		+ "AND header.qstdtPaymentHeaderPK.personId IN :personIds "
+		+ "AND header.qstdtPaymentHeaderPK.companyCode = dep.cmnmtDepPK.companyCode "
+		+ "AND header.departmentCode = dep.cmnmtDepPK.departmentCode "
+		+ "AND com.pcpmtPersonComPK.ccd = header.qstdtPaymentHeaderPK.companyCode "
+		+ "AND com.pcpmtPersonComPK.pid = header.qstdtPaymentHeaderPK.personId ";
+
+	public static final String QUERY_PAYMENT_DETAIL = "SELECT h FROM QstdtPaymentDetail h "
+		+ "WHERE h.qstdtPaymentDetailPK.companyCode = :companyCode "
+		+ "AND h.qstdtPaymentDetailPK.payBonusAttribute = 0 "
+		+ "AND h.qstdtPaymentDetailPK.processingYM >= :startDate "
+		+ "AND h.qstdtPaymentDetailPK.processingYM <= :endDate ";
+
+	public static final String QUERY_PAYMENT_DATA_DETAIL = "SELECT detail, com, item, detailheader "
+		+ "FROM QstdtPaymentDetail detail, PcpmtPersonCom com, QcamtItem item , "
+		+ "QlsptPaylstFormDetail detailheader "
+		+ "WHERE detail.qstdtPaymentDetailPK.companyCode = :companyCode "
+		+ "AND detail.qstdtPaymentDetailPK.payBonusAttribute = " + PAY_BONUS_ATR + " "
+		+ "AND detail.qstdtPaymentDetailPK.sparePayAttribute = " + SPARE_PAY_ATR + " "
+		+ "AND detail.qstdtPaymentDetailPK.personId IN :personIds "
+		+ "AND com.pcpmtPersonComPK.ccd = detail.qstdtPaymentDetailPK.companyCode "
+		+ "AND com.pcpmtPersonComPK.pid = detail.qstdtPaymentDetailPK.personId "
+		+ "AND detail.qstdtPaymentDetailPK.categoryATR = item.qcamtItemPK.ctgAtr "
+		+ "AND detail.qstdtPaymentDetailPK.itemCode = item.qcamtItemPK.itemCd "
+		+ "AND item.qcamtItemPK.ccd = detail.qstdtPaymentDetailPK.companyCode "
+		+ "AND detailheader.qlsptPaylstFormDetailPK.ccd = detail.qstdtPaymentDetailPK.companyCode "
+		+ "AND detailheader.qlsptPaylstFormDetailPK.formCd = :formCd "
+		+ "AND detailheader.qlsptPaylstFormDetailPK.ctgAtr = detail.qstdtPaymentDetailPK.categoryATR "
+		+ "AND detailheader.qlsptPaylstFormDetailPK.itemAgreCd = detail.qstdtPaymentDetailPK.itemCode ";
 
 	/** The repository. */
 	@Inject
@@ -60,20 +91,6 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository implements P
 			"999000000000000000000000000000000009", "999000000000000000000000000000000010" };
 		query.setPersonIds(Arrays.asList(personIds));
 		PaymentSalaryReportData data = new PaymentSalaryReportData();
-
-		/*QlsptPaylstFormHead headerForm = this.findHeaderFrom(companyCode, query.getOutputSettingCode());
-		this.findItem(companyCode);
-		QlsptPaylstAggreHead payHead = this.findAggreHeader(companyCode); // hea
-																			// //
-		if (CollectionUtil.isEmpty(payHead.getQlsptPaylstAggreDetailList())) {
-			throw new BusinessException("ER010");
-		}
-		List<PbsmtPersonBase> persons = this.findAllPerson(query.getPersonIds());
-		List<QstdtPaymentDetail> paymentDetails = this.findAllDetail(companyCode, query);
-		if (CollectionUtil.isEmpty(paymentDetails)) {
-			throw new BusinessException("ER010");
-		}
-		*/
 
 		List<Object[]> paydetails = this.findAllDetail(companyCode, query);
 
@@ -111,21 +128,7 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository implements P
 	public List<EmployeeDto> sortEmployees(String companyCode, List<String> personIds) {
 
 		EntityManager em = this.getEntityManager();
-
-		// PbsmtPersonBase
-		// PcpmtPersonCom
-		// PogmtPersonDepRgl
-		// CmnmtDep
-
-		String query = "SELECT header,dep,com FROM QstdtPaymentHeader header, CmnmtDep dep ,"
-			+ " PcpmtPersonCom com WHERE " + "header.qstdtPaymentHeaderPK.companyCode = :companyCode "
-			+ "AND header.qstdtPaymentHeaderPK.personId IN :personIds "
-			+ "AND header.qstdtPaymentHeaderPK.companyCode = dep.cmnmtDepPK.companyCode "
-			+ "AND header.departmentCode = dep.cmnmtDepPK.departmentCode "
-			+ "AND com.pcpmtPersonComPK.ccd = header.qstdtPaymentHeaderPK.companyCode "
-			+ "AND com.pcpmtPersonComPK.pid = header.qstdtPaymentHeaderPK.personId ";
-
-		TypedQuery<Object[]> typedQuery = em.createQuery(query, Object[].class);
+		TypedQuery<Object[]> typedQuery = em.createQuery(QUERY_EMPLOYEE_SORT, Object[].class);
 		typedQuery.setParameter("personIds", personIds);
 		typedQuery.setParameter("companyCode", companyCode);
 		List<Object[]> data = typedQuery.getResultList();
@@ -182,80 +185,6 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository implements P
 	}
 
 	/**
-	 * Find header from.
-	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param fromId
-	 *            the from id
-	 * @return the qlspt paylst form head
-	 */
-	private QlsptPaylstFormHead findHeaderFrom(String companyCode, String fromId) {
-		EntityManager em = this.getEntityManager();
-		String queryString = "SELECT h FROM QlsptPaylstFormHead h "
-			+ "WHERE h.qlsptPaylstFormHeadPK.ccd = :companyCode "
-			+ "AND h.qlsptPaylstFormHeadPK.formCd = :formCd ";
-
-		TypedQuery<QlsptPaylstFormHead> typedQuery = em.createQuery(queryString, QlsptPaylstFormHead.class);
-		typedQuery.setParameter("companyCode", companyCode);
-		typedQuery.setParameter("formCd", fromId);
-		return typedQuery.getSingleResult();
-	}
-
-	/**
-	 * Find item.
-	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param query
-	 *            the query
-	 * @return the qcamt item
-	 */
-	private List<QcamtItem> findItem(String companyCode) {
-		EntityManager em = this.getEntityManager();
-		String queryString = "SELECT h FROM QcamtItem h " + "WHERE h.qcamtItemPK.ccd = :companyCode "
-			+ "AND h.qcamtItemPK.ctgAtr = 0 AND h.qcamtItemPK.itemCd = '0' ";
-
-		TypedQuery<QcamtItem> typedQuery = em.createQuery(queryString, QcamtItem.class);
-		typedQuery.setParameter("companyCode", companyCode);
-		return typedQuery.getResultList();
-	}
-
-	/**
-	 * Find aggre header.
-	 *
-	 * @param companyCode
-	 *            the company code
-	 * @return the qlspt paylst aggre head
-	 */
-	private QlsptPaylstAggreHead findAggreHeader(String companyCode) {
-		EntityManager em = this.getEntityManager();
-		String queryString = "SELECT h FROM QlsptPaylstAggreHead h "
-			+ "WHERE h.qlsptPaylstAggreHeadPK.ccd = :companyCode "
-			+ "AND h.qlsptPaylstAggreHeadPK.aggregateCd = 1 AND h.qlsptPaylstAggreHeadPK.ctgAtr = 1 ";
-
-		TypedQuery<QlsptPaylstAggreHead> typedQuery = em.createQuery(queryString, QlsptPaylstAggreHead.class);
-		typedQuery.setParameter("companyCode", companyCode);
-		return typedQuery.getSingleResult();
-	}
-
-	/**
-	 * Find all person.
-	 *
-	 * @param personIds
-	 *            the person ids
-	 * @return the list
-	 */
-	private List<PbsmtPersonBase> findAllPerson(List<String> personIds) {
-		EntityManager em = this.getEntityManager();
-		String queryString = "SELECT h FROM PbsmtPersonBase h " + "WHERE h.pid IN = :personIds ";
-
-		TypedQuery<PbsmtPersonBase> typedQuery = em.createQuery(queryString, PbsmtPersonBase.class);
-		typedQuery.setParameter("personIds", personIds);
-		return typedQuery.getResultList();
-	}
-
-	/**
 	 * Find all detail.
 	 *
 	 * @param companyCode
@@ -266,35 +195,8 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository implements P
 	 */
 	private List<Object[]> findAllDetail(String companyCode, PaymentSalaryQuery query) {
 		EntityManager em = this.getEntityManager();
-		String queryString = "SELECT detail,com,item, detailheader "
-			+ "FROM QstdtPaymentDetail detail, PcpmtPersonCom com, QcamtItem item , "
-			+ "QlsptPaylstFormDetail detailheader "
-			+ "WHERE detail.qstdtPaymentDetailPK.companyCode = :companyCode "
-			+ "AND detail.qstdtPaymentDetailPK.personId IN :personIds "
-			+ "AND com.pcpmtPersonComPK.ccd = detail.qstdtPaymentDetailPK.companyCode "
-			+ "AND com.pcpmtPersonComPK.pid = detail.qstdtPaymentDetailPK.personId "
-			+ "AND detail.qstdtPaymentDetailPK.categoryATR = item.qcamtItemPK.ctgAtr "
-			+ "AND detail.qstdtPaymentDetailPK.itemCode = item.qcamtItemPK.itemCd "
-			+ "AND item.qcamtItemPK.ccd = detail.qstdtPaymentDetailPK.companyCode "
-			+ "AND detailheader.qlsptPaylstFormDetailPK.ccd = detail.qstdtPaymentDetailPK.companyCode "
-			+ "AND detailheader.qlsptPaylstFormDetailPK.formCd = :formCd "
-			+ "AND detailheader.qlsptPaylstFormDetailPK.ctgAtr = detail.qstdtPaymentDetailPK.categoryATR "
-			+ "AND detailheader.qlsptPaylstFormDetailPK.itemAgreCd = detail.qstdtPaymentDetailPK.itemCode ";
-		/*
-		 * + "AND h.qstdtPaymentDetailPK.payBonusAttribute = 0 " +
-		 * "AND h.qstdtPaymentDetailPK.processingYM >= :startDate " +
-		 * "AND h.qstdtPaymentDetailPK.processingYM <= :endDate " +
-		 * "AND h.qstdtPaymentDetailPK.sparePayAttribute = 0 " +
-		 * "AND h.qstdtPaymentDetailPK.categoryATR = 0 AND h.qstdtPaymentDetailPK.itemCode = 0"
-		 * ;
-		 * 
-		 * // set start date typedQuery.setParameter("startDate",
-		 * query.getStartDate());
-		 * 
-		 * // set end date typedQuery.setParameter("endDate",
-		 * query.getEndDate());
-		 */
-		TypedQuery<Object[]> typedQuery = em.createQuery(queryString, Object[].class);
+
+		TypedQuery<Object[]> typedQuery = em.createQuery(QUERY_PAYMENT_DATA_DETAIL, Object[].class);
 
 		// set eq companyCode
 		typedQuery.setParameter("companyCode", companyCode);
@@ -303,30 +205,6 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository implements P
 		typedQuery.setParameter("personIds", query.getPersonIds());
 		typedQuery.setParameter("formCd", query.getOutputSettingCode());
 
-		return typedQuery.getResultList();
-	}
-
-	/**
-	 * Find payment header.
-	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param query
-	 *            the query
-	 * @return the list
-	 */
-	private List<QstdtPaymentHeader> findPaymentHeader(String companyCode, PaymentSalaryQuery query) {
-		EntityManager em = this.getEntityManager();
-		String queryString = "SELECT h FROM QstdtPaymentHeader h "
-			+ "WHERE h.qstdtPaymentHeaderPK.companyCode = :companyCode "
-			+ "AND h.qstdtPaymentHeaderPK.payBonusAtr = 0 "
-			+ "AND h.qstdtPaymentHeaderPK.processingYM >= :startDate "
-			+ "AND h.qstdtPaymentHeaderPK.processingYM <= :endDate ";
-
-		TypedQuery<QstdtPaymentHeader> typedQuery = em.createQuery(queryString, QstdtPaymentHeader.class);
-		typedQuery.setParameter("companyCode", companyCode);
-		typedQuery.setParameter("startDate", query.getStartDate());
-		typedQuery.setParameter("endDate", query.getEndDate());
 		return typedQuery.getResultList();
 	}
 
@@ -341,13 +219,8 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository implements P
 	 */
 	private List<QstdtPaymentDetail> findPaymentDetail(String companyCode, PaymentSalaryQuery query) {
 		EntityManager em = this.getEntityManager();
-		String queryString = "SELECT h FROM QstdtPaymentDetail h "
-			+ "WHERE h.qstdtPaymentDetailPK.companyCode = :companyCode "
-			+ "AND h.qstdtPaymentDetailPK.payBonusAttribute = 0 "
-			+ "AND h.qstdtPaymentDetailPK.processingYM >= :startDate "
-			+ "AND h.qstdtPaymentDetailPK.processingYM <= :endDate ";
-
-		TypedQuery<QstdtPaymentDetail> typedQuery = em.createQuery(queryString, QstdtPaymentDetail.class);
+		TypedQuery<QstdtPaymentDetail> typedQuery = em.createQuery(QUERY_PAYMENT_DETAIL,
+			QstdtPaymentDetail.class);
 		typedQuery.setParameter("companyCode", companyCode);
 		typedQuery.setParameter("startDate", query.getStartDate());
 		typedQuery.setParameter("endDate", query.getEndDate());

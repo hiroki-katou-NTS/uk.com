@@ -69,6 +69,7 @@ public class JpaWLAggregateItemRepository extends JpaRepository implements WLAgg
 			// Update entity with new domain.
 			aggregateItem.saveToMemento(new JpaWLAggregateItemSetMemento(entity));
 			this.commandProxy().update(entity);
+			return;
 		}
 		throw new RuntimeException("Cannot update entity not exist!");
 	}
