@@ -5,6 +5,7 @@ module cmm009.d.viewmodel {
         startDate: KnockoutObservable<string>;
         startDateFromA: KnockoutObservable<string>;
         endDate: KnockoutObservable<string>;
+        enableInput: KnockoutObservable<boolean>;
         valueSel001: KnockoutObservable<string>;
         startYmHis: KnockoutObservable<number>;
         timeEditorOption: KnockoutObservable<any>;
@@ -14,6 +15,7 @@ module cmm009.d.viewmodel {
         isEnable: KnockoutObservable<boolean>;
         // time editor
         yearmonthdayeditor: any;
+
         /**
          * Init screen model.
          */
@@ -21,6 +23,7 @@ module cmm009.d.viewmodel {
             var self = this;
             self.isEnable = ko.observable(true);
             self.startDate = ko.observable("1900");
+            self.enableInput = ko.observable(true);
             self.yearmonthdayeditor = {
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
                     inputFormat: 'date'
@@ -35,7 +38,6 @@ module cmm009.d.viewmodel {
             self.startDateFromA(data.startDate);
             self.endDate(data.endDate);
             console.log(data);
-            debugger;
             //---radio
             self.itemsRadio = ko.observableArray([
                 { value: 1, text: ko.observable('履歴を削除する') },
@@ -46,34 +48,62 @@ module cmm009.d.viewmodel {
             if (index != "0") {
                 self.isEnable(false);
             }
+
+            self.isRadioCheck.subscribe(function(codeChangeds) {
+                if (codeChangeds == 1) {
+                    self.enableInput(false);
+                } else if (codeChangeds == 2) {
+                    self.enableInput(true);
+                }
+            }
         }
 
         createHistory(): any {
             var self = this;
+            if (self.isRadioCheck() == 2) {
+                self.confirmDelete();
+            } else if (self.isRadioCheck() == 1) {
+                nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
+                    self.confirmDelete();
+                }).ifNo(function() { });
+            }
+        }
+
+        confirmDelete() {
+            var self = this;
             var inputYm = $('#INP_STARTYMD').val();
             //check YM
-            if (!nts.uk.time.parseYearMonthDate(inputYm).success) {
-                alert(nts.uk.time.parseYearMonthDate(inputYm).msg);
-                return false;
-            }
-            var selectYm = self.startDateFromA();
-            var inputYm2 = inputYm.replace('/', '');
-            inputYm2 = inputYm2.replace('/', '');
-            selectYm = selectYm.replace('/', '');
-            selectYm = selectYm.replace('/', '');
-            console.log(inputYm2);
-            if (+inputYm2 < +selectYm
-                || +inputYm2 == +selectYm) {
-                alert('履歴の期間が正しくありません。');
-                return false;
-            }
-            else {
+            if (self.isRadioCheck() == 2) {
+                if (!nts.uk.time.parseYearMonthDate(inputYm).success) {
+                    alert(nts.uk.time.parseYearMonthDate(inputYm).msg);
+                    return false;
+                }
+                var selectYm = self.startDateFromA();
+                var inputYm2 = inputYm.replace('/', '');
+                inputYm2 = inputYm2.replace('/', '');
+                selectYm = selectYm.replace('/', '');
+                selectYm = selectYm.replace('/', '');
+                console.log(inputYm2);
+                if (+inputYm2 < +selectYm
+                    || +inputYm2 == +selectYm) {
+                    alert('履歴の期間が正しくありません。');
+                    return false;
+                }
+                else {
+                    var self = this;
+                    var isRadio = self.isRadioCheck() + "";
+                    nts.uk.ui.windows.setShared('newstartDate', self.startDate());
+                    nts.uk.ui.windows.setShared('isradio', isRadio);
+                    nts.uk.ui.windows.close();
+                }
+            } else {
                 var self = this;
                 var isRadio = self.isRadioCheck() + "";
                 nts.uk.ui.windows.setShared('newstartDate', self.startDate());
                 nts.uk.ui.windows.setShared('isradio', isRadio);
                 nts.uk.ui.windows.close();
             }
+
         }
 
         start(): JQueryPromise<any> {
