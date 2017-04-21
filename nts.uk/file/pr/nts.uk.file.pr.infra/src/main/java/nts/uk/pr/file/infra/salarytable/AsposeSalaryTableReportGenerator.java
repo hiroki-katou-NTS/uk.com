@@ -934,30 +934,30 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	class PrintProcess{
 		
 		/** The row index. */
-		int rowIndex;
+		public int rowIndex;
 		
 		/** The cells. */
-		Cells cells;
+		public Cells cells;
 		
 		/** The query. */
-		SalaryTableReportQuery query;
+		public SalaryTableReportQuery query;
 		
 		/** The dep stack. */
-		Stack<DepartmentData> depStack;
+		public Stack<DepartmentData> depStack;
 		
 		/** The current emp. */
-		EmployeeData currentEmp;
+		public EmployeeData currentEmp;
 		
 		/** The prev emp. */
-		EmployeeData prevEmp;
+		public EmployeeData prevEmp;
 		
 		/** The temp denomination. */
-		Map<Denomination, Long> tempDenomination;
+		public Map<Denomination, Long> tempDenomination;
 		
 		/** The temp accumulate. */
-		double tempAccumulate; 
+		public double tempAccumulate; 
 		
 		/** The members. */
-		int members;
+		public int members;
 	}
 }

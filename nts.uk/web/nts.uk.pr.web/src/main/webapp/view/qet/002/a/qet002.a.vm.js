@@ -6,11 +6,16 @@ var qet002;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
-                    this.targetYear = ko.observable(2016);
-                    this.isLowerLimit = ko.observable(true);
-                    this.isUpperLimit = ko.observable(true);
-                    this.lowerLimitValue = ko.observable(null);
-                    this.upperLimitValue = ko.observable(null);
+                    var self = this;
+                    self.targetYear = ko.observable(2016);
+                    self.isLowerLimit = ko.observable(true);
+                    self.isUpperLimit = ko.observable(true);
+                    self.lowerLimitValue = ko.observable(null);
+                    self.japanYear = ko.observable('(' + nts.uk.time.yearInJapanEmpire('2016') + ')');
+                    self.upperLimitValue = ko.observable(null);
+                    self.targetYear.subscribe(function (val) {
+                        self.japanYear("" + nts.uk.time.yearInJapanEmpire(val));
+                    });
                 }
                 ScreenModel.prototype.start = function () {
                     var dfd = $.Deferred();

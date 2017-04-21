@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.accumulatedpayment;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -43,7 +46,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 	private static final String TEMPLATE_FILE = "report/AccumulatedPaymentReport.xlsx";
 
 	/** The Constant FIRST_ROW_INDEX. */
-	private static final int FIRST_ROW_INDEX = 12;
+	private static final int FIRST_ROW_INDEX = 9;//12
 
 	/** The Constant FIRST_COLUMN. */
 	private static final int FIRST_COLUMN = 0;
@@ -83,6 +86,12 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 			Worksheet worksheet = worksheets.get(0);
 			Cells cells = worksheet.getCells();
 			
+			// Set header.
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd hh:mm");
+			worksheet.getPageSetup().setHeader(2, 
+					"&\"IPAPGothic\"&13 " + dateFormat.format(new Date()) + "\r\n&P ページ");
+			designer.getDesigner().setDataSource("Header", dataSource.getHeaderData());
+
 			// Fill data
 			// List Item Data			
 			int amountEmployee = accumulatedPaymentList.size();
