@@ -8,51 +8,52 @@ module qmm003.b.viewmodel {
         precfecture: Array<RedensitalTaxNode> = [];
         itemPrefecture: KnockoutObservableArray<RedensitalTaxNode> = ko.observableArray([]);
         residentalTaxList: KnockoutObservableArray<service.model.ResidentialTaxDto> = ko.observableArray([]);
-        currentNode: KnockoutObservable<service.model.ResidentialTaxDto> = ko.observable(null);
+        currentNode: KnockoutObservable<service.model.ResidentialTax> = ko.observable(null);
+        yes: boolean = null;
         constructor() {
             let self = this;
             self.init();
             self.singleSelectedCode.subscribe(function(newValue) {
                 if (newValue.length > 2) {
-                    self.currentNode(self.findByCode(self.residentalTaxList(), newValue));
+                    self.processWhenCurrentCodeChange(newValue);
+                }
+            });
+
+        }
+
+        // get Data khi currentCode thay đổi
+        processWhenCurrentCodeChange(newValue: string) {
+            let self = this;
+            service.getResidentialTaxDetail("0000", newValue).done(function(data: service.model.ResidentialTax) {
+                if (data) {
+                    self.currentNode(data);
                     console.log(self.currentNode());
                 }
             });
-
         }
-        
-        findByCode(items: Array<service.model.ResidentialTaxDto>, newValue: string): service.model.ResidentialTaxDto {
-            let self = this;
-            let _node: service.model.ResidentialTaxDto;
-            _.find(items, function(_obj: service.model.ResidentialTaxDto) {
-                if (!_node) {
-                    if (_obj.resiTaxCode == newValue) {
-                        _node = _obj;
 
-                    }
-                }
-            });
-
-            return _node;
-        };
-      
         clickButton(): any {
             let self = this;
+            self.yes = true;
             nts.uk.ui.windows.setShared('currentNode', self.currentNode(), true);
+            nts.uk.ui.windows.setShared('yes', self.yes, true);
             nts.uk.ui.windows.close();
 
         }
-        
+
         cancelButton(): void {
+            let self = this;
+            self.yes = false;
+            nts.uk.ui.windows.setShared('yes', self.yes, true);
             nts.uk.ui.windows.close();
         }
-        
+
         init(): void {
             let self = this;
             self.items = ko.observableArray([]);
             self.singleSelectedCode = ko.observable('');
         }
-        
+
         //11.初期データ取得処理 11. Initial data acquisition processing
         start(): JQueryPromise<any> {
             var dfd = $.Deferred<any>();

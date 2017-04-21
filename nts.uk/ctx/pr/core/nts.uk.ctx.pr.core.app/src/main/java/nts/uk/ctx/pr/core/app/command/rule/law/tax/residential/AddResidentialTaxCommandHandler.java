@@ -38,7 +38,7 @@ public class AddResidentialTaxCommandHandler extends CommandHandler<AddResidenti
 			this.repo.add(ResidentialTax.createFromJavaType(companyCode, add.getCompanyAccountNo(),
 					add.getCompanySpecifiedNo(), add.getCordinatePostOffice(), add.getCordinatePostalCode(),
 					add.getMemo(), add.getPrefectureCode(), add.getRegisteredName(), add.getResiTaxAutonomy(),
-					add.getResiTaxCode(), add.getResiTaxReportCode()));
+					add.getResiTaxAutonomyKana(), add.getResiTaxCode(), add.getResiTaxReportCode()));
 		}
 	}
 

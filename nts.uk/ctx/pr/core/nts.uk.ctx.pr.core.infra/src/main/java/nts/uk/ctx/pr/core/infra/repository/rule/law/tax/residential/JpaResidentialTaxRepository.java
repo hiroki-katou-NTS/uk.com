@@ -29,7 +29,7 @@ public class JpaResidentialTaxRepository extends JpaRepository implements Reside
 	private static ResidentialTax toDomain(QtxmtResidentialTax entity) {
 		val domain = ResidentialTax.createFromJavaType(entity.qtxmtResidentialTaxPk.companyCd, entity.companyAccountNo,
 				entity.companySpecifiedNo, entity.cordinatePostOffice, entity.cordinatePostalCode, entity.memo,
-				entity.prefectureCode, entity.registeredName, entity.resiTaxAutonomy,
+				entity.prefectureCode, entity.registeredName, entity.resiTaxAutonomy, entity.resiTaxAutonomyKana,
 				entity.qtxmtResidentialTaxPk.resiTaxCode, entity.resiTaxReportCode);
 		return domain;
 	}
@@ -47,6 +47,7 @@ public class JpaResidentialTaxRepository extends JpaRepository implements Reside
 		entity.registeredName = domain.getRegisteredName().v();
 		entity.resiTaxReportCode = domain.getResiTaxReportCode().v();
 		entity.resiTaxAutonomy = domain.getResiTaxAutonomy().v();
+		entity.resiTaxAutonomyKana = domain.getResiTaxAutonomyKana().v();
 		return entity;
 	}
 

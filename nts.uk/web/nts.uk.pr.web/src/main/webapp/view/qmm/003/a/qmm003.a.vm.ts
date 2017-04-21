@@ -139,6 +139,7 @@ module qmm003.a.viewmodel {
             self.enableBTN005(false);
             self.currentResidential().resiTaxCode('');
             self.currentResidential().resiTaxAutonomy('');
+            self.currentResidential().resiTaxAutonomyKana('');
             self.currentResidential().prefectureCode('');
             self.currentResidential().resiTaxReportCode('');
             self.currentResidential().registeredName('');
@@ -159,14 +160,15 @@ module qmm003.a.viewmodel {
             // data of treegrid
             self.redensitalTaxNodeList = ko.observableArray([]);
             self.singleSelectedCode = ko.observable("");
-            self.currentResidential = ko.observable(new ResidentialTax(({
+            self.currentResidential = ko.observable(new ResidentialTax({
                 resiTaxCode: '',
                 resiTaxAutonomy: '',
+                resiTaxAutonomyKana: '',
                 prefectureCode: '',
                 registeredName: '',
                 companyAccountNo: '',
                 companySpecifiedNo: ''
-            })));
+            }));
         }
 
         // khi click vào btn006 mở ra màn hình D
@@ -456,6 +458,7 @@ module qmm003.a.viewmodel {
         enableBTN009: KnockoutObservable<boolean> = ko.observable(null);
         resiTaxCode: KnockoutObservable<string>;
         resiTaxAutonomy: KnockoutObservable<string>;
+        resiTaxAutonomyKana: KnockoutObservable<string>;
         prefectureCode: KnockoutObservable<string>;
         resiTaxReportCode: KnockoutObservable<string>;
         registeredName: KnockoutObservable<string>;
@@ -472,6 +475,7 @@ module qmm003.a.viewmodel {
             let self = this;
             self.resiTaxCode(param.resiTaxCode);
             self.resiTaxAutonomy(param.resiTaxAutonomy);
+            self.resiTaxAutonomyKana(param.resiTaxAutonomyKana);
             self.prefectureCode(param.prefectureCode);
             self.resiTaxReportCode(param.resiTaxReportCode);
             self.registeredName(param.registeredName);
@@ -485,6 +489,7 @@ module qmm003.a.viewmodel {
         init(param: any) {
             this.resiTaxCode = ko.observable(param.resiTaxCode);
             this.resiTaxAutonomy = ko.observable(param.resiTaxAutonomy);
+            this.resiTaxAutonomyKana = ko.observable(param.resiTaxAutonomyKana);
             this.prefectureCode = ko.observable(param.prefectureCode);
             this.resiTaxReportCode = ko.observable(param.resiTaxReportCode);
             this.registeredName = ko.observable(param.registeredName);
@@ -497,17 +502,23 @@ module qmm003.a.viewmodel {
         // khi click btn007 mo ra man hinh B
         openBDialog() {
             let self = this;
-            let currentNode: service.model.ResidentialTaxDto;
+            let currentNode: service.model.ResidentialTaxDetailDto;
+            let yes: boolean;
             nts.uk.ui.windows.sub.modeless('/view/qmm/003/b/index.xhtml', { title: '住民税納付先の登録＞住民税納付先一覧', dialogClass: "no-close" }).onClosed(function(): any {
                 currentNode = nts.uk.ui.windows.getShared("currentNode");
-                if (currentNode) {
-                    self.resiTaxCode(currentNode.resiTaxCode);
-                    self.resiTaxAutonomy(currentNode.resiTaxAutonomy);
-                    self.prefectureCode(currentNode.prefectureCode);
-                    $('#A_INP_002').ntsError('clear');
-                    $('#A_INP_003').ntsError('clear');
-                } else {
-                    nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。");
+                yes = nts.uk.ui.windows.getShared("yes");
+                if (yes) {
+                    if (currentNode) {
+                        self.resiTaxCode(currentNode.resiTaxCode);
+                        self.resiTaxAutonomy(currentNode.resiTaxAutonomy);
+                        self.resiTaxAutonomyKana(currentNode.resiTaxAutonomyKana);
+                        console.log(currentNode);
+                        self.prefectureCode(currentNode.prefectureCode);
+                        $('#A_INP_002').ntsError('clear');
+                        $('#A_INP_003').ntsError('clear');
+                    } else {
+                        nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。");
+                    }
                 }
             });
         }
@@ -515,15 +526,18 @@ module qmm003.a.viewmodel {
         // khi click btn009 mo ra man hinh C 
         openCDialog() {
             let self = this;
-            let currentResidential: service.model.ResidentialTaxDetailDto;
-            let items: any;
+            let currentNode: RedensitalTaxNode;
+            let yes: boolean;
             nts.uk.ui.windows.sub.modeless("/view/qmm/003/c/index.xhtml", { title: '住民税納付先の登録＞住民税報告先一覧', dialogClass: "no-close" }).onClosed(function(): any {
-                currentResidential = nts.uk.ui.windows.getShared('currentResidential');
-                    if (currentResidential) {
-                        self.resiTaxReportCode(currentResidential.resiTaxCode + " " + currentResidential.resiTaxAutonomy);
+                currentNode = nts.uk.ui.windows.getShared('currentNode');
+                yes = nts.uk.ui.windows.getShared('yes');
+                if (yes) {
+                    if (currentNode) {
+                        self.resiTaxReportCode(currentNode.code + " " + currentNode.name);
                     } else {
                         nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。");
                     }
+                }
             });
         }
     }
@@ -531,6 +545,7 @@ module qmm003.a.viewmodel {
     interface ResidentialTaxBase {
         resiTaxCode: string;
         resiTaxAutonomy: string;
+        resiTaxAutonomyKana: string;
         prefectureCode: string;
         resiTaxReportCode?: string;
         registeredName: string;

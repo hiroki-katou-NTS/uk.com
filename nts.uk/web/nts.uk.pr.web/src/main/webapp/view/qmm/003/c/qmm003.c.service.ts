@@ -32,7 +32,7 @@ module qmm003.c.service {
     }
 
     export function getResidentialTaxDetail(resiTaxCode: string): JQueryPromise<model.ResidentialTax> {
-        var dfd = $.Deferred<qmm003.d.service.model.ResidentialTax>();
+        var dfd = $.Deferred<qmm003.c.service.model.ResidentialTax>();
         var objectLayout = { resiTaxCode: resiTaxCode };
         var _path = nts.uk.text.format(paths.getResidentialDetail, resiTaxCode);
         nts.uk.request.ajax(_path)
@@ -50,6 +50,7 @@ module qmm003.c.service {
             companyCode: string;
             resiTaxCode: string;
             resiTaxAutonomy: string;
+            resiTaxAutonomyKana: string;
             prefectureCode: string;
             resiTaxReportCode: string;
             registeredName: string;

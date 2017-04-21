@@ -24,10 +24,10 @@ module qmm003.a.service {
             })
         return dfd.promise();
     }
-    
-        /**
-     * Get list  ResidentialTax companyCode == 0000.
-     */
+
+    /**
+ * Get list  ResidentialTax companyCode == 0000.
+ */
     export function getResidentialTaxCCD(): JQueryPromise<Array<model.ResidentialTaxDto>> {
         var dfd = $.Deferred<Array<model.ResidentialTaxDto>>();
         nts.uk.request.ajax(paths.getResidentalTaxList)
@@ -53,11 +53,11 @@ module qmm003.a.service {
             })
         return dfd.promise();
     }
-    
+
     /**
      * add  Residential
      */
-    
+
     export function addResidential(residential: model.ResidentialTaxDetailDto) {
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax(paths.addResidential, residential).done(function(res: Array<any>) {
@@ -68,7 +68,7 @@ module qmm003.a.service {
             })
         return dfd.promise();
     }
-    
+
     /**
      * update ResidentialTax
      */
@@ -83,7 +83,7 @@ module qmm003.a.service {
             })
         return dfd.promise();
     }
-    
+
     /**
      * delete Residential
      */
@@ -119,6 +119,7 @@ module qmm003.a.service {
             companyCode: string;
             resiTaxCode: string;
             resiTaxAutonomy: string;
+            resiTaxAutonomyKana: string;
             prefectureCode: string;
             resiTaxReportCode: string;
             registeredName: string;
@@ -128,12 +129,14 @@ module qmm003.a.service {
             cordinatePostOffice: string;
             memo: string;
             contructor(companyCode: string, resiTaxCode: string, resiTaxAutonomy: string,
+                resiTaxAutonomyKana: string,
                 prefectureCode: string, resiTaxReportCode: string,
                 registeredName: string, companyAccountNo: string, companySpecifiedNo: string,
                 cordinatePostalCode: string, cordinatePostOffice: string, memo: string) {
                 this.companyCode = companyCode;
                 this.resiTaxCode = resiTaxCode;
                 this.resiTaxAutonomy = resiTaxAutonomy;
+                this.resiTaxAutonomyKana = resiTaxAutonomyKana;
                 this.prefectureCode = prefectureCode;
                 this.resiTaxReportCode = resiTaxReportCode;
                 this.registeredName = registeredName;

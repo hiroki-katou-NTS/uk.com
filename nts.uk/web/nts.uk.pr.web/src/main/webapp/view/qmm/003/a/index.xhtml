@@ -13,6 +13,7 @@
 					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.PrefectureCode
 					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResiTaxReportCode
 					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResiTaxAutonomy
+					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResiTaxAutonomyKana
 					nts.uk.shr.com.primitive.Memo
 					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.CompanyAccountNo
 					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.CompanySpecifiedNo
@@ -67,7 +68,7 @@
 								class="cf"></table>
 						</div>
 				
-					 <label id="A_LBL_011" data-bind="text: numberOfResidentialTax()"> 【登録件数】 202件</label>
+					 <label id="A_LBL_011" data-bind="text: numberOfResidentialTax()"> 【登録件数】 0件</label>
 				
 							
 						
@@ -88,7 +89,7 @@
 									<th colspan="1" >
 									
 		                           <div >
-										<input id="A_INP_002"  class="save-error"  data-bind="ntsTextEditor: {
+										<input  data-name="ResiTaxCode" id="A_INP_002"  class="save-error"  data-bind="ntsTextEditor: {
 												value: resiTaxCode,
 												constraint: 'ResiTaxCode',
 												required: true,
@@ -99,7 +100,7 @@
 									</th>
 									<th colspan="2" >
 		                           <div >
-										<input id="A_INP_003"  class="save-error"  data-bind="ntsTextEditor: {
+										<input data-name="ResiTaxAutonomy" id="A_INP_003"  class="save-error"  data-bind="ntsTextEditor: {
 												value: resiTaxAutonomy,
 												constraint: 'ResiTaxAutonomy',
 												required: true,
@@ -110,7 +111,24 @@
 									<th colspan="3" >
 										<button id="A_BTN_007" data-bind="click: openBDialog,enable: $parent.isNew"  style="margin-left: 5px;height: inherit;">参照</button>													 		
 									</th>								
-								</tr>							
+								</tr>
+								<!-- update UI -->	
+								<tr class ="flex">
+								 <th colspan="1" class="th flex">
+										<div data-bind="ntsFormLabel: {constraint: 'ResiTaxAutonomyKana'}" class="form-label ">
+											<label id="A_LBL_013">カナ名</label>
+										</div>
+								 </th>
+								 <th>
+								 <div >
+										<input  data-name="ResiTaxAutonomyKana" id="A_INP_010"  class="save-error"  data-bind="ntsTextEditor: {
+												value: resiTaxAutonomyKana,
+												constraint: 'ResiTaxAutonomyKana',
+												enable: true,
+												readonly: false }" style="margin-top: 5px;"/>					
+									</div>
+								 </th>
+								</tr>						
 
 								<!--  3  -->
 								<tr class= "flex">
@@ -164,7 +182,7 @@
 
 									<th colspan="2" class="th">
 									<div >
-										<input id="A_INP_004"  class="save-error"  data-bind="ntsTextEditor: {
+										<input  data-name="CompanyAccountNo" id="A_INP_004"  class="save-error"  data-bind="ntsTextEditor: {
 												value: companyAccountNo,
 												constraint: 'CompanyAccountNo',
 												enable: true,
@@ -183,7 +201,7 @@
 
 									<th colspan="2" class="th">
 									<div >
-										<input id="A_INP_005"   class="save-error"  data-bind="ntsTextEditor: {
+										<input data-name="RegisteredName" id="A_INP_005"   class="save-error"  data-bind="ntsTextEditor: {
 												value: registeredName,
 												constraint: 'RegisteredName',
 												required: true,
@@ -211,7 +229,7 @@
 
 								<th colspan="2" class='th' >
 								<div >
-										<input id="A_INP_006"  class="save-error"  data-bind="ntsTextEditor: {
+										<input  data-name="CompanySpecifiedNo" id="A_INP_006"  class="save-error"  data-bind="ntsTextEditor: {
 												value: companySpecifiedNo,
 												constraint: 'CompanySpecifiedNo',
 												required: true,
@@ -233,7 +251,7 @@
 
 								<th colspan="2" class='th'>
 								<div >
-										<input id="A_INP_007"   class="save-error"  data-bind="ntsTextEditor: {
+										<input data-name="CordinatePostalCode" id="A_INP_007"   class="save-error"  data-bind="ntsTextEditor: {
 												value: cordinatePostalCode,
 												constraint: 'CordinatePostalCode',
 												enable: true,
@@ -255,7 +273,7 @@
 
 								<th colspan="2" class="th">
 								<div >
-										<input id="A_INP_008"  class="save-error"  data-bind="ntsTextEditor: {
+										<input data-name="CordinatePostOffice" id="A_INP_008"  class="save-error"  data-bind="ntsTextEditor: {
 												value: cordinatePostOffice,
 												constraint: 'CordinatePostOffice',
 												enable: true,
@@ -275,7 +293,7 @@
 
 								<th colspan="2" class="th">
 								<div >
-										<textarea id="A_INP_009"  class="save-error"  data-bind="ntsMultilineEditor:{
+										<textarea  data-name="Memo" id="A_INP_009"  class="save-error"  data-bind="ntsMultilineEditor:{
 												value: memo,
 												constraint: 'Memo',
 												enable: true,

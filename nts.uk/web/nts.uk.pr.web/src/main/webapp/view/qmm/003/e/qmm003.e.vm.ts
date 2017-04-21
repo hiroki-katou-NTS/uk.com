@@ -9,7 +9,7 @@ module qmm003.e.viewmodel {
         japanLocation: Array<qmm003.b.service.model.RegionObject> = [];
         precfecture: Array<ResidentialTaxNode> = [];
         itemPrefecture: KnockoutObservableArray<ResidentialTaxNode> = ko.observableArray([]);
-        residentalTaxList: KnockoutObservableArray<qmm003.b.service.model.ResidentialTax> = ko.observableArray([]);
+        residentalTaxList: KnockoutObservableArray<qmm003.e.service.model.ResidentialTax> = ko.observableArray([]);
         selectedCode: KnockoutObservable<string> = ko.observable("");
         year: KnockoutObservable<number> = ko.observable(null);
         yearJapan: KnockoutObservable<string> = ko.observable("");

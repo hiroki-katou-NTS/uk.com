@@ -12,6 +12,7 @@ public class ResidentialTaxDetailDto {
 	private String companyCode;
 	private String resiTaxCode;
 	private String resiTaxAutonomy;
+	private String resiTaxAutonomyKana;
 	private String prefectureCode;
 	private String resiTaxReportCode;
 	private String registeredName;
@@ -23,7 +24,7 @@ public class ResidentialTaxDetailDto {
 
 	public static ResidentialTaxDetailDto fromDomain(ResidentialTax domain) {
 		return new ResidentialTaxDetailDto(domain.getCompanyCode().v(), domain.getResiTaxCode().v(),
-				domain.getResiTaxAutonomy().v(), domain.getPrefectureCode().v(), domain.getResiTaxReportCode().v(),
+				domain.getResiTaxAutonomy().v(),domain.getResiTaxAutonomyKana().v(), domain.getPrefectureCode().v(), domain.getResiTaxReportCode().v(),
 				domain.getRegisteredName().v(), domain.getCompanyAccountNo().v(), domain.getCompanySpecifiedNo().v(),
 				domain.getCordinatePostalCode().v(), domain.getCordinatePostOffice().v(), domain.getMemo().v());
 	}

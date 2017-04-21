@@ -32,7 +32,8 @@ public class UpdateResidentialTaxCommandHandler extends CommandHandler<UpdateRes
 				 companyCode, update.getCompanyAccountNo(), update.getCompanySpecifiedNo(),
 					update.getCordinatePostOffice(), update.getCordinatePostalCode(), update.getMemo(), 
 					update.getPrefectureCode(), update.getRegisteredName(), update.getResiTaxAutonomy(), 
-					update.getResiTaxCode(), update.getResiTaxReportCode());
+					update.getResiTaxAutonomyKana(),update.getResiTaxCode(), 
+					update.getResiTaxReportCode());
 		 this.resiTaxRepository.update(resiTax);
 	}
 }

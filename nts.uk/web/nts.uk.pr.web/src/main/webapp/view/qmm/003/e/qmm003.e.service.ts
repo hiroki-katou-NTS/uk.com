@@ -107,10 +107,10 @@ module qmm003.e.service {
             })
         return dfd.promise();
     }
-    
+
     export function updateAllReportCode(param: Array<string>, resiTaxReportCode: string, yearKey: number) {
         let dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.updateReportCode, { resiTaxCodes: param, resiTaxReportCode: resiTaxReportCode, yearKey: yearKey})
+        nts.uk.request.ajax(paths.updateReportCode, { resiTaxCodes: param, resiTaxReportCode: resiTaxReportCode, yearKey: yearKey })
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })
@@ -126,6 +126,7 @@ module qmm003.e.service {
             companyCode: string;
             resiTaxCode: string;
             resiTaxAutonomy: string;
+            resiTaxAutonomyKana: string;
             prefectureCode: string;
             resiTaxReportCode: string;
             registeredName: string;
@@ -135,12 +136,14 @@ module qmm003.e.service {
             cordinatePostOffice: string;
             memo: string;
             contructor(companyCode: string, resiTaxCode: string, resiTaxAutonomy: string,
+                resiTaxAutonomyKana: string,
                 prefectureCode: string, resiTaxReportCode: string,
                 registeredName: string, companyAccountNo: string, companySpecifiedNo: string,
                 cordinatePostalCode: string, cordinatePostOffice: string, memo: string) {
                 this.companyCode = companyCode;
                 this.resiTaxCode = resiTaxCode;
                 this.resiTaxAutonomy = resiTaxAutonomy;
+                this.resiTaxAutonomyKana = resiTaxAutonomyKana;
                 this.prefectureCode = prefectureCode;
                 this.resiTaxReportCode = resiTaxReportCode;
                 this.registeredName = registeredName;

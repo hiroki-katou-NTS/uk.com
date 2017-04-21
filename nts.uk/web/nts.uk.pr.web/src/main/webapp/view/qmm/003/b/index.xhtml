@@ -14,23 +14,22 @@
 				<com:scriptfile path="qmm003.b.start.js" />
 				<com:scriptfile path="qmm003.b.vm.js" />
 				<com:scriptfile path="qmm003.b.service.js" />
-			    <script>var dialogSize = { width: 460, height: 710 };</script>
+			    <script>var dialogSize = { width: 400, height: 540 };</script>
             </ui:define>
             
             <ui:define name="content">
             	<div id="contents-area">
-            	<div class="flex valign-center" style="margin-top:10px; margin-left:35px">
+            	<div class="flex valign-center" style=" margin-left:15px">
             	<label id="B_LBL_001">サンプル納付先情報を表示しています。</label>	
             	</div>	    
-            	<!-- <i class="icon icon-searchbox"></i> -->
             	<i class="icon icon-searchbox"></i>	
-				<div id="B_SCH_001"
+				<div style="margin-top: -11px;margin-left: 30px;" id="B_SCH_001"
 								data-bind="ntsSearchBox: {items: items, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
 							<div>
 								<table id="treegrid2"
 									data-bind="ntsTreeGridView:{
-											   	width: 400,
-												height: 460,
+											   	width: 300,
+												height: 410,
 												options: items,
 												value: singleSelectedCode,
 												optionsValue: 'code',

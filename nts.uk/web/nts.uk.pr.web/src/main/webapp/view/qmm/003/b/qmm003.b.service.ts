@@ -30,6 +30,20 @@ module qmm003.b.service {
             })
         return dfd.promise();
     }
+
+    export function getResidentialTaxDetail(companyCd: string, resiTaxCode: string): JQueryPromise<model.ResidentialTax> {
+        var dfd = $.Deferred<qmm003.b.service.model.ResidentialTax>();
+        var objectLayout = { resiTaxCode: resiTaxCode };
+        var _path = nts.uk.text.format(paths.getResidentialDetail, companyCd, resiTaxCode);
+        nts.uk.request.ajax(_path)
+            .done(function(res: model.ResidentialTax) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
     export module model {
         export class ResidentialTax {
             companyCode: string;
