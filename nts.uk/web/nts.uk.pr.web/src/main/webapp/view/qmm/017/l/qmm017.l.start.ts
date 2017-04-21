@@ -3,5 +3,6 @@ __viewContext.ready(function() {
     var screenModel = new nts.uk.pr.view.qmm017.l.viewmodel.ScreenModelLScreen(param);
     screenModel.start().done(function() {
         __viewContext.bind(screenModel);
+        $("#easy-formula-name").focus();
     });
 });

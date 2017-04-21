@@ -7,6 +7,9 @@ var qmm018;
             var paths = {
                 itemSelect: "pr/core/item/findall/category/{0}"
             };
+            /**
+             * select items master by category
+             */
             function itemSelect(categoryAtr) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(nts.uk.text.format(paths.itemSelect, categoryAtr))
@@ -22,4 +25,3 @@ var qmm018;
         })(service = b.service || (b.service = {}));
     })(b = qmm018.b || (qmm018.b = {}));
 })(qmm018 || (qmm018 = {}));
-//# sourceMappingURL=qmm018.b.service.js.map

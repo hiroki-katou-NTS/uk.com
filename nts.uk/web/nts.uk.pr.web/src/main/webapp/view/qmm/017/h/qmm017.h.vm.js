@@ -2,8 +2,8 @@ var nts;
 (function (nts) {
     var qmm017;
     (function (qmm017) {
-        var HScreen = (function () {
-            function HScreen(root) {
+        class HScreen {
+            constructor(root) {
                 var self = this;
                 self.formulaCode = ko.observable(root.viewModel017b().formulaCode());
                 self.baseYm = ko.observable(root.viewModel017b().startYearMonth());
@@ -21,7 +21,7 @@ var nts;
                 self.listBoxItemType().selectedCode.subscribe(function (codeChange) {
                     if (codeChange === '1') {
                         self.listBoxItems().itemList([]);
-                        var baseYm = 0;
+                        let baseYm = 0;
                         if (self.baseYm().indexOf('/') !== -1) {
                             baseYm = self.baseYm().replace('/', '');
                         }
@@ -36,9 +36,7 @@ var nts;
                     }
                 });
             }
-            return HScreen;
-        }());
+        }
         qmm017.HScreen = HScreen;
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm017.h.vm.js.map

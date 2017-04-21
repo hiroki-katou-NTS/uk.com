@@ -12,20 +12,24 @@ var nts;
                     (function (b) {
                         var viewmodel;
                         (function (viewmodel) {
-                            var ScreenModel = (function () {
-                                function ScreenModel() {
+                            class ScreenModel {
+                                constructor() {
                                     var self = this;
                                     self.salaryPrintSettingModel = ko.observable();
                                 }
-                                ScreenModel.prototype.startPage = function () {
+                                /**
+                                 * Start page.
+                                 */
+                                startPage() {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    self.loadSalaryPrintSetting().done(function () {
-                                        return dfd.resolve();
-                                    });
+                                    self.loadSalaryPrintSetting().done(() => dfd.resolve());
                                     return dfd.promise();
-                                };
-                                ScreenModel.prototype.loadSalaryPrintSetting = function () {
+                                }
+                                /**
+                                 * Call service to load salary print setting.
+                                 */
+                                loadSalaryPrintSetting() {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     b.service.findSalaryPrintSetting().done(function (res) {
@@ -33,20 +37,25 @@ var nts;
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
-                                };
-                                ScreenModel.prototype.saveSetting = function () {
+                                }
+                                /**
+                                 * Call service to save print setting.
+                                 */
+                                saveSetting() {
                                     var self = this;
                                     b.service.saveSalaryPrintSetting(ko.toJS(self.salaryPrintSettingModel));
                                     nts.uk.ui.windows.close();
-                                };
-                                ScreenModel.prototype.cancel = function () {
+                                }
+                                /**
+                                 * Cancel and close dialog.
+                                 */
+                                cancel() {
                                     nts.uk.ui.windows.close();
-                                };
-                                return ScreenModel;
-                            }());
+                                }
+                            }
                             viewmodel.ScreenModel = ScreenModel;
-                            var SalaryPrintSettingModel = (function () {
-                                function SalaryPrintSettingModel(dto) {
+                            class SalaryPrintSettingModel {
+                                constructor(dto) {
                                     this.showPayment = ko.observable(dto.showPayment);
                                     this.sumPersonSet = ko.observable(dto.sumPersonSet);
                                     this.sumMonthPersonSet = ko.observable(dto.sumMonthPersonSet);
@@ -66,8 +75,7 @@ var nts;
                                     this.totalSet = ko.observable(dto.totalSet);
                                     this.monthTotalSet = ko.observable(dto.monthTotalSet);
                                 }
-                                return SalaryPrintSettingModel;
-                            }());
+                            }
                             viewmodel.SalaryPrintSettingModel = SalaryPrintSettingModel;
                         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
                     })(b = qpp007.b || (qpp007.b = {}));
@@ -76,4 +84,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qpp007.b.vm.js.map

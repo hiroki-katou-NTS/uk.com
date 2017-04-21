@@ -1,8 +1,3 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var nts;
 (function (nts) {
     var uk;
@@ -22,31 +17,36 @@ var nts;
                             var PensionRateItemDto = c.service.model.finder.PensionRateItemDto;
                             var FundRateItemDto = c.service.model.finder.FundRateItemDto;
                             var ScreenBaseModel = view.base.simplehistory.viewmodel.ScreenBaseModel;
-                            var ScreenModel = (function (_super) {
-                                __extends(ScreenModel, _super);
-                                function ScreenModel() {
-                                    _super.call(this, {
+                            class ScreenModel extends ScreenBaseModel {
+                                constructor() {
+                                    super({
                                         functionName: '厚生年金',
                                         service: c.service.instance,
                                         removeMasterOnLastHistoryRemove: false
                                     });
                                     var self = this;
+                                    //init model
                                     self.pensionModel = ko.observable(new PensionRateModel());
+                                    // init insurance offices list
                                     self.pensionInsuranceOfficeList = ko.observableArray([]);
                                     self.pensionFilteredData = ko.observableArray(nts.uk.util.flatArray(self.pensionInsuranceOfficeList(), "childs"));
+                                    //init rounding list
                                     self.roundingList = ko.observableArray([]);
                                     self.Rate2 = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                                         grouplength: 3,
                                         decimallength: 2
                                     }));
+                                    //pension fund switch 
                                     self.pensionFundInputOptions = ko.observableArray([
                                         { code: '1', name: '有' },
                                         { code: '0', name: '無' }
                                     ]);
+                                    //pension calculate switch 
                                     self.pensionCalculateOptions = ko.observableArray([
                                         { code: '0', name: 'する' },
                                         { code: '1', name: 'しない' }
                                     ]);
+                                    // add history dialog
                                     self.isTransistReturnData = ko.observable(false);
                                     self.fundInputEnable = ko.observable(false);
                                     self.isLoading = ko.observable(true);
@@ -54,6 +54,7 @@ var nts;
                                     self.japanYear = ko.observable('');
                                     self.sendOfficeData = ko.observable('');
                                     self.pensionModel().fundInputApply.subscribe(function () {
+                                        //change select -> hide fund input table
                                         if (self.pensionModel().fundInputApply() != 1) {
                                             self.fundInputEnable(true);
                                         }
@@ -71,25 +72,33 @@ var nts;
                                     self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
                                     self.backupDataDirty = ko.observable();
                                     self.canOpenOfficeRegisterDialog = ko.observable(true);
-                                }
-                                ScreenModel.prototype.start = function () {
+                                } //end constructor
+                                // Start
+                                start() {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     self.getAllRounding().done(function () {
+                                        // Resolve
                                         dfd.resolve(null);
                                     });
+                                    // Return.
                                     return dfd.promise();
-                                };
-                                ScreenModel.prototype.getAllRounding = function () {
+                                }
+                                //load All rounding method
+                                getAllRounding() {
                                     var self = this;
                                     var dfd = $.Deferred();
+                                    // Invoked service method
                                     c.service.findAllRounding().done(function (data) {
+                                        // Set list.
                                         self.roundingList(data);
                                         dfd.resolve(data);
                                     });
+                                    // Return.
                                     return dfd.promise();
-                                };
-                                ScreenModel.prototype.convertRounding = function (stringRounding) {
+                                }
+                                //string rounding to value
+                                convertRounding(stringRounding) {
                                     switch (stringRounding) {
                                         case Rounding.TRUNCATION: return "0";
                                         case Rounding.ROUNDUP: return "1";
@@ -98,8 +107,9 @@ var nts;
                                         case Rounding.ROUNDDOWN: return "4";
                                         default: return "0";
                                     }
-                                };
-                                ScreenModel.prototype.convertToRounding = function (stringValue) {
+                                }
+                                //value to string rounding
+                                convertToRounding(stringValue) {
                                     switch (stringValue) {
                                         case "0": return Rounding.TRUNCATION;
                                         case "1": return Rounding.ROUNDUP;
@@ -108,12 +118,13 @@ var nts;
                                         case "4": return Rounding.ROUNDDOWN;
                                         default: return Rounding.TRUNCATION;
                                     }
-                                };
-                                ScreenModel.prototype.loadPension = function (data) {
+                                }
+                                loadPension(data) {
                                     var self = this;
                                     if (data == null) {
                                         return;
                                     }
+                                    //Set pension detail.
                                     self.pensionModel().historyId = data.historyId;
                                     self.pensionModel().companyCode = data.companyCode;
                                     self.pensionModel().officeCode(data.officeCode);
@@ -186,10 +197,12 @@ var nts;
                                             self.pensionModel().fundRateItems().bonusCompanyUnknownExemption(item.exemptionChargeCompanyRate);
                                         }
                                     });
+                                    //set rounding list
                                     self.pensionModel().roundingMethods().pensionSalaryPersonalComboBox(self.roundingList());
                                     self.pensionModel().roundingMethods().pensionSalaryCompanyComboBox(self.roundingList());
                                     self.pensionModel().roundingMethods().pensionBonusPersonalComboBox(self.roundingList());
                                     self.pensionModel().roundingMethods().pensionBonusCompanyComboBox(self.roundingList());
+                                    //Set selected rounding method
                                     data.roundingMethods.forEach(function (item, index) {
                                         if (item.payType == PaymentType.SALARY) {
                                             self.pensionModel().roundingMethods().pensionSalaryPersonalComboBoxSelectedCode(self.convertRounding(item.roundAtrs.personalRoundAtr));
@@ -202,8 +215,8 @@ var nts;
                                     });
                                     self.pensionModel().maxAmount(data.maxAmount);
                                     self.pensionModel().childContributionRate(data.childContributionRate);
-                                };
-                                ScreenModel.prototype.pensionCollectData = function () {
+                                }
+                                pensionCollectData() {
                                     var self = this;
                                     var rates = self.pensionModel().rateItems();
                                     var rateItems = [];
@@ -226,22 +239,26 @@ var nts;
                                     roundingMethods.push(new RoundingDto(PaymentType.SALARY, new RoundingItemDto(self.convertToRounding(self.pensionModel().roundingMethods().pensionSalaryPersonalComboBoxSelectedCode()), self.convertToRounding(self.pensionModel().roundingMethods().pensionSalaryCompanyComboBoxSelectedCode()))));
                                     roundingMethods.push(new RoundingDto(PaymentType.BONUS, new RoundingItemDto(self.convertToRounding(self.pensionModel().roundingMethods().pensionBonusPersonalComboBoxSelectedCode()), self.convertToRounding(self.pensionModel().roundingMethods().pensionBonusCompanyComboBoxSelectedCode()))));
                                     return new c.service.model.finder.PensionRateDto(self.pensionModel().historyId, self.pensionModel().companyCode, self.currentOfficeCode(), self.pensionModel().startMonth(), self.pensionModel().endMonth(), self.pensionModel().autoCalculate(), self.pensionModel().fundInputApply(), rateItems, fundRateItems, roundingMethods, self.pensionModel().maxAmount(), self.pensionModel().childContributionRate());
-                                };
-                                ScreenModel.prototype.getDataOfPensionSelectedOffice = function () {
+                                }
+                                //get current item office 
+                                getDataOfPensionSelectedOffice() {
                                     var self = this;
                                     var saveVal = null;
+                                    // Set parent value
                                     self.pensionInsuranceOfficeList().forEach(function (item, index) {
                                         if (self.currentOfficeCode() == item.code) {
                                             saveVal = item;
                                         }
                                     });
                                     return saveVal;
-                                };
-                                ScreenModel.prototype.save = function () {
+                                }
+                                save() {
                                     var self = this;
+                                    //check auto calculate
                                     if (self.pensionModel().autoCalculate() == AutoCalculateType.Auto) {
                                         nts.uk.ui.dialog.confirm("自動計算が行われます。登録しますか？").ifYes(function () {
                                             self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
+                                            //update pension
                                             c.service.updatePensionRate(self.pensionCollectData()).done(function () {
                                                 self.backupDataDirty(self.pensionCollectData());
                                             });
@@ -254,14 +271,17 @@ var nts;
                                             self.backupDataDirty(self.pensionCollectData());
                                         });
                                     }
-                                };
-                                ScreenModel.prototype.onSelectHistory = function (id) {
+                                }
+                                /**
+                                * Load History detail.
+                                */
+                                onSelectHistory(id) {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     self.isLoading(true);
                                     self.isClickHistory(true);
                                     self.currentOfficeCode(self.getCurrentOfficeCode(id));
-                                    c.service.instance.findHistoryByUuid(id).done(function (dto) {
+                                    c.service.instance.findHistoryByUuid(id).done(dto => {
                                         self.backupDataDirty(dto);
                                         self.loadPension(dto);
                                         self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
@@ -269,8 +289,8 @@ var nts;
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
-                                };
-                                ScreenModel.prototype.onSave = function () {
+                                }
+                                onSave() {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     if (nts.uk.ui._viewModel.errors.isEmpty()) {
@@ -279,30 +299,36 @@ var nts;
                                     else {
                                     }
                                     return dfd.promise();
-                                };
-                                ScreenModel.prototype.clearErrors = function () {
+                                }
+                                clearErrors() {
                                     if (nts.uk.ui._viewModel) {
                                         $('.save-error').ntsError('clear');
                                     }
-                                };
-                                ScreenModel.prototype.onSelectMaster = function (code) {
+                                }
+                                /**
+                                  * On select master data.
+                                  */
+                                onSelectMaster(code) {
                                     var self = this;
                                     self.isClickHistory(false);
                                     self.clearErrors();
-                                };
-                                ScreenModel.prototype.onRegistNew = function () {
+                                }
+                                /**
+                                 * Clear all input and switch to new mode.
+                                 */
+                                onRegistNew() {
                                     var self = this;
                                     if (self.canOpenOfficeRegisterDialog()) {
                                         self.OpenModalOfficeRegister();
                                     }
                                     self.canOpenOfficeRegisterDialog(false);
                                     self.isClickHistory(false);
-                                };
-                                ScreenModel.prototype.isDirty = function () {
+                                }
+                                isDirty() {
                                     var self = this;
                                     return self.dirty.isDirty();
-                                };
-                                ScreenModel.prototype.getCurrentOfficeCode = function (childId) {
+                                }
+                                getCurrentOfficeCode(childId) {
                                     var self = this;
                                     var returnValue;
                                     if (self.masterHistoryList.length > 0) {
@@ -321,8 +347,8 @@ var nts;
                                         });
                                     }
                                     return returnValue;
-                                };
-                                ScreenModel.prototype.OpenModalOfficeRegisterWithDirtyCheck = function () {
+                                }
+                                OpenModalOfficeRegisterWithDirtyCheck() {
                                     var self = this;
                                     if (self.dirty.isDirty()) {
                                         nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function () {
@@ -335,16 +361,20 @@ var nts;
                                     else {
                                         self.OpenModalOfficeRegister();
                                     }
-                                };
-                                ScreenModel.prototype.OpenModalOfficeRegister = function () {
+                                }
+                                //open office register dialog
+                                OpenModalOfficeRegister() {
                                     var self = this;
+                                    // Set parent value
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録", dialogClass: 'no-close' }).onClosed(function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録", dialogClass: 'no-close' }).onClosed(() => {
+                                        //when close dialog -> reload office list
                                         var codeOfNewOffice = nts.uk.ui.windows.getShared("codeOfNewOffice");
                                         self.reloadMasterHistory(codeOfNewOffice);
+                                        //                    self.igGridSelectedHistoryUuid(codeOfNewOffice);
                                     });
-                                };
-                                ScreenModel.prototype.OpenModalStandardMonthlyPricePensionWithDirtyCheck = function () {
+                                }
+                                OpenModalStandardMonthlyPricePensionWithDirtyCheck() {
                                     var self = this;
                                     if (self.dirty.isDirty()) {
                                         nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function () {
@@ -357,23 +387,26 @@ var nts;
                                     else {
                                         self.OpenModalStandardMonthlyPricePension();
                                     }
-                                };
-                                ScreenModel.prototype.OpenModalStandardMonthlyPricePension = function () {
+                                }
+                                //open modal standard monthly price pension 
+                                OpenModalStandardMonthlyPricePension() {
+                                    // Set parent value
                                     nts.uk.ui.windows.setShared("officeName", this.sendOfficeData());
                                     nts.uk.ui.windows.setShared("pensionModel", this.pensionModel());
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/i/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表", dialogClass: 'no-close' }).onClosed(function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/i/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表", dialogClass: 'no-close' }).onClosed(() => {
+                                        // Get child value
                                         var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
                                     });
-                                };
-                                ScreenModel.prototype.goToHealth = function () {
+                                }
+                                //jump back to health
+                                goToHealth() {
                                     nts.uk.request.jump("/view/qmm/008/b/index.xhtml");
-                                };
-                                return ScreenModel;
-                            }(ScreenBaseModel));
+                                }
+                            }
                             viewmodel.ScreenModel = ScreenModel;
-                            var PensionRateModel = (function () {
-                                function PensionRateModel() {
+                            class PensionRateModel {
+                                constructor() {
                                     this.startMonth = ko.observable('');
                                     this.endMonth = ko.observable('');
                                     this.officeCode = ko.observable('');
@@ -385,11 +418,10 @@ var nts;
                                     this.maxAmount = ko.observable(0);
                                     this.childContributionRate = ko.observable(0);
                                 }
-                                return PensionRateModel;
-                            }());
+                            }
                             viewmodel.PensionRateModel = PensionRateModel;
-                            var PensionRateItemModel = (function () {
-                                function PensionRateItemModel() {
+                            class PensionRateItemModel {
+                                constructor() {
                                     this.pensionSalaryPersonalSon = ko.observable(0);
                                     this.pensionSalaryCompanySon = ko.observable(0);
                                     this.pensionBonusPersonalSon = ko.observable(0);
@@ -403,11 +435,10 @@ var nts;
                                     this.pensionBonusPersonalUnknown = ko.observable(0);
                                     this.pensionBonusCompanyUnknown = ko.observable(0);
                                 }
-                                return PensionRateItemModel;
-                            }());
+                            }
                             viewmodel.PensionRateItemModel = PensionRateItemModel;
-                            var FunRateItemModel = (function () {
-                                function FunRateItemModel() {
+                            class FunRateItemModel {
+                                constructor() {
                                     this.salaryPersonalSonExemption = ko.observable(0);
                                     this.salaryCompanySonExemption = ko.observable(0);
                                     this.bonusPersonalSonExemption = ko.observable(0);
@@ -433,11 +464,10 @@ var nts;
                                     this.bonusPersonalUnknownBurden = ko.observable(0);
                                     this.bonusCompanyUnknownBurden = ko.observable(0);
                                 }
-                                return FunRateItemModel;
-                            }());
+                            }
                             viewmodel.FunRateItemModel = FunRateItemModel;
-                            var PensionRateRoundingModel = (function () {
-                                function PensionRateRoundingModel() {
+                            class PensionRateRoundingModel {
+                                constructor() {
                                     this.pensionSalaryPersonalComboBox = ko.observableArray(null);
                                     this.pensionSalaryPersonalComboBoxItemName = ko.observable('');
                                     this.pensionSalaryPersonalComboBoxCurrentCode = ko.observable(1);
@@ -455,36 +485,26 @@ var nts;
                                     this.pensionBonusCompanyComboBoxCurrentCode = ko.observable(3);
                                     this.pensionBonusCompanyComboBoxSelectedCode = ko.observable('002');
                                 }
-                                return PensionRateRoundingModel;
-                            }());
+                            }
                             viewmodel.PensionRateRoundingModel = PensionRateRoundingModel;
-                            var PaymentType = (function () {
-                                function PaymentType() {
-                                }
-                                PaymentType.SALARY = 'Salary';
-                                PaymentType.BONUS = 'Bonus';
-                                return PaymentType;
-                            }());
+                            class PaymentType {
+                            }
+                            PaymentType.SALARY = 'Salary';
+                            PaymentType.BONUS = 'Bonus';
                             viewmodel.PaymentType = PaymentType;
-                            var Rounding = (function () {
-                                function Rounding() {
-                                }
-                                Rounding.ROUNDUP = 'RoundUp';
-                                Rounding.TRUNCATION = 'Truncation';
-                                Rounding.ROUNDDOWN = 'RoundDown';
-                                Rounding.DOWN5_UP6 = 'Down5_Up6';
-                                Rounding.DOWN4_UP5 = 'Down4_Up5';
-                                return Rounding;
-                            }());
+                            class Rounding {
+                            }
+                            Rounding.ROUNDUP = 'RoundUp';
+                            Rounding.TRUNCATION = 'Truncation';
+                            Rounding.ROUNDDOWN = 'RoundDown';
+                            Rounding.DOWN5_UP6 = 'Down5_Up6';
+                            Rounding.DOWN4_UP5 = 'Down4_Up5';
                             viewmodel.Rounding = Rounding;
-                            var InsuranceGender = (function () {
-                                function InsuranceGender() {
-                                }
-                                InsuranceGender.MALE = "Male";
-                                InsuranceGender.FEMALE = "Female";
-                                InsuranceGender.UNKNOW = "Unknow";
-                                return InsuranceGender;
-                            }());
+                            class InsuranceGender {
+                            }
+                            InsuranceGender.MALE = "Male";
+                            InsuranceGender.FEMALE = "Female";
+                            InsuranceGender.UNKNOW = "Unknow";
                             viewmodel.InsuranceGender = InsuranceGender;
                             (function (AutoCalculateType) {
                                 AutoCalculateType[AutoCalculateType["Auto"] = 0] = "Auto";
@@ -498,4 +518,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm008.c.vm.js.map

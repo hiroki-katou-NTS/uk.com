@@ -12,8 +12,8 @@ var nts;
                     (function (l) {
                         var viewmodel;
                         (function (viewmodel) {
-                            var ScreenModelLScreen = (function () {
-                                function ScreenModelLScreen(param) {
+                            class ScreenModelLScreen {
+                                constructor(param) {
                                     var self = this;
                                     self.paramIsUpdate = param.isUpdate;
                                     self.paramDirtyData = param.dirtyData;
@@ -35,14 +35,14 @@ var nts;
                                         self.comboBoxAdjustmentAtr().selectedCode(self.paramDirtyData.adjustmentDevision.toString());
                                     }
                                 }
-                                ScreenModelLScreen.prototype.exportTextListItemName = function (lstItem, lstItemCode) {
+                                exportTextListItemName(lstItem, lstItemCode) {
                                     var textListItemName = '';
                                     _.forEach(lstItemCode, function (itemCode) {
                                         textListItemName += (_.find(lstItem, function (item) { return item.code == itemCode; }).name + ' ');
                                     });
                                     return textListItemName;
-                                };
-                                ScreenModelLScreen.prototype.initOriginal = function () {
+                                }
+                                initOriginal() {
                                     var self = this;
                                     self.easyFormulaName = ko.observable(null);
                                     self.comboBoxFormulaType = ko.observable(new ComboBox([
@@ -50,12 +50,19 @@ var nts;
                                         new ItemModel('1', '計算式２'),
                                         new ItemModel('2', '計算式3')
                                     ]));
+                                    //              0 Fixed value
+                                    //              1 Company Unit price 
+                                    //              2 Person unit price
+                                    //              3 Payment items
+                                    //              4 Deduction item
                                     self.comboBoxBaseAmount = ko.observable(new ComboBox([
                                         new ItemModel('0', '固定値'),
                                         new ItemModel('2', '個人単価'),
                                         new ItemModel('3', '支給項目'),
                                         new ItemModel('4', '控除項目')
                                     ]));
+                                    // if formula type 3, base amount attribute: 0, 1, 3, 4
+                                    // if formula type 1 or 2, base amount attribute: 0, 2, 3, 4
                                     self.comboBoxFormulaType().selectedCode.subscribe(function (codeChange) {
                                         if (codeChange === '2') {
                                             self.comboBoxBaseAmount().itemList([
@@ -88,6 +95,16 @@ var nts;
                                         width: "290px",
                                         textalign: "left"
                                     }));
+                                    //Fixed value  0
+                                    //Standard number of days 1
+                                    //Number of working days 2
+                                    //Work day 3
+                                    //Work days + paid usage 4
+                                    //Reference days * Reference time 5
+                                    //Number of working days * Reference time 6
+                                    //Working days * Reference time 7
+                                    //(Attendance days + number of paid use) * reference time 8
+                                    //Working time 9
                                     self.comboBoxBaseValue = ko.observable(new ComboBox([
                                         new ItemModel('0', '固定値'),
                                         new ItemModel('1', '基準日数'),
@@ -107,23 +124,35 @@ var nts;
                                         decimallength: 0,
                                         symbolChar: '%'
                                     }));
+                                    //Round figure: 0
+                                    //Round up: 1
+                                    //Truncate: 2
+                                    //No round figure: 3
                                     self.switchButtonRoundingFiguresD = ko.observable(new SwitchButton([
                                         new ItemModel('0', '四捨五入'),
                                         new ItemModel('1', '切り上げ'),
                                         new ItemModel('2', '切り捨て'),
                                         new ItemModel('3', '端数処理なし')
                                     ]));
+                                    //Round figure: 0
+                                    //Round up: 1
+                                    //Truncate: 2
                                     self.switchButtonRoundingFiguresF = ko.observable(new SwitchButton([
                                         new ItemModel('0', '四捨五入'),
                                         new ItemModel('1', '切り上げ'),
                                         new ItemModel('2', '切り捨て')
                                     ]));
+                                    //TO DO: get items which have CTG_ATR = 2 from table QCAMT_ITEM to add to the item model list from the fourth item 
                                     self.comboBoxCoefficient = ko.observable(new ComboBox([
                                         new ItemModel('0000', '固定値'),
                                         new ItemModel('F200', '基準日数'),
                                         new ItemModel('F000', '出勤日数+有給使用数')
                                     ]));
                                     self.coefficientFixedValue = ko.observable(0);
+                                    //Do not adjust: 0
+                                    //Plus adjustment: 1
+                                    //Minus adjustment: 2
+                                    //Plus and minus inversion: 3
                                     self.comboBoxAdjustmentAtr = ko.observable(new ComboBox([
                                         new ItemModel('0', '調整しない'),
                                         new ItemModel('1', 'プラス調整'),
@@ -134,8 +163,8 @@ var nts;
                                     self.personalUnitPriceItems = ko.observableArray([]);
                                     self.paymentItems = ko.observableArray([]);
                                     self.deductionItems = ko.observableArray([]);
-                                };
-                                ScreenModelLScreen.prototype.start = function () {
+                                }
+                                start() {
                                     var self = this;
                                     var dfdMaster = $.Deferred();
                                     var dfdGetListCompanyUP = $.Deferred();
@@ -146,20 +175,21 @@ var nts;
                                     l.service.getListItemMaster(2)
                                         .done(function (lstItem) {
                                         if (lstItem && lstItem.length > 0) {
-                                            _.forEach(lstItem, function (item) {
+                                            _.forEach(lstItem, item => {
                                                 self.comboBoxCoefficient().itemList.push(new ItemModel(item.itemCode, item.itemName));
                                             });
                                         }
                                         dfdGetTimeItems.resolve();
                                     })
                                         .fail(function () {
+                                        // Alert message
                                         alert(res);
                                         dfdGetTimeItems.reject();
                                     });
                                     l.service.getListCompanyUnitPrice(self.startYm.replace('/', ''))
                                         .done(function (lstCompanyUnitPrice) {
                                         if (lstCompanyUnitPrice && lstCompanyUnitPrice.length > 0) {
-                                            _.forEach(lstCompanyUnitPrice, function (item) {
+                                            _.forEach(lstCompanyUnitPrice, item => {
                                                 self.companyUnitPriceItems.push(new ItemModel(item.companyUnitPriceCode, item.companyUnitPriceName));
                                             });
                                         }
@@ -170,7 +200,7 @@ var nts;
                                     l.service.getListPersonalUnitPrice()
                                         .done(function (lstPersonalUnitPrice) {
                                         if (lstPersonalUnitPrice && lstPersonalUnitPrice.length > 0) {
-                                            _.forEach(lstPersonalUnitPrice, function (item) {
+                                            _.forEach(lstPersonalUnitPrice, item => {
                                                 self.personalUnitPriceItems.push(new ItemModel(item.personalUnitPriceCode, item.personalUnitPriceName));
                                             });
                                         }
@@ -181,26 +211,28 @@ var nts;
                                     l.service.getListItemMaster(0)
                                         .done(function (lstItem) {
                                         if (lstItem && lstItem.length > 0) {
-                                            _.forEach(lstItem, function (item) {
+                                            _.forEach(lstItem, item => {
                                                 self.paymentItems.push(new ItemModel(item.itemCode, item.itemName));
                                             });
                                         }
                                         dfdGetPaymentItems.resolve();
                                     })
                                         .fail(function () {
+                                        // Alert message
                                         alert(res);
                                         dfdGetPaymentItems.reject();
                                     });
                                     l.service.getListItemMaster(1)
                                         .done(function (lstItem) {
                                         if (lstItem && lstItem.length > 0) {
-                                            _.forEach(lstItem, function (item) {
+                                            _.forEach(lstItem, item => {
                                                 self.deductionItems.push(new ItemModel(item.itemCode, item.itemName));
                                             });
                                         }
                                         dfdGetDeductionItems.resolve();
                                     })
                                         .fail(function () {
+                                        // Alert message
                                         alert(res);
                                         dfdGetDeductionItems.reject();
                                     });
@@ -252,11 +284,12 @@ var nts;
                                         .fail(function () {
                                         dfdMaster.reject();
                                     });
+                                    // Return.
                                     return dfdMaster.promise();
-                                };
-                                ScreenModelLScreen.prototype.openDialogP = function () {
+                                }
+                                openDialogP() {
                                     var self = this;
-                                    var param = {
+                                    let param = {
                                         subject: '',
                                         itemList: [],
                                         selectedItems: self.baseAmountListItem()
@@ -278,14 +311,14 @@ var nts;
                                         param.itemList = self.deductionItems();
                                     }
                                     nts.uk.ui.windows.setShared('paramFromScreenL', param);
-                                    nts.uk.ui.windows.sub.modal('/view/qmm/017/p/index.xhtml', { title: '項目の選択', width: 350, height: 480 }).onClosed(function () {
-                                        var baseAmountListItem = nts.uk.ui.windows.getShared('baseAmountListItem');
+                                    nts.uk.ui.windows.sub.modal('/view/qmm/017/p/index.xhtml', { title: '項目の選択', width: 350, height: 480 }).onClosed(() => {
+                                        let baseAmountListItem = nts.uk.ui.windows.getShared('baseAmountListItem');
                                         self.baseAmountListItem(baseAmountListItem);
                                     });
-                                };
-                                ScreenModelLScreen.prototype.closeAndReturnData = function () {
+                                }
+                                closeAndReturnData() {
                                     var self = this;
-                                    var easyFormulaDetail = {
+                                    let easyFormulaDetail = {
                                         easyFormulaCode: self.paramDirtyData.easyFormulaCode,
                                         easyFormulaName: self.easyFormulaName(),
                                         easyFormulaTypeAtr: self.comboBoxFormulaType().selectedCode(),
@@ -310,45 +343,41 @@ var nts;
                                     if (easyFormulaDetail.baseValueDevision !== '0') {
                                         easyFormulaDetail.baseFixedValue = 0;
                                     }
-                                    if (easyFormulaDetail.coefficientDivision !== '0') {
+                                    if (easyFormulaDetail.coefficientDivision !== '0000') {
                                         easyFormulaDetail.coefficientFixedValue = 0;
                                     }
                                     nts.uk.ui.windows.setShared('easyFormulaDetail', easyFormulaDetail);
                                     nts.uk.ui.windows.close();
-                                };
-                                ScreenModelLScreen.prototype.closeDialog = function () {
+                                }
+                                closeDialog() {
                                     nts.uk.ui.windows.close();
-                                };
-                                return ScreenModelLScreen;
-                            }());
+                                }
+                            }
                             viewmodel.ScreenModelLScreen = ScreenModelLScreen;
-                            var ComboBox = (function () {
-                                function ComboBox(itemList) {
+                            class ComboBox {
+                                constructor(itemList) {
                                     var self = this;
                                     self.itemList = ko.observableArray(itemList);
                                     self.itemName = ko.observable('');
                                     self.currentCode = ko.observable('0');
                                     self.selectedCode = ko.observable('0');
                                 }
-                                return ComboBox;
-                            }());
+                            }
                             viewmodel.ComboBox = ComboBox;
-                            var SwitchButton = (function () {
-                                function SwitchButton(itemList) {
+                            class SwitchButton {
+                                constructor(itemList) {
                                     var self = this;
                                     self.roundingRules = ko.observableArray(itemList);
                                     self.selectedRuleCode = ko.observable('0');
                                 }
-                                return SwitchButton;
-                            }());
+                            }
                             viewmodel.SwitchButton = SwitchButton;
-                            var ItemModel = (function () {
-                                function ItemModel(code, name) {
+                            class ItemModel {
+                                constructor(code, name) {
                                     this.code = code;
                                     this.name = name;
                                 }
-                                return ItemModel;
-                            }());
+                            }
                         })(viewmodel = l.viewmodel || (l.viewmodel = {}));
                     })(l = qmm017.l || (qmm017.l = {}));
                 })(qmm017 = view.qmm017 || (view.qmm017 = {}));
@@ -356,4 +385,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm017.l.vm.js.map

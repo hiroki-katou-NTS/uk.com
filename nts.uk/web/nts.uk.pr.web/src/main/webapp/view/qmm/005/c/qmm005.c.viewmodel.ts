@@ -235,9 +235,9 @@ module qmm005.c {
                 incometaxStdDay: self.sel015(),
                 payDays: []
             };
-            /// Khởi tạo dữ liệu lương & thưởng cho 12 tháng trong năm
+            /// Initial data for salary and bonus for 12 months in year
             for (var month = 0; month < 12; month++) {
-                // Lương
+                // Salary
                 data.payDays.push({
                     processingNo: data.processingNo,
                     payBonusAtr: 0,
@@ -253,7 +253,7 @@ module qmm005.c {
                     empInsStdDate: new Date(stdYear, data.empInsStdMon - 1, data.empInsStdDay),
                     stmtOutputMon: parseInt(nts.uk.time.formatDate(new Date(stdYear, month + data.payslipPrintMonth, 1), 'yyyyMM'))
                 });
-                // Thưởng
+                // Bonus
                 /*data.payDays.push({
                     processingNo: data.processingNo,
                     payBonusAtr: 1,
