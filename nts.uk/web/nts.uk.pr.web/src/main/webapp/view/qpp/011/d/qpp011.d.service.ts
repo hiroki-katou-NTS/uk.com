@@ -67,34 +67,34 @@ module qpp011.d.service {
         return dfd.promise();
     }
     export module model {
-        export class residentialTax {
-            resimentTaxCode: string;
-            yearMonth: number;
-            taxPayRollMoney: string;
-            taxBonusMoney: number;
-            taxOverDueMoney: number;
-            taxDemandChargeMoyney: number;
-            address: string;
-            dueDate: Date;
-            headcount: number;
-            retirementBonusAmout: number;
-            cityTaxMoney: number;
-            prefectureTaxMoney: number;
-            constructor(resimentTaxCode: string, taxPayRollMoney: string, yearMonth: number, taxBonusMoney: number, taxOverDueMoney: number, taxDemandChargeMoyney: number, address: string, dueDate: Date, headcount: number, retirementBonusAmout: number, cityTaxMoney: number, prefectureTaxMoney: number) {
-                this.resimentTaxCode = resimentTaxCode;
-                this.taxPayRollMoney = taxPayRollMoney;
-                this.yearMonth = yearMonth;
-                this.taxBonusMoney = taxBonusMoney;
-                this.taxOverDueMoney = taxOverDueMoney;
-                this.taxDemandChargeMoyney = taxDemandChargeMoyney;
-                this.address = address;
-                this.dueDate = dueDate;
-                this.headcount = headcount;
-                this.retirementBonusAmout = retirementBonusAmout;
-                this.cityTaxMoney = cityTaxMoney;
-                this.prefectureTaxMoney = prefectureTaxMoney;
-            }
-        }
+           export class residentialTax {
+            resimentTaxCode: KnockoutObservable<string>;
+            yearMonth: KnockoutObservable<number>;
+            taxPayRollMoney: KnockoutObservable<number>;
+            taxBonusMoney: KnockoutObservable<number>;
+            taxOverDueMoney: KnockoutObservable<number>;
+            taxDemandChargeMoyney: KnockoutObservable<number>;
+            address: KnockoutObservable<string>;
+            dueDate: KnockoutObservable<Date>;
+            headcount: KnockoutObservable<number>;
+            retirementBonusAmout: KnockoutObservable<number>;
+            cityTaxMoney: KnockoutObservable<number>;
+            prefectureTaxMoney: KnockoutObservable<number>;
+            constructor(resimentTaxCode: string, yearMonth: number,taxPayRollMoney: number, taxBonusMoney: number, taxOverDueMoney: number, taxDemandChargeMoyney: number, address: string, dueDate: Date, headcount: number, retirementBonusAmout: number, cityTaxMoney: number, prefectureTaxMoney: number) {
+                this.resimentTaxCode = ko.observable(resimentTaxCode);
+                this.yearMonth = ko.observable(yearMonth);
+                this.taxPayRollMoney = ko.observable(taxPayRollMoney);
+                this.taxBonusMoney = ko.observable(taxBonusMoney);
+                this.taxOverDueMoney = ko.observable(taxOverDueMoney);
+                this.taxDemandChargeMoyney = ko.observable(taxDemandChargeMoyney);
+                this.address = ko.observable(address);
+                this.dueDate = ko.observable(dueDate);
+                this.headcount = ko.observable(headcount);
+                this.retirementBonusAmout = ko.observable(retirementBonusAmout);
+                this.cityTaxMoney = ko.observable(cityTaxMoney);
+                this.prefectureTaxMoney = ko.observable(prefectureTaxMoney);
+            }     
+    }
     }
 
 

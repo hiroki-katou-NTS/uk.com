@@ -5,12 +5,12 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="/master/dialog.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="service.js" />
-			<com:scriptfile path="start.js" />
-			<com:stylefile path="style.css" />
+			<com:scriptfile path="qpp011.d.vm.js" />
+			<com:scriptfile path="qpp011.d.service.js" />
+			<com:scriptfile path="qpp011.d.start.js" />
+			<com:stylefile path="qpp011.d.main.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:ValidatorScript>
 					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.output.ResidentTaxMoney
@@ -30,7 +30,7 @@
 					<div id="SearchBackGround">
 						<div class="clearBoth">
 							<div id="D_LBL_001" data-bind="ntsFormLabel: { }">コード/名称</div>
-							<div id="D_SCH_001" style="width: 100px"
+							<div id="D_SCH_001" style="width: 100px; hight: 100%"
 								data-bind="ntsSearchBox: {
 								comId: 'D_LST_001',
 								items: D_LST_001_Data, 
@@ -44,17 +44,17 @@
 						</div>
 					</div>
 				</div>
-				<div class="floatLeft fullHeight " style="margin-left: 40px;">
+				<div class="floatLeft fullHeight " style="margin-left: 40px;" data-bind="with: currentTax">
 					<div class="clearBoth floatLeft" style="margin-left: -10px;">
-						<label id="D_LBL_002"
-							data-bind="text: D_LST_001_selectedResiTaxCode">コード </label> <label
-							id="D_LBL_003" data-bind="text: D_LST_001_selectedRegisteredName">納付先名
+						<!-- <label id="D_LBL_002"
+							data-bind="text: D_LST_001_selectedResiTaxCode">コード </label> --> <label
+							id="D_LBL_003" data-bind="text: $parent.D_LST_001_selectedRegisteredName">納付先名
 						</label>
 					</div>
 					<div class=" clearBoth floatLeft">
 						<div style="margin-top: 21px;" data-bind="ntsFormLabel: { }">済通知書</div>
-						<label id="D_LBL_018" data-bind="text:D_LBL_018_Year_Month"></label>
-						<label id="D_LBL_019" data-bind="text:D_LBL_019_yearInJapanEmpire"></label>
+						<label id="D_LBL_018" data-bind="text:$parent.D_LBL_018_Year_Month"></label>
+						<label id="D_LBL_019" data-bind="text:$parent.D_LBL_019_yearInJapanEmpire"></label>
 
 					</div>
 					<div class="clearBoth">
@@ -69,7 +69,7 @@
 								<div id="D_INP_002">
 									<input
 										data-bind="ntsNumberEditor: {
-											value: taxPayRollMoney,
+											value: $parent.taxPayRollMoney,
 											constraint:  'ResidentTaxMoney',
 											option: {
 							                    grouplength: 3,
@@ -90,7 +90,7 @@
 								<div id="D_INP_003">
 									<input
 										data-bind="ntsNumberEditor: {
-											value: taxBonusMoney,
+											value: $parent.taxBonusMoney,
 											constraint:  'ResidentTaxMoney',
 											option: {
 							                    grouplength: 3,
@@ -111,7 +111,7 @@
 								<div id="D_INP_004">
 									<input
 										data-bind="ntsNumberEditor: {
-											value: taxOverDueMoney,
+											value: $parent.taxOverDueMoney,
 											constraint:  'ResidentTaxMoney',
 											option: {
 							                    grouplength: 3,
@@ -132,7 +132,7 @@
 								<div id="D_INP_005">
 									<input
 										data-bind="ntsNumberEditor: {
-											value: taxDemandChargeMoyney,
+											value: $parent.taxDemandChargeMoyney,
 											constraint:  'ResidentTaxMoney',
 											option: {
 							                    grouplength: 3,
@@ -154,7 +154,7 @@
 								<div id="D_LBL_010" data-bind="ntsFormLabel: { }">あて先</div>
 								<input id="D_INP_006"
 									data-bind="ntsTextEditor:{
-											value: address,
+											value: $parent.address,
 											constraint:  '',
 											option: {
 								            	textmode: 'text',
@@ -168,8 +168,8 @@
 							<div class="clearBoth floatLeft" style="margin-top: 10px;">
 								<div id="D_LBL_011" data-bind="ntsFormLabel: { }">納付期限</div>
 								<div id="D_INP_007"
-									data-bind="ntsDatePicker: {value: date_D_INP_007, dateFormat: 'yyyy/MM/dd', startDate: '1900/01/01' , endDate:'9999/12/31'}"></div>
-								<label id="D_LBL_012" data-bind="text:yearInJapanEmpire_LBL_012">納付期限和暦
+									data-bind="ntsDatePicker: {value: $parent.date_D_INP_007, dateFormat: 'YYYY/MM/DD', valueFormat: 'YYYYMMDD', startDate: '1900/01/01' , endDate:'9999/12/31'}"></div>
+								<label id="D_LBL_012" data-bind="text:$parent.yearInJapanEmpire_LBL_012">納付期限和暦
 								</label>
 							</div>
 							<div class="clearBoth floatLeft" style="margin-top: 10px;">
@@ -177,12 +177,12 @@
 								<div id="D_INP_008">
 									<input
 										data-bind="ntsNumberEditor: {
-											value: headcount,
+											value: $parent.headcount,
 											constraint:  'StaffNo',
 											option: {
 							                    grouplength: 3,
 							                    decimallength: 0,
-							                    currencyformat: 'JPY',
+							                    symbolChar: '人',
 							                    currencyposition: 'right'
 							                },
 											required: false,
@@ -198,7 +198,7 @@
 								<div id="D_INP_009" class="floatLeft">
 									<input
 										data-bind="ntsNumberEditor: {
-											value: retirementBonusAmout,
+											value: $parent.retirementBonusAmout,
 											constraint:  'ResidentTaxMoney',
 											option: {
 							                    grouplength: 3,
@@ -219,7 +219,7 @@
 								<div id="D_INP_010" class="floatLeft">
 									<input
 										data-bind="ntsNumberEditor: {
-											value: cityTaxMoney,
+											value: $parent.cityTaxMoney,
 											constraint:  'ResidentTaxMoney',
 											option: {
 							                    grouplength: 3,
@@ -241,7 +241,7 @@
 								<div class="floatLeft" id="D_INP_011">
 									<input
 										data-bind="ntsNumberEditor: {
-											value: prefectureTaxMoney,
+											value: $parent.prefectureTaxMoney,
 											constraint:  'ResidentTaxMoney',
 											option: {
 							                    grouplength: 3,

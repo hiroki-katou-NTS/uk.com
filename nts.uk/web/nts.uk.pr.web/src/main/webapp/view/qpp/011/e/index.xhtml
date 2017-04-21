@@ -7,14 +7,14 @@
 
 <body>
 
-	<ui:composition template="/master/dialog.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="start.js" />
-			<com:stylefile path="style.css" />
+			<script>var dialogSize = { width: 350, height: 177};</script>
+			<com:scriptfile path="qpp011.e.vm.js" />
+			<com:scriptfile path="qpp011.e.start.js" />
+			<com:stylefile path="qpp011.e.main.css" />
 			<com:scriptfile set="IGNITE" />
 		</ui:define>
-
 		<ui:define name="content">
 
 			<div id="content-header">

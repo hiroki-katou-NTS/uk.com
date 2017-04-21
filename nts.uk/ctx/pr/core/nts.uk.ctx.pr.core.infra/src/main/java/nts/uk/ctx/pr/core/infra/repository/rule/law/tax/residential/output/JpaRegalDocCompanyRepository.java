@@ -13,7 +13,7 @@ import nts.uk.ctx.pr.core.infra.entity.rule.law.tax.residential.output.QcpmtRega
 
 @RequestScoped
 public class JpaRegalDocCompanyRepository extends JpaRepository implements RegalDocCompanyRepository {
-	private final String SEL_1 = "SELECT c FROM QcpmtRegalDocCom c WHERE c.qcpmtRegalDocComPK.ccd =:companyCd";
+	private final String SEL_1 = "SELECT c FROM QcpmtRegalDocCom c WHERE c.qcpmtRegalDocComPK.ccd = :companyCd";
 
 	private static QcpmtRegalDocCom toEntity(RegalDocCompany domain) {
 		QcpmtRegalDocCom entity = new QcpmtRegalDocCom();

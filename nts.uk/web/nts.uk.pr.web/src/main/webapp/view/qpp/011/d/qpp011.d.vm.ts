@@ -1,4 +1,3 @@
-// TreeGrid Node
 module qpp011.d {
 
     export class ScreenModel {
@@ -9,6 +8,7 @@ module qpp011.d {
         D_LST_001_selectedResiTaxCode: KnockoutObservable<any> = ko.observable();
         D_LST_001_selectedRegisteredName: KnockoutObservable<any> = ko.observable();
         currentObject: any = ko.observable();
+        currentTax: KnockoutObservable<service.model.residentialTax>;
         //Tree Data Variable
         TreeArray: any;
         ListLocation: any;
@@ -35,9 +35,16 @@ module qpp011.d {
         D_LBL_019_yearInJapanEmpire: any;
         //datepicker
         date_D_INP_007: KnockoutObservable<Date> = ko.observable(new Date());;
-
+        //dirty check
+        dirty: nts.uk.ui.DirtyChecker;
+        notLoopAlert: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
+            self.currentTax = ko.observable(new service.model.residentialTax(null, null, null, null, null, null, null, null, null, null, null, null));
+            self.notLoopAlert = ko.observable(true);
+            self.yearInJapanEmpire_LBL_012 = ko.computed(function() {
+                return "(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.date_D_INP_007()).format("YYYY/MM")).toString() + ")";
+            });
             //gridlist data                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
             self.columns_D_LST_001 = [
                 { headerText: "position", key: "position", width: "30px", dataType: "string", hidden: true },
@@ -47,6 +54,12 @@ module qpp011.d {
             ];
             function registeredNameAndCode(val, row) {
                 return row.resiTaxCode + " " + row.registeredName;
+            }
+
+            //
+            if (!self.notLoopAlert()) {
+                self.notLoopAlert(true);
+                return;
             }
             //Set Tree Data 
             service.findAllResidential().done(function(data: Array<any>) {
@@ -78,6 +91,7 @@ module qpp011.d {
                         // self.currentIndex++;
                     }
                 }
+
                 return self.TreeArray;
             }
             function CreateTreeBranchs(prefectureCode) {
@@ -183,22 +197,42 @@ module qpp011.d {
                 }
             });
 
-            self.yearInJapanEmpire_LBL_012 = ko.observable("(" + nts.uk.time.yearmonthInJapanEmpire(self.date_D_INP_007().toString()).toString() + ")");
-            self.currentObject.subscribe(function(newValue) {
-                self.taxPayRollMoney(newValue ? newValue.taxPayRollMoney : null);
-                self.taxBonusMoney(newValue ? newValue.taxBonusMoney : null)
-                self.taxOverDueMoney(newValue ? newValue.taxOverDueMoney : null);
-                self.taxDemandChargeMoyney(newValue ? newValue.taxDemandChargeMoyney : null);
-                self.address(newValue ? newValue.address : null);
-                self.headcount(newValue ? newValue.headcount : null);
-                self.retirementBonusAmout(newValue ? newValue.retirementBonusAmout : null);
-                self.cityTaxMoney(newValue ? newValue.cityTaxMoney : null);
-                self.prefectureTaxMoney(newValue ? newValue.prefectureTaxMoney : null);
-                self.date_D_INP_007(newValue ? new Date(newValue.dueDate) : new Date());
-                self.yearInJapanEmpire_LBL_012("(" + nts.uk.time.yearmonthInJapanEmpire(self.date_D_INP_007().toString()).toString() + ")");
-            });
-            //currencyeditor
 
+
+            //self.yearInJapanEmpire_LBL_012 = ko.observable("(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.date_D_INP_007()).format("YYYY/MM")).toString() + ")");
+            self.currentObject.subscribe(function(newValue) {
+                if (self.dirty.isDirty()) {
+                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                        self.taxPayRollMoney(newValue ? newValue.taxPayRollMoney : null);
+                        self.taxBonusMoney(newValue ? newValue.taxBonusMoney : null)
+                        self.taxOverDueMoney(newValue ? newValue.taxOverDueMoney : null);
+                        self.taxDemandChargeMoyney(newValue ? newValue.taxDemandChargeMoyney : null);
+                        self.address(newValue ? newValue.address : null);
+                        self.headcount(newValue ? newValue.headcount : null);
+                        self.retirementBonusAmout(newValue ? newValue.retirementBonusAmout : null);
+                        self.cityTaxMoney(newValue ? newValue.cityTaxMoney : null);
+                        self.prefectureTaxMoney(newValue ? newValue.prefectureTaxMoney : null);
+                        self.date_D_INP_007(newValue ? new Date(newValue.dueDate) : new Date());
+                    }).ifNo(function() {
+                        self.clearError();
+                        self.notLoopAlert(false);
+                        self.dirty.reset();
+                    });
+                } else {
+                    self.taxPayRollMoney(newValue ? newValue.taxPayRollMoney : null);
+                    self.taxBonusMoney(newValue ? newValue.taxBonusMoney : null)
+                    self.taxOverDueMoney(newValue ? newValue.taxOverDueMoney : null);
+                    self.taxDemandChargeMoyney(newValue ? newValue.taxDemandChargeMoyney : null);
+                    self.address(newValue ? newValue.address : null);
+                    self.headcount(newValue ? newValue.headcount : null);
+                    self.retirementBonusAmout(newValue ? newValue.retirementBonusAmout : null);
+                    self.cityTaxMoney(newValue ? newValue.cityTaxMoney : null);
+                    self.prefectureTaxMoney(newValue ? newValue.prefectureTaxMoney : null);
+                    self.date_D_INP_007(newValue ? new Date(newValue.dueDate) : new Date());
+                }
+
+
+            });
             //Switch
 
             self.D_LBL_018_Year_Month = nts.uk.sessionStorage.getItemAndRemove("TargetDate").value;
@@ -211,6 +245,8 @@ module qpp011.d {
                 { code: '2', name: 'Item2' }
             ]);
             self.selectedRuleCode = ko.observable(1);
+
+
 
             function BindTreeGrid(gridID, Data, selectedValue) {
                 $(gridID).igTreeGrid({
@@ -241,7 +277,7 @@ module qpp011.d {
                     self.currentObject(data)
                 }).fail(function(res) {
                     // Alert message
-                    alert(res);
+                    alert("対象データがありません。");
                 })
             }
 
@@ -292,6 +328,20 @@ module qpp011.d {
                 })
             }
         }
+        clearError(): void {
+            $('#D_INP_002').ntsError('clear');
+            $('#D_INP_003').ntsError('clear');
+            $('#D_INP_004').ntsError('clear');
+            $('#D_INP_005').ntsError('clear');
+            $('#D_INP_006').ntsError('clear');
+            $('#D_INP_008').ntsError('clear');
+            $('#D_INP_009').ntsError('clear');
+            $('#D_INP_0010').ntsError('clear');
+            $('#D_INP_0011').ntsError('clear');
+        };
+
+
+
         submitDialog() {
             let self = this;
             let TargetDate = self.D_LBL_018_Year_Month = self.D_LBL_018_Year_Month.replace("/", "");
@@ -303,7 +353,7 @@ module qpp011.d {
                         self.CreateResidentialTax(self.D_LST_001_selectedResiTaxCode());
                     }
                 }).fail(function(res) {
-                    alert(res.message);
+                    alert("対象データがありません。");
                 })
             }
         }
@@ -320,6 +370,7 @@ module qpp011.d {
             this.registeredName = registeredName;
         }
     }
+
     //Tree Data Class
     export class TreeItem {
         code: string;

@@ -16,7 +16,6 @@ import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.UpdateResidential
 import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.UpdateResidentialTaxCommandHandler;
 import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.ResidentialTaxDto;
 import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.ResidentialTaxFinder;
-import nts.uk.shr.com.context.AppContexts;
 
 @Path("pr/core/residential")
 @Produces("application/json")

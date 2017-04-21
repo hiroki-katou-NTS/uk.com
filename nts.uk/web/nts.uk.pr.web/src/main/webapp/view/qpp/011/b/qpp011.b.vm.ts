@@ -160,27 +160,40 @@ module qpp011.b {
             self.C_SEL_004_ComboBoxItemList = ko.observableArray([]);
             self.C_SEL_003_selectedCode = ko.observable("");
             self.C_SEL_004_selectedCode = ko.observable("");
-            service.findAllLinebank().done(function(data: Array<any>) {
-                for (let object of data) {
-                    self.C_SEL_003_ComboBoxItemList.push(new C_SEL_003_ComboboxItemModel(object.bankCode, object.branchCode, object.lineBankCode, object.lineBankName))
-                }
-                if (self.C_SEL_003_ComboBoxItemList.length > 0)
-                    self.C_SEL_003_selectedCode(self.C_SEL_003_ComboBoxItemList()[0].lineBankCode);
-            }).fail(function(res) {
-                alert(res.message);
-            });
+            //C_SEL_003 get data
+            service.findBankAll().done(function(data1: Array<any>) {
+                var dataSource = [];
+                //Flat Array
+                dataSource = nts.uk.util.flatArray(data1, "bankBranch");
+                service.findAllLinebank().done(function(data2: Array<any>) {
+                    for (let object of data2) {
+                        var obj = _.find(dataSource, function(x) {
+                            return x.bankBranchID === object.branchId
+                        });
+                        //Push data C_SEL_003
+                        self.C_SEL_003_ComboBoxItemList.push(new C_SEL_003_ComboboxItemModel(obj.bankCode, obj.bankBranchCode, object.lineBankCode, object.lineBankName));
+                        if (self.C_SEL_003_ComboBoxItemList.length > 0)
+                            self.C_SEL_003_selectedCode(self.C_SEL_003_ComboBoxItemList()[0].lineBankCode);
+                    }
+                }).fail(function(res) { });
+            }).fail(function(res) { });
+            //find by login
             service.getCurrentProcessingNo().done(function(data: any) {
                 let yearMonth = data.currentProcessingYm;
                 self.B_INP_001_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
                 self.B_INP_002_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
+                self.B_INP_003_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
+
                 self.C_INP_001_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
                 self.C_INP_002_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
+                self.C_INP_003_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
             }).fail(function(res) {
                 alert(res.message);
             });
             self.B_SEL_002_ComboBoxItemList = ko.observableArray([]);
             self.B_SEL_002_selectedCode = ko.observable("");
             self.C_SEL_002_selectedCode = ko.observable("");
+            //B_SEL_002
             service.findallRegalDoc().done(function(data: any) {
                 for (let object of data) {
                     self.B_SEL_002_ComboBoxItemList.push(new B_SEL_002_ComboboxItemModel(object.reganDocCompanyCode, object.reganDocCompanyName))
@@ -378,7 +391,7 @@ module qpp011.b {
             //003
             self.B_INP_003_yearMonth = ko.observable('2017/12/01');
             self.B_INP_003_yearMonth.subscribe(function(newValue) {
-                self.yearInJapanEmpire_B_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_003_yearMonth()).toString() + ")");
+                self.yearInJapanEmpire_B_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.B_INP_003_yearMonth()).format("YYYY/MM")).toString() + ")");
             });
             self.yearInJapanEmpire_B_LBL_010 = ko.observable();
             self.yearInJapanEmpire_B_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_003_yearMonth()).toString() + ")");
@@ -399,26 +412,49 @@ module qpp011.b {
             //003
             self.C_INP_003_yearMonth = ko.observable('2017/12/01');
             self.C_INP_003_yearMonth.subscribe(function(newValue) {
-                self.yearInJapanEmpire_C_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_003_yearMonth()).toString() + ")");
+                self.yearInJapanEmpire_C_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.C_INP_003_yearMonth()).format("YYYY/MM")).toString() + ")");
             });
             self.yearInJapanEmpire_C_LBL_010 = ko.observable();
             self.yearInJapanEmpire_C_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_003_yearMonth()).toString() + ")");
         }
-        openFDialog() {
-            let self = this;
-            nts.uk.sessionStorage.setItem("TargetDate", self.B_INP_001_yearMonth());
-            nts.uk.ui.windows.sub.modal('/view/qpp/011/f/index.xhtml', { height: 560, width: 900, dialogClass: 'no-close' }).onClosed(function(): any {
-            });
-        }
-        openEDialog() {
-            nts.uk.ui.windows.sub.modal('/view/qpp/011/e/index.xhtml', { height: 180, width: 300, dialogClass: 'no-close' }).onClosed(function(): any {
-            });
-        }
+
         openDDialog() {
             let self = this;
             nts.uk.sessionStorage.setItem("TargetDate", self.B_INP_001_yearMonth());
-            nts.uk.ui.windows.sub.modal('/view/qpp/011/d/index.xhtml', { height: 550, width: 1020, dialogClass: 'no-close' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/qpp/011/d/index.xhtml', { title: '納付書詳細設定', height: 550, width: 1050, dialogClass: 'no-close' }).onClosed(function(): any {
             });
+        }
+
+        openEDialog() {
+            nts.uk.ui.windows.sub.modal('/view/qpp/011/e/index.xhtml', { title: '出力の設定', height: 180, width: 330, dialogClass: 'no-close' }).onClosed(function(): any {
+            });
+        }
+
+        openFDialog() {
+            let self = this;
+            nts.uk.sessionStorage.setItem("TargetDate", self.B_INP_001_yearMonth());
+            nts.uk.ui.windows.sub.modal('/view/qpp/011/f/index.xhtml', { title: '住民税チェックリスト', height: 560, width: 900, dialogClass: 'no-close' }).onClosed(function(): any {
+            });
+        }
+
+        checkCValue(): boolean {
+            var self = this;
+            if (self.C_INP_001_yearMonth() === "" || self.C_INP_001_yearMonth() === null) {
+                nts.uk.ui.dialog.alert("が入力されていません");
+                $('#C_INP_001').focus();
+                return false;
+            }
+            if (self.C_INP_002_yearMonth() === "" || self.C_INP_002_yearMonth() === null) {
+                nts.uk.ui.dialog.alert("が入力されていません");
+                $('#C_INP_002').focus();
+                return false;
+            }
+            if (self.C_INP_003_yearMonth() === "" || self.C_INP_003_yearMonth() === null) {
+                nts.uk.ui.dialog.alert("が入力されていません");
+                $('#C_INP_003').focus();
+                return false;
+            }
+            return true;
         }
 
         exportPdf(): void {
@@ -440,7 +476,7 @@ module qpp011.b {
         }
     }
 
-  
+
     export class BoxModel {
         id: number;
         name: string;
@@ -453,12 +489,12 @@ module qpp011.b {
 
     export class C_SEL_003_ComboboxItemModel {
         bankCode: string;
-        branchCode: string;
+        bankBranchCode: string;
         lineBankCode: string;
         lineBankName: string;
-        constructor(bankCode: string, branchCode: string, lineBankCode: string, lineBankName: string) {
+        constructor(bankCode: string, bankBranchCode: string, lineBankCode: string, lineBankName: string) {
             this.bankCode = bankCode;
-            this.branchCode = branchCode;
+            this.bankBranchCode = bankBranchCode;
             this.lineBankCode = lineBankCode;
             this.lineBankName = lineBankName;
         }
@@ -468,7 +504,7 @@ module qpp011.b {
         reganDocCompanyName: string;
         constructor(reganDocCompanyCode: string, reganDocCompanyName: string) {
             this.reganDocCompanyCode = reganDocCompanyCode;
-            this.reganDocCompanyName = reganDocCompanyName;
+            this.reganDocCompanyName = reganDocCompanyCode + "   " + reganDocCompanyName;
         }
     }
     export class C_SEL_004_ComboboxItemModel {
@@ -507,7 +543,8 @@ module qpp011.b {
             this.code = code;
             this.name = name;
         }
-
     }
+
+
 
 };

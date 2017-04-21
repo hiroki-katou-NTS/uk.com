@@ -17,7 +17,7 @@ public class RegalDocCompanyWebService extends WebService {
 
 	@Inject
 	private RegalDocCompanyFinder finder;
-
+	
 	@Path("findallRegalDoc")
 	@POST
 	public List<RegalDocCompanyDto> findAll() {

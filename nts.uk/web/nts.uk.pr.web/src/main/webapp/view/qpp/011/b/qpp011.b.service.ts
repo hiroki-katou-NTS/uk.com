@@ -5,6 +5,7 @@ module qpp011.b.service {
         update: "pr/core/rule/law/tax/residential/output/update",
         findAllResidential: "pr/core/residential/findallresidential",
         findAllLinebank: "basic/system/bank/linebank/findAll",
+        findBankAll: "basic/system/bank/find/all",
         findLinebank: "basic/system/bank/linebank/find",
         getlistLocation: "pr/core/residential/getlistLocation",
         currentProcessingNo: "pr/proto/paymentdatemaster/processing/findbylogin",
@@ -85,6 +86,17 @@ module qpp011.b.service {
     export function findAllLinebank(): JQueryPromise<Array<any>> {
         var dfd = $.Deferred<any>();
         nts.uk.request.ajax("com", paths.findAllLinebank)
+            .done(function(res: Array<any>) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+      export function findBankAll(): JQueryPromise<Array<any>> {
+        var dfd = $.Deferred<any>();
+        nts.uk.request.ajax("com", paths.findBankAll)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })

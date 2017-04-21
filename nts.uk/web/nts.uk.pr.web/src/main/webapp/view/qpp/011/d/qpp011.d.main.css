@@ -58,13 +58,7 @@ input {
 	float: left;
 }
 
-.fullHeight {
-	height: 100%;
-}
 
-.fullWidth {
-	width: 100%;
-}
 
 #D_LBL_002, #D_LBL_003 {
 	font-size: 1.3rem;
