@@ -78,8 +78,6 @@ module cmm009.a.viewmodel {
             self.lengthTreeCurrent = ko.observable(null);
             self.numberItemNew = ko.observable(0);
 
-
-            self.A_INP_MEMO = ko.observable(null);
             self.currentItem_treegrid = ko.observable(null);
             self.checknull = ko.observable(null);
             self.listDtoUpdateHierachy = ko.observable(null);
@@ -105,7 +103,7 @@ module cmm009.a.viewmodel {
                 }
 
                 if (self.dirty_DetailPartment.isDirty() || self.dirty_Memo.isDirty() || self.dirty_ListHistory.isDirty()) {
-                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。 select").ifYes(function() {
+                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
                         self.currentItem(new viewmodel.model.InputField(current, false));
                         self.memo().A_INP_MEMO(self.memobyHistoryId());
                         if (current.historyId == "") {
@@ -147,6 +145,7 @@ module cmm009.a.viewmodel {
                 if (codeChanged == null) {
                     return;
                 }
+                
                 if (!self.notAlertHist()) {
                     self.notAlertHist(true);
                     return;
@@ -154,7 +153,7 @@ module cmm009.a.viewmodel {
                 let itemHisCurrent = self.itemHist();
 
                 if (self.dirty_DetailPartment.isDirty() || self.dirty_Memo.isDirty() || self.dirty_ListHistory.isDirty()) {
-                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。 select").ifYes(function() {
+                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
                         self.findHist_Dep(self.itemHistId(), codeChanged);
                         if (self.itemHist() != null) {
                             if (self.itemHist().historyId != "") {
@@ -178,6 +177,7 @@ module cmm009.a.viewmodel {
                                         self.dataSource(department_arr);
                                         if (self.dataSource().length > 0) {
                                             self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "children"));
+                                            self.notAlert(false);
                                             self.singleSelectedCode(self.dataSource()[0].departmentCode);
                                             var current = self.findHira(self.singleSelectedCode(), self.dataSource());
                                             self.currentItem().A_INP_DEPNAME(current.name);
@@ -285,7 +285,7 @@ module cmm009.a.viewmodel {
                         location.reload();
                     }).fail(function(error) {
                         if (error.message == "ER026") {
-                            alert("trung companyCode");
+                            alert("ER026");
                         }
                     })
                 dfd.resolve();
@@ -295,9 +295,7 @@ module cmm009.a.viewmodel {
             if (self.currentItem().A_INP_CODE_ENABLE() == false && self.checkInput() && self.checkConditionAddHist() == '') {
                 var dfd = $.Deferred();
                 let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
-                var _dt = self.dataSource();
-                var _code = self.singleSelectedCode();
-                var current = self.findHira(_code, _dt);
+                var current = self.findHira(self.singleSelectedCode(), self.dataSource());
                 let dto = new model.AddDepartmentDto(self.currentItem().A_INP_CODE(), current.historyId, hisdto.endDate, self.currentItem().A_INP_OUTCODE(), self.currentItem().A_INP_FULLNAME(), current.hierarchyCode, self.currentItem().A_INP_DEPNAME(), hisdto.startDate, self.memo().A_INP_MEMO(), null);
                 let arr = new Array;
                 arr.push(dto);
@@ -339,7 +337,7 @@ module cmm009.a.viewmodel {
                             return dfd2.promise();
                         }).fail(function(error) {
                             if (error.message == "ER005") {
-                                alert("ko ton tai");
+                                alert("ER005");
                             }
                         })
                     dfd.resolve();
@@ -519,7 +517,7 @@ module cmm009.a.viewmodel {
             var _dt = self.dataSource();
             var _dtflat = nts.uk.util.flatArray(_dt, 'children');
             var _code = self.singleSelectedCode();
-            var current = self.findHira(_code, _dt);
+            var current = self.findHira(self.singleSelectedCode(), self.dataSource());
             let deleteobj = new model.DepartmentDeleteDto(current.departmentCode, current.historyId, current.hierarchyCode);
             if (_dtflat.length < 2) {
                 return;
@@ -695,6 +693,7 @@ module cmm009.a.viewmodel {
                         _dt[0].endDate = "9999/12/31";
                         self.itemHistId(_dt);
                         self.dirty_ListHistory.reset();
+                        self.notAlertHist(false);
                         self.selectedCodes_His(_dt[0].startDate);
                     }
                     self.memo().A_INP_MEMO(self.memobyHistoryId());
@@ -741,7 +740,6 @@ module cmm009.a.viewmodel {
                         let add = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");
                         let arr = self.itemHistId();
                         arr.unshift(add);
-                        //self.itemHistId.unshift(add);
                         let startDate = new Date(itemAddHistory.startYearMonth);
                         startDate.setDate(startDate.getDate() - 1);
                         let strStartDate = startDate.getFullYear() + '/' + (startDate.getMonth() + 1) + '/' + startDate.getDate();
@@ -792,6 +790,7 @@ module cmm009.a.viewmodel {
                         _dt.splice(0, 1);
                         _dt[0].endDate = "9999/12/31";
                         self.itemHistId(_dt);
+                         self.notAlertHist(false);
                         self.selectedCodes_His(_dt[0].startDate);
                         self.memo().A_INP_MEMO(self.memobyHistoryId());
                         self.currentItem().A_INP_DEPNAME(current.name);
@@ -965,7 +964,6 @@ module cmm009.a.viewmodel {
                                 editObjs[k].workPlaceCode = editObjs[k].departmentCode;
                             }
                         }
-
                         self.dtoAdd(newObj);
                         self.listDtoUpdateHierachy(editObjs);
                     } else {
