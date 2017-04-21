@@ -9,7 +9,7 @@
 		
 		<ui:composition template="../../../../master/sidebar.xhtml">
 			<ui:define name="sidebar-head">
-				<script>var dialogSize = { width: 1200, height: 950 };</script>
+				<script>var dialogSize = { width: 1129, height: 800 };</script>
 				<com:stylefile path="qet001.i.main.css" />
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="qet001.i.service.js" />
@@ -109,11 +109,12 @@
 			<script type="text/html" id="header-template">
 				<button data-bind="click: switchToCreateMode">新規</button>
 				<button class="proceed" data-bind="click: save">登録</button>
-				<button data-bind="click: remove, enable: !aggregateItemDetail().createMode()">削除</button>
+				<button class="danger" data-bind="click: remove, enable: !aggregateItemDetail().createMode()">削除</button>
 				<button data-bind="click: close">閉じる</button>
 			</script>
 			<script type="text/html" id="content-template">
-			<div class="left-content">
+			<div class="left-content bg-green caret-right caret-background pull-left">
+			<i class="icon icon-searchbox"></i>
 			<div class="search-grid">
 				<div id="search-input" class="ntsSearchBox"
 						data-bind="ntsSearchBox: {comId: 'aggregate-items', 
@@ -126,7 +127,7 @@
 			<div class="aggregate-table">
 				<table id="aggregate-items" data-bind="ntsGridList: {
 								width: 250,
-								height: 500,
+								height: 400,
 								options: itemList,
 								optionsValue: 'code',
 								columns: $root.content.itemListColumns,
@@ -182,8 +183,8 @@
 				</div>
 				<div id="swap-list" data-bind="ntsSwapList: {
 						showSearchBox: { showLeft : true, showRight: false},
-						height: 350,
-						width: 750,
+						height: 400,
+						width: 650,
 						dataSource: masterItems,
 						primaryKey: 'code',
 						columns: $root.content.swapListColumns,
