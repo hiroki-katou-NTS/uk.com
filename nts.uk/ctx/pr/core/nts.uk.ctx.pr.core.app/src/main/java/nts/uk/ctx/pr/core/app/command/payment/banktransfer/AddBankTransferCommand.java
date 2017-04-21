@@ -11,6 +11,10 @@ import nts.uk.ctx.pr.core.dom.payment.banktransfer.BankTransfer;
 @Data
 @NoArgsConstructor
 public class AddBankTransferCommand {
+	private GeneralDate payDateOfScreenE;
+	private int processingNoOfScreenE;
+	private int sparePayAtrOfScreenE;
+	private int processingYMOfScreenE;
 	private String companyNameKana;
 	private String personId;
 	private String departmentCode;

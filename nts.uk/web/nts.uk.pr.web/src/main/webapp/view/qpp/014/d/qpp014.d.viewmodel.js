@@ -7,8 +7,8 @@ var qpp014;
             var ScreenModel = (function () {
                 function ScreenModel(data) {
                     var self = this;
-                    self.dateOfPayment = ko.observable('2016/12/01');
-                    self.d_SEL_001_selectedCode = ko.observable(1);
+                    self.dateOfPayment = ko.observable('2820-12-09 00:00:00');
+                    self.sparePayAtr = ko.observable(1);
                     self.d_SEL_002_selectedCode = ko.observable(1);
                     self.d_LST_001_items = ko.observableArray([]);
                     for (var i_1 = 1; i_1 < 31; i_1++) {
@@ -19,14 +19,17 @@ var qpp014;
                     self.d_nextScreen = ko.computed(function () {
                         return self.d_SEL_002_selectedCode() == 2 ? 'screen_g' : 'screen_h';
                     });
-                    self.processingDate = ko.observable(nts.uk.time.formatYearMonth(data.currentProcessingYm));
-                    self.d_lbl_015 = ko.observable('( ' + data.processingNo + ' : ');
-                    self.d_lbl_016 = ko.observable(data.processingName + ' )');
+                    self.processingYMNotConvert = ko.observable(data.currentProcessingYm);
+                    self.processingYM = ko.observable(nts.uk.time.formatYearMonth(data.currentProcessingYm));
+                    self.d_lbl_015 = ko.observable(data.processingNo);
+                    self.d_lbl_016 = ko.observable(data.processingName);
                 }
                 ScreenModel.prototype.openEDialog = function () {
                     var self = this;
-                    nts.uk.ui.windows.setShared("processingDate", self.processingDate(), true);
+                    nts.uk.ui.windows.setShared("sparePayAtr", self.sparePayAtr(), true);
+                    nts.uk.ui.windows.setShared("processingYMNotConvert", self.processingYMNotConvert(), true);
                     nts.uk.ui.windows.setShared("dateOfPayment", self.dateOfPayment(), true);
+                    nts.uk.ui.windows.setShared("processingNo", self.d_lbl_015(), true);
                     nts.uk.ui.windows.sub.modal("/view/qpp/014/e/index.xhtml", { title: "振込データの作成結果一覧", dialogClass: "no-close" }).onClosed(function () {
                         if (!nts.uk.ui.windows.getShared("closeDialog")) {
                             $('#wizard').ntsWizard("next");

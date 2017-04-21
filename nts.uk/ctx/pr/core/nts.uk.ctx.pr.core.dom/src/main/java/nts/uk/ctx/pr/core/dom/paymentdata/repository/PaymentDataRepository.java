@@ -31,6 +31,31 @@ public interface PaymentDataRepository {
 	List<Payment> findPaymentHeader(String companyCode, String personId, int payBonusAttribute, int processingYM);
 
 	/**
+	 * 
+	 * @param companyCode
+	 * @param personId
+	 * @param processingNo
+	 * @param payBonusAtr
+	 * @param processingYm
+	 * @param sparePayAtr
+	 * @return
+	 */
+	List<Payment> findWith6Property(String companyCode, String personId, int processingNo, int payBonusAtr,
+			int processingYm, int sparePayAtr);
+
+	/**
+	 * 
+	 * @param companyCode
+	 * @param personId
+	 * @param processingNo
+	 * @param payBonusAtr
+	 * @param processingYm
+	 * @return
+	 */
+	List<Payment> findWith5Property(String companyCode, String personId, int processingNo, int payBonusAtr,
+			int processingYm);
+
+	/**
 	 * check is exist payment header of personid in processing year month
 	 * 
 	 * @param personId

@@ -27,8 +27,8 @@ module qpp014.a.viewmodel {
         findAll(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            //get data with BONUS_ATR = 0 
-            qpp014.a.service.findAll(0)
+            //get data with BONUS_ATR = 1 and (final) DISP_SET = 1
+            qpp014.a.service.findAll(1)
                 .done(function(data) {
                     if (data.length > 0) {
                         self.a_SEL_001_items(data);

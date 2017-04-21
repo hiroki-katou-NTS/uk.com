@@ -26,14 +26,47 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 			+ " AND c.qstdtPaymentHeaderPK.processingYM = :PROCESSING_YM";
 
 	private final String REMOVE_DETAIL = "DELETE FROM QstdtPaymentDetail d "
-			+ "WHERE d.qstdtPaymentDetailPK.companyCode = :CCD" 
-			+" AND d.qstdtPaymentDetailPK.personId = :PID"
-			+" AND d.qstdtPaymentDetailPK.processingYM = :PROCESSING_YM" 
-			+" AND d.qstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR"
-			+" AND d.qstdtPaymentDetailPK.processingNo = :PROCESSING_NO"
-			+" AND d.qstdtPaymentDetailPK.sparePayAttribute = :SPARE_PAY_ATR";
-	
-	
+			+ "WHERE d.qstdtPaymentDetailPK.companyCode = :CCD" + " AND d.qstdtPaymentDetailPK.personId = :PID"
+			+ " AND d.qstdtPaymentDetailPK.processingYM = :PROCESSING_YM"
+			+ " AND d.qstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR"
+			+ " AND d.qstdtPaymentDetailPK.processingNo = :PROCESSING_NO"
+			+ " AND d.qstdtPaymentDetailPK.sparePayAttribute = :SPARE_PAY_ATR";
+
+	private final String SEL_3 = "SELECT a FROM QstdtPaymentHeader a "
+			+ "WHERE a.qstdtPaymentHeaderPK.companyCode = :CCD" + " AND a.qstdtPaymentHeaderPK.personId = :PID"
+			+ " AND a.qstdtPaymentHeaderPK.processingYM = :PROCESSING_YM"
+			+ " AND a.qstdtPaymentHeaderPK.payBonusAtr = :PAY_BONUS_ATR"
+			+ " AND a.qstdtPaymentHeaderPK.processingNo = :PROCESSING_NO"
+			+ " AND a.qstdtPaymentHeaderPK.sparePayAtr = :SPARE_PAY_ATR";
+
+	private final String SEL_3_1 = "SELECT a FROM QstdtPaymentHeader a "
+			+ "WHERE a.qstdtPaymentHeaderPK.companyCode = :CCD" + " AND a.qstdtPaymentDetailPK.personId = :PID"
+			+ " AND a.qstdtPaymentHeaderPK.processingYM = :PROCESSING_YM"
+			+ " AND a.qstdtPaymentHeaderPK.payBonusAtr = :PAY_BONUS_ATR"
+			+ " AND a.qstdtPaymentHeaderPK.processingNo = :PROCESSING_NO";
+
+	@Override
+	public List<Payment> findWith6Property(String companyCode, String personId, int processingNo, int payBonusAtr,
+			int processingYm, int sparePayAtr) {
+		return this.queryProxy().query(SEL_3, QstdtPaymentHeader.class).setParameter("CCD", companyCode)
+				.setParameter("PID", personId).setParameter("PROCESSING_YM", processingYm)
+				.setParameter("PAY_BONUS_ATR", payBonusAtr).setParameter("PROCESSING_NO", processingNo)
+				.setParameter("SPARE_PAY_ATR", sparePayAtr).getList(c -> toDomain(c));
+	}
+
+	/**
+	 * find Payment Header with companyCode, personId, processingNo,
+	 * payBonusAtr, processingYm
+	 */
+	@Override
+	public List<Payment> findWith5Property(String companyCode, String personId, int processingNo, int payBonusAtr,
+			int processingYm) {
+		return this.queryProxy().query(SEL_3_1, QstdtPaymentHeader.class).setParameter("CCD", companyCode)
+				.setParameter("PID", personId).setParameter("PROCESSING_YM", processingYm)
+				.setParameter("PAY_BONUS_ATR", payBonusAtr).setParameter("PROCESSING_NO", processingNo)
+				.getList(c -> toDomain(c));
+	}
+
 	@Override
 	public Optional<Payment> find(String companyCode, String personId, int processingNo, int payBonusAttribute,
 			int processingYM, int sparePayAttribute) {
@@ -250,16 +283,13 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 
 		return entity;
 	}
-	
+
 	@Override
 	public void removeDetails(String personId, Integer processingYM, String companyCode) {
-		this.getEntityManager().createQuery(REMOVE_DETAIL)
-							   .setParameter("CCD", companyCode)
-							   .setParameter("PID", personId)
-							   .setParameter("PROCESSING_YM", processingYM)
-							   .setParameter("PAY_BONUS_ATR", 0)
-							   .setParameter("PROCESSING_NO", 1)
-							   .setParameter("SPARE_PAY_ATR", 0).executeUpdate();
+		this.getEntityManager().createQuery(REMOVE_DETAIL).setParameter("CCD", companyCode)
+				.setParameter("PID", personId).setParameter("PROCESSING_YM", processingYM)
+				.setParameter("PAY_BONUS_ATR", 0).setParameter("PROCESSING_NO", 1).setParameter("SPARE_PAY_ATR", 0)
+				.executeUpdate();
 	}
 
 	@Override
@@ -267,5 +297,5 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		val pk = new QstdtPaymentHeaderPK(companyCode, personId, 1, 0, processingYM, 0);
 		this.commandProxy().remove(QstdtPaymentHeader.class, pk);
 	}
-	
+
 }

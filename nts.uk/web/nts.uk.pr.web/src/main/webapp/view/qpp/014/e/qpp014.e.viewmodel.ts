@@ -6,84 +6,79 @@ module qpp014.e {
         columns_E_LST_003: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         currentCode_E_LST_003: KnockoutObservable<any>;
         timer: nts.uk.ui.sharedvm.KibanTimer;
-        processingDate: KnockoutObservable<any>;
         dateOfPayment: KnockoutObservable<any>;
         dataFixed: KnockoutObservableArray<any>;
+        numberOfPerson: KnockoutObservable<number>;
+        processingState: KnockoutObservable<string>;
+        numberOfProcessSuccess: KnockoutObservable<number>;
+        numberOfProcessFail: KnockoutObservable<number>;
+        processingYM: KnockoutObservable<string>;
+
         constructor() {
             var self = this;
             $('#successful').css('display', 'none');
             $('#error').css('display', 'none');
             self.e_errorList = ko.observableArray([]);
+            self.numberOfPerson = ko.observable(0);
+            self.processingState = ko.observable(null);
+            self.numberOfProcessSuccess = ko.observable(0);
+            self.numberOfProcessFail = ko.observable(0);
             self.timer = new nts.uk.ui.sharedvm.KibanTimer('timer');
             for (let i = 1; i < 100; i++) {
                 self.e_errorList.push(new ItemModel_E_LST_003('00' + i, '基本給', "description " + i));
             }
-            var command1 = {
-                companyNameKana: "companyNameKana1",
-                personId: "personId1",
-                departmentCode: "depCode1",
-                paymentDate: moment.utc('20000101', 'YYYYMMDD').toISOString(),
-                paymentBonusAtr: 0,
-                paymentMoney: 12210,
-                processingNo: 0,
-                sparePaymentAtr: 0,
-                processingYM: "201410",
-                fromBank: { branchId: "50000000001", bankNameKana: "frBankKNName", branchNameKana: "frBranchKNName", accountAtr: 0, accountNo: "100" },
-                toBank: { branchId: "50000000002", bankNameKana: "toBankKNName", branchNameKana: "toBranchKNName", accountAtr: 0, accountNo: "200", accountNameKana: "toAccKNName" },
-            }
-            var command2 = {
-                companyNameKana: "companyNameKana2",
-                personId: "personId2",
-                departmentCode: "depCode2",
-                paymentDate: moment.utc('20000102', 'YYYYMMDD').toISOString(),
-                paymentBonusAtr: 1,
-                paymentMoney: 12212,
-                processingNo: 1,
-                sparePaymentAtr: 1,
-                processingYM: "201411",
-                fromBank: { branchId: "50000000011", bankNameKana: "frBankKNName2", branchNameKana: "frBranchKNName2", accountAtr: 1, accountNo: "100" },
-                toBank: { branchId: "50000000012", bankNameKana: "toBankKNName2", branchNameKana: "toBranchKNName2", accountAtr: 1, accountNo: "200", accountNameKana: "toAccKNName2" },
-            }
-            var command3 = {
-                companyNameKana: "companyNameKana3",
-                personId: "personId3",
-                departmentCode: "depCode3",
-                paymentDate: moment.utc('20000103', 'YYYYMMDD').toISOString(),
-                paymentBonusAtr: 1,
-                paymentMoney: 12213,
-                processingNo: 0,
-                sparePaymentAtr: 0,
-                processingYM: "201412",
-                fromBank: { branchId: "50000000021", bankNameKana: "frBankKNName3", branchNameKana: "frBranchKNName", accountAtr: 1, accountNo: "300" },
-                toBank: { branchId: "50000000031", bankNameKana: "toBankKNName3", branchNameKana: "toBranchKNName", accountAtr: 0, accountNo: "300", accountNameKana: "toAccKNName3" },
-            }
             self.dataFixed = ko.observableArray([]);
-            self.dataFixed.push(command1);
-            self.dataFixed.push(command2);
-            self.dataFixed.push(command3);
+            //fix data to add to db BANK_TRANSFER
+            for (let i = 1; i < 10; i++) {
+                self.dataFixed.push(new TestArray("companyNameKana" + i, "99900000000000000000000000000000000" + i, "depCode" + i,
+                    moment.utc(Math.floor(Math.random() * (2999 - 1900 + 1) + 1900).toString() + Math.floor(Math.random() * (12 - 10 + 1) + 10).toString() + Math.floor(Math.random() * (28 - 1 + 1) + 1).toString(), 'YYYYMMDD').toISOString(),
+                    Math.floor(Math.random() * 2), Math.floor(Math.random() * 1001), 1, Math.floor(Math.random() * 2), Math.floor(Math.random() * (2999 - 1900 + 1) + 1900).toString() + Math.floor(Math.random() * (12 - 10 + 1) + 10).toString(),
+                    { branchId: "00000000" + i, bankNameKana: "frBankKNN" + i, branchNameKana: "frBranchKNN" + i, accountAtr: Math.floor(Math.random() * 2), accountNo: "00" + i },
+                    { branchId: "10000000" + i, bankNameKana: "toBankKNN" + i, branchNameKana: "toBranchKNN" + i, accountAtr: Math.floor(Math.random() * 2), accountNo: "00" + i, accountNameKana: "toAccKNName" + i }));
+            }
             self.currentCode_E_LST_003 = ko.observable();
             self.dateOfPayment = ko.observable(moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("YYYY/MM/DD"));
-            self.processingDate = ko.observable(nts.uk.ui.windows.getShared("processingDate"));
+            self.processingYM = ko.observable(nts.uk.time.formatYearMonth(nts.uk.ui.windows.getShared("processingYMNotConvert")));
         }
 
-        startPage(): JQueryPromise<any> {
+        startPage(): void {
             var self = this;
             var dfd = $.Deferred();
+            var index = ko.observable(0);
+            self.numberOfPerson(self.dataFixed().length);
+            if (self.numberOfPerson() > 0) {
+                self.processingState('データの作成中');
+            } else {
+                self.stopProcessing();
+            }
+            self.timer.start();
             _.forEach(self.dataFixed(), function(bankTransfer) {
                 $.when(self.addBankTransfer(bankTransfer)).done(function() {
-                    dfd.resolve();
+                    //if add data to DB success, go to dialog "Success"
+                    if (self.numberOfProcessSuccess() == self.numberOfPerson()) {
+                        self.timer.end();
+                        self.processingState('完了');
+                        nts.uk.ui.windows.setShared("closeDialog", false, true);
+                        $('#successful').css('display', '');
+                        $('#stop').css('display', 'none');
+                        $('#error').css('display', 'none');
+                    }
                 }).fail(function(res) {
-                    dfd.reject(res);
                 });
             });
-            return dfd.promise();
         }
 
         /**
          * insert data to DB BANK_TRANSFER
          */
-        addBankTransfer(bankTransfer): void {
+        addBankTransfer(bankTransfer): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
             var command = {
+                processingNoOfScreenE: nts.uk.ui.windows.getShared("processingNo"),
+                payDateOfScreenE: moment.utc(nts.uk.ui.windows.getShared("dateOfPayment")).toISOString(),
+                sparePayAtrOfScreenE: nts.uk.ui.windows.getShared("processingNo"),
+                processingYMOfScreenE: nts.uk.ui.windows.getShared("processingYMNotConvert"),
                 companyNameKana: bankTransfer.companyNameKana,
                 personId: bankTransfer.personId,
                 departmentCode: bankTransfer.departmentCode,
@@ -97,8 +92,15 @@ module qpp014.e {
                 toBank: { branchId: bankTransfer.toBank.branchId, bankNameKana: bankTransfer.toBank.bankNameKana, branchNameKana: bankTransfer.toBank.branchNameKana, accountAtr: bankTransfer.toBank.accountAtr, accountNo: bankTransfer.toBank.accountNo, accountNameKana: bankTransfer.toBank.accountNameKana },
             }
             qpp014.e.service.addBankTransfer(command)
-                .done(function() { })
-                .fail(function() { });
+                .done(function() {
+                    self.numberOfProcessSuccess(self.numberOfProcessSuccess() + 1);
+                    dfd.resolve();
+                })
+                .fail(function(res) {
+                    self.numberOfProcessFail(self.numberOfProcessFail() + 1);
+                    dfd.resolve(res);
+                });
+            return dfd.promise();
         }
 
         /**
@@ -122,6 +124,7 @@ module qpp014.e {
         stopProcessing(): void {
             var self = this;
             self.timer.end();
+            self.processingState('完了');
             nts.uk.ui.windows.setShared("closeDialog", false, true);
             $('#successful').css('display', 'none');
             $('#stop').css('display', 'none');
@@ -152,29 +155,11 @@ module qpp014.e {
         processingNo: number
         sparePaymentAtr: number
         processingYM: string
-        fromBank: {
-            branchId: string
-            bankNameKana: string
-            branchNameKana: string
-            accountAtr: number
-            accountNo: string
-        }
-        toBank: {
-            branchId: string
-            bankNameKana: string
-            branchNameKana: string
-            accountAtr: number
-            accountNo: string
-            accountNameKana: string
-        }
+        fromBank: FromBank
+        toBank: ToBank
 
         constructor(companyNameKana: string, personId: string, departmentCode: string, paymentDate: string, paymentBonusAtr: number, paymentMoney: number,
-            processingNo: number, sparePaymentAtr: number, processingYM: string, fromBank: {
-                branchId: string, bankNameKana: string, branchNameKana: string, accountAtr: number, accountNo: string
-            },
-            toBank: {
-                branchId: string, bankNameKana: string, branchNameKana: string, accountAtr: number, accountNo: string, accountNameKana: string
-            }) {
+            processingNo: number, sparePaymentAtr: number, processingYM: string, fromBank: FromBank, toBank: ToBank) {
             this.companyNameKana = companyNameKana;
             this.personId = personId;
             this.departmentCode = departmentCode;
@@ -184,17 +169,42 @@ module qpp014.e {
             this.processingNo = processingNo;
             this.sparePaymentAtr = sparePaymentAtr;
             this.processingYM = processingYM;
-            this.fromBank.branchId = fromBank.branchId;
-            this.fromBank.bankNameKana = fromBank.bankNameKana;
-            this.fromBank.branchNameKana = fromBank.branchNameKana;
-            this.fromBank.accountAtr = fromBank.accountAtr;
-            this.fromBank.accountNo = fromBank.accountNo;
-            this.toBank.branchId = toBank.branchId;
-            this.toBank.bankNameKana = toBank.bankNameKana;
-            this.toBank.branchNameKana = toBank.branchNameKana;
-            this.toBank.accountAtr = toBank.accountAtr;
-            this.toBank.accountNo = toBank.accountNo;
-            this.toBank.accountNameKana = toBank.accountNameKana;
+            this.fromBank = fromBank;
+            this.toBank = toBank;
+        }
+    }
+
+    export class FromBank {
+        branchId: string
+        bankNameKana: string
+        branchNameKana: string
+        accountAtr: number
+        accountNo: string
+
+        constructor(branchId: string, bankNameKana: string, branchNameKana: string, accountAtr: number, accountNo: string) {
+            this.branchId = branchId;
+            this.bankNameKana = bankNameKana;
+            this.branchNameKana = branchNameKana;
+            this.accountAtr = accountAtr;
+            this.accountNo = accountNo;
+        }
+    }
+
+    export class ToBank {
+        branchId: string
+        bankNameKana: string
+        branchNameKana: string
+        accountAtr: number
+        accountNo: string
+        accountNameKana: string
+
+        constructor(branchId: string, bankNameKana: string, branchNameKana: string, accountAtr: number, accountNo: string, accountNameKana: string) {
+            this.branchId = branchId;
+            this.bankNameKana = bankNameKana;
+            this.branchNameKana = branchNameKana;
+            this.accountAtr = accountAtr;
+            this.accountNo = accountNo;
+            this.accountNameKana = accountNameKana;
         }
     }
 

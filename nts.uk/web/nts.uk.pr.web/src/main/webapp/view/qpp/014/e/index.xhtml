@@ -31,17 +31,17 @@
 								</tr>
 								<tr>
 									<td>処理状態</td>
-									<td><span></span> <!-- <span
-										data-bind="text: processingState()==0 ? 'データの作成中': '完了'"></span>
+									<td> <span
+										data-bind="text: processingState"></span>
 										<span
-										data-bind="text:nts.uk.text.format('{0}/{1}人', completeList().length, numberOfPerson())">
-									</span> -->
+										data-bind="text:nts.uk.text.format('{0}/{1}人', numberOfProcessSuccess(), numberOfPerson())">
+									</span>
 									</td>
 								</tr>
 								<tr>
 									<td>エラー件数</td>
 									<td>
-									<!-- <span data-bind="text: countError()"></span> -->
+									<span data-bind="text: numberOfProcessFail()"></span>
 									件</td>
 								</tr>
 							</tbody>
@@ -59,11 +59,11 @@
 								</tr>
 								<tr>
 									<td>処理する明細書の年月</td>
-									<td data-bind="text: processingDate()"></td>
+									<td data-bind="text: processingYM"></td>
 								</tr>
 								<tr>
 									<td>振込日</td>
-									<td data-bind="text: dateOfPayment()"></td>
+									<td data-bind="text: dateOfPayment"></td>
 								</tr>
 							</tbody>
 						</table>
