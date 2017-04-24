@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.DomainObject;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.formula.dom.enums.ConditionAtr;
 import nts.uk.ctx.pr.formula.dom.enums.ReferenceMasterNo;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
@@ -14,7 +14,7 @@ import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
  *
  */
 @Getter
-public class FormulaEasyHeader extends DomainObject {
+public class FormulaEasyHeader extends AggregateRoot {
 	
 	private String companyCode;
 	

@@ -97,7 +97,7 @@ module nts.qmm017 {
                 { id: 'tab-2', title: '単価', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-3', title: '関数', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-4', title: 'システム変数', content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-5', title: '個人情報', content: '.tab-content-5', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-5', title: '個人情報', content: '.tab-content-5', enable: ko.observable(false), visible: ko.observable(true) },
                 { id: 'tab-6', title: '計算式', content: '.tab-content-6', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-7', title: '賃金テーブル', content: '.tab-content-7', style: 'margin-left: 50px;', enable: ko.observable(true), visible: ko.observable(true) }
             ]);
@@ -196,23 +196,37 @@ module nts.qmm017 {
 
         openDialogL() {
             var self = this;
-            service.getFormulaEasyDetail(self.formulaCode(), self.historyId(), self.easyFormulaCode())
-                .done(function(formulaEasyDetail) {
-                    self.easyFormulaDetail(formulaEasyDetail);
-                    let param = {
-                        isUpdate: (self.easyFormulaName() !== '' && self.easyFormulaName() !== null),
-                        dirtyData: self.easyFormulaDetail(),
-                        startYm: self.startYm()
-                    };
-                    nts.uk.ui.windows.setShared('paramFromScreenC', param);
-                    nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(() => {
-                        if (nts.uk.ui.windows.getShared('easyFormulaDetail')) {
-                            self.easyFormulaDetail(nts.uk.ui.windows.getShared('easyFormulaDetail'));
-                            self.easyFormulaName(self.easyFormulaDetail().easyFormulaName);
-                        }
+            if (self.easyFormulaCode() && self.easyFormulaCode() !== '') {
+                service.getFormulaEasyDetail(self.formulaCode(), self.historyId(), self.easyFormulaCode())
+                    .done(function(formulaEasyDetail) {
+                        self.easyFormulaDetail(formulaEasyDetail);
+                        let param = {
+                            isUpdate: (self.easyFormulaName() !== '' && self.easyFormulaName() !== null),
+                            dirtyData: self.easyFormulaDetail(),
+                            startYm: self.startYm()
+                        };
+                        nts.uk.ui.windows.setShared('paramFromScreenC', param);
+                        nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(() => {
+                            if (nts.uk.ui.windows.getShared('easyFormulaDetail')) {
+                                self.easyFormulaDetail(nts.uk.ui.windows.getShared('easyFormulaDetail'));
+                                self.easyFormulaName(self.easyFormulaDetail().easyFormulaName);
+                            }
+                        });
                     });
+            } else {
+                let param = {
+                    isUpdate: (self.easyFormulaName() !== '' && self.easyFormulaName() !== null),
+                    dirtyData: self.easyFormulaDetail(),
+                    startYm: self.startYm()
+                };
+                nts.uk.ui.windows.setShared('paramFromScreenC', param);
+                nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(() => {
+                    if (nts.uk.ui.windows.getShared('easyFormulaDetail')) {
+                        self.easyFormulaDetail(nts.uk.ui.windows.getShared('easyFormulaDetail'));
+                        self.easyFormulaName(self.easyFormulaDetail().easyFormulaName);
+                    }
                 });
-
+            }
         }
     }
 
@@ -629,7 +643,8 @@ module nts.qmm017 {
 
         validateContentFunction(contentFunction) {
             var self = this;
-            let treeFunction = nts.uk.util.createTreeFromString(contentFunction, "（", "）", ",");
+//            let treeObjects = contentFunction;
+            let treeFunction = nts.uk.util.createTreeFromString(contentFunction, "（", "）", ",", []);
             self.validateTreeFunction(treeFunction[0]);
         }
 

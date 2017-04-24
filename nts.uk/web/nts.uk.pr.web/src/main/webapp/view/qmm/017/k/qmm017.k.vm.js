@@ -26,18 +26,21 @@ var nts;
                                 ScreenModelKScreen.prototype.actionHandler = function () {
                                     var self = this;
                                     if (self.selectedMode() == 0) {
-                                        var command = {
+                                        var command_1 = {
                                             formulaCode: self.data.formulaCode,
                                             historyId: self.data.historyId,
                                             startDate: self.startYm(),
                                             difficultyAtr: self.data.difficultyAtr
                                         };
-                                        k.service.removeFormulaHistory(command)
-                                            .done(function () {
-                                            nts.uk.ui.windows.close();
-                                        })
-                                            .fail(function (res) {
-                                            alert(res);
+                                        nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？")
+                                            .ifYes(function () {
+                                            k.service.removeFormulaHistory(command_1)
+                                                .done(function () {
+                                                nts.uk.ui.windows.close();
+                                            })
+                                                .fail(function (res) {
+                                                alert(res);
+                                            });
                                         });
                                     }
                                     else {

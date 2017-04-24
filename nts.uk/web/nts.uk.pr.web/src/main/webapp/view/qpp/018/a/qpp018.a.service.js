@@ -12,10 +12,14 @@ var nts;
                     (function (a) {
                         var service;
                         (function (service) {
+                            // Service paths.
                             var servicePath = {
                                 findAllInsuranceOffice: "pr/insurance/social/findall",
                                 saveAsPdf: "screen/pr/QPP018/saveAsPdf"
                             };
+                            /**
+                             * find All Insurance Office
+                             */
                             function findAllInsuranceOffice() {
                                 var dfd = $.Deferred();
                                 nts.uk.request.ajax(servicePath.findAllInsuranceOffice).done(function (res) {
@@ -31,16 +35,18 @@ var nts;
                                 return nts.uk.request.exportFile(servicePath.saveAsPdf, command);
                             }
                             service.saveAsPdf = saveAsPdf;
+                            /**
+                             * insurance office
+                             */
                             var model;
                             (function (model) {
-                                var InsuranceOffice = (function () {
-                                    function InsuranceOffice(code, name) {
-                                        var self = this;
+                                class InsuranceOffice {
+                                    constructor(code, name) {
+                                        let self = this;
                                         self.code = code;
                                         self.name = name;
                                     }
-                                    return InsuranceOffice;
-                                }());
+                                }
                                 model.InsuranceOffice = InsuranceOffice;
                             })(model = service.model || (service.model = {}));
                         })(service = a.service || (a.service = {}));
@@ -50,4 +56,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qpp018.a.service.js.map

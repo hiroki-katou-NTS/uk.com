@@ -4,8 +4,8 @@ var qmm006;
     (function (c) {
         var viewmodel;
         (function (viewmodel) {
-            var ScreenModel = (function () {
-                function ScreenModel() {
+            class ScreenModel {
+                constructor() {
                     var self = this;
                     self.currentCode = ko.observable();
                     self.currentCode1 = ko.observable();
@@ -18,10 +18,13 @@ var qmm006;
                         { headerText: '口座番号', key: 'accountNo', width: 100, formatter: _.escape }
                     ]);
                 }
-                ScreenModel.prototype.startPage = function () {
+                startPage() {
                     return this.findAll();
-                };
-                ScreenModel.prototype.findAll = function () {
+                }
+                /**
+                 * get data from database
+                 */
+                findAll() {
                     var self = this;
                     var dfd = $.Deferred();
                     qmm006.c.service.findAll()
@@ -31,13 +34,17 @@ var qmm006;
                             self.items1(data);
                         }
                         else {
+                            //ER010- data is none
                             nts.uk.ui.dialog.alert("対象データがありません。");
                         }
                         dfd.resolve();
                     }).fail(function () { });
                     return dfd.promise();
-                };
-                ScreenModel.prototype.transferData = function (data, newLineBankCode) {
+                }
+                /**
+                 * forward property 'currentCode' to screen A, close dialog
+                 */
+                transferData(data, newLineBankCode) {
                     c.service.transfer(data)
                         .done(function () {
                         nts.uk.ui.windows.setShared("currentCode", newLineBankCode, true);
@@ -46,26 +53,32 @@ var qmm006;
                         .fail(function (error) {
                         nts.uk.ui.dialog.alert(error.message);
                     });
-                };
-                ScreenModel.prototype.transfer = function () {
+                }
+                /**
+                 * change lineBankCode in database PERSON_BANK_ACCOUNT base-on data on screen
+                 */
+                transfer() {
                     var self = this;
                     var oldLineBankCode = self.currentCode();
                     var newLineBankCode = self.currentCode1();
                     if (oldLineBankCode == null) {
-                        nts.uk.ui.dialog.alert("置換元情報が選択されていません。");
+                        nts.uk.ui.dialog.alert("置換元情報が選択されていません。"); //ER007
                         return;
                     }
                     if (newLineBankCode == null) {
-                        nts.uk.ui.dialog.alert("置換先情報が選択されていません。");
+                        nts.uk.ui.dialog.alert("置換先情報が選択されていません。"); //ER007
                         return;
                     }
                     if (oldLineBankCode == newLineBankCode) {
-                        var messageError = nts.uk.text.format("統合元と統合先で同じコードの{0}が選択されています。\r\n  振込元銀行を確認してください。", self.currentCode());
+                        //ER009
+                        let messageError = nts.uk.text.format("統合元と統合先で同じコードの{0}が選択されています。\r\n  振込元銀行を確認してください。", self.currentCode());
                         nts.uk.ui.dialog.alert(messageError);
                         return;
                     }
                     else {
+                        //Al003
                         nts.uk.ui.dialog.confirm("統合元から統合先へデータを置換えます。\r\n よろしいですか？").ifYes(function () {
+                            //Do you want to delete lineBank?
                             nts.uk.ui.dialog.confirm("置換元のマスタを削除しますか？[はい/いいえ]").ifYes(function () {
                                 var data = {
                                     oldLineBankCode: oldLineBankCode,
@@ -85,24 +98,24 @@ var qmm006;
                             return;
                         });
                     }
-                };
-                ScreenModel.prototype.closeDialog = function () {
+                }
+                /**
+                 * close dialog
+                 */
+                closeDialog() {
                     nts.uk.ui.windows.close();
-                };
-                return ScreenModel;
-            }());
+                }
+            }
             viewmodel.ScreenModel = ScreenModel;
-            var LineBankC = (function () {
-                function LineBankC(lineBankCode, lineBankName, accountAtr, accountNo) {
+            class LineBankC {
+                constructor(lineBankCode, lineBankName, accountAtr, accountNo) {
                     this.lineBankCode = ko.observable(lineBankCode);
                     this.lineBankName = ko.observable(lineBankName);
                     this.accountAtr = ko.observable(accountAtr);
                     this.accountNo = ko.observable(accountNo);
                 }
-                return LineBankC;
-            }());
+            }
         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
     })(c = qmm006.c || (qmm006.c = {}));
 })(qmm006 || (qmm006 = {}));
 ;
-//# sourceMappingURL=qmm006.c.viewmodel.js.map

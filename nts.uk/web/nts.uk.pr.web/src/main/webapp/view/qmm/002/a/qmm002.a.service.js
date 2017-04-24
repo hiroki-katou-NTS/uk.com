@@ -21,7 +21,7 @@ var nts;
                                 check: "basic/system/bank/find/check"
                             };
                             function getBankList() {
-                                var dfd = $.Deferred();
+                                let dfd = $.Deferred();
                                 nts.uk.request.ajax("com", paths.getBankList)
                                     .done(function (res) {
                                     dfd.resolve(res);
@@ -33,7 +33,7 @@ var nts;
                             }
                             service.getBankList = getBankList;
                             function checkBankList() {
-                                var dfd = $.Deferred();
+                                let dfd = $.Deferred();
                                 nts.uk.request.ajax("com", paths.check)
                                     .done(function (res) {
                                     dfd.resolve(res);
@@ -81,4 +81,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm002.a.service.js.map

@@ -18,7 +18,7 @@ var nts;
                                     self.lastestHistory = data;
                                     self.formulaCode = ko.observable(data.formulaCode);
                                     self.formulaName = ko.observable(data.formulaName);
-                                    self.startYm = ko.observable(data.startYm);
+                                    self.startYm = ko.observable(moment(data.startYm, "YYYY/MM").add(1, 'M').format("YYYY/MM"));
                                     self.switchButtonDifficultyAtr = ko.observable({
                                         items: ko.observableArray([
                                             { code: '0', name: 'かんたん設定' },
@@ -26,6 +26,8 @@ var nts;
                                         ]),
                                         selectedCode: ko.observable(0)
                                     });
+                                    var diffcultyAtr = _.find(self.switchButtonDifficultyAtr().items(), function (item) { return item.code == data.difficultyAtr; });
+                                    self.txtDifficultyAtr = diffcultyAtr.name;
                                     self.switchButtonConditionAtr = ko.observable({
                                         items: ko.observableArray([
                                             { code: '0', name: '利用しない' },
@@ -76,13 +78,18 @@ var nts;
                                             referenceMasterNo: self.comboBoxReferenceMasterNo().selectedCode(),
                                         };
                                     }
-                                    j.service.registerFormulaHistory(command)
-                                        .done(function () {
-                                        nts.uk.ui.windows.close();
-                                    })
-                                        .fail(function (res) {
-                                        alert(res);
-                                    });
+                                    if (moment(command.startDate) <= moment(self.lastestHistory.startYm)) {
+                                        j.service.registerFormulaHistory(command)
+                                            .done(function () {
+                                            nts.uk.ui.windows.close();
+                                        })
+                                            .fail(function (res) {
+                                            alert(res);
+                                        });
+                                    }
+                                    else {
+                                        nts.uk.ui.dialog.alert("履歴の期間が正しくありません。");
+                                    }
                                 };
                                 return ScreenModelJScreen;
                             }());

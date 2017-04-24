@@ -17,11 +17,24 @@ var nts;
                                     var self = this;
                                     self.items = ko.observableArray([]);
                                     self.personalUPItems = ko.observableArray([]);
+                                    self.systemVariableItems = ko.observableArray([]);
                                     self.currentCodeList = ko.observableArray([]);
-                                    self.formulaContent = data.formulaContent;
-                                    self.buildListItemModel(data.itemsBag);
-                                    self.bindGridListItem();
-                                    self.calculator = new Calculator();
+                                    self.formulaContent = ko.observable(data.formulaContent);
+                                    if (self.formulaContent().indexOf('計算式＠') !== -1) {
+                                        self.extractOtherFormulaContents(data.itemsBag)
+                                            .done(function () {
+                                            self.replaceCodesToNames(data.itemsBag);
+                                            self.buildListItemModel(data.itemsBag);
+                                            self.bindGridListItem();
+                                            self.replaceSystemVariableToValue();
+                                        });
+                                    }
+                                    else {
+                                        self.replaceCodesToNames(data.itemsBag);
+                                        self.buildListItemModel(data.itemsBag);
+                                        self.bindGridListItem();
+                                        self.replaceSystemVariableToValue();
+                                    }
                                 }
                                 ScreenModel.prototype.isDuplicated = function (itemName) {
                                     var self = this;
@@ -30,12 +43,55 @@ var nts;
                                     });
                                     return foundItem !== undefined;
                                 };
+                                ScreenModel.prototype.replaceCodesToNames = function (itemsBag) {
+                                    var self = this;
+                                    var replacedContent = self.formulaContent();
+                                    _.forEach(itemsBag, function (item) {
+                                        if (replacedContent.indexOf(item.code) !== -1) {
+                                            replacedContent = replacedContent.replace(item.code, item.name);
+                                        }
+                                    });
+                                    self.formulaContent(replacedContent);
+                                };
+                                ScreenModel.prototype.replaceSystemVariableToValue = function () {
+                                    var self = this;
+                                    var replacedContent = self.formulaContent();
+                                    _.forEach(self.systemVariableItems(), function (item) {
+                                        if (replacedContent.indexOf(item.code) !== -1) {
+                                            replacedContent = replacedContent.replace(item.code, item.value);
+                                        }
+                                    });
+                                    self.formulaContent(replacedContent);
+                                };
+                                ScreenModel.prototype.extractOtherFormulaContents = function (itemsBag) {
+                                    var self = this;
+                                    var dfdExtraction = $.Deferred();
+                                    var replacedValue = self.formulaContent();
+                                    _.forEach(itemsBag, function (item) {
+                                        if (item.name.indexOf('計算式＠') !== -1 && self.formulaContent().indexOf(item.name) !== -1) {
+                                            var itemCodeSplited = item.code.split('＠');
+                                            q.service.findLastestFormulaManual(itemCodeSplited[1])
+                                                .done(function (formulaManual) {
+                                                replacedValue = replacedValue.replace(new RegExp(item.name, 'g'), "（" + formulaManual.formulaContent + "）");
+                                                self.formulaContent(replacedValue);
+                                                dfdExtraction.resolve();
+                                            })
+                                                .fail(function () {
+                                                dfdExtraction.reject();
+                                            });
+                                        }
+                                    });
+                                    return dfdExtraction.promise();
+                                };
                                 ScreenModel.prototype.buildListItemModel = function (itemsBag) {
                                     var self = this;
                                     _.forEach(itemsBag, function (item) {
-                                        if (item.name.indexOf('関数') === -1 && self.formulaContent.indexOf(item.name) !== -1 && !self.isDuplicated(item.name)) {
+                                        if (item.name.indexOf('関数') === -1 && self.formulaContent().indexOf(item.name) !== -1 && !self.isDuplicated(item.name)) {
                                             if (item.name.indexOf('個人単価＠') !== -1) {
                                                 self.personalUPItems.push(new ItemModel(item.name, 0));
+                                            }
+                                            else if (item.name.indexOf('変数＠') !== -1) {
+                                                self.systemVariableItems.push(new ItemModel(item.name, item.value));
                                             }
                                             else {
                                                 self.items.push(new ItemModel(item.name, 0));
@@ -73,7 +129,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.calculationTrial = function () {
                                     var self = this;
-                                    var replacedValue = self.formulaContent + '+ 0';
+                                    var replacedValue = self.formulaContent() + '+ 0';
                                     _.forEach(self.items(), function (item) {
                                         replacedValue = replacedValue.replace(new RegExp(item.code, 'g'), item.value);
                                     });
@@ -165,57 +221,6 @@ var nts;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
                         })(viewmodel = q.viewmodel || (q.viewmodel = {}));
-                        var Calculator = (function () {
-                            function Calculator() {
-                            }
-                            Calculator.prototype.calculateConditionExpression = function (condition, result1, result2) {
-                                if (condition) {
-                                    return result1;
-                                }
-                                else {
-                                    return result2;
-                                }
-                            };
-                            Calculator.prototype.calculateAndExpression = function (lstCondition) {
-                                _.forEach(lstCondition, function (condition) {
-                                    if (!condition || condition !== 'true') {
-                                        return false;
-                                    }
-                                });
-                                return true;
-                            };
-                            Calculator.prototype.calculateOrExpression = function (lstCondition) {
-                                _.forEach(lstCondition, function (condition) {
-                                    if (condition || condition === 'true') {
-                                        return true;
-                                    }
-                                });
-                                return false;
-                            };
-                            Calculator.prototype.calculateCeil = function (value) {
-                                return _.ceil(value);
-                            };
-                            Calculator.prototype.calculateMax = function (lstValue) {
-                                return _.max(lstValue);
-                            };
-                            Calculator.prototype.calculateMin = function (lstValue) {
-                                return _.min(lstValue);
-                            };
-                            Calculator.prototype.calculateNumberOfFamily = function (minAge, maxAge) {
-                                return 0;
-                            };
-                            Calculator.prototype.calculateAddMonth = function (yearMonth, month) {
-                                return moment(yearMonth, "YYYY/MM").add(month, 'months').format("YYYY/MM");
-                            };
-                            Calculator.prototype.calculateExportYear = function (yearMonth) {
-                                return moment(yearMonth, "YYYY/MM").year();
-                            };
-                            Calculator.prototype.calculateExportMonth = function (yearMonth) {
-                                return moment(yearMonth, "YYYY/MM").month() + 1;
-                            };
-                            return Calculator;
-                        }());
-                        q.Calculator = Calculator;
                         var ItemModel = (function () {
                             function ItemModel(code, value) {
                                 this.code = code;
@@ -229,4 +234,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm017.q.vm.js.map

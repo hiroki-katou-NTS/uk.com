@@ -1,7 +1,7 @@
-var CheckBoxWithHelpBindingHandler = (function () {
-    function CheckBoxWithHelpBindingHandler() {
+class CheckBoxWithHelpBindingHandler {
+    constructor() {
     }
-    CheckBoxWithHelpBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+    init(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
         ko.bindingHandlers['ntsCheckBox'].init(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
         if (valueAccessor().helper) {
             var span = document.createElement('span');
@@ -9,17 +9,16 @@ var CheckBoxWithHelpBindingHandler = (function () {
             span.setAttribute('class', 'label helper');
             element.getElementsByTagName('label')[0].appendChild(span);
         }
-    };
-    CheckBoxWithHelpBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+    }
+    update(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
         ko.bindingHandlers['ntsCheckBox'].update(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
-    };
-    return CheckBoxWithHelpBindingHandler;
-}());
+    }
+}
 ko.bindingHandlers['ntsCheckBox2'] = new CheckBoxWithHelpBindingHandler();
 Date.prototype["getWorkDays"] = function () {
-    var workDays = 0, lastDate = moment(this).daysInMonth();
-    for (var day = 1; day <= lastDate; day++) {
-        var date = new Date(this.getFullYear(), this.getMonth(), day);
+    let workDays = 0, lastDate = moment(this).daysInMonth();
+    for (let day = 1; day <= lastDate; day++) {
+        let date = new Date(this.getFullYear(), this.getMonth(), day);
         if (date.getDay() != 0 && date.getDay() != 6) {
             workDays++;
         }
@@ -100,41 +99,40 @@ var qmm005;
         }
         common.webapi = webapi;
         function formatNumber(num, lenght) {
-            var len = num.toString().length;
+            let len = num.toString().length;
             if (len >= lenght) {
                 return num.toString();
             }
-            var str = '';
-            for (var i = 1; i <= lenght - len; i++) {
+            let str = '';
+            for (let i = 1; i <= lenght - len; i++) {
                 str += '0';
             }
             return str + num;
         }
         common.formatNumber = formatNumber;
-        var SelectItem = (function () {
-            function SelectItem(param) {
-                var self = this;
+        class SelectItem {
+            constructor(param) {
+                let self = this;
                 self.index = param.index;
                 self.label = param.label;
                 self.value = param.value || undefined;
                 self.selected = param.selected || false;
             }
-            return SelectItem;
-        }());
+        }
         common.SelectItem = SelectItem;
-        var CheckBoxItem = (function () {
-            function CheckBoxItem(param) {
-                var self = this;
+        class CheckBoxItem {
+            constructor(param) {
+                let self = this;
                 self.text = param.text;
                 self.helper = param.helper;
                 self.enable = ko.observable(param.enable || true);
                 self.checked = ko.observable(param.checked || false);
             }
-            return CheckBoxItem;
-        }());
+        }
         common.CheckBoxItem = CheckBoxItem;
     })(common = qmm005.common || (qmm005.common = {}));
 })(qmm005 || (qmm005 = {}));
+// for develop
 var _ref = (window.location.href.indexOf('localhost') == -1) && new Date().getTime() || 'v1.0.0';
 var route = window.location.href
     .slice(0, window.location.href.lastIndexOf('/'))
@@ -145,4 +143,3 @@ document.writeln("<link rel='stylesheet' type='text/css' href='" + route + ".sty
 document.writeln("<script type='text/javascript' src='" + route + ".service.js?ref=" + _ref + "'></script>");
 document.writeln("<script type='text/javascript' src='" + route + ".viewmodel.js?ref=" + _ref + "'></script>");
 document.writeln("<script type='text/javascript' src='" + route + ".start.js?ref=" + _ref + "'></script>");
-//# sourceMappingURL=qmm005.js.map
