@@ -45,6 +45,7 @@ import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery;
 import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery.OutputType;
 import nts.uk.file.pr.app.export.wageledger.data.WLNewLayoutReportData;
 import nts.uk.file.pr.app.export.wageledger.data.WLOldLayoutReportData;
+import nts.uk.file.pr.app.export.wageledger.data.newlayout.TotalData;
 import nts.uk.file.pr.app.export.wageledger.data.oldlayout.DeductionData;
 import nts.uk.file.pr.app.export.wageledger.data.oldlayout.PaymentData;
 import nts.uk.file.pr.app.export.wageledger.data.share.HeaderReportData;
@@ -150,7 +151,7 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 			return (List<T>) this.convertToOldLayoutDataList(resultData, query, companyCode);
 		}
 		if (returnType.getName().equals(WLNewLayoutReportData.class)) {
-			//return (List<T>) this.covertToNewLayoutDataList(itemResultList);
+			return (List<T>) this.covertToNewLayoutDataList(resultData, query, companyCode);
 		}
 
 		// Not support return type.
@@ -348,8 +349,51 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 	 * @param itemList the item list
 	 * @return the list
 	 */
-	private List<WLNewLayoutReportData> covertToNewLayoutDataList(List<Object[]> itemList) {
+	private List<WLNewLayoutReportData> covertToNewLayoutDataList(ResultData resultData, WageLedgerReportQuery query,
+			String companyCode) {
+		List<WLNewLayoutReportData> reportList = new ArrayList<>();
+		MonthData monthData = new MonthData();
+		// Query Header data.
+		Map<String, HeaderReportData> headerDataMap = this.findHeaderDatas(companyCode, query);
+
+		// Group by user.
+		Map<String, List<Object[]>> userMap = resultData.reportItemData.stream()
+				.collect(Collectors.groupingBy(item -> ((QstdtPaymentDetail) item[0]).qstdtPaymentDetailPK.personId));
+		Map<String, List<Object[]>> userAllMasterDataMap = resultData.allMasterItemData.stream()
+				.collect(Collectors.groupingBy(item -> ((QstdtPaymentDetail) item[0]).qstdtPaymentDetailPK.personId));
+		List<QcamtItem> masterItems = this.getEntityManager().createQuery(MASTER_ITEM_QUERY_STRING, QcamtItem.class)
+				.setParameter("companyCode", companyCode).getResultList();
+		
+		// Convert to report data model.
+		for (String personId : userMap.keySet()) {
+			List<Object[]> detailData = userMap.get(personId);
+			List<Object[]> allMasterItemData = userAllMasterDataMap.get(personId);
+			
+			// =========================== Total Data. ===========================
+			
+		}
+
 		return null;
+	}
+	
+	private TotalData findTotalDataItems(List<Object[]> allMasterData, PaymentType paymentType, MonthData monthData,
+			List<QcamtItem> masterItems) {
+		// Total tax.
+		ItemData totalTaxItemData = new ItemData(paymentType.value, WLCategory.Payment.value, TOTAL_TAX_ITEM_CODE);
+		ReportItemDto totalTaxItem = this.findItem(allMasterData, masterItems, totalTaxItemData, monthData);
+		
+		// Total Tax Exemption.
+		ItemData totalTaxExemptionItemData = new ItemData(paymentType.value,
+				WLCategory.Payment.value, TOTAL_TAX_EXEMPTION_ITEM_CODE);
+		ReportItemDto totalTaxExemptionItem = this.findItem(allMasterData, masterItems,
+				totalTaxExemptionItemData, monthData);
+		
+		// Total payment.
+//		ItemData totalPay
+		return TotalData.builder()
+				.totalTax(totalTaxItem)
+				.totalTaxExemption(totalTaxExemptionItem)
+				.build();
 	}
 
 	/**

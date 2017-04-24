@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pr.report.app.itemmaster.find.ItemMaterFinder;
-import nts.uk.ctx.pr.report.app.itemmaster.find.MasterItemDto;
+import nts.uk.ctx.pr.report.app.itemmaster.query.ItemMaterRepository;
+import nts.uk.ctx.pr.report.app.itemmaster.query.MasterItemDto;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.HeaderSettingDto;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.OutputSettingDto;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItem;
@@ -33,7 +33,7 @@ public class OutputSettingFinder {
 	
 	/** The finder. */
 	@Inject
-	private ItemMaterFinder finder;
+	private ItemMaterRepository finder;
 	
 	/** The aggregate item repository. */
 	@Inject

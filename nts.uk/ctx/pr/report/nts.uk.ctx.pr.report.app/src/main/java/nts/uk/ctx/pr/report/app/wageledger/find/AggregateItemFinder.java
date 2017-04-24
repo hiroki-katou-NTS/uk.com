@@ -14,8 +14,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.uk.ctx.pr.report.app.itemmaster.find.ItemMaterFinder;
-import nts.uk.ctx.pr.report.app.itemmaster.find.MasterItemDto;
+import nts.uk.ctx.pr.report.app.itemmaster.query.ItemMaterRepository;
+import nts.uk.ctx.pr.report.app.itemmaster.query.MasterItemDto;
 import nts.uk.ctx.pr.report.app.wageledger.command.dto.ItemSubjectDto;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.AggregateItemDto;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.HeaderSettingDto;
@@ -36,7 +36,7 @@ public class AggregateItemFinder {
 	
 	/** The item mater finder. */
 	@Inject
-	private ItemMaterFinder itemMaterFinder;
+	private ItemMaterRepository itemMaterRepo;
 	
 	/**
 	 * Find all.
@@ -90,7 +90,7 @@ public class AggregateItemFinder {
 		aggregateItem.saveToMemento(dto);
 		
 		// Find master item name.
-		Map<String, MasterItemDto> itemMap = this.itemMaterFinder
+		Map<String, MasterItemDto> itemMap = this.itemMaterRepo
 				.findByCodes(companyCode, new ArrayList<>(aggregateItem.getSubItems())).stream()
 				.filter(item -> item.category.value == subject.getCategory().value)
 				.collect(Collectors.toMap(item -> item.code, Function.identity()));

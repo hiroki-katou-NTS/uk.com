@@ -2,14 +2,14 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.report.app.itemmaster.find;
+package nts.uk.ctx.pr.report.app.itemmaster.query;
 
 import java.util.List;
 
 /**
  * The Interface ItemMaterFinder.
  */
-public interface ItemMaterFinder {
+public interface ItemMaterRepository {
 	
 	/**
 	 * Find all.
