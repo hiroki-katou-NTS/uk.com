@@ -167,7 +167,6 @@ module nts.uk.pr.view.qmm016.a {
                 var self = this;
                 self.selectedTab('tab-1');
                 self.head().reset();
-                self.valueItems(self.history().detailViewModel.getCellItem());
                 self.headDirtyChecker.reset();
                 self.settingDirtyChecker.reset();
                 self.valuesDirtyChecker.reset();
