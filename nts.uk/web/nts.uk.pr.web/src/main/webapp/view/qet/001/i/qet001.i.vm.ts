@@ -76,6 +76,7 @@ module qet001.i.viewmodel {
         itemList: KnockoutObservableArray<service.Item>;
         category: string;
         paymentType: string;
+        fullCategoryName: string;
         aggregateItemSelectedCode: KnockoutObservable<string>;
         temporarySelectedCode: KnockoutObservable<string>;
         aggregateItemDetail: KnockoutObservable<AggregateItemDetail>;
@@ -87,6 +88,7 @@ module qet001.i.viewmodel {
             this.paymentType = paymentType;
             this.aggregateItemSelectedCode = ko.observable(null);
             this.temporarySelectedCode = ko.observable(null);
+            this.fullCategoryName = this.getFullCategoryName(categoryName, paymentType);
 
             // Filter master item by category and payment type.
             var masterItemInCate = masterItems.filter(item => item.category == categoryName);
@@ -125,6 +127,28 @@ module qet001.i.viewmodel {
                     self.aggregateItemSelectedCode(self.temporarySelectedCode());
                 });
             });
+        }
+
+        /**
+         * Get full category name by category and payment type.
+         */
+        private getFullCategoryName(category: string, paymentType: string): string {
+            var categoryName = '';
+            switch (category) {
+                case Category.PAYMENT:
+                    categoryName = '支給';
+                    break;
+                case Category.DEDUCTION:
+                    categoryName = '控除';
+                    break;
+                case Category.ATTENDANCE:
+                    categoryName = '勤怠';
+                    break;
+                default:
+                    categoryName = '';
+            }
+            var paymentTypeName = paymentType == PaymentType.SALARY ? '給与' : '賞与';
+            return paymentTypeName + categoryName;
         }
 
         /**

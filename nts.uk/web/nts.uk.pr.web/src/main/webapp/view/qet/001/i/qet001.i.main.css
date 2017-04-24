@@ -60,3 +60,6 @@
 #search-input > .ntsSearchBox {
 	width: 192px !important;
 }
+span.category-name {
+	font-size: 1.5rem;
+}

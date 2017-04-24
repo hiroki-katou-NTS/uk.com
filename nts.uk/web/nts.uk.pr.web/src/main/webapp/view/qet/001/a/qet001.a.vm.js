@@ -7,7 +7,7 @@ var qet001;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     this.targetYear = ko.observable(2016);
-                    this.isAggreatePreliminaryMonth = ko.observable(true);
+                    this.isAggreatePreliminaryMonth = ko.observable(false);
                     this.layoutSelected = ko.observable(LayoutOutput.ONE_PAGE);
                     this.isPageBreakIndicator = ko.observable(false);
                     this.outputTypeSelected = ko.observable(OutputType.MASTER_ITEMS);
