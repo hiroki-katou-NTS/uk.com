@@ -85,7 +85,6 @@ module nts.uk.pr.view.qmm010.a {
             //function clear message error
             private clearErrorSave() {
                 $('.save-error').ntsError('clear');
-                $('#btn_save').ntsError('clear');
             }
 
             //function read all SocialTnsuranceOffice

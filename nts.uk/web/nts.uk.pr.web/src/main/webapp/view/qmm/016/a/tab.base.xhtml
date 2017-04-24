@@ -18,15 +18,15 @@
 				<tr class="control-group">
 					<td><div id="lbl_002"
 							data-bind="ntsFormLabel: { constraint: ['WtCode', 'WtName'], required: true }">コード/名称*</div></td>
-					<td colspan="2"><input id="inp_001"
+					<td colspan="2"><input id="inp_code"
 						data-bind="ntsTextEditor: {value: head().code,  constraint: 'WtCode', enable: isNewMode}" />
-						<input id="inp_002"
+						<input id="inp_name"
 						data-bind="ntsTextEditor: {value: head().name,  constraint: 'WtName' }" /></td>
 				</tr>
 				<tr class="control-group">
 					<td><div id="lbl_003"
 							data-bind="ntsFormLabel: { required: true }">開始年月*</div></td>
-					<td><span id="ipnStartDate"
+					<td><span id="inp_start_date"
 						data-bind="ntsDatePicker: {value: history().startYearMonth, class: 'nts-editor nts-input', dateFormat: 'yyyy/MM', enable: isNewMode}"></span>
 						<label data-bind="text: history().startYearMonthJpText" />~</td>
 					

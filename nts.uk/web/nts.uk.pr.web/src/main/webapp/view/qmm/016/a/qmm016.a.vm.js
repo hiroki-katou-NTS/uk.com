@@ -90,9 +90,19 @@ var nts;
                                     dfd.resolve();
                                     return dfd.promise();
                                 };
+                                ScreenModel.prototype.validateData = function () {
+                                    $("#inp_code").ntsEditor("validate");
+                                    $("#inp_name").ntsEditor("validate");
+                                    $("#inp_start_date").ntsEditor("validate");
+                                };
+                                ScreenModel.prototype.clearErrorSave = function () {
+                                    $('.save-error').ntsError('clear');
+                                };
                                 ScreenModel.prototype.onSave = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
+                                    self.clearErrorSave();
+                                    self.validateData();
                                     if (self.isNewMode()) {
                                         var wagetableDto = self.head().getWageTableDto();
                                         a.service.instance.initWageTable({

@@ -120,6 +120,18 @@ module nts.uk.pr.view.qmm016.a {
                 dfd.resolve();
                 return dfd.promise();
             }
+            
+            
+            private validateData() {
+                $("#inp_code").ntsEditor("validate");
+                $("#inp_name").ntsEditor("validate");
+                $("#inp_start_date").ntsEditor("validate");
+            }
+            
+            //function clear message error
+            private clearErrorSave() {
+                $('.save-error').ntsError('clear');
+            }
 
             /**
              * Create or Update UnitPriceHistory.
@@ -127,6 +139,9 @@ module nts.uk.pr.view.qmm016.a {
             onSave(): JQueryPromise<string> {
                 var self = this;
                 var dfd = $.Deferred<string>();
+                
+                self.clearErrorSave();
+                self.validateData();
 
                 // New mode.
                 if (self.isNewMode()) {
