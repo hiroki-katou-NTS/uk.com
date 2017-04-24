@@ -6,13 +6,11 @@ package nts.uk.pr.file.infra.wageledger;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -30,6 +28,7 @@ import nts.uk.ctx.basic.infra.entity.report.PclmtPersonTitleRgl;
 import nts.uk.ctx.basic.infra.entity.report.PcpmtPersonCom;
 import nts.uk.ctx.basic.infra.entity.report.PogmtPersonDepRgl;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItem;
+import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemPK;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentDetail;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
@@ -102,19 +101,6 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 			+ "AND d.qstdtPaymentDetailPK.processingYM <= :endProcessingYM "
 			+ "AND d.qstdtPaymentDetailPK.sparePayAttribute = :sparePayAtr ";
 	
-	/** The Constant DETAIL_DATA_QUERY_STRING. */
-	private static final String DETAIL_DATA_QUERY_STRING = "SELECT d, m "
-			+ "FROM QcamtItem m, "
-			+ "QstdtPaymentDetail d "
-			+ "WHERE d.qstdtPaymentDetailPK.itemCode = m.qcamtItemPK.itemCd "
-			+ "AND d.qstdtPaymentDetailPK.companyCode = m.qcamtItemPK.ccd "
-			+ "AND m.qcamtItemPK.ccd = :companyCode "
-			+ "AND d.qstdtPaymentDetailPK.personId in :personIds "
-			+ "AND d.qstdtPaymentDetailPK.processingYM >= :startProcessingYM "
-			+ "AND d.qstdtPaymentDetailPK.processingYM <= :endProcessingYM "
-			+ "AND d.qstdtPaymentDetailPK.sparePayAttribute = :sparePayAtr "
-			+ "AND m.qcamtItemPK.itemCd IN :masterItemCode";
-	
 	/** The Constant MASTER_ITEM_QUERY_STRING. */
 	private static final String MASTER_ITEM_QUERY_STRING = "SELECT mi FROM QcamtItem mi "
 			+ "WHERE mi.qcamtItemPK.ccd = :companyCode";
@@ -156,21 +142,14 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> List<T> findReportDatas(String companyCode, WageLedgerReportQuery query, Class<T> returnType) {
-		List<Object[]> itemResultList;
-		// Case: Query master item only.
-		if (query.outputType == OutputType.MasterItems) {
-			itemResultList = this.queryDataList(companyCode, query);
-		} else {
-			// Case: Query by output setting.
-			itemResultList = this.queryByOutputSetting(companyCode, query);
-		}
+		ResultData resultData = this.queryDataList(companyCode, query);
 
 		// Covert to Data model.
 		if (returnType.getName().equals(WLOldLayoutReportData.class.getName())) {
-			return (List<T>) this.convertToOldLayoutDataList(itemResultList, query, companyCode);
+			return (List<T>) this.convertToOldLayoutDataList(resultData, query, companyCode);
 		}
 		if (returnType.getName().equals(WLNewLayoutReportData.class)) {
-			return (List<T>) this.covertToNewLayoutDataList(itemResultList);
+			//return (List<T>) this.covertToNewLayoutDataList(itemResultList);
 		}
 
 		// Not support return type.
@@ -211,7 +190,7 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 	 * @return the list
 	 */
 	@SuppressWarnings("unchecked")
-	private List<Object[]> queryDataList(String companyCode, WageLedgerReportQuery query) {
+	private ResultData queryDataList(String companyCode, WageLedgerReportQuery query) {
 		
 		EntityManager em = this.getEntityManager();
 		// Create Year Month.
@@ -232,7 +211,7 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 			masterResultList.addAll(typeQuery.setParameter("personIds", subList).getResultList());
 		});
 		if (query.outputType == OutputType.MasterItems) {
-			return masterResultList;
+			return new ResultData(masterResultList);
 		}
 		
 		// ===================== Query by output setting.=====================
@@ -246,42 +225,30 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 						.map(item -> item.getLinkageCode()).collect(Collectors.toList()))
 				.flatMap(items -> items.stream()).collect(Collectors.toList());
 		List<WLAggregateItem> aggregateItems = this.aggregateItemRepository.findByCodes(companyCode, aggregateItemCode);
-		List<String> masterItemCodesInAggregate = aggregateItems.stream().map(item -> item.getSubItems()).flatMap(item -> item.stream())
-		.collect(Collectors.toList());
-		
-		// Query master item in output setting & aggregate.
-		List<String> masterItemCodes = outputSetting.getCategorySettings().stream()
-				.map(cate -> cate.getOutputItems().stream().filter(item -> item.getType() == WLItemType.Master)
-						.map(item -> item.getLinkageCode()).collect(Collectors.toList()))
-				.flatMap(items -> items.stream()).collect(Collectors.toList());
-		// Create Query.
-		Query masterItemQuery = em.createQuery(DETAIL_DATA_QUERY_STRING)
-				.setParameter("companyCode", companyCode)
-				.setParameter("sparePayAtr", query.isAggreatePreliminaryMonth ? 1 : 0)
-				.setParameter("startProcessingYM", startYearMonth.v())
-				.setParameter("endProcessingYM", endYearMonth.v())
-				.setParameter("masterItemCode", Stream.concat(masterItemCodesInAggregate.stream(), masterItemCodes.stream())
-						.collect(Collectors.toList()));
-		// Query data.
-		CollectionUtil.split(query.employeeIds, 1000, (subList) -> {
-			masterResultList.addAll(masterItemQuery.setParameter("personIds", subList).getResultList());
-		});
 		
 		// Aggregate master item and aggregate item in output setting.
-		List<Object[]> outputSettingResultList = new ArrayList<>();
-		// Remove master
+		Map<String, List<Object[]>> userMap = masterResultList.stream()
+				.collect(Collectors.groupingBy(item -> ((QstdtPaymentDetail) item[0]).qstdtPaymentDetailPK.personId));
+		List<Object[]> outputSettingDataList = new ArrayList<>();
+		userMap.forEach((userId, userData) -> {
+			Map<QcamtItem, List<Object[]>> dataMaps = userData.stream()
+					.collect(Collectors.groupingBy(data -> (QcamtItem) data[1]));
+			outputSettingDataList.addAll(this.filterDataByOutputSetting(companyCode, dataMaps, outputSetting, aggregateItems));
+		});
 		
-		return null;
+		return new ResultData(masterResultList, outputSettingDataList);
 	}
 	
 	private List<Object[]> filterDataByOutputSetting(String companyCode, Map<QcamtItem, List<Object[]>> dataMaps,
 			WLOutputSetting outputSetting, List<WLAggregateItem> aggregateItems) {
 		List<Object[]> results = new ArrayList<>();
+
 		outputSetting.getCategorySettings().forEach(category -> {
 			category.getOutputItems().forEach(outputItem -> {
 				// Master item.
 				if (outputItem.getType() == WLItemType.Master) {
 					QcamtItem masterItem = new QcamtItem();
+					masterItem.qcamtItemPK = new QcamtItemPK();
 					masterItem.qcamtItemPK.ccd = companyCode;
 					masterItem.qcamtItemPK.ctgAtr = category.getCategory().value;
 					masterItem.qcamtItemPK.itemCd = outputItem.getLinkageCode();
@@ -298,46 +265,71 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 				List<QcamtItem> masterItemList = aggregateItem.getSubItems().stream()
 						.map(subItem -> {
 							QcamtItem masterItem = new QcamtItem();
+							masterItem.qcamtItemPK = new QcamtItemPK();
 							masterItem.qcamtItemPK.ccd = companyCode;
 							masterItem.qcamtItemPK.ctgAtr = category.getCategory().value;
 							masterItem.qcamtItemPK.itemCd = subItem;
-							return new QcamtItem();
+							return masterItem;
 						}).collect(Collectors.toList());
 				
 				// Calculate aggregate item.
-				double aggregateValue = masterItemList.stream().mapToDouble(item -> {
-					return dataMaps.get(item).stream()
-							.mapToDouble(data -> ((QstdtPaymentDetail) data[1]).value.doubleValue())
-							.sum();
-				}).sum();
+				Map<Integer, Double> aggregateValueMap = new HashMap<>();
+				masterItemList.forEach(item -> {
+					List<Object[]> data = dataMaps.get(item);
+					if (CollectionUtil.isEmpty(data)) {
+						return;
+					}
+					// Group data by year month.
+					Map<Integer, List<Object[]>> monthMap = data.stream().collect(Collectors.groupingBy(
+							monthData -> ((QstdtPaymentDetail) monthData[0]).qstdtPaymentDetailPK.processingYM));
+					
+					monthMap.forEach((yearMonth, monthData) -> {
+						
+						// Calculate aggregate item value.
+						double aggregateValue = monthData.stream()
+								.mapToDouble(dataItem -> ((QstdtPaymentDetail) dataItem[0]).value.doubleValue())
+								.sum();
+						aggregateValueMap.put(yearMonth, aggregateValue);
+					});
+				});
 				
-				Object[] aggreateItemData = new Object[2];
-				QcamtItem masterItem = masterItemList.get(0);
-				masterItem.qcamtItemPK.itemCd = aggregateItem.getSubject().getCode().v();
-				masterItem.itemName = aggregateItem.getName().v();
-				aggreateItemData[0] = masterItem;
-				QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) dataMaps.get(masterItemList.get(0)).get(0)[1];
-				paymentDetail.qstdtPaymentDetailPK.categoryATR = category.getCategory().value;
-				paymentDetail.qstdtPaymentDetailPK.companyCode = companyCode;
-				paymentDetail.qstdtPaymentDetailPK.itemCode = aggregateItem.getSubject().getCode().v();
-				paymentDetail.value = new BigDecimal(aggregateValue);
-				aggreateItemData[1] = paymentDetail;
-				results.add(aggreateItemData);
+				// Check if none data for aggregate item.
+				if (CollectionUtil.isEmpty(aggregateItems)) {
+					Object[] aggreateItemData = new Object[2];
+					QcamtItem masterItem = masterItemList.get(0);
+					masterItem.qcamtItemPK.itemCd = aggregateItem.getSubject().getCode().v();
+					masterItem.itemName = aggregateItem.getName().v();
+					aggreateItemData[1] = masterItem;
+					QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) dataMaps.get(masterItemList.get(0)).get(0)[0];
+					paymentDetail.qstdtPaymentDetailPK.categoryATR = category.getCategory().value;
+					paymentDetail.qstdtPaymentDetailPK.companyCode = companyCode;
+					paymentDetail.qstdtPaymentDetailPK.itemCode = aggregateItem.getSubject().getCode().v();
+					paymentDetail.value = new BigDecimal(0);
+					aggreateItemData[0] = paymentDetail;
+					results.add(aggreateItemData);
+					return;
+				}
+				
+				// Add item to result list.
+				aggregateValueMap.forEach((yearMonth, value) -> {
+					// Create new data object.
+					Object[] aggreateItemData = new Object[2];
+					QcamtItem masterItem = masterItemList.get(0);
+					masterItem.qcamtItemPK.itemCd = aggregateItem.getSubject().getCode().v();
+					masterItem.itemName = aggregateItem.getName().v();
+					aggreateItemData[1] = masterItem;
+					QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) dataMaps.get(masterItemList.get(0)).get(0)[0];
+					paymentDetail.qstdtPaymentDetailPK.categoryATR = category.getCategory().value;
+					paymentDetail.qstdtPaymentDetailPK.companyCode = companyCode;
+					paymentDetail.qstdtPaymentDetailPK.itemCode = aggregateItem.getSubject().getCode().v();
+					paymentDetail.qstdtPaymentDetailPK.processingYM = yearMonth;
+					paymentDetail.value = new BigDecimal(value);
+					aggreateItemData[0] = paymentDetail;
+					results.add(aggreateItemData);
+				});
 			});
 		});
 		return results;
-	}
-
-	/**
-	 * Query by output setting.
-	 *
-	 * @param companyCode the company code
-	 * @param query the query
-	 * @return the list
-	 */
-	private List<Object[]> queryByOutputSetting(String companyCode, WageLedgerReportQuery query) {
-		
-		return null;
 	}
 
 	/**
@@ -358,7 +350,7 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	private List<WLOldLayoutReportData> convertToOldLayoutDataList(List<Object[]> itemList, WageLedgerReportQuery query,
+	private List<WLOldLayoutReportData> convertToOldLayoutDataList(ResultData resultData, WageLedgerReportQuery query,
 			String companyCode) {
 		List<WLOldLayoutReportData> dataList = new ArrayList<>();
 		MonthData monthData = new MonthData();
@@ -366,7 +358,9 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		Map<String, HeaderReportData> headerDataMap = this.findHeaderDatas(companyCode, query);
 
 		// Group by user.
-		Map<String, List<Object[]>> userMap = itemList.stream()
+		Map<String, List<Object[]>> userMap = resultData.reportItemData.stream()
+				.collect(Collectors.groupingBy(item -> ((QstdtPaymentDetail) item[0]).qstdtPaymentDetailPK.personId));
+		Map<String, List<Object[]>> userAllMasterDataMap = resultData.allMasterItemData.stream()
 				.collect(Collectors.groupingBy(item -> ((QstdtPaymentDetail) item[0]).qstdtPaymentDetailPK.personId));
 		List<QcamtItem> masterItems = this.getEntityManager().createQuery(MASTER_ITEM_QUERY_STRING, QcamtItem.class)
 				.setParameter("companyCode", companyCode)
@@ -375,6 +369,7 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		// Convert to report data model.
 		for (String personId : userMap.keySet()) {
 			List<Object[]> detailData = userMap.get(personId);
+			List<Object[]> allMasterItemData = userAllMasterDataMap.get(personId);
 
 			// =============== Salary payment data ===========================
 			// Filter result list by payment type and category.
@@ -386,7 +381,8 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 			// Convert result list to item map.
 			Map<QcamtItem, ReportItemDto> salaryPaymentItemsMap = this
 					.convertMasterResultDatasToItemMap(salaryPaymentResultList, monthData);
-			PaymentData salaryPaymentData = this.convertToPaymentData(salaryPaymentItemsMap, masterItems);
+			PaymentData salaryPaymentData = this.convertToPaymentData(salaryPaymentItemsMap, allMasterItemData,
+					PaymentType.Salary, masterItems, monthData);
 
 			// =============== Bonus payment data ===========================
 			// Filter result list by payment type and category.
@@ -398,7 +394,8 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 			// Convert result list to item map.
 			Map<QcamtItem, ReportItemDto> bonusPaymentItemsMap = this
 					.convertMasterResultDatasToItemMap(bonusPaymentResultList, monthData);
-			PaymentData bonusPaymentData = this.convertToPaymentData(bonusPaymentItemsMap, masterItems);
+			PaymentData bonusPaymentData = this.convertToPaymentData(bonusPaymentItemsMap, allMasterItemData,
+					PaymentType.Bonus, masterItems, monthData);
 
 			// =============== Salary Deduction data ===========================
 			// Filter result list by payment type and category.
@@ -410,7 +407,8 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 			// Convert result list to item map.
 			Map<QcamtItem, ReportItemDto> salaryDeductionItemsMap = this
 					.convertMasterResultDatasToItemMap(salaryDeductionResultList, monthData);
-			DeductionData salaryDeductionData = this.convertToDeductionData(salaryDeductionItemsMap, masterItems);
+			DeductionData salaryDeductionData = this.convertToDeductionData(salaryDeductionItemsMap, allMasterItemData,
+					PaymentType.Salary, masterItems, monthData);
 
 			// =============== Bonus Deduction data ===========================
 			// Filter result list by payment type and category.
@@ -422,15 +420,16 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 			// Convert result list to item map.
 			Map<QcamtItem, ReportItemDto> bonusDeductionItemsMap = this
 					.convertMasterResultDatasToItemMap(bonusDeductionResultList, monthData);
-			DeductionData bonusDeductionData = this.convertToDeductionData(bonusDeductionItemsMap, masterItems);
+			DeductionData bonusDeductionData = this.convertToDeductionData(bonusDeductionItemsMap, allMasterItemData,
+					PaymentType.Bonus, masterItems, monthData);
 
 			// =============== Net salary item ===========================
 			ItemData netSalaryItemData = new ItemData(PaymentType.Salary.value, ARTICLE_CATEGORY, TOTAL_REAL_ITEM_CODE);
-			ReportItemDto netSalaryItem = this.findItem(detailData, masterItems, netSalaryItemData, monthData);
+			ReportItemDto netSalaryItem = this.findItem(allMasterItemData, masterItems, netSalaryItemData, monthData);
 
 			// =============== Total bonus item ===========================
 			ItemData totalBonusItemData = new ItemData(PaymentType.Bonus.value, ARTICLE_CATEGORY, TOTAL_REAL_ITEM_CODE);
-			ReportItemDto totalBonusItem = this.findItem(detailData, masterItems, totalBonusItemData, monthData);
+			ReportItemDto totalBonusItem = this.findItem(allMasterItemData, masterItems, totalBonusItemData, monthData);
 
 			// =============== Salary Attendance Data. ===========================
 			// Filter result list by payment type and category.
@@ -531,37 +530,29 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 	 * @param resultsMap the results map
 	 * @return the payment data
 	 */
-	private PaymentData convertToPaymentData(Map<QcamtItem, ReportItemDto> resultsMap, List<QcamtItem> masterItems) {
+	private PaymentData convertToPaymentData(Map<QcamtItem, ReportItemDto> resultsMap, List<Object[]> allData,
+			PaymentType paymentType, List<QcamtItem> masterItems, MonthData monthData) {
 		List<ReportItemDto> items = new ArrayList<>(resultsMap.values());
 		
 		// Create total tax item.
-		QcamtItem totalTaxResultItem = masterItems.stream()
-				.filter(item -> item.qcamtItemPK.itemCd.equals(TOTAL_TAX_ITEM_CODE))
-				.findFirst().get();
-		ReportItemDto totalTaxReportItem = resultsMap.get(totalTaxResultItem);
+		ItemData totalTaxResultItemData = new ItemData(paymentType.value, WLCategory.Payment.value,
+				TOTAL_TAX_ITEM_CODE);
+		ReportItemDto totalTaxReportItem = this.findItem(allData, masterItems, totalTaxResultItemData, monthData);
 		items.remove(totalTaxReportItem);
-		if (totalTaxReportItem == null) {
-			totalTaxReportItem = new ReportItemDto(totalTaxResultItem.itemName);
-		}
 
 		// Create total tax exemption item.
-		QcamtItem totalTaxExemptionResultItem = masterItems.stream()
-				.filter(item -> item.qcamtItemPK.itemCd.equals(TOTAL_TAX_EXEMPTION_ITEM_CODE))
-				.findFirst().get();
-		ReportItemDto totalTaxExemptionReportItem = resultsMap.get(totalTaxExemptionResultItem);
+		ItemData totalTaxExemptionResultItemData = new ItemData(paymentType.value, WLCategory.Payment.value,
+				TOTAL_TAX_EXEMPTION_ITEM_CODE);
+		ReportItemDto totalTaxExemptionReportItem = this.findItem(allData, masterItems, totalTaxExemptionResultItemData,
+				monthData);
 		items.remove(totalTaxExemptionReportItem);
-		if (totalTaxExemptionReportItem == null) {
-			totalTaxExemptionReportItem = new ReportItemDto(totalTaxExemptionResultItem.itemName);
-		}
 
 		// Create total salary payment item.
-		QcamtItem totalSalaryPaymentResultItem = masterItems.stream()
-				.filter(item -> item.qcamtItemPK.itemCd.equals(TOTAL_PAYMENT_ITEM_CODE)).findFirst().get();
-		ReportItemDto totalSalaryPaymentReportItem = resultsMap.get(totalSalaryPaymentResultItem);
+		ItemData totalSalaryPaymentResultItemData = new ItemData(paymentType.value, WLCategory.Payment.value,
+				TOTAL_PAYMENT_ITEM_CODE);
+		ReportItemDto totalSalaryPaymentReportItem = this.findItem(allData, masterItems,
+				totalSalaryPaymentResultItemData, monthData);
 		items.remove(totalSalaryPaymentReportItem);
-		if (totalSalaryPaymentReportItem == null) {
-			totalSalaryPaymentReportItem = new ReportItemDto(totalSalaryPaymentResultItem.itemName);
-		}
 		
 		return PaymentData.builder()
 				.aggregateItemList(items)
@@ -577,17 +568,15 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 	 * @param resultsMap the results map
 	 * @return the deduction data
 	 */
-	private DeductionData convertToDeductionData(Map<QcamtItem, ReportItemDto> resultsMap, List<QcamtItem> masterItems) {
+	private DeductionData convertToDeductionData(Map<QcamtItem, ReportItemDto> resultsMap, List<Object[]> allData,
+			PaymentType paymentType, List<QcamtItem> masterItems, MonthData monthData) {
 		List<ReportItemDto> items = new ArrayList<>(resultsMap.values());
 
 		// Create total deduction item.
-		QcamtItem totalDeductionItem = masterItems.stream()
-				.filter(item -> item.qcamtItemPK.itemCd.equals(TOTAL_DEDUCTION_ITEM_CODE)).findFirst().get();
-		ReportItemDto totalDeductionReportItem = resultsMap.get(totalDeductionItem);
+		ItemData totalDeductionItemData = new ItemData(paymentType.value, WLCategory.Deduction.value,
+				TOTAL_DEDUCTION_ITEM_CODE);
+		ReportItemDto totalDeductionReportItem = this.findItem(allData, masterItems, totalDeductionItemData, monthData);
 		items.remove(totalDeductionReportItem);
-		if (totalDeductionReportItem == null) {
-			totalDeductionReportItem = new ReportItemDto(totalDeductionItem.itemName);
-		}
 
 		return DeductionData.builder()
 				.aggregateItemList(items)
@@ -612,6 +601,11 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		itemListMap.forEach((masterItem, datas) -> {
 			List<MonthlyData> monthlyDatas = datas.stream().map(data -> {
 				QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) data[0];
+				
+				// Check have data in payment detail.
+				if (paymentDetail.qstdtPaymentDetailPK.processingYM == 0) {
+					return MonthlyData.builder().month(0).amount(paymentDetail.value.longValue()).build();
+				}
 				YearMonth processYM = YearMonth.of(paymentDetail.qstdtPaymentDetailPK.processingYM);
 				int month = processYM.month();
 
@@ -738,6 +732,23 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 			this.paymentType = paymentType;
 			this.category = category;
 			this.itemCode = itemCode;
+		}
+	}
+	
+	public class ResultData {
+		public List<Object[]> allMasterItemData;
+		
+		public List<Object[]> reportItemData;
+		
+		public ResultData(List<Object[]> allMasterItemData) {
+			this.allMasterItemData = allMasterItemData;
+			this.reportItemData = allMasterItemData;
+		}
+
+		public ResultData(List<Object[]> allMasterItemData, List<Object[]> reportItemData) {
+			super();
+			this.allMasterItemData = allMasterItemData;
+			this.reportItemData = reportItemData;
 		}
 	}
 }
