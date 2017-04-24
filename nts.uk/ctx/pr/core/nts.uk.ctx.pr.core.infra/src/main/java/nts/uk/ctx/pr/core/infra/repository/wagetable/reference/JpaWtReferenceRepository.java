@@ -173,11 +173,11 @@ public class JpaWtReferenceRepository extends JpaRepository implements WtReferen
 				.parseInt(baseDateParam.replace(ParamType.BASEDATE.prefix, ""));
 
 		// Get the base date from db
-		List<Payday> paydays = paydayRepository.select1_3(companyCode, processingNo,
+		Payday payday = paydayRepository.select3(companyCode, processingNo,
 				PayBonusAtr.SALARY.value, processingYm, SparePayAtr.NORMAL.value);
 
 		// Return
-		return paydays.get(0).getStdDate();
+		return payday.getStdDate();
 	}
 
 	/**
