@@ -1,18 +1,15 @@
 module nts.uk.pr.view.qpp007.a {
 
-    import SalaryOutputSettingHeaderDto = service.model.SalaryOutputSettingHeaderDto;
-    
     export module viewmodel {
-        
+
         export class ScreenModel {
             startYearMonth: KnockoutObservable<string>;
             endYearMonth: KnockoutObservable<string>;
             isUsuallyAMonth: KnockoutObservable<boolean>;
             isPreliminaryMonth: KnockoutObservable<boolean>;
             outputFormatType: KnockoutObservableArray<SelectionModel>;
-            enable: KnockoutObservable<boolean>;
             selectedOutputFormat: KnockoutObservable<string>;
-            outputItemSetting: KnockoutObservableArray<SelectionModel>;
+            outputSettings: KnockoutObservableArray<SelectionModel>;
             selectedOutputSetting: KnockoutObservable<string>;
             isVerticalLine: KnockoutObservable<boolean>;
             isHorizontalRuledLine: KnockoutObservable<boolean>;
@@ -23,22 +20,23 @@ module nts.uk.pr.view.qpp007.a {
             outputLanguage: KnockoutObservableArray<SelectionModel>;
             selectedOutputLanguage: KnockoutObservable<string>;
             isDepartmentHierarchy: KnockoutObservable<boolean>;
+            hourMinuteOutputClassification: KnockoutObservableArray<SelectionModel>;
+            selectedHourMinuteOutputClassification: KnockoutObservable<string>;
 
             constructor() {
                 this.isUsuallyAMonth = ko.observable(true);
-                this.isPreliminaryMonth = ko.observable(true);
+                this.isPreliminaryMonth = ko.observable(false);
                 this.startYearMonth = ko.observable('2016/12');
                 this.endYearMonth = ko.observable('2017/03');
-                this.enable = ko.observable(true);
                 this.selectedOutputFormat = ko.observable('1');
                 this.outputFormatType = ko.observableArray<SelectionModel>([
                     new SelectionModel('1', '明細一覧表'),
                     new SelectionModel('2', '明細累計表')
                 ]);
-                this.outputItemSetting = ko.observableArray<SelectionModel>([]);
+                this.outputSettings = ko.observableArray<SelectionModel>([]);
                 this.selectedOutputSetting = ko.observable('1');
-                this.isVerticalLine = ko.observable(true);
-                this.isHorizontalRuledLine = ko.observable(true);
+                this.isVerticalLine = ko.observable(false);
+                this.isHorizontalRuledLine = ko.observable(false);
 
                 this.pageBreakSetting = ko.observableArray<SelectionModel>([
                     new SelectionModel('1', 'なし'),
@@ -64,6 +62,11 @@ module nts.uk.pr.view.qpp007.a {
                 this.isDepartmentHierarchy = ko.computed(function() {
                     return self.selectedpageBreakSetting() == '4';
                 });
+                self.hourMinuteOutputClassification = ko.observableArray<SelectionModel>([
+                    new SelectionModel('0', '時間'),
+                    new SelectionModel('1', '分')
+                ]);
+                self.selectedHourMinuteOutputClassification = ko.observable('0');
             }
 
             /**
@@ -78,11 +81,14 @@ module nts.uk.pr.view.qpp007.a {
                 return dfd.promise();
             }
 
+            /**
+             * Load all OutputSetting.
+             */
             public loadAllOutputSetting(): JQueryPromise<any> {
                 var dfd = $.Deferred<any>();
                 var self = this;
                 service.findAllSalaryOutputSetting().done(function(data) {
-                    self.outputItemSetting(data);
+                    self.outputSettings(data);
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
@@ -90,38 +96,99 @@ module nts.uk.pr.view.qpp007.a {
                 })
                 return dfd.promise();
             }
-            
+
+            /**
+             * Open PrintSetting dialog
+             */
             public openPrintSettingDialog() {
-                // Set parent value
-                nts.uk.ui.windows.setShared("data", "nothing");
-
-                nts.uk.ui.windows.sub.modal("/view/qpp/007/b/index.xhtml", { title: "印刷設定", dialogClass: 'no-close' }).onClosed(() => {
-                    // Get child value
-                    var returnValue = nts.uk.ui.windows.getShared("childData");
-                })
+                nts.uk.ui.windows.sub.modal("/view/qpp/007/b/index.xhtml", { title: "印刷設定", dialogClass: 'no-close' });
             }
-            
+
+            /**
+             * Open SalaryOuputSetting dialog
+             */
             public openSalaryOuputSettingDialog() {
+                var self = this;
+                // Set parent value
+                nts.uk.ui.windows.setShared("selectedCode", self.selectedOutputSetting());
+                nts.uk.ui.windows.setShared("outputSettings", self.outputSettings());
                 nts.uk.ui.windows.sub.modal("/view/qpp/007/c/index.xhtml", { title: "出力項目の設定", dialogClass: 'no-close' }).onClosed(() => {
-                    // Get child value
+                    if (nts.uk.ui.windows.getShared('isSomethingChanged')) {
+                        // Reload output setting list.
+                        self.loadAllOutputSetting();
+                    }
                 })
             }
 
-            saveAsPdf(): void {
+            /**
+             * Print selected Employee.
+             */
+            public printSelectedEmployee(): void {
                 let self = this;
-                let dfd = $.Deferred<void>();
+                // Validate
+                self.validate();
+                if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                    return;
+                }
+                let command = self.toJsObject();
+                service.saveAsPdf(command)
+                    .fail(function(res) {
+                        //TODO ...
+                    });
+            }
+
+            /**
+             * Output text.
+             */
+            public outputText(): void {
+                let self = this;
+                // Validate
+                self.validate();
+                if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                    return;
+                }
+            }
+
+            /**
+             * Collect data from model then convert to JsObject.
+             */
+            private toJsObject(): any {
+                let self = this;
                 let command: any = {};
-                service.saveAsPdf(command).done(function() {
-                    dfd.resolve();
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
-                });
+                command.outputFormatType = self.selectedOutputFormat();
+                command.outputSettingCode = self.selectedOutputSetting();
+                command.isVerticalLine = self.isVerticalLine();
+                command.isHorizontalLine = self.isHorizontalRuledLine();
+                command.outputLanguage =  self.selectedOutputLanguage();
+                command.pageBreakSetting = self.selectedpageBreakSetting();
+                if (self.isDepartmentHierarchy()) {
+                    command.hierarchy  = self.selectedHierachy();
+                }
+                return command;
+            }
+
+            /**
+            * Clear all input errors.
+            */
+            private clearErrors(): void {
+                if (nts.uk.ui._viewModel) {
+                    $('#start-ym').ntsError('clear');
+                    $('#end-ym').ntsError('clear');
+                }
+            }
+
+            /**
+            * Validate all inputs.
+            */
+            private validate(): void {
+                $('#start-ym').ntsEditor('validate');
+                $('#end-ym').ntsEditor('validate');
             }
 
         }
 
         /**
-         *  Class Page Break setting
+         *  Class SelectionModel.
          */
         export class SelectionModel {
             code: string;

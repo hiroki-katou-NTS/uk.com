@@ -1,4 +1,3 @@
-/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -34,20 +33,20 @@ var nts;
                         this.option.show(false);
                     };
                     ErrorsViewModel.prototype.addError = function (error) {
-                        // defer無しでerrorsを呼び出すと、なぜか全てのKnockoutBindingHandlerのupdateが呼ばれてしまうので、
-                        // 原因がわかるまでひとまずdeferを使っておく
-                        //            _.defer(() => {
                         var duplicate = _.filter(this.errors(), function (e) { return e.$control.is(error.$control) && e.message == error.message; });
                         if (duplicate.length == 0)
                             this.errors.push(error);
-                        //            });
+                    };
+                    ErrorsViewModel.prototype.hasError = function () {
+                        return this.occurs();
+                    };
+                    ErrorsViewModel.prototype.clearError = function () {
+                        $(".error").removeClass('error');
+                        this.errors.removeAll();
                     };
                     ErrorsViewModel.prototype.removeErrorByElement = function ($element) {
-                        // addErrorと同じ対応
-                        //            _.defer(() => {
                         var removeds = _.filter(this.errors(), function (e) { return e.$control.is($element); });
                         this.errors.removeAll(removeds);
-                        //            });
                     };
                     return ErrorsViewModel;
                 }());
@@ -78,6 +77,14 @@ var nts;
                     errorsViewModel().addError(error);
                 }
                 errors.add = add;
+                function hasError() {
+                    return errorsViewModel().hasError();
+                }
+                errors.hasError = hasError;
+                function clearAll() {
+                    errorsViewModel().clearError();
+                }
+                errors.clearAll = clearAll;
                 function removeByElement($control) {
                     errorsViewModel().removeErrorByElement($control);
                 }

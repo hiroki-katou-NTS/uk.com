@@ -70,47 +70,62 @@ module qmm006.a.viewmodel {
             self.indexLineBank = ko.observable(0);
 
             self.messageList = ko.observableArray([
-                { messageId: "ER001", message: "＊が入力されていません。" },
-                { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
-                { messageId: "ER007", message: "＊が選択されていません。" },
-                { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
+                { messageId: "ER001", message: "が入力されていません。" },
+                { messageId: "ER005", message: "入力したコードは既に存在しています。\r\n コードを確認してください。" },
+                { messageId: "ER007", message: "が選択されていません。" },
+                { messageId: "ER008", message: "選択された{0}は使用されているため削除できません。" },
                 { messageId: "ER010", message: "対象データがありません。" },
             ]);
 
             self.currentCode.subscribe(function(codeChange) {
-                // no error in the first findAll(), so dont allow jump to clearError() 
-                if (!self.isFirstFindAll()) {
-                    self.clearError();
-                }
-                // dont allow loop checkDirty when change data and change row 
-                if (!self.notLoopAlert()) {
-                    self.notLoopAlert(true);
-                    return;
-                }
-                // only checkDirty in clearForm, not checkDirty in subscribe
-                // when remove(), not check dirty
-                if (codeChange == null || self.isNotCheckDirty()) {
-                    self.isNotCheckDirty(false);
-                    self.setCurrentLineBank(codeChange);
-                    return;
-                }
                 if (self.dirty.isDirty()) {
+                    // dont allow loop checkDirty when change data and change row 
+                    if (!self.notLoopAlert()) {
+                        self.notLoopAlert(true);
+                        return;
+                    }
+                    // only checkDirty in clearForm, not checkDirty in subscribe
+                    // when remove(), not check dirty
+                    if (codeChange == null || self.isNotCheckDirty()) {
+                        self.isNotCheckDirty(false);
+                        self.setCurrentLineBank(codeChange);
+                        return;
+                        //end
+                    }
                     //"変更された内容が登録されていません。"---AL001 
                     nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                        self.clearError();
                         //data is changed
                         self.setCurrentLineBank(codeChange);
-                    }).ifNo(function() {
+                    }).ifCancel(function() {
                         self.notLoopAlert(false);
                         self.currentCode(self.currentLineBank().lineBankCode());
                     });
                 } else {
+                    // no error in the first findAll(), so dont allow jump to clearError() 
+                    if (!self.isFirstFindAll()) {
+                        self.clearError();
+                    }
+                    // dont allow loop checkDirty when change data and change row 
+                    if (!self.notLoopAlert()) {
+                        self.notLoopAlert(true);
+                        return;
+                    }
+                    // only checkDirty in clearForm, not checkDirty in subscribe
+                    // when remove(), not check dirty
+                    if (codeChange == null || self.isNotCheckDirty()) {
+                        self.isNotCheckDirty(false);
+                        self.setCurrentLineBank(codeChange);
+                        return;
+                        //end
+                    }
                     //data isn't changed
                     self.setCurrentLineBank(codeChange);
                 }
             });
         }
 
-        startPage() {
+        startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             $.when(self.findBankAll()).done(function() {
@@ -125,7 +140,10 @@ module qmm006.a.viewmodel {
             return dfd.promise();
         }
 
-        setCurrentLineBank(codeChange) {
+        /**
+         * get data from database, set into screen
+         */
+        setCurrentLineBank(codeChange): void {
             var self = this;
             var lineBank = self.getLineBank(codeChange);
             self.getInfoBankBranch(lineBank);
@@ -143,9 +161,11 @@ module qmm006.a.viewmodel {
                 self.isEnable(true);
             }
         }
-        
-        //get data from DB
-        findAll() {
+
+        /**
+         * get data from DB
+         */
+        findAll(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             qmm006.a.service.findAll()
@@ -179,11 +199,14 @@ module qmm006.a.viewmodel {
             return dfd.promise();
         }
 
-
-        saveData() {
+        /**
+         * save data from screen to database
+         */
+        saveData(): void {
             var self = this;
-            if (self.currentLineBank().lineBankCode().length == 1) {
-                var lineBankCode = '0' + self.currentLineBank().lineBankCode();
+            //if input 0-9, auto insert '0' before
+            if (self.currentLineBank().lineBankCode() != null && self.currentLineBank().lineBankCode().length == 1) {
+                self.currentLineBank().lineBankCode("0" + self.currentLineBank().lineBankCode());
             }
             var command = {
                 accountAtr: self.currentLineBank().accountAtr(),
@@ -215,31 +238,33 @@ module qmm006.a.viewmodel {
                     if (error.messageId == self.messageList()[0].messageId) {
                         var message = self.messageList()[0].message;
                         if (!command.lineBankCode) {
-                            $('#A_INP_001').ntsError('set', message);
+                            $('#inp_lineBankCode').ntsError('set', message);
                         }
                         if (!command.lineBankName) {
-                            $('#A_INP_002').ntsError('set', message);
+                            $('#inp_lineBankName').ntsError('set', message);
                         }
                         if (!command.accountNo) {
-                            $('#A_INP_003').ntsError('set', message);
+                            $('#inp_accountNumber').ntsError('set', message);
                         }
                     } else if (error.messageId == self.messageList()[2].messageId) {
                         var message = self.messageList()[2].message;
                         if (!command.branchId) {
-                            $('#A_LBL_004').ntsError('set', message);
-                            $('#A_LBL_007').ntsError('set', message);
+                            $('#lbl_bankCode').ntsError('set', message);
+                            $('#lbl_branchCode').ntsError('set', message);
                         }
                     } else if (error.messageId == self.messageList()[1].messageId) {
                         var message = self.messageList()[1].message;
-                        $('#A_INP_001').ntsError('set', message);
+                        $('#inp_lineBankCode').ntsError('set', message);
                     }
                 });
         }
 
-        remove() {
+        /**
+         * remove data in dababase
+         */
+        remove(): void {
             var self = this;
-            //"データを削除します。\r\nよろしいですか？"---AL002
-            nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？")
+            nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？")//AL002
                 .ifYes(function() {
                     var command = {
                         lineBankCode: self.currentLineBank().lineBankCode(),
@@ -257,14 +282,21 @@ module qmm006.a.viewmodel {
                                 }
                             })
                         }).fail(function(error) {
-                            nts.uk.ui.dialog.alert(self.messageList()[3].message);
+                            if (error.messageId == self.messageList()[3].messageId) { // ER008
+                                self.isNotCheckDirty(false);
+                                var messageError = nts.uk.text.format(self.messageList()[3].message, self.currentLineBank().lineBankName());
+                                nts.uk.ui.dialog.alert(messageError);
+                            }
                         });
                 })
-                .ifNo(function() {
+                .ifCancel(function() {
                 });
         }
 
-        openBDialog() {
+        /**
+         * open B dialog
+         */
+        openBDialog(): void {
             var self = this;
             qmm006.a.service.checkExistBankAndBranch()
                 .done(function() {
@@ -277,28 +309,31 @@ module qmm006.a.viewmodel {
                             self.branchName(nts.uk.ui.windows.getShared("selectedBank").name);
                             lineBank.branchId(nts.uk.ui.windows.getShared("selectedBank").branchId);
                             //only clear error of LBL004 & LBL007
-                            $('#A_LBL_004').ntsError('clear');
-                            $('#A_LBL_007').ntsError('clear');
+                            $('#lbl_bankCode').ntsError('clear');
+                            $('#lbl_branchCode').ntsError('clear');
                         }
                     });
                 })
                 .fail(function(error) {
                     nts.uk.ui.dialog.alert(self.messageList()[4].message);
                 });
-
-
         }
 
-        openCDialog() {
+        /**
+         * open C dialog
+         */
+        openCDialog(): void {
             var self = this;
             //bt003 disable if list has 1 row or less
             //in case user can fix css in screen to enable bt003
             if (self.items().length > 1) {
                 if (self.dirty.isDirty()) {
-                    //"変更された内容が登録されていません。"---AL001 
+                    //AL001 
                     nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                        //delete the data being changed
+                        self.setCurrentLineBank(self.currentCode());
                         self.afterCloseCDialog();
-                    }).ifNo(function() {
+                    }).ifCancel(function() {
                     })
                 } else {
                     self.afterCloseCDialog();
@@ -309,7 +344,10 @@ module qmm006.a.viewmodel {
             }
         }
 
-        afterCloseCDialog() {
+        /**
+         * set value for currentCode property
+         */
+        afterCloseCDialog(): void {
             var self = this;
             nts.uk.ui.windows.sub.modal("/view/qmm/006/c/index.xhtml", { title: "振込元銀行の登録　＞　振込元銀行", dialogClass: "no-close" }).onClosed(function() {
                 self.findAll().done(function() {
@@ -320,27 +358,33 @@ module qmm006.a.viewmodel {
             });
         }
 
-        btn007() {
+        btn007(): void {
             //to-do
         }
 
-        jumpToQmm002A() {
+        /**
+         * go to screen A of QMM002
+         */
+        jumpToQmm002A(): void {
             var self = this;
             if (self.dirty.isDirty()) {
-                //"変更された内容が登録されていません。"---AL001 
+                //AL001 
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
                     nts.uk.request.jump("/view/qmm/002/a/index.xhtml");
-                }).ifNo(function() {
+                }).ifCancel(function() {
                 })
             } else {
                 nts.uk.request.jump("/view/qmm/002/a/index.xhtml");
             }
         }
 
-        clearForm(): any {
+        /**
+         * clear data on screen, new mode
+         */
+        clearForm(): void {
             var self = this;
             if (self.dirty.isDirty() && !self.isNotCheckDirty()) {
-                //"変更された内容が登録されていません。"---AL001 
+                //AL001 
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。")
                     .ifYes(function() {
                         if (self.currentCode(null)) {
@@ -352,22 +396,30 @@ module qmm006.a.viewmodel {
                             self.currentCode(null);
                         }
                     })
-                    .ifNo(function() { })
+                    .ifCancel(function() { })
             } else {
                 self.currentCode(null);
             }
         }
 
-        clearError() {
-            $('#A_INP_001').ntsError('clear');
-            $('#A_INP_002').ntsError('clear');
-            $('#A_INP_003').ntsError('clear');
-            $('#A_LBL_004').ntsError('clear');
-            $('#A_LBL_007').ntsError('clear');
-            $('#A_INP_004').ntsError('clear');
+        /**
+         * clear error on screen
+         */
+        clearError(): void {
+            $('#inp_lineBankCode').ntsError('clear');
+            $('#inp_lineBankName').ntsError('clear');
+            $('#inp_accountNumber').ntsError('clear');
+            $('#lbl_bankCode').ntsError('clear');
+            $('#lbl_branchCode').ntsError('clear');
+            $('#inp_transferRequestName').ntsError('clear');
+            $('#inp_memo').ntsError('clear');
+            $('.consignor').ntsError('clear');
         }
 
-        getLineBank(curCode) {
+        /**
+         * get data base-on currentCode
+         */
+        getLineBank(curCode): LineBank {
             var self = this;
             let data = _.find(self.items(), function(x) {
                 return x.lineBankCode === curCode;
@@ -378,9 +430,11 @@ module qmm006.a.viewmodel {
             return new LineBank(data.branchId, data.lineBankCode, data.lineBankName,
                 data.accountAtr, data.accountNo, data.memo, data.requesterName, data.consignors);
         }
-        
-        //get data for bankName, bankCode, branchName, branchCode
-        getInfoBankBranch(lineBank) {
+
+        /**
+         * get data for bankName, bankCode, branchName, branchCode
+         */
+        getInfoBankBranch(lineBank): void {
             var self = this;
             if (lineBank.branchId() == null) {
                 self.bankCode('');
@@ -398,9 +452,11 @@ module qmm006.a.viewmodel {
                 self.branchName(tmp.name);
             }
         }
-        
-        //find list Bank
-        findBankAll() {
+
+        /**
+         * get info of Bank from database
+         */
+        findBankAll(): JQueryPromise<any> {
             var self = this;
             var lineBank = self.currentLineBank();
             var dfd = $.Deferred();
@@ -435,7 +491,8 @@ module qmm006.a.viewmodel {
         requesterName: KnockoutObservable<string>;
         branchId: KnockoutObservable<string>;
 
-        constructor(branchId: string, lineBankCode: string, lineBankName: string, accountAtr: number, accountNo: string, memo: string, requesterName: string, consignors: Array<any>) {
+        constructor(branchId: string, lineBankCode: string, lineBankName: string, accountAtr: number,
+            accountNo: string, memo: string, requesterName: string, consignors: Array<any>) {
 
             this.branchId = ko.observable(branchId);
             this.lineBankCode = ko.observable(lineBankCode);
@@ -451,45 +508,37 @@ module qmm006.a.viewmodel {
                 var consignorItem = consignors[i];
                 switch (i) {
                     case 0:
-                        if (consignorItem) {
-                            this.consignors.push(new Consignor("①", consignorItem.code, consignorItem.memo));
-                        } else {
-                            this.consignors.push(new Consignor("①", "", ""));
-                        }
-
+                        this.createConsignorItem(consignorItem, "①");
                         break;
                     case 1:
-                        if (consignorItem) {
-                            this.consignors.push(new Consignor("②", consignorItem.code, consignorItem.memo));
-                        } else {
-                            this.consignors.push(new Consignor("②", "", ""));
-                        }
+                        this.createConsignorItem(consignorItem, "②");
                         break;
                     case 2:
-                        if (consignorItem) {
-                            this.consignors.push(new Consignor("③", consignorItem.code, consignorItem.memo));
-                        } else {
-                            this.consignors.push(new Consignor("③", "", ""));
-                        }
+                        this.createConsignorItem(consignorItem, "③");
                         break;
                     case 3:
-                        if (consignorItem) {
-                            this.consignors.push(new Consignor("④", consignorItem.code, consignorItem.memo));
-                        } else {
-                            this.consignors.push(new Consignor("④", "", ""));
-                        }
+                        this.createConsignorItem(consignorItem, "④");
                         break;
                     case 4:
-                        if (consignorItem) {
-                            this.consignors.push(new Consignor("⑤", consignorItem.code, consignorItem.memo));
-                        } else {
-                            this.consignors.push(new Consignor("⑤", "", ""));
-                        }
+                        this.createConsignorItem(consignorItem, "⑤");
                         break;
                     default:
                         break;
                 }
             }
+        }
+
+        /**
+         * create consignor on screen
+         */
+        private createConsignorItem(item: any, icon: string): void {
+            var self = this;
+            if (item) {
+                self.consignors.push(new Consignor(icon, item.code, item.memo));
+            } else {
+                self.consignors.push(new Consignor(icon, "", ""));
+            }
+
         }
     }
 

@@ -1,13 +1,16 @@
 module cmm001.a {
+    import PostCode = nts.uk.pr.view.base.postcode.service.model.PostCode;
     export class ViewModel {
 
         gridColumns: KnockoutObservableArray<any>;
         currentCompany: KnockoutObservable<CompanyModel>;
+        company: service.model.CompanyDto = null;
         currentCompanyCode: KnockoutObservable<string>;
         sel001Data: KnockoutObservableArray<CompanyModel>;
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
         displayAttribute: KnockoutObservable<boolean>;
+        previousDisplayAttribute: boolean = true; //lưu giá trị của displayAttribute trước khi nó bị thay đổi
         isUpdate: KnockoutObservable<boolean> = ko.observable(null);
         dirtyObject: nts.uk.ui.DirtyChecker;
         previousCurrentCode: string = null; //lưu giá trị của currentCode trước khi nó bị thay đổi
@@ -21,7 +24,6 @@ module cmm001.a {
                 if (nts.uk.text.isNullOrEmpty(newValue)) {
                     return;
                 } else {
-                    self.isUpdate(true);
                     if (!nts.uk.text.isNullOrEmpty(newValue) && self.currentCompanyCode() !== self.previousCurrentCode) {
                         //goi check isDirty
                         if (self.dirtyObject.isDirty()) {
@@ -39,54 +41,72 @@ module cmm001.a {
             });
 
             self.displayAttribute.subscribe(function(newValue) {
-                let $grid = $("#A_LST_001");
-                var currentColumns = $grid.igGrid("option", "columns");
-                var width = $grid.igGrid("option", "width");
+                if (self.displayAttribute() !== self.previousDisplayAttribute) {
+                    //goi check isDirty
+                    if (self.dirtyObject.isDirty()) {
+                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
+                            self.dirtyObject.reset();
+                            self.processWhenDisplayAttributeChanged(newValue);
+                        }).ifCancel(function() {
+                            self.displayAttribute(self.previousDisplayAttribute);
+                        })
+                    } else {
+                        self.processWhenDisplayAttributeChanged(newValue);
+                    }
+                }
+            });
+        }
 
-                if (newValue) {
-                    $('#A_SEL_001').ntsError('clear');
-                    currentColumns[2].hidden = false;
-                    $grid.igGrid("option", "width", "400px");
-                    self.sel001Data([]);
-                    self.reload(undefined);
-                } else {
-                    self.sel001Data([]);
-                    currentColumns[2].hidden = true;
-                    $grid.igGrid("option", "width", "400px");
-                    service.getAllCompanys().done(function(data: Array<service.model.CompanyDto>) {
-                        if (data.length > 0) {
-                            _.each(data, function(obj: service.model.CompanyDto) {
-                                let companyModel: CompanyModel;
-                                companyModel = ko.mapping.fromJS(obj);
-                                if (obj.displayAttribute === 1) {
-                                    companyModel.displayAttribute('');
-                                    self.sel001Data.push(ko.toJS(companyModel));
-                                }
-                            });
-                            let companyCheckExist = _.find(self.sel001Data(), function(obj: CompanyModel) {
-                                let newCompanyCode: string = ko.toJS(obj.companyCode);
-                                let oldCompanyCode: string = (ko.toJS(self.currentCompanyCode));
-                                return newCompanyCode === oldCompanyCode;
-                            });
-                            if (self.sel001Data().length > 0) {
-                                self.isUpdate(true);
-                                if (!companyCheckExist) {
-                                    self.processWhenCurrentCodeChange(ko.toJS(self.sel001Data()[0].companyCode));
-                                    self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
-                                } else {
-                                    self.processWhenCurrentCodeChange(self.currentCompanyCode());
+        processWhenDisplayAttributeChanged(newValue: boolean) {
+            let self = this;
+            let $grid = $("#gridCompany");
+            var currentColumns = $grid.igGrid("option", "columns");
+            var width = $grid.igGrid("option", "width");
 
-                                }
+            if (newValue) {
+                $('#displayAttribute').ntsError('clear');
+                currentColumns[2].hidden = false;
+                $grid.igGrid("option", "width", "400px");
+                self.sel001Data([]);
+                self.reload(undefined);
+            } else {
+                self.sel001Data([]);
+                currentColumns[2].hidden = true;
+                $grid.igGrid("option", "width", "400px");
+                service.getAllCompanys().done(function(data: Array<service.model.CompanyDto>) {
+                    if (data.length > 0) {
+                        _.each(data, function(obj: service.model.CompanyDto) {
+                            let companyModel: CompanyModel;
+                            companyModel = ko.mapping.fromJS(obj);
+                            if (obj.displayAttribute === 1) {
+                                companyModel.displayAttribute('');
+                                self.sel001Data.push(ko.toJS(companyModel));
+                            }
+                        });
+                        let companyCheckExist = _.find(self.sel001Data(), function(obj: CompanyModel) {
+                            let newCompanyCode: string = ko.toJS(obj.companyCode);
+                            let oldCompanyCode: string = (ko.toJS(self.currentCompanyCode));
+                            return newCompanyCode === oldCompanyCode;
+                        });
+                        if (self.sel001Data().length > 0) {
+                            self.isUpdate(true);
+                            if (!companyCheckExist) {
+                                self.processWhenCurrentCodeChange(ko.toJS(self.sel001Data()[0].companyCode));
+                                self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
                             } else {
-                                self.resetData();
-                                self.isUpdate(false);
+                                self.processWhenCurrentCodeChange(self.currentCompanyCode());
 
                             }
+                        } else {
+                            self.resetData();
+                            self.isUpdate(false);
+
                         }
-                    });
-                }
-                $grid.igGrid("option", "columns", currentColumns);
-            });
+                    }
+                });
+            }
+            $grid.igGrid("option", "columns", currentColumns);
+            self.previousDisplayAttribute = newValue;
         }
 
         processWhenCurrentCodeChange(newValue: string) {
@@ -98,9 +118,11 @@ module cmm001.a {
                     }
                     self.currentCompany().setDataForCurrentCompany(company);
                     self.hasFocus(false);
+                    self.isUpdate(true);
                     self.previousCurrentCode = newValue;
                     self.dirtyObject.reset();
                 } else {
+                    self.isUpdate(false);
                     self.currentCompany().resetCurrentCompany();
                 }
             });
@@ -138,7 +160,6 @@ module cmm001.a {
 
             self.currentCompany = ko.observable(null);
             self.currentCompanyCode = ko.observable('');
-
             self.sel001Data = ko.observableArray([]);
         }
 
@@ -288,12 +309,22 @@ module cmm001.a {
                     cmm001.a.service.updateData(company).done(function() {
                         self.sel001Data([]);
                         self.reload(company.companyCode);
+                    }).fail(function(res: any) {
+                        nts.uk.ui.dialog.alert(res.message);
                     });
                 } else {
-                    cmm001.a.service.addData(company).done(function() {
-                        self.sel001Data([]);
-                        self.reload(company.companyCode);
-                    })
+                    service.getCompanyDetail(company.companyCode).done(function(data) {
+                        self.company = data;
+                    });
+                    if (!self.company) {
+                        $.when(cmm001.a.service.addData(company)).done(function() {
+                            self.sel001Data([]);
+                            self.reload(company.companyCode);
+                        });
+
+                    } else {
+                        nts.uk.ui.dialog.alert("入力したコードは既に存在しています。 コードを確認してください。");
+                    }
                 }
             } else {
                 if (self.isUpdate()) {
@@ -319,25 +350,33 @@ module cmm001.a {
                             }
                         });
 
-                    });
-                } else {
-                    cmm001.a.service.addData(company).done(function() {
-                        self.sel001Data([]);
-                        service.getAllCompanys().done(function(data: Array<service.model.CompanyDto>) {
-                            if (data.length > 0) {
-                                _.each(data, function(obj: service.model.CompanyDto) {
-                                    let companyModel: CompanyModel;
-                                    companyModel = ko.mapping.fromJS(obj);
-                                    if (obj.displayAttribute === 1) {
-                                        companyModel.displayAttribute('');
-                                        self.sel001Data.push(ko.toJS(companyModel));
-                                    }
-                                });
-                                self.dirtyObject.reset();
-                                self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
-                            }
-                        });
                     })
+                } else {
+
+                    service.getCompanyDetail(company.companyCode).done(function(data) {
+                        self.company = data;
+                    });
+                    if (!self.company) {
+                        $.when(cmm001.a.service.addData(company)).done(function() {
+                            self.sel001Data([]);
+                            service.getAllCompanys().done(function(data: Array<service.model.CompanyDto>) {
+                                if (data.length > 0) {
+                                    _.each(data, function(obj: service.model.CompanyDto) {
+                                        let companyModel: CompanyModel;
+                                        companyModel = ko.mapping.fromJS(obj);
+                                        if (obj.displayAttribute === 1) {
+                                            companyModel.displayAttribute('');
+                                            self.sel001Data.push(ko.toJS(companyModel));
+                                        }
+                                    });
+                                    self.dirtyObject.reset();
+                                    self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
+                                }
+                            });
+                        });
+                    } else {
+                        nts.uk.ui.dialog.alert("入力したコードは既に存在しています。 コードを確認してください。");
+                    }
                 }
 
 
@@ -371,42 +410,34 @@ module cmm001.a {
         }
         validateData(): boolean {
             $(".nts-editor").ntsEditor("validate");
-            $("#A_INP_002").ntsEditor("validate");
-            $("#A_INP_003").ntsEditor("validate");
-            $("#A_INP_004").ntsEditor("validate");
-            $("#A_INP_005").ntsEditor("validate");
-            $("#B_INP_001").ntsEditor("validate");
-            $("#B_INP_002").ntsEditor("validate");
-            $("#B_INP_003").ntsEditor("validate");
-            $("#C_INP_002").ntsEditor("validate");
-            $("#C_INP_003").ntsEditor("validate");
-            $("#C_INP_004").ntsEditor("validate");
-            $("#C_INP_005").ntsEditor("validate");
-            $("#C_INP_006").ntsEditor("validate");
-            $("#C_INP_007").ntsEditor("validate");
-            $("#D_SEL_001").ntsEditor("validate");
-            $("#D_SEL_002").ntsEditor("validate");
-            $("#D_SEL_003").ntsEditor("validate");
-            $("#D_SEL_004").ntsEditor("validate");
-            $("#D_SEL_005").ntsEditor("validate");
+            $("#companyCode").ntsEditor("validate");
+            $("#companyName").ntsEditor("validate");
+            $("#companyNameKana").ntsEditor("validate");
+            $("#companyNameAbb").ntsEditor("validate");
+            $("#corporateMyNumber").ntsEditor("validate");
+            $("#presidentName").ntsEditor("validate");
+            $("#presidentJobTitle").ntsEditor("validate");
+            $("#postal").ntsEditor("validate");
+            $("#address1").ntsEditor("validate");
+            $("#address2").ntsEditor("validate");
+            $("#addressKana1").ntsEditor("validate");
+            $("#addressKana2").ntsEditor("validate");
+            $("#telephoneNo").ntsEditor("validate");
+            $("#faxNo").ntsEditor("validate");
             let errorA: boolean = false;
             let errorB: boolean = false;
             let errorC: boolean = false;
-            let errorD: boolean = false;
 
-            errorA = $("#A_INP_002").ntsError('hasError') || $("#A_INP_003").ntsError('hasError')
-                || $("#A_INP_004").ntsError('hasError')
-                || $("#A_INP_005").ntsError('hasError');
-            errorB = $("#B_INP_002").ntsError('hasError') || $("#B_INP_001").ntsError('hasError')
-                || $("#B_INP_003").ntsError('hasError');
-            errorC = $("#C_INP_002").ntsError('hasError') || $("#C_INP_003").ntsError('hasError')
-                || $("#C_INP_004").ntsError('hasError') || $("#C_INP_005").ntsError('hasError')
-                || $("#C_INP_006").ntsError('hasError') || $("#C_INP_007").ntsError('hasError');
-            errorD = $("#D_SEL_001").ntsError('hasError') || $("#D_SEL_002").ntsError('hasError')
-                || $("#D_SEL_003").ntsError('hasError') || $("#D_SEL_004").ntsError('hasError')
-                || $("#D_SEL_005").ntsError('hasError');
-
-            if ($(".nts-editor").ntsError('hasError') || errorA || errorB || errorC || errorD) {
+            errorA = $("#companyCode").ntsError('hasError') || $("#companyName").ntsError('hasError')
+                || $("#companyNameKana").ntsError('hasError')
+                || $("#companyNameAbb").ntsError('hasError');
+            errorB = $("#corporateMyNumber").ntsError('hasError') || $("#presidentName").ntsError('hasError')
+                || $("#presidentJobTitle").ntsError('hasError');
+            errorC = $("#postal").ntsError('hasError') || $("#address1").ntsError('hasError')
+                || $("#address2").ntsError('hasError') || $("#addressKana1").ntsError('hasError')
+                || $("#addressKana2").ntsError('hasError') || $("#telephoneNo").ntsError('hasError')
+                || $("#faxNo").ntsError('hasError');
+            if ($(".nts-editor").ntsError('hasError') || errorA || errorB || errorC) {
                 return false;
             }
             return true;
@@ -542,6 +573,47 @@ module cmm001.a {
             ]);
             self.selectedRuleCode3 = ko.observable("");
         }
+
+        //search Zip Code
+        searchZipCode() {
+            var self = this;
+            var messageList = [
+                { messageId: "ER001", message: "＊が入力されていません。" },
+                { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                { messageId: "ER010", message: "対象データがありません。" }
+            ];
+            nts.uk.pr.view.base.postcode.service.findPostCodeZipCodeToRespone(self.postal()).done(data => {
+                if (data.errorCode == '0') {
+                    for (var datamessage of messageList) {
+                        if (datamessage.messageId == data.message) {
+                            $('#postal').ntsError('set', datamessage.message);
+                        }
+                    }
+                }
+                else if (data.errorCode == '1') {
+                    self.postal(data.postcode.postcode);
+                    $('#postal').ntsError('clear');
+                } else {
+                    nts.uk.pr.view.base.postcode.service.findPostCodeZipCodeSelection(self.postal()).done(res => {
+                        if (res.errorCode == '0') {
+                            for (var datamessage of messageList) {
+                                if (datamessage.messageId == res.message) {
+                                    $('#postal').ntsError('set', datamessage.message);
+                                }
+                            }
+                        }
+                        else if (res.errorCode == '1') {
+                            self.postal(res.postcode.postcode);
+                            $('#postal').ntsError('clear');
+                        }
+                    }).fail(function(error) {
+                        console.log(error);
+                    });
+                }
+            }).fail(function(error) {
+                console.log(error);
+            });
+        }
     }
 
     interface ICompany {
@@ -619,6 +691,15 @@ module cmm001.a {
         }
 
 
+    }
+
+    export class ItemMessage {
+        messCode: string;
+        messName: string;
+        constructor(messCode: string, messName: string) {
+            this.messCode = messCode;
+            this.messName = messName;
+        }
     }
 
 }

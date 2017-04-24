@@ -113,9 +113,8 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 
 		// exclude select
 		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
-		List<AccidentInsuranceRate> lstAccidentInsuranceRate = query.getResultList().stream()
-			.map(item -> this.toDomainHistory(item)).collect(Collectors.toList());
-		return lstAccidentInsuranceRate;
+		return query.getResultList().stream().map(item -> this.toDomainHistory(item))
+			.collect(Collectors.toList());
 	}
 
 	/*
@@ -170,8 +169,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 		// set order
 		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
-		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = query.getResultList();
-		return lstQismtWorkAccidentInsu;
+		return query.getResultList();
 	}
 
 	/**
@@ -209,7 +207,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 	 * @return the accident insurance rate
 	 */
 	public AccidentInsuranceRate toDomainHistory(QismtWorkAccidentInsu entity) {
-		return new AccidentInsuranceRate(new JpaHistoryAccidentInsuranceRateGetMemento(entity));
+		return new AccidentInsuranceRate(new JpaAccidentInsuranceHistoryGetMemento(entity));
 	}
 
 	/*
@@ -320,6 +318,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
 		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = query.getResultList();
 
+		// check empty data  
 		if (CollectionUtil.isEmpty(lstQismtWorkAccidentInsu)) {
 			return Optional.empty();
 		}

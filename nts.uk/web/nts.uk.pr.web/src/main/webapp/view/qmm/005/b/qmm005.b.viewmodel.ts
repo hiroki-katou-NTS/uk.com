@@ -1,7 +1,8 @@
 /// <reference path="../qmm005.ts"/>
 module qmm005.b {
     export class ViewModel {
-        index: KnockoutObservable<number> = ko.observable(0);
+        toggle: KnockoutObservable<boolean> = ko.observable(true);
+        processingNo: KnockoutObservable<number> = ko.observable(0);
         lbl002: KnockoutObservable<string> = ko.observable('');
         lbl003: KnockoutObservable<string> = ko.observable('');
         lbl005: KnockoutObservable<string> = ko.observable('');
@@ -9,12 +10,13 @@ module qmm005.b {
         lst001: KnockoutObservable<number> = ko.observable(0);
         lst001Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
         lst002Data: KnockoutObservableArray<TableRowItem> = ko.observableArray([]);
+        dataSources: Array<IPaydayDto> = [];
         dirty: IDirty = {
             inp001: new nts.uk.ui.DirtyChecker(this.inp001),
             lst001: new nts.uk.ui.DirtyChecker(this.lst001),
             lst002: new nts.uk.ui.DirtyChecker(this.lst002Data),
             isDirty: function() {
-                return this.inp001.isDirty() || this.lst001.isDirty() || this.lst002.isDirty();
+                return this.inp001.isDirty() || this.lst002.isDirty();
             },
             reset: function() {
                 this.inp001.reset();
@@ -24,18 +26,44 @@ module qmm005.b {
         };
         constructor() {
             let self = this;
+
+            // toggle width of dialog
+            self.toggle.subscribe(function(v) {
+                if (v) {
+                    nts.uk.ui.windows.getSelf().setWidth(1020);
+                } else {
+                    nts.uk.ui.windows.getSelf().setWidth(1465);
+                }
+            });
+            self.toggle.valueHasMutated();
+
             // processingNo
             let dataRow = nts.uk.ui.windows.getShared('dataRow');
-            self.index(dataRow.index());
+            self.processingNo(dataRow.index());
             self.lbl002(dataRow.index());
             self.lbl003(dataRow.label());
 
             self.lst001.subscribe(function(v) {
-                if (v) {
-                    let lst001Data = self.lst001Data(),
-                        currentItem = _.find(lst001Data, function(item) { return item.index == v; });
-                    if (currentItem) {
-                        self.inp001(currentItem.value);
+                if (v && v != 0 && v != parseInt(self.dirty.lst001.initialState)) {
+                    
+                    if (self.dirty.isDirty()) {
+                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
+                            let lst001Data = self.lst001Data(),
+                                currentItem = _.find(lst001Data, function(item) { return item.index == v; });
+                            if (currentItem) {
+                                self.inp001(currentItem.value);
+                                self.reloadData(currentItem.value);
+                            }
+                        }).ifNo(function() {
+                            self.lst001(parseInt(self.dirty.lst001.initialState));
+                        });
+                    } else {
+                        let lst001Data = self.lst001Data(),
+                            currentItem = _.find(lst001Data, function(item) { return item.index == v; });
+                        if (currentItem) {
+                            self.inp001(currentItem.value);
+                            self.reloadData(currentItem.value);
+                        }
                     }
                 }
             });
@@ -60,102 +88,108 @@ module qmm005.b {
         }
 
         start() {
-            let self = this;
-            services.getData(self.index()).done(function(resp: Array<PaydayDto>) {
+            let self = this,
+                lst001Data: Array<common.SelectItem> = [],
+                dataRow = nts.uk.ui.windows.getShared('dataRow');
+
+            services.getData(self.processingNo()).done(function(resp: Array<IPaydayDto>) {
                 if (resp && resp.length > 0) {
-                    resp = _.orderBy(resp, ["processingYm"], ["asc"]);
-                    let lst001Data: Array<common.SelectItem> = [],
-                        lst002Data: Array<TableRowItem> = [],
-                        dataRow = nts.uk.ui.windows.getShared('dataRow');
-                    for (let i: number = 0, rec: PaydayDto; i <= 11, rec = resp[i]; i++) {
-                        if (rec) {
-                            let year = rec.processingYm["getYearInYm"](),
-                                yearIJE = year + "(" + year["yearInJapanEmpire"]() + ")",
-                                index = i + 1,
-                                $moment = moment(new Date(rec.payDate)),
-                                sel002Data: Array<common.SelectItem> = [];
+                    self.dataSources = _.orderBy(resp, ["processingYm"], ["asc"]);
+                    for (let i: number = 0, rec: IPaydayDto; rec = self.dataSources[i]; i++) {
+                        let year = rec.processingYm["getYearInYm"](),
+                            yearIJE = year + "(" + year["yearInJapanEmpire"]() + ")";
 
-                            //row.sel002($moment.date());
-                            for (var j: number = 1; j <= $moment.daysInMonth(); j++) {
-                                var date = moment(new Date($moment.year(), $moment.month(), j));
-                                sel002Data.push(new common.SelectItem({
-                                    index: j,
-                                    label: date.format("YYYY/MM/DD"),
-                                    value: date.toDate()
-                                }));
-                            }
-
-                            let row = new TableRowItem({
-                                month: index,
-                                year: year,
-                                sel001: rec.payBonusAtr == 1 ? true : false,
-                                sel002: $moment.date(),
-                                sel002Data: sel002Data,
-                                inp003: new Date(rec.stdDate),
-                                inp004: rec.socialInsLevyMon["formatYearMonth"]("/"),
-                                inp005: rec.stmtOutputMon["formatYearMonth"]("/"),
-                                inp006: new Date(rec.socialInsStdDate),
-                                inp007: new Date(rec.empInsStdDate),
-                                inp008: new Date(rec.incomeTaxStdDate),
-                                inp009: new Date(rec.accountingClosing),
-                                inp010: rec.neededWorkDay
-                            });
-
-                            lst002Data.push(row);
-
-                            if (!_.find(lst001Data, function(item) { return item.value == year; })) {
-                                lst001Data.push(new common.SelectItem({ index: i + 1, label: yearIJE, value: year, selected: year == dataRow.sel001() }));
-                            }
+                        if (!_.find(lst001Data, function(item) { return item.value == year; })) {
+                            lst001Data.push(new common.SelectItem({ index: lst001Data.length + 1, label: yearIJE, value: year, selected: year == dataRow.sel001() }));
                         }
                     }
                     self.lst001Data(lst001Data);
-                    self.lst002Data(lst002Data);
 
-                    /// Select tạm ra một object (kiband có sửa phần này)
+                    // Selected year match with parent row
                     let selectRow = _.find(lst001Data, function(item) { return item.selected; });
                     if (selectRow) {
                         self.lst001(selectRow.index);
+                        self.lst001.valueHasMutated();
+                        // Load data to table
+                        self.reloadData(selectRow.value);
                     }
                 }
-                self.dirty.reset();
             });
         }
 
-        toggleColumns(item, event): void {
-            $('.toggle').toggleClass('hidden');
-            $(event.currentTarget).parent('td').toggleClass('checkbox-cols');
-            ($(event.currentTarget).text() == "-" && $(event.currentTarget).text('+')) || $(event.currentTarget).text('-');
-            if (!$('.toggle').hasClass('hidden')) {
-                nts.uk.ui.windows.getSelf().setWidth(1465);
-            } else {
-                nts.uk.ui.windows.getSelf().setWidth(1020);
+        reloadData(year) {
+            console.log(_.filter(this.dataSources, (item) => { return item.processingYm == 201707; }));
+            let self = this,
+                lst002Data: Array<TableRowItem> = [],
+                dataRow = nts.uk.ui.windows.getShared('dataRow');
+
+            // Redefined year value
+            year = year || dataRow.sel001();
+
+            let dataSources = self.dataSources.filter(function(item) { return item.processingYm["getYearInYm"]() == year; });
+
+            for (let i: number = 0, rec: IPaydayDto; rec = self.dataSources[i]; i++) {
+                let rec: IPaydayDto = dataSources[i];
+                if (rec) {
+                    let $moment = moment(new Date(rec.payDate)),
+                        month = $moment.month() + 1,
+                        sel002Data: Array<common.SelectItem> = [];
+
+                    for (var j: number = 1; j <= $moment.daysInMonth(); j++) {
+                        var date = moment(new Date($moment.year(), $moment.month(), j));
+                        sel002Data.push(new common.SelectItem({
+                            index: j,
+                            label: date.format("YYYY/MM/DD"),
+                            value: date.toDate()
+                        }));
+                    }
+
+                    let row = _.find(lst002Data, function(item) { return item.month() == month; });
+                    if (!row) {
+                        row = new TableRowItem({
+                            month: month,
+                            year: year,
+                            sel001: rec.payBonusAtr == 1 ? true : false,
+                            sel002: $moment.date(),
+                            sel002Data: sel002Data,
+                            inp003: new Date(rec.stdDate),
+                            inp004: rec.socialInsLevyMon["formatYearMonth"]("/"),
+                            inp005: rec.stmtOutputMon["formatYearMonth"]("/"),
+                            inp006: new Date(rec.socialInsStdDate),
+                            inp007: new Date(rec.empInsStdDate),
+                            inp008: new Date(rec.incomeTaxStdDate),
+                            inp009: new Date(rec.accountingClosing),
+                            inp010: rec.neededWorkDay
+                        });
+                        lst002Data.push(row);
+                    } else {
+                        row.sel001(rec.payBonusAtr == 1 ? true : false);
+                    }
+                }
             }
+            self.lst002Data(lst002Data);
+            self.dirty.reset();
         }
 
-        showModalDialogC(item, event): void {
-            nts.uk.ui.windows.sub.modal("../c/index.xhtml", { width: 682, height: 370, title: '処理区分の追加' })
-                .onClosed(() => { });
-        }
-
-        showModalDialogD(item, event): void {
-            nts.uk.ui.windows.sub.modal("../d/index.xhtml", { width: 682, height: 410, title: '処理区分の追加' })
-                .onClosed(() => { });
+        toggleColumns(item, event): void {
+            let self = this;
+            self.toggle(!self.toggle());
         }
 
         showModalDialogE(item, event): void {
-            nts.uk.ui.windows.sub.modal("../e/index.xhtml", { width: 540, height: 600, title: '処理区分の追加' })
+            nts.uk.ui.windows.setShared('viewModelB', item);
+            nts.uk.ui.windows.sub.modal("../e/index.xhtml", { width: 540, height: 600, title: '処理区分の追加', dialogClass: "no-close" })
                 .onClosed(() => { });
         }
 
         newData(item, event) {
             let self = this;
             if (self.dirty.isDirty()) {
-                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。よろしいですか。?").ifYes(function() {
                     self.lst001(null);
                     self.inp001(null);
                     self.dirty.reset();
-                }).ifCancel(function() {
-                })
+                });
             } else {
                 self.lst001(null);
                 self.inp001(null);
@@ -164,16 +198,96 @@ module qmm005.b {
         }
 
         saveData(item, event) {
-            let self = this;
+            let self = this,
+                lst002Data = ko.toJS(self.lst002Data()),
+                data: Array<IPaydayDto> = [];
+
+            for (var i in lst002Data) {
+                let item = lst002Data[i],
+                    dataSources = _.clone(self.dataSources),
+                    processingYm = parseInt((item.year + '' + item.month)['formatYearMonth']()),
+                    filterProcessings = _.filter(dataSources, function(item) { return item.processingYm == processingYm; });
+
+                // update salary info
+                let salary = _.find(filterProcessings, function(item) { return item.payBonusAtr == 0; });
+                {
+                    salary.processingNo = self.processingNo();
+                    salary.payBonusAtr = 0;
+                    salary.processingYm = parseInt((item.year + '' + item.month)['formatYearMonth']());
+                    salary.sparePayAtr = 0;
+                    salary.payDate = moment.utc(item.sel002Data[item.sel002 - 1].label).toISOString();
+                    salary.stdDate = moment.utc(item.inp003).toISOString();
+                    salary.accountingClosing = moment.utc(item.inp009).toISOString();
+                    salary.socialInsLevyMon = parseInt(item.inp004["formatYearMonth"]());
+                    salary.socialInsStdDate = moment.utc(item.inp006).toISOString();
+                    salary.incomeTaxStdDate = moment.utc(item.inp008).toISOString();
+                    salary.neededWorkDay = item.inp010;
+                    salary.empInsStdDate = moment.utc(item.inp007).toISOString();
+                    salary.stmtOutputMon = parseInt(item.inp005["formatYearMonth"]());
+                }
+
+                // If month has bonus
+                if (item.sel001 == true) {
+                    if (filterProcessings.length == 1) {
+                        // Add new bonus data
+                        filterProcessings.push({
+                            processingNo: self.processingNo(),
+                            payBonusAtr: 1,
+                            processingYm: parseInt((item.year + '' + item.month)['formatYearMonth']()),
+                            sparePayAtr: 0,
+                            payDate: moment.utc(item.sel002Data[item.sel002 - 1].label).toISOString(),
+                            stdDate: moment.utc(item.inp003).toISOString(),
+                            accountingClosing: moment.utc(item.inp009).toISOString(),
+                            socialInsLevyMon: parseInt(item.inp004["formatYearMonth"]()),
+                            socialInsStdDate: moment.utc(item.inp006).toISOString(),
+                            incomeTaxStdDate: moment.utc(item.inp008).toISOString(),
+                            neededWorkDay: item.inp010,
+                            empInsStdDate: moment.utc(item.inp007).toISOString(),
+                            stmtOutputMon: parseInt(item.inp005["formatYearMonth"]())
+                        });
+                    } else {
+                        // update exist bonus infomation
+                        let bonus = _.find(filterProcessings, function(item) { return item.payBonusAtr == 1; });
+                        if (bonus) {
+                            //bonus.processingNo = self.processingNo();
+                            //bonus.payBonusAtr = 0;
+                            //bonus.processingYm = parseInt((item.year + '' + item.month)['formatYearMonth']());
+                            //bonus.sparePayAtr = 0;
+                            bonus.payDate = moment.utc(bonus.payDate).toISOString();
+                            bonus.stdDate = moment.utc(bonus.stdDate).toISOString();
+                            bonus.accountingClosing = moment.utc(bonus.accountingClosing).toISOString();
+                            //bonus.socialInsLevyMon = parseInt(item.inp004["formatYearMonth"]());
+                            bonus.socialInsStdDate = moment.utc(bonus.socialInsStdDate).toISOString();
+                            bonus.incomeTaxStdDate = moment.utc(bonus.incomeTaxStdDate).toISOString();
+                            bonus.neededWorkDay = item.inp010;
+                            bonus.empInsStdDate = moment.utc(bonus.empInsStdDate).toISOString();
+                            //bonus.stmtOutputMon = parseInt(item.inp005["formatYearMonth"]());
+                        }
+                    }
+                } else { // remove bonus info
+                    filterProcessings = _.filter(filterProcessings, function(item) { return item.payBonusAtr == 0; });
+                }
+                data = data.concat(filterProcessings);
+            }
+            data = _.orderBy(data, ["payBonusAtr", "processingYm"], ["asc", "asc"]);
             debugger;
+            services.updatData({ processingNo: self.processingNo(), payDays: data }).done(() => { });
         }
 
         deleteData(item, event) {
             let self = this;
-            debugger;
+            // Note
+            /// No document for this action
         }
 
-        closeDialog(item, event) { nts.uk.ui.windows.close(); }
+        closeDialog(item, event) {
+            let self = this;
+            if (self.dirty.isDirty()) {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。よろしいですか。?").ifYes(function() { nts.uk.ui.windows.close(); });
+            } else {
+                nts.uk.ui.windows.close();
+            }
+        }
     }
 
     interface ITableRowItem {
@@ -213,7 +327,7 @@ module qmm005.b {
             let self = this;
             self.month(param.month);
             self.year(param.year);
-            self.year.subscribe(function(v) {                
+            self.year.subscribe(function(v) {
                 self.sel001(false);
                 let sel002Data: Array<common.SelectItem> = [], $moment = moment(new Date(v, self.month() - 1, 1));
                 for (let i = 1; i <= $moment.daysInMonth(); i++) {
@@ -226,14 +340,14 @@ module qmm005.b {
                 }
                 self.sel002Data(sel002Data);
                 self.sel002.valueHasMutated();
-                self.inp003(new Date(v, self.month() - 1, 1))
-                self.inp004(new Date(v, self.month() - 1, 0)["formatYearMonth"]("/"))
-                self.inp005(new Date(v, self.month() - 1, 1)["formatYearMonth"]("/"));
-                self.inp006(new Date(v, self.month() - 1, 0));
-                self.inp007(new Date(v, self.month() - 1, 1));
-                self.inp008(new Date(v + 1, 0, 1));
-                self.inp009(new Date(v, self.month(), 0));
-                self.inp010(new Date(v, self.month() - 1, 1)["getWorkDays"]());
+                self.inp003(moment.utc([v, self.month() - 1, 1]).toDate())
+                self.inp004(moment.utc([v, self.month() - 1, 0]).format("YYYY/MM"))
+                self.inp005(moment.utc([v, self.month() - 1, 1]).format("YYYY/MM"));
+                self.inp006(moment.utc([v, self.month() - 1, 0]).toDate());
+                self.inp007(moment.utc([v, self.month() - 1, 1]).toDate());
+                self.inp008(moment.utc([v + 1, 0, 1]).toDate());
+                self.inp009(moment.utc([v, self.month(), 0]).toDate());
+                self.inp010(moment.utc([v, self.month() - 1, 1]).toDate()["getWorkDays"]());
             });
             self.year.valueHasMutated();
 
@@ -264,7 +378,7 @@ module qmm005.b {
         }
     }
 
-    interface PaydayDto {
+    interface IPaydayDto {
         processingNo: number;
         payBonusAtr: number;
         processingYm: number;

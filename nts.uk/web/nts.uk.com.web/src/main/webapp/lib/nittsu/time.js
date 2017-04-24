@@ -1,4 +1,3 @@
-/// <reference path="reference.ts"/>
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -10,16 +9,14 @@ var nts;
     (function (uk) {
         var time;
         (function (time_1) {
+            var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm"];
+            var listEmpire = {
+                "明治": "1868/01/01",
+                "大正": "1912/07/30",
+                "昭和": "1926/12/25",
+                "平成": "1989/01/08"
+            };
             var dotW = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
-            function formatYearMonth(yearMonth) {
-                var result;
-                var num = parseInt(String(yearMonth));
-                var year = String(Math.floor(num / 100));
-                var month = uk.text.charPadding(String(num % 100), '0', true, 2);
-                result = year + '/' + month;
-                return result;
-            }
-            time_1.formatYearMonth = formatYearMonth;
             function getYearMonthJapan(year, month) {
                 if (month)
                     return year + "年 " + month + " 月";
@@ -112,12 +109,25 @@ var nts;
                 return new JapanYearMonth("平成 ", diff, month);
             }
             time_1.yearmonthInJapanEmpire = yearmonthInJapanEmpire;
-            /**
-            * Format by pattern
-            * @param  {number} [seconds]      Input seconds
-            * @param  {string} [formatOption] Format option
-            * @return {string}                Formatted duration
-            */
+            var JapanDateMoment = (function () {
+                function JapanDateMoment(date, outputFormat) {
+                    var MomentResult = parseMoment(date, outputFormat);
+                    var year = MomentResult.momentObject.year();
+                    var month = MomentResult.momentObject.month() + 1;
+                }
+                JapanDateMoment.prototype.toString = function () {
+                    return (this.empire === undefined ? "" : this.empire + " ")
+                        + (this.year === undefined ? "" : this.year + " 年 ")
+                        + (this.month === undefined ? "" : this.month + " 月")
+                        + (this.day === undefined ? "" : this.day + " ");
+                };
+                return JapanDateMoment;
+            }());
+            time_1.JapanDateMoment = JapanDateMoment;
+            function dateInJapanEmpire(date) {
+                return new JapanDateMoment(date);
+            }
+            time_1.dateInJapanEmpire = dateInJapanEmpire;
             function formatSeconds(seconds, formatOption) {
                 seconds = parseInt(String(seconds));
                 var ss = uk.text.padLeft(String(seconds % 60), '0', 2);
@@ -125,19 +135,12 @@ var nts;
                 var mm = uk.text.padLeft(String(minutes % 60), '0', 2);
                 var hours = uk.ntsNumber.trunc(seconds / 60 / 60);
                 var h = String(hours);
-                // TODO: use formatOption
                 return "h:mm:ss"
                     .replace(/h/g, h)
                     .replace(/mm/g, mm)
                     .replace(/ss/g, ss);
             }
             time_1.formatSeconds = formatSeconds;
-            /**
-            * 日付をフォーマットする
-            * @param  {Date}   date     日付
-            * @param  {String} [format] フォーマット
-            * @return {String}          フォーマット済み日付
-            */
             function formatDate(date, format) {
                 if (!format)
                     format = 'yyyy-MM-dd hh:mm:ss.SSS';
@@ -165,17 +168,19 @@ var nts;
                 return format;
             }
             time_1.formatDate = formatDate;
-            /**
-            * Format by pattern
-            * @param  {Date}   [date]         Input date
-            * @param  {String} [inputFormat]  Input format
-            * @param  {String} [outputFormat] Output format
-            * @return {String}                Formatted date
-            */
+            function formatYearMonth(yearMonth) {
+                var result;
+                var num = parseInt(String(yearMonth));
+                var year = String(Math.floor(num / 100));
+                var month = uk.text.charPadding(String(num % 100), '0', true, 2);
+                result = year + '/' + month;
+                return result;
+            }
+            time_1.formatYearMonth = formatYearMonth;
             function formatPattern(date, inputFormat, outputFormat) {
                 outputFormat = uk.text.getISOFormat(outputFormat);
-                inputFormat = uk.text.getISOFormat(inputFormat);
-                return moment.utc(date, inputFormat).format(outputFormat);
+                var inputFormats = (inputFormat) ? inputFormat : defaultInputFormat;
+                return moment.utc(date, inputFormats).format(outputFormat);
             }
             time_1.formatPattern = formatPattern;
             var ParseResult = (function () {
@@ -351,7 +356,6 @@ var nts;
                     return ResultParseTimeOfTheDay.failed("invalid time of the day format");
                 var hour = parseInt(timeOfDay.substring(0, stringLength - 2));
                 var minute = parseInt(timeOfDay.substring(stringLength - 2));
-                //console.log(checkNum.substring(0,stringLength-2));
                 if (hour < 0 || hour > 23)
                     return ResultParseTimeOfTheDay.failed("invalid: hour must in range 0-23");
                 if (minute < 0 || minute > 59)
@@ -445,16 +449,17 @@ var nts;
             time_1.parseYearMonthDate = parseYearMonthDate;
             var MomentResult = (function (_super) {
                 __extends(MomentResult, _super);
-                function MomentResult(success, momentObject, outputFormat, msg) {
-                    _super.call(this, success);
+                function MomentResult(momentObject, outputFormat) {
+                    _super.call(this, true);
                     this.momentObject = momentObject;
-                    this.msg = msg || "Invalid format";
+                    this.outputFormat = uk.text.getISOFormat(outputFormat);
                 }
-                MomentResult.succeeded = function (momentObject) {
-                    return new MomentResult(true, momentObject);
+                MomentResult.prototype.succeeded = function () {
+                    this.success = true;
                 };
-                MomentResult.failed = function (msg) {
-                    return new MomentResult(false, null, msg);
+                MomentResult.prototype.failed = function (msg) {
+                    this.msg = (msg) ? msg : "Invalid format";
+                    this.success = false;
                 };
                 MomentResult.prototype.format = function () {
                     if (!this.success)
@@ -466,10 +471,59 @@ var nts;
                         return null;
                     return this.momentObject;
                 };
+                MomentResult.prototype.toNumber = function (outputFormat) {
+                    var dateFormats = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "date"];
+                    var yearMonthFormats = ["YYYY/MM", "YYYY-MM", "YYYYMM", "yearmonth"];
+                    if (!this.success)
+                        return null;
+                    if (dateFormats.indexOf(outputFormat) != -1) {
+                        return this.momentObject.year() * 10000 + (this.momentObject.month() + 1) * 100 + this.momentObject.date();
+                    }
+                    else if (yearMonthFormats.indexOf(outputFormat) != -1) {
+                        return this.momentObject.year() * 100 + (this.momentObject.month() + 1);
+                    }
+                    else {
+                        return parseInt(this.momentObject.format(outputFormat).replace(/[^\d]/g, ""));
+                    }
+                };
                 MomentResult.prototype.getMsg = function () { return this.msg; };
                 return MomentResult;
             }(ParseResult));
             time_1.MomentResult = MomentResult;
+            function parseMoment(datetime, outputFormat, inputFormat) {
+                var inputFormats = (inputFormat) ? inputFormat : defaultInputFormat;
+                var momentObject = moment.utc(datetime, inputFormats);
+                var result = new MomentResult(momentObject, outputFormat);
+                if (momentObject.isValid())
+                    result.succeeded();
+                else
+                    result.failed();
+                return result;
+            }
+            time_1.parseMoment = parseMoment;
+            function UTCDate(year, month, date, hours, minutes, seconds, milliseconds) {
+                if (uk.util.isNullOrUndefined(year)) {
+                    var currentDate = new Date();
+                    year = currentDate.getUTCFullYear();
+                    month = (uk.util.isNullOrUndefined(month)) ? currentDate.getUTCMonth() : month;
+                    date = (uk.util.isNullOrUndefined(date)) ? currentDate.getUTCDate() : date;
+                    hours = (uk.util.isNullOrUndefined(hours)) ? currentDate.getUTCHours() : hours;
+                    minutes = (uk.util.isNullOrUndefined(minutes)) ? currentDate.getUTCMinutes() : minutes;
+                    seconds = (uk.util.isNullOrUndefined(seconds)) ? currentDate.getUTCSeconds() : seconds;
+                    milliseconds = (uk.util.isNullOrUndefined(milliseconds)) ? currentDate.getUTCMilliseconds() : milliseconds;
+                    return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
+                }
+                else {
+                    month = (uk.util.isNullOrUndefined(month)) ? 0 : month;
+                    date = (uk.util.isNullOrUndefined(date)) ? 1 : date;
+                    hours = (uk.util.isNullOrUndefined(hours)) ? 0 : hours;
+                    minutes = (uk.util.isNullOrUndefined(minutes)) ? 0 : minutes;
+                    seconds = (uk.util.isNullOrUndefined(seconds)) ? 1 : seconds;
+                    milliseconds = (uk.util.isNullOrUndefined(milliseconds)) ? 0 : milliseconds;
+                    return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
+                }
+            }
+            time_1.UTCDate = UTCDate;
         })(time = uk.time || (uk.time = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

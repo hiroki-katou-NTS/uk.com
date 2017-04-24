@@ -2,23 +2,12 @@
 	margin-left: 25px
 }
 
-#B_INP_001 {
-	width: 370px;
-	border: 1px solid #4F4F4F;
-	border-radius: 5px;
-	padding: 5px 0px
-}
-
-#B_SCH_001 {
-	padding: 0px 20px
-}
-
-#B_BTN_001 {
+#btn_decide {
 	margin-left: 120px;
 	margin-top: 6px;
 }
 
-#B_BTN_002 {
+#btn_cancel {
 	margin-left: 80px;
 }
 
@@ -33,4 +22,3 @@
 	margin-right: 10px;
 	margin-top: 3px;
 }
-
