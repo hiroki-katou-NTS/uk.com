@@ -26,7 +26,7 @@ public class JpaItemPeriodRepository extends JpaRepository implements ItemPeriod
 	 * Convert to domain
 	 * 
 	 * @param entity
-	 * @return
+	 * @return ItemPeriod
 	 */
 	private ItemPeriod toDomain(QcamtItemPeriod entity) {
 		val domain = ItemPeriod.createFromJavaType(entity.qcamtItemPeriodPK.ccd, entity.qcamtItemPeriodPK.ctgAtr,

@@ -33,7 +33,7 @@ module qmm012.c.viewmodel {
         groupName: KnockoutObservable<any>;
         CurrentItemSalary: KnockoutObservable<service.model.ItemSalary> = ko.observable(null);
         CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMaster> = ko.observable(null);
-        CurrentLimitMny: KnockoutObservable<number> = ko.observable(0);
+        CurrentLimitMny: KnockoutObservable<number> = ko.observable(1);
         CurrentErrRangeHigh: KnockoutObservable<number> = ko.observable(0);
         CurrentAlRangeHigh: KnockoutObservable<number> = ko.observable(0);
         CurrentErrRangeLow: KnockoutObservable<number> = ko.observable(0);
@@ -186,7 +186,7 @@ module qmm012.c.viewmodel {
                 self.CurrentItemDisplayAtr(NewValue == true ? 0 : 1);
             });
             self.CurrentItemSalary.subscribe(function(NewValue: service.model.ItemSalary) {
-                self.CurrentLimitMny(NewValue ? NewValue.limitMny : 0);
+                self.CurrentLimitMny(NewValue ? NewValue.limitMny : 1);
                 self.CurrentErrRangeHigh(NewValue ? NewValue.errRangeHigh : 0);
                 self.CurrentAlRangeHigh(NewValue ? NewValue.alRangeHigh : 0);
                 self.CurrentErrRangeLow(NewValue ? NewValue.errRangeLow : 0);
@@ -276,19 +276,19 @@ module qmm012.c.viewmodel {
                 self.loadItemSalary(itemMaster).done(function() {
                     self.loadItemPeriod(itemMaster).done(function() {
                         self.loadItemBDs(itemMaster).done(function() {
-                            dfd.resolve("done");
+                            dfd.resolve();
                         });
                     });
                 });
             } else {
                 self.clearContent();
-                dfd.resolve("done");
+                dfd.resolve();
             }
             return dfd.promise();
         }
         clearContent() {
             let self = this;
-            self.CurrentLimitMny(0);
+            self.CurrentLimitMny(1);
             self.CurrentErrRangeHigh(0);
             self.CurrentAlRangeHigh(0);
             self.CurrentErrRangeLow(0);
@@ -390,7 +390,7 @@ module qmm012.c.viewmodel {
             let self = this;
             nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
             nts.uk.ui.windows.setShared('itemPeriod', self.currentItemPeriod());
-            nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close" , title: "項目名の登録"}).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close", title: "項目名の登録" }).onClosed(function(): any {
                 self.currentItemPeriod(nts.uk.ui.windows.getShared('itemPeriod'));
             });
         }

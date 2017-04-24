@@ -64,7 +64,8 @@
 				<div class="nts-left-content caret-right caret-background ">
 					<i class="icon icon-searchbox"></i>
 					<div class="divLine">
-						<div id="B_Lbl_ItemClassification" data-bind="ntsFormLabel: {  required: false }">項目区分</div>
+						<div id="B_Lbl_ItemClassification"
+							data-bind="ntsFormLabel: {  required: false }">項目区分</div>
 						<div id="B_Sel_ItemClassification"
 							data-bind="ntsComboBox: {
 											options: B_Sel_ItemClassification,
@@ -81,7 +82,8 @@
 
 					</div>
 					<div class="divLine">
-						<div id="B_Lbl_Code" data-bind="ntsFormLabel: {  required: false }">コード/名称</div>
+						<div id="B_Lbl_Code"
+							data-bind="ntsFormLabel: {  required: false }">コード/名称</div>
 						<div id="B_Sch_SearchButton"
 							data-bind="ntsSearchBox: {
 									comId: 'B_Lst_ItemList',
@@ -89,7 +91,9 @@
 									selected: GridlistCurrentCode,
 									selectedKey: 'itemCode', 
 									placeHolder:'',
-									fields: ['itemCode', 'itemName']},
+									fields: ['itemCode', 'itemName']
+									
+									},
 									" />
 					</div>
 					<div class="B_Lst_ItemList">
@@ -145,8 +149,9 @@
 									data-bind="ntsFormLabel: {  required: true ,constraint: 'ItemName'}">略名</div>
 							</div>
 							<div class="divLineCol2">
-								<div data-bind="with:texteditor_B_Inp_AbbreviatedName"> 
-									<input data-name="略名" id="B_Inp_AbbreviatedName" class="save-error"
+								<div data-bind="with:texteditor_B_Inp_AbbreviatedName">
+									<input data-name="略名" id="B_Inp_AbbreviatedName"
+										class="save-error"
 										data-bind="ntsTextEditor: {
 										constraint: 'ItemName',
 										required: true,

@@ -36,6 +36,18 @@ public class ItemDeductBD extends AggregateRoot {
 	private RangeAtr alRangeHighAtr;
 	private AlRangeHigh alRangeHigh;
 
+	@Override
+	public void validate() {
+		super.validate();
+		if (StringUtil.isNullOrEmpty(this.itemCode.v(), true)
+				|| StringUtil.isNullOrEmpty(this.itemBreakdownCode.v(), true)
+				|| StringUtil.isNullOrEmpty(this.itemBreakdownName.v(), true)
+				|| StringUtil.isNullOrEmpty(this.itemBreakdownAbName.v(), true)) {
+			throw new BusinessException("ER001");
+		}
+
+	}
+	
 	public static ItemDeductBD createFromJavaType(String itemCode, String itemBreakdownCode, String itemBreakdownName,
 			String itemBreakdownAbName, String uniteCode, int zeroDispSet, int itemDispAtr, int errRangeLowAtr,
 			BigDecimal errRangeLow, int errRangeHighAtr, BigDecimal errRangeHigh, int alRangeLowAtr,
@@ -47,18 +59,6 @@ public class ItemDeductBD extends AggregateRoot {
 				EnumAdaptor.valueOf(errRangeHighAtr, RangeAtr.class), new ErrRangeHigh(errRangeHigh),
 				EnumAdaptor.valueOf(alRangeLowAtr, RangeAtr.class), new AlRangeLow(alRangeLow),
 				EnumAdaptor.valueOf(alRangeHighAtr, RangeAtr.class), new AlRangeHigh(alRangeHigh));
-	}
-
-	@Override
-	public void validate() {
-		super.validate();
-		if (StringUtil.isNullOrEmpty(this.itemCode.v(), true)
-				|| StringUtil.isNullOrEmpty(this.itemBreakdownCode.v(), true)
-				|| StringUtil.isNullOrEmpty(this.itemBreakdownName.v(), true)
-				|| StringUtil.isNullOrEmpty(this.itemBreakdownAbName.v(), true)) {
-			throw new BusinessException("ER001");
-		}
-
 	}
 
 	public ItemDeductBD(ItemCode itemCode, ItemCode itemBreakdownCode, ItemName itemBreakdownName,

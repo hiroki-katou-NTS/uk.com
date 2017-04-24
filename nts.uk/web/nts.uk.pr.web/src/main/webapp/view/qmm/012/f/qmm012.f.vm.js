@@ -34,7 +34,7 @@ var qmm012;
                     var dfd = $.Deferred();
                     self.CurrentZeroDisplaySet(itemMaster ? itemMaster.zeroDisplaySet : 1);
                     self.checked_NoDisplay(itemMaster ? itemMaster.itemDisplayAtr == 0 ? true : false : false);
-                    dfd.resolve("done");
+                    dfd.resolve();
                     return dfd.promise();
                 };
                 return ScreenModel;

@@ -209,8 +209,8 @@ var qmm012;
                             self.dirty = new nts.uk.ui.DirtyChecker(self.dirtyItemBD);
                         }
                         else {
-                            //if no item, show message set new mode
-                            nts.uk.ui.dialog.alert("対象データがありません。");
+                            //if no item,set new mode
+                            //  nts.uk.ui.dialog.alert("対象データがありません。");
                             self.setNewMode();
                         }
                     });
@@ -270,20 +270,19 @@ var qmm012;
                 ScreenModel.prototype.activeDirty = function (MainFunction, YesFunction, NoFunction) {
                     var self = this;
                     self.dirtyItemBD(self.getCurrentItemBD());
-                    if (self.dirty ? !self.dirty.isDirty() : true) {
-                        MainFunction();
-                    }
-                    else {
-                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。  ").ifYes(function () {
-                            //reset data on form when not save 
-                            self.gridListCurrentCode(self.gridListCurrentCode());
-                            if (YesFunction)
-                                YesFunction();
-                        }).ifNo(function () {
-                            if (NoFunction)
-                                NoFunction();
-                        });
-                    }
+                    //   if (self.dirty ? !self.dirty.isDirty() : true) {
+                    MainFunction();
+                    //   } else {
+                    //     nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。  ").ifYes(function() {
+                    //reset data on form when not save 
+                    //        self.gridListCurrentCode(self.gridListCurrentCode());
+                    //         if (YesFunction)
+                    //          YesFunction();
+                    //    }).ifNo(function() {
+                    //        if (NoFunction)
+                    //             NoFunction();
+                    //     })
+                    //    }
                 };
                 ScreenModel.prototype.addItemBD = function (itemBD) {
                     var self = this;

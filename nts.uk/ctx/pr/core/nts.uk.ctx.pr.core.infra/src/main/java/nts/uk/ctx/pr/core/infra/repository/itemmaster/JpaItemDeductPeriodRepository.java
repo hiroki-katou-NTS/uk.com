@@ -20,7 +20,12 @@ public class JpaItemDeductPeriodRepository extends JpaRepository implements Item
 		return this.queryProxy().find(key, QcamtItemDeductPeriod.class).map(x -> toDomain(x));
 
 	}
-
+	/**
+	 * Convert to domain
+	 * 
+	 * @param entity
+	 * @return ItemDeductPeriod
+	 */
 	private ItemDeductPeriod toDomain(QcamtItemDeductPeriod entity) {
 		val domain = ItemDeductPeriod.createFromJavaType(entity.qcamtItemDeductPeriodPK.itemCd, entity.periodAtr,
 				entity.strY, entity.endY, entity.cycleAtr, entity.cycle01Atr, entity.cycle02Atr, entity.cycle03Atr,
@@ -41,7 +46,14 @@ public class JpaItemDeductPeriodRepository extends JpaRepository implements Item
 		this.commandProxy().remove(QcamtItemDeductPeriod.class, key);
 
 	}
-
+	
+	/**
+	 * Convert to Entity
+	 * 
+	 * @param domain
+	 * @return QcamtItemDeductPeriod
+	 */
+	
 	private QcamtItemDeductPeriod toEntity(String companyCode, ItemDeductPeriod domain) {
 		QcamtItemDeductPeriodPK key = new QcamtItemDeductPeriodPK(companyCode, domain.getItemCode().v());
 		return new QcamtItemDeductPeriod(key, domain.getPeriodAtr().value, domain.getStrY().v(), domain.getEndY().v(),

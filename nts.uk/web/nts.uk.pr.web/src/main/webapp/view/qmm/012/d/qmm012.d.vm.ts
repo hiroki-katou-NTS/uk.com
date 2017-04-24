@@ -145,13 +145,13 @@ module qmm012.d.viewmodel {
                 self.loadItemDeduct(itemMaster).done(function() {
                     self.loadItemPeriod(itemMaster).done(function() {
                         self.loadItemBDs(itemMaster).done(function() {
-                            dfd.resolve("done");
+                            dfd.resolve();
                         });
                     });
                 });
             } else {
                 self.clearContent();
-                dfd.resolve("done");
+                dfd.resolve();
             }
             self.Checked_NoDisplayNames(itemMaster ? itemMaster.itemDisplayAtr == 0 ? true : false : false);
             self.CurrentZeroDisplaySet(itemMaster ? itemMaster.zeroDisplaySet : 1);

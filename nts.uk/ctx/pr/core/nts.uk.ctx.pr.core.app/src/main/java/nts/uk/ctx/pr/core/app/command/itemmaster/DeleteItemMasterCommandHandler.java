@@ -52,21 +52,29 @@ public class DeleteItemMasterCommandHandler extends CommandHandler<DeleteItemMas
 	protected void handle(CommandHandlerContext<DeleteItemMasterCommand> context) {
 
 		val companyCode = AppContexts.user().companyCode();
+
 		val categoryAtr = context.getCommand().getCategoryAtr();
+
 		val itemCode = context.getCommand().getItemCode();
+
 		if (!this.itemMasterRepository.find(companyCode, categoryAtr, itemCode).isPresent())
-			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。"));
+			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。")); // ER026
+
 		this.itemMasterRepository.remove(companyCode, categoryAtr, itemCode);
 		// remove all sub item linked with item master through the item code
+
 		switch (categoryAtr) {
+
 		case 0:
 			// if item Category 支給
 			deleteItemSalary(companyCode, context);
 			break;
+
 		case 1:
 			// 控除
 			deleteItemDeduct(companyCode, context);
 			break;
+
 		case 2:
 			// 勤怠
 			deleteItemAttend(companyCode, context);
@@ -75,42 +83,81 @@ public class DeleteItemMasterCommandHandler extends CommandHandler<DeleteItemMas
 	}
 
 	private void deleteItemSalary(String companyCode, CommandHandlerContext<DeleteItemMasterCommand> context) {
+
 		val itemCode = context.getCommand().getItemCode();
-		if (!this.itemSalaryRespository.find(companyCode, itemCode).isPresent())
-			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。"));
+
+		// first check item Salary is Exists
+		if (!this.itemSalaryRespository.find(companyCode, itemCode).isPresent()) {
+			// no , throw BusinessException
+			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。")); // ER026
+		}
+
+		// if yes , delete it
 		this.itemSalaryRespository.delete(companyCode, itemCode);
-		if (this.itemSalaryPeriodRepository.find(companyCode, itemCode).isPresent())
-		this.itemSalaryPeriodRepository.delete(companyCode, itemCode);
-		// Then remove itemBD
+
+		// check item Salary Period is Exists
+		if (this.itemSalaryPeriodRepository.find(companyCode, itemCode).isPresent()) {
+
+			// if yes , delete item Salary Period
+			this.itemSalaryPeriodRepository.delete(companyCode, itemCode);
+		}
+
+		// Then check itemBD
 		List<ItemSalaryBD> itemBDList = this.itemSalaryBDRepository.findAll(companyCode, itemCode);
+
+		// create loop for delete all itemBD
 		for (ItemSalaryBD itemBD : itemBDList) {
-			if (!this.itemSalaryBDRepository.find(companyCode, itemCode, itemBD.getItemBreakdownCode().v()).isPresent())
-				throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。"));
+
+			// delete itemBD
 			this.itemSalaryBDRepository.delete(companyCode, itemBD.getItemCode().v(),
 					itemBD.getItemBreakdownCode().v());
 		}
 	}
 
 	private void deleteItemDeduct(String companyCode, CommandHandlerContext<DeleteItemMasterCommand> context) {
+
 		val itemCode = context.getCommand().getItemCode();
-		if (!this.itemDeductRespository.find(companyCode, itemCode).isPresent())
-			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。"));
+
+		// first check item Deduct is Exists
+		if (!this.itemDeductRespository.find(companyCode, itemCode).isPresent()) {
+			// no , throw BusinessException
+			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。")); // ER026
+		}
+
+		// if yes , delete it
 		this.itemDeductRespository.delete(companyCode, itemCode);
-		if (this.itemDeductPeriodRepository.find(companyCode, itemCode).isPresent())
-		this.itemDeductPeriodRepository.delete(companyCode, itemCode);
+
+		// check item Deduct Period is Exists
+		if (this.itemDeductPeriodRepository.find(companyCode, itemCode).isPresent()) {
+
+			// if yes , delete item Deduct Period
+			this.itemDeductPeriodRepository.delete(companyCode, itemCode);
+
+		}
+
+		// Then check itemBD
 		List<ItemDeductBD> itemBDList = this.itemDeductBDRepository.findAll(companyCode, itemCode);
+
+		// create loop for delete all itemBD
 		for (ItemDeductBD itemBD : itemBDList) {
-			if (!this.itemDeductBDRepository.find(companyCode, itemCode, itemBD.getItemBreakdownCode().v()).isPresent())
-				throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。"));
+
+			// delete itemBD
 			this.itemDeductBDRepository.delete(companyCode, itemBD.getItemCode().v(),
 					itemBD.getItemBreakdownCode().v());
 		}
 	}
 
 	private void deleteItemAttend(String companyCode, CommandHandlerContext<DeleteItemMasterCommand> context) {
+
 		val itemCode = context.getCommand().getItemCode();
-		if (!this.itemAttendRespository.find(companyCode, itemCode).isPresent())
-			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。"));
+		// first check item Deduct is Exists
+		
+		if (!this.itemAttendRespository.find(companyCode, itemCode).isPresent()) {
+			// no , throw BusinessException
+			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。")); // ER026
+		}
+		
+		// if yes , delete it
 		this.itemAttendRespository.delete(companyCode, itemCode);
 
 	}

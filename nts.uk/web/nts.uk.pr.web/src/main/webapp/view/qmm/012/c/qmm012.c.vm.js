@@ -8,7 +8,7 @@ var qmm012;
                 function ScreenModel() {
                     this.CurrentItemSalary = ko.observable(null);
                     this.CurrentItemMaster = ko.observable(null);
-                    this.CurrentLimitMny = ko.observable(0);
+                    this.CurrentLimitMny = ko.observable(1);
                     this.CurrentErrRangeHigh = ko.observable(0);
                     this.CurrentAlRangeHigh = ko.observable(0);
                     this.CurrentErrRangeLow = ko.observable(0);
@@ -159,7 +159,7 @@ var qmm012;
                         self.CurrentItemDisplayAtr(NewValue == true ? 0 : 1);
                     });
                     self.CurrentItemSalary.subscribe(function (NewValue) {
-                        self.CurrentLimitMny(NewValue ? NewValue.limitMny : 0);
+                        self.CurrentLimitMny(NewValue ? NewValue.limitMny : 1);
                         self.CurrentErrRangeHigh(NewValue ? NewValue.errRangeHigh : 0);
                         self.CurrentAlRangeHigh(NewValue ? NewValue.alRangeHigh : 0);
                         self.CurrentErrRangeLow(NewValue ? NewValue.errRangeLow : 0);
@@ -248,20 +248,20 @@ var qmm012;
                         self.loadItemSalary(itemMaster).done(function () {
                             self.loadItemPeriod(itemMaster).done(function () {
                                 self.loadItemBDs(itemMaster).done(function () {
-                                    dfd.resolve("done");
+                                    dfd.resolve();
                                 });
                             });
                         });
                     }
                     else {
                         self.clearContent();
-                        dfd.resolve("done");
+                        dfd.resolve();
                     }
                     return dfd.promise();
                 };
                 ScreenModel.prototype.clearContent = function () {
                     var self = this;
-                    self.CurrentLimitMny(0);
+                    self.CurrentLimitMny(1);
                     self.CurrentErrRangeHigh(0);
                     self.CurrentAlRangeHigh(0);
                     self.CurrentErrRangeLow(0);

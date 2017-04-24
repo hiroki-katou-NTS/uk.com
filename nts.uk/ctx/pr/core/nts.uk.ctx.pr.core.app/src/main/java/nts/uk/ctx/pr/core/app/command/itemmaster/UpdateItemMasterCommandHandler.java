@@ -42,7 +42,7 @@ public class UpdateItemMasterCommandHandler extends CommandHandler<UpdateItemMas
 		itemMaster.validate();
 		// Check the data exists
 		if (!this.itemMasterRepository.find(companyCode, categoryAtr, itemCode).isPresent())
-			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。"));
+			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。"));// ER026
 		this.itemMasterRepository.update(context.getCommand().toDomain());
 		// after update item master , update sub item
 		switch (categoryAtr) {
@@ -63,29 +63,58 @@ public class UpdateItemMasterCommandHandler extends CommandHandler<UpdateItemMas
 
 	private void updateItemSalary(String companyCode, CommandHandlerContext<UpdateItemMasterCommand> context) {
 		UpdateItemMasterCommand itemCommand = context.getCommand();
+
 		String itemCode = itemCommand.getItemCode();
+
+		// set item Code = itemMaster Code
 		itemCommand.getItemSalary().setItemCode(itemCode);
-		if (!this.itemSalaryRespository.find(companyCode, itemCode).isPresent())
-			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。"));
+
+		// first check item Salary is Exists
+		if (!this.itemSalaryRespository.find(companyCode, itemCode).isPresent()) {
+			// no , throw BusinessException
+			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。")); // ER026
+		}
+
+		// if yes , update it
 		this.itemSalaryRespository.update(companyCode, itemCommand.getItemSalary().toDomain());
 	}
 
 	private void updateItemDeduct(String companyCode, CommandHandlerContext<UpdateItemMasterCommand> context) {
+
 		UpdateItemMasterCommand itemCommand = context.getCommand();
+
 		String itemCode = itemCommand.getItemCode();
+
+		// set item Code = itemMaster Code
 		itemCommand.getItemDeduct().setItemCode(itemCode);
-		if (!this.itemDeductRespository.find(companyCode, itemCode).isPresent())
-			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。"));
+
+		// first check item Deduct is Exists
+		if (!this.itemDeductRespository.find(companyCode, itemCode).isPresent()) {
+			// no , throw BusinessException
+			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。"));// ER026
+		}
+
+		// if yes , update it
 		this.itemDeductRespository.update(companyCode, itemCommand.getItemDeduct().toDomain());
 
 	}
 
 	private void updateItemAttend(String companyCode, CommandHandlerContext<UpdateItemMasterCommand> context) {
+
 		UpdateItemMasterCommand itemCommand = context.getCommand();
+
 		String itemCode = itemCommand.getItemCode();
+
+		// set item Code = itemMaster Code
 		itemCommand.getItemAttend().setItemCode(itemCode);
-		if (!this.itemAttendRespository.find(companyCode, itemCode).isPresent())
-			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。"));
+
+		// check item Attend is Exists
+		if (!this.itemAttendRespository.find(companyCode, itemCode).isPresent()) {
+			// no , throw BusinessException
+			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。"));// ER026
+		}
+		
+		// if yes , update it
 		this.itemAttendRespository.update(companyCode, itemCommand.getItemAttend().toDomain());
 	}
 

@@ -62,6 +62,12 @@ public class ItemDeductPeriod extends AggregateRoot {
 				|| (this.endY.v() > 9999 && this.endY.v() < 1900)) {
 			throw new BusinessException("ER001");
 		}
+		if (this.strY.v() > this.endY.v()) {
+			throw new BusinessException("ER024");
+		}
+		if (this.cycle01Atr.value == 0 && this.cycle12Atr.value == 0 && this.cycleAtr.value == 1) {
+			throw new BusinessException("ER007");
+		}
 
 	}
 

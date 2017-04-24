@@ -25,18 +25,31 @@ public class UpdateItemMasterNameCommandHandler extends CommandHandler<List<Upda
 	@Override
 	protected void handle(CommandHandlerContext<List<UpdateItemMasterCommand>> context) {
 		String companyCode = AppContexts.user().companyCode();
+
+		// create loop for update Item Master Name
 		for (UpdateItemMasterCommand updateCommand : context.getCommand()) {
+
 			int categoryAtr = updateCommand.getCategoryAtr();
+
 			String itemCode = updateCommand.getItemCode();
+
+			// check Item Master Exists
 			Optional<ItemMaster> itemmaster = this.itemMasterRepository.find(companyCode, categoryAtr, itemCode);
-			if (!itemmaster.isPresent())
-				throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。"));
+			if (!itemmaster.isPresent()) {
+
+				// no , throw BusinessException
+				throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。"));// ER026
+			}
+			
+			//if yes , create new itemMaster have data same item Master Just found Except the name (for just change ItemAbName and getItemAbNameE )
 			ItemMaster newItemmaster = ItemMaster.createFromJavaType(companyCode, itemCode,
 					itemmaster.get().getItemName().v(), itemmaster.get().getItemAbName().v(),
 					updateCommand.getItemAbNameE(), updateCommand.getItemAbNameO(),
-					itemmaster.get().getCategoryAtr().value, itemmaster.get().getFixAtr(),
+					itemmaster.get().getCategoryAtr().value, itemmaster.get().getFixAtr().value,
 					itemmaster.get().getDisplaySet().value, itemmaster.get().getUniteCode().v(),
 					itemmaster.get().getZeroDisplaySet().value, itemmaster.get().getItemDisplayAtr().value);
+			
+			//and update it
 			this.itemMasterRepository.update(newItemmaster);
 		}
 	}

@@ -27,6 +27,12 @@ public class JpaItemSalaryBDRepository extends JpaRepository implements ItemSala
 
 	}
 
+	/**
+	 * Convert to domain
+	 * 
+	 * @param entity
+	 * @return ItemPeriod
+	 */
 	private ItemSalaryBD toDomain(QcamtItemSalaryBd entity) {
 
 		val domain = ItemSalaryBD.createFromJavaType(entity.qcamtItemSalaryBdPK.itemCd,
@@ -44,6 +50,12 @@ public class JpaItemSalaryBDRepository extends JpaRepository implements ItemSala
 
 	}
 
+	/**
+	 * Convert to entity
+	 * 
+	 * @param domain
+	 * @return QcamtItemSalaryBd
+	 */
 	private QcamtItemSalaryBd toEntity(String companyCode, ItemSalaryBD domain) {
 		String campanyCode = AppContexts.user().companyCode();
 		QcamtItemSalaryBdPK pk = new QcamtItemSalaryBdPK(campanyCode, domain.getItemCode().v(),

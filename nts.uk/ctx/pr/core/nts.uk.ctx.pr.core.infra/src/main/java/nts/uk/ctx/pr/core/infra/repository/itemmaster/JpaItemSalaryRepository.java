@@ -54,7 +54,14 @@ public class JpaItemSalaryRepository extends JpaRepository implements ItemSalary
 	public void add(String companyCode, ItemSalary item) {
 		this.commandProxy().insert(toEntity(companyCode, item));
 	}
-
+	
+	/**
+	 * Convert to domain
+	 * 
+	 * @param entity
+	 * @return ItemSalary
+	 */
+	
 	private ItemSalary toDomain(QcamtItemSalary entity) {
 
 		val domain = ItemSalary.createFromJavaType(entity.qcamtItemSalaryPK.itemCd, entity.taxAtr, entity.socialInsAtr,

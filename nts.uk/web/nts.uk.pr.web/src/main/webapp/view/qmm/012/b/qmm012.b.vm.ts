@@ -128,10 +128,10 @@ module qmm012.b.viewmodel {
             }
 
             self.GridlistCurrentCode.subscribe(function(newValue) {
-                if (newValue != self.dirtyOldValue.lstCode) {
-                    var item = _.find(self.GridlistItems(), function(ItemModel: service.model.ItemMaster) {
-                        return ItemModel.itemCode == newValue;
-                    });
+                var item = _.find(self.GridlistItems(), function(ItemModel: service.model.ItemMaster) {
+                    return ItemModel.itemCode == newValue;
+                });
+                if (newValue != self.dirtyOldValue.lstCode ) {
                     self.activeDirty(function() {
                         self.GridlistCurrentItem(item);
                     }, function() {
@@ -141,7 +141,7 @@ module qmm012.b.viewmodel {
                     });
                 }
             });
-
+            
             self.GridlistCurrentItem.subscribe(function(itemModel: service.model.ItemMaster) {
                 self.clearAllValidateError();
                 self.GridCurrentItemName(itemModel ? itemModel.itemName : '');
@@ -225,32 +225,32 @@ module qmm012.b.viewmodel {
                     //支給
                     $('#screenC').show();
                     self.screenModel.screenModelC.loadData(self.GridlistCurrentItem()).done(function() {
-                        dfd.resolve("done");
+                        dfd.resolve();
                     });
                     break;
                 case 1:
                     //控除
                     $('#screenD').show();
                     self.screenModel.screenModelD.loadData(self.GridlistCurrentItem()).done(function() {
-                        dfd.resolve("done");
+                        dfd.resolve();
                     });
                     break;
                 case 2:
                     //勤怠
                     $('#screenE').show();
                     self.screenModel.screenModelE.loadData(self.GridlistCurrentItem()).done(function() {
-                        dfd.resolve("done");
+                        dfd.resolve();
                     });
                     break;
                 case 3:
                     //記事
                     $('#screenF').show();
                     self.screenModel.screenModelF.loadData(self.GridlistCurrentItem()).done(function() {
-                        dfd.resolve("done");
+                        dfd.resolve();
                     });
                     break;
                 case 9:
-                    dfd.resolve("done");
+                    dfd.resolve();
                     break;
             }
             return dfd.promise();
@@ -542,19 +542,19 @@ module qmm012.b.viewmodel {
         activeDirty(MainFunction, YesFunction?, NoFunction?) {
             let self = this;
             self.dirtyItemMaster(self.getCurrentItemMaster());
-            if (self.dirty ? !self.dirty.isDirty() : true) {
-                MainFunction();
-            } else {
-                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。  ").ifYes(function() {
-                    //reset data on form when not save 
-                    self.GridlistCurrentItem(self.GridlistCurrentItem());
-                    if (YesFunction)
-                        YesFunction();
-                }).ifNo(function() {
-                    if (NoFunction)
-                        NoFunction();
-                })
-            }
+            //    if (self.dirty ? !self.dirty.isDirty() : true) {
+            MainFunction();
+            //    } else {
+            //    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。  ").ifYes(function() {
+            //reset data on form when not save 
+            //      self.GridlistCurrentItem(self.GridlistCurrentItem());
+            //      if (YesFunction)
+            //      YesFunction();
+            //    }).ifNo(function() {
+            //       if (NoFunction)
+            //           NoFunction();
+            //   })
+            //   }
         }
     }
     class DirtyValue {

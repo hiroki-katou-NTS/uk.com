@@ -10,7 +10,6 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalaryperiod.ItemSalaryPeriod;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalaryperiod.ItemSalaryPeriodRepository;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemSalaryPeriod;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemSalaryPeriodPK;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaItemSalaryPeriodRepository extends JpaRepository implements ItemSalaryPeriodRepository {

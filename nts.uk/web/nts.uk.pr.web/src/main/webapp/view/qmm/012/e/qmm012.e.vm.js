@@ -121,12 +121,12 @@ var qmm012;
                     self.CurrentItemMaster(itemMaster);
                     if (itemMaster.itemCode) {
                         self.loadItemAttend(itemMaster).done(function () {
-                            dfd.resolve("done");
+                            dfd.resolve();
                         });
                     }
                     else {
                         self.clearContent();
-                        dfd.resolve("done");
+                        dfd.resolve();
                     }
                     self.CurrentZeroDisplaySet(itemMaster ? itemMaster.zeroDisplaySet : 1);
                     self.Checked_NoDisplay(itemMaster ? itemMaster.itemDisplayAtr == 0 ? true : false : false);

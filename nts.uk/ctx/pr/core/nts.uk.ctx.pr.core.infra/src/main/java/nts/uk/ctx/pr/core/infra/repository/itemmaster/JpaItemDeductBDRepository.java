@@ -24,7 +24,12 @@ public class JpaItemDeductBDRepository extends JpaRepository implements ItemDedu
 				.setParameter("itemCode", itemCode).getList(c -> toDomain(c));
 
 	}
-
+	/**
+	 * Convert to domain
+	 * 
+	 * @param entity
+	 * @return ItemDeductBD
+	 */
 	private ItemDeductBD toDomain(QcamtItemDeductBd entity) {
 		val domain = ItemDeductBD.createFromJavaType(entity.qcamtItemDeductBdPK.itemCd,
 				entity.qcamtItemDeductBdPK.itemBreakdownCd, entity.itemBreakdownName, entity.itemBreakdownAbName,
@@ -44,7 +49,12 @@ public class JpaItemDeductBDRepository extends JpaRepository implements ItemDedu
 	public void add(String companyCode, ItemDeductBD itemDeductBD) {
 		this.commandProxy().insert(toEntity(companyCode,itemDeductBD));
 	}
-
+	/**
+	 * Convert to Entity
+	 * 
+	 * @param domain
+	 * @return QcamtItemDeductBd
+	 */
 	private QcamtItemDeductBd toEntity(String companyCode, ItemDeductBD domain) {
 		QcamtItemDeductBdPK pk = new QcamtItemDeductBdPK(companyCode, domain.getItemCode().v(),
 				domain.getItemBreakdownCode().v());

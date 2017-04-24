@@ -61,28 +61,15 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 	}
 
 	@Override
-	public List<ItemMaster> findAll_SEL_3(String companyCode, int ctgAtr) {
-		return this.queryProxy().query(SEL_3_1, QcamtItem.class).setParameter("companyCode", companyCode)
-				.setParameter("ctgAtr", ctgAtr).getList(c -> toDomain(c));
+	public List<ItemMaster> findAllByDispSetAndCtgAtr(String companyCode, int ctgAtr, int dispSet) {
+		return this.queryProxy().query(SEL_1_1, QcamtItem.class).setParameter("companyCode", companyCode)
+				.setParameter("ctgAtr", ctgAtr).setParameter("dispSet", dispSet).getList(c -> toDomain(c));
 	}
 
 	@Override
-	public List<ItemMaster> findAllNoAvePayAtr(String companyCode, int ctgAtr, int dispSet) {
-		List<ItemMaster> ItemList;
-		if (ctgAtr == -1 && dispSet == -1)
-			ItemList = this.queryProxy().query(SEL_1, QcamtItem.class).setParameter("companyCode", companyCode)
-					.getList(c -> toDomain(c));
-		else if (dispSet == -1)
-			ItemList = this.queryProxy().query(SEL_3_1, QcamtItem.class).setParameter("companyCode", companyCode)
-					.setParameter("ctgAtr", ctgAtr).getList(c -> toDomain(c));
-
-		else if (ctgAtr == -1)
-			ItemList = this.queryProxy().query(SEL_1_2, QcamtItem.class).setParameter("companyCode", companyCode)
-					.setParameter("dispSet", dispSet).getList(c -> toDomain(c));
-		else
-			ItemList = this.queryProxy().query(SEL_1_1, QcamtItem.class).setParameter("companyCode", companyCode)
-					.setParameter("ctgAtr", ctgAtr).setParameter("dispSet", dispSet).getList(c -> toDomain(c));
-		return ItemList;
+	public List<ItemMaster> findAllByDispSet(String companyCode, int dispSet) {
+		return this.queryProxy().query(SEL_1_2, QcamtItem.class).setParameter("companyCode", companyCode)
+				.setParameter("dispSet", dispSet).getList(c -> toDomain(c));
 	}
 
 	@Override
@@ -98,6 +85,7 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 				.setParameter("itemCodeList", itemCode).getList(c -> toDomain(c));
 	}
 
+	@Override
 	public void remove(String companyCode, int categoryAtr, String itemCode) {
 		QcamtItemPK key = new QcamtItemPK(companyCode, categoryAtr, itemCode);
 		this.commandProxy().remove(QcamtItem.class, key);
@@ -108,12 +96,18 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 		this.commandProxy().insert(toEntity(itemMaster));
 	}
 
+	/**
+	 * Convert to Entity
+	 * 
+	 * @param domain
+	 * @return QcamtItem
+	 */
 	private QcamtItem toEntity(ItemMaster domain) {
 		return new QcamtItem(
 				new QcamtItemPK(domain.getCompanyCode().v(), domain.getCategoryAtr().value, domain.getItemCode().v()),
-				domain.getFixAtr(), domain.getItemName().v(), domain.getItemAbName().v(), domain.getItemAbNameE().v(),
-				domain.getItemAbNameO().v(), domain.getDisplaySet().value, domain.getUniteCode().v(),
-				domain.getZeroDisplaySet().value, domain.getItemDisplayAtr().value);
+				domain.getFixAtr().value, domain.getItemName().v(), domain.getItemAbName().v(),
+				domain.getItemAbNameE().v(), domain.getItemAbNameO().v(), domain.getDisplaySet().value,
+				domain.getUniteCode().v(), domain.getZeroDisplaySet().value, domain.getItemDisplayAtr().value);
 
 	}
 
@@ -121,7 +115,7 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 	 * Convert to domain
 	 * 
 	 * @param entity
-	 * @return
+	 * @return ItemMaster
 	 */
 	private ItemMaster toDomain(QcamtItem entity) {
 		val domain = ItemMaster.createFromJavaType(entity.qcamtItemPK.ccd, entity.qcamtItemPK.itemCd, entity.itemName,
@@ -135,7 +129,5 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 	public void update(ItemMaster itemMaster) {
 		this.commandProxy().update(toEntity(itemMaster));
 	}
-
-	
 
 }

@@ -20,12 +20,17 @@ public class JpaItemDeductRepository extends JpaRepository implements ItemDeduct
 				.map(c -> toDomain(c));
 	}
 
+	/**
+	 * Convert to domain
+	 * 
+	 * @param entity
+	 * @return ItemDeduct
+	 */
 	private ItemDeduct toDomain(QcamtItemDeduct entity) {
 
 		val domain = ItemDeduct.createFromJavaType(entity.qcamtItemDeductPK.itemCd, entity.deductAtr,
 				entity.errRangeLowAtr, entity.errRangeLow, entity.errRangeHighAtr, entity.errRangeHigh,
 				entity.alRangeLowAtr, entity.alRangeLow, entity.alRangeHighAtr, entity.alRangeHigh, entity.memo);
-		// TODO Auto-generated method stub
 		return domain;
 	}
 
@@ -34,6 +39,12 @@ public class JpaItemDeductRepository extends JpaRepository implements ItemDeduct
 		this.commandProxy().insert(toEntity(companyCode, itemDeduct));
 	}
 
+	/**
+	 * Convert to Entity
+	 * 
+	 * @param domain
+	 * @return QcamtItemDeduct
+	 */
 	private QcamtItemDeduct toEntity(String companyCode, ItemDeduct domain) {
 		return new QcamtItemDeduct(new QcamtItemDeductPK(companyCode, domain.getItemCode().v()),
 				domain.getDeductAtr().value, domain.getErrRangeLowAtr().value, domain.getErrRangeLow().v(),

@@ -19,6 +19,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.RangeAtr;
 
 @Getter
 public class ItemSalaryBD extends AggregateRoot {
+
 	private ItemCode itemCode;
 	private ItemCode itemBreakdownCode;
 	private ItemName itemBreakdownName;
@@ -34,28 +35,6 @@ public class ItemSalaryBD extends AggregateRoot {
 	private AlRangeLow alRangeLow;
 	private RangeAtr alRangeHighAtr;
 	private AlRangeHigh alRangeHigh;
-
-	public ItemSalaryBD(ItemCode itemCode, ItemCode itemBreakdownCode, ItemName itemBreakdownName,
-			ItemName itemBreakdownAbName, UniteCode uniteCode, DisplayAtr zeroDispSet, DisplayAtr itemDispAtr,
-			RangeAtr errRangeLowAtr, ErrRangeLow errRangeLow, RangeAtr errRangeHighAtr, ErrRangeHigh errRangeHigh,
-			RangeAtr alRangeLowAtr, AlRangeLow alRangeLow, RangeAtr alRangeHighAtr, AlRangeHigh alRangeHigh) {
-		super();
-		this.itemCode = itemCode;
-		this.itemBreakdownCode = itemBreakdownCode;
-		this.itemBreakdownName = itemBreakdownName;
-		this.itemBreakdownAbName = itemBreakdownAbName;
-		this.uniteCode = uniteCode;
-		this.zeroDispSet = zeroDispSet;
-		this.itemDispAtr = itemDispAtr;
-		this.errRangeLowAtr = errRangeLowAtr;
-		this.errRangeLow = errRangeLow;
-		this.errRangeHighAtr = errRangeHighAtr;
-		this.errRangeHigh = errRangeHigh;
-		this.alRangeLowAtr = alRangeLowAtr;
-		this.alRangeLow = alRangeLow;
-		this.alRangeHighAtr = alRangeHighAtr;
-		this.alRangeHigh = alRangeHigh;
-	}
 
 	@Override
 	public void validate() {
@@ -81,6 +60,28 @@ public class ItemSalaryBD extends AggregateRoot {
 				EnumAdaptor.valueOf(alRangeLowAtr, RangeAtr.class), new AlRangeLow(alRangeLow),
 				EnumAdaptor.valueOf(alRangeHighAtr, RangeAtr.class), new AlRangeHigh(alRangeHigh));
 
+	}
+
+	public ItemSalaryBD(ItemCode itemCode, ItemCode itemBreakdownCode, ItemName itemBreakdownName,
+			ItemName itemBreakdownAbName, UniteCode uniteCode, DisplayAtr zeroDispSet, DisplayAtr itemDispAtr,
+			RangeAtr errRangeLowAtr, ErrRangeLow errRangeLow, RangeAtr errRangeHighAtr, ErrRangeHigh errRangeHigh,
+			RangeAtr alRangeLowAtr, AlRangeLow alRangeLow, RangeAtr alRangeHighAtr, AlRangeHigh alRangeHigh) {
+		super();
+		this.itemCode = itemCode;
+		this.itemBreakdownCode = itemBreakdownCode;
+		this.itemBreakdownName = itemBreakdownName;
+		this.itemBreakdownAbName = itemBreakdownAbName;
+		this.uniteCode = uniteCode;
+		this.zeroDispSet = zeroDispSet;
+		this.itemDispAtr = itemDispAtr;
+		this.errRangeLowAtr = errRangeLowAtr;
+		this.errRangeLow = errRangeLow;
+		this.errRangeHighAtr = errRangeHighAtr;
+		this.errRangeHigh = errRangeHigh;
+		this.alRangeLowAtr = alRangeLowAtr;
+		this.alRangeLow = alRangeLow;
+		this.alRangeHighAtr = alRangeHighAtr;
+		this.alRangeHigh = alRangeHigh;
 	}
 
 }
