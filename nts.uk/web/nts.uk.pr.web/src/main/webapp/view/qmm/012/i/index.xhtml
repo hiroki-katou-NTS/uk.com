@@ -79,9 +79,9 @@
 									コード/名称</div>
 							</div>
 							<div class="divLineCol2">
-								<input id="I_Inp_Code" data-name="コード/名称" class="save-error"
-									data-bind="ntsTextEditor: {  required: true, value: CurrentItemBreakdownCode , enable:enable_I_Inp_Code , constraint : 'ItemCode'}"></input>
-								<input id="I_Inp_Name" data-name="コード/名称" class="save-error"
+								<input id="I_Inp_Code" data-name="コード" class="save-error"
+									data-bind="ntsTextEditor: {  required: true, value: CurrentItemBreakdownCode , enable:enable_I_Inp_Code , constraint :['ItemCode','ItemName'] }"></input>
+								<input id="I_Inp_Name" data-name="名称" class="save-error"
 									data-bind="ntsTextEditor: {  required: true, value: CurrentItemBreakdownName  , constraint : 'ItemName'}"></input>
 							</div>
 						</div>

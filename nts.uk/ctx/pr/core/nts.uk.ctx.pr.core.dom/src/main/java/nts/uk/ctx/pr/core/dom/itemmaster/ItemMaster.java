@@ -26,7 +26,7 @@ public class ItemMaster extends AggregateRoot {
 	/**
 	 * Abbreviations Name
 	 */
-	private ItemName itemAbName;
+	private ItemAbName itemAbName;
 	/**
 	 * Abbreviations English Name
 	 */
@@ -73,7 +73,7 @@ public class ItemMaster extends AggregateRoot {
 
 	}
 
-	public ItemMaster(CompanyCode companyCode, ItemCode itemCode, ItemName itemName, ItemName itemAbName,
+	public ItemMaster(CompanyCode companyCode, ItemCode itemCode, ItemName itemName, ItemAbName itemAbName,
 			ItemName itemAbNameE, ItemName itemAbNameO, CategoryAtr categoryAtr, FixAtr fixAtr, DisplayAtr displaySet,
 			UniteCode uniteCode, DisplayAtr zeroDisplaySet, ItemDisplayAtr itemDisplayAtr) {
 		super();
@@ -101,7 +101,7 @@ public class ItemMaster extends AggregateRoot {
 			String itemAbNameE, String itemAbNameO, int categoryAtr, int fixAtr, int displaySet, String uniteCode,
 			int zeroDisplaySet, int itemDisplayAtr) {
 		return new ItemMaster(new CompanyCode(companyCode), new ItemCode(itemCode), new ItemName(itemName),
-				new ItemName(itemAbName), new ItemName(itemAbNameE), new ItemName(itemAbNameO),
+				new ItemAbName(itemAbName), new ItemName(itemAbNameE), new ItemName(itemAbNameO),
 				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class), EnumAdaptor.valueOf(fixAtr, FixAtr.class),
 				EnumAdaptor.valueOf(displaySet, DisplayAtr.class), new UniteCode(uniteCode),
 				EnumAdaptor.valueOf(zeroDisplaySet, DisplayAtr.class),

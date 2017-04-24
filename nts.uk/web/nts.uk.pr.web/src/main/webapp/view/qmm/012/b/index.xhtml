@@ -32,6 +32,7 @@
 				<!-- For B -->
 				nts.uk.ctx.pr.core.dom.itemmaster.ItemCode
 				nts.uk.ctx.pr.core.dom.itemmaster.ItemName
+				nts.uk.ctx.pr.core.dom.itemmaster.ItemAbName
 				<!-- End B -->
 				<!-- For C -->
 				nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.LimitMny
@@ -114,7 +115,7 @@
 						<div class="divLine">
 							<div class="divLineCol1">
 								<div id="B_Lbl_Name" class="floatLeft haveSmallSpan"
-									data-bind="ntsFormLabel: {  required: true  ,constraint: 'ItemCode'}">
+									data-bind="ntsFormLabel: {  required: true  ,constraint: ['ItemCode','ItemName'] }">
 									コード/名称</div>
 							</div>
 							<div class="divLineCol2">
@@ -129,7 +130,7 @@
 								</div>
 
 								<div class="floatLeft" data-bind="with:texteditor_B_Inp_Name">
-									<input data-name="略名" id="B_Inp_Name" class="save-error"
+									<input data-name="名称" id="B_Inp_Name" class="save-error"
 										data-bind="ntsTextEditor: {
 										constraint: 'ItemName',
 										required: true,
@@ -146,14 +147,14 @@
 						<div class="divLine">
 							<div class="divLineCol1">
 								<div id="B_Lbl_AbbreviatedName"
-									data-bind="ntsFormLabel: {  required: true ,constraint: 'ItemName'}">略名</div>
+									data-bind="ntsFormLabel: {  required: true ,constraint: 'ItemAbName'}">略名</div>
 							</div>
 							<div class="divLineCol2">
 								<div data-bind="with:texteditor_B_Inp_AbbreviatedName">
 									<input data-name="略名" id="B_Inp_AbbreviatedName"
 										class="save-error"
 										data-bind="ntsTextEditor: {
-										constraint: 'ItemName',
+										constraint: 'ItemAbName',
 										required: true,
 										value: value,
 										option: option}" />
