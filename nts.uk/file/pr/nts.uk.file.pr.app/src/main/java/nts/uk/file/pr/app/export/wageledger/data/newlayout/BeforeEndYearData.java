@@ -1,18 +1,34 @@
+/******************************************************************
+ * Copyright (c) 2015 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.file.pr.app.export.wageledger.data.newlayout;
 
-public class BeforeEndYearData {
+import lombok.Builder;
+import lombok.Getter;
 
-	/** The position money before year end. */
-	public Long positionMoney;
+/**
+ * The Class BeforeEndYearData.
+ */
+@Builder
+@Getter
+public class BeforeEndYearData {
 	
-	/** The other money before year end. */
-	public Long otherMoney;
+	/** The total tax previous position. */
+	public Long totalTaxPreviousPosition;
 	
-	public Long totalTaxPreviousPostition;
-	
+	/** The total tax other money. */
 	public Long totalTaxOtherMoney;
 	
-	public Long totalSocialInsurancePreviousPostition;
+	/** The total social insurance previous position. */
+	public Long totalSocialInsurancePreviousPosition;
 	
+	/** The total social insurance other money. */
 	public Long totalSocialInsuranceOtherMoney;
+	
+	/** The Acquisition tax previous position. */
+	public Long acquisitionTaxPreviousPosition;
+	
+	/** The Acquisition tax other money. */
+	public Long acquisitionTaxOtherMoney;
 }

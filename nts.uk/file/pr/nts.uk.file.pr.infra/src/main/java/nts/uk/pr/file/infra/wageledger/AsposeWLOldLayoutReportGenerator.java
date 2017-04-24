@@ -43,7 +43,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator implements WLOldLayoutReportGenerator {
 	
 	/** The Constant TEMPLATE_FILE. */
-	private static final String TEMPLATE_FILE = "report/WageLegerOldLayoutReportTemplate.xlsx";
+	private static final String TEMPLATE_FILE = "report/QET001_1.xlsx";
 	
 	/** The Constant ROW_START_REPORT. */
 	private static final int ROW_START_REPORT = 5;
@@ -122,7 +122,7 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 			reportContext.getDesigner().process(false);
 
 			// save as PDF file
-			reportContext.saveAsPdf(this.createNewFile(fileContext, REPORT_FILE_NAME));
+			reportContext.saveAsPdf(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);

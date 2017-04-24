@@ -41,7 +41,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator implements WLNewLayoutReportGenerator{
 	
 	/** The Constant TEMPLATE_FILE. */
-	private static final String TEMPLATE_FILE = "report/WageLedgerNewLayoutTemplate.xlsx";
+	private static final String TEMPLATE_FILE = "report/QET001_2.xlsx";
 	
 	/** The Constant ROW_START_REPORT. */
 	private static final int ROW_START_REPORT = 5;
@@ -161,7 +161,8 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 			reportContext.getDesigner().setUpdateReference(true);
 
 			// save as PDF file
-			reportContext.saveAsPdf(this.createNewFile(fileContext, REPORT_FILE_NAME));
+			reportContext.getWorkbook().save("C://Test.xlsx");
+			reportContext.saveAsPdf(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -191,6 +192,9 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 		});
 		// Salary part.
 		this.setDataSourceForTotalItems(designer, reportData.bonusTotalData, false);
+		
+		// ======================== Set Before End Year Data Source.========================
+		reportContext.setDataSource("EndYearData", reportData.beforeEndYearData);
 	}
 	
 	/**

@@ -21,6 +21,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery.LayoutType;
 import nts.uk.file.pr.app.export.wageledger.data.WLNewLayoutReportData;
 import nts.uk.file.pr.app.export.wageledger.data.WLOldLayoutReportData;
+import nts.uk.file.pr.app.export.wageledger.data.newlayout.BeforeEndYearData;
 import nts.uk.file.pr.app.export.wageledger.data.newlayout.TotalData;
 import nts.uk.file.pr.app.export.wageledger.data.share.HeaderReportData;
 import nts.uk.file.pr.app.export.wageledger.data.share.MonthlyData;
@@ -163,10 +164,16 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 				.salaryAttendanceItems(this.fakeReportItems())
 				.salaryPaymentItems(this.fakeReportItems())
 				.salaryDeductionItems(this.fakeReportItems())
-//				.otherMoneyBeforeYearEnd((long)(Math.random() * 2000000))
-//				.positionMoneyBeforeYearEnd((long)(Math.random() * 2000000))
 				.bonusPaymentDateMap(this.fakeDateMap(5))
 				.salaryPaymentDateMap(this.fakeDateMap(12))
+				.beforeEndYearData(BeforeEndYearData.builder()
+						.acquisitionTaxOtherMoney((long)(Math.random() * 2000000))
+						.acquisitionTaxPreviousPosition((long)(Math.random() * 2000000))
+						.totalSocialInsuranceOtherMoney((long)(Math.random() * 2000000))
+						.totalSocialInsurancePreviousPosition((long)(Math.random() * 2000000))
+						.totalTaxOtherMoney((long)(Math.random() * 2000000))
+						.totalTaxPreviousPosition((long)(Math.random() * 2000000))
+						.build())
 				.build();
 		
 		// Generate report.

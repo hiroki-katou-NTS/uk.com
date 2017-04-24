@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Builder;
+import nts.uk.file.pr.app.export.wageledger.data.newlayout.BeforeEndYearData;
 import nts.uk.file.pr.app.export.wageledger.data.newlayout.TotalData;
 import nts.uk.file.pr.app.export.wageledger.data.share.HeaderReportData;
 import nts.uk.file.pr.app.export.wageledger.data.share.ReportItemDto;
@@ -27,6 +28,9 @@ public class WLNewLayoutReportData {
 	
 	/** The bonus total data. */
 	public TotalData bonusTotalData;
+	
+	/** The before end year data. */
+	public BeforeEndYearData beforeEndYearData;
 	
 	/** The salary payment items. */
 	public List<ReportItemDto> salaryPaymentItems;
