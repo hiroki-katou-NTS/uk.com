@@ -131,7 +131,6 @@ var nts;
                                 };
                                 ScreenModel.prototype.showchangeCertifyGroup = function (selectionCodeLstLstCertifyGroup) {
                                     var self = this;
-                                    console.log(selectionCodeLstLstCertifyGroup);
                                     if (self.typeAction() == TypeActionCertifyGroup.add) {
                                         if (self.dirty.isDirty() && self.isShowDirty()) {
                                             nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {

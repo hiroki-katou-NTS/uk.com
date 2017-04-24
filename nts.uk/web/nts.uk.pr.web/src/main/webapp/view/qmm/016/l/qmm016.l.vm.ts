@@ -154,7 +154,6 @@ module nts.uk.pr.view.qmm016.l {
             //show CertifyGroup (change event)
             private showchangeCertifyGroup(selectionCodeLstLstCertifyGroup: string) {
                 var self = this;
-                console.log(selectionCodeLstLstCertifyGroup);
                 // type action add (new mode)
                 if (self.typeAction() == TypeActionCertifyGroup.add) {
                     if (self.dirty.isDirty() && self.isShowDirty()) {

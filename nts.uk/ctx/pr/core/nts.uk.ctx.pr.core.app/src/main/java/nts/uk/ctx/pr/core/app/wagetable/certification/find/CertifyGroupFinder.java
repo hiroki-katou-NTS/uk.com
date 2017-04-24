@@ -48,38 +48,14 @@ public class CertifyGroupFinder {
 		// Get all
 		List<CertifyGroup> certifyGroups = this.certifyRepository.findAll(companyCode);
 
-		List<Certification> certifyNoneGroupItems = certifiRepository.findAllNoneOfGroup(companyCode);
+		List<Certification> certifyNoneGroupItems = certifiRepository
+			.findAllNoneOfGroup(companyCode);
 
 		// Check exist none group item.
 		if (!CollectionUtil.isEmpty(certifyNoneGroupItems)) {
 			// Add group of none group items.
-			certifyGroups.add(new CertifyGroup(new CertifyGroupGetMemento() {
-
-				@Override
-				public CertifyGroupName getName() {
-					return new CertifyGroupName("グループ なし");
-				}
-
-				@Override
-				public MultipleTargetSetting getMultiApplySet() {
-					return MultipleTargetSetting.TotalMethod;
-				}
-
-				@Override
-				public String getCompanyCode() {
-					return companyCode;
-				}
-
-				@Override
-				public CertifyGroupCode getCode() {
-					return new CertifyGroupCode("000");
-				}
-
-				@Override
-				public Set<Certification> getCertifies() {
-					return certifyNoneGroupItems.stream().collect(Collectors.toSet());
-				}
-			}));
+			certifyGroups.add(
+				new CertifyGroup(new CertifyGroupDefaultImpl(companyCode, certifyNoneGroupItems)));
 		}
 		return certifyGroups;
 	}
@@ -119,7 +95,8 @@ public class CertifyGroupFinder {
 		CertifyGroupFindDto dataOutput = new CertifyGroupFindDto();
 
 		// call findById
-		Optional<CertifyGroup> data = this.certifyRepository.findById(loginUserContext.companyCode(), code);
+		Optional<CertifyGroup> data = this.certifyRepository
+			.findById(loginUserContext.companyCode(), code);
 
 		// not value find
 		if (!data.isPresent()) {
@@ -129,6 +106,45 @@ public class CertifyGroupFinder {
 		// to output
 		data.get().saveToMemento(dataOutput);
 		return dataOutput;
+	}
+
+	class CertifyGroupDefaultImpl implements CertifyGroupGetMemento {
+
+		private String companyCode;
+
+		List<Certification> certifyNoneGroupItems;
+
+		public CertifyGroupDefaultImpl(String companyCode,
+			List<Certification> certifyNoneGroupItems) {
+			this.companyCode = companyCode;
+			this.certifyNoneGroupItems = certifyNoneGroupItems;
+		}
+
+		@Override
+		public String getCompanyCode() {
+			return this.companyCode;
+		}
+
+		@Override
+		public CertifyGroupCode getCode() {
+			return new CertifyGroupCode("000");
+		}
+
+		@Override
+		public CertifyGroupName getName() {
+			return new CertifyGroupName("グループ なし");
+		}
+
+		@Override
+		public MultipleTargetSetting getMultiApplySet() {
+			return MultipleTargetSetting.TotalMethod;
+		}
+
+		@Override
+		public Set<Certification> getCertifies() {
+			return certifyNoneGroupItems.stream().collect(Collectors.toSet());
+		}
+
 	}
 
 }

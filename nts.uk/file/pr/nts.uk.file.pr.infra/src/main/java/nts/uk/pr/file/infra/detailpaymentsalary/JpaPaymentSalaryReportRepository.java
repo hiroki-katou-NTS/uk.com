@@ -36,13 +36,16 @@ import nts.uk.file.pr.app.export.detailpaymentsalary.query.PaymentSalaryQuery;
  * The Class JpaPaymentSalaryReportRepository.
  */
 @Stateless
-public class JpaPaymentSalaryReportRepository extends JpaRepository implements PaymentSalaryReportRepository {
+public class JpaPaymentSalaryReportRepository extends JpaRepository
+	implements PaymentSalaryReportRepository {
 
 	public static final int PAY_BONUS_ATR = 0;
 	public static final int SPARE_PAY_ATR = 0;
+	public static final int LENGTH_LEVEL = 3;
 
-	public static final String QUERY_EMPLOYEE_SORT = "SELECT header,dep,com FROM QstdtPaymentHeader header, "
-		+ "CmnmtDep dep, PcpmtPersonCom com WHERE header.qstdtPaymentHeaderPK.companyCode = :companyCode "
+	public static final String QUERY_EMPLOYEE_SORT = "SELECT header,dep,com "
+		+ "FROM QstdtPaymentHeader header, CmnmtDep dep, PcpmtPersonCom com "
+		+ "WHERE header.qstdtPaymentHeaderPK.companyCode = :companyCode "
 		+ "AND header.qstdtPaymentHeaderPK.personId IN :personIds "
 		+ "AND header.qstdtPaymentHeaderPK.companyCode = dep.cmnmtDepPK.companyCode "
 		+ "AND header.departmentCode = dep.cmnmtDepPK.departmentCode "
@@ -83,12 +86,14 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository implements P
 	 * PaymentSalaryReportRepository#exportPDFPaymentSalary(nts.uk.file.pr.app.
 	 * export.detailpaymentsalary.query.PaymentSalaryQuery)
 	 */
-	public PaymentSalaryReportData exportPDFPaymentSalary(String companyCode, PaymentSalaryQuery query) {
-		String personIds[] = { "999000000000000000000000000000000001", "999000000000000000000000000000000002",
-			"999000000000000000000000000000000003", "999000000000000000000000000000000004",
-			"999000000000000000000000000000000005", "999000000000000000000000000000000006",
-			"999000000000000000000000000000000007", "999000000000000000000000000000000008",
-			"999000000000000000000000000000000009", "999000000000000000000000000000000010" };
+	public PaymentSalaryReportData exportPDFPaymentSalary(String companyCode,
+		PaymentSalaryQuery query) {
+		String personIds[] = { "999000000000000000000000000000000001",
+			"999000000000000000000000000000000002", "999000000000000000000000000000000003",
+			"999000000000000000000000000000000004", "999000000000000000000000000000000005",
+			"999000000000000000000000000000000006", "999000000000000000000000000000000007",
+			"999000000000000000000000000000000008", "999000000000000000000000000000000009",
+			"999000000000000000000000000000000010" };
 		query.setPersonIds(Arrays.asList(personIds));
 		PaymentSalaryReportData data = new PaymentSalaryReportData();
 
@@ -144,7 +149,7 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository implements P
 			DepartmentDto departmentDto = new DepartmentDto();
 			departmentDto.setCode(dep.getCmnmtDepPK().getDepartmentCode());
 			departmentDto.setName(dep.getDepName());
-			departmentDto.setDepLevel(dep.getHierarchyId().length() / 3);
+			departmentDto.setDepLevel(dep.getHierarchyId().length() / LENGTH_LEVEL);
 			departmentDto.setDepPath(dep.getHierarchyId());
 			departmentDto.setYearMonth(dep.getStartDate().yearMonth().v().toString());
 			dto.setDepartment(departmentDto);
@@ -179,7 +184,7 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository implements P
 		DepartmentDto departmentDto = new DepartmentDto();
 		departmentDto.setCode(department.getDepartmentCode().v());
 		departmentDto.setName(department.getDepartmentName().v());
-		departmentDto.setDepLevel(department.getHierarchyCode().v().length() / 3);
+		departmentDto.setDepLevel(department.getHierarchyCode().v().length() / LENGTH_LEVEL);
 		departmentDto.setDepPath(department.getHierarchyCode().v());
 		return departmentDto;
 	}
@@ -217,7 +222,8 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository implements P
 	 *            the query
 	 * @return the list
 	 */
-	private List<QstdtPaymentDetail> findPaymentDetail(String companyCode, PaymentSalaryQuery query) {
+	private List<QstdtPaymentDetail> findPaymentDetail(String companyCode,
+		PaymentSalaryQuery query) {
 		EntityManager em = this.getEntityManager();
 		TypedQuery<QstdtPaymentDetail> typedQuery = em.createQuery(QUERY_PAYMENT_DETAIL,
 			QstdtPaymentDetail.class);
