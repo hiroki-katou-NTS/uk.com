@@ -18,7 +18,10 @@
 						<hr/>
 						<div class="control-group">
 							<div class="list001" data-bind="with: defaultEasyFormula">
-								<div class="col col-1 bg-green">既定の計算式</div>
+								<div class="col col-1 bg-green">
+								<span>既定の計算式</span><br/>
+								<span>（下記表に該当しない人に適用します）</span>
+								</div>
 								<div class="col col-2">
 									<div data-bind="ntsSwitchButton: {
 											options: roundingRulesEasySettings,
@@ -45,7 +48,9 @@
 								<div class="list002">
 									<div class="header">
 										<div class="row cf">
-											<div class="col col-2"></div>
+											<div class="col col-2">
+												<span>給与形態のマスタに該当する場合</span>
+											</div>
 											<div class="col col-3">
 												<button id="btn_020" style="margin-top: 4px;" data-bind="click: setAllFixValued">全て固定値</button>
 												<button id="btn_021" data-bind="click: setAllDetail">全て計算式</button>
@@ -191,9 +196,7 @@
 					<table class="c-table">
 						  <tr>
 						    <td colspan="2" class="td-left">
-						    	<div id="c_lbl_005" style="vertical-align: bottom;" data-bind="ntsFormLabel: {}">コード/名称</div>
-						    	<button style="font-weight: bold;" id="c_btn_017" data-bind="click: undo">←</button>
-						    	<button style="font-weight: bold;" id="c_btn_018" data-bind="click: redo">→</button>
+						    	<div id="c_lbl_005" style="vertical-align: bottom;" data-bind="ntsFormLabel: {required: true}">計算式</div>
 						    	<button id="btn-validateTextArea" data-bind="click: validateTextArea" class="separate-button">計算式チェック</button>
 						    	<button id="c_btn_003" data-bind="click: $root.content.openDialogQ.bind($data, $root.content)">お試し計算</button>
 						    	<hr/>
@@ -231,9 +234,28 @@
 										</div>
 										<div id="input-content-area" data-bind="html: contentValue"></div>
 										<div id="input-area">
-											<TEXTAREA id="input-text" maxlength="3000" rows="12" cols="68" data-bind="value: textArea" autofocus="autofocus"></TEXTAREA>
+											<TEXTAREA id="input-text" style="border-radius: 6px;" maxlength="3000" rows="12" cols="68" data-bind="value: textArea" autofocus="autofocus"></TEXTAREA>
 										</div>
 									</div>
+									<com:ko-if bind="lstError().length > 0">
+										<div id="list-error">
+											<span style="color: gray; margin: 3px 0  0 3px; display: inline-block">計算式チェック　エラー一覧</span>
+											<hr/>
+											<table>
+												<thead>
+													<tr>
+												    	<th></th>
+												  	</tr>
+											  	</thead>
+											  	<tbody data-bind="foreach: lstError">
+											  		<tr>
+											    		<td data-bind="text: $data"></td>
+											    	</tr>	
+											  	</tbody>
+											  
+											</table>
+										</div>
+									</com:ko-if>
 						  		</div>
 						  	</td>
 						  	<td class="td-right">

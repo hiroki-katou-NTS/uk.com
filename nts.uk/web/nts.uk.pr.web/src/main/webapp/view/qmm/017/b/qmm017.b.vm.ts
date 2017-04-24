@@ -26,7 +26,8 @@ module nts.qmm017 {
                 { code: '1', name: '利用する' }
             ]);
             self.selectedConditionAtr = ko.observable(0);
-            self.startYearMonth = ko.observable(data.startYearMonth());
+            self.startYearMonth = ko.observable('');
+            self.startYearMonth(data.startYearMonth());
             self.formulaCode = ko.observable('');
             self.formulaName = ko.observable('');
             self.startYearMonthFormated = ko.observable('');

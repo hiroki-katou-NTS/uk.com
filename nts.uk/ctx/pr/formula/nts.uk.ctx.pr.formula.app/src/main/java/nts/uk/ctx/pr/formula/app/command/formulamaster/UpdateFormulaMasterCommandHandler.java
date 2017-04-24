@@ -69,7 +69,7 @@ public class UpdateFormulaMasterCommandHandler extends CommandHandler<UpdateForm
 			}).collect(Collectors.toList());
 
 			command.getEasyFormulaDto().forEach(easyFormulaDto -> {
-				if (easyFormulaDto.getFixFormulaAtr() == 1) {
+				if (easyFormulaDto.getFixFormulaAtr() == 1 &&  easyFormulaDto.getFormulaDetail().getBaseAmountDevision() != null) {
 					FormulaEasyDetail formulaEasyDetail = new FormulaEasyDetail(companyCode,
 							new FormulaCode(command.getFormulaCode()), command.getHistoryId(),
 							new EasyFormulaCode(easyFormulaDto.getEasyFormulaCode()),

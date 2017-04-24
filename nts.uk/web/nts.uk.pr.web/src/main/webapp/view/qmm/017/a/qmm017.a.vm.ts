@@ -102,6 +102,7 @@ module nts.qmm017 {
                                     self.itemsBagRepository = [];
                                     // fill items bag
                                     self.fillItemsBagRepository().done(function() {
+                                        self.viewModel017c().formulaManualContent().itemsBag = self.itemsBagRepository;
                                         self.refreshItemTabs();
                                         self.viewModel017c().formulaManualContent().textArea('');
                                         self.viewModel017c().comboBoxReferenceMonthAtr().selectedCode(0);
@@ -124,7 +125,7 @@ module nts.qmm017 {
                                         self.viewModel017c().noneConditionalEasyFormula().easyFormulaCode(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaCode);
                                         self.viewModel017c().noneConditionalEasyFormula().easyFormulaName(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaName);
                                     }
-                                } else if (currentFormulaDetail.easyFormula && currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo < 6) {
+                                } else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo < 6) {
                                     self.viewModel017c().defaultEasyFormula(new EasyFormula(0, self.viewModel017b));
                                     if (currentFormulaDetail.easyFormula[0]) {
                                         self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(currentFormulaDetail.easyFormula[0].value);
@@ -132,7 +133,7 @@ module nts.qmm017 {
                                         self.viewModel017c().defaultEasyFormula().easyFormulaCode(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaCode);
                                         self.viewModel017c().defaultEasyFormula().easyFormulaName(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaName);
                                     }
-                                } else if (currentFormulaDetail.easyFormula && currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo === 6) {
+                                } else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo === 6) {
                                     self.viewModel017c().defaultEasyFormula(new EasyFormula(0, self.viewModel017b));
                                     _.forEach(currentFormulaDetail.easyFormula, easyFormula => {
                                         if (easyFormula.easyFormulaCode === '000') {
@@ -467,7 +468,6 @@ module nts.qmm017 {
             self.treeGridHistory().singleSelectedCode(null);
             self.selectedTabASel001('tab-1');
             self.isNewMode(true);
-            self.startYearMonth("");
             self.viewModel017b().formulaCode('');
             self.viewModel017b().formulaName('');
             self.viewModel017b().selectedDifficultyAtr(0);
@@ -475,6 +475,8 @@ module nts.qmm017 {
             self.viewModel017b().comboBoxUseMaster().selectedCode(1);
             self.currentNode(null);
             self.currentParentNode(null);
+            $("#start-date-inp-input").select();
+            self.startYearMonth('');
             $("#inp-formulaName").focus();
             $("#inp-formulaCode").focus();
             self.dirtyCheckScreenB.reset();
@@ -804,7 +806,7 @@ module nts.qmm017 {
                 difficultyAtr: self.viewModel017b().selectedDifficultyAtr()
             };
             nts.uk.ui.windows.setShared('paramFromScreenA', param);
-            nts.uk.ui.windows.sub.modal('/view/qmm/017/k/index.xhtml', { title: '履歴の編集', width: 540, height: 380 }).onClosed(() => {
+            nts.uk.ui.windows.sub.modal('/view/qmm/017/k/index.xhtml', { title: '履歴の編集', width: 540, height: 500 }).onClosed(() => {
                 self.start();
             });
         }
