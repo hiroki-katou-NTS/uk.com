@@ -20,3 +20,4 @@ var sample;
         })(viewmodel = datepicker.viewmodel || (datepicker.viewmodel = {}));
     })(datepicker = sample.datepicker || (sample.datepicker = {}));
 })(sample || (sample = {}));
+//# sourceMappingURL=viewmodel.js.map
