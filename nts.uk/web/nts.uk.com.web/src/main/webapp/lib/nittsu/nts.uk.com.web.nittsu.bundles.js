@@ -4753,82 +4753,6 @@ var nts;
                             }
                         }));
                         container.data("multiple", isMultiSelect);
-                        container.bind('mousedown', function (evt, ui) {
-                            var OUTSIDE_AUTO_SCROLL_SPEED = {
-                                RATIO: 0.2,
-                                MAX: 30
-                            };
-                            var $target = $(evt.target);
-                            var $row = $target.closest(".ui-selectee");
-                            var rowIndex = parseInt($row.attr("data-idx"));
-                            var scrollHeight = container[0].scrollHeight;
-                            var divHeight = container.height();
-                            var gridVerticalRange = new uk.util.Range(container.offset().top, container.offset().top + divHeight);
-                            var mousePos = {
-                                x: evt.pageX,
-                                y: evt.pageY,
-                                rowIndex: rowIndex,
-                                target: evt.target
-                            };
-                            var timerAutoScroll = setInterval(function () {
-                                var distance = gridVerticalRange.distanceFrom(mousePos.y);
-                                var delta = Math.min(distance * OUTSIDE_AUTO_SCROLL_SPEED.RATIO, OUTSIDE_AUTO_SCROLL_SPEED.MAX);
-                                var currentScrolls = container.scrollTop() + delta;
-                                if (container.data("multiple")) {
-                                    if (distance === 0) {
-                                        return;
-                                    }
-                                    container.ntsListBox("deselectAll");
-                                    container.scrollTop(currentScrolls);
-                                    if (distance > 0) {
-                                        var height_1 = 0;
-                                        var rowSelect = _.filter(container.find(".ui-selectee"), function (e) {
-                                            var flag = parseInt($(e).attr("data-idx")) >= rowIndex &&
-                                                ((currentScrolls + divHeight >= scrollHeight) ? true : +height_1 <= currentScrolls);
-                                            height_1 += $(e).height();
-                                            return flag;
-                                        });
-                                        $(rowSelect).addClass("ui-selected");
-                                    }
-                                    else {
-                                        var height_2 = 0;
-                                        var rowSelect = _.filter(container.find(".ui-selectee"), function (e) {
-                                            var flag = parseInt($(e).attr("data-idx")) <= rowIndex &&
-                                                ((currentScrolls <= 0) ? true : +height_2 >= currentScrolls);
-                                            height_2 += $(e).height();
-                                            return flag;
-                                        });
-                                        $(rowSelect).addClass("ui-selected");
-                                    }
-                                }
-                                else {
-                                    container.scrollTop(currentScrolls);
-                                    var $currentTarget = $(mousePos.target);
-                                    var $movedRow = $currentTarget.closest(".ui-selectee");
-                                    container.ntsListBox("deselectAll");
-                                    $movedRow.addClass("ui-selected");
-                                    data.value($movedRow.data('value'));
-                                }
-                            }, 20);
-                            $(window).bind('mousemove.NtsListBoxDragging', function (e) {
-                                var $currentTarget = $(e.target);
-                                var $movedRow = $currentTarget.closest(".ui-selectee");
-                                var movedRowIndex = parseInt($movedRow.attr("data-idx"));
-                                if (mousePos.rowIndex !== undefined && mousePos.rowIndex === movedRowIndex) {
-                                    return;
-                                }
-                                mousePos = {
-                                    x: e.pageX,
-                                    y: e.pageY,
-                                    rowIndex: movedRowIndex,
-                                    target: e.target
-                                };
-                            });
-                            $(window).one('mouseup', function (e) {
-                                $(window).unbind('mousemove.NtsListBoxDragging');
-                                clearInterval(timerAutoScroll);
-                            });
-                        });
                     };
                     ListBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
@@ -4908,7 +4832,7 @@ var nts;
                                     else {
                                         itemTemplate = '<div class="nts-column nts-list-box-column-0">' + item[optionText] + '</div>';
                                     }
-                                    $('<li/>').addClass("ui-selectee").addClass(selectedClass).attr("data-idx", idx)
+                                    $('<li/>').addClass(selectedClass).attr("data-idx", idx)
                                         .html(itemTemplate).data('value', getOptionValue(item))
                                         .appendTo(selectListBoxContainer);
                                 }
@@ -5356,8 +5280,15 @@ var nts;
                             virtualizationMode: 'continuous',
                             features: features
                         });
-                        if (data.draggable === true)
+                        if (data.draggable === true) {
                             this.swapper.enableDragDrop();
+                            if (data.multipleDrag && data.multipleDrag.left === true) {
+                                this.swapper.Model.swapParts[0].$listControl.addClass("multiple-drag");
+                            }
+                            if (data.multipleDrag && data.multipleDrag.right === true) {
+                                this.swapper.Model.swapParts[1].$listControl.addClass("multiple-drag");
+                            }
+                        }
                         $grid2.closest('.ui-iggrid')
                             .addClass('nts-gridlist')
                             .height(gridHeight);
@@ -5465,7 +5396,7 @@ var nts;
                             return one.index - two.index;
                         });
                         var $helper;
-                        if (selectedRowElms.length > 1) {
+                        if ($(evt.currentTarget).hasClass("multiple-drag") && selectedRowElms.length > 1) {
                             $helper = $("<div><table><tbody></tbody></table></div>").addClass("select-drag");
                             var rowId = ui.data("row-idx");
                             var selectedItems = selectedRowElms.map(function (elm) { return elm.element; });
@@ -6554,6 +6485,13 @@ var nts;
                             else {
                                 $input.ntsError('set', result.errorMessage);
                                 value(newText);
+                            }
+                        });
+                        $input.on("blur", function () {
+                            var newText = $input.val();
+                            var result = validator.validate(newText);
+                            if (!result.isValid) {
+                                $input.ntsError('set', result.errorMessage);
                             }
                         });
                         $input.on('validate', (function (e) {
