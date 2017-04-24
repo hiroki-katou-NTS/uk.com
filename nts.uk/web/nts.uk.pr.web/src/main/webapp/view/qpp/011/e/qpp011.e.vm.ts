@@ -1,6 +1,5 @@
 // TreeGrid Node
 module qpp011.e {
-
     export class ScreenModel {
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;

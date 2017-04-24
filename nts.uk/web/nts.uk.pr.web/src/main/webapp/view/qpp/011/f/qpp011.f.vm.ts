@@ -14,6 +14,7 @@ module qpp011.f {
         //End Data Variable
         //currencyeditor
         F_LBL_002_Year_Month: any;
+        F_Year_Month: any;
         currencyeditor: any;
         F_LBL_003_yearInJapanEmpire: any;
         //Switch
@@ -23,10 +24,12 @@ module qpp011.f {
         constructor() {
             var self = this;
             //gridlist data
+            self.F_LBL_002_Year_Month = ko.observable(null);
+            self.F_Year_Month = ko.observable(null);
             self.F_LST_001_Data = ko.observable([]);
             self.F_LST_001_selectedValue = ko.observableArray([]);
             self.F_LST_001_columns = [
-                  { headerText: "position", key: "position", width: "30px", dataType: "string", hidden: true },
+                { headerText: "position", key: "position", width: "30px", dataType: "string", hidden: true },
                 { headerText: "code", key: "code", width: "30px", dataType: "string", hidden: true },
                 { headerText: "コード/名称", key: "displayText", width: "230px", dataType: "string" },
             ];
@@ -69,7 +72,7 @@ module qpp011.f {
                     height: "300px",
                     dataSource: Data,
                     autoGenerateColumns: false,
-                     primaryKey: "position",
+                    primaryKey: "position",
                     foreignKey: "child",
                     columns: self.F_LST_001_columns,
                     initialExpandDepth: 2,
@@ -94,7 +97,6 @@ module qpp011.f {
                 });
                 $(gridID).setupSearchScroll("igTreeGrid");
             }
-
             //Create Tree Data
             function CreateDataArray(TreeData, Data) {
                 self.TreeArray = [];
@@ -139,7 +141,6 @@ module qpp011.f {
                     case (40 <= prefectureCodeInt && prefectureCodeInt <= 47):
                         PositionIndex = AddTreeRootToArray(prefectureCode, "8");
                         break;
-
                 }
                 return PositionIndex;
             }
@@ -150,13 +151,13 @@ module qpp011.f {
                 if (!root) {
                     root = _.find(self.ListLocation, { 'regionCode': regionCode });
                     if (root) {
-                        let NewRoot = new TreeItem(root.regionCode, root.regionName, -1, positionIndex + 1, root.regionName, 'Root');
+                        let NewRoot = new TreeItem(root["regionCode"], root["regionName"], -1, positionIndex + 1, root["regionName"], 'Root');
                         self.TreeArray.push(NewRoot);
                         self.currentIndex++;
                         returnValue = self.currentIndex;
                     }
                 } else {
-                    returnValue = root.position;
+                    returnValue = root["position"];
                 }
                 return returnValue;
             }
@@ -172,13 +173,13 @@ module qpp011.f {
                                 break;
                         }
                         if (firstBranch) {
-                            let NewBranch = new TreeItem(firstBranch.prefectureCode, firstBranch.prefectureName, parrentIndex, positionIndex + 1, firstBranch.prefectureName, 'firstBranch');
+                            let NewBranch = new TreeItem(firstBranch["prefectureCode"], firstBranch["prefectureName"], parrentIndex, positionIndex + 1, firstBranch["prefectureName"], 'firstBranch');
                             self.TreeArray.push(NewBranch);
                             self.currentIndex++;
                             returnValue = self.currentIndex;
                         }
                     } else {
-                        returnValue = firstBranch.position;
+                        returnValue = firstBranch["position"];
                     }
                     return returnValue;
                 }
@@ -206,9 +207,11 @@ module qpp011.f {
                 { code: '2', name: '個人明細別' }
             ]);
             self.selectedRuleCode = ko.observable(1);
-            self.F_LBL_002_Year_Month = nts.uk.sessionStorage.getItemAndRemove("TargetDate").value;
+            self.F_LBL_002_Year_Month(nts.uk.ui.windows.getShared('QPP011_F_TargetDate'));
+            //self.F_LBL_002_Year_Month = nts.uk.sessionStorage.getItemAndRemove("TargetDate").value;
+            self.F_Year_Month(nts.uk.ui.windows.getShared('QPP011_F_DesignatedMonth'));
             self.F_LBL_003_yearInJapanEmpire = ko.observable();
-            self.F_LBL_003_yearInJapanEmpire("(" + nts.uk.time.yearmonthInJapanEmpire(self.F_LBL_002_Year_Month).toString() + ")");
+            self.F_LBL_003_yearInJapanEmpire("(" + nts.uk.time.yearmonthInJapanEmpire(self.F_LBL_002_Year_Month()).toString() + ")");
 
         }
         submitDialog() {

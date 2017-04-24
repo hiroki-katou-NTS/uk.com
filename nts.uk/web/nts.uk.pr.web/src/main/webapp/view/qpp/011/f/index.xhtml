@@ -15,9 +15,7 @@
 			<com:stylefile path="qpp011.f.main.css" />
 			<com:scriptfile set="IGNITE" />
 		</ui:define>
-
 		<ui:define name="content">
-
 			<div id="content-header">
 				<button class="proceed" data-bind="click: submitDialog"
 					id="F_BTN_001">印刷（PDF)</button>
@@ -34,11 +32,11 @@
 						<div id="F_LBL_004" data-bind="ntsFormLabel: {   }">出力形式</div>
 						<div id="F_SEL_001" class="cf"
 							data-bind="ntsSwitchButton: {
-								options: roundingRules,
-								optionsValue: 'code',
-								optionsText: 'name',
-								value: selectedRuleCode,
-								enable: enable }">
+													options: roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedRuleCode,
+													enable: enable }">
 						</div>
 					</div>
 				</div>
@@ -50,12 +48,12 @@
 						<div class="clearBoth">
 							<div id="F_INP_001"
 								data-bind="ntsSearchBox: {
-								comId: 'F_LST_001',
-								items: F_LST_001_Data, 
-								selected: F_LST_001_selectedValue, 
-								selectedKey: 'position', 
-								fields: ['position'], 
-								childField: 'childs'}" />
+													comId: 'F_LST_001',
+													items: F_LST_001_Data, 
+													selected: F_LST_001_selectedValue, 
+													selectedKey: 'position', 
+													fields: ['position'], 
+													childField: 'childs'}" />
 						</div>
 						<table id="F_LST_001"></table>
 					</div>
