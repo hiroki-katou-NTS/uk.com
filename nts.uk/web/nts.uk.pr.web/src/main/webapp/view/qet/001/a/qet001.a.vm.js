@@ -42,14 +42,14 @@ var qet001;
                     nts.uk.ui.windows.setShared('selectedCode', this.outputSettingSelectedCode(), true);
                     nts.uk.ui.windows.setShared('outputSettings', this.outputSettings(), true);
                     var self = this;
-                    nts.uk.ui.windows.sub.modal("/view/qet/001/b/index.xhtml", { title: "出カ項目の設定" }).onClosed(function () {
+                    nts.uk.ui.windows.sub.modal("/view/qet/001/b/index.xhtml", { title: "出カ項目の設定", dialogClass: 'no-close' }).onClosed(function () {
                         if (nts.uk.ui.windows.getShared('isHasUpdate')) {
                             self.loadAllOutputSetting();
                         }
                     });
                 };
                 ScreenModel.prototype.goToAggregateItemPage = function () {
-                    nts.uk.ui.windows.sub.modeless("/view/qet/001/i/index.xhtml", { title: "明細書項目の集約設定" });
+                    nts.uk.ui.windows.sub.modal("/view/qet/001/i/index.xhtml", { title: "明細書項目の集約設定", dialogClass: 'no-close' });
                 };
                 ScreenModel.prototype.print = function () {
                     $('#target-year-input').ntsError('clear');

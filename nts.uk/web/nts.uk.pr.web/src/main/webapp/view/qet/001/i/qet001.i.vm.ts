@@ -77,6 +77,7 @@ module qet001.i.viewmodel {
         category: string;
         paymentType: string;
         aggregateItemSelectedCode: KnockoutObservable<string>;
+        temporarySelectedCode: KnockoutObservable<string>;
         aggregateItemDetail: KnockoutObservable<AggregateItemDetail>;
         dirty: nts.uk.ui.DirtyChecker;
 
@@ -85,6 +86,7 @@ module qet001.i.viewmodel {
             this.category = categoryName;
             this.paymentType = paymentType;
             this.aggregateItemSelectedCode = ko.observable(null);
+            this.temporarySelectedCode = ko.observable(null);
 
             // Filter master item by category and payment type.
             var masterItemInCate = masterItems.filter(item => item.category == categoryName);
@@ -94,22 +96,35 @@ module qet001.i.viewmodel {
             self.dirty = new nts.uk.ui.DirtyChecker(self.aggregateItemDetail);
 
             // When selected aggregate item => load detail.
-            self.aggregateItemSelectedCode.subscribe((code) => {
-                if (code == undefined || code == null || code == '') {
-                    self.aggregateItemDetail(new AggregateItemDetail(paymentType,
-                        categoryName, masterItemInCate));
-                    self.setStyle();
-                    self.dirty.reset()
+            self.aggregateItemSelectedCode.subscribe((code: string) => {
+                // Do nothing if selected same code.
+                if (self.temporarySelectedCode() == code) {
                     return;
                 }
-                self.loadDetailAggregateItem(self.category, self.paymentType, code).done(function(res: service.Item) {
-                    self.aggregateItemDetail(new AggregateItemDetail(paymentType,
-                        categoryName, masterItemInCate, res));
-                    self.dirty.reset();
-                    self.setStyle();
+                self.confirmDirtyAndExecute(function() {
+                    // update mode.
+                    if (code) {
+                        self.temporarySelectedCode(code);
+                        self.loadDetailAggregateItem(self.category, self.paymentType, code).done(function(res: service.Item) {
+                            self.aggregateItemDetail(new AggregateItemDetail(paymentType,
+                                categoryName, masterItemInCate, res));
+                            self.dirty.reset();
+                            self.setStyle();
+                        });
+                    }
+                    // new mode.
+                    else {
+                        self.clearError();
+                        self.temporarySelectedCode('');
+                        self.aggregateItemDetail(new AggregateItemDetail(paymentType,
+                            categoryName, masterItemInCate));
+                        self.dirty.reset();
+                        self.setStyle();
+                    }
+                }, function() {
+                    self.aggregateItemSelectedCode(self.temporarySelectedCode());
                 });
             });
-
         }
 
         /**
@@ -117,11 +132,14 @@ module qet001.i.viewmodel {
          */
         public loadAggregateItemByCategory(): JQueryPromise<void> {
             var dfd = $.Deferred<void>();
-            // Fake data.
             var self = this;
             service.findAggregateItemsByCategory(self.category, self.paymentType).done(function(res: service.Item[]) {
                 self.itemList(res);
-                self.aggregateItemSelectedCode(res.length > 0 ? res[0].code : null);
+                if (!self.aggregateItemSelectedCode()) {
+                    // Select first element or enter new mode if there is no element.
+                    let selectedCode = res.length > 0 ? res[0].code : null
+                    self.aggregateItemSelectedCode(selectedCode);
+                }
                 dfd.resolve();
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);
@@ -147,26 +165,13 @@ module qet001.i.viewmodel {
         /**
          * Switch to create mode.
          */
-        public switchToCreateMode() {
-            // Dirty check.
+        public switchToCreateMode(): void {
             var self = this;
-            if (self.dirty.isDirty()) {
-                nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function() {
-                    self.aggregateItemSelectedCode(null);
-                });
-            } else {
-                self.aggregateItemSelectedCode(null);
-            }
+            self.aggregateItemSelectedCode(null);
         }
 
-        public save() {
+        public save(): void {
             var self = this;
-            // clear error.
-            $('#code-input').ntsError('clear');
-            $('#name-input').ntsError('clear');
-            // Validate.
-            $('#code-input').ntsEditor('validate');
-            $('#name-input').ntsEditor('validate');
             // Check has error.
             if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                 return;
@@ -174,66 +179,89 @@ module qet001.i.viewmodel {
 
             // save.
             service.save(self.aggregateItemDetail()).done(function() {
-                self.loadAggregateItemByCategory();
+                service.findAggregateItemsByCategory(self.category, self.paymentType).done(function(res: service.Item[]) {
+                    self.itemList(res);
+                    self.dirty.reset();
+                    self.aggregateItemSelectedCode(self.aggregateItemDetail().code());
+                });
             }).fail(function(res) {
+                // clear error.
+                self.clearError();
                 $('#code-input').ntsError('set', res.message);
             });
         }
 
-        public remove() {
+        public remove(): void {
             var self = this;
-            if (self.aggregateItemSelectedCode() == null) {
+            if (!self.aggregateItemSelectedCode()) {
                 return;
             }
-            // save.
-            service.remove(self.category, self.paymentType, self.aggregateItemSelectedCode()).done(function() {
-                // Find item selected.
-                var itemSelected = self.itemList().filter(item => item.code == self.aggregateItemSelectedCode())[0];
-                var indexSelected = self.itemList().indexOf(itemSelected);
-                // Remove item selected in list.
-                self.itemList.remove(itemSelected);
+            nts.uk.ui.dialog.confirm('出力項目設定からもデータを削除します。\r\nよろしいですか？').ifYes(function() {
+                service.remove(self.category, self.paymentType, self.aggregateItemSelectedCode()).done(function() {
+                    // Find item selected.
+                    var itemSelected = self.itemList().filter(item => item.code == self.aggregateItemSelectedCode())[0];
+                    var indexSelected = self.itemList().indexOf(itemSelected);
+                    // Remove item selected in list.
+                    self.itemList.remove(itemSelected);
 
-                // If list is empty -> new mode.
-                if (self.itemList.length == 0) {
-                    self.aggregateItemSelectedCode(null);
-                    return;
-                }
-
-                // Select same row with item selected.
-                if (self.itemList()[indexSelected]) {
-                    self.aggregateItemSelectedCode(self.itemList()[indexSelected].code);
-                    return;
-                }
-
-                // Select next higher row.
-                self.aggregateItemSelectedCode(self.itemList()[indexSelected - 1].code)
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alert(res.message);
+                    if (self.itemList() && self.itemList().length > 0) {
+                        let currentItem = self.itemList()[indexSelected];
+                        // Select same row with item selected.
+                        if (currentItem) {
+                            self.aggregateItemSelectedCode(currentItem.code);
+                        }
+                        else {
+                            // Select next higher row.
+                            self.aggregateItemSelectedCode(self.itemList()[indexSelected - 1].code)
+                        }
+                    }
+                    // If list is empty -> new mode.
+                    else {
+                        self.aggregateItemSelectedCode(null);
+                    }
+                });
             });
         }
 
         /**
          * Close dialog.
          */
-        public close() {
+        public close(): void {
             // Dirty check.
             var self = this;
-            if (self.dirty.isDirty()) {
-                nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function() {
-                    nts.uk.ui.windows.close();
-                });
-            } else {
-                nts.uk.ui.windows.close();
-            }
+            self.confirmDirtyAndExecute(() => nts.uk.ui.windows.close());
         }
 
         /**
          * Set style when re-rending list.
          */
-        public setStyle() {
+        public setStyle(): void {
             // set width when swap list is rended.
             $('.master-table-label').attr('style', 'width: ' + $('#swap-list-gridArea1').width() + 'px');
             $('.sub-table-label').attr('style', 'width: ' + $('#swap-list-gridArea2').width() + 'px');
+        }
+
+        private clearError(): void {
+            $('#code-input').ntsError('clear');
+            $('#name-input').ntsError('clear');
+        }
+
+        /**
+         * Confirm dirty state and execute function.
+         */
+        private confirmDirtyAndExecute(functionToExecute: () => void, functionToExecuteIfNo?: () => void): void {
+            var self = this;
+            if (self.dirty.isDirty()) {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                    functionToExecute();
+                }).ifNo(function() {
+                    if (functionToExecuteIfNo) {
+                        functionToExecuteIfNo();
+                    }
+                });
+            } else {
+                functionToExecute();
+            }
         }
     }
 
