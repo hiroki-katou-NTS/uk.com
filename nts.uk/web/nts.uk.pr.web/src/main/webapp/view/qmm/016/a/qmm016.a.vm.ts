@@ -121,11 +121,14 @@ module nts.uk.pr.view.qmm016.a {
                 return dfd.promise();
             }
             
-            
             private validateData() {
                 $("#inp_code").ntsEditor("validate");
                 $("#inp_name").ntsEditor("validate");
                 $("#inp_start_date").ntsEditor("validate");
+                if ($('.nts-editor').ntsError("hasError")) {
+                    return true;
+                }
+                return false;
             }
             
             //function clear message error
@@ -141,7 +144,9 @@ module nts.uk.pr.view.qmm016.a {
                 var dfd = $.Deferred<string>();
                 
                 self.clearErrorSave();
-                self.validateData();
+                if(self.validateData()) {
+                    return dfd.promise();
+                }
 
                 // New mode.
                 if (self.isNewMode()) {
