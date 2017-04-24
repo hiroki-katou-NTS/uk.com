@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.formula.infra.repository.formula;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaMaster;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
+import nts.uk.ctx.pr.formula.dom.primitive.FormulaName;
 import nts.uk.ctx.pr.formula.dom.repository.FormulaMasterRepository;
 import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormula;
 import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaPK;
@@ -42,7 +44,7 @@ public class JpaFormulaMasterRepository extends JpaRepository implements Formula
 		builderString.append("SELECT a ");
 		builderString.append("FROM QcfmtFormula a ");
 		builderString.append("WHERE a.qcfmtFormulaPK.ccd = :companyCode ");
-		builderString.append("AND a.qcfmtFormulaPK.formulaCd IN :formulaCd ");
+		builderString.append("AND a.qcfmtFormulaPK.formulaCd = :formulaCd ");
 		builderString.append("ORDER BY a.qcfmtFormulaPK.ccd, a.qcfmtFormulaPK.formulaCd ");
 		FIND_FORMULA_NAME_BY_CODES = builderString.toString();
 	}
@@ -75,9 +77,13 @@ public class JpaFormulaMasterRepository extends JpaRepository implements Formula
 	}
 
 	@Override
-	public void update(String companyCode, FormulaCode formulaCode) {
-		this.commandProxy().update(
-				toEntity(this.findByCompanyCodeAndFormulaCode(companyCode, new FormulaCode(formulaCode.v())).get()));
+	public void update(String companyCode, FormulaCode formulaCode, FormulaName formulaName) {
+		FormulaMaster domain = this.findByCompanyCodeAndFormulaCode(companyCode, new FormulaCode(formulaCode.v()))
+				.map(formula -> {
+					FormulaMaster newDomain = new FormulaMaster(companyCode, formulaCode, formula.getDifficultyAtr(), formulaName);
+					return newDomain;
+				}).get();
+		this.commandProxy().update(toEntity(domain));
 	}
 
 	private FormulaMaster toDomain(QcfmtFormula qcfmtFormula) {
@@ -105,10 +111,14 @@ public class JpaFormulaMasterRepository extends JpaRepository implements Formula
 	}
 
 	@Override
-	public List<FormulaMaster> findByCompanyCodeAndFormulaCodes(String companyCode, List<FormulaCode> FormulaCode) {
-		return this.queryProxy().query(FIND_FORMULA_NAME_BY_CODES, QcfmtFormula.class)
-				.setParameter("companyCode", companyCode).setParameter("formulaCd", FormulaCode)
-				.getList(f -> toDomain(f));
+	public List<FormulaMaster> findByCompanyCodeAndFormulaCodes(String companyCode, List<FormulaCode> lstFormulaCode) {
+		List<FormulaMaster> lstFormula = new ArrayList<>();
+		for (FormulaCode formulaCode : lstFormulaCode) {
+			lstFormula.add(this.queryProxy().query(FIND_FORMULA_NAME_BY_CODES, QcfmtFormula.class)
+					.setParameter("companyCode", companyCode).setParameter("formulaCd", formulaCode)
+					.getSingle(f -> toDomain(f)).get());
+		}
+		return lstFormula;
 	}
 
 }

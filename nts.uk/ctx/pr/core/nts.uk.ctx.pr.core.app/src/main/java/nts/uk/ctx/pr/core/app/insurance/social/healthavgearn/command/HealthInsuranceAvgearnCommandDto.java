@@ -45,7 +45,7 @@ public class HealthInsuranceAvgearnCommandDto implements HealthInsuranceAvgearnG
 	 * HealthInsuranceAvgearnGetMemento#getLevelCode()
 	 */
 	@Override
-	public Integer getLevelCode() {
+	public Integer getGrade() {
 		return this.levelCode;
 	}
 

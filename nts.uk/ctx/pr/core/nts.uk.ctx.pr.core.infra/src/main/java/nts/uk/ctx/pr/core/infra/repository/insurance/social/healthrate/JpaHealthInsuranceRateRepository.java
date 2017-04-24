@@ -53,19 +53,15 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 	 * social.healthrate.HealthInsuranceRate)
 	 */
 	@Override
-	public boolean update(HealthInsuranceRate rate) {
+	public void update(HealthInsuranceRate rate) {
 		EntityManager em = this.getEntityManager();
-		QismtHealthInsuRatePK pk = new QismtHealthInsuRatePK(rate.getCompanyCode(),
-				rate.getOfficeCode().v(), rate.getHistoryId());
+		QismtHealthInsuRatePK pk = new QismtHealthInsuRatePK(rate.getCompanyCode(), rate.getOfficeCode().v(),
+				rate.getHistoryId());
 		QismtHealthInsuRate findEntity = em.find(QismtHealthInsuRate.class, pk);
 		QismtHealthInsuRate entity = new QismtHealthInsuRate();
 		rate.saveToMemento(new JpaHealthInsuranceRateSetMemento(entity));
 		entity.setQismtHealthInsuAvgearnList(findEntity.getQismtHealthInsuAvgearnList());
-		if (em.merge(entity) != null) {
-			return true;
-		} else {
-			return false;
-		}
+		em.merge(entity);
 	}
 
 	/*
@@ -92,11 +88,12 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		List<QismtHealthInsuRate> result = em.createQuery(cq).getResultList();
 		// If have no record.
-		if (!CollectionUtil.isEmpty(result)) {
-			QismtHealthInsuRate entity = new QismtHealthInsuRate();
-			entity = result.get(0);
-			em.remove(entity);
+		if (CollectionUtil.isEmpty(result)) {
+			return;
 		}
+		QismtHealthInsuRate entity = new QismtHealthInsuRate();
+		entity = result.get(0);
+		em.remove(entity);
 	}
 
 	/*

@@ -4,8 +4,8 @@ var qmm012;
     (function (b) {
         var viewmodel;
         (function (viewmodel) {
-            var ScreenModel = (function () {
-                function ScreenModel(screenModel) {
+            class ScreenModel {
+                constructor(screenModel) {
                     this.enable = ko.observable(true);
                     this.selectedCode_B_001 = ko.observable(1);
                     //gridlist
@@ -26,7 +26,7 @@ var qmm012;
                     this.checked_B_002 = ko.observable(false);
                     this.enable_B_INP_002 = ko.observable(false);
                     this.B_BTN_004_enable = ko.observable(true);
-                    var self = this;
+                    let self = this;
                     self.screenModel = screenModel;
                     //set combobox data
                     //001
@@ -39,7 +39,7 @@ var qmm012;
                         new ComboboxItemModel(6, 'その他項目')
                     ]);
                     self.selectedCode_B_001.subscribe(function (newValue) {
-                        var categoryAtr;
+                        let categoryAtr;
                         switch (newValue) {
                             case 1:
                                 //select  all  
@@ -187,8 +187,8 @@ var qmm012;
                         }))
                     };
                 }
-                ScreenModel.prototype.setNewItemMode = function () {
-                    var self = this;
+                setNewItemMode() {
+                    let self = this;
                     //set selected code is '' for trigger subscribe
                     self.GridlistCurrentCode_B_001('');
                     //disable delete button
@@ -198,9 +198,9 @@ var qmm012;
                     self.screenModel.screenModelC.C_BTN_002_enable(false);
                     self.screenModel.screenModelD.D_BTN_001_enable(false);
                     self.screenModel.screenModelD.D_BTN_002_enable(false);
-                };
-                ScreenModel.prototype.setUpdateItemMode = function () {
-                    var self = this;
+                }
+                setUpdateItemMode() {
+                    let self = this;
                     //if from new mode change to update mode , need clear all ntsError 
                     $('#B_INP_002').ntsError('clear');
                     //enable delete button
@@ -210,26 +210,26 @@ var qmm012;
                     self.screenModel.screenModelC.C_BTN_002_enable(true);
                     self.screenModel.screenModelD.D_BTN_001_enable(true);
                     self.screenModel.screenModelD.D_BTN_002_enable(true);
-                };
-                ScreenModel.prototype.GetCurrentItemMaster = function () {
+                }
+                GetCurrentItemMaster() {
                     //get item master The user entered on the form 
-                    var self = this;
+                    let self = this;
                     //this is item master Constructor
-                    var itemMaster = new b.service.model.ItemMaster(self.B_INP_002_text(), self.GridCurrentItemName_B_001(), self.GridCurrentCategoryAtr_B_001(), self.GridCurrentCategoryAtrName_B_001(), self.GridCurrentItemAbName_B_001(), self.GridlistCurrentItem_B_001() ? self.GridlistCurrentItem_B_001().itemAbNameO : self.GridCurrentItemAbName_B_001(), self.GridlistCurrentItem_B_001() ? self.GridlistCurrentItem_B_001().itemAbNameE : self.GridCurrentItemAbName_B_001(), self.GridCurrentDisplaySet_B_001() == true ? 1 : 0, self.GridCurrentUniteCode_B_001(), self.getCurrentZeroDisplaySet(), self.getCurrentItemDisplayAtr(), 1);
+                    let itemMaster = new b.service.model.ItemMaster(self.B_INP_002_text(), self.GridCurrentItemName_B_001(), self.GridCurrentCategoryAtr_B_001(), self.GridCurrentCategoryAtrName_B_001(), self.GridCurrentItemAbName_B_001(), self.GridlistCurrentItem_B_001() ? self.GridlistCurrentItem_B_001().itemAbNameO : self.GridCurrentItemAbName_B_001(), self.GridlistCurrentItem_B_001() ? self.GridlistCurrentItem_B_001().itemAbNameE : self.GridCurrentItemAbName_B_001(), self.GridCurrentDisplaySet_B_001() == true ? 1 : 0, self.GridCurrentUniteCode_B_001(), self.getCurrentZeroDisplaySet(), self.getCurrentItemDisplayAtr(), 1);
                     //set sub item constructor
                     itemMaster.itemSalary = self.screenModel.screenModelC.GetCurrentItemSalary();
                     itemMaster.itemDeduct = self.screenModel.screenModelD.GetCurrentItemDeduct();
                     itemMaster.itemAttend = self.screenModel.screenModelE.getCurrentItemAttend();
                     return itemMaster;
-                };
-                ScreenModel.prototype.LoadGridList = function (ItemCode) {
-                    var self = this;
-                    var categoryAtr = self.categoryAtr;
+                }
+                LoadGridList(ItemCode) {
+                    let self = this;
+                    let categoryAtr = self.categoryAtr;
                     //load dispSet 
                     //if 0  mean
                     // no view この項目名を廃止する 
                     //else view all
-                    var dispSet = self.checked_B_002() ? -1 : 0;
+                    let dispSet = self.checked_B_002() ? -1 : 0;
                     //call service load findAllItemMaster
                     b.service.findAllItemMaster(categoryAtr, dispSet).done(function (MasterItems) {
                         self.GridlistItems_B_001(MasterItems);
@@ -245,11 +245,11 @@ var qmm012;
                     }).fail(function (res) {
                         alert(res);
                     });
-                };
-                ScreenModel.prototype.deleteItem = function () {
-                    var self = this;
-                    var ItemMaster = self.GetCurrentItemMaster();
-                    var index = self.GridlistItems_B_001.indexOf(self.GridlistCurrentItem_B_001());
+                }
+                deleteItem() {
+                    let self = this;
+                    let ItemMaster = self.GetCurrentItemMaster();
+                    let index = self.GridlistItems_B_001.indexOf(self.GridlistCurrentItem_B_001());
                     //if has item selected
                     if (index >= 0) {
                         //show dialog
@@ -257,7 +257,7 @@ var qmm012;
                             //if yes call service delete item
                             b.service.deleteItemMaster(ItemMaster).done(function (any) {
                                 //reload grid and set select code after delete item success
-                                var selectItemCode;
+                                let selectItemCode;
                                 //if after delete gridlist length >0
                                 if (self.GridlistItems_B_001().length - 1 > 1) {
                                     if (index < self.GridlistItems_B_001().length - 1)
@@ -277,11 +277,11 @@ var qmm012;
                             });
                         });
                     }
-                };
-                ScreenModel.prototype.getCurrentZeroDisplaySet = function () {
-                    var Result;
-                    var self = this;
-                    var CurrentGroup = self.GridCurrentCategoryAtr_B_001();
+                }
+                getCurrentZeroDisplaySet() {
+                    let Result;
+                    let self = this;
+                    let CurrentGroup = self.GridCurrentCategoryAtr_B_001();
                     switch (CurrentGroup) {
                         case 0:
                             //支給
@@ -301,12 +301,12 @@ var qmm012;
                             break;
                     }
                     return Result;
-                };
-                ScreenModel.prototype.getCurrentItemDisplayAtr = function () {
+                }
+                getCurrentItemDisplayAtr() {
                     //like getCurrentZeroDisplaySet
-                    var Result;
-                    var self = this;
-                    var CurrentGroup = self.GridCurrentCategoryAtr_B_001();
+                    let Result;
+                    let self = this;
+                    let CurrentGroup = self.GridCurrentCategoryAtr_B_001();
                     switch (CurrentGroup) {
                         case 0:
                             Result = self.screenModel.screenModelC.CurrentItemDisplayAtr();
@@ -322,23 +322,23 @@ var qmm012;
                             break;
                     }
                     return Result;
-                };
-                ScreenModel.prototype.openADialog = function () {
+                }
+                openADialog() {
                     //open select type dialog for new item
-                    var self = this;
+                    let self = this;
                     nts.uk.ui.windows.sub.modal('../a/index.xhtml', { height: 480, width: 630, dialogClass: "no-close" }).onClosed(function () {
                         if (nts.uk.ui.windows.getShared('groupCode') != undefined) {
                             //get group from session
-                            var groupCode = Number(nts.uk.ui.windows.getShared('groupCode'));
+                            let groupCode = Number(nts.uk.ui.windows.getShared('groupCode'));
                             //set layout for new.
                             self.enable_B_INP_002(true);
                             self.GridCurrentCategoryAtr_B_001(groupCode);
                         }
                     });
-                };
-                ScreenModel.prototype.submitData = function () {
-                    var self = this;
-                    var ItemMaster = self.GetCurrentItemMaster();
+                }
+                submitData() {
+                    let self = this;
+                    let ItemMaster = self.GetCurrentItemMaster();
                     //if self.enable_B_INP_002 == true is mean New mode
                     if (self.enable_B_INP_002()) {
                         self.addNewItemMaster(ItemMaster);
@@ -347,9 +347,9 @@ var qmm012;
                         //else update mode
                         self.updateItemMaster(ItemMaster);
                     }
-                };
-                ScreenModel.prototype.addNewItemMaster = function (ItemMaster) {
-                    var self = this;
+                }
+                addNewItemMaster(ItemMaster) {
+                    let self = this;
                     //call add service
                     b.service.addItemMaster(ItemMaster).done(function (any) {
                         //after add , reload grid list
@@ -357,9 +357,9 @@ var qmm012;
                     }).fail(function (res) {
                         alert(res);
                     });
-                };
-                ScreenModel.prototype.updateItemMaster = function (ItemMaster) {
-                    var self = this;
+                }
+                updateItemMaster(ItemMaster) {
+                    let self = this;
                     //call update service
                     b.service.updateItemMaster(ItemMaster).done(function (any) {
                         //after add , reload grid list
@@ -367,23 +367,20 @@ var qmm012;
                     }).fail(function (res) {
                         alert(res);
                     });
-                };
-                ScreenModel.prototype.openJDialog = function () {
-                    var self = this;
+                }
+                openJDialog() {
+                    let self = this;
                     nts.uk.ui.windows.sub.modal('../j/index.xhtml', { height: 700, width: 970, dialogClass: "no-close" }).onClosed(function () {
                     });
-                };
-                return ScreenModel;
-            }());
+                }
+            }
             viewmodel.ScreenModel = ScreenModel;
-            var ComboboxItemModel = (function () {
-                function ComboboxItemModel(code, name) {
+            class ComboboxItemModel {
+                constructor(code, name) {
                     this.code = code;
                     this.name = name;
                 }
-                return ComboboxItemModel;
-            }());
+            }
         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
     })(b = qmm012.b || (qmm012.b = {}));
 })(qmm012 || (qmm012 = {}));
-//# sourceMappingURL=viewmodel.js.map

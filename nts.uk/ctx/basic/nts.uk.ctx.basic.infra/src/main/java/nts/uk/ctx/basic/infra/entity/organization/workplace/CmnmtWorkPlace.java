@@ -12,6 +12,7 @@ import javax.persistence.TemporalType;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 
 @Entity
 @NoArgsConstructor
@@ -29,53 +30,20 @@ public class CmnmtWorkPlace implements Serializable {
 
 	@Column(name = "STR_D")
 	@Temporal(TemporalType.DATE)
-	private Date startDate;
+	private GeneralDate startDate;
 
 	@Column(name = "END_D")
 	@Temporal(TemporalType.DATE)
-	private Date endDate;
+	private GeneralDate endDate;
 
 	@Column(name = "WKPNAME")
 	private String name;
-
-	@Column(name = "WKPNAME_ABB")
-	private String shortName;
 
 	@Column(name = "WKPNAME_TOTAL")
 	private String genericName;
 
 	@Column(name = "HIERARCHY_ID")
 	private String hierarchyId;
-
-	@Column(name = "HIERARCHY_ID_01")
-	private String hierarchyId01;
-
-	@Column(name = "HIERARCHY_ID_02")
-	private String hierarchyId02;
-
-	@Column(name = "HIERARCHY_ID_03")
-	private String hierarchyId03;
-
-	@Column(name = "HIERARCHY_ID_04")
-	private String hierarchyId04;
-
-	@Column(name = "HIERARCHY_ID_05")
-	private String hierarchyId05;
-
-	@Column(name = "HIERARCHY_ID_06")
-	private String hierarchyId06;
-
-	@Column(name = "HIERARCHY_ID_07")
-	private String hierarchyId07;
-
-	@Column(name = "HIERARCHY_ID_08")
-	private String hierarchyId08;
-
-	@Column(name = "HIERARCHY_ID_09")
-	private String hierarchyId09;
-
-	@Column(name = "HIERARCHY_ID_10")
-	private String hierarchyId10;
 
 	@Column(name = "WKP_OUT_CD")
 	private String externalCode;
@@ -100,19 +68,19 @@ public class CmnmtWorkPlace implements Serializable {
 		this.cmnmtWorkPlacePK = cmnmtWorkPlacePK;
 	}
 
-	public Date getStartDate() {
+	public GeneralDate getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(GeneralDate startDate) {
 		this.startDate = startDate;
 	}
 
-	public Date getEndDate() {
+	public GeneralDate getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(Date endDate) {
+	public void setEndDate(GeneralDate endDate) {
 		this.endDate = endDate;
 	}
 
@@ -124,14 +92,7 @@ public class CmnmtWorkPlace implements Serializable {
 		this.name = name;
 	}
 
-	public String getShortName() {
-		return shortName;
-	}
-
-	public void setShortName(String shortName) {
-		this.shortName = shortName;
-	}
-
+	
 	public String getGenericName() {
 		return genericName;
 	}
@@ -146,86 +107,6 @@ public class CmnmtWorkPlace implements Serializable {
 
 	public void setHierarchyId(String hierarchyId) {
 		this.hierarchyId = hierarchyId;
-	}
-
-	public String getHierarchyId01() {
-		return hierarchyId01;
-	}
-
-	public void setHierarchyId01(String hierarchyId01) {
-		this.hierarchyId01 = hierarchyId01;
-	}
-
-	public String getHierarchyId02() {
-		return hierarchyId02;
-	}
-
-	public void setHierarchyId02(String hierarchyId02) {
-		this.hierarchyId02 = hierarchyId02;
-	}
-
-	public String getHierarchyId03() {
-		return hierarchyId03;
-	}
-
-	public void setHierarchyId03(String hierarchyId03) {
-		this.hierarchyId03 = hierarchyId03;
-	}
-
-	public String getHierarchyId04() {
-		return hierarchyId04;
-	}
-
-	public void setHierarchyId04(String hierarchyId04) {
-		this.hierarchyId04 = hierarchyId04;
-	}
-
-	public String getHierarchyId05() {
-		return hierarchyId05;
-	}
-
-	public void setHierarchyId05(String hierarchyId05) {
-		this.hierarchyId05 = hierarchyId05;
-	}
-
-	public String getHierarchyId06() {
-		return hierarchyId06;
-	}
-
-	public void setHierarchyId06(String hierarchyId06) {
-		this.hierarchyId06 = hierarchyId06;
-	}
-
-	public String getHierarchyId07() {
-		return hierarchyId07;
-	}
-
-	public void setHierarchyId07(String hierarchyId07) {
-		this.hierarchyId07 = hierarchyId07;
-	}
-
-	public String getHierarchyId08() {
-		return hierarchyId08;
-	}
-
-	public void setHierarchyId08(String hierarchyId08) {
-		this.hierarchyId08 = hierarchyId08;
-	}
-
-	public String getHierarchyId09() {
-		return hierarchyId09;
-	}
-
-	public void setHierarchyId09(String hierarchyId09) {
-		this.hierarchyId09 = hierarchyId09;
-	}
-
-	public String getHierarchyId10() {
-		return hierarchyId10;
-	}
-
-	public void setHierarchyId10(String hierarchyId10) {
-		this.hierarchyId10 = hierarchyId10;
 	}
 
 	public String getExternalCode() {

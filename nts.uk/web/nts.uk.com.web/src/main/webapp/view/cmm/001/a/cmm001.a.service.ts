@@ -12,7 +12,7 @@ module cmm001.a.service {
     export function getAllCompanys(): JQueryPromise<Array<model.CompanyDto>> {
         let dfd = $.Deferred<Array<model.CompanyDto>>();
         nts.uk.request.ajax(paths.getAllCompanys)
-            .done(function(res: Array<model.CompanyDto>) {
+            .done(function(res: Array<model.CompanyDto>) {   
                 dfd.resolve(res);
             })
             .fail(function(res: model.CompanyDto) {
@@ -38,6 +38,7 @@ module cmm001.a.service {
         nts.uk.request.ajax(paths.addCompany, company).done(function(res: Array<any>) {
             dfd.resolve(res);
         }).fail(function(res: any) {
+            nts.uk.ui.dialog.alert(res.messName);
             dfd.reject(res);
         })
         return dfd.promise();

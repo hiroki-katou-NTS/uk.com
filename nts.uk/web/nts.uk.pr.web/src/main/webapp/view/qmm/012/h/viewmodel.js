@@ -4,8 +4,8 @@ var qmm012;
     (function (h) {
         var viewmodel;
         (function (viewmodel) {
-            var ScreenModel = (function () {
-                function ScreenModel() {
+            class ScreenModel {
+                constructor() {
                     this.enable = ko.observable(true);
                     this.CurrentItemMaster = ko.observable(null);
                     this.CurrentCategoryAtrName = ko.observable('');
@@ -58,10 +58,10 @@ var qmm012;
                     });
                     self.LoadItemPeriod();
                 }
-                ScreenModel.prototype.LoadItemPeriod = function () {
+                LoadItemPeriod() {
                     //this dialog only load data in session from parrent call it
-                    var self = this;
-                    var itemMaster = nts.uk.ui.windows.getShared('itemMaster');
+                    let self = this;
+                    let itemMaster = nts.uk.ui.windows.getShared('itemMaster');
                     if (itemMaster != undefined) {
                         self.CurrentItemMaster(itemMaster);
                         self.CurrentCategoryAtrName(itemMaster.categoryAtrName);
@@ -69,16 +69,16 @@ var qmm012;
                     }
                     if (nts.uk.ui.windows.getShared('itemPeriod'))
                         self.CurrentItemPeriod(nts.uk.ui.windows.getShared('itemPeriod'));
-                };
-                ScreenModel.prototype.getCurrentItemPeriod = function () {
+                }
+                getCurrentItemPeriod() {
                     //return  ItemPeriod customer has input to form
-                    var self = this;
+                    let self = this;
                     return new h.service.model.ItemPeriod(self.CurrentItemMaster().itemCode, self.CurrentPeriodAtr(), self.CurrentStrY(), self.CurrentEndY(), self.CurrentCycleAtr(), self.H_SEL_003_checked() == true ? 1 : 0, self.H_SEL_004_checked() == true ? 1 : 0, self.H_SEL_005_checked() == true ? 1 : 0, self.H_SEL_006_checked() == true ? 1 : 0, self.H_SEL_007_checked() == true ? 1 : 0, self.H_SEL_008_checked() == true ? 1 : 0, self.H_SEL_009_checked() == true ? 1 : 0, self.H_SEL_010_checked() == true ? 1 : 0, self.H_SEL_011_checked() == true ? 1 : 0, self.H_SEL_012_checked() == true ? 1 : 0, self.H_SEL_013_checked() == true ? 1 : 0, self.H_SEL_014_checked() == true ? 1 : 0);
-                };
-                ScreenModel.prototype.SubmitDialog = function () {
-                    var self = this;
-                    var itemPeriodOld = self.CurrentItemPeriod();
-                    var itemPeriod = self.getCurrentItemPeriod();
+                }
+                SubmitDialog() {
+                    let self = this;
+                    let itemPeriodOld = self.CurrentItemPeriod();
+                    let itemPeriod = self.getCurrentItemPeriod();
                     if (itemPeriodOld) {
                         //it mean this item has been created before
                         h.service.updateItemPeriod(itemPeriod, self.CurrentItemMaster()).done(function (res) {
@@ -96,36 +96,31 @@ var qmm012;
                             alert(res.value);
                         });
                     }
-                };
-                ScreenModel.prototype.CloseDialog = function () {
+                }
+                CloseDialog() {
                     nts.uk.ui.windows.close();
-                };
-                return ScreenModel;
-            }());
+                }
+            }
             viewmodel.ScreenModel = ScreenModel;
-            var GridItemModel = (function () {
-                function GridItemModel(code, name) {
+            class GridItemModel {
+                constructor(code, name) {
                     this.code = code;
                     this.name = name;
                 }
-                return GridItemModel;
-            }());
-            var ComboboxItemModel = (function () {
-                function ComboboxItemModel(code, name) {
+            }
+            class ComboboxItemModel {
+                constructor(code, name) {
                     this.code = code;
                     this.name = name;
                 }
-                return ComboboxItemModel;
-            }());
-            var BoxModel = (function () {
-                function BoxModel(id, name) {
+            }
+            class BoxModel {
+                constructor(id, name) {
                     var self = this;
                     self.id = id;
                     self.name = name;
                 }
-                return BoxModel;
-            }());
+            }
         })(viewmodel = h.viewmodel || (h.viewmodel = {}));
     })(h = qmm012.h || (qmm012.h = {}));
 })(qmm012 || (qmm012 = {}));
-//# sourceMappingURL=viewmodel.js.map

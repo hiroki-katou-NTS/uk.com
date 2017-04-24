@@ -5,7 +5,6 @@
 package nts.uk.ctx.pr.core.infra.entity.wagetable.history;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -16,11 +15,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class QwtmtWagetableMny.
@@ -29,7 +27,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "QWTMT_WAGETABLE_MNY")
-public class QwtmtWagetableMny implements Serializable {
+public class QwtmtWagetableMny extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -37,45 +35,6 @@ public class QwtmtWagetableMny implements Serializable {
 	/** The qwtmt wagetable mny PK. */
 	@EmbeddedId
 	protected QwtmtWagetableMnyPK qwtmtWagetableMnyPK;
-
-	/** The ins date. */
-	@Column(name = "INS_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date insDate;
-
-	/** The ins ccd. */
-	@Column(name = "INS_CCD")
-	private String insCcd;
-
-	/** The ins scd. */
-	@Column(name = "INS_SCD")
-	private String insScd;
-
-	/** The ins pg. */
-	@Column(name = "INS_PG")
-	private String insPg;
-
-	/** The upd date. */
-	@Column(name = "UPD_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updDate;
-
-	/** The upd ccd. */
-	@Column(name = "UPD_CCD")
-	private String updCcd;
-
-	/** The upd scd. */
-	@Column(name = "UPD_SCD")
-	private String updScd;
-
-	/** The upd pg. */
-	@Column(name = "UPD_PG")
-	private String updPg;
-
-	/** The exclus ver. */
-	@Basic(optional = false)
-	@Column(name = "EXCLUS_VER")
-	private int exclusVer;
 
 	/** The value mny. */
 	@Basic(optional = false)
@@ -105,23 +64,6 @@ public class QwtmtWagetableMny implements Serializable {
 	 */
 	public QwtmtWagetableMny(QwtmtWagetableMnyPK qwtmtWagetableMnyPK) {
 		this.qwtmtWagetableMnyPK = qwtmtWagetableMnyPK;
-	}
-
-	/**
-	 * Instantiates a new qwtmt wagetable mny.
-	 *
-	 * @param qwtmtWagetableMnyPK
-	 *            the qwtmt wagetable mny PK
-	 * @param exclusVer
-	 *            the exclus ver
-	 * @param valueMny
-	 *            the value mny
-	 */
-	public QwtmtWagetableMny(QwtmtWagetableMnyPK qwtmtWagetableMnyPK, int exclusVer,
-			long valueMny) {
-		this.qwtmtWagetableMnyPK = qwtmtWagetableMnyPK;
-		this.exclusVer = exclusVer;
-		this.valueMny = valueMny;
 	}
 
 	/**
@@ -175,5 +117,15 @@ public class QwtmtWagetableMny implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.qwtmtWagetableMnyPK;
 	}
 }

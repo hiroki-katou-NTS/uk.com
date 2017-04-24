@@ -34,8 +34,8 @@ var qmm012;
             service.findItemDeductPeriod = findItemDeductPeriod;
             function findItemPeriod(ItemMaster) {
                 var dfd = $.Deferred();
-                var categoryAtr = ItemMaster.categoryAtr;
-                var itemCode = ItemMaster.itemCode;
+                let categoryAtr = ItemMaster.categoryAtr;
+                let itemCode = ItemMaster.itemCode;
                 if (categoryAtr == 0) {
                     service.findItemSalaryPeriod(itemCode).done(function (ItemPeriod) {
                         dfd.resolve(ItemPeriod);
@@ -79,8 +79,8 @@ var qmm012;
             }
             function addItemPeriod(itemPeriod, itemMaster) {
                 var dfd = $.Deferred();
-                var categoryAtr = itemMaster.categoryAtr;
-                var itemCode = itemMaster.itemCode;
+                let categoryAtr = itemMaster.categoryAtr;
+                let itemCode = itemMaster.itemCode;
                 if (categoryAtr == 0) {
                     addItemSalaryPeriod(itemPeriod).done(function (any) {
                         dfd.resolve(any);
@@ -124,8 +124,8 @@ var qmm012;
             }
             function updateItemPeriod(itemPeriod, itemMaster) {
                 var dfd = $.Deferred();
-                var categoryAtr = itemMaster.categoryAtr;
-                var itemCode = itemMaster.itemCode;
+                let categoryAtr = itemMaster.categoryAtr;
+                let itemCode = itemMaster.itemCode;
                 if (categoryAtr == 0) {
                     updateItemSalaryPeriod(itemPeriod).done(function (any) {
                         dfd.resolve(any);
@@ -147,8 +147,8 @@ var qmm012;
             service.updateItemPeriod = updateItemPeriod;
             var model;
             (function (model) {
-                var ItemPeriod = (function () {
-                    function ItemPeriod(itemCode, periodAtr, strY, endY, cycleAtr, cycle01Atr, cycle02Atr, cycle03Atr, cycle04Atr, cycle05Atr, cycle06Atr, cycle07Atr, cycle08Atr, cycle09Atr, cycle10Atr, cycle11Atr, cycle12Atr) {
+                class ItemPeriod {
+                    constructor(itemCode, periodAtr, strY, endY, cycleAtr, cycle01Atr, cycle02Atr, cycle03Atr, cycle04Atr, cycle05Atr, cycle06Atr, cycle07Atr, cycle08Atr, cycle09Atr, cycle10Atr, cycle11Atr, cycle12Atr) {
                         this.itemCode = itemCode;
                         this.periodAtr = periodAtr;
                         this.strY = strY;
@@ -167,11 +167,9 @@ var qmm012;
                         this.cycle11Atr = cycle11Atr;
                         this.cycle12Atr = cycle12Atr;
                     }
-                    return ItemPeriod;
-                }());
+                }
                 model.ItemPeriod = ItemPeriod;
             })(model = service.model || (service.model = {}));
         })(service = h.service || (h.service = {}));
     })(h = qmm012.h || (qmm012.h = {}));
 })(qmm012 || (qmm012 = {}));
-//# sourceMappingURL=service.js.map
