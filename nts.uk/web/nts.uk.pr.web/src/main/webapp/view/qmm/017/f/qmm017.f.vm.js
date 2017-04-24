@@ -2,8 +2,8 @@ var nts;
 (function (nts) {
     var qmm017;
     (function (qmm017) {
-        var FScreen = (function () {
-            function FScreen() {
+        class FScreen {
+            constructor() {
                 var self = this;
                 var hList001 = [
                     { code: '1', name: '全て' },
@@ -13,9 +13,7 @@ var nts;
                 self.listBoxItemType().selectedCode.subscribe(function (codeChange) {
                 });
             }
-            return FScreen;
-        }());
+        }
         qmm017.FScreen = FScreen;
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm017.f.vm.js.map

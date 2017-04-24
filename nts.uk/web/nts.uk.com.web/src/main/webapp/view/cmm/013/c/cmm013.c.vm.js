@@ -4,13 +4,14 @@ var cmm013;
     (function (c) {
         var viewmodel;
         (function (viewmodel) {
-            var ScreenModel = (function () {
-                function ScreenModel() {
+            class ScreenModel {
+                constructor() {
                     var self = this;
                     self.label_002 = ko.observable(new Labels());
                     self.inp_003 = ko.observable("");
                     self.historyId = ko.observable(null);
                     self.startDateLast = ko.observable('');
+                    //C_SEL_001
                     self.selectedId = ko.observable(1);
                     self.enable = ko.observable(true);
                     self.yearmonthdateeditor = {
@@ -19,12 +20,17 @@ var cmm013;
                         })),
                     };
                 }
-                ScreenModel.prototype.startPage = function () {
+                /**
+                 * Start page
+                 * get start date last from screen A
+                 */
+                startPage() {
                     var self = this;
                     var dfd = $.Deferred();
                     self.historyId(nts.uk.ui.windows.getShared('CMM013_historyId'));
                     self.startDateLast(nts.uk.ui.windows.getShared('CMM013_startDateLast'));
                     self.selectedId = ko.observable(0);
+                    //!nts.uk.text.isNullOrEmpty(self.historyId()) && !nts.uk.text.isNullOrEmpty(self.startDateLast()) && 
                     if (self.startDateLast()) {
                         self.itemList = ko.observableArray([
                             new BoxModel(0, '最新の履歴（' + self.startDateLast() + '）から引き継ぐ  '),
@@ -39,19 +45,24 @@ var cmm013;
                     }
                     dfd.resolve();
                     return dfd.promise();
-                };
-                ScreenModel.prototype.setValueForRadio = function () {
+                }
+                /**
+                 * decision add history
+                 * set start date new and send to screen A(main)
+                 * then close screen C
+                 */
+                setValueForRadio() {
                     var self = this;
                     self.itemList = ko.observableArray([
                         new BoxModel(0, ' 初めから作成する '),
                         new BoxModel(1, ' 初めから作成する')
                     ]);
                     self.selectedId = ko.observable(0);
-                };
-                ScreenModel.prototype.closeDialog = function () {
+                }
+                closeDialog() {
                     nts.uk.ui.windows.close();
-                };
-                ScreenModel.prototype.add = function () {
+                }
+                add() {
                     var self = this;
                     if (self.checkTypeInput() == false) {
                         return;
@@ -67,7 +78,7 @@ var cmm013;
                             var check = 2;
                         }
                         var date = new Date(self.inp_003());
-                        var dateNew = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
+                        let dateNew = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
                         if (date.getMonth() < 9 && date.getDate() < 10) {
                             dateNew = date.getFullYear() + '/' + 0 + (date.getMonth() + 1) + '/' + 0 + date.getDate();
                         }
@@ -87,8 +98,8 @@ var cmm013;
                         nts.uk.ui.windows.setShared('cmm013Insert', true, true);
                         nts.uk.ui.windows.close();
                     }
-                };
-                ScreenModel.prototype.checkTypeInput = function () {
+                }
+                checkTypeInput() {
                     var self = this;
                     var date = new Date(self.inp_003());
                     if (date.toDateString() == 'Invalid Date') {
@@ -98,8 +109,8 @@ var cmm013;
                     else {
                         return true;
                     }
-                };
-                ScreenModel.prototype.checkValueInput = function (value) {
+                }
+                checkValueInput(value) {
                     var self = this;
                     if (value <= self.startDateLast()) {
                         alert("履歴の期間が正しくありません。");
@@ -108,31 +119,27 @@ var cmm013;
                     else {
                         return true;
                     }
-                };
-                return ScreenModel;
-            }());
+                }
+            }
             viewmodel.ScreenModel = ScreenModel;
-            var Labels = (function () {
-                function Labels() {
+            class Labels {
+                constructor() {
                     this.constraint = 'LayoutCode';
                     var self = this;
                     self.inline = ko.observable(true);
                     self.required = ko.observable(true);
                     self.enable = ko.observable(true);
                 }
-                return Labels;
-            }());
+            }
             viewmodel.Labels = Labels;
-            var BoxModel = (function () {
-                function BoxModel(id, name) {
+            class BoxModel {
+                constructor(id, name) {
                     var self = this;
                     self.id = id;
                     self.name = name;
                 }
-                return BoxModel;
-            }());
+            }
             viewmodel.BoxModel = BoxModel;
         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
     })(c = cmm013.c || (cmm013.c = {}));
 })(cmm013 || (cmm013 = {}));
-//# sourceMappingURL=cmm013.c.vm.js.map

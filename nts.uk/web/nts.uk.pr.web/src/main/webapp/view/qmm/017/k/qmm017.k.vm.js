@@ -12,21 +12,21 @@ var nts;
                     (function (k) {
                         var viewmodel;
                         (function (viewmodel) {
-                            var ScreenModelKScreen = (function () {
-                                function ScreenModelKScreen(param) {
+                            class ScreenModelKScreen {
+                                constructor(param) {
                                     var self = this;
                                     self.data = param;
                                     self.startYm = ko.observable(param.startYm);
                                     self.endYm = ko.observable(param.endYm);
                                     self.selectedMode = ko.observable(1);
                                 }
-                                ScreenModelKScreen.prototype.closeDialog = function () {
+                                closeDialog() {
                                     nts.uk.ui.windows.close();
-                                };
-                                ScreenModelKScreen.prototype.actionHandler = function () {
+                                }
+                                actionHandler() {
                                     var self = this;
                                     if (self.selectedMode() == 0) {
-                                        var command = {
+                                        let command = {
                                             formulaCode: self.data.formulaCode,
                                             historyId: self.data.historyId,
                                             startDate: self.startYm(),
@@ -41,7 +41,7 @@ var nts;
                                         });
                                     }
                                     else {
-                                        var command = {
+                                        let command = {
                                             formulaCode: self.data.formulaCode,
                                             historyId: self.data.historyId,
                                             startDate: self.startYm(),
@@ -54,9 +54,8 @@ var nts;
                                             alert(res);
                                         });
                                     }
-                                };
-                                return ScreenModelKScreen;
-                            }());
+                                }
+                            }
                             viewmodel.ScreenModelKScreen = ScreenModelKScreen;
                         })(viewmodel = k.viewmodel || (k.viewmodel = {}));
                     })(k = qmm017.k || (qmm017.k = {}));
@@ -65,4 +64,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm017.k.vm.js.map

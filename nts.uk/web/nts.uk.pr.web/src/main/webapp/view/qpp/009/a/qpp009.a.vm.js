@@ -4,8 +4,8 @@ var qpp009;
     (function (a) {
         var viewmodel;
         (function (viewmodel) {
-            var ScreenModel = (function () {
-                function ScreenModel() {
+            class ScreenModel {
+                constructor() {
                     this.targetYear = ko.observable(2016);
                     this.outputDivisions = ko.observableArray([
                         new SelectionModel('UsuallyMonth', '通常月'),
@@ -16,23 +16,31 @@ var qpp009;
                     this.printSetting = ko.observable(new PrintSetting());
                     this.yearMonth = ko.observable('2016/12');
                 }
-                ScreenModel.prototype.start = function () {
+                /**
+                 * Start srceen.
+                 */
+                start() {
                     var dfd = $.Deferred();
                     dfd.resolve();
                     return dfd.promise();
-                };
-                ScreenModel.prototype.printData = function () {
+                }
+                /**
+                 * Print report.
+                 */
+                printData() {
                     a.service.printService(this).done(function () {
                     })
                         .fail(function (res) {
                         nts.uk.ui.dialog.alert(res.message);
                     });
-                };
-                return ScreenModel;
-            }());
+                }
+            }
             viewmodel.ScreenModel = ScreenModel;
-            var DetailItemsSetting = (function () {
-                function DetailItemsSetting() {
+            /**
+             * Class detail items setting.
+             */
+            class DetailItemsSetting {
+                constructor() {
                     this.isPrintDetailItem = ko.observable(false);
                     this.isPrintTotalOfDepartment = ko.observable(true);
                     this.isPrintDepHierarchy = ko.observable(true);
@@ -44,11 +52,13 @@ var qpp009;
                     ]);
                     this.selectedLevels = ko.observableArray([1, 2, 3, 8, 9]);
                 }
-                return DetailItemsSetting;
-            }());
+            }
             viewmodel.DetailItemsSetting = DetailItemsSetting;
-            var PrintSetting = (function () {
-                function PrintSetting() {
+            /**
+             * Class print setting.
+             */
+            class PrintSetting {
+                constructor() {
                     this.specifyBreakPageList = ko.observableArray([
                         new SelectionDto(1, 'なし'),
                         new SelectionDto(2, '社員毎'),
@@ -72,11 +82,10 @@ var qpp009;
                         return self.selectedBreakPageCode() == 4;
                     });
                 }
-                return PrintSetting;
-            }());
+            }
             viewmodel.PrintSetting = PrintSetting;
-            var SalaryChartResultViewModel = (function () {
-                function SalaryChartResultViewModel(empCode, empName, paymentAmount, empDesignation, depDesignation, totalDesignation, depCode, depName, depPath) {
+            class SalaryChartResultViewModel {
+                constructor(empCode, empName, paymentAmount, empDesignation, depDesignation, totalDesignation, depCode, depName, depPath) {
                     this.empCode = empCode;
                     this.empName = empName;
                     this.paymentAmount = paymentAmount;
@@ -87,26 +96,25 @@ var qpp009;
                     this.depName = depName;
                     this.depPath = depPath;
                 }
-                return SalaryChartResultViewModel;
-            }());
+            }
             viewmodel.SalaryChartResultViewModel = SalaryChartResultViewModel;
-            var SelectionModel = (function () {
-                function SelectionModel(code, name) {
+            /**
+         * Class 出力区分.
+         */
+            class SelectionModel {
+                constructor(code, name) {
                     this.code = code;
                     this.name = name;
                 }
-                return SelectionModel;
-            }());
+            }
             viewmodel.SelectionModel = SelectionModel;
-            var SelectionDto = (function () {
-                function SelectionDto(code, name) {
+            class SelectionDto {
+                constructor(code, name) {
                     this.code = code;
                     this.name = name;
                 }
-                return SelectionDto;
-            }());
+            }
             viewmodel.SelectionDto = SelectionDto;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qpp009.a || (qpp009.a = {}));
 })(qpp009 || (qpp009 = {}));
-//# sourceMappingURL=qpp009.a.vm.js.map

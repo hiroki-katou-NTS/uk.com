@@ -12,8 +12,8 @@ var nts;
                     (function (q) {
                         var viewmodel;
                         (function (viewmodel) {
-                            var ScreenModel = (function () {
-                                function ScreenModel(data) {
+                            class ScreenModel {
+                                constructor(data) {
                                     var self = this;
                                     self.items = ko.observableArray([]);
                                     self.personalUPItems = ko.observableArray([]);
@@ -23,14 +23,14 @@ var nts;
                                     self.bindGridListItem();
                                     self.calculator = new Calculator();
                                 }
-                                ScreenModel.prototype.isDuplicated = function (itemName) {
+                                isDuplicated(itemName) {
                                     var self = this;
-                                    var foundItem = _.find(self.items(), function (item) {
+                                    let foundItem = _.find(self.items(), function (item) {
                                         return item.name == itemName;
                                     });
                                     return foundItem !== undefined;
-                                };
-                                ScreenModel.prototype.buildListItemModel = function (itemsBag) {
+                                }
+                                buildListItemModel(itemsBag) {
                                     var self = this;
                                     _.forEach(itemsBag, function (item) {
                                         if (item.name.indexOf('関数') === -1 && self.formulaContent.indexOf(item.name) !== -1 && !self.isDuplicated(item.name)) {
@@ -42,8 +42,8 @@ var nts;
                                             }
                                         }
                                     });
-                                };
-                                ScreenModel.prototype.bindGridListItem = function () {
+                                }
+                                bindGridListItem() {
                                     var self = this;
                                     $("#lstItemValue").igGrid({
                                         primaryKey: "code",
@@ -70,31 +70,31 @@ var nts;
                                             }]
                                     });
                                     $("[aria-describedby='lstItemValue_code']").css({ "backgroundColor": "#CFF1A5" });
-                                };
-                                ScreenModel.prototype.calculationTrial = function () {
+                                }
+                                calculationTrial() {
                                     var self = this;
-                                    var replacedValue = self.formulaContent + '+ 0';
+                                    let replacedValue = self.formulaContent + '+ 0';
                                     _.forEach(self.items(), function (item) {
                                         replacedValue = replacedValue.replace(new RegExp(item.code, 'g'), item.value);
                                     });
                                     _.forEach(self.personalUPItems(), function (item) {
                                         replacedValue = replacedValue.replace(new RegExp(item.code, 'g'), item.value);
                                     });
-                                    var contentPieces = replacedValue.split(/[\+|\-|\×|\÷|\＾]/);
-                                    var listTreeObject = [];
-                                    for (var i = 0; i < contentPieces.length - 1; i++) {
+                                    let contentPieces = replacedValue.split(/[\+|\-|\×|\÷|\＾]/);
+                                    let listTreeObject = [];
+                                    for (let i = 0; i < contentPieces.length - 1; i++) {
                                         listTreeObject.push(nts.uk.util.createTreeFromString(contentPieces[i], "（", "）", ",", [])[0]);
                                     }
                                     ;
-                                    var listOperator = [];
-                                    var toCharContent = replacedValue.split('');
+                                    let listOperator = [];
+                                    let toCharContent = replacedValue.split('');
                                     _.forEach(toCharContent, function (char) {
                                         if (char === '+' || char === '-' || char === '×' || char === '÷' || char === '＾') {
                                             listOperator.push(char);
                                         }
                                     });
-                                };
-                                ScreenModel.prototype.calculateTreeObject = function (treeObject) {
+                                }
+                                calculateTreeObject(treeObject) {
                                     var self = this;
                                     if (treeObject.value === '関数＠条件式') {
                                     }
@@ -120,8 +120,8 @@ var nts;
                                     }
                                     else if (treeObject.value === '関数＠月抽出') {
                                     }
-                                };
-                                ScreenModel.prototype.compareValues = function (firstValue, secondValue, comparator) {
+                                }
+                                compareValues(firstValue, secondValue, comparator) {
                                     if (comparator === '＜') {
                                         return firstValue < secondValue;
                                     }
@@ -140,8 +140,8 @@ var nts;
                                     else if (comparator === '≠') {
                                         return firstValue !== secondValue;
                                     }
-                                };
-                                ScreenModel.prototype.operatorHandler = function (firstValue, secondValue, operator) {
+                                }
+                                operatorHandler(firstValue, secondValue, operator) {
                                     if (operator === '+') {
                                         return firstValue + secondValue;
                                     }
@@ -157,76 +157,72 @@ var nts;
                                     else if (operator === '＾') {
                                         return Math.pow(firstValue, secondValue);
                                     }
-                                };
-                                ScreenModel.prototype.close = function () {
+                                }
+                                close() {
                                     nts.uk.ui.windows.close();
-                                };
-                                return ScreenModel;
-                            }());
+                                }
+                            }
                             viewmodel.ScreenModel = ScreenModel;
                         })(viewmodel = q.viewmodel || (q.viewmodel = {}));
-                        var Calculator = (function () {
-                            function Calculator() {
+                        class Calculator {
+                            constructor() {
                             }
-                            Calculator.prototype.calculateConditionExpression = function (condition, result1, result2) {
+                            calculateConditionExpression(condition, result1, result2) {
                                 if (condition) {
                                     return result1;
                                 }
                                 else {
                                     return result2;
                                 }
-                            };
-                            Calculator.prototype.calculateAndExpression = function (lstCondition) {
+                            }
+                            calculateAndExpression(lstCondition) {
                                 _.forEach(lstCondition, function (condition) {
                                     if (!condition || condition !== 'true') {
                                         return false;
                                     }
                                 });
                                 return true;
-                            };
-                            Calculator.prototype.calculateOrExpression = function (lstCondition) {
+                            }
+                            calculateOrExpression(lstCondition) {
                                 _.forEach(lstCondition, function (condition) {
                                     if (condition || condition === 'true') {
                                         return true;
                                     }
                                 });
                                 return false;
-                            };
-                            Calculator.prototype.calculateCeil = function (value) {
+                            }
+                            calculateCeil(value) {
                                 return _.ceil(value);
-                            };
-                            Calculator.prototype.calculateMax = function (lstValue) {
+                            }
+                            calculateMax(lstValue) {
                                 return _.max(lstValue);
-                            };
-                            Calculator.prototype.calculateMin = function (lstValue) {
+                            }
+                            calculateMin(lstValue) {
                                 return _.min(lstValue);
-                            };
-                            Calculator.prototype.calculateNumberOfFamily = function (minAge, maxAge) {
+                            }
+                            calculateNumberOfFamily(minAge, maxAge) {
                                 return 0;
-                            };
-                            Calculator.prototype.calculateAddMonth = function (yearMonth, month) {
+                            }
+                            calculateAddMonth(yearMonth, month) {
                                 return moment(yearMonth, "YYYY/MM").add(month, 'months').format("YYYY/MM");
-                            };
-                            Calculator.prototype.calculateExportYear = function (yearMonth) {
+                            }
+                            calculateExportYear(yearMonth) {
                                 return moment(yearMonth, "YYYY/MM").year();
-                            };
-                            Calculator.prototype.calculateExportMonth = function (yearMonth) {
+                            }
+                            calculateExportMonth(yearMonth) {
                                 return moment(yearMonth, "YYYY/MM").month() + 1;
-                            };
-                            return Calculator;
-                        }());
+                            }
+                        }
                         q.Calculator = Calculator;
-                        var ItemModel = (function () {
-                            function ItemModel(code, value) {
+                        class ItemModel {
+                            constructor(code, value) {
                                 this.code = code;
                                 this.value = value;
                             }
-                            return ItemModel;
-                        }());
+                        }
                     })(q = qmm017.q || (qmm017.q = {}));
                 })(qmm017 = view.qmm017 || (view.qmm017 = {}));
             })(view = pr.view || (pr.view = {}));
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm017.q.vm.js.map

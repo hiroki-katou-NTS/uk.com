@@ -2,8 +2,8 @@ var nts;
 (function (nts) {
     var qmm017;
     (function (qmm017) {
-        var CScreen = (function () {
-            function CScreen(data) {
+        class CScreen {
+            constructor(data) {
                 var self = this;
                 self.selectedDifficultyAtr = ko.observable(data.viewModel017b().selectedDifficultyAtr());
                 self.selectedConditionAtr = ko.observable(data.viewModel017b().selectedConditionAtr());
@@ -24,7 +24,7 @@ var nts;
                 self.useMasterCode = ko.observable(data.viewModel017b().comboBoxUseMaster().selectedCode());
                 self.useMasterName = ko.observable('');
                 data.viewModel017b().comboBoxUseMaster().selectedCode.subscribe(function (codeChange) {
-                    var useMasterFound = _.find(data.viewModel017b().comboBoxUseMaster().itemList(), function (item) {
+                    let useMasterFound = _.find(data.viewModel017b().comboBoxUseMaster().itemList(), (item) => {
                         return item.code == codeChange;
                     });
                     self.useMasterCode(data.viewModel017b().comboBoxUseMaster().selectedCode());
@@ -86,40 +86,39 @@ var nts;
                 self.dailyEasyFormula = ko.observable(new EasyFormula(1, data.viewModel017b));
                 self.hourlyEasyFormula = ko.observable(new EasyFormula(1, data.viewModel017b));
             }
-            CScreen.prototype.undo = function () {
+            undo() {
                 document.execCommand("undo", false, null);
-            };
-            CScreen.prototype.redo = function () {
+            }
+            redo() {
                 document.execCommand("redo", false, null);
-            };
-            CScreen.prototype.validateTextArea = function () {
+            }
+            validateTextArea() {
                 var self = this;
                 self.formulaManualContent().testError();
-            };
-            CScreen.prototype.setAllFixValued = function () {
+            }
+            setAllFixValued() {
                 var self = this;
                 self.monthlyEasyFormula().selectedRuleCodeEasySettings('0');
                 self.dailyMonthlyEasyFormula().selectedRuleCodeEasySettings('0');
                 self.dailyEasyFormula().selectedRuleCodeEasySettings('0');
                 self.hourlyEasyFormula().selectedRuleCodeEasySettings('0');
-            };
-            CScreen.prototype.setAllDetail = function () {
+            }
+            setAllDetail() {
                 var self = this;
                 self.monthlyEasyFormula().selectedRuleCodeEasySettings('1');
                 self.dailyMonthlyEasyFormula().selectedRuleCodeEasySettings('1');
                 self.dailyEasyFormula().selectedRuleCodeEasySettings('1');
                 self.hourlyEasyFormula().selectedRuleCodeEasySettings('1');
-            };
-            CScreen.prototype.pasteValue = function (targetString) {
+            }
+            pasteValue(targetString) {
                 var self = this;
-                var currentTextArea = self.formulaManualContent().textArea();
+                let currentTextArea = self.formulaManualContent().textArea();
                 self.formulaManualContent().textArea(self.formulaManualContent().insertString(currentTextArea, targetString, $("#input-text")[0].selectionStart));
-            };
-            return CScreen;
-        }());
+            }
+        }
         qmm017.CScreen = CScreen;
-        var EasyFormula = (function () {
-            function EasyFormula(mode, root) {
+        class EasyFormula {
+            constructor(mode, root) {
                 var self = this;
                 self.startYm = ko.observable(root().startYearMonth());
                 root().startYearMonth.subscribe(function (yearMonth) {
@@ -153,30 +152,29 @@ var nts;
                     self.historyId(historyId);
                 });
             }
-            EasyFormula.prototype.openDialogL = function () {
+            openDialogL() {
                 var self = this;
                 qmm017.service.getFormulaEasyDetail(self.formulaCode(), self.historyId(), self.easyFormulaCode())
                     .done(function (formulaEasyDetail) {
                     self.easyFormulaDetail(formulaEasyDetail);
-                    var param = {
+                    let param = {
                         isUpdate: (self.easyFormulaName() !== '' && self.easyFormulaName() !== null),
                         dirtyData: self.easyFormulaDetail(),
                         startYm: self.startYm()
                     };
                     nts.uk.ui.windows.setShared('paramFromScreenC', param);
-                    nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(function () {
+                    nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(() => {
                         if (nts.uk.ui.windows.getShared('easyFormulaDetail')) {
                             self.easyFormulaDetail(nts.uk.ui.windows.getShared('easyFormulaDetail'));
                             self.easyFormulaName(self.easyFormulaDetail().easyFormulaName);
                         }
                     });
                 });
-            };
-            return EasyFormula;
-        }());
+            }
+        }
         qmm017.EasyFormula = EasyFormula;
-        var ComboBox = (function () {
-            function ComboBox(data, isEnable, isEditable) {
+        class ComboBox {
+            constructor(data, isEnable, isEditable) {
                 var self = this;
                 self.itemList = ko.observableArray(data);
                 self.itemName = ko.observable('');
@@ -185,8 +183,7 @@ var nts;
                 self.isEnable = ko.observable(isEnable);
                 self.isEditable = ko.observable(isEditable);
             }
-            return ComboBox;
-        }());
+        }
         qmm017.ComboBox = ComboBox;
         function showError(event) {
             var self = this;
@@ -202,8 +199,8 @@ var nts;
                 $("#error-containner").show();
             }
         }
-        var ItemModelTextEditor = (function () {
-            function ItemModelTextEditor(code, name, description) {
+        class ItemModelTextEditor {
+            constructor(code, name, description) {
                 this.code = ko.observable(code);
                 this.name = ko.observable(name);
                 this.description = ko.observable(description);
@@ -211,11 +208,11 @@ var nts;
                     return this.code() + "  " + this.name();
                 }, this).extend({ deferred: true });
             }
-            return ItemModelTextEditor;
-        }());
+        }
         qmm017.ItemModelTextEditor = ItemModelTextEditor;
-        var TextEditor = (function () {
-            function TextEditor() {
+        class TextEditor {
+            constructor() {
+                //list error messsage
                 this.ERROR_BRACKET = "カッコ()の数に誤りがあります。";
                 this.ERROR_CONSECUTIVELY = "構文に誤りがあります。{0}と{1}が連続して入力されています。";
                 this.ERROR_MUST_CONTAIN_ATSIGN = "「{0}」は利用できない文字列です。";
@@ -231,6 +228,7 @@ var nts;
                 this.listSpecialChar = ["+", "-", "×", "÷", "＾", "（", "）", "＜", "＞", "≦", "≧", "＝", "≠"];
                 this.listOperatorChar = ["+", "-", "×", "÷"];
                 var self = this;
+                //----------------------------------------------------------------------------
                 self.autoComplete = ko.observableArray([
                     new ItemModelTextEditor('001', '基本給', "description 1"),
                     new ItemModelTextEditor('150', '役職手当', "description 2"),
@@ -266,7 +264,7 @@ var nts;
                 }, self);
                 self.contentValue = ko.observable("");
                 $("#error-containner").hide();
-                $(document).on("keyup", "#input-text", function (event) {
+                $(document).on("keyup", "#input-text", (event) => {
                     if (!event.shiftKey && event.keyCode === 16 && event.key === "@") {
                         return;
                     }
@@ -284,15 +282,15 @@ var nts;
                         $("#auto-complete-containner").hide();
                     }
                 });
-                $(document).on("mouseleave", "#error-containner", function (event) {
+                $(document).on("mouseleave", "#error-containner", (event) => {
                     $("#error-containner").hide();
                 });
-                $(document).on("click", "#input-area", function (event) {
+                $(document).on("click", "#input-area", (event) => {
                     $("#error-containner").hide();
                     self.observeError($(".error-char"));
                 });
             }
-            TextEditor.prototype.observeError = function (subjectTags) {
+            observeError(subjectTags) {
                 var currentClickedTag = _.findLast(subjectTags, function (tag) {
                     var x = $(tag).offset();
                     return x.top <= event.pageY && x.left <= event.pageX
@@ -303,13 +301,13 @@ var nts;
                     $(currentClickedTag).click({ pageX: event.pageX, pageY: event.pageY }, showError);
                     $(currentClickedTag).click();
                 }
-            };
-            TextEditor.prototype.validateBracket = function (bracketTags) {
+            }
+            validateBracket(bracketTags) {
                 var self = this;
-                var openBracket = _.remove(bracketTags, function (n) {
+                let openBracket = _.remove(bracketTags, function (n) {
                     return $(n).html() === "\（";
                 });
-                var closeBracket = _.remove(bracketTags, function (n) {
+                let closeBracket = _.remove(bracketTags, function (n) {
                     return $(n).html() === "\）";
                 });
                 if (closeBracket.length === 0) {
@@ -336,8 +334,8 @@ var nts;
                     self.markError($(openError), self.ERROR_BRACKET, []);
                     self.markError($(closeBracket), self.ERROR_BRACKET, []);
                 }
-            };
-            TextEditor.prototype.validateConsecutively = function (specialChar) {
+            }
+            validateConsecutively(specialChar) {
                 var self = this;
                 var singleSpecial = {
                     "+": "+",
@@ -353,7 +351,7 @@ var nts;
                     "≧": "≧",
                     "＠": "＠"
                 };
-                for (var i = 0; i < specialChar.length; i++) {
+                for (let i = 0; i < specialChar.length; i++) {
                     var $data = $(specialChar[i]);
                     var charCount = parseInt($data.attr("id").split("-")[1]);
                     var char = $data.text();
@@ -365,56 +363,56 @@ var nts;
                         }
                     }
                 }
-            };
-            TextEditor.prototype.validateContainAtSign = function (tagsJapaneseChar) {
+            }
+            validateContainAtSign(tagsJapaneseChar) {
                 var self = this;
-                for (var tagOrder = 0; tagOrder < tagsJapaneseChar.length; tagOrder++) {
+                for (let tagOrder = 0; tagOrder < tagsJapaneseChar.length; tagOrder++) {
                     if (tagsJapaneseChar[tagOrder].innerText.indexOf('＠') === -1) {
-                        var contentToChars = tagsJapaneseChar[tagOrder].innerText.split('');
+                        let contentToChars = tagsJapaneseChar[tagOrder].innerText.split('');
                         if (contentToChars[0] !== '”' || contentToChars[contentToChars.length - 1] !== '”') {
                             self.markError($(tagsJapaneseChar[tagOrder]), self.ERROR_MUST_CONTAIN_ATSIGN, [tagsJapaneseChar[tagOrder].innerText]);
                         }
                     }
                 }
-            };
-            TextEditor.prototype.validateBeforeAtSign = function (tagsJapaneseChar) {
+            }
+            validateBeforeAtSign(tagsJapaneseChar) {
                 var self = this;
-                var lstSyntaxBeforeAtSign = ["支給", "控除", "勤怠", "会社単価", "個人単価", "関数", "変数", "個人", "計算式", "賃金TBL"];
-                for (var tagOrder = 0; tagOrder < tagsJapaneseChar.length; tagOrder++) {
+                let lstSyntaxBeforeAtSign = ["支給", "控除", "勤怠", "会社単価", "個人単価", "関数", "変数", "個人", "計算式", "賃金TBL"];
+                for (let tagOrder = 0; tagOrder < tagsJapaneseChar.length; tagOrder++) {
                     if (tagsJapaneseChar[tagOrder].innerText.indexOf('＠') !== -1) {
-                        var splitByAtSign = tagsJapaneseChar[tagOrder].innerText.split('＠');
+                        let splitByAtSign = tagsJapaneseChar[tagOrder].innerText.split('＠');
                         if (!self.checkEqualInArray(splitByAtSign[0], lstSyntaxBeforeAtSign)) {
                             self.markError($(tagsJapaneseChar[tagOrder]), self.ERROR_BEFORE_ATSIGN, [splitByAtSign[0]]);
                         }
                     }
                 }
-            };
-            TextEditor.prototype.validateDivideZero = function (tagsSpecialChar) {
+            }
+            validateDivideZero(tagsSpecialChar) {
                 var self = this;
-                for (var tagOrder = 0; tagOrder < tagsSpecialChar.length; tagOrder++) {
+                for (let tagOrder = 0; tagOrder < tagsSpecialChar.length; tagOrder++) {
                     if (tagsSpecialChar[tagOrder].innerText === '÷') {
-                        var nextTag = $(tagsSpecialChar[tagOrder]).next();
+                        let nextTag = $(tagsSpecialChar[tagOrder]).next();
                         if (nextTag) {
-                            var contentNextTag = nextTag[0].innerText;
+                            let contentNextTag = nextTag[0].innerText;
                             if (contentNextTag.trim() === '0') {
                                 self.markError($(tagsSpecialChar[tagOrder]), self.ERROR_DIVIDE_ZERO, []);
                             }
                         }
                     }
                 }
-            };
-            TextEditor.prototype.validateEmptyInput = function () {
+            }
+            validateEmptyInput() {
                 var self = this;
-                var contentInput = $("#input-text").val();
+                let contentInput = $("#input-text").val();
                 if (!contentInput || contentInput.trim() === '') {
-                    var html = "<span class='editor-line'><span id='span-1' class='error-char' message='" + self.ERROR_EMPTY_INPUT + "'>  </span></span>";
+                    let html = "<span class='editor-line'><span id='span-1' class='error-char' message='" + self.ERROR_EMPTY_INPUT + "'>  </span></span>";
                     self.contentValue(html);
                 }
-            };
-            TextEditor.prototype.validateNestedMoreThan10 = function (tagsSpecialChar) {
+            }
+            validateNestedMoreThan10(tagsSpecialChar) {
                 var self = this;
                 var countChar = 0;
-                for (var tagOrder = 0; tagOrder < tagsSpecialChar.length; tagOrder++) {
+                for (let tagOrder = 0; tagOrder < tagsSpecialChar.length; tagOrder++) {
                     if (tagsSpecialChar[tagOrder].innerText === '（') {
                         countChar++;
                         if (countChar > 10) {
@@ -425,21 +423,24 @@ var nts;
                         countChar = 0;
                     }
                 }
-            };
-            TextEditor.prototype.validateDigitsAfterDecimal = function (tagsUnknownChar) {
+            }
+            validateDigitsAfterDecimal(tagsUnknownChar) {
                 var self = this;
-                for (var tagOrder = 0; tagOrder < tagsUnknownChar.length; tagOrder++) {
+                for (let tagOrder = 0; tagOrder < tagsUnknownChar.length; tagOrder++) {
                     if (tagsUnknownChar[tagOrder].innerText >= '0' && tagsUnknownChar[tagOrder].innerText <= '9' && tagsUnknownChar[tagOrder].innerText.indexOf('.') !== -1) {
-                        var splitContentTag = tagsUnknownChar[tagOrder].innerText.split('.');
+                        let splitContentTag = tagsUnknownChar[tagOrder].innerText.split('.');
                         if (splitContentTag[1].length > 5) {
                             self.markError($(tagsUnknownChar[tagOrder]), self.ERROR_DIGITS_AFTER_DECIMAL, [tagsUnknownChar[tagOrder].innerText]);
                         }
                     }
                 }
-            };
-            TextEditor.prototype.validateNumberOfParam = function (treeObject) {
-                var functionName = treeObject.value.trim();
-                var numberOfParam = treeObject.children.length;
+            }
+            // return 2 if too much param
+            // return 1 if not enough param
+            // return 0 if OK
+            validateNumberOfParam(treeObject) {
+                let functionName = treeObject.value.trim();
+                let numberOfParam = treeObject.children.length;
                 if (functionName === "関数＠条件式") {
                     if (numberOfParam === 3)
                         return 1;
@@ -537,10 +538,10 @@ var nts;
                         return 0;
                 }
                 return 1;
-            };
-            TextEditor.prototype.validateTypeOfParams = function (treeObject) {
-                var functionName = treeObject.value.trim();
-                var param = treeObject.children;
+            }
+            validateTypeOfParams(treeObject) {
+                let functionName = treeObject.value.trim();
+                let param = treeObject.children;
                 if (functionName === "関数＠条件式" && param.length == 3) {
                 }
                 else if (functionName === "関数＠かつ" && param.length >= 2) {
@@ -565,14 +566,14 @@ var nts;
                 }
                 else if (functionName === "関数＠月抽出" && param.length == 1) {
                 }
-            };
-            TextEditor.prototype.validateFunction = function (allElementTag) {
+            }
+            validateFunction(allElementTag) {
                 var self = this;
                 var inputContent = [];
                 var inputTags = [];
                 var splitContent = "";
                 var splitTags = [];
-                for (var tagOrder = 0; tagOrder < allElementTag.length; tagOrder++) {
+                for (let tagOrder = 0; tagOrder < allElementTag.length; tagOrder++) {
                     if (!self.checkEqualInArray(allElementTag[tagOrder].innerText, self.listOperatorChar)) {
                         splitContent += allElementTag[tagOrder].innerText;
                         splitTags.push(allElementTag[tagOrder]);
@@ -585,18 +586,18 @@ var nts;
                     }
                 }
                 self.validateContentFunction(inputContent[0]);
-            };
-            TextEditor.prototype.validateContentFunction = function (contentFunction) {
+            }
+            validateContentFunction(contentFunction) {
                 var self = this;
-                var treeFunction = nts.uk.util.createTreeFromString(contentFunction, "（", "）", ",");
+                let treeFunction = nts.uk.util.createTreeFromString(contentFunction, "（", "）", ",");
                 self.validateTreeFunction(treeFunction[0]);
-            };
-            TextEditor.prototype.validateTreeFunction = function (treeObject) {
+            }
+            validateTreeFunction(treeObject) {
                 var self = this;
-                var params = treeObject.children;
+                let params = treeObject.children;
                 if (params.length > 0) {
                     if (self.validateNumberOfParam(treeObject) === 1) {
-                        for (var i = 0; i < params.length; i++) {
+                        for (let i = 0; i < params.length; i++) {
                             self.validateTreeFunction(params[i]);
                         }
                     }
@@ -607,58 +608,59 @@ var nts;
                         self.markErrorTreeObject(treeObject, self.ERROR_NOT_ENOUGH_PARAM);
                     }
                 }
-            };
-            TextEditor.prototype.markErrorTreeObject = function (treeObject, message) {
+            }
+            markErrorTreeObject(treeObject, message) {
                 var self = this;
-                var indexTree = treeObject.index;
-                var specialCharTags = $(".special-char");
+                let indexTree = treeObject.index;
+                let specialCharTags = $(".special-char");
                 var countOpenBrackets = 0;
-                for (var orderTag = 0; orderTag < specialCharTags.length; orderTag++) {
+                for (let orderTag = 0; orderTag < specialCharTags.length; orderTag++) {
                     if (specialCharTags[orderTag].innerText === '（') {
                         countOpenBrackets += 1;
                     }
+                    //if found the bracket of the function
                     if (countOpenBrackets === indexTree) {
-                        var functionNameTag = specialCharTags[orderTag].previousSibling;
+                        let functionNameTag = specialCharTags[orderTag].previousSibling;
                         self.markError($(functionNameTag), message, [functionNameTag.innerText]);
                         return true;
                     }
                 }
                 return true;
-            };
-            TextEditor.prototype.checkEqualInArray = function (target, array) {
-                for (var count = 0; count < array.length; count++) {
+            }
+            checkEqualInArray(target, array) {
+                for (let count = 0; count < array.length; count++) {
                     if (target === array[count]) {
                         return true;
                     }
                 }
                 return false;
-            };
-            TextEditor.prototype.checkContainsInArray = function (target, array) {
-                for (var count = 0; count < array.length; count++) {
+            }
+            checkContainsInArray(target, array) {
+                for (let count = 0; count < array.length; count++) {
                     if (target.indexOf(array[count]) !== -1) {
                         return true;
                     }
                 }
                 return false;
-            };
-            TextEditor.prototype.markError = function (tag, message, param) {
+            }
+            markError(tag, message, param) {
                 var errorContent = message;
                 if (tag) {
                     if (param && param.length > 0) {
-                        for (var paramOrder = 0; paramOrder < param.length; paramOrder++) {
+                        for (let paramOrder = 0; paramOrder < param.length; paramOrder++) {
                             errorContent = errorContent.replace("{" + paramOrder + "}", param[paramOrder]);
                         }
                     }
                     tag.addClass("error-char").attr("message", errorContent);
                 }
-            };
-            TextEditor.prototype.insertString = function (original, sub, position) {
+            }
+            insertString(original, sub, position) {
                 if (original.length === position) {
                     return original + sub;
                 }
                 return original.substr(0, position) + sub + original.substr(position);
-            };
-            TextEditor.prototype.testError = function () {
+            }
+            testError() {
                 var self = this;
                 var value = $("#input-text").val();
                 var count = 1;
@@ -722,8 +724,8 @@ var nts;
                 self.validateDigitsAfterDecimal($(".unknown-char"));
                 self.validateFunction($(".element-content"));
                 self.contentValue($("#input-content-area").html());
-            };
-            TextEditor.prototype.getCurrentPosition = function (position) {
+            }
+            getCurrentPosition(position) {
                 var uiPosition = {};
                 var $lines = $("#input-content-area").find(".editor-line");
                 var index = 0;
@@ -740,15 +742,15 @@ var nts;
                     }
                 });
                 return uiPosition;
-            };
-            TextEditor.prototype.checkAlphaOrEmpty = function (char) {
+            }
+            checkAlphaOrEmpty(char) {
                 var speChar = new RegExp(/[~`!#$×%\（）＜＞≦≧＝≠^＾÷&*+=\-\[\]\\;\',/{}|\\\":<>\?\(\)]/g);
                 return !speChar.test(char) || char === " " || char === undefined;
-            };
-            TextEditor.prototype.checkJapanese = function (char) {
+            }
+            checkJapanese(char) {
                 return !nts.uk.text.allHalf(char);
-            };
-            TextEditor.prototype.countNeighbor = function (index, array, countNext, countPrev) {
+            }
+            countNeighbor(index, array, countNext, countPrev) {
                 var self = this;
                 var current = _.find(array, function (a) { return $(a).attr("id") === "span-" + (index); });
                 var previous = _.find(array, function (a) { return $(a).attr("id") === "span-" + (index - 1); });
@@ -771,21 +773,19 @@ var nts;
                     }
                 }
                 return previousCount + nextCount;
-            };
-            TextEditor.prototype.countPreviousElement = function (element, x, index) {
+            }
+            countPreviousElement(element, x, index) {
                 var x2 = element.slice(0, index);
                 return _.filter(x2, function (d) {
                     return d === x;
                 }).length;
-            };
-            TextEditor.prototype.toArrayChar = function (element) {
+            }
+            toArrayChar(element) {
                 return _.map(element, function (data) {
                     return $(data).html();
                 });
-            };
-            return TextEditor;
-        }());
+            }
+        }
         qmm017.TextEditor = TextEditor;
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm017.c.vm.js.map
