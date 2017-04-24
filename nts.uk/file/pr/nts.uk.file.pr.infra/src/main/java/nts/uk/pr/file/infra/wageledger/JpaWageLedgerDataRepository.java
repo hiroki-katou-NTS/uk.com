@@ -30,6 +30,7 @@ import nts.uk.ctx.basic.infra.entity.report.PogmtPersonDepRgl;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItem;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemPK;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentDetail;
+import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentDetailPK;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItem;
@@ -233,14 +234,15 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		userMap.forEach((userId, userData) -> {
 			Map<QcamtItem, List<Object[]>> dataMaps = userData.stream()
 					.collect(Collectors.groupingBy(data -> (QcamtItem) data[1]));
-			outputSettingDataList.addAll(this.filterDataByOutputSetting(companyCode, dataMaps, outputSetting, aggregateItems));
+			outputSettingDataList.addAll(this.filterDataByOutputSetting(companyCode, dataMaps, outputSetting,
+					aggregateItems, userId));
 		});
 		
 		return new ResultData(masterResultList, outputSettingDataList);
 	}
 	
 	private List<Object[]> filterDataByOutputSetting(String companyCode, Map<QcamtItem, List<Object[]>> dataMaps,
-			WLOutputSetting outputSetting, List<WLAggregateItem> aggregateItems) {
+			WLOutputSetting outputSetting, List<WLAggregateItem> aggregateItems, String persionId) {
 		List<Object[]> results = new ArrayList<>();
 
 		outputSetting.getCategorySettings().forEach(category -> {
@@ -287,6 +289,8 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 						
 						// Calculate aggregate item value.
 						double aggregateValue = monthData.stream()
+								.filter(dataItem -> ((QstdtPaymentDetail) dataItem[0])
+										.qstdtPaymentDetailPK.payBonusAttribute == category.getPaymentType().value)
 								.mapToDouble(dataItem -> ((QstdtPaymentDetail) dataItem[0]).value.doubleValue())
 								.sum();
 						aggregateValueMap.put(yearMonth, aggregateValue);
@@ -294,15 +298,18 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 				});
 				
 				// Check if none data for aggregate item.
-				if (CollectionUtil.isEmpty(aggregateItems)) {
+				if (aggregateValueMap.isEmpty()) {
 					Object[] aggreateItemData = new Object[2];
 					QcamtItem masterItem = masterItemList.get(0);
-					masterItem.qcamtItemPK.itemCd = aggregateItem.getSubject().getCode().v();
+					masterItem.qcamtItemPK.itemCd = aggregateItem.getSubject().getCode().v() + "_A";
 					masterItem.itemName = aggregateItem.getName().v();
 					aggreateItemData[1] = masterItem;
-					QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) dataMaps.get(masterItemList.get(0)).get(0)[0];
+					QstdtPaymentDetail paymentDetail = new QstdtPaymentDetail();
+					paymentDetail.qstdtPaymentDetailPK = new QstdtPaymentDetailPK();
 					paymentDetail.qstdtPaymentDetailPK.categoryATR = category.getCategory().value;
 					paymentDetail.qstdtPaymentDetailPK.companyCode = companyCode;
+					paymentDetail.qstdtPaymentDetailPK.personId = persionId;
+					paymentDetail.qstdtPaymentDetailPK.payBonusAttribute = category.getPaymentType().value;
 					paymentDetail.qstdtPaymentDetailPK.itemCode = aggregateItem.getSubject().getCode().v();
 					paymentDetail.value = new BigDecimal(0);
 					aggreateItemData[0] = paymentDetail;
@@ -315,12 +322,15 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 					// Create new data object.
 					Object[] aggreateItemData = new Object[2];
 					QcamtItem masterItem = masterItemList.get(0);
-					masterItem.qcamtItemPK.itemCd = aggregateItem.getSubject().getCode().v();
+					masterItem.qcamtItemPK.itemCd = aggregateItem.getSubject().getCode().v() + "_A";
 					masterItem.itemName = aggregateItem.getName().v();
 					aggreateItemData[1] = masterItem;
-					QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) dataMaps.get(masterItemList.get(0)).get(0)[0];
+					QstdtPaymentDetail paymentDetail = new QstdtPaymentDetail();
+					paymentDetail.qstdtPaymentDetailPK = new QstdtPaymentDetailPK();
 					paymentDetail.qstdtPaymentDetailPK.categoryATR = category.getCategory().value;
 					paymentDetail.qstdtPaymentDetailPK.companyCode = companyCode;
+					paymentDetail.qstdtPaymentDetailPK.personId = persionId;
+					paymentDetail.qstdtPaymentDetailPK.payBonusAttribute = category.getPaymentType().value;
 					paymentDetail.qstdtPaymentDetailPK.itemCode = aggregateItem.getSubject().getCode().v();
 					paymentDetail.qstdtPaymentDetailPK.processingYM = yearMonth;
 					paymentDetail.value = new BigDecimal(value);

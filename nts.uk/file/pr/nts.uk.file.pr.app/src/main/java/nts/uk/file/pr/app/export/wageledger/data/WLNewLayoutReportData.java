@@ -28,12 +28,6 @@ public class WLNewLayoutReportData {
 	/** The bonus total data. */
 	public TotalData bonusTotalData;
 	
-	/** The position money before year end. */
-	public Long positionMoneyBeforeYearEnd;
-	
-	/** The other money before year end. */
-	public Long otherMoneyBeforeYearEnd;
-	
 	/** The salary payment items. */
 	public List<ReportItemDto> salaryPaymentItems;
 	

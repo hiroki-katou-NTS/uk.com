@@ -163,8 +163,8 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 				.salaryAttendanceItems(this.fakeReportItems())
 				.salaryPaymentItems(this.fakeReportItems())
 				.salaryDeductionItems(this.fakeReportItems())
-				.otherMoneyBeforeYearEnd((long)(Math.random() * 2000000))
-				.positionMoneyBeforeYearEnd((long)(Math.random() * 2000000))
+//				.otherMoneyBeforeYearEnd((long)(Math.random() * 2000000))
+//				.positionMoneyBeforeYearEnd((long)(Math.random() * 2000000))
 				.bonusPaymentDateMap(this.fakeDateMap(5))
 				.salaryPaymentDateMap(this.fakeDateMap(12))
 				.build();
