@@ -1,10 +1,10 @@
 module qpp011.d {
 
     export class ScreenModel {
-        //gridlist
+        //Gridlist
         D_LST_001_Data: any = ko.observable([]);
         columns_D_LST_001: any;
-        D_LST_001_selectedValue: any = ko.observableArray([]);;
+        D_LST_001_selectedValue: any = ko.observableArray([]);
         D_LST_001_selectedResiTaxCode: KnockoutObservable<any> = ko.observable();
         D_LST_001_selectedRegisteredName: KnockoutObservable<any> = ko.observable();
         currentObject: any = ko.observable();
@@ -14,8 +14,7 @@ module qpp011.d {
         ListLocation: any;
         ResidentialData: any = ko.observable([]);
         currentIndex: any = 0;
-        //End Data Variable
-        //value 
+        //Value 
         taxPayRollMoney: any = ko.observable();
         taxBonusMoney: any = ko.observable();
         taxOverDueMoney: any = ko.observable();
@@ -29,23 +28,26 @@ module qpp011.d {
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
         enable: KnockoutObservable<boolean>;
-        //search box 
+        //Search box 
         yearInJapanEmpire_LBL_012: any;
         D_LBL_018_Year_Month: any;
         D_LBL_019_yearInJapanEmpire: any;
-        //datepicker
+        //Datepicker
         date_D_INP_007: KnockoutObservable<Date> = ko.observable(new Date());;
-        //dirty check
+        //Dirty check
         dirty: nts.uk.ui.DirtyChecker;
         notLoopAlert: KnockoutObservable<boolean>;
+        initScreen: boolean;
         constructor() {
             var self = this;
             self.currentTax = ko.observable(new service.model.residentialTax(null, null, null, null, null, null, null, null, null, null, null, null));
+            self.initScreen = true;
+            self.dirty = new nts.uk.ui.DirtyChecker(self.currentObject);
             self.notLoopAlert = ko.observable(true);
             self.yearInJapanEmpire_LBL_012 = ko.computed(function() {
                 return "(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.date_D_INP_007()).format("YYYY/MM")).toString() + ")";
             });
-            //gridlist data                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+            //Gridlist data                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
             self.columns_D_LST_001 = [
                 { headerText: "position", key: "position", width: "30px", dataType: "string", hidden: true },
                 { headerText: "code", key: "code", width: "30px", dataType: "string", hidden: true },
@@ -55,22 +57,18 @@ module qpp011.d {
             function registeredNameAndCode(val, row) {
                 return row.resiTaxCode + " " + row.registeredName;
             }
-
-            //
-            if (!self.notLoopAlert()) {
-                self.notLoopAlert(true);
-                return;
-            }
             //Set Tree Data 
             service.findAllResidential().done(function(data: Array<any>) {
                 service.getlistLocation().done(function(listLocation: Array<any>) {
+
                     self.ResidentialData(data);
                     self.ListLocation = listLocation;
                     let ArrayData = CreateDataArray(listLocation, data);
                     self.D_LST_001_Data(ArrayData);
                     BindTreeGrid("#D_LST_001", self.D_LST_001_Data(), self.D_LST_001_selectedValue);
-                    if (data.length > 0)
+                    if (data.length > 0) {
                         self.D_LST_001_selectedValue([data[0].resiTaxCode]);
+                    }
                 }).fail(function(res) {
                     // Alert message
                     alert(res.message);
@@ -88,10 +86,8 @@ module qpp011.d {
                     let positionIndex = CreateTreeBranchs(Object.prefectureCode);
                     if (positionIndex) {
                         self.TreeArray.push(new TreeItem(Object.resiTaxCode, Object.resiTaxName, positionIndex, Object.resiTaxCode, Object.resiTaxCode + " " + Object.registeredName, 'Item'));
-                        // self.currentIndex++;
                     }
                 }
-
                 return self.TreeArray;
             }
             function CreateTreeBranchs(prefectureCode) {
@@ -129,6 +125,7 @@ module qpp011.d {
                 }
                 return PositionIndex;
             }
+            //Add Tree Root to Array
             function AddTreeRootToArray(prefectureCode, regionCode) {
                 let positionIndex = self.currentIndex;
                 let returnValue;
@@ -136,16 +133,17 @@ module qpp011.d {
                 if (!root) {
                     root = _.find(self.ListLocation, { 'regionCode': regionCode });
                     if (root) {
-                        let NewRoot = new TreeItem(root.regionCode, root.regionName, -1, positionIndex + 1, root.regionName, 'Root');
+                        let NewRoot = new TreeItem(root["regionCode"], root["regionName"], -1, positionIndex + 1, root["regionName"], 'Root');
                         self.TreeArray.push(NewRoot);
                         self.currentIndex++;
                         returnValue = self.currentIndex;
                     }
                 } else {
-                    returnValue = root.position;
+                    returnValue = root["position"];
                 }
                 return returnValue;
             }
+            //Create Branch
             function CreateBranch(parrentIndex, prefectureCode) {
                 if (parrentIndex) {
                     let firstBranch = _.find(self.TreeArray, { 'code': prefectureCode, 'typeBranch': 'firstBranch' });
@@ -158,21 +156,27 @@ module qpp011.d {
                                 break;
                         }
                         if (firstBranch) {
-                            let NewBranch = new TreeItem(firstBranch.prefectureCode, firstBranch.prefectureName, parrentIndex, positionIndex + 1, firstBranch.prefectureName, 'firstBranch');
+                            let NewBranch = new TreeItem(firstBranch["prefectureCode"], firstBranch["prefectureName"], parrentIndex, positionIndex + 1, firstBranch["prefectureName"], 'firstBranch');
                             self.TreeArray.push(NewBranch);
                             self.currentIndex++;
                             returnValue = self.currentIndex;
                         }
                     } else {
-                        returnValue = firstBranch.position;
+                        returnValue = firstBranch["position"];
                     }
                     return returnValue;
                 }
             }
             //End Create Tree Data
-            //end set tree data
+            //End set tree data
             let D_LST_001 = $("#D_LST_001");
             self.D_LST_001_selectedValue.subscribe(function(newValue) {
+                if (self.dirty.isDirty()) {
+                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                    }).ifCancel(function() {
+                    });
+                } else {
+                }
                 let selectedRows = _.map(D_LST_001.igTreeGridSelection("selectedRows"), function(row) {
                     if (row != undefined)
                         return row.id;
@@ -183,58 +187,36 @@ module qpp011.d {
                         D_LST_001.igTreeGridSelection("selectRowById", id);
                     });
                 }
-                var item = _.find(self.D_LST_001_Data(), function(obj) {
+                var item: TreeItem = _.find(self.D_LST_001_Data(), function(obj: TreeItem) {
                     return (obj.position == self.D_LST_001_selectedValue() && obj.typeBranch == "Item");
                 });
                 if (item != undefined) {
-                    self.D_LST_001_selectedResiTaxCode(item.position);
-                    self.D_LST_001_selectedRegisteredName(item.displayText);
-                    GetDataFormSelectedRows(item.position);
+                    GetDataFormSelectedRows(item);
                 } else {
-                    self.D_LST_001_selectedResiTaxCode("");
-                    self.D_LST_001_selectedRegisteredName("");
                     GetDataFormSelectedRows(null);
                 }
             });
 
-
-
-            //self.yearInJapanEmpire_LBL_012 = ko.observable("(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.date_D_INP_007()).format("YYYY/MM")).toString() + ")");
             self.currentObject.subscribe(function(newValue) {
-                if (self.dirty.isDirty()) {
-                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
-                        self.taxPayRollMoney(newValue ? newValue.taxPayRollMoney : null);
-                        self.taxBonusMoney(newValue ? newValue.taxBonusMoney : null)
-                        self.taxOverDueMoney(newValue ? newValue.taxOverDueMoney : null);
-                        self.taxDemandChargeMoyney(newValue ? newValue.taxDemandChargeMoyney : null);
-                        self.address(newValue ? newValue.address : null);
-                        self.headcount(newValue ? newValue.headcount : null);
-                        self.retirementBonusAmout(newValue ? newValue.retirementBonusAmout : null);
-                        self.cityTaxMoney(newValue ? newValue.cityTaxMoney : null);
-                        self.prefectureTaxMoney(newValue ? newValue.prefectureTaxMoney : null);
-                        self.date_D_INP_007(newValue ? new Date(newValue.dueDate) : new Date());
-                    }).ifNo(function() {
-                        self.clearError();
-                        self.notLoopAlert(false);
-                        self.dirty.reset();
-                    });
-                } else {
-                    self.taxPayRollMoney(newValue ? newValue.taxPayRollMoney : null);
-                    self.taxBonusMoney(newValue ? newValue.taxBonusMoney : null)
-                    self.taxOverDueMoney(newValue ? newValue.taxOverDueMoney : null);
-                    self.taxDemandChargeMoyney(newValue ? newValue.taxDemandChargeMoyney : null);
-                    self.address(newValue ? newValue.address : null);
-                    self.headcount(newValue ? newValue.headcount : null);
-                    self.retirementBonusAmout(newValue ? newValue.retirementBonusAmout : null);
-                    self.cityTaxMoney(newValue ? newValue.cityTaxMoney : null);
-                    self.prefectureTaxMoney(newValue ? newValue.prefectureTaxMoney : null);
-                    self.date_D_INP_007(newValue ? new Date(newValue.dueDate) : new Date());
-                }
-
-
+                var item: TreeItem = _.find(self.D_LST_001_Data(), function(obj: TreeItem) {
+                    return (obj.position == self.D_LST_001_selectedValue() && obj.typeBranch == "Item");
+                });
+                self.initScreen = false;
+                self.taxPayRollMoney(newValue ? newValue.taxPayRollMoney : null);
+                self.taxBonusMoney(newValue ? newValue.taxBonusMoney : null)
+                self.taxOverDueMoney(newValue ? newValue.taxOverDueMoney : null);
+                self.taxDemandChargeMoyney(newValue ? newValue.taxDemandChargeMoyney : null);
+                self.address(newValue ? newValue.address : null);
+                self.headcount(newValue ? newValue.headcount : null);
+                self.retirementBonusAmout(newValue ? newValue.retirementBonusAmout : null);
+                self.cityTaxMoney(newValue ? newValue.cityTaxMoney : null);
+                self.prefectureTaxMoney(newValue ? newValue.prefectureTaxMoney : null);
+                self.date_D_INP_007(newValue ? new Date(newValue.dueDate) : new Date());
+                self.D_LST_001_selectedResiTaxCode(item.position);
+                self.D_LST_001_selectedRegisteredName(item.displayText);
+                self.dirty.reset();
             });
             //Switch
-
             self.D_LBL_018_Year_Month = nts.uk.sessionStorage.getItemAndRemove("TargetDate").value;
             self.D_LBL_019_yearInJapanEmpire = ko.observable();
             self.D_LBL_019_yearInJapanEmpire("(" + nts.uk.time.yearmonthInJapanEmpire(self.D_LBL_018_Year_Month).toString() + ")");
@@ -245,9 +227,7 @@ module qpp011.d {
                 { code: '2', name: 'Item2' }
             ]);
             self.selectedRuleCode = ko.observable(1);
-
-
-
+            //Bind Tree Grid
             function BindTreeGrid(gridID, Data, selectedValue) {
                 $(gridID).igTreeGrid({
                     width: "280px",
@@ -262,53 +242,56 @@ module qpp011.d {
                         {
                             name: "Selection",
                             mode: "row",
-                            activeRowChanged: function(evt: any, ui: any) {
+                            rowSelectionChanged: function(evt: any, ui: any) {
                                 var selectedRows: any = ui.row;
                                 selectedValue([selectedRows.id]);
                             }
                         }]
                 });
-                $(gridID).setupSearchScroll("igTreeGrid");
+                //                $(gridID).setupSearchScroll("igTreeGrid");
+
+                //                $(document).delegate(gridID, "igtreegridselectionactiverowchanging", function(evt, ui) {
+                //                    if (self.dirty.isDirty()) {
+                //                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                //
+                //                        }).ifCancel(function() {
+                //                            return false;
+                //                        });
+                //                    }
+                //                });
             }
 
-            function GetDataFormSelectedRows(selectedResiTaxCode) {
-                let TargetDate = self.D_LBL_018_Year_Month = self.D_LBL_018_Year_Month.replace("/", "");
-                service.findresidentialTax(selectedResiTaxCode, TargetDate).done(function(data: any) {
-                    self.currentObject(data)
-                }).fail(function(res) {
-                    // Alert message
-                    alert("対象データがありません。");
-                })
+            function GetDataFormSelectedRows(item: TreeItem) {
+                if (item) {
+                    let TargetDate = self.D_LBL_018_Year_Month = self.D_LBL_018_Year_Month.replace("/", "");
+                    service.findresidentialTax(item.position, TargetDate).done(function(data: any) {
+                        self.currentObject(data);
+                    }).fail(function(res) {
+                        // Alert message
+                        alert("対象データがありません。");
+                    })
+                }
             }
 
         }
+
         UpdateResidentialTax(selectedResiTaxCode) {
             let self = this;
             let TargetDate = self.D_LBL_018_Year_Month = self.D_LBL_018_Year_Month.replace("/", "");
-            let residentialTax = new service.model.residentialTax(
-                selectedResiTaxCode,
-                self.taxPayRollMoney(),
-                TargetDate,
-                self.taxBonusMoney(),
-                self.taxOverDueMoney(),
-                self.taxDemandChargeMoyney(),
-                self.address(),
-                new Date(self.date_D_INP_007().toDateString()),
-                self.headcount(),
-                self.retirementBonusAmout(),
-                self.cityTaxMoney(),
-                self.prefectureTaxMoney());
+            let residentialTax = self.getCurrentResidentialTax();
             service.update(residentialTax).done(function(data: any) {
                 self.currentObject(residentialTax);
             }).fail(function(res) {
                 alert(res.message);
             })
         }
-        CreateResidentialTax(selectedResiTaxCode) {
+
+        getCurrentResidentialTax() {
             let self = this;
             let TargetDate = self.D_LBL_018_Year_Month = self.D_LBL_018_Year_Month.replace("/", "");
+
             let residentialTax = new service.model.residentialTax(
-                selectedResiTaxCode,
+                self.D_LST_001_selectedResiTaxCode(),
                 self.taxPayRollMoney(),
                 TargetDate,
                 self.taxBonusMoney(),
@@ -320,6 +303,13 @@ module qpp011.d {
                 self.retirementBonusAmout(),
                 self.cityTaxMoney(),
                 self.prefectureTaxMoney());
+            return residentialTax;
+        }
+
+        CreateResidentialTax(selectedResiTaxCode) {
+            let self = this;
+            let TargetDate = self.D_LBL_018_Year_Month = self.D_LBL_018_Year_Month.replace("/", "");
+            let residentialTax = self.getCurrentResidentialTax();
             if (residentialTax.cityTaxMoney && residentialTax.dueDate && residentialTax.prefectureTaxMoney && residentialTax.resimentTaxCode && residentialTax.retirementBonusAmout && residentialTax.taxBonusMoney && residentialTax.taxDemandChargeMoyney && residentialTax.taxOverDueMoney && residentialTax.taxPayRollMoney && residentialTax.yearMonth) {
                 service.add(residentialTax).done(function(data: any) {
                     self.currentObject(residentialTax);
@@ -328,6 +318,7 @@ module qpp011.d {
                 })
             }
         }
+
         clearError(): void {
             $('#D_INP_002').ntsError('clear');
             $('#D_INP_003').ntsError('clear');
@@ -339,9 +330,7 @@ module qpp011.d {
             $('#D_INP_0010').ntsError('clear');
             $('#D_INP_0011').ntsError('clear');
         };
-
-
-
+        
         submitDialog() {
             let self = this;
             let TargetDate = self.D_LBL_018_Year_Month = self.D_LBL_018_Year_Month.replace("/", "");
@@ -357,20 +346,21 @@ module qpp011.d {
                 })
             }
         }
+        
         closeDialog() {
             nts.uk.ui.windows.close();
         }
+        
     }
+    
     export class D_LST_001_ItemModel {
         resiTaxCode: string;
         registeredName: string;
-
         constructor(resiTaxCode: string, registeredName: string) {
             this.resiTaxCode = resiTaxCode;
             this.registeredName = registeredName;
         }
     }
-
     //Tree Data Class
     export class TreeItem {
         code: string;
@@ -379,7 +369,6 @@ module qpp011.d {
         position: string;
         displayText: string;
         typeBranch: string;
-
         constructor(code: string, name: string, child: number, position: string, displayText: string, typeBranch: string) {
             this.code = code;
             this.name = name;
@@ -388,8 +377,5 @@ module qpp011.d {
             this.displayText = displayText;
             this.typeBranch = typeBranch;
         }
-
     }
-    // End Tree Data Class
-
 };

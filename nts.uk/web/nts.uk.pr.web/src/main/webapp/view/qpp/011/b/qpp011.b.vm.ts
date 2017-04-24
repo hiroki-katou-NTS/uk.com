@@ -1,27 +1,22 @@
-// TreeGrid Node
 module qpp011.b {
 
     export class ScreenModel {
         RadioItemList: KnockoutObservableArray<any>;
         selectedId: KnockoutObservable<number>;
         enable: KnockoutObservable<boolean>;
-
         B_SEL_001_RadioItemList: KnockoutObservableArray<any>;
         B_SEL_001_selectedId: KnockoutObservable<number>;
-
         C_SEL_001_selectedId: KnockoutObservable<number>;
-        //combobox
+        //Combobox
         ComboBoxItemList: KnockoutObservableArray<ComboboxItemModel>;
-
         B_SEL_002_ComboBoxItemList: KnockoutObservableArray<B_SEL_002_ComboboxItemModel>;
         B_SEL_002_selectedCode: KnockoutObservable<string>;
         C_SEL_002_selectedCode: KnockoutObservable<string>;
-
         C_SEL_003_ComboBoxItemList: KnockoutObservableArray<C_SEL_003_ComboboxItemModel>;
         C_SEL_003_selectedCode: KnockoutObservable<string>;
         C_SEL_004_ComboBoxItemList: KnockoutObservableArray<C_SEL_004_ComboboxItemModel>;
         C_SEL_004_selectedCode: KnockoutObservable<string>;
-        //end combobox
+        //End combobox
         //B_002
         B_SEL_002_Enable: any;
         C_SEL_002_Enable: any;
@@ -36,10 +31,9 @@ module qpp011.b {
         ResidentialData: any;
         currentIndex: any = 0;
         //End Data Variable
-        //
         selectedValue_B_LST_001: any;
         selectedValue_C_LST_001: any;
-        //gridlist
+        //Gridlist
         B_LST_001_Data: any;
         columns: any;
         //B
@@ -66,7 +60,6 @@ module qpp011.b {
                 new BoxModel(1, '本社'),
                 new BoxModel(2, '法定調書出力用会社')
             ]);
-
             self.B_SEL_001_selectedId = ko.observable(1);
             self.B_SEL_002_Enable = ko.observable(false);
             self.B_SEL_001_selectedId.subscribe(function(newValue) {
@@ -99,25 +92,20 @@ module qpp011.b {
                     self.enable(true);
                 }
             });
-
-            //end radiogroup data
-            //start cobobox data
-
             self.ComboBoxItemList = ko.observableArray([
                 new ComboboxItemModel('0001', 'Item1'),
                 new ComboboxItemModel('0002', 'Item2'),
                 new ComboboxItemModel('0003', 'Item3')
             ]);
-
             self.ComboBoxCurrentCode = ko.observable(1);
             self.selectedCode = ko.observable('0001')
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
-            //end combobox data
-            // start gridlist
+            //End Combobox Data
+            //Start Gridlist
             //B_LST_001
-            //end gridlist
-            //start number editer
+            //End Gridlist
+            //Start Number Editer
             self.numbereditor = {
                 value: ko.observable(),
                 constraint: '',
@@ -134,9 +122,8 @@ module qpp011.b {
             }
             self.B_LST_001_Data = ko.observable([]);
             self.ResidentialData = ko.observable([]);
-            //end number editer
+            //End number editer
             //Set Tree Data 
-
             qpp011.b.service.findAllResidential().done(function(data: Array<any>) {
                 service.getlistLocation().done(function(listLocation: Array<any>) {
                     self.ResidentialData(data);
@@ -149,13 +136,10 @@ module qpp011.b {
                     // Alert message
                     alert(res.message);
                 });
-
             }).fail(function(res) {
                 // Alert message
                 alert(res.message);
             });
-
-
             self.C_SEL_003_ComboBoxItemList = ko.observableArray([]);
             self.C_SEL_004_ComboBoxItemList = ko.observableArray([]);
             self.C_SEL_003_selectedCode = ko.observable("");
@@ -180,10 +164,11 @@ module qpp011.b {
             //find by login
             service.getCurrentProcessingNo().done(function(data: any) {
                 let yearMonth = data.currentProcessingYm;
+                //Set Input Screen B
                 self.B_INP_001_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
                 self.B_INP_002_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
                 self.B_INP_003_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
-
+                //Set Input Screen C
                 self.C_INP_001_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
                 self.C_INP_002_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
                 self.C_INP_003_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
@@ -202,7 +187,6 @@ module qpp011.b {
                     self.B_SEL_002_selectedCode(data[0].reganDocCompanyCode);
                     self.C_SEL_002_selectedCode(data[0].reganDocCompanyCode);
                 }
-
             }).fail(function(res) {
                 alert(res.message);
             });
@@ -233,7 +217,7 @@ module qpp011.b {
                     let positionIndex = CreateTreeBranchs(Object.prefectureCode);
                     if (positionIndex) {
                         self.TreeArray.push(new TreeItem(Object.resiTaxCode, Object.resiTaxName, positionIndex, Object.resiTaxCode, Object.resiTaxCode + " " + Object.registeredName, 'Item'));
-                        // self.currentIndex++;
+                        //Self.currentIndex++;
                     }
                 }
                 return self.TreeArray;
@@ -280,13 +264,13 @@ module qpp011.b {
                 if (!root) {
                     root = _.find(self.ListLocation, { 'regionCode': regionCode });
                     if (root) {
-                        let NewRoot = new TreeItem(root.regionCode, root.regionName, -1, positionIndex + 1, root.regionName, 'Root');
+                        let NewRoot = new TreeItem(root["regionCode"], root["regionName"], -1, positionIndex + 1, root["regionName"], 'Root');
                         self.TreeArray.push(NewRoot);
                         self.currentIndex++;
                         returnValue = self.currentIndex;
                     }
                 } else {
-                    returnValue = root.position;
+                    returnValue = root["position"];
                 }
                 return returnValue;
             }
@@ -302,13 +286,13 @@ module qpp011.b {
                                 break;
                         }
                         if (firstBranch) {
-                            let NewBranch = new TreeItem(firstBranch.prefectureCode, firstBranch.prefectureName, parrentIndex, positionIndex + 1, firstBranch.prefectureName, 'firstBranch');
+                            let NewBranch = new TreeItem(firstBranch["prefectureCode"], firstBranch["prefectureName"], parrentIndex, positionIndex + 1, firstBranch["prefectureName"], 'firstBranch');
                             self.TreeArray.push(NewBranch);
                             self.currentIndex++;
                             returnValue = self.currentIndex;
                         }
                     } else {
-                        returnValue = firstBranch.position;
+                        returnValue = firstBranch["position"];
                     }
                     return returnValue;
                 }
@@ -325,8 +309,7 @@ module qpp011.b {
                     columns: self.columns,
                     initialExpandDepth: 2,
                     features: [
-                        {
-                            name: "Selection",
+                        {   name: "Selection",
                             multipleSelection: true,
                             rowSelectionChanged: function(evt: any, ui: any) {
                                 var selectedRows: Array<any> = ui.selectedRows;
@@ -335,8 +318,7 @@ module qpp011.b {
                                 }));
                             }
                         },
-                        {
-                            name: "RowSelectors",
+                        {   name: "RowSelectors",
                             enableCheckBoxes: true,
                             checkBoxMode: "biState",
                             enableSelectAllForPaging: true,
@@ -432,7 +414,9 @@ module qpp011.b {
 
         openFDialog() {
             let self = this;
-            nts.uk.sessionStorage.setItem("TargetDate", self.B_INP_001_yearMonth());
+            //nts.uk.sessionStorage.setItem("TargetDate", self.B_INP_001_yearMonth());
+            nts.uk.ui.windows.setShared('QPP011_F_TargetDate', self.B_INP_001_yearMonth());
+            nts.uk.ui.windows.setShared('QPP011_F_DesignatedMonth', self.B_INP_002_yearMonth());
             nts.uk.ui.windows.sub.modal('/view/qpp/011/f/index.xhtml', { title: '住民税チェックリスト', height: 560, width: 900, dialogClass: 'no-close' }).onClosed(function(): any {
             });
         }
