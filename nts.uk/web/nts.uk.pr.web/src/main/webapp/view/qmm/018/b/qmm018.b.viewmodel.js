@@ -4,14 +4,17 @@ var qmm018;
     (function (b) {
         var viewmodel;
         (function (viewmodel) {
-            var ScreenModel = (function () {
-                function ScreenModel() {
+            class ScreenModel {
+                constructor() {
                     var self = this;
                     self.items = ko.observableArray([]);
                     self.currentCodeListSwap = ko.observableArray([]);
                     self.oldCurrentCodeListSwap = ko.observableArray([]);
                 }
-                ScreenModel.prototype.startPage = function () {
+                /**
+                 * get init data
+                 */
+                startPage() {
                     var self = this;
                     var dfd = $.Deferred();
                     qmm018.b.service.itemSelect(nts.uk.ui.windows.getShared('categoryAtr')).done(function (data) {
@@ -35,21 +38,27 @@ var qmm018;
                     }).fail(function (res) {
                     });
                     return dfd.promise();
-                };
-                ScreenModel.prototype.submitData = function () {
+                }
+                /**
+                 * send changed data to A screen
+                 */
+                submitData() {
+                    // return new data
                     var self = this;
                     nts.uk.ui.windows.setShared('selectedItemList', self.currentCodeListSwap());
                     nts.uk.ui.windows.close();
-                };
-                ScreenModel.prototype.closeWindow = function () {
+                }
+                /**
+                 * back to A screen without change
+                 */
+                closeWindow() {
+                    // return old data
                     var self = this;
                     nts.uk.ui.windows.setShared('selectedItemList', self.oldCurrentCodeListSwap());
                     nts.uk.ui.windows.close();
-                };
-                return ScreenModel;
-            }());
+                }
+            }
             viewmodel.ScreenModel = ScreenModel;
         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
     })(b = qmm018.b || (qmm018.b = {}));
 })(qmm018 || (qmm018 = {}));
-//# sourceMappingURL=qmm018.b.viewmodel.js.map

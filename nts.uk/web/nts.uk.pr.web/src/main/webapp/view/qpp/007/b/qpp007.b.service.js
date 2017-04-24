@@ -12,14 +12,23 @@ var nts;
                     (function (b) {
                         var service;
                         (function (service) {
+                            /**
+                             *  Service paths
+                             */
                             var paths = {
                                 saveSalaryPrintSetting: "ctx/pr/report/salarydetail/printsetting/save",
                                 findSalaryPrintSetting: "ctx/pr/report/salarydetail/printsetting/find"
                             };
+                            /**
+                             *  Save SalaryPrintSetting.
+                             */
                             function saveSalaryPrintSetting(data) {
                                 return nts.uk.request.ajax(paths.saveSalaryPrintSetting, data);
                             }
                             service.saveSalaryPrintSetting = saveSalaryPrintSetting;
+                            /**
+                             *  Load SalaryPrintSetting.
+                             */
                             function findSalaryPrintSetting() {
                                 return nts.uk.request.ajax(paths.findSalaryPrintSetting);
                             }
@@ -31,4 +40,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qpp007.b.service.js.map

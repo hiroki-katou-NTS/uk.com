@@ -4,20 +4,27 @@ var qet002;
     (function (a) {
         var viewmodel;
         (function (viewmodel) {
-            var ScreenModel = (function () {
-                function ScreenModel() {
+            class ScreenModel {
+                constructor() {
                     this.targetYear = ko.observable(2016);
                     this.isLowerLimit = ko.observable(true);
                     this.isUpperLimit = ko.observable(true);
                     this.lowerLimitValue = ko.observable(null);
                     this.upperLimitValue = ko.observable(null);
                 }
-                ScreenModel.prototype.start = function () {
+                /**
+                 * Start screen.
+                 */
+                start() {
                     var dfd = $.Deferred();
                     dfd.resolve();
                     return dfd.promise();
-                };
-                ScreenModel.prototype.printData = function () {
+                }
+                /**
+                 * Print Report
+                 */
+                printData() {
+                    // Validate
                     var hasError = false;
                     if (this.targetYear() == null) {
                         hasError = true;
@@ -50,16 +57,19 @@ var qet002;
                     if (hasError) {
                         return;
                     }
+                    //Print Report
                     a.service.printService(this).done(function (data) {
                     }).fail(function (res) {
                         nts.uk.ui.dialog.alert(res.message);
                     });
-                };
-                return ScreenModel;
-            }());
+                }
+            }
             viewmodel.ScreenModel = ScreenModel;
-            var AccumulatedPaymentResultViewModel = (function () {
-                function AccumulatedPaymentResultViewModel(empDesignation, empCode, empName, taxAmount, socialInsuranceAmount, widthHoldingTaxAmount, enrollmentStatus, directionalStatus, amountAfterTaxDeduction) {
+            /**
+             * Accumulated Payment Result Dto
+             */
+            class AccumulatedPaymentResultViewModel {
+                constructor(empDesignation, empCode, empName, taxAmount, socialInsuranceAmount, widthHoldingTaxAmount, enrollmentStatus, directionalStatus, amountAfterTaxDeduction) {
                     var self = this;
                     self.empDesignation = empDesignation;
                     self.empCode = empCode;
@@ -71,10 +81,8 @@ var qet002;
                     self.directionalStatus = directionalStatus;
                     self.amountAfterTaxDeduction = amountAfterTaxDeduction;
                 }
-                return AccumulatedPaymentResultViewModel;
-            }());
+            }
             viewmodel.AccumulatedPaymentResultViewModel = AccumulatedPaymentResultViewModel;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qet002.a || (qet002.a = {}));
 })(qet002 || (qet002 = {}));
-//# sourceMappingURL=qet002.a.vm.js.map

@@ -8,14 +8,18 @@ import javax.enterprise.event.Event;
 
 import nts.arc.i18n.custom.ISessionLocale;
 import nts.arc.i18n.custom.LanguageChangedEvent;
+import nts.arc.i18n.custom.ResourceChangedEvent;
+import nts.gul.text.IdentifierUtil;
 
 @SessionScoped
 @Stateful
 public class SessionLocale implements ISessionLocale {
 	private Locale currentLocale;
+	private long version;
 
 	public SessionLocale() {
 		this.currentLocale = Locale.getDefault();
+		version = IdentifierUtil.randomUniqueId().hashCode();
 	}
 
 	private Event<LanguageChangedEvent> languageChanged;
@@ -32,6 +36,17 @@ public class SessionLocale implements ISessionLocale {
 		LanguageChangedEvent event = new LanguageChangedEvent();
 		languageChanged.fire(event);
 
+	}
+
+	@Override
+	public void resourceChangedEventHandler(ResourceChangedEvent event) {
+		version++;
+	}
+
+	@Override
+	public long getVersion() {
+		// TODO Auto-generated method stub
+		return this.version;
 	}
 
 }
