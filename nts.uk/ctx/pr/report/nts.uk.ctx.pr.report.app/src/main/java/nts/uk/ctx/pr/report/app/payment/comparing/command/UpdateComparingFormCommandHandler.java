@@ -11,11 +11,11 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.report.dom.payment.comparing.ComparingFormDetail;
-import nts.uk.ctx.pr.report.dom.payment.comparing.ComparingFormDetailRepository;
-import nts.uk.ctx.pr.report.dom.payment.comparing.ComparingFormHeader;
-import nts.uk.ctx.pr.report.dom.payment.comparing.ComparingFormHeaderRepository;
-import nts.uk.ctx.pr.report.dom.payment.comparing.FormName;
+import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFormDetail;
+import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFormDetailRepository;
+import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFormHeader;
+import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFormHeaderRepository;
+import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.FormName;
 import nts.uk.shr.com.context.AppContexts;
 
 @RequestScoped

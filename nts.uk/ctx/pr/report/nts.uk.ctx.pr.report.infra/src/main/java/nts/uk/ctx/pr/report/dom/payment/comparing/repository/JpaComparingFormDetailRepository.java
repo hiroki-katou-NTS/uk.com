@@ -8,10 +8,10 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.report.dom.payment.comparing.ComparingFormDetail;
-import nts.uk.ctx.pr.report.dom.payment.comparing.ComparingFormDetailRepository;
 import nts.uk.ctx.pr.report.dom.payment.comparing.entity.QlsptPaycompFormDetail;
 import nts.uk.ctx.pr.report.dom.payment.comparing.entity.QlsptPaycompFormDetailPK;
+import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFormDetail;
+import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFormDetailRepository;
 
 @Stateless
 public class JpaComparingFormDetailRepository extends JpaRepository implements ComparingFormDetailRepository {

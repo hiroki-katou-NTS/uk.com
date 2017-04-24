@@ -28,8 +28,7 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.reference.QwtmtWagetableRefCd_;
  * The Class JpaWageTableCodeRefRepository.
  */
 @Stateless
-public class JpaWtCodeRefRepository extends JpaRepository
-		implements WtCodeRefRepository {
+public class JpaWtCodeRefRepository extends JpaRepository implements WtCodeRefRepository {
 
 	/*
 	 * (non-Javadoc)
@@ -54,8 +53,10 @@ public class JpaWtCodeRefRepository extends JpaRepository
 		predicateList.add(cb.equal(root.get(QwtmtWagetableRefCd_.qwtmtWagetableRefCdPK)
 				.get(QwtmtWagetableRefCdPK_.ccd), companyCode));
 
+		// Add where clause
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
+		// Return
 		return em.createQuery(cq).getResultList().stream()
 				.map(item -> new WtCodeRef(new JpaWtCodeRefGetMemento(item)))
 				.collect(Collectors.toList());
@@ -87,17 +88,21 @@ public class JpaWtCodeRefRepository extends JpaRepository
 		predicateList.add(cb.equal(root.get(QwtmtWagetableRefCd_.qwtmtWagetableRefCdPK)
 				.get(QwtmtWagetableRefCdPK_.refCdNo), code));
 
+		// Add where clause
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
+		// Get result
 		List<QwtmtWagetableRefCd> result = em.createQuery(cq).getResultList();
 
+		// Check empty.
 		if (CollectionUtil.isEmpty(result)) {
 			return Optional.empty();
 		}
 
-		return Optional.of(result.stream()
-				.map(item -> new WtCodeRef(new JpaWtCodeRefGetMemento(item)))
-				.collect(Collectors.toList()).get(0));
+		// Return
+		return Optional
+				.of(result.stream().map(item -> new WtCodeRef(new JpaWtCodeRefGetMemento(item)))
+						.collect(Collectors.toList()).get(0));
 	}
 
 }

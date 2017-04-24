@@ -4,9 +4,9 @@ var qmm012;
     (function (j) {
         var viewmodel;
         (function (viewmodel) {
-            var ScreenModel = (function () {
-                function ScreenModel() {
-                    var self = this;
+            class ScreenModel {
+                constructor() {
+                    let self = this;
                     //gridlist
                     self.items = ko.observableArray([
                         new ItemModel('001', 'name1', "name1"),
@@ -37,27 +37,24 @@ var qmm012;
                     ]);
                     self.currentCode = ko.observable();
                 }
-                ScreenModel.prototype.changeGrid = function (value) {
+                changeGrid(value) {
                     //    alert(value);
-                };
-                ScreenModel.prototype.SubmitDialog = function () {
+                }
+                SubmitDialog() {
                     nts.uk.ui.windows.close();
-                };
-                ScreenModel.prototype.CloseDialog = function () {
+                }
+                CloseDialog() {
                     nts.uk.ui.windows.close();
-                };
-                return ScreenModel;
-            }());
+                }
+            }
             viewmodel.ScreenModel = ScreenModel;
-            var ItemModel = (function () {
-                function ItemModel(code, name, description) {
+            class ItemModel {
+                constructor(code, name, description) {
                     this.code = code;
                     this.name = name;
                     this.description = description;
                 }
-                return ItemModel;
-            }());
+            }
         })(viewmodel = j.viewmodel || (j.viewmodel = {}));
     })(j = qmm012.j || (qmm012.j = {}));
 })(qmm012 || (qmm012 = {}));
-//# sourceMappingURL=viewmodel.js.map

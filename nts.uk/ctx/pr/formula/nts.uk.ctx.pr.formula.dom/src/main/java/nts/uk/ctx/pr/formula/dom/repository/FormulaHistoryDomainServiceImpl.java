@@ -48,7 +48,7 @@ public class FormulaHistoryDomainServiceImpl implements FormulaHistoryDomainServ
 			if (difficultyAtr == 0) {
 				this.formulaEasyHeaderRepository.add(formulaEasyHead);
 			}
-			if ((difficultyAtr == 1 || difficultyAtr == 0) && previousFormulaHistoryUpdate != null) {
+			if (previousFormulaHistoryUpdate != null) {
 				this.formulaHistoryRepository.update(previousFormulaHistoryUpdate);
 			}
 		} catch (Exception e) {
@@ -78,8 +78,6 @@ public class FormulaHistoryDomainServiceImpl implements FormulaHistoryDomainServ
 				this.formulaMasterRepository.remove(companyCode, new FormulaCode(formulaCode));
 			} else if (this.formulaHistoryRepository.isNewestHistory(companyCode, new FormulaCode(formulaCode),
 					new YearMonth(startDate))) {
-				this.formulaHistoryRepository.remove(companyCode, new FormulaCode(formulaCode), historyId);
-
 				// select last history
 				Optional<FormulaHistory> lastFormulaHistory = this.formulaHistoryRepository.findLastHistory(companyCode,
 						new FormulaCode(formulaCode));

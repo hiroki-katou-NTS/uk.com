@@ -96,7 +96,6 @@ public class JpaWtHeadSetMemento implements WtHeadSetMemento {
 	@Override
 	public void setMode(ElementCount mode) {
 		this.typeValue.setDemensionSet(mode.value);
-
 	}
 
 	/*
@@ -108,13 +107,23 @@ public class JpaWtHeadSetMemento implements WtHeadSetMemento {
 	 */
 	@Override
 	public void setElements(List<WtElement> elements) {
+		// Get pk info
 		QwtmtWagetableHeadPK qwtmtWagetableHeadPK = this.typeValue.getQwtmtWagetableHeadPK();
+
+		// Convert to entity list.
 		List<QwtmtWagetableElement> wagetableElementList = elements.stream().map(item -> {
+			// Create entity.
 			QwtmtWagetableElement entity = new QwtmtWagetableElement();
+
+			// Transfer data.
 			item.saveToMemento(new JpaWtElementSetMemento(qwtmtWagetableHeadPK.getCcd(),
 					qwtmtWagetableHeadPK.getWageTableCd(), entity));
+
+			// Return
 			return entity;
 		}).collect(Collectors.toList());
+
+		// Set data
 		this.typeValue.setWagetableElementList(wagetableElementList);
 	}
 }

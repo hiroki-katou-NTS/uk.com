@@ -25,6 +25,6 @@ public class PaymentData {
 	public ReportItemDto totalTaxExemption;
 	
 	/** The total subsidy. */
-	public ReportItemDto totalSubsidy;
+	public ReportItemDto totalSalaryPayment;
 
 }

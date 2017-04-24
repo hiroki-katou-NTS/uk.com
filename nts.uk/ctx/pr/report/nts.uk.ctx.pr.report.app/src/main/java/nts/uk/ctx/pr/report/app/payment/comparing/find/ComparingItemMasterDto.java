@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.report.app.payment.comparing.find;
 
 import lombok.Value;
-import nts.uk.ctx.pr.report.dom.payment.comparing.ComparingItemMaster;
+import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingItemMaster;
 
 @Value
 public class ComparingItemMasterDto {

@@ -1,8 +1,3 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var nts;
 (function (nts) {
     var uk;
@@ -71,7 +66,6 @@ var nts;
                             service.addUnemployeeInsuranceRate = addUnemployeeInsuranceRate;
                             //Function connection service update Unemployee Insurance Rate
                             function updateUnemployeeInsuranceRate(unemployeeInsuranceRateModel) {
-                                var dfd = $.Deferred();
                                 var data = {
                                     unemployeeInsuranceRate: service.convertUnemployeeInsuranceRateModelDTO(unemployeeInsuranceRateModel)
                                 };
@@ -85,8 +79,7 @@ var nts;
                                     .done(function (res) {
                                     var convertRes;
                                     convertRes = [];
-                                    for (var _i = 0, res_1 = res; _i < res_1.length; _i++) {
-                                        var itemRes = res_1[_i];
+                                    for (var itemRes of res) {
                                         var UnemployeeInsuranceHistoryDto;
                                         UnemployeeInsuranceHistoryDto = new model.UnemployeeInsuranceHistoryDto();
                                         UnemployeeInsuranceHistoryDto.setDataHistory(itemRes);
@@ -164,8 +157,7 @@ var nts;
                                     .done(function (res) {
                                     var convertRes;
                                     convertRes = [];
-                                    for (var _i = 0, res_2 = res; _i < res_2.length; _i++) {
-                                        var itemRes = res_2[_i];
+                                    for (var itemRes of res) {
                                         var AccidentInsuranceHistoryDto;
                                         AccidentInsuranceHistoryDto = new model.AccidentInsuranceHistoryDto();
                                         AccidentInsuranceHistoryDto.setDataHistory(itemRes);
@@ -327,194 +319,135 @@ var nts;
                             service.findAllInsuranceBusinessType = findAllInsuranceBusinessType;
                             var model;
                             (function (model) {
-                                var YearMonth = (function () {
-                                    function YearMonth(year, month) {
+                                class YearMonth {
+                                    constructor(year, month) {
                                         this.year = year;
                                         this.month = month;
                                     }
-                                    return YearMonth;
-                                }());
+                                }
                                 model.YearMonth = YearMonth;
-                                var MonthRange = (function () {
-                                    function MonthRange(startMonth, endMonth) {
+                                class MonthRange {
+                                    constructor(startMonth, endMonth) {
                                         this.startMonth = startMonth;
                                         this.endMonth = endMonth;
                                     }
-                                    return MonthRange;
-                                }());
+                                }
                                 model.MonthRange = MonthRange;
-                                var RoundingMethodDto = (function () {
-                                    function RoundingMethodDto(code, name) {
+                                class RoundingMethodDto {
+                                    constructor(code, name) {
                                         this.code = code;
                                         this.name = name;
                                     }
-                                    return RoundingMethodDto;
-                                }());
+                                }
                                 model.RoundingMethodDto = RoundingMethodDto;
-                                var UnemployeeInsuranceRateItemSettingDto = (function () {
-                                    function UnemployeeInsuranceRateItemSettingDto(roundAtr, rate) {
+                                class UnemployeeInsuranceRateItemSettingDto {
+                                    constructor(roundAtr, rate) {
                                         this.roundAtr = roundAtr;
                                         this.rate = rate;
                                     }
-                                    return UnemployeeInsuranceRateItemSettingDto;
-                                }());
+                                }
                                 model.UnemployeeInsuranceRateItemSettingDto = UnemployeeInsuranceRateItemSettingDto;
-                                var UnemployeeInsuranceRateItemDto = (function () {
-                                    function UnemployeeInsuranceRateItemDto(careerGroup, companySetting, personalSetting) {
+                                class UnemployeeInsuranceRateItemDto {
+                                    constructor(careerGroup, companySetting, personalSetting) {
                                         this.careerGroup = careerGroup;
                                         this.companySetting = companySetting;
                                         this.personalSetting = personalSetting;
                                     }
-                                    return UnemployeeInsuranceRateItemDto;
-                                }());
+                                }
                                 model.UnemployeeInsuranceRateItemDto = UnemployeeInsuranceRateItemDto;
-                                var UnemployeeInsuranceRateCopyDto = (function () {
-                                    function UnemployeeInsuranceRateCopyDto() {
+                                class UnemployeeInsuranceRateCopyDto {
+                                    constructor() {
                                         this.historyIdCopy = '';
                                         this.startMonth = 0;
                                         this.addNew = false;
                                     }
-                                    return UnemployeeInsuranceRateCopyDto;
-                                }());
+                                }
                                 model.UnemployeeInsuranceRateCopyDto = UnemployeeInsuranceRateCopyDto;
-                                var AccidentInsuranceRateCopyDto = (function () {
-                                    function AccidentInsuranceRateCopyDto() {
+                                class AccidentInsuranceRateCopyDto {
+                                    constructor() {
                                         this.historyIdCopy = '';
                                         this.startMonth = 0;
                                         this.addNew = false;
                                     }
-                                    return AccidentInsuranceRateCopyDto;
-                                }());
+                                }
                                 model.AccidentInsuranceRateCopyDto = AccidentInsuranceRateCopyDto;
-                                var HistoryInsuranceDto = (function () {
-                                    function HistoryInsuranceDto() {
+                                class HistoryInsuranceDto {
+                                    constructor() {
                                         this.historyId = '';
                                         this.startMonthRage = '';
                                         this.endMonthRage = '';
                                         this.inforMonthRage = '';
                                     }
-                                    HistoryInsuranceDto.prototype.setDataHistory = function (historyData) {
+                                    setDataHistory(historyData) {
                                         this.historyId = historyData.historyId;
                                         this.startMonthRage = nts.uk.time.formatYearMonth(historyData.startMonth);
                                         this.endMonthRage = nts.uk.time.formatYearMonth(historyData.endMonth);
                                         this.inforMonthRage = this.startMonthRage + ' ~ ' + this.endMonthRage;
                                         this.startMonth = historyData.startMonth;
                                         this.endMonth = historyData.endMonth;
-                                    };
-                                    return HistoryInsuranceDto;
-                                }());
+                                    }
+                                }
                                 model.HistoryInsuranceDto = HistoryInsuranceDto;
-                                var HistoryInsuranceFindOutDto = (function () {
-                                    function HistoryInsuranceFindOutDto() {
-                                    }
-                                    return HistoryInsuranceFindOutDto;
-                                }());
+                                class HistoryInsuranceFindOutDto {
+                                }
                                 model.HistoryInsuranceFindOutDto = HistoryInsuranceFindOutDto;
-                                var HistoryInsuranceInDto = (function () {
-                                    function HistoryInsuranceInDto() {
-                                    }
-                                    return HistoryInsuranceInDto;
-                                }());
+                                class HistoryInsuranceInDto {
+                                }
                                 model.HistoryInsuranceInDto = HistoryInsuranceInDto;
-                                var UnemployeeInsuranceHistoryDto = (function (_super) {
-                                    __extends(UnemployeeInsuranceHistoryDto, _super);
-                                    function UnemployeeInsuranceHistoryDto() {
-                                        _super.apply(this, arguments);
-                                    }
-                                    return UnemployeeInsuranceHistoryDto;
-                                }(HistoryInsuranceDto));
+                                class UnemployeeInsuranceHistoryDto extends HistoryInsuranceDto {
+                                }
                                 model.UnemployeeInsuranceHistoryDto = UnemployeeInsuranceHistoryDto;
-                                var UnemployeeInsuranceHistoryFindInDto = (function () {
-                                    function UnemployeeInsuranceHistoryFindInDto() {
-                                    }
-                                    return UnemployeeInsuranceHistoryFindInDto;
-                                }());
+                                class UnemployeeInsuranceHistoryFindInDto {
+                                }
                                 model.UnemployeeInsuranceHistoryFindInDto = UnemployeeInsuranceHistoryFindInDto;
-                                var UnemployeeInsuranceHistoryUpdateDto = (function () {
-                                    function UnemployeeInsuranceHistoryUpdateDto() {
-                                    }
-                                    return UnemployeeInsuranceHistoryUpdateDto;
-                                }());
+                                class UnemployeeInsuranceHistoryUpdateDto {
+                                }
                                 model.UnemployeeInsuranceHistoryUpdateDto = UnemployeeInsuranceHistoryUpdateDto;
-                                var AccidentInsuranceHistoryUpdateDto = (function () {
-                                    function AccidentInsuranceHistoryUpdateDto() {
-                                    }
-                                    return AccidentInsuranceHistoryUpdateDto;
-                                }());
+                                class AccidentInsuranceHistoryUpdateDto {
+                                }
                                 model.AccidentInsuranceHistoryUpdateDto = AccidentInsuranceHistoryUpdateDto;
-                                var UnemployeeInsuranceRateFindOutDto = (function () {
-                                    function UnemployeeInsuranceRateFindOutDto() {
-                                    }
-                                    return UnemployeeInsuranceRateFindOutDto;
-                                }());
+                                class UnemployeeInsuranceRateFindOutDto {
+                                }
                                 model.UnemployeeInsuranceRateFindOutDto = UnemployeeInsuranceRateFindOutDto;
-                                var AccidentInsuranceRateDeleteDto = (function () {
-                                    function AccidentInsuranceRateDeleteDto() {
-                                    }
-                                    return AccidentInsuranceRateDeleteDto;
-                                }());
+                                class AccidentInsuranceRateDeleteDto {
+                                }
                                 model.AccidentInsuranceRateDeleteDto = AccidentInsuranceRateDeleteDto;
-                                var UnemployeeInsuranceDeleteDto = (function () {
-                                    function UnemployeeInsuranceDeleteDto() {
-                                    }
-                                    return UnemployeeInsuranceDeleteDto;
-                                }());
+                                class UnemployeeInsuranceDeleteDto {
+                                }
                                 model.UnemployeeInsuranceDeleteDto = UnemployeeInsuranceDeleteDto;
-                                var UnemployeeInsuranceRateDto = (function () {
-                                    function UnemployeeInsuranceRateDto() {
-                                    }
-                                    return UnemployeeInsuranceRateDto;
-                                }());
+                                class UnemployeeInsuranceRateDto {
+                                }
                                 model.UnemployeeInsuranceRateDto = UnemployeeInsuranceRateDto;
-                                var AccidentInsuranceHistoryDto = (function (_super) {
-                                    __extends(AccidentInsuranceHistoryDto, _super);
-                                    function AccidentInsuranceHistoryDto() {
-                                        _super.apply(this, arguments);
-                                    }
-                                    return AccidentInsuranceHistoryDto;
-                                }(HistoryInsuranceDto));
+                                class AccidentInsuranceHistoryDto extends HistoryInsuranceDto {
+                                }
                                 model.AccidentInsuranceHistoryDto = AccidentInsuranceHistoryDto;
-                                var UnemployeeInsuranceFindInDto = (function () {
-                                    function UnemployeeInsuranceFindInDto() {
-                                    }
-                                    return UnemployeeInsuranceFindInDto;
-                                }());
+                                class UnemployeeInsuranceFindInDto {
+                                }
                                 model.UnemployeeInsuranceFindInDto = UnemployeeInsuranceFindInDto;
-                                var AccidentInsuranceRateDto = (function () {
-                                    function AccidentInsuranceRateDto() {
-                                    }
-                                    return AccidentInsuranceRateDto;
-                                }());
+                                class AccidentInsuranceRateDto {
+                                }
                                 model.AccidentInsuranceRateDto = AccidentInsuranceRateDto;
-                                var AccidentInsuranceRateFindOutDto = (function () {
-                                    function AccidentInsuranceRateFindOutDto() {
-                                    }
-                                    return AccidentInsuranceRateFindOutDto;
-                                }());
+                                class AccidentInsuranceRateFindOutDto {
+                                }
                                 model.AccidentInsuranceRateFindOutDto = AccidentInsuranceRateFindOutDto;
-                                var AccidentInsuranceRateHistoryFindInDto = (function () {
-                                    function AccidentInsuranceRateHistoryFindInDto() {
-                                    }
-                                    return AccidentInsuranceRateHistoryFindInDto;
-                                }());
+                                class AccidentInsuranceRateHistoryFindInDto {
+                                }
                                 model.AccidentInsuranceRateHistoryFindInDto = AccidentInsuranceRateHistoryFindInDto;
-                                var InsuBizRateItemDto = (function () {
-                                    function InsuBizRateItemDto(insuBizType, insuRate, insuRound, insuranceBusinessType) {
+                                class InsuBizRateItemDto {
+                                    constructor(insuBizType, insuRate, insuRound, insuranceBusinessType) {
                                         this.insuBizType = insuBizType;
                                         this.insuRate = insuRate;
                                         this.insuRound = insuRound;
                                         this.insuranceBusinessType = insuranceBusinessType;
                                     }
-                                    return InsuBizRateItemDto;
-                                }());
+                                }
                                 model.InsuBizRateItemDto = InsuBizRateItemDto;
-                                var InsuranceBusinessType = (function () {
-                                    function InsuranceBusinessType(bizOrder, bizName) {
+                                class InsuranceBusinessType {
+                                    constructor(bizOrder, bizName) {
                                         this.bizOrder = bizOrder;
                                         this.bizName = bizName;
                                     }
-                                    return InsuranceBusinessType;
-                                }());
+                                }
                                 model.InsuranceBusinessType = InsuranceBusinessType;
                                 (function (CareerGroupDto) {
                                     CareerGroupDto[CareerGroupDto["Agroforestry"] = 0] = "Agroforestry";
@@ -555,8 +488,8 @@ var nts;
                                     TypeActionInsuranceRate[TypeActionInsuranceRate["update"] = 2] = "update";
                                 })(model.TypeActionInsuranceRate || (model.TypeActionInsuranceRate = {}));
                                 var TypeActionInsuranceRate = model.TypeActionInsuranceRate;
-                                var InsuranceBusinessTypeDto = (function () {
-                                    function InsuranceBusinessTypeDto(bizNameBiz1St, bizNameBiz2Nd, bizNameBiz3Rd, bizNameBiz4Th, bizNameBiz5Th, bizNameBiz6Th, bizNameBiz7Th, bizNameBiz8Th, bizNameBiz9Th, bizNameBiz10Th, version) {
+                                class InsuranceBusinessTypeDto {
+                                    constructor(bizNameBiz1St, bizNameBiz2Nd, bizNameBiz3Rd, bizNameBiz4Th, bizNameBiz5Th, bizNameBiz6Th, bizNameBiz7Th, bizNameBiz8Th, bizNameBiz9Th, bizNameBiz10Th, version) {
                                         this.bizNameBiz1St = bizNameBiz1St;
                                         this.bizNameBiz2Nd = bizNameBiz2Nd;
                                         this.bizNameBiz3Rd = bizNameBiz3Rd;
@@ -569,8 +502,7 @@ var nts;
                                         this.bizNameBiz10Th = bizNameBiz10Th;
                                         this.version = version;
                                     }
-                                    return InsuranceBusinessTypeDto;
-                                }());
+                                }
                                 model.InsuranceBusinessTypeDto = InsuranceBusinessTypeDto;
                             })(model = service.model || (service.model = {}));
                         })(service = a.service || (a.service = {}));
@@ -580,4 +512,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm011.a.service.js.map

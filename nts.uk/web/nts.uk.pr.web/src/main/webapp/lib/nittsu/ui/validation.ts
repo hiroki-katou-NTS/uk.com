@@ -3,11 +3,11 @@
 module nts.uk.ui.validation {
 
     export interface IValidator {
-        validate(inputText: string): ValidationResult;
+        validate(inputText: string, option?: any): ValidationResult;
     }
 
     export class NoValidator {
-        validate(inputText: string): ValidationResult {
+        validate(inputText: string, option?: any): ValidationResult {
             var result = new ValidationResult();
             result.isValid = true;
             result.parsedValue = inputText;
@@ -42,17 +42,22 @@ module nts.uk.ui.validation {
             this.required = option.required;
         }
 
-        validate(inputText: string): ValidationResult {
+        validate(inputText: string, option?: any): ValidationResult {
             var result = new ValidationResult();
             // Check Required
             if (this.required !== undefined && this.required !== false) {
-                if (!checkRequired(inputText)) {
+                if (util.isNullOrEmpty(inputText)) {
                     result.fail('This field is required');
                     return result;
                 }
             }
             // Check CharType
             if (this.charType !== null && this.charType !== undefined) {
+                if (this.charType.viewName === '半角数字' || this.charType.viewName === '半角英数字') {
+                    inputText = text.toOneByteAlphaNumberic(inputText);        
+                } else if (this.charType.viewName === 'カタカナ') {
+                    inputText = text.oneByteKatakanaToTwoByte(inputText);    
+                }
                 if (!this.charType.validate(inputText)) {
                     result.fail('Invalid text');
                     return result;
@@ -64,12 +69,15 @@ module nts.uk.ui.validation {
                     result.fail('Max length for this input is ' + this.constraint.maxLength);
                     return result;
                 }
-
-                if (!text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
-                    result.fail('This field is not valid with pattern!');
-                    return result;
+                
+                if(!util.isNullOrUndefined(option) && option.isCheckExpression === true){  
+                    if (!text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
+                        result.fail('This field is not valid with pattern!');
+                        return result;
+                    }  
                 }
             }
+            
             result.success(inputText);
             return result;
         }
@@ -119,25 +127,39 @@ module nts.uk.ui.validation {
         outputFormat: string;
         required: boolean;
         valueType: string;
+        mode: string;
         constructor(primitiveValueName: string, option?: any) {
             this.constraint = getConstraint(primitiveValueName);
-            this.outputFormat = (option && option.inputFormat) ? option.inputFormat : "";
+            this.outputFormat = (option && option.outputFormat) ? option.outputFormat : "";
             this.required = (option && option.required) ? option.required : false;
             this.valueType = (option && option.valueType) ? option.valueType : "string";
+            this.mode = (option && option.mode) ? option.mode : "";
         }
 
         validate(inputText: string): any {
             var result = new ValidationResult();
             // Check required
-            if (this.required !== undefined && this.required !== false) {
-                if (!checkRequired(inputText)) {
+            if (util.isNullOrEmpty(inputText)) {
+                if (this.required === true) {
                     result.fail('This field is required');
+                    return result;
+                }
+                else {
+                    result.success("");
                     return result;
                 }
             }
             // Create Parser
-            var parseResult;
-            parseResult = time.parseMoment(inputText, this.outputFormat);
+            if(this.mode === "time"){
+                var timeParse = time.parseTime(inputText, false) 
+                if (timeParse.success) {
+                    result.success(timeParse.toValue());
+                } else {
+                    result.fail(timeParse.getMsg()); 
+                }
+                return result;   
+            }
+            var parseResult = time.parseMoment(inputText, this.outputFormat);
             // Parse
             if (parseResult.success) {
                 if (this.valueType === "string")
@@ -160,13 +182,6 @@ module nts.uk.ui.validation {
             }
             return result;
         }
-    }
-
-    function checkRequired(value: any): boolean {
-        if (value === undefined || value === null || value.length == 0) {
-            return false;
-        }
-        return true;
     }
 
     export function getConstraint(primitiveValueName: string) {

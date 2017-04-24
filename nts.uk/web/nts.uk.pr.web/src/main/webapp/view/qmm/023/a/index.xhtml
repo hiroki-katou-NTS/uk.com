@@ -105,12 +105,12 @@
 										data-bind="ntsNumberEditor: {
 													value: taxLimit,
 													constraint: 'CommuNoTaxLimitValue',
-													option: {
+													option: new nts.uk.ui.option.NumberEditorOption({
 														grouplength: 3,
 														decimallength: 0,
 														currencyformat: 'JPY',
 														currencyposition: 'right'
-													},
+													}),
 													immediate: false
 										   }" />
 								</div>

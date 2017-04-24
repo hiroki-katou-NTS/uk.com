@@ -27,7 +27,7 @@
 				<hr />
 				<div class="form-group">
 					<div id="E_LBL_007" data-bind="ntsFormLabel: {}">反映開始月</div>
-					<label id="E_LBL_008" class="label">2016/</label>
+					<label id="E_LBL_008" class="label" data-bind="text: lbl005() + '/'">2016/</label>
 					<div id="E_SEL_001"
 						data-bind="ntsComboBox: {
 						options: sel001Data,
@@ -38,7 +38,7 @@
 						enable: true,
 						columns: [{ prop: 'label', length: 4 }]}"></div>
 						<span>~</span>
-					<label id="E_LBL_009" class="label">2016/12</label>
+					<label id="E_LBL_009" class="label" data-bind="text: lbl005() + '/12'">2016/12</label>
 				</div>
 
 				<div class="form-group form-inline">

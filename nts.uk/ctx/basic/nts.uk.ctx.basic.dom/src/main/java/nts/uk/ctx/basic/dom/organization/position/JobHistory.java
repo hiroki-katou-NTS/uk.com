@@ -1,54 +1,32 @@
 package nts.uk.ctx.basic.dom.organization.position;
 
 import lombok.Getter;
-
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.gul.text.IdentifierUtil;
 
-
+@Setter
 @Getter
 public class JobHistory extends AggregateRoot {
 	
+	private String companyCode;
+	
 	private String historyId;
 
-	private String companyCode;
+	private GeneralDate startDate;
 	
 	private GeneralDate endDate;
 	
-	private GeneralDate startDate;
-	
-	
-	
-	
-	
-	
-	public JobHistory( String companyCode,String historyId,GeneralDate endDate,GeneralDate startDate) {
-
+	public JobHistory( String companyCode,String historyId,GeneralDate startDate,GeneralDate endDate) {
 		super();
-		
 		this.companyCode = companyCode;
 		this.historyId = historyId;
-		this.endDate = endDate;
 		this.startDate = startDate;
-	}
-
-	public JobHistory( String companyCode,GeneralDate endDate,GeneralDate startDate) {
-
-		super();
-		
-		this.companyCode = companyCode;
-		this.historyId = IdentifierUtil.randomUniqueId();
-		this.endDate = endDate;
-		this.startDate = startDate;
-	}
-	public static JobHistory createFromJavaType( String companyCode,String historyId,GeneralDate endDate,GeneralDate startDate) {
-		return new JobHistory(companyCode,historyId,endDate,startDate);
-
-	}
-
-	public void setEndDate(GeneralDate endDate) {
 		this.endDate = endDate;
 	}
 
+	public static JobHistory createFromJavaType( String companyCode,String historyId,GeneralDate startDate,GeneralDate endDate) {
+		return new JobHistory(companyCode,historyId,startDate,endDate);
+
+	}
 }

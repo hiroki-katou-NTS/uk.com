@@ -8,10 +8,10 @@
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
 				<com:scriptfile set="IGNITE" />
-				<com:stylefile path="style.css" />
-				<com:scriptfile path="start.js" />
-				<com:scriptfile path="viewmodel.js" />
-				<com:scriptfile path="service.js" />
+				<com:stylefile path="qmm017.p.style.css" />
+				<com:scriptfile path="qmm017.p.start.js" />
+				<com:scriptfile path="qmm017.p.vm.js" />
+				<com:scriptfile path="qmm017.p.service.js" />
 			</ui:define>
 			
 			<ui:define name="content">
@@ -22,6 +22,7 @@
 					<br />
 					<div style="margin: 10px 0 0 20px; display: inline-block;">
 						<table id="p_lbl_001" data-bind="ntsGridList: {
+									width: 293,
 									height: 290,
 									options: items,
 									optionsValue: 'code',
