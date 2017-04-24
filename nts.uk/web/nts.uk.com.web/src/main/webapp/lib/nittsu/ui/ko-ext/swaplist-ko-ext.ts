@@ -165,7 +165,15 @@ module nts.uk.ui.koExtentions {
                 virtualizationMode: 'continuous',
                 features: features
             });
-            if (data.draggable === true) this.swapper.enableDragDrop();
+            if (data.draggable === true) {
+                this.swapper.enableDragDrop();
+                if (data.multipleDrag && data.multipleDrag.left === true) {
+                    this.swapper.Model.swapParts[0].$listControl.addClass("multiple-drag");
+                }
+                if (data.multipleDrag && data.multipleDrag.right === true) {
+                    this.swapper.Model.swapParts[1].$listControl.addClass("multiple-drag");
+                }
+            }
             
             $grid2.closest('.ui-iggrid')
                 .addClass('nts-gridlist')
@@ -291,7 +299,7 @@ module nts.uk.ui.koExtentions {
                 return one.index - two.index;
             });
             var $helper;
-            if (selectedRowElms.length > 1) {
+            if ($(evt.currentTarget).hasClass("multiple-drag") && selectedRowElms.length > 1) {
                 $helper = $("<div><table><tbody></tbody></table></div>").addClass("select-drag");
                 var rowId = ui.data("row-idx");
                 var selectedItems: Array<JQuery> = selectedRowElms.map(function(elm) { return elm.element; });
@@ -318,7 +326,7 @@ module nts.uk.ui.koExtentions {
             var partId = model.transportBuilder.startAt === "first" ? 0 : 1;
             var destPartId = model.receiver(ui) === "first" ? 0 : 1;
             model.transportBuilder.toAdjacent(model.neighbor(ui)).target(model.target(ui));
-            // In case of muliple selections
+            // In case of multiple selections
             if (ui.helper.hasClass("select-drag") === true) {
                 var rowsInHelper = ui.helper.find("tr");
                 var rows = rowsInHelper.toArray(); 
