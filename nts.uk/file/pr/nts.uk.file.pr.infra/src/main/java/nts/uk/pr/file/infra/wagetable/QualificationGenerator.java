@@ -24,8 +24,6 @@ import nts.uk.ctx.pr.core.app.wagetable.command.dto.WtHistoryDto;
 import nts.uk.ctx.pr.core.app.wagetable.command.dto.WtItemDto;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 
 /**
@@ -49,12 +47,6 @@ public class QualificationGenerator implements Generator {
 	@Override
 	public void generate(AsposeCellsReportContext context, WtUpdateCommand data) {
 		WtHistoryDto history = data.getWtHistoryDto();
-
-		// get info login
-		LoginUserContext loginUserContext = AppContexts.user();
-
-		// company code
-		String companyCode = loginUserContext.companyCode();
 
 		// Set work sheet name.
 		Worksheet ws = context.getWorkbook().getWorksheets().get(0);
@@ -82,12 +74,13 @@ public class QualificationGenerator implements Generator {
 			int start = index;
 			for (Certification certification : group.getCertifies()) {
 				cells.get(index + 1, 1).setValue(certification.getName());
-				cells.get(index+1,2).setValue(itemToAmountMap.get(codeToUuid.get(certification.getCode())));
+				cells.get(index + 1, 2)
+					.setValue(itemToAmountMap.get(codeToUuid.get(certification.getCode())));
 				index++;
 			}
 			cells.merge(start + 1, 0, index - start, 1, false);
 			cells.get(start + 1, 0).setValue(group.getName());
-			
+
 		}
 		// Border set.
 		Style style = cells.get(1, 0).getStyle();

@@ -62,21 +62,33 @@ var qet001;
                     this.category = categoryName;
                     this.paymentType = paymentType;
                     this.aggregateItemSelectedCode = ko.observable(null);
+                    this.temporarySelectedCode = ko.observable(null);
                     var masterItemInCate = masterItems.filter(function (item) { return item.category == categoryName; });
                     this.aggregateItemDetail = ko.observable(new AggregateItemDetail(paymentType, categoryName, masterItemInCate));
                     var self = this;
                     self.dirty = new nts.uk.ui.DirtyChecker(self.aggregateItemDetail);
                     self.aggregateItemSelectedCode.subscribe(function (code) {
-                        if (code == undefined || code == null || code == '') {
-                            self.aggregateItemDetail(new AggregateItemDetail(paymentType, categoryName, masterItemInCate));
-                            self.setStyle();
-                            self.dirty.reset();
+                        if (self.temporarySelectedCode() == code) {
                             return;
                         }
-                        self.loadDetailAggregateItem(self.category, self.paymentType, code).done(function (res) {
-                            self.aggregateItemDetail(new AggregateItemDetail(paymentType, categoryName, masterItemInCate, res));
-                            self.dirty.reset();
-                            self.setStyle();
+                        self.confirmDirtyAndExecute(function () {
+                            if (code) {
+                                self.temporarySelectedCode(code);
+                                self.loadDetailAggregateItem(self.category, self.paymentType, code).done(function (res) {
+                                    self.aggregateItemDetail(new AggregateItemDetail(paymentType, categoryName, masterItemInCate, res));
+                                    self.dirty.reset();
+                                    self.setStyle();
+                                });
+                            }
+                            else {
+                                self.clearError();
+                                self.temporarySelectedCode('');
+                                self.aggregateItemDetail(new AggregateItemDetail(paymentType, categoryName, masterItemInCate));
+                                self.dirty.reset();
+                                self.setStyle();
+                            }
+                        }, function () {
+                            self.aggregateItemSelectedCode(self.temporarySelectedCode());
                         });
                     });
                 }
@@ -85,7 +97,10 @@ var qet001;
                     var self = this;
                     i.service.findAggregateItemsByCategory(self.category, self.paymentType).done(function (res) {
                         self.itemList(res);
-                        self.aggregateItemSelectedCode(res.length > 0 ? res[0].code : null);
+                        if (!self.aggregateItemSelectedCode()) {
+                            var selectedCode = res.length > 0 ? res[0].code : null;
+                            self.aggregateItemSelectedCode(selectedCode);
+                        }
                         dfd.resolve();
                     }).fail(function (res) {
                         nts.uk.ui.dialog.alert(res.message);
@@ -105,66 +120,75 @@ var qet001;
                 };
                 AggregateCategory.prototype.switchToCreateMode = function () {
                     var self = this;
-                    if (self.dirty.isDirty()) {
-                        nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function () {
-                            self.aggregateItemSelectedCode(null);
-                        });
-                    }
-                    else {
-                        self.aggregateItemSelectedCode(null);
-                    }
+                    self.aggregateItemSelectedCode(null);
                 };
                 AggregateCategory.prototype.save = function () {
                     var self = this;
-                    $('#code-input').ntsError('clear');
-                    $('#name-input').ntsError('clear');
-                    $('#code-input').ntsEditor('validate');
-                    $('#name-input').ntsEditor('validate');
                     if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                         return;
                     }
                     i.service.save(self.aggregateItemDetail()).done(function () {
-                        self.loadAggregateItemByCategory();
+                        i.service.findAggregateItemsByCategory(self.category, self.paymentType).done(function (res) {
+                            self.itemList(res);
+                            self.dirty.reset();
+                            self.aggregateItemSelectedCode(self.aggregateItemDetail().code());
+                        });
                     }).fail(function (res) {
+                        self.clearError();
                         $('#code-input').ntsError('set', res.message);
                     });
                 };
                 AggregateCategory.prototype.remove = function () {
                     var self = this;
-                    if (self.aggregateItemSelectedCode() == null) {
+                    if (!self.aggregateItemSelectedCode()) {
                         return;
                     }
-                    i.service.remove(self.category, self.paymentType, self.aggregateItemSelectedCode()).done(function () {
-                        var itemSelected = self.itemList().filter(function (item) { return item.code == self.aggregateItemSelectedCode(); })[0];
-                        var indexSelected = self.itemList().indexOf(itemSelected);
-                        self.itemList.remove(itemSelected);
-                        if (self.itemList.length == 0) {
-                            self.aggregateItemSelectedCode(null);
-                            return;
-                        }
-                        if (self.itemList()[indexSelected]) {
-                            self.aggregateItemSelectedCode(self.itemList()[indexSelected].code);
-                            return;
-                        }
-                        self.aggregateItemSelectedCode(self.itemList()[indexSelected - 1].code);
-                    }).fail(function (res) {
-                        nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.confirm('出力項目設定からもデータを削除します。\r\nよろしいですか？').ifYes(function () {
+                        i.service.remove(self.category, self.paymentType, self.aggregateItemSelectedCode()).done(function () {
+                            var itemSelected = self.itemList().filter(function (item) { return item.code == self.aggregateItemSelectedCode(); })[0];
+                            var indexSelected = self.itemList().indexOf(itemSelected);
+                            self.itemList.remove(itemSelected);
+                            if (self.itemList() && self.itemList().length > 0) {
+                                var currentItem = self.itemList()[indexSelected];
+                                if (currentItem) {
+                                    self.aggregateItemSelectedCode(currentItem.code);
+                                }
+                                else {
+                                    self.aggregateItemSelectedCode(self.itemList()[indexSelected - 1].code);
+                                }
+                            }
+                            else {
+                                self.aggregateItemSelectedCode(null);
+                            }
+                        });
                     });
                 };
                 AggregateCategory.prototype.close = function () {
                     var self = this;
-                    if (self.dirty.isDirty()) {
-                        nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function () {
-                            nts.uk.ui.windows.close();
-                        });
-                    }
-                    else {
-                        nts.uk.ui.windows.close();
-                    }
+                    self.confirmDirtyAndExecute(function () { return nts.uk.ui.windows.close(); });
                 };
                 AggregateCategory.prototype.setStyle = function () {
                     $('.master-table-label').attr('style', 'width: ' + $('#swap-list-gridArea1').width() + 'px');
                     $('.sub-table-label').attr('style', 'width: ' + $('#swap-list-gridArea2').width() + 'px');
+                };
+                AggregateCategory.prototype.clearError = function () {
+                    $('#code-input').ntsError('clear');
+                    $('#name-input').ntsError('clear');
+                };
+                AggregateCategory.prototype.confirmDirtyAndExecute = function (functionToExecute, functionToExecuteIfNo) {
+                    var self = this;
+                    if (self.dirty.isDirty()) {
+                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
+                            functionToExecute();
+                        }).ifNo(function () {
+                            if (functionToExecuteIfNo) {
+                                functionToExecuteIfNo();
+                            }
+                        });
+                    }
+                    else {
+                        functionToExecute();
+                    }
                 };
                 return AggregateCategory;
             }());
