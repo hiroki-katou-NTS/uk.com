@@ -1,4 +1,4 @@
-module nts.uk.pr.view.qmm016 {
+module nts.uk.pr.view.qmm016.a {
     /**
      * Module service.
      */
@@ -239,7 +239,7 @@ module nts.uk.pr.view.qmm016 {
         /**
          * Wgate table history dto.
          */
-        export interface WageTableHistoryDto {
+        export class WageTableHistoryDto {
             /** The head. */
             head: WageTableHeadDto;
 
@@ -257,6 +257,9 @@ module nts.uk.pr.view.qmm016 {
 
             /** The value items. */
             valueItems: Array<CellItemDto>;
+            
+            constructor() {
+            }
         }
         
         /**

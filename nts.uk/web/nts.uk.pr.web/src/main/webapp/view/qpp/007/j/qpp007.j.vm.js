@@ -84,16 +84,18 @@ var nts;
                                     var dfd = $.Deferred();
                                     j.service.findSalaryAggregateItem(salaryAggregateItemInDto).done(function (data) {
                                         self.salaryAggregateItemModel().convertDtoToData(data);
-                                        var fullItemCodes;
-                                        fullItemCodes = [];
-                                        for (var i = 1; i <= 20; i++) {
-                                            var salaryItemDto = new SalaryItemDto();
-                                            salaryItemDto.salaryItemCode = '' + i;
-                                            salaryItemDto.salaryItemName = '基本給 ' + i;
-                                            fullItemCodes.push(salaryItemDto);
-                                        }
-                                        self.salaryAggregateItemModel().setFullItemCode(fullItemCodes);
-                                        dfd.resolve(self);
+                                        j.service.findAllMasterItem().done(function (masterData) {
+                                            var dataMasterModel;
+                                            dataMasterModel = [];
+                                            for (var _i = 0, masterData_1 = masterData; _i < masterData_1.length; _i++) {
+                                                var item = masterData_1[_i];
+                                                if (item.category == self.selectedDivision()) {
+                                                    dataMasterModel.push(item);
+                                                }
+                                            }
+                                            self.salaryAggregateItemModel().setFullItemCode(dataMasterModel);
+                                            dfd.resolve(self);
+                                        });
                                     }).fail(function (error) {
                                     });
                                     return dfd.promise();
@@ -125,7 +127,7 @@ var nts;
                                     salaryAggregateItemSaveDto.subItemCodes = [];
                                     for (var _i = 0, _a = self.salaryAggregateItemModel().subItemCodes(); _i < _a.length; _i++) {
                                         var itemModel = _a[_i];
-                                        salaryAggregateItemSaveDto.subItemCodes.push(itemModel);
+                                        salaryAggregateItemSaveDto.subItemCodes.push(itemModel.toDto());
                                     }
                                     salaryAggregateItemSaveDto.taxDivision = taxDivision;
                                     j.service.saveSalaryAggregateItem(salaryAggregateItemSaveDto).done(function () {
@@ -140,8 +142,15 @@ var nts;
                                 function SalaryItemModel() {
                                 }
                                 SalaryItemModel.prototype.convertDtoToData = function (salaryItemDto) {
-                                    this.salaryItemCode = salaryItemDto.salaryItemCode;
-                                    this.salaryItemName = salaryItemDto.salaryItemName;
+                                    this.salaryItemCode = salaryItemDto.code;
+                                    this.salaryItemName = salaryItemDto.name;
+                                };
+                                SalaryItemModel.prototype.toDto = function () {
+                                    var dto;
+                                    dto = new SalaryItemDto();
+                                    dto.code = this.salaryItemCode;
+                                    dto.name = this.salaryItemName;
+                                    return dto;
                                 };
                                 return SalaryItemModel;
                             }());
@@ -194,7 +203,7 @@ var nts;
                                             check = 1;
                                             for (var _a = 0, _b = this.subItemCodes(); _a < _b.length; _a++) {
                                                 var itemSub = _b[_a];
-                                                if (itemSub.salaryItemCode == item.salaryItemCode) {
+                                                if (itemSub.salaryItemCode == item.code) {
                                                     check = 0;
                                                     break;
                                                 }

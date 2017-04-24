@@ -90,16 +90,18 @@ module nts.uk.pr.view.qpp007.j {
                 var dfd = $.Deferred<any>();
                 service.findSalaryAggregateItem(salaryAggregateItemInDto).done(data => {
                     self.salaryAggregateItemModel().convertDtoToData(data);
-                    var fullItemCodes: SalaryItemDto[];
-                    fullItemCodes = [];
-                    for (var i = 1; i <= 20; i++) {
-                        var salaryItemDto: SalaryItemDto = new SalaryItemDto();
-                        salaryItemDto.salaryItemCode = '' + i;
-                        salaryItemDto.salaryItemName = '基本給 ' + i;
-                        fullItemCodes.push(salaryItemDto);
-                    }
-                    self.salaryAggregateItemModel().setFullItemCode(fullItemCodes);
-                    dfd.resolve(self);
+
+                    service.findAllMasterItem().done(masterData => {
+                        var dataMasterModel: SalaryItemDto[];
+                        dataMasterModel = [];
+                        for (var item of masterData) {
+                            if (item.category == self.selectedDivision()) {
+                                dataMasterModel.push(item);
+                            }
+                        }
+                        self.salaryAggregateItemModel().setFullItemCode(dataMasterModel);
+                        dfd.resolve(self);
+                    });
                 }).fail(function(error: any) {
 
                 });
@@ -135,7 +137,7 @@ module nts.uk.pr.view.qpp007.j {
                     self.salaryAggregateItemModel().salaryAggregateItemName();
                 salaryAggregateItemSaveDto.subItemCodes = [];
                 for (var itemModel of self.salaryAggregateItemModel().subItemCodes()) {
-                    salaryAggregateItemSaveDto.subItemCodes.push(itemModel);
+                    salaryAggregateItemSaveDto.subItemCodes.push(itemModel.toDto());
                 }
                 salaryAggregateItemSaveDto.taxDivision = taxDivision;
 
@@ -156,8 +158,16 @@ module nts.uk.pr.view.qpp007.j {
 
             //convert dto find => model
             convertDtoToData(salaryItemDto: SalaryItemDto) {
-                this.salaryItemCode = salaryItemDto.salaryItemCode;
-                this.salaryItemName = salaryItemDto.salaryItemName;
+                this.salaryItemCode = salaryItemDto.code;
+                this.salaryItemName = salaryItemDto.name;
+            }
+
+            toDto(): SalaryItemDto {
+                var dto: SalaryItemDto;
+                dto = new SalaryItemDto();
+                dto.code = this.salaryItemCode;
+                dto.name = this.salaryItemName;
+                return dto;
             }
         }
         export class SalaryAggregateItemModel {
@@ -210,7 +220,7 @@ module nts.uk.pr.view.qpp007.j {
                         var check: number;
                         check = 1;
                         for (var itemSub of this.subItemCodes()) {
-                            if (itemSub.salaryItemCode == item.salaryItemCode) {
+                            if (itemSub.salaryItemCode == item.code) {
                                 check = 0;
                                 break;
                             }

@@ -21,7 +21,7 @@ var qet001;
                             }
                         },
                         { headerText: 'コード', prop: 'code', width: 50 },
-                        { headerText: '名称', prop: 'name', width: 50 },
+                        { headerText: '名称', prop: 'name', width: 100 },
                         { headerText: '削除', prop: 'code', width: 50,
                             formatter: function (data) {
                                 return '<button class="delete-button icon icon-close" id="' + data + '" >'
@@ -114,8 +114,10 @@ var qet001;
                     return false;
                 };
                 ScreenModel.prototype.clearError = function () {
-                    $('#code-input').ntsError('clear');
-                    $('#name-input').ntsError('clear');
+                    if (nts.uk.ui._viewModel) {
+                        $('#code-input').ntsError('clear');
+                        $('#name-input').ntsError('clear');
+                    }
                 };
                 ScreenModel.prototype.reloadReportItem = function () {
                     var self = this;
@@ -178,20 +180,17 @@ var qet001;
                 };
                 ScreenModel.prototype.save = function () {
                     var self = this;
-                    self.clearError();
-                    $('#code-input').ntsEditor('validate');
-                    $('#name-input').ntsEditor('validate');
                     if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                         return;
                     }
-                    var currentSelectedCode = self.outputSettings().temporarySelectedCode();
                     b.service.saveOutputSetting(self.outputSettingDetail()).done(function () {
                         nts.uk.ui.windows.setShared('isHasUpdate', true, false);
-                        nts.uk.ui.dialog.alert('save success!').then(function () {
-                            self.loadAllOutputSetting();
+                        self.loadAllOutputSetting().done(function () {
                             self.resetDirty();
+                            self.outputSettings().outputSettingSelectedCode(self.outputSettingDetail().settingCode());
                         });
                     }).fail(function (res) {
+                        self.clearError();
                         $('#code-input').ntsError('set', res.message);
                     });
                 };

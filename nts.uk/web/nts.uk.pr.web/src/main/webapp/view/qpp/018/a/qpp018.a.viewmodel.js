@@ -69,7 +69,7 @@ var nts;
                                     var isError = false;
                                     $('#date-picker').ntsEditor('validate');
                                     if (!self.isEqual() && !self.isDeficient() && !self.isRedundant()) {
-                                        $('.extract-condition-error').ntsError('set', '出力条件が入力されていません。');
+                                        $('.extract-condition-error').ntsError('set', 'が入力されていません。');
                                         isError = true;
                                     }
                                     if (self.insuranceOffice().selectedOfficeCodeList().length <= 0) {

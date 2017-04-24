@@ -36,7 +36,7 @@ module qet001.b.viewmodel {
                         }
                     },
                     {headerText: 'コード', prop: 'code', width: 50},
-                    {headerText: '名称', prop: 'name', width: 50},
+                    {headerText: '名称', prop: 'name', width: 100},
                     {headerText: '削除', prop: 'code', width: 50,
                         formatter: function(data: string) {
                             return '<button class="delete-button icon icon-close" id="' + data + '" >'
@@ -133,8 +133,10 @@ module qet001.b.viewmodel {
             }
 
         private clearError(): void {
-            $('#code-input').ntsError('clear');
-            $('#name-input').ntsError('clear');
+            if (nts.uk.ui._viewModel) {
+                $('#code-input').ntsError('clear');
+                $('#name-input').ntsError('clear');
+            }
         }
 
         /**
@@ -221,23 +223,18 @@ module qet001.b.viewmodel {
          */
         public save() {
             var self = this;
-            // clear error.
-            self.clearError();
-            // Validate.
-            $('#code-input').ntsEditor('validate');
-            $('#name-input').ntsEditor('validate');
             // Check has error.
             if(!nts.uk.ui._viewModel.errors.isEmpty()) {
                 return;
             }
-            var currentSelectedCode = self.outputSettings().temporarySelectedCode();
             service.saveOutputSetting(self.outputSettingDetail()).done(function() {
                 nts.uk.ui.windows.setShared('isHasUpdate', true, false);
-                nts.uk.ui.dialog.alert('save success!').then(function() {
-                    self.loadAllOutputSetting();
+                self.loadAllOutputSetting().done(() => {
                     self.resetDirty();
-                })
+                    self.outputSettings().outputSettingSelectedCode(self.outputSettingDetail().settingCode());
+                });
             }).fail(function(res) {
+                self.clearError();
                 $('#code-input').ntsError('set', res.message);
             })
         }
@@ -290,7 +287,6 @@ module qet001.b.viewmodel {
         public loadOutputSettingDetail(selectedCode: string): JQueryPromise<void> {
             var dfd = $.Deferred<void>();
             var self = this;
-            
             service.findOutputSettingDetail(selectedCode).done(function(data: WageLedgerOutputSetting){
                 self.clearError();
                 self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList, data));

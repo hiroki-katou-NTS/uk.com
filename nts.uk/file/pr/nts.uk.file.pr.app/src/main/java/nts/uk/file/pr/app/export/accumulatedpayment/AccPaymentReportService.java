@@ -15,6 +15,7 @@ import lombok.val;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.file.pr.app.export.accumulatedpayment.data.AccPaymentDataSource;
+import nts.uk.file.pr.app.export.accumulatedpayment.data.AccPaymentHeaderData;
 import nts.uk.file.pr.app.export.accumulatedpayment.data.AccPaymentItemData;
 import nts.uk.file.pr.app.export.accumulatedpayment.query.AccPaymentReportQuery;
 import nts.uk.shr.com.context.AppContexts;
@@ -46,7 +47,7 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 				"999000000000000000000000000000000005", "999000000000000000000000000000000006",
 				"999000000000000000000000000000000007", "999000000000000000000000000000000008",
 				"999000000000000000000000000000000009", "999000000000000000000000000000000010" };
-			query.setEmpIdList(Arrays.asList(personIds));
+			query.setPIdList(Arrays.asList(personIds));
 		
 		
 		// Query data.
@@ -76,13 +77,18 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 //		}
 		// Create header object.
 		
-
+		AccPaymentHeaderData headerData = AccPaymentHeaderData.builder()
+				.departmentInfo("【部門：役員　販売促進1課　役員～製造部　製造課　製造　（31部門）】")
+				.empTypeInfo("【分類：正社員～アルバイト（5分類）】")
+				.positionInfo("【職位：参事～主任（10職位）】")
+				.yearMonthInfo("【処理年月：平成12年1月~12月迄】")
+				.build();
 
 		// Create data source.
 		val dataSource = AccPaymentDataSource
 				.builder()
 				.accPaymentItemData(items)
-				.headerData(null)
+				.headerData(headerData)
 				.build();
 
 		// Call generator.

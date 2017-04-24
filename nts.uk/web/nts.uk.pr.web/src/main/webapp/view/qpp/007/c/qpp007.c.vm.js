@@ -89,7 +89,13 @@ var nts;
                                     nts.uk.ui.windows.sub.modal('/view/qpp/007/j/index.xhtml', { title: '集計項目の設定', dialogClass: 'no-close' })
                                         .onClosed(function () {
                                         self.loadAggregateItems().done(function () {
-                                            self.loadOutputSettingDetail(self.outputSettingDetailModel().settingCode());
+                                            var selectedCode = self.outputSettingDetailModel().settingCode();
+                                            if (selectedCode) {
+                                                self.loadOutputSettingDetail(selectedCode);
+                                            }
+                                            else {
+                                                self.outputSettingDetailModel().updateData();
+                                            }
                                         });
                                     });
                                 };

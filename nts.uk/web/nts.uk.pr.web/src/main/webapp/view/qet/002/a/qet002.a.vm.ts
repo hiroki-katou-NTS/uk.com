@@ -5,14 +5,19 @@ module qet002.a.viewmodel {
         lowerLimitValue: KnockoutObservable<number>;
         isUpperLimit: KnockoutObservable<boolean>;
         upperLimitValue: KnockoutObservable<number>;
+        japanYear: KnockoutObservable<string>;
 
         constructor() {
-            this.targetYear = ko.observable(2016);
-            this.isLowerLimit = ko.observable(true);
-            this.isUpperLimit = ko.observable(true);
-            this.lowerLimitValue = ko.observable(null);
-            this.upperLimitValue = ko.observable(null);           
-
+            var self = this;
+            self.targetYear = ko.observable(2016);
+            self.isLowerLimit = ko.observable(true);
+            self.isUpperLimit = ko.observable(true);
+            self.lowerLimitValue = ko.observable(null);
+            self.japanYear = ko.observable('(' + nts.uk.time.yearInJapanEmpire('2016') + ')');
+            self.upperLimitValue = ko.observable(null);           
+            self.targetYear.subscribe(function(val: number){
+               self.japanYear(""+nts.uk.time.yearInJapanEmpire(val)); 
+            });
         }
 
         /**

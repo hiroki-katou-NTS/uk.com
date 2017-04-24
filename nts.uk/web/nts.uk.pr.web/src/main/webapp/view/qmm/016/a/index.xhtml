@@ -15,6 +15,14 @@
 				nts.uk.ctx.pr.core.dom.wagetable.history.element.RangeLimit
 				nts.uk.ctx.pr.core.dom.wagetable.WtValue
 			</com:ValidatorScript>
+			<script>
+				__viewContext.primitiveValueConstraints.Interval = {
+					valueType: 'Decimal',
+					max: 999.99,
+					min: -999.99,
+					notEqual: 0.00,
+				};
+			</script>
 			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js" />
 			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js" />
 			<com:stylefile path="qmm016.a.style.css" />

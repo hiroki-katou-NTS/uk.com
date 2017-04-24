@@ -93,8 +93,8 @@ public class SalaryAggregateItemSaveDto {
 		public Set<SalaryItem> getSubItemCodes() {
 			return this.dto.getSubItemCodes().stream().map(itemCode -> {
 				SalaryItem salaryItem = new SalaryItem();
-				salaryItem.setSalaryItemCode(itemCode.getSalaryItemCode());
-				salaryItem.setSalaryItemName(itemCode.getSalaryItemName());
+				salaryItem.setSalaryItemCode(itemCode.getCode());
+				salaryItem.setSalaryItemName(itemCode.getName());
 				return salaryItem;
 			}).collect(Collectors.toSet());
 		}
