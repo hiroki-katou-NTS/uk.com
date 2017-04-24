@@ -66,8 +66,7 @@ public class WtUpdateCommandHandler extends CommandHandler<WtUpdateCommand> {
 
 		// Check exist
 		if (!optHeader.isPresent()) {
-			// TODO: need msg id.
-			throw new BusinessException("errorMessage");
+			throw new BusinessException("ER026");
 		}
 
 		// Update new data
@@ -78,6 +77,14 @@ public class WtUpdateCommandHandler extends CommandHandler<WtUpdateCommand> {
 		// Validate
 		header.validate();
 		headService.validateRequiredItem(header);
+
+		Optional<WtHistory> optHistory = this.wtHistoryRepo
+				.findHistoryByUuid(command.getWtHistoryDto().getHistoryId());
+
+		// Check exist
+		if (!optHistory.isPresent()) {
+			throw new BusinessException("ER026");
+		}
 
 		// Create history from cmd.
 		WtHistory history = command.getWtHistoryDto().toDomain(header.getCode().v());

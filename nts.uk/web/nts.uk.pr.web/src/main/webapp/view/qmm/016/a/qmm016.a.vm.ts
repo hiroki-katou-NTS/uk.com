@@ -120,6 +120,21 @@ module nts.uk.pr.view.qmm016.a {
                 dfd.resolve();
                 return dfd.promise();
             }
+            
+            private validateData() {
+                $("#inp_code").ntsEditor("validate");
+                $("#inp_name").ntsEditor("validate");
+                $("#inp_start_date").ntsEditor("validate");
+                if ($('.nts-editor').ntsError("hasError")) {
+                    return true;
+                }
+                return false;
+            }
+            
+            //function clear message error
+            private clearErrorSave() {
+                $('.save-error').ntsError('clear');
+            }
 
             /**
              * Create or Update UnitPriceHistory.
@@ -127,6 +142,11 @@ module nts.uk.pr.view.qmm016.a {
             onSave(): JQueryPromise<string> {
                 var self = this;
                 var dfd = $.Deferred<string>();
+                
+                self.clearErrorSave();
+                if(self.validateData()) {
+                    return dfd.promise();
+                }
 
                 // New mode.
                 if (self.isNewMode()) {
@@ -167,7 +187,6 @@ module nts.uk.pr.view.qmm016.a {
                 var self = this;
                 self.selectedTab('tab-1');
                 self.head().reset();
-                self.valueItems(self.history().detailViewModel.getCellItem());
                 self.headDirtyChecker.reset();
                 self.settingDirtyChecker.reset();
                 self.valuesDirtyChecker.reset();

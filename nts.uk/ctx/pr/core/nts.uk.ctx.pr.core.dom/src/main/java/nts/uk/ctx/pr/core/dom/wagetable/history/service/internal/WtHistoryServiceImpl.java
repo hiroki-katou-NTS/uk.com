@@ -64,7 +64,7 @@ public class WtHistoryServiceImpl extends WtHistoryService {
 		if (!wtHistoryRepo.isValidDateRange(history.getCompanyCode(),
 				history.getWageTableCode().v(), history.getApplyRange().getStartMonth().v())) {
 			// History after start date and time exists
-			throw new BusinessException("ER010");
+			throw new BusinessException("ER011");
 		}
 	}
 
