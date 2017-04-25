@@ -24,7 +24,7 @@ module qmm020.k.viewmodel {
             self.endYM = ko.observable(nts.uk.ui.windows.getShared('endYM'));
             self.currentItem = ko.observable(nts.uk.ui.windows.getShared('currentItem'));
             self.selectStartYm = ko.observable(nts.uk.ui.windows.getShared('startYM'));
-            
+
             if (self.scrType() === '1') {
                 $('#K_LBL_005').parent().hide();
                 $('#K_LBL_006').hide();
@@ -42,20 +42,7 @@ module qmm020.k.viewmodel {
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred<any>();
-            //list data
-            //self.buildItemList();
-            $('#F_LST_001').on('selectionChanging', function(event) {
-                console.log('Selecting value:' + (<any>event.originalEvent).detail);
-            })
-            $('#F_LST_001').on('selectionChanged', function(event: any) {
-                console.log('Selected value:' + (<any>event.originalEvent).detail)
-            })
-            //fill data to dialog
-            //            service.getLayoutWithMaxStartYm().done(function(layout: Array<service.model.LayoutMasterDto>){
-            //                self.layouts(layout);
-            //                self();
-            //            });
-
+            
             //checkbox change
             self.isRadioCheck.subscribe(function(newValue) {
                 if (newValue === 2) {
@@ -64,6 +51,7 @@ module qmm020.k.viewmodel {
                     self.enableYm(false);
                 }
             })
+            
             dfd.resolve();
             // Return.
             return dfd.promise();
@@ -72,15 +60,38 @@ module qmm020.k.viewmodel {
         //Setting History 
         historyProcess(): any {
             var self = this;
+            debugger;
+            if(parseInt(self.selectStartYm())> parseInt($('#K_INP_001').val())){
+                //$('#K_INP_001').ntsError('set',Error.ER023);
+                nts.uk.ui.dialog.confirm("Do you want to say \"Hello World!\"?");
+            }
             //履歴の編集-削除処理
             if (self.isRadioCheck() == 1) {
                 service.delComAllot(self.currentItem()).done(function() {
                 }).fail(function(res) {
                     alert(res);
                 });
-
+            //履歴を修正する
             } else {
-                alert('update');
+                self.currentItem();
+                var previousItem = nts.uk.ui.windows.getShared('previousItem');
+                //Update current Item 
+                var startValue = $('#K_INP_001').val().replace('/', '');
+                self.currentItem().startDate = startValue;
+
+                //previousItem.startDate = 
+                service.updateComAllot(self.currentItem()).done(function() {
+                }).fail(function(res) {
+                    alert(res);
+                });
+                //Update previous iTem
+                if (previousItem != undefined) {
+                    previousItem.endDate = previousYM(startValue);
+                    service.updateComAllot(previousItem).done(function() {
+                    }).fail(function(res) {
+                        alert(res);
+                    });
+                }
             }
             nts.uk.ui.windows.close();
         }
@@ -90,6 +101,26 @@ module qmm020.k.viewmodel {
             nts.uk.ui.windows.close();
         }
     }
-
+    
+    
+    enum Error {
+        ER023 = <any>"履歴の期間が重複しています。",   
+    }
+    //Previous Month 
+    function previousYM(sYm: string):number{
+        var preYm: number = 0;
+        if (sYm.length == 6) {
+            let sYear: string = sYm.substr(0, 4);
+            let sMonth: string = sYm.substr(4, 2);
+            //Trong truong hop thang 1 thi thang truoc la thang 12
+            if (sMonth == "01") {
+                preYm = parseInt((parseInt(sYear) - 1).toString() + "12");
+                //Truong hop con lai thi tru di 1      
+            } else {
+                preYm = parseInt(sYm) - 1;
+            }
+        }
+        return preYm;
+    }
 
 }

@@ -5,7 +5,8 @@ var qmm020;
         var service;
         (function (service) {
             var paths = {
-                delAllotCompanySetting: "pr/core/allot/delete"
+                delAllotCompanySetting: "pr/core/allot/delete",
+                updateAllotCompanySetting: "pr/core/allot/update"
             };
             function delComAllot(delAllotCompanyCmd) {
                 var dfd = $.Deferred();
@@ -15,10 +16,8 @@ var qmm020;
                 command.startDate = delAllotCompanyCmd.startDate;
                 command.endDate = delAllotCompanyCmd.endDate;
                 command.historyId = delAllotCompanyCmd.historyId;
-                debugger;
                 nts.uk.request.ajax(paths.delAllotCompanySetting, command)
                     .done(function (res) {
-                    debugger;
                     dfd.resolve(res);
                 })
                     .fail(function (res) {
@@ -27,6 +26,25 @@ var qmm020;
                 return dfd.promise();
             }
             service.delComAllot = delComAllot;
+            function updateComAllot(updateAllotCompanyCommand) {
+                var dfd = $.Deferred();
+                var command = {};
+                debugger;
+                command.payStmtCode = updateAllotCompanyCommand.paymentDetailCode;
+                command.bonusStmtCode = updateAllotCompanyCommand.bonusDetailCode;
+                command.startDate = updateAllotCompanyCommand.startDate;
+                command.endDate = updateAllotCompanyCommand.endDate;
+                command.historyId = updateAllotCompanyCommand.historyId;
+                nts.uk.request.ajax(paths.updateAllotCompanySetting, command)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.updateComAllot = updateComAllot;
         })(service = k.service || (k.service = {}));
     })(k = qmm020.k || (qmm020.k = {}));
 })(qmm020 || (qmm020 = {}));

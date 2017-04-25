@@ -38,15 +38,15 @@ module qmm020.j.viewmodel {
             self.txtCopyHistory = "";
             self.start();
         }
-        
+
 
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred<any>();
-                var maxDate :number = Number(self.valueShareJDialog().split("~")[1]);
-                self.selectStartYm(nts.uk.time.formatYearMonth(maxDate));
-                //Hien thi lable RadioBoxs
-                self.txtCopyHistory="最新の履歴（" + nts.uk.time.formatYearMonth(maxDate) + "）から引き継ぐ";
+            var maxDate: number = Number(self.valueShareJDialog().split("~")[1]);
+            self.selectStartYm(nts.uk.time.formatYearMonth(maxDate));
+            //Hien thi lable RadioBoxs
+            self.txtCopyHistory = "最新の履歴（" + nts.uk.time.formatYearMonth(maxDate) + "）から引き継ぐ";
             dfd.resolve();
             // Return.
             return dfd.promise();
@@ -54,14 +54,18 @@ module qmm020.j.viewmodel {
 
         //Event when click to Setting Button
         createHistoryDocument(): any {
-            
+
             var self = this;
+            if (self.selectStartYm() > nts.uk.time.formatYearMonth($('#J_INP_001').val())) {
+                $('#J_INP_001').ntsError('set', Error.ER023);
+            }
+
             if (self.valueShareJDialog().split('~')[0] === "1") {
                 var radioCheckVal = self.selectedValue();
                 var inputYm = $('#J_INP_001').val();
                 if (!nts.uk.time.parseYearMonth(inputYm).success) {
-                        alert(nts.uk.time.parseYearMonth(inputYm).msg);
-                        return false;
+                    alert(nts.uk.time.parseYearMonth(inputYm).msg);
+                    return false;
                 }
                 //Set value share to parent Dialog
                 if (radioCheckVal === 1) {
@@ -74,28 +78,21 @@ module qmm020.j.viewmodel {
             }
             //Type of History Screen is 2 
             if (self.valueShareJDialog().split('~')[0] === "2") {
-                
+
             }
             //Type of History Screen is 3 
             if (self.valueShareJDialog().split('~')[0] === "3") {
                 
             }
-            //check YM
-            //           var selectYm = self.selectStartYm();
-            //           inputYm = inputYm.replace('/','');
-            //           if(+inputYm < +selectYm || + inputYm == +selectYm){
-            //              alert('履歴の期間が正しくありません。');
-            //               return false;
-            //           }
-            //           else{
-            //               nts.uk.ui.windows.setShared('returnJDialog',self.selectStartYm());
-            //               nts.uk.ui.windows.close();  
-            //           }
+
         }
         //Close Dialog
         closeDialog(): any {
             //nts.uk.ui.windows.setShared('returnJDialog','');
             nts.uk.ui.windows.close();
         }
+    }
+    enum Error {
+        ER023 = <any>"履歴の期間が重複しています。",
     }
 }

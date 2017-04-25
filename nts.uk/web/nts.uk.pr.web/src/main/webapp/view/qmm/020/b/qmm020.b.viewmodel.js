@@ -7,11 +7,10 @@ var qmm020;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.maxDate = "";
                     self.isInsert = ko.observable(false);
                     self.itemList = ko.observableArray([]);
                     self.currentItem = ko.observable(new ComHistItem({
-                        histId: '',
+                        historyId: '',
                         startYm: '',
                         endYm: '',
                         payCode: '',
@@ -30,7 +29,7 @@ var qmm020;
                                 var item = companyAllots[i_1];
                                 if (item) {
                                     _items.push(new ComHistItem({
-                                        histId: (item.historyId || "").toString(),
+                                        historyId: (item.historyId || "").toString(),
                                         startYm: (item.startDate || "").toString(),
                                         endYm: (item.endDate || "").toString(),
                                         payCode: (item.paymentDetailCode || "").toString(),
@@ -41,7 +40,7 @@ var qmm020;
                             self.itemList(_items);
                             self.companyAllots = companyAllots;
                             self.currentItem().setSource(self.companyAllots);
-                            self.currentItem().histId(companyAllots[0].historyId);
+                            self.currentItem().historyId(companyAllots[0].historyId);
                         }
                         else {
                             dfd.resolve();
@@ -50,7 +49,7 @@ var qmm020;
                         alert(res);
                     });
                     b.service.getAllotCompanyMaxDate().done(function (itemMax) {
-                        self.maxDate = (itemMax.startDate || "").toString();
+                        debugger;
                         self.maxItem(itemMax);
                     }).fail(function (res) {
                         alert(res);
@@ -59,10 +58,14 @@ var qmm020;
                 };
                 ScreenModel.prototype.register = function () {
                     var self = this;
-                    var current = _.find(self.companyAllots, function (item) { return item.historyId == self.currentItem().histId(); });
-                    debugger;
-                    if (current) {
-                        b.service.insertComAllot(current).done(function () {
+                    if (self.isInsert()) {
+                        b.service.insertComAllot(self.currentItem()).done(function () {
+                        }).fail(function (res) {
+                            alert(res);
+                        });
+                    }
+                    else {
+                        b.service.updateComAllot(self.currentItem()).done(function () {
                         }).fail(function (res) {
                             alert(res);
                         });
@@ -71,62 +74,75 @@ var qmm020;
                 ScreenModel.prototype.openJDialog = function () {
                     var self = this;
                     var historyScreenType = "1";
-                    var valueShareJDialog = historyScreenType + "~" + self.maxDate;
+                    var valueShareJDialog = historyScreenType + "~" + self.currentItem().startYm();
                     nts.uk.ui.windows.setShared('valJDialog', valueShareJDialog);
                     nts.uk.ui.windows.sub.modal('/view/qmm/020/j/index.xhtml', { title: '明細書の紐ずけ＞履歴追加' })
                         .onClosed(function () {
                         var returnJDialog = nts.uk.ui.windows.getShared('returnJDialog');
-                        var modeRadio = returnJDialog.split("~")[0];
-                        var returnValue = returnJDialog.split("~")[1];
-                        if (returnValue != '') {
-                            var items = self.itemList();
-                            var addItem = new ComHistItem({
-                                histId: new Date().getTime().toString(),
-                                startYm: returnValue,
-                                endYm: '999912',
-                                payCode: '',
-                                bonusCode: ''
-                            });
-                            items.push(addItem);
-                            if (modeRadio === "1") {
-                                debugger;
-                                self.currentItem().histId(addItem.histId());
-                                self.currentItem().startYm(returnValue);
-                                self.currentItem().endYm('999912');
-                                self.currentItem().payCode(self.maxItem().paymentDetailCode);
-                                self.currentItem().bonusCode(self.maxItem().bonusDetailCode);
-                                if (self.currentItem().payCode() != '') {
-                                    b.service.getAllotLayoutName(self.currentItem().payCode()).done(function (stmtName) {
-                                        self.currentItem().payName(stmtName);
-                                    }).fail(function (res) {
+                        if (returnJDialog != undefined) {
+                            var modeRadio = returnJDialog.split("~")[0];
+                            var returnValue = returnJDialog.split("~")[1];
+                            if (returnValue != '') {
+                                var items = [];
+                                var addItem = new ComHistItem({
+                                    historyId: new Date().getTime().toString(),
+                                    startYm: returnValue,
+                                    endYm: '999912',
+                                    payCode: '',
+                                    bonusCode: ''
+                                });
+                                items.push(addItem);
+                                for (var i_2 in self.itemList()) {
+                                    items.push(self.itemList()[i_2]);
+                                }
+                                var lastValue = _.find(self.companyAllots, function (item) { return item.endDate == 999912; });
+                                if (lastValue != undefined) {
+                                    lastValue.endDate = previousYM(returnValue);
+                                    var updateValue = _.find(items, function (item) { return item.endYm() == "999912" && item.startYm() != returnValue; });
+                                    if (updateValue != undefined) {
+                                        updateValue.endYm(lastValue.endDate.toString());
+                                    }
+                                }
+                                if (modeRadio === "1") {
+                                    self.currentItem().historyId(addItem.historyId());
+                                    self.currentItem().startYm(returnValue);
+                                    self.currentItem().endYm('999912');
+                                    self.currentItem().payCode(self.maxItem().paymentDetailCode);
+                                    self.currentItem().bonusCode(self.maxItem().bonusDetailCode);
+                                    if (self.currentItem().payCode() != '') {
+                                        b.service.getAllotLayoutName(self.currentItem().payCode()).done(function (stmtName) {
+                                            self.currentItem().payName(stmtName);
+                                        }).fail(function (res) {
+                                            self.currentItem().payName('');
+                                        });
+                                    }
+                                    else {
                                         self.currentItem().payName('');
-                                    });
-                                }
-                                else {
-                                    self.currentItem().payName('');
-                                }
-                                if (self.currentItem().bonusCode() != '') {
-                                    b.service.getAllotLayoutName(self.currentItem().bonusCode()).done(function (stmtName) {
-                                        self.currentItem().bonusName(stmtName);
-                                    }).fail(function (res) {
+                                    }
+                                    if (self.currentItem().bonusCode() != '') {
+                                        b.service.getAllotLayoutName(self.currentItem().bonusCode()).done(function (stmtName) {
+                                            self.currentItem().bonusName(stmtName);
+                                        }).fail(function (res) {
+                                            self.currentItem().bonusName('');
+                                        });
+                                    }
+                                    else {
                                         self.currentItem().bonusName('');
-                                    });
+                                    }
                                 }
                                 else {
+                                    self.currentItem().historyId(addItem.historyId());
+                                    self.currentItem().startYm(returnValue);
+                                    self.currentItem().endYm('999912');
+                                    self.currentItem().payCode('');
+                                    self.currentItem().bonusCode('');
+                                    self.currentItem().payName('');
                                     self.currentItem().bonusName('');
                                 }
                             }
-                            else {
-                                self.currentItem().histId(addItem.histId());
-                                self.currentItem().startYm(returnValue);
-                                self.currentItem().endYm('999912');
-                                self.currentItem().payCode('');
-                                self.currentItem().bonusCode('');
-                                self.currentItem().payName('');
-                                self.currentItem().bonusName('');
-                            }
                             self.itemList([]);
                             self.itemList(items);
+                            self.isInsert = ko.observable(true);
                         }
                     });
                 };
@@ -134,10 +150,14 @@ var qmm020;
                     var self = this;
                     nts.uk.ui.windows.setShared("endYM", self.currentItem().endYm());
                     nts.uk.ui.windows.setShared('scrType', '1');
-                    nts.uk.ui.windows.setShared('startYM', self.maxDate);
-                    var current = _.find(self.companyAllots, function (item) { return item.historyId == self.currentItem().histId(); });
+                    nts.uk.ui.windows.setShared('startYM', self.currentItem().startYm());
+                    var current = _.find(self.companyAllots, function (item) { return item.historyId == self.currentItem().historyId(); });
+                    var previousItem = _.find(self.companyAllots, function (item) { return item.endDate == parseInt(self.currentItem().startYm()) - 1; });
                     if (current) {
                         nts.uk.ui.windows.setShared('currentItem', current);
+                    }
+                    if (previousItem) {
+                        nts.uk.ui.windows.setShared('previousItem', previousItem);
                     }
                     nts.uk.ui.windows.sub.modal('/view/qmm/020/k/index.xhtml', { title: '明細書の紐ずけ＞履歴編集' }).onClosed(function () {
                         self.start();
@@ -177,11 +197,25 @@ var qmm020;
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
+            function previousYM(sYm) {
+                var preYm = 0;
+                if (sYm.length == 6) {
+                    var sYear = sYm.substr(0, 4);
+                    var sMonth = sYm.substr(4, 2);
+                    if (sMonth == "01") {
+                        preYm = parseInt((parseInt(sYear) - 1).toString() + "12");
+                    }
+                    else {
+                        preYm = parseInt(sYm) - 1;
+                    }
+                }
+                return preYm;
+            }
             var ComHistItem = (function () {
                 function ComHistItem(param) {
                     var self = this;
-                    self.id = param.histId;
-                    self.histId = ko.observable(param.histId);
+                    self.id = param.historyId;
+                    self.historyId = ko.observable(param.historyId);
                     self.startYm = ko.observable(param.startYm);
                     self.endYm = ko.observable(param.endYm);
                     self.payCode = ko.observable(param.payCode);
@@ -189,7 +223,7 @@ var qmm020;
                     self.startEnd = param.startYm + '~' + param.endYm;
                     self.payName = ko.observable(param.payName || '');
                     self.bonusName = ko.observable(param.bonusName || '');
-                    self.histId.subscribe(function (newValue) {
+                    self.historyId.subscribe(function (newValue) {
                         if (typeof newValue != 'string') {
                             return;
                         }
@@ -227,7 +261,7 @@ var qmm020;
                                 bonusDetailCode: '',
                                 startDate: 0,
                                 endDate: 0,
-                                historyId: self.histId()
+                                historyId: self.historyId()
                             };
                             self.listSource.push(newItem);
                             self.payName('');
@@ -235,25 +269,27 @@ var qmm020;
                         }
                     });
                     self.payCode.subscribe(function (newValue) {
-                        var current = _.find(self.listSource, function (item) { return item.historyId == self.histId(); });
+                        var current = _.find(self.listSource, function (item) { return item.historyId == self.historyId(); });
                         if (current) {
                             current.paymentDetailCode = newValue;
                         }
                     });
                     self.bonusCode.subscribe(function (newValue) {
-                        var current = _.find(self.listSource, function (item) { return item.historyId == self.histId(); });
+                        var current = _.find(self.listSource, function (item) { return item.historyId == self.historyId(); });
                         if (current) {
                             current.bonusDetailCode = newValue;
                         }
                     });
                     self.startYm.subscribe(function (newValue) {
-                        var current = _.find(self.listSource, function (item) { return item.historyId == self.histId(); });
+                        self.startEnd = self.startYm() + '~' + self.endYm();
+                        var current = _.find(self.listSource, function (item) { return item.historyId == self.historyId(); });
                         if (current) {
                             current.startDate = newValue;
                         }
                     });
                     self.endYm.subscribe(function (newValue) {
-                        var current = _.find(self.listSource, function (item) { return item.historyId == self.histId(); });
+                        self.startEnd = self.startYm() + '~' + self.endYm();
+                        var current = _.find(self.listSource, function (item) { return item.historyId == self.historyId(); });
                         if (current) {
                             current.endDate = newValue;
                         }

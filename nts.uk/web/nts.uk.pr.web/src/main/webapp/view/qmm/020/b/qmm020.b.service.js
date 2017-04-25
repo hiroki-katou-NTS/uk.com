@@ -44,6 +44,7 @@ var qmm020;
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getMaxDate)
                     .done(function (res) {
+                    debugger;
                     dfd.resolve(res);
                 })
                     .fail(function (res) {
@@ -55,11 +56,11 @@ var qmm020;
             function updateComAllot(updateAllotCompanyCommand) {
                 var dfd = $.Deferred();
                 var command = {};
-                command.payStmtCode = updateAllotCompanyCommand.paymentDetailCode;
-                command.bonusStmtCode = updateAllotCompanyCommand.bonusDetailCode;
-                command.startDate = updateAllotCompanyCommand.startDate;
-                command.endDate = updateAllotCompanyCommand.endDate;
-                command.historyId = updateAllotCompanyCommand.historyId;
+                command.payStmtCode = updateAllotCompanyCommand.payCode();
+                command.bonusStmtCode = updateAllotCompanyCommand.bonusCode();
+                command.startDate = updateAllotCompanyCommand.startYm();
+                command.endDate = updateAllotCompanyCommand.endYm();
+                command.historyId = updateAllotCompanyCommand.historyId();
                 nts.uk.request.ajax(paths.updateAllotCompanySetting, command)
                     .done(function (res) {
                     dfd.resolve(res);
@@ -73,12 +74,11 @@ var qmm020;
             function insertComAllot(insertAllotCompanyCommand) {
                 var dfd = $.Deferred();
                 var command = {};
-                command.payStmtCode = insertAllotCompanyCommand.paymentDetailCode;
-                command.bonusStmtCode = insertAllotCompanyCommand.bonusDetailCode;
-                command.startDate = insertAllotCompanyCommand.startDate;
-                command.endDate = insertAllotCompanyCommand.endDate;
-                command.historyId = insertAllotCompanyCommand.historyId;
-                debugger;
+                command.payStmtCode = insertAllotCompanyCommand.payCode();
+                command.bonusStmtCode = insertAllotCompanyCommand.bonusCode();
+                command.startDate = insertAllotCompanyCommand.startYm();
+                command.endDate = insertAllotCompanyCommand.endYm();
+                command.historyId = insertAllotCompanyCommand.historyId();
                 nts.uk.request.ajax(paths.insertAllotCompanySetting, command)
                     .done(function (res) {
                     dfd.resolve(res);

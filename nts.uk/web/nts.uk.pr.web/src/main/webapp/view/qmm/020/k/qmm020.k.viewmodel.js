@@ -29,12 +29,6 @@ var qmm020;
                 ScreenModel.prototype.start = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    $('#F_LST_001').on('selectionChanging', function (event) {
-                        console.log('Selecting value:' + event.originalEvent.detail);
-                    });
-                    $('#F_LST_001').on('selectionChanged', function (event) {
-                        console.log('Selected value:' + event.originalEvent.detail);
-                    });
                     self.isRadioCheck.subscribe(function (newValue) {
                         if (newValue === 2) {
                             self.enableYm(true);
@@ -48,6 +42,10 @@ var qmm020;
                 };
                 ScreenModel.prototype.historyProcess = function () {
                     var self = this;
+                    debugger;
+                    if (parseInt(self.selectStartYm()) > parseInt($('#K_INP_001').val())) {
+                        nts.uk.ui.dialog.confirm("Do you want to say \"Hello World!\"?");
+                    }
                     if (self.isRadioCheck() == 1) {
                         k.service.delComAllot(self.currentItem()).done(function () {
                         }).fail(function (res) {
@@ -55,7 +53,21 @@ var qmm020;
                         });
                     }
                     else {
-                        alert('update');
+                        self.currentItem();
+                        var previousItem = nts.uk.ui.windows.getShared('previousItem');
+                        var startValue = $('#K_INP_001').val().replace('/', '');
+                        self.currentItem().startDate = startValue;
+                        k.service.updateComAllot(self.currentItem()).done(function () {
+                        }).fail(function (res) {
+                            alert(res);
+                        });
+                        if (previousItem != undefined) {
+                            previousItem.endDate = previousYM(startValue);
+                            k.service.updateComAllot(previousItem).done(function () {
+                            }).fail(function (res) {
+                                alert(res);
+                            });
+                        }
                     }
                     nts.uk.ui.windows.close();
                 };
@@ -65,6 +77,24 @@ var qmm020;
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
+            var Error;
+            (function (Error) {
+                Error[Error["ER023"] = "履歴の期間が重複しています。"] = "ER023";
+            })(Error || (Error = {}));
+            function previousYM(sYm) {
+                var preYm = 0;
+                if (sYm.length == 6) {
+                    var sYear = sYm.substr(0, 4);
+                    var sMonth = sYm.substr(4, 2);
+                    if (sMonth == "01") {
+                        preYm = parseInt((parseInt(sYear) - 1).toString() + "12");
+                    }
+                    else {
+                        preYm = parseInt(sYm) - 1;
+                    }
+                }
+                return preYm;
+            }
         })(viewmodel = k.viewmodel || (k.viewmodel = {}));
     })(k = qmm020.k || (qmm020.k = {}));
 })(qmm020 || (qmm020 = {}));

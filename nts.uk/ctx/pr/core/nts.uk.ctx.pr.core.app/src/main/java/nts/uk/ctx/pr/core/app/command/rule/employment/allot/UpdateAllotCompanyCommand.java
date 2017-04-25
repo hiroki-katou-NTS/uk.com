@@ -9,8 +9,8 @@ public class UpdateAllotCompanyCommand {
 	 
 	 private String payStmtCode;
 	 private String bonusStmtCode;
-	 private int startYm;
-	 private int endYm;
+	 private int startDate;
+	 private int endDate;
 	 private String historyId;
 	 
 	 
@@ -21,8 +21,8 @@ public class UpdateAllotCompanyCommand {
 	 public CompanyAllotSetting toDomain(){
 		  return CompanyAllotSetting.createFromJavaType(AppContexts.user().companyCode(), 
 		      this.historyId,  
-		      this.startYm,
-		      this.endYm,
+		      this.startDate,
+		      this.endDate,
 		      this.payStmtCode, 
 		      this.bonusStmtCode);
 		 }
