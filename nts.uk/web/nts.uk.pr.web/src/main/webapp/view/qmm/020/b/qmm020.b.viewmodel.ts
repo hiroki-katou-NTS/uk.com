@@ -1,6 +1,6 @@
 module qmm020.b.viewmodel {
     export class ScreenModel {
-        content:  KnockoutObservable<any>;
+        content: KnockoutObservable<any>;
         itemList: KnockoutObservableArray<ComHistItem>;
         currentItem: KnockoutObservable<ComHistItem>;
         maxItem: KnockoutObservable<service.model.CompanyAllotSettingDto>;
@@ -20,7 +20,7 @@ module qmm020.b.viewmodel {
                 bonusCode: ''
             }));
             self.maxItem = ko.observable(new service.model.CompanyAllotSettingDto());
-            self.start();
+            //self.start();
         }
         // start function
         start(): JQueryPromise<any> {
@@ -30,6 +30,8 @@ module qmm020.b.viewmodel {
             //get allot Company
             service.getAllotCompanyList().done(function(companyAllots: Array<service.model.CompanyAllotSettingDto>) {
                 if (companyAllots.length > 0) {
+                    console.log(companyAllots);
+                    dfd.resolve();
                     let _items: Array<ComHistItem> = [];
                     //push data to listItem of hist List
                     for (let i in companyAllots) {
@@ -48,6 +50,7 @@ module qmm020.b.viewmodel {
                     self.companyAllots = companyAllots;
                     self.currentItem().setSource(self.companyAllots);
                     self.currentItem().histId(companyAllots[0].historyId);
+                     dfd.resolve();
                 } else {
                     //self.allowClick(false);
                     dfd.resolve();
@@ -63,21 +66,26 @@ module qmm020.b.viewmodel {
                 //console.log(current);
                 self.maxDate = (itemMax.startDate || "").toString();
                 self.maxItem(itemMax);
+                 dfd.resolve();
             }).fail(function(res) {
                 alert(res);
+                dfd.resolve();
             });
 
             // Return.
             return dfd.promise();
+
         }
-        
+
         //Update data
         register() {
             var self = this;
+            var dfd = $.Deferred<any>();
             var current = _.find(self.companyAllots, function(item) { return item.historyId == self.currentItem().histId(); });
             debugger;
             if (current) {
                 service.insertComAllot(current).done(function() {
+                    dfd.resolve();
                 }).fail(function(res) {
                     alert(res);
                 });
@@ -87,6 +95,7 @@ module qmm020.b.viewmodel {
         //Open dialog Add History
         openJDialog() {
             var self = this;
+            var dfd = $.Deferred<any>();
             //getMaxDate
             var historyScreenType = "1";
             //Get value TabCode + value of selected Name in History List
@@ -124,6 +133,7 @@ module qmm020.b.viewmodel {
                             if (self.currentItem().payCode() != '') {
                                 service.getAllotLayoutName(self.currentItem().payCode()).done(function(stmtName: string) {
                                     self.currentItem().payName(stmtName);
+                                    dfd.resolve();
                                 }).fail(function(res) {
                                     self.currentItem().payName('');
                                 });
@@ -134,13 +144,14 @@ module qmm020.b.viewmodel {
                             if (self.currentItem().bonusCode() != '') {
                                 service.getAllotLayoutName(self.currentItem().bonusCode()).done(function(stmtName: string) {
                                     self.currentItem().bonusName(stmtName);
+                                    dfd.resolve();
                                 }).fail(function(res) {
                                     self.currentItem().bonusName('');
                                 });
                             } else {
                                 self.currentItem().bonusName('');
                             }
-                        }else{
+                        } else {
                             self.currentItem().histId(addItem.histId());
                             self.currentItem().startYm(returnValue);
                             self.currentItem().endYm('999912');
@@ -156,16 +167,16 @@ module qmm020.b.viewmodel {
                 });
         }
 
-        
+
         //Open dialog Edit History
         openKDialog() {
             var self = this;
-            nts.uk.ui.windows.setShared("endYM",self.currentItem().endYm());    
-            nts.uk.ui.windows.setShared('scrType','1');
-            nts.uk.ui.windows.setShared('startYM',self.maxDate);
+            nts.uk.ui.windows.setShared("endYM", self.currentItem().endYm());
+            nts.uk.ui.windows.setShared('scrType', '1');
+            nts.uk.ui.windows.setShared('startYM', self.maxDate);
             var current = _.find(self.companyAllots, function(item) { return item.historyId == self.currentItem().histId(); });
-            if(current){
-                nts.uk.ui.windows.setShared('currentItem',current);
+            if (current) {
+                nts.uk.ui.windows.setShared('currentItem', current);
             }
             nts.uk.ui.windows.sub.modal('/view/qmm/020/k/index.xhtml', { title: '明細書の紐ずけ＞履歴編集' }).onClosed(function(): any {
                 self.start();
@@ -178,6 +189,7 @@ module qmm020.b.viewmodel {
         //Click to button Select Payment
         openPaymentMDialog() {
             var self = this;
+            var dfd = $.Deferred<any>();
             var valueShareMDialog = self.currentItem().startYm();
             //debugger;
             nts.uk.ui.windows.setShared('valMDialog', valueShareMDialog);
@@ -189,6 +201,7 @@ module qmm020.b.viewmodel {
                 //get Name payment Name
                 service.getAllotLayoutName(self.currentItem().payCode()).done(function(stmtName: string) {
                     self.currentItem().payName(stmtName);
+                    dfd.resolve();
                 }).fail(function(res) {
                     alert(res);
                 });
@@ -198,6 +211,7 @@ module qmm020.b.viewmodel {
         //Click to button Select Bonus
         openBonusMDialog() {
             var self = this;
+            var dfd = $.Deferred<any>();
             var valueShareMDialog = self.currentItem().startYm();
             //debugger;
             nts.uk.ui.windows.setShared('valMDialog', valueShareMDialog);
@@ -209,6 +223,7 @@ module qmm020.b.viewmodel {
                 //get Name payment Name
                 service.getAllotLayoutName(self.currentItem().bonusCode()).done(function(stmtName: string) {
                     self.currentItem().bonusName(stmtName);
+                    dfd.resolve();
                 }).fail(function(res) {
                     alert(res);
                 });
@@ -253,6 +268,7 @@ module qmm020.b.viewmodel {
             self.bonusName = ko.observable(param.bonusName || '');
 
             self.histId.subscribe(function(newValue) {
+                var dfd = $.Deferred<any>();
                 if (typeof newValue != 'string') {
                     return
                 }
@@ -267,6 +283,7 @@ module qmm020.b.viewmodel {
                     if (current.paymentDetailCode != '') {
                         service.getAllotLayoutName(current.paymentDetailCode).done(function(stmtName: string) {
                             self.payName(stmtName);
+                            dfd.resolve();
                         }).fail(function(res) {
                             self.payName('');
                         });
@@ -276,6 +293,7 @@ module qmm020.b.viewmodel {
                     if (current.bonusDetailCode != '') {
                         service.getAllotLayoutName(current.bonusDetailCode).done(function(stmtName: string) {
                             self.bonusName(stmtName);
+                            dfd.resolve();
                         }).fail(function(res) {
                             self.bonusName('');
                         });

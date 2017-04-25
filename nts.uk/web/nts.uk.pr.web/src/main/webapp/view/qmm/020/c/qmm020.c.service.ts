@@ -42,7 +42,7 @@ module qmm020.c.service {
     export function getAllEmployeeAllotSetting(histId: string): JQueryPromise<Array<any>> {
         let dfd = $.Deferred<Array<any>>();
         let _path = nts.uk.text.format(paths.getAllEmployeeAllotSettingList, histId);
-        nts.uk.request.ajax(_path).done(function(res: Array<any>) {
+        nts.uk.request.ajax("pr",_path).done(function(res: Array<any>) {
             dfd.resolve(res);
         }).fail(function(error) {
             dfd.reject(error);
@@ -62,7 +62,8 @@ module qmm020.c.service {
     }
     export function getEmployeeDetail(histId: string) : JQueryPromise<Array<any>> {
         let dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.getEmployeeDetail, histId)
+         let _path = nts.uk.text.format(paths.getEmployeeDetail, histId);
+        nts.uk.request.ajax(_path)
         .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })

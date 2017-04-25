@@ -40,6 +40,7 @@ module qmm020.c.viewmodel {
             self.histId = ko.observable(null);
             self.maxItem = ko.observable(null);
             self.maxDate = "";
+            self.dataSource = ko.observableArray([]);
             self.currentItem = ko.observable(new TotalModel({
                 historyId: '',
                 employmentCode: '',
@@ -49,55 +50,56 @@ module qmm020.c.viewmodel {
                 endYm: ''
             }));
             self.selectedCode.subscribe(function(codeChange) {
-                //                service.getAllEmployeeAllotSetting(ko.toJS(codeChange)).done(function(data) {
-                //                    self.itemListDetail([]);
-                //                    if (data && data.length > 0) {
-                //                        _.map(data, function(item) {
-                //                            self.itemListDetail.push(new EmployeeAllotSettingDto(item.companyCode, item.historyId, item.employeeCode, item.employeeName, item.paymentDetailCode
-                //                                , item.paymentDetailName, item.bonusDetailCode, item.bonusDetailName));
-                //                        });
-                //
-                //                    }
-                //                    if (self.firstLoad)
-                //                        $("#C_LST_001").igGrid("option", "dataSource", ko.mapping.toJS(self.itemListDetail));
-                //                    else
-                //                        self.LoadData(self.itemListDetail);
-                //                    dfd.resolve();
-                //                }).fail(function(res) {
-                //                    // Alert message
-                //                    alert(res);
-                //                });
-                //                dfd.promise();
-                service.getEmployeeDetail(ko.toJS(codeChange)).done(function(data: Array<IModel>) {
-                    let employeeItem: Array<TotalModel> = [];
-                    if (data && data.length > 0) {
-                        _.map(data, function(item) {
-                            employeeItem.push(new TotalModel({ historyId: item.historyId, employmentCode: item.employmentCode, paymentDetailCode: item.paymentDetailCode, bonusDetailCode: item.bonusDetailCode }));
-                        });
-                    }
-                    if (self.firstLoad)
-                        $("#C_LST_001").igGrid("option", "dataSource", employeeItem);
-                    else
-                        self.LoadData(employeeItem);
-                    dfd.resolve();
-
-                }).fail(function(res) {
-                    // Alert message
-                    alert(res);
-                });
-                dfd.promise();
+//                service.getAllEmployeeAllotSetting(ko.toJS(codeChange)).done(function(data) {
+//                    self.itemListDetail([]);
+//                    if (data && data.length > 0) {
+//                        console.log(data);
+//                        _.map(data, function(item) {
+//                            self.itemListDetail.push(new EmployeeAllotSettingDto(item.companyCode, item.historyId, item.employeeCode, item.employeeName, item.paymentDetailCode
+//                                , item.paymentDetailName, item.bonusDetailCode, item.bonusDetailName));
+//                        });
+//                        dfd.resolve();
+//                    }
+//                    if (self.firstLoad)
+//                        $("#C_LST_001").igGrid("option", "dataSource", ko.mapping.toJS(self.itemListDetail));
+//                    else
+//                        self.LoadData(self.itemListDetail);
+//                    dfd.resolve();
+//                }).fail(function(res) {
+//                    alert(res);
+//                });
+//                dfd.promise();
+                                service.getEmployeeDetail(ko.toJS(codeChange)).done(function(data: Array<IModel>) {
+                                    let employeeItem: Array<TotalModel> = [];
+                                    if (data && data.length > 0) {
+                                        _.map(data, function(item) {
+                                            employeeItem.push(new TotalModel({ historyId: item.historyId, employmentCode: item.employmentCode, paymentDetailCode: item.paymentDetailCode, bonusDetailCode: item.bonusDetailCode }));
+                                        });
+                                        dfd.resolve();
+                                    }
+                                    if (self.firstLoad)
+                                        $("#C_LST_001").igGrid("option", "dataSource", employeeItem);
+                                    else
+                                        self.LoadData(employeeItem);
+                                    dfd.resolve();
+                
+                                }).fail(function(res) {
+                                     //Alert message
+                                    alert(res);
+                                });
+                                dfd.promise();
 
 
             });
 
             // Array Data 1 
-//            let employment1 = ko.mapping.fromJS([
-//                { "NO": 1, "ID": "000000001", "Name": "正社員", "PaymentDocID": "K001", "PaymentDocName": "給与明細書001", "BonusDocID": "S001", "BonusDocName": "賞与明細書001" },
-//                { "NO": 2, "ID": "000000002", "Name": "DucPham社員", "PaymentDocID": "K002", "PaymentDocName": "給与明細書002", "BonusDocID": "S001", "BonusDocName": "賞与明細書002" },
-//                { "NO": 3, "ID": "000000003", "Name": "HoangMai社員", "PaymentDocID": "K003", "PaymentDocName": "給与明細書003", "BonusDocID": "S001", "BonusDocName": "賞与明細書003" }
-//            ]);
-//
-//            self.dataSource = ko.mapping.toJS(employment1());
+            //            let employment1 = ko.mapping.fromJS([
+            //                { "NO": 1, "ID": "000000001", "Name": "正社員", "PaymentDocID": "K001", "PaymentDocName": "給与明細書001", "BonusDocID": "S001", "BonusDocName": "賞与明細書001" },
+            //                { "NO": 2, "ID": "000000002", "Name": "DucPham社員", "PaymentDocID": "K002", "PaymentDocName": "給与明細書002", "BonusDocID": "S001", "BonusDocName": "賞与明細書002" },
+            //                { "NO": 3, "ID": "000000003", "Name": "HoangMai社員", "PaymentDocID": "K003", "PaymentDocName": "給与明細書003", "BonusDocID": "S001", "BonusDocName": "賞与明細書003" }
+            //            ]);
+            //
+            //            self.dataSource = ko.mapping.toJS(employment1());
             //console.log(self.dataSource);
             //Build IgGrid
 
@@ -105,18 +107,18 @@ module qmm020.c.viewmodel {
 
             //SCREEN C
             //Event : Click to button Sentaku on igGrid
-//            var openPaymentDialog = function(evt, ui) {
-//                if (ui.colKey === "PaymentDocID") {
-//                    //Gọi hàm open SubWindow
-//                    //Khi close Subwindow, get dc cái new object(ID, Name... )
-//                    let row = _.find(employment1(), function(item) {
-//                        //return item.ID() === ui.rowKey;
-//                    });
-//                    //row.PaymentDocName("test");
-//                    //self.buildGrid("#C_LST_001", "C_BTN_001", "C_BTN_002");
-//                }
-//            }
-//            self.start();
+            //            var openPaymentDialog = function(evt, ui) {
+            //                if (ui.colKey === "PaymentDocID") {
+            //                    //Gọi hàm open SubWindow
+            //                    //Khi close Subwindow, get dc cái new object(ID, Name... )
+            //                    let row = _.find(employment1(), function(item) {
+            //                        //return item.ID() === ui.rowKey;
+            //                    });
+            //                    //row.PaymentDocName("test");
+            //                    //self.buildGrid("#C_LST_001", "C_BTN_001", "C_BTN_002");
+            //                }
+            //            }
+            //            self.start();
 
             /**
              * find maxItem by endate
@@ -186,15 +188,19 @@ module qmm020.c.viewmodel {
             service.getEmployeeName().done(function(data: Array<IModel>) {
                 let employeeItem: Array<TotalModel> = [];
                 if (data && data.length > 0) {
+
                     _.map(data, function(item) {
                         employeeItem.push(new TotalModel({ historyId: item.historyId, employmentCode: item.employmentCode, employmentName: item.employmentName }));
                     });
                     //                       self.employeeTotal(employeeItem);
+                    dfd.resolve();
                 }
                 if (self.firstLoad)
                     $("#C_LST_001").igGrid("option", "dataSource", employeeItem);
                 else
                     self.LoadData(employeeItem);
+                console.log(self.dataSource);
+                console.log('111111111111111111111111111111111111111');
                 dfd.resolve();
 
             }).fail(function(res) {
@@ -211,6 +217,7 @@ module qmm020.c.viewmodel {
                     });
                     self.itemTotalList(totalItem);
                     //                    let max = _.maxBy(self.itemList(), (itemMax) => { return itemMax.endYm });
+                    dfd.resolve();
                 } else {
                     dfd.resolve();
                 }
@@ -218,13 +225,15 @@ module qmm020.c.viewmodel {
                 // Alert message
                 alert(res);
             });
-            console.log(ko.toJSON(self.itemTotalList()));
+
+            console.log((self.itemTotalList()));
             service.getAllotEmployeeMaxDate().done(function(itemMax: number) {
-                //                self.maxDate = (itemMax.startYm || "").toString();
-                //                self.maxItem(itemMax);
                 let maxDate: TotalModel = _.find(self.itemTotalList(), function(obj) { return parseInt(obj.endYm()) == itemMax; });
                 self.maxDate = (maxDate.startYm || "").toString();
                 self.maxItem(maxDate);
+                console.log(self.maxItem());
+                console.log(self.maxDate);
+                dfd.resolve();
             }).fail(function(res) {
                 alert(res);
             });
@@ -308,7 +317,7 @@ module qmm020.c.viewmodel {
                                     self.currentItem().paymentDetailName(ko.toJS(self.itemListDetail()[0].paymentDetailName));
                                     self.currentItem().bonusDetailCode(ko.toJS(self.itemListDetail()[0].bonusDetailCode));
                                     self.currentItem().bonusDetailName(ko.toJS(self.itemListDetail()[0].bonusDetailName));
-
+                                    dfd.resolve();
                                 }
                                 if (self.firstLoad)
                                     $("#C_LST_001").igGrid("option", "dataSource", ko.mapping.toJS(self.itemListDetail));

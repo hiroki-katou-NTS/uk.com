@@ -1,6 +1,9 @@
 module qmm020.c {
     __viewContext.ready(function() {
         let screenModel = new qmm020.c.viewmodel.ScreenModel();
-        __viewContext.bind(screenModel);
+        screenModel.start().done(function() {
+            __viewContext.bind(screenModel);
+        })
+
     });
 }
