@@ -21,6 +21,13 @@ var qmm020;
                         { headerText: '賞与明細書', key: 'other1', width: 150 },
                         { headerText: '適用されている設定', key: 'other2', width: 150 },
                     ]);
+                    //Delegate 
+                    //            $(document).delegate("#single-list", "iggriddatarendered", function(evt, ui) {
+                    //
+                    //                $('.error').parent().css({ 'background-color': 'rgba(253, 159, 159, 0.44)' });
+                    //
+                    //            })
+                    //close dialog
                     this.currentCode = ko.observable();
                     this.currentCodeList = ko.observableArray([]);
                 }
@@ -41,6 +48,7 @@ var qmm020;
     })(i = qmm020.i || (qmm020.i = {}));
 })(qmm020 || (qmm020 = {}));
 var ItemModel = (function () {
+    //  template: string;  
     function ItemModel(code, name, description, deletable, other1, other2) {
         this.code = code;
         this.name = name;
@@ -61,4 +69,3 @@ var ItemModel = (function () {
     }
     return ItemModel;
 }());
-//# sourceMappingURL=qmm020.i.viewmodel.js.map

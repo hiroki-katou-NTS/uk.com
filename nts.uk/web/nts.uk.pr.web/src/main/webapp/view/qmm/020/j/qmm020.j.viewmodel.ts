@@ -29,10 +29,17 @@ module qmm020.j.viewmodel {
                 $('#J_LBL_006').parent().hide();
                 $('#J_INP_002').hide();
                 $('#J_caution').hide();
-            } else {
-                //Set height to Sub Windows
+            } 
+            if(self.valueShareJDialog().split("~")[0] === "2") {               
                 nts.uk.ui.windows.getSelf().setHeight(450);
+                $('#J_INP_003').hide();
+                //$('#J_LBL_006').parent().hide();
+                //$('#J_INP_002').hide();               
             }
+//             {
+//                //Set height to Sub Windows
+//                nts.uk.ui.windows.getSelf().setHeight(450);
+//            }
             //
             self.selectStartYm = ko.observable('');
             self.txtCopyHistory = "";

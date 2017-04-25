@@ -8,4 +8,6 @@ public interface EmployeeAllotSettingRepository {
 	
 	// Return List
 	List<EmployeeAllotSetting> findAll(String companyCode,String historyID);
+	List<EmployeeAllSetting> findAllEm(String companyCode,String historyID);
+	
 }

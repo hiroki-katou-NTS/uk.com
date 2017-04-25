@@ -6,4 +6,5 @@ public interface EmployeeAllotSettingHeaderRespository {
 	Optional<EmployeeAllotSettingHeader> find(String companyCode);
 	//find all, return list
 	List<EmployeeAllotSettingHeader> findAll(String companyCode);
+	Optional<Integer> findMaxEnd(String companyCode);
 }

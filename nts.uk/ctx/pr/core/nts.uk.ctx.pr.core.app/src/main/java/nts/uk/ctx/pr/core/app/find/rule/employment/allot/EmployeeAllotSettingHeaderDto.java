@@ -6,15 +6,15 @@ import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.EmployeeAllotSettingH
 @Value
 public class EmployeeAllotSettingHeaderDto {
 	String companyCode;
-	int startDate;
-	int endDate;
+	int startYm;
+	int endYm;
 	String historyId;
 	
-	public static EmployeeAllotSettingHeaderDto fromDomain(EmployeeAllotSettingHeader EmployeeAllotSettingHeader) {
+	public static EmployeeAllotSettingHeaderDto fromDomain(EmployeeAllotSettingHeader employeeAllotSettingHeader) {
 		return new EmployeeAllotSettingHeaderDto(
-				EmployeeAllotSettingHeader.getCompanyCode().v(),
-				EmployeeAllotSettingHeader.getStartDate().v(),
-				EmployeeAllotSettingHeader.getEndDate().v(),
-				EmployeeAllotSettingHeader.getHistoryId());
+				employeeAllotSettingHeader.getCompanyCode(),
+				employeeAllotSettingHeader.getStartYm().v(),
+				employeeAllotSettingHeader.getEndYm().v(),
+				employeeAllotSettingHeader.getHistoryId());
 	}
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.ws.rule.employment.allot;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -21,5 +22,11 @@ public class EmployeeAllotSettingHeaderWebService {
 	public List<EmployeeAllotSettingHeaderDto> GetAllEmployeeAllotSettingHeader(){
 		List<EmployeeAllotSettingHeaderDto> test = this.find.getEmployeeAllotSettingHeader(AppContexts.user().companyCode());
 		return test;
+	}
+	@POST
+	@Path("findallemployeeallotheaderMax")
+	public Integer getAllotHMax (){
+		String companyCode = AppContexts.user().companyCode();
+		return this.find.getAllotHMax(companyCode).get();
 	}
 }
