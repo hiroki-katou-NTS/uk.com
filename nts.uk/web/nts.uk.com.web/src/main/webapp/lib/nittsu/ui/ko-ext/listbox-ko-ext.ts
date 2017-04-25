@@ -46,7 +46,7 @@ module nts.uk.ui.koExtentions {
             var changeEvent = new CustomEvent("selectionChange", {
                 detail: {},
             });
-            
+             
             container.data("selectionChange", changeEvent);
             
             var features = [];
