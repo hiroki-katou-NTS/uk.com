@@ -262,6 +262,7 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 		Cell contentNameCell = cells.get(printData.currentRow, printData.currentColumn);
 		contentNameCell.setValue(printData.headerLabel);
 		printData.currentRow++;
+		boolean isItemLastOfPage = false;
 		
 		while (totalItemData > 0) {
 			int amountItemOnPage = Math.min(printData.amountItemLeftOnCurrentPage, MAX_RECORD_ON_ONE_PAGE);
@@ -282,7 +283,7 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 				}
 				
 				// Fill items.
-				this.fillItemData(item, printData);
+				isItemLastOfPage = this.fillItemData(item, printData);
 			}
 			
 			// Draw horizontal line end page.
@@ -295,10 +296,12 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 			fromIndex += MAX_RECORD_ON_ONE_PAGE;
 		}
 		
-		// Draw vertical line end page.
-		Range endRowRange = cells.createRange(printData.currentRow - 1,
-				printData.currentColumn + 1, 1, paymentDateMap.size());
-		endRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+		// Draw vertical line end path.
+		if (!paymentDateMap.isEmpty() && !isItemLastOfPage) {
+			Range endRowRange = cells.createRange(printData.currentRow - 1,
+					printData.currentColumn + 1, 1, paymentDateMap.size());
+			endRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+		}
 	}
 	
 	/**
@@ -310,7 +313,7 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 	 * @param startColumn the start column
 	 * @param monthList the month list
 	 */
-	private void fillItemData(ReportItemDto item, PrintData printData) {
+	private boolean fillItemData(ReportItemDto item, PrintData printData) {
 		Worksheet ws = printData.reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
 		Cells cells = ws.getCells();
 		Color backgroundColor = printData.isGreenRow ? GREEN_COLOR : null;
@@ -356,7 +359,11 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 			endRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 			printData.isCheckBreakPage = false;
 			this.breakPage(printData);
+			
+			// Return item is last of page.
+			return true;
 		}
+		return false;
 	}
 	
 	/**
