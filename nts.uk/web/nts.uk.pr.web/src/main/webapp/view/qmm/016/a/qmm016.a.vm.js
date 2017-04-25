@@ -31,6 +31,7 @@ var nts;
                                         service: a.service.instance,
                                         removeMasterOnLastHistoryRemove: true
                                     });
+                                    this.demensionBullet = { 1: "①", 2: "②", 3: "③" };
                                     var self = this;
                                     self.head = ko.observable(new HeadViewModel());
                                     self.history = ko.observable(new HistoryViewModel());
@@ -71,7 +72,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.isDirty = function () {
                                     var self = this;
-                                    self.valueItems(self.history().detailViewModel.getCellItem());
+                                    self.valueItems(self.history().detailViewModel ? self.history().detailViewModel.getCellItem() : []);
                                     return self.headDirtyChecker.isDirty() ||
                                         self.settingDirtyChecker.isDirty() ||
                                         self.valuesDirtyChecker.isDirty();
@@ -94,6 +95,10 @@ var nts;
                                     $("#inp_code").ntsEditor("validate");
                                     $("#inp_name").ntsEditor("validate");
                                     $("#inp_start_date").ntsEditor("validate");
+                                    if ($('.nts-editor').ntsError("hasError")) {
+                                        return true;
+                                    }
+                                    return false;
                                 };
                                 ScreenModel.prototype.clearErrorSave = function () {
                                     $('.save-error').ntsError('clear');
@@ -102,7 +107,9 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     self.clearErrorSave();
-                                    self.validateData();
+                                    if (self.validateData()) {
+                                        return dfd.promise();
+                                    }
                                     if (self.isNewMode()) {
                                         var wagetableDto = self.head().getWageTableDto();
                                         a.service.instance.initWageTable({

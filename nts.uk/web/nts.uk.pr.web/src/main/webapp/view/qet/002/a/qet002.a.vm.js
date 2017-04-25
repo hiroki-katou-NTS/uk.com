@@ -7,11 +7,11 @@ var qet002;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.targetYear = ko.observable(2016);
+                    self.targetYear = ko.observable(2017);
                     self.isLowerLimit = ko.observable(true);
                     self.isUpperLimit = ko.observable(true);
                     self.lowerLimitValue = ko.observable(null);
-                    self.japanYear = ko.observable('(' + nts.uk.time.yearInJapanEmpire('2016') + ')');
+                    self.japanYear = ko.observable('(' + nts.uk.time.yearInJapanEmpire('2017') + ')');
                     self.upperLimitValue = ko.observable(null);
                     self.targetYear.subscribe(function (val) {
                         self.japanYear("" + nts.uk.time.yearInJapanEmpire(val));

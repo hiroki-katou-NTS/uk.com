@@ -87,7 +87,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
             + "AND pc.pcpmtPersonComPK.pid = pb.pid "
             + "AND pc.pcpmtPersonComPK.ccd = :companyCode "
             + "AND pec.pclmtPersonEmpContractPK.ccd = pc.pcpmtPersonComPK.ccd "
-            + "AND pec.pclmtPersonEmpContractPK.pId = pb.pid "
+            + "AND pec.pclmtPersonEmpContractPK.pId = pc.pid "
             + "AND pec.pclmtPersonEmpContractPK.strD <= :baseDate "
             + "AND pec.endD >= :baseDate "
             + "AND ce.cmnmtEmpPk.companyCode = pc.pcpmtPersonComPK.ccd "
@@ -98,15 +98,15 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
             + "AND mp.qpdmtPaydayPK.processingYm = :yearMonth "
             + "AND mp.qpdmtPaydayPK.sparePayAtr = 0 "
             + "AND pic.pismtPersonInsuCarePK.ccd = pc.pcpmtPersonComPK.ccd "
-            + "AND pic.pismtPersonInsuCarePK.pid = pb.pid "
+            + "AND pic.pismtPersonInsuCarePK.pid = pc.pid "
             + "AND pic.strD <= mp.socialInsStdDate "
             + "AND pic.endD >= mp.socialInsStdDate "
             + "AND phb.pismtPersonInsuHealBPK.ccd = pc.pcpmtPersonComPK.ccd "
-            + "AND phb.pismtPersonInsuHealBPK.pid = pb.pid "
+            + "AND phb.pismtPersonInsuHealBPK.pid = pc.pid "
             + "AND phb.strYm <= :yearMonth "
             + "AND phb.endYm >= :yearMonth "
             + "AND ppb.pismtPersonInsuPensBPK.ccd = pc.pcpmtPersonComPK.ccd "
-            + "AND ppb.pismtPersonInsuPensBPK.pid = pb.pid "
+            + "AND ppb.pismtPersonInsuPensBPK.pid = pc.pid "
             + "AND ppb.strYm <= :yearMonth "
             + "AND ppb.endYm >= :yearMonth ";
     
@@ -166,7 +166,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         int yearMonth = salaryQuery.getYearMonth();
         List<Object[]> itemList = findOffice(companyCode, officeCodes, yearMonth, loginPersonId);
         if (itemList.isEmpty()) {
-            throw new BusinessException("対象データがありません。");
+            throw new BusinessException("ER010");
         }
         Map<Object, List<Object[]>> mapOffice = itemList.stream()
                 .collect(Collectors.groupingBy(item -> ((QismtSocialInsuOffice) item[0]))
@@ -199,7 +199,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
             reportData.objectDeductions = findPersonDeduction(companyCode, officeCode, personIds, yearMonth);
             
             if (reportData.objectNormals.isEmpty() || reportData.objectDeductions.isEmpty()) {
-                throw new BusinessException("対象データがありません。");
+                throw new BusinessException("ER010");
             }
             List<DataRowItem> listRowItemPersonal = new ArrayList<>();
             List<DataRowItem> listRowItemCompany = new ArrayList<>();
@@ -292,7 +292,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         int yearMonth = salaryQuery.getYearMonth();
         List<Object[]> itemList = findOffice(companyCode, officeCodes, yearMonth, loginPid);
         if (itemList.isEmpty()) {
-            throw new BusinessException("対象データがありません。");
+            throw new BusinessException("ER010");
         }
         Map<Object, List<Object[]>> mapOffice = itemList.stream()
                 .collect(Collectors.groupingBy(item -> ((QismtSocialInsuOffice) item[0]))
@@ -320,7 +320,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
             reportData.objectDeductions = findPersonDeduction(companyCode, officeCode, personIds, yearMonth);
             
             if (reportData.objectNormals.isEmpty() || reportData.objectDeductions.isEmpty()) {
-                throw new BusinessException("対象データがありません。");
+                throw new BusinessException("ER010");
             }
             List<MLayoutRowItem> listRowItem = new ArrayList<>();
             // list employee is printed output.
@@ -805,14 +805,9 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
      */
     private double findValueDeductionByItemCode(List<Object[]> objectList, String itemCode) {
         return objectList.stream()
-                .filter(p -> {
-                    QstdtPaymentDetail paymentEntity = (QstdtPaymentDetail) p[1];
-                    return paymentEntity.qstdtPaymentDetailPK.itemCode.equals(itemCode);
-                })
-                .mapToDouble(p -> {
-                    QstdtPaymentDetail paymentEntity = (QstdtPaymentDetail) p[1];
-                    return paymentEntity.value.doubleValue();
-                })
+                .map(p -> (QstdtPaymentDetail) p[1])
+                .filter(p -> p.qstdtPaymentDetailPK.itemCode.equals(itemCode))
+                .mapToDouble(p -> p.value.doubleValue())
                 .sum();
     }
     

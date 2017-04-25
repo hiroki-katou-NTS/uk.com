@@ -15,7 +15,7 @@ var qet001;
                     this.outputSettingSelectedCode = ko.observable('');
                     var self = this;
                     self.japanTargetYear = ko.computed(function () {
-                        return nts.uk.time.yearInJapanEmpire(self.targetYear()).toString();
+                        return nts.uk.time.yearInJapanEmpire(self.targetYear().toString()).toString();
                     });
                 }
                 ScreenModel.prototype.start = function () {

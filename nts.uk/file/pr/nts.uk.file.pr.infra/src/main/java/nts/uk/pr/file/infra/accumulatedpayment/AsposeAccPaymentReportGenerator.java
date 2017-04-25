@@ -41,6 +41,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 
 	/** The Constant REPORT_FILE_NAME. */
 	private static final String REPORT_FILE_NAME = "AccumulatedPaymentReport.pdf";
+	//private static final String REPORT_FILE_NAME = "AccumulatedPaymentReport.xlsx";
 
 	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/AccumulatedPaymentReport.xlsx";
@@ -129,6 +130,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
 			designer.saveAsPdf(this.createNewFile(generatorContext, REPORT_FILE_NAME));
+			//designer.saveAsExcel(this.createNewFile(generatorContext, REPORT_FILE_NAME));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
