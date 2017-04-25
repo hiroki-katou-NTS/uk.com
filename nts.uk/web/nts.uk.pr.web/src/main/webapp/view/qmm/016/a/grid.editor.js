@@ -13,6 +13,7 @@ $.ig.NtsNumberEditor = $.ig.EditorProvider.extend({
         $('input', editorWrapper).on('input', function (evt) {
             callbacks.textChanged(evt, {}, key);
         });
+        this._super(callbacks, key, editorOptions, tabIndex, format, element);
         return editorWrapper;
     },
     attachErrorEvents: function (errorShowing, errorShown, errorHidden) { },

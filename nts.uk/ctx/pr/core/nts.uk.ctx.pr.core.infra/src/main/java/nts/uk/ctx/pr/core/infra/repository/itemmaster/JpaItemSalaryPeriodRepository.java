@@ -16,7 +16,8 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaItemSalaryPeriodRepository extends JpaRepository implements ItemSalaryPeriodRepository {
 
 	@Override
-	public Optional<ItemSalaryPeriod> find(String companyCode, String itemCode) {
+	public Optional<ItemSalaryPeriod> find( String itemCode) {
+		String companyCode = AppContexts.user().companyCode();
 		QcamtItemSalaryPeriodPK key = new QcamtItemSalaryPeriodPK(companyCode, itemCode);
 		return this.queryProxy().find(key, QcamtItemSalaryPeriod.class).map(x -> toDomain(x));
 	}
@@ -51,7 +52,7 @@ public class JpaItemSalaryPeriodRepository extends JpaRepository implements Item
 
 	private QcamtItemSalaryPeriod toEntity(ItemSalaryPeriod domain) {
 		String campanyCode = AppContexts.user().companyCode();
-		QcamtItemSalaryPeriodPK key = new QcamtItemSalaryPeriodPK(campanyCode, domain.getItemCd().v());
+		QcamtItemSalaryPeriodPK key = new QcamtItemSalaryPeriodPK(campanyCode, domain.getItemCode().v());
 		return new QcamtItemSalaryPeriod(key, domain.getPeriodAtr().value, domain.getStrY().v(), domain.getEndY().v(),
 				domain.getCycleAtr().value, domain.getCycle01Atr().value, domain.getCycle02Atr().value,
 				domain.getCycle03Atr().value, domain.getCycle04Atr().value, domain.getCycle05Atr().value,

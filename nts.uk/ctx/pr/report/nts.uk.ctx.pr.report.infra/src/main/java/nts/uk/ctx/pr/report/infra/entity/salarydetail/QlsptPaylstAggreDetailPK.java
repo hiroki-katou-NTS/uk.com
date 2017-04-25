@@ -48,6 +48,7 @@ public class QlsptPaylstAggreDetailPK implements Serializable {
 	 * Instantiates a new qlspt paylst aggre detail PK.
 	 */
 	public QlsptPaylstAggreDetailPK() {
+		super();
 	}
 
 	/**

@@ -18,8 +18,8 @@ var nts;
                         var CertifyGroupDeleteDto = l.service.model.CertifyGroupDeleteDto;
                         var viewmodel;
                         (function (viewmodel) {
-                            var ScreenModel = (function () {
-                                function ScreenModel() {
+                            class ScreenModel {
+                                constructor() {
                                     var self = this;
                                     self.columnsLstCertifyGroup = ko.observableArray([
                                         { headerText: 'コード', key: 'code', width: 120 },
@@ -31,39 +31,51 @@ var nts;
                                     self.typeAction = ko.observable(TypeActionCertifyGroup.update);
                                     self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
                                     self.isEmpty = ko.observable(true);
+                                    self.messageList = ko.observableArray([
+                                        { messageId: "ER001", message: "＊が入力されていません。" },
+                                        { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                                        { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" },
+                                        { messageId: "ER010", message: "対象データがありません。" },
+                                        { messageId: "AL002", message: "データを削除します。\r\n よろしいですか？。" }
+                                    ]);
+                                    self.showDelete = ko.observable(true);
+                                    self.certifyGroupModel = ko.observable(new CertifyGroupModel(new CertifyGroupDto()));
+                                    self.dirty = new nts.uk.ui.DirtyChecker(self.certifyGroupModel);
                                 }
-                                ScreenModel.prototype.startPage = function () {
+                                //start page init data begin load page
+                                startPage() {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     self.findAllCertifyGroup().done(function () {
-                                        self.findAllCertification().done(function (data) {
+                                        self.findAllCertification().done(data => {
                                             dfd.resolve(data);
                                         });
                                     });
                                     return dfd.promise();
-                                };
-                                ScreenModel.prototype.findAllCertification = function () {
+                                }
+                                // find all Certification connection service
+                                findAllCertification() {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    l.service.findAllCertification().done(function (data) {
+                                    l.service.findAllCertification().done(data => {
                                         self.lstCertification = data;
                                         dfd.resolve(self);
                                     });
                                     return dfd.promise();
-                                };
-                                ScreenModel.prototype.findAllCertifyGroup = function () {
+                                }
+                                //find all CertifyGroup connection service
+                                findAllCertifyGroup() {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    l.service.findAllCertifyGroup().done(function (data) {
+                                    l.service.findAllCertifyGroup().done(data => {
                                         if (data != null && data.length > 0) {
                                             self.lstCertifyGroup = ko.observableArray(data);
                                             self.selectCodeLstLstCertifyGroup(data[0].code);
                                             self.selectCodeLstLstCertifyGroup.subscribe(function (selectionCodeLstLstCertifyGroup) {
                                                 self.showchangeCertifyGroup(selectionCodeLstLstCertifyGroup);
                                             });
-                                            self.findCertifyGroup(data[0].code).done(function (res) {
-                                                dfd.resolve(res);
-                                            });
+                                            self.detailCertifyGroup(data[0].code);
+                                            dfd.resolve(self);
                                         }
                                         else {
                                             self.newmodeEmptyData();
@@ -72,24 +84,25 @@ var nts;
                                         }
                                     });
                                     return dfd.promise();
-                                };
-                                ScreenModel.prototype.findCertifyGroup = function (code) {
+                                }
+                                //detail CertifyGroup by code
+                                findCertifyGroup(code) {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    l.service.findCertifyGroup(code).done(function (data) {
-                                        self.certifyGroupModel = ko.observable(new CertifyGroupModel(data));
-                                        l.service.findAllCertification().done(function (data) {
+                                    l.service.findCertifyGroup(code).done(data => {
+                                        self.certifyGroupModel(new CertifyGroupModel(data));
+                                        l.service.findAllCertification().done(data => {
                                             self.certifyGroupModel().lstCertification(data);
                                             self.lstCertification = data;
                                             dfd.resolve(self);
                                         });
                                     });
                                     return dfd.promise();
-                                };
-                                ScreenModel.prototype.detailCertifyGroup = function (code) {
-                                    if (code != null && code != undefined && code != '') {
+                                }
+                                detailCertifyGroup(code) {
+                                    if (code && code != '') {
                                         var self = this;
-                                        l.service.findCertifyGroup(code).done(function (data) {
+                                        l.service.findCertifyGroup(code).done(data => {
                                             if (self.isEmpty()) {
                                                 self.selectCodeLstLstCertifyGroup(code);
                                                 self.selectCodeLstLstCertifyGroup.subscribe(function (selectionCodeLstLstCertifyGroup) {
@@ -103,17 +116,37 @@ var nts;
                                             self.certifyGroupModel().certifies(data.certifies);
                                             self.typeAction(TypeActionCertifyGroup.update);
                                             self.certifyGroupModel().setReadOnly(true);
-                                            l.service.findAllCertification().done(function (dataCertification) {
+                                            self.showDelete(true);
+                                            l.service.findAllCertification().done(dataCertification => {
                                                 self.certifyGroupModel().setLstCertification(dataCertification);
+                                                self.dirty.reset();
+                                            }).fail(function () {
+                                                self.dirty.reset();
                                             });
                                         });
                                     }
-                                };
-                                ScreenModel.prototype.showchangeCertifyGroup = function (selectionCodeLstLstCertifyGroup) {
+                                }
+                                //show CertifyGroup (change event)
+                                showchangeCertifyGroup(selectionCodeLstLstCertifyGroup) {
                                     var self = this;
                                     self.detailCertifyGroup(selectionCodeLstLstCertifyGroup);
-                                };
-                                ScreenModel.prototype.resetValueCertifyGroup = function () {
+                                }
+                                //reset value => begin add button
+                                resetValueCertifyGroup() {
+                                    var self = this;
+                                    if (self.dirty.isDirty()) {
+                                        nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
+                                            self.onResetValueCertifyGroup();
+                                        }).ifNo(function () {
+                                            //No action
+                                        });
+                                    }
+                                    else {
+                                        self.onResetValueCertifyGroup();
+                                    }
+                                }
+                                //reset value => begin add button
+                                onResetValueCertifyGroup() {
                                     var self = this;
                                     if (self.certifyGroupModel == null || self.certifyGroupModel == undefined) {
                                         self.certifyGroupModel = ko.observable(new CertifyGroupModel(new CertifyGroupDto()));
@@ -125,18 +158,24 @@ var nts;
                                     self.selectCodeLstLstCertifyGroup('');
                                     self.certifyGroupModel().setReadOnly(false);
                                     self.certifyGroupModel().certifies([]);
-                                    l.service.findAllCertification().done(function (data) {
+                                    self.showDelete(false);
+                                    l.service.findAllCertification().done(data => {
                                         self.certifyGroupModel().lstCertification(data);
+                                        self.dirty.reset();
                                     });
-                                };
-                                ScreenModel.prototype.saveCertifyGroup = function () {
+                                }
+                                saveCertifyGroup() {
                                     var self = this;
+                                    self.clearErrorSave();
+                                    self.validateData();
+                                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                                        return;
+                                    }
                                     if (self.typeAction() == TypeActionCertifyGroup.add) {
                                         l.service.addCertifyGroup(self.convertDataModel()).done(function () {
                                             self.reloadDataByAction(self.certifyGroupModel().code());
                                         }).fail(function (error) {
                                             self.showMessageSave(error.message);
-                                            self.reloadDataByAction('');
                                         });
                                     }
                                     else {
@@ -145,15 +184,15 @@ var nts;
                                             self.clearErrorSave();
                                         }).fail(function (error) {
                                             self.showMessageSave(error.message);
-                                            self.reloadDataByAction(self.certifyGroupModel().code());
                                         });
                                     }
-                                };
-                                ScreenModel.prototype.reloadDataByAction = function (code) {
+                                }
+                                //reload action
+                                reloadDataByAction(code) {
                                     var self = this;
-                                    l.service.findAllCertifyGroup().done(function (data) {
+                                    l.service.findAllCertifyGroup().done(data => {
                                         self.lstCertifyGroup(data);
-                                        if (code != null && code != undefined && code != '') {
+                                        if (code && code != '') {
                                             self.selectCodeLstLstCertifyGroup(code);
                                             self.detailCertifyGroup(code);
                                         }
@@ -168,23 +207,25 @@ var nts;
                                             }
                                         }
                                     });
-                                };
-                                ScreenModel.prototype.newmodeEmptyData = function () {
+                                }
+                                //new mode empty data
+                                newmodeEmptyData() {
                                     var self = this;
-                                    l.service.findAllCertification().done(function (data) {
+                                    l.service.findAllCertification().done(data => {
                                         self.lstCertification = data;
-                                        self.resetValueCertifyGroup();
+                                        self.onResetValueCertifyGroup();
                                         self.isEmpty(true);
                                         self.certifyGroupModel().setReadOnly(false);
+                                        self.showDelete(false);
                                     });
-                                };
-                                ScreenModel.prototype.deleteCertifyGroup = function () {
+                                }
+                                deleteCertifyGroup() {
                                     var self = this;
-                                    nts.uk.ui.dialog.confirm("Do you delete Item?").ifYes(function () {
+                                    nts.uk.ui.dialog.confirm(self.messageList()[4].message).ifYes(function () {
                                         var certifyGroupDeleteDto = new CertifyGroupDeleteDto();
                                         certifyGroupDeleteDto.groupCode = self.certifyGroupModel().code();
                                         certifyGroupDeleteDto.version = 12;
-                                        l.service.deleteCertifyGroup(certifyGroupDeleteDto).done(function (data) {
+                                        l.service.deleteCertifyGroup(certifyGroupDeleteDto).done(function () {
                                             self.reloadDataByAction('');
                                         });
                                     }).ifNo(function () {
@@ -194,11 +235,12 @@ var nts;
                                     }).then(function () {
                                         self.reloadDataByAction(self.selectCodeLstLstCertifyGroup());
                                     });
-                                };
-                                ScreenModel.prototype.closeCertifyGroup = function () {
+                                }
+                                closeCertifyGroup() {
                                     nts.uk.ui.windows.close();
-                                };
-                                ScreenModel.prototype.convertDataModel = function () {
+                                }
+                                //convert data model => Dto
+                                convertDataModel() {
                                     var self = this;
                                     var certifyGroupDto = new CertifyGroupDto();
                                     certifyGroupDto.code = self.certifyGroupModel().code();
@@ -206,21 +248,36 @@ var nts;
                                     certifyGroupDto.multiApplySet = self.certifyGroupModel().multiApplySet();
                                     certifyGroupDto.certifies = self.certifyGroupModel().certifies();
                                     return certifyGroupDto;
-                                };
-                                ScreenModel.prototype.showMessageSave = function (message) {
-                                    $('#btn_saveCertifyGroup').ntsError('set', message);
-                                    nts.uk.ui.dialog.alert(message);
-                                };
-                                ScreenModel.prototype.clearErrorSave = function () {
+                                }
+                                //show message by connection service => respone error
+                                showMessageSave(messageId) {
                                     var self = this;
+                                    if (messageId == self.messageList()[0]) {
+                                        if (!self.certifyGroupModel().code()) {
+                                            $('#inp_code').ntsError('set', self.messageList()[0].message);
+                                        }
+                                        if (!self.certifyGroupModel().name()) {
+                                            $('#inp_name').ntsError('set', self.messageList()[0].message);
+                                        }
+                                    }
+                                    if (messageId == self.messageList()[1]) {
+                                        $('#btn_saveCertifyGroup').ntsError('set', self.messageList()[1].message);
+                                    }
+                                }
+                                //clear error view 
+                                clearErrorSave() {
                                     $('.save-error').ntsError('clear');
                                     $('#btn_saveCertifyGroup').ntsError('clear');
-                                };
-                                return ScreenModel;
-                            }());
+                                }
+                                //validate client
+                                validateData() {
+                                    $("#inp_code").ntsEditor("validate");
+                                    $("#inp_name").ntsEditor("validate");
+                                }
+                            }
                             viewmodel.ScreenModel = ScreenModel;
-                            var CertifyGroupModel = (function () {
-                                function CertifyGroupModel(certifyGroupDto) {
+                            class CertifyGroupModel {
+                                constructor(certifyGroupDto) {
                                     this.code = ko.observable(certifyGroupDto.code);
                                     this.name = ko.observable(certifyGroupDto.name);
                                     this.multiApplySet = ko.observable(certifyGroupDto.multiApplySet);
@@ -236,15 +293,14 @@ var nts;
                                     this.isReadOnly = ko.observable(true);
                                     this.isEnable = ko.observable(false);
                                 }
-                                CertifyGroupModel.prototype.setLstCertification = function (lstCertification) {
+                                setLstCertification(lstCertification) {
                                     this.lstCertification(lstCertification);
-                                };
-                                CertifyGroupModel.prototype.setReadOnly = function (readonly) {
+                                }
+                                setReadOnly(readonly) {
                                     this.isReadOnly(readonly);
                                     this.isEnable(!readonly);
-                                };
-                                return CertifyGroupModel;
-                            }());
+                                }
+                            }
                             viewmodel.CertifyGroupModel = CertifyGroupModel;
                         })(viewmodel = l.viewmodel || (l.viewmodel = {}));
                     })(l = qmm016.l || (qmm016.l = {}));
@@ -253,4 +309,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm016.l.vm.js.map

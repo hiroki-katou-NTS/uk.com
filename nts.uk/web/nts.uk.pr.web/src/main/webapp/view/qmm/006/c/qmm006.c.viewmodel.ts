@@ -8,10 +8,8 @@ module qmm006.c.viewmodel {
 
         constructor() {
             var self = this;
-
             self.currentCode = ko.observable();
             self.currentCode1 = ko.observable();
-
             self.items = ko.observableArray([]);
             self.items1 = ko.observableArray([]);
 
@@ -27,7 +25,10 @@ module qmm006.c.viewmodel {
             return this.findAll();
         }
 
-        findAll() {
+        /**
+         * get data from database
+         */
+        findAll(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             qmm006.c.service.findAll()
@@ -45,7 +46,10 @@ module qmm006.c.viewmodel {
 
         }
 
-        transferData(data, newLineBankCode) {
+        /**
+         * forward property 'currentCode' to screen A, close dialog
+         */
+        transferData(data, newLineBankCode): void {
             service.transfer(data)
                 .done(function() {
                     nts.uk.ui.windows.setShared("currentCode", newLineBankCode, true);
@@ -56,20 +60,30 @@ module qmm006.c.viewmodel {
                 });
         }
 
-        transfer() {
+        /**
+         * change lineBankCode in database PERSON_BANK_ACCOUNT base-on data on screen
+         */
+        transfer(): void {
             var self = this;
             var oldLineBankCode = self.currentCode();
             var newLineBankCode = self.currentCode1();
-            if (oldLineBankCode == null || newLineBankCode == null) {
-                nts.uk.ui.dialog.alert("＊が選択されていません。");//ER007
+            if (oldLineBankCode == null) {
+                nts.uk.ui.dialog.alert("置換元情報が選択されていません。");//ER007
                 return;
             }
-            else if (oldLineBankCode == newLineBankCode) {
-                nts.uk.ui.dialog.alert("統合元と統合先で同じコードの＊が選択されています。\r\n  ＊を確認してください。");//ER009
+            if (newLineBankCode == null) {
+                nts.uk.ui.dialog.alert("置換先情報が選択されていません。");//ER007
+                return;
+            }
+            if (oldLineBankCode == newLineBankCode) {
+                //ER009
+                let messageError = nts.uk.text.format("統合元と統合先で同じコードの{0}が選択されています。\r\n  振込元銀行を確認してください。", self.currentCode());
+                nts.uk.ui.dialog.alert(messageError);
                 return;
             } else {
                 //Al003
                 nts.uk.ui.dialog.confirm("統合元から統合先へデータを置換えます。\r\n よろしいですか？").ifYes(function() {
+                    //Do you want to delete lineBank?
                     nts.uk.ui.dialog.confirm("置換元のマスタを削除しますか？[はい/いいえ]").ifYes(function() {
                         var data = {
                             oldLineBankCode: oldLineBankCode,
@@ -85,17 +99,19 @@ module qmm006.c.viewmodel {
                         }
                         self.transferData(data, newLineBankCode);
                     })
-                }).ifNo(function() {
+                }).ifCancel(function() {
                     return;
                 })
             }
         }
 
-        closeDialog(): any {
+        /**
+         * close dialog
+         */
+        closeDialog(): void {
             nts.uk.ui.windows.close();
         }
     }
-
 
     class LineBankC {
         lineBankCode: KnockoutObservable<string>;

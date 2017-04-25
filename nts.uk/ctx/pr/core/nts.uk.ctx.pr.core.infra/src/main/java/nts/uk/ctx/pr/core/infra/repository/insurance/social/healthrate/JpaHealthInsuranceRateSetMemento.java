@@ -26,7 +26,7 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthIn
 public class JpaHealthInsuranceRateSetMemento implements HealthInsuranceRateSetMemento {
 
 	/** The type value. */
-	protected QismtHealthInsuRate typeValue;
+	private QismtHealthInsuRate typeValue;
 
 	/**
 	 * Instantiates a new jpa health insurance rate set memento.

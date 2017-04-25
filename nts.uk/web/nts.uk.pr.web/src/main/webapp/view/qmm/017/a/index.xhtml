@@ -8,60 +8,60 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="style.css" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="service.js" />
+			<com:stylefile path="qmm017.a.style.css" />
+			<com:scriptfile path="qmm017.a.start.js" />
+			<com:scriptfile path="qmm017.a.vm.js" />
+			<com:scriptfile path="qmm017.a.service.js" />
 			<com:ValidatorScript>
 				nts.uk.ctx.pr.formula.dom.primitive.Money
 			</com:ValidatorScript>
 			
-			<com:stylefile path="../../../../view/qmm/017/b/style.css" />
-			<com:scriptfile path="../../../../view/qmm/017/b/viewmodel.js" />
-			<com:scriptfile path="../../../../view/qmm/017/b/service.js" />
+			<com:stylefile path="../../../../view/qmm/017/b/qmm017.b.style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/b/qmm017.b.vm.js" />
+			<com:scriptfile path="../../../../view/qmm/017/b/qmm017.b.service.js" />
 			
-			<com:stylefile path="../../../../view/qmm/017/c/style.css" />
-			<com:scriptfile path="../../../../view/qmm/017/c/viewmodel.js" />
-			<com:scriptfile path="../../../../view/qmm/017/c/service.js" />
+			<com:stylefile path="../../../../view/qmm/017/c/qmm017.c.style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/c/qmm017.c.vm.js" />
+			<com:scriptfile path="../../../../view/qmm/017/c/qmm017.c.service.js" />
 			
-			<com:stylefile path="../../../../view/qmm/017/d/style.css" />
-			<com:scriptfile path="../../../../view/qmm/017/d/viewmodel.js" />
-			<com:scriptfile path="../../../../view/qmm/017/d/service.js" />
+			<com:stylefile path="../../../../view/qmm/017/d/qmm017.d.style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/d/qmm017.d.vm.js" />
+			<com:scriptfile path="../../../../view/qmm/017/d/qmm017.d.service.js" />
 			
-			<com:stylefile path="../../../../view/qmm/017/e/style.css" />
-			<com:scriptfile path="../../../../view/qmm/017/e/viewmodel.js" />
-			<com:scriptfile path="../../../../view/qmm/017/e/service.js" />
+			<com:stylefile path="../../../../view/qmm/017/e/qmm017.e.style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/e/qmm017.e.vm.js" />
+			<com:scriptfile path="../../../../view/qmm/017/e/qmm017.e.service.js" />
 			
-			<com:stylefile path="../../../../view/qmm/017/f/style.css" />
-			<com:scriptfile path="../../../../view/qmm/017/f/viewmodel.js" />
-			<com:scriptfile path="../../../../view/qmm/017/f/service.js" />
+			<com:stylefile path="../../../../view/qmm/017/f/qmm017.f.style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/f/qmm017.f.vm.js" />
+			<com:scriptfile path="../../../../view/qmm/017/f/qmm017.f.service.js" />
 			
-			<com:stylefile path="../../../../view/qmm/017/g/style.css" />
-			<com:scriptfile path="../../../../view/qmm/017/g/viewmodel.js" />
-			<com:scriptfile path="../../../../view/qmm/017/g/service.js" />
+			<com:stylefile path="../../../../view/qmm/017/g/qmm017.g.style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/g/qmm017.g.vm.js" />
+			<com:scriptfile path="../../../../view/qmm/017/g/qmm017.g.service.js" />
 			
-			<com:stylefile path="../../../../view/qmm/017/h/style.css" />
-			<com:scriptfile path="../../../../view/qmm/017/h/viewmodel.js" />
-			<com:scriptfile path="../../../../view/qmm/017/h/service.js" />
+			<com:stylefile path="../../../../view/qmm/017/h/qmm017.h.style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/h/qmm017.h.vm.js" />
 			
-			<com:stylefile path="../../../../view/qmm/017/i/style.css" />
-			<com:scriptfile path="../../../../view/qmm/017/i/viewmodel.js" />
-			<com:scriptfile path="../../../../view/qmm/017/i/service.js" />
+			<com:stylefile path="../../../../view/qmm/017/i/qmm017.i.style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/i/qmm017.i.vm.js" />
+			<com:scriptfile path="../../../../view/qmm/017/i/qmm017.i.service.js" />
+			
+			<com:stylefile path="../../../../view/qmm/017/r/qmm017.r.style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/r/qmm017.r.vm.js" />
 		</ui:define>
 
 		<ui:define name="content">
 				<div id="functions-area" style="padding-top: 5px;" class="cf">
-				<button id="a_btn_001" class="button separate-button fix-button" data-bind="click: start">新規</button>
-				<button id="a_btn_002"
-					class="button proceed separate-button fix-button" data-bind="click: registerFormulaMaster">登録</button>
-				<button id="a_btn_003" class="button separate-button fix-button">コピー</button>
-				<button id="a_btn_004" class="button separate-button fix-button">Excel出力</button>
-				<button id="a_btn_007" class="button separate-button fix-button">マスタ修正ログ</button>
-				<span id="a_lbl_001">計算式の登録</span>
+				<button class="button separate-button fix-button" data-bind="click: resetToNewMode,enable: !isNewMode()">新規</button>
+				<button class="button proceed separate-button fix-button" data-bind="click: registerFormulaMaster, enable: $root.errors.isEmpty">登録</button>
+				<button id="copy_btn" class="button separate-button fix-button" data-bind="enable: false">コピー</button>
+				<button class="button separate-button fix-button" data-bind="enable: false">Excel出力</button>
+				<button class="button separate-button fix-button">マスタ修正ログ</button>
 				</div>
 				<div id="contents-area" style="width: 1366px;" class="cf">
 					<div id="left-content" class="bg-green caret-right caret-background">
-						<div id="a_lbl_002" data-bind="ntsFormLabel: {}">コード/名称</div>
+						<div id="code_name_lbl" data-bind="ntsFormLabel: {}">コード/名称</div>
 						<div style="width: 200px; display: inline-block" data-bind="ntsSearchBox: {
 							comId: 'treeGrid',
 							items: treeGridHistory().items, 		
@@ -70,10 +70,10 @@
 							childField: 'childs', 
 							fields: ['name', 'code']}" />	
 						<br />
-						<button id="a_btn_005" data-bind="click: openDialogJ, enable: !isNewMode()">履歴追加</button>
-						<button id="a_btn_006" data-bind="click: openDialogK, enable: !isNewMode()">履歴編集</button>
+						<button data-bind="click: openDialogJ, enable: !isNewMode()">履歴追加</button>
+						<button id="edit_history_btn" data-bind="click: openDialogK, enable: !isNewMode()">履歴編集</button>
 						<br />
-						<div id="a_lst_001" data-bind="with: treeGridHistory">
+						<div id="tree_history" data-bind="with: treeGridHistory">
 							<table id="treeGrid"
 								data-bind="ntsTreeGridView:{
 										width: 288,
@@ -90,7 +90,7 @@
 						</div>
 					</div>
 					<div id="right-content">
-						<div id="a_sel_001"
+						<div id="tabFormula"
 							data-bind="ntsTabPanel: { dataSource: a_sel_001, active: selectedTabASel001}">
 							<div class="tab-content-1" data-bind="with: viewModel017b">
 								<ui:include src="../b/index.xhtml" />

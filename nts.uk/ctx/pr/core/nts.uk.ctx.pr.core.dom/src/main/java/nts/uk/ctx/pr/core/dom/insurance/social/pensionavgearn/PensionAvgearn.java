@@ -7,6 +7,7 @@ package nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn;
 import java.math.BigDecimal;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 
@@ -17,7 +18,7 @@ import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 public class PensionAvgearn extends DomainObject {
 
 	/** The history id. */
-	// historyId
+	@Setter
 	private String historyId;
 
 	/** The level code. */
@@ -47,8 +48,9 @@ public class PensionAvgearn extends DomainObject {
 	/**
 	 * Health insurance avgearn.
 	 */
-	private PensionAvgearn() {
-	};
+	private PensionAvgearn(String historyId) {
+		this.historyId = historyId;
+	}
 	
 	// =================== Memento State Support Method ===================
 	/**
@@ -94,8 +96,7 @@ public class PensionAvgearn extends DomainObject {
 	 * @return the pension avgearn
 	 */
 	public PensionAvgearn copyWithNewHistoryId(String newHistoryId) {
-		PensionAvgearn pensionAvgearn = new PensionAvgearn();
-		pensionAvgearn.historyId = newHistoryId;
+		PensionAvgearn pensionAvgearn = new PensionAvgearn(newHistoryId);
 		pensionAvgearn.levelCode = this.levelCode;
 		pensionAvgearn.personalFund = this.personalFund;
 		pensionAvgearn.personalFundExemption = this.personalFundExemption;
@@ -115,8 +116,7 @@ public class PensionAvgearn extends DomainObject {
 	 * @return the object
 	 */
 	public static PensionAvgearn createWithIntial(String newHistoryId, Integer levelCode) {
-		PensionAvgearn pensionAvgearn = new PensionAvgearn();
-		pensionAvgearn.historyId = newHistoryId;
+		PensionAvgearn pensionAvgearn = new PensionAvgearn(newHistoryId);
 		pensionAvgearn.levelCode = levelCode;
 		CommonAmount defaultAmount = new CommonAmount(BigDecimal.ZERO);
 		PensionAvgearnValue defaultValue = new PensionAvgearnValue(defaultAmount, defaultAmount, defaultAmount);

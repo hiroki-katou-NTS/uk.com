@@ -1,36 +1,37 @@
 package nts.uk.ctx.basic.dom.organization.position;
 import lombok.Getter;
+import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.basic.dom.company.CompanyCode;
-
+@Setter
 @Getter
 public class JobTitleRef extends AggregateRoot{
 	
-	private AuthorizationCode authorizationCode;
-			
-	private String historyId;
-	
 	private String companyCode;
+	
+	private String historyId;
 	
 	private JobCode jobCode;
 	
+	private AuthorizationCode authCode;
+	
 	private ReferenceSettings referenceSettings;
 	
-	public JobTitleRef(AuthorizationCode authorizationCode, ReferenceSettings referenceSettings, 
-			String companyCode, String historyId,JobCode jobCode) {
+	public JobTitleRef(String companyCode, String historyId,JobCode jobCode,AuthorizationCode authCode,ReferenceSettings referenceSettings ) {
 		super();
-		this.authorizationCode = authorizationCode;
-		this.historyId = historyId;
 		this.companyCode = companyCode;
-		this.referenceSettings = referenceSettings;
+		this.historyId = historyId;
 		this.jobCode = jobCode;
+		this.authCode = authCode;
+		this.referenceSettings = referenceSettings;
+		
 	}
 
-	public static JobTitleRef createSimpleFromJavaType(String authorizationCode, int referenceSettings, 
-			 String companyCode, String historyId,String jobCode)
+	public static JobTitleRef createFromJavaType(  
+			 String companyCode, String historyId,String jobCode,String authCode,int referenceSettings)
 	{
-		return new JobTitleRef(new AuthorizationCode(authorizationCode), ReferenceSettings.valueOf(String.valueOf(referenceSettings)),
-				companyCode, historyId,new JobCode(jobCode));
+		return new JobTitleRef( 
+				companyCode, historyId,new JobCode(jobCode),new AuthorizationCode(authCode),EnumAdaptor.valueOf(referenceSettings, ReferenceSettings.class) );
 	}
 
 }

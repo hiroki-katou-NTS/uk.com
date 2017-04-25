@@ -1,25 +1,21 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.entity.wagetable.certification;
 
 import java.io.Serializable;
-import java.util.Date;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class QwtmtWagetableCertify.
@@ -28,7 +24,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "QWTMT_WAGETABLE_CERTIFY")
-public class QwtmtWagetableCertify implements Serializable {
+public class QwtmtWagetableCertify extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -37,53 +33,16 @@ public class QwtmtWagetableCertify implements Serializable {
 	@EmbeddedId
 	protected QwtmtWagetableCertifyPK qwtmtWagetableCertifyPK;
 
-	/** The ins date. */
-	@Column(name = "INS_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date insDate;
-
-	/** The ins ccd. */
-	@Column(name = "INS_CCD")
-	private String insCcd;
-
-	/** The ins scd. */
-	@Column(name = "INS_SCD")
-	private String insScd;
-
-	/** The ins pg. */
-	@Column(name = "INS_PG")
-	private String insPg;
-
-	/** The upd date. */
-	@Column(name = "UPD_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updDate;
-
-	/** The upd ccd. */
-	@Column(name = "UPD_CCD")
-	private String updCcd;
-
-	/** The upd scd. */
-	@Column(name = "UPD_SCD")
-	private String updScd;
-
-	/** The upd pg. */
-	@Column(name = "UPD_PG")
-	private String updPg;
-
-	/** The exclus ver. */
-	@Basic(optional = false)
-	@Column(name = "EXCLUS_VER")
-	private long exclusVer;
-
 	/** The qcemt certification. */
-	@JoinColumns({ @JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
+	@JoinColumns({
+			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
 			@JoinColumn(name = "CERTIFY_CD", referencedColumnName = "CERT_CD", insertable = false, updatable = false) })
 	@ManyToOne(optional = false)
 	private QcemtCertification qcemtCertification;
 
 	/** The qwtmt wagetable certify G. */
-	@JoinColumns({ @JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
+	@JoinColumns({
+			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
 			@JoinColumn(name = "CERTIFY_GROUP_CD", referencedColumnName = "CERTIFY_GROUP_CD", insertable = false, updatable = false) })
 	@ManyToOne(optional = false)
 	private QwtmtWagetableCertifyG qwtmtWagetableCertifyG;
@@ -148,6 +107,16 @@ public class QwtmtWagetableCertify implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.qwtmtWagetableCertifyPK;
 	}
 
 }

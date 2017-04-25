@@ -20,12 +20,10 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu;
-import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsuPK;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsuPK_;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu_;
 
@@ -61,12 +59,13 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
-	 * AccidentInsuranceRateRepository#remove(java.lang.String, java.lang.Long)
+	 * AccidentInsuranceRateRepository#remove(java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
-	public void remove(String companyCode, String historyId, long version) {
+	public void remove(String companyCode, String historyId) {
 		List<QismtWorkAccidentInsu> lstRateRemove = this.findDataById(companyCode, historyId);
 		this.commandProxy().removeAll(lstRateRemove);
 	}
@@ -114,9 +113,8 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 
 		// exclude select
 		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
-		List<AccidentInsuranceRate> lstAccidentInsuranceRate = query.getResultList().stream()
-			.map(item -> this.toDomainHistory(item)).collect(Collectors.toList());
-		return lstAccidentInsuranceRate;
+		return query.getResultList().stream().map(item -> this.toDomainHistory(item))
+			.collect(Collectors.toList());
 	}
 
 	/*
@@ -126,8 +124,8 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 	 * AccidentInsuranceRateRepository#findById(java.lang.String)
 	 */
 	@Override
-	public Optional<AccidentInsuranceRate> findById(String String, String historyId) {
-		return Optional.ofNullable(this.toDomain(this.findDataById(String, historyId)));
+	public Optional<AccidentInsuranceRate> findById(String companyCode, String historyId) {
+		return Optional.ofNullable(this.toDomain(this.findDataById(companyCode, historyId)));
 	}
 
 	/**
@@ -171,8 +169,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 		// set order
 		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
-		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = query.getResultList();
-		return lstQismtWorkAccidentInsu;
+		return query.getResultList();
 	}
 
 	/**
@@ -210,33 +207,14 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 	 * @return the accident insurance rate
 	 */
 	public AccidentInsuranceRate toDomainHistory(QismtWorkAccidentInsu entity) {
-		return new AccidentInsuranceRate(new JpaHistoryAccidentInsuranceRateGetMemento(entity));
-	}
-
-	/**
-	 * Ramdom history.
-	 *
-	 * @param rate
-	 *            the rate
-	 * @return the list
-	 */
-	public List<QismtWorkAccidentInsu> ramdomHistory(AccidentInsuranceRate rate) {
-		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = this.toEntity(rate);
-		String historyId = IdentifierUtil.randomUniqueId();
-		for (QismtWorkAccidentInsu qismtWorkAccidentInsu : lstQismtWorkAccidentInsu) {
-			QismtWorkAccidentInsuPK pk = qismtWorkAccidentInsu.getQismtWorkAccidentInsuPK();
-			pk.setHistId(historyId);
-			qismtWorkAccidentInsu.setQismtWorkAccidentInsuPK(pk);
-		}
-		return lstQismtWorkAccidentInsu;
+		return new AccidentInsuranceRate(new JpaAccidentInsuranceHistoryGetMemento(entity));
 	}
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
-	 * AccidentInsuranceRateRepository#findFirstData(nts.uk.ctx.core.dom.company
-	 * .String)
+	 * AccidentInsuranceRateRepository#findFirstData(java.lang.String)
 	 */
 	@Override
 	public Optional<AccidentInsuranceRate> findFirstData(String companyCode) {
@@ -340,6 +318,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
 		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = query.getResultList();
 
+		// check empty data  
 		if (CollectionUtil.isEmpty(lstQismtWorkAccidentInsu)) {
 			return Optional.empty();
 		}

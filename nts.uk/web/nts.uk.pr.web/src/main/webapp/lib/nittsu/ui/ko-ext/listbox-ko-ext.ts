@@ -14,7 +14,7 @@ module nts.uk.ui.koExtentions {
         $target.selectable("destroy");
     }
     
-    function bindMultible($target: JQuery, changeEvent: CustomEvent){
+    function bindMultible($target: JQuery, changeEvent: CustomEvent){ 
         $target.selectable({
             filter: 'li',
             selected: function(event, ui) {
@@ -303,9 +303,9 @@ module nts.uk.ui.koExtentions {
             container.data("init", false);
 
             // Set value
-            var haveDate = isMultiSelect ? !uk.text.isNullOrEmpty(selectedValue) && selectedValue.length > 0 
+            var haveData = isMultiSelect ? !uk.text.isNullOrEmpty(selectedValue) && selectedValue.length > 0 
                 : !uk.text.isNullOrEmpty(selectedValue);
-            if (haveDate && (!_.isEqual(originalSelected, selectedValue) || init)) {
+            if (haveData && (!_.isEqual(originalSelected, selectedValue) || init)) {
                 selectListBoxContainer.data('value', selectedValue);
                 if(isMultiSelect){
                     selectMultiRow(selectListBoxContainer, selectedValue);
@@ -313,6 +313,8 @@ module nts.uk.ui.koExtentions {
                     selectOneRow(selectListBoxContainer, selectedValue);
                 }
                 container.trigger('selectionChange');
+            } else if (!haveData){
+                container.ntsListBox("deselectAll");    
             }
             
             if (isMultiSelect) {
@@ -327,12 +329,12 @@ module nts.uk.ui.koExtentions {
             } else {
                 if (!enable) {
                     //selectListBoxContainer.selectable("disable");;
-                    container.off("click", "li");
+                    selectListBoxContainer.off("click", "li");
                     container.addClass('disabled');
                 } else {
                     //selectListBoxContainer.selectable("enable");
                     if (container.hasClass("disabled")) {
-                        container.on("click", "li", { event: container.data("selectionChange") }, selectOnListBox);
+                        selectListBoxContainer.on("click", "li", { event: container.data("selectionChange") }, selectOnListBox);
                         container.removeClass('disabled');
                     }
                 }

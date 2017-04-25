@@ -2,86 +2,89 @@ var qmm005;
 (function (qmm005) {
     var c;
     (function (c) {
-        var ViewModel = (function () {
-            function ViewModel() {
-                var self = this;
+        class ViewModel {
+            constructor() {
+                let self = this;
+                // processingNo
                 self.index = ko.observable(nts.uk.ui.windows.getShared('dataRow').index());
-                var C_SEL_001_DATA = [];
-                for (var i = 1; i < 31; i++) {
+                // define all data
+                let C_SEL_001_DATA = [];
+                for (let i = 1; i < 31; i++) {
                     C_SEL_001_DATA.push(new qmm005.common.SelectItem({ index: i, label: i + '日' }));
                 }
                 C_SEL_001_DATA.push(new qmm005.common.SelectItem({ index: 31, label: '末日' }));
-                var C_SEL_002_DATA = [
+                let C_SEL_002_DATA = [
                     new qmm005.common.SelectItem({ index: 0, label: '当月' }),
                     new qmm005.common.SelectItem({ index: -1, label: '前月' })
                 ];
-                var C_SEL_003_DATA = [];
-                for (var i = 1; i < 31; i++) {
+                let C_SEL_003_DATA = [];
+                for (let i = 1; i < 31; i++) {
                     C_SEL_003_DATA.push(new qmm005.common.SelectItem({ index: i, label: i + '日' }));
                 }
                 C_SEL_003_DATA.push(new qmm005.common.SelectItem({ index: 31, label: '末日' }));
-                var C_SEL_004_DATA = [
+                let C_SEL_004_DATA = [
                     new qmm005.common.SelectItem({ index: 0, label: '当月' }),
                     new qmm005.common.SelectItem({ index: -1, label: '前月' })
                 ];
-                var C_SEL_005_DATA = [];
-                for (var i = 1; i < 31; i++) {
+                let C_SEL_005_DATA = [];
+                for (let i = 1; i < 31; i++) {
                     C_SEL_005_DATA.push(new qmm005.common.SelectItem({ index: i, label: i + '日' }));
                 }
                 C_SEL_005_DATA.push(new qmm005.common.SelectItem({ index: 31, label: '末日' }));
-                var C_SEL_006_DATA = [
+                let C_SEL_006_DATA = [
                     new qmm005.common.SelectItem({ index: 0, label: '当月' }),
                     new qmm005.common.SelectItem({ index: -1, label: '前月' }),
                 ];
-                var C_SEL_007_DATA = [
+                let C_SEL_007_DATA = [
                     new qmm005.common.SelectItem({ index: -2, label: '前々月' }),
                     new qmm005.common.SelectItem({ index: -1, label: '前月' }),
                     new qmm005.common.SelectItem({ index: 0, label: '当月' }),
                     new qmm005.common.SelectItem({ index: 1, label: '翌月' }),
                     new qmm005.common.SelectItem({ index: 2, label: '翌々月' })
                 ];
-                var C_SEL_008_DATA = [
+                let C_SEL_008_DATA = [
                     new qmm005.common.SelectItem({ index: -1, label: '前年' }),
                     new qmm005.common.SelectItem({ index: 0, label: '当年' }),
                     new qmm005.common.SelectItem({ index: 1, label: '翌年' }),
                     new qmm005.common.SelectItem({ index: 2, label: '翌々年' })
                 ];
-                var C_SEL_009_DATA = [
+                let C_SEL_009_DATA = [
                     new qmm005.common.SelectItem({ index: -1, label: '前月' }),
                     new qmm005.common.SelectItem({ index: 0, label: '当月' })
                 ];
-                for (var i = 1; i <= 12; i++) {
+                for (let i = 1; i <= 12; i++) {
                     C_SEL_009_DATA.push(new qmm005.common.SelectItem({ index: i, label: i + '月' }));
                 }
-                var C_SEL_010_DATA = [];
-                for (var i = 1; i < 31; i++) {
+                let C_SEL_010_DATA = [];
+                for (let i = 1; i < 31; i++) {
                     C_SEL_010_DATA.push(new qmm005.common.SelectItem({ index: i, label: i + '日' }));
                 }
                 C_SEL_010_DATA.push(new qmm005.common.SelectItem({ index: 31, label: '末日' }));
-                var C_SEL_011_DATA = [];
-                for (var i = 1; i <= 12; i++) {
+                let C_SEL_011_DATA = [];
+                for (let i = 1; i <= 12; i++) {
                     C_SEL_011_DATA.push(new qmm005.common.SelectItem({ index: i, label: i + '月' }));
                 }
-                var C_SEL_012_DATA = [];
-                for (var i = 1; i < 31; i++) {
+                let C_SEL_012_DATA = [];
+                for (let i = 1; i < 31; i++) {
                     C_SEL_012_DATA.push(new qmm005.common.SelectItem({ index: i, label: i + '日' }));
                 }
                 C_SEL_012_DATA.push(new qmm005.common.SelectItem({ index: 31, label: '末日' }));
-                var C_SEL_013_DATA = [
+                let C_SEL_013_DATA = [
                     new qmm005.common.SelectItem({ index: -1, label: '前年' }),
                     new qmm005.common.SelectItem({ index: 0, label: '当年' }),
                     new qmm005.common.SelectItem({ index: 1, label: '翌年' }),
                     new qmm005.common.SelectItem({ index: 2, label: '翌々年' }),
                 ];
-                var C_SEL_014_DATA = [];
-                for (var i = 1; i <= 12; i++) {
+                let C_SEL_014_DATA = [];
+                for (let i = 1; i <= 12; i++) {
                     C_SEL_014_DATA.push(new qmm005.common.SelectItem({ index: i, label: i + '月' }));
                 }
-                var C_SEL_015_DATA = [];
-                for (var i = 1; i < 31; i++) {
+                let C_SEL_015_DATA = [];
+                for (let i = 1; i < 31; i++) {
                     C_SEL_015_DATA.push(new qmm005.common.SelectItem({ index: i, label: i + '日' }));
                 }
                 C_SEL_015_DATA.push(new qmm005.common.SelectItem({ index: 31, label: '末日' }));
+                // observables all values
                 self.inp001 = ko.observable('');
                 self.sel001 = ko.observable(1);
                 self.sel002 = ko.observable(0);
@@ -98,6 +101,7 @@ var qmm005;
                 self.sel013 = ko.observable(1);
                 self.sel014 = ko.observable(1);
                 self.sel015 = ko.observable(1);
+                // observable all datas
                 self.sel001Data = ko.observableArray(C_SEL_001_DATA);
                 self.sel002Data = ko.observableArray(C_SEL_002_DATA);
                 self.sel003Data = ko.observableArray(C_SEL_003_DATA);
@@ -114,7 +118,7 @@ var qmm005;
                 self.sel014Data = ko.observableArray(C_SEL_014_DATA);
                 self.sel015Data = ko.observableArray(C_SEL_015_DATA);
             }
-            ViewModel.prototype.toggleView = function () {
+            toggleView() {
                 $('.form-extent').toggleClass('hidden');
                 if (!$('.form-extent').hasClass('hidden')) {
                     nts.uk.ui.windows.getSelf().setHeight(window.top.innerHeight < 801 ? 610 : 650);
@@ -124,13 +128,14 @@ var qmm005;
                     nts.uk.ui.windows.getSelf().setHeight(350);
                     $('#contents-area').css('padding-bottom', '');
                 }
-            };
-            ViewModel.prototype.validate = function ($root) {
-                var self = this;
+            }
+            validate($root) {
+                let self = this;
                 return $root.errors.isEmpty() && self.inp001().trim() != '';
-            };
-            ViewModel.prototype.saveData = function () {
-                var self = this, date = new Date(), stdYear = date.getFullYear(), stdMonth = date.getMonth(), stdDate = date.getDate();
+            }
+            saveData() {
+                let self = this, date = new Date(), stdYear = date.getFullYear(), stdMonth = date.getMonth(), stdDate = date.getDate();
+                // Chưa thấy đề cập tới các trường hợp ngày > số ngày trong tháng.
                 var data = {
                     processingNo: self.index(),
                     processingName: self.inp001(),
@@ -139,9 +144,6 @@ var qmm005;
                     bonusAtr: 0,
                     bcurrentProcessingYm: parseInt(nts.uk.time.formatDate(new Date(stdYear, stdDate <= self.sel001() ? stdMonth + 1 : stdMonth, 1), 'yyyyMM')),
                     payStdDay: self.sel001(),
-                    resitaxBeginMon: 6,
-                    resitaxStdMon: 1,
-                    resitaxStdDay: 1,
                     pickupStdMonAtr: self.sel002(),
                     pickupStdDay: self.sel003(),
                     accountDueMonAtr: self.sel004(),
@@ -158,7 +160,9 @@ var qmm005;
                     incometaxStdDay: self.sel015(),
                     payDays: []
                 };
+                /// Initial data for salary and bonus for 12 months in year
                 for (var month = 0; month < 12; month++) {
+                    // Salary
                     data.payDays.push({
                         processingNo: data.processingNo,
                         payBonusAtr: 0,
@@ -176,11 +180,9 @@ var qmm005;
                     });
                 }
                 c.services.insertData(data).done(self.closeDialog);
-            };
-            ViewModel.prototype.closeDialog = function () { nts.uk.ui.windows.close(); };
-            return ViewModel;
-        }());
+            }
+            closeDialog() { nts.uk.ui.windows.close(); }
+        }
         c.ViewModel = ViewModel;
     })(c = qmm005.c || (qmm005.c = {}));
 })(qmm005 || (qmm005 = {}));
-//# sourceMappingURL=qmm005.c.viewmodel.js.map

@@ -58,8 +58,10 @@ public class SocialInsuranceOfficeWs extends WebService {
 	@POST
 	@Path("findall")
 	public List<SocialInsuranceOfficeItemDto> findAll() {
+		// Get the current company code
 		String companyCode = AppContexts.user().companyCode();
 
+		// Find all office
 		return socialInsuranceOfficeFinder.findAll(companyCode);
 	}
 
@@ -71,8 +73,10 @@ public class SocialInsuranceOfficeWs extends WebService {
 	@POST
 	@Path("findall/detail")
 	public List<SocialInsuranceOfficeDto> findAllDetail() {
+		// Get the current company code
 		String companyCode = AppContexts.user().companyCode();
 
+		// Return office detail
 		return socialInsuranceOfficeFinder.findAllDetail(companyCode);
 	}
 
@@ -86,8 +90,10 @@ public class SocialInsuranceOfficeWs extends WebService {
 	@POST
 	@Path("find/{officeCode}")
 	public SocialInsuranceOfficeDto findOffice(@PathParam("officeCode") String officeCode) {
+		// Get the current company code
 		String companyCode = AppContexts.user().companyCode();
 
+		// Return office info
 		return socialInsuranceOfficeFinder.find(companyCode, new OfficeCode(officeCode)).get();
 	}
 
@@ -110,7 +116,6 @@ public class SocialInsuranceOfficeWs extends WebService {
 	@Path("create")
 	public void createOffice(RegisterSocialOfficeCommand command) {
 		this.registerSocialOfficeCommandHandler.handle(command);
-		return;
 	}
 
 	/**
@@ -123,7 +128,6 @@ public class SocialInsuranceOfficeWs extends WebService {
 	@Path("update")
 	public void updateOffice(UpdateSocialOfficeCommand command) {
 		this.updateSocialOfficeCommandHandler.handle(command);
-		return;
 	}
 
 	/**
@@ -136,6 +140,5 @@ public class SocialInsuranceOfficeWs extends WebService {
 	@Path("remove")
 	public void removeOffice(DeleteSocialOfficeCommand command) {
 		this.deleteSocialOfficeCommandHandler.handle(command);
-		return;
 	}
 }

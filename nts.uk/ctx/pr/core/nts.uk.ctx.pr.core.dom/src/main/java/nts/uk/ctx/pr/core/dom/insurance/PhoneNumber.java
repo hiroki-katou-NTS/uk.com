@@ -12,7 +12,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * The Class PhoneNumber.
  */
-@StringCharType(CharType.ANY_HALF_WIDTH)
+@StringCharType(CharType.NUMERIC)
 @StringMaxLength(20)
 public class PhoneNumber extends StringPrimitiveValue<PhoneNumber>{
 	

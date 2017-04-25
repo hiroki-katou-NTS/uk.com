@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -16,11 +15,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class QupmtCUnitpriceDetail.
@@ -29,7 +27,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "QUPMT_C_UNITPRICE_DETAIL")
-public class QupmtCUnitpriceDetail implements Serializable {
+public class QupmtCUnitpriceDetail extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -37,45 +35,6 @@ public class QupmtCUnitpriceDetail implements Serializable {
 	/** The qupmt C unitprice detail PK. */
 	@EmbeddedId
 	protected QupmtCUnitpriceDetailPK qupmtCUnitpriceDetailPK;
-
-	/** The ins date. */
-	@Column(name = "INS_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date insDate;
-
-	/** The ins ccd. */
-	@Column(name = "INS_CCD")
-	private String insCcd;
-
-	/** The ins scd. */
-	@Column(name = "INS_SCD")
-	private String insScd;
-
-	/** The ins pg. */
-	@Column(name = "INS_PG")
-	private String insPg;
-
-	/** The upd date. */
-	@Column(name = "UPD_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updDate;
-
-	/** The upd ccd. */
-	@Column(name = "UPD_CCD")
-	private String updCcd;
-
-	/** The upd scd. */
-	@Column(name = "UPD_SCD")
-	private String updScd;
-
-	/** The upd pg. */
-	@Column(name = "UPD_PG")
-	private String updPg;
-
-	/** The exclus ver. */
-	@Basic(optional = false)
-	@Column(name = "EXCLUS_VER")
-	private int exclusVer;
 
 	/** The str ym. */
 	@Basic(optional = false)
@@ -129,15 +88,17 @@ public class QupmtCUnitpriceDetail implements Serializable {
 	private String memo;
 
 	/** The qupmt C unitprice head. */
-	@JoinColumns({ @JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
+	@JoinColumns({
+			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
 			@JoinColumn(name = "C_UNITPRICE_CD", referencedColumnName = "C_UNITPRICE_CD", insertable = false, updatable = false) })
 	@ManyToOne(optional = false)
 	private QupmtCUnitpriceHeader qupmtCUnitpriceHeader;
-	
+
 	/**
 	 * Instantiates a new qupmt C unitprice detail.
 	 */
 	public QupmtCUnitpriceDetail() {
+		super();
 	}
 
 	/**
@@ -148,48 +109,6 @@ public class QupmtCUnitpriceDetail implements Serializable {
 	 */
 	public QupmtCUnitpriceDetail(QupmtCUnitpriceDetailPK qupmtCUnitpriceDetailPK) {
 		this.qupmtCUnitpriceDetailPK = qupmtCUnitpriceDetailPK;
-	}
-
-	/**
-	 * Instantiates a new qupmt C unitprice detail.
-	 *
-	 * @param qupmtCUnitpriceDetailPK
-	 *            the qupmt C unitprice detail PK
-	 * @param exclusVer
-	 *            the exclus ver
-	 * @param strYm
-	 *            the str ym
-	 * @param endYm
-	 *            the end ym
-	 * @param cUnitprice
-	 *            the c unitprice
-	 * @param fixPaySet
-	 *            the fix pay set
-	 * @param fixPayAtr
-	 *            the fix pay atr
-	 * @param fixPayAtrMonthly
-	 *            the fix pay atr monthly
-	 * @param fixPayAtrDaymonth
-	 *            the fix pay atr daymonth
-	 * @param fixPayAtrDaily
-	 *            the fix pay atr daily
-	 * @param fixPayAtrHourly
-	 *            the fix pay atr hourly
-	 */
-	public QupmtCUnitpriceDetail(QupmtCUnitpriceDetailPK qupmtCUnitpriceDetailPK, int exclusVer, int strYm, int endYm,
-			BigDecimal cUnitprice, short fixPaySet, short fixPayAtr, short fixPayAtrMonthly, short fixPayAtrDaymonth,
-			short fixPayAtrDaily, short fixPayAtrHourly) {
-		this.qupmtCUnitpriceDetailPK = qupmtCUnitpriceDetailPK;
-		this.exclusVer = exclusVer;
-		this.strYm = strYm;
-		this.endYm = endYm;
-		this.cUnitprice = cUnitprice;
-		this.fixPaySet = fixPaySet;
-		this.fixPayAtr = fixPayAtr;
-		this.fixPayAtrMonthly = fixPayAtrMonthly;
-		this.fixPayAtrDaymonth = fixPayAtrDaymonth;
-		this.fixPayAtrDaily = fixPayAtrDaily;
-		this.fixPayAtrHourly = fixPayAtrHourly;
 	}
 
 	/**
@@ -235,5 +154,13 @@ public class QupmtCUnitpriceDetail implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.qupmtCUnitpriceDetailPK;
 	}
 }

@@ -15,8 +15,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import org.apache.commons.lang3.mutable.MutableInt;
-
 import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
 import com.aspose.cells.CellBorderType;
@@ -60,17 +58,8 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 	/** The Constant MAX_RECORD_ON_ONE_PAGE. */
 	private static final int MAX_RECORD_ON_ONE_PAGE = 40;
 	
-	/** The amount item left on current page. */
-	private int amountItemLeftOnCurrentPage = MAX_RECORD_ON_ONE_PAGE;
-	
 	/** The Constant AMOUNT_COLUMN_FIRST_PAGE. */
 	private static final int AMOUNT_COLUMN_FIRST_PAGE = 60;
-	
-	/** The query. */
-	private WageLedgerReportQuery query;
-	
-	/** The is green row. */
-	private boolean isGreenRow;
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.file.pr.app.export.wageledger.WLNewLayoutReportGenerator
@@ -82,8 +71,15 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 	public void generate(FileGeneratorContext fileContext, WLNewLayoutReportData reportData, WageLedgerReportQuery query) {
 		try {
 			AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE);
-			this.query = query;
-			MutableInt currentRow = new MutableInt(AMOUNT_COLUMN_FIRST_PAGE + ROW_START_REPORT);
+			// Create Print Data.
+			PrintData printData = new PrintData();
+			printData.amountItemLeftOnCurrentPage = MAX_RECORD_ON_ONE_PAGE;
+			printData.currentColumn = COLUMN_START_REPORT;
+			printData.currentRow = AMOUNT_COLUMN_FIRST_PAGE + ROW_START_REPORT;
+			printData.reportData = reportData;
+			printData.reportContext = reportContext;
+			printData.isSalaryPath = true;
+			printData.query = query;
 			
 			// ======================== Fill header data.========================
 			this.fillHeaderData(reportContext, reportData.headerData);
@@ -92,52 +88,67 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 			this.setDataSourceForTotalPart(reportContext, reportData);
 			
 			// ======================== Fill Salary payment part.========================
-			this.fillHeaderTable(reportContext, currentRow, COLUMN_START_REPORT,
-					reportData.salaryPaymentDateMap, "給与明細");
-			this.fillReportItemsData(reportContext, reportData.salaryPaymentItems, COLUMN_START_REPORT,
-					currentRow, "【支給】", reportData.salaryPaymentDateMap);
-			this.breakPage(reportContext, currentRow, true);
+			printData.headerLabel = "給与明細";
+			this.fillHeaderTable(printData);
+			printData.headerLabel = "【支給】";
+			printData.currentColumn = COLUMN_START_REPORT;
+			this.fillReportItemsData(reportData.salaryPaymentItems, printData);
+			printData.isCheckBreakPage = true;
+			this.breakPage(printData);
 			
 			// ======================== Fill Salary Deduction part.========================
-			this.fillReportItemsData(reportContext, reportData.salaryDeductionItems, COLUMN_START_REPORT,
-					currentRow, "【控除】", reportData.salaryPaymentDateMap);
-			this.breakPage(reportContext, currentRow, true);
+			printData.headerLabel = "【控除】";
+			printData.currentColumn = COLUMN_START_REPORT;
+			this.fillReportItemsData(reportData.salaryDeductionItems, printData);
+			printData.isCheckBreakPage = true;
+			this.breakPage(printData);
 			
 			// ======================== Fill Salary Attendance part.========================
-			this.fillReportItemsData(reportContext, reportData.salaryAttendanceItems, COLUMN_START_REPORT,
-					currentRow, "【勤怠】", reportData.salaryPaymentDateMap);
-			this.breakPage(reportContext, currentRow, true);
+			printData.headerLabel = "【勤怠】";
+			printData.currentColumn = COLUMN_START_REPORT;
+			this.fillReportItemsData(reportData.salaryAttendanceItems, printData);
+			printData.isCheckBreakPage = true;
+			this.breakPage(printData);
 			
 			// ======================== Fill Bonus Payment part and Bonus Deduction part.========================
-			MutableInt rowStartThisPart = new MutableInt(currentRow);
-			int amountItemLeftOnThisPart = this.amountItemLeftOnCurrentPage;
+			printData.isSalaryPath = false;
+			int rowStartThisPart = printData.currentRow;
+			int amountItemLeftOnThisPart = printData.amountItemLeftOnCurrentPage;
 			
 			// Bonus payment part.
-			this.fillHeaderTable(reportContext, currentRow, COLUMN_START_REPORT,
-					reportData.bonusPaymentDateMap, "賞与明細");
-			this.fillReportItemsData(reportContext, reportData.bonusPaymentItems, COLUMN_START_REPORT,
-					currentRow, "【支給】", reportData.bonusPaymentDateMap);
-			int amountItemLeftOnThisPage = this.amountItemLeftOnCurrentPage;
+			printData.headerLabel = "賞与明細";
+			printData.currentColumn = COLUMN_START_REPORT;
+			this.fillHeaderTable(printData);
+			printData.headerLabel = "【支給】";
+			printData.currentColumn = COLUMN_START_REPORT;
+			this.fillReportItemsData(reportData.bonusPaymentItems, printData);
+			int amountItemLeftOnThisPage = printData.amountItemLeftOnCurrentPage;
+			int rowEndThisPart = printData.currentRow;
 			
 			// Bonus deduction part.
-			this.amountItemLeftOnCurrentPage = amountItemLeftOnThisPart;
-			this.fillHeaderTable(reportContext, rowStartThisPart, COLUMN_START_REPORT + AMOUNT_COLUMN_BONUS_PART + 1,
-					reportData.bonusPaymentDateMap, "賞与明細");
-			this.fillReportItemsData(reportContext, reportData.bonusDeductionItems,
-					COLUMN_START_REPORT + AMOUNT_COLUMN_BONUS_PART + 1, rowStartThisPart,
-					"【控除】】", reportData.bonusPaymentDateMap);
-			this.amountItemLeftOnCurrentPage = amountItemLeftOnThisPage;
-			this.breakPage(reportContext, currentRow, true);
+			printData.headerLabel = "賞与明細";
+			printData.amountItemLeftOnCurrentPage = amountItemLeftOnThisPart;
+			printData.currentColumn = COLUMN_START_REPORT + AMOUNT_COLUMN_BONUS_PART + 1;
+			printData.currentRow = rowStartThisPart;
+			this.fillHeaderTable(printData);
+			printData.headerLabel = "【控除】";
+			printData.currentColumn = COLUMN_START_REPORT + AMOUNT_COLUMN_BONUS_PART + 1;
+			this.fillReportItemsData(reportData.bonusDeductionItems, printData);
+			printData.amountItemLeftOnCurrentPage = amountItemLeftOnThisPage;
+			printData.currentRow = rowEndThisPart;
+			printData.isCheckBreakPage = true;
+			this.breakPage(printData);
 			
 			// ======================== Fill Bonus Attendance part.========================
-			this.fillReportItemsData(reportContext, reportData.bonusAttendanceItems, COLUMN_START_REPORT,
-					currentRow, "【勤怠】", reportData.bonusPaymentDateMap);
+			printData.headerLabel = "【勤怠】";
+			printData.currentColumn = COLUMN_START_REPORT;
+			this.fillReportItemsData(reportData.bonusAttendanceItems, printData);
 			
 			// ======================== Setting report.========================
 			// Set print area.
 			Worksheet ws = reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
 			PageSetup pageSetup = ws.getPageSetup();
-			Cell endCell = ws.getCells().get(currentRow.intValue(), 12);
+			Cell endCell = ws.getCells().get(printData.currentRow, 12);
 			pageSetup.setPrintArea("A1:" + endCell.getName());
 			
 			// Set header.
@@ -235,23 +246,24 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 	 * @param contentName the content name
 	 * @param paymentDateMap the payment date map
 	 */
-	private void fillReportItemsData(AsposeCellsReportContext reportContext, List<ReportItemDto> reportItems,
-			int startColumn, MutableInt startRow, String contentName, Map<Integer, Date> paymentDateMap) {
-		Worksheet ws = reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
+	private void fillReportItemsData(List<ReportItemDto> reportItems, PrintData printData) {
+		Worksheet ws = printData.reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
 		Cells cells = ws.getCells();
 		int totalItemData = reportItems.size();
 		int fromIndex = 0;
+		Map<Integer, Date> paymentDateMap = printData.isSalaryPath ? printData.reportData.salaryPaymentDateMap
+				: printData.reportData.bonusPaymentDateMap;
 		
 		// Fill content name cell.
-		Cell contentNameCell = cells.get(startRow.intValue(), startColumn);
-		contentNameCell.setValue(contentName);
-		startRow.increment();
+		Cell contentNameCell = cells.get(printData.currentRow, printData.currentColumn);
+		contentNameCell.setValue(printData.headerLabel);
+		printData.currentRow++;
 		
 		while (totalItemData > 0) {
-			int amountItemOnPage = Math.min(this.amountItemLeftOnCurrentPage, MAX_RECORD_ON_ONE_PAGE);
+			int amountItemOnPage = Math.min(printData.amountItemLeftOnCurrentPage, MAX_RECORD_ON_ONE_PAGE);
 			int toIndex = fromIndex + amountItemOnPage;
 			List<ReportItemDto> items = this.safeSubList(reportItems, fromIndex, toIndex);
-			int startRowOnThisPage = startRow.intValue();
+			int startRowOnThisPage = printData.currentRow;
 			
 			
 			// Fill report item list.
@@ -260,26 +272,28 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 				
 				// Draw begin line on page.
 				if (i == 0) {
-					Range beginRowRange = cells.createRange(startRow.intValue(), startColumn + 1, 1, paymentDateMap.size());
+					Range beginRowRange = cells.createRange(printData.currentRow, printData.currentColumn + 1,
+							1, paymentDateMap.size());
 					beginRowRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
 				}
 				
 				// Fill items.
-				this.fillItemData(reportContext, item, startRow, startColumn,
-						new ArrayList<>(paymentDateMap.keySet()));
+				this.fillItemData(item, printData);
 			}
 			
 			// Draw horizontal line end page.
-			Range endColumnRange = cells.createRange(startRowOnThisPage, startColumn + paymentDateMap.size(), items.size(), 1);
+			Range endColumnRange = cells.createRange(startRowOnThisPage,
+					printData.currentColumn + paymentDateMap.size(), items.size(), 1);
 			endColumnRange.setOutlineBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
 			
-			// Caculate to next page.
+			// Calculate to next page.
 			totalItemData -= MAX_RECORD_ON_ONE_PAGE;
 			fromIndex += MAX_RECORD_ON_ONE_PAGE;
 		}
 		
 		// Draw vertical line end page.
-		Range endRowRange = cells.createRange(startRow.intValue() - 1, startColumn + 1, 1, paymentDateMap.size());
+		Range endRowRange = cells.createRange(printData.currentRow - 1,
+				printData.currentColumn + 1, 1, paymentDateMap.size());
 		endRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 	}
 	
@@ -292,26 +306,28 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 	 * @param startColumn the start column
 	 * @param monthList the month list
 	 */
-	private void fillItemData(AsposeCellsReportContext reportContext, ReportItemDto item, MutableInt row,
-			Integer startColumn, List<Integer> monthList) {
-		Worksheet ws = reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
+	private void fillItemData(ReportItemDto item, PrintData printData) {
+		Worksheet ws = printData.reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
 		Cells cells = ws.getCells();
-		Color backgroundColor = this.isGreenRow ? GREEN_COLOR : null;
-		this.isGreenRow = !this.isGreenRow;
-		
+		Color backgroundColor = printData.isGreenRow ? GREEN_COLOR : null;
+		printData.isGreenRow  = !printData.isGreenRow;
+		int startColumn = printData.currentColumn;
 		
 		// Fill item name cell.
-		Cell nameCell = cells.get(row.intValue(), startColumn);
+		Cell nameCell = cells.get(printData.currentRow, printData.currentColumn);
 		nameCell.setValue(item.name);
 		this.setStyleCell(nameCell, StyleModel.createNameCellStyle(backgroundColor));
-		startColumn++;
+		printData.currentColumn++;
 		
 		// Fill item data cells.
 		Map<Integer, MonthlyData> dataMap = item.monthlyDatas.stream()
 				.collect(Collectors.toMap(d -> d.month, Function.identity()));
-		for (int j = 0; j < monthList.size(); j++) {
+		Map<Integer, Date> paymentDateMap = printData.isSalaryPath ? printData.reportData.salaryPaymentDateMap
+				: printData.reportData.bonusPaymentDateMap;
+		List<Integer> monthList = new ArrayList<>(paymentDateMap.keySet());
+		for (int j = 0; j < paymentDateMap.size(); j++) {
 			MonthlyData data = dataMap.get(monthList.get(j));
-			Cell monthCell = cells.get(row.intValue(), startColumn);
+			Cell monthCell = cells.get(printData.currentRow, printData.currentColumn);
 			monthCell.setValue(data.amount);
 
 			// Set style for cell.
@@ -320,19 +336,22 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 			this.setStyleCell(monthCell, dataCellStyle);
 
 			// Next column.
-			startColumn++;
+			printData.currentColumn++;
 		}
 		
 		// Next row.
-		row.increment();
+		printData.currentRow++;
 		// Calculate amount item left on page.
-		this.amountItemLeftOnCurrentPage--;
+		printData.amountItemLeftOnCurrentPage--;
+		printData.currentColumn = startColumn;
 		
 		// Check row is last of page.
-		if (this.amountItemLeftOnCurrentPage == 0) {
-			Range endRowRange = cells.createRange(row.intValue() - 1, 1, 1, monthList.size());
+		if (printData.amountItemLeftOnCurrentPage == 0) {
+			Range endRowRange = cells.createRange(printData.currentRow - 1,
+					printData.currentColumn + 1, 1, paymentDateMap.size());
 			endRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
-			this.breakPage(reportContext, row, false);
+			printData.isCheckBreakPage = false;
+			this.breakPage(printData);
 		}
 	}
 	
@@ -345,48 +364,49 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 	 * @param paymentDateMap the payment date map
 	 * @param contentName the content name
 	 */
-	private void fillHeaderTable(AsposeCellsReportContext reportContext, MutableInt startRow,
-			int startColumn, Map<Integer, Date> paymentDateMap, String contentName) {
-		Worksheet ws = reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
+	private void fillHeaderTable(PrintData printData) {
+		Worksheet ws = printData.reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
 		Cells cells = ws.getCells();
 		
 		// Fill content name.
-		Cell contentCell = cells.get(startRow.intValue(), startColumn);
-		contentCell.setValue(contentName);
-		startRow.increment();
+		Cell contentCell = cells.get(printData.currentRow, printData.currentColumn);
+		contentCell.setValue(printData.headerLabel);
+		printData.currentRow++;
 		
 		// ======================== Fill Header.========================
-		int monthRow = startRow.intValue();
-		int paymentDateRow = startRow.incrementAndGet();
+		int monthRow = printData.currentRow;
+		int paymentDateRow = ++printData.currentRow;
 		StyleModel totalCellStyle = StyleModel.createHeaderCellStyle(false);
 		
 		// Fill first column.
-		Cell blankCell = cells.get(monthRow, startColumn);
+		Cell blankCell = cells.get(monthRow, printData.currentColumn);
 		this.setStyleCell(blankCell, totalCellStyle);
-		Cell paymentDateLabelCell = cells.get(paymentDateRow, startColumn);
+		Cell paymentDateLabelCell = cells.get(paymentDateRow, printData.currentColumn);
 		paymentDateLabelCell.setValue("支払日");
 		this.setStyleCell(paymentDateLabelCell, totalCellStyle);
-		startColumn++;
+		printData.currentColumn++;
 		
 		// Fill content header.
+		Map<Integer, Date> paymentDateMap = printData.isSalaryPath ? printData.reportData.salaryPaymentDateMap
+				: printData.reportData.bonusPaymentDateMap;
 		for (Integer month : paymentDateMap.keySet()) {
 			Date paymentDate = paymentDateMap.get(month);
 			// Month cell.
-			Cell monthCell = cells.get(monthRow, startColumn);
+			Cell monthCell = cells.get(monthRow, printData.currentColumn);
 			monthCell.setValue(month + " 月");
 			this.setStyleCell(monthCell, totalCellStyle);
 			
 			// Payment Date Cell.
-			Cell paymentDateCell = cells.get(paymentDateRow, startColumn);
+			Cell paymentDateCell = cells.get(paymentDateRow, printData.currentColumn);
 			paymentDateCell.setValue(this.formartDate(paymentDate));
 			this.setStyleCell(paymentDateCell, totalCellStyle);
 			
 			// Next Column.
-			startColumn++;
+			printData.currentColumn++;
 		}
 		
 		// Next Row.
-		startRow.increment();
+		printData.currentRow++;
 	}
 	
 	/**
@@ -396,16 +416,15 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 	 * @param currentRow the current row
 	 * @param isCheckBreakPageCondition the is check break page condition
 	 */
-	private void breakPage(AsposeCellsReportContext reportContext, MutableInt currentRow,
-			boolean isCheckBreakPageCondition) {
-		if (!isCheckBreakPageCondition 
-				|| (isCheckBreakPageCondition && this.query.isPageBreakIndicator)) {
-			int currentPage = currentRow.intValue() / MAX_ROW_ON_ONE_PAGE + 1;
-			currentRow.setValue(AMOUNT_COLUMN_FIRST_PAGE 
-					+ (currentPage - 1) * MAX_ROW_ON_ONE_PAGE + ROW_START_REPORT);
-			this.amountItemLeftOnCurrentPage = MAX_RECORD_ON_ONE_PAGE;
+	private void breakPage(PrintData printData) {
+		if (!printData.isCheckBreakPage 
+				|| (printData.isCheckBreakPage && printData.query.isPageBreakIndicator)) {
+			int currentPage = printData.currentRow / MAX_ROW_ON_ONE_PAGE + 1;
+			printData.currentRow = AMOUNT_COLUMN_FIRST_PAGE 
+					+ (currentPage - 1) * MAX_ROW_ON_ONE_PAGE + ROW_START_REPORT;
+			printData.amountItemLeftOnCurrentPage = MAX_RECORD_ON_ONE_PAGE;
 		} else {
-			currentRow.increment();
+			printData.currentRow++;
 		}
 	}
 	
@@ -420,4 +439,39 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 		return String.format("%s日%s月 支給", paymentDate.getDate(), paymentDate.getMonth());
 	}
 	
+	/**
+	 * The Class PrintData.
+	 */
+	private class PrintData {
+		
+		/** The report context. */
+		AsposeCellsReportContext reportContext;
+		
+		/** The report data. */
+		WLNewLayoutReportData reportData;
+		
+		/** The query. */
+		WageLedgerReportQuery query;
+		
+		/** The current row. */
+		int currentRow;
+		
+		/** The current column. */
+		int currentColumn;
+		
+		/** The amount item left on current page. */
+		int amountItemLeftOnCurrentPage;
+		
+		/** The is green row. */
+		boolean isGreenRow;
+		
+		/** The is salary path. */
+		boolean isSalaryPath;
+		
+		/** The is total item. */
+		boolean isCheckBreakPage;
+		
+		/** The header label. */
+		String headerLabel;
+	}
 }

@@ -16,9 +16,6 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvge
 @Getter
 public class HealthInsuranceAvgearnDto implements HealthInsuranceAvgearnSetMemento {
 
-	/** The history id. */
-	private String historyId;
-
 	/** The level code. */
 	private Integer levelCode;
 
@@ -36,7 +33,7 @@ public class HealthInsuranceAvgearnDto implements HealthInsuranceAvgearnSetMemen
 	 */
 	@Override
 	public void setHistoryId(String historyId) {
-		this.historyId = historyId;
+		// Do nothing.
 	}
 
 	/*
@@ -46,7 +43,7 @@ public class HealthInsuranceAvgearnDto implements HealthInsuranceAvgearnSetMemen
 	 * HealthInsuranceAvgearnSetMemento#setLevelCode(java.lang.Integer)
 	 */
 	@Override
-	public void setLevelCode(Integer levelCode) {
+	public void setGrade(Integer levelCode) {
 		this.levelCode = levelCode;
 	}
 

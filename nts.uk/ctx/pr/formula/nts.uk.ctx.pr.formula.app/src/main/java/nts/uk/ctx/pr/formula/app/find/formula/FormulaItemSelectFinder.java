@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.formula.app.find.formula;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,9 +17,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * 
- * @author Nam-PT
- * activity 18
- * H screen
+ * @author Nam-PT activity 18 H screen
  *
  */
 @Stateless
@@ -35,15 +34,24 @@ public class FormulaItemSelectFinder {
 		LoginUserContext login = AppContexts.user();
 		String companyCode = login.companyCode();
 
-		List<FormulaHistoryDto> formulaHistoryDto = formulaHistoryRepository
+		List<FormulaHistoryDto> lstFormulaHistoryDto = formulaHistoryRepository
 				.findDataDifFormulaCode(companyCode, new FormulaCode(formulaCode), new YearMonth(baseDate)).stream()
 				.map(f -> FormulaHistoryDto.fromDomain(f)).collect(Collectors.toList());
-		
-		List<FormulaItemSelectDto> formulaDto = formulaMasterRepository.findByCompanyCodeAndFormulaCodes(companyCode, formulaHistoryDto.stream().map(item -> {
-			return new FormulaCode(item.getFormulaCode());
-		}).collect(Collectors.toList())).stream().map(f -> FormulaItemSelectDto.fromDomain(f)).collect(Collectors.toList());
-		
-		return formulaDto;
+		List<FormulaItemSelectDto> lstFormulaDto = new ArrayList<>();
+		if (lstFormulaHistoryDto.size() > 0) {
+			List<FormulaCode> lstFormulaCode = lstFormulaHistoryDto.stream().map(
+					history -> {
+						return new FormulaCode(history.getFormulaCode());
+					}
+			).collect(Collectors.toList());
+			lstFormulaDto = formulaMasterRepository
+					.findByCompanyCodeAndFormulaCodes(companyCode, lstFormulaCode)
+					.stream()
+					.filter(formula -> formula.getDifficultyAtr().value == 1)
+					.map(formula -> FormulaItemSelectDto.fromDomain(formula))
+					.collect(Collectors.toList());
+		}
+		return lstFormulaDto;
 	}
 
 }

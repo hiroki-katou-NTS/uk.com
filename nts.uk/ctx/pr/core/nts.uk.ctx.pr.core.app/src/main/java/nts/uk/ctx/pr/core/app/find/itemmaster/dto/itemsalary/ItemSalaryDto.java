@@ -31,7 +31,7 @@ public class ItemSalaryDto {
 	private BigDecimal alRangeHigh;
 	private String memo;
 	private int limitMnyAtr;
-	private String limitMnyRefItemCd;
+	private String limitMnyRefItemCode;
 	private BigDecimal limitMny;
 
 	public static ItemSalaryDto fromDomain(ItemSalary domain) {
@@ -57,7 +57,7 @@ public class ItemSalaryDto {
 				domain.getAlRangeHigh().v(), 
 				domain.getMemo().v(),
 				domain.getLimitMnyAtr().value,
-				domain.getLimitMnyRefItemCd().v(), 
+				domain.getLimitMnyRefItemCode().v(), 
 				domain.getLimitMny().v());
 	}
 }

@@ -14,77 +14,31 @@ var cmm008;
                 getCompanyInfor: "ctx/proto/company/findCompany"
             };
             function getAllEmployments() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", path.getAllEmployment)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax("com", path.getAllEmployment);
             }
             service.getAllEmployments = getAllEmployments;
             function getEmploymentByCode(employmentCode) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", path.getEmploymentByCode + employmentCode)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax("com", path.getEmploymentByCode + employmentCode);
             }
             service.getEmploymentByCode = getEmploymentByCode;
             function createEmployment(employment) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", path.createEmployment, employment).done(function (res) {
-                    dfd.resolve(res);
-                }).fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax("com", path.createEmployment, employment);
             }
             service.createEmployment = createEmployment;
             function updateEmployment(employment) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", path.updateEmployment, employment).done(function (res) {
-                    dfd.resolve(res);
-                }).fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax("com", path.updateEmployment, employment);
             }
             service.updateEmployment = updateEmployment;
             function deleteEmployment(employment) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", path.deleteEmployment, employment).done(function (res) {
-                    dfd.resolve(res);
-                }).fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax("com", path.deleteEmployment, employment);
             }
             service.deleteEmployment = deleteEmployment;
             function getProcessingNo() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax(path.getAllProcessingNo).done(function (res) {
-                    dfd.resolve(res);
-                }).fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax(path.getAllProcessingNo);
             }
             service.getProcessingNo = getProcessingNo;
             function getCompanyInfor() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax('com', path.getCompanyInfor).done(function (res) {
-                    dfd.resolve(res);
-                }).fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+                return nts.uk.request.ajax('com', path.getCompanyInfor);
             }
             service.getCompanyInfor = getCompanyInfor;
             var model;

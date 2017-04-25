@@ -16,6 +16,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery.LayoutType;
 import nts.uk.file.pr.app.export.wageledger.data.WLNewLayoutReportData;
 import nts.uk.file.pr.app.export.wageledger.data.WLOldLayoutReportData;
@@ -25,6 +26,7 @@ import nts.uk.file.pr.app.export.wageledger.data.oldlayout.PaymentData;
 import nts.uk.file.pr.app.export.wageledger.data.share.HeaderReportData;
 import nts.uk.file.pr.app.export.wageledger.data.share.MonthlyData;
 import nts.uk.file.pr.app.export.wageledger.data.share.ReportItemDto;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class WageLedgerReportSevice.
@@ -52,10 +54,16 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 		
 		// TODO : validate query.
 		WageLedgerReportQuery query = context.getQuery();
+		String companyCode = AppContexts.user().companyCode();
+		query.baseDate = GeneralDate.today();
+		query.employeeIds = Arrays.asList("999000000000000000000000000000000001");
+		if (!this.repository.hasReportData(companyCode, query)) {
+			throw new RuntimeException("None Data!");
+		}
 		
 		// Query Data.
 		@SuppressWarnings("unused")
-		List<WLOldLayoutReportData> reportData = this.repository.findReportDatas(query.targetYear, query.employeeIds);
+		List<WLOldLayoutReportData> reportData = this.repository.findReportDatas(companyCode, query, WLOldLayoutReportData.class);
 		
 		// Fake data.
 		WLOldLayoutReportData fakeReportData = WLOldLayoutReportData.builder()
@@ -75,10 +83,6 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 								.name("Total Tax")
 								.monthlyDatas(this.fakeMonthlyData())
 								.build())
-						.totalSubsidy(ReportItemDto.builder()
-								.monthlyDatas(this.fakeMonthlyData())
-								.name("Total Subsidy")
-								.build())
 						.totalTaxExemption(ReportItemDto.builder()
 								.monthlyDatas(this.fakeMonthlyData())
 								.name("Total Tax Exemption")
@@ -89,10 +93,6 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 						.totalTax(ReportItemDto.builder()
 								.name("Total Tax")
 								.monthlyDatas(this.fakeMonthlyData())
-								.build())
-						.totalSubsidy(ReportItemDto.builder()
-								.monthlyDatas(this.fakeMonthlyData())
-								.name("Total Subsidy")
 								.build())
 						.totalTaxExemption(ReportItemDto.builder()
 								.monthlyDatas(this.fakeMonthlyData())
@@ -175,7 +175,7 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 		if (query.layoutType == LayoutType.NewLayout) {
 			this.newGenerator.generate(context.getGeneratorContext(), newLayoutReportData, query);
 		} else {
-			this.oldGenerator.generate(context.getGeneratorContext(), fakeReportData);
+			this.oldGenerator.generate(context.getGeneratorContext(), fakeReportData, query);
 		}
 	}
 	

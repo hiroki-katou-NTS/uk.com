@@ -17,7 +17,7 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn.QismtHealt
 public class JpaHealthInsuranceAvgearnSetMemento implements HealthInsuranceAvgearnSetMemento {
 
 	/** The type value. */
-	protected QismtHealthInsuAvgearn typeValue;
+	private QismtHealthInsuAvgearn typeValue;
 
 	/**
 	 * Instantiates a new jpa health insurance avgearn set memento.
@@ -49,7 +49,7 @@ public class JpaHealthInsuranceAvgearnSetMemento implements HealthInsuranceAvgea
 	 * HealthInsuranceAvgearnSetMemento#setLevelCode(java.lang.Integer)
 	 */
 	@Override
-	public void setLevelCode(Integer levelCode) {
+	public void setGrade(Integer levelCode) {
 		QismtHealthInsuAvgearnPK healthInsuAvgearnPK = this.typeValue.getQismtHealthInsuAvgearnPK();
 		healthInsuAvgearnPK.setHealthInsuGrade(BigDecimal.valueOf(levelCode));
 		this.typeValue.setQismtHealthInsuAvgearnPK(healthInsuAvgearnPK);

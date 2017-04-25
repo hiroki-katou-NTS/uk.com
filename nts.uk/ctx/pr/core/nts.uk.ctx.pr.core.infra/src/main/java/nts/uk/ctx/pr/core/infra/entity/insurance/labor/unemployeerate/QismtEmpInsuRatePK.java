@@ -36,6 +36,7 @@ public class QismtEmpInsuRatePK implements Serializable {
 	 * Instantiates a new qismt emp insu rate PK.
 	 */
 	public QismtEmpInsuRatePK() {
+		super();
 	}
 
 	/**

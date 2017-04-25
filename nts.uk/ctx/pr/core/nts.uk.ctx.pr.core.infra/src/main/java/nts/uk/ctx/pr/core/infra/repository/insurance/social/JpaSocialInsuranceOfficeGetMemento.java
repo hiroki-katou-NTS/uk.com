@@ -35,7 +35,7 @@ import nts.uk.shr.com.primitive.Memo;
 public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOfficeGetMemento {
 
 	/** The type value. */
-	protected QismtSocialInsuOffice typeValue;
+	private QismtSocialInsuOffice typeValue;
 
 	/**
 	 * Instantiates a new jpa social insurance office get memento.
@@ -250,9 +250,8 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	public WelfarePensionFundCode getWelfarePensionFundCode() {
 		if (this.typeValue.getPensionFundNo() == null || this.typeValue.getPensionFundNo().equals("")) {
 			return null;
-		} else {
-			return new WelfarePensionFundCode(new BigDecimal(this.typeValue.getPensionFundNo()));
 		}
+		return new WelfarePensionFundCode(new BigDecimal(this.typeValue.getPensionFundNo()));
 	}
 
 	/*

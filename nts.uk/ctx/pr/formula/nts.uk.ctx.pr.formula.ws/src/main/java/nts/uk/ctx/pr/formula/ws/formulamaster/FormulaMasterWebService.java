@@ -19,10 +19,14 @@ import nts.uk.ctx.pr.formula.app.command.formulamaster.UpdateFormulaMasterComman
 import nts.uk.ctx.pr.formula.app.command.formulamaster.UpdateFormulaMasterCommandHandler;
 import nts.uk.ctx.pr.formula.app.find.formula.FormulaBasicInformationDto;
 import nts.uk.ctx.pr.formula.app.find.formula.FormulaBasicInformationFinder;
+import nts.uk.ctx.pr.formula.app.find.formula.FormulaEasyFinder;
+import nts.uk.ctx.pr.formula.app.find.formula.FormulaEasyFinderDto;
 import nts.uk.ctx.pr.formula.app.find.formula.FormulaFinder;
 import nts.uk.ctx.pr.formula.app.find.formula.FormulaFinderDto;
 import nts.uk.ctx.pr.formula.app.find.formula.FormulaItemSelectDto;
 import nts.uk.ctx.pr.formula.app.find.formula.FormulaItemSelectFinder;
+import nts.uk.ctx.pr.formula.app.find.formula.FormulaManualDto;
+import nts.uk.ctx.pr.formula.app.find.formula.FormulaManualLastestHistoryFinder;
 import nts.uk.ctx.pr.formula.app.find.formula.FormulaSettingDto;
 import nts.uk.ctx.pr.formula.app.find.formula.FormulaSettingFinder;
 import nts.uk.ctx.pr.formula.app.find.formulahistory.FormulaHistoryDto;
@@ -46,6 +50,10 @@ public class FormulaMasterWebService extends WebService {
 	private AddFormulaMasterCommandHandler addFormulaMasterCommandHandler;
 	@Inject
 	private UpdateFormulaMasterCommandHandler updateFormulaMasterCommandHandler;
+	@Inject
+	private FormulaEasyFinder formulaEasyFinder;
+	@Inject
+	private FormulaManualLastestHistoryFinder formulaManualLastestHistoryFinder;
 	
 
 	@POST
@@ -59,6 +67,12 @@ public class FormulaMasterWebService extends WebService {
 	public FormulaBasicInformationDto findFormula(@PathParam("formulaCode") String formulaCode,
 			@PathParam("historyId") String historyId) {
 		return this.formulaBasicInformationFinder.init(formulaCode, historyId);
+	}
+	
+	@POST
+	@Path("findLastestFormulaManual/{formulaCode}")
+	public FormulaManualDto findLastestFormulaManual(@PathParam("formulaCode") String formulaCode) {
+		return this.formulaManualLastestHistoryFinder.find(formulaCode);
 	}
 
 	@POST
@@ -74,9 +88,16 @@ public class FormulaMasterWebService extends WebService {
 			@PathParam("historyId") String historyId) {
 		return this.formulaHistoryFinder.findByPriKey(formulaCode, historyId).get();
 	}
+	
+	@POST
+	@Path("getFormulaEasyDetail/{formulaCode}/{historyId}/{easyFormulaCode}")
+	public FormulaEasyFinderDto getFormulaEasyDetail(@PathParam("formulaCode") String formulaCode,
+			@PathParam("historyId") String historyId, @PathParam("easyFormulaCode") String easyFormulaCode) {
+		return this.formulaEasyFinder.init(formulaCode, historyId, easyFormulaCode);
+	}
 
 	@POST
-	@Path("getSelectedItems/{formulaCode}/{historyId}")
+	@Path("findOtherFormulas/{formulaCode}/{baseDate}")
 	public List<FormulaItemSelectDto> getSelectedItems(@PathParam("formulaCode") String formulaCode,
 			@PathParam("baseDate") int baseDate) {
 		return this.formulaItemSelectFinder.init(formulaCode, baseDate);
