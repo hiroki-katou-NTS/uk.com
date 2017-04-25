@@ -15,8 +15,8 @@
 			<com:scriptfile path="qmm010.a.vm.js" />
 			<com:scriptfile path="../../../../view/base/postcode/service.js" />
 			<com:ValidatorScript>
-			    nts.uk.ctx.pr.core.dom.insurance.OfficeName
 			    nts.uk.ctx.pr.core.dom.insurance.OfficeCode
+			    nts.uk.ctx.pr.core.dom.insurance.OfficeName
 			    nts.uk.ctx.pr.core.dom.insurance.ShortName
 			    nts.uk.ctx.pr.core.dom.insurance.PicName
 			    nts.uk.ctx.pr.core.dom.insurance.PicPosition
@@ -93,8 +93,8 @@
 										data-bind="ntsTextEditor: {value: code,
 											constraint: 'OfficeCode', 
 											option: textEditorOption,
-											readonly: isReadOnly, 
 											enable: isEnable,
+											immediate: false,
 											required:true}" />
 										<input id="inp_name" data-name="名称" class="tr240 save-error"
 										data-bind="ntsTextEditor: {value: name, 
