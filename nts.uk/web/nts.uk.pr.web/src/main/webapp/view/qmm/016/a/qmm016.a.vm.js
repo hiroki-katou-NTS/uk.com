@@ -266,7 +266,7 @@ var nts;
                                                 late.elementName('遅刻・早退回数');
                                                 var level = new DemensionItemViewModel(3);
                                                 level.elementType(9);
-                                                level.elementName('レベル');
+                                                level.elementName('精皆勤レベル');
                                                 newDemensionItemList.push(workDay);
                                                 newDemensionItemList.push(late);
                                                 newDemensionItemList.push(level);

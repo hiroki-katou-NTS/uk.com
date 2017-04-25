@@ -6,6 +6,8 @@ package nts.uk.ctx.pr.core.dom.wagetable.element;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import nts.arc.error.BusinessException;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 
@@ -28,27 +30,23 @@ public class WtElement {
 	/**
 	 * Instantiates a new wt element.
 	 *
-	 * @param demensionNo the demension no
-	 * @param type the type
-	 */
-	public WtElement(DemensionNo demensionNo, ElementType type) {
-		super();
-		this.demensionNo = demensionNo;
-		this.type = type;
-	}
-
-	/**
-	 * Instantiates a new wt element.
-	 *
-	 * @param demensionNo the demension no
-	 * @param type the type
-	 * @param referenceCode the reference code
+	 * @param demensionNo
+	 *            the demension no
+	 * @param type
+	 *            the type
+	 * @param referenceCode
+	 *            the reference code
 	 */
 	public WtElement(DemensionNo demensionNo, ElementType type, String referenceCode) {
 		super();
 		this.demensionNo = demensionNo;
 		this.type = type;
 		this.referenceCode = referenceCode;
+		if ((this.type.equals(ElementType.MASTER_REF) || this.type.equals(ElementType.CODE_REF))
+				&& StringUtil.isNullOrEmpty(this.referenceCode, true)) {
+			// TODO: pls add msg id
+			throw new BusinessException("Reference code is required");
+		}
 	}
 
 	// =================== Memento State Support Method ===================

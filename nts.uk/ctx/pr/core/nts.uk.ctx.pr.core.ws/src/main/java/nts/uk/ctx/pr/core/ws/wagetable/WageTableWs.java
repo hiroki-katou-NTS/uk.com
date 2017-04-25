@@ -407,7 +407,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 		items.add(new DemensionItemDto(ElementType.CERTIFICATION));
 
 		/** The working day. */
-		items.add(new DemensionItemDto(ElementType.WORKING_DAY));
+		items.add(new DemensionItemDto(ElementType.WITHOUT_WORKING_DAY));
 
 		/** The come late. */
 		items.add(new DemensionItemDto(ElementType.COME_LATE));
