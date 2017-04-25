@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.wageledger.command;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -57,14 +59,15 @@ public class OutputSettingSaveCommandHandler extends CommandHandler<OutputSettin
 		}
 		
 		// Case update.
-		WLOutputSetting outputSetting = this.repository.findByCode(companyCode, 
+		Optional<WLOutputSetting> outputSetting = this.repository.findByCode(companyCode, 
 				new WLOutputSettingCode(command.getCode()));
-		if (outputSetting == null) {
-			throw new IllegalStateException("Output Setting is not found");
+		if (outputSetting.isPresent()) {
+			WLOutputSetting updatedOutputSetting = command.toDomain(companyCode);
+			updatedOutputSetting.validate();
+			this.repository.update(updatedOutputSetting);
+		} else {
+			throw new BusinessException("ER026");
 		}
-		outputSetting = command.toDomain(companyCode);
-		outputSetting.validate();
-		this.repository.update(outputSetting);
 	}
 
 }
