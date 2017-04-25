@@ -10,6 +10,7 @@
 
 #contents-area {
 	padding-left: 20px;
+	width: 1300px !important;
 }
 
 #register-g-btn-001, #PDF-output-g-btn-002 {
@@ -80,7 +81,8 @@
 
 #search-btn-sch-001 {
 	margin-top: 17px;
-	margin-left: 15px; height : 45px;
+	margin-left: 15px;
+	height: 45px;
 	width: 90px;
 	height: 45px;
 }
@@ -88,6 +90,40 @@
 #div-contents-three {
 	width: 700px;
 }
+
+#grid-comparing-different thead {
+		background: #CFF1A5;
+}
+
+
+/** grid css */
+.confirmedStatus-checkBox {
+	position: relative;
+	width: 19px;
+	height: 19px;
+	background: transparent;
+	border: 2px solid #2FCC71;
+	border-radius: 4px;
+	box-sizing: border-box;
+	margin-left: 20px;
+}
+
+.reasonDifference-text {
+	width: 100%;
+	background: transparent;
+	border: 1px solid gray;
+	border-radius: 4px;
+	box-sizing: border-box;
+}
+
+.red-color-diff {
+	background-color: #ffcccc !important;
+}
+
+.blue-color-diff {
+	background-color: 	#ccd8ff !important;
+}
+
 
 /** old css*/
 .function-area button {za a s65` Q2 - margin-left:40px;
@@ -146,22 +182,13 @@
 	margin-left: 35px;
 }
 
-.red {
-	background-color: red !important;
-}
 
-.blue {
-	background-color: 33CC66 !important;
-}
-
-.yellow {
-	background-color: yellow;
-}
 
 .ui-iggrid-header, .ui-widget-header {
 	text-align: center !important;
 }
-.ui-widget-header{
+
+.ui-widget-header {
 	border: 1px solid #fff;
 	background: none !important;
 }

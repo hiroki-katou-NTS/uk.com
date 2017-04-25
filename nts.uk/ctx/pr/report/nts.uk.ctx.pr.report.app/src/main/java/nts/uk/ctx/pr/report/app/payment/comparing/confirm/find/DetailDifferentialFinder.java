@@ -41,7 +41,7 @@ public class DetailDifferentialFinder {
 				s.setComparisonValue2(new ComparisonValue(new BigDecimal(0)));
 				s.setRegistrationStatus2(EnumAdaptor.valueOf(0, RegistrationStatus.class));
 				s.setValueDifference(new ValueDifference(new BigDecimal(0)));
-				s.setReasonDifference(new ReasonDifference(""));
+				s.setReasonDifference(new ReasonDifference(null));
 				s.setConfirmedStatus(EnumAdaptor.valueOf(0, ConfirmedStatus.class));
 				return s;
 			}
@@ -58,7 +58,7 @@ public class DetailDifferentialFinder {
 				return s;
 			} else {
 				s.setValueDifference(new ValueDifference(s.getComparisonValue1().v().subtract(detalDiff.get().getComparisonValue2().v())));
-				s.setReasonDifference(new ReasonDifference(""));
+				s.setReasonDifference(new ReasonDifference(null));
 				s.setConfirmedStatus(EnumAdaptor.valueOf(0, ConfirmedStatus.class));
 				return s;
 			}

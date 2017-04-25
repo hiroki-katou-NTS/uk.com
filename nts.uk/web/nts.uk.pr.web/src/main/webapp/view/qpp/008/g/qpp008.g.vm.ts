@@ -1,6 +1,6 @@
 module qpp008.g.viewmodel {
     export class ScreenModel {
-        detailDifferentList: KnockoutObservableArray<DetailsEmployeer>;
+        detailDifferentList: Array<DetailsEmployeer>;
         selectedDetailDiff: KnockoutObservable<number>;
         firstLoad: KnockoutObservable<boolean>;
         /*checkBox*/
@@ -17,7 +17,7 @@ module qpp008.g.viewmodel {
 
         constructor() {
             let self = this;
-            self.detailDifferentList = ko.observableArray([]);
+            self.detailDifferentList = new Array();
             self.selectedDetailDiff = ko.observable(0);
             self.initIggrid(self.detailDifferentList);
             self.itemCategoryChecked = ko.observableArray([
@@ -42,7 +42,7 @@ module qpp008.g.viewmodel {
 
         }
 
-        initIggrid(data: KnockoutObservableArray<DetailsEmployeer>) {
+        initIggrid(data: Array<DetailsEmployeer>) {
             let self = this;
             /*iggrid*/
             self.firstLoad = ko.observable(true);
@@ -50,108 +50,52 @@ module qpp008.g.viewmodel {
             let _checkAll = false;
             let _checkAllValue = false;
             // event
-
-            $("#grid10").on("iggridupdatingdatadirty", function(event: any, ui: any) {
-                $("#grid10").igGrid("saveChanges");
-                return false;
-            });
-
-            $("#grid10").on("iggriddatabound", function(event: any, ui: any) {
-                if (_checkAll) {
-                    //                    return true;
-                } else if (_isDataBound === false) {
-                    _isDataBound = false;
-                } else {
-                    return;
-                }
-                let i = ui.owner;
-                let grid = ui.owner;
-                let ds = grid.dataSource;
-                let data = ds.data();
-                let dataLength = data.length;
-
-                for (i = 0; i < dataLength; i++) {
-                    if (_checkAll) {
-                        if (data[i]["difference"] != 0) {
-                            data[i]["confirmedStatus"] = _checkAllValue;
-                        }
-                    }
-                    else if (self.firstLoad()) {
-                        if (data[i]["difference"] != 0) {
-                            data[i]["confirmedStatus"] = true;
-                        }
-                    }
-
-                }
-                self.firstLoad = ko.observable(false);
-            });
-
-            $(document).delegate("#grid10", "iggridupdatingeditrowstarting", function(evt: any, ui: any) {
-                let $cell = $($("#grid10").igGrid("cellById", ui.rowID, "difference"));
-                //var $cell1 = $($("#grid10").igGrid("cellAt", 4, ui.rowID));
-                if (!($cell.hasClass("red") || $cell.hasClass("yellow"))) {
-                    return false;
-
-                }
-                //return the triggered event
-                evt;
-                // get reference to igGridUpdating widget
-                ui.owner;
-                // to get key or index of row
-                ui.rowID;
-                // check if that event is raised while new-row-adding
-                ui.rowAdding;
-            });
-            //change color by delegate
-            $(document).delegate("#grid10", "iggriddatarendered", function(evt: any, ui: any) {
+            $("#grid-comparing-different").on("iggriddatarendered", function(evt: JQueryEventObject, ui: any) {
                 _.forEach(ui.owner.dataSource.dataView(), function(item, index) {
-                    item["confirmedStatus"] = false;
                     if (item["difference"] < 0) {
-                        let cell1 = $("#grid10").igGrid("cellById", item["id"], "difference");
-                        $(cell1).addClass('red').attr('data-class', 'red');
-                        $(window).on('resize', () => { $(cell1).addClass('red'); });
-                        item["confirmedStatus"] = true;
+                        let cell1 = $("#grid-comparing-different").igGrid("cellById", item["id"], "difference");
+                        $(cell1).addClass('red-color-diff').attr('data-class', 'red-color-diff');
+                        $(window).on('resize', () => { $(cell1).addClass('red-color-diff'); });
                     } else if (item["difference"] > 0) {
-                        let cell1 = $("#grid10").igGrid("cellById", item["id"], "difference");
-                        $(cell1).addClass('yellow').attr('data-class', 'yellow');
-                        $(window).on('resize', () => { $(cell1).addClass('yellow'); });
-                        item["confirmedStatus"] = true;
+                        let cell1 = $("#grid-comparing-different").igGrid("cellById", item["id"], "difference");
+                        $(cell1).addClass('blue-color-diff').attr('data-class', 'blue-color-diff');
+                        $(window).on('resize', () => { $(cell1).addClass('blue-color-diff'); });
                     }
                 });
             });
 
-            $("#grid10").igGrid({
+            let processingYMEarlier = "2017/02";
+            let processingYMLater = "2017/03";
+            $("#grid-comparing-different").igGrid({
                 primaryKey: "id",
-                dataSource: data(),
+                dataSource: data,
                 width: "100%",
                 autoGenerateColumns: false,
                 responseDataKey: "id",
                 columns: [
-                    { headerText: "", key: "id", dataType: "number", hidden: true},
-                    { headerText: "社員コード", key: "employeeCode", dataType: "string" },
-                    { headerText: "氏名", key: "employeeName", dataType: "string" },
-                    { headerText: "区分", key: "categoryAtr", dataType: "string" },
-                    { headerText: "項目名", key: "itemName", dataType: "string" },
-                    { headerText: "比較年月1", key: "comparisonDate1", dataType: "number", format: "currency" },
-                    { headerText: "比較年月2", key: "comparisonDate2", dataType: "number", format: "currency" },
-                    { headerText: "差額", key: "difference", dataType: "number", format: "currency", columnCssClass: "colStyle" },
+                    { headerText: "", key: "id", dataType: "number", hidden: true },
+                    { headerText: "社員コード", key: "employeeCode", dataType: "string", width: "10%" },
+                    { headerText: "氏名", key: "employeeName", dataType: "string", width: "10%" },
+                    { headerText: "区分", key: "categoryAtr", dataType: "string", width: "4%" },
+                    { headerText: "項目名", key: "itemName", dataType: "string", width: "10%" },
+                    { headerText: processingYMEarlier, key: "comparisonDate1", dataType: "number", format: "currency", width: "8%" },
+                    { headerText: processingYMLater, key: "comparisonDate2", dataType: "number", format: "currency", width: "8%" },
+                    { headerText: "差額", key: "difference", dataType: "number", format: "currency", width: "8%" },
                     {
                         headerText: "差異理由",
                         key: "reasonDifference",
                         dataType: "string",
-                        width: "200px",
-                        unbound: true,
-                        template: "<input type='text' value='${reasonDifference}' class='reasonDifference-text'/>"
+                        width: "12%",
+                        template: "{{if ${difference} !== 0}}<input type='text' data-value = ${id} value='${reasonDifference}' class='reasonDifference-text' />{{/if}}"
                     },
-                    { headerText: "登録状況（比較年月１）", key: "registrationStatus1", dataType: "string" },
-                    { headerText: "登録状況（比較年月2）", key: "registrationStatus2", dataType: "string" },
+                    { headerText: "登録状況（" + processingYMEarlier + "）", key: "registrationStatus1", dataType: "string", width: "12%" },
+                    { headerText: "登録状況（" + processingYMLater + "）", key: "registrationStatus2", dataType: "string", width: "12%" },
                     {
                         headerText: "確認済",
                         key: "confirmedStatus",
                         dataType: "bool",
-                        width: "70px",
-                        unbound: true,
-                        template: "<input type='checkbox' value='${confirmedStatus}' class='confirmedStatus-checkBox'/>"
+                        width: "3%",
+                        template: "{{if ${difference} !== 0}}<input type='checkbox' {{if ${confirmedStatus} === true}} checked='checked'{{/if}} class='confirmedStatus-checkBox'/>{{/if}}"
                     }
                 ],
                 features:
@@ -162,7 +106,7 @@ module qpp008.g.viewmodel {
                         pageIndexChanged: function(evt: any, ui: any) {
 
                         },
-                        pageSize: 20
+                        pageSize: 10
                     },
                     {
                         name: "Updating",
@@ -203,9 +147,7 @@ module qpp008.g.viewmodel {
                                 readOnly: true
                             },
                             {
-                                columnKey: "reasonDifference",
-                                editorType: "text",
-                                readOnly: false
+                                columnKey: "reasonDifference"
                             },
                             {
                                 columnKey: "registrationStatus1",
@@ -217,19 +159,18 @@ module qpp008.g.viewmodel {
                             },
                             {
                                 columnKey: "confirmedStatus",
-                                editorType: "checkbox",
-                                readOnly: false
+                                readOnly: true
                             },
                         ]
-                    }, 
+                    },
                 ]
             });
-            //checkBox
-            $("#cb1").on("click", function(event, ui) {
-                let value = $(this).is(":checked");
-                _checkAll = true;
-                _checkAllValue = value;
-                $("#grid10").igGrid("dataBind");
+            $("#grid-comparing-different").on("change", ".reasonDifference-text", function(evt: any) {
+                let $element = $(this);
+                let selectedValue = $element.val();
+                let selectId = $element.attr('data-value');
+                self.updateValueResionDiffChange(Number(selectId), selectedValue);
+                return;
             });
         }
         startPage(): JQueryPromise<any> {
@@ -237,12 +178,12 @@ module qpp008.g.viewmodel {
             let processingYMEarlier = 201702;
             let processingYMLater = 201703;
             let dfd = $.Deferred();
-            self.detailDifferentList([]);
+            self.detailDifferentList = new Array();
             service.getDetailDifferentials(processingYMEarlier, processingYMLater).done(function(data: any) {
                 let mapDetailDiff = _.map(data, function(item, i) {
                     return new DetailsEmployeer(item, i);
                 });
-                self.detailDifferentList(mapDetailDiff);
+                self.detailDifferentList = mapDetailDiff;
                 self.initIggrid(self.detailDifferentList);
                 dfd.resolve();
             }).fail(function(error: any) {
@@ -251,20 +192,18 @@ module qpp008.g.viewmodel {
             return dfd.promise();
         }
 
-        loadDataGrid() {
+        updateValueResionDiffChange(id: number, newValue: string) {
             let self = this;
-            let processingYMEarlier = 201702;
-            let processingYMLater = 201703;
-            self.detailDifferentList([]);
-            service.getDetailDifferentials(processingYMEarlier, processingYMLater).done(function(data: any) {
-                let mapDetailDiff = _.map(data, function(item, i) {
-                    return new DetailsEmployeer(item, i);
-                });
-                self.detailDifferentList(mapDetailDiff);
-            }).fail(function(error: any) {
-
+            _.forEach(self.detailDifferentList, function(item) {
+                if (item.id === id) {
+                    item.reasonDifference = newValue
+                    return true;
+                }
+                return false;
             });
         }
+
+
     }
 
     class ItemModel {
@@ -307,6 +246,7 @@ module qpp008.g.viewmodel {
                 self.registrationStatus1 = data.registrationStatus1;
                 self.registrationStatus2 = data.registrationStatus2;
                 self.confirmedStatus = data.confirmedStatus;
+
             }
         }
     }
