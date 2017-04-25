@@ -38,7 +38,17 @@ public class DepartmentDto {
     
     /** The dep level. */
     private int depLevel;
-
+    
+    public static DepartmentDto newDepartment(DepartmentDto otherDep, String yearMonth) {
+        DepartmentDto dep = new DepartmentDto();
+        dep.yearMonth = yearMonth;
+        dep.code = otherDep.code;
+        dep.name = otherDep.name;
+        dep.depPath = otherDep.depPath;
+        dep.depLevel = otherDep.depLevel;
+        return dep;
+    }
+    
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */

@@ -47,7 +47,7 @@ public class ReportConstant {
     public static final int NUMBER_ONE = 1;
     
     /** The Constant NUMBER_COLUMN_PAGE. */
-    public static final int NUMBER_COLUMN_PAGE = 15;
+    public static final int NUMBER_COLUMN_PAGE = 13;
     
     /** The Constant LIGHT_BLUE_COLOR. */
     public static final Color LIGHT_BLUE_COLOR = Color.fromArgb(197, 241, 247);
