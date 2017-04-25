@@ -37,7 +37,6 @@ module cmm009.d.viewmodel {
             self.startDateFromA(data.startDate);
             self.endDate(data.endDate);
             console.log(data);
-            debugger;
             //---radio
             self.itemsRadio = ko.observableArray([
                 { value: 1, text: ko.observable('履歴を削除する') },
@@ -74,6 +73,11 @@ module cmm009.d.viewmodel {
             var inputYm = $('#INP_STARTYMD').val();
             //check YM
             if (self.isRadioCheck() == 2) {
+                if (inputYm == "") {
+                    alert("開始年月日 が入力されていません。");
+                    return false;
+                }
+
                 if (!nts.uk.time.parseYearMonthDate(inputYm).success) {
                     alert(nts.uk.time.parseYearMonthDate(inputYm).msg);
                     return false;

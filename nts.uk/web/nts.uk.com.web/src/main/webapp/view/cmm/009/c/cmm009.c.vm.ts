@@ -15,7 +15,7 @@ module cmm009.c.viewmodel {
         data: any;
         object: KnockoutObservable<viewmodel.Object>;
         startDateofHisFromScreenatoString: any;
-        
+
         // time editor
         yearmonthdayeditor: any;
         /**
@@ -42,7 +42,7 @@ module cmm009.c.viewmodel {
             if (month < 10) month = "0" + month;
             var day = startDateofHisFromScreena.getDate();
             if (day < 10) day = "0" + day;
-            self.startDateofHisFromScreenatoString = year+""+month+""+day;
+            self.startDateofHisFromScreenatoString = year + "" + month + "" + day;
 
             //---radio
             if (self.data == "datanull") {
@@ -64,6 +64,10 @@ module cmm009.c.viewmodel {
             var self = this;
             var inputYm = $('#INP_STARTYMD').val();
             //check YM
+            if (inputYm == "") {
+                alert("開始年月日 が入力されていません。");
+                return false;
+            }
             if (!nts.uk.time.parseYearMonthDate(inputYm).success) {
                 alert(nts.uk.time.parseYearMonthDate(inputYm).msg);
                 return false;

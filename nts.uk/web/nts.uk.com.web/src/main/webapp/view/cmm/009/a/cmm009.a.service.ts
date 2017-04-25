@@ -11,6 +11,7 @@ module cmm009.a.service {
         deleteHistory: "basic/organization/deletehistory",
         updateStartDateandEndDate: "basic/organization/updatestartdateandenddate",
         deleteDep: "basic/organization/deletedep",
+        getAllHistory : "basic/organization/getAllhistoryDepartment"
         
     }
 
@@ -131,6 +132,20 @@ module cmm009.a.service {
         var dfd = $.Deferred<any>();
         nts.uk.request.ajax("com", paths.getAllDepartment)
             .done(function(res: any) {
+                dfd.resolve(res);
+            })
+            .fail(function(res: any) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+     /**
+     * get list History
+     */
+    export function getAllHistory(): JQueryPromise<Array<any>> {
+        var dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax("com", paths.getAllHistory)
+            .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })
             .fail(function(res: any) {

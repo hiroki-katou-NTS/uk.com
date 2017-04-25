@@ -7,6 +7,9 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.Memo
+			</com:ValidatorScript>
 			<com:stylefile path="cmm009.c.main.css" />
 			<com:scriptfile
 				path="../../../../lib/generic/igniteui/js/infragistics.core.js" />
@@ -18,21 +21,12 @@
 			<com:scriptfile path="cmm009.c.start.js" />
 			<com:scriptfile path="cmm009.c.vm.js" />
 			<com:scriptfile path="cmm009.c.service.js" />
-			<script>var dialogSize = { width: 510, height: 580 };</script>
+			<script>var dialogSize = { width: 550, height: 580 };</script>
 			<style>
 .nts-list-box * {
 	box-sizing: border-box
 }
 </style>
-			<script type="text/javascript">
-					
-					__viewContext.primitiveValueConstraints.Memo = {
-							valueType: 'String',
-							charType: 'AnyHalfWidth',
-							maxLength: 500,
-						};
-					
-				</script>
 		</ui:define>
 
 		<ui:define name="content">

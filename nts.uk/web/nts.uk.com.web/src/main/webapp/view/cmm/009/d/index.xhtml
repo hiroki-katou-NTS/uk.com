@@ -7,6 +7,9 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.Memo
+				</com:ValidatorScript>
 			<com:stylefile path="cmm009.d.main.css" />
 			<com:scriptfile
 				path="../../../../lib/generic/igniteui/js/infragistics.core.js" />
@@ -18,21 +21,13 @@
 			<com:scriptfile path="cmm009.d.start.js" />
 			<com:scriptfile path="cmm009.d.vm.js" />
 			<com:scriptfile path="cmm009.d.service.js" />
-			<script>var dialogSize = { width: 580, height: 400 };</script>
+			<script>var dialogSize = { width: 620, height: 400 };</script>
 			<style>
 .nts-list-box * {
 	box-sizing: border-box
 }
 </style>
-			<script type="text/javascript">
-					
-					__viewContext.primitiveValueConstraints.Memo = {
-							valueType: 'String',
-							charType: 'AnyHalfWidth',
-							maxLength: 500,
-						};
-					
-				</script>
+
 		</ui:define>
 
 		<ui:define name="content">
@@ -63,7 +58,8 @@
 					<div class="timeInput">
 						<div data-bind="ntsFormLabel: {}">期間</div>
 						<div class="C_INP_STARTYMD">
-							<input id="INP_STARTYMD" style="ime-mode: inactive" maxlength="10"
+							<input id="INP_STARTYMD" style="ime-mode: inactive"
+								maxlength="10"
 								data-bind="ntsTimeEditor: {value: startDate, inputFormat: 'date',enable: enableInput}" />
 						</div>
 						<div class="C_INP_SUB">
@@ -83,7 +79,8 @@
 				<div class="bottomStype">
 					<button class="x-large proceed" id="BTN_DECIDE"
 						data-bind="click: createHistory, enable: $root.errors.isEmpty">決定</button>
-					<button class="large" id="BTN_CANCEL" data-bind="click: closeDialog">キャンセル</button>
+					<button class="large" id="BTN_CANCEL"
+						data-bind="click: closeDialog">キャンセル</button>
 					<br />
 				</div>
 			</div>

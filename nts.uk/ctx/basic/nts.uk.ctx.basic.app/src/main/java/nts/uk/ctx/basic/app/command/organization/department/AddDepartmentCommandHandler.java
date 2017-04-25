@@ -67,11 +67,10 @@ public class AddDepartmentCommandHandler extends CommandHandler<List<AddDepartme
 				String historyId = department.getHistoryId();
 				addMemo(companyCode, historyId, context.getCommand().get(0).getMemo());
 			} else {
-
 				if (departmentRepository.isDuplicateDepartmentCode(companyCode,
 						context.getCommand().get(0).getHistoryId(),
 						new DepartmentCode(context.getCommand().get(0).getDepartmentCode()))) {
-					throw new BusinessException("ER026");
+					throw new BusinessException("ER005");
 				}
 				
 				department = new Department(companyCode,

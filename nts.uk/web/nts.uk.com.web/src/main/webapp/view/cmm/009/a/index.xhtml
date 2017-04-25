@@ -12,7 +12,8 @@
 					nts.uk.ctx.basic.dom.organization.department.DepartmentCode
 					nts.uk.ctx.basic.dom.organization.department.DepartmentName
 					nts.uk.ctx.basic.dom.organization.department.DepartmentGenericName
-				</com:ValidatorScript>
+					nts.uk.shr.com.primitive.Memo
+			</com:ValidatorScript>
 			<com:stylefile path="cmm009.a.main.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="cmm009.a.start.js" />
@@ -26,7 +27,7 @@
 				<button id="A_BTN_PRINT_CHART" class=" btnStyle">組織図印刷</button>
 				<button id="A_BTN_LOG">マスタ修正ログ</button>
 				<button id="A_BTN_DELETE" class="danger btnStyle"
-					data-bind="click: deletebtn">削除</button>
+					data-bind="click: deletebtn , enable: enablebtnDelete">削除</button>
 			</div>
 			<div id="contents-area">
 				<div id="left-content"
@@ -36,7 +37,7 @@
 						<button id="A_BTN_OPENCDIALOG"
 							data-bind="click: openCDialog, enable: allowClick()">履歴追加</button>
 						<button id="A_BTN_OPENDDIALOG"
-							data-bind="click: openDDialog, enable: allowClick()">履歴削除</button>
+							data-bind="click: openDDialog, enable: enableDDialog">履歴削除</button>
 						<div id="A_LBL_002" data-bind="ntsFormLabel: {}">メモ</div>
 					</div>
 					<div class="second-line">
@@ -58,11 +59,11 @@
 								
 							]}"></div>
 						<!-- INP_008 -->
-						<div class="in-second-line multi" data-bind="with: memo">
+						<div class="in-second-line multi">
 							<textarea class="A_INP_MEMO"
 								data-bind="ntsMultilineEditor: { 
 											value: A_INP_MEMO, 
-											constraint:  'ResidenceCode',
+											constraint:  'Memo',
 											}" />
 						</div>
 
@@ -111,6 +112,7 @@
 									</button>
 								</div>
 								<hr style="width: 80px;"></hr>
+								
 								<div style="height: 145px; padding-left: 32px;"
 									id="tree-up-down"
 									data-bind="ntsUpDown: {
@@ -118,7 +120,7 @@
 									primaryKey: 'departmentCode',
 									comId: '#treegrid1',
 									type: 'tree', 
-									childDataKey: 'children'
+									childDataKey: 'children',
 								}"
 									class=""></div>
 							</div>
@@ -129,7 +131,7 @@
 				</div>
 
 				<div id="right-content">
-					<table class="table_content" data-bind="with: currentItem">
+					<table class="table_content">
 						<colgroup>
 							<col width="150px" />
 							<col width="*" />
@@ -154,8 +156,9 @@
 									<div class="input_002 input_name">
 										<input id="A_INP_DEPNAME" style="width: 242px"
 											data-bind="ntsTextEditor: {
-											value: A_INP_DEPNAME,
-											constraint: 'DepartmentName'
+											constraint: 'DepartmentName',
+											value: A_INP_DEPNAME
+											
 											}" />
 									</div>
 
