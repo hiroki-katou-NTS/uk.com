@@ -19,6 +19,7 @@ import nts.uk.file.pr.app.export.residentialtax.data.InhabitantTaxChecklistBRpHe
 import nts.uk.file.pr.app.export.residentialtax.data.PaymentDetailDto;
 import nts.uk.file.pr.app.export.residentialtax.data.PersonResitaxDto;
 import nts.uk.file.pr.app.export.residentialtax.data.ResidentialTaxDto;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class InhabitantTaxChecklistReportBService extends ExportService<InhabitantTaxChecklistQuery> {
@@ -30,7 +31,7 @@ public class InhabitantTaxChecklistReportBService extends ExportService<Inhabita
 	@Override
 	protected void handle(ExportServiceContext<InhabitantTaxChecklistQuery> context) {
 
-		String companyCode = "0001";
+		String companyCode = AppContexts.user().companyCode();
 		int Y_K = 2016;
 		Map<String, Double> totalPaymentAmount = new HashMap<>();
 		Map<String, Integer> totalNumberPeople = new HashMap<>();
@@ -68,7 +69,6 @@ public class InhabitantTaxChecklistReportBService extends ExportService<Inhabita
 		for (ResidentialTaxDto residentialTax : residentTaxList) {
 			
 			InhabitantTaxChecklistBRpData reportData = new InhabitantTaxChecklistBRpData();
-			
 			//DBD_001 residenceTaxCode
 			 reportData.setResidenceTaxCode(residentialTax.getResidenceTaxCode());
 			 
@@ -83,17 +83,14 @@ public class InhabitantTaxChecklistReportBService extends ExportService<Inhabita
 		}
 		
 		InhabitantTaxChecklistBRpData sumReportData = new InhabitantTaxChecklistBRpData();
-		
-		Double sumPaymentAmount = 0d;
-		for (Double d : totalPaymentAmount.values()) {
-			sumPaymentAmount += d;
-		}
-		
-		Integer sumNumberPeople = 0;
-		for (Integer i : totalNumberPeople.values()) {
-			sumNumberPeople += i;
-		}
-		
+			
+		Double sumPaymentAmount = totalPaymentAmount.values().stream()
+				.mapToDouble(x -> x.doubleValue())
+				.sum();
+				
+		Integer sumNumberPeople = totalNumberPeople.values().stream()
+				.mapToInt(x -> x.intValue())
+				.sum();
 		sumReportData.setResidenceTaxCode("");
 		sumReportData.setResiTaxAutonomy("総合計");
 		sumReportData.setNumberPeople(sumNumberPeople.toString());

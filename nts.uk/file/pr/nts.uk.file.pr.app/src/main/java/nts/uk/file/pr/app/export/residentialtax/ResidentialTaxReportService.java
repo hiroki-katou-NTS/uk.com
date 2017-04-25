@@ -21,6 +21,7 @@ import nts.uk.file.pr.app.export.residentialtax.data.ResidentTaxReportData;
 import nts.uk.file.pr.app.export.residentialtax.data.ResidentialTaxDto;
 import nts.uk.file.pr.app.export.residentialtax.data.ResidentialTaxSlipDto;
 import nts.uk.file.pr.app.export.residentialtax.data.RetirementPaymentDto;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class ResidentialTaxReportService extends ExportService<ResidentialTaxQuery> {
@@ -32,7 +33,7 @@ public class ResidentialTaxReportService extends ExportService<ResidentialTaxQue
 	@Override
 	protected void handle(ExportServiceContext<ResidentialTaxQuery> context) {
 
-		String companyCode = "0001";
+		String companyCode = AppContexts.user().companyCode();
 		int Y_K = 2016;
 		Map<String, Double> totalSalaryPaymentAmount = new HashMap<>();
 		Map<String, Double> totalDeliveryAmountRetirement = new HashMap<>();

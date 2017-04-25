@@ -2,7 +2,7 @@ module qpp011.f.service {
     var paths = {
         findAllResidential: "pr/core/residential/findallresidential",
         getlistLocation: "pr/core/residential/getlistLocation",
-        saveAsPdf: "screen/pr/QPP011/saveAsPdfB"
+        saveAsPdf: "screen/pr/QPP011/saveAsPdfC"
     }
 
     /**

@@ -449,7 +449,7 @@ module qpp011.b {
                 regalDocCompanyCode: null,
                 yearMonth: 201612,
                 processingYearMonth: 201703,
-                endDate: self.B_INP_003_yearMonth()
+                endDate: new Date("2017/04/24")
             };
 
             service.saveAsPdf(command).done(function() {
