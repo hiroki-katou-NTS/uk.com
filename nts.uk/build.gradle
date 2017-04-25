@@ -570,7 +570,10 @@ project (':web:nts.uk.com.js.web') {
 		into explodedWarPath
 	}
 	
-
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		
+	}
 }
 //=====================nts.uk.com.js.web↑============================
 //=====================nts.uk.at.web↓==============================
