@@ -90,10 +90,9 @@
 									comId: 'B_Lst_ItemList',
 									items: GridlistItems, 
 									selected: GridlistCurrentCode,
-									selectedKey: 'itemCode', 
+									selectedKey: 'itemKey', 
 									placeHolder:'',
-									fields: ['itemCode', 'itemName']
-									
+									fields: ['itemCode', 'displaySet']
 									},
 									" />
 					</div>
@@ -103,7 +102,7 @@
 							width: 389,
 							height: 320,
 							options: GridlistItems,
-							optionsValue: 'itemCode',
+							optionsValue: 'itemKey',
 							columns: GridColumns,
 							multiple: false,
 							value: GridlistCurrentCode
@@ -115,7 +114,7 @@
 						<div class="divLine">
 							<div class="divLineCol1">
 								<div id="B_Lbl_Name" class="floatLeft haveSmallSpan"
-									data-bind="ntsFormLabel: {  required: true  ,constraint: ['ItemCode','ItemName'] }">
+									data-bind="ntsFormLabel: {  required: true  ,constraint: ['ItemCode','ItemName']}">
 									コード/名称</div>
 							</div>
 							<div class="divLineCol2">

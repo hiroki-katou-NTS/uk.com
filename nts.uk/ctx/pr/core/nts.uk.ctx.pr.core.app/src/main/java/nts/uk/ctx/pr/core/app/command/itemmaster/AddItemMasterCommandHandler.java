@@ -45,6 +45,8 @@ public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCom
 
 		// validate
 		itemMaster.validate();
+		// because add new from client item Code is not alphalnumberic
+		itemMaster.validateAddNew();
 
 		String itemCode = itemMaster.getItemCode().v();
 

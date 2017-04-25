@@ -5,6 +5,7 @@ module qmm012.b {
             deleteItemMaster: "pr/core/item/delete",
             addItemMaster: "pr/core/item/add",
             updateItemMaster: "pr/core/item/update",
+            findItemMaster: "pr/core/item/find"
         }
 
         export function findAllItemMaster(ctgAtr, dispSet): JQueryPromise<Array<model.ItemMaster>> {
@@ -22,7 +23,11 @@ module qmm012.b {
                         }
                         return comparison;
                     }
-                    dfd.resolve(res.sort(compare));
+                    let ItemList: Array<service.model.ItemMaster> = [];
+                    for (let ItemMaster of res.sort(compare)) {
+                        ItemList.push(new service.model.ItemMaster(ItemMaster.itemCode, ItemMaster.itemName, ItemMaster.categoryAtr, ItemMaster.categoryAtrName, ItemMaster.itemAbName, ItemMaster.itemAbNameO, ItemMaster.itemAbNameE, ItemMaster.displaySet, ItemMaster.uniteCode, ItemMaster.zeroDisplaySet, ItemMaster.itemDisplayAtr, ItemMaster.fixAtr));
+                    }
+                    dfd.resolve(ItemList);
                 })
                 .fail(function(res) {
                     dfd.reject(res.message);
@@ -31,8 +36,17 @@ module qmm012.b {
         }
 
 
-
-
+        export function findItemMaster(ctgAtr, itemCode): JQueryPromise<model.ItemMaster> {
+            var dfd = $.Deferred<any>();
+            nts.uk.request.ajax(paths.findItemMaster + "/" + ctgAtr + "/" + itemCode)
+                .done(function(res: model.ItemMaster) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res.message);
+                })
+            return dfd.promise();
+        }
         export function deleteItemMaster(ItemMaster: model.ItemMaster): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
             nts.uk.request.ajax(paths.deleteItemMaster, ItemMaster)
@@ -87,6 +101,7 @@ module qmm012.b {
                 zeroDisplaySet: number;
                 itemDisplayAtr: number;
                 fixAtr: number;
+                itemKey: string;
                 constructor(
                     itemCode: string,
                     itemName: string,
@@ -113,10 +128,12 @@ module qmm012.b {
                     this.zeroDisplaySet = zeroDisplaySet;
                     this.itemDisplayAtr = itemDisplayAtr;
                     this.fixAtr = fixAtr;
+                    this.itemKey = itemCode + ";" + categoryAtr;
                 }
             }
 
         }
+
     }
 
 }

@@ -211,6 +211,8 @@ module qmm012.c.viewmodel {
             });
 
             self.CurrentLimitMnyAtr.subscribe(function(newValue) {
+                self.CurrentLimitMny(1);
+                $("#C_Inp_LimitAmount").ntsError('clear');
                 $('#C_Div_002').hide();
                 $('#C_Div_003').hide();
                 $('#C_Div_004').show();

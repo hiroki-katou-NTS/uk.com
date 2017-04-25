@@ -1,5 +1,8 @@
 package nts.uk.ctx.pr.core.dom.itemmaster;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
@@ -36,11 +39,11 @@ public class ItemMaster extends AggregateRoot {
 	 */
 	private ItemName itemAbNameO;
 	/**
-	 * Category  Attribute
+	 * Category Attribute
 	 */
 	private CategoryAtr categoryAtr;
 	/**
-	 *  Fix Attribute
+	 * Fix Attribute
 	 */
 	private FixAtr fixAtr;
 	/**
@@ -59,7 +62,7 @@ public class ItemMaster extends AggregateRoot {
 	 * Item name display classification
 	 */
 	private ItemDisplayAtr itemDisplayAtr;
-	
+
 	/**
 	 * validate item Master
 	 */
@@ -71,6 +74,12 @@ public class ItemMaster extends AggregateRoot {
 			throw new BusinessException("ER001");
 		}
 
+	}
+	
+	public void validateAddNew() {
+		if (!StringUtils.isNumericSpace(this.itemCode.v())) {
+			throw new BusinessException("ER001");
+		}
 	}
 
 	public ItemMaster(CompanyCode companyCode, ItemCode itemCode, ItemName itemName, ItemAbName itemAbName,
@@ -96,7 +105,7 @@ public class ItemMaster extends AggregateRoot {
 	 * 
 	 * @return ItemMaster
 	 */
-	
+
 	public static ItemMaster createFromJavaType(String companyCode, String itemCode, String itemName, String itemAbName,
 			String itemAbNameE, String itemAbNameO, int categoryAtr, int fixAtr, int displaySet, String uniteCode,
 			int zeroDisplaySet, int itemDisplayAtr) {

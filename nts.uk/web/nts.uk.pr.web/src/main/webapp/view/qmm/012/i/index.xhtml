@@ -17,6 +17,7 @@
 			<com:ValidatorScript>
 			nts.uk.ctx.pr.core.dom.itemmaster.ItemCode
 			nts.uk.ctx.pr.core.dom.itemmaster.ItemName
+			nts.uk.ctx.pr.core.dom.itemmaster.ItemAbName
 			nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.AlRangeHigh
 			nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.AlRangeLow
 			nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ErrRangeHigh
@@ -88,12 +89,12 @@
 						<div class="divLine">
 							<div class="divLineCol1">
 								<div id="I_Lbl_AbbreviatedName"
-									data-bind="ntsFormLabel: {  required: true, constraint : 'ItemName' }">略名</div>
+									data-bind="ntsFormLabel: {  required: true, constraint : 'ItemAbName' }">略名</div>
 							</div>
 							<div class="divLineCol2">
 								<input id="I_Inp_AbbreviatedName" data-name="略名"
 									class="save-error"
-									data-bind="ntsTextEditor: {required: true, value: CurrentItemBreakdownAbName  , constraint : 'ItemName'}"></input>
+									data-bind="ntsTextEditor: {required: true, value: CurrentItemBreakdownAbName  , constraint : 'ItemAbName'}"></input>
 							</div>
 						</div>
 						<div class="divLine">

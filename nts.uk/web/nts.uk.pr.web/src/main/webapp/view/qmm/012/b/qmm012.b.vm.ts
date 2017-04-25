@@ -8,7 +8,7 @@ module qmm012.b.viewmodel {
         //gridlist
         GridlistItems: KnockoutObservableArray<service.model.ItemMaster> = ko.observableArray([]);
         GridColumns: KnockoutObservableArray<any>;
-        GridlistCurrentCode: KnockoutObservable<string> = ko.observable('');
+        GridlistCurrentCode: KnockoutObservable<any> = ko.observable();
         GridlistCurrentItem: KnockoutObservable<service.model.ItemMaster> = ko.observable(null);
         GridCurrentItemAbName: KnockoutObservable<string> = ko.observable('');
         GridCurrentItemName: KnockoutObservable<string> = ko.observable('');
@@ -16,7 +16,6 @@ module qmm012.b.viewmodel {
         GridCurrentUniteCode: KnockoutObservable<string> = ko.observable('');
         GridCurrentCategoryAtr: KnockoutObservable<number> = ko.observable(0);
         GridCurrentCategoryAtrName: KnockoutObservable<string> = ko.observable('');
-        GridCurrentCodeAndName: KnockoutObservable<string> = ko.observable('');
         B_Inp_Code_text: KnockoutObservable<string> = ko.observable('');
         categoryAtr: number = -1;
         //Checkbox
@@ -117,7 +116,8 @@ module qmm012.b.viewmodel {
                 { headerText: '項目区分', prop: 'categoryAtrName', width: 80 },
                 { headerText: 'コード', prop: 'itemCode', width: 50 },
                 { headerText: '名称', prop: 'itemName', width: 150 },
-                { headerText: '廃止', prop: 'displaySet', width: 20, formatter: makeIcon }
+                { headerText: '廃止', prop: 'displaySet', width: 20, formatter: makeIcon },
+                { headerText: '廃止', prop: 'itemKey', width: 20, hidden: true }
             ]);
 
             function makeIcon(val) {
@@ -126,12 +126,11 @@ module qmm012.b.viewmodel {
                     return "<div class = 'NoIcon' > </div>";
                 return "";
             }
-
             self.GridlistCurrentCode.subscribe(function(newValue) {
                 var item = _.find(self.GridlistItems(), function(ItemModel: service.model.ItemMaster) {
-                    return ItemModel.itemCode == newValue;
+                    return ItemModel.itemKey == newValue;
                 });
-                if (newValue != self.dirtyOldValue.lstCode ) {
+                if (newValue != self.dirtyOldValue.lstCode) {
                     self.activeDirty(function() {
                         self.GridlistCurrentItem(item);
                     }, function() {
@@ -141,14 +140,13 @@ module qmm012.b.viewmodel {
                     });
                 }
             });
-            
+
             self.GridlistCurrentItem.subscribe(function(itemModel: service.model.ItemMaster) {
                 self.clearAllValidateError();
                 self.GridCurrentItemName(itemModel ? itemModel.itemName : '');
                 self.GridCurrentUniteCode(itemModel ? itemModel.uniteCode : '');
                 //set text for B_Inp_Code
                 self.B_Inp_Code_text(itemModel ? itemModel.itemCode : '');
-                self.GridCurrentCodeAndName(itemModel ? itemModel.itemCode + ' ' + itemModel.itemName : '');
                 self.GridCurrentDisplaySet(itemModel ? itemModel.displaySet == 1 ? true : false : false);
                 self.GridCurrentItemAbName(itemModel ? itemModel.itemAbName : '');
                 self.GridCurrentCategoryAtrName(itemModel ? itemModel.categoryAtrName : '');
@@ -203,11 +201,8 @@ module qmm012.b.viewmodel {
             };
             self.B_Inp_Code_text.subscribe(function(newValue) {
                 if (self.enable_B_Inp_Code()) {
-                    var item = _.find(self.GridlistItems(), function(ItemModel: service.model.ItemMaster) {
-                        return ItemModel.itemCode == newValue;
-                    });
-                    if (item) {
-                        $('#B_Inp_Code').ntsError('set', '入力したコードは既に存在しています。');
+                    if (isNaN(parseInt(newValue))) {
+                        $('#B_Inp_Code').ntsError('set', 'is not number');//i don't know message
                     }
                 }
             })
@@ -283,7 +278,6 @@ module qmm012.b.viewmodel {
             self.GridCurrentUniteCode('');
             //set text for B_Inp_Code
             self.B_Inp_Code_text('');
-            self.GridCurrentCodeAndName('');
             self.GridCurrentDisplaySet(false);
             self.GridCurrentItemAbName('');
             self.GridCurrentCategoryAtrName('');
@@ -338,7 +332,7 @@ module qmm012.b.viewmodel {
             }
             return false;
         }
-        loadGridList(ItemCode?) {
+        loadGridList(ItemKey?) {
             let self = this;
             let categoryAtr = self.categoryAtr;
             //load dispSet 
@@ -353,27 +347,27 @@ module qmm012.b.viewmodel {
                 if (self.dirty)
                     self.dirty.reset();
                 if (self.GridlistItems().length > 0) {
-                    // if not itemcode parameter
-                    if (!ItemCode) {
+                    // if not ItemKey parameter
+                    if (!ItemKey) {
                         //set GridlistCurrentCode selected first item in gridlist
                         self.GridlistCurrentItem(self.GridlistItems()[0]);
-                        self.dirtyOldValue.lstCode = self.GridlistItems()[0].itemCode;
-                        self.GridlistCurrentCode(self.GridlistItems()[0].itemCode);
+                        self.dirtyOldValue.lstCode = self.GridlistItems()[0].itemKey;
+                        self.GridlistCurrentCode(self.GridlistItems()[0].itemKey);
                     }
                     else {
-                        //set  selected == param itemcode
+                        //set  selected == param ItemKey
                         var item = _.find(self.GridlistItems(), function(ItemModel: service.model.ItemMaster) {
-                            return ItemModel.itemCode == ItemCode;
+                            return ItemModel.itemKey == ItemKey;
                         });
                         if (item) {
                             self.GridlistCurrentItem(item);
-                            self.dirtyOldValue.lstCode = ItemCode;
-                            self.GridlistCurrentCode(ItemCode);
+                            self.dirtyOldValue.lstCode = ItemKey;
+                            self.GridlistCurrentCode(ItemKey);
                         }
                         else {
                             self.GridlistCurrentItem(self.GridlistItems()[0]);
-                            self.dirtyOldValue.lstCode = self.GridlistItems()[0].itemCode;
-                            self.GridlistCurrentCode(self.GridlistItems()[0].itemCode);
+                            self.dirtyOldValue.lstCode = self.GridlistItems()[0].itemKey;
+                            self.GridlistCurrentCode(self.GridlistItems()[0].itemKey);
                         }
                     }
                     self.dirtyItemMaster(self.getCurrentItemMaster());
@@ -399,20 +393,20 @@ module qmm012.b.viewmodel {
                     //if yes call service delete item
                     service.deleteItemMaster(ItemMaster).done(function(any) {
                         //reload grid and set select code after delete item success
-                        let selectItemCode;
+                        let selectItemKey;
                         //if after delete gridlist length >0
                         if (self.GridlistItems().length - 1 > 1) {
                             if (index < self.GridlistItems().length - 1)
                                 //if not last selected item , set selected same position
-                                selectItemCode = self.GridlistItems()[index + 1].itemCode;
+                                selectItemKey = self.GridlistItems()[index + 1].itemKey;
                             else
                                 //else selected item Before it
-                                selectItemCode = self.GridlistItems()[index - 1].itemCode;
+                                selectItemKey = self.GridlistItems()[index - 1].itemKey;
                         } else
                             //length < 0 no select any thing
-                            selectItemCode = '';
+                            selectItemKey = '';
                         //reload gruid list
-                        self.loadGridList(selectItemCode);
+                        self.loadGridList(selectItemKey);
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alert(res);
                     });
@@ -501,15 +495,27 @@ module qmm012.b.viewmodel {
             }
         }
 
-        addNewItemMaster(ItemMaster: service.model.ItemMaster) {
+        addNewItemMaster(itemMaster: service.model.ItemMaster) {
             let self = this;
-            //call add service
-            service.addItemMaster(ItemMaster).done(function(any) {
-                //after add , reload grid list
-                self.loadGridList(ItemMaster.itemCode);
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alert(res);
-            });
+            //check before call services
+            if (isNaN(parseInt(self.B_Inp_Code_text()))) {
+                $('#B_Inp_Code').ntsError('set', 'is not number');//i don't know message
+            }
+            else {
+                service.findItemMaster(itemMaster.categoryAtr, itemMaster.itemCode).done(function(itemMasterRes: service.model.ItemMaster) {
+                    if (itemMasterRes != undefined) {
+                        $('#B_Inp_Code').ntsError('set', '入力したコードは既に存在しています。');
+                    } else {
+                        service.addItemMaster(itemMaster).done(function(any) {
+                            //after add , reload grid list
+                            self.loadGridList(itemMaster.itemKey);
+                        }).fail(function(res) {
+                            nts.uk.ui.dialog.alert(res);
+                        });
+                    }
+                });
+            }
+
         }
 
         updateItemMaster(ItemMaster: service.model.ItemMaster) {
@@ -517,7 +523,7 @@ module qmm012.b.viewmodel {
             //call update service
             service.updateItemMaster(ItemMaster).done(function(any) {
                 //after add , reload grid list
-                self.loadGridList(ItemMaster.itemCode);
+                self.loadGridList(ItemMaster.itemKey);
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res);
             });
@@ -577,4 +583,5 @@ module qmm012.b.viewmodel {
             this.name = name;
         }
     }
+
 }
