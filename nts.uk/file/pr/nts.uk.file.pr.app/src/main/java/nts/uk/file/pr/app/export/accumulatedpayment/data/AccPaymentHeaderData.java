@@ -12,23 +12,12 @@ import lombok.Setter;
  * The Class AccPaymentHeaderData.
  */
 
-/* (non-Javadoc)
- * @see java.lang.Object#toString()
- */
 @Builder
 
-/**
- * Gets the year month info.
- *
- * @return the year month info
- */
+
 @Getter
 
-/**
- * Sets the year month info.
- *
- * @param yearMonthInfo the new year month info
- */
+
 @Setter
 public class AccPaymentHeaderData {
 	
