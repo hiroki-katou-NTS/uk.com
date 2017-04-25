@@ -1,4 +1,3 @@
-/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -7,68 +6,61 @@ var nts;
         (function (ui) {
             var errors;
             (function (errors) {
-                class ErrorsViewModel {
-                    constructor() {
+                var ErrorsViewModel = (function () {
+                    function ErrorsViewModel() {
+                        var _this = this;
                         this.title = "エラー一覧";
                         this.errors = ko.observableArray([]);
                         this.errors.extend({ rateLimit: 1 });
                         this.option = ko.mapping.fromJS(new ui.option.ErrorDialogOption());
-                        this.occurs = ko.computed(() => this.errors().length !== 0);
+                        this.occurs = ko.computed(function () { return _this.errors().length !== 0; });
                         this.allResolved = $.Callbacks();
-                        this.errors.subscribe(() => {
-                            if (this.errors().length === 0) {
-                                this.allResolved.fire();
+                        this.errors.subscribe(function () {
+                            if (_this.errors().length === 0) {
+                                _this.allResolved.fire();
                             }
                         });
-                        this.allResolved.add(() => {
-                            this.hide();
+                        this.allResolved.add(function () {
+                            _this.hide();
                         });
                     }
-                    closeButtonClicked() {
-                    }
-                    open() {
+                    ErrorsViewModel.prototype.closeButtonClicked = function () {
+                    };
+                    ErrorsViewModel.prototype.open = function () {
                         this.option.show(true);
-                    }
-                    hide() {
+                    };
+                    ErrorsViewModel.prototype.hide = function () {
                         this.option.show(false);
-                    }
-                    addError(error) {
-                        // defer無しでerrorsを呼び出すと、なぜか全てのKnockoutBindingHandlerのupdateが呼ばれてしまうので、
-                        // 原因がわかるまでひとまずdeferを使っておく
-                        //_.defer(() => {
-                        var duplicate = _.filter(this.errors(), e => e.$control.is(error.$control) && e.message == error.message);
+                    };
+                    ErrorsViewModel.prototype.addError = function (error) {
+                        var duplicate = _.filter(this.errors(), function (e) { return e.$control.is(error.$control) && e.message == error.message; });
                         if (duplicate.length == 0)
                             this.errors.push(error);
-                        //});
-                    }
-                    hasError() {
+                    };
+                    ErrorsViewModel.prototype.hasError = function () {
                         return this.occurs();
-                    }
-                    clearError() {
+                    };
+                    ErrorsViewModel.prototype.clearError = function () {
                         $(".error").removeClass('error');
                         this.errors.removeAll();
-                    }
-                    removeErrorByElement($element) {
-                        // addErrorと同じ対応
-                        //_.defer(() => {
-                        var removeds = _.filter(this.errors(), e => e.$control.is($element));
+                    };
+                    ErrorsViewModel.prototype.removeErrorByElement = function ($element) {
+                        var removeds = _.filter(this.errors(), function (e) { return e.$control.is($element); });
                         this.errors.removeAll(removeds);
-                        //});
-                    }
-                }
+                    };
+                    return ErrorsViewModel;
+                }());
                 errors.ErrorsViewModel = ErrorsViewModel;
-                class ErrorHeader {
-                    constructor(name, text, width, visible) {
+                var ErrorHeader = (function () {
+                    function ErrorHeader(name, text, width, visible) {
                         this.name = name;
                         this.text = text;
                         this.width = width;
                         this.visible = visible;
                     }
-                }
+                    return ErrorHeader;
+                }());
                 errors.ErrorHeader = ErrorHeader;
-                /**
-                 *  Public API
-                **/
                 function errorsViewModel() {
                     return nts.uk.ui._viewModel.kiban.errorDialogViewModel;
                 }

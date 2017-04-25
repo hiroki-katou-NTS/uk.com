@@ -2,14 +2,14 @@ var cmm001;
 (function (cmm001) {
     var a;
     (function (a) {
-        class ViewModel {
-            constructor() {
+        var ViewModel = (function () {
+            function ViewModel() {
                 this.company = null;
-                this.previousDisplayAttribute = true; //lưu giá trị của displayAttribute trước khi nó bị thay đổi
+                this.previousDisplayAttribute = true;
                 this.isUpdate = ko.observable(null);
-                this.previousCurrentCode = null; //lưu giá trị của currentCode trước khi nó bị thay đổi
+                this.previousCurrentCode = null;
                 this.hasFocus = ko.observable(true);
-                let self = this;
+                var self = this;
                 self.init();
                 self.currentCompanyCode.subscribe(function (newValue) {
                     if (nts.uk.text.isNullOrEmpty(newValue)) {
@@ -17,7 +17,6 @@ var cmm001;
                     }
                     else {
                         if (!nts.uk.text.isNullOrEmpty(newValue) && self.currentCompanyCode() !== self.previousCurrentCode) {
-                            //goi check isDirty
                             if (self.dirtyObject.isDirty()) {
                                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function () {
                                     self.processWhenCurrentCodeChange(newValue);
@@ -33,7 +32,6 @@ var cmm001;
                 });
                 self.displayAttribute.subscribe(function (newValue) {
                     if (self.displayAttribute() !== self.previousDisplayAttribute) {
-                        //goi check isDirty
                         if (self.dirtyObject.isDirty()) {
                             nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function () {
                                 self.dirtyObject.reset();
@@ -48,9 +46,9 @@ var cmm001;
                     }
                 });
             }
-            processWhenDisplayAttributeChanged(newValue) {
-                let self = this;
-                let $grid = $("#gridCompany");
+            ViewModel.prototype.processWhenDisplayAttributeChanged = function (newValue) {
+                var self = this;
+                var $grid = $("#gridCompany");
                 var currentColumns = $grid.igGrid("option", "columns");
                 var width = $grid.igGrid("option", "width");
                 if (newValue) {
@@ -67,16 +65,16 @@ var cmm001;
                     a.service.getAllCompanys().done(function (data) {
                         if (data.length > 0) {
                             _.each(data, function (obj) {
-                                let companyModel;
+                                var companyModel;
                                 companyModel = ko.mapping.fromJS(obj);
                                 if (obj.displayAttribute === 1) {
                                     companyModel.displayAttribute('');
                                     self.sel001Data.push(ko.toJS(companyModel));
                                 }
                             });
-                            let companyCheckExist = _.find(self.sel001Data(), function (obj) {
-                                let newCompanyCode = ko.toJS(obj.companyCode);
-                                let oldCompanyCode = (ko.toJS(self.currentCompanyCode));
+                            var companyCheckExist = _.find(self.sel001Data(), function (obj) {
+                                var newCompanyCode = ko.toJS(obj.companyCode);
+                                var oldCompanyCode = (ko.toJS(self.currentCompanyCode));
                                 return newCompanyCode === oldCompanyCode;
                             });
                             if (self.sel001Data().length > 0) {
@@ -98,9 +96,9 @@ var cmm001;
                 }
                 $grid.igGrid("option", "columns", currentColumns);
                 self.previousDisplayAttribute = newValue;
-            }
-            processWhenCurrentCodeChange(newValue) {
-                let self = this;
+            };
+            ViewModel.prototype.processWhenCurrentCodeChange = function (newValue) {
+                var self = this;
                 a.service.getCompanyDetail(newValue).done(function (company) {
                     if (company) {
                         if ($('.nts-editor').ntsError("hasError")) {
@@ -117,15 +115,15 @@ var cmm001;
                         self.currentCompany().resetCurrentCompany();
                     }
                 });
-            }
-            init() {
-                let self = this;
+            };
+            ViewModel.prototype.init = function () {
+                var self = this;
                 self.tabs = ko.observableArray([
                     { id: 'tab-1', title: '会社基本情報', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-2', title: '会社所在地・連絡先', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-3', title: 'システム設定', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
-                let itemArray = [
+                var itemArray = [
                     { code: '1', name: '1月' },
                     { code: '2', name: '2月' },
                     { code: '3', name: '3月' },
@@ -150,15 +148,15 @@ var cmm001;
                 self.currentCompany = ko.observable(null);
                 self.currentCompanyCode = ko.observable('');
                 self.sel001Data = ko.observableArray([]);
-            }
-            start(currentCode) {
-                let self = this;
-                let dfd = $.Deferred();
+            };
+            ViewModel.prototype.start = function (currentCode) {
+                var self = this;
+                var dfd = $.Deferred();
                 a.service.getAllCompanys().done(function (data) {
                     if (data.length > 0) {
                         self.isUpdate(true);
                         _.each(data, function (obj) {
-                            let companyModel;
+                            var companyModel;
                             companyModel = ko.mapping.fromJS(obj);
                             if (obj.displayAttribute === 1) {
                                 companyModel.displayAttribute('');
@@ -206,15 +204,15 @@ var cmm001;
                     dfd.resolve();
                 });
                 return dfd.promise();
-            }
-            reload(currentCode) {
-                let self = this;
-                let dfd = $.Deferred();
+            };
+            ViewModel.prototype.reload = function (currentCode) {
+                var self = this;
+                var dfd = $.Deferred();
                 a.service.getAllCompanys().done(function (data) {
                     if (data.length > 0) {
                         self.isUpdate(true);
                         _.each(data, function (obj) {
-                            let companyModel;
+                            var companyModel;
                             companyModel = ko.mapping.fromJS(obj);
                             if (obj.displayAttribute === 1) {
                                 companyModel.displayAttribute('');
@@ -238,9 +236,9 @@ var cmm001;
                     dfd.resolve();
                 });
                 return dfd.promise();
-            }
-            resetData() {
-                let self = this;
+            };
+            ViewModel.prototype.resetData = function () {
+                var self = this;
                 if ($('.nts-editor').ntsError("hasError")) {
                     $('.save-error').ntsError('clear');
                 }
@@ -275,11 +273,11 @@ var cmm001;
                 self.previousCurrentCode = "";
                 self.currentCompanyCode("");
                 self.dirtyObject.reset();
-            }
-            clickRegister() {
-                let self = this;
-                let dfd = $.Deferred();
-                let currentCompany;
+            };
+            ViewModel.prototype.clickRegister = function () {
+                var self = this;
+                var dfd = $.Deferred();
+                var currentCompany;
                 currentCompany = ko.toJS(self.currentCompany);
                 if (!self.validateData()) {
                     return;
@@ -290,7 +288,7 @@ var cmm001;
                 else {
                     currentCompany.displayAttribute = ko.observable("1");
                 }
-                let company = new a.service.model.CompanyDto("", "", "", "", "", "", "", "", "", 0, 0, "", "", "", "", "", 0, 0, 0, 0);
+                var company = new a.service.model.CompanyDto("", "", "", "", "", "", "", "", "", 0, 0, "", "", "", "", "", 0, 0, 0, 0);
                 company = self.convertCompanyDto(currentCompany);
                 if (self.displayAttribute()) {
                     if (self.isUpdate()) {
@@ -323,7 +321,7 @@ var cmm001;
                             a.service.getAllCompanys().done(function (data) {
                                 if (data.length > 0) {
                                     _.each(data, function (obj) {
-                                        let companyModel;
+                                        var companyModel;
                                         companyModel = ko.mapping.fromJS(obj);
                                         if (obj.displayAttribute === 1) {
                                             companyModel.displayAttribute('');
@@ -352,7 +350,7 @@ var cmm001;
                                 a.service.getAllCompanys().done(function (data) {
                                     if (data.length > 0) {
                                         _.each(data, function (obj) {
-                                            let companyModel;
+                                            var companyModel;
                                             companyModel = ko.mapping.fromJS(obj);
                                             if (obj.displayAttribute === 1) {
                                                 companyModel.displayAttribute('');
@@ -370,9 +368,9 @@ var cmm001;
                         }
                     }
                 }
-            }
-            convertCompanyDto(company) {
-                let companyDto = new a.service.model.CompanyDto("", "", "", "", "", "", "", "", "", 0, 0, "", "", "", "", "", 0, 0, 0, 0);
+            };
+            ViewModel.prototype.convertCompanyDto = function (company) {
+                var companyDto = new a.service.model.CompanyDto("", "", "", "", "", "", "", "", "", 0, 0, "", "", "", "", "", 0, 0, 0, 0);
                 companyDto.companyCode = ko.toJS(company.companyCode);
                 companyDto.companyName = ko.toJS(company.companyName);
                 companyDto.companyNameGlobal = ko.toJS(company.companyNameGlobal);
@@ -395,8 +393,8 @@ var cmm001;
                 companyDto.presidentJobTitle = ko.toJS(company.presidentJobTitle);
                 companyDto.presidentName = ko.toJS(company.presidentName);
                 return companyDto;
-            }
-            validateData() {
+            };
+            ViewModel.prototype.validateData = function () {
                 $(".nts-editor").ntsEditor("validate");
                 $("#companyCode").ntsEditor("validate");
                 $("#companyName").ntsEditor("validate");
@@ -412,9 +410,9 @@ var cmm001;
                 $("#addressKana2").ntsEditor("validate");
                 $("#telephoneNo").ntsEditor("validate");
                 $("#faxNo").ntsEditor("validate");
-                let errorA = false;
-                let errorB = false;
-                let errorC = false;
+                var errorA = false;
+                var errorB = false;
+                var errorC = false;
                 errorA = $("#companyCode").ntsError('hasError') || $("#companyName").ntsError('hasError')
                     || $("#companyNameKana").ntsError('hasError')
                     || $("#companyNameAbb").ntsError('hasError');
@@ -428,18 +426,19 @@ var cmm001;
                     return false;
                 }
                 return true;
-            }
-        }
+            };
+            return ViewModel;
+        }());
         a.ViewModel = ViewModel;
-        class CompanyModel {
-            constructor(param) {
+        var CompanyModel = (function () {
+            function CompanyModel(param) {
                 this.isEnableCompanyCode = ko.observable(true);
-                this.editMode = true; // mode reset or not reset
-                let self = this;
+                this.editMode = true;
+                var self = this;
                 self.init(param);
             }
-            setDataForCurrentCompany(company) {
-                let self = this;
+            CompanyModel.prototype.setDataForCurrentCompany = function (company) {
+                var self = this;
                 self.companyCode(company.companyCode);
                 self.companyName(company.companyName);
                 self.companyNameGlobal(company.companyNameGlobal);
@@ -470,9 +469,9 @@ var cmm001;
                 self.selectedRuleCode2(company.use_Qy_Set.toString());
                 self.selectedRuleCode3(company.depWorkPlaceSet.toString());
                 self.isEnableCompanyCode(false);
-            }
-            resetCurrentCompany() {
-                let self = this;
+            };
+            CompanyModel.prototype.resetCurrentCompany = function () {
+                var self = this;
                 self.editMode = false;
                 self.address1('');
                 self.address2('');
@@ -493,9 +492,9 @@ var cmm001;
                 self.termBeginMon(0);
                 self.companyUseSet(new CompanyUseSet(0, 0, 0));
                 self.isDelete(false);
-            }
-            init(param) {
-                let self = this;
+            };
+            CompanyModel.prototype.init = function (param) {
+                var self = this;
                 self.companyCode = ko.observable(param.companyCode);
                 self.address1 = ko.observable(param.address1);
                 self.address2 = ko.observable(param.address2);
@@ -516,7 +515,6 @@ var cmm001;
                 self.termBeginMon = ko.observable(param.termBeginMon);
                 self.companyUseSet = ko.observable(param.companyUseSet);
                 self.isDelete = ko.observable(param.isDelete || false);
-                //SWITCH
                 self.roundingRules = ko.observableArray([
                     new RoundingRule("1", '利用する'),
                     new RoundingRule('0', '利用しない')
@@ -529,18 +527,18 @@ var cmm001;
                     new RoundingRule('0', '区別しない')
                 ]);
                 self.selectedRuleCode3 = ko.observable("");
-            }
-            //search Zip Code
-            searchZipCode() {
+            };
+            CompanyModel.prototype.searchZipCode = function () {
                 var self = this;
                 var messageList = [
                     { messageId: "ER001", message: "＊が入力されていません。" },
                     { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
                     { messageId: "ER010", message: "対象データがありません。" }
                 ];
-                nts.uk.pr.view.base.postcode.service.findPostCodeZipCodeToRespone(self.postal()).done(data => {
+                nts.uk.pr.view.base.postcode.service.findPostCodeZipCodeToRespone(self.postal()).done(function (data) {
                     if (data.errorCode == '0') {
-                        for (var datamessage of messageList) {
+                        for (var _i = 0, messageList_1 = messageList; _i < messageList_1.length; _i++) {
+                            var datamessage = messageList_1[_i];
                             if (datamessage.messageId == data.message) {
                                 $('#postal').ntsError('set', datamessage.message);
                             }
@@ -551,9 +549,10 @@ var cmm001;
                         $('#postal').ntsError('clear');
                     }
                     else {
-                        nts.uk.pr.view.base.postcode.service.findPostCodeZipCodeSelection(self.postal()).done(res => {
+                        nts.uk.pr.view.base.postcode.service.findPostCodeZipCodeSelection(self.postal()).done(function (res) {
                             if (res.errorCode == '0') {
-                                for (var datamessage of messageList) {
+                                for (var _i = 0, messageList_2 = messageList; _i < messageList_2.length; _i++) {
+                                    var datamessage = messageList_2[_i];
                                     if (datamessage.messageId == res.message) {
                                         $('#postal').ntsError('set', datamessage.message);
                                     }
@@ -570,10 +569,11 @@ var cmm001;
                 }).fail(function (error) {
                     console.log(error);
                 });
-            }
-        }
-        class CompanyUseSet {
-            constructor(useKtSet, useQySet, useJjSet) {
+            };
+            return CompanyModel;
+        }());
+        var CompanyUseSet = (function () {
+            function CompanyUseSet(useKtSet, useQySet, useJjSet) {
                 this.useGrSet = 0;
                 this.useKtSet = useKtSet;
                 this.useQySet = useQySet;
@@ -594,20 +594,24 @@ var cmm001;
                 this.useRs09Set = 0;
                 this.useRs10Set = 0;
             }
-        }
+            return CompanyUseSet;
+        }());
         a.CompanyUseSet = CompanyUseSet;
-        class RoundingRule {
-            constructor(code, name) {
+        var RoundingRule = (function () {
+            function RoundingRule(code, name) {
                 this.code = code;
                 this.name = name;
             }
-        }
-        class ItemMessage {
-            constructor(messCode, messName) {
+            return RoundingRule;
+        }());
+        var ItemMessage = (function () {
+            function ItemMessage(messCode, messName) {
                 this.messCode = messCode;
                 this.messName = messName;
             }
-        }
+            return ItemMessage;
+        }());
         a.ItemMessage = ItemMessage;
     })(a = cmm001.a || (cmm001.a = {}));
 })(cmm001 || (cmm001 = {}));
+//# sourceMappingURL=cmm001.a.vm.js.map
