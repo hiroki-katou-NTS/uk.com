@@ -3911,15 +3911,13 @@ var nts;
                         var $input = container.find(".nts-input");
                         var $label = container.find(".dayofweek-label");
                         var dateFormatValue = (value() !== "") ? uk.time.formatPattern(value(), valueFormat, ISOFormat) : "";
-                        if (init === true || uk.time.formatPattern($input.datepicker("getDate", true), "", ISOFormat) !== dateFormatValue) {
-                            if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
-                                $input.datepicker('setDate', dateFormatValue);
-                                $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
-                            }
-                            else {
-                                $input.val("");
-                                $label.text("");
-                            }
+                        if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
+                            $input.datepicker('setDate', dateFormatValue);
+                            $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
+                        }
+                        else {
+                            $input.val("");
+                            $label.text("");
                         }
                         container.data("init", false);
                         $input.datepicker('setStartDate', startDate);
