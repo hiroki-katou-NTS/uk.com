@@ -38,6 +38,7 @@ module qet001.i.viewmodel {
                     return;
                 }
                 // reload tab.
+                self.aggregateItemCategories()[val].clearError();
                 self.aggregateItemCategories()[val].loadAggregateItemByCategory();
             })
         }
@@ -104,6 +105,7 @@ module qet001.i.viewmodel {
                     return;
                 }
                 self.confirmDirtyAndExecute(function() {
+                    self.clearError();
                     // update mode.
                     if (code) {
                         self.temporarySelectedCode(code);
@@ -116,7 +118,6 @@ module qet001.i.viewmodel {
                     }
                     // new mode.
                     else {
-                        self.clearError();
                         self.temporarySelectedCode('');
                         self.aggregateItemDetail(new AggregateItemDetail(paymentType,
                             categoryName, masterItemInCate));
@@ -265,9 +266,11 @@ module qet001.i.viewmodel {
             $('.sub-table-label').attr('style', 'width: ' + $('#swap-list-gridArea2').width() + 'px');
         }
 
-        private clearError(): void {
-            $('#code-input').ntsError('clear');
-            $('#name-input').ntsError('clear');
+        public clearError(): void {
+            if (nts.uk.ui._viewModel) {
+                $('#code-input').ntsError('clear');
+                $('#name-input').ntsError('clear');
+            }
         }
 
         /**
