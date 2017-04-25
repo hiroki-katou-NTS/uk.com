@@ -19,7 +19,7 @@ module qpp008.g.viewmodel {
             let self = this;
             self.detailDifferentList = ko.observableArray([]);
             self.selectedDetailDiff = ko.observable(0);
-
+            self.initIggrid(self.detailDifferentList);
             self.itemCategoryChecked = ko.observableArray([
                 new ItemModel(0, '支給'),
                 new ItemModel(1, '控除'),
@@ -38,6 +38,12 @@ module qpp008.g.viewmodel {
             self.checked = ko.observable(true);
             self.enable = ko.observable(true);
 
+
+
+        }
+
+        initIggrid(data: KnockoutObservableArray<DetailsEmployeer>) {
+            let self = this;
             /*iggrid*/
             self.firstLoad = ko.observable(true);
             let _isDataBound = false;
@@ -101,57 +107,27 @@ module qpp008.g.viewmodel {
                 _.forEach(ui.owner.dataSource.dataView(), function(item, index) {
                     item["confirmedStatus"] = false;
                     if (item["difference"] < 0) {
-                        let cell1 = $("#grid10").igGrid("cellById", item["employeeCode"], "difference");
+                        let cell1 = $("#grid10").igGrid("cellById", item["id"], "difference");
                         $(cell1).addClass('red').attr('data-class', 'red');
                         $(window).on('resize', () => { $(cell1).addClass('red'); });
                         item["confirmedStatus"] = true;
                     } else if (item["difference"] > 0) {
-                        let cell1 = $("#grid10").igGrid("cellById", item["employeeCode"], "difference");
+                        let cell1 = $("#grid10").igGrid("cellById", item["id"], "difference");
                         $(cell1).addClass('yellow').attr('data-class', 'yellow');
                         $(window).on('resize', () => { $(cell1).addClass('yellow'); });
                         item["confirmedStatus"] = true;
                     }
                 });
             });
-            //instantiation
-            let iggridData = new Array();
-            let str = ['A00000', 'b00000', 'c00000', 'd00000', 'e00000', 'f00000', 'g00000'];
-            for (let j = 0; j < 4; j++) {
-                for (let i = 1; i < 41; i++) {
-                    let code = i < 10 ? str[j] + '0' + i : str[j] + i;
-                    let itemCode = i < 10 ? "000" + i : "00" + i;
-                    let comparisonDate1 = Math.floor(Math.random() * 20);
-                    let comparisonDate2 = Math.floor(Math.random() * 20);
-                    let difference = comparisonDate2 - comparisonDate1;
-                    let reasonDifference = "";
-                    let confirmedStatus = false;
-                    if (difference < 0) {
-                        reasonDifference = "reason of difference.";
-                        confirmedStatus = true;
-                    }
-                    let registrationStatus1 = "registrationStatus1";
-                    let registrationStatus2 = "registrationStatus2";
-
-                    iggridData.push(
-                        {
-                            "itemCode": itemCode,
-                            "employeeCode": code, "employeeName": code, "categoryAtr": "支", "itemName": "Mr Person Name",
-                            "comparisonDate1": comparisonDate1, "comparisonDate2": comparisonDate2,
-                            "difference": difference, "reasonDifference": reasonDifference, "registrationStatus1": registrationStatus1,
-                            "registrationStatus2": registrationStatus2, "confirmedStatus": confirmedStatus
-                        });
-                }
-            }
 
             $("#grid10").igGrid({
-                primaryKey: "employeeCode",
-                dataSource: iggridData,
+                primaryKey: "id",
+                dataSource: data(),
                 width: "100%",
                 autoGenerateColumns: false,
-                dataSourceType: "json",
-                responseDataKey: "results",
+                responseDataKey: "id",
                 columns: [
-                    { headerText: "itemCode", key: "itemCode", dataType: "string", allowHiding: true, hidden: true },
+                    { headerText: "", key: "id", dataType: "number", hidden: true},
                     { headerText: "社員コード", key: "employeeCode", dataType: "string" },
                     { headerText: "氏名", key: "employeeName", dataType: "string" },
                     { headerText: "区分", key: "categoryAtr", dataType: "string" },
@@ -159,48 +135,44 @@ module qpp008.g.viewmodel {
                     { headerText: "比較年月1", key: "comparisonDate1", dataType: "number", format: "currency" },
                     { headerText: "比較年月2", key: "comparisonDate2", dataType: "number", format: "currency" },
                     { headerText: "差額", key: "difference", dataType: "number", format: "currency", columnCssClass: "colStyle" },
-                    { headerText: "差異理由", key: "reasonDifference", dataType: "string" },
+                    {
+                        headerText: "差異理由",
+                        key: "reasonDifference",
+                        dataType: "string",
+                        width: "200px",
+                        unbound: true,
+                        template: "<input type='text' value='${reasonDifference}' class='reasonDifference-text'/>"
+                    },
                     { headerText: "登録状況（比較年月１）", key: "registrationStatus1", dataType: "string" },
                     { headerText: "登録状況（比較年月2）", key: "registrationStatus2", dataType: "string" },
-                    { headerText: "確認済", key: "confirmedStatus", dataType: "bool", unbound: true, format: "checkbox" },
+                    {
+                        headerText: "確認済",
+                        key: "confirmedStatus",
+                        dataType: "bool",
+                        width: "70px",
+                        unbound: true,
+                        template: "<input type='checkbox' value='${confirmedStatus}' class='confirmedStatus-checkBox'/>"
+                    }
                 ],
                 features:
                 [
                     {
-                        name: "Responsive",
-                        enableVerticalRendering: false,
-                        columnSettings: [
-                            {
-                                columnKey: "employeeCode",
-                                classes: "ui-hidden-tablet"
-                            }
-                        ]
-                    },
-                    {
                         name: "Paging",
                         type: "local",
                         pageIndexChanged: function(evt: any, ui: any) {
-                            //                            _.forEach(ui.owner.grid.dataSource.data(), function(item, cellId) {
-                            //                                if (item["UnitPrice"] > 270) {
-                            //                                    var cell = $("#grid10").igGrid("cellById", 3, cellId);
-                            //                                    $(cell).addClass('red');
-                            //                                } else if (item["UnitPrice"] < 100) {
-                            //                                    var cell1 = $("#grid10").igGrid("cellById", 3, cellId);
-                            //                                    $(cell1).css("background-color", "yellow");
-                            //                                }
-                            //                            });
+
                         },
                         pageSize: 20
                     },
                     {
                         name: "Updating",
-                        editMode: "row",
+                        editMode: "none",
                         enableAddRow: false,
-                        enableDeleteRow: true,
+                        enableDeleteRow: false,
                         columnSettings: [
                             {
-                                columnKey: "itemCode",
-                                readOnly: true
+                                columnKey: "id",
+                                readOnly: true,
                             },
                             {
                                 columnKey: "employeeCode",
@@ -249,7 +221,7 @@ module qpp008.g.viewmodel {
                                 readOnly: false
                             },
                         ]
-                    }
+                    }, 
                 ]
             });
             //checkBox
@@ -260,7 +232,6 @@ module qpp008.g.viewmodel {
                 $("#grid10").igGrid("dataBind");
             });
         }
-
         startPage(): JQueryPromise<any> {
             let self = this;
             let processingYMEarlier = 201702;
@@ -272,11 +243,27 @@ module qpp008.g.viewmodel {
                     return new DetailsEmployeer(item, i);
                 });
                 self.detailDifferentList(mapDetailDiff);
+                self.initIggrid(self.detailDifferentList);
                 dfd.resolve();
             }).fail(function(error: any) {
 
             });
             return dfd.promise();
+        }
+
+        loadDataGrid() {
+            let self = this;
+            let processingYMEarlier = 201702;
+            let processingYMLater = 201703;
+            self.detailDifferentList([]);
+            service.getDetailDifferentials(processingYMEarlier, processingYMLater).done(function(data: any) {
+                let mapDetailDiff = _.map(data, function(item, i) {
+                    return new DetailsEmployeer(item, i);
+                });
+                self.detailDifferentList(mapDetailDiff);
+            }).fail(function(error: any) {
+
+            });
         }
     }
 
@@ -291,35 +278,35 @@ module qpp008.g.viewmodel {
     }
 
     class DetailsEmployeer {
-        id: KnockoutObservable<number>;
-        employeeCode: KnockoutObservable<string>;
-        employeeName: KnockoutObservable<string>;
-        categoryAtr: KnockoutObservable<string>;
-        itemName: KnockoutObservable<string>;
-        itemCode: KnockoutObservable<string>;
-        comparisonDate1: KnockoutObservable<number>;
-        comparisonDate2: KnockoutObservable<number>;
-        difference: KnockoutObservable<number>;
-        reasonDifference: KnockoutObservable<string>;
-        registrationStatus1: KnockoutObservable<string>;
-        registrationStatus2: KnockoutObservable<string>;
-        confirmedStatus: KnockoutObservable<boolean>;
+        id: number;
+        employeeCode: string;
+        employeeName: string;
+        categoryAtr: string;
+        itemName: string;
+        itemCode: string;
+        comparisonDate1: number;
+        comparisonDate2: number;
+        difference: number;
+        reasonDifference: string;
+        registrationStatus1: string;
+        registrationStatus2: string;
+        confirmedStatus: boolean;
         constructor(data: any, id: number) {
             let self = this;
             if (data) {
-                self.id = ko.observable(id);
-                self.employeeCode = ko.observable(data.employeeCode);
-                self.employeeName = ko.observable(data.employeeName);
-                self.categoryAtr = ko.observable(data.categoryAtr);
-                self.itemName = ko.observable(data.itemName);
-                self.itemCode = ko.observable(data.itemCode);
-                self.comparisonDate1 = ko.observable(data.comparisonDate1);
-                self.comparisonDate2 = ko.observable(data.comparisonDate2);
-                self.difference = ko.observable(data.valueDifference);
-                self.reasonDifference = ko.observable(data.reasonDifference);
-                self.registrationStatus1 = ko.observable(data.registrationStatus1);
-                self.registrationStatus2 = ko.observable(data.registrationStatus2);
-                self.confirmedStatus = ko.observable(data.confirmedStatus);
+                self.id = id;
+                self.employeeCode = data.employeeCode;
+                self.employeeName = data.employeeName;
+                self.categoryAtr = data.categoryAtr;
+                self.itemName = data.itemName;
+                self.itemCode = data.itemCode;
+                self.comparisonDate1 = data.comparisonValue1;
+                self.comparisonDate2 = data.comparisonValue2;
+                self.difference = data.valueDifference;
+                self.reasonDifference = data.reasonDifference;
+                self.registrationStatus1 = data.registrationStatus1;
+                self.registrationStatus2 = data.registrationStatus2;
+                self.confirmedStatus = data.confirmedStatus;
             }
         }
     }

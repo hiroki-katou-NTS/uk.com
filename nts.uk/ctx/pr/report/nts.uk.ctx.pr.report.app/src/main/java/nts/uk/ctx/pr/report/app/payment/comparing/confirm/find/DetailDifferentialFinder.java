@@ -25,7 +25,7 @@ public class DetailDifferentialFinder {
 	@Inject
 	private ComfirmDifferentRepository comfirmDiffRepository;
 
-	public List<DetailDifferential> getDetailDifferential(int processingYMEarlier, int processingYMLater) {
+	public List<DetailDifferentialDto> getDetailDifferential(int processingYMEarlier, int processingYMLater) {
 		String companyCode = AppContexts.user().companyCode();
 		List<DetailDifferential> detailDifferential1 = this.comfirmDiffRepository
 				.getDetailDifferentialWithEarlyYM(companyCode, processingYMEarlier);
@@ -66,6 +66,6 @@ public class DetailDifferentialFinder {
 		/** start detailDifferential2 map detailDifferential1 */
 
 		/** end detailDifferential2 map detailDifferential1 */
-		return detailDifferential;
+		return detailDifferential.stream().map(s -> DetailDifferentialDto.createFromJavaType(s)).collect(Collectors.toList());
 	}
 }

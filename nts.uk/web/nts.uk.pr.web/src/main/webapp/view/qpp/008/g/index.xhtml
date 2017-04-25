@@ -13,6 +13,7 @@
 					height : 500
 				};
 			</script>
+			<script src="http://www.igniteui.com/data-files/adventureworks.min.js"></script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="qpp008.g.main.css" />
 			<com:scriptfile path="qpp008.g.start.js" />
@@ -49,7 +50,7 @@
 				<div id="div-contents-three">
 					<div id="G_LBL_010" data-bind="ntsFormLabel: {}">対象データの絞り込み設定</div>
 					<div class="valign-center control-group">
-						<div class = "setting-filter-g">
+						<div class="setting-filter-g">
 							<div class="valign-center control-group">
 								<label id="check-item-lbl-005">確認する項目区分</label>
 								<div class="col-100px"
@@ -61,8 +62,9 @@
 									enable: enable }"></div>
 							</div>
 							<div class="confirmed-Squeezing-div valign-top control-group">
-								<label id="confirmed-Squeezing-lbl-006">確認済みのしぼり込み</label>
-								<span class = "confirmed-Squeezing-sel-004" data-bind="ntsSwitchButton: {
+								<label id="confirmed-Squeezing-lbl-006">確認済みのしぼり込み</label> <span
+									class="confirmed-Squeezing-sel-004"
+									data-bind="ntsSwitchButton: {
 									options: confirmedSqueezingSwitch,
 									optionsValue: 'code',
 									optionsText: 'name',
@@ -71,11 +73,13 @@
 								</span>
 							</div>
 						</div>
-						<button class="large search-btn caret-bottom" id = "search-btn-sch-001">絞り込み</button>
+						<button class="large search-btn caret-bottom"
+							id="search-btn-sch-001">絞り込み</button>
 					</div>
 				</div>
 				<div>
 					<table id="grid10" class="ui-iggrid-headertable"></table>
+					<table id="grid"></table>
 				</div>
 			</div>
 		</ui:define>
