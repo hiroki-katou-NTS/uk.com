@@ -29,13 +29,4 @@ public class InhabitantTaxChecklistBRpData {
 	 */
 	private Double value;
 	
-	/**
-	 * CTR_001(総合計人数) 
-	 */
-	//private String totalNumberPeople ;
-	
-	/**
-	 * CTR_002(総合計納付額)
-	 */
-	//private String totalPaymentAmount;
 }

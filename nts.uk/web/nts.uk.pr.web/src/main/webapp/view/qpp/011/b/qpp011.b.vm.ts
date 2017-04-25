@@ -514,11 +514,27 @@ module qpp011.b {
         }
         exportText(): void {
             var self = this;
+
             self.checkCValue();
              if (self.selectedValue_C_LST_001().length > 0) {
                  } else {
                 nts.uk.ui.dialog.alert("納付先が選択されていせん。");
             }
+
+            var command = {
+                residentTaxCodeList: self.selectedValue_B_LST_001(),
+                companyLogin: null,
+                regalDocCompanyCode: null,
+                yearMonth: 201612,
+                processingYearMonth: 201703,
+                endDate: new Date("2017/04/24")
+            };
+
+            service.saveAsPdf(command).done(function() {
+                //
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.message);
+            });
         }
     }
 

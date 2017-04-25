@@ -8,53 +8,29 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InhabitantTaxChecklistCRpData {
+	
 	/**
-	 * DBD_001,DBD_002(社員呼称)
+	 * DBD_001(住民税納付先コード)
 	 */
 	private String residenceTaxCode;
 
 	/**
-	 * DBD_003(住民税納付先コード)
+	 * DBD_002(住民税納付先名称)
 	 */
-	private String numberPeople;
+	private String resiTaxAutonomy;
 
 	/**
-	 * DBD_004(住民税納付先名称)
+	 * DBD_005(社員CD)
 	 */
-	private String value;
+	private String code;
 	
 	/**
-	 * DBD_005(社員コード)
-	 */
-	private String employeeCode;
-	
-	/**
-	 * DBD_006(氏名)
+	 * DBD_006(社員名)
 	 */
 	private String name;
-	
-	/**
-	 * DBD_007(納付額)
-	 */
-	private String paymentAmount;
 
 	/**
-	 * CTR_001(合計人数)
+	 * DBD_004(納付額)
 	 */
-	private String sumNumberPeople;
-
-	/**
-	 * CTR_002(合計納付額)
-	 */
-	private String sumPaymentAmount;
-	
-	/**
-	 * CTR_003(総合計人数)
-	 */
-	private String totalNumberPeople;
-	
-	/**
-	 * CTR_004(総合計納付額)
-	 */
-	private String totalPaymentAmount;
+	private Double value;
 }
