@@ -90,9 +90,6 @@ public class AggregateItemFinder {
 		val dto = AggregateItemDto.builder().build();
 		aggregateItem.saveToMemento(dto);
 
-		if (CollectionUtil.isEmpty(aggregateItem.getSubItems())) {
-			return dto;
-		}
 		// Find master item name.
 		Map<String, MasterItemDto> itemMap = this.itemMaterRepo
 				.findByCodes(companyCode, new ArrayList<>(aggregateItem.getSubItems())).stream()

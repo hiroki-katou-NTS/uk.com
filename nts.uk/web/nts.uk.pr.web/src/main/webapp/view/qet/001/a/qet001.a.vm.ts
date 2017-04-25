@@ -19,7 +19,7 @@ module qet001.a.viewmodel {
             this.outputSettingSelectedCode = ko.observable('');
             var self = this;
             self.japanTargetYear = ko.computed(function() {
-                return nts.uk.time.yearInJapanEmpire(self.targetYear()).toString();
+                return nts.uk.time.yearInJapanEmpire(self.targetYear().toString()).toString();
             })
         }
         
