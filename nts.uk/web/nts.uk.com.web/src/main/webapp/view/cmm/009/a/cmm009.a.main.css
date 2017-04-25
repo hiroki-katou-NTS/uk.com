@@ -130,12 +130,12 @@ button.search-btn {
 }
 
 .sub_table {
-	width: 97px;
-	height: 354px;
-	background: #F3F3F3;
-	margin-top: 62px;
-	border: 8px solid white;
-	border-left: none;
+    width: 97px;
+    height: 370px;
+    background: #F3F3F3;
+    margin-top: 62px;
+    border: 8px solid white;
+    border-left: none;
 }
 
 .bt_insert_up {
