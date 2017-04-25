@@ -5,7 +5,7 @@
 package nts.uk.ctx.basic.infra.entity.report;
 
 import java.io.Serializable;
-import java.math.BigInteger;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -32,7 +32,7 @@ public class QyedtYearendDetailPK implements Serializable {
 	/** The pid. */
 	@Basic(optional = false)
 	@Column(name = "PID")
-	private BigInteger pid;
+	private String pid;
 
 	/** The year K. */
 	@Basic(optional = false)
