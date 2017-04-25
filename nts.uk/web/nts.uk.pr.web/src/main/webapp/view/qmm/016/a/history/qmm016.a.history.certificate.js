@@ -28,7 +28,7 @@ var nts;
                                 CertificateViewModel.prototype.onLoad = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    qmm016.service.instance.loadCertificate().done(function (res) {
+                                    a.service.instance.loadCertificate().done(function (res) {
                                         self.certificateGroupModel = res;
                                         _.forEach(self.certificateGroupModel.certifyGroups, function (group) {
                                             _.forEach(group.certifyItems, function (cert) {
@@ -156,7 +156,7 @@ var nts;
                                     self.groupName = group.name;
                                     self.name = item.displayName;
                                     self.amount = ko.observable(0);
-                                    self.groupCalTypeText = group.multiApplySet == 0 ? 'BiggestMethod' : 'TotalMethod';
+                                    self.groupCalTypeText = group.multiApplySet == 0 ? '一番高い手当を1つだけ支給する' : '複数該当した金額を加算する';
                                 }
                                 return ItemViewModel;
                             }());
