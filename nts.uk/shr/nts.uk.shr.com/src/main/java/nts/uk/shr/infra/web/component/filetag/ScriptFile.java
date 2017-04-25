@@ -28,7 +28,7 @@ public class ScriptFile extends UIComponentBase {
             "/lib/generic/knockoutjs/knockout.mapping-2.4.1.js",
             "/lib/generic/jquery/datepicker.js",
             "/lib/nittsu/iefix.js",
-            "nts.uk.com.js.web/lib/nittsu/nts.uk.com.web.nittsu.bundles.js"
+            "/lib/nittsu/nts.uk.com.web.nittsu.bundles.js"
     }));
     
     private static Set<String> FILES_IGNITE = new LinkedHashSet<String>(Arrays.asList(new String[] {
