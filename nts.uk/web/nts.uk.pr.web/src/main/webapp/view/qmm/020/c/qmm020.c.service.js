@@ -4,7 +4,6 @@ var qmm020;
     (function (c) {
         var service;
         (function (service) {
-            //duong dan   
             var paths = {
                 getEmployAllotSettingHeaderList: "pr/core/allot/findallemployeeallotheader",
                 getEmployAllotSettingDetailList: "pr/core/allot/findallemployeeallotdetail",
@@ -14,9 +13,6 @@ var qmm020;
                 getEmployeeDetail: "pr/core/allot/findEmployeeDetail/{0}",
                 getEmployeeName: "basic/organization/employment/findallemployments"
             };
-            /**
-             * Get list payment date processing.
-             */
             function getEmployeeAllotHeaderList() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getEmployAllotSettingHeaderList)
@@ -29,9 +25,6 @@ var qmm020;
                 return dfd.promise();
             }
             service.getEmployeeAllotHeaderList = getEmployeeAllotHeaderList;
-            /**
-             * Get employee list with payment doc, bunus doc
-             */
             function getEmployeeAllotDetailList() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getEmployAllotSettingDetailList)
@@ -47,7 +40,7 @@ var qmm020;
             function getAllEmployeeAllotSetting(histId) {
                 var dfd = $.Deferred();
                 var _path = nts.uk.text.format(paths.getAllEmployeeAllotSettingList, histId);
-                nts.uk.request.ajax(_path).done(function (res) {
+                nts.uk.request.ajax("pr", _path).done(function (res) {
                     dfd.resolve(res);
                 }).fail(function (error) {
                     dfd.reject(error);
@@ -69,7 +62,8 @@ var qmm020;
             service.getEmployeeName = getEmployeeName;
             function getEmployeeDetail(histId) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getEmployeeDetail, histId)
+                var _path = nts.uk.text.format(paths.getEmployeeDetail, histId);
+                nts.uk.request.ajax(_path)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
