@@ -20,6 +20,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.basic.infra.entity.organization.employment.CmnmtEmp;
 import nts.uk.ctx.basic.infra.entity.report.PbsmtPersonBase;
 import nts.uk.ctx.basic.infra.entity.report.PcpmtPersonCom;
+import nts.uk.ctx.basic.infra.entity.report.QyedtYearendDetail;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentDetail;
 import nts.uk.ctx.pr.core.infra.entity.personalinfo.employmentcontract.PclmtPersonEmpContract;
 import nts.uk.file.pr.app.export.accumulatedpayment.AccPaymentRepository;
@@ -97,14 +98,14 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 	private static final String UNDELIVERED = "未出向";
 
 	/** The Constant QUERY_STRING. */
-	private static final String QUERY_STRING = "SELECT p,  pc, ec, e, pd, pdt "
-			// a, yd
+	private static final String QUERY_STRING = "SELECT p,  pc, ec, e, pd, pdt, yd "
+			// a
 			+ "FROM PbsmtPersonBase p, "
 			// + "PcpmtPersonTempAssign a, "//To get the loan information of
 			// individuals who meet the conditions // a demo
 			+ "PcpmtPersonCom pc, " + "PclmtPersonEmpContract ec, " + "CmnmtEmp e, " + "QpdmtPayday pd, "
-			+ "QstdtPaymentDetail pdt "
-			// + "QyedtYearendDetail yd "
+			+ "QstdtPaymentDetail pdt, "
+			 + "QyedtYearendDetail yd "
 			+ "WHERE p.pid in :PIDs "
 			// + "AND a.pcpmtPersonTempAssignPK.ccd = :CCD "
 			// + "AND a.pcpmtPersonTempAssignPK.pid = p.pid "
@@ -120,15 +121,11 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 			+ "AND pd.payDate <= :END_YMD " + "AND pdt.qstdtPaymentDetailPK.companyCode = pd.qpdmtPaydayPK.ccd "
 			+ "AND pdt.qstdtPaymentDetailPK.personId = p.pid "
 			+ "AND pdt.qstdtPaymentDetailPK.processingNo = pd.qpdmtPaydayPK.processingNo "
-			// + "AND pdt.qstdtPaymentDetailPK.payBonusAttribute =
-			// :PAY_BONUS_ATR "//1
-			// + "AND pdt.qstdtPaymentDetailPK.processingYM =
-			// pd.qpdmtPaydayPK.processingYm "
-			+ "AND pdt.qstdtPaymentDetailPK.sparePayAttribute = :SPARE_PAY_ATR ";// 0
-	// + "AND yd.qyedtYearendDetailPK.ccd = pdt.qstdtPaymentDetailPK.companyCode
-	// "
-	// + "AND yd.qyedtYearendDetailPK.pid = p.pid "
-	// + "AND yd.qyedtYearendDetailPK.yearK = :YEAR_k ";
+			+ "AND pdt.qstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR "//1
+			+ "AND pdt.qstdtPaymentDetailPK.processingYM = pd.qpdmtPaydayPK.processingYm "//0
+			+ "AND pdt.qstdtPaymentDetailPK.sparePayAttribute = :SPARE_PAY_ATR "// 0
+			+ "AND yd.qyedtYearendDetailPK.ccd = pdt.qstdtPaymentDetailPK.companyCode "
+			+ "AND yd.qyedtYearendDetailPK.pid = p.pid " + "AND yd.qyedtYearendDetailPK.yearK = :YEAR_k ";
 
 	/** The Constant CHECK_AT_PRINTING_QUERY. */
 	private static final String CHECK_AT_PRINTING_QUERY = "SELECT pdt.qstdtPaymentDetailPK.personId, sum(pdt.value) "
@@ -142,10 +139,8 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 			+ "AND pd.payDate <= :END_YMD " + "AND pdt.qstdtPaymentDetailPK.companyCode = pd.qpdmtPaydayPK.ccd "
 			+ "AND pdt.qstdtPaymentDetailPK.personId = ec.pclmtPersonEmpContractPK.pId "
 			+ "AND pdt.qstdtPaymentDetailPK.processingNo = pd.qpdmtPaydayPK.processingNo "
-			// + "AND pdt.qstdtPaymentDetailPK.payBonusAttribute =
-			// :PAY_BONUS_ATR "//1
-			// + "AND pdt.qstdtPaymentDetailPK.processingYM =
-			// pd.qpdmtPaydayPK.processingYm "
+			+ "AND pdt.qstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR "//1
+			+ "AND pdt.qstdtPaymentDetailPK.processingYM = pd.qpdmtPaydayPK.processingYm "
 			+ "AND pdt.qstdtPaymentDetailPK.sparePayAttribute = :SPARE_PAY_ATR "// 0
 			+ "AND pdt.qstdtPaymentDetailPK.categoryATR = :CTG_ATR_0 "// 0
 			+ "AND pdt.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F001 "// "F001"
@@ -160,6 +155,12 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<AccPaymentItemData> getItems(String companyCode, AccPaymentReportQuery query) {
+		//
+		GeneralVars general = new GeneralVars();
+		general.companyCode = companyCode;
+		general.query = query;
+		//general.sqlQuery = CHECK_AT_PRINTING_QUERY;
+		
 		// Check Having Conditions
 		String havingQuery = "";
 		List<String> havingCondition = new ArrayList<>();
@@ -176,33 +177,24 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 		List<AccPaymentItemData> filtedData = new ArrayList<>();
 		EntityManager em = this.getEntityManager();
 		List<Object[]> masterResultList = new ArrayList<>();
-		// Create Year Month.
-		String startDate = query.getTargetYear() + START_DATE_OF_YEAR;
-		String endDate = query.getTargetYear() + END_DATE_OF_YEAR;
-		GeneralDate strYMD = GeneralDate.fromString(startDate, DATE_FORMAT);
-		GeneralDate endYMD = GeneralDate.fromString(endDate, DATE_FORMAT);
-		
-		String checkingQuery = CHECK_AT_PRINTING_QUERY + havingQuery;
-		Query typedQuery = em.createQuery(checkingQuery).setParameter("CCD", companyCode)
-				.setParameter("BASE_YMD", GeneralDate.today())
-				.setParameter("PAY_BONUS_ATR", PAY_BONUS_ATR)
-				.setParameter("STR_YMD", strYMD).setParameter("END_YMD", endYMD)
-				.setParameter("SPARE_PAY_ATR", SPARE_PAY_ATR)
+		String sqlQuery = CHECK_AT_PRINTING_QUERY + havingQuery;
+		general.typedQuery = em.createQuery(sqlQuery)
 				.setParameter("CTG_ATR_0", PAYMENT_CATEGORY)
 				.setParameter("ITEM_CD_F001", ITEM_CD_F001);
+		this.setGeneralParams(general);
 
-		if (query.getIsLowerLimit()) {
-			typedQuery.setParameter("LOWER_LIMIT_VALUE", query.getLowerLimitValue());
+		if (general.query.getIsLowerLimit()) {
+			general.typedQuery.setParameter("LOWER_LIMIT_VALUE", general.query.getLowerLimitValue());
 		}
-		if (query.getIsUpperLimit()) {
-			typedQuery.setParameter("UPPER_LIMIT_VALUE", query.getUpperLimitValue());
+		if (general.query.getIsUpperLimit()) {
+			general.typedQuery.setParameter("UPPER_LIMIT_VALUE", general.query.getUpperLimitValue());
 		}
 //		typedQuery.setParameter("PIDs", query.getEmpIdList());
 //		List<Object[]> resultList = typedQuery.getResultList();
 		
 		List<Object[]> resultList = new ArrayList<>();
 		CollectionUtil.split(query.getPIdList(), 1000, (subList) -> {
-			resultList.addAll(typedQuery.setParameter("PIDs",subList).getResultList());
+			resultList.addAll(general.typedQuery.setParameter("PIDs",subList).getResultList());
 		});
 		List<String> pIdList = new ArrayList<>();
 		resultList.stream().forEach(record -> {
@@ -213,13 +205,13 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 			throw new BusinessException("ER010");
 		} else {
 			// Get Master Result List
-			masterResultList = this.getMasterResultList(companyCode, pIdList, query);
-			if (masterResultList.isEmpty()) {
+			masterResultList = this.getMasterResultList(general, pIdList);
+			if (CollectionUtil.isEmpty(masterResultList)) {
 				// Throw Error message and stop
 				throw new BusinessException("ER010");
 			}
 		}
-		filtedData = this.filterData(masterResultList, companyCode, query);
+		filtedData = this.filterData(masterResultList, general);
 		return filtedData;
 	}
 
@@ -231,37 +223,45 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 	 * @param query the query
 	 * @return the list
 	 */
-	private List<AccPaymentItemData> filterData(List<Object[]> itemList, String companyCode,
-			AccPaymentReportQuery query) {
+	private List<AccPaymentItemData> filterData(List<Object[]> itemList, GeneralVars general) {
 		List<AccPaymentItemData> resultDataList = new ArrayList<>();
 		// Group by EMP.
 		Map<String, List<Object[]>> userMap = itemList.stream()
 				.collect(Collectors.groupingBy(item -> ((PbsmtPersonBase) item[0]).getPid()));
 		for (String pId : userMap.keySet()) {
 			List<Object[]> detailData = userMap.get(pId);
-			// Category_Attribute = 0 and Item_code = F001
 			// Taxable Amount
-			Double taxAmount = this.sumValues(detailData, PAYMENT_CATEGORY, ITEM_CD_F001, YEAR_ADJUSTMENT_ITEM_046,
-					YEAR_ADJUSTMENT_ITEM_049);
+			general.category = PAYMENT_CATEGORY;
+			general.itemCode = ITEM_CD_F001;
+			general.yearAdjusmentOne = YEAR_ADJUSTMENT_ITEM_046;
+			general.yearAdjusmentTwo = YEAR_ADJUSTMENT_ITEM_049;
+			Double taxAmount = this.sumValues(detailData, general);
 
 			// Social Insurance Total Amount
-			Double socialInsAmount = this.sumValues(detailData, DEDUCTION_CATEGORY, ITEM_CD_F005,
-					YEAR_ADJUSTMENT_ITEM_048, YEAR_ADJUSTMENT_ITEM_051);
+			general.category = DEDUCTION_CATEGORY;
+			general.itemCode = ITEM_CD_F005;
+			general.yearAdjusmentOne = YEAR_ADJUSTMENT_ITEM_048;
+			general.yearAdjusmentTwo = YEAR_ADJUSTMENT_ITEM_051;
+			Double socialInsAmount = this.sumValues(detailData, general);
 
 			// Withholding tax amount
-			Double withHoldingTax = this.sumValues(detailData, DEDUCTION_CATEGORY, ITEM_CD_F007,
-					YEAR_ADJUSTMENT_ITEM_047, YEAR_ADJUSTMENT_ITEM_050);
+			general.category = DEDUCTION_CATEGORY;
+			general.itemCode = ITEM_CD_F007;
+			general.yearAdjusmentOne = YEAR_ADJUSTMENT_ITEM_047;
+			general.yearAdjusmentTwo = YEAR_ADJUSTMENT_ITEM_050;
+			Double withHoldingTax = this.sumValues(detailData, general);
 
 			String empCode = ((PclmtPersonEmpContract) detailData.get(0)[2]).empCd;
 			String empName = ((CmnmtEmp) detailData.get(0)[3]).employmentName;
 			PcpmtPersonCom person = 	(PcpmtPersonCom) detailData.get(0)[1];
 			GeneralDate endDatePersonTem = person.getEndD();
 			String enrollmentStatus = endDatePersonTem == null ? ENROLMENT
-					: endDatePersonTem.year() < query.getTargetYear().intValue() ? RETIRED : ENROLMENT;
+					: endDatePersonTem.year() < general.query.getTargetYear().intValue() ? RETIRED : ENROLMENT;
 
 			GeneralDate endDatePersonTempAsign = GeneralDate.today();
 			// ((PcpmtPersonTempAssign) detailData.get(0)[1]).getEndD();
-			String directionalStatus = endDatePersonTempAsign.year() < query.getTargetYear() ? SECONDMENT : UNDELIVERED;
+			String directionalStatus = 
+					endDatePersonTempAsign.year() < general.query.getTargetYear() ? SECONDMENT : UNDELIVERED;
 			// AccPaymentItemData
 			AccPaymentItemData itemData = AccPaymentItemData.builder()
 					.taxAmount(taxAmount)
@@ -288,11 +288,12 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 	 * @param yearAdj2 the year adj 2
 	 * @return the double
 	 */
-	private Double sumValues(List<Object[]> detailData, int category, String itemCode, int yearAdj1, int yearAdj2) {
+	private Double sumValues(List<Object[]> detailData, GeneralVars general) {
 		Double amount = 0.0;
 		Double sumOfF001 = detailData.stream().filter(data -> {
 			QstdtPaymentDetail pdt = (QstdtPaymentDetail) data[5];
-			return pdt.qstdtPaymentDetailPK.categoryATR == category && pdt.qstdtPaymentDetailPK.itemCode == itemCode;
+			return pdt.qstdtPaymentDetailPK.categoryATR == general.category && 
+					pdt.qstdtPaymentDetailPK.itemCode == general.itemCode;
 		}).mapToDouble(result -> {
 			if (result[5] instanceof QstdtPaymentDetail) {
 				QstdtPaymentDetail pdt = (QstdtPaymentDetail) result[5];
@@ -303,18 +304,12 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 
 		// Value Number of Year Adjustment
 		Double valueNoTaxAmount = detailData.stream().filter(data -> {
-			return true;
-			/*
-			 * QyedtYearendDetail yd = (QyedtYearendDetail) data[7]; return
-			 * yd.getQyedtYearendDetailPK().getAdjItemNo() == yearAdj1 ||
-			 * yd.getQyedtYearendDetailPK().getAdjItemNo() == yearAdj2;
-			 */
+			QyedtYearendDetail yd = (QyedtYearendDetail) data[6]; 
+			return	yd.getQyedtYearendDetailPK().getAdjItemNo() == general.yearAdjusmentOne ||
+			yd.getQyedtYearendDetailPK().getAdjItemNo() == general.yearAdjusmentTwo;
 		}).mapToDouble(result -> {
-			return 10;
-			/*
-			 * QyedtYearendDetail yd = (QyedtYearendDetail) result[7]; return
-			 * yd.getValNumber().doubleValue();
-			 */
+			QyedtYearendDetail yd = (QyedtYearendDetail) result[6]; 
+			return yd.getValNumber().doubleValue();
 		}).sum();
 		// sum above values
 		amount = sumOfF001 + valueNoTaxAmount;
@@ -329,38 +324,41 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 	 * @return the master result list
 	 */
 	@SuppressWarnings("unchecked")
-	private List<Object[]> getMasterResultList(String companyCode, List<String> pIdList, AccPaymentReportQuery query) {
-		EntityManager em = this.getEntityManager();
+	private List<Object[]> getMasterResultList(GeneralVars general, List<String> pIdList) {
 		List<Object[]> masterResultList = new ArrayList<>();
-
-		// Create Year Month.
-		String startDate = query.getTargetYear() + START_DATE_OF_YEAR;
-		String endDate = query.getTargetYear() + END_DATE_OF_YEAR;
-		GeneralDate strYMD = GeneralDate.fromString(startDate, DATE_FORMAT);
-		GeneralDate endYMD = GeneralDate.fromString(endDate, DATE_FORMAT);
-
-		Query typedQuery = em.createQuery(QUERY_STRING, Object[].class).setParameter("CCD", companyCode)
-				.setParameter("BASE_YMD", GeneralDate.today())
-				.setParameter("PAY_BONUS_ATR", PAY_BONUS_ATR)
-				.setParameter("STR_YMD", strYMD)
-				.setParameter("END_YMD", endYMD)
-				.setParameter("SPARE_PAY_ATR", SPARE_PAY_ATR)
-				// .setParameter("YEAR_k", query.getTargetYear())
+		EntityManager em = this.getEntityManager();
+		general.typedQuery = em.createQuery(QUERY_STRING, Object[].class)
+				.setParameter("YEAR_k", general.query.getTargetYear())
 				.setParameter("REGULAR_COM", REGULAR_COM);// REGULAR_COM
+		this.setGeneralParams(general);
 		CollectionUtil.split(pIdList, 1000, (subList) -> {
-			masterResultList.addAll(typedQuery.setParameter("PIDs", subList).getResultList());
+			masterResultList.addAll(general.typedQuery.setParameter("PIDs", subList).getResultList());
 		});
 		return masterResultList;
 	}
+	
+	private void setGeneralParams(GeneralVars general){
+		String startDate = general.query.getTargetYear() + START_DATE_OF_YEAR;
+		String endDate = general.query.getTargetYear() + END_DATE_OF_YEAR;
+		GeneralDate strYMD = GeneralDate.fromString(startDate, DATE_FORMAT);
+		GeneralDate endYMD = GeneralDate.fromString(endDate, DATE_FORMAT);
+		general.typedQuery.setParameter("CCD", general.companyCode)
+		.setParameter("BASE_YMD", GeneralDate.today())
+		.setParameter("PAY_BONUS_ATR", PAY_BONUS_ATR)
+		.setParameter("STR_YMD", strYMD)
+		.setParameter("END_YMD", endYMD)
+		.setParameter("SPARE_PAY_ATR", SPARE_PAY_ATR)
+		.setParameter("PAY_BONUS_ATR", PAY_BONUS_ATR);
+	}
+
 	class GeneralVars{
-		public String companycode;
+		public String companyCode;
 		public AccPaymentReportQuery query;
-		public List<Object[]> itemList;
+		public Query typedQuery;
 		public int category;
 		public String itemCode;
 		public int yearAdjusmentOne;
 		public int yearAdjusmentTwo;
-		public GeneralDate strYMD;
-		public GeneralDate endYMD;
+
 	}
 }
