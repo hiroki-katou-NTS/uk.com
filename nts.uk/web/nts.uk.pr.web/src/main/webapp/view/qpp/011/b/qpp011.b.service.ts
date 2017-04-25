@@ -94,7 +94,7 @@ module qpp011.b.service {
             })
         return dfd.promise();
     }
-      export function findBankAll(): JQueryPromise<Array<any>> {
+    export function findBankAll(): JQueryPromise<Array<any>> {
         var dfd = $.Deferred<any>();
         nts.uk.request.ajax("com", paths.findBankAll)
             .done(function(res: Array<any>) {
@@ -180,7 +180,7 @@ module qpp011.b.service {
             }
         }
 
-  
+
     }
 
 

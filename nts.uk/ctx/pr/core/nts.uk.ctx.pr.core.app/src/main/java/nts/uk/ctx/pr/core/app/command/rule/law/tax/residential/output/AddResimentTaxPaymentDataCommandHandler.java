@@ -1,37 +1,33 @@
 package nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.output;
 
 import java.util.Optional;
-
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.rule.law.tax.residential.output.ResidentTaxPaymentData;
 import nts.uk.ctx.pr.core.dom.rule.law.tax.residential.output.ResidentTaxPaymentDataRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 @Transactional
 public class AddResimentTaxPaymentDataCommandHandler extends CommandHandler<AddResimentTaxPaymentDataCommand> {
 	@Inject
 	private ResidentTaxPaymentDataRepository repository;
-	
 	@Override
 	protected void handle(CommandHandlerContext<AddResimentTaxPaymentDataCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		AddResimentTaxPaymentDataCommand command = context.getCommand();
-		
-		// check exists data
-		Optional<ResidentTaxPaymentData> taxtPaymentData = repository.find(companyCode, command.getResimentTaxCode(), command.getYearMonth());
+		// Check exists data
+		Optional<ResidentTaxPaymentData> taxtPaymentData = repository.find(
+				companyCode, 
+				command.getResimentTaxCode(), 
+				command.getYearMonth());
 		if (taxtPaymentData.isPresent()) {
-			throw new BusinessException("Data exists!");
+			throw new BusinessException("対象データがありません。");
 		}
-		
-		
 		ResidentTaxPaymentData domain = ResidentTaxPaymentData.createFromJavaType(
 				command.getResimentTaxCode(), 
 				command.getTaxPayRollMoney(), 
@@ -45,9 +41,7 @@ public class AddResimentTaxPaymentDataCommandHandler extends CommandHandler<AddR
 				command.getCityTaxMoney(), 
 				command.getPrefectureTaxMoney(),
 				command.getYearMonth());
-		
 		domain.validate();
-		
 		repository.add(companyCode, domain);
 	}
 

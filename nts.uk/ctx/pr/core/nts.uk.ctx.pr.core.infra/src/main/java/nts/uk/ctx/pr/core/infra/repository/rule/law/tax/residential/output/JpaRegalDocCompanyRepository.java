@@ -1,9 +1,7 @@
 package nts.uk.ctx.pr.core.infra.repository.rule.law.tax.residential.output;
 
 import java.util.List;
-
-import javax.enterprise.context.RequestScoped;
-
+import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.rule.law.tax.residential.output.RegalDocCompany;
@@ -11,7 +9,7 @@ import nts.uk.ctx.pr.core.dom.rule.law.tax.residential.output.RegalDocCompanyRep
 import nts.uk.ctx.pr.core.infra.entity.rule.law.tax.residential.output.QcpmtRegalDocCom;
 import nts.uk.ctx.pr.core.infra.entity.rule.law.tax.residential.output.QcpmtRegalDocComPK;
 
-@RequestScoped
+@Stateless
 public class JpaRegalDocCompanyRepository extends JpaRepository implements RegalDocCompanyRepository {
 	private final String SEL_1 = "SELECT c FROM QcpmtRegalDocCom c WHERE c.qcpmtRegalDocComPK.ccd = :companyCd";
 
@@ -52,6 +50,11 @@ public class JpaRegalDocCompanyRepository extends JpaRepository implements Regal
 		return entity;
 	}
 
+	/**
+	 * Convert to Domain
+	 * @param entity
+	 * @return
+	 */
 	private static RegalDocCompany toDomain(QcpmtRegalDocCom entity) {
 		val domain = RegalDocCompany.createFromJavaType(entity.qcpmtRegalDocComPK.ccd,
 				entity.qcpmtRegalDocComPK.regalDocCcd, entity.regalDocCname, entity.regalDocCnameSjis,
@@ -65,6 +68,9 @@ public class JpaRegalDocCompanyRepository extends JpaRepository implements Regal
 		return domain;
 	}
 
+	/**
+	 * Find All Regal Doc Company
+	 */
 	@Override
 	public List<RegalDocCompany> findAll(String companyCode) {
 		List<RegalDocCompany> list = this.queryProxy().query(SEL_1, QcpmtRegalDocCom.class)

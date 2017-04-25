@@ -4,10 +4,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-
 <body>
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
+			<com:ValidatorScript>
+				nts.uk.ctx.pr.core.dom.rule.law.tax.residential.output.CodeType
+			</com:ValidatorScript>
 			<script>var dialogSize = { width: 900, height: 700 };</script>
 			<com:scriptfile path="qpp011.b.vm.js" />
 			<com:scriptfile path="qpp011.b.service.js" />
@@ -215,12 +217,13 @@
 														options: C_SEL_003_ComboBoxItemList,
 														optionsValue: 'lineBankCode',
 														value: C_SEL_003_selectedCode,
-														optionsText: 'lineBankName',
+														optionsText: 'label',
 														editable: false,
 														enable: true, 
 														columns: [
-																{ prop: 'lineBankCode', length: 4 },
-																{ prop: 'lineBankName', length: 4 },
+																{ prop: 'label', length:  10},
+															
+																
 															]}">
 								</div>
 							</div>
@@ -242,16 +245,17 @@
 							</div>
 							<div style="clear: both;">
 								<div class="floatLeft" id="C_LBL_013"
-									data-bind="ntsFormLabel: {  required: true }">種別コード</div>
-								<div id="C_INP_004" data-bind="with: numbereditor">
+									data-bind="ntsFormLabel: {constraint: 'CodeType',  required: true }">種別コード</div>
+								<div id="C_INP_004"  data-bind="with: numbereditor" >
 									<input
 										data-bind="ntsNumberEditor: {
 														value: value,
-														constraint: constraint,
+														constraint: '',
 														option: option,
 														required: required,
 														enable: enable,
-														readonly: readonly}" />
+														readonly: readonly
+														}" />
 								</div>
 							</div>
 						</div>
