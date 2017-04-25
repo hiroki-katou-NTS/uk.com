@@ -25,7 +25,7 @@ module nts.qmm017 {
         comboBoxReferenceMonthAtr: KnockoutObservable<ComboBox>;
         comboBoxRoudingMethod: KnockoutObservable<ComboBox>;
         comboBoxRoudingPosition: KnockoutObservable<ComboBox>;
-        
+
 
         constructor(data) {
             var self = this;
@@ -197,52 +197,19 @@ module nts.qmm017 {
 
         openDialogL() {
             var self = this;
-            if (self.easyFormulaCode() && self.easyFormulaCode() !== '') {
-                if (self.easyFormulaDetail().baseAmountDevision) {
-                    let param = {
-                        isUpdate: (self.easyFormulaName() !== '' && self.easyFormulaName() !== null),
-                        dirtyData: self.easyFormulaDetail(),
-                        startYm: self.startYm()
-                    };
-                    nts.uk.ui.windows.setShared('paramFromScreenC', param);
-                    nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(() => {
-                        if (nts.uk.ui.windows.getShared('easyFormulaDetail')) {
-                            self.easyFormulaDetail(nts.uk.ui.windows.getShared('easyFormulaDetail'));
-                            self.easyFormulaName(self.easyFormulaDetail().easyFormulaName);
-                        }
-                    });
-                } else {
-                    service.getFormulaEasyDetail(self.formulaCode(), self.historyId(), self.easyFormulaCode())
-                        .done(function(formulaEasyDetail) {
-                            self.easyFormulaDetail(formulaEasyDetail);
-                            let param = {
-                                isUpdate: (self.easyFormulaName() !== '' && self.easyFormulaName() !== null),
-                                dirtyData: self.easyFormulaDetail(),
-                                startYm: self.startYm()
-                            };
-                            nts.uk.ui.windows.setShared('paramFromScreenC', param);
-                            nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(() => {
-                                if (nts.uk.ui.windows.getShared('easyFormulaDetail')) {
-                                    self.easyFormulaDetail(nts.uk.ui.windows.getShared('easyFormulaDetail'));
-                                    self.easyFormulaName(self.easyFormulaDetail().easyFormulaName);
-                                }
-                            });
-                        });
+            let param = {
+                isUpdate: (self.easyFormulaName() !== '' && self.easyFormulaName() !== null),
+                dirtyData: self.easyFormulaDetail(),
+                startYm: self.startYm()
+            };
+            nts.uk.ui.windows.setShared('paramFromScreenC', param);
+            nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(() => {
+                if (nts.uk.ui.windows.getShared('easyFormulaDetail')) {
+                    self.easyFormulaDetail(nts.uk.ui.windows.getShared('easyFormulaDetail'));
+                    self.easyFormulaName(self.easyFormulaDetail().easyFormulaName);
                 }
-            } else {
-                let param = {
-                    isUpdate: (self.easyFormulaName() !== '' && self.easyFormulaName() !== null),
-                    dirtyData: self.easyFormulaDetail(),
-                    startYm: self.startYm()
-                };
-                nts.uk.ui.windows.setShared('paramFromScreenC', param);
-                nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(() => {
-                    if (nts.uk.ui.windows.getShared('easyFormulaDetail')) {
-                        self.easyFormulaDetail(nts.uk.ui.windows.getShared('easyFormulaDetail'));
-                        self.easyFormulaName(self.easyFormulaDetail().easyFormulaName);
-                    }
-                });
-            }
+            });
+
         }
     }
 
@@ -498,15 +465,15 @@ module nts.qmm017 {
                 }
             }
         }
-        
-        validateAfterAtSign(tagsJapaneseChar){
+
+        validateAfterAtSign(tagsJapaneseChar) {
             var self = this;
             for (let tagOrder = 0; tagOrder < tagsJapaneseChar.length; tagOrder++) {
                 if (tagsJapaneseChar[tagOrder].innerText.indexOf('＠') !== -1) {
                     let splitByAtSign = tagsJapaneseChar[tagOrder].innerText.split('＠');
-                    let correctItemName = _.find(self.itemsBag, function(item){return item.name == tagsJapaneseChar[tagOrder].innerText});
-                    if(!correctItemName){
-                        self.markError($(tagsJapaneseChar[tagOrder]), self.ERROR_AFTER_ATSIGN, [splitByAtSign[1]]);    
+                    let correctItemName = _.find(self.itemsBag, function(item) { return item.name == tagsJapaneseChar[tagOrder].innerText });
+                    if (!correctItemName) {
+                        self.markError($(tagsJapaneseChar[tagOrder]), self.ERROR_AFTER_ATSIGN, [splitByAtSign[1]]);
                     }
                 }
             }

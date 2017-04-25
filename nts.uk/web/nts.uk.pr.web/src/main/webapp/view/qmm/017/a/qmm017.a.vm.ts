@@ -23,9 +23,6 @@ module nts.qmm017 {
         currentParentNode: any;
         itemsBagRepository: Array<any>;
 
-        dirtyCheckScreenB: nts.uk.ui.DirtyChecker;
-        dirtyCheckScreenC: nts.uk.ui.DirtyChecker;
-
         constructor() {
             var self = this;
             self.itemsBagRepository = [];
@@ -55,22 +52,11 @@ module nts.qmm017 {
             self.viewModel017h = ko.observable(new HScreen(self));
             self.viewModel017i = ko.observable(new IScreen(self));
             self.viewModel017r = ko.observable(new RScreen(self));
-            self.dirtyCheckScreenB = new nts.uk.ui.DirtyChecker(self.viewModel017b);
-            self.dirtyCheckScreenC = new nts.uk.ui.DirtyChecker(self.viewModel017c);
         }
 
         formulaTree_onSelecting(codeChange) {
             var self = this;
-            if (self.dirtyCheckScreenB.isDirty() || self.dirtyCheckScreenC.isDirty()) {
-                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。")
-                    .ifYes(function() {
-                        self.bindDataByChanging(codeChange);
-                    }).ifNo(function() {
-                        return false;
-                    });
-            } else {
-                self.bindDataByChanging(codeChange);
-            }
+            self.bindDataByChanging(codeChange);
         }
 
         bindDataByChanging(codeChange) {
@@ -115,7 +101,6 @@ module nts.qmm017 {
                                             self.viewModel017c().comboBoxRoudingMethod().selectedCode(currentFormulaDetail.roundAtr);
                                             self.viewModel017c().comboBoxRoudingPosition().selectedCode(currentFormulaDetail.roundDigit);
                                         }
-                                        self.dirtyCheckScreenC.reset();
                                     }).fail(function(res) {
                                         alert(res);
                                     });
@@ -124,6 +109,10 @@ module nts.qmm017 {
                                     if (currentFormulaDetail.easyFormula[0]) {
                                         self.viewModel017c().noneConditionalEasyFormula().easyFormulaCode(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaCode);
                                         self.viewModel017c().noneConditionalEasyFormula().easyFormulaName(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaName);
+                                        service.getFormulaEasyDetail(self.currentParentNode().code, self.currentNode().code, currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaCode)
+                                            .done(function(formulaEasyDetail: model.FormulaEasyDetailDto) {
+                                                self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail(formulaEasyDetail);
+                                            });
                                     }
                                 } else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo < 6) {
                                     self.viewModel017c().defaultEasyFormula(new EasyFormula(0, self.viewModel017b));
@@ -132,9 +121,17 @@ module nts.qmm017 {
                                         self.viewModel017c().defaultEasyFormula().selectedRuleCodeEasySettings(currentFormulaDetail.easyFormula[0].fixFormulaAtr);
                                         self.viewModel017c().defaultEasyFormula().easyFormulaCode(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaCode);
                                         self.viewModel017c().defaultEasyFormula().easyFormulaName(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaName);
+                                        service.getFormulaEasyDetail(self.currentParentNode().code, self.currentNode().code, currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaCode)
+                                            .done(function(formulaEasyDetail: model.FormulaEasyDetailDto) {
+                                                self.viewModel017c().defaultEasyFormula().easyFormulaDetail(formulaEasyDetail);
+                                            });
                                     }
                                 } else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo === 6) {
                                     self.viewModel017c().defaultEasyFormula(new EasyFormula(0, self.viewModel017b));
+                                    self.viewModel017c().monthlyEasyFormula(new EasyFormula(1, self.viewModel017b));
+                                    self.viewModel017c().dailyMonthlyEasyFormula(new EasyFormula(1, self.viewModel017b));
+                                    self.viewModel017c().dailyEasyFormula(new EasyFormula(1, self.viewModel017b));
+                                    self.viewModel017c().hourlyEasyFormula(new EasyFormula(1, self.viewModel017b));
                                     _.forEach(currentFormulaDetail.easyFormula, easyFormula => {
                                         if (easyFormula.easyFormulaCode === '000') {
                                             self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(easyFormula.value);
@@ -142,6 +139,10 @@ module nts.qmm017 {
                                             if (easyFormula.fixFormulaAtr === 1) {
                                                 self.viewModel017c().defaultEasyFormula().easyFormulaCode(easyFormula.formulaEasyDetail.easyFormulaCode);
                                                 self.viewModel017c().defaultEasyFormula().easyFormulaName(easyFormula.formulaEasyDetail.easyFormulaName);
+                                                service.getFormulaEasyDetail(self.currentParentNode().code, self.currentNode().code, easyFormula.formulaEasyDetail.easyFormulaCode)
+                                                    .done(function(formulaEasyDetail: model.FormulaEasyDetailDto) {
+                                                        self.viewModel017c().defaultEasyFormula().easyFormulaDetail(formulaEasyDetail);
+                                                    });
                                             }
                                         }
                                         if (easyFormula.easyFormulaCode === '001') {
@@ -150,6 +151,10 @@ module nts.qmm017 {
                                             if (easyFormula.fixFormulaAtr === 1) {
                                                 self.viewModel017c().monthlyEasyFormula().easyFormulaCode(easyFormula.formulaEasyDetail.easyFormulaCode);
                                                 self.viewModel017c().monthlyEasyFormula().easyFormulaName(easyFormula.formulaEasyDetail.easyFormulaName);
+                                                service.getFormulaEasyDetail(self.currentParentNode().code, self.currentNode().code, easyFormula.formulaEasyDetail.easyFormulaCode)
+                                                    .done(function(formulaEasyDetail: model.FormulaEasyDetailDto) {
+                                                        self.viewModel017c().monthlyEasyFormula().easyFormulaDetail(formulaEasyDetail);
+                                                    });
                                             }
                                         }
                                         if (easyFormula.easyFormulaCode === '002') {
@@ -158,6 +163,10 @@ module nts.qmm017 {
                                             if (easyFormula.fixFormulaAtr === 1) {
                                                 self.viewModel017c().dailyMonthlyEasyFormula().easyFormulaCode(easyFormula.formulaEasyDetail.easyFormulaCode);
                                                 self.viewModel017c().dailyMonthlyEasyFormula().easyFormulaName(easyFormula.formulaEasyDetail.easyFormulaName);
+                                                service.getFormulaEasyDetail(self.currentParentNode().code, self.currentNode().code, easyFormula.formulaEasyDetail.easyFormulaCode)
+                                                    .done(function(formulaEasyDetail: model.FormulaEasyDetailDto) {
+                                                        self.viewModel017c().dailyMonthlyEasyFormula().easyFormulaDetail(formulaEasyDetail);
+                                                    });
                                             }
                                         }
                                         if (easyFormula.easyFormulaCode === '003') {
@@ -166,6 +175,10 @@ module nts.qmm017 {
                                             if (easyFormula.fixFormulaAtr === 1) {
                                                 self.viewModel017c().dailyEasyFormula().easyFormulaCode(easyFormula.formulaEasyDetail.easyFormulaCode);
                                                 self.viewModel017c().dailyEasyFormula().easyFormulaName(easyFormula.formulaEasyDetail.easyFormulaName);
+                                                service.getFormulaEasyDetail(self.currentParentNode().code, self.currentNode().code, easyFormula.formulaEasyDetail.easyFormulaCode)
+                                                    .done(function(formulaEasyDetail: model.FormulaEasyDetailDto) {
+                                                        self.viewModel017c().dailyEasyFormula().easyFormulaDetail(formulaEasyDetail);
+                                                    });
                                             }
                                         }
                                         if (easyFormula.easyFormulaCode === '004') {
@@ -174,13 +187,14 @@ module nts.qmm017 {
                                             if (easyFormula.fixFormulaAtr === 1) {
                                                 self.viewModel017c().hourlyEasyFormula().easyFormulaCode(easyFormula.formulaEasyDetail.easyFormulaCode);
                                                 self.viewModel017c().hourlyEasyFormula().easyFormulaName(easyFormula.formulaEasyDetail.easyFormulaName);
+                                                service.getFormulaEasyDetail(self.currentParentNode().code, self.currentNode().code, easyFormula.formulaEasyDetail.easyFormulaCode)
+                                                    .done(function(formulaEasyDetail: model.FormulaEasyDetailDto) {
+                                                        self.viewModel017c().hourlyEasyFormula().easyFormulaDetail(formulaEasyDetail);
+                                                    });
                                             }
                                         }
                                     });
                                 }
-
-                                self.dirtyCheckScreenB.reset();
-                                self.dirtyCheckScreenC.reset();
                             })
                             .fail(function(res) {
                                 alert(res);
@@ -475,29 +489,15 @@ module nts.qmm017 {
             self.viewModel017b().comboBoxUseMaster().selectedCode(1);
             self.currentNode(null);
             self.currentParentNode(null);
-            $("#start-date-inp-input").select();
             self.startYearMonth('');
             $("#inp-formulaName").focus();
+            //$("#start-date-inp-input").focus();
             $("#inp-formulaCode").focus();
-            self.dirtyCheckScreenB.reset();
-            self.dirtyCheckScreenC.reset();
         }
 
         resetToNewMode() {
             var self = this;
-            if (self.dirtyCheckScreenB.isDirty() || self.dirtyCheckScreenC.isDirty()) {
-                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。")
-                    .ifYes(function() {
-                        $('.check-error').ntsError('clear');
-                        self.setNewMode();
-                    }).ifNo(function() {
-
-                    }).ifCancel(function() {
-
-                    });
-            } else {
-                self.setNewMode();
-            }
+            self.setNewMode();
         }
 
         bindHistoryTree(): JQueryPromise<any> {
