@@ -28,19 +28,19 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class OutputSettingFinder {
-	
+
 	/** The repository. */
 	@Inject
 	private WLOutputSettingRepository repository;
-	
+
 	/** The finder. */
 	@Inject
 	private ItemMaterRepository finder;
-	
+
 	/** The aggregate item repository. */
 	@Inject
 	private WLAggregateItemRepository aggregateItemRepository;
-	
+
 	/**
 	 * Find.
 	 *
@@ -51,14 +51,14 @@ public class OutputSettingFinder {
 		String companyCode = AppContexts.user().companyCode();
 		Optional<WLOutputSetting> optOutputSetting = this.repository.findByCode(companyCode,
 				new WLOutputSettingCode(code));
-		
+
 		OutputSettingDto dto = OutputSettingDto.builder().build();
 		if (optOutputSetting.isPresent()) {
 			optOutputSetting.get().saveToMemento(dto);
 		} else {
 			throw new BusinessException("entity not found.");
 		}
-		
+
 		// Find master item name.
 		List<String> masterItemCode = dto.categorySettings.stream()
 				.map(category -> category.outputItems.stream()
@@ -68,7 +68,7 @@ public class OutputSettingFinder {
 				.flatMap(item -> item.stream())
 				.collect(Collectors.toList());
 		List<MasterItemDto> masterItemMap = this.finder.findByCodes(companyCode, masterItemCode);
-		
+
 		// Find aggregate item name.
 		List<String> aggregateItemCode = dto.categorySettings.stream()
 				.map(category -> category.outputItems.stream()
@@ -83,7 +83,7 @@ public class OutputSettingFinder {
 		// Add master item name to output setting. 
 		dto.categorySettings.forEach(cate -> {
 			cate.outputItems.forEach(item -> {
-				
+
 				// Master item.
 				if (!item.isAggregateItem) {
 					MasterItemDto masterItem = masterItemMap.stream()
@@ -93,7 +93,7 @@ public class OutputSettingFinder {
 					item.name = masterItem.name;
 					return;
 				}
-				
+
 				// Aggregate item.
 				WLAggregateItem aggregateItem = aggregateItems.stream()
 						.filter(ai -> ai.getSubject().getCode().v().equals(item.code)
@@ -104,14 +104,14 @@ public class OutputSettingFinder {
 		});
 		return dto;
 	}
-	
+
 	/**
 	 * Find all.
 	 *
 	 * @return the list
 	 */
 	public List<HeaderSettingDto> findAll() {
-		String companyCode = AppContexts.user().companyCode(); 
+		String companyCode = AppContexts.user().companyCode();
 		return this.repository.findAll(companyCode).stream().map(setting -> {
 			return HeaderSettingDto.builder()
 					.code(setting.getCode().v())

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.wageledger.find;
@@ -14,7 +14,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.report.app.itemmaster.query.ItemMaterRepository;
 import nts.uk.ctx.pr.report.app.itemmaster.query.MasterItemDto;
 import nts.uk.ctx.pr.report.app.wageledger.command.dto.ItemSubjectDto;
@@ -30,15 +29,15 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class AggregateItemFinder {
-	
+
 	/** The repository. */
 	@Inject
 	private WLAggregateItemRepository repository;
-	
-	/** The item mater finder. */
+
+	/** The item mater repo. */
 	@Inject
 	private ItemMaterRepository itemMaterRepo;
-	
+
 	/**
 	 * Find all.
 	 *
@@ -55,7 +54,7 @@ public class AggregateItemFinder {
 					.build();
 		}).collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * Find by category and payment type.
 	 *
@@ -73,19 +72,19 @@ public class AggregateItemFinder {
 					.name(item.getName().v()).build();
 		}).collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * Find detail.
 	 *
-	 * @param code the code
+	 * @param subject the subject
 	 * @return the aggregate item dto
 	 */
 	public AggregateItemDto findDetail(ItemSubjectDto subject) {
 		String companyCode = AppContexts.user().companyCode();
-		
+
 		// Query data.
 		val aggregateItem = this.repository.findByCode(subject.toDomain(companyCode));
-		
+
 		// Return dto.
 		val dto = AggregateItemDto.builder().build();
 		aggregateItem.saveToMemento(dto);
