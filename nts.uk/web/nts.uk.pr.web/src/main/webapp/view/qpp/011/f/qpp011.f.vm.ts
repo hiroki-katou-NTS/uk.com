@@ -203,8 +203,8 @@ module qpp011.f {
             //Switch
             self.enable = ko.observable(true);
             self.roundingRules = ko.observableArray([
-                { code: '1', name: '納付先別' },
-                { code: '2', name: '個人明細別' }
+                { code: 1, name: '納付先別' },
+                { code: 2, name: '個人明細別' }
             ]);
             self.selectedRuleCode = ko.observable(1);
             self.F_LBL_002_Year_Month(nts.uk.ui.windows.getShared('QPP011_F_TargetDate'));
@@ -222,7 +222,7 @@ module qpp011.f {
         }
 
         exportPdf(): void {
-               var self = this;
+            var self = this;
             if (self.F_LST_001_selectedValue().length > 0) {
                 var command = {
                     residentTaxCodeList: self.F_LST_001_selectedValue(),
@@ -231,12 +231,25 @@ module qpp011.f {
                     yearMonth: 201612,
                     processingYearMonth: 201703,
                 };
-                
-                service.saveAsPdf(command).done(function() {
-                    //
+                //                if (self.selectedRuleCode() == 1) {
+                //                    service.saveAsPdfB(command).done(function() {
+                //                        //
+                //                    }).fail(function(res) {
+                //                        nts.uk.ui.dialog.alert(res.message);
+                //                    });
+                //                } else {
+                //                    service.saveAsPdfC(command).done(function() {
+                //                        //
+                //                    }).fail(function(res) {
+                //                        nts.uk.ui.dialog.alert(res.message);
+                //                    });
+                //                }
+                service.saveAsPdf(self.selectedRuleCode(),command).done(function() {
+                  //
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
                 });
+
             } else {
                 nts.uk.ui.dialog.alert("納付先が選択されていせん。");
             }

@@ -15,6 +15,7 @@ import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.PayBonusAtr;
+import nts.uk.file.pr.app.export.residentialtax.data.CompanyDto;
 import nts.uk.file.pr.app.export.residentialtax.data.InhabitantTaxChecklistBRpHeader;
 import nts.uk.file.pr.app.export.residentialtax.data.InhabitantTaxChecklistCReport;
 import nts.uk.file.pr.app.export.residentialtax.data.InhabitantTaxChecklistCRpData;
@@ -47,6 +48,8 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 
 		List<PersonResitaxDto> personResidentTaxList = residentialTaxRepo.findPersonResidentTax(companyCode, Y_K,
 				query.getResidentTaxCodeList());
+		
+		CompanyDto company = residentialTaxRepo.findCompany(companyCode);
 
 		Map<String, List<PersonResitaxDto>> personResidentTaxListMap = personResidentTaxList.stream()
 				.collect(Collectors.groupingBy(PersonResitaxDto::getResidenceCode, Collectors.toList()));
@@ -68,7 +71,6 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 			totalNumberPeople.put(personResidentTax.getResidenceCode(), personResitaxList.size());
 		}
 
-		//Map<String, PersonDetailDto> personDetail = fixPersonDetail();
 
 		List<InhabitantTaxChecklistCRpData> reportDataList = new ArrayList<InhabitantTaxChecklistCRpData>();
 
@@ -80,7 +82,6 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 			for (PersonResitaxDto item : personResitaxList) {
 				InhabitantTaxChecklistCRpData personData = new InhabitantTaxChecklistCRpData();
 				BigDecimal value = personValue.get(item.getPersonID());
-				//PersonDetailDto person = personDetail.get(item.getPersonID());
 				// DBD_003
 				personData.setResidenceTaxCode(residentialTax.getResidenceTaxCode());
 				// DBD_004
@@ -131,7 +132,7 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 
 		InhabitantTaxChecklistBRpHeader header = new InhabitantTaxChecklistBRpHeader();
 		int size = reportDataList.size() - 3;
-		header.setCompanyName("日通システム株式会社");
+		header.setCompanyName(company.getCompanyName());
 		header.setStartResiTaxAutonomy(
 				reportDataList.get(0).getResidenceTaxCode() + " " + reportDataList.get(0).getResiTaxAutonomy());
 		header.setLateResiTaxAutonomy(
