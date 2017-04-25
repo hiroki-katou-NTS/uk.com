@@ -12,8 +12,8 @@ var nts;
                     (function (c) {
                         var viewmodel;
                         (function (viewmodel) {
-                            var ScreenModel = (function () {
-                                function ScreenModel() {
+                            class ScreenModel {
+                                constructor() {
                                     var self = this;
                                     self.isLoading = ko.observable(true);
                                     self.isNewMode = ko.observable(true);
@@ -27,6 +27,7 @@ var nts;
                                     self.allAggregateItems = ko.observableArray([]);
                                     self.allMasterItems = ko.observableArray([]);
                                     self.dirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetailModel);
+                                    // Define aggregateOutputItems column.
                                     self.aggregateOutputItemColumns = ko.observableArray([
                                         { headerText: '区分', prop: 'categoryNameJPN', width: 50 },
                                         {
@@ -41,21 +42,24 @@ var nts;
                                         { headerText: 'コード', prop: 'code', width: 50 },
                                         { headerText: '名称', prop: 'name', width: 100 },
                                     ]);
-                                    self.outputSettingDetailModel.subscribe(function (data) {
+                                    self.outputSettingDetailModel.subscribe((data) => {
                                         self.reloadAggregateOutputItems();
                                         data.reloadAggregateOutputItems = self.reloadAggregateOutputItems.bind(self);
                                     });
-                                    self.temporarySelectedCode.subscribe(function (code) {
+                                    self.temporarySelectedCode.subscribe(code => {
+                                        // Do nothing if code == null or undefined.
                                         if (!code) {
                                             return;
                                         }
-                                        var executeIfConfirmed = function () {
+                                        // Function to executed on confirmDirty dialog.
+                                        var executeIfConfirmed = () => {
                                             self.outputSettingSelectedCode(self.temporarySelectedCode());
                                             self.onSelectOutputSetting(code);
                                         };
-                                        var executeIfCanceled = function () {
+                                        var executeIfCanceled = () => {
                                             self.temporarySelectedCode(self.outputSettingSelectedCode());
                                         };
+                                        // Do nothing if selected same code.
                                         if (self.outputSettingSelectedCode() == code) {
                                             return;
                                         }
@@ -64,13 +68,17 @@ var nts;
                                         }
                                     });
                                 }
-                                ScreenModel.prototype.startPage = function () {
+                                /**
+                                 * Start page.
+                                 */
+                                startPage() {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     var outputSettings = nts.uk.ui.windows.getShared('outputSettings');
                                     var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
-                                    $.when(self.loadMasterItems(), self.loadAggregateItems()).done(function () {
+                                    $.when(self.loadMasterItems(), self.loadAggregateItems()).done(() => {
                                         self.isLoading(false);
+                                        // New mode if there is 0 outputSettings. 
                                         if (!outputSettings || outputSettings.length == 0) {
                                             self.enableNewMode();
                                         }
@@ -81,60 +89,79 @@ var nts;
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
-                                };
-                                ScreenModel.prototype.onCommonSettingBtnClicked = function () {
+                                }
+                                /**
+                                * Open common setting dialog.
+                                */
+                                onCommonSettingBtnClicked() {
                                     var self = this;
                                     nts.uk.ui.windows.sub.modal('/view/qpp/007/j/index.xhtml', { title: '集計項目の設定', dialogClass: 'no-close' })
                                         .onClosed(function () {
-                                        self.loadAggregateItems().done(function () {
+                                        self.loadAggregateItems().done(() => {
                                             self.loadOutputSettingDetail(self.outputSettingDetailModel().settingCode());
                                         });
                                     });
-                                };
-                                ScreenModel.prototype.onNewModeBtnClicked = function () {
+                                }
+                                /**
+                                 * Clear errors and enable new mode.
+                                 */
+                                onNewModeBtnClicked() {
                                     var self = this;
                                     self.confirmDirtyAndExecute(function () {
                                         self.clearError();
                                         self.enableNewMode();
                                     });
-                                };
-                                ScreenModel.prototype.onSaveBtnClicked = function () {
+                                }
+                                /**
+                                 * Save outputSetting.
+                                 */
+                                onSaveBtnClicked() {
                                     var self = this;
+                                    // Clear errors.
                                     self.clearError();
+                                    // Validate.
                                     self.validate();
                                     if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                                         return;
                                     }
                                     var data = self.collectData();
+                                    // Set isCreateMode.
                                     if (self.isNewMode()) {
                                         data.createMode = true;
                                     }
                                     else {
                                         data.createMode = false;
                                     }
-                                    c.service.save(data).done(function () {
+                                    // Save.
+                                    c.service.save(data).done(() => {
                                         self.isNewMode(false);
                                         self.isSomethingChanged(true);
                                         self.dirtyChecker.reset();
                                         self.loadAllOutputSetting();
-                                    }).fail(function (res) {
+                                    }).fail(res => {
                                         if (res.messageId == 'ER005') {
                                             $('#inpCode').ntsError('set', '入力した＊は既に存在しています。\r\n ＊を確認してください。');
                                         }
                                     });
-                                };
-                                ScreenModel.prototype.onRemoveBtnClicked = function () {
+                                }
+                                /**
+                                 * Delete selected outputSetting.
+                                 */
+                                onRemoveBtnClicked() {
                                     var self = this;
                                     var selectedCode = self.outputSettingSelectedCode();
                                     if (selectedCode) {
                                         nts.uk.ui.dialog.confirm("データを削除します。\r\n よろしいですか？").ifYes(function () {
-                                            c.service.remove(selectedCode).done(function () {
+                                            c.service.remove(selectedCode).done(() => {
                                                 self.isSomethingChanged(true);
-                                                var selectedOutputSetting = self.outputSettings().filter(function (item) { return item.code == selectedCode; })[0];
+                                                // Find selected outputSetting.
+                                                var selectedOutputSetting = self.outputSettings().filter(item => item.code == selectedCode)[0];
                                                 var selectedIndex = self.outputSettings().indexOf(selectedOutputSetting);
+                                                // Remove selected setting from list.
                                                 self.outputSettings.remove(selectedOutputSetting);
                                                 if (self.outputSettings() && self.outputSettings().length > 0) {
                                                     var currentSetting = self.outputSettings()[selectedIndex];
+                                                    // Select setting with the same index.
                                                     if (currentSetting) {
                                                         self.temporarySelectedCode(currentSetting.code);
                                                     }
@@ -149,35 +176,47 @@ var nts;
                                             });
                                         });
                                     }
-                                };
-                                ScreenModel.prototype.onCloseBtnClicked = function () {
+                                }
+                                /**
+                                 * Close dialog.
+                                 */
+                                onCloseBtnClicked() {
                                     var self = this;
                                     self.confirmDirtyAndExecute(function () {
                                         nts.uk.ui.windows.setShared('isSomethingChanged', self.isSomethingChanged());
                                         nts.uk.ui.windows.close();
                                     });
-                                };
-                                ScreenModel.prototype.onSelectOutputSetting = function (code) {
+                                }
+                                /**
+                                  * On select outputSetting
+                                  */
+                                onSelectOutputSetting(code) {
                                     var self = this;
-                                    self.loadOutputSettingDetail(code).done(function () {
+                                    self.loadOutputSettingDetail(code).done(() => {
                                         self.isNewMode(false);
                                         self.isLoading(false);
                                         self.clearError();
                                     });
-                                };
-                                ScreenModel.prototype.collectData = function () {
+                                }
+                                /**
+                                * Collect Data
+                                */
+                                collectData() {
                                     var self = this;
                                     var model = self.outputSettingDetailModel();
+                                    // Convert model to dto.
                                     var dto = new OutputSettingDto();
                                     dto.code = model.settingCode();
                                     dto.name = model.settingName();
                                     var categorySettingDto = new Array();
-                                    model.categorySettings().forEach(function (setting) {
+                                    model.categorySettings().forEach(setting => {
+                                        // Set order number.
                                         for (var i = 0; i < setting.outputItems().length; i++) {
                                             setting.outputItems()[i].orderNumber = i;
                                         }
-                                        categorySettingDto.push(new CategorySettingDto(setting.categoryName, setting.outputItems().map(function (item) {
+                                        categorySettingDto.push(new CategorySettingDto(setting.categoryName, setting.outputItems().map(item => {
                                             var mappedItem = item;
+                                            // map Attendance && ArticleOthers item.
                                             if (!item.isAggregateItem) {
                                                 mappedItem = new OutputItem();
                                                 mappedItem.code = item.code;
@@ -188,20 +227,31 @@ var nts;
                                             return mappedItem;
                                         })));
                                     });
+                                    // Set categorySettings.
                                     dto.categorySettings = categorySettingDto;
+                                    // return dto.
                                     return dto;
-                                };
-                                ScreenModel.prototype.clearError = function () {
+                                }
+                                /**
+                                * Clear all input errors.
+                                */
+                                clearError() {
                                     if (nts.uk.ui._viewModel) {
                                         $('#inpCode').ntsError('clear');
                                         $('#inpName').ntsError('clear');
                                     }
-                                };
-                                ScreenModel.prototype.validate = function () {
+                                }
+                                /**
+                                * Validate all inputs.
+                                */
+                                validate() {
                                     $('#inpCode').ntsEditor('validate');
                                     $('#inpName').ntsEditor('validate');
-                                };
-                                ScreenModel.prototype.confirmDirtyAndExecute = function (functionToExecute, functionToExecuteIfNo) {
+                                }
+                                /**
+                                 * Confirm dirty state and execute function.
+                                 */
+                                confirmDirtyAndExecute(functionToExecute, functionToExecuteIfNo) {
                                     var self = this;
                                     if (self.dirtyChecker.isDirty()) {
                                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
@@ -215,42 +265,55 @@ var nts;
                                     else {
                                         functionToExecute();
                                     }
-                                };
-                                ScreenModel.prototype.enableNewMode = function () {
+                                }
+                                /**
+                                * Reset selected code & all inputs.
+                                */
+                                enableNewMode() {
                                     var self = this;
                                     self.outputSettingDetailModel(new OutputSettingDetailModel(self.allMasterItems, self.allAggregateItems));
                                     self.outputSettingSelectedCode(null);
                                     self.dirtyChecker.reset();
                                     self.isNewMode(true);
-                                };
-                                ScreenModel.prototype.reloadAggregateOutputItems = function () {
+                                }
+                                /**
+                                * Reload aggregateOutput items.
+                                */
+                                reloadAggregateOutputItems() {
                                     var self = this;
                                     var data = self.outputSettingDetailModel();
                                     if (!data || data.categorySettings().length == 0) {
                                         self.aggregateOutputItems([]);
                                         return;
                                     }
+                                    // Set data to report item list.
                                     var reportItemList = [];
-                                    data.categorySettings().forEach(function (setting) {
+                                    data.categorySettings().forEach((setting) => {
                                         var categoryName = setting.categoryName;
-                                        setting.outputItems().forEach(function (item) {
+                                        setting.outputItems().forEach((item) => {
                                             reportItemList.push(new AggregateOutputItem(item.code, item.name, categoryName, item.isAggregateItem));
                                         });
                                     });
                                     self.aggregateOutputItems(reportItemList);
-                                };
-                                ScreenModel.prototype.loadAllOutputSetting = function () {
+                                }
+                                /**
+                                 * Load all output setting.
+                                 */
+                                loadAllOutputSetting() {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    c.service.findAllOutputSettings().done(function (data) {
+                                    c.service.findAllOutputSettings().done(data => {
                                         self.outputSettings(data);
                                         dfd.resolve();
                                     }).fail(function (res) {
                                         dfd.reject();
                                     });
                                     return dfd.promise();
-                                };
-                                ScreenModel.prototype.loadOutputSettingDetail = function (code) {
+                                }
+                                /**
+                                 * Load detail output setting.
+                                 */
+                                loadOutputSettingDetail(code) {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     if (code) {
@@ -266,11 +329,14 @@ var nts;
                                         self.outputSettingDetailModel(new OutputSettingDetailModel(self.allMasterItems, self.allAggregateItems));
                                     }
                                     return dfd.promise();
-                                };
-                                ScreenModel.prototype.loadAggregateItems = function () {
+                                }
+                                /**
+                                * Load aggregate items
+                                */
+                                loadAggregateItems() {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    c.service.findAllAggregateItems().done(function (res) {
+                                    c.service.findAllAggregateItems().done(res => {
                                         self.allAggregateItems.removeAll();
                                         res.forEach(function (item) {
                                             self.allAggregateItems.push({
@@ -282,39 +348,47 @@ var nts;
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
-                                };
-                                ScreenModel.prototype.loadMasterItems = function () {
+                                }
+                                /**
+                                * Load master items
+                                */
+                                loadMasterItems() {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    c.service.findAllMasterItems().done(function (res) {
+                                    c.service.findAllMasterItems().done(res => {
                                         self.allMasterItems(res);
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
-                                };
-                                return ScreenModel;
-                            }());
+                                }
+                            }
                             viewmodel.ScreenModel = ScreenModel;
-                            var OutputSettingHeader = (function () {
-                                function OutputSettingHeader(code, name) {
+                            /**
+                             * OutputSettingHeader model.
+                             */
+                            class OutputSettingHeader {
+                                constructor(code, name) {
                                     this.code = code;
                                     this.name = name;
                                 }
-                                return OutputSettingHeader;
-                            }());
+                            }
                             viewmodel.OutputSettingHeader = OutputSettingHeader;
-                            var OutputSettingDto = (function () {
-                                function OutputSettingDto() {
-                                }
-                                return OutputSettingDto;
-                            }());
+                            /**
+                             * OutputSettingDto model.
+                             */
+                            class OutputSettingDto {
+                            }
                             viewmodel.OutputSettingDto = OutputSettingDto;
-                            var OutputSettingDetailModel = (function () {
-                                function OutputSettingDetailModel(masterItems, aggregateItems, outputSetting) {
+                            /**
+                             * OutputSettingDetailModel model.
+                             */
+                            class OutputSettingDetailModel {
+                                constructor(masterItems, aggregateItems, outputSetting) {
                                     this.settingCode = ko.observable(outputSetting != undefined ? outputSetting.code : '');
                                     this.settingName = ko.observable(outputSetting != undefined ? outputSetting.name : '');
                                     this.aggregateItems = aggregateItems;
                                     this.masterItems = masterItems;
+                                    // construct categorySettings.
                                     var settings = [];
                                     if (outputSetting == undefined) {
                                         settings = this.toModel();
@@ -331,13 +405,16 @@ var nts;
                                     ]);
                                     this.selectedCategory = ko.observable(SalaryCategory.PAYMENT);
                                     var self = this;
-                                    self.categorySettings().forEach(function (setting) {
-                                        setting.outputItems.subscribe(function (newValue) {
+                                    self.categorySettings().forEach((setting) => {
+                                        setting.outputItems.subscribe((newValue) => {
                                             self.reloadAggregateOutputItems();
                                         });
                                     });
                                 }
-                                OutputSettingDetailModel.prototype.toModel = function (categorySettings) {
+                                /**
+                                * Convert category setting data from dto to screen model.
+                                */
+                                toModel(categorySettings) {
                                     var settings = [];
                                     var categorySettingDtos;
                                     if (categorySettings && categorySettings.length > 0) {
@@ -348,31 +425,35 @@ var nts;
                                     settings[2] = this.filterSettingByCategory(SalaryCategory.ATTENDANCE, categorySettingDtos);
                                     settings[3] = this.filterSettingByCategory(SalaryCategory.ARTICLE_OTHERS, categorySettingDtos);
                                     return settings;
-                                };
-                                OutputSettingDetailModel.prototype.filterSettingByCategory = function (category, categorySettings) {
+                                }
+                                filterSettingByCategory(category, categorySettings) {
                                     var cateTempSetting = { category: category, outputItems: [] };
                                     if (categorySettings == undefined) {
                                         return new CategorySettingModel(category, this.masterItems, this.aggregateItems, cateTempSetting);
                                     }
-                                    var categorySetting = categorySettings.filter(function (item) { return item.category == category; })[0];
+                                    var categorySetting = categorySettings.filter(item => item.category == category)[0];
                                     if (categorySetting == undefined) {
                                         categorySetting = cateTempSetting;
                                     }
                                     return new CategorySettingModel(category, this.masterItems, this.aggregateItems, categorySetting);
-                                };
-                                return OutputSettingDetailModel;
-                            }());
+                                }
+                            }
                             viewmodel.OutputSettingDetailModel = OutputSettingDetailModel;
-                            var CategorySettingDto = (function () {
-                                function CategorySettingDto(category, outputItems) {
+                            /**
+                             * CategorySettingDto model.
+                             */
+                            class CategorySettingDto {
+                                constructor(category, outputItems) {
                                     this.category = category;
                                     this.outputItems = outputItems;
                                 }
-                                return CategorySettingDto;
-                            }());
+                            }
                             viewmodel.CategorySettingDto = CategorySettingDto;
-                            var AggregateOutputItem = (function () {
-                                function AggregateOutputItem(code, name, categoryName, isAggregate) {
+                            /**
+                             * ReportItem model.
+                             */
+                            class AggregateOutputItem {
+                                constructor(code, name, categoryName, isAggregate) {
                                     this.code = code;
                                     this.name = name;
                                     this.isAggregate = isAggregate;
@@ -394,11 +475,13 @@ var nts;
                                             self.categoryNameJPN = '';
                                     }
                                 }
-                                return AggregateOutputItem;
-                            }());
+                            }
                             viewmodel.AggregateOutputItem = AggregateOutputItem;
-                            var CategorySettingModel = (function () {
-                                function CategorySettingModel(categoryName, masterItems, aggregateItems, categorySetting) {
+                            /**
+                             * CategorySettingModel model.
+                             */
+                            class CategorySettingModel {
+                                constructor(categoryName, masterItems, aggregateItems, categorySetting) {
                                     var self = this;
                                     self.categoryName = categoryName;
                                     self.aggregateItems = ko.observableArray([]);
@@ -410,45 +493,46 @@ var nts;
                                     self.outputItemsSelected = ko.observableArray([]);
                                     switch (categoryName) {
                                         case SalaryCategory.PAYMENT:
-                                            aggregateItems().forEach(function (item) {
+                                            aggregateItems().forEach(item => {
                                                 if (item.taxDivision == TaxDivision.PAYMENT) {
                                                     self.aggregateItems.push(item);
                                                 }
                                             });
-                                            masterItems().forEach(function (item) {
+                                            masterItems().forEach(item => {
                                                 if (item.category == SalaryCategory.PAYMENT) {
                                                     self.masterItems.push(item);
                                                 }
                                             });
                                             break;
                                         case SalaryCategory.DEDUCTION:
-                                            aggregateItems().forEach(function (item) {
+                                            aggregateItems().forEach(item => {
                                                 if (item.taxDivision == TaxDivision.DEDUCTION) {
                                                     self.aggregateItems.push(item);
                                                 }
                                             });
-                                            masterItems().forEach(function (item) {
+                                            masterItems().forEach(item => {
                                                 if (item.category == SalaryCategory.DEDUCTION) {
                                                     self.masterItems.push(item);
                                                 }
                                             });
                                             break;
                                         case SalaryCategory.ATTENDANCE:
-                                            masterItems().forEach(function (item) {
+                                            masterItems().forEach(item => {
                                                 if (item.category == SalaryCategory.ATTENDANCE) {
                                                     self.masterItems.push(item);
                                                 }
                                             });
                                             break;
                                         case SalaryCategory.ARTICLE_OTHERS:
-                                            masterItems().forEach(function (item) {
+                                            masterItems().forEach(item => {
                                                 if (item.category == SalaryCategory.ARTICLE_OTHERS) {
                                                     self.masterItems.push(item);
                                                 }
                                             });
                                             break;
-                                        default:
+                                        default: // Do nothing.
                                     }
+                                    // Define outputItemColumns.
                                     this.outputItemColumns = ko.observableArray([
                                         {
                                             headerText: '集約', prop: 'isAggregateItem', width: 40,
@@ -469,11 +553,12 @@ var nts;
                                             }
                                         }
                                     ]);
+                                    // Customs handle.
                                     ko.bindingHandlers.rended = {
                                         init: function (element, valueAccessor, allBindings, viewModel, bindingContext) { },
                                         update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
                                             var code = valueAccessor();
-                                            viewModel.outputItems().forEach(function (item) {
+                                            viewModel.outputItems().forEach(item => {
                                                 $('#' + item.code).on('click', function () {
                                                     code(item.code);
                                                     viewModel.remove();
@@ -483,16 +568,22 @@ var nts;
                                         }
                                     };
                                 }
-                                CategorySettingModel.prototype.moveMasterItem = function () {
+                                /**
+                                * Move master item to outputItems.
+                                */
+                                moveMasterItem() {
+                                    // Check if has selected
                                     if (this.masterItemsSelected()[0]) {
                                         var self = this;
+                                        // Get selected items from selected code list.
                                         var selectedItems = [];
-                                        self.masterItemsSelected().forEach(function (selectedCode) {
-                                            selectedItems.push(self.masterItems().filter(function (item) {
+                                        self.masterItemsSelected().forEach(selectedCode => {
+                                            selectedItems.push(self.masterItems().filter((item) => {
                                                 return selectedCode == item.code;
                                             })[0]);
                                         });
-                                        selectedItems.forEach(function (item) {
+                                        // Remove from master list and add to output list
+                                        selectedItems.forEach(item => {
                                             self.masterItems.remove(item);
                                             self.outputItems.push({
                                                 code: item.code,
@@ -503,17 +594,23 @@ var nts;
                                         });
                                         self.masterItemsSelected([]);
                                     }
-                                };
-                                CategorySettingModel.prototype.moveAggregateItem = function () {
+                                }
+                                /**
+                                * Move aggregate item to outputItems.
+                                */
+                                moveAggregateItem() {
+                                    // Check if has selected
                                     if (this.aggregateItemsSelected()[0]) {
                                         var self = this;
+                                        // Get selected items from selected code list.
                                         var selectedItems = [];
-                                        self.aggregateItemsSelected().forEach(function (selectedCode) {
-                                            selectedItems.push(self.aggregateItems().filter(function (item) {
+                                        self.aggregateItemsSelected().forEach(selectedCode => {
+                                            selectedItems.push(self.aggregateItems().filter((item) => {
                                                 return selectedCode == item.code;
                                             })[0]);
                                         });
-                                        selectedItems.forEach(function (item) {
+                                        // Remove from aggregate list and add to output list
+                                        selectedItems.forEach(item => {
                                             self.aggregateItems.remove(item);
                                             self.outputItems.push({
                                                 code: item.code,
@@ -524,14 +621,19 @@ var nts;
                                         });
                                         self.aggregateItemsSelected([]);
                                     }
-                                };
-                                CategorySettingModel.prototype.remove = function () {
+                                }
+                                /**
+                                * Remove item from outputItems.
+                                */
+                                remove() {
                                     var self = this;
-                                    var selectedItem = self.outputItems().filter(function (item) {
+                                    var selectedItem = self.outputItems().filter((item) => {
                                         return item.code == self.outputItemSelected();
                                     })[0];
                                     self.outputItems.remove(selectedItem);
+                                    // Return item.
                                     if (selectedItem.isAggregateItem) {
+                                        // Return to Aggregate items table.
                                         self.aggregateItems.push({
                                             code: selectedItem.code,
                                             name: selectedItem.name,
@@ -539,58 +641,40 @@ var nts;
                                         });
                                         return;
                                     }
+                                    // Return to master items table.
                                     self.masterItems.push({
                                         code: selectedItem.code,
                                         name: selectedItem.name,
                                         category: SalaryCategory.PAYMENT
                                     });
-                                };
-                                return CategorySettingModel;
-                            }());
+                                }
+                            }
                             viewmodel.CategorySettingModel = CategorySettingModel;
-                            var AggregateItem = (function () {
-                                function AggregateItem() {
-                                }
-                                return AggregateItem;
-                            }());
+                            class AggregateItem {
+                            }
                             viewmodel.AggregateItem = AggregateItem;
-                            var MasterItem = (function () {
-                                function MasterItem() {
-                                }
-                                return MasterItem;
-                            }());
+                            class MasterItem {
+                            }
                             viewmodel.MasterItem = MasterItem;
-                            var OutputItem = (function () {
-                                function OutputItem() {
-                                }
-                                return OutputItem;
-                            }());
+                            class OutputItem {
+                            }
                             viewmodel.OutputItem = OutputItem;
-                            var SalaryCategory = (function () {
-                                function SalaryCategory() {
-                                }
-                                SalaryCategory.PAYMENT = 'Payment';
-                                SalaryCategory.DEDUCTION = 'Deduction';
-                                SalaryCategory.ATTENDANCE = 'Attendance';
-                                SalaryCategory.ARTICLE_OTHERS = 'ArticleOthers';
-                                return SalaryCategory;
-                            }());
+                            class SalaryCategory {
+                            }
+                            SalaryCategory.PAYMENT = 'Payment';
+                            SalaryCategory.DEDUCTION = 'Deduction';
+                            SalaryCategory.ATTENDANCE = 'Attendance';
+                            SalaryCategory.ARTICLE_OTHERS = 'ArticleOthers';
                             viewmodel.SalaryCategory = SalaryCategory;
-                            var TaxDivision = (function () {
-                                function TaxDivision() {
-                                }
-                                TaxDivision.PAYMENT = 'Payment';
-                                TaxDivision.DEDUCTION = 'Deduction';
-                                return TaxDivision;
-                            }());
+                            class TaxDivision {
+                            }
+                            TaxDivision.PAYMENT = 'Payment';
+                            TaxDivision.DEDUCTION = 'Deduction';
                             viewmodel.TaxDivision = TaxDivision;
-                            var SalaryOutputDistinction = (function () {
-                                function SalaryOutputDistinction() {
-                                }
-                                SalaryOutputDistinction.HOURLY = 'Hourly';
-                                SalaryOutputDistinction.MINUTLY = 'Minutely';
-                                return SalaryOutputDistinction;
-                            }());
+                            class SalaryOutputDistinction {
+                            }
+                            SalaryOutputDistinction.HOURLY = 'Hourly';
+                            SalaryOutputDistinction.MINUTLY = 'Minutely';
                             viewmodel.SalaryOutputDistinction = SalaryOutputDistinction;
                         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
                     })(c = qpp007.c || (qpp007.c = {}));
@@ -599,4 +683,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qpp007.c.vm.js.map

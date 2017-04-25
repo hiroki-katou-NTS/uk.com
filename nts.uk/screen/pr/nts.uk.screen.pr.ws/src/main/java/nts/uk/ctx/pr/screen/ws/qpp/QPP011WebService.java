@@ -7,6 +7,8 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
+import nts.uk.file.pr.app.export.residentialtax.InhabitantTaxChecklistQuery;
+import nts.uk.file.pr.app.export.residentialtax.InhabitantTaxChecklistReportBService;
 import nts.uk.file.pr.app.export.residentialtax.ResidentialTaxQuery;
 import nts.uk.file.pr.app.export.residentialtax.ResidentialTaxReportService;
 
@@ -16,11 +18,22 @@ public class QPP011WebService extends WebService {
 
 	@Inject
 	ResidentialTaxReportService reportService;
+	
+	@Inject
+	InhabitantTaxChecklistReportBService reportServiceB;
 
 	@POST
 	@Path("saveAsPdf")
 	public ExportServiceResult exportDataToPdf(ResidentialTaxQuery query) {
 		return reportService.start(query);
 	}
+	
+	@POST
+	@Path("saveAsPdfB")
+	public ExportServiceResult exportDataToPdf(InhabitantTaxChecklistQuery query) {
+		return reportServiceB.start(query);
+	}
+	
+	
 
 }

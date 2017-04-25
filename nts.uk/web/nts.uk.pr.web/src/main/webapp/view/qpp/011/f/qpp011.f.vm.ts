@@ -220,6 +220,22 @@ module qpp011.f {
         closeDialog() {
             nts.uk.ui.windows.close();
         }
+
+        exportPdf(): void {
+            var self = this;
+            var command = {
+                residentTaxCodeList: self.F_LST_001_selectedValue(),
+                companyLogin: null,
+                yearMonth: 201612,
+                processingYearMonth: 201703
+            };
+
+            service.saveAsPdf(command).done(function() {
+                //
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.message);
+            });
+        }
     }
     export class GridItemModel_F_LST_001 {
         code: string;

@@ -12,8 +12,8 @@ var nts;
                     (function (a) {
                         var viewmodel;
                         (function (viewmodel) {
-                            var ScreenModel = (function () {
-                                function ScreenModel() {
+                            class ScreenModel {
+                                constructor() {
                                     this.isUsuallyAMonth = ko.observable(true);
                                     this.isPreliminaryMonth = ko.observable(false);
                                     this.startYearMonth = ko.observable('2016/12');
@@ -55,15 +55,21 @@ var nts;
                                     ]);
                                     self.selectedHourMinuteOutputClassification = ko.observable('0');
                                 }
-                                ScreenModel.prototype.start = function () {
+                                /**
+                                 * Start srceen.
+                                 */
+                                start() {
                                     var dfd = $.Deferred();
                                     var self = this;
                                     $.when(self.loadAllOutputSetting()).done(function () {
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
-                                };
-                                ScreenModel.prototype.loadAllOutputSetting = function () {
+                                }
+                                /**
+                                 * Load all OutputSetting.
+                                 */
+                                loadAllOutputSetting() {
                                     var dfd = $.Deferred();
                                     var self = this;
                                     a.service.findAllSalaryOutputSetting().done(function (data) {
@@ -74,41 +80,61 @@ var nts;
                                         dfd.reject();
                                     });
                                     return dfd.promise();
-                                };
-                                ScreenModel.prototype.openPrintSettingDialog = function () {
+                                }
+                                /**
+                                 * Open PrintSetting dialog
+                                 */
+                                openPrintSettingDialog() {
                                     nts.uk.ui.windows.sub.modal("/view/qpp/007/b/index.xhtml", { title: "印刷設定", dialogClass: 'no-close' });
-                                };
-                                ScreenModel.prototype.openSalaryOuputSettingDialog = function () {
+                                }
+                                /**
+                                 * Open SalaryOuputSetting dialog
+                                 */
+                                openSalaryOuputSettingDialog() {
                                     var self = this;
+                                    // Set parent value
                                     nts.uk.ui.windows.setShared("selectedCode", self.selectedOutputSetting());
                                     nts.uk.ui.windows.setShared("outputSettings", self.outputSettings());
-                                    nts.uk.ui.windows.sub.modal("/view/qpp/007/c/index.xhtml", { title: "出力項目の設定", dialogClass: 'no-close' }).onClosed(function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qpp/007/c/index.xhtml", { title: "出力項目の設定", dialogClass: 'no-close' }).onClosed(() => {
                                         if (nts.uk.ui.windows.getShared('isSomethingChanged')) {
+                                            // Reload output setting list.
                                             self.loadAllOutputSetting();
                                         }
                                     });
-                                };
-                                ScreenModel.prototype.printSelectedEmployee = function () {
-                                    var self = this;
+                                }
+                                /**
+                                 * Print selected Employee.
+                                 */
+                                printSelectedEmployee() {
+                                    let self = this;
+                                    // Validate
                                     self.validate();
                                     if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                                         return;
                                     }
-                                    var command = self.toJsObject();
+                                    let command = self.toJsObject();
                                     a.service.saveAsPdf(command)
                                         .fail(function (res) {
+                                        //TODO ...
                                     });
-                                };
-                                ScreenModel.prototype.outputText = function () {
-                                    var self = this;
+                                }
+                                /**
+                                 * Output text.
+                                 */
+                                outputText() {
+                                    let self = this;
+                                    // Validate
                                     self.validate();
                                     if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                                         return;
                                     }
-                                };
-                                ScreenModel.prototype.toJsObject = function () {
-                                    var self = this;
-                                    var command = {};
+                                }
+                                /**
+                                 * Collect data from model then convert to JsObject.
+                                 */
+                                toJsObject() {
+                                    let self = this;
+                                    let command = {};
                                     command.outputFormatType = self.selectedOutputFormat();
                                     command.outputSettingCode = self.selectedOutputSetting();
                                     command.isVerticalLine = self.isVerticalLine();
@@ -119,27 +145,34 @@ var nts;
                                         command.hierarchy = self.selectedHierachy();
                                     }
                                     return command;
-                                };
-                                ScreenModel.prototype.clearErrors = function () {
+                                }
+                                /**
+                                * Clear all input errors.
+                                */
+                                clearErrors() {
                                     if (nts.uk.ui._viewModel) {
                                         $('#start-ym').ntsError('clear');
                                         $('#end-ym').ntsError('clear');
                                     }
-                                };
-                                ScreenModel.prototype.validate = function () {
+                                }
+                                /**
+                                * Validate all inputs.
+                                */
+                                validate() {
                                     $('#start-ym').ntsEditor('validate');
                                     $('#end-ym').ntsEditor('validate');
-                                };
-                                return ScreenModel;
-                            }());
+                                }
+                            }
                             viewmodel.ScreenModel = ScreenModel;
-                            var SelectionModel = (function () {
-                                function SelectionModel(code, name) {
+                            /**
+                             *  Class SelectionModel.
+                             */
+                            class SelectionModel {
+                                constructor(code, name) {
                                     this.code = code;
                                     this.name = name;
                                 }
-                                return SelectionModel;
-                            }());
+                            }
                             viewmodel.SelectionModel = SelectionModel;
                         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
                     })(a = qpp007.a || (qpp007.a = {}));
@@ -148,4 +181,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qpp007.a.vm.js.map

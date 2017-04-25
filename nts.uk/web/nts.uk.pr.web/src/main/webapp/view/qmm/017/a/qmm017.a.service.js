@@ -15,7 +15,8 @@ var nts;
                 getListItemMaster: "pr/core/item/findall/category/",
                 findOtherFormulas: "pr/formula/formulaMaster/findOtherFormulas/",
                 getListWageTable: "pr/proto/wagetable/findbymonth/",
-                getFormulaEasyDetail: "pr/formula/formulaMaster/getFormulaEasyDetail/"
+                getFormulaEasyDetail: "pr/formula/formulaMaster/getFormulaEasyDetail/",
+                getListSystemVariable: "pr/formula/systemvariable/getAll"
             };
             function getAllFormula() {
                 var dfd = $.Deferred();
@@ -145,64 +146,62 @@ var nts;
                 return dfd.promise();
             }
             service.getListWageTable = getListWageTable;
+            function getListSystemVariable() {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("pr", paths.getListSystemVariable)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getListSystemVariable = getListSystemVariable;
         })(service = qmm017.service || (qmm017.service = {}));
         var model;
         (function (model) {
-            var FormulaDto = (function () {
-                function FormulaDto() {
+            class FormulaDto {
+                constructor() {
                 }
-                return FormulaDto;
-            }());
+            }
             model.FormulaDto = FormulaDto;
-            var FormulaHistoryDto = (function () {
-                function FormulaHistoryDto() {
+            class FormulaHistoryDto {
+                constructor() {
                 }
-                return FormulaHistoryDto;
-            }());
+            }
             model.FormulaHistoryDto = FormulaHistoryDto;
-            var FormulaDetailDto = (function () {
-                function FormulaDetailDto() {
-                }
-                return FormulaDetailDto;
-            }());
+            class FormulaDetailDto {
+            }
             model.FormulaDetailDto = FormulaDetailDto;
-            var FormulaEasyDto = (function () {
-                function FormulaEasyDto() {
+            class FormulaEasyDto {
+                constructor() {
                 }
-                return FormulaEasyDto;
-            }());
+            }
             model.FormulaEasyDto = FormulaEasyDto;
-            var FormulaEasyDetailDto = (function () {
-                function FormulaEasyDetailDto() {
+            class FormulaEasyDetailDto {
+                constructor() {
                 }
-                return FormulaEasyDetailDto;
-            }());
+            }
             model.FormulaEasyDetailDto = FormulaEasyDetailDto;
-            var CompanyUnitPriceDto = (function () {
-                function CompanyUnitPriceDto() {
-                }
-                return CompanyUnitPriceDto;
-            }());
+            class CompanyUnitPriceDto {
+            }
             model.CompanyUnitPriceDto = CompanyUnitPriceDto;
-            var PersonalUnitPriceDto = (function () {
-                function PersonalUnitPriceDto() {
-                }
-                return PersonalUnitPriceDto;
-            }());
+            class PersonalUnitPriceDto {
+            }
             model.PersonalUnitPriceDto = PersonalUnitPriceDto;
-            var ItemMasterDto = (function () {
-                function ItemMasterDto() {
-                }
-                return ItemMasterDto;
-            }());
+            class ItemMasterDto {
+            }
             model.ItemMasterDto = ItemMasterDto;
-            var WageTableDto = (function () {
-                function WageTableDto() {
-                }
-                return WageTableDto;
-            }());
+            class WageTableDto {
+            }
             model.WageTableDto = WageTableDto;
+            var SystemVariableDto = (function () {
+                function SystemVariableDto() {
+                }
+                return SystemVariableDto;
+            }());
+            model.SystemVariableDto = SystemVariableDto;
         })(model = qmm017.model || (qmm017.model = {}));
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm017.a.service.js.map

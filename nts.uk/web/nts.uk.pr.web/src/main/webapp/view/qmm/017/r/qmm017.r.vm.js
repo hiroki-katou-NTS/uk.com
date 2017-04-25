@@ -2,8 +2,8 @@ var nts;
 (function (nts) {
     var qmm017;
     (function (qmm017) {
-        var RScreen = (function () {
-            function RScreen(root) {
+        class RScreen {
+            constructor(root) {
                 var self = this;
                 self.startYm = ko.observable(root.viewModel017b().startYearMonth());
                 root.viewModel017b().startYearMonth.subscribe(function (yMChange) {
@@ -39,9 +39,7 @@ var nts;
                     }
                 });
             }
-            return RScreen;
-        }());
+        }
         qmm017.RScreen = RScreen;
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm017.r.vm.js.map

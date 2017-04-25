@@ -12,21 +12,24 @@ var nts;
                     (function (a) {
                         var viewmodel;
                         (function (viewmodel) {
-                            var ScreenModel = (function () {
-                                function ScreenModel() {
-                                    var self = this;
+                            class ScreenModel {
+                                constructor() {
+                                    let self = this;
                                     self.yearMonth = ko.observable(null);
                                     self.isEqual = ko.observable(true);
                                     self.isDeficient = ko.observable(true);
                                     self.isRedundant = ko.observable(true);
                                     self.insuranceOffice = ko.observable(new InsuranceOfficeModel());
-                                    self.japanYearmonth = ko.computed(function () {
+                                    self.japanYearmonth = ko.computed(() => {
                                         return nts.uk.time.yearmonthInJapanEmpire(self.yearMonth()).toString();
                                     });
                                 }
-                                ScreenModel.prototype.startPage = function () {
-                                    var self = this;
-                                    var dfd = $.Deferred();
+                                /**
+                                 * start page
+                                 */
+                                startPage() {
+                                    let self = this;
+                                    let dfd = $.Deferred();
                                     self.yearMonth(self.getCurrentYearMonth());
                                     $.when(self.insuranceOffice().findAllInsuranceOffice()).done(function () {
                                         if (self.insuranceOffice().items().length > 0) {
@@ -35,40 +38,54 @@ var nts;
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
-                                };
-                                ScreenModel.prototype.exportData = function () {
-                                    var self = this;
-                                    var dfd = $.Deferred();
+                                }
+                                /**
+                                 *  Export Data
+                                 */
+                                exportData() {
+                                    let self = this;
+                                    let dfd = $.Deferred();
                                     self.clearAllError();
                                     if (self.validate()) {
                                         return;
                                     }
-                                    var command = self.toJSObjet();
+                                    let command = self.toJSObjet();
                                     a.service.saveAsPdf(command).done(function () {
                                         dfd.resolve();
                                     }).fail(function (res) {
                                         nts.uk.ui.dialog.alert(res.message);
                                     });
-                                };
-                                ScreenModel.prototype.toJSObjet = function () {
-                                    var self = this;
-                                    var command = {};
+                                }
+                                /**
+                                 * to JSon Object
+                                 */
+                                toJSObjet() {
+                                    let self = this;
+                                    let command = {};
                                     command.yearMonth = self.yearMonth();
                                     command.isEqual = self.isEqual();
                                     command.isDeficient = self.isDeficient();
                                     command.isRedundant = self.isRedundant();
                                     command.insuranceOffices = self.insuranceOffice().getSelectedOffice();
                                     return command;
-                                };
-                                ScreenModel.prototype.showDialogChecklistPrintSetting = function () {
+                                }
+                                /**
+                                 *  Show dialog ChecklistPrintSetting
+                                 */
+                                showDialogChecklistPrintSetting() {
                                     nts.uk.ui.windows.setShared("socialInsuranceFeeChecklist", null);
                                     nts.uk.ui.windows.sub.modal("/view/qpp/018/c/index.xhtml", { title: "印刷の設定" });
-                                };
-                                ScreenModel.prototype.validate = function () {
-                                    var self = this;
-                                    var isError = false;
+                                }
+                                /**
+                                 * validate
+                                 */
+                                validate() {
+                                    let self = this;
+                                    let isError = false;
+                                    // Validate year month
                                     $('#date-picker').ntsEditor('validate');
                                     if (!self.isEqual() && !self.isDeficient() && !self.isRedundant()) {
+                                        // message ER001
                                         $('.extract-condition-error').ntsError('set', '出力条件が入力されていません。');
                                         isError = true;
                                     }
@@ -77,25 +94,30 @@ var nts;
                                         isError = true;
                                     }
                                     return isError || !nts.uk.ui._viewModel.errors.isEmpty();
-                                };
-                                ScreenModel.prototype.clearAllError = function () {
+                                }
+                                clearAllError() {
                                     $('#date-picker').ntsError('clear');
                                     $('.grid-error').ntsError('clear');
                                     $('.extract-condition-error').ntsError('clear');
-                                };
-                                ScreenModel.prototype.getCurrentYearMonth = function () {
-                                    var today = new Date();
-                                    var month = today.getMonth() + 1;
-                                    var year = today.getFullYear();
-                                    var yearMonth = year * 100 + month;
+                                }
+                                /**
+                                 * get year and month current.
+                                 */
+                                getCurrentYearMonth() {
+                                    let today = new Date();
+                                    let month = today.getMonth() + 1; //January is 0!
+                                    let year = today.getFullYear();
+                                    let yearMonth = year * 100 + month;
                                     return yearMonth;
-                                };
-                                return ScreenModel;
-                            }());
+                                }
+                            }
                             viewmodel.ScreenModel = ScreenModel;
-                            var InsuranceOfficeModel = (function () {
-                                function InsuranceOfficeModel() {
-                                    var self = this;
+                            /**
+                              * Class InsuranceOfficeModel
+                              */
+                            class InsuranceOfficeModel {
+                                constructor() {
+                                    let self = this;
                                     self.items = ko.observableArray([]);
                                     self.selectedOfficeCodeList = ko.observableArray([]);
                                     self.columns = ko.observableArray([
@@ -103,9 +125,12 @@ var nts;
                                         { headerText: '名称 ', key: 'name', width: 200 }
                                     ]);
                                 }
-                                InsuranceOfficeModel.prototype.findAllInsuranceOffice = function () {
-                                    var self = this;
-                                    var dfd = $.Deferred();
+                                /**
+                                 * find list insurance office.
+                                 */
+                                findAllInsuranceOffice() {
+                                    let self = this;
+                                    let dfd = $.Deferred();
                                     a.service.findAllInsuranceOffice().done(function (res) {
                                         self.items(res);
                                         dfd.resolve();
@@ -113,36 +138,35 @@ var nts;
                                         nts.uk.ui.dialog.alert(res.message);
                                     });
                                     return dfd.promise();
-                                };
-                                InsuranceOfficeModel.prototype.selectFirst = function () {
-                                    var self = this;
-                                    var code = self.items()[0].code;
+                                }
+                                selectFirst() {
+                                    let self = this;
+                                    let code = self.items()[0].code;
                                     self.selectedOfficeCodeList().push(code);
-                                };
-                                InsuranceOfficeModel.prototype.getSelectedOffice = function () {
-                                    var self = this;
-                                    var offices = [];
-                                    for (var i in self.selectedOfficeCodeList()) {
-                                        var code = self.selectedOfficeCodeList()[i];
-                                        var office = self.getOfficeByCode(code);
+                                }
+                                getSelectedOffice() {
+                                    let self = this;
+                                    let offices = [];
+                                    for (let i in self.selectedOfficeCodeList()) {
+                                        let code = self.selectedOfficeCodeList()[i];
+                                        let office = self.getOfficeByCode(code);
                                         if (office) {
                                             offices.push(office);
                                         }
                                     }
                                     return offices;
-                                };
-                                InsuranceOfficeModel.prototype.getOfficeByCode = function (code) {
-                                    var self = this;
-                                    for (var i in self.items()) {
-                                        var office = self.items()[i];
+                                }
+                                getOfficeByCode(code) {
+                                    let self = this;
+                                    for (let i in self.items()) {
+                                        let office = self.items()[i];
                                         if (office.code == code) {
                                             return office;
                                         }
                                     }
                                     return null;
-                                };
-                                return InsuranceOfficeModel;
-                            }());
+                                }
+                            }
                             viewmodel.InsuranceOfficeModel = InsuranceOfficeModel;
                         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
                     })(a = qpp018.a || (qpp018.a = {}));
@@ -151,4 +175,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qpp018.a.viewmodel.js.map

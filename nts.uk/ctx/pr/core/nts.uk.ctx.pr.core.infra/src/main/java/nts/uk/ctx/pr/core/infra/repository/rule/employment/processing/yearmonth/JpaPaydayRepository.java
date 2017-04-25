@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.infra.repository.rule.employment.processing.yearmonth;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -41,12 +42,17 @@ public class JpaPaydayRepository extends JpaRepository implements PaydayReposito
 			+ " AND c.qpdmtPaydayPK.payBonusAtr = :payBonusAtr AND c.qpdmtPaydayPK.sparePayAtr = :sparePayAtr";
 
 	@Override
-	public List<Payday> select1_3(String companyCode, int processingNo, int payBonusAtr, int processingYm,
+	public BigDecimal select1(String companyCode, int processingNo, int payBonusAtr, int processingYm,
 			int sparePayAtr) {
+		return select3(companyCode, processingNo, payBonusAtr, processingYm, sparePayAtr).getNeededWorkDay().v();
+	}
+
+	@Override
+	public Payday select3(String companyCode, int processingNo, int payBonusAtr, int processingYm, int sparePayAtr) {
 		return this.queryProxy().query(SELECT_ALL_1_3, QpdmtPayday.class).setParameter("companyCode", companyCode)
 				.setParameter("processingNo", processingNo).setParameter("payBonusAtr", payBonusAtr)
 				.setParameter("processingYm", processingYm).setParameter("sparePayAtr", sparePayAtr)
-				.getList(c -> toDomain(c));
+				.getList(c -> toDomain(c)).get(0);
 	}
 
 	@Override
@@ -102,6 +108,11 @@ public class JpaPaydayRepository extends JpaRepository implements PaydayReposito
 	@Override
 	public void insert1(Payday domain) {
 		this.commandProxy().insert(toEntity(domain));
+	}
+
+	@Override
+	public void update1(Payday domain) {
+		this.commandProxy().update(toEntity(domain));
 	}
 
 	private Payday toDomain(QpdmtPayday entity) {

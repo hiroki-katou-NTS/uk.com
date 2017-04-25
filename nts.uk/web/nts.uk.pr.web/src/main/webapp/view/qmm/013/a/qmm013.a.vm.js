@@ -4,8 +4,8 @@ var qmm013;
     (function (a) {
         var viewmodel;
         (function (viewmodel) {
-            var ScreenModel = (function () {
-                function ScreenModel() {
+            class ScreenModel {
+                constructor() {
                     this.confirmDirty = false;
                     var self = this;
                     self.items = ko.observableArray([]);
@@ -47,10 +47,12 @@ var qmm013;
                     ]);
                     self.currentCode.subscribe(function (newCode) {
                         if (!self.checkDirty()) {
+                            //in case first getData, no error so not jump clearError()
                             if (self.isFirstGetData()) {
                                 self.clearError();
                             }
                             self.isFirstGetData(true);
+                            //don't allow checkDirty
                             if (self.notCheckDirty()) {
                                 self.selectedUnitPrice(newCode);
                                 self.notCheckDirty(false);
@@ -61,11 +63,13 @@ var qmm013;
                             self.isEnableDelete(true);
                         }
                         else {
+                            //don't allow checkDirty
                             if (self.notCheckDirty()) {
                                 self.selectedUnitPrice(newCode);
                                 self.notCheckDirty(false);
                                 return;
                             }
+                            //don't loop subscribe function
                             if (self.confirmDirty) {
                                 self.confirmDirty = false;
                                 self.isEnableDelete(true);
@@ -84,12 +88,16 @@ var qmm013;
                         }
                     });
                     self.displayAll.subscribe(function (newValue) {
+                        // don't loop subscribe function
+                        // in case change data, change state button SEL_001 and choise 'NO'
                         if (self.notLoop()) {
                             self.notLoop(false);
                             return;
                         }
                         if (!self.checkDirty()) {
                             self.getPersonalUnitPriceList().done(function () {
+                                //in case no dirty
+                                //if row is chose has column '廃止' is 'X', select first row in new list
                                 if (!self.currentItem().displaySet() && self.currentCode() != "") {
                                     var tmp = _.find(self.listItems(), function (x) {
                                         return x.personalUnitPriceCode === self.currentCode();
@@ -106,16 +114,20 @@ var qmm013;
                         else {
                             nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。")
                                 .ifYes(function () {
+                                //self.notCheckDirty(true);
                                 self.getPersonalUnitPriceList().done(function () {
+                                    //in case dirty
                                     if (self.currentCode() == "") {
                                         self.notCheckDirty(true);
                                         self.selectedFirstUnitPrice();
                                     }
+                                    //if row is chose has column '廃止' is 'X', select first row in new list
                                     if (self.currentItem().displaySet()) {
                                         self.notCheckDirty(true);
                                         self.selectedFirstUnitPrice();
                                     }
                                     else {
+                                        //if row is chose has column '廃止' isn't 'X', keep the same position in new list
                                         var tmp = _.find(self.listItems(), function (x) {
                                             return x.personalUnitPriceCode === self.currentCode();
                                         });
@@ -131,11 +143,14 @@ var qmm013;
                             });
                         }
                     });
+                    /**
+                     * paymentSettingType is number, convert to boolean type
+                     */
                     self.isCompany = ko.computed(function () {
                         return !(self.currentItem().paymentSettingType() == 0);
                     });
                 }
-                ScreenModel.prototype.startPage = function () {
+                startPage() {
                     var self = this;
                     var dfd = $.Deferred();
                     self.getPersonalUnitPriceList().done(function () {
@@ -143,8 +158,11 @@ var qmm013;
                         dfd.resolve();
                     });
                     return dfd.promise();
-                };
-                ScreenModel.prototype.getPersonalUnitPriceList = function () {
+                }
+                /**
+                 * get data from data base to screen
+                 */
+                getPersonalUnitPriceList() {
                     var self = this;
                     var dfd = $.Deferred();
                     a.service.getPersonalUnitPriceList(self.displayAll()).done(function (data) {
@@ -159,8 +177,8 @@ var qmm013;
                         dfd.reject(res);
                     });
                     return dfd.promise();
-                };
-                ScreenModel.prototype.selectedUnitPrice = function (code) {
+                }
+                selectedUnitPrice(code) {
                     var self = this;
                     if (!code) {
                         return;
@@ -171,12 +189,12 @@ var qmm013;
                     }).fail(function (res) {
                         alert(res.message);
                     });
-                };
-                ScreenModel.prototype.selectedFirst = function (item) {
+                }
+                selectedFirst(item) {
                     var self = this;
                     return new PersonalUnitPrice(item.personalUnitPriceCode, item.personalUnitPriceName, item.personalUnitPriceShortName, item.displaySet ? false : true, item.uniteCode, item.paymentSettingType, item.fixPaymentAtr, item.fixPaymentMonthly, item.fixPaymentDayMonth, item.fixPaymentDaily, item.fixPaymentHoursly, item.unitPriceAtr, item.memo);
-                };
-                ScreenModel.prototype.checkDirty = function () {
+                }
+                checkDirty() {
                     var self = this;
                     if (self.dirty.isDirty()) {
                         return true;
@@ -184,9 +202,12 @@ var qmm013;
                     else {
                         return false;
                     }
-                };
+                }
                 ;
-                ScreenModel.prototype.btn_001 = function () {
+                /**
+                 * 新規(Clear form)
+                 */
+                btn_001() {
                     var self = this;
                     if (self.isFirstGetData()) {
                         self.clearError();
@@ -208,8 +229,8 @@ var qmm013;
                         })
                             .ifCancel(function () { });
                     }
-                };
-                ScreenModel.prototype.closeDialog = function () {
+                }
+                closeDialog() {
                     var self = this;
                     if (!self.checkDirty()) {
                         nts.uk.ui.windows.close();
@@ -221,9 +242,14 @@ var qmm013;
                         })
                             .ifCancel(function () { });
                     }
-                };
-                ScreenModel.prototype.btn_002 = function () {
+                }
+                /**
+                 * 登録(Add button)
+                 */
+                btn_002() {
                     var self = this;
+                    //self.confirmDirty = true;
+                    //if input 0-9, auto insert '0' before
                     if (self.currentItem().personalUnitPriceCode() != null && self.currentItem().personalUnitPriceCode().length == 1) {
                         self.currentItem().personalUnitPriceCode("0" + self.currentItem().personalUnitPriceCode());
                     }
@@ -244,6 +270,7 @@ var qmm013;
                     };
                     a.service.addPersonalUnitPrice(self.isCreated(), PersonalUnitPrice).done(function () {
                         self.getPersonalUnitPriceList();
+                        //define update mode or insert mode
                         if (self.currentItem().personalUnitPriceCode() != self.currentCode()) {
                             self.confirmDirty = true;
                         }
@@ -266,8 +293,11 @@ var qmm013;
                             nts.uk.ui.dialog.alert(self.messages()[4].message);
                         }
                     });
-                };
-                ScreenModel.prototype.btn_004 = function () {
+                }
+                /**
+                 * 削除(Delete button)
+                 */
+                btn_004() {
                     var self = this;
                     nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
                         var data = {
@@ -277,6 +307,7 @@ var qmm013;
                             return x.code === self.currentCode();
                         }));
                         a.service.removePersonalUnitPrice(data).done(function () {
+                            // reload list   
                             self.getPersonalUnitPriceList().done(function () {
                                 self.notCheckDirty(true);
                                 if (self.items().length > self.indexRow()) {
@@ -293,8 +324,8 @@ var qmm013;
                             alert(error.message);
                         });
                     }).ifCancel(function () { });
-                };
-                ScreenModel.prototype.selectedFirstUnitPrice = function () {
+                }
+                selectedFirstUnitPrice() {
                     var self = this;
                     if (self.items().length > 0) {
                         self.currentCode(self.items()[0].code);
@@ -303,34 +334,31 @@ var qmm013;
                     else {
                         self.btn_001();
                     }
-                };
-                ScreenModel.prototype.clearError = function () {
+                }
+                clearError() {
                     $('#INP_002').ntsError('clear');
                     $('#INP_003').ntsError('clear');
                     $('#INP_004').ntsError('clear');
                     $('#INP_005').ntsError('clear');
-                };
-                return ScreenModel;
-            }());
+                }
+            }
             viewmodel.ScreenModel = ScreenModel;
-            var ItemModel = (function () {
-                function ItemModel(code, name, abolition) {
+            class ItemModel {
+                constructor(code, name, abolition) {
                     this.code = code;
                     this.name = name;
                     this.abolition = abolition;
                 }
-                return ItemModel;
-            }());
-            var BoxModel = (function () {
-                function BoxModel(id, name) {
+            }
+            class BoxModel {
+                constructor(id, name) {
                     var self = this;
                     self.id = id;
                     self.name = name;
                 }
-                return BoxModel;
-            }());
-            var PersonalUnitPrice = (function () {
-                function PersonalUnitPrice(personalUnitPriceCode, personalUnitPriceName, personalUnitPriceShortName, displaySet, uniteCode, paymentSettingType, fixPaymentAtr, fixPaymentMonthly, fixPaymentDayMonth, fixPaymentDaily, fixPaymentHoursly, unitPriceAtr, memo) {
+            }
+            class PersonalUnitPrice {
+                constructor(personalUnitPriceCode, personalUnitPriceName, personalUnitPriceShortName, displaySet, uniteCode, paymentSettingType, fixPaymentAtr, fixPaymentMonthly, fixPaymentDayMonth, fixPaymentDaily, fixPaymentHoursly, unitPriceAtr, memo) {
                     this.personalUnitPriceCode = ko.observable(personalUnitPriceCode);
                     this.personalUnitPriceName = ko.observable(personalUnitPriceName);
                     this.personalUnitPriceShortName = ko.observable(personalUnitPriceShortName);
@@ -345,9 +373,7 @@ var qmm013;
                     this.unitPriceAtr = ko.observable(unitPriceAtr);
                     this.memo = ko.observable(memo);
                 }
-                return PersonalUnitPrice;
-            }());
+            }
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm013.a || (qmm013.a = {}));
 })(qmm013 || (qmm013 = {}));
-//# sourceMappingURL=qmm013.a.vm.js.map

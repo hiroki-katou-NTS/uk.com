@@ -1,5 +1,6 @@
 package nts.uk.file.pr.app.export.residentialtax;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,9 @@ import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.PayBonusAtr;
-import nts.uk.file.pr.app.export.residentialtax.data.InhabitantTaxChecklistRpDataB;
+import nts.uk.file.pr.app.export.residentialtax.data.InhabitantTaxChecklistBReport;
+import nts.uk.file.pr.app.export.residentialtax.data.InhabitantTaxChecklistBRpData;
+import nts.uk.file.pr.app.export.residentialtax.data.InhabitantTaxChecklistBRpHeader;
 import nts.uk.file.pr.app.export.residentialtax.data.PaymentDetailDto;
 import nts.uk.file.pr.app.export.residentialtax.data.PersonResitaxDto;
 import nts.uk.file.pr.app.export.residentialtax.data.ResidentialTaxDto;
@@ -20,7 +23,7 @@ import nts.uk.file.pr.app.export.residentialtax.data.ResidentialTaxDto;
 @Stateless
 public class InhabitantTaxChecklistReportBService extends ExportService<InhabitantTaxChecklistQuery> {
 	@Inject
-	private ResidentialTaxGenerator generate;
+	private InhabitantTaxChecklistBGenerator generate;
 	@Inject
 	private ResidentialTaxReportRepository residentialTaxRepo;
 
@@ -44,8 +47,8 @@ public class InhabitantTaxChecklistReportBService extends ExportService<Inhabita
 		Map<String, List<PersonResitaxDto>> personResidentTaxListMap = personResidentTaxList.stream()
 				.collect(Collectors.groupingBy(PersonResitaxDto::getResidenceCode, Collectors.toList()));
 
-		for (PersonResitaxDto residentialTax : personResidentTaxList) {
-			List<PersonResitaxDto> personResitaxList = personResidentTaxListMap.get(residentialTax.getResidenceCode());
+		for (PersonResitaxDto personResidentTax : personResidentTaxList) {
+			List<PersonResitaxDto> personResitaxList = personResidentTaxListMap.get(personResidentTax.getResidenceCode());
 			List<String> personIdList = personResitaxList.stream().map(x -> x.getPersonID())
 					.collect(Collectors.toList());
 			
@@ -56,13 +59,15 @@ public class InhabitantTaxChecklistReportBService extends ExportService<Inhabita
 	                 .mapToDouble(x->x.getValue().doubleValue())
 	                 .sum();
 			
-			totalPaymentAmount.put(residentialTax.getResidenceCode(), totalValue);
-			totalNumberPeople.put(residentialTax.getResidenceCode(), personResitaxList.size());
+			totalPaymentAmount.put(personResidentTax.getResidenceCode(), totalValue);
+			totalNumberPeople.put(personResidentTax.getResidenceCode(), personResitaxList.size());
 		}
+		
+		List<InhabitantTaxChecklistBRpData> reportDataList = new ArrayList<InhabitantTaxChecklistBRpData>();
 		
 		for (ResidentialTaxDto residentialTax : residentTaxList) {
 			
-			InhabitantTaxChecklistRpDataB reportData = new InhabitantTaxChecklistRpDataB();
+			InhabitantTaxChecklistBRpData reportData = new InhabitantTaxChecklistBRpData();
 			
 			//DBD_001 residenceTaxCode
 			 reportData.setResidenceTaxCode(residentialTax.getResidenceTaxCode());
@@ -73,12 +78,39 @@ public class InhabitantTaxChecklistReportBService extends ExportService<Inhabita
 			//DBD_003  numberPeople
 			 reportData.setNumberPeople(totalNumberPeople.get(residentialTax.getResidenceTaxCode()).toString());
 			//DBD_004 value
-			 reportData.setValue(totalPaymentAmount.get(residentialTax.getResidenceTaxCode()).toString());
-			//CTR_001  totalNumberPeople
-             reportData.setTotalNumberPeople("");
-			//CTR_002  totalPaymentAmount
-			 reportData.setTotalPaymentAmount("");
+			 reportData.setValue(totalPaymentAmount.get(residentialTax.getResidenceTaxCode()));
+			 reportDataList.add(reportData);
 		}
+		
+		InhabitantTaxChecklistBRpData sumReportData = new InhabitantTaxChecklistBRpData();
+		
+		Double sumPaymentAmount = 0d;
+		for (Double d : totalPaymentAmount.values()) {
+			sumPaymentAmount += d;
+		}
+		
+		Integer sumNumberPeople = 0;
+		for (Integer i : totalNumberPeople.values()) {
+			sumNumberPeople += i;
+		}
+		
+		sumReportData.setResidenceTaxCode("");
+		sumReportData.setResiTaxAutonomy("総合計");
+		sumReportData.setNumberPeople(sumNumberPeople.toString());
+		sumReportData.setValue(sumPaymentAmount);
+		
+		reportDataList.add(sumReportData);
+		
+		InhabitantTaxChecklistBRpHeader header = new InhabitantTaxChecklistBRpHeader();		
+		header.setCompanyName("日通システム株式会社");
+		header.setStartResiTaxAutonomy(reportDataList.get(0).getResidenceTaxCode()+" "+reportDataList.get(0).getResiTaxAutonomy());
+		header.setLateResiTaxAutonomy(reportDataList.get(0).getResidenceTaxCode()+" "+reportDataList.get(0).getResiTaxAutonomy());
+		header.setDate("2017/04/24");
+		
+		InhabitantTaxChecklistBReport dataReportB = new InhabitantTaxChecklistBReport();
+		dataReportB.setData(reportDataList);
+		dataReportB.setHeader(header);
+		this.generate.generate(context.getGeneratorContext(), dataReportB);
 
 	}
 

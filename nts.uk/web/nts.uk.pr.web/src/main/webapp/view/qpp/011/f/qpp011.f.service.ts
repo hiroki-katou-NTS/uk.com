@@ -2,6 +2,7 @@ module qpp011.f.service {
     var paths = {
         findAllResidential: "pr/core/residential/findallresidential",
         getlistLocation: "pr/core/residential/getlistLocation",
+        saveAsPdf: "screen/pr/QPP011/saveAsPdfB"
     }
 
     /**
@@ -29,5 +30,9 @@ module qpp011.f.service {
                 dfd.reject(res);
             })
         return dfd.promise();
+    }
+    
+     export function saveAsPdf(command: any): JQueryPromise<any> {
+        return nts.uk.request.exportFile(paths.saveAsPdf, command);
     }
 }

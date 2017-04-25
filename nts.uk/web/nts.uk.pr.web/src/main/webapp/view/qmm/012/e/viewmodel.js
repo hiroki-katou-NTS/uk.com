@@ -4,12 +4,17 @@ var qmm012;
     (function (e) {
         var viewmodel;
         (function (viewmodel) {
-            var ScreenModel = (function () {
-                function ScreenModel() {
+            class ScreenModel {
+                constructor() {
+                    //E_004
                     this.checked_E_004 = ko.observable(false);
+                    //E_005
                     this.checked_E_005 = ko.observable(false);
+                    //E_006
                     this.checked_E_006 = ko.observable(false);
+                    //E_007
                     this.checked_E_007 = ko.observable(false);
+                    //E_008
                     this.checked_E_008 = ko.observable(false);
                     this.CurrentItemMaster = ko.observable(null);
                     this.CurrentItemAttend = ko.observable(null);
@@ -23,7 +28,9 @@ var qmm012;
                     this.CurrentMemo = ko.observable("");
                     this.CurrentZeroDisplaySet = ko.observable(1);
                     this.CurrentItemDisplayAtr = ko.observable(1);
-                    var self = this;
+                    let self = this;
+                    //E_001 To 003
+                    //E_001To003
                     self.roundingRules_E_001 = ko.observableArray([
                         { code: 0, name: '時間' },
                         { code: 1, name: '回数' }
@@ -37,6 +44,7 @@ var qmm012;
                         { code: 0, name: 'ゼロを表示しない' }
                     ]);
                     self.enable = ko.observable(false);
+                    //E_001
                     self.currencyeditor_E_001 = {
                         value: self.CurrentErrRangeHigh,
                         constraint: 'ErrRangeHigh',
@@ -46,6 +54,7 @@ var qmm012;
                             currencyposition: 'right'
                         }))
                     };
+                    //E_002
                     self.currencyeditor_E_002 = {
                         value: self.CurrentAlRangeHigh,
                         constraint: 'AlRangeHigh',
@@ -55,6 +64,7 @@ var qmm012;
                             currencyposition: 'right'
                         }))
                     };
+                    //E_003
                     self.currencyeditor_E_003 = {
                         value: self.CurrentErrRangeLow,
                         constraint: 'ErrRangeLow',
@@ -64,6 +74,7 @@ var qmm012;
                             currencyposition: 'right'
                         }))
                     };
+                    //E_004
                     self.currencyeditor_E_004 = {
                         value: self.CurrentAlRangeLow,
                         constraint: 'AlRangeLow',
@@ -78,6 +89,7 @@ var qmm012;
                             e.service.findItemAttend(ItemMaster.itemCode).done(function (ItemAttend) {
                                 self.CurrentItemAttend(ItemAttend);
                             }).fail(function (res) {
+                                // Alert message
                                 alert(res);
                             });
                         }
@@ -105,15 +117,14 @@ var qmm012;
                         self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
                     });
                 }
-                ScreenModel.prototype.getCurrentItemAttend = function () {
-                    var self = this;
-                    var itemAttend = new e.service.model.ItemAttend(self.CurrentAvePayAtr(), self.CurrentItemAtr(), self.checked_E_006() ? 1 : 0, self.CurrentErrRangeLow(), self.checked_E_005() ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_E_008() ? 1 : 0, self.CurrentAlRangeLow(), self.checked_E_007() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentWorkDaysScopeAtr(), self.CurrentMemo());
+                getCurrentItemAttend() {
+                    //return Item Attend customer input on form
+                    let self = this;
+                    let itemAttend = new e.service.model.ItemAttend(self.CurrentAvePayAtr(), self.CurrentItemAtr(), self.checked_E_006() ? 1 : 0, self.CurrentErrRangeLow(), self.checked_E_005() ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_E_008() ? 1 : 0, self.CurrentAlRangeLow(), self.checked_E_007() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentWorkDaysScopeAtr(), self.CurrentMemo());
                     return itemAttend;
-                };
-                return ScreenModel;
-            }());
+                }
+            }
             viewmodel.ScreenModel = ScreenModel;
         })(viewmodel = e.viewmodel || (e.viewmodel = {}));
     })(e = qmm012.e || (qmm012.e = {}));
 })(qmm012 || (qmm012 = {}));
-//# sourceMappingURL=viewmodel.js.map

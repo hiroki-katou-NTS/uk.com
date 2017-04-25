@@ -4,8 +4,8 @@ var qmm006;
     (function (b) {
         var viewmodel;
         (function (viewmodel) {
-            var ScreenModel = (function () {
-                function ScreenModel() {
+            class ScreenModel {
+                constructor() {
                     var self = this;
                     self.dataSource = ko.observableArray([]),
                         self.dataSource2 = ko.observableArray([]),
@@ -21,14 +21,17 @@ var qmm006;
                         self.selectedBank(self.getBank(codeChanged));
                     });
                 }
-                ScreenModel.prototype.getBank = function (codeNew) {
-                    var self = this;
-                    var bank = _.find(self.dataSource2(), function (item) {
+                /**
+                 * find data in Bank base-on treeCode
+                 */
+                getBank(codeNew) {
+                    let self = this;
+                    let bank = _.find(self.dataSource2(), function (item) {
                         return item.treeCode === codeNew;
                     });
                     return bank;
-                };
-                ScreenModel.prototype.startPage = function () {
+                }
+                startPage() {
                     var self = this;
                     var dfd = $.Deferred();
                     self.findBankAll().done(function () {
@@ -37,8 +40,11 @@ var qmm006;
                         dfd.reject(res);
                     });
                     return dfd.promise();
-                };
-                ScreenModel.prototype.findBankAll = function () {
+                }
+                /**
+                 * get data from database BANK, set to property dataSource
+                 */
+                findBankAll() {
                     var self = this;
                     var dfd = $.Deferred();
                     qmm006.b.service.findBankAll()
@@ -53,6 +59,7 @@ var qmm006;
                             });
                             self.dataSource(bankData);
                             self.dataSource2(nts.uk.util.flatArray(self.dataSource(), "childs"));
+                            //select first row child of first row parent
                             if (data[0].bankBranch != null) {
                                 self.singleSelectedCode(data[0].bankCode + data[0].bankBranch[0].bankBranchCode);
                             }
@@ -66,28 +73,36 @@ var qmm006;
                         dfd.resolve();
                     }).fail(function (res) { });
                     return dfd.promise();
-                };
-                ScreenModel.prototype.closeDialog = function () {
+                }
+                /**
+                 * forward data 'selectedBank' to screen A, close dialog
+                 */
+                closeDialog() {
                     nts.uk.ui.windows.setShared("selectedBank", null, true);
                     nts.uk.ui.windows.close();
-                };
-                ScreenModel.prototype.transferData = function () {
+                }
+                /**
+                 * forward data 'selectedBank' to screen A, close dialog
+                 */
+                transferData() {
                     var self = this;
+                    //define row selected
                     if (_.find(self.dataSource(), function (x) {
                         return x.treeCode === self.singleSelectedCode();
                     }) == undefined) {
+                        // select row child will transfer data to screen QMM006.a
                         nts.uk.ui.windows.setShared("selectedBank", self.selectedBank(), true);
                         nts.uk.ui.windows.close();
                     }
                     else {
+                        // select row parent will appear alert
                         nts.uk.ui.dialog.alert(self.messageList()[0].message);
                     }
-                };
-                return ScreenModel;
-            }());
+                }
+            }
             viewmodel.ScreenModel = ScreenModel;
-            var Bank = (function () {
-                function Bank(code, branchId, name, parentCode, parentName, treeCode, childs) {
+            class Bank {
+                constructor(code, branchId, name, parentCode, parentName, treeCode, childs) {
                     var self = this;
                     self.code = code;
                     self.name = name;
@@ -98,10 +113,8 @@ var qmm006;
                     self.treeCode = treeCode;
                     self.branchId = branchId;
                 }
-                return Bank;
-            }());
+            }
         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
     })(b = qmm006.b || (qmm006.b = {}));
 })(qmm006 || (qmm006 = {}));
 ;
-//# sourceMappingURL=qmm006.b.viewmodel.js.map

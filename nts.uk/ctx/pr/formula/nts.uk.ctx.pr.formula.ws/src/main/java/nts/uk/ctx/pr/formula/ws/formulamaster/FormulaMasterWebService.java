@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.formula.ws.formulamaster;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -9,11 +10,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.formula.app.command.formulahistory.RemoveFormulaHistoryCommand;
+import nts.uk.ctx.pr.formula.app.command.formulahistory.RemoveFormulaHistoryCommandHandler;
+import nts.uk.ctx.pr.formula.app.command.formulahistory.UpdateFormulaHistoryCommandHandler;
 import nts.uk.ctx.pr.formula.app.command.formulamaster.AddFormulaMasterCommand;
 import nts.uk.ctx.pr.formula.app.command.formulamaster.AddFormulaMasterCommandHandler;
 import nts.uk.ctx.pr.formula.app.command.formulamaster.UpdateFormulaMasterCommand;
 import nts.uk.ctx.pr.formula.app.command.formulamaster.UpdateFormulaMasterCommandHandler;
-import nts.uk.ctx.pr.formula.app.find.formula.CalculationTrial;
 import nts.uk.ctx.pr.formula.app.find.formula.FormulaBasicInformationDto;
 import nts.uk.ctx.pr.formula.app.find.formula.FormulaBasicInformationFinder;
 import nts.uk.ctx.pr.formula.app.find.formula.FormulaEasyFinder;
@@ -22,6 +25,8 @@ import nts.uk.ctx.pr.formula.app.find.formula.FormulaFinder;
 import nts.uk.ctx.pr.formula.app.find.formula.FormulaFinderDto;
 import nts.uk.ctx.pr.formula.app.find.formula.FormulaItemSelectDto;
 import nts.uk.ctx.pr.formula.app.find.formula.FormulaItemSelectFinder;
+import nts.uk.ctx.pr.formula.app.find.formula.FormulaManualDto;
+import nts.uk.ctx.pr.formula.app.find.formula.FormulaManualLastestHistoryFinder;
 import nts.uk.ctx.pr.formula.app.find.formula.FormulaSettingDto;
 import nts.uk.ctx.pr.formula.app.find.formula.FormulaSettingFinder;
 import nts.uk.ctx.pr.formula.app.find.formulahistory.FormulaHistoryDto;
@@ -48,7 +53,7 @@ public class FormulaMasterWebService extends WebService {
 	@Inject
 	private FormulaEasyFinder formulaEasyFinder;
 	@Inject
-	private CalculationTrial calculatorExcute;
+	private FormulaManualLastestHistoryFinder formulaManualLastestHistoryFinder;
 	
 
 	@POST
@@ -62,6 +67,12 @@ public class FormulaMasterWebService extends WebService {
 	public FormulaBasicInformationDto findFormula(@PathParam("formulaCode") String formulaCode,
 			@PathParam("historyId") String historyId) {
 		return this.formulaBasicInformationFinder.init(formulaCode, historyId);
+	}
+	
+	@POST
+	@Path("findLastestFormulaManual/{formulaCode}")
+	public FormulaManualDto findLastestFormulaManual(@PathParam("formulaCode") String formulaCode) {
+		return this.formulaManualLastestHistoryFinder.find(formulaCode);
 	}
 
 	@POST
@@ -102,11 +113,5 @@ public class FormulaMasterWebService extends WebService {
 	@Path("updateFormulaMaster")
 	public void updateFormulaMaster (UpdateFormulaMasterCommand command){
 		this.updateFormulaMasterCommandHandler.handle(command);
-	}
-	
-	@POST
-	@Path("calculate")
-	public void calculate (){
-		this.calculatorExcute.init();
 	}
 }
