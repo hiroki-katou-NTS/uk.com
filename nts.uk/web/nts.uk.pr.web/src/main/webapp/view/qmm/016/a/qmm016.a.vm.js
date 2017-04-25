@@ -31,7 +31,6 @@ var nts;
                                         service: a.service.instance,
                                         removeMasterOnLastHistoryRemove: true
                                     });
-                                    this.demensionBullet = { 1: "①", 2: "②", 3: "③" };
                                     var self = this;
                                     self.head = ko.observable(new HeadViewModel());
                                     self.history = ko.observable(new HistoryViewModel());
@@ -60,6 +59,7 @@ var nts;
                                     self.headDirtyChecker = new nts.uk.ui.DirtyChecker(self.head);
                                     self.settingDirtyChecker = new nts.uk.ui.DirtyChecker(self.history().elements);
                                     self.valuesDirtyChecker = new nts.uk.ui.DirtyChecker(self.valueItems);
+                                    self.demensionBullet = ["①", "②", "③"];
                                 }
                                 ScreenModel.prototype.start = function () {
                                     var self = this;

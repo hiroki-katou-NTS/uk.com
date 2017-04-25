@@ -33,7 +33,7 @@ module nts.uk.pr.view.qmm016.a {
             valuesDirtyChecker: nts.uk.ui.DirtyChecker;
             valueItems: KnockoutObservable<Array<model.CellItemDto>>;
             
-            demensionBullet: any = {1: "①", 2: "②", 3: "③"};
+            demensionBullet: Array<string>;
 
             constructor() {
                 super({
@@ -78,6 +78,7 @@ module nts.uk.pr.view.qmm016.a {
                 self.settingDirtyChecker = new nts.uk.ui.DirtyChecker(self.history().elements);
                 self.valuesDirtyChecker = new nts.uk.ui.DirtyChecker(self.valueItems);
 
+                self.demensionBullet = ["①", "②", "③"];
             }
 
             /**
