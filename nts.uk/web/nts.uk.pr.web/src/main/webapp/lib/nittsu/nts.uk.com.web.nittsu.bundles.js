@@ -863,7 +863,7 @@ var nts;
                     this.option = option;
                 }
                 NumberFormatter.prototype.format = function (source) {
-                    return uk.ntsNumber.formatNumber(source, this.option.option);
+                    return source === '' ? source : uk.ntsNumber.formatNumber(source, this.option.option);
                 };
                 return NumberFormatter;
             }());
@@ -1858,6 +1858,16 @@ var nts;
                         var result = new ValidationResult();
                         var isDecimalNumber = false;
                         if (this.option !== undefined) {
+                            if (nts.uk.util.isNullOrUndefined(inputText) || inputText.trim().length <= 0) {
+                                if (this.option['required'] === true) {
+                                    result.fail('This field is required.');
+                                    return result;
+                                }
+                                else {
+                                    result.success('');
+                                    return result;
+                                }
+                            }
                             isDecimalNumber = (this.option.decimallength > 0);
                             inputText = uk.text.replaceAll(inputText.toString(), this.option.groupseperator, '');
                         }
@@ -3234,6 +3244,8 @@ var nts;
                         }
                     }
                     function setupSelectingEvents($grid) {
+                        $grid.bind('iggridselectioncellselectionchanging', function () {
+                        });
                         $grid.bind('iggridselectionrowselectionchanged', function () {
                             $grid.triggerHandler('selectionchanged');
                         });
@@ -4292,6 +4304,8 @@ var nts;
                     };
                     NumberEditorProcessor.prototype.getValidator = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+                        this.editorOption['required'] = required;
                         return new validation.NumberValidator(constraintName, this.editorOption);
                     };
                     return NumberEditorProcessor;
@@ -4492,7 +4506,9 @@ var nts;
                         var features = [];
                         features.push({ name: 'Selection', multipleSelection: data.multiple });
                         features.push({ name: 'Sorting', type: 'local' });
-                        features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: showNumbering });
+                        if (data.multiple || showNumbering) {
+                            features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: showNumbering });
+                        }
                         var gridFeatures = ko.unwrap(data.features);
                         var iggridColumns = _.map(observableColumns, function (c) {
                             c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -4503,9 +4519,9 @@ var nts;
                                 });
                                 if (!uk.util.isNullOrUndefined(switchF)) {
                                     features.push({ name: 'Updating', enableAddRow: false, enableDeleteRow: false, editMode: 'none' });
-                                    var switchOptions_1 = ko.unwrap(switchF.options);
-                                    var switchValue_1 = switchF.optionsValue;
-                                    var switchText_1 = switchF.optionsText;
+                                    var switchOptions_1 = ko.unwrap(switchF['options']);
+                                    var switchValue_1 = switchF['optionsValue'];
+                                    var switchText_1 = switchF['optionsText'];
                                     c["formatter"] = function createButton(val, row) {
                                         var result = $('<div class="ntsControl"/>');
                                         result.attr("data-value", val);
@@ -6020,6 +6036,13 @@ var nts;
                             throw new Error('the element NtsSwapList must have id attribute.');
                         }
                         var data = valueAccessor();
+                        var enable = ko.unwrap(data.enable);
+                        if (enable === false) {
+                            $upDown.find(".ntsUpDownButton").prop('disabled', true);
+                        }
+                        else {
+                            $upDown.find(".ntsUpDownButton").prop('disabled', false);
+                        }
                     };
                     return NtsUpDownBindingHandler;
                 }());

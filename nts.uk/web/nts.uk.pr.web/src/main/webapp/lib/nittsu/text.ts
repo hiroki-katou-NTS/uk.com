@@ -494,7 +494,7 @@
             }
 
             format(source: any): string {
-                return ntsNumber.formatNumber(source, this.option.option);
+                return source === '' ? source: ntsNumber.formatNumber(source, this.option.option);
             }
         }
 

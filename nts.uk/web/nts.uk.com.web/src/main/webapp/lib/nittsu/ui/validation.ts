@@ -96,6 +96,15 @@ module nts.uk.ui.validation {
             var result = new ValidationResult();
             var isDecimalNumber = false;
             if (this.option !== undefined) {
+                if(nts.uk.util.isNullOrUndefined(inputText) || inputText.trim().length <= 0){
+                    if(this.option['required'] === true){    
+                        result.fail('This field is required.');
+                        return result;
+                    } else {
+                        result.success('');
+                        return result;
+                    }    
+                }
                 isDecimalNumber = (this.option.decimallength > 0)
                 inputText = text.replaceAll(inputText.toString(), this.option.groupseperator, '');
             }
