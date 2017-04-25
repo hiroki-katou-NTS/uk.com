@@ -58,7 +58,6 @@ var nts;
                                     self.typeAction(TypeActionLaborInsuranceOffice.add);
                                     self.selectCodeLstlaborInsuranceOffice('');
                                     self.beginSelectlaborInsuranceOffice('');
-                                    self.laborInsuranceOfficeModel().setReadOnly(false);
                                     if (!self.isEmpty())
                                         self.clearErrorSave();
                                     self.dirty.reset();
@@ -170,12 +169,15 @@ var nts;
                                     $("#inp_officeNoA").ntsEditor("validate");
                                     $("#inp_officeNoB").ntsEditor("validate");
                                     $("#inp_officeNoC").ntsEditor("validate");
+                                    if ($('.nts-editor').ntsError("hasError")) {
+                                        return true;
+                                    }
+                                    return false;
                                 };
                                 ScreenModel.prototype.saveLaborInsuranceOffice = function () {
                                     var self = this;
                                     self.clearErrorSave();
-                                    self.validateData();
-                                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                                    if (self.validateData()) {
                                         return;
                                     }
                                     if (self.typeAction() == TypeActionLaborInsuranceOffice.add) {
@@ -243,7 +245,7 @@ var nts;
                                                 self.isEmpty(false);
                                             }
                                             self.laborInsuranceOfficeModel().updateData(data);
-                                            self.laborInsuranceOfficeModel().setReadOnly(true);
+                                            self.laborInsuranceOfficeModel().setEnable(false);
                                             self.isEnableDelete(true);
                                             self.clearErrorSave();
                                             self.beginSelectlaborInsuranceOffice(code);
@@ -401,7 +403,6 @@ var nts;
                                             textalign: "left"
                                         })),
                                     });
-                                    this.isReadOnly = ko.observable(true);
                                     this.isEnable = ko.observable(true);
                                 }
                                 LaborInsuranceOfficeModel.prototype.resetAllValue = function () {
@@ -433,8 +434,10 @@ var nts;
                                             textalign: "left"
                                         })),
                                     });
-                                    this.isReadOnly(false);
                                     this.isEnable(true);
+                                };
+                                LaborInsuranceOfficeModel.prototype.setEnable = function (isEnable) {
+                                    this.isEnable(isEnable);
                                 };
                                 LaborInsuranceOfficeModel.prototype.updateData = function (officeInfo) {
                                     if (officeInfo != null) {
@@ -467,10 +470,6 @@ var nts;
                                             })),
                                         });
                                     }
-                                };
-                                LaborInsuranceOfficeModel.prototype.setReadOnly = function (readonly) {
-                                    this.isReadOnly(readonly);
-                                    this.isEnable(!readonly);
                                 };
                                 LaborInsuranceOfficeModel.prototype.setPostCode = function (postcode) {
                                     this.address1st(nts.uk.pr.view.base.postcode.service.toAddress(postcode));

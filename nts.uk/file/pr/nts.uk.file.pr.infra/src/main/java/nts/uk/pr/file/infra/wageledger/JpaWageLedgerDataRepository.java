@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -18,6 +19,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
@@ -230,8 +232,12 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		
 		// ===================== Query by output setting.=====================
 		// Find Output setting.
-		WLOutputSetting outputSetting = this.outputSettingRepository.findByCode(companyCode,
+		Optional<WLOutputSetting> optOutputSetting = this.outputSettingRepository.findByCode(companyCode,
 				new WLOutputSettingCode(query.outputSettingCode));
+		if (!optOutputSetting.isPresent()) {
+			throw new BusinessException("Entity not found.");
+		}
+		WLOutputSetting outputSetting = optOutputSetting.get();
 		
 		// Find Aggregate item in output setting.
 		List<String> aggregateItemCode = outputSetting.getCategorySettings().stream()

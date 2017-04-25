@@ -134,9 +134,25 @@ module qet001.b.viewmodel {
 
         private clearError(): void {
             if (nts.uk.ui._viewModel) {
+                $('#register-button').ntsError('clear');
                 $('#code-input').ntsError('clear');
                 $('#name-input').ntsError('clear');
             }
+        }
+
+        private validate(): void {
+            $('#register-button').ntsEditor('validate');
+            $('#code-input').ntsEditor('validate');
+            $('#name-input').ntsEditor('validate');
+        }
+
+        private hasError(): boolean {
+            if ($('#register-button').ntsError('hasError')
+                || $('#code-input').ntsError('hasError')
+                || $('#name-input').ntsError('hasError')) {
+                return true;
+            }
+            return false;
         }
 
         /**
@@ -223,8 +239,9 @@ module qet001.b.viewmodel {
          */
         public save() {
             var self = this;
-            // Check has error.
-            if(!nts.uk.ui._viewModel.errors.isEmpty()) {
+            // Validate.
+            self.validate();
+            if (self.hasError()) {
                 return;
             }
             service.saveOutputSetting(self.outputSettingDetail()).done(function() {
@@ -235,8 +252,12 @@ module qet001.b.viewmodel {
                 });
             }).fail(function(res) {
                 self.clearError();
-                $('#code-input').ntsError('set', res.message);
-            })
+                if (res.messageId == 'ER026') {
+                    $('#register-button').ntsError('set', res.message);
+                } else {
+                    $('#code-input').ntsError('set', '入力したコードは既に存在しています。↵コードを確認してください。');
+                }
+            });
         }
         
         /**

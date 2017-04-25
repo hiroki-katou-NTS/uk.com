@@ -1,15 +1,17 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.wageledger.find;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.pr.report.app.itemmaster.query.ItemMaterRepository;
 import nts.uk.ctx.pr.report.app.itemmaster.query.MasterItemDto;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.HeaderSettingDto;
@@ -47,11 +49,15 @@ public class OutputSettingFinder {
 	 */
 	public OutputSettingDto find(String code) {
 		String companyCode = AppContexts.user().companyCode();
-		WLOutputSetting outputSetting = this.repository.findByCode(companyCode,
+		Optional<WLOutputSetting> optOutputSetting = this.repository.findByCode(companyCode,
 				new WLOutputSettingCode(code));
 		
 		OutputSettingDto dto = OutputSettingDto.builder().build();
-		outputSetting.saveToMemento(dto);
+		if (optOutputSetting.isPresent()) {
+			optOutputSetting.get().saveToMemento(dto);
+		} else {
+			throw new BusinessException("entity not found.");
+		}
 		
 		// Find master item name.
 		List<String> masterItemCode = dto.categorySettings.stream()
