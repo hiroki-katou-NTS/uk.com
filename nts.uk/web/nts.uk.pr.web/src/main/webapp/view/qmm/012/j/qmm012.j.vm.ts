@@ -128,7 +128,7 @@ module qmm012.j.viewmodel {
                     return ItemModel.itemCode == ui.rowID;
                 });
                 if (item) {
-                    if (self.validate(ui.value, ui.columnKey)) {
+                    if (self.validate(ui.value)) {
                         let itemUpdate = _.find(self.updateSource(), function(ItemModel: qmm012.b.service.model.ItemMaster) {
                             return ItemModel.itemCode == ui.rowID;
                         });
@@ -145,7 +145,7 @@ module qmm012.j.viewmodel {
                 }
             }
         }
-        validate(value, columnKey) {
+        validate(value) {
             let result = true;
             if (value != "") {
                 var n = 0;
@@ -160,11 +160,6 @@ module qmm012.j.viewmodel {
                 }
                 if (n > 12) {
                     $('#J_Lst_ItemList').ntsError('set', 'Max length for this input is 12');
-                    $('.ui-igedit').addClass("errorValidate");
-                    result = false;
-                }
-                if (columnKey == "itemAbNameO") {
-                    $('#J_Lst_ItemList').ntsError('set', 'Min length for this input is 6');
                     $('.ui-igedit').addClass("errorValidate");
                     result = false;
                 }

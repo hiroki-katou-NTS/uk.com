@@ -121,7 +121,7 @@ var qmm012;
                             return ItemModel.itemCode == ui.rowID;
                         });
                         if (item) {
-                            if (self.validate(ui.value, ui.columnKey)) {
+                            if (self.validate(ui.value)) {
                                 var itemUpdate = _.find(self.updateSource(), function (ItemModel) {
                                     return ItemModel.itemCode == ui.rowID;
                                 });
@@ -140,7 +140,7 @@ var qmm012;
                         }
                     }
                 };
-                ScreenModel.prototype.validate = function (value, columnKey) {
+                ScreenModel.prototype.validate = function (value) {
                     var result = true;
                     if (value != "") {
                         var n = 0;
@@ -157,11 +157,6 @@ var qmm012;
                         }
                         if (n > 12) {
                             $('#J_Lst_ItemList').ntsError('set', 'Max length for this input is 12');
-                            $('.ui-igedit').addClass("errorValidate");
-                            result = false;
-                        }
-                        if (columnKey == "itemAbNameO") {
-                            $('#J_Lst_ItemList').ntsError('set', 'Min length for this input is 6');
                             $('.ui-igedit').addClass("errorValidate");
                             result = false;
                         }
