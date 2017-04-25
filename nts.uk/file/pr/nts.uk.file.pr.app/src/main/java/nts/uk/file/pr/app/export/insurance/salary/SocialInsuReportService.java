@@ -58,7 +58,7 @@ public class SocialInsuReportService extends ExportService<SocialInsuQuery> {
     protected void handle(ExportServiceContext<SocialInsuQuery> context) {
         SocialInsuQuery query = context.getQuery();
         String companyCode = AppContexts.user().companyCode();
-        String loginPersonID = "000000000000000000000000000000000001"; //AppContexts.user().personId();
+        String loginPersonID = "00000000-0000-0000-0000-000000000001"; //AppContexts.user().personId();
         
         List<String> officeCodes = query.getInsuranceOffices().stream()
                 .map(office -> office.getCode())
@@ -182,7 +182,7 @@ public class SocialInsuReportService extends ExportService<SocialInsuQuery> {
         headerData.setTitleReport("会社保険料チェックリスト(被保険者)");
         headerData.setInformationOffice("【事業所:本社 ~ 福岡支社(3事業所)】");
         // TODO: convert to year Japan.
-        headerData.setTargetYearMonth("【対象年月:平成19年12月 給与】 ");
+        headerData.setTargetYearMonth("【対象年月:平成25年04月 給与】 ");
         String headerCondition = "【出カ条件:算定月額と対象月控除額が";
         if (query.getIsEqual()) {
             headerCondition += "全て同じ、";

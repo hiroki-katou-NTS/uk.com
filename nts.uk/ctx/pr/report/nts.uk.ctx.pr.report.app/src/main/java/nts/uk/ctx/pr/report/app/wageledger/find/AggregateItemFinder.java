@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.report.app.itemmaster.query.ItemMaterRepository;
 import nts.uk.ctx.pr.report.app.itemmaster.query.MasterItemDto;
 import nts.uk.ctx.pr.report.app.wageledger.command.dto.ItemSubjectDto;
@@ -88,13 +89,15 @@ public class AggregateItemFinder {
 		// Return dto.
 		val dto = AggregateItemDto.builder().build();
 		aggregateItem.saveToMemento(dto);
-		
+
+		if (CollectionUtil.isEmpty(aggregateItem.getSubItems())) {
+			return dto;
+		}
 		// Find master item name.
 		Map<String, MasterItemDto> itemMap = this.itemMaterRepo
 				.findByCodes(companyCode, new ArrayList<>(aggregateItem.getSubItems())).stream()
 				.filter(item -> item.category.value == subject.getCategory().value)
 				.collect(Collectors.toMap(item -> item.code, Function.identity()));
-		// Fake master item name.
 		dto.subItems.forEach(item -> {
 			item.name = itemMap.get(item.code).name;
 		});
