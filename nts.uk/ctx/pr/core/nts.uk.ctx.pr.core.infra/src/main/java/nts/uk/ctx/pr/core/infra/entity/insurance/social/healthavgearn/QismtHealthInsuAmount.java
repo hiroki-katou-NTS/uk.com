@@ -13,7 +13,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -80,7 +80,7 @@ public class QismtHealthInsuAmount extends UkJpaEntity implements Serializable {
 	@JoinColumns({
 			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false),
 			@JoinColumn(name = "HEALTH_INSU_GRADE", referencedColumnName = "HEALTH_INSU_GRADE", insertable = false, updatable = false) })
-	@ManyToOne(optional = false, cascade = CascadeType.DETACH)
+	@OneToOne(optional = false, cascade = CascadeType.DETACH)
 	private QismtHealInsuAvgearnD qismtHealInsuAvgearnD;
 
 	/**

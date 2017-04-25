@@ -169,6 +169,8 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 
 		// Get updated uuid.
 		Optional<H> optH = repo.findHistoryByUuid(uuid);
+		
+		// Check exist
 		if (!optH.isPresent()) {
 			throw new BusinessException("ER026");
 		}
