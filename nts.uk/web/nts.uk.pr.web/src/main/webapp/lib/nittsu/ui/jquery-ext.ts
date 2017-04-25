@@ -428,8 +428,6 @@ module nts.uk.ui.jqueryExtentions {
         }
 
         function setupSelectingEvents($grid: JQuery) {
-            $grid.bind('iggridselectioncellselectionchanging', () => {
-            });
             $grid.bind('iggridselectionrowselectionchanged', () => {
                 $grid.triggerHandler('selectionchanged');
             });
