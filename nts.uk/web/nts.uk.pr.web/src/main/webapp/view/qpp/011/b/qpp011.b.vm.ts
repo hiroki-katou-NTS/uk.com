@@ -157,7 +157,7 @@ module qpp011.b {
                             return x.bankBranchID === object.branchId
                         });
                         //Push data C_SEL_003
-                        self.C_SEL_003_ComboBoxItemList.push(new C_SEL_003_ComboboxItemModel(obj.bankBranchName, obj.bankBranchCode,object.lineBankCode, object.lineBankName));
+                        self.C_SEL_003_ComboBoxItemList.push(new C_SEL_003_ComboboxItemModel(obj.bankBranchName, obj.bankBranchCode, object.lineBankCode, object.lineBankName));
                         if (self.C_SEL_003_ComboBoxItemList.length > 0)
                             self.C_SEL_003_selectedCode(self.C_SEL_003_ComboBoxItemList()[0].lineBankCode);
                     }
@@ -363,14 +363,22 @@ module qpp011.b {
             //001
             self.B_INP_001_yearMonth = ko.observable('2017/12');
             self.B_INP_001_yearMonth.subscribe(function(newValue) {
-                self.yearInJapanEmpire_B_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_001_yearMonth()).toString() + ")");
+                if (newValue != null) {
+                    self.yearInJapanEmpire_B_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_001_yearMonth()).toString() + ")");
+                } else {
+                    self.yearInJapanEmpire_B_LBL_005("");
+                }
             });
             self.yearInJapanEmpire_B_LBL_005 = ko.observable();
             self.yearInJapanEmpire_B_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_001_yearMonth()).toString() + ")");
             //002
             self.B_INP_002_yearMonth = ko.observable('2017/12');
             self.B_INP_002_yearMonth.subscribe(function(newValue) {
-                self.yearInJapanEmpire_B_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_002_yearMonth()).toString() + ")");
+                if (newValue != null) {
+                    self.yearInJapanEmpire_B_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_002_yearMonth()).toString() + ")");
+                } else {
+                    self.yearInJapanEmpire_B_LBL_008("");
+                }
             });
             self.yearInJapanEmpire_B_LBL_008 = ko.observable();
             self.yearInJapanEmpire_B_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_002_yearMonth()).toString() + ")");
@@ -405,8 +413,8 @@ module qpp011.b {
             //self.C_INP_003_yearMonth = ko.observable();
             self.C_INP_003_yearMonth.subscribe(function(newValue) {
                 if (newValue != null) {
-                self.yearInJapanEmpire_C_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.C_INP_003_yearMonth()).format("YYYY/MM")).toString() + ")");
-                    }else{
+                    self.yearInJapanEmpire_C_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.C_INP_003_yearMonth()).format("YYYY/MM")).toString() + ")");
+                } else {
                     self.yearInJapanEmpire_C_LBL_010("");
                 }
             });
@@ -416,6 +424,11 @@ module qpp011.b {
 
         openDDialog() {
             let self = this;
+            if (self.B_INP_001_yearMonth() === "" || self.B_INP_001_yearMonth() === null) {
+                nts.uk.ui.dialog.alert("が入力されていません");
+                $('#B_INP_001').focus();
+                return false;
+            }
             nts.uk.sessionStorage.setItem("QPP011_D_TargetDate", nts.uk.time.formatYearMonth(self.B_INP_001_yearMonth()));
             nts.uk.ui.windows.sub.modal('/view/qpp/011/d/index.xhtml', { title: '納付書詳細設定', height: 550, width: 1050, dialogClass: 'no-close' }).onClosed(function(): any {
             });
@@ -435,6 +448,50 @@ module qpp011.b {
             });
         }
 
+        checkBValue(): boolean {
+            var self = this;
+            if (self.B_INP_001_yearMonth() === "" || self.B_INP_001_yearMonth() === null) {
+                nts.uk.ui.dialog.alert("が入力されていません");
+                $('#B_INP_001').focus();
+                return false;
+            }
+            if (self.B_INP_002_yearMonth() === "" || self.B_INP_002_yearMonth() === null) {
+                nts.uk.ui.dialog.alert("が入力されていません");
+                $('#B_INP_002').focus();
+                return false;
+            }
+            if (self.B_INP_003_yearMonth() === "" || self.B_INP_003_yearMonth() === null) {
+                nts.uk.ui.dialog.alert("が入力されていません");
+                $('#B_INP_003').focus();
+                return false;
+            }
+            return true;
+        }
+
+        exportPdf(): void {
+            var self = this;
+            self.checkBValue();
+            if (self.selectedValue_B_LST_001().length > 0) {
+                var command = {
+                    residentTaxCodeList: self.selectedValue_B_LST_001(),
+                    companyLogin: null,
+                    regalDocCompanyCode: null,
+                    yearMonth: 201612,
+                    processingYearMonth: 201703,
+                    endDate: self.B_INP_003_yearMonth()
+                };
+                
+                service.saveAsPdf(command).done(function() {
+                    //
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
+            } else {
+                nts.uk.ui.dialog.alert("納付先が選択されていせん。");
+            }
+
+        }
+
         checkCValue(): boolean {
             var self = this;
             if (self.C_INP_001_yearMonth() === "" || self.C_INP_001_yearMonth() === null) {
@@ -452,25 +509,16 @@ module qpp011.b {
                 $('#C_INP_003').focus();
                 return false;
             }
+          
             return true;
         }
-
-        exportPdf(): void {
+        exportText(): void {
             var self = this;
-            var command = {
-                residentTaxCodeList: self.selectedValue_B_LST_001(),
-                companyLogin: null,
-                regalDocCompanyCode: null,
-                yearMonth: 201612,
-                processingYearMonth: 201703,
-                endDate: self.B_INP_003_yearMonth()
-            };
-
-            service.saveAsPdf(command).done(function() {
-                //
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alert(res.message);
-            });
+            self.checkCValue();
+             if (self.selectedValue_C_LST_001().length > 0) {
+                 } else {
+                nts.uk.ui.dialog.alert("納付先が選択されていせん。");
+            }
         }
     }
 
@@ -496,7 +544,7 @@ module qpp011.b {
             this.bankBranchCode = bankBranchCode;
             this.lineBankCode = lineBankCode;
             this.lineBankName = lineBankName;
-            this.label = lineBankCode+" - "+bankBranchCode+"  "+lineBankName+"  "+ lineBankName;
+            this.label = lineBankCode + " - " + bankBranchCode + "  " + lineBankName + "  " + lineBankName;
         }
     }
     export class B_SEL_002_ComboboxItemModel {

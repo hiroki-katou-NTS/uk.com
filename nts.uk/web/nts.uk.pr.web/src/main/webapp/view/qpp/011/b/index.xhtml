@@ -7,9 +7,6 @@
 <body>
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
-			<com:ValidatorScript>
-				nts.uk.ctx.pr.core.dom.rule.law.tax.residential.output.CodeType
-			</com:ValidatorScript>
 			<script>var dialogSize = { width: 900, height: 700 };</script>
 			<com:scriptfile path="qpp011.b.vm.js" />
 			<com:scriptfile path="qpp011.b.service.js" />
@@ -130,7 +127,7 @@
 			<div id="tabpanel-2" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">納付データの出力</span>
-					<button class="proceed" id="C_BTN_001">テキスト出力</button>
+					<button class="proceed" id="C_BTN_001" data-bind="click: exportText">テキスト出力</button>
 					<button id="C_BTN_002" data-bind="click: openEDialog">出力の設定
 					</button>
 					<button id="C_BTN_003" data-bind="click: openFDialog">住民税チェックリスト
@@ -245,12 +242,12 @@
 							</div>
 							<div style="clear: both;">
 								<div class="floatLeft" id="C_LBL_013"
-									data-bind="ntsFormLabel: {constraint: 'CodeType',  required: true }">種別コード</div>
+									data-bind="ntsFormLabel: { required: true }">種別コード</div>
 								<div id="C_INP_004"  data-bind="with: numbereditor" >
 									<input
 										data-bind="ntsNumberEditor: {
 														value: value,
-														constraint: '',
+														constraint:constraint ,
 														option: option,
 														required: required,
 														enable: enable,

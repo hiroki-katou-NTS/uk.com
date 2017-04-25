@@ -222,19 +222,24 @@ module qpp011.f {
         }
 
         exportPdf(): void {
-            var self = this;
-            var command = {
-                residentTaxCodeList: self.F_LST_001_selectedValue(),
-                companyLogin: null,
-                yearMonth: 201612,
-                processingYearMonth: 201703
-            };
-
-            service.saveAsPdf(command).done(function() {
-                //
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alert(res.message);
-            });
+               var self = this;
+            if (self.F_LST_001_selectedValue().length > 0) {
+                var command = {
+                    residentTaxCodeList: self.F_LST_001_selectedValue(),
+                    companyLogin: null,
+                    regalDocCompanyCode: null,
+                    yearMonth: 201612,
+                    processingYearMonth: 201703,
+                };
+                
+                service.saveAsPdf(command).done(function() {
+                    //
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
+            } else {
+                nts.uk.ui.dialog.alert("納付先が選択されていせん。");
+            }
         }
     }
     export class GridItemModel_F_LST_001 {
