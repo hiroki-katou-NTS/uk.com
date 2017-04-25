@@ -140,8 +140,15 @@ var nts;
                             virtualizationMode: 'continuous',
                             features: features
                         });
-                        if (data.draggable === true)
+                        if (data.draggable === true) {
                             this.swapper.enableDragDrop();
+                            if (data.multipleDrag && data.multipleDrag.left === true) {
+                                this.swapper.Model.swapParts[0].$listControl.addClass("multiple-drag");
+                            }
+                            if (data.multipleDrag && data.multipleDrag.right === true) {
+                                this.swapper.Model.swapParts[1].$listControl.addClass("multiple-drag");
+                            }
+                        }
                         $grid2.closest('.ui-iggrid')
                             .addClass('nts-gridlist')
                             .height(gridHeight);
@@ -249,7 +256,7 @@ var nts;
                             return one.index - two.index;
                         });
                         var $helper;
-                        if (selectedRowElms.length > 1) {
+                        if ($(evt.currentTarget).hasClass("multiple-drag") && selectedRowElms.length > 1) {
                             $helper = $("<div><table><tbody></tbody></table></div>").addClass("select-drag");
                             var rowId = ui.data("row-idx");
                             var selectedItems = selectedRowElms.map(function (elm) { return elm.element; });

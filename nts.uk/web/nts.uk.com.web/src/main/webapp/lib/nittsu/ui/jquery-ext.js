@@ -348,6 +348,8 @@ var nts;
                         }
                     }
                     function setupSelectingEvents($grid) {
+                        $grid.bind('iggridselectioncellselectionchanging', function () {
+                        });
                         $grid.bind('iggridselectionrowselectionchanged', function () {
                             $grid.triggerHandler('selectionchanged');
                         });
