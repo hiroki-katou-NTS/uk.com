@@ -21,24 +21,33 @@ import nts.uk.shr.com.context.AppContexts;
 public class EmployeeAllotSettingWebService {
 	
 	@Inject
-	private EmployeeAllotSettingFinder find;
-	@Inject
-	private EmployeeAllotSettingHeaderFinder finder;
+	private EmployeeAllotSettingFinder employeeAllotSettingFinder;
 	@POST
 	@Path("findallemployeeallotdetail")
 	public List<EmployeeAllotSettingDto> GetAllEmployeeAllotSettingDetailList(String histId){
-		return this.find.getAllEmployeeAllotDetailSetting(AppContexts.user().companyCode(),histId);
+		return this.employeeAllotSettingFinder.getAllEmployeeAllotDetailSetting(AppContexts.user().companyCode(),histId);
 	}
 	
 	@POST
 	@Path("findAllEmployeeAllotSettingList/{histId}")
 	public List<EmployeeAllSettingDto> getAllEmployeeAllotSettingList(@PathParam("histId") String histid ){
-		return this.find.getAllEmployeeAllotSettingList(AppContexts.user().companyCode(), histid);
+		return this.employeeAllotSettingFinder.getAllEmployeeAllotSettingList(AppContexts.user().companyCode(), histid);
 	}
+	@POST
+	@Path("findEmployeeDetail/{histId}")
+	public List<EmployeeAllotSettingDto> findEmployeeDetail(@PathParam("histId") String histid){
+		return this.employeeAllotSettingFinder.getEmpDetail(AppContexts.user().companyCode(), histid);
+		
+	}
+	
 //	@POST
 //	@Path("insert")
 //	public void insert(insertAllotEmployeeCommand command) {
 //		this.insert.handle(command);
 //	}
+	
+//	@POST
+//	@Path("findAllEmployeeName")
+//	public List<>
 	
 }

@@ -29,4 +29,8 @@ public class EmployeeAllotSettingFinder {
 				.map(e -> EmployeeAllSettingDto.fromDomain(e)).collect(Collectors.toList());
 
 	}
+	public List<EmployeeAllotSettingDto> getEmpDetail(String companyCode, String historyID){
+		return this.EmpAllotSettingRepo.findEmpDetail(companyCode, historyID).stream()
+				.map(a -> EmployeeAllotSettingDto.fromDomain(a)).collect(Collectors.toList());
+	}
 }

@@ -5,8 +5,9 @@ module qmm020.c.service {
         getEmployAllotSettingDetailList: "pr/core/allot/findallemployeeallotdetail",
         getAllEmployeeAllotSettingList: "pr/core/allot/findAllEmployeeAllotSettingList/{0}",
         getMaxDate: "pr/core/allot/findallemployeeallotheaderMax",
-        insertAllotEmployeeSetting: "pr/core/allot/insertAllEmployeeSetting"
-        
+        insertAllotEmployeeSetting: "pr/core/allot/insertAllEmployeeSetting",
+        getEmployeeDetail: "pr/core/allot/findEmployeeDetail/{0}",
+        getEmployeeName : "basic/organization/employment/findallemployments"
     }
     /**
      * Get list payment date processing.
@@ -46,6 +47,28 @@ module qmm020.c.service {
         }).fail(function(error) {
             dfd.reject(error);
         })
+        return dfd.promise();
+    }
+    export function getEmployeeName() : JQueryPromise<Array<any>>{
+            let dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax("com",paths.getEmployeeName)
+            .done(function(res: Array<any>) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+    export function getEmployeeDetail(histId: string) : JQueryPromise<Array<any>> {
+        let dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax(paths.getEmployeeDetail, histId)
+        .done(function(res: Array<any>) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
         return dfd.promise();
     }
     export function getAllotEmployeeMaxDate(): JQueryPromise<any> {

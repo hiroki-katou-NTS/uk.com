@@ -21,24 +21,43 @@ var qmm020;
                     self.maxDate = "";
                     self.currentItem = ko.observable(new TotalModel({
                         historyId: '',
-                        employeeCode: '',
+                        employmentCode: '',
                         paymentDetailCode: '',
                         bonusDetailCode: '',
                         startYm: '',
                         endYm: ''
                     }));
                     self.selectedCode.subscribe(function (codeChange) {
-                        c.service.getAllEmployeeAllotSetting(ko.toJS(codeChange)).done(function (data) {
-                            self.itemListDetail([]);
+                        //                service.getAllEmployeeAllotSetting(ko.toJS(codeChange)).done(function(data) {
+                        //                    self.itemListDetail([]);
+                        //                    if (data && data.length > 0) {
+                        //                        _.map(data, function(item) {
+                        //                            self.itemListDetail.push(new EmployeeAllotSettingDto(item.companyCode, item.historyId, item.employeeCode, item.employeeName, item.paymentDetailCode
+                        //                                , item.paymentDetailName, item.bonusDetailCode, item.bonusDetailName));
+                        //                        });
+                        //
+                        //                    }
+                        //                    if (self.firstLoad)
+                        //                        $("#C_LST_001").igGrid("option", "dataSource", ko.mapping.toJS(self.itemListDetail));
+                        //                    else
+                        //                        self.LoadData(self.itemListDetail);
+                        //                    dfd.resolve();
+                        //                }).fail(function(res) {
+                        //                    // Alert message
+                        //                    alert(res);
+                        //                });
+                        //                dfd.promise();
+                        c.service.getEmployeeDetail(ko.toJS(codeChange)).done(function (data) {
+                            var employeeItem = [];
                             if (data && data.length > 0) {
                                 _.map(data, function (item) {
-                                    self.itemListDetail.push(new EmployeeAllotSettingDto(item.companyCode, item.historyId, item.employeeCode, item.employeeName, item.paymentDetailCode, item.paymentDetailName, item.bonusDetailCode, item.bonusDetailName));
+                                    employeeItem.push(new TotalModel({ historyId: item.historyId, employmentCode: item.employmentCode, paymentDetailCode: item.paymentDetailCode, bonusDetailCode: item.bonusDetailCode }));
                                 });
                             }
                             if (self.firstLoad)
-                                $("#C_LST_001").igGrid("option", "dataSource", ko.mapping.toJS(self.itemListDetail));
+                                $("#C_LST_001").igGrid("option", "dataSource", employeeItem);
                             else
-                                self.LoadData(self.itemListDetail);
+                                self.LoadData(employeeItem);
                             dfd.resolve();
                         }).fail(function (res) {
                             // Alert message
@@ -47,26 +66,29 @@ var qmm020;
                         dfd.promise();
                     });
                     // Array Data 1 
-                    var employment1 = ko.mapping.fromJS([
-                        { "NO": 1, "ID": "000000001", "Name": "正社員", "PaymentDocID": "K001", "PaymentDocName": "給与明細書001", "BonusDocID": "S001", "BonusDocName": "賞与明細書001" },
-                        { "NO": 2, "ID": "000000002", "Name": "DucPham社員", "PaymentDocID": "K002", "PaymentDocName": "給与明細書002", "BonusDocID": "S001", "BonusDocName": "賞与明細書002" },
-                        { "NO": 3, "ID": "000000003", "Name": "HoangMai社員", "PaymentDocID": "K003", "PaymentDocName": "給与明細書003", "BonusDocID": "S001", "BonusDocName": "賞与明細書003" }
-                    ]);
-                    self.dataSource = ko.mapping.toJS(employment1());
+                    //            let employment1 = ko.mapping.fromJS([
+                    //                { "NO": 1, "ID": "000000001", "Name": "正社員", "PaymentDocID": "K001", "PaymentDocName": "給与明細書001", "BonusDocID": "S001", "BonusDocName": "賞与明細書001" },
+                    //                { "NO": 2, "ID": "000000002", "Name": "DucPham社員", "PaymentDocID": "K002", "PaymentDocName": "給与明細書002", "BonusDocID": "S001", "BonusDocName": "賞与明細書002" },
+                    //                { "NO": 3, "ID": "000000003", "Name": "HoangMai社員", "PaymentDocID": "K003", "PaymentDocName": "給与明細書003", "BonusDocID": "S001", "BonusDocName": "賞与明細書003" }
+                    //            ]);
+                    //
+                    //            self.dataSource = ko.mapping.toJS(employment1());
                     //console.log(self.dataSource);
                     //Build IgGrid
                     //SCREEN C
                     //Event : Click to button Sentaku on igGrid
-                    var openPaymentDialog = function (evt, ui) {
-                        if (ui.colKey === "PaymentDocID") {
-                            //Gọi hàm open SubWindow
-                            //Khi close Subwindow, get dc cái new object(ID, Name... )
-                            var row = _.find(employment1(), function (item) {
-                                //return item.ID() === ui.rowKey;
-                            });
-                        }
-                    };
-                    self.start();
+                    //            var openPaymentDialog = function(evt, ui) {
+                    //                if (ui.colKey === "PaymentDocID") {
+                    //                    //Gọi hàm open SubWindow
+                    //                    //Khi close Subwindow, get dc cái new object(ID, Name... )
+                    //                    let row = _.find(employment1(), function(item) {
+                    //                        //return item.ID() === ui.rowKey;
+                    //                    });
+                    //                    //row.PaymentDocName("test");
+                    //                    //self.buildGrid("#C_LST_001", "C_BTN_001", "C_BTN_002");
+                    //                }
+                    //            }
+                    //            self.start();
                     /**
                      * find maxItem by endate
                      */
@@ -76,8 +98,8 @@ var qmm020;
                     $("#C_LST_001").igGrid({
                         columns: [
                             { headerText: "", key: "NO", dataType: "string", width: "20px" },
-                            { headerText: "コード", key: "employeeCode", dataType: "string", width: "100px" },
-                            { headerText: "名称", key: "employeeName", dataType: "string", width: "200px" },
+                            { headerText: "コード", key: "employmentCode", dataType: "string", width: "100px" },
+                            { headerText: "名称", key: "employmentName", dataType: "string", width: "200px" },
                             { headerText: "", key: "paymentDetailCode", dataType: "string", hidden: true },
                             { headerText: "", key: "paymentDetailName", dataType: "string", hidden: true },
                             { headerText: "", key: "bonusDetailCode", dataType: "string", hidden: true },
@@ -101,7 +123,7 @@ var qmm020;
                         virtualizationMode: 'continuous',
                         width: "800px",
                         height: "240px",
-                        primaryKey: "ID",
+                        primaryKey: "employmentCode",
                         dataSource: ko.mapping.toJS(itemList)
                     });
                     self.firstLoad = true;
@@ -128,6 +150,24 @@ var qmm020;
                 ScreenModel.prototype.start = function () {
                     var self = this;
                     var dfd = $.Deferred();
+                    //fill employ data to c_LST_001
+                    c.service.getEmployeeName().done(function (data) {
+                        var employeeItem = [];
+                        if (data && data.length > 0) {
+                            _.map(data, function (item) {
+                                employeeItem.push(new TotalModel({ historyId: item.historyId, employmentCode: item.employmentCode, employmentName: item.employmentName }));
+                            });
+                        }
+                        if (self.firstLoad)
+                            $("#C_LST_001").igGrid("option", "dataSource", employeeItem);
+                        else
+                            self.LoadData(employeeItem);
+                        dfd.resolve();
+                    }).fail(function (res) {
+                        // Alert message
+                        alert(res);
+                    });
+                    dfd.promise();
                     //Get list startDate, endDate of History  
                     var totalItem = [];
                     c.service.getEmployeeAllotHeaderList().done(function (data) {
@@ -185,7 +225,7 @@ var qmm020;
                             if (modeRadio === "2") {
                                 addItem = new TotalModel({
                                     historyId: '',
-                                    employeeCode: '',
+                                    employmentCode: '',
                                     paymentDetailCode: '',
                                     bonusDetailCode: '',
                                     startYm: returnValue,
@@ -197,8 +237,8 @@ var qmm020;
                             else {
                                 copItem = new TotalModel({
                                     historyId: '',
-                                    employeeCode: '',
-                                    employeeName: '',
+                                    employmentCode: '',
+                                    employmentName: '',
                                     paymentDetailCode: '',
                                     paymentDetailName: '',
                                     bonusDetailCode: '',
@@ -210,17 +250,17 @@ var qmm020;
                                 self.currentItem().historyId(copItem.historyId());
                                 self.currentItem().startYm(returnValue);
                                 self.currentItem().endYm('999912');
-                                self.currentItem().employeeCode(self.maxItem().historyId());
-                                //get employeeName, paymentDetailName, paymentDetailCode
+                                self.currentItem().employmentCode(self.maxItem().historyId());
+                                //get employmentName, paymentDetailName, paymentDetailCode
                                 var dfd_1 = $.Deferred();
                                 c.service.getAllEmployeeAllotSetting(ko.toJS(self.maxItem().historyId())).done(function (data) {
                                     self.itemListDetail([]);
                                     if (data && data.length > 0) {
                                         _.map(data, function (item) {
-                                            self.itemListDetail.push(new copItem(item.historyId, item.employeeCode, item.employeeName, item.paymentDetailCode, item.paymentDetailName, item.bonusDetailCode, item.bonusDetailName, item.startYm, item.endYm, item.startEnd));
+                                            self.itemListDetail.push(new copItem(item.historyId, item.employmentCode, item.employmentName, item.paymentDetailCode, item.paymentDetailName, item.bonusDetailCode, item.bonusDetailName, item.startYm, item.endYm, item.startEnd));
                                         });
-                                        self.currentItem().employeeCode(ko.toJS(self.itemListDetail()[0].employeeCode));
-                                        self.currentItem().employeeName(ko.toJS(self.itemListDetail()[0].employeeName));
+                                        self.currentItem().employmentCode(ko.toJS(self.itemListDetail()[0].employmentCode));
+                                        self.currentItem().employmentName(ko.toJS(self.itemListDetail()[0].employmentName));
                                         self.currentItem().paymentDetailCode(ko.toJS(self.itemListDetail()[0].paymentDetailCode));
                                         self.currentItem().paymentDetailName(ko.toJS(self.itemListDetail()[0].paymentDetailName));
                                         self.currentItem().bonusDetailCode(ko.toJS(self.itemListDetail()[0].bonusDetailCode));
@@ -266,11 +306,11 @@ var qmm020;
             }());
             viewmodel.ItemModel = ItemModel;
             var EmployeeAllotSettingDto = (function () {
-                function EmployeeAllotSettingDto(companyCode, historyId, employeeCode, employeeName, paymentDetailCode, paymentDetailName, bonusDetailCode, bonusDetailName) {
+                function EmployeeAllotSettingDto(companyCode, historyId, employmentCode, employmentName, paymentDetailCode, paymentDetailName, bonusDetailCode, bonusDetailName) {
                     this.companyCode = ko.observable(companyCode);
                     this.historyId = ko.observable(historyId);
-                    this.employeeCode = ko.observable(employeeCode);
-                    this.employeeName = ko.observable(employeeName);
+                    this.employmentCode = ko.observable(employmentCode);
+                    this.employmentName = ko.observable(employmentName);
                     this.paymentDetailCode = ko.observable(paymentDetailCode);
                     this.paymentDetailName = ko.observable(paymentDetailName);
                     this.bonusDetailCode = ko.observable(bonusDetailCode);
@@ -289,10 +329,10 @@ var qmm020;
             }());
             viewmodel.EmployeeSettingHeaderModel = EmployeeSettingHeaderModel;
             var EmployeeSettingDetailModel = (function () {
-                function EmployeeSettingDetailModel(companyCode, historyId, employeeCode, paymentDetailCode, bonusDetailCode) {
+                function EmployeeSettingDetailModel(companyCode, historyId, employmentCode, paymentDetailCode, bonusDetailCode) {
                     this.companyCode = companyCode;
                     this.historyId = historyId;
-                    this.employeeCode = employeeCode;
+                    this.employmentCode = employmentCode;
                     this.paymentDetailCode = paymentDetailCode;
                     this.bonusDetailCode = bonusDetailCode;
                 }
@@ -304,8 +344,8 @@ var qmm020;
                     this.companyCode = ko.observable(param.companyCode);
                     this.historyId = ko.observable(param.historyId);
                     this.startEnd = param.startEnd;
-                    this.employeeCode = ko.observable(param.employeeCode);
-                    this.employeeName = ko.observable(param.employeeName);
+                    this.employmentCode = ko.observable(param.employmentCode);
+                    this.employmentName = ko.observable(param.employmentName);
                     this.paymentDetailCode = ko.observable(param.paymentDetailCode);
                     this.paymentDetailName = ko.observable(param.paymentDetailName);
                     this.bonusDetailCode = ko.observable(param.bonusDetailCode);

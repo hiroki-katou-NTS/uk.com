@@ -29,4 +29,6 @@ public class EmployeeAllotSettingHeaderWebService {
 		String companyCode = AppContexts.user().companyCode();
 		return this.find.getAllotHMax(companyCode).get();
 	}
+	
+	
 }

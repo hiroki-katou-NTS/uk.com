@@ -10,7 +10,9 @@ var qmm020;
                 getEmployAllotSettingDetailList: "pr/core/allot/findallemployeeallotdetail",
                 getAllEmployeeAllotSettingList: "pr/core/allot/findAllEmployeeAllotSettingList/{0}",
                 getMaxDate: "pr/core/allot/findallemployeeallotheaderMax",
-                insertAllotEmployeeSetting: "pr/core/allot/insertAllEmployeeSetting"
+                insertAllotEmployeeSetting: "pr/core/allot/insertAllEmployeeSetting",
+                getEmployeeDetail: "pr/core/allot/findEmployeeDetail/{0}",
+                getEmployeeName: "basic/organization/employment/findallemployments"
             };
             /**
              * Get list payment date processing.
@@ -53,6 +55,30 @@ var qmm020;
                 return dfd.promise();
             }
             service.getAllEmployeeAllotSetting = getAllEmployeeAllotSetting;
+            function getEmployeeName() {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", paths.getEmployeeName)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getEmployeeName = getEmployeeName;
+            function getEmployeeDetail(histId) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.getEmployeeDetail, histId)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getEmployeeDetail = getEmployeeDetail;
             function getAllotEmployeeMaxDate() {
                 var dfd = $.Deferred();
                 var _path = nts.uk.text.format(paths.getMaxDate);
