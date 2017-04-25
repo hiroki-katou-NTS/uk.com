@@ -1,4 +1,4 @@
-module cmm009.c.viewmodel {
+module cmm011.c.viewmodel {
     import option = nts.uk.ui.option;
     export class ScreenModel {
         selectStartYm: KnockoutObservable<string>;
@@ -64,6 +64,12 @@ module cmm009.c.viewmodel {
             var self = this;
             var inputYm = $('#INP_STARTYMD').val();
             //check YM
+            
+             if (inputYm == "") {
+                alert("開始年月日 が入力されていません。");
+                return false;
+            }
+            
             if (!nts.uk.time.parseYearMonthDate(inputYm).success) {
                 alert(nts.uk.time.parseYearMonthDate(inputYm).msg);
                 return false;

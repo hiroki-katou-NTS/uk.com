@@ -21,7 +21,7 @@ public class RemoveWorkPlaceCommandHandler extends CommandHandler<RemoveWorkPlac
 		String companyCode = AppContexts.user().companyCode();
 		if (!workPlaceRepository.isExistWorkPace(companyCode, context.getCommand().getHistoryId(),
 				new WorkPlaceCode(context.getCommand().getWorkplaceCode()))) {
-			throw new BusinessException("ER005");
+			throw new BusinessException("ER06");
 		}
 
 		workPlaceRepository.remove(companyCode, context.getCommand().getHistoryId(),

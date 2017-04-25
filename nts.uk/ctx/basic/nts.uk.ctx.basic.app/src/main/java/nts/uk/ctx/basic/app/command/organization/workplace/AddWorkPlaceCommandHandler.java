@@ -85,7 +85,7 @@ public class AddWorkPlaceCommandHandler extends CommandHandler<List<AddWorkPlace
 				if (workPlaceRepository.isDuplicateWorkPlaceCode(companyCode,
 						new WorkPlaceCode(context.getCommand().get(0).getWorkPlaceCode()),
 						context.getCommand().get(0).getHistoryId())) {
-					throw new BusinessException("ER026");
+					throw new BusinessException("ER005");
 				}
 
 				workPlace = new WorkPlace(companyCode,

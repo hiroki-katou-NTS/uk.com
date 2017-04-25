@@ -1,4 +1,4 @@
-module cmm009.d.viewmodel {
+module cmm011.d.viewmodel {
     import option = nts.uk.ui.option;
     export class ScreenModel {
 
@@ -73,7 +73,13 @@ module cmm009.d.viewmodel {
             var self = this;
             var inputYm = $('#INP_STARTYMD').val();
             //check YM
+
             if (self.isRadioCheck() == 2) {
+                if (inputYm == "") {
+                    alert("開始年月日 が入力されていません。");
+                    return false;
+                }
+
                 if (!nts.uk.time.parseYearMonthDate(inputYm).success) {
                     alert(nts.uk.time.parseYearMonthDate(inputYm).msg);
                     return false;
@@ -83,7 +89,6 @@ module cmm009.d.viewmodel {
                 inputYm2 = inputYm2.replace('/', '');
                 selectYm = selectYm.replace('/', '');
                 selectYm = selectYm.replace('/', '');
-                console.log(inputYm2);
                 if (+inputYm2 < +selectYm
                     || +inputYm2 == +selectYm) {
                     alert('履歴の期間が正しくありません。');

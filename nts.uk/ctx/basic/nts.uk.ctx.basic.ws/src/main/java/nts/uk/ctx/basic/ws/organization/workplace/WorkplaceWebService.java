@@ -23,8 +23,10 @@ import nts.uk.ctx.basic.app.command.organization.workplace.UpdateStartDateAndEnd
 import nts.uk.ctx.basic.app.command.organization.workplace.UpdateStartDateandEndDateWKPHistoryCommand;
 import nts.uk.ctx.basic.app.command.organization.workplace.UpdateWorkPlaceCommand;
 import nts.uk.ctx.basic.app.command.organization.workplace.UpdateWorkPlaceCommandHandler;
+import nts.uk.ctx.basic.app.find.organization.department.DepartmentHistoryDto;
 import nts.uk.ctx.basic.app.find.organization.workplace.WorkPlaceDto;
 import nts.uk.ctx.basic.app.find.organization.workplace.WorkPlaceFinder;
+import nts.uk.ctx.basic.app.find.organization.workplace.WorkPlaceHistoryDto;
 import nts.uk.ctx.basic.app.find.organization.workplace.WorkPlaceMemoDto;
 import nts.uk.ctx.basic.app.find.organization.workplace.WorkPlaceQueryResult;
 import nts.uk.ctx.basic.dom.organization.workplace.WorkPlace;
@@ -60,6 +62,15 @@ public class WorkplaceWebService extends WebService {
 	public void add(List<AddWorkPlaceCommand> command) {
 		this.addWorkPlace.handle(command);
 	}
+	
+	@POST
+	@Path("getAllHistoryWorkPlace")
+	public List<WorkPlaceHistoryDto> getAllhistory() {
+		String ccd = AppContexts.user().companyCode();
+		List<WorkPlaceHistoryDto> list =  finder.getAllHistory(ccd);
+		return list;
+	}
+
 
 	@POST
 	@Path("getallworkplace")

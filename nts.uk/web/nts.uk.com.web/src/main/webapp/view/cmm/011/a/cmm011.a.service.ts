@@ -11,7 +11,8 @@ module cmm011.a.service {
         getAllWorkPLaceByHistId: "basic/organization/getallwkpbyhistid/",
         getMemoWorkPLaceByHistId: "basic/organization/getmemowkpbyhistid/",
         addWorkPlace: "basic/organization/addworkplace",
-        updatelistWorkPLace: "basic/organization/updateworkplace"
+        updatelistWorkPLace: "basic/organization/updateworkplace",
+        getAllHistory: "basic/organization/getAllHistoryWorkPlace"
     }
 
     export function upDateListWorkplace(listworkplace: any) {
@@ -82,7 +83,7 @@ module cmm011.a.service {
         return dfd.promise();
     }
 
-    
+
     export function deleteWorkPalce(workplace: viewmodel.model.WorkPlaceDeleteDto) {
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax("com", paths.deleteWorkPLace, workplace).done(
@@ -138,6 +139,20 @@ module cmm011.a.service {
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax("com", paths.updateEndDateofWkp, obj).done(
             function(res: any) {
+                dfd.resolve(res);
+            })
+            .fail(function(res: any) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+    /**
+     * get list History
+     */
+    export function getAllHistory(): JQueryPromise<Array<any>> {
+        var dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax("com", paths.getAllHistory)
+            .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })
             .fail(function(res: any) {
