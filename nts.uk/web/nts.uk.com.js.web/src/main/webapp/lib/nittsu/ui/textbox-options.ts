@@ -2,14 +2,14 @@
 
 module nts.uk.ui.option {
     
-    abstract class EditorOptionBase {
+    export abstract class EditorOptionBase {
         placeholder: string;
         width: string;
         textalign: string;
     }
 
     // Text Editor Option
-    interface ITextEditorOption{
+    export interface ITextEditorOption{
         textmode?: TextMode;
         placeholder?: string;
         width?: string;
@@ -36,7 +36,7 @@ module nts.uk.ui.option {
     }
 
     // Time Editor Option
-    interface ITimeEditorOption{
+    export interface ITimeEditorOption{
         inputFormat?: string;
         placeholder?: string;
         width?: string;
@@ -139,9 +139,9 @@ module nts.uk.ui.option {
         }
     }
     
-    type TextMode = "text" | "password";
-    type FillDirection = "left" |"right";
-    type Currency = "JPY" | "USD";
+    export type TextMode = "text" | "password";
+    export type FillDirection = "left" |"right";
+    export type Currency = "JPY" | "USD";
     
     var currenryPosition = {
         "JPY" : "left",
