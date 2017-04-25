@@ -51,6 +51,9 @@ var qmm020;
                 //Event when click to Setting Button
                 ScreenModel.prototype.createHistoryDocument = function () {
                     var self = this;
+                    if (self.selectStartYm() > nts.uk.time.formatYearMonth($('#J_INP_001').val())) {
+                        $('#J_INP_001').ntsError('set', Error.ER023);
+                    }
                     if (self.valueShareJDialog().split('~')[0] === "1") {
                         var radioCheckVal = self.selectedValue();
                         var inputYm = $('#J_INP_001').val();
@@ -94,6 +97,10 @@ var qmm020;
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
+            var Error;
+            (function (Error) {
+                Error[Error["ER023"] = "履歴の期間が重複しています。"] = "ER023";
+            })(Error || (Error = {}));
         })(viewmodel = j.viewmodel || (j.viewmodel = {}));
     })(j = qmm020.j || (qmm020.j = {}));
 })(qmm020 || (qmm020 = {}));

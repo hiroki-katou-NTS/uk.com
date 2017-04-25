@@ -41,5 +41,4 @@ public class InsertAllotCompanyCommandHandler extends CommandHandler<InsertAllot
 		//Insert process
 		companyRepo.insert(objInsert);
 	}
-	 
 }

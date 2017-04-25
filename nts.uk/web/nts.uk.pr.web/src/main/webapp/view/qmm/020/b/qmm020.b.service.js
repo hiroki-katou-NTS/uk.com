@@ -4,7 +4,6 @@ var qmm020;
     (function (b) {
         var service;
         (function (service) {
-            //duong dan   
             var paths = {
                 getAllotCompanySettingList: "pr/core/allot/findallcompanyallot",
                 getLayoutName: "pr/core/allot/findcompanyallotlayoutname/{0}",
@@ -12,9 +11,6 @@ var qmm020;
                 updateAllotCompanySetting: "pr/core/allot/update",
                 insertAllotCompanySetting: "pr/core/allot/insert"
             };
-            /**
-             * Get list payment date processing.
-             */
             function getAllotCompanyList() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getAllotCompanySettingList)
@@ -27,9 +23,6 @@ var qmm020;
                 return dfd.promise();
             }
             service.getAllotCompanyList = getAllotCompanyList;
-            /**
-             * Get layout master name
-             */
             function getAllotLayoutName(stmtCode) {
                 var dfd = $.Deferred();
                 var _path = nts.uk.text.format(paths.getLayoutName, stmtCode);
@@ -47,13 +40,11 @@ var qmm020;
                 return dfd.promise();
             }
             service.getAllotLayoutName = getAllotLayoutName;
-            /**
-             * get Data of Item with Max End date
-             */
             function getAllotCompanyMaxDate() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getMaxDate)
                     .done(function (res) {
+                    debugger;
                     dfd.resolve(res);
                 })
                     .fail(function (res) {
@@ -62,15 +53,14 @@ var qmm020;
                 return dfd.promise();
             }
             service.getAllotCompanyMaxDate = getAllotCompanyMaxDate;
-            //Update company code 
             function updateComAllot(updateAllotCompanyCommand) {
                 var dfd = $.Deferred();
                 var command = {};
-                command.payStmtCode = updateAllotCompanyCommand.paymentDetailCode;
-                command.bonusStmtCode = updateAllotCompanyCommand.bonusDetailCode;
-                command.startDate = updateAllotCompanyCommand.startDate;
-                command.endDate = updateAllotCompanyCommand.endDate;
-                command.historyId = updateAllotCompanyCommand.historyId;
+                command.payStmtCode = updateAllotCompanyCommand.payCode();
+                command.bonusStmtCode = updateAllotCompanyCommand.bonusCode();
+                command.startDate = updateAllotCompanyCommand.startYm();
+                command.endDate = updateAllotCompanyCommand.endYm();
+                command.historyId = updateAllotCompanyCommand.historyId();
                 nts.uk.request.ajax(paths.updateAllotCompanySetting, command)
                     .done(function (res) {
                     dfd.resolve(res);
@@ -84,13 +74,11 @@ var qmm020;
             function insertComAllot(insertAllotCompanyCommand) {
                 var dfd = $.Deferred();
                 var command = {};
-                command.payStmtCode = insertAllotCompanyCommand.paymentDetailCode;
-                command.bonusStmtCode = insertAllotCompanyCommand.bonusDetailCode;
-                command.startDate = insertAllotCompanyCommand.startDate;
-                command.endDate = insertAllotCompanyCommand.endDate;
-                command.historyId = insertAllotCompanyCommand.historyId;
-                //command.isCopy = insertAllotCompanyCommand.isCopy;
-                debugger;
+                command.payStmtCode = insertAllotCompanyCommand.payCode();
+                command.bonusStmtCode = insertAllotCompanyCommand.bonusCode();
+                command.startDate = insertAllotCompanyCommand.startYm();
+                command.endDate = insertAllotCompanyCommand.endYm();
+                command.historyId = insertAllotCompanyCommand.historyId();
                 nts.uk.request.ajax(paths.insertAllotCompanySetting, command)
                     .done(function (res) {
                     dfd.resolve(res);
@@ -101,10 +89,6 @@ var qmm020;
                 return dfd.promise();
             }
             service.insertComAllot = insertComAllot;
-            /**
-             *
-             *
-             */
             var model;
             (function (model) {
                 var CompanyAllotSettingDto = (function () {
@@ -123,3 +107,4 @@ var qmm020;
         })(service = b.service || (b.service = {}));
     })(b = qmm020.b || (qmm020.b = {}));
 })(qmm020 || (qmm020 = {}));
+//# sourceMappingURL=qmm020.b.service.js.map
