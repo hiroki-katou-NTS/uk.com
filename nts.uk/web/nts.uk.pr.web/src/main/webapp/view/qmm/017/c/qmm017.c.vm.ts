@@ -484,12 +484,13 @@ module nts.qmm017 {
             for (let tagOrder = 0; tagOrder < tagsSpecialChar.length; tagOrder++) {
                 if (tagsSpecialChar[tagOrder].innerText === '÷') {
                     let nextTag = $(tagsSpecialChar[tagOrder]).next();
-                    if (nextTag) {
+                    if (nextTag[0]) {
                         let contentNextTag = nextTag[0].innerText;
                         if (contentNextTag.trim() === '0') {
                             self.markError($(tagsSpecialChar[tagOrder]), self.ERROR_DIVIDE_ZERO, []);
                         }
                     }
+
                 }
             }
 
@@ -852,8 +853,8 @@ module nts.qmm017 {
             self.validateConsecutively($(".special-char"));
             self.validateBracket($(".special-char"));
             self.validateContainAtSign($(".japanese-character"));
-            self.validateBeforeAtSign($(".japanese-character"));
             self.validateAfterAtSign($(".japanese-character"));
+            self.validateBeforeAtSign($(".japanese-character"));
             self.validateDivideZero($(".special-char"));
             self.validateEmptyInput();
             self.validateNestedMoreThan10($(".special-char"));

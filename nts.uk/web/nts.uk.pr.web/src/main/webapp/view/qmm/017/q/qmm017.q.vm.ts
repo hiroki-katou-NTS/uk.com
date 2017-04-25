@@ -73,6 +73,12 @@ module nts.uk.pr.view.qmm017.q {
                                 self.replaceSystemVariableToValue();
                             })
                             .fail(function() {
+                                replacedValue = replacedValue.replace(new RegExp(item.name, 'g'), "（ ）");
+                                self.formulaContent(replacedValue);
+                                self.replaceCodesToNames(itemsBag);
+                                self.buildListItemModel(itemsBag);
+                                self.bindGridListItem();
+                                self.replaceSystemVariableToValue();
                             });
                     }
                 });
