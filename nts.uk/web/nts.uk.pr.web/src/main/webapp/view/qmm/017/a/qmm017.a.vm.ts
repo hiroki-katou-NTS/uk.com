@@ -491,7 +491,7 @@ module nts.qmm017 {
             self.currentParentNode(null);
             self.startYearMonth('');
             $("#inp-formulaName").focus();
-            //$("#start-date-inp-input").focus();
+            $("#start-date-inp-input").focus();
             $("#inp-formulaCode").focus();
         }
 
@@ -530,7 +530,6 @@ module nts.qmm017 {
                         nodesTreeGrid.push(nodeFormula);
                     });
                     self.treeGridHistory().items(nodesTreeGrid);
-                    self.setNewMode();
                 } else {
                     self.treeGridHistory().items(nodesTreeGrid);
                 }
@@ -619,6 +618,9 @@ module nts.qmm017 {
                         });
                     } else if (self.viewModel017b().selectedConditionAtr() == 1 && self.viewModel017b().comboBoxUseMaster().selectedCode() < 6) {
                         let defaultEasyFormulaDetail = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
+                        if(!defaultEasyFormulaDetail){
+                            defaultEasyFormulaDetail = new nts.qmm017.model.FormulaEasyDetailDto();
+                        }
                         defaultEasyFormulaDetail.easyFormulaCode = '000';
                         command.easyFormulaDto.push(
                             {
