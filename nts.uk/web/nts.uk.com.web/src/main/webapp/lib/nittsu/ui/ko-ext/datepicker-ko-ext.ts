@@ -88,6 +88,15 @@ module nts.uk.ui.koExtentions {
                     value(newText);
                 }
             });
+            
+            $input.on("blur", () => {
+                var newText = $input.val();
+                var result = validator.validate(newText);
+                if (!result.isValid) {
+                    $input.ntsError('set', result.errorMessage);
+                }
+            });
+
 
             $input.on('validate', (function(e: Event) {
                 var newText = $input.val();
@@ -123,15 +132,14 @@ module nts.uk.ui.koExtentions {
             
             // Value Binding
             var dateFormatValue = (value() !== "") ? time.formatPattern(value(), valueFormat, ISOFormat) : "";
-            if (init === true || time.formatPattern($input.datepicker("getDate",true),"",ISOFormat) !== dateFormatValue) {
-                if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
-                    $input.datepicker('setDate', dateFormatValue);
-                    $label.text("(" + time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
-                }
-                else {
-                    $input.val("");
-                    $label.text("");
-                }
+            if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
+                // Check equals to avoid multi datepicker with same value
+                $input.datepicker('setDate', dateFormatValue);
+                $label.text("(" + time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
+            }
+            else {
+                $input.val("");
+                $label.text("");
             }
             container.data("init", false);
             
