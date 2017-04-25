@@ -7,7 +7,11 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Getter
 public class ResidentTaxPaymentData extends AggregateRoot {
 	private ResiTaxCode code;
@@ -28,10 +32,26 @@ public class ResidentTaxPaymentData extends AggregateRoot {
 		super.validate();
 
 		if (this.code == null) {
-			throw new BusinessException("Code nulll");
+			throw new BusinessException("対象データがありません。");
 		}
 	}
 
+	/**
+	 * Convert java type of Resident Tax Payment
+	 * @param code
+	 * @param taxPayrollMoney
+	 * @param taxBonusMoney
+	 * @param taxOverdueMoney
+	 * @param taxDemandChargeMoney
+	 * @param address
+	 * @param dueDate
+	 * @param staffNo
+	 * @param retirementAmount
+	 * @param cityTaxMoney
+	 * @param prefectureTaxMoney
+	 * @param yearMonth
+	 * @return
+	 */
 	public static ResidentTaxPaymentData createFromJavaType(String code, BigDecimal taxPayrollMoney,
 			BigDecimal taxBonusMoney, BigDecimal taxOverdueMoney, BigDecimal taxDemandChargeMoney, String address,
 			GeneralDate dueDate, BigDecimal staffNo, BigDecimal retirementAmount, BigDecimal cityTaxMoney,
@@ -42,7 +62,21 @@ public class ResidentTaxPaymentData extends AggregateRoot {
 				new StaffNo(staffNo), new ResidentTaxMoney(retirementAmount), new ResidentTaxMoney(cityTaxMoney),
 				new ResidentTaxMoney(prefectureTaxMoney), new YearMonth(yearMonth));
 	}
-
+	/**
+	 * Constructor Resident Tax Payment
+	 * @param code
+	 * @param taxPayrollMoney
+	 * @param taxBonusMoney
+	 * @param taxOverdueMoney
+	 * @param taxDemandChargeMoney
+	 * @param address
+	 * @param dueDate
+	 * @param staffNo
+	 * @param retirementAmount
+	 * @param cityTaxMoney
+	 * @param prefectureTaxMoney
+	 * @param yearMonth
+	 */
 	public ResidentTaxPaymentData(ResiTaxCode code, ResidentTaxMoney taxPayrollMoney, ResidentTaxMoney taxBonusMoney,
 			ResidentTaxMoney taxOverdueMoney, ResidentTaxMoney taxDemandChargeMoney, ResidentTaxAddress address,
 			GeneralDate dueDate, StaffNo staffNo, ResidentTaxMoney retirementAmount, ResidentTaxMoney cityTaxMoney,

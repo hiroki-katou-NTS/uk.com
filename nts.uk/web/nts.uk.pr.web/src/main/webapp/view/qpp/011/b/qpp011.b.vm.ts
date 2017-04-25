@@ -39,14 +39,14 @@ module qpp011.b {
         //B
         B_INP_001_yearMonth: any;
         B_INP_002_yearMonth: any;
-        B_INP_003_yearMonth: any;
+        B_INP_003_yearMonth: KnockoutObservable<any> = ko.observable();
         yearInJapanEmpire_B_LBL_005: any;
         yearInJapanEmpire_B_LBL_008: any;
         yearInJapanEmpire_B_LBL_010: any;
         //C
         C_INP_001_yearMonth: any;
         C_INP_002_yearMonth: any;
-        C_INP_003_yearMonth: any;
+        C_INP_003_yearMonth: KnockoutObservable<any> = ko.observable();
         yearInJapanEmpire_C_LBL_005: any;
         yearInJapanEmpire_C_LBL_008: any;
         yearInJapanEmpire_C_LBL_010: any;
@@ -56,6 +56,8 @@ module qpp011.b {
             var self = this;
             //start radiogroup data
             //B_01
+            //            self.B_INP_003_yearMonth = ko.observable(null);
+            //            $('#B_LBL_010').hide();
             self.B_SEL_001_RadioItemList = ko.observableArray([
                 new BoxModel(1, '本社'),
                 new BoxModel(2, '法定調書出力用会社')
@@ -113,8 +115,8 @@ module qpp011.b {
                     grouplength: 0,
                     decimallength: 0,
                     placeholder: "",
-                    width: "",
-                    textalign: "right"
+                    width: "18",
+                    textalign: "center"
                 })),
                 required: ko.observable(true),
                 enable: ko.observable(true),
@@ -155,7 +157,7 @@ module qpp011.b {
                             return x.bankBranchID === object.branchId
                         });
                         //Push data C_SEL_003
-                        self.C_SEL_003_ComboBoxItemList.push(new C_SEL_003_ComboboxItemModel(obj.bankCode, obj.bankBranchCode, object.lineBankCode, object.lineBankName));
+                        self.C_SEL_003_ComboBoxItemList.push(new C_SEL_003_ComboboxItemModel(obj.bankBranchName, obj.bankBranchCode,object.lineBankCode, object.lineBankName));
                         if (self.C_SEL_003_ComboBoxItemList.length > 0)
                             self.C_SEL_003_selectedCode(self.C_SEL_003_ComboBoxItemList()[0].lineBankCode);
                     }
@@ -167,11 +169,11 @@ module qpp011.b {
                 //Set Input Screen B
                 self.B_INP_001_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
                 self.B_INP_002_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
-                self.B_INP_003_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
+                self.B_INP_003_yearMonth(null);
                 //Set Input Screen C
                 self.C_INP_001_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
                 self.C_INP_002_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
-                self.C_INP_003_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
+                self.C_INP_003_yearMonth(null);
             }).fail(function(res) {
                 alert(res.message);
             });
@@ -309,7 +311,8 @@ module qpp011.b {
                     columns: self.columns,
                     initialExpandDepth: 2,
                     features: [
-                        {   name: "Selection",
+                        {
+                            name: "Selection",
                             multipleSelection: true,
                             rowSelectionChanged: function(evt: any, ui: any) {
                                 var selectedRows: Array<any> = ui.selectedRows;
@@ -318,7 +321,8 @@ module qpp011.b {
                                 }));
                             }
                         },
-                        {   name: "RowSelectors",
+                        {
+                            name: "RowSelectors",
                             enableCheckBoxes: true,
                             checkBoxMode: "biState",
                             enableSelectAllForPaging: true,
@@ -371,10 +375,15 @@ module qpp011.b {
             self.yearInJapanEmpire_B_LBL_008 = ko.observable();
             self.yearInJapanEmpire_B_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_002_yearMonth()).toString() + ")");
             //003
-            self.B_INP_003_yearMonth = ko.observable('2017/12/01');
+            // self.B_INP_003_yearMonth = ko.observable('2017/12/01');
             self.B_INP_003_yearMonth.subscribe(function(newValue) {
-                self.yearInJapanEmpire_B_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.B_INP_003_yearMonth()).format("YYYY/MM")).toString() + ")");
+                if (newValue != null) {
+                    self.yearInJapanEmpire_B_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.B_INP_003_yearMonth()).format("YYYY/MM")).toString() + ")");
+                } else {
+                    self.yearInJapanEmpire_B_LBL_010("");
+                }
             });
+
             self.yearInJapanEmpire_B_LBL_010 = ko.observable();
             self.yearInJapanEmpire_B_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_003_yearMonth()).toString() + ")");
             //C
@@ -392,9 +401,14 @@ module qpp011.b {
             self.yearInJapanEmpire_C_LBL_008 = ko.observable();
             self.yearInJapanEmpire_C_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_002_yearMonth()).toString() + ")");
             //003
-            self.C_INP_003_yearMonth = ko.observable('2017/12/01');
+
+            //self.C_INP_003_yearMonth = ko.observable();
             self.C_INP_003_yearMonth.subscribe(function(newValue) {
+                if (newValue != null) {
                 self.yearInJapanEmpire_C_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.C_INP_003_yearMonth()).format("YYYY/MM")).toString() + ")");
+                    }else{
+                    self.yearInJapanEmpire_C_LBL_010("");
+                }
             });
             self.yearInJapanEmpire_C_LBL_010 = ko.observable();
             self.yearInJapanEmpire_C_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_003_yearMonth()).toString() + ")");
@@ -402,7 +416,7 @@ module qpp011.b {
 
         openDDialog() {
             let self = this;
-            nts.uk.sessionStorage.setItem("TargetDate", self.B_INP_001_yearMonth());
+            nts.uk.sessionStorage.setItem("QPP011_D_TargetDate", nts.uk.time.formatYearMonth(self.B_INP_001_yearMonth()));
             nts.uk.ui.windows.sub.modal('/view/qpp/011/d/index.xhtml', { title: '納付書詳細設定', height: 550, width: 1050, dialogClass: 'no-close' }).onClosed(function(): any {
             });
         }
@@ -414,8 +428,8 @@ module qpp011.b {
 
         openFDialog() {
             let self = this;
-            //nts.uk.sessionStorage.setItem("TargetDate", self.B_INP_001_yearMonth());
-            nts.uk.ui.windows.setShared('QPP011_F_TargetDate', self.B_INP_001_yearMonth());
+            //nts.uk.sessionStorage.setItem("QPP011_F_TargetDate", moment(self.B_INP_001_yearMonth()).format("YYYY/MM"));
+            nts.uk.ui.windows.setShared('QPP011_F_TargetDate', nts.uk.time.formatYearMonth(self.B_INP_001_yearMonth()));
             nts.uk.ui.windows.setShared('QPP011_F_DesignatedMonth', self.B_INP_002_yearMonth());
             nts.uk.ui.windows.sub.modal('/view/qpp/011/f/index.xhtml', { title: '住民税チェックリスト', height: 560, width: 900, dialogClass: 'no-close' }).onClosed(function(): any {
             });
@@ -472,15 +486,17 @@ module qpp011.b {
     }
 
     export class C_SEL_003_ComboboxItemModel {
-        bankCode: string;
+        bankBranchName: string;
         bankBranchCode: string;
         lineBankCode: string;
         lineBankName: string;
-        constructor(bankCode: string, bankBranchCode: string, lineBankCode: string, lineBankName: string) {
-            this.bankCode = bankCode;
+        label: string;
+        constructor(bankBranchName: string, bankBranchCode: string, lineBankCode: string, lineBankName: string) {
+            this.bankBranchName = bankBranchName;
             this.bankBranchCode = bankBranchCode;
             this.lineBankCode = lineBankCode;
             this.lineBankName = lineBankName;
+            this.label = lineBankCode+" - "+bankBranchCode+"  "+lineBankName+"  "+ lineBankName;
         }
     }
     export class B_SEL_002_ComboboxItemModel {

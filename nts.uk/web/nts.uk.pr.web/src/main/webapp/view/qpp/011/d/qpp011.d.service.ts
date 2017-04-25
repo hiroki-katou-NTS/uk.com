@@ -43,7 +43,7 @@ module qpp011.d.service {
             })
         return dfd.promise();
     }
-    export function add(residentialTax: model.residentialTax): JQueryPromise<any> {
+    export function add(residentialTax: any): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
         nts.uk.request.ajax(paths.add, residentialTax)
             .done(function(res: any) {
@@ -55,7 +55,7 @@ module qpp011.d.service {
         return dfd.promise();
     }
 
-    export function update(residentialTax: model.residentialTax): JQueryPromise<any> {
+    export function update(residentialTax:any): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
         nts.uk.request.ajax(paths.update, residentialTax)
             .done(function(res: any) {

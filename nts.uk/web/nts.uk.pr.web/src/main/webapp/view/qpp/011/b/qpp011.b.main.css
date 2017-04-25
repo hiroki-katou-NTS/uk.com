@@ -49,7 +49,7 @@
 }
 
 #C_INP_003 input, #C_INP_002 input, #C_INP_001 input, #B_INP_001 input,
-	#B_INP_002 input, #B_INP_003 input {
+	#B_INP_002 input, #B_INP_003 input  {
 	height: 20px;
 }
 
@@ -84,7 +84,8 @@ input {
 #C_INP_004 input {
 	padding: 2px 9px !important;
 	width: 38px;
-	margin-left: 26px;
+	height: 30px;
+	margin-left: -3px;
 }
 
 .hrLabel {

@@ -24,6 +24,12 @@ public class ResimentTaxPaymentDataWebService extends WebService {
 	@Inject
 	private UpdateResimentTaxPaymentDataCommandHandler updateHandler;
 
+	/**
+	 * Find Resiment Tax Payment by ResimentTaxCode and YearMonth
+	 * @param resimentTaxCode
+	 * @param yearMonth
+	 * @return
+	 */
 	@Path("find/{resimentTaxCode}/{yearMonth}")
 	@POST
 	public ResimentTaxPaymentDataDto find(@PathParam("resimentTaxCode") String resimentTaxCode,
@@ -31,12 +37,20 @@ public class ResimentTaxPaymentDataWebService extends WebService {
 		return this.finder.find(resimentTaxCode, yearMonth);
 	}
 
+	/**
+	 * Add Resiment Tax Payment
+	 * @param command
+	 */
 	@Path("add")
 	@POST
 	public void add(AddResimentTaxPaymentDataCommand command) {
 		this.addHandler.handle(command);
 	}
 
+	/**
+	 * Update Resiment Tax Payment
+	 * @param command
+	 */
 	@Path("update")
 	@POST
 	public void update(UpdateResimentTaxPaymentDataCommand command) {
