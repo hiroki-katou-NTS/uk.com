@@ -7,14 +7,14 @@ import nts.arc.primitive.constraint.IntegerMinValue;
  * @author LamDT
  */
 @IntegerMinValue(1)
-public class Column extends IntegerPrimitiveValue<Column> {
+public class Row extends IntegerPrimitiveValue<Column> {
 
 	/**
 	 * serialVersionUID
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public Column(int rawValue) {
+	public Row(int rawValue) {
 		super(rawValue);
 	}
 

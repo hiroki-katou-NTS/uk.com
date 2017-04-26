@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.dom.layout.enums;
+package nts.uk.ctx.sys.portal.dom.enums;
 
 /**
  *  0: My Page <br/>
