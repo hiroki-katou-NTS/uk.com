@@ -32,10 +32,10 @@ module qmm005.a {
 
                     if (item) {
                         _row.dispSet = item.paydayProcessingDto.dispSet;
-                        
+
                         _row.index(item.paydayProcessingDto.processingNo);
                         _row.label(item.paydayProcessingDto.processingName);
-                        
+
                         let _sel001Data: Array<common.SelectItem> = [];
                         let _sel002Data: Array<common.SelectItem> = [];
                         let _sel004Data: Array<common.SelectItem> = [];
@@ -58,10 +58,10 @@ module qmm005.a {
                                 if (ym.success) {
                                     _sel001Data.push(new common.SelectItem({ index: ym.year, label: ym.year.toString(), value: ym.year }));
                                 }
-                                _sel002Data.push(new common.SelectItem({ index: month, label: label, value: month }));
+                                _sel002Data.push(new common.SelectItem({ index: parseInt(ym.year + '' + month), label: label, value: month }));
 
                                 if (payDate.getFullYear() === cym.year && month === cym.month) {
-                                    cspd = month;
+                                    cspd = parseInt(cym.year + '' + month);
                                 }
                             }
                         }
@@ -103,7 +103,7 @@ module qmm005.a {
                         if (bYear) {
                             _row.sel004(bcym.year);
                         }
-                        else if(_sel004Data[0]) {
+                        else if (_sel004Data[0]) {
                             _row.sel004(_sel004Data[0].value);
                         }
 
@@ -111,7 +111,7 @@ module qmm005.a {
                         let bMonth = _.find(_sel005Data, function(ii) { return ii.value == bcym.month; });
                         if (bMonth) {
                             _row.sel005(bcym.month);
-                        } else if(_sel005Data[0]){
+                        } else if (_sel005Data[0]) {
                             _row.sel005(_sel005Data[0].value);
                         }
                     }
@@ -133,7 +133,7 @@ module qmm005.a {
                         processingNo: row.index(),
                         processingName: row.label(),
                         dispSet: 0,
-                        currentProcessingYm: parseInt((row.sel001() + '' + row.sel002())['formatYearMonth']()),
+                        currentProcessingYm: parseInt(row.sel002()['formatYearMonth']()),
                         bonusAtr: row.sel003() === true ? 1 : 0,
                         bcurrentProcessingYm: parseInt((row.sel004() + '' + row.sel005())['formatYearMonth']())
                     });
@@ -219,28 +219,38 @@ module qmm005.a {
         sel005Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
 
         constructor(param: ITableRowItem) {
-            this.index(param.index);
-            this.label(param.label);
-            
-            this.dispSet = param.dispSet;
+            let self = this;
+            self.index(param.index);
+            self.label(param.label);
 
-            this.sel001Data(param.sel001Data);
+            self.dispSet = param.dispSet;
+
+            self.sel001Data(param.sel001Data);
             if (param.sel001Data[0])
-                this.sel001(param.sel001Data[0].index);
+                self.sel001(param.sel001Data[0].index);
 
-            this.sel002Data(param.sel002Data);
+            self.sel002Data(param.sel002Data);
             if (param.sel002Data[0])
-                this.sel002(param.sel002Data[0].index);
+                self.sel002(param.sel002Data[0].index);
 
-            this.sel003(param.sel003);
+            self.sel003(param.sel003);
 
-            this.sel004Data(param.sel004Data);
+            self.sel004Data(param.sel004Data);
             if (param.sel004Data[0])
-                this.sel004(param.sel004Data[0].index);
+                self.sel004(param.sel004Data[0].index);
 
-            this.sel005Data(param.sel005Data);
+            self.sel005Data(param.sel005Data);
             if (param.sel005Data[0])
-                this.sel005(param.sel005Data[0].index);
+                self.sel005(param.sel005Data[0].index);
+
+            self.sel001.subscribe(function(v) {
+                if (v) {
+                    let selected = _.find(self.sel002Data(), function(item) { return item.index == self.sel002(); });
+                    if (selected) {
+                        self.sel002(parseInt(v + '' + selected.value));
+                    }
+                }
+            });
         }
 
         enable(): boolean {
@@ -252,7 +262,7 @@ module qmm005.a {
             self.showDialog(true);
             nts.uk.ui.windows.setShared('dataRow', item);
             console.log(window.innerWidth);
-            nts.uk.ui.windows.sub.modal("../b/index.xhtml", { width: window["large"] ? 1025 : 1035 , height: window["large"] ? 755 : 620, title: '支払日の設定', dialogClass: "no-close" })
+            nts.uk.ui.windows.sub.modal("../b/index.xhtml", { width: window["large"] ? 1025 : 1035, height: window["large"] ? 755 : 620, title: '支払日の設定', dialogClass: "no-close" })
                 .onClosed(function() {
                     self.showDialog(false);
                     __viewContext["viewModel"].start();

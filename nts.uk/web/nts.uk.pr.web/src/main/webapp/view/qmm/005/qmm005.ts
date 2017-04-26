@@ -38,7 +38,6 @@ class CheckBoxWithHelpBindingHandler implements KnockoutBindingHandler {
                 span.id = valueAccessor().helper.id;
 
                 //remove child helper
-                debugger;
                 $(".helper", element).remove();
 
                 if (typeof valueAccessor().helper.text == 'function') {
