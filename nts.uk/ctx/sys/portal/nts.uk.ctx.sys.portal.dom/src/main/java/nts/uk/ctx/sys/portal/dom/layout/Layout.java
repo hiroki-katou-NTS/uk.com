@@ -5,7 +5,7 @@ import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.sys.portal.dom.enums.PGType;
+import nts.uk.ctx.sys.portal.dom.layout.enums.PGType;
 
 /**
  * @author LamDT
