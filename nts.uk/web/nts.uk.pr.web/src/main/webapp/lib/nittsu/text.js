@@ -372,7 +372,7 @@ var nts;
                     this.option = option;
                 }
                 NumberFormatter.prototype.format = function (source) {
-                    return uk.ntsNumber.formatNumber(source, this.option.option);
+                    return source === '' ? source : uk.ntsNumber.formatNumber(source, this.option.option);
                 };
                 return NumberFormatter;
             }());
