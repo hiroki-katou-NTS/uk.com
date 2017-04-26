@@ -27,8 +27,8 @@ var qmm012;
             }
             function findAllItemBD(ItemMaster) {
                 var dfd = $.Deferred();
-                var categoryAtr = ItemMaster.categoryAtr;
-                var itemCode = ItemMaster.itemCode;
+                let categoryAtr = ItemMaster.categoryAtr;
+                let itemCode = ItemMaster.itemCode;
                 if (categoryAtr == 0) {
                     findAllItemSalaryBD(itemCode).done(function (itemBDs) {
                         dfd.resolve(itemBDs);
@@ -77,8 +77,8 @@ var qmm012;
             }
             function deleteItemBD(itemBD, ItemMaster) {
                 var dfd = $.Deferred();
-                var categoryAtr = ItemMaster.categoryAtr;
-                var itemCode = ItemMaster.itemCode;
+                let categoryAtr = ItemMaster.categoryAtr;
+                let itemCode = ItemMaster.itemCode;
                 if (categoryAtr == 0) {
                     deleteItemSalaryBD(itemBD).done(function (any) {
                         dfd.resolve(any);
@@ -116,8 +116,8 @@ var qmm012;
             }
             function addItemBD(itemBD, ItemMaster) {
                 var dfd = $.Deferred();
-                var categoryAtr = ItemMaster.categoryAtr;
-                var itemCode = ItemMaster.itemCode;
+                let categoryAtr = ItemMaster.categoryAtr;
+                let itemCode = ItemMaster.itemCode;
                 if (categoryAtr == 0) {
                     addItemSalaryBD(itemBD).done(function (any) {
                         dfd.resolve(any);
@@ -155,8 +155,8 @@ var qmm012;
             }
             function updateItemBD(itemBD, ItemMaster) {
                 var dfd = $.Deferred();
-                var categoryAtr = ItemMaster.categoryAtr;
-                var itemCode = ItemMaster.itemCode;
+                let categoryAtr = ItemMaster.categoryAtr;
+                let itemCode = ItemMaster.itemCode;
                 if (categoryAtr == 0) {
                     updateItemSalaryBD(itemBD).done(function (any) {
                         dfd.resolve(any);
@@ -172,26 +172,25 @@ var qmm012;
             service.updateItemBD = updateItemBD;
             var model;
             (function (model) {
-                var ItemBD = (function () {
-                    function ItemBD(itemCode, itemBreakdownCode, itemBreakdownName, itemBreakdownAbName, uniteCode, zeroDispSet, itemDispAtr, errRangeLowAtr, errRangeLow, errRangeHighAtr, errRangeHigh, alRangeLowAtr, alRangeLow, alRangeHighAtr, alRangeHigh) {
-                        this.itemCode = itemCode ? itemCode : '';
-                        this.itemBreakdownCode = itemBreakdownCode ? itemBreakdownCode : '';
-                        this.itemBreakdownName = itemBreakdownName ? itemBreakdownName : '';
-                        this.itemBreakdownAbName = itemBreakdownAbName ? itemBreakdownAbName : '';
-                        this.uniteCode = uniteCode ? uniteCode : '';
-                        this.zeroDispSet = zeroDispSet ? zeroDispSet : 0;
-                        this.itemDispAtr = itemDispAtr ? itemDispAtr : 0;
-                        this.errRangeLowAtr = errRangeLowAtr ? errRangeLowAtr : 0;
-                        this.errRangeLow = errRangeLow ? errRangeLow : 0;
-                        this.errRangeHighAtr = errRangeHighAtr ? errRangeHighAtr : 0;
-                        this.errRangeHigh = errRangeHigh ? errRangeHigh : 0;
-                        this.alRangeLowAtr = alRangeLowAtr ? alRangeLowAtr : 0;
-                        this.alRangeLow = alRangeLow ? alRangeLow : 0;
-                        this.alRangeHighAtr = alRangeHighAtr ? alRangeHighAtr : 0;
-                        this.alRangeHigh = alRangeHigh ? alRangeHigh : 0;
+                class ItemBD {
+                    constructor(itemCode, itemBreakdownCode, itemBreakdownName, itemBreakdownAbName, uniteCode, zeroDispSet, itemDispAtr, errRangeLowAtr, errRangeLow, errRangeHighAtr, errRangeHigh, alRangeLowAtr, alRangeLow, alRangeHighAtr, alRangeHigh) {
+                        this.itemCode = itemCode;
+                        this.itemBreakdownCode = itemBreakdownCode;
+                        this.itemBreakdownName = itemBreakdownName;
+                        this.itemBreakdownAbName = itemBreakdownAbName;
+                        this.uniteCode = uniteCode;
+                        this.zeroDispSet = zeroDispSet;
+                        this.itemDispAtr = itemDispAtr;
+                        this.errRangeLowAtr = errRangeLowAtr;
+                        this.errRangeLow = errRangeLow;
+                        this.errRangeHighAtr = errRangeHighAtr;
+                        this.errRangeHigh = errRangeHigh;
+                        this.alRangeLowAtr = alRangeLowAtr;
+                        this.alRangeLow = alRangeLow;
+                        this.alRangeHighAtr = alRangeHighAtr;
+                        this.alRangeHigh = alRangeHigh;
                     }
-                    return ItemBD;
-                }());
+                }
                 model.ItemBD = ItemBD;
             })(model = service.model || (service.model = {}));
         })(service = i.service || (i.service = {}));

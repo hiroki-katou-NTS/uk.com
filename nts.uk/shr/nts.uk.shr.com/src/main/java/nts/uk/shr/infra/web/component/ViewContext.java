@@ -43,17 +43,9 @@ public class ViewContext extends UIComponentBase {
 		rw.write("__viewContext.primitiveValueConstraints = __viewContext.primitiveValueConstraints || {};");
 
 		CDI.current().select(ViewContextEnvWriter.class).get().write(rw);
-
-		// add i18n to view context
-		IInternationalization i18n = CDI.current().select(IInternationalization.class).get();
-		String messageObject = createJsObject(i18n.getAllMessage());
-		// TODO: temp fix program id
-		String codeNameObject = createJsObject(i18n.getCodeNameResourceForProgram("QPP005"));
-		rw.write("__viewContext.messages=" + messageObject);
-		rw.write(";");
-		rw.write("__viewContext.codeNames=" + codeNameObject);
-
+		String applicationContextPath = context.getExternalContext().getApplicationContextPath();
 		rw.write("</script>");
+		rw.write("<script src='"+applicationContextPath+"/webapi/loadresource'></script>");
 
 	}
 
@@ -65,15 +57,6 @@ public class ViewContext extends UIComponentBase {
 		rw.write("rootPath: '" + rootPath + "'");
 	}
 
-	private String createJsObject(Map<String, String> resource) {
-		StringBuilder builder = new StringBuilder();
-		builder.append("{");
-
-		builder.append(resource.entrySet().stream().map(e -> e.getKey() + ":\"" + e.getValue() + "\"")
-				.collect(Collectors.joining(",")));
-
-		builder.append("}");
-		return builder.toString();
-	}
+	
 
 }

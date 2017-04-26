@@ -48,7 +48,7 @@ public class FormulaHistoryDomainServiceImpl implements FormulaHistoryDomainServ
 			if (difficultyAtr == 0) {
 				this.formulaEasyHeaderRepository.add(formulaEasyHead);
 			}
-			if ((difficultyAtr == 1 || difficultyAtr == 0) && previousFormulaHistoryUpdate != null) {
+			if (previousFormulaHistoryUpdate != null) {
 				this.formulaHistoryRepository.update(previousFormulaHistoryUpdate);
 			}
 		} catch (Exception e) {

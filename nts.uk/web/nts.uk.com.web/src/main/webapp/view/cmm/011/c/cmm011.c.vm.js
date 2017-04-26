@@ -4,8 +4,11 @@ var cmm009;
     (function (c) {
         var viewmodel;
         (function (viewmodel) {
-            var ScreenModel = (function () {
-                function ScreenModel() {
+            class ScreenModel {
+                /**
+                 * Init screen model.
+                 */
+                constructor() {
                     var self = this;
                     self.C_INP_002 = ko.observable(null);
                     self.valueSel001 = ko.observable("");
@@ -28,13 +31,14 @@ var cmm009;
                     if (day < 10)
                         day = "0" + day;
                     startDateofHisFromScreenatoString = year + month + day;
+                    //---radio
                     if (self.data == "datanull") {
                         self.isRadioCheck = ko.observable(2);
                         self.enable = ko.observable(false);
                     }
                     else {
                         self.enable = ko.observable(true);
-                        var _st = nts.uk.ui.windows.getShared('startDateOfHis');
+                        let _st = nts.uk.ui.windows.getShared('startDateOfHis');
                         self.selectStartYm(_st);
                         self.isRadioCheck = ko.observable(1);
                     }
@@ -43,9 +47,10 @@ var cmm009;
                         { value: 2, text: ko.observable('初めから作成する') }
                     ]);
                 }
-                ScreenModel.prototype.createHistory = function () {
+                createHistory() {
                     var self = this;
                     var inputYm = $('#INP_001').val();
+                    //check YM
                     if (!nts.uk.time.parseYearMonthDate(inputYm).success) {
                         alert(nts.uk.time.parseYearMonthDate(inputYm).msg);
                         return false;
@@ -62,8 +67,8 @@ var cmm009;
                         self.createData();
                         nts.uk.ui.windows.close();
                     }
-                };
-                ScreenModel.prototype.createData = function () {
+                }
+                createData() {
                     var self = this;
                     var startYearMonthDay = $('#INP_001').val();
                     var checked = null;
@@ -77,29 +82,30 @@ var cmm009;
                     var obj = new Object(startYearMonthDay, checked, memo);
                     self.object(obj);
                     nts.uk.ui.windows.setShared('itemHistory', self.object());
-                };
-                ScreenModel.prototype.start = function () {
+                }
+                start() {
                     var self = this;
                     var dfd = $.Deferred();
                     dfd.resolve();
+                    // Return.
                     return dfd.promise();
-                };
-                ScreenModel.prototype.closeDialog = function () {
+                }
+                closeDialog() {
                     nts.uk.ui.windows.close();
-                };
-                return ScreenModel;
-            }());
+                }
+            }
             viewmodel.ScreenModel = ScreenModel;
-            var Object = (function () {
-                function Object(startYearMonth, checked, memo) {
+            class Object {
+                constructor(startYearMonth, checked, memo) {
                     this.startYearMonth = startYearMonth;
                     this.memo = memo;
                     this.checked = checked;
                 }
-                return Object;
-            }());
+            }
             viewmodel.Object = Object;
         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
     })(c = cmm009.c || (cmm009.c = {}));
 })(cmm009 || (cmm009 = {}));
-//# sourceMappingURL=cmm011.c.vm.js.map
+/*
+
+*/ 

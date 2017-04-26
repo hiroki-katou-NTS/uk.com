@@ -106,7 +106,7 @@ module qmm005.a {
             });
         }
 
-        btn001Click(item, event) {
+        saveData(item, event) {
             let self = this, items = self.items();
             var data: Array<PaydayProcessingDto> = [];
             for (var i = 0, row; row = items[i] as TableRowItem; i++) {

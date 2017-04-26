@@ -5,7 +5,8 @@ __viewContext.ready(function () {
             self.enable = ko.observable(true);
             self.readonly = ko.observable(false);
             self.date = ko.observable("1990/01/01");
-            self.time = ko.observable("12:00");
+            self.timeOfDay = ko.observable("12:00");
+            self.time = ko.observable(1200);
             self.yearmontheditor = {
                 value: ko.observable(200001),
                 constraint: 'LayoutCode',

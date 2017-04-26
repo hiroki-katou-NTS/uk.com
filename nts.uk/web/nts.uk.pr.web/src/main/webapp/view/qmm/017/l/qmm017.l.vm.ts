@@ -47,7 +47,6 @@ module nts.uk.pr.view.qmm017.l {
                     self.coefficientFixedValue(self.paramDirtyData.coefficientFixedValue);
                     self.comboBoxAdjustmentAtr().selectedCode(self.paramDirtyData.adjustmentDevision.toString());
                 }
-
             }
 
             exportTextListItemName(lstItem: Array<ItemModel>, lstItemCode: Array<string>) {
@@ -353,7 +352,7 @@ module nts.uk.pr.view.qmm017.l {
                 if(easyFormulaDetail.baseValueDevision !== '0') {
                     easyFormulaDetail.baseFixedValue = 0;
                 }
-                if(easyFormulaDetail.coefficientDivision !== '0') {
+                if(easyFormulaDetail.coefficientDivision !== '0000') {
                     easyFormulaDetail.coefficientFixedValue = 0;
                 }
                 nts.uk.ui.windows.setShared('easyFormulaDetail', easyFormulaDetail);
