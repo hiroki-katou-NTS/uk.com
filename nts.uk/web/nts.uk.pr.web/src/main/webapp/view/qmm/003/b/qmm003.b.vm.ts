@@ -35,10 +35,13 @@ module qmm003.b.viewmodel {
         clickButton(): any {
             let self = this;
             self.yes = true;
-            nts.uk.ui.windows.setShared('currentNode', self.currentNode(), true);
             nts.uk.ui.windows.setShared('yes', self.yes, true);
-            nts.uk.ui.windows.close();
-
+            if (self.currentNode()) {
+                nts.uk.ui.windows.setShared('currentNode', self.currentNode(), true);
+                nts.uk.ui.windows.close();
+            } else {
+                nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。");
+            }
         }
 
         cancelButton(): void {

@@ -39,16 +39,18 @@ module qmm003.d.viewmodel {
             for (let i = 0; i < self.arrayNode().length; i++) {
                 resiTaxCodes.push(self.arrayNode()[i]);
             }
-            nts.uk.ui.windows.setShared('items', self.items(), true);
-            nts.uk.ui.windows.setShared('arrayNode', self.arrayNode(), true);
             nts.uk.ui.windows.setShared('yes', self.yes, true);
-            qmm003.d.service.deleteResidential(resiTaxCodes).done(function(data) {
-                self.items([]);
-                self.nodeRegionPrefectures([]);
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alert(res.message);
-            });
-            nts.uk.ui.windows.close();
+            if (resiTaxCodes.length > 0) {
+                qmm003.d.service.deleteResidential(resiTaxCodes).done(function(data) {
+                    self.items([]);
+                    self.nodeRegionPrefectures([]);
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
+                nts.uk.ui.windows.close();
+            } else {
+                nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。");
+            }
         }
         cancelButton(): void {
             this.yes = false;

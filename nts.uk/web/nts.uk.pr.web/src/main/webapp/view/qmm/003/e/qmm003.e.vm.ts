@@ -27,24 +27,27 @@ module qmm003.e.viewmodel {
         clickButton(): any {
             let self = this;
             self.yes = true;
-            nts.uk.ui.windows.setShared('resiTaxCodeLeft', self.resiTaxCodeLeft(), true);
-            nts.uk.ui.windows.setShared('year', self.year(), true);
-            nts.uk.ui.windows.setShared('resiTaxCodeRight', self.resiTaxCodeRight(), true);
             nts.uk.ui.windows.setShared('yes', self.yes, true);
-            nts.uk.ui.windows.setShared('treeLeft', self.treeLeft(), true);
             if (self.resiTaxCodeLeft() && self.resiTaxCodeRight() && self.year()) {
                 service.updateAllReportCode(self.resiTaxCodeLeft(), self.resiTaxCodeRight(), self.year()).done(function(data: any) {
                 }).fail(function(res: any) {
                     nts.uk.ui.dialog.alert(res.message);
                 });
+                nts.uk.ui.windows.close();
+            } else {
+                if (!self.year()) {
+                    //error 07, 01
+                    nts.uk.ui.dialog.alert("対象年度  が入力されていません。 \r\n 住民税納付先コード が選択されていません。");
+                } else {
+                    //error 07
+                    nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。");
+                }
             }
-            nts.uk.ui.windows.close();
         }
 
         cancelButton(): void {
             this.yes = false;
             nts.uk.ui.windows.setShared('yes', this.yes, true);
-            nts.uk.ui.windows.setShared('treeLeft', this.treeLeft(), true);
             nts.uk.ui.windows.close();
         }
 

@@ -18,25 +18,23 @@
 			<com:stylefile path="main.css" />
 			<script>
 				var dialogSize = {
-					width : 910,
-					height : 850
+					width : 710,
+					height : 630
 				};
 			</script>
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="flex valign-center" style="margin-top: 20px">
+			<div class="flex valign-center" style="margin-top: 5px">
 				<label id="E_LBL_001">個人情報で登録した納付先を置換えます。</label>
 			</div>
 			<div>
-				<div style="margin-left: 55px"
-					data-bind="ntsFormLabel: { required: true }" class="form-label">
+				<div style="margin-left: 25px; height: 30px; margin-top:5px"
+					data-bind="ntsFormLabel: { required: true }" class="form-label flex">
 					<label id="E_LBL_004">対象年度</label>
+					<input id="E_INP_003" data-bind="ntsTextEditor: {value:year}" />
+				    <label id="E_LBL_005" data-bind="text: yearJapan()">対象年度</label>
 				</div>
-				<input id="E_INP_003" data-bind="ntsTextEditor: {value:year}" />
-				<label id="E_LBL_005" data-bind="text: yearJapan()">対象年度</label>
-
-
 			</div>
 
 			<div id="contents-area" class="cf">
@@ -48,13 +46,12 @@
 					<div class="caret-right caret-background">
 						<i class="icon icon-searchbox"></i>
 
-						<div id="E_SCH_001" style="width: 400px"
-							data-bind="ntsSearchBox: {items: treeLeft, selected: resiTaxCodeLeft, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
+						<div style="margin-top: -11px; margin-left: 50px;" data-bind="ntsSearchBox: {items: treeLeft, selected: resiTaxCodeLeft, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
 						<div>
 							<table id="treegrid21"
 								data-bind="ntsTreeGridView:{
-								   	width: 385,
-									height: 380,
+								   	width: 310,
+									height: 360,
 									options: treeLeft,
 									selectedValues: resiTaxCodeLeft,
 									optionsValue: 'code',
@@ -75,14 +72,14 @@
 					</div>
 
 					<div>
-						<i class="icon icon-searchbox"></i>
-						<div id="E_SCH_002" style="width: 410px"
+						<i style="margin-left: 15px" class="icon icon-searchbox"></i>
+						<div style="margin-left: 80px; margin-top: -10px;"
 							data-bind="ntsSearchBox: {items: treeRight, selected: resiTaxCodeRight, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
 						<div>
 							<table id="treegrid2"
 								data-bind="ntsTreeGridView:{
-								   	width: 385,
-									height: 380,
+								   	width: 300,
+									height: 360,
 									options: treeRight,
 									value: resiTaxCodeRight,
 									optionsValue: 'code',
@@ -98,7 +95,7 @@
 			</div>
 			<hr />
 			<div>
-				<button id="E_BTN_001" class="proceed"
+				<button id="E_BTN_001" style="margin-left: 250px;" class="proceed"
 					data-bind="click: clickButton">実行</button>
 				<button id="E_BTN_002" data-bind="click: cancelButton">キャンセル</button>
 			</div>

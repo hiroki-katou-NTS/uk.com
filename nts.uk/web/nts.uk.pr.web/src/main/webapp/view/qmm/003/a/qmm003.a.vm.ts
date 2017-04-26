@@ -174,19 +174,13 @@ module qmm003.a.viewmodel {
         // khi click vào btn006 mở ra màn hình D
         openDDialog() {
             let self = this;
-            let arrayNode: any;
             let yes: any;
             nts.uk.ui.windows.sub.modeless("/view/qmm/003/d/index.xhtml", { title: '住民税納付先の登録　＞　一括削除', dialogClass: "no-close" }).onClosed(function(): any {
-                arrayNode = nts.uk.ui.windows.getShared("arrayNode");
                 yes = nts.uk.ui.windows.getShared("yes");
                 if (yes) {
-                    if (arrayNode.length > 0) {
-                        self.redensitalTaxNodeList([]);
-                        self.nodeRegionPrefectures([]);
-                        self.reload(undefined);
-                    } else {
-                        nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。");
-                    }
+                    self.redensitalTaxNodeList([]);
+                    self.nodeRegionPrefectures([]);
+                    self.reload(undefined);
                 }
             });
 
@@ -218,36 +212,15 @@ module qmm003.a.viewmodel {
         // khi click btn004 mở ra màn hình E - chức năng hợp nhất nơi đăng kí thuế cư trú
         openEDialog() {
             let self = this;
-            let resiTaxCodeLeft: any;
-            let resiTaxCodeRight: any;
             let yes: any;
-            let year: any;
-            let treeLeft: any;
             if (self.redensitalTaxNodeList().length > 0) {
                 nts.uk.ui.windows.sub.modeless("/view/qmm/003/e/index.xhtml", { title: '住民税納付先の登録＞納付先の統合', dialogClass: "no-close" }).onClosed(function(): any {
-                    treeLeft = nts.uk.ui.windows.getShared('treeLeft');
-                    resiTaxCodeLeft = nts.uk.ui.windows.getShared('resiTaxCodeLeft');
-                    resiTaxCodeRight = nts.uk.ui.windows.getShared('resiTaxCodeRight');
-                    year = nts.uk.ui.windows.getShared('year');
                     yes = nts.uk.ui.windows.getShared('yes');
-                    if (treeLeft) {
                         if (yes) {
-
-                            if (resiTaxCodeRight && resiTaxCodeLeft) {
-                                self.redensitalTaxNodeList([]);
-                                self.nodeRegionPrefectures([]);
-                                self.reload(undefined);
-                            } else {
-                                if (!year) {
-                                    //error 07, 01
-                                    nts.uk.ui.dialog.alert("対象年度  が入力されていません。 \r\n 住民税納付先コード が選択されていません。");
-                                } else {
-                                    //error 07
-                                    nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。");
-                                }
-                            }
+                            self.redensitalTaxNodeList([]);
+                            self.nodeRegionPrefectures([]);
+                            self.reload(undefined);
                         }
-                    }
                 });
             }
         }
@@ -508,17 +481,12 @@ module qmm003.a.viewmodel {
                 currentNode = nts.uk.ui.windows.getShared("currentNode");
                 yes = nts.uk.ui.windows.getShared("yes");
                 if (yes) {
-                    if (currentNode) {
-                        self.resiTaxCode(currentNode.resiTaxCode);
-                        self.resiTaxAutonomy(currentNode.resiTaxAutonomy);
-                        self.resiTaxAutonomyKana(currentNode.resiTaxAutonomyKana);
-                        console.log(currentNode);
-                        self.prefectureCode(currentNode.prefectureCode);
-                        $('#A_INP_002').ntsError('clear');
-                        $('#A_INP_003').ntsError('clear');
-                    } else {
-                        nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。");
-                    }
+                    self.resiTaxCode(currentNode.resiTaxCode);
+                    self.resiTaxAutonomy(currentNode.resiTaxAutonomy);
+                    self.resiTaxAutonomyKana(currentNode.resiTaxAutonomyKana);
+                    self.prefectureCode(currentNode.prefectureCode);
+                    $('#A_INP_002').ntsError('clear');
+                    $('#A_INP_003').ntsError('clear');
                 }
             });
         }
@@ -526,17 +494,13 @@ module qmm003.a.viewmodel {
         // khi click btn009 mo ra man hinh C 
         openCDialog() {
             let self = this;
-            let currentNode: RedensitalTaxNode;
+            let currentNode: any;
             let yes: boolean;
             nts.uk.ui.windows.sub.modeless("/view/qmm/003/c/index.xhtml", { title: '住民税納付先の登録＞住民税報告先一覧', dialogClass: "no-close" }).onClosed(function(): any {
                 currentNode = nts.uk.ui.windows.getShared('currentNode');
                 yes = nts.uk.ui.windows.getShared('yes');
                 if (yes) {
-                    if (currentNode) {
-                        self.resiTaxReportCode(currentNode.code + " " + currentNode.name);
-                    } else {
-                        nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。");
-                    }
+                    self.resiTaxReportCode(currentNode.resiTaxCode + " " + currentNode.resiTaxAutonomy);
                 }
             });
         }
