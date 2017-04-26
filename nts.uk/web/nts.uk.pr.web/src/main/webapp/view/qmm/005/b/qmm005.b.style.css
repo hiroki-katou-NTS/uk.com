@@ -1,5 +1,13 @@
 @import url("../qmm005.css");
 
+#functions-area {
+	position: fixed;
+	width: 100%;
+	top: 0;
+	z-index: 100;
+	background-color: #fff;
+}
+
 #functions-area #B_BTN_002 {
 	background-color: rgb(164, 238, 176);
 }
@@ -12,6 +20,7 @@
 
 #contents-area {
 	padding-bottom: 0;
+	margin-top: 50px;
 }
 
 #contents-area .blst001-container {
