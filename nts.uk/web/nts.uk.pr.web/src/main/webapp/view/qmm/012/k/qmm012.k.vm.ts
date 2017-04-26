@@ -47,6 +47,4 @@ module qmm012.k.viewmodel {
             nts.uk.ui.windows.close();
         }
     }
-
-
 }

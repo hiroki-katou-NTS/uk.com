@@ -4,12 +4,12 @@ var qmm012;
     (function (a) {
         var viewmodel;
         (function (viewmodel) {
-            class ScreenModel {
-                constructor() {
+            var ScreenModel = (function () {
+                function ScreenModel() {
                     this.selectedRuleCode = ko.observable(0);
                     this.enable = ko.observable(true);
-                    this.lBL_004_Text = ko.observable('社員に対して支払う金額の種類を登録します。」と表記');
-                    let self = this;
+                    this.NavigationMessage = ko.observable('社員に対して支払う金額の種類を登録します。」と表記');
+                    var self = this;
                     //start Switch Data
                     self.enable;
                     self.roundingRules = ko.observableArray([
@@ -19,10 +19,10 @@ var qmm012;
                     ]);
                     //endSwitch Data
                     self.selectedRuleCode.subscribe(function (NewValue) {
-                        self.lBL_004_Text(Gen_LBL_004_Text(NewValue));
+                        self.NavigationMessage(Gen_NavigationMessage_Text(NewValue));
                     });
-                    function Gen_LBL_004_Text(NewValue) {
-                        let text;
+                    function Gen_NavigationMessage_Text(NewValue) {
+                        var text;
                         switch (NewValue) {
                             case 0:
                                 text = "社員に対して支払う金額の種類を登録します。」と表記";
@@ -37,18 +37,19 @@ var qmm012;
                         return text;
                     }
                 }
-                submitInfo() {
-                    let self = this;
+                ScreenModel.prototype.submitInfo = function () {
+                    var self = this;
                     //get and set selected code to session
-                    let groupCode = self.selectedRuleCode();
+                    var groupCode = self.selectedRuleCode();
                     nts.uk.ui.windows.setShared('groupCode', groupCode);
                     //then close dialog
                     nts.uk.ui.windows.close();
-                }
-                closeDialog() {
+                };
+                ScreenModel.prototype.closeDialog = function () {
                     nts.uk.ui.windows.close();
-                }
-            }
+                };
+                return ScreenModel;
+            }());
             viewmodel.ScreenModel = ScreenModel;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm012.a || (qmm012.a = {}));

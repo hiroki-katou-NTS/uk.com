@@ -33,8 +33,8 @@ var qmm012;
             service.findItemSalary = findItemSalary;
             var model;
             (function (model) {
-                class ItemSalary {
-                    constructor(taxAtr, socialInsAtr, laborInsAtr, fixPayAtr, applyForAllEmpFlg, applyForMonthlyPayEmp, applyForDaymonthlyPayEmp, applyForDaylyPayEmp, applyForHourlyPayEmp, avePayAtr, errRangeLowAtr, errRangeLow, errRangeHighAtr, errRangeHigh, alRangeLowAtr, alRangeLow, alRangeHighAtr, alRangeHigh, memo, limitMnyAtr, limitMnyRefItemCode, limitMny) {
+                var ItemSalary = (function () {
+                    function ItemSalary(taxAtr, socialInsAtr, laborInsAtr, fixPayAtr, applyForAllEmpFlg, applyForMonthlyPayEmp, applyForDaymonthlyPayEmp, applyForDaylyPayEmp, applyForHourlyPayEmp, avePayAtr, errRangeLowAtr, errRangeLow, errRangeHighAtr, errRangeHigh, alRangeLowAtr, alRangeLow, alRangeHighAtr, alRangeHigh, memo, limitMnyAtr, limitMnyRefItemCode, limitMny) {
                         this.taxAtr = taxAtr;
                         this.socialInsAtr = socialInsAtr;
                         this.laborInsAtr = laborInsAtr;
@@ -59,7 +59,8 @@ var qmm012;
                         this.limitMny = limitMny;
                     }
                     ;
-                }
+                    return ItemSalary;
+                }());
                 model.ItemSalary = ItemSalary;
             })(model = service.model || (service.model = {}));
         })(service = c.service || (c.service = {}));

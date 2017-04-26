@@ -3,7 +3,7 @@ var qmm012;
     var i;
     (function (i) {
         __viewContext.ready(function () {
-            let screenModel = new i.viewmodel.ScreenModel();
+            var screenModel = new i.viewmodel.ScreenModel();
             __viewContext.bind(screenModel);
         });
     })(i = qmm012.i || (qmm012.i = {}));

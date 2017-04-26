@@ -183,7 +183,6 @@ var qmm012;
                         self.C_Sel_AlarmLower_Selected(NewValue ? NewValue.alRangeLowAtr == 0 ? false : true : false);
                     });
                     self.CurrentLimitMnyAtr.subscribe(function (newValue) {
-                        self.CurrentLimitMny(1);
                         $("#C_Inp_LimitAmount").ntsError('clear');
                         $('#C_Div_002').hide();
                         $('#C_Div_003').hide();
@@ -194,9 +193,11 @@ var qmm012;
                                 break;
                             case 1:
                                 $('#C_Div_003').show();
+                                self.CurrentLimitMny(1);
                                 break;
                             case 2:
                             case 3:
+                                self.CurrentLimitMny(1);
                                 $('#C_Div_004').hide();
                                 break;
                         }

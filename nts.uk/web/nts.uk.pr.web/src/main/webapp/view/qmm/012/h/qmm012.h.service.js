@@ -7,6 +7,10 @@ var qmm012;
             var paths = {
                 findItemSalaryPeriod: "pr/core/itemsalaryperiod/find",
                 findItemDeductPeriod: "pr/core/itemdeductperiod/find",
+                addItemSalaryPeriod: "pr/core/itemsalaryperiod/add",
+                addItemDeductPeriod: "pr/core/itemdeductperiod/add",
+                updateItemSalaryPeriod: "pr/core/itemsalaryperiod/update",
+                updateItemDeductPeriod: "pr/core/itemdeductperiod/update",
             };
             function findItemSalaryPeriod(itemCode) {
                 var dfd = $.Deferred();
@@ -19,7 +23,6 @@ var qmm012;
                 });
                 return dfd.promise();
             }
-            service.findItemSalaryPeriod = findItemSalaryPeriod;
             function findItemDeductPeriod(itemCode) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.findItemDeductPeriod + "/" + itemCode)
@@ -31,25 +34,24 @@ var qmm012;
                 });
                 return dfd.promise();
             }
-            service.findItemDeductPeriod = findItemDeductPeriod;
-            function findItemPeriod(ItemMaster) {
+            function findItemPeriod(itemMaster) {
                 var dfd = $.Deferred();
-                let categoryAtr = ItemMaster.categoryAtr;
-                let itemCode = ItemMaster.itemCode;
+                var categoryAtr = itemMaster.categoryAtr;
+                var itemCode = itemMaster.itemCode;
                 if (categoryAtr == 0) {
-                    service.findItemSalaryPeriod(itemCode).done(function (ItemPeriod) {
+                    findItemSalaryPeriod(itemCode).done(function (ItemPeriod) {
                         dfd.resolve(ItemPeriod);
                     }).fail(function (res) {
                         // Alert message
-                        dfd.reject(res);
+                        dfd.reject(res.message);
                     });
                 }
                 if (categoryAtr == 1) {
-                    service.findItemDeductPeriod(itemCode).done(function (ItemPeriod) {
+                    findItemDeductPeriod(itemCode).done(function (ItemPeriod) {
                         dfd.resolve(ItemPeriod);
                     }).fail(function (res) {
                         // Alert message
-                        dfd.reject(res);
+                        dfd.reject(res.message);
                     });
                 }
                 return dfd.promise();
@@ -79,22 +81,22 @@ var qmm012;
             }
             function addItemPeriod(itemPeriod, itemMaster) {
                 var dfd = $.Deferred();
-                let categoryAtr = itemMaster.categoryAtr;
-                let itemCode = itemMaster.itemCode;
+                var categoryAtr = itemMaster.categoryAtr;
+                var itemCode = itemMaster.itemCode;
                 if (categoryAtr == 0) {
-                    addItemSalaryPeriod(itemPeriod).done(function (any) {
-                        dfd.resolve(any);
+                    addItemSalaryPeriod(itemPeriod).done(function (res) {
+                        dfd.resolve(res);
                     }).fail(function (res) {
                         // Alert message
-                        dfd.reject(res);
+                        dfd.reject(res.message);
                     });
                 }
                 if (categoryAtr == 1) {
-                    addItemDeductPeriod(itemPeriod).done(function (any) {
-                        dfd.resolve(any);
+                    addItemDeductPeriod(itemPeriod).done(function (res) {
+                        dfd.resolve(res);
                     }).fail(function (res) {
                         // Alert message
-                        dfd.reject(res);
+                        dfd.reject(res.message);
                     });
                 }
                 return dfd.promise();
@@ -124,22 +126,22 @@ var qmm012;
             }
             function updateItemPeriod(itemPeriod, itemMaster) {
                 var dfd = $.Deferred();
-                let categoryAtr = itemMaster.categoryAtr;
-                let itemCode = itemMaster.itemCode;
+                var categoryAtr = itemMaster.categoryAtr;
+                var itemCode = itemMaster.itemCode;
                 if (categoryAtr == 0) {
-                    updateItemSalaryPeriod(itemPeriod).done(function (any) {
-                        dfd.resolve(any);
+                    updateItemSalaryPeriod(itemPeriod).done(function (res) {
+                        dfd.resolve(res);
                     }).fail(function (res) {
                         // Alert message
-                        dfd.reject(res);
+                        dfd.reject(res.message);
                     });
                 }
                 if (categoryAtr == 1) {
-                    updateItemDeductPeriod(itemPeriod).done(function (any) {
-                        dfd.resolve(any);
+                    updateItemDeductPeriod(itemPeriod).done(function (res) {
+                        dfd.resolve(res);
                     }).fail(function (res) {
                         // Alert message
-                        dfd.reject(res);
+                        dfd.reject(res.message);
                     });
                 }
                 return dfd.promise();
@@ -147,8 +149,8 @@ var qmm012;
             service.updateItemPeriod = updateItemPeriod;
             var model;
             (function (model) {
-                class ItemPeriod {
-                    constructor(itemCode, periodAtr, strY, endY, cycleAtr, cycle01Atr, cycle02Atr, cycle03Atr, cycle04Atr, cycle05Atr, cycle06Atr, cycle07Atr, cycle08Atr, cycle09Atr, cycle10Atr, cycle11Atr, cycle12Atr) {
+                var ItemPeriod = (function () {
+                    function ItemPeriod(itemCode, periodAtr, strY, endY, cycleAtr, cycle01Atr, cycle02Atr, cycle03Atr, cycle04Atr, cycle05Atr, cycle06Atr, cycle07Atr, cycle08Atr, cycle09Atr, cycle10Atr, cycle11Atr, cycle12Atr) {
                         this.itemCode = itemCode;
                         this.periodAtr = periodAtr;
                         this.strY = strY;
@@ -167,7 +169,8 @@ var qmm012;
                         this.cycle11Atr = cycle11Atr;
                         this.cycle12Atr = cycle12Atr;
                     }
-                }
+                    return ItemPeriod;
+                }());
                 model.ItemPeriod = ItemPeriod;
             })(model = service.model || (service.model = {}));
         })(service = h.service || (h.service = {}));
