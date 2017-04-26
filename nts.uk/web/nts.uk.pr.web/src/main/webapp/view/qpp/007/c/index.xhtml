@@ -154,8 +154,8 @@
 								<td style="padding-left: 75px"><div data-bind="ntsFormLabel: {required: false}">表に追加した項目</div></td>
 								</tr>
 								<tr>
-								<td style="width: 260px"><hr /></td>
-								<td style="width: 300px; padding-left: 75px"><hr /></td>
+								<td style="width: 240px"><hr /></td>
+								<td style="width: 280px; padding-left: 75px"><hr /></td>
 								</tr>
 								</table>
 								<com:ko tag="template" bind="{name: 'swaplist'}"></com:ko>
@@ -170,8 +170,8 @@
 								<td style="padding-left: 75px"><div data-bind="ntsFormLabel: {required: false}">表に追加した項目</div></td>
 								</tr>
 								<tr>
-								<td style="width: 260px"><hr /></td>
-								<td style="width: 300px; padding-left: 75px"><hr /></td>
+								<td style="width: 240px"><hr /></td>
+								<td style="width: 280px; padding-left: 75px"><hr /></td>
 								</tr>
 								</table>
 								<com:ko tag="template" bind="{name: 'swaplist'}"></com:ko>
@@ -259,12 +259,11 @@
 				<div id="swap-list" data-bind="ntsSwapList: {
 				showSearchBox: { showLeft : false, showRight: false},
 				height: 450,
-				width: 580,
 				dataSource: masterItems,
 				primaryKey: 'code',
 				columns: ko.observableArray([
 				{headerText: 'コード', prop: 'code', width: 50},
-				{headerText: '名称', prop: 'name', width: 100}
+				{headerText: '名称', prop: 'name', width: 120}
 				]),
 				value: outputItems}">
 				</div>
