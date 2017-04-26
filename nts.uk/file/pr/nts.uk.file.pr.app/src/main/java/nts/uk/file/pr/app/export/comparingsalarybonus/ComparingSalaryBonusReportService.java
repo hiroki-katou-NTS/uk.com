@@ -31,7 +31,7 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 		headerData.setPostion("【職位： 】");
 		headerData.setTargetYearMonth("【処理年月： 】");
 		reportData.setHeaderData(headerData);
-
+        
 		return reportData;
 	}
 

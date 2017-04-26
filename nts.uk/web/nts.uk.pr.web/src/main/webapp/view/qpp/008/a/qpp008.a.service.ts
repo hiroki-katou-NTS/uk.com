@@ -15,7 +15,7 @@ module qpp008.a.service {
             })
         return dfd.promise();
     }
-    export function saveAsPdf(): JQueryPromise<any> {
-        return nts.uk.request.exportFile(paths.saveAsPdf);
+    export function saveAsPdf(command: any): JQueryPromise<any> {
+        return nts.uk.request.exportFile(paths.saveAsPdf, command);
     }
 }

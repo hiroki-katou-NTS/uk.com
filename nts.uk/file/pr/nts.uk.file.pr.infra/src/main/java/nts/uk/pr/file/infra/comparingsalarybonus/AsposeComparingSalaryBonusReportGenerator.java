@@ -7,10 +7,6 @@ import java.util.Date;
 
 import javax.ejb.Stateless;
 
-import com.aspose.cells.Workbook;
-import com.aspose.cells.Worksheet;
-import com.aspose.cells.WorksheetCollection;
-
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.file.pr.app.export.comparingsalarybonus.ComparingSalaryBonusGenerator;
@@ -29,16 +25,13 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 	private static final String EXTENSION = ".pdf";
 	/** The Constant DATE_TIME_FORMAT. */
 	private static final String DATE_TIME_FORMAT = "yyyyMMddHHmmss";
-
-	/** The Constant SHEET_NAME. */
-	private static final String SHEET_NAME = "My Sheet";
 	/** The Constant HEADER. */
 	private static final String HEADER = "HEADER";
 
 	@Override
 	public void generate(FileGeneratorContext fileContext, ComparingSalaryBonusReportData reportData) {
 		try (val reportContext = this.createContext(TEMPLATE_FILE)) {
-			reportContext.setDataSource(HEADER,Arrays.asList(reportData.getHeaderData()));
+			reportContext.setDataSource(HEADER, Arrays.asList(reportData.getHeaderData()));
 			reportContext.processDesigner();
 			DateFormat dateFormat = new SimpleDateFormat(DATE_TIME_FORMAT);
 			Date date = new Date();

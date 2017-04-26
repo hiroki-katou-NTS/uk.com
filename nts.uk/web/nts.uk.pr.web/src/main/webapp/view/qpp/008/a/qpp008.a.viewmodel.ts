@@ -13,9 +13,7 @@ module qpp008.a.viewmodel {
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
 
-        /*
-        
-                /*Multiple selecting GridList*/
+        /*Multiple selecting GridList*/
         itemLeft: KnockoutObservableArray<Employee>;
         columnsLeft: KnockoutObservableArray<any>;
         currentCodeLeft: KnockoutObservable<any>;
@@ -56,7 +54,8 @@ module qpp008.a.viewmodel {
         selectedCodeCbb3: KnockoutObservable<string>;
         isEnableCbb3: KnockoutObservable<boolean>;
         isEditableCbb3: KnockoutObservable<boolean>;
-        yearmontheditor: any;
+        yearmontheditor1: any;
+        yearmontheditor2: any;
 
 
         constructor() {
@@ -65,7 +64,16 @@ module qpp008.a.viewmodel {
             self.paymentDateProcessingList = ko.observableArray([]);
             self.selectedPaymentDate = ko.observable(null);
 
-            self.yearmontheditor = {
+            self.yearmontheditor1 = {
+                value: ko.observable(200001),
+                option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
+                    inputFormat: 'yearmonth'
+                })),
+                required: ko.observable(false),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            };
+            self.yearmontheditor2 = {
                 value: ko.observable(200001),
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
                     inputFormat: 'yearmonth'
@@ -86,11 +94,16 @@ module qpp008.a.viewmodel {
             ]);
 
             self.itemLeft = ko.observableArray([
-                new Employee("A0001", "A", ""),
-                new Employee("A0002", "A", ""),
-                new Employee("A0003", "A", ""),
-                new Employee("A0004", "A", ""),
-                new Employee("A0005", "A", "")
+                new Employee("99900000-0000-0000-0000-000000000001", "A", ""),
+                new Employee("99900000-0000-0000-0000-000000000002", "B", ""),
+                new Employee("99900000-0000-0000-0000-000000000003", "c", ""),
+                new Employee("99900000-0000-0000-0000-000000000004", "d", ""),
+                new Employee("99900000-0000-0000-0000-000000000005", "f", ""),
+                new Employee("99900000-0000-0000-0000-000000000006", "g", ""),
+                new Employee("99900000-0000-0000-0000-000000000007", "h", ""),
+                new Employee("99900000-0000-0000-0000-000000000008", "k", ""),
+                new Employee("99900000-0000-0000-0000-000000000009", "t", ""),
+                new Employee("99900000-0000-0000-0000-0000000000010", "A", "")
             ]);
 
             self.columns = ko.observableArray([
@@ -101,9 +114,9 @@ module qpp008.a.viewmodel {
             self.currentCodeList = ko.observableArray([]);
 
             self.columnsLeft = ko.observableArray([
-                { headerText: '印刷内容', prop: 'code', width: 150 },
-                { headerText: '印刷内容', prop: 'name', width: 150 },
-                { headerText: '印刷内容', prop: 'note', width: 250 }
+                { headerText: '社員CD', prop: 'code', width: 150 },
+                { headerText: '氏名', prop: 'name', width: 150 },
+                { headerText: '所属', prop: 'note', width: 250 }
 
             ]);
             self.currentCodeLeft = ko.observable();
@@ -184,16 +197,33 @@ module qpp008.a.viewmodel {
                 readonly: ko.observable(false)
             };
         }
+        
+        /**
+         *  to JSon Object
+         */
+        private toJSObjet(): any {
+            let self = this;
+            let command: any = {};
+            command.month1 = self.yearmontheditor1.value();
+            command.month2 = self.yearmontheditor2.value();
+            command.payBonusAttr = 0;
+            command.employeeCodeList = self.currentCodeListLeft();
+            return command;
+        }
+
+
         /**
          *  Export Data
          */
         exportData(): void {
             let self = this;
-            let dfd = $.Deferred<void>();
-            service.saveAsPdf().done(function() {
-                dfd.resolve();
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alert(res.message);
+            let dfd = $.Deferred<any>();
+            let command: any;
+            command = self.toJSObjet();
+            service.saveAsPdf(command).done(function() {
+                   console.log(command);
+            }).fail(function(res: any) {
+                console.log(res.message);
             });
 
         }
@@ -258,6 +288,17 @@ module qpp008.a.viewmodel {
             this.note = note;
         }
 
+    }
+
+    class ComparingSalaryBonus {
+        month1: string;
+        month2: string;
+        employeeCodeList: Array<string>;
+        constructor(month1: string, month2: string, employeeCodeList: Array<string>) {
+            this.month1 = month1;
+            this.month2 = month2;
+            this.employeeCodeList = employeeCodeList;
+        }
     }
 
 }
