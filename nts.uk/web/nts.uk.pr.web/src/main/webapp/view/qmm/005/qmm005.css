@@ -17,10 +17,10 @@ hr {
 	box-sizing: border-box;
 }
 
-*, *:hover, *:active, *.focus {
+/**, *:hover, *:active, *.focus {
 	outline: none;
-	/* border-radius: 0 !important; */
-}
+	 border-radius: 0 !important; 
+}*/
 
 /* override tab css */
 .ui-widget.ui-tabs .ui-tabs-nav {

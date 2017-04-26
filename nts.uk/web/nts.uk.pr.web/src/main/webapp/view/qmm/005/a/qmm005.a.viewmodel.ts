@@ -150,10 +150,10 @@ module qmm005.a {
             let self = this;
             if (self.dirty.isDirty()) {
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。よろしいですか。?").ifYes(function() {
-                    location.href = "../../../qmp/005/b/index.xhtml";
+                    //location.href = "../../../qmp/005/b/index.xhtml";
                 });
             } else {
-                location.href = "../../../qmp/005/b/index.xhtml";
+                //location.href = "../../../qmp/005/b/index.xhtml";
             }
         }
 
@@ -161,10 +161,10 @@ module qmm005.a {
             let self = this;
             if (self.dirty.isDirty()) {
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。よろしいですか。?").ifYes(function() {
-                    location.href = "../../../qmp/005/b/index.xhtml";
+                    //location.href = "../../../qmp/005/b/index.xhtml";
                 });
             } else {
-                location.href = "../../../qmp/005/b/index.xhtml";
+                //location.href = "../../../qmp/005/b/index.xhtml";
             }
         }
 
@@ -172,10 +172,10 @@ module qmm005.a {
             let self = this;
             if (self.dirty.isDirty()) {
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。よろしいですか。?").ifYes(function() {
-                    location.href = "../../../qmp/005/b/index.xhtml";
+                    //location.href = "../../../qmp/005/b/index.xhtml";
                 });
             } else {
-                location.href = "../../../qmp/005/b/index.xhtml";
+                //location.href = "../../../qmp/005/b/index.xhtml";
             }
         }
 
@@ -183,10 +183,10 @@ module qmm005.a {
             let self = this;
             if (self.dirty.isDirty()) {
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。よろしいですか。?").ifYes(function() {
-                    location.href = "../../../qmp/005/b/index.xhtml";
+                    //location.href = "../../../qmp/005/b/index.xhtml";
                 });
             } else {
-                location.href = "../../../qmp/005/b/index.xhtml";
+                //location.href = "../../../qmp/005/b/index.xhtml";
             }
         }
     }
