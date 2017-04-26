@@ -1,6 +1,4 @@
 module qmm020.c.viewmodel {
-
-
     export class ScreenModel {
         // listbox
         itemList: KnockoutObservableArray<ItemModel>;
@@ -49,45 +47,46 @@ module qmm020.c.viewmodel {
                 startYm: '',
                 endYm: ''
             }));
+            self.start();
             self.selectedCode.subscribe(function(codeChange) {
-//                service.getAllEmployeeAllotSetting(ko.toJS(codeChange)).done(function(data) {
-//                    self.itemListDetail([]);
-//                    if (data && data.length > 0) {
-//                        console.log(data);
-//                        _.map(data, function(item) {
-//                            self.itemListDetail.push(new EmployeeAllotSettingDto(item.companyCode, item.historyId, item.employeeCode, item.employeeName, item.paymentDetailCode
-//                                , item.paymentDetailName, item.bonusDetailCode, item.bonusDetailName));
-//                        });
-//                        dfd.resolve();
-//                    }
-//                    if (self.firstLoad)
-//                        $("#C_LST_001").igGrid("option", "dataSource", ko.mapping.toJS(self.itemListDetail));
-//                    else
-//                        self.LoadData(self.itemListDetail);
-//                    dfd.resolve();
-//                }).fail(function(res) {
-//                    alert(res);
-//                });
-//                dfd.promise();
-                                service.getEmployeeDetail(ko.toJS(codeChange)).done(function(data: Array<IModel>) {
-                                    let employeeItem: Array<TotalModel> = [];
-                                    if (data && data.length > 0) {
-                                        _.map(data, function(item) {
-                                            employeeItem.push(new TotalModel({ historyId: item.historyId, employmentCode: item.employmentCode, paymentDetailCode: item.paymentDetailCode, bonusDetailCode: item.bonusDetailCode }));
-                                        });
-                                        dfd.resolve();
-                                    }
-                                    if (self.firstLoad)
-                                        $("#C_LST_001").igGrid("option", "dataSource", employeeItem);
-                                    else
-                                        self.LoadData(employeeItem);
-                                    dfd.resolve();
-                
-                                }).fail(function(res) {
-                                     //Alert message
-                                    alert(res);
-                                });
-                                dfd.promise();
+                //                service.getAllEmployeeAllotSetting(ko.toJS(codeChange)).done(function(data) {
+                //                    self.itemListDetail([]);
+                //                    if (data && data.length > 0) {
+                //                        console.log(data);
+                //                        _.map(data, function(item) {
+                //                            self.itemListDetail.push(new EmployeeAllotSettingDto(item.companyCode, item.historyId, item.employeeCode, item.employeeName, item.paymentDetailCode
+                //                                , item.paymentDetailName, item.bonusDetailCode, item.bonusDetailName));
+                //                        });
+                //                        dfd.resolve();
+                //                    }
+                //                    if (self.firstLoad)
+                //                        $("#C_LST_001").igGrid("option", "dataSource", ko.mapping.toJS(self.itemListDetail));
+                //                    else
+                //                        self.LoadData(self.itemListDetail);
+                //                    dfd.resolve();
+                //                }).fail(function(res) {
+                //                    alert(res);
+                //                });
+                //                dfd.promise();
+                service.getEmployeeDetail(ko.toJS(codeChange)).done(function(data: Array<IModel>) {
+                    let employeeItem: KnockoutObservableArray<TotalModel> = ko.observableArray([]);
+                    if (data && data.length > 0) {
+                        _.map(data, function(item) {
+                            employeeItem().push(new TotalModel({ historyId: item.historyId, employmentCode: item.employeeCode, paymentDetailCode: item.paymentDetailCode, bonusDetailCode: item.bonusDetailCode }));
+                        });
+                        dfd.resolve();
+                    }
+                    if (self.firstLoad)
+                        $("#C_LST_001").igGrid("option", "dataSource", ko.mapping.toJS(employeeItem));
+                    else
+                        self.LoadData(employeeItem);
+                    dfd.resolve();
+
+                }).fail(function(res) {
+                    //Alert message
+                    alert(res);
+                });
+                dfd.promise();
 
 
             });
@@ -258,7 +257,7 @@ module qmm020.c.viewmodel {
         //Open dialog Add History
         openJDialog() {
             var self = this;
-            //            debugger;
+            debugger;
             var historyScreenType = "1";
             let valueShareJDialog = historyScreenType + "~" + "201701";
 
@@ -457,5 +456,8 @@ module qmm020.c.viewmodel {
             this.startYm = ko.observable(param.startYm);
             this.endYm = ko.observable(param.endYm);
         }
+    }
+    class EmpDetail {
+
     }
 }

@@ -27,6 +27,7 @@ module qmm020.b.viewmodel {
             //Get list startDate, endDate of History 
             //get allot Company
             service.getAllotCompanyList().done(function(companyAllots: Array<service.model.CompanyAllotSettingDto>) {
+                
                 if (companyAllots.length > 0) {
                     let _items: Array<ComHistItem> = [];
                     //push data to listItem of hist List
@@ -58,7 +59,6 @@ module qmm020.b.viewmodel {
             });
             //get Row with max Date 
             service.getAllotCompanyMaxDate().done(function(itemMax: service.model.CompanyAllotSettingDto) {
-                debugger;
                 self.maxItem(itemMax);
             }).fail(function(res) {
                 alert(res);
@@ -97,7 +97,7 @@ module qmm020.b.viewmodel {
 
             nts.uk.ui.windows.setShared('valJDialog', valueShareJDialog);
 
-            nts.uk.ui.windows.sub.modal('/view/qmm/020/j/index.xhtml', { title: '明細書の紐ずけ＞履歴追加' })
+            nts.uk.ui.windows.sub.modal('/view/qmm/020/j/index.xhtml', { title: '譏守ｴｰ譖ｸ縺ｮ邏舌★縺托ｼ槫ｱ･豁ｴ霑ｽ蜉�' })
                 .onClosed(function() {
                     let returnJDialog: string = nts.uk.ui.windows.getShared('returnJDialog');
                     if (returnJDialog != undefined) {
@@ -193,7 +193,7 @@ module qmm020.b.viewmodel {
             if (previousItem) {
                 nts.uk.ui.windows.setShared('previousItem', previousItem);
             }
-            nts.uk.ui.windows.sub.modal('/view/qmm/020/k/index.xhtml', { title: '明細書の紐ずけ＞履歴編集' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/qmm/020/k/index.xhtml', { title: '譏守ｴｰ譖ｸ縺ｮ邏舌★縺托ｼ槫ｱ･豁ｴ邱ｨ髮�' }).onClosed(function(): any {
                 self.start();
             });
         }
@@ -207,7 +207,7 @@ module qmm020.b.viewmodel {
             var valueShareMDialog = self.currentItem().startYm();
             //debugger;
             nts.uk.ui.windows.setShared('valMDialog', valueShareMDialog);
-            nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '明細書の選択' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '譏守ｴｰ譖ｸ縺ｮ驕ｸ謚�' }).onClosed(function(): any {
                 //get selected code from M dialog
                 var stmtCodeSelected = nts.uk.ui.windows.getShared('stmtCodeSelected');
 
@@ -227,7 +227,7 @@ module qmm020.b.viewmodel {
             var valueShareMDialog = self.currentItem().startYm();
             //debugger;
             nts.uk.ui.windows.setShared('valMDialog', valueShareMDialog);
-            nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '明細書の選択' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '譏守ｴｰ譖ｸ縺ｮ驕ｸ謚�' }).onClosed(function(): any {
                 //get selected code from M dialog
                 var stmtCodeSelected = nts.uk.ui.windows.getShared('stmtCodeSelected');
 

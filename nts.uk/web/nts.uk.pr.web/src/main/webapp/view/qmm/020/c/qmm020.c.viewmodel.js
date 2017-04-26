@@ -28,17 +28,18 @@ var qmm020;
                         startYm: '',
                         endYm: ''
                     }));
+                    self.start();
                     self.selectedCode.subscribe(function (codeChange) {
                         c.service.getEmployeeDetail(ko.toJS(codeChange)).done(function (data) {
-                            var employeeItem = [];
+                            var employeeItem = ko.observableArray([]);
                             if (data && data.length > 0) {
                                 _.map(data, function (item) {
-                                    employeeItem.push(new TotalModel({ historyId: item.historyId, employmentCode: item.employmentCode, paymentDetailCode: item.paymentDetailCode, bonusDetailCode: item.bonusDetailCode }));
+                                    employeeItem().push(new TotalModel({ historyId: item.historyId, employmentCode: item.employeeCode, paymentDetailCode: item.paymentDetailCode, bonusDetailCode: item.bonusDetailCode }));
                                 });
                                 dfd.resolve();
                             }
                             if (self.firstLoad)
-                                $("#C_LST_001").igGrid("option", "dataSource", employeeItem);
+                                $("#C_LST_001").igGrid("option", "dataSource", ko.mapping.toJS(employeeItem));
                             else
                                 self.LoadData(employeeItem);
                             dfd.resolve();
@@ -156,6 +157,7 @@ var qmm020;
                 };
                 ScreenModel.prototype.openJDialog = function () {
                     var self = this;
+                    debugger;
                     var historyScreenType = "1";
                     var valueShareJDialog = historyScreenType + "~" + "201701";
                     nts.uk.ui.windows.setShared('valJDialog', valueShareJDialog);
@@ -295,6 +297,11 @@ var qmm020;
                     this.endYm = ko.observable(param.endYm);
                 }
                 return TotalModel;
+            }());
+            var EmpDetail = (function () {
+                function EmpDetail() {
+                }
+                return EmpDetail;
             }());
         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
     })(c = qmm020.c || (qmm020.c = {}));

@@ -44,7 +44,6 @@ var qmm020;
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getMaxDate)
                     .done(function (res) {
-                    debugger;
                     dfd.resolve(res);
                 })
                     .fail(function (res) {

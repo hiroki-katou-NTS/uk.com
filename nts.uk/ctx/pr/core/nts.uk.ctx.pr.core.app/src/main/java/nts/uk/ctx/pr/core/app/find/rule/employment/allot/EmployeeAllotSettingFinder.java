@@ -30,7 +30,8 @@ public class EmployeeAllotSettingFinder {
 
 	}
 	public List<EmployeeAllotSettingDto> getEmpDetail(String companyCode, String historyID){
-		return this.EmpAllotSettingRepo.findEmpDetail(companyCode, historyID).stream()
+		List<EmployeeAllotSettingDto> lstDto = this.EmpAllotSettingRepo.findEmpDetail(companyCode, historyID).stream()
 				.map(a -> EmployeeAllotSettingDto.fromDomain(a)).collect(Collectors.toList());
+		return lstDto;
 	}
 }

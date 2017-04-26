@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "QSTMT_STMT_ALLOT_EM")
 @AllArgsConstructor
 @NoArgsConstructor
-public class QstmtStmtAllotEm extends TableEntity implements Serializable{
+public class QstmtStmtAllotEm extends UkJpaEntity implements Serializable{
 	/**
 	 * 
 	 */
@@ -34,10 +34,10 @@ public class QstmtStmtAllotEm extends TableEntity implements Serializable{
 	@Column(name = "BONUS_STMT_CD")
 	public String bonusDetailCode;
 
-//	@Override
-//	protected QstmtStmtAllotEmPK getKey() {
-//		// TODO Auto-generated method stub
-//		return this.QstmtStmtAllotEmPK ;
-//	}
+	@Override
+	protected QstmtStmtAllotEmPK getKey() {
+		// TODO Auto-generated method stub
+		return this.QstmtStmtAllotEmPK ;
+	}
 
 }

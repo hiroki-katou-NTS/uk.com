@@ -49,7 +49,6 @@ module qmm020.b.service {
         var dfd = $.Deferred<any>();
         nts.uk.request.ajax(paths.getMaxDate)
             .done(function(res: any) {
-                debugger;
                 dfd.resolve(res);
             })
             .fail(function(res) {

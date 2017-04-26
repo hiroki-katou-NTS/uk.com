@@ -56,15 +56,15 @@
 			<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 			<!-- ~~~~~~~~~~~~~~~~~~~~~~~~TAB PANEL 2 SCREEN C~~~~~~~~~~~~~雇用~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 			<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-			<div id="tabpanel-2" role="tabpanel">
-				<div class="sidebar-content-header" data-bind="">
+			<div id="tabpanel-2" role="tabpanel" data-bind="with : viewmodelC">
+				<div class="sidebar-content-header">
 					<span class="title">雇用</span>
 					<button class="proceed">登録</button>
 					<button>個人の設定状況確認</button>
-					<button id="A_BTN_003" data-bind="">利用単位の設定</button>
+					<button id="A_BTN_003" data-bind="click : $parent.viewmodelA.openMainLDialog">利用単位の設定</button>
 					<button>マスタ修正ログ</button>
 				</div>
-				<div id="screenC" data-bind="with: viewmodelC"> 
+				<div id="screenC"> 
  					<ui:include src="../c/index.xhtml" /> 
  				</div>
 			</div>

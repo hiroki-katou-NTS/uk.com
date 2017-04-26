@@ -9,8 +9,6 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.basic.dom.organization.employment.Employment;
-import nts.uk.ctx.basic.infra.entity.organization.employment.CmnmtEmp;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.EmployeeAllSetting;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.EmployeeAllotSetting;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.EmployeeAllotSettingHeader;
@@ -43,7 +41,7 @@ public class JpaEmployeeAllotSettingRepository extends JpaRepository implements 
 //	private final String MAX_END = "SELECT c FROM QstmtStmtAllotHEm c"
 //			+ " WHERE c.QstmtStmtAllotHEmPK.companyCode = :companyCode "
 //			+ " AND c.endDate = (SELECT MAX(d.endDate) FROM QstmtStmtAllotHEm d)";
-	private final String EMP_SET_SEL = "SELECT a.QstmtStmtAllotEmPK.companyCode, a.QstmtStmtAllotEmPK.histId, a.QstmtStmtAllotEmPK.employeeCd, a.paymentDetailCode, a.bonusDetailCode "
+	private final String EMP_SET_SEL = "SELECT a "
 									+ " FROM QstmtStmtAllotEm a WHERE a.QstmtStmtAllotEmPK.histId = :histId ";
 	
 	private final String EMP_SEL = "SELECT e.cmnmtEmpPk.employmentCode, e.employmentName, e.cmnmtEmpPk.companyCode  FROM CmnmtEmp e WHERE e.cmnmtEmpPk.companyCode = :companyCode ";
