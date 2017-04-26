@@ -1,26 +1,32 @@
 package nts.uk.ctx.sys.portal.infra.entity.layout;
 
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * @author LamDT
  */
-@Getter
-@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "CCGMT_LAYOUT")
 public class CcgmtLayout extends UkJpaEntity {
 
-	int pgType;
-	
+	@EmbeddedId
+	protected CcgmtLayoutPK ccgmtLayoutPK;
+
+	@Column(name = "PG_TYPE")
+	public int pgType;
+
 	@Override
 	protected Object getKey() {
-		return null;
+		return ccgmtLayoutPK;
 	}
 
 }
