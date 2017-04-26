@@ -134,7 +134,7 @@
 							<td>
 								<com:ko-if bind="comboBoxFormulaType().selectedCode() != '0'">
 									<div id="l_lbl_premiumRate" class="separate-vertical"
-										data-bind="ntsFormLabel: {required: true }">C：割増率</div>
+										data-bind="ntsFormLabel: {required: true, constraint: 'PremiumRate' }">C：割増率</div>
 									<input style="margin-left: 14px;" id="number-2" data-bind="ntsNumberEditor: {value: premiumRate, constraint: 'PremiumRate', option: premiumRateInputOption, required: true, enable: true, readonly: false}" />
 								</com:ko-if>
 							</td>
