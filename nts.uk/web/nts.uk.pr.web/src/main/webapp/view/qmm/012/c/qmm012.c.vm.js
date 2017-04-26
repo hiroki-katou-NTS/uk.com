@@ -197,8 +197,8 @@ var qmm012;
                                 break;
                             case 2:
                             case 3:
-                                self.CurrentLimitMny(1);
                                 $('#C_Div_004').hide();
+                                self.CurrentLimitMny(1);
                                 break;
                         }
                     });
