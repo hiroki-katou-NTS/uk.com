@@ -155,7 +155,12 @@ var qet001;
                         });
                     }).fail(function (res) {
                         self.clearError();
-                        $('#code-input').ntsError('set', res.message);
+                        if (res.messageId == 'ER005') {
+                            $('#code-input').ntsError('set', res.message);
+                        }
+                        else {
+                            $('#btnSave').ntsError('set', res.message);
+                        }
                     });
                 };
                 AggregateCategory.prototype.remove = function () {
@@ -193,6 +198,7 @@ var qet001;
                 };
                 AggregateCategory.prototype.clearError = function () {
                     if (nts.uk.ui._viewModel) {
+                        $('#btnSave').ntsError('clear');
                         $('#code-input').ntsError('clear');
                         $('#name-input').ntsError('clear');
                     }

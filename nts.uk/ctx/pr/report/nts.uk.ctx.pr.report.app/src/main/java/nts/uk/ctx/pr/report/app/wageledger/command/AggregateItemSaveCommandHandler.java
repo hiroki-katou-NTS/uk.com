@@ -12,6 +12,7 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.report.app.wageledger.command.dto.ItemSubjectDto;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItem;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemRepository;
@@ -48,6 +49,11 @@ public class AggregateItemSaveCommandHandler extends CommandHandler<AggregateIte
 		}
 		if (command.getName() == null || command.getName().equals("")) {
 			throw new BusinessException("ER001");
+		}
+
+		// Validate item selection
+		if (CollectionUtil.isEmpty(command.getSubItems())) {
+			throw new BusinessException("ER007");
 		}
 
 		// Convert command to Domain.

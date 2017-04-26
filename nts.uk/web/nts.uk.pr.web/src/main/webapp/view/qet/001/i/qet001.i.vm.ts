@@ -212,7 +212,11 @@ module qet001.i.viewmodel {
             }).fail(function(res) {
                 // clear error.
                 self.clearError();
-                $('#code-input').ntsError('set', res.message);
+                if(res.messageId == 'ER005') {
+                    $('#code-input').ntsError('set', res.message);
+                } else {
+                    $('#btnSave').ntsError('set', res.message);
+                }
             });
         }
 
@@ -268,6 +272,7 @@ module qet001.i.viewmodel {
 
         public clearError(): void {
             if (nts.uk.ui._viewModel) {
+                $('#btnSave').ntsError('clear');
                 $('#code-input').ntsError('clear');
                 $('#name-input').ntsError('clear');
             }
