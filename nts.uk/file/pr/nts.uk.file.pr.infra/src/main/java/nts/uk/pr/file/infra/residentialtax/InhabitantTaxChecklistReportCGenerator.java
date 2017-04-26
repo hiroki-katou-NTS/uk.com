@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import com.aspose.cells.PageSetup;
 import com.aspose.cells.PdfSaveOptions;
 import com.aspose.cells.SaveFormat;
 
@@ -34,6 +35,10 @@ public class InhabitantTaxChecklistReportCGenerator extends AsposeCellsReportGen
 			reportContext.setDataSource("header", dataExport.getHeader());
 			reportContext.setDataSource("list", reportData);
 
+			PageSetup pageSetup = reportContext.getWorkbook().getWorksheets().get(0).getPageSetup();
+			pageSetup.setHeader(0, "【　日通システム株式会社 】");
+			pageSetup.setHeader(2, "&D &T");
+			
 			// process data binginds in template
 			reportContext.getWorkbook().calculateFormula(true);
 			reportContext.getDesigner().process(false);

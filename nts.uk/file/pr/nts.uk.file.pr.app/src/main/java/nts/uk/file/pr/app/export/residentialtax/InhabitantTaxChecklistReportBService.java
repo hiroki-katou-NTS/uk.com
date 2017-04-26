@@ -13,6 +13,7 @@ import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.PayBonusAtr;
+import nts.uk.file.pr.app.export.residentialtax.data.CompanyDto;
 import nts.uk.file.pr.app.export.residentialtax.data.InhabitantTaxChecklistBReport;
 import nts.uk.file.pr.app.export.residentialtax.data.InhabitantTaxChecklistBRpData;
 import nts.uk.file.pr.app.export.residentialtax.data.InhabitantTaxChecklistBRpHeader;
@@ -44,6 +45,8 @@ public class InhabitantTaxChecklistReportBService extends ExportService<Inhabita
 
 		List<PersonResitaxDto> personResidentTaxList = residentialTaxRepo.findPersonResidentTax(companyCode, Y_K,
 				query.getResidentTaxCodeList());
+		
+		CompanyDto company = residentialTaxRepo.findCompany(companyCode);
 
 		Map<String, List<PersonResitaxDto>> personResidentTaxListMap = personResidentTaxList.stream()
 				.collect(Collectors.groupingBy(PersonResitaxDto::getResidenceCode, Collectors.toList()));

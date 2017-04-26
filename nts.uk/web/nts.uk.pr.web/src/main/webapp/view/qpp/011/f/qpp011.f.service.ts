@@ -2,7 +2,8 @@ module qpp011.f.service {
     var paths = {
         findAllResidential: "pr/core/residential/findallresidential",
         getlistLocation: "pr/core/residential/getlistLocation",
-        saveAsPdf: "screen/pr/QPP011/saveAsPdfC"
+        saveAsPdfB: "screen/pr/QPP011/saveAsPdfB",
+        saveAsPdfC: "screen/pr/QPP011/saveAsPdfC"
     }
 
     /**
@@ -31,8 +32,13 @@ module qpp011.f.service {
             })
         return dfd.promise();
     }
-    
-     export function saveAsPdf(command: any): JQueryPromise<any> {
-        return nts.uk.request.exportFile(paths.saveAsPdf, command);
+
+    export function saveAsPdf(check: any,command: any): JQueryPromise<any> {
+        if(check == 1) {
+           var path  = paths.saveAsPdfB;
+        } else {
+           var path  = paths.saveAsPdfC;
+        }
+        return nts.uk.request.exportFile(path, command);
     }
 }
