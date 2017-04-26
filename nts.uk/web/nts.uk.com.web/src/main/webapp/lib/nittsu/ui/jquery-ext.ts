@@ -5,6 +5,7 @@ interface JQuery {
     ntsError(action: string, param?: any): any;
     ntsListBox(action: string, param?: any): any;
     ntsGridList(action: string, param?: any): any;
+    ntsGridListFeature(feature: string, action: string, ...params: any[]): any;
     ntsWizard(action: string, param?: any): any;
     ntsUserGuide(action?: string, param?: any): any;
     ntsSideBar(action?: string, param?: any): any;

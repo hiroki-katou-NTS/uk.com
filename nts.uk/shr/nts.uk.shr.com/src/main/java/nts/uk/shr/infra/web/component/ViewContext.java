@@ -45,7 +45,7 @@ public class ViewContext extends UIComponentBase {
 		CDI.current().select(ViewContextEnvWriter.class).get().write(rw);
 		String applicationContextPath = context.getExternalContext().getApplicationContextPath();
 		rw.write("</script>");
-		rw.write("<script src='"+applicationContextPath+"/webapi/loadresource'></script>");
+//		rw.write("<script src='/nts.uk.com.web/webapi/loadresource'></script>");
 
 	}
 

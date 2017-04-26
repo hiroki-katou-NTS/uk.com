@@ -1,15 +1,15 @@
 __viewContext.ready(function () {
-    class ScreenModel {
-        constructor() {
+    var ScreenModel = (function () {
+        function ScreenModel() {
             this.itemsSwap = ko.observableArray([]);
             var array = [];
             for (var i = 0; i < 10000; i++) {
-                array.push(new ItemModel(i, '蝓ｺ譛ｬ邨ｦ', "description"));
+                array.push(new ItemModel(i, '基本給', "description"));
             }
             this.itemsSwap(array);
             this.columns = ko.observableArray([
-                { headerText: '繧ｳ繝ｼ繝・', key: 'code', width: 100 },
-                { headerText: '蜷咲ｧｰ', key: 'name', width: 150 }
+                { headerText: 'コード', key: 'code', width: 100 },
+                { headerText: '名称', key: 'name', width: 150 }
             ]);
             var x = [];
             x.push(_.cloneDeep(array[0]));
@@ -18,18 +18,20 @@ __viewContext.ready(function () {
             this.currentCodeListSwap = ko.observableArray(x);
             this.test = ko.observableArray([]);
         }
-        remove() {
+        ScreenModel.prototype.remove = function () {
             this.itemsSwap.shift();
-        }
-    }
-    class ItemModel {
-        constructor(code, name, description) {
+        };
+        return ScreenModel;
+    }());
+    var ItemModel = (function () {
+        function ItemModel(code, name, description) {
             this.code = code;
             this.name = name;
             this.description = description;
             this.deletable = code % 3 === 0;
         }
-    }
+        return ItemModel;
+    }());
     this.bind(new ScreenModel());
 });
 //# sourceMappingURL=start.js.map

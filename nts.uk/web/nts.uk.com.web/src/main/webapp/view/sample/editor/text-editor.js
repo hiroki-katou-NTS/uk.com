@@ -1,9 +1,8 @@
 __viewContext.ready(function () {
-    class ScreenModel {
-        constructor() {
+    var ScreenModel = (function () {
+        function ScreenModel() {
             var self = this;
             self.value = ko.observable("123");
-            // TextEditor
             self.texteditor = {
                 value: ko.observable(''),
                 constraint: 'WLAggregateItemCode',
@@ -20,7 +19,6 @@ __viewContext.ready(function () {
                     $("#text-1").ntsError("clear");
                 }
             };
-            // EmployeeCodeEditor
             self.employeeeditor = {
                 value: ko.observable('19'),
                 constraint: 'EmployeeCode',
@@ -33,7 +31,8 @@ __viewContext.ready(function () {
                 readonly: ko.observable(false)
             };
         }
-    }
+        return ScreenModel;
+    }());
     var viewmodel = new ScreenModel();
     this.bind(viewmodel);
 });
