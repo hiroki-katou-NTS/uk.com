@@ -23,7 +23,7 @@ module cmm009.c.viewmodel {
          */
         constructor() {
             var self = this;
-            self.selectStartYm = ko.observable("1900");
+            self.selectStartYm = ko.observable("");
             self.yearmonthdayeditor = {
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
                     inputFormat: 'date'
@@ -48,23 +48,28 @@ module cmm009.c.viewmodel {
             if (self.data == "datanull") {
                 self.isRadioCheck = ko.observable(2);
                 self.enable = ko.observable(false);
+                self.itemsRadio = ko.observableArray([
+                    { value: 1, text: ko.observable('最新の履歴から引き継ぐ') },
+                    { value: 2, text: ko.observable('初めから作成する') }
+                ]);
             } else {
                 self.enable = ko.observable(true);
-                self.selectStartYm(nts.uk.ui.windows.getShared('startDateOfHis'));
+                //self.selectStartYm(nts.uk.ui.windows.getShared('startDateOfHis'));
                 self.isRadioCheck = ko.observable(1);
+                self.itemsRadio = ko.observableArray([
+                    { value: 1, text: ko.observable('最新の履歴（' + nts.uk.ui.windows.getShared('startDateOfHis') + '）から引き継ぐ') },
+                    { value: 2, text: ko.observable('初めから作成する') }
+                ]);
             }
 
-            self.itemsRadio = ko.observableArray([
-                { value: 1, text: ko.observable('最新の履歴（' + self.selectStartYm() + '）から引き継ぐ') },
-                { value: 2, text: ko.observable('初めから作成する') }
-            ]);
+
         }
 
         createHistory(): any {
             var self = this;
             var inputYm = $('#INP_STARTYMD').val();
             //check YM
-            if (inputYm == "") {
+            if (self.selectStartYm() == "") {
                 alert("開始年月日 が入力されていません。");
                 return false;
             }
