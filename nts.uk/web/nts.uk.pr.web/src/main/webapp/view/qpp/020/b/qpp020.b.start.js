@@ -1,4 +1,4 @@
-ko.bindingHandlers.ntsTable = {
+ko.bindingHandlers["ntsTable"] = {
     init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
         var $body = $(element).find('tbody');
         var value = ko.unwrap(valueAccessor());

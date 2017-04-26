@@ -16,9 +16,10 @@ var nts;
                                 function viewModel() {
                                 }
                                 viewModel.prototype.showModalDialogB = function (item, event) {
-                                    nts.uk.ui.windows.sub.modal("../b/index.xhtml", { resizable: false, width: 600, height: 515, title: '給与処理月を翌月へ更新  ' })
+                                    nts.uk.ui.windows.sub.modal("../b/index.xhtml", {
+                                        resizable: false, width: 600, height: 515, title: '給与処理月を翌月へ更新' })
                                         .onClosed(function () {
-                                        alert('ok');
+                                        //   alert('ok');
                                     });
                                 };
                                 return viewModel;
