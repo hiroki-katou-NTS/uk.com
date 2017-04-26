@@ -1,0 +1,45 @@
+package nts.uk.ctx.at.record.dom.divergencetime;
+
+import lombok.Getter;
+import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
+
+@Getter
+@Setter
+public class DivergenceReason {
+	/*会社ID*/
+	private int companyId;
+	/*乖離時間ID*/
+	private int divTimeId;
+	/*乖離理由コード*/
+	private DiverdenceReasonCode divReasonCode;
+	/*乖離理由*/
+	private DivergenceReasonContent divReasonContent;
+	/*必須区分*/
+	private RequiredAtr requiredAtr;
+
+	public DivergenceReason(int companyId, int divTimeId, DiverdenceReasonCode divReasonCode,
+			DivergenceReasonContent divReasonContent, RequiredAtr requiredAtr) {
+		super();
+		this.companyId = companyId;
+		this.divTimeId = divTimeId;
+		this.divReasonCode = divReasonCode;
+		this.divReasonContent = divReasonContent;
+		this.requiredAtr = requiredAtr;
+	}
+	public static DivergenceReason createSimpleFromJavaType(
+			int companyId,
+			int divTimeId,
+			String divReasonCode,
+			String divReasonContent,
+			int requiredAtr)
+	{
+		return new DivergenceReason(
+				companyId,
+				divTimeId,
+				new DiverdenceReasonCode(divReasonCode),
+				new DivergenceReasonContent(divReasonContent),
+				EnumAdaptor.valueOf(requiredAtr, RequiredAtr.class));
+				
+	}
+}
