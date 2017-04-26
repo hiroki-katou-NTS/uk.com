@@ -10,14 +10,14 @@ import nts.arc.primitive.constraint.StringMaxLength;
  */
 @StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(4)
-public class ToppagePartCode extends StringPrimitiveValue<ToppagePartCode> {
+public class TopPagePartCode extends StringPrimitiveValue<TopPagePartCode> {
 
 	/**
 	 * serialVersionUID
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public ToppagePartCode(String rawValue) {
+	public TopPagePartCode(String rawValue) {
 		super(rawValue);
 	}
 

@@ -7,14 +7,14 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author LamDT
  */
 @StringMaxLength(30)
-public class ToppagePartName extends StringPrimitiveValue<ToppagePartName> {
+public class TopPagePartName extends StringPrimitiveValue<TopPagePartName> {
 
 	/**
 	 * serialVersionUID
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public ToppagePartName(String rawValue) {
+	public TopPagePartName(String rawValue) {
 		super(rawValue);
 	}
 
