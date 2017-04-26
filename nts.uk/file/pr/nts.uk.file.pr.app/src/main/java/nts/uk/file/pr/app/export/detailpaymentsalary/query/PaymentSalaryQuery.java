@@ -15,52 +15,37 @@ import lombok.Setter;
 /**
  * The Class PaymentSalaryQuery.
  */
-
-/**
- * Sets the end date.
- *
- * @param endDate
- *            the new end date
- */
 @Setter
-
-/**
- * Gets the end date.
- *
- * @return the end date
- */
 @Getter
 public class PaymentSalaryQuery {
 
-	/** The output setting code. */
-	private String outputSettingCode;
+    /** The start date. */
+    private Integer startDate;
 
-	/** The employee codes. */
-	private List<String> personIds;
+    /** The end date. */
+    private Integer endDate;
 
-	/** The start date. */
-	private Integer startDate;
+    /** The employee codes. */
+    private List<String> personIds;
 
-	/** The end date. */
-	private Integer endDate;
-	
-	/** The output format type. */
-	private String outputFormatType;
+    /** The output format type. */
+    private String outputFormatType;
 
+    /** The output setting code. */
+    private String outputSettingCode;
 
-	/** The is vertical line. */
-	private boolean isVerticalLine;
+    /** The is vertical line. */
+    private Boolean isVerticalLine;
 
-	/** The is horizontal line. */
-	private boolean isHorizontalLine;
+    /** The is horizontal line. */
+    private Boolean isHorizontalLine;
 
-	/** The output language. */
-	private String outputLanguage;
+    /** The page break setting. */
+    private String pageBreakSetting;
 
-	/** The page break setting. */
-	private String pageBreakSetting;
+    /** The hierarchy. */
+    private String hierarchy;
 
-	/** The hierarchy. */
-	private String hierarchy;
-
+    /** The output language. */
+    private String outputLanguage;
 }
