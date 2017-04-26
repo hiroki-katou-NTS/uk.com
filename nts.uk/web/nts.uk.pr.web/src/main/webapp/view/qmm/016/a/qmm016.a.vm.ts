@@ -32,7 +32,8 @@ module nts.uk.pr.view.qmm016.a {
             settingDirtyChecker: nts.uk.ui.DirtyChecker;
             valuesDirtyChecker: nts.uk.ui.DirtyChecker;
             valueItems: KnockoutObservable<Array<model.CellItemDto>>;
-
+            
+            demensionBullet: Array<string>;
 
             constructor() {
                 super({
@@ -77,6 +78,7 @@ module nts.uk.pr.view.qmm016.a {
                 self.settingDirtyChecker = new nts.uk.ui.DirtyChecker(self.history().elements);
                 self.valuesDirtyChecker = new nts.uk.ui.DirtyChecker(self.valueItems);
 
+                self.demensionBullet = ["①", "②", "③"];
             }
 
             /**
@@ -97,7 +99,7 @@ module nts.uk.pr.view.qmm016.a {
              */
             isDirty(): boolean {
                 var self = this;
-                self.valueItems(self.history().detailViewModel.getCellItem());
+                self.valueItems(self.history().detailViewModel ? self.history().detailViewModel.getCellItem() : []);
                 return self.headDirtyChecker.isDirty() ||
                     self.settingDirtyChecker.isDirty() || 
                     self.valuesDirtyChecker.isDirty();
@@ -375,7 +377,7 @@ module nts.uk.pr.view.qmm016.a {
                             late.elementName('遅刻・早退回数');
                             let level = new DemensionItemViewModel(3);
                             level.elementType(9);
-                            level.elementName('レベル');
+                            level.elementName('精皆勤レベル');
                             newDemensionItemList.push(workDay);
                             newDemensionItemList.push(late);
                             newDemensionItemList.push(level);

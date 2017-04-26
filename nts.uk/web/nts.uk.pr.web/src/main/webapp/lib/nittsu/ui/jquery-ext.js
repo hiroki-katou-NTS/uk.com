@@ -1,4 +1,3 @@
-/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -13,7 +12,7 @@ var nts;
                     $.fn.ntsError = function (action, message) {
                         var $control = $(this);
                         if (action === DATA_HAS_ERROR) {
-                            return _.some($control, c => hasError($(c)));
+                            return _.some($control, function (c) { return hasError($(c)); });
                         }
                         else {
                             $control.each(function (index) {
@@ -23,7 +22,6 @@ var nts;
                             return $control;
                         }
                     };
-                    //function for set and clear error
                     function processErrorOnItem($control, message, action) {
                         switch (action) {
                             case 'set':
@@ -54,7 +52,7 @@ var nts;
                 })(ntsError || (ntsError = {}));
                 var ntsPopup;
                 (function (ntsPopup) {
-                    let DATA_INSTANCE_NAME = 'nts-popup-panel';
+                    var DATA_INSTANCE_NAME = 'nts-popup-panel';
                     $.fn.ntsPopup = function () {
                         if (arguments.length === 1) {
                             var p = arguments[0];
@@ -99,8 +97,8 @@ var nts;
                                 break;
                         }
                     }
-                    class NtsPopupPanel {
-                        constructor($panel, position) {
+                    var NtsPopupPanel = (function () {
+                        function NtsPopupPanel($panel, position) {
                             this.position = position;
                             var parent = $panel.parent();
                             this.$panel = $panel
@@ -109,7 +107,7 @@ var nts;
                                 .appendTo(parent);
                             this.$panel.css("z-index", 100);
                         }
-                        show() {
+                        NtsPopupPanel.prototype.show = function () {
                             this.$panel
                                 .css({
                                 visibility: 'hidden',
@@ -119,16 +117,16 @@ var nts;
                                 .css({
                                 visibility: 'visible'
                             });
-                        }
-                        hide() {
+                        };
+                        NtsPopupPanel.prototype.hide = function () {
                             this.$panel.css({
                                 display: 'none'
                             });
-                        }
-                        destroy() {
+                        };
+                        NtsPopupPanel.prototype.destroy = function () {
                             this.$panel = null;
-                        }
-                        toggle() {
+                        };
+                        NtsPopupPanel.prototype.toggle = function () {
                             var isDisplaying = this.$panel.css("display");
                             if (isDisplaying === 'none') {
                                 this.show();
@@ -136,12 +134,13 @@ var nts;
                             else {
                                 this.hide();
                             }
-                        }
-                    }
+                        };
+                        return NtsPopupPanel;
+                    }());
                 })(ntsPopup || (ntsPopup = {}));
                 var ntsGridList;
                 (function (ntsGridList) {
-                    let OUTSIDE_AUTO_SCROLL_SPEED = {
+                    var OUTSIDE_AUTO_SCROLL_SPEED = {
                         RATIO: 0.2,
                         MAX: 30
                     };
@@ -160,7 +159,11 @@ var nts;
                                 return setupDeleteButton($grid, param);
                         }
                     };
-                    $.fn.ntsGridListFeature = function (feature, action, ...params) {
+                    $.fn.ntsGridListFeature = function (feature, action) {
+                        var params = [];
+                        for (var _i = 2; _i < arguments.length; _i++) {
+                            params[_i - 2] = arguments[_i];
+                        }
                         var $grid = $(this);
                         switch (feature) {
                             case 'switch':
@@ -170,33 +173,30 @@ var nts;
                                 }
                         }
                     };
-                    function setSwitchValue($grid, ...params) {
-                        let rowId = params[0][0];
-                        let columnKey = params[0][1];
-                        let selectedValue = params[0][2];
-                        let $row = $($grid.igGrid("rowById", rowId));
-                        let $parent = $row.find(".ntsControl");
-                        //            let currentElement = _.find($parent.find(".nts-switch-button"), function (e){
-                        //                return $(e).hasClass('selected');    
-                        //            });
-                        //            let currentSelect = currentElement === undefined ? undefined : $(currentElement).attr('data-value');
-                        let currentSelect = $parent.attr('data-value');
+                    function setSwitchValue($grid) {
+                        var params = [];
+                        for (var _i = 1; _i < arguments.length; _i++) {
+                            params[_i - 1] = arguments[_i];
+                        }
+                        var rowId = params[0][0];
+                        var columnKey = params[0][1];
+                        var selectedValue = params[0][2];
+                        var $row = $($grid.igGrid("rowById", rowId));
+                        var $parent = $row.find(".ntsControl");
+                        var currentSelect = $parent.attr('data-value');
                         if (selectedValue !== currentSelect) {
-                            //                let $tr = $parent.closest("tr");   
-                            let rowKey = $row.attr("data-id");
+                            var rowKey = $row.attr("data-id");
                             $parent.find(".nts-switch-button").removeClass("selected");
-                            let element = _.find($parent.find(".nts-switch-button"), function (e) {
+                            var element = _.find($parent.find(".nts-switch-button"), function (e) {
                                 return selectedValue === $(e).attr('data-value');
                             });
                             if (element !== undefined) {
                                 $(element).addClass('selected');
                                 $parent.attr('data-value', selectedValue);
-                                //                    let $scroll = $("#" + $grid.attr("id") + "_scrollContainer")
-                                //                    let currentPosition = $scroll[0].scrollTop;
                                 $grid.igGridUpdating("setCellValue", rowKey, columnKey, selectedValue);
                                 $grid.igGrid("commit");
                                 if ($grid.igGrid("hasVerticalScrollbar")) {
-                                    let current = $grid.ntsGridList("getSelected");
+                                    var current = $grid.ntsGridList("getSelected");
                                     $grid.igGrid("virtualScrollTo", (typeof current === 'object' ? current.index : current[0].index) + 1);
                                 }
                             }
@@ -225,7 +225,7 @@ var nts;
                     function setSelected($grid, selectedId) {
                         deselectAll($grid);
                         if ($grid.igGridSelection('option', 'multipleSelection')) {
-                            selectedId.forEach(id => $grid.igGridSelection('selectRowById', id));
+                            selectedId.forEach(function (id) { return $grid.igGridSelection('selectRowById', id); });
                         }
                         else {
                             $grid.igGridSelection('selectRowById', selectedId);
@@ -279,26 +279,21 @@ var nts;
                     }
                     function setupDragging($grid) {
                         var dragSelectRange = [];
-                        // used to auto scrolling when dragged above/below grid)
                         var mousePos = null;
                         $grid.bind('mousedown', function (e) {
-                            // グリッド内がマウスダウンされていない場合は処理なしで終了
                             var $container = $grid.closest('.ui-iggrid-scrolldiv');
                             if ($(e.target).closest('.ui-iggrid-table').length === 0) {
                                 return;
                             }
-                            // current grid size
                             var gridVerticalRange = new uk.util.Range($container.offset().top, $container.offset().top + $container.height());
                             mousePos = {
                                 x: e.pageX,
                                 y: e.pageY,
                                 rowIndex: ui.ig.grid.getRowIndexFrom($(e.target))
                             };
-                            // set position to start dragging
                             dragSelectRange.push(mousePos.rowIndex);
                             var $scroller = $('#' + $grid.attr('id') + '_scrollContainer');
-                            // auto scroll while mouse is outside grid
-                            var timerAutoScroll = setInterval(() => {
+                            var timerAutoScroll = setInterval(function () {
                                 var distance = gridVerticalRange.distanceFrom(mousePos.y);
                                 if (distance === 0) {
                                     return;
@@ -307,10 +302,8 @@ var nts;
                                 var currentScrolls = $scroller.scrollTop();
                                 $grid.igGrid('virtualScrollTo', (currentScrolls + delta) + 'px');
                             }, 20);
-                            // handle mousemove on window while dragging (unhandle when mouseup)
                             $(window).bind('mousemove.NtsGridListDragging', function (e) {
                                 var newPointedRowIndex = ui.ig.grid.getRowIndexFrom($(e.target));
-                                // selected range is not changed
                                 if (mousePos.rowIndex === newPointedRowIndex) {
                                     return;
                                 }
@@ -324,7 +317,6 @@ var nts;
                                 }
                                 updateSelections();
                             });
-                            // stop dragging
                             $(window).one('mouseup', function (e) {
                                 mousePos = null;
                                 dragSelectRange = [];
@@ -333,21 +325,15 @@ var nts;
                             });
                         });
                         function updateSelections() {
-                            // rowIndex is NaN when mouse is outside grid
                             if (isNaN(mousePos.rowIndex)) {
                                 return;
                             }
-                            // 以前のドラッグ範囲の選択を一旦解除する
-                            // TODO: probably this code has problem of perfomance when select many rows
-                            // should process only "differences" instead of "all"
                             for (var i = 0, i_len = dragSelectRange.length; i < i_len; i++) {
-                                // http://jp.igniteui.com/help/api/2016.2/ui.iggridselection#methods:deselectRow
                                 $grid.igGridSelection('deselectRow', dragSelectRange[i]);
                             }
                             var newDragSelectRange = [];
                             if (dragSelectRange[0] <= mousePos.rowIndex) {
                                 for (var j = dragSelectRange[0]; j <= mousePos.rowIndex; j++) {
-                                    // http://jp.igniteui.com/help/api/2016.2/ui.iggridselection#methods:selectRow
                                     $grid.igGridSelection('selectRow', j);
                                     newDragSelectRange.push(j);
                                 }
@@ -362,12 +348,12 @@ var nts;
                         }
                     }
                     function setupSelectingEvents($grid) {
-                        $grid.bind('iggridselectioncellselectionchanging', () => {
+                        $grid.bind('iggridselectioncellselectionchanging', function () {
                         });
-                        $grid.bind('iggridselectionrowselectionchanged', () => {
+                        $grid.bind('iggridselectionrowselectionchanged', function () {
                             $grid.triggerHandler('selectionchanged');
                         });
-                        $grid.on('mouseup', () => {
+                        $grid.on('mouseup', function () {
                             $grid.triggerHandler('selectionchanged');
                         });
                     }
@@ -416,8 +402,6 @@ var nts;
                             var $input = $(this);
                             document.getElementById($input.attr('id')).dispatchEvent(validateEvent);
                         });
-                        //            document.getElementById($editor.attr('id')).dispatchEvent(validateEvent);
-                        //            $editor.trigger("validate");
                     }
                 })(ntsEditor || (ntsEditor = {}));
                 var ntsWizard;
@@ -500,27 +484,23 @@ var nts;
                     };
                     function init(controls) {
                         controls.each(function () {
-                            // UserGuide container
-                            let $control = $(this);
+                            var $control = $(this);
                             $control.remove();
                             if (!$control.hasClass("ntsUserGuide"))
                                 $control.addClass("ntsUserGuide");
                             $($control).appendTo($("body")).show();
-                            let target = $control.data('target');
-                            let direction = $control.data('direction');
-                            // Userguide Information Box
+                            var target = $control.data('target');
+                            var direction = $control.data('direction');
                             $control.children().each(function () {
-                                let $box = $(this);
-                                let boxDirection = $box.data("direction");
+                                var $box = $(this);
+                                var boxDirection = $box.data("direction");
                                 $box.addClass("userguide-box caret-" + getReveseDirection(boxDirection) + " caret-overlay");
                             });
-                            // Userguide Overlay
-                            let $overlay = $("<div class='userguide-overlay'></div>")
+                            var $overlay = $("<div class='userguide-overlay'></div>")
                                 .addClass("overlay-" + direction)
                                 .appendTo($control);
                             $control.hide();
                         });
-                        // Hiding when click outside
                         $("html").on("mouseup keypress", { controls: controls }, hideBinding);
                         return controls;
                     }
@@ -528,7 +508,6 @@ var nts;
                         controls.each(function () {
                             $(this).remove();
                         });
-                        // Unbind Hiding when click outside
                         $("html").off("mouseup keypress", hideBinding);
                         return controls;
                     }
@@ -540,18 +519,18 @@ var nts;
                     }
                     function show(controls) {
                         controls.each(function () {
-                            let $control = $(this);
+                            var $control = $(this);
                             $control.show();
-                            let target = $control.data('target');
-                            let direction = $control.data('direction');
+                            var target = $control.data('target');
+                            var direction = $control.data('direction');
                             $control.find(".userguide-overlay").each(function (index, elem) {
                                 calcOverlayPosition($(elem), target, direction);
                             });
                             $control.children().each(function () {
-                                let $box = $(this);
-                                let boxTarget = $box.data("target");
-                                let boxDirection = $box.data("direction");
-                                let boxMargin = ($box.data("margin")) ? $box.data("margin") : "20";
+                                var $box = $(this);
+                                var boxTarget = $box.data("target");
+                                var boxDirection = $box.data("direction");
+                                var boxMargin = ($box.data("margin")) ? $box.data("margin") : "20";
                                 calcBoxPosition($box, boxTarget, boxDirection, boxMargin);
                             });
                         });
@@ -571,7 +550,7 @@ var nts;
                         return controls;
                     }
                     function isShow(controls) {
-                        let result = true;
+                        var result = true;
                         controls.each(function () {
                             if (!$(this).is(":visible"))
                                 result = false;
@@ -594,7 +573,7 @@ var nts;
                                 .css("height", $("body").height() - $(target).offset().top);
                     }
                     function calcBoxPosition(box, target, direction, margin) {
-                        let operation = "+";
+                        var operation = "+";
                         if (direction === "left" || direction === "top")
                             operation = "-";
                         return box.position({
@@ -684,7 +663,6 @@ var nts;
                         return $treegrid;
                     }
                     function setupIgTreeScroll($control) {
-                        //implement later if needed
                         return $control;
                     }
                 })(ntsSearchBox || (ntsSearchBox = {}));
@@ -760,7 +738,7 @@ var nts;
                         return control;
                     }
                     function getCurrent(control) {
-                        let index = 0;
+                        var index = 0;
                         index = control.find("#sidebar-area .navigator a.active").closest("li").index();
                         return index;
                     }

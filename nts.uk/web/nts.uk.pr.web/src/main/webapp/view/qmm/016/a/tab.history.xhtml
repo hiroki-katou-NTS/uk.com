@@ -43,7 +43,7 @@
 							<tbody data-bind="with: history">
 								<com:ko tag="foreach" bind="elements">
 									<tr>
-										<td class="bgIgCol halign-center" data-bind="text: demensionNo"/>
+										<td class="bgIgCol halign-center" data-bind="text: $root.content.demensionBullet[$index()]"/>
 										<td>
 											<com:ko tag="ifnot" bind="$root.content.head().demensionType().isAttendance || $root.content.head().demensionType().isCertification">
 											</com:ko>

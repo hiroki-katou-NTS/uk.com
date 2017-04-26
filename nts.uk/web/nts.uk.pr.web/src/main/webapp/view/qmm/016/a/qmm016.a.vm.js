@@ -59,6 +59,7 @@ var nts;
                                     self.headDirtyChecker = new nts.uk.ui.DirtyChecker(self.head);
                                     self.settingDirtyChecker = new nts.uk.ui.DirtyChecker(self.history().elements);
                                     self.valuesDirtyChecker = new nts.uk.ui.DirtyChecker(self.valueItems);
+                                    self.demensionBullet = ["①", "②", "③"];
                                 }
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
@@ -71,7 +72,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.isDirty = function () {
                                     var self = this;
-                                    self.valueItems(self.history().detailViewModel.getCellItem());
+                                    self.valueItems(self.history().detailViewModel ? self.history().detailViewModel.getCellItem() : []);
                                     return self.headDirtyChecker.isDirty() ||
                                         self.settingDirtyChecker.isDirty() ||
                                         self.valuesDirtyChecker.isDirty();
@@ -94,6 +95,10 @@ var nts;
                                     $("#inp_code").ntsEditor("validate");
                                     $("#inp_name").ntsEditor("validate");
                                     $("#inp_start_date").ntsEditor("validate");
+                                    if ($('.nts-editor').ntsError("hasError")) {
+                                        return true;
+                                    }
+                                    return false;
                                 };
                                 ScreenModel.prototype.clearErrorSave = function () {
                                     $('.save-error').ntsError('clear');
@@ -102,7 +107,9 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     self.clearErrorSave();
-                                    self.validateData();
+                                    if (self.validateData()) {
+                                        return dfd.promise();
+                                    }
                                     if (self.isNewMode()) {
                                         var wagetableDto = self.head().getWageTableDto();
                                         a.service.instance.initWageTable({
@@ -259,7 +266,7 @@ var nts;
                                                 late.elementName('遅刻・早退回数');
                                                 var level = new DemensionItemViewModel(3);
                                                 level.elementType(9);
-                                                level.elementName('レベル');
+                                                level.elementName('精皆勤レベル');
                                                 newDemensionItemList.push(workDay);
                                                 newDemensionItemList.push(late);
                                                 newDemensionItemList.push(level);

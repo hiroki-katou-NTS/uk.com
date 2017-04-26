@@ -120,7 +120,7 @@
 								<com:ko tag="foreach" bind="demensionItemList">
 									<tr>
 										<td class="bgIgCol halign-center"
-											data-bind="text: demensionNo" />
+											data-bind="text: $root.content.demensionBullet[$index()]" />
 										<td><com:ko tag="ifnot"
 												bind="$parent.demensionType().isAttendance || $parent.demensionType().isCertification">
 												<button

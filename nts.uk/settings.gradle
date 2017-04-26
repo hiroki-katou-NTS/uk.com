@@ -1,6 +1,7 @@
 include 'web:nts.uk.com.web'
 include 'web:nts.uk.pr.web'
 include 'web:nts.uk.at.web'
+include 'web:nts.uk.com.js.web'
 
 include 'shr:nts.uk.shr.com'
 include 'shr:nts.uk.shr.ws'

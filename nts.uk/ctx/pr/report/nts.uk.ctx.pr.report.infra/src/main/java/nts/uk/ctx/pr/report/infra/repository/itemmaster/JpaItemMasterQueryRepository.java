@@ -4,12 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.repository.itemmaster;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.report.app.itemmaster.query.ItemMasterCategory;
 import nts.uk.ctx.pr.report.app.itemmaster.query.ItemMaterRepository;
 import nts.uk.ctx.pr.report.app.itemmaster.query.MasterItemDto;
@@ -56,6 +58,9 @@ public class JpaItemMasterQueryRepository extends JpaRepository implements ItemM
 	 */
 	@Override
 	public List<MasterItemDto> findByCodes(String companyCode, List<String> codes) {
+		if (CollectionUtil.isEmpty(codes)) {
+			return Collections.emptyList();
+		}
 		return this.queryProxy().query(SELECT_BY_CODES)
 				.setParameter("companyCode", companyCode)
 				.setParameter("itemCodeList", codes)

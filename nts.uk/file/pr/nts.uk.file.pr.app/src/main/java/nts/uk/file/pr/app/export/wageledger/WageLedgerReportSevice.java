@@ -51,7 +51,7 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 		
 		// TODO: Validate query employee ids and base date.
 		query.baseDate = GeneralDate.today();
-		query.employeeIds = Arrays.asList("999000000000000000000000000000000001");
+		query.employeeIds = Arrays.asList("99900000-0000-0000-0000-000000000001");
 		if (!this.repository.hasReportData(companyCode, query)) {
 			throw new BusinessException("ER010");
 		}
