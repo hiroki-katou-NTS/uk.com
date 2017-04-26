@@ -18,41 +18,23 @@ var nts;
                                 recalculateHealthInsuranceAvgearn: "ctx/pr/core/insurance/social/healthavgearn/recalculate"
                             };
                             function updateHealthInsuranceAvgearn(list, officeCode) {
-                                var dfd = $.Deferred();
                                 var data = {
                                     listHealthInsuranceAvgearnDto: list.listHealthInsuranceAvgearnDto,
                                     historyId: list.historyId,
                                     officeCode: officeCode
                                 };
-                                nts.uk.request.ajax(paths.updateHealthInsuranceAvgearn, data).done(function () {
-                                    return dfd.resolve();
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.updateHealthInsuranceAvgearn, data);
                             }
                             service.updateHealthInsuranceAvgearn = updateHealthInsuranceAvgearn;
                             function recalculateHealthInsuranceAvgearn(historyId) {
-                                var dfd = $.Deferred();
                                 var data = {
                                     historyId: historyId,
                                 };
-                                nts.uk.request.ajax(paths.recalculateHealthInsuranceAvgearn, data).done(function (res) {
-                                    dfd.resolve(res);
-                                }).fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.recalculateHealthInsuranceAvgearn, data);
                             }
                             service.recalculateHealthInsuranceAvgearn = recalculateHealthInsuranceAvgearn;
                             function findHealthInsuranceAvgEarn(historyId) {
-                                var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findHealthInsuranceAvgEarn + '/' + historyId)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.findHealthInsuranceAvgEarn + '/' + historyId);
                             }
                             service.findHealthInsuranceAvgEarn = findHealthInsuranceAvgEarn;
                         })(service = h.service || (h.service = {}));

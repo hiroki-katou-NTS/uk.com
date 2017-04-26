@@ -45,12 +45,8 @@ var nts;
                                 updateHistoryStartPath: 'ctx/pr/core/insurance/social/healthrate/history/update/start'
                             });
                             function findInsuranceOffice(key) {
-                                var dfd = $.Deferred();
                                 var findPath = servicePath.getAllOfficeItem + ((key != null && key != '') ? ('?key=' + key) : '');
-                                nts.uk.request.ajax(findPath).done(function (data) {
-                                    dfd.resolve(data);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(findPath);
                             }
                             service.findInsuranceOffice = findInsuranceOffice;
                             function findAllRounding() {
@@ -69,21 +65,13 @@ var nts;
                             function getHealthInsuranceItemDetail(code) {
                                 var dfd = $.Deferred();
                                 var findPath = servicePath.getHealthInsuranceItemDetail + "/" + code;
-                                nts.uk.request.ajax(findPath).done(function (data) {
-                                    var healthInsuranceRateDetailData = data;
-                                    dfd.resolve(healthInsuranceRateDetailData);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(findPath);
                             }
                             service.getHealthInsuranceItemDetail = getHealthInsuranceItemDetail;
                             function getAllHealthOfficeItem() {
                                 var dfd = $.Deferred();
                                 var findPath = servicePath.getAllHealthOfficeAndHistory;
-                                nts.uk.request.ajax(findPath).done(function (data) {
-                                    var returnData = data;
-                                    dfd.resolve(returnData);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(findPath);
                             }
                             service.getAllHealthOfficeItem = getAllHealthOfficeItem;
                             function registerHealthRate(data) {

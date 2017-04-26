@@ -18,41 +18,23 @@ var nts;
                                 recalculatePensionAvgearn: "ctx/pr/core/insurance/social/pensionavgearn/recalculate"
                             };
                             function updatePensionAvgearn(list, officeCode) {
-                                var dfd = $.Deferred();
                                 var data = {
                                     listPensionAvgearnDto: list.listPensionAvgearnDto,
                                     historyId: list.historyId,
                                     officeCode: officeCode
                                 };
-                                nts.uk.request.ajax(paths.updatePensionAvgearn, data).done(function () {
-                                    return dfd.resolve();
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.updatePensionAvgearn, data);
                             }
                             service.updatePensionAvgearn = updatePensionAvgearn;
                             function recalculatePensionAvgearn(historyId) {
-                                var dfd = $.Deferred();
                                 var data = {
                                     historyId: historyId,
                                 };
-                                nts.uk.request.ajax(paths.recalculatePensionAvgearn, data).done(function (res) {
-                                    dfd.resolve(res);
-                                }).fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.recalculatePensionAvgearn, data);
                             }
                             service.recalculatePensionAvgearn = recalculatePensionAvgearn;
                             function findPensionAvgearn(id) {
-                                var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findPensionAvgearn + '/' + id)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.findPensionAvgearn + '/' + id);
                             }
                             service.findPensionAvgearn = findPensionAvgearn;
                         })(service = i.service || (i.service = {}));
