@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.portal.dom.enums.PGType;
 
 /**
@@ -22,7 +23,8 @@ public class Layout extends AggregateRoot {
 	/** Enum PG Type */
 	PGType pgType;
 
-	public static Layout createFromJavaType(String companyID, String layoutID, int pgType) {
+	public static Layout createFromJavaType(String companyID, int pgType) {
+		String layoutID = IdentifierUtil.randomUniqueId();
 		return new Layout(companyID, layoutID, EnumAdaptor.valueOf(pgType, PGType.class));
 	}
 

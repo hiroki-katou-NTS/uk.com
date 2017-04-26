@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.TopPagePartCode;
 import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.TopPagePartName;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
@@ -33,7 +34,8 @@ public class TopPagePart extends DomainObject {
 	/** Size */
 	Size size;
 
-	public static TopPagePart createFromJavaType(String companyID, String topPagePartID, String topPagePartCode, String topPagePartName, int topPagePartType, int width, int height){
+	public static TopPagePart createFromJavaType(String companyID, String topPagePartCode, String topPagePartName, int topPagePartType, int width, int height){
+		String topPagePartID = IdentifierUtil.randomUniqueId();
 		return new TopPagePart(
 			companyID, topPagePartID,
 			new TopPagePartCode(topPagePartCode),
