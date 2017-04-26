@@ -118,11 +118,14 @@ module nts.uk.pr.view.qmm016.a {
                         self.settingDirtyChecker.reset();
                         self.valuesDirtyChecker.reset();
                     })
-                })
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alert(error.message);
+                });
                 dfd.resolve();
                 return dfd.promise();
             }
             
+            // Validate data
             private validateData() {
                 $("#inp_code").ntsEditor("validate");
                 $("#inp_name").ntsEditor("validate");
@@ -163,6 +166,8 @@ module nts.uk.pr.view.qmm016.a {
                         self.headDirtyChecker.reset();
                         self.settingDirtyChecker.reset();
                         self.valuesDirtyChecker.reset();
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alert(error.message);
                     });
                 } else {
                     // Update mode.
@@ -177,7 +182,9 @@ module nts.uk.pr.view.qmm016.a {
                         self.headDirtyChecker.reset();
                         self.settingDirtyChecker.reset();
                         self.valuesDirtyChecker.reset();
-                    })
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alert(error.message);
+                    });
                 }
                 return dfd.promise();
             }
@@ -533,20 +540,17 @@ module nts.uk.pr.view.qmm016.a {
                 service.instance.genearetItemSetting({
                     historyId: self.history.historyId,
                     settings: self.getElementSettings()
-                })
-                    .done((res: Array<ElementSettingDto>) => {
-                        // Validate items
-                        if (res.length == null || !this.validateElementSettingDto(res)) {
-                            nts.uk.ui.dialog.alert("Cann't generate items with the current setting. Please check again!");
-                        }
-
-                        self.history.elements = res;
-                        self.detailViewModel.refreshElementSettings(res);
-                    }).fail(function(error) {
-                        //                    if (error.message === '1') {
+                }).done((res: Array<ElementSettingDto>) => {
+                    // Validate items
+                    if (res.length == null || !this.validateElementSettingDto(res)) {
                         nts.uk.ui.dialog.alert("Cann't generate items with the current setting. Please check again!");
-                        //                    }
-                    });
+                    }
+
+                    self.history.elements = res;
+                    self.detailViewModel.refreshElementSettings(res);
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alert("Cann't generate items with the current setting. Please check again!");
+                });
             }
 
             private validateElementSettingDto(res: Array<ElementSettingDto>): boolean {

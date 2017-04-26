@@ -45,12 +45,8 @@ var nts;
                                 updateHistoryStartPath: 'ctx/pr/core/insurance/social/pensionrate/history/update/start'
                             });
                             function findInsuranceOffice(key) {
-                                var dfd = $.Deferred();
                                 var findPath = servicePath.getAllOfficeItem + ((key != null && key != '') ? ('?key=' + key) : '');
-                                nts.uk.request.ajax(findPath).done(function (data) {
-                                    dfd.resolve(data);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(findPath);
                             }
                             service.findInsuranceOffice = findInsuranceOffice;
                             function findAllRounding() {
@@ -67,23 +63,13 @@ var nts;
                             }
                             service.findAllRounding = findAllRounding;
                             function getPensionItemDetail(code) {
-                                var dfd = $.Deferred();
                                 var findPath = servicePath.getPensionItemDetail + "/" + code;
-                                nts.uk.request.ajax(findPath).done(function (data) {
-                                    var pensionRateDetailData = data;
-                                    dfd.resolve(pensionRateDetailData);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(findPath);
                             }
                             service.getPensionItemDetail = getPensionItemDetail;
                             function getAllPensionOfficeItem() {
-                                var dfd = $.Deferred();
                                 var findPath = servicePath.getAllPensionOfficeAndHistory;
-                                nts.uk.request.ajax(findPath).done(function (data) {
-                                    var returnData = data;
-                                    dfd.resolve(returnData);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(findPath);
                             }
                             service.getAllPensionOfficeItem = getAllPensionOfficeItem;
                             function registerPensionRate(data) {

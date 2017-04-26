@@ -87,6 +87,8 @@ var nts;
                                             self.settingDirtyChecker.reset();
                                             self.valuesDirtyChecker.reset();
                                         });
+                                    }).fail(function (error) {
+                                        nts.uk.ui.dialog.alert(error.message);
                                     });
                                     dfd.resolve();
                                     return dfd.promise();
@@ -121,6 +123,8 @@ var nts;
                                             self.headDirtyChecker.reset();
                                             self.settingDirtyChecker.reset();
                                             self.valuesDirtyChecker.reset();
+                                        }).fail(function (error) {
+                                            nts.uk.ui.dialog.alert(error.message);
                                         });
                                     }
                                     else {
@@ -135,6 +139,8 @@ var nts;
                                             self.headDirtyChecker.reset();
                                             self.settingDirtyChecker.reset();
                                             self.valuesDirtyChecker.reset();
+                                        }).fail(function (error) {
+                                            nts.uk.ui.dialog.alert(error.message);
                                         });
                                     }
                                     return dfd.promise();
@@ -377,8 +383,7 @@ var nts;
                                     a.service.instance.genearetItemSetting({
                                         historyId: self.history.historyId,
                                         settings: self.getElementSettings()
-                                    })
-                                        .done(function (res) {
+                                    }).done(function (res) {
                                         if (res.length == null || !_this.validateElementSettingDto(res)) {
                                             nts.uk.ui.dialog.alert("Cann't generate items with the current setting. Please check again!");
                                         }
@@ -484,4 +489,6 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+elf.elementType();
+[0];
 //# sourceMappingURL=qmm016.a.vm.js.map

@@ -14,47 +14,28 @@ module nts.uk.pr.view.qmm008.h {
          *  Save List Health Insurance Average Earn
          */
         export function updateHealthInsuranceAvgearn(list: model.ListHealthInsuranceAvgEarnDto, officeCode: string): JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
             var data = {
                 listHealthInsuranceAvgearnDto: list.listHealthInsuranceAvgearnDto,
                 historyId: list.historyId,
                 officeCode: officeCode
             };
-            nts.uk.request.ajax(paths.updateHealthInsuranceAvgearn, data).done(() =>
-                dfd.resolve());
-            return dfd.promise();
+            return nts.uk.request.ajax(paths.updateHealthInsuranceAvgearn, data);
         }
 
         // Re-calculate values
         export function recalculateHealthInsuranceAvgearn(historyId: string): JQueryPromise<model.ListHealthInsuranceAvgEarnDto> {
-            var dfd = $.Deferred<any>();
-
             var data = {
                 historyId: historyId,
             };
 
-            nts.uk.request.ajax(paths.recalculateHealthInsuranceAvgearn, data).done(function(res: model.ListHealthInsuranceAvgEarnDto) {
-                dfd.resolve(res);
-            }).fail(function(res: any) {
-                dfd.reject(res);
-            });
-
-            return dfd.promise();
+            return nts.uk.request.ajax(paths.recalculateHealthInsuranceAvgearn, data);
         }
 
         /**
          *  Find list HealthInsuranceAvgEarn by historyId
          */
         export function findHealthInsuranceAvgEarn(historyId: string): JQueryPromise<model.ListHealthInsuranceAvgEarnDto> {
-            var dfd = $.Deferred<model.ListHealthInsuranceAvgEarnDto>();
-            nts.uk.request.ajax(paths.findHealthInsuranceAvgEarn + '/' + historyId)
-                .done(function(res: model.ListHealthInsuranceAvgEarnDto) {
-                    dfd.resolve(res);
-                })
-                .fail(function(res: any) {
-                    dfd.reject(res);
-                });
-            return dfd.promise();
+            return nts.uk.request.ajax(paths.findHealthInsuranceAvgEarn + '/' + historyId);
         }
 
         /**
