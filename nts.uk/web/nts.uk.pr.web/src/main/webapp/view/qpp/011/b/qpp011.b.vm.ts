@@ -497,10 +497,7 @@ module qpp011.b {
                     endDate: new Date("2017/04/26"),
                     endDateJapan: nts.uk.time.yearmonthInJapanEmpire(moment(self.B_INP_003_yearMonth()).format("YYYY/MM")).toString()
                 };
-<<<<<<< HEAD
 
-=======
->>>>>>> 28564e9e4b6b50fc17c6d2c8ac487458613b58bd
                 service.saveAsPdf(command).done(function() {
                     //
                 }).fail(function(res) {
