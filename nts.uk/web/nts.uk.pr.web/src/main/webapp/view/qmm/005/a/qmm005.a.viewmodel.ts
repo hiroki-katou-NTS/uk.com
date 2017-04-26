@@ -21,6 +21,7 @@ module qmm005.a {
                     let _row = new TableRowItem({
                         index: index,
                         label: "",
+                        dispSet: false,
                         sel001Data: [new common.SelectItem({ index: -1, label: "" })],
                         sel002Data: [new common.SelectItem({ index: -1, label: "" })],
                         sel003: true,
@@ -30,8 +31,11 @@ module qmm005.a {
                     let item = _.find(resp, function(item) { return item && item.paydayProcessingDto && item.paydayProcessingDto.processingNo == index; });
 
                     if (item) {
+                        _row.dispSet = item.paydayProcessingDto.dispSet;
+                        
                         _row.index(item.paydayProcessingDto.processingNo);
                         _row.label(item.paydayProcessingDto.processingName);
+                        
                         let _sel001Data: Array<common.SelectItem> = [];
                         let _sel002Data: Array<common.SelectItem> = [];
                         let _sel004Data: Array<common.SelectItem> = [];
@@ -190,6 +194,7 @@ module qmm005.a {
     interface ITableRowItem {
         index: number;
         label: string;
+        dispSet: boolean;
         sel001Data: Array<common.SelectItem>;
         sel002Data: Array<common.SelectItem>;
         sel003: boolean;
@@ -198,6 +203,7 @@ module qmm005.a {
     }
 
     class TableRowItem {
+        dispSet: boolean = false;
         showDialog: KnockoutObservable<boolean> = ko.observable(false);
         index: KnockoutObservable<number> = ko.observable(0);
         label: KnockoutObservable<string> = ko.observable('');
@@ -215,6 +221,8 @@ module qmm005.a {
         constructor(param: ITableRowItem) {
             this.index(param.index);
             this.label(param.label);
+            
+            this.dispSet = param.dispSet;
 
             this.sel001Data(param.sel001Data);
             if (param.sel001Data[0])

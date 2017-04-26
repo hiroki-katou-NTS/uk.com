@@ -151,12 +151,12 @@ module qmm005.b {
             for (let i: number = 0, rec: IPaydayDto; rec = self.dataSources[i]; i++) {
                 let rec: IPaydayDto = dataSources[i];
                 if (rec) {
-                    let $moment = moment(new Date(rec.payDate)),
+                    let $moment = moment.utc(rec.payDate),
                         month = $moment.month() + 1,
                         sel002Data: Array<common.SelectItem> = [];
 
                     for (var j: number = 1; j <= $moment.daysInMonth(); j++) {
-                        var date = moment(new Date($moment.year(), $moment.month(), j));
+                        var date = moment.utc([$moment.year(), $moment.month(), j]);
                         sel002Data.push(new common.SelectItem({
                             index: j,
                             label: date.format("YYYY/MM/DD"),
@@ -172,13 +172,13 @@ module qmm005.b {
                             sel001: rec.payBonusAtr == 1 ? true : false,
                             sel002: $moment.date(),
                             sel002Data: sel002Data,
-                            inp003: moment.utc(new Date(rec.stdDate)).toDate(),
+                            inp003: moment.utc(rec.stdDate).toDate(),
                             inp004: rec.socialInsLevyMon["formatYearMonth"]("/"),
                             inp005: rec.stmtOutputMon["formatYearMonth"]("/"),
-                            inp006: new Date(rec.socialInsStdDate),
-                            inp007: new Date(rec.empInsStdDate),
-                            inp008: new Date(rec.incomeTaxStdDate),
-                            inp009: new Date(rec.accountingClosing),
+                            inp006: moment.utc(rec.socialInsStdDate).toDate(),
+                            inp007: moment.utc(rec.empInsStdDate).toDate(),
+                            inp008: moment.utc(rec.incomeTaxStdDate).toDate(),
+                            inp009: moment.utc(rec.accountingClosing).toDate(),
                             inp010: rec.neededWorkDay
                         });
                         lst002Data.push(row);
@@ -261,7 +261,6 @@ module qmm005.b {
             let self = this,
                 lst002Data = ko.toJS(self.lst002Data()),
                 data: Array<IPaydayDto> = [];
-
             for (var i in lst002Data) {
                 let item = lst002Data[i],
                     dataSources = _.clone(self.dataSources),

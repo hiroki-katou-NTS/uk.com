@@ -261,9 +261,12 @@ a, input, select, .form-control, div.form-group>input.form-control {
 	background-image:
 		url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAATCAYAAAB7u5a2AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAJySURBVDhPnVVdbxJBFD2zsGCyFOTTB76eSGya+EgTWoyNiU30R/JHJDFpg8ALD/piqIm2llaxXYggy36Nc6dLycIq1LO5GZY7c+6Ze+/MsvNZgzMGkG0LLp4dZQ9z9xaGewmGkOfxg30zG/ysF4b+XYESPGcNruvi2V4VxVIeN3YTJv8pAiiedwmFFBtThl/6w2xuuFBDGjKRI0SUjNiL41EuIcNRAEX8ImOMb2lyPcJsB2n1uQiQXAvg20soFIKqqlvZArPZDCp7jHT4SIz+AOzSavCPpyquvnC8On6JTCbjuf4OzjmGwyHy+Tx6vR5SqRTK5TIsfouh+RY2n8ga+JQHKQyySCSCXC4n18znc3Q6HQwGA6E8JVL0QqaKduAjJ0VBIIJVo7mL0TAMtNttXF9fI6rkZA3CTPOn5fWbY2SzWY/yDrZto9lswrIs7x8/iJh81J6apqFWq8ldUf/7lAeBlI3HY4xGIzmummmacp4iWm0ymaDVakHXdTxS8pvJHwIm+jMajcq6EDaSk6JCoYBSqYRisbhmlAraneM4SKfTODysIxaLYeJ82pxzAuVzFaSSSLvdLvr9PpLJJOr1OhKJBKbOGXSrtV1aSP2q0eGhkQLE43EcHBx4xJ8xstpwV1uRTui2oKIRKAXUIaT8t/sVuv1eEJviEIlnkZYfFwyZbOq+GP8CqaUTWalUZBvSmplzLm7IU+EzxIw7zZL8w4mK4YXYInPlwk2gGuzvV7G7+1S+G+4Vbsx3QvFMvC2TwS6MBqcr1w4+I4HgguZJrIqUtieIB7i1TuDwqfD4S/ifXyIXyXANEWQxtJr3F5UfwB+8G2HvP6XKnQAAAABJRU5ErkJggg==');
 	background-repeat: no-repeat;
-	background-position-x: 5px;
-	background-position-y: 5px;
-	padding-left: 30px;
+    background-position-x: 10px;
+    background-position-y: 7px;
+    padding-left: 40px;
+    display: inline-block;
+    line-height: 32px;
+    padding-right: 10px;
 }
 
 #contents-area {

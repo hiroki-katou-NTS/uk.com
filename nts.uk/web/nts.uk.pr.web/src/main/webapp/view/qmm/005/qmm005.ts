@@ -81,7 +81,7 @@ Date.prototype["formatYearMonth"] = function(format) {
 
 String.prototype["formatYearMonth"] = function(format) {
     var match = this.match(/\d{4}|\d{2}|\d{1}/g);
-    if (match.length != 2) {
+    if (match.length < 2) {
         console.error('Input string is not correct!');
         return undefined;
     }
@@ -106,8 +106,8 @@ Number.prototype["getYearInYm"] = function() {
 }
 
 String.prototype["getYearInYm"] = function() {
-    var match = this.match(/\d{4}|\d{2}|\d{1}/g);
-    if (match.length != 2) {
+    var match = this.toString().match(/\d{4}|\d{2}|\d{1}/g);
+    if (match.length < 2) {
         console.error('Input string is not correct!');
     }
     return parseInt(match[0]);
@@ -205,7 +205,7 @@ module qmm005.common {
 }
 
 // detect size of window
-(window.onresize = () => { window["large"] = window.innerWidth >= 1920; })();
+(window.onresize = () => { window["large"] = window.outerWidth >= 1920; })();
 
 // 4dev
 var _ref = (window.location.href.indexOf('localhost') == -1) && 'v1.0.0' || new Date().getTime();

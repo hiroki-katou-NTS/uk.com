@@ -19,7 +19,7 @@ module qmm005.d {
         sel014: KnockoutObservable<number> = ko.observable(1);
         sel015: KnockoutObservable<number> = ko.observable(1);
         sel016: common.CheckBoxItem = new common.CheckBoxItem({ enable: true, checked: false, text: 'この処理区分を廃止する' });
-        
+
         sel001Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
         sel002Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
         sel003Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
@@ -98,7 +98,7 @@ module qmm005.d {
             let self = this;
             // processingNo
             self.index(nts.uk.ui.windows.getShared('dataRow').index());
-
+            self.sel016.checked(nts.uk.ui.windows.getShared('dataRow').dispSet);
             // define all data
             let D_SEL_001_DATA: Array<common.SelectItem> = [];
 
@@ -287,7 +287,7 @@ module qmm005.d {
                 sparePayAtr: 0,
                 processingNo: self.index(),
                 processingName: self.inp001(),
-                dispSet: 0,
+                dispSet: self.sel016.checked() ==  true ? 1 : 0,
                 currentProcessingYm: parseInt(nts.uk.time.formatDate(new Date(stdYear, stdDate <= self.sel001() ? stdMonth + 1 : stdMonth, 1), 'yyyyMM')),
                 bonusAtr: 0,
                 bcurrentProcessingYm: parseInt(nts.uk.time.formatDate(new Date(stdYear, stdDate <= self.sel001() ? stdMonth + 1 : stdMonth, 1), 'yyyyMM')),
