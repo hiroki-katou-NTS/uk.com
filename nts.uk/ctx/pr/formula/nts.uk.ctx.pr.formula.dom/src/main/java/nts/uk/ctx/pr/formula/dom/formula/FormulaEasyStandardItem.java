@@ -1,12 +1,13 @@
 package nts.uk.ctx.pr.formula.dom.formula;
 
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaCode;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
 import nts.uk.ctx.pr.formula.dom.primitive.ReferenceItemCode;
 
 @Getter
-public class FormulaEasyStandardItem {
+public class FormulaEasyStandardItem extends AggregateRoot{
 
 	private String companyCode;
 

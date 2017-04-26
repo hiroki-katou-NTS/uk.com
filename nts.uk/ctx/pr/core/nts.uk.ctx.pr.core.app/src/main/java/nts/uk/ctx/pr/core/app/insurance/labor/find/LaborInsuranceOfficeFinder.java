@@ -68,7 +68,7 @@ public class LaborInsuranceOfficeFinder {
 		// get login user info
 		LoginUserContext loginUserContext = AppContexts.user();
 
-		// get companycode by user login
+		// get company code by user login
 		String companyCode = loginUserContext.companyCode();
 
 		// find data
@@ -77,7 +77,8 @@ public class LaborInsuranceOfficeFinder {
 		// to Dto
 		List<LaborInsuranceOfficeFindOutDto> dataOutput = data.stream().map(office -> {
 			LaborInsuranceOfficeFindOutDto dto = new LaborInsuranceOfficeFindOutDto();
-			office.saveToMemento(dto);
+			dto.setCode(office.getCode().v());
+			dto.setName(office.getName().v());
 			return dto;
 		}).collect(Collectors.toList());
 

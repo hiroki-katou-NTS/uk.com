@@ -207,14 +207,17 @@ public class StepItemGenerator implements ItemGenerator {
 	private BigDecimal getUnit(BigDecimal num) {
 		num = num.multiply(BigDecimal.valueOf(100d));
 
+		// Check number of decimal digits : number remainder 100
 		if (BigDecimal.ZERO.intValue() == num.remainder(BigDecimal.valueOf(100d)).intValue()) {
 			return UNIT_L1;
 		}
 
+		// Check number of decimal digits : number remainder 10
 		if (BigDecimal.ZERO.intValue() == num.remainder(BigDecimal.valueOf(10d)).intValue()) {
 			return UNIT_L2;
 		}
 
+		// Return default unit.
 		return UNIT_L3;
 	}
 }

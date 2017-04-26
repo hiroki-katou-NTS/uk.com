@@ -9,7 +9,7 @@ __viewContext.ready(function () {
             self.itemList = ko.observableArray(temp);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(3);
-            self.selectedCode = ko.observable(2);
+            self.selectedCode = ko.observable(temp[2]);
             self.selectedCodes = ko.observableArray([]);
             self.isEnable = ko.observable(true);
             self.isMulti = ko.observable(true);
@@ -33,22 +33,14 @@ __viewContext.ready(function () {
             var self = this;
             self.selectedCodes([10]);
         };
-        /**
-         * Clear options.
-         */
         ScreenModel.prototype.clearOptions = function () {
             var self = this;
             self.itemList([]);
         };
-        /**
-         * Remove item by code;
-         */
         ScreenModel.prototype.remove = function () {
             var self = this;
-            // Remove by code.
             var selected = self.itemList().filter(function (item) { return item.code === self.selectedCode(); })[0];
             self.itemList.remove(selected);
-            // Remove by codes
             var selecteds = self.itemList().filter(function (item) { return self.selectedCodes().indexOf(item.code) != -1; });
             self.itemList.removeAll(selecteds);
         };

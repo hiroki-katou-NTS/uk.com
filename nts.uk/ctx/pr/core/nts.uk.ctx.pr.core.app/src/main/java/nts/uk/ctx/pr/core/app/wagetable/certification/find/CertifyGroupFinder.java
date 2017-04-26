@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.certification.find;
@@ -26,7 +26,7 @@ public class CertifyGroupFinder {
 
 	/** The find. */
 	@Inject
-	private CertifyGroupRepository find;
+	private CertifyGroupRepository repository;
 
 	/**
 	 * Find all.
@@ -39,13 +39,13 @@ public class CertifyGroupFinder {
 		LoginUserContext loginUserContext = AppContexts.user();
 
 		// call findAll
-		List<CertifyGroup> lstCertifyGroup = find.findAll(loginUserContext.companyCode());
+		List<CertifyGroup> data = this.repository.findAll(loginUserContext.companyCode());
 
 		// to Dto
-		return lstCertifyGroup.stream().map(certifyGroup -> {
-			CertifyGroupFindOutDto certifyGroupFindOutDto = new CertifyGroupFindOutDto();
-			certifyGroup.saveToMemento(certifyGroupFindOutDto);
-			return certifyGroupFindOutDto;
+		return data.stream().map(certifyGroup -> {
+			CertifyGroupFindOutDto dto = new CertifyGroupFindOutDto();
+			certifyGroup.saveToMemento(dto);
+			return dto;
 		}).collect(Collectors.toList());
 	}
 
@@ -57,23 +57,22 @@ public class CertifyGroupFinder {
 	 * @return the certify group find dto
 	 */
 	public CertifyGroupFindDto find(String code) {
-		
+
 		// get info login
 		LoginUserContext loginUserContext = AppContexts.user();
-		CertifyGroupFindDto certifyGroupFindDto = new CertifyGroupFindDto();
-		
+		CertifyGroupFindDto dataOutput = new CertifyGroupFindDto();
+
 		// call findById
-		Optional<CertifyGroup> optionalCertifyGroup = find.findById(loginUserContext.companyCode(), code);
-		
+		Optional<CertifyGroup> data = this.repository.findById(loginUserContext.companyCode(), code);
+
 		// not value find
-		if (!optionalCertifyGroup.isPresent()) {
+		if (!data.isPresent()) {
 			return null;
 		}
-		
-		// to Dto
-		optionalCertifyGroup.get().saveToMemento(certifyGroupFindDto);
 
-		return certifyGroupFindDto;
+		// to output
+		data.get().saveToMemento(dataOutput);
+		return dataOutput;
 	}
 
 }

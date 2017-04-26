@@ -21,8 +21,8 @@ public class DeletePositionCommandHandler extends CommandHandler<DeletePositionC
 
 		String companyCode = AppContexts.user().companyCode();
 		positionRepository.delete(companyCode,
-				new JobCode(context.getCommand().getJobCode()),
-				context.getCommand().getHistoryId());
+				context.getCommand().getHistoryId(),
+				new JobCode(context.getCommand().getJobCode()));
 	}
 
 }

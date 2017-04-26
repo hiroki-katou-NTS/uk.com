@@ -17,14 +17,6 @@ import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupName;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.MultipleTargetSetting;
 
 /**
- * The Class CertifyGroupDto.
- */
-
-/**
- * Instantiates a new certify group dto.
- */
-
-/**
  * Instantiates a new certify group dto.
  */
 @Data
@@ -135,7 +127,8 @@ public class CertifyGroupDto {
 		 */
 		@Override
 		public Set<Certification> getCertifies() {
-			return this.dto.certifies.stream().map(certificationDto -> certificationDto.toDomain(this.companyCode))
+			return this.dto.certifies.stream()
+				.map(certificationDto -> certificationDto.toDomain(this.companyCode))
 				.collect(Collectors.toSet());
 
 		}

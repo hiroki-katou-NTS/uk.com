@@ -58,10 +58,10 @@ public class UpdateSocialOfficeCommandHandler extends CommandHandler<UpdateSocia
 		Optional<SocialInsuranceOffice> findOffice = socialInsuranceOfficeRepository
 				.findByOfficeCode(companyCode, new OfficeCode(command.getCode()));
 
-		if (!findOffice.isPresent()) {
-			throw new BusinessException("ER010");
-		} else {
+		if (findOffice.isPresent()) {
 			socialInsuranceOfficeRepository.update(socialInsuranceOffice);
+		} else {
+			throw new BusinessException("ER010");
 		}
 
 		return;
