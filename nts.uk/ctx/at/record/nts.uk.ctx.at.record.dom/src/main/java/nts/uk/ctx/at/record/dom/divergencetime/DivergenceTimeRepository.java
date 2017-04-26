@@ -1,0 +1,48 @@
+package nts.uk.ctx.at.record.dom.divergencetime;
+
+import java.util.List;
+
+public interface DivergenceTimeRepository {
+
+	/**
+	 * get all divergence time
+	 * @param companyId
+	 * @return
+	 */
+	List<DivergenceTime> getAllDivTime(String companyId);
+	/**
+	 * get all divergence reason
+	 * @param companyId
+	 * @param divTimeCode
+	 * @return
+	 */
+	List<DivergenceReason> getDivReasonByCode(String companyId, String divTimeCode);
+	/**
+	 * get all attendance item
+	 * @param companyId
+	 * @param divTimeId
+	 * @return
+	 */
+	List<AttendanceItem> getallItembyCode(String companyId, String divTimeId);
+	/**
+	 * update divergence time
+	 * @param divTime
+	 */
+	void updateDivTime(DivergenceTime divTime);
+	/**
+	 * add divergence reason
+	 * @param divReason
+	 */
+	void addDivReason(DivergenceReason divReason);
+	/**
+	 * update divergence reason
+	 * @param divReason
+	 */
+	void updateDivReason(DivergenceReason divReason);
+	/**
+	 * delete divergence reason
+	 * @param divReason
+	 */
+	void deleteDivReason(DivergenceReason divReason);
+	
+}
