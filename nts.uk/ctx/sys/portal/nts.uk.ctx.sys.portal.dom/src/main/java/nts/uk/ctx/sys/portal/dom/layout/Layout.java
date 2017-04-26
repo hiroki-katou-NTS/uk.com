@@ -6,6 +6,9 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.portal.dom.enums.PGType;
 
+/**
+ * @author LamDT
+ */
 @Value
 @EqualsAndHashCode(callSuper = false)
 public class Layout extends AggregateRoot {
@@ -16,7 +19,7 @@ public class Layout extends AggregateRoot {
 	/** Layout GUID */
 	String layoutID;
 
-	/** PG Type */
+	/** Enum PG Type */
 	PGType pgType;
 
 	public static Layout createFromJavaType(String companyID, String layoutID, int pgType) {
