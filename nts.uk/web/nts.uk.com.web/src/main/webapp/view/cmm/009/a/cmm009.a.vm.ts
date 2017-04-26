@@ -513,14 +513,16 @@ module cmm009.a.viewmodel {
                             var dfd = $.Deferred();
                             service.upDateListDepartment(data)
                                 .done(function(mess) {
+                                    var current = self.findHira(deleteobj.departmentCode, self.dataSource());
                                     let _dt = nts.uk.util.flatArray(self.dataSource(), 'children');
                                     let selectedcode = "";
                                     let indexOfItemDelete = _.findIndex(_dt, function(o) { return o.departmentCode == deleteobj.departmentCode; });
-                                    if (indexOfItemDelete === self.dataSource().length) {
-                                        selectedcode = (_dt[indexOfItemDelete - 1].departmentCode)
+                                    if (indexOfItemDelete === _dt.length - 1 || current.children.length > 0) {
+                                        selectedcode = (_dt[indexOfItemDelete - 1].departmentCode);
                                     } else {
-                                        selectedcode = (_dt[indexOfItemDelete].departmentCode)
+                                        selectedcode = (_dt[indexOfItemDelete + 1].departmentCode);
                                     }
+
                                     debugger;
                                     self.getAllDepartmentByHistId(hisdto.historyId, selectedcode);
                                 }).fail(function(error) {
