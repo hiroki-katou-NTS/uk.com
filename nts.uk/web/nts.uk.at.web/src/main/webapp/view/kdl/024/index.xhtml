@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+</head>
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="kdl024.a.main.css" />
+			<com:scriptfile path="kdl024.a.start.js" />
+			<com:scriptfile path="kdl024.a.vm.js" />
+			<com:ValidatorScript>
+				nts.uk.shr.com.primitive.PersonId
+				nts.uk.shr.com.primitive.sample.ResidenceCode
+			</com:ValidatorScript>
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button id="A1_1" class="btnM	n" data-bind="">新規</button>
+				<button id="A_BTN_001" class="btnMn proceed" data-bind="">登録</button>
+				<button id="A_BTN_003" class="btnMn delete_btn btn_width danger"
+					data-bind="" style="margin-left: 60px;">削除</button>
+				<button id="A_BTN_004" class="btnMn " data-bind="">閉じる</button>
+			</div>
+			<div id="content-area" class="cf">
+				<div class="left-content">
+					<div id="A_LST" class="bg-green caret-right caret-background">
+						<table id="single-list"
+										data-bind="ntsGridList: {								
+										height: 350,
+										dataSource: items,
+										primaryKey: 'code',
+										columns: columns2,
+										multiple: false,
+										value: currentCode
+										}"
+							class="cf">
+						</table>
+					</div>
+				</div>
+				<div class="right-content">
+					<div id="A3"
+						data-bind="ntsFormLabel: {
+													constraint: constraint, 
+													required: true, 
+													inline:false, 
+													enable:true }">
+						コード/名称</div>
+				</div>
+
+			</div>
+
+
+		</ui:define>
+
+	</ui:composition>
+</body>
+</html>
