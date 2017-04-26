@@ -471,7 +471,7 @@
             return repeater.begin(conf);
         }
         
-        module repeater {
+        export module repeater {
             export function begin(conf: IConfiguration) {
                 return (<Configuration>conf).run();
             }
