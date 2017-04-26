@@ -76,7 +76,6 @@ module cmm011.a.viewmodel {
             self.checkAddHist1 = ko.observable('');
             self.newEndDate = ko.observable(null);
             self.arrayItemEdit = ko.observableArray([]);
-            self.memobyHistoryId = ko.observable(null);
 
             self.singleSelectedCode.subscribe(function(codeChangeds) {
                 var _dt = self.dataSource();

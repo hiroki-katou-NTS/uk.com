@@ -37,7 +37,7 @@
 						<button id="A_BTN_OPENCDIALOG"
 							data-bind="click: openCDialog, enable: allowClick()">履歴追加</button>
 						<button id="A_BTN_OPENDDIALOG"
-							data-bind="click: openDDialog, enable: enableDDialog">履歴削除</button>
+							data-bind="click: openDDialog, enable: enableDDialog">履歴編集</button>
 						<div id="A_LBL_002" data-bind="ntsFormLabel: {}">メモ</div>
 					</div>
 					<div class="second-line">
@@ -91,7 +91,7 @@
 										value: singleSelectedCode,								
 										optionsValue: 'departmentCode',
 										optionsChild: 'children',
-										optionsText: 'name',
+										optionsText: 'display',
 										multiple: false,
 										enable: true,										
 										showCheckBox: false}"

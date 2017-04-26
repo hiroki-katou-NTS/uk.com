@@ -49,7 +49,7 @@ public class UpdateDepartmentCommandHandler extends CommandHandler<List<UpdateDe
 
 			if (!departmentRepository.isExistDepartment(companyCode,context.getCommand().get(0).getHistoryId(),
 					new DepartmentCode(context.getCommand().get(0).getDepartmentCode()))) {
-				throw new BusinessException("ER005");
+				throw new BusinessException("ER06");
 			}
 
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
@@ -79,7 +79,7 @@ public class UpdateDepartmentCommandHandler extends CommandHandler<List<UpdateDe
 			for (int i = 0; i < context.getCommand().size(); i++) {
 				if (!departmentRepository.isExistDepartment(companyCode,context.getCommand().get(0).getHistoryId(),
 						new DepartmentCode(context.getCommand().get(i).getDepartmentCode()))) {
-					throw new BusinessException("ER005");
+					throw new BusinessException("ER06");
 				}
 			}
 			for (int i = 0; i < context.getCommand().size(); i++) {

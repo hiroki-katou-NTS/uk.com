@@ -55,7 +55,7 @@ module cmm011.d.viewmodel {
                 } else if (codeChangeds == 2) {
                     self.enableInput(true);
                 }
-            }
+            });
         }
 
         createHistory(): any {

@@ -91,7 +91,7 @@ module cmm011.c.viewmodel {
         createData(): any {
             var self = this;
             var startYearMonthDay = $('#INP_STARTYMD').val();
-            var checked = null;
+            var checked : any = null;
             if (self.isRadioCheck() === 1 && self.enable() === true) {
                 checked = true;
             } else {

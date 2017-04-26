@@ -175,8 +175,9 @@ module cmm009.a.viewmodel {
                     .done(function(mess: any) {
                         location.reload();
                     }).fail(function(error) {
-                        if (error.message == "ER005") {
+                        if (error.messageId == "ER005") {
                             alert("入力したコードは既に存在しています。\r\n コードを確認してください。 ");
+                            $("#A_INP_CODE").focus();
                         }
                     })
                 dfd.resolve();
@@ -195,7 +196,7 @@ module cmm009.a.viewmodel {
                     .done(function(mess: any) {
                         self.getAllDepartmentByHistId(hisdto.historyId, depCodeCurrent);
                     }).fail(function(error) {
-                        if (error.message == "ER06") {
+                        if (error.messageId == "ER06") {
                             alert("対象データがありません。");
                         }
                     })
@@ -220,17 +221,20 @@ module cmm009.a.viewmodel {
                                 .done(function(mess: any) {
                                     self.getAllDepartmentByHistId(hisdto.historyId, _depCodeItemAdd);
                                     self.numberItemNew(0);
+                                    dfd2.resolve();
+                                    dfd.resolve();
                                 })
                                 .fail(function(error) {
-                                    if (error.message == "ER005") {
+                                    if (error.messageId == "ER005") {
                                         alert("入力したコードは既に存在しています。\r\n コードを確認してください。 ");
+                                        $("#A_INP_CODE").focus(); s
                                     }
+                                    dfd2.reject();
                                 })
-                            dfd2.resolve();
+
                             return dfd2.promise();
                         }).fail(function(error) {
                         })
-                    dfd.resolve();
                     return dfd.promise();
                 } else {
                     var dfd2 = $.Deferred();
@@ -238,13 +242,14 @@ module cmm009.a.viewmodel {
                         .done(function(mess: any) {
                             self.getAllDepartmentByHistId(hisdto.historyId, _depCodeItemAdd);
                             self.numberItemNew(0);
+                            dfd2.resolve();
                         })
                         .fail(function(error) {
-                            if (error.message == "ER005") {
+                            if (error.messageId == "ER005") {
                                 alert("入力したコードは既に存在しています。\r\n コードを確認してください。 ");
+                                $("#A_INP_CODE").focus();
                             }
                         })
-                    dfd2.resolve();
                     return dfd2.promise();
                 }
             }
@@ -264,12 +269,12 @@ module cmm009.a.viewmodel {
                         service.upDateEndDate(arr)
                             .done(function() {
                                 location.reload();
+                                dfd2.resolve();
                             })
                             .fail(function() { })
                         self.start();
                     })
                     .fail(function(error) { })
-                dfd2.resolve();
                 return dfd2.promise();
             }
 
@@ -288,12 +293,12 @@ module cmm009.a.viewmodel {
                             service.upDateEndDate(arr)
                                 .done(function() {
                                     location.reload();
+                                    dfd2.resolve();
                                 })
                                 .fail(function() { })
                             self.start();
                         })
                         .fail(function(error) { })
-                    dfd2.resolve();
                     return dfd2.promise();
                 }
             }
@@ -305,16 +310,14 @@ module cmm009.a.viewmodel {
                     service.upDateListDepartment(_dt)
                         .done(function(done) {
                             self.getAllDepartmentByHistId(hisdto.historyId, self.singleSelectedCode());
+                            dfd.resolve();
                         }).fail(function(error) {
                             alert(error.message);
                         })
-                    dfd.resolve();
                     return dfd.promise();
                 }
             }
             self.item_dep_selected(null);
-            self.enablebtnDelete(true);
-            self.enableDDialog(true);
         }
 
         getAllDepartmentByHistId(historyId, departmentCode) {
@@ -421,6 +424,7 @@ module cmm009.a.viewmodel {
 
         deletebtn() {
             var self = this;
+            let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
             var _dt = self.dataSource();
             var _dtflat = nts.uk.util.flatArray(_dt, 'children');
             var _code = self.singleSelectedCode();
@@ -509,7 +513,16 @@ module cmm009.a.viewmodel {
                             var dfd = $.Deferred();
                             service.upDateListDepartment(data)
                                 .done(function(mess) {
-                                    location.reload();
+                                    let _dt = nts.uk.util.flatArray(self.dataSource(), 'children');
+                                    let selectedcode = "";
+                                    let indexOfItemDelete = _.findIndex(_dt, function(o) { return o.departmentCode == deleteobj.departmentCode; });
+                                    if (indexOfItemDelete === self.dataSource().length) {
+                                        selectedcode = (_dt[indexOfItemDelete - 1].departmentCode)
+                                    } else {
+                                        selectedcode = (_dt[indexOfItemDelete].departmentCode)
+                                    }
+                                    debugger;
+                                    self.getAllDepartmentByHistId(hisdto.historyId, selectedcode);
                                 }).fail(function(error) {
                                 })
                             dfd.resolve();
@@ -517,7 +530,7 @@ module cmm009.a.viewmodel {
                         }
                     })
                     .fail(function(error) {
-                        if (error.message == "ER06") {
+                        if (error.messageId == "ER06") {
                             alert("対象データがありません。");
                         }
                     })
@@ -536,6 +549,18 @@ module cmm009.a.viewmodel {
             sources = nts.uk.util.flatArray(sources, 'children');
             self.lengthTreeCurrent(sources.length + 1);
             return _.find(sources, function(item: model.Dto) { return item.departmentCode == value; });
+        }
+
+        findDepByHirachy(value: string, sources) {
+            let self = this;
+
+            if (!sources || !sources.length) {
+                return undefined;
+            }
+
+            sources = nts.uk.util.flatArray(sources, 'children');
+            self.lengthTreeCurrent(sources.length + 1);
+            return _.find(sources, function(item: model.Dto) { return item.hierarchyCode == value; });
         }
 
         findParent(value: string, sources) {
@@ -596,7 +621,7 @@ module cmm009.a.viewmodel {
                 nts.uk.ui.windows.setShared('datanull', "datanull");
                 nts.uk.ui.windows.sub.modal('/view/cmm/009/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
                     let itemAddHistory = nts.uk.ui.windows.getShared('itemHistory');
-                    if (itemAddHistory !== undefined) {
+                    if (itemAddHistory) {
                         let itemadd = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");
                         self.itemaddHist = itemadd;
                         self.itemHistId().push(self.itemaddHist);
@@ -604,10 +629,10 @@ module cmm009.a.viewmodel {
                         self.resetInput();
                         if (itemAddHistory.memo !== null) {
                             self.A_INP_MEMO(itemAddHistory.memo);
+                        } else {
+                            self.A_INP_MEMO("");
                         }
                     }
-                    self.enablebtnDelete(false);
-                    self.enableDDialog(false);
                 });
             } else {
                 if (self.selectedCodes_His() == null)
@@ -616,49 +641,53 @@ module cmm009.a.viewmodel {
                 nts.uk.ui.windows.setShared('startDateOfHis', self.itemHistId()[0].startDate);
                 nts.uk.ui.windows.sub.modal('/view/cmm/009/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
                     let itemAddHistory = nts.uk.ui.windows.getShared('itemHistory');
-                    if (itemAddHistory.checked == true) {
-                        let add = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");
-                        let arr = self.itemHistId();
-                        arr.unshift(add);
-                        let startDate = new Date(itemAddHistory.startYearMonth);
-                        startDate.setDate(startDate.getDate() - 1);
-                        let strStartDate = startDate.getFullYear() + '/' + (startDate.getMonth() + 1) + '/' + startDate.getDate();
-                        arr[1].endDate = strStartDate;
-                        self.itemHistId(arr);
-                        self.selectedCodes_His(itemAddHistory.startYearMonth);
-                        if (itemAddHistory.memo !== null) {
-                            self.A_INP_MEMO(itemAddHistory.memo);
+                    if (itemAddHistory) {
+                        if (itemAddHistory.checked == true) {
+                            let add = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");
+                            let arr = self.itemHistId();
+                            arr.unshift(add);
+                            let startDate = new Date(itemAddHistory.startYearMonth);
+                            startDate.setDate(startDate.getDate() - 1);
+                            let strStartDate = startDate.getFullYear() + '/' + (startDate.getMonth() + 1) + '/' + startDate.getDate();
+                            arr[1].endDate = strStartDate;
+                            self.itemHistId(arr);
+                            self.selectedCodes_His(itemAddHistory.startYearMonth);
+                            if (itemAddHistory.memo !== null) {
+                                self.A_INP_MEMO(itemAddHistory.memo);
+                            } else {
+                                self.A_INP_MEMO("");
+                            }
+                            var _dt = self.dataSource();
+                            let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
+                            var _dt2 = _.forEach(nts.uk.util.flatArray(_dt, 'children'), function(item) {
+                                item.historyId = null;
+                                item.startDate = hisdto.startDate;
+                                item.endDate = hisdto.endDate;
+                            });
+                            self.checkConditionAddHist("AddhistoryFromLatest");
+                            self.dataSource2(_dt2);
+                        } else {
+                            let add = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");
+                            let arr = self.itemHistId();
+                            arr.unshift(add);
+                            //self.itemHistId.unshift(add);
+                            let startDate = new Date(itemAddHistory.startYearMonth);
+                            startDate.setDate(startDate.getDate() - 1);
+                            let strStartDate = startDate.getFullYear() + '/' + (startDate.getMonth() + 1) + '/' + startDate.getDate();
+                            arr[1].endDate = strStartDate;
+                            self.itemHistId(arr);
+                            self.selectedCodes_His(self.itemHistId()[0].startDate);
+                            if (itemAddHistory.memo !== null) {
+                                self.A_INP_MEMO(itemAddHistory.memo);
+                            } else {
+                                self.A_INP_MEMO("");
+                            }
+                            self.dataSource(null);
+                            self.resetInput();
+                            self.checkConditionAddHist("AddhistoryFromBeggin");
                         }
-                        var _dt = self.dataSource();
-                        let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
-                        var _dt2 = _.forEach(nts.uk.util.flatArray(_dt, 'children'), function(item) {
-                            item.historyId = null;
-                            item.startDate = hisdto.startDate;
-                            item.endDate = hisdto.endDate;
-                        });
-                        self.checkConditionAddHist("AddhistoryFromLatest");
-                        self.dataSource2(_dt2);
-                    } else {
-                        let add = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");
-                        let arr = self.itemHistId();
-                        arr.unshift(add);
-                        //self.itemHistId.unshift(add);
-                        let startDate = new Date(itemAddHistory.startYearMonth);
-                        startDate.setDate(startDate.getDate() - 1);
-                        let strStartDate = startDate.getFullYear() + '/' + (startDate.getMonth() + 1) + '/' + startDate.getDate();
-                        arr[1].endDate = strStartDate;
-                        self.itemHistId(arr);
-                        self.selectedCodes_His(self.itemHistId()[0].startDate);
-                        if (itemAddHistory.memo !== null) {
-                            self.A_INP_MEMO(itemAddHistory.memo);
-                        }
-                        self.dataSource(null);
-                        self.resetInput();
-                        self.checkConditionAddHist("AddhistoryFromBeggin");
                     }
                 });
-                self.enablebtnDelete(false);
-                self.enableDDialog(false);
             }
         }
 
@@ -842,8 +871,6 @@ module cmm009.a.viewmodel {
                 } else if (self.numberItemNew() == 1) {
                     $("#A_INP_CODE").focus();
                 }
-                self.enablebtnDelete(false);
-                self.enableDDialog(false);
             } else {
                 alert("maximum 889 item");
             }
@@ -1012,8 +1039,6 @@ module cmm009.a.viewmodel {
                 } else if (self.numberItemNew() == 1) {
                     $("#A_INP_CODE").focus();
                 }
-                self.enablebtnDelete(false);
-                self.enableDDialog(false);
             } else {
                 alert("maximum 889 item");
             }
@@ -1054,8 +1079,6 @@ module cmm009.a.viewmodel {
                 } else if (self.numberItemNew() == 1) {
                     $("#A_INP_CODE").focus();
                 }
-                self.enablebtnDelete(false);
-                self.enableDDialog(false);
             } else {
                 alert("maximum 889 item");
             }
@@ -1099,6 +1122,9 @@ module cmm009.a.viewmodel {
                     self.openCDialog();
                 } else {
                     if (departmentQueryResult.departments.length > 0) {
+                        //                        var temp = _.map(departmentQueryResult.departments, (dep) => {
+                        //                            return new Dto()
+                        //                        });
                         self.dataSource(departmentQueryResult.departments);
                     }
                     if (departmentQueryResult.memo) {
@@ -1158,6 +1184,7 @@ module cmm009.a.viewmodel {
             fullName: string;
             hierarchyCode: string;
             name: string;
+            display: string;
             startDate: string;
             children: Array<Dto>;
             constructor(companyCode: string,
@@ -1168,6 +1195,7 @@ module cmm009.a.viewmodel {
                 fullName: string,
                 hierarchyCode: string,
                 name: string,
+                display: string,
                 startDate: string,
                 children: Array<Dto>
             ) {
@@ -1180,6 +1208,7 @@ module cmm009.a.viewmodel {
                 self.fullName = fullName;
                 self.hierarchyCode = hierarchyCode;
                 self.name = name;
+                self.display = departmentCode + " " + name;
                 self.startDate = startDate;
                 self.children = children;
             }
