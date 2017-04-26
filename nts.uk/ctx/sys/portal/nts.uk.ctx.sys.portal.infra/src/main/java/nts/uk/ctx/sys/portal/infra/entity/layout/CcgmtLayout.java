@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class CcgmtLayout extends UkJpaEntity {
 
 	@EmbeddedId
-	protected CcgmtLayoutPK ccgmtLayoutPK;
+	public CcgmtLayoutPK ccgmtLayoutPK;
 
 	@Column(name = "PG_TYPE")
 	public int pgType;

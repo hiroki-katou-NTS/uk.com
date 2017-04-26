@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class CcgmtPlacement extends UkJpaEntity {
 
 	@EmbeddedId
-	protected CcgmtPlacementPK ccgmtPlacementPK;
+	public CcgmtPlacementPK ccgmtPlacementPK;
 
 	@Column(name = "LAYOUT_ID")
 	public String layoutID;

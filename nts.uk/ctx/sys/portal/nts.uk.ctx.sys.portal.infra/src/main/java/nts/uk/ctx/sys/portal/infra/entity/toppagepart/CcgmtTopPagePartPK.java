@@ -6,14 +6,10 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * @author LamDT
  */
-@Getter
-@Setter
 @AllArgsConstructor
 @Embeddable
 public class CcgmtTopPagePartPK implements Serializable {
@@ -23,10 +19,10 @@ public class CcgmtTopPagePartPK implements Serializable {
 
 	/** Company ID */
 	@Column(name = "CID")
-	private String companyID;
+	public String companyID;
 
 	/** TopPage Part GUID */
 	@Column(name = "TOPPAGE_PART_ID")
-	private String topPagePartID;
+	public String topPagePartID;
 
 }

@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class CcgmtTopPagePart extends UkJpaEntity {
 
 	@EmbeddedId
-	protected CcgmtTopPagePartPK ccgmtTopPagePartPK;
+	public CcgmtTopPagePartPK ccgmtTopPagePartPK;
 
 	@Column(name = "CODE")
 	public String code;
