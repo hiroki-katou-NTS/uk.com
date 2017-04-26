@@ -151,16 +151,38 @@ module qmm020.c.viewmodel {
                     multipleSelection: true,
                     activation: false,
                     //                    rowSelectionChanged: this.selectionChanged.bind(this)
-                }],
+                },
+                    {
+                        name: "Updating",
+                        editMode: "row",
+                        enableAddRow: false,
+                        enableDeleteRow: true,
+                        columnSettings: [
+                            {
+                                columnKey: "paymentDetailCode",
+                                readOnly: true
+                            },
+                            {
+                                columnKey: "bonusDetailCode",
+                                readOnly: true
+                            }
+                        ]
+                    }
+                ],
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 width: "800px",
                 height: "240px",
                 primaryKey: "employmentCode",
                 dataSource: ko.mapping.toJS(itemList)
+            }).on("iggridupdatingeditrowended", function(evt, ui) {
+                console.log(ui.values);
+                self.currentItem().paymentDetailCode(ui.values.paymentDetailCode);
+                debugger;
             });
             self.firstLoad = true;
         }
+
         //find histId to subscribe
         getHist(value: any) {
             let self = this;
@@ -242,18 +264,22 @@ module qmm020.c.viewmodel {
             return dfd.promise();
         }
         //click register button
+        /**
+         * 
+         */
 
-        register() {
-            var self = this;
-            var current = _.find(self.itemTotalList(), function(item: IModel) { return item.historyId == self.currentItem().historyId(); });
-            //            debugger;
-            if (current) {
-                //                service.insertEmAllot(current).done(function() {
-                //                }).fail(function(res) {
-                //                    alert(res);
-                //                });
-            }
-        }
+
+        //        register() {
+        //            var self = this;
+        //            var current = _.find(self.itemTotalList(), function(item: IModel) { return item.historyId == self.currentItem().historyId(); });
+        //            //            debugger;
+        //            if (current) {
+        //                //                service.insertEmAllot(current).done(function() {
+        //                //                }).fail(function(res) {
+        //                //                    alert(res);
+        //                //                });
+        //            }
+        //        }
         //Open dialog Add History
         openJDialog() {
             var self = this;

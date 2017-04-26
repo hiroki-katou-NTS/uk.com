@@ -30,6 +30,25 @@ var qmm020;
                     }));
                     self.start();
                     self.selectedCode.subscribe(function (codeChange) {
+                        //                service.getAllEmployeeAllotSetting(ko.toJS(codeChange)).done(function(data) {
+                        //                    self.itemListDetail([]);
+                        //                    if (data && data.length > 0) {
+                        //                        console.log(data);
+                        //                        _.map(data, function(item) {
+                        //                            self.itemListDetail.push(new EmployeeAllotSettingDto(item.companyCode, item.historyId, item.employeeCode, item.employeeName, item.paymentDetailCode
+                        //                                , item.paymentDetailName, item.bonusDetailCode, item.bonusDetailName));
+                        //                        });
+                        //                        dfd.resolve();
+                        //                    }
+                        //                    if (self.firstLoad)
+                        //                        $("#C_LST_001").igGrid("option", "dataSource", ko.mapping.toJS(self.itemListDetail));
+                        //                    else
+                        //                        self.LoadData(self.itemListDetail);
+                        //                    dfd.resolve();
+                        //                }).fail(function(res) {
+                        //                    alert(res);
+                        //                });
+                        //                dfd.promise();
                         c.service.getEmployeeDetail(ko.toJS(codeChange)).done(function (data) {
                             var employeeItem = ko.observableArray([]);
                             if (data && data.length > 0) {
@@ -44,10 +63,38 @@ var qmm020;
                                 self.LoadData(employeeItem);
                             dfd.resolve();
                         }).fail(function (res) {
+                            //Alert message
                             alert(res);
                         });
                         dfd.promise();
                     });
+                    // Array Data 1 
+                    //            let employment1 = ko.mapping.fromJS([
+                    //                { "NO": 1, "ID": "000000001", "Name": "正社員", "PaymentDocID": "K001", "PaymentDocName": "給与明細書001", "BonusDocID": "S001", "BonusDocName": "賞与明細書001" },
+                    //                { "NO": 2, "ID": "000000002", "Name": "DucPham社員", "PaymentDocID": "K002", "PaymentDocName": "給与明細書002", "BonusDocID": "S001", "BonusDocName": "賞与明細書002" },
+                    //                { "NO": 3, "ID": "000000003", "Name": "HoangMai社員", "PaymentDocID": "K003", "PaymentDocName": "給与明細書003", "BonusDocID": "S001", "BonusDocName": "賞与明細書003" }
+                    //            ]);
+                    //
+                    //            self.dataSource = ko.mapping.toJS(employment1());
+                    //console.log(self.dataSource);
+                    //Build IgGrid
+                    //SCREEN C
+                    //Event : Click to button Sentaku on igGrid
+                    //            var openPaymentDialog = function(evt, ui) {
+                    //                if (ui.colKey === "PaymentDocID") {
+                    //                    //Gọi hàm open SubWindow
+                    //                    //Khi close Subwindow, get dc cái new object(ID, Name... )
+                    //                    let row = _.find(employment1(), function(item) {
+                    //                        //return item.ID() === ui.rowKey;
+                    //                    });
+                    //                    //row.PaymentDocName("test");
+                    //                    //self.buildGrid("#C_LST_001", "C_BTN_001", "C_BTN_002");
+                    //                }
+                    //            }
+                    //            self.start();
+                    /**
+                     * find maxItem by endate
+                     */
                 }
                 ScreenModel.prototype.LoadData = function (itemList) {
                     var self = this;
@@ -74,23 +121,47 @@ var qmm020;
                                 mode: 'row',
                                 multipleSelection: true,
                                 activation: false,
-                            }],
+                            },
+                            {
+                                name: "Updating",
+                                editMode: "row",
+                                enableAddRow: false,
+                                enableDeleteRow: true,
+                                columnSettings: [
+                                    {
+                                        columnKey: "paymentDetailCode",
+                                        readOnly: true
+                                    },
+                                    {
+                                        columnKey: "bonusDetailCode",
+                                        readOnly: true
+                                    }
+                                ]
+                            }
+                        ],
                         virtualization: true,
                         virtualizationMode: 'continuous',
                         width: "800px",
                         height: "240px",
                         primaryKey: "employmentCode",
                         dataSource: ko.mapping.toJS(itemList)
+                    }).on("iggridupdatingeditrowended", function (evt, ui) {
+                        console.log(ui.values);
+                        self.currentItem().paymentDetailCode(ui.values.paymentDetailCode);
+                        debugger;
                     });
                     self.firstLoad = true;
                 };
+                //find histId to subscribe
                 ScreenModel.prototype.getHist = function (value) {
                     var self = this;
                     return _.find(self.itemList(), function (item) {
                         return item.historyId === value;
                     });
                 };
+                //Selected changed
                 ScreenModel.prototype.selectionChanged = function (evt, ui) {
+                    //console.log(evt.type);
                     var selectedRows = ui.selectedRows;
                     var arr = [];
                     for (var i = 0; i < selectedRows.length; i++) {
@@ -99,15 +170,18 @@ var qmm020;
                     this.selectedList(arr);
                 };
                 ;
+                // start function
                 ScreenModel.prototype.start = function () {
                     var self = this;
                     var dfd = $.Deferred();
+                    //fill employ data to c_LST_001
                     c.service.getEmployeeName().done(function (data) {
                         var employeeItem = [];
                         if (data && data.length > 0) {
                             _.map(data, function (item) {
                                 employeeItem.push(new TotalModel({ historyId: item.historyId, employmentCode: item.employmentCode, employmentName: item.employmentName }));
                             });
+                            //                       self.employeeTotal(employeeItem);
                             dfd.resolve();
                         }
                         if (self.firstLoad)
@@ -118,9 +192,11 @@ var qmm020;
                         console.log('111111111111111111111111111111111111111');
                         dfd.resolve();
                     }).fail(function (res) {
+                        // Alert message
                         alert(res);
                     });
                     dfd.promise();
+                    //Get list startDate, endDate of History  
                     var totalItem = [];
                     c.service.getEmployeeAllotHeaderList().done(function (data) {
                         if (data.length > 0) {
@@ -128,12 +204,14 @@ var qmm020;
                                 totalItem.push(new TotalModel({ historyId: item.historyId, startEnd: item.startYm + ' ~ ' + item.endYm, endYm: item.endYm }));
                             });
                             self.itemTotalList(totalItem);
+                            //                    let max = _.maxBy(self.itemList(), (itemMax) => { return itemMax.endYm });
                             dfd.resolve();
                         }
                         else {
                             dfd.resolve();
                         }
                     }).fail(function (res) {
+                        // Alert message
                         alert(res);
                     });
                     console.log((self.itemTotalList()));
@@ -147,14 +225,25 @@ var qmm020;
                     }).fail(function (res) {
                         alert(res);
                     });
+                    // Return.
                     return dfd.promise();
                 };
-                ScreenModel.prototype.register = function () {
-                    var self = this;
-                    var current = _.find(self.itemTotalList(), function (item) { return item.historyId == self.currentItem().historyId(); });
-                    if (current) {
-                    }
-                };
+                //click register button
+                /**
+                 *
+                 */
+                //        register() {
+                //            var self = this;
+                //            var current = _.find(self.itemTotalList(), function(item: IModel) { return item.historyId == self.currentItem().historyId(); });
+                //            //            debugger;
+                //            if (current) {
+                //                //                service.insertEmAllot(current).done(function() {
+                //                //                }).fail(function(res) {
+                //                //                    alert(res);
+                //                //                });
+                //            }
+                //        }
+                //Open dialog Add History
                 ScreenModel.prototype.openJDialog = function () {
                     var self = this;
                     debugger;
@@ -167,6 +256,7 @@ var qmm020;
                         var modeRadio = returnJDialog.split("~")[0];
                         var returnValue = returnJDialog.split("~")[1];
                         if (returnValue != '') {
+                            //                        let employeeAllotSettings = new Array<EmployeeAllotSettingDto>();
                             var items = self.itemTotalList();
                             var addItem;
                             var copItem;
@@ -199,6 +289,7 @@ var qmm020;
                                 self.currentItem().startYm(returnValue);
                                 self.currentItem().endYm('999912');
                                 self.currentItem().employmentCode(self.maxItem().historyId());
+                                //get employmentName, paymentDetailName, paymentDetailCode
                                 var dfd_1 = $.Deferred();
                                 c.service.getAllEmployeeAllotSetting(ko.toJS(self.maxItem().historyId())).done(function (data) {
                                     self.itemListDetail([]);
@@ -220,6 +311,7 @@ var qmm020;
                                         self.LoadData(self.itemListDetail);
                                     dfd_1.resolve();
                                 }).fail(function (res) {
+                                    // Alert message
                                     alert(res);
                                 });
                                 dfd_1.promise();
@@ -230,9 +322,13 @@ var qmm020;
                         }
                     });
                 };
+                //Open dialog Edit History
                 ScreenModel.prototype.openKDialog = function () {
                     var self = this;
+                    //var singleSelectedCode = self.singleSelectedCode().split(';');
+                    //nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
                     nts.uk.ui.windows.sub.modal('/view/qmm/020/k/index.xhtml', { title: '明細書の紐ずけ＞履歴編集' }).onClosed(function () {
+                        //self.start(self.singleSelectedCode());
                     });
                 };
                 return ScreenModel;

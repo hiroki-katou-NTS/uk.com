@@ -8,6 +8,7 @@ var qmm020;
                 delAllotCompanySetting: "pr/core/allot/delete",
                 updateAllotCompanySetting: "pr/core/allot/update"
             };
+            //delete
             function delComAllot(delAllotCompanyCmd) {
                 var dfd = $.Deferred();
                 var command = {};
@@ -26,6 +27,7 @@ var qmm020;
                 return dfd.promise();
             }
             service.delComAllot = delComAllot;
+            //Update ALLOT company  
             function updateComAllot(updateAllotCompanyCommand) {
                 var dfd = $.Deferred();
                 var command = {};
@@ -48,4 +50,3 @@ var qmm020;
         })(service = k.service || (k.service = {}));
     })(k = qmm020.k || (qmm020.k = {}));
 })(qmm020 || (qmm020 = {}));
-//# sourceMappingURL=qmm020.k.service.js.map

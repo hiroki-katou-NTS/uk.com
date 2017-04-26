@@ -77,17 +77,6 @@ var qmm020;
                     //Type of History Screen is 3 
                     if (self.valueShareJDialog().split('~')[0] === "3") {
                     }
-                    //check YM
-                    //           var selectYm = self.selectStartYm();
-                    //           inputYm = inputYm.replace('/','');
-                    //           if(+inputYm < +selectYm || + inputYm == +selectYm){
-                    //              alert('履歴の期間が正しくありません。');
-                    //               return false;
-                    //           }
-                    //           else{
-                    //               nts.uk.ui.windows.setShared('returnJDialog',self.selectStartYm());
-                    //               nts.uk.ui.windows.close();  
-                    //           }
                 };
                 //Close Dialog
                 ScreenModel.prototype.closeDialog = function () {

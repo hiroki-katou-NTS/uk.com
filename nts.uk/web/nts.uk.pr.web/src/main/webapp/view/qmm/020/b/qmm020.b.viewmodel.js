@@ -19,12 +19,16 @@ var qmm020;
                     self.maxItem = ko.observable(new b.service.model.CompanyAllotSettingDto());
                     self.start();
                 }
+                // start function
                 ScreenModel.prototype.start = function () {
                     var self = this;
                     var dfd = $.Deferred();
+                    //Get list startDate, endDate of History 
+                    //get allot Company
                     b.service.getAllotCompanyList().done(function (companyAllots) {
                         if (companyAllots.length > 0) {
                             var _items = [];
+                            //push data to listItem of hist List
                             for (var i_1 in companyAllots) {
                                 var item = companyAllots[i_1];
                                 if (item) {
@@ -39,15 +43,20 @@ var qmm020;
                             }
                             self.itemList(_items);
                             self.companyAllots = companyAllots;
+                            //console.log(self.companyAllots);
                             self.currentItem().setSource(self.companyAllots);
+                            //console.log(self.companyAllots);
                             self.currentItem().historyId(companyAllots[0].historyId);
                         }
                         else {
+                            //self.allowClick(false);
                             dfd.resolve();
                         }
                     }).fail(function (res) {
+                        // Alert message
                         alert(res);
                     });
+                    //get Row with max Date 
                     b.service.getAllotCompanyMaxDate().done(function (itemMax) {
                         self.maxItem(itemMax);
                     }).fail(function (res) {
@@ -55,8 +64,12 @@ var qmm020;
                     });
                     return dfd.promise();
                 };
+                //Event of Save Button Clicking
+                //Insert or Update Data
                 ScreenModel.prototype.register = function () {
                     var self = this;
+                    //debugger;
+                    //Insert
                     if (self.isInsert()) {
                         b.service.insertComAllot(self.currentItem()).done(function () {
                         }).fail(function (res) {
@@ -70,9 +83,12 @@ var qmm020;
                         });
                     }
                 };
+                //Open dialog Add History
                 ScreenModel.prototype.openJDialog = function () {
                     var self = this;
+                    //getMaxDate
                     var historyScreenType = "1";
+                    //Get value TabCode + value of selected Name in History List
                     var valueShareJDialog = historyScreenType + "~" + self.currentItem().startYm();
                     nts.uk.ui.windows.setShared('valJDialog', valueShareJDialog);
                     nts.uk.ui.windows.sub.modal('/view/qmm/020/j/index.xhtml', { title: '譏守ｴｰ譖ｸ縺ｮ邏舌★縺托ｼ槫ｱ･豁ｴ霑ｽ蜉�' })
@@ -90,10 +106,13 @@ var qmm020;
                                     payCode: '',
                                     bonusCode: ''
                                 });
+                                // them thang cuoi cung tren man hinh
                                 items.push(addItem);
+                                //them cac thang da co
                                 for (var i_2 in self.itemList()) {
                                     items.push(self.itemList()[i_2]);
                                 }
+                                //UPDATE ENDATE MAX
                                 var lastValue = _.find(self.companyAllots, function (item) { return item.endDate == 999912; });
                                 if (lastValue != undefined) {
                                     lastValue.endDate = previousYM(returnValue);
@@ -102,12 +121,18 @@ var qmm020;
                                         updateValue.endYm(lastValue.endDate.toString());
                                     }
                                 }
+                                // Goi cap nhat vao currentItem
+                                // Trong truong hop them moi NHANH, copy payCode, bonusCode tu Previous Item
                                 if (modeRadio === "1") {
+                                    //the new items
+                                    //update payCode, bonus Code cua thang vua them
+                                    //Update Current item tren man hinh 
                                     self.currentItem().historyId(addItem.historyId());
                                     self.currentItem().startYm(returnValue);
                                     self.currentItem().endYm('999912');
                                     self.currentItem().payCode(self.maxItem().paymentDetailCode);
                                     self.currentItem().bonusCode(self.maxItem().bonusDetailCode);
+                                    //get Payment Name
                                     if (self.currentItem().payCode() != '') {
                                         b.service.getAllotLayoutName(self.currentItem().payCode()).done(function (stmtName) {
                                             self.currentItem().payName(stmtName);
@@ -118,6 +143,7 @@ var qmm020;
                                     else {
                                         self.currentItem().payName('');
                                     }
+                                    //get Bonus Name
                                     if (self.currentItem().bonusCode() != '') {
                                         b.service.getAllotLayoutName(self.currentItem().bonusCode()).done(function (stmtName) {
                                             self.currentItem().bonusName(stmtName);
@@ -139,12 +165,14 @@ var qmm020;
                                     self.currentItem().bonusName('');
                                 }
                             }
+                            //console.log(self.companyAllots);
                             self.itemList([]);
                             self.itemList(items);
                             self.isInsert = ko.observable(true);
                         }
                     });
                 };
+                //Open dialog Edit History
                 ScreenModel.prototype.openKDialog = function () {
                     var self = this;
                     nts.uk.ui.windows.setShared("endYM", self.currentItem().endYm());
@@ -162,16 +190,21 @@ var qmm020;
                         self.start();
                     });
                 };
+                //Open L Dialog
                 ScreenModel.prototype.openLDialog = function () {
                     alert('2017');
                 };
+                //Click to button Select Payment
                 ScreenModel.prototype.openPaymentMDialog = function () {
                     var self = this;
                     var valueShareMDialog = self.currentItem().startYm();
+                    //debugger;
                     nts.uk.ui.windows.setShared('valMDialog', valueShareMDialog);
                     nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '譏守ｴｰ譖ｸ縺ｮ驕ｸ謚�' }).onClosed(function () {
+                        //get selected code from M dialog
                         var stmtCodeSelected = nts.uk.ui.windows.getShared('stmtCodeSelected');
                         self.currentItem().payCode(stmtCodeSelected);
+                        //get Name payment Name
                         b.service.getAllotLayoutName(self.currentItem().payCode()).done(function (stmtName) {
                             self.currentItem().payName(stmtName);
                         }).fail(function (res) {
@@ -179,13 +212,17 @@ var qmm020;
                         });
                     });
                 };
+                //Click to button Select Bonus
                 ScreenModel.prototype.openBonusMDialog = function () {
                     var self = this;
                     var valueShareMDialog = self.currentItem().startYm();
+                    //debugger;
                     nts.uk.ui.windows.setShared('valMDialog', valueShareMDialog);
                     nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '譏守ｴｰ譖ｸ縺ｮ驕ｸ謚�' }).onClosed(function () {
+                        //get selected code from M dialog
                         var stmtCodeSelected = nts.uk.ui.windows.getShared('stmtCodeSelected');
                         self.currentItem().bonusCode(stmtCodeSelected);
+                        //get Name payment Name
                         b.service.getAllotLayoutName(self.currentItem().bonusCode()).done(function (stmtName) {
                             self.currentItem().bonusName(stmtName);
                         }).fail(function (res) {
@@ -196,11 +233,13 @@ var qmm020;
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
+            //Previous Month 
             function previousYM(sYm) {
                 var preYm = 0;
                 if (sYm.length == 6) {
                     var sYear = sYm.substr(0, 4);
                     var sMonth = sYm.substr(4, 2);
+                    //Trong truong hop thang 1 thi thang truoc la thang 12
                     if (sMonth == "01") {
                         preYm = parseInt((parseInt(sYear) - 1).toString() + "12");
                     }
@@ -268,6 +307,7 @@ var qmm020;
                         }
                     });
                     self.payCode.subscribe(function (newValue) {
+                        //console.log(self.listSource);
                         var current = _.find(self.listSource, function (item) { return item.historyId == self.historyId(); });
                         if (current) {
                             current.paymentDetailCode = newValue;
