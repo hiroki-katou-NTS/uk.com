@@ -65,7 +65,6 @@ public class SalaryTableReportQuery {
 	private Boolean isPrintDepHierarchy;
 	
 	/** The selected levels. */ 
-	//private int selectedDepHierarchy;
 	private List<Integer> selectedLevels;
 	
 	/** The is calculate total. */
@@ -73,21 +72,9 @@ public class SalaryTableReportQuery {
 	
 	/** The selected break page code. */
 	private Integer selectedBreakPageCode;
-	
-//	/** The is break page by employee. */
-//	private boolean isBreakPageByEmployee;
-//	
-//	/** The is break page by department. */
-//	private boolean isBreakPageByDepartment;
-//	
-//	/** The is break page by accumulated. */
-//	private boolean isBreakPageByAccumulated;
 
 	/** The selected use 2000 yen. */
 	private Integer selectedUse2000yen; 
-//	
-//	/** The is break page hierarchy. */
-//	public boolean isBreakPageHierarchy;
 	
 	/** The selected break page hierarchy code. */
 	private Integer selectedBreakPageHierarchyCode;

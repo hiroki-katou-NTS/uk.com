@@ -52,7 +52,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	private static final String REPORT_FILE_NAME = "SalaryTableReport.pdf";
 
 	/** The Constant TEMPLATE_FILE. */
-	private static final String TEMPLATE_FILE = "report/SalaryTableTemplate.xlsx";
+	private static final String TEMPLATE_FILE = "report/QPP009.xlsx";
 
 	/** The Constant FIRST_COLUMN_INDEX. */
 	private static final int FIRST_COLUMN_INDEX = 0;
@@ -123,13 +123,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 			reportContext.getDesigner().setDataSource("Header", reportData.getSalaryChartHeader());
 			
 			// Initial Variables
-//			int rowIndex = FIRST_ROW_INDEX;
-//			EmployeeData prevEmp = null;
-//			Stack<DepartmentData> depStack = new Stack<>();
-//			Map<Denomination, Long> tempDenomination = new HashMap<>();
-//			double tempAccumulate = 0;
-//			int members = 0;
-			
+
 			PrintProcess printProcess = new PrintProcess();
 			printProcess.cells = cells;
 			printProcess.query = query;
@@ -190,7 +184,8 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 				this.printEmpSameDep(printProcess, isGreenRow);
 				printProcess.prevEmp = currentEmp;
 				continue;
-			} else {
+			}
+			else {
 				// Push Temp DepartmentData To Stack and Reset Temp vars
 				this.pushToStackAndReset(printProcess);
 				// Cumulate to Temp vars
@@ -451,7 +446,8 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 		int currentRow = printProcess.rowIndex;
 		if(currentRow % ROWS_PER_PAGE == 0){
 			this.createTitle(printProcess);
-		} else {
+		}
+		else {
 			// Create End Row Range
 			this.createEndRowRange(printProcess);		
 			int nextPage = currentRow / ROWS_PER_PAGE +1;
@@ -718,7 +714,8 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	 * @param denomination the denomination
 	 * @param currentEmpDeno the current emp deno
 	 */
-	private void cumulateGrossDenomination(Map<Denomination, Long> denomination, Map<Denomination, Long> currentEmpDeno) {		
+	private void cumulateGrossDenomination(Map<Denomination, Long> denomination, 
+			Map<Denomination, Long> currentEmpDeno) {
 		for (Denomination d : Denomination.values()) {
 			if(denomination.get(d) == null){
 				denomination.put(d, 0l);
@@ -737,7 +734,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 		Map<Denomination, Long> denomination = printProcess.tempDenomination;
 		for (Denomination d : Denomination.values()) {
 			if(denomination.get(d) == null){
-				printProcess.tempDenomination.put(d, 0l);
+				printProcess.tempDenomination.put(d, 0L);
 			}
 			Map<Denomination, Long> currentEmpDeno = printProcess.currentEmp.getDenomination();
 			long quantity = denomination.get(d) + currentEmpDeno.get(d);
@@ -960,4 +957,5 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 		/** The members. */
 		public int members;
 	}
+	
 }
