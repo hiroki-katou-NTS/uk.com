@@ -15,9 +15,14 @@ public class MyPageSettingFinder {
 	@Inject
 	MyPageSettingRepository myPageSettingRepository;
 
-	public MyPageSettingDto findByCode(String constractCode, String companyCode, String topPageCode) {
-		Optional<MyPageSetting> myPageSetting = myPageSettingRepository.findByCode(companyCode, constractCode,
-				topPageCode);
+	/**
+	 * Find by company id.
+	 *
+	 * @param CompanyId the company id
+	 * @return the my page setting dto
+	 */
+	public MyPageSettingDto findByCompanyId(String CompanyId) {
+		Optional<MyPageSetting> myPageSetting = myPageSettingRepository.findByCompanyId(CompanyId);
 		// convert toppage domain to dto
 		if (myPageSetting.isPresent()) {
 			MyPageSetting mps = myPageSetting.get();

@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="ccg015.b.style.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="ccg015.b.start.js" />
+			<com:scriptfile path="ccg015.b.service.js" />
+			<com:scriptfile path="ccg015.b.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<div data-bind="with: myPageSettingModel" id="contents-left">
+					<div>トップページでマイページを利用する項目を設定してください。</div><BR />
+					<div style="float:left;" id="lbl_code_name" data-bind="ntsFormLabel: {required: true}">
+						<label>マイページ利用区分<br /></label>
+					</div>
+					<div style="float:left;" class="cf"
+						data-bind="ntsSwitchButton: {
+						options: $parent.useDivisionOptions,
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: useMyPage,
+						enable: true }"></div>
+						<BR /><BR /><BR />
+					<div style="width: 50%; padding-left: 10px;">
+						<div id="tab-panel" class="cf"
+							data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: $parent.selectedTab, direction: 'vertical' }">
+							<div id="widget" data-bind="if: $parent.selectedTab() == 'tab_widget'">
+								<com:ko tag="template" bind="{name: 'tab-template', data: topPagePartSettingItems()[0]}"></com:ko>
+							</div>
+							<div id="dash_board" data-bind="if: $parent.selectedTab() == 'tab_dash_board'">
+								<com:ko tag="template" bind="{name: 'tab-template', data: topPagePartSettingItems()[1]}"></com:ko>
+							</div>
+							<div id="flow_menu" data-bind="if: $parent.selectedTab() == 'tab_flow_menu'">
+								<com:ko tag="template" bind="{name: 'tab-template', data: topPagePartSettingItems()[2]}"></com:ko>
+							</div>
+							<div id="url" data-bind="if: $parent.selectedTab() == 'tab_url'">
+								<com:ko tag="template" bind="{name: 'tab-URL-template', data: topPagePartSettingItems()[3]}"></com:ko>
+							</div>
+						</div>
+					</div>
+				</div>
+				<hr />
+				<div id="this-functions-area" class="control-group halign-center">
+					<button class="btn-default proceed x-large">決定</button>
+					<button onclick="nts.uk.ui.windows.close()">キャンセル</button>
+				</div>
+			</div>
+			<script type="text/html" id="tab-template">
+					<div style="float:left;" id="lbl_code_name" data-bind="ntsFormLabel: {required: true}">
+						<label>利用区分<br /></label>
+					</div>
+					<div style="float:left;" class="cf"
+						data-bind="ntsSwitchButton: {
+						options: $parents[1].useDivisionOptions,
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: usePart,
+						enable: true }"></div>
+					<div>
+						<table id="single-list" data-bind="ntsGridList: {	
+								showNumbering: true,							
+								height: 350,
+								dataSource: settingItems,
+								primaryKey: 'itemCode',
+								columns: $parents[1].columns,
+								multiple: false,
+								features: [{name: 'Switch', options: $parents[1].useDivisionOptions, optionsValue: 'code', optionsText: 'name'}],
+								value: $parents[1].currentCode
+							}"
+							class="cf"></table>
+					</div>
+			
+			</script>
+			
+			<script type="text/html" id="tab-URL-template">
+					<div style="float:left;" id="lbl_code_name" data-bind="ntsFormLabel: {required: true}">
+						<label>許可区分<br /></label>
+					</div>
+					<div style="float:left;" class="cf"
+						data-bind="ntsSwitchButton: {
+						options: $parents[1].permissionDivisionOptions,
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: usePart,
+						enable: true }"></div>
+			</script>
+			
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

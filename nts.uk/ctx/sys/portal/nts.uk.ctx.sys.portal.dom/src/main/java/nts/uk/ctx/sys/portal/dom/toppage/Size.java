@@ -1,15 +1,16 @@
 package nts.uk.ctx.sys.portal.dom.toppage;
 
 import lombok.Getter;
-import nts.uk.ctx.sys.portal.dom.primitive.HeightSize;
-import nts.uk.ctx.sys.portal.dom.primitive.WidthSize;
+import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.Height;
+import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.Width;
 
 /**
  * The Class Size.
  */
 @Getter
-public class Size {
-	private WidthSize widthSize;
+public class Size extends DomainObject{
+	private Width width;
 
-	private HeightSize heightSize;
+	private Height height;
 }

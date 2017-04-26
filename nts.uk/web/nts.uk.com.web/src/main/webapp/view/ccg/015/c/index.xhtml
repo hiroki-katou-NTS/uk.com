@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="ccg015.c.style.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="ccg015.c.start.js" />
+			<com:scriptfile path="ccg015.c.service.js" />
+			<com:scriptfile path="ccg015.c.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<div id="contents-left">
+					<div style="float: left;">
+						<p>コピー元情報：</p>
+					</div>
+					<div style="float: left;" id="lbl_code_name"
+						data-bind="ntsFormLabel: {}">
+						<label>コード/名称</label>
+					</div>
+					<div>
+						<p style="float: left;" data-bind="text:'code'"></p>
+						<p style="float: left;padding-left: 150px;" data-bind="text:'name'"></p>
+					</div>
+					<BR />
+					<BR />
+					<BR />
+					<div style="float: left;">
+						<p>コピー先情報：</p>
+					</div>
+					<div style="float: left;" id="lbl_code_name"
+						data-bind="ntsFormLabel: {required: true}">
+						<label>コード/名称</label>
+					</div>
+					<div>
+						<input
+							data-bind="ntsTextEditor: {
+							value: code,
+							required: true
+							}" />
+
+						<input
+							data-bind="ntsTextEditor: {
+							value: name,
+							required: true
+							}" />
+					</div>
+				</div>
+				<hr />
+				<div class="bg-yellow" style="padding: 10px 5px; margin: 10px -5px;">
+				<div data-bind="ntsCheckBox: { checked: true, enable: true}">設定みの場合、データを上書きします。</div>
+				</div>
+				<div id="this-functions-area" class="control-group halign-center">
+					<button class="btn-default proceed x-large">決定</button>
+					<button onclick="nts.uk.ui.windows.close()">キャンセル</button>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

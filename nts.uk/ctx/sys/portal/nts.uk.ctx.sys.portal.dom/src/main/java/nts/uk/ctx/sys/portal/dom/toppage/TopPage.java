@@ -1,15 +1,16 @@
 package nts.uk.ctx.sys.portal.dom.toppage;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.sys.portal.dom.primitive.CompanyId;
-import nts.uk.ctx.sys.portal.dom.primitive.TopPageCode;
-import nts.uk.ctx.sys.portal.dom.primitive.TopPageName;
+import nts.uk.ctx.sys.portal.dom.toppage.primitive.TopPageCode;
+import nts.uk.ctx.sys.portal.dom.toppage.primitive.TopPageName;
 
 /**
  * The Class TopPage.
  */
 @Getter
-public class TopPage {
+public class TopPage extends DomainObject {
 	
 	/** The company id. */
 	private CompanyId companyId;

@@ -1,26 +1,27 @@
 package nts.uk.ctx.sys.portal.dom.mypage.setting;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.enums.UseDivision;
 import nts.uk.ctx.sys.portal.dom.primitive.CompanyId;
-import nts.uk.ctx.sys.portal.dom.primitive.TopPagePartCode;
-import nts.uk.ctx.sys.portal.dom.primitive.TopPagePartName;
+import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.ToppagePartCode;
+import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.ToppagePartName;
 
 /**
  * The Class TopPagePartSettingItem.
  */
 @Getter
-public class TopPagePartUseSetting {
+public class TopPagePartUseSetting extends DomainObject{
 
 	/** The company id. */
 	private CompanyId companyId;
 
 	/** The top page part code. */
-	private TopPagePartCode topPagePartCode;
+	private ToppagePartCode topPagePartCode;
 
 	/** The top page part name. */
-	private TopPagePartName topPagePartName;
+	private ToppagePartName topPagePartName;
 
 	/** The use division. */
 	private UseDivision useDivision;
@@ -42,7 +43,7 @@ public class TopPagePartUseSetting {
 	 * @param topPagePartType
 	 *            the top page part type
 	 */
-	public TopPagePartUseSetting(CompanyId companyId, TopPagePartCode topPagePartCode, TopPagePartName topPagePartName,
+	public TopPagePartUseSetting(CompanyId companyId, ToppagePartCode topPagePartCode, ToppagePartName topPagePartName,
 			UseDivision useDivision, TopPagePartType topPagePartType) {
 		super();
 		this.companyId = companyId;

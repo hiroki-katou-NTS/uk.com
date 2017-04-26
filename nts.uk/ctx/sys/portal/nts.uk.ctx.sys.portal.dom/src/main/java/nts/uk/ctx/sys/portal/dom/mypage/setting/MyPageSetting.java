@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.portal.dom.mypage.setting;
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.sys.portal.dom.enums.PermissionDivision;
 import nts.uk.ctx.sys.portal.dom.enums.UseDivision;
 import nts.uk.ctx.sys.portal.dom.primitive.CompanyId;
@@ -11,7 +12,7 @@ import nts.uk.ctx.sys.portal.dom.primitive.CompanyId;
  * The Class MyPageSetting.
  */
 @Getter
-public class MyPageSetting {
+public class MyPageSetting extends DomainObject{
 
 	/** The company id. */
 	private CompanyId companyId;

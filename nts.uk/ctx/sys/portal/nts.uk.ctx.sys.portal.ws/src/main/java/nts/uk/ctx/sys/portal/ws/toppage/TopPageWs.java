@@ -19,22 +19,34 @@ import nts.uk.ctx.sys.portal.app.toppage.find.TopPageDto;
 import nts.uk.ctx.sys.portal.app.toppage.find.TopPageFinder;
 import nts.uk.ctx.sys.portal.app.toppage.find.TopPageItemDto;
 
+/**
+ * The Class TopPageWs.
+ */
 @Path("/toppage")
 @Stateless
 public class TopPageWs extends WebService {
 
+	/** The top page finder. */
 	@Inject
 	TopPageFinder topPageFinder;
 
+	/** The register top page command handler. */
 	@Inject
 	RegisterTopPageCommandHandler registerTopPageCommandHandler;
 
+	/** The update top page command handler. */
 	@Inject
 	UpdateTopPageCommandHandler updateTopPageCommandHandler;
 
+	/** The delete top page command handler. */
 	@Inject
 	DeleteTopPageCommandHandler deleteTopPageCommandHandler;
 
+	/**
+	 * Find all.
+	 *
+	 * @return the list
+	 */
 	@POST
 	@Path("findAll")
 	public List<TopPageItemDto> findAll() {
@@ -42,6 +54,12 @@ public class TopPageWs extends WebService {
 		return topPageFinder.findAll(companyId);
 	}
 
+	/**
+	 * Gets the top page detail.
+	 *
+	 * @param topPageCode the top page code
+	 * @return the top page detail
+	 */
 	@POST
 	@Path("topPageDetail/{topPageCode}")
 	public TopPageDto getTopPageDetail(@PathParam("topPageCode") String topPageCode) {
@@ -49,18 +67,33 @@ public class TopPageWs extends WebService {
 		return topPageFinder.findByCode(companyId, topPageCode, "0");
 	}
 
+	/**
+	 * Creates the top page.
+	 *
+	 * @param command the command
+	 */
 	@POST
 	@Path("create")
 	public void createTopPage(RegisterTopPageCommand command) {
 		registerTopPageCommandHandler.handle(command);
 	}
 
+	/**
+	 * Update top page.
+	 *
+	 * @param command the command
+	 */
 	@POST
 	@Path("update")
 	public void updateTopPage(UpdateTopPageCommand command) {
 		updateTopPageCommandHandler.handle(command);
 	}
 
+	/**
+	 * Delete top page.
+	 *
+	 * @param command the command
+	 */
 	@POST
 	@Path("delete")
 	public void deleteTopPage(DeleteTopPageCommand command) {

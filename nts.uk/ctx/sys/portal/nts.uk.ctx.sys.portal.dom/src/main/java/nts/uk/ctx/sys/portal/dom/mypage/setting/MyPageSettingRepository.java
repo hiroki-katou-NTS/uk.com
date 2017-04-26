@@ -5,14 +5,12 @@ import java.util.Optional;
 public interface MyPageSettingRepository {
 	
 	/**
-	 * Find by code.
+	 * Find by company id.
 	 *
-	 * @param companyCode the company code
-	 * @param constractCode the constract code
-	 * @param topPageCode the top page code
+	 * @param CompanyId the company id
 	 * @return the optional
 	 */
-	Optional<MyPageSetting> findByCode(String companyCode, String constractCode,String myPageCode);
+	Optional<MyPageSetting> findByCompanyId(String CompanyId);
 	
 	/**
 	 * Update.

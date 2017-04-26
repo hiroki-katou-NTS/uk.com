@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.dom.primitive;
+package nts.uk.ctx.sys.portal.dom.toppage.primitive;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
