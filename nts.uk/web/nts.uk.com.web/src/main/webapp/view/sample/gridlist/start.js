@@ -7,11 +7,11 @@ var nts;
             var gridlist;
             (function (gridlist) {
                 __viewContext.ready(function () {
-                    class ScreenModel {
-                        constructor() {
+                    var ScreenModel = (function () {
+                        function ScreenModel() {
                             this.count = 100;
                             this.items = ko.observableArray([]);
-                            for (let i = 1; i < 100; i++) {
+                            for (var i = 1; i < 100; i++) {
                                 this.items.push(new ItemModel('00' + i, '基本給', "description " + i, i % 3 === 0, "2010/1/1"));
                             }
                             this.columns = ko.observableArray([
@@ -36,7 +36,6 @@ var nts;
                             ]);
                             this.currentCode = ko.observable();
                             this.currentCodeList = ko.observableArray([]);
-                            // Fire event.
                             $("#multi-list").on('itemDeleted', (function (e) {
                                 alert("Item is deleted in multi grid is " + e["detail"]["target"]);
                             }));
@@ -44,29 +43,30 @@ var nts;
                                 alert("Item is deleted in single grid is " + e["detail"]["target"]);
                             }));
                         }
-                        selectSomeItems() {
+                        ScreenModel.prototype.selectSomeItems = function () {
                             this.currentCode('0010');
                             this.currentCodeList.removeAll();
                             this.currentCodeList.push('001');
                             this.currentCodeList.push('002');
-                        }
-                        deselectAll() {
+                        };
+                        ScreenModel.prototype.deselectAll = function () {
                             this.currentCode(null);
                             this.currentCodeList.removeAll();
-                        }
-                        addItem() {
+                        };
+                        ScreenModel.prototype.addItem = function () {
                             this.items.push(new ItemModel(this.count.toString(), '基本給', "description " + this.count, true, "other " + this.count));
                             this.count++;
-                        }
-                        removeItem() {
+                        };
+                        ScreenModel.prototype.removeItem = function () {
                             this.items.shift();
-                        }
-                        addDeleteButton() {
+                        };
+                        ScreenModel.prototype.addDeleteButton = function () {
                             $("#multi-list").ntsGridList("setupDeleteButton", { deleteField: "deletable", sourceTarget: this.items });
-                        }
-                    }
-                    class ItemModel {
-                        constructor(code, name, description, deletable, other1, other2) {
+                        };
+                        return ScreenModel;
+                    }());
+                    var ItemModel = (function () {
+                        function ItemModel(code, name, description, deletable, other1, other2) {
                             this.code = code;
                             this.name = name;
                             this.description = description;
@@ -75,10 +75,12 @@ var nts;
                             this.deletable = deletable;
                             this.switchValue = ((code % 3) + 1).toString();
                         }
-                    }
+                        return ItemModel;
+                    }());
                     this.bind(new ScreenModel());
                 });
             })(gridlist = ui.gridlist || (ui.gridlist = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=start.js.map

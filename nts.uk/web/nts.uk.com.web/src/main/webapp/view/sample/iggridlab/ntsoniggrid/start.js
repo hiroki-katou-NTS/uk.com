@@ -7,8 +7,8 @@ var nts;
             var gridlist;
             (function (gridlist) {
                 __viewContext.ready(function () {
-                    class ScreenModel {
-                        constructor() {
+                    var ScreenModel = (function () {
+                        function ScreenModel() {
                             this.modes = ko.observableArray([
                                 { code: '1', name: '四捨五入' },
                                 { code: '2', name: '切り上げ' },
@@ -23,9 +23,8 @@ var nts;
                                 return ko.observableArray(list);
                             })();
                         }
-                        rowsRendered(evt, ui) {
-                            // 
-                            _.defer(() => {
+                        ScreenModel.prototype.rowsRendered = function (evt, ui) {
+                            _.defer(function () {
                                 $('.nts-binding').not('.nts-binding-done').each(function () {
                                     var $this = $(this).addClass('.nts-binding-done');
                                     var rowIndex = ui_1.ig.grid.getRowIndexFrom($this);
@@ -36,15 +35,17 @@ var nts;
                                     });
                                 });
                             });
-                        }
-                    }
-                    class GridItem {
-                        constructor(index) {
+                        };
+                        return ScreenModel;
+                    }());
+                    var GridItem = (function () {
+                        function GridItem(index) {
                             this.id = index;
                             this.flag = ko.observable(index % 2 == 0);
                             this.ruleCode = ko.observable(String(index % 3 + 1));
                         }
-                    }
+                        return GridItem;
+                    }());
                     var model = new ScreenModel();
                     this.bind(model);
                 });

@@ -10,11 +10,8 @@ var cmm001;
                 addCompany: "ctx/proto/company/adddata",
                 updateCompany: "ctx/proto/company/updatedata"
             };
-            /**
-             * get list company
-             */
             function getAllCompanys() {
-                let dfd = $.Deferred();
+                var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getAllCompanys)
                     .done(function (res) {
                     dfd.resolve(res);
@@ -26,7 +23,7 @@ var cmm001;
             }
             service.getAllCompanys = getAllCompanys;
             function getCompanyDetail(companyCd) {
-                let dfd = $.Deferred();
+                var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getCompanyDetail + "/" + companyCd)
                     .done(function (res) {
                     dfd.resolve(res);
@@ -62,10 +59,8 @@ var cmm001;
             service.updateData = updateData;
             var model;
             (function (model) {
-                // company
-                class CompanyDto {
-                    constructor(companyCode, companyName, address1, address2, addressKana1, addressKana2, companyNameAbb, companyNameKana, corporateMyNumber, depWorkPlaceSet, displayAttribute, // cot thu 3
-                        faxNo, postal, presidentName, presidentJobTitle, telephoneNo, termBeginMon, useKtSet, useQySet, useJjSet) {
+                var CompanyDto = (function () {
+                    function CompanyDto(companyCode, companyName, address1, address2, addressKana1, addressKana2, companyNameAbb, companyNameKana, corporateMyNumber, depWorkPlaceSet, displayAttribute, faxNo, postal, presidentName, presidentJobTitle, telephoneNo, termBeginMon, useKtSet, useQySet, useJjSet) {
                         this.termBeginMon = 0;
                         this.use_Gr_Set = 0;
                         this.use_Kt_Set = 0;
@@ -115,9 +110,11 @@ var cmm001;
                         this.use_Rs09_Set = 0;
                         this.use_Rs10_Set = 0;
                     }
-                }
+                    return CompanyDto;
+                }());
                 model.CompanyDto = CompanyDto;
             })(model = service.model || (service.model = {}));
         })(service = a.service || (a.service = {}));
     })(a = cmm001.a || (cmm001.a = {}));
 })(cmm001 || (cmm001 = {}));
+//# sourceMappingURL=cmm001.a.service.js.map
