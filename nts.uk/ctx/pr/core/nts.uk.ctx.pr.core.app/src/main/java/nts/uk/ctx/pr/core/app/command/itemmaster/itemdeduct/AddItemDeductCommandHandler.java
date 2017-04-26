@@ -28,8 +28,8 @@ public class AddItemDeductCommandHandler extends CommandHandler<AddItemDeductCom
 		String companyCode = AppContexts.user().companyCode();
 		val itemCode = context.getCommand().getItemCode();
 		if (this.itemDeductRespository.find(companyCode, itemCode).isPresent())
-			throw new BusinessException(" 明細書名が入力されていません。");
-		this.itemDeductRespository.add(companyCode,context.getCommand().toDomain());
+			throw new BusinessException(new RawErrorMessage("明細書名が入力されていません。"));
+		this.itemDeductRespository.add(companyCode, context.getCommand().toDomain());
 
 	}
 }

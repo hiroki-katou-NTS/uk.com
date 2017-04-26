@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
@@ -51,7 +52,7 @@ public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCom
 		String itemCode = itemMaster.getItemCode().v();
 
 		if (this.itemMasterRepository.find(companyCode, categoryAtr, itemCode).isPresent()) {
-			throw new BusinessException("入力したコードは既に存在しています。\r\nを確認してください。"); // ER005
+			throw new BusinessException(new RawErrorMessage("入力したコードは既に存在しています。\r\nを確認してください。")); // ER005
 		}
 
 		itemMasterRepository.add(itemMaster);
@@ -90,7 +91,7 @@ public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCom
 
 		// use interface for add sub item
 		if (this.itemAttendRespository.find(companyCode, itemCode).isPresent()) {
-			throw new BusinessException("入力したコードは既に存在しています。\r\nを確認してください。"); // ER005
+			throw new BusinessException(new RawErrorMessage("入力したコードは既に存在しています。\r\nを確認してください。")); // ER005
 		}
 
 		this.itemAttendRespository.add(companyCode, context.getCommand().getItemAttend().toDomain());
@@ -106,7 +107,7 @@ public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCom
 		// use interface for add sub item
 
 		if (this.itemDeductRespository.find(companyCode, itemCode).isPresent()) {
-			throw new BusinessException("入力したコードは既に存在しています。\r\nを確認してください。"); // ER005
+			throw new BusinessException(new RawErrorMessage("入力したコードは既に存在しています。\r\nを確認してください。")); // ER005
 		}
 
 		this.itemDeductRespository.add(companyCode, context.getCommand().getItemDeduct().toDomain());
@@ -122,7 +123,7 @@ public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCom
 
 		// use interface for add sub item
 		if (this.itemSalaryRespository.find(companyCode, itemCode).isPresent()) {
-			throw new BusinessException("入力したコードは既に存在しています。\r\nを確認してください。"); // ER005
+			throw new BusinessException(new RawErrorMessage("入力したコードは既に存在しています。\r\nを確認してください。")); // ER005
 		}
 
 		this.itemSalaryRespository.add(companyCode, context.getCommand().getItemSalary().toDomain());

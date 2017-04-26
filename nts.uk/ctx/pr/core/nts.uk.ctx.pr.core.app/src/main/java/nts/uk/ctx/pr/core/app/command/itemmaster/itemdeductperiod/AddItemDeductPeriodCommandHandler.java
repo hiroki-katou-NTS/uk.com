@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductperiod.ItemDeductPeriod;
@@ -25,7 +26,7 @@ public class AddItemDeductPeriodCommandHandler extends CommandHandler<AddItemDed
 		ItemDeductPeriod itemDeductPeriod = context.getCommand().toDomain();
 		itemDeductPeriod.validate();
 		if (this.itemDeductPeriodRepo.find(companyCode, itemCode).isPresent())
-			throw new BusinessException(" 明細書名が入力されていません。");
+			throw new BusinessException(new RawErrorMessage("明細書名が入力されていません。"));
 		this.itemDeductPeriodRepo.add(companyCode, itemDeductPeriod);
 	}
 
