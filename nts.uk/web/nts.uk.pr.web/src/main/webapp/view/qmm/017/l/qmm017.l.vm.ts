@@ -203,7 +203,7 @@ module nts.uk.pr.view.qmm017.l {
                     })
                     .fail(function() {
                         // Alert message
-                        alert(res);
+                        nts.uk.ui.dialog.alert(res);
                         dfdGetTimeItems.reject();
                     });
                 service.getListCompanyUnitPrice(self.startYm.replace('/', ''))
@@ -241,7 +241,7 @@ module nts.uk.pr.view.qmm017.l {
                     })
                     .fail(function() {
                         // Alert message
-                        alert(res);
+                        nts.uk.ui.dialog.alert(res);
                         dfdGetPaymentItems.reject();
                     });
 
@@ -256,7 +256,7 @@ module nts.uk.pr.view.qmm017.l {
                     })
                     .fail(function() {
                         // Alert message
-                        alert(res);
+                        nts.uk.ui.dialog.alert(res);
                         dfdGetDeductionItems.reject();
                     });
 

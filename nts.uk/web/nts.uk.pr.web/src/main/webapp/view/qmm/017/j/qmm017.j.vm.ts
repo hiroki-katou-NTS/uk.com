@@ -86,7 +86,7 @@ module nts.uk.pr.view.qmm017.j {
                             nts.uk.ui.windows.close();
                         })
                         .fail(function(res) {
-                            alert(res);
+                            nts.uk.ui.dialog.alert(res);
                         });
                 } else {
                     nts.uk.ui.dialog.alert("履歴の期間が正しくありません。");

@@ -102,7 +102,7 @@ module nts.qmm017 {
                                             self.viewModel017c().comboBoxRoudingPosition().selectedCode(currentFormulaDetail.roundDigit);
                                         }
                                     }).fail(function(res) {
-                                        alert(res);
+                                        nts.uk.ui.dialog.alert(res);
                                     });
                                 } else if (currentFormulaDetail.easyFormula && currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 0) {
                                     self.viewModel017c().noneConditionalEasyFormula(new EasyFormula(0, self.viewModel017b));
@@ -197,7 +197,7 @@ module nts.qmm017 {
                                 }
                             })
                             .fail(function(res) {
-                                alert(res);
+                                nts.uk.ui.dialog.alert(res);
                             });
                         self.selectedTabASel001('tab-1');
                         self.viewModel017b().selectedConditionAtr(currentFormula.conditionAtr);
@@ -205,7 +205,7 @@ module nts.qmm017 {
                         $('.check-error').ntsError('clear');
                     })
                     .fail(function(res) {
-                        alert(res);
+                        nts.uk.ui.dialog.alert(res);
                     });
                 $('.error').ntsError('clear');
             }
@@ -536,7 +536,7 @@ module nts.qmm017 {
                 dfdHistoryTree.resolve();
             }).fail(function(res) {
                 // Alert message
-                alert(res);
+                nts.uk.ui.dialog.alert(res);
                 dfdHistoryTree.reject();
             });
             // Return.
@@ -585,7 +585,7 @@ module nts.qmm017 {
                             self.start();
                         })
                         .fail(function(res) {
-                            alert(res)
+                            nts.uk.ui.dialog.alert(res);
                         });
                 }
             } else {
@@ -768,7 +768,7 @@ module nts.qmm017 {
                         self.start();
                     })
                     .fail(function(res) {
-                        alert(res)
+                        nts.uk.ui.dialog.alert(res);
                     });
             }
         }

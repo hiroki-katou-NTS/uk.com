@@ -245,6 +245,7 @@ module nts.qmm017 {
         export class PersonalUnitPriceDto {
             personalUnitPriceCode: string;
             personalUnitPriceName: string;
+            memo: string;
         }
 
         export class ItemMasterDto {
