@@ -4,12 +4,13 @@ var cmm013;
     (function (d) {
         var viewmodel;
         (function (viewmodel) {
-            var ScreenModel = (function () {
-                function ScreenModel() {
+            class ScreenModel {
+                constructor() {
                     var self = this;
                     self.inp_003 = ko.observable(null);
                     self.inp_003_enable = ko.observable(true);
                     self.endDateUpdate = ko.observable('');
+                    //D_SEL_001
                     self.enable = ko.observable(true);
                     self.oldStartDate = ko.observable('');
                     self.lstMessage = ko.observableArray([]);
@@ -17,7 +18,7 @@ var cmm013;
                     self.oldEndDate = ko.observable('');
                     self.jobCode = ko.observable('');
                 }
-                ScreenModel.prototype.startPage = function () {
+                startPage() {
                     var self = this;
                     var dfd = $.Deferred();
                     self.endDateUpdate(nts.uk.ui.windows.getShared('cmm013EndDate'));
@@ -36,6 +37,7 @@ var cmm013;
                         }
                     });
                     self.inp_003(self.oldStartDate());
+                    //nếu không phải lịch sử mới nhat thi khong duoc xoa va chỉ mặc định được sửa thôi
                     if (self.oldEndDate() === "9999/12/31") {
                         self.enable(true);
                     }
@@ -44,16 +46,17 @@ var cmm013;
                     }
                     dfd.resolve();
                     return dfd.promise();
-                };
-                ScreenModel.prototype.setValueForRadio = function () {
+                }
+                setValueForRadio() {
                     var self = this;
                     self.itemList = ko.observableArray([
                         new BoxModel(1, '履歴を削除する '),
                         new BoxModel(2, '履歴を修正する')
                     ]);
                     self.selectedId = ko.observable(2);
-                };
-                ScreenModel.prototype.listMessage = function () {
+                }
+                //<---list  message--->
+                listMessage() {
                     var self = this;
                     self.lstMessage.push(new ItemMessage("ER005", "入力した*は既に存在しています。\r\n*を確認してください。"));
                     self.lstMessage.push(new ItemMessage("ER010", "対象データがありません。"));
@@ -61,20 +64,24 @@ var cmm013;
                     self.lstMessage.push(new ItemMessage("AL002", "データを削除します。\r\nよろしいですか？"));
                     self.lstMessage.push(new ItemMessage("ER026", "更新対象のデータが存在しません。"));
                     self.lstMessage.push(new ItemMessage("ER023", "履歴の期間が重複しています。"));
-                };
-                ScreenModel.prototype.clearShared = function () {
+                }
+                //<---clear set share--->
+                clearShared() {
                     nts.uk.ui.windows.setShared('cmm013StartDate', '');
                     nts.uk.ui.windows.setShared('cmm013EndDate', '');
                     nts.uk.ui.windows.setShared('cmm013HistoryId', '');
-                };
-                ScreenModel.prototype.closeDialog = function () {
+                }
+                //<---close dialog--->       
+                closeDialog() {
                     nts.uk.ui.windows.setShared('cancelDialog', true);
                     nts.uk.ui.windows.close();
-                };
-                ScreenModel.prototype.positionHis = function () {
-                    var self = this;
+                }
+                positionHis() {
+                    let self = this;
+                    //<---If delete--->
                     var historyInfo = new model.ListHistoryDto(self.histIdUpdate(), self.oldStartDate(), self.inp_003(), self.jobCode());
                     if (self.selectedId() === 1) {
+                        //<---Delete?--->
                         var AL002 = _.find(self.lstMessage(), function (mess) {
                             return mess.messCode === "AL002";
                         });
@@ -87,12 +94,14 @@ var cmm013;
                                 });
                                 nts.uk.ui.dialog.alert(delMess.messName);
                             }).done(function () {
+                                //<---Close Screen--->
                                 self.clearShared();
                                 nts.uk.ui.windows.close();
                             });
                         });
                     }
                     else {
+                        //Check Input New StartDate <= Now StartDate 
                         var originallyStartDate = new Date(self.oldStartDate());
                         var newStartDate = new Date(self.inp_003());
                         if (originallyStartDate >= newStartDate) {
@@ -108,44 +117,40 @@ var cmm013;
                                 });
                                 nts.uk.ui.dialog.alert(upMess.messName);
                             }).done(function () {
+                                //<---Close Screen--->
                                 self.clearShared();
                                 nts.uk.ui.windows.close();
                             });
                         }
                     }
-                };
-                return ScreenModel;
-            }());
+                }
+            }
             viewmodel.ScreenModel = ScreenModel;
-            var BoxModel = (function () {
-                function BoxModel(id, name) {
+            class BoxModel {
+                constructor(id, name) {
                     this.id = id;
                     this.name = name;
                 }
-                return BoxModel;
-            }());
+            }
             var model;
             (function (model) {
-                var ListHistoryDto = (function () {
-                    function ListHistoryDto(historyId, oldStartDate, newStartDate, jobCode) {
+                class ListHistoryDto {
+                    constructor(historyId, oldStartDate, newStartDate, jobCode) {
                         this.historyId = historyId;
                         this.oldStartDate = oldStartDate;
                         this.newStartDate = newStartDate;
                         this.jobCode = jobCode;
                     }
-                    return ListHistoryDto;
-                }());
+                }
                 model.ListHistoryDto = ListHistoryDto;
             })(model = viewmodel.model || (viewmodel.model = {}));
-            var ItemMessage = (function () {
-                function ItemMessage(messCode, messName) {
+            class ItemMessage {
+                constructor(messCode, messName) {
                     this.messCode = messCode;
                     this.messName = messName;
                 }
-                return ItemMessage;
-            }());
+            }
             viewmodel.ItemMessage = ItemMessage;
         })(viewmodel = d.viewmodel || (d.viewmodel = {}));
     })(d = cmm013.d || (cmm013.d = {}));
 })(cmm013 || (cmm013 = {}));
-//# sourceMappingURL=cmm013.d.vm.js.map

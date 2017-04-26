@@ -290,7 +290,8 @@ module nts.uk.ui.koExtentions {
             var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var inputFormat: string = (data.inputFormat !== undefined) ? ko.unwrap(data.inputFormat) : option.inputFormat;
-            return new validation.TimeValidator(constraintName, { required: required, outputFormat: inputFormat });
+            var mode: string = (data.mode !== undefined) ? ko.unwrap(data.mode) : "";
+            return new validation.TimeValidator(constraintName, { required: required, outputFormat: inputFormat, mode: mode });
         }
     }
 

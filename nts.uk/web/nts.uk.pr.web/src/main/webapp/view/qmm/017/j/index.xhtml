@@ -30,7 +30,7 @@
 				<br />
 				<div id="start_date_lbl" class="separate-vertical"
 					data-bind="ntsFormLabel: {required: true }">開始年月</div>
-				<div id="start_date_inp" data-bind="ntsDatePicker: {value: startYm, dateFormat: 'yyyy/MM', valueFormat: 'YYYYMM'}"></div>
+				<div id="start_date_inp" data-bind="ntsDatePicker: {value: startYm, dateFormat: 'yyyy/MM', startDate: startYm, valueFormat: 'YYYYMM', required: true}"></div>
 				<span data-bind="text: startYearMonthFormated"></span> <br />
 				<div>
 					<div class="separate-vertical" data-bind="ntsFormLabel: {required: true }">
@@ -58,13 +58,8 @@
 				<com:ko-if bind="selectedMode() == 1">
 					<div id="setting_formula_lbl_j_screen" style="margin-top: 10px" class="separate-vertical"
 						data-bind="ntsFormLabel: {required: true }">計算式の設定方法</div>
-					<div class="cf" style="display: inline-block" data-bind="ntsSwitchButton: {
-						options: switchButtonDifficultyAtr().items,
-						optionsValue: 'code',
-						optionsText: 'name',
-						value: switchButtonDifficultyAtr().selectedCode,
-						enable: true }"></div> <br/>
-					<com:ko-if bind="switchButtonDifficultyAtr().selectedCode() == 0">
+					<span data-bind="text: txtDifficultyAtr"></span><br/>
+					<com:ko-if bind="lastestHistory.difficultyAtr == 0">
 						<div id="condition_attribute_lbl" class="separate-vertical"
 							data-bind="ntsFormLabel: {required: true }">かんたん計算式でマスタによる条件分岐を利用する</div><br/>
 						<div class="cf" style="margin: 10px 0px 0px 193px;" data-bind="ntsSwitchButton: {
@@ -76,7 +71,7 @@
 						<com:ko-if bind="switchButtonConditionAtr().selectedCode() == 1">	
 							<div id="master_item_sel" class="separate-vertical"
 								data-bind="ntsFormLabel: {required: true }">使用するマスタ</div>
-							<div id="combo-box" data-bind="ntsComboBox: {
+							<div id="combo-box" style="vertical-align: middle;" data-bind="ntsComboBox: {
 								options: comboBoxReferenceMasterNo().items,
 								optionsValue: 'code',
 								value: comboBoxReferenceMasterNo().selectedCode,
@@ -88,7 +83,7 @@
 				</com:ko-if>
 				<div id="footer">
 					<hr/>
-					<button class="x-large proceed" data-bind="click: registerFormulaHistory">決定</button>
+					<button class="x-large proceed" data-bind="click: registerFormulaHistory, enable: $root.errors.isEmpty">決定</button>
 					<button data-bind="click: closeDialog">キャンセル</button>
 				</div>
 			</div>

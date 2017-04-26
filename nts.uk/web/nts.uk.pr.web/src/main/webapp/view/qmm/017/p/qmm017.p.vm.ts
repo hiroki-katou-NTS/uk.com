@@ -16,14 +16,18 @@ module nts.uk.pr.view.qmm017.p {
                 ]);
                 self.currentCodeList = ko.observableArray(data.selectedItems);
             }
-            
+
             closeAndReturnData() {
                 var self = this;
                 let baseAmountListItem = self.currentCodeList();
-                nts.uk.ui.windows.setShared('baseAmountListItem', baseAmountListItem);
-                nts.uk.ui.windows.close();
+                if (baseAmountListItem.length > 0) {
+                    nts.uk.ui.windows.setShared('baseAmountListItem', baseAmountListItem);
+                    nts.uk.ui.windows.close();
+                } else {
+                    nts.uk.ui.dialog.alert("項目が選択されていません。");    
+                }
             }
-            
+
             closeDialog() {
                 nts.uk.ui.windows.close();
             }

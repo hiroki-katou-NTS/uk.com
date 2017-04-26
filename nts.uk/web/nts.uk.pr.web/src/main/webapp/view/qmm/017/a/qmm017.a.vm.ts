@@ -23,6 +23,9 @@ module nts.qmm017 {
         currentParentNode: any;
         itemsBagRepository: Array<any>;
 
+        dirtyCheckScreenB: nts.uk.ui.DirtyChecker;
+        dirtyCheckScreenC: nts.uk.ui.DirtyChecker;
+
         constructor() {
             var self = this;
             self.itemsBagRepository = [];
@@ -43,11 +46,6 @@ module nts.qmm017 {
             });
             self.currentNode = ko.observable(null);
             self.currentParentNode = ko.observable(null);
-            self.treeGridHistory().singleSelectedCode.subscribe(function(codeChange) {
-                if (codeChange !== null) {
-                    self.bindDataByChanging(codeChange);
-                }
-            });
             self.viewModel017b = ko.observable(new BScreen(self));
             self.viewModel017c = ko.observable(new CScreen(self));
             self.viewModel017d = ko.observable(new DScreen());
@@ -57,6 +55,22 @@ module nts.qmm017 {
             self.viewModel017h = ko.observable(new HScreen(self));
             self.viewModel017i = ko.observable(new IScreen(self));
             self.viewModel017r = ko.observable(new RScreen(self));
+            self.dirtyCheckScreenB = new nts.uk.ui.DirtyChecker(self.viewModel017b);
+            self.dirtyCheckScreenC = new nts.uk.ui.DirtyChecker(self.viewModel017c);
+        }
+
+        formulaTree_onSelecting(codeChange) {
+            var self = this;
+            if (self.dirtyCheckScreenB.isDirty() || self.dirtyCheckScreenC.isDirty()) {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。")
+                    .ifYes(function() {
+                        self.bindDataByChanging(codeChange);
+                    }).ifNo(function() {
+                        return false;
+                    });
+            } else {
+                self.bindDataByChanging(codeChange);
+            }
         }
 
         bindDataByChanging(codeChange) {
@@ -88,20 +102,29 @@ module nts.qmm017 {
                                     self.itemsBagRepository = [];
                                     // fill items bag
                                     self.fillItemsBagRepository().done(function() {
+                                        self.refreshItemTabs();
+                                        self.viewModel017c().formulaManualContent().textArea('');
+                                        self.viewModel017c().comboBoxReferenceMonthAtr().selectedCode(0);
+                                        self.viewModel017c().comboBoxRoudingMethod().selectedCode(0);
+                                        self.viewModel017c().comboBoxRoudingPosition().selectedCode(0);
                                         // bind formula manual
-                                        self.viewModel017c().formulaManualContent().textArea(self.replaceCodesToNames(currentFormulaDetail.formulaContent));
-                                        self.viewModel017c().comboBoxReferenceMonthAtr().selectedCode(currentFormulaDetail.referenceMonthAtr);
-                                        self.viewModel017c().comboBoxRoudingMethod().selectedCode(currentFormulaDetail.roundAtr);
-                                        self.viewModel017c().comboBoxRoudingPosition().selectedCode(currentFormulaDetail.roundDigit);
+                                        if (currentFormulaDetail.formulaContent) {
+                                            self.viewModel017c().formulaManualContent().textArea(self.replaceCodesToNames(currentFormulaDetail.formulaContent));
+                                            self.viewModel017c().comboBoxReferenceMonthAtr().selectedCode(currentFormulaDetail.referenceMonthAtr);
+                                            self.viewModel017c().comboBoxRoudingMethod().selectedCode(currentFormulaDetail.roundAtr);
+                                            self.viewModel017c().comboBoxRoudingPosition().selectedCode(currentFormulaDetail.roundDigit);
+                                        }
+                                        self.dirtyCheckScreenC.reset();
                                     }).fail(function(res) {
                                         alert(res);
                                     });
-                                } else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 0) {
+                                } else if (currentFormulaDetail.easyFormula && currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 0) {
                                     self.viewModel017c().noneConditionalEasyFormula(new EasyFormula(0, self.viewModel017b));
                                     if (currentFormulaDetail.easyFormula[0]) {
+                                        self.viewModel017c().noneConditionalEasyFormula().easyFormulaCode(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaCode);
                                         self.viewModel017c().noneConditionalEasyFormula().easyFormulaName(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaName);
                                     }
-                                } else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo < 6) {
+                                } else if (currentFormulaDetail.easyFormula && currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo < 6) {
                                     self.viewModel017c().defaultEasyFormula(new EasyFormula(0, self.viewModel017b));
                                     if (currentFormulaDetail.easyFormula[0]) {
                                         self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(currentFormulaDetail.easyFormula[0].value);
@@ -109,7 +132,7 @@ module nts.qmm017 {
                                         self.viewModel017c().defaultEasyFormula().easyFormulaCode(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaCode);
                                         self.viewModel017c().defaultEasyFormula().easyFormulaName(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaName);
                                     }
-                                } else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo === 6) {
+                                } else if (currentFormulaDetail.easyFormula && currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo === 6) {
                                     self.viewModel017c().defaultEasyFormula(new EasyFormula(0, self.viewModel017b));
                                     _.forEach(currentFormulaDetail.easyFormula, easyFormula => {
                                         if (easyFormula.easyFormulaCode === '000') {
@@ -154,20 +177,48 @@ module nts.qmm017 {
                                         }
                                     });
                                 }
+
+                                self.dirtyCheckScreenB.reset();
+                                self.dirtyCheckScreenC.reset();
                             })
                             .fail(function(res) {
                                 alert(res);
                             });
-
+                        self.selectedTabASel001('tab-1');
                         self.viewModel017b().selectedConditionAtr(currentFormula.conditionAtr);
                         self.viewModel017b().comboBoxUseMaster().selectedCode(currentFormula.refMasterNo.toString());
-
+                        $('.check-error').ntsError('clear');
                     })
                     .fail(function(res) {
                         alert(res);
                     });
+                $('.error').ntsError('clear');
             }
         }
+
+        refreshItemTabs() {
+            var self = this;
+            self.viewModel017c().selectedTabCSel006('tab-1');
+            self.viewModel017d().listBoxItemType().selectedCode(null);
+            self.viewModel017d().listBoxItems().selectedCode(null);
+            self.viewModel017d().listBoxItems().itemList([]);
+            self.viewModel017e().listBoxItemType().selectedCode(null);
+            self.viewModel017e().listBoxItems().selectedCode(null);
+            self.viewModel017e().listBoxItems().itemList([]);
+            self.viewModel017f().listBoxItemType().selectedCode(null);
+            self.viewModel017f().listBoxItems().selectedCode(null);
+            self.viewModel017f().listBoxItems().itemList([]);
+            self.viewModel017h().listBoxItemType().selectedCode(null);
+            self.viewModel017h().listBoxItems().selectedCode(null);
+            self.viewModel017h().listBoxItems().itemList([]);
+            self.viewModel017i().listBoxItemType().selectedCode(null);
+            self.viewModel017i().listBoxItems().selectedCode(null);
+            self.viewModel017i().listBoxItems().itemList([]);
+            self.viewModel017r().listBoxItemType().selectedCode(null);
+            self.viewModel017r().listBoxItems().selectedCode(null);
+            self.viewModel017r().listBoxItems().itemList([]);
+        }
+
         //from mode:
         //0: Screen D
         //1: Screen E
@@ -178,81 +229,116 @@ module nts.qmm017 {
         //6: Screen R
         placeItemNameToTextArea(mode, self) {
             if (mode === 0) {
-                let currentTextArea = self.viewModel017c().formulaManualContent().textArea();
-                let itemType = _.find(self.viewModel017d().listBoxItemType().itemList(), function(itemType) {
-                    return itemType.code === self.viewModel017d().listBoxItemType().selectedCode();
-                });
-                let itemTypeDisplayName = itemType.name.slice(5, 8);
-                let itemDetailDisplayName = '';
-                if (self.viewModel017d().listBoxItems().selectedCode() !== '') {
+                if (self.viewModel017d().listBoxItems().selectedCode() !== '' && self.viewModel017d().listBoxItemType().selectedCode() !== '') {
+                    let currentTextArea = self.viewModel017c().formulaManualContent().textArea();
+                    let itemType = _.find(self.viewModel017d().listBoxItemType().itemList(), function(itemType) {
+                        return itemType.code === self.viewModel017d().listBoxItemType().selectedCode();
+                    });
+                    let itemTypeDisplayName = itemType.name.slice(5, 8);
+                    let itemDetailDisplayName = '';
                     let itemDetail = _.find(self.viewModel017d().listBoxItems().itemList(), function(item) {
                         return item.code === self.viewModel017d().listBoxItems().selectedCode();
                     });
                     itemDetailDisplayName = itemDetail.name;
+                    self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemTypeDisplayName + itemDetailDisplayName, $("#input-text")[0].selectionStart));
+                } else {
+                    nts.uk.ui.dialog.alert("計算式に挿入する項目が選択されていません。");
                 }
-                self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemTypeDisplayName + itemDetailDisplayName, $("#input-text")[0].selectionStart));
+
             } else if (mode === 1) {
-                let currentTextArea = self.viewModel017c().formulaManualContent().textArea();
-                let itemDetailDisplayName = '';
-                if (self.viewModel017e().listBoxItems().selectedCode() !== '') {
-                    if (self.viewModel017e().listBoxItems().selectedCode() === '1') {
-                        itemDetailDisplayName = '関数＠条件式（,,）';
-                    } else if (self.viewModel017e().listBoxItems().selectedCode() === '2') {
-                        itemDetailDisplayName = '関数＠かつ（,）';
-                    } else if (self.viewModel017e().listBoxItems().selectedCode() === '3') {
-                        itemDetailDisplayName = '関数＠または（,）';
-                    } else if (self.viewModel017e().listBoxItems().selectedCode() === '4') {
-                        itemDetailDisplayName = '関数＠四捨五入（ ）';
-                    } else if (self.viewModel017e().listBoxItems().selectedCode() === '5') {
-                        itemDetailDisplayName = '関数＠切捨て（ ）';
-                    } else if (self.viewModel017e().listBoxItems().selectedCode() === '6') {
-                        itemDetailDisplayName = '関数＠切上げ（ ）';
-                    } else if (self.viewModel017e().listBoxItems().selectedCode() === '7') {
-                        itemDetailDisplayName = '関数＠最大値（,）';
-                    } else if (self.viewModel017e().listBoxItems().selectedCode() === '8') {
-                        itemDetailDisplayName = '関数＠最小値（,）';
-                    } else if (self.viewModel017e().listBoxItems().selectedCode() === '9') {
-                        itemDetailDisplayName = '関数＠家族人数（,）';
-                    } else if (self.viewModel017e().listBoxItems().selectedCode() === '10') {
-                        itemDetailDisplayName = '関数＠月加算（,）';
-                    } else if (self.viewModel017e().listBoxItems().selectedCode() === '11') {
-                        itemDetailDisplayName = '関数＠年抽出（  ）';
-                    } else if (self.viewModel017e().listBoxItems().selectedCode() === '12') {
-                        itemDetailDisplayName = '関数＠月抽出（  ）';
+                if (self.viewModel017e().listBoxItems().selectedCode() !== '' && self.viewModel017e().listBoxItemType().selectedCode() !== '') {
+                    let currentTextArea = self.viewModel017c().formulaManualContent().textArea();
+                    let itemDetailDisplayName = '';
+                    if (self.viewModel017e().listBoxItems().selectedCode() !== '') {
+                        if (self.viewModel017e().listBoxItems().selectedCode() === '1') {
+                            itemDetailDisplayName = '関数＠条件式（,,）';
+                        } else if (self.viewModel017e().listBoxItems().selectedCode() === '2') {
+                            itemDetailDisplayName = '関数＠かつ（,）';
+                        } else if (self.viewModel017e().listBoxItems().selectedCode() === '3') {
+                            itemDetailDisplayName = '関数＠または（,）';
+                        } else if (self.viewModel017e().listBoxItems().selectedCode() === '4') {
+                            itemDetailDisplayName = '関数＠四捨五入（ ）';
+                        } else if (self.viewModel017e().listBoxItems().selectedCode() === '5') {
+                            itemDetailDisplayName = '関数＠切捨て（ ）';
+                        } else if (self.viewModel017e().listBoxItems().selectedCode() === '6') {
+                            itemDetailDisplayName = '関数＠切上げ（ ）';
+                        } else if (self.viewModel017e().listBoxItems().selectedCode() === '7') {
+                            itemDetailDisplayName = '関数＠最大値（,）';
+                        } else if (self.viewModel017e().listBoxItems().selectedCode() === '8') {
+                            itemDetailDisplayName = '関数＠最小値（,）';
+                        } else if (self.viewModel017e().listBoxItems().selectedCode() === '9') {
+                            itemDetailDisplayName = '関数＠家族人数（,）';
+                        } else if (self.viewModel017e().listBoxItems().selectedCode() === '10') {
+                            itemDetailDisplayName = '関数＠月加算（,）';
+                        } else if (self.viewModel017e().listBoxItems().selectedCode() === '11') {
+                            itemDetailDisplayName = '関数＠年抽出（  ）';
+                        } else if (self.viewModel017e().listBoxItems().selectedCode() === '12') {
+                            itemDetailDisplayName = '関数＠月抽出（  ）';
+                        }
                     }
+                    self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemDetailDisplayName, $("#input-text")[0].selectionStart));
+                } else {
+                    nts.uk.ui.dialog.alert("計算式に挿入する項目が選択されていません。");
                 }
-                self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemDetailDisplayName, $("#input-text")[0].selectionStart));
             } else if (mode === 6) {
-                let currentTextArea = self.viewModel017c().formulaManualContent().textArea();
-                let itemType = _.find(self.viewModel017r().listBoxItemType().itemList(), function(itemType) {
-                    return itemType.code === self.viewModel017r().listBoxItemType().selectedCode();
-                });
-                let itemTypeDisplayName = itemType.name.slice(7, 12);
-                let itemDetailDisplayName = '';
-                if (self.viewModel017r().listBoxItems().selectedCode() !== '') {
-                    let itemDetail = _.find(self.viewModel017r().listBoxItems().itemList(), function(item) {
-                        return item.code === self.viewModel017r().listBoxItems().selectedCode();
+                if (self.viewModel017r().listBoxItems().selectedCode() !== '' && self.viewModel017r().listBoxItemType().selectedCode() !== '') {
+                    let currentTextArea = self.viewModel017c().formulaManualContent().textArea();
+                    let itemType = _.find(self.viewModel017r().listBoxItemType().itemList(), function(itemType) {
+                        return itemType.code === self.viewModel017r().listBoxItemType().selectedCode();
                     });
-                    itemDetailDisplayName = itemDetail.name;
+                    let itemTypeDisplayName = itemType.name.slice(7, 12);
+                    let itemDetailDisplayName = '';
+                    if (self.viewModel017r().listBoxItems().selectedCode() !== '') {
+                        let itemDetail = _.find(self.viewModel017r().listBoxItems().itemList(), function(item) {
+                            return item.code === self.viewModel017r().listBoxItems().selectedCode();
+                        });
+                        itemDetailDisplayName = itemDetail.name;
+                    }
+                    self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemTypeDisplayName + itemDetailDisplayName, $("#input-text")[0].selectionStart));
+                } else {
+                    nts.uk.ui.dialog.alert("計算式に挿入する項目が選択されていません。");
                 }
-                self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemTypeDisplayName + itemDetailDisplayName, $("#input-text")[0].selectionStart));
             } else if (mode === 4) {
-                let currentTextArea = self.viewModel017c().formulaManualContent().textArea();
-                let itemDetailDisplayName = '';
-                if (self.viewModel017h().listBoxItems().selectedCode() !== '') {
-                    let itemDetail = _.find(self.viewModel017h().listBoxItems().itemList(), function(item) {
-                        return item.code === self.viewModel017h().listBoxItems().selectedCode();
-                    });
-                    itemDetailDisplayName = '計算式＠' + itemDetail.name;
+                if (self.viewModel017h().listBoxItems().selectedCode() !== '' && self.viewModel017h().listBoxItemType().selectedCode() !== '') {
+                    let currentTextArea = self.viewModel017c().formulaManualContent().textArea();
+                    let itemDetailDisplayName = '';
+                    if (self.viewModel017h().listBoxItems().selectedCode() !== '') {
+                        let itemDetail = _.find(self.viewModel017h().listBoxItems().itemList(), function(item) {
+                            return item.code === self.viewModel017h().listBoxItems().selectedCode();
+                        });
+                        itemDetailDisplayName = '計算式＠' + itemDetail.name;
+                    }
+                    self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemDetailDisplayName, $("#input-text")[0].selectionStart));
+                } else {
+                    nts.uk.ui.dialog.alert("計算式に挿入する項目が選択されていません。");
                 }
             } else if (mode === 5) {
-                let currentTextArea = self.viewModel017c().formulaManualContent().textArea();
-                let itemDetailDisplayName = '';
-                if (self.viewModel017i().listBoxItems().selectedCode() !== '') {
-                    let itemDetail = _.find(self.viewModel017i().listBoxItems().itemList(), function(item) {
-                        return item.code === self.viewModel017i().listBoxItems().selectedCode();
-                    });
-                    itemDetailDisplayName = '賃金TBL＠' + itemDetail.name;
+                if (self.viewModel017i().listBoxItems().selectedCode() !== '' && self.viewModel017i().listBoxItemType().selectedCode() !== '') {
+                    let currentTextArea = self.viewModel017c().formulaManualContent().textArea();
+                    let itemDetailDisplayName = '';
+                    if (self.viewModel017i().listBoxItems().selectedCode() !== '') {
+                        let itemDetail = _.find(self.viewModel017i().listBoxItems().itemList(), function(item) {
+                            return item.code === self.viewModel017i().listBoxItems().selectedCode();
+                        });
+                        itemDetailDisplayName = '賃金TBL＠' + itemDetail.name;
+                        self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemDetailDisplayName, $("#input-text")[0].selectionStart));
+                    }
+                } else {
+                    nts.uk.ui.dialog.alert("計算式に挿入する項目が選択されていません。");
+                }
+            } else if (mode === 2) {
+                if (self.viewModel017f().listBoxItems().selectedCode() !== '' && self.viewModel017f().listBoxItemType().selectedCode() !== '') {
+                    let currentTextArea = self.viewModel017c().formulaManualContent().textArea();
+                    let itemDetailDisplayName = '';
+                    if (self.viewModel017f().listBoxItems().selectedCode() !== '') {
+                        let itemDetail = _.find(self.viewModel017f().listBoxItems().itemList(), function(item) {
+                            return item.code === self.viewModel017f().listBoxItems().selectedCode();
+                        });
+                        itemDetailDisplayName = '変数＠' + itemDetail.name;
+                        self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemDetailDisplayName, $("#input-text")[0].selectionStart));
+                    }
+                } else {
+                    nts.uk.ui.dialog.alert("計算式に挿入する項目が選択されていません。");
                 }
             }
         }
@@ -288,6 +374,7 @@ module nts.qmm017 {
             $.when(treeHistoryPromise)
                 .done(function() {
                     self.treeGridHistory().singleSelectedCode(self.treeGridHistory().items()[0].childs[0].code);
+                    self.bindDataByChanging(self.treeGridHistory().items()[0].childs[0].code);
                     dfdStart.resolve();
                 })
                 .fail(function() {
@@ -331,6 +418,12 @@ module nts.qmm017 {
                     });
                 });
             }).then(function() {
+                service.getListSystemVariable().done(function(lstItem) {
+                    _.forEach(lstItem, function(item: model.SystemVariableDto) {
+                        self.itemsBagRepository.push({ code: '4＠' + item.systemVariableCode, name: '変数＠' + item.systemVariableName, value: item.result });
+                    });
+                });
+            }).then(function() {
                 service.findOtherFormulas(self.viewModel017b().formulaCode(), self.toYearMonthInt(self.viewModel017b().startYearMonth())).done(function(lstFormula) {
                     _.forEach(lstFormula, function(formula) {
                         self.itemsBagRepository.push({ code: '5＠' + formula.formulaCode, name: '計算式＠' + formula.formulaName });
@@ -369,12 +462,12 @@ module nts.qmm017 {
             }
         }
 
-        resetToNewMode() {
+        setNewMode() {
             var self = this;
             self.treeGridHistory().singleSelectedCode(null);
             self.selectedTabASel001('tab-1');
             self.isNewMode(true);
-            self.startYearMonth('');
+            self.startYearMonth("");
             self.viewModel017b().formulaCode('');
             self.viewModel017b().formulaName('');
             self.viewModel017b().selectedDifficultyAtr(0);
@@ -382,6 +475,27 @@ module nts.qmm017 {
             self.viewModel017b().comboBoxUseMaster().selectedCode(1);
             self.currentNode(null);
             self.currentParentNode(null);
+            $("#inp-formulaName").focus();
+            $("#inp-formulaCode").focus();
+            self.dirtyCheckScreenB.reset();
+            self.dirtyCheckScreenC.reset();
+        }
+
+        resetToNewMode() {
+            var self = this;
+            if (self.dirtyCheckScreenB.isDirty() || self.dirtyCheckScreenC.isDirty()) {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。")
+                    .ifYes(function() {
+                        $('.check-error').ntsError('clear');
+                        self.setNewMode();
+                    }).ifNo(function() {
+
+                    }).ifCancel(function() {
+
+                    });
+            } else {
+                self.setNewMode();
+            }
         }
 
         bindHistoryTree(): JQueryPromise<any> {
@@ -414,7 +528,7 @@ module nts.qmm017 {
                         nodesTreeGrid.push(nodeFormula);
                     });
                     self.treeGridHistory().items(nodesTreeGrid);
-                    self.resetToNewMode();
+                    self.setNewMode();
                 } else {
                     self.treeGridHistory().items(nodesTreeGrid);
                 }
@@ -458,14 +572,21 @@ module nts.qmm017 {
                     conditionAtr: self.viewModel017b().selectedConditionAtr(),
                     refMasterNo: referenceMasterNo
                 };
-
-                service.registerFormulaMaster(command)
-                    .done(function() {
-                        self.resetToNewMode();
-                    })
-                    .fail(function(res) {
-                        alert(res)
-                    });
+                let existedFormula = _.find(self.treeGridHistory().items(), function(formula: Node) {
+                    return formula.code === command.formulaCode;
+                });
+                if (existedFormula) {
+                    debugger;
+                    nts.uk.ui.dialog.alert("入力した計算式コードは既に存在しています。\r\n計算式コードを確認してください。");
+                } else {
+                    service.registerFormulaMaster(command)
+                        .done(function() {
+                            self.start();
+                        })
+                        .fail(function(res) {
+                            alert(res)
+                        });
+                }
             } else {
                 let command = {
                     formulaCode: self.viewModel017b().formulaCode(),
@@ -494,7 +615,7 @@ module nts.qmm017 {
                             value: self.viewModel017c().noneConditionalEasyFormula().easyFormulaFixMoney(),
                             referenceMasterNo: "0000000000",
                             formulaDetail: noneConditionalEasyFormulaDetail,
-                            fixFormulaAtr: self.viewModel017c().noneConditionalEasyFormula().selectedRuleCodeEasySettings()
+                            fixFormulaAtr: 1
                         });
                     } else if (self.viewModel017b().selectedConditionAtr() == 1 && self.viewModel017b().comboBoxUseMaster().selectedCode() < 6) {
                         let defaultEasyFormulaDetail = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
@@ -662,7 +783,7 @@ module nts.qmm017 {
                 }
                 service.updateFormulaMaster(command)
                     .done(function() {
-                        self.resetToNewMode();
+                        self.start();
                     })
                     .fail(function(res) {
                         alert(res)

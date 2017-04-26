@@ -27,12 +27,15 @@ module nts.uk.pr.view.qmm017.k {
                         startDate: self.startYm(),
                         difficultyAtr: self.data.difficultyAtr
                     }
-                    service.removeFormulaHistory(command)
-                        .done(function() {
-                            nts.uk.ui.windows.close();
-                        })
-                        .fail(function(res) {
-                            alert(res);
+                    nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？")
+                        .ifYes(function() {
+                            service.removeFormulaHistory(command)
+                                .done(function() {
+                                    nts.uk.ui.windows.close();
+                                })
+                                .fail(function(res) {
+                                    alert(res);
+                                });
                         });
                 } else {
                     let command = {

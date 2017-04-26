@@ -14,34 +14,55 @@ var cmm013;
                 deleteJobTitleRef: "basic/organization/position/deleteJobTitleRef/",
                 findAuth: "basic/organization/position/findAuth/"
             };
+            /**
+             * find all position
+             */
             function findAllJobTitle(historyId) {
                 var dfd = $.Deferred();
                 return nts.uk.request.ajax("com", paths.findAllJobTitle + historyId);
             }
             service.findAllJobTitle = findAllJobTitle;
+            /**
+             * find by Use Kt
+             */
             function findByUseKt() {
                 var dfd = $.Deferred();
                 return nts.uk.request.ajax("com", paths.getAllUseKt + "1");
             }
             service.findByUseKt = findByUseKt;
+            /**
+             * delete Position select
+             */
             function deleteJobTitle(position) {
                 var dfd = $.Deferred();
                 return nts.uk.request.ajax("com", paths.deleteJobTitle, position);
             }
             service.deleteJobTitle = deleteJobTitle;
+            /**
+            * get all history
+            */
             function getAllHistory() {
                 var dfd = $.Deferred();
                 return nts.uk.request.ajax("com", paths.getAllHistory);
             }
             service.getAllHistory = getAllHistory;
+            /**
+             * add & update position && add & update history
+             */
             function registry(addHandler) {
                 var dfd = $.Deferred();
                 return nts.uk.request.ajax("com", paths.regitry, addHandler);
             }
             service.registry = registry;
+            /**
+             * get all jobtitle ref auth
+             */
             function getAllJobTitleAuth(historyId, jobCode) {
                 var dfd = $.Deferred();
                 return nts.uk.request.ajax("com", paths.getAuth + historyId + "/" + jobCode);
+                /**
+                 * delete jobtitle ref auth
+                 */
             }
             service.getAllJobTitleAuth = getAllJobTitleAuth;
             function deleteJobRefAuth(jobRefAuth) {
@@ -54,8 +75,8 @@ var cmm013;
                 return nts.uk.request.ajax("com", paths.findAuth + "KT");
             }
             service.findAuth = findAuth;
-            var GetJobAuth = (function () {
-                function GetJobAuth(historyId, jobCode, authCode, authName, referenceSettings, authScopeAtr) {
+            class GetJobAuth {
+                constructor(historyId, jobCode, authCode, authName, referenceSettings, authScopeAtr) {
                     this.historyId = historyId;
                     this.jobCode = jobCode;
                     this.authCode = authCode;
@@ -63,10 +84,8 @@ var cmm013;
                     this.referenceSettings = referenceSettings;
                     this.authScopeAtr = authScopeAtr;
                 }
-                return GetJobAuth;
-            }());
+            }
             service.GetJobAuth = GetJobAuth;
         })(service = a.service || (a.service = {}));
     })(a = cmm013.a || (cmm013.a = {}));
 })(cmm013 || (cmm013 = {}));
-//# sourceMappingURL=cmm013.a.service.js.map
