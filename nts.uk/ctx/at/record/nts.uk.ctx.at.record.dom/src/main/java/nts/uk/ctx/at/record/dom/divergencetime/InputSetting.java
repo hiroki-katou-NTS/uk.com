@@ -2,14 +2,11 @@ package nts.uk.ctx.at.record.dom.divergencetime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.DomainObject;
 @Getter
-@Setter
 @AllArgsConstructor
-@NoArgsConstructor
-public class InputSetting {
+public class InputSetting extends DomainObject{
 
 	private UseSetting selectUseSet;
 	

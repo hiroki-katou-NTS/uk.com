@@ -2,13 +2,9 @@ package nts.uk.ctx.at.record.dom.divergencetime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class AttendanceItem {
 	/*会社ID*/
 	private int companyId;

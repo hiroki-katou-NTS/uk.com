@@ -2,12 +2,11 @@ package nts.uk.ctx.at.record.dom.divergencetime;
 import java.math.BigDecimal;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.AggregateRoot;
 
 @Getter
-@Setter
-public class DivergenceTime {
+public class DivergenceTime extends AggregateRoot{
 	/*会社ID*/
 	private int companyId;
 	/*乖離時間ID*/
