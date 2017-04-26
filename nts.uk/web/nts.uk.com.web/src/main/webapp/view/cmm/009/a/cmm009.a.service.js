@@ -47,9 +47,6 @@ var cmm009;
                 return dfd.promise();
             }
             service.addWorkPlace = addWorkPlace;
-            /**
-             * get list workplace theo historyID
-             */
             function getAllWorkPLaceByHistId(historyId) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.getAllWorkPLaceByHistId + historyId)
@@ -62,9 +59,6 @@ var cmm009;
                 return dfd.promise();
             }
             service.getAllWorkPLaceByHistId = getAllWorkPLaceByHistId;
-            /**
-             * get Memo theo historyID
-             */
             function getMemoWorkPLaceByHistId(historyId) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.getMemoWorkPLaceByHistId + historyId)
@@ -187,9 +181,6 @@ var cmm009;
                 return dfd.promise();
             }
             service.getCodeOfDepWP = getCodeOfDepWP;
-            /**
-            * Get list dapartment tại listHistory[0].
-            */
             function getAllDepartment() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.getAllDepartment)
@@ -202,9 +193,6 @@ var cmm009;
                 return dfd.promise();
             }
             service.getAllDepartment = getAllDepartment;
-            /**
-             * get list dapartment theo historyID
-             */
             function getAllDepartmentByHistId(historyId) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.getAllDepartmentByHistId + historyId)
@@ -217,9 +205,6 @@ var cmm009;
                 return dfd.promise();
             }
             service.getAllDepartmentByHistId = getAllDepartmentByHistId;
-            /**
-             * get Memo theo historyID
-             */
             function getMemoByHistId(historyId) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.getMemoByHistId + historyId)
@@ -232,9 +217,6 @@ var cmm009;
                 return dfd.promise();
             }
             service.getMemoByHistId = getMemoByHistId;
-            /**
-           * Get list dapartment tại listHistory[0].
-           */
             function getAllWorkplace() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.getAllWorkPlace)
@@ -247,9 +229,6 @@ var cmm009;
                 return dfd.promise();
             }
             service.getAllWorkplace = getAllWorkplace;
-            /**
-            * get list dapartment theo historyID
-            */
             function getAllWorkPlaceByHistId(historyId) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.getAllWorkPlaceByHistId + historyId)
@@ -262,9 +241,6 @@ var cmm009;
                 return dfd.promise();
             }
             service.getAllWorkPlaceByHistId = getAllWorkPlaceByHistId;
-            /*
-            * get Memo theo historyID
-            */
             function getMemoWkpByHistId(historyId) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.getMemoWkpByHistId + historyId)
@@ -280,3 +256,4 @@ var cmm009;
         })(service = a.service || (a.service = {}));
     })(a = cmm009.a || (cmm009.a = {}));
 })(cmm009 || (cmm009 = {}));
+//# sourceMappingURL=cmm009.a.service.js.map
