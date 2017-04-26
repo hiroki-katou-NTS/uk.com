@@ -1,3 +1,4 @@
+/// <reference path="../../reference.ts"/>
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -11,9 +12,18 @@ var nts;
         (function (ui_1) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * SwapList binding handler
+                 */
                 var NtsSwapListBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
                     function NtsSwapListBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsSwapListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var HEADER_HEIGHT = 27;
                         var CHECKBOX_WIDTH = 70;
@@ -27,6 +37,7 @@ var nts;
                         }
                         var data = valueAccessor();
                         var originalSource = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
+                        //            var selectedValues = ko.unwrap(data.value);
                         var totalWidth = ko.unwrap(data.width);
                         var height = ko.unwrap(data.height);
                         var showSearchBox = ko.unwrap(data.showSearchBox);
@@ -166,6 +177,9 @@ var nts;
                             swapper.Model.move(false, data.value);
                         });
                     };
+                    /**
+                     * Update
+                     */
                     NtsSwapListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var elementId = this.swapper.Model.$container.attr('id');
@@ -191,6 +205,9 @@ var nts;
                             this.swapper.Model.swapParts[1].bindData(newSelectedList.slice());
                         }
                     };
+                    /**
+                     * Share swapper b/w init and update
+                     */
                     NtsSwapListBindingHandler.prototype.makeBindings = function () {
                         var handler = this;
                         return {
@@ -252,6 +269,7 @@ var nts;
                     };
                     SwapHandler.prototype._createHelper = function (evt, ui) {
                         var selectedRowElms = $(evt.currentTarget).igGrid("selectedRows");
+                        // Set the orders same as on grid
                         selectedRowElms.sort(function (one, two) {
                             return one.index - two.index;
                         });
@@ -284,6 +302,7 @@ var nts;
                         var partId = model.transportBuilder.startAt === "first" ? 0 : 1;
                         var destPartId = model.receiver(ui) === "first" ? 0 : 1;
                         model.transportBuilder.toAdjacent(model.neighbor(ui)).target(model.target(ui));
+                        // In case of multiple selections
                         if (ui.helper.hasClass("select-drag") === true) {
                             var rowsInHelper = ui.helper.find("tr");
                             var rows = rowsInHelper.toArray();
@@ -310,6 +329,7 @@ var nts;
                                 }
                                 model.swapParts[destPartId].$listControl.find("tbody").children()
                                     .eq(standardIdx - 1).before(rowsBefore).after(rowsAfter);
+                                // Remove rows in source
                                 var sourceRows = model.swapParts[partId].$listControl.find("tbody").children();
                                 for (var index = rowsAfter.length - 1; index >= 0; index--) {
                                     if ($(rows[index]).data("row-idx") === targetIdx)
@@ -367,7 +387,7 @@ var nts;
                 }());
                 var SwapPart = (function () {
                     function SwapPart() {
-                        this.searchMode = "highlight";
+                        this.searchMode = "highlight"; // highlight & filter - Default: highlight
                         this.innerDrop = true;
                         this.outerDrop = true;
                     }
