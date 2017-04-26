@@ -62,7 +62,7 @@ module qpp011.d {
             //Set Tree Data 
             service.findAllResidential().done(function(data: Array<any>) {
                 service.getlistLocation().done(function(listLocation: Array<any>) {
-
+                    
                     self.ResidentialData(data);
                     self.ListLocation = listLocation;
                     let ArrayData = CreateDataArray(listLocation, data);
@@ -71,6 +71,9 @@ module qpp011.d {
                     if (data.length > 0) {
                         self.dirty.reset();
                         self.D_LST_001_selectedValue([data[0].resiTaxCode]);
+                    }
+                    if(data.length ===0){
+                        nts.uk.ui.dialog.alert("対象データがありません。");
                     }
                 }).fail(function(res) {
                     // Alert message
@@ -88,7 +91,7 @@ module qpp011.d {
                 for (let Object of Data) {
                     let positionIndex = CreateTreeBranchs(Object.prefectureCode);
                     if (positionIndex) {
-                        self.TreeArray.push(new TreeItem(Object.resiTaxCode, Object.resiTaxName, positionIndex, Object.resiTaxCode, Object.resiTaxCode + " " + Object.registeredName, 'Item'));
+                        self.TreeArray.push(new TreeItem(Object.resiTaxCode, Object.resiTaxName, positionIndex, Object.resiTaxCode, Object.resiTaxCode + " " + Object.resiTaxAutonomy, 'Item'));
                     }
                 }
                 return self.TreeArray;
