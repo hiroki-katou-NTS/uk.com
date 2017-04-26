@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.app.command.budget.external.UpdateExternalBudgetCm
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetFinder;
 
-@Path("pr/proto/layout")
+@Path("at/")
 @Produces("application/json")
 public class ExternalBudgetWebService extends WebService {
 	@Inject
