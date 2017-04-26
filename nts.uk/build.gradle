@@ -617,7 +617,7 @@ project (':web:nts.uk.at.web') {
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		
 		runtime project (':shr:nts.uk.shr.ws')
-		runtime project (':shr:nts.uk.shr.find')
+		
 		
 		runtime project (':ctx:at:schedule:nts.uk.ctx.at.schedule.ac')
 		runtime project (':ctx:at:schedule:nts.uk.ctx.at.schedule.app')
