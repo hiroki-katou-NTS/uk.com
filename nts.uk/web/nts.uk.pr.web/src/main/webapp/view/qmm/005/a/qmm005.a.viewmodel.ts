@@ -243,7 +243,8 @@ module qmm005.a {
             let self = this;
             self.showDialog(true);
             nts.uk.ui.windows.setShared('dataRow', item);
-            nts.uk.ui.windows.sub.modal("../b/index.xhtml", { width: 1020, height: 730, title: '支払日の設定', dialogClass: "no-close" })
+            console.log(window.innerWidth);
+            nts.uk.ui.windows.sub.modal("../b/index.xhtml", { width: window["large"] ? 1025 : 1035 , height: window["large"] ? 755 : 620, title: '支払日の設定', dialogClass: "no-close" })
                 .onClosed(function() {
                     self.showDialog(false);
                     __viewContext["viewModel"].start();

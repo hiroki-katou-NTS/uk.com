@@ -139,15 +139,18 @@ td>.ntsControl span.label {
 	border-bottom: none;
 }
 
+.relative {
+	position: relative;
+}
+
 #B_SEL_002 {
-	display: inline-table;
 	width: 130px;
-	margin-left: -3px;
 }
 
 #B_SEL_002+div {
-	display: inline-table;
-	margin-right: 5px;
+	position: absolute;
+	top: 10px;
+	right: 3px;
 }
 
 #B_SEL_002+div:before {
@@ -204,10 +207,6 @@ td>.ntsControl span.label {
 	display: inline-table;
 }
 
-#contents-area  #B_INP_004 {
-	margin-left: -3px;
-}
-
 #contents-area  #B_INP_004+div {
 	margin-right: 5px;
 }
@@ -241,7 +240,7 @@ td>.ntsControl span.label {
 }
 
 #contents-area #B_LST_002.table>thead>tr:nth-child(3) th:nth-child(4),
-#contents-area #B_LST_002.table>thead>tr:nth-child(3) th:nth-child(5) {
+	#contents-area #B_LST_002.table>thead>tr:nth-child(3) th:nth-child(5) {
 	width: 90px;
 }
 

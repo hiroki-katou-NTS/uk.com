@@ -31,9 +31,22 @@ module qmm005.b {
             // toggle width of dialog
             self.toggle.subscribe(function(v) {
                 if (v) {
-                    nts.uk.ui.windows.getSelf().setWidth(1020);
+                    $('#contents-area').css('width', '');
+                    $('#contents-area').css('padding-bottom', '');
+                    if (window["large"]) {
+                        nts.uk.ui.windows.getSelf().setWidth(1025);
+                    } else {
+                        $('#contents-area').css('padding-bottom', '10px');
+                        nts.uk.ui.windows.getSelf().setWidth(1035);
+                    }
                 } else {
-                    nts.uk.ui.windows.getSelf().setWidth(1465);
+                    if (window["large"]) {
+                        nts.uk.ui.windows.getSelf().setWidth(1465);
+                    } else {
+                        $('#contents-area').css('width', '1465px');
+                        $('#contents-area').css('padding-bottom', '10px');
+                        nts.uk.ui.windows.getSelf().setWidth(1300);
+                    }
                 }
             });
             self.toggle.valueHasMutated();

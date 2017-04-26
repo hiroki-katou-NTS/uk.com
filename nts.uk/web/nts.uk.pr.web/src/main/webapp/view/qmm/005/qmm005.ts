@@ -36,10 +36,11 @@ class CheckBoxWithHelpBindingHandler implements KnockoutBindingHandler {
                 span.innerHTML = '(' + valueAccessor().helper + ')';
             } else if (typeof valueAccessor().helper == 'object') {
                 span.id = valueAccessor().helper.id;
-                
+
                 //remove child helper
-                element.getElementsByClassName("helper")[0].remove();
-                
+                debugger;
+                $(".helper", element).remove();
+
                 if (typeof valueAccessor().helper.text == 'function') {
                     span.innerHTML = '(' + valueAccessor().helper.text() + ')';
                 }
@@ -203,8 +204,11 @@ module qmm005.common {
     }
 }
 
-// for develop
-var _ref = (window.location.href.indexOf('localhost') == -1) && new Date().getTime() || 'v1.0.0';
+// detect size of window
+(window.onresize = () => { window["large"] = window.innerWidth >= 1920; })();
+
+// 4dev
+var _ref = (window.location.href.indexOf('localhost') == -1) && 'v1.0.0' || new Date().getTime();
 
 var route = window.location.href
     .slice(0, window.location.href.lastIndexOf('/'))

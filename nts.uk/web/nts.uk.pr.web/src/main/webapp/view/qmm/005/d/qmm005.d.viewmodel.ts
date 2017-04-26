@@ -18,7 +18,8 @@ module qmm005.d {
         sel013: KnockoutObservable<number> = ko.observable(1);
         sel014: KnockoutObservable<number> = ko.observable(1);
         sel015: KnockoutObservable<number> = ko.observable(1);
-
+        sel016: common.CheckBoxItem = new common.CheckBoxItem({ enable: true, checked: false, text: 'この処理区分を廃止する' });
+        
         sel001Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
         sel002Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
         sel003Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
@@ -52,6 +53,7 @@ module qmm005.d {
             sel013: new nts.uk.ui.DirtyChecker(this.sel013),
             sel014: new nts.uk.ui.DirtyChecker(this.sel014),
             sel015: new nts.uk.ui.DirtyChecker(this.sel015),
+            sel016: new nts.uk.ui.DirtyChecker(this.sel016.checked),
             isDirty: function() {
                 return this.inp001.isDirty()
                     || this.sel001.isDirty()
@@ -68,7 +70,8 @@ module qmm005.d {
                     || this.sel012.isDirty()
                     || this.sel013.isDirty()
                     || this.sel014.isDirty()
-                    || this.sel015.isDirty();
+                    || this.sel015.isDirty()
+                    || this.sel016.isDirty();
             },
             reset: function() {
                 this.inp001.reset();
@@ -87,6 +90,7 @@ module qmm005.d {
                 this.sel013.reset();
                 this.sel014.reset();
                 this.sel015.reset();
+                this.sel016.reset();
             }
         }
 

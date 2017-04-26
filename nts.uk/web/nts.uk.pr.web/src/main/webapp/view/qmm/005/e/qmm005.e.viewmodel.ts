@@ -18,6 +18,13 @@ module qmm005.e {
         sel008: common.CheckBoxItem = new common.CheckBoxItem({ enable: false, checked: true, text: '所得税基準日', helper: { id: 'E_LBL_018', text: ko.observable('処理月の習前の１月１日') } }); // Base date của thuế thu nhập (ngày 1/1 tiếp theo)
         sel009: common.CheckBoxItem = new common.CheckBoxItem({ enable: true, checked: true, text: '経理締め日', helper: { id: 'E_LBL_019', text: ko.observable('処理月の前月15日') } }); // Ngày chốt (tháng trước của tháng xử lý)
         dataSources: Array<any> = [];
+        dirty = {
+            
+            isDirty: function() {
+            },
+            reset: function() {
+            }
+        }
         constructor() {
             let self = this;
 
@@ -82,7 +89,7 @@ module qmm005.e {
                     incometaxStdDay: self.dataSources[1] && self.dataSources[1].incometaxStdDay,
                     accountDueDay: self.dataSources[0] && self.dataSources[0].accountDueDay
                 };
-            
+
             // Share data to global and close dialog
             nts.uk.ui.windows.setShared('viewModelE', model);
             self.closeDialog();
