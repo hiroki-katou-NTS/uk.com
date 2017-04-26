@@ -2,7 +2,6 @@ package nts.uk.ctx.pr.core.app.command.retirement.payment;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 
 /**
  * 

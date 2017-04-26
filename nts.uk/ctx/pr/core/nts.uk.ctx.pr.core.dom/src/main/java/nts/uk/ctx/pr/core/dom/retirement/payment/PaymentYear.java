@@ -16,6 +16,5 @@ public class PaymentYear extends IntegerPrimitiveValue<PaymentYear>{
 	
 	public PaymentYear(int value) {
 		super(value);
-		// TODO Auto-generated constructor stub
 	}
 }

@@ -4,9 +4,9 @@ import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -28,6 +28,7 @@ import nts.uk.shr.com.primitive.PersonId;
  *
  */
 @RequestScoped
+@Transactional
 public class RegisterRetirementPaymentCommandHandler extends CommandHandler<RegisterRetirementPaymentCommand>{
 	@Inject
 	private RetirementPaymentRepository retirementPaymentRepository;
@@ -40,14 +41,14 @@ public class RegisterRetirementPaymentCommandHandler extends CommandHandler<Regi
 		Optional<RetirementPayment> reOptional = this.retirementPaymentRepository.findRetirementPaymentInfo(
 																new CompanyCode(companyCode), 
 																new PersonId(command.getPersonId().toString()), 
-																GeneralDate.fromString(command.getPayDate(), "yyyy-MM-dd"));
+																GeneralDate.fromString(command.getPayDate(), "yyyy/MM/dd"));
 		if(reOptional.isPresent()) {
-			throw new BusinessException("Register Fail");
+			throw new RuntimeException("Item already exist");
 		}
 		RetirementPayment retirementPayment = new RetirementPayment(
 				new CompanyCode(companyCode), 
 				new PersonId(command.getPersonId()), 
-				GeneralDate.fromString(command.getPayDate(), "yyyy-MM-dd"),
+				GeneralDate.fromString(command.getPayDate(), "yyyy/MM/dd"),
 				EnumAdaptor.valueOf(command.getTrialPeriodSet(), TrialPeriodSet.class),
 				new PaymentYear(command.getExclusionYears()), 
 				new PaymentYear(command.getAdditionalBoardYears()), 

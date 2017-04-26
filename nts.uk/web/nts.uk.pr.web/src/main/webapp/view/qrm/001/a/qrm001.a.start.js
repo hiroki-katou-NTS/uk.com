@@ -1,12 +1,13 @@
 var qrm001;
 (function (qrm001) {
-    var b;
-    (function (b) {
+    var a;
+    (function (a) {
         __viewContext.ready(function () {
-            var screenModel = new qrm001.b.viewmodel.ScreenModel();
+            var screenModel = new qrm001.a.viewmodel.ScreenModel();
             screenModel.startPage().done(function () {
                 __viewContext.bind(screenModel);
             });
         });
-    })(b = qrm001.b || (qrm001.b = {}));
+    })(a = qrm001.a || (qrm001.a = {}));
 })(qrm001 || (qrm001 = {}));
+//# sourceMappingURL=qrm001.a.start.js.map

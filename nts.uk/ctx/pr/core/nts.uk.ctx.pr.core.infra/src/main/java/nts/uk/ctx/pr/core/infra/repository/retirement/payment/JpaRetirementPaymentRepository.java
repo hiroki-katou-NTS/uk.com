@@ -4,17 +4,22 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
-import javax.transaction.Transactional;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.ws.json.serializer.GeneralDateTimeSerializer;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.retirement.payment.BankTransferOption;
+import nts.uk.ctx.pr.core.dom.retirement.payment.PaymentMoney;
+import nts.uk.ctx.pr.core.dom.retirement.payment.PaymentYear;
+import nts.uk.ctx.pr.core.dom.retirement.payment.RetirementPayOption;
 import nts.uk.ctx.pr.core.dom.retirement.payment.RetirementPayment;
 import nts.uk.ctx.pr.core.dom.retirement.payment.RetirementPaymentRepository;
+import nts.uk.ctx.pr.core.dom.retirement.payment.TaxCalculationMethod;
+import nts.uk.ctx.pr.core.dom.retirement.payment.TrialPeriodSet;
 import nts.uk.ctx.pr.core.infra.entity.retirement.payment.QredtRetirementPayment;
 import nts.uk.ctx.pr.core.infra.entity.retirement.payment.QredtRetirementPaymentPK;
+import nts.uk.shr.com.primitive.Memo;
 import nts.uk.shr.com.primitive.PersonId;
 
 /**
@@ -23,7 +28,6 @@ import nts.uk.shr.com.primitive.PersonId;
  *
  */
 @RequestScoped
-@Transactional
 public class JpaRetirementPaymentRepository extends JpaRepository implements RetirementPaymentRepository {
 	
 	private final String FindByCompanyCodeAndPersonId = "Select a From QredtRetirementPayment a "
@@ -36,77 +40,17 @@ public class JpaRetirementPaymentRepository extends JpaRepository implements Ret
 	}
 	
 	@Override
-	public List<RetirementPayment> findByCompanyCodeandPersonId(CompanyCode companyCode, PersonId personId) {
+	public List<RetirementPayment> findByCompanyCodeAndPersonId(CompanyCode companyCode, PersonId personId) {
 		return this.queryProxy().query(FindByCompanyCodeAndPersonId, QredtRetirementPayment.class)
 				.setParameter("companyCode", companyCode.v())
 				.setParameter("personId", personId.v())
-				.getList(x -> RetirementPayment.createFromJavaType(
-						x.qredtRetirementPaymentPK.companyCode, 
-						x.qredtRetirementPaymentPK.personId, 
-						x.qredtRetirementPaymentPK.payDate, 
-						x.trialPeriodSet, 
-						x.exclusionYears, 
-						x.additionalBoardYears, 
-						x.boardYears, 
-						x.totalPaymentMoney, 
-						x.deduction1Money, 
-						x.deduction2Money, 
-						x.deduction3Money, 
-						x.retirementPayOption, 
-						x.taxCalculationMethod, 
-						x.incomeTaxMoney, 
-						x.cityTaxMoney, 
-						x.prefectureTaxMoney, 
-						x.totalDeclarationMoney, 
-						x.actualRecieveMoney, 
-						x.bankTransferOption1,
-						x.option1Money,
-						x.bankTransferOption2,
-						x.option2Money,
-						x.bankTransferOption3,
-						x.option3Money,
-						x.bankTransferOption4,
-						x.option4Money,
-						x.bankTransferOption5,
-						x.option5Money,
-						x.withholdingMeno,
-						x.statementMemo));
+				.getList(x -> convertToDomain(x));
 	}
 	
 	@Override
 	public Optional<RetirementPayment> findRetirementPaymentInfo(CompanyCode companyCode, PersonId personId, GeneralDate dateTime) {
 		return this.queryProxy().find(new QredtRetirementPaymentPK(companyCode.v(), personId.v(), dateTime), QredtRetirementPayment.class)
-				.map(x -> RetirementPayment.createFromJavaType(
-						x.qredtRetirementPaymentPK.companyCode, 
-						x.qredtRetirementPaymentPK.personId, 
-						x.qredtRetirementPaymentPK.payDate,
-						x.trialPeriodSet,
-						x.exclusionYears,
-						x.additionalBoardYears, 
-						x.boardYears,
-						x.totalPaymentMoney,
-						x.deduction1Money, 
-						x.deduction2Money, 
-						x.deduction3Money, 
-						x.retirementPayOption, 
-						x.taxCalculationMethod,
-						x.incomeTaxMoney, 
-						x.cityTaxMoney, 
-						x.prefectureTaxMoney,
-						x.totalDeclarationMoney,
-						x.actualRecieveMoney,
-						x.bankTransferOption1,
-						x.option1Money,
-						x.bankTransferOption2,
-						x.option2Money,
-						x.bankTransferOption3,
-						x.option3Money,
-						x.bankTransferOption4,
-						x.option4Money,
-						x.bankTransferOption5,
-						x.option5Money,
-						x.withholdingMeno,
-						x.statementMemo));
+				.map(x -> convertToDomain(x));
 	}
 	
 	@Override
@@ -126,6 +70,11 @@ public class JpaRetirementPaymentRepository extends JpaRepository implements Ret
 		);
 	}
 	
+	/**
+	 * Convert Domain Item to Entity Item
+	 * @param retirementPayment Domain Item
+	 * @return Entiry Item
+	 */
 	private QredtRetirementPayment convertToEntity(RetirementPayment retirementPayment){
 		return new QredtRetirementPayment(
 					new QredtRetirementPaymentPK(
@@ -160,5 +109,44 @@ public class JpaRetirementPaymentRepository extends JpaRepository implements Ret
 					retirementPayment.getWithholdingMeno().v(),
 					retirementPayment.getStatementMemo().v()
 				);
+	}
+	
+	/**
+	 * Convert Entity Item to Domain Item
+	 * @param qredtRetirementPayment Entity Item
+	 * @return Domain Item
+	 */
+	private RetirementPayment convertToDomain(QredtRetirementPayment qredtRetirementPayment){
+		return new RetirementPayment(
+				new CompanyCode(qredtRetirementPayment.qredtRetirementPaymentPK.companyCode), 
+				new PersonId(qredtRetirementPayment.qredtRetirementPaymentPK.personId), 
+				qredtRetirementPayment.qredtRetirementPaymentPK.payDate,
+				EnumAdaptor.valueOf(qredtRetirementPayment.trialPeriodSet, TrialPeriodSet.class),
+				new PaymentYear(qredtRetirementPayment.exclusionYears),
+				new PaymentYear(qredtRetirementPayment.additionalBoardYears), 
+				new PaymentYear(qredtRetirementPayment.boardYears), 
+				new PaymentMoney(qredtRetirementPayment.totalPaymentMoney),
+				new PaymentMoney(qredtRetirementPayment.deduction1Money), 
+				new PaymentMoney(qredtRetirementPayment.deduction2Money), 
+				new PaymentMoney(qredtRetirementPayment.deduction3Money), 
+				EnumAdaptor.valueOf(qredtRetirementPayment.retirementPayOption, RetirementPayOption.class), 
+				EnumAdaptor.valueOf(qredtRetirementPayment.taxCalculationMethod, TaxCalculationMethod.class), 
+				new PaymentMoney(qredtRetirementPayment.incomeTaxMoney),
+				new PaymentMoney(qredtRetirementPayment.cityTaxMoney), 
+				new PaymentMoney(qredtRetirementPayment.prefectureTaxMoney), 
+				new PaymentMoney(qredtRetirementPayment.totalDeclarationMoney), 
+				new PaymentMoney(qredtRetirementPayment.actualRecieveMoney), 
+				EnumAdaptor.valueOf(qredtRetirementPayment.bankTransferOption1, BankTransferOption.class),
+				new PaymentMoney(qredtRetirementPayment.option1Money),
+				EnumAdaptor.valueOf(qredtRetirementPayment.bankTransferOption2, BankTransferOption.class),
+				new PaymentMoney(qredtRetirementPayment.option2Money),
+				EnumAdaptor.valueOf(qredtRetirementPayment.bankTransferOption3, BankTransferOption.class),
+				new PaymentMoney(qredtRetirementPayment.option3Money),
+				EnumAdaptor.valueOf(qredtRetirementPayment.bankTransferOption4, BankTransferOption.class),
+				new PaymentMoney(qredtRetirementPayment.option4Money),
+				EnumAdaptor.valueOf(qredtRetirementPayment.bankTransferOption5, BankTransferOption.class),
+				new PaymentMoney(qredtRetirementPayment.option5Money),
+				new Memo(qredtRetirementPayment.withholdingMeno),
+				new Memo(qredtRetirementPayment.statementMemo));
 	}
 }

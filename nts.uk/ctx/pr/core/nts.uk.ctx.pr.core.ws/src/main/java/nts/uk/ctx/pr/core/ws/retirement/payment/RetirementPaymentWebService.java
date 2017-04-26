@@ -10,7 +10,6 @@ import javax.ws.rs.Produces;
 
 import lombok.Data;
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.app.command.retirement.payment.RegisterRetirementPaymentCommand;
 import nts.uk.ctx.pr.core.app.command.retirement.payment.RegisterRetirementPaymentCommandHandler;
 import nts.uk.ctx.pr.core.app.command.retirement.payment.RemoveRetirementPaymentCommand;
@@ -48,7 +47,7 @@ public class RetirementPaymentWebService extends WebService{
 	@Path("findByCompanyCodeandPersonId/{personId}")
 	@POST
 	public List<RetirementPaymentDto> findByCompanyCodeandPersonId(@PathParam("personId") String personId){
-		return this.retirementPaymentFinder.findByCompanyCodeandPersonId(personId);
+		return this.retirementPaymentFinder.findByCompanyCodeAndPersonId(personId);
 	}
 	
 	@Path("findRetirementPaymentInfo")

@@ -15,7 +15,6 @@ import nts.arc.primitive.constraint.IntegerMinValue;
 public class PaymentMoney extends IntegerPrimitiveValue<PaymentMoney>{
 	
 	public PaymentMoney(int value) {
-		// TODO Auto-generated constructor stub
 		super(value);
 	}
 

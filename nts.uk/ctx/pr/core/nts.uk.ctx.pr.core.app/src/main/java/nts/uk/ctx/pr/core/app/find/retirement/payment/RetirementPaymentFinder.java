@@ -2,11 +2,11 @@ package nts.uk.ctx.pr.core.app.find.retirement.payment;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.core.dom.company.CompanyCode;
@@ -22,14 +22,20 @@ import nts.uk.shr.com.primitive.PersonId;
  *
  */
 @RequestScoped
+@Transactional
 public class RetirementPaymentFinder {
 	
 	@Inject
 	private RetirementPaymentRepository	retirementPaymentRepository;
 	
-	public List<RetirementPaymentDto> findByCompanyCodeandPersonId(String personId) {
+	/**
+	 * find list Retirement Payment by Company Code and Person ID
+	 * @param personId Person ID
+	 * @return list Retirement Payment by COmpant Code and Person ID
+	 */
+	public List<RetirementPaymentDto> findByCompanyCodeAndPersonId(String personId) {
 		String companyCode = AppContexts.user().companyCode();
-		return this.retirementPaymentRepository.findByCompanyCodeandPersonId(new CompanyCode(companyCode), new PersonId(personId))
+		return this.retirementPaymentRepository.findByCompanyCodeAndPersonId(new CompanyCode(companyCode), new PersonId(personId))
 				.stream()
 				.map(x -> new RetirementPaymentDto(
 						x.getCompanyCode().v(), 
@@ -65,6 +71,12 @@ public class RetirementPaymentFinder {
 				.collect(Collectors.toList());
 	}
 	
+	/**
+	 * get single Retirement Payment by Company Code, Person ID and Date Time
+	 * @param personId Person ID
+	 * @param dateTime Date Time
+	 * @return single Retirement Payment by Company Code, Person ID and Date Time
+	 */
 	public RetirementPaymentDto findRetirementPaymentInfo(String personId, String dateTime) {
 		String companyCode = AppContexts.user().companyCode();
 		GeneralDate date = GeneralDate.fromString(dateTime, "yyyy/MM/dd");

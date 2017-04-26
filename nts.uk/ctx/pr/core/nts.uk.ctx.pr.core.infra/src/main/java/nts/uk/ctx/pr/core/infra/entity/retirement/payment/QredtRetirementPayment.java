@@ -6,12 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.core.dom.retirement.payment.BankTransferOption;
-import nts.uk.ctx.pr.core.dom.retirement.payment.PaymentMoney;
-import nts.uk.shr.com.primitive.Memo;
-import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 
  * @author Doan Duy Hung
@@ -21,7 +17,7 @@ import nts.uk.shr.infra.data.entity.TableEntity;
 @NoArgsConstructor
 @Table(name="QREDT_RETIREMENT_PAYMENT")
 @Entity
-public class QredtRetirementPayment extends TableEntity {
+public class QredtRetirementPayment extends UkJpaEntity {
 	@EmbeddedId
 	public QredtRetirementPaymentPK qredtRetirementPaymentPK;
 	
@@ -105,4 +101,9 @@ public class QredtRetirementPayment extends TableEntity {
 	
 	@Column(name="STATEMENT_MEMO")
 	public String statementMemo;
+
+	@Override
+	protected Object getKey() {
+		return qredtRetirementPaymentPK;
+	}
 }

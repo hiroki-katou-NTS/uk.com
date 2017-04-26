@@ -1,10 +1,8 @@
 package nts.uk.ctx.pr.core.dom.retirement.payment;
 
 
-import javax.persistence.EnumType;
-
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.core.dom.company.CompanyCode;
@@ -149,48 +147,35 @@ public class RetirementPayment extends AggregateRoot {
 		this.option5Money = option5Money;
 		this.withholdingMeno = withholdingMeno;
 		this.statementMemo = statementMemo;
+		if(this.taxCalculationMethod.value==0){
+			RetirementPaymentDomainService.autoCalculate(this);
+		} else RetirementPaymentDomainService.manualCalculate(this);
 	}
 	
-	public static RetirementPayment createFromJavaType(String companyCode, String personId, GeneralDate payDate,
-			int trialPeriodSet, int exclusionYears, int additionalBoardYears,
-			int boardYears, int totalPaymentMoney, int deduction1Money,
-			int deduction2Money, int deduction3Money, int retirementPayOption,
-			int taxCalculationMethod, int incomeTaxMoney, int cityTaxMoney,
-			int prefectureTaxMoney, int totalDeclarationMoney, int actualRecieveMoney,
-			int bankTransferOption1, int option1Money, int bankTransferOption2,
-			int option2Money, int bankTransferOption3, int option3Money,
-			int bankTransferOption4, int option4Money, int bankTransferOption5,
-			int option5Money, String withholdingMeno, String statementMemo) {
-		return new RetirementPayment(
-				new CompanyCode(companyCode), 
-				new PersonId(personId), 
-				payDate,
-				EnumAdaptor.valueOf(trialPeriodSet, TrialPeriodSet.class),
-				new PaymentYear(exclusionYears),
-				new PaymentYear(additionalBoardYears), 
-				new PaymentYear(boardYears), 
-				new PaymentMoney(totalPaymentMoney),
-				new PaymentMoney(deduction1Money), 
-				new PaymentMoney(deduction2Money), 
-				new PaymentMoney(deduction3Money), 
-				EnumAdaptor.valueOf(retirementPayOption, RetirementPayOption.class), 
-				EnumAdaptor.valueOf(taxCalculationMethod, TaxCalculationMethod.class), 
-				new PaymentMoney(incomeTaxMoney),
-				new PaymentMoney(cityTaxMoney), 
-				new PaymentMoney(prefectureTaxMoney), 
-				new PaymentMoney(totalDeclarationMoney), 
-				new PaymentMoney(actualRecieveMoney), 
-				EnumAdaptor.valueOf(bankTransferOption1, BankTransferOption.class),
-				new PaymentMoney(option1Money),
-				EnumAdaptor.valueOf(bankTransferOption2, BankTransferOption.class),
-				new PaymentMoney(option2Money),
-				EnumAdaptor.valueOf(bankTransferOption3, BankTransferOption.class),
-				new PaymentMoney(option3Money),
-				EnumAdaptor.valueOf(bankTransferOption4, BankTransferOption.class),
-				new PaymentMoney(option4Money),
-				EnumAdaptor.valueOf(bankTransferOption5, BankTransferOption.class),
-				new PaymentMoney(option5Money),
-				new Memo(withholdingMeno),
-				new Memo(statementMemo));
+	/**
+	 * set new value after auto calculate
+	 * @param incomeTaxMoney IncomeTaxMoney
+	 * @param cityTaxMoney CityTaxMoney
+	 * @param prefectureTaxMoney PrefectureTaxMoney
+	 * @param totalDeclarationMoney TotalDeclarationMoney
+	 * @param actualRecieveMoney ActualRecieveMoney
+	 */
+	public void autoCalculate(PaymentMoney incomeTaxMoney, PaymentMoney cityTaxMoney, 
+			PaymentMoney prefectureTaxMoney, PaymentMoney totalDeclarationMoney, PaymentMoney actualRecieveMoney){
+		this.incomeTaxMoney = incomeTaxMoney;
+		this.cityTaxMoney = cityTaxMoney;
+		this.prefectureTaxMoney = prefectureTaxMoney;
+		this.totalDeclarationMoney = totalDeclarationMoney;
+		this.actualRecieveMoney = actualRecieveMoney;
+	}
+	
+	/**
+	 * set new value after manual calculate
+	 * @param totalDeclarationMoney TotalDeclarationMoney
+	 * @param actualRecieveMoney ActualRecieveMoney
+	 */
+	public void manualCalculate(PaymentMoney totalDeclarationMoney, PaymentMoney actualRecieveMoney){
+		this.totalDeclarationMoney = totalDeclarationMoney;
+		this.actualRecieveMoney = actualRecieveMoney;
 	}
 }

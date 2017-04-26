@@ -7,11 +7,10 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 440, height: 380 };</script>
-				<com:stylefile path="main.css" />
-				<com:scriptfile path="start.js" />
-				<com:scriptfile path="viewmodel.js" />
-				<com:scriptfile path="service.js" />
+				<script>var dialogSize = { width: 430, height: 280 };</script>
+				<com:stylefile path="qrm001.b.main.css" />
+				<com:scriptfile path="qrm001.b.start.js" />
+				<com:scriptfile path="qrm001.b.vm.js" />
 			</ui:define>
 			<ui:define name="content">
 				<div id="contents-area">
@@ -37,7 +36,7 @@
 						<span>入力不可</span>
 					</div>
 					<hr />
-					<button data-bind="click: closeWindow">閉じる</button>
+					<button data-bind="click: closeDialog">閉じる</button>
 				</div>
 			</ui:define>
 		</ui:composition>
