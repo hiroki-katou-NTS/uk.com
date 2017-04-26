@@ -48,7 +48,7 @@
     }
 
     export function yearInJapanEmpire(date: any): JapanYearMonth {
-        let year = moment.utc(date).year();
+        let year = moment.utc(date, "YYYY").year();
         if (year == 1868) {
             return new JapanYearMonth("明治元年");
         }
