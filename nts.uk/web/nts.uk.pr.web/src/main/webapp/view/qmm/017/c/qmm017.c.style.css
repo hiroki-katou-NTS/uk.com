@@ -154,6 +154,11 @@ textarea {
 	background: #E0F59E;
 }
 
+.col-2 span {
+	margin-top: 10px;
+	display: inline-block;
+}
+
 .list002 .header {
 	
 }
@@ -219,10 +224,17 @@ textarea {
 	border-bottom: 1px solid gray;
 }
 
-#list-error table thead{ display: block; background-color: #CFF1A5;}
-#list-error table tbody { display: block; }
+#list-error table thead {
+	display: block;
+	background-color: #CFF1A5;
+}
+
 #list-error table tbody {
-    height: 107px;
-    overflow-y: auto;  
-    overflow-x: hidden; 
+	display: block;
+}
+
+#list-error table tbody {
+	height: 107px;
+	overflow-y: auto;
+	overflow-x: hidden;
 }
