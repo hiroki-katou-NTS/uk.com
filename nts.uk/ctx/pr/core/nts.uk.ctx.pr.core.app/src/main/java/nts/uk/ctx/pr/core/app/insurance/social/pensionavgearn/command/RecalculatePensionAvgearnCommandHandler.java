@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.command.RecalculateHealthInsuAvgearnCommand;
@@ -56,7 +57,7 @@ public class RecalculatePensionAvgearnCommandHandler extends
 				.findById(command.getHistoryId());
 
 		if (!optPensionRate.isPresent()) {
-			throw new BusinessException("Rate isn't exist.");
+			throw new BusinessException(new RawErrorMessage("Rate isn't exist."));
 		}
 
 		PensionRate pensionRate = optPensionRate.get();

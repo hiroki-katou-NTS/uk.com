@@ -19,6 +19,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.pr.core.app.wagetable.command.WtInitCommand;
 import nts.uk.ctx.pr.core.app.wagetable.command.WtInitCommandHandler;
 import nts.uk.ctx.pr.core.app.wagetable.command.WtUpdateCommand;
@@ -131,7 +132,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 		// Check exist.
 		if (!optWageTableHistory.isPresent()) {
 			// TODO: Find msg id
-			throw new BusinessException("History is not exist.");
+			throw new BusinessException(new RawErrorMessage("History is not exist."));
 		}
 
 		WtHistory wtHistory = optWageTableHistory.get();
@@ -142,7 +143,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 		// Check exist.
 		if (!optWageTable.isPresent()) {
 			// TODO: Find msg id
-			throw new BusinessException("History is not exist.");
+			throw new BusinessException(new RawErrorMessage("History is not exist."));
 		}
 
 		WtHead wageTableHead = optWageTable.get();
@@ -349,6 +350,13 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 			// Put demension name
 			Optional<WtElement> optWtElement = this.wtElementRepo
 					.findByHistoryId(input.getHistoryId());
+
+			// Check exist
+			if (!optWtElement.isPresent()) {
+				// TODO: Pls add msg id
+				throw new BusinessException(new RawErrorMessage("Element is not exist."));
+			}
+
 			elementSettingDto.setDemensionName(this.wtElementService.getDemensionName(companyCode,
 					optWtElement.get().getReferenceCode(), item.getType()));
 
