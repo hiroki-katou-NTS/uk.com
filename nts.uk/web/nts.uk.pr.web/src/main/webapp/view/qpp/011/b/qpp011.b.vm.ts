@@ -361,6 +361,7 @@ module qpp011.b {
             });
             //B
             //001
+            self.B_INP_001_yearMonth = ko.observable('2017/12');
             self.B_INP_001_yearMonth.subscribe(function(newValue) {
                 if (newValue != "") {
                     self.yearInJapanEmpire_B_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_001_yearMonth()).toString() + ")");
@@ -371,6 +372,7 @@ module qpp011.b {
             self.yearInJapanEmpire_B_LBL_005 = ko.observable();
             self.yearInJapanEmpire_B_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_001_yearMonth()).toString() + ")");
             //002
+            self.B_INP_002_yearMonth = ko.observable('2017/12');
             self.B_INP_002_yearMonth.subscribe(function(newValue) {
                 if (newValue != "") {
                     self.yearInJapanEmpire_B_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_002_yearMonth()).toString() + ")");
@@ -393,6 +395,7 @@ module qpp011.b {
             self.yearInJapanEmpire_B_LBL_010 = ko.observable();
             self.yearInJapanEmpire_B_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_003_yearMonth()).toString() + ")");
             //C
+            self.C_INP_001_yearMonth = ko.observable('2017/12');
             self.C_INP_001_yearMonth.subscribe(function(newValue) {
                 if (newValue != "") {
                 self.yearInJapanEmpire_C_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_001_yearMonth()).toString() + ")");
@@ -403,6 +406,7 @@ module qpp011.b {
             self.yearInJapanEmpire_C_LBL_005 = ko.observable();
             self.yearInJapanEmpire_C_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_001_yearMonth()).toString() + ")");
             //002
+            self.C_INP_002_yearMonth = ko.observable('2017/12');
             self.C_INP_002_yearMonth.subscribe(function(newValue) {
                  if (newValue != "") {
                 self.yearInJapanEmpire_C_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_002_yearMonth()).toString() + ")");
@@ -413,6 +417,8 @@ module qpp011.b {
             self.yearInJapanEmpire_C_LBL_008 = ko.observable();
             self.yearInJapanEmpire_C_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_002_yearMonth()).toString() + ")");
             //003
+
+            //self.C_INP_003_yearMonth = ko.observable();
             self.C_INP_003_yearMonth.subscribe(function(newValue) {
                 if (newValue != null && newValue !== "") {
                     self.yearInJapanEmpire_C_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.C_INP_003_yearMonth()).format("YYYY/MM")).toString() + ")");
