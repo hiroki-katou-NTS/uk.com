@@ -64,9 +64,6 @@ button.search-btn {
 	width: 40%;
 }
 
-.ntsListBox {
-	overflow-y: scroll;
-}
 
 .ntsListBox .nts-list-box .ui-selected {
 	background: #F39814;
