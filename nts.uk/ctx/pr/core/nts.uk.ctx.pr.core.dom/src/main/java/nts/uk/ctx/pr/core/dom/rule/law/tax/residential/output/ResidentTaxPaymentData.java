@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -32,7 +33,7 @@ public class ResidentTaxPaymentData extends AggregateRoot {
 		super.validate();
 
 		if (this.code == null) {
-			throw new BusinessException("対象データがありません。");
+			throw new BusinessException(new RawErrorMessage("対象データがありません。"));
 		}
 	}
 

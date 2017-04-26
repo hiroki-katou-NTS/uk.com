@@ -5,6 +5,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.rule.law.tax.residential.output.ResidentTaxPaymentData;
@@ -31,7 +32,7 @@ public class UpdateResimentTaxPaymentDataCommandHandler extends CommandHandler<U
 				command.getResimentTaxCode(),
 				command.getYearMonth());
 		if (!taxtPaymentData.isPresent()) {		
-			throw new BusinessException("対象データがありません。");
+			throw new BusinessException(new RawErrorMessage("対象データがありません。"));
 		} 
 		ResidentTaxPaymentData domain = ResidentTaxPaymentData.createFromJavaType(
 				command.getResimentTaxCode(),

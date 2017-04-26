@@ -74,7 +74,7 @@ module qpp011.d {
                     }
                 }).fail(function(res) {
                     // Alert message
-                    alert(res.message);
+                    nts.uk.ui.dialog.alert("対象データがありません。");
                 });
 
             }).fail(function(res) {

@@ -45,7 +45,7 @@ module qpp011.f {
                     BindTreeGrid("#F_LST_001", self.F_LST_001_Data(), self.F_LST_001_selectedValue);
                 }).fail(function(res) {
                     // Alert message
-                    alert(res.message);
+                    nts.uk.ui.dialog.alert("対象データがありません。");
                 });
 
             }).fail(function(res) {
