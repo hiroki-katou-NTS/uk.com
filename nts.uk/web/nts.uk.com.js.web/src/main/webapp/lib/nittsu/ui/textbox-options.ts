@@ -57,7 +57,7 @@ module nts.uk.ui.option {
     }
 
     // Number Editor Option
-    interface INumberEditorOption{
+    export interface INumberEditorOption{
         groupseperator?: string,
         grouplength?: number,
         decimalseperator?: string,
@@ -119,7 +119,7 @@ module nts.uk.ui.option {
     }
         
     // Multiline Editor Option
-    interface IMultilineEditorOption{
+    export interface IMultilineEditorOption{
         resizeable?: boolean;
         placeholder?: string;
         width?: string;

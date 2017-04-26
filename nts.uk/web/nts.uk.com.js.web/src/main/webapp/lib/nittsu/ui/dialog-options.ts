@@ -165,8 +165,8 @@ module nts.uk.ui.option {
         }
     }
     
-    type ButtonSize = "x-large" | "large" | "medium" | "small";
-    type ButtonColor = "" | "danger" | "proceed";
+    export type ButtonSize = "x-large" | "large" | "medium" | "small";
+    export type ButtonColor = "" | "danger" | "proceed";
     
     export class DialogButton{
         text: string;
