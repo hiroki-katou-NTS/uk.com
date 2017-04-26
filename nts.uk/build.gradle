@@ -538,7 +538,7 @@ project (':web:nts.uk.com.js.web') {
 	apply plugin: "de.richsource.gradle.plugins.typescript"
 	war {
 		baseName= "nts.uk.com.js.web"
-		into("lib") {
+		into("lib/nittsu") {
 			from compileTypeScript.outputs
 		}
 	}
