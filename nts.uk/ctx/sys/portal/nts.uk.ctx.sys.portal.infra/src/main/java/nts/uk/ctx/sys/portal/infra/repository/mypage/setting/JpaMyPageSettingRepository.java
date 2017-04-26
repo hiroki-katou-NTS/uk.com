@@ -13,8 +13,8 @@ import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSetting;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSettingRepository;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.TopPagePartUseSetting;
 import nts.uk.ctx.sys.portal.dom.primitive.CompanyId;
-import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.ToppagePartCode;
-import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.ToppagePartName;
+import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.TopPagePartCode;
+import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.TopPagePartName;
 
 @Stateless
 public class JpaMyPageSettingRepository implements MyPageSettingRepository {
@@ -24,17 +24,17 @@ public class JpaMyPageSettingRepository implements MyPageSettingRepository {
 
 		// mock data
 		List<TopPagePartUseSetting> lstPagePartSettingItem = new ArrayList<TopPagePartUseSetting>();
-		TopPagePartUseSetting item1 = new TopPagePartUseSetting(new CompanyId("001"), new ToppagePartCode("w1"),new ToppagePartName("PartName"),
+		TopPagePartUseSetting item1 = new TopPagePartUseSetting(new CompanyId("001"), new TopPagePartCode("w1"),new TopPagePartName("PartName"),
 				UseDivision.Use, TopPagePartType.Widget);
-		TopPagePartUseSetting item2 = new TopPagePartUseSetting(new CompanyId("001"), new ToppagePartCode("d1"),new ToppagePartName("PartName"),
+		TopPagePartUseSetting item2 = new TopPagePartUseSetting(new CompanyId("001"), new TopPagePartCode("d1"),new TopPagePartName("PartName"),
 				UseDivision.NotUse, TopPagePartType.DashBoard);
-		TopPagePartUseSetting item3 = new TopPagePartUseSetting(new CompanyId("001"), new ToppagePartCode("d2"),new ToppagePartName("PartName"),
+		TopPagePartUseSetting item3 = new TopPagePartUseSetting(new CompanyId("001"), new TopPagePartCode("d2"),new TopPagePartName("PartName"),
 				UseDivision.NotUse, TopPagePartType.DashBoard);
-		TopPagePartUseSetting item4 = new TopPagePartUseSetting(new CompanyId("001"), new ToppagePartCode("f1"),new ToppagePartName("PartName"),
+		TopPagePartUseSetting item4 = new TopPagePartUseSetting(new CompanyId("001"), new TopPagePartCode("f1"),new TopPagePartName("PartName"),
 				UseDivision.Use, TopPagePartType.FolowMenu);
-		TopPagePartUseSetting item5 = new TopPagePartUseSetting(new CompanyId("001"), new ToppagePartCode("f2"),new ToppagePartName("PartName"),
+		TopPagePartUseSetting item5 = new TopPagePartUseSetting(new CompanyId("001"), new TopPagePartCode("f2"),new TopPagePartName("PartName"),
 				UseDivision.NotUse, TopPagePartType.FolowMenu);
-		TopPagePartUseSetting item6 = new TopPagePartUseSetting(new CompanyId("001"), new ToppagePartCode("d3"),new ToppagePartName("PartName"),
+		TopPagePartUseSetting item6 = new TopPagePartUseSetting(new CompanyId("001"), new TopPagePartCode("d3"),new TopPagePartName("PartName"),
 				UseDivision.NotUse, TopPagePartType.DashBoard);
 
 		lstPagePartSettingItem.add(item1);

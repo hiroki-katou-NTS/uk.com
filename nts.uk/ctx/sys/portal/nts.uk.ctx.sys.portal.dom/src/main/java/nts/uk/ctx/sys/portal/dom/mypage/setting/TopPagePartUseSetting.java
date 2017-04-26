@@ -5,8 +5,8 @@ import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.enums.UseDivision;
 import nts.uk.ctx.sys.portal.dom.primitive.CompanyId;
-import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.ToppagePartCode;
-import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.ToppagePartName;
+import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.TopPagePartCode;
+import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.TopPagePartName;
 
 /**
  * The Class TopPagePartSettingItem.
@@ -18,10 +18,10 @@ public class TopPagePartUseSetting extends DomainObject{
 	private CompanyId companyId;
 
 	/** The top page part code. */
-	private ToppagePartCode topPagePartCode;
+	private TopPagePartCode topPagePartCode;
 
 	/** The top page part name. */
-	private ToppagePartName topPagePartName;
+	private TopPagePartName topPagePartName;
 
 	/** The use division. */
 	private UseDivision useDivision;
@@ -43,7 +43,7 @@ public class TopPagePartUseSetting extends DomainObject{
 	 * @param topPagePartType
 	 *            the top page part type
 	 */
-	public TopPagePartUseSetting(CompanyId companyId, ToppagePartCode topPagePartCode, ToppagePartName topPagePartName,
+	public TopPagePartUseSetting(CompanyId companyId, TopPagePartCode topPagePartCode, TopPagePartName topPagePartName,
 			UseDivision useDivision, TopPagePartType topPagePartType) {
 		super();
 		this.companyId = companyId;
