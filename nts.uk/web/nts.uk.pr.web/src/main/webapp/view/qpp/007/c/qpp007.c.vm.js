@@ -30,7 +30,7 @@ var nts;
                                     self.codeDirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetailModel().settingCode);
                                     self.nameDirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetailModel().settingName);
                                     self.aggregateOutputItemColumns = ko.observableArray([
-                                        { headerText: '区分', prop: 'categoryNameJPN', width: 50 },
+                                        { headerText: '区分', prop: 'categoryNameJPN', width: 40 },
                                         {
                                             headerText: '集約', prop: 'isAggregate', width: 40,
                                             formatter: function (isAggregate) {

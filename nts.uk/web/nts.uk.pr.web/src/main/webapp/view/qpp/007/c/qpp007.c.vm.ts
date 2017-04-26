@@ -39,7 +39,7 @@ module nts.uk.pr.view.qpp007.c {
 
                 // Define aggregateOutputItems column.
                 self.aggregateOutputItemColumns = ko.observableArray<any>([
-                    { headerText: '区分', prop: 'categoryNameJPN', width: 50 },
+                    { headerText: '区分', prop: 'categoryNameJPN', width: 40 },
                     {
                         headerText: '集約', prop: 'isAggregate', width: 40,
                         formatter: function(isAggregate: string) {
