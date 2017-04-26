@@ -58,6 +58,7 @@ module qpp011.b {
             //B_01
             //            self.B_INP_003_yearMonth = ko.observable(null);
             //            $('#B_LBL_010').hide();
+
             self.B_SEL_001_RadioItemList = ko.observableArray([
                 new BoxModel(1, '本社'),
                 new BoxModel(2, '法定調書出力用会社')
@@ -127,6 +128,7 @@ module qpp011.b {
             //End number editer
             //Set Tree Data 
             qpp011.b.service.findAllResidential().done(function(data: Array<any>) {
+
                 service.getlistLocation().done(function(listLocation: Array<any>) {
                     self.ResidentialData(data);
                     self.ListLocation = listLocation;
@@ -135,12 +137,13 @@ module qpp011.b {
                     BindTreeGrid("#B_LST_001", self.B_LST_001_Data(), self.selectedValue_B_LST_001);
                     BindTreeGrid("#C_LST_001", self.B_LST_001_Data(), self.selectedValue_C_LST_001);
                 }).fail(function(res) {
-                    // Alert message
-                    alert(res.message);
+                    nts.uk.ui.dialog.alert("対象データがありません。");
                 });
+                if (data.length === 0) {
+                    nts.uk.ui.dialog.alert("対象データがありません。");
+                }
             }).fail(function(res) {
-                // Alert message
-                alert(res.message);
+                nts.uk.ui.dialog.alert("対象データがありません。");
             });
             self.C_SEL_003_ComboBoxItemList = ko.observableArray([]);
             self.C_SEL_004_ComboBoxItemList = ko.observableArray([]);
@@ -188,10 +191,12 @@ module qpp011.b {
                 if (data.length > 0) {
                     self.B_SEL_002_selectedCode(data[0].reganDocCompanyCode);
                     self.C_SEL_002_selectedCode(data[0].reganDocCompanyCode);
+
                 }
             }).fail(function(res) {
                 alert(res.message);
             });
+
             self.C_SEL_003_selectedCode.subscribe(function(newValue) {
                 self.C_SEL_004_ComboBoxItemList([]);
                 service.findLinebank(newValue).done(function(data: any) {
@@ -218,7 +223,7 @@ module qpp011.b {
                 for (let Object of Data) {
                     let positionIndex = CreateTreeBranchs(Object.prefectureCode);
                     if (positionIndex) {
-                        self.TreeArray.push(new TreeItem(Object.resiTaxCode, Object.resiTaxName, positionIndex, Object.resiTaxCode, Object.resiTaxCode + " " + Object.registeredName, 'Item'));
+                        self.TreeArray.push(new TreeItem(Object.resiTaxCode, Object.resiTaxName, positionIndex, Object.resiTaxCode, Object.resiTaxCode + " " + Object.resiTaxAutonomy, 'Item'));
                         //Self.currentIndex++;
                     }
                 }
@@ -363,7 +368,7 @@ module qpp011.b {
             //001
             self.B_INP_001_yearMonth = ko.observable('2017/12');
             self.B_INP_001_yearMonth.subscribe(function(newValue) {
-                if (newValue != null) {
+                if (newValue != "") {
                     self.yearInJapanEmpire_B_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_001_yearMonth()).toString() + ")");
                 } else {
                     self.yearInJapanEmpire_B_LBL_005("");
@@ -374,7 +379,7 @@ module qpp011.b {
             //002
             self.B_INP_002_yearMonth = ko.observable('2017/12');
             self.B_INP_002_yearMonth.subscribe(function(newValue) {
-                if (newValue != null) {
+                if (newValue != "") {
                     self.yearInJapanEmpire_B_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_002_yearMonth()).toString() + ")");
                 } else {
                     self.yearInJapanEmpire_B_LBL_008("");
@@ -385,7 +390,7 @@ module qpp011.b {
             //003
             // self.B_INP_003_yearMonth = ko.observable('2017/12/01');
             self.B_INP_003_yearMonth.subscribe(function(newValue) {
-                if (newValue != null) {
+                if (newValue != null && newValue !== "") {
                     self.yearInJapanEmpire_B_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.B_INP_003_yearMonth()).format("YYYY/MM")).toString() + ")");
                 } else {
                     self.yearInJapanEmpire_B_LBL_010("");
@@ -397,14 +402,22 @@ module qpp011.b {
             //C
             self.C_INP_001_yearMonth = ko.observable('2017/12');
             self.C_INP_001_yearMonth.subscribe(function(newValue) {
-                self.yearInJapanEmpire_C_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_001_yearMonth()).toString() + ")");
+                if (newValue != "") {
+                    self.yearInJapanEmpire_C_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_001_yearMonth()).toString() + ")");
+                } else {
+                    self.yearInJapanEmpire_C_LBL_005("");
+                }
             });
             self.yearInJapanEmpire_C_LBL_005 = ko.observable();
             self.yearInJapanEmpire_C_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_001_yearMonth()).toString() + ")");
             //002
             self.C_INP_002_yearMonth = ko.observable('2017/12');
             self.C_INP_002_yearMonth.subscribe(function(newValue) {
-                self.yearInJapanEmpire_C_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_002_yearMonth()).toString() + ")");
+                if (newValue != "") {
+                    self.yearInJapanEmpire_C_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_002_yearMonth()).toString() + ")");
+                } else {
+                    self.yearInJapanEmpire_C_LBL_008("");
+                }
             });
             self.yearInJapanEmpire_C_LBL_008 = ko.observable();
             self.yearInJapanEmpire_C_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_002_yearMonth()).toString() + ")");
@@ -412,7 +425,7 @@ module qpp011.b {
 
             //self.C_INP_003_yearMonth = ko.observable();
             self.C_INP_003_yearMonth.subscribe(function(newValue) {
-                if (newValue != null) {
+                if (newValue != null && newValue !== "") {
                     self.yearInJapanEmpire_C_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.C_INP_003_yearMonth()).format("YYYY/MM")).toString() + ")");
                 } else {
                     self.yearInJapanEmpire_C_LBL_010("");
@@ -420,6 +433,8 @@ module qpp011.b {
             });
             self.yearInJapanEmpire_C_LBL_010 = ko.observable();
             self.yearInJapanEmpire_C_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_003_yearMonth()).toString() + ")");
+
+
         }
 
         openDDialog() {
@@ -474,17 +489,22 @@ module qpp011.b {
             if (self.selectedValue_B_LST_001().length > 0) {
                 var command = {
                     residentTaxCodeList: self.selectedValue_B_LST_001(),
-                    companyLogin: null,
-                    regalDocCompanyCode: null,
+                    companyLogin: self.B_SEL_001_selectedId(),
+                    regalDocCompanyCode: self.B_SEL_002_selectedCode(),
                     yearMonth: 201612,
                     processingYearMonth: 201703,
-                    endDate: self.B_INP_003_yearMonth()
+                    processingYearMonthJapan: nts.uk.time.yearmonthInJapanEmpire(self.B_INP_002_yearMonth()).toString(),
+                    endDate: new Date("2017/04/26"),
+                    endDateJapan: nts.uk.time.yearmonthInJapanEmpire(moment(self.B_INP_003_yearMonth()).format("YYYY/MM")).toString()
                 };
-                
+<<<<<<< HEAD
+
+=======
+>>>>>>> 28564e9e4b6b50fc17c6d2c8ac487458613b58bd
                 service.saveAsPdf(command).done(function() {
                     //
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alert("");
                 });
             } else {
                 nts.uk.ui.dialog.alert("納付先が選択されていせん。");
@@ -509,22 +529,21 @@ module qpp011.b {
                 $('#C_INP_003').focus();
                 return false;
             }
-          
+
             return true;
         }
         exportText(): void {
             var self = this;
-
             self.checkCValue();
-             if (self.selectedValue_C_LST_001().length > 0) {
-                 } else {
+            if (self.selectedValue_C_LST_001().length > 0) {
+            } else {
                 nts.uk.ui.dialog.alert("納付先が選択されていせん。");
             }
-
+            
             var command = {
                 residentTaxCodeList: self.selectedValue_B_LST_001(),
-                companyLogin: null,
-                regalDocCompanyCode: null,
+                companyLogin: self.B_SEL_001_selectedId(),
+                regalDocCompanyCode: self.B_SEL_002_selectedCode(),
                 yearMonth: 201612,
                 processingYearMonth: 201703,
                 endDate: new Date("2017/04/24")

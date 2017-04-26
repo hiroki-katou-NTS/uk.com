@@ -38,13 +38,13 @@ public class ResidentTaxReportData {
 	 * DBD_006(給与分納入金額)
 	 * value + taxPayrollMny
 	 */
-	private String salaryPaymentAmount;
+	private Double salaryPaymentAmount;
 
 	/**
 	 * DBD_007(退職所得分納入金額)
 	 * cityTaxMny1 + prefectureTaxMny1 + taxRetirementMny
 	 */
-	private String deliveryAmountRetirement;
+	private Double deliveryAmountRetirement;
 	
 	/**
 	 * DBD_008(特別徴収義務者郵便番号)
@@ -85,7 +85,7 @@ public class ResidentTaxReportData {
     /**
      * DBD_015(退職手当等支払金額)
      */
-	private String actualRecieveMny;
+	private Double actualRecieveMny;
 	
 	/**
 	 * DBD_016(市町村民税)
@@ -120,7 +120,7 @@ public class ResidentTaxReportData {
 	/**
 	 * CTR_002(納入金額合計額 = 給与分納入金額 + 退職所得分納入金額)
 	 */
-    private String totalAmountTobePaid;
+    private Double totalAmountTobePaid;
     
     /**
      * CTR_003(納期限)

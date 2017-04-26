@@ -16,7 +16,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 @Stateless
-public class InhabitantTaxChecklistReportGenerator extends AsposeCellsReportGenerator
+public class InhabitantTaxChecklistReportBGenerator extends AsposeCellsReportGenerator
 		implements InhabitantTaxChecklistBGenerator {
 	
 	/** The Constant TEMPLATE_FILE. */
@@ -36,7 +36,7 @@ public class InhabitantTaxChecklistReportGenerator extends AsposeCellsReportGene
 			reportContext.setDataSource("list", reportData);
 			
 			PageSetup pageSetup = reportContext.getWorkbook().getWorksheets().get(0).getPageSetup();
-			pageSetup.setHeader(0, "【　日通システム株式会社 】");
+			pageSetup.setHeader(0, dataExport.getHeader().getCompanyName());
 			pageSetup.setHeader(2, "&D &T");
 			
 			// process data binginds in template

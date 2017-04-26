@@ -21,12 +21,15 @@
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">
+		
 			<div id="tabpanel-1" role="tabpanel">
+			<div id="functions-area">
 				<div class="sidebar-content-header">
 					<span class="title">納付書の印刷</span>
 					<button class="proceed" id="B_BTN_001" data-bind="click: exportPdf">印刷（PDF)</button>
 					<button id="B_BTN_002" data-bind="click: openFDialog">住民税チェックリスト</button>
 					<button id="B_BTN_003">印刷実行ログ</button>
+				</div>
 				</div>
 				<div class="contents-area">
 					<div id="content">
@@ -59,7 +62,8 @@
 									data-bind="ntsDatePicker: {
 														value: B_INP_001_yearMonth, 
 														dateFormat: 'YYYY/MM', 
-														valueFormat: 'YYYYMM', 
+														valueFormat: 'YYYYMM',
+														required: true, 
 														startDate: '1900/01' , 
 														endDate:'9999/12'}">
 								</div>
@@ -75,7 +79,8 @@
 									data-bind="ntsDatePicker: {
 														value: B_INP_002_yearMonth, 
 														dateFormat: 'YYYY/MM', 
-														valueFormat: 'YYYYMM', 
+														valueFormat: 'YYYYMM',
+														required: true, 
 														startDate: '1900/01' , 
 														endDate:'9999/12'}">
 								</div>
@@ -90,7 +95,8 @@
 									data-bind="ntsDatePicker: {
 														value: B_INP_003_yearMonth, 
 														dateFormat: 'YYYY/MM/DD', 
-														valueFormat: 'YYYYMMDD', 
+														valueFormat: 'YYYY/MM/DD',
+														required: true, 
 														startDate: '1900/01/01' , 
 														endDate:'9999/12/31'}">
 								</div>
@@ -165,7 +171,8 @@
 									data-bind="ntsDatePicker: {
 														value: C_INP_001_yearMonth, 
 														dateFormat: 'YYYY/MM', 
-														valueFormat: 'YYYYMM', 
+														valueFormat: 'YYYYMM',
+														required: true, 
 														startDate: '1900/01' , 
 														endDate:'9999/12'}">
 								</div>
@@ -181,7 +188,8 @@
 									data-bind="ntsDatePicker: {
 														value: C_INP_002_yearMonth, 
 														dateFormat: 'YYYY/MM', 
-														valueFormat: 'YYYYMM', 
+														valueFormat: 'YYYYMM',
+														required: true, 
 														startDate: '1900/01' , 
 														endDate:'9999/12'}">
 								</div>
@@ -197,7 +205,8 @@
 									data-bind="ntsDatePicker: {
 														value: C_INP_003_yearMonth, 
 														dateFormat: 'YYYY/MM/DD',
-														valueFormat: 'YYYYMMDD', 
+														valueFormat: 'YYYY/MM/DD',
+														required: true, 
 														startDate: '1900/01/01' , 
 														endDate:'9999/12/31'}">
 								</div>
@@ -249,7 +258,7 @@
 														value: value,
 														constraint:constraint ,
 														option: option,
-														required: required,
+														required: true,
 														enable: enable,
 														readonly: readonly
 														}" />

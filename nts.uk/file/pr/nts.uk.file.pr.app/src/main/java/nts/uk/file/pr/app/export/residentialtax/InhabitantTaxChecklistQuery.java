@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class InhabitantTaxChecklistQuery {
 	private List<String> residentTaxCodeList;
-	private boolean companyLogin;
-	private int yearMonth;
-	private int processingYearMonth;
+	private String yearMonth;
+	private String processingYearMonth;
+	private String processingDate;
 }
