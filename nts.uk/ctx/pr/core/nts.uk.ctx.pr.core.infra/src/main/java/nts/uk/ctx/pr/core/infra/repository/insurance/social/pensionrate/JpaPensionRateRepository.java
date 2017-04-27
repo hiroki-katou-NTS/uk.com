@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -101,6 +102,37 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 		QismtPensionRate entity = result.get(0);
 
 		em.remove(entity);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRepository
+	 * #removeByOfficeCode(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void removeByOfficeCode(String companyCode, String officeCode) {
+
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		// Query for.
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaDelete<QismtPensionRate> cq = cb.createCriteriaDelete(QismtPensionRate.class);
+		Root<QismtPensionRate> root = cq.from(QismtPensionRate.class);
+
+		// Constructing list of parameters
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Construct condition.
+		predicateList.add(cb.equal(root.get(QismtPensionRate_.ccd), companyCode));
+		predicateList.add(cb.equal(root.get(QismtPensionRate_.siOfficeCd), officeCode));
+
+		cq.where(predicateList.toArray(new Predicate[] {}));
+
+		// perform update
+		em.createQuery(cq).executeUpdate();
 	}
 
 	/*
