@@ -53,6 +53,28 @@ import nts.uk.file.pr.app.export.insurance.salary.SocialInsuRepository;
 @Stateless
 public class JpaSocialInsuRepository extends JpaRepository implements SocialInsuRepository {
     
+    /** The query check data. */
+    String QUERY_CHECK_DATA = "SELECT ppd, pmd, ps, ph "
+            + "FROM QpdptPayday ppd,"
+            + "QpdmtPayday pmd, "
+            + "PismtPersonInsuSocial ps, "
+            + "QstdtPaymentHeader ph "
+            + "WHERE ppd.qpdptPaydayPK.ccd = :companyCode "
+            + "AND ppd.qpdptPaydayPK.pid = :loginPid "
+            + "AND pmd.qpdmtPaydayPK.ccd = ppd.qpdptPaydayPK.ccd "
+            + "AND pmd.qpdmtPaydayPK.processingNo = ppd.processingNo "
+            + "AND pmd.qpdmtPaydayPK.payBonusAtr = 0 "
+            + "AND pmd.qpdmtPaydayPK.processingYm = :yearMonth "
+            + "AND pmd.qpdmtPaydayPK.sparePayAtr = 0 "
+            + "AND ps.pismtPersonInsuSocialPK.ccd = pmd.qpdmtPaydayPK.ccd "
+            + "AND ps.strD <= :baseDate "
+            + "AND ps.endD >= :baseDate "
+            + "AND ps.siOfficeCd IN :officeCodes "
+            + "AND ph.qstdtPaymentHeaderPK.companyCode = ps.pismtPersonInsuSocialPK.ccd "
+            + "AND ph.qstdtPaymentHeaderPK.personId = ps.pismtPersonInsuSocialPK.pid "
+            + "AND ph.qstdtPaymentHeaderPK.payBonusAtr = 0 "
+            + "AND ph.qstdtPaymentHeaderPK.processingYM = :yearMonth ";
+    
     /** The Constant FIND_PERSON_OFFICES. */
     private static final String FIND_PERSON_OFFICES = "SELECT so, ps "
             + "FROM QismtSocialInsuOffice so, "
@@ -146,6 +168,32 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
     private static List<String> LIST_ITEM_CODE = Arrays.asList("F101", "F102", "F103", "F109", "F110", "F111", "F112",
             "F115", "F116", "F117", "F118", "F119", "F120", "F121", "F124");
     
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.file.pr.app.export.insurance.salary.SocialInsuRepository#
+     * checkDataAvaible(java.lang.String, java.lang.String,
+     * nts.uk.file.pr.app.export.insurance.salary.SocialInsuQuery)
+     */
+    @Override
+    public boolean isAvaibleData(String companyCode, String loginPersonId, SocialInsuQuery salaryQuery) {
+        Integer yearMonth = salaryQuery.getYearMonth();
+        EntityManager em = this.getEntityManager();
+        Query query = em.createQuery(QUERY_CHECK_DATA);
+        query.setParameter("companyCode", companyCode);
+        query.setParameter("loginPid", loginPersonId);
+        query.setParameter("yearMonth", yearMonth);
+        query.setParameter("officeCodes", salaryQuery.getOfficeCodes());
+        String tmpDate = yearMonth.toString().concat(FIRST_DAY);
+        GeneralDate baseDate = GeneralDate.fromString(tmpDate, DATE_FORMAT);
+        query.setParameter("baseDate", baseDate);
+        if (query.getResultList().isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+    
     /*
      * (non-Javadoc)
      * 
@@ -160,11 +208,8 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         ReportData reportData = new ReportData();
         reportData.listHealInsuAvgearn = healInsuAvgearns;
         reportData.listPensAvgearn = pensionAvgearns;
-        List<String> officeCodes = salaryQuery.getInsuranceOffices().stream()
-                .map(p -> p.getCode())
-                .collect(Collectors.toList());
         int yearMonth = salaryQuery.getYearMonth();
-        List<Object[]> itemList = findOffice(companyCode, officeCodes, yearMonth, loginPersonId);
+        List<Object[]> itemList = findPersons(companyCode, salaryQuery.getOfficeCodes(), yearMonth, loginPersonId);
         if (itemList.isEmpty()) {
             throw new BusinessException("ER010");
         }
@@ -286,11 +331,8 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         reportData.listHealInsuAvgearn = healInsuAvgearns;
         reportData.listPensAvgearn = pensionAvgearns;
         
-        List<String> officeCodes = salaryQuery.getInsuranceOffices().stream()
-                .map(p -> p.getCode())
-                .collect(Collectors.toList());
         int yearMonth = salaryQuery.getYearMonth();
-        List<Object[]> itemList = findOffice(companyCode, officeCodes, yearMonth, loginPid);
+        List<Object[]> itemList = findPersons(companyCode, salaryQuery.getOfficeCodes(), yearMonth, loginPid);
         if (itemList.isEmpty()) {
             throw new BusinessException("ER010");
         }
@@ -366,7 +408,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
      * @return the list
      */
     @SuppressWarnings("unchecked")
-    private List<Object[]> findOffice(String companyCode, List<String> officeCodes, Integer yearMonth,
+    private List<Object[]> findPersons(String companyCode, List<String> officeCodes, Integer yearMonth,
             String loginPersonId) {
         EntityManager em = this.getEntityManager();
         Query query = em.createQuery(FIND_PERSON_OFFICES);
@@ -935,48 +977,48 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         item.setItemCodeChildRaising("F124");
         return item;
     }
-}
 
-class ReportData {
+    class ReportData {
+        
+        /** The object normals. */
+        List<Object[]> objectNormals;
+        
+        /** The object deductions. */
+        List<Object[]> objectDeductions;
+        
+        /** The list heal insu avgearn. */
+        List<HealthInsuranceAvgearn> listHealInsuAvgearn;
+        
+        /** The list pens avgearn. */
+        List<PensionAvgearn> listPensAvgearn;
+    }
     
-    /** The object normals. */
-    List<Object[]> objectNormals;
-    
-    /** The object deductions. */
-    List<Object[]> objectDeductions;
-    
-    /** The list heal insu avgearn. */
-    List<HealthInsuranceAvgearn> listHealInsuAvgearn;
-    
-    /** The list pens avgearn. */
-    List<PensionAvgearn> listPensAvgearn;
-}
-
-@Setter
-@Getter
-class ItemDeduction {
-    
-    /** The item code health insu. */
-    String itemCodeHealthInsu;
-    
-    /** The item code general insu. */
-    String itemCodeGeneralInsu;
-    
-    /** The item code long term insu. */
-    String itemCodeLongTermInsu;
-    
-    /** The item code specific insu. */
-    String itemCodeSpecificInsu;
-    
-    /** The item code basic insu. */
-    String itemCodeBasicInsu;
-    
-    /** The item code welfare pension insu. */
-    String itemCodeWelfarePensionInsu;
-    
-    /** The item code welfare pension fund. */
-    String itemCodeWelfarePensionFund;
-    
-    /** The item code child raising. */
-    String itemCodeChildRaising;
+    @Setter
+    @Getter
+    class ItemDeduction {
+        
+        /** The item code health insu. */
+        String itemCodeHealthInsu;
+        
+        /** The item code general insu. */
+        String itemCodeGeneralInsu;
+        
+        /** The item code long term insu. */
+        String itemCodeLongTermInsu;
+        
+        /** The item code specific insu. */
+        String itemCodeSpecificInsu;
+        
+        /** The item code basic insu. */
+        String itemCodeBasicInsu;
+        
+        /** The item code welfare pension insu. */
+        String itemCodeWelfarePensionInsu;
+        
+        /** The item code welfare pension fund. */
+        String itemCodeWelfarePensionFund;
+        
+        /** The item code child raising. */
+        String itemCodeChildRaising;
+    }
 }

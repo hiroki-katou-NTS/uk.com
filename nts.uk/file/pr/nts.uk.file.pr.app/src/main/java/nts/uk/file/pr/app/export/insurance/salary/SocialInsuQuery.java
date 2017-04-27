@@ -11,7 +11,6 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.file.pr.app.export.insurance.data.InsuranceOfficeDto;
 
 /**
  * The Class SocialInsuranceQuery.
@@ -34,6 +33,6 @@ public class SocialInsuQuery {
     /** The is redundant. */
     private Boolean isRedundant;
     
-    /** The insurance offices. */
-    private List<InsuranceOfficeDto> insuranceOffices;
+    /** The office codes. */
+    private List<String> officeCodes;
 }
