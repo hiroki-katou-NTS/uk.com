@@ -44,10 +44,12 @@ module qmm003.d.viewmodel {
                 qmm003.d.service.deleteResidential(resiTaxCodes).done(function(data) {
                     self.items([]);
                     self.nodeRegionPrefectures([]);
+                    nts.uk.ui.windows.close();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alert(res.message).then(function(data) {
+                        nts.uk.ui.windows.close();
+                    });
                 });
-                nts.uk.ui.windows.close();
             } else {
                 nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。");
             }

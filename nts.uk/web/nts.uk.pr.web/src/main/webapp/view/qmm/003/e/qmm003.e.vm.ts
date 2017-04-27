@@ -37,11 +37,14 @@ module qmm003.e.viewmodel {
             } else {
                 if (!self.year()) {
                     //error 07, 01
-                    nts.uk.ui.dialog.alert("対象年度  が入力されていません。 \r\n 住民税納付先コード が選択されていません。");
-                } else {
+                    nts.uk.ui.dialog.alert("対象年度  が入力されていません。");
+                } else if (!self.resiTaxCodeLeft() && self.resiTaxCodeRight()) {
                     //error 07
                     nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。");
+                } else  if (!self.resiTaxCodeLeft() && self.resiTaxCodeRight() && !self.year()){
+                    nts.uk.ui.dialog.alert("対象年度 が入力されていません。 \n\r 住民税納付先コード が選択されていません。");
                 }
+
             }
         }
 
