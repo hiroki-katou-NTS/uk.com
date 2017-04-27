@@ -105,6 +105,7 @@ module cmm011.a.viewmodel {
                 self.findHist_Dep(self.itemHistId(), codeChanged);
                 if (self.itemHist() != null) {
                     if (self.itemHist().historyId != "") {
+                        self.enableBtn();
                         for (var i = 0; i < self.itemHistId().length; i++) {
                             if (self.itemHistId()[i].historyId == "") {
                                 let item = self.itemHistId()[i];
