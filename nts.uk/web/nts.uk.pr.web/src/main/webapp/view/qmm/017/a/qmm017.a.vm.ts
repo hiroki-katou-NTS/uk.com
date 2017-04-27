@@ -406,11 +406,11 @@ module nts.qmm017 {
             var dfd = $.Deferred<any>();
             service.getListSimpleCalSetting()
                 .done(function(listSimpleCalSetting: Array<model.SimpleCalSettingDto>) {
-                    let itemList = _.map(listSimpleCalSetting, function(simpleCalSetting: model.SimpleCalSettingDto){ return {code: parseInt(simpleCalSetting.itemCode), name: simpleCalSetting.itemName}});
+                    let itemList = _.map(listSimpleCalSetting, function(simpleCalSetting: model.SimpleCalSettingDto) { return { code: parseInt(simpleCalSetting.itemCode), name: simpleCalSetting.itemName } });
                     self.viewModel017b().comboBoxUseMaster().itemList(itemList);
                     dfd.resolve();
                 })
-                .fail(function(res){
+                .fail(function(res) {
                     nts.uk.ui.dialog.alert(res);
                 });
             return dfd.promise();
@@ -831,13 +831,16 @@ module nts.qmm017 {
 
         openDialogQ(root) {
             var self = root;
-            let param = {
-                formulaContent: self.viewModel017c().formulaManualContent().textArea(),
-                itemsBag: self.itemsBagRepository
-            };
-            nts.uk.ui.windows.setShared('formulaManual', param);
-            nts.uk.ui.windows.sub.modal('/view/qmm/017/q/index.xhtml', { title: 'お試し計算', width: 840, height: 615 }).onClosed(() => {
-            });
+            self.viewModel017c().validateTextArea();
+            if (self.viewModel017c().formulaManualContent().lstError().length === 0) {
+                let param = {
+                    formulaContent: self.viewModel017c().formulaManualContent().textArea(),
+                    itemsBag: self.itemsBagRepository
+                };
+                nts.uk.ui.windows.setShared('formulaManual', param);
+                nts.uk.ui.windows.sub.modal('/view/qmm/017/q/index.xhtml', { title: 'お試し計算', width: 840, height: 615 }).onClosed(() => {
+                });
+            }
         }
     }
 
