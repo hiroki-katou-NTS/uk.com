@@ -5,6 +5,9 @@ var qpp004;
         var viewmodel;
         (function (viewmodel) {
             var ScreenModel = (function () {
+                /**
+                 * Init screen model.
+                 */
                 function ScreenModel() {
                     var self = this;
                     self.paymentDateProcessingList = ko.observableArray([]);
@@ -19,9 +22,15 @@ var qpp004;
                         self.displayCurrentYearMonthProcessing(nts.uk.time.formatYearMonth(currentDateMaster.currentProcessingYm));
                     });
                 }
+                /**
+                 * Start page.
+                 * Load all data which is need for binding data.
+                 */
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
+                    // Page load dfd.
                     var dfd = $.Deferred();
+                    // Resolve start page dfd after load all data.
                     $.when(qpp004.a.service.getPaymentDateProcessingMasterList()).done(function (data) {
                         self.paymentDateProcessingList(data);
                         dfd.resolve();
@@ -29,6 +38,9 @@ var qpp004;
                     });
                     return dfd.promise();
                 };
+                /**
+                 * Redirect to page process create data
+                 */
                 ScreenModel.prototype.redirectToCreateData = function () {
                     var self = this;
                     var data = self.currentPaymentDateProcessing();
@@ -41,4 +53,3 @@ var qpp004;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qpp004.a || (qpp004.a = {}));
 })(qpp004 || (qpp004 = {}));
-//# sourceMappingURL=viewmodel.js.map

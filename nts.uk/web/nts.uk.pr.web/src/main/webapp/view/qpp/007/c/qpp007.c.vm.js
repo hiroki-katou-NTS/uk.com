@@ -12,8 +12,8 @@ var nts;
                     (function (c) {
                         var viewmodel;
                         (function (viewmodel) {
-                            class ScreenModel {
-                                constructor() {
+                            var ScreenModel = (function () {
+                                function ScreenModel() {
                                     var self = this;
                                     self.isLoading = ko.observable(true);
                                     self.isNewMode = ko.observable(true);
@@ -42,21 +42,21 @@ var nts;
                                         { headerText: 'コード', prop: 'code', width: 50 },
                                         { headerText: '名称', prop: 'name', width: 100 },
                                     ]);
-                                    self.outputSettingDetailModel.subscribe((data) => {
+                                    self.outputSettingDetailModel.subscribe(function (data) {
                                         self.reloadAggregateOutputItems();
                                         data.reloadAggregateOutputItems = self.reloadAggregateOutputItems.bind(self);
                                     });
-                                    self.temporarySelectedCode.subscribe(code => {
+                                    self.temporarySelectedCode.subscribe(function (code) {
                                         // Do nothing if code == null or undefined.
                                         if (!code) {
                                             return;
                                         }
                                         // Function to executed on confirmDirty dialog.
-                                        var executeIfConfirmed = () => {
+                                        var executeIfConfirmed = function () {
                                             self.outputSettingSelectedCode(self.temporarySelectedCode());
                                             self.onSelectOutputSetting(code);
                                         };
-                                        var executeIfCanceled = () => {
+                                        var executeIfCanceled = function () {
                                             self.temporarySelectedCode(self.outputSettingSelectedCode());
                                         };
                                         // Do nothing if selected same code.
@@ -71,12 +71,12 @@ var nts;
                                 /**
                                  * Start page.
                                  */
-                                startPage() {
+                                ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     var outputSettings = nts.uk.ui.windows.getShared('outputSettings');
                                     var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
-                                    $.when(self.loadMasterItems(), self.loadAggregateItems()).done(() => {
+                                    $.when(self.loadMasterItems(), self.loadAggregateItems()).done(function () {
                                         self.isLoading(false);
                                         // New mode if there is 0 outputSettings. 
                                         if (!outputSettings || outputSettings.length == 0) {
@@ -89,33 +89,33 @@ var nts;
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
-                                }
+                                };
                                 /**
                                 * Open common setting dialog.
                                 */
-                                onCommonSettingBtnClicked() {
+                                ScreenModel.prototype.onCommonSettingBtnClicked = function () {
                                     var self = this;
                                     nts.uk.ui.windows.sub.modal('/view/qpp/007/j/index.xhtml', { title: '集計項目の設定', dialogClass: 'no-close' })
                                         .onClosed(function () {
-                                        self.loadAggregateItems().done(() => {
+                                        self.loadAggregateItems().done(function () {
                                             self.loadOutputSettingDetail(self.outputSettingDetailModel().settingCode());
                                         });
                                     });
-                                }
+                                };
                                 /**
                                  * Clear errors and enable new mode.
                                  */
-                                onNewModeBtnClicked() {
+                                ScreenModel.prototype.onNewModeBtnClicked = function () {
                                     var self = this;
                                     self.confirmDirtyAndExecute(function () {
                                         self.clearError();
                                         self.enableNewMode();
                                     });
-                                }
+                                };
                                 /**
                                  * Save outputSetting.
                                  */
-                                onSaveBtnClicked() {
+                                ScreenModel.prototype.onSaveBtnClicked = function () {
                                     var self = this;
                                     // Clear errors.
                                     self.clearError();
@@ -133,29 +133,29 @@ var nts;
                                         data.createMode = false;
                                     }
                                     // Save.
-                                    c.service.save(data).done(() => {
+                                    c.service.save(data).done(function () {
                                         self.isNewMode(false);
                                         self.isSomethingChanged(true);
                                         self.dirtyChecker.reset();
                                         self.loadAllOutputSetting();
-                                    }).fail(res => {
+                                    }).fail(function (res) {
                                         if (res.messageId == 'ER005') {
                                             $('#inpCode').ntsError('set', '入力した＊は既に存在しています。\r\n ＊を確認してください。');
                                         }
                                     });
-                                }
+                                };
                                 /**
                                  * Delete selected outputSetting.
                                  */
-                                onRemoveBtnClicked() {
+                                ScreenModel.prototype.onRemoveBtnClicked = function () {
                                     var self = this;
                                     var selectedCode = self.outputSettingSelectedCode();
                                     if (selectedCode) {
                                         nts.uk.ui.dialog.confirm("データを削除します。\r\n よろしいですか？").ifYes(function () {
-                                            c.service.remove(selectedCode).done(() => {
+                                            c.service.remove(selectedCode).done(function () {
                                                 self.isSomethingChanged(true);
                                                 // Find selected outputSetting.
-                                                var selectedOutputSetting = self.outputSettings().filter(item => item.code == selectedCode)[0];
+                                                var selectedOutputSetting = self.outputSettings().filter(function (item) { return item.code == selectedCode; })[0];
                                                 var selectedIndex = self.outputSettings().indexOf(selectedOutputSetting);
                                                 // Remove selected setting from list.
                                                 self.outputSettings.remove(selectedOutputSetting);
@@ -176,32 +176,32 @@ var nts;
                                             });
                                         });
                                     }
-                                }
+                                };
                                 /**
                                  * Close dialog.
                                  */
-                                onCloseBtnClicked() {
+                                ScreenModel.prototype.onCloseBtnClicked = function () {
                                     var self = this;
                                     self.confirmDirtyAndExecute(function () {
                                         nts.uk.ui.windows.setShared('isSomethingChanged', self.isSomethingChanged());
                                         nts.uk.ui.windows.close();
                                     });
-                                }
+                                };
                                 /**
                                   * On select outputSetting
                                   */
-                                onSelectOutputSetting(code) {
+                                ScreenModel.prototype.onSelectOutputSetting = function (code) {
                                     var self = this;
-                                    self.loadOutputSettingDetail(code).done(() => {
+                                    self.loadOutputSettingDetail(code).done(function () {
                                         self.isNewMode(false);
                                         self.isLoading(false);
                                         self.clearError();
                                     });
-                                }
+                                };
                                 /**
                                 * Collect Data
                                 */
-                                collectData() {
+                                ScreenModel.prototype.collectData = function () {
                                     var self = this;
                                     var model = self.outputSettingDetailModel();
                                     // Convert model to dto.
@@ -209,12 +209,12 @@ var nts;
                                     dto.code = model.settingCode();
                                     dto.name = model.settingName();
                                     var categorySettingDto = new Array();
-                                    model.categorySettings().forEach(setting => {
+                                    model.categorySettings().forEach(function (setting) {
                                         // Set order number.
                                         for (var i = 0; i < setting.outputItems().length; i++) {
                                             setting.outputItems()[i].orderNumber = i;
                                         }
-                                        categorySettingDto.push(new CategorySettingDto(setting.categoryName, setting.outputItems().map(item => {
+                                        categorySettingDto.push(new CategorySettingDto(setting.categoryName, setting.outputItems().map(function (item) {
                                             var mappedItem = item;
                                             // map Attendance && ArticleOthers item.
                                             if (!item.isAggregateItem) {
@@ -231,27 +231,27 @@ var nts;
                                     dto.categorySettings = categorySettingDto;
                                     // return dto.
                                     return dto;
-                                }
+                                };
                                 /**
                                 * Clear all input errors.
                                 */
-                                clearError() {
+                                ScreenModel.prototype.clearError = function () {
                                     if (nts.uk.ui._viewModel) {
                                         $('#inpCode').ntsError('clear');
                                         $('#inpName').ntsError('clear');
                                     }
-                                }
+                                };
                                 /**
                                 * Validate all inputs.
                                 */
-                                validate() {
+                                ScreenModel.prototype.validate = function () {
                                     $('#inpCode').ntsEditor('validate');
                                     $('#inpName').ntsEditor('validate');
-                                }
+                                };
                                 /**
                                  * Confirm dirty state and execute function.
                                  */
-                                confirmDirtyAndExecute(functionToExecute, functionToExecuteIfNo) {
+                                ScreenModel.prototype.confirmDirtyAndExecute = function (functionToExecute, functionToExecuteIfNo) {
                                     var self = this;
                                     if (self.dirtyChecker.isDirty()) {
                                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
@@ -265,21 +265,21 @@ var nts;
                                     else {
                                         functionToExecute();
                                     }
-                                }
+                                };
                                 /**
                                 * Reset selected code & all inputs.
                                 */
-                                enableNewMode() {
+                                ScreenModel.prototype.enableNewMode = function () {
                                     var self = this;
                                     self.outputSettingDetailModel(new OutputSettingDetailModel(self.allMasterItems, self.allAggregateItems));
                                     self.outputSettingSelectedCode(null);
                                     self.dirtyChecker.reset();
                                     self.isNewMode(true);
-                                }
+                                };
                                 /**
                                 * Reload aggregateOutput items.
                                 */
-                                reloadAggregateOutputItems() {
+                                ScreenModel.prototype.reloadAggregateOutputItems = function () {
                                     var self = this;
                                     var data = self.outputSettingDetailModel();
                                     if (!data || data.categorySettings().length == 0) {
@@ -288,32 +288,32 @@ var nts;
                                     }
                                     // Set data to report item list.
                                     var reportItemList = [];
-                                    data.categorySettings().forEach((setting) => {
+                                    data.categorySettings().forEach(function (setting) {
                                         var categoryName = setting.categoryName;
-                                        setting.outputItems().forEach((item) => {
+                                        setting.outputItems().forEach(function (item) {
                                             reportItemList.push(new AggregateOutputItem(item.code, item.name, categoryName, item.isAggregateItem));
                                         });
                                     });
                                     self.aggregateOutputItems(reportItemList);
-                                }
+                                };
                                 /**
                                  * Load all output setting.
                                  */
-                                loadAllOutputSetting() {
+                                ScreenModel.prototype.loadAllOutputSetting = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    c.service.findAllOutputSettings().done(data => {
+                                    c.service.findAllOutputSettings().done(function (data) {
                                         self.outputSettings(data);
                                         dfd.resolve();
                                     }).fail(function (res) {
                                         dfd.reject();
                                     });
                                     return dfd.promise();
-                                }
+                                };
                                 /**
                                  * Load detail output setting.
                                  */
-                                loadOutputSettingDetail(code) {
+                                ScreenModel.prototype.loadOutputSettingDetail = function (code) {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     if (code) {
@@ -329,14 +329,14 @@ var nts;
                                         self.outputSettingDetailModel(new OutputSettingDetailModel(self.allMasterItems, self.allAggregateItems));
                                     }
                                     return dfd.promise();
-                                }
+                                };
                                 /**
                                 * Load aggregate items
                                 */
-                                loadAggregateItems() {
+                                ScreenModel.prototype.loadAggregateItems = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    c.service.findAllAggregateItems().done(res => {
+                                    c.service.findAllAggregateItems().done(function (res) {
                                         self.allAggregateItems.removeAll();
                                         res.forEach(function (item) {
                                             self.allAggregateItems.push({
@@ -348,42 +348,47 @@ var nts;
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
-                                }
+                                };
                                 /**
                                 * Load master items
                                 */
-                                loadMasterItems() {
+                                ScreenModel.prototype.loadMasterItems = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    c.service.findAllMasterItems().done(res => {
+                                    c.service.findAllMasterItems().done(function (res) {
                                         self.allMasterItems(res);
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
-                                }
-                            }
+                                };
+                                return ScreenModel;
+                            }());
                             viewmodel.ScreenModel = ScreenModel;
                             /**
                              * OutputSettingHeader model.
                              */
-                            class OutputSettingHeader {
-                                constructor(code, name) {
+                            var OutputSettingHeader = (function () {
+                                function OutputSettingHeader(code, name) {
                                     this.code = code;
                                     this.name = name;
                                 }
-                            }
+                                return OutputSettingHeader;
+                            }());
                             viewmodel.OutputSettingHeader = OutputSettingHeader;
                             /**
                              * OutputSettingDto model.
                              */
-                            class OutputSettingDto {
-                            }
+                            var OutputSettingDto = (function () {
+                                function OutputSettingDto() {
+                                }
+                                return OutputSettingDto;
+                            }());
                             viewmodel.OutputSettingDto = OutputSettingDto;
                             /**
                              * OutputSettingDetailModel model.
                              */
-                            class OutputSettingDetailModel {
-                                constructor(masterItems, aggregateItems, outputSetting) {
+                            var OutputSettingDetailModel = (function () {
+                                function OutputSettingDetailModel(masterItems, aggregateItems, outputSetting) {
                                     this.settingCode = ko.observable(outputSetting != undefined ? outputSetting.code : '');
                                     this.settingName = ko.observable(outputSetting != undefined ? outputSetting.name : '');
                                     this.aggregateItems = aggregateItems;
@@ -405,8 +410,8 @@ var nts;
                                     ]);
                                     this.selectedCategory = ko.observable(SalaryCategory.PAYMENT);
                                     var self = this;
-                                    self.categorySettings().forEach((setting) => {
-                                        setting.outputItems.subscribe((newValue) => {
+                                    self.categorySettings().forEach(function (setting) {
+                                        setting.outputItems.subscribe(function (newValue) {
                                             self.reloadAggregateOutputItems();
                                         });
                                     });
@@ -414,7 +419,7 @@ var nts;
                                 /**
                                 * Convert category setting data from dto to screen model.
                                 */
-                                toModel(categorySettings) {
+                                OutputSettingDetailModel.prototype.toModel = function (categorySettings) {
                                     var settings = [];
                                     var categorySettingDtos;
                                     if (categorySettings && categorySettings.length > 0) {
@@ -425,35 +430,37 @@ var nts;
                                     settings[2] = this.filterSettingByCategory(SalaryCategory.ATTENDANCE, categorySettingDtos);
                                     settings[3] = this.filterSettingByCategory(SalaryCategory.ARTICLE_OTHERS, categorySettingDtos);
                                     return settings;
-                                }
-                                filterSettingByCategory(category, categorySettings) {
+                                };
+                                OutputSettingDetailModel.prototype.filterSettingByCategory = function (category, categorySettings) {
                                     var cateTempSetting = { category: category, outputItems: [] };
                                     if (categorySettings == undefined) {
                                         return new CategorySettingModel(category, this.masterItems, this.aggregateItems, cateTempSetting);
                                     }
-                                    var categorySetting = categorySettings.filter(item => item.category == category)[0];
+                                    var categorySetting = categorySettings.filter(function (item) { return item.category == category; })[0];
                                     if (categorySetting == undefined) {
                                         categorySetting = cateTempSetting;
                                     }
                                     return new CategorySettingModel(category, this.masterItems, this.aggregateItems, categorySetting);
-                                }
-                            }
+                                };
+                                return OutputSettingDetailModel;
+                            }());
                             viewmodel.OutputSettingDetailModel = OutputSettingDetailModel;
                             /**
                              * CategorySettingDto model.
                              */
-                            class CategorySettingDto {
-                                constructor(category, outputItems) {
+                            var CategorySettingDto = (function () {
+                                function CategorySettingDto(category, outputItems) {
                                     this.category = category;
                                     this.outputItems = outputItems;
                                 }
-                            }
+                                return CategorySettingDto;
+                            }());
                             viewmodel.CategorySettingDto = CategorySettingDto;
                             /**
                              * ReportItem model.
                              */
-                            class AggregateOutputItem {
-                                constructor(code, name, categoryName, isAggregate) {
+                            var AggregateOutputItem = (function () {
+                                function AggregateOutputItem(code, name, categoryName, isAggregate) {
                                     this.code = code;
                                     this.name = name;
                                     this.isAggregate = isAggregate;
@@ -475,13 +482,14 @@ var nts;
                                             self.categoryNameJPN = '';
                                     }
                                 }
-                            }
+                                return AggregateOutputItem;
+                            }());
                             viewmodel.AggregateOutputItem = AggregateOutputItem;
                             /**
                              * CategorySettingModel model.
                              */
-                            class CategorySettingModel {
-                                constructor(categoryName, masterItems, aggregateItems, categorySetting) {
+                            var CategorySettingModel = (function () {
+                                function CategorySettingModel(categoryName, masterItems, aggregateItems, categorySetting) {
                                     var self = this;
                                     self.categoryName = categoryName;
                                     self.aggregateItems = ko.observableArray([]);
@@ -493,38 +501,38 @@ var nts;
                                     self.outputItemsSelected = ko.observableArray([]);
                                     switch (categoryName) {
                                         case SalaryCategory.PAYMENT:
-                                            aggregateItems().forEach(item => {
+                                            aggregateItems().forEach(function (item) {
                                                 if (item.taxDivision == TaxDivision.PAYMENT) {
                                                     self.aggregateItems.push(item);
                                                 }
                                             });
-                                            masterItems().forEach(item => {
+                                            masterItems().forEach(function (item) {
                                                 if (item.category == SalaryCategory.PAYMENT) {
                                                     self.masterItems.push(item);
                                                 }
                                             });
                                             break;
                                         case SalaryCategory.DEDUCTION:
-                                            aggregateItems().forEach(item => {
+                                            aggregateItems().forEach(function (item) {
                                                 if (item.taxDivision == TaxDivision.DEDUCTION) {
                                                     self.aggregateItems.push(item);
                                                 }
                                             });
-                                            masterItems().forEach(item => {
+                                            masterItems().forEach(function (item) {
                                                 if (item.category == SalaryCategory.DEDUCTION) {
                                                     self.masterItems.push(item);
                                                 }
                                             });
                                             break;
                                         case SalaryCategory.ATTENDANCE:
-                                            masterItems().forEach(item => {
+                                            masterItems().forEach(function (item) {
                                                 if (item.category == SalaryCategory.ATTENDANCE) {
                                                     self.masterItems.push(item);
                                                 }
                                             });
                                             break;
                                         case SalaryCategory.ARTICLE_OTHERS:
-                                            masterItems().forEach(item => {
+                                            masterItems().forEach(function (item) {
                                                 if (item.category == SalaryCategory.ARTICLE_OTHERS) {
                                                     self.masterItems.push(item);
                                                 }
@@ -558,7 +566,7 @@ var nts;
                                         init: function (element, valueAccessor, allBindings, viewModel, bindingContext) { },
                                         update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
                                             var code = valueAccessor();
-                                            viewModel.outputItems().forEach(item => {
+                                            viewModel.outputItems().forEach(function (item) {
                                                 $('#' + item.code).on('click', function () {
                                                     code(item.code);
                                                     viewModel.remove();
@@ -571,19 +579,19 @@ var nts;
                                 /**
                                 * Move master item to outputItems.
                                 */
-                                moveMasterItem() {
+                                CategorySettingModel.prototype.moveMasterItem = function () {
                                     // Check if has selected
                                     if (this.masterItemsSelected()[0]) {
                                         var self = this;
                                         // Get selected items from selected code list.
                                         var selectedItems = [];
-                                        self.masterItemsSelected().forEach(selectedCode => {
-                                            selectedItems.push(self.masterItems().filter((item) => {
+                                        self.masterItemsSelected().forEach(function (selectedCode) {
+                                            selectedItems.push(self.masterItems().filter(function (item) {
                                                 return selectedCode == item.code;
                                             })[0]);
                                         });
                                         // Remove from master list and add to output list
-                                        selectedItems.forEach(item => {
+                                        selectedItems.forEach(function (item) {
                                             self.masterItems.remove(item);
                                             self.outputItems.push({
                                                 code: item.code,
@@ -594,23 +602,23 @@ var nts;
                                         });
                                         self.masterItemsSelected([]);
                                     }
-                                }
+                                };
                                 /**
                                 * Move aggregate item to outputItems.
                                 */
-                                moveAggregateItem() {
+                                CategorySettingModel.prototype.moveAggregateItem = function () {
                                     // Check if has selected
                                     if (this.aggregateItemsSelected()[0]) {
                                         var self = this;
                                         // Get selected items from selected code list.
                                         var selectedItems = [];
-                                        self.aggregateItemsSelected().forEach(selectedCode => {
-                                            selectedItems.push(self.aggregateItems().filter((item) => {
+                                        self.aggregateItemsSelected().forEach(function (selectedCode) {
+                                            selectedItems.push(self.aggregateItems().filter(function (item) {
                                                 return selectedCode == item.code;
                                             })[0]);
                                         });
                                         // Remove from aggregate list and add to output list
-                                        selectedItems.forEach(item => {
+                                        selectedItems.forEach(function (item) {
                                             self.aggregateItems.remove(item);
                                             self.outputItems.push({
                                                 code: item.code,
@@ -621,13 +629,13 @@ var nts;
                                         });
                                         self.aggregateItemsSelected([]);
                                     }
-                                }
+                                };
                                 /**
                                 * Remove item from outputItems.
                                 */
-                                remove() {
+                                CategorySettingModel.prototype.remove = function () {
                                     var self = this;
-                                    var selectedItem = self.outputItems().filter((item) => {
+                                    var selectedItem = self.outputItems().filter(function (item) {
                                         return item.code == self.outputItemSelected();
                                     })[0];
                                     self.outputItems.remove(selectedItem);
@@ -647,34 +655,53 @@ var nts;
                                         name: selectedItem.name,
                                         category: SalaryCategory.PAYMENT
                                     });
-                                }
-                            }
+                                };
+                                return CategorySettingModel;
+                            }());
                             viewmodel.CategorySettingModel = CategorySettingModel;
-                            class AggregateItem {
-                            }
+                            var AggregateItem = (function () {
+                                function AggregateItem() {
+                                }
+                                return AggregateItem;
+                            }());
                             viewmodel.AggregateItem = AggregateItem;
-                            class MasterItem {
-                            }
+                            var MasterItem = (function () {
+                                function MasterItem() {
+                                }
+                                return MasterItem;
+                            }());
                             viewmodel.MasterItem = MasterItem;
-                            class OutputItem {
-                            }
+                            var OutputItem = (function () {
+                                function OutputItem() {
+                                }
+                                return OutputItem;
+                            }());
                             viewmodel.OutputItem = OutputItem;
-                            class SalaryCategory {
-                            }
-                            SalaryCategory.PAYMENT = 'Payment';
-                            SalaryCategory.DEDUCTION = 'Deduction';
-                            SalaryCategory.ATTENDANCE = 'Attendance';
-                            SalaryCategory.ARTICLE_OTHERS = 'ArticleOthers';
+                            var SalaryCategory = (function () {
+                                function SalaryCategory() {
+                                }
+                                SalaryCategory.PAYMENT = 'Payment';
+                                SalaryCategory.DEDUCTION = 'Deduction';
+                                SalaryCategory.ATTENDANCE = 'Attendance';
+                                SalaryCategory.ARTICLE_OTHERS = 'ArticleOthers';
+                                return SalaryCategory;
+                            }());
                             viewmodel.SalaryCategory = SalaryCategory;
-                            class TaxDivision {
-                            }
-                            TaxDivision.PAYMENT = 'Payment';
-                            TaxDivision.DEDUCTION = 'Deduction';
+                            var TaxDivision = (function () {
+                                function TaxDivision() {
+                                }
+                                TaxDivision.PAYMENT = 'Payment';
+                                TaxDivision.DEDUCTION = 'Deduction';
+                                return TaxDivision;
+                            }());
                             viewmodel.TaxDivision = TaxDivision;
-                            class SalaryOutputDistinction {
-                            }
-                            SalaryOutputDistinction.HOURLY = 'Hourly';
-                            SalaryOutputDistinction.MINUTLY = 'Minutely';
+                            var SalaryOutputDistinction = (function () {
+                                function SalaryOutputDistinction() {
+                                }
+                                SalaryOutputDistinction.HOURLY = 'Hourly';
+                                SalaryOutputDistinction.MINUTLY = 'Minutely';
+                                return SalaryOutputDistinction;
+                            }());
                             viewmodel.SalaryOutputDistinction = SalaryOutputDistinction;
                         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
                     })(c = qpp007.c || (qpp007.c = {}));

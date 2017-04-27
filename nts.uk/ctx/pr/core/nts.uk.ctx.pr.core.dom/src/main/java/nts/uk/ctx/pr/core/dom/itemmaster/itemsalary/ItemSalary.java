@@ -83,11 +83,15 @@ public class ItemSalary extends AggregateRoot {
 				EnumAdaptor.valueOf(applyForDaylyPayEmp, ApplyFor.class),
 				EnumAdaptor.valueOf(applyForHourlyPayEmp, ApplyFor.class),
 				EnumAdaptor.valueOf(avePayAtr, AvePayAtr.class), EnumAdaptor.valueOf(errRangeLowAtr, RangeAtr.class),
-				new ErrRangeLow(errRangeLow), EnumAdaptor.valueOf(errRangeHighAtr, RangeAtr.class),
-				new ErrRangeHigh(errRangeHigh), EnumAdaptor.valueOf(alRangeLowAtr, RangeAtr.class),
-				new AlRangeLow(alRangeLow), EnumAdaptor.valueOf(alRangeHighAtr, RangeAtr.class),
-				new AlRangeHigh(alRangeHigh), new Memo(memo), EnumAdaptor.valueOf(limitMnyAtr, LimitMnyAtr.class),
-				new LimitMnyRefItemCd(limitMnyRefItemCd), new LimitMny(limitMny));
+				errRangeLow == null ? null : new ErrRangeLow(errRangeLow),
+				EnumAdaptor.valueOf(errRangeHighAtr, RangeAtr.class),
+				errRangeHigh == null ? null : new ErrRangeHigh(errRangeHigh),
+				EnumAdaptor.valueOf(alRangeLowAtr, RangeAtr.class),
+				alRangeLow == null ? null : new AlRangeLow(alRangeLow),
+				EnumAdaptor.valueOf(alRangeHighAtr, RangeAtr.class),
+				alRangeHigh == null ? null : new AlRangeHigh(alRangeHigh)
+				, new Memo(memo), EnumAdaptor.valueOf(limitMnyAtr, LimitMnyAtr.class),
+				new LimitMnyRefItemCd(limitMnyRefItemCd), limitMny == null ? null : new LimitMny(limitMny));
 
 	}
 

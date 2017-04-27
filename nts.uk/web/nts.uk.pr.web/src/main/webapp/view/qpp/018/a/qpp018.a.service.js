@@ -40,13 +40,14 @@ var nts;
                              */
                             var model;
                             (function (model) {
-                                class InsuranceOffice {
-                                    constructor(code, name) {
-                                        let self = this;
+                                var InsuranceOffice = (function () {
+                                    function InsuranceOffice(code, name) {
+                                        var self = this;
                                         self.code = code;
                                         self.name = name;
                                     }
-                                }
+                                    return InsuranceOffice;
+                                }());
                                 model.InsuranceOffice = InsuranceOffice;
                             })(model = service.model || (service.model = {}));
                         })(service = a.service || (a.service = {}));

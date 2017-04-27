@@ -13,7 +13,7 @@ var nts;
                         var service;
                         (function (service) {
                             // Service paths.
-                            let paths = {
+                            var paths = {
                                 findCheckListPrintSetting: "ctx/pr/report/insurance/checklist/find",
                                 saveCheckListPrintSetting: "ctx/pr/report/insurance/checklist/save"
                             };

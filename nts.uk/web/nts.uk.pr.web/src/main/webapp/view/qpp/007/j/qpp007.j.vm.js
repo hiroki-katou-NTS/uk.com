@@ -16,8 +16,8 @@ var nts;
                         var TaxDivision = nts.uk.pr.view.qpp007.c.viewmodel.TaxDivision;
                         var viewmodel;
                         (function (viewmodel) {
-                            class ScreenModel {
-                                constructor() {
+                            var ScreenModel = (function () {
+                                function ScreenModel() {
                                     var self = this;
                                     self.taxDivisionTab = ko.observableArray([
                                         { id: TaxDivision.PAYMENT, title: '支給集計', content: '#tab-payment', enable: ko.observable(true), visible: ko.observable(true) },
@@ -52,19 +52,19 @@ var nts;
                                 /**
                                  * Start page.
                                  */
-                                startPage() {
+                                ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     return self.initData();
-                                }
-                                initData() {
+                                };
+                                ScreenModel.prototype.initData = function () {
                                     var self = this;
                                     var salaryAggregateItemInDto;
                                     salaryAggregateItemInDto = new SalaryAggregateItemInDto();
                                     salaryAggregateItemInDto.taxDivision = 0;
                                     salaryAggregateItemInDto.aggregateItemCode = self.selectedAggregateItem();
                                     return self.showDataModel(salaryAggregateItemInDto);
-                                }
-                                onShowDataChange(selectedDivision, selectedAggregateItem) {
+                                };
+                                ScreenModel.prototype.onShowDataChange = function (selectedDivision, selectedAggregateItem) {
                                     if (nts.uk.ui._viewModel) {
                                         $('#inpDisplayName').ntsError('clear');
                                     }
@@ -79,11 +79,11 @@ var nts;
                                     }
                                     salaryAggregateItemInDto.aggregateItemCode = selectedAggregateItem;
                                     self.showDataModel(salaryAggregateItemInDto);
-                                }
-                                showDataModel(salaryAggregateItemInDto) {
+                                };
+                                ScreenModel.prototype.showDataModel = function (salaryAggregateItemInDto) {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    j.service.findSalaryAggregateItem(salaryAggregateItemInDto).done(data => {
+                                    j.service.findSalaryAggregateItem(salaryAggregateItemInDto).done(function (data) {
                                         self.salaryAggregateItemModel().convertDtoToData(data);
                                         var fullItemCodes;
                                         fullItemCodes = [];
@@ -98,11 +98,11 @@ var nts;
                                     }).fail(function (error) {
                                     });
                                     return dfd.promise();
-                                }
-                                closeDialogBtnClicked() {
+                                };
+                                ScreenModel.prototype.closeDialogBtnClicked = function () {
                                     nts.uk.ui.windows.close();
-                                }
-                                saveSalaryAggregateItem() {
+                                };
+                                ScreenModel.prototype.saveSalaryAggregateItem = function () {
                                     $('#inpDisplayName').ntsEditor('validate');
                                     if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                                         return;
@@ -115,8 +115,8 @@ var nts;
                                         self.convertModelToDto(1);
                                     }
                                     //reload///
-                                }
-                                convertModelToDto(taxDivision) {
+                                };
+                                ScreenModel.prototype.convertModelToDto = function (taxDivision) {
                                     var self = this;
                                     var salaryAggregateItemSaveDto;
                                     salaryAggregateItemSaveDto = new SalaryAggregateItemSaveDto();
@@ -125,7 +125,8 @@ var nts;
                                     salaryAggregateItemSaveDto.salaryAggregateItemName =
                                         self.salaryAggregateItemModel().salaryAggregateItemName();
                                     salaryAggregateItemSaveDto.subItemCodes = [];
-                                    for (var itemModel of self.salaryAggregateItemModel().subItemCodes()) {
+                                    for (var _i = 0, _a = self.salaryAggregateItemModel().subItemCodes(); _i < _a.length; _i++) {
+                                        var itemModel = _a[_i];
                                         salaryAggregateItemSaveDto.subItemCodes.push(itemModel);
                                     }
                                     salaryAggregateItemSaveDto.taxDivision = taxDivision;
@@ -136,25 +137,29 @@ var nts;
                                         //reload
                                     });
                                     return salaryAggregateItemSaveDto;
-                                }
-                            }
+                                };
+                                return ScreenModel;
+                            }());
                             viewmodel.ScreenModel = ScreenModel;
-                            class SalaryItemModel {
+                            var SalaryItemModel = (function () {
+                                function SalaryItemModel() {
+                                }
                                 //convert dto find => model
-                                convertDtoToData(salaryItemDto) {
+                                SalaryItemModel.prototype.convertDtoToData = function (salaryItemDto) {
                                     this.salaryItemCode = salaryItemDto.salaryItemCode;
                                     this.salaryItemName = salaryItemDto.salaryItemName;
-                                }
-                            }
+                                };
+                                return SalaryItemModel;
+                            }());
                             viewmodel.SalaryItemModel = SalaryItemModel;
-                            class SalaryAggregateItemModel {
-                                constructor() {
+                            var SalaryAggregateItemModel = (function () {
+                                function SalaryAggregateItemModel() {
                                     this.salaryAggregateItemCode = ko.observable('');
                                     this.salaryAggregateItemName = ko.observable('');
                                     this.subItemCodes = ko.observableArray([]);
                                     this.fullItemCodes = ko.observableArray([]);
                                 }
-                                convertDtoToData(salaryAggregateItemFindDto) {
+                                SalaryAggregateItemModel.prototype.convertDtoToData = function (salaryAggregateItemFindDto) {
                                     if (this.salaryAggregateItemCode) {
                                         this.salaryAggregateItemCode(salaryAggregateItemFindDto.salaryAggregateItemCode);
                                     }
@@ -171,7 +176,8 @@ var nts;
                                         this.subItemCodes([]);
                                         var subItemCodes;
                                         subItemCodes = [];
-                                        for (var item of salaryAggregateItemFindDto.subItemCodes) {
+                                        for (var _i = 0, _a = salaryAggregateItemFindDto.subItemCodes; _i < _a.length; _i++) {
+                                            var item = _a[_i];
                                             var salaryItemModel;
                                             salaryItemModel = new SalaryItemModel();
                                             salaryItemModel.convertDtoToData(item);
@@ -182,16 +188,18 @@ var nts;
                                     else {
                                         this.subItemCodes([]);
                                     }
-                                }
-                                setFullItemCode(fullItemCodes) {
+                                };
+                                SalaryAggregateItemModel.prototype.setFullItemCode = function (fullItemCodes) {
                                     if (fullItemCodes && fullItemCodes.length > 0) {
                                         this.fullItemCodes([]);
                                         var fullItemCodesModel;
                                         fullItemCodesModel = [];
-                                        for (var item of fullItemCodes) {
+                                        for (var _i = 0, fullItemCodes_1 = fullItemCodes; _i < fullItemCodes_1.length; _i++) {
+                                            var item = fullItemCodes_1[_i];
                                             var check;
                                             check = 1;
-                                            for (var itemSub of this.subItemCodes()) {
+                                            for (var _a = 0, _b = this.subItemCodes(); _a < _b.length; _a++) {
+                                                var itemSub = _b[_a];
                                                 if (itemSub.salaryItemCode == item.salaryItemCode) {
                                                     check = 0;
                                                     break;
@@ -209,8 +217,9 @@ var nts;
                                     else {
                                         this.fullItemCodes([]);
                                     }
-                                }
-                            }
+                                };
+                                return SalaryAggregateItemModel;
+                            }());
                             viewmodel.SalaryAggregateItemModel = SalaryAggregateItemModel;
                         })(viewmodel = j.viewmodel || (j.viewmodel = {}));
                     })(j = qpp007.j || (qpp007.j = {}));

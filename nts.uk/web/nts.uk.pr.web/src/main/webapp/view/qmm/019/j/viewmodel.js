@@ -38,4 +38,3 @@ var qmmm019;
         })(viewmodel = j.viewmodel || (j.viewmodel = {}));
     })(j = qmmm019.j || (qmmm019.j = {}));
 })(qmmm019 || (qmmm019 = {}));
-//# sourceMappingURL=viewmodel.js.map

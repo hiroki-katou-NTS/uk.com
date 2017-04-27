@@ -12,22 +12,22 @@ var nts;
                     (function (c) {
                         var viewmodel;
                         (function (viewmodel) {
-                            class ScreenModel {
-                                constructor() {
-                                    let self = this;
+                            var ScreenModel = (function () {
+                                function ScreenModel() {
+                                    var self = this;
                                     self.checklistPrintSettingModel = ko.observable(new ChecklistPrintSettingModel());
                                 }
-                                startPage() {
-                                    let self = this;
-                                    let dfd = $.Deferred();
+                                ScreenModel.prototype.startPage = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
                                     self.loadCheckListPrintSetting().done(function () {
                                         dfd.resolve(self);
                                     });
                                     return dfd.promise();
-                                }
-                                loadCheckListPrintSetting() {
-                                    let self = this;
-                                    let dfd = $.Deferred();
+                                };
+                                ScreenModel.prototype.loadCheckListPrintSetting = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
                                     c.service.findCheckListPrintSetting().done(function (data) {
                                         self.initUI(data);
                                         dfd.resolve();
@@ -35,10 +35,10 @@ var nts;
                                         nts.uk.ui.dialog.alert(res.message);
                                     });
                                     return dfd.promise();
-                                }
-                                saveConfigSetting() {
-                                    let self = this;
-                                    let dfd = $.Deferred();
+                                };
+                                ScreenModel.prototype.saveConfigSetting = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
                                     if (self.validate()) {
                                         return;
                                     }
@@ -50,38 +50,39 @@ var nts;
                                         self.closeDialog();
                                     });
                                     return dfd.promise();
-                                }
-                                validate() {
-                                    let self = this;
-                                    let isError = false;
+                                };
+                                ScreenModel.prototype.validate = function () {
+                                    var self = this;
+                                    var isError = false;
                                     self.clearError();
-                                    let checklistSetting = self.checklistPrintSettingModel();
+                                    var checklistSetting = self.checklistPrintSettingModel();
                                     if (!checklistSetting.showDetail() && !checklistSetting.showOffice() && !checklistSetting.showTotal()
                                         && !checklistSetting.showDeliveryNoticeAmount()) {
                                         isError = true;
                                         $('#require-least-item').ntsError('set', '必須の入力項目が入力されていません。');
                                     }
                                     return isError;
-                                }
-                                clearError() {
+                                };
+                                ScreenModel.prototype.clearError = function () {
                                     $('#require-least-item').ntsError('clear');
-                                }
-                                closeDialog() {
+                                };
+                                ScreenModel.prototype.closeDialog = function () {
                                     nts.uk.ui.windows.close();
-                                }
-                                initUI(res) {
-                                    let self = this;
-                                    let checklistSetting = self.checklistPrintSettingModel();
+                                };
+                                ScreenModel.prototype.initUI = function (res) {
+                                    var self = this;
+                                    var checklistSetting = self.checklistPrintSettingModel();
                                     checklistSetting.setData(res);
-                                }
-                            }
+                                };
+                                return ScreenModel;
+                            }());
                             viewmodel.ScreenModel = ScreenModel;
                             /**
                              * The ChecklistPrintSettingModel
                              */
-                            class ChecklistPrintSettingModel {
-                                constructor() {
-                                    let self = this;
+                            var ChecklistPrintSettingModel = (function () {
+                                function ChecklistPrintSettingModel() {
+                                    var self = this;
                                     self.selectedHealthInsuranceItem = ko.observable("indicate");
                                     self.showCategoryInsuranceItem = ko.computed(function () {
                                         if (self.selectedHealthInsuranceItem() == 'indicate') {
@@ -98,16 +99,17 @@ var nts;
                                         { code: "hide", name: "表示しない" }
                                     ]);
                                 }
-                                setData(dto) {
-                                    let self = this;
+                                ChecklistPrintSettingModel.prototype.setData = function (dto) {
+                                    var self = this;
                                     var insuranceItemCode = dto.showCategoryInsuranceItem ? 'indicate' : 'hide';
                                     self.selectedHealthInsuranceItem(insuranceItemCode);
                                     self.showDetail(dto.showDetail);
                                     self.showOffice(dto.showOffice);
                                     self.showTotal(dto.showTotal);
                                     self.showDeliveryNoticeAmount(dto.showDeliveryNoticeAmount);
-                                }
-                            }
+                                };
+                                return ChecklistPrintSettingModel;
+                            }());
                             viewmodel.ChecklistPrintSettingModel = ChecklistPrintSettingModel;
                         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
                     })(c = qpp018.c || (qpp018.c = {}));
