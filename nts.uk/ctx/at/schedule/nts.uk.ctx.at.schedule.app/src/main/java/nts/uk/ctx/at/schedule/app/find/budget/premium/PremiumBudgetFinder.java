@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
@@ -16,6 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 
+@Stateless
 public class PremiumBudgetFinder {
 	
 	@Inject

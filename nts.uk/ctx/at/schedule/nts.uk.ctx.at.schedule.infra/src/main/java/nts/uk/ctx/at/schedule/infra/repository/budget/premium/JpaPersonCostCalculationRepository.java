@@ -3,6 +3,8 @@ package nts.uk.ctx.at.schedule.infra.repository.budget.premium;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
@@ -19,6 +21,7 @@ import nts.uk.shr.com.primitive.Memo;
  *
  */
 
+@Stateless
 public class JpaPersonCostCalculationRepository extends JpaRepository implements PersonCostCalculationRepository{
 
 	private final String SEL_BY_CID = "Select a from KmlmtPersonCostCalculation a where a.kmlmpPersonCostCalculationPK.CID = :CID";
