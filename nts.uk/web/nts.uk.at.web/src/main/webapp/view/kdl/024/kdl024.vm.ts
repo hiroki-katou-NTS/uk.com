@@ -15,8 +15,18 @@ module kdl024.a.viewmodel {
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred<any>();
-
-
+            let _items : Array<Item> = [];
+            
+            
+            _items.push(new Item({
+                code :"",
+                name :"",
+                attribute :0,
+                unit :0    
+            }));
+            
+            
+            self.items(_items);
             return dfd.promise();
         }
     }

@@ -9,9 +9,9 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:stylefile path="kdl024.a.main.css" />
-			<com:scriptfile path="kdl024.a.start.js" />
-			<com:scriptfile path="kdl024.a.vm.js" />
+			<com:stylefile path="kdl024.main.css" />
+			<com:scriptfile path="kdl024.start.js" />
+			<com:scriptfile path="kdl024.vm.js" />
 			<com:ValidatorScript>
 				nts.uk.shr.com.primitive.PersonId
 				nts.uk.shr.com.primitive.sample.ResidenceCode
@@ -20,10 +20,10 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button id="A1_1" class="btnM	n" data-bind="">新規</button>
-				<button id="A_BTN_001" class="btnMn proceed" data-bind="">登録</button>
-				<button id="A_BTN_003" class="btnMn delete_btn btn_width danger"
+				<button id="BTN_001" class="btnMn proceed" data-bind="">登録</button>
+				<button id="BTN_003" class="btnMn delete_btn btn_width danger"
 					data-bind="" style="margin-left: 60px;">削除</button>
-				<button id="A_BTN_004" class="btnMn " data-bind="">閉じる</button>
+				<button id="BTN_004" class="btnMn " data-bind="">閉じる</button>
 			</div>
 			<div id="content-area" class="cf">
 				<div class="left-content">
@@ -49,6 +49,16 @@
 													inline:false, 
 													enable:true }">
 						コード/名称</div>
+					<input id="INP_001"></input>
+					<input id="INP_002"></input>
+					
+					
+					<div id="A3_4"
+						data-bind="ntsFormLabel:{
+												required: true, 
+												inline:false, 
+												enable:true 
+						}">属性</div>
 				</div>
 
 			</div>
