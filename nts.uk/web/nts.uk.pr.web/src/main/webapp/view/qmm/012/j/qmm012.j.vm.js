@@ -105,12 +105,6 @@ var qmm012;
                                 enableDeleteRow: false,
                                 cancelTooltip: "Click to cancel",
                                 columnSettings: self.columnSettings()
-                            },
-                            {
-                                name: "RowSelectors"
-                            },
-                            {
-                                name: "Selection"
                             }]
                     });
                 };

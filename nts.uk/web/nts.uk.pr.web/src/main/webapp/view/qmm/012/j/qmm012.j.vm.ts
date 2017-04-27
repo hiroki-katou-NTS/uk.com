@@ -111,12 +111,6 @@ module qmm012.j.viewmodel {
                         enableDeleteRow: false,
                         cancelTooltip: "Click to cancel",
                         columnSettings: self.columnSettings()
-                    },
-                    {
-                        name: "RowSelectors"
-                    },
-                    {
-                        name: "Selection"
                     }]
             });
         }
