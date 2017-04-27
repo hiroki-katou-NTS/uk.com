@@ -103,6 +103,6 @@ public class ScriptFile extends UIComponentBase {
         
         FILE_SETS.get(fileSet).stream()
                 .filter(filePath -> excludes.stream().noneMatch(ex -> filePath.contains(ex)))
-                .forEach(filePath -> writeTag(rw, FileTagsHelper.buildPath(context, filePath)));
+                .forEach(filePath -> writeTag(rw, FileTagsHelper.buildPathUsingComWeb(context, filePath)));
     }
 }
