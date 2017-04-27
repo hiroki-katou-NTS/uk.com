@@ -12,7 +12,8 @@ module nts.qmm017 {
             findOtherFormulas: "pr/formula/formulaMaster/findOtherFormulas/",
             getListWageTable: "pr/proto/wagetable/findbymonth/",
             getFormulaEasyDetail: "pr/formula/formulaMaster/getFormulaEasyDetail/",
-            getListSystemVariable: "pr/formula/systemvariable/getAll"
+            getListSystemVariable: "pr/formula/systemvariable/getAll",
+            getSimpleCalSetting: "pr/formula/simplecalsetting/getAll"
         }
 
         export function getAllFormula(): JQueryPromise<Array<model.FormulaDto>> {
@@ -154,6 +155,18 @@ module nts.qmm017 {
                 })
             return dfd.promise();
         }
+        
+        export function getListSimpleCalSetting(): JQueryPromise<Array<model.SimpleCalSettingDto>> {
+            var dfd = $.Deferred<Array<model.SimpleCalSettingDto>>();
+            nts.uk.request.ajax("pr", paths.getSimpleCalSetting)
+                .done(function(res: Array<model.SimpleCalSettingDto>) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
     }
 
     export module model {
@@ -262,6 +275,11 @@ module nts.qmm017 {
             systemVariableName: string;
             systemVariableCode: string;
             result: string;
+        }
+        
+        export class SimpleCalSettingDto {
+            itemCode: string;
+            itemName: string;
         }
     }
 }

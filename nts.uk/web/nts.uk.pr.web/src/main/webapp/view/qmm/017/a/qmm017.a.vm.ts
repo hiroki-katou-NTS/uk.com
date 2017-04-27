@@ -201,7 +201,7 @@ module nts.qmm017 {
                             });
                         self.selectedTabASel001('tab-1');
                         self.viewModel017b().selectedConditionAtr(currentFormula.conditionAtr);
-                        self.viewModel017b().comboBoxUseMaster().selectedCode(currentFormula.refMasterNo.toString());
+                        self.viewModel017b().comboBoxUseMaster().selectedCode(currentFormula.refMasterNo);
                         $('.check-error').ntsError('clear');
                     })
                     .fail(function(res) {
@@ -385,8 +385,10 @@ module nts.qmm017 {
             var dfdStart = $.Deferred<any>();
             // binding tree history a_lst_001
             let treeHistoryPromise = self.bindHistoryTree();
+            // build list combobox use master
+            let buildComboBoxUseMasterPromise = self.buildComboBoxUseMaster();
             // when all done
-            $.when(treeHistoryPromise)
+            $.when(treeHistoryPromise, buildComboBoxUseMasterPromise)
                 .done(function() {
                     self.treeGridHistory().singleSelectedCode(self.treeGridHistory().items()[0].childs[0].code);
                     self.bindDataByChanging(self.treeGridHistory().items()[0].childs[0].code);
@@ -397,6 +399,21 @@ module nts.qmm017 {
                 });
             // Return.
             return dfdStart.promise();
+        }
+
+        buildComboBoxUseMaster() {
+            var self = this;
+            var dfd = $.Deferred<any>();
+            service.getListSimpleCalSetting()
+                .done(function(listSimpleCalSetting: Array<model.SimpleCalSettingDto>) {
+                    let itemList = _.map(listSimpleCalSetting, function(simpleCalSetting: model.SimpleCalSettingDto){ return {code: parseInt(simpleCalSetting.itemCode), name: simpleCalSetting.itemName}});
+                    self.viewModel017b().comboBoxUseMaster().itemList(itemList);
+                    dfd.resolve();
+                })
+                .fail(function(res){
+                    nts.uk.ui.dialog.alert(res);
+                });
+            return dfd.promise();
         }
 
         fillItemsBagRepository() {
@@ -577,7 +594,6 @@ module nts.qmm017 {
                     return formula.code === command.formulaCode;
                 });
                 if (existedFormula) {
-                    debugger;
                     nts.uk.ui.dialog.alert("入力した計算式コードは既に存在しています。\r\n計算式コードを確認してください。");
                 } else {
                     service.registerFormulaMaster(command)
@@ -616,9 +632,9 @@ module nts.qmm017 {
                             formulaDetail: noneConditionalEasyFormulaDetail,
                             fixFormulaAtr: 1
                         });
-                    } else if (self.viewModel017b().selectedConditionAtr() == 1 && self.viewModel017b().comboBoxUseMaster().selectedCode() < 6) {
+                    } else if (self.viewModel017b().selectedConditionAtr() == 1 && self.viewModel017b().comboBoxUseMaster().selectedCode() !== '0006') {
                         let defaultEasyFormulaDetail = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
-                        if(!defaultEasyFormulaDetail){
+                        if (!defaultEasyFormulaDetail) {
                             defaultEasyFormulaDetail = new nts.qmm017.model.FormulaEasyDetailDto();
                         }
                         defaultEasyFormulaDetail.easyFormulaCode = '000';
@@ -634,7 +650,7 @@ module nts.qmm017 {
                         if (command.easyFormulaDto[0].fixFormulaAtr !== 0) {
                             command.easyFormulaDto[0].value = 0;
                         }
-                    } else if (self.viewModel017b().selectedConditionAtr() == 1 && self.viewModel017b().comboBoxUseMaster().selectedCode() === '6') {
+                    } else if (self.viewModel017b().selectedConditionAtr() == 1 && self.viewModel017b().comboBoxUseMaster().selectedCode() === '0006') {
                         let defaultEasyFormulaDetail = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
                         defaultEasyFormulaDetail.easyFormulaCode = '000';
                         command.easyFormulaDto.push(

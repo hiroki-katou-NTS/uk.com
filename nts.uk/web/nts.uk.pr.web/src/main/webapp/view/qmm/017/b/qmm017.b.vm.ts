@@ -43,14 +43,7 @@ module nts.qmm017 {
                 }
             });
             self.comboBoxUseMaster = ko.observable({
-                itemList: ko.observableArray([
-                    { code: '1', name: '雇用マスタ' },
-                    { code: '2', name: '部門マスタ' },
-                    { code: '3', name: '分類マスタ' },
-                    { code: '4', name: '給与分類マスタ' },
-                    { code: '5', name: '職位マスタ' },
-                    { code: '6', name: '給与区分' },
-                ]),
+                itemList: ko.observableArray([]),
                 selectedCode: ko.observable(1)
             });
             //auto fill input formula code to 3 char

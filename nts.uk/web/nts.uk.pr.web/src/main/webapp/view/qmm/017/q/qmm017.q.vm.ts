@@ -8,6 +8,7 @@ module nts.uk.pr.view.qmm017.q {
             currentCodeList: KnockoutObservableArray<any>;
             formulaContent: KnockoutObservable<string>;
             itemsBag: any;
+            result: KnockoutObservable<string>;
 
             constructor(data) {
                 var self = this;
@@ -25,6 +26,7 @@ module nts.uk.pr.view.qmm017.q {
                     self.replaceSystemVariableToValue();
                 }
                 self.itemsBag = data.itemsBag;
+                self.result = ko.observable('');
             }
 
             isDuplicated(itemName) {
@@ -136,7 +138,7 @@ module nts.uk.pr.view.qmm017.q {
                 let replaceValue = targetContent;
                 _.forEach(self.itemsBag, function(item){
                     if(replaceValue.indexOf(item.name) !== -1){
-                        replaceValue.replace(new RegExp(item.name, 'g'), item.code);
+                        replaceValue = replaceValue.replace(new RegExp(item.name, 'g'), item.code);
                     }
                 });
                 return replaceValue;
@@ -159,7 +161,7 @@ module nts.uk.pr.view.qmm017.q {
                 let replaceValue = targetContent;
                 _.forEach(lstSpecialChar, function(char){
                     if(replaceValue.indexOf(char.jp) !== -1){
-                        replaceValue.replace(new RegExp(char.jp, 'g'), char.en);
+                        replaceValue = replaceValue.replace(new RegExp(char.jp, 'g'), char.en);
                     }
                 });
                 return replaceValue;
@@ -177,7 +179,10 @@ module nts.uk.pr.view.qmm017.q {
                 replacedValue = replacedValue.replace(new RegExp(' ', 'g'), '');
                 replacedValue = self.replaceFunctionNameToCode(replacedValue);
                 replacedValue = self.replaceJPCharToEN(replacedValue);
-                service.trialCalculate(replacedValue);
+                self.result('...');
+                service.trialCalculate(replacedValue).done(function(calculatorDto: model.CalculatorDto){
+                    self.result(calculatorDto.result);
+                });
             }
 
             close() {
