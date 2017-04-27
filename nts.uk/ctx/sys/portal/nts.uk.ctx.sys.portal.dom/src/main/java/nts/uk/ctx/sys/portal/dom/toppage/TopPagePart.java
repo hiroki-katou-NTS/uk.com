@@ -2,15 +2,16 @@ package nts.uk.ctx.sys.portal.dom.toppage;
 
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
-import nts.uk.ctx.sys.portal.dom.primitive.TopPagePartCode;
-import nts.uk.ctx.sys.portal.dom.primitive.TopPagePartName;
+import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.TopPagePartCode;
+import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.TopPagePartName;
 
 /**
  * The Class TopPagePart.
  */
 @Getter
-public class TopPagePart {
+public class TopPagePart extends DomainObject {
 	
 	/** The top page part code. */
 	private TopPagePartCode topPagePartCode;

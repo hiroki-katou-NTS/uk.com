@@ -6,10 +6,10 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.sys.portal.dom.primitive.TopPageCode;
-import nts.uk.ctx.sys.portal.dom.primitive.TopPageName;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository;
+import nts.uk.ctx.sys.portal.dom.toppage.primitive.TopPageCode;
+import nts.uk.ctx.sys.portal.dom.toppage.primitive.TopPageName;
 
 @Stateless
 public class JpaTopPageRepository implements TopPageRepository {

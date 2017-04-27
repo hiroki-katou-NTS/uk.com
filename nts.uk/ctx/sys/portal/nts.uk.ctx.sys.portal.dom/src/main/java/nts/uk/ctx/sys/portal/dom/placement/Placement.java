@@ -33,10 +33,14 @@ public class Placement extends DomainObject {
 
 	/** ExternalUrl */
 	ExternalUrl externalUrl;
-	
-	public static Placement createFromJavaType(String companyId, String placementID, String layoutID, String toppagePartID, int column, int row, String url, int width, int height) {
-		return new Placement(
-			companyId, placementID, layoutID, toppagePartID,
+
+	/** Create an Layout from Java type */
+	public static Placement createFromJavaType(
+			String companyId, String placementID, String layoutID, String toppagePartID,
+			int column, int row,
+			String url, int width, int height)
+	{
+		return new Placement( companyId, placementID, layoutID, toppagePartID,
 			new Column(column), new Row(row),
 			ExternalUrl.createFromJavaType(url, width, height)
 		);

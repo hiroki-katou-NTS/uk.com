@@ -1,12 +1,13 @@
 package nts.uk.ctx.sys.portal.dom.toppage;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * The Class Placement.
  */
 @Getter
-public class Placement {
+public class Placement extends DomainObject {
 
 	/** The column. */
 	private Integer column;

@@ -1,17 +1,18 @@
 package nts.uk.ctx.sys.portal.dom.mypage.setting;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.enums.UseDivision;
 import nts.uk.ctx.sys.portal.dom.primitive.CompanyId;
-import nts.uk.ctx.sys.portal.dom.primitive.TopPagePartCode;
-import nts.uk.ctx.sys.portal.dom.primitive.TopPagePartName;
+import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.TopPagePartCode;
+import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.TopPagePartName;
 
 /**
  * The Class TopPagePartSettingItem.
  */
 @Getter
-public class TopPagePartUseSetting {
+public class TopPagePartUseSetting extends DomainObject{
 
 	/** The company id. */
 	private CompanyId companyId;
