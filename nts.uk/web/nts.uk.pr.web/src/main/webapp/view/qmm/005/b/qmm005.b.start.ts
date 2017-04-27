@@ -3,6 +3,7 @@
 __viewContext.primitiveValueConstraints["processingYear"] = {
     min: 1970,
     max: 9999,
+    required: true,
     charType: "Numeric",
     valueType: "Numeric"
 }

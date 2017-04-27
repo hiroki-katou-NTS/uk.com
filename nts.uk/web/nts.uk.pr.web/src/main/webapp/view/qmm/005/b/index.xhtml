@@ -95,7 +95,7 @@
 											optionsValue: 'index',
 											value:  sel002,
 											optionsText: 'label',
-											editable: true,
+											editable: false,
 											enable: true,
 											columns: [{ prop: 'label', length: 4 }]}">
 										</div>
@@ -103,16 +103,16 @@
 									</td>
 									<td>
 										<div id="B_INP_003"
-											data-bind="ntsDatePicker: { value: inp003, dateFormat: 'YYYY/MM/DD'}"></div>
+											data-bind="ntsDatePicker: { value: inp003, dateFormat: 'YYYY/MM/DD', required: true}"></div>
 									</td>
 									<td>
 										<div id="B_INP_004"
-											data-bind="ntsDatePicker: { value: inp004, dateFormat: 'YYYY/MM' }"></div>
+											data-bind="ntsDatePicker: { value: inp004, dateFormat: 'YYYY/MM', required: true }"></div>
 										<div>分を徴収</div>
 									</td>
 									<td>
 										<div id="B_INP_005"
-											data-bind="ntsDatePicker: { value: inp005, dateFormat: 'YYYY/MM' }"></div>
+											data-bind="ntsDatePicker: { value: inp005, dateFormat: 'YYYY/MM', required: true }"></div>
 									</td>
 									<td class="double-border"><input id="B_INP_010"
 										data-bind="ntsNumberEditor: {
@@ -121,25 +121,25 @@
 											option: {
 												decimallength: 2
 											},
-											required: false,
+											required: true,
 											enable: true,
 											readonly: false}" />
 										<span>日</span></td>
 									<td data-bind="css: {'hidden' : $parent.toggle}">
 										<div id="B_INP_006"
-											data-bind="ntsDatePicker: { value: inp006, dateFormat: 'YYYY/MM/DD'}"></div>
+											data-bind="ntsDatePicker: { value: inp006, dateFormat: 'YYYY/MM/DD', required: true}"></div>
 									</td>
 									<td data-bind="css: {'hidden' : $parent.toggle}">
 										<div id="B_INP_007"
-											data-bind="ntsDatePicker: { value: inp007, dateFormat: 'YYYY/MM/DD'}"></div>
+											data-bind="ntsDatePicker: { value: inp007, dateFormat: 'YYYY/MM/DD', required: true}"></div>
 									</td>
 									<td data-bind="css: {'hidden' : $parent.toggle}">
 										<div id="B_INP_008"
-											data-bind="ntsDatePicker: { value: inp008, dateFormat: 'YYYY/MM/DD'}"></div>
+											data-bind="ntsDatePicker: { value: inp008, dateFormat: 'YYYY/MM/DD', required: true}"></div>
 									</td>
 									<td data-bind="css: {'hidden' : $parent.toggle}">
 										<div id="B_INP_009"
-											data-bind="ntsDatePicker: { value: inp009, dateFormat: 'YYYY/MM/DD'}"></div>
+											data-bind="ntsDatePicker: { value: inp009, dateFormat: 'YYYY/MM/DD', required: true}"></div>
 									</td>
 									<td class="checkbox-cols"><span id="B_SEL_001"
 										data-bind="ntsCheckBox: { checked: sel001, enable: true, text: '' }"></span>

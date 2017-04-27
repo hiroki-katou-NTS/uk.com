@@ -22,6 +22,10 @@ hr {
 	 border-radius: 0 !important; 
 }*/
 
+#func-notifier-errors {
+	z-index: 999999999;
+}
+
 /* override tab css */
 .ui-widget.ui-tabs .ui-tabs-nav {
 	overflow: hidden;
