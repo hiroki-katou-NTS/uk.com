@@ -5,6 +5,9 @@ import java.util.stream.Collectors;
 
 import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSetting;
 
+/**
+ * The Class MyPageSettingDto.
+ */
 public class MyPageSettingDto {
 
 	/** The My page setting code. */
@@ -28,6 +31,12 @@ public class MyPageSettingDto {
 	/** The top page part use setting dto. */
 	public List<TopPagePartUseSettingDto> topPagePartUseSettingDto;
 
+	/**
+	 * From domain.
+	 *
+	 * @param myPageSetting the my page setting
+	 * @return the my page setting dto
+	 */
 	public static MyPageSettingDto fromDomain(MyPageSetting myPageSetting) {
 		MyPageSettingDto myPageSettingDto = new MyPageSettingDto();
 		myPageSettingDto.useMyPage = myPageSetting.getUseMyPage().value;

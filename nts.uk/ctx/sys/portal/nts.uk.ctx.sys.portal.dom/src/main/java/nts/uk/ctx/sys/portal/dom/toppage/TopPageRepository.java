@@ -27,18 +27,16 @@ public interface TopPageRepository {
  	/**
 	  * Adds the.
 	  *
-	  * @param CompanyId the company id
 	  * @param topPage the top page
 	  */
-	 void add(String CompanyId, TopPage topPage);
+	 void add(TopPage topPage);
 	 
  	/**
 	  * Update.
 	  *
-	  * @param CompanyId the company id
 	  * @param topPage the top page
 	  */
- 	void update(String CompanyId, TopPage topPage);
+ 	void update(TopPage topPage);
 	 
  	/**
 	  * Removes the.
