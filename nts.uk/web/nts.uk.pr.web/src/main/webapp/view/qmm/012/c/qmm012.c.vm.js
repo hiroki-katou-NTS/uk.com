@@ -145,6 +145,7 @@ var qmm012;
                     //end textarea
                     self.CurrentTaxAtr.subscribe(function (newValue) {
                         $('#C_Div_001').hide();
+                        $('#C_Div_005').hide();
                         switch (newValue) {
                             case 1:
                             case 3:
@@ -152,6 +153,9 @@ var qmm012;
                                 $('#C_Div_002').show();
                                 self.CurrentLimitMnyAtr(0);
                                 $('#C_Div_001').show();
+                                break;
+                            case 4:
+                                $('#C_Div_005').show();
                                 break;
                         }
                     });

@@ -172,6 +172,7 @@ module qmm012.c.viewmodel {
             //end textarea
             self.CurrentTaxAtr.subscribe(function(newValue) {
                 $('#C_Div_001').hide();
+                $('#C_Div_005').hide();
                 switch (newValue) {
                     case 1:
                     case 3:
@@ -180,6 +181,10 @@ module qmm012.c.viewmodel {
                         self.CurrentLimitMnyAtr(0);
                         $('#C_Div_001').show();
                         break;
+                    case 4:
+                        $('#C_Div_005').show();
+                        break;
+
                 }
             });
             self.C_Sel_NoItemNames_Selected.subscribe(function(NewValue: boolean) {

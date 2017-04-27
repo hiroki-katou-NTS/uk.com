@@ -18,28 +18,26 @@
  										optionsText: 'name', 
  										enable:true,
  										columns: [ 
- 											{ prop: 'name', length: 10 },
- 										
+ 											{ prop: 'name', length: 10 }
 										]}">
 			</div>
 		</div>
 	</div>
 	<div id="C_Div_001" style="display: none;">
-		<div>
-			<div class="divLine">
-				<div class="divLineCol1 verticalAlignTop">
-					<div id="C_Lbl_LimitAmountSpecification"
-						data-bind="ntsFormLabel: {  required: false }">限度金額指定</div>
-				</div>
-				<div class="divLineCol2">
-					<div id="C_Sel_LimitAmount" class="cf switchNomalSize"
-						data-bind="ntsSwitchButton: {
+		<div class="divLine">
+			<div class="divLineCol1 verticalAlignTop">
+				<div id="C_Lbl_LimitAmountSpecification"
+					data-bind="ntsFormLabel: {  required: false }">限度金額指定</div>
+			</div>
+			<div class="divLineCol2">
+				<div id="C_Sel_LimitAmount" class="cf switchNomalSize"
+					data-bind="ntsSwitchButton: {
 										options: Roundingrules_LimitAmount,
 										optionsValue: 'code',
 										optionsText: 'name',
 										value: CurrentLimitMnyAtr}"></div>
-				</div>
 			</div>
+
 		</div>
 		<div class="divLine" id="C_Div_004" style="display: none;">
 			<div class="divLineCol1">
@@ -63,6 +61,12 @@
 						data-bind="text:C_Lbl_LimitAmountItem_Value"> 項目区分 </label>
 				</div>
 			</div>
+		</div>
+	</div>
+	<div class="divLine" id="C_Div_005" style="display: none;">
+		<div class="divLineCol1"></div>
+		<div class="divLineCol2">
+			<label id="C_Lbl_NavigationMessage3">※限度額は個人情報の通勤費非課税限度額を参照します。」と表記する</label>
 		</div>
 	</div>
 	<div class="divLine">
