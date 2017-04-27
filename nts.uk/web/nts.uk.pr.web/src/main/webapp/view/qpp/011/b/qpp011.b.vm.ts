@@ -391,7 +391,8 @@ module qpp011.b {
             // self.B_INP_003_yearMonth = ko.observable('2017/12/01');
             self.B_INP_003_yearMonth.subscribe(function(newValue) {
                 if (newValue != null && newValue !== "") {
-                    self.yearInJapanEmpire_B_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.B_INP_003_yearMonth()).format("YYYY/MM")).toString() + ")");
+                    self.yearInJapanEmpire_B_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.B_INP_003_yearMonth()).format("YYYY/MM")).toString() +
+                     moment(self.B_INP_003_yearMonth()).format('DD') + " 日");
                 } else {
                     self.yearInJapanEmpire_B_LBL_010("");
                 }
@@ -426,7 +427,8 @@ module qpp011.b {
             //self.C_INP_003_yearMonth = ko.observable();
             self.C_INP_003_yearMonth.subscribe(function(newValue) {
                 if (newValue != null && newValue !== "") {
-                    self.yearInJapanEmpire_C_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.C_INP_003_yearMonth()).format("YYYY/MM")).toString() + ")");
+                    self.yearInJapanEmpire_C_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.C_INP_003_yearMonth()).format("YYYY/MM")).toString() +
+                     moment(self.C_INP_003_yearMonth()).format('DD') + " 日");
                 } else {
                     self.yearInJapanEmpire_C_LBL_010("");
                 }
