@@ -1,10 +1,15 @@
 package nts.uk.ctx.sys.portal.app.toppage.find;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.List;
+import java.util.stream.Collectors;
 
-@Getter
-@Setter
+import nts.uk.ctx.sys.portal.dom.placement.Placement;
+import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
+import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
+
+/**
+ * The Class TopPageDto.
+ */
 public class TopPageDto {
 
 	/** The top page code. */
@@ -13,15 +18,34 @@ public class TopPageDto {
 	/** The top page name. */
 	public String topPageName;
 
+	/** The Language number. */
+	public Integer languageNumber;
+
+	public List<PlacementDto> placementDto;
+
 	/**
-	 * Instantiates a new top page dto.
+	 * From domain.
 	 *
-	 * @param topPageCode the top page code
-	 * @param topPageName the top page name
+	 * @param topPage
+	 *            the top page
+	 * @param placement
+	 *            the placement
+	 * @param lstTopPagePart
+	 *            the lst top page part
+	 * @return the top page dto
 	 */
-	public TopPageDto(String topPageCode, String topPageName) {
-		super();
-		this.topPageCode = topPageCode;
-		this.topPageName = topPageName;
+	public static TopPageDto fromDomain(TopPage topPage, List<Placement> lstPlacement,
+			List<TopPagePart> lstTopPagePart) {
+		TopPageDto topPageDto = new TopPageDto();
+		topPageDto.topPageCode = topPage.getTopPageCode().v();
+		topPageDto.topPageName = topPage.getTopPageName().v();
+		topPageDto.languageNumber = topPage.getLanguageNumber();
+
+		topPageDto.placementDto = lstPlacement.stream().map(item -> {
+			return PlacementDto.fromDomain(item, lstTopPagePart.stream().filter(t -> {
+				return t.getToppagePartID().equals(item.getToppagePartID());
+			}).findFirst().get());
+		}).collect(Collectors.toList());
+		return topPageDto;
 	}
 }

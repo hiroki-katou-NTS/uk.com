@@ -3,6 +3,9 @@ package nts.uk.ctx.sys.portal.app.mypage.setting.find;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.TopPagePartUseSetting;
 
+/**
+ * The Class TopPagePartUseSettingDto.
+ */
 public class TopPagePartUseSettingDto {
 
 	/** The company id. */
@@ -20,6 +23,12 @@ public class TopPagePartUseSettingDto {
 	/** The part type. */
 	public TopPagePartType partType;
 
+	/**
+	 * From domain.
+	 *
+	 * @param topPagePartSettingItem the top page part setting item
+	 * @return the top page part use setting dto
+	 */
 	public static TopPagePartUseSettingDto fromDomain(TopPagePartUseSetting topPagePartSettingItem) {
 		TopPagePartUseSettingDto topPagePartSettingItemDto = new TopPagePartUseSettingDto();
 		topPagePartSettingItemDto.partItemCode = topPagePartSettingItem.getTopPagePartCode().toString();

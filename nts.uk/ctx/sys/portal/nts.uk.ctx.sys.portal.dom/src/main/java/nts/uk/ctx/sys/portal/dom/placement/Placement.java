@@ -3,8 +3,9 @@ package nts.uk.ctx.sys.portal.dom.placement;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.sys.portal.dom.placement.primitive.Column;
-import nts.uk.ctx.sys.portal.dom.placement.primitive.Row;
+import nts.uk.ctx.sys.portal.dom.placement.externalurl.Column;
+import nts.uk.ctx.sys.portal.dom.placement.externalurl.ExternalUrl;
+import nts.uk.ctx.sys.portal.dom.placement.externalurl.Row;
 
 /**
  * @author LamDT

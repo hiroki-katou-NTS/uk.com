@@ -18,4 +18,11 @@ public interface MyPageSettingRepository {
 	 * @param myPageSetting the my page setting
 	 */
 	void update(MyPageSetting myPageSetting);
+	
+	/**
+	 * Adds the.
+	 *
+	 * @param myPageSetting the my page setting
+	 */
+	void add(MyPageSetting myPageSetting);
 }

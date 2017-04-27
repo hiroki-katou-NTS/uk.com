@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.portal.dom.placement.ExternalUrl;
 import nts.uk.ctx.sys.portal.dom.placement.Placement;
 import nts.uk.ctx.sys.portal.dom.placement.PlacementRepository;
-import nts.uk.ctx.sys.portal.dom.placement.primitive.Column;
-import nts.uk.ctx.sys.portal.dom.placement.primitive.Row;
+import nts.uk.ctx.sys.portal.dom.placement.externalurl.Column;
+import nts.uk.ctx.sys.portal.dom.placement.externalurl.ExternalUrl;
+import nts.uk.ctx.sys.portal.dom.placement.externalurl.Row;
 import nts.uk.ctx.sys.portal.infra.entity.placement.CcgmtPlacement;
 import nts.uk.ctx.sys.portal.infra.entity.placement.CcgmtPlacementPK;
 

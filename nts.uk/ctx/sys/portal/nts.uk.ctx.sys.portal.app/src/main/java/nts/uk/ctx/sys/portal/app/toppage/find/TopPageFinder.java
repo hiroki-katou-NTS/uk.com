@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.portal.app.toppage.find;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -7,9 +8,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.sys.portal.dom.placement.Placement;
+import nts.uk.ctx.sys.portal.dom.placement.PlacementRepository;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository;
-
+import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
 
 /**
  * The Class TopPageFinder.
@@ -18,6 +21,12 @@ import nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository;
 public class TopPageFinder {
 	@Inject
 	TopPageRepository topPageRepository;
+
+	@Inject
+	PlacementRepository PlacementRepository;
+
+	// @Inject
+	// TopPagePartRepository topPagePartRepository;
 
 	public List<TopPageItemDto> findAll(String companyId) {
 		List<TopPage> listTopPage = topPageRepository.findAll(companyId);
@@ -30,10 +39,13 @@ public class TopPageFinder {
 
 	public TopPageDto findByCode(String companyId, String topPageCode, String languageType) {
 		Optional<TopPage> topPage = topPageRepository.findByCode(companyId, topPageCode);
+		List<Placement> lstPlacement = PlacementRepository.findByLayout(topPage.get().getLayoutId());
+		// TODO use topPagePartRepository find
+		List<TopPagePart> lstTopPagePart = new ArrayList<>();
 		// convert toppage domain to dto
 		if (topPage.isPresent()) {
-			TopPage tp = topPage.get(); 
-			return new TopPageDto(tp.getTopPageCode().v(), tp.getTopPageName().v());
+			TopPage tp = topPage.get();
+			return TopPageDto.fromDomain(tp, lstPlacement, lstTopPagePart);
 		}
 		return null;
 	}

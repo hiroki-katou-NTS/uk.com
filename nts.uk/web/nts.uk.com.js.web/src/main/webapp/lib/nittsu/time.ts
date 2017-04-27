@@ -15,7 +15,7 @@
         if (month)
             return year + "年 " + month + " 月";
         return year;
-    }
+    } 
 
     export class JapanYearMonth {
         empire: string;

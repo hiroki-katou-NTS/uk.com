@@ -8,8 +8,6 @@ import javax.ejb.Stateless;
 
 import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository;
-import nts.uk.ctx.sys.portal.dom.toppage.primitive.TopPageCode;
-import nts.uk.ctx.sys.portal.dom.toppage.primitive.TopPageName;
 
 @Stateless
 public class JpaTopPageRepository implements TopPageRepository {
@@ -18,20 +16,20 @@ public class JpaTopPageRepository implements TopPageRepository {
 	public List<TopPage> findAll(String companyId) {
 		// Mock data
 		List<TopPage> lstTopPage = new ArrayList<TopPage>();
-		lstTopPage.add(new TopPage(new TopPageCode("001"), null, new TopPageName("no"), null));
-		lstTopPage.add(new TopPage(new TopPageCode("002"), null, new TopPageName("2"), null));
-		lstTopPage.add(new TopPage(new TopPageCode("003"), null, new TopPageName("4"), null));
-		lstTopPage.add(new TopPage(new TopPageCode("004"), null, new TopPageName("5"), null));
+		lstTopPage.add(TopPage.createFromJavaType("1", "001", "id","no", 0));
+		lstTopPage.add(TopPage.createFromJavaType("1", "002", "id","2", 0));
+		lstTopPage.add(TopPage.createFromJavaType("1", "003", "id","4", 0));
+		lstTopPage.add(TopPage.createFromJavaType("1", "004", "id","5", 0));
 		return lstTopPage;
 	}
 
 	@Override
 	public Optional<TopPage> findByCode(String companyId, String topPageCode) {
 		List<TopPage> lstTopPage = new ArrayList<TopPage>();
-		lstTopPage.add(new TopPage(new TopPageCode("001"), null, new TopPageName("no"), null));
-		lstTopPage.add(new TopPage(new TopPageCode("002"), null, new TopPageName("2"), null));
-		lstTopPage.add(new TopPage(new TopPageCode("003"), null, new TopPageName("4"), null));
-		lstTopPage.add(new TopPage(new TopPageCode("004"), null, new TopPageName("5"), null));
+		lstTopPage.add(TopPage.createFromJavaType("1", "001", "id","no", 0));
+		lstTopPage.add(TopPage.createFromJavaType("1", "002", "id","2", 0));
+		lstTopPage.add(TopPage.createFromJavaType("1", "003", "id","4", 0));
+		lstTopPage.add(TopPage.createFromJavaType("1", "004", "id","5", 0));
 		TopPage tp = lstTopPage.stream().filter(item -> {
 			return item.getTopPageCode().v().equals(topPageCode);
 		}).findAny().orElse(null);
@@ -40,13 +38,13 @@ public class JpaTopPageRepository implements TopPageRepository {
 	}
 
 	@Override
-	public void add(String CompanyId, TopPage topPage) {
+	public void add(TopPage topPage) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void update(String CompanyId, TopPage topPage) {
+	public void update(TopPage topPage) {
 		// TODO Auto-generated method stub
 		
 	}
