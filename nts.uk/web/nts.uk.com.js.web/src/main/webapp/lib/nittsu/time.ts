@@ -15,7 +15,7 @@
         if (month)
             return year + "年 " + month + " 月";
         return year;
-    }
+    } 
 
     export class JapanYearMonth {
         empire: string;
@@ -216,7 +216,7 @@
         return moment.utc(date, inputFormats).format(outputFormat);
     }
 
-    abstract class ParseResult {
+    export abstract class ParseResult {
         success: boolean;
         constructor(success) {
             this.success = success;

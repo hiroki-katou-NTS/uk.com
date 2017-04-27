@@ -118,7 +118,7 @@ module nts.uk.ui.koExtentions {
                 $(element).igTreeGridSelection("clearSelection");
             } else {
                 // Compare value.
-                var olds = _.map($(element).igTreeGridSelection("selectedRow"), function(row: any) {
+                var olds = _.map($(element).igTreeGridSelection("selectedRow") as Array<any>, function(row: any) {
                     return row.id;
                 });
                 // Not change, do nothing.

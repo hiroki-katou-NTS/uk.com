@@ -14,7 +14,7 @@ module nts.uk.ui.koExtentions {
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             var data = valueAccessor();
-            var value = data.value;
+            var value = data.value; 
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var dateFormat: string = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
             var ISOFormat = text.getISOFormat(dateFormat);
@@ -27,7 +27,7 @@ module nts.uk.ui.koExtentions {
             var startDate: any = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
             var endDate: any = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
             var autoHide: boolean = (data.autoHide !== undefined) ? ko.unwrap(data.autoHide) : true;
-            var valueType = typeof value();
+            var valueType:string = typeof value();
             if (valueType === "string") {
                 valueFormat = (valueFormat) ? valueFormat : text.getISOFormat("ISO");
             }

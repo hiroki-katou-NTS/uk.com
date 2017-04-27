@@ -2,7 +2,7 @@
 
 module nts.uk.ui.option {
     
-    abstract class DialogOption {
+    export abstract class DialogOption {
         modal: boolean;
         show: boolean = false;
         buttons: DialogButton[];
@@ -165,10 +165,10 @@ module nts.uk.ui.option {
         }
     }
     
-    type ButtonSize = "x-large" | "large" | "medium" | "small";
-    type ButtonColor = "" | "danger" | "proceed";
+    export type ButtonSize = "x-large" | "large" | "medium" | "small";
+    export type ButtonColor = "" | "danger" | "proceed";
     
-    class DialogButton{
+    export class DialogButton{
         text: string;
         "class": string;
         size: ButtonSize;

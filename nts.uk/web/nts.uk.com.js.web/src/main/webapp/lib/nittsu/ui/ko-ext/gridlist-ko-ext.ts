@@ -26,9 +26,9 @@ module nts.uk.ui.koExtentions {
             var features = [];
             features.push({ name: 'Selection', multipleSelection: data.multiple });
             features.push({ name: 'Sorting', type: 'local' });
-//            if(data.multiple){ 
+            if(data.multiple || showNumbering){ 
                 features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: showNumbering });    
-//            }
+            }
             
             var gridFeatures = ko.unwrap(data.features);
             var iggridColumns = _.map(observableColumns, c => {
@@ -40,9 +40,9 @@ module nts.uk.ui.koExtentions {
                     });
                     if(!util.isNullOrUndefined(switchF)){
                         features.push({name: 'Updating', enableAddRow: false, enableDeleteRow: false, editMode: 'none'});
-                        let switchOptions = ko.unwrap(switchF.options);
-                        let switchValue = switchF.optionsValue; 
-                        let switchText = switchF.optionsText;
+                        let switchOptions = ko.unwrap(switchF['options']);
+                        let switchValue = switchF['optionsValue']; 
+                        let switchText = switchF['optionsText'];
                         c["formatter"] = function createButton(val, row) {
                             let result: JQuery = $('<div class="ntsControl"/>');
                             result.attr("data-value", val);
@@ -67,7 +67,7 @@ module nts.uk.ui.koExtentions {
                         });      
                     }       
                 }
-                return c;
+                return c; 
             });
 
             $grid.igGrid({
