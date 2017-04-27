@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.dom.enums;
+package nts.uk.ctx.sys.portal.dom.flowmenu;
 
 public enum DefClassAtr {
 	/* New screen */

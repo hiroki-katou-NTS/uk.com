@@ -1,7 +1,7 @@
 /**
  * author hieult
  */
-package nts.uk.ctx.sys.portal.dom.titlemenu.primitive;
+package nts.uk.ctx.sys.portal.dom.titlemenu;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
