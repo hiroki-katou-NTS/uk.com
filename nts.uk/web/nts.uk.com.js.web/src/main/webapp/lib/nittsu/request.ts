@@ -28,7 +28,7 @@ module nts.uk.request {
             }
             return instance;
         }
-
+ 
         static build(entriesObj: { [key: string]: any }) {
             var instance = new QueryString();
 
