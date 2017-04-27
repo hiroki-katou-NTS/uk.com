@@ -392,7 +392,7 @@ module qpp011.b {
             self.B_INP_003_yearMonth.subscribe(function(newValue) {
                 if (newValue != null && newValue !== "") {
                     self.yearInJapanEmpire_B_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.B_INP_003_yearMonth()).format("YYYY/MM")).toString() +
-                     moment(self.B_INP_003_yearMonth()).format('DD') + " 日");
+                        moment(self.B_INP_003_yearMonth()).format('DD') + " 日");
                 } else {
                     self.yearInJapanEmpire_B_LBL_010("");
                 }
@@ -428,7 +428,7 @@ module qpp011.b {
             self.C_INP_003_yearMonth.subscribe(function(newValue) {
                 if (newValue != null && newValue !== "") {
                     self.yearInJapanEmpire_C_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.C_INP_003_yearMonth()).format("YYYY/MM")).toString() +
-                     moment(self.C_INP_003_yearMonth()).format('DD') + " 日");
+                        moment(self.C_INP_003_yearMonth()).format('DD') + " 日");
                 } else {
                     self.yearInJapanEmpire_C_LBL_010("");
                 }
@@ -446,7 +446,7 @@ module qpp011.b {
                 $('#B_INP_001').focus();
                 return false;
             }
-            nts.uk.sessionStorage.setItem("QPP011_D_TargetDate", nts.uk.time.formatYearMonth(self.B_INP_001_yearMonth()));
+            nts.uk.sessionStorage.setItem("QPP011_D_TargetDate", self.B_INP_001_yearMonth());
             nts.uk.ui.windows.sub.modal('/view/qpp/011/d/index.xhtml', { title: '納付書詳細設定', height: 550, width: 1050, dialogClass: 'no-close' }).onClosed(function(): any {
             });
         }
@@ -478,7 +478,7 @@ module qpp011.b {
                 return false;
             }
             if (self.B_INP_003_yearMonth() === "" || self.B_INP_003_yearMonth() === null) {
-                nts.uk.ui.dialog.alert("が入力されていません");
+                $('#B_INP_003-input').ntsError('set', 'が入力されていません');
                 $('#B_INP_003').focus();
                 return false;
             }
@@ -536,7 +536,7 @@ module qpp011.b {
             } else {
                 nts.uk.ui.dialog.alert("納付先が選択されていせん。");
             }
-            
+
             var command = {
                 residentTaxCodeList: self.selectedValue_B_LST_001(),
                 companyLogin: null,
