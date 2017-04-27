@@ -4,12 +4,11 @@ import java.util.List;
 
 public interface ComfirmDifferentRepository {
 
-	List<DetailDifferential> getDetailDifferentialWithEarlyYM(String companyCode, int processingYMEarlier);
+	List<DetailDifferential> getDetailDifferentialWithEarlyYM(String companyCode, int processingYMEarlier, List<String> personIDs);
 
-	List<DetailDifferential> getDetailDifferentialWithLaterYM(String companyCode, int processingYMLater);
+	List<DetailDifferential> getDetailDifferentialWithLaterYM(String companyCode, int processingYMLater, List<String> personIDs);
 
-	PaycompConfirm getPayCompComfirm(String companyCode, String personId, int processYMEarly, int processYMLater,
-			int categoryAtr, String itemCD);
+	List<PaycompConfirm> getPayCompComfirm(String companyCode, List<String> personIDs, int processYMEarly, int processYMLater);
 
 	void insertComparingPrintSet(PaycompConfirm paycompConfirm);
 

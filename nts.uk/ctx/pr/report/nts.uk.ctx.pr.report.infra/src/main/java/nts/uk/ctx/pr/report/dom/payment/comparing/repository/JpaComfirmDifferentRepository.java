@@ -23,28 +23,19 @@ public class JpaComfirmDifferentRepository extends JpaRepository implements Comf
 			+ "AND h.qstdtPaymentHeaderPK.sparePayAtr = d.qstdtPaymentDetailPK.sparePayAttribute AND h.qstdtPaymentHeaderPK.processingYM = d.qstdtPaymentDetailPK.processingYM "
 			+ "INNER JOIN QcamtItem_v1 i " + "ON h.qstdtPaymentHeaderPK.companyCode = i.qcamtItemPK.ccd "
 			+ "AND d.qstdtPaymentDetailPK.categoryATR = i.qcamtItemPK.ctgAtr AND d.qstdtPaymentDetailPK.itemCode = i.qcamtItemPK.itemCd "
-			+ "WHERE d.qstdtPaymentDetailPK.companyCode = :ccd AND d.qstdtPaymentDetailPK.processingYM = :processYM "
+			+ "WHERE d.qstdtPaymentDetailPK.companyCode = :ccd AND d.qstdtPaymentDetailPK.personId IN :personId AND d.qstdtPaymentDetailPK.processingYM = :processYM "
 			+ "AND d.qstdtPaymentDetailPK.categoryATR in (0,1,3) ORDER BY d.qstdtPaymentDetailPK.personId, d.qstdtPaymentDetailPK.itemCode";
 
 	private final String SELECT_PAYCOMP_COMFIRM = "SELECT c FROM QlsdtPaycompConfirm as c WHERE "
-			+ "c.paycompConfirmPK.companyCode = :companyCode AND c.paycompConfirmPK.personId = :personId "
-			+ "AND c.paycompConfirmPK.processYMEarly = :processYMEarly AND c.paycompConfirmPK.processYMLater = :processYMLater "
-			+ "AND c.paycompConfirmPK.categoryAtr = :categoryAtr AND c.paycompConfirmPK.itemCD = :itemCD";
+			+ "c.paycompConfirmPK.companyCode = :companyCode AND c.paycompConfirmPK.personId IN :personId "
+			+ "AND c.paycompConfirmPK.processYMEarly = :processYMEarly AND c.paycompConfirmPK.processYMLater = :processYMLater";
+
 
 	@Override
-	public void insertComparingPrintSet(PaycompConfirm paycompConfirm) {
-
-	}
-
-	@Override
-	public void updateComparingPrintSet(PaycompConfirm paycompConfirm) {
-
-	}
-
-	@Override
-	public List<DetailDifferential> getDetailDifferentialWithEarlyYM(String companyCode, int processingYMEarlier) {
+	public List<DetailDifferential> getDetailDifferentialWithEarlyYM(String companyCode, int processingYMEarlier,
+			List<String> personIDs) {
 		return this.queryProxy().query(SELECT_DETAIL_DIFFERENT_YM, Object[].class).setParameter("ccd", companyCode)
-				.setParameter("processYM", processingYMEarlier).getList(s -> {
+				.setParameter("personId", personIDs).setParameter("processYM", processingYMEarlier).getList(s -> {
 					String employeeCode = s[0].toString();
 					String employeeName = employeeCode.substring(0, 10);
 					String itemCode = s[1].toString();
@@ -62,9 +53,10 @@ public class JpaComfirmDifferentRepository extends JpaRepository implements Comf
 	}
 
 	@Override
-	public List<DetailDifferential> getDetailDifferentialWithLaterYM(String companyCode, int processingYMLater) {
+	public List<DetailDifferential> getDetailDifferentialWithLaterYM(String companyCode, int processingYMLater,
+			List<String> personIDs) {
 		return this.queryProxy().query(SELECT_DETAIL_DIFFERENT_YM, Object[].class).setParameter("ccd", companyCode)
-				.setParameter("processYM", processingYMLater).getList(s -> {
+				.setParameter("personId", personIDs).setParameter("processYM", processingYMLater).getList(s -> {
 					String employeeCode = s[0].toString();
 					String employeeName = employeeCode.substring(0, 10);
 					String itemCode = s[1].toString();
@@ -82,15 +74,24 @@ public class JpaComfirmDifferentRepository extends JpaRepository implements Comf
 	}
 
 	@Override
-	public PaycompConfirm getPayCompComfirm(String companyCode, String personId, int processYMEarly, int processYMLater,
-			int categoryAtr, String itemCD) {
+	public List<PaycompConfirm> getPayCompComfirm(String companyCode, List<String> personIDs, int processYMEarly, int processYMLater) {
 		return this.queryProxy().query(SELECT_PAYCOMP_COMFIRM, QlsdtPaycompConfirm.class)
-				.setParameter("companyCode", companyCode).setParameter("personId", personId)
+				.setParameter("companyCode", companyCode).setParameter("personId", personIDs)
 				.setParameter("processYMEarly", processYMEarly).setParameter("processYMLater", processYMLater)
-				.setParameter("categoryAtr", categoryAtr).setParameter("itemCD", itemCD)
-				.getSingleOrNull(s -> convertToDomainPaycompConfirm(s));
+				.getList(s -> convertToDomainPaycompConfirm(s));
+	}
+	
+
+	@Override
+	public void insertComparingPrintSet(PaycompConfirm paycompConfirm) {
+		this.commandProxy().insert(convertToEntityPaycompConfirm(paycompConfirm));
 	}
 
+	@Override
+	public void updateComparingPrintSet(PaycompConfirm paycompConfirm) {
+		this.commandProxy().update(convertToEntityPaycompConfirm(paycompConfirm));
+	}
+	
 	private static DetailDifferential convertToDomainDetailDifferential(String companyCode, String employeeCode,
 			String employeeName, String itemCode, String itemName, int categoryAtr, BigDecimal comparisonValue1,
 			BigDecimal comparisonValue2, BigDecimal valueDifference, String reasonDifference, int registrationStatus1,

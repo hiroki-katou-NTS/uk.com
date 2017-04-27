@@ -13,7 +13,8 @@
 					height : 500
 				};
 			</script>
-			<script src="http://www.igniteui.com/data-files/adventureworks.min.js"></script>
+			<script
+				src="http://www.igniteui.com/data-files/adventureworks.min.js"></script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="qpp008.g.main.css" />
 			<com:scriptfile path="qpp008.g.start.js" />
@@ -31,18 +32,20 @@
 
 				<div class="div-contents-one valign-center control-group">
 					<div id="comparative-date-lbl-001" data-bind="ntsFormLabel: {}">比較年月</div>
-					<label id="comparative-date-value-lbl-002">2017/03 と
-						2017/04 を比較</label>
+					<label id="comparative-date-value-lbl-002"><span
+						data-bind="text: comparativeDateEarlier"></span> と <span
+						data-bind="text: comparativeDateLater"></span> を比較</label>
 					<div id="mumber-people-lbl-003" data-bind="ntsFormLabel: {}">対象者</div>
-					<label id="mumber-people-value-lbl-004">2人</label>
+					<label id="mumber-people-value-lbl-004"><span
+						data-bind="text: numberOfPeople"></span>人</label>
 					<hr />
 				</div>
 				<div class="div-contents-two">
 					<div id="confirmation-status-lbl-007" data-bind="ntsFormLabel: {}">確認状況の一括変更</div>
 					<div id="div-contents-two-right">
-						<button>チェックをつける</button>
+						<button data-bind = "click: checkedAllComfirmStatus">チェックをつける</button>
 						<span>表示されているデータを全て確認済みにします（チェックをつけます）</span>
-						<button>チェックをはずす</button>
+						<button data-bind = "click: unCheckedAllComfirmStatus">チェックをはずす</button>
 						<span>表示されているデータを全て未確認にします（チェックをはずします）</span>
 					</div>
 
@@ -59,7 +62,7 @@
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: selectedItemCategoryCode,
-									enable: enable }"></div>
+									enable: true }"></div>
 							</div>
 							<div class="confirmed-Squeezing-div valign-top control-group">
 								<label id="confirmed-Squeezing-lbl-006">確認済みのしぼり込み</label> <span
@@ -69,12 +72,12 @@
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: selectedconfirmedCode,
-									enable: enable }">
+									enable: true }">
 								</span>
 							</div>
 						</div>
 						<button class="large search-btn caret-bottom"
-							id="search-btn-sch-001">絞り込み</button>
+							id="search-btn-sch-001" data-bind = "click: refineComparingDifferrent">絞り込み</button>
 					</div>
 				</div>
 				<div>

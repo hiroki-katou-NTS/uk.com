@@ -14,7 +14,12 @@ public enum RegistrationStatus {
 	/**
 	 * 1:初期データ作成
 	 */
-	CREATION_INITAL(1, "初期データ作成");
+	CREATION_INITAL(1, "初期データ作成"),
+	
+	/**
+	 * 2:未作成
+	 */
+	NOT_CREATION(2, "未作成");
 
 	public final int value;
 	public final String name;

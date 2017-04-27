@@ -21,8 +21,10 @@ public class DetailDifferentialDto {
 	private String itemCode;
 
 	private String itemName;
-
-	private String categoryAtr;
+	
+	private int categoryAtr;
+	
+	private String categoryAtrName;
 
 	private BigDecimal comparisonValue1;
 
@@ -40,7 +42,7 @@ public class DetailDifferentialDto {
 
 	public static DetailDifferentialDto createFromJavaType(DetailDifferential domain) {
 		return new DetailDifferentialDto(domain.getEmployeeCode().v(), domain.getEmployeeName().v(),
-				domain.getItemCode().v(), domain.getItemName().v(), domain.getCategoryAtr().name,
+				domain.getItemCode().v(), domain.getItemName().v(), domain.getCategoryAtr().value, domain.getCategoryAtr().name,
 				domain.getComparisonValue1().v(), domain.getComparisonValue2().v(), domain.getValueDifference().v(),
 				domain.getReasonDifference().v(), domain.getRegistrationStatus1().name,
 				domain.getRegistrationStatus2().name, domain.getConfirmedStatus().value);
