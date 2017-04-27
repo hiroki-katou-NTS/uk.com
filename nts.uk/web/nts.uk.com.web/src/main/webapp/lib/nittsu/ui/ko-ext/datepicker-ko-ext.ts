@@ -14,7 +14,7 @@ module nts.uk.ui.koExtentions {
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             var data = valueAccessor();
-            var value = data.value;
+            var value = data.value; 
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var dateFormat: string = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
             var ISOFormat = text.getISOFormat(dateFormat);
@@ -132,15 +132,14 @@ module nts.uk.ui.koExtentions {
             
             // Value Binding
             var dateFormatValue = (value() !== "") ? time.formatPattern(value(), valueFormat, ISOFormat) : "";
-            if (init === true || time.formatPattern($input.datepicker("getDate",true),"",ISOFormat) !== dateFormatValue) {
-                if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
-                    $input.datepicker('setDate', dateFormatValue);
-                    $label.text("(" + time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
-                }
-                else {
-                    $input.val("");
-                    $label.text("");
-                }
+            if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
+                // Check equals to avoid multi datepicker with same value
+                $input.datepicker('setDate', dateFormatValue);
+                $label.text("(" + time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
+            }
+            else {
+                $input.val("");
+                $label.text("");
             }
             container.data("init", false);
             

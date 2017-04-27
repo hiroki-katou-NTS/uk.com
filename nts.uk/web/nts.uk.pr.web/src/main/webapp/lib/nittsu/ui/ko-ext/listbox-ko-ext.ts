@@ -2,92 +2,6 @@
 
 module nts.uk.ui.koExtentions {
     
-    function selectOnListBox(event) {
-        var container = $(event.delegateTarget);
-        container.find(".ui-selected").removeClass('ui-selected');
-        $(this).addClass('ui-selected');
-        container.data('value', $(this).data('value'));
-        document.getElementById(container.parent().attr('id')).dispatchEvent(event.data.event);
-    }
-    
-    function unbindMultible($target: JQuery){
-        $target.selectable("destroy");
-    }
-    
-    function bindMultible($target: JQuery, changeEvent: CustomEvent){ 
-        $target.selectable({
-            filter: 'li',
-            selected: function(event, ui) {
-            },
-            stop: function(event, ui) {
-                // Add selected value.
-                var data = [];
-                $("li.ui-selected", $target).each(function(index, opt) {
-                    data[index] = $(opt).data('value');
-                });
-                $target.data('value', data);
-
-                // fire event change.
-                document.getElementById($target.parent().attr('id')).dispatchEvent(changeEvent);
-            },
-            selecting: function(event, ui) {
-                if ((<any>event).shiftKey) {
-                    if ($(ui.selecting).attr("clicked") !== "true") {
-                        var source = $target.find("li");
-                        var clicked = _.find(source, function(row) {
-                            return $(row).attr("clicked") === "true";
-                        });
-                        if (clicked === undefined) {
-                            $(ui.selecting).attr("clicked", "true");
-                        } else {
-                            $target.find("li").attr("clicked", "");
-                            $(ui.selecting).attr("clicked", "true");
-                            var start = parseInt($(clicked).attr("data-idx"));
-                            var end = parseInt($(ui.selecting).attr("data-idx"));
-                            var max = start > end ? start : end;
-                            var min = start < end ? start : end;
-                            var range = _.filter(source, function(row) {
-                                var index = parseInt($(row).attr("data-idx"));
-                                return index >= min && index <= max;
-                            });
-                            $(range).addClass("ui-selected");
-                        }
-                    }
-                } else if (!(<any>event).ctrlKey) {
-                    $target.find("li").attr("clicked", "");
-                    $(ui.selecting).attr("clicked", "true");
-                }
-            }
-        });
-    }
-    
-    function bindSingleSelectListBox($target: JQuery, changeEvent: CustomEvent){
-        $target.on("click", "li", { event: changeEvent }, selectOnListBox);
-    }
-    
-    function unbindSingleSelectListBox($target: JQuery){
-        $target.off("click", "li");
-    }
-    
-    function selectOneRow(container, selectedValue){
-        container.find("li").removeClass("ui-selected");
-        var target = _.find($('li', container), function(opt) {
-            var optValue = $(opt).data('value');
-            return optValue == selectedValue;
-        });
-        $(target).addClass('ui-selected');
-    }
-    
-    function selectMultiRow(container, selectedValues){
-        container.find("li").removeClass("ui-selected");
-        _.forEach(selectedValues, function(selectedValue){ 
-            var target = _.find($('li', container), function(opt) {
-                var optValue = $(opt).data('value');
-                return optValue == selectedValue;
-            });
-            $(target).addClass('ui-selected');
-        });  
-    }
     /**
      * ListBox binding handler
      */
@@ -106,70 +20,162 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
 
             // Get options
-            var options: Array<any> = ko.unwrap(data.options);
+            var options: Array<any> = ko.unwrap(data.options) ;
             // Get options value
             var optionValue = ko.unwrap(data.primaryKey === undefined ? data.optionsValue : data.primaryKey);
             var optionText = ko.unwrap(data.primaryText === undefined ? data.optionsText : data.primaryText);
             var selectedValue = ko.unwrap(data.value);
             var isMultiSelect = ko.unwrap(data.multiple);
             var enable: boolean = ko.unwrap(data.enable);
-            var required = ko.unwrap(data.required) || false;
+//            var required = ko.unwrap(data.required) || false;
+            var columns: Array<any> = data.columns;
             // Container
-            var container = $(element);
-            container.addClass('ntsListBox ntsControl').data('required', required);
+            let gridId = $(element).attr("id");
+            if(nts.uk.util.isNullOrUndefined(gridId)){
+                gridId = nts.uk.util.randomId();        
+            } else {
+                gridId += "_grid";    
+            }
+            $(element).append("<table id='" + gridId + "' class='ntsListBox ntsControl'/>");
+            var container = $(element).find("#" + gridId);
             container.data("options", options.slice());
             container.data("init", true);
             container.data("enable", enable);
             
-            // Create select
-            container.append('<ol class="nts-list-box"></ol>');
-            var selectListBoxContainer = container.find('.nts-list-box');
-
             // Create changing event.
             var changeEvent = new CustomEvent("selectionChange", {
                 detail: {},
             });
-            
+              
             container.data("selectionChange", changeEvent);
-            if (isMultiSelect) {
-                // Bind selectable.
-                bindMultible(selectListBoxContainer, changeEvent);
-            }
-            else {
-                bindSingleSelectListBox(selectListBoxContainer, changeEvent);
-            }
             
-            // Fire event.
-            container.on('selectionChange', (function(e: Event) {
-                // Check is multi-selection.
+            var features = [];
+            features.push({ name: 'Selection', multipleSelection: isMultiSelect });
+            
+            var maxWidthCharacter = 15;
+            var gridFeatures = ko.unwrap(data.features);
+            var width = 0;
+            let iggridColumns = [];
+            if(nts.uk.util.isNullOrUndefined(columns)){
+                iggridColumns.push({"key": optionValue, "width": 10 * maxWidthCharacter + 20, "headerText": '', "columnCssClass": 'nts-column', 'hidden': true});
+                iggridColumns.push({"key": optionText, "width": 10 * maxWidthCharacter + 20, "headerText": '', "columnCssClass": 'nts-column'});
+                width += 10 * maxWidthCharacter + 20;    
+                container.data("fullValue", true);
+            } else {
+                iggridColumns = _.map(columns, c => {
+                    c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
+                    c["width"] = c["length"] * maxWidthCharacter + 20;
+                    c["headerText"] = '';
+                    c["columnCssClass"] = 'nts-column';
+                    width += c["length"] * maxWidthCharacter + 20;
+                    return c;
+                });    
+            }
+
+            var gridHeaderHeight = 24;
+            container.igGrid({
+                width: width + "px",
+                height: (data.rows * 28 + gridHeaderHeight) + "px",
+                primaryKey: optionValue,
+                columns: iggridColumns,
+                virtualization: true,
+                virtualizationMode: 'continuous',
+                features: features
+            });
+            
+            container.ntsGridList('setupSelecting');
+             
+            
+            container.bind('iggridselectionrowselectionchanging', () => {
+                if(container.data("enable") === false){
+                    return false;       
+                }
+                let itemSelected;
+                if (container.igGridSelection('option', 'multipleSelection')) {
+                    let selected: Array<any> = container.ntsGridList('getSelected');
+                    if (selected) {
+                        itemSelected = _.map(selected, s => s.id);
+                    } else {
+                        itemSelected = [];
+                    }
+                } else {
+                    let selected = container.ntsGridList('getSelected');
+                    if (selected) {
+                        itemSelected = selected.id;
+                    } else {
+                        itemSelected = ('');
+                    }
+                }
                 var changingEvent = new CustomEvent("selectionChanging", {
-                    detail: itemsSelected, 
+                    detail: itemSelected,  
                     bubbles: true,
                     cancelable: true,
                 });
                 
-                var isMulti = container.data("multiple");
-                var itemsSelected: any = selectListBoxContainer.data('value');
-                // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
+                container.data("chaninged", true);
+                
                 document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
-                if (changingEvent.returnValue !== undefined && !changingEvent.returnValue) {
-                    // revert select.
-                    console.log(selectedValue);
-                    selectListBoxContainer.data('value', data.value());
-                    if(isMulti){
-                        selectMultiRow(selectListBoxContainer, data.value());
-                    } else {
-                        selectOneRow(selectListBoxContainer, data.value());
-                    }
-//                    $(this).val(selectedValue);
-//                    data.value(selectedValue);
-                } else{
-                    data.value(itemsSelected);
-                    container.data("selected", !isMulti ? itemsSelected : itemsSelected.slice());
+                
+                if (changingEvent.returnValue === undefined || !changingEvent.returnValue) {
+                    return false;    
                 }
-            }));
+            });
+
+            container.bind('selectionchanged', () => {
+                let itemSelected;
+                if (container.igGridSelection('option', 'multipleSelection')) {
+                    let selected: Array<any> = container.ntsGridList('getSelected');
+                    if (selected) {
+                        itemSelected = _.map(selected, s => s.id);
+                    } else {
+                        itemSelected = [];
+                    }
+                } else {
+                    let selected = container.ntsGridList('getSelected');
+                    if (selected) {
+                        itemSelected = selected.id;
+                    } else {
+                        itemSelected = ('');
+                    }
+                }
+                if(container.data("chaninged") !== true){
+                    
+                    var changingEvent = new CustomEvent("selectionChanging", {
+                        detail: itemSelected,  
+                        bubbles: true,
+                        cancelable: true,
+                    });
+                    
+                    document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
+                    
+                    if (changingEvent.returnValue === undefined || !changingEvent.returnValue) {
+                        let oldSelected = container.data("selected");
+                        container.ntsGridList("setSelected", oldSelected);
+                        return false;    
+                    } 
+                }
+                
+                container.data("selected", itemSelected);
+                container.data("chaninged", false);
+                let isMultiOld = container.igGridSelection('option', 'multipleSelection');
+                if(container.data("fullValue")){
+                    let dataSource = container.igGrid('option', "dataSource");
+                    if (isMultiOld){
+                        itemSelected = _.map(dataSource, optionValue);
+                    } else {
+                        itemSelected = _.find(dataSource, function (d){
+                            return d[optionValue].toString() === itemSelected.toString();      
+                        });    
+                    }
+                }
+                data.value(itemSelected);
+
+            });
+            container.setupSearchScroll("igGrid", true); 
             
             container.data("multiple", isMultiSelect);
+            $("#" + gridId + "_container").find("#" + gridId + "_headers").closest("tr").hide();
+            $("#" + gridId + "_container").height($("#" + gridId + "_container").height() - gridHeaderHeight);
         }
 
         /**
@@ -190,156 +196,65 @@ module nts.uk.ui.koExtentions {
             var columns: Array<any> = data.columns;
             var rows = data.rows;
             // Container.
-            var container = $(element);
-            var selectListBoxContainer = container.find('.nts-list-box');
-            var maxWidthCharacter = 15;
-            var required = ko.unwrap(data.required) || false;
-            container.data('required', required);
-
-            var getOptionValue = item => {
-                if (optionValue === undefined) {
-                    return item;
-                } else {
-                    return item[optionValue];
-                }
-            };
-            var originalOptions = container.data("options");
-            var init = container.data("init");
-            var originalSelected = container.data("selected");
-            
-            var oldMultiOption = container.data("multiple");
-            
-            if(oldMultiOption !== isMultiSelect && !init){
-                var changeEvent = new CustomEvent("selectionChange", {
-                    detail: {},
-                });
-                if (oldMultiOption) {
-                    unbindMultible(selectListBoxContainer);
-                    bindSingleSelectListBox(selectListBoxContainer, changeEvent);
-                    container.find("li").removeClass("ui-selected");
-                    if(selectedValue.length > 0){
-                        selectOneRow(selectListBoxContainer, selectedValue[0]);
-                        data.value(selectedValue[0]);
-                    }
-                } else {
-                    unbindSingleSelectListBox(selectListBoxContainer);
-                    bindMultible(selectListBoxContainer, changeEvent);
-                    if (!uk.text.isNullOrEmpty(selectedValue)){
-                        let array = [];
-                        array.push(selectedValue);
-                        data.value(array);
-                    }
-                }
-                container.data("multiple", isMultiSelect);        
-            }
-            
-            if (!_.isEqual(originalOptions, options) || init) {
-                
-                if(!init){
-                    //remove children
-                    selectListBoxContainer.empty();
-                }
-                
-                // Append options.
-                options.forEach((item, idx) => {
-                    // Check option is Selected
-                    var isSelected: boolean = false;
-                    if (isMultiSelect) {
-                        isSelected = (<Array<any>>selectedValue).indexOf(getOptionValue(item)) !== -1;
-                    } else {
-                        isSelected = selectedValue === getOptionValue(item);
-                    }
-                    var target = _.find($('li', container), function(opt) {
-                        var optValue = $(opt).data('value');
-                        return optValue == getOptionValue(item);
-                    });
-                    if (init || target === undefined) {
-                        // Add option
-                        var selectedClass = isSelected ? 'ui-selected' : '';
-                        var itemTemplate: string = '';
-                        if (columns && columns.length > 0) {
-                            columns.forEach((col, cIdx) => {
-                                itemTemplate += '<div class="nts-column nts-list-box-column-' + cIdx + '">' + item[col.key !== undefined ? col.key : col.prop] + '</div>';
-                            });
-                        } else {
-                            itemTemplate = '<div class="nts-column nts-list-box-column-0">' + item[optionText] + '</div>';
-                        }
-                        
-                        $('<li/>').addClass(selectedClass).attr("data-idx", idx)
-                            .html(itemTemplate).data('value', getOptionValue(item))
-                            .appendTo(selectListBoxContainer);
-                        
-                    } else {
-                        var targetOption = $(target);
-                        if (isSelected) {
-                            targetOption.addClass('ui-selected');
-                        } else {
-                            targetOption.removeClass('ui-selected');
-                        }
-                    }
-
-                });
-
-                var padding = 10;
-                var rowHeight = 28;
-                // Set width for multi columns
-                if (columns && columns.length > 0) {
-                    var totalWidth = 0;
-                    columns.forEach((item, cIdx) => {
-                        container.find('.nts-list-box-column-' + cIdx).width(item.length * maxWidthCharacter + 20);
-                        totalWidth += item.length * maxWidthCharacter + 20;
-                    });
-                    totalWidth += padding * (columns.length + 1); // + 50;
-                    container.find('.nts-list-box > li').css({ 'width': totalWidth });
-                    container.find('.nts-list-box').css({ 'width': totalWidth });
-                    container.css({ 'width': totalWidth });
-                }
-                if (rows && rows > 0) {
-                    container.css('height', rows * rowHeight);
-                    container.find('.nts-list-box').css('height', rows * rowHeight);
-                }
-            }
-            container.data("options", options.slice());
-            container.data("init", false);
-
-            // Set value
-            var haveData = isMultiSelect ? !uk.text.isNullOrEmpty(selectedValue) && selectedValue.length > 0 
-                : !uk.text.isNullOrEmpty(selectedValue);
-            if (haveData && (!_.isEqual(originalSelected, selectedValue) || init)) {
-                selectListBoxContainer.data('value', selectedValue);
-                if(isMultiSelect){
-                    selectMultiRow(selectListBoxContainer, selectedValue);
-                } else {
-                    selectOneRow(selectListBoxContainer, selectedValue);
-                }
-                container.trigger('selectionChange');
-            } else if (!haveData){
-                container.ntsListBox("deselectAll");    
-            }
-            
-            if (isMultiSelect) {
-                // Check enable
-                if (!enable) {
-                    selectListBoxContainer.selectable("disable");;
-                    container.addClass('disabled');
-                } else {
-                    selectListBoxContainer.selectable("enable");
-                    container.removeClass('disabled');
-                }
-            } else {
-                if (!enable) {
-                    //selectListBoxContainer.selectable("disable");;
-                    selectListBoxContainer.off("click", "li");
-                    container.addClass('disabled');
-                } else {
-                    //selectListBoxContainer.selectable("enable");
-                    if (container.hasClass("disabled")) {
-                        selectListBoxContainer.on("click", "li", { event: container.data("selectionChange") }, selectOnListBox);
-                        container.removeClass('disabled');
-                    }
-                }
-            }
+            var container = $(element).find(".ntsListBox");
             container.data("enable", enable);
+            if(!enable){
+                container.ntsGridList('unsetupSelecting');
+                container.addClass("disabled");     
+            } else {
+                container.ntsGridList('setupSelecting');
+                container.removeClass("disabled");    
+            }
+            
+            var currentSource = container.igGrid('option', 'dataSource');
+            if (!_.isEqual(currentSource, options)) {
+                let currentSources = options.slice();
+                var observableColumns = _.filter(ko.unwrap(data.columns), function(c){
+                    c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
+                    return c["isDateColumn"] !== undefined && c["isDateColumn"] !== null && c["isDateColumn"] === true;
+                });
+                _.forEach(currentSources, function(s){
+                    _.forEach(observableColumns, function(c){
+                        let key = c["key"] === undefined ? c["prop"] : c["key"];
+                        s[key] = moment(s[key]).format(c["format"]);
+                    });        
+                }); 
+                container.igGrid('option', 'dataSource', currentSources);
+                container.igGrid("dataBind");
+            }
+            
+            let dataValue = data.value();
+            let isMultiOld = container.igGridSelection('option', 'multipleSelection');
+            if(container.data("fullValue")){
+                if (isMultiOld){
+                    dataValue = _.map(dataValue, optionValue);
+                } else {
+                    dataValue = dataValue[optionValue];    
+                }
+            }
+            
+            if(isMultiOld !== isMultiSelect){
+                
+                container.igGridSelection('option', 'multipleSelection', isMultiSelect);   
+                if(isMultiOld && !nts.uk.util.isNullOrUndefined(dataValue) && dataValue.length > 0){
+                    data.value(data.value()[0]);   
+                } else if (!isMultiOld && !nts.uk.util.isNullOrUndefined(dataValue)){
+                    data.value([data.value()]);       
+                }
+                container.ntsGridList('setSelected', dataValue);    
+            } else {
+                var currentSelectedItems = container.ntsGridList('getSelected');
+                var isEqual = _.isEqualWith(currentSelectedItems, dataValue, function(current, newVal) {
+                    if ((current === undefined && newVal === undefined) || (current !== undefined && current.id === newVal)) {
+                        return true;
+                    }
+                })
+                if (!isEqual) {
+                    container.ntsGridList('setSelected', dataValue);
+                }    
+            }
+
+            container.closest('.ui-iggrid').addClass('nts-gridlist').height(data.height);
         }
     }
     
