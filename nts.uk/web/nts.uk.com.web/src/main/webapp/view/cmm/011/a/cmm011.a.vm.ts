@@ -619,7 +619,8 @@ module cmm011.a.viewmodel {
                 nts.uk.ui.windows.setShared('datanull', "datanull");
                 nts.uk.ui.windows.sub.modal('/view/cmm/011/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
                     let itemAddHistory = nts.uk.ui.windows.getShared('itemHistory');
-                    if (itemAddHistory !== undefined) {
+                    if (itemAddHistory) {
+                        self.disableBtn();
                         let itemadd = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");
                         self.itemaddHist = itemadd;
                         self.itemHistId().push(self.itemaddHist);
@@ -627,10 +628,10 @@ module cmm011.a.viewmodel {
                         self.resetInput();
                         if (itemAddHistory.memo !== null) {
                             self.A_INP_MEMO(itemAddHistory.memo);
+                        } else {
+                            self.A_INP_MEMO("");
                         }
                     }
-                    self.enablebtnDelete(false);
-                    self.enableDDialog(false);
                 });
             } else {
                 if (self.selectedCodes_His() == null)
@@ -940,7 +941,7 @@ module cmm011.a.viewmodel {
                     var parrent = self.findParent(_code, _dt);
                     var newObj = new model.Dto('', "999", "", "",
                         "", "", hierachyItemadd,
-                        "情報を登録してください", "",
+                        "情報を登録してください", "情報を登録してください",
                         current.startDate,
                         []);
                     if (parrent) {
@@ -1028,13 +1029,12 @@ module cmm011.a.viewmodel {
                     self.disableBtn();
                 } else if (self.numberItemNew() == 1) {
                     $("#A_INP_CODE").focus();
-                    self.disableBtn(); 
-                                      } else {
-                alert("maximum 889 item");
+                    self.disableBtn();
+                } else {
+                    alert("maximum 889 item");
+                }
             }
-
         }
-
         insertItemEnd() {
             var self = this;
             if (self.lengthTreeCurrent() < 889) {
@@ -1050,7 +1050,7 @@ module cmm011.a.viewmodel {
                             hierachyItemadd = "0" + hierachyItemadd;
                         var newObj = new model.Dto('', "999", "", "",
                             "", "", hierachy_current + hierachyItemadd,
-                            "情報を登録してください", "",
+                            "情報を登録してください", "情報を登録してください",
                             current.startDate,
                             []);
                         current.children.push(newObj);
@@ -1069,12 +1069,11 @@ module cmm011.a.viewmodel {
                     }
                 } else if (self.numberItemNew() == 1) {
                     $("#A_INP_CODE").focus();
-                    self.disableBtn(); 
+                    self.disableBtn();
                 }
             } else {
                 alert("maximum 889 item");
             }
-
         }
 
 

@@ -813,7 +813,7 @@ module cmm009.a.viewmodel {
                     var parrent = self.findParent(_code, _dt);
                     var newObj = new model.Dto('', "999", "", "",
                         "", "", hierachyItemadd,
-                        "情報を登録してください",
+                        "情報を登録してください","情報を登録してください",
                         current.startDate,
                         []);
                     if (parrent) {
