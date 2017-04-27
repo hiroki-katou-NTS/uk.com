@@ -13,10 +13,10 @@ public interface DivergenceTimeRepository {
 	/**
 	 * get all divergence reason
 	 * @param companyId
-	 * @param divTimeCode
+	 * @param divTimeId
 	 * @return
 	 */
-	List<DivergenceReason> getDivReasonByCode(String companyId, String divTimeCode);
+	List<DivergenceReason> getDivReasonByCode(String companyId, String divTimeId);
 	/**
 	 * get all attendance item
 	 * @param companyId

@@ -2,7 +2,6 @@ package nts.ctx.at.record.infra.entity.divergencetime;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -26,31 +25,24 @@ public class KmnmtDivergenceTime extends UkJpaEntity implements Serializable{
 	@EmbeddedId
 	public KmnmtDivergenceTimePK kmnmtDivergenceTimePK;
 	/*乖離時間使用設定*/
-	@Basic(optional = false)
 	@Column(name = "DIVERGENCETIME_USE_SET")
 	public int divTimeUseSet;
 	/*アラーム時間*/
-	@Basic(optional = false)
 	@Column(name = "ALARM_TIME")
 	public int alarmTime;
 	/*エラー時間*/
-	@Basic(optional = false)
 	@Column(name = "ERR_TIME")
 	public int errTime;
 	/*選択使用設定*/
-	@Basic(optional = false)
 	@Column(name = "SELECT_USE_SET")
 	public int selectUseSet;
 	/*乖離理由選択エラー解除*/
-	@Basic(optional = false)
 	@Column(name = "CANCEL_ERR_SEL_REASON")
 	public int cancelErrSelReason;
 	/*入力使用設定*/
-	@Basic(optional = false)
 	@Column(name = "INPUT_USE_SET")
 	public int inputUseSet;
 	/*乖離理由入力エラー解除*/
-	@Basic(optional = false)
 	@Column(name = "CANCEL_EER_INPUT_REASON")
 	public int cancelErrInputReason;
 	

@@ -2,7 +2,6 @@ package nts.ctx.at.record.infra.entity.divergencetime;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -26,11 +25,9 @@ public class KmnmtDivergenceReason extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KmnmtDivergenceReasonPK kmnmtDivergenceReasonPK;
 	/*乖離理由*/
-	@Basic(optional = false)
 	@Column(name = "DIVERGENCETIME_REASON")
 	public String divReason;
 	/*必須区分*/
-	@Basic(optional = false)
 	@Column(name = "REQUIRED_ATR")
 	public int requiredAtr;
 	
