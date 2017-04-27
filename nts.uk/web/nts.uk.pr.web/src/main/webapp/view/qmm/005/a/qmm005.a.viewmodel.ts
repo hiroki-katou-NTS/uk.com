@@ -129,17 +129,17 @@ module qmm005.a {
             var data: Array<PaydayProcessingDto> = [];
             for (var i = 0, row; row = items[i] as TableRowItem; i++) {
                 if (row.label() != '') {
+                    // check error
                     data.push({
                         processingNo: row.index(),
                         processingName: row.label(),
                         dispSet: 0,
                         currentProcessingYm: parseInt(row.sel002()['formatYearMonth']()),
                         bonusAtr: row.sel003() === true ? 1 : 0,
-                        bcurrentProcessingYm: parseInt((row.sel004() + '' + row.sel005())['formatYearMonth']())
+                        bcurrentProcessingYm: (row.sel004Data().length == 0 || row.sel005Data().length == 0) ? parseInt(row.sel002()['formatYearMonth']()) : parseInt((row.sel004() + '' + row.sel005())['formatYearMonth']())
                     });
                 }
             }
-
             services.updatData({ paydayProcessings: data }).done(function(resp) {
                 self.start();
             });
