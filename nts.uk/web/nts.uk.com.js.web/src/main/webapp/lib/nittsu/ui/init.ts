@@ -10,7 +10,7 @@ module nts.uk.ui {
     
     /** Event to notify ViewModel built to bind. */
     export var viewModelBuilt = $.Callbacks();
-
+ 
     
     // Kiban ViewModel
     export class KibanViewModel {
