@@ -2,8 +2,8 @@ var nts;
 (function (nts) {
     var qmm017;
     (function (qmm017) {
-        class BScreen {
-            constructor(data) {
+        var BScreen = (function () {
+            function BScreen(data) {
                 var self = this;
                 self.historyId = ko.observable('');
                 self.roundingRules = ko.observableArray([
@@ -45,7 +45,8 @@ var nts;
                     selectedCode: ko.observable(1)
                 });
             }
-        }
+            return BScreen;
+        }());
         qmm017.BScreen = BScreen;
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));

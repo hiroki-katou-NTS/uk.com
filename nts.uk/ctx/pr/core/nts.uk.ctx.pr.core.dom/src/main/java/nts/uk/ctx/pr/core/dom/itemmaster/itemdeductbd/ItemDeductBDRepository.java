@@ -4,15 +4,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ItemDeductBDRepository {
-	
-	List<ItemDeductBD> findAll( String itemCode);
 
-	void add(ItemDeductBD itemDeductBD);
+	List<ItemDeductBD> findAll(String companyCode, String itemCode);
 
-	void delete(String itemCd, String itemBreakdownCd);
+	void add(String companyCode, ItemDeductBD itemDeductBD);
 
-	Optional<ItemDeductBD> find(String itemCd, String itemBreakdownCd);
+	void delete(String companyCode, String itemCode, String itemBreakdownCd);
 
-	void update(ItemDeductBD itemDeductBD);
+	Optional<ItemDeductBD> find(String companyCode, String itemCode, String itemBreakdownCd);
+
+	void update(String companyCode, ItemDeductBD itemDeductBD);
 
 }

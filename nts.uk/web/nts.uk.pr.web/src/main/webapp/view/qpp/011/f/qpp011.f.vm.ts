@@ -209,6 +209,7 @@ module qpp011.f {
             self.selectedRuleCode = ko.observable(1);
             self.F_LBL_002_Year_Month(nts.uk.ui.windows.getShared('QPP011_F_TargetDate'));
             //self.F_LBL_002_Year_Month = nts.uk.sessionStorage.getItemAndRemove("TargetDate").value;
+            debugger;
             self.F_Year_Month(nts.uk.ui.windows.getShared('QPP011_F_DesignatedMonth'));
             self.F_LBL_003_yearInJapanEmpire = ko.observable();
             self.F_LBL_003_yearInJapanEmpire("(" + nts.uk.time.yearmonthInJapanEmpire(self.F_LBL_002_Year_Month()).toString() + ")");
@@ -226,24 +227,11 @@ module qpp011.f {
             if (self.F_LST_001_selectedValue().length > 0) {
                 var command = {
                     residentTaxCodeList: self.F_LST_001_selectedValue(),
-                    companyLogin: null,
-                    regalDocCompanyCode: null,
-                    yearMonth: 201612,
-                    processingYearMonth: 201703,
+                    yearMonth: self.F_LBL_002_Year_Month(),
+                    //201703
+                    processingYearMonth: self.F_Year_Month(),
+                    processingDate: nts.uk.time.yearmonthInJapanEmpire(self.F_LBL_002_Year_Month()).toString(),
                 };
-                //                if (self.selectedRuleCode() == 1) {
-                //                    service.saveAsPdfB(command).done(function() {
-                //                        //
-                //                    }).fail(function(res) {
-                //                        nts.uk.ui.dialog.alert(res.message);
-                //                    });
-                //                } else {
-                //                    service.saveAsPdfC(command).done(function() {
-                //                        //
-                //                    }).fail(function(res) {
-                //                        nts.uk.ui.dialog.alert(res.message);
-                //                    });
-                //                }
                 service.saveAsPdf(self.selectedRuleCode(),command).done(function() {
                   //
                 }).fail(function(res) {

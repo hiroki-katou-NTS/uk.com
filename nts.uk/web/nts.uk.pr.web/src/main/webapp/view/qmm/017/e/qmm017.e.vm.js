@@ -2,14 +2,14 @@ var nts;
 (function (nts) {
     var qmm017;
     (function (qmm017) {
-        class EScreen {
-            constructor() {
+        var EScreen = (function () {
+            function EScreen() {
                 var self = this;
                 self.description = ko.observableArray([]);
                 var eList001 = [
                     { code: '1', name: '全て' }
                 ];
-                let eList002 = [
+                var eList002 = [
                     { code: '1', name: '条件式' },
                     { code: '2', name: 'かつ' },
                     { code: '3', name: 'または' },
@@ -116,7 +116,8 @@ var nts;
                     }
                 });
             }
-        }
+            return EScreen;
+        }());
         qmm017.EScreen = EScreen;
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));

@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
@@ -33,18 +34,23 @@ public class InhabitantTaxChecklistReportBService extends ExportService<Inhabita
 	protected void handle(ExportServiceContext<InhabitantTaxChecklistQuery> context) {
 
 		String companyCode = AppContexts.user().companyCode();
-		int Y_K = 2016;
+		Integer year;
 		Map<String, Double> totalPaymentAmount = new HashMap<>();
 		Map<String, Integer> totalNumberPeople = new HashMap<>();
 
 		InhabitantTaxChecklistQuery query = context.getQuery();
-
+        
+		String[]  yearMonth = query.getYearMonth().split("/");
+		year = Integer.parseInt(yearMonth[0]);
 		// get residential tax
 		List<ResidentialTaxDto> residentTaxList = residentialTaxRepo.findResidentTax(companyCode,
 				query.getResidentTaxCodeList());
 
-		List<PersonResitaxDto> personResidentTaxList = residentialTaxRepo.findPersonResidentTax(companyCode, Y_K,
+		List<PersonResitaxDto> personResidentTaxList = residentialTaxRepo.findPersonResidentTax(companyCode, year,
 				query.getResidentTaxCodeList());
+		if(personResidentTaxList.size() == 0) {
+			throw new BusinessException("データがありません。");
+		}
 		
 		CompanyDto company = residentialTaxRepo.findCompany(companyCode);
 
@@ -57,7 +63,7 @@ public class InhabitantTaxChecklistReportBService extends ExportService<Inhabita
 					.collect(Collectors.toList());
 			
 			List<PaymentDetailDto> paymentDetailList = residentialTaxRepo.findPaymentDetail(companyCode, personIdList,
-					PayBonusAtr.SALARY, query.getProcessingYearMonth(), CategoryAtr.DEDUCTION, "F108");
+					PayBonusAtr.SALARY, Integer.parseInt(query.getProcessingYearMonth()), CategoryAtr.DEDUCTION, "F108");
 			
 			double totalValue = paymentDetailList.stream()
 	                 .mapToDouble(x->x.getValue().doubleValue())
@@ -102,10 +108,10 @@ public class InhabitantTaxChecklistReportBService extends ExportService<Inhabita
 		reportDataList.add(sumReportData);
 		
 		InhabitantTaxChecklistBRpHeader header = new InhabitantTaxChecklistBRpHeader();		
-		header.setCompanyName("日通システム株式会社");
+		header.setCompanyName(company.getCompanyName());
 		header.setStartResiTaxAutonomy(reportDataList.get(0).getResidenceTaxCode()+" "+reportDataList.get(0).getResiTaxAutonomy());
-		header.setLateResiTaxAutonomy(reportDataList.get(0).getResidenceTaxCode()+" "+reportDataList.get(0).getResiTaxAutonomy());
-		header.setDate("2017/04/24");
+		header.setLateResiTaxAutonomy(reportDataList.get(0).getResidenceTaxCode()+" "+reportDataList.get(0).getResiTaxAutonomy()+"】");
+		header.setDate(query.getProcessingDate()+"度 】");
 		
 		InhabitantTaxChecklistBReport dataReportB = new InhabitantTaxChecklistBReport();
 		dataReportB.setData(reportDataList);

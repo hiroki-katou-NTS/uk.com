@@ -491,12 +491,15 @@ module qpp011.b {
             if (self.selectedValue_B_LST_001().length > 0) {
                 var command = {
                     residentTaxCodeList: self.selectedValue_B_LST_001(),
-                    companyLogin: null,
-                    regalDocCompanyCode: null,
+                    companyLogin: self.B_SEL_001_selectedId(),
+                    regalDocCompanyCode: self.B_SEL_002_selectedCode(),
                     yearMonth: 201612,
                     processingYearMonth: 201703,
-                    endDate: self.B_INP_003_yearMonth()
+                    processingYearMonthJapan: nts.uk.time.yearmonthInJapanEmpire(self.B_INP_002_yearMonth()).toString(),
+                    endDate: new Date("2017/04/26"),
+                    endDateJapan: nts.uk.time.yearmonthInJapanEmpire(moment(self.B_INP_003_yearMonth()).format("YYYY/MM")).toString()
                 };
+
                 service.saveAsPdf(command).done(function() {
                     //
                 }).fail(function(res) {
@@ -530,7 +533,6 @@ module qpp011.b {
         }
         exportText(): void {
             var self = this;
-
             self.checkCValue();
             if (self.selectedValue_C_LST_001().length > 0) {
             } else {
@@ -539,8 +541,8 @@ module qpp011.b {
 
             var command = {
                 residentTaxCodeList: self.selectedValue_B_LST_001(),
-                companyLogin: null,
-                regalDocCompanyCode: null,
+                companyLogin: self.B_SEL_001_selectedId(),
+                regalDocCompanyCode: self.B_SEL_002_selectedCode(),
                 yearMonth: 201612,
                 processingYearMonth: 201703,
                 endDate: new Date("2017/04/24")

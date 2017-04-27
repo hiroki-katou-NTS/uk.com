@@ -36,7 +36,7 @@ public class InhabitantTaxChecklistReportCGenerator extends AsposeCellsReportGen
 			reportContext.setDataSource("list", reportData);
 
 			PageSetup pageSetup = reportContext.getWorkbook().getWorksheets().get(0).getPageSetup();
-			pageSetup.setHeader(0, "【　日通システム株式会社 】");
+			pageSetup.setHeader(0, dataExport.getHeader().getCompanyName());
 			pageSetup.setHeader(2, "&D &T");
 			
 			// process data binginds in template

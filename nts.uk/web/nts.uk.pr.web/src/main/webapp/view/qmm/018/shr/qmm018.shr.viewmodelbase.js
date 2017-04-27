@@ -4,12 +4,13 @@ var qmm018;
     (function (shr) {
         var viewmodelbase;
         (function (viewmodelbase) {
-            class ItemModel {
-                constructor(itemCode, itemAbName) {
+            var ItemModel = (function () {
+                function ItemModel(itemCode, itemAbName) {
                     this.itemCode = itemCode;
                     this.itemAbName = itemAbName;
                 }
-            }
+                return ItemModel;
+            }());
             viewmodelbase.ItemModel = ItemModel;
             (function (CategoryAtr) {
                 CategoryAtr[CategoryAtr["PAYMENT"] = 0] = "PAYMENT";
