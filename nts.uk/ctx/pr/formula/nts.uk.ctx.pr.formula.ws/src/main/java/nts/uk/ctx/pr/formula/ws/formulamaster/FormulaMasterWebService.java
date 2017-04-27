@@ -118,6 +118,6 @@ public class FormulaMasterWebService extends WebService {
 	@POST
 	@Path("trialCalculate")
 	public CalculatorDto trialCalculate (String formulaContent){
-		return this.calculationTrial.init();
+		return this.calculationTrial.init(formulaContent);
 	}
 }
