@@ -11,6 +11,7 @@ module cmm009.a.viewmodel {
         arr: any;
         enablebtnDelete: KnockoutObservable<boolean>;
         enableDDialog: KnockoutObservable<boolean>;
+        enablebtnupdown: KnockoutObservable<boolean>;
 
         // treegrid
         dataSource: KnockoutObservableArray<any>;
@@ -58,6 +59,7 @@ module cmm009.a.viewmodel {
             self.historyId = ko.observable('');
             self.enablebtnDelete = ko.observable(true);
             self.enableDDialog = ko.observable(true);
+            self.enablebtnupdown = ko.observable(true);
             self.selectedCodes_His = ko.observable(null);
             self.itemHist = ko.observable(null);
             self.arr = ko.observableArray([]);
@@ -123,10 +125,13 @@ module cmm009.a.viewmodel {
                                 self.itemHistId.remove(item);
                                 let _dt = self.itemHistId();
                                 self.itemHistId([]);
-                                _dt[0].endDate= "9999/12/31";
+                                _dt[0].endDate = "9999/12/31";
                                 self.itemHistId(_dt);
-                                
+
                             }
+                        }
+                        if (self.numberItemNew() == 1) {
+                            self.numberItemNew(0);
                         }
                         self.historyId(self.itemHist().historyId);
                         //get all department by historyId
@@ -170,6 +175,7 @@ module cmm009.a.viewmodel {
 
         register() {
             var self = this;
+            self.enableBtn();
             /*case add item lần đầu khi history == null*/
             if (self.checknull() === true && self.itemHistId().length == 1 && self.checkInput()) {
                 let dto = new model.AddDepartmentDto(self.A_INP_CODE(), null, "9999/12/31", self.A_INP_OUTCODE(), self.A_INP_FULLNAME(), "001", self.A_INP_DEPNAME(), self.itemaddHist.startDate, self.A_INP_MEMO(), null);
@@ -323,6 +329,19 @@ module cmm009.a.viewmodel {
                 }
             }
             self.item_dep_selected(null);
+        }
+
+        enableBtn() {
+            var self = this;
+            self.enablebtnDelete(true);
+            self.enableDDialog(true);
+            self.enablebtnupdown(true);
+        }
+        disableBtn() {
+            var self = this;
+            self.enablebtnDelete(false);
+            self.enableDDialog(false);
+            self.enablebtnupdown(false);
         }
 
         getAllDepartmentByHistId(historyId, departmentCode) {
@@ -644,6 +663,7 @@ module cmm009.a.viewmodel {
                 nts.uk.ui.windows.sub.modal('/view/cmm/009/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
                     let itemAddHistory = nts.uk.ui.windows.getShared('itemHistory');
                     if (itemAddHistory) {
+                        self.disableBtn();
                         if (itemAddHistory.checked == true) {
                             let add = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");
                             let arr = self.itemHistId();
@@ -870,8 +890,10 @@ module cmm009.a.viewmodel {
                     self.numberItemNew(1);
                     self.singleSelectedCode(newObj.departmentCode);
                     self.resetInput();
+                    self.disableBtn();
                 } else if (self.numberItemNew() == 1) {
                     $("#A_INP_CODE").focus();
+                    self.disableBtn();
                 }
             } else {
                 alert("maximum 889 item");
@@ -1038,8 +1060,10 @@ module cmm009.a.viewmodel {
                     self.numberItemNew(1);
                     self.singleSelectedCode(newObj.departmentCode);
                     self.resetInput();
+                    self.disableBtn();
                 } else if (self.numberItemNew() == 1) {
                     $("#A_INP_CODE").focus();
+                    self.disableBtn();
                 }
             } else {
                 alert("maximum 889 item");
@@ -1075,11 +1099,13 @@ module cmm009.a.viewmodel {
                         self.numberItemNew(1);
                         self.singleSelectedCode(newObj.departmentCode);
                         self.resetInput();
+                        self.disableBtn();
                     } else {
                         alert("hierarchy item current is 10 ,not push item child to tree");
                     }
                 } else if (self.numberItemNew() == 1) {
                     $("#A_INP_CODE").focus();
+                    self.disableBtn();
                 }
             } else {
                 alert("maximum 889 item");
