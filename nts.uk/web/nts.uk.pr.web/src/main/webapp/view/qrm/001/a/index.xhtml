@@ -41,7 +41,8 @@
 									value: currentEmployee().displayId,
 									constraint: '',
 									option: { textmode: 'text', textalign: 'left' },
-									required: true }" />
+									required: true,
+									enable: false }" />
 							</span>
 							<span id="symbol">&#8629;</span>
 						</div>
@@ -124,7 +125,8 @@
 														value: retirementPaymentCurrent().exclusionYears,
 														constraint: 'PaymentYear',
 														option: { textmode: 'text' },
-														required: true }" />
+														required: true,
+														readonly: true }" />
 												</div>
 											</td>
 										</tr>
@@ -150,7 +152,8 @@
 														value: retirementPaymentCurrent().additionalBoardYears,
 														constraint: 'PaymentYear',
 														option: { textmode: 'text' },
-														required: true }" />
+														required: true,
+														readonly: true  }" />
 												</div>
 											</td>
 											<td>
@@ -159,7 +162,8 @@
 														value: retirementPaymentCurrent().boardYears,
 														constraint: 'PaymentYear',
 														option: { textmode: 'text' },
-														required: true }" />
+														required: true ,
+														readonly: true }" />
 												</div>
 											</td>
 											<td class="const" data-bind="text : personCom().adoptType"></td>
@@ -304,7 +308,8 @@
 													optionsValue: 'code',
 													value: retirementPaymentCurrent().retirementPayOption,
 													optionsText: 'name',
-													enable: Boolean(!retirementPaymentCurrent().taxCalculationMethod()) }"></span>	
+													enable: true
+													}"></span>	
 											</td>
 											<td>
 												<div id="combo-box5" data-bind="ntsComboBox: {
