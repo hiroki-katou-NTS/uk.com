@@ -2,6 +2,10 @@ package nts.uk.shr.com.context;
 
 public class LoginUserContext {
 
+	public String companyID() {
+		return "123456789ABC-0001";
+	}
+	
 	public String companyCode() {
 		return "0001";
 	}
