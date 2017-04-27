@@ -37,5 +37,17 @@ final class FileTagsHelper {
 
 		return appendVersionString(filePath);
 	}
+	static String buildPathOf(String appPath ,String specifiedPath) {
+
+		String filePath;
+
+		if (specifiedPath.charAt(0) == '/') {
+			filePath = appPath + specifiedPath;
+		} else {
+			filePath = specifiedPath;
+		}
+
+		return appendVersionString(filePath);
+	}
 
 }
