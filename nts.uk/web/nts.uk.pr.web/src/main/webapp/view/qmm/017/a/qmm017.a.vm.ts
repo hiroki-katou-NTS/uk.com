@@ -403,18 +403,18 @@ module nts.qmm017 {
             var self = this;
             var dfdItemsBags = $.Deferred<any>();
             self.itemsBagRepository.push(
-                { code: '3＠1', name: '関数＠条件式' },
-                { code: '3＠2', name: '関数＠かつ' },
-                { code: '3＠3', name: '関数＠または' },
-                { code: '3＠4', name: '関数＠四捨五入' },
-                { code: '3＠5', name: '関数＠切捨て' },
-                { code: '3＠6', name: '関数＠切上げ' },
-                { code: '3＠7', name: '関数＠最大値' },
-                { code: '3＠8', name: '関数＠最小値' },
-                { code: '3＠9', name: '関数＠家族人数' },
-                { code: '3＠10', name: '関数＠月加算' },
-                { code: '3＠11', name: '関数＠年抽出' },
-                { code: '3＠12', name: '関数＠月抽出' }
+                { code: 'F@1', name: '関数＠条件式' },
+                { code: 'F@2', name: '関数＠かつ' },
+                { code: 'F@3', name: '関数＠または' },
+                { code: 'F@4', name: '関数＠四捨五入' },
+                { code: 'F@5', name: '関数＠切捨て' },
+                { code: 'F@6', name: '関数＠切上げ' },
+                { code: 'F@7', name: '関数＠最大値' },
+                { code: 'F@8', name: '関数＠最小値' },
+                { code: 'F@9', name: '関数＠家族人数' },
+                { code: 'F@10', name: '関数＠月加算' },
+                { code: 'F@11', name: '関数＠年抽出' },
+                { code: 'F@12', name: '関数＠月抽出' }
             );
             service.getListItemMaster(0).done(function(lstItem) {
                 _.forEach(lstItem, function(item: model.ItemMasterDto) {
@@ -670,7 +670,7 @@ module nts.qmm017 {
                                     value: self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(),
                                     referenceMasterNo: "0000000061",
                                     formulaDetail: defaultEasyFormulaDetail,
-                                    fixFormulaAtr: self.viewModel017c().defaultEasyFormula().selectedRuleCodeEasySettings()
+                                    fixFormulaAtr: self.viewModel017c().monthlyEasyFormula().selectedRuleCodeEasySettings()
                                 }
                             );
                         }
@@ -695,7 +695,7 @@ module nts.qmm017 {
                                     value: self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(),
                                     referenceMasterNo: "0000000062",
                                     formulaDetail: defaultEasyFormulaDetail,
-                                    fixFormulaAtr: self.viewModel017c().defaultEasyFormula().selectedRuleCodeEasySettings()
+                                    fixFormulaAtr: self.viewModel017c().dailyMonthlyEasyFormula().selectedRuleCodeEasySettings()
                                 }
                             );
                         }
@@ -720,7 +720,7 @@ module nts.qmm017 {
                                     value: self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(),
                                     referenceMasterNo: "0000000063",
                                     formulaDetail: defaultEasyFormulaDetail,
-                                    fixFormulaAtr: self.viewModel017c().defaultEasyFormula().selectedRuleCodeEasySettings()
+                                    fixFormulaAtr: self.viewModel017c().dailyEasyFormula().selectedRuleCodeEasySettings()
                                 }
                             );
                         }
@@ -745,7 +745,7 @@ module nts.qmm017 {
                                     value: self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(),
                                     referenceMasterNo: "0000000064",
                                     formulaDetail: defaultEasyFormulaDetail,
-                                    fixFormulaAtr: self.viewModel017c().defaultEasyFormula().selectedRuleCodeEasySettings()
+                                    fixFormulaAtr: self.viewModel017c().hourlyEasyFormula().selectedRuleCodeEasySettings()
                                 }
                             );
                         }
