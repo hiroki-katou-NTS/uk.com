@@ -20,7 +20,7 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
 
             // Get options
-            var options: Array<any> = ko.unwrap(data.options);
+            var options: Array<any> = ko.unwrap(data.options) ;
             // Get options value
             var optionValue = ko.unwrap(data.primaryKey === undefined ? data.optionsValue : data.primaryKey);
             var optionText = ko.unwrap(data.primaryText === undefined ? data.optionsText : data.primaryText);
@@ -46,7 +46,7 @@ module nts.uk.ui.koExtentions {
             var changeEvent = new CustomEvent("selectionChange", {
                 detail: {},
             });
-             
+              
             container.data("selectionChange", changeEvent);
             
             var features = [];
@@ -84,9 +84,12 @@ module nts.uk.ui.koExtentions {
             });
             
             container.ntsGridList('setupSelecting');
-            
+             
             
             container.bind('iggridselectionrowselectionchanging', () => {
+                if(container.data("enable") === false){
+                    return false;       
+                }
                 let itemSelected;
                 if (container.igGridSelection('option', 'multipleSelection')) {
                     let selected: Array<any> = container.ntsGridList('getSelected');
@@ -195,6 +198,13 @@ module nts.uk.ui.koExtentions {
             // Container.
             var container = $(element).find(".ntsListBox");
             container.data("enable", enable);
+            if(!enable){
+                container.ntsGridList('unsetupSelecting');
+                container.addClass("disabled");     
+            } else {
+                container.ntsGridList('setupSelecting');
+                container.removeClass("disabled");    
+            }
             
             var currentSource = container.igGrid('option', 'dataSource');
             if (!_.isEqual(currentSource, options)) {
@@ -208,7 +218,7 @@ module nts.uk.ui.koExtentions {
                         let key = c["key"] === undefined ? c["prop"] : c["key"];
                         s[key] = moment(s[key]).format(c["format"]);
                     });        
-                });
+                }); 
                 container.igGrid('option', 'dataSource', currentSources);
                 container.igGrid("dataBind");
             }
