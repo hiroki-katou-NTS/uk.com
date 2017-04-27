@@ -27,7 +27,7 @@ module nts.uk.ui.koExtentions {
             var startDate: any = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
             var endDate: any = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
             var autoHide: boolean = (data.autoHide !== undefined) ? ko.unwrap(data.autoHide) : true;
-            var valueType = typeof value();
+            var valueType:string = typeof value();
             if (valueType === "string") {
                 valueFormat = (valueFormat) ? valueFormat : text.getISOFormat("ISO");
             }
