@@ -51,7 +51,7 @@ public class UpdateFormulaMasterCommandHandler extends CommandHandler<UpdateForm
 	protected void handle(CommandHandlerContext<UpdateFormulaMasterCommand> context) {
 		UpdateFormulaMasterCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
-
+		
 		List<FormulaEasyCondition> listFormulaEasyCondition = new ArrayList<>();
 		List<FormulaEasyDetail> listFormulaEasyDetail = new ArrayList<>();
 		List<FormulaEasyStandardItem> listFormulaEasyStandardItem = new ArrayList<>();
@@ -92,6 +92,9 @@ public class UpdateFormulaMasterCommandHandler extends CommandHandler<UpdateForm
 									AdjustmentAtr.class),
 							EnumAdaptor.valueOf(easyFormulaDto.getFormulaDetail().getTotalRounding().intValue(),
 									RoundAtr.class));
+					
+					formulaEasyDetail.validate();	
+					
 					listFormulaEasyDetail.add(formulaEasyDetail);
 				}
 			});
