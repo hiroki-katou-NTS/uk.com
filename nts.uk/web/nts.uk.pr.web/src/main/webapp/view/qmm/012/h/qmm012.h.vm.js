@@ -10,7 +10,7 @@ var qmm012;
                     this.CurrentItemMaster = ko.observable(null);
                     this.CurrentCategoryAtrName = ko.observable('');
                     this.CurrentItemPeriod = ko.observable(null);
-                    this.CurrentItemCode = ko.observable('');
+                    this.CurrentCodeAndNameText = ko.observable('');
                     this.CurrentPeriodAtr = ko.observable(0);
                     this.CurrentStrY = ko.observable(1900);
                     this.CurrentEndY = ko.observable(1900);
@@ -71,7 +71,7 @@ var qmm012;
                     if (itemMaster != undefined) {
                         self.CurrentItemMaster(itemMaster);
                         self.CurrentCategoryAtrName(itemMaster.categoryAtrName);
-                        self.CurrentItemCode(itemMaster.itemCode);
+                        self.CurrentCodeAndNameText(itemMaster.itemCode + "  " + itemMaster.itemName);
                     }
                     if (nts.uk.ui.windows.getShared('itemPeriod'))
                         self.CurrentItemPeriod(nts.uk.ui.windows.getShared('itemPeriod'));

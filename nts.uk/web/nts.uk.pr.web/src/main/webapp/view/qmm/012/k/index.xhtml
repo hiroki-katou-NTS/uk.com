@@ -19,7 +19,7 @@
 			<div id="content-header">
 				<label id="K_Lbl_MessageGuide"> 利用する非課税限度額を選択してください。 </label>
 				<div class="K_Lst_TaxLimitList">
-					<table  id="K_Lst_TaxLimitList"
+					<table id="K_Lst_TaxLimitList"
 						data-bind="ntsGridList: {
 							width: 330,
 							height: 370,
@@ -33,8 +33,9 @@
 			</div>
 			<div id="contents-area">
 				<button id="K_Btn_Setting" class="x-large proceed"
-					data-bind="click:SubmitDialog">選択ボタン</button>
-				<button id="K_Btn_Cancel" class="large" data-bind="click:CloseDialog">キャンセルボタン</button>
+					data-bind="click:SubmitDialog">設定</button>
+				<button id="K_Btn_Cancel" class="large"
+					data-bind="click:CloseDialog">キャンセル</button>
 			</div>
 		</ui:define>
 	</ui:composition>

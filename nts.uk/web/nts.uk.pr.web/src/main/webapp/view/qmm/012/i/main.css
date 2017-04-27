@@ -1,6 +1,6 @@
 @import url("../a/base.css");
 
-#content-header {
+#functions-area {
 	position: relative;
 	padding: 10px;
 	border-bottom: solid 1px #B1B1B1;
@@ -11,13 +11,13 @@
 	min-height: 1px;
 }
 
-#content-header-top {
+#functions-area-top {
 	border-bottom: solid 1px #B1B1B1;
 	display: inline-block;
 	padding-bottom: 15px;
 }
 
-#content-header-bottom {
+#functions-area-bottom {
 	padding: 15px 0px;
 }
 

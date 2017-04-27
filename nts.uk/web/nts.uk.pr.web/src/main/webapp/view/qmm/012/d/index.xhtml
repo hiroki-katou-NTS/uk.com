@@ -46,7 +46,7 @@
 	<div class="divLine">
 		<div class="divLineCol1">
 			<div id="D_Lbl_ErrorRange"
-				data-bind="ntsFormLabel: {  required: false }">社会保険区分</div>
+				data-bind="ntsFormLabel: {  required: false }">エラー範囲</div>
 		</div>
 		<div class="divLineCol2">
 			<div id="D_Sel_ErrorUpper"
@@ -81,7 +81,7 @@
 	<div class="divLine">
 		<div class="divLineCol1">
 			<div id="D_Lbl_AlarmRange"
-				data-bind="ntsFormLabel: {  required: false }">固定的賃金</div>
+				data-bind="ntsFormLabel: {  required: false }">アラーム範囲</div>
 		</div>
 		<div class="divLineCol2 verticalAlignBottom">
 			<div id="D_Sel_ErrorLower"
@@ -116,12 +116,10 @@
 	<div class="divLine">
 		<div class="divLineCol1"></div>
 		<div class="divLineCol2">
-			<label id="D_Lbl_NavigationMessage1">「※エラーの場合は、データが登録されません。 <br />
-				アラームの場合は、メッセージが表示されます。（データが登録されます）」と表記
+			<label id="D_Lbl_NavigationMessage1">※エラーの場合は、データが登録されません。 <br />
+				アラームの場合は、メッセージが表示されます。（データが登録されます）
 			</label>
-
 		</div>
-
 	</div>
 	<div class="divLine">
 		<div class="divLineCol1">
@@ -145,7 +143,7 @@
 		</div>
 		<div class="divLineCol2">
 			<button id="D_Btn_BreakdownSetting" class="small"
-				data-bind="click:openIDialog,enable: D_Btn_BreakdownSetting_enable">有効期間設定</button>
+				data-bind="click:openIDialog,enable: D_Btn_BreakdownSetting_enable">内訳項目設定</button>
 			<label id="D_Lbl_BreakdownItem"
 				data-bind="text:D_Lbl_BreakdownItem_Text">サイクル設定区分</label>
 		</div>

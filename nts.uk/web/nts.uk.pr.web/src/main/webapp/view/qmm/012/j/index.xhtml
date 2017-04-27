@@ -31,12 +31,13 @@
 		</ui:define>
 		<ui:define name="sidebar-content">
 			<div id="tabpanel-1" role="tabpanel">
-				<div class="sidebar-content-header">
+				<div id="functions-area" class="sidebar-content-header">
 					<span class="title">支給項目</span>
 					<button class="proceed" id="J_Btn_RegisterButton"
-						data-bind="click:updateData">印刷</button>
-					<button id="J_Btn_CloseUp" data-bind="click:CloseDialog">納付デ</button>
+						data-bind="click:updateData">登録</button>
+					<button id="J_Btn_CloseUp" data-bind="click:CloseDialog">閉じる</button>
 				</div>
+
 				<div class="contents-area">
 					<div id="content">
 						<table id="J_Lst_ItemList" data-name="名称"></table>

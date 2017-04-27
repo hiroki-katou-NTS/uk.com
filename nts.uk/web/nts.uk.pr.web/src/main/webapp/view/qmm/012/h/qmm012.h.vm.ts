@@ -17,7 +17,7 @@ module qmm012.h.viewmodel {
         CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMaster> = ko.observable(null);
         CurrentCategoryAtrName: KnockoutObservable<string> = ko.observable('');
         CurrentItemPeriod: KnockoutObservable<service.model.ItemPeriod> = ko.observable(null);
-        CurrentItemCode: KnockoutObservable<string> = ko.observable('');
+        CurrentCodeAndNameText: KnockoutObservable<string> = ko.observable('');
         CurrentPeriodAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentStrY: KnockoutObservable<number> = ko.observable(1900);
         CurrentEndY: KnockoutObservable<number> = ko.observable(1900);
@@ -78,11 +78,11 @@ module qmm012.h.viewmodel {
         LoadItemPeriod() {
             //this dialog only load data in session from parrent call it
             let self = this;
-            let itemMaster = nts.uk.ui.windows.getShared('itemMaster');
+            let itemMaster: qmm012.b.service.model.ItemMaster = nts.uk.ui.windows.getShared('itemMaster');
             if (itemMaster != undefined) {
                 self.CurrentItemMaster(itemMaster);
                 self.CurrentCategoryAtrName(itemMaster.categoryAtrName);
-                self.CurrentItemCode(itemMaster.itemCode);
+                self.CurrentCodeAndNameText(itemMaster.itemCode + "  " + itemMaster.itemName);
             }
             if (nts.uk.ui.windows.getShared('itemPeriod'))
                 self.CurrentItemPeriod(nts.uk.ui.windows.getShared('itemPeriod'));
