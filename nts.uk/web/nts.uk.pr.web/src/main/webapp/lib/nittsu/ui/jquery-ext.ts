@@ -181,6 +181,8 @@ module nts.uk.ui.jqueryExtentions {
             switch (action) {
                 case 'setupSelecting':
                     return setupSelecting($grid);
+                case 'unsetupSelecting':
+                    return unsetupSelecting($grid);
                 case 'getSelected':
                     return getSelected($grid);
                 case 'setSelected':
@@ -319,6 +321,13 @@ module nts.uk.ui.jqueryExtentions {
 
             return $grid;
         }
+        
+        function unsetupSelecting($grid: JQuery) {
+            unsetupDragging($grid);
+            unsetupSelectingEvents($grid);
+
+            return $grid;
+        }
 
         function setupDragging($grid: JQuery) {
             var dragSelectRange = [];
@@ -438,6 +447,22 @@ module nts.uk.ui.jqueryExtentions {
             $grid.on('mouseup', () => {
                 $grid.triggerHandler('selectionchanged');
             });
+        }
+        
+        function unsetupDragging($grid: JQuery) {
+            var dragSelectRange = [];
+
+            // used to auto scrolling when dragged above/below grid)
+            var mousePos: { x: number, y: number, rowIndex: number } = null;
+
+
+            $grid.unbind('mousedown');
+        }
+
+        function unsetupSelectingEvents($grid: JQuery) {
+            $grid.unbind('iggridselectionrowselectionchanged');
+
+            $grid.off('mouseup');
         }
     }
 
@@ -869,4 +894,123 @@ module nts.uk.ui.jqueryExtentions {
         }
 
     }
+    
+    export module igGridExt {
+        $.fn.igGridExt = function(options: any) {
+            var self = this;
+            if (options.ntsControls === undefined) {
+                $(this).igGrid(options);
+                return;
+            }
+            
+            var columns = _.map(options.columns, function(column: any) {
+                if (column.ntsControl === undefined) return column;
+                var controlDef = _.find(options.ntsControls, function(ctl: any) {
+                    return ctl.name === column.ntsControl;    
+                });
+                
+                var $self = $(self);
+                column.formatter = function(value, rowObj) {
+                    var update = (val) => { 
+                        if ($self.data("igGrid") !== null) {
+                            $self.igGridUpdating("setCellValue", rowObj[$self.igGrid("option", "primaryKey")], column.key, val);
+                            $self.igGrid("commit");
+                        }
+                    };
+                    var data = {
+                        setChecked: update,
+                        checked: value
+                    };
+                    var ntsControl = getControl(controlDef.controlType);
+                    ntsControl.setText(controlDef);
+                    var $container = ntsControl.draw(data);
+                    var selectors = ntsControl.bindEventsTo();
+                    
+                    var $_self = $self;
+                    setTimeout(function() {
+                        var $self = $_self;
+                        for (var sel in selectors) {
+                            var events = (<any>$)._data($container.find(selectors[sel])[0], "events");
+                            var $selector = $self.igGrid("cellById", rowObj[$self.igGrid("option", "primaryKey")], column.key).find(selectors[sel]);
+                            for (var id in events) {
+                                _.each(events[id], function(evt) {
+                                    $selector.unbind();
+                                    $selector.on(evt.type, evt.handler);
+                                });
+                            }
+                        }
+                    }, 0);
+                    
+                    return $container.html();
+                }; 
+                return column;
+            });
+            
+            options.columns = columns;
+            $(this).igGrid(options);
+        };
+        
+        function getControl(name: string): NtsControlBase {
+            
+            return new CheckBox();
+        }
+        
+        abstract class NtsControlBase {
+            value: any;
+            readOnly: boolean = false;
+            enable: boolean = true;
+            text: string;
+            
+            abstract draw(data: any): JQuery;
+            abstract setText(options: any): void;
+            abstract bindEventsTo(): any;
+        }
+                
+        class CheckBox extends NtsControlBase {
+            
+            draw(data: any): JQuery {
+                var $container = $("<div/>");
+                var checkBoxText: string;
+                var setChecked = data.setChecked;
+                var $wrapper = $("<div/>");
+                $wrapper.appendTo($container).addClass("ntsControl").on("click", (e) => {
+                    if ($wrapper.data("readonly") === true) e.preventDefault();
+                });
+                
+                if (this.text) {
+                    checkBoxText = this.text;
+                } else {
+                    checkBoxText = $wrapper.text();
+                    $wrapper.text('');
+                }
+                var $checkBoxLabel = $("<label class='ntsCheckBox'></label>");
+                var $checkBox = $('<input type="checkbox">').on("change", function() {
+                        setChecked($(this).is(":checked"));
+                }).appendTo($checkBoxLabel);
+                var $box = $("<span class='box'></span>").appendTo($checkBoxLabel);
+                if(checkBoxText && checkBoxText.length > 0)
+                    var label = $("<span class='label'></span>").text(checkBoxText).appendTo($checkBoxLabel);
+                $checkBoxLabel.appendTo($wrapper);
+                
+                var checked = data.checked !== undefined ? data.checked : true;
+                $wrapper.data("readonly", this.readOnly);
+                var $checkBox = $wrapper.find("input[type='checkbox']");
+        
+                if (checked === true) $checkBox.attr("checked", "checked");
+                else $checkBox.removeAttr("checked");
+                if (this.enable === true) $checkBox.removeAttr("disabled");
+                else $checkBox.attr("disabled", "disabled");
+                return $container;
+            }
+            
+            bindEventsTo(): any {
+                return [ ".ntsControl", "input[type='checkbox']" ];
+            }
+            
+            setText(controlDef: any): void {
+                this.text = controlDef.options[controlDef.optionsText];
+            }
+        }
+    }
 }
+

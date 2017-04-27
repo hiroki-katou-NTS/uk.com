@@ -181,6 +181,8 @@ module nts.uk.ui.jqueryExtentions {
             switch (action) {
                 case 'setupSelecting':
                     return setupSelecting($grid);
+                case 'unsetupSelecting':
+                    return unsetupSelecting($grid);
                 case 'getSelected':
                     return getSelected($grid);
                 case 'setSelected':
@@ -319,6 +321,13 @@ module nts.uk.ui.jqueryExtentions {
 
             return $grid;
         }
+        
+        function unsetupSelecting($grid: JQuery) {
+            unsetupDragging($grid);
+            unsetupSelectingEvents($grid);
+
+            return $grid;
+        }
 
         function setupDragging($grid: JQuery) {
             var dragSelectRange = [];
@@ -438,6 +447,22 @@ module nts.uk.ui.jqueryExtentions {
             $grid.on('mouseup', () => {
                 $grid.triggerHandler('selectionchanged');
             });
+        }
+        
+        function unsetupDragging($grid: JQuery) {
+            var dragSelectRange = [];
+
+            // used to auto scrolling when dragged above/below grid)
+            var mousePos: { x: number, y: number, rowIndex: number } = null;
+
+
+            $grid.unbind('mousedown');
+        }
+
+        function unsetupSelectingEvents($grid: JQuery) {
+            $grid.unbind('iggridselectionrowselectionchanged');
+
+            $grid.off('mouseup');
         }
     }
 
