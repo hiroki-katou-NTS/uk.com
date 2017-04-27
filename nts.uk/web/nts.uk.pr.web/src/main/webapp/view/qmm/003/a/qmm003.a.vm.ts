@@ -151,7 +151,7 @@ module qmm003.a.viewmodel {
             self.previousCurrentCode = '';
             self.singleSelectedCode("");
             self.dirtyObject.reset();
-            self.currentResidential().hasFocus(true);
+            $("#A_INP_002").focus();
         }
 
         // init menu
@@ -216,11 +216,11 @@ module qmm003.a.viewmodel {
             if (self.redensitalTaxNodeList().length > 0) {
                 nts.uk.ui.windows.sub.modeless("/view/qmm/003/e/index.xhtml", { title: '住民税納付先の登録＞納付先の統合', dialogClass: "no-close" }).onClosed(function(): any {
                     yes = nts.uk.ui.windows.getShared('yes');
-                        if (yes) {
-                            self.redensitalTaxNodeList([]);
-                            self.nodeRegionPrefectures([]);
-                            self.reload(undefined);
-                        }
+                    if (yes) {
+                        self.redensitalTaxNodeList([]);
+                        self.nodeRegionPrefectures([]);
+                        self.reload(undefined);
+                    }
                 });
             }
         }
@@ -324,6 +324,7 @@ module qmm003.a.viewmodel {
             self.numberOfResidentialTax(" 【登録件数】 0  件");
             self.isNew(true);
             self.enableBTN005(false);
+            $("#A_INP_002").focus();
         }
 
         // hàm xây dựng tree
@@ -427,7 +428,6 @@ module qmm003.a.viewmodel {
     //insert an update  ResidentialTax Object
     export class ResidentialTax {
         editMode: boolean = null; // true là mode thêm mới, false là mode update 
-        hasFocus: KnockoutObservable<boolean> = ko.observable(true);
         enableBTN009: KnockoutObservable<boolean> = ko.observable(null);
         resiTaxCode: KnockoutObservable<string>;
         resiTaxAutonomy: KnockoutObservable<string>;
