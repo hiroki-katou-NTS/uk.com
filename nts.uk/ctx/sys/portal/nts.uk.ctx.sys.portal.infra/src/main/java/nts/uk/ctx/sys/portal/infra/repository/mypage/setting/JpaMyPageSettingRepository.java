@@ -55,4 +55,10 @@ public class JpaMyPageSettingRepository implements MyPageSettingRepository {
 		
 	}
 
+	@Override
+	public void add(MyPageSetting myPageSetting) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

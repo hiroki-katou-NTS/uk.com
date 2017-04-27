@@ -1,7 +1,8 @@
 package nts.uk.ctx.sys.portal.dom.mypage.setting;
 
-import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.enums.UseDivision;
 import nts.uk.ctx.sys.portal.dom.primitive.CompanyId;
@@ -11,8 +12,9 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
 /**
  * The Class TopPagePartSettingItem.
  */
-@Getter
-public class TopPagePartUseSetting extends DomainObject{
+@Value
+@EqualsAndHashCode(callSuper = false)
+public class TopPagePartUseSetting extends AggregateRoot {
 
 	/** The company id. */
 	private CompanyId companyId;
@@ -51,5 +53,12 @@ public class TopPagePartUseSetting extends DomainObject{
 		this.topPagePartName = topPagePartName;
 		this.useDivision = useDivision;
 		this.topPagePartType = topPagePartType;
+	}
+
+	public static TopPagePartUseSetting createFromJavaType(String companyId, String topPagePartCode,
+			String topPagePartName, Integer useDivision, Integer topPagePartType) {
+		return new TopPagePartUseSetting(new CompanyId(companyId), new TopPagePartCode(topPagePartCode),
+				new TopPagePartName(topPagePartName), UseDivision.valueOf(useDivision),
+				TopPagePartType.valueOf(topPagePartType));
 	}
 }
