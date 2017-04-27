@@ -122,8 +122,10 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 			+ "FROM PbsmtPersonBase p, "
 			// + "PcpmtPersonTempAssign a, "//To get the loan information of
 			// individuals who meet the conditions // a demo
-			+ "PcpmtPersonCom pc, " + "PclmtPersonEmpContract ec, " 
-			+ "CmnmtEmp e, " + "QpdmtPayday pd, "
+			+ "PcpmtPersonCom pc, " 
+			+ "PclmtPersonEmpContract ec, " 
+			+ "CmnmtEmp e, " 
+			+ "QpdmtPayday pd, "
 			+ "QstdtPaymentDetail pdt, "
 			 + "QyedtYearendDetail yd "
 			+ "WHERE p.pid in :PIDs "
@@ -131,7 +133,7 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 			// + "AND a.pcpmtPersonTempAssignPK.pid = p.pid "
 			+ "AND pc.pcpmtPersonComPK.ccd = :CCD " 
 			+ "AND pc.pcpmtPersonComPK.pid = p.pid "
-			+ "AND pc.regularCom = :REGULAR_COM "// 0
+			+ "AND pc.regularCom = :REGULAR_COM "
 			+ "AND ec.pclmtPersonEmpContractPK.ccd = :CCD "
 			+ "AND ec.pclmtPersonEmpContractPK.pId = pc.pcpmtPersonComPK.pid "
 			+ "AND ec.pclmtPersonEmpContractPK.strD <= :BASE_YMD " 
@@ -156,7 +158,9 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 	/** The Constant CHECK_AT_PRINTING_QUERY. */
 	private static final String CHECK_AT_PRINTING_QUERY = "SELECT pdt.qstdtPaymentDetailPK.personId, "
 			+ "sum(pdt.value) "
-			+ "FROM QstdtPaymentDetail pdt," + "CmnmtEmp e, " + "QpdmtPayday pd, " 
+			+ "FROM QstdtPaymentDetail pdt," 
+			+ "CmnmtEmp e, " 
+			+ "QpdmtPayday pd, " 
 			+ "PclmtPersonEmpContract ec " 
 			+ "WHERE ec.pclmtPersonEmpContractPK.pId in :PIDs " 
 			+ "AND ec.pclmtPersonEmpContractPK.ccd = :CCD "
@@ -379,8 +383,8 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 	 */
 	private void setGeneralParams(GeneralVars general){
 		// Set general Parameters for query
-		String startDate = general.query.getTargetYear() + START_DATE_OF_YEAR;
-		String endDate = general.query.getTargetYear() + END_DATE_OF_YEAR;
+		String startDate = general.query.getTargetYear().toString() + START_DATE_OF_YEAR;
+		String endDate = general.query.getTargetYear().toString() + END_DATE_OF_YEAR;
 		GeneralDate strYMD = GeneralDate.fromString(startDate, DATE_FORMAT);
 		GeneralDate endYMD = GeneralDate.fromString(endDate, DATE_FORMAT);
 		general.typedQuery.setParameter("CCD", general.companyCode)

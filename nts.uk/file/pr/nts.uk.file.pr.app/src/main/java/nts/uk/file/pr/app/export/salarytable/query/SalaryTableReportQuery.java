@@ -50,7 +50,7 @@ public class SalaryTableReportQuery {
 	private Integer targetYear;
 	
 	/** The emp id list. */
-	private List<String> empIdList;
+	private List<String> pIdList;
 	
 	/** The selected division. */
 	private String selectedDivision;	
