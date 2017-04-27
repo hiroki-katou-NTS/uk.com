@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.formula.dom.enums.AdjustmentAtr;
 import nts.uk.ctx.pr.formula.dom.enums.BaseMoneyAtr;
 import nts.uk.ctx.pr.formula.dom.enums.DivideValueSet;
@@ -14,8 +16,6 @@ import nts.uk.ctx.pr.formula.dom.primitive.DivideValue;
 import nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaCode;
 import nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaName;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
-import nts.uk.ctx.pr.formula.dom.primitive.MaxValue;
-import nts.uk.ctx.pr.formula.dom.primitive.MinValue;
 import nts.uk.ctx.pr.formula.dom.primitive.Money;
 import nts.uk.ctx.pr.formula.dom.primitive.PremiumRate;
 import nts.uk.ctx.pr.formula.dom.primitive.WorkItemCode;
@@ -103,18 +103,32 @@ public class FormulaEasyDetail extends AggregateRoot {
 		this.adjustmentDevision = adjustmentDevision;
 		this.totalRounding = totalRounding;
 	}
-	
-	public static FormulaEasyDetail createFromJavaType (String companyCode, String formulaCode, String historyId,
-			String easyFormulaCode,String easyFormulaName, BigDecimal easyFormulaTypeAtr,BigDecimal baseFixedAmount,
-			BigDecimal baseAmountDevision, BigDecimal baseFixedValue, BigDecimal baseValueDevision, BigDecimal premiumRate,
-			BigDecimal roundProcessingDevision, String coefficientDivision, BigDecimal coefficientFixedValue, BigDecimal adjustmentDevision,
-			BigDecimal totalRounding){
+
+	public static FormulaEasyDetail createFromJavaType(String companyCode, String formulaCode, String historyId,
+			String easyFormulaCode, String easyFormulaName, BigDecimal easyFormulaTypeAtr, BigDecimal baseFixedAmount,
+			BigDecimal baseAmountDevision, BigDecimal baseFixedValue, BigDecimal baseValueDevision,
+			BigDecimal premiumRate, BigDecimal roundProcessingDevision, String coefficientDivision,
+			BigDecimal coefficientFixedValue, BigDecimal adjustmentDevision, BigDecimal totalRounding) {
 		return new FormulaEasyDetail(companyCode, new FormulaCode(formulaCode), historyId,
-				new EasyFormulaCode(easyFormulaCode), new EasyFormulaName(easyFormulaName), EnumAdaptor.valueOf(easyFormulaTypeAtr.intValue(), EasyFormulaTypeAtr.class)
-				, new Money(baseFixedAmount), EnumAdaptor.valueOf(baseAmountDevision.intValue(), BaseMoneyAtr.class), new DivideValue(baseFixedValue)
-				, EnumAdaptor.valueOf(baseValueDevision.intValue(), DivideValueSet.class), new PremiumRate(premiumRate), EnumAdaptor.valueOf(roundProcessingDevision.intValue(), RoundAtr.class)
-				, new WorkItemCode(coefficientDivision), new WorkValue(coefficientFixedValue), EnumAdaptor.valueOf(adjustmentDevision.intValue(), AdjustmentAtr.class)
-				,EnumAdaptor.valueOf(totalRounding.intValue(), RoundAtr.class));
+				new EasyFormulaCode(easyFormulaCode), new EasyFormulaName(easyFormulaName),
+				EnumAdaptor.valueOf(easyFormulaTypeAtr.intValue(), EasyFormulaTypeAtr.class),
+				new Money(baseFixedAmount), EnumAdaptor.valueOf(baseAmountDevision.intValue(), BaseMoneyAtr.class),
+				new DivideValue(baseFixedValue),
+				EnumAdaptor.valueOf(baseValueDevision.intValue(), DivideValueSet.class), new PremiumRate(premiumRate),
+				EnumAdaptor.valueOf(roundProcessingDevision.intValue(), RoundAtr.class),
+				new WorkItemCode(coefficientDivision), new WorkValue(coefficientFixedValue),
+				EnumAdaptor.valueOf(adjustmentDevision.intValue(), AdjustmentAtr.class),
+				EnumAdaptor.valueOf(totalRounding.intValue(), RoundAtr.class));
+	}
+
+	public void validate() {
+		if (StringUtil.isNullOrEmpty(easyFormulaName.v(), true)
+				|| StringUtil.isNullOrEmpty(baseAmountDevision.toString(), true)
+				|| StringUtil.isNullOrEmpty(premiumRate.toString(), true)
+				|| StringUtil.isNullOrEmpty(baseFixedValue.toString(), true)
+				|| StringUtil.isNullOrEmpty(coefficientFixedValue.toString(), true)) {
+			throw new BusinessException("ER001");
+		}
 	}
 
 }

@@ -459,7 +459,7 @@ module nts.qmm017 {
             for (let tagOrder = 0; tagOrder < tagsJapaneseChar.length; tagOrder++) {
                 if (tagsJapaneseChar[tagOrder].innerText.indexOf('＠') !== -1) {
                     let splitByAtSign = tagsJapaneseChar[tagOrder].innerText.split('＠');
-                    if (!self.checkEqualInArray(splitByAtSign[0], lstSyntaxBeforeAtSign)) {
+                    if (!self.checkEqualInArray(splitByAtSign[0].trim(), lstSyntaxBeforeAtSign)) {
                         self.markError($(tagsJapaneseChar[tagOrder]), self.ERROR_BEFORE_ATSIGN, [splitByAtSign[0]]);
                     }
                 }
@@ -471,7 +471,7 @@ module nts.qmm017 {
             for (let tagOrder = 0; tagOrder < tagsJapaneseChar.length; tagOrder++) {
                 if (tagsJapaneseChar[tagOrder].innerText.indexOf('＠') !== -1) {
                     let splitByAtSign = tagsJapaneseChar[tagOrder].innerText.split('＠');
-                    let correctItemName = _.find(self.itemsBag, function(item) { return item.name == tagsJapaneseChar[tagOrder].innerText });
+                    let correctItemName = _.find(self.itemsBag, function(item) { return item.name == tagsJapaneseChar[tagOrder].innerText.trim() });
                     if (!correctItemName) {
                         self.markError($(tagsJapaneseChar[tagOrder]), self.ERROR_AFTER_ATSIGN, [splitByAtSign[1]]);
                     }

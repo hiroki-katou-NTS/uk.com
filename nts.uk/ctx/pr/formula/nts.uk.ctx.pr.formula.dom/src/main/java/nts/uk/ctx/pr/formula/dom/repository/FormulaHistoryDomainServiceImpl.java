@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyHeader;
@@ -52,7 +53,7 @@ public class FormulaHistoryDomainServiceImpl implements FormulaHistoryDomainServ
 				this.formulaHistoryRepository.update(previousFormulaHistoryUpdate);
 			}
 		} catch (Exception e) {
-			throw new BusinessException("OKボタンクリックで次の処理へ");
+			throw new BusinessException(new RawErrorMessage("OKボタンクリックで次の処理へ"));
 		}
 	}
 
@@ -89,7 +90,7 @@ public class FormulaHistoryDomainServiceImpl implements FormulaHistoryDomainServ
 				}
 			}
 		} catch (Exception e) {
-			throw new BusinessException("OKボタンクリックで次の処理へ");
+			throw new BusinessException(new RawErrorMessage("OKボタンクリックで次の処理へ"));
 		}
 	}
 

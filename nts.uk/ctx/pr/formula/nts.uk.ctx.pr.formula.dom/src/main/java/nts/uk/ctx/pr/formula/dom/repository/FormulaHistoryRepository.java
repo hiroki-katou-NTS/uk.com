@@ -29,6 +29,8 @@ public interface FormulaHistoryRepository {
 	
 	boolean isExistedHistory(String companyCode);
 	
+	boolean isExistedHistoryForUpdate(String companyCode, FormulaCode formulaCode, String historyId);
+	
 	Optional<FormulaHistory> findLastHistory(String companyCode, FormulaCode formulaCode);
 	
 	boolean isNewestHistory(String companyCode, FormulaCode formulaCode, YearMonth startDate);

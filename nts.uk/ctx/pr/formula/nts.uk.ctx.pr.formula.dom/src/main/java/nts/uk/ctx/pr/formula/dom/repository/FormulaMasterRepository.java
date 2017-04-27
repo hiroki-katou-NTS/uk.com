@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.formula.dom.repository;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,5 +38,7 @@ public interface FormulaMasterRepository {
 	
 	void remove(String companyCode, FormulaCode formulaCode);
 	
-	boolean isExistedFormula(String companyCode);
+	boolean isExistedFormulaByCompanyCode(String companyCode);
+	
+	boolean isExistedFormula(String companyCode, FormulaCode formulaCode);
 }
