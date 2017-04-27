@@ -71,6 +71,7 @@ module cmm009.c.viewmodel {
             //check YM
             if (self.selectStartYm() == "") {
                 alert("開始年月日 が入力されていません。");
+                $("#INP_STARTYMD").focus();
                 return false;
             }
             if (!nts.uk.time.parseYearMonthDate(inputYm).success) {
@@ -83,6 +84,7 @@ module cmm009.c.viewmodel {
             if (+inputYm2 < +self.startDateofHisFromScreenatoString
                 || +inputYm2 == +self.startDateofHisFromScreenatoString) {
                 alert('履歴の期間が正しくありません。');
+                $("#INP_STARTYMD").focus();
                 return false;
             }
             else {

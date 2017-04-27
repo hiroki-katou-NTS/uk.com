@@ -36,7 +36,6 @@ public class UpdateDepartmentCommandHandler extends CommandHandler<List<UpdateDe
 
 	@Inject
 	private DepartmentRepository departmentRepository;
-	// private DepartmentDomainService departmentDomainService;
 
 	@Override
 	protected void handle(CommandHandlerContext<List<UpdateDepartmentCommand>> context) {

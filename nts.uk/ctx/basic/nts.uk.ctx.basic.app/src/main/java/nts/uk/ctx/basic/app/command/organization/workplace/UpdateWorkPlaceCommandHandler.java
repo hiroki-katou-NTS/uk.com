@@ -51,7 +51,7 @@ public class UpdateWorkPlaceCommandHandler extends CommandHandler<List<UpdateWor
 
 			if (!workPlaceRepository.isExistWorkPace(companyCode, context.getCommand().get(0).getHistoryId(),
 					new WorkPlaceCode(context.getCommand().get(0).getWorkPlaceCode()))) {
-				throw new BusinessException("ER005");
+				throw new BusinessException("ER06");
 			}
 
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");

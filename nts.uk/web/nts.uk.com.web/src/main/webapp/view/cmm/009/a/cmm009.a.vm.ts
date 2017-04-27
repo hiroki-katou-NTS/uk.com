@@ -121,6 +121,11 @@ module cmm009.a.viewmodel {
                             if (self.itemHistId()[i].historyId == "") {
                                 let item = self.itemHistId()[i];
                                 self.itemHistId.remove(item);
+                                let _dt = self.itemHistId();
+                                self.itemHistId([]);
+                                _dt[0].endDate= "9999/12/31";
+                                self.itemHistId(_dt);
+                                
                             }
                         }
                         self.historyId(self.itemHist().historyId);
@@ -227,7 +232,7 @@ module cmm009.a.viewmodel {
                                 .fail(function(error) {
                                     if (error.messageId == "ER005") {
                                         alert("入力したコードは既に存在しています。\r\n コードを確認してください。 ");
-                                        $("#A_INP_CODE").focus(); s
+                                        $("#A_INP_CODE").focus();
                                     }
                                     dfd2.reject();
                                 })
@@ -522,8 +527,6 @@ module cmm009.a.viewmodel {
                                     } else {
                                         selectedcode = (_dt[indexOfItemDelete + 1].departmentCode);
                                     }
-
-                                    debugger;
                                     self.getAllDepartmentByHistId(hisdto.historyId, selectedcode);
                                 }).fail(function(error) {
                                 })
@@ -547,7 +550,6 @@ module cmm009.a.viewmodel {
             if (!sources || !sources.length) {
                 return undefined;
             }
-
             sources = nts.uk.util.flatArray(sources, 'children');
             self.lengthTreeCurrent(sources.length + 1);
             return _.find(sources, function(item: model.Dto) { return item.departmentCode == value; });
@@ -555,11 +557,9 @@ module cmm009.a.viewmodel {
 
         findDepByHirachy(value: string, sources) {
             let self = this;
-
             if (!sources || !sources.length) {
                 return undefined;
             }
-
             sources = nts.uk.util.flatArray(sources, 'children');
             self.lengthTreeCurrent(sources.length + 1);
             return _.find(sources, function(item: model.Dto) { return item.hierarchyCode == value; });
