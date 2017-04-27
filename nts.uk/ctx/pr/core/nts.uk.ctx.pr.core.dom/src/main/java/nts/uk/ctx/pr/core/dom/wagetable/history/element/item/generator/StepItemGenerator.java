@@ -15,6 +15,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
@@ -66,7 +67,8 @@ public class StepItemGenerator implements ItemGenerator {
 		// Lower limit is always less than upper limit.
 		if (upperLimit.compareTo(lowerLimit) < 0) {
 			// TODO: need msg id.
-			throw new BusinessException(new RawErrorMessage("Lower limit must be always less than upper limit."));
+			throw new BusinessException(
+					new RawErrorMessage("Lower limit must be always less than upper limit."));
 		}
 
 		// Interval is greater than zero.
@@ -126,6 +128,14 @@ public class StepItemGenerator implements ItemGenerator {
 
 			// Add start value of next item.
 			start = start.add(interval);
+		}
+
+		// Check has items.
+		if (CollectionUtil.isEmpty(items)) {
+			// TODO: need msg id.
+			throw new BusinessException(new RawErrorMessage(
+					"Have not any items on demension  " + elementSetting.getDemensionNo().value
+							+ ": " + elementSetting.getType().displayName));
 		}
 
 		// Return
