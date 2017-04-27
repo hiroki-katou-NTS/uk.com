@@ -46,10 +46,12 @@ public class CalculationTrial {
 		// + "関数＠最小値（100, 200）÷ 関数＠切上げ（ 10.6 ）× " + "関数＠条件式（ 関数＠かつ（ 関数＠年抽出（
 		// 200010 ）＞1999 ,"
 		// + "関数＠月抽出（ 200001 ）＜ 3 ）, 1.5 , 2）";
-//		String formula = "1+2*3*2*2+5+5*2/2-5+F@1(2<4,100,200)+F@6(1.2)";
+		// String formula = "1+2*3*2*2+5+5*2/2-5+F@1(2<4,100,200)+F@6(1.2)";
 		formulaContent = rePlaceFormula(formulaContent);
+		List<String> content = new ArrayList<>();
+		replaceBracket(formulaContent, content);
+		formulaContent = content.get(0);
 		int smallIndex;
-		BigDecimal result = null;
 		CalculatorDto calculatorDto = new CalculatorDto();
 		// case first char is digit
 		if (isDigit(formulaContent.charAt(0))) {
@@ -62,20 +64,42 @@ public class CalculationTrial {
 			List<BigDecimal> resultValue = new ArrayList<>();
 			proceedExcuteWithDigit(firstValue, null, firstSign, null, formulaContent, resultValue);
 			calculatorDto.setResult(resultValue.get(0).toString());
-		}
+		} 
 		return calculatorDto;
+	}
+	
+	private void replaceBracket (String formula, List<String> content) {
+		StringBuilder formulaBuilder = new StringBuilder(formula);
+		int index = formulaBuilder.indexOf(openBracket);
+		int smallIndex;
+		if(index > -1){
+			List<String> subText = splitFormula(formula);
+			String subFormula = subText.get(0);
+			smallIndex = findLocation(subFormula);
+			// get first value of formula
+			BigDecimal firstValue = new BigDecimal(subFormula.substring(0, smallIndex));
+			String firstSign = subFormula.substring(smallIndex, smallIndex + 1);
+			// remove first value and sign outside formula
+			subFormula = subFormula.substring(smallIndex + 1, subFormula.length());
+			List<BigDecimal> resultValue = new ArrayList<>();
+			proceedExcuteWithDigit(firstValue, null, firstSign, null, subFormula, resultValue);
+			formula = formulaBuilder.replace(index, Integer.parseInt(subText.get(1)) + 1, resultValue.get(0).toString()).toString();
+			replaceBracket(formula, content);
+		}else {
+			content.add(formula);
+		}
 	}
 
 	private String rePlaceFormula(String formula) {
 		StringBuilder formulaBuilder = new StringBuilder(formula);
-		//get conditionalExpression
+		// get conditionalExpression
 		int indexOfformula = findFormula(conditionalExpression, formulaBuilder);
 		int indexOfCloseBracket;
 		int indexOfOpenBracket;
 		String subText = null;
 		BigDecimal value = null;
 		boolean trueValue;
-		if(indexOfformula > -1){
+		if (indexOfformula > -1) {
 			subText = formulaBuilder.substring(indexOfformula);
 			indexOfOpenBracket = subText.indexOf(openBracket);
 			indexOfCloseBracket = subText.indexOf(closeBracket);
@@ -83,9 +107,9 @@ public class CalculationTrial {
 			value = conditionalExpression(subText);
 			formulaBuilder.replace(indexOfformula, indexOfformula + indexOfCloseBracket + 1, value.toString());
 		}
-		//get andFunction
+		// get andFunction
 		indexOfformula = findFormula(andFunction, formulaBuilder);
-		if(indexOfformula > -1){
+		if (indexOfformula > -1) {
 			subText = formulaBuilder.substring(indexOfformula);
 			indexOfOpenBracket = subText.indexOf(openBracket);
 			indexOfCloseBracket = subText.indexOf(closeBracket);
@@ -93,9 +117,9 @@ public class CalculationTrial {
 			trueValue = andFunction(subText);
 			formulaBuilder.replace(indexOfformula, indexOfformula + indexOfCloseBracket + 1, trueValue + "");
 		}
-		//get orFunction
+		// get orFunction
 		indexOfformula = findFormula(orFunction, formulaBuilder);
-		if(indexOfformula > -1){
+		if (indexOfformula > -1) {
 			subText = formulaBuilder.substring(indexOfformula);
 			indexOfOpenBracket = subText.indexOf(openBracket);
 			indexOfCloseBracket = subText.indexOf(closeBracket);
@@ -103,9 +127,9 @@ public class CalculationTrial {
 			trueValue = orFunction(subText);
 			formulaBuilder.replace(indexOfformula, indexOfformula + indexOfCloseBracket + 1, trueValue + "");
 		}
-		//get roundFunction
+		// get roundFunction
 		indexOfformula = findFormula(roundFunction, formulaBuilder);
-		if(indexOfformula > -1){
+		if (indexOfformula > -1) {
 			subText = formulaBuilder.substring(indexOfformula);
 			indexOfOpenBracket = subText.indexOf(openBracket);
 			indexOfCloseBracket = subText.indexOf(closeBracket);
@@ -113,9 +137,9 @@ public class CalculationTrial {
 			value = roundFunction(subText);
 			formulaBuilder.replace(indexOfformula, indexOfformula + indexOfCloseBracket + 1, value.toString());
 		}
-		//get truncateFunction
+		// get truncateFunction
 		indexOfformula = findFormula(truncateFunction, formulaBuilder);
-		if(indexOfformula > -1){
+		if (indexOfformula > -1) {
 			subText = formulaBuilder.substring(indexOfformula);
 			indexOfOpenBracket = subText.indexOf(openBracket);
 			indexOfCloseBracket = subText.indexOf(closeBracket);
@@ -123,9 +147,9 @@ public class CalculationTrial {
 			value = truncateFunction(subText);
 			formulaBuilder.replace(indexOfformula, indexOfformula + indexOfCloseBracket + 1, value.toString());
 		}
-		//get roundUpFunction
+		// get roundUpFunction
 		indexOfformula = findFormula(roundUpFunction, formulaBuilder);
-		if(indexOfformula > -1){
+		if (indexOfformula > -1) {
 			subText = formulaBuilder.substring(indexOfformula);
 			indexOfOpenBracket = subText.indexOf(openBracket);
 			indexOfCloseBracket = subText.indexOf(closeBracket);
@@ -133,9 +157,9 @@ public class CalculationTrial {
 			value = roundUpFunction(subText);
 			formulaBuilder.replace(indexOfformula, indexOfformula + indexOfCloseBracket + 1, value.toString());
 		}
-		//get maximumFunction
+		// get maximumFunction
 		indexOfformula = findFormula(maximumFunction, formulaBuilder);
-		if(indexOfformula > -1){
+		if (indexOfformula > -1) {
 			subText = formulaBuilder.substring(indexOfformula);
 			indexOfOpenBracket = subText.indexOf(openBracket);
 			indexOfCloseBracket = subText.indexOf(closeBracket);
@@ -143,9 +167,9 @@ public class CalculationTrial {
 			value = maximumFunction(subText);
 			formulaBuilder.replace(indexOfformula, indexOfformula + indexOfCloseBracket + 1, value.toString());
 		}
-		//get minimumFunction
+		// get minimumFunction
 		indexOfformula = findFormula(minimumFunction, formulaBuilder);
-		if(indexOfformula > -1){
+		if (indexOfformula > -1) {
 			subText = formulaBuilder.substring(indexOfformula);
 			indexOfOpenBracket = subText.indexOf(openBracket);
 			indexOfCloseBracket = subText.indexOf(closeBracket);
@@ -153,9 +177,9 @@ public class CalculationTrial {
 			value = minimumFunction(subText);
 			formulaBuilder.replace(indexOfformula, indexOfformula + indexOfCloseBracket + 1, value.toString());
 		}
-		//get familyMemberFunction
+		// get familyMemberFunction
 		indexOfformula = findFormula(familyMemberFunction, formulaBuilder);
-		if(indexOfformula > -1){
+		if (indexOfformula > -1) {
 			subText = formulaBuilder.substring(indexOfformula);
 			indexOfOpenBracket = subText.indexOf(openBracket);
 			indexOfCloseBracket = subText.indexOf(closeBracket);
@@ -163,9 +187,9 @@ public class CalculationTrial {
 			value = familyMemberFunction(subText);
 			formulaBuilder.replace(indexOfformula, indexOfformula + indexOfCloseBracket + 1, value.toString());
 		}
-		//get addMonthFunction
+		// get addMonthFunction
 		indexOfformula = findFormula(addMonthFunction, formulaBuilder);
-		if(indexOfformula > -1){
+		if (indexOfformula > -1) {
 			subText = formulaBuilder.substring(indexOfformula);
 			indexOfOpenBracket = subText.indexOf(openBracket);
 			indexOfCloseBracket = subText.indexOf(closeBracket);
@@ -173,9 +197,9 @@ public class CalculationTrial {
 			value = addMonthFunction(subText);
 			formulaBuilder.replace(indexOfformula, indexOfformula + indexOfCloseBracket + 1, value.toString());
 		}
-		//get extractYearFunction
+		// get extractYearFunction
 		indexOfformula = findFormula(extractYearFunction, formulaBuilder);
-		if(indexOfformula > -1){
+		if (indexOfformula > -1) {
 			subText = formulaBuilder.substring(indexOfformula);
 			indexOfOpenBracket = subText.indexOf(openBracket);
 			indexOfCloseBracket = subText.indexOf(closeBracket);
@@ -183,9 +207,9 @@ public class CalculationTrial {
 			value = extractYearFunction(subText);
 			formulaBuilder.replace(indexOfformula, indexOfformula + indexOfCloseBracket + 1, value.toString());
 		}
-		//get extractMonthFunction
+		// get extractMonthFunction
 		indexOfformula = findFormula(extractMonthFunction, formulaBuilder);
-		if(indexOfformula > -1){
+		if (indexOfformula > -1) {
 			subText = formulaBuilder.substring(indexOfformula);
 			indexOfOpenBracket = subText.indexOf(openBracket);
 			indexOfCloseBracket = subText.indexOf(closeBracket);
@@ -268,8 +292,8 @@ public class CalculationTrial {
 		}
 
 	}
-	
-	private boolean checkIsEndOfString(String formula){
+
+	private boolean checkIsEndOfString(String formula) {
 		int index = findLocation(formula);
 		return index > -1 ? false : true;
 	}
@@ -321,8 +345,8 @@ public class CalculationTrial {
 		}
 		return result;
 	}
-	
-	private int findFormula(String formula, StringBuilder text){
+
+	private int findFormula(String formula, StringBuilder text) {
 		return text.indexOf(formula);
 	}
 
@@ -363,20 +387,36 @@ public class CalculationTrial {
 			countClose += 1;
 		}
 		List<String> subFormula = new ArrayList<>();
-		if (!Character.isDigit(formula.charAt(0))) {
+//		if (!Character.isDigit(formula.charAt(0))) {
 			subFormula.add(formula.substring(start + 1, closeIndex));
 			subFormula.add(closeIndex + "");
-		}
+//		}
 		return subFormula;
 	}
 
 	private BigDecimal conditionalExpression(String expression) {
 		String[] arrs = expression.split(",");
-		String[] exps = arrs[0].split(">|<|>=|<=|!=");
+		String[] exps = arrs[0].split(">|<|>=|<=|!=|=");
+
+		String conditionFormula = exps[0];
+		BigDecimal conditionValue = null;
+		List<BigDecimal> resultValue = new ArrayList<>();
+		int smallIndex = findLocation(conditionFormula);
+		if (smallIndex > -1) {
+			// get first value of formula
+			BigDecimal firstValue = new BigDecimal(conditionFormula.substring(0, smallIndex));
+			String firstSign = conditionFormula.substring(smallIndex, smallIndex + 1);
+			conditionFormula = conditionFormula.substring(smallIndex + 1, conditionFormula.length());
+			proceedExcuteWithDigit(firstValue, null, firstSign, null, conditionFormula, resultValue);
+			conditionValue = resultValue.get(0);
+		} else {
+			conditionValue = new BigDecimal(exps[0]);
+		}
+
 		BigDecimal fValue = new BigDecimal(arrs[1]);
 		BigDecimal sValue = new BigDecimal(arrs[2]);
 		BigDecimal result = null;
-		int compare = new BigDecimal(exps[0]).compareTo(new BigDecimal(exps[1]));
+		int compare = conditionValue.compareTo(new BigDecimal(exps[1]));
 		if (arrs[0].contains(more)) {
 			result = compare > 0 ? fValue : sValue;
 		} else if (arrs[0].contains(less)) {
@@ -387,6 +427,8 @@ public class CalculationTrial {
 			result = compare <= 0 ? fValue : sValue;
 		} else if (arrs[0].contains(different)) {
 			result = compare != 0 ? fValue : sValue;
+		} else if (arrs[0].contains(equal)) {
+			result = compare == 0 ? fValue : sValue;
 		}
 		return result;
 	}
