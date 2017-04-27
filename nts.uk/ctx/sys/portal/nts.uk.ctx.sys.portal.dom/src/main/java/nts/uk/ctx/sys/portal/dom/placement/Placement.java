@@ -3,7 +3,6 @@ package nts.uk.ctx.sys.portal.dom.placement;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.DomainObject;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.portal.dom.placement.primitive.Column;
 import nts.uk.ctx.sys.portal.dom.placement.primitive.Row;
 
@@ -35,11 +34,13 @@ public class Placement extends DomainObject {
 	/** ExternalUrl */
 	ExternalUrl externalUrl;
 
-	public static Placement createFromJavaType(String companyId, String layoutID,
-			String toppagePartID, int column, int row, String url, int width, int height) {
-		String placementID = IdentifierUtil.randomUniqueId();
-		return new Placement(
-			companyId, placementID, layoutID, toppagePartID,
+	/** Create an Layout from Java type */
+	public static Placement createFromJavaType(
+			String companyId, String placementID, String layoutID, String toppagePartID,
+			int column, int row,
+			String url, int width, int height)
+	{
+		return new Placement( companyId, placementID, layoutID, toppagePartID,
 			new Column(column), new Row(row),
 			ExternalUrl.createFromJavaType(url, width, height)
 		);

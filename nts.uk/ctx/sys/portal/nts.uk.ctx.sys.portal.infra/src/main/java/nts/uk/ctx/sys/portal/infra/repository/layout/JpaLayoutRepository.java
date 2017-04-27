@@ -5,11 +5,9 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.layout.Layout;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutRepository;
-import nts.uk.ctx.sys.portal.dom.layout.enums.PGType;
 import nts.uk.ctx.sys.portal.infra.entity.layout.CcgmtLayout;
 import nts.uk.ctx.sys.portal.infra.entity.layout.CcgmtLayoutPK;
 
@@ -103,7 +101,7 @@ public class JpaLayoutRepository extends JpaRepository implements LayoutReposito
 	 * @return layout
 	 */
 	private Layout toDomain(CcgmtLayout entity) {
-		return new Layout(entity.ccgmtLayoutPK.companyID, entity.ccgmtLayoutPK.layoutID, EnumAdaptor.valueOf(entity.pgType, PGType.class));
+		return Layout.createFromJavaType(entity.ccgmtLayoutPK.companyID, entity.ccgmtLayoutPK.layoutID, entity.pgType);
 	}
 
 }
