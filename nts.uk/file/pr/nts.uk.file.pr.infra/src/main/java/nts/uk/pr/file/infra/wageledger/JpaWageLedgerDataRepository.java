@@ -305,7 +305,10 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 					masterItem.qcamtItemPK.ccd = companyCode;
 					masterItem.qcamtItemPK.ctgAtr = category.getCategory().value;
 					masterItem.qcamtItemPK.itemCd = outputItem.getLinkageCode();
-					results.addAll(dataMaps.get(masterItem));
+					results.addAll(dataMaps.get(masterItem).stream().filter(detail -> {
+						return ((QstdtPaymentDetail) detail[0]).qstdtPaymentDetailPK.payBonusAttribute == category
+								.getPaymentType().value;
+					}).collect(Collectors.toList()));
 					return;
 				}
 				
@@ -315,6 +318,9 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 								&& item.getSubject().getPaymentType() == category.getPaymentType()
 								&& item.getSubject().getCode().v().equals(outputItem.getLinkageCode()))
 						.findFirst().get();
+				if (CollectionUtil.isEmpty(aggregateItem.getSubItems())) {
+					return;
+				}
 				List<QcamtItem> masterItemList = aggregateItem.getSubItems().stream()
 						.map(subItem -> {
 							QcamtItem masterItem = new QcamtItem();
