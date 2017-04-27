@@ -1,0 +1,48 @@
+/**
+ * author hieult
+ */
+package nts.uk.ctx.sys.portal.dom.flowmenu;
+
+import java.util.List;
+import java.util.Optional;
+
+
+
+public interface FlowMenuRepository {
+
+	/**
+	 * Find All
+	 * @param companyID
+	 * @return
+	 */
+	List<FlowMenu> findAll(String companyID);
+	/**
+	 * Find by code
+	 * @param companyID
+	 * @param toppagePartID
+	 * @return
+	 */
+	Optional<FlowMenu> findByCode (String companyID , String toppagePartID);
+	
+	/**
+	 * Add
+	 * @param companyID
+	 * @param toppagePartID
+	 */
+	void add (String companyID, String toppagePartID);
+	/**
+	 * Update
+	 * @param companyID
+	 * @param toppagePartID
+	 */
+	void update (String companyID, String toppagePartID);
+	/**
+	 * Remove
+	 * @param companyID
+	 * @param toppagePartID
+	 */
+
+	void remove (String companyID, String toppagePartID);
+	
+	
+}
