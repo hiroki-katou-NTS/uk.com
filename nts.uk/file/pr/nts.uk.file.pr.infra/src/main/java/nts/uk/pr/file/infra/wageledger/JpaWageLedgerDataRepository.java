@@ -420,7 +420,7 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 				.setParameter("companyCode", companyCode).getResultList();
 		
 		// Convert to report data model.
-		for (String personId : userMap.keySet()) {
+		for (String personId : headerDataMap.keySet()) {
 			List<Object[]> detailData = userMap.get(personId);
 			List<Object[]> allMasterItemData = userAllMasterDataMap.get(personId);
 			ResultData userResultData = new ResultData(allMasterItemData, detailData);
@@ -683,7 +683,7 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 				.getResultList();
 		
 		// Convert to report data model.
-		for (String personId : userMap.keySet()) {
+		for (String personId : headerDataMap.keySet()) {
 			List<Object[]> detailData = userMap.get(personId);
 			List<Object[]> allMasterItemData = userAllMasterDataMap.get(personId);
 			if (CollectionUtil.isEmpty(detailData)) {
