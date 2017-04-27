@@ -119,6 +119,7 @@ module cmm009.a.viewmodel {
                 self.findHist_Dep(self.itemHistId(), codeChanged);
                 if (self.itemHist() != null) {
                     if (self.itemHist().historyId != "") {
+                        self.enableBtn();
                         for (var i = 0; i < self.itemHistId().length; i++) {
                             if (self.itemHistId()[i].historyId == "") {
                                 let item = self.itemHistId()[i];
@@ -127,7 +128,6 @@ module cmm009.a.viewmodel {
                                 self.itemHistId([]);
                                 _dt[0].endDate = "9999/12/31";
                                 self.itemHistId(_dt);
-
                             }
                         }
                         if (self.numberItemNew() == 1) {
@@ -643,6 +643,7 @@ module cmm009.a.viewmodel {
                 nts.uk.ui.windows.sub.modal('/view/cmm/009/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
                     let itemAddHistory = nts.uk.ui.windows.getShared('itemHistory');
                     if (itemAddHistory) {
+                        self.disableBtn();
                         let itemadd = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");
                         self.itemaddHist = itemadd;
                         self.itemHistId().push(self.itemaddHist);
