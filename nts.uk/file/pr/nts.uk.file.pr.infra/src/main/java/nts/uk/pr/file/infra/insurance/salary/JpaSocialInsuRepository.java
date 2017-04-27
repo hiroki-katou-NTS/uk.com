@@ -69,6 +69,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
             + "AND ps.pismtPersonInsuSocialPK.ccd = pmd.qpdmtPaydayPK.ccd "
             + "AND ps.strD <= :baseDate "
             + "AND ps.endD >= :baseDate "
+            + "AND ps.siOfficeCd IN :officeCodes "
             + "AND ph.qstdtPaymentHeaderPK.companyCode = ps.pismtPersonInsuSocialPK.ccd "
             + "AND ph.qstdtPaymentHeaderPK.personId = ps.pismtPersonInsuSocialPK.pid "
             + "AND ph.qstdtPaymentHeaderPK.payBonusAtr = 0 "
@@ -183,6 +184,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         query.setParameter("companyCode", companyCode);
         query.setParameter("loginPid", loginPersonId);
         query.setParameter("yearMonth", yearMonth);
+        query.setParameter("officeCodes", salaryQuery.getOfficeCodes());
         String tmpDate = yearMonth.toString().concat(FIRST_DAY);
         GeneralDate baseDate = GeneralDate.fromString(tmpDate, DATE_FORMAT);
         query.setParameter("baseDate", baseDate);
