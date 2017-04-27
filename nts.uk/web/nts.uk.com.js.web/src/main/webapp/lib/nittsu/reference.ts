@@ -21,7 +21,7 @@
 /// <reference path="ui/ko-ext/formlabel-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/gridlist-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/listbox-ko-ext.ts"/>
-/// <reference path="ui/ko-ext/radiobox-ko-ext.ts"/>
+/// <reference path="ui/ko-ext/radiobox-ko-ext.ts"/> 
 /// <reference path="ui/ko-ext/searchbox-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/swaplist-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/switch-button-ko-ext.ts"/>
@@ -29,3 +29,4 @@
 /// <reference path="ui/ko-ext/treegrid-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/updown-button-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/wizard-ko-ext.ts"/>
+/// <reference path="../generic/momentjs/moment.d.ts"/>

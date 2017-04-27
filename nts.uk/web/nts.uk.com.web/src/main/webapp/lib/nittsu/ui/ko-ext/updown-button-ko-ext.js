@@ -223,6 +223,13 @@ var nts;
                             throw new Error('the element NtsSwapList must have id attribute.');
                         }
                         var data = valueAccessor();
+                        var enable = ko.unwrap(data.enable);
+                        if (enable === false) {
+                            $upDown.find(".ntsUpDownButton").prop('disabled', true);
+                        }
+                        else {
+                            $upDown.find(".ntsUpDownButton").prop('disabled', false);
+                        }
                     };
                     return NtsUpDownBindingHandler;
                 }());

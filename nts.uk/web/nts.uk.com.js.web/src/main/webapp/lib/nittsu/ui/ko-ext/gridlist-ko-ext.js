@@ -25,7 +25,9 @@ var nts;
                         var features = [];
                         features.push({ name: 'Selection', multipleSelection: data.multiple });
                         features.push({ name: 'Sorting', type: 'local' });
-                        features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: showNumbering });
+                        if (data.multiple || showNumbering) {
+                            features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: showNumbering });
+                        }
                         var gridFeatures = ko.unwrap(data.features);
                         var iggridColumns = _.map(observableColumns, function (c) {
                             c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -36,22 +38,22 @@ var nts;
                                 });
                                 if (!uk.util.isNullOrUndefined(switchF)) {
                                     features.push({ name: 'Updating', enableAddRow: false, enableDeleteRow: false, editMode: 'none' });
-                                    var switchOptions_1 = ko.unwrap(switchF.options);
-                                    var switchValue_1 = switchF.optionsValue;
-                                    var switchText_1 = switchF.optionsText;
+                                    var switchOptions_1 = ko.unwrap(switchF['options']);
+                                    var switchValue_1 = switchF['optionsValue'];
+                                    var switchText_1 = switchF['optionsText'];
                                     c["formatter"] = function createButton(val, row) {
                                         var result = $('<div class="ntsControl"/>');
+                                        result.attr("data-value", val);
                                         _.forEach(switchOptions_1, function (opt) {
                                             var value = opt[switchValue_1];
                                             var text = opt[switchText_1];
-                                            var btn = $('<button>').text(text)
-                                                .addClass('nts-switch-button');
+                                            var btn = $('<button>').text(text).addClass('nts-switch-button');
                                             btn.attr('data-value', value);
                                             if (val == value) {
                                                 btn.addClass('selected');
                                             }
                                             btn.appendTo(result);
-                                        }, result.attr("data-value", val));
+                                        });
                                         return result[0].outerHTML;
                                     };
                                     $grid.on("click", ".nts-switch-button", function (evt, ui) {
