@@ -1,15 +1,44 @@
-.btnMn{
+.btnMenu {
 	width: 70px;
 }
-#A1_1{
-	margin-left :50px;
+
+#btnNew {
+	margin-left: 50px;
 }
-#A3{
-	margin-top :30px;
+
+#lstBudget {
+	float: left;
+	width: 225px;
+	height: 280px;
+	margin: 20px 50px;
+	padding-left: 20px;
+	padding-top: 20px;
 }
-#A_LST{
-	float:left; 
-	width:220px; 
-	height: 320px; 
-	margin:20px 50px;
+
+#tblContent {
+	margin-top: 20px;
+}
+
+#inpCode {
+	width: 40px;
+}
+
+#inpName {
+	width: 150px;
+}
+
+#inpCode, #inpName {
+	border-radius: 4px;
+	border: solid 1px #999999;
+	height: 25px;
+}
+
+button.nts-switch-button {
+	height: 30px;
+}
+
+#tblContent tr td {
+	/* border: 1px solid black; */
+	padding: 10px;
+	vertical-align: middle;
 }

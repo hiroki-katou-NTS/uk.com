@@ -1,17 +1,24 @@
 module kdl024.service {
-    var path = {
-        getExternalBudgetList: "at/findallexternalbudget",
-        insertExternalBudget: "at/insertexternalbudget",
-        updateExternalBudget: "at/updateexternalbudget",
-        deleteExternalBudget: "at/deleteexternalbudget"
+    var paths = {
+        getExternalBudgetList: "at/budget/findallexternalbudget",
+        insertExternalBudget: "at/budget/insertexternalbudget",
+        updateExternalBudget: "at/budget/updateexternalbudget",
+        deleteExternalBudget: "at/budget/deleteexternalbudget"
     }
     /**
      * get list External Budget
      */
     export function getListExternalBudget(): JQueryPromise<Array<model.ExternalBudgetDto>> {
         var dfd = $.Deferred<Array<any>>();
+        debugger;
         //TODO-- service Get List
-
+        nts.uk.request.ajax(paths.getExternalBudgetList)
+            .done(function(res: Array<any>) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
         return dfd.promise();
     }
     /**
