@@ -7,7 +7,7 @@ import nts.arc.layer.dom.AggregateRoot;
 @Getter
 public class DivergenceReason extends AggregateRoot {
 	/*会社ID*/
-	private int companyId;
+	private String companyId;
 	/*乖離時間ID*/
 	private int divTimeId;
 	/*乖離理由コード*/
@@ -17,7 +17,7 @@ public class DivergenceReason extends AggregateRoot {
 	/*必須区分*/
 	private RequiredAtr requiredAtr;
 
-	public DivergenceReason(int companyId, int divTimeId, DiverdenceReasonCode divReasonCode,
+	public DivergenceReason(String companyId, int divTimeId, DiverdenceReasonCode divReasonCode,
 			DivergenceReasonContent divReasonContent, RequiredAtr requiredAtr) {
 		super();
 		this.companyId = companyId;
@@ -27,7 +27,7 @@ public class DivergenceReason extends AggregateRoot {
 		this.requiredAtr = requiredAtr;
 	}
 	public static DivergenceReason createSimpleFromJavaType(
-			int companyId,
+			String companyId,
 			int divTimeId,
 			String divReasonCode,
 			String divReasonContent,

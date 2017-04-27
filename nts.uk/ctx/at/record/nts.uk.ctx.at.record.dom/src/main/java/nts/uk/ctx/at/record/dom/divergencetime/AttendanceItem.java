@@ -7,14 +7,14 @@ import lombok.Getter;
 @AllArgsConstructor
 public class AttendanceItem {
 	/*会社ID*/
-	private int companyId;
+	private String companyId;
 	/*乖離時間*/
 	private int divTimeId;
 	/*勤怠項目*/
 	private int attendanceId;
 	
 	public static AttendanceItem createSimpleFromJavaType(
-			int companyId,
+			String companyId,
 			int divTimeId,
 			int attendanceId)
 	{

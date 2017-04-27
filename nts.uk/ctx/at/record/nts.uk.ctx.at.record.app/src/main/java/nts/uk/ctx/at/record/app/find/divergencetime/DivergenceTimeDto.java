@@ -11,7 +11,7 @@ import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTime;
 @NoArgsConstructor
 public class DivergenceTimeDto {
 	/*会社ID*/
-	private int companyId;
+	private String companyId;
 	/*乖離時間ID*/
 	private int divTimeId;
 	/*乖離時間使用設定*/
@@ -27,7 +27,7 @@ public class DivergenceTimeDto {
 	
 	public static DivergenceTimeDto fromDomain(DivergenceTime domain){
 		return new DivergenceTimeDto(domain.getCompanyId(),
-					domain.getCompanyId(),
+					domain.getDivTimeId(),
 					Integer.valueOf(domain.getDivTimeUseSet().toString()),
 					Integer.valueOf(domain.getAlarmTime().toString()),
 					Integer.valueOf(domain.getErrTime().toString()),

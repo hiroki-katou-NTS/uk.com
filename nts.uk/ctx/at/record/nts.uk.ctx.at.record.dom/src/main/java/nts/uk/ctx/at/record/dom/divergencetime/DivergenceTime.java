@@ -8,7 +8,7 @@ import nts.arc.layer.dom.AggregateRoot;
 @Getter
 public class DivergenceTime extends AggregateRoot{
 	/*会社ID*/
-	private int companyId;
+	private String companyId;
 	/*乖離時間ID*/
 	private int divTimeId;
 	/*乖離時間使用設定*/
@@ -22,8 +22,13 @@ public class DivergenceTime extends AggregateRoot{
 	/*入力使用設定*/
 	private InputSetting inputSet;
 
-	public DivergenceTime(int companyId, int divTimeId, DivergenceTimeUseSet divTimeUseSet, Time alarmTime,
-			Time errTime, InputSetting selectSet, InputSetting inputSet) {
+	public DivergenceTime(String companyId, 
+						int divTimeId, 
+						DivergenceTimeUseSet divTimeUseSet, 
+						Time alarmTime,
+						Time errTime, 
+						InputSetting selectSet, 
+						InputSetting inputSet) {
 		super();
 		this.companyId = companyId;
 		this.divTimeId = divTimeId;
@@ -34,17 +39,15 @@ public class DivergenceTime extends AggregateRoot{
 		this.inputSet = inputSet;
 	}
 	
-	public static DivergenceTime createSimpleFromJavaType(
-			int companyId,
-			int divTimeId,
-			int divTimeUseSet,
-			int alarmTime,
-			int errTime,
-			int selectUseSet,
-			int cancelErrSelect,
-			int inputUseSet,
-			int cancelErrInput
-			){
+	public static DivergenceTime createSimpleFromJavaType(String companyId,
+														int divTimeId,
+														int divTimeUseSet,
+														int alarmTime,
+														int errTime,
+														int selectUseSet,
+														int cancelErrSelect,
+														int inputUseSet,
+														int cancelErrInput){
 		return new DivergenceTime(
 				companyId, 
 				divTimeId, 
