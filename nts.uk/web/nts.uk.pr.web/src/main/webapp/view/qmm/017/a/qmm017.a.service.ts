@@ -213,12 +213,27 @@ module nts.qmm017 {
             baseValueDevision: number;
             premiumRate: number;
             roundProcessingDevision: number;
-            coefficientDivision: string;
+            coefficientDivision: number;
             coefficientFixedValue: number;
             adjustmentDevision: number;
             totalRounding: number;
             referenceItemCodes: Array<string>;
             constructor() {
+                var self = this;
+                self.easyFormulaCode = '';
+                self.easyFormulaName = '';
+                self.easyFormulaTypeAtr = 0;
+                self.baseFixedAmount = 0;
+                self.baseAmountDevision = 0;
+                self.baseFixedValue = 0;
+                self.baseValueDevision = 0;
+                self.premiumRate = 0;
+                self.roundProcessingDevision = 0;
+                self.coefficientDivision = 0;
+                self.coefficientFixedValue = 0;
+                self.adjustmentDevision = 0;
+                self.totalRounding = 0;
+                self.referenceItemCodes = [];
             }
         }
 
@@ -230,6 +245,7 @@ module nts.qmm017 {
         export class PersonalUnitPriceDto {
             personalUnitPriceCode: string;
             personalUnitPriceName: string;
+            memo: string;
         }
 
         export class ItemMasterDto {
