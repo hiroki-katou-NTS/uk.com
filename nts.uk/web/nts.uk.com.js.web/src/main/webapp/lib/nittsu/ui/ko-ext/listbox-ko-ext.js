@@ -68,6 +68,9 @@ var nts;
                         });
                         container.ntsGridList('setupSelecting');
                         container.bind('iggridselectionrowselectionchanging', function () {
+                            if (container.data("enable") === false) {
+                                return false;
+                            }
                             var itemSelected;
                             if (container.igGridSelection('option', 'multipleSelection')) {
                                 var selected = container.ntsGridList('getSelected');
@@ -164,6 +167,14 @@ var nts;
                         var rows = data.rows;
                         var container = $(element).find(".ntsListBox");
                         container.data("enable", enable);
+                        if (!enable) {
+                            container.ntsGridList('unsetupSelecting');
+                            container.addClass("disabled");
+                        }
+                        else {
+                            container.ntsGridList('setupSelecting');
+                            container.removeClass("disabled");
+                        }
                         var currentSource = container.igGrid('option', 'dataSource');
                         if (!_.isEqual(currentSource, options)) {
                             var currentSources = options.slice();

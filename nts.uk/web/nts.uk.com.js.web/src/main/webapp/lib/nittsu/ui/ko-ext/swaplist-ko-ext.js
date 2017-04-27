@@ -573,7 +573,7 @@ var nts;
                         });
                         var selectedIds = selectedRows.map(function (row) { return row.id; });
                         this.transportBuilder.at(forward ? "first" : "second").directTo(forward ? "second" : "first")
-                            .target(selectedIds).toAdjacent(destList[destList.length - 1][this.swapParts[0].primaryKey]).update();
+                            .target(selectedIds).toAdjacent(destList.length > 0 ? destList[destList.length - 1][this.swapParts[0].primaryKey] : null).update();
                         this.swapParts[0].bindData(this.transportBuilder.getFirst());
                         this.swapParts[1].bindData(this.transportBuilder.getSecond());
                         $source.igGridSelection("clearSelection");
@@ -624,6 +624,8 @@ var nts;
                         return this;
                     };
                     ListItemTransporter.prototype.toAdjacent = function (adjId) {
+                        if (adjId === null)
+                            adjId = "ceil";
                         this.adjacentIncomeId = adjId;
                         return this;
                     };
