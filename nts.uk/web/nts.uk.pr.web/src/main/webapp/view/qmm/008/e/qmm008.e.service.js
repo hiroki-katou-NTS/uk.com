@@ -19,12 +19,8 @@ var nts;
                                 removeOffice: "pr/insurance/social/remove"
                             };
                             function getOfficeItemDetail(code) {
-                                var dfd = $.Deferred();
                                 var findPath = servicePath.getOfficeDetailData + "/" + code;
-                                nts.uk.request.ajax(findPath).done(function (data) {
-                                    dfd.resolve(data);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(findPath);
                             }
                             service.getOfficeItemDetail = getOfficeItemDetail;
                             function register(data) {

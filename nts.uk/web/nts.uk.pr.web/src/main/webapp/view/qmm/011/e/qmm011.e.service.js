@@ -21,8 +21,7 @@ var nts;
                                 nts.uk.request.ajax(paths.updateInsuranceBusinessType, data)
                                     .done(function (res) {
                                     dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
+                                }).fail(function (res) {
                                     dfd.reject(res);
                                 });
                                 return dfd.promise();

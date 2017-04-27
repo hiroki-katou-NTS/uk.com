@@ -26,24 +26,24 @@ var qet002;
                     var hasError = false;
                     if (this.targetYear() == null) {
                         hasError = true;
-                        $('#target-year-input').ntsError('set', '未入力エラー');
+                        $('#target-year-input').ntsError('set', '対象年 が入力されていません。');
                     }
                     if (this.isLowerLimit() == true) {
                         if (this.lowerLimitValue() == null) {
                             hasError = true;
-                            $('#lower-limit-input').ntsError('set', '未入力エラー');
+                            $('#lower-limit-input').ntsError('set', '金額範囲下限額 が入力されていません。');
                         }
                     }
                     if (this.isUpperLimit() == true) {
                         if (this.upperLimitValue() == null) {
                             hasError = true;
-                            $('#upper-limit-input').ntsError('set', '未入力エラー');
+                            $('#upper-limit-input').ntsError('set', '金額範囲上限額 が入力されていません。');
                         }
                     }
                     if ((this.isLowerLimit() == true) && (this.isUpperLimit() == true)) {
                         if (this.lowerLimitValue() > this.upperLimitValue()) {
                             hasError = true;
-                            $('#lower-limit-input').ntsError('set', '未入力エラー');
+                            $('#lower-limit-input').ntsError('set', '金額の範囲が正しく指定されていません。');
                         }
                     }
                     if (this.isLowerLimit() == false) {
@@ -56,6 +56,7 @@ var qet002;
                         return;
                     }
                     a.service.printService(this).done(function (data) {
+                        console.log("YES");
                     }).fail(function (res) {
                         nts.uk.ui.dialog.alert(res.message);
                     });

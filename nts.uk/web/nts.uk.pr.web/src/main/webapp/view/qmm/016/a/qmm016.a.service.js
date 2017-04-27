@@ -53,7 +53,9 @@ var nts;
                                     var dfd = $.Deferred();
                                     nts.uk.request.ajax(path.genitem, data).done(function (res) {
                                         dfd.resolve(res.elementSettings);
-                                    }).fail(dfd.fail);
+                                    }).fail(function (res) {
+                                        dfd.reject(res);
+                                    });
                                     return dfd.promise();
                                 };
                                 return Service;
