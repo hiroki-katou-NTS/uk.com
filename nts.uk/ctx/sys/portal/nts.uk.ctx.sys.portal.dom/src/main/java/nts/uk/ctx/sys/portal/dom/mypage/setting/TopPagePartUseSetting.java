@@ -5,8 +5,8 @@ import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.enums.UseDivision;
 import nts.uk.ctx.sys.portal.dom.primitive.CompanyId;
-import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.TopPagePartCode;
-import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.TopPagePartName;
+import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartCode;
+import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
 
 /**
  * The Class TopPagePartSettingItem.

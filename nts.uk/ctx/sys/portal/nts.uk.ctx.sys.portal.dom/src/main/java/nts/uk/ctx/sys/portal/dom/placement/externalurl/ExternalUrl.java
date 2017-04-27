@@ -1,10 +1,9 @@
-package nts.uk.ctx.sys.portal.dom.placement;
+package nts.uk.ctx.sys.portal.dom.placement.externalurl;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.sys.portal.dom.placement.primitive.Url;
-import nts.uk.ctx.sys.portal.dom.toppagepart.Size;
+import nts.uk.ctx.sys.portal.dom.toppagepart.size.Size;
 
 /**
  * @author LamDT

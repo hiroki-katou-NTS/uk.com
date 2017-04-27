@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.dom.toppagepart.primitive;
+package nts.uk.ctx.sys.portal.dom.toppagepart.size;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;

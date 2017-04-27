@@ -2,8 +2,8 @@ package nts.uk.ctx.sys.portal.dom.toppage;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.Height;
-import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.Width;
+import nts.uk.ctx.sys.portal.dom.toppagepart.size.Height;
+import nts.uk.ctx.sys.portal.dom.toppagepart.size.Width;
 
 /**
  * The Class Size.

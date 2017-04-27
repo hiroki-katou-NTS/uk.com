@@ -13,8 +13,8 @@ import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSetting;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSettingRepository;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.TopPagePartUseSetting;
 import nts.uk.ctx.sys.portal.dom.primitive.CompanyId;
-import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.TopPagePartCode;
-import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.TopPagePartName;
+import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartCode;
+import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
 
 @Stateless
 public class JpaMyPageSettingRepository implements MyPageSettingRepository {

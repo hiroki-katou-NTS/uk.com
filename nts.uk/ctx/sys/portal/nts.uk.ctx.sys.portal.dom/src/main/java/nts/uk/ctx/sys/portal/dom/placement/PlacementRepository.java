@@ -19,10 +19,9 @@ public interface PlacementRepository {
 	Optional<Placement> find(String placementID);
 
 	/**
-	 * Find Placement by PGType
+	 * Find Placement by Layout
 	 *
-	 * @param companyID
-	 * @param pgType
+	 * @param layoutID
 	 * @return List Placement
 	 */
 	List<Placement> findByLayout(String layoutID);

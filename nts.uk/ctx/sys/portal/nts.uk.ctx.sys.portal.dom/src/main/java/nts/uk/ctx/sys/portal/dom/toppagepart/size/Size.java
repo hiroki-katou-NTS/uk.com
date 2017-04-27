@@ -1,10 +1,8 @@
-package nts.uk.ctx.sys.portal.dom.toppagepart;
+package nts.uk.ctx.sys.portal.dom.toppagepart.size;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.Height;
-import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.Width;
 
 /**
  * @author LamDT

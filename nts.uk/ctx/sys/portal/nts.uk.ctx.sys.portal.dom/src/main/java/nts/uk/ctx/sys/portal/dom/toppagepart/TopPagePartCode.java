@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.dom.toppagepart.primitive;
+package nts.uk.ctx.sys.portal.dom.toppagepart;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;

@@ -4,8 +4,8 @@ package nts.uk.ctx.sys.portal.dom.toppage;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
-import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.TopPagePartCode;
-import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.TopPagePartName;
+import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartCode;
+import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
 
 /**
  * The Class TopPagePart.

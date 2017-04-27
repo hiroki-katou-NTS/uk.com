@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.dom.toppagepart.primitive;
+package nts.uk.ctx.sys.portal.dom.placement.externalurl;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
@@ -6,16 +6,15 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * @author LamDT
  */
-@StringMaxLength(30)
-public class TopPagePartName extends StringPrimitiveValue<TopPagePartName> {
-
+@StringMaxLength(2000)
+public class Url extends StringPrimitiveValue<Url> {
+	
 	/**
 	 * serialVersionUID
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public TopPagePartName(String rawValue) {
+	public Url(String rawValue) {
 		super(rawValue);
 	}
-
 }

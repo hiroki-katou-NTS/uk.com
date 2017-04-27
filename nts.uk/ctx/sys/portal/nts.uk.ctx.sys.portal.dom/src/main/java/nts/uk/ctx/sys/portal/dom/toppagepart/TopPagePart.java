@@ -5,9 +5,8 @@ import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.TopPagePartCode;
-import nts.uk.ctx.sys.portal.dom.toppagepart.primitive.TopPagePartName;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
+import nts.uk.ctx.sys.portal.dom.toppagepart.size.Size;
 
 /**
  * @author LamDT
