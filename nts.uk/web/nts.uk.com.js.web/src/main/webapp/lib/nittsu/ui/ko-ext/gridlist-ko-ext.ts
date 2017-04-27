@@ -67,7 +67,7 @@ module nts.uk.ui.koExtentions {
                         });      
                     }       
                 }
-                return c;
+                return c; 
             });
 
             $grid.igGrid({

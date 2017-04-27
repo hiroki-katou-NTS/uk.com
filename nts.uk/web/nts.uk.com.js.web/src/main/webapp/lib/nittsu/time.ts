@@ -216,7 +216,7 @@
         return moment.utc(date, inputFormats).format(outputFormat);
     }
 
-    abstract class ParseResult {
+    export abstract class ParseResult {
         success: boolean;
         constructor(success) {
             this.success = success;
