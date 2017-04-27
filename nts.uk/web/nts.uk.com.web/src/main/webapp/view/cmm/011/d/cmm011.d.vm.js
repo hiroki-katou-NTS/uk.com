@@ -4,11 +4,8 @@ var cmm009;
     (function (d) {
         var viewmodel;
         (function (viewmodel) {
-            class ScreenModel {
-                /**
-                 * Init screen model.
-                 */
-                constructor() {
+            var ScreenModel = (function () {
+                function ScreenModel() {
                     var self = this;
                     self.isEnable = ko.observable(true);
                     self.startDate = ko.observable("1900");
@@ -27,21 +24,19 @@ var cmm009;
                     self.endDate(data.endDate);
                     console.log(data);
                     debugger;
-                    //---radio
                     self.itemsRadio = ko.observableArray([
                         { value: 1, text: ko.observable('履歴を削除する') },
                         { value: 2, text: ko.observable('履歴を修正する') }
                     ]);
                     self.isRadioCheck = ko.observable(2);
-                    let index = data.index;
+                    var index = data.index;
                     if (index != "0") {
                         self.isEnable(false);
                     }
                 }
-                createHistory() {
+                ScreenModel.prototype.createHistory = function () {
                     var self = this;
                     var inputYm = $('#INP_001').val();
-                    //check YM
                     if (!nts.uk.time.parseYearMonthDate(inputYm).success) {
                         alert(nts.uk.time.parseYearMonthDate(inputYm).msg);
                         return false;
@@ -64,19 +59,20 @@ var cmm009;
                         nts.uk.ui.windows.setShared('isradio', isRadio);
                         nts.uk.ui.windows.close();
                     }
-                }
-                start() {
+                };
+                ScreenModel.prototype.start = function () {
                     var self = this;
                     var dfd = $.Deferred();
                     dfd.resolve();
-                    // Return.
                     return dfd.promise();
-                }
-                closeDialog() {
+                };
+                ScreenModel.prototype.closeDialog = function () {
                     nts.uk.ui.windows.close();
-                }
-            }
+                };
+                return ScreenModel;
+            }());
             viewmodel.ScreenModel = ScreenModel;
         })(viewmodel = d.viewmodel || (d.viewmodel = {}));
     })(d = cmm009.d || (cmm009.d = {}));
 })(cmm009 || (cmm009 = {}));
+//# sourceMappingURL=cmm011.d.vm.js.map
