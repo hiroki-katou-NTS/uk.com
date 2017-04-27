@@ -12,6 +12,17 @@ import nts.uk.file.pr.app.export.insurance.data.SocialInsuReportData;
  */
 public interface SocialInsuRepository {
 
+    
+    /**
+     * Checks if is avaible data.
+     *
+     * @param companyCode the company code
+     * @param loginPersonId the login person id
+     * @param salaryQuery the salary query
+     * @return true, if is avaible data
+     */
+    boolean isAvaibleData(String companyCode, String loginPersonId, SocialInsuQuery salaryQuery);
+    
     /**
      * Find report data.
      *
