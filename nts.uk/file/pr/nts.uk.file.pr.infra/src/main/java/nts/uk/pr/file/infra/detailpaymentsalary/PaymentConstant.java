@@ -15,7 +15,7 @@ import com.aspose.cells.Color;
  *
  * @author duongnd
  */
-public class ReportConstant {
+public class PaymentConstant {
     
     /** The Constant DATE_TIME_FORMAT. */
     public static final String DATE_TIME_FORMAT = "yyyyMMddHHmmss";
