@@ -110,7 +110,7 @@ module nts.uk.pr.view.qmm017.q {
                     primaryKey: "code",
                     columns: [
                         { headerText: "計算式の項目名", key: "code", dataType: "string", width: '150px' },
-                        { headerText: "値", key: "value", dataType: "number", width: '150px' },
+                        { headerText: "値", key: "value", dataType: "number", width: '150px', format: '0.00' },
                     ],
                     dataSource: self.items(),
                     height: "200px",
@@ -122,7 +122,7 @@ module nts.uk.pr.view.qmm017.q {
                             editMode: "row",
                             enableDeleteRow: false,
                             columnSettings: [
-                                { columnKey: "code", editorOptions: { type: "string", disabled: true } },
+                                { columnKey: "code", editorOptions: { type: "string", disabled: true } }
                             ],
                             editCellEnding: function(evt, ui) {
                                 var foundItem = _.find(self.items(), function(item) { return item.code == ui.rowID });
@@ -132,35 +132,35 @@ module nts.uk.pr.view.qmm017.q {
                 });
                 $("[aria-describedby='lstItemValue_code']").css({ "backgroundColor": "#CFF1A5" });
             }
-            
-            replaceFunctionNameToCode(targetContent){
+
+            replaceFunctionNameToCode(targetContent) {
                 var self = this;
                 let replaceValue = targetContent;
-                _.forEach(self.itemsBag, function(item){
-                    if(replaceValue.indexOf(item.name) !== -1){
+                _.forEach(self.itemsBag, function(item) {
+                    if (replaceValue.indexOf(item.name) !== -1) {
                         replaceValue = replaceValue.replace(new RegExp(item.name, 'g'), item.code);
                     }
                 });
                 return replaceValue;
             }
-            
-            replaceJPCharToEN(targetContent){
+
+            replaceJPCharToEN(targetContent) {
                 let lstSpecialChar = [
-                    {jp: '＠', en:'@'},
-                    {jp: '×', en:'*'},
-                    {jp: '÷', en:'/'},
-                    {jp: '＾', en:'^'},
-                    {jp: '（', en:'('},
-                    {jp: '）', en:')'},
-                    {jp: '＜', en:'<'},
-                    {jp: '＞', en:'>'},
-                    {jp: '≦', en:'<='},
-                    {jp: '≧', en:'>='},
-                    {jp: '≠', en:'!='}
+                    { jp: '＠', en: '@' },
+                    { jp: '×', en: '*' },
+                    { jp: '÷', en: '/' },
+                    { jp: '＾', en: '^' },
+                    { jp: '（', en: '(' },
+                    { jp: '）', en: ')' },
+                    { jp: '＜', en: '<' },
+                    { jp: '＞', en: '>' },
+                    { jp: '≦', en: '<=' },
+                    { jp: '≧', en: '>=' },
+                    { jp: '≠', en: '!=' }
                 ];
                 let replaceValue = targetContent;
-                _.forEach(lstSpecialChar, function(char){
-                    if(replaceValue.indexOf(char.jp) !== -1){
+                _.forEach(lstSpecialChar, function(char) {
+                    if (replaceValue.indexOf(char.jp) !== -1) {
                         replaceValue = replaceValue.replace(new RegExp(char.jp, 'g'), char.en);
                     }
                 });
@@ -180,7 +180,7 @@ module nts.uk.pr.view.qmm017.q {
                 replacedValue = self.replaceFunctionNameToCode(replacedValue);
                 replacedValue = self.replaceJPCharToEN(replacedValue);
                 self.result('...');
-                service.trialCalculate(replacedValue).done(function(calculatorDto: model.CalculatorDto){
+                service.trialCalculate(replacedValue).done(function(calculatorDto: model.CalculatorDto) {
                     self.result(calculatorDto.result);
                 });
             }
