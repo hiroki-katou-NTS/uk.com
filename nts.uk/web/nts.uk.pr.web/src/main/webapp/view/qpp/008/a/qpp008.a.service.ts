@@ -1,6 +1,7 @@
 module qpp008.a.service {
     var paths: any = {
-        getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
+        getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall",
+        saveAsPdf: "screen/pr/QPP008/saveAsPdf"
     }
 
     export function getPaymentDateProcessingList(): JQueryPromise<Array<any>> {
@@ -13,5 +14,8 @@ module qpp008.a.service {
                 dfd.reject(res);
             })
         return dfd.promise();
+    }
+    export function saveAsPdf(command: any): JQueryPromise<any> {
+        return nts.uk.request.exportFile(paths.saveAsPdf, command);
     }
 }

@@ -5,13 +5,19 @@ module qpp008.a.viewmodel {
         singleSelectedCode: KnockoutObservable<string>;
         texteditor1: any;
         texteditor2: any;
-        textLbl006:KnockoutObservable<string>;
+        textLbl006: KnockoutObservable<string>;
 
         /*Multiple selecting GridList*/
         items: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
+
+        /*Multiple selecting GridList*/
+        itemLeft: KnockoutObservableArray<Employee>;
+        columnsLeft: KnockoutObservableArray<any>;
+        currentCodeLeft: KnockoutObservable<any>;
+        currentCodeListLeft: KnockoutObservableArray<any>;
 
         /*
                 *label
@@ -48,7 +54,8 @@ module qpp008.a.viewmodel {
         selectedCodeCbb3: KnockoutObservable<string>;
         isEnableCbb3: KnockoutObservable<boolean>;
         isEditableCbb3: KnockoutObservable<boolean>;
-        yearmontheditor: any;
+        yearmontheditor1: any;
+        yearmontheditor2: any;
 
 
         constructor() {
@@ -57,7 +64,16 @@ module qpp008.a.viewmodel {
             self.paymentDateProcessingList = ko.observableArray([]);
             self.selectedPaymentDate = ko.observable(null);
 
-            self.yearmontheditor = {
+            self.yearmontheditor1 = {
+                value: ko.observable(200001),
+                option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
+                    inputFormat: 'yearmonth'
+                })),
+                required: ko.observable(false),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            };
+            self.yearmontheditor2 = {
                 value: ko.observable(200001),
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
                     inputFormat: 'yearmonth'
@@ -77,13 +93,35 @@ module qpp008.a.viewmodel {
                 new ItemModel('基本給1')
             ]);
 
+            self.itemLeft = ko.observableArray([
+                new Employee("99900000-0000-0000-0000-000000000001", "A", ""),
+                new Employee("99900000-0000-0000-0000-000000000002", "B", ""),
+                new Employee("99900000-0000-0000-0000-000000000003", "c", ""),
+                new Employee("99900000-0000-0000-0000-000000000004", "d", ""),
+                new Employee("99900000-0000-0000-0000-000000000005", "f", ""),
+                new Employee("99900000-0000-0000-0000-000000000006", "g", ""),
+                new Employee("99900000-0000-0000-0000-000000000007", "h", ""),
+                new Employee("99900000-0000-0000-0000-000000000008", "k", ""),
+                new Employee("99900000-0000-0000-0000-000000000009", "t", ""),
+                new Employee("99900000-0000-0000-0000-0000000000010", "A", "")
+            ]);
+
             self.columns = ko.observableArray([
                 { headerText: '印刷内容', prop: 'name', width: 150 }
 
             ]);
-
             self.currentCode = ko.observable();
             self.currentCodeList = ko.observableArray([]);
+
+            self.columnsLeft = ko.observableArray([
+                { headerText: '社員CD', prop: 'code', width: 150 },
+                { headerText: '氏名', prop: 'name', width: 150 },
+                { headerText: '所属', prop: 'note', width: 250 }
+
+            ]);
+            self.currentCodeLeft = ko.observable();
+            self.currentCodeListLeft = ko.observableArray([]);
+
             /* Label  */
             self.inline = ko.observable(true);
             self.required = ko.observable(true)
@@ -159,7 +197,36 @@ module qpp008.a.viewmodel {
                 readonly: ko.observable(false)
             };
         }
+        
+        /**
+         *  to JSon Object
+         */
+        private toJSObjet(): any {
+            let self = this;
+            let command: any = {};
+            command.month1 = self.yearmontheditor1.value();
+            command.month2 = self.yearmontheditor2.value();
+            command.payBonusAttr = 0;
+            command.employeeCodeList = self.currentCodeListLeft();
+            return command;
+        }
 
+
+        /**
+         *  Export Data
+         */
+        exportData(): void {
+            let self = this;
+            let dfd = $.Deferred<any>();
+            let command: any;
+            command = self.toJSObjet();
+            service.saveAsPdf(command).done(function() {
+                   console.log(command);
+            }).fail(function(res: any) {
+                console.log(res.message);
+            });
+
+        }
         openBDialog() {
             var self = this;
             nts.uk.ui.windows.sub.modal('/view/qpp/008/b/index.xhtml', { title: '印刷設定', dialogClass: 'no-close' }).onClosed(function(): any {
@@ -170,10 +237,10 @@ module qpp008.a.viewmodel {
             nts.uk.ui.windows.sub.modal('/view/qpp/008/c/index.xhtml', { title: '出力項目の設定（共通）', dialogClass: 'no-close' }).onClosed(function(): any {
             });
         }
-    /* ItemModelCbb1 of combobox */
+        /* ItemModelCbb1 of combobox */
     }
-    
-    
+
+
     class ItemModelCbb1 {
         codeCbb1: string;
         nameCbb1: string;
@@ -209,6 +276,28 @@ module qpp008.a.viewmodel {
 
         constructor(name: string) {
             this.name = name;
+        }
+    }
+    class Employee {
+        code: string;
+        name: string;
+        note: string;
+        constructor(code: string, name: string, note: string) {
+            this.code = code;
+            this.name = name;
+            this.note = note;
+        }
+
+    }
+
+    class ComparingSalaryBonus {
+        month1: string;
+        month2: string;
+        employeeCodeList: Array<string>;
+        constructor(month1: string, month2: string, employeeCodeList: Array<string>) {
+            this.month1 = month1;
+            this.month2 = month2;
+            this.employeeCodeList = employeeCodeList;
         }
     }
 
