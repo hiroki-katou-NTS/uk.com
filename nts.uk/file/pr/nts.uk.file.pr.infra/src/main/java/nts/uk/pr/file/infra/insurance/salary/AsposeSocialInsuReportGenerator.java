@@ -52,7 +52,7 @@ public class AsposeSocialInsuReportGenerator extends AsposeCellsReportGenerator
         implements SocialInsuGenerator {
 
     /** The Constant TEMPLATE_FILE. */
-    private static final String TEMPLATE_FILE = "report/SocialInsuTemplate.xlsx";
+    private static final String TEMPLATE_FILE = "report/QPP018_1.xlsx";
 
     /** The Constant REPORT_FILE_NAME. */
     private static final String REPORT_FILE_NAME = "給与社会保険料チェックリスト.pdf";
@@ -182,7 +182,7 @@ public class AsposeSocialInsuReportGenerator extends AsposeCellsReportGenerator
      */
     private void setColumnWidth(Worksheet worksheet, int numberColumn, double columnWidth) {
         worksheet.getCells().setColumnWidth(ReportConstant.NUMBER_ZERO, ReportConstant.COLUMN_WIDTH_OFFICE_CODE);
-        for (int i = ReportConstant.NUMBER_ONE; i < numberColumn - ReportConstant.NUMBER_ONE; i++) {
+        for (int i = ReportConstant.NUMBER_ONE; i < numberColumn; i++) {
             worksheet.getCells().setColumnWidth(i, columnWidth);
         }
     }
