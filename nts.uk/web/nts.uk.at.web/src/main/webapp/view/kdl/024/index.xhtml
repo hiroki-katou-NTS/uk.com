@@ -7,10 +7,12 @@
 <head>
 </head>
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdl024.main.css" />
 			<com:scriptfile path="kdl024.start.js" />
+			<com:scriptfile path="kdl024.service.js" />
 			<com:scriptfile path="kdl024.vm.js" />
 			<com:ValidatorScript>
 				nts.uk.shr.com.primitive.PersonId
@@ -19,51 +21,97 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="A1_1" class="btnM	n" data-bind="">新規</button>
-				<button id="BTN_001" class="btnMn proceed" data-bind="">登録</button>
-				<button id="BTN_003" class="btnMn delete_btn btn_width danger"
+				<button id="btnNew" class="btnMenu" data-bind="">新規</button>
+				<button id="btnSave" class="btnMenu proceed" data-bind="">登録</button>
+				<button id="btnDel" class="btnMenu delete_btn btn_width danger"
 					data-bind="" style="margin-left: 60px;">削除</button>
-				<button id="BTN_004" class="btnMn " data-bind="">閉じる</button>
+				<button id="btnClose" class="btnMenu" data-bind="">閉じる</button>
 			</div>
 			<div id="content-area" class="cf">
 				<div class="left-content">
-					<div id="A_LST" class="bg-green caret-right caret-background">
+					<div id="lstBudget" class="bg-green caret-right caret-background">
 						<table id="single-list"
-										data-bind="ntsGridList: {								
-										height: 350,
-										dataSource: items,
-										primaryKey: 'code',
-										columns: columns2,
-										multiple: false,
-										value: currentCode
-										}"
+							data-bind="ntsGridList: {								
+								height: 255,
+								dataSource: items,
+								primaryKey: 'code',
+								columns: columns,
+								multiple: false,
+								value: currentCode
+							}"
 							class="cf">
 						</table>
 					</div>
 				</div>
 				<div class="right-content">
-					<div id="A3"
-						data-bind="ntsFormLabel: {
+					<table id="tblContent">
+						<tr>
+							<td>
+								<div id="divInfo"
+									data-bind="ntsFormLabel: {
 													constraint: constraint, 
 													required: true, 
 													inline:false, 
 													enable:true }">
-						コード/名称</div>
-					<input id="INP_001"></input>
-					<input id="INP_002"></input>
-					
-					
-					<div id="A3_4"
-						data-bind="ntsFormLabel:{
+									コード/名称</div>
+							</td>
+							<td>
+								<input id="inpCode" data-bind="ntsTextEditor: {
+													value:'',
+													enable: false,
+													readonly:true" />
+								<input id="inpName" data-bind="ntsTextEditor: {value:''" /> 
+								<BR />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div id="divAttribute"
+									data-bind="ntsFormLabel:{
 												required: true, 
 												inline:false, 
 												enable:true 
-						}">属性</div>
+									}">属性
+								</div>
+							</td>
+							<td>
+								<div id="cmbAttribute"
+									data-bind="ntsComboBox: {
+													options: itemListCbb,
+													optionsValue: 'nameCbb',
+													value: selectedCodeCbb,
+													optionsText: 'nameCbb',
+													enable: isEnableCbb,
+													columns: [
+														{ prop: 'nameCbb', length: 2 }
+													]}">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div id="divAttribute"
+									data-bind="ntsFormLabel:{
+												required: true, 
+												inline:false, 
+												enable:true 
+									}">単位
+								</div>
+							</td>
+							<td>
+								<div class="cf"
+									data-bind="ntsSwitchButton: {
+											options: roundingRules,
+											optionsValue: 'unitId',
+											optionsText: 'unitName',
+											value: selectedRuleCode,
+											enable: true }">
+								</div>
+							</td>
+						</tr>
+					</table>
 				</div>
-
 			</div>
-
-
 		</ui:define>
 
 	</ui:composition>

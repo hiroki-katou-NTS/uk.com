@@ -2,18 +2,26 @@ var kdl024;
 (function (kdl024) {
     var service;
     (function (service) {
-        var path = {
-            getExternalBudgetList: "at/findallexternalbudget",
-            insertExternalBudget: "at/insertexternalbudget",
-            updateExternalBudget: "at/updateexternalbudget",
-            deleteExternalBudget: "at/deleteexternalbudget"
+        var paths = {
+            getExternalBudgetList: "at/budget/findallexternalbudget",
+            insertExternalBudget: "at/budget/insertexternalbudget",
+            updateExternalBudget: "at/budget/updateexternalbudget",
+            deleteExternalBudget: "at/budget/deleteexternalbudget"
         };
         /**
          * get list External Budget
          */
         function getListExternalBudget() {
             var dfd = $.Deferred();
+            debugger;
             //TODO-- service Get List
+            nts.uk.request.ajax(paths.getExternalBudgetList)
+                .done(function (res) {
+                dfd.resolve(res);
+            })
+                .fail(function (res) {
+                dfd.reject(res);
+            });
             return dfd.promise();
         }
         service.getListExternalBudget = getListExternalBudget;
