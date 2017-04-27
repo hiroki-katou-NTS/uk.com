@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResidentialTaxRepository;
@@ -36,16 +37,16 @@ public class UpdateResidentialTaxReportCommandHandler extends CommandHandler<Upd
 				update.getResiTaxReportCode());
 		// error 001
 		if (update.getYearKey() == 0) {
-			throw new BusinessException("対象年度  が入力されていません。。");
+			throw new BusinessException(new RawErrorMessage("対象年度  が入力されていません。。"));
 		}
 		// error009
 		if (lstResiTaxCheck.isEmpty()) {
-			throw new BusinessException("統合元と統合先で同じコードの が選択されています。\r\n ＊を確認してください。");
+			throw new BusinessException(new RawErrorMessage("統合元と統合先で同じコードの が選択されています。\r\n ＊を確認してください。"));
 		}
 
 		// error 007
 		if (lstResidentaxCode.isEmpty()) {
-			throw new BusinessException("住民税納付先コード が選択されていません。");
+			throw new BusinessException(new RawErrorMessage("住民税納付先コード が選択されていません。"));
 		}
 		lstResidentaxCode.stream().forEach(c -> {
 			List<?> lstResiTaxUpdate = this.resiTaxRepository.getAllResidentialTaxCode(companyCode, c.toString());
