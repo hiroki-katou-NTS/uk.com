@@ -58934,7 +58934,7 @@ interface IgGridUpdating {
  	 * Specifies how end-users are able to start edit mode. Possible values: "click", "dblclick", "F2", "enter" and their combinations separated by coma or in array. The keyboard triggers have effect only if the grid cells can receive focus (the grid's [tabIndex](ui.iggrid#options:tabIndex) property should not have a negative value) or Selection is enabled. If "dblclick" is included, then "click" has no effect.
 	 *
 	 */
-	startEditTriggers?: string|Array;
+	startEditTriggers?: string|Array<any>;
 
 	/**
  	 * Determines if pressing Enter to navigate away from the currently edited cell should move the focus horizontally or vertically (default).
@@ -59544,7 +59544,7 @@ interface JQuery {
 	 * Gets how end-users are able to start edit mode. Possible values: "click", "dblclick", "F2", "enter" and their combinations separated by coma or in array. The keyboard triggers have effect only if the grid cells can receive focus (the grid's [tabIndex](ui.iggrid#options:tabIndex) property should not have a negative value) or Selection is enabled. If "dblclick" is included, then "click" has no effect.
 	 *
 	 */
-	igGridUpdating(optionLiteral: 'option', optionName: "startEditTriggers"): string|Array;
+	igGridUpdating(optionLiteral: 'option', optionName: "startEditTriggers"): string|Array<any>;
 
 	/**
 	 * Sets how end-users are able to start edit mode. Possible values: "click", "dblclick", "F2", "enter" and their combinations separated by coma or in array. The keyboard triggers have effect only if the grid cells can receive focus (the grid's [tabIndex](ui.iggrid#options:tabIndex) property should not have a negative value) or Selection is enabled. If "dblclick" is included, then "click" has no effect.
@@ -59552,7 +59552,7 @@ interface JQuery {
 	 *
 	 * @optionValue New value to be set.
 	 */
-	igGridUpdating(optionLiteral: 'option', optionName: "startEditTriggers", optionValue: string|Array): void;
+	igGridUpdating(optionLiteral: 'option', optionName: "startEditTriggers", optionValue: string|Array<any>): void;
 
 	/**
 	 * Determines if pressing Enter to navigate away from the currently edited cell should move the focus horizontally or vertically (default).
@@ -66548,7 +66548,7 @@ interface IgPivotDataSelectorDragAndDropSettings {
  	 * Specifies the containment for the drag helper. The area inside of which the                                     helper is contained would be scrollable while dragging.
 	 *
 	 */
-	containment?: boolean|string|Array;
+	containment?: boolean|string|Array<any>;
 
 	/**
  	 * Specifies z-index that would be set for the drag helper.
@@ -68110,7 +68110,7 @@ interface IgPivotGridDragAndDropSettings {
  	 * Specifies the containment for the drag helper. The area inside of which the                 helper is contained would be scrollable while dragging.
 	 *
 	 */
-	containment?: boolean|string|Array;
+	containment?: boolean|string|Array<any>;
 
 	/**
  	 * Specifies z-index that would be set for the drag helper.
@@ -70239,7 +70239,7 @@ interface IgPivotViewPivotGridOptionsDragAndDropSettings {
  	 * Specifies the containment for the drag helper. The area inside of which the helper is contained would be scrollable while dragging.
 	 *
 	 */
-	containment?: boolean|string|Array;
+	containment?: boolean|string|Array<any>;
 
 	/**
  	 * Specifies z-index that would be set for the drag helper.
@@ -70404,7 +70404,7 @@ interface IgPivotViewDataSelectorOptionsDragAndDropSettings {
  	 * Specifies the containment for the drag helper. The area inside of which the helper is contained would be scrollable while dragging.
 	 *
 	 */
-	containment?: boolean|string|Array;
+	containment?: boolean|string|Array<any>;
 
 	/**
  	 * Specifies z-index that would be set for the drag helper.
@@ -79967,7 +79967,7 @@ interface IgTreeDragAndDropSettings {
 	 * "string" Possible values: "parent", "document", "window".
 	 * "array" An array defining a bounding box in the form [ x1, y1, x2, y2 ].
 	 */
-	containment?: boolean|string|Object|Array;
+	containment?: boolean|string|Object|Array<any>;
 
 	/**
  	 * Gets the HTML markup for the invalid helper.
@@ -93442,7 +93442,7 @@ interface IgTreeGridUpdating {
  	 * Specifies how end-users are able to start edit mode. Possible values: "click", "dblclick", "F2", "enter" and their combinations separated by coma or in array. The keyboard triggers have effect only if the grid cells can receive focus (the grid's [tabIndex](ui.iggrid#options:tabIndex) property should not have a negative value) or Selection is enabled. If "dblclick" is included, then "click" has no effect.
 	 *
 	 */
-	startEditTriggers?: string|Array;
+	startEditTriggers?: string|Array<any>;
 
 	/**
  	 * Determines if pressing Enter to navigate away from the currently edited cell should move the focus horizontally or vertically (default).
@@ -94122,7 +94122,7 @@ interface JQuery {
 	 * Gets how end-users are able to start edit mode. Possible values: "click", "dblclick", "F2", "enter" and their combinations separated by coma or in array. The keyboard triggers have effect only if the grid cells can receive focus (the grid's [tabIndex](ui.iggrid#options:tabIndex) property should not have a negative value) or Selection is enabled. If "dblclick" is included, then "click" has no effect.
 	 *
 	 */
-	igTreeGridUpdating(optionLiteral: 'option', optionName: "startEditTriggers"): string|Array;
+	igTreeGridUpdating(optionLiteral: 'option', optionName: "startEditTriggers"): string|Array<any>;
 
 	/**
 	 * Sets how end-users are able to start edit mode. Possible values: "click", "dblclick", "F2", "enter" and their combinations separated by coma or in array. The keyboard triggers have effect only if the grid cells can receive focus (the grid's [tabIndex](ui.iggrid#options:tabIndex) property should not have a negative value) or Selection is enabled. If "dblclick" is included, then "click" has no effect.
@@ -94130,7 +94130,7 @@ interface JQuery {
 	 *
 	 * @optionValue New value to be set.
 	 */
-	igTreeGridUpdating(optionLiteral: 'option', optionName: "startEditTriggers", optionValue: string|Array): void;
+	igTreeGridUpdating(optionLiteral: 'option', optionName: "startEditTriggers", optionValue: string|Array<any>): void;
 
 	/**
 	 * Determines if pressing Enter to navigate away from the currently edited cell should move the focus horizontally or vertically (default).
@@ -96755,7 +96755,7 @@ interface IgValidator {
 	 * "array" An array of two numbers, where the first value is the minimum and the second is the maximum. (e.g. lengthRange: [ 1, 10] )
 	 * "object" A configuration object with optional error message. Message strings can contain format items for min and max respecitively (e.g. lengthRange: { min: 6, max: 20, errorMessage: "Password must be at least {0} long and no more than {1}." } )
 	 */
-	lengthRange?: Array|Object;
+	lengthRange?: Array<any>|Object;
 
 	/**
  	 * Gets/Sets a minimum and/or maximum value. Null values are ignored.
@@ -96765,7 +96765,7 @@ interface IgValidator {
 	 * "array" An array of two numbers or dates, where the first is the minimum and the second is the maximum. (e.g. valueRange: [ 1, 10] )
 	 * "object" A configuration object with optional error message. Message strings can contain format items for min and max respecitively (e.g. lengthRange: { min: 6, max: 20, errorMessage: "Value must be between {0} and {1}." } )
 	 */
-	valueRange?: Array|Object;
+	valueRange?: Array<any>|Object;
 
 	/**
  	 * Gets/Sets Credit Card number validation rule options.Note: This rule will only validate the checksum of the number using Luhn algorithm irregardless of card type.
@@ -97612,7 +97612,7 @@ interface JQuery {
 	 * Gets/Sets a minimum and/or maximum length of text or number of selected items. Null or 0 values are ignored.
 	 *
 	 */
-	igValidator(optionLiteral: 'option', optionName: "lengthRange"): Array|Object;
+	igValidator(optionLiteral: 'option', optionName: "lengthRange"): Array<any>|Object;
 
 	/**
 	 * /Sets a minimum and/or maximum length of text or number of selected items. Null or 0 values are ignored.
@@ -97620,13 +97620,13 @@ interface JQuery {
 	 *
 	 * @optionValue New value to be set.
 	 */
-	igValidator(optionLiteral: 'option', optionName: "lengthRange", optionValue: Array|Object): void;
+	igValidator(optionLiteral: 'option', optionName: "lengthRange", optionValue: Array<any>|Object): void;
 
 	/**
 	 * Gets/Sets a minimum and/or maximum value. Null values are ignored.
 	 *
 	 */
-	igValidator(optionLiteral: 'option', optionName: "valueRange"): Array|Object;
+	igValidator(optionLiteral: 'option', optionName: "valueRange"): Array<any>|Object;
 
 	/**
 	 * /Sets a minimum and/or maximum value. Null values are ignored.
@@ -97634,7 +97634,7 @@ interface JQuery {
 	 *
 	 * @optionValue New value to be set.
 	 */
-	igValidator(optionLiteral: 'option', optionName: "valueRange", optionValue: Array|Object): void;
+	igValidator(optionLiteral: 'option', optionName: "valueRange", optionValue: Array<any>|Object): void;
 
 	/**
 	 * Gets/Sets Credit Card number validation rule options.Note: This rule will only validate the checksum of the number using Luhn algorithm irregardless of card type.

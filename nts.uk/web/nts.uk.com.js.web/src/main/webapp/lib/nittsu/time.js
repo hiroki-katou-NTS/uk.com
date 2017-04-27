@@ -189,6 +189,7 @@ var nts;
                 }
                 return ParseResult;
             }());
+            time_1.ParseResult = ParseResult;
             var ResultParseTime = (function (_super) {
                 __extends(ResultParseTime, _super);
                 function ResultParseTime(success, minus, hours, minutes, msg) {

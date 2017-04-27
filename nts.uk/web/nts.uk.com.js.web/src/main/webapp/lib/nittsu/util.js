@@ -444,7 +444,7 @@ var nts;
                     };
                     return Configuration;
                 }());
-            })(repeater || (repeater = {}));
+            })(repeater = deferred.repeater || (deferred.repeater = {}));
         })(deferred = uk.deferred || (uk.deferred = {}));
         var resource;
         (function (resource) {

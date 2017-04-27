@@ -49,6 +49,7 @@ var nts;
                                             self.dialogOptions.onCopyCallBack(callBackData)
                                                 .done(function () { return nts.uk.ui.windows.close(); })
                                                 .fail(function (res) {
+                                                nts.uk.ui.dialog.alert(res.message);
                                                 if (res.messageId == 'ER010') {
                                                     $('#startYearMonth').ntsError('set', '対象データがありません。');
                                                 }
@@ -58,6 +59,7 @@ var nts;
                                             self.dialogOptions.onCreateCallBack(callBackData)
                                                 .done(function () { return nts.uk.ui.windows.close(); })
                                                 .fail(function (res) {
+                                                nts.uk.ui.dialog.alert(res.message);
                                                 if (res.messageId == 'ER010') {
                                                     $('#startYearMonth').ntsError('set', '対象データがありません。');
                                                 }

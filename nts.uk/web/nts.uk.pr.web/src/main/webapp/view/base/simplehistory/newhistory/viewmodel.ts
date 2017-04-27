@@ -116,6 +116,7 @@ module nts.uk.pr.view.base.simplehistory.newhistory {
                     self.dialogOptions.onCopyCallBack(callBackData)
                         .done(() => nts.uk.ui.windows.close())
                         .fail((res) => {
+                            nts.uk.ui.dialog.alert(res.message);
                             if (res.messageId == 'ER010') {
                                 $('#startYearMonth').ntsError('set', '対象データがありません。');
                             }
@@ -124,6 +125,7 @@ module nts.uk.pr.view.base.simplehistory.newhistory {
                     self.dialogOptions.onCreateCallBack(callBackData)
                         .done(() => nts.uk.ui.windows.close())
                         .fail((res) => {
+                            nts.uk.ui.dialog.alert(res.message);
                             if (res.messageId == 'ER010') {
                                 $('#startYearMonth').ntsError('set', '対象データがありません。');
                             }

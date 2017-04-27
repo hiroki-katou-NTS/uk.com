@@ -1,3 +1,8 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var nts;
 (function (nts) {
     var uk;
@@ -149,6 +154,8 @@ var nts;
                         switch (action) {
                             case 'setupSelecting':
                                 return setupSelecting($grid);
+                            case 'unsetupSelecting':
+                                return unsetupSelecting($grid);
                             case 'getSelected':
                                 return getSelected($grid);
                             case 'setSelected':
@@ -277,6 +284,11 @@ var nts;
                         setupSelectingEvents($grid);
                         return $grid;
                     }
+                    function unsetupSelecting($grid) {
+                        unsetupDragging($grid);
+                        unsetupSelectingEvents($grid);
+                        return $grid;
+                    }
                     function setupDragging($grid) {
                         var dragSelectRange = [];
                         var mousePos = null;
@@ -356,6 +368,15 @@ var nts;
                         $grid.on('mouseup', function () {
                             $grid.triggerHandler('selectionchanged');
                         });
+                    }
+                    function unsetupDragging($grid) {
+                        var dragSelectRange = [];
+                        var mousePos = null;
+                        $grid.unbind('mousedown');
+                    }
+                    function unsetupSelectingEvents($grid) {
+                        $grid.unbind('iggridselectionrowselectionchanged');
+                        $grid.off('mouseup');
                     }
                 })(ntsGridList || (ntsGridList = {}));
                 var ntsListBox;
@@ -743,6 +764,118 @@ var nts;
                         return index;
                     }
                 })(ntsSideBar || (ntsSideBar = {}));
+                var igGridExt;
+                (function (igGridExt) {
+                    $.fn.igGridExt = function (options) {
+                        var self = this;
+                        if (options.ntsControls === undefined) {
+                            $(this).igGrid(options);
+                            return;
+                        }
+                        var columns = _.map(options.columns, function (column) {
+                            if (column.ntsControl === undefined)
+                                return column;
+                            var controlDef = _.find(options.ntsControls, function (ctl) {
+                                return ctl.name === column.ntsControl;
+                            });
+                            var $self = $(self);
+                            column.formatter = function (value, rowObj) {
+                                var update = function (val) {
+                                    if ($self.data("igGrid") !== null) {
+                                        $self.igGridUpdating("setCellValue", rowObj[$self.igGrid("option", "primaryKey")], column.key, val);
+                                        $self.igGrid("commit");
+                                    }
+                                };
+                                var data = {
+                                    setChecked: update,
+                                    checked: value
+                                };
+                                var ntsControl = getControl(controlDef.controlType);
+                                ntsControl.setText(controlDef);
+                                var $container = ntsControl.draw(data);
+                                var selectors = ntsControl.bindEventsTo();
+                                var $_self = $self;
+                                setTimeout(function () {
+                                    var $self = $_self;
+                                    for (var sel in selectors) {
+                                        var events = $._data($container.find(selectors[sel])[0], "events");
+                                        var $selector = $self.igGrid("cellById", rowObj[$self.igGrid("option", "primaryKey")], column.key).find(selectors[sel]);
+                                        for (var id in events) {
+                                            _.each(events[id], function (evt) {
+                                                $selector.unbind();
+                                                $selector.on(evt.type, evt.handler);
+                                            });
+                                        }
+                                    }
+                                }, 0);
+                                return $container.html();
+                            };
+                            return column;
+                        });
+                        options.columns = columns;
+                        $(this).igGrid(options);
+                    };
+                    function getControl(name) {
+                        return new CheckBox();
+                    }
+                    var NtsControlBase = (function () {
+                        function NtsControlBase() {
+                            this.readOnly = false;
+                            this.enable = true;
+                        }
+                        return NtsControlBase;
+                    }());
+                    var CheckBox = (function (_super) {
+                        __extends(CheckBox, _super);
+                        function CheckBox() {
+                            _super.apply(this, arguments);
+                        }
+                        CheckBox.prototype.draw = function (data) {
+                            var $container = $("<div/>");
+                            var checkBoxText;
+                            var setChecked = data.setChecked;
+                            var $wrapper = $("<div/>");
+                            $wrapper.appendTo($container).addClass("ntsControl").on("click", function (e) {
+                                if ($wrapper.data("readonly") === true)
+                                    e.preventDefault();
+                            });
+                            if (this.text) {
+                                checkBoxText = this.text;
+                            }
+                            else {
+                                checkBoxText = $wrapper.text();
+                                $wrapper.text('');
+                            }
+                            var $checkBoxLabel = $("<label class='ntsCheckBox'></label>");
+                            var $checkBox = $('<input type="checkbox">').on("change", function () {
+                                setChecked($(this).is(":checked"));
+                            }).appendTo($checkBoxLabel);
+                            var $box = $("<span class='box'></span>").appendTo($checkBoxLabel);
+                            if (checkBoxText && checkBoxText.length > 0)
+                                var label = $("<span class='label'></span>").text(checkBoxText).appendTo($checkBoxLabel);
+                            $checkBoxLabel.appendTo($wrapper);
+                            var checked = data.checked !== undefined ? data.checked : true;
+                            $wrapper.data("readonly", this.readOnly);
+                            var $checkBox = $wrapper.find("input[type='checkbox']");
+                            if (checked === true)
+                                $checkBox.attr("checked", "checked");
+                            else
+                                $checkBox.removeAttr("checked");
+                            if (this.enable === true)
+                                $checkBox.removeAttr("disabled");
+                            else
+                                $checkBox.attr("disabled", "disabled");
+                            return $container;
+                        };
+                        CheckBox.prototype.bindEventsTo = function () {
+                            return [".ntsControl", "input[type='checkbox']"];
+                        };
+                        CheckBox.prototype.setText = function (controlDef) {
+                            this.text = controlDef.options[controlDef.optionsText];
+                        };
+                        return CheckBox;
+                    }(NtsControlBase));
+                })(igGridExt = jqueryExtentions.igGridExt || (jqueryExtentions.igGridExt = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));

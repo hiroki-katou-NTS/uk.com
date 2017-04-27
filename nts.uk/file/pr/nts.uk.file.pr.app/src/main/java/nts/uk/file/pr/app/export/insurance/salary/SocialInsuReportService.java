@@ -9,21 +9,21 @@ package nts.uk.file.pr.app.export.insurance.salary;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearn;
 import nts.uk.file.pr.app.export.insurance.data.ChecklistPrintSettingDto;
 import nts.uk.file.pr.app.export.insurance.data.DataRowItem;
+import nts.uk.file.pr.app.export.insurance.data.HeaderReportData;
 import nts.uk.file.pr.app.export.insurance.data.InsuranceOfficeDto;
 import nts.uk.file.pr.app.export.insurance.data.MLayoutInsuOfficeDto;
 import nts.uk.file.pr.app.export.insurance.data.MLayoutRowItem;
-import nts.uk.file.pr.app.export.insurance.data.HeaderReportData;
 import nts.uk.file.pr.app.export.insurance.data.SocialInsuMLayoutReportData;
 import nts.uk.file.pr.app.export.insurance.data.SocialInsuReportData;
 import nts.uk.shr.com.context.AppContexts;
@@ -58,15 +58,18 @@ public class SocialInsuReportService extends ExportService<SocialInsuQuery> {
     protected void handle(ExportServiceContext<SocialInsuQuery> context) {
         SocialInsuQuery query = context.getQuery();
         String companyCode = AppContexts.user().companyCode();
-        String loginPersonID = "00000000-0000-0000-0000-000000000001"; //AppContexts.user().personId();
+        String loginPersonID = "00000000-0000-0000-0000-000000000001"; //"000000000000000000000000000000000001";
+        //AppContexts.user().personId();
         
-        List<String> officeCodes = query.getInsuranceOffices().stream()
-                .map(office -> office.getCode())
-                .collect(Collectors.toList());
+        if (!repository.isAvaibleData(companyCode, loginPersonID, query)) {
+            throw new BusinessException("ER010");
+        }
+        
         // find list health insurance average earn
-        List<HealthInsuranceAvgearn> listhealInsuAvgearn = queryProcessor.findHealInsuAvgearnByOffice(officeCodes);
+        List<HealthInsuranceAvgearn> listhealInsuAvgearn = queryProcessor
+                .findHealInsuAvgearnByOffice(query.getOfficeCodes());
         // find list pension average earn
-        List<PensionAvgearn> listPensionAvgearn = queryProcessor.findPensAvgearnByOffice(officeCodes);
+        List<PensionAvgearn> listPensionAvgearn = queryProcessor.findPensAvgearnByOffice(query.getOfficeCodes());
         // find configure print output.
         ChecklistPrintSettingDto configOutput = queryProcessor.findConfigureOutputSetting();
         

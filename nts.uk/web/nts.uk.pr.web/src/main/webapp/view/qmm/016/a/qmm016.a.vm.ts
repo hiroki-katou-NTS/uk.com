@@ -32,7 +32,7 @@ module nts.uk.pr.view.qmm016.a {
             settingDirtyChecker: nts.uk.ui.DirtyChecker;
             valuesDirtyChecker: nts.uk.ui.DirtyChecker;
             valueItems: KnockoutObservable<Array<model.CellItemDto>>;
-            
+
             demensionBullet: Array<string>;
 
             constructor() {
@@ -101,7 +101,7 @@ module nts.uk.pr.view.qmm016.a {
                 var self = this;
                 self.valueItems(self.history().detailViewModel ? self.history().detailViewModel.getCellItem() : []);
                 return self.headDirtyChecker.isDirty() ||
-                    self.settingDirtyChecker.isDirty() || 
+                    self.settingDirtyChecker.isDirty() ||
                     self.valuesDirtyChecker.isDirty();
             }
 
@@ -124,7 +124,7 @@ module nts.uk.pr.view.qmm016.a {
                 dfd.resolve();
                 return dfd.promise();
             }
-            
+
             // Validate data
             private validateData() {
                 $("#inp_code").ntsEditor("validate");
@@ -135,7 +135,7 @@ module nts.uk.pr.view.qmm016.a {
                 }
                 return false;
             }
-            
+
             //function clear message error
             private clearErrorSave() {
                 $('.save-error').ntsError('clear');
@@ -147,9 +147,9 @@ module nts.uk.pr.view.qmm016.a {
             onSave(): JQueryPromise<string> {
                 var self = this;
                 var dfd = $.Deferred<string>();
-                
+
                 self.clearErrorSave();
-                if(self.validateData()) {
+                if (self.validateData()) {
                     return dfd.promise();
                 }
 
@@ -541,30 +541,11 @@ module nts.uk.pr.view.qmm016.a {
                     historyId: self.history.historyId,
                     settings: self.getElementSettings()
                 }).done((res: Array<ElementSettingDto>) => {
-                    // Validate items
-                    if (res.length == null || !this.validateElementSettingDto(res)) {
-                        nts.uk.ui.dialog.alert("Cann't generate items with the current setting. Please check again!");
-                    }
-
                     self.history.elements = res;
                     self.detailViewModel.refreshElementSettings(res);
                 }).fail(function(error) {
-                    nts.uk.ui.dialog.alert("Cann't generate items with the current setting. Please check again!");
+                    nts.uk.ui.dialog.alert(error.message);
                 });
-            }
-
-            private validateElementSettingDto(res: Array<ElementSettingDto>): boolean {
-                if (res == null || res.length <= 0) {
-                    return false;
-                }
-
-                for (var i = 0; i < res.length; i++) {
-                    if (res[i].itemList == null || res[i].itemList.length <= 0) {
-                        return false;
-                    }
-                }
-
-                return true;
             }
 
             /**

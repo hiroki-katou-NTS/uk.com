@@ -68,7 +68,7 @@ module nts.uk.pr.view.qpp018.a {
                 command.isEqual = self.isEqual();
                 command.isDeficient = self.isDeficient();
                 command.isRedundant = self.isRedundant();
-                command.insuranceOffices = self.insuranceOffice().getSelectedOffice();
+                command.officeCodes = self.insuranceOffice().getSelectedOffice();
                 return command;
             }
             
@@ -159,17 +159,16 @@ module nts.uk.pr.view.qpp018.a {
                 self.selectedOfficeCodeList().push(code);
             }
             
-            getSelectedOffice(): InsuranceOffice[] {
+            getSelectedOffice(): String[] {
                 let self = this;
-                let offices: InsuranceOffice[] = [];
+                let officeCodes: String[] = [];
                 for(let i in self.selectedOfficeCodeList()) {
                     let code: string = self.selectedOfficeCodeList()[i];
-                    let office = self.getOfficeByCode(code);
-                    if (office) {
-                        offices.push(office);
+                    if (code) {
+                        officeCodes.push(code);
                     }
                 }
-                return offices;
+                return officeCodes;
             }
         
             getOfficeByCode(code: string): InsuranceOffice {

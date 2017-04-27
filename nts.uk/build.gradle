@@ -100,7 +100,7 @@ subprojects {
 		compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.22'
 		
 		compile group: 'nts.gul', name: 'nts.gul', version: '0.15.1'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.21.5'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.22.6'
 	}
 }
 
@@ -538,7 +538,7 @@ project (':web:nts.uk.com.js.web') {
 	apply plugin: "de.richsource.gradle.plugins.typescript"
 	war {
 		baseName= "nts.uk.com.js.web"
-		into("lib") {
+		into("lib/nittsu") {
 			from compileTypeScript.outputs
 		}
 	}
@@ -615,9 +615,6 @@ project (':web:nts.uk.at.web') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
-		
-		runtime project (':shr:nts.uk.shr.ws')
-		runtime project (':shr:nts.uk.shr.find')
 		
 		runtime project (':ctx:at:schedule:nts.uk.ctx.at.schedule.ac')
 		runtime project (':ctx:at:schedule:nts.uk.ctx.at.schedule.app')

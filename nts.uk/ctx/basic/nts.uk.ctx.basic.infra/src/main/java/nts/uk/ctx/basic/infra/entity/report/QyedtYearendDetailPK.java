@@ -27,7 +27,7 @@ public class QyedtYearendDetailPK implements Serializable {
 	/** The ccd. */
 	@Basic(optional = false)
 	@Column(name = "CCD")
-	private short ccd;
+	private String ccd;
 
 	/** The pid. */
 	@Basic(optional = false)
@@ -49,48 +49,6 @@ public class QyedtYearendDetailPK implements Serializable {
 	@Column(name = "ADJ_ITEM_NO")
 	private short adjItemNo;
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		int hash = 0;
-		hash += (int) ccd;
-		hash += (pid != null ? pid.hashCode() : 0);
-		hash += (int) yearK;
-		hash += (int) yeCnt;
-		hash += (int) adjItemNo;
-		return hash;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object object) {
-		if (!(object instanceof QyedtYearendDetailPK)) {
-			return false;
-		}
-		QyedtYearendDetailPK other = (QyedtYearendDetailPK) object;
-		if (this.ccd != other.ccd) {
-			return false;
-		}
-		if ((this.pid == null && other.pid != null) || (this.pid != null && !this.pid.equals(other.pid))) {
-			return false;
-		}
-		if (this.yearK != other.yearK) {
-			return false;
-		}
-		if (this.yeCnt != other.yeCnt) {
-			return false;
-		}
-		if (this.adjItemNo != other.adjItemNo) {
-			return false;
-		}
-		return true;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -100,6 +58,54 @@ public class QyedtYearendDetailPK implements Serializable {
 	public String toString() {
 		return "entity.QyedtYearendDetailPK[ ccd=" + ccd + ", pid=" + pid + ", yearK=" + yearK + ", yeCnt=" + yeCnt
 				+ ", adjItemNo=" + adjItemNo + " ]";
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + adjItemNo;
+		result = prime * result + ((ccd == null) ? 0 : ccd.hashCode());
+		result = prime * result + ((pid == null) ? 0 : pid.hashCode());
+		result = prime * result + yeCnt;
+		result = prime * result + yearK;
+		return result;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		QyedtYearendDetailPK other = (QyedtYearendDetailPK) obj;
+		if (adjItemNo != other.adjItemNo)
+			return false;
+		if (ccd == null) {
+			if (other.ccd != null)
+				return false;
+		} else if (!ccd.equals(other.ccd))
+			return false;
+		if (pid == null) {
+			if (other.pid != null)
+				return false;
+		} else if (!pid.equals(other.pid))
+			return false;
+		if (yeCnt != other.yeCnt)
+			return false;
+		if (yearK != other.yearK)
+			return false;
+		return true;
 	}
 
 }

@@ -239,6 +239,8 @@ var nts;
                     };
                     NumberEditorProcessor.prototype.getValidator = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+                        this.editorOption['required'] = required;
                         return new validation.NumberValidator(constraintName, this.editorOption);
                     };
                     return NumberEditorProcessor;
