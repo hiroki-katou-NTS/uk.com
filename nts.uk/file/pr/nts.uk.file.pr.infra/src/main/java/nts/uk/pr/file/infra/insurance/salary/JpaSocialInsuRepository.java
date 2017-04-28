@@ -177,7 +177,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
      * nts.uk.file.pr.app.export.insurance.salary.SocialInsuQuery)
      */
     @Override
-    public boolean isAvaibleData(String companyCode, String loginPersonId, SocialInsuQuery salaryQuery) {
+    public boolean isAvailableData(String companyCode, String loginPersonId, SocialInsuQuery salaryQuery) {
         Integer yearMonth = salaryQuery.getYearMonth();
         EntityManager em = this.getEntityManager();
         Query query = em.createQuery(QUERY_CHECK_DATA);

@@ -14,14 +14,14 @@ public interface SocialInsuRepository {
 
     
     /**
-     * Checks if is avaible data.
+     * Checks if is available data.
      *
      * @param companyCode the company code
      * @param loginPersonId the login person id
      * @param salaryQuery the salary query
-     * @return true, if is avaible data
+     * @return true, if is available data
      */
-    boolean isAvaibleData(String companyCode, String loginPersonId, SocialInsuQuery salaryQuery);
+    boolean isAvailableData(String companyCode, String loginPersonId, SocialInsuQuery salaryQuery);
     
     /**
      * Find report data.
