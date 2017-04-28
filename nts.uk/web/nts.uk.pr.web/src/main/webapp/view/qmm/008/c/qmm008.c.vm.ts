@@ -323,7 +323,7 @@ module nts.uk.pr.view.qmm008.c {
             onSave(): JQueryPromise<string> {
                 var self = this;
                 var dfd = $.Deferred<string>();
-
+                self.dirty.reset();
                 //check auto calculate
                 if (self.pensionModel().autoCalculate() == AutoCalculateType.Auto) {
                     nts.uk.ui.dialog.confirm("自動計算が行われます。登録しますか？").ifYes(function() {
@@ -334,7 +334,6 @@ module nts.uk.pr.view.qmm008.c {
                             return dfd.promise();
                         }
 
-                        self.dirty.reset();
 
                         //update pension
                         service.updatePensionRate(self.pensionCollectData()).done(function() {
@@ -353,8 +352,6 @@ module nts.uk.pr.view.qmm008.c {
                         dfd.reject();
                         return dfd.promise();
                     }
-
-                    self.dirty.reset();
 
                     service.updatePensionRate(self.pensionCollectData()).done(function() {
                         self.backupDataDirty(self.pensionCollectData());

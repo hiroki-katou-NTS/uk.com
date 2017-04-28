@@ -269,6 +269,8 @@ module nts.uk.pr.view.qmm008.b {
                 var self = this;
                 var dfd = $.Deferred<string>();
 
+                self.dirty.reset();
+                
                 //check auto calculate
                 if (self.healthModel().autoCalculate() == AutoCalculateType.Auto) {
                     nts.uk.ui.dialog.confirm("自動計算が行われます。登録しますか？").ifYes(function() {
@@ -279,7 +281,7 @@ module nts.uk.pr.view.qmm008.b {
                             return dfd.promise();
                         }
 
-                        self.dirty.reset();
+                        
 
                         //update health
                         service.updateHealthRate(self.healthCollectData()).done(function() {
@@ -297,9 +299,7 @@ module nts.uk.pr.view.qmm008.b {
                         dfd.reject();
                         return dfd.promise();
                     }
-
-                    self.dirty.reset();
-
+                    
                     //update health
                     service.updateHealthRate(self.healthCollectData()).done(function() {
                         self.backupDataDirty(self.healthCollectData());
