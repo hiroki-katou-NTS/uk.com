@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.app.layout.find;
+package nts.uk.ctx.sys.portal.app.find.layout;
 
 import java.util.Optional;
 
