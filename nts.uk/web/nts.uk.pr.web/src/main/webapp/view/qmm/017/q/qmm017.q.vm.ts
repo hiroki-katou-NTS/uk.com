@@ -3,20 +3,32 @@ module nts.uk.pr.view.qmm017.q {
         export class ScreenModel {
             items: KnockoutObservableArray<ItemModel>;
             personalUPItems: KnockoutObservableArray<ItemModel>;
+            systemVariableItems: KnockoutObservableArray<ItemModel>;
             columns: KnockoutObservableArray<any>;
             currentCodeList: KnockoutObservableArray<any>;
-            formulaContent: string;
-            calculator: Calculator;
+            formulaContent: KnockoutObservable<string>;
 
             constructor(data) {
                 var self = this;
                 self.items = ko.observableArray([]);
                 self.personalUPItems = ko.observableArray([]);
+                self.systemVariableItems = ko.observableArray([]);
                 self.currentCodeList = ko.observableArray([]);
-                self.formulaContent = data.formulaContent;
-                self.buildListItemModel(data.itemsBag);
-                self.bindGridListItem();
-                self.calculator = new Calculator();
+                self.formulaContent = ko.observable(data.formulaContent);
+                if (self.formulaContent().indexOf('計算式＠') !== -1) {
+                    self.extractOtherFormulaContents(data.itemsBag)
+                        .done(function() {
+                            self.replaceCodesToNames(data.itemsBag);
+                            self.buildListItemModel(data.itemsBag);
+                            self.bindGridListItem();
+                            self.replaceSystemVariableToValue();
+                        });
+                } else {
+                    self.replaceCodesToNames(data.itemsBag);
+                    self.buildListItemModel(data.itemsBag);
+                    self.bindGridListItem();
+                    self.replaceSystemVariableToValue();
+                }
             }
 
             isDuplicated(itemName) {
@@ -27,12 +39,57 @@ module nts.uk.pr.view.qmm017.q {
                 return foundItem !== undefined;
             }
 
+            replaceCodesToNames(itemsBag) {
+                var self = this;
+                let replacedContent = self.formulaContent();
+                _.forEach(itemsBag, function(item) {
+                    if (replacedContent.indexOf(item.code) !== -1) {
+                        replacedContent = replacedContent.replace(item.code, item.name);
+                    }
+                });
+                self.formulaContent(replacedContent);
+            }
+            
+            replaceSystemVariableToValue() {
+                var self = this;
+                let replacedContent = self.formulaContent();
+                _.forEach(self.systemVariableItems(), function(item) {
+                    if (replacedContent.indexOf(item.code) !== -1) {
+                        replacedContent = replacedContent.replace(item.code, item.value);
+                    }
+                });
+                self.formulaContent(replacedContent);
+            }
+
+            extractOtherFormulaContents(itemsBag) {
+                var self = this;
+                let dfdExtraction = $.Deferred<any>();
+                let replacedValue = self.formulaContent();
+                _.forEach(itemsBag, function(item) {
+                    if (item.name.indexOf('計算式＠') !== -1 && self.formulaContent().indexOf(item.name) !== -1) {
+                        let itemCodeSplited = item.code.split('＠');
+                        service.findLastestFormulaManual(itemCodeSplited[1])
+                            .done(function(formulaManual: model.FormulaManualDto) {
+                                replacedValue = replacedValue.replace(new RegExp(item.name, 'g'), "（" + formulaManual.formulaContent + "）");
+                                self.formulaContent(replacedValue);
+                                dfdExtraction.resolve();
+                            })
+                            .fail(function() {
+                                dfdExtraction.reject();
+                            });
+                    }
+                });
+                return dfdExtraction.promise();
+            }
+
             buildListItemModel(itemsBag) {
                 var self = this;
                 _.forEach(itemsBag, function(item) {
-                    if (item.name.indexOf('関数') === -1 && self.formulaContent.indexOf(item.name) !== -1 && !self.isDuplicated(item.name)) {
+                    if (item.name.indexOf('関数') === -1 && self.formulaContent().indexOf(item.name) !== -1 && !self.isDuplicated(item.name)) {
                         if (item.name.indexOf('個人単価＠') !== -1) {
                             self.personalUPItems.push(new ItemModel(item.name, 0));
+                        } else if (item.name.indexOf('変数＠') !== -1){
+                            self.systemVariableItems.push(new ItemModel(item.name, item.value));
                         } else {
                             self.items.push(new ItemModel(item.name, 0));
                         }
@@ -71,7 +128,7 @@ module nts.uk.pr.view.qmm017.q {
 
             calculationTrial() {
                 var self = this;
-                let replacedValue = self.formulaContent + '+ 0';
+                let replacedValue = self.formulaContent() + '+ 0';
                 _.forEach(self.items(), function(item) {
                     replacedValue = replacedValue.replace(new RegExp(item.code, 'g'), item.value);
                 });
@@ -94,7 +151,7 @@ module nts.uk.pr.view.qmm017.q {
 
             calculateTreeObject(treeObject) {
                 var self = this;
-                
+
                 if (treeObject.value === '関数＠条件式') {
 
                 } else if (treeObject.value === '関数＠かつ') {
@@ -158,67 +215,6 @@ module nts.uk.pr.view.qmm017.q {
 
         }
     }
-
-    export class Calculator {
-        constructor() {
-
-        }
-
-        calculateConditionExpression(condition, result1, result2) {
-            if (condition) {
-                return result1;
-            } else {
-                return result2;
-            }
-        }
-
-        calculateAndExpression(lstCondition) {
-            _.forEach(lstCondition, function(condition) {
-                if (!condition || condition !== 'true') {
-                    return false;
-                }
-            });
-            return true;
-        }
-
-        calculateOrExpression(lstCondition) {
-            _.forEach(lstCondition, function(condition) {
-                if (condition || condition === 'true') {
-                    return true;
-                }
-            });
-            return false;
-        }
-
-        calculateCeil(value) {
-            return _.ceil(value);
-        }
-
-        calculateMax(lstValue) {
-            return _.max(lstValue);
-        }
-
-        calculateMin(lstValue) {
-            return _.min(lstValue);
-        }
-
-        calculateNumberOfFamily(minAge, maxAge) {
-            return 0;
-        }
-
-        calculateAddMonth(yearMonth, month) {
-            return moment(yearMonth, "YYYY/MM").add(month, 'months').format("YYYY/MM");
-        }
-
-        calculateExportYear(yearMonth) {
-            return moment(yearMonth, "YYYY/MM").year();
-        }
-
-        calculateExportMonth(yearMonth) {
-            return moment(yearMonth, "YYYY/MM").month() + 1;
-        }
-    }
-
 
     class ItemModel {
         code: string;

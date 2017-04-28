@@ -31,7 +31,7 @@ module nts.uk.ui.gridlist {
                         
                         $this.one('remove', function (e) {
                             ko.cleanNode(this);
-                        });
+                        }); 
                     });
                 });
             }
@@ -43,12 +43,33 @@ module nts.uk.ui.gridlist {
             ruleCode: KnockoutObservable<string>;
             constructor(index: number) {
                 this.id = index;
-                this.flag = ko.observable(index % 2 == 0);
-                this.ruleCode = ko.observable(String(index % 3 + 1));
+//                this.flag = ko.observable(index % 2 == 0);
+//                this.ruleCode = ko.observable(String(index % 3 + 1));
+                this.flag = index % 2 == 0;
+                this.ruleCode = String(index % 3 + 1);
             }
         }
         
         var model = new ScreenModel();
+        $("#grid2").igGridExt({ 
+                            width: '600px',
+                            height: '400px',
+                            dataSource: model.items(),
+                            primaryKey: 'id',
+                            virtualization: true,
+                            virtualizationMode: 'continuous',
+                            columns: [
+                                { headerText: 'ID', key: 'id', dataType: 'number', width: '200px' },
+                                { headerText: 'FLAG', key: 'flag', dataType: 'boolean', width: '200px', ntsControl: 'Checkbox' },
+                                { headerText: 'RULECODE', key: 'ruleCode', dataType: 'string', width: '200px' }
+                            ], 
+                            features: [{ name: 'Sorting', type: 'local' }, { name: 'Updating', enableAddRow: false, enableDeleteRow: false, editMode: 'none' }],
+                            ntsControls: [{ name: 'Checkbox', options: { value: 1, text: 'Custom Check' }, optionsValue: 'value', optionsText: 'text', controlType: 'Checkbox' }]
+                            });
+        $("#run").on("click", function() {
+            var source = $("#grid2").igGrid("option", "dataSource");
+            alert(source[0].flag);
+        });
         this.bind(model);
     });
 }

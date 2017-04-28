@@ -52,12 +52,11 @@
 		</ui:define>
 
 		<ui:define name="content">
-				<span id="title_span">計算式の登録</span>
 				<div id="functions-area" style="padding-top: 5px;" class="cf">
 				<button class="button separate-button fix-button" data-bind="click: resetToNewMode,enable: !isNewMode()">新規</button>
-				<button class="button proceed separate-button fix-button" data-bind="click: registerFormulaMaster">登録</button>
-				<button id="copy_btn" class="button separate-button fix-button">コピー</button>
-				<button class="button separate-button fix-button">Excel出力</button>
+				<button class="button proceed separate-button fix-button" data-bind="click: registerFormulaMaster, enable: $root.errors.isEmpty">登録</button>
+				<button id="copy_btn" class="button separate-button fix-button" data-bind="enable: false">コピー</button>
+				<button class="button separate-button fix-button" data-bind="enable: false">Excel出力</button>
 				<button class="button separate-button fix-button">マスタ修正ログ</button>
 				</div>
 				<div id="contents-area" style="width: 1366px;" class="cf">
