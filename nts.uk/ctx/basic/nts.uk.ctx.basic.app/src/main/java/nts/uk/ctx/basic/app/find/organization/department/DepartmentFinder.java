@@ -99,8 +99,14 @@ public class DepartmentFinder {
 
 	public DepartmentMemoDto findMemo(String companyCode, String historyId) {
 		Optional<DepartmentMemo> departmentMemo = this.departmentRepository.findMemo(companyCode, historyId);
-		return departmentMemo.isPresent() ? new DepartmentMemoDto(departmentMemo.get().getHistoryId(),
-				departmentMemo.get().getMemo().toString()) : null;
+		return departmentMemo.isPresent() ? new DepartmentMemoDto(departmentMemo.get().getHistoryId(), departmentMemo.get().getMemo().toString()): null;
+	}
+
+	public List<DepartmentHistoryDto> getAllHistory(String companyCode) {
+		List<DepartmentHistoryDto> histories = departmentRepository.findHistories(companyCode).stream().map(e -> {
+			return new DepartmentHistoryDto(e.getHistoryId(), e.getStartDate(), e.getEndDate());
+		}).collect(Collectors.toList());
+		return histories;
 	}
 
 }

@@ -16,7 +16,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  *
@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.TableEntity;
 @NoArgsConstructor
 @Table(name = "QCAMT_ITEM_ATTEND")
 @Entity
-public class QcamtItemAttend extends TableEntity implements Serializable {
+public class QcamtItemAttend extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
@@ -97,4 +97,8 @@ public class QcamtItemAttend extends TableEntity implements Serializable {
 		return "entity.itemmaster.QcamtItemAttend[ qcamtItemAttendPK=" + qcamtItemAttendPK + " ]";
 	}
 
+	@Override
+	protected QcamtItemAttendPK getKey() {
+		return this.qcamtItemAttendPK;
+	}
 }

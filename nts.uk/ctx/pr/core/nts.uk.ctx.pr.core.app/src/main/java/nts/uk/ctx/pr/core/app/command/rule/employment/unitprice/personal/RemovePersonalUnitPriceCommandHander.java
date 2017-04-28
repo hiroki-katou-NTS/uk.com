@@ -27,7 +27,7 @@ public class RemovePersonalUnitPriceCommandHander extends CommandHandler<RemoveP
 		
 		Optional<PersonalUnitPrice> unitPrice = personalUnitPriceRepository.find(companyCode, command.getPersonalUnitPriceCode());
 		if (!unitPrice.isPresent()) {
-			throw new BusinessException("Unit price not found");
+			throw new RuntimeException("Unit price not found");
 		}
 		
 	    personalUnitPriceRepository.remove(companyCode, command.getPersonalUnitPriceCode());

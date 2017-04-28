@@ -1,4 +1,4 @@
-#C_LBL_003{
+#C_LBL_ENDYMD{
 	margin-left: 25px;
 	margin-top: 10px;
 	text-align: center;
@@ -13,22 +13,22 @@
 #LBL_003{
 	padding-right: 20px;
 }
-#INP_001{
+#INP_STARTYMD{
 	width: 130px !important;	
 	padding-left: 0px !important;
 }
 
-.C_INP_001{
+.C_INP_STARTYMD{
 	padding-left: 15px;
 }
-.C_INP_002{
+.C_LBL_STRATYMD{
 	padding-top: 10px;
 }
 .inlineInfor{
 	display: flex;
 }
 
-#SEL_001{
+#SELECT{
 	margin-left: 20px;
 	margin-top: 5px;
 	width: 270px;
@@ -37,7 +37,7 @@
 	margin-left: 150px;
 }
 
-#BTN_001{
+#BTN_DECIDE{
 	margin-right: 20px;
 }
 
