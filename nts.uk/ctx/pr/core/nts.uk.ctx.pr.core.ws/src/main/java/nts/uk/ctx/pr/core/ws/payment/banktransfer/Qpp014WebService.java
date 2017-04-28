@@ -20,7 +20,7 @@ public class Qpp014WebService extends WebService {
 
 	@Inject
 	private IPaydayProcessingFinder iPaydayProcessingFinder;
-	
+
 	@Inject
 	private AddBankTransferCommandHandler addBankTransferCommandHandler;
 
@@ -29,10 +29,10 @@ public class Qpp014WebService extends WebService {
 	public List<PaydayProcessingDto> findPayDayProcessing(@PathParam("payBonusAtr") int payBonusAtr) {
 		return iPaydayProcessingFinder.getPaydayProcessing(payBonusAtr);
 	}
-	
+
 	@POST
 	@Path("add")
-	public void add(AddBankTransferCommand command){
+	public void add(AddBankTransferCommand command) {
 		this.addBankTransferCommandHandler.handle(command);
 	}
 }

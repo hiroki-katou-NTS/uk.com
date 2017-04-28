@@ -25,11 +25,12 @@ public interface BankTransferRepository {
 	/**
 	 * 
 	 * @param companyCode
+	 * @param payBonusAtr
 	 * @param processingNo
 	 * @param payDate
 	 * @param sparePayAtr
 	 */
-	void remove(String companyCode, int processingNo, GeneralDate payDate, int sparePayAtr);
+	void remove(String companyCode, int payBonusAtr, int processingNo, GeneralDate payDate, int sparePayAtr);
 
 	/**
 	 * 

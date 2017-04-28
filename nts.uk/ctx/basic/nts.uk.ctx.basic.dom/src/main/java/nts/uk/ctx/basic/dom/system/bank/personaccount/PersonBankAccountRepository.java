@@ -19,7 +19,7 @@ public interface PersonBankAccountRepository {
 	 * @param baseYM
 	 * @return
 	 */
-	List<PersonBankAccount> findBasePIdAndBaseYM(String companyCode, String personId, int baseYM);
+	Optional<PersonBankAccount> findBasePIdAndBaseYM(String companyCode, String personId, int baseYM);
 
 	/**
 	 * 

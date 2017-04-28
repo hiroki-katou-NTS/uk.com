@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.paymentdata.Payment;
+import nts.uk.ctx.pr.core.dom.paymentdata.PaymentDetail;
 import nts.uk.ctx.pr.core.dom.paymentdata.dataitem.DetailItem;
 import nts.uk.ctx.pr.core.dom.paymentdata.dataitem.position.PrintPositionCategory;
 import nts.uk.ctx.pr.core.dom.paymentdata.repository.PaymentDataRepository;
@@ -32,38 +33,55 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 			+ " AND d.qstdtPaymentDetailPK.processingNo = :PROCESSING_NO"
 			+ " AND d.qstdtPaymentDetailPK.sparePayAttribute = :SPARE_PAY_ATR";
 
-	private final String SEL_3 = "SELECT a FROM QstdtPaymentHeader a "
-			+ "WHERE a.qstdtPaymentHeaderPK.companyCode = :CCD" + " AND a.qstdtPaymentHeaderPK.personId = :PID"
-			+ " AND a.qstdtPaymentHeaderPK.processingYM = :PROCESSING_YM"
-			+ " AND a.qstdtPaymentHeaderPK.payBonusAtr = :PAY_BONUS_ATR"
-			+ " AND a.qstdtPaymentHeaderPK.processingNo = :PROCESSING_NO"
-			+ " AND a.qstdtPaymentHeaderPK.sparePayAtr = :SPARE_PAY_ATR";
+	private String SEL_11 = "SELECT d FROM QstdtPaymentDetail d" + " WHERE d.qstdtPaymentDetailPK.companyCode = :CCD"
+			+ " AND d.qstdtPaymentDetailPK.personId = :PID"
+			+ " AND d.qstdtPaymentDetailPK.processingNo = :PROCESSING_NO"
+			+ " AND d.qstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR"
+			+ " AND d.qstdtPaymentDetailPK.processingYM = :PROCESSING_YM"
+			+ " AND d.qstdtPaymentDetailPK.sparePayAttribute = :SPARE_PAY_ATR"
+			+ " AND d.qstdtPaymentDetailPK.categoryATR = :CTG_ATR" + " AND d.qstdtPaymentDetailPK.itemCode = :ITEM_CD"
+			+ " AND d.value >= :VAL";
 
-	private final String SEL_3_1 = "SELECT a FROM QstdtPaymentHeader a "
-			+ "WHERE a.qstdtPaymentHeaderPK.companyCode = :CCD" + " AND a.qstdtPaymentDetailPK.personId = :PID"
-			+ " AND a.qstdtPaymentHeaderPK.processingYM = :PROCESSING_YM"
-			+ " AND a.qstdtPaymentHeaderPK.payBonusAtr = :PAY_BONUS_ATR"
-			+ " AND a.qstdtPaymentHeaderPK.processingNo = :PROCESSING_NO";
+	private String SEL_11_1 = "SELECT d FROM QstdtPaymentDetail d" + " WHERE d.qstdtPaymentDetailPK.companyCode = :CCD"
+			+ " AND d.qstdtPaymentDetailPK.personId = :PID"
+			+ " AND d.qstdtPaymentDetailPK.processingNo = :PROCESSING_NO"
+			+ " AND d.qstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR"
+			+ " AND d.qstdtPaymentDetailPK.processingYM = :PROCESSING_YM"
+			+ " AND d.qstdtPaymentDetailPK.categoryATR = :CTG_ATR" + " AND d.qstdtPaymentDetailPK.itemCode = :ITEM_CD"
+			+ " AND d.value >= :VAL";
+
+	private final String SELECT_3_1 = " SELECT c FROM QstdtPaymentHeader c "
+			+ " WHERE c.qstdtPaymentHeaderPK.companyCode = :CCD" + " AND c.qstdtPaymentHeaderPK.personId = :PID"
+			+ " AND c.qstdtPaymentHeaderPK.processingNo = :PROCESSING_NO"
+			+ " AND c.qstdtPaymentHeaderPK.payBonusAtr = :PAY_BONUS_ATR"
+			+ " AND c.qstdtPaymentHeaderPK.processingYM = :PROCESSING_YM";
 
 	@Override
-	public List<Payment> findWith6Property(String companyCode, String personId, int processingNo, int payBonusAtr,
-			int processingYm, int sparePayAtr) {
-		return this.queryProxy().query(SEL_3, QstdtPaymentHeader.class).setParameter("CCD", companyCode)
-				.setParameter("PID", personId).setParameter("PROCESSING_YM", processingYm)
-				.setParameter("PAY_BONUS_ATR", payBonusAtr).setParameter("PROCESSING_NO", processingNo)
-				.setParameter("SPARE_PAY_ATR", sparePayAtr).getList(c -> toDomain(c));
+	public Optional<PaymentDetail> findItemWith9Property(String companyCode, String personId, int processingNo,
+			int processingYm, int payBonusAtr, int sparePayAtr, int categoryAtr, String itemCode, BigDecimal value) {
+		return this.queryProxy().query(SEL_11, PaymentDetail.class).setParameter("CCD", companyCode)
+				.setParameter("PID", personId).setParameter("PROCESSING_NO", processingNo)
+				.setParameter("PROCESSING_YM", processingYm).setParameter("PAY_BONUS_ATR", payBonusAtr)
+				.setParameter("SPARE_PAY_ATR", sparePayAtr).setParameter("CTG_ATR", categoryAtr)
+				.setParameter("ITEM_CD", itemCode).setParameter("VAL", value).getSingle();
 	}
 
-	/**
-	 * find Payment Header with companyCode, personId, processingNo,
-	 * payBonusAtr, processingYm
-	 */
 	@Override
-	public List<Payment> findWith5Property(String companyCode, String personId, int processingNo, int payBonusAtr,
-			int processingYm) {
-		return this.queryProxy().query(SEL_3_1, QstdtPaymentHeader.class).setParameter("CCD", companyCode)
-				.setParameter("PID", personId).setParameter("PROCESSING_YM", processingYm)
-				.setParameter("PAY_BONUS_ATR", payBonusAtr).setParameter("PROCESSING_NO", processingNo)
+	public List<PaymentDetail> findItemWith8Property(String companyCode, String personId, int processingNo,
+			int processingYm, int payBonusAtr, int categoryAtr, String itemCode, BigDecimal value) {
+		return this.queryProxy().query(SEL_11_1, QstdtPaymentDetail.class).setParameter("CCD", companyCode)
+				.setParameter("PID", personId).setParameter("PROCESSING_NO", processingNo)
+				.setParameter("PROCESSING_YM", processingYm).setParameter("PAY_BONUS_ATR", payBonusAtr)
+				.setParameter("CTG_ATR", categoryAtr).setParameter("ITEM_CD", itemCode).setParameter("VAL", value)
+				.getList(c -> paymentDetailToDomain(c));
+	}
+
+	@Override
+	public List<Payment> findItemWith5Property(String companyCode, String personId, int processingNo,
+			int payBonusAttribute, int processingYM) {
+		return this.queryProxy().query(SELECT_3_1, QstdtPaymentHeader.class).setParameter("CCD", companyCode)
+				.setParameter("PID", personId).setParameter("PROCESSING_NO", processingNo)
+				.setParameter("PAY_BONUS_ATR", payBonusAttribute).setParameter("PROCESSING_YM", processingYM)
 				.getList(c -> toDomain(c));
 	}
 
@@ -164,6 +182,15 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 				entity.calcFlag, entity.makeMethodFlag, entity.comment);
 		domain.additionInfo(entity.departmentCode, entity.departmentName, entity.companyName);
 		// entity.toDomain(domain);
+		return domain;
+	}
+
+	private static PaymentDetail paymentDetailToDomain(QstdtPaymentDetail entity) {
+		val domain = PaymentDetail.createFromJavaType(entity.qstdtPaymentDetailPK.companyCode,
+				entity.qstdtPaymentDetailPK.personId, entity.qstdtPaymentDetailPK.processingNo,
+				entity.qstdtPaymentDetailPK.payBonusAttribute, entity.qstdtPaymentDetailPK.processingYM,
+				entity.qstdtPaymentDetailPK.sparePayAttribute, entity.qstdtPaymentDetailPK.categoryATR,
+				entity.qstdtPaymentDetailPK.itemCode, entity.value);
 		return domain;
 	}
 
@@ -297,5 +324,4 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		val pk = new QstdtPaymentHeaderPK(companyCode, personId, 1, 0, processingYM, 0);
 		this.commandProxy().remove(QstdtPaymentHeader.class, pk);
 	}
-
 }

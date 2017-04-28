@@ -1,9 +1,11 @@
 package nts.uk.ctx.pr.core.dom.paymentdata.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.pr.core.dom.paymentdata.Payment;
+import nts.uk.ctx.pr.core.dom.paymentdata.PaymentDetail;
 import nts.uk.ctx.pr.core.dom.paymentdata.dataitem.DetailItem;
 
 public interface PaymentDataRepository {
@@ -21,6 +23,51 @@ public interface PaymentDataRepository {
 			int processingYM, int sparePayAttribute);
 
 	/**
+	 * Added by sonnh1
+	 * 
+	 * @param companyCode
+	 * @param personId
+	 * @param processingNo
+	 * @param processingYm
+	 * @param payBonusAtr
+	 * @param sparePayAtr
+	 * @param categoryAtr
+	 * @param itemCode
+	 * @return
+	 */
+	Optional<PaymentDetail> findItemWith9Property(String companyCode, String personId, int processingNo,
+			int processingYm, int payBonusAtr, int sparePayAtr, int categoryAtr, String itemCode, BigDecimal value);
+
+	/**
+	 * Added by sonnh1
+	 * 
+	 * @param companyCode
+	 * @param personId
+	 * @param processingNo
+	 * @param processingYm
+	 * @param payBonusAtr
+	 * @param categoryAtr
+	 * @param itemCode
+	 * @param value
+	 * @return
+	 */
+	List<PaymentDetail> findItemWith8Property(String companyCode, String personId, int processingNo, int processingYm,
+			int payBonusAtr, int categoryAtr, String itemCode, BigDecimal value);
+
+	/**
+	 * Added by sonnh1
+	 * 
+	 * @param companyCode
+	 * @param personId
+	 * @param processingNo
+	 * @param payBonusAttribute
+	 * @param processingYM
+	 * @return
+	 */
+	List<Payment> findItemWith5Property(String companyCode, String personId, int processingNo, int payBonusAttribute,
+			int processingYM);
+
+	/**
 	 * 
 	 * @param companyCode
 	 * @param personId
@@ -29,31 +76,6 @@ public interface PaymentDataRepository {
 	 * @return payment header
 	 */
 	List<Payment> findPaymentHeader(String companyCode, String personId, int payBonusAttribute, int processingYM);
-
-	/**
-	 * 
-	 * @param companyCode
-	 * @param personId
-	 * @param processingNo
-	 * @param payBonusAtr
-	 * @param processingYm
-	 * @param sparePayAtr
-	 * @return
-	 */
-	List<Payment> findWith6Property(String companyCode, String personId, int processingNo, int payBonusAtr,
-			int processingYm, int sparePayAtr);
-
-	/**
-	 * 
-	 * @param companyCode
-	 * @param personId
-	 * @param processingNo
-	 * @param payBonusAtr
-	 * @param processingYm
-	 * @return
-	 */
-	List<Payment> findWith5Property(String companyCode, String personId, int processingNo, int payBonusAtr,
-			int processingYm);
 
 	/**
 	 * check is exist payment header of personid in processing year month

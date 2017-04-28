@@ -1,7 +1,6 @@
 package nts.uk.ctx.pr.core.ac.bank;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -18,9 +17,9 @@ public class PersonBankAccountAdapterImpl implements PersonBankAccountAdapter {
 	private PersonBankAccountPub personBankAccountPub;
 	
 	@Override
-	public List<BasicPersonBankAccountDto> findBasePIdAndBaseYM(String companyCode, String personId, int baseYM) {
+	public Optional<BasicPersonBankAccountDto> findBasePIdAndBaseYM(String companyCode, String personId, int baseYM) {
 		return personBankAccountPub.findBasePIdAndBaseYM(companyCode, personId, baseYM)
-				.stream().map(x -> {
+				.map(x -> {
 					return new BasicPersonBankAccountDto(
 							companyCode, 
 							x.getPersonID(), 
@@ -32,7 +31,7 @@ public class PersonBankAccountAdapterImpl implements PersonBankAccountAdapter {
 							toUserSetting(x.getUseSet3()), 
 							toUserSetting(x.getUseSet4()), 
 							toUserSetting(x.getUseSet5()));
-				}).collect(Collectors.toList());
+				});
 	}
 	
 	private BasicPersonUseSettingDto toUserSetting(PersonUseSettingDto x) {

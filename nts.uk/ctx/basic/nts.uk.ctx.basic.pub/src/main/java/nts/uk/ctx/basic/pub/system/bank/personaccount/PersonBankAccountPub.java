@@ -1,6 +1,6 @@
 package nts.uk.ctx.basic.pub.system.bank.personaccount;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface PersonBankAccountPub {
 	/**
@@ -10,6 +10,6 @@ public interface PersonBankAccountPub {
 	 * @param baseYM
 	 * @return
 	 */
-	List<PersonBankAccountDto> findBasePIdAndBaseYM(String companyCode, String personId, int baseYM);
+	Optional<PersonBankAccountDto> findBasePIdAndBaseYM(String companyCode, String personId, int baseYM);
 
 }

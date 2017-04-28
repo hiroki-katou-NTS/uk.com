@@ -1,6 +1,6 @@
 package nts.uk.ctx.pr.core.dom.payment.banktransfer.adapter;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface PersonBankAccountAdapter {
 	/**
@@ -10,5 +10,5 @@ public interface PersonBankAccountAdapter {
 	 * @param baseYM
 	 * @return
 	 */
-	List<BasicPersonBankAccountDto> findBasePIdAndBaseYM(String companyCode, String personId, int baseYM);
+	Optional<BasicPersonBankAccountDto> findBasePIdAndBaseYM(String companyCode, String personId, int baseYM);
 }

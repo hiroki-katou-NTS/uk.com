@@ -36,10 +36,12 @@ public class JpaBankTransferRepository extends JpaRepository implements BankTran
 			+ "AND b.qbkdtBankTransferPK.sparePayAtr = :sparePayAtr";
 
 	private final String DEL_1 = "DELETE FROM QbkdtBankTransfer b " + "WHERE b.qbkdtBankTransferPK.ccd = :companyCode "
+			+ "AND b.qbkdtBankTransferPK.payBonusAtr = :payBonusAtr "
 			+ "AND b.qbkdtBankTransferPK.processingNo = :processingNo "
 			+ "AND b.qbkdtBankTransferPK.payDate = :payDate " + "AND b.qbkdtBankTransferPK.sparePayAtr = :sparePayAtr";
-	
-	private final String DEL_ALL = "DELETE FROM QbkdtBankTransfer b " + "WHERE b.qbkdtBankTransferPK.ccd = :companyCode "
+
+	private final String DEL_ALL = "DELETE FROM QbkdtBankTransfer b "
+			+ "WHERE b.qbkdtBankTransferPK.ccd = :companyCode "
 			+ "AND b.qbkdtBankTransferPK.processingNo = :processingNo "
 			+ "AND b.qbkdtBankTransferPK.payDate = :payDate";
 
@@ -89,12 +91,12 @@ public class JpaBankTransferRepository extends JpaRepository implements BankTran
 	}
 
 	@Override
-	public void remove(String companyCode, int processingNo, GeneralDate payDate, int sparePayAtr) {
+	public void remove(String companyCode, int payBonusAtr, int processingNo, GeneralDate payDate, int sparePayAtr) {
 		this.getEntityManager().createQuery(DEL_1, QbkdtBankTransfer.class).setParameter("companyCode", companyCode)
-				.setParameter("processingNo", processingNo).setParameter("payDate", payDate)
-				.setParameter("sparePayAtr", sparePayAtr).executeUpdate();
+				.setParameter("payBonusAtr", payBonusAtr).setParameter("processingNo", processingNo)
+				.setParameter("payDate", payDate).setParameter("sparePayAtr", sparePayAtr).executeUpdate();
 	}
-	
+
 	@Override
 	public void removeAll(String companyCode, int processingNo, GeneralDate payDate) {
 		this.getEntityManager().createQuery(DEL_ALL, QbkdtBankTransfer.class).setParameter("companyCode", companyCode)

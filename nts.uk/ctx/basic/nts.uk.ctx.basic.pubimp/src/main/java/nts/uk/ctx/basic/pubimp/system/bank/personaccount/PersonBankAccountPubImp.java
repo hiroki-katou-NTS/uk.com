@@ -1,7 +1,6 @@
 package nts.uk.ctx.basic.pubimp.system.bank.personaccount;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -18,9 +17,9 @@ public class PersonBankAccountPubImp implements PersonBankAccountPub {
 	private PersonBankAccountRepository personBankAccountRepo;
 	
 	@Override
-	public List<PersonBankAccountDto> findBasePIdAndBaseYM(String companyCode, String personId, int baseYM) {
+	public Optional<PersonBankAccountDto> findBasePIdAndBaseYM(String companyCode, String personId, int baseYM) {
 		return personBankAccountRepo.findBasePIdAndBaseYM(companyCode, personId, baseYM)
-				.stream().map(x -> {
+				.map(x -> {
 					return new PersonBankAccountDto(
 							companyCode, 
 							x.getPersonID(), 
@@ -32,7 +31,7 @@ public class PersonBankAccountPubImp implements PersonBankAccountPub {
 							toUserSetting(x.getUseSet3()), 
 							toUserSetting(x.getUseSet4()), 
 							toUserSetting(x.getUseSet5()));
-				}).collect(Collectors.toList());
+				});
 	}
 
 	private PersonUseSettingDto toUserSetting(PersonUseSetting x) {

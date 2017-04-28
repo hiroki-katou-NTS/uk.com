@@ -1,10 +1,8 @@
 package nts.uk.ctx.basic.pub.system.bank.personaccount;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
 @NoArgsConstructor
 public class PersonBankAccountDto {
 	@Getter

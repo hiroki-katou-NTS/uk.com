@@ -3,7 +3,8 @@ package nts.uk.ctx.basic.infra.repository.system.bank.personaccount;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonBankAccount;
@@ -12,7 +13,8 @@ import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonUseSetting;
 import nts.uk.ctx.basic.infra.entity.system.bank.personaccount.PbamtPersonBankAccount;
 import nts.uk.ctx.basic.infra.entity.system.bank.personaccount.PbamtPersonBankAccountPK;
 
-@RequestScoped
+@Stateless
+@Transactional
 public class JpaPersonBankAccountRepository extends JpaRepository implements PersonBankAccountRepository {
 
 	private final String SEL_1 = "SELECT a FROM PbamtPersonBankAccount a"
@@ -53,16 +55,15 @@ public class JpaPersonBankAccountRepository extends JpaRepository implements Per
 			+ " OR (a.useSet3 = 1" + " AND a.paymentMethod3 = 0)" + " OR (a.useSet4 = 1" + " AND a.paymentMethod4 = 0)"
 			+ " OR (a.useSet5 = 1" + " AND a.paymentMethod5 = 0))";
 
-	@Override
+	@Override 
 	public List<PersonBankAccount> findAll(String companyCode) {
-
 		return null;
 	}
 
 	@Override
-	public List<PersonBankAccount> findBasePIdAndBaseYM(String companyCode, String personId, int baseYM) {
+	public Optional<PersonBankAccount> findBasePIdAndBaseYM(String companyCode, String personId, int baseYM) {
 		return this.queryProxy().query(SEL_7, PbamtPersonBankAccount.class).setParameter("companyCode", companyCode)
-				.setParameter("personId", personId).setParameter("baseYM", baseYM).getList(x -> toDomain(x));
+				.setParameter("personId", personId).setParameter("baseYM", baseYM).getSingle(x -> toDomain(x));
 	}
 
 	@Override
