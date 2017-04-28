@@ -38,7 +38,7 @@ module qmm034.a.viewmodel {
                     self.countStartDateChange = 1;
                 }
                 self.currentEra().startDate(dateChange);
-                self.dateTime(nts.uk.time.yearInJapanEmpire(dateChange).toString());
+                self.dateTime(nts.uk.time.yearInJapanEmpire(moment(dateChange, "YYYY/MM/DD").format()).toString());
             })
             self.currentCode.subscribe(function(codeChanged) {
                 if (!nts.uk.text.isNullOrEmpty(codeChanged) && self.currentCode() !== self.previousCurrentCode) {
@@ -155,7 +155,7 @@ module qmm034.a.viewmodel {
             $.when(qmm034.a.service.getAllEras()).done(function(data) {
                 self.items([]);
                 if (data.length > 0) {
-                    self.items(data);
+                    self.items(ko.toJS(data));
                     //self.date(self.currentEra().startDate().toString());
                     //self.currentCode(self.currentEra().eraHist());
                     self.isDeleteEnable(true);
@@ -220,7 +220,7 @@ module qmm034.a.viewmodel {
             // Resolve start page dfd after load all data.
             $.when(qmm034.a.service.getAllEras()).done(function(data: Array<EraModel>) {
                 if (data.length > 0) {
-                    self.items(data);
+                    self.items(ko.toJS(data));
                     self.currentEra(self.items()[0]);
                     self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentEra);
                     self.currentCode(self.currentEra().eraHist);
@@ -280,8 +280,8 @@ module qmm034.a.viewmodel {
         constructor(eraName: string, eraMark: string, startDate: string, fixAttribute: number, eraHist: string, endDate: string) {
             this.eraName = ko.observable(eraName);
             this.eraMark = ko.observable(eraMark);
-            this.startDate = ko.observable(startDate);
-            this.endDate = ko.observable(endDate);
+            this.startDate = ko.observable(moment(startDate, "YYYY/MM/DD").format());
+            this.endDate = ko.observable(moment(endDate, "YYYY/MM/DD").format());
             this.fixAttribute = ko.observable(fixAttribute);
             this.eraHist = ko.observable(eraHist);
         }
