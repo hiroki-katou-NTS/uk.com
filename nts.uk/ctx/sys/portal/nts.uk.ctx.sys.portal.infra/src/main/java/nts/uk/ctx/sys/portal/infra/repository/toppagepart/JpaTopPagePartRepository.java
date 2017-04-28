@@ -68,7 +68,7 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 	 */
 	@Override
 	public void add(TopPagePart topPagePart) {
-		this.commandProxy().insert(topPagePart);
+		this.commandProxy().insert(toEntity(topPagePart));
 	}
 
 	/*
@@ -79,14 +79,14 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 	 */
 	@Override
 	public void update(TopPagePart topPagePart) {
-		this.commandProxy().update(topPagePart);
+		this.commandProxy().update(toEntity(topPagePart));
 	}
 
 	/**
 	 * Convert entity to domain
 	 * 
-	 * @param CcgmtPlacement entity
-	 * @return placement
+	 * @param entity CcgmtPlacement
+	 * @return TopPagePart instance
 	 */
 	private TopPagePart toDomain(CcgmtTopPagePart entity) {
 		return TopPagePart.createFromJavaType(
@@ -96,4 +96,19 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 			entity.width, entity.height);
 	}
 
+	/**
+	 * Convert domain to entity
+	 * 
+	 * @param domain TopPagePart
+	 * @return CcgmtTopPagePart instance
+	 */
+	private CcgmtTopPagePart toEntity(TopPagePart domain) {
+		return new CcgmtTopPagePart(
+			new CcgmtTopPagePartPK(domain.getCompanyID(), domain.getToppagePartID()),
+			domain.getCode().v(), domain.getName().v(),
+			domain.getType().value,
+			domain.getSize().getWidth().v(), domain.getSize().getHeight().v()
+		);
+	}
+	
 }
