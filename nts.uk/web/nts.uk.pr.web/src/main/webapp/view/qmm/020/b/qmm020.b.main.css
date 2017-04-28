@@ -1,15 +1,15 @@
-.caret-left {border-width: 15px 20px; margin-top: -15px; color:#D90000;}
-.bg-green {
+.screen-b .caret-left {border-width: 15px 20px; margin-top: -15px; color:#D90000;}
+.screen-b .bg-green {
 	background-color: #E0F59E;
 }
-.nts-list-box .ui-selected {
+.screen-b .nts-list-box .ui-selected {
 	background-color: 	#ccffff;
 	color : #000000;
 }
-.nts-list-box .ui-selecting {
+.screen-b .nts-list-box .ui-selecting {
   background: #ccffff;
 }
-#B_LST_001, #C_LST_002{
+.screen-b #B_LST_001,.screen-b #C_LST_002{
   list-style-type: none;
   margin: 0;
   padding: 0;

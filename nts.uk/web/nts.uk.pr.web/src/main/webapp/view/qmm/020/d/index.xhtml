@@ -2,8 +2,7 @@
 <!DOCTYPE html>
 <html>
 <body>
-	<div class="contents-area">
-		<!-- 		~~~~~~~~~~~~~~~~~~~~~~ LEFT ~~~~~~~~~~~~~~~~~~~~~~ -->
+	<div class="screen-d contents-area">
 		<div style="float: left; margin-left: 10px;" class="left-content">
 			<div class="bg-green caret-right caret-background"
 				style="width: 250px; height: 300px; margin: 20px 50px;">
@@ -26,23 +25,24 @@
 				</div>
 			</div>
 		</div>
-		<!-- 		~~~~~~~~~~~~~~~~~~~~~~ RIGHT ~~~~~~~~~~~~~~~~~~~~~~ -->
 		<div style="float: left; margin-top: 10px" class="right-content">
 			<div class="form-label">
 				<label id="LBL_004">部門に明細書を紐ずける</label>
 			</div>
-				<HR style="display: block; margin-top: 10px; margin-bottom: 10px; margin-left: -1em; width: 600px;" />
-			<br/>
-				<!-- iG TreeGrid List -->
-				<div style= "width:800px;" data-bind="ntsSearchBox: {
+			<HR
+				style="display: block; margin-top: 10px; margin-bottom: 10px; margin-left: -1em; width: 600px;" />
+			<br />
+			<!-- iG TreeGrid List -->
+			<div style="width: 800px;"
+				data-bind="ntsSearchBox: {
 								comId: 'treegrid', 
 								items: dataSourceDTree, 
 								selected: selectedValueDTree, 
 								selectedKey: 'code', 
 								fields: ['name', 'code'], 
 								childField: 'childs'}" />
-				<BR />				
-				<table id="treegrid"></table>
+			<BR />
+			<table id="treegrid"></table>
 		</div>
 	</div>
 </body>
