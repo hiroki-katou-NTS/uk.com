@@ -33,9 +33,9 @@ public class TopPagePartDto {
 	public static TopPagePartDto fromDomain(TopPagePart topPagePart)
 	{
 		TopPagePartDto topPagePartDto = new TopPagePartDto();
-		topPagePartDto.topPagePartType = topPagePart.getTopPagePartType().value;
-		topPagePartDto.topPagePartCode = topPagePart.getTopPagePartCode().v();
-		topPagePartDto.topPagePartName = topPagePart.getTopPagePartName().v();
+		topPagePartDto.topPagePartType = topPagePart.getType().value;
+		topPagePartDto.topPagePartCode = topPagePart.getCode().v();
+		topPagePartDto.topPagePartName = topPagePart.getName().v();
 		topPagePartDto.width = topPagePart.getSize().getWidth().v();
 		topPagePartDto.height = topPagePart.getSize().getHeight().v();
 		return  topPagePartDto;

@@ -42,12 +42,12 @@ public class TopPageFinder {
 		List<Placement> lstPlacement = PlacementRepository.findByLayout(topPage.get().getLayoutId());
 		// TODO use topPagePartRepository find
 		List<TopPagePart> lstTopPagePart = new ArrayList<>();
-		lstTopPagePart.add(TopPagePart.createFromJavaType("1", "topPagePartCode1", "topPagePartName", 1, 1, 1));
-		lstTopPagePart.add(TopPagePart.createFromJavaType("1", "topPagePartCode2", "topPagePartName", 1, 1, 1));
-		lstTopPagePart.add(TopPagePart.createFromJavaType("1", "topPagePartCode3", "topPagePartName", 1, 1, 1));
-		lstTopPagePart.add(TopPagePart.createFromJavaType("1", "topPagePartCode4", "topPagePartName", 1, 1, 1));
-		lstTopPagePart.add(TopPagePart.createFromJavaType("1", "topPagePartCode5", "topPagePartName", 1, 1, 1));
-		lstTopPagePart.add(TopPagePart.createFromJavaType("1", "topPagePartCode6", "topPagePartName", 1, 1, 1));
+		lstTopPagePart.add(TopPagePart.createFromJavaType("1","topPagePartId1", "topPagePartCode1", "topPagePartName", 1, 1, 1));
+		lstTopPagePart.add(TopPagePart.createFromJavaType("1","topPagePartId2", "topPagePartCode2", "topPagePartName", 1, 1, 1));
+		lstTopPagePart.add(TopPagePart.createFromJavaType("1","topPagePartId3", "topPagePartCode3", "topPagePartName", 1, 1, 1));
+		lstTopPagePart.add(TopPagePart.createFromJavaType("1","topPagePartId4", "topPagePartCode4", "topPagePartName", 1, 1, 1));
+		lstTopPagePart.add(TopPagePart.createFromJavaType("1","topPagePartId5", "topPagePartCode5", "topPagePartName", 1, 1, 1));
+		lstTopPagePart.add(TopPagePart.createFromJavaType("1","topPagePartId6", "topPagePartCode6", "topPagePartName", 1, 1, 1));
 		// convert toppage domain to dto
 		if (topPage.isPresent()) {
 			TopPage tp = topPage.get();
