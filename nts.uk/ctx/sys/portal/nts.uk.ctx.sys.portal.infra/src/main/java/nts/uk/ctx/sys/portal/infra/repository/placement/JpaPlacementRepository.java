@@ -8,9 +8,6 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.placement.Placement;
 import nts.uk.ctx.sys.portal.dom.placement.PlacementRepository;
-import nts.uk.ctx.sys.portal.dom.placement.externalurl.Column;
-import nts.uk.ctx.sys.portal.dom.placement.externalurl.ExternalUrl;
-import nts.uk.ctx.sys.portal.dom.placement.externalurl.Row;
 import nts.uk.ctx.sys.portal.infra.entity.placement.CcgmtPlacement;
 import nts.uk.ctx.sys.portal.infra.entity.placement.CcgmtPlacementPK;
 
@@ -19,6 +16,7 @@ import nts.uk.ctx.sys.portal.infra.entity.placement.CcgmtPlacementPK;
  */
 @Stateless
 public class JpaPlacementRepository extends JpaRepository implements PlacementRepository {
+	
 	private final String SELECT_SINGLE = "SELECT c FROM CcgmtPlacement c WHERE c.placementID = :placementID";
 	private final String SELECT_BY_LAYOUT = "SELECT c FROM CcgmtPlacement c WHERE c.layoutID = :layoutID";
 
@@ -67,7 +65,7 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 	 */
 	@Override
 	public void add(Placement placement) {
-		this.commandProxy().insert(placement);
+		this.commandProxy().insert(toEntity(placement));
 	}
 
 	/*
@@ -78,19 +76,42 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 	 */
 	@Override
 	public void update(Placement placement) {
-		this.commandProxy().update(placement);
+		this.commandProxy().update(toEntity(placement));
 	}
 
 	/**
 	 * Convert entity to domain
 	 * 
 	 * @param CcgmtPlacement entity
-	 * @return placement
+	 * @return Placement instance
 	 */
 	private Placement toDomain(CcgmtPlacement entity) {
-		return new Placement(
+		return Placement.createFromJavaType(
 			entity.ccgmtPlacementPK.companyID, entity.ccgmtPlacementPK.placementID, entity.layoutID, entity.topPagePartID,
-			new Column(entity.column), new Row(entity.row),
-			ExternalUrl.createFromJavaType(entity.externalUrl, entity.width, entity.height));
+			entity.column, entity.row,
+			entity.externalUrl, entity.width, entity.height);
 	}
+	
+	/**
+	 * Convert domain to entity
+	 * 
+	 * @param domain CcgmtPlacement
+	 * @return CcgmtPlacement instance
+	 */
+	private CcgmtPlacement toEntity(Placement domain) {
+		// External Url information
+		Integer width = null, height = null;
+		String externalUrl = null;
+		if (domain.getExternalUrl().isPresent()) {
+			width = domain.getExternalUrl().get().getWidth().v();
+			height = domain.getExternalUrl().get().getHeight().v();
+			externalUrl = domain.getExternalUrl().get().getUrl().v();
+		}
+		
+		return new CcgmtPlacement(
+			new CcgmtPlacementPK(domain.getCompanyID(), domain.getPlacementID()),
+			domain.getLayoutID(), domain.getColumn().v(), domain.getRow().v(),
+			width, height, externalUrl, domain.getToppagePartID());
+	}
+	
 }

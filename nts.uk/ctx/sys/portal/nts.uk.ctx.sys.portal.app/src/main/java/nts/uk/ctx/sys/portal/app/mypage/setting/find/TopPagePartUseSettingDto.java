@@ -1,11 +1,13 @@
 package nts.uk.ctx.sys.portal.app.mypage.setting.find;
 
+import lombok.Data;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.TopPagePartUseSetting;
 
 /**
  * The Class TopPagePartUseSettingDto.
  */
+@Data
 public class TopPagePartUseSettingDto {
 
 	/** The company id. */

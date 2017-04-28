@@ -20,11 +20,11 @@ module nts.uk.com.view.ccg015.a {
             return dfd.promise();
         }
 
-        export function loadDetailTopPage(topPageCode: string): JQueryPromise<model.TopPageItemDetailDto> {
+        export function loadDetailTopPage(topPageCode: string): JQueryPromise<model.TopPageDto> {
             var self = this;
-            var dfd = $.Deferred<model.TopPageItemDetailDto>();
+            var dfd = $.Deferred<model.TopPageDto>();
             var path = servicePath.getTopPageItemDetail + '/' + topPageCode;
-            nts.uk.request.ajax(path).done(function(data: model.TopPageItemDetailDto) {
+            nts.uk.request.ajax(path).done(function(data: model.TopPageDto) {
                 dfd.resolve(data);
             });
             return dfd.promise();
@@ -33,21 +33,21 @@ module nts.uk.com.view.ccg015.a {
         /**
           * Function is used to save new Top Page.
           */
-        export function registerTopPage(data: model.TopPageItemDetailDto): JQueryPromise<model.TopPageItemDetailDto> {
+        export function registerTopPage(data: model.TopPageDto): JQueryPromise<model.TopPageDto> {
             return nts.uk.request.ajax(servicePath.registerTopPage, data);
         }
 
         /**
         * Function is used to update Top Page.
         */
-        export function updateTopPage(data: model.TopPageItemDetailDto): JQueryPromise<model.TopPageItemDetailDto> {
+        export function updateTopPage(data: model.TopPageDto): JQueryPromise<model.TopPageDto> {
             return nts.uk.request.ajax(servicePath.updateTopPage, data);
         }
 
         /**
         * Function is used to delete Top Page.
         */
-        export function deleteTopPage(topPageItemCode: string): JQueryPromise<model.TopPageItemDetailDto> {
+        export function deleteTopPage(topPageItemCode: string): JQueryPromise<model.TopPageDto> {
             return nts.uk.request.ajax(servicePath.removeTopPage, topPageItemCode);
         }
 
@@ -56,9 +56,23 @@ module nts.uk.com.view.ccg015.a {
                 topPageCode: string;
                 topPageName: string;
             }
-            export interface TopPageItemDetailDto {
+            export interface TopPageDto {
                 topPageCode: string;
                 topPageName: string;
+                languageNumber: number;
+                placementDto: Array<PlacementDto>;
+            }
+            export interface PlacementDto {
+                row: number;
+                column: number;
+                topPagePartDto: TopPagePartDto;
+            }
+            export interface TopPagePartDto {
+                topPagePartType: number;
+                topPagePartCode: string;
+                topPagePartName: string;
+                width: number;
+                height: number;
             }
         }
     }

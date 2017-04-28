@@ -25,9 +25,9 @@ import nts.uk.ctx.basic.app.command.organization.department.UpdateEndDateByHisto
 import nts.uk.ctx.basic.app.command.organization.department.UpdateStartDateAndEndDateByHistoryIdCommandHandler;
 import nts.uk.ctx.basic.app.find.organization.department.DepartmentDto;
 import nts.uk.ctx.basic.app.find.organization.department.DepartmentFinder;
+import nts.uk.ctx.basic.app.find.organization.department.DepartmentHistoryDto;
 import nts.uk.ctx.basic.app.find.organization.department.DepartmentMemoDto;
 import nts.uk.ctx.basic.app.find.organization.department.DepartmentQueryResult;
-import nts.uk.ctx.basic.app.find.organization.department.GetCodeDto;
 import nts.uk.ctx.basic.dom.organization.department.Department;
 import nts.uk.ctx.basic.dom.organization.department.DepartmentMemo;
 import nts.uk.shr.com.context.AppContexts;
@@ -58,12 +58,11 @@ public class DepartmentWebService extends WebService {
 	private UpdateStartDateAndEndDateByHistoryIdCommandHandler updateStartAndEnddate;
 
 	@POST
-	@Path("getcode")
-	public GetCodeDto getCode() {
-		String department = "CODE_004";
-		String workplace = "CODE_005";
-		GetCodeDto dto = new GetCodeDto(workplace);
-		return dto;
+	@Path("getAllhistoryDepartment")
+	public List<DepartmentHistoryDto> getAllhistory() {
+		String ccd = AppContexts.user().companyCode();
+		List<DepartmentHistoryDto> list =  departmentFinder.getAllHistory(ccd);
+		return list;
 	}
 
 	@POST

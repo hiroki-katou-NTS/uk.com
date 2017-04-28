@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.portal.dom.placement;
 
+import java.util.Optional;
+
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.DomainObject;
@@ -33,7 +35,7 @@ public class Placement extends DomainObject {
 	Row row;
 
 	/** ExternalUrl */
-	ExternalUrl externalUrl;
+	Optional<ExternalUrl> externalUrl;
 
 	/** Create an Layout from Java type */
 	public static Placement createFromJavaType(

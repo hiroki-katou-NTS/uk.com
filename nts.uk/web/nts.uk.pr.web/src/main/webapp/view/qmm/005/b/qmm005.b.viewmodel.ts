@@ -11,6 +11,7 @@ module qmm005.b {
         lst001Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
         lst002Data: KnockoutObservableArray<TableRowItem> = ko.observableArray([]);
         dataSources: Array<IPaydayDto> = [];
+        enabled: KnockoutObservable<boolean> = ko.observable(true);
         dirty: IDirty = {
             inp001: new nts.uk.ui.DirtyChecker(this.inp001),
             lst001: new nts.uk.ui.DirtyChecker(this.lst001),
@@ -30,9 +31,22 @@ module qmm005.b {
             // toggle width of dialog
             self.toggle.subscribe(function(v) {
                 if (v) {
-                    nts.uk.ui.windows.getSelf().setWidth(1020);
+                    $('#contents-area').css('width', '');
+                    $('#contents-area').css('padding-bottom', '');
+                    if (window["large"]) {
+                        nts.uk.ui.windows.getSelf().setWidth(1025);
+                    } else {
+                        $('#contents-area').css('padding-bottom', '10px');
+                        nts.uk.ui.windows.getSelf().setWidth(1035);
+                    }
                 } else {
-                    nts.uk.ui.windows.getSelf().setWidth(1465);
+                    if (window["large"]) {
+                        nts.uk.ui.windows.getSelf().setWidth(1465);
+                    } else {
+                        $('#contents-area').css('width', '1465px');
+                        $('#contents-area').css('padding-bottom', '10px');
+                        nts.uk.ui.windows.getSelf().setWidth(1300);
+                    }
                 }
             });
             self.toggle.valueHasMutated();
@@ -44,10 +58,12 @@ module qmm005.b {
             self.lbl003(dataRow.label());
 
             self.lst001.subscribe(function(v) {
-                if (v && v != 0 && v != parseInt(self.dirty.lst001.initialState)) {
-                    
+                let value = v && !!parseInt(v.toString());
+                self.enabled(value);
+
+                if (value && v != parseInt(self.dirty.lst001.initialState)) {
                     if (self.dirty.isDirty()) {
-                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
+                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。よろしいですか。?").ifYes(function() {
                             let lst001Data = self.lst001Data(),
                                 currentItem = _.find(lst001Data, function(item) { return item.index == v; });
                             if (currentItem) {
@@ -69,16 +85,18 @@ module qmm005.b {
             });
 
             self.inp001.subscribe(function(v) {
-                if (v) {
+                let value = v && !!parseInt(v.toString());
+                if (value) {
                     self.lbl005("(" + v["yearInJapanEmpire"]() + ")");
                 } else {
                     self.lbl005("");
                 }
-                if (self.lst001() == null) {
+
+                if (self.lst001() == null || self.lst001() == undefined || !self.lst001()) {
                     for (let i = 0; i < 12; i++) {
                         let row = self.lst002Data()[i] as TableRowItem;
                         if (row) {
-                            row.year(v || new Date().getFullYear());
+                            row.year(v && parseInt(v.toString()) || new Date().getFullYear());
                             row.year.valueHasMutated();
                         }
                     }
@@ -89,6 +107,7 @@ module qmm005.b {
 
         start() {
             let self = this,
+                dfd = $.Deferred(),
                 lst001Data: Array<common.SelectItem> = [],
                 dataRow = nts.uk.ui.windows.getShared('dataRow');
 
@@ -112,13 +131,14 @@ module qmm005.b {
                         self.lst001.valueHasMutated();
                         // Load data to table
                         self.reloadData(selectRow.value);
+                        dfd.resolve();
                     }
                 }
             });
+            return dfd.promise();
         }
 
         reloadData(year) {
-            console.log(_.filter(this.dataSources, (item) => { return item.processingYm == 201707; }));
             let self = this,
                 lst002Data: Array<TableRowItem> = [],
                 dataRow = nts.uk.ui.windows.getShared('dataRow');
@@ -131,12 +151,12 @@ module qmm005.b {
             for (let i: number = 0, rec: IPaydayDto; rec = self.dataSources[i]; i++) {
                 let rec: IPaydayDto = dataSources[i];
                 if (rec) {
-                    let $moment = moment(new Date(rec.payDate)),
+                    let $moment = moment.utc(rec.payDate),
                         month = $moment.month() + 1,
                         sel002Data: Array<common.SelectItem> = [];
 
                     for (var j: number = 1; j <= $moment.daysInMonth(); j++) {
-                        var date = moment(new Date($moment.year(), $moment.month(), j));
+                        var date = moment.utc([$moment.year(), $moment.month(), j]);
                         sel002Data.push(new common.SelectItem({
                             index: j,
                             label: date.format("YYYY/MM/DD"),
@@ -152,13 +172,13 @@ module qmm005.b {
                             sel001: rec.payBonusAtr == 1 ? true : false,
                             sel002: $moment.date(),
                             sel002Data: sel002Data,
-                            inp003: new Date(rec.stdDate),
+                            inp003: moment.utc(rec.stdDate).toDate(),
                             inp004: rec.socialInsLevyMon["formatYearMonth"]("/"),
                             inp005: rec.stmtOutputMon["formatYearMonth"]("/"),
-                            inp006: new Date(rec.socialInsStdDate),
-                            inp007: new Date(rec.empInsStdDate),
-                            inp008: new Date(rec.incomeTaxStdDate),
-                            inp009: new Date(rec.accountingClosing),
+                            inp006: moment.utc(rec.socialInsStdDate).toDate(),
+                            inp007: moment.utc(rec.empInsStdDate).toDate(),
+                            inp008: moment.utc(rec.incomeTaxStdDate).toDate(),
+                            inp009: moment.utc(rec.accountingClosing).toDate(),
                             inp010: rec.neededWorkDay
                         });
                         lst002Data.push(row);
@@ -177,9 +197,49 @@ module qmm005.b {
         }
 
         showModalDialogE(item, event): void {
+            let self = this;
             nts.uk.ui.windows.setShared('viewModelB', item);
             nts.uk.ui.windows.sub.modal("../e/index.xhtml", { width: 540, height: 600, title: '処理区分の追加', dialogClass: "no-close" })
-                .onClosed(() => { });
+                .onClosed(() => {
+                    let model = nts.uk.ui.windows.getShared("viewModelE");
+                    if (model) {
+                        // update data to current processing year month when close dialog
+                        for (var i in self.lst002Data()) {
+                            if (model.flectionStartMonth <= parseInt(i.toString()) + 1) {
+                                let row: TableRowItem = self.lst002Data()[i];
+                                if (row) {
+                                    if (model.sel003) {
+                                        row.sel002(new Date(row.year(), row.month(), 0).getDate());
+                                    }
+
+                                    if (model.sel004) {
+                                        row.inp003(moment.utc([row.year(), row.month() - 1, 1]).toDate());
+                                    }
+
+                                    if (model.sel005) {
+                                        row.inp004(moment.utc(new Date(row.year(), row.month() - 1, 0)).format("YYYY/MM"));
+                                    }
+
+                                    if (model.sel006) {
+                                        row.inp006(moment.utc(new Date(row.year(), row.month() - 1, 0)).toDate());
+                                    }
+
+                                    if (model.sel007) {
+                                        row.inp007(moment.utc(new Date(row.year(), row.month() - 1, 0).setDate(1)).toDate());
+                                    }
+
+                                    if (model.sel008) {
+                                        row.inp008(moment.utc([row.year() + 1, row.month() - 1, 1]).toDate());
+                                    }
+
+                                    if (model.sel009) {
+                                        row.inp009(moment.utc([row.year(), row.month() - 1, 1]).toDate());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
         }
 
         newData(item, event) {
@@ -201,7 +261,6 @@ module qmm005.b {
             let self = this,
                 lst002Data = ko.toJS(self.lst002Data()),
                 data: Array<IPaydayDto> = [];
-
             for (var i in lst002Data) {
                 let item = lst002Data[i],
                     dataSources = _.clone(self.dataSources),
@@ -210,7 +269,7 @@ module qmm005.b {
 
                 // update salary info
                 let salary = _.find(filterProcessings, function(item) { return item.payBonusAtr == 0; });
-                {
+                if (salary != undefined) {
                     salary.processingNo = self.processingNo();
                     salary.payBonusAtr = 0;
                     salary.processingYm = parseInt((item.year + '' + item.month)['formatYearMonth']());
@@ -224,6 +283,23 @@ module qmm005.b {
                     salary.neededWorkDay = item.inp010;
                     salary.empInsStdDate = moment.utc(item.inp007).toISOString();
                     salary.stmtOutputMon = parseInt(item.inp005["formatYearMonth"]());
+                } else {
+                    // Add new salary data
+                    filterProcessings.push({
+                        processingNo: self.processingNo(),
+                        payBonusAtr: 0,
+                        processingYm: parseInt((self.inp001() + '' + item.month)['formatYearMonth']()),
+                        sparePayAtr: 0,
+                        payDate: moment.utc(item.sel002Data[item.sel002 - 1].label).toISOString(),
+                        stdDate: moment.utc(item.inp003).toISOString(),
+                        accountingClosing: moment.utc(item.inp009).toISOString(),
+                        socialInsLevyMon: parseInt(item.inp004["formatYearMonth"]()),
+                        socialInsStdDate: moment.utc(item.inp006).toISOString(),
+                        incomeTaxStdDate: moment.utc(item.inp008).toISOString(),
+                        neededWorkDay: item.inp010,
+                        empInsStdDate: moment.utc(item.inp007).toISOString(),
+                        stmtOutputMon: parseInt(item.inp005["formatYearMonth"]())
+                    });
                 }
 
                 // If month has bonus
@@ -233,7 +309,7 @@ module qmm005.b {
                         filterProcessings.push({
                             processingNo: self.processingNo(),
                             payBonusAtr: 1,
-                            processingYm: parseInt((item.year + '' + item.month)['formatYearMonth']()),
+                            processingYm: parseInt((self.inp001() + '' + item.month)['formatYearMonth']()),
                             sparePayAtr: 0,
                             payDate: moment.utc(item.sel002Data[item.sel002 - 1].label).toISOString(),
                             stdDate: moment.utc(item.inp003).toISOString(),
@@ -251,7 +327,7 @@ module qmm005.b {
                         if (bonus) {
                             //bonus.processingNo = self.processingNo();
                             //bonus.payBonusAtr = 0;
-                            //bonus.processingYm = parseInt((item.year + '' + item.month)['formatYearMonth']());
+                            bonus.processingYm = parseInt((self.inp001() + '' + item.month)['formatYearMonth']());
                             //bonus.sparePayAtr = 0;
                             bonus.payDate = moment.utc(bonus.payDate).toISOString();
                             bonus.stdDate = moment.utc(bonus.stdDate).toISOString();
@@ -267,11 +343,28 @@ module qmm005.b {
                 } else { // remove bonus info
                     filterProcessings = _.filter(filterProcessings, function(item) { return item.payBonusAtr == 0; });
                 }
+                // push info to model
                 data = data.concat(filterProcessings);
             }
             data = _.orderBy(data, ["payBonusAtr", "processingYm"], ["asc", "asc"]);
-            debugger;
-            services.updatData({ processingNo: self.processingNo(), payDays: data }).done(() => { });
+            services.updatData({ processingNo: self.processingNo(), payDays: data }).done(() => {
+                //nts.uk.ui.dialog.info("sucessfull");
+                let lst001 = parseInt(self.dirty.lst001.initialState);
+                self.dirty.reset();
+                if (!lst001) {
+                    lst001 = parseInt(self.inp001().toString());
+                }
+                self.start().then(() => {
+                    self.dirty.reset();
+                    let selected = _.find(self.lst001Data(), function(ii) { return ii.value == lst001; });
+                    if (selected) {
+                        self.lst001(selected.index);
+                    } else {
+                        self.lst001(lst001);
+                    }
+                    self.dirty.reset();
+                });
+            });
         }
 
         deleteData(item, event) {
@@ -328,26 +421,28 @@ module qmm005.b {
             self.month(param.month);
             self.year(param.year);
             self.year.subscribe(function(v) {
-                self.sel001(false);
-                let sel002Data: Array<common.SelectItem> = [], $moment = moment(new Date(v, self.month() - 1, 1));
-                for (let i = 1; i <= $moment.daysInMonth(); i++) {
-                    let date = moment(new Date(v, self.month() - 1, i));
-                    sel002Data.push(new common.SelectItem({
-                        index: i,
-                        label: date.format("YYYY/MM/DD"),
-                        value: date.toDate()
-                    }));
+                if (v) {
+                    self.sel001(false);
+                    let sel002Data: Array<common.SelectItem> = [], $moment = moment(new Date(v, self.month() - 1, 1));
+                    for (let i = 1; i <= $moment.daysInMonth(); i++) {
+                        let date = moment(new Date(v, self.month() - 1, i));
+                        sel002Data.push(new common.SelectItem({
+                            index: i,
+                            label: date.format("YYYY/MM/DD"),
+                            value: date.toDate()
+                        }));
+                    }
+                    self.sel002Data(sel002Data);
+                    self.sel002.valueHasMutated();
+                    self.inp003(moment.utc([v, self.month() - 1, 1]).toDate())
+                    self.inp004(moment.utc(new Date(v, self.month() - 1, 0)).format("YYYY/MM"));
+                    self.inp005(moment.utc([v, self.month() - 1, 1]).format("YYYY/MM"));
+                    self.inp006(moment.utc(new Date(v, self.month() - 1, 0)).toDate());
+                    self.inp007(moment.utc([v, self.month() - 1, 1]).toDate());
+                    self.inp008(moment.utc([v + 1, 0, 1]).toDate());
+                    self.inp009(moment.utc(new Date(v, self.month(), 0)).toDate());
+                    self.inp010(moment.utc([v, self.month() - 1, 1]).toDate()["getWorkDays"]());
                 }
-                self.sel002Data(sel002Data);
-                self.sel002.valueHasMutated();
-                self.inp003(moment.utc([v, self.month() - 1, 1]).toDate())
-                self.inp004(moment.utc([v, self.month() - 1, 0]).format("YYYY/MM"))
-                self.inp005(moment.utc([v, self.month() - 1, 1]).format("YYYY/MM"));
-                self.inp006(moment.utc([v, self.month() - 1, 0]).toDate());
-                self.inp007(moment.utc([v, self.month() - 1, 1]).toDate());
-                self.inp008(moment.utc([v + 1, 0, 1]).toDate());
-                self.inp009(moment.utc([v, self.month(), 0]).toDate());
-                self.inp010(moment.utc([v, self.month() - 1, 1]).toDate()["getWorkDays"]());
             });
             self.year.valueHasMutated();
 

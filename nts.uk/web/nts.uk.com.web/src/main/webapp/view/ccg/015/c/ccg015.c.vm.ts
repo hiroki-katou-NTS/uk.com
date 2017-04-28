@@ -1,12 +1,16 @@
 module nts.uk.pr.view.ccg015.c {
     export module viewmodel {
         export class ScreenModel {
-            code : KnockoutObservable<string>;
-            name : KnockoutObservable<string>;
-            constructor() {
+            parentTopPageCode : KnockoutObservable<string>;
+            parentTopPageName : KnockoutObservable<string>;
+            newTopPageCode : KnockoutObservable<string>;
+            newTopPageName : KnockoutObservable<string>;
+            constructor(topPageCode: string,topPageName: string) {
                 var self = this;
-                self.code = ko.observable("code");
-                self.name = ko.observable("name");
+                self.parentTopPageCode = ko.observable(topPageCode);
+                self.parentTopPageName = ko.observable(topPageName);
+                self.newTopPageCode = ko.observable("");
+                self.newTopPageName = ko.observable("");
             }
             start(): JQueryPromise<void> {
                 var self = this;

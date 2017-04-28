@@ -444,17 +444,12 @@ module nts.uk.ui.jqueryExtentions {
                 $grid.triggerHandler('selectionchanged');
             });
 
-            $grid.on('mouseup', () => {
-                $grid.triggerHandler('selectionchanged');
-            });
+//            $grid.on('mouseup', () => {
+//                $grid.triggerHandler('selectionchanged');
+//            });
         }
-        
+         
         function unsetupDragging($grid: JQuery) {
-            var dragSelectRange = [];
-
-            // used to auto scrolling when dragged above/below grid)
-            var mousePos: { x: number, y: number, rowIndex: number } = null;
-
 
             $grid.unbind('mousedown');
         }
@@ -462,7 +457,7 @@ module nts.uk.ui.jqueryExtentions {
         function unsetupSelectingEvents($grid: JQuery) {
             $grid.unbind('iggridselectionrowselectionchanged');
 
-            $grid.off('mouseup');
+//            $grid.off('mouseup');
         }
     }
 
@@ -913,16 +908,14 @@ module nts.uk.ui.jqueryExtentions {
                 column.formatter = function(value, rowObj) {
                     var update = (val) => { 
                         if ($self.data("igGrid") !== null) {
-<<<<<<< HEAD
-                            $self.igGridUpdating("setCellValue", rowObj[$self.igGrid("option", "primaryKey")], column.key, val);
-                            $self.igGrid("commit");
-=======
+//                            $self.igGridUpdating("setCellValue", rowObj[$self.igGrid("option", "primaryKey")], column.key, val);
+//                            $self.igGrid("commit");
                             var rowId = rowObj[$self.igGrid("option", "primaryKey")];
                             $self.igGridUpdating("setCellValue", rowId, column.key, val);
                             var updatedRow = $self.igGrid("rowById", rowId, false);
                             $self.igGrid("commit");
-                            if (updatedRow !== undefined) $self.igGrid("virtualScrollTo", $(updatedRow).data("row-idx"));
->>>>>>> 73145a2505adecfd13663a2b6dbe8006e825b9b5
+                            if (updatedRow !== undefined) 
+                                $self.igGrid("virtualScrollTo", $(updatedRow).data("row-idx"));
                         }
                     };
                     var data = {
@@ -953,10 +946,6 @@ module nts.uk.ui.jqueryExtentions {
                 }; 
                 return column;
             });
-<<<<<<< HEAD
-            
-            options.columns = columns;
-=======
             options.columns = columns;
             
             if (_.find(options.features, function(feature: any) {
@@ -964,7 +953,6 @@ module nts.uk.ui.jqueryExtentions {
             }) === undefined) {
                 options.features.push({ name: 'Updating', enableAddRow: false, enableDeleteRow: false, editMode: 'none' });
             }
->>>>>>> 73145a2505adecfd13663a2b6dbe8006e825b9b5
             $(this).igGrid(options);
         };
         
@@ -1030,9 +1018,5 @@ module nts.uk.ui.jqueryExtentions {
             }
         }
     }
-<<<<<<< HEAD
 }
 
-=======
-}
->>>>>>> 73145a2505adecfd13663a2b6dbe8006e825b9b5

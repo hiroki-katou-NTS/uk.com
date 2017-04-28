@@ -11,8 +11,8 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
-import nts.uk.file.pr.app.export.insurance.salary.SalarySocialInsuranceQuery;
-import nts.uk.file.pr.app.export.insurance.salary.SalarySocialInsuranceReportService;
+import nts.uk.file.pr.app.export.insurance.salary.SocialInsuQuery;
+import nts.uk.file.pr.app.export.insurance.salary.SocialInsuReportService;
 
 /**
  * The Class QPP018WebService.
@@ -23,7 +23,7 @@ public class QPP018WebService extends WebService {
 
     /** The report service. */
     @Inject
-    private SalarySocialInsuranceReportService reportService;
+    private SocialInsuReportService reportService;
     
     /**
      * Export data to pdf.
@@ -33,7 +33,7 @@ public class QPP018WebService extends WebService {
      */
     @POST
     @Path("saveAsPdf")
-    public ExportServiceResult exportDataToPdf(SalarySocialInsuranceQuery query) {
+    public ExportServiceResult exportDataToPdf(SocialInsuQuery query) {
          return reportService.start(query);
     }
 }

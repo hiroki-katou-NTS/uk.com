@@ -35,7 +35,6 @@ public class WorkPlaceFinder {
 		List<WorkPlaceHistoryDto> histories = workPlaceRepository.findHistories(companyCode).stream().map(e -> {
 			return new WorkPlaceHistoryDto(e.getHistoryId(), e.getStartDate(), e.getEndDate());
 		}).collect(Collectors.toList());
-		System.out.println(histories + "===");
 		if (!histories.isEmpty()) {
 			List<WorkPlace> workPlaces = workPlaceRepository.findAllByHistory(companyCode,
 					histories.get(0).getHistoryId());
@@ -106,6 +105,14 @@ public class WorkPlaceFinder {
 				.map(d -> WorkPlaceMemoDto.fromDomain(d));
 		return wkpmemo.isPresent()
 				? new WorkPlaceMemoDto(wkpmemo.get().getHistoryId(), wkpmemo.get().getMemo().toString()) : null;
+	}
+	
+	
+	public List<WorkPlaceHistoryDto> getAllHistory(String companyCode) {
+		List<WorkPlaceHistoryDto> histories = workPlaceRepository.findHistories(companyCode).stream().map(e -> {
+			return new WorkPlaceHistoryDto(e.getHistoryId(), e.getStartDate(), e.getEndDate());
+		}).collect(Collectors.toList());
+		return histories;
 	}
 
 }

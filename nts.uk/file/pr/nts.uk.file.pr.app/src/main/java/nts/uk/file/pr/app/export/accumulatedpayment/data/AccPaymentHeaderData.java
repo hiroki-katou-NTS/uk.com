@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.file.pr.app.export.accumulatedpayment.data;
 
-import java.time.YearMonth;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,14 +11,25 @@ import lombok.Setter;
 /**
  * The Class AccPaymentHeaderData.
  */
+
 @Builder
+
+
 @Getter
+
+
 @Setter
 public class AccPaymentHeaderData {
-
-	/** The start. */
-	private YearMonth start;
-
-	/** The end. */
-	private YearMonth end;
+	
+	/** The department info. */
+	private String departmentInfo;
+	
+	/** The emp type info. */
+	private String empTypeInfo;
+	
+	/** The position info. */
+	private String positionInfo;
+	
+	/** The year month info. */
+	private String yearMonthInfo;
 }

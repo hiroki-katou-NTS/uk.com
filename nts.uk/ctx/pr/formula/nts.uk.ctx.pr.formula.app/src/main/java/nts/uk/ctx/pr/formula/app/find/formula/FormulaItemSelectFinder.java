@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.formula.app.find.formula;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,18 +34,24 @@ public class FormulaItemSelectFinder {
 		LoginUserContext login = AppContexts.user();
 		String companyCode = login.companyCode();
 
-		List<FormulaHistoryDto> formulaHistoryDto = formulaHistoryRepository
+		List<FormulaHistoryDto> lstFormulaHistoryDto = formulaHistoryRepository
 				.findDataDifFormulaCode(companyCode, new FormulaCode(formulaCode), new YearMonth(baseDate)).stream()
 				.map(f -> FormulaHistoryDto.fromDomain(f)).collect(Collectors.toList());
-		List<FormulaItemSelectDto> formulaDto = new ArrayList<>();
-		if (formulaHistoryDto.size() > 0) {
-			formulaDto = formulaMasterRepository
-					.findByCompanyCodeAndFormulaCodes(companyCode, formulaHistoryDto.stream().map(item -> {
-						return new FormulaCode(item.getFormulaCode());
-					}).collect(Collectors.toList()), new BigDecimal(1)).stream().map(f -> FormulaItemSelectDto.fromDomain(f))
+		List<FormulaItemSelectDto> lstFormulaDto = new ArrayList<>();
+		if (lstFormulaHistoryDto.size() > 0) {
+			List<FormulaCode> lstFormulaCode = lstFormulaHistoryDto.stream().map(
+					history -> {
+						return new FormulaCode(history.getFormulaCode());
+					}
+			).collect(Collectors.toList());
+			lstFormulaDto = formulaMasterRepository
+					.findByCompanyCodeAndFormulaCodes(companyCode, lstFormulaCode)
+					.stream()
+					.filter(formula -> formula.getDifficultyAtr().value == 1)
+					.map(formula -> FormulaItemSelectDto.fromDomain(formula))
 					.collect(Collectors.toList());
 		}
-		return formulaDto;
+		return lstFormulaDto;
 	}
 
 }

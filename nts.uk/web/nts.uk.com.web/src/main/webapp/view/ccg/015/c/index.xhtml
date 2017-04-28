@@ -24,8 +24,8 @@
 						<label>コード/名称</label>
 					</div>
 					<div>
-						<p style="float: left;" data-bind="text:'code'"></p>
-						<p style="float: left;padding-left: 150px;" data-bind="text:'name'"></p>
+						<p style="float: left;" data-bind="text: parentTopPageCode"></p>
+						<p style="float: left;padding-left: 150px;" data-bind="text: parentTopPageName"></p>
 					</div>
 					<BR />
 					<BR />
@@ -40,13 +40,13 @@
 					<div>
 						<input
 							data-bind="ntsTextEditor: {
-							value: code,
+							value: newTopPageCode,
 							required: true
 							}" />
 
 						<input
 							data-bind="ntsTextEditor: {
-							value: name,
+							value: newTopPageName,
 							required: true
 							}" />
 					</div>

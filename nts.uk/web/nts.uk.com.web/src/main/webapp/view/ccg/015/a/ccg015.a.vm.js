@@ -28,6 +28,12 @@ var nts;
                                             self.loadTopPageItemDetail(data);
                                         });
                                     });
+                                    self.languageListOption = ko.observableArray([
+                                        new ItemCbbModel("0", "日本語"),
+                                        new ItemCbbModel("1", "英語"),
+                                        new ItemCbbModel("2", "ベトナム語")
+                                    ]);
+                                    self.languageSelectedCode = ko.observable("0");
                                 }
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
@@ -37,6 +43,9 @@ var nts;
                                             self.listTopPage.push(new Node(item.topPageCode, item.topPageName, null));
                                             dfd.resolve();
                                         });
+                                        if (self.listTopPage().length > 0) {
+                                            self.toppageSelectedCode(self.listTopPage()[0].code);
+                                        }
                                     });
                                     return dfd.promise();
                                 };
@@ -44,8 +53,26 @@ var nts;
                                     var self = this;
                                     self.topPageModel().topPageCode(data.topPageCode);
                                     self.topPageModel().topPageName(data.topPageName);
+                                    if (data.placements) {
+                                        data.placements.forEach(function (item, index) {
+                                            var placementModel = new PlacementModel();
+                                            var topPagePartModel = new TopPagePartModel();
+                                            topPagePartModel.topPagePartType(item.topPagePartDto.topPagePartType);
+                                            topPagePartModel.topPagePartCode(item.topPagePartDto.topPagePartCode);
+                                            topPagePartModel.topPagePartName(item.topPagePartDto.topPagePartName);
+                                            topPagePartModel.width(item.topPagePartDto.width);
+                                            topPagePartModel.height(item.topPagePartDto.height);
+                                            placementModel.row(item.row);
+                                            placementModel.column(item.column);
+                                            placementModel.topPagePart(topPagePartModel);
+                                            self.topPageModel().placement().push(placementModel);
+                                        });
+                                    }
                                 };
                                 ScreenModel.prototype.collectData = function () {
+                                    return null;
+                                };
+                                ScreenModel.prototype.collectDataForCreateNew = function () {
                                     return null;
                                 };
                                 ScreenModel.prototype.saveTopPage = function () {
@@ -68,6 +95,9 @@ var nts;
                                     });
                                 };
                                 ScreenModel.prototype.copyTopPage = function () {
+                                    var self = this;
+                                    nts.uk.ui.windows.setShared('topPageCode', self.topPageModel().topPageCode());
+                                    nts.uk.ui.windows.setShared('topPageName', self.topPageModel().topPageName());
                                     nts.uk.ui.windows.sub.modal("/view/ccg/015/c/index.xhtml", {
                                         height: 350, width: 650,
                                         title: "他のトップページコピー",
@@ -101,20 +131,41 @@ var nts;
                             viewmodel.Node = Node;
                             var TopPageModel = (function () {
                                 function TopPageModel() {
-                                    this.url;
                                     this.topPageCode = ko.observable('');
                                     this.topPageName = ko.observable('');
-                                    this.layout = null;
+                                    this.placement = ko.observableArray([]);
                                 }
                                 return TopPageModel;
                             }());
                             viewmodel.TopPageModel = TopPageModel;
-                            var Layout = (function () {
-                                function Layout() {
+                            var PlacementModel = (function () {
+                                function PlacementModel() {
+                                    this.row = ko.observable(0);
+                                    this.column = ko.observable(0);
+                                    this.topPagePart = ko.observable(new TopPagePartModel());
                                 }
-                                return Layout;
+                                return PlacementModel;
                             }());
-                            viewmodel.Layout = Layout;
+                            viewmodel.PlacementModel = PlacementModel;
+                            var TopPagePartModel = (function () {
+                                function TopPagePartModel() {
+                                    this.topPagePartType = ko.observable(0);
+                                    this.topPagePartCode = ko.observable("");
+                                    this.topPagePartName = ko.observable("");
+                                    this.width = ko.observable(0);
+                                    this.height = ko.observable(0);
+                                }
+                                return TopPagePartModel;
+                            }());
+                            viewmodel.TopPagePartModel = TopPagePartModel;
+                            var ItemCbbModel = (function () {
+                                function ItemCbbModel(code, name) {
+                                    this.code = code;
+                                    this.name = name;
+                                }
+                                return ItemCbbModel;
+                            }());
+                            viewmodel.ItemCbbModel = ItemCbbModel;
                         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
                     })(a = ccg015.a || (ccg015.a = {}));
                 })(ccg015 = view.ccg015 || (view.ccg015 = {}));

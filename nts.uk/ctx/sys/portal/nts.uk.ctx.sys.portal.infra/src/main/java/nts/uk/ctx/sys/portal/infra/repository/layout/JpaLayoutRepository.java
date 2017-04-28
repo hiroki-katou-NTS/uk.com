@@ -80,7 +80,7 @@ public class JpaLayoutRepository extends JpaRepository implements LayoutReposito
 	 */
 	@Override
 	public void add(Layout layout) {
-		this.commandProxy().insert(layout);
+		this.commandProxy().insert(toEntity(layout));
 	}
 
 	/*
@@ -91,17 +91,29 @@ public class JpaLayoutRepository extends JpaRepository implements LayoutReposito
 	 */
 	@Override
 	public void update(Layout layout) {
-		this.commandProxy().update(layout);
+		this.commandProxy().update(toEntity(layout));
 	}
 
 	/**
 	 * Convert entity to domain
 	 * 
-	 * @param CcgmtLayout entity
-	 * @return layout
+	 * @param entity CcgmtLayout
+	 * @return Layout instance
 	 */
 	private Layout toDomain(CcgmtLayout entity) {
 		return Layout.createFromJavaType(entity.ccgmtLayoutPK.companyID, entity.ccgmtLayoutPK.layoutID, entity.pgType);
 	}
 
+	/**
+	 * Convert domain to entity
+	 * 
+	 * @param domain Layout
+	 * @return CcgmtLayout instance
+	 */
+	private CcgmtLayout toEntity(Layout domain) {
+		return new CcgmtLayout(
+			new CcgmtLayoutPK(domain.getCompanyID(), domain.getLayoutID()),
+			domain.getPgType().value);
+	}
+	
 }

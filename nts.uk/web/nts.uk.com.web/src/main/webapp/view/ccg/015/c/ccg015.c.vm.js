@@ -13,10 +13,12 @@ var nts;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
-                                function ScreenModel() {
+                                function ScreenModel(topPageCode, topPageName) {
                                     var self = this;
-                                    self.code = ko.observable("code");
-                                    self.name = ko.observable("name");
+                                    self.parentTopPageCode = ko.observable(topPageCode);
+                                    self.parentTopPageName = ko.observable(topPageName);
+                                    self.newTopPageCode = ko.observable("");
+                                    self.newTopPageName = ko.observable("");
                                 }
                                 ScreenModel.prototype.start = function () {
                                     var self = this;

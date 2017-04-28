@@ -3,6 +3,7 @@ package nts.uk.ctx.basic.dom.organization.department;
 import java.time.LocalDate;
 
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.basic.dom.company.CompanyCode;
@@ -10,24 +11,24 @@ import nts.uk.ctx.basic.dom.organization.shr.HierarchyCode;
 import nts.uk.shr.com.primitive.Memo;
 
 @Getter
-public class Department {
-
+public class Department extends AggregateRoot {
+	/* 会社コード */
 	private String companyCode;
-
+	/* 部門コード */
 	private DepartmentCode departmentCode;
-
+	/* 履歴ID */
 	private String historyId;
-
+	/* 終了年月日 */
 	private GeneralDate endDate;
-
+	/* 外部コード */
 	private DepartmentCode externalCode;
-
+	/* 部門表示名 */
 	private DepartmentGenericName fullName;
-
+	/* 内部階層CD */
 	private HierarchyCode hierarchyCode;
-
+	/* 部門名称 */
 	private DepartmentName departmentName;
-
+	/* 開始年月日 */
 	private GeneralDate startDate;
 
 	public Department(String companyCode, DepartmentCode departmentCode, String historyId, GeneralDate endDate,
@@ -58,7 +59,6 @@ public class Department {
 		this.startDate = startDate;
 	}
 
-	
 	public Department(String historyId, GeneralDate startDate, GeneralDate endDate) {
 		super();
 		this.historyId = historyId;

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.healthrate.service.internal;
@@ -16,10 +16,10 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
-import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSetting;
-import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSettingRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnRepository;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.limit.HealthAvgEarnLimit;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.limit.HealthAvgEarnLimitRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.service.HealthInsuranceRateService;
@@ -40,9 +40,9 @@ public class HealthInsuranceRateServiceImpl extends HealthInsuranceRateService {
 	@Inject
 	private HealthInsuranceRateRepository healthInsuranceRateRepo;
 
-	/** The avg earn level master setting repository. */
+	/** The avg earn limit repo. */
 	@Inject
-	private AvgEarnLevelMasterSettingRepository avgEarnLevelMasterSettingRepository;
+	private HealthAvgEarnLimitRepository avgEarnLimitRepo;
 
 	/** The health insurance avgearn repository. */
 	@Inject
@@ -66,11 +66,17 @@ public class HealthInsuranceRateServiceImpl extends HealthInsuranceRateService {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService#getRepository()
+	 */
 	@Override
 	public SimpleHistoryRepository<HealthInsuranceRate> getRepository() {
 		return this.healthInsuranceRateRepo;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService#createInitalHistory(java.lang.String, java.lang.String, nts.arc.time.YearMonth)
+	 */
 	@Override
 	public HealthInsuranceRate createInitalHistory(String companyCode, String officeCode,
 			YearMonth startTime) {
@@ -97,10 +103,11 @@ public class HealthInsuranceRateServiceImpl extends HealthInsuranceRateService {
 	@Override
 	protected void onCopyHistory(String companyCode, String masterCode,
 			HealthInsuranceRate copiedHistory, HealthInsuranceRate newHistory) {
-		super.onCopyHistory(companyCode, masterCode, copiedHistory, newHistory);
+
 		// Get listAvgEarn of copiedHistory.
 		List<HealthInsuranceAvgearn> listHealthInsuranceAvgearn = healthInsuranceAvgearnRepository
 				.findById(copiedHistory.getHistoryId());
+
 		// Update newHistoryId.
 		List<HealthInsuranceAvgearn> updatedList = listHealthInsuranceAvgearn.stream().map(item -> {
 			return item.copyWithNewHistoryId(newHistory.getHistoryId());
@@ -120,15 +127,16 @@ public class HealthInsuranceRateServiceImpl extends HealthInsuranceRateService {
 	@Override
 	protected void onCreateHistory(String companyCode, String masterCode,
 			HealthInsuranceRate newHistory) {
-		super.onCreateHistory(companyCode, masterCode, newHistory);
-		// Get listAvgEarnLevelMasterSetting.
-		List<AvgEarnLevelMasterSetting> listAvgEarnLevelMasterSetting = avgEarnLevelMasterSettingRepository
+
+		// Get listHealthAvgEarnLimit.
+		List<HealthAvgEarnLimit> listHealthAvgEarnLimit = avgEarnLimitRepo
 				.findAll(companyCode);
+
 		// Create HealthInsuranceAvgearn list with initial values.
-		List<HealthInsuranceAvgearn> newList = listAvgEarnLevelMasterSetting.stream()
+		List<HealthInsuranceAvgearn> newList = listHealthAvgEarnLimit.stream()
 				.map(setting -> {
 					return HealthInsuranceAvgearn.createWithIntial(newHistory.getHistoryId(),
-							setting.getCode());
+							setting.getGrade(), setting.getAvgEarn(), setting.getSalLimit());
 				}).collect(Collectors.toList());
 
 		this.healthInsuranceAvgearnRepository.update(newList, companyCode,

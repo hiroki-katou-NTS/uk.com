@@ -4,15 +4,22 @@
 .proceed {
 	margin-right: 200px;
 }
+.contents-area {
+	padding-top: 20px;
+	padding-left: 20px;
+}
 .left-content {
-	width: 270px;
-	background-color: #E2F79F;
+	width: 280px;
 	border-radius: 5px;
-	height: 580px;
+	height: 500px;
 	margin: 10px;
+	margin-right: 20px;
+	padding-left: 10px;
 	float: left;
 }
-
+.left-content.caret-background.caret-right:after {
+    display: none;
+}
 .search-grid > .ntsSearchBox > input.ntsSearchBox {
 	width: 200px;
 	margin: 10px 0 10px 10px;
@@ -27,8 +34,11 @@
 .name-input {
     margin-left: 5px;
 }
+.name-input input {
+    width: 280px !important;
+}
 .code-input {
-    margin-left: 47px;
+    margin-left: 30px;
 }
 .head-end {
     width: 100%;
@@ -45,8 +55,11 @@
     margin-left: 76px;
 }
 .switch-button-class {
-    margin-left: 92px;
+    margin-left: 75px;
 }
 #search-input > .ntsSearchBox {
 	width: 192px !important;
+}
+span.category-name {
+	font-size: 1.5rem;
 }

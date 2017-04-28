@@ -282,11 +282,13 @@ module nts.uk.pr.view.qmm008.b {
             onSave(): JQueryPromise<string> {
                 var self = this;
                 var dfd = $.Deferred<string>();
-                if (nts.uk.ui._viewModel.errors.isEmpty()) {
-                    self.save();
+                // Validate.
+                $('.nts-input').ntsEditor('validate');
+                if ($('.nts-input').ntsError('hasError')) {
+                    dfd.reject();
+                    return dfd.promise();
                 }
-                else {
-                }
+                dfd.resolve()
                 return dfd.promise();
             }
             clearErrors(): void {

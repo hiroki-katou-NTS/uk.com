@@ -13,6 +13,8 @@ import nts.uk.ctx.pr.report.app.salarydetail.aggregate.find.dto.SalaryItemDto;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItem;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemCode;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemGetMemento;
+import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemHeader;
+import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemHeaderGetMemento;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemName;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.TaxDivision;
 import nts.uk.ctx.pr.report.dom.salarydetail.item.SalaryItem;
@@ -35,13 +37,11 @@ public class SalaryAggregateItemSaveDto {
 	/** The tax division. */
 	private int taxDivision;
 
-	/** The category code. */
-	private String categoryCode;
-
 	/**
 	 * To domain.
 	 *
-	 * @param companyCode the company code
+	 * @param companyCode
+	 *            the company code
 	 * @return the salary aggregate item
 	 */
 	public SalaryAggregateItem toDomain(String companyCode) {
@@ -62,34 +62,14 @@ public class SalaryAggregateItemSaveDto {
 		/**
 		 * Instantiates a new salary aggregate item get memento impl.
 		 *
-		 * @param companyCode the company code
-		 * @param dto the dto
+		 * @param companyCode
+		 *            the company code
+		 * @param dto
+		 *            the dto
 		 */
 		public SalaryAggregateItemGetMementoImpl(String companyCode, SalaryAggregateItemSaveDto dto) {
 			this.dto = dto;
 			this.companyCode = companyCode;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
-		 * SalaryAggregateItemGetMemento#getCompanyCode()
-		 */
-		@Override
-		public String getCompanyCode() {
-			return this.companyCode;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
-		 * SalaryAggregateItemGetMemento#getSalaryAggregateItemCode()
-		 */
-		@Override
-		public SalaryAggregateItemCode getSalaryAggregateItemCode() {
-			return new SalaryAggregateItemCode(this.dto.salaryAggregateItemCode);
 		}
 
 		/*
@@ -113,8 +93,8 @@ public class SalaryAggregateItemSaveDto {
 		public Set<SalaryItem> getSubItemCodes() {
 			return this.dto.getSubItemCodes().stream().map(itemCode -> {
 				SalaryItem salaryItem = new SalaryItem();
-				salaryItem.setSalaryItemCode(itemCode.getSalaryItemCode());
-				salaryItem.setSalaryItemName(itemCode.getSalaryItemName());
+				salaryItem.setSalaryItemCode(itemCode.getCode());
+				salaryItem.setSalaryItemName(itemCode.getName());
 				return salaryItem;
 			}).collect(Collectors.toSet());
 		}
@@ -123,22 +103,71 @@ public class SalaryAggregateItemSaveDto {
 		 * (non-Javadoc)
 		 * 
 		 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
-		 * SalaryAggregateItemGetMemento#getTaxDivision()
+		 * SalaryAggregateItemGetMemento#getSalaryAggregateItem()
 		 */
 		@Override
-		public TaxDivision getTaxDivision() {
-			return TaxDivision.valueOf(this.dto.taxDivision);
+		public SalaryAggregateItemHeader getSalaryAggregateItemHeader() {
+			return new SalaryAggregateItemHeader(
+					new SalaryAggregateItemHeaderGetMementoImpl(this.companyCode, this.dto));
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
-		 * SalaryAggregateItemGetMemento#getItemCategory()
+		/**
+		 * The Class SalaryAggregateItemHeaderGetMementoImpl.
 		 */
-		@Override
-		public int getItemCategory() {
-			return 1;
+		private class SalaryAggregateItemHeaderGetMementoImpl implements SalaryAggregateItemHeaderGetMemento {
+
+			/** The dto. */
+			private SalaryAggregateItemSaveDto dto;
+
+			/** The company code. */
+			private String companyCode;
+
+			/**
+			 * Instantiates a new salary aggregate item header get memento impl.
+			 *
+			 * @param companyCode
+			 *            the company code
+			 * @param dto
+			 *            the dto
+			 */
+			public SalaryAggregateItemHeaderGetMementoImpl(String companyCode, SalaryAggregateItemSaveDto dto) {
+				this.companyCode = companyCode;
+				this.dto = dto;
+			}
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
+			 * SalaryAggregateItemHeaderGetMemento#getCompanyCode()
+			 */
+			@Override
+			public String getCompanyCode() {
+				return this.companyCode;
+			}
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
+			 * SalaryAggregateItemHeaderGetMemento#getSalaryAggregateItemCode()
+			 */
+			@Override
+			public SalaryAggregateItemCode getSalaryAggregateItemCode() {
+				return new SalaryAggregateItemCode(this.dto.salaryAggregateItemCode);
+			}
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
+			 * SalaryAggregateItemHeaderGetMemento#getTaxDivision()
+			 */
+			@Override
+			public TaxDivision getTaxDivision() {
+				return TaxDivision.valueOf(this.dto.taxDivision);
+			}
+
 		}
 
 	}

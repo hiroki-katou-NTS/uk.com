@@ -18,11 +18,10 @@ public interface TopPagePartRepository {
 	/**
 	 * Find TopPagePart by PGType
 	 *
-	 * @param companyID
-	 * @param pgType
+	 * @param layoutID
 	 * @return List TopPagePart
 	 */
-	List<TopPagePart> findByLayout(String topPagePartID);
+	List<TopPagePart> findByLayout(String layoutID);
 
 	/**
 	 * Remove a TopPagePart

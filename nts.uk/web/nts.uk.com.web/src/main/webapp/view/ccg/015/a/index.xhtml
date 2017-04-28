@@ -61,6 +61,26 @@
 									<td class="contentsRL">
 										<div id="lbl_code_name"
 											data-bind="ntsFormLabel: {required: true}">
+											<label>言語<br /></label>
+										</div>
+									</td>
+									<td>
+										<div id="combo-box"
+											data-bind="ntsComboBox: {
+												options: $parent.languageListOption,
+												optionsValue: 'code',
+												value: $parent.languageSelectedCode,
+												optionsText: 'name',
+												enable: true,
+												columns: [
+														{ prop: 'name', length: 10 },
+													]}"></div>
+									</td>
+								</tr>
+								<tr>
+									<td class="contentsRL">
+										<div id="lbl_code_name"
+											data-bind="ntsFormLabel: {required: true}">
 											<label>コード/名称<br /></label>
 										</div>
 									</td>
@@ -79,6 +99,7 @@
 											required:true}" />
 									</td>
 								</tr>
+
 								<tr>
 									<td><button class="x-large">レイアウト設定</button></td>
 								</tr>

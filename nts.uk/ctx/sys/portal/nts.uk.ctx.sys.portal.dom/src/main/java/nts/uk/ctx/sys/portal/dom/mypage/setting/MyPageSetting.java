@@ -40,20 +40,13 @@ public class MyPageSetting extends AggregateRoot {
 	/**
 	 * Instantiates a new my page setting.
 	 *
-	 * @param companyId
-	 *            the company id
-	 * @param useMyPage
-	 *            the use my page
-	 * @param useWidget
-	 *            the use widget
-	 * @param useDashboard
-	 *            the use dashboard
-	 * @param useFlowMenu
-	 *            the use flow menu
-	 * @param externalUrlPermission
-	 *            the external url permission
-	 * @param topPagePartUseSetting
-	 *            the top page part use setting
+	 * @param companyId the company id
+	 * @param useMyPage the use my page
+	 * @param useWidget the use widget
+	 * @param useDashboard the use dashboard
+	 * @param useFlowMenu the use flow menu
+	 * @param externalUrlPermission the external url permission
+	 * @param topPagePartUseSetting the top page part use setting
 	 */
 	public MyPageSetting(CompanyId companyId, UseDivision useMyPage, UseDivision useWidget, UseDivision useDashboard,
 			UseDivision useFlowMenu, PermissionDivision externalUrlPermission,
@@ -66,5 +59,24 @@ public class MyPageSetting extends AggregateRoot {
 		this.useFlowMenu = useFlowMenu;
 		this.externalUrlPermission = externalUrlPermission;
 		this.topPagePartUseSetting = topPagePartUseSetting;
+	}
+
+	/**
+	 * Creates the from java type.
+	 *
+	 * @param CompanyId the company id
+	 * @param useMyPage the use my page
+	 * @param useWidget the use widget
+	 * @param useDashboard the use dashboard
+	 * @param useFlowMenu the use flow menu
+	 * @param externalUrlPermission the external url permission
+	 * @param topPagePartUseSetting the top page part use setting
+	 * @return the my page setting
+	 */
+	public static MyPageSetting createFromJavaType(String CompanyId, Integer useMyPage, Integer useWidget,
+			Integer useDashboard, Integer useFlowMenu, Integer externalUrlPermission,List<TopPagePartUseSetting> topPagePartUseSetting) {
+		return new MyPageSetting(new CompanyId(CompanyId), UseDivision.valueOf(useMyPage),
+				UseDivision.valueOf(useWidget), UseDivision.valueOf(useDashboard), UseDivision.valueOf(useFlowMenu),
+				PermissionDivision.valueOf(externalUrlPermission), topPagePartUseSetting);
 	}
 }

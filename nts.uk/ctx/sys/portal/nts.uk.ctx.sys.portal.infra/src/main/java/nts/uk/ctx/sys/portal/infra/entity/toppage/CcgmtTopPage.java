@@ -19,13 +19,13 @@ public class CcgmtTopPage extends UkJpaEntity {
 	public CcgmtTopPagePK ccgmtTopPagePK;
 
 	@Column(name = "TOP_PAGE_NAME")
-	public int topPageName;
+	public String topPageName;
 
 	@Column(name = "LANG_NO")
-	public int width;
+	public int languageNumber;
 
 	@Column(name = "LAYOUT_ID")
-	public int height;
+	public String layoutId;
 
 	@Override
 	protected Object getKey() {

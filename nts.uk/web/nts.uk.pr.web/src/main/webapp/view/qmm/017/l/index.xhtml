@@ -24,7 +24,7 @@
 		<ui:define name="content">
 			<div id="contents-area" style="padding-left: 20px">
 				<div id="easy_formula_name_lbl" class="separate-vertical" data-bind="ntsFormLabel: {constraint: 'EasyFormulaName', required: true}">名称</div>
-				<input style="margin-left: 25px;" data-bind="ntsTextEditor: { value: easyFormulaName, required: true, constraint: 'EasyFormulaName'}" />
+				<input id="easy-formula-name" style="margin-left: 25px;" data-name="名称" data-bind="ntsTextEditor: { value: easyFormulaName, required: true, constraint: 'EasyFormulaName'}" />
 				<hr/>	
 				<table>
 					<colgroup>
@@ -134,7 +134,7 @@
 							<td>
 								<com:ko-if bind="comboBoxFormulaType().selectedCode() != '0'">
 									<div id="l_lbl_premiumRate" class="separate-vertical"
-										data-bind="ntsFormLabel: {required: true }">C：割増率</div>
+										data-bind="ntsFormLabel: {required: true, constraint: 'PremiumRate' }">C：割増率</div>
 									<input style="margin-left: 14px;" id="number-2" data-bind="ntsNumberEditor: {value: premiumRate, constraint: 'PremiumRate', option: premiumRateInputOption, required: true, enable: true, readonly: false}" />
 								</com:ko-if>
 							</td>
