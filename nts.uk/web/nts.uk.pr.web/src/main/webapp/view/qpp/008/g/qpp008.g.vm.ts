@@ -200,9 +200,15 @@ module qpp008.g.viewmodel {
         }
 
         registerData() {
-            let insertUpdate = 0;
-            service.insertUpdatePaycompConfirm(insertUpdate).fail(function(error: any){
-                
+            let self = this;
+            let processingYMEarlier = Number(self.comparativeDateEarlier.trim().replace("/", ""));
+            let processingYMLater = Number(self.comparativeDateLater.trim().replace("/", ""));
+            let paycompConfirmList = _.map(self.detailDifferentList, function(item) {
+                return new PaycompConfirmModel(item, processingYMEarlier, processingYMLater);
+            });
+            let insertUpdateData = new  InsetUpdatePaycompConfirmModel(paycompConfirmList, self.employeerIDSelection);
+            service.insertUpdatePaycompConfirm(insertUpdateData).fail(function(error: any) {
+                alert("update Error");
             });
         }
 
@@ -251,6 +257,38 @@ module qpp008.g.viewmodel {
                 self.registrationStatus2 = data.registrationStatus2;
                 self.confirmedStatus = data.confirmedStatus === 1 ? true : false;
             }
+        }
+    }
+
+    class InsetUpdatePaycompConfirmModel {
+        lstInsertUpdatedata: Array<PaycompConfirmModel>;
+        persionIDs: Array<string>;
+        constructor(lstInsertUpdatedata: Array<PaycompConfirmModel>, persionIDs: Array<string>) {
+            let self = this;
+            self.lstInsertUpdatedata = lstInsertUpdatedata;
+            self.persionIDs = persionIDs;
+        }
+    }
+
+    class PaycompConfirmModel {
+        employeeCode: string;
+        processingYMEarlier: number;
+        processingYMLater: number;
+        categoryAtr: number;
+        itemCode: string;
+        confirmedStatus: number;
+        valueDifference: number;
+        reasonDifference: string;
+        constructor(empInfo: DetailsEmployeer, processingYMEarlier: number, processingYMLater: number) {
+            let self = this;
+            self.employeeCode = empInfo.employeeCode;
+            self.processingYMEarlier = processingYMEarlier;
+            self.processingYMLater = processingYMLater;
+            self.categoryAtr = empInfo.categoryAtr;
+            self.itemCode = empInfo.itemCode;
+            self.confirmedStatus = empInfo.confirmedStatus ? 1 : 0;
+            self.valueDifference = empInfo.difference;
+            self.reasonDifference = empInfo.reasonDifference;
         }
     }
 }

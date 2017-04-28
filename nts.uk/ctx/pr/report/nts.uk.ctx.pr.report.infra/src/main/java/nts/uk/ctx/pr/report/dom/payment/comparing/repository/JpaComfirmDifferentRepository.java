@@ -2,9 +2,11 @@ package nts.uk.ctx.pr.report.dom.payment.comparing.repository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.ComfirmDifferentRepository;
 import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.DetailDifferential;
@@ -29,7 +31,6 @@ public class JpaComfirmDifferentRepository extends JpaRepository implements Comf
 	private final String SELECT_PAYCOMP_COMFIRM = "SELECT c FROM QlsdtPaycompConfirm as c WHERE "
 			+ "c.paycompConfirmPK.companyCode = :companyCode AND c.paycompConfirmPK.personId IN :personId "
 			+ "AND c.paycompConfirmPK.processYMEarly = :processYMEarly AND c.paycompConfirmPK.processYMLater = :processYMLater";
-
 
 	@Override
 	public List<DetailDifferential> getDetailDifferentialWithEarlyYM(String companyCode, int processingYMEarlier,
@@ -74,24 +75,28 @@ public class JpaComfirmDifferentRepository extends JpaRepository implements Comf
 	}
 
 	@Override
-	public List<PaycompConfirm> getPayCompComfirm(String companyCode, List<String> personIDs, int processYMEarly, int processYMLater) {
+	public List<PaycompConfirm> getPayCompComfirm(String companyCode, List<String> personIDs, int processYMEarly,
+			int processYMLater) {
 		return this.queryProxy().query(SELECT_PAYCOMP_COMFIRM, QlsdtPaycompConfirm.class)
 				.setParameter("companyCode", companyCode).setParameter("personId", personIDs)
 				.setParameter("processYMEarly", processYMEarly).setParameter("processYMLater", processYMLater)
 				.getList(s -> convertToDomainPaycompConfirm(s));
 	}
-	
 
 	@Override
-	public void insertComparingPrintSet(PaycompConfirm paycompConfirm) {
-		this.commandProxy().insert(convertToEntityPaycompConfirm(paycompConfirm));
+	public void insertComparingPrintSet(List<PaycompConfirm> paycompConfirmList) {
+		List<QlsdtPaycompConfirm> qlsdtPaycompConfirmList = paycompConfirmList.stream()
+				.map(pc -> convertToEntityPaycompConfirm(pc)).collect(Collectors.toList());
+		this.commandProxy().insertAll(qlsdtPaycompConfirmList);
 	}
 
 	@Override
-	public void updateComparingPrintSet(PaycompConfirm paycompConfirm) {
-		this.commandProxy().update(convertToEntityPaycompConfirm(paycompConfirm));
+	public void updateComparingPrintSet(List<PaycompConfirm> paycompConfirmList) {
+		List<QlsdtPaycompConfirm> qlsdtPaycompConfirmList = paycompConfirmList.stream()
+				.map(pc -> convertToEntityPaycompConfirm(pc)).collect(Collectors.toList());
+		this.commandProxy().updateAll(qlsdtPaycompConfirmList);
 	}
-	
+
 	private static DetailDifferential convertToDomainDetailDifferential(String companyCode, String employeeCode,
 			String employeeName, String itemCode, String itemName, int categoryAtr, BigDecimal comparisonValue1,
 			BigDecimal comparisonValue2, BigDecimal valueDifference, String reasonDifference, int registrationStatus1,
@@ -111,10 +116,10 @@ public class JpaComfirmDifferentRepository extends JpaRepository implements Comf
 	}
 
 	private static QlsdtPaycompConfirm convertToEntityPaycompConfirm(PaycompConfirm domain) {
-		QlsdtPaycompConfirm entity = new QlsdtPaycompConfirm();
-		QlsdtPaycompConfirmPK entityPK = new QlsdtPaycompConfirmPK(domain.getCompanyCode(),
-				domain.getEmployeeCode().v(), domain.getProcessingYMEarlier().v(), domain.getProcessingYMLater().v(),
-				domain.getCategoryAtr().value, domain.getItemCode().v());
+		val entity = new QlsdtPaycompConfirm();
+		val entityPK = new QlsdtPaycompConfirmPK(domain.getCompanyCode(), domain.getEmployeeCode().v(),
+				domain.getProcessingYMEarlier().v(), domain.getProcessingYMLater().v(), domain.getCategoryAtr().value,
+				domain.getItemCode().v());
 		entity.paycompConfirmPK = entityPK;
 		entity.confirmSTS = domain.getConfirmedStatus().value;
 		entity.diffAmount = domain.getValueDifference().v();

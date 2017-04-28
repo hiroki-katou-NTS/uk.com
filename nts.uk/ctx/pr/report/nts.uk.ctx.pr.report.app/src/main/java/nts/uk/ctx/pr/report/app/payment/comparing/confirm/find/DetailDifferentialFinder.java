@@ -9,15 +9,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.ComfirmDifferentRepository;
-import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.ComparisonValue;
-import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.ConfirmedStatus;
 import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.DetailDifferential;
 import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.PaycompConfirm;
-import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.ReasonDifference;
-import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.RegistrationStatus;
-import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.ValueDifference;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -42,32 +36,31 @@ public class DetailDifferentialFinder {
 							&& s.getItemCode().v().equals(f.getItemCode().v())
 							&& s.getCategoryAtr().value == f.getCategoryAtr().value)
 					.findFirst();
-			if (!detalDiff.isPresent()) {
-				s.setComparisonValue2(new ComparisonValue(new BigDecimal(-1)));
-				s.setRegistrationStatus2(EnumAdaptor.valueOf(2, RegistrationStatus.class));
-				s.setValueDifference(new ValueDifference(s.getComparisonValue1().v().subtract(new BigDecimal(0))));
-			} else {
-				s.setComparisonValue2(detalDiff.get().getComparisonValue2());
-				s.setRegistrationStatus2(detalDiff.get().getRegistrationStatus2());
-				s.setValueDifference(new ValueDifference(
-						s.getComparisonValue1().v().subtract(detalDiff.get().getComparisonValue2().v())));
-				detailDifferential2.remove(detalDiff);
+			BigDecimal comparisonValue2 = new BigDecimal(-1);
+			int registrationStatus2 = 2;
+			BigDecimal valueDifference = s.getComparisonValue1().v().subtract(new BigDecimal(0));
+			String reasonDifference = "";
+			int confirmedStatus = 0;
+			if (detalDiff.isPresent()) {
+				comparisonValue2 = detalDiff.get().getComparisonValue2().v();
+				registrationStatus2 = detalDiff.get().getRegistrationStatus2().value;
+				valueDifference = s.getComparisonValue1().v().subtract(detalDiff.get().getComparisonValue2().v());
+				detailDifferential2.remove(detalDiff.get());
 			}
+
 			Optional<PaycompConfirm> payCompComfirmFilter = payCompComfirm.stream()
 					.filter(c -> c.getCategoryAtr().value == s.getCategoryAtr().value
 							&& s.getCompanyCode().equals(c.getItemCode().v()))
 					.findFirst();
 			if (payCompComfirmFilter.isPresent()) {
-				s.setValueDifference(new ValueDifference(payCompComfirmFilter.get().getValueDifference().v()));
-				s.setReasonDifference(new ReasonDifference(payCompComfirmFilter.get().getReasonDifference().v()));
-				s.setConfirmedStatus(EnumAdaptor.valueOf(payCompComfirmFilter.get().getConfirmedStatus().value,
-						ConfirmedStatus.class));
-				return s;
-			} else {
-				s.setReasonDifference(new ReasonDifference(null));
-				s.setConfirmedStatus(EnumAdaptor.valueOf(0, ConfirmedStatus.class));
-				return s;
+				valueDifference = payCompComfirmFilter.get().getValueDifference().v();
+				reasonDifference = payCompComfirmFilter.get().getReasonDifference().v();
+				confirmedStatus = payCompComfirmFilter.get().getConfirmedStatus().value;
 			}
+			return DetailDifferential.createFromJavaType(companyCode, s.getEmployeeCode().v(), s.getEmployeeName().v(),
+					s.getItemCode().v(), s.getItemName().v(), s.getCategoryAtr().value, s.getComparisonValue1().v(),
+					comparisonValue2, valueDifference, reasonDifference, s.getRegistrationStatus1().value,
+					registrationStatus2, confirmedStatus);
 		}).collect(Collectors.toList());
 		/** start detailDifferential2 map detailDifferential1 */
 		List<DetailDifferential> detailDifferential2Map = detailDifferential2.stream().map(s -> {
@@ -75,20 +68,21 @@ public class DetailDifferentialFinder {
 					.filter(c -> c.getCategoryAtr().value == s.getCategoryAtr().value
 							&& s.getCompanyCode().equals(c.getItemCode().v()))
 					.findFirst();
-			s.setComparisonValue1(new ComparisonValue(new BigDecimal(-1)));
-			s.setRegistrationStatus1(EnumAdaptor.valueOf(2, RegistrationStatus.class));
+			BigDecimal comparisonValue1 = new BigDecimal(-1);
+			int registrationStatus1 = 2;
+			BigDecimal valueDifference = new BigDecimal(0).subtract(s.getComparisonValue2().v());
+			String reasonDifference = "";
+			int confirmedStatus = 0;
 			if (payCompComfirmFilter.isPresent()) {
-				s.setValueDifference(new ValueDifference(payCompComfirmFilter.get().getValueDifference().v()));
-				s.setReasonDifference(new ReasonDifference(payCompComfirmFilter.get().getReasonDifference().v()));
-				s.setConfirmedStatus(EnumAdaptor.valueOf(payCompComfirmFilter.get().getConfirmedStatus().value,
-						ConfirmedStatus.class));
-				return s;
-			} else {
-				s.setValueDifference(new ValueDifference(new BigDecimal(0).subtract(s.getComparisonValue2().v())));
-				s.setReasonDifference(new ReasonDifference(null));
-				s.setConfirmedStatus(EnumAdaptor.valueOf(0, ConfirmedStatus.class));
-				return s;
+				valueDifference = payCompComfirmFilter.get().getValueDifference().v();
+				reasonDifference = payCompComfirmFilter.get().getReasonDifference().v();
+				confirmedStatus = payCompComfirmFilter.get().getConfirmedStatus().value;
 			}
+			return DetailDifferential.createFromJavaType(companyCode, s.getEmployeeCode().v(), s.getEmployeeName().v(),
+					s.getItemCode().v(), s.getItemName().v(), s.getCategoryAtr().value, comparisonValue1,
+					s.getComparisonValue2().v(), valueDifference, reasonDifference, registrationStatus1,
+					s.getRegistrationStatus2().value, confirmedStatus);
+
 		}).collect(Collectors.toList());
 		detailDifferential.addAll(detailDifferential2Map);
 		/** end detailDifferential2 map detailDifferential1 */
@@ -98,6 +92,5 @@ public class DetailDifferentialFinder {
 		return detailDifferential.stream().map(s -> DetailDifferentialDto.createFromJavaType(s))
 				.collect(Collectors.toList());
 	}
-	
-	
+
 }

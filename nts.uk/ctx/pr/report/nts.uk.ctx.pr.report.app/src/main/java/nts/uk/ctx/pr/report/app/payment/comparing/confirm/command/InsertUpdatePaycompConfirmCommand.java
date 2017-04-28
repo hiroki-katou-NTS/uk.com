@@ -14,8 +14,4 @@ public class InsertUpdatePaycompConfirmCommand {
 	private List<InsertUpdatePaycompConfirm> lstInsertUpdatedata;
 	
 	private List<String> persionIDs;
-	
-	private int processingYMEarlier;
-
-	private int processingYMLater;
 }
