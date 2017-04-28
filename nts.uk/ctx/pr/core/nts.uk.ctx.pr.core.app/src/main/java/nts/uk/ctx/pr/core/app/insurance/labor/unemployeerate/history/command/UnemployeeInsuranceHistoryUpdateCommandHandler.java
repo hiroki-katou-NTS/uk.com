@@ -62,8 +62,8 @@ public class UnemployeeInsuranceHistoryUpdateCommandHandler
 		// exist data
 		if (data.isPresent()) {
 			UnemployeeInsuranceRate insuranceRate = data.get();
-			insuranceRate.setApplyRange(
-				MonthRange.range(YearMonth.of(command.getStartMonth()), YearMonth.of(command.getEndMonth())));
+			insuranceRate.setApplyRange(MonthRange.range(YearMonth.of(command.getStartMonth()),
+				YearMonth.of(command.getEndMonth())));
 
 			// validate
 			insuranceRate.validate();
@@ -83,7 +83,8 @@ public class UnemployeeInsuranceHistoryUpdateCommandHandler
 
 			// update end year month start previous
 			if (dataPrevious.isPresent()) {
-				dataPrevious.get().setEnd(insuranceRate.getApplyRange().getStartMonth().previousMonth());
+				dataPrevious.get()
+					.setEnd(insuranceRate.getApplyRange().getStartMonth().previousMonth());
 				this.repository.update(dataPrevious.get());
 			}
 

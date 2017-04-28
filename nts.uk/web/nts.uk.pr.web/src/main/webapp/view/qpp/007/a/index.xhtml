@@ -47,12 +47,14 @@
 									<span id="start-ym" data-name="対象期間開始年月" data-bind="ntsDatePicker: {
 										value: startYearMonth, 
 										dateFormat: 'yyyy/MM',
-										startDate: '1900/01', 
+										required: true,
+										startDate: '1900/01',
 										endDate:'9999/12'}"></span>
 									<span>月度 ~</span>
 									<span id="end-ym" data-name="対象期間終了年月" data-bind="ntsDatePicker: {
 										value: endYearMonth,
 										dateFormat: 'yyyy/MM',
+										required: true,
 										startDate: '1900/01',
 										endDate:'9999/12'}"></span>
 									<span>月度</span>

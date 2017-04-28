@@ -40,8 +40,9 @@ public class SalaryPrintSettingSaveCommandHandler extends CommandHandler<SalaryP
 		SalaryPrintSetting salaryPrintSetting = new SalaryPrintSetting(command);
 
 		// Validate
-		salaryPrintSetting.validate();
 		service.validateRequiredItem(salaryPrintSetting);
+		salaryPrintSetting.validate();
+		service.validateSelection(salaryPrintSetting);
 
 		repository.save(salaryPrintSetting);
 	}
