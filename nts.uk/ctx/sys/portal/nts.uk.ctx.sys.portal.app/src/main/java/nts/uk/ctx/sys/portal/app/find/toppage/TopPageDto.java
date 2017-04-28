@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.app.toppage.find;
+package nts.uk.ctx.sys.portal.app.find.toppage;
 
 import java.util.List;
 import java.util.stream.Collectors;

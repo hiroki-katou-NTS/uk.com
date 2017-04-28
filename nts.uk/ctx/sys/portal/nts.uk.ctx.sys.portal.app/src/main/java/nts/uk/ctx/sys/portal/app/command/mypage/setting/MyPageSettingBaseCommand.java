@@ -1,9 +1,9 @@
-package nts.uk.ctx.sys.portal.app.mypage.setting.command;
+package nts.uk.ctx.sys.portal.app.command.mypage.setting;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.sys.portal.app.mypage.setting.find.TopPagePartUseSettingDto;
+import nts.uk.ctx.sys.portal.app.find.mypage.setting.TopPagePartUseSettingDto;
 import nts.uk.ctx.sys.portal.dom.enums.PermissionDivision;
 import nts.uk.ctx.sys.portal.dom.enums.UseDivision;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSetting;

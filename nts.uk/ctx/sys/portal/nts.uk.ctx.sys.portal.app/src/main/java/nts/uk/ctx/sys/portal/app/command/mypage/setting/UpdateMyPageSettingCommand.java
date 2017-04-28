@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.app.mypage.setting.command;
+package nts.uk.ctx.sys.portal.app.command.mypage.setting;
 
 /**
  * The Class UpdateMyPageSettingCommand.

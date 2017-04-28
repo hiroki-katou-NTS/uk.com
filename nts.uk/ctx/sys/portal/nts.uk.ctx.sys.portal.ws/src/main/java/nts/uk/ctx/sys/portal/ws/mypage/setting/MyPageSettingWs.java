@@ -7,10 +7,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.sys.portal.app.mypage.setting.command.UpdateMyPageSettingCommand;
-import nts.uk.ctx.sys.portal.app.mypage.setting.command.UpdateMyPageSettingCommandHandler;
-import nts.uk.ctx.sys.portal.app.mypage.setting.find.MyPageSettingDto;
-import nts.uk.ctx.sys.portal.app.mypage.setting.find.MyPageSettingFinder;
+import nts.uk.ctx.sys.portal.app.command.mypage.setting.UpdateMyPageSettingCommand;
+import nts.uk.ctx.sys.portal.app.command.mypage.setting.UpdateMyPageSettingCommandHandler;
+import nts.uk.ctx.sys.portal.app.find.mypage.setting.MyPageSettingDto;
+import nts.uk.ctx.sys.portal.app.find.mypage.setting.MyPageSettingFinder;
 
 /**
  * The Class MyPageSettingWs.

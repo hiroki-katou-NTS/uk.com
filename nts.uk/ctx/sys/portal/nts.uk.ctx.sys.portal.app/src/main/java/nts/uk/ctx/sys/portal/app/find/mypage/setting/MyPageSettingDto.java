@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.app.mypage.setting.find;
+package nts.uk.ctx.sys.portal.app.find.mypage.setting;
 
 import java.util.List;
 import java.util.stream.Collectors;

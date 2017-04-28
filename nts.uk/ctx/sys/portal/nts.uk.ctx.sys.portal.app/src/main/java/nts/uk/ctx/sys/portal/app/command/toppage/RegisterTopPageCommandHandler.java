@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.app.toppage.command;
+package nts.uk.ctx.sys.portal.app.command.toppage;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

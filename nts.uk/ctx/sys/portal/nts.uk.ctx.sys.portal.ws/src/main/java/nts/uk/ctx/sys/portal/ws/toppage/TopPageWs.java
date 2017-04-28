@@ -9,15 +9,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.sys.portal.app.toppage.command.DeleteTopPageCommand;
-import nts.uk.ctx.sys.portal.app.toppage.command.DeleteTopPageCommandHandler;
-import nts.uk.ctx.sys.portal.app.toppage.command.RegisterTopPageCommand;
-import nts.uk.ctx.sys.portal.app.toppage.command.RegisterTopPageCommandHandler;
-import nts.uk.ctx.sys.portal.app.toppage.command.UpdateTopPageCommand;
-import nts.uk.ctx.sys.portal.app.toppage.command.UpdateTopPageCommandHandler;
-import nts.uk.ctx.sys.portal.app.toppage.find.TopPageDto;
-import nts.uk.ctx.sys.portal.app.toppage.find.TopPageFinder;
-import nts.uk.ctx.sys.portal.app.toppage.find.TopPageItemDto;
+import nts.uk.ctx.sys.portal.app.command.toppage.DeleteTopPageCommand;
+import nts.uk.ctx.sys.portal.app.command.toppage.DeleteTopPageCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.toppage.RegisterTopPageCommand;
+import nts.uk.ctx.sys.portal.app.command.toppage.RegisterTopPageCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.toppage.UpdateTopPageCommand;
+import nts.uk.ctx.sys.portal.app.command.toppage.UpdateTopPageCommandHandler;
+import nts.uk.ctx.sys.portal.app.find.toppage.TopPageDto;
+import nts.uk.ctx.sys.portal.app.find.toppage.TopPageFinder;
+import nts.uk.ctx.sys.portal.app.find.toppage.TopPageItemDto;
 
 /**
  * The Class TopPageWs.

@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.app.mypage.setting.find;
+package nts.uk.ctx.sys.portal.app.find.mypage.setting;
 
 import lombok.Data;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;

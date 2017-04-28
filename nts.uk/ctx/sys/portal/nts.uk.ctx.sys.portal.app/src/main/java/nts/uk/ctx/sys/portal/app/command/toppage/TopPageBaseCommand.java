@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.app.toppage.command;
+package nts.uk.ctx.sys.portal.app.command.toppage;
 
 import lombok.Data;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
