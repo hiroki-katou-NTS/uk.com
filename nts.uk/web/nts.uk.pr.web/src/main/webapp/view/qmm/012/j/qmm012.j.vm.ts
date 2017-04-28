@@ -110,9 +110,18 @@ module qmm012.j.viewmodel {
                         editMode: "cell",
                         enableDeleteRow: false,
                         cancelTooltip: "Click to cancel",
-                        columnSettings: self.columnSettings()
+                        columnSettings: self.columnSettings(),
+                        editCellStarting: self.edited 
                     }]
             });
+        }
+        
+        edited(evt, ui){ 
+            window.setTimeout(function(){ 
+                $(".ui-iggrid-table").parent().scrollLeft(0);          
+            }, 0);
+//                $(".ui-iggrid-table").parent().scrollLeft(0);        
+//            }, 300);
         }
 
         saveData(evt, ui) {
