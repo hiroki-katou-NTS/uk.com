@@ -15,7 +15,6 @@ import lombok.Setter;
 /**
  * The Class SocialInsuranceItemDto.
  *
- * @author duongnd
  */
 
 @Setter

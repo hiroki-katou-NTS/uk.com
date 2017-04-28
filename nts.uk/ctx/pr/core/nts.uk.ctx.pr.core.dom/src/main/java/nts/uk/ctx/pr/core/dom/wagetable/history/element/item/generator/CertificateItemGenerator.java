@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
@@ -42,6 +45,13 @@ public class CertificateItemGenerator implements ItemGenerator {
 			ElementSetting elementSetting) {
 		// Get all certification.
 		List<Certification> certifications = this.certificationRepo.findAll(companyCode);
+
+		// Check has items.
+		if (CollectionUtil.isEmpty(certifications)) {
+			throw new BusinessException(new RawErrorMessage(
+					"Have not any items on demension  " + elementSetting.getDemensionNo().value
+							+ ": " + elementSetting.getType().displayName));
+		}
 
 		// Create map: unique code - old uuid.
 		@SuppressWarnings("unchecked")

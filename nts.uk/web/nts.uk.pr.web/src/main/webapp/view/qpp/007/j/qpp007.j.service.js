@@ -14,7 +14,8 @@ var nts;
                         (function (service) {
                             var paths = {
                                 findSalaryAggregateItem: "ctx/pr/report/salary/aggregate/item/findSalaryAggregateItem",
-                                saveSalaryAggregateItem: "ctx/pr/report/salary/aggregate/item/save"
+                                saveSalaryAggregateItem: "ctx/pr/report/salary/aggregate/item/save",
+                                findAllMasterItem: "ctx/pr/report/masteritem/findAll"
                             };
                             //connection server find Salary Aggregate Item
                             function findSalaryAggregateItem(salaryAggregateItemInDto) {
@@ -29,6 +30,10 @@ var nts;
                                 return nts.uk.request.ajax(paths.saveSalaryAggregateItem, data);
                             }
                             service.saveSalaryAggregateItem = saveSalaryAggregateItem;
+                            function findAllMasterItem() {
+                                return nts.uk.request.ajax(paths.findAllMasterItem);
+                            }
+                            service.findAllMasterItem = findAllMasterItem;
                             var model;
                             (function (model) {
                                 var SalaryItemDto = (function () {

@@ -18,17 +18,17 @@
 				<tr class="control-group">
 					<td><div id="lbl_002"
 							data-bind="ntsFormLabel: { constraint: ['WtCode', 'WtName'], required: true }">コード/名称*</div></td>
-					<td colspan="2"><input id="inp_001"
-						data-bind="ntsTextEditor: {value: head.code,  constraint: 'WtCode'}" />
-						<input id="inp_002"
-						data-bind="ntsTextEditor: {value: head.name,  constraint: 'WtName' }" /></td>
+					<td colspan="2"><input id="inp_code"
+						data-bind="ntsTextEditor: {value: head().code,  constraint: 'WtCode', enable: isNewMode, required:true}" />
+						<input id="inp_name"
+						data-bind="ntsTextEditor: {value: head().name,  constraint: 'WtName', required:true}" /></td>
 				</tr>
 				<tr class="control-group">
 					<td><div id="lbl_003"
 							data-bind="ntsFormLabel: { required: true }">開始年月*</div></td>
-					<td><span id="ipnStartDate"
-						data-bind="ntsDatePicker: {value: history.startYearMonth, class: 'nts-editor nts-input', dateFormat: 'yyyy/MM'}"></span>
-						<label data-bind="text: history.startYearMonthJpText" />~</td>
+					<td><span id="inp_start_date"
+						data-bind="ntsDatePicker: {value: history().startYearMonth, class: 'nts-editor nts-input', dateFormat: 'yyyy/MM', enable: isNewMode, required:true}"></span>
+						<label data-bind="text: history().startYearMonthJpText" />~</td>
 					
 				</tr>
 				<tr class="control-group">
@@ -38,9 +38,9 @@
 						<hr /></td>
 					<td rowspan="9" style="padding-left: 10px; vertical-align: top;">
 						<div style="line-height: 30px; padding: 0px 10px; background-color: #F2F2F2; border-radius: 6px;">
-							<div id="lbl_007" data-bind="text: head.lblContent"></div>
+							<div id="lbl_007" data-bind="text: head().lblContent"></div>
 							<img width="380px" height="160px"
-								data-bind="attr: { src: head.lblSampleImgLink, title: 'details' }" />
+								data-bind="attr: { src: head().lblSampleImgLink, title: 'details' }" />
 						</div>
 					</td>
 				</tr>
@@ -52,7 +52,7 @@
 								options: generalTableTypes,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: head.demensionSet}"></div></td>
+								value: head().demensionSet}"></div></td>
 					<td></td>
 				</tr>
 				<tr class="control-group">
@@ -75,7 +75,7 @@
 								options: specialTableTypes,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: head.demensionSet}"></div>
+								value: head().demensionSet}"></div>
 					</td>
 					<td></td>
 				</tr>
@@ -120,7 +120,7 @@
 								<com:ko tag="foreach" bind="demensionItemList">
 									<tr>
 										<td class="bgIgCol halign-center"
-											data-bind="text: demensionNo" />
+											data-bind="text: $root.content.demensionBullet[$index()]" />
 										<td><com:ko tag="ifnot"
 												bind="$parent.demensionType().isAttendance || $parent.demensionType().isCertification">
 												<button
