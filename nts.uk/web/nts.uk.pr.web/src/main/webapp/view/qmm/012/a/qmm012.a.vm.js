@@ -8,7 +8,7 @@ var qmm012;
                 function ScreenModel() {
                     this.selectedRuleCode = ko.observable(0);
                     this.enable = ko.observable(true);
-                    this.NavigationMessage = ko.observable('社員に対して支払う金額の種類を登録します。」と表記');
+                    this.NavigationMessage = ko.observable('社員に対して支払う金額の種類を登録します。');
                     var self = this;
                     //start Switch Data
                     self.enable;
@@ -25,7 +25,7 @@ var qmm012;
                         var text;
                         switch (NewValue) {
                             case 0:
-                                text = "社員に対して支払う金額の種類を登録します。」と表記";
+                                text = "社員に対して支払う金額の種類を登録します。";
                                 break;
                             case 1:
                                 text = "社員から徴収する金額の種類を登録します。";
