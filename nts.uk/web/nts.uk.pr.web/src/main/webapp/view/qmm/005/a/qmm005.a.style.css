@@ -35,3 +35,41 @@ td>.ui-igcombo-wrapper, td>.caret>.ui-igcombo-wrapper {
 #A_SEL_005 {
 	width: 80px;
 }
+
+#A_LST_001 {
+	width: 853px;
+}
+
+#contents-area table.table th {
+	height: 32px;
+	width: initial;
+}
+
+#contents-area #A_LST_001.table tr:first-child th:nth-child(1) {
+	width: 25px;
+}
+
+#contents-area #A_LST_001.table tr:first-child th:nth-child(2) {
+	width: 142px;
+}
+
+#contents-area #A_LST_001.table tr:first-child th:nth-child(3) {
+	width: 65px;
+}
+
+#contents-area #A_LST_001.table tr:first-child th:nth-child(4) {
+	width: 360px;
+}
+
+#contents-area #A_LST_001.table tr:first-child th:nth-child(5) {
+	width: 5px;
+}
+
+#contents-area #A_LST_001.table tr:first-child th:nth-child(6) {
+	width: 266px;
+}
+
+
+#contents-area #A_LST_001.table tr:nth-child(2) th:nth-child(2) {
+	width: 55px;
+}

@@ -39,7 +39,7 @@ public class FormulaEasyFinder {
 		}
 
 		FormulaEasyFinderDto formulaEasyFinderDto = new FormulaEasyFinderDto();
-
+		formulaEasyFinderDto.setEasyFormulaCode(formulaEasyDetailDto.get().getEasyFormulaCode());
 		formulaEasyFinderDto.setEasyFormulaName(formulaEasyDetailDto.get().getEasyFormulaName());
 		formulaEasyFinderDto.setEasyFormulaTypeAtr(formulaEasyDetailDto.get().getEasyFormulaTypeAtr());
 		formulaEasyFinderDto.setBaseFixedAmount(formulaEasyDetailDto.get().getBaseFixedAmount());
@@ -54,7 +54,7 @@ public class FormulaEasyFinder {
 		formulaEasyFinderDto.setTotalRounding(formulaEasyDetailDto.get().getTotalRounding());
 		formulaEasyFinderDto.setMaxLimitValue(formulaEasyDetailDto.get().getMaxLimitValue());
 		formulaEasyFinderDto.setMinLimitValue(formulaEasyDetailDto.get().getMinLimitValue());
-
+		List<String> referenceItemCodes = new ArrayList<>();
 		/* baseAmount = 基準金額 */
 		if (formulaEasyDetailDto.get().getBaseAmountDevision().intValue() == 1
 				|| formulaEasyDetailDto.get().getBaseAmountDevision().intValue() == 2
@@ -63,14 +63,13 @@ public class FormulaEasyFinder {
 			List<FormulaEasyStandardItemDto> formulaEasyStandardItemDtos = formulaEasyStandardItemRepository
 					.findAll(companyCode, new FormulaCode(formulaCode), historyId, new EasyFormulaCode(easyFormulaCode))
 					.stream().map(f -> FormulaEasyStandardItemDto.fromDomain(f)).collect(Collectors.toList());
-			List<String> referenceItemCodes = new ArrayList<>();
-			formulaEasyStandardItemDtos.stream().map(f -> {
+			
+			formulaEasyStandardItemDtos.stream().forEach(f -> {
 				referenceItemCodes.add(f.getReferenceItemCode());
-				return referenceItemCodes;
 			});
-			formulaEasyFinderDto.setReferenceItemCodes(referenceItemCodes);
+			
 		}
-
+		formulaEasyFinderDto.setReferenceItemCodes(referenceItemCodes);
 		return formulaEasyFinderDto;
 	}
 

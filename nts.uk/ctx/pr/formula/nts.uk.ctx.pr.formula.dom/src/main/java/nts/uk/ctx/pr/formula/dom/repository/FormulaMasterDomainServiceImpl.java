@@ -15,6 +15,7 @@ import nts.uk.ctx.pr.formula.dom.formula.FormulaHistory;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaManual;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaMaster;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
+import nts.uk.ctx.pr.formula.dom.primitive.FormulaName;
 
 /**
  * @author nampt activity 3
@@ -58,13 +59,13 @@ public class FormulaMasterDomainServiceImpl implements FormulaMasterDomainServic
 		}
 	}
 
-	public void update(int difficultyAtr, String companyCode, FormulaCode formulaCode, String historyId,
+	public void update(int difficultyAtr, String companyCode, FormulaCode formulaCode, FormulaName formulaName, String historyId,
 			List<FormulaEasyCondition> listFormulaEasyCondition, List<FormulaEasyDetail> listFormulaEasyDetail,
 			List<FormulaEasyStandardItem> listFormulaEasyStandardItem, FormulaManual formulaManual) {
 
 		try {
 			// [計算式マスタ.UPD-1]を実施する
-			this.formulaMasterRepository.update(companyCode, formulaCode);
+			this.formulaMasterRepository.update(companyCode, formulaCode, formulaName);
 
 			if (difficultyAtr == 0) {
 				// [かんたん計算_条件.DEL-1]を実施する

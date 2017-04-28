@@ -7,8 +7,8 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:stylefile path="qmm016.l.style.css" />
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="qmm016.l.style.css" />
 			<com:scriptfile path="qmm016.l.start.js" />
 			<com:scriptfile path="qmm016.l.service.js" />
 			<com:scriptfile path="qmm016.l.vm.js" />
@@ -119,11 +119,12 @@
 								<div class="div100">
 									<div id="swap-list"
 										data-bind="ntsSwapList: {
-										showSearchBox: true,
+										showSearchBox: { showLeft : true, showRight: false},
 										height: 300,
 										dataSource: lstCertification,
 										primaryKey: 'code',
 										columns: columnsCertification,
+										searchCriterion: ['code', 'name'],
 										value: certifies
 									}"></div>
 								</div>

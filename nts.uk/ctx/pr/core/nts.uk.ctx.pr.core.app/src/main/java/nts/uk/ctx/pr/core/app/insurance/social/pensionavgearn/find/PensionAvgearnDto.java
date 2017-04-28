@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.find;
@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import lombok.Builder;
 import lombok.Getter;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearn;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnSetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValue;
 
@@ -17,10 +18,16 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValu
  */
 @Builder
 @Getter
-public class PensionAvgearnDto implements PensionAvgearnSetMemento {
+public class PensionAvgearnDto {
 
-	/** The level code. */
-	private Integer levelCode;
+	/** The grade. */
+	private Integer grade;
+
+	/** The avg earn. */
+	private Long avgEarn;
+
+	/** The upper limit. */
+	private Long upperLimit;
 
 	/** The child contribution amount. */
 	private BigDecimal childContributionAmount;
@@ -43,109 +50,168 @@ public class PensionAvgearnDto implements PensionAvgearnSetMemento {
 	/** The personal pension. */
 	private PensionAvgearnValueDto personalPension;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
-	 * PensionAvgearnSetMemento#setHistoryId(java.lang.String)
+	/**
+	 * From domain.
+	 *
+	 * @param domain
+	 *            the domain
+	 * @return the pension avgearn dto
 	 */
-	@Override
-	public void setHistoryId(String historyId) {
-		// Do nothing.
+	public PensionAvgearnDto fromDomain(PensionAvgearn domain) {
+		PensionAvgearnDto dto = this;
+
+		domain.saveToMemento(new SetMemento(dto));
+
+		return dto;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
-	 * PensionAvgearnSetMemento#setLevelCode(java.lang.Integer)
+	/**
+	 * The Class SetMemento.
 	 */
-	@Override
-	public void setLevelCode(Integer levelCode) {
-		this.levelCode = levelCode;
+	private class SetMemento implements PensionAvgearnSetMemento {
+
+		/** The dto. */
+		private PensionAvgearnDto dto;
+
+		/**
+		 * Instantiates a new sets the memento.
+		 *
+		 * @param dto
+		 *            the dto
+		 */
+		public SetMemento(PensionAvgearnDto dto) {
+			this.dto = dto;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+		 * PensionAvgearnSetMemento#setHistoryId(java.lang.String)
+		 */
+		@Override
+		public void setHistoryId(String historyId) {
+			// Do nothing.
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+		 * PensionAvgearnSetMemento#setGrade(java.lang.Integer)
+		 */
+		@Override
+		public void setGrade(Integer grade) {
+			this.dto.grade = grade;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+		 * PensionAvgearnSetMemento#setChildContributionAmount(nts.uk.ctx.pr.
+		 * core. dom.insurance.InsuranceAmount)
+		 */
+		@Override
+		public void setChildContributionAmount(CommonAmount childContributionAmount) {
+			this.dto.childContributionAmount = childContributionAmount.v();
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+		 * PensionAvgearnSetMemento#setCompanyFund(nts.uk.ctx.pr.core.dom.
+		 * insurance. social.pensionavgearn.PensionAvgearnValue)
+		 */
+		@Override
+		public void setCompanyFund(PensionAvgearnValue companyFund) {
+			this.dto.companyFund = PensionAvgearnValueDto.fromDomain(companyFund);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+		 * PensionAvgearnSetMemento#setCompanyFundExemption(nts.uk.ctx.pr.core.
+		 * dom. insurance.social.pensionavgearn.PensionAvgearnValue)
+		 */
+		@Override
+		public void setCompanyFundExemption(PensionAvgearnValue companyFundExemption) {
+			this.dto.companyFundExemption = PensionAvgearnValueDto.fromDomain(companyFundExemption);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+		 * PensionAvgearnSetMemento#setCompanyPension(nts.uk.ctx.pr.core.dom.
+		 * insurance.social.pensionavgearn.PensionAvgearnValue)
+		 */
+		@Override
+		public void setCompanyPension(PensionAvgearnValue companyPension) {
+			this.dto.companyPension = PensionAvgearnValueDto.fromDomain(companyPension);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+		 * PensionAvgearnSetMemento#setPersonalFund(nts.uk.ctx.pr.core.dom.
+		 * insurance .social.pensionavgearn.PensionAvgearnValue)
+		 */
+		@Override
+		public void setPersonalFund(PensionAvgearnValue personalFund) {
+			this.dto.personalFund = PensionAvgearnValueDto.fromDomain(personalFund);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+		 * PensionAvgearnSetMemento#setPersonalFundExemption(nts.uk.ctx.pr.core.
+		 * dom. insurance.social.pensionavgearn.PensionAvgearnValue)
+		 */
+		@Override
+		public void setPersonalFundExemption(PensionAvgearnValue personalFundExemption) {
+			this.dto.personalFundExemption = PensionAvgearnValueDto
+					.fromDomain(personalFundExemption);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+		 * PensionAvgearnSetMemento#setPersonalPension(nts.uk.ctx.pr.core.dom.
+		 * insurance.social.pensionavgearn.PensionAvgearnValue)
+		 */
+		@Override
+		public void setPersonalPension(PensionAvgearnValue personalPension) {
+			this.dto.personalPension = PensionAvgearnValueDto.fromDomain(personalPension);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+		 * PensionAvgearnSetMemento#setAvgEarn(java.lang.Long)
+		 */
+		@Override
+		public void setAvgEarn(Long avgEarn) {
+			this.dto.avgEarn = avgEarn;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+		 * PensionAvgearnSetMemento#setUpperLimit(java.lang.Long)
+		 */
+		@Override
+		public void setUpperLimit(Long upperLimit) {
+			this.dto.upperLimit = upperLimit;
+		}
+
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
-	 * PensionAvgearnSetMemento#setChildContributionAmount(nts.uk.ctx.pr.core.
-	 * dom.insurance.InsuranceAmount)
-	 */
-	@Override
-	public void setChildContributionAmount(CommonAmount childContributionAmount) {
-		this.childContributionAmount = childContributionAmount.v();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
-	 * PensionAvgearnSetMemento#setCompanyFund(nts.uk.ctx.pr.core.dom.insurance.
-	 * social.pensionavgearn.PensionAvgearnValue)
-	 */
-	@Override
-	public void setCompanyFund(PensionAvgearnValue companyFund) {
-		this.companyFund = PensionAvgearnValueDto.fromDomain(companyFund);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
-	 * PensionAvgearnSetMemento#setCompanyFundExemption(nts.uk.ctx.pr.core.dom.
-	 * insurance.social.pensionavgearn.PensionAvgearnValue)
-	 */
-	@Override
-	public void setCompanyFundExemption(PensionAvgearnValue companyFundExemption) {
-		this.companyFundExemption = PensionAvgearnValueDto.fromDomain(companyFundExemption);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
-	 * PensionAvgearnSetMemento#setCompanyPension(nts.uk.ctx.pr.core.dom.
-	 * insurance.social.pensionavgearn.PensionAvgearnValue)
-	 */
-	@Override
-	public void setCompanyPension(PensionAvgearnValue companyPension) {
-		this.companyPension = PensionAvgearnValueDto.fromDomain(companyPension);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
-	 * PensionAvgearnSetMemento#setPersonalFund(nts.uk.ctx.pr.core.dom.insurance
-	 * .social.pensionavgearn.PensionAvgearnValue)
-	 */
-	@Override
-	public void setPersonalFund(PensionAvgearnValue personalFund) {
-		this.personalFund = PensionAvgearnValueDto.fromDomain(personalFund);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
-	 * PensionAvgearnSetMemento#setPersonalFundExemption(nts.uk.ctx.pr.core.dom.
-	 * insurance.social.pensionavgearn.PensionAvgearnValue)
-	 */
-	@Override
-	public void setPersonalFundExemption(PensionAvgearnValue personalFundExemption) {
-		this.personalFundExemption = PensionAvgearnValueDto.fromDomain(personalFundExemption);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
-	 * PensionAvgearnSetMemento#setPersonalPension(nts.uk.ctx.pr.core.dom.
-	 * insurance.social.pensionavgearn.PensionAvgearnValue)
-	 */
-	@Override
-	public void setPersonalPension(PensionAvgearnValue personalPension) {
-		this.personalPension = PensionAvgearnValueDto.fromDomain(personalPension);
-	}
 }

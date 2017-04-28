@@ -20,7 +20,13 @@ __viewContext.ready(function () {
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(3);
             self.selectedCode = ko.observable(temp[2]);
+            self.selectedCode.subscribe(function (value){
+                console.log(value);        
+            });
             self.selectedCodes = ko.observableArray([]);
+            self.selectedCodes.subscribe(function (value){
+                console.log(value);        
+            });
             self.isEnable = ko.observable(true);
             self.isMulti = ko.observable(true);
             self.isMulti2 = ko.observable(true);

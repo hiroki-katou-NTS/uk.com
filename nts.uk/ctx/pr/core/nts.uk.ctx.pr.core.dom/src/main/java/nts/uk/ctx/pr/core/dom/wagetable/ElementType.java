@@ -33,13 +33,13 @@ public enum ElementType {
 	CERTIFICATION(6, true, false, "資格"),
 
 	/** The working day. */
-	WORKING_DAY(7, false, true, "精皆勤"),
+	WITHOUT_WORKING_DAY(7, false, true, "欠勤日数"),
 
 	/** The come late. */
 	COME_LATE(8, false, true, "遅刻早退"),
 
 	/** The level. */
-	LEVEL(9, true, false, "レベル");
+	LEVEL(9, true, false, "精皆勤レベル");
 
 	/** The value. */
 	public int value;

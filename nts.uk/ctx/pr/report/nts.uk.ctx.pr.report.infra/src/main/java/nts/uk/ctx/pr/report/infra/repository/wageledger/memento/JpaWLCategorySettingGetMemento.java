@@ -70,6 +70,9 @@ public class JpaWLCategorySettingGetMemento implements WLCategorySettingGetMemen
 				() -> this.entity.getQlsptLedgerFormDetailList().stream()
 						.filter(data -> data.getQlsptLedgerFormDetailPK().getCtgAtr() == this.category.value
 								&& data.getQlsptLedgerFormDetailPK().getPayBonusAtr() == this.paymentType.value)
+						.sorted((data1, data2) -> {
+							return data2.getDispOrder() - data1.getDispOrder();
+						})
 						.collect(Collectors.toList()),
 				detail -> new WLSettingItem(new JpaWLSettingItemGetMemento(detail)));
 	}

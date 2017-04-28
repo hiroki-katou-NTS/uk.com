@@ -10,7 +10,8 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author lanlt
  *
  */
-@StringMaxLength(15)
+@StringMaxLength(24)
+/*@StringCharType(CharType.ALPHABET)*/
 public class RegisteredName extends StringPrimitiveValue<RegisteredName> {
 /**
  * 
