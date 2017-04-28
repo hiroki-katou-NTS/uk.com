@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSetting;
@@ -66,7 +67,7 @@ public class SalaryOutputSettingSaveCommandHandler extends CommandHandler<Salary
 
 				this.repository.update(outputSetting);
 			} else {
-				throw new IllegalStateException("Output Setting is not found");
+				throw new BusinessException("ER026");
 			}
 		}
 	}
