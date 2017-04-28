@@ -98,7 +98,7 @@ var nts;
                         swapParts.push(new GridSwapPart().listControl($grid1)
                             .searchControl($swap.find(".ntsSwapSearchLeft").find(".ntsSearchButton"))
                             .searchBox($swap.find(".ntsSwapSearchLeft").find(".ntsSearchBox"))
-                            .setDataSource(originalSource)
+                            .setDataSource(data.dataSource)
                             .setSearchCriterion(data.searchCriterion || criterion)
                             .setSearchMode(data.searchMode || "highlight")
                             .setColumns(columns())
@@ -109,7 +109,7 @@ var nts;
                         swapParts.push(new GridSwapPart().listControl($grid2)
                             .searchControl($swap.find(".ntsSwapSearchRight").find(".ntsSearchButton"))
                             .searchBox($swap.find(".ntsSwapSearchRight").find(".ntsSearchBox"))
-                            .setDataSource(data.value())
+                            .setDataSource(data.value)
                             .setSearchCriterion(data.searchCriterion || criterion)
                             .setSearchMode(data.searchMode || "highlight")
                             .setColumns(columns())
@@ -670,24 +670,24 @@ var nts;
                     ListItemTransporter.prototype.update = function () {
                         switch (this.determineDirection()) {
                             case "firstToSecond":
-                                this.move(this.firstList, this.secondList);
+                                this.move(this.firstList(), this.secondList());
                                 break;
                             case "secondToFirst":
-                                this.move(this.secondList, this.firstList);
+                                this.move(this.secondList(), this.firstList());
                                 break;
                             case "insideFirst":
-                                this.move(this.firstList, this.firstList);
+                                this.move(this.firstList(), this.firstList());
                                 break;
                             case "insideSecond":
-                                this.move(this.secondList, this.secondList);
+                                this.move(this.secondList(), this.secondList());
                                 break;
                         }
                     };
                     ListItemTransporter.prototype.getFirst = function () {
-                        return this.firstList;
+                        return this.firstList();
                     };
                     ListItemTransporter.prototype.getSecond = function () {
-                        return this.secondList;
+                        return this.secondList();
                     };
                     return ListItemTransporter;
                 }());

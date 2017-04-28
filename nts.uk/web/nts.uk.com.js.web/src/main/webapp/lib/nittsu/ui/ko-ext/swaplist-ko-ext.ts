@@ -120,7 +120,7 @@ module nts.uk.ui.koExtentions {
             swapParts.push(new GridSwapPart().listControl($grid1)
                                 .searchControl($swap.find(".ntsSwapSearchLeft").find(".ntsSearchButton")) 
                                 .searchBox($swap.find(".ntsSwapSearchLeft").find(".ntsSearchBox"))
-                                .setDataSource(originalSource)
+                                .setDataSource(data.dataSource)
                                 .setSearchCriterion(data.searchCriterion || criterion)
                                 .setSearchMode(data.searchMode || "highlight")
                                 .setColumns(columns())
@@ -131,7 +131,7 @@ module nts.uk.ui.koExtentions {
             swapParts.push(new GridSwapPart().listControl($grid2)
                                 .searchControl($swap.find(".ntsSwapSearchRight").find(".ntsSearchButton")) 
                                 .searchBox($swap.find(".ntsSwapSearchRight").find(".ntsSearchBox"))
-                                .setDataSource(data.value())
+                                .setDataSource(data.value)
                                 .setSearchCriterion(data.searchCriterion || criterion)
                                 .setSearchMode(data.searchMode || "highlight")
                                 .setColumns(columns())
@@ -680,8 +680,8 @@ module nts.uk.ui.koExtentions {
     }
     
     class ListItemTransporter {
-        private firstList: Array<any>;
-        private secondList: Array<any>;
+        private firstList: KnockoutObservableArray<any>;
+        private secondList: KnockoutObservableArray<any>;
         startAt: string;
         direction: string;
         primaryKey: string;
@@ -690,17 +690,17 @@ module nts.uk.ui.koExtentions {
         outcomeIndex: number;
         incomeIndex: number;
         
-        constructor(firstList: Array<any>, secondList: Array<any>) {
+        constructor(firstList: KnockoutObservableArray<any>, secondList: KnockoutObservableArray<any>) {
             this.firstList = firstList;
             this.secondList = secondList;
         }
         
-        private first(firstList: Array<any>) : ListItemTransporter {
+        private first(firstList: KnockoutObservableArray<any>) : ListItemTransporter {
             this.firstList = firstList;
             return this;
         }
         
-        private second(secondList: Array<any>) : ListItemTransporter {
+        private second(secondList: KnockoutObservableArray<any>) : ListItemTransporter {
             this.secondList = secondList;
             return this;
         }
@@ -762,7 +762,7 @@ module nts.uk.ui.koExtentions {
             }
         }
         
-        determineDirection() : string {
+        determineDirection() : string { 
             if (this.startAt.toLowerCase() !== this.direction.toLowerCase()
                 && this.direction.toLowerCase() === "second") {
                 return "firstToSecond";
@@ -778,26 +778,26 @@ module nts.uk.ui.koExtentions {
         update() : void {
             switch (this.determineDirection()) {
                 case "firstToSecond":
-                    this.move(this.firstList, this.secondList);
+                    this.move(this.firstList(), this.secondList());
                     break;
                 case "secondToFirst":
-                    this.move(this.secondList, this.firstList);
+                    this.move(this.secondList(), this.firstList());
                     break;
                 case "insideFirst":
-                    this.move(this.firstList, this.firstList);
+                    this.move(this.firstList(), this.firstList());
                     break;
                 case "insideSecond":
-                    this.move(this.secondList, this.secondList);
+                    this.move(this.secondList(), this.secondList());
                     break;
             }
         }
         
         getFirst() : Array<any> {
-            return this.firstList;
+            return this.firstList();
         }
         
         getSecond() : Array<any> {
-            return this.secondList;
+            return this.secondList();
         }
     }
 }

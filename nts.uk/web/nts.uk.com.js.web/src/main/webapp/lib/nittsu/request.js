@@ -7,7 +7,8 @@ var nts;
             request.STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
             var WEB_APP_NAME = {
                 com: 'nts.uk.com.web',
-                pr: 'nts.uk.pr.web'
+                pr: 'nts.uk.pr.web',
+                at: 'nts.uk.at.web'
             };
             var QueryString = (function () {
                 function QueryString() {
