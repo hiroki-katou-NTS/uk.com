@@ -281,8 +281,6 @@ module nts.uk.pr.view.qmm008.b {
                             return dfd.promise();
                         }
 
-                        
-
                         //update health
                         service.updateHealthRate(self.healthCollectData()).done(function() {
                             self.backupDataDirty(self.healthCollectData());
@@ -299,7 +297,7 @@ module nts.uk.pr.view.qmm008.b {
                         dfd.reject();
                         return dfd.promise();
                     }
-                    
+
                     //update health
                     service.updateHealthRate(self.healthCollectData()).done(function() {
                         self.backupDataDirty(self.healthCollectData());
@@ -308,7 +306,7 @@ module nts.uk.pr.view.qmm008.b {
                     });
                 }
 
-                dfd.resolve()
+                dfd.resolve(self.healthModel().historyId)
                 return dfd.promise();
             }
 

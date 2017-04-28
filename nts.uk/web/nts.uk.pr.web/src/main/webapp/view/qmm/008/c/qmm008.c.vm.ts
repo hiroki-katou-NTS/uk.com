@@ -334,7 +334,6 @@ module nts.uk.pr.view.qmm008.c {
                             return dfd.promise();
                         }
 
-
                         //update pension
                         service.updatePensionRate(self.pensionCollectData()).done(function() {
                             self.backupDataDirty(self.pensionCollectData());
@@ -360,8 +359,7 @@ module nts.uk.pr.view.qmm008.c {
                     });
                 }
 
-                dfd.resolve();
-
+                dfd.resolve(self.pensionModel().historyId);
                 return dfd.promise();
             }
 
