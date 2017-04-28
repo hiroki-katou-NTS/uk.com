@@ -3,6 +3,8 @@ package nts.uk.ctx.sys.portal.infra.repository.placement;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.placement.Placement;
 import nts.uk.ctx.sys.portal.dom.placement.PlacementRepository;
@@ -12,6 +14,10 @@ import nts.uk.ctx.sys.portal.dom.placement.externalurl.Row;
 import nts.uk.ctx.sys.portal.infra.entity.placement.CcgmtPlacement;
 import nts.uk.ctx.sys.portal.infra.entity.placement.CcgmtPlacementPK;
 
+/**
+ * @author LamDT
+ */
+@Stateless
 public class JpaPlacementRepository extends JpaRepository implements PlacementRepository {
 	private final String SELECT_SINGLE = "SELECT c FROM CcgmtPlacement c WHERE c.placementID = :placementID";
 	private final String SELECT_BY_LAYOUT = "SELECT c FROM CcgmtPlacement c WHERE c.layoutID = :layoutID";
