@@ -102,9 +102,8 @@ module nts.uk.pr.view.qmm008.h {
              */
             public save(): void {
                 var self = this;
-                // Validate.
-                $('.nts-input').ntsEditor('validate');
-                if ($('.nts-input').ntsError('hasError')) {
+                // Return if has error.
+                if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                     return;
                 }
                 service.updateHealthInsuranceAvgearn(self.collectData(), self.healthInsuranceRateModel.officeCode).done(() =>

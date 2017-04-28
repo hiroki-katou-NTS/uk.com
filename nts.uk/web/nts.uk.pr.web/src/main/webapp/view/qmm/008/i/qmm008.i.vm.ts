@@ -127,9 +127,8 @@ module nts.uk.pr.view.qmm008.i {
              */
             private save(): void {
                 var self = this;
-                // Validate.
-                $('.nts-input').ntsEditor('validate');
-                if ($('.nts-input').ntsError('hasError')) {
+                // Return if has error.
+                if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                     return;
                 }
                 service.updatePensionAvgearn(self.collectData(), self.pensionRateModel.officeCode)
