@@ -1,7 +1,7 @@
 module nts.uk.com.view.ccg015.a {
     export module viewmodel {
         import TopPageItemDto = ccg015.a.service.model.TopPageItemDto;
-        import TopPageItemDetailDto = ccg015.a.service.model.TopPageItemDetailDto;
+        import TopPageDto = ccg015.a.service.model.TopPageDto;
         export class ScreenModel {
             listTopPage: KnockoutObservableArray<Node>;
             toppageSelectedCode: KnockoutObservable<string>;
@@ -21,7 +21,7 @@ module nts.uk.com.view.ccg015.a {
                 ]);
                 self.isNewMode = ko.observable(true);
                 self.toppageSelectedCode.subscribe(function(selectedTopPageCode: string) {
-                    service.loadDetailTopPage(selectedTopPageCode).done(function(data: TopPageItemDetailDto) {
+                    service.loadDetailTopPage(selectedTopPageCode).done(function(data: TopPageDto) {
                         self.loadTopPageItemDetail(data);
                     });
                 });
@@ -49,7 +49,7 @@ module nts.uk.com.view.ccg015.a {
             }
 
             //load top page Item 
-            private loadTopPageItemDetail(data: TopPageItemDetailDto) {
+            private loadTopPageItemDetail(data: TopPageDto) {
                 var self = this;
                 self.topPageModel().topPageCode(data.topPageCode);
                 self.topPageModel().topPageName(data.topPageName);
@@ -58,11 +58,11 @@ module nts.uk.com.view.ccg015.a {
                         var placementModel = new PlacementModel();
                         var topPagePartModel = new TopPagePartModel();
                         //set value for top page part
-                        topPagePartModel.topPagePartType(item.topPagePartDto.topPagePartType);
-                        topPagePartModel.topPagePartCode(item.topPagePartDto.topPagePartCode);
-                        topPagePartModel.topPagePartName(item.topPagePartDto.topPagePartName);
-                        topPagePartModel.width(item.topPagePartDto.width);
-                        topPagePartModel.height(item.topPagePartDto.height);
+                        topPagePartModel.topPagePartType(item.topPagePart.topPagePartType);
+                        topPagePartModel.topPagePartCode(item.topPagePart.topPagePartCode);
+                        topPagePartModel.topPagePartName(item.topPagePart.topPagePartName);
+                        topPagePartModel.width(item.topPagePart.width);
+                        topPagePartModel.height(item.topPagePart.height);
 
                         placementModel.row(item.row);
                         placementModel.column(item.column);
@@ -72,10 +72,11 @@ module nts.uk.com.view.ccg015.a {
                     });
                 }
             }
-            private collectData(): TopPageItemDetailDto {
+            private collectData(): TopPageDto {
+                //TODO collect data from screen
                 return null;
             }
-            private collectDataForCreateNew(): TopPageItemDetailDto {
+            private collectDataForCreateNew(): TopPageDto {
                 return null;
             }
             private saveTopPage() {

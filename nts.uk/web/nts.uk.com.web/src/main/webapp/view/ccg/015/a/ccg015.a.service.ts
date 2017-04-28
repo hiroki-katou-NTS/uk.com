@@ -60,12 +60,12 @@ module nts.uk.com.view.ccg015.a {
                 topPageCode: string;
                 topPageName: string;
                 languageNumber: number;
-                placementDto: Array<PlacementDto>;
+                placements: Array<PlacementDto>;
             }
             export interface PlacementDto {
                 row: number;
                 column: number;
-                topPagePartDto: TopPagePartDto;
+                topPagePart: TopPagePartDto;
             }
             export interface TopPagePartDto {
                 topPagePartType: number;

@@ -57,11 +57,11 @@ var nts;
                                         data.placements.forEach(function (item, index) {
                                             var placementModel = new PlacementModel();
                                             var topPagePartModel = new TopPagePartModel();
-                                            topPagePartModel.topPagePartType(item.topPagePartDto.topPagePartType);
-                                            topPagePartModel.topPagePartCode(item.topPagePartDto.topPagePartCode);
-                                            topPagePartModel.topPagePartName(item.topPagePartDto.topPagePartName);
-                                            topPagePartModel.width(item.topPagePartDto.width);
-                                            topPagePartModel.height(item.topPagePartDto.height);
+                                            topPagePartModel.topPagePartType(item.topPagePart.topPagePartType);
+                                            topPagePartModel.topPagePartCode(item.topPagePart.topPagePartCode);
+                                            topPagePartModel.topPagePartName(item.topPagePart.topPagePartName);
+                                            topPagePartModel.width(item.topPagePart.width);
+                                            topPagePartModel.height(item.topPagePart.height);
                                             placementModel.row(item.row);
                                             placementModel.column(item.column);
                                             placementModel.topPagePart(topPagePartModel);
