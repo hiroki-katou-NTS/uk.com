@@ -23,10 +23,10 @@ var qpp014;
                     self.processingYM = ko.observable(nts.uk.time.formatYearMonth(data.currentProcessingYm));
                     self.d_lbl_015 = ko.observable(data.processingNo);
                     self.d_lbl_016 = ko.observable(data.processingName);
+                    nts.uk.ui.windows.setShared("sparePayAtr", self.sparePayAtr(), true);
                 }
                 ScreenModel.prototype.openEDialog = function () {
                     var self = this;
-                    nts.uk.ui.windows.setShared("sparePayAtr", self.sparePayAtr(), true);
                     nts.uk.ui.windows.setShared("processingYMNotConvert", self.processingYMNotConvert(), true);
                     nts.uk.ui.windows.setShared("dateOfPayment", self.dateOfPayment(), true);
                     nts.uk.ui.windows.setShared("processingNo", self.d_lbl_015(), true);

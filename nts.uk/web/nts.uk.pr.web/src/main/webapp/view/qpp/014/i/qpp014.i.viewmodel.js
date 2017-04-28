@@ -14,7 +14,7 @@ var qpp014;
                 }
                 self.currentCode_I_LST_003 = ko.observable();
                 self.processingDateInJapanEmprire = ko.observable(nts.uk.ui.windows.getShared("processingDateInJapanEmprire"));
-                self.transferBank = ko.observable(nts.uk.ui.windows.getShared("transferBank"));
+                self.transferBank = ko.observable(nts.uk.ui.windows.getShared("label"));
             }
             ScreenModel.prototype.closeDialog = function () {
                 nts.uk.ui.windows.close();

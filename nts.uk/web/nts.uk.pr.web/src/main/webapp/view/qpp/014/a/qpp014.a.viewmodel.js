@@ -28,6 +28,7 @@ var qpp014;
                         if (data.length > 0) {
                             self.a_SEL_001_items(data);
                             self.a_SEL_001_itemSelected(self.a_SEL_001_items()[0]);
+                            self.a_SEL_001_itemSelected().process = ' ' + self.a_SEL_001_itemSelected().processingNo + ' : ' + self.a_SEL_001_itemSelected().processingName;
                         }
                         else {
                             nts.uk.ui.dialog.alert("対象データがありません。");

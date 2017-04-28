@@ -17,7 +17,7 @@ var qpp014;
                     self.e_errorList.push(new ItemModel_E_LST_003('00' + i_1, '基本給', "description " + i_1));
                 }
                 self.dataFixed = ko.observableArray([]);
-                for (var i_2 = 1; i_2 < 10; i_2++) {
+                for (var i_2 = 1; i_2 < 4; i_2++) {
                     self.dataFixed.push(new TestArray("companyNameKana" + i_2, "99900000000000000000000000000000000" + i_2, "depCode" + i_2, moment.utc(Math.floor(Math.random() * (2999 - 1900 + 1) + 1900).toString() + Math.floor(Math.random() * (12 - 10 + 1) + 10).toString() + Math.floor(Math.random() * (28 - 1 + 1) + 1).toString(), 'YYYYMMDD').toISOString(), Math.floor(Math.random() * 2), Math.floor(Math.random() * 1001), 1, Math.floor(Math.random() * 2), Math.floor(Math.random() * (2999 - 1900 + 1) + 1900).toString() + Math.floor(Math.random() * (12 - 10 + 1) + 10).toString(), { branchId: "00000000" + i_2, bankNameKana: "frBankKNN" + i_2, branchNameKana: "frBranchKNN" + i_2, accountAtr: Math.floor(Math.random() * 2), accountNo: "00" + i_2 }, { branchId: "10000000" + i_2, bankNameKana: "toBankKNN" + i_2, branchNameKana: "toBranchKNN" + i_2, accountAtr: Math.floor(Math.random() * 2), accountNo: "00" + i_2, accountNameKana: "toAccKNName" + i_2 }));
                 }
                 self.currentCode_E_LST_003 = ko.observable();
@@ -26,7 +26,6 @@ var qpp014;
             }
             ScreenModel.prototype.startPage = function () {
                 var self = this;
-                var dfd = $.Deferred();
                 var index = ko.observable(0);
                 self.numberOfPerson(self.dataFixed().length);
                 if (self.numberOfPerson() > 0) {
@@ -56,7 +55,7 @@ var qpp014;
                 var command = {
                     processingNoOfScreenE: nts.uk.ui.windows.getShared("processingNo"),
                     payDateOfScreenE: moment.utc(nts.uk.ui.windows.getShared("dateOfPayment")).toISOString(),
-                    sparePayAtrOfScreenE: nts.uk.ui.windows.getShared("processingNo"),
+                    sparePayAtrOfScreenE: nts.uk.ui.windows.getShared("sparePayAtr"),
                     processingYMOfScreenE: nts.uk.ui.windows.getShared("processingYMNotConvert"),
                     companyNameKana: bankTransfer.companyNameKana,
                     personId: bankTransfer.personId,

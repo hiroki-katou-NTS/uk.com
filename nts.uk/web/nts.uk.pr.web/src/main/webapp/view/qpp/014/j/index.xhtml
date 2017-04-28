@@ -9,7 +9,7 @@
 
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1225, height: 560 };</script>
+			<script>var dialogSize = { width: 1230	, height: 560 };</script>
 			<com:scriptfile path="qpp014.j.start.js" />
 			<com:scriptfile path="qpp014.j.viewmodel.js" />
 			<com:stylefile path="qpp014.j.main.css" />
@@ -60,13 +60,11 @@
 							<div id="J_SEL_002"
 								data-bind="ntsComboBox: {
 								options: itemList_J_SEL_002,
-								optionsValue: 'code',
+								optionsValue: 'name',
 								value: selectedCode_J_SEL_002,
-								optionsText: 'name',
-								enable: true,
+								enable: isEnable,
 								columns: [
-									{ prop: 'code', length: 4 },
-									{ prop: 'name', length: 10 },
+									{ prop: 'name', length: 10 }
 								]}">
 							</div>
 						</div>
@@ -79,12 +77,10 @@
 							<div id="J_SEL_003"
 								data-bind="ntsComboBox: {
 								options: itemList_J_SEL_003,
-								optionsValue: 'code',
+								optionsValue: 'name',
 								value: selectedCode_J_SEL_003,
-								optionsText: 'name',
-								enable: true,
+								enable: isEnable,
 								columns: [
-									{ prop: 'code', length: 4 },
 									{ prop: 'name', length: 10 },
 								]}">
 							</div>
@@ -94,7 +90,7 @@
 						<div id="J_LBL_009" data-bind="ntsFormLabel: {required: false}">給与・予備月の出力形式</div>
 					</div>
 					<div class="divLine" style="padding-left: 30px;">
-						<div class="cf" id="J_SEL_009"
+						<div class="cf" id="J_SEL_004"
 							data-bind="ntsSwitchButton: {
 							options: ko.observableArray([
 					            { code: '1', name: '合算して出力' },

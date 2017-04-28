@@ -11,17 +11,16 @@ var qpp014;
                 ]);
                 self.selectedId_J_SEL_001 = ko.observable(0);
                 self.itemList_J_SEL_002 = ko.observableArray([
-                    new ItemModel_J_SEL_002('0001', 'aaaaaaa'),
-                    new ItemModel_J_SEL_002('0002', 'bbbbbbb'),
-                    new ItemModel_J_SEL_002('0003', 'ccccccc')
+                    new ItemModel_J_SEL_002('振込先順 '),
+                    new ItemModel_J_SEL_002('個人　コード順'),
                 ]);
-                self.selectedCode_J_SEL_002 = ko.observable('0002');
+                self.selectedCode_J_SEL_002 = ko.observable(self.itemList_J_SEL_002()[0]);
                 self.itemList_J_SEL_003 = ko.observableArray([
-                    new ItemModel_J_SEL_003('0001', 'mmmmmm'),
-                    new ItemModel_J_SEL_003('0002', 'qqqqqq'),
-                    new ItemModel_J_SEL_003('0003', 'oooooo')
+                    new ItemModel_J_SEL_002('漢字出力'),
+                    new ItemModel_J_SEL_002('カナ出力'),
                 ]);
-                self.selectedCode_J_SEL_003 = ko.observable('0001');
+                self.selectedCode_J_SEL_003 = ko.observable(self.itemList_J_SEL_003()[0]);
+                self.isEnable = ko.observable(false);
                 self.items_J_LST_001 = ko.observableArray([]);
                 for (var i_1 = 1; i_1 < 100; i_1++) {
                     self.items_J_LST_001.push(new ItemModel_J_LST_001('00' + i_1, '基本給 ' + i_1, 'des ' + i_1));
@@ -33,6 +32,17 @@ var qpp014;
                 self.dateOfPayment = ko.observable(moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("YYYY/MM/DD") +
                     "(" + nts.uk.time.yearmonthInJapanEmpire(moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("YYYY/MM")).toString() +
                     moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("DD") + "日)");
+                self.isEnable = ko.computed(function () {
+                    return self.selectedId_J_SEL_001() == 0 ? false : true;
+                });
+                if (nts.uk.ui.windows.getShared("sparePayAtr") != 3) {
+                    $('#J_SEL_004').css('display', 'none');
+                    $('#J_LBL_009').css('display', 'none');
+                }
+                else {
+                    $('#J_SEL_004').css('display', '');
+                    $('#J_LBL_009').css('display', '');
+                }
             }
             ScreenModel.prototype.closeDialog = function () {
                 nts.uk.ui.windows.close();
@@ -50,21 +60,12 @@ var qpp014;
         }());
         j.BoxModel_J_SEL_001 = BoxModel_J_SEL_001;
         var ItemModel_J_SEL_002 = (function () {
-            function ItemModel_J_SEL_002(code, name) {
-                this.code = code;
+            function ItemModel_J_SEL_002(name) {
                 this.name = name;
             }
             return ItemModel_J_SEL_002;
         }());
         j.ItemModel_J_SEL_002 = ItemModel_J_SEL_002;
-        var ItemModel_J_SEL_003 = (function () {
-            function ItemModel_J_SEL_003(code, name) {
-                this.code = code;
-                this.name = name;
-            }
-            return ItemModel_J_SEL_003;
-        }());
-        j.ItemModel_J_SEL_003 = ItemModel_J_SEL_003;
         var ItemModel_J_LST_001 = (function () {
             function ItemModel_J_LST_001(code, name, description) {
                 this.code = code;

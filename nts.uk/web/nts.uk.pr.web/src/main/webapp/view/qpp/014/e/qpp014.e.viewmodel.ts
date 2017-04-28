@@ -29,7 +29,7 @@ module qpp014.e {
             }
             self.dataFixed = ko.observableArray([]);
             //fix data to add to db BANK_TRANSFER
-            for (let i = 1; i < 10; i++) {
+            for (let i = 1; i < 4; i++) {
                 self.dataFixed.push(new TestArray("companyNameKana" + i, "99900000000000000000000000000000000" + i, "depCode" + i,
                     moment.utc(Math.floor(Math.random() * (2999 - 1900 + 1) + 1900).toString() + Math.floor(Math.random() * (12 - 10 + 1) + 10).toString() + Math.floor(Math.random() * (28 - 1 + 1) + 1).toString(), 'YYYYMMDD').toISOString(),
                     Math.floor(Math.random() * 2), Math.floor(Math.random() * 1001), 1, Math.floor(Math.random() * 2), Math.floor(Math.random() * (2999 - 1900 + 1) + 1900).toString() + Math.floor(Math.random() * (12 - 10 + 1) + 10).toString(),
@@ -43,7 +43,6 @@ module qpp014.e {
 
         startPage(): void {
             var self = this;
-            var dfd = $.Deferred();
             var index = ko.observable(0);
             self.numberOfPerson(self.dataFixed().length);
             if (self.numberOfPerson() > 0) {
@@ -77,7 +76,7 @@ module qpp014.e {
             var command = {
                 processingNoOfScreenE: nts.uk.ui.windows.getShared("processingNo"),
                 payDateOfScreenE: moment.utc(nts.uk.ui.windows.getShared("dateOfPayment")).toISOString(),
-                sparePayAtrOfScreenE: nts.uk.ui.windows.getShared("processingNo"),
+                sparePayAtrOfScreenE: nts.uk.ui.windows.getShared("sparePayAtr"),
                 processingYMOfScreenE: nts.uk.ui.windows.getShared("processingYMNotConvert"),
                 companyNameKana: bankTransfer.companyNameKana,
                 personId: bankTransfer.personId,

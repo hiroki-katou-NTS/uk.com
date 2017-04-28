@@ -16,6 +16,15 @@ var qpp014;
                     self.viewmodelg = new qpp014.g.viewmodel.ScreenModel(data);
                     self.viewmodelh = new qpp014.h.viewmodel.ScreenModel(data);
                     self.data = data;
+                    self.viewmodeld.sparePayAtr.subscribe(function (newValue) {
+                        nts.uk.ui.windows.setShared("sparePayAtr", newValue, true);
+                    });
+                    self.viewmodelg.g_INP_001(ko.computed(function () {
+                        return self.viewmodelg.g_INP_001(self.viewmodeld.dateOfPayment());
+                    }));
+                    self.viewmodelh.h_INP_001(ko.computed(function () {
+                        return self.viewmodelh.h_INP_001(self.viewmodeld.dateOfPayment());
+                    }));
                 }
                 ScreenModel.prototype.startPage = function () {
                     var self = this;

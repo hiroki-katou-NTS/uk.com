@@ -31,11 +31,11 @@
 
 			<div class="divLine">
 				<div class="divLine-col-1">
-					<div id="G_LBL_006" data-bind="ntsFormLabel: {required: false}">振込指定日</div>
+					<div data-name="振込指定日" id="G_LBL_006" data-bind="ntsFormLabel: {required: true}">振込指定日</div>
 				</div>
 				<div class="divLine-col-2">
-					<div id="G_INP_001"
-						data-bind="ntsDatePicker: { value: viewmodelg.g_INP_001, dateFormat: 'YYYY/MM/DD'}"></div>
+					<div id="G_INP_001" data-name="振込指定日"
+						data-bind="ntsDatePicker: { value: viewmodelg.g_INP_001, dateFormat: 'YYYY/MM/DD', required: true}"></div>
 					<label id="G_LBL_007"
 						data-bind="text: viewmodelg.yearMonthDateInJapanEmpire"></label>
 				</div>
@@ -48,13 +48,12 @@
 					<div id="G_SEL_001"
 						data-bind="ntsComboBox: {
 									options: viewmodelg.g_SEL_001_items,
-									optionsValue: 'nts-combo-label',
+									optionsValue: 'code',
 									value: viewmodelg.g_SEL_001_itemSelected,
 									editable: false,
 									enable: true,
 									columns: [
-										{ prop: 'code', length: 4 },
-										{ prop: 'name', length: 12 },
+										{ prop: 'label', length: 30 }
 									]}">
 					</div>
 				</div>
@@ -64,7 +63,7 @@
 					<div id="G_LBL_009" data-bind="ntsFormLabel: {required: false}">預金種目</div>
 				</div>
 				<div class="divLine-col-2">
-					<label id="G_LBL_010">010</label>
+					<label id="G_LBL_010" data-bind="text:viewmodelg.accountAtr"></label>
 				</div>
 			</div>
 			<div class="divLine">
@@ -72,7 +71,7 @@
 					<div id="G_LBL_011" data-bind="ntsFormLabel: {required: false}">口座番号</div>
 				</div>
 				<div class="divLine-col-2">
-					<label id="G_LBL_012">012</label>
+					<label id="G_LBL_012" data-bind="text:viewmodelg.accountNo"></label>
 				</div>
 			</div>
 			<div class="divLine">
@@ -85,7 +84,6 @@
 								options: viewmodelg.g_SEL_002_items,
 								optionsValue: 'code',
 								value: viewmodelg.g_SEL_002_itemSelected,
-								optionsText: 'code',
 								editable: false,
 								enable: true,
 								columns: [
@@ -100,10 +98,9 @@
 				</div>
 				<div class="divLine-col-2">
 					<div data-bind="with: viewmodelg.g_INP_002">
-						<input id="G_INP_002"
+						<input data-name="種別コード" id="G_INP_002"
 							data-bind="ntsNumberEditor: { 
 								value: value, 
-								constraint: 'ResidenceCode',
 								required: true,
 								enable: true }" />
 					</div>

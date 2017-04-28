@@ -7,16 +7,18 @@ module qpp014.j {
         //combobox
         //J_SEL_002
         itemList_J_SEL_002: KnockoutObservableArray<ItemModel_J_SEL_002>;
-        selectedCode_J_SEL_002: KnockoutObservable<string>;
+        selectedCode_J_SEL_002: KnockoutObservable<ItemModel_J_SEL_002>;
         //J_SEL_003
-        itemList_J_SEL_003: KnockoutObservableArray<ItemModel_J_SEL_003>;
-        selectedCode_J_SEL_003: KnockoutObservable<string>;
+        itemList_J_SEL_003: KnockoutObservableArray<ItemModel_J_SEL_002>;
+        selectedCode_J_SEL_003: KnockoutObservable<ItemModel_J_SEL_002>;
         //gridview
         items_J_LST_001: KnockoutObservableArray<ItemModel_J_LST_001>;
         currentCode_J_LST_001: KnockoutObservable<any>;
         currentCode_J_SEL_004: KnockoutObservable<any>;
         currentProcessingYm: any;
         dateOfPayment: any;
+        isEnable: KnockoutObservable<boolean>;
+        isHidden: KnockoutObservable<boolean>;
 
         constructor() {
             let self = this;
@@ -26,17 +28,16 @@ module qpp014.j {
             ]);
             self.selectedId_J_SEL_001 = ko.observable(0);
             self.itemList_J_SEL_002 = ko.observableArray([
-                new ItemModel_J_SEL_002('0001', 'aaaaaaa'),
-                new ItemModel_J_SEL_002('0002', 'bbbbbbb'),
-                new ItemModel_J_SEL_002('0003', 'ccccccc')
+                new ItemModel_J_SEL_002('振込先順 '),
+                new ItemModel_J_SEL_002('個人　コード順'),
             ]);
-            self.selectedCode_J_SEL_002 = ko.observable('0002')
+            self.selectedCode_J_SEL_002 = ko.observable(self.itemList_J_SEL_002()[0]);
             self.itemList_J_SEL_003 = ko.observableArray([
-                new ItemModel_J_SEL_003('0001', 'mmmmmm'),
-                new ItemModel_J_SEL_003('0002', 'qqqqqq'),
-                new ItemModel_J_SEL_003('0003', 'oooooo')
+                new ItemModel_J_SEL_002('漢字出力'),
+                new ItemModel_J_SEL_002('カナ出力'),
             ]);
-            self.selectedCode_J_SEL_003 = ko.observable('0001');
+            self.selectedCode_J_SEL_003 = ko.observable(self.itemList_J_SEL_003()[0]);
+            self.isEnable = ko.observable(false);
             //gridview
             //LST_001
             self.items_J_LST_001 = ko.observableArray([]);
@@ -47,9 +48,19 @@ module qpp014.j {
             self.currentCode_J_SEL_004 = ko.observable(1);
             self.currentProcessingYm = nts.uk.time.parseYearMonth(nts.uk.ui.windows.getShared("data").currentProcessingYm).format() + "(" +
                 nts.uk.time.yearmonthInJapanEmpire(nts.uk.time.parseYearMonth(nts.uk.ui.windows.getShared("data").currentProcessingYm).format()) + ")";
-            self.dateOfPayment = ko.observable(moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("YYYY/MM/DD") + 
-                                    "(" + nts.uk.time.yearmonthInJapanEmpire(moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("YYYY/MM")).toString() +
-                                     moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("DD") + "日)");
+            self.dateOfPayment = ko.observable(moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("YYYY/MM/DD") +
+                "(" + nts.uk.time.yearmonthInJapanEmpire(moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("YYYY/MM")).toString() +
+                moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("DD") + "日)");
+            self.isEnable = ko.computed(function() {
+                return self.selectedId_J_SEL_001() == 0 ? false : true;
+            });
+            if (nts.uk.ui.windows.getShared("sparePayAtr") != 3) {
+                $('#J_SEL_004').css('display','none');
+                $('#J_LBL_009').css('display','none');
+            } else {
+                $('#J_SEL_004').css('display','');
+                $('#J_LBL_009').css('display','');
+            }
         }
 
         closeDialog(): void {
@@ -65,26 +76,15 @@ module qpp014.j {
             self.name = name;
         }
     }
+
     export class ItemModel_J_SEL_002 {
-        code: string;
         name: string;
-        label: string;
 
-        constructor(code: string, name: string) {
-            this.code = code;
+        constructor(name: string) {
             this.name = name;
         }
     }
-    export class ItemModel_J_SEL_003 {
-        code: string;
-        name: string;
-        label: string;
 
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
-        }
-    }
     export class ItemModel_J_LST_001 {
         code: string;
         name: string;

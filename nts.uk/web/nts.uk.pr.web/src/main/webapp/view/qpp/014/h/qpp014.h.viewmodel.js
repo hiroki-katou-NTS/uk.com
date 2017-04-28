@@ -7,15 +7,18 @@ var qpp014;
             var ScreenModel = (function () {
                 function ScreenModel(data) {
                     var self = this;
-                    self.h_INP_001 = ko.observable(new Date('2016/12/01'));
+                    self.h_INP_001 = ko.observable();
                     self.h_LST_001_items = ko.observableArray([]);
                     for (var i_1 = 1; i_1 < 100; i_1++) {
                         self.h_LST_001_items.push(new ItemModel_H_LST_001('00' + i_1, '基本給', "description " + i_1));
                     }
                     self.h_LST_001_itemsSelected = ko.observable();
                     self.yearMonthDateInJapanEmpire = ko.computed(function () {
+                        if (self.h_INP_001() == undefined || self.h_INP_001() == null || self.h_INP_001() == "") {
+                            return '';
+                        }
                         return "(" + nts.uk.time.yearInJapanEmpire(moment(self.h_INP_001()).format('YYYY')).toString() +
-                            moment(self.h_INP_001()).format('MM') + "月" + moment(self.h_INP_001()).format('DD') + "日)";
+                            moment(self.h_INP_001()).format('MM') + " 月 " + moment(self.h_INP_001()).format('DD') + " 日)";
                     });
                     self.processingDate = ko.observable(nts.uk.time.formatYearMonth(data.currentProcessingYm));
                     self.processingDateInJapanEmprire = ko.computed(function () {

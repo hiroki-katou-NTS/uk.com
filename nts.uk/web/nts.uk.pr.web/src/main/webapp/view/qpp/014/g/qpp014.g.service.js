@@ -5,20 +5,17 @@ var qpp014;
         var service;
         (function (service) {
             var paths = {
-                getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
+                findAllLineBank: "basic/system/bank/linebank/findAll",
+                findAllBankBranch: "basic/system/bank/find/all",
             };
-            function getPaymentDateProcessingList() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getPaymentDateProcessingList)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
+            function findAllLineBank() {
+                return nts.uk.request.ajax("com", paths.findAllLineBank);
             }
-            service.getPaymentDateProcessingList = getPaymentDateProcessingList;
+            service.findAllLineBank = findAllLineBank;
+            function findAllBankBranch() {
+                return nts.uk.request.ajax("com", paths.findAllBankBranch);
+            }
+            service.findAllBankBranch = findAllBankBranch;
         })(service = g.service || (g.service = {}));
     })(g = qpp014.g || (qpp014.g = {}));
 })(qpp014 || (qpp014 = {}));

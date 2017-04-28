@@ -1,18 +1,21 @@
 module qpp014.g.service {
     var paths: any = {
-        getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
+        findAllLineBank: "basic/system/bank/linebank/findAll",
+        findAllBankBranch: "basic/system/bank/find/all",
+    }
+
+    /**
+     * Get data from DB LINE_BANK to screen
+     */
+    export function findAllLineBank(): JQueryPromise<Array<any>> {
+        return nts.uk.request.ajax("com", paths.findAllLineBank);
     }
     
-    export function getPaymentDateProcessingList(): JQueryPromise<Array<any>> {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.getPaymentDateProcessingList)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+    /**
+     * Get data from DB LINE_BANK to screen
+     */
+    export function findAllBankBranch(): JQueryPromise<Array<any>> {
+        return nts.uk.request.ajax("com", paths.findAllBankBranch);
     }
 }
 

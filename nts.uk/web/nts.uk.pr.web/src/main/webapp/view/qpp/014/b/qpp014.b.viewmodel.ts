@@ -18,6 +18,20 @@ module qpp014.b.viewmodel {
             self.viewmodelg = new qpp014.g.viewmodel.ScreenModel(data);
             self.viewmodelh = new qpp014.h.viewmodel.ScreenModel(data);
             self.data = data;
+            
+            //sparePayAtr not transfer value in screen d, so tranfer it here
+            self.viewmodeld.sparePayAtr.subscribe(function(newValue) {
+                nts.uk.ui.windows.setShared("sparePayAtr", newValue, true);
+            });
+
+            //transfer data between screen d and screen g
+            self.viewmodelg.g_INP_001(ko.computed(function() {
+                return self.viewmodelg.g_INP_001(self.viewmodeld.dateOfPayment());
+            }));
+            //transfer data between screen d and screen h
+            self.viewmodelh.h_INP_001(ko.computed(function() {
+                return self.viewmodelh.h_INP_001(self.viewmodeld.dateOfPayment());
+            }));
         }
 
         startPage(): JQueryPromise<any> {
