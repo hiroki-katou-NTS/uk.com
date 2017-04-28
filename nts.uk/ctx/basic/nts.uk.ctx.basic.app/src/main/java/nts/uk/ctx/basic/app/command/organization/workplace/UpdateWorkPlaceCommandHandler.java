@@ -46,6 +46,7 @@ public class UpdateWorkPlaceCommandHandler extends CommandHandler<List<UpdateWor
 		List<WorkPlace> listDep1 = new ArrayList<WorkPlace>();
 		Date startDate1 = new Date();
 		Date endDate1 = new Date();
+		//  update workplace when click register button
 		if ((context.getCommand().size() == 1)
 				&& (context.getCommand().get(0).getMemo().compareTo("addhistoryfromlatest") != 0)) {
 
@@ -59,7 +60,6 @@ public class UpdateWorkPlaceCommandHandler extends CommandHandler<List<UpdateWor
 				startDate1 = formatter.parse(context.getCommand().get(0).getStartDate());
 				endDate1 = formatter.parse(context.getCommand().get(0).getEndDate());
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			GeneralDate startDate = GeneralDate.legacyDate(startDate1);
@@ -81,7 +81,7 @@ public class UpdateWorkPlaceCommandHandler extends CommandHandler<List<UpdateWor
 			workPlaceRepository.update(workPlace);
 			updateMemo(companyCode, historyId, context.getCommand().get(0).getMemo());
 		} else if (context.getCommand().size() > 1) {
-
+			// update hierachy of list workplace when insert 1 item to tree
 			for (int i = 0; i < context.getCommand().size(); i++) {
 				if (!workPlaceRepository.isExistWorkPace(companyCode, context.getCommand().get(0).getHistoryId(),
 						new WorkPlaceCode(context.getCommand().get(i).getWorkPlaceCode()))) {
@@ -143,12 +143,11 @@ public class UpdateWorkPlaceCommandHandler extends CommandHandler<List<UpdateWor
 			updateMemo(companyCode, historyId, context.getCommand().get(0).getMemo());
 		} else if ((context.getCommand().size() == 1)
 				&& (context.getCommand().get(0).getMemo().compareTo("addhistoryfromlatest") == 0)) {
-
+			//  update endDate when insert 1 history.
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 			try {
 				endDate1 = formatter.parse(context.getCommand().get(0).getEndDate());
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			GeneralDate endDate = GeneralDate.legacyDate(endDate1);

@@ -15,8 +15,8 @@ module cmm011.a.viewmodel {
 
         // treegrid
         dataSource: KnockoutObservableArray<any>;
-        // dataSource2 : chứa list workplace để insert vào csdl trong trường hợp thêm mới lịch sử
-        dataSource2: KnockoutObservableArray<any>;
+        // dataSourceToInsert : chứa list workplace để insert vào csdl trong trường hợp thêm mới lịch sử
+        dataSourceToInsert: KnockoutObservableArray<any>;
         currentItem_treegrid: KnockoutObservable<any>;
         singleSelectedCode: KnockoutObservable<string>;
         selectedCodes_treegrid: any;
@@ -63,7 +63,7 @@ module cmm011.a.viewmodel {
             self.A_INP_MEMO = ko.observable(null);
 
             self.dataSource = ko.observableArray([]);
-            self.dataSource2 = ko.observableArray([]);
+            self.dataSourceToInsert = ko.observableArray([]);
             self.singleSelectedCode = ko.observable(null);
             self.selectedCodes_treegrid = ko.observableArray([]);
             self.headers = ko.observableArray(["", ""]);
@@ -130,7 +130,7 @@ module cmm011.a.viewmodel {
                                     self.singleSelectedCode(self.dataSource()[0].departmentCode);
                                 }
                             }).fail(function(error) {
-                                alert(error.message);
+                                alert(error.messageId);
                             })
                         service.getMemoWorkPLaceByHistId(self.historyId())
                             .done(function(memo: viewmodel.model.MemoDto) {
@@ -138,7 +138,7 @@ module cmm011.a.viewmodel {
                                     self.A_INP_MEMO(memo.memo);
                                 }
                             }).fail(function(error) {
-                                alert(error.message);
+                                alert(error.messageId);
                             })
                         dfd.resolve();
                         return dfd.promise();
@@ -250,13 +250,13 @@ module cmm011.a.viewmodel {
             }
             /*case add list workplace trong trường hợp thêm mới lịch sử từ lịch sử mới nhất*/
             if (self.checkAddHist1() == "AddhistoryFromLatest") {
-                let _dt = self.dataSource2();
+                let _dt = self.dataSourceToInsert();
                 if (_dt.length > 0) {
                     _dt[0].memo = self.A_INP_MEMO();
                 }
-                self.dataSource2(_dt);
+                self.dataSourceToInsert(_dt);
                 var dfd2 = $.Deferred();
-                service.addListWorkPlace(self.dataSource2())
+                service.addListWorkPlace(self.dataSourceToInsert())
                     .done(function(mess: any) {
                         var dfd2 = $.Deferred();
                         let _dto = new model.AddWorkplaceDto("", self.itemHistId()[1].historyId, self.itemHistId()[1].endDate, null, null, null, null, null, "addhistoryfromlatest", null, null, null, null, null, null);
@@ -308,7 +308,7 @@ module cmm011.a.viewmodel {
                         .done(function(done) {
                             self.getAllWorkPlaceByHistId(hisdto.historyId, self.singleSelectedCode());
                         }).fail(function(error) {
-                            alert(error.message);
+                            alert(error.messageId);
                         })
                     dfd.resolve();
                     return dfd.promise();
@@ -340,7 +340,7 @@ module cmm011.a.viewmodel {
                         self.singleSelectedCode(workplaceCode);
                     }
                 }).fail(function(error) {
-                    alert(error.message);
+                    alert(error.messageId);
                 })
         }
 
@@ -387,7 +387,7 @@ module cmm011.a.viewmodel {
                         self.arrayItemEdit().push(item);
                     }
                     if (item.children.length > 0) {
-                        self.updateHierachy1(item);
+                        self.updateHierachyWhenclickUpdownBtn(item);
                     }
                 }
             } else {
@@ -425,7 +425,7 @@ module cmm011.a.viewmodel {
                         self.arrayItemEdit().push(item);
                     }
                     if (item.children.length > 0) {
-                        self.updateHierachy1(item);
+                        self.updateHierachyWhenclickUpdownBtn(item);
                     }
                 }
             }
@@ -470,7 +470,7 @@ module cmm011.a.viewmodel {
                                 item1.hierarchyCode = phc + itemAddH;
                                 item1.editIndex = true;
                                 if (item1.children.length > 0) {
-                                    self.updateHierachy2(item1, phc + itemAddH);
+                                    self.updateHierachyWhenInsertItem(item1, phc + itemAddH);
                                 }
                             }
                             var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item) { return item.editIndex; });
@@ -503,7 +503,7 @@ module cmm011.a.viewmodel {
                                 item2.hierarchyCode = itemAddH;
                                 item2.editIndex = true;
                                 if (item2.children.length > 0) {
-                                    self.updateHierachy2(item2, itemAddH);
+                                    self.updateHierachyWhenInsertItem(item2, itemAddH);
                                 }
                             }
                             var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item) { return item.editIndex; });
@@ -662,7 +662,7 @@ module cmm011.a.viewmodel {
                                 item.workPlaceCode = item.departmentCode;
                             });
                             self.checkAddHist1("AddhistoryFromLatest");
-                            self.dataSource2(_dt2);
+                            self.dataSourceToInsert(_dt2);
                         } else {
                             let add = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");
                             let arr = self.itemHistId();
@@ -716,7 +716,7 @@ module cmm011.a.viewmodel {
                             return dfd.promise();
                         })
                         .fail(function(error) {
-                            if (error.message == "ER06") {
+                            if (error.messageId == "ER06") {
                                 alert("対象データがありません。");
                             }
                         })
@@ -794,7 +794,7 @@ module cmm011.a.viewmodel {
                             item1.hierarchyCode = phc + itemAddH;
                             item1.editIndex = true;
                             if (item1.children.length > 0) {
-                                self.updateHierachy2(item1, phc + itemAddH);
+                                self.updateHierachyWhenInsertItem(item1, phc + itemAddH);
                             }
                         }
                         newObj.hierarchyCode = phc + hierachyItemadd;
@@ -830,7 +830,7 @@ module cmm011.a.viewmodel {
                             item2.hierarchyCode = itemAddH;
                             item2.editIndex = true;
                             if (item2.children.length > 0) {
-                                self.updateHierachy2(item2, itemAddH);
+                                self.updateHierachyWhenInsertItem(item2, itemAddH);
                             }
                         }
                         newObj.hierarchyCode = hierachyItemadd;
@@ -857,8 +857,6 @@ module cmm011.a.viewmodel {
                     $("#A_INP_CODE").focus();
                     self.disableBtn();
                 }
-
-
             } else {
                 alert("maximum 889 item");
             }
@@ -875,8 +873,8 @@ module cmm011.a.viewmodel {
             $("#A_INP_CODE").focus();
         }
 
-
-        updateHierachy1(item: any) {
+        // update hierachy when click button up down
+        updateHierachyWhenclickUpdownBtn(item: any) {
             var self = this;
             let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
             for (var i in item.children) {
@@ -908,12 +906,13 @@ module cmm011.a.viewmodel {
                     self.arrayItemEdit().push(itemCon);
                 }
                 if (itemCon.children.length > 0) {
-                    self.updateHierachy1(itemCon);
+                    self.updateHierachyWhenclickUpdownBtn(itemCon);
                 }
             }
         }
-
-        updateHierachy2(item: any, hierarchyCode: any) {
+        
+        // update Hierachy when insert item to tree
+        updateHierachyWhenInsertItem(item: any, hierarchyCode: any) {
             var self = this;
             for (var i in item.children) {
                 var con = item.children[i];
@@ -922,7 +921,7 @@ module cmm011.a.viewmodel {
                 con.hierarchyCode = ii;
                 con.editIndex = true;
                 if (con.children.length > 0) {
-                    self.updateHierachy2(con, hierarchyCode);
+                    self.updateHierachyWhenInsertItem(con, hierarchyCode);
                 }
             }
         }
@@ -961,7 +960,7 @@ module cmm011.a.viewmodel {
                             item.hierarchyCode = phc + itemAddH;
                             item.editIndex = true;
                             if (item.children.length > 0) {
-                                self.updateHierachy2(item, phc + itemAddH);
+                                self.updateHierachyWhenInsertItem(item, phc + itemAddH);
                             }
                         }
                         newObj.hierarchyCode = phc + hierachyItemadd;
@@ -1000,7 +999,7 @@ module cmm011.a.viewmodel {
                             item.hierarchyCode = itemAddH;
                             item.editIndex = true;
                             if (item.children.length > 0) {
-                                self.updateHierachy2(item, itemAddH);
+                                self.updateHierachyWhenInsertItem(item, itemAddH);
                             }
                         }
                         newObj.hierarchyCode = hierachyItemadd;

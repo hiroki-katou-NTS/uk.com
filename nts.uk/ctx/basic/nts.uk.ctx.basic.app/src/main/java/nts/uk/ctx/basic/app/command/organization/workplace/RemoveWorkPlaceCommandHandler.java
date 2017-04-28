@@ -19,6 +19,7 @@ public class RemoveWorkPlaceCommandHandler extends CommandHandler<RemoveWorkPlac
 	@Override
 	protected void handle(CommandHandlerContext<RemoveWorkPlaceCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
+		// check isExistWorkPace
 		if (!workPlaceRepository.isExistWorkPace(companyCode, context.getCommand().getHistoryId(),
 				new WorkPlaceCode(context.getCommand().getWorkplaceCode()))) {
 			throw new BusinessException("ER06");
