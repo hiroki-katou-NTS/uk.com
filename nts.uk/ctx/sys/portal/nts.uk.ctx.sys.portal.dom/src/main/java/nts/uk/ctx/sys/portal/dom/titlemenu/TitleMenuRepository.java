@@ -27,22 +27,26 @@ public interface TitleMenuRepository {
 	
 	/**
 	 * Add
-	 * @param companyID
-	 * @param titleMenuCD
+	 * @param title
 	 */
-	void add (String companyID , String titleMenuCD);
+	void add (TitleMenu  title);
 	
 	/**
 	 * Update
-	 * @param companyID
-	 * @param titleMenuCD
+	 * @param title
+	 * 
 	 */
-	void update (String companyID , String titleMenuCD);
-	
+	void update (TitleMenu  title);
 	/**
+	 * Copy
+	 * @param title
+	 *//*
+	void copy (TitleMenu  title);*/
+	 /**
 	 * Remove
 	 * @param companyID
 	 * @param titleMenuCD
 	 */
 	void remove (String companyID , String titleMenuCD);
-}
+
+	}

@@ -26,10 +26,10 @@ public interface FlowMenuRepository {
 	
 	/**
 	 * Add
-	 * @param companyID
-	 * @param toppagePartID
+	 * @param flow 
+	 * 
 	 */
-	void add (String companyID, String toppagePartID);
+	void add (FlowMenu flow);
 	/**
 	 * Update
 	 * @param companyID
@@ -43,6 +43,7 @@ public interface FlowMenuRepository {
 	 */
 
 	void remove (String companyID, String toppagePartID);
+
 	
 	
 }

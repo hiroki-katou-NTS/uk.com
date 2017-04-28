@@ -7,8 +7,6 @@ import lombok.EqualsAndHashCode;
 
 import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.sys.portal.dom.titlemenu.primitive.Name;
-import nts.uk.ctx.sys.portal.dom.titlemenu.primitive.TitleMenuCD;
 
 @Value
 @EqualsAndHashCode(callSuper = false)

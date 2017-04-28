@@ -51,7 +51,7 @@ public class JpaTitleMenuRepository extends JpaRepository implements TitleMenuRe
 	 * @return 
 	 */
 	@Override
-	public void add(String companyID, String titleMenuCD) {
+	public void add(TitleMenu title) {
 		this.commandProxy().insert(CcgmtTitleMenu.class);
 		}
 	/**
@@ -61,7 +61,7 @@ public class JpaTitleMenuRepository extends JpaRepository implements TitleMenuRe
 	 * @return 
 	 */	
 	@Override
-	public void update(String companyID, String titleMenuCD) {
+	public void update(TitleMenu title) {
 				this.commandProxy().update(CcgmtTitleMenu.class);
 	}
 	/**
@@ -78,6 +78,6 @@ public class JpaTitleMenuRepository extends JpaRepository implements TitleMenuRe
 	private TitleMenu toDomain(CcgmtTitleMenu entity) {
 		return TitleMenu.createFromJavaType(entity.ccgmtTitleMenuPK.companyID, entity.ccgmtTitleMenuPK.titleMenuCD, entity.layoutID, entity.name);
 	}
-	
+
 }
 

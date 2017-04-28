@@ -6,13 +6,15 @@ package nts.uk.ctx.sys.portal.infra.repository.flowmenu;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
 import nts.uk.ctx.sys.portal.infra.entity.Flowmenu.CcgmtFlowMenu;
 
 
-
+@Stateless
 public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepository{
 	
 	private final String SELECT= "SELECT c FROM CcgmtFlowMenu c";
@@ -51,7 +53,7 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 	 * @return
 	 */
 	@Override
-	public void add(String companyID, String toppagePartID) {
+	public void add(FlowMenu flow) {
 		this.commandProxy().insert(CcgmtFlowMenu.class);
 		
 	}
