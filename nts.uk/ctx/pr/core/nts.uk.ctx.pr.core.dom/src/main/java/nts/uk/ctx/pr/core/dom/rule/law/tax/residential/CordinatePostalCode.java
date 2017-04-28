@@ -10,7 +10,8 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author lanlt
  *
  */
-@StringMaxLength(10)
+@StringMaxLength(7)
+/*@StringCharType(CharType.ALPHABET)*/
 public class CordinatePostalCode extends StringPrimitiveValue<CordinatePostOffice>{
 /**
  * contructors

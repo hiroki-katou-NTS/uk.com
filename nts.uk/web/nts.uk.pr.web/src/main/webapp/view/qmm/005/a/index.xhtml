@@ -46,12 +46,12 @@
 						<tr>
 							<th data-bind="text: $index() + 1"></th>
 							<td class="division">
-								<div data-bind="if: enable()">
+								<div data-bind="if: enable()" class="text-left">
 									<span data-bind="text: label"></span>
 									<button id="A_BTN_006" data-bind="click: showModalDialogD">編集</button>
 								</div>
-								<div data-bind="if: !enable()">
-									<button id="A_BTN_007" class="full-width" data-bind="click: showModalDialogC">追加</button>
+								<div data-bind="if: !enable()" class="text-center">
+									<button id="A_BTN_007" class="hafl-width" data-bind="click: showModalDialogC">追加</button>
 								</div>
 							</td>
 							<td><button id="A_BTN_008" class='full-width' data-bind="click: showModalDialogB, enable: enable()">設定</button></td>
@@ -62,7 +62,7 @@
 											optionsValue: 'index',
 											value:  sel001,
 											optionsText: 'label',
-											editable: enable(),
+											editable: false,
 											enable: enable(),
 											columns: [{ prop: 'label', length: 4 }]}">
 									</div>
@@ -73,7 +73,7 @@
 										optionsValue: 'index',
 										value:  sel002,
 										optionsText: 'label',
-										editable: enable(),
+										editable: false,
 										enable: enable(),
 										columns: [{ prop: 'label', length: 4 }]}"></div>
 							</td>
@@ -91,7 +91,7 @@
 											optionsValue: 'index',
 											value:  sel004,
 											optionsText: 'label',
-											editable: enable(),
+											editable: false,
 											enable: enable(),
 											columns: [{ prop: 'label', length: 4 }]}">
 									</div>
@@ -102,7 +102,7 @@
 										optionsValue: 'index',
 										value:  sel005,
 										optionsText: 'label',
-										editable: enable(),
+										editable: false,
 										enable: enable(),
 										columns: [{ prop: 'label', length: 4 }]}"></div></td>
 						</tr>
