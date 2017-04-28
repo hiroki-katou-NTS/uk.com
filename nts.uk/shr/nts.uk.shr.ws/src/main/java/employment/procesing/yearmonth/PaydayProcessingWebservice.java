@@ -7,11 +7,12 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.ws.WebService;
 import nts.uk.shr.find.employment.processing.yearmonth.IPaydayProcessingFinder;
 import nts.uk.shr.find.employment.processing.yearmonth.PaydayProcessingDto;
 @Path("pr/core")
 @Produces("application/json")
-public class PaydayProcessingWebservice {
+public class PaydayProcessingWebservice extends WebService {
 	
 	@Inject
 	private IPaydayProcessingFinder processing;
