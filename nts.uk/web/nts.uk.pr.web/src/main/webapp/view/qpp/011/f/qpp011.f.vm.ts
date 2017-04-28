@@ -209,7 +209,6 @@ module qpp011.f {
             self.selectedRuleCode = ko.observable(1);
             self.F_LBL_002_Year_Month(nts.uk.ui.windows.getShared('QPP011_F_TargetDate'));
             //self.F_LBL_002_Year_Month = nts.uk.sessionStorage.getItemAndRemove("TargetDate").value;
-            debugger;
             self.F_Year_Month(nts.uk.ui.windows.getShared('QPP011_F_DesignatedMonth'));
             self.F_LBL_003_yearInJapanEmpire = ko.observable();
             self.F_LBL_003_yearInJapanEmpire("(" + nts.uk.time.yearmonthInJapanEmpire(self.F_LBL_002_Year_Month()).toString() + ")");

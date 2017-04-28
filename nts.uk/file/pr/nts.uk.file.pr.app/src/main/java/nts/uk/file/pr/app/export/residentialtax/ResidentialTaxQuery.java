@@ -10,7 +10,7 @@ public class ResidentialTaxQuery {
 	private List<String> residentTaxCodeList;
 	private int companyLogin;
 	private String regalDocCompanyCode;
-	private int yearMonth;
+	private String yearMonth;
 	private String processingYearMonth;
 	private String processingYearMonthJapan;
 	private GeneralDate endDate;
