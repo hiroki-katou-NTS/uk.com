@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.wageledger.command;
@@ -20,27 +20,31 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class AggregateItemRemoveCommandHandler extends CommandHandler<AggregateItemRemoveCommand> {
-	
+
 	/** The repository. */
 	@Inject
 	private WLAggregateItemRepository repository;
-	
+
 	/** The output setting repo. */
 	@Inject
 	private WLOutputSettingRepository outputSettingRepo;
 
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<AggregateItemRemoveCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		WLItemSubject itemSubject = context.getCommand().getSubject().toDomain(companyCode);
-		
+
 		// Remove aggregate item.
 		this.repository.remove(itemSubject);
-		
+
 		// Remove aggregate item used by output setting.
 		this.outputSettingRepo.removeAggregateItemUsed(itemSubject);
 	}

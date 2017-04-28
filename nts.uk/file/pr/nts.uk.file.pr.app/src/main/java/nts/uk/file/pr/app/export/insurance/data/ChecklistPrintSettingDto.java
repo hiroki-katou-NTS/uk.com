@@ -13,7 +13,6 @@ import lombok.Setter;
 /**
  * The Class ChecklistPrintSettingDto.
  *
- * @author duongnd
  */
 
 @Setter

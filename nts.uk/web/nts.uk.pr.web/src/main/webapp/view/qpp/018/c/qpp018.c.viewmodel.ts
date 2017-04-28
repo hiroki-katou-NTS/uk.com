@@ -54,7 +54,7 @@ module nts.uk.pr.view.qpp018.c {
                 if (!checklistSetting.showDetail() && !checklistSetting.showOffice() && !checklistSetting.showTotal() 
                     && !checklistSetting.showDeliveryNoticeAmount()) {
                     isError = true;
-                    $('#require-least-item').ntsError('set', '必須の入力項目が入力されていません。');
+                    $('#require-least-item').ntsError('set', 'が入力されていません。');
                 }
                 return isError;
             }

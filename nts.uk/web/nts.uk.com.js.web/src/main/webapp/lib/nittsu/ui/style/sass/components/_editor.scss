@@ -7,6 +7,7 @@ $editor-border-color: #999999;
 		padding: 5px 10px;
 		font-family: $font_family_monospace;
 		border-radius: 5px;
+		overflow: visible;
 		&:focus{outline: none;}
 	}
 	

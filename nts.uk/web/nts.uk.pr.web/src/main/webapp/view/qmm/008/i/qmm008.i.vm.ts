@@ -1,7 +1,5 @@
 module nts.uk.pr.view.qmm008.i {
     export module viewmodel {
-        import commonService = nts.uk.pr.view.qmm008._0.common.service;
-        import AvgEarnLevelMasterSettingDto = nts.uk.pr.view.qmm008._0.common.service.model.AvgEarnLevelMasterSettingDto;
         import FunRateItemModel = nts.uk.pr.view.qmm008.c.viewmodel.FunRateItemModel;
         import PensionRateItemModel = nts.uk.pr.view.qmm008.c.viewmodel.PensionRateItemModel;
         import PensionRateRoundingModel = nts.uk.pr.view.qmm008.c.viewmodel.PensionRateRoundingModel;
@@ -9,7 +7,6 @@ module nts.uk.pr.view.qmm008.i {
         import ListPensionAvgearnDto = nts.uk.pr.view.qmm008.i.service.model.ListPensionAvgearnDto;
 
         export class ScreenModel {
-            listAvgEarnLevelMasterSetting: Array<AvgEarnLevelMasterSettingDto>;
             listPensionAvgearnModel: KnockoutObservableArray<PensionAvgearnModel>;
             numberEditorCommonOption: KnockoutObservable<nts.uk.ui.option.NumberEditorOption>;
 
@@ -24,7 +21,6 @@ module nts.uk.pr.view.qmm008.i {
             errorList: KnockoutObservableArray<any>;
             constructor(officeName: string, pensionModel: PensionRateModelFromScreenA) {
                 var self = this;
-                self.listAvgEarnLevelMasterSetting = [];
                 self.listPensionAvgearnModel = ko.observableArray<PensionAvgearnModel>([]);
                 self.pensionRateModel = new PensionRateModel(
                     pensionModel.historyId,
@@ -60,24 +56,12 @@ module nts.uk.pr.view.qmm008.i {
             public startPage(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                $.when(self.loadAvgEarnLevelMasterSetting(), self.loadPensionAvgearn()).done(() => {
+                $.when(self.loadPensionAvgearn()).done(() => {
                     dfd.resolve();
                 });
                 return dfd.promise();
             }
 
-            /**
-             * Load AvgEarnLevelMasterSetting list.
-             */
-            private loadAvgEarnLevelMasterSetting(): JQueryPromise<void> {
-                var self = this;
-                var dfd = $.Deferred<void>();
-                commonService.getAvgEarnLevelMasterSettingList().done(res => {
-                    self.listAvgEarnLevelMasterSetting = res;
-                    dfd.resolve();
-                });
-                return dfd.promise();
-            }
 
             /**
              * Load PensionAvgEarn.
@@ -86,9 +70,13 @@ module nts.uk.pr.view.qmm008.i {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 service.findPensionAvgearn(self.pensionRateModel.historyId).done(res => {
+                    var salMin: number = 0;
                     res.listPensionAvgearnDto.forEach(item => {
                         self.listPensionAvgearnModel.push(new PensionAvgearnModel(
-                            item.levelCode,
+                            item.grade,
+                            item.avgEarn,
+                            salMin,
+                            item.upperLimit,
                             new PensionAvgearnValueModel(
                                 item.companyFund.maleAmount,
                                 item.companyFund.femaleAmount,
@@ -114,6 +102,7 @@ module nts.uk.pr.view.qmm008.i {
                                 item.personalPension.femaleAmount,
                                 item.personalPension.unknownAmount),
                             item.childContributionAmount));
+                        salMin = item.upperLimit;
                     });
                     self.dirty.reset();
                     dfd.resolve();
@@ -138,8 +127,9 @@ module nts.uk.pr.view.qmm008.i {
              */
             private save(): void {
                 var self = this;
-                // Return if has error.
-                if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                // Validate.
+                $('.nts-input').ntsEditor('validate');
+                if ($('.nts-input').ntsError('hasError')) {
                     return;
                 }
                 service.updatePensionAvgearn(self.collectData(), self.pensionRateModel.officeCode)
@@ -167,116 +157,52 @@ module nts.uk.pr.view.qmm008.i {
             /**
              * ReCalculate the listPensionAvgearnModel
              */
-            private reCalculate(): void {
+            public reCalculate(): void {
+                // TODO: LÀM LẠI
                 var self = this;
                 self.clearError();
                 // Clear current listPensionAvgearnModel
                 self.listPensionAvgearnModel.removeAll();
 
                 // Recalculate listPensionAvgearnModel
-                self.listAvgEarnLevelMasterSetting.forEach(item => {
-                    self.listPensionAvgearnModel.push(self.calculatePensionAvgearn(item));
-                });
-            }
-
-            /**
-             * Calculate the PensionAvgearn
-             */
-            private calculatePensionAvgearn(levelMasterSetting: AvgEarnLevelMasterSettingDto): PensionAvgearnModel {
-                var self = this;
-                var model = self.pensionRateModel;
-                var fundRateItems: FunRateItemModel = self.pensionRateModel.fundRateItems;
-                var pensionRateItems: PensionRateItemModel = self.pensionRateModel.rateItems;
-                var roundingMethods: PensionRateRoundingModel = self.pensionRateModel.roundingMethods;
-                var personalRounding = self.convertToRounding(roundingMethods.pensionSalaryPersonalComboBoxSelectedCode());
-                var companyRounding = self.convertToRounding(roundingMethods.pensionSalaryCompanyComboBoxSelectedCode()); 
-                var rate = levelMasterSetting.avgEarn / 1000;
-                var fundInputApply = self.pensionRateModel.fundInputApply;
-                if(fundInputApply == FundInputApply.Yes){
-                    return new PensionAvgearnModel(
-                        levelMasterSetting.code,
-                        new PensionAvgearnValueModel(
-                            self.rounding(companyRounding, fundRateItems.salaryCompanySonBurden() * rate),
-                            self.rounding(companyRounding, fundRateItems.salaryCompanyDaughterBurden() * rate),
-                            self.rounding(companyRounding, fundRateItems.salaryCompanyUnknownBurden() * rate)),
-                        new PensionAvgearnValueModel(
-                            self.rounding(companyRounding, fundRateItems.salaryCompanySonExemption() * rate),
-                            self.rounding(companyRounding, fundRateItems.salaryCompanyDaughterExemption() * rate),
-                            self.rounding(companyRounding, fundRateItems.salaryCompanyUnknownExemption() * rate)),
-                        new PensionAvgearnValueModel(
-                            self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanySon() * rate),
-                            self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanyDaughter() * rate),
-                            self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanyUnknown() * rate)),
-                        new PensionAvgearnValueModel(
-                            self.rounding(personalRounding, fundRateItems.salaryPersonalSonBurden() * rate),
-                            self.rounding(personalRounding, fundRateItems.salaryPersonalDaughterBurden() * rate),
-                            self.rounding(personalRounding, fundRateItems.salaryPersonalUnknownBurden() * rate)),
-                        new PensionAvgearnValueModel(
-                            self.rounding(personalRounding, fundRateItems.salaryPersonalSonExemption() * rate),
-                            self.rounding(personalRounding, fundRateItems.salaryPersonalDaughterExemption() * rate),
-                            self.rounding(personalRounding, fundRateItems.salaryPersonalUnknownExemption() * rate)),
-                        new PensionAvgearnValueModel(
-                            self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalSon() * rate),
-                            self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalDaughter() * rate),
-                            self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalUnknown() * rate)),
-                        model.childContributionRate() * rate
-                    );
-                }
-                else {
-                    return new PensionAvgearnModel(
-                        levelMasterSetting.code,
-                        new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero),
-                        new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero),
-                        new PensionAvgearnValueModel(
-                            self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanySon() * rate),
-                            self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanyDaughter() * rate),
-                            self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanyUnknown() * rate)),
-                        new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero),
-                        new PensionAvgearnValueModel(Number.Zero, Number.Zero, Number.Zero),
-                        new PensionAvgearnValueModel(
-                            self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalSon() * rate),
-                            self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalDaughter() * rate),
-                            self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalUnknown() * rate)),
-                        model.childContributionRate() * rate
-                    );
-                }
-            }
-
-            // rounding 
-            private rounding(roudingMethod: string,roundValue: number): number {
-                var self = this;
-                var backupValue = roundValue;
-                switch(roudingMethod){
-                    case Rounding.ROUNDUP: return Math.ceil(backupValue);
-                    case Rounding.TRUNCATION: return Math.floor(backupValue);
-                    case Rounding.ROUNDDOWN:
-                        if ((backupValue * 10) % 10 > 5)
-                            return Math.ceil(backupValue);
-                        else
-                            return Math.floor(backupValue);
-                    case Rounding.DOWN4_UP5: return self.roudingDownUp(backupValue, 4);
-                    case Rounding.DOWN5_UP6: return self.roudingDownUp(backupValue, 5);
-                }
-            }
-
-            private roudingDownUp(value: number, down: number): number {
-                var newVal = Math.round(value * 10) / 10;
-                if ((newVal * 10) % 10 > down)
-                    return Math.ceil(value);
-                else
-                    return Math.floor(value);
-            }
-
-              //value to string rounding
-            public convertToRounding(stringValue: string) {
-                switch (stringValue) {
-                    case "0": return Rounding.TRUNCATION;
-                    case "1": return Rounding.ROUNDUP;
-                    case "2": return Rounding.DOWN4_UP5;
-                    case "3": return Rounding.DOWN5_UP6;
-                    case "4": return Rounding.ROUNDDOWN;
-                    default: return Rounding.TRUNCATION;
-                }
+                service.recalculatePensionAvgearn(self.pensionRateModel.historyId)
+                    .done(res => {
+                        var salMin: number = 0;
+                        res.listPensionAvgearnDto.forEach(item => {
+                            self.listPensionAvgearnModel.push(new PensionAvgearnModel(
+                                item.grade,
+                                item.avgEarn,
+                                salMin,
+                                item.upperLimit,
+                                new PensionAvgearnValueModel(
+                                    item.companyFund.maleAmount,
+                                    item.companyFund.femaleAmount,
+                                    item.companyFund.unknownAmount),
+                                new PensionAvgearnValueModel(
+                                    item.companyFundExemption.maleAmount,
+                                    item.companyFundExemption.femaleAmount,
+                                    item.companyFundExemption.unknownAmount),
+                                new PensionAvgearnValueModel(
+                                    item.companyPension.maleAmount,
+                                    item.companyPension.femaleAmount,
+                                    item.companyPension.unknownAmount),
+                                new PensionAvgearnValueModel(
+                                    item.personalFund.maleAmount,
+                                    item.personalFund.femaleAmount,
+                                    item.personalFund.unknownAmount),
+                                new PensionAvgearnValueModel(
+                                    item.personalFundExemption.maleAmount,
+                                    item.personalFundExemption.femaleAmount,
+                                    item.personalFundExemption.unknownAmount),
+                                new PensionAvgearnValueModel(
+                                    item.personalPension.maleAmount,
+                                    item.personalPension.femaleAmount,
+                                    item.personalPension.unknownAmount),
+                                item.childContributionAmount));
+                            salMin = item.upperLimit;
+                        });
+                        self.dirty.reset();
+                    });
             }
 
             private closeDialogWithDirtyCheck(): void {
@@ -345,7 +271,10 @@ module nts.uk.pr.view.qmm008.i {
          * PensionAvgearn Model
          */
         export class PensionAvgearnModel {
-            levelCode: number;
+            grade: number;
+            avgEarn: number;
+            lowerLimit: number;
+            upperLimit: number;
             companyFund: PensionAvgearnValueModel;
             companyFundExemption: PensionAvgearnValueModel;
             companyPension: PensionAvgearnValueModel;
@@ -354,7 +283,10 @@ module nts.uk.pr.view.qmm008.i {
             personalPension: PensionAvgearnValueModel;
             childContributionAmount: KnockoutObservable<number>;
             constructor(
-                levelCode: number,
+                grade: number,
+                avgEarn: number,
+                lowerLimit: number,
+                upperLimit: number,
                 companyFund: PensionAvgearnValueModel,
                 companyFundExemption: PensionAvgearnValueModel,
                 companyPension: PensionAvgearnValueModel,
@@ -362,7 +294,10 @@ module nts.uk.pr.view.qmm008.i {
                 personalFundExemption: PensionAvgearnValueModel,
                 personalPension: PensionAvgearnValueModel,
                 childContributionAmount: number) {
-                this.levelCode = levelCode;
+                this.grade = grade;
+                this.avgEarn = avgEarn;
+                this.lowerLimit = lowerLimit;
+                this.upperLimit = upperLimit;
                 this.companyFund = companyFund;
                 this.companyFundExemption = companyFundExemption;
                 this.companyPension = companyPension;
@@ -385,23 +320,6 @@ module nts.uk.pr.view.qmm008.i {
                 this.femaleAmount = ko.observable(femaleAmount);
                 this.unknownAmount = ko.observable(unknownAmount);
             }
-        }
-
-         export class Rounding {
-            static ROUNDUP = 'RoundUp';
-            static TRUNCATION = 'Truncation';
-            static ROUNDDOWN = 'RoundDown';
-            static DOWN5_UP6 = 'Down5_Up6';
-            static DOWN4_UP5 = 'Down4_Up5'
-        }
-        export enum Number{
-                Zero = 0,
-                One = 1,
-                Three = 3
-        }
-        export enum FundInputApply {
-            No = 0,
-            Yes = 1
         }
     }
 }

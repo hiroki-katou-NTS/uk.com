@@ -51,7 +51,7 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	 */
 	@Override
 	public String getHistoryId() {
-		return this.typeValue.getQismtHealthInsuRatePK().getHistId();
+		return this.typeValue.getHistId();
 	}
 
 	/*
@@ -62,7 +62,7 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	 */
 	@Override
 	public String getCompanyCode() {
-		return this.typeValue.getQismtHealthInsuRatePK().getCcd();
+		return this.typeValue.getCcd();
 	}
 
 	/*
@@ -73,7 +73,7 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	 */
 	@Override
 	public OfficeCode getOfficeCode() {
-		return new OfficeCode(this.typeValue.getQismtHealthInsuRatePK().getSiOfficeCd());
+		return new OfficeCode(this.typeValue.getSiOfficeCd());
 	}
 
 	/*

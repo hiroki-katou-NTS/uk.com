@@ -9,6 +9,7 @@ import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -17,6 +18,8 @@ import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
+import nts.arc.time.GeneralDate;
 
 /**
  * The Class PismtPersonInsuSocial.
@@ -80,14 +83,14 @@ public class PismtPersonInsuSocial implements Serializable {
 	/** The str D. */
 	@Basic(optional = false)
 	@Column(name = "STR_D")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date strD;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	private GeneralDate strD;
 	
 	/** The end D. */
 	@Basic(optional = false)
 	@Column(name = "END_D")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date endD;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	private GeneralDate endD;
 	
 	/** The aged atr. */
 	@Basic(optional = false)

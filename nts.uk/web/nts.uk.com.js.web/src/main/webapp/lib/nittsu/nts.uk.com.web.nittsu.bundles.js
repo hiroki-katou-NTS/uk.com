@@ -1507,7 +1507,8 @@ var nts;
             request.STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
             var WEB_APP_NAME = {
                 com: 'nts.uk.com.web',
-                pr: 'nts.uk.pr.web'
+                pr: 'nts.uk.pr.web',
+                at: 'nts.uk.at.web'
             };
             var QueryString = (function () {
                 function QueryString() {
@@ -3105,18 +3106,12 @@ var nts;
                         $grid.bind('iggridselectionrowselectionchanged', function () {
                             $grid.triggerHandler('selectionchanged');
                         });
-                        $grid.on('mouseup', function () {
-                            $grid.triggerHandler('selectionchanged');
-                        });
                     }
                     function unsetupDragging($grid) {
-                        var dragSelectRange = [];
-                        var mousePos = null;
                         $grid.unbind('mousedown');
                     }
                     function unsetupSelectingEvents($grid) {
                         $grid.unbind('iggridselectionrowselectionchanged');
-                        $grid.off('mouseup');
                     }
                 })(ntsGridList || (ntsGridList = {}));
                 var ntsListBox;
@@ -4802,14 +4797,21 @@ var nts;
                             container.data("fullValue", true);
                         }
                         else {
+                            var isHaveKey_1 = false;
                             iggridColumns = _.map(columns, function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
                                 c["width"] = c["length"] * maxWidthCharacter + 20;
                                 c["headerText"] = '';
                                 c["columnCssClass"] = 'nts-column';
                                 width += c["length"] * maxWidthCharacter + 20;
+                                if (optionValue === c["key"]) {
+                                    isHaveKey_1 = true;
+                                }
                                 return c;
                             });
+                            if (!isHaveKey_1) {
+                                iggridColumns.push({ "key": optionValue, "width": 10 * maxWidthCharacter + 20, "headerText": '', "columnCssClass": 'nts-column', 'hidden': true });
+                            }
                         }
                         var gridHeaderHeight = 24;
                         container.igGrid({
@@ -5323,7 +5325,7 @@ var nts;
                         swapParts.push(new GridSwapPart().listControl($grid1)
                             .searchControl($swap.find(".ntsSwapSearchLeft").find(".ntsSearchButton"))
                             .searchBox($swap.find(".ntsSwapSearchLeft").find(".ntsSearchBox"))
-                            .setDataSource(originalSource)
+                            .setDataSource(data.dataSource)
                             .setSearchCriterion(data.searchCriterion || criterion)
                             .setSearchMode(data.searchMode || "highlight")
                             .setColumns(columns())
@@ -5334,7 +5336,7 @@ var nts;
                         swapParts.push(new GridSwapPart().listControl($grid2)
                             .searchControl($swap.find(".ntsSwapSearchRight").find(".ntsSearchButton"))
                             .searchBox($swap.find(".ntsSwapSearchRight").find(".ntsSearchBox"))
-                            .setDataSource(data.value())
+                            .setDataSource(data.value)
                             .setSearchCriterion(data.searchCriterion || criterion)
                             .setSearchMode(data.searchMode || "highlight")
                             .setColumns(columns())
@@ -5895,24 +5897,24 @@ var nts;
                     ListItemTransporter.prototype.update = function () {
                         switch (this.determineDirection()) {
                             case "firstToSecond":
-                                this.move(this.firstList, this.secondList);
+                                this.move(this.firstList(), this.secondList());
                                 break;
                             case "secondToFirst":
-                                this.move(this.secondList, this.firstList);
+                                this.move(this.secondList(), this.firstList());
                                 break;
                             case "insideFirst":
-                                this.move(this.firstList, this.firstList);
+                                this.move(this.firstList(), this.firstList());
                                 break;
                             case "insideSecond":
-                                this.move(this.secondList, this.secondList);
+                                this.move(this.secondList(), this.secondList());
                                 break;
                         }
                     };
                     ListItemTransporter.prototype.getFirst = function () {
-                        return this.firstList;
+                        return this.firstList();
                     };
                     ListItemTransporter.prototype.getSecond = function () {
-                        return this.secondList;
+                        return this.secondList();
                     };
                     return ListItemTransporter;
                 }());
