@@ -114,7 +114,7 @@ module nts.uk.pr.view.qpp007.j {
 
             private saveSalaryAggregateItem() {
                 $('#inpDisplayName').ntsEditor('validate');
-                if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                if ($('.nts-input').ntsError('hasError')) {
                     return;
                 }
                 var self = this;

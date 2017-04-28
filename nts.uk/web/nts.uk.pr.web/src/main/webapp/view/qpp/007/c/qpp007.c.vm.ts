@@ -147,7 +147,8 @@ module nts.uk.pr.view.qpp007.c {
             public onSaveBtnClicked(): void {
                 var self = this;
                 // Validate.
-                if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                $('.nts-input').ntsEditor('validate');
+                if ($('.nts-input').ntsError('hasError')) {
                     return;
                 }
                 var data = self.collectData();
