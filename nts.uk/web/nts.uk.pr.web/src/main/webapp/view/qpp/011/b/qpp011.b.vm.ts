@@ -459,7 +459,7 @@ module qpp011.b {
         openFDialog() {
             let self = this;
             //nts.uk.sessionStorage.setItem("QPP011_F_TargetDate", moment(self.B_INP_001_yearMonth()).format("YYYY/MM"));
-            nts.uk.ui.windows.setShared('QPP011_F_TargetDate', nts.uk.time.formatYearMonth(self.B_INP_001_yearMonth()));
+            nts.uk.ui.windows.setShared('QPP011_F_TargetDate',self.B_INP_001_yearMonth());
             nts.uk.ui.windows.setShared('QPP011_F_DesignatedMonth', self.B_INP_002_yearMonth());
             nts.uk.ui.windows.sub.modal('/view/qpp/011/f/index.xhtml', { title: '住民税チェックリスト', height: 560, width: 900, dialogClass: 'no-close' }).onClosed(function(): any {
             });
