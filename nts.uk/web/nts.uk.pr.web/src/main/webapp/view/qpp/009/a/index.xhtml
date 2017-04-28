@@ -9,9 +9,9 @@
 		<ui:define name="htmlHead">
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="qpp009.a.vm.js" />
 			<com:scriptfile path="qpp009.a.start.js" />
  			<com:scriptfile path="qpp009.a.service.js" /> 
+			<com:scriptfile path="qpp009.a.vm.js" />
 			<script type="text/javascript">
 				// TODO: Code validate.
 				__viewContext.primitiveValueConstraints.TargetYear = {
@@ -47,7 +47,7 @@
 									
 									<span id="date-picker" for="target-year-label"  data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yyyy/MM',startDate: '1900/01', endDate:'9999/12'}" ></span>
 									
-									<span id="japan-year">(?????)</span>
+									<span id="japan-year" data-bind="text: japanYearmonth"></span>
 								</div>
 								<div id="output-division" data-bind="ntsSwitchButton: {
 										options: outputDivisions,

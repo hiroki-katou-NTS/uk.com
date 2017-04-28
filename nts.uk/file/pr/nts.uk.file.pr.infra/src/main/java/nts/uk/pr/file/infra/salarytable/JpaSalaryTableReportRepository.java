@@ -46,7 +46,7 @@ public class JpaSalaryTableReportRepository extends JpaRepository implements Sal
 			+ "AND pd.qstdtPaymentDetailPK.processingYM = h.qstdtPaymentHeaderPK.processingYM "
 			+ "AND pd.qstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR "//0
 			+ "AND pd.qstdtPaymentDetailPK.categoryATR = :CTR_ATR "//4
-			+ "AND pd.value = :VALUE ";//0
+			+ "AND pd.value != :VALUE ";//0
 			
 	private static final String QUERY_STRING = "SELECT pb, pc, pdr, d, ba, pd "
 			+ "FROM PbsmtPersonBase pb "
@@ -57,18 +57,18 @@ public class JpaSalaryTableReportRepository extends JpaRepository implements Sal
 			+ "LEFT JOIN PogmtPersonDepRgl pdr "
 			+ "ON pdr.pogmtPersonDepRglPK.ccd = :CCD "
 			+ "AND pdr.pogmtPersonDepRglPK.pid = pb.pid "
-			+ "AND pdr.strD <= :BASE_YMD "
-			+ "AND pdr.endD >= :BASE_YMD "
+			+ "AND pdr.strD >= :BASE_YMD "
+			+ "AND pdr.endD <= :BASE_YMD "
 			+ "LEFT JOIN CmnmtDep d "
 			+ "ON d.cmnmtDepPK.companyCode = pc.pcpmtPersonComPK.ccd "
-			+ "AND d.startDate <= :BASE_YMD "
-			+ "AND d.endDate >= :BASE_YMD "
+			+ "AND d.startDate >= :BASE_YMD "
+			+ "AND d.endDate <= :BASE_YMD "
 			+ "AND d.cmnmtDepPK.departmentCode = pdr.depcd "
 			+ "LEFT JOIN PbamtPersonBankAccount ba "
 			+ "ON ba.pbamtPersonBankAccountPK.companyCode = d.cmnmtDepPK.companyCode "
 			+ "AND ba.pbamtPersonBankAccountPK.personId = pb.pid "
-			+ "AND ba.startYearMonth <= :BASE_YM "
-			+ "AND ba.endYearMonth >= :BASE_YM "
+			+ "AND ba.startYearMonth >= :BASE_YM "
+			+ "AND ba.endYearMonth <= :BASE_YM "
 			+ "LEFT JOIN QstdtPaymentDetail pd "
 			+ "ON pd.qstdtPaymentDetailPK.companyCode = pc.pcpmtPersonComPK.ccd "
 			+ "AND pd.qstdtPaymentDetailPK.personId = pc.pcpmtPersonComPK.pid "
@@ -91,21 +91,26 @@ public class JpaSalaryTableReportRepository extends JpaRepository implements Sal
 		sqlQuery.setParameter("PAY_BONUS_ATR", PAY_BONUS_ATR);
 		sqlQuery.setParameter("CTR_ATR", CTR_ATR_CHECK);
 		sqlQuery.setParameter("VALUE", VALUE_0);
+		List<Object[]> masterResultList;
 		// Get Result List
 		List<Object[]> resultList = new ArrayList<>();
 		CollectionUtil.split(query.getPIdList(), ONE_THOUSAND,
 				subList -> resultList.addAll(sqlQuery.setParameter("PIDs", subList).getResultList()));
 		// Check if Result List is Empty
-		if (CollectionUtil.isEmpty(resultList)) {
-			throw new BusinessException("ER010");
-		}
-		else {
-			
-		}
-		
+//		if (CollectionUtil.isEmpty(resultList)) {
+//			throw new BusinessException("ER010");
+//		}
+//		else {
+//			// Get Master Result List
+//			masterResultList = this.getMasterResultList(companyCode, query);
+//			if (CollectionUtil.isEmpty(masterResultList)) {
+//				throw new BusinessException("ER010");
+//			}
+//		}
 		
 		return null;
 	}
+	
 	
 	private List<Object[]> getMasterResultList(String companyCode, SalaryTableReportQuery query) {
 		EntityManager em = this.getEntityManager();
@@ -120,7 +125,11 @@ public class JpaSalaryTableReportRepository extends JpaRepository implements Sal
 		CollectionUtil.split(query.getPIdList(), ONE_THOUSAND,
 				subList -> resultList.addAll(sqlQuery.setParameter("PIDs", subList).getResultList()));
 		
-		return null;
+		return resultList;
 	}
+	
+//	private List<Object[]> filterAtChecking(List<Object[]> itemList) {
+//		
+//	}
 	
 }
