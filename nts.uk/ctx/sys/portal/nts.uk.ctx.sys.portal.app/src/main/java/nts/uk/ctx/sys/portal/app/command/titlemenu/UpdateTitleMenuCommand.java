@@ -16,7 +16,8 @@ public class UpdateTitleMenuCommand {
 	private String layoutID;
 
 	public TitleMenu toDomain() {
-		return TitleMenu.createFromJavaType(AppContexts.user().companyID(),
+		return TitleMenu.createFromJavaType(
+				AppContexts.user().companyID(),
 				this.titleMenuCD,
 				this.name,
 				this.layoutID);

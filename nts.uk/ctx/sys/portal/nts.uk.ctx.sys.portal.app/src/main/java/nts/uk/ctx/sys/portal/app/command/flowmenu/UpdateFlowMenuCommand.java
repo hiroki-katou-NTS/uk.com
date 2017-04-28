@@ -19,11 +19,11 @@ public class UpdateFlowMenuCommand {
 	private int defClassAtr;
 	
 	public FlowMenu toDomain (){
-		
-		return FlowMenu.createFromJavaType(AppContexts.user().companyID(),
-				this.toppagePartID,
-				this.fileID,
-				this.fileName,
-				this.defClassAtr);
+		return FlowMenu.createFromJavaType(
+			AppContexts.user().companyID(),
+			this.toppagePartID,
+			this.fileID,
+			this.fileName,
+			this.defClassAtr);
 	}
 }

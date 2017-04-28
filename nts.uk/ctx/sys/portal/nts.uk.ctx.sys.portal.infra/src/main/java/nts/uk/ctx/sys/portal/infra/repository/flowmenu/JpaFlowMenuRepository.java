@@ -11,7 +11,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
-import nts.uk.ctx.sys.portal.infra.entity.Flowmenu.CcgmtFlowMenu;
+import nts.uk.ctx.sys.portal.infra.entity.flowmenu.CcgmtFlowMenu;
+import nts.uk.ctx.sys.portal.infra.entity.flowmenu.CcgmtFlowMenuPK;
 
 
 @Stateless
@@ -48,25 +49,23 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 	}
 	/**
 	 * Add
-	 * @param companyID
-	 * @param toppagePartID
+	 * @param flow FlowMenu
 	 * @return
 	 */
 	@Override
 	public void add(FlowMenu flow) {
-		this.commandProxy().insert(CcgmtFlowMenu.class);
+		this.commandProxy().insert(toEntity(flow));
 		
 	}
 	/**
 	 * Update
-	 * @param companyID
-	 * @param toppagePartID
+	 * @param flow FlowMenu
 	 * @return
 	 */
 	@Override
-	public void update(String companyID, String toppagePartID) {
-		this.commandProxy().update(CcgmtFlowMenu.class);
-		
+	public void update(FlowMenu flow) {
+		CcgmtFlowMenu entity = toEntity(flow);
+		this.commandProxy().update(entity);
 	}
 	/**
 	 * Remove
@@ -76,9 +75,10 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 	 */
 	@Override
 	public void remove(String companyID, String toppagePartID) {
-		this.commandProxy().remove(CcgmtFlowMenu.class);
+		this.commandProxy().remove(CcgmtFlowMenu.class, new CcgmtFlowMenuPK(companyID, toppagePartID));
 		
 	}
+	
 	private FlowMenu toDomain(CcgmtFlowMenu entity) {
 		return FlowMenu.createFromJavaType(
 				entity.ccgmtFlowMenuPK.companyID,
@@ -86,6 +86,14 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 				entity.fileID, 
 				entity.fileName, 
 				entity.defClassAtr);
+	}
+	
+	private CcgmtFlowMenu toEntity(FlowMenu domain) {
+		return new CcgmtFlowMenu(
+			new CcgmtFlowMenuPK(domain.getCompanyID(), domain.getToppagePartID()),
+			domain.getFileID(), domain.getFileName().v(),
+			domain.getDefClassAtr().getValue()
+		);
 	}
 
 }

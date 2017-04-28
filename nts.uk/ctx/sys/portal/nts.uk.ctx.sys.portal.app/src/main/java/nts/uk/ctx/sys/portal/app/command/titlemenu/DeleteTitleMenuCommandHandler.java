@@ -19,5 +19,4 @@ public class DeleteTitleMenuCommandHandler extends CommandHandler<DeleteTitleMen
 		String companyID = AppContexts.user().companyID();
 		repository.remove(companyID, context.getCommand().getTitleMenuID());
 	}
-
 }

@@ -10,7 +10,6 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -21,7 +20,6 @@ public class UpdateFlowMenuCommandHandler extends CommandHandler<UpdateFlowMenuC
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateFlowMenuCommand> context) {
-		String companyID = AppContexts.user().companyID();
-		repository.update(companyID, context.getCommand().getToppagePartID());
+		repository.update(context.getCommand().toDomain());
 	}
 }

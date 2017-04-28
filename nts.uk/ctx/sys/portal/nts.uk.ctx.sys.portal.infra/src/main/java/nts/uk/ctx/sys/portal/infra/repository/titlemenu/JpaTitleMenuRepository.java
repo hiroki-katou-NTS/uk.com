@@ -10,6 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.titlemenu.TitleMenu;
 import nts.uk.ctx.sys.portal.dom.titlemenu.TitleMenuRepository;
 import nts.uk.ctx.sys.portal.infra.entity.titlemenu.CcgmtTitleMenu;
+import nts.uk.ctx.sys.portal.infra.entity.titlemenu.CcgmtTitleMenuPK;
 
 @Stateless
 public class JpaTitleMenuRepository extends JpaRepository implements TitleMenuRepository{
@@ -46,38 +47,47 @@ public class JpaTitleMenuRepository extends JpaRepository implements TitleMenuRe
 	}
 	/**
 	 * Add
-	 * @param companyID
-	 * @param titleMenuCD
-	 * @return 
+	 * @param title
+	 * @return  
 	 */
 	@Override
 	public void add(TitleMenu title) {
-		this.commandProxy().insert(CcgmtTitleMenu.class);
+		this.commandProxy().insert(toEntity(title));
 		}
 	/**
 	 * Update
-	 * @param companyID
-	 * @param titleMenuCD
+	 * @param title
 	 * @return 
 	 */	
 	@Override
 	public void update(TitleMenu title) {
-				this.commandProxy().update(CcgmtTitleMenu.class);
+				this.commandProxy().update(toEntity(title));
 	}
 	/**
 	 * Remove
-	 * @param companyID
+	 * @param companyID 
 	 * @param titleMenuCD
 	 * @return 
 	 */
 	@Override
 	public void remove(String companyID, String titleMenuCD) {
-		this.commandProxy().remove(CcgmtTitleMenu.class);
+		this.commandProxy().remove(CcgmtTitleMenu.class, new CcgmtTitleMenuPK(companyID, titleMenuCD));
 	}
 
 	private TitleMenu toDomain(CcgmtTitleMenu entity) {
-		return TitleMenu.createFromJavaType(entity.ccgmtTitleMenuPK.companyID, entity.ccgmtTitleMenuPK.titleMenuCD, entity.layoutID, entity.name);
+		return TitleMenu.createFromJavaType(
+				entity.ccgmtTitleMenuPK.companyID,
+				entity.ccgmtTitleMenuPK.titleMenuCD,
+				entity.layoutID,
+				entity.name);
 	}
+	private CcgmtTitleMenu toEntity (TitleMenu domain){
+		return new CcgmtTitleMenu (
+					new CcgmtTitleMenuPK(domain.getCompanyID(), domain.getTitleMenuCD().v()),
+					domain.getName().v(),
+					domain.getLayoutID());
+	};
+	
 
 }
 

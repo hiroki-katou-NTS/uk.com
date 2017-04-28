@@ -9,10 +9,5 @@ import lombok.Value;
 @Value
 
 public class DeleteTitleMenuCommand {
-	
 	private String titleMenuID;
-	
-	private String name;
-	
-	private String layoutID;
 }

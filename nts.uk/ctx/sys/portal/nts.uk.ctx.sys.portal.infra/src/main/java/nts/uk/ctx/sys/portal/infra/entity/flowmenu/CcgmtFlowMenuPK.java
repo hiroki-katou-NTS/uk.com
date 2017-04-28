@@ -1,7 +1,7 @@
 /**
  * author hieult
  */
-package nts.uk.ctx.sys.portal.infra.entity.Flowmenu;
+package nts.uk.ctx.sys.portal.infra.entity.flowmenu;
 
 import java.io.Serializable;
 
