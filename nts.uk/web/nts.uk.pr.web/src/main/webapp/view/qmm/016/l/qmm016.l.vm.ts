@@ -226,12 +226,12 @@ module nts.uk.pr.view.qmm016.l {
 
             private saveCertifyGroup() {
                 var self = this;
-                self.clearErrorSave();
+                // Validate
                 self.validateData();
-
-                if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                if ($('.nts-input').ntsError('hasError')) {
                     return;
                 }
+
                 if (self.typeAction() == TypeActionCertifyGroup.add) {
                     service.addCertifyGroup(self.convertDataModel()).done(function() {
                         self.reloadDataByAction(self.certifyGroupModel().code());
@@ -241,8 +241,8 @@ module nts.uk.pr.view.qmm016.l {
                 } else {
                     service.updateCertifyGroup(self.convertDataModel()).done(function() {
                         self.reloadDataByAction(self.certifyGroupModel().code());
-                        self.clearErrorSave();
                     }).fail(function(error) {
+                        self.clearErrorSave();
                         self.showMessageSave(error.message);
                     })
                 }

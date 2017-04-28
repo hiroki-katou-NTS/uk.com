@@ -25,6 +25,8 @@ public class WorkPlaceDto extends OrganizationTreeDto<WorkPlaceDto> {
 	private String hierarchyCode;
 
 	private String name;
+	
+	private String display;
 
 	private String parentChildAttribute1;
 
@@ -47,6 +49,7 @@ public class WorkPlaceDto extends OrganizationTreeDto<WorkPlaceDto> {
 		this.fullName = genericName;
 		this.hierarchyCode = hierarchyCode;
 		this.name = name;
+		this.display = workPlaceCode + " " + name;
 		this.parentChildAttribute1 = parentChildAttribute1;
 		this.parentChildAttribute2 = parentChildAttribute2;
 		this.parentWorkCode1 = parentWorkCode1;

@@ -1507,7 +1507,8 @@ var nts;
             request.STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
             var WEB_APP_NAME = {
                 com: 'nts.uk.com.web',
-                pr: 'nts.uk.pr.web'
+                pr: 'nts.uk.pr.web',
+                at: 'nts.uk.at.web'
             };
             var QueryString = (function () {
                 function QueryString() {
@@ -4824,7 +4825,6 @@ var nts;
                         });
                         container.ntsGridList('setupSelecting');
                         container.bind('iggridselectionrowselectionchanging', function (evt, ui) {
-                            console.log(ui);
                             if (container.data("enable") === false) {
                                 return false;
                             }
@@ -4847,7 +4847,6 @@ var nts;
                             }
                         });
                         container.bind('selectionchanged', function () {
-                            console.log(ui);
                             var itemSelected;
                             if (container.igGridSelection('option', 'multipleSelection')) {
                                 var selected = container.ntsGridList('getSelected');

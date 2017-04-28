@@ -79,7 +79,7 @@ module qet001.a.viewmodel {
             $('#target-year-input').ntsEditor('validate')
             var self = this;
             // TODO: Check employee list.
-            if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+            if ($('.nts-input').ntsError('hasError')) {
                 return;
             }
             // Print.

@@ -197,8 +197,9 @@ module qet001.i.viewmodel {
 
         public save(): void {
             var self = this;
-            // Check has error.
-            if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+            // Validate.
+            $('.nts-input').ntsEditor('validate');
+            if ($('.nts-input').ntsError('hasError')) {
                 return;
             }
 

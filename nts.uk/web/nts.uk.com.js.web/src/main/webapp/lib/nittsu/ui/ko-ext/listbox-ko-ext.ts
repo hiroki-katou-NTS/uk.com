@@ -94,7 +94,7 @@ module nts.uk.ui.koExtentions {
              
             
             container.bind('iggridselectionrowselectionchanging', (evt, ui) => {
-                console.log(ui);
+//                console.log(ui);
                 if(container.data("enable") === false){ 
                     return false;        
                 }
@@ -122,7 +122,7 @@ module nts.uk.ui.koExtentions {
             });
 
             container.bind('selectionchanged', () => {
-                console.log(ui);
+//                console.log(ui);
                 let itemSelected;
                 if (container.igGridSelection('option', 'multipleSelection')) {
                     let selected: Array<any> = container.ntsGridList('getSelected');
