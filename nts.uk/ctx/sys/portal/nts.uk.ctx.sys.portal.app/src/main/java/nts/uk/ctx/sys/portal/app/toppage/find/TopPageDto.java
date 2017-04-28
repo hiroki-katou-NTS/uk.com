@@ -21,17 +21,15 @@ public class TopPageDto {
 	/** The Language number. */
 	public Integer languageNumber;
 
+	/** The placement dto. */
 	public List<PlacementDto> placementDto;
 
 	/**
 	 * From domain.
 	 *
-	 * @param topPage
-	 *            the top page
-	 * @param placement
-	 *            the placement
-	 * @param lstTopPagePart
-	 *            the lst top page part
+	 * @param topPage the top page
+	 * @param lstPlacement the lst placement
+	 * @param lstTopPagePart the lst top page part
 	 * @return the top page dto
 	 */
 	public static TopPageDto fromDomain(TopPage topPage, List<Placement> lstPlacement,
@@ -43,7 +41,8 @@ public class TopPageDto {
 
 		topPageDto.placementDto = lstPlacement.stream().map(item -> {
 			return PlacementDto.fromDomain(item, lstTopPagePart.stream().filter(t -> {
-				return t.getToppagePartID().equals(item.getToppagePartID());
+				return true;
+//				return t.getToppagePartID().equals(item.getToppagePartID());
 			}).findFirst().get());
 		}).collect(Collectors.toList());
 		return topPageDto;

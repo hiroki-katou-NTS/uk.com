@@ -3,14 +3,16 @@ module nts.uk.com.view.ccg015.a {
         import TopPageItemDto = ccg015.a.service.model.TopPageItemDto;
         import TopPageItemDetailDto = ccg015.a.service.model.TopPageItemDetailDto;
         export class ScreenModel {
-            listTopPage : KnockoutObservableArray<Node>;
-            toppageSelectedCode : KnockoutObservable<string>;
+            listTopPage: KnockoutObservableArray<Node>;
+            toppageSelectedCode: KnockoutObservable<string>;
             topPageModel: KnockoutObservable<TopPageModel>;
-            columns : KnockoutObservable<any>;
+            columns: KnockoutObservable<any>;
             isNewMode: KnockoutObservable<boolean>;
+            languageListOption: KnockoutObservableArray<ItemCbbModel>;
+            languageSelectedCode: KnockoutObservable<string>;
             constructor() {
                 var self = this;
-                self.listTopPage= ko.observableArray<Node>([]);
+                self.listTopPage = ko.observableArray<Node>([]);
                 self.toppageSelectedCode = ko.observable(null);
                 self.topPageModel = ko.observable(new TopPageModel());
                 self.columns = ko.observableArray([
@@ -23,28 +25,58 @@ module nts.uk.com.view.ccg015.a {
                         self.loadTopPageItemDetail(data);
                     });
                 });
+                self.languageListOption = ko.observableArray([
+                    new ItemCbbModel("0", "日本語"),
+                    new ItemCbbModel("1", "英語"),
+                    new ItemCbbModel("2", "ベトナム語")
+                ]);
+                self.languageSelectedCode = ko.observable("0");
+                //end constructor
             }
-            start(): JQueryPromise<void>
-            {
+            start(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 service.loadTopPage().done(function(data: Array<TopPageItemDto>) {
                     data.forEach(function(item, index) {
-                        self.listTopPage.push(new Node(item.topPageCode, item.topPageName,null));
+                        self.listTopPage.push(new Node(item.topPageCode, item.topPageName, null));
                         dfd.resolve();
                     });
+                    if (self.listTopPage().length > 0) {
+                        self.toppageSelectedCode(self.listTopPage()[0].code);
+                    }
                 });
                 return dfd.promise();
             }
-            
+
             //load top page Item 
-            private loadTopPageItemDetail(data: TopPageItemDetailDto){
-                var self =this;
-                    self.topPageModel().topPageCode(data.topPageCode);
-                    self.topPageModel().topPageName(data.topPageName);
+            private loadTopPageItemDetail(data: TopPageItemDetailDto) {
+                var self = this;
+                self.topPageModel().topPageCode(data.topPageCode);
+                self.topPageModel().topPageName(data.topPageName);
+                if (data.placements) {
+                    data.placements.forEach(function(item, index) {
+                        var placementModel = new PlacementModel();
+                        var topPagePartModel = new TopPagePartModel();
+                        //set value for top page part
+                        topPagePartModel.topPagePartType(item.topPagePartDto.topPagePartType);
+                        topPagePartModel.topPagePartCode(item.topPagePartDto.topPagePartCode);
+                        topPagePartModel.topPagePartName(item.topPagePartDto.topPagePartName);
+                        topPagePartModel.width(item.topPagePartDto.width);
+                        topPagePartModel.height(item.topPagePartDto.height);
+
+                        placementModel.row(item.row);
+                        placementModel.column(item.column);
+                        placementModel.topPagePart(topPagePartModel);
+
+                        self.topPageModel().placement().push(placementModel);
+                    });
+                }
             }
-            private collectData():TopPageItemDetailDto{
-                    return null;
+            private collectData(): TopPageItemDetailDto {
+                return null;
+            }
+            private collectDataForCreateNew(): TopPageItemDetailDto {
+                return null;
             }
             private saveTopPage() {
                 var self = this;
@@ -60,7 +92,7 @@ module nts.uk.com.view.ccg015.a {
                     });
                 }
             }
-            private openMyPageSettingDialog(){
+            private openMyPageSettingDialog() {
                 nts.uk.ui.windows.sub.modal("/view/ccg/015/b/index.xhtml", {
                     height: 700, width: 850,
                     title: "マイページの設定",
@@ -70,8 +102,11 @@ module nts.uk.com.view.ccg015.a {
                 });
 
             }
-            
-             private copyTopPage(){
+
+            private copyTopPage() {
+                var self = this;
+                nts.uk.ui.windows.setShared('topPageCode', self.topPageModel().topPageCode());
+                nts.uk.ui.windows.setShared('topPageName', self.topPageModel().topPageName());
                 nts.uk.ui.windows.sub.modal("/view/ccg/015/c/index.xhtml", {
                     height: 350, width: 650,
                     title: "他のトップページコピー",
@@ -81,9 +116,9 @@ module nts.uk.com.view.ccg015.a {
                 });
 
             }
-            private newTopPage(){
+            private newTopPage() {
                 var self = this;
-                self.topPageModel(new TopPageModel());   
+                self.topPageModel(new TopPageModel());
             }
             private removeTopPage() {
                 var self = this;
@@ -108,20 +143,49 @@ module nts.uk.com.view.ccg015.a {
             }
         }
         export class TopPageModel {
-            url: string;
-            topPageCode : KnockoutObservable<string>;
-            topPageName : KnockoutObservable<string>;
-            layout: Layout;//TODO
-            constructor()
-            {
-                this.url;
+            topPageCode: KnockoutObservable<string>;
+            topPageName: KnockoutObservable<string>;
+            placement: KnockoutObservableArray<PlacementModel>;
+            constructor() {
                 this.topPageCode = ko.observable('');
                 this.topPageName = ko.observable('');
-                this.layout = null;    
+                this.placement = ko.observableArray([]);
             }
         }
-        export class Layout{
-            
+        export class PlacementModel {
+            row: KnockoutObservable<number>;
+            column: KnockoutObservable<number>;
+            topPagePart: KnockoutObservable<TopPagePartModel>;
+            constructor() {
+                this.row = ko.observable(0);
+                this.column = ko.observable(0);
+                this.topPagePart = ko.observable(new TopPagePartModel());
+            }
         }
+        export class TopPagePartModel {
+            topPagePartType: KnockoutObservable<number>;
+            topPagePartCode: KnockoutObservable<string>;
+            topPagePartName: KnockoutObservable<string>;
+            width: KnockoutObservable<number>;
+            height: KnockoutObservable<number>;
+            constructor() {
+                this.topPagePartType = ko.observable(0);
+                this.topPagePartCode = ko.observable("");
+                this.topPagePartName = ko.observable("");
+                this.width = ko.observable(0);
+                this.height = ko.observable(0);
+            }
+        }
+
+        export class ItemCbbModel {
+            code: string;
+            name: string;
+            label: string;
+            constructor(code: string, name: string) {
+                this.code = code;
+                this.name = name;
+            }
+        }
+
     }
 }

@@ -17,8 +17,10 @@ public class TopPageItemDto {
 	public String topPageName;
 
 	/**
-	 * @param topPageCode
-	 * @param topPageName
+	 * Instantiates a new top page item dto.
+	 *
+	 * @param topPageCode the top page code
+	 * @param topPageName the top page name
 	 */
 	public TopPageItemDto(String topPageCode, String topPageName) {
 		super();

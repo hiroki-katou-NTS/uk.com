@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Embeddable
-public class CcgmtPartItemSettingPK implements Serializable {
+public class CcgmtPartItemSetPK implements Serializable {
 	
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;

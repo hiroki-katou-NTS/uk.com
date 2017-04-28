@@ -1,7 +1,12 @@
 package nts.uk.ctx.sys.portal.app.toppage.find;
 
+import lombok.Data;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
 
+/**
+ * The Class TopPagePartDto.
+ */
+@Data
 public class TopPagePartDto {
 	
 	/** The top page part type. */
@@ -19,6 +24,12 @@ public class TopPagePartDto {
 	/** The height. */
 	Integer height;
 	
+	/**
+	 * From domain.
+	 *
+	 * @param topPagePart the top page part
+	 * @return the top page part dto
+	 */
 	public static TopPagePartDto fromDomain(TopPagePart topPagePart)
 	{
 		TopPagePartDto topPagePartDto = new TopPagePartDto();

@@ -22,11 +22,11 @@ public class CcgmtMyPageSet extends UkJpaEntity {
 
 	/** The use my page atr. */
 	@Column(name = "USE_MY_PAGE_ATR")
-	public String useMyPageAtr;
+	public int useMyPageAtr;
 
 	/** The use widget atr. */
 	@Column(name = "USE_WIDGET_ATR")
-	public String useWidgetAtr;
+	public int useWidgetAtr;
 
 	/** The use dash board atr. */
 	@Column(name = "USE_DASH_BOARD_ATR")

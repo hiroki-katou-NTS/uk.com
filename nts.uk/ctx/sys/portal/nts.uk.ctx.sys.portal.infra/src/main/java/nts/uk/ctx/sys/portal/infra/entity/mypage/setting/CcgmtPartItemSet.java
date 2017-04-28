@@ -16,10 +16,10 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @Entity
 @Table(name = "CCGMT_PART_ITEM_SET")
-public class CcgmtPartItemSetting extends UkJpaEntity {
+public class CcgmtPartItemSet extends UkJpaEntity {
 
 	@EmbeddedId
-	public CcgmtPartItemSettingPK ccgmtPartItemSettingPK;
+	public CcgmtPartItemSetPK ccgmtPartItemSetPK;
 
 	/** The use atr. */
 	@Column(name = "USE_ATR")
@@ -27,7 +27,7 @@ public class CcgmtPartItemSetting extends UkJpaEntity {
 
 	@Override
 	protected Object getKey() {
-		return ccgmtPartItemSettingPK;
+		return ccgmtPartItemSetPK;
 	}
 
 }
