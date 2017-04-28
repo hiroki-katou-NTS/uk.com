@@ -92,6 +92,7 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository
 				.get(QismtSocialInsuOfficePK_.siOfficeCd), officeCode));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		List<QismtSocialInsuOffice> result = em.createQuery(cq).getResultList();
+		
 		// If have no record.
 		if (!CollectionUtil.isEmpty(result)) {
 			QismtSocialInsuOffice entity = new QismtSocialInsuOffice();

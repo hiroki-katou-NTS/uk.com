@@ -2,7 +2,9 @@ package nts.uk.ctx.pr.core.dom.itemmaster.itemdeductperiod;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemperiod.UsageClassification;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.Year;
@@ -51,6 +53,22 @@ public class ItemDeductPeriod extends AggregateRoot {
 		this.cycle10Atr = cycle10Atr;
 		this.cycle11Atr = cycle11Atr;
 		this.cycle12Atr = cycle12Atr;
+	}
+
+	@Override
+	public void validate() {
+		super.validate();
+		if (StringUtil.isNullOrEmpty(this.itemCode.v(), true) || (this.strY.v() > 9999 && this.strY.v() < 1900)
+				|| (this.endY.v() > 9999 && this.endY.v() < 1900)) {
+			throw new BusinessException("ER001");
+		}
+		if (this.strY.v() > this.endY.v()) {
+			throw new BusinessException("ER024");
+		}
+		if (this.cycle01Atr.value == 0 && this.cycle12Atr.value == 0 && this.cycleAtr.value == 1) {
+			throw new BusinessException("ER007");
+		}
+
 	}
 
 	public static ItemDeductPeriod createFromJavaType(String itemCode, int periodAtr, int strY, int endY, int cycleAtr,

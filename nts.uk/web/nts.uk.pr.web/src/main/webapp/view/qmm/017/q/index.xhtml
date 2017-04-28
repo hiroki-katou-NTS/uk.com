@@ -32,14 +32,14 @@
 									<div class="result-block">
 										<span>結果</span>
 										<hr/>
-										<span id="result-value">10000</span>
+										<span id="result-value" data-bind="text: result"></span>
 									</div>
 								</td>
 							</tr>
 						</tbody>
 					</table>					
 					<br />
-					<div id="q_lbl_003" class="separate-vertical" data-bind="ntsFormLabel: {}">お試しの値</div>
+					<div id="q_lbl_003" class="separate-vertical" data-bind="ntsFormLabel: {}">計算式</div>
 					<hr/>
 					<div id="q_inp_002">
 						<span data-bind="text: formulaContent"></span>
@@ -47,7 +47,7 @@
 					<br />
 					<div id="footer">
 						<hr/>
-						<button id="btnClose" data-bind="click: close">計算式</button>
+						<button id="btnClose" data-bind="click: close">閉じる</button>
 					</div>
 					
 				</div>

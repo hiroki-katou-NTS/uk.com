@@ -47,14 +47,17 @@ module nts.uk.pr.view.qmm017.l {
                     self.coefficientFixedValue(self.paramDirtyData.coefficientFixedValue);
                     self.comboBoxAdjustmentAtr().selectedCode(self.paramDirtyData.adjustmentDevision.toString());
                 }
-
             }
 
             exportTextListItemName(lstItem: Array<ItemModel>, lstItemCode: Array<string>) {
                 var textListItemName = '';
-                _.forEach(lstItemCode, function(itemCode) {
-                    textListItemName += (_.find(lstItem, function(item) { return item.code == itemCode }).name + ' ');
-                });
+                for (let i = 0; i < lstItemCode.length; i++) {
+                    if (i !== lstItemCode.length - 1) {
+                        textListItemName += (_.find(lstItem, function(item) { return item.code == lstItemCode[i] }).name + ' + ');
+                    } else {
+                        textListItemName += (_.find(lstItem, function(item) { return item.code == lstItemCode[i] }).name);
+                    }
+                }
                 return textListItemName;
             }
 
@@ -200,7 +203,7 @@ module nts.uk.pr.view.qmm017.l {
                     })
                     .fail(function() {
                         // Alert message
-                        alert(res);
+                        nts.uk.ui.dialog.alert(res);
                         dfdGetTimeItems.reject();
                     });
                 service.getListCompanyUnitPrice(self.startYm.replace('/', ''))
@@ -238,7 +241,7 @@ module nts.uk.pr.view.qmm017.l {
                     })
                     .fail(function() {
                         // Alert message
-                        alert(res);
+                        nts.uk.ui.dialog.alert(res);
                         dfdGetPaymentItems.reject();
                     });
 
@@ -253,13 +256,13 @@ module nts.uk.pr.view.qmm017.l {
                     })
                     .fail(function() {
                         // Alert message
-                        alert(res);
+                        nts.uk.ui.dialog.alert(res);
                         dfdGetDeductionItems.reject();
                     });
 
                 $.when(dfdGetTimeItems.promise(), dfdGetListCompanyUP.promise(), dfdGetListPersonalUP.promise(), dfdGetPaymentItems.promise(), dfdGetDeductionItems.promise())
                     .done(function() {
-                        if ( self.baseAmountListItem().length > 0) {
+                        if (self.baseAmountListItem().length > 0) {
                             var textListItemName = '';
                             if (self.comboBoxBaseAmount().selectedCode() === '1') {
                                 textListItemName = self.exportTextListItemName(self.companyUnitPriceItems(), self.baseAmountListItem());
@@ -323,7 +326,9 @@ module nts.uk.pr.view.qmm017.l {
                 nts.uk.ui.windows.setShared('paramFromScreenL', param);
                 nts.uk.ui.windows.sub.modal('/view/qmm/017/p/index.xhtml', { title: '項目の選択', width: 350, height: 480 }).onClosed(() => {
                     let baseAmountListItem = nts.uk.ui.windows.getShared('baseAmountListItem');
-                    self.baseAmountListItem(baseAmountListItem);
+                    if (baseAmountListItem.length > 0) {
+                        self.baseAmountListItem(baseAmountListItem);
+                    }
                 });
             }
 
@@ -345,15 +350,15 @@ module nts.uk.pr.view.qmm017.l {
                     coefficientFixedValue: self.coefficientFixedValue(),
                     adjustmentDevision: self.comboBoxAdjustmentAtr().selectedCode()
                 };
-                if(easyFormulaDetail.baseAmountDevision === '0') {
+                if (easyFormulaDetail.baseAmountDevision === '0') {
                     easyFormulaDetail.referenceItemCodes = [];
                 } else {
                     easyFormulaDetail.baseFixedAmount = 0;
                 }
-                if(easyFormulaDetail.baseValueDevision !== '0') {
+                if (easyFormulaDetail.baseValueDevision !== '0') {
                     easyFormulaDetail.baseFixedValue = 0;
                 }
-                if(easyFormulaDetail.coefficientDivision !== '0') {
+                if (easyFormulaDetail.coefficientDivision !== '0000') {
                     easyFormulaDetail.coefficientFixedValue = 0;
                 }
                 nts.uk.ui.windows.setShared('easyFormulaDetail', easyFormulaDetail);

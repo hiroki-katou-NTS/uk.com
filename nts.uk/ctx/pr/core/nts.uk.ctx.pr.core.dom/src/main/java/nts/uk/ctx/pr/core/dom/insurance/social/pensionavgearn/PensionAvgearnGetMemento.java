@@ -19,11 +19,25 @@ public interface PensionAvgearnGetMemento {
 	String getHistoryId();
 
 	/**
-	 * Gets the level code.
+	 * Gets the grade.
 	 *
-	 * @return the level code
+	 * @return the grade
 	 */
-	Integer getLevelCode();
+	Integer getGrade();
+
+	/**
+ 	 * Gets the avg earn.
+ 	 *
+ 	 * @return the avg earn
+ 	 */
+ 	Long getAvgEarn();
+
+	/**
+ 	 * Gets the upper limit.
+ 	 *
+ 	 * @return the upper limit
+ 	 */
+ 	Long getUpperLimit();
 
 	/**
 	 * Gets the child contribution amount.

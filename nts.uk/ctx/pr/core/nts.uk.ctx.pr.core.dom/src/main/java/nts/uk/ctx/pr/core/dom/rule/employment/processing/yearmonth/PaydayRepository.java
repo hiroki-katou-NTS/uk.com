@@ -29,4 +29,6 @@ public interface PaydayRepository {
 	void insert1(Payday domain);
 	
 	void update1(Payday domain);
+	
+	void delete1(Payday domain);
 }

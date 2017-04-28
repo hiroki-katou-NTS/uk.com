@@ -12,12 +12,18 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.swing.plaf.ListUI;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 import nts.uk.ctx.pr.core.dom.wagetable.element.WtElement;
 import nts.uk.ctx.pr.core.dom.wagetable.element.WtElementRepository;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistory;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistoryRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.ElementSetting;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.CodeItem;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.Item;
@@ -31,6 +37,10 @@ import nts.uk.ctx.pr.core.dom.wagetable.reference.WtReferenceRepository;
  */
 @Stateless
 public class MasterRefItemGenerator implements ItemGenerator {
+
+	/** The wt history repo. */
+	@Inject
+	private WtHistoryRepository wtHistoryRepo;
 
 	/** The wt element repo. */
 	@Inject
@@ -54,11 +64,14 @@ public class MasterRefItemGenerator implements ItemGenerator {
 	@Override
 	public List<? extends Item> generate(String companyCode, String historyId,
 			ElementSetting elementSetting) {
+		// Get the history
+		Optional<WtHistory> optWtHistory = wtHistoryRepo.findHistoryByUuid(historyId);
+
 		// Get the element.
 		Optional<WtElement> optWtElement = this.wtElementRepo.findByHistoryId(historyId);
 
-		// Check element is existed.
-		if (!optWtElement.isPresent()) {
+		// Check history and element is existed.
+		if (!optWtElement.isPresent() || !optWtHistory.isPresent()) {
 			return Collections.emptyList();
 		}
 
@@ -66,13 +79,21 @@ public class MasterRefItemGenerator implements ItemGenerator {
 		Optional<WtMasterRef> optMasterRef = this.wtMasterRefRepo.findByCode(companyCode,
 				optWtElement.get().getReferenceCode());
 
-		// Check master ref is existed.
+		// Check master ref is not existed.
 		if (!optMasterRef.isPresent()) {
 			return Collections.emptyList();
 		}
 
 		// Get ref items.
-		List<WtCodeRefItem> wtRefItems = this.wtReferenceRepo.getMasterRefItem(optMasterRef.get());
+		List<WtCodeRefItem> wtRefItems = this.wtReferenceRepo.getMasterRefItem(optMasterRef.get(),
+				optWtHistory.get().getStart());
+
+		// Check has items.
+		if (CollectionUtil.isEmpty(wtRefItems)) {
+			throw new BusinessException(new RawErrorMessage(
+					"Have not any items on demension  " + elementSetting.getDemensionNo().value
+							+ ": " + optMasterRef.get().getRefName()));
+		}
 
 		// Create map: unique code - old uuid.
 		@SuppressWarnings("unchecked")
