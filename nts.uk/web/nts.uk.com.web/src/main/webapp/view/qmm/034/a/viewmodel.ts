@@ -59,6 +59,7 @@ module qmm034.a.viewmodel {
 
         processWhenCurrentCodeChange(codeChanged: any) {
             let self = this;
+            self.clearError();
             self.countStartDateChange += 1;
             self.currentEra(self.getEra(codeChanged));
             self.date(self.currentEra().startDate().toString());
