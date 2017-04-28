@@ -14,17 +14,26 @@ var nts;
                         (function (service) {
                             var paths = {
                                 findSalaryAggregateItem: "ctx/pr/report/salary/aggregate/item/findSalaryAggregateItem",
-                                saveSalaryAggregateItem: "ctx/pr/report/salary/aggregate/item/save"
+                                saveSalaryAggregateItem: "ctx/pr/report/salary/aggregate/item/save",
+                                findAllMasterItem: "ctx/pr/report/masteritem/findAll"
                             };
+                            //connection server find Salary Aggregate Item
                             function findSalaryAggregateItem(salaryAggregateItemInDto) {
+                                //call server service
                                 return nts.uk.request.ajax(paths.findSalaryAggregateItem, salaryAggregateItemInDto);
                             }
                             service.findSalaryAggregateItem = findSalaryAggregateItem;
+                            //connection server find Salary Aggregate Item
                             function saveSalaryAggregateItem(salaryAggregateItemSaveDto) {
+                                //call server service
                                 var data = { salaryAggregateItemSaveDto: salaryAggregateItemSaveDto };
                                 return nts.uk.request.ajax(paths.saveSalaryAggregateItem, data);
                             }
                             service.saveSalaryAggregateItem = saveSalaryAggregateItem;
+                            function findAllMasterItem() {
+                                return nts.uk.request.ajax(paths.findAllMasterItem);
+                            }
+                            service.findAllMasterItem = findAllMasterItem;
                             var model;
                             (function (model) {
                                 var SalaryItemDto = (function () {
@@ -59,4 +68,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qpp007.j.service.js.map
