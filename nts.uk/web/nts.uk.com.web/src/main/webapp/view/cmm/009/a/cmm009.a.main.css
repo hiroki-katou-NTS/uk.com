@@ -89,6 +89,7 @@ button.search-btn {
 }
 
 #treegrid1_container {
+	    border: 1px solid #ccc;
 }
 
 .input_002 {
