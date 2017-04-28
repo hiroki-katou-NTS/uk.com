@@ -6,6 +6,7 @@ module qmm020.c.viewmodel {
         employeeTotal: KnockoutObservableArray<TotalModel>;
         itemSetShareList: KnockoutObservableArray<EmployeeSettingHeaderModel>;
         itemTotalList: KnockoutObservableArray<TotalModel>;
+        itemAllotSetting: KnockoutObservableArray<TotalModel>;
         itemName: KnockoutObservable<string>;
         currentCode: KnockoutObservable<number>;
         currentItem: KnockoutObservable<TotalModel>;
@@ -17,7 +18,6 @@ module qmm020.c.viewmodel {
         itemHist: KnockoutObservable<EmployeeSettingHeaderModel>;
         maxItem: KnockoutObservable<TotalModel>;
         maxDate: string;
-        firstLoad: boolean = false;
         //selectedCode: KnockoutObservable<string>;
 
 
@@ -32,9 +32,11 @@ module qmm020.c.viewmodel {
             self.selectedCode = ko.observable('');
             self.isEnable = ko.observable(true);
             self.selectedList = ko.observableArray([]);
+            self.employeeTotal = ko.observableArray([]);
             self.itemHist = ko.observable(null);
             self.itemTotalList = ko.observableArray([]);
             self.itemListDetail = ko.observableArray([]);
+            self.itemAllotSetting = ko.observableArray([]);
             self.histId = ko.observable(null);
             self.maxItem = ko.observable(null);
             self.maxDate = "";
@@ -47,39 +49,40 @@ module qmm020.c.viewmodel {
                 startYm: '',
                 endYm: ''
             }));
-            self.start();
+
             self.selectedCode.subscribe(function(codeChange) {
-                //                service.getAllEmployeeAllotSetting(ko.toJS(codeChange)).done(function(data) {
-                //                    self.itemListDetail([]);
-                //                    if (data && data.length > 0) {
-                //                        console.log(data);
-                //                        _.map(data, function(item) {
-                //                            self.itemListDetail.push(new EmployeeAllotSettingDto(item.companyCode, item.historyId, item.employeeCode, item.employeeName, item.paymentDetailCode
-                //                                , item.paymentDetailName, item.bonusDetailCode, item.bonusDetailName));
-                //                        });
-                //                        dfd.resolve();
-                //                    }
-                //                    if (self.firstLoad)
-                //                        $("#C_LST_001").igGrid("option", "dataSource", ko.mapping.toJS(self.itemListDetail));
-                //                    else
-                //                        self.LoadData(self.itemListDetail);
-                //                    dfd.resolve();
-                //                }).fail(function(res) {
-                //                    alert(res);
-                //                });
-                //                dfd.promise();
+                //let x =  self.getEmpName();
+                //self.itemAllotSetting([]);
                 service.getEmployeeDetail(ko.toJS(codeChange)).done(function(data: Array<IModel>) {
-                    let employeeItem: KnockoutObservableArray<TotalModel> = ko.observableArray([]);
+                    let employeeItems: Array<IModel> = [];
                     if (data && data.length > 0) {
-                        _.map(data, function(item) {
-                            employeeItem().push(new TotalModel({ historyId: item.historyId, employmentCode: item.employeeCode, paymentDetailCode: item.paymentDetailCode, bonusDetailCode: item.bonusDetailCode }));
-                        });
+                        employeeItems = $("#C_LST_001").igGrid("option", "dataSource");
+                        if (employeeItems.length == 0) {
+                            employeeItems = data;
+                        }
+                        for (let i in employeeItems) {
+                            let item = employeeItems[i];
+                            let itemAllotSetting = _.find(data, function(allot) { return item.employmentCode == allot.employeeCode; });
+                            if (itemAllotSetting) {
+                                item.paymentDetailCode = itemAllotSetting.paymentDetailCode;
+                                item.paymentDetailName = itemAllotSetting.paymentDetailName;
+                                item.bonusDetailCode = itemAllotSetting.bonusDetailCode;
+                                item.bonusDetailName = itemAllotSetting.bonusDetailName;
+                            } else {
+                                item.paymentDetailCode = undefined;
+                                item.paymentDetailName = undefined;
+                                item.bonusDetailCode = undefined;
+                                item.bonusDetailName = undefined;
+                            }
+                        }
+
+                        // Set data to grid
+                        $("#C_LST_001").igGrid("option", "dataSource", employeeItems);
+
                         dfd.resolve();
                     }
-                    if (self.firstLoad)
-                        $("#C_LST_001").igGrid("option", "dataSource", ko.mapping.toJS(employeeItem));
-                    else
-                        self.LoadData(employeeItem);
+
+                    self.itemAllotSetting(employeeItems);
                     dfd.resolve();
 
                 }).fail(function(res) {
@@ -87,44 +90,16 @@ module qmm020.c.viewmodel {
                     alert(res);
                 });
                 dfd.promise();
-
-
             });
-
-            // Array Data 1 
-            //            let employment1 = ko.mapping.fromJS([
-            //                { "NO": 1, "ID": "000000001", "Name": "正社員", "PaymentDocID": "K001", "PaymentDocName": "給与明細書001", "BonusDocID": "S001", "BonusDocName": "賞与明細書001" },
-            //                { "NO": 2, "ID": "000000002", "Name": "DucPham社員", "PaymentDocID": "K002", "PaymentDocName": "給与明細書002", "BonusDocID": "S001", "BonusDocName": "賞与明細書002" },
-            //                { "NO": 3, "ID": "000000003", "Name": "HoangMai社員", "PaymentDocID": "K003", "PaymentDocName": "給与明細書003", "BonusDocID": "S001", "BonusDocName": "賞与明細書003" }
-            //            ]);
-            //
-            //            self.dataSource = ko.mapping.toJS(employment1());
-            //console.log(self.dataSource);
-            //Build IgGrid
-
-
-
-            //SCREEN C
-            //Event : Click to button Sentaku on igGrid
-            //            var openPaymentDialog = function(evt, ui) {
-            //                if (ui.colKey === "PaymentDocID") {
-            //                    //Gọi hàm open SubWindow
-            //                    //Khi close Subwindow, get dc cái new object(ID, Name... )
-            //                    let row = _.find(employment1(), function(item) {
-            //                        //return item.ID() === ui.rowKey;
-            //                    });
-            //                    //row.PaymentDocName("test");
-            //                    //self.buildGrid("#C_LST_001", "C_BTN_001", "C_BTN_002");
-            //                }
-            //            }
-            //            self.start();
-
-            /**
-             * find maxItem by endate
-             */
-
-
+            // init columns and title for grid
+            self.LoadData([]);
+            // call first method
+            self.start();
+            $("#C_BTN_001").click(function() {
+                alert("The paragraph was clicked.");
+            });
         }
+
         LoadData(itemList) {
             let self = this;
             $("#C_LST_001").igGrid({
@@ -138,11 +113,11 @@ module qmm020.c.viewmodel {
                     { headerText: "", key: "bonusDetailName", dataType: "string", hidden: true },
                     {
                         headerText: "給与明細書", key: "paymentDetailCode", dataType: "string", width: "250px", unbound: true,
-                        template: "<input type='button' id='" + "C_BTN_001" + "' value='選択'/><label style='margin-left:5px;'>${paymentDetailCode}</label><label style='margin-left:15px;'>${paymentDetailName}</label>"
+                        template: "<input type='button' data-bind='click: abc' class='" + "C_BTN_001" + "' value='選択'/><label style='margin-left:5px;'>${paymentDetailCode}</label><label style='margin-left:15px;'>${paymentDetailName}</label>"
                     },
                     {
                         headerText: "賞与明細書", key: "bonusDetailCode", dataType: "string", width: "20%", unbound: true,
-                        template: "<input type='button' id='" + "C_BTN_002" + "' value='選択'/><label style='margin-left:5px;'>${bonusDetailCode}</label><label style='margin-left:15px;'>${bonusDetailName}</label>"
+                        template: "<input type='button' data-bind='click: abc' class='" + "C_BTN_002" + "' value='選択'/><label style='margin-left:5px;'>${bonusDetailCode}</label><label style='margin-left:15px;'>${bonusDetailName}</label>"
                     },
                 ],
                 features: [{
@@ -152,35 +127,15 @@ module qmm020.c.viewmodel {
                     activation: false,
                     //                    rowSelectionChanged: this.selectionChanged.bind(this)
                 },
-                    {
-                        name: "Updating",
-                        editMode: "row",
-                        enableAddRow: false,
-                        enableDeleteRow: true,
-                        columnSettings: [
-                            {
-                                columnKey: "paymentDetailCode",
-                                readOnly: true
-                            },
-                            {
-                                columnKey: "bonusDetailCode",
-                                readOnly: true
-                            }
-                        ]
-                    }
                 ],
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 width: "800px",
                 height: "240px",
                 primaryKey: "employmentCode",
-                dataSource: ko.mapping.toJS(itemList)
-            }).on("iggridupdatingeditrowended", function(evt, ui) {
-                console.log(ui.values);
-                self.currentItem().paymentDetailCode(ui.values.paymentDetailCode);
-                debugger;
+                dataSource: itemList
+
             });
-            self.firstLoad = true;
         }
 
         //find histId to subscribe
@@ -190,10 +145,26 @@ module qmm020.c.viewmodel {
                 return item.historyId === value;
             });
         }
+        //find employeeName initiation
+        getEmpName(value: any) {
+            let self = this;
+            value = _.find(ko.mapping.toJS(self.employeeTotal()), function(o: IModel) {
+                return o.employmentCode == '00001';
+            });
+            return value;
+        }
+        // getEmpCode initiation
+        getEmpcode(value: any) {
+            let self = this;
+            value = _.find(ko.mapping.toJS(self.employeeTotal()), function(h: IModel) {
+                return null;
+            });
+        }
         //Selected changed
         selectionChanged(evt, ui) {
             //console.log(evt.type);
             var selectedRows = ui.selectedRows;
+
             var arr = [];
             for (var i = 0; i < selectedRows.length; i++) {
                 arr.push("" + selectedRows[i].id);
@@ -211,15 +182,14 @@ module qmm020.c.viewmodel {
                 if (data && data.length > 0) {
 
                     _.map(data, function(item) {
-                        employeeItem.push(new TotalModel({ historyId: item.historyId, employmentCode: item.employmentCode, employmentName: item.employmentName }));
+                        employeeItem.push({ historyId: item.historyId, employmentCode: item.employmentCode, employmentName: item.employmentName });
                     });
-                    //                       self.employeeTotal(employeeItem);
                     dfd.resolve();
                 }
-                if (self.firstLoad)
-                    $("#C_LST_001").igGrid("option", "dataSource", employeeItem);
-                else
-                    self.LoadData(employeeItem);
+                self.employeeTotal(employeeItem);
+                self.currentItem(employeeItem.employmentName);
+                // Set datafor grid
+                $("#C_LST_001").igGrid("option", "dataSource", employeeItem);
                 console.log(self.dataSource);
                 console.log('111111111111111111111111111111111111111');
                 dfd.resolve();
@@ -344,10 +314,8 @@ module qmm020.c.viewmodel {
                                     self.currentItem().bonusDetailName(ko.toJS(self.itemListDetail()[0].bonusDetailName));
                                     dfd.resolve();
                                 }
-                                if (self.firstLoad)
-                                    $("#C_LST_001").igGrid("option", "dataSource", ko.mapping.toJS(self.itemListDetail));
-                                else
-                                    self.LoadData(self.itemListDetail);
+
+                                $("#C_LST_001").igGrid("option", "dataSource", ko.mapping.toJS(self.itemListDetail));
                                 dfd.resolve();
                             }).fail(function(res) {
                                 // Alert message
@@ -371,6 +339,17 @@ module qmm020.c.viewmodel {
             //nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
             nts.uk.ui.windows.sub.modal('/view/qmm/020/k/index.xhtml', { title: '明細書の紐ずけ＞履歴編集' }).onClosed(function(): any {
                 //self.start(self.singleSelectedCode());
+            });
+        }
+
+        openMDialog() {
+            var self = this;
+            var valueShareMDialog = self.currentItem().startYm();
+            //debugger;
+            nts.uk.ui.windows.setShared('valMDialog', valueShareMDialog);
+            nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '譏守ｴｰ譖ｸ縺ｮ驕ｸ謚�' }).onClosed(function(): any {
+                //get selected code from M dialog
+                //get Name payment Name
             });
         }
 
@@ -487,3 +466,16 @@ module qmm020.c.viewmodel {
 
     }
 }
+
+$(function() {
+    $(document).on("click", ".C_BTN_001", function() {
+       var self = this;
+            var valueShareMDialog = self.currentItem.startYm;
+            //debugger;
+            nts.uk.ui.windows.setShared('valMDialog', valueShareMDialog);
+            nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '譏守ｴｰ譖ｸ縺ｮ驕ｸ謚�' }).onClosed(function(): any {
+                //get selected code from M dialog
+                //get Name payment Name
+            });
+    });
+})
