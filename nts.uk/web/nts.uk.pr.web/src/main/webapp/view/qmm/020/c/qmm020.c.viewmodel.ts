@@ -105,19 +105,19 @@ module qmm020.c.viewmodel {
             $("#C_LST_001").igGrid({
                 columns: [
                     { headerText: "", key: "NO", dataType: "string", width: "20px" },
-                    { headerText: "コード", key: "employmentCode", dataType: "string", width: "100px" },
-                    { headerText: "名称", key: "employmentName", dataType: "string", width: "200px" },
+                    { headerText: "繧ｳ繝ｼ繝�", key: "employmentCode", dataType: "string", width: "100px" },
+                    { headerText: "蜷咲ｧｰ", key: "employmentName", dataType: "string", width: "200px" },
                     { headerText: "", key: "paymentDetailCode", dataType: "string", hidden: true },
                     { headerText: "", key: "paymentDetailName", dataType: "string", hidden: true },
                     { headerText: "", key: "bonusDetailCode", dataType: "string", hidden: true },
                     { headerText: "", key: "bonusDetailName", dataType: "string", hidden: true },
                     {
-                        headerText: "給与明細書", key: "paymentDetailCode", dataType: "string", width: "250px", unbound: true,
-                        template: "<input type='button' data-bind='click: abc' class='" + "C_BTN_001" + "' value='選択'/><label style='margin-left:5px;'>${paymentDetailCode}</label><label style='margin-left:15px;'>${paymentDetailName}</label>"
+                        headerText: "邨ｦ荳取�守ｴｰ譖ｸ", key: "paymentDetailCode", dataType: "string", width: "250px", unbound: true,
+                        template: "<input type='button' data-bind='click: abc' class='" + "C_BTN_001" + "' value='驕ｸ謚�'/><label style='margin-left:5px;'>${paymentDetailCode}</label><label style='margin-left:15px;'>${paymentDetailName}</label>"
                     },
                     {
-                        headerText: "賞与明細書", key: "bonusDetailCode", dataType: "string", width: "20%", unbound: true,
-                        template: "<input type='button' data-bind='click: abc' class='" + "C_BTN_002" + "' value='選択'/><label style='margin-left:5px;'>${bonusDetailCode}</label><label style='margin-left:15px;'>${bonusDetailName}</label>"
+                        headerText: "雉樔ｸ取�守ｴｰ譖ｸ", key: "bonusDetailCode", dataType: "string", width: "20%", unbound: true,
+                        template: "<input type='button' data-bind='click: abc' class='" + "C_BTN_002" + "' value='驕ｸ謚�'/><label style='margin-left:5px;'>${bonusDetailCode}</label><label style='margin-left:15px;'>${bonusDetailName}</label>"
                     },
                 ],
                 features: [{
@@ -259,7 +259,7 @@ module qmm020.c.viewmodel {
 
             nts.uk.ui.windows.setShared('valJDialog', valueShareJDialog);
 
-            nts.uk.ui.windows.sub.modal('/view/qmm/020/j/index.xhtml', { title: '明細書の紐ずけ＞履歴追加' })
+            nts.uk.ui.windows.sub.modal('/view/qmm/020/j/index.xhtml', { title: '譏守ｴｰ譖ｸ縺ｮ邏舌★縺托ｼ槫ｱ･豁ｴ霑ｽ蜉�' })
                 .onClosed(function() {
                     let returnJDialog: string = nts.uk.ui.windows.getShared('returnJDialog');
                     var modeRadio = returnJDialog.split("~")[0];
@@ -337,7 +337,7 @@ module qmm020.c.viewmodel {
             var self = this;
             //var singleSelectedCode = self.singleSelectedCode().split(';');
             //nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
-            nts.uk.ui.windows.sub.modal('/view/qmm/020/k/index.xhtml', { title: '明細書の紐ずけ＞履歴編集' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/qmm/020/k/index.xhtml', { title: '譏守ｴｰ譖ｸ縺ｮ邏舌★縺托ｼ槫ｱ･豁ｴ邱ｨ髮�' }).onClosed(function(): any {
                 //self.start(self.singleSelectedCode());
             });
         }
@@ -347,7 +347,7 @@ module qmm020.c.viewmodel {
             var valueShareMDialog = self.currentItem().startYm();
             //debugger;
             nts.uk.ui.windows.setShared('valMDialog', valueShareMDialog);
-            nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '譏守ｴｰ譖ｸ縺ｮ驕ｸ謚�' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '隴丞ｮ茨ｽｴ�ｽｰ隴厄ｽｸ邵ｺ�ｽｮ鬩包ｽｸ隰夲ｿｽ' }).onClosed(function(): any {
                 //get selected code from M dialog
                 //get Name payment Name
             });
@@ -470,10 +470,10 @@ module qmm020.c.viewmodel {
 $(function() {
     $(document).on("click", ".C_BTN_001", function() {
        var self = this;
-            var valueShareMDialog = self.currentItem.startYm;
+            var valueShareMDialog = __viewContext.viewModel.viewmodelC.currentItem().startYm();
             //debugger;
             nts.uk.ui.windows.setShared('valMDialog', valueShareMDialog);
-            nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '譏守ｴｰ譖ｸ縺ｮ驕ｸ謚�' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '隴丞ｮ茨ｽｴ�ｽｰ隴厄ｽｸ邵ｺ�ｽｮ鬩包ｽｸ隰夲ｿｽ' }).onClosed(function(): any {
                 //get selected code from M dialog
                 //get Name payment Name
             });
