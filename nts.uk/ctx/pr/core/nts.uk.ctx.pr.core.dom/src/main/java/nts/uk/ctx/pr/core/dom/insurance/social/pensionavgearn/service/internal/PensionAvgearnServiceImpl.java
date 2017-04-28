@@ -157,9 +157,7 @@ public class PensionAvgearnServiceImpl implements PensionAvgearnService {
 			this.setting.setRateItems(this.rateItems);
 			PensionRateRounding salaryRoundingMethod = roundingMethods.stream()
 					.filter(item -> item.getPayType() == PaymentType.Salary).findFirst()
-					.orElseThrow(() -> {
-						throw new RuntimeException("No such RoungdingMethod.");
-					});
+					.orElseThrow(() -> new RuntimeException("No such RoungdingMethod."));
 			this.setting
 					.setCompanyRoundAtr(salaryRoundingMethod.getRoundAtrs().getCompanyRoundAtr());
 			this.setting
