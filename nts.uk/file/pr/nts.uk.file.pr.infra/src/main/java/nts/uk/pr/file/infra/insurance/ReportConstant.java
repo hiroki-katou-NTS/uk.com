@@ -73,8 +73,8 @@ public class ReportConstant {
     public static final int NUMBER_LINE_OF_PAGE = 61;
 
     /** The Constant COLUMN_WIDTH. */
-    public static final double COLUMN_WIDTH = 11.5;
+    public static final double COLUMN_WIDTH = 11;
     
     /** The Constant COLUMN_WIDTH_OFFICE_CODE. */
-    public static final double COLUMN_WIDTH_OFFICE_CODE = 14;
+    public static final double COLUMN_WIDTH_OFFICE_CODE = 19;
 }

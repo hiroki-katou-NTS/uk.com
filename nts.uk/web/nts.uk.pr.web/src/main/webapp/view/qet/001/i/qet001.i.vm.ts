@@ -38,6 +38,7 @@ module qet001.i.viewmodel {
                     return;
                 }
                 // reload tab.
+                self.aggregateItemCategories()[val].clearError();
                 self.aggregateItemCategories()[val].loadAggregateItemByCategory();
             })
         }
@@ -76,6 +77,7 @@ module qet001.i.viewmodel {
         itemList: KnockoutObservableArray<service.Item>;
         category: string;
         paymentType: string;
+        fullCategoryName: string;
         aggregateItemSelectedCode: KnockoutObservable<string>;
         temporarySelectedCode: KnockoutObservable<string>;
         aggregateItemDetail: KnockoutObservable<AggregateItemDetail>;
@@ -87,6 +89,7 @@ module qet001.i.viewmodel {
             this.paymentType = paymentType;
             this.aggregateItemSelectedCode = ko.observable(null);
             this.temporarySelectedCode = ko.observable(null);
+            this.fullCategoryName = this.getFullCategoryName(categoryName, paymentType);
 
             // Filter master item by category and payment type.
             var masterItemInCate = masterItems.filter(item => item.category == categoryName);
@@ -102,6 +105,7 @@ module qet001.i.viewmodel {
                     return;
                 }
                 self.confirmDirtyAndExecute(function() {
+                    self.clearError();
                     // update mode.
                     if (code) {
                         self.temporarySelectedCode(code);
@@ -114,7 +118,6 @@ module qet001.i.viewmodel {
                     }
                     // new mode.
                     else {
-                        self.clearError();
                         self.temporarySelectedCode('');
                         self.aggregateItemDetail(new AggregateItemDetail(paymentType,
                             categoryName, masterItemInCate));
@@ -125,6 +128,28 @@ module qet001.i.viewmodel {
                     self.aggregateItemSelectedCode(self.temporarySelectedCode());
                 });
             });
+        }
+
+        /**
+         * Get full category name by category and payment type.
+         */
+        private getFullCategoryName(category: string, paymentType: string): string {
+            var categoryName = '';
+            switch (category) {
+                case Category.PAYMENT:
+                    categoryName = '支給';
+                    break;
+                case Category.DEDUCTION:
+                    categoryName = '控除';
+                    break;
+                case Category.ATTENDANCE:
+                    categoryName = '勤怠';
+                    break;
+                default:
+                    categoryName = '';
+            }
+            var paymentTypeName = paymentType == PaymentType.SALARY ? '給与' : '賞与';
+            return paymentTypeName + categoryName;
         }
 
         /**
@@ -187,7 +212,11 @@ module qet001.i.viewmodel {
             }).fail(function(res) {
                 // clear error.
                 self.clearError();
-                $('#code-input').ntsError('set', res.message);
+                if(res.messageId == 'ER005') {
+                    $('#code-input').ntsError('set', res.message);
+                } else {
+                    $('#btnSave').ntsError('set', res.message);
+                }
             });
         }
 
@@ -241,9 +270,12 @@ module qet001.i.viewmodel {
             $('.sub-table-label').attr('style', 'width: ' + $('#swap-list-gridArea2').width() + 'px');
         }
 
-        private clearError(): void {
-            $('#code-input').ntsError('clear');
-            $('#name-input').ntsError('clear');
+        public clearError(): void {
+            if (nts.uk.ui._viewModel) {
+                $('#btnSave').ntsError('clear');
+                $('#code-input').ntsError('clear');
+                $('#name-input').ntsError('clear');
+            }
         }
 
         /**

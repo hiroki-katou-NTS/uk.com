@@ -13,8 +13,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.report.app.itemmaster.find.ItemMaterFinder;
-import nts.uk.ctx.pr.report.app.itemmaster.find.MasterItemDto;
+import nts.uk.ctx.pr.report.app.itemmaster.query.ItemMaterRepository;
+import nts.uk.ctx.pr.report.app.itemmaster.query.MasterItemDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -26,7 +26,7 @@ public class ItemMasterWebservice extends WebService {
 
 	/** The item mater finder. */
 	@Inject
-	private ItemMaterFinder itemMaterFinder;
+	private ItemMaterRepository itemMaterFinder;
 
 	/**
 	 * Find all.

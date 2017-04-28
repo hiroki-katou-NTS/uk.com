@@ -68,8 +68,10 @@ module nts.uk.pr.view.qmm016.a {
                 // Call service.
                 nts.uk.request.ajax(path.genitem, data).done((res: any) => {
                     dfd.resolve(res.elementSettings);
-                }).fail(dfd.fail);
-
+                }).fail(function(res) {
+                    dfd.reject(res);
+                });
+                    
                 // Promise.
                 return dfd.promise();
             }

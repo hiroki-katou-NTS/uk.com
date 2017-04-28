@@ -7,7 +7,7 @@ var qet001;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     this.targetYear = ko.observable(2016);
-                    this.isAggreatePreliminaryMonth = ko.observable(true);
+                    this.isAggreatePreliminaryMonth = ko.observable(false);
                     this.layoutSelected = ko.observable(LayoutOutput.ONE_PAGE);
                     this.isPageBreakIndicator = ko.observable(false);
                     this.outputTypeSelected = ko.observable(OutputType.MASTER_ITEMS);
@@ -15,7 +15,7 @@ var qet001;
                     this.outputSettingSelectedCode = ko.observable('');
                     var self = this;
                     self.japanTargetYear = ko.computed(function () {
-                        return nts.uk.time.yearInJapanEmpire(self.targetYear()).toString();
+                        return nts.uk.time.yearInJapanEmpire(self.targetYear().toString()).toString();
                     });
                 }
                 ScreenModel.prototype.start = function () {

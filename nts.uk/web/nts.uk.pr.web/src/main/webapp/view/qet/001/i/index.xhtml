@@ -108,7 +108,7 @@
 		   		
 			<script type="text/html" id="header-template">
 				<button data-bind="click: switchToCreateMode">新規</button>
-				<button class="proceed" data-bind="click: save">登録</button>
+				<button id="btnSave" class="proceed" data-bind="click: save">登録</button>
 				<button class="danger" data-bind="click: remove, enable: !aggregateItemDetail().createMode()">削除</button>
 				<button data-bind="click: close">閉じる</button>
 			</script>
@@ -173,11 +173,11 @@
 			<div class="select-item">
 				<div class="select-label">
 					<div class="master-table-label">
-						<div data-bind="ntsFormLabel: {}">選択できる給与支給項目</div>
+						<div data-bind="ntsFormLabel: {}">選択できる<span class="category-name" data-bind="text: $parent.fullCategoryName"></span>項目</div>
 						<div class="head-end"></div>
 					</div>
 					<div class="sub-table-label">
-						<div data-bind="ntsFormLabel: {}">集約する給与支給項目</div>
+						<div data-bind="ntsFormLabel: {}">集約する<span class="category-name" data-bind="text: $parent.fullCategoryName"></span>項目</div>
 						<div class="head-end"></div>
 					</div>
 				</div>

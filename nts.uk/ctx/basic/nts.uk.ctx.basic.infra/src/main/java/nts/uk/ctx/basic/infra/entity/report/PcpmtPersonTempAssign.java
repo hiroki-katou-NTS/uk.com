@@ -5,7 +5,6 @@
 package nts.uk.ctx.basic.infra.entity.report;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;

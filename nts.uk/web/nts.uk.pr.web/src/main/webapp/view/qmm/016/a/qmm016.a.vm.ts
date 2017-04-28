@@ -33,6 +33,7 @@ module nts.uk.pr.view.qmm016.a {
             valuesDirtyChecker: nts.uk.ui.DirtyChecker;
             valueItems: KnockoutObservable<Array<model.CellItemDto>>;
 
+            demensionBullet: Array<string>;
 
             constructor() {
                 super({
@@ -77,6 +78,7 @@ module nts.uk.pr.view.qmm016.a {
                 self.settingDirtyChecker = new nts.uk.ui.DirtyChecker(self.history().elements);
                 self.valuesDirtyChecker = new nts.uk.ui.DirtyChecker(self.valueItems);
 
+                self.demensionBullet = ["①", "②", "③"];
             }
 
             /**
@@ -97,9 +99,9 @@ module nts.uk.pr.view.qmm016.a {
              */
             isDirty(): boolean {
                 var self = this;
-                self.valueItems(self.history().detailViewModel.getCellItem());
+                self.valueItems(self.history().detailViewModel ? self.history().detailViewModel.getCellItem() : []);
                 return self.headDirtyChecker.isDirty() ||
-                    self.settingDirtyChecker.isDirty() || 
+                    self.settingDirtyChecker.isDirty() ||
                     self.valuesDirtyChecker.isDirty();
             }
 
@@ -116,9 +118,27 @@ module nts.uk.pr.view.qmm016.a {
                         self.settingDirtyChecker.reset();
                         self.valuesDirtyChecker.reset();
                     })
-                })
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alert(error.message);
+                });
                 dfd.resolve();
                 return dfd.promise();
+            }
+
+            // Validate data
+            private validateData() {
+                $("#inp_code").ntsEditor("validate");
+                $("#inp_name").ntsEditor("validate");
+                $("#inp_start_date").ntsEditor("validate");
+                if ($('.nts-editor').ntsError("hasError")) {
+                    return true;
+                }
+                return false;
+            }
+
+            //function clear message error
+            private clearErrorSave() {
+                $('.save-error').ntsError('clear');
             }
 
             /**
@@ -127,6 +147,11 @@ module nts.uk.pr.view.qmm016.a {
             onSave(): JQueryPromise<string> {
                 var self = this;
                 var dfd = $.Deferred<string>();
+
+                self.clearErrorSave();
+                if (self.validateData()) {
+                    return dfd.promise();
+                }
 
                 // New mode.
                 if (self.isNewMode()) {
@@ -141,6 +166,8 @@ module nts.uk.pr.view.qmm016.a {
                         self.headDirtyChecker.reset();
                         self.settingDirtyChecker.reset();
                         self.valuesDirtyChecker.reset();
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alert(error.message);
                     });
                 } else {
                     // Update mode.
@@ -155,7 +182,9 @@ module nts.uk.pr.view.qmm016.a {
                         self.headDirtyChecker.reset();
                         self.settingDirtyChecker.reset();
                         self.valuesDirtyChecker.reset();
-                    })
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alert(error.message);
+                    });
                 }
                 return dfd.promise();
             }
@@ -167,7 +196,6 @@ module nts.uk.pr.view.qmm016.a {
                 var self = this;
                 self.selectedTab('tab-1');
                 self.head().reset();
-                self.valueItems(self.history().detailViewModel.getCellItem());
                 self.headDirtyChecker.reset();
                 self.settingDirtyChecker.reset();
                 self.valuesDirtyChecker.reset();
@@ -356,7 +384,7 @@ module nts.uk.pr.view.qmm016.a {
                             late.elementName('遅刻・早退回数');
                             let level = new DemensionItemViewModel(3);
                             level.elementType(9);
-                            level.elementName('レベル');
+                            level.elementName('精皆勤レベル');
                             newDemensionItemList.push(workDay);
                             newDemensionItemList.push(late);
                             newDemensionItemList.push(level);
@@ -512,34 +540,12 @@ module nts.uk.pr.view.qmm016.a {
                 service.instance.genearetItemSetting({
                     historyId: self.history.historyId,
                     settings: self.getElementSettings()
-                })
-                    .done((res: Array<ElementSettingDto>) => {
-                        // Validate items
-                        if (res.length == null || !this.validateElementSettingDto(res)) {
-                            nts.uk.ui.dialog.alert("Cann't generate items with the current setting. Please check again!");
-                        }
-
-                        self.history.elements = res;
-                        self.detailViewModel.refreshElementSettings(res);
-                    }).fail(function(error) {
-                        //                    if (error.message === '1') {
-                        nts.uk.ui.dialog.alert("Cann't generate items with the current setting. Please check again!");
-                        //                    }
-                    });
-            }
-
-            private validateElementSettingDto(res: Array<ElementSettingDto>): boolean {
-                if (res == null || res.length <= 0) {
-                    return false;
-                }
-
-                for (var i = 0; i < res.length; i++) {
-                    if (res[i].itemList == null || res[i].itemList.length <= 0) {
-                        return false;
-                    }
-                }
-
-                return true;
+                }).done((res: Array<ElementSettingDto>) => {
+                    self.history.elements = res;
+                    self.detailViewModel.refreshElementSettings(res);
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alert(error.message);
+                });
             }
 
             /**

@@ -1,10 +1,11 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.wageledger.outputsetting;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLItemSubject;
 
@@ -42,7 +43,7 @@ public interface WLOutputSettingRepository {
 	 * @param companyCode the company code
 	 * @return the WL output setting
 	 */
-	WLOutputSetting findByCode(String companyCode, WLOutputSettingCode code);
+	Optional<WLOutputSetting> findByCode(String companyCode, WLOutputSettingCode code);
 	
 	/**
 	 * Find all.

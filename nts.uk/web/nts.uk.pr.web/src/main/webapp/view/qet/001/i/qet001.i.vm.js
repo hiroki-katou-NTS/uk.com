@@ -30,6 +30,7 @@ var qet001;
                         if (val == undefined || val == null) {
                             return;
                         }
+                        self.aggregateItemCategories()[val].clearError();
                         self.aggregateItemCategories()[val].loadAggregateItemByCategory();
                     });
                 }
@@ -63,6 +64,7 @@ var qet001;
                     this.paymentType = paymentType;
                     this.aggregateItemSelectedCode = ko.observable(null);
                     this.temporarySelectedCode = ko.observable(null);
+                    this.fullCategoryName = this.getFullCategoryName(categoryName, paymentType);
                     var masterItemInCate = masterItems.filter(function (item) { return item.category == categoryName; });
                     this.aggregateItemDetail = ko.observable(new AggregateItemDetail(paymentType, categoryName, masterItemInCate));
                     var self = this;
@@ -72,6 +74,7 @@ var qet001;
                             return;
                         }
                         self.confirmDirtyAndExecute(function () {
+                            self.clearError();
                             if (code) {
                                 self.temporarySelectedCode(code);
                                 self.loadDetailAggregateItem(self.category, self.paymentType, code).done(function (res) {
@@ -81,7 +84,6 @@ var qet001;
                                 });
                             }
                             else {
-                                self.clearError();
                                 self.temporarySelectedCode('');
                                 self.aggregateItemDetail(new AggregateItemDetail(paymentType, categoryName, masterItemInCate));
                                 self.dirty.reset();
@@ -92,6 +94,24 @@ var qet001;
                         });
                     });
                 }
+                AggregateCategory.prototype.getFullCategoryName = function (category, paymentType) {
+                    var categoryName = '';
+                    switch (category) {
+                        case Category.PAYMENT:
+                            categoryName = '支給';
+                            break;
+                        case Category.DEDUCTION:
+                            categoryName = '控除';
+                            break;
+                        case Category.ATTENDANCE:
+                            categoryName = '勤怠';
+                            break;
+                        default:
+                            categoryName = '';
+                    }
+                    var paymentTypeName = paymentType == PaymentType.SALARY ? '給与' : '賞与';
+                    return paymentTypeName + categoryName;
+                };
                 AggregateCategory.prototype.loadAggregateItemByCategory = function () {
                     var dfd = $.Deferred();
                     var self = this;
@@ -135,7 +155,12 @@ var qet001;
                         });
                     }).fail(function (res) {
                         self.clearError();
-                        $('#code-input').ntsError('set', res.message);
+                        if (res.messageId == 'ER005') {
+                            $('#code-input').ntsError('set', res.message);
+                        }
+                        else {
+                            $('#btnSave').ntsError('set', res.message);
+                        }
                     });
                 };
                 AggregateCategory.prototype.remove = function () {
@@ -172,8 +197,11 @@ var qet001;
                     $('.sub-table-label').attr('style', 'width: ' + $('#swap-list-gridArea2').width() + 'px');
                 };
                 AggregateCategory.prototype.clearError = function () {
-                    $('#code-input').ntsError('clear');
-                    $('#name-input').ntsError('clear');
+                    if (nts.uk.ui._viewModel) {
+                        $('#btnSave').ntsError('clear');
+                        $('#code-input').ntsError('clear');
+                        $('#name-input').ntsError('clear');
+                    }
                 };
                 AggregateCategory.prototype.confirmDirtyAndExecute = function (functionToExecute, functionToExecuteIfNo) {
                     var self = this;

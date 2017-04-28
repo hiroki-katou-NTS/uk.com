@@ -59,6 +59,7 @@ var nts;
                                     self.headDirtyChecker = new nts.uk.ui.DirtyChecker(self.head);
                                     self.settingDirtyChecker = new nts.uk.ui.DirtyChecker(self.history().elements);
                                     self.valuesDirtyChecker = new nts.uk.ui.DirtyChecker(self.valueItems);
+                                    self.demensionBullet = ["①", "②", "③"];
                                 }
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
@@ -71,7 +72,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.isDirty = function () {
                                     var self = this;
-                                    self.valueItems(self.history().detailViewModel.getCellItem());
+                                    self.valueItems(self.history().detailViewModel ? self.history().detailViewModel.getCellItem() : []);
                                     return self.headDirtyChecker.isDirty() ||
                                         self.settingDirtyChecker.isDirty() ||
                                         self.valuesDirtyChecker.isDirty();
@@ -86,13 +87,31 @@ var nts;
                                             self.settingDirtyChecker.reset();
                                             self.valuesDirtyChecker.reset();
                                         });
+                                    }).fail(function (error) {
+                                        nts.uk.ui.dialog.alert(error.message);
                                     });
                                     dfd.resolve();
                                     return dfd.promise();
                                 };
+                                ScreenModel.prototype.validateData = function () {
+                                    $("#inp_code").ntsEditor("validate");
+                                    $("#inp_name").ntsEditor("validate");
+                                    $("#inp_start_date").ntsEditor("validate");
+                                    if ($('.nts-editor').ntsError("hasError")) {
+                                        return true;
+                                    }
+                                    return false;
+                                };
+                                ScreenModel.prototype.clearErrorSave = function () {
+                                    $('.save-error').ntsError('clear');
+                                };
                                 ScreenModel.prototype.onSave = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
+                                    self.clearErrorSave();
+                                    if (self.validateData()) {
+                                        return dfd.promise();
+                                    }
                                     if (self.isNewMode()) {
                                         var wagetableDto = self.head().getWageTableDto();
                                         a.service.instance.initWageTable({
@@ -104,6 +123,8 @@ var nts;
                                             self.headDirtyChecker.reset();
                                             self.settingDirtyChecker.reset();
                                             self.valuesDirtyChecker.reset();
+                                        }).fail(function (error) {
+                                            nts.uk.ui.dialog.alert(error.message);
                                         });
                                     }
                                     else {
@@ -118,6 +139,8 @@ var nts;
                                             self.headDirtyChecker.reset();
                                             self.settingDirtyChecker.reset();
                                             self.valuesDirtyChecker.reset();
+                                        }).fail(function (error) {
+                                            nts.uk.ui.dialog.alert(error.message);
                                         });
                                     }
                                     return dfd.promise();
@@ -126,7 +149,6 @@ var nts;
                                     var self = this;
                                     self.selectedTab('tab-1');
                                     self.head().reset();
-                                    self.valueItems(self.history().detailViewModel.getCellItem());
                                     self.headDirtyChecker.reset();
                                     self.settingDirtyChecker.reset();
                                     self.valuesDirtyChecker.reset();
@@ -250,7 +272,7 @@ var nts;
                                                 late.elementName('遅刻・早退回数');
                                                 var level = new DemensionItemViewModel(3);
                                                 level.elementType(9);
-                                                level.elementName('レベル');
+                                                level.elementName('精皆勤レベル');
                                                 newDemensionItemList.push(workDay);
                                                 newDemensionItemList.push(late);
                                                 newDemensionItemList.push(level);
@@ -361,8 +383,7 @@ var nts;
                                     a.service.instance.genearetItemSetting({
                                         historyId: self.history.historyId,
                                         settings: self.getElementSettings()
-                                    })
-                                        .done(function (res) {
+                                    }).done(function (res) {
                                         if (res.length == null || !_this.validateElementSettingDto(res)) {
                                             nts.uk.ui.dialog.alert("Cann't generate items with the current setting. Please check again!");
                                         }
@@ -468,4 +489,6 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+elf.elementType();
+[0];
 //# sourceMappingURL=qmm016.a.vm.js.map

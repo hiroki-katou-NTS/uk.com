@@ -43,7 +43,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator implements WLOldLayoutReportGenerator {
 	
 	/** The Constant TEMPLATE_FILE. */
-	private static final String TEMPLATE_FILE = "report/WageLegerOldLayoutReportTemplate.xlsx";
+	private static final String TEMPLATE_FILE = "report/QET001_1.xlsx";
 	
 	/** The Constant ROW_START_REPORT. */
 	private static final int ROW_START_REPORT = 5;
@@ -63,8 +63,39 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 	 *  nts.uk.file.pr.app.export.wageledger.data.WageLedgerReportData)
 	 */
 	@Override
-	public void generate(FileGeneratorContext fileContext, WLOldLayoutReportData reportData, WageLedgerReportQuery query) {
+	public void generate(FileGeneratorContext fileContext, List<WLOldLayoutReportData> reportDatas, WageLedgerReportQuery query) {
+		// Generate report.
+		List<AsposeCellsReportContext> reportFiles = reportDatas.stream()
+				.map(data -> this.generateReport(fileContext, data, query)).collect(Collectors.toList());
 		
+		// Save report to file PDF.
+		try {
+			AsposeCellsReportContext reportContext = reportFiles.get(0);
+
+			// If have 2 or more report -> combine to 1 workbook.
+			if (reportFiles.size() > 1) {
+				for (int i = 1; i < reportFiles.size(); i++) {
+					reportContext.getWorkbook().combine(reportFiles.get(i).getWorkbook());
+				}
+			}
+
+			// Save to PDF.
+			reportContext.saveAsPdf(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	/**
+	 * Generate report.
+	 *
+	 * @param fileContext the file context
+	 * @param reportData the report data
+	 * @param query the query
+	 * @return the aspose cells report context
+	 */
+	private AsposeCellsReportContext generateReport(FileGeneratorContext fileContext, WLOldLayoutReportData reportData,
+			WageLedgerReportQuery query) {
 		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
 			
 			Worksheet ws = reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
@@ -122,7 +153,7 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 			reportContext.getDesigner().process(false);
 
 			// save as PDF file
-			reportContext.saveAsPdf(this.createNewFile(fileContext, REPORT_FILE_NAME));
+			return reportContext;
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);

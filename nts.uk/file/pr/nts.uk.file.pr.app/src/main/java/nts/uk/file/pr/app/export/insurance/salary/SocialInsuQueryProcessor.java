@@ -77,7 +77,7 @@ public class SocialInsuQueryProcessor {
         String companyCode = AppContexts.user().companyCode();
         List<HealthInsuranceAvgearn> healInsuAvgearns = insuAvgearnRepo.findByOfficeCodes(companyCode, officeCodes);
         if (healInsuAvgearns.isEmpty()) {
-            throw new BusinessException("対象データがありません。");
+            throw new BusinessException("ER010");
         }
         return healInsuAvgearns;
     }
@@ -92,7 +92,7 @@ public class SocialInsuQueryProcessor {
         String companyCode = AppContexts.user().companyCode();
         List<PensionAvgearn> pensionAvgearns = pensAvgearnRepo.findbyOfficeCodes(companyCode, officeCodes);
         if (pensionAvgearns.isEmpty()) {
-            throw new BusinessException("対象データがありません。");
+            throw new BusinessException("ER010");
         }
         return pensionAvgearns;
     }
