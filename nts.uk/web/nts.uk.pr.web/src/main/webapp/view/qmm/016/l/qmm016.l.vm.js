@@ -130,6 +130,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.showchangeCertifyGroup = function (selectionCodeLstLstCertifyGroup) {
                                     var self = this;
+                                    debugger;
                                     if (selectionCodeLstLstCertifyGroup) {
                                         if (self.typeAction() == TypeActionCertifyGroup.add) {
                                             if (self.dirty.isDirty() && self.isShowDirty()) {
@@ -225,11 +226,9 @@ var nts;
                                         self.lstCertifyGroup(data);
                                         if (code && code != '') {
                                             self.detailCertifyGroup(code);
-                                            self.selectCodeLstLstCertifyGroup(code);
                                         }
                                         else {
                                             if (data != null && data.length > 0) {
-                                                self.selectCodeLstLstCertifyGroup(data[0].code);
                                                 self.detailCertifyGroup(data[0].code);
                                             }
                                             else {

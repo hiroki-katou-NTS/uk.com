@@ -154,6 +154,7 @@ module nts.uk.pr.view.qmm016.l {
             private showchangeCertifyGroup(selectionCodeLstLstCertifyGroup: string) {
                 var self = this;
                 // type action add (new mode)
+                debugger;
                 if (selectionCodeLstLstCertifyGroup) {
                     if (self.typeAction() == TypeActionCertifyGroup.add) {
                         if (self.dirty.isDirty() && self.isShowDirty()) {
@@ -255,10 +256,8 @@ module nts.uk.pr.view.qmm016.l {
                     self.lstCertifyGroup(data);
                     if (code && code != '') {
                         self.detailCertifyGroup(code);
-                        self.selectCodeLstLstCertifyGroup(code);
                     } else {
                         if (data != null && data.length > 0) {
-                            self.selectCodeLstLstCertifyGroup(data[0].code);
                             self.detailCertifyGroup(data[0].code);
                         } else {
                             self.newmodeEmptyData();
