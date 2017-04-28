@@ -11,7 +11,7 @@ import nts.uk.ctx.sys.portal.dom.layout.LayoutRepository;
  * @author LamDT
  */
 @Stateless
-public class LayoutFinder {
+public class PortalLayoutFinder {
 
 	@Inject
 	private LayoutRepository layoutRepository;

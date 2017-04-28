@@ -10,13 +10,13 @@ import nts.uk.ctx.sys.portal.dom.layout.Layout;
 public class LayoutDto {
 	
 	/** Company ID */
-	String companyID;
+	private String companyID;
 
 	/** Layout GUID */
-	String layoutID;
+	private String layoutID;
 
 	/** Enum PG Type */
-	int pgType;
+	private int pgType;
 
 	/** Create Dto from Domain */
 	public static LayoutDto fromDomain(Layout layout) {

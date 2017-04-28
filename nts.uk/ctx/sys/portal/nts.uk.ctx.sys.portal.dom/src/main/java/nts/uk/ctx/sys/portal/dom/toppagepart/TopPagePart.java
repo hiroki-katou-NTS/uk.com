@@ -5,7 +5,9 @@ import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
+import nts.uk.ctx.sys.portal.dom.toppagepart.size.Height;
 import nts.uk.ctx.sys.portal.dom.toppagepart.size.Size;
+import nts.uk.ctx.sys.portal.dom.toppagepart.size.Width;
 
 /**
  * @author LamDT
@@ -31,7 +33,23 @@ public class TopPagePart extends DomainObject {
 
 	/** Size */
 	Size size;
+	
+	/** Quickly get Size.width */
+	public Width getWidth() {
+		return this.size.getWidth();
+	}
 
+	/** Quickly get Size.height */
+	public Height getHeight() {
+		return this.size.getHeight();
+	}
+
+	/**
+	 * Create TopPagePart from Java type 
+	 * 
+	 * @param
+	 * @return TopPagePart
+	 **/
 	public static TopPagePart createFromJavaType(String companyID, String topPagePartID, String topPagePartCode, String topPagePartName, int topPagePartType, int width, int height){
 		return new TopPagePart(
 			companyID, topPagePartID,
