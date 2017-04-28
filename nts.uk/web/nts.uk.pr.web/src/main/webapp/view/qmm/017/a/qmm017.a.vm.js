@@ -2,8 +2,8 @@ var nts;
 (function (nts) {
     var qmm017;
     (function (qmm017) {
-        class ScreenModel {
-            constructor() {
+        var ScreenModel = (function () {
+            function ScreenModel() {
                 var self = this;
                 self.itemsBagRepository = [];
                 self.isNewMode = ko.observable(true);
@@ -23,11 +23,6 @@ var nts;
                 });
                 self.currentNode = ko.observable(null);
                 self.currentParentNode = ko.observable(null);
-                self.treeGridHistory().singleSelectedCode.subscribe(function (codeChange) {
-                    if (codeChange !== null) {
-                        self.bindDataByChanging(codeChange);
-                    }
-                });
                 self.viewModel017b = ko.observable(new qmm017.BScreen(self));
                 self.viewModel017c = ko.observable(new qmm017.CScreen(self));
                 self.viewModel017d = ko.observable(new qmm017.DScreen());
@@ -37,22 +32,38 @@ var nts;
                 self.viewModel017h = ko.observable(new qmm017.HScreen(self));
                 self.viewModel017i = ko.observable(new qmm017.IScreen(self));
                 self.viewModel017r = ko.observable(new qmm017.RScreen(self));
+                self.dirtyCheckScreenB = new nts.uk.ui.DirtyChecker(self.viewModel017b);
+                self.dirtyCheckScreenC = new nts.uk.ui.DirtyChecker(self.viewModel017c);
             }
-            bindDataByChanging(codeChange) {
+            ScreenModel.prototype.formulaTree_onSelecting = function (codeChange) {
+                var self = this;
+                if (self.dirtyCheckScreenB.isDirty() || self.dirtyCheckScreenC.isDirty()) {
+                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。")
+                        .ifYes(function () {
+                        self.bindDataByChanging(codeChange);
+                    }).ifNo(function () {
+                        return false;
+                    });
+                }
+                else {
+                    self.bindDataByChanging(codeChange);
+                }
+            };
+            ScreenModel.prototype.bindDataByChanging = function (codeChange) {
                 var self = this;
                 if (codeChange !== null) {
-                    let currentNode = null;
-                    let currentParentNode = null;
+                    var currentNode = null;
+                    var currentParentNode = null;
                     self.isNewMode(false);
-                    for (let order = 0; order < self.treeGridHistory().items().length; order++) {
-                        let foundNode = findNode(self.treeGridHistory().items()[order], self.treeGridHistory().singleSelectedCode());
+                    for (var order = 0; order < self.treeGridHistory().items().length; order++) {
+                        var foundNode = findNode(self.treeGridHistory().items()[order], self.treeGridHistory().singleSelectedCode());
                         if (foundNode) {
                             self.currentNode(foundNode);
                             self.viewModel017b().historyId(foundNode.code);
                             self.currentParentNode(self.treeGridHistory().items()[order]);
                         }
                     }
-                    let rangeYearMonth = self.currentNode().name.split('~');
+                    var rangeYearMonth = self.currentNode().name.split('~');
                     self.startYearMonth(rangeYearMonth[0].trim());
                     self.a_sel_001()[1].enable(true);
                     self.viewModel017b().formulaCode(self.currentParentNode().code);
@@ -67,22 +78,31 @@ var nts;
                                 self.itemsBagRepository = [];
                                 // fill items bag
                                 self.fillItemsBagRepository().done(function () {
+                                    self.refreshItemTabs();
+                                    self.viewModel017c().formulaManualContent().textArea('');
+                                    self.viewModel017c().comboBoxReferenceMonthAtr().selectedCode(0);
+                                    self.viewModel017c().comboBoxRoudingMethod().selectedCode(0);
+                                    self.viewModel017c().comboBoxRoudingPosition().selectedCode(0);
                                     // bind formula manual
-                                    self.viewModel017c().formulaManualContent().textArea(self.replaceCodesToNames(currentFormulaDetail.formulaContent));
-                                    self.viewModel017c().comboBoxReferenceMonthAtr().selectedCode(currentFormulaDetail.referenceMonthAtr);
-                                    self.viewModel017c().comboBoxRoudingMethod().selectedCode(currentFormulaDetail.roundAtr);
-                                    self.viewModel017c().comboBoxRoudingPosition().selectedCode(currentFormulaDetail.roundDigit);
+                                    if (currentFormulaDetail.formulaContent) {
+                                        self.viewModel017c().formulaManualContent().textArea(self.replaceCodesToNames(currentFormulaDetail.formulaContent));
+                                        self.viewModel017c().comboBoxReferenceMonthAtr().selectedCode(currentFormulaDetail.referenceMonthAtr);
+                                        self.viewModel017c().comboBoxRoudingMethod().selectedCode(currentFormulaDetail.roundAtr);
+                                        self.viewModel017c().comboBoxRoudingPosition().selectedCode(currentFormulaDetail.roundDigit);
+                                    }
+                                    self.dirtyCheckScreenC.reset();
                                 }).fail(function (res) {
                                     alert(res);
                                 });
                             }
-                            else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 0) {
+                            else if (currentFormulaDetail.easyFormula && currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 0) {
                                 self.viewModel017c().noneConditionalEasyFormula(new qmm017.EasyFormula(0, self.viewModel017b));
                                 if (currentFormulaDetail.easyFormula[0]) {
+                                    self.viewModel017c().noneConditionalEasyFormula().easyFormulaCode(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaCode);
                                     self.viewModel017c().noneConditionalEasyFormula().easyFormulaName(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaName);
                                 }
                             }
-                            else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo < 6) {
+                            else if (currentFormulaDetail.easyFormula && currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo < 6) {
                                 self.viewModel017c().defaultEasyFormula(new qmm017.EasyFormula(0, self.viewModel017b));
                                 if (currentFormulaDetail.easyFormula[0]) {
                                     self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(currentFormulaDetail.easyFormula[0].value);
@@ -91,9 +111,9 @@ var nts;
                                     self.viewModel017c().defaultEasyFormula().easyFormulaName(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaName);
                                 }
                             }
-                            else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo === 6) {
+                            else if (currentFormulaDetail.easyFormula && currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo === 6) {
                                 self.viewModel017c().defaultEasyFormula(new qmm017.EasyFormula(0, self.viewModel017b));
-                                _.forEach(currentFormulaDetail.easyFormula, easyFormula => {
+                                _.forEach(currentFormulaDetail.easyFormula, function (easyFormula) {
                                     if (easyFormula.easyFormulaCode === '000') {
                                         self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(easyFormula.value);
                                         self.viewModel017c().defaultEasyFormula().selectedRuleCodeEasySettings(easyFormula.fixFormulaAtr);
@@ -136,18 +156,45 @@ var nts;
                                     }
                                 });
                             }
+                            self.dirtyCheckScreenB.reset();
+                            self.dirtyCheckScreenC.reset();
                         })
                             .fail(function (res) {
                             alert(res);
                         });
+                        self.selectedTabASel001('tab-1');
                         self.viewModel017b().selectedConditionAtr(currentFormula.conditionAtr);
                         self.viewModel017b().comboBoxUseMaster().selectedCode(currentFormula.refMasterNo.toString());
+                        $('.check-error').ntsError('clear');
                     })
                         .fail(function (res) {
                         alert(res);
                     });
+                    $('.error').ntsError('clear');
                 }
-            }
+            };
+            ScreenModel.prototype.refreshItemTabs = function () {
+                var self = this;
+                self.viewModel017c().selectedTabCSel006('tab-1');
+                self.viewModel017d().listBoxItemType().selectedCode(null);
+                self.viewModel017d().listBoxItems().selectedCode(null);
+                self.viewModel017d().listBoxItems().itemList([]);
+                self.viewModel017e().listBoxItemType().selectedCode(null);
+                self.viewModel017e().listBoxItems().selectedCode(null);
+                self.viewModel017e().listBoxItems().itemList([]);
+                self.viewModel017f().listBoxItemType().selectedCode(null);
+                self.viewModel017f().listBoxItems().selectedCode(null);
+                self.viewModel017f().listBoxItems().itemList([]);
+                self.viewModel017h().listBoxItemType().selectedCode(null);
+                self.viewModel017h().listBoxItems().selectedCode(null);
+                self.viewModel017h().listBoxItems().itemList([]);
+                self.viewModel017i().listBoxItemType().selectedCode(null);
+                self.viewModel017i().listBoxItems().selectedCode(null);
+                self.viewModel017i().listBoxItems().itemList([]);
+                self.viewModel017r().listBoxItemType().selectedCode(null);
+                self.viewModel017r().listBoxItems().selectedCode(null);
+                self.viewModel017r().listBoxItems().itemList([]);
+            };
             //from mode:
             //0: Screen D
             //1: Screen E
@@ -156,130 +203,172 @@ var nts;
             //4: Screen H
             //5: Screen I
             //6: Screen R
-            placeItemNameToTextArea(mode, self) {
+            ScreenModel.prototype.placeItemNameToTextArea = function (mode, self) {
                 if (mode === 0) {
-                    let currentTextArea = self.viewModel017c().formulaManualContent().textArea();
-                    let itemType = _.find(self.viewModel017d().listBoxItemType().itemList(), function (itemType) {
-                        return itemType.code === self.viewModel017d().listBoxItemType().selectedCode();
-                    });
-                    let itemTypeDisplayName = itemType.name.slice(5, 8);
-                    let itemDetailDisplayName = '';
-                    if (self.viewModel017d().listBoxItems().selectedCode() !== '') {
-                        let itemDetail = _.find(self.viewModel017d().listBoxItems().itemList(), function (item) {
+                    if (self.viewModel017d().listBoxItems().selectedCode() !== '' && self.viewModel017d().listBoxItemType().selectedCode() !== '') {
+                        var currentTextArea = self.viewModel017c().formulaManualContent().textArea();
+                        var itemType = _.find(self.viewModel017d().listBoxItemType().itemList(), function (itemType) {
+                            return itemType.code === self.viewModel017d().listBoxItemType().selectedCode();
+                        });
+                        var itemTypeDisplayName = itemType.name.slice(5, 8);
+                        var itemDetailDisplayName = '';
+                        var itemDetail = _.find(self.viewModel017d().listBoxItems().itemList(), function (item) {
                             return item.code === self.viewModel017d().listBoxItems().selectedCode();
                         });
                         itemDetailDisplayName = itemDetail.name;
+                        self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemTypeDisplayName + itemDetailDisplayName, $("#input-text")[0].selectionStart));
                     }
-                    self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemTypeDisplayName + itemDetailDisplayName, $("#input-text")[0].selectionStart));
+                    else {
+                        nts.uk.ui.dialog.alert("計算式に挿入する項目が選択されていません。");
+                    }
                 }
                 else if (mode === 1) {
-                    let currentTextArea = self.viewModel017c().formulaManualContent().textArea();
-                    let itemDetailDisplayName = '';
-                    if (self.viewModel017e().listBoxItems().selectedCode() !== '') {
-                        if (self.viewModel017e().listBoxItems().selectedCode() === '1') {
-                            itemDetailDisplayName = '関数＠条件式（,,）';
+                    if (self.viewModel017e().listBoxItems().selectedCode() !== '' && self.viewModel017e().listBoxItemType().selectedCode() !== '') {
+                        var currentTextArea = self.viewModel017c().formulaManualContent().textArea();
+                        var itemDetailDisplayName = '';
+                        if (self.viewModel017e().listBoxItems().selectedCode() !== '') {
+                            if (self.viewModel017e().listBoxItems().selectedCode() === '1') {
+                                itemDetailDisplayName = '関数＠条件式（,,）';
+                            }
+                            else if (self.viewModel017e().listBoxItems().selectedCode() === '2') {
+                                itemDetailDisplayName = '関数＠かつ（,）';
+                            }
+                            else if (self.viewModel017e().listBoxItems().selectedCode() === '3') {
+                                itemDetailDisplayName = '関数＠または（,）';
+                            }
+                            else if (self.viewModel017e().listBoxItems().selectedCode() === '4') {
+                                itemDetailDisplayName = '関数＠四捨五入（ ）';
+                            }
+                            else if (self.viewModel017e().listBoxItems().selectedCode() === '5') {
+                                itemDetailDisplayName = '関数＠切捨て（ ）';
+                            }
+                            else if (self.viewModel017e().listBoxItems().selectedCode() === '6') {
+                                itemDetailDisplayName = '関数＠切上げ（ ）';
+                            }
+                            else if (self.viewModel017e().listBoxItems().selectedCode() === '7') {
+                                itemDetailDisplayName = '関数＠最大値（,）';
+                            }
+                            else if (self.viewModel017e().listBoxItems().selectedCode() === '8') {
+                                itemDetailDisplayName = '関数＠最小値（,）';
+                            }
+                            else if (self.viewModel017e().listBoxItems().selectedCode() === '9') {
+                                itemDetailDisplayName = '関数＠家族人数（,）';
+                            }
+                            else if (self.viewModel017e().listBoxItems().selectedCode() === '10') {
+                                itemDetailDisplayName = '関数＠月加算（,）';
+                            }
+                            else if (self.viewModel017e().listBoxItems().selectedCode() === '11') {
+                                itemDetailDisplayName = '関数＠年抽出（  ）';
+                            }
+                            else if (self.viewModel017e().listBoxItems().selectedCode() === '12') {
+                                itemDetailDisplayName = '関数＠月抽出（  ）';
+                            }
                         }
-                        else if (self.viewModel017e().listBoxItems().selectedCode() === '2') {
-                            itemDetailDisplayName = '関数＠かつ（,）';
-                        }
-                        else if (self.viewModel017e().listBoxItems().selectedCode() === '3') {
-                            itemDetailDisplayName = '関数＠または（,）';
-                        }
-                        else if (self.viewModel017e().listBoxItems().selectedCode() === '4') {
-                            itemDetailDisplayName = '関数＠四捨五入（ ）';
-                        }
-                        else if (self.viewModel017e().listBoxItems().selectedCode() === '5') {
-                            itemDetailDisplayName = '関数＠切捨て（ ）';
-                        }
-                        else if (self.viewModel017e().listBoxItems().selectedCode() === '6') {
-                            itemDetailDisplayName = '関数＠切上げ（ ）';
-                        }
-                        else if (self.viewModel017e().listBoxItems().selectedCode() === '7') {
-                            itemDetailDisplayName = '関数＠最大値（,）';
-                        }
-                        else if (self.viewModel017e().listBoxItems().selectedCode() === '8') {
-                            itemDetailDisplayName = '関数＠最小値（,）';
-                        }
-                        else if (self.viewModel017e().listBoxItems().selectedCode() === '9') {
-                            itemDetailDisplayName = '関数＠家族人数（,）';
-                        }
-                        else if (self.viewModel017e().listBoxItems().selectedCode() === '10') {
-                            itemDetailDisplayName = '関数＠月加算（,）';
-                        }
-                        else if (self.viewModel017e().listBoxItems().selectedCode() === '11') {
-                            itemDetailDisplayName = '関数＠年抽出（  ）';
-                        }
-                        else if (self.viewModel017e().listBoxItems().selectedCode() === '12') {
-                            itemDetailDisplayName = '関数＠月抽出（  ）';
-                        }
+                        self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemDetailDisplayName, $("#input-text")[0].selectionStart));
                     }
-                    self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemDetailDisplayName, $("#input-text")[0].selectionStart));
+                    else {
+                        nts.uk.ui.dialog.alert("計算式に挿入する項目が選択されていません。");
+                    }
                 }
                 else if (mode === 6) {
-                    let currentTextArea = self.viewModel017c().formulaManualContent().textArea();
-                    let itemType = _.find(self.viewModel017r().listBoxItemType().itemList(), function (itemType) {
-                        return itemType.code === self.viewModel017r().listBoxItemType().selectedCode();
-                    });
-                    let itemTypeDisplayName = itemType.name.slice(7, 12);
-                    let itemDetailDisplayName = '';
-                    if (self.viewModel017r().listBoxItems().selectedCode() !== '') {
-                        let itemDetail = _.find(self.viewModel017r().listBoxItems().itemList(), function (item) {
-                            return item.code === self.viewModel017r().listBoxItems().selectedCode();
+                    if (self.viewModel017r().listBoxItems().selectedCode() !== '' && self.viewModel017r().listBoxItemType().selectedCode() !== '') {
+                        var currentTextArea = self.viewModel017c().formulaManualContent().textArea();
+                        var itemType = _.find(self.viewModel017r().listBoxItemType().itemList(), function (itemType) {
+                            return itemType.code === self.viewModel017r().listBoxItemType().selectedCode();
                         });
-                        itemDetailDisplayName = itemDetail.name;
+                        var itemTypeDisplayName = itemType.name.slice(7, 12);
+                        var itemDetailDisplayName = '';
+                        if (self.viewModel017r().listBoxItems().selectedCode() !== '') {
+                            var itemDetail = _.find(self.viewModel017r().listBoxItems().itemList(), function (item) {
+                                return item.code === self.viewModel017r().listBoxItems().selectedCode();
+                            });
+                            itemDetailDisplayName = itemDetail.name;
+                        }
+                        self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemTypeDisplayName + itemDetailDisplayName, $("#input-text")[0].selectionStart));
                     }
-                    self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemTypeDisplayName + itemDetailDisplayName, $("#input-text")[0].selectionStart));
+                    else {
+                        nts.uk.ui.dialog.alert("計算式に挿入する項目が選択されていません。");
+                    }
                 }
                 else if (mode === 4) {
-                    let currentTextArea = self.viewModel017c().formulaManualContent().textArea();
-                    let itemDetailDisplayName = '';
-                    if (self.viewModel017h().listBoxItems().selectedCode() !== '') {
-                        let itemDetail = _.find(self.viewModel017h().listBoxItems().itemList(), function (item) {
-                            return item.code === self.viewModel017h().listBoxItems().selectedCode();
-                        });
-                        itemDetailDisplayName = '計算式＠' + itemDetail.name;
+                    if (self.viewModel017h().listBoxItems().selectedCode() !== '' && self.viewModel017h().listBoxItemType().selectedCode() !== '') {
+                        var currentTextArea = self.viewModel017c().formulaManualContent().textArea();
+                        var itemDetailDisplayName = '';
+                        if (self.viewModel017h().listBoxItems().selectedCode() !== '') {
+                            var itemDetail = _.find(self.viewModel017h().listBoxItems().itemList(), function (item) {
+                                return item.code === self.viewModel017h().listBoxItems().selectedCode();
+                            });
+                            itemDetailDisplayName = '計算式＠' + itemDetail.name;
+                        }
+                        self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemDetailDisplayName, $("#input-text")[0].selectionStart));
+                    }
+                    else {
+                        nts.uk.ui.dialog.alert("計算式に挿入する項目が選択されていません。");
                     }
                 }
                 else if (mode === 5) {
-                    let currentTextArea = self.viewModel017c().formulaManualContent().textArea();
-                    let itemDetailDisplayName = '';
-                    if (self.viewModel017i().listBoxItems().selectedCode() !== '') {
-                        let itemDetail = _.find(self.viewModel017i().listBoxItems().itemList(), function (item) {
-                            return item.code === self.viewModel017i().listBoxItems().selectedCode();
-                        });
-                        itemDetailDisplayName = '賃金TBL＠' + itemDetail.name;
+                    if (self.viewModel017i().listBoxItems().selectedCode() !== '' && self.viewModel017i().listBoxItemType().selectedCode() !== '') {
+                        var currentTextArea = self.viewModel017c().formulaManualContent().textArea();
+                        var itemDetailDisplayName = '';
+                        if (self.viewModel017i().listBoxItems().selectedCode() !== '') {
+                            var itemDetail = _.find(self.viewModel017i().listBoxItems().itemList(), function (item) {
+                                return item.code === self.viewModel017i().listBoxItems().selectedCode();
+                            });
+                            itemDetailDisplayName = '賃金TBL＠' + itemDetail.name;
+                            self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemDetailDisplayName, $("#input-text")[0].selectionStart));
+                        }
+                    }
+                    else {
+                        nts.uk.ui.dialog.alert("計算式に挿入する項目が選択されていません。");
                     }
                 }
-            }
-            replaceNamesToCodes(content) {
+                else if (mode === 2) {
+                    if (self.viewModel017f().listBoxItems().selectedCode() !== '' && self.viewModel017f().listBoxItemType().selectedCode() !== '') {
+                        var currentTextArea = self.viewModel017c().formulaManualContent().textArea();
+                        var itemDetailDisplayName = '';
+                        if (self.viewModel017f().listBoxItems().selectedCode() !== '') {
+                            var itemDetail = _.find(self.viewModel017f().listBoxItems().itemList(), function (item) {
+                                return item.code === self.viewModel017f().listBoxItems().selectedCode();
+                            });
+                            itemDetailDisplayName = '変数＠' + itemDetail.name;
+                            self.viewModel017c().formulaManualContent().textArea(self.viewModel017c().formulaManualContent().insertString(currentTextArea, itemDetailDisplayName, $("#input-text")[0].selectionStart));
+                        }
+                    }
+                    else {
+                        nts.uk.ui.dialog.alert("計算式に挿入する項目が選択されていません。");
+                    }
+                }
+            };
+            ScreenModel.prototype.replaceNamesToCodes = function (content) {
                 var self = this;
-                let replacedContent = content;
+                var replacedContent = content;
                 _.forEach(self.itemsBagRepository, function (item) {
                     if (replacedContent.indexOf(item.name) !== -1) {
                         replacedContent = replacedContent.replace(item.name, item.code);
                     }
                 });
                 return replacedContent;
-            }
-            replaceCodesToNames(content) {
+            };
+            ScreenModel.prototype.replaceCodesToNames = function (content) {
                 var self = this;
-                let replacedContent = content;
+                var replacedContent = content;
                 _.forEach(self.itemsBagRepository, function (item) {
                     if (replacedContent.indexOf(item.code) !== -1) {
                         replacedContent = replacedContent.replace(item.code, item.name);
                     }
                 });
                 return replacedContent;
-            }
-            start() {
+            };
+            ScreenModel.prototype.start = function () {
                 var self = this;
                 var dfdStart = $.Deferred();
                 // binding tree history a_lst_001
-                let treeHistoryPromise = self.bindHistoryTree();
+                var treeHistoryPromise = self.bindHistoryTree();
                 // when all done
                 $.when(treeHistoryPromise)
                     .done(function () {
                     self.treeGridHistory().singleSelectedCode(self.treeGridHistory().items()[0].childs[0].code);
+                    self.bindDataByChanging(self.treeGridHistory().items()[0].childs[0].code);
                     dfdStart.resolve();
                 })
                     .fail(function () {
@@ -287,8 +376,8 @@ var nts;
                 });
                 // Return.
                 return dfdStart.promise();
-            }
-            fillItemsBagRepository() {
+            };
+            ScreenModel.prototype.fillItemsBagRepository = function () {
                 var self = this;
                 var dfdItemsBags = $.Deferred();
                 self.itemsBagRepository.push({ code: '3＠1', name: '関数＠条件式' }, { code: '3＠2', name: '関数＠かつ' }, { code: '3＠3', name: '関数＠または' }, { code: '3＠4', name: '関数＠四捨五入' }, { code: '3＠5', name: '関数＠切捨て' }, { code: '3＠6', name: '関数＠切上げ' }, { code: '3＠7', name: '関数＠最大値' }, { code: '3＠8', name: '関数＠最小値' }, { code: '3＠9', name: '関数＠家族人数' }, { code: '3＠10', name: '関数＠月加算' }, { code: '3＠11', name: '関数＠年抽出' }, { code: '3＠12', name: '関数＠月抽出' });
@@ -306,6 +395,12 @@ var nts;
                     qmm017.service.getListItemMaster(2).done(function (lstItem) {
                         _.forEach(lstItem, function (item) {
                             self.itemsBagRepository.push({ code: '2＠' + item.itemCode, name: '勤怠＠' + item.itemName });
+                        });
+                    });
+                }).then(function () {
+                    qmm017.service.getListSystemVariable().done(function (lstItem) {
+                        _.forEach(lstItem, function (item) {
+                            self.itemsBagRepository.push({ code: '4＠' + item.systemVariableCode, name: '変数＠' + item.systemVariableName, value: item.result });
                         });
                     });
                 }).then(function () {
@@ -337,21 +432,21 @@ var nts;
                     dfdItemsBags.reject(res);
                 });
                 return dfdItemsBags.promise();
-            }
-            toYearMonthInt(yearmonth) {
+            };
+            ScreenModel.prototype.toYearMonthInt = function (yearmonth) {
                 if (yearmonth.indexOf('/') !== -1) {
                     return yearmonth.replace('/', '');
                 }
                 else {
                     return yearmonth;
                 }
-            }
-            resetToNewMode() {
+            };
+            ScreenModel.prototype.setNewMode = function () {
                 var self = this;
                 self.treeGridHistory().singleSelectedCode(null);
                 self.selectedTabASel001('tab-1');
                 self.isNewMode(true);
-                self.startYearMonth('');
+                self.startYearMonth("");
                 self.viewModel017b().formulaCode('');
                 self.viewModel017b().formulaName('');
                 self.viewModel017b().selectedDifficultyAtr(0);
@@ -359,8 +454,27 @@ var nts;
                 self.viewModel017b().comboBoxUseMaster().selectedCode(1);
                 self.currentNode(null);
                 self.currentParentNode(null);
-            }
-            bindHistoryTree() {
+                $("#inp-formulaName").focus();
+                $("#inp-formulaCode").focus();
+                self.dirtyCheckScreenB.reset();
+                self.dirtyCheckScreenC.reset();
+            };
+            ScreenModel.prototype.resetToNewMode = function () {
+                var self = this;
+                if (self.dirtyCheckScreenB.isDirty() || self.dirtyCheckScreenC.isDirty()) {
+                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。")
+                        .ifYes(function () {
+                        $('.check-error').ntsError('clear');
+                        self.setNewMode();
+                    }).ifNo(function () {
+                    }).ifCancel(function () {
+                    });
+                }
+                else {
+                    self.setNewMode();
+                }
+            };
+            ScreenModel.prototype.bindHistoryTree = function () {
                 var self = this;
                 var dfdHistoryTree = $.Deferred();
                 var itemsTreeGridHistory = [];
@@ -369,21 +483,21 @@ var nts;
                 // convert FormulaDto to Node objects to fill in the tree grid
                 qmm017.service.getAllFormula().done(function (lstFormulaDto) {
                     if (lstFormulaDto) {
-                        let groupsFormulaByCode = _.groupBy(lstFormulaDto, 'formulaCode');
-                        let lstFormulaCode = Object.keys(groupsFormulaByCode);
-                        _.forEach(lstFormulaCode, (formulaCode) => {
-                            let nodeHistory = [];
-                            let lstHistoryEachCode = groupsFormulaByCode[formulaCode];
-                            for (let orderHistory = 0; orderHistory < lstHistoryEachCode.length; orderHistory++) {
+                        var groupsFormulaByCode_1 = _.groupBy(lstFormulaDto, 'formulaCode');
+                        var lstFormulaCode = Object.keys(groupsFormulaByCode_1);
+                        _.forEach(lstFormulaCode, function (formulaCode) {
+                            var nodeHistory = [];
+                            var lstHistoryEachCode = groupsFormulaByCode_1[formulaCode];
+                            for (var orderHistory = 0; orderHistory < lstHistoryEachCode.length; orderHistory++) {
                                 nodeHistory.push(new Node(lstHistoryEachCode[orderHistory].historyId, nts.uk.time.formatYearMonth(lstHistoryEachCode[orderHistory].startDate)
                                     + ' ~ '
                                     + nts.uk.time.formatYearMonth(lstHistoryEachCode[orderHistory].endDate), []));
                             }
-                            let nodeFormula = new Node(lstHistoryEachCode[0].formulaCode, lstHistoryEachCode[0].formulaName, self.sortFormulaHistory(nodeHistory));
+                            var nodeFormula = new Node(lstHistoryEachCode[0].formulaCode, lstHistoryEachCode[0].formulaName, self.sortFormulaHistory(nodeHistory));
                             nodesTreeGrid.push(nodeFormula);
                         });
                         self.treeGridHistory().items(nodesTreeGrid);
-                        self.resetToNewMode();
+                        self.setNewMode();
                     }
                     else {
                         self.treeGridHistory().items(nodesTreeGrid);
@@ -396,30 +510,30 @@ var nts;
                 });
                 // Return.
                 return dfdHistoryTree.promise();
-            }
-            sortFormulaHistory(lstFormulaHistory) {
+            };
+            ScreenModel.prototype.sortFormulaHistory = function (lstFormulaHistory) {
                 return lstFormulaHistory.sort(function (formulaHistoryA, formulaHistoryB) {
                     return formulaHistoryB.name.split(' ~ ')[0].replace('/', '') - formulaHistoryA.name.split(' ~ ')[0].replace('/', '');
                 });
-            }
-            registerFormulaMaster() {
+            };
+            ScreenModel.prototype.registerFormulaMaster = function () {
                 var self = this;
                 if (self.isNewMode()) {
-                    let referenceMasterNo = null;
+                    var referenceMasterNo = null;
                     if (self.viewModel017b().selectedDifficultyAtr() === 0 && self.viewModel017b().selectedConditionAtr() === 0) {
                         referenceMasterNo = 0;
                     }
                     else if (self.viewModel017b().selectedDifficultyAtr() === 0 && self.viewModel017b().selectedConditionAtr() === '1') {
                         referenceMasterNo = self.viewModel017b().comboBoxUseMaster().selectedCode();
                     }
-                    let startDate = '';
+                    var startDate = '';
                     if (self.viewModel017b().startYearMonth().indexOf('/') !== -1) {
                         startDate = self.viewModel017b().startYearMonth().replace('/', '');
                     }
                     else {
                         startDate = self.viewModel017b().startYearMonth();
                     }
-                    let command = {
+                    var command_1 = {
                         formulaCode: self.viewModel017b().formulaCode(),
                         formulaName: self.viewModel017b().formulaName(),
                         difficultyAtr: self.viewModel017b().selectedDifficultyAtr(),
@@ -428,16 +542,25 @@ var nts;
                         conditionAtr: self.viewModel017b().selectedConditionAtr(),
                         refMasterNo: referenceMasterNo
                     };
-                    qmm017.service.registerFormulaMaster(command)
-                        .done(function () {
-                        self.resetToNewMode();
-                    })
-                        .fail(function (res) {
-                        alert(res);
+                    var existedFormula = _.find(self.treeGridHistory().items(), function (formula) {
+                        return formula.code === command_1.formulaCode;
                     });
+                    if (existedFormula) {
+                        debugger;
+                        nts.uk.ui.dialog.alert("入力した計算式コードは既に存在しています。\r\n計算式コードを確認してください。");
+                    }
+                    else {
+                        qmm017.service.registerFormulaMaster(command_1)
+                            .done(function () {
+                            self.start();
+                        })
+                            .fail(function (res) {
+                            alert(res);
+                        });
+                    }
                 }
                 else {
-                    let command = {
+                    var command = {
                         formulaCode: self.viewModel017b().formulaCode(),
                         formulaName: self.viewModel017b().formulaName(),
                         difficultyAtr: self.viewModel017b().selectedDifficultyAtr(),
@@ -456,7 +579,7 @@ var nts;
                     }
                     else {
                         if (self.viewModel017b().selectedConditionAtr() == 0) {
-                            let noneConditionalEasyFormulaDetail = self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail();
+                            var noneConditionalEasyFormulaDetail = self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail();
                             noneConditionalEasyFormulaDetail.easyFormulaCode = '000';
                             noneConditionalEasyFormulaDetail.maxLimitValue = 0;
                             noneConditionalEasyFormulaDetail.minLimitValue = 0;
@@ -465,11 +588,11 @@ var nts;
                                 value: self.viewModel017c().noneConditionalEasyFormula().easyFormulaFixMoney(),
                                 referenceMasterNo: "0000000000",
                                 formulaDetail: noneConditionalEasyFormulaDetail,
-                                fixFormulaAtr: self.viewModel017c().noneConditionalEasyFormula().selectedRuleCodeEasySettings()
+                                fixFormulaAtr: 1
                             });
                         }
                         else if (self.viewModel017b().selectedConditionAtr() == 1 && self.viewModel017b().comboBoxUseMaster().selectedCode() < 6) {
-                            let defaultEasyFormulaDetail = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
+                            var defaultEasyFormulaDetail = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
                             defaultEasyFormulaDetail.easyFormulaCode = '000';
                             defaultEasyFormulaDetail.maxLimitValue = 0;
                             defaultEasyFormulaDetail.minLimitValue = 0;
@@ -485,7 +608,7 @@ var nts;
                             }
                         }
                         else if (self.viewModel017b().selectedConditionAtr() == 1 && self.viewModel017b().comboBoxUseMaster().selectedCode() === '6') {
-                            let defaultEasyFormulaDetail = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
+                            var defaultEasyFormulaDetail = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
                             defaultEasyFormulaDetail.easyFormulaCode = '000';
                             defaultEasyFormulaDetail.maxLimitValue = 0;
                             defaultEasyFormulaDetail.minLimitValue = 0;
@@ -500,7 +623,7 @@ var nts;
                                 command.easyFormulaDto[0].value = 0;
                             }
                             if (self.viewModel017c().monthlyEasyFormula().selectedRuleCodeEasySettings() !== '2') {
-                                let monthlyEasyFormulaDetail = self.viewModel017c().monthlyEasyFormula().easyFormulaDetail();
+                                var monthlyEasyFormulaDetail = self.viewModel017c().monthlyEasyFormula().easyFormulaDetail();
                                 monthlyEasyFormulaDetail.easyFormulaCode = '001';
                                 monthlyEasyFormulaDetail.maxLimitValue = 0;
                                 monthlyEasyFormulaDetail.minLimitValue = 0;
@@ -513,20 +636,20 @@ var nts;
                                 });
                             }
                             else {
-                                let defaultEasyFormulaDetail = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
-                                defaultEasyFormulaDetail.easyFormulaCode = '001';
-                                defaultEasyFormulaDetail.maxLimitValue = 0;
-                                defaultEasyFormulaDetail.minLimitValue = 0;
+                                var defaultEasyFormulaDetail_1 = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
+                                defaultEasyFormulaDetail_1.easyFormulaCode = '001';
+                                defaultEasyFormulaDetail_1.maxLimitValue = 0;
+                                defaultEasyFormulaDetail_1.minLimitValue = 0;
                                 command.easyFormulaDto.push({
                                     easyFormulaCode: '001',
                                     value: self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(),
                                     referenceMasterNo: "0000000061",
-                                    formulaDetail: defaultEasyFormulaDetail,
+                                    formulaDetail: defaultEasyFormulaDetail_1,
                                     fixFormulaAtr: self.viewModel017c().defaultEasyFormula().selectedRuleCodeEasySettings()
                                 });
                             }
                             if (self.viewModel017c().dailyMonthlyEasyFormula().selectedRuleCodeEasySettings() !== '2') {
-                                let dailyMonthlyEasyFormulaDetail = self.viewModel017c().dailyMonthlyEasyFormula().easyFormulaDetail();
+                                var dailyMonthlyEasyFormulaDetail = self.viewModel017c().dailyMonthlyEasyFormula().easyFormulaDetail();
                                 dailyMonthlyEasyFormulaDetail.easyFormulaCode = '002';
                                 dailyMonthlyEasyFormulaDetail.maxLimitValue = 0;
                                 dailyMonthlyEasyFormulaDetail.minLimitValue = 0;
@@ -539,20 +662,20 @@ var nts;
                                 });
                             }
                             else {
-                                let defaultEasyFormulaDetail = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
-                                defaultEasyFormulaDetail.easyFormulaCode = '002';
-                                defaultEasyFormulaDetail.maxLimitValue = 0;
-                                defaultEasyFormulaDetail.minLimitValue = 0;
+                                var defaultEasyFormulaDetail_2 = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
+                                defaultEasyFormulaDetail_2.easyFormulaCode = '002';
+                                defaultEasyFormulaDetail_2.maxLimitValue = 0;
+                                defaultEasyFormulaDetail_2.minLimitValue = 0;
                                 command.easyFormulaDto.push({
                                     easyFormulaCode: '002',
                                     value: self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(),
                                     referenceMasterNo: "0000000062",
-                                    formulaDetail: defaultEasyFormulaDetail,
+                                    formulaDetail: defaultEasyFormulaDetail_2,
                                     fixFormulaAtr: self.viewModel017c().defaultEasyFormula().selectedRuleCodeEasySettings()
                                 });
                             }
                             if (self.viewModel017c().dailyEasyFormula().selectedRuleCodeEasySettings() !== '2') {
-                                let dailyEasyFormulaDetail = self.viewModel017c().dailyEasyFormula().easyFormulaDetail();
+                                var dailyEasyFormulaDetail = self.viewModel017c().dailyEasyFormula().easyFormulaDetail();
                                 dailyEasyFormulaDetail.easyFormulaCode = '003';
                                 dailyEasyFormulaDetail.maxLimitValue = 0;
                                 dailyEasyFormulaDetail.minLimitValue = 0;
@@ -565,20 +688,20 @@ var nts;
                                 });
                             }
                             else {
-                                let defaultEasyFormulaDetail = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
-                                defaultEasyFormulaDetail.easyFormulaCode = '003';
-                                defaultEasyFormulaDetail.maxLimitValue = 0;
-                                defaultEasyFormulaDetail.minLimitValue = 0;
+                                var defaultEasyFormulaDetail_3 = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
+                                defaultEasyFormulaDetail_3.easyFormulaCode = '003';
+                                defaultEasyFormulaDetail_3.maxLimitValue = 0;
+                                defaultEasyFormulaDetail_3.minLimitValue = 0;
                                 command.easyFormulaDto.push({
                                     easyFormulaCode: '003',
                                     value: self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(),
                                     referenceMasterNo: "0000000063",
-                                    formulaDetail: defaultEasyFormulaDetail,
+                                    formulaDetail: defaultEasyFormulaDetail_3,
                                     fixFormulaAtr: self.viewModel017c().defaultEasyFormula().selectedRuleCodeEasySettings()
                                 });
                             }
                             if (self.viewModel017c().hourlyEasyFormula().selectedRuleCodeEasySettings() !== '2') {
-                                let hourlyEasyFormulaDetail = self.viewModel017c().hourlyEasyFormula().easyFormulaDetail();
+                                var hourlyEasyFormulaDetail = self.viewModel017c().hourlyEasyFormula().easyFormulaDetail();
                                 hourlyEasyFormulaDetail.easyFormulaCode = '004';
                                 hourlyEasyFormulaDetail.maxLimitValue = 0;
                                 hourlyEasyFormulaDetail.minLimitValue = 0;
@@ -591,15 +714,15 @@ var nts;
                                 });
                             }
                             else {
-                                let defaultEasyFormulaDetail = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
-                                defaultEasyFormulaDetail.easyFormulaCode = '004';
-                                defaultEasyFormulaDetail.maxLimitValue = 0;
-                                defaultEasyFormulaDetail.minLimitValue = 0;
+                                var defaultEasyFormulaDetail_4 = self.viewModel017c().defaultEasyFormula().easyFormulaDetail();
+                                defaultEasyFormulaDetail_4.easyFormulaCode = '004';
+                                defaultEasyFormulaDetail_4.maxLimitValue = 0;
+                                defaultEasyFormulaDetail_4.minLimitValue = 0;
                                 command.easyFormulaDto.push({
                                     easyFormulaCode: '004',
                                     value: self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(),
                                     referenceMasterNo: "0000000064",
-                                    formulaDetail: defaultEasyFormulaDetail,
+                                    formulaDetail: defaultEasyFormulaDetail_4,
                                     fixFormulaAtr: self.viewModel017c().defaultEasyFormula().selectedRuleCodeEasySettings()
                                 });
                             }
@@ -619,20 +742,20 @@ var nts;
                     }
                     qmm017.service.updateFormulaMaster(command)
                         .done(function () {
-                        self.resetToNewMode();
+                        self.start();
                     })
                         .fail(function (res) {
                         alert(res);
                     });
                 }
-            }
-            openDialogJ() {
+            };
+            ScreenModel.prototype.openDialogJ = function () {
                 var self = this;
-                let lastestHistoryNode = self.currentParentNode().childs[0];
-                let lastestHistory = lastestHistoryNode.name;
-                let lastestYearMonth = lastestHistory.split("~");
-                let lastestStartYm = lastestYearMonth[0].trim();
-                let param = {
+                var lastestHistoryNode = self.currentParentNode().childs[0];
+                var lastestHistory = lastestHistoryNode.name;
+                var lastestYearMonth = lastestHistory.split("~");
+                var lastestStartYm = lastestYearMonth[0].trim();
+                var param = {
                     formulaCode: self.viewModel017b().formulaCode(),
                     formulaName: self.viewModel017b().formulaName(),
                     startYm: lastestStartYm,
@@ -641,17 +764,17 @@ var nts;
                     referenceMasterNo: self.viewModel017b().comboBoxUseMaster().selectedCode()
                 };
                 nts.uk.ui.windows.setShared('paramFromScreenA', param);
-                nts.uk.ui.windows.sub.modal('/view/qmm/017/j/index.xhtml', { title: '履歴の追加', width: 540, height: 545 }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal('/view/qmm/017/j/index.xhtml', { title: '履歴の追加', width: 540, height: 545 }).onClosed(function () {
                     self.start();
                 });
-            }
-            openDialogK() {
+            };
+            ScreenModel.prototype.openDialogK = function () {
                 var self = this;
-                let currentHistory = self.currentNode().name;
-                let currentYearMonth = currentHistory.split(" ~ ");
-                let currentStartYm = currentYearMonth[0];
-                let currentEndYm = currentYearMonth[1];
-                let param = {
+                var currentHistory = self.currentNode().name;
+                var currentYearMonth = currentHistory.split(" ~ ");
+                var currentStartYm = currentYearMonth[0];
+                var currentEndYm = currentYearMonth[1];
+                var param = {
                     formulaCode: self.viewModel017b().formulaCode(),
                     formulaName: self.viewModel017b().formulaName(),
                     historyId: self.currentNode().code,
@@ -660,21 +783,22 @@ var nts;
                     difficultyAtr: self.viewModel017b().selectedDifficultyAtr()
                 };
                 nts.uk.ui.windows.setShared('paramFromScreenA', param);
-                nts.uk.ui.windows.sub.modal('/view/qmm/017/k/index.xhtml', { title: '履歴の編集', width: 540, height: 380 }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal('/view/qmm/017/k/index.xhtml', { title: '履歴の編集', width: 540, height: 380 }).onClosed(function () {
                     self.start();
                 });
-            }
-            openDialogQ(root) {
+            };
+            ScreenModel.prototype.openDialogQ = function (root) {
                 var self = root;
-                let param = {
+                var param = {
                     formulaContent: self.viewModel017c().formulaManualContent().textArea(),
                     itemsBag: self.itemsBagRepository
                 };
                 nts.uk.ui.windows.setShared('formulaManual', param);
-                nts.uk.ui.windows.sub.modal('/view/qmm/017/q/index.xhtml', { title: 'お試し計算', width: 840, height: 615 }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal('/view/qmm/017/q/index.xhtml', { title: 'お試し計算', width: 840, height: 615 }).onClosed(function () {
                 });
-            }
-        }
+            };
+            return ScreenModel;
+        }());
         qmm017.ScreenModel = ScreenModel;
         function findNode(targetNode, searchString) {
             if (targetNode.code === searchString) {
@@ -685,15 +809,15 @@ var nts;
                     return targetNode;
                 }
             }
-            for (let count = 0; count < targetNode.childs.length; count++) {
-                let foundNode = findNode(targetNode.childs[count], searchString);
+            for (var count = 0; count < targetNode.childs.length; count++) {
+                var foundNode = findNode(targetNode.childs[count], searchString);
                 if (foundNode) {
                     return foundNode;
                 }
             }
         }
-        class TreeGrid {
-            constructor() {
+        var TreeGrid = (function () {
+            function TreeGrid() {
                 var self = this;
                 self.items = ko.observableArray([new Node('001', 'Formula 1', [
                         new Node('0001-2', '2017/03 ~ 9999/12', []),
@@ -707,10 +831,11 @@ var nts;
                 self.singleSelectedCode = ko.observable(null);
                 self.index = 0;
             }
-        }
+            return TreeGrid;
+        }());
         qmm017.TreeGrid = TreeGrid;
-        class Node {
-            constructor(code, name, childs) {
+        var Node = (function () {
+            function Node(code, name, childs) {
                 var self = this;
                 self.code = code;
                 self.name = name;
@@ -722,7 +847,8 @@ var nts;
                 }
                 self.childs = childs;
             }
-        }
+            return Node;
+        }());
         qmm017.Node = Node;
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));

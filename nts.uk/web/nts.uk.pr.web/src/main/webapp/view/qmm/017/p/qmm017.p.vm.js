@@ -12,8 +12,8 @@ var nts;
                     (function (p) {
                         var viewmodel;
                         (function (viewmodel) {
-                            class ScreenModel {
-                                constructor(data) {
+                            var ScreenModel = (function () {
+                                function ScreenModel(data) {
                                     var self = this;
                                     self.subject = "基準金額に設定する、" + data.subject + "を";
                                     self.items = ko.observableArray(data.itemList);
@@ -23,24 +23,31 @@ var nts;
                                     ]);
                                     self.currentCodeList = ko.observableArray(data.selectedItems);
                                 }
-                                closeAndReturnData() {
+                                ScreenModel.prototype.closeAndReturnData = function () {
                                     var self = this;
-                                    let baseAmountListItem = self.currentCodeList();
-                                    nts.uk.ui.windows.setShared('baseAmountListItem', baseAmountListItem);
+                                    var baseAmountListItem = self.currentCodeList();
+                                    if (baseAmountListItem.length > 0) {
+                                        nts.uk.ui.windows.setShared('baseAmountListItem', baseAmountListItem);
+                                        nts.uk.ui.windows.close();
+                                    }
+                                    else {
+                                        nts.uk.ui.dialog.alert("項目が選択されていません。");
+                                    }
+                                };
+                                ScreenModel.prototype.closeDialog = function () {
                                     nts.uk.ui.windows.close();
-                                }
-                                closeDialog() {
-                                    nts.uk.ui.windows.close();
-                                }
-                            }
+                                };
+                                return ScreenModel;
+                            }());
                             viewmodel.ScreenModel = ScreenModel;
                         })(viewmodel = p.viewmodel || (p.viewmodel = {}));
-                        class ItemModel {
-                            constructor(code, name) {
+                        var ItemModel = (function () {
+                            function ItemModel(code, name) {
                                 this.code = code;
                                 this.name = name;
                             }
-                        }
+                            return ItemModel;
+                        }());
                     })(p = qmm017.p || (qmm017.p = {}));
                 })(qmm017 = view.qmm017 || (view.qmm017 = {}));
             })(view = pr.view || (pr.view = {}));

@@ -2,8 +2,8 @@ var nts;
 (function (nts) {
     var qmm017;
     (function (qmm017) {
-        class CScreen {
-            constructor(data) {
+        var CScreen = (function () {
+            function CScreen(data) {
                 var self = this;
                 self.selectedDifficultyAtr = ko.observable(data.viewModel017b().selectedDifficultyAtr());
                 self.selectedConditionAtr = ko.observable(data.viewModel017b().selectedConditionAtr());
@@ -24,7 +24,7 @@ var nts;
                 self.useMasterCode = ko.observable(data.viewModel017b().comboBoxUseMaster().selectedCode());
                 self.useMasterName = ko.observable('');
                 data.viewModel017b().comboBoxUseMaster().selectedCode.subscribe(function (codeChange) {
-                    let useMasterFound = _.find(data.viewModel017b().comboBoxUseMaster().itemList(), (item) => {
+                    var useMasterFound = _.find(data.viewModel017b().comboBoxUseMaster().itemList(), function (item) {
                         return item.code == codeChange;
                     });
                     self.useMasterCode(data.viewModel017b().comboBoxUseMaster().selectedCode());
@@ -71,7 +71,7 @@ var nts;
                     { id: 'tab-2', title: '単価', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-3', title: '関数', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-4', title: 'システム変数', content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-5', title: '個人情報', content: '.tab-content-5', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-5', title: '個人情報', content: '.tab-content-5', enable: ko.observable(false), visible: ko.observable(true) },
                     { id: 'tab-6', title: '計算式', content: '.tab-content-6', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-7', title: '賃金テーブル', content: '.tab-content-7', style: 'margin-left: 50px;', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
@@ -86,39 +86,40 @@ var nts;
                 self.dailyEasyFormula = ko.observable(new EasyFormula(1, data.viewModel017b));
                 self.hourlyEasyFormula = ko.observable(new EasyFormula(1, data.viewModel017b));
             }
-            undo() {
+            CScreen.prototype.undo = function () {
                 document.execCommand("undo", false, null);
-            }
-            redo() {
+            };
+            CScreen.prototype.redo = function () {
                 document.execCommand("redo", false, null);
-            }
-            validateTextArea() {
+            };
+            CScreen.prototype.validateTextArea = function () {
                 var self = this;
                 self.formulaManualContent().testError();
-            }
-            setAllFixValued() {
+            };
+            CScreen.prototype.setAllFixValued = function () {
                 var self = this;
                 self.monthlyEasyFormula().selectedRuleCodeEasySettings('0');
                 self.dailyMonthlyEasyFormula().selectedRuleCodeEasySettings('0');
                 self.dailyEasyFormula().selectedRuleCodeEasySettings('0');
                 self.hourlyEasyFormula().selectedRuleCodeEasySettings('0');
-            }
-            setAllDetail() {
+            };
+            CScreen.prototype.setAllDetail = function () {
                 var self = this;
                 self.monthlyEasyFormula().selectedRuleCodeEasySettings('1');
                 self.dailyMonthlyEasyFormula().selectedRuleCodeEasySettings('1');
                 self.dailyEasyFormula().selectedRuleCodeEasySettings('1');
                 self.hourlyEasyFormula().selectedRuleCodeEasySettings('1');
-            }
-            pasteValue(targetString) {
+            };
+            CScreen.prototype.pasteValue = function (targetString) {
                 var self = this;
-                let currentTextArea = self.formulaManualContent().textArea();
+                var currentTextArea = self.formulaManualContent().textArea();
                 self.formulaManualContent().textArea(self.formulaManualContent().insertString(currentTextArea, targetString, $("#input-text")[0].selectionStart));
-            }
-        }
+            };
+            return CScreen;
+        }());
         qmm017.CScreen = CScreen;
-        class EasyFormula {
-            constructor(mode, root) {
+        var EasyFormula = (function () {
+            function EasyFormula(mode, root) {
                 var self = this;
                 self.startYm = ko.observable(root().startYearMonth());
                 root().startYearMonth.subscribe(function (yearMonth) {
@@ -152,29 +153,46 @@ var nts;
                     self.historyId(historyId);
                 });
             }
-            openDialogL() {
+            EasyFormula.prototype.openDialogL = function () {
                 var self = this;
-                qmm017.service.getFormulaEasyDetail(self.formulaCode(), self.historyId(), self.easyFormulaCode())
-                    .done(function (formulaEasyDetail) {
-                    self.easyFormulaDetail(formulaEasyDetail);
-                    let param = {
+                if (self.easyFormulaCode() && self.easyFormulaCode() !== '') {
+                    qmm017.service.getFormulaEasyDetail(self.formulaCode(), self.historyId(), self.easyFormulaCode())
+                        .done(function (formulaEasyDetail) {
+                        self.easyFormulaDetail(formulaEasyDetail);
+                        var param = {
+                            isUpdate: (self.easyFormulaName() !== '' && self.easyFormulaName() !== null),
+                            dirtyData: self.easyFormulaDetail(),
+                            startYm: self.startYm()
+                        };
+                        nts.uk.ui.windows.setShared('paramFromScreenC', param);
+                        nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(function () {
+                            if (nts.uk.ui.windows.getShared('easyFormulaDetail')) {
+                                self.easyFormulaDetail(nts.uk.ui.windows.getShared('easyFormulaDetail'));
+                                self.easyFormulaName(self.easyFormulaDetail().easyFormulaName);
+                            }
+                        });
+                    });
+                }
+                else {
+                    var param = {
                         isUpdate: (self.easyFormulaName() !== '' && self.easyFormulaName() !== null),
                         dirtyData: self.easyFormulaDetail(),
                         startYm: self.startYm()
                     };
                     nts.uk.ui.windows.setShared('paramFromScreenC', param);
-                    nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(() => {
+                    nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(function () {
                         if (nts.uk.ui.windows.getShared('easyFormulaDetail')) {
                             self.easyFormulaDetail(nts.uk.ui.windows.getShared('easyFormulaDetail'));
                             self.easyFormulaName(self.easyFormulaDetail().easyFormulaName);
                         }
                     });
-                });
-            }
-        }
+                }
+            };
+            return EasyFormula;
+        }());
         qmm017.EasyFormula = EasyFormula;
-        class ComboBox {
-            constructor(data, isEnable, isEditable) {
+        var ComboBox = (function () {
+            function ComboBox(data, isEnable, isEditable) {
                 var self = this;
                 self.itemList = ko.observableArray(data);
                 self.itemName = ko.observable('');
@@ -183,7 +201,8 @@ var nts;
                 self.isEnable = ko.observable(isEnable);
                 self.isEditable = ko.observable(isEditable);
             }
-        }
+            return ComboBox;
+        }());
         qmm017.ComboBox = ComboBox;
         function showError(event) {
             var self = this;
@@ -199,8 +218,8 @@ var nts;
                 $("#error-containner").show();
             }
         }
-        class ItemModelTextEditor {
-            constructor(code, name, description) {
+        var ItemModelTextEditor = (function () {
+            function ItemModelTextEditor(code, name, description) {
                 this.code = ko.observable(code);
                 this.name = ko.observable(name);
                 this.description = ko.observable(description);
@@ -208,10 +227,11 @@ var nts;
                     return this.code() + "  " + this.name();
                 }, this).extend({ deferred: true });
             }
-        }
+            return ItemModelTextEditor;
+        }());
         qmm017.ItemModelTextEditor = ItemModelTextEditor;
-        class TextEditor {
-            constructor() {
+        var TextEditor = (function () {
+            function TextEditor() {
                 //list error messsage
                 this.ERROR_BRACKET = "カッコ()の数に誤りがあります。";
                 this.ERROR_CONSECUTIVELY = "構文に誤りがあります。{0}と{1}が連続して入力されています。";
@@ -264,7 +284,7 @@ var nts;
                 }, self);
                 self.contentValue = ko.observable("");
                 $("#error-containner").hide();
-                $(document).on("keyup", "#input-text", (event) => {
+                $(document).on("keyup", "#input-text", function (event) {
                     if (!event.shiftKey && event.keyCode === 16 && event.key === "@") {
                         return;
                     }
@@ -282,15 +302,15 @@ var nts;
                         $("#auto-complete-containner").hide();
                     }
                 });
-                $(document).on("mouseleave", "#error-containner", (event) => {
+                $(document).on("mouseleave", "#error-containner", function (event) {
                     $("#error-containner").hide();
                 });
-                $(document).on("click", "#input-area", (event) => {
+                $(document).on("click", "#input-area", function (event) {
                     $("#error-containner").hide();
                     self.observeError($(".error-char"));
                 });
             }
-            observeError(subjectTags) {
+            TextEditor.prototype.observeError = function (subjectTags) {
                 var currentClickedTag = _.findLast(subjectTags, function (tag) {
                     var x = $(tag).offset();
                     return x.top <= event.pageY && x.left <= event.pageX
@@ -301,13 +321,13 @@ var nts;
                     $(currentClickedTag).click({ pageX: event.pageX, pageY: event.pageY }, showError);
                     $(currentClickedTag).click();
                 }
-            }
-            validateBracket(bracketTags) {
+            };
+            TextEditor.prototype.validateBracket = function (bracketTags) {
                 var self = this;
-                let openBracket = _.remove(bracketTags, function (n) {
+                var openBracket = _.remove(bracketTags, function (n) {
                     return $(n).html() === "\（";
                 });
-                let closeBracket = _.remove(bracketTags, function (n) {
+                var closeBracket = _.remove(bracketTags, function (n) {
                     return $(n).html() === "\）";
                 });
                 if (closeBracket.length === 0) {
@@ -334,8 +354,8 @@ var nts;
                     self.markError($(openError), self.ERROR_BRACKET, []);
                     self.markError($(closeBracket), self.ERROR_BRACKET, []);
                 }
-            }
-            validateConsecutively(specialChar) {
+            };
+            TextEditor.prototype.validateConsecutively = function (specialChar) {
                 var self = this;
                 var singleSpecial = {
                     "+": "+",
@@ -351,7 +371,7 @@ var nts;
                     "≧": "≧",
                     "＠": "＠"
                 };
-                for (let i = 0; i < specialChar.length; i++) {
+                for (var i = 0; i < specialChar.length; i++) {
                     var $data = $(specialChar[i]);
                     var charCount = parseInt($data.attr("id").split("-")[1]);
                     var char = $data.text();
@@ -363,56 +383,56 @@ var nts;
                         }
                     }
                 }
-            }
-            validateContainAtSign(tagsJapaneseChar) {
+            };
+            TextEditor.prototype.validateContainAtSign = function (tagsJapaneseChar) {
                 var self = this;
-                for (let tagOrder = 0; tagOrder < tagsJapaneseChar.length; tagOrder++) {
+                for (var tagOrder = 0; tagOrder < tagsJapaneseChar.length; tagOrder++) {
                     if (tagsJapaneseChar[tagOrder].innerText.indexOf('＠') === -1) {
-                        let contentToChars = tagsJapaneseChar[tagOrder].innerText.split('');
+                        var contentToChars = tagsJapaneseChar[tagOrder].innerText.split('');
                         if (contentToChars[0] !== '”' || contentToChars[contentToChars.length - 1] !== '”') {
                             self.markError($(tagsJapaneseChar[tagOrder]), self.ERROR_MUST_CONTAIN_ATSIGN, [tagsJapaneseChar[tagOrder].innerText]);
                         }
                     }
                 }
-            }
-            validateBeforeAtSign(tagsJapaneseChar) {
+            };
+            TextEditor.prototype.validateBeforeAtSign = function (tagsJapaneseChar) {
                 var self = this;
-                let lstSyntaxBeforeAtSign = ["支給", "控除", "勤怠", "会社単価", "個人単価", "関数", "変数", "個人", "計算式", "賃金TBL"];
-                for (let tagOrder = 0; tagOrder < tagsJapaneseChar.length; tagOrder++) {
+                var lstSyntaxBeforeAtSign = ["支給", "控除", "勤怠", "会社単価", "個人単価", "関数", "変数", "個人", "計算式", "賃金TBL"];
+                for (var tagOrder = 0; tagOrder < tagsJapaneseChar.length; tagOrder++) {
                     if (tagsJapaneseChar[tagOrder].innerText.indexOf('＠') !== -1) {
-                        let splitByAtSign = tagsJapaneseChar[tagOrder].innerText.split('＠');
+                        var splitByAtSign = tagsJapaneseChar[tagOrder].innerText.split('＠');
                         if (!self.checkEqualInArray(splitByAtSign[0], lstSyntaxBeforeAtSign)) {
                             self.markError($(tagsJapaneseChar[tagOrder]), self.ERROR_BEFORE_ATSIGN, [splitByAtSign[0]]);
                         }
                     }
                 }
-            }
-            validateDivideZero(tagsSpecialChar) {
+            };
+            TextEditor.prototype.validateDivideZero = function (tagsSpecialChar) {
                 var self = this;
-                for (let tagOrder = 0; tagOrder < tagsSpecialChar.length; tagOrder++) {
+                for (var tagOrder = 0; tagOrder < tagsSpecialChar.length; tagOrder++) {
                     if (tagsSpecialChar[tagOrder].innerText === '÷') {
-                        let nextTag = $(tagsSpecialChar[tagOrder]).next();
+                        var nextTag = $(tagsSpecialChar[tagOrder]).next();
                         if (nextTag) {
-                            let contentNextTag = nextTag[0].innerText;
+                            var contentNextTag = nextTag[0].innerText;
                             if (contentNextTag.trim() === '0') {
                                 self.markError($(tagsSpecialChar[tagOrder]), self.ERROR_DIVIDE_ZERO, []);
                             }
                         }
                     }
                 }
-            }
-            validateEmptyInput() {
+            };
+            TextEditor.prototype.validateEmptyInput = function () {
                 var self = this;
-                let contentInput = $("#input-text").val();
+                var contentInput = $("#input-text").val();
                 if (!contentInput || contentInput.trim() === '') {
-                    let html = "<span class='editor-line'><span id='span-1' class='error-char' message='" + self.ERROR_EMPTY_INPUT + "'>  </span></span>";
+                    var html = "<span class='editor-line'><span id='span-1' class='error-char' message='" + self.ERROR_EMPTY_INPUT + "'>  </span></span>";
                     self.contentValue(html);
                 }
-            }
-            validateNestedMoreThan10(tagsSpecialChar) {
+            };
+            TextEditor.prototype.validateNestedMoreThan10 = function (tagsSpecialChar) {
                 var self = this;
                 var countChar = 0;
-                for (let tagOrder = 0; tagOrder < tagsSpecialChar.length; tagOrder++) {
+                for (var tagOrder = 0; tagOrder < tagsSpecialChar.length; tagOrder++) {
                     if (tagsSpecialChar[tagOrder].innerText === '（') {
                         countChar++;
                         if (countChar > 10) {
@@ -423,24 +443,24 @@ var nts;
                         countChar = 0;
                     }
                 }
-            }
-            validateDigitsAfterDecimal(tagsUnknownChar) {
+            };
+            TextEditor.prototype.validateDigitsAfterDecimal = function (tagsUnknownChar) {
                 var self = this;
-                for (let tagOrder = 0; tagOrder < tagsUnknownChar.length; tagOrder++) {
+                for (var tagOrder = 0; tagOrder < tagsUnknownChar.length; tagOrder++) {
                     if (tagsUnknownChar[tagOrder].innerText >= '0' && tagsUnknownChar[tagOrder].innerText <= '9' && tagsUnknownChar[tagOrder].innerText.indexOf('.') !== -1) {
-                        let splitContentTag = tagsUnknownChar[tagOrder].innerText.split('.');
+                        var splitContentTag = tagsUnknownChar[tagOrder].innerText.split('.');
                         if (splitContentTag[1].length > 5) {
                             self.markError($(tagsUnknownChar[tagOrder]), self.ERROR_DIGITS_AFTER_DECIMAL, [tagsUnknownChar[tagOrder].innerText]);
                         }
                     }
                 }
-            }
+            };
             // return 2 if too much param
             // return 1 if not enough param
             // return 0 if OK
-            validateNumberOfParam(treeObject) {
-                let functionName = treeObject.value.trim();
-                let numberOfParam = treeObject.children.length;
+            TextEditor.prototype.validateNumberOfParam = function (treeObject) {
+                var functionName = treeObject.value.trim();
+                var numberOfParam = treeObject.children.length;
                 if (functionName === "関数＠条件式") {
                     if (numberOfParam === 3)
                         return 1;
@@ -538,10 +558,10 @@ var nts;
                         return 0;
                 }
                 return 1;
-            }
-            validateTypeOfParams(treeObject) {
-                let functionName = treeObject.value.trim();
-                let param = treeObject.children;
+            };
+            TextEditor.prototype.validateTypeOfParams = function (treeObject) {
+                var functionName = treeObject.value.trim();
+                var param = treeObject.children;
                 if (functionName === "関数＠条件式" && param.length == 3) {
                 }
                 else if (functionName === "関数＠かつ" && param.length >= 2) {
@@ -566,14 +586,14 @@ var nts;
                 }
                 else if (functionName === "関数＠月抽出" && param.length == 1) {
                 }
-            }
-            validateFunction(allElementTag) {
+            };
+            TextEditor.prototype.validateFunction = function (allElementTag) {
                 var self = this;
                 var inputContent = [];
                 var inputTags = [];
                 var splitContent = "";
                 var splitTags = [];
-                for (let tagOrder = 0; tagOrder < allElementTag.length; tagOrder++) {
+                for (var tagOrder = 0; tagOrder < allElementTag.length; tagOrder++) {
                     if (!self.checkEqualInArray(allElementTag[tagOrder].innerText, self.listOperatorChar)) {
                         splitContent += allElementTag[tagOrder].innerText;
                         splitTags.push(allElementTag[tagOrder]);
@@ -586,18 +606,19 @@ var nts;
                     }
                 }
                 self.validateContentFunction(inputContent[0]);
-            }
-            validateContentFunction(contentFunction) {
+            };
+            TextEditor.prototype.validateContentFunction = function (contentFunction) {
                 var self = this;
-                let treeFunction = nts.uk.util.createTreeFromString(contentFunction, "（", "）", ",");
+                //            let treeObjects = contentFunction;
+                var treeFunction = nts.uk.util.createTreeFromString(contentFunction, "（", "）", ",", []);
                 self.validateTreeFunction(treeFunction[0]);
-            }
-            validateTreeFunction(treeObject) {
+            };
+            TextEditor.prototype.validateTreeFunction = function (treeObject) {
                 var self = this;
-                let params = treeObject.children;
+                var params = treeObject.children;
                 if (params.length > 0) {
                     if (self.validateNumberOfParam(treeObject) === 1) {
-                        for (let i = 0; i < params.length; i++) {
+                        for (var i = 0; i < params.length; i++) {
                             self.validateTreeFunction(params[i]);
                         }
                     }
@@ -608,59 +629,59 @@ var nts;
                         self.markErrorTreeObject(treeObject, self.ERROR_NOT_ENOUGH_PARAM);
                     }
                 }
-            }
-            markErrorTreeObject(treeObject, message) {
+            };
+            TextEditor.prototype.markErrorTreeObject = function (treeObject, message) {
                 var self = this;
-                let indexTree = treeObject.index;
-                let specialCharTags = $(".special-char");
+                var indexTree = treeObject.index;
+                var specialCharTags = $(".special-char");
                 var countOpenBrackets = 0;
-                for (let orderTag = 0; orderTag < specialCharTags.length; orderTag++) {
+                for (var orderTag = 0; orderTag < specialCharTags.length; orderTag++) {
                     if (specialCharTags[orderTag].innerText === '（') {
                         countOpenBrackets += 1;
                     }
                     //if found the bracket of the function
                     if (countOpenBrackets === indexTree) {
-                        let functionNameTag = specialCharTags[orderTag].previousSibling;
+                        var functionNameTag = specialCharTags[orderTag].previousSibling;
                         self.markError($(functionNameTag), message, [functionNameTag.innerText]);
                         return true;
                     }
                 }
                 return true;
-            }
-            checkEqualInArray(target, array) {
-                for (let count = 0; count < array.length; count++) {
+            };
+            TextEditor.prototype.checkEqualInArray = function (target, array) {
+                for (var count = 0; count < array.length; count++) {
                     if (target === array[count]) {
                         return true;
                     }
                 }
                 return false;
-            }
-            checkContainsInArray(target, array) {
-                for (let count = 0; count < array.length; count++) {
+            };
+            TextEditor.prototype.checkContainsInArray = function (target, array) {
+                for (var count = 0; count < array.length; count++) {
                     if (target.indexOf(array[count]) !== -1) {
                         return true;
                     }
                 }
                 return false;
-            }
-            markError(tag, message, param) {
+            };
+            TextEditor.prototype.markError = function (tag, message, param) {
                 var errorContent = message;
                 if (tag) {
                     if (param && param.length > 0) {
-                        for (let paramOrder = 0; paramOrder < param.length; paramOrder++) {
+                        for (var paramOrder = 0; paramOrder < param.length; paramOrder++) {
                             errorContent = errorContent.replace("{" + paramOrder + "}", param[paramOrder]);
                         }
                     }
                     tag.addClass("error-char").attr("message", errorContent);
                 }
-            }
-            insertString(original, sub, position) {
+            };
+            TextEditor.prototype.insertString = function (original, sub, position) {
                 if (original.length === position) {
                     return original + sub;
                 }
                 return original.substr(0, position) + sub + original.substr(position);
-            }
-            testError() {
+            };
+            TextEditor.prototype.testError = function () {
                 var self = this;
                 var value = $("#input-text").val();
                 var count = 1;
@@ -724,8 +745,8 @@ var nts;
                 self.validateDigitsAfterDecimal($(".unknown-char"));
                 self.validateFunction($(".element-content"));
                 self.contentValue($("#input-content-area").html());
-            }
-            getCurrentPosition(position) {
+            };
+            TextEditor.prototype.getCurrentPosition = function (position) {
                 var uiPosition = {};
                 var $lines = $("#input-content-area").find(".editor-line");
                 var index = 0;
@@ -742,15 +763,15 @@ var nts;
                     }
                 });
                 return uiPosition;
-            }
-            checkAlphaOrEmpty(char) {
+            };
+            TextEditor.prototype.checkAlphaOrEmpty = function (char) {
                 var speChar = new RegExp(/[~`!#$×%\（）＜＞≦≧＝≠^＾÷&*+=\-\[\]\\;\',/{}|\\\":<>\?\(\)]/g);
                 return !speChar.test(char) || char === " " || char === undefined;
-            }
-            checkJapanese(char) {
+            };
+            TextEditor.prototype.checkJapanese = function (char) {
                 return !nts.uk.text.allHalf(char);
-            }
-            countNeighbor(index, array, countNext, countPrev) {
+            };
+            TextEditor.prototype.countNeighbor = function (index, array, countNext, countPrev) {
                 var self = this;
                 var current = _.find(array, function (a) { return $(a).attr("id") === "span-" + (index); });
                 var previous = _.find(array, function (a) { return $(a).attr("id") === "span-" + (index - 1); });
@@ -773,19 +794,20 @@ var nts;
                     }
                 }
                 return previousCount + nextCount;
-            }
-            countPreviousElement(element, x, index) {
+            };
+            TextEditor.prototype.countPreviousElement = function (element, x, index) {
                 var x2 = element.slice(0, index);
                 return _.filter(x2, function (d) {
                     return d === x;
                 }).length;
-            }
-            toArrayChar(element) {
+            };
+            TextEditor.prototype.toArrayChar = function (element) {
                 return _.map(element, function (data) {
                     return $(data).html();
                 });
-            }
-        }
+            };
+            return TextEditor;
+        }());
         qmm017.TextEditor = TextEditor;
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));

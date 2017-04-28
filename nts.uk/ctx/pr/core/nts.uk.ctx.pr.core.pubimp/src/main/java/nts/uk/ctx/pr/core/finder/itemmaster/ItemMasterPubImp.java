@@ -19,7 +19,7 @@ public class ItemMasterPubImp implements ItemMasterPub {
 	@Override
 	public List<ItemMasterSEL_3_Dto> find_SEL_3(int categoryAtr) {
 		
-		return this.itemMasterRepo.findAll_SEL_3(AppContexts.user().companyCode(), categoryAtr).stream()
+		return this.itemMasterRepo.findAllByCategory(AppContexts.user().companyCode(), categoryAtr).stream()
 				.map(item -> {
 					return new ItemMasterSEL_3_Dto(item.getItemCode().v(), item.getItemAbName().v());
 				}).collect(Collectors.toList());

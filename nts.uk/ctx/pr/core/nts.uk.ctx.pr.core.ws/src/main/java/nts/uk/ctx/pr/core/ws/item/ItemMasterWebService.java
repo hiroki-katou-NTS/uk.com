@@ -15,9 +15,9 @@ import nts.uk.ctx.pr.core.app.command.itemmaster.DeleteItemMasterCommand;
 import nts.uk.ctx.pr.core.app.command.itemmaster.DeleteItemMasterCommandHandler;
 import nts.uk.ctx.pr.core.app.command.itemmaster.UpdateItemMasterCommand;
 import nts.uk.ctx.pr.core.app.command.itemmaster.UpdateItemMasterCommandHandler;
+import nts.uk.ctx.pr.core.app.command.itemmaster.UpdateItemMasterNameCommandHandler;
 import nts.uk.ctx.pr.core.app.find.itemmaster.ItemMasterFinder;
 import nts.uk.ctx.pr.core.app.find.itemmaster.dto.ItemMasterDto;
-import nts.uk.ctx.pr.core.app.find.itemmaster.dto.ItemMasterSEL_3_Dto;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemAtr;
 
 @Path("pr/core/item")
@@ -31,6 +31,8 @@ public class ItemMasterWebService extends WebService {
 	private AddItemMasterCommandHandler addHandler;
 	@Inject
 	private DeleteItemMasterCommandHandler deleteHandler;
+	@Inject
+	private UpdateItemMasterNameCommandHandler updateNameHandler;
 
 	@POST
 	@Path("findall/avepay/time")
@@ -46,6 +48,7 @@ public class ItemMasterWebService extends WebService {
 
 	/**
 	 * Find all item master by category and list of item code
+	 * 
 	 * @param param
 	 * @return
 	 */
@@ -54,13 +57,13 @@ public class ItemMasterWebService extends WebService {
 	public List<ItemMasterDto> find(ItemMasterQueryParam param) {
 		return itemFinder.findBy(param.getCategoryAtr(), param.getItemCodes());
 	}
-	
+
 	@POST
 	@Path("find/{categoryAtr}/{itemCode}")
 	public ItemMasterDto find(@PathParam("categoryAtr") int categoryAtr, @PathParam("itemCode") String itemCode) {
 		return itemFinder.find(categoryAtr, itemCode);
 	}
-	
+
 	@POST
 	@Path("add")
 	public void add(AddItemMasterCommand command) {
@@ -81,16 +84,15 @@ public class ItemMasterWebService extends WebService {
 
 	@POST
 	@Path("findAllItemMaster/{ctgAtr}/{dispSet}")
-	public List<ItemMasterDto> findAllNoAvePayAtr(
-			@PathParam("ctgAtr") int ctgAtr,
-			@PathParam("dispSet") int dispSet) {
-		return itemFinder.findAllNoAvePayAtr(ctgAtr, dispSet);
+	public List<ItemMasterDto> findAllNoAvePayAtr(@PathParam("ctgAtr") int ctgAtr, @PathParam("dispSet") int dispSet) {
+		return itemFinder.findAllItemMasterByCtgAtrAndDispSet(ctgAtr, dispSet);
 	}
+
+	
 
 	@POST
-	@Path("find_SEL_3/{categoryAtr}")
-	public List<ItemMasterSEL_3_Dto> find_SEL_3(@PathParam("categoryAtr") int categoryAtr) {
-		return itemFinder.find_SEL_3(categoryAtr);
+	@Path("updateName")
+	public void updateName(List<UpdateItemMasterCommand> command) {
+			this.updateNameHandler.handle(command);
 	}
-
 }
