@@ -94,7 +94,7 @@ module nts.uk.pr.view.qmm008.c {
                     { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
                     { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" }
                 ]);
-                self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
+                self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
                 self.backupDataDirty = ko.observable<PensionRateDto>();
                 self.canOpenOfficeRegisterDialog = ko.observable(true);
             } //end constructor
@@ -106,6 +106,8 @@ module nts.uk.pr.view.qmm008.c {
                 self.getAllRounding().done(function() {
                     // Resolve
                     dfd.resolve(null);
+                }).fail((res) => {
+                    nts.uk.ui.dialog.alert(res.message);
                 });
                 // Return.
                 return dfd.promise();
@@ -120,7 +122,10 @@ module nts.uk.pr.view.qmm008.c {
                     // Set list.
                     self.roundingList(data);
                     dfd.resolve(data);
+                }).fail((res) => {
+                    nts.uk.ui.dialog.alert(res.message);
                 });
+
                 // Return.
                 return dfd.promise();
             }
@@ -306,9 +311,11 @@ module nts.uk.pr.view.qmm008.c {
                 service.instance.findHistoryByUuid(id).done(dto => {
                     self.backupDataDirty(dto);
                     self.loadPension(dto);
-                    self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
+                    self.dirty.reset();
                     self.isLoading(false);
                     dfd.resolve();
+                }).fail((res) => {
+                    nts.uk.ui.dialog.alert(res.message);
                 });
                 return dfd.promise();
             }
@@ -327,11 +334,15 @@ module nts.uk.pr.view.qmm008.c {
                             return dfd.promise();
                         }
 
-                        self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
+                        self.dirty.reset();
+
                         //update pension
                         service.updatePensionRate(self.pensionCollectData()).done(function() {
                             self.backupDataDirty(self.pensionCollectData());
+                        }).fail((res) => {
+                            nts.uk.ui.dialog.alert(res.message);
                         });
+
                     }).ifNo(function() {
                     });
                 }
@@ -343,9 +354,12 @@ module nts.uk.pr.view.qmm008.c {
                         return dfd.promise();
                     }
 
-                    self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
+                    self.dirty.reset();
+
                     service.updatePensionRate(self.pensionCollectData()).done(function() {
                         self.backupDataDirty(self.pensionCollectData());
+                    }).fail((res) => {
+                        nts.uk.ui.dialog.alert(res.message);
                     });
                 }
 
