@@ -31,6 +31,10 @@ public class QtxmtResidentialTax extends TableEntity implements Serializable{
 	@Basic(optional = false)
 	@Column(name ="RESI_TAX_AUTONOMY")
 	public String resiTaxAutonomy;
+	
+	@Basic(optional = false)
+	@Column(name ="RESI_TAX_AUTONOMY_KN_NAME")
+	public String resiTaxAutonomyKana;
 
 	@Basic(optional = false)
 	@Column(name ="PREFECTURE_CD")

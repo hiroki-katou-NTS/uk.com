@@ -56,14 +56,23 @@ var nts;
                         })(service = l.service || (l.service = {}));
                         var model;
                         (function (model) {
-                            class CompanyUnitPriceDto {
-                            }
+                            var CompanyUnitPriceDto = (function () {
+                                function CompanyUnitPriceDto() {
+                                }
+                                return CompanyUnitPriceDto;
+                            }());
                             model.CompanyUnitPriceDto = CompanyUnitPriceDto;
-                            class PersonalUnitPriceDto {
-                            }
+                            var PersonalUnitPriceDto = (function () {
+                                function PersonalUnitPriceDto() {
+                                }
+                                return PersonalUnitPriceDto;
+                            }());
                             model.PersonalUnitPriceDto = PersonalUnitPriceDto;
-                            class ItemMasterDto {
-                            }
+                            var ItemMasterDto = (function () {
+                                function ItemMasterDto() {
+                                }
+                                return ItemMasterDto;
+                            }());
                             model.ItemMasterDto = ItemMasterDto;
                         })(model = l.model || (l.model = {}));
                     })(l = qmm017.l || (qmm017.l = {}));

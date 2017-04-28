@@ -64,16 +64,16 @@ var nts;
                                 var dfd = $.Deferred();
                                 // mock data
                                 var masterItems = [];
-                                for (let i = 1; i <= 9; i++) {
+                                for (var i = 1; i <= 9; i++) {
                                     masterItems.push({ code: 'F00' + i, name: '基本給' + i, category: 'Payment' });
                                 }
-                                for (let i = 1; i <= 9; i++) {
+                                for (var i = 1; i <= 9; i++) {
                                     masterItems.push({ code: 'F10' + i, name: '基本給' + i, category: 'Deduction' });
                                 }
-                                for (let i = 1; i <= 9; i++) {
+                                for (var i = 1; i <= 9; i++) {
                                     masterItems.push({ code: 'F20' + i, name: '基本給' + i, category: 'Attendance' });
                                 }
-                                for (let i = 1; i <= 9; i++) {
+                                for (var i = 1; i <= 9; i++) {
                                     masterItems.push({ code: 'F30' + i, name: '基本給' + i, category: 'ArticleOthers' });
                                 }
                                 return dfd.resolve(masterItems).promise();

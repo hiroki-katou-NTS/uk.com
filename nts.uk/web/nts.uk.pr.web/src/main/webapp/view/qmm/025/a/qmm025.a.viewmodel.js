@@ -4,8 +4,8 @@ var qmm025;
     (function (a) {
         var viewmodel;
         (function (viewmodel) {
-            class ScreenModel {
-                constructor() {
+            var ScreenModel = (function () {
+                function ScreenModel() {
                     var self = this;
                     self.items = ko.observableArray([]);
                     self.isDeleteEnable = ko.observable(false);
@@ -31,7 +31,7 @@ var qmm025;
                     // checkbox square
                     $.ig.checkboxMarkupClasses = "ui-state-default ui-corner-all ui-igcheckbox-small";
                 }
-                startPage() {
+                ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
                     $.when(self.getYearKey()).done(function () {
@@ -44,8 +44,8 @@ var qmm025;
                         dfd.reject(res);
                     });
                     return dfd.promise();
-                }
-                findAll() {
+                };
+                ScreenModel.prototype.findAll = function () {
                     var self = this;
                     var dfd = $.Deferred();
                     qmm025.a.service.findAll(self.yearKey())
@@ -75,16 +75,17 @@ var qmm025;
                         dfd.reject(res);
                     });
                     return dfd.promise();
-                }
+                };
                 //lay du lieu tu DB de hien thi ra man hinh
-                getData(perResiTaxData = [], data) {
+                ScreenModel.prototype.getData = function (perResiTaxData, data) {
+                    if (perResiTaxData === void 0) { perResiTaxData = []; }
                     var self = this;
                     perResiTaxData.push(new ResidenceTax('NSVC', '0000001', 'name', 'Vietnam', false, data[0].residenceTax[0].value, data[0].residenceTax[1].value, data[0].residenceTax[2].value, data[0].residenceTax[3].value, data[0].residenceTax[4].value, data[0].residenceTax[5].value, data[0].residenceTax[6].value, data[0].residenceTax[7].value, data[0].residenceTax[8].value, data[0].residenceTax[9].value, data[0].residenceTax[10].value, data[0].residenceTax[11].value));
                     perResiTaxData.push(new ResidenceTax('NSVC', '0000002', 'name1', 'Japan', false, 25000, 25000, 25000, 25000, 25000, 15000, 25000, 25000, 25000, 25000, 25000, 25000));
                     self.items(perResiTaxData);
                     self.bindGrid(self.items());
-                }
-                getYearKey() {
+                };
+                ScreenModel.prototype.getYearKey = function () {
                     var self = this;
                     var dfd = $.Deferred();
                     qmm025.a.service.getYearKey()
@@ -96,8 +97,8 @@ var qmm025;
                         dfd.reject(res);
                     });
                     return dfd.promise();
-                }
-                saveData() {
+                };
+                ScreenModel.prototype.saveData = function () {
                     var self = this;
                     var obj = {
                         residenceCode: '000010',
@@ -121,8 +122,8 @@ var qmm025;
                     })
                         .fail(function () {
                     });
-                }
-                remove() {
+                };
+                ScreenModel.prototype.remove = function () {
                     var self = this;
                     var obj = {
                         personId: self.personId(),
@@ -134,8 +135,8 @@ var qmm025;
                     })
                         .fail(function () {
                     });
-                }
-                bindGrid(items) {
+                };
+                ScreenModel.prototype.bindGrid = function (items) {
                     var self = this;
                     //tinh lai tong khi row bi thay doi- updating when row edited
                     $("#grid").on("iggridupdatingeditrowended", function (event, ui) {
@@ -325,11 +326,12 @@ var qmm025;
                             }
                         ]
                     });
-                }
-            }
+                };
+                return ScreenModel;
+            }());
             viewmodel.ScreenModel = ScreenModel;
-            class ResidenceTax {
-                constructor(department, code, name, add, checkAllMonth, residenceTax01, residenceTax02, residenceTax03, residenceTax04, residenceTax05, residenceTax06, residenceTax07, residenceTax08, residenceTax09, residenceTax10, residenceTax11, residenceTax12) {
+            var ResidenceTax = (function () {
+                function ResidenceTax(department, code, name, add, checkAllMonth, residenceTax01, residenceTax02, residenceTax03, residenceTax04, residenceTax05, residenceTax06, residenceTax07, residenceTax08, residenceTax09, residenceTax10, residenceTax11, residenceTax12) {
                     this.department = department;
                     this.code = code;
                     this.name = name;
@@ -349,7 +351,8 @@ var qmm025;
                     this.residenceTax12 = residenceTax12;
                     this.residenceTaxPerYear = this.residenceTax05 + this.residenceTax06 + this.residenceTax07;
                 }
-            }
+                return ResidenceTax;
+            }());
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm025.a || (qmm025.a = {}));
 })(qmm025 || (qmm025 = {}));

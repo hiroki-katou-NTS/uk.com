@@ -232,6 +232,7 @@ var nts;
         qmm017.ItemModelTextEditor = ItemModelTextEditor;
         var TextEditor = (function () {
             function TextEditor() {
+                //list error messsage
                 this.ERROR_BRACKET = "カッコ()の数に誤りがあります。";
                 this.ERROR_CONSECUTIVELY = "構文に誤りがあります。{0}と{1}が連続して入力されています。";
                 this.ERROR_MUST_CONTAIN_ATSIGN = "「{0}」は利用できない文字列です。";
@@ -247,6 +248,7 @@ var nts;
                 this.listSpecialChar = ["+", "-", "×", "÷", "＾", "（", "）", "＜", "＞", "≦", "≧", "＝", "≠"];
                 this.listOperatorChar = ["+", "-", "×", "÷"];
                 var self = this;
+                //----------------------------------------------------------------------------
                 self.autoComplete = ko.observableArray([
                     new ItemModelTextEditor('001', '基本給', "description 1"),
                     new ItemModelTextEditor('150', '役職手当', "description 2"),
@@ -453,6 +455,9 @@ var nts;
                     }
                 }
             };
+            // return 2 if too much param
+            // return 1 if not enough param
+            // return 0 if OK
             TextEditor.prototype.validateNumberOfParam = function (treeObject) {
                 var functionName = treeObject.value.trim();
                 var numberOfParam = treeObject.children.length;
@@ -604,6 +609,7 @@ var nts;
             };
             TextEditor.prototype.validateContentFunction = function (contentFunction) {
                 var self = this;
+                //            let treeObjects = contentFunction;
                 var treeFunction = nts.uk.util.createTreeFromString(contentFunction, "（", "）", ",", []);
                 self.validateTreeFunction(treeFunction[0]);
             };
@@ -633,6 +639,7 @@ var nts;
                     if (specialCharTags[orderTag].innerText === '（') {
                         countOpenBrackets += 1;
                     }
+                    //if found the bracket of the function
                     if (countOpenBrackets === indexTree) {
                         var functionNameTag = specialCharTags[orderTag].previousSibling;
                         self.markError($(functionNameTag), message, [functionNameTag.innerText]);
