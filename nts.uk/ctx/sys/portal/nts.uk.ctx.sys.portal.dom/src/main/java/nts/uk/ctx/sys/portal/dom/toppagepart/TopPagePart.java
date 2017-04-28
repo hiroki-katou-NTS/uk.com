@@ -21,13 +21,13 @@ public class TopPagePart extends DomainObject {
 	String toppagePartID;
 
 	/** ToppagePart Code */
-	TopPagePartCode topPagePartCode;
+	TopPagePartCode code;
 
 	/** ToppagePart Name */
-	TopPagePartName topPagePartName;
+	TopPagePartName name;
 
 	/** Enum ToppagePart Type */
-	TopPagePartType topPagePartType;
+	TopPagePartType type;
 
 	/** Size */
 	Size size;
