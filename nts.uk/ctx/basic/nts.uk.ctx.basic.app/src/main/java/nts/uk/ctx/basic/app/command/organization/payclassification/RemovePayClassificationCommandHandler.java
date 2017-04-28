@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.basic.dom.organization.payclassification.PayClassificationRepository;
@@ -20,7 +21,7 @@ public class RemovePayClassificationCommandHandler extends CommandHandler<Remove
 		String companyCode = AppContexts.user().companyCode();
 		if (!payClassificationRepository.isExisted(companyCode, context.getCommand().getPayClassificationCode())) {
 
-			throw new BusinessException("対象データがありません。");}
+			throw new BusinessException(new RawErrorMessage("対象データがありません。"));}
 
 		payClassificationRepository.remove(companyCode, context.getCommand().getPayClassificationCode());
 
