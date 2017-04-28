@@ -36,7 +36,6 @@ module cmm009.d.viewmodel {
             self.startDate(data.startDate);
             self.startDateFromA(data.startDate);
             self.endDate(data.endDate);
-            console.log(data);
             //---radio
             self.itemsRadio = ko.observableArray([
                 { value: 1, text: ko.observable('履歴を削除する') },
