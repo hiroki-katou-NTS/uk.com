@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.infra.repository.rule.employment.processing.yearmonth;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
@@ -17,9 +19,15 @@ public class JpaStandardDayRepository extends JpaRepository implements StandardD
 
 	@Override
 	public StandardDay select1(String companyCode, int processingNo) {
-		return this.queryProxy().query(SELECT_ALL_BY_CCD_AND_PROCESSING_NO, QpdmtStandardDay.class)
+		List<StandardDay> standardDays = this.queryProxy()
+				.query(SELECT_ALL_BY_CCD_AND_PROCESSING_NO, QpdmtStandardDay.class)
 				.setParameter("companyCode", companyCode).setParameter("processingNo", processingNo)
-				.getList(c -> toDomain(c)).get(0);
+				.getList(c -> toDomain(c));
+		if (standardDays.isEmpty()) {
+			return null;
+		} else {
+			return standardDays.get(0);
+		}
 	}
 
 	@Override

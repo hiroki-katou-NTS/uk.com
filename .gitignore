@@ -17,3 +17,4 @@ nts.uk/pr/file/nts.uk.pr.file.infra/bin/
 *.class
 *.js.map
 *.orig
+*.js
