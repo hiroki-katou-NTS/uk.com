@@ -34,7 +34,7 @@ module nts.uk.pr.view.qmm017.k {
                                     nts.uk.ui.windows.close();
                                 })
                                 .fail(function(res) {
-                                    alert(res);
+                                    nts.uk.ui.dialog.alert(res);
                                 });
                         });
                 } else {
@@ -48,7 +48,7 @@ module nts.uk.pr.view.qmm017.k {
                             nts.uk.ui.windows.close();
                         })
                         .fail(function(res) {
-                            alert(res);
+                            nts.uk.ui.dialog.alert(res);
                         });
                 }
             }
