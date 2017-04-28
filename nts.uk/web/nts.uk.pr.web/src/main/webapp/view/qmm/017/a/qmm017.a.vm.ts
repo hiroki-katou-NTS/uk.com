@@ -594,14 +594,24 @@ module nts.qmm017 {
                     return formula.code === command.formulaCode;
                 });
                 if (existedFormula) {
-                    nts.uk.ui.dialog.alert("入力した計算式コードは既に存在しています。\r\n計算式コードを確認してください。");
+//                    nts.uk.ui.dialog.alert("入力した計算式コードは既に存在しています。\r\n計算式コードを確認してください。");
+                    $('#inp-formulaCode').ntsError('set', '入力した計算式コードは既に存在しています。\r\n計算式コードを確認してください。');
                 } else {
                     service.registerFormulaMaster(command)
                         .done(function() {
                             self.start();
                         })
                         .fail(function(res) {
-                            nts.uk.ui.dialog.alert(res);
+//                            nts.uk.ui.dialog.alert(res);
+                            if(command.formulaCode == null){
+                                $('#inp-formulaCode').ntsError('set', 'が入力されていません。');
+                            }
+                            if(command.formulaName == null){
+                                $('#inp-formulaName').ntsError('set', 'が入力されていません。');
+                            }
+                            if(command.startDate == null){
+                                $('#start-date-inp').ntsError('set', 'が入力されていません。');
+                            }
                         });
                 }
             } else {
@@ -784,7 +794,7 @@ module nts.qmm017 {
                         self.start();
                     })
                     .fail(function(res) {
-                        nts.uk.ui.dialog.alert(res);
+                        nts.uk.ui.dialog.alert(res.messageId);
                     });
             }
         }

@@ -123,7 +123,7 @@ public class FormulaEasyDetail extends AggregateRoot {
 
 	public void validate() {
 		if (StringUtil.isNullOrEmpty(easyFormulaName.v(), true)
-				|| StringUtil.isNullOrEmpty(baseAmountDevision.toString(), true)
+				|| StringUtil.isNullOrEmpty(baseFixedAmount.toString(), true)
 				|| StringUtil.isNullOrEmpty(premiumRate.toString(), true)
 				|| StringUtil.isNullOrEmpty(baseFixedValue.toString(), true)
 				|| StringUtil.isNullOrEmpty(coefficientFixedValue.toString(), true)) {

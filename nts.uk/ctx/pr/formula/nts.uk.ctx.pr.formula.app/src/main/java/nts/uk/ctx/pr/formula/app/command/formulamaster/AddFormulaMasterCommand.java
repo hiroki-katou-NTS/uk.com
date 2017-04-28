@@ -36,7 +36,7 @@ public class AddFormulaMasterCommand {
 	
 	public FormulaHistory toDomainHis(String companyCode, String historyId){
 		
-		FormulaHistory domain = FormulaHistory.createFromJavaType(companyCode, this.formulaCode, historyId, this.startDate, 9999/12);
+		FormulaHistory domain = FormulaHistory.createFromJavaType(companyCode, this.formulaCode, historyId, this.startDate, 999912);
 		
 		return domain;
 		

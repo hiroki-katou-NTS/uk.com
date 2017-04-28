@@ -19,11 +19,11 @@
 			</com:ko-if>
 			<br />
 			<div class="separate-vertical" data-bind="ntsFormLabel: {required: true, constraint:['FormulaCode', 'FormulaName']}">コード/名称</div>
-			<input id="inp-formulaCode" class="check-error" data-bind="ntsTextEditor: { value: formulaCode, constraint: 'FormulaCode', enable: isNewMode, required: true}" />
-			<input id="inp-formulaName" class="check-error" data-bind="ntsTextEditor: { value: formulaName, constraint: 'FormulaName', enable: true, required: true}" />
+			<input id="inp-formulaCode" data-name="コード" class="check-error" data-bind="ntsTextEditor: { value: formulaCode, constraint: 'FormulaCode', enable: isNewMode, required: true}" />
+			<input id="inp-formulaName" data-name="名称" class="check-error" data-bind="ntsTextEditor: { value: formulaName, constraint: 'FormulaName', enable: true, required: true}" />
 			<br/>
 			<div class="separate-vertical" data-bind="ntsFormLabel: {required: true }">開始年月</div>
-			<div id="start-date-inp" class="check-error" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'YYYY/MM', disabled: !isNewMode(), valueFormat: 'YYYYMM', required: true }"></div>
+			<div id="start-date-inp" class="check-error" data-name="開始年月" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'YYYY/MM', disabled: !isNewMode(), valueFormat: 'YYYYMM', required: true }"></div>
 			<span data-bind="text: startYearMonthFormated"></span>
 			<br/>
 			<div class="separate-vertical" data-bind="ntsFormLabel: {required: true }">計算式の設定方法</div>
