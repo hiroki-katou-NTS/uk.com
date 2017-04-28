@@ -15,8 +15,8 @@ module cmm009.a.viewmodel {
 
         // treegrid
         dataSource: KnockoutObservableArray<any>;
-        // dataSource2 : chứa list department để insert vào csdl trong trường hợp thêm mới lịch sử
-        dataSource2: KnockoutObservableArray<any>;
+        // dataSourceToInsert : chứa list department để insert vào csdl trong trường hợp thêm mới lịch sử
+        dataSourceToInsert: KnockoutObservableArray<any>;
         currentItem_treegrid: KnockoutObservable<any>;
         currentItem: KnockoutObservable<viewmodel.model.InputField>;
         memo: KnockoutObservable<viewmodel.model.InputMemo>;
@@ -64,10 +64,8 @@ module cmm009.a.viewmodel {
             self.itemHist = ko.observable(null);
             self.arr = ko.observableArray([]);
 
-
-
             self.dataSource = ko.observableArray([]);
-            self.dataSource2 = ko.observableArray([]);
+            self.dataSourceToInsert = ko.observableArray([]);
             self.singleSelectedCode = ko.observable(null);
             self.selectedCodes_treegrid = ko.observableArray([]);
             self.headers = ko.observableArray(["", ""]);
@@ -144,7 +142,7 @@ module cmm009.a.viewmodel {
                                     self.singleSelectedCode(self.dataSource()[0].departmentCode);
                                 }
                             }).fail(function(error) {
-                                alert(error.message);
+                                alert(error.messageId);
                             })
                         service.getMemoByHistId(self.historyId())
                             .done(function(memo: viewmodel.model.MemoDto) {
@@ -152,7 +150,7 @@ module cmm009.a.viewmodel {
                                     self.A_INP_MEMO(memo.memo);
                                 }
                             }).fail(function(error) {
-                                alert(error.message);
+                                alert(error.messageId);
                             })
                         dfd.resolve();
                         return dfd.promise();
@@ -265,13 +263,13 @@ module cmm009.a.viewmodel {
                 }
             }
             if (self.checkConditionAddHist() == "AddhistoryFromLatest") {
-                let _dt = self.dataSource2();
+                let _dt = self.dataSourceToInsert();
                 if (_dt.length > 0) {
                     _dt[0].memo = self.A_INP_MEMO();
                 }
-                self.dataSource2(_dt);
+                self.dataSourceToInsert(_dt);
                 var dfd2 = $.Deferred();
-                service.addListDepartment(self.dataSource2())
+                service.addListDepartment(self.dataSourceToInsert())
                     .done(function(mess: any) {
                         var dfd2 = $.Deferred();
                         let _dto = new model.AddDepartmentDto("", self.itemHistId()[1].historyId, self.itemHistId()[1].endDate, "", "", "", "", "", "addhistoryfromlatest", null);
@@ -323,7 +321,7 @@ module cmm009.a.viewmodel {
                             self.getAllDepartmentByHistId(hisdto.historyId, self.singleSelectedCode());
                             dfd.resolve();
                         }).fail(function(error) {
-                            alert(error.message);
+                            alert(error.messageId);
                         })
                     return dfd.promise();
                 }
@@ -355,7 +353,7 @@ module cmm009.a.viewmodel {
                         self.singleSelectedCode(departmentCode);
                     }
                 }).fail(function(error) {
-                    alert(error.message);
+                    alert(error.messageId);
                 })
         }
 
@@ -401,7 +399,7 @@ module cmm009.a.viewmodel {
                         self.arrayItemEdit().push(item);
                     }
                     if (item.children.length > 0) {
-                        self.updateHierachy1(item);
+                        self.updateHierachyWhenclickUpdownBtn(item);
                     }
                 }
             } else {
@@ -438,7 +436,7 @@ module cmm009.a.viewmodel {
                         self.arrayItemEdit().push(item);
                     }
                     if (item.children.length > 0) {
-                        self.updateHierachy1(item);
+                        self.updateHierachyWhenclickUpdownBtn(item);
                     }
                 }
             }
@@ -485,7 +483,7 @@ module cmm009.a.viewmodel {
                                 item.hierarchyCode = phc + itemAddHierachy;
                                 item.editIndex = true;
                                 if (item.children.length > 0) {
-                                    self.updateHierachy2(item, phc + itemAddHierachy);
+                                    self.updateHierachyWhenInsertItem(item, phc + itemAddHierachy);
                                 }
                             }
                             var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item) { return item.editIndex; });
@@ -518,7 +516,7 @@ module cmm009.a.viewmodel {
                                 item.hierarchyCode = itemAddHierachy;
                                 item.editIndex = true;
                                 if (item.children.length > 0) {
-                                    self.updateHierachy2(item, itemAddHierachy);
+                                    self.updateHierachyWhenInsertItem(item, itemAddHierachy);
                                 }
                             }
                             var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item) { return item.editIndex; });
@@ -688,7 +686,7 @@ module cmm009.a.viewmodel {
                                 item.endDate = hisdto.endDate;
                             });
                             self.checkConditionAddHist("AddhistoryFromLatest");
-                            self.dataSource2(_dt2);
+                            self.dataSourceToInsert(_dt2);
                         } else {
                             let add = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");
                             let arr = self.itemHistId();
@@ -745,7 +743,7 @@ module cmm009.a.viewmodel {
                             return dfd.promise();
                         })
                         .fail(function(error) {
-                            if (error.message == "ER06") {
+                            if (error.messageId == "ER06") {
                                 alert("対象データがありません。");
                             }
                         })
@@ -811,9 +809,9 @@ module cmm009.a.viewmodel {
                     while ((hierachyItemadd + "").length < 3)
                         hierachyItemadd = "0" + hierachyItemadd;
                     var parrent = self.findParent(_code, _dt);
-                    var newObj = new model.Dto('', "999", "", "",
+                    var newObj = new model.Dto('', "", "", "",
                         "", "", hierachyItemadd,
-                        "情報を登録してください","情報を登録してください",
+                        "情報を登録してください",
                         current.startDate,
                         []);
                     if (parrent) {
@@ -834,7 +832,7 @@ module cmm009.a.viewmodel {
                             item1.hierarchyCode = phc + itemAddH;
                             item1.editIndex = true;
                             if (item1.children.length > 0) {
-                                self.updateHierachy2(item1, phc + itemAddH);
+                                self.updateHierachyWhenInsertItem(item1, phc + itemAddH);
                             }
                         }
                         newObj.hierarchyCode = phc + hierachyItemadd;
@@ -869,7 +867,7 @@ module cmm009.a.viewmodel {
                             item2.hierarchyCode = itemAddH;
                             item2.editIndex = true;
                             if (item2.children.length > 0) {
-                                self.updateHierachy2(item2, itemAddH);
+                                self.updateHierachyWhenInsertItem(item2, itemAddH);
                             }
                         }
                         newObj.hierarchyCode = hierachyItemadd;
@@ -902,8 +900,8 @@ module cmm009.a.viewmodel {
 
         }
 
-
-        updateHierachy1(item: any) {
+        // update hierachy when click button up down
+        updateHierachyWhenclickUpdownBtn(item: any) {
             var self = this;
             let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
             for (var i in item.children) {
@@ -934,12 +932,13 @@ module cmm009.a.viewmodel {
                     self.arrayItemEdit().push(itemCon);
                 }
                 if (itemCon.children.length > 0) {
-                    self.updateHierachy1(itemCon);
+                    self.updateHierachyWhenclickUpdownBtn(itemCon);
                 }
             }
         }
-
-        updateHierachy2(item: any, hierarchyCode: any) {
+        
+         // update Hierachy when insert item to tree
+        updateHierachyWhenInsertItem(item: any, hierarchyCode: any) {
             var self = this;
             for (var i in item.children) {
                 var con = item.children[i];
@@ -948,7 +947,7 @@ module cmm009.a.viewmodel {
                 con.hierarchyCode = ii;
                 con.editIndex = true;
                 if (con.children.length > 0) {
-                    self.updateHierachy2(con, hierarchyCode);
+                    self.updateHierachyWhenInsertItem(con, hierarchyCode);
                 }
             }
         }
@@ -976,7 +975,7 @@ module cmm009.a.viewmodel {
                     while ((hierachyItemadd + "").length < 3)
                         hierachyItemadd = "0" + hierachyItemadd;
                     var parrent = self.findParent(_code, _dt);
-                    var newObj = new model.Dto('', "999", "", "",
+                    var newObj = new model.Dto('', "", "", "",
                         "", "", hierachyItemadd,
                         "情報を登録してください",
                         current.startDate,
@@ -998,7 +997,7 @@ module cmm009.a.viewmodel {
                             item.hierarchyCode = phc + itemAddH;
                             item.editIndex = true;
                             if (item.children.length > 0) {
-                                self.updateHierachy2(item, phc + itemAddH);
+                                self.updateHierachyWhenInsertItem(item, phc + itemAddH);
                             }
                         }
                         newObj.hierarchyCode = phc + hierachyItemadd;
@@ -1036,7 +1035,7 @@ module cmm009.a.viewmodel {
                             item.hierarchyCode = itemAddH;
                             item.editIndex = true;
                             if (item.children.length > 0) {
-                                self.updateHierachy2(item, itemAddH);
+                                self.updateHierachyWhenInsertItem(item, itemAddH);
                             }
                         }
                         newObj.hierarchyCode = hierachyItemadd;
@@ -1084,7 +1083,7 @@ module cmm009.a.viewmodel {
                         var hierachyItemadd = length + "";
                         while ((hierachyItemadd + "").length < 3)
                             hierachyItemadd = "0" + hierachyItemadd;
-                        var newObj = new model.Dto('', "999", "", "",
+                        var newObj = new model.Dto('', "", "", "",
                             "", "", hierachy_current + hierachyItemadd,
                             "情報を登録してください",
                             current.startDate,
@@ -1101,9 +1100,7 @@ module cmm009.a.viewmodel {
                         self.singleSelectedCode(newObj.departmentCode);
                         self.resetInput();
                         self.disableBtn();
-                    } else {
-                        alert("hierarchy item current is 10 ,not push item child to tree");
-                    }
+                    } else { }
                 } else if (self.numberItemNew() == 1) {
                     $("#A_INP_CODE").focus();
                     self.disableBtn();
@@ -1151,9 +1148,6 @@ module cmm009.a.viewmodel {
                     self.openCDialog();
                 } else {
                     if (departmentQueryResult.departments.length > 0) {
-                        //                        var temp = _.map(departmentQueryResult.departments, (dep) => {
-                        //                            return new Dto()
-                        //                        });
                         self.dataSource(departmentQueryResult.departments);
                     }
                     if (departmentQueryResult.memo) {

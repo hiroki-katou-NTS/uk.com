@@ -44,24 +44,22 @@ public class UpdateDepartmentCommandHandler extends CommandHandler<List<UpdateDe
 		List<Department> listDep1 = new ArrayList<Department>();
 		Date startDate1 = new Date();
 		Date endDate1 = new Date();
-		if ((context.getCommand().size() == 1 ) && (context.getCommand().get(0).getMemo().compareTo("addhistoryfromlatest") != 0)) {
-
-			if (!departmentRepository.isExistDepartment(companyCode,context.getCommand().get(0).getHistoryId(),
+		if ((context.getCommand().size() == 1)
+				&& (context.getCommand().get(0).getMemo().compareTo("addhistoryfromlatest") != 0)) {
+			// update department when click register button
+			if (!departmentRepository.isExistDepartment(companyCode, context.getCommand().get(0).getHistoryId(),
 					new DepartmentCode(context.getCommand().get(0).getDepartmentCode()))) {
 				throw new BusinessException("ER06");
 			}
-
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 			try {
 				startDate1 = formatter.parse(context.getCommand().get(0).getStartDate());
 				endDate1 = formatter.parse(context.getCommand().get(0).getEndDate());
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			GeneralDate startDate = GeneralDate.legacyDate(startDate1);
 			GeneralDate endDate = GeneralDate.legacyDate(endDate1);
-
 			Department department = new Department(companyCode,
 					new DepartmentCode(context.getCommand().get(0).getDepartmentCode()),
 					context.getCommand().get(0).getHistoryId(), endDate,
@@ -74,27 +72,23 @@ public class UpdateDepartmentCommandHandler extends CommandHandler<List<UpdateDe
 			departmentRepository.update(department);
 			updateMemo(companyCode, historyId, context.getCommand().get(0).getMemo());
 		} else if (context.getCommand().size() > 1) {
-
+			// update hierachy of list Department when insert 1 item to tree
 			for (int i = 0; i < context.getCommand().size(); i++) {
-				if (!departmentRepository.isExistDepartment(companyCode,context.getCommand().get(0).getHistoryId(),
+				if (!departmentRepository.isExistDepartment(companyCode, context.getCommand().get(0).getHistoryId(),
 						new DepartmentCode(context.getCommand().get(i).getDepartmentCode()))) {
 					throw new BusinessException("ER06");
 				}
 			}
 			for (int i = 0; i < context.getCommand().size(); i++) {
-
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 				try {
 					startDate1 = formatter.parse(context.getCommand().get(i).getStartDate());
 					endDate1 = formatter.parse(context.getCommand().get(i).getEndDate());
 				} catch (ParseException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
 				GeneralDate startDate = GeneralDate.legacyDate(startDate1);
 				GeneralDate endDate = GeneralDate.legacyDate(endDate1);
-
 				Department department = new Department(companyCode,
 						new DepartmentCode(context.getCommand().get(i).getDepartmentCode()),
 						context.getCommand().get(i).getHistoryId(), endDate,
@@ -119,22 +113,22 @@ public class UpdateDepartmentCommandHandler extends CommandHandler<List<UpdateDe
 			update(listDep1);
 			update(listDep);
 			updateMemo(companyCode, historyId, context.getCommand().get(0).getMemo());
-		}else if((context.getCommand().size() == 1 ) && (context.getCommand().get(0).getMemo().compareTo("addhistoryfromlatest") == 0)){
-			
+		} else if ((context.getCommand().size() == 1)
+				&& (context.getCommand().get(0).getMemo().compareTo("addhistoryfromlatest") == 0)) {
+			// update endDate when insert 1 history.
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 			try {
 				endDate1 = formatter.parse(context.getCommand().get(0).getEndDate());
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			GeneralDate endDate = GeneralDate.legacyDate(endDate1);
 			String historyId = context.getCommand().get(0).getHistoryId();
-			
-			departmentRepository.updateEnddate(companyCode,historyId , endDate);
-			
+
+			departmentRepository.updateEnddate(companyCode, historyId, endDate);
+
 		}
-		
+
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

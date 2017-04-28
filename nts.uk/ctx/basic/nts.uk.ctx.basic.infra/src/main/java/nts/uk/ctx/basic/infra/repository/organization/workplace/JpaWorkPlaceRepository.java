@@ -155,21 +155,17 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 		builderString.append(" WHERE e.cmnmtWorkPlacePK.companyCode = :companyCode");
 		builderString.append(" AND e.cmnmtWorkPlacePK.historyId = :historyId");
 		REMOVE_HISTORY = builderString.toString();
-
 	}
 
 	@Override
 	public void add(WorkPlace workPlace) {
 		this.commandProxy().insert(convertToDbType(workPlace));
-
 	}
 
 	@Override
 	public void update(WorkPlace workPlace) {
 		this.commandProxy().update(convertToDbType(workPlace));
-
 	}
-
 
 	@Override
 	public void registerMemo(String companyCode, String historyId, Memo memo) {
@@ -190,7 +186,6 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 	public List<WorkPlace> findAllByHistory(String companyCode, String historyId) {
 		List<CmnmtWorkPlace> resultList = this.queryProxy().query(FIND_ALL_BY_HISTORY, CmnmtWorkPlace.class)
 				.setParameter("companyCode", companyCode).setParameter("historyId", historyId).getList();
-		System.out.println(resultList);
 		return !resultList.isEmpty() ? resultList.stream().map(item -> {
 			return convertToDomain(item);
 		}).collect(Collectors.toList()) : new ArrayList<>();
@@ -200,14 +195,12 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 	public List<WorkPlace> findHistories(String companyCode) {
 		List<Object[]> resultList = this.queryProxy().query(FIND_HISTORIES).setParameter("companyCode", companyCode)
 				.getList();
-
 		return resultList.stream().map(e -> new WorkPlace((String) e[0], (GeneralDate) e[1], (GeneralDate) e[2]))
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public boolean checkExist(String companyCode) {
-
 		return this.queryProxy().query(CHECK_EXIST, long.class).setParameter("companyCode", companyCode).getSingle()
 				.get() > 0;
 	}
@@ -274,7 +267,6 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 
 	@Override
 	public boolean isExistWorkPace(String companyCode, String historyId, WorkPlaceCode workPlaceCode) {
-		// TODO Auto-generated method stub
 		return this.queryProxy().query(QUERY_IS_EXISTED, long.class).setParameter("companyCode", companyCode)
 				.setParameter("historyId", historyId).setParameter("workPlaceCode", workPlaceCode.toString())
 				.getSingle().get() > 0;
@@ -328,8 +320,6 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 	public void updateEnddate(String companyCode, String historyId, GeneralDate endDate) {
 		this.getEntityManager().createQuery(UPDATE_ENDDATE).setParameter("companyCode", companyCode)
 		.setParameter("historyId", historyId).setParameter("endDate", endDate).executeUpdate();
-
-		
 	}
 
 	@Override
