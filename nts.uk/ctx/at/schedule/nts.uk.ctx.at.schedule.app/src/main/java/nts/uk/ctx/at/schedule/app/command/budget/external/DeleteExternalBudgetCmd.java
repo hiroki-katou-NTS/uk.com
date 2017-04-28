@@ -6,7 +6,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Getter
 public class DeleteExternalBudgetCmd {
-	private String externalBudgetId;
+	private String externalBudgetCode;
 	
 	private String externalBudgetName;
 
@@ -15,7 +15,7 @@ public class DeleteExternalBudgetCmd {
 	private int unitAtr;
 	
 	public ExternalBudget toDomain() {
-		return ExternalBudget.createFromJavaType(AppContexts.user().companyCode(), this.externalBudgetId,
+		return ExternalBudget.createFromJavaType(AppContexts.user().companyCode(), this.externalBudgetCode,
 				this.externalBudgetName, this.budgetAtr, this.unitAtr);
 	}
 

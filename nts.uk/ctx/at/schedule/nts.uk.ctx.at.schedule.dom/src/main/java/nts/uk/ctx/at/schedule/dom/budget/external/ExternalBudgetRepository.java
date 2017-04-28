@@ -21,5 +21,5 @@ public interface ExternalBudgetRepository {
 	/*
 	 * Delete
 	 */
-	void delete(String companyId,String externalBudgetId);
+	void delete(String companyId,String externalBudgetCode);
 }

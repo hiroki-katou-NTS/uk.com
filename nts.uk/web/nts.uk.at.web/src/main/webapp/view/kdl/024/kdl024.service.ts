@@ -10,7 +10,6 @@ module kdl024.service {
      */
     export function getListExternalBudget(): JQueryPromise<Array<model.ExternalBudgetDto>> {
         var dfd = $.Deferred<Array<any>>();
-        debugger;
         nts.uk.request.ajax("at", paths.getExternalBudgetList)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);

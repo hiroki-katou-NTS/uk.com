@@ -16,7 +16,7 @@ public class JpaExternalBudgetRepository extends JpaRepository implements Extern
 
 	private final String SELECT_NO_WHERE = "SELECT c FROM KscstExternalBudget c ";
 
-	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE + " WHERE c.KscstExternalBudgetPK.companyId = :companyId";
+	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE + " WHERE c.kscstExternalBudgetPk.companyId = :companyId";
 
 //	private final String SELECTED_ITEM = SELECT_NO_WHERE + " WHERE c.KscstExternalBudgetPK.companyId = :companyId "
 //			+ " AND c.KscstExternalBudgetPK.externalBudgetCd = :externalBudgetCd ";
@@ -64,10 +64,10 @@ public class JpaExternalBudgetRepository extends JpaRepository implements Extern
 	}
 
 	@Override
-	public void delete(String companyId, String externalBudgetId) {
+	public void delete(String companyId, String externalBudgetCode) {
 		val objectKey = new KstscExternalBudgetPK();
 		objectKey.companyId = companyId;
-		objectKey.externalBudgetCd = externalBudgetId;
+		objectKey.externalBudgetCd = externalBudgetCode;
 		this.commandProxy().remove(KscstExternalBudget.class, objectKey);
 
 	}

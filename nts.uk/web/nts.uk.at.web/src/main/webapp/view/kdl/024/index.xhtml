@@ -34,9 +34,10 @@
 							data-bind="ntsGridList: {								
 								height: 255,
 								dataSource: items,
-								primaryKey: 'code',
+								primaryKey: 'externalBudgetCode',
 								columns: columns,
 								multiple: false,
+								required: true,
 								value: currentCode
 							}"
 							class="cf">
@@ -49,7 +50,7 @@
 							<td>
 								<div id="divInfo"
 									data-bind="ntsFormLabel: {
-													constraint: constraint, 
+													constraint: ['ResidenceCode','ResidenceCode'] ,
 													required: true, 
 													inline:false, 
 													enable:true }">
@@ -57,10 +58,13 @@
 							</td>
 							<td>
 								<input id="inpCode" data-bind="ntsTextEditor: {
-													value:'',
-													enable: false,
-													readonly:true" />
-								<input id="inpName" data-bind="ntsTextEditor: {value:''" /> 
+ 													value: currentItem().externalBudgetCode,
+													enable: false, 
+ 													readonly:true }" />
+								<input id="inpName" data-bind="ntsTextEditor: {
+ 													value:currentItem().externalBudgetName, 
+ 													enable: true } 
+													" />
 								<BR />
 							</td>
 						</tr>
@@ -78,7 +82,7 @@
 								<div id="cmbAttribute"
 									data-bind="ntsComboBox: {
 													options: itemListCbb,
-													optionsValue: 'nameCbb',
+													optionsValue: 'codeCbb',
 													value: selectedCodeCbb,
 													optionsText: 'nameCbb',
 													enable: isEnableCbb,

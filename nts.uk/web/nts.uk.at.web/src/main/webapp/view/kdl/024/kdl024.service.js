@@ -10,7 +10,6 @@ var kdl024;
         };
         function getListExternalBudget() {
             var dfd = $.Deferred();
-            debugger;
             nts.uk.request.ajax("at", paths.getExternalBudgetList)
                 .done(function (res) {
                 dfd.resolve(res);
