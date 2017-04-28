@@ -34,12 +34,22 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 
 	private static final String UPDATE_HISTORY_BY_KEY;
 
+	private static final String IS_EXISTED_HISTORY_FOR_UPDATE;
+
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(a) ");
 		builderString.append("FROM QcfmtFormulaHistory a ");
 		builderString.append("WHERE a.qcfmtFormulaHistoryPK.companyCode = :companyCode ");
 		IS_EXISTED_HISTORY = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(a) ");
+		builderString.append("FROM QcfmtFormulaHistory a ");
+		builderString.append("WHERE a.qcfmtFormulaHistoryPK.companyCode = :companyCode ");
+		builderString.append("AND a.qcfmtFormulaHistoryPK.formulaCode = :formulaCode ");
+		builderString.append("AND a.qcfmtFormulaHistoryPK.historyId = :historyId ");
+		IS_EXISTED_HISTORY_FOR_UPDATE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
@@ -173,6 +183,13 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 	public boolean isExistedHistory(String companyCode) {
 		return this.queryProxy().query(IS_EXISTED_HISTORY, long.class).setParameter("companyCode", companyCode)
 				.getSingle().get() > 0;
+	}
+
+	@Override
+	public boolean isExistedHistoryForUpdate(String companyCode, FormulaCode formulaCode, String historyId) {
+		return this.queryProxy().query(IS_EXISTED_HISTORY_FOR_UPDATE, long.class)
+				.setParameter("companyCode", companyCode).setParameter("formulaCode", formulaCode)
+				.setParameter("historyId", historyId).getSingle().get() > 0;
 	}
 
 	@Override
