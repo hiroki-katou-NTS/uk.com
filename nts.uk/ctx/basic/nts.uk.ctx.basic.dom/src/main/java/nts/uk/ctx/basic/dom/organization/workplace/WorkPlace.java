@@ -4,38 +4,37 @@ package nts.uk.ctx.basic.dom.organization.workplace;
 import java.time.LocalDate;
 
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.basic.dom.organization.shr.HierarchyCode;
 
 @Getter
-public class WorkPlace {
-
+public class WorkPlace extends AggregateRoot{
+	/* 会社コード */
 	private String companyCode;
-
+	/* 職場コード      */
 	private WorkPlaceCode workPlaceCode;
-
+	/* 履歴ID      */
 	private String historyId;
-
+	/*  終了年月日     */
 	private GeneralDate endDate;
-
+	/* 外部コード      */
 	private WorkPlaceCode externalCode;
-	
+	/* 職場表示名      */	
 	private WorkPlaceGenericName genericName;
-
+	/* 内部階層CD      */
 	private HierarchyCode hierarchyCode;
-
+	/* 職場名称      */
 	private WorkPlaceName name;
-
+	/* 親子属性1       */
 	private ParentChildAttribute parentChildAttribute1;
-
+	/*  親子属性2     */
 	private ParentChildAttribute parentChildAttribute2;
-
+	/* 親職場コード1      */
 	private WorkPlaceCode parentWorkCode1;
-
+	/* 親職場コード2     */
 	private WorkPlaceCode parentWorkCode2;
-
-	//private WorkPlaceShortName shortName;
 
 	private GeneralDate startDate;
 

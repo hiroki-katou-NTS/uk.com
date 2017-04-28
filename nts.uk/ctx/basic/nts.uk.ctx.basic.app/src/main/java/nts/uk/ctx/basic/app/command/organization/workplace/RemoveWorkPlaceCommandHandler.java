@@ -3,6 +3,7 @@ package nts.uk.ctx.basic.app.command.organization.workplace;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.basic.dom.organization.workplace.WorkPlaceCode;
@@ -18,9 +19,14 @@ public class RemoveWorkPlaceCommandHandler extends CommandHandler<RemoveWorkPlac
 	@Override
 	protected void handle(CommandHandlerContext<RemoveWorkPlaceCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
-		workPlaceRepository.remove(companyCode, new WorkPlaceCode(context.getCommand().getWorkPlaceCode()),
-				context.getCommand().getHistoryId());
+		// check isExistWorkPace
+		if (!workPlaceRepository.isExistWorkPace(companyCode, context.getCommand().getHistoryId(),
+				new WorkPlaceCode(context.getCommand().getWorkplaceCode()))) {
+			throw new BusinessException("ER06");
+		}
+
+		workPlaceRepository.remove(companyCode, context.getCommand().getHistoryId(),
+				context.getCommand().getHierarchyCode());
 	}
 
 }
-
