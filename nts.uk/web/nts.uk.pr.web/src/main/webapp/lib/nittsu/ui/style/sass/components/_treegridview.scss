@@ -1,8 +1,0 @@
-@import "_ignitecommons.scss";
-
-.ui-igtreegrid {
-	@include iggridstyle();
-	@include iggridrowselector();
-	
-	cursor: default;
-}

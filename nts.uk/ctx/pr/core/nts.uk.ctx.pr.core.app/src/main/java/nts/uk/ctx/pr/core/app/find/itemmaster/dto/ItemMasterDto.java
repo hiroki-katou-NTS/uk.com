@@ -29,7 +29,7 @@ public class ItemMasterDto {
 
 	public static ItemMasterDto fromDomain(ItemMaster domain) {
 		return new ItemMasterDto(domain.getItemCode().v(), domain.getItemName().v(), domain.getCategoryAtr().value,
-				domain.getCategoryAtr().name, domain.getItemAbName().v(), domain.getFixAtr(),
+				domain.getCategoryAtr().name, domain.getItemAbName().v(), domain.getFixAtr().value,
 				domain.getItemAbNameE().v(), domain.getItemAbNameO().v(), domain.getDisplaySet().value,
 				domain.getUniteCode().v(), domain.getZeroDisplaySet().value, domain.getItemDisplayAtr().value);
 	}

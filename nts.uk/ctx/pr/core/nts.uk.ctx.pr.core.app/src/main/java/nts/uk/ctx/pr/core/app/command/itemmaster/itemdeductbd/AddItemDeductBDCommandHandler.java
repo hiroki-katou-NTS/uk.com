@@ -9,7 +9,9 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBD;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBDRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author sonnlb
@@ -26,9 +28,12 @@ public class AddItemDeductBDCommandHandler extends CommandHandler<AddItemDeductB
 	protected void handle(CommandHandlerContext<AddItemDeductBDCommand> context) {
 		val itemCode = context.getCommand().getItemCode();
 		val itemBreakdownCode = context.getCommand().getItemBreakdownCode();
-		// Check if the data already exists 
-		if (this.itemDeductBDRepo.find(itemCode, itemBreakdownCode).isPresent())
-			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
-		this.itemDeductBDRepo.add(context.getCommand().toDomain());
+		String companyCode = AppContexts.user().companyCode();
+		ItemDeductBD itemDeductBD = context.getCommand().toDomain();
+		itemDeductBD.validate();
+		// Check if the data already exists
+		if (this.itemDeductBDRepo.find(companyCode, itemCode, itemBreakdownCode).isPresent())
+			throw new BusinessException(new RawErrorMessage("明細書名が入力されていません。"));
+		this.itemDeductBDRepo.add(companyCode, itemDeductBD);
 	}
 }

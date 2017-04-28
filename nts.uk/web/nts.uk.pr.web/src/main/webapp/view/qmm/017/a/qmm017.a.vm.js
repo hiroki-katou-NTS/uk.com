@@ -68,6 +68,7 @@ var nts;
                     self.a_sel_001()[1].enable(true);
                     self.viewModel017b().formulaCode(self.currentParentNode().code);
                     self.viewModel017b().formulaName(self.currentParentNode().name);
+                    //get formula detail
                     qmm017.service.findFormula(self.currentParentNode().code, self.currentNode().code)
                         .done(function (currentFormula) {
                         self.viewModel017b().selectedDifficultyAtr(currentFormula.difficultyAtr);
@@ -75,12 +76,14 @@ var nts;
                             .done(function (currentFormulaDetail) {
                             if (currentFormula && currentFormula.difficultyAtr === 1) {
                                 self.itemsBagRepository = [];
+                                // fill items bag
                                 self.fillItemsBagRepository().done(function () {
                                     self.refreshItemTabs();
                                     self.viewModel017c().formulaManualContent().textArea('');
                                     self.viewModel017c().comboBoxReferenceMonthAtr().selectedCode(0);
                                     self.viewModel017c().comboBoxRoudingMethod().selectedCode(0);
                                     self.viewModel017c().comboBoxRoudingPosition().selectedCode(0);
+                                    // bind formula manual
                                     if (currentFormulaDetail.formulaContent) {
                                         self.viewModel017c().formulaManualContent().textArea(self.replaceCodesToNames(currentFormulaDetail.formulaContent));
                                         self.viewModel017c().comboBoxReferenceMonthAtr().selectedCode(currentFormulaDetail.referenceMonthAtr);
@@ -192,6 +195,14 @@ var nts;
                 self.viewModel017r().listBoxItems().selectedCode(null);
                 self.viewModel017r().listBoxItems().itemList([]);
             };
+            //from mode:
+            //0: Screen D
+            //1: Screen E
+            //2: Screen F
+            //3: Screen G
+            //4: Screen H
+            //5: Screen I
+            //6: Screen R
             ScreenModel.prototype.placeItemNameToTextArea = function (mode, self) {
                 if (mode === 0) {
                     if (self.viewModel017d().listBoxItems().selectedCode() !== '' && self.viewModel017d().listBoxItemType().selectedCode() !== '') {
@@ -351,7 +362,9 @@ var nts;
             ScreenModel.prototype.start = function () {
                 var self = this;
                 var dfdStart = $.Deferred();
+                // binding tree history a_lst_001
                 var treeHistoryPromise = self.bindHistoryTree();
+                // when all done
                 $.when(treeHistoryPromise)
                     .done(function () {
                     self.treeGridHistory().singleSelectedCode(self.treeGridHistory().items()[0].childs[0].code);
@@ -361,6 +374,7 @@ var nts;
                     .fail(function () {
                     dfdStart.reject();
                 });
+                // Return.
                 return dfdStart.promise();
             };
             ScreenModel.prototype.fillItemsBagRepository = function () {
@@ -466,6 +480,7 @@ var nts;
                 var itemsTreeGridHistory = [];
                 var itemsTreeGridFormula = [];
                 var nodesTreeGrid = [];
+                // convert FormulaDto to Node objects to fill in the tree grid
                 qmm017.service.getAllFormula().done(function (lstFormulaDto) {
                     if (lstFormulaDto) {
                         var groupsFormulaByCode_1 = _.groupBy(lstFormulaDto, 'formulaCode');
@@ -489,9 +504,11 @@ var nts;
                     }
                     dfdHistoryTree.resolve();
                 }).fail(function (res) {
+                    // Alert message
                     alert(res);
                     dfdHistoryTree.reject();
                 });
+                // Return.
                 return dfdHistoryTree.promise();
             };
             ScreenModel.prototype.sortFormulaHistory = function (lstFormulaHistory) {

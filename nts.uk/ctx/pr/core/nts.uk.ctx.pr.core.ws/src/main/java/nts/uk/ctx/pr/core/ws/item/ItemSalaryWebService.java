@@ -21,7 +21,4 @@ public class ItemSalaryWebService extends WebService {
 	public ItemSalaryDto findItemSalary(@PathParam("itemCode") String itemCode) {
 		return itemSalaryFinder.find(itemCode);
 	}
-	
-	
-	
 }

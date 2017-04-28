@@ -12,26 +12,27 @@
 		<!-- Template region -->
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="service.js" />
-			<com:stylefile path="style.css" />
-			<com:scriptfile path="../c/viewmodel.js" />
-			<com:scriptfile path="../c/service.js" />
-			<com:scriptfile path="../d/viewmodel.js" />
-			<com:scriptfile path="../d/service.js" />
-			<com:scriptfile path="../e/viewmodel.js" />
-			<com:scriptfile path="../e/service.js" />
-			<com:scriptfile path="../f/viewmodel.js" />
-			<com:scriptfile path="../f/service.js" />
-			<com:scriptfile path="../g/viewmodel.js" />
-			<com:scriptfile path="../g/service.js" />
-			<com:scriptfile path="../h/service.js" />
-			<com:scriptfile path="../i/service.js" />
+			<com:scriptfile path="qmm012.b.vm.js" />
+			<com:scriptfile path="qmm012.b.start.js" />
+			<com:scriptfile path="qmm012.b.service.js" />
+			<com:stylefile path="main.css" />
+			<com:scriptfile path="../c/qmm012.c.vm.js" />
+			<com:scriptfile path="../c/qmm012.c.service.js" />
+			<com:scriptfile path="../d/qmm012.d.vm.js" />
+			<com:scriptfile path="../d/qmm012.d.service.js" />
+			<com:scriptfile path="../e/qmm012.e.vm.js" />
+			<com:scriptfile path="../e/qmm012.e.service.js" />
+			<com:scriptfile path="../f/qmm012.f.vm.js" />
+			<com:scriptfile path="../f/qmm012.f.service.js" />
+			<com:scriptfile path="../g/qmm012.g.vm.js" />
+			<com:scriptfile path="../g/qmm012.g.service.js" />
+			<com:scriptfile path="../h/qmm012.h.service.js" />
+			<com:scriptfile path="../i/qmm012.i.service.js" />
 			<com:ValidatorScript>
 				<!-- For B -->
 				nts.uk.ctx.pr.core.dom.itemmaster.ItemCode
 				nts.uk.ctx.pr.core.dom.itemmaster.ItemName
+				nts.uk.ctx.pr.core.dom.itemmaster.ItemAbName
 				<!-- End B -->
 				<!-- For C -->
 				nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.LimitMny
@@ -45,60 +46,66 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="B_BTN_001" data-bind="click: openADialog"
+				<button id="B_Btn_NewButton" data-bind="click: addNewButtonClick"
 					class="inputNomalSize">新規</button>
-				<button id="B_BTN_002" class="proceed inputNomalSize"
+				<button id="B_Btn_RegisterButton" class="proceed inputNomalSize"
 					data-bind="click:submitData,enable: $root.errors.isEmpty">登録</button>
-				<button id="B_BTN_003" class="inputNomalSize">コピー</button>
-				<button id="B_BTN_004" class="danger inputNomalSize"
-					data-bind="click: deleteItem,enable: B_BTN_004_enable">削除</button>
-				<button id="B_BTN_005" class="inputNomalSize">Excel出力</button>
-				<button id="B_BTN_006">マスタ修正ログ</button>
-				<button id="B_BTN_008" data-bind="click:openJDialog">印字名称の登録</button>
+				<button id="B_Btn_CopyButton" class="inputNomalSize"
+					data-bind="click:copyButtonClick">コピー</button>
+				<button id="B_Btn_DeleteButton" class="danger inputNomalSize"
+					data-bind="click: deleteItem,enable: B_Btn_DeleteButton_enable">削除</button>
+				<button id="B_Btn_OutputButton" class="inputNomalSize"
+					data-bind="click:exportExcelButtonClick">Excel出力</button>
+				<button id="B_Btn_OutputButton">マスタ修正ログ</button>
+				<button id="B_Btn_RegistrationButtonOfPrintName"
+					data-bind="click:registerPrintingNameButtonClick">印字名称の登録</button>
 			</div>
 
 			<div id="contents-area" class="cf">
 				<div class="nts-left-content caret-right caret-background ">
 					<i class="icon icon-searchbox"></i>
 					<div class="divLine">
-						<div id="B_LBL_002" data-bind="ntsFormLabel: {  required: false }">項目区分</div>
-						<div id="B_SEL_001"
+						<div id="B_Lbl_ItemClassification"
+							data-bind="ntsFormLabel: {  required: false }">項目区分</div>
+						<div id="B_Sel_ItemClassification"
 							data-bind="ntsComboBox: {
-											options: ComboBoxItemList_B_001,
+											options: B_Sel_ItemClassification,
 											optionsValue: 'code',
-											value: selectedCode_B_001,
+											value: B_Selected_ItemClassification,
 											optionsText: 'name',
 											enable: true,
 											columns: [
 												{ prop: 'name', length: 10 },
 											]}">
 						</div>
-						<div id="B_SEL_002"
-							data-bind="ntsCheckBox: { checked: checked_B_002, text: '廃止も表示する' }"></div>
+						<div id="B_Sel_AlsoDisplayAbolition"
+							data-bind="ntsCheckBox: { checked: Checked_AlsoDisplayAbolition, text: '廃止も表示する' }"></div>
 
 					</div>
 					<div class="divLine">
-						<div id="B_LBL_003" data-bind="ntsFormLabel: {  required: false }">コード/名称</div>
-						<div id="B_SCH_001"
+						<div id="B_Lbl_Code"
+							data-bind="ntsFormLabel: {  required: false }">コード/名称</div>
+						<div id="B_Sch_SearchButton"
 							data-bind="ntsSearchBox: {
-									comId: 'B_LST_001',
-									items: GridlistItems_B_001, 
-									selected: GridlistCurrentCode_B_001,
-									selectedKey: 'itemCode', 
+									comId: 'B_Lst_ItemList',
+									items: GridlistItems, 
+									selected: GridlistCurrentCode,
+									selectedKey: 'itemKey', 
 									placeHolder:'',
-									fields: ['itemCode', 'itemName']},
+									fields: ['itemCode', 'displaySet']
+									},
 									" />
 					</div>
-					<div class="B_LST_001">
-						<table id="B_LST_001"
+					<div class="B_Lst_ItemList">
+						<table id="B_Lst_ItemList"
 							data-bind="ntsGridList: {
 							width: 389,
 							height: 320,
-							options: GridlistItems_B_001,
-							optionsValue: 'itemCode',
-							columns: GridColumns_B_001,
+							options: GridlistItems,
+							optionsValue: 'itemKey',
+							columns: GridColumns,
 							multiple: false,
-							value: GridlistCurrentCode_B_001
+							value: GridlistCurrentCode
 						}"></table>
 					</div>
 				</div>
@@ -106,13 +113,13 @@
 					<div id="right-content-top">
 						<div class="divLine">
 							<div class="divLineCol1">
-								<div id="B_LBL_004" class="floatLeft haveSmallSpan"
-									data-bind="ntsFormLabel: {  required: true  ,constraint: 'ItemCode'}">
+								<div id="B_Lbl_Name" class="floatLeft haveSmallSpan"
+									data-bind="ntsFormLabel: {  required: true  ,constraint: ['ItemCode','ItemName']}">
 									コード/名称</div>
 							</div>
 							<div class="divLineCol2">
-								<div class="floatLeft" data-bind="with:texteditor_B_INP_002">
-									<input id="B_INP_002" data-name="コード/名称"
+								<div class="floatLeft" data-bind="with:texteditor_B_Inp_Code">
+									<input id="B_Inp_Code" data-name="コード" class="save-error"
 										data-bind="ntsTextEditor: {
 										constraint: 'ItemCode',
 										required: true,
@@ -121,8 +128,8 @@
 										enable: enable}" />
 								</div>
 
-								<div class="floatLeft" data-bind="with:texteditor_B_INP_003">
-									<input data-name="略名" id="B_INP_003"
+								<div class="floatLeft" data-bind="with:texteditor_B_Inp_Name">
+									<input data-name="名称" id="B_Inp_Name" class="save-error"
 										data-bind="ntsTextEditor: {
 										constraint: 'ItemName',
 										required: true,
@@ -130,22 +137,23 @@
 										option: option}" />
 								</div>
 								<div id="B_DIV_HELP" class="floatLeft">
-									<div id="B_SEL_003" class="floatLeft"
-										data-bind="ntsCheckBox: { checked: GridCurrentDisplaySet_B_001, text: 'この項目名を廃止する' }"></div>
+									<div id="B_Sel_AbolishThisItemName" class="floatLeft"
+										data-bind="ntsCheckBox: { checked: GridCurrentDisplaySet, text: 'この項目名を廃止する' }"></div>
 									<button id="B_BTN_HELP" class="small">?</button>
 								</div>
 							</div>
 						</div>
 						<div class="divLine">
 							<div class="divLineCol1">
-								<div id="B_LBL_005"
-									data-bind="ntsFormLabel: {  required: true ,constraint: 'ItemName'}">略名</div>
+								<div id="B_Lbl_AbbreviatedName"
+									data-bind="ntsFormLabel: {  required: true ,constraint: 'ItemAbName'}">略名</div>
 							</div>
 							<div class="divLineCol2">
-								<div data-bind="with:texteditor_B_INP_004">
-									<input data-name="略名" id="B_INP_004"
+								<div data-bind="with:texteditor_B_Inp_AbbreviatedName">
+									<input data-name="略名" id="B_Inp_AbbreviatedName"
+										class="save-error"
 										data-bind="ntsTextEditor: {
-										constraint: 'ItemName',
+										constraint: 'ItemAbName',
 										required: true,
 										value: value,
 										option: option}" />
@@ -154,22 +162,22 @@
 						</div>
 						<div class="divLine">
 							<div class="divLineCol1">
-								<div id="B_LBL_006"
+								<div id="B_Lbl_ItemClassification"
 									data-bind="ntsFormLabel: {  required: true }">項目区分</div>
 							</div>
 							<div class="divLineCol2">
-								<label data-bind="text:GridCurrentCategoryAtrName_B_001"
-									id="B_LBL_007"> 項目区分 </label>
+								<label data-bind="text:GridCurrentCategoryAtrName"
+									id="B_Lbl_ItemClassification"> 項目区分 </label>
 							</div>
 						</div>
 						<div class="divLine">
 							<div class="divLineCol1">
-								<div id="B_LBL_008"
+								<div id="B_Lbl_IntegrationCode"
 									data-bind="ntsFormLabel: {  required: false }">統合コード</div>
 							</div>
 							<div class="divLineCol2">
-								<button id="B_BTN_007" class="small">参照</button>
-								<label id="B_LBL_009"></label>
+								<button id="B_Btn_ReferenceButton" class="small">参照</button>
+								<label id="B_Lbl_IntegrationCode"></label>
 							</div>
 						</div>
 					</div>

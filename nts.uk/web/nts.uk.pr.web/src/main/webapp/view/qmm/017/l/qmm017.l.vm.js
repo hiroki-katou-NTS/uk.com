@@ -12,8 +12,8 @@ var nts;
                     (function (l) {
                         var viewmodel;
                         (function (viewmodel) {
-                            class ScreenModelLScreen {
-                                constructor(param) {
+                            var ScreenModelLScreen = (function () {
+                                function ScreenModelLScreen(param) {
                                     var self = this;
                                     self.paramIsUpdate = param.isUpdate;
                                     self.paramDirtyData = param.dirtyData;
@@ -35,14 +35,14 @@ var nts;
                                         self.comboBoxAdjustmentAtr().selectedCode(self.paramDirtyData.adjustmentDevision.toString());
                                     }
                                 }
-                                exportTextListItemName(lstItem, lstItemCode) {
+                                ScreenModelLScreen.prototype.exportTextListItemName = function (lstItem, lstItemCode) {
                                     var textListItemName = '';
                                     _.forEach(lstItemCode, function (itemCode) {
                                         textListItemName += (_.find(lstItem, function (item) { return item.code == itemCode; }).name + ' ');
                                     });
                                     return textListItemName;
-                                }
-                                initOriginal() {
+                                };
+                                ScreenModelLScreen.prototype.initOriginal = function () {
                                     var self = this;
                                     self.easyFormulaName = ko.observable(null);
                                     self.comboBoxFormulaType = ko.observable(new ComboBox([
@@ -163,8 +163,8 @@ var nts;
                                     self.personalUnitPriceItems = ko.observableArray([]);
                                     self.paymentItems = ko.observableArray([]);
                                     self.deductionItems = ko.observableArray([]);
-                                }
-                                start() {
+                                };
+                                ScreenModelLScreen.prototype.start = function () {
                                     var self = this;
                                     var dfdMaster = $.Deferred();
                                     var dfdGetListCompanyUP = $.Deferred();
@@ -175,7 +175,7 @@ var nts;
                                     l.service.getListItemMaster(2)
                                         .done(function (lstItem) {
                                         if (lstItem && lstItem.length > 0) {
-                                            _.forEach(lstItem, item => {
+                                            _.forEach(lstItem, function (item) {
                                                 self.comboBoxCoefficient().itemList.push(new ItemModel(item.itemCode, item.itemName));
                                             });
                                         }
@@ -189,7 +189,7 @@ var nts;
                                     l.service.getListCompanyUnitPrice(self.startYm.replace('/', ''))
                                         .done(function (lstCompanyUnitPrice) {
                                         if (lstCompanyUnitPrice && lstCompanyUnitPrice.length > 0) {
-                                            _.forEach(lstCompanyUnitPrice, item => {
+                                            _.forEach(lstCompanyUnitPrice, function (item) {
                                                 self.companyUnitPriceItems.push(new ItemModel(item.companyUnitPriceCode, item.companyUnitPriceName));
                                             });
                                         }
@@ -200,7 +200,7 @@ var nts;
                                     l.service.getListPersonalUnitPrice()
                                         .done(function (lstPersonalUnitPrice) {
                                         if (lstPersonalUnitPrice && lstPersonalUnitPrice.length > 0) {
-                                            _.forEach(lstPersonalUnitPrice, item => {
+                                            _.forEach(lstPersonalUnitPrice, function (item) {
                                                 self.personalUnitPriceItems.push(new ItemModel(item.personalUnitPriceCode, item.personalUnitPriceName));
                                             });
                                         }
@@ -211,7 +211,7 @@ var nts;
                                     l.service.getListItemMaster(0)
                                         .done(function (lstItem) {
                                         if (lstItem && lstItem.length > 0) {
-                                            _.forEach(lstItem, item => {
+                                            _.forEach(lstItem, function (item) {
                                                 self.paymentItems.push(new ItemModel(item.itemCode, item.itemName));
                                             });
                                         }
@@ -225,7 +225,7 @@ var nts;
                                     l.service.getListItemMaster(1)
                                         .done(function (lstItem) {
                                         if (lstItem && lstItem.length > 0) {
-                                            _.forEach(lstItem, item => {
+                                            _.forEach(lstItem, function (item) {
                                                 self.deductionItems.push(new ItemModel(item.itemCode, item.itemName));
                                             });
                                         }
@@ -286,10 +286,10 @@ var nts;
                                     });
                                     // Return.
                                     return dfdMaster.promise();
-                                }
-                                openDialogP() {
+                                };
+                                ScreenModelLScreen.prototype.openDialogP = function () {
                                     var self = this;
-                                    let param = {
+                                    var param = {
                                         subject: '',
                                         itemList: [],
                                         selectedItems: self.baseAmountListItem()
@@ -311,14 +311,14 @@ var nts;
                                         param.itemList = self.deductionItems();
                                     }
                                     nts.uk.ui.windows.setShared('paramFromScreenL', param);
-                                    nts.uk.ui.windows.sub.modal('/view/qmm/017/p/index.xhtml', { title: '項目の選択', width: 350, height: 480 }).onClosed(() => {
-                                        let baseAmountListItem = nts.uk.ui.windows.getShared('baseAmountListItem');
+                                    nts.uk.ui.windows.sub.modal('/view/qmm/017/p/index.xhtml', { title: '項目の選択', width: 350, height: 480 }).onClosed(function () {
+                                        var baseAmountListItem = nts.uk.ui.windows.getShared('baseAmountListItem');
                                         self.baseAmountListItem(baseAmountListItem);
                                     });
-                                }
-                                closeAndReturnData() {
+                                };
+                                ScreenModelLScreen.prototype.closeAndReturnData = function () {
                                     var self = this;
-                                    let easyFormulaDetail = {
+                                    var easyFormulaDetail = {
                                         easyFormulaCode: self.paramDirtyData.easyFormulaCode,
                                         easyFormulaName: self.easyFormulaName(),
                                         easyFormulaTypeAtr: self.comboBoxFormulaType().selectedCode(),
@@ -348,36 +348,40 @@ var nts;
                                     }
                                     nts.uk.ui.windows.setShared('easyFormulaDetail', easyFormulaDetail);
                                     nts.uk.ui.windows.close();
-                                }
-                                closeDialog() {
+                                };
+                                ScreenModelLScreen.prototype.closeDialog = function () {
                                     nts.uk.ui.windows.close();
-                                }
-                            }
+                                };
+                                return ScreenModelLScreen;
+                            }());
                             viewmodel.ScreenModelLScreen = ScreenModelLScreen;
-                            class ComboBox {
-                                constructor(itemList) {
+                            var ComboBox = (function () {
+                                function ComboBox(itemList) {
                                     var self = this;
                                     self.itemList = ko.observableArray(itemList);
                                     self.itemName = ko.observable('');
                                     self.currentCode = ko.observable('0');
                                     self.selectedCode = ko.observable('0');
                                 }
-                            }
+                                return ComboBox;
+                            }());
                             viewmodel.ComboBox = ComboBox;
-                            class SwitchButton {
-                                constructor(itemList) {
+                            var SwitchButton = (function () {
+                                function SwitchButton(itemList) {
                                     var self = this;
                                     self.roundingRules = ko.observableArray(itemList);
                                     self.selectedRuleCode = ko.observable('0');
                                 }
-                            }
+                                return SwitchButton;
+                            }());
                             viewmodel.SwitchButton = SwitchButton;
-                            class ItemModel {
-                                constructor(code, name) {
+                            var ItemModel = (function () {
+                                function ItemModel(code, name) {
                                     this.code = code;
                                     this.name = name;
                                 }
-                            }
+                                return ItemModel;
+                            }());
                         })(viewmodel = l.viewmodel || (l.viewmodel = {}));
                     })(l = qmm017.l || (qmm017.l = {}));
                 })(qmm017 = view.qmm017 || (view.qmm017 = {}));

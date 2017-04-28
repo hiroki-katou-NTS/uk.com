@@ -7,6 +7,7 @@ var nts;
             screenModel.start().done(function () {
                 __viewContext.bind(screenModel);
                 $(document).delegate("#treeGrid", "igtreegridselectionrowselectionchanging", function (evt, ui) {
+                    //                screenModel.formulaTree_onSelecting(ui.row.id);
                     if (screenModel.dirtyCheckScreenB.isDirty() || screenModel.dirtyCheckScreenC.isDirty()) {
                         evt.preventDefault();
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。")

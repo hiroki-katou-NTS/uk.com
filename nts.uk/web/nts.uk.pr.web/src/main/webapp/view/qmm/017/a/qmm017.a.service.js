@@ -161,40 +161,59 @@ var nts;
         })(service = qmm017.service || (qmm017.service = {}));
         var model;
         (function (model) {
-            class FormulaDto {
-                constructor() {
+            var FormulaDto = (function () {
+                function FormulaDto() {
                 }
-            }
+                return FormulaDto;
+            }());
             model.FormulaDto = FormulaDto;
-            class FormulaHistoryDto {
-                constructor() {
+            var FormulaHistoryDto = (function () {
+                function FormulaHistoryDto() {
                 }
-            }
+                return FormulaHistoryDto;
+            }());
             model.FormulaHistoryDto = FormulaHistoryDto;
-            class FormulaDetailDto {
-            }
+            var FormulaDetailDto = (function () {
+                function FormulaDetailDto() {
+                }
+                return FormulaDetailDto;
+            }());
             model.FormulaDetailDto = FormulaDetailDto;
-            class FormulaEasyDto {
-                constructor() {
+            var FormulaEasyDto = (function () {
+                function FormulaEasyDto() {
                 }
-            }
+                return FormulaEasyDto;
+            }());
             model.FormulaEasyDto = FormulaEasyDto;
-            class FormulaEasyDetailDto {
-                constructor() {
+            var FormulaEasyDetailDto = (function () {
+                function FormulaEasyDetailDto() {
                 }
-            }
+                return FormulaEasyDetailDto;
+            }());
             model.FormulaEasyDetailDto = FormulaEasyDetailDto;
-            class CompanyUnitPriceDto {
-            }
+            var CompanyUnitPriceDto = (function () {
+                function CompanyUnitPriceDto() {
+                }
+                return CompanyUnitPriceDto;
+            }());
             model.CompanyUnitPriceDto = CompanyUnitPriceDto;
-            class PersonalUnitPriceDto {
-            }
+            var PersonalUnitPriceDto = (function () {
+                function PersonalUnitPriceDto() {
+                }
+                return PersonalUnitPriceDto;
+            }());
             model.PersonalUnitPriceDto = PersonalUnitPriceDto;
-            class ItemMasterDto {
-            }
+            var ItemMasterDto = (function () {
+                function ItemMasterDto() {
+                }
+                return ItemMasterDto;
+            }());
             model.ItemMasterDto = ItemMasterDto;
-            class WageTableDto {
-            }
+            var WageTableDto = (function () {
+                function WageTableDto() {
+                }
+                return WageTableDto;
+            }());
             model.WageTableDto = WageTableDto;
             var SystemVariableDto = (function () {
                 function SystemVariableDto() {

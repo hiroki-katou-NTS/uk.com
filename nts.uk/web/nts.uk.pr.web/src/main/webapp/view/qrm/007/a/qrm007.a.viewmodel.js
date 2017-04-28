@@ -4,15 +4,15 @@ var qrm007;
     (function (a) {
         var viewmodel;
         (function (viewmodel) {
-            class ScreenModel {
-                constructor() {
+            var ScreenModel = (function () {
+                function ScreenModel() {
                     var self = this;
                     self.retirementPayItemList = ko.observableArray([]);
                     self.currentCode = ko.observable("");
                     self.currentItem = ko.observable(new RetirementPayItem("", 0, "", "", "", "", "", ""));
                     self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                 }
-                startPage() {
+                ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
                     self.findRetirementPayItemList(false)
@@ -43,12 +43,12 @@ var qrm007;
                         dfd.reject(res);
                     });
                     return dfd.promise();
-                }
+                };
                 /**
                  * find retirement payment item by company code
                  * @param notFirstTime : check current find is first time or not
                  */
-                findRetirementPayItemList(notFirstTime) {
+                ScreenModel.prototype.findRetirementPayItemList = function (notFirstTime) {
                     var self = this;
                     var dfd = $.Deferred();
                     qrm007.a.service.retirePayItemSelect()
@@ -71,15 +71,15 @@ var qrm007;
                         dfd.reject(res);
                     });
                     return dfd.promise();
-                }
+                };
                 /**
                  * update retirement payment item
                  */
-                updateRetirementPayItemList() {
+                ScreenModel.prototype.updateRetirementPayItemList = function () {
                     var self = this;
                     var dfd = $.Deferred();
                     if (self.dirty.isDirty()) {
-                        let command = ko.mapping.toJS(self.currentItem());
+                        var command = ko.mapping.toJS(self.currentItem());
                         qrm007.a.service.retirePayItemUpdate(command)
                             .done(function (data) {
                             self.findRetirementPayItemList(true);
@@ -89,18 +89,19 @@ var qrm007;
                         });
                     }
                     return dfd.promise();
-                }
+                };
                 /**
                  * event update selected retirement payment item
                  */
-                saveData() {
+                ScreenModel.prototype.saveData = function () {
                     var self = this;
                     self.updateRetirementPayItemList();
-                }
-            }
+                };
+                return ScreenModel;
+            }());
             viewmodel.ScreenModel = ScreenModel;
-            class RetirementPayItem {
-                constructor(companyCode, category, itemCode, itemName, printName, englishName, fullName, memo) {
+            var RetirementPayItem = (function () {
+                function RetirementPayItem(companyCode, category, itemCode, itemName, printName, englishName, fullName, memo) {
                     var self = this;
                     self.companyCode = ko.observable(companyCode);
                     self.category = ko.observable(category);
@@ -111,10 +112,11 @@ var qrm007;
                     self.fullName = ko.observable(fullName);
                     self.memo = ko.observable(memo);
                 }
-                static converToObject(object) {
+                RetirementPayItem.converToObject = function (object) {
                     return new RetirementPayItem(object.companyCode, object.category, object.itemCode, object.itemName, object.printName, object.englishName, object.fullName, object.memo);
-                }
-            }
+                };
+                return RetirementPayItem;
+            }());
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qrm007.a || (qrm007.a = {}));
 })(qrm007 || (qrm007 = {}));

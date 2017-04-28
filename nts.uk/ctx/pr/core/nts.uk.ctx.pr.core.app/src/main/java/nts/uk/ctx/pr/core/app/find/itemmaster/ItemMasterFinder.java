@@ -8,7 +8,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.core.app.find.itemmaster.dto.ItemMasterDto;
-import nts.uk.ctx.pr.core.app.find.itemmaster.dto.ItemMasterSEL_3_Dto;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -22,7 +21,7 @@ public class ItemMasterFinder {
 	 * Find all item master by ave Pay Attribute
 	 * 
 	 * @param avePayAtr
-	 * @return
+	 * @return list of item master
 	 */
 	public List<ItemMasterDto> findAllByItemAtr(ItemAtr itemAtr) {
 		return this.itemMasterRepo.findAllByCategory(AppContexts.user().companyCode(), itemAtr.value).stream()
@@ -34,7 +33,7 @@ public class ItemMasterFinder {
 	 * 
 	 * @param companyCode
 	 * @param categoryAtr
-	 * @return
+	 * @return list of item master
 	 */
 	public List<ItemMasterDto> findBy(int categoryAtr) {
 		return this.itemMasterRepo.findAllByCategory(AppContexts.user().companyCode(), categoryAtr).stream()
@@ -44,10 +43,11 @@ public class ItemMasterFinder {
 	/**
 	 * finder item by company code, category type, item code
 	 * 
-	 * @param companyCode
 	 * @param categoryAtr
+	 *            category attribute
 	 * @param itemCode
-	 * @return
+	 *            item code
+	 * @return item master
 	 */
 	public ItemMasterDto find(int categoryAtr, String itemCode) {
 		Optional<ItemMasterDto> itemOp = this.itemMasterRepo
@@ -57,27 +57,47 @@ public class ItemMasterFinder {
 		return !itemOp.isPresent() ? null : itemOp.get();
 	}
 
-	public List<ItemMasterDto> findAllNoAvePayAtr(int ctgAtr, int dispSet) {
-		return this.itemMasterRepo.findAllNoAvePayAtr(AppContexts.user().companyCode(), ctgAtr,dispSet).stream()
-				.map(item -> ItemMasterDto.fromDomain(item)).collect(Collectors.toList());
-	}
+	/**
+	 * finder item by company code, category type, item code
+	 * 
+	 * @param categoryAtr
+	 *            category attribute
+	 * @param dispSet
+	 *            display set
+	 * @return list of item master
+	 */
+	public List<ItemMasterDto> findAllItemMasterByCtgAtrAndDispSet(int ctgAtr, int dispSet) {
 
-	public List<ItemMasterSEL_3_Dto> find_SEL_3(int categoryAtr) {
-		return this.itemMasterRepo.findAll_SEL_3(AppContexts.user().companyCode(), categoryAtr).stream()
-				.map(item -> ItemMasterSEL_3_Dto.fromDomain(item)).collect(Collectors.toList());
+		List<ItemMasterDto> ItemList;
+		if (ctgAtr == -1 && dispSet == -1)
+			ItemList = this.itemMasterRepo.findAll(AppContexts.user().companyCode()).stream()
+					.map(item -> ItemMasterDto.fromDomain(item)).collect(Collectors.toList());
+		else if (dispSet == -1)
+			ItemList = this.itemMasterRepo.findAllByCategory(AppContexts.user().companyCode(), ctgAtr).stream()
+					.map(item -> ItemMasterDto.fromDomain(item)).collect(Collectors.toList());
+		else if (ctgAtr == -1)
+			ItemList = this.itemMasterRepo.findAllByDispSet(AppContexts.user().companyCode(), dispSet).stream()
+					.map(item -> ItemMasterDto.fromDomain(item)).collect(Collectors.toList());
+		else
+			ItemList = this.itemMasterRepo.findAllByDispSetAndCtgAtr(AppContexts.user().companyCode(), ctgAtr, dispSet)
+					.stream().map(item -> ItemMasterDto.fromDomain(item)).collect(Collectors.toList());
+		return ItemList;
+
 	}
 
 	/**
 	 * Find all item master by category and list of item code
-	 * @param categoryAtr category attribute
-	 * @param itemCodes list of item code
+	 * 
+	 * @param categoryAtr
+	 *            category attribute
+	 * @param itemCodes
+	 *            list of item code
 	 * @return list of item master
 	 */
 	public List<ItemMasterDto> findBy(int categoryAtr, List<String> itemCodes) {
 		String companyCode = AppContexts.user().companyCode();
 		return this.itemMasterRepo.findAll(companyCode, categoryAtr, itemCodes).stream()
-				.map(item -> ItemMasterDto.fromDomain(item))
-				.collect(Collectors.toList());
+				.map(item -> ItemMasterDto.fromDomain(item)).collect(Collectors.toList());
 	}
 
 }

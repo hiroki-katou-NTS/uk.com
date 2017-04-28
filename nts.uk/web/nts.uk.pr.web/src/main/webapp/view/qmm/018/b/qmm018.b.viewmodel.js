@@ -4,8 +4,8 @@ var qmm018;
     (function (b) {
         var viewmodel;
         (function (viewmodel) {
-            class ScreenModel {
-                constructor() {
+            var ScreenModel = (function () {
+                function ScreenModel() {
                     var self = this;
                     self.items = ko.observableArray([]);
                     self.currentCodeListSwap = ko.observableArray([]);
@@ -14,7 +14,7 @@ var qmm018;
                 /**
                  * get init data
                  */
-                startPage() {
+                ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
                     qmm018.b.service.itemSelect(nts.uk.ui.windows.getShared('categoryAtr')).done(function (data) {
@@ -38,26 +38,27 @@ var qmm018;
                     }).fail(function (res) {
                     });
                     return dfd.promise();
-                }
+                };
                 /**
                  * send changed data to A screen
                  */
-                submitData() {
+                ScreenModel.prototype.submitData = function () {
                     // return new data
                     var self = this;
                     nts.uk.ui.windows.setShared('selectedItemList', self.currentCodeListSwap());
                     nts.uk.ui.windows.close();
-                }
+                };
                 /**
                  * back to A screen without change
                  */
-                closeWindow() {
+                ScreenModel.prototype.closeWindow = function () {
                     // return old data
                     var self = this;
                     nts.uk.ui.windows.setShared('selectedItemList', self.oldCurrentCodeListSwap());
                     nts.uk.ui.windows.close();
-                }
-            }
+                };
+                return ScreenModel;
+            }());
             viewmodel.ScreenModel = ScreenModel;
         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
     })(b = qmm018.b || (qmm018.b = {}));
