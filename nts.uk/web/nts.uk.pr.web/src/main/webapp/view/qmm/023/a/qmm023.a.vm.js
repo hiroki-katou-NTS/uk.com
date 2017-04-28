@@ -189,6 +189,7 @@ var qmm023;
                         self.deleteData();
                     });
                 };
+                // startpage
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     return self.reload(true);
@@ -247,4 +248,3 @@ var qmm023;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm023.a || (qmm023.a = {}));
 })(qmm023 || (qmm023 = {}));
-//# sourceMappingURL=qmm023.a.vm.js.map

@@ -36,28 +36,14 @@ public class ItemSalaryDto {
 
 	public static ItemSalaryDto fromDomain(ItemSalary domain) {
 
-		return new ItemSalaryDto(
-				domain.getTaxAtr().value,
-				domain.getSocialInsAtr().value,
-				domain.getLaborInsAtr().value, 
-				domain.getFixPayAtr().value, 
-				domain.getApplyForAllEmpFlg().value,
-				domain.getApplyForMonthlyPayEmp().value,
-				domain.getApplyForDaymonthlyPayEmp().value,
-				domain.getApplyForDaylyPayEmp().value,
-				domain.getApplyForHourlyPayEmp().value, 
-				domain.getAvePayAtr().value, 
-				domain.getErrRangeLowAtr().value,
-				domain.getErrRangeLow().v(),
-				domain.getErrRangeHighAtr().value, 
-				domain.getErrRangeHigh().v(), 
-				domain.getAlRangeLowAtr().value,
-				domain.getAlRangeLow().v(),
-				domain.getAlRangeHighAtr().value,
-				domain.getAlRangeHigh().v(), 
-				domain.getMemo().v(),
-				domain.getLimitMnyAtr().value,
-				domain.getLimitMnyRefItemCode().v(), 
-				domain.getLimitMny().v());
+		return new ItemSalaryDto(domain.getTaxAtr().value, domain.getSocialInsAtr().value,
+				domain.getLaborInsAtr().value, domain.getFixPayAtr().value, domain.getApplyForAllEmpFlg().value,
+				domain.getApplyForMonthlyPayEmp().value, domain.getApplyForDaymonthlyPayEmp().value,
+				domain.getApplyForDaylyPayEmp().value, domain.getApplyForHourlyPayEmp().value,
+				domain.getAvePayAtr().value, domain.getErrRangeLowAtr().value, domain.getErrRangeLow().v(),
+				domain.getErrRangeHighAtr().value, domain.getErrRangeHigh().v(), domain.getAlRangeLowAtr().value,
+				domain.getAlRangeLow().v(), domain.getAlRangeHighAtr().value, domain.getAlRangeHigh().v(),
+				domain.getMemo().v(), domain.getLimitMnyAtr().value, domain.getLimitMnyRefItemCode().v(),
+				domain.getLimitMny() != null ? domain.getLimitMny().v() : null);
 	}
 }

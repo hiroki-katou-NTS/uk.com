@@ -10,10 +10,20 @@ var nts;
                 (function (qpp005) {
                     var a;
                     (function (a) {
+                        //    import viewmodel = nts.uk.pr.view.qpp005.a.viewmodel;
                         __viewContext.ready(function () {
                             var screenModel = new nts.uk.pr.view.qpp005.a.viewmodel.ScreenModel();
                             screenModel.startPage().done(function () {
                                 __viewContext.bind(screenModel);
+                                //            var categoryPayment: viewmodel.LayoutMasterCategoryViewModel = (<any>screenModel).paymentDataResult().categories()[0];
+                                //            var categoryDeduct: viewmodel.LayoutMasterCategoryViewModel = (<any>screenModel).paymentDataResult().categories()[1];
+                                //            var categoryArticle: viewmodel.LayoutMasterCategoryViewModel = (<any>screenModel).paymentDataResult().categories()[3];
+                                //        var $paymentLastItem = 'ct' + (<any>categoryPayment).categoryAttribute() + '_' + ((<any>categoryPayment).lineCounts() - 1) + '_8';
+                                //        $("#" + $paymentLastItem).addClass('disabled');
+                                //        var $deductLastItem = (<any>categoryDeduct).categoryAttribute() + '_' + ((<any>categoryDeduct).lineCounts() - 1) + '_8';
+                                //        $("#" + $deductLastItem).addClass('disabled');
+                                //        var $articleLastItem = (<any>categoryArticle).categoryAttribute() + '_' + ((<any>categoryArticle).lineCounts() - 1) + '_8';
+                                //        $("#" + $articleLastItem).addClass('disabled');
                                 $('#pơpup-orientation').ntsPopup({
                                     position: {
                                         my: 'left top',
@@ -25,6 +35,7 @@ var nts;
                             }).fail(function () {
                                 __viewContext.bind(screenModel);
                             });
+                            //         __viewContext.bind(screenModel);
                         });
                         var utils;
                         (function (utils) {
@@ -72,6 +83,12 @@ var nts;
                                             return false;
                                         }
                                     });
+                                    //                $tbl.on('change', 'input', function(e) {
+                                    //                    var nId = this.id;
+                                    //                    var nVal = $(this).val();
+                                    //
+                                    //                    setBackgroundColorForItem(nId, nVal);
+                                    //                });
                                 });
                             }
                             utils.gridSetup = gridSetup;
@@ -120,4 +137,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=start.js.map

@@ -86,26 +86,18 @@ module nts.uk.ui.koExtentions {
             container.ntsGridList('setupSelecting');
              
             
-            container.bind('iggridselectionrowselectionchanging', () => {
-                if(container.data("enable") === false){
-                    return false;       
+            container.bind('iggridselectionrowselectionchanging', (evt, ui) => {
+                if(container.data("enable") === false){ 
+                    return false;        
                 }
-                let itemSelected;
-                if (container.igGridSelection('option', 'multipleSelection')) {
-                    let selected: Array<any> = container.ntsGridList('getSelected');
-                    if (selected) {
-                        itemSelected = _.map(selected, s => s.id);
-                    } else {
-                        itemSelected = [];
-                    }
-                } else {
-                    let selected = container.ntsGridList('getSelected');
-                    if (selected) {
-                        itemSelected = selected.id;
-                    } else {
-                        itemSelected = ('');
-                    }
+                let itemSelected = ui.row.id;
+                let dataSource = container.igGrid('option', "dataSource");
+                if(container.data("fullValue")){
+                    itemSelected = _.find(dataSource, function (d){
+                        return d[optionValue].toString() === itemSelected.toString();      
+                    });    
                 }
+                  
                 var changingEvent = new CustomEvent("selectionChanging", {
                     detail: itemSelected,  
                     bubbles: true,
@@ -138,6 +130,20 @@ module nts.uk.ui.koExtentions {
                         itemSelected = ('');
                     }
                 }
+                container.data("selected", itemSelected);
+                let isMultiOld = container.igGridSelection('option', 'multipleSelection');
+                if(container.data("fullValue")){
+                    let dataSource = container.igGrid('option', "dataSource");
+                    if (isMultiOld){
+                        itemSelected = _.filter(dataSource, function(d){
+                            itemSelected.indexOf(d[optionValue].toString()) >= 0;            
+                        });
+                    } else {
+                        itemSelected = _.find(dataSource, function (d){
+                            return d[optionValue].toString() === itemSelected.toString();      
+                        });    
+                    }
+                }
                 if(container.data("chaninged") !== true){
                     
                     var changingEvent = new CustomEvent("selectionChanging", {
@@ -154,22 +160,10 @@ module nts.uk.ui.koExtentions {
                         return false;    
                     } 
                 }
-                
-                container.data("selected", itemSelected);
                 container.data("chaninged", false);
-                let isMultiOld = container.igGridSelection('option', 'multipleSelection');
-                if(container.data("fullValue")){
-                    let dataSource = container.igGrid('option', "dataSource");
-                    if (isMultiOld){
-                        itemSelected = _.map(dataSource, optionValue);
-                    } else {
-                        itemSelected = _.find(dataSource, function (d){
-                            return d[optionValue].toString() === itemSelected.toString();      
-                        });    
-                    }
+                if(!_.isEqual(itemSelected, data.value())){
+                    data.value(itemSelected);        
                 }
-                data.value(itemSelected);
-
             });
             container.setupSearchScroll("igGrid", true); 
             
@@ -197,14 +191,17 @@ module nts.uk.ui.koExtentions {
             var rows = data.rows;
             // Container.
             var container = $(element).find(".ntsListBox");
-            container.data("enable", enable);
-            if(!enable){
-                container.ntsGridList('unsetupSelecting');
-                container.addClass("disabled");     
-            } else {
-                container.ntsGridList('setupSelecting');
-                container.removeClass("disabled");    
+            if(container.data("enable") !== enable){
+                if(!enable){
+                    container.ntsGridList('unsetupSelecting');
+                    container.addClass("disabled");     
+                } else {
+                    container.ntsGridList('setupSelecting');
+                    container.removeClass("disabled");    
+                }    
             }
+            
+            container.data("enable", enable);
             
             var currentSource = container.igGrid('option', 'dataSource');
             if (!_.isEqual(currentSource, options)) {
@@ -244,11 +241,27 @@ module nts.uk.ui.koExtentions {
                 container.ntsGridList('setSelected', dataValue);    
             } else {
                 var currentSelectedItems = container.ntsGridList('getSelected');
-                var isEqual = _.isEqualWith(currentSelectedItems, dataValue, function(current, newVal) {
-                    if ((current === undefined && newVal === undefined) || (current !== undefined && current.id === newVal)) {
-                        return true;
+                if (isMultiOld) {
+                    if (currentSelectedItems) {
+                        currentSelectedItems = _.map(currentSelectedItems, s => s.id);
+                    } else {
+                        currentSelectedItems = [];
                     }
-                })
+                    if(dataValue) {
+                        dataValue = _.map(dataValue, s => s.toString());
+                    }   
+                } else {
+                    if (currentSelectedItems) {
+                        currentSelectedItems = currentSelectedItems.id;
+                    } else {
+                        currentSelectedItems = ('');
+                    }
+                    if(dataValue) {
+                        dataValue = dataValue.toString();
+                    }
+                }
+                
+                var isEqual = _.isEqual(currentSelectedItems, dataValue);
                 if (!isEqual) {
                     container.ntsGridList('setSelected', dataValue);
                 }    

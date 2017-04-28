@@ -17,11 +17,15 @@ var nts;
                                 saveSalaryAggregateItem: "ctx/pr/report/salary/aggregate/item/save",
                                 findAllMasterItem: "ctx/pr/report/masteritem/findAll"
                             };
+                            //connection server find Salary Aggregate Item
                             function findSalaryAggregateItem(salaryAggregateItemInDto) {
+                                //call server service
                                 return nts.uk.request.ajax(paths.findSalaryAggregateItem, salaryAggregateItemInDto);
                             }
                             service.findSalaryAggregateItem = findSalaryAggregateItem;
+                            //connection server find Salary Aggregate Item
                             function saveSalaryAggregateItem(salaryAggregateItemSaveDto) {
+                                //call server service
                                 var data = { salaryAggregateItemSaveDto: salaryAggregateItemSaveDto };
                                 return nts.uk.request.ajax(paths.saveSalaryAggregateItem, data);
                             }
@@ -64,4 +68,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qpp007.j.service.js.map
