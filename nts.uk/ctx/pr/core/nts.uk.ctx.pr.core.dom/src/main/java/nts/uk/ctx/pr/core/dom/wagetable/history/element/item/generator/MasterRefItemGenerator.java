@@ -12,7 +12,11 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.swing.plaf.ListUI;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
@@ -83,6 +87,13 @@ public class MasterRefItemGenerator implements ItemGenerator {
 		// Get ref items.
 		List<WtCodeRefItem> wtRefItems = this.wtReferenceRepo.getMasterRefItem(optMasterRef.get(),
 				optWtHistory.get().getStart());
+
+		// Check has items.
+		if (CollectionUtil.isEmpty(wtRefItems)) {
+			throw new BusinessException(new RawErrorMessage(
+					"Have not any items on demension  " + elementSetting.getDemensionNo().value
+							+ ": " + optMasterRef.get().getRefName()));
+		}
 
 		// Create map: unique code - old uuid.
 		@SuppressWarnings("unchecked")

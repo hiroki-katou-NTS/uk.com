@@ -61,7 +61,7 @@ public class SocialInsuReportService extends ExportService<SocialInsuQuery> {
         String loginPersonID = "00000000-0000-0000-0000-000000000001"; //"000000000000000000000000000000000001";
         //AppContexts.user().personId();
         
-        if (!repository.isAvaibleData(companyCode, loginPersonID, query)) {
+        if (!repository.isAvailableData(companyCode, loginPersonID, query)) {
             throw new BusinessException("ER010");
         }
         
