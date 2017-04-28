@@ -1,13 +1,10 @@
 package nts.uk.ctx.basic.infra.repository.organization.department;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ejb.Stateless;
-
-import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.dom.organization.department.Department;
@@ -219,7 +216,6 @@ public class JpaDepartmentRepository extends JpaRepository implements Department
 		convertListDepToDbType(list).forEach(item -> {
 			this.commandProxy().update(item);
 		});
-		// this.commandProxy().updateAll(convertListDepToDbType(list));
 	}
 
 	@Override

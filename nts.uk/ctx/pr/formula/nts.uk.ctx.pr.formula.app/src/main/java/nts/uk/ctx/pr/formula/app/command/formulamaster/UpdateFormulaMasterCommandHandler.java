@@ -51,7 +51,7 @@ public class UpdateFormulaMasterCommandHandler extends CommandHandler<UpdateForm
 	protected void handle(CommandHandlerContext<UpdateFormulaMasterCommand> context) {
 		UpdateFormulaMasterCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
-
+		
 		List<FormulaEasyCondition> listFormulaEasyCondition = new ArrayList<>();
 		List<FormulaEasyDetail> listFormulaEasyDetail = new ArrayList<>();
 		List<FormulaEasyStandardItem> listFormulaEasyStandardItem = new ArrayList<>();
@@ -69,7 +69,7 @@ public class UpdateFormulaMasterCommandHandler extends CommandHandler<UpdateForm
 			}).collect(Collectors.toList());
 
 			command.getEasyFormulaDto().forEach(easyFormulaDto -> {
-				if (easyFormulaDto.getFixFormulaAtr() == 1) {
+				if (easyFormulaDto.getFixFormulaAtr() == 1 &&  easyFormulaDto.getFormulaDetail().getBaseAmountDevision() != null) {
 					FormulaEasyDetail formulaEasyDetail = new FormulaEasyDetail(companyCode,
 							new FormulaCode(command.getFormulaCode()), command.getHistoryId(),
 							new EasyFormulaCode(easyFormulaDto.getEasyFormulaCode()),
@@ -91,8 +91,10 @@ public class UpdateFormulaMasterCommandHandler extends CommandHandler<UpdateForm
 							EnumAdaptor.valueOf(easyFormulaDto.getFormulaDetail().getAdjustmentDevision().intValue(),
 									AdjustmentAtr.class),
 							EnumAdaptor.valueOf(easyFormulaDto.getFormulaDetail().getTotalRounding().intValue(),
-									RoundAtr.class),
-							null, null);
+									RoundAtr.class));
+					
+					formulaEasyDetail.validate();	
+					
 					listFormulaEasyDetail.add(formulaEasyDetail);
 				}
 			});

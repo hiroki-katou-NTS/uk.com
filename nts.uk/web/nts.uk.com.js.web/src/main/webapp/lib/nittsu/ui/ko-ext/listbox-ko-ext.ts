@@ -62,14 +62,21 @@ module nts.uk.ui.koExtentions {
                 width += 10 * maxWidthCharacter + 20;    
                 container.data("fullValue", true);
             } else {
+                let isHaveKey = false;
                 iggridColumns = _.map(columns, c => {
                     c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
                     c["width"] = c["length"] * maxWidthCharacter + 20;
                     c["headerText"] = '';
                     c["columnCssClass"] = 'nts-column';
                     width += c["length"] * maxWidthCharacter + 20;
+                    if (optionValue === c["key"]) {
+                         isHaveKey = true;   
+                    }
                     return c;
-                });    
+                });   
+                if (!isHaveKey) {
+                    iggridColumns.push({"key": optionValue, "width": 10 * maxWidthCharacter + 20, "headerText": '', "columnCssClass": 'nts-column', 'hidden': true});        
+                } 
             }
 
             var gridHeaderHeight = 24;
@@ -87,6 +94,7 @@ module nts.uk.ui.koExtentions {
              
             
             container.bind('iggridselectionrowselectionchanging', (evt, ui) => {
+//                console.log(ui);
                 if(container.data("enable") === false){ 
                     return false;        
                 }
@@ -114,6 +122,7 @@ module nts.uk.ui.koExtentions {
             });
 
             container.bind('selectionchanged', () => {
+//                console.log(ui);
                 let itemSelected;
                 if (container.igGridSelection('option', 'multipleSelection')) {
                     let selected: Array<any> = container.ntsGridList('getSelected');

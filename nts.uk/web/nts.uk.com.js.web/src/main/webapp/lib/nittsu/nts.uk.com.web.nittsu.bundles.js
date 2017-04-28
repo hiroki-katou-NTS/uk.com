@@ -1507,7 +1507,8 @@ var nts;
             request.STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
             var WEB_APP_NAME = {
                 com: 'nts.uk.com.web',
-                pr: 'nts.uk.pr.web'
+                pr: 'nts.uk.pr.web',
+                at: 'nts.uk.at.web'
             };
             var QueryString = (function () {
                 function QueryString() {
@@ -3105,18 +3106,12 @@ var nts;
                         $grid.bind('iggridselectionrowselectionchanged', function () {
                             $grid.triggerHandler('selectionchanged');
                         });
-                        $grid.on('mouseup', function () {
-                            $grid.triggerHandler('selectionchanged');
-                        });
                     }
                     function unsetupDragging($grid) {
-                        var dragSelectRange = [];
-                        var mousePos = null;
                         $grid.unbind('mousedown');
                     }
                     function unsetupSelectingEvents($grid) {
                         $grid.unbind('iggridselectionrowselectionchanged');
-                        $grid.off('mouseup');
                     }
                 })(ntsGridList || (ntsGridList = {}));
                 var ntsListBox;
@@ -4802,14 +4797,21 @@ var nts;
                             container.data("fullValue", true);
                         }
                         else {
+                            var isHaveKey_1 = false;
                             iggridColumns = _.map(columns, function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
                                 c["width"] = c["length"] * maxWidthCharacter + 20;
                                 c["headerText"] = '';
                                 c["columnCssClass"] = 'nts-column';
                                 width += c["length"] * maxWidthCharacter + 20;
+                                if (optionValue === c["key"]) {
+                                    isHaveKey_1 = true;
+                                }
                                 return c;
                             });
+                            if (!isHaveKey_1) {
+                                iggridColumns.push({ "key": optionValue, "width": 10 * maxWidthCharacter + 20, "headerText": '', "columnCssClass": 'nts-column', 'hidden': true });
+                            }
                         }
                         var gridHeaderHeight = 24;
                         container.igGrid({

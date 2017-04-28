@@ -1,7 +1,5 @@
-module cmm009.d.service {
+module cmm009.c.service {
     var paths = {
-        getLayoutInfor : "pr/proto/layout/findlayoutwithmaxstartym",
-        createlayouthistory: "pr/proto/layout/createlayouthistory"
     }
     
     /**

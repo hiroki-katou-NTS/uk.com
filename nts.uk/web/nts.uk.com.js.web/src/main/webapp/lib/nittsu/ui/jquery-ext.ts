@@ -444,17 +444,12 @@ module nts.uk.ui.jqueryExtentions {
                 $grid.triggerHandler('selectionchanged');
             });
 
-            $grid.on('mouseup', () => {
-                $grid.triggerHandler('selectionchanged');
-            });
+//            $grid.on('mouseup', () => {
+//                $grid.triggerHandler('selectionchanged');
+//            });
         }
          
         function unsetupDragging($grid: JQuery) {
-            var dragSelectRange = [];
-
-            // used to auto scrolling when dragged above/below grid)
-            var mousePos: { x: number, y: number, rowIndex: number } = null;
-
 
             $grid.unbind('mousedown');
         }
@@ -462,7 +457,7 @@ module nts.uk.ui.jqueryExtentions {
         function unsetupSelectingEvents($grid: JQuery) {
             $grid.unbind('iggridselectionrowselectionchanged');
 
-            $grid.off('mouseup');
+//            $grid.off('mouseup');
         }
     }
 
