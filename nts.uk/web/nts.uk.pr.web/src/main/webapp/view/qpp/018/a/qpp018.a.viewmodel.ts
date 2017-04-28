@@ -97,7 +97,7 @@ module nts.uk.pr.view.qpp018.a {
                     $('.grid-error').ntsError('set', '社会保険事業所が入力されていません。');
                     isError = true;
                 }
-                return isError || !nts.uk.ui._viewModel.errors.isEmpty();
+                return isError || $('.nts-input').ntsError('hasError');
             }
             
             private clearAllError(): void {
