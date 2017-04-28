@@ -5,6 +5,10 @@ import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
+/**
+ * 
+ *部門総称
+ */
 @StringMaxLength(40)
 public class DepartmentGenericName extends StringPrimitiveValue<DepartmentGenericName>{
 

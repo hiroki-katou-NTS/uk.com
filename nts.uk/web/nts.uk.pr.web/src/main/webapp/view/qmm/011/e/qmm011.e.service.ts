@@ -16,8 +16,7 @@ module nts.uk.pr.view.qmm011.e {
             nts.uk.request.ajax(paths.updateInsuranceBusinessType, data)
                 .done(function(res: void) {
                     dfd.resolve(res);
-                })
-                .fail(function(res: any) {
+                }).fail(function(res: any) {
                     dfd.reject(res);
                 })
             return dfd.promise();

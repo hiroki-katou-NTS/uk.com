@@ -23,6 +23,8 @@ public class DepartmentDto extends OrganizationTreeDto<DepartmentDto>{
 	private String hierarchyCode;
 
 	private String name;
+	
+	private String display;
 
 	private GeneralDate startDate;
 
@@ -33,6 +35,7 @@ public class DepartmentDto extends OrganizationTreeDto<DepartmentDto>{
 		this.fullName = fullName;
 		this.hierarchyCode = hierarchyCode;
 		this.name = name;
+		this.display =  departmentCode +" "+ name;
 		this.children = new ArrayList<>();
 		this.historyId = historyId;
 	}

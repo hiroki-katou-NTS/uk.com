@@ -46,10 +46,6 @@ public class FormulaEasyDetailDto {
 	private BigDecimal adjustmentDevision;
 
 	private BigDecimal totalRounding;
-	
-	private BigDecimal maxLimitValue;
-	
-	private BigDecimal minLimitValue;
 
 	public static FormulaEasyDetailDto fromDomain(FormulaEasyDetail domain) {
 		return new FormulaEasyDetailDto(
@@ -68,9 +64,7 @@ public class FormulaEasyDetailDto {
 				domain.getCoefficientDivision().v(),
 				domain.getCoefficientFixedValue().v(),
 				new BigDecimal(domain.getAdjustmentDevision().value),
-				new BigDecimal(domain.getTotalRounding().value),
-				domain.getMaxValue().v(),
-				domain.getMinValue().v());
+				new BigDecimal(domain.getTotalRounding().value));
 	}
 
 }

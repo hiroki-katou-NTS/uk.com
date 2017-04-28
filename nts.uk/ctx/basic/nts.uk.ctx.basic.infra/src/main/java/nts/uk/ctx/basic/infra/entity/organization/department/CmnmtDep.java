@@ -21,9 +21,6 @@ import nts.arc.time.GeneralDate;
 @Table(name = "CMNMT_DEP")
 public class CmnmtDep implements Serializable {
 
-	/**
-	 * serialVersionUID
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId

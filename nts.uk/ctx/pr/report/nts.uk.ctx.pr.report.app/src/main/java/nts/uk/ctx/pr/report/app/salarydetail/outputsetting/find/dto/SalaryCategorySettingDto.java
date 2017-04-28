@@ -47,7 +47,6 @@ public class SalaryCategorySettingDto implements SalaryCategorySettingSetMemento
 		this.outputItems = listSalaryOutputItem.stream().map(item -> {
 			SalaryOutputSettingItemDto itemDto = SalaryOutputSettingItemDto.builder().build();
 			item.saveToMemento(itemDto);
-			itemDto.name = "FakeName" + itemDto.code;
 			return itemDto;
 		}).sorted((a, b) -> Integer.compare(a.orderNumber, b.orderNumber)).collect(Collectors.toList());
 	}

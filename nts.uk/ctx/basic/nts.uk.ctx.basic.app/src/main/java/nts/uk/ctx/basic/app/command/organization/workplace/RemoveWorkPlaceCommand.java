@@ -5,9 +5,11 @@ import lombok.Data;
 @Data
 public class RemoveWorkPlaceCommand {
 
-	private String workPlaceCode;
+	private String workplaceCode;
 
 	private String historyId;
+	
+	private String hierarchyCode;
 
 }
 
