@@ -124,7 +124,7 @@ public class JpaTopPageRepository extends JpaRepository implements TopPageReposi
 	 * @return the ccgmt top page
 	 */
 	public CcgmtTopPage toEntity(TopPage domain) {
-		CcgmtTopPagePK key = new CcgmtTopPagePK(domain.getCompanyId().v(), domain.getTopPageCode().v());
+		CcgmtTopPagePK key = new CcgmtTopPagePK(domain.getCompanyId(), domain.getTopPageCode().v());
 		return new CcgmtTopPage(key, domain.getTopPageName().v(), domain.getLanguageNumber(), domain.getLayoutId());
 	}
 }
