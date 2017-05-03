@@ -38,8 +38,9 @@ public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRa
 	 */
 	@Override
 	public void validateRequiredItem(UnemployeeInsuranceRate rate) {
-		if (StringUtil.isNullOrEmpty(rate.getHistoryId(), true) || CollectionUtil.isEmpty(rate.getRateItems())
-			|| rate.getRateItems() == null || rate.getRateItems().size() != RATE_ITEM_COUNT) {
+		if (StringUtil.isNullOrEmpty(rate.getHistoryId(), true)
+			|| CollectionUtil.isEmpty(rate.getRateItems()) || rate.getRateItems() == null
+			|| rate.getRateItems().size() != RATE_ITEM_COUNT) {
 			throw new BusinessException("ER001");
 		}
 	}
@@ -72,7 +73,8 @@ public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRa
 		}
 
 		// find data first
-		Optional<UnemployeeInsuranceRate> data = this.repository.findFirstData(rate.getCompanyCode());
+		Optional<UnemployeeInsuranceRate> data = this.repository
+			.findFirstData(rate.getCompanyCode());
 
 		// check exist
 		if (data.isPresent() && data.get().getApplyRange().getStartMonth().nextMonth().v() > rate
@@ -149,11 +151,12 @@ public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRa
 
 		if (data.isPresent()) {
 			Optional<UnemployeeInsuranceRate> dataUpdate = this.repository.findBetweenUpdate(
-				rate.getCompanyCode(), data.get().getApplyRange().getStartMonth(), data.get().getHistoryId());
+				rate.getCompanyCode(), data.get().getApplyRange().getStartMonth(),
+				data.get().getHistoryId());
 
 			// check first data
-			return (dataUpdate.isPresent() && (dataUpdate.get().getApplyRange().getStartMonth().v() >= rate
-				.getApplyRange().getStartMonth().v()));
+			return (dataUpdate.isPresent() && (dataUpdate.get().getApplyRange().getStartMonth()
+				.v() >= rate.getApplyRange().getStartMonth().v()));
 		}
 		return true;
 	}

@@ -181,6 +181,8 @@ module nts.uk.ui.jqueryExtentions {
             switch (action) {
                 case 'setupSelecting':
                     return setupSelecting($grid);
+                case 'unsetupSelecting':
+                    return unsetupSelecting($grid);
                 case 'getSelected':
                     return getSelected($grid);
                 case 'setSelected':
@@ -319,6 +321,13 @@ module nts.uk.ui.jqueryExtentions {
 
             return $grid;
         }
+        
+        function unsetupSelecting($grid: JQuery) {
+            unsetupDragging($grid);
+            unsetupSelectingEvents($grid);
+
+            return $grid;
+        }
 
         function setupDragging($grid: JQuery) {
             var dragSelectRange = [];
@@ -435,9 +444,20 @@ module nts.uk.ui.jqueryExtentions {
                 $grid.triggerHandler('selectionchanged');
             });
 
-            $grid.on('mouseup', () => {
-                $grid.triggerHandler('selectionchanged');
-            });
+//            $grid.on('mouseup', () => {
+//                $grid.triggerHandler('selectionchanged');
+//            });
+        }
+         
+        function unsetupDragging($grid: JQuery) {
+
+            $grid.unbind('mousedown');
+        }
+
+        function unsetupSelectingEvents($grid: JQuery) {
+            $grid.unbind('iggridselectionrowselectionchanged');
+
+//            $grid.off('mouseup');
         }
     }
 
@@ -888,11 +908,14 @@ module nts.uk.ui.jqueryExtentions {
                 column.formatter = function(value, rowObj) {
                     var update = (val) => { 
                         if ($self.data("igGrid") !== null) {
+//                            $self.igGridUpdating("setCellValue", rowObj[$self.igGrid("option", "primaryKey")], column.key, val);
+//                            $self.igGrid("commit");
                             var rowId = rowObj[$self.igGrid("option", "primaryKey")];
                             $self.igGridUpdating("setCellValue", rowId, column.key, val);
                             var updatedRow = $self.igGrid("rowById", rowId, false);
                             $self.igGrid("commit");
-                            if (updatedRow !== undefined) $self.igGrid("virtualScrollTo", $(updatedRow).data("row-idx"));
+                            if (updatedRow !== undefined) 
+                                $self.igGrid("virtualScrollTo", $(updatedRow).data("row-idx"));
                         }
                     };
                     var data = {
@@ -996,3 +1019,4 @@ module nts.uk.ui.jqueryExtentions {
         }
     }
 }
+

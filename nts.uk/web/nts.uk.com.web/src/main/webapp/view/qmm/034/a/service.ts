@@ -13,8 +13,11 @@ module qmm034.a.service {
      */
     export function getAllEras(): JQueryPromise<Array<viewmodel.EraModel>> {
         let dfd = $.Deferred<Array<viewmodel.EraModel>>();
-        nts.uk.request.ajax(paths.getAllEras).done(function(res: Array<viewmodel.EraModel>) {
-            dfd.resolve(res);
+        nts.uk.request.ajax(paths.getAllEras).done(function(res: Array<model.EraDto>) {
+            var data = _.map(res, function(era) {
+                return new viewmodel.EraModel(era.eraName, era.eraMark, era.startDate, era.fixAttribute, era.eraHist, era.endDate);
+            });
+            dfd.resolve(data);
         }).fail(function(err: any) {
             dfd.reject(err);
         })

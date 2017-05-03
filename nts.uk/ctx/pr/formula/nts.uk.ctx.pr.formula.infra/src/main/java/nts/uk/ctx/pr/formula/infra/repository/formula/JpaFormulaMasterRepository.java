@@ -22,6 +22,8 @@ public class JpaFormulaMasterRepository extends JpaRepository implements Formula
 
 	private static final String FIND_ALL_BY_COMPANYCODE;
 
+	private static final String IS_EXISTED_BY_COMPANYCODE;
+
 	private static final String IS_EXISTED_FORMULA;
 
 	private static final String FIND_FORMULA_NAME_BY_CODES;
@@ -31,8 +33,15 @@ public class JpaFormulaMasterRepository extends JpaRepository implements Formula
 		builderString.append("SELECT COUNT(a) ");
 		builderString.append("FROM QcfmtFormula a ");
 		builderString.append("WHERE a.qcfmtFormulaPK.ccd = :companyCode ");
-		IS_EXISTED_FORMULA = builderString.toString();
+		IS_EXISTED_BY_COMPANYCODE = builderString.toString();
 
+		builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(a) ");
+		builderString.append("FROM QcfmtFormula a ");
+		builderString.append("WHERE a.qcfmtFormulaPK.ccd = :companyCode ");
+		builderString.append("AND a.qcfmtFormulaPK.formulaCd = :formulaCd ");
+		IS_EXISTED_FORMULA = builderString.toString();
+		
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM QcfmtFormula a ");
@@ -105,8 +114,14 @@ public class JpaFormulaMasterRepository extends JpaRepository implements Formula
 	}
 
 	@Override
-	public boolean isExistedFormula(String companyCode) {
-		return this.queryProxy().query(IS_EXISTED_FORMULA, long.class).setParameter("companyCode", companyCode)
+	public boolean isExistedFormulaByCompanyCode(String companyCode) {
+		return this.queryProxy().query(IS_EXISTED_BY_COMPANYCODE, long.class).setParameter("companyCode", companyCode)
+				.getSingle().get() > 0;
+	}
+
+	@Override
+	public boolean isExistedFormula(String companyCode, FormulaCode formulaCode ) {
+		return this.queryProxy().query(IS_EXISTED_FORMULA, long.class).setParameter("companyCode", companyCode).setParameter("formulaCd", formulaCode)
 				.getSingle().get() > 0;
 	}
 

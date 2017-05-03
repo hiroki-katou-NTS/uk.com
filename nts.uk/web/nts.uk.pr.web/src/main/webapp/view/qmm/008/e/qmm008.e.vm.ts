@@ -367,9 +367,9 @@ module nts.uk.pr.view.qmm008.e {
                 var self = this;
                 if (self.dirty.isDirty()) {
                     nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function() {
-                        nts.uk.ui.windows.setShared("codeOfNewOffice", null, this.isTransistReturnData());
-                        nts.uk.ui.windows.close();
                         self.dirty.reset();
+                        nts.uk.ui.windows.setShared("codeOfNewOffice", null, self.isTransistReturnData());
+                        nts.uk.ui.windows.close();
                     }).ifNo(function() {
                     });
                 }

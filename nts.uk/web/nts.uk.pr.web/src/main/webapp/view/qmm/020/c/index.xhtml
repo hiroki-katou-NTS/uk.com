@@ -10,14 +10,14 @@
 			<div class="bg-green caret-right caret-background"
 				style="float: left; width: 250px; height: 300px; margin: 20px 50px;">
 				<button id="C_BTN_003" style="margin: 20px 20px"
-					data-bind="click:openJDialog">螻豁霑ｽ蜉</button>
+					data-bind="click:openJDialog">陞ｻ雎�髴托ｽｽ陷�</button>
 				<button id="C_BTN_004" style="margin: 20px 20px"
-					data-bind="click:openKDialog">螻豁邱ｨ髮</button>
+					data-bind="click:openKDialog">陞ｻ雎�驍ｱ�ｽｨ鬮ｮ</button>
 				<div style="margin: 10px 20px;">
 					<div style="width: 250px;" id="C_LST_002"
 						data-bind="ntsListBox: {
 									options: itemTotalList,
-									optionsValue: 'historyId',
+									optionsValue: 'id',
 									optionsText: 'startEnd',
 									value: selectedCode,
 									enable: isEnable(),
@@ -27,6 +27,16 @@
 										{ prop: 'startEnd', length: 12 }
 									]}">
 					</div>
+					<!-- <table id="single-list"
+						data-bind="ntsGridList: {
+									width: 550,
+									height: 110,
+									dataSource: itemTotalList,
+									primaryKey: 'historyId',
+									columns: columns,
+									multiple: false,
+									value: selectedCode
+								}"></table> -->
 				</div>
 
 			</div>
@@ -36,21 +46,21 @@
 		<!-- ~~~~~~~~~~~~~~~~~~~~~~ -->
 		<div style="margin: 10px 20px;" class="right-content">
 			<div class="form-label">
-				<label id="LBL_004">雇用に明細書を紐ずける</label>
+				<label id="LBL_004">髮�逕ｨ縺ｫ譏守ｴｰ譖ｸ繧堤ｴ舌★縺代ｋ</label>
 				<HR
 					style="display: block; margin-top: 1.2em; margin-left: -1em; width: 800px;" />
 				<br></br>
 			</div>
 			<div class="cf">
 				<div style="float: left; width: 600px;">
-		 			<div
+					<div
 						data-bind="ntsSearchBox: {
 											mode: 'igGrid', 
 											comId: 'C_LST_001', 
 											items: dataSource, 
 											selected: selectedList, 
 											selectedKey: 'ID', 
-											fields: ['Name', 'ID']}" /> 
+											fields: ['Name', 'ID']}" />
 					<BR />
 					<table id="C_LST_001" class="cf"></table>
 					<br />
