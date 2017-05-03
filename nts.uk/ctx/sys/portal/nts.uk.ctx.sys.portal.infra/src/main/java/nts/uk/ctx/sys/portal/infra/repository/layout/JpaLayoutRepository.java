@@ -18,8 +18,8 @@ import nts.uk.ctx.sys.portal.infra.entity.layout.CcgmtLayoutPK;
 public class JpaLayoutRepository extends JpaRepository implements LayoutRepository {
 
 	private final String SELECT_SINGLE = "SELECT c FROM CcgmtLayout c WHERE c.layoutID = :layoutID";
-	private final String SELECT_ALL = "SELECT c FROM CcgmtLayout c WHERE c.CcgmtLayoutPK.companyID = :companyID";
-	private final String SELECT_BY_TYPE = "SELECT c FROM CcgmtLayout c WHERE c.CcgmtLayoutPK.companyID = :companyID AND c.pgType = :pgType";
+	private final String SELECT_ALL = "SELECT c FROM CcgmtLayout c WHERE c.ccgmtLayoutPK.companyID = :companyID";
+	private final String SELECT_BY_TYPE = "SELECT c FROM CcgmtLayout c WHERE c.ccgmtLayoutPK.companyID = :companyID AND c.pgType = :pgType";
 
 	/*
 	 * (non-Javadoc)

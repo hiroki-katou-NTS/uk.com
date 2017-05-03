@@ -16,12 +16,20 @@ public interface TopPagePartRepository {
 	Optional<TopPagePart> find(String topPagePartID);
 
 	/**
-	 * Find TopPagePart by PGType
+	 * Find all TopPagePart
 	 *
-	 * @param layoutID
+	 * @param companyID
 	 * @return List TopPagePart
 	 */
-	List<TopPagePart> findByLayout(String layoutID);
+	List<TopPagePart> findAll(String companyID);
+
+	/**
+	 * Find TopPagePart by Type
+	 *
+	 * @param type
+	 * @return List TopPagePart
+	 */
+	List<TopPagePart> findByType(String companyID, int type);
 
 	/**
 	 * Remove a TopPagePart

@@ -17,8 +17,9 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePartPK;
 @Stateless
 public class JpaTopPagePartRepository extends JpaRepository implements TopPagePartRepository {
 
-	private final String SELECT_SINGLE = "SELECT c FROM CcgmtTopPagePart c WHERE c.topPagePartID = :topPagePartID";
-	private final String SELECT_BY_LAYOUT = "SELECT c FROM CcgmtTopPagePart c WHERE c.layoutID = :layoutID";
+	private final String SELECT_SINGLE = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.topPagePartID = :topPagePartID";
+	private final String SELECT_BY_COMPANY = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID";
+	private final String SELECT_BY_TYPE = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID AND c.topPagePartType = :topPagePartType";
 
 	/*
 	 * (non-Javadoc)
@@ -42,9 +43,24 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 	 * String layoutID)
 	 */
 	@Override
-	public List<TopPagePart> findByLayout(String layoutID) {
-		return this.queryProxy().query(SELECT_BY_LAYOUT, CcgmtTopPagePart.class)
-				.setParameter("layoutID", layoutID)
+	public List<TopPagePart> findAll(String companyID) {
+		 return this.queryProxy().query(SELECT_BY_COMPANY, CcgmtTopPagePart.class)
+					.setParameter("companyID", companyID)
+					.getList(c -> toDomain(c));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartRepository#findByLayout(
+	 * String layoutID)
+	 */
+	@Override
+	public List<TopPagePart> findByType(String companyID, int type) {
+		 return this.queryProxy().query(SELECT_BY_TYPE, CcgmtTopPagePart.class)
+				.setParameter("companyID", companyID)
+				.setParameter("topPagePartType", type)
 				.getList(c -> toDomain(c));
 	}
 
@@ -110,5 +126,4 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 			domain.getSize().getWidth().v(), domain.getSize().getHeight().v()
 		);
 	}
-	
 }
