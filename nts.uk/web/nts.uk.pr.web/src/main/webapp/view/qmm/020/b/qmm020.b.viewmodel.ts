@@ -1,3 +1,5 @@
+
+
 module qmm020.b.viewmodel {
     export class ScreenModel {
         //content:  KnockoutObservable<any>;

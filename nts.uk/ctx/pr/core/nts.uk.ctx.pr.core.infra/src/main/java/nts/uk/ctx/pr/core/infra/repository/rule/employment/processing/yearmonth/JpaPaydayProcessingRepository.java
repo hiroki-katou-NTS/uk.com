@@ -27,9 +27,15 @@ public class JpaPaydayProcessingRepository extends JpaRepository implements Payd
 
 	@Override
 	public PaydayProcessing selectOne(String companyCode, int processingNo) {
-		return this.queryProxy().query(SELECT_ONE_BY_KEY, QpdmtPaydayProcessing.class)
-				.setParameter("companyCode", companyCode).setParameter("processingNo", processingNo)
-				.getList(c -> toDomain(c)).get(0);
+		List<PaydayProcessing> paydayProcessings = this.queryProxy()
+				.query(SELECT_ONE_BY_KEY, QpdmtPaydayProcessing.class).setParameter("companyCode", companyCode)
+				.setParameter("processingNo", processingNo).getList(c -> toDomain(c));
+
+		if (paydayProcessings.isEmpty()) {
+			return null;
+		} else {
+			return paydayProcessings.get(0);
+		}
 	}
 
 	@Override
